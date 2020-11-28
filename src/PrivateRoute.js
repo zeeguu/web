@@ -10,7 +10,6 @@ import { UserContext } from './UserContext'
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const user = useContext(UserContext)
 
-  console.log(user)
   if (!user.session) {
     return <Redirect to={{ pathname: '/login' }} />
   }

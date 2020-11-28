@@ -17,14 +17,11 @@ export default function Settings ({ updateUserInfo }) {
   const user = useContext(UserContext)
 
   useEffect(() => {
-    console.log('fetching user data')
     getUserDetails2(user.session, data => {
-      console.log(data)
       setUserDetails(data)
     })
-  }, [])
+  }, [user.session])
 
-  console.log(userDetails)
   function handleSave (e) {
     e.preventDefault()
 

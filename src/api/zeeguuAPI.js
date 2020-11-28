@@ -5,7 +5,7 @@ console.log('API Url: ' + baseAPIUrl)
 
 function getUrl (endpointName) {
   const sessionID = LocalStorage.session()
-  console.log(sessionID)
+
   if (endpointName.includes('?')) {
     return `${baseAPIUrl}/${endpointName}&session=${sessionID}`
   }
