@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './FindWordInContext.css'
 import { useSpeechSynthesis } from 'react-speech-kit'
+import removeAccents from 'remove-accents'
 
 function randomElement (x) {
   return x[Math.floor(Math.random() * x.length)]
@@ -17,13 +18,13 @@ export default function FindWordInContext ({ bookmarkToStudy, correctAnswer }) {
   )
 
   function eliminateTypos (x) {
-    return x
-      .trim()
-      .toUpperCase()
-      .replace(/[^a-zA-Z ]/g, '')
+    return x.trim().toUpperCase()
+    // .replace(/[^a-zA-Z ]/g, '')
   }
   function checkResult () {
-    if (eliminateTypos(currentInput) === eliminateTypos(bookmarkToStudy.from)) {
+    var a = removeAccents(eliminateTypos(currentInput))
+    var b = removeAccents(eliminateTypos(bookmarkToStudy.from))
+    if (a === b) {
       setIsCorrect(true)
     }
   }

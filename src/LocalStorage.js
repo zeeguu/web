@@ -8,7 +8,11 @@ const LocalStorage = {
 
   // Getting Info
   hasSession: function () {
-    return localStorage[this.Keys.session]
+    return localStorage[this.Keys.Session]
+  },
+
+  session: function () {
+    return localStorage[this.Keys.Session]
   },
 
   userInfo: function () {

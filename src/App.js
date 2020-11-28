@@ -42,7 +42,7 @@ function App () {
   function doUpdateUserInfo (info) {
     console.log('in do update user name')
 
-    LocalStorage.setUserInfo(userInfo)
+    LocalStorage.setUserInfo(info)
     setUser({
       ...user,
       name: info.name,

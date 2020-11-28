@@ -6,8 +6,6 @@ import { UserContext } from '../UserContext'
 export default function MenuOnTheLeft () {
   const user = useContext(UserContext)
 
-  console.log(user)
-
   return (
     <div className='sidenav'>
       <h2>Welcome {user.name}</h2>

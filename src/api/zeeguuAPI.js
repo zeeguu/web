@@ -4,7 +4,8 @@ const baseAPIUrl = process.env.REACT_APP_API_URL
 console.log('API Url: ' + baseAPIUrl)
 
 function getUrl (endpointName) {
-  const sessionID = localStorage[LocalStorage.Keys.session]
+  const sessionID = LocalStorage.session()
+  console.log(sessionID)
   if (endpointName.includes('?')) {
     return `${baseAPIUrl}/${endpointName}&session=${sessionID}`
   }

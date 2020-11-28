@@ -13,6 +13,7 @@
     "react-speech": "^1.0.2",
     "react-speech-kit": "^3.0.1",
     "react-widgets": "^4.6.1",
+    "remove-accents": "^0.4.2",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
