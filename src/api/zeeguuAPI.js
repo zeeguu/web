@@ -1,8 +1,10 @@
+import LocalStorage from '../LocalStorage'
+
 const baseAPIUrl = process.env.REACT_APP_API_URL
 console.log('API Url: ' + baseAPIUrl)
 
 function getUrl (endpointName) {
-  const sessionID = localStorage['sessionID']
+  const sessionID = localStorage[LocalStorage.Keys.session]
   if (endpointName.includes('?')) {
     return `${baseAPIUrl}/${endpointName}&session=${sessionID}`
   }
@@ -96,8 +98,6 @@ function attemptToSave (user_details, setErrorMessage, onSuccess) {
       return response // OK in case of success
     })
     .then(data => {
-      // we must update this one in case it was changed in the DB
-      localStorage['name'] = user_details.name
       onSuccess(data)
     })
     .catch(error => {

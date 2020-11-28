@@ -1,6 +1,7 @@
+import LocalStorage from '../LocalStorage'
 import UserHome from './Articles'
 export default function LandingPage () {
-  if (localStorage['sessionID'] !== undefined) {
+  if (!LocalStorage.hasSession) {
     return <UserHome />
   }
   return (

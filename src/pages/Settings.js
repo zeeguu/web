@@ -2,7 +2,7 @@ import './Settings.css'
 
 import { useEffect, useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-import { attemptToSave, getUserDetails2 } from '../zeeguuAPI'
+import { attemptToSave, getUserDetails2 } from '../api/zeeguuAPI'
 
 import { languages, language_from_id, language_id } from '../languages'
 

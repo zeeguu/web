@@ -1,48 +1,49 @@
-const StorageKeys = {
-  Session: 'sessionID',
-  Name: 'name',
-  LearnedLanguage: 'learned_language',
-  NativeLanguage: 'native_language'
-}
+const LocalStorage = {
+  Keys: {
+    Session: 'sessionID',
+    Name: 'name',
+    LearnedLanguage: 'learned_language',
+    NativeLanguage: 'native_language'
+  },
 
-function locallySetName (newName) {
-  localStorage[StorageKeys.Name] = newName
-}
+  // Getting Info
+  hasSession: function () {
+    return localStorage[this.Keys.session]
+  },
 
-function setSessionInLocalStorage (session) {
-  localStorage[StorageKeys.Session] = session
-}
+  userInfo: function () {
+    return {
+      name: localStorage[this.Keys.Name],
+      learned_language: localStorage[this.Keys.LearnedLanguage],
+      native_language: localStorage[this.Keys.NativeLanguage]
+    }
+  },
 
-function setUserInfoInLocalStorage (info) {
-  localStorage[StorageKeys.Name] = info.name
-  localStorage[StorageKeys.LearnedLanguage] = info.learned_language
-  localStorage[StorageKeys.NativeLanguage] = info.native_language
-}
+  // Setting info
+  locallySetName: function (newName) {
+    localStorage[this.Keys.Name] = newName
+  },
 
-function deleteUserInfoFromLocalStorage () {
-  try {
-    localStorage.removeItem(StorageKeys.Name)
-    localStorage.removeItem(StorageKeys.LearnedLanguage)
-    localStorage.removeItem(StorageKeys.NativeLanguage)
-    localStorage.removeItem(StorageKeys.Session)
-  } catch (e) {
-    console.log(e)
+  setSession: function (session) {
+    localStorage[this.Keys.Session] = session
+  },
+
+  setUserInfo: function (info) {
+    localStorage[this.Keys.Name] = info.name
+    localStorage[this.Keys.LearnedLanguage] = info.learned_language
+    localStorage[this.Keys.NativeLanguage] = info.native_language
+  },
+
+  deleteUserInfo: function () {
+    try {
+      localStorage.removeItem(this.Keys.Name)
+      localStorage.removeItem(this.Keys.LearnedLanguage)
+      localStorage.removeItem(this.Keys.NativeLanguage)
+      localStorage.removeItem(this.Keys.Session)
+    } catch (e) {
+      console.log(e)
+    }
   }
 }
 
-function userInfoFromLocalStorage () {
-  return {
-    name: localStorage[StorageKeys.Name],
-    learned_language: localStorage[StorageKeys.LearnedLanguage],
-    native_language: localStorage[StorageKeys.NativeLanguage]
-  }
-}
-
-export {
-  StorageKeys,
-  locallySetName,
-  setUserInfoInLocalStorage,
-  deleteUserInfoFromLocalStorage,
-  setSessionInLocalStorage,
-  userInfoFromLocalStorage
-}
+export default LocalStorage

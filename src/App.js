@@ -11,22 +11,16 @@ import Settings from './pages/Settings'
 import ArticleReader from './pages/ArticleReader'
 import { UserContext } from './UserContext'
 import { PrivateRoute } from './PrivateRoute'
-import {
-  StorageKeys,
-  setUserInfoInLocalStorage,
-  deleteUserInfoFromLocalStorage,
-  setSessionInLocalStorage,
-  userInfoFromLocalStorage
-} from './LocalStorage'
+import LocalStorage from './LocalStorage'
 
 function App () {
   let userDict = {}
 
-  if (localStorage[StorageKeys.Session]) {
+  if (LocalStorage.hasSession()) {
     console.log('loading from localstorage')
     userDict = {
       session: localStorage['sessionID'],
-      ...userInfoFromLocalStorage()
+      ...LocalStorage.userInfo()
     }
   }
 
@@ -41,14 +35,14 @@ function App () {
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language
     })
-    setSessionInLocalStorage(sessionId)
-    setUserInfoInLocalStorage(userInfo)
+    LocalStorage.setSession(sessionId)
+    LocalStorage.setUserInfo(userInfo)
   }
 
   function doUpdateUserInfo (info) {
     console.log('in do update user name')
 
-    setUserInfoInLocalStorage(info)
+    LocalStorage.setUserInfo(userInfo)
     setUser({
       ...user,
       name: info.name,
@@ -58,7 +52,7 @@ function App () {
   }
 
   function logout () {
-    deleteUserInfoFromLocalStorage()
+    LocalStorage.deleteUserInfo()
     setUser({})
   }
 

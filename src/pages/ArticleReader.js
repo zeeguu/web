@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import MenuOnTheLeft from '../components/MenuOnTheLeft'
-import { getArticleInfo } from '../zeeguuAPI'
+import { getArticleInfo } from '../api/zeeguuAPI'
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.

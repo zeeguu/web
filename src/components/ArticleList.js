@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getUserArticles } from '../zeeguuAPI'
+import { getUserArticles } from '../api/zeeguuAPI'
 import Article from './Article'
 
 export default function AllTexts () {

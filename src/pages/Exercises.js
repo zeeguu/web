@@ -1,4 +1,4 @@
-import { getBookmarksToStudy } from '../zeeguuAPI'
+import { getBookmarksToStudy } from '../api/zeeguuAPI'
 import { useState } from 'react'
 
 import MenuOnTheLeft from '../components/MenuOnTheLeft'

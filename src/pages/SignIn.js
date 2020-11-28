@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
-import { attemptToSignIn, getUserDetails2 } from '../zeeguuAPI'
+import { attemptToSignIn, getUserDetails2 } from '../api/zeeguuAPI'
 import { useHistory } from 'react-router-dom'
 
 export default function SignIn ({ setUserState }) {
