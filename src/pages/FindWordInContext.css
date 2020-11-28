@@ -1,0 +1,23 @@
+.findWordInContext {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  transition: all 0.5s;
+}
+
+.bottomInput {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-end;
+  margin-top: 3em;
+}
+
+.highlightedWord {
+  color: orange;
+  font-weight: 800;
+}
+
+.contextExample {
+  margin-top: 2em;
+}

@@ -1,0 +1,12 @@
+.loadingMessageContainer {
+  /* background-color: yellow; */
+  position: absolute;
+  width: 80vw;
+  height: 100vh;
+  left: 12em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: lightgrey;
+  animation: fadein 1s;
+}
