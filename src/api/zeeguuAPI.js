@@ -84,6 +84,7 @@ function attemptToSignIn (
     body: `password=${password}`
   })
     .then(response => {
+      // https://stackoverflow.com/a/45366905/1200070
       response.json().then(data => {
         if (response.status === 200) {
           onSuccess(data)
