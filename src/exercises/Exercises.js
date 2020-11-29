@@ -2,9 +2,9 @@ import { getBookmarksToStudy } from '../api/zeeguuAPI'
 import { useState } from 'react'
 
 import MenuOnTheLeft from '../components/MenuOnTheLeft'
-import FindWordInContext from './FindWordInContext'
-import Congratulations from '../components/exercises/Congratulations'
-import ProgressBar from '../components/exercises/ProgressBar'
+import FindWordInContext from './recognize/FindWordInContext'
+import Congratulations from './Congratulations'
+import ProgressBar from './ProgressBar'
 import MenuOnTheLeftWithLoading from '../components/MenuOnTheLeftWithLoading'
 
 import './Exercises.css'

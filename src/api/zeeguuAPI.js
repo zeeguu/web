@@ -12,6 +12,10 @@ function getUrl (endpointName) {
   return `${baseAPIUrl}/${endpointName}?session=${sessionID}`
 }
 
+function generalPost (endpoint, callback) {
+  fetch(getUrl(endpoint), { method: 'POST' })
+}
+
 function generalGet (endpoint, callback) {
   fetch(getUrl(endpoint))
     .then(response => response.json())
@@ -45,6 +49,17 @@ function getUserDetails (callback) {
 
 function getBookmarksToStudy (count, callback) {
   generalGet(`bookmarks_to_study/${count}`, callback)
+}
+
+function uploadExerciseFeedback (
+  exercise_outcome,
+  exercise_source,
+  exercise_solving_speed,
+  bookmark_id
+) {
+  generalPost(
+    `report_exercise_outcome/${exercise_outcome}/${exercise_source}/${exercise_solving_speed}/${bookmark_id}`
+  )
 }
 
 function getUserArticles (callback) {
@@ -114,5 +129,6 @@ export {
   getArticleInfo,
   attemptToSignIn,
   attemptToSave,
-  getBookmarksToStudy
+  getBookmarksToStudy,
+  uploadExerciseFeedback
 }
