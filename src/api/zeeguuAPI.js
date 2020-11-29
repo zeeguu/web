@@ -84,17 +84,19 @@ function attemptToSignIn (
     body: `password=${password}`
   })
     .then(response => {
-      if (response.status !== 200) {
-        throw response
-      }
-      return response.json()
-    })
-    .then(data => {
-      onSuccess(data)
+      response.json().then(data => {
+        if (response.status === 200) {
+          onSuccess(data)
+        }
+        setErrorMessage(data.message)
+      })
     })
     .catch(error => {
-      console.log(error)
-      setErrorMessage('Invalid credentials')
+      if (!error.response) {
+        setErrorMessage(
+          'There seems to be a problem with the server. Please try again later.'
+        )
+      }
     })
 }
 

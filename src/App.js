@@ -28,7 +28,7 @@ function App () {
 
   useEffect(() => {}, [])
 
-  function updateUserState (sessionId, userInfo) {
+  function handleSuccessfulSignIn (sessionId, userInfo) {
     setUser({
       session: sessionId,
       name: userInfo.name,
@@ -65,7 +65,9 @@ function App () {
           {/* cf: https://ui.dev/react-router-v4-pass-props-to-components/ */}
           <Route
             path='/login'
-            render={() => <SignIn setUserState={updateUserState} />}
+            render={() => (
+              <SignIn onSuccessfulSignIn={handleSuccessfulSignIn} />
+            )}
           />
 
           <PrivateRoute path='/read' exact component={Articles} />
