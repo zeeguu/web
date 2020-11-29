@@ -28,7 +28,7 @@ export default function Settings ({ updateUserInfo }) {
     attemptToSave(userDetails, setErrorMessage, () => {
       console.log('saved!')
       updateUserInfo(userDetails)
-      history.push('/read')
+      history.goBack()
     })
   }
 
