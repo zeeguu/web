@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import removeAccents from 'remove-accents'
 
-export default function BottomInput ({ handleCorrectAnswer, bookmarkToStudy }) {
+export default function BottomInput ({
+  handleCorrectAnswer,
+  bookmarkToStudy,
+  notifyKeyPress
+}) {
   const [currentInput, setCurrentInput] = useState('')
   const [hintLength, setHintLength] = useState(0)
 
@@ -37,6 +41,9 @@ export default function BottomInput ({ handleCorrectAnswer, bookmarkToStudy }) {
         value={currentInput}
         onChange={e => setCurrentInput(e.target.value)}
         onKeyUp={e => {
+          if (currentInput != '') {
+            notifyKeyPress()
+          }
           if (e.key === 'Enter') {
             checkResult()
           }

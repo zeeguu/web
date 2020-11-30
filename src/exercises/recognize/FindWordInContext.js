@@ -5,19 +5,34 @@ import BottomInput from './BottomInput'
 import BottomFeedback from './BottomFeedback'
 import { uploadExerciseFeedback } from './../../api/zeeguuAPI'
 
+const EXERCISE_TYPE = 'Recognize_L1W_in_L2T'
 export default function FindWordInContext ({ bookmarkToStudy, correctAnswer }) {
   const [isCorrect, setIsCorrect] = useState(false)
+  const [initialTime, setCurrentTime] = useState(new Date())
+  const [firstTypeTime, setFirstTypeTime] = useState()
 
   function colorWordInContext (context, word) {
     return context.replace(word, `<span class='highlightedWord'>${word}</span>`)
   }
 
+  function inputKeyPress () {
+    if (firstTypeTime === undefined) {
+      console.log('first time key prss!')
+      setFirstTypeTime(new Date())
+    }
+  }
+
   function handleCorrectAnswer () {
+    console.log(new Date() - initialTime)
+    console.log('^^^^ time elapsed')
+    console.log(firstTypeTime - initialTime)
+    console.log('^^^^ to first key press')
+
     setIsCorrect(true)
     uploadExerciseFeedback(
       'Correct',
-      'Recognize_L1W_in_L2T',
-      1234,
+      EXERCISE_TYPE,
+      firstTypeTime - initialTime,
       bookmarkToStudy.id
     )
   }
@@ -43,6 +58,7 @@ export default function FindWordInContext ({ bookmarkToStudy, correctAnswer }) {
         <BottomInput
           handleCorrectAnswer={handleCorrectAnswer}
           bookmarkToStudy={bookmarkToStudy}
+          notifyKeyPress={inputKeyPress}
         />
       )}
       {isCorrect && (

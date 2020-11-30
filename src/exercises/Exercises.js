@@ -6,8 +6,10 @@ import FindWordInContext from './recognize/FindWordInContext'
 import Congratulations from './Congratulations'
 import ProgressBar from './ProgressBar'
 import MenuOnTheLeftWithLoading from '../components/MenuOnTheLeftWithLoading'
+import { uploadExerciseFeedback } from '../api/zeeguuAPI'
 
 import './Exercises.css'
+import FeedbackButtons from './FeedbackButtons'
 
 const NUMBER_OF_EXERCISES = 4
 
@@ -16,6 +18,7 @@ export default function Exercises () {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [currentBookmarkToStudy, setCurretBookmarkToStudy] = useState(null)
   const [finished, setFinished] = useState(false)
+  const [showFeedbackButtons, setShowFeedbackButtons] = useState(false)
 
   if (!bookmarksToStudyList) {
     getBookmarksToStudy(NUMBER_OF_EXERCISES, bookmarks => {
@@ -37,16 +40,30 @@ export default function Exercises () {
     return <MenuOnTheLeftWithLoading />
   }
 
-  function correctAnswer () {
+  function moveToNextExercise () {
     const newIndex = currentIndex + 1
 
-    if (newIndex == NUMBER_OF_EXERCISES) {
+    if (newIndex === NUMBER_OF_EXERCISES) {
       setFinished(true)
       return
     }
 
     setCurrentIndex(newIndex)
     setCurretBookmarkToStudy(bookmarksToStudyList[newIndex])
+  }
+  function correctAnswer () {
+    moveToNextExercise()
+  }
+
+  function stopShowingThisFeedback (reason) {
+    moveToNextExercise()
+    uploadExerciseFeedback(
+      reason,
+      'Recognize_L1W_in_L2T',
+      0,
+      currentBookmarkToStudy.id
+    )
+    setShowFeedbackButtons(false)
   }
 
   return (
@@ -65,6 +82,12 @@ export default function Exercises () {
                 key={currentBookmarkToStudy.id}
               />
             </div>
+
+            <FeedbackButtons
+              show={showFeedbackButtons}
+              setShow={setShowFeedbackButtons}
+              feedbackFunction={stopShowingThisFeedback}
+            />
           </div>
         </div>
       </div>
