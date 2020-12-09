@@ -3,10 +3,13 @@ import './FindWordInContext.css'
 
 import BottomInput from './BottomInput'
 import BottomFeedback from './BottomFeedback'
-import { uploadExerciseFeedback } from './../../api/zeeguuAPI'
 
 const EXERCISE_TYPE = 'Recognize_L1W_in_L2T'
-export default function FindWordInContext ({ bookmarkToStudy, correctAnswer }) {
+export default function FindWordInContext ({
+  api,
+  bookmarkToStudy,
+  correctAnswer
+}) {
   const [isCorrect, setIsCorrect] = useState(false)
   const [initialTime, setCurrentTime] = useState(new Date())
   const [firstTypeTime, setFirstTypeTime] = useState()
@@ -29,7 +32,7 @@ export default function FindWordInContext ({ bookmarkToStudy, correctAnswer }) {
     console.log('^^^^ to first key press')
 
     setIsCorrect(true)
-    uploadExerciseFeedback(
+    api.uploadExerciseFeedback(
       'Correct',
       EXERCISE_TYPE,
       firstTypeTime - initialTime,

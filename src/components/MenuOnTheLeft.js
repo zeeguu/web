@@ -14,7 +14,7 @@ export default function MenuOnTheLeft () {
       <br />
       <small>Learned: {user.learned_language}</small>
       <br />
-      <small>Learned: {user.session}</small>
+      <small>Session: {user.session}</small>
       <br />
 
       <button onClick={() => user.logoutMethod()}>Logout</button>

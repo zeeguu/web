@@ -2,7 +2,6 @@ import './Settings.css'
 
 import { useEffect, useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-import { attemptToSave, getUserDetails2 } from '../api/zeeguuAPI'
 
 import { languages, language_from_id, language_id } from '../languages'
 
@@ -10,14 +9,14 @@ import { LanguageSelector } from '../components/LanguageSelector'
 import MenuOnTheLeft from '../components/MenuOnTheLeft'
 import { UserContext } from '../UserContext'
 
-export default function Settings ({ updateUserInfo }) {
+export default function Settings ({ api, updateUserInfo }) {
   const [userDetails, setUserDetails] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
   const history = useHistory()
   const user = useContext(UserContext)
 
   useEffect(() => {
-    getUserDetails2(user.session, data => {
+    api.getUserDetails(data => {
       setUserDetails(data)
     })
   }, [user.session])
@@ -25,7 +24,7 @@ export default function Settings ({ updateUserInfo }) {
   function handleSave (e) {
     e.preventDefault()
 
-    attemptToSave(userDetails, setErrorMessage, () => {
+    api.saveUserDetails(userDetails, setErrorMessage, () => {
       console.log('saved!')
       updateUserInfo(userDetails)
       history.goBack()

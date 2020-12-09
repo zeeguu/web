@@ -1,4 +1,3 @@
-import { getBookmarksToStudy } from '../api/zeeguuAPI'
 import { useState } from 'react'
 
 import MenuOnTheLeft from '../components/MenuOnTheLeft'
@@ -6,14 +5,13 @@ import FindWordInContext from './recognize/FindWordInContext'
 import Congratulations from './Congratulations'
 import ProgressBar from './ProgressBar'
 import MenuOnTheLeftWithLoading from '../components/MenuOnTheLeftWithLoading'
-import { uploadExerciseFeedback } from '../api/zeeguuAPI'
 
 import './Exercises.css'
 import FeedbackButtons from './FeedbackButtons'
 
 const NUMBER_OF_EXERCISES = 4
 
-export default function Exercises () {
+export default function Exercises ({ api }) {
   const [bookmarksToStudyList, setbookmarksToStudyList] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [currentBookmarkToStudy, setCurretBookmarkToStudy] = useState(null)
@@ -21,7 +19,7 @@ export default function Exercises () {
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false)
 
   if (!bookmarksToStudyList) {
-    getBookmarksToStudy(NUMBER_OF_EXERCISES, bookmarks => {
+    api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, bookmarks => {
       setbookmarksToStudyList(bookmarks)
       setCurretBookmarkToStudy(bookmarks[currentIndex])
     })
@@ -57,7 +55,7 @@ export default function Exercises () {
 
   function stopShowingThisFeedback (reason) {
     moveToNextExercise()
-    uploadExerciseFeedback(
+    api.uploadExerciseFeedback(
       reason,
       'Recognize_L1W_in_L2T',
       0,
@@ -80,6 +78,7 @@ export default function Exercises () {
                 bookmarkToStudy={currentBookmarkToStudy}
                 correctAnswer={correctAnswer}
                 key={currentBookmarkToStudy.id}
+                api={api}
               />
             </div>
 

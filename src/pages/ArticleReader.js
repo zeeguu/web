@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import MenuOnTheLeft from '../components/MenuOnTheLeft'
-import { getArticleInfo } from '../api/zeeguuAPI'
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -9,7 +8,7 @@ function useQuery () {
   return new URLSearchParams(useLocation().search)
 }
 
-export default function ArticleReader () {
+export default function ArticleReader ({ api }) {
   let query = useQuery()
 
   const articleID = query.get('id')
@@ -18,7 +17,7 @@ export default function ArticleReader () {
 
   useEffect(() => {
     console.log('article with id ....' + articleID)
-    getArticleInfo(articleID, data => {
+    api.getArticleInfo(articleID, data => {
       console.log(data)
       setArticleInfo(data)
     })

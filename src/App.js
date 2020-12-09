@@ -12,9 +12,12 @@ import ArticleReader from './pages/ArticleReader'
 import { UserContext } from './UserContext'
 import { PrivateRoute } from './PrivateRoute'
 import LocalStorage from './LocalStorage'
+import Zeeguu_API from './api/Zeeguu_API'
 
 function App () {
   let userDict = {}
+
+  let _api = new Zeeguu_API(process.env.REACT_APP_API_URL)
 
   if (LocalStorage.hasSession()) {
     console.log('loading from localstorage')
@@ -22,20 +25,23 @@ function App () {
       session: localStorage['sessionID'],
       ...LocalStorage.userInfo()
     }
+    _api.session = localStorage['sessionID']
   }
+
+  const [api, setAPI] = useState(_api)
 
   const [user, setUser] = useState(userDict)
 
   useEffect(() => {}, [])
 
-  function handleSuccessfulSignIn (sessionId, userInfo) {
+  function handleSuccessfulSignIn (userInfo) {
     setUser({
-      session: sessionId,
+      session: api.session,
       name: userInfo.name,
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language
     })
-    LocalStorage.setSession(sessionId)
+    LocalStorage.setSession(api.session)
     LocalStorage.setUserInfo(userInfo)
   }
 
@@ -66,18 +72,26 @@ function App () {
           <Route
             path='/login'
             render={() => (
-              <SignIn onSuccessfulSignIn={handleSuccessfulSignIn} />
+              <SignIn
+                api={api}
+                notifySuccessfulSignIn={handleSuccessfulSignIn}
+              />
             )}
           />
 
-          <PrivateRoute path='/read' exact component={Articles} />
-          <PrivateRoute path='/read/article' component={ArticleReader} />
-          <PrivateRoute path='/bookmarks' component={Bookmarks} />
-          <PrivateRoute path='/exercises' component={Exercises} />
+          <PrivateRoute path='/read' exact api={api} component={Articles} />
+          <PrivateRoute
+            path='/read/article'
+            api={api}
+            component={ArticleReader}
+          />
+          <PrivateRoute path='/bookmarks' api={api} component={Bookmarks} />
+          <PrivateRoute path='/exercises' api={api} component={Exercises} />
 
           <PrivateRoute
             path='/account_settings'
             updateUserInfo={doUpdateUserInfo}
+            api={api}
             component={Settings}
           />
         </Switch>

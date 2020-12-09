@@ -1,5 +1,5 @@
 import MenuOnTheLeft from '../components/MenuOnTheLeft'
-export default function Bookmarks () {
+export default function Bookmarks ({ api }) {
   return (
     <div>
       <MenuOnTheLeft />

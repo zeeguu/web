@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import AllTexts from '../components/ArticleList'
 import MenuOnTheLeft from '../components/MenuOnTheLeft'
-import { getUserDetails } from '../api/zeeguuAPI'
 
-export default function UserHome () {
+export default function Articles ({ api }) {
   return (
     <div>
       <MenuOnTheLeft />
       <div>
         <h1>Recommended Texts</h1>
-        <AllTexts />
+        <AllTexts api={api} />
       </div>
     </div>
   )

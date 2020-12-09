@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 
-import { attemptToSignIn, getUserDetails2 } from '../api/zeeguuAPI'
 import { useHistory } from 'react-router-dom'
 
-export default function SignIn ({ onSuccessfulSignIn }) {
+export default function SignIn ({ api, notifySuccessfulSignIn }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -16,13 +15,11 @@ export default function SignIn ({ onSuccessfulSignIn }) {
 
   function handleSignIn (e) {
     e.preventDefault()
-    attemptToSignIn(email, password, setErrorMessage, function onSuccess (
-      sessionId
-    ) {
+    api.signIn(email, password, setErrorMessage, sessionId => {
       console.log('successful login')
 
-      getUserDetails2(sessionId, userInfo => {
-        onSuccessfulSignIn(sessionId, userInfo)
+      api.getUserDetails(userInfo => {
+        notifySuccessfulSignIn(userInfo)
 
         history.push('/read')
       })

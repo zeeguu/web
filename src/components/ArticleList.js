@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { getUserArticles } from '../api/zeeguuAPI'
+
 import Article from './Article'
 
-export default function AllTexts () {
+export default function AllTexts ({ api }) {
   const [articleList, setArticleList] = useState(null)
   const [currentSort, setCurrentSort] = useState('')
   const [wordCountSortState, setwordCountSortState] = useState('')
@@ -10,7 +10,7 @@ export default function AllTexts () {
   var originalList = null
 
   if (articleList == null) {
-    getUserArticles(articles => {
+    api.getUserArticles(articles => {
       console.log(articles)
       setArticleList(articles)
       originalList = [...articles]

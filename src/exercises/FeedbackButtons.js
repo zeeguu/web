@@ -15,14 +15,14 @@ export default function FeedbackButtons ({ show, setShow, feedbackFunction }) {
   }
   return (
     <div>
-      <div class='feedback_link_holder'>
-        <Link class='discrete-link' onClick={toggleShow}>
+      <div className='feedback_link_holder'>
+        <Link to={'#'} className='discrete-link' onClick={toggleShow}>
           Stop showing this
         </Link>
       </div>
 
       {show && (
-        <div class='feedback_buttons_holder'>
+        <div className='feedback_buttons_holder'>
           {buttons.map(each => (
             <button onClick={() => feedbackFunction(each.value)}>
               {each.name}
