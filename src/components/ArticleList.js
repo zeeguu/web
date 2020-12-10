@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import Article from './Article'
 
-export default function AllTexts ({ api }) {
+export default function AllTexts ({ zapi }) {
   const [articleList, setArticleList] = useState(null)
   const [currentSort, setCurrentSort] = useState('')
   const [wordCountSortState, setwordCountSortState] = useState('')
@@ -10,14 +10,13 @@ export default function AllTexts ({ api }) {
   var originalList = null
 
   if (articleList == null) {
-    api.getUserArticles(articles => {
+    zapi.getUserArticles(articles => {
       setArticleList(articles)
       originalList = [...articles]
     })
 
     return (
       <div>
-        <h1>Your Texts</h1>
         <p>loading...</p>
       </div>
     )

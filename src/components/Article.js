@@ -5,7 +5,11 @@ export default function Article ({ article }) {
   return (
     <div className='articleLinkEntry'>
       <h3>
-        <img style={{ width: 20 }} src={`/news-icons/${article.icon_name}`} />{' '}
+        <img
+          alt=''
+          style={{ width: 20 }}
+          src={`/news-icons/${article.icon_name}`}
+        />{' '}
         &nbsp;
         <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>(
         {(article.metrics.difficulty * 100) / 10}, {article.metrics.word_count})

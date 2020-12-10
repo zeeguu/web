@@ -1,4 +1,4 @@
-label {
+labeld {
   display: block;
   width: 10em;
   float: left; /* makes the element act like inline block */
@@ -6,11 +6,11 @@ label {
   margin-top: 1em;
 }
 
-input {
+/* input {
   width: 10em;
   float: left;
   margin-top: 1em;
-}
+} */
 
 input[type='submit' i] {
   clear: both;

@@ -86,6 +86,14 @@ const Zeeguu_API = class {
     this._get('user_articles/recommended', callback)
   }
 
+  getBookmarkedArticles (callback) {
+    this._get('user_articles/starred_or_liked', callback)
+  }
+
+  getCohortArticles (callback) {
+    this._get('cohort_articles', callback)
+  }
+
   getArticleInfo (articleID, callback) {
     this._get(`user_article?article_id=${articleID}`, callback)
   }

@@ -2,13 +2,13 @@ import './App.css'
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
-import LandingPage from './pages/LandingPage'
+import LandingPage from './landingPage/LandingPage'
 import SignIn from './pages/SignIn'
-import Articles from './pages/Articles'
+import Articles from './reader/Articles'
 import Bookmarks from './pages/Bookmarks'
 import Exercises from './exercises/Exercises'
 import Settings from './pages/Settings'
-import ArticleReader from './pages/ArticleReader'
+import ArticleReader from './reader/ArticleReader'
 import { UserContext } from './UserContext'
 import { PrivateRoute } from './PrivateRoute'
 import LocalStorage from './LocalStorage'
@@ -17,6 +17,7 @@ import Zeeguu_API from './api/Zeeguu_API'
 function App () {
   let userDict = {}
 
+  // we use the _api to initialize the api state variable
   let _api = new Zeeguu_API(process.env.REACT_APP_API_URL)
 
   if (LocalStorage.hasSession()) {
@@ -79,7 +80,7 @@ function App () {
             )}
           />
 
-          <PrivateRoute path='/read' exact api={api} component={Articles} />
+          <PrivateRoute path='/read' exact zapi={api} component={Articles} />
           <PrivateRoute
             path='/read/article'
             api={api}

@@ -1,5 +1,7 @@
 import LocalStorage from '../LocalStorage'
-import UserHome from './Articles'
+import UserHome from '../reader/Articles'
+import './LandingPage.css'
+
 export default function LandingPage () {
   if (!LocalStorage.hasSession) {
     return <UserHome />

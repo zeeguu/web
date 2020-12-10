@@ -16,14 +16,6 @@
   overflow: auto;
 }
 
-.zeeguuLogo {
-  position: relative;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  top: 3.375em;
-}
-
 .dropbtn {
   background-color: #ffbb54;
   color: white;

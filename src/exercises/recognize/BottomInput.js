@@ -41,7 +41,7 @@ export default function BottomInput ({
         value={currentInput}
         onChange={e => setCurrentInput(e.target.value)}
         onKeyUp={e => {
-          if (currentInput != '') {
+          if (currentInput !== '') {
             notifyKeyPress()
           }
           if (e.key === 'Enter') {

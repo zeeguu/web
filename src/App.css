@@ -1,3 +1,7 @@
 body {
-  margin-left: 400px;
+  font-family: Montserrat;
+}
+
+input:not([type='image' i]) {
+  box-sizing: border-box;
 }

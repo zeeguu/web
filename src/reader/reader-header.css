@@ -1,0 +1,105 @@
+.main-container {
+  margin-left: 12.5em;
+  padding: 0.0625em 1em;
+  height: 100%;
+  margin-top: 1em;
+  background-color: azure;
+}
+
+.select-article,
+h1 {
+  padding-top: 0.3em;
+  margin-bottom: 0.3em;
+  font-family: Montserrat;
+  font-weight: 200;
+  font-size: 1.6em;
+  line-height: 1em;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: auto;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+p {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1em;
+  line-height: 1.5em;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: space-around;
+  margin: auto;
+  margin-top: 3.125em;
+}
+
+.all__tabs {
+  display: flex;
+  min-width: 100%;
+  align-items: center;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+}
+
+.headmenuTab {
+  font-family: Montserrat;
+  font-size: 0.6em;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.row__bar {
+  margin: 0px;
+  padding: 1.5em;
+}
+
+.bar {
+  width: 36px;
+  height: 0px;
+  border: 1px solid #acacac;
+  transform: rotate(-90deg);
+}
+
+.headmenuTab,
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.headmenuTab:hover,
+a:hover {
+  color: #ffbb54;
+}
+
+/*******MEDIA QUERIES **********/
+@media screen and (max-width: 500px) {
+  .main-container {
+    position: relative;
+    overflow-x: hidden;
+    margin: 0;
+  }
+
+  .select-article,
+  h1 {
+    font-size: 1.2em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+  }
+
+  .row__bar {
+    padding: 0em;
+  }
+  .bar {
+    width: 19px;
+    height: 0px;
+    border: 0.5px solid #acacac;
+  }
+}
