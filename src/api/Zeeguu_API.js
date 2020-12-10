@@ -1,5 +1,9 @@
 import fetch from 'cross-fetch'
 
+function apiLog (what) {
+  console.log('➡️ ' + what)
+}
+
 const Zeeguu_API = class {
   constructor (baseAPIurl) {
     this.baseAPIurl = baseAPIurl
@@ -21,8 +25,8 @@ const Zeeguu_API = class {
   }
 
   signIn (email, password, onError, onSuccess) {
-    console.log('trying to sign in to: ' + this.baseAPIurl)
     let url = this.baseAPIurl + `/session/${email}`
+    apiLog(`/session/${email}`)
 
     fetch(url, {
       method: 'POST',
@@ -54,6 +58,7 @@ const Zeeguu_API = class {
   }
 
   saveUserDetails (user_details, setErrorMessage, onSuccess) {
+    apiLog(this._appendSessionToUrl('user_settings'))
     fetch(this._appendSessionToUrl('user_settings'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -113,7 +118,6 @@ const Zeeguu_API = class {
   }
 
   _appendSessionToUrl (endpointName) {
-    console.log('this session: ' + this.session)
     if (endpointName.includes('?')) {
       return `${this.baseAPIurl}/${endpointName}&session=${this.session}`
     }
@@ -121,6 +125,7 @@ const Zeeguu_API = class {
   }
 
   _get (endpoint, callback) {
+    apiLog('GET' + endpoint)
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then(response => response.json())
       .then(data => {
@@ -129,6 +134,7 @@ const Zeeguu_API = class {
   }
 
   _post (endpoint) {
+    apiLog('POST' + endpoint)
     fetch(this._appendSessionToUrl(endpoint), { method: 'POST' })
   }
 }

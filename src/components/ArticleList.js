@@ -11,7 +11,6 @@ export default function AllTexts ({ api }) {
 
   if (articleList == null) {
     api.getUserArticles(articles => {
-      console.log(articles)
       setArticleList(articles)
       originalList = [...articles]
     })
