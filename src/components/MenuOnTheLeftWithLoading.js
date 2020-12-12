@@ -1,7 +1,7 @@
-import './MenuOnTheLeft.css'
+// import './MenuOnTheLeft.css'
 
 import MenuOnTheLeft from './MenuOnTheLeft'
-import './MenuOnTheLeftWithLoading.css'
+// import './MenuOnTheLeftWithLoading.css'
 
 export default function MenuOnTheLeftWithLoading () {
   return (

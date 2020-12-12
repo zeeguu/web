@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import AllTexts from '../components/ArticleList'
+import AllTexts from './ArticleList'
 import MenuOnTheLeft from '../components/MenuOnTheLeft'
 import './reader-header.css'
 import { ReadingTab, SeparatorBar } from './ReadingTab'
+import SideBar from '../components/SideBar'
 
 export default function Articles ({ zapi }) {
   return (

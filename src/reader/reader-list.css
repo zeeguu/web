@@ -1,0 +1,173 @@
+body {
+  background-color: white;
+  margin: auto;
+}
+
+/***********The article list style************/
+.articleLinkList {
+  list-style-type: none;
+  list-style-position: inside;
+  padding: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 60em;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.articleLinkList a {
+  text-decoration: none;
+  font-family: Montserrat;
+  color: black;
+  font-size: larger;
+}
+
+.articleLinkTitle {
+  font-size: 1.0416666666666667em;
+  color: black;
+  padding-right: 13.020833333333334em;
+}
+
+.articleLinkSummary {
+  font-size: 0.8333333333333334em;
+  color: #6d6d6d;
+  max-width: 54em;
+  line-height: 1.5em;
+  margin-top: 0.36458333333333337em;
+  padding-right: 13.020833333333334em;
+}
+/* 
+.articleLinkSummary{
+  font-size: 16px;
+  color: #6D6D6D;
+  max-width: 44em;
+  line-height: 1.5em;
+  margin-top: 7px; 
+} */
+
+.articleLinkEntry {
+  border-left: solid #ffbb54;
+  margin-top: 1.9375em;
+  padding-left: 0.8125em;
+}
+
+.headerElement {
+  display: table-cell;
+}
+
+.articleLinkDifficulty {
+  width: 10em;
+  float: right;
+}
+
+.articleLinkDifficultyText {
+  margin-top: -2em;
+  position: absolute;
+  padding: 0.3em;
+  width: 3em;
+  height: 3em;
+  text-align: center;
+  border-radius: 50%;
+  background: #f1f0f0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.feedIcon {
+  background-color: white;
+  width: 1.6666666666666667em;
+  height: 1.6666666666666667em;
+  margin-right: 0.9895833333333334em;
+}
+
+.articleTopics {
+  margin-top: 1em;
+  display: flex;
+  color: black;
+}
+
+.publishingTime {
+  margin-top: 0.2em;
+  margin-right: 0.78125em;
+}
+
+.difficulty-level {
+  margin-left: 6.40625em;
+}
+
+#topicsList {
+  display: none;
+}
+
+.singleTopicTag {
+  height: 1.2em;
+  margin-left: 0.2em;
+  border: solid #ffbb54;
+  border-radius: 1.0416666666666667em;
+  padding: 0.20833333333333334em 1.3541666666666667em;
+  font-size: 0.8333333333333334em;
+}
+
+/*******MEDIA QUERIES **********/
+@media screen and (max-width: 500px) {
+  .articleLinkEntry {
+    margin-bottom: 1em;
+    margin-top: 1em;
+  }
+  .articleLinkTitle {
+    padding-right: 0em;
+    font-size: 0.9em;
+    color: black;
+    width: 247px;
+  }
+
+  .articleLinkSummary {
+    padding-right: 0em;
+    text-align: left;
+  }
+
+  .difficulty-level {
+    margin-left: 3.40625em;
+  }
+
+  .articleLinkDifficultyText {
+    position: absolute;
+    padding: 0.8em;
+    width: 1em;
+    height: 1em;
+    text-align: center;
+    border-radius: 50%;
+    background: #f1f0f0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7em;
+  }
+  .articleLinkDifficulty {
+    width: 0em;
+    float: unset;
+    padding-left: 11px;
+    position: relative;
+    top: 1em;
+  }
+  .publishingTime {
+    margin-right: 0.7em;
+    font-size: 0.8em;
+    color: #6d6d6d;
+  }
+
+  .singleTopicTag {
+    padding: 0.3em 0.9em;
+    font-size: 11px;
+    margin-top: 0.2em;
+    border: solid 0.15em #ffbb54;
+  }
+  .feedIcon {
+    background-color: white;
+    width: 1.4em;
+    height: 1.4em;
+    margin-right: 0em;
+  }
+}

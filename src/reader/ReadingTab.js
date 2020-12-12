@@ -4,8 +4,7 @@ function ReadingTab ({ id, text, link, isActive }) {
       <a
         id={id}
         href={link}
-        className={'headmenuTab ' + isActive ? 'is-active' : ''}
-        style={{ fontWeight: 600 }}
+        className={'headmenuTab ' + (isActive ? 'is-active' : '')}
       >
         {text}
       </a>

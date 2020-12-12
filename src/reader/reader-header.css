@@ -3,7 +3,6 @@
   padding: 0.0625em 1em;
   height: 100%;
   margin-top: 1em;
-  background-color: azure;
 }
 
 .select-article,
@@ -102,4 +101,8 @@ a:hover {
     height: 0px;
     border: 0.5px solid #acacac;
   }
+}
+
+.is-active {
+  font-weight: 600;
 }
