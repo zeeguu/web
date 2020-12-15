@@ -5,7 +5,7 @@ import Article from './Article'
 import './reader-list.css'
 import './article-settings.css'
 
-export default function AllArticles ({ zapi }) {
+export default function NewArticles ({ zapi }) {
   const [articleList, setArticleList] = useState(null)
   const [currentSort, setCurrentSort] = useState('')
   const [wordCountSortState, setwordCountSortState] = useState('')

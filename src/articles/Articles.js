@@ -1,10 +1,8 @@
-import AllArticles from './AllArticles'
+import NewArticles from './NewArticles'
 import BookmarkedArticles from './BookmarkedArticles'
 import './reader-header.css'
 import { ReadingTab, SeparatorBar } from './ReadingTab'
 import { PrivateRoute } from '../PrivateRoute'
-
-import { NavLink } from 'react-router-dom'
 
 export default function Articles ({ api }) {
   return (
@@ -14,12 +12,7 @@ export default function Articles ({ api }) {
           <h1>Select an Article</h1>
 
           <div className='all__tabs'>
-            <ReadingTab
-              id='inbox_tab'
-              text='New'
-              link='/articles'
-              isActive={true}
-            />
+            <ReadingTab text='New' link='/articles' isActive={true} />
 
             <SeparatorBar />
 
@@ -40,7 +33,7 @@ export default function Articles ({ api }) {
         </div>
       </header>
 
-      <PrivateRoute path='/articles' exact zapi={api} component={AllArticles} />
+      <PrivateRoute path='/articles' exact zapi={api} component={NewArticles} />
 
       <PrivateRoute
         path='/articles/bookmarked'
