@@ -33,7 +33,7 @@ export default function NewArticles ({ zapi }) {
         setArticleList={setArticleList}
       />
 
-      <InterestsAndSearch />
+      <InterestsAndSearch zapi={zapi} />
 
       <ul id='articleLinkList' className='articleLinkList'>
         {articleList.map(each => (

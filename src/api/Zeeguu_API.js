@@ -102,6 +102,10 @@ const Zeeguu_API = class {
     this._get(`bookmarks_to_study/${count}`, callback)
   }
 
+  getInterestingTopics (callback) {
+    this._get('interesting_topics', callback)
+  }
+
   getPossibleTranslations (from_lang, to_lang, word, context, pageUrl) {
     let url = this._appendSessionToUrl(
       `get_possible_translations/${from_lang}/${to_lang}`
