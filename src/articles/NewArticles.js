@@ -5,6 +5,7 @@ import Article from './Article'
 import './reader-list.css'
 import './article-settings.css'
 import SortingButtons from './SortingButtons'
+import InterestsAndSearch from './InterestsAndSearch'
 
 export default function NewArticles ({ zapi }) {
   const [articleList, setArticleList] = useState(null)
@@ -31,6 +32,8 @@ export default function NewArticles ({ zapi }) {
         originalList={originalList}
         setArticleList={setArticleList}
       />
+
+      <InterestsAndSearch />
 
       <ul id='articleLinkList' className='articleLinkList'>
         {articleList.map(each => (
