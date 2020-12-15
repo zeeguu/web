@@ -1,10 +1,8 @@
 import { useState } from 'react'
 
-import MenuOnTheLeft from '../components/MenuOnTheLeft'
 import FindWordInContext from './recognize/FindWordInContext'
 import Congratulations from './Congratulations'
 import ProgressBar from './ProgressBar'
-import MenuOnTheLeftWithLoading from '../components/MenuOnTheLeftWithLoading'
 
 import './Exercises.css'
 import FeedbackButtons from './FeedbackButtons'
@@ -28,14 +26,13 @@ export default function Exercises ({ api }) {
   if (finished) {
     return (
       <div>
-        <MenuOnTheLeft />
         <Congratulations />
       </div>
     )
   }
 
   if (!currentBookmarkToStudy) {
-    return <MenuOnTheLeftWithLoading />
+    return <div>loading...</div>
   }
 
   function moveToNextExercise () {
@@ -66,8 +63,6 @@ export default function Exercises ({ api }) {
 
   return (
     <div>
-      <MenuOnTheLeft />
-
       <div className='exercisesContainer'>
         <div className='exMain'>
           <ProgressBar index={currentIndex} total={NUMBER_OF_EXERCISES} />

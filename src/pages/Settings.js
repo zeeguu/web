@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom'
 import { languages, language_from_id, language_id } from '../languages'
 
 import { LanguageSelector } from '../components/LanguageSelector'
-import MenuOnTheLeft from '../components/MenuOnTheLeft'
+
 import { UserContext } from '../UserContext'
 
 export default function Settings ({ api, updateUserInfo }) {
@@ -34,7 +34,6 @@ export default function Settings ({ api, updateUserInfo }) {
   if (!userDetails) {
     return (
       <div>
-        <MenuOnTheLeft />
         <h1>Account Settings</h1>
         loading...
       </div>
@@ -43,7 +42,6 @@ export default function Settings ({ api, updateUserInfo }) {
 
   return (
     <div>
-      <MenuOnTheLeft />
       <h1>Account Settings</h1>
       <h5>{errorMessage}</h5>
 

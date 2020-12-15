@@ -24,16 +24,10 @@ export default function ArticleReader ({ api }) {
   }, [])
 
   if (!articleInfo) {
-    return (
-      <div>
-        <MenuOnTheLeft />
-        '...'
-      </div>
-    )
+    return <div>'...'</div>
   }
   return (
     <div>
-      <MenuOnTheLeft />
       <h1>{articleInfo.title}</h1>
       <h4>{articleInfo.authors}</h4>
       <h5>{articleInfo.published}</h5>

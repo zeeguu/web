@@ -1,8 +1,9 @@
 .main-container {
-  margin-left: 12.5em;
   padding: 0.0625em 1em;
   height: 100%;
   margin-top: 1em;
+  border: 2px solid red;
+  border-radius: 5px;
 }
 
 .select-article,

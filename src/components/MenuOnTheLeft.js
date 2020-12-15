@@ -30,6 +30,7 @@ export default function MenuOnTheLeft () {
       <span class='arrow-icon' id='arrow-p' onClick={hideSidebar}>
         <p class='arrow-nav-icon'>▲</p>
       </span>
+
       <div class='sidenav' id='myTopnav'>
         <a href='/read' rel='external'>
           <img

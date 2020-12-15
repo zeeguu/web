@@ -1,13 +1,12 @@
 import AllTexts from './ArticleList'
-import MenuOnTheLeft from '../components/MenuOnTheLeft'
 import './reader-header.css'
 import { ReadingTab, SeparatorBar } from './ReadingTab'
-import SideBar from '../components/SideBar'
+import { PrivateRoute } from '../PrivateRoute'
+import ArticleReader from './ArticleReader'
 
-export default function Articles ({ zapi }) {
+export default function Articles ({ api }) {
   return (
-    <div className='main-container'>
-      <MenuOnTheLeft />
+    <div>
       <div>
         <header>
           <div className='select-article'>
@@ -40,8 +39,10 @@ export default function Articles ({ zapi }) {
           </div>
         </header>
 
-        <AllTexts zapi={zapi} />
+        <PrivateRoute path='/read' exact zapi={api} component={AllTexts} />
       </div>
+
+      <PrivateRoute path='/read/article' api={api} component={ArticleReader} />
     </div>
   )
 }

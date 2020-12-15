@@ -5,10 +5,6 @@ nav {
 .sidenav {
   height: 100%;
   width: 12.5em;
-  position: fixed;
-  z-index: 10;
-  top: 0;
-  left: 0;
   background-color: #ffd047;
   overflow-x: hidden;
   padding-top: 1.25em;
@@ -163,7 +159,6 @@ nav {
   /*optional*/
   font-family: arial, sans-serif;
   /*input has OS specific font-family*/
-
   text-decoration: underline;
   cursor: pointer;
 }
@@ -260,7 +255,6 @@ p {
   .sidenav {
     width: 100%;
     height: 100%;
-    position: fixed;
   }
   .sidebar a {
     float: left;

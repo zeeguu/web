@@ -19,6 +19,7 @@ export default function SideBar () {
             alt='Zeeguu Logo - The Elephant'
           />
         </a>
+
         <div class='dropdown'>
           <button class='dropbtn' onclick="location.href='/read'">
             | Articles <span id='arrow'></span>
