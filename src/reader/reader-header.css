@@ -1,9 +1,11 @@
 .main-container {
   padding: 0.0625em 1em;
+  margin-left: 12.5em;
   height: 100%;
   margin-top: 1em;
   border: 2px solid red;
   border-radius: 5px;
+  background-color: yellow;
 }
 
 .select-article,

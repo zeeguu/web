@@ -3,7 +3,7 @@ import Bookmarks from './pages/Bookmarks'
 import Exercises from './exercises/Exercises'
 import Settings from './pages/Settings'
 import { PrivateRoute } from './PrivateRoute'
-import MenuOnTheLeft from './components/MenuOnTheLeft'
+import SideBar from './components/SideBar'
 import LocalStorage from './LocalStorage'
 import './LoggedInRouter.css'
 
@@ -21,23 +21,21 @@ export default function LoggedInRouter ({ api, user, setUser }) {
   }
 
   return (
-    <div>
-      <div className='menu-and-container-holder'>
-        <MenuOnTheLeft />
+    <>
+      <SideBar />
 
-        <div className='main-container'>
-          <PrivateRoute path='/read' api={api} component={Articles} />
-          <PrivateRoute path='/bookmarks' api={api} component={Bookmarks} />
-          <PrivateRoute path='/exercises' api={api} component={Exercises} />
+      <div className='main-container'>
+        <PrivateRoute path='/read' api={api} component={Articles} />
+        <PrivateRoute path='/bookmarks' api={api} component={Bookmarks} />
+        <PrivateRoute path='/exercises' api={api} component={Exercises} />
 
-          <PrivateRoute
-            path='/account_settings'
-            updateUserInfo={doUpdateUserInfo}
-            api={api}
-            component={Settings}
-          />
-        </div>
+        <PrivateRoute
+          path='/account_settings'
+          updateUserInfo={doUpdateUserInfo}
+          api={api}
+          component={Settings}
+        />
       </div>
-    </div>
+    </>
   )
 }

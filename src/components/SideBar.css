@@ -1,24 +1,30 @@
+/* Fixed sidenav, full height */
+
 nav {
-  font-size: 14px;
+  font-size: 14pt;
 }
-
-.sidenav {
-  height: 100%;
-  width: 12.5em;
-  background-color: #ffd047;
-  overflow-x: hidden;
-  padding-top: 1.25em;
-  margin: auto;
-  padding: 0;
-  overflow: auto;
-}
-
 .zeeguuLogo {
   position: relative;
   display: block;
   margin-left: auto;
   margin-right: auto;
   top: 3.375em;
+}
+
+.sidenav {
+  height: 100%;
+  width: 12.5em;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  background-color: #ffd047;
+  overflow-x: hidden;
+  padding-top: 1.25em;
+  font-family: Montserrat;
+  margin: auto;
+  padding: 0;
+  overflow: auto;
 }
 
 .dropbtn {
@@ -32,6 +38,7 @@ nav {
   text-align: left;
   font-family: Montserrat;
 }
+
 .generalNavLinks {
   position: absolute;
   bottom: 0.625em;
@@ -83,9 +90,10 @@ nav {
 }
 
 .dropdown {
+  position: relative;
   display: block;
   bottom: 25%;
-
+  top: 16%;
   z-index: 3;
 }
 
@@ -148,17 +156,6 @@ nav {
   color: white;
   transform: rotate(-90deg);
   text-decoration: none;
-}
-
-#arrow-p {
-  background: none !important;
-  border: none;
-  padding: 0 !important;
-  /*optional*/
-  font-family: arial, sans-serif;
-  /*input has OS specific font-family*/
-  text-decoration: underline;
-  cursor: pointer;
 }
 
 .arrow-icon:hover {
@@ -253,6 +250,7 @@ p {
   .sidenav {
     width: 100%;
     height: 100%;
+    position: fixed;
   }
   .sidebar a {
     float: left;
@@ -278,42 +276,5 @@ p {
 
   .sidenav-mobile {
     display: none;
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .sidenav a {
-    text-align: center;
-    float: none;
-  }
-
-  .dropdown-content a {
-    text-align: left;
-  }
-
-  .zeeguuLogo {
-    width: 3em;
-  }
-
-  .dropdown {
-    top: 10%;
-  }
-
-  #hidden {
-    margin-bottom: 0em;
-    height: 13vh;
-  }
-
-  .hiddenOption {
-    padding: 0.5em;
-  }
-
-  .hiddenText {
-  }
-}
-
-@media screen and (max-width: 450px) {
-  arrow-icon {
-    left: -0.8em !important;
   }
 }

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import MenuOnTheLeft from '../components/MenuOnTheLeft'
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
