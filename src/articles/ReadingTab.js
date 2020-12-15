@@ -1,13 +1,17 @@
+import { NavLink } from 'react-router-dom'
+
 function ReadingTab ({ id, text, link, isActive }) {
   return (
     <div className='row__tab'>
-      <a
+      <NavLink
         id={id}
-        href={link}
-        className={'headmenuTab ' + (isActive ? 'is-active' : '')}
+        className={'headmenuTab'}
+        to={link}
+        exact
+        activeStyle={{ fontWeight: 600 }}
       >
         {text}
-      </a>
+      </NavLink>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import LocalStorage from '../LocalStorage'
-import UserHome from '../reader/Articles'
+import UserHome from '../articles/Articles'
 import './LandingPage.css'
 
 export default function LandingPage () {

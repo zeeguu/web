@@ -1,13 +1,11 @@
 // import './MenuOnTheLeft.css'
 import { Link } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { UserContext } from '../UserContext'
 import './SideBar.css'
 
-export default function SideBar () {
+export default function SideBar ({ visible, setVisible }) {
   const user = useContext(UserContext)
-
-  const [visible, setVisible] = useState(true)
 
   function hideSidebar (e) {
     e.preventDefault()
@@ -17,9 +15,9 @@ export default function SideBar () {
 
   if (!visible) {
     return (
-      <nav class='nav-menu'>
+      <nav className='nav-menu'>
         <span class='arrow-none-block' id='arrow-p' onClick={hideSidebar}>
-          <p class='arrow-nav-icon'>▲</p>
+          <p className='arrow-nav-icon'>▲</p>
         </span>
       </nav>
     )
@@ -27,7 +25,7 @@ export default function SideBar () {
 
   return (
     <nav className='sidenav' id='myTopnav'>
-      <a href='/read' rel='external'>
+      <a href='/articles' rel='external'>
         <img
           className='zeeguuLogo'
           src='/static/images/zeeguuWhiteLogo.svg'
@@ -35,18 +33,18 @@ export default function SideBar () {
         />
       </a>
 
-      <span class='arrow-icon' id='arrow-p' onClick={hideSidebar}>
-        <p class='arrow-nav-icon'>▲</p>
+      <span className='arrow-icon' id='arrow-p' onClick={hideSidebar}>
+        <p className='arrow-nav-icon'>▲</p>
       </span>
 
       <div className='dropdown'>
         <div className='dropbtn'>
-          <Link to='/read'>Readings</Link>
+          <Link to='/articles'>Articles</Link>
         </div>
       </div>
       <div className='dropdown'>
         <div className='dropbtn'>
-          <Link to='/bookmarks'>Words</Link>
+          <Link to='/words'>Words</Link>
         </div>
       </div>
       <div className='dropdown'>

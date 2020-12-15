@@ -23,7 +23,7 @@ export default function SignIn ({ api, notifySuccessfulSignIn }) {
       api.getUserDetails(userInfo => {
         notifySuccessfulSignIn(userInfo)
 
-        history.push('/read')
+        history.push('/articles')
       })
     })
   }
