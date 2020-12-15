@@ -27,18 +27,20 @@ export default function MenuOnTheLeft () {
 
   return (
     <nav class='nav-menu'>
-      <span class='arrow-icon' id='arrow-p' onClick={hideSidebar}>
-        <p class='arrow-nav-icon'>▲</p>
-      </span>
-
       <div class='sidenav' id='myTopnav'>
-        <a href='/read' rel='external'>
-          <img
-            class='zeeguuLogo'
-            src='/static/images/zeeguuWhiteLogo.svg'
-            alt='Zeeguu Logo - The Elephant'
-          />
-        </a>
+        <div>
+          <a href='/read' rel='external'>
+            <img
+              class='zeeguuLogo'
+              src='/static/images/zeeguuWhiteLogo.svg'
+              alt='Zeeguu Logo - The Elephant'
+            />
+          </a>
+        </div>
+
+        <span class='arrow-icon' id='arrow-p' onClick={hideSidebar}>
+          <p class='arrow-nav-icon'>▲</p>
+        </span>
 
         <div className='dropdown'>
           <div className='dropbtn'>
