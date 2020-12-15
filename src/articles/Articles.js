@@ -12,23 +12,15 @@ export default function Articles ({ api }) {
           <h1>Select an Article</h1>
 
           <div className='all__tabs'>
-            <ReadingTab text='New' link='/articles' isActive={true} />
+            <ReadingTab text='New' link='/articles' />
 
             <SeparatorBar />
 
-            <ReadingTab
-              id='starred_tab'
-              text='Bookmarked'
-              link='/articles/bookmarked'
-            />
+            <ReadingTab text='Bookmarked' link='/articles/bookmarked' />
 
             <SeparatorBar />
 
-            <ReadingTab
-              id='classroom_tab'
-              text='Classroom'
-              link='/articles/classroom'
-            />
+            <ReadingTab text='Classroom' link='/articles/classroom' />
           </div>
         </div>
       </header>

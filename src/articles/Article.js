@@ -3,13 +3,12 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 
 export default function Article ({ article }) {
-  let topics = article.topics.split(' ').filter(each => each != '')
+  let topics = article.topics.split(' ').filter(each => each !== '')
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10
-  console.log(topics)
 
-  console.log(article)
   return (
     <li
+      key={article.id}
       className={
         article.metrics.word_count +
         ' ' +
@@ -21,26 +20,32 @@ export default function Article ({ article }) {
         <div className='articleLinkHeader'>
           <div className='articleLinkTitle headerElement'>{article.title}</div>
           <div className='articleLinkDifficulty headerElement'>
-            <span class='difficulty-level articleLinkDifficultyText'>
+            <span className='difficulty-level articleLinkDifficultyText'>
               {difficulty}
             </span>
-            <span class='articleLinkDifficultyText'>
+            <span className='articleLinkDifficultyText'>
               {article.metrics.word_count}
             </span>
           </div>
         </div>
 
-        <div class='articleLinkSummary'>{article.summary}</div>
+        <div className='articleLinkSummary'>{article.summary}</div>
 
-        <div class='articleTopics'>
-          <div class='articleLinkImage'>
-            <img src={'/news-icons/' + article.icon_name} class='feedIcon' />
+        <div className='articleTopics'>
+          <div className='articleLinkImage'>
+            <img
+              src={'/news-icons/' + article.icon_name}
+              className='feedIcon'
+              alt=''
+            />
           </div>
-          <span class='publishingTime'>
+          <span className='publishingTime'>
             {moment.utc(article.published).fromNow()}
           </span>
           {topics.map(topic => (
-            <span class='singleTopicTag'>{topic}</span>
+            <span key={topic} className='singleTopicTag'>
+              {topic}
+            </span>
           ))}
         </div>
       </Link>
