@@ -25,6 +25,14 @@ export default function NewArticles ({ zapi }) {
     )
   }
 
+  function articlesListShouldChange () {
+    setArticleList(null)
+    zapi.getUserArticles(articles => {
+      setArticleList(articles)
+      originalList = [...articles]
+    })
+  }
+
   return (
     <div>
       <SortingButtons
@@ -33,7 +41,10 @@ export default function NewArticles ({ zapi }) {
         setArticleList={setArticleList}
       />
 
-      <InterestsAndSearch zapi={zapi} />
+      <InterestsAndSearch
+        zapi={zapi}
+        articlesListShouldChange={articlesListShouldChange}
+      />
 
       <ul id='articleLinkList' className='articleLinkList'>
         {articleList.map(each => (

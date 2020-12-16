@@ -1,11 +1,20 @@
 import TagsOfInterests from './TagsOfInterests'
 import { useState } from 'react'
 
-export default function InterestsAndSearch ({ setArticleList, zapi }) {
+export default function InterestsAndSearch ({
+  setArticleList,
+  zapi,
+  articlesListShouldChange
+}) {
   const [showingInterests, setShowingInterests] = useState(false)
 
   function toggleInterests () {
     setShowingInterests(!showingInterests)
+  }
+
+  function closeTagsOfInterestAndNotifyArticleListOfChange () {
+    articlesListShouldChange()
+    toggleInterests()
   }
 
   return (
@@ -57,7 +66,13 @@ export default function InterestsAndSearch ({ setArticleList, zapi }) {
         </div>
       </div>
 
-      <TagsOfInterests visible={showingInterests} zapi={zapi} />
+      <TagsOfInterests
+        visible={showingInterests}
+        zapi={zapi}
+        articlesListShouldChange={
+          closeTagsOfInterestAndNotifyArticleListOfChange
+        }
+      />
     </>
   )
 }

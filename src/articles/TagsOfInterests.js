@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 
-export default function TagsOfInterests ({ visible, zapi }) {
+export default function TagsOfInterests ({
+  visible,
+  zapi,
+  articlesListShouldChange
+}) {
   const [interestingTopics, setInterestingTopics] = useState(null)
   const [subscribedTopics, setSubscribedTopics] = useState(null)
 
@@ -22,12 +26,13 @@ export default function TagsOfInterests ({ visible, zapi }) {
   function subscribeToTopicOfInterest (topic) {
     setSubscribedTopics([...subscribedTopics, topic])
     setInterestingTopics(interestingTopics.filter(each => each.id !== topic.id))
-    zapi.subscribeToTopic(topic.id)
+    zapi.subscribeToTopic(topic)
   }
 
   function unsubscribeFromTopicOfInterest (topic) {
     setSubscribedTopics(subscribedTopics.filter(each => each.id !== topic.id))
     setInterestingTopics([...interestingTopics, topic])
+    zapi.unsubscribeFromTopic(topic)
   }
 
   function toggleInterest (topic) {
@@ -48,7 +53,12 @@ export default function TagsOfInterests ({ visible, zapi }) {
       >
         <div className='interestsSettings'>
           <button className='addInterestButton'>＋</button>
-          <button className='closeTagsOfInterests'>save</button>
+          <button
+            className='closeTagsOfInterests'
+            onClick={e => articlesListShouldChange()}
+          >
+            save
+          </button>
         </div>
 
         {allTopics.map(topic => (

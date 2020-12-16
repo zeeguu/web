@@ -110,8 +110,12 @@ const Zeeguu_API = class {
     this._get('subscribed_topics', callback)
   }
 
-  subscribeToTopic (topicID) {
-    return this._post(`subscribe_topic`, `topic_id=${topicID}`)
+  subscribeToTopic (topic) {
+    return this._post(`subscribe_topic`, `topic_id=${topic.id}`)
+  }
+
+  unsubscribeFromTopic (topic) {
+    return this._post(`unsubscribe_topic`, `topic_id=${topic.id}`)
   }
 
   getPossibleTranslations (from_lang, to_lang, word, context, pageUrl) {
