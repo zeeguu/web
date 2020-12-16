@@ -529,8 +529,6 @@ body.stop-scrolling {
   border-radius: 5px;
   text-align: center;
   position: fixed;
-  left: 50%;
-  top: 50%;
   margin-left: -256px;
   margin-top: -200px;
   overflow: hidden;
@@ -657,7 +655,7 @@ body.stop-scrolling {
   font-size: 18px;
   box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.06);
   padding: 0 12px;
-  display: none;
+  /* display: none; */
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
 }
@@ -706,7 +704,7 @@ body.stop-scrolling {
   opacity: 0;
   visibility: hidden;
 }
-.sweet-alert button {
+.sweet-alert a {
   background-color: #ffbb54;
   font-family: Montserrat;
   color: white;
@@ -730,7 +728,7 @@ body.stop-scrolling {
 .sweet-alert button:active {
   background-color: #ffbb54;
 }
-.sweet-alert button.cancel {
+.sweet-alert a.cancel {
   background-color: #c1c1c1;
 }
 .sweet-alert button.cancel:hover {

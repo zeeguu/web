@@ -2,7 +2,6 @@ import TagsOfInterests from './TagsOfInterests'
 import { useState } from 'react'
 
 export default function InterestsAndSearch ({
-  setArticleList,
   zapi,
   articlesListShouldChange
 }) {

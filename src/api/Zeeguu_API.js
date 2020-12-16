@@ -110,12 +110,23 @@ const Zeeguu_API = class {
     this._get('subscribed_topics', callback)
   }
 
+  getSubscribedSearchers (callback) {
+    this._get('subscribed_searches', callback)
+  }
+
   subscribeToTopic (topic) {
     return this._post(`subscribe_topic`, `topic_id=${topic.id}`)
   }
 
   unsubscribeFromTopic (topic) {
     return this._post(`unsubscribe_topic`, `topic_id=${topic.id}`)
+  }
+
+  subscribeToSearch (searchTerm, callback) {
+    return this._get(`subscribe_search/${searchTerm}`, callback)
+  }
+  unsubscribeFromSearch (search) {
+    return this._post(`unsubscribe_search`, `search_id=${search.id}`)
   }
 
   getPossibleTranslations (from_lang, to_lang, word, context, pageUrl) {
@@ -158,7 +169,7 @@ const Zeeguu_API = class {
       })
   }
 
-  _post (endpoint, body) {
+  _post (endpoint, body, callback) {
     apiLog('POST' + endpoint)
 
     const url = this._appendSessionToUrl(endpoint)
@@ -172,9 +183,11 @@ const Zeeguu_API = class {
       }
     }
 
-    console.log(params)
-
-    fetch(url, params)
+    if (callback) {
+      fetch(url, params).then(data => callback(data))
+    } else {
+      fetch(url, params)
+    }
   }
 }
 

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import React from 'react'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 export default function TagsOfInterests ({
   visible,
@@ -7,6 +9,11 @@ export default function TagsOfInterests ({
 }) {
   const [interestingTopics, setInterestingTopics] = useState(null)
   const [subscribedTopics, setSubscribedTopics] = useState(null)
+  const [subscribedSearches, setSubscribedSearches] = useState(null)
+  const [
+    showingSpecialInterestModal,
+    setshowingSpecialInterestModal
+  ] = useState(false)
 
   useEffect(() => {
     zapi.getInterestingTopics(data => {
@@ -16,9 +23,15 @@ export default function TagsOfInterests ({
     zapi.getSubscribedTopics(data => {
       setSubscribedTopics(data)
     })
+
+    zapi.getSubscribedSearchers(data => {
+      setSubscribedSearches(data)
+    })
   }, [zapi])
 
-  if (!interestingTopics || !subscribedTopics) return ''
+  if (!interestingTopics || !subscribedTopics || !subscribedSearches) return ''
+
+  console.log(subscribedSearches)
 
   let allTopics = [...interestingTopics, ...subscribedTopics]
   allTopics.sort((a, b) => a.title.localeCompare(b.title))
@@ -35,6 +48,14 @@ export default function TagsOfInterests ({
     zapi.unsubscribeFromTopic(topic)
   }
 
+  function removeSearch (search) {
+    console.log('unsubscribing from search' + search)
+    setSubscribedSearches(
+      subscribedSearches.filter(each => each.id !== search.id)
+    )
+    zapi.unsubscribeFromSearch(search)
+  }
+
   function toggleInterest (topic) {
     console.log(topic)
     console.log(subscribedTopics)
@@ -45,14 +66,44 @@ export default function TagsOfInterests ({
     }
   }
 
+  const onConfirm = response => {
+    zapi.subscribeToSearch(response, data => {
+      console.log(data)
+      console.log(subscribedSearches)
+      setSubscribedSearches([...subscribedSearches, data])
+    })
+
+    setshowingSpecialInterestModal(false)
+  }
+
+  const onCancel = () => {
+    setshowingSpecialInterestModal(false)
+  }
+
   return (
     <>
+      {showingSpecialInterestModal && (
+        <SweetAlert
+          input
+          showCancel
+          title='Add a personal interest'
+          placeHolder='interest'
+          onConfirm={onConfirm}
+          onCancel={onCancel}
+        ></SweetAlert>
+      )}
+
       <div
         className='tagsOfInterests'
         style={{ display: visible ? 'block' : 'none' }}
       >
         <div className='interestsSettings'>
-          <button className='addInterestButton'>＋</button>
+          <button
+            className='addInterestButton'
+            onClick={e => setshowingSpecialInterestModal(true)}
+          >
+            ＋
+          </button>
           <button
             className='closeTagsOfInterests'
             onClick={e => articlesListShouldChange()}
@@ -72,6 +123,18 @@ export default function TagsOfInterests ({
               }
             >
               <span className='addableTitle'>{topic.title}</span>
+            </button>
+          </div>
+        ))}
+
+        {subscribedSearches.map(search => (
+          <div key={search.id} searchremovabeid={search.id}>
+            <button
+              onClick={e => removeSearch(search)}
+              type='button'
+              className={'interests'}
+            >
+              <span className='addableTitle'>{search.search}</span>
             </button>
           </div>
         ))}
