@@ -2,13 +2,43 @@ import { useEffect, useState } from 'react'
 
 export default function TagsOfInterests ({ visible, zapi }) {
   const [interestingTopics, setInterestingTopics] = useState(null)
+  const [subscribedTopics, setSubscribedTopics] = useState(null)
+
   useEffect(() => {
     zapi.getInterestingTopics(data => {
       setInterestingTopics(data)
     })
+
+    zapi.getSubscribedTopics(data => {
+      setSubscribedTopics(data)
+    })
   }, [zapi])
 
-  if (!interestingTopics) return ''
+  if (!interestingTopics || !subscribedTopics) return ''
+
+  let allTopics = [...interestingTopics, ...subscribedTopics]
+  allTopics.sort((a, b) => a.title.localeCompare(b.title))
+
+  function subscribeToTopicOfInterest (topic) {
+    setSubscribedTopics([...subscribedTopics, topic])
+    setInterestingTopics(interestingTopics.filter(each => each.id !== topic.id))
+    zapi.subscribeToTopic(topic.id)
+  }
+
+  function unsubscribeFromTopicOfInterest (topic) {
+    setSubscribedTopics(subscribedTopics.filter(each => each.id !== topic.id))
+    setInterestingTopics([...interestingTopics, topic])
+  }
+
+  function toggleInterest (topic) {
+    console.log(topic)
+    console.log(subscribedTopics)
+    if (subscribedTopics.includes(topic)) {
+      unsubscribeFromTopicOfInterest(topic)
+    } else {
+      subscribeToTopicOfInterest(topic)
+    }
+  }
 
   return (
     <>
@@ -21,9 +51,16 @@ export default function TagsOfInterests ({ visible, zapi }) {
           <button className='closeTagsOfInterests'>save</button>
         </div>
 
-        {interestingTopics.map(topic => (
+        {allTopics.map(topic => (
           <div key={topic.id} addableid={topic.id}>
-            <button type='button' className='interests unsubscribed'>
+            <button
+              onClick={e => toggleInterest(topic)}
+              type='button'
+              className={
+                'interests ' +
+                (subscribedTopics.includes(topic) ? '' : 'unsubscribed')
+              }
+            >
               <span className='addableTitle'>{topic.title}</span>
             </button>
           </div>

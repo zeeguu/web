@@ -106,6 +106,14 @@ const Zeeguu_API = class {
     this._get('interesting_topics', callback)
   }
 
+  getSubscribedTopics (callback) {
+    this._get('subscribed_topics', callback)
+  }
+
+  subscribeToTopic (topicID) {
+    return this._post(`subscribe_topic`, `topic_id=${topicID}`)
+  }
+
   getPossibleTranslations (from_lang, to_lang, word, context, pageUrl) {
     let url = this._appendSessionToUrl(
       `get_possible_translations/${from_lang}/${to_lang}`
@@ -125,7 +133,8 @@ const Zeeguu_API = class {
     bookmark_id
   ) {
     this._post(
-      `report_exercise_outcome/${exercise_outcome}/${exercise_source}/${exercise_solving_speed}/${bookmark_id}`
+      `report_exercise_outcome/${exercise_outcome}/${exercise_source}/${exercise_solving_speed}/${bookmark_id}`,
+      null
     )
   }
 
@@ -145,9 +154,23 @@ const Zeeguu_API = class {
       })
   }
 
-  _post (endpoint) {
+  _post (endpoint, body) {
     apiLog('POST' + endpoint)
-    fetch(this._appendSessionToUrl(endpoint), { method: 'POST' })
+
+    const url = this._appendSessionToUrl(endpoint)
+
+    let params = { method: 'POST' }
+    if (body) {
+      params = {
+        ...params,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body
+      }
+    }
+
+    console.log(params)
+
+    fetch(url, params)
   }
 }
 
