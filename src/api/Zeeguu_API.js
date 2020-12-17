@@ -102,6 +102,7 @@ const Zeeguu_API = class {
     this._get(`bookmarks_to_study/${count}`, callback)
   }
 
+  // Interesting Topics
   getInterestingTopics (callback) {
     this._get('interesting_topics', callback)
   }
@@ -127,6 +128,31 @@ const Zeeguu_API = class {
   }
   unsubscribeFromSearch (search) {
     return this._post(`unsubscribe_search`, `search_id=${search.id}`)
+  }
+
+  // Uninteresting Topics
+  getFilteredTopics (callback) {
+    this._get('filtered_topics', callback)
+  }
+
+  getSubscribedFilterSearches (callback) {
+    this._get('filtered_searches', callback)
+  }
+
+  interestingButNotSubscribedTopics (callback) {
+    this.getInterestingTopics(interesting => {
+      console.log(interesting)
+      console.log('interesting')
+      this.getSubscribedTopics(subscribed => {
+        console.log('subscribed')
+        console.log(subscribed)
+        var available = interesting.filter(e => !subscribed.includes(e))
+        available.sort((a, b) => a.title.localeCompare(b.title))
+        console.log('available')
+        console.log(available)
+        callback(available)
+      })
+    })
   }
 
   getPossibleTranslations (from_lang, to_lang, word, context, pageUrl) {

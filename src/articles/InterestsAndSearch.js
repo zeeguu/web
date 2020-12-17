@@ -1,4 +1,5 @@
 import TagsOfInterests from './TagsOfInterests'
+import TagsOfFilters from './TagsOfFilters'
 import { useState } from 'react'
 
 export default function InterestsAndSearch ({
@@ -6,9 +7,14 @@ export default function InterestsAndSearch ({
   articlesListShouldChange
 }) {
   const [showingInterests, setShowingInterests] = useState(false)
+  const [showingFilters, setShowingFilters] = useState(false)
 
   function toggleInterests () {
     setShowingInterests(!showingInterests)
+  }
+
+  function toggleFilters () {
+    setShowingFilters(!showingFilters)
   }
 
   function closeTagsOfInterestAndNotifyArticleListOfChange () {
@@ -18,23 +24,22 @@ export default function InterestsAndSearch ({
 
   return (
     <>
-      <div
-        className='options'
-        id='optionsID'
-        style={{ display: 'inline-flex' }}
-      >
+      <div className='options' style={{ display: 'inline-flex' }}>
         <br />
         <br />
         <br />
         <div className='interestButton'>
-          <button
-            type='button'
-            className='orangeButton show-topic-subscriber'
-            onClick={e => toggleInterests()}
-          >
-            <span className='orangeButtonText'>Interests</span>
+          <button className='orangeButton' onClick={e => toggleInterests()}>
+            Interests
           </button>
         </div>
+
+        <div className='interestButton'>
+          <button onClick={e => toggleFilters()} className='orangeButton'>
+            <nobr>Non-Interests</nobr>
+          </button>
+        </div>
+
         <div id='searchesList'></div>
 
         <div id='topicsList'>
@@ -44,13 +49,7 @@ export default function InterestsAndSearch ({
           </div>
         </div>
         <div style={{ fontSize: 'xx-small' }}>&nbsp;</div>
-        <div className='interestButton'>
-          <button type='button' className='orangeButton show-filter-subscriber'>
-            <span className='orangeButtonText'>
-              <nobr>Non-Interests</nobr>
-            </span>
-          </button>
-        </div>
+
         <div id='searchesFilterList'></div>
         <div id='topicsFilterList'></div>
         <div style={{ fontSize: 'xx-small' }}>&nbsp;</div>
@@ -67,6 +66,14 @@ export default function InterestsAndSearch ({
 
       <TagsOfInterests
         visible={showingInterests}
+        zapi={zapi}
+        articlesListShouldChange={
+          closeTagsOfInterestAndNotifyArticleListOfChange
+        }
+      />
+
+      <TagsOfFilters
+        visible={showingFilters}
         zapi={zapi}
         articlesListShouldChange={
           closeTagsOfInterestAndNotifyArticleListOfChange

@@ -68,8 +68,6 @@ export default function TagsOfInterests ({
 
   const onConfirm = response => {
     zapi.subscribeToSearch(response, data => {
-      console.log(data)
-      console.log(subscribedSearches)
       setSubscribedSearches([...subscribedSearches, data])
     })
 
