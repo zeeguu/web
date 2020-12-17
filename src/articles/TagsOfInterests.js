@@ -57,8 +57,6 @@ export default function TagsOfInterests ({
   }
 
   function toggleInterest (topic) {
-    console.log(topic)
-    console.log(subscribedTopics)
     if (subscribedTopics.includes(topic)) {
       unsubscribeFromTopicOfInterest(topic)
     } else {
@@ -117,7 +115,9 @@ export default function TagsOfInterests ({
               type='button'
               className={
                 'interests ' +
-                (subscribedTopics.includes(topic) ? '' : 'unsubscribed')
+                (subscribedTopics.map(e => e.id).includes(topic.id)
+                  ? ''
+                  : 'unsubscribed')
               }
             >
               <span className='addableTitle'>{topic.title}</span>

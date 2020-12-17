@@ -13,7 +13,6 @@ export default function TagsOfFilters ({
   const [showingModal, setShowingModal] = useState(false)
 
   useEffect(() => {
-    console.log('!!!+!+!!+!+!+ in use effect...')
     zapi.interestingButNotSubscribedTopics(topics => {
       setAvailableFilters(topics)
     })
@@ -30,14 +29,27 @@ export default function TagsOfFilters ({
   if (!availableFilters | !subscribedFilters | !subscribedSearchFilters)
     return ''
 
-  function subscribeToFilter (filter) {}
+  function subscribeToFilter (filter) {
+    setSubscribedFilters([...subscribedFilters, filter])
+    zapi.subscribeToFilter(filter)
+  }
 
-  function unsubscribeFromFilter (filter) {}
+  function unsubscribeFromFilter (filter) {
+    setSubscribedFilters(
+      subscribedFilters.filter(each => each.id !== filter.id)
+    )
+    zapi.unsubscribeFromFilter(filter)
+  }
 
-  function removeSearchFilter (search) {}
+  function removeSearchFilter (search) {
+    zapi.unsubscribeFromSearchFilter(search)
+    setSubscribedSearchFilters(
+      subscribedSearchFilters.filter(each => each.id !== search.id)
+    )
+  }
 
   function toggleFilter (filter) {
-    if (subscribedFilters.includes(filter)) {
+    if (subscribedFilters.map(e => e.id).includes(filter.id)) {
       unsubscribeFromFilter(filter)
     } else {
       subscribeToFilter(filter)
@@ -70,7 +82,7 @@ export default function TagsOfFilters ({
       )}
 
       <div
-        className='tagsOfInterests'
+        className='tagsWithFilters'
         style={{ display: visible ? 'block' : 'none' }}
       >
         <div className='interestsSettings'>
@@ -88,17 +100,19 @@ export default function TagsOfFilters ({
           </button>
         </div>
 
-        {availableFilters.map(filter => (
-          <div key={filter.id} addableid={filter.id}>
+        {availableFilters.map(f => (
+          <div key={f.id} addableid={f.id}>
             <button
-              onClick={e => toggleFilter(filter)}
+              onClick={e => toggleFilter(f)}
               type='button'
               className={
                 'interests ' +
-                (subscribedFilters.includes(filter) ? '' : 'unsubscribed')
+                (subscribedFilters.map(e => e.id).includes(f.id)
+                  ? ''
+                  : 'unsubscribed')
               }
             >
-              <span className='addableTitle'>{filter.title}</span>
+              <span className='addableTitle'>{f.title}</span>
             </button>
           </div>
         ))}

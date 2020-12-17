@@ -107,7 +107,8 @@ button {
   margin-top: 1.25em;
 }
 
-.tagsOfInterests {
+.tagsOfInterests,
+.tagsWithFilters {
   cursor: pointer;
   background: #fff4e2;
   border-radius: 0.5em;
@@ -116,6 +117,16 @@ button {
   padding: 5px;
   text-align: center;
   overflow: auto;
+  animation: fadeIn ease 0.5s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .tagsOfNonInterests {
@@ -242,6 +253,7 @@ button {
   justify-content: space-around;
   margin-top: 0.2em;
   margin-bottom: 0.2em;
+  margin-left: 3em;
 }
 
 .addInterestButton,

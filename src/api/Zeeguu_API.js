@@ -130,7 +130,7 @@ const Zeeguu_API = class {
     return this._post(`unsubscribe_search`, `search_id=${search.id}`)
   }
 
-  // Uninteresting Topics
+  // Filters / Uninteresting Topics
   getFilteredTopics (callback) {
     this._get('filtered_topics', callback)
   }
@@ -139,18 +139,33 @@ const Zeeguu_API = class {
     this._get('filtered_searches', callback)
   }
 
+  subscribeToFilter (filter) {
+    return this._post(`filter_topic`, `filter_id=${filter.id}`)
+  }
+
+  subscribeToSearchFilter (filter, callback) {
+    return this._get(`filter_search/${filter}`, callback)
+  }
+
+  unsubscribeFromSearchFilter (filter) {
+    return this._post(`unfilter_search`, `search_id=${filter.id}`)
+  }
+
+  unsubscribeFromFilter (filter) {
+    // here it's tpoic_id / above it's filter_id;
+    // stupid bug in the API...
+    return this._post('unfilter_topic', `topic_id=${filter.id}`)
+  }
+
   interestingButNotSubscribedTopics (callback) {
     this.getInterestingTopics(interesting => {
-      console.log(interesting)
-      console.log('interesting')
       this.getSubscribedTopics(subscribed => {
-        console.log('subscribed')
-        console.log(subscribed)
-        var available = interesting.filter(e => !subscribed.includes(e))
-        available.sort((a, b) => a.title.localeCompare(b.title))
-        console.log('available')
-        console.log(available)
-        callback(available)
+        this.getFilteredTopics(filtered => {
+          var available = interesting.filter(e => !subscribed.includes(e))
+          var allAvailable = [...available, ...filtered]
+          allAvailable.sort((a, b) => a.title.localeCompare(b.title))
+          callback(allAvailable)
+        })
       })
     })
   }

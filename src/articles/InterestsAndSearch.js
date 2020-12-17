@@ -10,10 +10,16 @@ export default function InterestsAndSearch ({
   const [showingFilters, setShowingFilters] = useState(false)
 
   function toggleInterests () {
+    if (showingFilters) {
+      return
+    }
     setShowingInterests(!showingInterests)
   }
 
   function toggleFilters () {
+    if (showingInterests) {
+      return
+    }
     setShowingFilters(!showingFilters)
   }
 
