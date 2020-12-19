@@ -78,8 +78,7 @@
   min-width: 6.25em;
 }
 
-.interestButton,
-button {
+.interestButton {
   cursor: pointer;
   margin-right: 0.625em;
   width: 100%;

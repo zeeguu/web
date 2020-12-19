@@ -23,8 +23,8 @@ p {
   line-height: 1.5em;
   display: flex;
   align-items: center;
-  text-align: center;
-  justify-content: space-around;
+  /* text-align: center; */
+  /* justify-content: space-around; */
   margin: auto;
   margin-top: 3.125em;
 }
