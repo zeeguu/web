@@ -4,16 +4,14 @@ import Article from './Article'
 
 import './reader-list.css'
 import './article-settings.css'
-import SortingButtons from './SortingButtons'
-import InterestsAndSearch from './InterestsAndSearch'
 
-export default function NewArticles ({ zapi }) {
+export default function ClassroomArticles ({ zapi }) {
   const [articleList, setArticleList] = useState(null)
 
   var originalList = null
 
   if (articleList == null) {
-    zapi.getUserArticles(articles => {
+    zapi.getCohortArticles(articles => {
       console.log(articles)
       setArticleList(articles)
       originalList = [...articles]
@@ -26,27 +24,12 @@ export default function NewArticles ({ zapi }) {
     )
   }
 
-  function articlesListShouldChange () {
-    setArticleList(null)
-    zapi.getUserArticles(articles => {
-      setArticleList(articles)
-      originalList = [...articles]
-    })
+  if (articleList.length === 0) {
+    return <div>no articles found</div>
   }
 
   return (
     <div>
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
-      />
-
-      <InterestsAndSearch
-        zapi={zapi}
-        articlesListShouldChange={articlesListShouldChange}
-      />
-
       <ul id='articleLinkList' className='articleLinkList'>
         {articleList.map(each => (
           <Article key={each.id} article={each} />

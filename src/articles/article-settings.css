@@ -34,14 +34,15 @@
 .searchText {
   font-family: Montserrat;
   color: #ffbb54;
-  border: none;
+
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: center;
+  text-align: left;
   vertical-align: middle;
   text-decoration: none;
   outline: none;
   width: 97%;
+  display: block;
 }
 
 .deleteSearch {

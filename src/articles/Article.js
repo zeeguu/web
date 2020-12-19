@@ -2,7 +2,7 @@ import './Article.css'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
-export default function Article ({ article }) {
+export default function Article ({ article, dontShowPublishingTime }) {
   let topics = article.topics.split(' ').filter(each => each !== '')
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10
 
@@ -39,9 +39,11 @@ export default function Article ({ article }) {
               alt=''
             />
           </div>
-          <span className='publishingTime'>
-            {moment.utc(article.published).fromNow()}
-          </span>
+          {!dontShowPublishingTime && (
+            <span className='publishingTime'>
+              {moment.utc(article.published).fromNow()}
+            </span>
+          )}
           {topics.map(topic => (
             <span key={topic} className='singleTopicTag'>
               {topic}

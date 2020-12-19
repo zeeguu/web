@@ -1,6 +1,7 @@
 import TagsOfInterests from './TagsOfInterests'
 import TagsOfFilters from './TagsOfFilters'
 import { useState } from 'react'
+import SearchField from './SearchField'
 
 export default function InterestsAndSearch ({
   zapi,
@@ -34,6 +35,7 @@ export default function InterestsAndSearch ({
         <br />
         <br />
         <br />
+
         <div className='interestButton'>
           <button className='orangeButton' onClick={e => toggleInterests()}>
             Interests
@@ -46,28 +48,7 @@ export default function InterestsAndSearch ({
           </button>
         </div>
 
-        <div id='searchesList'></div>
-
-        <div id='topicsList'>
-          <div id='any_topic' style={{ display: 'block' }}>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <i style={{ color: 'gray' }}>Showing all Interests...</i>
-          </div>
-        </div>
-        <div style={{ fontSize: 'xx-small' }}>&nbsp;</div>
-
-        <div id='searchesFilterList'></div>
-        <div id='topicsFilterList'></div>
-        <div style={{ fontSize: 'xx-small' }}>&nbsp;</div>
-        <br />
-        <div className='seachField'>
-          <input
-            className='searchTextfieldInput'
-            type='text'
-            id='search-expandable'
-            placeholder='Search all articles'
-          />
-        </div>
+        <SearchField />
       </div>
 
       <TagsOfInterests

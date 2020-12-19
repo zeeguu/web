@@ -170,6 +170,12 @@ const Zeeguu_API = class {
     })
   }
 
+  // search
+
+  search (term, callback) {
+    return this._get(`search/${term}`, callback)
+  }
+
   getPossibleTranslations (from_lang, to_lang, word, context, pageUrl) {
     let url = this._appendSessionToUrl(
       `get_possible_translations/${from_lang}/${to_lang}`

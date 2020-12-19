@@ -10,9 +10,27 @@ export default function BookmarkedArticles ({ zapi }) {
 
   var originalList = null
 
+  if (articleList == null) {
+    zapi.getBookmarkedArticles(articles => {
+      console.log(articles)
+      setArticleList(articles)
+      originalList = [...articles]
+    })
+
+    return (
+      <div>
+        <p>loading...</p>
+      </div>
+    )
+  }
+
   return (
     <div>
-      <h1>bookmarked articles...</h1>
+      <ul id='articleLinkList' className='articleLinkList'>
+        {articleList.map(each => (
+          <Article key={each.id} article={each} dontShowPublishingTime={true} />
+        ))}
+      </ul>
     </div>
   )
 }
