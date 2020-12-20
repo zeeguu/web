@@ -88,6 +88,10 @@ const Zeeguu_API = class {
     this._get('bookmarks_by_day/with_context', callback)
   }
 
+  starredBookmarks (count, callback) {
+    this._get(`starred_bookmarks/${count}`, callback)
+  }
+
   // articles
   getUserArticles (callback) {
     this._get('user_articles/recommended', callback)
