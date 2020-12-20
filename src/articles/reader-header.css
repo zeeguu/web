@@ -15,7 +15,7 @@ h1 {
   justify-content: space-around;
 }
 
-p {
+.p-reader-header {
   font-family: Montserrat;
   font-style: normal;
   font-weight: normal;

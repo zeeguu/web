@@ -44,7 +44,7 @@ export default function SideBar ({ visible, setVisible }) {
       </div>
       <div className='dropdown'>
         <div className='dropbtn'>
-          <Link to='/words'>Words</Link>
+          <Link to='/words/history'>Words</Link>
         </div>
       </div>
       <div className='dropdown'>

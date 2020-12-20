@@ -1,5 +1,5 @@
 import Articles from './articles/Articles'
-import Bookmarks from './pages/Bookmarks'
+import Words from './words/Words'
 import Exercises from './exercises/Exercises'
 import Settings from './pages/Settings'
 import { PrivateRoute } from './PrivateRoute'
@@ -33,8 +33,8 @@ export default function LoggedInRouter ({ api, user, setUser }) {
         style={{ marginLeft: visible ? '12.5em' : '0px' }}
       >
         <PrivateRoute path='/articles' api={api} component={Articles} />
-        <PrivateRoute path='/words' api={api} component={Bookmarks} />
         <PrivateRoute path='/exercises' api={api} component={Exercises} />
+        <PrivateRoute path='/words' api={api} component={Words} />
 
         <PrivateRoute
           path='/account_settings'

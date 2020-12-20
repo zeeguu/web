@@ -355,24 +355,24 @@ p.title {
   padding-bottom: 0em;
 }
 
-p {
+.p-article-reader {
   font-size: 1.3em;
   line-height: 3em;
   padding: 0.2em;
 }
 
-h1,
+/* h1,
 h2,
 h3,
 h4 {
   font-size: 1.4em;
   font-family: Montserrat;
-}
+} */
 
-h5,
+/* h5,
 h6 {
   font-size: 0.7em;
-}
+} */
 
 .seperator {
   border-radius: 5px;

@@ -82,6 +82,13 @@ const Zeeguu_API = class {
       })
   }
 
+  // words
+
+  getBookmarksByDay (callback) {
+    this._get('bookmarks_by_day/with_context', callback)
+  }
+
+  // articles
   getUserArticles (callback) {
     this._get('user_articles/recommended', callback)
   }

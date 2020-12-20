@@ -64,7 +64,7 @@ export default function ArticleReader ({ api }) {
               </div>
 
               <div id='articleContent'>
-                <p>{articleInfo.content}</p>
+                <p className='p-article-reader'>{articleInfo.content}</p>
               </div>
             </div>
           </div>
