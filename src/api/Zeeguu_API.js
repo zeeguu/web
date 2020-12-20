@@ -92,6 +92,14 @@ const Zeeguu_API = class {
     this._get(`starred_bookmarks/${count}`, callback)
   }
 
+  unstarBookmark (bookmark_id) {
+    this._post(`unstar_bookmark/${bookmark_id}`)
+  }
+
+  starBookmark (bookmark_id) {
+    this._post(`star_bookmark/${bookmark_id}`)
+  }
+
   // articles
   getUserArticles (callback) {
     this._get('user_articles/recommended', callback)

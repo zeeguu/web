@@ -20,7 +20,8 @@ export default function Starred ({ zapi }) {
   }
 
   function unstarBookmark (id) {
-    console.log('unstarring bookmark')
+    zapi.unstarBookmark(id)
+    setWords(words.filter(w => w.id !== id))
   }
 
   function deleteBookmark (id) {
@@ -32,7 +33,13 @@ export default function Starred ({ zapi }) {
       <div className='StarredContainer'>
         <div class='one verticalLine'></div>
         <div class='two' id='star154363'>
-          <Link onClick={e => unstarBookmark(each.id)}>
+          <Link
+            to='/'
+            onClick={e => {
+              e.preventDefault()
+              unstarBookmark(each.id)
+            }}
+          >
             <img src='/static/images/star.svg' alt='star' />
           </Link>
         </div>
@@ -40,7 +47,14 @@ export default function Starred ({ zapi }) {
           {each.from}-{each.to}
         </div>
         <div class='five delete'>
-          <Link onClick={e => deleteBookmark(each.id)} id='trash'>
+          <Link
+            to='/'
+            onClick={e => {
+              e.preventDefault()
+              deleteBookmark(each.id)
+            }}
+            id='trash'
+          >
             <img src='/static/images/trash.svg' alt='trash' />
           </Link>
         </div>

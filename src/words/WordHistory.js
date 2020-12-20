@@ -7,7 +7,6 @@ export default function WordHistory ({ zapi }) {
 
   if (!wordsByDay) {
     zapi.getBookmarksByDay(bookmarks_by_day => {
-      console.log(bookmarks_by_day)
       setWordsByDay(bookmarks_by_day)
     })
     return <div className='loading'>loading...</div>
@@ -17,7 +16,31 @@ export default function WordHistory ({ zapi }) {
     console.log('deleting bookmark with id: ' + id)
   }
 
-  function toggleStarred () {}
+  function toggleStarred (day, bookmark) {
+    console.log('toggling star of: ')
+    console.log(bookmark)
+    if (bookmark.starred) {
+      zapi.unstarBookmark(bookmark.id)
+    } else {
+      zapi.starBookmark(bookmark.id)
+    }
+
+    console.log(day)
+    console.log(bookmark)
+    console.log(wordsByDay)
+
+    let updatedDay = {
+      date: day.date,
+      bookmarks: [
+        ...day.bookmarks.map(b =>
+          b.id !== bookmark.id ? b : { ...bookmark, starred: !bookmark.starred }
+        )
+      ]
+    }
+    setWordsByDay([
+      ...wordsByDay.map(e => (e.date !== day.date ? e : updatedDay))
+    ])
+  }
 
   return (
     <>
@@ -36,7 +59,7 @@ export default function WordHistory ({ zapi }) {
           </div>
 
           <WordsOnDate
-            bookmarks_in_day={day.bookmarks}
+            day={day}
             toggleStarred={toggleStarred}
             deleteBookmark={deleteBookmark}
           />

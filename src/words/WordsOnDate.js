@@ -1,10 +1,6 @@
 import { Link } from 'react-router-dom'
 
-export function WordsOnDate ({
-  bookmarks_in_day,
-  deleteBookmark,
-  toggleStarred
-}) {
+export function WordsOnDate ({ day, deleteBookmark, toggleStarred }) {
   function groupBy (list, keyGetter) {
     const map = new Map()
     list.forEach(item => {
@@ -19,7 +15,7 @@ export function WordsOnDate ({
     return map
   }
 
-  let bookmarks_by_article = groupBy(bookmarks_in_day, x => x.article_id)
+  let bookmarks_by_article = groupBy(day.bookmarks, x => x.article_id)
 
   let articleIDs = Array.from(bookmarks_by_article.keys())
 
@@ -58,8 +54,14 @@ export function WordsOnDate ({
                   </td>
 
                   <td width='40px'>
-                    <div onClick={e => toggleStarred(bookmark.id)}>
-                      <img src='/static/images/star_empty.svg' alt='star' />
+                    <div onClick={e => toggleStarred(day, bookmark)}>
+                      <img
+                        src={
+                          '/static/images/star' +
+                          (bookmark.starred ? '.svg' : '_empty.svg')
+                        }
+                        alt='star'
+                      />
                     </div>
                   </td>
 
