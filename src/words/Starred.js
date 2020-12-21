@@ -19,13 +19,22 @@ export default function Starred ({ zapi }) {
     )
   }
 
+  if (words.length === 0) {
+    return (
+      <div className='topMessageContainer'>
+        <div className='topMessage'>You have no starred words yet.</div>
+      </div>
+    )
+  }
+
   function unstarBookmark (id) {
     zapi.unstarBookmark(id)
     setWords(words.filter(w => w.id !== id))
   }
 
   function deleteBookmark (id) {
-    console.log('delete bookmark ' + id)
+    zapi.deleteBookmark(id)
+    setWords(words.filter(w => w.id !== id))
   }
 
   return words.map(each => (

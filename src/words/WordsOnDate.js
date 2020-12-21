@@ -20,9 +20,15 @@ export function WordsOnDate ({ day, deleteBookmark, toggleStarred }) {
   let articleIDs = Array.from(bookmarks_by_article.keys())
 
   return (
-    <div>
+    <div key={day.date}>
+      <div className='outerDate'>
+        <div className='dateContainer'>
+          <h1 className='date'>{day.date} </h1>
+        </div>
+      </div>
+
       {articleIDs.map(article_id => (
-        <>
+        <div key={article_id}>
           <div className='articleContainer'>
             <div className='verticalLine'></div>
             <div className='titleContainer'>
@@ -39,7 +45,7 @@ export function WordsOnDate ({ day, deleteBookmark, toggleStarred }) {
           <table width='100%' className='table table-no-borders'>
             <tbody>
               {bookmarks_by_article.get(article_id).map(bookmark => (
-                <tr>
+                <tr key={bookmark.id}>
                   <td
                     style={{
                       textAlign: 'left',
@@ -48,7 +54,14 @@ export function WordsOnDate ({ day, deleteBookmark, toggleStarred }) {
                       paddingTop: '0.4em'
                     }}
                   >
-                    <Link onClick={e => deleteBookmark(bookmark.id)} id='trash'>
+                    <Link
+                      to='/'
+                      onClick={e => {
+                        e.preventDefault()
+                        deleteBookmark(day, bookmark)
+                      }}
+                      id='trash'
+                    >
                       <img src='/static/images/trash.svg' alt='trash' />
                     </Link>
                   </td>
@@ -65,7 +78,7 @@ export function WordsOnDate ({ day, deleteBookmark, toggleStarred }) {
                     </div>
                   </td>
 
-                  <td colspan='2' className='word-details-td'>
+                  <td colSpan='2' className='word-details-td'>
                     <div className='impression'>
                       {bookmark.from}
                       <span style={{ color: 'black' }}> – </span>
@@ -76,7 +89,7 @@ export function WordsOnDate ({ day, deleteBookmark, toggleStarred }) {
               ))}
             </tbody>
           </table>
-        </>
+        </div>
       ))}
     </div>
   )

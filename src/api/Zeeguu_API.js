@@ -100,6 +100,10 @@ const Zeeguu_API = class {
     this._post(`star_bookmark/${bookmark_id}`)
   }
 
+  deleteBookmark (bookmark_id) {
+    this._post(`delete_bookmark/${bookmark_id}`)
+  }
+
   // articles
   getUserArticles (callback) {
     this._get('user_articles/recommended', callback)

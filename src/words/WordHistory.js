@@ -12,22 +12,31 @@ export default function WordHistory ({ zapi }) {
     return <div className='loading'>loading...</div>
   }
 
-  function deleteBookmark (id) {
-    console.log('deleting bookmark with id: ' + id)
+  function deleteBookmark (day, bookmark) {
+    zapi.deleteBookmark(bookmark.id)
+
+    let updatedDay = {
+      date: day.date,
+      bookmarks: day.bookmarks.filter(b => b.id !== bookmark.id)
+    }
+
+    if (updatedDay.bookmarks.length === 0) {
+      // if there's no more bookmarks left for the day,
+      // just filter out the whole day from the list
+      setWordsByDay(wordsByDay.filter(e => e.date !== day.date))
+    } else {
+      setWordsByDay([
+        ...wordsByDay.map(e => (e.date !== day.date ? e : updatedDay))
+      ])
+    }
   }
 
   function toggleStarred (day, bookmark) {
-    console.log('toggling star of: ')
-    console.log(bookmark)
     if (bookmark.starred) {
       zapi.unstarBookmark(bookmark.id)
     } else {
       zapi.starBookmark(bookmark.id)
     }
-
-    console.log(day)
-    console.log(bookmark)
-    console.log(wordsByDay)
 
     let updatedDay = {
       date: day.date,
@@ -51,19 +60,12 @@ export default function WordHistory ({ zapi }) {
       </div>
 
       {wordsByDay.map(day => (
-        <>
-          <div className='outerDate'>
-            <div className='dateContainer'>
-              <h1 className='date'>{day.date} </h1>
-            </div>
-          </div>
-
-          <WordsOnDate
-            day={day}
-            toggleStarred={toggleStarred}
-            deleteBookmark={deleteBookmark}
-          />
-        </>
+        <WordsOnDate
+          key={day.date}
+          day={day}
+          toggleStarred={toggleStarred}
+          deleteBookmark={deleteBookmark}
+        />
       ))}
     </>
   )
