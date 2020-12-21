@@ -96,6 +96,10 @@ const Zeeguu_API = class {
     this._get(`learned_bookmarks/${count}`, callback)
   }
 
+  topBookmarks (count, callback) {
+    this._get(`top_bookmarks/${count}`, callback)
+  }
+
   // individual bookmark handling
 
   unstarBookmark (bookmark_id) {
