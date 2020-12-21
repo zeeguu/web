@@ -6,7 +6,6 @@ export default function Starred ({ zapi }) {
 
   useEffect(() => {
     zapi.starredBookmarks(30, starredWords => {
-      console.log(starredWords)
       setWords(starredWords)
     })
   }, [])
@@ -14,7 +13,7 @@ export default function Starred ({ zapi }) {
   if (!words) {
     return (
       <>
-        <h1>Starred</h1>
+        <h1>loading...</h1>
       </>
     )
   }
