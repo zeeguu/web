@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
+import TranslatableWord from './TranslatableWord'
 
 export function TranslatableParagraph ({ zapi, text, url }) {
   const [words, setWords] = useState(
@@ -28,24 +29,7 @@ export function TranslatableParagraph ({ zapi, text, url }) {
     <div>
       (
       {words.map(word => (
-        <>
-          <z-tag class='origtrans' onClick={e => clicked(word)}>
-            {word.word}
-            {word.translation && (
-              <tran
-                chosen={word.translation}
-                suggestion=''
-                possibly_more_translations=''
-                translation0={word.translation}
-                servicenametranslation0='Google - without context'
-                transcount='1'
-              >
-                <singlealternative></singlealternative>
-              </tran>
-            )}
-          </z-tag>
-          <span> </span>
-        </>
+        <TranslatableWord word={word} />
       ))}
       )
     </div>
