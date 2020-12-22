@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import art from './article.css'
+import './article.css'
+import { TranslatableParagraph } from './TranslatableParagraph'
+import { TranslatableText } from './TranslatableText'
 
+const Z_TAG = 'z-tag'
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery () {
@@ -17,43 +20,83 @@ export default function ArticleReader ({ api }) {
 
   useEffect(() => {
     console.log('article with id ....' + articleID)
+
     api.getArticleInfo(articleID, data => {
       console.log(data)
       setArticleInfo(data)
     })
   }, [])
 
+  function zTagClicked (e) {
+    console.log(e.target.innerText)
+  }
+
   if (!articleInfo) {
     return <div>'...'</div>
   }
   return (
-    <div>
-      <main clasName='layout__content'>
+    <>
+      <header className='articleHeader'>
+        <div id='toolbarContainer' className='toolbar'>
+          <div className='main-tools'>
+            <div>
+              <button className='tool selected' id='toggle_translate'>
+                <img
+                  className='click_translate'
+                  src='/static/images/translate.svg'
+                  alt='click and translate'
+                />
+                <span className='tooltiptext'>click and translate</span>
+              </button>
+              <button className='tool' id='toggle_listen'>
+                <img
+                  className='click_listen'
+                  src=' /static/images/sound.svg'
+                  alt='click and listen'
+                />
+                <span className='tooltiptext'>click and listen</span>
+              </button>
+              <button className='tool' id='toggle_undo'>
+                <img src='/static/images/undo.svg' alt='undo a translation' />
+                <span className='tooltiptext'>undo translation</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className='layout__content'>
         <div id='main_article_content' className='page-content-container'>
           <div className='content-container'>
             <div className='page-content'>
               <div className='title translatable noselect'>
-                <span id='articleTitle'>{articleInfo.title}</span>
+                <span id='articleTitle'>
+                  <TranslatableParagraph
+                    url={articleInfo.url}
+                    zapi={api}
+                    text={articleInfo.title}
+                  />
+                </span>
               </div>
-              <hr class='seperator'></hr>
+              <hr className='seperator'></hr>
 
               <div className='articleDetails'>
-                <button id='bookmark_button' class='bookmark_button'>
+                <button id='bookmark_button' className='bookmark_button'>
                   <img
-                    class='bookmark_icon_done'
+                    className='bookmark_icon_done'
                     src='/static/images/bookmark-done.svg'
                     alt='bookmark this article'
                   />
                   <img
-                    class='bookmark_icon_undone'
+                    className='bookmark_icon_undone'
                     src='/static/images/bookmark-undone.svg'
                     alt='bookmark this article'
                     style={{ display: 'none' }}
                   />
-                  <span class='bookmarkText'>Save to Bookmarks</span>
+                  <span className='bookmarkText'>Save to Bookmarks</span>
                 </button>
 
-                <div id='articleInfo' class='noselect'>
+                <div id='articleInfo' className='noselect'>
                   <div id='articleURL'>
                     <a href={articleInfo.url} target='_blank' id='source'>
                       source
@@ -64,12 +107,18 @@ export default function ArticleReader ({ api }) {
               </div>
 
               <div id='articleContent'>
-                <p className='p-article-reader'>{articleInfo.content}</p>
+                <div className='p-article-reader'>
+                  <TranslatableText
+                    url={articleInfo.url}
+                    zapi={api}
+                    text={articleInfo.content}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </main>
-    </div>
+    </>
   )
 }

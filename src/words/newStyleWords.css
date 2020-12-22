@@ -1,3 +1,15 @@
+.loaderanimation {
+  left: 0px;
+  position: absolute;
+  text-align: center;
+  color: gray;
+  top: 50%;
+  width: 100%;
+  z-index: 9999;
+  animation: 2s linear 0s 6 alternate none running fadein;
+  display: none;
+}
+
 .mainWordsContainer {
   margin: auto;
   margin-left: 7.5em;

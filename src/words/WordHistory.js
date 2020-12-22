@@ -9,7 +9,7 @@ export default function WordHistory ({ zapi }) {
     zapi.getBookmarksByDay(bookmarks_by_day => {
       setWordsByDay(bookmarks_by_day)
     })
-    return <div className='loading'>loading...</div>
+    return <div className='loaderanimation'>Loading words ...</div>
   }
 
   function deleteBookmark (day, bookmark) {

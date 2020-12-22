@@ -9,6 +9,10 @@
   box-shadow: none;
 }
 
+.textParagraph {
+  margin-bottom: 1.5em;
+}
+
 .articleLayout {
   margin-left: 12.5em;
   height: 100%;
@@ -34,7 +38,12 @@
   box-shadow: 0em 0em 1em lightgray !important;
 } */
 
-zeeguu.loading {
+z-tag {
+  cursor: pointer;
+  /* margin-right: 1em; */
+}
+
+z-tag.loading {
   animation: fadein 1s 0s infinite linear alternate;
 }
 
@@ -45,9 +54,9 @@ zeeguu.loading {
   line-height: 29px;
 }
 
-/*  zeeguu tag hover changes color, translated word hover no underline or color*/
+/*  z-tag tag hover changes color, translated word hover no underline or color*/
 
-zeeguu:hover {
+z-tag:hover {
   color: #ffbb54;
   border-bottom: 1px dashed #ffbb54;
 }
@@ -61,7 +70,7 @@ zeeguu:hover {
    highlights the fact that we are not sure of the translation ...
    */
 
-zeeguu tran {
+z-tag tran {
   display: block;
 
   margin-top: -9px;
@@ -83,7 +92,7 @@ zeeguu tran {
   text-align: center;
 }
 
-zeeguu tran:hover {
+z-tag tran:hover {
   color: black;
 }
 
@@ -93,7 +102,7 @@ zeeguu tran:hover {
     solid if the user selects an alternative, confirms this one, or
     uploads a new translation
 */
-zeeguu orig {
+z-tag orig {
   border-bottom: 1px dashed #ffbb54;
   width: 100%;
   color: #ffbb54;
@@ -103,14 +112,14 @@ zeeguu orig {
 green downwards pointing triangle; we used to mark also single alternatives
  but for now there's no marking for them */
 
-zeeguu tran moreAlternatives {
+z-tag tran moreAlternatives {
   font-size: 0.5em;
   float: right;
   width: 1em;
   padding-left: 0.5em;
 }
 
-zeeguu tran moreAlternatives {
+z-tag tran moreAlternatives {
 }
 
 .arrow {
@@ -118,7 +127,7 @@ zeeguu tran moreAlternatives {
   color: #4f4f4f;
 }
 
-zeeguu tran moreAlternatives:after {
+z-tag tran moreAlternatives:after {
   content: '▼';
   color: #4f4f4f;
 }
@@ -173,7 +182,7 @@ that made the UI too heavy ... */
 .contributedAlternativeOrig {
 }
 
-zeeguu tran[chosen]:after {
+z-tag tran[chosen]:after {
   content: attr(chosen);
 }
 
