@@ -70,7 +70,7 @@ z-tag:hover {
    highlights the fact that we are not sure of the translation ...
    */
 
-z-tag tran {
+z-tag z-tran {
   display: block;
 
   margin-top: -9px;
@@ -92,7 +92,7 @@ z-tag tran {
   text-align: center;
 }
 
-z-tag tran:hover {
+z-tag z-tran:hover {
   color: black;
 }
 
@@ -102,7 +102,7 @@ z-tag tran:hover {
     solid if the user selects an alternative, confirms this one, or
     uploads a new translation
 */
-z-tag orig {
+z-tag z-orig {
   border-bottom: 1px dashed #ffbb54;
   width: 100%;
   color: #ffbb54;
@@ -112,14 +112,14 @@ z-tag orig {
 green downwards pointing triangle; we used to mark also single alternatives
  but for now there's no marking for them */
 
-z-tag tran moreAlternatives {
+z-tag z-tran moreAlternatives {
   font-size: 0.5em;
   float: right;
   width: 1em;
   padding-left: 0.5em;
 }
 
-z-tag tran moreAlternatives {
+z-tag z-tran moreAlternatives {
 }
 
 .arrow {
@@ -127,7 +127,7 @@ z-tag tran moreAlternatives {
   color: #4f4f4f;
 }
 
-z-tag tran moreAlternatives:after {
+z-tag z-tran moreAlternatives:after {
   content: '▼';
   color: #4f4f4f;
 }
@@ -182,7 +182,7 @@ that made the UI too heavy ... */
 .contributedAlternativeOrig {
 }
 
-z-tag tran[chosen]:after {
+z-tag z-tran[chosen]:after {
   content: attr(chosen);
 }
 
@@ -304,22 +304,22 @@ z-tag tran[chosen]:after {
   font-size: small;
 }
 
-#altermenu {
+.altermenu {
   color: white;
-  text-align: center;
+  /* text-align: center; */
   background: #ffe086;
   border-radius: 0.3em;
-  width: 8em;
-  padding: 0.3em;
+  /* width: 8em; */
+  /* padding: 0.3em; */
   margin-top: 3.3em;
 }
 
-#altermenu .additionalTrans {
+.altermenu .additionalTrans {
   width: 100%;
   height: 100%;
   text-transform: lowercase;
   white-space: normal;
-  border-bottom: 1px solid #383838 !important;
+  border-bottom: 1px solid #f8d486 !important;
   color: #383838;
   line-height: 1em;
   padding: 0.3em;
@@ -328,22 +328,22 @@ z-tag tran[chosen]:after {
   background: transparent;
 }
 
-#altermenu * {
+.altermenu * {
   font-family: Montserrat;
   font-weight: 400;
   font-size: 0.9em;
 }
 
-#alterMenuContainer {
+.alterMenuContainer {
   display: none;
 }
 
 .searchTextfieldInput {
   color: #484848;
   font-weight: 400;
-  text-align: center;
+  /* text-align: center; */
   border: none;
-  padding-top: 0.5em;
+  padding: 0.3em;
 }
 
 .matchWidth {

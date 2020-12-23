@@ -109,7 +109,7 @@ export default function ArticleReader ({ api }) {
               <div id='articleContent'>
                 <div className='p-article-reader'>
                   <TranslatableText
-                    url={articleInfo.url}
+                    articleInfo={articleInfo}
                     zapi={api}
                     text={articleInfo.content}
                   />

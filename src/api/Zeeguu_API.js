@@ -221,6 +221,25 @@ const Zeeguu_API = class {
     })
   }
 
+  getOneTranslation (
+    from_lang,
+    to_lang,
+    word,
+    context,
+    articleUrl,
+    articleTitle
+  ) {
+    let url = this._appendSessionToUrl(
+      `get_one_translation/${from_lang}/${to_lang}`
+    )
+
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `word=${word}&context=${context}&url=${articleUrl}&title=${articleTitle}`
+    })
+  }
+
   getNextTranslations (
     from_lang,
     to_lang,
@@ -228,15 +247,27 @@ const Zeeguu_API = class {
     context,
     pageUrl,
     numberOfResults,
-    callback
+    service,
+    currentTranslation
   ) {
     let url = this._appendSessionToUrl(
       `get_next_translations/${from_lang}/${to_lang}`
     )
+
+    let body = `word=${word}&context=${context}&url=${pageUrl}&numberOfResults=${numberOfResults}`
+
+    if (service) {
+      body += `&service=${service}`
+    }
+
+    if (currentTranslation) {
+      body += `&currentTranslation=${currentTranslation}`
+    }
+
     return fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `word=${word}&context=${context}&url=${pageUrl}&numberOfResults=${numberOfResults}`
+      body: body
     })
   }
 
