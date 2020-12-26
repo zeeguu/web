@@ -41,17 +41,13 @@
 z-tag {
   cursor: pointer;
   /* margin-right: 1em; */
+  display: inline-block;
+  margin: 0;
+  line-height: 29px;
 }
 
 z-tag.loading {
   animation: fadein 1s 0s infinite linear alternate;
-}
-
-/* keeps the translation and origin together */
-.origtrans {
-  display: inline-block;
-  margin: 0;
-  line-height: 29px;
 }
 
 /*  z-tag tag hover changes color, translated word hover no underline or color*/
@@ -59,9 +55,6 @@ z-tag.loading {
 z-tag:hover {
   color: #ffbb54;
   border-bottom: 1px dashed #ffbb54;
-}
-
-.origtrans:hover {
   border: none;
 }
 
@@ -305,17 +298,24 @@ z-tag z-tran[chosen]:after {
 }
 
 .altermenu {
+  position: absolute;
+  max-width: 30em;
+
+  background-color: lightgoldenrodyellow;
+  /* background: #ffe086; */
+
   color: white;
   /* text-align: center; */
-  background: #ffe086;
+
   border-radius: 0.3em;
   /* width: 8em; */
   /* padding: 0.3em; */
-  margin-top: 3.3em;
+  margin-top: 0.5em;
+  /* margin-top: 3.3em; */
 }
 
 .altermenu .additionalTrans {
-  width: 100%;
+  /* width: 100%; */
   height: 100%;
   text-transform: lowercase;
   white-space: normal;
@@ -325,7 +325,7 @@ z-tag z-tran[chosen]:after {
   padding: 0.3em;
   border: none;
   cursor: pointer;
-  background: transparent;
+  font-size: medium;
 }
 
 .altermenu * {
@@ -344,11 +344,12 @@ z-tag z-tran[chosen]:after {
   /* text-align: center; */
   border: none;
   padding: 0.3em;
+  font-size: x-small;
+  background: lightgoldenrodyellow;
 }
 
 .matchWidth {
   width: 100%;
-  background: #ffe086;
 }
 
 .mdl-js-snackbar {

@@ -12,6 +12,9 @@ export function TranslatableParagraph ({ zapi, text, articleInfo }) {
       })
   )
 
+  function wordUpdated (updatedWord) {
+    setWords(words.map(e => (e.id !== updatedWord.id ? e : updatedWord)))
+  }
   return (
     <div>
       (
@@ -21,6 +24,7 @@ export function TranslatableParagraph ({ zapi, text, articleInfo }) {
           articleInfo={articleInfo}
           zapi={zapi}
           word={word}
+          wordUpdated={wordUpdated}
         />
       ))}
       )

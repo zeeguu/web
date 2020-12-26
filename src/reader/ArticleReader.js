@@ -51,7 +51,7 @@ export default function ArticleReader ({ api }) {
               <button className='tool' id='toggle_listen'>
                 <img
                   className='click_listen'
-                  src=' /static/images/sound.svg'
+                  src='/static/images/sound.svg'
                   alt='click and listen'
                 />
                 <span className='tooltiptext'>click and listen</span>
@@ -72,7 +72,7 @@ export default function ArticleReader ({ api }) {
               <div className='title translatable noselect'>
                 <span id='articleTitle'>
                   <TranslatableParagraph
-                    url={articleInfo.url}
+                    articleInfo={articleInfo}
                     zapi={api}
                     text={articleInfo.title}
                   />
