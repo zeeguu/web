@@ -12,6 +12,8 @@ export default function TranslatableWord ({
   const domEl = useRef(null)
 
   function showTranslation (word) {
+    console.log(extractContext(domEl.current))
+
     zapi
       .getOneTranslation(
         articleInfo.language,
@@ -58,6 +60,25 @@ export default function TranslatableWord ({
       })
   }
 
+  function selectAlternative (alternative) {
+    console.log(extractContext(domEl.current))
+    zapi.contributeTranslation(
+      articleInfo.language,
+      localStorage.native_language,
+      word.word,
+      alternative,
+      extractContext(domEl.current),
+      window.location,
+      articleInfo.title
+    )
+    wordUpdated({
+      ...word,
+      translation: alternative,
+      service_name: 'Own alternative selection'
+    })
+    setShowingAlternatives(false)
+  }
+
   if (!word.translation) {
     return (
       <>
@@ -73,19 +94,16 @@ export default function TranslatableWord ({
       <z-tag ref={domEl}>
         <z-tran
           chosen={word.translation}
-          suggestion=''
-          possibly_more_translations=''
           translation0={word.translation}
-          servicenametranslation0='Google - without context'
-          transcount='1'
           onClick={e => toggleAlternatives(e, word)}
-        ></z-tran>
+        />
         <z-orig>
           {word.word}
           {showingAlternatives && (
             <AlterMenu
               word={word}
               setShowingAlternatives={setShowingAlternatives}
+              selectAlternative={selectAlternative}
             />
           )}
         </z-orig>

@@ -1,14 +1,14 @@
 import { useClickOutside } from 'react-click-outside-hook'
 
-export default function AlterMenu ({ word, setShowingAlternatives }) {
+export default function AlterMenu ({
+  word,
+  setShowingAlternatives,
+  selectAlternative
+}) {
   const [refToAlterMenu, hasClickedOutside] = useClickOutside()
 
   console.log('%%%%%%%%%%% rendering alter menu')
   console.log(word)
-
-  function handleAlternative (alternative) {
-    console.log('selected alternative: ' + alternative)
-  }
 
   if (hasClickedOutside) {
     setShowingAlternatives(false)
@@ -19,7 +19,7 @@ export default function AlterMenu ({ word, setShowingAlternatives }) {
       {word.alternatives.map(each => (
         <div
           key={each}
-          onClick={e => handleAlternative(each)}
+          onClick={e => selectAlternative(each)}
           className='additionalTrans'
         >
           {each}

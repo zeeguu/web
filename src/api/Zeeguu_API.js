@@ -271,6 +271,28 @@ const Zeeguu_API = class {
     })
   }
 
+  contributeTranslation (
+    from_lang,
+    to_lang,
+    word,
+    translation,
+    context,
+    pageUrl,
+    pageTitle
+  ) {
+    let url = this._appendSessionToUrl(
+      `contribute_translation/${from_lang}/${to_lang}`
+    )
+
+    let body = `word=${word}&translation=${translation}&context=${context}&url=${pageUrl}&pageTitle=${pageTitle}`
+
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    })
+  }
+
   uploadExerciseFeedback (
     exercise_outcome,
     exercise_source,
