@@ -7,8 +7,6 @@ function randomElement (x) {
 }
 
 function getRandomVoice (voices, language) {
-  console.log(voices)
-  console.log(language)
   let x = randomElement(voices.filter(v => v.lang.includes(language)))
   console.log(x)
   return x
