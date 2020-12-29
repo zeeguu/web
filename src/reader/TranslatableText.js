@@ -22,7 +22,6 @@ export function TranslatableText ({
   const [paragraphs, setParagraphs] = useState(text.split(/\n\n/))
 
   const { speak, voices } = useSpeechSynthesis()
-  // console.log(voices)
 
   function pronounce (word) {
     let voice = getRandomVoice(voices, articleInfo.language)
