@@ -1,8 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import TranslatableWord from './TranslatableWord'
 
-export function TranslatableParagraph ({ zapi, text, articleInfo }) {
+export function TranslatableParagraph ({
+  zapi,
+  text,
+  articleInfo,
+  translating,
+  pronouncing,
+  pronounce
+}) {
   const [words, setWords] = useState(
     text
       .trim()
@@ -25,6 +32,9 @@ export function TranslatableParagraph ({ zapi, text, articleInfo }) {
           zapi={zapi}
           word={word}
           wordUpdated={wordUpdated}
+          translating={translating}
+          pronouncing={pronouncing}
+          pronounce={pronounce}
         />
       ))}
       )

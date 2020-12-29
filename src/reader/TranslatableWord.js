@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import AlterMenu from './AlterMenu'
 import extractContext from './contextExtractor'
 
@@ -6,13 +6,25 @@ export default function TranslatableWord ({
   zapi,
   word,
   wordUpdated,
-  articleInfo
+  articleInfo,
+  translating,
+  pronouncing,
+  pronounce
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false)
   const domEl = useRef(null)
 
+  function clickOnWord (word) {
+    if (translating) {
+      showTranslation(word)
+    }
+    if (pronouncing) {
+      pronounce(word)
+    }
+  }
+
   function showTranslation (word) {
-    console.log(extractContext(domEl.current))
+    // console.log(extractContext(domEl.current))
 
     zapi
       .getOneTranslation(
@@ -83,10 +95,18 @@ export default function TranslatableWord ({
     setShowingAlternatives(false)
   }
 
+  function hideTranslation (e, word) {
+    wordUpdated({
+      ...word,
+      translation: undefined
+    })
+    // setShowingAlternatives(false)
+  }
+
   if (!word.translation) {
     return (
       <>
-        <z-tag ref={domEl} onClick={e => showTranslation(word)}>
+        <z-tag ref={domEl} onClick={e => clickOnWord(word)}>
           {word.word}
         </z-tag>
         <span> </span>
@@ -102,7 +122,7 @@ export default function TranslatableWord ({
           onClick={e => toggleAlternatives(e, word)}
         />
         <z-orig>
-          {word.word}
+          <span onClick={e => hideTranslation(e, word)}>{word.word} </span>
           {showingAlternatives && (
             <AlterMenu
               word={word}

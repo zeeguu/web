@@ -18,6 +18,9 @@ export default function ArticleReader ({ api }) {
 
   const [articleInfo, setArticleInfo] = useState()
 
+  const [translating, setTranslating] = useState(true)
+  const [pronouncing, setPronouncing] = useState(false)
+
   useEffect(() => {
     console.log('article with id ....' + articleID)
 
@@ -26,6 +29,10 @@ export default function ArticleReader ({ api }) {
       setArticleInfo(data)
     })
   }, [])
+
+  function toggle (state, togglerFunction) {
+    togglerFunction(!state)
+  }
 
   function zTagClicked (e) {
     console.log(e.target.innerText)
@@ -40,19 +47,27 @@ export default function ArticleReader ({ api }) {
         <div id='toolbarContainer' className='toolbar'>
           <div className='main-tools'>
             <div>
-              <button className='tool selected' id='toggle_translate'>
+              <button
+                className={'tool ' + (translating ? 'selected' : '')}
+                id='toggle_translate'
+                onClick={e => toggle(translating, setTranslating)}
+              >
                 <img
                   className='click_translate'
                   src='/static/images/translate.svg'
-                  alt='click and translate'
+                  alt='translate on click'
                 />
                 <span className='tooltiptext'>click and translate</span>
               </button>
-              <button className='tool' id='toggle_listen'>
+              <button
+                className={'tool ' + (pronouncing ? 'selected' : '')}
+                id='toggle_listen'
+                onClick={e => toggle(pronouncing, setPronouncing)}
+              >
                 <img
                   className='click_listen'
                   src='/static/images/sound.svg'
-                  alt='click and listen'
+                  alt='listen on click'
                 />
                 <span className='tooltiptext'>click and listen</span>
               </button>
@@ -112,6 +127,8 @@ export default function ArticleReader ({ api }) {
                     articleInfo={articleInfo}
                     zapi={api}
                     text={articleInfo.content}
+                    translating={translating}
+                    pronouncing={pronouncing}
                   />
                 </div>
               </div>
