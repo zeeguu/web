@@ -48,7 +48,7 @@ export default function TranslatableWord ({
         articleInfo.url,
         -1,
         word.service_name,
-        'underline'
+        word.translation
       )
       .then(response => response.json())
       .then(data => {
