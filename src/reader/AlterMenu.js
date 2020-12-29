@@ -1,17 +1,24 @@
+import { useEffect, useState } from 'react'
 import { useClickOutside } from 'react-click-outside-hook'
 
 export default function AlterMenu ({
   word,
-  setShowingAlternatives,
+  clickedOutsideAlterMenu,
   selectAlternative
 }) {
   const [refToAlterMenu, hasClickedOutside] = useClickOutside()
+  const [inputValue, setInputValue] = useState('')
 
-  console.log('%%%%%%%%%%% rendering alter menu')
-  console.log(word)
+  useEffect(() => {
+    if (hasClickedOutside) {
+      clickedOutsideAlterMenu()
+    }
+  }, [hasClickedOutside])
 
-  if (hasClickedOutside) {
-    setShowingAlternatives(false)
+  function handleKeyDown (e) {
+    if (e.code == 'Enter') {
+      selectAlternative(inputValue)
+    }
   }
 
   return (
@@ -30,6 +37,9 @@ export default function AlterMenu ({
         className='searchTextfieldInput matchWidth'
         type='text'
         id='#userAlternative'
+        value={inputValue}
+        onChange={e => setInputValue(e.target.value)}
+        onKeyDown={e => handleKeyDown(e)}
         placeholder='Own translation...'
       />
     </div>

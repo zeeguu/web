@@ -79,6 +79,10 @@ export default function TranslatableWord ({
     setShowingAlternatives(false)
   }
 
+  function clickedOutsideAlterMenu () {
+    setShowingAlternatives(false)
+  }
+
   if (!word.translation) {
     return (
       <>
@@ -104,6 +108,7 @@ export default function TranslatableWord ({
               word={word}
               setShowingAlternatives={setShowingAlternatives}
               selectAlternative={selectAlternative}
+              clickedOutsideAlterMenu={clickedOutsideAlterMenu}
             />
           )}
         </z-orig>
