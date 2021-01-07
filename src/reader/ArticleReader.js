@@ -57,7 +57,7 @@ export default function ArticleReader ({ api }) {
                   src='/static/images/translate.svg'
                   alt='translate on click'
                 />
-                <span className='tooltiptext'>click and translate</span>
+                <span className='tooltiptext'>translate on click</span>
               </button>
               <button
                 className={'tool ' + (pronouncing ? 'selected' : '')}
@@ -69,12 +69,12 @@ export default function ArticleReader ({ api }) {
                   src='/static/images/sound.svg'
                   alt='listen on click'
                 />
-                <span className='tooltiptext'>click and listen</span>
+                <span className='tooltiptext'>listen on click</span>
               </button>
-              <button className='tool' id='toggle_undo'>
+              {/* <button className='tool' id='toggle_undo'>
                 <img src='/static/images/undo.svg' alt='undo a translation' />
                 <span className='tooltiptext'>undo translation</span>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

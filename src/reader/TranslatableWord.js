@@ -5,6 +5,7 @@ import extractContext from './contextExtractor'
 export default function TranslatableWord ({
   zapi,
   word,
+  showTranslation,
   wordUpdated,
   articleInfo,
   translating,
@@ -16,33 +17,11 @@ export default function TranslatableWord ({
 
   function clickOnWord (word) {
     if (translating) {
-      showTranslation(word)
+      showTranslation(word, domEl)
     }
     if (pronouncing) {
       pronounce(word)
     }
-  }
-
-  function showTranslation (word) {
-    // console.log(extractContext(domEl.current))
-
-    zapi
-      .getOneTranslation(
-        articleInfo.language,
-        localStorage.native_language,
-        word.word,
-        extractContext(domEl.current),
-        window.location,
-        articleInfo.title
-      )
-      .then(response => response.json())
-      .then(data => {
-        wordUpdated({
-          ...word,
-          translation: data['translations'][0].translation,
-          service_name: data['translations'][0].service_name
-        })
-      })
   }
 
   function toggleAlternatives (e, word) {
