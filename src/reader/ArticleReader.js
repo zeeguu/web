@@ -71,10 +71,10 @@ export default function ArticleReader ({ api }) {
                 />
                 <span className='tooltiptext'>listen on click</span>
               </button>
-              {/* <button className='tool' id='toggle_undo'>
+              <button className='tool' id='toggle_undo'>
                 <img src='/static/images/undo.svg' alt='undo a translation' />
                 <span className='tooltiptext'>undo translation</span>
-              </button> */}
+              </button>
             </div>
           </div>
         </div>

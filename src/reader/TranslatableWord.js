@@ -43,10 +43,8 @@ export default function TranslatableWord ({
       )
       .then(response => response.json())
       .then(data => {
-        wordUpdated({
-          ...word,
-          alternatives: data.translations.map(each => each.translation)
-        })
+        word.alternatives = data.translations.map(each => each.translation)
+        wordUpdated(word)
         setShowingAlternatives(!showingAlternatives)
       })
   }
@@ -62,11 +60,10 @@ export default function TranslatableWord ({
       window.location,
       articleInfo.title
     )
-    wordUpdated({
-      ...word,
-      translation: alternative,
-      service_name: 'Own alternative selection'
-    })
+    word.translation = alternative
+    word.service_name = 'Own alternative selection'
+
+    wordUpdated()
     setShowingAlternatives(false)
   }
 
@@ -75,11 +72,8 @@ export default function TranslatableWord ({
   }
 
   function hideTranslation (e, word) {
-    wordUpdated({
-      ...word,
-      translation: undefined
-    })
-    // setShowingAlternatives(false)
+    word.translation = undefined
+    wordUpdated()
   }
 
   if (!word.translation) {
