@@ -24,7 +24,7 @@ export function TranslatableParagraph ({
   function showTranslation (word, domEl) {
     let context = extractContext(domEl.current)
 
-    word = linkedWordsList.fuseWithNeighborsIfNeeded(word)
+    word = word.fuseWithNeighborsIfNeeded()
 
     zapi
       .getOneTranslation(

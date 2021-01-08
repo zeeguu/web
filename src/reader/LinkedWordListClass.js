@@ -8,6 +8,31 @@ export class Word extends LinkedList.Item {
     this.word = word
     this.translation = null
   }
+
+  fuseWithPrevious () {
+    this.word = this.prev.word + ' ' + this.word
+    this.prev.detach()
+    return this
+  }
+
+  fuseWithNext () {
+    this.word = this.word + ' ' + this.next.word
+    this.next.detach()
+    return this
+  }
+
+  fuseWithNeighborsIfNeeded () {
+    let newWord = this
+    if (this.prev && this.prev.translation) {
+      newWord = this.fuseWithPrevious()
+    }
+
+    if (this.next && this.next.translation) {
+      newWord = this.fuseWithNext()
+    }
+
+    return newWord
+  }
 }
 
 export default class LinkedWordList {
@@ -17,31 +42,6 @@ export default class LinkedWordList {
 
   getWords () {
     return this.linkedWords.toArray()
-  }
-
-  fuseWithPrevious (word) {
-    word.word = word.prev.word + ' ' + word.word
-    word.prev.detach()
-    return word
-  }
-
-  fuseWithNext (word) {
-    word.word = word.word + ' ' + word.next.word
-    word.next.detach()
-    return word
-  }
-
-  fuseWithNeighborsIfNeeded (word) {
-    let newWord = word
-    if (word.prev && word.prev.translation) {
-      newWord = this.fuseWithPrevious(word)
-    }
-
-    if (word.next && word.next.translation) {
-      newWord = this.fuseWithNext(word)
-    }
-
-    return newWord
   }
 }
 
