@@ -5,7 +5,6 @@ import TranslatableWord from './TranslatableWord'
 export function TranslatableText ({
   interactiveText,
   zapi,
-  articleInfo,
   translating,
   pronouncing,
   pronounce
@@ -23,7 +22,6 @@ export function TranslatableText ({
             <TranslatableWord
               interactiveText={interactiveText}
               key={word.id}
-              articleInfo={articleInfo}
               zapi={zapi}
               word={word}
               wordUpdated={wordUpdated}

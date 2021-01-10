@@ -19,9 +19,14 @@ export default class InteractiveText {
     return this.paragraphsAsLinkedWordLists
   }
 
+  getContext (word) {
+    //   TODO: to implement
+    return word.word
+  }
+
   translate (word, onSucess) {
     this.history.push(_.cloneDeep(this.paragraphsAsLinkedWordLists))
-    let context = word.word
+    let context = this.getContext(word)
 
     word = word.fuseWithNeighborsIfNeeded()
 
@@ -41,7 +46,29 @@ export default class InteractiveText {
       })
   }
 
+  alternativeTranslations (word, onSuccess) {
+    let context = this.getContext(word)
+    this.zapi
+      .getNextTranslations(
+        this.articleInfo.language,
+        localStorage.native_language,
+        word.word,
+        context,
+        this.articleInfo.url,
+        -1,
+        word.service_name,
+        word.translation
+      )
+      .then(response => response.json())
+      .then(data => {
+        word.alternatives = data.translations.map(each => each.translation)
+        onSuccess()
+      })
+  }
+
   undo () {
-    this.paragraphsAsLinkedWordLists = this.history.pop()
+    if (this.history.length !== 0) {
+      this.paragraphsAsLinkedWordLists = this.history.pop()
+    }
   }
 }

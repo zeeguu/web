@@ -156,7 +156,6 @@ export default function ArticleReader ({ api }) {
                 <div className='p-article-reader'>
                   <TranslatableText
                     interactiveText={interactiveText}
-                    articleInfo={articleInfo}
                     zapi={api}
                     text={articleInfo.content}
                     translating={translating}

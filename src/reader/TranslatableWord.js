@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import AlterMenu from './AlterMenu'
 import extractContext from './contextExtractor'
 
@@ -7,7 +7,6 @@ export default function TranslatableWord ({
   zapi,
   word,
   wordUpdated,
-  articleInfo,
   translating,
   pronouncing,
   pronounce
@@ -31,36 +30,22 @@ export default function TranslatableWord ({
       setShowingAlternatives(false)
       return
     }
-
-    zapi
-      .getNextTranslations(
-        articleInfo.language,
-        localStorage.native_language,
-        word.word,
-        extractContext(domEl.current),
-        articleInfo.url,
-        -1,
-        word.service_name,
-        word.translation
-      )
-      .then(response => response.json())
-      .then(data => {
-        word.alternatives = data.translations.map(each => each.translation)
-        wordUpdated(word)
-        setShowingAlternatives(!showingAlternatives)
-      })
+    interactiveText.alternativeTranslations(word, () => {
+      wordUpdated(word)
+      setShowingAlternatives(!showingAlternatives)
+    })
   }
 
   function selectAlternative (alternative) {
     console.log(extractContext(domEl.current))
     zapi.contributeTranslation(
-      articleInfo.language,
+      interactiveText.articleInfo.language,
       localStorage.native_language,
       word.word,
       alternative,
       extractContext(domEl.current),
       window.location,
-      articleInfo.title
+      interactiveText.articleInfo.title
     )
     word.translation = alternative
     word.service_name = 'Own alternative selection'
