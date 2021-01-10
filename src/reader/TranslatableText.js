@@ -1,45 +1,37 @@
 import { useState } from 'react'
 import { TranslatableParagraph } from './TranslatableParagraph'
-import { useSpeechSynthesis } from 'react-speech-kit'
-
-function randomElement (x) {
-  return x[Math.floor(Math.random() * x.length)]
-}
-
-function getRandomVoice (voices, language) {
-  let x = randomElement(voices.filter(v => v.lang.includes(language)))
-  console.log(x)
-  return x
-}
+import TranslatableWord from './TranslatableWord'
 
 export function TranslatableText ({
-  text,
+  interactiveText,
   zapi,
   articleInfo,
   translating,
-  pronouncing
+  pronouncing,
+  pronounce
 }) {
-  const [paragraphs, setParagraphs] = useState(text.split(/\n\n/))
+  const [translationCount, setTranslationCount] = useState(0)
 
-  const { speak, voices } = useSpeechSynthesis()
-
-  function pronounce (word) {
-    let voice = getRandomVoice(voices, articleInfo.language)
-    speak({ text: word.word, voice: voice })
+  function wordUpdated () {
+    setTranslationCount(translationCount + 1)
   }
-
   return (
     <div>
-      {paragraphs.map((par, index) => (
+      {interactiveText.getParagraphs().map((par, index) => (
         <div key={index} className='textParagraph'>
-          <TranslatableParagraph
-            articleInfo={articleInfo}
-            zapi={zapi}
-            text={par}
-            translating={translating}
-            pronouncing={pronouncing}
-            pronounce={pronounce}
-          />
+          {par.getWords().map(word => (
+            <TranslatableWord
+              interactiveText={interactiveText}
+              key={word.id}
+              articleInfo={articleInfo}
+              zapi={zapi}
+              word={word}
+              wordUpdated={wordUpdated}
+              translating={translating}
+              pronouncing={pronouncing}
+              pronounce={pronounce}
+            />
+          ))}
         </div>
       ))}
     </div>

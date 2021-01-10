@@ -3,9 +3,9 @@ import AlterMenu from './AlterMenu'
 import extractContext from './contextExtractor'
 
 export default function TranslatableWord ({
+  interactiveText,
   zapi,
   word,
-  showTranslation,
   wordUpdated,
   articleInfo,
   translating,
@@ -17,7 +17,9 @@ export default function TranslatableWord ({
 
   function clickOnWord (word) {
     if (translating) {
-      showTranslation(word, domEl)
+      interactiveText.translate(word, () => {
+        wordUpdated()
+      })
     }
     if (pronouncing) {
       pronounce(word)

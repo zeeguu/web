@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom'
 import './article.css'
 import { TranslatableParagraph } from './TranslatableParagraph'
 import { TranslatableText } from './TranslatableText'
+import { useSpeechSynthesis } from 'react-speech-kit'
+import InteractiveText from './InteractiveText'
 
 const Z_TAG = 'z-tag'
 // A custom hook that builds on useLocation to parse
@@ -17,18 +19,39 @@ export default function ArticleReader ({ api }) {
   const articleID = query.get('id')
 
   const [articleInfo, setArticleInfo] = useState()
+  const [interactiveText, setInteractiveText] = useState()
 
   const [translating, setTranslating] = useState(true)
   const [pronouncing, setPronouncing] = useState(false)
+
+  const { speak, voices } = useSpeechSynthesis()
+
+  const [undoCount, setUndoCount] = useState(0)
 
   useEffect(() => {
     console.log('article with id ....' + articleID)
 
     api.getArticleInfo(articleID, data => {
       console.log(data)
+      setInteractiveText(new InteractiveText(data, api))
       setArticleInfo(data)
     })
   }, [])
+
+  function randomElement (x) {
+    return x[Math.floor(Math.random() * x.length)]
+  }
+
+  function getRandomVoice (voices, language) {
+    let x = randomElement(voices.filter(v => v.lang.includes(language)))
+    console.log(x)
+    return x
+  }
+
+  function pronounce (word) {
+    let voice = getRandomVoice(voices, articleInfo.language)
+    speak({ text: word.word, voice: voice })
+  }
 
   function toggle (state, togglerFunction) {
     togglerFunction(!state)
@@ -71,7 +94,15 @@ export default function ArticleReader ({ api }) {
                 />
                 <span className='tooltiptext'>listen on click</span>
               </button>
-              <button className='tool' id='toggle_undo'>
+              <button
+                className='tool'
+                id='toggle_undo'
+                onClick={e => {
+                  console.log('about to undo...')
+                  interactiveText.undo()
+                  setUndoCount(undoCount + 1)
+                }}
+              >
                 <img src='/static/images/undo.svg' alt='undo a translation' />
                 <span className='tooltiptext'>undo translation</span>
               </button>
@@ -124,11 +155,13 @@ export default function ArticleReader ({ api }) {
               <div id='articleContent'>
                 <div className='p-article-reader'>
                   <TranslatableText
+                    interactiveText={interactiveText}
                     articleInfo={articleInfo}
                     zapi={api}
                     text={articleInfo.content}
                     translating={translating}
                     pronouncing={pronouncing}
+                    pronounce={pronounce}
                   />
                 </div>
               </div>
