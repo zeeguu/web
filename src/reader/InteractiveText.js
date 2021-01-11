@@ -19,11 +19,6 @@ export default class InteractiveText {
     return this.paragraphsAsLinkedWordLists
   }
 
-  getContext (word) {
-    //   TODO: to implement
-    return word.word
-  }
-
   translate (word, onSucess) {
     this.history.push(_.cloneDeep(this.paragraphsAsLinkedWordLists))
     let context = this.getContext(word)
@@ -70,5 +65,29 @@ export default class InteractiveText {
     if (this.history.length !== 0) {
       this.paragraphsAsLinkedWordLists = this.history.pop()
     }
+  }
+
+  getContext (word) {
+    function endOfSentenceIn (word) {
+      let text = word.word
+      return text[text.length - 1] == '.'
+    }
+    function getLeftContext (word, count) {
+      if (count == 0 || !word || endOfSentenceIn(word)) return ''
+      return getLeftContext(word.prev, count - 1) + ' ' + word.word
+    }
+
+    function getRightContext (word, count) {
+      if (count == 0 || !word || endOfSentenceIn(word)) return ''
+      return word.word + ' ' + getRightContext(word.next, count - 1)
+    }
+    let context =
+      getLeftContext(word.prev, 2) +
+      ' ' +
+      word.word +
+      ' ' +
+      getRightContext(word.next, 2)
+    console.log(context)
+    return context
   }
 }
