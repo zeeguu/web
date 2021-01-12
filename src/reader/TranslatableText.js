@@ -1,13 +1,10 @@
 import { useState } from 'react'
-import { TranslatableParagraph } from './TranslatableParagraph'
 import TranslatableWord from './TranslatableWord'
 
 export function TranslatableText ({
   interactiveText,
-  zapi,
   translating,
-  pronouncing,
-  pronounce
+  pronouncing
 }) {
   const [translationCount, setTranslationCount] = useState(0)
 
@@ -22,12 +19,10 @@ export function TranslatableText ({
             <TranslatableWord
               interactiveText={interactiveText}
               key={word.id}
-              zapi={zapi}
               word={word}
               wordUpdated={wordUpdated}
               translating={translating}
               pronouncing={pronouncing}
-              pronounce={pronounce}
             />
           ))}
         </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import './article.css'
-import { TranslatableParagraph } from './TranslatableParagraph'
+
 import { TranslatableText } from './TranslatableText'
 import { useSpeechSynthesis } from 'react-speech-kit'
 import InteractiveText from './InteractiveText'
@@ -20,6 +20,7 @@ export default function ArticleReader ({ api }) {
 
   const [articleInfo, setArticleInfo] = useState()
   const [interactiveText, setInteractiveText] = useState()
+  const [interactiveTitle, setInteractiveTitle] = useState()
 
   const [translating, setTranslating] = useState(true)
   const [pronouncing, setPronouncing] = useState(false)
@@ -29,36 +30,20 @@ export default function ArticleReader ({ api }) {
   const [undoCount, setUndoCount] = useState(0)
 
   useEffect(() => {
-    console.log('article with id ....' + articleID)
-
     api.getArticleInfo(articleID, data => {
       console.log(data)
-      setInteractiveText(new InteractiveText(data, api))
+      setInteractiveText(
+        new InteractiveText(data.content, data, api, voices, speak)
+      )
+      setInteractiveTitle(
+        new InteractiveText(data.title, data, api, voices, speak)
+      )
       setArticleInfo(data)
     })
   }, [])
 
-  function randomElement (x) {
-    return x[Math.floor(Math.random() * x.length)]
-  }
-
-  function getRandomVoice (voices, language) {
-    let x = randomElement(voices.filter(v => v.lang.includes(language)))
-    console.log(x)
-    return x
-  }
-
-  function pronounce (word) {
-    let voice = getRandomVoice(voices, articleInfo.language)
-    speak({ text: word.word, voice: voice })
-  }
-
   function toggle (state, togglerFunction) {
     togglerFunction(!state)
-  }
-
-  function zTagClicked (e) {
-    console.log(e.target.innerText)
   }
 
   if (!articleInfo) {
@@ -117,10 +102,10 @@ export default function ArticleReader ({ api }) {
             <div className='page-content'>
               <div className='title translatable noselect'>
                 <span id='articleTitle'>
-                  <TranslatableParagraph
-                    articleInfo={articleInfo}
-                    zapi={api}
-                    text={articleInfo.title}
+                  <TranslatableText
+                    interactiveText={interactiveTitle}
+                    translating={translating}
+                    pronouncing={pronouncing}
                   />
                 </span>
               </div>
@@ -156,11 +141,8 @@ export default function ArticleReader ({ api }) {
                 <div className='p-article-reader'>
                   <TranslatableText
                     interactiveText={interactiveText}
-                    zapi={api}
-                    text={articleInfo.content}
                     translating={translating}
                     pronouncing={pronouncing}
-                    pronounce={pronounce}
                   />
                 </div>
               </div>

@@ -2,16 +2,18 @@ import LinkedWordList from './LinkedWordListClass'
 import _ from 'lodash'
 
 export default class InteractiveText {
-  constructor (articleInfo, zapi) {
+  constructor (content, articleInfo, zapi, voices, speak) {
     this.articleInfo = articleInfo
     this.zapi = zapi
+    this.voices = voices
+    this.speak = speak
     //
-    this.paragraphs = articleInfo.content.split(/\n\n/)
-    console.log(this.paragraphs)
+    this.paragraphs = content.split(/\n\n/)
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       each => new LinkedWordList(each)
     )
 
+    // history allows undo-ing the word translations
     this.history = []
   }
 
@@ -41,6 +43,22 @@ export default class InteractiveText {
       })
   }
 
+  selectAlternative (word, alternative, onSuccess) {
+    this.zapi.contributeTranslation(
+      this.articleInfo.language,
+      localStorage.native_language,
+      word.word,
+      alternative,
+      this.getContext(word),
+      window.location,
+      this.articleInfo.title
+    )
+    word.translation = alternative
+    word.service_name = 'Own alternative selection'
+
+    onSuccess()
+  }
+
   alternativeTranslations (word, onSuccess) {
     let context = this.getContext(word)
     this.zapi
@@ -67,18 +85,32 @@ export default class InteractiveText {
     }
   }
 
+  pronounce (word) {
+    function randomElement (x) {
+      return x[Math.floor(Math.random() * x.length)]
+    }
+
+    function getRandomVoice (voices, language) {
+      let x = randomElement(voices.filter(v => v.lang.includes(language)))
+      console.log(x)
+      return x
+    }
+    let voice = getRandomVoice(this.voices, this.articleInfo.language)
+    this.speak({ text: word.word, voice: voice })
+  }
+
   getContext (word) {
     function endOfSentenceIn (word) {
       let text = word.word
-      return text[text.length - 1] == '.'
+      return text[text.length - 1] === '.'
     }
     function getLeftContext (word, count) {
-      if (count == 0 || !word || endOfSentenceIn(word)) return ''
+      if (count === 0 || !word || endOfSentenceIn(word)) return ''
       return getLeftContext(word.prev, count - 1) + ' ' + word.word
     }
 
     function getRightContext (word, count) {
-      if (count == 0 || !word || endOfSentenceIn(word)) return ''
+      if (count === 0 || !word || endOfSentenceIn(word)) return ''
       return word.word + ' ' + getRightContext(word.next, count - 1)
     }
     let context =

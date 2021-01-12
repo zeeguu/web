@@ -1,18 +1,14 @@
 import { useState, useRef } from 'react'
 import AlterMenu from './AlterMenu'
-import extractContext from './contextExtractor'
 
 export default function TranslatableWord ({
   interactiveText,
-  zapi,
   word,
   wordUpdated,
   translating,
-  pronouncing,
-  pronounce
+  pronouncing
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false)
-  const domEl = useRef(null)
 
   function clickOnWord (word) {
     if (translating) {
@@ -21,7 +17,7 @@ export default function TranslatableWord ({
       })
     }
     if (pronouncing) {
-      pronounce(word)
+      interactiveText.pronounce(word)
     }
   }
 
@@ -37,21 +33,10 @@ export default function TranslatableWord ({
   }
 
   function selectAlternative (alternative) {
-    console.log(extractContext(domEl.current))
-    zapi.contributeTranslation(
-      interactiveText.articleInfo.language,
-      localStorage.native_language,
-      word.word,
-      alternative,
-      extractContext(domEl.current),
-      window.location,
-      interactiveText.articleInfo.title
-    )
-    word.translation = alternative
-    word.service_name = 'Own alternative selection'
-
-    wordUpdated()
-    setShowingAlternatives(false)
+    interactiveText.selectAlternative(word, alternative, () => {
+      wordUpdated()
+      setShowingAlternatives(false)
+    })
   }
 
   function clickedOutsideAlterMenu () {
@@ -66,16 +51,14 @@ export default function TranslatableWord ({
   if (!word.translation) {
     return (
       <>
-        <z-tag ref={domEl} onClick={e => clickOnWord(word)}>
-          {word.word}
-        </z-tag>
+        <z-tag onClick={e => clickOnWord(word)}>{word.word}</z-tag>
         <span> </span>
       </>
     )
   }
   return (
     <>
-      <z-tag ref={domEl}>
+      <z-tag>
         <z-tran
           chosen={word.translation}
           translation0={word.translation}
