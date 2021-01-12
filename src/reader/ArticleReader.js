@@ -6,7 +6,6 @@ import { TranslatableText } from './TranslatableText'
 import { useSpeechSynthesis } from 'react-speech-kit'
 import InteractiveText from './InteractiveText'
 
-const Z_TAG = 'z-tag'
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery () {
