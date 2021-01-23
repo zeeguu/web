@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import './article.css'
 
 import { TranslatableText } from './TranslatableText'
-import { useSpeechSynthesis } from 'react-speech-kit'
+
 import InteractiveText from './InteractiveText'
 
 // A custom hook that builds on useLocation to parse
@@ -24,22 +24,16 @@ export default function ArticleReader ({ api }) {
   const [translating, setTranslating] = useState(true)
   const [pronouncing, setPronouncing] = useState(false)
 
-  const { speak, voices } = useSpeechSynthesis()
-
   const [undoCount, setUndoCount] = useState(0)
 
   useEffect(() => {
     api.getArticleInfo(articleID, data => {
       console.log(data)
-      setInteractiveText(
-        new InteractiveText(data.content, data, api, voices, speak)
-      )
-      setInteractiveTitle(
-        new InteractiveText(data.title, data, api, voices, speak)
-      )
+      setInteractiveText(new InteractiveText(data.content, data, api))
+      setInteractiveTitle(new InteractiveText(data.title, data, api))
       setArticleInfo(data)
     })
-  }, [api, articleID, speak, voices])
+  }, [])
 
   function toggle (state, togglerFunction) {
     togglerFunction(!state)

@@ -1,12 +1,13 @@
 import LinkedWordList from './LinkedWordListClass'
 import _ from 'lodash'
 
+import Speech from 'speak-tts'
+
 export default class InteractiveText {
-  constructor (content, articleInfo, zapi, voices, speak) {
+  constructor (content, articleInfo, zapi) {
     this.articleInfo = articleInfo
     this.zapi = zapi
-    this.voices = voices
-    this.speak = speak
+
     //
     this.paragraphs = content.split(/\n\n/)
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
@@ -15,6 +16,23 @@ export default class InteractiveText {
 
     // history allows undo-ing the word translations
     this.history = []
+
+    // speech
+    this.speech = new Speech()
+    this.speech
+      .init()
+      .then(data => {
+        // The "data" object contains the list of available voices and the voice synthesis params
+        let randomVoice = _getRandomVoice(
+          data.voices,
+          this.articleInfo.language
+        )
+
+        this.speech.setVoice(randomVoice.name)
+      })
+      .catch(e => {
+        console.error('An error occured while initializing : ', e)
+      })
   }
 
   getParagraphs () {
@@ -86,17 +104,9 @@ export default class InteractiveText {
   }
 
   pronounce (word) {
-    function randomElement (x) {
-      return x[Math.floor(Math.random() * x.length)]
-    }
-
-    function getRandomVoice (voices, language) {
-      let x = randomElement(voices.filter(v => v.lang.includes(language)))
-      console.log(x)
-      return x
-    }
-    let voice = getRandomVoice(this.voices, this.articleInfo.language)
-    this.speak({ text: word.word, voice: voice })
+    this.speech.speak({
+      text: word.word
+    })
   }
 
   getContext (word) {
@@ -122,4 +132,13 @@ export default class InteractiveText {
     console.log(context)
     return context
   }
+}
+
+function _randomElement (x) {
+  return x[Math.floor(Math.random() * x.length)]
+}
+
+function _getRandomVoice (voices, language) {
+  let x = _randomElement(voices.filter(v => v.lang.includes(language)))
+  return x
 }
