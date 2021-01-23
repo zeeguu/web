@@ -9,7 +9,7 @@ export default function Learned ({ zapi }) {
       console.log(learnedWords)
       setWords(learnedWords)
     })
-  }, [])
+  }, [zapi])
 
   if (!words) {
     return (

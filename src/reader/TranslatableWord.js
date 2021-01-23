@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import AlterMenu from './AlterMenu'
 
 export default function TranslatableWord ({

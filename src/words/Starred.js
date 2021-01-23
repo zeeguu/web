@@ -8,7 +8,7 @@ export default function Starred ({ zapi }) {
     zapi.starredBookmarks(30, starredWords => {
       setWords(starredWords)
     })
-  }, [])
+  }, [zapi])
 
   if (!words) {
     return (

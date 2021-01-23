@@ -1,10 +1,9 @@
 import { useParams } from 'react-router-dom'
 import SortingButtons from './SortingButtons'
 import { useState } from 'react'
-import InterestsAndSearch from './InterestsAndSearch'
 import Article from './Article'
 
-export default function Search ({ zapi, articlesListShouldChange }) {
+export default function Search ({ zapi }) {
   const [articleList, setArticleList] = useState(null)
 
   let { term } = useParams()
@@ -24,14 +23,6 @@ export default function Search ({ zapi, articlesListShouldChange }) {
     )
   }
 
-  function articlesListShouldChange () {
-    setArticleList(null)
-    zapi.getUserArticles(articles => {
-      setArticleList(articles)
-      originalList = [...articles]
-    })
-  }
-
   return (
     <>
       <div>
@@ -40,11 +31,6 @@ export default function Search ({ zapi, articlesListShouldChange }) {
           originalList={originalList}
           setArticleList={setArticleList}
         />
-
-        {/* <InterestsAndSearch
-          zapi={zapi}
-          articlesListShouldChange={articlesListShouldChange}
-        /> */}
 
         <div className='searchText articleLinkEntry'>
           You searched for: {term}

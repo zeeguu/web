@@ -1,4 +1,3 @@
-// import './MenuOnTheLeft.css'
 import { Link } from 'react-router-dom'
 import { useContext } from 'react'
 import { UserContext } from '../UserContext'
@@ -10,7 +9,6 @@ export default function SideBar ({ visible, setVisible }) {
   function hideSidebar (e) {
     e.preventDefault()
     setVisible(!visible)
-    console.log(visible)
   }
 
   if (!visible) {
@@ -25,6 +23,10 @@ export default function SideBar ({ visible, setVisible }) {
 
   return (
     <nav className='sidenav' id='myTopnav'>
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <small> Welcome {user.name}!</small>
+      </div>
+
       <a href='/articles' rel='external'>
         <img
           className='zeeguuLogo'

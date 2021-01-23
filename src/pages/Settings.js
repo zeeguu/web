@@ -19,7 +19,7 @@ export default function Settings ({ api, updateUserInfo }) {
     api.getUserDetails(data => {
       setUserDetails(data)
     })
-  }, [user.session])
+  }, [user.session, api])
 
   function handleSave (e) {
     e.preventDefault()

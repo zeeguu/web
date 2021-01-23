@@ -8,13 +8,10 @@ import './article-settings.css'
 export default function ClassroomArticles ({ zapi }) {
   const [articleList, setArticleList] = useState(null)
 
-  var originalList = null
-
   if (articleList == null) {
     zapi.getCohortArticles(articles => {
       console.log(articles)
       setArticleList(articles)
-      originalList = [...articles]
     })
 
     return (

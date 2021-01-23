@@ -8,13 +8,10 @@ import './article-settings.css'
 export default function BookmarkedArticles ({ zapi }) {
   const [articleList, setArticleList] = useState(null)
 
-  var originalList = null
-
   if (articleList == null) {
     zapi.getBookmarkedArticles(articles => {
       console.log(articles)
       setArticleList(articles)
-      originalList = [...articles]
     })
 
     return (

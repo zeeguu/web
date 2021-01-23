@@ -13,10 +13,10 @@ export default function AlterMenu ({
     if (hasClickedOutside) {
       clickedOutsideAlterMenu()
     }
-  }, [hasClickedOutside])
+  }, [hasClickedOutside, clickedOutsideAlterMenu])
 
   function handleKeyDown (e) {
-    if (e.code == 'Enter') {
+    if (e.code === 'Enter') {
       selectAlternative(inputValue)
     }
   }

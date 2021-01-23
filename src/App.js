@@ -25,7 +25,7 @@ function App () {
     _api.session = localStorage['sessionID']
   }
 
-  const [api, setAPI] = useState(_api)
+  const [api] = useState(_api)
 
   const [user, setUser] = useState(userDict)
 

@@ -39,7 +39,7 @@ export default function ArticleReader ({ api }) {
       )
       setArticleInfo(data)
     })
-  }, [])
+  }, [api, articleID, speak, voices])
 
   function toggle (state, togglerFunction) {
     togglerFunction(!state)
@@ -128,7 +128,12 @@ export default function ArticleReader ({ api }) {
 
                 <div id='articleInfo' className='noselect'>
                   <div id='articleURL'>
-                    <a href={articleInfo.url} target='_blank' id='source'>
+                    <a
+                      href={articleInfo.url}
+                      target='_blank'
+                      rel='noreferrer'
+                      id='source'
+                    >
                       source
                     </a>
                   </div>

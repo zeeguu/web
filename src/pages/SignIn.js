@@ -39,13 +39,7 @@ export default function SignIn ({ api, notifySuccessfulSignIn }) {
           />
         </div>
 
-        <form
-          id='login'
-          action=''
-          method='post'
-          role='form'
-          novalidate='novalidate'
-        >
+        <form id='login' action='' method='post' novalidate='novalidate'>
           <div className='outerContainer'>
             <div className='innerContainer authentificationBox'>
               <p id='authentificationBoxTitle'>Sign In</p>

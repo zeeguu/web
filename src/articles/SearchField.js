@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function SearchField ({}) {
+export default function SearchField () {
   const [searchTerm, setSearchTerm] = useState('')
 
   function keyDownInSearch (e) {

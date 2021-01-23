@@ -5,11 +5,12 @@ export default function Top ({ zapi }) {
   const [words, setWords] = useState(null)
 
   useEffect(() => {
+    console.log('in useEffect in Top')
     zapi.topBookmarks(300, topWords => {
       console.log(topWords)
       setWords(topWords)
     })
-  }, [])
+  }, [zapi])
 
   if (!words) {
     return (

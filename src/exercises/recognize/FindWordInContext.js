@@ -11,7 +11,7 @@ export default function FindWordInContext ({
   correctAnswer
 }) {
   const [isCorrect, setIsCorrect] = useState(false)
-  const [initialTime, setCurrentTime] = useState(new Date())
+  const [initialTime] = useState(new Date())
   const [firstTypeTime, setFirstTypeTime] = useState()
 
   function colorWordInContext (context, word) {
