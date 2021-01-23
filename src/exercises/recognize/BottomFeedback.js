@@ -1,18 +1,27 @@
-import { useSpeechSynthesis } from 'react-speech-kit'
+import { useState } from 'react'
+import Speech from 'speak-tts'
 
 function randomElement (x) {
   return x[Math.floor(Math.random() * x.length)]
 }
 
 export default function BottomFeedback ({ bookmarkToStudy, correctAnswer }) {
-  const { speak, voices } = useSpeechSynthesis()
+  const [speech] = useState(new Speech())
 
-  const voice = randomElement(
-    voices.filter(v => v.lang.includes(bookmarkToStudy.from_lang))
-  )
+  speech
+    .init()
+    .then(data => {
+      // The "data" object contains the list of available voices and the voice synthesis params
+      let randomVoice = _getRandomVoice(data.voices, bookmarkToStudy.from_lang)
+
+      speech.setVoice(randomVoice.name)
+    })
+    .catch(e => {
+      console.error('An error occured while initializing : ', e)
+    })
 
   function handleSpeak () {
-    speak({ text: bookmarkToStudy.from, voice: voice })
+    speech.speak({ text: bookmarkToStudy.from })
   }
 
   return (
@@ -24,4 +33,13 @@ export default function BottomFeedback ({ bookmarkToStudy, correctAnswer }) {
       </button>
     </div>
   )
+}
+
+function _randomElement (x) {
+  return x[Math.floor(Math.random() * x.length)]
+}
+
+function _getRandomVoice (voices, language) {
+  let x = _randomElement(voices.filter(v => v.lang.includes(language)))
+  return x
 }
