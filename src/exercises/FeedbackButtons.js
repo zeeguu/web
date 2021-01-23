@@ -10,7 +10,6 @@ const buttons = [
 ]
 export default function FeedbackButtons ({ show, setShow, feedbackFunction }) {
   function toggleShow () {
-    console.log('toggle show')
     setShow(!show)
   }
   return (
@@ -24,7 +23,10 @@ export default function FeedbackButtons ({ show, setShow, feedbackFunction }) {
       {show && (
         <div className='feedback_buttons_holder'>
           {buttons.map(each => (
-            <button onClick={() => feedbackFunction(each.value)}>
+            <button
+              key={each.value}
+              onClick={() => feedbackFunction(each.value)}
+            >
               {each.name}
             </button>
           ))}
