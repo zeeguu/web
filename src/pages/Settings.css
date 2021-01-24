@@ -1,24 +1,100 @@
-labeld {
-  display: block;
-  width: 10em;
-  float: left; /* makes the element act like inline block */
-  clear: left; /* clears any left floats so before so this should start on new line */
-  margin-top: 1em;
+body {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
 }
 
-/* input {
-  width: 10em;
-  float: left;
-  margin-top: 1em;
-} */
+.content {
+  margin-left: 12.5em;
+  width: 50%;
+  padding: 10px;
+}
 
-input[type='submit' i] {
-  clear: both;
-  margin-top: 3em;
+.category {
+  font-size: 1.5em;
+  font-family: Montserrat;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.inputLabel {
+  font-size: 1em;
+  font-family: Montserrat;
+}
+
+.pleaseSelect {
+  font-size: 0.8em;
+  text-align: center;
+  font-family: Montserrat;
+}
+
+.inputField {
+  font-size: 1em;
+  font-family: Montserrat;
+}
+
+form {
+  margin-top: -1em;
+}
+
+input {
+  float: right;
+  border: 0.15em solid #ffbb54;
+  border-radius: 5em;
+  width: 15em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  font-family: Montserrat;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  overflow: hidden;
+}
+
+label {
+  font-family: Montserrat;
 }
 
 select {
+  float: right;
+  font-size: 0.8em;
+  font-family: Montserrat;
+  border: 0.2em solid #ffbb54;
+}
+
+.saveButton {
   width: 10em;
+  border-radius: 2em;
+  border: none;
   float: left;
-  margin-top: 1em;
+  margin-left: 31.5%;
+  margin-top: 0.5em;
+  height: 2em;
+  font-size: 0.8em;
+  text-transform: lowercase;
+  font-weight: 400;
+  background: #ffbb54;
+  outline: none;
+  color: white;
+  font-family: Montserrat;
+}
+
+.saveButton:hover {
+  cursor: pointer;
+}
+
+.saveButton:focus {
+  outline: none;
+}
+
+select:focus {
+  outline: none;
+}
+
+button:focus {
+  outline: none;
+}
+
+.formSettings {
+  width: 20em;
 }

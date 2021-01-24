@@ -6,7 +6,9 @@ export function LanguageSelector ({ languages, selected, onChange }) {
       onChange={e => onChange(e)}
     >
       {languages.map(lang => (
-        <option key={lang}>{lang}</option>
+        <option key={lang.code} code={lang.code}>
+          {lang.name}
+        </option>
       ))}
     </select>
   )

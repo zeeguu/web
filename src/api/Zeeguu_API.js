@@ -57,6 +57,10 @@ const Zeeguu_API = class {
     this._get('get_user_details', callback)
   }
 
+  getSystemLanguages (callback) {
+    this._get('system_languages', callback)
+  }
+
   saveUserDetails (user_details, setErrorMessage, onSuccess) {
     apiLog(this._appendSessionToUrl('user_settings'))
     fetch(this._appendSessionToUrl('user_settings'), {

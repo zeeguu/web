@@ -3,7 +3,7 @@ import './Settings.css'
 import { useEffect, useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { languages, language_from_id, language_id } from '../languages'
+import { language_for_id } from '../languages'
 
 import { LanguageSelector } from '../components/LanguageSelector'
 
@@ -14,10 +14,14 @@ export default function Settings ({ api, updateUserInfo }) {
   const [errorMessage, setErrorMessage] = useState('')
   const history = useHistory()
   const user = useContext(UserContext)
+  const [languages, setLanguages] = useState()
 
   useEffect(() => {
     api.getUserDetails(data => {
-      setUserDetails(data)
+      api.getSystemLanguages(systemLanguages => {
+        setLanguages(systemLanguages)
+        setUserDetails(data)
+      })
     })
   }, [user.session, api])
 
@@ -25,13 +29,12 @@ export default function Settings ({ api, updateUserInfo }) {
     e.preventDefault()
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      console.log('saved!')
       updateUserInfo(userDetails)
       history.goBack()
     })
   }
 
-  if (!userDetails) {
+  if (!userDetails || !languages) {
     return (
       <div>
         <h1>Account Settings</h1>
@@ -41,56 +44,71 @@ export default function Settings ({ api, updateUserInfo }) {
   }
 
   return (
-    <div>
-      <h1>Account Settings</h1>
+    <form className='formSettings'>
+      <h1 className='category'>Account Settings</h1>
       <h5>{errorMessage}</h5>
-
-      <form>
-        <label>Name: </label>
+      <small>
+        <label for='name'>Name </label>
         <input
+          id='name'
+          name='name'
           type='text'
           value={userDetails.name}
           onChange={e =>
             setUserDetails({ ...userDetails, name: e.target.value })
           }
         />
-        <label>Email: </label>
+        <br />
+
+        <label for='email'>Email </label>
         <input
+          id='email'
+          name='email'
           type='text'
           value={userDetails.email}
           onChange={e =>
             setUserDetails({ ...userDetails, email: e.target.value })
           }
         />
-        <label>Learned Language: </label>
+        <br />
+        <label for='learned language'>Learned Language: </label>
         <LanguageSelector
-          languages={languages()}
-          selected={language_from_id(userDetails.learned_language)}
+          languages={languages.learnable_languages}
+          selected={language_for_id(
+            userDetails.learned_language,
+            languages.learnable_languages
+          )}
           onChange={e => {
+            let code = e.target[e.target.selectedIndex].getAttribute('code')
             setUserDetails({
               ...userDetails,
-              learned_language: language_id(e.target.value)
-            })
-          }}
-        />
-        <label>Native Language: </label>
-        <LanguageSelector
-          languages={languages()}
-          selected={language_from_id(userDetails.native_language)}
-          onChange={e => {
-            setUserDetails({
-              ...userDetails,
-              native_language: language_id(e.target.value)
+              learned_language: code
             })
           }}
         />
         <br />
-        <br /> <br />
-        <br />
-        <div>
-          <input type='submit' value='Save' onClick={handleSave} />
-        </div>
-      </form>
-    </div>
+        <label for='native language'>Native Language: </label>
+        <LanguageSelector
+          languages={languages.native_languages}
+          selected={language_for_id(
+            userDetails.native_language,
+            languages.native_languages
+          )}
+          onChange={e => {
+            let code = e.target[e.target.selectedIndex].getAttribute('code')
+            setUserDetails({
+              ...userDetails,
+              native_language: code
+            })
+          }}
+        />
+      </small>
+      <br />
+      <br /> <br />
+      <br />
+      <div>
+        <input type='submit' value='Save' onClick={handleSave} />
+      </div>
+    </form>
   )
 }
