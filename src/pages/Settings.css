@@ -1,7 +1,23 @@
 body {
   margin: auto;
-  width: 50%;
-  padding: 10px;
+  width: 100%;
+  padding: 0;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 0px; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #ff0000;
+}
+
+html {
+  overflow-y: scroll;
+  display: block;
 }
 
 .content {
