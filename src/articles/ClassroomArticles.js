@@ -29,7 +29,7 @@ export default function ClassroomArticles ({ zapi }) {
     <div>
       <ul id='articleLinkList' className='articleLinkList'>
         {articleList.map(each => (
-          <Article key={each.id} article={each} />
+          <Article key={each.id} article={each} dontShowImage={true} />
         ))}
       </ul>
     </div>

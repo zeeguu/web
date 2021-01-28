@@ -2,7 +2,11 @@ import './Article.css'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
-export default function Article ({ article, dontShowPublishingTime }) {
+export default function Article ({
+  article,
+  dontShowPublishingTime,
+  dontShowImage
+}) {
   let topics = article.topics.split(' ').filter(each => each !== '')
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10
 
@@ -32,13 +36,16 @@ export default function Article ({ article, dontShowPublishingTime }) {
         <div className='articleLinkSummary'>{article.summary}</div>
 
         <div className='articleTopics'>
-          <div className='articleLinkImage'>
-            <img
-              src={'/news-icons/' + article.icon_name}
-              className='feedIcon'
-              alt=''
-            />
-          </div>
+          {!dontShowImage && (
+            <div className='articleLinkImage'>
+              <img
+                src={'/news-icons/' + article.icon_name}
+                className='feedIcon'
+                alt=''
+              />
+            </div>
+          )}
+
           {!dontShowPublishingTime && (
             <span className='publishingTime'>
               {moment.utc(article.published).fromNow()}
