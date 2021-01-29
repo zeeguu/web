@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import './article.css'
+// import './article.css'
 
 import { TranslatableText } from './TranslatableText'
 

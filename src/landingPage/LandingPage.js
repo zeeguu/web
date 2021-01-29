@@ -1,6 +1,6 @@
 import LocalStorage from '../LocalStorage'
 import UserHome from '../articles/Articles'
-import styled from 'styled-components'
+import * as s from './LandingPage.sc.js'
 
 export default function LandingPage () {
   if (!LocalStorage.hasSession) {
@@ -8,129 +8,105 @@ export default function LandingPage () {
   }
   return (
     <div>
-      <nav>
-        <LoginHeader>
-          <Title>Zeeguu</Title>
-          <Button>
+      <s.LoginHeader>
+        <s.HeaderTitle>Zeeguu</s.HeaderTitle>
+        <nav>
+          <s.HeaderButton>
             <a href='/login'>Sign In</a>
-          </Button>
-        </LoginHeader>
-      </nav>
+          </s.HeaderButton>
+        </nav>
+      </s.LoginHeader>
 
-      <PageContent>
-        <LogoContainer>
-          <BigLogo>
+      <s.PageContent>
+        <s.NarrowColumn>
+          <s.BigLogo>
             <img src='/static/images/zeeguuLogo.svg' />
-          </BigLogo>
+          </s.BigLogo>
           <h1>Zeeguu</h1>
-          <p>
+          <h4>
             A research project aiming to personalize reading and vocabulary
             practice in foreign languages
-          </p>
+          </h4>
 
-          <InviteButton>
-            <a href='./create_account'>Become a Betatester!</a>
-          </InviteButton>
-        </LogoContainer>
-      </PageContent>
+          <s.InviteButton>
+            <nav>
+              <a href='./create_account'>Become a Betatester!</a>
+            </nav>
+          </s.InviteButton>
+        </s.NarrowColumn>
+
+        <s.PaleAdaptableColumn>
+          <h1>How Does It Work?</h1>
+          <h2>Personalized Recommendations</h2>
+          <s.DescriptionText>
+            <p>
+              Our system continuously searches the net for texts based on your
+              own declared interests.
+            </p>
+
+            <p>
+              We help you find texts that are at the right difficulty level
+              since you learn best when materials are challenging but not too
+              difficult
+            </p>
+
+            <p>
+              Unlike the generic texts that you can find in textbooks,
+              personally relevant texts will motivate you to study more.
+            </p>
+          </s.DescriptionText>
+
+          <h2>Easy Translations</h2>
+          <s.DescriptionText>
+            <p>
+              Studies show that you learn best when the texts that you read are
+              challenging. In such a text you will still encounter words that
+              you don't understand.
+            </p>
+
+            <p>
+              By using machine translation our system helps you obtain
+              translations in any text with a simple click (or tap on
+              touch-enabled devices).
+            </p>
+
+            <p>
+              The system also provides word pronunciation support. For some
+              languages, e.g. Danish, this is very important.
+            </p>
+          </s.DescriptionText>
+
+          <h2>Personalized Practice</h2>
+          <s.DescriptionText>
+            <p>
+              Spaced repetition algorithms optimize your practice and frequent
+              words are prioritized.
+            </p>
+            <p>
+              Zeeguu uses machine learning to create a model of your vocabulary
+              knowledge based on your past interactions with texts the system.
+            </p>
+            <p>
+              It then generates a variety of vocabulary exercises, some of
+              which, even use the original context of the word because
+              contextual learning works better.
+            </p>
+          </s.DescriptionText>
+        </s.PaleAdaptableColumn>
+
+        <s.AdaptableColumn>
+          <h1>News</h1>
+          <p>Paper at CHI'2021</p>
+          <p>Two New Schools</p>
+          <p>Paper at CHI'2020</p>
+        </s.AdaptableColumn>
+
+        <s.PaleAdaptableColumn>
+          <h1>Contributors</h1>
+          <p>Mircea Lungu</p>
+          <p>Simon Marti</p>
+        </s.PaleAdaptableColumn>
+      </s.PageContent>
     </div>
   )
 }
-
-const LoginHeader = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  height: 4em;
-  background: #ffbb54;
-  color: white;
-  font-size: 18px;
-  font-family: Montserrat;
-  margin: 0;
-  margin-bottom: 1em;
-`
-
-const Title = styled.div`
-  font-size: 1.5em;
-  font-weight: 600;
-  margin-left: 1em;
-  margin-top: 0.6em;
-`
-
-const Button = styled.div`
-  background: white;
-  width: 6em;
-  height: 2em;
-  border-radius: 1em;
-  text-align: center;
-  line-height: 2em;
-  margin-top: 0.9em;
-  margin-right: 1em;
-
-  a {
-    color: #ffbb54;
-    font-size: 1em;
-    font-weight: 500;
-  }
-`
-
-const PageContent = styled.div`
-  position: absolute;
-  width: 100%;
-  left: 0;
-`
-
-const LogoContainer = styled.div`
-  padding-top: 3em;
-  padding-bottom: 3em;
-  height: auto;
-
-  width: 20em;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-
-  h1 {
-    display: block;
-    font-size: 2em;
-    margin-block-start: 0.67em;
-    margin-block-end: 0.67em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-    color: #ffbb54;
-  }
-
-  p {
-    padding: 0.5em 1em;
-  }
-`
-
-const BigLogo = styled.div`
-  transform-origin: top center;
-  animation: swing 2s ease 3;
-  text-align: center;
-
-  img {
-    width: 10em;
-  }
-`
-
-const InviteButton = styled.button`
-  height: 4em;
-  width: 25em;
-  background: #ffbb54;
-  border: 0.3em solid #ffbb54;
-  border-radius: 7em;
-  margin-bottom: 3em;
-  margin-top: 3em;
-
-  overflow: hidden;
-
-  a {
-    font-family: Montserrat;
-    font-weight: 600;
-    font-size: 1.5em;
-    color: white;
-  }
-`

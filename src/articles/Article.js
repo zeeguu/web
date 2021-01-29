@@ -1,4 +1,4 @@
-import './Article.css'
+// import './Article.css'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 

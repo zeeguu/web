@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useContext } from 'react'
 import { UserContext } from '../UserContext'
-import './SideBar.css'
+// import './SideBar.css'
 
 export default function SideBar ({ visible, setVisible }) {
   const user = useContext(UserContext)

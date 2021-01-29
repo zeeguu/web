@@ -1,4 +1,4 @@
-import './Settings.css'
+// import './Settings.css'
 
 import { useEffect, useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom'

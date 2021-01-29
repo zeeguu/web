@@ -4,7 +4,7 @@ import WordHistory from './WordHistory'
 import Starred from './Starred'
 import Learned from './Learned'
 import Top from './Top'
-import './newStyleWords.css'
+// import './newStyleWords.css'
 
 export default function Words ({ api }) {
   return (

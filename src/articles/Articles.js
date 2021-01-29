@@ -1,6 +1,6 @@
 import NewArticles from './NewArticles'
 import BookmarkedArticles from './BookmarkedArticles'
-import './reader-header.css'
+// import './reader-header.css'
 import { ReadingTab, SeparatorBar } from './ReadingTab'
 import { PrivateRoute } from '../PrivateRoute'
 import Search from './Search'

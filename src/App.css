@@ -1,7 +1,12 @@
-body {
+/* body {
   font-family: Montserrat;
+  margin: auto;
+  width: 100%;
+  padding: 0;
+  overflow-y: scroll;
 }
 
-input:not([type='image' i]) {
-  box-sizing: border-box;
-}
+html {
+  overflow-y: scroll;
+  display: block;
+} */

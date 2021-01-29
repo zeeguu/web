@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import Article from './Article'
 
-import './reader-list.css'
-import './article-settings.css'
+// import './reader-list.css'
+// import './article-settings.css'
 
 export default function BookmarkedArticles ({ zapi }) {
   const [articleList, setArticleList] = useState(null)
