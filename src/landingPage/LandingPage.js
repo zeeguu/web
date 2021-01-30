@@ -1,6 +1,8 @@
 import LocalStorage from '../LocalStorage'
 import UserHome from '../articles/Articles'
+import News from './News'
 import * as s from './LandingPage.sc.js'
+import Contributors from './Contributors'
 
 export default function LandingPage () {
   if (!LocalStorage.hasSession) {
@@ -95,16 +97,11 @@ export default function LandingPage () {
         </s.PaleAdaptableColumn>
 
         <s.AdaptableColumn>
-          <h1>News</h1>
-          <p>Paper at CHI'2021</p>
-          <p>Two New Schools</p>
-          <p>Paper at CHI'2020</p>
+          <News />
         </s.AdaptableColumn>
 
         <s.PaleAdaptableColumn>
-          <h1>Contributors</h1>
-          <p>Mircea Lungu</p>
-          <p>Simon Marti</p>
+          <Contributors />
         </s.PaleAdaptableColumn>
       </s.PageContent>
     </div>
