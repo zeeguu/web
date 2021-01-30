@@ -2,9 +2,11 @@ export default function News () {
   function item (month, text) {
     return (
       <>
-        <div style={{ textAlign: 'left' }}>
+        <div
+          style={{ textAlign: 'left', marginLeft: '8px', marginRight: '8px' }}
+        >
           <p>
-            <small>({month})</small> {text}
+            <small>[{month}]</small> {text}
           </p>
         </div>
       </>
@@ -20,7 +22,13 @@ export default function News () {
 
       <h2>2020</h2>
 
-      {item('Jan', <>Paper about Zeeguu accepted at CHI'2021</>)}
+      {item(
+        'Jan',
+        <>
+          Paper using Zeeguu to teach vocabulary in moments of online
+          procrastination accepted at CHI'2021
+        </>
+      )}
 
       {item(
         'Sep',
@@ -65,6 +73,16 @@ export default function News () {
         <>
           Paper about Zeeguu accepted at CHI 2018 -- the top international
           conference on HCI
+          <br />
+          <small>
+            ->
+            <a href='https://www.researchgate.net/publication/322489283_As_We_May_Study_Towards_the_Web_as_a_Personalized_Language_Textbook'>
+              As We May Study: Towards the Web as a Personalized Language
+              Textbook
+            </a>
+            <br />
+            <br />
+          </small>
         </>
       )}
 
