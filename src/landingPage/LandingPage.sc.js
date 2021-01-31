@@ -1,4 +1,4 @@
-import styled, { keyframes, css } from 'styled-components'
+import styled, { keyframes, css } from "styled-components";
 
 const LoginHeader = styled.div`
   width: 100%;
@@ -10,14 +10,14 @@ const LoginHeader = styled.div`
   font-size: 18px;
   margin: 0;
   margin-bottom: 1em;
-`
+`;
 
 const HeaderTitle = styled.div`
   font-size: 1.5em;
   font-weight: 600;
   margin-left: 1em;
   margin-top: 0.6em;
-`
+`;
 
 const HeaderButton = styled.div`
   background: white;
@@ -34,13 +34,13 @@ const HeaderButton = styled.div`
     font-size: 1em;
     font-weight: 500;
   }
-`
+`;
 
 const PageContent = styled.div`
   position: absolute;
   width: 100%;
   left: 0;
-`
+`;
 
 const _mainHeader = css`
   display: block;
@@ -51,13 +51,13 @@ const _mainHeader = css`
   margin-inline-end: 0px;
   font-weight: bold;
   color: #ffbb54;
-`
+`;
 
 const NarrowColumn = styled.div`
   padding-top: 5em;
   padding-bottom: 3em;
   height: auto;
-  width: 14em;
+  width: 22em;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -70,7 +70,7 @@ const NarrowColumn = styled.div`
     padding: 0.5em 1em;
     font-weight: 300;
   }
-`
+`;
 
 const AdaptableColumn = styled.div`
   padding-bottom: 3em;
@@ -92,12 +92,12 @@ const AdaptableColumn = styled.div`
   @media (min-width: 768px) {
     max-width: 32em;
   }
-`
+`;
 
 const PaleAdaptableColumn = styled(AdaptableColumn)`
   background-color: #ffe59e10;
   padding-top: 0.1em;
-`
+`;
 
 const DescriptionText = styled.div`
   text-align: center;
@@ -106,11 +106,11 @@ const DescriptionText = styled.div`
   @media (min-width: 768px) {
     text-align: left;
   }
-`
+`;
 
 const CenterText = styled.div`
   text-align: center;
-`
+`;
 
 const swing = keyframes`
   20% {
@@ -128,7 +128,7 @@ const swing = keyframes`
 100% {
   transform: rotate(0deg);
 }
-`
+`;
 
 const BigLogo = styled.div`
   text-align: center;
@@ -137,7 +137,7 @@ const BigLogo = styled.div`
     width: 10em;
     animation: ${swing} 2s ease 3;
   }
-`
+`;
 
 const InviteButton = styled.button`
   height: 4em;
@@ -154,7 +154,7 @@ const InviteButton = styled.button`
     font-size: 1.5em;
     color: white;
   }
-`
+`;
 
 export {
   LoginHeader,
@@ -167,5 +167,5 @@ export {
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,
-  CenterText
-}
+  CenterText,
+};
