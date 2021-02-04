@@ -1,22 +1,23 @@
-.menu-and-container-holder {
-  background-color: cadetblue;
-}
-
+/* Mobile Default */
 .main-container {
   padding: 0.0625em 1em;
-  margin-left: 12.5em;
-  height: 100%;
-
-  /* border: 2px solid red;
-  border-radius: 5px;
-  background-color: yellow; */
+  margin-left: 2em;
+  background-color: white;
 }
 
-/*******MEDIA QUERIES **********/
-@media screen and (max-width: 500px) {
+/* Mobile toggled */
+.main-container-toggled {
+  background-color: white;
+  margin-left: 7em;
+}
+
+@media screen and (min-width: 768px) {
   .main-container {
-    position: relative;
-    overflow-x: hidden;
-    margin: 0;
+    background-color: white;
+    margin-left: 12.5em;
+  }
+
+  .main-container-toggled {
+    background-color: white;
   }
 }
