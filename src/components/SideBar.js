@@ -24,7 +24,6 @@ export default function SideBar(props) {
       <div className="logo">
         <a href="/articles" rel="external">
           <img
-            className="zeeguuLogo"
             src="/static/images/zeeguuWhiteLogo.svg"
             alt="Zeeguu Logo - The Elephant"
           />
@@ -64,15 +63,15 @@ export default function SideBar(props) {
     return (
       <s.SideBarToggled>
         {sidebarContent}
-        <s.MainPageContentToggled>{props.children}</s.MainPageContentToggled>
+        <s.MainContentToggled>{props.children}</s.MainContentToggled>
       </s.SideBarToggled>
     );
   }
 
   return (
-    <s.SideBarDefault>
+    <s.SideBarInitial>
       {sidebarContent}
-      <s.MainPageContentDefault>{props.children}</s.MainPageContentDefault>
-    </s.SideBarDefault>
+      <s.MainContentInitial>{props.children}</s.MainContentInitial>
+    </s.SideBarInitial>
   );
 }

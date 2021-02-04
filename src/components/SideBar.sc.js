@@ -1,5 +1,11 @@
 import styled, { keyframes, css } from "styled-components";
 
+// The twistedness here is the fact that in the
+// mobile and the desktop version have inverted
+// initial state:
+//   Desktop = initially open, and
+//   Mobile = initiallly closed
+
 let arrowSize = "80px";
 
 let mainPageContentCommon = css`
@@ -10,7 +16,7 @@ let mainPageContentCommon = css`
   padding: 6px;
 `;
 
-const MainPageContentDefault = styled.div`
+const MainContentInitial = styled.div`
   /* Default (Minimized) on Mobile */
   margin-left: 1em;
   ${mainPageContentCommon}
@@ -21,7 +27,7 @@ const MainPageContentDefault = styled.div`
   }
 `;
 
-const MainPageContentToggled = styled.div`
+const MainContentToggled = styled.div`
   ${mainPageContentCommon}
 
   /* Toggled (Open) on Mobile  */
@@ -33,108 +39,87 @@ const MainPageContentToggled = styled.div`
   }
 `;
 
-const SideBarDefault = styled.div`
-  // Mobile - Default
+const sidebarCommon = css`
   position: fixed;
-  width: 0em;
   top: 0;
   height: 100vh;
   background-color: #ffbb54;
+  background-color: green;
+`;
 
+const logoOpen = css`
   .logo {
-    display: none;
+    display: block;
+    text-align: center;
+    width: 100%;
+    margin-top: 2em;
+    img {
+      width: 50%;
+    }
   }
+`;
 
+const arrowCommon = css`
+  .arrowHolder {
+    font-weight: 100;
+    cursor: pointer;
+    font-size: ${arrowSize};
+  }
+`;
+
+const arrowPointsToRight = css`
   .arrowHolder {
     display: flex;
     flex-direction: row-reverse;
-    font-weight: 100;
-    cursor: pointer;
 
     .toggleArrow {
-      font-size: ${arrowSize};
-      color: orange;
+      color: blue;
       z-index: 100;
       transform: rotate(90deg) translate(20px, -0.5em);
     }
+  }
+`;
+
+const arrowAsNegativeSpace = css`
+  .arrowHolder {
+    display: flex;
+    flex-direction: row-reverse;
+
+    .toggleArrow {
+      color: white;
+      transform: rotate(-90deg) translate(10px, 10px);
+    }
+  }
+`;
+
+const sidebarMinimizedCommon = css`
+  width: 0px;
+
+  .logo {
+    display: none;
   }
 
   .navigationLink {
     display: none;
   }
+`;
 
-  //   Default for Desktop
-  @media (min-width: 768px) {
-    position: fixed;
-    width: 12.5em;
+const navigationVisibleCommon = css`
+  .navigationLink {
+    display: block;
+    color: white;
+    /* font-size: xx-large; */
+    margin-bottom: 0.4em;
 
-    .logo {
-      display: block;
-      text-align: center;
-      width: 100%;
-      margin-top: 1em;
-    }
-
-    .arrowHolder {
-      display: flex;
-      width: 12.5em;
-      flex-direction: row-reverse;
-
-      .toggleArrow {
-        color: white;
-        /* color: lightcoral; */
-        transform: rotate(-90deg) translate(10px, 10px);
-      }
-    }
-
-    .navigationLink {
-      display: block;
-      background-color: green;
-      width: 1em;
+    a {
       color: white;
-      font-size: xx-large;
-      margin-bottom: 0.4em;
-
-      a {
-        color: white;
-        text-decoration: none;
-        padding-left: 10px;
-      }
+      text-decoration: none;
+      padding-left: 10px;
     }
   }
 `;
 
-const SideBarToggled = styled.div`
-  // Mobile - Toggled
-  top: 0px;
-  position: fixed;
-  width: 7em;
-  height: 100vh;
-  background-color: #ffbb54;
-
-  .logo {
-    // background-color: green;
-    display: block;
-    text-align: center;
-    width: 100%;
-    margin-top: 2em;
-  }
-
-  .arrowHolder {
-    display: flex;
-    flex-direction: row-reverse;
-    font-weight: 100;
-    // background-color: green;
-    /* z-index: 1000; */
-
-    .toggleArrow {
-      font-size: ${arrowSize};
-      color: white;
-
-      transform: rotate(-90deg) translate(20px, 8px);
-    }
-  }
-
+const navigation2 = css`
   .navigationLink {
     width: 1em;
     color: white;
@@ -148,34 +133,65 @@ const SideBarToggled = styled.div`
       padding-left: 10px;
     }
   }
+`;
 
+const SideBarInitial = styled.div`
+  // Mobile - Initial = Closed
+  ${sidebarCommon}
+
+  ${sidebarMinimizedCommon}
+
+  /*  Arrow */
+  ${arrowCommon}
+  ${arrowPointsToRight}
+
+  
+
+  //   Default for Desktop = Open
   @media (min-width: 768px) {
-    width: 0px;
+    width: 12.5em;
 
+    /* Logo */
+    ${logoOpen}
+
+    /* Arrow */
+    ${arrowAsNegativeSpace}
+
+    /* Navigation */
+    ${navigationVisibleCommon}
     .navigationLink {
-      display: none;
-    }
-
-    .logo {
-      display: none;
-    }
-
-    .arrowHolder {
-      position: fixed;
-      display: flex;
-      flex-direction: row-reverse;
-
-      .toggleArrow {
-        color: orange;
-        transform: rotate(90deg) translate(10px, 10px);
-      }
+      font-size: xx-large;
     }
   }
 `;
 
+const SideBarToggled = styled.div`
+  ${sidebarCommon}
+
+  // Mobile - Open
+  width: 7em;
+
+  ${logoOpen}
+
+  ${arrowCommon}
+
+  ${arrowAsNegativeSpace}
+
+  ${navigationVisibleCommon}
+  .navigationLink {
+    font-weight: 700;
+  }
+
+  @media (min-width: 768px) {
+    ${sidebarMinimizedCommon}
+
+    ${arrowPointsToRight}
+  }
+`;
+
 export {
-  SideBarDefault,
+  SideBarInitial,
   SideBarToggled,
-  MainPageContentDefault,
-  MainPageContentToggled,
+  MainContentInitial,
+  MainContentToggled,
 };
