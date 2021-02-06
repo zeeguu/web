@@ -44,7 +44,7 @@ const sidebarCommon = css`
   top: 0;
   height: 100vh;
   background-color: #ffbb54;
-  background-color: green;
+  /* background-color: green; */
 `;
 
 const logoOpen = css`
@@ -73,7 +73,7 @@ const arrowPointsToRight = css`
     flex-direction: row-reverse;
 
     .toggleArrow {
-      color: blue;
+      color: orange;
       z-index: 100;
       transform: rotate(90deg) translate(20px, -0.5em);
     }
@@ -180,11 +180,13 @@ const SideBarToggled = styled.div`
   ${navigationVisibleCommon}
   .navigationLink {
     font-weight: 700;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    font-size: large;
   }
 
   @media (min-width: 768px) {
     ${sidebarMinimizedCommon}
-
     ${arrowPointsToRight}
   }
 `;
