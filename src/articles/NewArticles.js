@@ -1,37 +1,37 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-import Article from './Article'
+import Article from "./Article";
 
 // import './reader-list.css'
-// import './article-settings.css'
-import SortingButtons from './SortingButtons'
-import InterestsAndSearch from './InterestsAndSearch'
+// import "./article-settings.css";
+import SortingButtons from "./SortingButtons";
+import InterestsAndSearch from "./InterestsAndSearch";
 
-export default function NewArticles ({ zapi }) {
-  const [articleList, setArticleList] = useState(null)
+export default function NewArticles({ zapi }) {
+  const [articleList, setArticleList] = useState(null);
 
-  var originalList = null
+  var originalList = null;
 
   if (articleList == null) {
-    zapi.getUserArticles(articles => {
-      console.log(articles)
-      setArticleList(articles)
-      originalList = [...articles]
-    })
+    zapi.getUserArticles((articles) => {
+      console.log(articles);
+      setArticleList(articles);
+      originalList = [...articles];
+    });
 
     return (
       <div>
         <p>loading...</p>
       </div>
-    )
+    );
   }
 
-  function articlesListShouldChange () {
-    setArticleList(null)
-    zapi.getUserArticles(articles => {
-      setArticleList(articles)
-      originalList = [...articles]
-    })
+  function articlesListShouldChange() {
+    setArticleList(null);
+    zapi.getUserArticles((articles) => {
+      setArticleList(articles);
+      originalList = [...articles];
+    });
   }
 
   return (
@@ -47,11 +47,11 @@ export default function NewArticles ({ zapi }) {
         articlesListShouldChange={articlesListShouldChange}
       />
 
-      <ul id='articleLinkList' className='articleLinkList'>
-        {articleList.map(each => (
+      <ul id="articleLinkList" className="articleLinkList">
+        {articleList.map((each) => (
           <Article key={each.id} article={each} />
         ))}
       </ul>
     </div>
-  )
+  );
 }
