@@ -5,7 +5,8 @@ import Article from "./Article";
 // import './reader-list.css'
 // import "./article-settings.css";
 import SortingButtons from "./SortingButtons";
-import InterestsAndSearch from "./InterestsAndSearch";
+import Interests from "./Interests";
+import SearchField from "./SearchField";
 
 export default function NewArticles({ zapi }) {
   const [articleList, setArticleList] = useState(null);
@@ -36,16 +37,18 @@ export default function NewArticles({ zapi }) {
 
   return (
     <div>
+      <Interests
+        zapi={zapi}
+        articlesListShouldChange={articlesListShouldChange}
+      />
+
       <SortingButtons
         articleList={articleList}
         originalList={originalList}
         setArticleList={setArticleList}
       />
 
-      <InterestsAndSearch
-        zapi={zapi}
-        articlesListShouldChange={articlesListShouldChange}
-      />
+      <SearchField />
 
       <ul id="articleLinkList" className="articleLinkList">
         {articleList.map((each) => (
