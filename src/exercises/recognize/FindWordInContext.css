@@ -39,13 +39,16 @@
 @media screen and (max-width: 768px) {
   .contextExample {
     margin-top: 0.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
   }
 
   .bottomInput {
-    flex-direction: column;
-    align-items: center;
-    flex-wrap: wrap;
     margin-top: 0.5em;
+  }
+
+  .bottomInput input {
+    width: 6em;
   }
 
   h1 {

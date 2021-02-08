@@ -8,11 +8,11 @@
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 0.5em;
 }
 
 .feedback_buttons_holder button {
   margin: 0.5em;
+  font-size: large;
 }
 
 .discrete-link {
