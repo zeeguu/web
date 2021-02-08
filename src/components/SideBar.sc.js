@@ -8,27 +8,36 @@ import styled, { keyframes, css } from "styled-components";
 
 let arrowSize = "80px";
 
+let sideBarWidthDesktop = "12.5em";
+
 let mainPageContentCommon = css`
   position: fixed;
   top: 0;
   overflow-y: scroll;
-  height: 100vh;
+  height: 90vh;
   padding: 6px;
 `;
 
 const MainContentInitial = styled.div`
   /* Default (Minimized) on Mobile */
+  /* background-color: lightcyan; */
+  /* border: 1px solid lightcoral; */
   margin-left: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  right: 1em;
   ${mainPageContentCommon}
 
   @media (min-width: 768px) {
     /* Default (Open) on Desktop */
-    margin-left: 12.5em;
+    left: ${sideBarWidthDesktop};
+    right: 1em;
   }
 `;
 
 const MainContentToggled = styled.div`
   ${mainPageContentCommon}
+  background-color: lightgoldenrodyellow;
 
   /* Toggled (Open) on Mobile  */
   margin-left: 7em;
@@ -36,6 +45,8 @@ const MainContentToggled = styled.div`
   @media (min-width: 768px) {
     /* Toggled (Minimized) on Desktop */
     margin-left: 2em;
+    right: 1em;
+    left: 1em;
   }
 `;
 
