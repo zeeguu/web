@@ -34,12 +34,22 @@
   margin-left: 2em;
   margin-right: 2em;
 }
-/* 
-@media screen and (max-width: 240px) {
+
+/* Mobile version */
+@media screen and (max-width: 768px) {
+  .contextExample {
+    margin-top: 0.5em;
+  }
+
   .bottomInput {
-    background-color: plum;
     flex-direction: column;
     align-items: center;
     flex-wrap: wrap;
+    margin-top: 0.5em;
   }
-} */
+
+  h1 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}

@@ -25,10 +25,11 @@ const MainContentInitial = styled.div`
   /* background-color: lightcyan; */
   /* border: 1px solid lightcoral; */
 
-  margin-left: 1em;
-  margin-top: 1em;
+  /* margin-left: 1em;
+  margin-top: 1em; */
   margin-bottom: 1em;
   right: 1em;
+  left: 1em;
   ${mainPageContentCommon}
 
   @media (min-width: 768px) {
