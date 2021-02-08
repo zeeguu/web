@@ -20,8 +20,11 @@ let mainPageContentCommon = css`
 
 const MainContentInitial = styled.div`
   /* Default (Minimized) on Mobile */
+
+  /* debugging */
   /* background-color: lightcyan; */
   /* border: 1px solid lightcoral; */
+
   margin-left: 1em;
   margin-top: 1em;
   margin-bottom: 1em;
@@ -37,10 +40,11 @@ const MainContentInitial = styled.div`
 
 const MainContentToggled = styled.div`
   ${mainPageContentCommon}
-  background-color: lightgoldenrodyellow;
+  /* border: 1px solid lightcoral; */
 
   /* Toggled (Open) on Mobile  */
-  margin-left: 7em;
+  left: 7em;
+  right: 1em;
 
   @media (min-width: 768px) {
     /* Toggled (Minimized) on Desktop */
