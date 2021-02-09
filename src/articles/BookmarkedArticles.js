@@ -2,10 +2,12 @@ import { useState } from "react";
 
 import Article from "./Article";
 
-import * as s from "./Article.sc";
+import SortingButtons from "./SortingButtons";
 
 export default function BookmarkedArticles({ zapi }) {
   const [articleList, setArticleList] = useState(null);
+
+  let originalList = articleList;
 
   if (articleList == null) {
     zapi.getBookmarkedArticles((articles) => {
@@ -22,6 +24,13 @@ export default function BookmarkedArticles({ zapi }) {
 
   return (
     <>
+      <br />
+      <br />
+      <SortingButtons
+        articleList={articleList}
+        originalList={originalList}
+        setArticleList={setArticleList}
+      />
       {articleList.map((each) => (
         <Article key={each.id} article={each} dontShowPublishingTime={true} />
       ))}

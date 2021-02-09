@@ -2,11 +2,12 @@ import { useState } from "react";
 
 import Article from "./Article";
 
-// import './reader-list.css'
-// import './article-settings.css'
+import SortingButtons from "./SortingButtons";
 
 export default function ClassroomArticles({ zapi }) {
   const [articleList, setArticleList] = useState(null);
+
+  let originalList = articleList;
 
   if (articleList == null) {
     zapi.getCohortArticles((articles) => {
@@ -27,6 +28,13 @@ export default function ClassroomArticles({ zapi }) {
 
   return (
     <>
+      <br />
+      <br />
+      <SortingButtons
+        articleList={articleList}
+        originalList={originalList}
+        setArticleList={setArticleList}
+      />
       {articleList.map((each) => (
         <Article key={each.id} article={each} dontShowImage={true} />
       ))}
