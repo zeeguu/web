@@ -16,6 +16,7 @@ let mainPageContentCommon = css`
   overflow-y: scroll;
   height: 100vh;
   padding: 6px;
+  overflow-x: hidden;
 `;
 
 const MainContentInitial = styled.div`
@@ -28,14 +29,14 @@ const MainContentInitial = styled.div`
   /* margin-left: 1em;
   margin-top: 1em; */
   margin-bottom: 1em;
-  right: 1em;
+  right: 0.1em;
   left: 1em;
   ${mainPageContentCommon}
 
   @media (min-width: 768px) {
     /* Default (Open) on Desktop */
     left: ${sideBarWidthDesktop};
-    right: 1em;
+    right: 0.1em;
   }
 `;
 
@@ -45,12 +46,12 @@ const MainContentToggled = styled.div`
 
   /* Toggled (Open) on Mobile  */
   left: 7em;
-  right: 1em;
+  right: 0.1em;
 
   @media (min-width: 768px) {
     /* Toggled (Minimized) on Desktop */
     margin-left: 2em;
-    right: 1em;
+    right: 0.1em;
     left: 1em;
   }
 `;
@@ -60,7 +61,7 @@ const sidebarCommon = css`
   top: 0;
   height: 100vh;
   background-color: #ffbb54;
-  /* background-color: green; */
+  background-color: #ffd047;
 `;
 
 const logoOpen = css`
@@ -126,6 +127,7 @@ const navigationVisibleCommon = css`
     color: white;
     /* font-size: xx-large; */
     margin-bottom: 0.4em;
+    background-color: #ffbb54;
 
     a {
       color: white;

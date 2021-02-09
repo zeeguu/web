@@ -21,30 +21,27 @@ export default function Article({
         <s.WordCount>{article.metrics.word_count}</s.WordCount>
       </s.Header>
 
-      <div className="articleLinkSummary">{article.summary}</div>
+      <s.Summary>{article.summary}</s.Summary>
 
-      <div className="articleTopics">
-        {!dontShowImage && (
-          <div className="articleLinkImage">
-            <img
-              src={"/news-icons/" + article.icon_name}
-              className="feedIcon"
-              alt=""
-            />
-          </div>
-        )}
+      {!dontShowImage && (
+        <s.SourceImage>
+          <img src={"/news-icons/" + article.icon_name} alt="" />
+        </s.SourceImage>
+      )}
 
-        {!dontShowPublishingTime && (
-          <span className="publishingTime">
-            {moment.utc(article.published).fromNow()}
-          </span>
-        )}
+      {!dontShowPublishingTime && (
+        <s.PublishingTime>
+          ({moment.utc(article.published).fromNow()})
+        </s.PublishingTime>
+      )}
+
+      <s.Topics>
         {topics.map((topic) => (
           <span key={topic} className="singleTopicTag">
             {topic}
           </span>
         ))}
-      </div>
+      </s.Topics>
     </s.IndividualArticle>
   );
 }
