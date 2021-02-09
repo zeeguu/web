@@ -7,6 +7,7 @@ import Article from "./Article";
 import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
 import SearchField from "./SearchField";
+import * as s from "./NewArticles.sc";
 
 export default function NewArticles({ zapi }) {
   const [articleList, setArticleList] = useState(null);
@@ -37,14 +38,14 @@ export default function NewArticles({ zapi }) {
 
   return (
     <>
-      <div>
+      <s.MaterialSelection>
         <Interests
           zapi={zapi}
           articlesListShouldChange={articlesListShouldChange}
         />
 
         <SearchField />
-      </div>
+      </s.MaterialSelection>
 
       <SortingButtons
         articleList={articleList}
@@ -52,11 +53,9 @@ export default function NewArticles({ zapi }) {
         setArticleList={setArticleList}
       />
 
-      <ul id="articleLinkList" className="articleLinkList">
-        {articleList.map((each) => (
-          <Article key={each.id} article={each} />
-        ))}
-      </ul>
+      {articleList.map((each) => (
+        <Article key={each.id} article={each} />
+      ))}
     </>
   );
 }
