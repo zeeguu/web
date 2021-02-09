@@ -6,7 +6,7 @@ export default function SortingButtons({
   setArticleList,
   originalList,
 }) {
-  const [currentSort, setCurrentSort] = useState("");
+  const [difficultySortState, setCurrentSort] = useState("");
   const [wordCountSortState, setwordCountSortState] = useState("");
 
   function sortArticleList(sorting) {
@@ -20,16 +20,16 @@ export default function SortingButtons({
     setOtherSort,
     sortingFunction
   ) {
-    if (currentSort === "flip clicked") {
+    if (currentSort === "ascending") {
       sortArticleList(sortingFunction);
-      setCurrentSort("clicked");
+      setCurrentSort("descending");
       setOtherSort("");
-    } else if (currentSort === "clicked") {
+    } else if (currentSort === "descending") {
       setArticleList(originalList);
       setCurrentSort("");
     } else {
       sortArticleList((a, b) => 0 - sortingFunction(a, b));
-      setCurrentSort("flip clicked");
+      setCurrentSort("ascending");
       setOtherSort("");
     }
   }
@@ -52,11 +52,11 @@ export default function SortingButtons({
         Words
       </s.SortButton>
       <s.SortButton
-        className={currentSort}
+        className={difficultySortState}
         onClick={(e) =>
           changeDifficultySorting(
             e,
-            currentSort,
+            difficultySortState,
             setCurrentSort,
             setwordCountSortState,
             (a, b) => b.metrics.difficulty - a.metrics.difficulty
