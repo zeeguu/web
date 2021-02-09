@@ -37,9 +37,7 @@ export default function Article({
 
       <s.Topics>
         {topics.map((topic) => (
-          <span key={topic} className="singleTopicTag">
-            {topic}
-          </span>
+          <span key={topic}>{topic}</span>
         ))}
       </s.Topics>
     </s.IndividualArticle>
