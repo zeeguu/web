@@ -1,9 +1,8 @@
-// import './Article.css'
 import { Link } from "react-router-dom";
 import moment from "moment";
 import * as s from "./Article.sc";
 
-export default function Article({
+export default function ArticleOverview({
   article,
   dontShowPublishingTime,
   dontShowImage,

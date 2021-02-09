@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Article from "./Article";
+import ArticleOverview from "./Article";
 
 import SortingButtons from "./SortingButtons";
 
@@ -32,7 +32,11 @@ export default function BookmarkedArticles({ zapi }) {
         setArticleList={setArticleList}
       />
       {articleList.map((each) => (
-        <Article key={each.id} article={each} dontShowPublishingTime={true} />
+        <ArticleOverview
+          key={each.id}
+          article={each}
+          dontShowPublishingTime={true}
+        />
       ))}
     </>
   );

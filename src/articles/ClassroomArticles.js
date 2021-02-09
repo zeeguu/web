@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Article from "./Article";
+import ArticleOverview from "./Article";
 
 import SortingButtons from "./SortingButtons";
 
@@ -36,7 +36,7 @@ export default function ClassroomArticles({ zapi }) {
         setArticleList={setArticleList}
       />
       {articleList.map((each) => (
-        <Article key={each.id} article={each} dontShowImage={true} />
+        <ArticleOverview key={each.id} article={each} dontShowImage={true} />
       ))}
     </>
   );

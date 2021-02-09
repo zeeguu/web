@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Article from "./Article";
+import ArticleOverview from "./Article";
 
 import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
@@ -52,7 +52,7 @@ export default function NewArticles({ zapi }) {
       />
 
       {articleList.map((each) => (
-        <Article key={each.id} article={each} />
+        <ArticleOverview key={each.id} article={each} />
       ))}
     </>
   );
