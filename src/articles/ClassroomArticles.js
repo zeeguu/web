@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import ArticleOverview from "./Article";
+import ArticleOverview from "./ArticleOverview";
 
 import SortingButtons from "./SortingButtons";
 
