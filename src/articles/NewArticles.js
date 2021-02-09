@@ -2,8 +2,6 @@ import { useState } from "react";
 
 import Article from "./Article";
 
-// import './reader-list.css'
-// import "./article-settings.css";
 import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
 import SearchField from "./SearchField";
