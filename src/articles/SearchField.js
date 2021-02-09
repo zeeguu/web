@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as s from "./SearchField.sc";
 
 export default function SearchField() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,23 +12,16 @@ export default function SearchField() {
   }
 
   return (
-    <>
-      {/* <div id="searchesList"></div>
-
-      <div id="searchesFilterList"></div>
-      <div id="topicsFilterList"></div> */}
-
-      <div className="seachField">
-        <input
-          className="searchTextfieldInput"
-          type="text"
-          id="search-expandable"
-          placeholder="Search all articles"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyDown={keyDownInSearch}
-        />
-      </div>
-    </>
+    <s.SearchField>
+      <input
+        className="searchTextfieldInput"
+        type="text"
+        id="search-expandable"
+        placeholder="Search all articles"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        onKeyDown={keyDownInSearch}
+      />
+    </s.SearchField>
   );
 }

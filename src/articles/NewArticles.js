@@ -36,11 +36,15 @@ export default function NewArticles({ zapi }) {
   }
 
   return (
-    <div>
-      <Interests
-        zapi={zapi}
-        articlesListShouldChange={articlesListShouldChange}
-      />
+    <>
+      <div>
+        <Interests
+          zapi={zapi}
+          articlesListShouldChange={articlesListShouldChange}
+        />
+
+        <SearchField />
+      </div>
 
       <SortingButtons
         articleList={articleList}
@@ -48,13 +52,11 @@ export default function NewArticles({ zapi }) {
         setArticleList={setArticleList}
       />
 
-      <SearchField />
-
       <ul id="articleLinkList" className="articleLinkList">
         {articleList.map((each) => (
           <Article key={each.id} article={each} />
         ))}
       </ul>
-    </div>
+    </>
   );
 }

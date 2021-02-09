@@ -36,9 +36,9 @@ export default function SortingButtons({
 
   return (
     <s.SortingButtons>
-      Sort by:
-      <button
-        className={"sortContainer " + wordCountSortState}
+      Sort by:&nbsp;
+      <s.SortButton
+        className={wordCountSortState}
         onClick={(e) =>
           changeDifficultySorting(
             e,
@@ -50,9 +50,9 @@ export default function SortingButtons({
         }
       >
         Words
-      </button>
-      <button
-        className={"sortContainer " + currentSort}
+      </s.SortButton>
+      <s.SortButton
+        className={currentSort}
         onClick={(e) =>
           changeDifficultySorting(
             e,
@@ -64,7 +64,7 @@ export default function SortingButtons({
         }
       >
         Difficulty
-      </button>
+      </s.SortButton>
     </s.SortingButtons>
   );
 }
