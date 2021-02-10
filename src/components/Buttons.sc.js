@@ -22,4 +22,15 @@ const OrangeRoundButton = styled(RoundButton)`
   background-color: #ffbb54;
 `;
 
-export { RoundButton, OrangeRoundButton };
+const BigSquareButton = styled(RoundButton)`
+  margin: 5px;
+  width: 180px;
+  height: 45px;
+  border-color: #ffbb54;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 10px;
+  font-size: 18px;
+`;
+
+export { RoundButton, OrangeRoundButton, BigSquareButton };

@@ -2,6 +2,10 @@ import styled from "styled-components";
 
 import { sideBarWidthDesktop } from "../components/SideBar.sc";
 
+import { BigSquareButton } from "../components/Buttons.sc";
+
+import * as color from "../components/colors";
+
 let ArticleReader = styled.div`
   /* border: 1px solid lightgray; */
   max-width: 768px;
@@ -75,7 +79,68 @@ let MainText = styled.div`
   font-size: 1.3em;
   line-height: 3em;
   padding: 0.2em;
-  padding-bottom: 8em;
 `;
 
-export { ArticleReader, Toolbar, Title, BookmarkButton, MainText };
+let _BottomButton = styled(BigSquareButton)`
+  width: 5em;
+  height: auto;
+  display: inline-block;
+`;
+
+let CenteredContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+let WhiteButton = styled(_BottomButton)`
+  background-color: white;
+  color: orange !important;
+`;
+
+let OrangeButton = styled(_BottomButton)`
+  background-color: orange;
+  width: 16em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+let FeedbackBox = styled.div`
+  border: 1px solid lightgray;
+  background-color: #f8f8f8;
+  border-radius: 1em;
+  padding: 1em;
+  padding-bottom: 1em;
+  margin-top: 3em;
+  width: 30em;
+  margin-left: auto;
+  margin-right: auto;
+  h2 {
+    text-align: center;
+  }
+  h4 {
+    text-align: center;
+  }
+  .selected {
+    background-color: ${color.lightOrange} !important;
+    color: white !important;
+  }
+`;
+
+let ExtraSpaceAtTheBottom = styled.div`
+  margin-bottom: 8em;
+`;
+
+export {
+  ArticleReader,
+  Toolbar,
+  Title,
+  BookmarkButton,
+  MainText,
+  WhiteButton,
+  OrangeButton,
+  FeedbackBox,
+  CenteredContent,
+  ExtraSpaceAtTheBottom,
+};

@@ -43,11 +43,15 @@ export default function ArticleReader({ api }) {
 
   function toggleBookmarkedState() {
     let newArticleInfo = { ...articleInfo, starred: !articleInfo.starred };
-    console.log("updated article info");
-    console.log(newArticleInfo);
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
-      console.log("updating state...");
+    });
+  }
+
+  function setLikedState(state) {
+    let newArticleInfo = { ...articleInfo, liked: state };
+    api.setArticleInfo(newArticleInfo, () => {
+      setArticleInfo(newArticleInfo);
     });
   }
 
@@ -112,7 +116,43 @@ export default function ArticleReader({ api }) {
         />
       </s.MainText>
 
-      
+      <s.FeedbackBox>
+        <small>
+          Help us make Zeeguu even smarter by always letting us know whether you
+          liked reading an article or not.
+        </small>
+
+        <h4>Did you enjoy the article?</h4>
+
+        <s.CenteredContent>
+          <s.WhiteButton
+            onClick={(e) => setLikedState(true)}
+            className={articleInfo.liked === true && "selected"}
+          >
+            Yes
+          </s.WhiteButton>
+          <s.WhiteButton
+            onClick={(e) => setLikedState(false)}
+            className={articleInfo.liked === false && "selected"}
+          >
+            No
+          </s.WhiteButton>
+        </s.CenteredContent>
+      </s.FeedbackBox>
+
+      <s.FeedbackBox>
+        <h2>Review Vocabulary</h2>
+        <small>
+          Review your translations now to ensure better learning and ensure that
+          you tell Zeeguu which of the words you want prioritize in your study.
+        </small>
+        <br />
+        <br />
+        <s.CenteredContent>
+          <s.OrangeButton>Review Vocabulary</s.OrangeButton>
+        </s.CenteredContent>
+      </s.FeedbackBox>
+      <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );
 }
