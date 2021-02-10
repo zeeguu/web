@@ -1,4 +1,5 @@
 import styled, { keyframes, css } from "styled-components";
+import { lightOrange } from "../components/colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
@@ -61,7 +62,7 @@ const sidebarCommon = css`
   top: 0;
   height: 100vh;
   background-color: #ffbb54;
-  background-color: #ffd047;
+  background-color: ${lightOrange};
 `;
 
 const logoOpen = css`

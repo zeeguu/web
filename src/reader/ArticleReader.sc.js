@@ -113,7 +113,10 @@ let FeedbackBox = styled.div`
   padding: 1em;
   padding-bottom: 1em;
   margin-top: 3em;
-  width: 30em;
+
+  @media (min-width: 768px) {
+    width: 30em;
+  }
   margin-left: auto;
   margin-right: auto;
   h2 {
