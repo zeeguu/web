@@ -3,47 +3,13 @@
   font-family: Montserrat;
 }
 
-.articleHeader {
-  position: sticky;
-  background-color: transparent;
-  box-shadow: none;
-}
-
-.textParagraph {
-  margin-bottom: 1.5em;
-}
-
-.articleLayout {
-  margin-left: 12.5em;
-  height: 100%;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-overflow-scrolling: touch;
-}
-
-.layout__content {
-  position: relative;
-  padding-top: 0.3em;
-  padding-bottom: 1em;
-  background-color: white;
-  overflow-y: overlay;
-}
-
-/*
-.is-casting-shadow {
-  box-shadow: 0em 0em 1em lightgray !important;
-} */
-
 z-tag {
   cursor: pointer;
   /* margin-right: 1em; */
   display: inline-block;
   margin: 0;
   line-height: 29px;
+  /* background-color: greenyellow; */
 }
 
 z-tag.loading {
@@ -116,12 +82,12 @@ z-tag z-tran moreAlternatives {
 }
 
 .arrow {
-  content: '▼';
+  content: "▼";
   color: #4f4f4f;
 }
 
 z-tag z-tran moreAlternatives:after {
-  content: '▼';
+  content: "▼";
   color: #4f4f4f;
 }
 
@@ -149,12 +115,12 @@ z-tag z-tran moreAlternatives:after {
 }
 
 .handSelected:after {
-  content: ' ';
+  content: " ";
   color: white;
 }
 
 .handContributed:after {
-  content: ' ';
+  content: " ";
   color: white;
 }
 
@@ -177,111 +143,6 @@ that made the UI too heavy ... */
 
 z-tag z-tran[chosen]:after {
   content: attr(chosen);
-}
-
-.toolbar {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
-  box-sizing: border-box;
-  align-self: stretch;
-  align-items: center;
-  height: 3.5em;
-  margin-top: 1.5em;
-  margin-right: 2em;
-  margin-bottom: 2.5em;
-}
-
-.tool {
-  width: 55px;
-  height: 55px;
-  background-color: #ffe086;
-  border-style: none;
-  box-shadow: none;
-  border-radius: 10px;
-  margin: 10px;
-  padding: 1px;
-}
-
-.main-tools {
-  display: flex;
-  justify-content: flex-end;
-  margin-left: auto;
-}
-.click_translate {
-  width: 100%;
-}
-
-#toggle_translate:hover {
-  cursor: pointer;
-}
-
-#toggle_translate.selected {
-  background-color: #ffbb54;
-}
-
-#toggle_translate .tooltiptext {
-  right: 12.5em;
-}
-
-#toggle_listen:hover {
-  cursor: pointer;
-}
-
-#toggle_listen.selected {
-  background-color: #ffbb54;
-}
-
-#toggle_listen .tooltiptext {
-  right: 6.5em;
-}
-
-#toggle_undo:hover {
-  cursor: pointer;
-}
-
-#toggle_undo.selected {
-  background-color: #ffbb54;
-}
-
-#toggle_undo .tooltiptext {
-  right: 0.5em;
-}
-
-.tool:hover .tooltiptext {
-  visibility: visible;
-}
-
-.tool .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  font-size: 13px;
-  background-color: #ffffff;
-  color: #ffbb54;
-  text-align: center;
-  border-radius: 6px;
-  padding: 4px 0;
-  position: absolute;
-  top: 6em;
-  z-index: 1;
-}
-
-.bookmark_button:hover .bookmarkText {
-  visibility: visible;
-}
-
-.bookmark_button .bookmarkText {
-  margin-left: -0.5em;
-  visibility: hidden;
-  font-size: 13px;
-  background-color: #ffffff;
-  color: #ffbb54;
-  text-align: center;
-  border-radius: 6px;
-  padding: 4px 0;
-  position: absolute;
-  z-index: 1;
 }
 
 .feedback_question {
