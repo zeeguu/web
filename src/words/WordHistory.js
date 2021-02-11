@@ -3,6 +3,8 @@ import { useState } from "react";
 import { WordsOnDate } from "./WordsOnDate";
 import LoadingAnimation from "../components/LoadingAnimation";
 
+import * as s from "./WordHistory.sc";
+
 export default function WordHistory({ zapi }) {
   const [wordsByDay, setWordsByDay] = useState(null);
 
@@ -54,11 +56,11 @@ export default function WordHistory({ zapi }) {
 
   return (
     <>
-      <div className="topMessageContainer">
-        <div className="topMessage">
-          Star a word to ensure it appears in your exercises.
-        </div>
-      </div>
+      <s.TopMessage>
+        <p>
+          Star a word to ensure it appears in exercises. Delete to avoid it.
+        </p>
+      </s.TopMessage>
 
       {wordsByDay.map((day) => (
         <WordsOnDate

@@ -2,11 +2,12 @@ import styled from "styled-components";
 
 const TopTabs = styled.div`
   h1 {
-    font-weight: 200;
-    font-size: 1.8em;
+    font-weight: 300;
+    font-size: 3em;
     line-height: 1em;
-    letter-spacing: 0.1em; // wider spacing; makes title stand out more
+    letter-spacing: 0.05em; // wider spacing; makes title stand out more
     text-align: center;
+    margin-top: 1em;
   }
 
   .all__tabs {
@@ -16,6 +17,7 @@ const TopTabs = styled.div`
     align-items: center;
     display: flex;
     justify-content: center;
+    margin-bottom: 2em;
   }
 
   .headmenuTab {
