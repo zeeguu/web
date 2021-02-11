@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import SortingButtons from "./SortingButtons";
 import { useState } from "react";
 import ArticleOverview from "./ArticleOverview";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function Search({ zapi }) {
   const [articleList, setArticleList] = useState(null);
@@ -16,11 +17,7 @@ export default function Search({ zapi }) {
       originalList = [...articles];
     });
 
-    return (
-      <div>
-        <p>loading...</p>
-      </div>
-    );
+    return <LoadingAnimation text="searching..." />;
   }
 
   return (

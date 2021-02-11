@@ -1,4 +1,5 @@
 import { useState } from "react";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 import ArticleOverview from "./ArticleOverview";
 
@@ -15,11 +16,7 @@ export default function BookmarkedArticles({ zapi }) {
       setArticleList(articles);
     });
 
-    return (
-      <div>
-        <p>loading...</p>
-      </div>
-    );
+    return <LoadingAnimation />;
   }
 
   return (

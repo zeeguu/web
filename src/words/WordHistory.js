@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { WordsOnDate } from "./WordsOnDate";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function WordHistory({ zapi }) {
   const [wordsByDay, setWordsByDay] = useState(null);
@@ -9,7 +10,7 @@ export default function WordHistory({ zapi }) {
     zapi.getBookmarksByDay((bookmarks_by_day) => {
       setWordsByDay(bookmarks_by_day);
     });
-    return <div className="loaderanimation">Loading words ...</div>;
+    return <LoadingAnimation />;
   }
 
   function deleteBookmark(day, bookmark) {

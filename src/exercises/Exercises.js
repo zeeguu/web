@@ -6,6 +6,7 @@ import ProgressBar from "./ProgressBar";
 
 import * as s from "./Exercises.sc";
 import FeedbackButtons from "./FeedbackButtons";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 const NUMBER_OF_EXERCISES = 4;
 
@@ -32,7 +33,7 @@ export default function Exercises({ api }) {
   }
 
   if (!currentBookmarkToStudy) {
-    return <div>loading...</div>;
+    return <LoadingAnimation />;
   }
 
   function moveToNextExercise() {

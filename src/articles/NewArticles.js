@@ -6,6 +6,7 @@ import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./NewArticles.sc";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function NewArticles({ zapi }) {
   const [articleList, setArticleList] = useState(null);
@@ -19,11 +20,7 @@ export default function NewArticles({ zapi }) {
       originalList = [...articles];
     });
 
-    return (
-      <div>
-        <p>loading...</p>
-      </div>
-    );
+    return <LoadingAnimation />;
   }
 
   function articlesListShouldChange() {

@@ -1,72 +1,69 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import LoadingAnimation from "../components/LoadingAnimation";
 
-export default function Starred ({ zapi }) {
-  const [words, setWords] = useState(null)
+export default function Starred({ zapi }) {
+  const [words, setWords] = useState(null);
 
   useEffect(() => {
-    zapi.starredBookmarks(30, starredWords => {
-      setWords(starredWords)
-    })
-  }, [zapi])
+    zapi.starredBookmarks(30, (starredWords) => {
+      setWords(starredWords);
+    });
+  }, [zapi]);
 
   if (!words) {
-    return (
-      <>
-        <h1>loading...</h1>
-      </>
-    )
+    return <LoadingAnimation />;
   }
 
   if (words.length === 0) {
     return (
-      <div className='topMessageContainer'>
-        <div className='topMessage'>You have no starred words yet.</div>
+      <div className="topMessageContainer">
+        <div className="topMessage">You have no starred words yet.</div>
       </div>
-    )
+    );
   }
 
-  function unstarBookmark (id) {
-    zapi.unstarBookmark(id)
-    setWords(words.filter(w => w.id !== id))
+  function unstarBookmark(id) {
+    zapi.unstarBookmark(id);
+    setWords(words.filter((w) => w.id !== id));
   }
 
-  function deleteBookmark (id) {
-    zapi.deleteBookmark(id)
-    setWords(words.filter(w => w.id !== id))
+  function deleteBookmark(id) {
+    zapi.deleteBookmark(id);
+    setWords(words.filter((w) => w.id !== id));
   }
 
-  return words.map(each => (
+  return words.map((each) => (
     <>
-      <div className='StarredContainer'>
-        <div class='one verticalLine'></div>
-        <div class='two' id='star154363'>
+      <div className="StarredContainer">
+        <div class="one verticalLine"></div>
+        <div class="two" id="star154363">
           <Link
-            to='/'
-            onClick={e => {
-              e.preventDefault()
-              unstarBookmark(each.id)
+            to="/"
+            onClick={(e) => {
+              e.preventDefault();
+              unstarBookmark(each.id);
             }}
           >
-            <img src='/static/images/star.svg' alt='star' />
+            <img src="/static/images/star.svg" alt="star" />
           </Link>
         </div>
-        <div class='three impression'>
+        <div class="three impression">
           {each.from}-{each.to}
         </div>
-        <div class='five delete'>
+        <div class="five delete">
           <Link
-            to='/'
-            onClick={e => {
-              e.preventDefault()
-              deleteBookmark(each.id)
+            to="/"
+            onClick={(e) => {
+              e.preventDefault();
+              deleteBookmark(each.id);
             }}
-            id='trash'
+            id="trash"
           >
-            <img src='/static/images/trash.svg' alt='trash' />
+            <img src="/static/images/trash.svg" alt="trash" />
           </Link>
         </div>
       </div>
     </>
-  ))
+  ));
 }
