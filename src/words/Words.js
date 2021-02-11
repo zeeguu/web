@@ -1,34 +1,23 @@
-import { TopTab, SeparatorBar } from "../components/TopTab";
 import { PrivateRoute } from "../PrivateRoute";
 import WordHistory from "./WordHistory";
 import Starred from "./Starred";
 import Learned from "./Learned";
 import Top from "./Top";
 import * as s from "./Words.sc";
-// import './newStyleWords.css'
+import TopTabs from "../components/TopTabs";
 
 export default function Words({ api }) {
   return (
     <s.Words>
-      <s.TopTabs>
-        <h1>Your Words</h1>
-
-        <div className="all__tabs">
-          <TopTab text="Translated" link="/words/history" />
-
-          <SeparatorBar />
-
-          <TopTab text="Starred" link="/words/starred" />
-
-          <SeparatorBar />
-
-          <TopTab text="Learned" link="/words/learned" />
-
-          <SeparatorBar />
-
-          <TopTab text="Top" link="/words/top" />
-        </div>
-      </s.TopTabs>
+      <TopTabs
+        title="Your Words"
+        tabsAndLinks={{
+          History: "/words/history",
+          Starred: "/words/starred",
+          Learned: "/words/learned",
+          Top: "/words/top",
+        }}
+      />
 
       <PrivateRoute
         path="/words/history"

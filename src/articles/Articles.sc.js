@@ -1,5 +1,4 @@
-import styled, { keyframes, css } from "styled-components";
-import { TopTabs } from "../components/TopTabs.sc";
+import styled from "styled-components";
 
 const Articles = styled.div`
   /* border: 1px solid lightgray; */
@@ -8,4 +7,4 @@ const Articles = styled.div`
   margin-right: auto;
 `;
 
-export { Articles, TopTabs };
+export { Articles };

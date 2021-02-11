@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { TopTabs } from "../components/TopTabs.sc";
 
 const Words = styled.div`
   border: 1px solid lightgray;
@@ -8,4 +7,4 @@ const Words = styled.div`
   margin-right: auto;
 `;
 
-export { Words, TopTabs };
+export { Words };
