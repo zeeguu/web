@@ -1,48 +1,47 @@
-import { WordsTab, SeparatorBar } from './WordsTab'
-import { PrivateRoute } from '../PrivateRoute'
-import WordHistory from './WordHistory'
-import Starred from './Starred'
-import Learned from './Learned'
-import Top from './Top'
+import { TopTab, SeparatorBar } from "../components/TopTab";
+import { PrivateRoute } from "../PrivateRoute";
+import WordHistory from "./WordHistory";
+import Starred from "./Starred";
+import Learned from "./Learned";
+import Top from "./Top";
+import * as s from "./Words.sc";
 // import './newStyleWords.css'
 
-export default function Words ({ api }) {
+export default function Words({ api }) {
   return (
-    <>
-      <header>
-        <div className='select-article'>
-          <h1>Your Words</h1>
+    <s.Words>
+      <s.TopTabs>
+        <h1>Your Words</h1>
 
-          <div className='all__tabs'>
-            <WordsTab text='Translated Words' link='/words/history' />
+        <div className="all__tabs">
+          <TopTab text="Translated" link="/words/history" />
 
-            <SeparatorBar />
+          <SeparatorBar />
 
-            <WordsTab text='Starred Words' link='/words/starred' />
+          <TopTab text="Starred" link="/words/starred" />
 
-            <SeparatorBar />
+          <SeparatorBar />
 
-            <WordsTab text='Learned Words' link='/words/learned' />
+          <TopTab text="Learned" link="/words/learned" />
 
-            <SeparatorBar />
+          <SeparatorBar />
 
-            <WordsTab text='Top Words' link='/words/top' />
-          </div>
+          <TopTab text="Top" link="/words/top" />
         </div>
-      </header>
+      </s.TopTabs>
 
       <PrivateRoute
-        path='/words/history'
+        path="/words/history"
         exact
         zapi={api}
         component={WordHistory}
       />
 
-      <PrivateRoute path='/words/starred' zapi={api} component={Starred} />
+      <PrivateRoute path="/words/starred" zapi={api} component={Starred} />
 
-      <PrivateRoute path='/words/learned' zapi={api} component={Learned} />
+      <PrivateRoute path="/words/learned" zapi={api} component={Learned} />
 
-      <PrivateRoute path='/words/top' zapi={api} component={Top} />
-    </>
-  )
+      <PrivateRoute path="/words/top" zapi={api} component={Top} />
+    </s.Words>
+  );
 }

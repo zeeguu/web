@@ -7,6 +7,8 @@ import SideBar from "./components/SideBar";
 import ArticleReader from "./reader/ArticleReader";
 import LocalStorage from "./LocalStorage";
 
+import { Link } from "react-router-dom";
+
 import { useState } from "react";
 
 export default function LoggedInRouter({ api, user, setUser }) {

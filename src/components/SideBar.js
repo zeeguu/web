@@ -29,13 +29,11 @@ export default function SideBar(props) {
           />
         </a>
       </div>
-
       <div className="arrowHolder">
         <span className="toggleArrow" onClick={toggleSidebar}>
           ▲
         </span>
       </div>
-
       <div className="navigationLink">
         <Link to="/articles" onClick={resetSidebarToDefault}>
           Articles
@@ -54,6 +52,17 @@ export default function SideBar(props) {
       <div className="navigationLink">
         <Link to="/account_settings" onClick={resetSidebarToDefault}>
           Settings
+        </Link>
+      </div>
+      <br />
+      <div className="navigationLink">
+        <Link
+          to="/"
+          onClick={() => {
+            user.logoutMethod();
+          }}
+        >
+          <small>Logout</small>
         </Link>
       </div>
     </>

@@ -1,6 +1,6 @@
 import NewArticles from "./NewArticles";
 import BookmarkedArticles from "./BookmarkedArticles";
-import { ReadingTab, SeparatorBar } from "./ReadingTab";
+import { TopTab, SeparatorBar } from "../components/TopTab";
 import { PrivateRoute } from "../PrivateRoute";
 import Search from "./Search";
 import ClassroomArticles from "./ClassroomArticles";
@@ -9,23 +9,23 @@ import * as s from "./Articles.sc";
 export default function Articles({ api }) {
   return (
     <s.Articles>
-      <header>
+      <s.TopTabs>
         <div className="select-article">
           <h1>Articles</h1>
 
           <div className="all__tabs">
-            <ReadingTab text="New" link="/articles" />
+            <TopTab text="New" link="/articles" />
 
             <SeparatorBar />
 
-            <ReadingTab text="Bookmarked" link="/articles/bookmarked" />
+            <TopTab text="Bookmarked" link="/articles/bookmarked" />
 
             <SeparatorBar />
 
-            <ReadingTab text="Classroom" link="/articles/classroom" />
+            <TopTab text="Classroom" link="/articles/classroom" />
           </div>
         </div>
-      </header>
+      </s.TopTabs>
 
       <PrivateRoute path="/articles" exact zapi={api} component={NewArticles} />
 
