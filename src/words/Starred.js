@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import LoadingAnimation from "../components/LoadingAnimation";
+import WordList from "./WordList";
 
 export default function Starred({ zapi }) {
   const [words, setWords] = useState(null);
@@ -33,37 +33,13 @@ export default function Starred({ zapi }) {
     setWords(words.filter((w) => w.id !== id));
   }
 
-  return words.map((each) => (
+  return (
     <>
-      <div className="StarredContainer">
-        <div class="one verticalLine"></div>
-        <div class="two" id="star154363">
-          <Link
-            to="/"
-            onClick={(e) => {
-              e.preventDefault();
-              unstarBookmark(each.id);
-            }}
-          >
-            <img src="/static/images/star.svg" alt="star" />
-          </Link>
-        </div>
-        <div class="three impression">
-          {each.from}-{each.to}
-        </div>
-        <div class="five delete">
-          <Link
-            to="/"
-            onClick={(e) => {
-              e.preventDefault();
-              deleteBookmark(each.id);
-            }}
-            id="trash"
-          >
-            <img src="/static/images/trash.svg" alt="trash" />
-          </Link>
-        </div>
-      </div>
+      <WordList
+        wordList={words}
+        deleteBookmark={deleteBookmark}
+        toggleStarred={unstarBookmark}
+      />
     </>
-  ));
+  );
 }

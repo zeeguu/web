@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import * as s from "./WordList.sc";
 
 export default function WordList({

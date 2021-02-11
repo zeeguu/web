@@ -23,6 +23,8 @@ let StarIcon = styled.div`
 
   padding-top: 10px;
 
+  margin-left: 2em;
+
   img {
     height: 26px;
     /* background-color: red; */
