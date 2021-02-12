@@ -51,9 +51,8 @@ export default function Top ({ zapi }) {
     <>
       <s.TopMessage>
         <p>
-          Words that you have translated in the past are ranked here based on
-          their importance in the language you're learning. The higher the
-          "importance", the more often does the word appear in the language.
+          Words that you have translated ranked by importance. Importance = how
+          often a word appears in the spoken language.
         </p>
       </s.TopMessage>
 
