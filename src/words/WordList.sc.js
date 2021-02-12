@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 let Word = styled.div`
   display: flex;
@@ -8,7 +8,7 @@ let Word = styled.div`
   /* background-color: green; */
   margin-bottom: 10px;
   /* align-items: stretch; */
-`;
+`
 
 let StarIcon = styled.div`
   cursor: pointer;
@@ -23,13 +23,11 @@ let StarIcon = styled.div`
 
   padding-top: 10px;
 
-  margin-left: 2em;
-
   img {
     height: 26px;
     /* background-color: red; */
   }
-`;
+`
 
 let WordPair = styled.div`
   /* color: rebeccapurple; */
@@ -47,7 +45,7 @@ let WordPair = styled.div`
     margin-top: 0px;
     font-weight: 300;
   }
-`;
+`
 
 let TrashIcon = styled.div`
   cursor: pointer;
@@ -67,7 +65,49 @@ let TrashIcon = styled.div`
     height: 30px;
     /* background-color: red; */
   }
-`;
+`
 
-export { Word, TrashIcon, StarIcon, WordPair };
+let Importance = styled.div`
+  color: orange;
+  font-size: xx-small;
+
+  .imp1 {
+    color: #fbf4d8;
+  }
+
+  .imp2 {
+    color: #f9e7bd;
+  }
+
+  .imp3 {
+    color: #f6d6a2;
+  }
+
+  .imp10 {
+    color: #bf1e06;
+  }
+  .imp9 {
+    color: #bf1e06;
+  }
+
+  .imp8 {
+    color: #f28750;
+  }
+  .imp7 {
+    color: #f28750;
+  }
+
+  .imp6 {
+    color: #f3a66c;
+  }
+  .imp5 {
+    color: #f5c187;
+  }
+
+  .imp4 {
+    color: #ffc187;
+  }
+`
+
+export { Word, TrashIcon, StarIcon, WordPair, Importance }
 //

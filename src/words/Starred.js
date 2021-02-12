@@ -1,36 +1,36 @@
-import { useEffect, useState } from "react";
-import LoadingAnimation from "../components/LoadingAnimation";
-import WordList from "./WordList";
+import { useEffect, useState } from 'react'
+import LoadingAnimation from '../components/LoadingAnimation'
+import WordList from './WordList'
 
-export default function Starred({ zapi }) {
-  const [words, setWords] = useState(null);
+export default function Starred ({ zapi }) {
+  const [words, setWords] = useState(null)
 
   useEffect(() => {
-    zapi.starredBookmarks(30, (starredWords) => {
-      setWords(starredWords);
-    });
-  }, [zapi]);
+    zapi.starredBookmarks(30, starredWords => {
+      setWords(starredWords)
+    })
+  }, [zapi])
 
   if (!words) {
-    return <LoadingAnimation />;
+    return <LoadingAnimation />
   }
 
   if (words.length === 0) {
     return (
-      <div className="topMessageContainer">
-        <div className="topMessage">You have no starred words yet.</div>
+      <div className='topMessageContainer'>
+        <div className='topMessage'>You have no starred words yet.</div>
       </div>
-    );
+    )
   }
 
-  function unstarBookmark(id) {
-    zapi.unstarBookmark(id);
-    setWords(words.filter((w) => w.id !== id));
+  function unstarBookmark (bookmark) {
+    zapi.unstarBookmark(bookmark.id)
+    setWords(words.filter(w => w.id !== bookmark.id))
   }
 
-  function deleteBookmark(id) {
-    zapi.deleteBookmark(id);
-    setWords(words.filter((w) => w.id !== id));
+  function deleteBookmark (bookmark) {
+    zapi.deleteBookmark(bookmark.id)
+    setWords(words.filter(w => w.id !== bookmark.id))
   }
 
   return (
@@ -41,5 +41,5 @@ export default function Starred({ zapi }) {
         toggleStarred={unstarBookmark}
       />
     </>
-  );
+  )
 }
