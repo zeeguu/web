@@ -54,6 +54,8 @@ export default function Learned ({ zapi }) {
             <small>
               Correct on:
               {' ' + each.learned_datetime}
+              <br />
+              <br />
             </small>
           </Word>
         </>

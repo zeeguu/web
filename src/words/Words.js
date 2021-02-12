@@ -14,8 +14,8 @@ export default function Words ({ api }) {
         tabsAndLinks={{
           History: '/words/history',
           Starred: '/words/starred',
-          Learned: '/words/learned',
-          Ranked: '/words/top'
+          Ranked: '/words/top',
+          Learned: '/words/learned'
         }}
       />
 
