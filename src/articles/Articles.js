@@ -21,25 +21,30 @@ export default function Articles({ api }) {
             Classroom: "/articles/classroom",
           }}
         />
-      </s.Articles>
 
-      {/* Routing */}
-      <PrivateRoute path="/articles" exact zapi={api} component={NewArticles} />
-      <PrivateRoute
-        path="/articles/search/:term"
-        zapi={api}
-        component={Search}
-      />
-      <PrivateRoute
-        path="/articles/bookmarked"
-        zapi={api}
-        component={BookmarkedArticles}
-      />
-      <PrivateRoute
-        path="/articles/classroom"
-        zapi={api}
-        component={ClassroomArticles}
-      />
+        {/* Routing */}
+        <PrivateRoute
+          path="/articles"
+          exact
+          zapi={api}
+          component={NewArticles}
+        />
+        <PrivateRoute
+          path="/articles/search/:term"
+          zapi={api}
+          component={Search}
+        />
+        <PrivateRoute
+          path="/articles/bookmarked"
+          zapi={api}
+          component={BookmarkedArticles}
+        />
+        <PrivateRoute
+          path="/articles/classroom"
+          zapi={api}
+          component={ClassroomArticles}
+        />
+      </s.Articles>
     </>
   );
 }
