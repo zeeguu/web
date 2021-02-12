@@ -25,8 +25,12 @@ export default function News () {
       {item(
         'Jan',
         <>
-          Paper using Zeeguu to teach vocabulary in moments of online
-          procrastination accepted at CHI'2021
+          📄 Paper using Zeeguu to teach vocabulary in moments of online
+          procrastination accepted at CHI'2021 (
+          <a href='https://github.com/Aiki-Extension/Aiki/blob/master/Aiki%20-%20Procrastination%20into%20Microlearning.pdf'>
+            Aiki - Turning Online Procrastination into Microlearning
+          </a>
+          )
         </>
       )}
 
@@ -71,18 +75,14 @@ export default function News () {
       {item(
         'Jan',
         <>
-          Paper about Zeeguu accepted at CHI 2018 -- the top international
-          conference on HCI
+          📄 Paper about Zeeguu accepted at CHI 2018 -- the top international
+          conference on HCI (
+          <a href='https://www.researchgate.net/publication/322489283_As_We_May_Study_Towards_the_Web_as_a_Personalized_Language_Textbook'>
+            As We May Study: Towards the Web as a Personalized Language Textbook
+          </a>
+          )
           <br />
-          <small>
-            ->
-            <a href='https://www.researchgate.net/publication/322489283_As_We_May_Study_Towards_the_Web_as_a_Personalized_Language_Textbook'>
-              As We May Study: Towards the Web as a Personalized Language
-              Textbook
-            </a>
-            <br />
-            <br />
-          </small>
+          <br />
         </>
       )}
 
