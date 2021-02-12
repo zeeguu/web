@@ -36,6 +36,7 @@ export default function Top ({ zapi }) {
   }
 
   function toggleStarred (bookmark) {
+    let state = bookmark.starred
     if (bookmark.starred) {
       zapi.unstarBookmark(bookmark.id)
     } else {
@@ -43,17 +44,14 @@ export default function Top ({ zapi }) {
     }
 
     setWords(
-      words.map(e => (e.id !== bookmark.id ? e : { ...e, starred: true }))
+      words.map(e => (e.id !== bookmark.id ? e : { ...e, starred: !state }))
     )
   }
 
   return (
     <>
       <s.TopMessage>
-        <p>
-          Words that you have translated ranked by importance. Importance = how
-          often a word appears in the spoken language.
-        </p>
+        <p>Words that you have translated ranked by importance.</p>
       </s.TopMessage>
 
       {words.map(each => (
