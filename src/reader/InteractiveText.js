@@ -91,7 +91,8 @@ export default class InteractiveText {
         this.articleInfo.url,
         -1,
         word.service_name,
-        word.translation
+        word.translation,
+        this.articleInfo.id
       )
       .then((response) => response.json())
       .then((data) => {

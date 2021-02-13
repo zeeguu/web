@@ -262,13 +262,14 @@ const Zeeguu_API = class {
     pageUrl,
     numberOfResults,
     service,
-    currentTranslation
+    currentTranslation,
+    articleID
   ) {
     let url = this._appendSessionToUrl(
       `get_next_translations/${from_lang}/${to_lang}`
     );
 
-    let body = `word=${word}&context=${context}&url=${pageUrl}&numberOfResults=${numberOfResults}`;
+    let body = `word=${word}&context=${context}&url=${pageUrl}&numberOfResults=${numberOfResults}&articleID=${articleID}`;
 
     if (service) {
       body += `&service=${service}`;
