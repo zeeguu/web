@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom'
 export default function Congratulations ({
   articleID,
   correctBookmarks,
-  incorrectBookmarks
+  incorrectBookmarks,
+  zapi
 }) {
   console.log(correctBookmarks)
   console.log(incorrectBookmarks)
@@ -22,7 +23,7 @@ export default function Congratulations ({
           <br />
           <br />
           {correctBookmarks.map(each => (
-            <Word bookmark={each} />
+            <Word bookmark={each} zapi={zapi} />
           ))}
         </h3>
       )}
@@ -35,7 +36,7 @@ export default function Congratulations ({
           <br />
           <br />
           {incorrectBookmarks.map(each => (
-            <Word bookmark={each} />
+            <Word bookmark={each} zapi={zapi} />
           ))}
         </h3>
       )}
@@ -52,7 +53,7 @@ export default function Congratulations ({
         </OrangeButton>
 
         <WhiteButton>
-          <a href='/read'>
+          <a href='/articles'>
             <h2>Back to Reading </h2>
           </a>
         </WhiteButton>

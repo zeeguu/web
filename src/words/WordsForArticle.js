@@ -37,8 +37,6 @@ export default function WordsForArticle ({ zapi }) {
   return (
     <NarrowColumn>
       <br />
-      <br />
-      <br />
       <h1>Review Your Words</h1>
 
       <h4>Article: {articleInfo.title}</h4>

@@ -43,7 +43,9 @@ export default function Word ({
   function deleteBookmark (bookmark) {
     zapi.deleteBookmark(bookmark.id)
     setDeleted(true)
-    notifyDelete(bookmark)
+    if (notifyDelete) {
+      notifyDelete(bookmark)
+    }
   }
 
   if (deleted) {
