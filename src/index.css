@@ -7,13 +7,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a:link {
-  color: rgb(201, 131, 1);
+a {
+  text-decoration: none;
+  font-weight: 500;
+  color: rgb(164, 106, 0);
+}
+/* a:link {
+  color: rgb(77, 52, 6);
+  color: rgb(215, 140, 0);
 }
 
 a:visited {
-  color: rgb(254, 170, 15);
-}
+  color: #222222;
+  color: rgb(136, 89, 0);
+  font-weight: 400;
+} */
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

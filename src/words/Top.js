@@ -30,24 +30,6 @@ export default function Top ({ zapi }) {
     )
   }
 
-  function deleteBookmark (bookmark) {
-    zapi.deleteBookmark(bookmark.id)
-    setWords(words.filter(e => e.id !== bookmark.id))
-  }
-
-  function toggleStarred (bookmark) {
-    let state = bookmark.starred
-    if (bookmark.starred) {
-      zapi.unstarBookmark(bookmark.id)
-    } else {
-      zapi.starBookmark(bookmark.id)
-    }
-
-    setWords(
-      words.map(e => (e.id !== bookmark.id ? e : { ...e, starred: !state }))
-    )
-  }
-
   return (
     <>
       <s.TopMessage>
@@ -55,11 +37,7 @@ export default function Top ({ zapi }) {
       </s.TopMessage>
 
       {words.map(each => (
-        <Word
-          bookmark={each}
-          deleteBookmark={deleteBookmark}
-          toggleStarred={toggleStarred}
-        />
+        <Word key={each.id} bookmark={each} zapi={zapi} />
       ))}
     </>
   )

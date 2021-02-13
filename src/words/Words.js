@@ -3,12 +3,12 @@ import WordHistory from './WordHistory'
 import Starred from './Starred'
 import Learned from './Learned'
 import Top from './Top'
-import * as s from './Words.sc'
+import * as s from '../components/NarrowColumn.sc'
 import TopTabs from '../components/TopTabs'
 
 export default function Words ({ api }) {
   return (
-    <s.Words>
+    <s.NarrowColumn>
       <TopTabs
         title='Your Words'
         tabsAndLinks={{
@@ -31,6 +31,6 @@ export default function Words ({ api }) {
       <PrivateRoute path='/words/learned' zapi={api} component={Learned} />
 
       <PrivateRoute path='/words/top' zapi={api} component={Top} />
-    </s.Words>
+    </s.NarrowColumn>
   )
 }

@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 // import './article.css'
 import * as s from './ArticleReader.sc'
+import { Link } from 'react-router-dom'
 
 import { TranslatableText } from './TranslatableText'
 
 import InteractiveText from './InteractiveText'
 import BookmarkButton from './BookmarkButton'
+
+import LoadingAnimation from '../components/LoadingAnimation'
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -56,7 +59,7 @@ export default function ArticleReader ({ api }) {
   }
 
   if (!articleInfo) {
-    return <div>'...'</div>
+    return <LoadingAnimation />
   }
   console.log(articleInfo)
   return (
@@ -149,7 +152,9 @@ export default function ArticleReader ({ api }) {
         <br />
         <br />
         <s.CenteredContent>
-          <s.OrangeButton>Review Vocabulary</s.OrangeButton>
+          <Link to={`/words/forArticle/${articleID}`}>
+            <s.OrangeButton>Review Vocabulary</s.OrangeButton>
+          </Link>
         </s.CenteredContent>
       </s.FeedbackBox>
       <s.ExtraSpaceAtTheBottom />

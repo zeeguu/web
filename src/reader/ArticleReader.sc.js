@@ -4,6 +4,8 @@ import { BigSquareButton } from '../components/Buttons.sc'
 
 import * as color from '../components/colors'
 
+import { NarrowColumn, CenteredContent } from '../components/NarrowColumn.sc'
+
 let ArticleReader = styled.div`
   /* border: 1px solid lightgray; */
   max-width: 768px;
@@ -281,15 +283,10 @@ let _BottomButton = styled(BigSquareButton)`
   display: inline-block;
 `
 
-let CenteredContent = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-`
-
 let WhiteButton = styled(_BottomButton)`
   background-color: white;
   color: orange !important;
+  width: 16em;
 `
 
 let OrangeButton = styled(_BottomButton)`
@@ -339,5 +336,6 @@ export {
   OrangeButton,
   FeedbackBox,
   CenteredContent,
-  ExtraSpaceAtTheBottom
+  ExtraSpaceAtTheBottom,
+  NarrowColumn
 }

@@ -8,7 +8,6 @@ export default function Learned ({ zapi }) {
 
   useEffect(() => {
     zapi.learnedBookmarks(300, learnedWords => {
-      console.log(learnedWords)
       setWords(learnedWords)
     })
   }, [zapi])
@@ -17,23 +16,7 @@ export default function Learned ({ zapi }) {
     return <LoadingAnimation />
   }
 
-  if (words.length === 0) {
-    return (
-      <div className='topMessageContainer'>
-        <div className='topMessage'>
-          Learned words are words that were correct in exercises in 4 different
-          days.
-        </div>
-      </div>
-    )
-  }
-
-  function deleteBookmark (bookmark) {
-    zapi.deleteBookmark(bookmark.id)
-    setWords(words.filter(e => e.id !== bookmark.id))
-  }
-
-  return (
+  let whatAreLearnedWordsMessage = (
     <>
       <s.TopMessage>
         <p>
@@ -47,18 +30,26 @@ export default function Learned ({ zapi }) {
           You have learned <b>{words.length}</b> words so far.
         </p>
       </s.TopMessage>
+    </>
+  )
+
+  if (words.length === 0) {
+    return whatAreLearnedWordsMessage
+  }
+
+  return (
+    <>
+      {whatAreLearnedWordsMessage}
 
       {words.map(each => (
-        <>
-          <Word bookmark={each}>
-            <small>
-              Correct on:
-              {' ' + each.learned_datetime}
-              <br />
-              <br />
-            </small>
-          </Word>
-        </>
+        <Word key={each.id} bookmark={each} zapi={zapi} hideStar={true}>
+          <small>
+            Correct on:
+            {' ' + each.learned_datetime}
+            <br />
+            <br />
+          </small>
+        </Word>
       ))}
     </>
   )

@@ -66,6 +66,7 @@ export default function WordHistory ({ zapi }) {
         <WordsOnDate
           key={day.date}
           day={day}
+          zapi={zapi}
           toggleStarred={bookmark => toggleStarred(day, bookmark)}
           deleteBookmark={bookmark => deleteBookmark(day, bookmark)}
         />
