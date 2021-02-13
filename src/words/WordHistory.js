@@ -12,6 +12,8 @@ export default function WordHistory ({ zapi }) {
     zapi.getBookmarksByDay(bookmarks_by_day => {
       setWordsByDay(bookmarks_by_day)
     })
+
+    document.title = 'Zeeguu Words - History'
     return <LoadingAnimation />
   }
 

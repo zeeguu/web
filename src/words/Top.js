@@ -13,6 +13,7 @@ export default function Top ({ zapi }) {
       console.log(topWords)
       setWords(topWords)
     })
+    document.title = 'Zeeguu Words - Ranked'
   }, [zapi])
 
   if (!words) {

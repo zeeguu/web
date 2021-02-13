@@ -31,7 +31,7 @@ export default function Exercises ({ api, articleID }) {
         setCurretBookmarkToStudy(bookmarks[currentIndex])
         api.getArticleInfo(articleID, data => {
           setArticleInfo(data)
-          document.title = 'Zeeguu Exercises in "' + data.title + '"'
+          document.title = 'Zeeguu Exercises: "' + data.title + '"'
         })
       })
     } else {
@@ -41,6 +41,8 @@ export default function Exercises ({ api, articleID }) {
         setCurretBookmarkToStudy(bookmarks[currentIndex])
       })
     }
+
+    document.title = 'Zeeguu Exercises'
   }
 
   if (finished) {

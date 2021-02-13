@@ -10,6 +10,7 @@ export default function Starred ({ zapi }) {
       console.log(starredWords)
       setWords(starredWords)
     })
+    document.title = 'Zeeguu Words - Starred'
   }, [])
 
   if (!words) {

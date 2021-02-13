@@ -37,7 +37,7 @@ export default function ArticleReader ({ api }) {
       setInteractiveText(new InteractiveText(data.content, data, api))
       setInteractiveTitle(new InteractiveText(data.title, data, api))
       setArticleInfo(data)
-      document.title = 'Zeeguu: ' + data.title
+      document.title = 'Zeeguu Read: ' + data.title
     })
   }, [])
 

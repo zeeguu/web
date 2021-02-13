@@ -10,6 +10,7 @@ export default function Learned ({ zapi }) {
     zapi.learnedBookmarks(300, learnedWords => {
       setWords(learnedWords)
     })
+    document.title = 'Zeeguu Words - Learned'
   }, [zapi])
 
   if (!words) {

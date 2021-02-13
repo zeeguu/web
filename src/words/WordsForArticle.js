@@ -19,7 +19,7 @@ export default function WordsForArticle ({ zapi }) {
     })
     zapi.getArticleInfo(articleID, data => {
       setArticleInfo(data)
-      document.title = 'Zeeguu: Words in "' + data.title + '"'
+      document.title = 'Zeeguu Words: "' + data.title + '"'
     })
   }, [])
 
@@ -28,9 +28,11 @@ export default function WordsForArticle ({ zapi }) {
   }
 
   function deleteBookmark (bookmark) {
-    zapi.deleteBookmark(bookmark.id)
     setWords(words.filter(e => e.id !== bookmark.id))
   }
+
+  console.log(words)
+  console.log(words.length)
 
   return (
     <NarrowColumn>
@@ -39,30 +41,35 @@ export default function WordsForArticle ({ zapi }) {
       <br />
       <h1>Review Your Words</h1>
 
-      <TopMessage>
-        To ensure that a word is included in exercises: star it. Consequently
-        delete the words you don't want to have in exercises.
-      </TopMessage>
-
       <h4>Article: {articleInfo.title}</h4>
+      <TopMessage>
+        {words.length > 0
+          ? "To ensure that a word is included in exercises: star it. Consequently delete the words you don't want to have in exercises."
+          : 'The words you translate in the article will appear here for review'}
+      </TopMessage>
 
       {words.map(each => (
         <Word
           key={each.id}
           bookmark={each}
-          deleteBookmark={deleteBookmark}
+          notifyDelete={deleteBookmark}
           zapi={zapi}
         />
       ))}
 
+      <br />
+      <br />
+      <br />
       <CenteredContent>
         <Link to={`/read/article?id=${articleID}`}>
           <WhiteButton>Back to Article</WhiteButton>
         </Link>
 
-        <Link to={`/exercises/forArticle/${articleID}`}>
-          <OrangeButton>To Exercises</OrangeButton>
-        </Link>
+        {words.length > 0 && (
+          <Link to={`/exercises/forArticle/${articleID}`}>
+            <OrangeButton>To Exercises</OrangeButton>
+          </Link>
+        )}
       </CenteredContent>
     </NarrowColumn>
   )

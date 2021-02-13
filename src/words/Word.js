@@ -5,6 +5,7 @@ import { useState } from 'react'
 export default function Word ({
   bookmark,
   notifyUnstar,
+  notifyDelete,
   children,
   zapi,
   hideStar
@@ -42,6 +43,7 @@ export default function Word ({
   function deleteBookmark (bookmark) {
     zapi.deleteBookmark(bookmark.id)
     setDeleted(true)
+    notifyDelete(bookmark)
   }
 
   if (deleted) {
