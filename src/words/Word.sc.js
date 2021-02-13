@@ -6,7 +6,6 @@ let Word = styled.div`
   align-items: flex-start;
 
   /* background-color: green; */
-  margin-bottom: 10px;
   /* align-items: stretch; */
 `
 
@@ -16,6 +15,7 @@ let StarIcon = styled.div`
   color: yellow;
 
   margin-right: 0.3em;
+  margin-left: 1em;
 
   display: flex;
   flex-direction: column;
@@ -39,10 +39,13 @@ let WordPair = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-left: 1em;
-  font-weight: 600;
 
-  p {
+  .from {
+    font-weight: 600;
+  }
+  .to {
     margin-top: 0px;
+    margin-bottom: 0px;
     font-weight: 300;
   }
 `
@@ -109,5 +112,9 @@ let Importance = styled.div`
   }
 `
 
-export { Word, TrashIcon, StarIcon, WordPair, Importance }
+let Spacer = styled.div`
+  margin-bottom: 20px;
+`
+
+export { Word, TrashIcon, StarIcon, WordPair, Importance, Spacer }
 //

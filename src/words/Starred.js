@@ -1,19 +1,24 @@
 import { useEffect, useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
-import WordList from './WordList'
+import Word from './Word'
 
 export default function Starred ({ zapi }) {
   const [words, setWords] = useState(null)
 
   useEffect(() => {
     zapi.starredBookmarks(30, starredWords => {
+      console.log(starredWords)
       setWords(starredWords)
     })
-  }, [zapi])
+    document.title = 'Zeeguu Words - Starred'
+  }, [])
 
   if (!words) {
     return <LoadingAnimation />
   }
+
+  console.log(words)
+  console.log(words.length)
 
   if (words.length === 0) {
     return (
@@ -23,23 +28,20 @@ export default function Starred ({ zapi }) {
     )
   }
 
-  function unstarBookmark (bookmark) {
-    zapi.unstarBookmark(bookmark.id)
-    setWords(words.filter(w => w.id !== bookmark.id))
-  }
-
-  function deleteBookmark (bookmark) {
-    zapi.deleteBookmark(bookmark.id)
+  function bookmarkHasBeenUnstared (bookmark) {
     setWords(words.filter(w => w.id !== bookmark.id))
   }
 
   return (
     <>
-      <WordList
-        wordList={words}
-        deleteBookmark={deleteBookmark}
-        toggleStarred={unstarBookmark}
-      />
+      {words.map(bookmark => (
+        <Word
+          key={bookmark.id}
+          bookmark={bookmark}
+          zapi={zapi}
+          notifyUnstar={bookmarkHasBeenUnstared}
+        />
+      ))}
     </>
   )
 }

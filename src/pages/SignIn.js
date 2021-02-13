@@ -88,11 +88,11 @@ export default function SignIn ({ api, notifySuccessfulSignIn }) {
 
               <div>
                 <small className='extraText'>
-                  Or
+                  Or{' '}
                   <a className='links' href='create_account'>
                     create an account
                   </a>{' '}
-                  or
+                  or{' '}
                   <a className='links' href='/reset_pass'>
                     reset your password
                   </a>

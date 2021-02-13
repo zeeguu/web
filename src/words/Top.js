@@ -13,6 +13,7 @@ export default function Top ({ zapi }) {
       console.log(topWords)
       setWords(topWords)
     })
+    document.title = 'Zeeguu Words - Ranked'
   }, [zapi])
 
   if (!words) {
@@ -30,39 +31,14 @@ export default function Top ({ zapi }) {
     )
   }
 
-  function deleteBookmark (bookmark) {
-    zapi.deleteBookmark(bookmark.id)
-    setWords(words.filter(e => e.id !== bookmark.id))
-  }
-
-  function toggleStarred (bookmark) {
-    if (bookmark.starred) {
-      zapi.unstarBookmark(bookmark.id)
-    } else {
-      zapi.starBookmark(bookmark.id)
-    }
-
-    setWords(
-      words.map(e => (e.id !== bookmark.id ? e : { ...e, starred: true }))
-    )
-  }
-
   return (
     <>
       <s.TopMessage>
-        <p>
-          Words that you have translated in the past are ranked here based on
-          their importance in the language you're learning. The higher the
-          "importance", the more often does the word appear in the language.
-        </p>
+        <p>Words that you have translated ranked by importance.</p>
       </s.TopMessage>
 
       {words.map(each => (
-        <Word
-          bookmark={each}
-          deleteBookmark={deleteBookmark}
-          toggleStarred={toggleStarred}
-        />
+        <Word key={each.id} bookmark={each} zapi={zapi} />
       ))}
     </>
   )

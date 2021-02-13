@@ -1,0 +1,16 @@
+import styled from 'styled-components'
+
+const NarrowColumn = styled.div`
+  /* border: 1px solid lightgray; */
+  max-width: 768px;
+  margin-left: auto;
+  margin-right: auto;
+`
+
+let CenteredContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`
+
+export { NarrowColumn, CenteredContent }

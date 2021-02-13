@@ -104,6 +104,12 @@ const Zeeguu_API = class {
     this._get(`top_bookmarks/${count}`, callback);
   }
 
+  bookmarksForArticle(articleId, callback) {
+    this._get(`bookmarks_for_article/${articleId}`, (result) =>
+      callback(result.bookmarks)
+    );
+  }
+
   // individual bookmark handling
 
   unstarBookmark(bookmark_id) {
@@ -114,8 +120,8 @@ const Zeeguu_API = class {
     this._post(`star_bookmark/${bookmark_id}`);
   }
 
-  deleteBookmark(bookmark_id) {
-    this._post(`delete_bookmark/${bookmark_id}`);
+  deleteBookmark(bookmark_id, callback) {
+    this._post(`delete_bookmark/${bookmark_id}`, "", callback);
   }
 
   // articles
