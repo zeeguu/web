@@ -286,15 +286,33 @@ let _BottomButton = styled(BigSquareButton)`
 let WhiteButton = styled(_BottomButton)`
   background-color: white;
   color: orange !important;
-  width: 16em;
+
+  width: 8em;
+  @media (min-wdith: 768px) {
+    width: 16em;
+  }
 `
 
 let OrangeButton = styled(_BottomButton)`
   background-color: orange;
-  width: 16em;
+
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
+
+  h1 {
+    color: white;
+  }
+  a {
+    color: white;
+  }
+
+  width: 8em;
+
+  @media (min-wdith: 768px) {
+    width: 16em;
+  }
 `
 
 let FeedbackBox = styled.div`

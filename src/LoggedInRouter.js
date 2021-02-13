@@ -1,15 +1,11 @@
 import Articles from './articles/Articles'
 import WordsRouter from './words/WordsRouter'
-import Exercises from './exercises/Exercises'
+import ExercisesRouter from './exercises/ExercisesRouter'
 import Settings from './pages/Settings'
 import { PrivateRoute } from './PrivateRoute'
 import SideBar from './components/SideBar'
 import ArticleReader from './reader/ArticleReader'
 import LocalStorage from './LocalStorage'
-
-import { Link } from 'react-router-dom'
-
-import { useState } from 'react'
 
 export default function LoggedInRouter ({ api, user, setUser }) {
   function doUpdateUserInfo (info) {
@@ -28,7 +24,11 @@ export default function LoggedInRouter ({ api, user, setUser }) {
     <>
       <SideBar>
         <PrivateRoute path='/articles' api={api} component={Articles} />
-        <PrivateRoute path='/exercises' api={api} component={Exercises} />
+        <PrivateRoute
+          path='/exercises'
+          zapi={api}
+          component={ExercisesRouter}
+        />
         <PrivateRoute path='/words' api={api} component={WordsRouter} />
 
         <PrivateRoute

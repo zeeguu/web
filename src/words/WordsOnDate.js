@@ -33,7 +33,7 @@ export function WordsOnDate ({ day, deleteBookmark, zapi, toggleStarred }) {
           </s.ArticleTitle>
 
           {bookmarks_by_article.get(article_id).map(bookmark => (
-            <Word bookmark={bookmark} zapi={zapi} />
+            <Word key={bookmark.id} bookmark={bookmark} zapi={zapi} />
           ))}
         </s.Article>
       ))}

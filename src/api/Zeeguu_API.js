@@ -105,7 +105,9 @@ const Zeeguu_API = class {
   }
 
   bookmarksForArticle (articleId, callback) {
-    this._get(`bookmarks_for_article/${articleId}`, callback)
+    this._get(`bookmarks_for_article/${articleId}`, result =>
+      callback(result.bookmarks)
+    )
   }
 
   // individual bookmark handling

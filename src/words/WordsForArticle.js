@@ -14,11 +14,12 @@ export default function WordsForArticle ({ zapi }) {
   const [articleInfo, setArticleInfo] = useState(null)
 
   useEffect(() => {
-    zapi.bookmarksForArticle(articleID, result => {
-      setWords(result.bookmarks)
+    zapi.bookmarksForArticle(articleID, bookmarks => {
+      setWords(bookmarks)
     })
     zapi.getArticleInfo(articleID, data => {
       setArticleInfo(data)
+      document.title = 'Zeeguu: Words in "' + data.title + '"'
     })
   }, [])
 
@@ -59,7 +60,7 @@ export default function WordsForArticle ({ zapi }) {
           <WhiteButton>Back to Article</WhiteButton>
         </Link>
 
-        <Link to={`/words/forArticle/${articleID}`}>
+        <Link to={`/exercises/forArticle/${articleID}`}>
           <OrangeButton>To Exercises</OrangeButton>
         </Link>
       </CenteredContent>

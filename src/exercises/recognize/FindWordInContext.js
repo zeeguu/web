@@ -8,7 +8,8 @@ const EXERCISE_TYPE = 'Recognize_L1W_in_L2T'
 export default function FindWordInContext ({
   api,
   bookmarkToStudy,
-  correctAnswer
+  correctAnswer,
+  notifyIncorrectAnswer
 }) {
   const [isCorrect, setIsCorrect] = useState(false)
   const [initialTime] = useState(new Date())
@@ -62,6 +63,7 @@ export default function FindWordInContext ({
           handleCorrectAnswer={handleCorrectAnswer}
           bookmarkToStudy={bookmarkToStudy}
           notifyKeyPress={inputKeyPress}
+          notifyIncorrectAnswer={notifyIncorrectAnswer}
         />
       )}
       {isCorrect && (
