@@ -201,7 +201,7 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
           {errorMessage && <div className='error'>{errorMessage}</div>}
 
           <s.CenteredContent>
-            <s.OrangeButton onClick={handleCreate}>
+            <s.OrangeButton onClick={handleCreate} tabIndex='0'>
               Create Account
             </s.OrangeButton>
           </s.CenteredContent>
