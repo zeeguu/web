@@ -18,7 +18,7 @@ let WhiteNarrowColumn = styled(NarrowColumn)`
   border-radius: 1em;
   padding: 0.5em;
   margin-top: 20px;
-  width: 80vw;
+  width: 90vw;
   padding-bottom: 150px;
 
   @media (min-width: 768px) {
@@ -31,14 +31,14 @@ let WhiteNarrowColumn = styled(NarrowColumn)`
     border: 1px solid #ffbb54;
     border-radius: 5px;
 
-    padding: 0.2em 0.3em;
     color: #333333;
     margin-bottom: 1em;
     font-size: large;
+    padding: 0.6em 0.5em;
 
     @media (min-width: 768px) {
       width: 22em;
-      padding: 0.3em 0.5em;
+      padding: 0.5em 0.5em;
       font-size: 0.6em;
     }
   }
@@ -52,7 +52,7 @@ let WhiteNarrowColumn = styled(NarrowColumn)`
     background-color: yellow;
     color: red;
     border-radius: 5px;
-    font-size: small;
+    font-weight: 700;
     margin-bottom: 1em;
     padding: 0.4em;
   }
