@@ -8,7 +8,8 @@ import LoadingAnimation from '../components/LoadingAnimation'
 
 import { CEFR_LEVELS } from './cefrLevels'
 
-import * as s from './CreateAccount.sc'
+import * as s from './FormPage.sc'
+import PrivacyNotice from './PrivacyNotice'
 
 export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
   const [inviteCode, setInviteCode] = useState('')
@@ -77,26 +78,23 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
   }
 
   return (
-    <s.CreateAccountPage>
-      {/* <img
-        class='zeeguuLogo'
-        src='/static/images/zeeguuWhiteLogo.svg'
-        alt='Zeeguu Logo - The Elephant'
-      ></img> */}
-      <s.WhiteNarrowColumn>
-        <form id='login' action='' method='post'>
-          <h2>Become a Beta-Tester</h2>
+    <s.PageBackground>
+      <s.LogoOnTop />
+
+      <s.FormContainer>
+        <form action=''>
+          <s.FormTitle>Create Account</s.FormTitle>
+
           <p>
             <small>
-              We need people to test this concept and let us know what works and
-              what can be improved
+              Thanks for being a beta-tester. We really want to hear from you at{' '}
+              <a href='#'>zeeguu.team@gmail.com</a>. Contact us also if you
+              don't have an invite code.
             </small>
           </p>
 
           <div className='inputField'>
-            <label>
-              Invite Code <small>(Contact us if you don't have one)</small>
-            </label>
+            <label>Invite Code </label>
             <input
               ref={inviteCodeInputDOM}
               value={inviteCode}
@@ -138,6 +136,7 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
 
             <Select
               elements={systemLanguages.learnable_languages}
+              placeholder='Learned Language'
               label={e => e.name}
               val={e => e.code}
               updateFunction={setLearned_language}
@@ -149,6 +148,7 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
 
             <Select
               elements={CEFR_LEVELS}
+              placeholder='Learned Language Level'
               label={e => e.label}
               val={e => e.value}
               updateFunction={setLearned_cefr_level}
@@ -160,53 +160,22 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
 
             <Select
               elements={systemLanguages.native_languages}
+              placeholder='Base Language'
               label={e => e.name}
               val={e => e.code}
               updateFunction={setNative_language}
             />
           </div>
 
-          <h2>Privacy Notice</h2>
-
-          <p>
-            <small>
-              <p>
-                Zeeguu is a research project. Our goal is to discover ways in
-                which learning a foreign language is more fun.
-              </p>
-
-              <p>
-                The only personal information that we store about you is your
-                email. We do not share it with anybody. We need it to send you a
-                reset password code, important announcements about the platform,
-                and possibly a survey at some point.
-              </p>
-
-              <p>
-                We store anonymized data about your interactions with foreign
-                texts and exercises together with the times of these
-                interactions. They help us estimate the words you know, the ones
-                you should learn, recommend texts, and approximate time spent
-                studying.
-              </p>
-
-              <p>
-                We might make the anonymized interaction data available for
-                other researchers too. In research, data can be even more
-                important than algorithms.
-              </p>
-            </small>
-          </p>
+          <PrivacyNotice />
 
           {errorMessage && <div className='error'>{errorMessage}</div>}
 
-          <s.CenteredContent>
-            <s.OrangeButton onClick={handleCreate} tabIndex='0'>
-              Create Account
-            </s.OrangeButton>
-          </s.CenteredContent>
+          <div className='inputField'>
+            <s.FormButton onClick={handleCreate}>Create Account</s.FormButton>
+          </div>
         </form>
-      </s.WhiteNarrowColumn>
-    </s.CreateAccountPage>
+      </s.FormContainer>
+    </s.PageBackground>
   )
 }
