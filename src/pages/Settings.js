@@ -1,5 +1,3 @@
-// import './Settings.css'
-
 import { useEffect, useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 
@@ -9,6 +7,8 @@ import { LanguageSelector } from '../components/LanguageSelector'
 
 import { UserContext } from '../UserContext'
 import LoadingAnimation from '../components/LoadingAnimation'
+
+import * as s from '../pages/FormPage.sc'
 
 export default function Settings ({ api, updateUserInfo }) {
   const [userDetails, setUserDetails] = useState(null)
@@ -41,15 +41,14 @@ export default function Settings ({ api, updateUserInfo }) {
   }
 
   return (
-    <form className='formSettings'>
-      <h1 className='category'>Account Settings</h1>
-      <h5>{errorMessage}</h5>
-      <small>
-        <label for='name'>Name </label>
+    <s.FormContainer>
+      <form className='formSettings'>
+        <h1>Account Settings</h1>
+        <h5>{errorMessage}</h5>
+
+        <label>Name </label>
         <input
-          id='name'
           name='name'
-          type='text'
           value={userDetails.name}
           onChange={e =>
             setUserDetails({ ...userDetails, name: e.target.value })
@@ -57,18 +56,16 @@ export default function Settings ({ api, updateUserInfo }) {
         />
         <br />
 
-        <label for='email'>Email </label>
+        <label>Email </label>
         <input
-          id='email'
-          name='email'
-          type='text'
+          type='email'
           value={userDetails.email}
           onChange={e =>
             setUserDetails({ ...userDetails, email: e.target.value })
           }
         />
-        <br />
-        <label for='learned language'>Learned Language: </label>
+
+        <label>Learned Language </label>
         <LanguageSelector
           languages={languages.learnable_languages}
           selected={language_for_id(
@@ -83,8 +80,8 @@ export default function Settings ({ api, updateUserInfo }) {
             })
           }}
         />
-        <br />
-        <label for='native language'>Native Language: </label>
+
+        <label>Native Language </label>
         <LanguageSelector
           languages={languages.native_languages}
           selected={language_for_id(
@@ -99,13 +96,11 @@ export default function Settings ({ api, updateUserInfo }) {
             })
           }}
         />
-      </small>
-      <br />
-      <br /> <br />
-      <br />
-      <div>
-        <input type='submit' value='Save' onClick={handleSave} />
-      </div>
-    </form>
+
+        <div>
+          <s.FormButton onClick={handleSave}>Save</s.FormButton>
+        </div>
+      </form>
+    </s.FormContainer>
   )
 }
