@@ -10,6 +10,7 @@ import LocalStorage from './LocalStorage'
 import Zeeguu_API from './api/Zeeguu_API'
 import LoggedInRouter from './LoggedInRouter'
 import CreateAccount from './pages/CreateAccount'
+import ResetPassword from './pages/ResetPassword'
 
 function App () {
   let userDict = {}
@@ -73,6 +74,11 @@ function App () {
                 notifySuccessfulSignIn={handleSuccessfulSignIn}
               />
             )}
+          />
+
+          <Route
+            path='/reset_pass'
+            render={() => <ResetPassword api={api} />}
           />
 
           <LoggedInRouter api={api} user={user} setUser={setUser} />

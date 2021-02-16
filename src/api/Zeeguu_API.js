@@ -69,6 +69,19 @@ const Zeeguu_API = class {
       })
   }
 
+  sendCode (email, callback, onError) {
+    this._post(`send_code/${email}`, '', callback, onError)
+  }
+
+  resetPassword (email, code, newPass, callback, onError) {
+    this._post(
+      `reset_password/${email}`,
+      `code=${code}&password=${newPass}`,
+      callback,
+      onError
+    )
+  }
+
   getUserDetails (callback) {
     this._get('get_user_details', callback)
   }
@@ -358,7 +371,7 @@ const Zeeguu_API = class {
       })
   }
 
-  _post (endpoint, body, callback) {
+  _post (endpoint, body, callback, onError) {
     apiLog('POST' + endpoint)
 
     const url = this._appendSessionToUrl(endpoint)
@@ -373,7 +386,15 @@ const Zeeguu_API = class {
     }
 
     if (callback) {
-      fetch(url, params).then(data => callback(data))
+      fetch(url, params)
+        .then(data => {
+          if (data.status === 400) {
+            onError(data)
+          } else {
+            callback(data)
+          }
+        })
+        .catch(e => onError(e))
     } else {
       fetch(url, params)
     }

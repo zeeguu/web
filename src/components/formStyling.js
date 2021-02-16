@@ -16,7 +16,7 @@ let formStyling = css`
     @media (min-width: 768px) {
       width: 80%;
       padding: 0.5em 0.5em;
-      font-size: 0.6em;
+      font-size: 0.8em;
     }
   }
 
@@ -26,7 +26,13 @@ let formStyling = css`
     margin-bottom: 0.5em;
 
     @media (min-width: 768px) {
-      font-size: 0.6em;
+      font-size: 0.8em;
+    }
+  }
+
+  p {
+    @media (min-width: 768px) {
+      font-size: 0.8em;
     }
   }
 

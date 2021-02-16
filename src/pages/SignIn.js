@@ -78,8 +78,8 @@ export default function SignIn ({ api, notifySuccessfulSignIn }) {
             </s.FormButton>
           </div>
 
-          <div>
-            Or{' '}
+          <p>
+            Alternatively you can{' '}
             <a className='links' href='create_account'>
               create an account
             </a>{' '}
@@ -87,7 +87,8 @@ export default function SignIn ({ api, notifySuccessfulSignIn }) {
             <a className='links' href='/reset_pass'>
               reset your password
             </a>
-          </div>
+            .
+          </p>
         </form>
       </s.NarrowFormContainer>
     </s.PageBackground>

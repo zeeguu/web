@@ -86,11 +86,9 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
           <s.FormTitle>Create Account</s.FormTitle>
 
           <p>
-            <small>
-              Thanks for being a beta-tester. We really want to hear from you at{' '}
-              <a href='#'>zeeguu.team@gmail.com</a>. Contact us also if you
-              don't have an invite code.
-            </small>
+            Thanks for being a beta-tester. We really want to hear from you at{' '}
+            <a href='#'>zeeguu.team@gmail.com</a>. Contact us also if you don't
+            have an invite code.
           </p>
 
           <div className='inputField'>

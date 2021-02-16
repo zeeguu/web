@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.1.2",
     "@testing-library/user-event": "^12.2.2",
     "cross-fetch": "^3.0.6",
+    "email-validator": "^2.0.4",
     "linked-list": "^2.1.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
