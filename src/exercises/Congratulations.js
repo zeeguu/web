@@ -1,7 +1,6 @@
 import Word from '../words/Word'
 import { NarrowColumn, CenteredContent } from '../components/NarrowColumn.sc'
 import { OrangeButton, WhiteButton } from '../reader/ArticleReader.sc'
-import { Link } from 'react-router-dom'
 
 export default function Congratulations ({
   articleID,

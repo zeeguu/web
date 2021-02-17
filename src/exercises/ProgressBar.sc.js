@@ -1,4 +1,4 @@
-import styled, { keyframes, css } from "styled-components";
+import styled from 'styled-components'
 
 const ProgressBar = styled.div`
   /* background-color: lightcoral; */
@@ -33,6 +33,6 @@ const ProgressBar = styled.div`
     transition: all 0.5s;
     border-radius: 15px;
   }
-`;
+`
 
-export { ProgressBar };
+export { ProgressBar }

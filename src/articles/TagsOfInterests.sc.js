@@ -1,4 +1,4 @@
-import styled, { keyframes, css } from 'styled-components'
+import styled from 'styled-components'
 
 const TagsOfInterests = styled.div`
   .tagsOfInterests,
@@ -13,13 +13,6 @@ const TagsOfInterests = styled.div`
     text-align: center;
     overflow: auto;
     animation: fadeIn ease 0.5s;
-  }
-
-  .tagsWithFilters {
-    @media (min-width: 786px) {
-      margin-left: 9em;
-      width: 100%;
-    }
   }
 
   .interestsSettings {

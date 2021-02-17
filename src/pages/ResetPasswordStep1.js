@@ -1,5 +1,5 @@
 import * as s from '../components/FormPage.sc'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import * as EmailValidator from 'email-validator'
 import validator from './validator'
 

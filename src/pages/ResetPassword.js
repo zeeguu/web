@@ -1,6 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
-
-import { useHistory } from 'react-router-dom'
+import { useState } from 'react'
 
 import * as s from '../components/FormPage.sc'
 
@@ -11,8 +9,6 @@ export default function ResetPassword ({ api, notifySuccessfulSignIn }) {
   const [email, setEmail] = useState('')
 
   const [codeSent, setCodeSent] = useState(false)
-
-  let history = useHistory()
 
   function validEmail () {
     setCodeSent(true)

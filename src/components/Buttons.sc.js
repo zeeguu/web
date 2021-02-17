@@ -1,4 +1,4 @@
-import styled, { button } from 'styled-components'
+import styled from 'styled-components'
 
 const RoundButton = styled.div`
   user-select: none;

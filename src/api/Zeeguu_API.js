@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch'
 
 function apiLog (what) {
-  console.log('➡️ ' + what)
+  // console.log('➡️ ' + what)
 }
 
 const Zeeguu_API = class {

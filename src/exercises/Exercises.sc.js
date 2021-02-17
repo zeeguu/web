@@ -1,4 +1,4 @@
-import styled, { keyframes, css } from 'styled-components'
+import styled from 'styled-components'
 
 const ExercisesColumn = styled.div`
   /* background-color: lightcoral; */

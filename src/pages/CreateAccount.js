@@ -27,11 +27,13 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
   let history = useHistory()
   let inviteCodeInputDOM = useRef()
 
+  // eslint-disable-next-line
   useEffect(() => {
     api.getSystemLanguages(languages => {
       setSystemLanguages(languages)
       inviteCodeInputDOM.current.focus()
     })
+    // eslint-disable-next-line
   }, [])
 
   if (!systemLanguages) {
@@ -86,8 +88,8 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
 
           <p>
             Thanks for being a beta-tester. We really want to hear from you at{' '}
-            <a href='#'>zeeguu.team@gmail.com</a>. Contact us also if you don't
-            have an invite code.
+            <b>zeeguu.team@gmail.com</b>. Contact us also if you don't have an
+            invite code.
           </p>
 
           <div className='inputField'>
