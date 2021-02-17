@@ -6,13 +6,13 @@ import Search from './Search'
 import ClassroomArticles from './ClassroomArticles'
 import TopTabs from '../components/TopTabs'
 
-import * as s from './Articles.sc'
+import * as s from '../components/NarrowColumn.sc'
 
 export default function ArticlesRouter ({ api }) {
   return (
     <>
       {/* Rendering top menu first, then routing to corresponding page */}
-      <s.Articles>
+      <s.NarrowColumn>
         <TopTabs
           title='Articles'
           tabsAndLinks={{
@@ -43,7 +43,7 @@ export default function ArticlesRouter ({ api }) {
           api={api}
           component={ClassroomArticles}
         />
-      </s.Articles>
+      </s.NarrowColumn>
     </>
   )
 }
