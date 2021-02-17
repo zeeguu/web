@@ -133,7 +133,7 @@ export default class InteractiveText {
       word.word +
       ' ' +
       getRightContext(word.next, 2)
-    console.log(context)
+
     return context
   }
 }

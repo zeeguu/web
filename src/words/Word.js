@@ -24,7 +24,6 @@ export default function Word ({
   }
 
   function toggleStarred (bookmark) {
-    console.log(starred)
     if (starred) {
       api.unstarBookmark(bookmark.id)
       bookmark.starred = false

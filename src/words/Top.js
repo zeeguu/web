@@ -10,7 +10,6 @@ export default function Top ({ api }) {
 
   useEffect(() => {
     api.topBookmarks(300, topWords => {
-      console.log(topWords)
       setWords(topWords)
     })
     setTitle('Ranked Words')

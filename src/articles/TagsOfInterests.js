@@ -32,8 +32,6 @@ export default function TagsOfInterests ({
 
   if (!interestingTopics || !subscribedTopics || !subscribedSearches) return ''
 
-  console.log(subscribedSearches)
-
   let allTopics = [...interestingTopics, ...subscribedTopics]
   allTopics.sort((a, b) => a.title.localeCompare(b.title))
 

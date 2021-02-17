@@ -21,7 +21,6 @@ export default function FindWordInContext ({
 
   function inputKeyPress () {
     if (firstTypeTime === undefined) {
-      console.log('first time key prss!')
       setFirstTypeTime(new Date())
     }
   }

@@ -9,8 +9,6 @@ export default function Congratulations ({
   incorrectBookmarks,
   api
 }) {
-  console.log(correctBookmarks)
-  console.log(incorrectBookmarks)
   return (
     <NarrowColumn>
       <br />

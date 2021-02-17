@@ -30,7 +30,6 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
   useEffect(() => {
     api.getSystemLanguages(languages => {
       setSystemLanguages(languages)
-      console.log(languages)
       inviteCodeInputDOM.current.focus()
     })
   }, [])

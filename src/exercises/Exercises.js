@@ -24,9 +24,8 @@ export default function Exercises ({ api, articleID }) {
   if (!bookmarksToStudyList) {
     if (articleID) {
       // we have an article id ==> we do exercises only for the words in that article
-      console.log(api)
+
       api.bookmarksForArticle(articleID, bookmarks => {
-        console.log(bookmarks)
         setbookmarksToStudyList(bookmarks)
         NUMBER_OF_EXERCISES = bookmarks.length
         setCurretBookmarkToStudy(bookmarks[currentIndex])
@@ -78,7 +77,6 @@ export default function Exercises ({ api, articleID }) {
     let currentBookmark = bookmarksToStudyList[currentIndex]
 
     if (!incorrectBookmarks.includes(currentBookmark)) {
-      console.log('adding to correct because not present in incorrect')
       setCorrectBookmarks([
         ...correctBookmarks,
         bookmarksToStudyList[currentIndex]
@@ -89,7 +87,6 @@ export default function Exercises ({ api, articleID }) {
   }
 
   function incorrectAnswerNotification () {
-    console.log('adding current to incorrect')
     setIncorrectBookmarks([
       ...incorrectBookmarks,
       bookmarksToStudyList[currentIndex]
@@ -108,14 +105,14 @@ export default function Exercises ({ api, articleID }) {
   }
 
   let wordSourceText = articleInfo ? (
-    <>Words in "{articleInfo.title}"</>
+    <>"{articleInfo.title}"</>
   ) : (
-    <>Words in your past readings</>
+    <>your past readings</>
   )
 
   return (
     <s.ExercisesColumn>
-      <small>{wordSourceText}</small>
+      <s.LittleMessageAbove>Words in {wordSourceText}</s.LittleMessageAbove>
       <ProgressBar index={currentIndex} total={NUMBER_OF_EXERCISES} />
 
       <s.ExForm>

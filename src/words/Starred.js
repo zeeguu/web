@@ -10,7 +10,6 @@ export default function Starred ({ api }) {
 
   useEffect(() => {
     api.starredBookmarks(30, starredWords => {
-      console.log(starredWords)
       setWords(starredWords)
     })
     setTitle('Starred Words')
@@ -19,9 +18,6 @@ export default function Starred ({ api }) {
   if (!words) {
     return <LoadingAnimation />
   }
-
-  console.log(words)
-  console.log(words.length)
 
   if (words.length === 0) {
     return <s.TopMessage>You have no starred words yet.</s.TopMessage>

@@ -33,7 +33,6 @@ export default function ArticleReader ({ api }) {
 
   useEffect(() => {
     api.getArticleInfo(articleID, data => {
-      console.log(data)
       setInteractiveText(new InteractiveText(data.content, data, api))
       setInteractiveTitle(new InteractiveText(data.title, data, api))
       setArticleInfo(data)
@@ -62,7 +61,7 @@ export default function ArticleReader ({ api }) {
   if (!articleInfo) {
     return <LoadingAnimation />
   }
-  console.log(articleInfo)
+
   return (
     <s.ArticleReader>
       <s.Toolbar>

@@ -15,7 +15,6 @@ export default function BookmarkedArticles ({ api }) {
 
   if (articleList == null) {
     api.getBookmarkedArticles(articles => {
-      console.log(articles)
       setArticleList(articles)
     })
 

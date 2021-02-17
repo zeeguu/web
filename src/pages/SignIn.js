@@ -18,8 +18,6 @@ export default function SignIn ({ api, notifySuccessfulSignIn }) {
   function handleSignIn (e) {
     e.preventDefault()
     api.signIn(email, password, setErrorMessage, sessionId => {
-      console.log('successful login')
-
       api.getUserDetails(userInfo => {
         notifySuccessfulSignIn(userInfo)
 

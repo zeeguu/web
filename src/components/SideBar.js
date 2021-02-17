@@ -9,8 +9,6 @@ export default function SideBar (props) {
   const [initialSidebarState, setInitialSidebarState] = useState(true)
 
   function toggleSidebar (e) {
-    console.log('toggling state...')
-    console.log(initialSidebarState)
     e.preventDefault()
     setInitialSidebarState(!initialSidebarState)
   }
