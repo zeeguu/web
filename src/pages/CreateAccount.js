@@ -10,6 +10,7 @@ import { CEFR_LEVELS } from '../assorted/cefrLevels'
 
 import * as s from '../components/FormPage.sc'
 import PrivacyNotice from './PrivacyNotice'
+import * as EmailValidator from 'email-validator'
 
 export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
   const [inviteCode, setInviteCode] = useState('')
@@ -41,7 +42,7 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
 
   let validatorRules = [
     [name === '', 'Name is required... ;)'],
-    [email === '', 'Please provide a valid email'],
+    [!EmailValidator.validate(email), 'Please provide a valid email'],
     [learned_language === '', 'Learned language is required'],
     [learned_cefr_level === '', 'Language level is required'],
     [native_language === '', 'Please select a base language.'],
