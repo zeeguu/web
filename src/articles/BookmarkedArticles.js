@@ -25,11 +25,7 @@ export default function BookmarkedArticles ({ api }) {
   }
 
   if (articleList.length === 0) {
-    return (
-      <s.TopMessage>
-        <p>You haven't bookmarked any articles yet</p>
-      </s.TopMessage>
-    )
+    return <s.TopMessage>You haven't bookmarked any articles yet</s.TopMessage>
   }
 
   return (

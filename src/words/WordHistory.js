@@ -60,9 +60,7 @@ export default function WordHistory ({ api }) {
   return (
     <>
       <s.TopMessage>
-        <p>
-          Star a word to ensure it appears in exercises. Delete to avoid it.
-        </p>
+        Star a word to ensure it appears in exercises. Delete to avoid it.
       </s.TopMessage>
 
       {wordsByDay.map(day => (

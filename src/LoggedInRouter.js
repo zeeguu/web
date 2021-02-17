@@ -1,5 +1,5 @@
-import ArticlesRouter from './articles/ArticlesRouter'
-import WordsRouter from './words/WordsRouter'
+import ArticlesRouter from './articles/_ArticlesRouter'
+import WordsRouter from './words/_WordsRouter'
 import ExercisesRouter from './exercises/ExercisesRouter'
 import Settings from './pages/Settings'
 import { PrivateRoute } from './PrivateRoute'

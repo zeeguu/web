@@ -6,7 +6,7 @@ import Top from './Top'
 import * as s from '../components/NarrowColumn.sc'
 import TopTabs from '../components/TopTabs'
 
-export default function Words ({ api }) {
+export default function WordsRouter ({ api }) {
   return (
     <s.NarrowColumn>
       <TopTabs

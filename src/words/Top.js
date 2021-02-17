@@ -34,7 +34,7 @@ export default function Top ({ api }) {
   return (
     <>
       <s.TopMessage>
-        <p>Words that you have translated ranked by importance.</p>
+        Words that you have translated ranked by importance.
       </s.TopMessage>
 
       {words.map(each => (

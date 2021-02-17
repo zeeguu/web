@@ -3,6 +3,8 @@ import LoadingAnimation from '../components/LoadingAnimation'
 import { setTitle } from '../components/setTitle'
 import Word from './Word'
 
+import * as s from '../components/TopMessage.sc'
+
 export default function Starred ({ api }) {
   const [words, setWords] = useState(null)
 
@@ -22,11 +24,7 @@ export default function Starred ({ api }) {
   console.log(words.length)
 
   if (words.length === 0) {
-    return (
-      <div className='topMessageContainer'>
-        <div className='topMessage'>You have no starred words yet.</div>
-      </div>
-    )
+    return <s.TopMessage>You have no starred words yet.</s.TopMessage>
   }
 
   function bookmarkHasBeenUnstared (bookmark) {

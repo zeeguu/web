@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-// import './article.css'
 import * as s from './ArticleReader.sc'
 import { Link } from 'react-router-dom'
 

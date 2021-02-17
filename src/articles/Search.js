@@ -24,13 +24,11 @@ export default function Search ({ api }) {
   return (
     <>
       <s.TopMessage>
-        <p>
-          {' '}
-          You searched for: {term}
-          <s.ClosePopupButton onClick={e => (window.location = '/articles')}>
-            X
-          </s.ClosePopupButton>
-        </p>
+        {' '}
+        You searched for: {term}
+        <s.ClosePopupButton onClick={e => (window.location = '/articles')}>
+          X
+        </s.ClosePopupButton>
       </s.TopMessage>
 
       <SortingButtons

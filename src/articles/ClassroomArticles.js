@@ -24,11 +24,7 @@ export default function ClassroomArticles ({ api }) {
   }
 
   if (articleList.length === 0) {
-    return (
-      <s.TopMessage>
-        <p>There are no articles in your classroom</p>
-      </s.TopMessage>
-    )
+    return <s.TopMessage>There are no articles in your classroom</s.TopMessage>
   }
 
   return (

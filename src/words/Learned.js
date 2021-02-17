@@ -18,30 +18,16 @@ export default function Learned ({ api }) {
     return <LoadingAnimation />
   }
 
-  let whatAreLearnedWordsMessage = (
-    <>
-      <s.TopMessage>
-        <p>
-          Learned words are words that were correct in exercises in 4 different
-          days.
-        </p>
-      </s.TopMessage>
-
-      <s.TopMessage>
-        <p>
-          You have learned <b>{words.length}</b> words so far.
-        </p>
-      </s.TopMessage>
-    </>
-  )
-
-  if (words.length === 0) {
-    return whatAreLearnedWordsMessage
-  }
-
   return (
     <>
-      {whatAreLearnedWordsMessage}
+      <s.TopMessage>
+        Learned words are words that were correct in exercises in 4 different
+        days.
+      </s.TopMessage>
+
+      <s.TopMessage>
+        You have learned <b>{words.length}</b> words so far.
+      </s.TopMessage>
 
       {words.map(each => (
         <Word key={each.id} bookmark={each} api={api} hideStar={true}>
