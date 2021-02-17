@@ -27,7 +27,6 @@ export default function CreateAccount ({ api, notifySuccessfulSignIn }) {
   let history = useHistory()
   let inviteCodeInputDOM = useRef()
 
-  // eslint-disable-next-line
   useEffect(() => {
     api.getSystemLanguages(languages => {
       setSystemLanguages(languages)
