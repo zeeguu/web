@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
 import Word from './Word'
 
-export default function Starred ({ zapi }) {
+export default function Starred ({ api }) {
   const [words, setWords] = useState(null)
 
   useEffect(() => {
-    zapi.starredBookmarks(30, starredWords => {
+    api.starredBookmarks(30, starredWords => {
       console.log(starredWords)
       setWords(starredWords)
     })
@@ -38,7 +38,7 @@ export default function Starred ({ zapi }) {
         <Word
           key={bookmark.id}
           bookmark={bookmark}
-          zapi={zapi}
+          api={api}
           notifyUnstar={bookmarkHasBeenUnstared}
         />
       ))}

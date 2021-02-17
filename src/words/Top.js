@@ -4,17 +4,17 @@ import LoadingAnimation from '../components/LoadingAnimation'
 import Word from './Word'
 import * as s from './WordHistory.sc'
 
-export default function Top ({ zapi }) {
+export default function Top ({ api }) {
   const [words, setWords] = useState(null)
 
   useEffect(() => {
     console.log('in useEffect in Top')
-    zapi.topBookmarks(300, topWords => {
+    api.topBookmarks(300, topWords => {
       console.log(topWords)
       setWords(topWords)
     })
     document.title = 'Zeeguu Words - Ranked'
-  }, [zapi])
+  }, [api])
 
   if (!words) {
     return <LoadingAnimation />
@@ -38,7 +38,7 @@ export default function Top ({ zapi }) {
       </s.TopMessage>
 
       {words.map(each => (
-        <Word key={each.id} bookmark={each} zapi={zapi} />
+        <Word key={each.id} bookmark={each} api={api} />
       ))}
     </>
   )

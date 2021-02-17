@@ -8,13 +8,13 @@ import SearchField from './SearchField'
 import * as s from './NewArticles.sc'
 import LoadingAnimation from '../components/LoadingAnimation'
 
-export default function NewArticles ({ zapi }) {
+export default function NewArticles ({ api }) {
   const [articleList, setArticleList] = useState(null)
 
   var originalList = null
 
   if (articleList == null) {
-    zapi.getUserArticles(articles => {
+    api.getUserArticles(articles => {
       console.log(articles)
       setArticleList(articles)
       originalList = [...articles]
@@ -27,7 +27,7 @@ export default function NewArticles ({ zapi }) {
 
   function articlesListShouldChange () {
     setArticleList(null)
-    zapi.getUserArticles(articles => {
+    api.getUserArticles(articles => {
       setArticleList(articles)
       originalList = [...articles]
     })
@@ -37,7 +37,7 @@ export default function NewArticles ({ zapi }) {
     <>
       <s.MaterialSelection>
         <Interests
-          zapi={zapi}
+          api={api}
           articlesListShouldChange={articlesListShouldChange}
         />
 

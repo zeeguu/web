@@ -8,16 +8,16 @@ import { TopMessage } from './WordHistory.sc'
 import { NarrowColumn, CenteredContent } from '../components/NarrowColumn.sc'
 import { OrangeButton, WhiteButton } from '../reader/ArticleReader.sc'
 
-export default function WordsForArticle ({ zapi }) {
+export default function WordsForArticle ({ api }) {
   let { articleID } = useParams()
   const [words, setWords] = useState(null)
   const [articleInfo, setArticleInfo] = useState(null)
 
   useEffect(() => {
-    zapi.bookmarksForArticle(articleID, bookmarks => {
+    api.bookmarksForArticle(articleID, bookmarks => {
       setWords(bookmarks)
     })
-    zapi.getArticleInfo(articleID, data => {
+    api.getArticleInfo(articleID, data => {
       setArticleInfo(data)
       document.title = 'Zeeguu Words: "' + data.title + '"'
     })
@@ -51,7 +51,7 @@ export default function WordsForArticle ({ zapi }) {
           key={each.id}
           bookmark={each}
           notifyDelete={deleteBookmark}
-          zapi={zapi}
+          api={api}
         />
       ))}
 

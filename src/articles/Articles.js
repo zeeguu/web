@@ -26,22 +26,22 @@ export default function Articles ({ api }) {
         <PrivateRoute
           path='/articles'
           exact
-          zapi={api}
+          api={api}
           component={NewArticles}
         />
         <PrivateRoute
           path='/articles/search/:term'
-          zapi={api}
+          api={api}
           component={Search}
         />
         <PrivateRoute
           path='/articles/bookmarked'
-          zapi={api}
+          api={api}
           component={BookmarkedArticles}
         />
         <PrivateRoute
           path='/articles/classroom'
-          zapi={api}
+          api={api}
           component={ClassroomArticles}
         />
       </s.Articles>

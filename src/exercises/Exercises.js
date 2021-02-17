@@ -52,7 +52,7 @@ export default function Exercises ({ api, articleID }) {
           articleID={articleID}
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
-          zapi={api}
+          api={api}
         />
       </div>
     )

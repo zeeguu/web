@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import Word from './Word'
 import * as s from './WordsOnDate.sc'
 
-export function WordsOnDate ({ day, deleteBookmark, zapi, toggleStarred }) {
+export function WordsOnDate ({ day, deleteBookmark, api, toggleStarred }) {
   function groupBy (list, keyGetter) {
     const map = new Map()
     list.forEach(item => {
@@ -33,7 +33,7 @@ export function WordsOnDate ({ day, deleteBookmark, zapi, toggleStarred }) {
           </s.ArticleTitle>
 
           {bookmarks_by_article.get(article_id).map(bookmark => (
-            <Word key={bookmark.id} bookmark={bookmark} zapi={zapi} />
+            <Word key={bookmark.id} bookmark={bookmark} api={api} />
           ))}
         </s.Article>
       ))}

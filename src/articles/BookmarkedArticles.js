@@ -5,13 +5,13 @@ import ArticleOverview from './ArticleOverview'
 
 import SortingButtons from './SortingButtons'
 
-export default function BookmarkedArticles ({ zapi }) {
+export default function BookmarkedArticles ({ api }) {
   const [articleList, setArticleList] = useState(null)
 
   let originalList = articleList
 
   if (articleList == null) {
-    zapi.getBookmarkedArticles(articles => {
+    api.getBookmarkedArticles(articles => {
       console.log(articles)
       setArticleList(articles)
     })

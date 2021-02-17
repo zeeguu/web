@@ -3,15 +3,15 @@ import LoadingAnimation from '../components/LoadingAnimation'
 import Word from './Word'
 import * as s from './WordHistory.sc'
 
-export default function Learned ({ zapi }) {
+export default function Learned ({ api }) {
   const [words, setWords] = useState(null)
 
   useEffect(() => {
-    zapi.learnedBookmarks(300, learnedWords => {
+    api.learnedBookmarks(300, learnedWords => {
       setWords(learnedWords)
     })
     document.title = 'Zeeguu Words - Learned'
-  }, [zapi])
+  }, [api])
 
   if (!words) {
     return <LoadingAnimation />
@@ -43,7 +43,7 @@ export default function Learned ({ zapi }) {
       {whatAreLearnedWordsMessage}
 
       {words.map(each => (
-        <Word key={each.id} bookmark={each} zapi={zapi} hideStar={true}>
+        <Word key={each.id} bookmark={each} api={api} hideStar={true}>
           <small>
             Correct on:
             {' ' + each.learned_datetime}

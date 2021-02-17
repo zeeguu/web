@@ -8,7 +8,7 @@ export default function WordsRouter ({ api }) {
     <Switch>
       <PrivateRoute
         path='/words/forArticle/:articleID'
-        zapi={api}
+        api={api}
         component={WordsForArticle}
       />
 

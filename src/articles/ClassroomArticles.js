@@ -5,14 +5,13 @@ import ArticleOverview from './ArticleOverview'
 
 import SortingButtons from './SortingButtons'
 
-export default function ClassroomArticles ({ zapi }) {
+export default function ClassroomArticles ({ api }) {
   const [articleList, setArticleList] = useState(null)
 
   let originalList = articleList
 
   if (articleList == null) {
-    zapi.getCohortArticles(articles => {
-      console.log(articles)
+    api.getCohortArticles(articles => {
       setArticleList(articles)
     })
 

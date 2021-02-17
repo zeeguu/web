@@ -22,15 +22,15 @@ export default function Words ({ api }) {
       <PrivateRoute
         path='/words/history'
         exact
-        zapi={api}
+        api={api}
         component={WordHistory}
       />
 
-      <PrivateRoute path='/words/starred' zapi={api} component={Starred} />
+      <PrivateRoute path='/words/starred' api={api} component={Starred} />
 
-      <PrivateRoute path='/words/learned' zapi={api} component={Learned} />
+      <PrivateRoute path='/words/learned' api={api} component={Learned} />
 
-      <PrivateRoute path='/words/top' zapi={api} component={Top} />
+      <PrivateRoute path='/words/top' api={api} component={Top} />
     </s.NarrowColumn>
   )
 }

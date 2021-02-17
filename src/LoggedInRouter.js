@@ -24,11 +24,7 @@ export default function LoggedInRouter ({ api, user, setUser }) {
     <>
       <SideBar>
         <PrivateRoute path='/articles' api={api} component={Articles} />
-        <PrivateRoute
-          path='/exercises'
-          zapi={api}
-          component={ExercisesRouter}
-        />
+        <PrivateRoute path='/exercises' api={api} component={ExercisesRouter} />
         <PrivateRoute path='/words' api={api} component={WordsRouter} />
 
         <PrivateRoute

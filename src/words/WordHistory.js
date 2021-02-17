@@ -5,11 +5,11 @@ import LoadingAnimation from '../components/LoadingAnimation'
 
 import * as s from './WordHistory.sc'
 
-export default function WordHistory ({ zapi }) {
+export default function WordHistory ({ api }) {
   const [wordsByDay, setWordsByDay] = useState(null)
 
   if (!wordsByDay) {
-    zapi.getBookmarksByDay(bookmarks_by_day => {
+    api.getBookmarksByDay(bookmarks_by_day => {
       setWordsByDay(bookmarks_by_day)
     })
 
@@ -18,7 +18,7 @@ export default function WordHistory ({ zapi }) {
   }
 
   function deleteBookmark (day, bookmark) {
-    zapi.deleteBookmark(bookmark.id)
+    api.deleteBookmark(bookmark.id)
 
     let updatedDay = {
       date: day.date,
@@ -38,9 +38,9 @@ export default function WordHistory ({ zapi }) {
 
   function toggleStarred (day, bookmark) {
     if (bookmark.starred) {
-      zapi.unstarBookmark(bookmark.id)
+      api.unstarBookmark(bookmark.id)
     } else {
-      zapi.starBookmark(bookmark.id)
+      api.starBookmark(bookmark.id)
     }
 
     let updatedDay = {
@@ -68,7 +68,7 @@ export default function WordHistory ({ zapi }) {
         <WordsOnDate
           key={day.date}
           day={day}
-          zapi={zapi}
+          api={api}
           toggleStarred={bookmark => toggleStarred(day, bookmark)}
           deleteBookmark={bookmark => deleteBookmark(day, bookmark)}
         />

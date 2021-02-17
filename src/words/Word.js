@@ -7,7 +7,7 @@ export default function Word ({
   notifyUnstar,
   notifyDelete,
   children,
-  zapi,
+  api,
   hideStar
 }) {
   const [starred, setStarred] = useState(bookmark.starred)
@@ -26,11 +26,11 @@ export default function Word ({
   function toggleStarred (bookmark) {
     console.log(starred)
     if (starred) {
-      zapi.unstarBookmark(bookmark.id)
+      api.unstarBookmark(bookmark.id)
       bookmark.starred = false
       setStarred(false)
     } else {
-      zapi.starBookmark(bookmark.id)
+      api.starBookmark(bookmark.id)
       setStarred(true)
       bookmark.starred = true
     }
@@ -41,7 +41,7 @@ export default function Word ({
   }
 
   function deleteBookmark (bookmark) {
-    zapi.deleteBookmark(bookmark.id)
+    api.deleteBookmark(bookmark.id)
     setDeleted(true)
     if (notifyDelete) {
       notifyDelete(bookmark)

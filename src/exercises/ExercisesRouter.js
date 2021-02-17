@@ -3,16 +3,16 @@ import { PrivateRoute } from '../PrivateRoute'
 import Exercises from './Exercises'
 import ExercisesForArticle from './ExercisesForArticle'
 
-export default function ExercisesRouter ({ zapi }) {
+export default function ExercisesRouter ({ api }) {
   return (
     <Switch>
       <PrivateRoute
         path='/exercises/forArticle/:articleID'
-        zapi={zapi}
+        api={api}
         component={ExercisesForArticle}
       />
 
-      <PrivateRoute path='/exercises' api={zapi} component={Exercises} />
+      <PrivateRoute path='/exercises' api={api} component={Exercises} />
     </Switch>
   )
 }

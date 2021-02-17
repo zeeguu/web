@@ -7,7 +7,7 @@ export default function Congratulations ({
   articleID,
   correctBookmarks,
   incorrectBookmarks,
-  zapi
+  api
 }) {
   console.log(correctBookmarks)
   console.log(incorrectBookmarks)
@@ -23,7 +23,7 @@ export default function Congratulations ({
           <br />
           <br />
           {correctBookmarks.map(each => (
-            <Word bookmark={each} zapi={zapi} />
+            <Word bookmark={each} api={api} />
           ))}
         </h3>
       )}
@@ -36,7 +36,7 @@ export default function Congratulations ({
           <br />
           <br />
           {incorrectBookmarks.map(each => (
-            <Word bookmark={each} zapi={zapi} />
+            <Word bookmark={each} api={api} />
           ))}
         </h3>
       )}
