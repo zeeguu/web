@@ -139,9 +139,6 @@ const TagsOfInterests = styled.div`
 
   .sweet-overlay {
     background-color: black;
-    /* IE8 */
-    -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=40)';
-    /* IE8 */
     background-color: rgba(0, 0, 0, 0.4);
     position: fixed;
     left: 0;
@@ -213,13 +210,11 @@ const TagsOfInterests = styled.div`
     overflow: hidden;
     padding: 0 10px;
     max-height: 0;
-    webkit-transition: padding 0.15s, max-height 0.15s;
     transition: padding 0.15s, max-height 0.15s;
   }
   .sweet-alert .sa-error-container.show {
     padding: 10px 0;
     max-height: 100px;
-    webkit-transition: padding 0.2s, max-height 0.2s;
     transition: padding 0.25s, max-height 0.25s;
   }
   .sweet-alert .sa-error-container .icon {
