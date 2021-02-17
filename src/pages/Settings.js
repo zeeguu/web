@@ -1,8 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { language_for_id } from '../languages'
-
 import { LanguageSelector } from '../components/LanguageSelector'
 
 import { UserContext } from '../UserContext'
@@ -116,4 +114,12 @@ export default function Settings ({ api, setUser }) {
       </form>
     </s.FormContainer>
   )
+}
+
+function language_for_id (id, language_list) {
+  for (let i = 0; i < language_list.length; i++) {
+    if (language_list[i].code === id) {
+      return language_list[i].name
+    }
+  }
 }
