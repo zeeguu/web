@@ -14,47 +14,8 @@ export default function WordHistory ({ api }) {
       setWordsByDay(bookmarks_by_day)
     })
 
-    setTitle('Words - History')
+    setTitle('Translation History')
     return <LoadingAnimation />
-  }
-
-  function deleteBookmark (day, bookmark) {
-    api.deleteBookmark(bookmark.id)
-
-    let updatedDay = {
-      date: day.date,
-      bookmarks: day.bookmarks.filter(b => b.id !== bookmark.id)
-    }
-
-    if (updatedDay.bookmarks.length === 0) {
-      // if there's no more bookmarks left for the day,
-      // just filter out the whole day from the list
-      setWordsByDay(wordsByDay.filter(e => e.date !== day.date))
-    } else {
-      setWordsByDay([
-        ...wordsByDay.map(e => (e.date !== day.date ? e : updatedDay))
-      ])
-    }
-  }
-
-  function toggleStarred (day, bookmark) {
-    if (bookmark.starred) {
-      api.unstarBookmark(bookmark.id)
-    } else {
-      api.starBookmark(bookmark.id)
-    }
-
-    let updatedDay = {
-      date: day.date,
-      bookmarks: [
-        ...day.bookmarks.map(b =>
-          b.id !== bookmark.id ? b : { ...bookmark, starred: !bookmark.starred }
-        )
-      ]
-    }
-    setWordsByDay([
-      ...wordsByDay.map(e => (e.date !== day.date ? e : updatedDay))
-    ])
   }
 
   return (
@@ -64,13 +25,7 @@ export default function WordHistory ({ api }) {
       </s.TopMessage>
 
       {wordsByDay.map(day => (
-        <WordsOnDate
-          key={day.date}
-          day={day}
-          api={api}
-          toggleStarred={bookmark => toggleStarred(day, bookmark)}
-          deleteBookmark={bookmark => deleteBookmark(day, bookmark)}
-        />
+        <WordsOnDate key={day.date} day={day} api={api} />
       ))}
     </>
   )

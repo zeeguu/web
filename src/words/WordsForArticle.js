@@ -32,9 +32,6 @@ export default function WordsForArticle ({ api }) {
     setWords(words.filter(e => e.id !== bookmark.id))
   }
 
-  console.log(words)
-  console.log(words.length)
-
   return (
     <NarrowColumn>
       <br />

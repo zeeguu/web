@@ -20,17 +20,6 @@ export default function Top ({ api }) {
     return <LoadingAnimation />
   }
 
-  if (words.length === 0) {
-    return (
-      <div className='topMessageContainer'>
-        <div className='topMessage'>
-          Learned words are words that were correct in exercises in 4 different
-          days.
-        </div>
-      </div>
-    )
-  }
-
   return (
     <>
       <s.TopMessage>

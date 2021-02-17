@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import Word from './Word'
 import * as s from './WordsOnDate.sc'
 
-export function WordsOnDate ({ day, deleteBookmark, api, toggleStarred }) {
+export function WordsOnDate ({ day, api }) {
   function groupBy (list, keyGetter) {
     const map = new Map()
     list.forEach(item => {
