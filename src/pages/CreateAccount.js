@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom'
 import validator from './validator'
 import LoadingAnimation from '../components/LoadingAnimation'
 
-import { CEFR_LEVELS } from './cefrLevels'
+import { CEFR_LEVELS } from '../assorted/cefrLevels'
 
 import * as s from '../components/FormPage.sc'
 import PrivacyNotice from './PrivacyNotice'
