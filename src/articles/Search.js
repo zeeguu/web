@@ -1,8 +1,9 @@
 import { useParams } from 'react-router-dom'
 import SortingButtons from './SortingButtons'
 import { useState } from 'react'
-import ArticleOverview from './ArticleOverview'
+import ArticleOverview from './ArticlePreview'
 import LoadingAnimation from '../components/LoadingAnimation'
+import * as s from './Search.sc'
 
 export default function Search ({ api }) {
   const [articleList, setArticleList] = useState(null)
@@ -22,18 +23,16 @@ export default function Search ({ api }) {
 
   return (
     <>
-      <br />
-      <div className='searchText articleLinkEntry'>
-        You searched for: {term}
-        <button
-          className='deleteSearch headerElement'
-          onClick={e => (window.location = '/articles')}
-        >
-          X
-        </button>
-      </div>
+      <s.TopMessage>
+        <p>
+          {' '}
+          You searched for: {term}
+          <s.ClosePopupButton onClick={e => (window.location = '/articles')}>
+            X
+          </s.ClosePopupButton>
+        </p>
+      </s.TopMessage>
 
-      <br />
       <SortingButtons
         articleList={articleList}
         originalList={originalList}

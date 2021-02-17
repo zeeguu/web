@@ -1,16 +1,16 @@
-import styled, { css } from "styled-components";
+import styled from 'styled-components'
 
-const IndividualArticle = styled.div`
+const ArticlePreview = styled.div`
   /* background-color: lightgoldenrodyellow; */
   margin-bottom: 1em;
   border-left: solid #ffbb54;
   margin-top: 2em;
   padding-left: 0.8em;
-`;
+`
 
 const Header = styled.div`
   /* display: flex; */
-`;
+`
 
 const Title = styled.div`
   font-size: 1.4em;
@@ -21,7 +21,7 @@ const Title = styled.div`
   a {
     text-decoration: none;
   }
-`;
+`
 
 const Difficulty = styled.div`
   padding: 0.3em;
@@ -36,11 +36,11 @@ const Difficulty = styled.div`
   margin-right: 1em;
   flex-shrink: 0;
   float: right;
-`;
+`
 
 const WordCount = styled(Difficulty)`
   background: #f1f0f0;
-`;
+`
 
 let Summary = styled.div`
   font-size: 0.83em;
@@ -48,7 +48,7 @@ let Summary = styled.div`
   max-width: 44em;
   line-height: 1.5em;
   margin-top: 0.36em;
-`;
+`
 
 let SourceImage = styled.span`
   img {
@@ -57,13 +57,13 @@ let SourceImage = styled.span`
   }
   /* background-color: red; */
   margin-right: 2em;
-`;
+`
 
 let PublishingTime = styled.span`
   /* background-color: olivedrab; */
   margin-right: 2em;
   padding-bottom: 1em;
-`;
+`
 
 let Topics = styled.span`
   display: inline-block;
@@ -79,16 +79,16 @@ let Topics = styled.span`
     padding: 0.20833333333333334em 1.3541666666666667em;
     font-size: 0.8333333333333334em;
   }
-`;
+`
 
 export {
   Header,
   Title,
   Difficulty,
   WordCount,
-  IndividualArticle,
+  ArticlePreview,
   Summary,
   SourceImage,
   PublishingTime,
-  Topics,
-};
+  Topics
+}

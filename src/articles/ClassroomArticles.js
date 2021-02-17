@@ -2,7 +2,7 @@ import { useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
 import { setTitle } from '../components/setTitle'
 
-import ArticleOverview from './ArticleOverview'
+import ArticleOverview from './ArticlePreview'
 
 import SortingButtons from './SortingButtons'
 

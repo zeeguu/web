@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-import ArticleOverview from './ArticleOverview'
+import ArticleOverview from './ArticlePreview'
 
 import SortingButtons from './SortingButtons'
 import Interests from './Interests'
 import SearchField from './SearchField'
-import * as s from './NewArticles.sc'
+import * as s from './FindArticles.sc'
 import LoadingAnimation from '../components/LoadingAnimation'
 import { setTitle } from '../components/setTitle'
 
@@ -16,7 +16,6 @@ export default function NewArticles ({ api }) {
 
   if (articleList == null) {
     api.getUserArticles(articles => {
-      console.log(articles)
       setArticleList(articles)
       originalList = [...articles]
     })

@@ -1,4 +1,4 @@
-import NewArticles from './NewArticles'
+import FindArticles from './FindArticles'
 import BookmarkedArticles from './BookmarkedArticles'
 
 import { PrivateRoute } from '../PrivateRoute'
@@ -26,7 +26,7 @@ export default function ArticlesRouter ({ api }) {
           path='/articles'
           exact
           api={api}
-          component={NewArticles}
+          component={FindArticles}
         />
         <PrivateRoute
           path='/articles/search/:term'

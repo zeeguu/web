@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const MaterialSelection = styled.div`
   /* background-color: gainsboro; */
@@ -8,5 +8,5 @@ const MaterialSelection = styled.div`
   @media (min-width: 768px) {
     flex-direction: row;
   }
-`;
-export { MaterialSelection };
+`
+export { MaterialSelection }
