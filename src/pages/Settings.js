@@ -8,9 +8,11 @@ import { LanguageSelector } from '../components/LanguageSelector'
 import { UserContext } from '../UserContext'
 import LoadingAnimation from '../components/LoadingAnimation'
 
+import LocalStorage from '../LocalStorage'
+
 import * as s from '../pages/FormPage.sc'
 
-export default function Settings ({ api, updateUserInfo }) {
+export default function Settings ({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
   const history = useHistory()
@@ -26,6 +28,16 @@ export default function Settings ({ api, updateUserInfo }) {
     })
     document.title = 'Zeeguu Settings'
   }, [user.session, api])
+
+  function updateUserInfo (info) {
+    LocalStorage.setUserInfo(info)
+    setUser({
+      ...user,
+      name: info.name,
+      learned_language: info.learned_language,
+      native_language: info.native_language
+    })
+  }
 
   function handleSave (e) {
     e.preventDefault()

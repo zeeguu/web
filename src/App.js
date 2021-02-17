@@ -1,5 +1,5 @@
 import './App.css'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import LandingPage from './landingPage/LandingPage'
@@ -19,7 +19,6 @@ function App () {
   let _api = new Zeeguu_API(process.env.REACT_APP_API_URL)
 
   if (LocalStorage.hasSession()) {
-    console.log('loading from localstorage')
     userDict = {
       session: localStorage['sessionID'],
       ...LocalStorage.userInfo()
@@ -30,8 +29,6 @@ function App () {
   const [api] = useState(_api)
 
   const [user, setUser] = useState(userDict)
-
-  useEffect(() => {}, [])
 
   function handleSuccessfulSignIn (userInfo) {
     setUser({

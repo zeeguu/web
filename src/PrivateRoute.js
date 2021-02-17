@@ -1,25 +1,19 @@
-import React, { useContext, useEffect } from "react";
-import { Route, Redirect } from "react-router-dom";
-import { UserContext } from "./UserContext";
+import React, { useContext, useEffect } from 'react'
+import { Route, Redirect } from 'react-router-dom'
+import { UserContext } from './UserContext'
 
 // inspired from:
 // https://dev.to/mychal/protected-routes-with-react-function-components-dh
-// to lear from there how to also pass on the original url, so i can
-// redirect to it from signin
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const user = useContext(UserContext);
-
-  useEffect(() => {
-    console.log("private route loaded");
-  }, []);
+  const user = useContext(UserContext)
 
   if (!user.session) {
-    return <Redirect to={{ pathname: "/login" }} />;
+    return <Redirect to={{ pathname: '/login' }} />
   }
   return (
-    <Route {...rest} render={(props) => <Component {...rest} {...props} />} />
-  );
-};
+    <Route {...rest} render={props => <Component {...rest} {...props} />} />
+  )
+}
 
-export { PrivateRoute };
+export { PrivateRoute }

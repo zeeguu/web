@@ -22,7 +22,6 @@ export default function Articles ({ api }) {
           }}
         />
 
-        {/* Routing */}
         <PrivateRoute
           path='/articles'
           exact

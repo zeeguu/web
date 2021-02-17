@@ -5,21 +5,8 @@ import Settings from './pages/Settings'
 import { PrivateRoute } from './PrivateRoute'
 import SideBar from './components/SideBar'
 import ArticleReader from './reader/ArticleReader'
-import LocalStorage from './LocalStorage'
 
-export default function LoggedInRouter ({ api, user, setUser }) {
-  function doUpdateUserInfo (info) {
-    console.log('in do update user name')
-
-    LocalStorage.setUserInfo(info)
-    setUser({
-      ...user,
-      name: info.name,
-      learned_language: info.learned_language,
-      native_language: info.native_language
-    })
-  }
-
+export default function LoggedInRouter ({ api, setUser }) {
   return (
     <>
       <SideBar>
@@ -29,8 +16,8 @@ export default function LoggedInRouter ({ api, user, setUser }) {
 
         <PrivateRoute
           path='/account_settings'
-          updateUserInfo={doUpdateUserInfo}
           api={api}
+          setUser={setUser}
           component={Settings}
         />
 
