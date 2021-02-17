@@ -13,6 +13,7 @@ export default function Starred ({ api }) {
       setWords(starredWords)
     })
     setTitle('Starred Words')
+    // eslint-disable-next-line
   }, [])
 
   if (!words) {

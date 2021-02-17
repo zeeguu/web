@@ -22,6 +22,7 @@ export default function WordsForArticle ({ api }) {
       setArticleInfo(data)
       setTitle('Words in "' + data.title + '"')
     })
+    // eslint-disable-next-line
   }, [])
 
   if (words === null || articleInfo === null) {

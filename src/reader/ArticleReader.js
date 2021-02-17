@@ -38,6 +38,7 @@ export default function ArticleReader ({ api }) {
       setArticleInfo(data)
       setTitle(data.title)
     })
+    // eslint-disable-next-line
   }, [])
 
   function toggle (state, togglerFunction) {

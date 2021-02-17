@@ -44,7 +44,7 @@ export default function ResetPasswordStep2 ({ api, email }) {
         </p>
 
         <p>
-          Or contact us at <a href='#'>zeeguu.team@gmail.com</a>
+          Or contact us at <b>zeeguu.team@gmail.com</b>
         </p>
       </>
     )
