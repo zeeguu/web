@@ -1,12 +1,12 @@
 import styled from 'styled-components'
-import { veryPaleOrange } from '../components/colors'
+import { veryPaleOrange } from './colors'
 
 let TopMessage = styled.div`
   text-align: center;
   margin: auto;
   background-color: ${veryPaleOrange};
   border-radius: 0.9em;
-  width: 100%;
+  max-width: 80%;
   margin-bottom: 0.5em;
 
   p {

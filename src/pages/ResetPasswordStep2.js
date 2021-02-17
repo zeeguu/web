@@ -1,4 +1,4 @@
-import * as s from './FormPage.sc'
+import * as s from '../components/FormPage.sc'
 import { useState, useRef, useEffect } from 'react'
 import validator from './validator'
 

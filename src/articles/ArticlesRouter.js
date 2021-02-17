@@ -8,7 +8,7 @@ import TopTabs from '../components/TopTabs'
 
 import * as s from './Articles.sc'
 
-export default function Articles ({ api }) {
+export default function ArticlesRouter ({ api }) {
   return (
     <>
       {/* Rendering top menu first, then routing to corresponding page */}

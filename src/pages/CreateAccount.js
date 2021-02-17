@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import Select from './Select'
+import Select from '../components/Select'
 
 import { useHistory } from 'react-router-dom'
 
@@ -8,7 +8,7 @@ import LoadingAnimation from '../components/LoadingAnimation'
 
 import { CEFR_LEVELS } from './cefrLevels'
 
-import * as s from './FormPage.sc'
+import * as s from '../components/FormPage.sc'
 import PrivacyNotice from './PrivacyNotice'
 
 export default function CreateAccount ({ api, notifySuccessfulSignIn }) {

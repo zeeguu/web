@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
+import { setTitle } from '../components/setTitle'
 import Word from './Word'
-import * as s from './WordHistory.sc'
+import * as s from '../components/TopMessage.sc'
 
 export default function Learned ({ api }) {
   const [words, setWords] = useState(null)
@@ -10,7 +11,7 @@ export default function Learned ({ api }) {
     api.learnedBookmarks(300, learnedWords => {
       setWords(learnedWords)
     })
-    document.title = 'Zeeguu Words - Learned'
+    setTitle('Learned Words')
   }, [api])
 
   if (!words) {

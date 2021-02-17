@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
+import { setTitle } from '../components/setTitle'
 import Word from './Word'
 
 export default function Starred ({ api }) {
@@ -10,7 +11,7 @@ export default function Starred ({ api }) {
       console.log(starredWords)
       setWords(starredWords)
     })
-    document.title = 'Zeeguu Words - Starred'
+    setTitle('Starred Words')
   }, [])
 
   if (!words) {

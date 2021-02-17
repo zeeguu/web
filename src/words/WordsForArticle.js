@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
 import Word from './Word'
 
-import { TopMessage } from './WordHistory.sc'
+import { TopMessage } from '../components/TopMessage.sc'
 import { NarrowColumn, CenteredContent } from '../components/NarrowColumn.sc'
 import { OrangeButton, WhiteButton } from '../reader/ArticleReader.sc'
+import { setTitle } from '../components/setTitle'
 
 export default function WordsForArticle ({ api }) {
   let { articleID } = useParams()
@@ -19,7 +20,7 @@ export default function WordsForArticle ({ api }) {
     })
     api.getArticleInfo(articleID, data => {
       setArticleInfo(data)
-      document.title = 'Zeeguu Words: "' + data.title + '"'
+      setTitle('Words in "' + data.title + '"')
     })
   }, [])
 

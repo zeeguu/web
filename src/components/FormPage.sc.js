@@ -2,11 +2,11 @@ import styled, { css } from 'styled-components'
 
 import { CenteredContent } from '../reader/ArticleReader.sc'
 
-import { formStyling } from '../components/formStyling'
+import { formStyling } from './formStyling.sc'
 
 import * as u from './usefulSnippets.sc'
 
-import * as color from '../components/colors'
+import * as color from './colors'
 
 // Nice orange background
 let PageBackground = styled.div`

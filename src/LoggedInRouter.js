@@ -1,4 +1,4 @@
-import Articles from './articles/Articles'
+import ArticlesRouter from './articles/ArticlesRouter'
 import WordsRouter from './words/WordsRouter'
 import ExercisesRouter from './exercises/ExercisesRouter'
 import Settings from './pages/Settings'
@@ -10,7 +10,7 @@ export default function LoggedInRouter ({ api, setUser }) {
   return (
     <>
       <SideBar>
-        <PrivateRoute path='/articles' api={api} component={Articles} />
+        <PrivateRoute path='/articles' api={api} component={ArticlesRouter} />
         <PrivateRoute path='/exercises' api={api} component={ExercisesRouter} />
         <PrivateRoute path='/words' api={api} component={WordsRouter} />
 

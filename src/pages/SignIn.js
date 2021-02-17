@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 
 import { useHistory } from 'react-router-dom'
 
-import * as s from './FormPage.sc'
+import * as s from '../components/FormPage.sc'
 
 export default function SignIn ({ api, notifySuccessfulSignIn }) {
   const [email, setEmail] = useState('')

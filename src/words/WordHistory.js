@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { WordsOnDate } from './WordsOnDate'
 import LoadingAnimation from '../components/LoadingAnimation'
 
-import * as s from './WordHistory.sc'
+import * as s from '../components/TopMessage.sc'
+import { setTitle } from '../components/setTitle'
 
 export default function WordHistory ({ api }) {
   const [wordsByDay, setWordsByDay] = useState(null)
@@ -13,7 +14,7 @@ export default function WordHistory ({ api }) {
       setWordsByDay(bookmarks_by_day)
     })
 
-    document.title = 'Zeeguu Words - History'
+    setTitle('Words - History')
     return <LoadingAnimation />
   }
 

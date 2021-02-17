@@ -10,6 +10,7 @@ import InteractiveText from './InteractiveText'
 import BookmarkButton from './BookmarkButton'
 
 import LoadingAnimation from '../components/LoadingAnimation'
+import { setTitle } from '../components/setTitle'
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -37,7 +38,7 @@ export default function ArticleReader ({ api }) {
       setInteractiveText(new InteractiveText(data.content, data, api))
       setInteractiveTitle(new InteractiveText(data.title, data, api))
       setArticleInfo(data)
-      document.title = 'Zeeguu Read: ' + data.title
+      setTitle(data.title)
     })
   }, [])
 

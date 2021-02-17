@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 
 import { useHistory } from 'react-router-dom'
 
-import * as s from './FormPage.sc'
+import * as s from '../components/FormPage.sc'
 
 import ResetPasswordStep1 from './ResetPasswordStep1'
 import ResetPasswordStep2 from './ResetPasswordStep2'

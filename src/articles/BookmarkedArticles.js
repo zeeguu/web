@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
+import { setTitle } from '../components/setTitle'
 
 import ArticleOverview from './ArticleOverview'
 
 import SortingButtons from './SortingButtons'
+
+import * as s from '../components/TopMessage.sc'
 
 export default function BookmarkedArticles ({ api }) {
   const [articleList, setArticleList] = useState(null)
@@ -16,9 +19,17 @@ export default function BookmarkedArticles ({ api }) {
       setArticleList(articles)
     })
 
-    document.title = 'Zeeguu Articles- Bookmarked'
+    setTitle('Bookmarked Articles')
 
     return <LoadingAnimation />
+  }
+
+  if (articleList.length === 0) {
+    return (
+      <s.TopMessage>
+        <p>You haven't bookmarked any articles yet</p>
+      </s.TopMessage>
+    )
   }
 
   return (

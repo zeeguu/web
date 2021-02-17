@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react'
 
 import LoadingAnimation from '../components/LoadingAnimation'
+import { setTitle } from '../components/setTitle'
 import Word from './Word'
-import * as s from './WordHistory.sc'
+import * as s from '../components/TopMessage.sc'
 
 export default function Top ({ api }) {
   const [words, setWords] = useState(null)
 
   useEffect(() => {
-    console.log('in useEffect in Top')
     api.topBookmarks(300, topWords => {
       console.log(topWords)
       setWords(topWords)
     })
-    document.title = 'Zeeguu Words - Ranked'
+    setTitle('Ranked Words')
   }, [api])
 
   if (!words) {

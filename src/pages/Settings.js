@@ -10,7 +10,8 @@ import LoadingAnimation from '../components/LoadingAnimation'
 
 import LocalStorage from '../LocalStorage'
 
-import * as s from '../pages/FormPage.sc'
+import * as s from '../components/FormPage.sc'
+import { setTitle } from '../components/setTitle'
 
 export default function Settings ({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null)
@@ -26,7 +27,7 @@ export default function Settings ({ api, setUser }) {
         setUserDetails(data)
       })
     })
-    document.title = 'Zeeguu Settings'
+    setTitle('Settings')
   }, [user.session, api])
 
   function updateUserInfo (info) {

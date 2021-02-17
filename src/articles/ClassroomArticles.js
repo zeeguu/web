@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
+import { setTitle } from '../components/setTitle'
 
 import ArticleOverview from './ArticleOverview'
 
 import SortingButtons from './SortingButtons'
+
+import * as s from '../components/TopMessage.sc'
 
 export default function ClassroomArticles ({ api }) {
   const [articleList, setArticleList] = useState(null)
@@ -15,13 +18,17 @@ export default function ClassroomArticles ({ api }) {
       setArticleList(articles)
     })
 
-    document.title = 'Zeeguu Articles - Classroom'
+    setTitle('Classroom Articles')
 
     return <LoadingAnimation />
   }
 
   if (articleList.length === 0) {
-    return <div>no articles found</div>
+    return (
+      <s.TopMessage>
+        <p>There are no articles in your classroom</p>
+      </s.TopMessage>
+    )
   }
 
   return (

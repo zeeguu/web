@@ -7,6 +7,7 @@ import ProgressBar from './ProgressBar'
 import * as s from './Exercises.sc'
 import FeedbackButtons from './FeedbackButtons'
 import LoadingAnimation from '../components/LoadingAnimation'
+import { setTitle } from '../components/setTitle'
 
 let NUMBER_OF_EXERCISES = 4
 
@@ -31,7 +32,7 @@ export default function Exercises ({ api, articleID }) {
         setCurretBookmarkToStudy(bookmarks[currentIndex])
         api.getArticleInfo(articleID, data => {
           setArticleInfo(data)
-          document.title = 'Zeeguu Exercises: "' + data.title + '"'
+          setTitle('Exercises for "' + data.title + '"')
         })
       })
     } else {
@@ -42,7 +43,7 @@ export default function Exercises ({ api, articleID }) {
       })
     }
 
-    document.title = 'Zeeguu Exercises'
+    setTitle('Exercises')
   }
 
   if (finished) {

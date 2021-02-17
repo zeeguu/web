@@ -7,6 +7,7 @@ import Interests from './Interests'
 import SearchField from './SearchField'
 import * as s from './NewArticles.sc'
 import LoadingAnimation from '../components/LoadingAnimation'
+import { setTitle } from '../components/setTitle'
 
 export default function NewArticles ({ api }) {
   const [articleList, setArticleList] = useState(null)
@@ -20,7 +21,7 @@ export default function NewArticles ({ api }) {
       originalList = [...articles]
     })
 
-    document.title = 'Zeeguu Articles - Find'
+    setTitle('Find Articles')
 
     return <LoadingAnimation />
   }
