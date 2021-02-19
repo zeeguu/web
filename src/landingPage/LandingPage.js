@@ -77,18 +77,20 @@ export default function LandingPage () {
           <h2>Personalized Practice</h2>
           <s.DescriptionText>
             <p>
-              Spaced repetition algorithms optimize your practice and frequent
-              words are prioritized.
+              Zeeguu generates personalized vocabulary exercises by using the
+              original context in which you encountered words that you didn't
+              understand. We do this because contextual learning works better.
             </p>
+
             <p>
+              Spaced repetition algorithms optimize your practice. Moreover, if
+              you have limited time, our algorithms will prioritize frequent
+              words in your exercises.
+            </p>
+            {/* <p>
               Zeeguu uses machine learning to create a model of your vocabulary
               knowledge based on your past interactions with texts the system.
-            </p>
-            <p>
-              It then generates a variety of vocabulary exercises, some of
-              which, even use the original context of the word because
-              contextual learning works better.
-            </p>
+            </p> */}
           </s.DescriptionText>
         </s.PaleAdaptableColumn>
 
