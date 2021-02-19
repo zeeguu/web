@@ -1,4 +1,4 @@
-import LocalStorage from '../LocalStorage'
+import LocalStorage from '../assorted/LocalStorage'
 import News from './News'
 import * as s from './LandingPage.sc.js'
 import Contributors from './Contributors'

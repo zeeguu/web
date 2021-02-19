@@ -6,10 +6,10 @@ import { LanguageSelector } from '../components/LanguageSelector'
 import { UserContext } from '../UserContext'
 import LoadingAnimation from '../components/LoadingAnimation'
 
-import LocalStorage from '../LocalStorage'
-
 import * as s from '../components/FormPage.sc'
 import { setTitle } from '../assorted/setTitle'
+
+import LocalStorage from '../assorted/LocalStorage'
 
 export default function Settings ({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null)

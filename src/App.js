@@ -6,7 +6,7 @@ import LandingPage from './landingPage/LandingPage'
 import SignIn from './pages/SignIn'
 import { UserContext } from './UserContext'
 
-import LocalStorage from './LocalStorage'
+import LocalStorage from './assorted/LocalStorage'
 import Zeeguu_API from './api/Zeeguu_API'
 import LoggedInRouter from './LoggedInRouter'
 import CreateAccount from './pages/CreateAccount'
