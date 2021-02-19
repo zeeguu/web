@@ -57,6 +57,7 @@ export default class InteractiveText {
       .then(response => response.json())
       .then(data => {
         word.translation = data['translations'][0].translation
+        word.service_name = data['translations'][0].service_name
         onSucess()
       })
       .catch(() => {
