@@ -1,7 +1,7 @@
 import * as s from '../components/FormPage.sc'
 import { useState } from 'react'
 import * as EmailValidator from 'email-validator'
-import validator from './validator'
+import validator from '../assorted/validator'
 
 export default function ResetPasswordStep1 ({
   api,

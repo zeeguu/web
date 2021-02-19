@@ -3,7 +3,7 @@ import Select from '../components/Select'
 
 import { useHistory } from 'react-router-dom'
 
-import validator from './validator'
+import validator from '../assorted/validator'
 import LoadingAnimation from '../components/LoadingAnimation'
 
 import { CEFR_LEVELS } from '../assorted/cefrLevels'
