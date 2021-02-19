@@ -43,7 +43,7 @@ export default function LandingPage () {
           <s.DescriptionText>
             <p>
               Our system continuously searches the net for texts based on your
-              own declared interests.
+              personalized interests.
             </p>
 
             <p>
