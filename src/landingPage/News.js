@@ -18,7 +18,17 @@ export default function News () {
 
       <h2>2021</h2>
 
-      {item('Feb', <>Kick off of project about using Zeeguu to teach Danish</>)}
+      {item(
+        'Feb',
+        <>
+          Pernille Hvalsoe obtains funding from The Danish Agency for
+          International Recruitment and Integration for a{' '}
+          <a href='https://cip.ku.dk/english/projects-and-collaborations/towards-a-personalised-textbook---new-tools-and-new-methods/'>
+            project which uses Zeeguu to increase personalization
+          </a>{' '}
+          in the Danish classroom.
+        </>
+      )}
 
       <h2>2020</h2>
 
