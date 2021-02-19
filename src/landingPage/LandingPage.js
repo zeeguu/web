@@ -43,27 +43,23 @@ export default function LandingPage () {
           <s.DescriptionText>
             <p>
               Our system continuously searches the net for texts based on your
-              personalized interests.
+              personalized interests. We believe that personally relevant texts
+              will motivate you to study more.
             </p>
 
             <p>
-              We help you find texts that are at the right difficulty level
-              since you learn best when materials are challenging but not too
-              difficult
-            </p>
-
-            <p>
-              Unlike the generic texts that you can find in textbooks,
-              personally relevant texts will motivate you to study more.
+              Moreover, we aim to help you to find texts that are at the right
+              difficulty level since you learn best when materials are
+              challenging but not too difficult (this is what is called
+              "studying in the zone of proximal development").
             </p>
           </s.DescriptionText>
 
           <h2>Easy Translations</h2>
           <s.DescriptionText>
             <p>
-              Studies show that you learn best when the texts that you read are
-              challenging. In such a text you will still encounter words that
-              you don't understand.
+              If a text is challenging it will also include words that you don't
+              understand.
             </p>
 
             <p>
@@ -74,7 +70,7 @@ export default function LandingPage () {
 
             <p>
               The system also provides word pronunciation support. For some
-              languages, e.g. Danish, this is very important.
+              languages, e.g. Danish, this is actually very important.
             </p>
           </s.DescriptionText>
 
