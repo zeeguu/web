@@ -7,7 +7,7 @@ import Word from './Word'
 import { TopMessage } from '../components/TopMessage.sc'
 import { NarrowColumn, CenteredContent } from '../components/NarrowColumn.sc'
 import { OrangeButton, WhiteButton } from '../reader/ArticleReader.sc'
-import { setTitle } from '../components/setTitle'
+import { setTitle } from '../assorted/setTitle'
 
 export default function WordsForArticle ({ api }) {
   let { articleID } = useParams()

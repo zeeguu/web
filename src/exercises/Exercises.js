@@ -7,7 +7,7 @@ import ProgressBar from './ProgressBar'
 import * as s from './Exercises.sc'
 import FeedbackButtons from './FeedbackButtons'
 import LoadingAnimation from '../components/LoadingAnimation'
-import { setTitle } from '../components/setTitle'
+import { setTitle } from '../assorted/setTitle'
 
 let NUMBER_OF_EXERCISES = 4
 

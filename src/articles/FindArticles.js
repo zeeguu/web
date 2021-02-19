@@ -7,7 +7,7 @@ import Interests from './Interests'
 import SearchField from './SearchField'
 import * as s from './FindArticles.sc'
 import LoadingAnimation from '../components/LoadingAnimation'
-import { setTitle } from '../components/setTitle'
+import { setTitle } from '../assorted/setTitle'
 
 export default function NewArticles ({ api }) {
   const [articleList, setArticleList] = useState(null)

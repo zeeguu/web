@@ -9,7 +9,7 @@ import LoadingAnimation from '../components/LoadingAnimation'
 import LocalStorage from '../LocalStorage'
 
 import * as s from '../components/FormPage.sc'
-import { setTitle } from '../components/setTitle'
+import { setTitle } from '../assorted/setTitle'
 
 export default function Settings ({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null)

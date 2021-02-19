@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
-import { setTitle } from '../components/setTitle'
+import { setTitle } from '../assorted/setTitle'
 
 import ArticleOverview from './ArticlePreview'
 

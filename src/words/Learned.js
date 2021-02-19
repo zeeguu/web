@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
-import { setTitle } from '../components/setTitle'
+import { setTitle } from '../assorted/setTitle'
 import Word from './Word'
 import * as s from '../components/TopMessage.sc'
 

@@ -9,7 +9,7 @@ import InteractiveText from './InteractiveText'
 import BookmarkButton from './BookmarkButton'
 
 import LoadingAnimation from '../components/LoadingAnimation'
-import { setTitle } from '../components/setTitle'
+import { setTitle } from '../assorted/setTitle'
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.

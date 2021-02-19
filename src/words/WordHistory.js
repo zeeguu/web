@@ -4,7 +4,7 @@ import { WordsOnDate } from './WordsOnDate'
 import LoadingAnimation from '../components/LoadingAnimation'
 
 import * as s from '../components/TopMessage.sc'
-import { setTitle } from '../components/setTitle'
+import { setTitle } from '../assorted/setTitle'
 
 export default function WordHistory ({ api }) {
   const [wordsByDay, setWordsByDay] = useState(null)

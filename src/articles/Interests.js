@@ -3,7 +3,7 @@ import TagsOfFilters from './TagsOfFilters'
 import { useState } from 'react'
 
 import * as s from './Interests.sc'
-import * as b from '../components/Buttons.sc'
+import * as b from '../components/buttons.sc'
 
 export default function InterestsAndSearch ({ api, articlesListShouldChange }) {
   const [showingInterests, setShowingInterests] = useState(false)
