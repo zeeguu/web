@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import * as b from '../components/buttons.sc'
+import * as b from '../components/allButtons.sc'
 
 const SortingButtons = styled.div`
   margin-bottom: 1em;
