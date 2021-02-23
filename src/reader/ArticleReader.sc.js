@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { BigSquareButton } from '../components/buttons.sc'
+import { BigSquareButton } from '../components/allButtons.sc'
 
 import * as color from '../components/colors'
 
