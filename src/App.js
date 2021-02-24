@@ -36,7 +36,7 @@ function App () {
       name: userInfo.name,
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
-      is_teacher: userInfo.teacher
+      is_teacher: userInfo.is_teacher
     })
     LocalStorage.setSession(api.session)
     LocalStorage.setUserInfo(userInfo)

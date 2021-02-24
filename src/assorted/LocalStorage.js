@@ -3,7 +3,8 @@ const LocalStorage = {
     Session: 'sessionID',
     Name: 'name',
     LearnedLanguage: 'learned_language',
-    NativeLanguage: 'native_language'
+    NativeLanguage: 'native_language',
+    IsTeacher: 'is_teacher'
   },
 
   // Getting Info
@@ -19,7 +20,8 @@ const LocalStorage = {
     return {
       name: localStorage[this.Keys.Name],
       learned_language: localStorage[this.Keys.LearnedLanguage],
-      native_language: localStorage[this.Keys.NativeLanguage]
+      native_language: localStorage[this.Keys.NativeLanguage],
+      is_teacher: localStorage[this.Keys.IsTeacher]
     }
   },
 
@@ -36,6 +38,7 @@ const LocalStorage = {
     localStorage[this.Keys.Name] = info.name
     localStorage[this.Keys.LearnedLanguage] = info.learned_language
     localStorage[this.Keys.NativeLanguage] = info.native_language
+    localStorage[this.Keys.IsTeacher] = info.is_teacher
   },
 
   deleteUserInfo: function () {
