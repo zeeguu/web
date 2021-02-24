@@ -39,6 +39,7 @@ function App () {
     })
     LocalStorage.setSession(api.session)
     LocalStorage.setUserInfo(userInfo)
+    document.cookie = `sessionID=${api.session};`
   }
 
   function logout () {
