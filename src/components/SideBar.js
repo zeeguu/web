@@ -50,8 +50,8 @@ export default function SideBar (props) {
       {(user.is_teacher === 'true' || user.is_teacher === true) && (
         <div className='navigationLink'>
           <Link
-            target='_blank'
-            to='/teacher-dashboard'
+            // target='_blank'
+            to='/teacher-dashboard/'
             onClick={resetSidebarToDefault}
           >
             <small>My Students</small>
