@@ -35,10 +35,15 @@ function App () {
       session: api.session,
       name: userInfo.name,
       learned_language: userInfo.learned_language,
-      native_language: userInfo.native_language
+      native_language: userInfo.native_language,
+      is_teacher: userInfo.teacher
     })
     LocalStorage.setSession(api.session)
     LocalStorage.setUserInfo(userInfo)
+
+    // TODO: this is required by the teacher dashboard
+    // could be cool to remove it from there and make that
+    // one also use the localStorage
     document.cookie = `sessionID=${api.session};`
   }
 

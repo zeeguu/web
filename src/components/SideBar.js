@@ -47,6 +47,14 @@ export default function SideBar (props) {
           Exercises
         </Link>
       </div>
+      {user.is_teacher && (
+        <div className='navigationLink'>
+          <Link to='/teacher_dashboard' onClick={resetSidebarToDefault}>
+            <small>My Students</small>
+          </Link>
+        </div>
+      )}
+
       <div className='navigationLink'>
         <Link to='/account_settings' onClick={resetSidebarToDefault}>
           Settings
