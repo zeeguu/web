@@ -33,13 +33,17 @@ export class Word extends LinkedList.Item {
     return this;
   }
 
+  isEndOfSentence() {
+    return ".;".includes(this.word[this.word.length - 1]);
+  }
+
   fuseWithNeighborsIfNeeded() {
     let newWord = this;
-    if (this.prev && this.prev.translation) {
+    if (this.prev && this.prev.translation && !this.prev.isEndOfSentence()) {
       newWord = this.fuseWithPrevious();
     }
 
-    if (this.next && this.next.translation) {
+    if (this.next && this.next.translation && !this.isEndOfSentence()) {
       newWord = this.fuseWithNext();
     }
 
