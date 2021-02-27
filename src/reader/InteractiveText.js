@@ -1,5 +1,4 @@
 import LinkedWordList from "./LinkedWordListClass";
-import _ from "lodash";
 
 import Speech from "speak-tts";
 
