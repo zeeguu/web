@@ -1,55 +1,67 @@
-import { v4 as uuid } from 'uuid'
-import LinkedList from 'linked-list'
+import { v4 as uuid } from "uuid";
+import LinkedList from "linked-list";
 
 export class Word extends LinkedList.Item {
-  constructor (word) {
-    super()
-    this.id = uuid()
-    this.word = word
-    this.translation = null
+  constructor(word) {
+    super();
+    this.id = uuid();
+    this.word = word;
+    this.translation = null;
   }
 
-  fuseWithPrevious () {
-    this.word = this.prev.word + ' ' + this.word
-    this.prev.detach()
-    return this
+  splitIntoComponents() {
+    let words = this.word.split(" ").map((e) => new Word(e));
+
+    this.append(words[0]);
+
+    for (let i = 0; i < words.length - 1; i++) {
+      words[i].append(words[i + 1]);
+    }
+
+    this.detach();
   }
 
-  fuseWithNext () {
-    this.word = this.word + ' ' + this.next.word
-    this.next.detach()
-    return this
+  fuseWithPrevious() {
+    this.word = this.prev.word + " " + this.word;
+    this.prev.detach();
+    return this;
   }
 
-  fuseWithNeighborsIfNeeded () {
-    let newWord = this
+  fuseWithNext() {
+    this.word = this.word + " " + this.next.word;
+    this.next.detach();
+    return this;
+  }
+
+  fuseWithNeighborsIfNeeded() {
+    let newWord = this;
     if (this.prev && this.prev.translation) {
-      newWord = this.fuseWithPrevious()
+      newWord = this.fuseWithPrevious();
     }
 
     if (this.next && this.next.translation) {
-      newWord = this.fuseWithNext()
+      newWord = this.fuseWithNext();
     }
 
-    return newWord
+    return newWord;
   }
 }
 
 export default class LinkedWordList {
-  constructor (text) {
-    this.linkedWords = LinkedList.from(splitTextIntoWords(text))
+  constructor(text) {
+    this.linkedWords = LinkedList.from(splitTextIntoWords(text));
   }
 
-  getWords () {
-    return this.linkedWords.toArray()
+  getWords() {
+    return this.linkedWords.toArray();
   }
 }
 
 // Private functions
-function splitTextIntoWords (text) {
+function splitTextIntoWords(text) {
   let splitWords = text
     .trim()
     .split(/[\s,]+/)
-    .map(word => new Word(word))
-  return splitWords
+    .map((word) => new Word(word));
+  return splitWords;
 }

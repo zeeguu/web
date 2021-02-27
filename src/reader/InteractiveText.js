@@ -1,49 +1,47 @@
-import LinkedWordList from './LinkedWordListClass'
-import _ from 'lodash'
+import LinkedWordList from "./LinkedWordListClass";
+import _ from "lodash";
 
-import Speech from 'speak-tts'
+import Speech from "speak-tts";
 
 export default class InteractiveText {
-  constructor (content, articleInfo, api) {
-    this.articleInfo = articleInfo
-    this.api = api
+  constructor(content, articleInfo, api) {
+    this.articleInfo = articleInfo;
+    this.api = api;
 
     //
-    this.paragraphs = content.split(/\n\n/)
+    this.paragraphs = content.split(/\n\n/);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
-      each => new LinkedWordList(each)
-    )
-
-    // history allows undo-ing the word translations
-    this.history = []
+      (each) => new LinkedWordList(each)
+    );
 
     // speech
-    this.speech = new Speech()
+    this.speech = new Speech();
     this.speech
       .init()
-      .then(data => {
+      .then((data) => {
         // The "data" object contains the list of available voices and the voice synthesis params
         let randomVoice = _getRandomVoice(
           data.voices,
           this.articleInfo.language
-        )
+        );
 
-        this.speech.setVoice(randomVoice.name)
+        this.speech.setVoice(randomVoice.name);
       })
-      .catch(e => {
-        console.error('An error occured while initializing : ', e)
-      })
+      .catch((e) => {
+        console.error("An error occured while initializing : ", e);
+      });
   }
 
-  getParagraphs () {
-    return this.paragraphsAsLinkedWordLists
+  getParagraphs() {
+    return this.paragraphsAsLinkedWordLists;
   }
 
-  translate (word, onSucess) {
-    this.history.push(_.cloneDeep(this.paragraphsAsLinkedWordLists))
-    let context = this.getContext(word)
+  translate(word, onSucess) {
+    // this.history.push(_.cloneDeep(this.paragraphsAsLinkedWordLists));
+    let context = this.getContext(word);
 
-    word = word.fuseWithNeighborsIfNeeded()
+    console.log(word);
+    word = word.fuseWithNeighborsIfNeeded();
 
     this.api
       .getOneTranslation(
@@ -54,18 +52,18 @@ export default class InteractiveText {
         window.location,
         this.articleInfo.title
       )
-      .then(response => response.json())
-      .then(data => {
-        word.translation = data['translations'][0].translation
-        word.service_name = data['translations'][0].service_name
-        onSucess()
+      .then((response) => response.json())
+      .then((data) => {
+        word.translation = data["translations"][0].translation;
+        word.service_name = data["translations"][0].service_name;
+        onSucess();
       })
       .catch(() => {
-        console.log('could not retreive translation')
-      })
+        console.log("could not retreive translation");
+      });
   }
 
-  selectAlternative (word, alternative, onSuccess) {
+  selectAlternative(word, alternative, onSuccess) {
     this.api.contributeTranslation(
       this.articleInfo.language,
       localStorage.native_language,
@@ -74,15 +72,15 @@ export default class InteractiveText {
       this.getContext(word),
       window.location,
       this.articleInfo.title
-    )
-    word.translation = alternative
-    word.service_name = 'Own alternative selection'
+    );
+    word.translation = alternative;
+    word.service_name = "Own alternative selection";
 
-    onSuccess()
+    onSuccess();
   }
 
-  alternativeTranslations (word, onSuccess) {
-    let context = this.getContext(word)
+  alternativeTranslations(word, onSuccess) {
+    let context = this.getContext(word);
     this.api
       .getNextTranslations(
         this.articleInfo.language,
@@ -95,55 +93,49 @@ export default class InteractiveText {
         word.translation,
         this.articleInfo.id
       )
-      .then(response => response.json())
-      .then(data => {
-        word.alternatives = data.translations.map(each => each.translation)
-        onSuccess()
-      })
+      .then((response) => response.json())
+      .then((data) => {
+        word.alternatives = data.translations.map((each) => each.translation);
+        onSuccess();
+      });
   }
 
-  undo () {
-    if (this.history.length !== 0) {
-      this.paragraphsAsLinkedWordLists = this.history.pop()
-    }
-  }
-
-  pronounce (word) {
+  pronounce(word) {
     this.speech.speak({
-      text: word.word
-    })
+      text: word.word,
+    });
   }
 
-  getContext (word) {
-    function endOfSentenceIn (word) {
-      let text = word.word
-      return text[text.length - 1] === '.'
+  getContext(word) {
+    function endOfSentenceIn(word) {
+      let text = word.word;
+      return text[text.length - 1] === ".";
     }
-    function getLeftContext (word, count) {
-      if (count === 0 || !word || endOfSentenceIn(word)) return ''
-      return getLeftContext(word.prev, count - 1) + ' ' + word.word
+    function getLeftContext(word, count) {
+      if (count === 0 || !word || endOfSentenceIn(word)) return "";
+      return getLeftContext(word.prev, count - 1) + " " + word.word;
     }
 
-    function getRightContext (word, count) {
-      if (count === 0 || !word || endOfSentenceIn(word)) return ''
-      return word.word + ' ' + getRightContext(word.next, count - 1)
+    function getRightContext(word, count) {
+      if (count === 0 || !word || endOfSentenceIn(word)) return "";
+      return word.word + " " + getRightContext(word.next, count - 1);
     }
     let context =
       getLeftContext(word.prev, 2) +
-      ' ' +
+      " " +
       word.word +
-      ' ' +
-      getRightContext(word.next, 2)
+      " " +
+      getRightContext(word.next, 2);
 
-    return context
+    return context;
   }
 }
 
-function _randomElement (x) {
-  return x[Math.floor(Math.random() * x.length)]
+function _randomElement(x) {
+  return x[Math.floor(Math.random() * x.length)];
 }
 
-function _getRandomVoice (voices, language) {
-  let x = _randomElement(voices.filter(v => v.lang.includes(language)))
-  return x
+function _getRandomVoice(voices, language) {
+  let x = _randomElement(voices.filter((v) => v.lang.includes(language)));
+  return x;
 }

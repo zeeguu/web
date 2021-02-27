@@ -1,60 +1,62 @@
-import { useState } from 'react'
-import AlterMenu from './AlterMenu'
+import { useState } from "react";
+import AlterMenu from "./AlterMenu";
 
-export default function TranslatableWord ({
+export default function TranslatableWord({
   interactiveText,
   word,
   wordUpdated,
   translating,
-  pronouncing
+  pronouncing,
 }) {
-  const [showingAlternatives, setShowingAlternatives] = useState(false)
+  const [showingAlternatives, setShowingAlternatives] = useState(false);
 
-  function clickOnWord (word) {
+  function clickOnWord(word) {
     if (translating) {
       interactiveText.translate(word, () => {
-        wordUpdated()
-      })
+        wordUpdated();
+      });
     }
     if (pronouncing) {
-      interactiveText.pronounce(word)
+      interactiveText.pronounce(word);
     }
   }
 
-  function toggleAlternatives (e, word) {
+  function toggleAlternatives(e, word) {
     if (showingAlternatives) {
-      setShowingAlternatives(false)
-      return
+      setShowingAlternatives(false);
+      return;
     }
     interactiveText.alternativeTranslations(word, () => {
-      wordUpdated(word)
-      setShowingAlternatives(!showingAlternatives)
-    })
+      wordUpdated(word);
+      setShowingAlternatives(!showingAlternatives);
+    });
   }
 
-  function selectAlternative (alternative) {
+  function selectAlternative(alternative) {
     interactiveText.selectAlternative(word, alternative, () => {
-      wordUpdated()
-      setShowingAlternatives(false)
-    })
+      wordUpdated();
+      setShowingAlternatives(false);
+    });
   }
 
-  function clickedOutsideAlterMenu () {
-    setShowingAlternatives(false)
+  function clickedOutsideAlterMenu() {
+    setShowingAlternatives(false);
   }
 
-  function hideTranslation (e, word) {
-    word.translation = undefined
-    wordUpdated()
+  function hideTranslation(e, word) {
+    console.log(word);
+    word.translation = undefined;
+    word.splitIntoComponents();
+    wordUpdated();
   }
 
   if (!word.translation) {
     return (
       <>
-        <z-tag onClick={e => clickOnWord(word)}>{word.word}</z-tag>
+        <z-tag onClick={(e) => clickOnWord(word)}>{word.word}</z-tag>
         <span> </span>
       </>
-    )
+    );
   }
   return (
     <>
@@ -62,10 +64,10 @@ export default function TranslatableWord ({
         <z-tran
           chosen={word.translation}
           translation0={word.translation}
-          onClick={e => toggleAlternatives(e, word)}
+          onClick={(e) => toggleAlternatives(e, word)}
         />
         <z-orig>
-          <span onClick={e => hideTranslation(e, word)}>{word.word} </span>
+          <span onClick={(e) => hideTranslation(e, word)}>{word.word} </span>
           {showingAlternatives && (
             <AlterMenu
               word={word}
@@ -76,7 +78,7 @@ export default function TranslatableWord ({
           )}
         </z-orig>
       </z-tag>
-      <span>{'  '} </span>
+      <span>{"  "} </span>
     </>
-  )
+  );
 }
