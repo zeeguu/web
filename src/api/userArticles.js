@@ -26,3 +26,7 @@ Zeeguu_API.prototype.setArticleInfo = function (articleInfo, callback) {
     callback
   )
 }
+
+Zeeguu_API.prototype.setArticleOpened = function (articleID) {
+  this._post('article_opened', `article_id=${articleID}`)
+}
