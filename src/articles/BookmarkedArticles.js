@@ -2,7 +2,7 @@ import { useState } from 'react'
 import LoadingAnimation from '../components/LoadingAnimation'
 import { setTitle } from '../assorted/setTitle'
 
-import ArticleOverview from './ArticlePreview'
+import ArticlePreview from './ArticlePreview'
 
 import SortingButtons from './SortingButtons'
 
@@ -37,7 +37,7 @@ export default function BookmarkedArticles ({ api }) {
         setArticleList={setArticleList}
       />
       {articleList.map(each => (
-        <ArticleOverview
+        <ArticlePreview
           key={each.id}
           article={each}
           dontShowPublishingTime={true}

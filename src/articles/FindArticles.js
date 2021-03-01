@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import ArticleOverview from './ArticlePreview'
+import ArticlePreview from './ArticlePreview'
 
 import SortingButtons from './SortingButtons'
 import Interests from './Interests'
@@ -51,7 +51,7 @@ export default function NewArticles ({ api }) {
       />
 
       {articleList.map(each => (
-        <ArticleOverview key={each.id} article={each} />
+        <ArticlePreview key={each.id} article={each} api={api} />
       ))}
     </>
   )

@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 import SortingButtons from './SortingButtons'
 import { useState } from 'react'
-import ArticleOverview from './ArticlePreview'
+import ArticlePreview from './ArticlePreview'
 import LoadingAnimation from '../components/LoadingAnimation'
 import * as s from './Search.sc'
 
@@ -38,7 +38,7 @@ export default function Search ({ api }) {
       />
 
       {articleList.map(each => (
-        <ArticleOverview key={each.id} article={each} />
+        <ArticlePreview key={each.id} article={each} api={api} />
       ))}
     </>
   )
