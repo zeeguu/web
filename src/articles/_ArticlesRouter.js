@@ -17,8 +17,8 @@ export default function ArticlesRouter ({ api }) {
           title='Articles'
           tabsAndLinks={{
             Find: '/articles',
-            Bookmarked: '/articles/bookmarked',
-            Classroom: '/articles/classroom'
+            Classroom: '/articles/classroom',
+            Bookmarked: '/articles/bookmarked'
           }}
         />
 
