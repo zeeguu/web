@@ -6,7 +6,7 @@ Configure the right `REACT_APP_API_URL` in the .env.development and `.env.produc
     npm run start
     
 
-## Notes: 
+## Notes
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
