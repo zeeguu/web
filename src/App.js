@@ -51,7 +51,7 @@ function App () {
     LocalStorage.deleteUserInfo()
     setUser({})
 
-    // expire cookies
+    // expire cookies, cf. https://stackoverflow.com/a/27374365/1200070
     document.cookie.split(';').forEach(function (c) {
       document.cookie = c
         .replace(/^ +/, '')
