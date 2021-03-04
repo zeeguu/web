@@ -1,98 +1,125 @@
-import './Settings.css'
-
 import { useEffect, useState, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { languages, language_from_id, language_id } from '../languages'
-
 import { LanguageSelector } from '../components/LanguageSelector'
-import MenuOnTheLeft from '../components/MenuOnTheLeft'
-import { UserContext } from '../UserContext'
 
-export default function Settings ({ api, updateUserInfo }) {
+import { UserContext } from '../UserContext'
+import LoadingAnimation from '../components/LoadingAnimation'
+
+import * as s from '../components/FormPage.sc'
+import { setTitle } from '../assorted/setTitle'
+
+import LocalStorage from '../assorted/LocalStorage'
+
+export default function Settings ({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
   const history = useHistory()
   const user = useContext(UserContext)
+  const [languages, setLanguages] = useState()
 
   useEffect(() => {
     api.getUserDetails(data => {
-      setUserDetails(data)
+      api.getSystemLanguages(systemLanguages => {
+        setLanguages(systemLanguages)
+        setUserDetails(data)
+      })
     })
-  }, [user.session])
+    setTitle('Settings')
+  }, [user.session, api])
+
+  function updateUserInfo (info) {
+    LocalStorage.setUserInfo(info)
+    setUser({
+      ...user,
+      name: info.name,
+      learned_language: info.learned_language,
+      native_language: info.native_language
+    })
+  }
 
   function handleSave (e) {
     e.preventDefault()
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      console.log('saved!')
       updateUserInfo(userDetails)
       history.goBack()
     })
   }
 
-  if (!userDetails) {
-    return (
-      <div>
-        <MenuOnTheLeft />
-        <h1>Account Settings</h1>
-        loading...
-      </div>
-    )
+  if (!userDetails || !languages) {
+    return <LoadingAnimation />
   }
 
   return (
-    <div>
-      <MenuOnTheLeft />
-      <h1>Account Settings</h1>
-      <h5>{errorMessage}</h5>
+    <s.FormContainer>
+      <form className='formSettings'>
+        <h1>Account Settings</h1>
+        <h5>{errorMessage}</h5>
 
-      <form>
-        <label>Name: </label>
+        <label>Name </label>
         <input
-          type='text'
+          name='name'
           value={userDetails.name}
           onChange={e =>
             setUserDetails({ ...userDetails, name: e.target.value })
           }
         />
-        <label>Email: </label>
+        <br />
+
+        <label>Email </label>
         <input
-          type='text'
+          type='email'
           value={userDetails.email}
           onChange={e =>
             setUserDetails({ ...userDetails, email: e.target.value })
           }
         />
-        <label>Learned Language: </label>
+
+        <label>Learned Language </label>
         <LanguageSelector
-          languages={languages()}
-          selected={language_from_id(userDetails.learned_language)}
+          languages={languages.learnable_languages}
+          selected={language_for_id(
+            userDetails.learned_language,
+            languages.learnable_languages
+          )}
           onChange={e => {
+            let code = e.target[e.target.selectedIndex].getAttribute('code')
             setUserDetails({
               ...userDetails,
-              learned_language: language_id(e.target.value)
+              learned_language: code
             })
           }}
         />
-        <label>Native Language: </label>
+
+        <label>Native Language </label>
         <LanguageSelector
-          languages={languages()}
-          selected={language_from_id(userDetails.native_language)}
+          languages={languages.native_languages}
+          selected={language_for_id(
+            userDetails.native_language,
+            languages.native_languages
+          )}
           onChange={e => {
+            let code = e.target[e.target.selectedIndex].getAttribute('code')
             setUserDetails({
               ...userDetails,
-              native_language: language_id(e.target.value)
+              native_language: code
             })
           }}
         />
-        <br />
-        <br /> <br />
-        <br />
+
         <div>
-          <input type='submit' value='Save' onClick={handleSave} />
+          <s.FormButton onClick={handleSave}>Save</s.FormButton>
         </div>
       </form>
-    </div>
+    </s.FormContainer>
   )
+}
+
+function language_for_id (id, language_list) {
+  for (let i = 0; i < language_list.length; i++) {
+    if (language_list[i].code === id) {
+      return language_list[i].name
+    }
+  }
 }

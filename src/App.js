@@ -1,18 +1,16 @@
 import './App.css'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import LandingPage from './landingPage/LandingPage'
 import SignIn from './pages/SignIn'
-import Articles from './reader/Articles'
-import Bookmarks from './pages/Bookmarks'
-import Exercises from './exercises/Exercises'
-import Settings from './pages/Settings'
-import ArticleReader from './reader/ArticleReader'
 import { UserContext } from './UserContext'
-import { PrivateRoute } from './PrivateRoute'
-import LocalStorage from './LocalStorage'
+
+import LocalStorage from './assorted/LocalStorage'
 import Zeeguu_API from './api/Zeeguu_API'
+import LoggedInRouter from './LoggedInRouter'
+import CreateAccount from './pages/CreateAccount'
+import ResetPassword from './pages/ResetPassword'
 
 function App () {
   let userDict = {}
@@ -21,7 +19,6 @@ function App () {
   let _api = new Zeeguu_API(process.env.REACT_APP_API_URL)
 
   if (LocalStorage.hasSession()) {
-    console.log('loading from localstorage')
     userDict = {
       session: localStorage['sessionID'],
       ...LocalStorage.userInfo()
@@ -29,38 +26,37 @@ function App () {
     _api.session = localStorage['sessionID']
   }
 
-  const [api, setAPI] = useState(_api)
+  const [api] = useState(_api)
 
   const [user, setUser] = useState(userDict)
-
-  useEffect(() => {}, [])
 
   function handleSuccessfulSignIn (userInfo) {
     setUser({
       session: api.session,
       name: userInfo.name,
       learned_language: userInfo.learned_language,
-      native_language: userInfo.native_language
+      native_language: userInfo.native_language,
+      is_teacher: userInfo.is_teacher
     })
     LocalStorage.setSession(api.session)
     LocalStorage.setUserInfo(userInfo)
-  }
 
-  function doUpdateUserInfo (info) {
-    console.log('in do update user name')
-
-    LocalStorage.setUserInfo(info)
-    setUser({
-      ...user,
-      name: info.name,
-      learned_language: info.learned_language,
-      native_language: info.native_language
-    })
+    // TODO: this is required by the teacher dashboard
+    // could be cool to remove it from there and make that
+    // one also use the localStorage
+    document.cookie = `sessionID=${api.session};`
   }
 
   function logout () {
     LocalStorage.deleteUserInfo()
     setUser({})
+
+    // expire cookies, cf. https://stackoverflow.com/a/27374365/1200070
+    document.cookie.split(';').forEach(function (c) {
+      document.cookie = c
+        .replace(/^ +/, '')
+        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
+    })
   }
 
   return (
@@ -80,21 +76,22 @@ function App () {
             )}
           />
 
-          <PrivateRoute path='/read' exact zapi={api} component={Articles} />
-          <PrivateRoute
-            path='/read/article'
-            api={api}
-            component={ArticleReader}
+          <Route
+            path='/create_account'
+            render={() => (
+              <CreateAccount
+                api={api}
+                notifySuccessfulSignIn={handleSuccessfulSignIn}
+              />
+            )}
           />
-          <PrivateRoute path='/bookmarks' api={api} component={Bookmarks} />
-          <PrivateRoute path='/exercises' api={api} component={Exercises} />
 
-          <PrivateRoute
-            path='/account_settings'
-            updateUserInfo={doUpdateUserInfo}
-            api={api}
-            component={Settings}
+          <Route
+            path='/reset_pass'
+            render={() => <ResetPassword api={api} />}
           />
+
+          <LoggedInRouter api={api} user={user} setUser={setUser} />
         </Switch>
       </UserContext.Provider>
     </BrowserRouter>

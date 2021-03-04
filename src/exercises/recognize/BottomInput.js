@@ -3,6 +3,7 @@ import removeAccents from 'remove-accents'
 
 export default function BottomInput ({
   handleCorrectAnswer,
+  notifyIncorrectAnswer,
   bookmarkToStudy,
   notifyKeyPress
 }) {
@@ -23,11 +24,21 @@ export default function BottomInput ({
     // .replace(/[^a-zA-Z ]/g, '')
   }
 
+  function removeQuotes (x) {
+    return x.replace(/[^a-zA-Z ]/g, '')
+  }
+
   function checkResult () {
-    var a = removeAccents(eliminateTypos(currentInput))
-    var b = removeAccents(eliminateTypos(bookmarkToStudy.from))
+    if (currentInput === '') {
+      return
+    }
+    console.log('checking result...')
+    var a = removeQuotes(removeAccents(eliminateTypos(currentInput)))
+    var b = removeQuotes(removeAccents(eliminateTypos(bookmarkToStudy.from)))
     if (a === b) {
       handleCorrectAnswer()
+    } else {
+      notifyIncorrectAnswer()
     }
   }
 

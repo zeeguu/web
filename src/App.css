@@ -1,7 +1,3 @@
-body {
-  font-family: Montserrat;
-}
-
-input:not([type='image' i]) {
-  box-sizing: border-box;
-}
+/* html {
+  font-size: 16px;
+} */

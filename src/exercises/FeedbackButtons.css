@@ -1,22 +1,26 @@
 .feedback_buttons_holder {
   display: flex;
-  /* background-color: red; */
+  background-color: rgba(211, 211, 211, 0.139);
+  border: 1px solid rgba(128, 128, 128, 0.228);
+  border-radius: 00.5em;
+
   width: 100%;
   flex-direction: row;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .feedback_buttons_holder button {
-  margin: 12px;
+  margin: 0.5em;
+  font-size: large;
 }
 
 .discrete-link {
   color: lightgray;
-  font-size: xx-small;
-  margin-right: 2em;
 }
 
 .feedback_link_holder {
-  text-align: right;
+  text-align: center;
   width: 100%;
+  margin: 1em;
 }
