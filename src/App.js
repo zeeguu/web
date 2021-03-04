@@ -50,6 +50,13 @@ function App () {
   function logout () {
     LocalStorage.deleteUserInfo()
     setUser({})
+
+    // expire cookies
+    document.cookie.split(';').forEach(function (c) {
+      document.cookie = c
+        .replace(/^ +/, '')
+        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
+    })
   }
 
   return (
