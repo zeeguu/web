@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const TranslatableText = styled.div`
   z-tag {
@@ -80,12 +80,12 @@ green downwards pointing triangle; we used to mark also single alternatives
   }
 
   .arrow {
-    content: '▼';
+    content: "▼";
     color: #4f4f4f;
   }
 
   z-tag z-tran moreAlternatives:after {
-    content: '▼';
+    content: "▼";
     color: #4f4f4f;
   }
 
@@ -113,12 +113,12 @@ green downwards pointing triangle; we used to mark also single alternatives
   }
 
   .handSelected:after {
-    content: ' ';
+    content: " ";
     color: white;
   }
 
   .handContributed:after {
-    content: ' ';
+    content: " ";
     color: white;
   }
 
@@ -141,6 +141,11 @@ that made the UI too heavy ... */
 
   z-tag z-tran[chosen]:after {
     content: attr(chosen);
+  }
+
+  z-tag z-tran[chosen]:hover:after {
+    color: rgb(60, 9, 143);
+    content: attr(chosen) " ▼";
   }
 
   .altermenu {
@@ -193,6 +198,6 @@ that made the UI too heavy ... */
     font-size: x-small;
     background: lightgoldenrodyellow;
   }
-`
+`;
 
-export { TranslatableText }
+export { TranslatableText };
