@@ -55,12 +55,6 @@ z-tag z-tran:hover {
   color: black;
 }
 
-/* Pick diff colour */
-z-tran:hover:after {
-  color: red;
-  content: "⌄";
-}
-
 /*
     the original word decoration; a simple dashed underline highlights
     the fact that we are not sure of the translation; underline becomes
@@ -148,7 +142,8 @@ that made the UI too heavy ... */
 }
 
 z-tag z-tran[chosen]:after {
-  content: attr(chosen);
+  color: rgb(60, 9, 143);
+  content: attr(chosen) "⌄";
 }
 
 .feedback_question {
