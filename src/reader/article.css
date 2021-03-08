@@ -55,6 +55,12 @@ z-tag z-tran:hover {
   color: black;
 }
 
+/* Pick diff colour */
+z-tran:hover:after {
+  color: red;
+  content: "⌄";
+}
+
 /*
     the original word decoration; a simple dashed underline highlights
     the fact that we are not sure of the translation; underline becomes
