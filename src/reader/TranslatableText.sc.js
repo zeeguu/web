@@ -79,9 +79,17 @@ green downwards pointing triangle; we used to mark also single alternatives
   z-tag z-tran moreAlternatives {
   }
 
-  .arrow {
-    content: "▼";
-    color: #4f4f4f;
+  z-tran > .arrow {
+    visibility: hidden;
+    margin: 0;
+    padding: 0;
+  }
+  z-tran:hover > .arrow {
+    visibility: visible;
+  }
+
+  z-tag z-tran[chosen]:before {
+    content: attr(chosen);
   }
 
   z-tag z-tran moreAlternatives:after {
@@ -137,15 +145,6 @@ that made the UI too heavy ... */
 
   .selectedAlternativeOrig,
   .contributedAlternativeOrig {
-  }
-
-  z-tag z-tran[chosen]:after {
-    content: attr(chosen);
-  }
-
-  z-tag z-tran[chosen]:hover:after {
-    color: rgb(60, 9, 143);
-    content: attr(chosen) " ▼";
   }
 
   .altermenu {

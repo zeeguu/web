@@ -82,8 +82,15 @@ z-tag z-tran moreAlternatives {
 }
 
 .arrow {
-  content: "▼";
-  color: #4f4f4f;
+  visibility: hidden;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  top: 0;
+}
+
+z-tag z-tran:only-child:hover {
+  visibility: visible;
 }
 
 z-tag z-tran moreAlternatives:after {
@@ -143,7 +150,7 @@ that made the UI too heavy ... */
 
 z-tag z-tran[chosen]:after {
   color: rgb(60, 9, 143);
-  content: attr(chosen) "⌄";
+  content: attr(chosen);
 }
 
 .feedback_question {
