@@ -1,14 +1,14 @@
-import { Link } from 'react-router-dom'
-import moment from 'moment'
-import * as s from './ArticlePreview.sc'
+import { Link } from "react-router-dom";
+import moment from "moment";
+import * as s from "./ArticlePreview.sc";
 
-export default function ArticleOverview ({
+export default function ArticleOverview({
   article,
   dontShowPublishingTime,
-  dontShowImage
+  dontShowImage,
 }) {
-  let topics = article.topics.split(' ').filter(each => each !== '')
-  let difficulty = Math.round(article.metrics.difficulty * 100) / 10
+  let topics = article.topics.split(" ").filter((each) => each !== "");
+  let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
   return (
     <s.ArticlePreview>
@@ -24,7 +24,7 @@ export default function ArticleOverview ({
 
       {!dontShowImage && (
         <s.SourceImage>
-          <img src={'/news-icons/' + article.icon_name} alt='' />
+          <img src={"/news-icons/" + article.icon_name} alt="" />
         </s.SourceImage>
       )}
 
@@ -35,10 +35,10 @@ export default function ArticleOverview ({
       )}
 
       <s.Topics>
-        {topics.map(topic => (
+        {topics.map((topic) => (
           <span key={topic}>{topic}</span>
         ))}
       </s.Topics>
     </s.ArticlePreview>
-  )
+  );
 }

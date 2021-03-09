@@ -1,30 +1,30 @@
-import { useState } from 'react'
-import LoadingAnimation from '../components/LoadingAnimation'
-import { setTitle } from '../assorted/setTitle'
+import { useState } from "react";
+import LoadingAnimation from "../components/LoadingAnimation";
+import { setTitle } from "../assorted/setTitle";
 
-import ArticlePreview from './ArticlePreview'
+import ArticlePreview from "./ArticlePreview";
 
-import SortingButtons from './SortingButtons'
+import SortingButtons from "./SortingButtons";
 
-import * as s from '../components/TopMessage.sc'
+import * as s from "../components/TopMessage.sc";
 
-export default function ClassroomArticles ({ api }) {
-  const [articleList, setArticleList] = useState(null)
+export default function ClassroomArticles({ api }) {
+  const [articleList, setArticleList] = useState(null);
 
-  let originalList = articleList
+  let originalList = articleList;
 
   if (articleList == null) {
-    api.getCohortArticles(articles => {
-      setArticleList(articles)
-    })
+    api.getCohortArticles((articles) => {
+      setArticleList(articles);
+    });
 
-    setTitle('Classroom Articles')
+    setTitle("Classroom Articles");
 
-    return <LoadingAnimation />
+    return <LoadingAnimation />;
   }
 
   if (articleList.length === 0) {
-    return <s.TopMessage>There are no articles in your classroom</s.TopMessage>
+    return <s.TopMessage>There are no articles in your classroom</s.TopMessage>;
   }
 
   return (
@@ -36,9 +36,9 @@ export default function ClassroomArticles ({ api }) {
         originalList={originalList}
         setArticleList={setArticleList}
       />
-      {articleList.map(each => (
+      {articleList.map((each) => (
         <ArticlePreview key={each.id} article={each} dontShowImage={true} />
       ))}
     </>
-  )
+  );
 }

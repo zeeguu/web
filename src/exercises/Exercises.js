@@ -1,48 +1,48 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-import FindWordInContext from './recognize/FindWordInContext'
-import Congratulations from './Congratulations'
-import ProgressBar from './ProgressBar'
+import FindWordInContext from "./recognize/FindWordInContext";
+import Congratulations from "./Congratulations";
+import ProgressBar from "./ProgressBar";
 
-import * as s from './Exercises.sc'
-import FeedbackButtons from './FeedbackButtons'
-import LoadingAnimation from '../components/LoadingAnimation'
-import { setTitle } from '../assorted/setTitle'
+import * as s from "./Exercises.sc";
+import FeedbackButtons from "./FeedbackButtons";
+import LoadingAnimation from "../components/LoadingAnimation";
+import { setTitle } from "../assorted/setTitle";
 
-let NUMBER_OF_EXERCISES = 4
+let NUMBER_OF_EXERCISES = 4;
 
-export default function Exercises ({ api, articleID }) {
-  const [bookmarksToStudyList, setbookmarksToStudyList] = useState(null)
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [currentBookmarkToStudy, setCurretBookmarkToStudy] = useState(null)
-  const [finished, setFinished] = useState(false)
-  const [showFeedbackButtons, setShowFeedbackButtons] = useState(false)
-  const [correctBookmarks, setCorrectBookmarks] = useState([])
-  const [incorrectBookmarks, setIncorrectBookmarks] = useState([])
-  const [articleInfo, setArticleInfo] = useState(null)
+export default function Exercises({ api, articleID }) {
+  const [bookmarksToStudyList, setbookmarksToStudyList] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentBookmarkToStudy, setCurretBookmarkToStudy] = useState(null);
+  const [finished, setFinished] = useState(false);
+  const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
+  const [correctBookmarks, setCorrectBookmarks] = useState([]);
+  const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
+  const [articleInfo, setArticleInfo] = useState(null);
 
   if (!bookmarksToStudyList) {
     if (articleID) {
       // we have an article id ==> we do exercises only for the words in that article
 
-      api.bookmarksForArticle(articleID, bookmarks => {
-        setbookmarksToStudyList(bookmarks)
-        NUMBER_OF_EXERCISES = bookmarks.length
-        setCurretBookmarkToStudy(bookmarks[currentIndex])
-        api.getArticleInfo(articleID, data => {
-          setArticleInfo(data)
-          setTitle('Exercises for "' + data.title + '"')
-        })
-      })
+      api.bookmarksForArticle(articleID, (bookmarks) => {
+        setbookmarksToStudyList(bookmarks);
+        NUMBER_OF_EXERCISES = bookmarks.length;
+        setCurretBookmarkToStudy(bookmarks[currentIndex]);
+        api.getArticleInfo(articleID, (data) => {
+          setArticleInfo(data);
+          setTitle('Exercises for "' + data.title + '"');
+        });
+      });
     } else {
-      api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, bookmarks => {
-        setbookmarksToStudyList(bookmarks)
-        NUMBER_OF_EXERCISES = bookmarks.length
-        setCurretBookmarkToStudy(bookmarks[currentIndex])
-      })
+      api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, (bookmarks) => {
+        setbookmarksToStudyList(bookmarks);
+        NUMBER_OF_EXERCISES = bookmarks.length;
+        setCurretBookmarkToStudy(bookmarks[currentIndex]);
+      });
     }
 
-    setTitle('Exercises')
+    setTitle("Exercises");
   }
 
   if (finished) {
@@ -55,61 +55,60 @@ export default function Exercises ({ api, articleID }) {
           api={api}
         />
       </div>
-    )
+    );
   }
 
   if (!currentBookmarkToStudy) {
-    return <LoadingAnimation />
-
+    return <LoadingAnimation />;
   }
 
-  function moveToNextExercise () {
-    const newIndex = currentIndex + 1
+  function moveToNextExercise() {
+    const newIndex = currentIndex + 1;
 
     if (newIndex === NUMBER_OF_EXERCISES) {
-      setFinished(true)
-      return
+      setFinished(true);
+      return;
     }
 
-    setCurrentIndex(newIndex)
-    setCurretBookmarkToStudy(bookmarksToStudyList[newIndex])
+    setCurrentIndex(newIndex);
+    setCurretBookmarkToStudy(bookmarksToStudyList[newIndex]);
   }
-  function correctAnswer () {
-    let currentBookmark = bookmarksToStudyList[currentIndex]
+  function correctAnswer() {
+    let currentBookmark = bookmarksToStudyList[currentIndex];
 
     if (!incorrectBookmarks.includes(currentBookmark)) {
       setCorrectBookmarks([
         ...correctBookmarks,
-        bookmarksToStudyList[currentIndex]
-      ])
+        bookmarksToStudyList[currentIndex],
+      ]);
     }
 
-    moveToNextExercise()
+    moveToNextExercise();
   }
 
-  function incorrectAnswerNotification () {
+  function incorrectAnswerNotification() {
     setIncorrectBookmarks([
       ...incorrectBookmarks,
-      bookmarksToStudyList[currentIndex]
-    ])
+      bookmarksToStudyList[currentIndex],
+    ]);
   }
 
-  function stopShowingThisFeedback (reason) {
-    moveToNextExercise()
+  function stopShowingThisFeedback(reason) {
+    moveToNextExercise();
     api.uploadExerciseFeedback(
       reason,
-      'Recognize_L1W_in_L2T',
+      "Recognize_L1W_in_L2T",
       0,
       currentBookmarkToStudy.id
-    )
-    setShowFeedbackButtons(false)
+    );
+    setShowFeedbackButtons(false);
   }
 
   let wordSourceText = articleInfo ? (
     <>"{articleInfo.title}"</>
   ) : (
     <>your past readings</>
-  )
+  );
 
   return (
     <s.ExercisesColumn>
@@ -132,5 +131,5 @@ export default function Exercises ({ api, articleID }) {
         feedbackFunction={stopShowingThisFeedback}
       />
     </s.ExercisesColumn>
-  )
+  );
 }

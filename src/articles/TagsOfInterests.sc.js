@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const TagsOfInterests = styled.div`
   .tagsOfInterests,
@@ -239,7 +239,7 @@ const TagsOfInterests = styled.div`
   }
   .sweet-alert .sa-input-error::before,
   .sweet-alert .sa-input-error::after {
-    content: '';
+    content: "";
     width: 20px;
     height: 6px;
     border-radius: 3px;
@@ -375,10 +375,10 @@ const TagsOfInterests = styled.div`
   .sweet-alert button::-moz-focus-inner {
     border: 0;
   }
-  .sweet-alert[data-has-cancel-button='false'] button {
+  .sweet-alert[data-has-cancel-button="false"] button {
     box-shadow: none !important;
   }
-  .sweet-alert[data-has-confirm-button='false'][data-has-cancel-button='false'] {
+  .sweet-alert[data-has-confirm-button="false"][data-has-cancel-button="false"] {
     padding-bottom: 40px;
   }
   .sweet-alert .sa-icon {
@@ -446,7 +446,7 @@ const TagsOfInterests = styled.div`
     border-color: #c9dae1;
   }
   .sweet-alert .sa-icon.sa-info::before {
-    content: '';
+    content: "";
     position: absolute;
     width: 5px;
     height: 29px;
@@ -457,7 +457,7 @@ const TagsOfInterests = styled.div`
     background-color: #c9dae1;
   }
   .sweet-alert .sa-icon.sa-info::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 7px;
     height: 7px;
@@ -472,7 +472,7 @@ const TagsOfInterests = styled.div`
   }
   .sweet-alert .sa-icon.sa-success::before,
   .sweet-alert .sa-icon.sa-success::after {
-    content: '';
+    content: "";
     -webkit-border-radius: 40px;
     border-radius: 40px;
     border-radius: 50%;
@@ -556,6 +556,6 @@ const TagsOfInterests = styled.div`
     background-position: center center;
     background-repeat: no-repeat;
   }
-`
+`;
 
-export { TagsOfInterests }
+export { TagsOfInterests };

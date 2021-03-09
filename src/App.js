@@ -1,73 +1,73 @@
-import './App.css'
-import React, { useState } from 'react'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import "./App.css";
+import React, { useState } from "react";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 
-import LandingPage from './landingPage/LandingPage'
-import SignIn from './pages/SignIn'
-import { UserContext } from './UserContext'
+import LandingPage from "./landingPage/LandingPage";
+import SignIn from "./pages/SignIn";
+import { UserContext } from "./UserContext";
 
-import LocalStorage from './assorted/LocalStorage'
-import Zeeguu_API from './api/Zeeguu_API'
-import LoggedInRouter from './LoggedInRouter'
-import CreateAccount from './pages/CreateAccount'
-import ResetPassword from './pages/ResetPassword'
+import LocalStorage from "./assorted/LocalStorage";
+import Zeeguu_API from "./api/Zeeguu_API";
+import LoggedInRouter from "./LoggedInRouter";
+import CreateAccount from "./pages/CreateAccount";
+import ResetPassword from "./pages/ResetPassword";
 
-function App () {
-  let userDict = {}
+function App() {
+  let userDict = {};
 
   // we use the _api to initialize the api state variable
-  let _api = new Zeeguu_API(process.env.REACT_APP_API_URL)
+  let _api = new Zeeguu_API(process.env.REACT_APP_API_URL);
 
   if (LocalStorage.hasSession()) {
     userDict = {
-      session: localStorage['sessionID'],
-      ...LocalStorage.userInfo()
-    }
-    _api.session = localStorage['sessionID']
+      session: localStorage["sessionID"],
+      ...LocalStorage.userInfo(),
+    };
+    _api.session = localStorage["sessionID"];
   }
 
-  const [api] = useState(_api)
+  const [api] = useState(_api);
 
-  const [user, setUser] = useState(userDict)
+  const [user, setUser] = useState(userDict);
 
-  function handleSuccessfulSignIn (userInfo) {
+  function handleSuccessfulSignIn(userInfo) {
     setUser({
       session: api.session,
       name: userInfo.name,
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
-      is_teacher: userInfo.is_teacher
-    })
-    LocalStorage.setSession(api.session)
-    LocalStorage.setUserInfo(userInfo)
+      is_teacher: userInfo.is_teacher,
+    });
+    LocalStorage.setSession(api.session);
+    LocalStorage.setUserInfo(userInfo);
 
     // TODO: this is required by the teacher dashboard
     // could be cool to remove it from there and make that
     // one also use the localStorage
-    document.cookie = `sessionID=${api.session};`
+    document.cookie = `sessionID=${api.session};`;
   }
 
-  function logout () {
-    LocalStorage.deleteUserInfo()
-    setUser({})
+  function logout() {
+    LocalStorage.deleteUserInfo();
+    setUser({});
 
     // expire cookies, cf. https://stackoverflow.com/a/27374365/1200070
-    document.cookie.split(';').forEach(function (c) {
+    document.cookie.split(";").forEach(function (c) {
       document.cookie = c
-        .replace(/^ +/, '')
-        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
-    })
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
   }
 
   return (
     <BrowserRouter>
       <UserContext.Provider value={{ ...user, logoutMethod: logout }}>
         <Switch>
-          <Route path='/' exact component={LandingPage} />
+          <Route path="/" exact component={LandingPage} />
 
           {/* cf: https://ui.dev/react-router-v4-pass-props-to-components/ */}
           <Route
-            path='/login'
+            path="/login"
             render={() => (
               <SignIn
                 api={api}
@@ -77,7 +77,7 @@ function App () {
           />
 
           <Route
-            path='/create_account'
+            path="/create_account"
             render={() => (
               <CreateAccount
                 api={api}
@@ -87,7 +87,7 @@ function App () {
           />
 
           <Route
-            path='/reset_pass'
+            path="/reset_pass"
             render={() => <ResetPassword api={api} />}
           />
 
@@ -95,7 +95,7 @@ function App () {
         </Switch>
       </UserContext.Provider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

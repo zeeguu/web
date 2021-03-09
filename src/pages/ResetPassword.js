@@ -1,17 +1,17 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-import * as s from '../components/FormPage.sc'
+import * as s from "../components/FormPage.sc";
 
-import ResetPasswordStep1 from './ResetPasswordStep1'
-import ResetPasswordStep2 from './ResetPasswordStep2'
+import ResetPasswordStep1 from "./ResetPasswordStep1";
+import ResetPasswordStep2 from "./ResetPasswordStep2";
 
-export default function ResetPassword ({ api, notifySuccessfulSignIn }) {
-  const [email, setEmail] = useState('')
+export default function ResetPassword({ api, notifySuccessfulSignIn }) {
+  const [email, setEmail] = useState("");
 
-  const [codeSent, setCodeSent] = useState(false)
+  const [codeSent, setCodeSent] = useState(false);
 
-  function validEmail () {
-    setCodeSent(true)
+  function validEmail() {
+    setCodeSent(true);
   }
 
   return (
@@ -33,5 +33,5 @@ export default function ResetPassword ({ api, notifySuccessfulSignIn }) {
         )}
       </s.NarrowFormContainer>
     </s.PageBackground>
-  )
+  );
 }

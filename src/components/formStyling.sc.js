@@ -1,4 +1,4 @@
-import { css } from 'styled-components'
+import { css } from "styled-components";
 
 let formStyling = css`
   input,
@@ -55,6 +55,6 @@ let formStyling = css`
       margin-left: 1em;
     }
   }
-`
+`;
 
-export { formStyling }
+export { formStyling };
