@@ -1,37 +1,37 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import moment from 'moment'
-import * as s from './ArticlePreview.sc'
-import { TranslatableText } from '../reader/TranslatableText'
-import InteractiveText from '../reader/InteractiveText'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import moment from "moment";
+import * as s from "./ArticlePreview.sc";
+import { TranslatableText } from "../reader/TranslatableText";
+import InteractiveText from "../reader/InteractiveText";
 
-export default function ArticleOverview ({
+export default function ArticleOverview({
   article,
   dontShowPublishingTime,
   dontShowImage,
-  api
+  api,
 }) {
-  let topics = article.topics.split(' ').filter(each => each !== '')
-  let difficulty = Math.round(article.metrics.difficulty * 100) / 10
+  let topics = article.topics.split(" ").filter((each) => each !== "");
+  let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
-  const [openedInNewTab, setOpenedInNewTab] = useState(false)
-  const [notInteresting, setNotInteresting] = useState(false)
+  const [openedInNewTab, setOpenedInNewTab] = useState(false);
+  const [notInteresting, setNotInteresting] = useState(false);
 
-  function handleOpen () {
-    setOpenedInNewTab(true)
-    window.open(`${article.url}`, '_blank')
+  function handleOpen() {
+    setOpenedInNewTab(true);
+    window.open(`${article.url}`, "_blank");
   }
 
-  function handleNotInteresting () {
-    setNotInteresting(true)
+  function handleNotInteresting() {
+    setNotInteresting(true);
   }
 
-  console.log(article)
+  console.log(article);
 
   if (!article.opened && openedInNewTab) {
     return (
       <s.ArticlePreview>
-        <div style={{ backgroundColor: 'orange' }}>
+        <div style={{ backgroundColor: "orange" }}>
           <s.Title>{article.title}</s.Title>
           <s.Difficulty>{difficulty}</s.Difficulty>
           <s.WordCount>{article.metrics.word_count}</s.WordCount>
@@ -45,19 +45,19 @@ export default function ArticleOverview ({
           <button>Report Incomplete</button> &nbsp;
         </div>
       </s.ArticlePreview>
-    )
+    );
   }
 
-  let openedStyle = {}
+  let openedStyle = {};
   if (openedInNewTab) {
-    openedStyle = { backgroundColor: '#dfb56e10' }
+    openedStyle = { backgroundColor: "#dfb56e10" };
   }
   if (article.opened) {
-    openedStyle = { backgroundColor: '#ffe59e10' }
+    openedStyle = { backgroundColor: "#ffe59e10" };
   }
 
   if (notInteresting) {
-    return <></>
+    return <></>;
   }
 
   return (
@@ -81,11 +81,11 @@ export default function ArticleOverview ({
         </s.Summary>
         <button>
           <Link onClick={handleOpen}>Open</Link>
-        </button>{' '}
+        </button>{" "}
         &nbsp;
         <button>
           <Link onClick={handleNotInteresting}>Not Interesting</Link>
-        </button>{' '}
+        </button>{" "}
         {article.opened && (
           <button>
             <Link to={`/read/article?id=${article.id}`}>Study in Zeeguu</Link>
@@ -94,7 +94,7 @@ export default function ArticleOverview ({
         <br />
         {!dontShowImage && (
           <s.SourceImage>
-            <img src={'/news-icons/' + article.icon_name} alt='' />
+            <img src={"/news-icons/" + article.icon_name} alt="" />
           </s.SourceImage>
         )}
         {!dontShowPublishingTime && (
@@ -103,11 +103,11 @@ export default function ArticleOverview ({
           </s.PublishingTime>
         )}
         <s.Topics>
-          {topics.map(topic => (
+          {topics.map((topic) => (
             <span key={topic}>{topic}</span>
           ))}
         </s.Topics>
       </div>
     </s.ArticlePreview>
-  )
+  );
 }

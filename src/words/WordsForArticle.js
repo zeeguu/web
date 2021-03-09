@@ -1,36 +1,36 @@
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link } from "react-router-dom";
 
-import { useState, useEffect } from 'react'
-import LoadingAnimation from '../components/LoadingAnimation'
-import Word from './Word'
+import { useState, useEffect } from "react";
+import LoadingAnimation from "../components/LoadingAnimation";
+import Word from "./Word";
 
-import { TopMessage } from '../components/TopMessage.sc'
-import { NarrowColumn, CenteredContent } from '../components/NarrowColumn.sc'
-import { OrangeButton, WhiteButton } from '../reader/ArticleReader.sc'
-import { setTitle } from '../assorted/setTitle'
+import { TopMessage } from "../components/TopMessage.sc";
+import { NarrowColumn, CenteredContent } from "../components/NarrowColumn.sc";
+import { OrangeButton, WhiteButton } from "../reader/ArticleReader.sc";
+import { setTitle } from "../assorted/setTitle";
 
-export default function WordsForArticle ({ api }) {
-  let { articleID } = useParams()
-  const [words, setWords] = useState(null)
-  const [articleInfo, setArticleInfo] = useState(null)
+export default function WordsForArticle({ api }) {
+  let { articleID } = useParams();
+  const [words, setWords] = useState(null);
+  const [articleInfo, setArticleInfo] = useState(null);
 
   useEffect(() => {
-    api.bookmarksForArticle(articleID, bookmarks => {
-      setWords(bookmarks)
-    })
-    api.getArticleInfo(articleID, data => {
-      setArticleInfo(data)
-      setTitle('Words in "' + data.title + '"')
-    })
+    api.bookmarksForArticle(articleID, (bookmarks) => {
+      setWords(bookmarks);
+    });
+    api.getArticleInfo(articleID, (data) => {
+      setArticleInfo(data);
+      setTitle('Words in "' + data.title + '"');
+    });
     // eslint-disable-next-line
-  }, [])
+  }, []);
 
   if (words === null || articleInfo === null) {
-    return <LoadingAnimation />
+    return <LoadingAnimation />;
   }
 
-  function deleteBookmark (bookmark) {
-    setWords(words.filter(e => e.id !== bookmark.id))
+  function deleteBookmark(bookmark) {
+    setWords(words.filter((e) => e.id !== bookmark.id));
   }
 
   return (
@@ -42,10 +42,10 @@ export default function WordsForArticle ({ api }) {
       <TopMessage>
         {words.length > 0
           ? "To ensure that a word is included in exercises: star it. Consequently delete the words you don't want to have in exercises."
-          : 'The words you translate in the article will appear here for review'}
+          : "The words you translate in the article will appear here for review"}
       </TopMessage>
 
-      {words.map(each => (
+      {words.map((each) => (
         <Word
           key={each.id}
           bookmark={each}
@@ -69,5 +69,5 @@ export default function WordsForArticle ({ api }) {
         )}
       </CenteredContent>
     </NarrowColumn>
-  )
+  );
 }

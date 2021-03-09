@@ -1,8 +1,8 @@
-import { Zeeguu_API } from './classDef'
+import { Zeeguu_API } from "./classDef";
 
 Zeeguu_API.prototype.getUserBookmarksToStudy = function (count, callback) {
-  this._get(`bookmarks_to_study/${count}`, callback)
-}
+  this._get(`bookmarks_to_study/${count}`, callback);
+};
 
 Zeeguu_API.prototype.uploadExerciseFeedback = function (
   exercise_outcome,
@@ -13,5 +13,5 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
   this._post(
     `report_exercise_outcome/${exercise_outcome}/${exercise_source}/${exercise_solving_speed}/${bookmark_id}`,
     null
-  )
-}
+  );
+};
