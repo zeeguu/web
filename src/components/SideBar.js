@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "../UserContext";
-import { strings } from "../i18n/definitions";
+import strings from "../i18n/definitions";
 
 import * as s from "./SideBar.sc";
 
