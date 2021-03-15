@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "../UserContext";
+import { strings } from "../i18n/definitions";
 
 import * as s from "./SideBar.sc";
 
@@ -34,7 +35,7 @@ export default function SideBar(props) {
       </div>
       <div className="navigationLink">
         <Link to="/articles" onClick={resetSidebarToDefault}>
-          Articles
+          {strings.articles}
         </Link>
       </div>
       <div className="navigationLink">
