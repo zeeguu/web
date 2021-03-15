@@ -11,6 +11,8 @@ import { setTitle } from "../assorted/setTitle";
 
 import LocalStorage from "../assorted/LocalStorage";
 
+import strings from "../i18n/definitions";
+
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -35,6 +37,16 @@ export default function Settings({ api, setUser }) {
       name: info.name,
       learned_language: info.learned_language,
       native_language: info.native_language,
+    });
+  }
+
+  function nativeLanguageUpdated(e) {
+    let code = e.target[e.target.selectedIndex].getAttribute("code");
+
+    strings.setLanguage(code);
+    setUserDetails({
+      ...userDetails,
+      native_language: code,
     });
   }
 
@@ -99,13 +111,7 @@ export default function Settings({ api, setUser }) {
             userDetails.native_language,
             languages.native_languages
           )}
-          onChange={(e) => {
-            let code = e.target[e.target.selectedIndex].getAttribute("code");
-            setUserDetails({
-              ...userDetails,
-              native_language: code,
-            });
-          }}
+          onChange={nativeLanguageUpdated}
         />
 
         <div>

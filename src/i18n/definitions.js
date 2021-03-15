@@ -14,4 +14,4 @@ let strings = new LocalizedStrings(
   }
 );
 
-export { strings };
+export default strings;
