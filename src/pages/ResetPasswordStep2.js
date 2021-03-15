@@ -1,24 +1,24 @@
-import * as s from '../components/FormPage.sc'
-import { useState } from 'react'
-import validator from '../assorted/validator'
+import * as s from "../components/FormPage.sc";
+import { useState } from "react";
+import validator from "../assorted/validator";
 
-export default function ResetPasswordStep2 ({ api, email }) {
-  const [errorMessage, setErrorMessage] = useState('')
-  const [code, setCode] = useState('')
-  const [newPass, setNewPass] = useState('')
-  const [success, setSuccess] = useState(false)
-  const [failure, setFailure] = useState(false)
+export default function ResetPasswordStep2({ api, email }) {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [code, setCode] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [failure, setFailure] = useState(false);
 
   let validatorRules = [
-    [newPass.length < 4, 'Password should be at least 4 characters'],
-    [code === '', 'Please provide a code']
-  ]
+    [newPass.length < 4, "Password should be at least 4 characters"],
+    [code === "", "Please provide a code"],
+  ];
 
-  function handleResetPassword (e) {
-    e.preventDefault()
+  function handleResetPassword(e) {
+    e.preventDefault();
 
     if (!validator(validatorRules, setErrorMessage)) {
-      return
+      return;
     }
 
     api.resetPassword(
@@ -26,13 +26,13 @@ export default function ResetPasswordStep2 ({ api, email }) {
       code,
       newPass,
       () => {
-        setSuccess(true)
+        setSuccess(true);
       },
-      e => {
-        console.log(e)
-        setFailure(true)
+      (e) => {
+        console.log(e);
+        setFailure(true);
       }
-    )
+    );
   }
 
   if (failure) {
@@ -40,14 +40,14 @@ export default function ResetPasswordStep2 ({ api, email }) {
       <>
         <h1>Something went wrong</h1>
         <p>
-          You can try <a href='/reset_pass'>to reset your password</a> again.{' '}
+          You can try <a href="/reset_pass">to reset your password</a> again.{" "}
         </p>
 
         <p>
           Or contact us at <b>zeeguu.team@gmail.com</b>
         </p>
       </>
-    )
+    );
   }
   if (success) {
     return (
@@ -56,45 +56,45 @@ export default function ResetPasswordStep2 ({ api, email }) {
         <p>Your password has been changed successfully.</p>
         <br />
         <p>
-          You can go to <a href='signin'>sign in</a> now
+          You can go to <a href="signin">sign in</a> now
         </p>
       </>
-    )
+    );
   }
 
   return (
-    <form action='' method='post'>
+    <form action="" method="post">
       <s.FormTitle>Reset Password</s.FormTitle>
 
       <p>
         Please check <b>{email}</b> for the one time code we sent you.
       </p>
 
-      {errorMessage && <div className='error'>{errorMessage}</div>}
+      {errorMessage && <div className="error">{errorMessage}</div>}
 
-      <div className='inputField'>
+      <div className="inputField">
         <label>Code</label>
         <input
-          placeholder='Code received via email'
+          placeholder="Code received via email"
           value={code}
-          onChange={e => setCode(e.target.value)}
+          onChange={(e) => setCode(e.target.value)}
         />
       </div>
 
-      <div className='inputField'>
+      <div className="inputField">
         <label>New Password</label>
         <input
-          placeholder='New Password'
+          placeholder="New Password"
           value={newPass}
-          onChange={e => setNewPass(e.target.value)}
+          onChange={(e) => setNewPass(e.target.value)}
         />
       </div>
 
-      <div className='inputField'>
-        <s.FormButton onClick={handleResetPassword} className='loginButton'>
+      <div className="inputField">
+        <s.FormButton onClick={handleResetPassword} className="loginButton">
           Set New Password
         </s.FormButton>
       </div>
     </form>
-  )
+  );
 }

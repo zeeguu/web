@@ -1,3 +1,3 @@
-export function setTitle (title) {
-  document.title = title + ': Zeeguu'
+export function setTitle(title) {
+  document.title = title + ": Zeeguu";
 }

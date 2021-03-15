@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -16,11 +16,11 @@ const RoundButton = styled.div`
   cursor: pointer;
   margin-top: 3px;
   box-sizing: border-box;
-`
+`;
 
 const OrangeRoundButton = styled(RoundButton)`
   background-color: #ffbb54;
-`
+`;
 
 const ClosePopupButton = styled.div`
   height: 1.2em;
@@ -33,7 +33,7 @@ const ClosePopupButton = styled.div`
   font-size: 0.8em;
   padding: 0.1em;
   font-weight: 400;
-`
+`;
 
 const BigSquareButton = styled(RoundButton)`
   margin: 5px;
@@ -44,6 +44,6 @@ const BigSquareButton = styled(RoundButton)`
   border-width: 2px;
   border-radius: 10px;
   font-size: 18px;
-`
+`;
 
-export { RoundButton, OrangeRoundButton, BigSquareButton, ClosePopupButton }
+export { RoundButton, OrangeRoundButton, BigSquareButton, ClosePopupButton };

@@ -1,73 +1,73 @@
-import { useEffect, useState } from 'react'
-import React from 'react'
-import SweetAlert from 'react-bootstrap-sweetalert'
-import * as s from './TagsOfInterests.sc'
+import { useEffect, useState } from "react";
+import React from "react";
+import SweetAlert from "react-bootstrap-sweetalert";
+import * as s from "./TagsOfInterests.sc";
 
-export default function TagsOfFilters ({
+export default function TagsOfFilters({
   visible,
   api,
-  articlesListShouldChange
+  articlesListShouldChange,
 }) {
-  const [availableFilters, setAvailableFilters] = useState(null)
-  const [subscribedFilters, setSubscribedFilters] = useState(null)
-  const [subscribedSearchFilters, setSubscribedSearchFilters] = useState(null)
-  const [showingModal, setShowingModal] = useState(false)
+  const [availableFilters, setAvailableFilters] = useState(null);
+  const [subscribedFilters, setSubscribedFilters] = useState(null);
+  const [subscribedSearchFilters, setSubscribedSearchFilters] = useState(null);
+  const [showingModal, setShowingModal] = useState(false);
 
   useEffect(() => {
-    api.interestingButNotSubscribedTopics(topics => {
-      setAvailableFilters(topics)
-    })
+    api.interestingButNotSubscribedTopics((topics) => {
+      setAvailableFilters(topics);
+    });
 
-    api.getFilteredTopics(filters => {
-      setSubscribedFilters(filters)
-    })
+    api.getFilteredTopics((filters) => {
+      setSubscribedFilters(filters);
+    });
 
-    api.getSubscribedFilterSearches(filters => {
-      setSubscribedSearchFilters(filters)
-    })
-  }, [api])
+    api.getSubscribedFilterSearches((filters) => {
+      setSubscribedSearchFilters(filters);
+    });
+  }, [api]);
 
   if (!availableFilters | !subscribedFilters | !subscribedSearchFilters)
-    return ''
+    return "";
 
-  function subscribeToFilter (filter) {
-    setSubscribedFilters([...subscribedFilters, filter])
-    api.subscribeToFilter(filter)
+  function subscribeToFilter(filter) {
+    setSubscribedFilters([...subscribedFilters, filter]);
+    api.subscribeToFilter(filter);
   }
 
-  function unsubscribeFromFilter (filter) {
+  function unsubscribeFromFilter(filter) {
     setSubscribedFilters(
-      subscribedFilters.filter(each => each.id !== filter.id)
-    )
-    api.unsubscribeFromFilter(filter)
+      subscribedFilters.filter((each) => each.id !== filter.id)
+    );
+    api.unsubscribeFromFilter(filter);
   }
 
-  function removeSearchFilter (search) {
-    api.unsubscribeFromSearchFilter(search)
+  function removeSearchFilter(search) {
+    api.unsubscribeFromSearchFilter(search);
     setSubscribedSearchFilters(
-      subscribedSearchFilters.filter(each => each.id !== search.id)
-    )
+      subscribedSearchFilters.filter((each) => each.id !== search.id)
+    );
   }
 
-  function toggleFilter (filter) {
-    if (subscribedFilters.map(e => e.id).includes(filter.id)) {
-      unsubscribeFromFilter(filter)
+  function toggleFilter(filter) {
+    if (subscribedFilters.map((e) => e.id).includes(filter.id)) {
+      unsubscribeFromFilter(filter);
     } else {
-      subscribeToFilter(filter)
+      subscribeToFilter(filter);
     }
   }
 
-  const onConfirm = response => {
-    api.subscribeToSearchFilter(response, data => {
-      setSubscribedSearchFilters([...subscribedSearchFilters, data])
-    })
+  const onConfirm = (response) => {
+    api.subscribeToSearchFilter(response, (data) => {
+      setSubscribedSearchFilters([...subscribedSearchFilters, data]);
+    });
 
-    setShowingModal(false)
-  }
+    setShowingModal(false);
+  };
 
   const onCancel = () => {
-    setShowingModal(false)
-  }
+    setShowingModal(false);
+  };
 
   return (
     <s.TagsOfInterests>
@@ -75,61 +75,61 @@ export default function TagsOfFilters ({
         <SweetAlert
           input
           showCancel
-          title='Add a personal filter'
-          placeHolder='interest'
+          title="Add a personal filter"
+          placeHolder="interest"
           onConfirm={onConfirm}
           onCancel={onCancel}
         ></SweetAlert>
       )}
 
       <div
-        className='tagsWithFilters'
-        style={{ display: visible ? 'block' : 'none' }}
+        className="tagsWithFilters"
+        style={{ display: visible ? "block" : "none" }}
       >
-        <div className='interestsSettings'>
+        <div className="interestsSettings">
           <button
-            className='addInterestButton'
-            onClick={e => setShowingModal(true)}
+            className="addInterestButton"
+            onClick={(e) => setShowingModal(true)}
           >
             ＋
           </button>
           <button
-            className='closeTagsOfInterests'
-            onClick={e => articlesListShouldChange()}
+            className="closeTagsOfInterests"
+            onClick={(e) => articlesListShouldChange()}
           >
             save
           </button>
         </div>
 
-        {availableFilters.map(f => (
+        {availableFilters.map((f) => (
           <div key={f.id} addableid={f.id}>
             <button
-              onClick={e => toggleFilter(f)}
-              type='button'
+              onClick={(e) => toggleFilter(f)}
+              type="button"
               className={
-                'interests ' +
-                (subscribedFilters.map(e => e.id).includes(f.id)
-                  ? ''
-                  : 'unsubscribed')
+                "interests " +
+                (subscribedFilters.map((e) => e.id).includes(f.id)
+                  ? ""
+                  : "unsubscribed")
               }
             >
-              <span className='addableTitle'>{f.title}</span>
+              <span className="addableTitle">{f.title}</span>
             </button>
           </div>
         ))}
 
-        {subscribedSearchFilters.map(search => (
+        {subscribedSearchFilters.map((search) => (
           <div key={search.id} searchremovabeid={search.id}>
             <button
-              onClick={e => removeSearchFilter(search)}
-              type='button'
-              className={'interests'}
+              onClick={(e) => removeSearchFilter(search)}
+              type="button"
+              className={"interests"}
             >
-              <span className='addableTitle'>{search.search}</span>
+              <span className="addableTitle">{search.search}</span>
             </button>
           </div>
         ))}
       </div>
     </s.TagsOfInterests>
-  )
+  );
 }

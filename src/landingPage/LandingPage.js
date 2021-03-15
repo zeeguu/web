@@ -1,12 +1,12 @@
-import LocalStorage from '../assorted/LocalStorage'
-import News from './News'
-import * as s from './LandingPage.sc.js'
-import Contributors from './Contributors'
-import { Redirect } from 'react-router-dom'
+import LocalStorage from "../assorted/LocalStorage";
+import News from "./News";
+import * as s from "./LandingPage.sc.js";
+import Contributors from "./Contributors";
+import { Redirect } from "react-router-dom";
 
-export default function LandingPage () {
+export default function LandingPage() {
   if (LocalStorage.hasSession()) {
-    return <Redirect to={{ pathname: '/articles' }} />
+    return <Redirect to={{ pathname: "/articles" }} />;
   }
   return (
     <div>
@@ -14,7 +14,7 @@ export default function LandingPage () {
         <s.HeaderTitle>Zeeguu</s.HeaderTitle>
         <nav>
           <s.HeaderButton>
-            <a href='/login'>Sign In</a>
+            <a href="/login">Sign In</a>
           </s.HeaderButton>
         </nav>
       </s.LoginHeader>
@@ -22,7 +22,7 @@ export default function LandingPage () {
       <s.PageContent>
         <s.NarrowColumn>
           <s.BigLogo>
-            <img src='/static/images/zeeguuLogo.svg' alt='elephant logo' />
+            <img src="/static/images/zeeguuLogo.svg" alt="elephant logo" />
           </s.BigLogo>
           <h1>Zeeguu</h1>
           <h4>
@@ -32,7 +32,7 @@ export default function LandingPage () {
 
           <s.InviteButton>
             <nav>
-              <a href='./create_account'>Become a Betatester!</a>
+              <a href="./create_account">Become a Betatester!</a>
             </nav>
           </s.InviteButton>
         </s.NarrowColumn>
@@ -103,5 +103,5 @@ export default function LandingPage () {
         </s.PaleAdaptableColumn>
       </s.PageContent>
     </div>
-  )
+  );
 }

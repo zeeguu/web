@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const ExercisesColumn = styled.div`
   /* background-color: lightcoral; */
@@ -8,7 +8,7 @@ const ExercisesColumn = styled.div`
 
   display: flex;
   flex-direction: column;
-`
+`;
 
 const ExForm = styled.div`
   margin: auto;
@@ -33,12 +33,12 @@ const ExForm = styled.div`
   input {
     font-size: large;
   }
-`
+`;
 
 const LittleMessageAbove = styled.div`
   padding: 0.2em;
   text-align: center;
   font-size: small;
-`
+`;
 
-export { ExercisesColumn, ExForm, LittleMessageAbove }
+export { ExercisesColumn, ExForm, LittleMessageAbove };
