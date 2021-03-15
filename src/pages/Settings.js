@@ -1,67 +1,67 @@
-import { useEffect, useState, useContext } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useEffect, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 
-import { LanguageSelector } from '../components/LanguageSelector'
+import { LanguageSelector } from "../components/LanguageSelector";
 
-import { UserContext } from '../UserContext'
-import LoadingAnimation from '../components/LoadingAnimation'
+import { UserContext } from "../UserContext";
+import LoadingAnimation from "../components/LoadingAnimation";
 
-import * as s from '../components/FormPage.sc'
-import { setTitle } from '../assorted/setTitle'
+import * as s from "../components/FormPage.sc";
+import { setTitle } from "../assorted/setTitle";
 
-import LocalStorage from '../assorted/LocalStorage'
+import LocalStorage from "../assorted/LocalStorage";
 
-export default function Settings ({ api, setUser }) {
-  const [userDetails, setUserDetails] = useState(null)
-  const [errorMessage, setErrorMessage] = useState('')
-  const history = useHistory()
-  const user = useContext(UserContext)
-  const [languages, setLanguages] = useState()
+export default function Settings({ api, setUser }) {
+  const [userDetails, setUserDetails] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const history = useHistory();
+  const user = useContext(UserContext);
+  const [languages, setLanguages] = useState();
 
   useEffect(() => {
-    api.getUserDetails(data => {
-      api.getSystemLanguages(systemLanguages => {
-        setLanguages(systemLanguages)
-        setUserDetails(data)
-      })
-    })
-    setTitle('Settings')
-  }, [user.session, api])
+    api.getUserDetails((data) => {
+      api.getSystemLanguages((systemLanguages) => {
+        setLanguages(systemLanguages);
+        setUserDetails(data);
+      });
+    });
+    setTitle("Settings");
+  }, [user.session, api]);
 
-  function updateUserInfo (info) {
-    LocalStorage.setUserInfo(info)
+  function updateUserInfo(info) {
+    LocalStorage.setUserInfo(info);
     setUser({
       ...user,
       name: info.name,
       learned_language: info.learned_language,
-      native_language: info.native_language
-    })
+      native_language: info.native_language,
+    });
   }
 
-  function handleSave (e) {
-    e.preventDefault()
+  function handleSave(e) {
+    e.preventDefault();
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      updateUserInfo(userDetails)
-      history.goBack()
-    })
+      updateUserInfo(userDetails);
+      history.goBack();
+    });
   }
 
   if (!userDetails || !languages) {
-    return <LoadingAnimation />
+    return <LoadingAnimation />;
   }
 
   return (
     <s.FormContainer>
-      <form className='formSettings'>
+      <form className="formSettings">
         <h1>Account Settings</h1>
         <h5>{errorMessage}</h5>
 
         <label>Name </label>
         <input
-          name='name'
+          name="name"
           value={userDetails.name}
-          onChange={e =>
+          onChange={(e) =>
             setUserDetails({ ...userDetails, name: e.target.value })
           }
         />
@@ -69,9 +69,9 @@ export default function Settings ({ api, setUser }) {
 
         <label>Email </label>
         <input
-          type='email'
+          type="email"
           value={userDetails.email}
-          onChange={e =>
+          onChange={(e) =>
             setUserDetails({ ...userDetails, email: e.target.value })
           }
         />
@@ -83,12 +83,12 @@ export default function Settings ({ api, setUser }) {
             userDetails.learned_language,
             languages.learnable_languages
           )}
-          onChange={e => {
-            let code = e.target[e.target.selectedIndex].getAttribute('code')
+          onChange={(e) => {
+            let code = e.target[e.target.selectedIndex].getAttribute("code");
             setUserDetails({
               ...userDetails,
-              learned_language: code
-            })
+              learned_language: code,
+            });
           }}
         />
 
@@ -99,12 +99,12 @@ export default function Settings ({ api, setUser }) {
             userDetails.native_language,
             languages.native_languages
           )}
-          onChange={e => {
-            let code = e.target[e.target.selectedIndex].getAttribute('code')
+          onChange={(e) => {
+            let code = e.target[e.target.selectedIndex].getAttribute("code");
             setUserDetails({
               ...userDetails,
-              native_language: code
-            })
+              native_language: code,
+            });
           }}
         />
 
@@ -113,13 +113,13 @@ export default function Settings ({ api, setUser }) {
         </div>
       </form>
     </s.FormContainer>
-  )
+  );
 }
 
-function language_for_id (id, language_list) {
+function language_for_id(id, language_list) {
   for (let i = 0; i < language_list.length; i++) {
     if (language_list[i].code === id) {
-      return language_list[i].name
+      return language_list[i].name;
     }
   }
 }

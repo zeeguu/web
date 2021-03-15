@@ -1,40 +1,40 @@
-import TagsOfInterests from './TagsOfInterests'
-import TagsOfFilters from './TagsOfFilters'
-import { useState } from 'react'
+import TagsOfInterests from "./TagsOfInterests";
+import TagsOfFilters from "./TagsOfFilters";
+import { useState } from "react";
 
-import * as s from './Interests.sc'
-import * as b from '../components/allButtons.sc'
+import * as s from "./Interests.sc";
+import * as b from "../components/allButtons.sc";
 
-export default function InterestsAndSearch ({ api, articlesListShouldChange }) {
-  const [showingInterests, setShowingInterests] = useState(false)
-  const [showingFilters, setShowingFilters] = useState(false)
+export default function InterestsAndSearch({ api, articlesListShouldChange }) {
+  const [showingInterests, setShowingInterests] = useState(false);
+  const [showingFilters, setShowingFilters] = useState(false);
 
-  function toggleInterests () {
+  function toggleInterests() {
     if (showingFilters) {
-      return
+      return;
     }
-    setShowingInterests(!showingInterests)
+    setShowingInterests(!showingInterests);
   }
 
-  function toggleFilters () {
+  function toggleFilters() {
     if (showingInterests) {
-      return
+      return;
     }
-    setShowingFilters(!showingFilters)
+    setShowingFilters(!showingFilters);
   }
 
-  function closeTagsOfInterestAndNotifyArticleListOfChange () {
-    articlesListShouldChange()
-    toggleInterests()
+  function closeTagsOfInterestAndNotifyArticleListOfChange() {
+    articlesListShouldChange();
+    toggleInterests();
   }
 
   return (
     <s.Interests>
-      <b.OrangeRoundButton onClick={e => toggleInterests()}>
+      <b.OrangeRoundButton onClick={(e) => toggleInterests()}>
         Interests
       </b.OrangeRoundButton>
 
-      <b.OrangeRoundButton onClick={e => toggleFilters()}>
+      <b.OrangeRoundButton onClick={(e) => toggleFilters()}>
         Non-interests
       </b.OrangeRoundButton>
 
@@ -53,5 +53,5 @@ export default function InterestsAndSearch ({ api, articlesListShouldChange }) {
         }
       />
     </s.Interests>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
-import { CenteredContent } from '../reader/ArticleReader.sc'
+import { CenteredContent } from "../reader/ArticleReader.sc";
 
-import { formStyling } from './formStyling.sc'
+import { formStyling } from "./formStyling.sc";
 
-import * as u from './usefulSnippets.sc'
+import * as u from "./usefulSnippets.sc";
 
-import * as color from './colors'
+import * as color from "./colors";
 
 // Nice orange background
 let PageBackground = styled.div`
@@ -21,11 +21,11 @@ let PageBackground = styled.div`
   padding-bottom: 1em;
 
   background: ${color.zeeguuOrange};
-`
+`;
 
 // Elephant logo
-let _verticalSpacer = '1em'
-let _logoSize = '50px'
+let _verticalSpacer = "1em";
+let _logoSize = "50px";
 
 let LogoOnTop = styled.div`
   ${u.horizontalCentering}
@@ -33,13 +33,13 @@ let LogoOnTop = styled.div`
   margin-top: ${_verticalSpacer};
   margin-bottom: ${_verticalSpacer};
 
-  background-image: url('/static/images/zeeguuWhiteLogo.svg');
+  background-image: url("/static/images/zeeguuWhiteLogo.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: ${_logoSize} ${_logoSize};
 
   height: ${_logoSize};
-`
+`;
 
 // White centered rounded cornders background
 let FormContainer = styled.div`
@@ -59,16 +59,16 @@ let FormContainer = styled.div`
   background-color: white;
 
   ${formStyling}
-`
+`;
 
 let NarrowFormContainer = styled(FormContainer)`
   width: 16em;
-`
+`;
 
 let FormTitle = styled.div`
   font-size: x-large;
   margin-bottom: 1em;
-`
+`;
 
 let FormButton = styled.button`
   background-color: orange;
@@ -86,7 +86,7 @@ let FormButton = styled.button`
   @media (min-width: 768px) {
     font-size: small;
   }
-`
+`;
 
 export {
   PageBackground,
@@ -95,5 +95,5 @@ export {
   CenteredContent,
   LogoOnTop,
   FormTitle,
-  FormButton
-}
+  FormButton,
+};

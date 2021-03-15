@@ -1,47 +1,47 @@
-import { useEffect, useState } from 'react'
-import { useClickOutside } from 'react-click-outside-hook'
+import { useEffect, useState } from "react";
+import { useClickOutside } from "react-click-outside-hook";
 
-export default function AlterMenu ({
+export default function AlterMenu({
   word,
   clickedOutsideAlterMenu,
-  selectAlternative
+  selectAlternative,
 }) {
-  const [refToAlterMenu, hasClickedOutside] = useClickOutside()
-  const [inputValue, setInputValue] = useState('')
+  const [refToAlterMenu, hasClickedOutside] = useClickOutside();
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     if (hasClickedOutside) {
-      clickedOutsideAlterMenu()
+      clickedOutsideAlterMenu();
     }
-  }, [hasClickedOutside, clickedOutsideAlterMenu])
+  }, [hasClickedOutside, clickedOutsideAlterMenu]);
 
-  function handleKeyDown (e) {
-    if (e.code === 'Enter') {
-      selectAlternative(inputValue)
+  function handleKeyDown(e) {
+    if (e.code === "Enter") {
+      selectAlternative(inputValue);
     }
   }
 
   return (
-    <div ref={refToAlterMenu} className='altermenu'>
-      {word.alternatives.map(each => (
+    <div ref={refToAlterMenu} className="altermenu">
+      {word.alternatives.map((each) => (
         <div
           key={each}
-          onClick={e => selectAlternative(each)}
-          className='additionalTrans'
+          onClick={(e) => selectAlternative(each)}
+          className="additionalTrans"
         >
           {each}
         </div>
       ))}
 
       <input
-        className='searchTextfieldInput matchWidth'
-        type='text'
-        id='#userAlternative'
+        className="searchTextfieldInput matchWidth"
+        type="text"
+        id="#userAlternative"
         value={inputValue}
-        onChange={e => setInputValue(e.target.value)}
-        onKeyDown={e => handleKeyDown(e)}
-        placeholder='Own translation...'
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={(e) => handleKeyDown(e)}
+        placeholder="Own translation..."
       />
     </div>
-  )
+  );
 }

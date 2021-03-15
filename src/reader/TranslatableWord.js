@@ -66,7 +66,7 @@ export default function TranslatableWord({
           translation0={word.translation}
           onClick={(e) => toggleAlternatives(e, word)}
         >
-        <span className="arrow">▼</span>
+          <span className="arrow">▼</span>
         </z-tran>
         <z-orig>
           <span onClick={(e) => hideTranslation(e, word)}>{word.word} </span>
@@ -80,7 +80,7 @@ export default function TranslatableWord({
           )}
         </z-orig>
       </z-tag>
-      <span>{"  "/* What is this for? */} </span>
+      <span>{"  " /* What is this for? */} </span>
     </>
   );
 }

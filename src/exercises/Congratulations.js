@@ -1,12 +1,12 @@
-import Word from '../words/Word'
-import { NarrowColumn, CenteredContent } from '../components/NarrowColumn.sc'
-import { OrangeButton, WhiteButton } from '../reader/ArticleReader.sc'
+import Word from "../words/Word";
+import { NarrowColumn, CenteredContent } from "../components/NarrowColumn.sc";
+import { OrangeButton, WhiteButton } from "../reader/ArticleReader.sc";
 
-export default function Congratulations ({
+export default function Congratulations({
   articleID,
   correctBookmarks,
   incorrectBookmarks,
-  api
+  api,
 }) {
   return (
     <NarrowColumn>
@@ -19,7 +19,7 @@ export default function Congratulations ({
           😊 Correct
           <br />
           <br />
-          {correctBookmarks.map(each => (
+          {correctBookmarks.map((each) => (
             <Word bookmark={each} api={api} />
           ))}
         </h3>
@@ -32,7 +32,7 @@ export default function Congratulations ({
           😳 Pay more attention to
           <br />
           <br />
-          {incorrectBookmarks.map(each => (
+          {incorrectBookmarks.map((each) => (
             <Word bookmark={each} api={api} />
           ))}
         </h3>
@@ -44,17 +44,17 @@ export default function Congratulations ({
       <br />
       <CenteredContent>
         <OrangeButton>
-          <a href='/exercises'>
+          <a href="/exercises">
             <h2>More Exercises </h2>
           </a>
         </OrangeButton>
 
         <WhiteButton>
-          <a href='/articles'>
+          <a href="/articles">
             <h2>Back to Reading </h2>
           </a>
         </WhiteButton>
       </CenteredContent>
     </NarrowColumn>
-  )
+  );
 }
