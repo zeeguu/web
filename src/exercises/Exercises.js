@@ -60,6 +60,7 @@ export default function Exercises ({ api, articleID }) {
 
   if (!currentBookmarkToStudy) {
     return <LoadingAnimation />
+
   }
 
   function moveToNextExercise () {

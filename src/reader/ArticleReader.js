@@ -1,88 +1,90 @@
-import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import * as s from './ArticleReader.sc'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import * as s from "./ArticleReader.sc";
+import { Link } from "react-router-dom";
 
-import { TranslatableText } from './TranslatableText'
+import { TranslatableText } from "./TranslatableText";
 
-import InteractiveText from './InteractiveText'
-import BookmarkButton from './BookmarkButton'
+import InteractiveText from "./InteractiveText";
+import BookmarkButton from "./BookmarkButton";
 
-import LoadingAnimation from '../components/LoadingAnimation'
-import { setTitle } from '../assorted/setTitle'
+import LoadingAnimation from "../components/LoadingAnimation";
+import { setTitle } from "../assorted/setTitle";
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
-function useQuery () {
-  return new URLSearchParams(useLocation().search)
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
 }
 
-export default function ArticleReader ({ api }) {
-  let query = useQuery()
+export default function ArticleReader({ api }) {
+  let query = useQuery();
 
-  const articleID = query.get('id')
+  const articleID = query.get("id");
 
-  const [articleInfo, setArticleInfo] = useState()
-  const [interactiveText, setInteractiveText] = useState()
-  const [interactiveTitle, setInteractiveTitle] = useState()
+  const [articleInfo, setArticleInfo] = useState();
+  const [interactiveText, setInteractiveText] = useState();
+  const [interactiveTitle, setInteractiveTitle] = useState();
 
-  const [translating, setTranslating] = useState(true)
-  const [pronouncing, setPronouncing] = useState(false)
+  const [translating, setTranslating] = useState(true);
+  const [pronouncing, setPronouncing] = useState(false);
 
   useEffect(() => {
-    api.getArticleInfo(articleID, data => {
-      setInteractiveText(new InteractiveText(data.content, data, api))
-      setInteractiveTitle(new InteractiveText(data.title, data, api))
-      setArticleInfo(data)
-      setTitle(data.title)
+    api.getArticleInfo(articleID, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(articleInfo.content, articleInfo, api)
+      );
+      setInteractiveTitle(
+        new InteractiveText(articleInfo.title, articleInfo, api)
+      );
+      setArticleInfo(articleInfo);
+      setTitle(articleInfo.title);
 
-      api.setArticleOpened(data.id)
-    })
+      api.setArticleOpened(articleInfo.id);
+    });
 
     // eslint-disable-next-line
-  }, [])
+  }, []);
 
-  function toggle (state, togglerFunction) {
-    togglerFunction(!state)
+  function toggle(state, togglerFunction) {
+    togglerFunction(!state);
   }
 
-  function toggleBookmarkedState () {
-    let newArticleInfo = { ...articleInfo, starred: !articleInfo.starred }
+  function toggleBookmarkedState() {
+    let newArticleInfo = { ...articleInfo, starred: !articleInfo.starred };
     api.setArticleInfo(newArticleInfo, () => {
-      setArticleInfo(newArticleInfo)
-    })
+      setArticleInfo(newArticleInfo);
+    });
   }
 
-  function setLikedState (state) {
-    let newArticleInfo = { ...articleInfo, liked: state }
+  function setLikedState(state) {
+    let newArticleInfo = { ...articleInfo, liked: state };
     api.setArticleInfo(newArticleInfo, () => {
-      setArticleInfo(newArticleInfo)
-    })
+      setArticleInfo(newArticleInfo);
+    });
   }
 
   if (!articleInfo) {
-    return <LoadingAnimation />
+    return <LoadingAnimation />;
   }
 
   return (
     <s.ArticleReader>
       <s.Toolbar>
-        <div className='lala'>
-          <button
-            className={translating ? 'selected' : ''}
-            onClick={e => toggle(translating, setTranslating)}
-          >
-            <img src='/static/images/translate.svg' alt='translate on click' />
-            <span className='tooltiptext'>translate on click</span>
-          </button>
-          <button
-            className={pronouncing ? 'selected' : ''}
-            onClick={e => toggle(pronouncing, setPronouncing)}
-          >
-            <img src='/static/images/sound.svg' alt='listen on click' />
-            <span className='tooltiptext'>listen on click</span>
-          </button>
-        </div>
+        <button
+          className={translating ? "selected" : ""}
+          onClick={(e) => toggle(translating, setTranslating)}
+        >
+          <img src="/static/images/translate.svg" alt="translate on click" />
+          <span className="tooltiptext">translate on click</span>
+        </button>
+        <button
+          className={pronouncing ? "selected" : ""}
+          onClick={(e) => toggle(pronouncing, setPronouncing)}
+        >
+          <img src="/static/images/sound.svg" alt="listen on click" />
+          <span className="tooltiptext">listen on click</span>
+        </button>
       </s.Toolbar>
       <s.Title>
         <TranslatableText
@@ -99,7 +101,7 @@ export default function ArticleReader ({ api }) {
       </s.BookmarkButton>
       <br />
       <div>{articleInfo.authors}</div>
-      <a href={articleInfo.url} target='_blank' rel='noreferrer' id='source'>
+      <a href={articleInfo.url} target="_blank" rel="noreferrer" id="source">
         source
       </a>
       <hr />
@@ -121,14 +123,14 @@ export default function ArticleReader ({ api }) {
 
         <s.CenteredContent>
           <s.WhiteButton
-            onClick={e => setLikedState(true)}
-            className={articleInfo.liked === true && 'selected'}
+            onClick={(e) => setLikedState(true)}
+            className={articleInfo.liked === true && "selected"}
           >
             Yes
           </s.WhiteButton>
           <s.WhiteButton
-            onClick={e => setLikedState(false)}
-            className={articleInfo.liked === false && 'selected'}
+            onClick={(e) => setLikedState(false)}
+            className={articleInfo.liked === false && "selected"}
           >
             No
           </s.WhiteButton>
@@ -151,5 +153,5 @@ export default function ArticleReader ({ api }) {
       </s.FeedbackBox>
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
-  )
+  );
 }
