@@ -9,6 +9,7 @@
     "cross-fetch": "^3.0.6",
     "email-validator": "^2.0.4",
     "linked-list": "^2.1.0",
+    "localized-strings": "^0.2.4",
     "moment": "^2.29.1",
     "react": "^17.0.1",
     "react-bootstrap-sweetalert": "^5.2.0",
