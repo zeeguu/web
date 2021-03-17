@@ -35,17 +35,17 @@ export default function SideBar(props) {
       </div>
       <div className="navigationLink">
         <Link to="/articles" onClick={resetSidebarToDefault}>
-          {strings.articles}
+          <small>{strings.articles}</small>
         </Link>
       </div>
       <div className="navigationLink">
         <Link to="/words/history" onClick={resetSidebarToDefault}>
-          Words
+          <small>{strings.words}</small>
         </Link>
       </div>
       <div className="navigationLink">
         <Link to="/exercises" onClick={resetSidebarToDefault}>
-          Exercises
+          <small>{strings.exercises}</small>
         </Link>
       </div>
       {(user.is_teacher === "true" || user.is_teacher === true) && (
@@ -55,7 +55,7 @@ export default function SideBar(props) {
             to="/teacher-dashboard"
             onClick={resetSidebarToDefault}
           >
-            Students
+            <small>{strings.teacherSite}</small>
           </Link>
         </div>
       )}
@@ -63,7 +63,7 @@ export default function SideBar(props) {
       <br />
       <div className="navigationLink">
         <Link to="/account_settings" onClick={resetSidebarToDefault}>
-          Settings
+          <small>{strings.settings}</small>
         </Link>
       </div>
       <br />
@@ -74,7 +74,7 @@ export default function SideBar(props) {
             user.logoutMethod();
           }}
         >
-          <small>Logout</small>
+          <small>{strings.logout}</small>
         </Link>
       </div>
     </>
