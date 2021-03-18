@@ -5,6 +5,8 @@ import Settings from "./pages/Settings";
 import { PrivateRoute } from "./PrivateRoute";
 import SideBar from "./components/SideBar";
 import ArticleReader from "./reader/ArticleReader";
+import UserDashboard from "./userDashboard/UserDashboard";
+
 
 export default function LoggedInRouter({ api, setUser }) {
   return (
@@ -25,6 +27,11 @@ export default function LoggedInRouter({ api, setUser }) {
           path="/read/article"
           api={api}
           component={ArticleReader}
+        />
+        <PrivateRoute
+          path="/user_dashboard"
+          api={api}
+          component={UserDashboard}
         />
       </SideBar>
     </>
