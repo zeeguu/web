@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
+import strings from "../i18n/definitions" 
 
 import ArticlePreview from "./ArticlePreview";
 
@@ -24,7 +25,7 @@ export default function ClassroomArticles({ api }) {
   }
 
   if (articleList.length === 0) {
-    return <s.TopMessage>There are no articles in your classroom</s.TopMessage>;
+    return <s.TopMessage>{strings.noArticlesInClassroom}</s.TopMessage>;
   }
 
   return (

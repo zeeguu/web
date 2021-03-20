@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import * as s from "./TagsOfInterests.sc";
+import strings from "../i18n/definitions";
 
 export default function TagsOfFilters({
   visible,
@@ -75,7 +76,7 @@ export default function TagsOfFilters({
         <SweetAlert
           input
           showCancel
-          title="Add a personal filter"
+          title={strings.addPersonalFilter}
           placeHolder="interest"
           onConfirm={onConfirm}
           onCancel={onCancel}
@@ -97,7 +98,7 @@ export default function TagsOfFilters({
             className="closeTagsOfInterests"
             onClick={(e) => articlesListShouldChange()}
           >
-            save
+            {strings.save}
           </button>
         </div>
 
