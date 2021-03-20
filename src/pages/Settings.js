@@ -115,7 +115,7 @@ export default function Settings({ api, setUser }) {
         />
 
         <div>
-          <s.FormButton onClick={handleSave}>Save</s.FormButton>
+          <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
         </div>
       </form>
     </s.FormContainer>

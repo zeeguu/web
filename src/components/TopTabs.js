@@ -4,6 +4,7 @@ import { TopTab } from "./TopTab";
 
 // Renders a title and the corresponding tabs links
 export default function TopTabs({ title, tabsAndLinks }) {
+  console.log(tabsAndLinks);
   let allTabsButLast = Object.entries(tabsAndLinks).slice(0, -1);
   let lastTab = Object.entries(tabsAndLinks).pop();
 
