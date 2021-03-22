@@ -17,9 +17,9 @@ export default function ArticlesRouter({ api }) {
         <TopTabs
           title= {strings.articles}
           tabsAndLinks={{
-            Find: "/articles",
-            Classroom: "/articles/classroom",
-            Bookmarked: "/articles/bookmarked",
+            [strings.findTab]: "/articles",
+            [strings.classroomTab]: "/articles/classroom",
+            [strings.bookmarkedTab]: "/articles/bookmarked",
           }}
         />
 

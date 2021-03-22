@@ -41,6 +41,23 @@ let strings = new LocalizedStrings(
       personalizedPractiseEllaboration2:
         "Spaced repetition algorithms optimize your practice. Moreover, if you have limited time, our algorithms will prioritize frequent words in your exercises.",
 
+      //ArticleRouter
+      findTab: "Find",
+      classroomTab: "Classroom",
+      bookmarkedTab: "Bookmarked",
+
+      //WordsRouter
+      yourWordsHeadline: "Your Words",
+      history: "History",
+      starred: "Starred",
+      ranked: "Ranked",
+      learned: "Learned",
+
+      //WordsHistory
+      titleTranslationHistory:"Translation History",
+      starAWordMsg:
+        "Star a word to ensure it appears in exercises. Delete to avoid it.",
+
       //ArticleReader
       translateOnClick: "translate on click",
       listenOnClick: "listen on click",
@@ -77,6 +94,23 @@ let strings = new LocalizedStrings(
 
       //TagOfFilters
       addPersonalFilter: "Add a personal filter",
+
+      //Learned
+      titleLearnedWords: "Learned Words",
+      learnedWordsAreMsg:
+        "Learned words are words that were correct in exercises on four different days.",
+      numberOfLearnedWordsMsg: "You have learned {0} words so far.",
+
+      //Starred
+      titleStarredWords: "Starred Words",
+      noStarredMsg: "You have no starred words yet.",
+
+      //Top
+      titleRankedWords: "Ranked Words",
+      rankedMsg: "Words that you have translated ranked by importance.",
+
+      //WordsOnDate
+      open:"Open",
     },
 
     da: {
@@ -114,9 +148,26 @@ let strings = new LocalizedStrings(
         "Systemet giver også mulighed for at få hjælp til udtalen. For nogle sprog - som f.eks, dansk - er dette ganske vigtigt.",
       personalizedPractise: "Personlig træning",
       personalizedPractiseEllaboration1:
-        'Zeeguu genererer personligt tilpassede ordforråds-øvelser ved at bruge den originale kontekst af dine \"ikke-umiddelbart-forståede ord\". Dette gør vi, fordi der er større udbytte af kontekstuel læring.',
+        'Zeeguu genererer personligt tilpassede ordforråds- øvelser ved at bruge den originale kontekst af dine "ikke-umiddelbart-forståede ord". Dette gør vi, fordi der er større udbytte af kontekstuel læring.',
       personalizedPractiseEllaboration2:
-        "Algoritmer of regelmæssig gentagelse sikrer, at du får den bedst mulige ordforrådstræning. Hvis du har begrænset tid, vil algoritmerne priortere træningen af dine hyppigt anvendte ord.",
+        "Algoritmer til regelmæssig gentagelse sikrer, at du får den bedst mulige ordforrådstræning. Hvis du har begrænset tid, vil algoritmerne priortere træningen af dine hyppigt anvendte ord.",
+
+      //ArticleRouter
+      findTab: "Find",
+      classroomTab: "Klasse",
+      bookmarkedTab: "Bogmærker",
+
+      //WordsRouter
+      yourWordsHeadline: "Dine ord",
+      history: "Oversatte",
+      starred: "Stjernemarkerede",
+      ranked: "Rangerede",
+      learned: "Indlærte",
+
+      //WordsHistory
+      titleTranslationHistory:"Oversættelseshistorik",
+      starAWordMsg:
+        "Stjernemarkér et ord for at være sikker på, at det indgår i øvelserne. Delete ordet for at undgå øvelser med det.",
 
       //ArticleReader
       translateOnClick: "klik og oversæt",
@@ -157,6 +208,23 @@ let strings = new LocalizedStrings(
 
       //TagsOfInterests
       addPersonalInterest: "Tilføj en personlig interesse",
+
+      //Learned
+      titleLearnedWords: "Indlærte ord",
+      learnedWordsAreMsg:
+        "Lærte ord er ord, der har været trænet korrekt i øvelser på fire forskellige dage.",
+      numberOfLearnedWordsMsg: "Du har lært {0} ord indtil videre.",
+
+      //Starred
+      titleStarredWords: "Starred Words",
+      noStarredMsg: "Du har ikke markeret nogen ord med stjerne endnu.",
+
+      //Top
+      titleRankedWords: "Rangerede ord",
+      rankedMsg: "De ord, du har oversat, er rangeret efter vigtighed.",
+
+      //WordsOnDate
+      open:"Åben",
     },
   },
   {
