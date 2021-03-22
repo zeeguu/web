@@ -1,4 +1,4 @@
-import "./FeedbackButtons.css";
+import * as s from "./FeedbackButtons.sc.js";
 import { Link } from "react-router-dom";
 
 const buttons = [
@@ -14,14 +14,14 @@ export default function FeedbackButtons({ show, setShow, feedbackFunction }) {
   }
   return (
     <div>
-      <div className="feedback_link_holder">
+      <s.FeedbackLinkHolder>
         <Link to={"#"} className="discrete-link" onClick={toggleShow}>
           Feedback on this Exercise
         </Link>
-      </div>
+      </s.FeedbackLinkHolder>
 
       {show && (
-        <div className="feedback_buttons_holder">
+        <s.FeedbackButtonsHolder>
           {buttons.map((each) => (
             <button
               key={each.value}
@@ -30,7 +30,7 @@ export default function FeedbackButtons({ show, setShow, feedbackFunction }) {
               {each.name}
             </button>
           ))}
-        </div>
+        </s.FeedbackButtonsHolder>
       )}
     </div>
   );
