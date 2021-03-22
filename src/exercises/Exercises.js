@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import FindWordInContext from "./recognize/FindWordInContext";
+// import FindWordInContext from "./findWordInContext/FindWordInContext";
+import MultipleChoice from "./findWordInContext/MultipleChoice";
 import Congratulations from "./Congratulations";
 import ProgressBar from "./ProgressBar";
 
@@ -116,7 +117,7 @@ export default function Exercises({ api, articleID }) {
       <ProgressBar index={currentIndex} total={NUMBER_OF_EXERCISES} />
 
       <s.ExForm>
-        <FindWordInContext
+        <MultipleChoice
           bookmarkToStudy={currentBookmarkToStudy}
           correctAnswer={correctAnswer}
           notifyIncorrectAnswer={incorrectAnswerNotification}
