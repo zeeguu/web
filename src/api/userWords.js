@@ -4,6 +4,10 @@ Zeeguu_API.prototype.getBookmarksByDay = function (callback) {
   this._get("bookmarks_by_day/with_context", callback);
 };
 
+Zeeguu_API.prototype.getBookmarksCountsByDate = function (callback) {
+  this._get("bookmark_counts_by_date", callback);
+};
+
 Zeeguu_API.prototype.starredBookmarks = function (count, callback) {
   this._get(`starred_bookmarks/${count}`, callback);
 };
