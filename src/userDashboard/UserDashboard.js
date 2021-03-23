@@ -18,7 +18,7 @@ const Tab = ({key, id, title, handleActiveTabChange}) => {
     )
 }
 
-export default function UserDashboard(){
+export default function UserDashboard({ api }){
 
     const user_data = mock_data() 
     const [activeTab, setActiveTab] = useState(1);
@@ -26,6 +26,16 @@ export default function UserDashboard(){
     function handleActiveTabChange(tab_id) {
       setActiveTab(tab_id)
     }
+
+    useEffect(() => {
+      api.getBookmarksCountsByDate((counts) => {
+        console.log(counts)
+      });
+      api.getBookmarksByDay((counts) => {
+        console.log(counts)
+      });
+
+    }, [])
 
     return (
     <div>
@@ -44,6 +54,7 @@ export default function UserDashboard(){
     );
     
 }
+
 
 function mock_data() {
     const data = [
