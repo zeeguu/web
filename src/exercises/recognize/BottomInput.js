@@ -1,5 +1,6 @@
 import { useState } from "react";
 import removeAccents from "remove-accents";
+import strings from "../../i18n/definitions";
 
 export default function BottomInput({
   handleCorrectAnswer,
@@ -62,7 +63,7 @@ export default function BottomInput({
         autoFocus
       />
 
-      <button onClick={checkResult}>Check</button>
+      <button onClick={checkResult}>{strings.check}</button>
     </div>
   );
 }

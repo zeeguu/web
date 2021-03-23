@@ -42,7 +42,7 @@ let strings = new LocalizedStrings(
         "Spaced repetition algorithms optimize your practice. Moreover, if you have limited time, our algorithms will prioritize frequent words in your exercises.",
 
       //News
-      news:"News",
+      news: "News",
       jan: "Jan",
       feb: "Feb",
       may: "May",
@@ -51,19 +51,29 @@ let strings = new LocalizedStrings(
       sep: "Sep",
       oct: "Oct",
       dec: "Dec",
-      pernilleObtainsFundingPrefix: "Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
-      pernilleObtainsFundingLinkTitle: "project which uses Zeeguu to increase personalization",
+      pernilleObtainsFundingPrefix:
+        "Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
+      pernilleObtainsFundingLinkTitle:
+        "project which uses Zeeguu to increase personalization",
       pernilleObtainsFundingSuffix: " in the Danish classroom",
-      procrastinationPaper:"Paper using Zeeguu to teach vocabulary in moments of online procrastination accepted at CHI 2021 ",
-      rotterdamStarts: "A highschool in Rotterdam starts using Zeeguu in their language classes",
+      procrastinationPaper:
+        "Paper using Zeeguu to teach vocabulary in moments of online procrastination accepted at CHI 2021 ",
+      rotterdamStarts:
+        "A highschool in Rotterdam starts using Zeeguu in their language classes",
       euroCall2020: "Workshop about Zeeguu at EuroCALL 2020",
-      betaTesters40K: "The beta-testers of Zeeguu reach 40'000 distinct words practiced within the exercises",
-      betaTesters100K: "The beta-testers of Zeeguu have reached 100'000 translations in their foreign language readings",
-      amsterdamStarts: "A highschool in Amsterdam starts using Zeeguu in the French courses",
+      betaTesters40K:
+        "The beta-testers of Zeeguu reach 40'000 distinct words practiced within the exercises",
+      betaTesters100K:
+        "The beta-testers of Zeeguu have reached 100'000 translations in their foreign language readings",
+      amsterdamStarts:
+        "A highschool in Amsterdam starts using Zeeguu in the French courses",
       euroCall2019: "Mircea talks about Zeeguu at EuroCALL 2019",
-      asWeMayStudyPaper: "Paper about Zeeguu is accepted at CHI 2018 - the top international conference on HCI",
-      groningenStarts:"Students at the Language Center from the University of Groningen use Zeeguu in their Dutch classes",
-      gomarusStarts: "Students at the Gomarus College in Netherlands start using Zeeguu in their French classes",
+      asWeMayStudyPaper:
+        "Paper about Zeeguu is accepted at CHI 2018 - the top international conference on HCI",
+      groningenStarts:
+        "Students at the Language Center from the University of Groningen use Zeeguu in their Dutch classes",
+      gomarusStarts:
+        "Students at the Gomarus College in Netherlands start using Zeeguu in their French classes",
       zeeguuIsReady: "Zeeguu is online and ready to welcome beta-testers",
 
       //Contributors
@@ -82,7 +92,7 @@ let strings = new LocalizedStrings(
       learned: "Learned",
 
       //WordsHistory
-      titleTranslationHistory:"Translation History",
+      titleTranslationHistory: "Translation History",
       starAWordMsg:
         "Star a word to ensure it appears in exercises. Delete to avoid it.",
 
@@ -138,7 +148,25 @@ let strings = new LocalizedStrings(
       rankedMsg: "Words that you have translated ranked by importance.",
 
       //WordsOnDate
-      open:"Open",
+      open: "Open",
+
+      //Exercises
+      wordSourceDefaultText: "your past readings",
+      wordSourcePrefix: "Words in",
+
+      //FindWordsInContext
+      findTheWordInContextHeadline: "Find the word in context",
+
+      //FeedbackButtons
+      giveFeedback: "Feedback on this Exercise",
+
+      //ButtomInput
+      check:"Check",
+      hint:"Hint",
+
+      //ButtomFeedback
+      speak: "Speak",
+      next: "Next",
     },
 
     da: {
@@ -181,29 +209,40 @@ let strings = new LocalizedStrings(
         "Algoritmer til regelmæssig gentagelse sikrer, at du får den bedst mulige ordforrådstræning. Hvis du har begrænset tid, vil algoritmerne priortere træningen af dine hyppigt anvendte ord.",
 
       //News
-      news:"Nyheder",
+      news: "Nyheder",
       jan: "Jan",
       feb: "Feb",
       may: "Maj",
       jul: "Jul",
       aug: "Aug",
+      oct: "Okt",
       sep: "Sep",
       dec: "Dec",
-      pernilleObtainsFundingPrefix: "Pernille Hvalsoe modtager bevillinger fra Styrelsen for International Rekruttering og Integration til et ",
-      pernilleObtainsFundingLinkTitle: "projekt som bruger Zeeguu til at øge individualiseringen af materialer",
+      pernilleObtainsFundingPrefix:
+        "Pernille Hvalsoe modtager bevillinger fra Styrelsen for International Rekruttering og Integration til et ",
+      pernilleObtainsFundingLinkTitle:
+        "projekt som bruger Zeeguu til at øge individualiseringen af materialer",
       pernilleObtainsFundingSuffix: " i de danske klasseværelser.",
-      procrastinationPaper:"Udgivelse om at bruge Zeeguu til ordforrådsundervisning i online overspringshandlinger bliver godkendt på CHI 2021 ",
-      rotterdamStarts: "Et gymnasium i Rotterdam begynder at bruge Zeeguu i deres sprogundervisning.",
+      procrastinationPaper:
+        "Udgivelse om at bruge Zeeguu til ordforrådsundervisning i online overspringshandlinger bliver godkendt på CHI 2021 ",
+      rotterdamStarts:
+        "Et gymnasium i Rotterdam begynder at bruge Zeeguu i deres sprogundervisning.",
       euroCall2020: "Workshop om Zeeguu på EuroCALL 2020.",
-      betaTesters40K: "Beta-testerne af Zeeguu når op på 40.000 forskellige ord trænet i øvelserne.",
-      betaTesters100K: "Beta-testerne af Zeeguu har nået 100.000 oversættelser i deres fremmedsprogslæsning.",
-      amsterdamStarts: "Et gymnasium Amsterdam begynder at bruge Zeeguu i deres franskundervisning.",
+      betaTesters40K:
+        "Beta-testerne af Zeeguu når op på 40.000 forskellige ord trænet i øvelserne.",
+      betaTesters100K:
+        "Beta-testerne af Zeeguu har nået 100.000 oversættelser i deres fremmedsprogslæsning.",
+      amsterdamStarts:
+        "Et gymnasium Amsterdam begynder at bruge Zeeguu i deres franskundervisning.",
       euroCall2019: "Mircea taler om Zeeguu på EuroCALL 2019.",
-      asWeMayStudyPaper:"Udgivelse om Zeeguu bliver godkendt på CHI 2018 - en stor international conference om HCI ",
-      groningenStarts:"Studerende på sprogcenteret ved Groningen Universitet begynder at bruge Zeeguu i deres undervisning i hollandsk.",
-      gomarusStarts: "Studerende på Gomarus Universitet i Holland begynder at bruge Zeeguu i deres franskundervisning.",
+      asWeMayStudyPaper:
+        "Udgivelse om Zeeguu bliver godkendt på CHI 2018 - en stor international conference om HCI ",
+      groningenStarts:
+        "Studerende på sprogcenteret ved Groningen Universitet begynder at bruge Zeeguu i deres undervisning i hollandsk.",
+      gomarusStarts:
+        "Studerende på Gomarus Universitet i Holland begynder at bruge Zeeguu i deres franskundervisning.",
       zeeguuIsReady: "Zeeguu er online og klar til betatestere.",
-      
+
       //Contributors
       contributors: "Bidragsydere",
 
@@ -220,7 +259,7 @@ let strings = new LocalizedStrings(
       learned: "Indlærte",
 
       //WordsHistory
-      titleTranslationHistory:"Oversættelseshistorik",
+      titleTranslationHistory: "Oversættelseshistorik",
       starAWordMsg:
         "Stjernemarkér et ord for at være sikker på, at det indgår i øvelserne. Delete ordet for at undgå øvelser med det.",
 
@@ -279,7 +318,25 @@ let strings = new LocalizedStrings(
       rankedMsg: "De ord, du har oversat, er rangeret efter vigtighed.",
 
       //WordsOnDate
-      open:"Åben",
+      open: "Åben",
+
+      //Exercises
+      wordSourceDefaultText: "din tidligere læsning",
+      wordSourcePrefix: "Ord fra",
+
+      //FindWordsInContext
+      findTheWordInContextHeadline: "Find ordet/ordene i sammenhængen",
+
+      //FeedbackButtons
+      giveFeedback: "Feedback på øvelsen",
+
+      //ButtomInput
+      check:"Tjek",
+      hint:"Hint",
+
+      //ButtomFeedback
+      speak: "Udtale",
+      next: "Næste",
     },
   },
   {
