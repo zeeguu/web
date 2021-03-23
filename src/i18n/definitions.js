@@ -124,6 +124,10 @@ let strings = new LocalizedStrings(
       //SearchField
       searchAllArticles: "Search all articles",
 
+      //Search
+      searching: "Searching...",
+      youSearchedFor: "You searched for: ",
+
       //ClassroomArticles
       noArticlesInClassroom: "There are no articles in your classroom.",
 
@@ -161,8 +165,8 @@ let strings = new LocalizedStrings(
       giveFeedback: "Feedback on this Exercise",
 
       //ButtomInput
-      check:"Check",
-      hint:"Hint",
+      check: "Check",
+      hint: "Hint",
 
       //ButtomFeedback
       speak: "Speak",
@@ -291,6 +295,10 @@ let strings = new LocalizedStrings(
       //SearchField
       searchAllArticles: "Søg i alle artikler",
 
+      //Search
+      searching: "Søger...",
+      youSearchedFor: "Du søgte på: ",
+
       //ClassroomArticles
       noArticlesInClassroom: "Der er ingen artikler i denne klasse.",
 
@@ -331,8 +339,8 @@ let strings = new LocalizedStrings(
       giveFeedback: "Feedback på øvelsen",
 
       //ButtomInput
-      check:"Tjek",
-      hint:"Hint",
+      check: "Tjek",
+      hint: "Hint",
 
       //ButtomFeedback
       speak: "Udtale",
