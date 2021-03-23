@@ -13,11 +13,6 @@ export default function LandingPage() {
     <div>
       <s.LoginHeader>
         <s.HeaderTitle>Zeeguu</s.HeaderTitle>
-        <nav>
-          <s.HeaderButton>
-            <a href="/login">{strings.login}</a>
-          </s.HeaderButton>
-        </nav>
       </s.LoginHeader>
 
       <s.PageContent>
@@ -26,58 +21,40 @@ export default function LandingPage() {
             <img src="/static/images/zeeguuLogo.svg" alt="elephant logo" />
           </s.BigLogo>
           <h1>Zeeguu</h1>
-          <h4>
-            {strings.projectDescription_UltraShort}
-          </h4>
-
-          <s.InviteButton>
-            <nav>
+          <h4>{strings.projectDescription_UltraShort}</h4>
+          <nav>
+            <s.PrimaryButton>
+              <a href="/login">{strings.login}</a>
+            </s.PrimaryButton>
+            <s.InverseButton>
               <a href="./create_account">{strings.betaTester}</a>
-            </nav>
-          </s.InviteButton>
+            </s.InverseButton>
+          </nav>
         </s.NarrowColumn>
 
         <s.PaleAdaptableColumn>
           <h1>{strings.howDoesItWork}</h1>
           <h2>{strings.personalizedRecommandations}</h2>
           <s.DescriptionText>
-            <p>
-              {strings.personalizedRecommandationsEllaboration1}
-            </p>
+            <p>{strings.personalizedRecommandationsEllaboration1}</p>
 
-            <p>
-              {strings.personalizedRecommandationsEllaboration2}
-            </p>
+            <p>{strings.personalizedRecommandationsEllaboration2}</p>
           </s.DescriptionText>
 
           <h2>{strings.easyTranslations}</h2>
           <s.DescriptionText>
-            <p>
-              {strings.easyTranslationsEllaboration1}
-            </p>
+            <p>{strings.easyTranslationsEllaboration1}</p>
 
-            <p>
-              {strings.easyTranslationsEllaboration2}
-            </p>
+            <p>{strings.easyTranslationsEllaboration2}</p>
 
-            <p>
-              {strings.easyTranslationsEllaboration3}
-            </p>
+            <p>{strings.easyTranslationsEllaboration3}</p>
           </s.DescriptionText>
 
           <h2>{strings.personalizedPractise}</h2>
           <s.DescriptionText>
-            <p>
-              {strings.personalizedPractiseEllaboration1}
-            </p>
+            <p>{strings.personalizedPractiseEllaboration1}</p>
 
-            <p>
-              {strings.personalizedPractiseEllaboration2}
-            </p>
-            {/* <p>
-              Zeeguu uses machine learning to create a model of your vocabulary
-              knowledge based on your past interactions with texts the system.
-            </p> */}
+            <p>{strings.personalizedPractiseEllaboration2}</p>
           </s.DescriptionText>
         </s.PaleAdaptableColumn>
 
