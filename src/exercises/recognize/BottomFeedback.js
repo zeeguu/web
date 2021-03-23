@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Speech from "speak-tts";
+import strings from "../../i18n/definitions";
 
 export default function BottomFeedback({ bookmarkToStudy, correctAnswer }) {
   const [speech] = useState(new Speech());
@@ -22,10 +23,10 @@ export default function BottomFeedback({ bookmarkToStudy, correctAnswer }) {
 
   return (
     <div className="bottomInput">
-      <button onClick={(e) => handleSpeak()}>Speak</button>
+      <button onClick={(e) => handleSpeak()}>{strings.speak}</button>
 
       <button onClick={(e) => correctAnswer()} autoFocus>
-        Next
+        {strings.next}
       </button>
     </div>
   );
