@@ -7,14 +7,14 @@ let strings = new LocalizedStrings(
       words: "Words",
       articles: "Texts",
       save: "save",
+      settings: "Settings",
+      exercises: "Exercises",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
 
       //Sidebar
-      exercises: "Exercises",
       teacherSite: "Teacher site",
-      settings: "Settings",
       logout: "Logout",
 
       //LandingPage
@@ -171,6 +171,12 @@ let strings = new LocalizedStrings(
       //ButtomFeedback
       speak: "Speak",
       next: "Next",
+      
+      //Settings
+      name:"Name",
+      email: "Email",
+      learnedLanguage: "Learned Language",
+      nativeLanguage: "Native Language",
     },
 
     da: {
@@ -178,14 +184,14 @@ let strings = new LocalizedStrings(
       words: "Ord",
       articles: "Tekster",
       save: "gem",
+      settings: "Indstillinger",
+      exercises: "Øvelser",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
 
       //Sidebar
-      exercises: "Øvelser",
       teacherSite: "Lærersiden",
-      settings: "Indstillinger",
       logout: "Log ud",
 
       //LandingPage
@@ -345,6 +351,12 @@ let strings = new LocalizedStrings(
       //ButtomFeedback
       speak: "Udtale",
       next: "Næste",
+
+      //Settings
+      name:"Navn",
+      email: "Email",
+      learnedLanguage: "Sprog, du vil lære",
+      nativeLanguage: "Modersmål",
     },
   },
   {

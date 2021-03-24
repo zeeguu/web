@@ -7,6 +7,7 @@ import { UserContext } from "../UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 
 import * as s from "../components/FormPage.sc";
+import * as sc from "../components/TopTabs.sc";
 import { setTitle } from "../assorted/setTitle";
 
 import LocalStorage from "../assorted/LocalStorage";
@@ -66,10 +67,13 @@ export default function Settings({ api, setUser }) {
   return (
     <s.FormContainer>
       <form className="formSettings">
-        <h1>Account Settings</h1>
+        <sc.TopTabs>
+          <h1>{strings.settings}</h1>
+        </sc.TopTabs>
+
         <h5>{errorMessage}</h5>
 
-        <label>Name </label>
+        <label>{strings.name}</label>
         <input
           name="name"
           value={userDetails.name}
@@ -79,7 +83,7 @@ export default function Settings({ api, setUser }) {
         />
         <br />
 
-        <label>Email </label>
+        <label>{strings.email}</label>
         <input
           type="email"
           value={userDetails.email}
@@ -88,7 +92,7 @@ export default function Settings({ api, setUser }) {
           }
         />
 
-        <label>Learned Language </label>
+        <label>{strings.learnedLanguage}</label>
         <LanguageSelector
           languages={languages.learnable_languages}
           selected={language_for_id(
@@ -104,7 +108,7 @@ export default function Settings({ api, setUser }) {
           }}
         />
 
-        <label>Native Language </label>
+        <label>{strings.nativeLanguage}</label>
         <LanguageSelector
           languages={languages.native_languages}
           selected={language_for_id(
