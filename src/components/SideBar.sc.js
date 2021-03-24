@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { lightOrange } from "../components/colors";
+import { zeeguuOrange, lightOrange } from "../components/colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
@@ -43,7 +43,6 @@ const MainContentInitial = styled.div`
 
 const MainContentToggled = styled.div`
   ${mainPageContentCommon}
-  /* border: 1px solid lightcoral; */
 
   /* Toggled (Open) on Mobile  */
   left: 7em;
@@ -61,7 +60,6 @@ const sidebarCommon = css`
   position: fixed;
   top: 0;
   height: 100vh;
-  background-color: #ffbb54;
   background-color: ${lightOrange};
 `;
 
@@ -91,7 +89,7 @@ const arrowPointsToRight = css`
     flex-direction: row-reverse;
 
     .toggleArrow {
-      color: orange;
+      color: ${zeeguuOrange};
       z-index: 100;
       transform: rotate(90deg) translate(20px, -0.5em);
     }
