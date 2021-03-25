@@ -10,7 +10,7 @@ export default function SideBar(props) {
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState();
 
-  //setting the state of the landingpage depending on whether the user is a student or a teacher
+  //deducting the landingpage based on whether the user is a student or a teacher - to render the 'Student/Teacher Site' button correctly.
   useEffect(() => {
     if (user.is_teacher) {
       setIsOnStudentSide(false);
@@ -72,8 +72,7 @@ export default function SideBar(props) {
         (isOnStudentSide === "true" || isOnStudentSide === true) && (
           <div className="navigationLink">
             <Link
-              /* target="_blank" */
-              to="/teacher"
+              to="/teacher/classes"
               onClick={changeSide}
             >
               <small>{strings.teacherSite}</small>
@@ -85,17 +84,17 @@ export default function SideBar(props) {
         (isOnStudentSide === "false" || isOnStudentSide === false) && (
           <>
             <div className="navigationLink">
-              <Link to="/teacher_classes" onClick={resetSidebarToDefault}>
+              <Link to="/teacher/classes" onClick={resetSidebarToDefault}>
                 <small>{strings.myClasses}</small>
               </Link>
             </div>
             <div className="navigationLink">
-              <Link to="teacher_texts"onClick={resetSidebarToDefault}>
+              <Link to="/teacher/texts" onClick={resetSidebarToDefault}>
                 <small>{strings.myTexts}</small>
               </Link>
             </div>
             <div className="navigationLink">
-              <Link to="/teacher_tutorials" onClick={resetSidebarToDefault}>
+              <Link to="/teacher/tutorials" onClick={resetSidebarToDefault}>
                 <small>{strings.tutorials}</small>
               </Link>
             </div>

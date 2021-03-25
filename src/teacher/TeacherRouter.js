@@ -1,40 +1,32 @@
 import { PrivateRoute } from "../PrivateRoute";
-import strings from "../i18n/definitions";
-
-import * as s from "../components/NarrowColumn.sc";
-import * as sc from "../components/TopTabs.sc";
 import ArticlesRouter from "../articles/_ArticlesRouter";
 import TeacherClasses from "../teacher/TeacherClasses";
+import TeacherTexts from "../teacher/TeacherTexts";
 import { Switch } from "react-router";
+import TeacherTutorials from "./TeacherTutorials";
 
 export default function TeacherRouter({ api }) {
   return (
     <>
-      {/* Rendering top menu first, then routing to corresponding page */}
-      <s.NarrowColumn>
-        <sc.TopTabs>
-          <h1>The teacher side of things is being built...</h1>
-        </sc.TopTabs>
-        <Switch>
-          <PrivateRoute
-            path="/teacher_classes"
-            exact
-            api={api}
-            component={TeacherClasses}
-          />
-          <PrivateRoute
-            path="/teacher_texts"
-            api={api}
-            component={TeacherClasses}
-          />
-          <PrivateRoute
-            path="/teacher_tutorials"
-            api={api}
-            component={TeacherClasses}
-          />
-          <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
-        </Switch>
-      </s.NarrowColumn>
+      <Switch>
+        <PrivateRoute
+          path="/teacher/classes"
+          exact
+          api={api}
+          component={TeacherClasses}
+        />
+        <PrivateRoute
+          path="/teacher/texts"
+          api={api}
+          component={TeacherTexts}
+        />
+        <PrivateRoute
+          path="/teacher/tutorials"
+          api={api}
+          component={TeacherTutorials}
+        />
+        <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
+      </Switch>
     </>
   );
 }
