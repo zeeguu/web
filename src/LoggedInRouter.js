@@ -1,11 +1,11 @@
+import SideBar from "./components/SideBar";
+import { PrivateRoute } from "./PrivateRoute";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import WordsRouter from "./words/_WordsRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
-import Settings from "./pages/Settings";
-import { PrivateRoute } from "./PrivateRoute";
-import SideBar from "./components/SideBar";
-import ArticleReader from "./reader/ArticleReader";
 import TeacherRouter from "./teacher/TeacherRouter";
+import Settings from "./pages/Settings";
+import ArticleReader from "./reader/ArticleReader";
 
 export default function LoggedInRouter({ api, setUser }) {
   return (
