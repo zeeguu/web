@@ -9,12 +9,16 @@ let strings = new LocalizedStrings(
       save: "save",
       settings: "Settings",
       exercises: "Exercises",
+      myClasses: "My Classes",
+      myTexts: "My Texts",
+      tutorials: "Tutorials",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
 
       //Sidebar
       teacherSite: "Teacher site",
+      studentSite: "Student site",
       logout: "Logout",
 
       //LandingPage
@@ -186,12 +190,16 @@ let strings = new LocalizedStrings(
       save: "gem",
       settings: "Indstillinger",
       exercises: "Øvelser",
+      myClasses: "Mine klasser",
+      myTexts: "Mine tekster",
+      tutorials: "Hjælp",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
 
       //Sidebar
       teacherSite: "Lærersiden",
+      studentSite: "Elevsiden",
       logout: "Log ud",
 
       //LandingPage

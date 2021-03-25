@@ -5,6 +5,7 @@ import Settings from "./pages/Settings";
 import { PrivateRoute } from "./PrivateRoute";
 import SideBar from "./components/SideBar";
 import ArticleReader from "./reader/ArticleReader";
+import TeacherRouter from "./teacher/TeacherRouter";
 
 export default function LoggedInRouter({ api, setUser }) {
   return (
@@ -26,6 +27,8 @@ export default function LoggedInRouter({ api, setUser }) {
           api={api}
           component={ArticleReader}
         />
+
+        <PrivateRoute path="/teacher" api={api} component={TeacherRouter}/>
       </SideBar>
     </>
   );
