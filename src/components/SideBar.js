@@ -100,7 +100,6 @@ export default function SideBar(props) {
             </div>
             <div className="navigationLink">
               <Link
-                /* target="_blank" */
                 to="/articles"
                 onClick={changeSide}
               >
