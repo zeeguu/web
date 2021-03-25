@@ -18,12 +18,16 @@ let strings = new LocalizedStrings(
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
       code: "Code",
+      myClasses: "My Classes",
+      myTexts: "My Texts",
+      tutorials: "Tutorials",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
 
       //Sidebar
       teacherSite: "Teacher site",
+      studentSite: "Student site",
       logout: "Logout",
 
       //CreateAccount
@@ -262,12 +266,16 @@ let strings = new LocalizedStrings(
       resetYourPassword: "nulstille dit kodeord",
       resetPassword: "Nulstil kodeord",
       code: "Kode",
+      myClasses: "Mine klasser",
+      myTexts: "Mine tekster",
+      tutorials: "Hjælp",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
 
       //Sidebar
       teacherSite: "Lærersiden",
+      studentSite: "Elevsiden",
       logout: "Log ud",
 
       //CreateAccount
