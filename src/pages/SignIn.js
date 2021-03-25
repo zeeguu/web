@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect} from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { useHistory } from "react-router-dom";
 import strings from "../i18n/definitions"
@@ -21,8 +21,9 @@ export default function SignIn({ api, notifySuccessfulSignIn }) {
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
         notifySuccessfulSignIn(userInfo);
-        
-        history.push("/articles");
+        userInfo.is_teacher
+          ? history.push("/teacher/classes")
+          : history.push("/articles");
       });
     });
   }
