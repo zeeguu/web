@@ -121,24 +121,8 @@ export default function SideBar(props) {
       </div>
     </>
   );
-  if (isOnStudentSide) {
-    if (!initialSidebarState) {
-      return (
-        <s.SideBarToggled>
-          {sidebarContent}
-          <s.MainContentToggled>{props.children}</s.MainContentToggled>
-        </s.SideBarToggled>
-      );
-    }
-
-    return (
-      <s.SideBarInitial>
-        {sidebarContent}
-        <s.MainContentInitial>{props.children}</s.MainContentInitial>
-      </s.SideBarInitial>
-    );
-  }
-  if (!isOnStudentSide) {
+  
+  if (user.is_teacher && !isOnStudentSide) {
     if (!initialSidebarState) {
       return (
         <s.SideBarToggledTeacher>
@@ -154,5 +138,22 @@ export default function SideBar(props) {
         <s.MainContentInitial>{props.children}</s.MainContentInitial>
       </s.SideBarInitialTeacher>
     );
+  }else{
+      if (!initialSidebarState) {
+      return (
+        <s.SideBarToggled>
+          {sidebarContent}
+          <s.MainContentToggled>{props.children}</s.MainContentToggled>
+        </s.SideBarToggled>
+      );
+    }
+
+    return (
+      <s.SideBarInitial>
+        {sidebarContent}
+        <s.MainContentInitial>{props.children}</s.MainContentInitial>
+      </s.SideBarInitial>
+    );
   }
+
 }
