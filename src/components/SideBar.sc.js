@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { zeeguuOrange, lightOrange } from "../components/colors";
+import { zeeguuOrange, lightOrange, lightBlue, darkBlue } from "../components/colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
@@ -22,10 +22,6 @@ let mainPageContentCommon = css`
 
 const MainContentInitial = styled.div`
   /* Default (Minimized) on Mobile */
-
-  /* debugging */
-  /* background-color: lightcyan; */
-  /* border: 1px solid lightcoral; */
 
   /* margin-left: 1em;
   margin-top: 1em; */
@@ -63,6 +59,11 @@ const sidebarCommon = css`
   background-color: ${lightOrange};
 `;
 
+const sidebarCommonTeacher = css`
+  ${sidebarCommon}
+  background-color: ${lightBlue};
+`;
+
 const logoOpen = css`
   .logo {
     display: block;
@@ -92,6 +93,14 @@ const arrowPointsToRight = css`
       color: ${zeeguuOrange};
       z-index: 100;
       transform: rotate(90deg) translate(20px, -0.5em);
+    }
+  }
+`;
+const arrowPointsToRightTeacher = css`
+  ${arrowPointsToRight}
+  .arrowHolder{
+    .toggleArrow{
+      color:${darkBlue};
     }
   }
 `;
@@ -126,13 +135,20 @@ const navigationVisibleCommon = css`
     color: white;
     /* font-size: xx-large; */
     margin-bottom: 0.4em;
-    background-color: #ffbb54;
+    background-color: ${zeeguuOrange};
 
     a {
       color: white;
       text-decoration: none;
       padding-left: 10px;
     }
+  }
+`;
+
+const navigationVisibleCommonTeacher = css`
+  ${navigationVisibleCommon}
+  .navigationLink {
+    background-color: ${darkBlue};
   }
 `;
 
@@ -146,8 +162,6 @@ const SideBarInitial = styled.div`
   ${arrowCommon}
   ${arrowPointsToRight}
 
-  
-
   //   Default for Desktop = Open
   @media (min-width: 768px) {
     width: 12.5em;
@@ -160,6 +174,33 @@ const SideBarInitial = styled.div`
 
     /* Navigation */
     ${navigationVisibleCommon}
+    .navigationLink {
+      font-size: xx-large;
+    }
+  }
+`;
+const SideBarInitialTeacher = styled.div`
+  // Mobile - Initial = Closed
+  ${sidebarCommonTeacher}
+
+  ${sidebarMinimizedCommon}
+
+  /*  Arrow */
+  ${arrowCommon}
+  ${arrowPointsToRightTeacher} 
+
+  //   Default for Desktop = Open
+  @media (min-width: 768px) {
+    width: 12.5em;
+
+    /* Logo */
+    ${logoOpen}
+
+    /* Arrow */
+    ${arrowAsNegativeSpace}
+
+    /* Navigation */
+    ${navigationVisibleCommonTeacher}
     .navigationLink {
       font-size: xx-large;
     }
@@ -192,9 +233,36 @@ const SideBarToggled = styled.div`
   }
 `;
 
+const SideBarToggledTeacher = styled.div`
+  ${sidebarCommonTeacher}
+
+  // Mobile - Open
+  width: 7em;
+
+  ${logoOpen}
+
+  ${arrowCommon}
+
+  ${arrowAsNegativeSpace}
+
+  ${navigationVisibleCommonTeacher}
+  .navigationLink {
+    font-weight: 700;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    font-size: large;
+  }
+
+  @media (min-width: 768px) {
+    ${sidebarMinimizedCommon}
+    ${arrowPointsToRightTeacher}
+  }
+`;
 export {
   SideBarInitial,
   SideBarToggled,
+  SideBarInitialTeacher,
+  SideBarToggledTeacher,
   MainContentInitial,
   MainContentToggled,
 };
