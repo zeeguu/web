@@ -1,8 +1,9 @@
 import { useEffect, useState, useContext } from "react";
+import UserCalendar from "./UserCalendar";
 import UserStats from "./UserStats";
 import UserStatsTest1 from "./UserStatsTest1";
 
-const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"} ]
+const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"}, {id: 4, title: "Forth tab"} ]
 
 const TabList = ({children}) => {
     return (
@@ -20,318 +21,63 @@ const Tab = ({key, id, title, handleActiveTabChange}) => {
 
 export default function UserDashboard({ api }){
 
-    const user_data = mock_data() 
     const [activeTab, setActiveTab] = useState(1);
+    const [wordCountCalendar, setWordCountCalendar] = useState([]);
+    const [dataForLineGraph, setDataForLineGraph] = useState([]);
+    const [bookmarks, setBookmarks] = useState(null);
+
+
 
     function handleActiveTabChange(tab_id) {
-      setActiveTab(tab_id)
+      setActiveTab(tab_id);  
+      console.log(bookmarks);      
     }
 
     useEffect(() => {
+
       api.getBookmarksCountsByDate((counts) => {
-        console.log(counts)
-      });
-      api.getBookmarksByDay((counts) => {
-        console.log(counts)
+
+      const formattedCountsCalendar = counts.map(function(row) {     
+          return { day : row.date, value : row.count }
+       });
+
+       setWordCountCalendar(formattedCountsCalendar);
+
+       const formattedCountsLine = counts.reverse().map(function(row) {     
+        return { x : row.date, y : row.count }
+     });
+
+     const formattedData = [{id: "Word Count", data: formattedCountsLine}, {id: "somethinng else", data:[]}];
+
+     setDataForLineGraph(formattedData);
+
       });
 
-    }, [])
+      api.getBookmarksByDay((bookmarks) => {
+        setBookmarks(bookmarks);
+      });
+
+    }, []);
 
     return (
-    <div>
+    <>
         Hello user, here's some data
         <TabList>
         {
             tabs.map(
                 tab => <Tab key={tab.id} id={tab.id} title={tab.title} handleActiveTabChange={handleActiveTabChange}/>
             )
+            
         }
         </TabList>
-        {activeTab === 1  && <UserStats user_data={user_data}/>}
-        {activeTab === 2  && <UserStatsTest1 user_data={mock_data2()}/>}
-        {activeTab === 3 && "this is third tab"}
-    </div>
+        {activeTab === 1  && <UserStats user_data={dataForLineGraph}/>}
+        {activeTab === 2  && <UserCalendar data={wordCountCalendar}/>}
+        {activeTab === 3  && <UserStatsTest1 user_data={mock_data2()}/>}
+    </>
     );
     
 }
 
-
-function mock_data() {
-    const data = [
-        {
-          "id": "japan",
-          "color": "hsl(99, 70%, 50%)",
-          "data": [
-            {
-              "x": "plane",
-              "y": 58
-            },
-            {
-              "x": "helicopter",
-              "y": 200
-            },
-            {
-              "x": "boat",
-              "y": 101
-            },
-            {
-              "x": "train",
-              "y": 247
-            },
-            {
-              "x": "subway",
-              "y": 16
-            },
-            {
-              "x": "bus",
-              "y": 108
-            },
-            {
-              "x": "car",
-              "y": 25
-            },
-            {
-              "x": "moto",
-              "y": 107
-            },
-            {
-              "x": "bicycle",
-              "y": 94
-            },
-            {
-              "x": "horse",
-              "y": 3
-            },
-            {
-              "x": "skateboard",
-              "y": 207
-            },
-            {
-              "x": "others",
-              "y": 98
-            }
-          ]
-        },
-        {
-          "id": "france",
-          "color": "hsl(325, 70%, 50%)",
-          "data": [
-            {
-              "x": "plane",
-              "y": 19
-            },
-            {
-              "x": "helicopter",
-              "y": 0
-            },
-            {
-              "x": "boat",
-              "y": 130
-            },
-            {
-              "x": "train",
-              "y": 261
-            },
-            {
-              "x": "subway",
-              "y": 269
-            },
-            {
-              "x": "bus",
-              "y": 279
-            },
-            {
-              "x": "car",
-              "y": 125
-            },
-            {
-              "x": "moto",
-              "y": 27
-            },
-            {
-              "x": "bicycle",
-              "y": 206
-            },
-            {
-              "x": "horse",
-              "y": 203
-            },
-            {
-              "x": "skateboard",
-              "y": 1
-            },
-            {
-              "x": "others",
-              "y": 241
-            }
-          ]
-        },
-        {
-          "id": "us",
-          "color": "hsl(295, 70%, 50%)",
-          "data": [
-            {
-              "x": "plane",
-              "y": 297
-            },
-            {
-              "x": "helicopter",
-              "y": 45
-            },
-            {
-              "x": "boat",
-              "y": 93
-            },
-            {
-              "x": "train",
-              "y": 31
-            },
-            {
-              "x": "subway",
-              "y": 204
-            },
-            {
-              "x": "bus",
-              "y": 180
-            },
-            {
-              "x": "car",
-              "y": 134
-            },
-            {
-              "x": "moto",
-              "y": 191
-            },
-            {
-              "x": "bicycle",
-              "y": 117
-            },
-            {
-              "x": "horse",
-              "y": 188
-            },
-            {
-              "x": "skateboard",
-              "y": 300
-            },
-            {
-              "x": "others",
-              "y": 280
-            }
-          ]
-        },
-        {
-          "id": "germany",
-          "color": "hsl(272, 70%, 50%)",
-          "data": [
-            {
-              "x": "plane",
-              "y": 56
-            },
-            {
-              "x": "helicopter",
-              "y": 103
-            },
-            {
-              "x": "boat",
-              "y": 205
-            },
-            {
-              "x": "train",
-              "y": 224
-            },
-            {
-              "x": "subway",
-              "y": 195
-            },
-            {
-              "x": "bus",
-              "y": 41
-            },
-            {
-              "x": "car",
-              "y": 177
-            },
-            {
-              "x": "moto",
-              "y": 175
-            },
-            {
-              "x": "bicycle",
-              "y": 228
-            },
-            {
-              "x": "horse",
-              "y": 17
-            },
-            {
-              "x": "skateboard",
-              "y": 198
-            },
-            {
-              "x": "others",
-              "y": 1
-            }
-          ]
-        },
-        {
-          "id": "norway",
-          "color": "hsl(263, 70%, 50%)",
-          "data": [
-            {
-              "x": "plane",
-              "y": 63
-            },
-            {
-              "x": "helicopter",
-              "y": 104
-            },
-            {
-              "x": "boat",
-              "y": 61
-            },
-            {
-              "x": "train",
-              "y": 139
-            },
-            {
-              "x": "subway",
-              "y": 132
-            },
-            {
-              "x": "bus",
-              "y": 168
-            },
-            {
-              "x": "car",
-              "y": 243
-            },
-            {
-              "x": "moto",
-              "y": 208
-            },
-            {
-              "x": "bicycle",
-              "y": 36
-            },
-            {
-              "x": "horse",
-              "y": 77
-            },
-            {
-              "x": "skateboard",
-              "y": 157
-            },
-            {
-              "x": "others",
-              "y": 256
-            }
-          ]
-        }
-      ]
-      
-    return data;
-  }
 
 function mock_data2(){
   return [
