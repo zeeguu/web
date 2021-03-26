@@ -71,10 +71,7 @@ export default function SideBar(props) {
       {user.is_teacher &&
         (isOnStudentSide === "true" || isOnStudentSide === true) && (
           <div className="navigationLink">
-            <Link
-              to="/teacher/classes"
-              onClick={changeSide}
-            >
+            <Link to="/teacher/classes" onClick={changeSide}>
               <small>{strings.teacherSite}</small>
             </Link>
           </div>
@@ -99,10 +96,7 @@ export default function SideBar(props) {
               </Link>
             </div>
             <div className="navigationLink">
-              <Link
-                to="/articles"
-                onClick={changeSide}
-              >
+              <Link to="/articles" onClick={changeSide}>
                 <small>{strings.studentSite}</small>
               </Link>
             </div>
@@ -127,20 +121,38 @@ export default function SideBar(props) {
       </div>
     </>
   );
+  if (isOnStudentSide) {
+    if (!initialSidebarState) {
+      return (
+        <s.SideBarToggled>
+          {sidebarContent}
+          <s.MainContentToggled>{props.children}</s.MainContentToggled>
+        </s.SideBarToggled>
+      );
+    }
 
-  if (!initialSidebarState) {
     return (
-      <s.SideBarToggled>
+      <s.SideBarInitial>
         {sidebarContent}
-        <s.MainContentToggled>{props.children}</s.MainContentToggled>
-      </s.SideBarToggled>
+        <s.MainContentInitial>{props.children}</s.MainContentInitial>
+      </s.SideBarInitial>
     );
   }
+  if (!isOnStudentSide) {
+    if (!initialSidebarState) {
+      return (
+        <s.SideBarToggledTeacher>
+          {sidebarContent}
+          <s.MainContentToggled>{props.children}</s.MainContentToggled>
+        </s.SideBarToggledTeacher>
+      );
+    }
 
-  return (
-    <s.SideBarInitial>
-      {sidebarContent}
-      <s.MainContentInitial>{props.children}</s.MainContentInitial>
-    </s.SideBarInitial>
-  );
+    return (
+      <s.SideBarInitialTeacher>
+        {sidebarContent}
+        <s.MainContentInitial>{props.children}</s.MainContentInitial>
+      </s.SideBarInitialTeacher>
+    );
+  }
 }
