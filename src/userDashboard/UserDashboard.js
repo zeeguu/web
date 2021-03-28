@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import UserCalendar from "./userGraphs/UserCalendar";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"}, {id: 4, title: "Forth tab"} ]
 
@@ -70,9 +71,13 @@ export default function UserDashboard({ api }){
             
         }
         </TabList>
-        {activeTab === 1  && <UserLineGraph data={dataForLineGraph}/>}
-        {activeTab === 2  && <UserCalendar data={wordCountCalendar}/>}
-        {activeTab === 3  && <UserBarGraph data={mock_data2()}/>}
+        {
+        !(dataForLineGraph || wordCountCalendar) ? <LoadingAnimation />
+          : (activeTab === 1) ? <UserLineGraph data={dataForLineGraph}/>
+          : (activeTab === 2) ? <UserCalendar data={wordCountCalendar}/>
+          : (activeTab === 3) ? <UserBarGraph data={mock_data2()}/>
+          : <></>
+        }
     </>
     );
     
