@@ -7,7 +7,7 @@ export default function UserCalendar ({ data }) {
 
     return (
         <>
-        <h1>Number of translated words / date</h1>
+        <h2 style={{marginLeft: '0.8rem'}}>Number of translated words / date</h2>
         <ResponsiveCalendar
             data={data}
             from={startDate}
