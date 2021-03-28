@@ -1,8 +1,9 @@
 import { useEffect, useState, useContext } from "react";
+import LoadingAnimation from "../components/LoadingAnimation";
 import UserCalendar from "./userGraphs/UserCalendar";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
-import LoadingAnimation from "../components/LoadingAnimation";
+import UserPie from "./userGraphs/UserPie";
 
 const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"}, {id: 4, title: "Forth tab"} ]
 
@@ -23,11 +24,9 @@ const Tab = ({key, id, title, handleActiveTabChange}) => {
 export default function UserDashboard({ api }){
 
     const [activeTab, setActiveTab] = useState(1);
-    const [wordCountCalendar, setWordCountCalendar] = useState([]);
+    const [dataForCalendar, setDataForCalendar] = useState([]);
     const [dataForLineGraph, setDataForLineGraph] = useState([]);
-    const [bookmarks, setBookmarks] = useState(null);
-
-
+    const [bookmarks, setBookmarks] = useState([]);
 
     function handleActiveTabChange(tab_id) {
       setActiveTab(tab_id);  
@@ -42,7 +41,7 @@ export default function UserDashboard({ api }){
           return { day : row.date, value : row.count }
        });
 
-       setWordCountCalendar(formattedCountsCalendar);
+       setDataForCalendar(formattedCountsCalendar);
 
        const formattedCountsLine = counts.reverse().map(function(row) {     
         return { x : row.date, y : row.count }
@@ -72,10 +71,11 @@ export default function UserDashboard({ api }){
         }
         </TabList>
         {
-        !(dataForLineGraph || wordCountCalendar) ? <LoadingAnimation />
-          : (activeTab === 1) ? <UserLineGraph data={dataForLineGraph}/>
-          : (activeTab === 2) ? <UserCalendar data={wordCountCalendar}/>
-          : (activeTab === 3) ? <UserBarGraph data={mock_data2()}/>
+        !(dataForLineGraph || dataForCalendar) ? <LoadingAnimation />
+          : (activeTab === 1) ? <UserPie data={mock_data()} userData={[]}/>
+          : (activeTab === 2) ? <UserLineGraph data={dataForLineGraph}/>
+          : (activeTab === 3) ? <UserCalendar data={dataForCalendar}/>
+          : (activeTab === 4) ? <UserBarGraph data={mock_data2()}/>
           : <></>
         }
     </>
@@ -83,6 +83,40 @@ export default function UserDashboard({ api }){
     
 }
 
+function mock_data(){
+  return [
+    {
+      "id": "articles",
+      "label": "Read articles",
+      "value": 54,
+      "color": "hsl(213, 70%, 50%)"
+    },
+    {
+      "id": "total_words",
+      "label": "Total Number of Read Words",
+      "value": 4587,
+      "color": "hsl(254, 70%, 50%)"
+    },
+    {
+      "id": "words",
+      "label": "Translated Words",
+      "value": 367,
+      "color": "hsl(344, 70%, 50%)"
+    },
+    {
+      "id": "minutes",
+      "label": "Minutes on Platform",
+      "value": 3487,
+      "color": "hsl(308, 70%, 50%)"
+    },
+    {
+      "id": "exercises",
+      "label": "Learned Words",
+      "value": 545,
+      "color": "hsl(158, 70%, 50%)"
+    }
+  ]
+}
 
 function mock_data2(){
   return [
