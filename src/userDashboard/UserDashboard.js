@@ -21,16 +21,40 @@ const Tab = ({key, id, title, handleActiveTabChange}) => {
     )
 }
 
+const options = [ {id: 1, title: "Week"}, {id: 2, title: "Month"}, {id: 3, title: "Year"}, {id: 4, title: "Years"}]
+
+const OptionList = ({ children, handleActiveOptionChange }) => {
+  return (
+    <select className="user-dashboard-option-list" onChange={(e) => handleActiveOptionChange(e.target.value)}>
+     {children}
+    </select>
+   )
+ }
+
+const Option = ({key, id, title}) => {
+  return (
+      <option className="user-dashboard-option" value={title}>{title}</option>
+  )
+}
+
 export default function UserDashboard({ api }){
 
     const [activeTab, setActiveTab] = useState(1);
+    const [activeOption, setActiveOption] = useState("");
     const [dataForCalendar, setDataForCalendar] = useState([]);
     const [dataForLineGraph, setDataForLineGraph] = useState([]);
     const [bookmarks, setBookmarks] = useState([]);
 
-    function handleActiveTabChange(tab_id) {
-      setActiveTab(tab_id);  
-      console.log(bookmarks);      
+    function handleActiveTabChange(tabId) {
+      setActiveTab(tabId);  
+    }
+
+    function handleActiveOptionChange(selected) {
+      console.log("selected:");
+      console.log(selected);  
+      setActiveOption(selected);
+      console.log("active option:");
+      console.log(activeOption);
     }
 
     useEffect(() => {
@@ -61,7 +85,6 @@ export default function UserDashboard({ api }){
 
     return (
     <>
-        Hello user, here's some data
         <TabList>
         {
             tabs.map(
@@ -70,6 +93,14 @@ export default function UserDashboard({ api }){
             
         }
         </TabList>
+        <OptionList handleActiveOptionChange={handleActiveOptionChange}>
+        {
+            options.map(
+                option => <Option key={option.id} id={option.id} title={option.title}/>
+            )
+            
+        }
+        </OptionList>
         {
         !(dataForLineGraph || dataForCalendar) ? <LoadingAnimation />
           : (activeTab === 1) ? <UserPie data={mock_data()} userData={[]}/>
