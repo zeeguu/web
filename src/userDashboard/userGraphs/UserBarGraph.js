@@ -6,6 +6,7 @@ export default function UserBarGraph ({ data }) {
     return(
         //parent container has to have height specified in order for the graph to be shown     
         <div style={{height: 500}}> 
+            <h2 style={{marginLeft: '0.8rem'}}>A Bar Chart</h2>
             <ResponsiveBar
                 data={data}
                 keys={[ 'hot dog', 'burger', 'sandwich', 'kebab', 'fries', 'donut' ]}
