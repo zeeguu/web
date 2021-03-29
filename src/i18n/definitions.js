@@ -1,5 +1,4 @@
 import LocalizedStrings from "localized-strings";
-import { now } from "moment";
 /* You find the definitions under the component in which they are rendered.
 Definitions that are rendered in multiple components are under "Shared". */
 let strings = new LocalizedStrings(
@@ -293,8 +292,8 @@ let strings = new LocalizedStrings(
         "Zeeguu er et forskningsprojekt. Vores mål er at undersøge, hvordan man kan gøre det sjovere at lære et fremmedsprog.",
       the: "Den ",
       onlyPersonalInfo: "eneste personlige information",
-      thatWeStore: ", vi gemmer om dig er det/den ",
-      nameAndEmail: "navn og email",
+      thatWeStore: ", vi gemmer om dig er ",
+      nameAndEmail: "det navn og den email",
       restOfPersonalInfoMsg:
         " du giver os på denne side. Vi deler ikke din email med nogen overhovedet. Vi har brug for den til at kunne sende kodeord, vigtig information om Zeeguu samt muligvis en brugerundersøgelse på et tidspunkt.",
       weStore: "Vi gemmer ",
