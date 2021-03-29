@@ -1,5 +1,6 @@
 import LocalizedStrings from "localized-strings";
-
+/* You find the definitions under the component in which they are rendered.
+Definitions that are rendered in multiple components are under "Shared". */
 let strings = new LocalizedStrings(
   {
     en: {
@@ -9,6 +10,10 @@ let strings = new LocalizedStrings(
       save: "save",
       settings: "Settings",
       exercises: "Exercises",
+      login: "Sing in",
+      email: "Email",
+      name: "Name",
+      learnedLanguage: "Learned Language",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -17,10 +22,54 @@ let strings = new LocalizedStrings(
       teacherSite: "Teacher site",
       logout: "Logout",
 
+      //CreateAccount
+      nameIsRequired: "Name is required.",
+      plsProvideValidEmail: "Please provide a valid email.",
+      learnedLanguageIsRequired: "Learned language is required.",
+      languangeLevelIsRequired: "Language level is required.",
+      plsSelectBaseLanguage: "Please select a base language.",
+      passwordMustBeMsg: "Password should be at least 4 characters long.",
+      createAccount: "Create Account",
+      thankYouMsgPrefix:
+        "Thanks for being a beta-tester. We really want to hear from you at",
+      thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
+      inviteCode: "Invite Code",
+      code: "Code",
+      levelOfLearnedLanguage: "Level in Learned Language",
+      baseLanguage: "Base languange",
+
+      //PrivacyNotice
+      privacyNotice: "Privacy Notice",
+      zeeguuIsAReaserchProject:
+        "Zeeguu is a research project. Our goal is to discover ways in which learning a foreign language is more fun.",
+      the: "The ",
+      onlyPersonalInfo: "only personal information",
+      thatWeStore: " that we store about you is the ",
+      nameAndEmail: "name and email",
+      restOfPersonalInfoMsg:
+        "you provide on this page. We do not share it with anybody. We need it to send you a reset password code, important announcements about the platform, and possibly a survey at some point.",
+      weStore: "We store ",
+      anonymizedData: "anonymized data",
+      aboutYour: " about your ",
+      interaction:
+        "interactions with foreign language texts and vocabulary exercises",
+      togetherWithThe: " together with the ",
+      times: "times of these interactions",
+      restOfDataStorageInfoMsg:
+        ". They help us estimate the words you know, the ones you should learn, recommend texts, and approximate time spent studying.",
+      weMightMakeDataAvailableInfo:
+        "        We might make the anonymized interaction data available for other researchers too. In research, data can be even more important than algorithms.",
+
+      //Signin
+      password: "Password",
+      alternativelyYouCan: "Alternatively, you can",
+      createAnAccount: "create an account",
+      or: "or",
+      resetYourPassword: "reset your password",
+
       //LandingPage
       projectDescription_UltraShort:
         "A research project aiming to personalize reading and vocabulary practice in foreign languages",
-      login: "Sing in",
       betaTester: "Become a Betatester!",
       howDoesItWork: "How Does It Work?",
       personalizedRecommandations: "Personalized Recommendations",
@@ -142,6 +191,7 @@ let strings = new LocalizedStrings(
       learnedWordsAreMsg:
         "Learned words are words that were correct in exercises on four different days.",
       numberOfLearnedWordsMsg: "You have learned {0} words so far.",
+      correctOn: "Correct on: ",
 
       //Starred
       titleStarredWords: "Starred Words",
@@ -171,11 +221,8 @@ let strings = new LocalizedStrings(
       //ButtomFeedback
       speak: "Speak",
       next: "Next",
-      
+
       //Settings
-      name:"Name",
-      email: "Email",
-      learnedLanguage: "Learned Language",
       nativeLanguage: "Native Language",
     },
 
@@ -186,6 +233,10 @@ let strings = new LocalizedStrings(
       save: "gem",
       settings: "Indstillinger",
       exercises: "Øvelser",
+      login: "Log ind",
+      email: "Email",
+      name: "Navn",
+      learnedLanguage: "Sprog, du vil lære",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -194,10 +245,56 @@ let strings = new LocalizedStrings(
       teacherSite: "Lærersiden",
       logout: "Log ud",
 
+      //CreateAccount
+      nameIsRequired: "Vi mangler et navn.",
+      plsProvideValidEmail: "Angiv venligst en gyldig email.",
+      learnedLanguageIsRequired: 'Udfyld feltet "Sprog, du vil lære"',
+      languangeLevelIsRequired:
+        "Angiv niveauet af det sprog, du gerne vil lære.",
+      plsSelectBaseLanguage: "Angiv, dit base sprog.",
+      passwordMustBeMsg: "Kodeordet skal være mindst fire karakterer",
+      createAccount: "Opret konto",
+      thankYouMsgPrefix:
+        "Tak fordi du vil være beta-tester. Du er altid velkommen til at kontakte os på: ",
+      thankYouMsgSuffix:
+        ". Du kan også kontakte os, hvis du mangler en invitationskode.",
+      inviteCode: "Invitationskode",
+      code: "kode",
+      levelOfLearnedLanguage: "Niveau på dit læringssprog",
+      baseLanguage: "Basesprog",
+
+      //PrivacyNotice
+      privacyNotice: "Fortrolighedserklæring",
+      zeeguuIsAReaserchProject:
+        "Zeeguu er et forskningsprojekt. Vores mål er at undersøge, hvordan man kan gøre det sjovere at lære et fremmedsprog.",
+      the: "Den ",
+      onlyPersonalInfo: "eneste personlige information",
+      thatWeStore: ", vi gemmer om dig er det/den ",
+      nameAndEmail: "navn og email",
+      restOfPersonalInfoMsg:
+        " du giver os på denne side. Vi deler ikke din email med nogen overhovedet. Vi har brug for den til at kunne sende kodeord, vigtig information om Zeeguu samt muligvis en brugerundersøgelse på et tidspunkt.",
+      weStore: "Vi gemmer ",
+      anonymizedData: "anonymiseret data",
+      aboutYour: " om din ",
+      interaction:
+        " interaktion med fremmedsprogsteksterne og ordforrådsøvelserne",
+      togetherWithThe: " sammen med ",
+      times: "tidspunkterne for disse interaktioner",
+      restOfDataStorageInfoMsg:
+        ". Denne data hjælper os til at kunne estimere; hvilke ord du kender, hvilke du skal lærer, hvilke tekster vi skal anbefale, samt til cirka at kunne anslå, hvor meget tid der bliver brugt på læringen.",
+      weMightMakeDataAvailableInfo:
+        "Vi vil muligvis dele den anonymiserede interaktionsdata med andre forskere, da denne kan være vigtige end algoritmer for forskningen.", 
+
+      //Signin
+      password: "Kodeord",
+      alternativelyYouCan: "Alternativt kan du",
+      createAnAccount: "oprette en konto",
+      or: "eller",
+      resetYourPassword: "nulstille dit kodeord",
+
       //LandingPage
       projectDescription_UltraShort:
         "Et forskningsprojekt på vej mod at tilpasse fremmedsprogslæsning og ordforrådstræning til den enkelte.",
-      login: "Log ind",
       betaTester: "Bliv Betatester!",
       howDoesItWork: "Hvordan fungerer det?",
       personalizedRecommandations: "Personlige anbefalinger",
@@ -353,9 +450,6 @@ let strings = new LocalizedStrings(
       next: "Næste",
 
       //Settings
-      name:"Navn",
-      email: "Email",
-      learnedLanguage: "Sprog, du vil lære",
       nativeLanguage: "Modersmål",
     },
   },
