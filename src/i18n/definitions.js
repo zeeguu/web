@@ -79,12 +79,13 @@ let strings = new LocalizedStrings(
       again: "again. ",
       orContactUsAt: "Or contact us on ",
       success: "Success!",
-      passwordChangedSuccessfullyMsg:"Your password has been changed successfully.",
+      passwordChangedSuccessfullyMsg:
+        "Your password has been changed successfully.",
       youCanGoTo: "You can go to ",
       now: " now.",
       plsCheck: "Please check ",
       forCode: " for the one-time code we sent you.",
-      codeReceived:"Code received via email",
+      codeReceived: "Code received via email",
       newPassword: "New Password",
       setNewPassword: "Set New Password",
 
@@ -306,7 +307,7 @@ let strings = new LocalizedStrings(
       restOfDataStorageInfoMsg:
         ". Denne data hjælper os til at kunne estimere; hvilke ord du kender, hvilke du skal lærer, hvilke tekster vi skal anbefale, samt til cirka at kunne anslå, hvor meget tid der bliver brugt på læringen.",
       weMightMakeDataAvailableInfo:
-        "Vi vil muligvis dele den anonymiserede interaktionsdata med andre forskere, da denne kan være vigtige end algoritmer for forskningen.",
+        "Vi vil muligvis dele den anonymiserede interaktionsdata med andre forskere, da denne kan være vigtigere end algoritmer for forskningen.",
 
       //Signin
       password: "Kodeord",
@@ -324,12 +325,12 @@ let strings = new LocalizedStrings(
       again: "igen.",
       orContactUsAt: "Ellers kan du kontakte os på: ",
       success: "Succes!",
-      passwordChangedSuccessfullyMsg:"Din kode er blevet ændret.",
+      passwordChangedSuccessfullyMsg: "Din kode er blevet ændret.",
       youCanGoTo: "Du kan gå til ",
       now: " nu.",
       plsCheck: "Vi har sendt en engangskode til: ",
       forCode: "",
-      codeReceived:"Engangskoden fra mailen",
+      codeReceived: "Engangskoden fra mailen",
       newPassword: "Nyt kodeord",
       setNewPassword: "Gem nyt kodeord",
 
