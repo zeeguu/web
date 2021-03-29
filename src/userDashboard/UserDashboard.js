@@ -40,7 +40,7 @@ const Option = ({key, id, title}) => {
 export default function UserDashboard({ api }){
 
     const [activeTab, setActiveTab] = useState(1);
-    const [activeOption, setActiveOption] = useState("");
+    const [activeOption, setActiveOption] = useState("Week");
     const [dataForCalendar, setDataForCalendar] = useState([]);
     const [dataForLineGraph, setDataForLineGraph] = useState([]);
     const [bookmarks, setBookmarks] = useState([]);
@@ -50,11 +50,7 @@ export default function UserDashboard({ api }){
     }
 
     function handleActiveOptionChange(selected) {
-      console.log("selected:");
-      console.log(selected);  
       setActiveOption(selected);
-      console.log("active option:");
-      console.log(activeOption);
     }
 
     useEffect(() => {
@@ -71,7 +67,7 @@ export default function UserDashboard({ api }){
         return { x : row.date, y : row.count }
      });
 
-     const formattedData = [{id: "Word Count", data: formattedCountsLine}, {id: "somethinng else", data:[]}];
+     const formattedData = [{id: "Word Count", data: formattedCountsLine}, {id: "number of read articles", data:[]}, {id: "read words", data:[]}, {id: "time spent on platform", data:[]}, {id: "exercises", data:[]}];
 
      setDataForLineGraph(formattedData);
 
@@ -85,22 +81,26 @@ export default function UserDashboard({ api }){
 
     return (
     <>
-        <TabList>
-        {
-            tabs.map(
-                tab => <Tab key={tab.id} id={tab.id} title={tab.title} handleActiveTabChange={handleActiveTabChange}/>
-            )
-            
-        }
-        </TabList>
-        <OptionList handleActiveOptionChange={handleActiveOptionChange}>
-        {
-            options.map(
-                option => <Option key={option.id} id={option.id} title={option.title}/>
-            )
-            
-        }
-        </OptionList>
+        <div>
+          <TabList>
+          {
+              tabs.map(
+                  tab => <Tab key={tab.id} id={tab.id} title={tab.title} handleActiveTabChange={handleActiveTabChange}/>
+              )
+              
+          }
+          </TabList>
+          <OptionList handleActiveOptionChange={handleActiveOptionChange}>
+          {
+              options.map(
+                  option => <Option key={option.id} id={option.id} title={option.title}/>
+              )
+              
+          }
+          </OptionList>
+          <h4>{activeOption}</h4>
+        </div>
+        
         {
         !(dataForLineGraph || dataForCalendar) ? <LoadingAnimation />
           : (activeTab === 1) ? <UserPie data={mock_data()} userData={[]}/>
