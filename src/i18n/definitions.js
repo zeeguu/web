@@ -1,4 +1,5 @@
 import LocalizedStrings from "localized-strings";
+import { now } from "moment";
 /* You find the definitions under the component in which they are rendered.
 Definitions that are rendered in multiple components are under "Shared". */
 let strings = new LocalizedStrings(
@@ -10,10 +11,14 @@ let strings = new LocalizedStrings(
       save: "save",
       settings: "Settings",
       exercises: "Exercises",
-      login: "Sing in",
+      login: "Sign in",
       email: "Email",
       name: "Name",
       learnedLanguage: "Learned Language",
+      plsProvideValidEmail: "Please provide a valid email.",
+      resetYourPassword: "reset your password",
+      resetPassword: "Reset Password",
+      code: "Code",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -24,7 +29,6 @@ let strings = new LocalizedStrings(
 
       //CreateAccount
       nameIsRequired: "Name is required.",
-      plsProvideValidEmail: "Please provide a valid email.",
       learnedLanguageIsRequired: "Learned language is required.",
       languangeLevelIsRequired: "Language level is required.",
       plsSelectBaseLanguage: "Please select a base language.",
@@ -34,7 +38,6 @@ let strings = new LocalizedStrings(
         "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
       inviteCode: "Invite Code",
-      code: "Code",
       levelOfLearnedLanguage: "Level in Learned Language",
       baseLanguage: "Base languange",
 
@@ -65,7 +68,25 @@ let strings = new LocalizedStrings(
       alternativelyYouCan: "Alternatively, you can",
       createAnAccount: "create an account",
       or: "or",
-      resetYourPassword: "reset your password",
+
+      //ResetPasswordStep1
+      weNeedTheEmailMsg:
+        "To do this we need the email that you registered with us.",
+      //ResetPasswordStep2
+      plsProvideCode: "Please provide a code.",
+      somethingWentWrong: "Something went wrong!",
+      youCanTryTo: "You can try to ",
+      again: "again. ",
+      orContactUsAt: "Or contact us on ",
+      success: "Success!",
+      passwordChangedSuccessfullyMsg:"Your password has been changed successfully.",
+      youCanGoTo: "You can go to ",
+      now: " now.",
+      plsCheck: "Please check ",
+      forCode: " for the one-time code we sent you.",
+      codeReceived:"Code received via email",
+      newPassword: "New Password",
+      setNewPassword: "Set New Password",
 
       //LandingPage
       projectDescription_UltraShort:
@@ -237,6 +258,10 @@ let strings = new LocalizedStrings(
       email: "Email",
       name: "Navn",
       learnedLanguage: "Sprog, du vil lære",
+      plsProvideValidEmail: "Angiv venligst en gyldig email.",
+      resetYourPassword: "nulstille dit kodeord",
+      resetPassword: "Nulstil kodeord",
+      code: "Kode",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -247,7 +272,6 @@ let strings = new LocalizedStrings(
 
       //CreateAccount
       nameIsRequired: "Vi mangler et navn.",
-      plsProvideValidEmail: "Angiv venligst en gyldig email.",
       learnedLanguageIsRequired: 'Udfyld feltet "Sprog, du vil lære"',
       languangeLevelIsRequired:
         "Angiv niveauet af det sprog, du gerne vil lære.",
@@ -259,7 +283,6 @@ let strings = new LocalizedStrings(
       thankYouMsgSuffix:
         ". Du kan også kontakte os, hvis du mangler en invitationskode.",
       inviteCode: "Invitationskode",
-      code: "kode",
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
       baseLanguage: "Basesprog",
 
@@ -283,14 +306,32 @@ let strings = new LocalizedStrings(
       restOfDataStorageInfoMsg:
         ". Denne data hjælper os til at kunne estimere; hvilke ord du kender, hvilke du skal lærer, hvilke tekster vi skal anbefale, samt til cirka at kunne anslå, hvor meget tid der bliver brugt på læringen.",
       weMightMakeDataAvailableInfo:
-        "Vi vil muligvis dele den anonymiserede interaktionsdata med andre forskere, da denne kan være vigtige end algoritmer for forskningen.", 
+        "Vi vil muligvis dele den anonymiserede interaktionsdata med andre forskere, da denne kan være vigtige end algoritmer for forskningen.",
 
       //Signin
       password: "Kodeord",
       alternativelyYouCan: "Alternativt kan du",
       createAnAccount: "oprette en konto",
       or: "eller",
-      resetYourPassword: "nulstille dit kodeord",
+
+      //ResetPasswordStep1
+      weNeedTheEmailMsg:
+        "Vi har brug for den email, du registrede hos os, for at nulstille kodeordet.",
+      //ResetPasswordStep2
+      plsProvideCode: "Angiv venligst engangskoden.",
+      somethingWentWrong: "Noget gik galt!",
+      youCanTryTo: "Du kan prøve at ",
+      again: "igen.",
+      orContactUsAt: "Ellers kan du kontakte os på: ",
+      success: "Succes!",
+      passwordChangedSuccessfullyMsg:"Din kode er blevet ændret.",
+      youCanGoTo: "Du kan gå til ",
+      now: " nu.",
+      plsCheck: "Vi har sendt en engangskode til: ",
+      forCode: "",
+      codeReceived:"Engangskoden fra mailen",
+      newPassword: "Nyt kodeord",
+      setNewPassword: "Gem nyt kodeord",
 
       //LandingPage
       projectDescription_UltraShort:
