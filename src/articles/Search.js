@@ -4,6 +4,7 @@ import { useState } from "react";
 import ArticlePreview from "./ArticlePreview";
 import LoadingAnimation from "../components/LoadingAnimation";
 import * as s from "./Search.sc";
+import strings from "../i18n/definitions";
 
 export default function Search({ api }) {
   const [articleList, setArticleList] = useState(null);
@@ -18,14 +19,14 @@ export default function Search({ api }) {
       originalList = [...articles];
     });
 
-    return <LoadingAnimation text="searching..." />;
+    return <LoadingAnimation text={strings.searching} />;
   }
 
   return (
     <>
       <s.TopMessage>
         {" "}
-        You searched for: {term}
+        {strings.youSearchedFor}{term}
         <s.ClosePopupButton onClick={(e) => (window.location = "/articles")}>
           X
         </s.ClosePopupButton>

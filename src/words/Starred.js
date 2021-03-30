@@ -4,6 +4,7 @@ import { setTitle } from "../assorted/setTitle";
 import Word from "./Word";
 
 import * as s from "../components/TopMessage.sc";
+import strings from "../i18n/definitions";
 
 export default function Starred({ api }) {
   const [words, setWords] = useState(null);
@@ -12,7 +13,7 @@ export default function Starred({ api }) {
     api.starredBookmarks(30, (starredWords) => {
       setWords(starredWords);
     });
-    setTitle("Starred Words");
+    setTitle(strings.titleStarredWords);
     // eslint-disable-next-line
   }, []);
 
@@ -21,7 +22,7 @@ export default function Starred({ api }) {
   }
 
   if (words.length === 0) {
-    return <s.TopMessage>You have no starred words yet.</s.TopMessage>;
+    return <s.TopMessage>{strings.noStarredMsg}</s.TopMessage>;
   }
 
   function bookmarkHasBeenUnstared(bookmark) {

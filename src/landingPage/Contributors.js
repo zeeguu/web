@@ -1,3 +1,5 @@
+import strings from "../i18n/definitions";
+
 export default function Contributors() {
   function member(name, role) {
     return (
@@ -14,7 +16,7 @@ export default function Contributors() {
   }
   return (
     <>
-      <h1>Contributors</h1>
+      <h1>{strings.contributors}</h1>
 
       {member("Mircea Lungu", "Production, maintenance")}
 

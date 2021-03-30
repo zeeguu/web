@@ -7,9 +7,12 @@ import { UserContext } from "../UserContext";
 import LoadingAnimation from "../components/LoadingAnimation";
 
 import * as s from "../components/FormPage.sc";
+import * as sc from "../components/TopTabs.sc";
 import { setTitle } from "../assorted/setTitle";
 
 import LocalStorage from "../assorted/LocalStorage";
+
+import strings from "../i18n/definitions";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -38,6 +41,16 @@ export default function Settings({ api, setUser }) {
     });
   }
 
+  function nativeLanguageUpdated(e) {
+    let code = e.target[e.target.selectedIndex].getAttribute("code");
+
+    strings.setLanguage(code);
+    setUserDetails({
+      ...userDetails,
+      native_language: code,
+    });
+  }
+
   function handleSave(e) {
     e.preventDefault();
 
@@ -54,10 +67,13 @@ export default function Settings({ api, setUser }) {
   return (
     <s.FormContainer>
       <form className="formSettings">
-        <h1>Account Settings</h1>
+        <sc.TopTabs>
+          <h1>{strings.settings}</h1>
+        </sc.TopTabs>
+
         <h5>{errorMessage}</h5>
 
-        <label>Name </label>
+        <label>{strings.name}</label>
         <input
           name="name"
           value={userDetails.name}
@@ -67,7 +83,7 @@ export default function Settings({ api, setUser }) {
         />
         <br />
 
-        <label>Email </label>
+        <label>{strings.email}</label>
         <input
           type="email"
           value={userDetails.email}
@@ -76,7 +92,7 @@ export default function Settings({ api, setUser }) {
           }
         />
 
-        <label>Learned Language </label>
+        <label>{strings.learnedLanguage}</label>
         <LanguageSelector
           languages={languages.learnable_languages}
           selected={language_for_id(
@@ -92,24 +108,18 @@ export default function Settings({ api, setUser }) {
           }}
         />
 
-        <label>Native Language </label>
+        <label>{strings.nativeLanguage}</label>
         <LanguageSelector
           languages={languages.native_languages}
           selected={language_for_id(
             userDetails.native_language,
             languages.native_languages
           )}
-          onChange={(e) => {
-            let code = e.target[e.target.selectedIndex].getAttribute("code");
-            setUserDetails({
-              ...userDetails,
-              native_language: code,
-            });
-          }}
+          onChange={nativeLanguageUpdated}
         />
 
         <div>
-          <s.FormButton onClick={handleSave}>Save</s.FormButton>
+          <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
         </div>
       </form>
     </s.FormContainer>
