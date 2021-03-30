@@ -1,9 +1,10 @@
 import { PrivateRoute } from "../PrivateRoute";
 import ArticlesRouter from "../articles/_ArticlesRouter";
-import TeacherClasses from "../teacher/TeacherClasses";
-import TeacherTexts from "../teacher/TeacherTexts";
+import ViewClass from "./ViewClass";
+import CohortsRouter from "./_CohortsRouter";
+import AllTexts from "./AllTexts";
 import { Switch } from "react-router";
-import TeacherTutorials from "./TeacherTutorials";
+import Tutorials from "./Tutorials";
 
 export default function TeacherRouter({ api }) {
   return (
@@ -11,19 +12,14 @@ export default function TeacherRouter({ api }) {
       <Switch>
         <PrivateRoute
           path="/teacher/classes"
-          exact
           api={api}
-          component={TeacherClasses}
+          component={CohortsRouter}
         />
-        <PrivateRoute
-          path="/teacher/texts"
-          api={api}
-          component={TeacherTexts}
-        />
+        <PrivateRoute path="/teacher/texts" api={api} component={AllTexts} />
         <PrivateRoute
           path="/teacher/tutorials"
           api={api}
-          component={TeacherTutorials}
+          component={Tutorials}
         />
         <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
       </Switch>
