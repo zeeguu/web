@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import strings from "../i18n/definitions";
 import Word from "./Word";
 import * as s from "./WordsOnDate.sc";
 
@@ -29,7 +30,7 @@ export function WordsOnDate({ day, api }) {
         <s.Article key={article_id}>
           <s.ArticleTitle>
             {bookmarks_by_article.get(article_id)[0].article_title}
-            <Link to={"/read/article?id=" + article_id}>open</Link>
+            <Link to={"/read/article?id=" + article_id}>{strings.open}</Link>
           </s.ArticleTitle>
 
           {bookmarks_by_article.get(article_id).map((bookmark) => (

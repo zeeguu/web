@@ -53,7 +53,7 @@ Zeeguu_API.prototype.unsubscribeFromSearchFilter = function (filter) {
 };
 
 Zeeguu_API.prototype.unsubscribeFromFilter = function (filter) {
-  // here it's tpoic_id / above it's filter_id;
+  // here it's topic_id / above it's filter_id;
   // stupid bug in the API...
   return this._post("unfilter_topic", `topic_id=${filter.id}`);
 };

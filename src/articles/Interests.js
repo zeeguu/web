@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import * as s from "./Interests.sc";
 import * as b from "../components/allButtons.sc";
+import strings from "../i18n/definitions";
 
 export default function InterestsAndSearch({ api, articlesListShouldChange }) {
   const [showingInterests, setShowingInterests] = useState(false);
@@ -31,11 +32,11 @@ export default function InterestsAndSearch({ api, articlesListShouldChange }) {
   return (
     <s.Interests>
       <b.OrangeRoundButton onClick={(e) => toggleInterests()}>
-        Interests
+      {strings.interests}
       </b.OrangeRoundButton>
 
       <b.OrangeRoundButton onClick={(e) => toggleFilters()}>
-        Non-interests
+        {strings.nonInterests}
       </b.OrangeRoundButton>
 
       <TagsOfInterests
