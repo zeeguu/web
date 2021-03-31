@@ -1,6 +1,6 @@
 import { PrivateRoute } from "../PrivateRoute";
 import ArticlesRouter from "../articles/_ArticlesRouter";
-import ViewClass from "./ViewClass";
+import StudentsActivityOverview from "./StudentsActivityOverview";
 import CohortsRouter from "./_CohortsRouter";
 import AllTexts from "./AllTexts";
 import { Switch } from "react-router";

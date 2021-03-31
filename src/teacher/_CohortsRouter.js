@@ -15,7 +15,7 @@ export default function CohortsRouter() {
 import { Switch } from "react-router";
 import { PrivateRoute } from "../PrivateRoute";
 import CohortList from "./CohortList";
-import ViewClass from "./ViewClass";
+import StudentsActivityOverview from "./StudentsActivityOverview";
 import Dummy from "./Dummy";
 import ActivityInsightsRouter from "./_ActivityInsightsRouter";
 
@@ -31,7 +31,7 @@ export default function CohortsRouter({ api }) {
       <PrivateRoute
         path="/teacher/classes/viewClass/:cohortID"
         api={api}
-        component={ViewClass}
+        component={StudentsActivityOverview}
       />
 
       <PrivateRoute

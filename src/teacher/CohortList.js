@@ -11,8 +11,19 @@ export default function CohortList() {
         <sc.TopTabs>
           <h1>{strings.myClasses}</h1>
         </sc.TopTabs>
+        <p>
+          Here, the list of the teacher's classes will be rendered... <br /><br/>
+          There will be three buttons to click: <br/>
+        <b>Add Class</b> op the top, which will open a popup <br/><br/>
+        Inside each class there will be two buttons:<br/>
+        <Link to={`/teacher/classes/viewClass/${cohortID}`}>
+          See Students' Activity
+        </Link> which will take us to the student activity overview.<br/>
+        And<br/>
+        <b>Edit Class</b> which will open a popup <br/>
+        
+        </p>
       </s.NarrowColumn>
-      <Link to={`/teacher/classes/viewClass/${cohortID}`}>View Class</Link>
     </>
   );
 }
