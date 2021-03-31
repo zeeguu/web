@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 
 import validator from "../assorted/validator";
 import LoadingAnimation from "../components/LoadingAnimation";
+import strings from "../i18n/definitions";
 
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
@@ -41,12 +42,12 @@ export default function CreateAccount({ api, notifySuccessfulSignIn }) {
   }
 
   let validatorRules = [
-    [name === "", "Name is required... ;)"],
-    [!EmailValidator.validate(email), "Please provide a valid email"],
-    [learned_language === "", "Learned language is required"],
-    [learned_cefr_level === "", "Language level is required"],
-    [native_language === "", "Please select a base language."],
-    [password.length < 4, "Password should be at least 4 characters long."],
+    [name === "", strings.nameIsRequired],
+    [!EmailValidator.validate(email), strings.plsProvideValidEmail],
+    [learned_language === "", strings.learnedLanguageIsRequired],
+    [learned_cefr_level === "", strings.languagelevelIsRequired],
+    [native_language === "", strings.plsSelectBaseLanguage],
+    [password.length < 4, strings.passwordMustBeMsg],
   ];
 
   function handleCreate(e) {
@@ -84,58 +85,57 @@ export default function CreateAccount({ api, notifySuccessfulSignIn }) {
 
       <s.FormContainer>
         <form action="">
-          <s.FormTitle>Create Account</s.FormTitle>
+          <s.FormTitle>{strings.createAccount}</s.FormTitle>
 
           <p>
-            Thanks for being a beta-tester. We really want to hear from you at{" "}
-            <b>zeeguu.team@gmail.com</b>. Contact us also if you don't have an
-            invite code.
+            {strings.thankYouMsgPrefix}
+            <b>zeeguu.team@gmail.com</b>
+            {strings.thankYouMsgSuffix}
           </p>
 
           <div className="inputField">
-            <label>Invite Code </label>
+            <label>{strings.inviteCode}</label>
             <input
               ref={inviteCodeInputDOM}
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
-              placeholder="Code"
+              placeholder={strings.code}
             />
           </div>
 
           <div className="inputField">
-            <label>Name</label>
+            <label>{strings.name}</label>
             <input
-              placeholder="Name"
+              placeholder={strings.name}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
 
           <div className="inputField">
-            <label>Email</label>
+            <label>{strings.email}</label>
             <input
-              placeholder="Email"
+              placeholder={strings.email}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
           <div className="inputField">
-            <label>Password</label>
+            <label>{strings.password}</label>
             <input
               type="password"
-              placeholder="Password"
+              placeholder={strings.password}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
           <div className="inputField">
-            <label>Learned Language</label>
+            <label>{strings.learnedLanguage}</label>
 
             <Select
               elements={systemLanguages.learnable_languages}
-              placeholder="Learned Language"
               label={(e) => e.name}
               val={(e) => e.code}
               updateFunction={setLearned_language}
@@ -143,11 +143,10 @@ export default function CreateAccount({ api, notifySuccessfulSignIn }) {
           </div>
 
           <div className="inputField">
-            <label>Level in Learned Language</label>
+            <label>{strings.levelOfLearnedLanguage}</label>
 
             <Select
               elements={CEFR_LEVELS}
-              placeholder="Learned Language Level"
               label={(e) => e.label}
               val={(e) => e.value}
               updateFunction={setLearned_cefr_level}
@@ -155,11 +154,10 @@ export default function CreateAccount({ api, notifySuccessfulSignIn }) {
           </div>
 
           <div className="inputField">
-            <label>Base Language</label>
+            <label>{strings.baseLanguage}</label>
 
             <Select
               elements={systemLanguages.native_languages}
-              placeholder="Base Language"
               label={(e) => e.name}
               val={(e) => e.code}
               updateFunction={setNative_language}
@@ -171,7 +169,9 @@ export default function CreateAccount({ api, notifySuccessfulSignIn }) {
           {errorMessage && <div className="error">{errorMessage}</div>}
 
           <div className="inputField">
-            <s.FormButton onClick={handleCreate}>Create Account</s.FormButton>
+            <s.FormButton onClick={handleCreate}>
+              {strings.createAccount}
+            </s.FormButton>
           </div>
         </form>
       </s.FormContainer>

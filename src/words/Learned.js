@@ -30,7 +30,7 @@ export default function Learned({ api }) {
       {words.map((each) => (
         <Word key={each.id} bookmark={each} api={api} hideStar={true}>
           <small>
-            Correct on:
+            {strings.correctOn}
             {" " + each.learned_datetime}
             <br />
             <br />
