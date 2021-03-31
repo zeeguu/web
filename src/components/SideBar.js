@@ -9,12 +9,17 @@ export default function SideBar(props) {
   const user = useContext(UserContext);
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState();
-  
-  //deducting whether we are on student or teacher side for colouring 
-  const path = useLocation().pathname
-  useEffect(()=>{
-    setIsOnStudentSide(!path.includes("teacher"))
-  },[path])
+
+  //deducting whether we are on student or teacher side for colouring
+  const path = useLocation().pathname;
+  useEffect(() => {
+    //in settings the side is determined by whether the user is a student or a teacher
+    if (path.includes("account")) {
+      setIsOnStudentSide(!user.is_teacher);
+    } else {
+      setIsOnStudentSide(!path.includes("teacher"));
+    }
+  }, [path]);
 
   function toggleSidebar(e) {
     e.preventDefault();
@@ -114,7 +119,7 @@ export default function SideBar(props) {
       </div>
     </>
   );
-  
+
   if (user.is_teacher && !isOnStudentSide) {
     if (!initialSidebarState) {
       return (
@@ -131,8 +136,8 @@ export default function SideBar(props) {
         <s.MainContentInitial>{props.children}</s.MainContentInitial>
       </s.SideBarInitialTeacher>
     );
-  }else{
-      if (!initialSidebarState) {
+  } else {
+    if (!initialSidebarState) {
       return (
         <s.SideBarToggled>
           {sidebarContent}
@@ -148,5 +153,4 @@ export default function SideBar(props) {
       </s.SideBarInitial>
     );
   }
-
 }
