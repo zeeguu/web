@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import strings from "../i18n/definitions";
@@ -9,14 +9,12 @@ export default function SideBar(props) {
   const user = useContext(UserContext);
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState();
-
-  //deducting the landingpage based on whether the user is a student or a teacher - to render the 'Student/Teacher Site' button correctly.
-  useEffect(() => {
-    if (user.is_teacher) {
-      setIsOnStudentSide(false);
-    }
-    // eslint-disable-next-line
-  }, []);
+  
+  //deducting whether we are on student or teacher side for colouring 
+  const path = useLocation().pathname
+  useEffect(()=>{
+    setIsOnStudentSide(!path.includes("teacher"))
+  },[path])
 
   function toggleSidebar(e) {
     e.preventDefault();
@@ -25,11 +23,6 @@ export default function SideBar(props) {
 
   function resetSidebarToDefault(e) {
     setInitialSidebarState(true);
-  }
-
-  function changeSide() {
-    resetSidebarToDefault();
-    setIsOnStudentSide(!isOnStudentSide);
   }
 
   let sidebarContent = (
@@ -71,7 +64,7 @@ export default function SideBar(props) {
       {user.is_teacher &&
         (isOnStudentSide === "true" || isOnStudentSide === true) && (
           <div className="navigationLink">
-            <Link to="/teacher/classes" onClick={changeSide}>
+            <Link to="/teacher/classes" onClick={resetSidebarToDefault}>
               <small>{strings.teacherSite}</small>
             </Link>
           </div>
@@ -96,7 +89,7 @@ export default function SideBar(props) {
               </Link>
             </div>
             <div className="navigationLink">
-              <Link to="/articles" onClick={changeSide}>
+              <Link to="/articles" onClick={resetSidebarToDefault}>
                 <small>{strings.studentSite}</small>
               </Link>
             </div>
