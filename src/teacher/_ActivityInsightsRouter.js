@@ -8,24 +8,24 @@ import ExercisesInsights from "./ExercisesInsights";
 
 export default function ActivityInsightsRouter({ api }) {
     const cohortID = useParams().cohortID
-    const studentID = useParams().studentID
+    const studentID = "HARDCODED"
 
   return (
     <Switch>
       <s.NarrowColumn>
         <TopTabs
-          title="Learning Activities"
+          title="STRINGS Learning Activities"
           tabsAndLinks={{
-            Reading:
-              "/teacher/classes/viewStudent/:studentID/class/:cohortID/reading",
+            STRINGSReading:
+              "/teacher/classes/viewStudent/"+studentID+"/class/"+cohortID,
             [strings.exercises]:
-              "/teacher/classes/viewStudent/:studentID/class/:cohortID/exercises",
-            BackToClassroom: "/teacher/classes/viewClass/"+cohortID,
+              "/teacher/classes/viewStudent/"+ studentID+ "/class/"+cohortID +"/exercises",
+            STRINGSBackToClassroom: "/teacher/classes/viewClass/"+cohortID,
           }}
         />
-        
         <PrivateRoute
-          path="/teacher/classes/viewStudent/:studentID/class/:cohortID/reading"
+          path="/teacher/classes/viewStudent/:studentID/class/:cohortID"
+          exact
           api={api}
           component={ReadingInsights}
         />
