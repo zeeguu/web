@@ -12,16 +12,21 @@ export default function CohortList() {
           <h1>{strings.myClasses}</h1>
         </sc.TopTabs>
         <p>
-          Here, the list of the teacher's classes will be rendered... <br /><br/>
-          There will be three buttons to click: <br/>
-        <b>Add Class</b> op the top, which will open a popup <br/><br/>
-        Inside each class there will be two buttons:<br/>
+          <br />
+          <button>STRINGSAdd class</button>
+          <br />
+          <br />
+          <b>ClassName</b> <br /> ... languange, invite code, no of students
+          everywhere...<br/>
+      
         <Link to={`/teacher/classes/viewClass/${cohortID}`}>
-          See Students' Activity
-        </Link> which will take us to the student activity overview.<br/>
-        And<br/>
-        <b>Edit Class</b> which will open a popup <br/>
-        
+          <button>STRINGSSee students' activity</button>
+        </Link>{" "}
+        <br />
+        <button>STRINGSEdit class</button>
+        <br/> 
+        <br/>
+        ("Add class" and "Edit class"opens popup.)
         </p>
       </s.NarrowColumn>
     </>

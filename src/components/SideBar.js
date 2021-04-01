@@ -13,12 +13,15 @@ export default function SideBar(props) {
   //deducting whether we are on student or teacher side for colouring
   const path = useLocation().pathname;
   useEffect(() => {
-    //in settings the side is determined by whether the user is a student or a teacher
+    //in Settings the side is determined by whether the user is a student or a teacher
     if (path.includes("account")) {
       setIsOnStudentSide(!user.is_teacher);
+          // eslint-disable-next-line
     } else {
       setIsOnStudentSide(!path.includes("teacher"));
+          // eslint-disable-next-line
     }
+    // eslint-disable-next-line
   }, [path]);
 
   function toggleSidebar(e) {
