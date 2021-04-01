@@ -21,6 +21,7 @@ let strings = new LocalizedStrings(
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
       code: "Code",
+      interest: "interest",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -211,6 +212,9 @@ let strings = new LocalizedStrings(
       //TagOfFilters
       addPersonalFilter: "Add a personal filter",
 
+       //TagsOfInterests
+       addPersonalInterest: "Add a personal interest",
+
       //Learned
       titleLearnedWords: "Learned Words",
       learnedWordsAreMsg:
@@ -269,6 +273,7 @@ let strings = new LocalizedStrings(
       resetYourPassword: "nulstille dit kodeord",
       resetPassword: "Nulstil kodeord",
       code: "Kode",
+      interest: "interesse",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -468,6 +473,8 @@ let strings = new LocalizedStrings(
       learnedWordsAreMsg:
         "Lærte ord er ord, der har været trænet korrekt i øvelser på fire forskellige dage.",
       numberOfLearnedWordsMsg: "Du har lært {0} ord indtil videre.",
+      correctOn: "Korrekt på: ",
+
 
       //Starred
       titleStarredWords: "Starred Words",

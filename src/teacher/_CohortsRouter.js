@@ -16,7 +16,6 @@ import { Switch } from "react-router";
 import { PrivateRoute } from "../PrivateRoute";
 import CohortList from "./CohortList";
 import StudentsActivityOverview from "./StudentsActivityOverview";
-import Dummy from "./Dummy";
 import ActivityInsightsRouter from "./_ActivityInsightsRouter";
 
 export default function CohortsRouter({ api }) {

@@ -1,28 +1,37 @@
+import { useState } from "react";
+import { Switch } from "react-router";
 import { PrivateRoute } from "../PrivateRoute";
 import ArticlesRouter from "../articles/_ArticlesRouter";
-import StudentsActivityOverview from "./StudentsActivityOverview";
 import CohortsRouter from "./_CohortsRouter";
-import AllTexts from "./AllTexts";
-import { Switch } from "react-router";
 import Tutorials from "./Tutorials";
+import TeacherTextsRouter from "./_TeacherTextsRouter";
+import { RoutingContext } from "../contexts/RoutingContext";
 
 export default function TeacherRouter({ api }) {
+  //Setting up the routing context to be able to use the cancel-button in EditText correctly
+  const [returnPath, setReturnPath] = useState("boo!");
   return (
     <>
-      <Switch>
-        <PrivateRoute
-          path="/teacher/classes"
-          api={api}
-          component={CohortsRouter}
-        />
-        <PrivateRoute path="/teacher/texts" api={api} component={AllTexts} />
-        <PrivateRoute
-          path="/teacher/tutorials"
-          api={api}
-          component={Tutorials}
-        />
-        <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
-      </Switch>
+      <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
+        <Switch>
+          <PrivateRoute
+            path="/teacher/classes"
+            api={api}
+            component={CohortsRouter}
+          />
+          <PrivateRoute
+            path="/teacher/texts"
+            api={api}
+            component={TeacherTextsRouter}
+          />
+          <PrivateRoute
+            path="/teacher/tutorials"
+            api={api}
+            component={Tutorials}
+          />
+          <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
+        </Switch>
+      </RoutingContext.Provider>
     </>
   );
 }

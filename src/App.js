@@ -6,6 +6,7 @@ import LandingPage from "./landingPage/LandingPage";
 import SignIn from "./pages/SignIn";
 import { UserContext } from "./UserContext";
 
+
 import LocalStorage from "./assorted/LocalStorage";
 import Zeeguu_API from "./api/Zeeguu_API";
 import LoggedInRouter from "./LoggedInRouter";
@@ -31,6 +32,7 @@ function App() {
   const [api] = useState(_api);
 
   const [user, setUser] = useState(userDict);
+
 
   function handleSuccessfulSignIn(userInfo) {
     strings.setLanguage(userInfo.native_language);
