@@ -9,7 +9,7 @@ import { RoutingContext } from "../contexts/RoutingContext";
 
 export default function TeacherRouter({ api }) {
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
-  const [returnPath, setReturnPath] = useState("boo!");
+  const [returnPath, setReturnPath] = useState("");
   return (
     <>
       <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
@@ -20,7 +20,7 @@ export default function TeacherRouter({ api }) {
             component={CohortsRouter}
           />
           <PrivateRoute
-            path="/teacher/texts"
+            path="/teacher/texts/"
             api={api}
             component={TeacherTextsRouter}
           />

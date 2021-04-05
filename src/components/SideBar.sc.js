@@ -258,6 +258,7 @@ const SideBarToggledTeacher = styled.div`
     ${arrowPointsToRightTeacher}
   }
 `;
+
 export {
   SideBarInitial,
   SideBarToggled,
