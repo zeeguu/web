@@ -133,7 +133,6 @@ const navigationVisibleCommon = css`
   .navigationLink {
     display: block;
     color: white;
-    /* font-size: xx-large; */
     margin-bottom: 0.4em;
     background-color: ${zeeguuOrange};
 
