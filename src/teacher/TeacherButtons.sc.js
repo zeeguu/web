@@ -1,11 +1,5 @@
 import styled, { css } from "styled-components";
-import {
-  zeeguuOrange,
-  lightOrange,
-  lightBlue,
-  darkBlue,
-  darkGrey
-} from "../components/colors";
+import { lightBlue, darkBlue } from "../components/colors";
 
 const StyledButton = styled.button`
   user-select: none;
@@ -20,26 +14,31 @@ const StyledButton = styled.button`
 
   cursor: pointer;
   margin-top: 3px;
- // box-sizing: border-box;
-  
+  // box-sizing: border-box;
+
   //Primary
-  ${(props) => props.primary && css`
-  color:white;
-  background-color:${darkBlue};
-  border: 2px solid ${darkBlue};
-`}
+  ${(props) =>
+    props.primary &&
+    css`
+      color: white;
+      background-color: ${darkBlue};
+      border: 2px solid ${darkBlue};
+    `}
   //Secondary
-  ${(props) => props.secondary && css`
-  color:${darkBlue};
-  background-color:white;
-  border: 2px solid ${lightBlue};
-  `}
-  `
+  ${(props) =>
+    props.secondary &&
+    css`
+      color: ${darkBlue};
+      background-color: white;
+      border: 2px solid ${lightBlue};
+    `}
+`;
 
-  const TopButton = styled.div`
-      display:flex;
-      justify-content:center;
-      align-items: center;
-      height:4em;`
+const TopButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 4em;
+`;
 
-  export { StyledButton, TopButton} ;
+export { StyledButton, TopButton };
