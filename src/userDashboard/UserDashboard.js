@@ -37,6 +37,65 @@ const Option = ({key, id, title}) => {
   )
 }
 
+function getFormattedWordCountData(data){
+
+  var dataFromString = data[0].date;
+  var dataToString = data[data.length-1].date;
+  console.log("from");
+  console.log(dataFromString);
+  console.log("to");
+  console.log(dataToString);
+
+  var lastDate = new Date(dataToString);
+  lastDate.setHours(0,0,0,0);
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  var counterDate = new Date();
+  counterDate.setHours(0,0,0,0);
+
+  var counter = 0;
+  var dataCounter = 0;
+
+  var formattedData = [];
+  
+  // start from today and go until the last date in the data
+  // add missing dates with 0 counts
+  while (true){
+
+    counterDate.setDate(today.getDate() - counter); //2021-03-17T00:00:00.000Z
+    counterDate.setHours(0,0,0,0);
+    
+    console.log(counterDate);
+    if (counterDate<lastDate){
+      break;
+    }
+    
+    var stringDate = counterDate.toISOString().split('T')[0]; //2021-03-17
+
+    var dataRow = data[dataCounter];
+
+    var dataKey = dataRow.date;
+
+    if (stringDate === dataKey){
+      formattedData.push({date: stringDate, x: counter, y: dataRow.count});
+      dataCounter++;
+    }
+
+    else{
+      formattedData.push({date: stringDate, x: counter, y: 0});
+    }
+
+    counter++;
+    
+  }
+
+  console.log(formattedData);
+
+  return formattedData.reverse();
+}
+
 export default function UserDashboard({ api }){
 
     const [activeTab, setActiveTab] = useState(1);
@@ -63,15 +122,13 @@ export default function UserDashboard({ api }){
 
        setDataForCalendar(formattedCountsCalendar);
 
-       const formattedCountsLine = counts.reverse().map(function(row) {     
-        return { x : row.date, y : row.count }
-     });
+      const formattedCountsLine = getFormattedWordCountData(counts);
 
-     const formattedData = [{id: "Word Count", data: formattedCountsLine}, {id: "number of read articles", data:[]}, {id: "read words", data:[]}, {id: "time spent on platform", data:[]}, {id: "exercises", data:[]}];
+      const formattedData = [{id: "Word Count", data: formattedCountsLine}, {id: "something else", data:[]}];
 
-     setDataForLineGraph(formattedData);
+      setDataForLineGraph(formattedData);
 
-      });
+        });
 
       api.getBookmarksByDay((bookmarks) => {
         setBookmarks(bookmarks);
