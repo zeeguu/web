@@ -4,9 +4,7 @@ import UserCalendar from "./userGraphs/UserCalendar";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
 import UserPie from "./userGraphs/UserPie";
-import { isBefore, subDays, addDays, isSameDay, format, startOfWeek, endOfWeek, isAfter, eachDayOfInterval } from 'date-fns'
-
-const DATE_FORMAT = "dd-MM-yyyy";
+import { getLineGraphData, getFormattedWordCountData, PERIOD_OPTIONS} from "./DataFormatUtils";
 
 const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"}, {id: 4, title: "Forth tab"} ]
 
@@ -24,7 +22,7 @@ const Tab = ({key, id, title, handleActiveTabChange}) => {
     )
 }
 
-const options = [ {id: 1, title: "Week"}, {id: 2, title: "Month"}, {id: 3, title: "Year"}, {id: 4, title: "Years"}]
+const options = [ {id: 1, title: PERIOD_OPTIONS.WEEK}, {id: 2, title: PERIOD_OPTIONS.MONTH}, {id: 3, title: PERIOD_OPTIONS.YEAR}, {id: 4, title: PERIOD_OPTIONS.YEARS}]
 
 const OptionList = ({ children, handleActiveOptionChange }) => {
   return (
@@ -40,106 +38,10 @@ const Option = ({key, id, title}) => {
   )
 }
 
-function getFormattedWordCountData(data){
-
-  var lastDate = new Date(data[data.length-1].date);
-
-  var counterDate = new Date();
-
-  counterDate = addDays(counterDate, 1);
-
-  var dataCounter = 0;
-
-  var formattedData = new Map();
-  
-  // start from today and go until the last date in the data
-  // add missing dates with 0 counts
-  while (true){
-
-    counterDate = subDays(counterDate, 1);
-    var stringDate = format(counterDate, DATE_FORMAT);
-
-    if ( isBefore(counterDate, lastDate) ){
-      break;
-    }
-    
-    var dataRow = data[dataCounter];
-
-    var dataKey = dataRow.date;
-
-    if ( isSameDay(counterDate, new Date(dataKey)) ){
-      formattedData.set(stringDate, dataRow.count);
-      dataCounter++;
-    }
-
-    else{
-      formattedData.set(stringDate, 0);
-    }
-    
-  }
-
-  console.log(formattedData);
-  return formattedData;
-}
-
-function getLineDataForWeek(data, dateInWeek){
-
-  var result = [];
-
-  var dates = eachDayOfInterval(
-    { start: subDays(dateInWeek, 6), end: dateInWeek}
-  )
-
-  dates.forEach(day => {
-    var stringDate = format(day, DATE_FORMAT);
-    data.has(stringDate) ? result.push({ x: stringDate, y: data.get(stringDate)}) : result.push({ x: stringDate, y: 0});
-  });
-
-  return result; 
-
-}
-
-function getLineDataForMonth(data, dateInMonth){
-  
-}
-
-function getLineDataForYear(data, dateInYear){
-  
-}
-
-function getLineDataForYears(data, dateInYears){
-  
-}
-
-function getLineGraphData(data, period, dateInPeriod){
-
-  var periodData = [];
-
-  switch(period) {
-    case "Week":
-      periodData = getLineDataForWeek(data, dateInPeriod); 
-      break;
-    case "Month":
-      periodData = getLineDataForMonth(data, dateInPeriod); 
-      break;
-    case "Year":
-      periodData = getLineDataForYear(data, dateInPeriod); 
-      break;
-    case "Years":
-      periodData = getLineDataForYears(data, dateInPeriod); 
-      break;
-    default:
-      periodData =  getLineDataForWeek(data, new Date()); 
-  }
-
-  return [{id: "Word Count", data: periodData}];
-
-}
-
 export default function UserDashboard({ api }){
 
     const [activeTab, setActiveTab] = useState(1);
-    const [activeOption, setActiveOption] = useState("Week");
+    const [activeOption, setActiveOption] = useState(PERIOD_OPTIONS.WEEK);
     const [dataForCalendar, setDataForCalendar] = useState([]);
     const [allWordsData, setAllWordsData] = useState({});
     const [dateForLineGraph, setDateForLineGraph] = useState(new Date());
@@ -163,9 +65,9 @@ export default function UserDashboard({ api }){
 
       setDataForCalendar(formattedCountsCalendar);
 
-      const formattedData = getFormattedWordCountData(counts);
-
-      setAllWordsData(formattedData);
+      setAllWordsData(
+        getFormattedWordCountData(counts)
+        );
 
         });
 
