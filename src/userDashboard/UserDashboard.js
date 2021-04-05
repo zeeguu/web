@@ -45,7 +45,6 @@ function getFormattedWordCountData(data){
   var lastDate = new Date(data[data.length-1].date);
 
   var counterDate = new Date();
-  counterDate.setHours(0,0,0,0); 
 
   counterDate = addDays(counterDate, 1);
 
@@ -59,7 +58,6 @@ function getFormattedWordCountData(data){
 
     counterDate = subDays(counterDate, 1);
     var stringDate = format(counterDate, DATE_FORMAT);
-
 
     if ( isBefore(counterDate, lastDate) ){
       break;
@@ -88,17 +86,12 @@ function getLineDataForWeek(data, dateInWeek){
 
   var result = [];
 
-  var weekStart = startOfWeek(dateInWeek);
-
-  var weekEnd = endOfWeek(dateInWeek);
-
   var dates = eachDayOfInterval(
-    { start: weekStart, end: weekEnd }
+    { start: subDays(dateInWeek, 6), end: dateInWeek}
   )
 
   dates.forEach(day => {
     var stringDate = format(day, DATE_FORMAT);
-    const stringKey = format(day, "dddd");
     data.has(stringDate) ? result.push({ x: stringDate, y: data.get(stringDate)}) : result.push({ x: stringDate, y: 0});
   });
 
