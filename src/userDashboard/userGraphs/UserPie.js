@@ -55,38 +55,6 @@ export default function UserPie ({ data, userData }) {
                     spacing: 10
                 }
             ]}
-            fill={[
-                {
-                    match: {
-                        id: 'articles'
-                    },
-                    id: 'dots'
-                },
-                {
-                    match: {
-                        id: 'total_words'
-                    },
-                    id: 'dots'
-                },
-                {
-                    match: {
-                        id: 'words'
-                    },
-                    id: 'dots'
-                },
-                {
-                    match: {
-                        id: 'minutes'
-                    },
-                    id: 'dots'
-                },
-                {
-                    match: {
-                        id: 'exercises'
-                    },
-                    id: 'lines'
-                }
-            ]}
             legends={[
                 {
                     anchor: 'left',

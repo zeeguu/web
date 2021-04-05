@@ -4,6 +4,8 @@ import UserCalendar from "./userGraphs/UserCalendar";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
 import UserPie from "./userGraphs/UserPie";
+import { isBefore, subDays, addDays, isSameDay, format } from 'date-fns'
+
 
 const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"}, {id: 4, title: "Forth tab"} ]
 
@@ -39,23 +41,11 @@ const Option = ({key, id, title}) => {
 
 function getFormattedWordCountData(data){
 
-  var dataFromString = data[0].date;
-  var dataToString = data[data.length-1].date;
-  console.log("from");
-  console.log(dataFromString);
-  console.log("to");
-  console.log(dataToString);
-
-  var lastDate = new Date(dataToString);
-  lastDate.setHours(0,0,0,0);
-
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  var lastDate = new Date(data[data.length-1].date);
 
   var counterDate = new Date();
-  counterDate.setHours(0,0,0,0);
+  counterDate = addDays(counterDate, 1);
 
-  var counter = 0;
   var dataCounter = 0;
 
   var formattedData = [];
@@ -64,34 +54,28 @@ function getFormattedWordCountData(data){
   // add missing dates with 0 counts
   while (true){
 
-    counterDate.setDate(today.getDate() - counter); //2021-03-17T00:00:00.000Z
-    counterDate.setHours(0,0,0,0);
-    
-    console.log(counterDate);
-    if (counterDate<lastDate){
+    counterDate = subDays(counterDate, 1);
+
+    if ( isBefore(counterDate, lastDate) ){
       break;
     }
     
-    var stringDate = counterDate.toISOString().split('T')[0]; //2021-03-17
-
     var dataRow = data[dataCounter];
 
     var dataKey = dataRow.date;
 
-    if (stringDate === dataKey){
-      formattedData.push({date: stringDate, x: counter, y: dataRow.count});
+    var stringDate = format(counterDate, 'yyyy-MM-dd');
+
+    if ( isSameDay(counterDate, new Date(dataKey)) ){
+      formattedData.push({date: counterDate, x: stringDate, y: dataRow.count});
       dataCounter++;
     }
 
     else{
-      formattedData.push({date: stringDate, x: counter, y: 0});
+      formattedData.push({date: counterDate, x: stringDate, y: 0});
     }
-
-    counter++;
     
   }
-
-  console.log(formattedData);
 
   return formattedData.reverse();
 }
