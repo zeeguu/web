@@ -1,7 +1,6 @@
 import strings from "../i18n/definitions";
 import * as s from "../components/NarrowColumn.sc";
 import * as sc from "../components/TopTabs.sc";
-import { Link } from "react-router-dom";
 import { CohortItemCard } from "./CohortItemCard";
 import { StyledButton, TopButton } from "./TeacherButtons.sc";
 

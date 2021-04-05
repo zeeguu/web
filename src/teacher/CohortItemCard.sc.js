@@ -1,11 +1,5 @@
-import styled, { css } from "styled-components";
-import {
-  zeeguuOrange,
-  lightOrange,
-  lightBlue,
-  darkBlue,
-  darkGrey
-} from "../components/colors";
+import styled from "styled-components";
+import { darkGrey } from "../components/colors";
 
 const StyledCohortItemCard = styled.div`
   .cohort-card {
@@ -16,12 +10,11 @@ const StyledCohortItemCard = styled.div`
     display: flex;
     position: relative;
     flex-direction: column;
-    /*  padding: calc(4 * #{$spacing-unit}); */
     padding-left: 1em;
     padding-bottom: 1em;
     margin-bottom: 1em;
   }
-  .top-line-box{
+  .top-line-box {
     display: flex;
     justify-content: space-between;
     padding-right: 1em;
@@ -33,7 +26,7 @@ const StyledCohortItemCard = styled.div`
   }
 
   .student-count {
-    color:black;
+    color: black;
     display: flex;
     & > * {
       margin-left: 5px;
@@ -41,23 +34,23 @@ const StyledCohortItemCard = styled.div`
   }
   .cohort-card-headline {
     color: black;
+    font-size: xx-large;
     margin-top: -4px;
     height: 50px;
   }
-  .font-light{
-      color: ${darkGrey}
+  .font-light {
+    color: ${darkGrey};
+    font-weight: 400;
   }
-  .buttom-box{
-     /*  background-color:orange; */
-      display: flex;
+  .buttom-box {
+    display: flex;
     justify-content: space-between;
     padding-right: 1em;
   }
-  .buttons-container{
-      padding-top: .49em;
+  .buttons-container {
+    padding-top: 0.49em;
 
-
-/*  To put the buttons on top of each other:
+    /*  To put the buttons on top of each other:
       display:flex;
       flex-direction: column; */
   }
