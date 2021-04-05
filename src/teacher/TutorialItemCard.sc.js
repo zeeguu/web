@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { darkGrey, darkBlue } from "../components/colors";
+import { darkGrey, darkBlue, lightBlue } from "../components/colors";
 
 
 export const StyledTutorialItemCard = styled.div`
+font-size:22px;
+
 .vertical-line-border-box{
     margin-top: 2em;
-    font-size:22px;
     padding: .05em .5em;
     border-left: solid 3px ${darkBlue}
 }
@@ -23,6 +24,8 @@ iframe{
     width:644px;
     height:362px;
     background-color: ${darkGrey};
-    border: solid 3px ${darkBlue};
+    border: solid 5px ${lightBlue};
+
+    p {margin-top: 25%}
 }
 `;
