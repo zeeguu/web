@@ -5,7 +5,6 @@ import { CohortItemCard } from "./CohortItemCard";
 import { StyledButton, TopButton } from "./TeacherButtons.sc";
 
 export default function CohortList() {
-  const cohortID = "ClassName(HARDCODED)";
 
   return (
     <>

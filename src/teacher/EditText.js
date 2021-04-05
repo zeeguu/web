@@ -4,6 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import * as s from "../components/NarrowColumn.sc";
 import * as sc from "../components/TopTabs.sc";
 import { RoutingContext } from "../contexts/RoutingContext";
+import { StyledButton } from "./TeacherButtons.sc";
 
 export default function EditText() {
   //As there are two paths to EditTexts we are using RoutingContext to be able to go back on the right one on Cancel
@@ -20,11 +21,14 @@ export default function EditText() {
         <h1>STRINGSEditText</h1>
       </sc.TopTabs>
       <p>
+        <StyledButton primary>STRINGSAdd to class</StyledButton>
         <Link to="/teacher/texts/editText/:articleID/studentView">
-          <button>STRINGSView as student</button>{" "}
+          <StyledButton secondary>STRINGSView as student</StyledButton>
         </Link>
-        <button>STRINGSAdd to class</button> <button>STRINGSDelete</button>{" "}
-        <button onClick={handleCancel}>STRINGSCancel</button>
+        <StyledButton secondary>STRINGSDelete</StyledButton>
+        <StyledButton secondary onClick={handleCancel}>
+          STRINGSCancel
+        </StyledButton>
         <br />
         <br />
         <label>
