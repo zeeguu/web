@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { darkGrey } from "../components/colors";
 
-const StyledCohortItemCard = styled.div`
+export const StyledCohortItemCard = styled.div`
   .cohort-card {
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
@@ -55,5 +55,3 @@ const StyledCohortItemCard = styled.div`
       flex-direction: column; */
   }
 `;
-
-export { StyledCohortItemCard };
