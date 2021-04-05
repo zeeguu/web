@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
+import { StyledButton, TopButton } from "./TeacherButtons.sc";
 import * as s from "../components/NarrowColumn.sc";
 import * as sc from "../components/TopTabs.sc";
 import { RoutingContext } from "../contexts/RoutingContext";
@@ -15,7 +16,9 @@ export default function AllTexts() {
       </sc.TopTabs>
       <p>
         <Link to="/teacher/texts/AddTextsOption">
-          <button>STRINGSAdd text</button>
+          <TopButton>
+            <StyledButton primary>STRINGSAdd text</StyledButton>
+          </TopButton>
         </Link>
         <br />
         <br />
@@ -23,8 +26,9 @@ export default function AllTexts() {
           to="/teacher/texts/editText/:articleID"
           onClick={setReturnPath("/teacher/texts")}
         >
-          Article Title | added to: XYZ | level | length | <button>STRINGSEdit text</button>
-        </Link>{" "}
+          Article Title | added to: XYZ | level | length |{" "}
+          <StyledButton secondary>STRINGSEdit text</StyledButton>
+        </Link>
       </p>
     </s.NarrowColumn>
   );
