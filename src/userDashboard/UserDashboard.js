@@ -4,8 +4,9 @@ import UserCalendar from "./userGraphs/UserCalendar";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
 import UserPie from "./userGraphs/UserPie";
-import { isBefore, subDays, addDays, isSameDay, format } from 'date-fns'
+import { isBefore, subDays, addDays, isSameDay, format, startOfWeek, endOfWeek, isAfter, eachDayOfInterval } from 'date-fns'
 
+const DATE_FORMAT = "dd-MM-yyyy";
 
 const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"}, {id: 4, title: "Forth tab"} ]
 
@@ -44,17 +45,21 @@ function getFormattedWordCountData(data){
   var lastDate = new Date(data[data.length-1].date);
 
   var counterDate = new Date();
+  counterDate.setHours(0,0,0,0); 
+
   counterDate = addDays(counterDate, 1);
 
   var dataCounter = 0;
 
-  var formattedData = [];
+  var formattedData = new Map();
   
   // start from today and go until the last date in the data
   // add missing dates with 0 counts
   while (true){
 
     counterDate = subDays(counterDate, 1);
+    var stringDate = format(counterDate, DATE_FORMAT);
+
 
     if ( isBefore(counterDate, lastDate) ){
       break;
@@ -64,20 +69,78 @@ function getFormattedWordCountData(data){
 
     var dataKey = dataRow.date;
 
-    var stringDate = format(counterDate, 'yyyy-MM-dd');
-
     if ( isSameDay(counterDate, new Date(dataKey)) ){
-      formattedData.push({date: counterDate, x: stringDate, y: dataRow.count});
+      formattedData.set(stringDate, dataRow.count);
       dataCounter++;
     }
 
     else{
-      formattedData.push({date: counterDate, x: stringDate, y: 0});
+      formattedData.set(stringDate, 0);
     }
     
   }
 
-  return formattedData.reverse();
+  console.log(formattedData);
+  return formattedData;
+}
+
+function getLineDataForWeek(data, dateInWeek){
+
+  var result = [];
+
+  var weekStart = startOfWeek(dateInWeek);
+
+  var weekEnd = endOfWeek(dateInWeek);
+
+  var dates = eachDayOfInterval(
+    { start: weekStart, end: weekEnd }
+  )
+
+  dates.forEach(day => {
+    var stringDate = format(day, DATE_FORMAT);
+    const stringKey = format(day, "dddd");
+    data.has(stringDate) ? result.push({ x: stringDate, y: data.get(stringDate)}) : result.push({ x: stringDate, y: 0});
+  });
+
+  return result; 
+
+}
+
+function getLineDataForMonth(data, dateInMonth){
+  
+}
+
+function getLineDataForYear(data, dateInYear){
+  
+}
+
+function getLineDataForYears(data, dateInYears){
+  
+}
+
+function getLineGraphData(data, period, dateInPeriod){
+
+  var periodData = [];
+
+  switch(period) {
+    case "Week":
+      periodData = getLineDataForWeek(data, dateInPeriod); 
+      break;
+    case "Month":
+      periodData = getLineDataForMonth(data, dateInPeriod); 
+      break;
+    case "Year":
+      periodData = getLineDataForYear(data, dateInPeriod); 
+      break;
+    case "Years":
+      periodData = getLineDataForYears(data, dateInPeriod); 
+      break;
+    default:
+      periodData =  getLineDataForWeek(data, new Date()); 
+  }
+
+  return [{id: "Word Count", data: periodData}];
+
 }
 
 export default function UserDashboard({ api }){
@@ -85,7 +148,8 @@ export default function UserDashboard({ api }){
     const [activeTab, setActiveTab] = useState(1);
     const [activeOption, setActiveOption] = useState("Week");
     const [dataForCalendar, setDataForCalendar] = useState([]);
-    const [dataForLineGraph, setDataForLineGraph] = useState([]);
+    const [allWordsData, setAllWordsData] = useState({});
+    const [dateForLineGraph, setDateForLineGraph] = useState(new Date());
     const [bookmarks, setBookmarks] = useState([]);
 
     function handleActiveTabChange(tabId) {
@@ -104,13 +168,11 @@ export default function UserDashboard({ api }){
           return { day : row.date, value : row.count }
        });
 
-       setDataForCalendar(formattedCountsCalendar);
+      setDataForCalendar(formattedCountsCalendar);
 
-      const formattedCountsLine = getFormattedWordCountData(counts);
+      const formattedData = getFormattedWordCountData(counts);
 
-      const formattedData = [{id: "Word Count", data: formattedCountsLine}, {id: "something else", data:[]}];
-
-      setDataForLineGraph(formattedData);
+      setAllWordsData(formattedData);
 
         });
 
@@ -143,9 +205,9 @@ export default function UserDashboard({ api }){
         </div>
         
         {
-        !(dataForLineGraph || dataForCalendar) ? <LoadingAnimation />
+        !(allWordsData || dataForCalendar) ? <LoadingAnimation />
           : (activeTab === 1) ? <UserPie data={mock_data()} userData={[]}/>
-          : (activeTab === 2) ? <UserLineGraph data={dataForLineGraph}/>
+          : (activeTab === 2) ? <UserLineGraph data={getLineGraphData(allWordsData, activeOption, dateForLineGraph)}/>
           : (activeTab === 3) ? <UserCalendar data={dataForCalendar}/>
           : (activeTab === 4) ? <UserBarGraph data={mock_data2()}/>
           : <></>
