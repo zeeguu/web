@@ -18,7 +18,7 @@ export default function CohortList() {
           <StyledButton primary>Add class (STRINGS)</StyledButton>
         </TopButton>
         <CohortItemCard />
-git         <p>
+        <p>
           <br />
           ("Add class" and "Edit class"opens popup.)
         </p>
