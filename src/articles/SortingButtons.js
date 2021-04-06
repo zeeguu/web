@@ -1,4 +1,5 @@
 import { useState } from "react";
+import strings from "../i18n/definitions";
 import * as s from "./SortingButtons.sc";
 
 export default function SortingButtons({
@@ -36,7 +37,7 @@ export default function SortingButtons({
 
   return (
     <s.SortingButtons>
-      Sort by:&nbsp;
+     {strings.sortBy}&nbsp;
       <s.SortButton
         className={wordCountSortState}
         onClick={(e) =>
@@ -49,7 +50,7 @@ export default function SortingButtons({
           )
         }
       >
-        Words
+        {strings.words}
       </s.SortButton>
       <s.SortButton
         className={difficultySortState}
@@ -63,7 +64,7 @@ export default function SortingButtons({
           )
         }
       >
-        Difficulty
+        {strings.difficulty}
       </s.SortButton>
     </s.SortingButtons>
   );

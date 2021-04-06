@@ -1,4 +1,5 @@
 import { useState } from "react";
+import strings from "../i18n/definitions"
 import * as s from "./SearchField.sc";
 
 export default function SearchField() {
@@ -17,7 +18,7 @@ export default function SearchField() {
         className="searchTextfieldInput"
         type="text"
         id="search-expandable"
-        placeholder="Search all articles"
+        placeholder={strings.searchAllArticles}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={keyDownInSearch}

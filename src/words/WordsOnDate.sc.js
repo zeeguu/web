@@ -1,16 +1,16 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
-let Day = styled.div``
+let Day = styled.div``;
 
 let Date = styled.div`
   font-size: small;
   font-weight: 600;
   margin-top: 2em;
-`
+`;
 
 let Article = styled.div`
   font-size: x-large;
-`
+`;
 
 let ArticleTitle = styled.div`
   font-size: large;
@@ -25,11 +25,11 @@ let ArticleTitle = styled.div`
     margin-left: 0.5em;
   }
   a:before {
-    content: '[';
+    content: "[";
   }
   a:after {
-    content: ']';
+    content: "]";
   }
-`
+`;
 
-export { Day, Date, ArticleTitle, Article }
+export { Day, Date, ArticleTitle, Article };

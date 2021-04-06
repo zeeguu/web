@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 let Word = styled.div`
   display: flex;
@@ -7,7 +7,7 @@ let Word = styled.div`
 
   /* background-color: green; */
   /* align-items: stretch; */
-`
+`;
 
 let StarIcon = styled.div`
   cursor: pointer;
@@ -27,7 +27,7 @@ let StarIcon = styled.div`
     height: 26px;
     /* background-color: red; */
   }
-`
+`;
 
 let WordPair = styled.div`
   /* color: rebeccapurple; */
@@ -48,7 +48,7 @@ let WordPair = styled.div`
     margin-bottom: 0px;
     font-weight: 300;
   }
-`
+`;
 
 let TrashIcon = styled.div`
   cursor: pointer;
@@ -68,7 +68,7 @@ let TrashIcon = styled.div`
     height: 30px;
     /* background-color: red; */
   }
-`
+`;
 
 let Importance = styled.div`
   color: orange;
@@ -110,11 +110,11 @@ let Importance = styled.div`
   .imp4 {
     color: #ffc187;
   }
-`
+`;
 
 let Spacer = styled.div`
   margin-bottom: 20px;
-`
+`;
 
-export { Word, TrashIcon, StarIcon, WordPair, Importance, Spacer }
+export { Word, TrashIcon, StarIcon, WordPair, Importance, Spacer };
 //

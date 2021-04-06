@@ -1,17 +1,17 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
-import { BigSquareButton } from '../components/allButtons.sc'
+import { BigSquareButton } from "../components/allButtons.sc";
 
-import * as color from '../components/colors'
+import * as color from "../components/colors";
 
-import { NarrowColumn, CenteredContent } from '../components/NarrowColumn.sc'
+import { NarrowColumn, CenteredContent } from "../components/NarrowColumn.sc";
 
 let ArticleReader = styled.div`
   /* border: 1px solid lightgray; */
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
-`
+`;
 
 let Toolbar = styled.div`
   /* border: 1px solid wheat; */
@@ -53,13 +53,13 @@ let Toolbar = styled.div`
   button:hover .tooltiptext {
     visibility: visible;
   }
-`
+`;
 
 let Title = styled.div`
   font-size: x-large;
   font-weight: 800;
   margin-top: 0.5em;
-`
+`;
 
 let BookmarkButton = styled.div`
   cursor: pointer;
@@ -76,19 +76,19 @@ let BookmarkButton = styled.div`
   :hover .tooltiptext {
     visibility: visible;
   }
-`
+`;
 
 let MainText = styled.div`
   font-size: 1.3em;
   line-height: 3em;
   padding: 0.2em;
-`
+`;
 
 let _BottomButton = styled(BigSquareButton)`
   width: 5em;
   height: auto;
   display: inline-block;
-`
+`;
 
 let WhiteButton = styled(_BottomButton)`
   background-color: white;
@@ -98,7 +98,7 @@ let WhiteButton = styled(_BottomButton)`
   @media (min-wdith: 768px) {
     width: 16em;
   }
-`
+`;
 
 let OrangeButton = styled(_BottomButton)`
   background-color: orange;
@@ -120,7 +120,7 @@ let OrangeButton = styled(_BottomButton)`
   @media (min-wdith: 768px) {
     width: 16em;
   }
-`
+`;
 
 let FeedbackBox = styled.div`
   border: 1px solid lightgray;
@@ -145,11 +145,11 @@ let FeedbackBox = styled.div`
     background-color: ${color.lightOrange} !important;
     color: white !important;
   }
-`
+`;
 
 let ExtraSpaceAtTheBottom = styled.div`
   margin-bottom: 8em;
-`
+`;
 
 export {
   ArticleReader,
@@ -162,5 +162,5 @@ export {
   FeedbackBox,
   CenteredContent,
   ExtraSpaceAtTheBottom,
-  NarrowColumn
-}
+  NarrowColumn,
+};
