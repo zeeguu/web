@@ -1,4 +1,5 @@
 //import strings from "../i18n/definitions";
+import React from "react";
 import * as s from "../components/NarrowColumn.sc";
 import * as sc from "../components/TopTabs.sc";
 import {
@@ -14,6 +15,7 @@ export default function AddTextOptions() {
   }
 
   return (
+    <React.Fragment>
     <s.NarrowColumn>
       <sc.TopTabs>
         <h1>STRINGSAddTexts</h1>
@@ -24,5 +26,6 @@ export default function AddTextOptions() {
       <TypeCopyPasteOption />
       <AddURLOption onClick={handleOpenDialog} />
     </s.NarrowColumn>
+    </React.Fragment>
   );
 }
