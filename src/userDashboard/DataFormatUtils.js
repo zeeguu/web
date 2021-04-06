@@ -1,4 +1,4 @@
-import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths } from 'date-fns';
+import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
 
 const PERIOD_OPTIONS = {
     WEEK: "Week",
@@ -122,11 +122,11 @@ function getLineDataForWeek(data, dateInWeek){
         var date = new Date(key);
 
         var year = getYear(date);
+        //in date-fns, as in JavaScript standard library 0 means January, 6 is July and 11 is December (getMonth)
         var month = getMonth(date);
 
         if (result.has(year)){
 
-            //in date-fns, as in JavaScript standard library 0 means January, 6 is July and 11 is December (getMonth)
             if (result.get(year).has(month)){
 
                 var prev = result.get(year).get(month);
@@ -149,7 +149,6 @@ function getLineDataForWeek(data, dateInWeek){
           result.set(year, mapMonth);
 
         }
-
 
       }
 
@@ -222,10 +221,45 @@ function getLineDataForWeek(data, dateInWeek){
 
   }
   
-  function getLineDataForYears(data, dateInYears){
+  function getLineDataForYears(dataPerMonths, dateInYear){
+
+    var result = [];
+
+    const STRING_FORMAT = "yyyy"; 
+
+    while(true){
+
+        var year = getYear(dateInYear);
+
+        if (!dataPerMonths.has(year)){
+          break;
+        }
+
+        else{
+
+          var sum = 0;
+
+          for (const [ , value] of dataPerMonths.get(year).entries()) {
+            sum += value;
+          }
+
+          console.log(sum);
+
+          result.push(
+            {
+            x: format(dateInYear, STRING_FORMAT), 
+            y: sum
+        }
+        );
+
+      }
+
+      dateInYear = subYears(dateInYear, 1);
+
+    }
 
     return [
-        {id: "TODO", data: []}   
+        {id: "Word Count Available Years", data: result.reverse()}   
     ];
 
   }
