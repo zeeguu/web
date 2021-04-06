@@ -4,7 +4,7 @@ import UserCalendar from "./userGraphs/UserCalendar";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
 import UserPie from "./userGraphs/UserPie";
-import { getLineGraphData, getFormattedWordCountData, PERIOD_OPTIONS} from "./DataFormatUtils";
+import { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth, PERIOD_OPTIONS} from "./DataFormatUtils";
 
 const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"}, {id: 4, title: "Forth tab"} ]
 
@@ -44,6 +44,7 @@ export default function UserDashboard({ api }){
     const [activeOption, setActiveOption] = useState(PERIOD_OPTIONS.WEEK);
     const [dataForCalendar, setDataForCalendar] = useState([]);
     const [allWordsData, setAllWordsData] = useState({});
+    const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
     const [dateForLineGraph, setDateForLineGraph] = useState(new Date());
     const [bookmarks, setBookmarks] = useState([]);
 
@@ -65,9 +66,11 @@ export default function UserDashboard({ api }){
 
       setDataForCalendar(formattedCountsCalendar);
 
-      setAllWordsData(
-        getFormattedWordCountData(counts)
-        );
+      var formatted = getFormattedWordCountData(counts);
+
+      setAllWordsData(formatted);
+      
+      setAllWordsDataPerMonths(calculateCountPerMonth(formatted));
 
         });
 
@@ -102,7 +105,7 @@ export default function UserDashboard({ api }){
         {
         !(allWordsData || dataForCalendar) ? <LoadingAnimation />
           : (activeTab === 1) ? <UserPie data={mock_data()} userData={[]}/>
-          : (activeTab === 2) ? <UserLineGraph data={getLineGraphData(allWordsData, activeOption, dateForLineGraph)}/>
+          : (activeTab === 2) ? <UserLineGraph data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeOption, dateForLineGraph)}/>
           : (activeTab === 3) ? <UserCalendar data={dataForCalendar}/>
           : (activeTab === 4) ? <UserBarGraph data={mock_data2()}/>
           : <></>
