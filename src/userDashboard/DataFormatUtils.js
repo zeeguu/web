@@ -1,4 +1,4 @@
-import { isBefore, subDays, addDays, isSameDay, format, startOfWeek, endOfWeek, isAfter, eachDayOfInterval } from 'date-fns'
+import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, addMonths } from 'date-fns';
 
 const PERIOD_OPTIONS = {
     WEEK: "Week",
@@ -7,7 +7,7 @@ const PERIOD_OPTIONS = {
     YEARS: 'Years'
   };
 
-const DATE_FORMAT = "dd-MM-yyyy";
+const DATE_FORMAT = "yyyy-MM-dd";
 
 function getFormattedWordCountData(data){
 
@@ -105,11 +105,6 @@ function getLineDataForWeek(data, dateInWeek){
         end: dateInMonth
     };
 
-    var datesPreviousWeek = {
-        start: subDays(datesCurrentMonth.start, 30),
-        end: subDays(datesCurrentMonth.start, 1)
-    };
-
     var currentMonth = getDataForInterval(data, datesCurrentMonth.start, datesCurrentMonth.end, STRING_FORMAT);
 
     return [
@@ -117,26 +112,125 @@ function getLineDataForWeek(data, dateInWeek){
     ];
 
   }
+
+  function calculateCountPerMonth(data){
+
+    var result = new Map();
+
+    for (const [key, value] of data.entries()) {
+
+        var date = new Date(key);
+
+        var year = getYear(date);
+        var month = getMonth(date);
+
+        if (result.has(year)){
+
+            //in date-fns, as in JavaScript standard library 0 means January, 6 is July and 11 is December (getMonth)
+            if (result.get(year).has(month)){
+
+                var prev = result.get(year).get(month);
+                result.get(year).set(month, prev + value);
+                console.log();
+
+            }
+
+            else{
+              result.get(year).set(month, value);
+              console.log();
+            }
+
+        } 
+        
+        else{
+
+          var mapMonth = new Map();
+          mapMonth.set(month, value);
+          result.set(year, mapMonth);
+          console.log();
+        }
+
+
+      }
+
+    console.log("counts");
+    console.log(result);
+
+    return result;
+
+  }
   
-  function getLineDataForYear(data, dateInYear){
+  function getLineDataForYear(dataPerMonths, dateInYear){
+
+    var result = [];
+
+    const STRING_FORMAT = "MMM-yyyy"; 
+
+    var monthCounter = 0;
+
+    while(true){
+
+        if (monthCounter >= 12){ //TODO: make this a constant somewhere or change the number
+            break;
+        }
+
+        var year = getYear(dateInYear);
+
+        var month = getMonth(dateInYear);
+
+        if (dataPerMonths.has(year)){
+
+            if(dataPerMonths.get(year).has(month)){
     
+                result.push(
+                    {
+                    x: format(dateInYear, STRING_FORMAT), 
+                    y: dataPerMonths.get(year).get(month)
+                }
+                );
+    
+            }
+    
+            else{
+    
+                result.push(
+                    {
+                    x: format(dateInYear, STRING_FORMAT), 
+                    y: 0
+                }
+                );
+    
+            }
+        }
+
+        monthCounter++;
+        dateInYear = addMonths(dateInYear, monthCounter);
+    
+    }
+
+    return [
+        {id: "Word Count Last Year", data: result}   
+    ];
+
   }
   
   function getLineDataForYears(data, dateInYears){
-    
+
+    return [
+        {id: "TODO", data: []}   
+    ];
+
   }
   
-  function getLineGraphData(data, period, dateInPeriod){
-  
-    var periodData = [];
-  
+  function getLineGraphData(data, countPerMonths, period, dateInPeriod){
+    
     switch(period) {
       case PERIOD_OPTIONS.WEEK:
         return getLineDataForWeek(data, dateInPeriod); 
       case PERIOD_OPTIONS.MONTH:
         return getLineDataForMonth(data, dateInPeriod); 
       case PERIOD_OPTIONS.YEAR:
-        return getLineDataForYear(data, dateInPeriod); 
+        return getLineDataForYear(data, dateInPeriod, countPerMonths); 
       case PERIOD_OPTIONS.YEARS:
         return getLineDataForYears(data, dateInPeriod); 
       default:
@@ -145,4 +239,4 @@ function getLineDataForWeek(data, dateInWeek){
   
   }
 
-  export { getLineGraphData, getFormattedWordCountData, PERIOD_OPTIONS};
+  export { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth, PERIOD_OPTIONS};
