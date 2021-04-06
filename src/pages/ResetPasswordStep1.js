@@ -1,65 +1,66 @@
-import * as s from '../components/FormPage.sc'
-import { useState } from 'react'
-import * as EmailValidator from 'email-validator'
-import validator from '../assorted/validator'
+import * as s from "../components/FormPage.sc";
+import { useState } from "react";
+import * as EmailValidator from "email-validator";
+import validator from "../assorted/validator";
+import strings from "../i18n/definitions"
 
-export default function ResetPasswordStep1 ({
+export default function ResetPasswordStep1({
   api,
   email,
   setEmail,
-  notifyOfValidEmail
+  notifyOfValidEmail,
 }) {
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState("");
 
   let validatorRules = [
-    [!EmailValidator.validate(email), 'Please provide a valid email']
-  ]
+    [!EmailValidator.validate(email), strings.plsProvideValidEmail],
+  ];
 
-  function handleResetPassword (e) {
-    e.preventDefault()
+  function handleResetPassword(e) {
+    e.preventDefault();
 
     if (!validator(validatorRules, setErrorMessage)) {
-      return
+      return;
     }
 
     api.sendCode(
       email,
       () => {
-        notifyOfValidEmail()
+        notifyOfValidEmail();
       },
       () => {
-        setErrorMessage('inexistent email')
+        setErrorMessage("inexistent email");
       }
-    )
+    );
   }
   return (
-    <form action='' method='post'>
-      <s.FormTitle>Reset Password</s.FormTitle>
+    <form action="" method="post">
+      <s.FormTitle>{strings.resetPassword}</s.FormTitle>
 
-      <p>To do this we need the email that you registered with us.</p>
-      {errorMessage && <div className='error'>{errorMessage}</div>}
+      <p>{strings.weNeedTheEmailMsg}</p>
+      {errorMessage && <div className="error">{errorMessage}</div>}
 
-      <div className='inputField'>
-        <label>Email</label>
+      <div className="inputField">
+        <label>{strings.email}</label>
         <input
-          type='email'
-          name='email'
-          placeholder='Email'
+          type="email"
+          name="email"
+          placeholder={strings.email}
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 
-      <div className='inputField'>
+      <div className="inputField">
         <s.FormButton
           onClick={handleResetPassword}
-          name='login'
-          value='Login'
-          className='loginButton'
+          name="login"
+          value="Login"
+          className="loginButton"
         >
-          Reset Password
+          {strings.resetPassword}
         </s.FormButton>
       </div>
     </form>
-  )
+  );
 }

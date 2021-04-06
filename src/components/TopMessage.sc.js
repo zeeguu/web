@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import { veryPaleOrange } from './colors'
+import styled from "styled-components";
+import { veryPaleOrange } from "./colors";
 
 let TopMessage = styled.div`
   text-align: center;
@@ -13,6 +13,6 @@ let TopMessage = styled.div`
   @media (min-width: 768px) {
     width: 36em;
   }
-`
+`;
 
-export { TopMessage }
+export { TopMessage };

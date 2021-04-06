@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components'
-import { lightOrange } from '../components/colors'
+import styled, { css } from "styled-components";
+import { lightOrange } from "../components/colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
@@ -7,9 +7,9 @@ import { lightOrange } from '../components/colors'
 //   Desktop = initially open, and
 //   Mobile = initiallly closed
 
-let arrowSize = '80px'
+let arrowSize = "80px";
 
-let sideBarWidthDesktop = '12.5em'
+let sideBarWidthDesktop = "12.5em";
 
 let mainPageContentCommon = css`
   position: fixed;
@@ -18,7 +18,7 @@ let mainPageContentCommon = css`
   height: 100vh;
   padding: 6px;
   overflow-x: hidden;
-`
+`;
 
 const MainContentInitial = styled.div`
   /* Default (Minimized) on Mobile */
@@ -39,7 +39,7 @@ const MainContentInitial = styled.div`
     left: ${sideBarWidthDesktop};
     right: 0.1em;
   }
-`
+`;
 
 const MainContentToggled = styled.div`
   ${mainPageContentCommon}
@@ -55,7 +55,7 @@ const MainContentToggled = styled.div`
     right: 0.1em;
     left: 1em;
   }
-`
+`;
 
 const sidebarCommon = css`
   position: fixed;
@@ -63,7 +63,7 @@ const sidebarCommon = css`
   height: 100vh;
   background-color: #ffbb54;
   background-color: ${lightOrange};
-`
+`;
 
 const logoOpen = css`
   .logo {
@@ -75,7 +75,7 @@ const logoOpen = css`
       width: 50%;
     }
   }
-`
+`;
 
 const arrowCommon = css`
   .arrowHolder {
@@ -83,7 +83,7 @@ const arrowCommon = css`
     cursor: pointer;
     font-size: ${arrowSize};
   }
-`
+`;
 
 const arrowPointsToRight = css`
   .arrowHolder {
@@ -96,7 +96,7 @@ const arrowPointsToRight = css`
       transform: rotate(90deg) translate(20px, -0.5em);
     }
   }
-`
+`;
 
 const arrowAsNegativeSpace = css`
   .arrowHolder {
@@ -108,7 +108,7 @@ const arrowAsNegativeSpace = css`
       transform: rotate(-90deg) translate(10px, 10px);
     }
   }
-`
+`;
 
 const sidebarMinimizedCommon = css`
   width: 0px;
@@ -120,7 +120,7 @@ const sidebarMinimizedCommon = css`
   .navigationLink {
     display: none;
   }
-`
+`;
 
 const navigationVisibleCommon = css`
   .navigationLink {
@@ -136,7 +136,7 @@ const navigationVisibleCommon = css`
       padding-left: 10px;
     }
   }
-`
+`;
 
 const SideBarInitial = styled.div`
   // Mobile - Initial = Closed
@@ -166,7 +166,7 @@ const SideBarInitial = styled.div`
       font-size: xx-large;
     }
   }
-`
+`;
 
 const SideBarToggled = styled.div`
   ${sidebarCommon}
@@ -192,11 +192,11 @@ const SideBarToggled = styled.div`
     ${sidebarMinimizedCommon}
     ${arrowPointsToRight}
   }
-`
+`;
 
 export {
   SideBarInitial,
   SideBarToggled,
   MainContentInitial,
-  MainContentToggled
-}
+  MainContentToggled,
+};

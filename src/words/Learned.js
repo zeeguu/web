@@ -1,44 +1,42 @@
-import { useEffect, useState } from 'react'
-import LoadingAnimation from '../components/LoadingAnimation'
-import { setTitle } from '../assorted/setTitle'
-import Word from './Word'
-import * as s from '../components/TopMessage.sc'
+import { useEffect, useState } from "react";
+import LoadingAnimation from "../components/LoadingAnimation";
+import { setTitle } from "../assorted/setTitle";
+import strings from "../i18n/definitions";
+import Word from "./Word";
+import * as s from "../components/TopMessage.sc";
 
-export default function Learned ({ api }) {
-  const [words, setWords] = useState(null)
+export default function Learned({ api }) {
+  const [words, setWords] = useState(null);
 
   useEffect(() => {
-    api.learnedBookmarks(300, learnedWords => {
-      setWords(learnedWords)
-    })
-    setTitle('Learned Words')
-  }, [api])
+    api.learnedBookmarks(300, (learnedWords) => {
+      setWords(learnedWords);
+    });
+    setTitle(strings.titleLearnedWords);
+  }, [api]);
 
   if (!words) {
-    return <LoadingAnimation />
+    return <LoadingAnimation />;
   }
 
   return (
     <>
-      <s.TopMessage>
-        Learned words are words that were correct in exercises in 4 different
-        days.
-      </s.TopMessage>
+      <s.TopMessage>{strings.learnedWordsAreMsg}</s.TopMessage>
 
       <s.TopMessage>
-        You have learned <b>{words.length}</b> words so far.
+        {strings.formatString(strings.numberOfLearnedWordsMsg, words.length)}
       </s.TopMessage>
 
-      {words.map(each => (
+      {words.map((each) => (
         <Word key={each.id} bookmark={each} api={api} hideStar={true}>
           <small>
-            Correct on:
-            {' ' + each.learned_datetime}
+            {strings.correctOn}
+            {" " + each.learned_datetime}
             <br />
             <br />
           </small>
         </Word>
       ))}
     </>
-  )
+  );
 }

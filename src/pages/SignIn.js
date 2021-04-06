@@ -1,29 +1,30 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from "react";
 
-import { useHistory } from 'react-router-dom'
+import { useHistory } from "react-router-dom";
+import strings from "../i18n/definitions"
 
-import * as s from '../components/FormPage.sc'
+import * as s from "../components/FormPage.sc";
 
-export default function SignIn ({ api, notifySuccessfulSignIn }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-  let history = useHistory()
-  let emailInputDOM = useRef()
+export default function SignIn({ api, notifySuccessfulSignIn }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  let history = useHistory();
+  let emailInputDOM = useRef();
 
   useEffect(() => {
-    emailInputDOM.current.focus()
-  }, [])
+    emailInputDOM.current.focus();
+  }, []);
 
-  function handleSignIn (e) {
-    e.preventDefault()
-    api.signIn(email, password, setErrorMessage, sessionId => {
-      api.getUserDetails(userInfo => {
-        notifySuccessfulSignIn(userInfo)
+  function handleSignIn(e) {
+    e.preventDefault();
+    api.signIn(email, password, setErrorMessage, (sessionId) => {
+      api.getUserDetails((userInfo) => {
+        notifySuccessfulSignIn(userInfo);
 
-        history.push('/articles')
-      })
-    })
+        history.push("/articles");
+      });
+    });
   }
 
   return (
@@ -31,64 +32,64 @@ export default function SignIn ({ api, notifySuccessfulSignIn }) {
       <s.LogoOnTop />
 
       <s.NarrowFormContainer>
-        <form action='' method='post'>
-          <s.FormTitle>Sign In</s.FormTitle>
+        <form action="" method="post">
+          <s.FormTitle>{strings.login}</s.FormTitle>
 
-          {errorMessage && <div className='error'>{errorMessage}</div>}
+          {errorMessage && <div className="error">{errorMessage}</div>}
 
-          <div className='inputField'>
-            <label>Email</label>
+          <div className="inputField">
+            <label>{strings.email}</label>
             <input
-              type='email'
-              className='field'
-              id='email'
-              name='email'
-              placeholder='Email'
-              background-color='#FFFFFF'
+              type="email"
+              className="field"
+              id="email"
+              name="email"
+              placeholder={strings.email}
+              background-color="#FFFFFF"
               ref={emailInputDOM}
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <div className='inputField'>
-            <label>Password</label>
+          <div className="inputField">
+            <label>{strings.password}</label>
             <input
-              type='password'
-              className='field'
-              id='password'
-              name='password'
-              placeholder='Password'
-              background-color='#FFFFFF'
+              type="password"
+              className="field"
+              id="password"
+              name="password"
+              placeholder={strings.password}
+              background-color="#FFFFFF"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          <div className='inputField'>
+          <div className="inputField">
             <s.FormButton
               onClick={handleSignIn}
-              name='login'
-              value='Login'
-              className='loginButton'
+              name="login"
+              value="Login"
+              className="loginButton"
             >
-              Sign In
+              {strings.login}
             </s.FormButton>
           </div>
 
           <p>
-            Alternatively you can{' '}
-            <a className='links' href='create_account'>
-              create an account
-            </a>{' '}
-            or{' '}
-            <a className='links' href='/reset_pass'>
-              reset your password
+            {strings.alternativelyYouCan}{" "}
+            <a className="links" href="create_account">
+              {strings.createAnAccount}
+            </a>{" "}
+            {strings.or}{" "}
+            <a className="links" href="/reset_pass">
+              {strings.resetYourPassword}
             </a>
             .
           </p>
         </form>
       </s.NarrowFormContainer>
     </s.PageBackground>
-  )
+  );
 }

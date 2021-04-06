@@ -1,24 +1,25 @@
-import * as s from '../components/FormPage.sc'
-import { useState } from 'react'
-import validator from '../assorted/validator'
+import * as s from "../components/FormPage.sc";
+import { useState } from "react";
+import validator from "../assorted/validator";
+import strings from "../i18n/definitions"
 
-export default function ResetPasswordStep2 ({ api, email }) {
-  const [errorMessage, setErrorMessage] = useState('')
-  const [code, setCode] = useState('')
-  const [newPass, setNewPass] = useState('')
-  const [success, setSuccess] = useState(false)
-  const [failure, setFailure] = useState(false)
+export default function ResetPasswordStep2({ api, email }) {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [code, setCode] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [failure, setFailure] = useState(false);
 
   let validatorRules = [
-    [newPass.length < 4, 'Password should be at least 4 characters'],
-    [code === '', 'Please provide a code']
-  ]
+    [newPass.length < 4, strings.passwordMustBeMsg],
+    [code === "", strings.plsProvideCode],
+  ];
 
-  function handleResetPassword (e) {
-    e.preventDefault()
+  function handleResetPassword(e) {
+    e.preventDefault();
 
     if (!validator(validatorRules, setErrorMessage)) {
-      return
+      return;
     }
 
     api.resetPassword(
@@ -26,75 +27,75 @@ export default function ResetPasswordStep2 ({ api, email }) {
       code,
       newPass,
       () => {
-        setSuccess(true)
+        setSuccess(true);
       },
-      e => {
-        console.log(e)
-        setFailure(true)
+      (e) => {
+        console.log(e);
+        setFailure(true);
       }
-    )
+    );
   }
 
   if (failure) {
     return (
       <>
-        <h1>Something went wrong</h1>
+        <h1>{strings.somethingWentWrong}</h1>
         <p>
-          You can try <a href='/reset_pass'>to reset your password</a> again.{' '}
+          {strings.youCanTryTo}<a href="/reset_pass">{strings.resetYourPassword}</a> {strings.again}
         </p>
 
         <p>
-          Or contact us at <b>zeeguu.team@gmail.com</b>
+          {strings.orContactUsAt} <b>zeeguu.team@gmail.com</b>
         </p>
       </>
-    )
+    );
   }
   if (success) {
     return (
       <>
-        <h1>Sucess</h1>
-        <p>Your password has been changed successfully.</p>
+        <h1>{strings.success}</h1>
+        <p>{strings.passwordChangedSuccessfullyMsg}</p>
         <br />
         <p>
-          You can go to <a href='signin'>sign in</a> now
+          {strings.youCanGoTo}<a href="signin">{strings.login}</a> {strings.now}
         </p>
       </>
-    )
+    );
   }
 
   return (
-    <form action='' method='post'>
-      <s.FormTitle>Reset Password</s.FormTitle>
+    <form action="" method="post">
+      <s.FormTitle>{strings.resetPassword}</s.FormTitle>
 
       <p>
-        Please check <b>{email}</b> for the one time code we sent you.
+        {strings.plsCheck} <b>{email}</b> {strings.forCode}
       </p>
 
-      {errorMessage && <div className='error'>{errorMessage}</div>}
+      {errorMessage && <div className="error">{errorMessage}</div>}
 
-      <div className='inputField'>
-        <label>Code</label>
+      <div className="inputField">
+        <label>{strings.code}</label>
         <input
-          placeholder='Code received via email'
+          placeholder={strings.codeReceived}
           value={code}
-          onChange={e => setCode(e.target.value)}
+          onChange={(e) => setCode(e.target.value)}
         />
       </div>
 
-      <div className='inputField'>
-        <label>New Password</label>
+      <div className="inputField">
+        <label>{strings.newPassword}</label>
         <input
-          placeholder='New Password'
+          placeholder={strings.newPassword}
           value={newPass}
-          onChange={e => setNewPass(e.target.value)}
+          onChange={(e) => setNewPass(e.target.value)}
         />
       </div>
 
-      <div className='inputField'>
-        <s.FormButton onClick={handleResetPassword} className='loginButton'>
-          Set New Password
+      <div className="inputField">
+        <s.FormButton onClick={handleResetPassword} className="loginButton">
+          {strings.setNewPassword}
         </s.FormButton>
       </div>
     </form>
-  )
+  );
 }

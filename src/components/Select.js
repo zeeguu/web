@@ -5,16 +5,16 @@
 //     { value: 'da', label: 'Danish' }
 //   ]
 
-export default function Select ({ elements, label, val, updateFunction }) {
+export default function Select({ elements, label, val, updateFunction }) {
   return (
-    <select onChange={e => updateFunction(e.target.value)}>
-      <option style={{ display: 'none' }} />
+    <select onChange={(e) => updateFunction(e.target.value)}>
+      <option style={{ display: "none" }} />
 
-      {elements.map(each => (
+      {elements.map((each) => (
         <option key={val(each)} value={val(each)}>
           {label(each)}
         </option>
       ))}
     </select>
-  )
+  );
 }

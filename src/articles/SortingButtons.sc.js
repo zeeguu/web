@@ -1,26 +1,26 @@
-import styled from 'styled-components'
-import * as b from '../components/allButtons.sc'
+import styled from "styled-components";
+import * as b from "../components/allButtons.sc";
 
 const SortingButtons = styled.div`
   margin-bottom: 1em;
   margin-left: 1em;
-  /* background-color: lightgrey; */
+  /* background-color: lightgrey; //for testing */
 
   display: flex;
   justify-content: flex-end;
 
   .descending::after {
-    content: '↑';
+    content: "↑";
   }
 
   .ascending::after {
-    content: '↓';
+    content: "↓";
   }
 
   @media (min-width: 768px) {
     margin-bottom: 3em;
   }
-`
+`;
 
 const SortButton = styled(b.RoundButton)`
   padding-left: 0.3em;
@@ -32,6 +32,6 @@ const SortButton = styled(b.RoundButton)`
   font-size: small;
   background-color: #efefef;
   color: #444444 !important;
-`
+`;
 
-export { SortingButtons, SortButton }
+export { SortingButtons, SortButton };

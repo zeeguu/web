@@ -4,7 +4,15 @@ Configure the right `REACT_APP_API_URL` in the .env.development and `.env.produc
 
     npm install
     npm run start
-    
+   
+## Development
+
+Make sure to install the following plugins for VSCode:
+- vscode-styled-components
+- Prettier - Code formatter 
+
+Write good code.
+
 
 ## Notes
 
