@@ -1,8 +1,10 @@
 import fetch from "cross-fetch";
+import axios from "axios";
 
 const Zeeguu_API = class {
   constructor(baseAPIurl) {
     this.baseAPIurl = baseAPIurl;
+    //this.session = currentSession; is initialized in App when the user logs in.
   }
 
   apiLog(what) {
@@ -11,6 +13,10 @@ const Zeeguu_API = class {
 
   getSystemLanguages(callback) {
     this._get("system_languages", callback);
+  }
+
+  getCohortsInfo(callback){
+    this._get("/cohorts_info", callback);
   }
 
   _appendSessionToUrl(endpointName) {
@@ -25,6 +31,7 @@ const Zeeguu_API = class {
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => response.json())
       .then((data) => {
+        //do whatever it is you need to do with the fetched data...
         callback(data);
       });
   }
@@ -57,6 +64,31 @@ const Zeeguu_API = class {
       fetch(url, params);
     }
   }
+
+  async apiPost(endpoint, data, isForm) {
+    const params = { session: this.session };
+
+    const headers = isForm
+      ? { "Content-Type": "multipart/form-data" }
+      : { "Content-Type": "application/json" };
+
+    const res = await axios({
+      method: "post",
+      url: this.baseAPIurl + endpoint,
+      params: params,
+      headers: headers,
+      data: data,
+    });
+
+    return res;
+  }
+
+  //TODO Remove - created getCohortsInfo() above instead of using the one in teacher.js
+/*   async apiGet(endpoint) {
+    const params = { session: this.session };
+    const res = await axios.get(this.baseAPIurl + endpoint, { params });
+    return res;
+  } */
 };
 
 export { Zeeguu_API };

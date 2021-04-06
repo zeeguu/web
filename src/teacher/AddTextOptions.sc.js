@@ -7,6 +7,7 @@ export const StyledAddTextOptions = styled.div`
   }
 
   .description {
+    margin-top:1em;
     height: 2.6em;
 
     :hover {
@@ -33,4 +34,3 @@ export const StyledAddTextOptions = styled.div`
     }
   }
 `;
-/* export default StyledAddTextOptions; */
