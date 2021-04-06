@@ -1,4 +1,4 @@
-import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, addMonths } from 'date-fns';
+import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths } from 'date-fns';
 
 const PERIOD_OPTIONS = {
     WEEK: "Week",
@@ -95,7 +95,7 @@ function getLineDataForWeek(data, dateInWeek){
   
   }
   
-  // last 30 days
+  // last 30 days from given date
   function getLineDataForMonth(data, dateInMonth){
 
     const STRING_FORMAT = "dd-MM"; 
@@ -131,13 +131,13 @@ function getLineDataForWeek(data, dateInWeek){
 
                 var prev = result.get(year).get(month);
                 result.get(year).set(month, prev + value);
-                console.log();
 
             }
 
             else{
+
               result.get(year).set(month, value);
-              console.log();
+
             }
 
         } 
@@ -147,14 +147,11 @@ function getLineDataForWeek(data, dateInWeek){
           var mapMonth = new Map();
           mapMonth.set(month, value);
           result.set(year, mapMonth);
-          console.log();
+
         }
 
 
       }
-
-    console.log("counts");
-    console.log(result);
 
     return result;
 
@@ -164,7 +161,7 @@ function getLineDataForWeek(data, dateInWeek){
 
     var result = [];
 
-    const STRING_FORMAT = "MMM-yyyy"; 
+    const STRING_FORMAT = "MMM-yy"; 
 
     var monthCounter = 0;
 
@@ -203,13 +200,24 @@ function getLineDataForWeek(data, dateInWeek){
             }
         }
 
+        else{
+
+          result.push(
+            {
+            x: format(dateInYear, STRING_FORMAT), 
+            y: 0
+        }
+        );
+
+        }
+
         monthCounter++;
-        dateInYear = addMonths(dateInYear, monthCounter);
+        dateInYear = subMonths(dateInYear, 1);
     
     }
 
     return [
-        {id: "Word Count Last Year", data: result}   
+        {id: "Word Count Last Year", data: result.reverse()}   
     ];
 
   }
@@ -230,9 +238,9 @@ function getLineDataForWeek(data, dateInWeek){
       case PERIOD_OPTIONS.MONTH:
         return getLineDataForMonth(data, dateInPeriod); 
       case PERIOD_OPTIONS.YEAR:
-        return getLineDataForYear(data, dateInPeriod, countPerMonths); 
+        return getLineDataForYear(countPerMonths, dateInPeriod); 
       case PERIOD_OPTIONS.YEARS:
-        return getLineDataForYears(data, dateInPeriod); 
+        return getLineDataForYears(countPerMonths, dateInPeriod); 
       default:
         return getLineDataForWeek(data, new Date()); 
     }
