@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 import { StyledButton, TopButton } from "./TeacherButtons.sc";
@@ -10,11 +10,12 @@ export default function AllTexts() {
   //Setting up the routing context to be able to route correctly on Cancel
   const { setReturnPath } = useContext(RoutingContext);
   return (
-    <s.NarrowColumn>
-      <sc.TopTabs>
-        <h1>{strings.myTexts}</h1>
-      </sc.TopTabs>
-      <p>
+    <React.Fragment>
+      <s.NarrowColumn>
+        <sc.TopTabs>
+          <h1>{strings.myTexts}</h1>
+        </sc.TopTabs>
+
         <Link to="/teacher/texts/AddTextsOption">
           <TopButton>
             <StyledButton primary>STRINGSAdd text</StyledButton>
@@ -29,7 +30,7 @@ export default function AllTexts() {
           Article Title | added to: XYZ | level | length |{" "}
           <StyledButton secondary>STRINGSEdit text</StyledButton>
         </Link>
-      </p>
-    </s.NarrowColumn>
+      </s.NarrowColumn>
+    </React.Fragment>
   );
 }

@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 
 export default function StudentsActivityOverview() {
   const cohortID = useParams().cohortID;
+  //TODO We need a way to turn a cohortID into a cohort.name - maybe an api-call: api.getCohortName(cohortID){//returns the name of the cohort that has the cohortID}
   const studentID = "StudentName(HARDCODED)";
   return (
     <>
