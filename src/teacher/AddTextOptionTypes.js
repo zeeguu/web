@@ -8,14 +8,14 @@ import * as s from "./AddTextOptions.sc";
 export function AddFromZeeguuOption(props) {
   return (
     <s.StyledAddTextOptions>
-      <p className="description">
+      <div className="description">
         <Link className="link" to="/articles">
           STRINGSAssign an article from Zeeguu to a class{" "}
           <StyledButton primary className="add-btn">
             +
           </StyledButton>
         </Link>
-      </p>
+      </div>
     </s.StyledAddTextOptions>
   );
 }
@@ -25,7 +25,7 @@ export function TypeCopyPasteOption() {
   const { setReturnPath } = useContext(RoutingContext);
   return (
     <s.StyledAddTextOptions>
-      <p className="description">
+      <div className="description">
         <Link
           className="link"
           to="/teacher/texts/editText/new"
@@ -36,7 +36,7 @@ export function TypeCopyPasteOption() {
             +
           </StyledButton>
         </Link>
-      </p>
+      </div>
     </s.StyledAddTextOptions>
   );
 }
@@ -44,12 +44,12 @@ export function TypeCopyPasteOption() {
 export function AddURLOption(props) {
   return (
     <s.StyledAddTextOptions>
-      <p className="description" onClick={props.onClick}>
+      <div className="description" onClick={props.onClick}>
         STRINGSUse a URL-address
         <StyledButton primary className="add-btn">
           +
         </StyledButton>
-      </p>
+      </div>
     </s.StyledAddTextOptions>
   );
 }

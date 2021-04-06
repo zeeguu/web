@@ -9,7 +9,6 @@ export default function Tutorials() {
         <sc.TopTabs>
           <h1>{strings.tutorials}</h1>
         </sc.TopTabs>
-        <TutorialItemCard headline="Testing with random video...(STRINGS)" video="https://www.youtube.com/embed/WmVLcj-XKnM" />
         <TutorialItemCard headline="How to add and edit a class...(STRINGS)" />
         <TutorialItemCard headline="How to delete a class...(STRINGS)" />
         <TutorialItemCard headline="How to add students...(STRINGS)" />
