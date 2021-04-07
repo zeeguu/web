@@ -1,7 +1,7 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 //import strings from "../i18n/definitions";
-import * as s from "../components/NarrowColumn.sc";
+import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import { RoutingContext } from "../contexts/RoutingContext";
 import { StyledButton } from "./TeacherButtons.sc";
@@ -16,6 +16,7 @@ export default function EditText() {
   };
 
   return (
+    <React.Fragment>
     <s.NarrowColumn>
       <sc.TopTabs>
         <h1>STRINGSEditText</h1>
@@ -49,5 +50,6 @@ export default function EditText() {
         ("Add to class" and "Delete" open popups.)
       </p>
     </s.NarrowColumn>
+    </React.Fragment>
   );
 }

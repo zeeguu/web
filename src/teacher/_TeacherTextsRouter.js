@@ -27,7 +27,7 @@ export default function TeacherTextsRouter({ api }) {
       />
 
       <PrivateRoute
-        path="/teacher/texts/AddTextsOption"
+        path="/teacher/texts/AddTextOptions"
         api={api}
         component={AddTextOptions}
       />

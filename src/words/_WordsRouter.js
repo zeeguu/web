@@ -3,7 +3,7 @@ import WordHistory from "./WordHistory";
 import Starred from "./Starred";
 import Learned from "./Learned";
 import Top from "./Top";
-import * as s from "../components/NarrowColumn.sc";
+import * as s from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions"
 import { Switch } from "react-router-dom";
