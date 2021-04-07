@@ -38,7 +38,7 @@ const StyledButton = styled.button`
     css`
       display: flex;
       margin: 0;
-      margin-top: -5px;
+      margin-top: -8px;
       padding: 0;
       border: None;
     `}
