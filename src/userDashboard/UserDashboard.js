@@ -46,7 +46,6 @@ export default function UserDashboard({ api }){
     const [allWordsData, setAllWordsData] = useState({});
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
     const [dateForLineGraph, setDateForLineGraph] = useState(new Date());
-    const [bookmarks, setBookmarks] = useState([]);
 
     function handleActiveTabChange(tabId) {
       setActiveTab(tabId);  
@@ -73,10 +72,6 @@ export default function UserDashboard({ api }){
       setAllWordsDataPerMonths(calculateCountPerMonth(formatted));
 
         });
-
-      api.getBookmarksByDay((bookmarks) => {
-        setBookmarks(bookmarks);
-      });
 
     }, [activeTab]);
 
