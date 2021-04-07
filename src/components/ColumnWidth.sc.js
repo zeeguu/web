@@ -13,4 +13,11 @@ let CenteredContent = styled.div`
   justify-content: center;
 `;
 
-export { NarrowColumn, CenteredContent };
+const WideColumn = styled.div`
+  max-width: 950px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 200px;
+`;
+
+export { NarrowColumn, CenteredContent, WideColumn };

@@ -7,7 +7,7 @@ import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions"
 
-import * as s from "../components/NarrowColumn.sc";
+import * as s from "../components/ColumnWidth.sc";
 
 export default function ArticlesRouter({ api }) {
   return (

@@ -1,37 +1,38 @@
-import * as s from "../components/NarrowColumn.sc";
-import * as sc from "../components/TopTabs.sc";
 import { useParams, Link } from "react-router-dom";
+import StudentInfoLine from "./StudentInfoLine";
+import * as s from "../components/ColumnWidth.sc";
+import * as sc from "../components/TopTabs.sc";
+import { StyledButton, TopButton } from "./TeacherButtons.sc";
+import React from "react";
 
 export default function StudentsActivityOverview() {
   const cohortID = useParams().cohortID;
   //TODO We need a way to turn a cohortID into a cohort.name - maybe an api-call: api.getCohortName(cohortID){//returns the name of the cohort that has the cohortID}
   const studentID = "StudentName(HARDCODED)";
   return (
-    <>
+    <React.Fragment>
       <s.NarrowColumn>
         <sc.TopTabs>
           <h1>{cohortID}</h1>
         </sc.TopTabs>
-        <p>
+        <div>
           <br />
           <br />
-          <Link to="/teacher/texts/AddTextsOption">
-            <button>STRINGSAdd text</button>
-          </Link>{" "}
-          <button>STRINGAdd student</button>
+          <TopButton>
+            <Link to="/teacher/texts/AddTextsOption">
+              <StyledButton primary>STRINGSAdd text</StyledButton>
+            </Link>
+            <StyledButton primary>STRINGAdd student</StyledButton>
+          </TopButton>
           <br />
           <br />
-          <Link
-            to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}`}
-          >
-            The Student Name | progressbar | avg text length | avg text level |
-            exercise correctness <button>X</button>
-          </Link>
+          <StudentInfoLine cohortID={cohortID} studentID={studentID}/>
+          <StudentInfoLine cohortID={cohortID} studentID={studentID}/>
           <br />
           <br />
           ("Add student" and "X" will open a popup.)
-        </p>
+        </div>
       </s.NarrowColumn>
-    </>
+    </React.Fragment>
   );
 }

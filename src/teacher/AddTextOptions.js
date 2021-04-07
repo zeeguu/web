@@ -1,6 +1,6 @@
 //import strings from "../i18n/definitions";
 import React from "react";
-import * as s from "../components/NarrowColumn.sc";
+import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import {
   AddFromZeeguuOption,
