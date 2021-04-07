@@ -47,7 +47,6 @@ function getFormattedWordCountData(data){
       
     }
   
-    console.log(formattedData);
     return formattedData;
 
 }
@@ -241,7 +240,7 @@ function getLineDataForWeek(data, dateInWeek){
           );
 
           break;
-          
+
         }
 
         else{
@@ -251,8 +250,6 @@ function getLineDataForWeek(data, dateInWeek){
           for (const [ , value] of dataPerMonths.get(year).entries()) {
             sum += value;
           }
-
-          console.log(sum);
 
           result.push(
             {
