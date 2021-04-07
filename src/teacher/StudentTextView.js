@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 //import strings from "../i18n/definitions";
-import * as s from "../components/NarrowColumn.sc";
+import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 
 export default function StudentsTextView() {

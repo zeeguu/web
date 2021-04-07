@@ -5,7 +5,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import Word from "./Word";
 
 import { TopMessage } from "../components/TopMessage.sc";
-import { NarrowColumn, CenteredContent } from "../components/NarrowColumn.sc";
+import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
 import { OrangeButton, WhiteButton } from "../reader/ArticleReader.sc";
 import { setTitle } from "../assorted/setTitle";
 

@@ -1,4 +1,4 @@
-import * as s from "../components/NarrowColumn.sc";
+import * as s from "../components/ColumnWidth.sc";
 
 export default function ExercisesInsights() {
   return (
