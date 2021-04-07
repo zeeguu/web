@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CohortList from "./CohortList";
 import strings from "../i18n/definitions";
-import * as s from "../components/NarrowColumn.sc";
+import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 
 function Home({ api }) {

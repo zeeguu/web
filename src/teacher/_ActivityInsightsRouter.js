@@ -1,7 +1,7 @@
 import strings from "../i18n/definitions";
 import { Switch, useParams } from "react-router";
 import { PrivateRoute } from "../PrivateRoute";
-import * as s from "../components/NarrowColumn.sc";
+import * as s from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
 import ReadingInsights from "./ReadingInsights";
 import ExercisesInsights from "./ExercisesInsights";
