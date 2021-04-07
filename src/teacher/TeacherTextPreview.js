@@ -45,7 +45,7 @@ export default function TeacherTextPreview({ article, setReturnPath }) {
               </StyledButton>
             </Link>
             <StyledButton icon style={{margin:"0"}}>
-              <MdHighlightOff size={34} />
+              <MdHighlightOff size={35} />
             </StyledButton>
           </div>
         </div>

@@ -11,7 +11,7 @@ export default function StudentsActivityOverview() {
   const studentID = "StudentName(HARDCODED)";
   return (
     <React.Fragment>
-      <s.NarrowColumn>
+      <s.WideColumn>
         <sc.TopTabs>
           <h1>{cohortID}</h1>
         </sc.TopTabs>
@@ -19,7 +19,7 @@ export default function StudentsActivityOverview() {
           <br />
           <br />
           <TopButton>
-            <Link to="/teacher/texts/AddTextsOption">
+            <Link to="/teacher/texts/AddTextOptions">
               <StyledButton primary>STRINGSAdd text</StyledButton>
             </Link>
             <StyledButton primary>STRINGAdd student</StyledButton>
@@ -32,7 +32,7 @@ export default function StudentsActivityOverview() {
           <br />
           ("Add student" and "X" will open a popup.)
         </div>
-      </s.NarrowColumn>
+      </s.WideColumn>
     </React.Fragment>
   );
 }

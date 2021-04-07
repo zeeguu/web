@@ -16,7 +16,7 @@ export default function StudentInfoLine(props) {
             exercise correctness
           </Link>
           <StyledButton icon onClick={() => setIsOpen(true)}>
-            <MdHighlightOff size={34}/>
+            <MdHighlightOff size={35}/>
           </StyledButton>
           </div>
           <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
