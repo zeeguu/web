@@ -34,8 +34,8 @@ export default function TeacherTextPreview({ article, setReturnPath }) {
             </div>
           </div>
           <div className="action-container">
-            <s.Difficulty>{difficulty}</s.Difficulty>
             <s.WordCount>{article.metrics.word_count}</s.WordCount>
+            <s.Difficulty>{difficulty}</s.Difficulty>
             <Link
               to="/teacher/texts/editText/:articleID"
               onClick={setReturnPath("/teacher/texts")}
