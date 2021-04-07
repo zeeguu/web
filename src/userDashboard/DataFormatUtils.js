@@ -232,7 +232,16 @@ function getLineDataForWeek(data, dateInWeek){
         var year = getYear(dateInYear);
 
         if (!dataPerMonths.has(year)){
+
+          result.push(
+              {
+              x: format(dateInYear, STRING_FORMAT), 
+              y: 0
+            }
+          );
+
           break;
+          
         }
 
         else{
