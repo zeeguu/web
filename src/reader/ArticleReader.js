@@ -49,12 +49,6 @@ export default function ArticleReader({ api }) {
 
   function toggle(state, togglerFunction) {
     togglerFunction(!state);
-
-    // Cf: https://stackoverflow.com/a/57547943/1200070
-    if (!interactiveText.mp3Player.src) {
-      interactiveText.mp3Player.play();
-      console.log("initialized the sound player");
-    }
   }
 
   function toggleBookmarkedState() {
