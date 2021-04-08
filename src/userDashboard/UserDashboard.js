@@ -6,7 +6,8 @@ import UserBarGraph from "./userGraphs/UserBarGraph";
 import {PERIOD_OPTIONS} from "./dataFormat/ConstantsUserDashboard";
 import { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth} from "./dataFormat/LineGraphDataFormat";
 import { getBarGraphData } from "./dataFormat/BarGraphDataFormat";
-
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 
 const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"}, {id: 4, title: "Forth tab"} ]
 
@@ -106,6 +107,12 @@ export default function UserDashboard({ api }){
           }
           </OptionList>
           <h4>{activeOption}</h4>
+        </div>
+        <div>
+          <DatePicker 
+            selected={dateForGraphs}
+            onChange={date => setDateForGraphs(date)}
+          />
         </div>
         
         {
