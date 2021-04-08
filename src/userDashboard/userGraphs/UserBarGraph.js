@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { ResponsiveBar } from '@nivo/bar'
-
+import {BAR_GRAPH_KEYS} from '../dataFormat/ConstantsUserDashboard';
 
 export default function UserBarGraph ({ data }) {
     return(
@@ -9,8 +9,8 @@ export default function UserBarGraph ({ data }) {
             <h2 style={{marginLeft: '0.8rem'}}>A Bar Chart</h2>
             <ResponsiveBar
                 data={data}
-                keys={[ 'hot dog', 'burger', 'sandwich', 'kebab', 'fries', 'donut' ]}
-                indexBy="country"
+                keys={[ BAR_GRAPH_KEYS.READING, BAR_GRAPH_KEYS.EXERCISES ]}
+                indexBy= {BAR_GRAPH_KEYS.INDEX_BY}
                 margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
                 padding={0.3}
                 valueScale={{ type: 'linear' }}
@@ -39,13 +39,13 @@ export default function UserBarGraph ({ data }) {
                 fill={[
                     {
                         match: {
-                            id: 'fries'
+                            id: BAR_GRAPH_KEYS.READING
                         },
                         id: 'dots'
                     },
                     {
                         match: {
-                            id: 'sandwich'
+                            id: BAR_GRAPH_KEYS.EXERCISES
                         },
                         id: 'lines'
                     }
@@ -57,7 +57,7 @@ export default function UserBarGraph ({ data }) {
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: 'country',
+                    legend: BAR_GRAPH_KEYS.LEGEND_BOTTOM,
                     legendPosition: 'middle',
                     legendOffset: 32
                 }}
@@ -65,7 +65,7 @@ export default function UserBarGraph ({ data }) {
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: 'food',
+                    legend: BAR_GRAPH_KEYS.LEGEND_LEFT,
                     legendPosition: 'middle',
                     legendOffset: -40
                 }}

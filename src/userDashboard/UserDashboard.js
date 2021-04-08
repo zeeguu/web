@@ -3,8 +3,10 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import UserCalendar from "./userGraphs/UserCalendar";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
-import UserPie from "./userGraphs/UserPie";
-import { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth, PERIOD_OPTIONS} from "./DataFormatUtils";
+import {PERIOD_OPTIONS} from "./dataFormat/ConstantsUserDashboard";
+import { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth} from "./dataFormat/LineGraphDataFormat";
+import { getBarGraphData } from "./dataFormat/BarGraphDataFormat";
+
 
 const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"}, {id: 4, title: "Forth tab"} ]
 
@@ -45,7 +47,9 @@ export default function UserDashboard({ api }){
     const [dataForCalendar, setDataForCalendar] = useState([]);
     const [allWordsData, setAllWordsData] = useState({});
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
-    const [dateForLineGraph, setDateForLineGraph] = useState(new Date());
+    const [dateForGraphs, setDateForGraphs] = useState(new Date());
+    const [userActivityData, setuserActivityData] = useState({});
+
 
     function handleActiveTabChange(tabId) {
       setActiveTab(tabId);  
@@ -71,7 +75,14 @@ export default function UserDashboard({ api }){
       
       setAllWordsDataPerMonths(calculateCountPerMonth(formatted));
 
-        });
+      });
+
+      api.getUserActivityByDay((activity) => {
+
+        console.log(activity);
+        setuserActivityData(activity);
+  
+      });
 
     }, [activeTab]);
 
@@ -99,50 +110,15 @@ export default function UserDashboard({ api }){
         
         {
         !(allWordsData || dataForCalendar) ? <LoadingAnimation />
-          : (activeTab === 1) ? <UserPie data={mock_data()} userData={[]}/>
-          : (activeTab === 2) ? <UserLineGraph data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeOption, dateForLineGraph)}/>
+          : (activeTab === 4) ? <UserBarGraph data={getBarGraphData(userActivityData, {}, activeOption, dateForGraphs)}/>
+          : (activeTab === 2) ? <UserLineGraph data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeOption, dateForGraphs)}/>
           : (activeTab === 3) ? <UserCalendar data={dataForCalendar}/>
-          : (activeTab === 4) ? <UserBarGraph data={mock_data2()}/>
+          : (activeTab === 1) ? <></>
           : <></>
         }
     </>
     );
     
-}
-
-function mock_data(){
-  return [
-    {
-      "id": "articles",
-      "label": "Read articles",
-      "value": 54,
-      "color": "hsl(213, 70%, 50%)"
-    },
-    {
-      "id": "total_words",
-      "label": "Total Number of Read Words",
-      "value": 4587,
-      "color": "hsl(254, 70%, 50%)"
-    },
-    {
-      "id": "words",
-      "label": "Translated Words",
-      "value": 367,
-      "color": "hsl(344, 70%, 50%)"
-    },
-    {
-      "id": "minutes",
-      "label": "Minutes on Platform",
-      "value": 3487,
-      "color": "hsl(308, 70%, 50%)"
-    },
-    {
-      "id": "exercises",
-      "label": "Learned Words",
-      "value": 545,
-      "color": "hsl(158, 70%, 50%)"
-    }
-  ]
 }
 
 function mock_data2(){
