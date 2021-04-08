@@ -21,9 +21,6 @@ let strings = new LocalizedStrings(
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
       code: "Code",
-      myClasses: "My Classes",
-      myTexts: "My Texts",
-      tutorials: "Tutorials",
       interest: "interest",
 
       //LoadingAnimation
@@ -276,9 +273,6 @@ let strings = new LocalizedStrings(
       resetYourPassword: "nulstille dit kodeord",
       resetPassword: "Nulstil kodeord",
       code: "Kode",
-      myClasses: "Mine klasser",
-      myTexts: "Mine tekster",
-      tutorials: "Hjælp",
       interest: "interesse",
 
       //LoadingAnimation

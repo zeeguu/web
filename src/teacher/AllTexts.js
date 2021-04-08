@@ -11,7 +11,6 @@ import * as sc from "../components/TopTabs.sc";
 
 import { DUMMYLIST } from "./DummyArticleList";
 import SortingButtons from "../articles/SortingButtons";
-import { MdFormatAlignJustify } from "react-icons/md";
 
 export default function AllTexts({ api }) {
   //Setting up the routing context to be able to route correctly on Cancel
