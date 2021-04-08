@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const FindWordInContext = styled.div`
+const Exercise = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -59,4 +59,4 @@ const FindWordInContext = styled.div`
   }
 `;
 
-export { FindWordInContext };
+export { Exercise };

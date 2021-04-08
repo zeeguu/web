@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as s from "./FindWordInContext.sc.js";
+import * as s from "./Exercise.sc.js";
 
 import BottomInput from "./BottomInput";
 import BottomFeedback from "./BottomFeedback";
@@ -44,8 +44,8 @@ export default function FindWordInContext({
   }
 
   return (
-    <s.FindWordInContext>
-      <h3>Find the word in context</h3>
+    <s.Exercise>
+      <h3>Find the word in the context</h3>
       <h1>{bookmarkToStudy.to}</h1>
       <div className="contextExample">
         <div
@@ -74,6 +74,6 @@ export default function FindWordInContext({
           correctAnswer={correctAnswer}
         />
       )}
-    </s.FindWordInContext>
+    </s.Exercise>
   );
 }
