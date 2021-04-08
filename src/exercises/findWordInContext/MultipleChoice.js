@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as s from "./FindWordInContext.sc.js";
+import * as s from "./Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 
 import BottomFeedback from "./BottomFeedback";
@@ -9,16 +9,15 @@ const EXERCISE_TYPE = "MULTIPLE_CHOICE";
 export default function MultipleChoice({
   api,
   bookmarkToStudy,
+  otherBookmarksToStudyList,
   correctAnswer,
   notifyIncorrectAnswer,
 }) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isIncorrect, setIsincorrect] = useState(false);
+  const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
-  const [firstTypeTime, setFirstTypeTime] = useState();
-
-  // get random words from API
-  let randomWords = ["foo", "bar"];
+  const [firstPressTime, setFirstPressTime] = useState();
 
   function colorWordInContext(context, word) {
     return context.replace(
@@ -28,61 +27,73 @@ export default function MultipleChoice({
   }
 
   function notifyChoiceSelection(selectedChoice) {
+    if (firstPressTime === undefined) setFirstPressTime(new Date());
     if (selectedChoice === bookmarkToStudy.from) {
-      setIsCorrect(true);
+      handleCorrectAnswer();
     } else {
-      setIsincorrect(true);
+      setIncorrectAnswer(selectedChoice);
+      handleIncorrectAnswer();
     }
   }
 
-  function notifyIncorrectAnswer() {}
+  function handleIncorrectAnswer() {
+    setIsincorrect(true);
+    notifyIncorrectAnswer();
+  }
 
   function handleCorrectAnswer() {
     console.log(new Date() - initialTime);
     console.log("^^^^ time elapsed");
-    console.log(firstTypeTime - initialTime);
-    console.log("^^^^ to first key press");
+    console.log(firstPressTime - initialTime);
+    console.log("^^^^ to first button press");
 
     setIsCorrect(true);
     api.uploadExerciseFeedback(
       "Correct",
       EXERCISE_TYPE,
-      firstTypeTime - initialTime,
+      firstPressTime - initialTime,
       bookmarkToStudy.id
     );
   }
 
-  console.log(bookmarkToStudy);
-
   function contextWithMissingWord(context, missingWord) {
-    // what happens if a word appears twice?
-    // make sure that parts of words don't get matched
     return context.replace(missingWord, "______");
   }
 
   return (
-    <s.FindWordInContext>
-      <h3>Select the missing word</h3>
+    <s.Exercise>
+      <h3>Choose the word that fits the context</h3>
       <div className="contextExample">
-        {contextWithMissingWord(bookmarkToStudy.context, bookmarkToStudy.from)}
+        <div
+          dangerouslySetInnerHTML={{
+            __html: isCorrect
+              ? colorWordInContext(
+                  bookmarkToStudy.context,
+                  bookmarkToStudy.from
+                )
+              : contextWithMissingWord(
+                  bookmarkToStudy.context,
+                  bookmarkToStudy.from
+                ),
+          }}
+        />
       </div>
 
-      <MultipleChoicesInput
-        handleCorrectAnswer={handleCorrectAnswer}
-        bookmarkToStudy={bookmarkToStudy}
-        randomWords={randomWords}
-        notifyChoiceSelection={notifyChoiceSelection}
-        notifyIncorrectAnswer={notifyIncorrectAnswer}
-      />
-
-      {isIncorrect && <div>Try again</div>}
-
+      {!isCorrect && (
+        <MultipleChoicesInput
+          bookmarkToStudy={bookmarkToStudy}
+          otherBookmarksToStudyList={otherBookmarksToStudyList}
+          notifyChoiceSelection={notifyChoiceSelection}
+          isIncorrect={isIncorrect}
+          incorrectAnswer={incorrectAnswer}
+        />
+      )}
       {isCorrect && (
         <BottomFeedback
           bookmarkToStudy={bookmarkToStudy}
           correctAnswer={correctAnswer}
         />
       )}
-    </s.FindWordInContext>
+    </s.Exercise>
   );
 }

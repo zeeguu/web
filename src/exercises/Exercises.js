@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-// import FindWordInContext from "./findWordInContext/FindWordInContext";
+import FindWordInContext from "./findWordInContext/FindWordInContext";
 import MultipleChoice from "./findWordInContext/MultipleChoice";
 import Congratulations from "./Congratulations";
 import ProgressBar from "./ProgressBar";
@@ -15,7 +15,10 @@ let NUMBER_OF_EXERCISES = 4;
 export default function Exercises({ api, articleID }) {
   const [bookmarksToStudyList, setbookmarksToStudyList] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentBookmarkToStudy, setCurretBookmarkToStudy] = useState(null);
+  const [currentBookmarkToStudy, setCurrentBookmarkToStudy] = useState(null);
+  const [otherBookmarksToStudyList, setOtherBookmarksToStudyList] = useState(
+    null
+  );
   const [finished, setFinished] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
@@ -29,7 +32,8 @@ export default function Exercises({ api, articleID }) {
       api.bookmarksForArticle(articleID, (bookmarks) => {
         setbookmarksToStudyList(bookmarks);
         NUMBER_OF_EXERCISES = bookmarks.length;
-        setCurretBookmarkToStudy(bookmarks[currentIndex]);
+        setCurrentBookmarkToStudy(bookmarks[currentIndex]);
+        setOtherBookmarksToStudyList(filterBookmarks(bookmarks, currentIndex));
         api.getArticleInfo(articleID, (data) => {
           setArticleInfo(data);
           setTitle('Exercises for "' + data.title + '"');
@@ -39,10 +43,10 @@ export default function Exercises({ api, articleID }) {
       api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, (bookmarks) => {
         setbookmarksToStudyList(bookmarks);
         NUMBER_OF_EXERCISES = bookmarks.length;
-        setCurretBookmarkToStudy(bookmarks[currentIndex]);
+        setCurrentBookmarkToStudy(bookmarks[currentIndex]);
+        setOtherBookmarksToStudyList(filterBookmarks(bookmarks, currentIndex));
       });
     }
-
     setTitle("Exercises");
   }
 
@@ -63,6 +67,14 @@ export default function Exercises({ api, articleID }) {
     return <LoadingAnimation />;
   }
 
+  function filterBookmarks(bookmarks, currentIndex) {
+    let filteredBookmarks = bookmarks.filter(
+      (_, index) => index !== currentIndex
+    );
+
+    return filteredBookmarks;
+  }
+
   function moveToNextExercise() {
     const newIndex = currentIndex + 1;
 
@@ -72,7 +84,10 @@ export default function Exercises({ api, articleID }) {
     }
 
     setCurrentIndex(newIndex);
-    setCurretBookmarkToStudy(bookmarksToStudyList[newIndex]);
+    setCurrentBookmarkToStudy(bookmarksToStudyList[newIndex]);
+    setOtherBookmarksToStudyList(
+      filterBookmarks(bookmarksToStudyList, newIndex)
+    );
   }
   function correctAnswer() {
     let currentBookmark = bookmarksToStudyList[currentIndex];
@@ -117,13 +132,24 @@ export default function Exercises({ api, articleID }) {
       <ProgressBar index={currentIndex} total={NUMBER_OF_EXERCISES} />
 
       <s.ExForm>
-        <MultipleChoice
+        {currentIndex % 2 === 0 && (
+          <FindWordInContext
           bookmarkToStudy={currentBookmarkToStudy}
           correctAnswer={correctAnswer}
           notifyIncorrectAnswer={incorrectAnswerNotification}
-          key={currentBookmarkToStudy.id}
           api={api}
         />
+        )}
+        {currentIndex % 2 === 1 && (
+          <MultipleChoice
+            bookmarkToStudy={currentBookmarkToStudy}
+            otherBookmarksToStudyList={otherBookmarksToStudyList}
+            correctAnswer={correctAnswer}
+            notifyIncorrectAnswer={incorrectAnswerNotification}
+            key={currentBookmarkToStudy.id}
+            api={api}
+          />
+        )}
       </s.ExForm>
 
       <FeedbackButtons
