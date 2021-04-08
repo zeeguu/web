@@ -15,6 +15,10 @@ const Zeeguu_API = class {
     this._get("system_languages", callback);
   }
 
+  getCohortsInfo(callback){
+    this._get("/cohorts_info", callback);
+  }
+
   _appendSessionToUrl(endpointName) {
     if (endpointName.includes("?")) {
       return `${this.baseAPIurl}/${endpointName}&session=${this.session}`;
