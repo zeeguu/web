@@ -7,5 +7,6 @@ import "./userArticles";
 import "./translations";
 import "./exercises";
 import "./userStats";
+import "./teacher";
 
 export default Zeeguu_API;
