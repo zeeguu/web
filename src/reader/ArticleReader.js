@@ -49,6 +49,12 @@ export default function ArticleReader({ api }) {
 
   function toggle(state, togglerFunction) {
     togglerFunction(!state);
+
+    // Cf: https://stackoverflow.com/a/57547943/1200070
+    if (!interactiveText.mp3Player.src) {
+      interactiveText.mp3Player.play();
+      console.log("initialized the sound player");
+    }
   }
 
   function toggleBookmarkedState() {
@@ -76,7 +82,10 @@ export default function ArticleReader({ api }) {
           className={translating ? "selected" : ""}
           onClick={(e) => toggle(translating, setTranslating)}
         >
-          <img src="/static/images/translate.svg" alt={strings.translateOnClick} />
+          <img
+            src="/static/images/translate.svg"
+            alt={strings.translateOnClick}
+          />
           <span className="tooltiptext">{strings.translateOnClick}</span>
         </button>
         <button
@@ -115,9 +124,7 @@ export default function ArticleReader({ api }) {
       </s.MainText>
 
       <s.FeedbackBox>
-        <small>
-          {strings.helpUsMsg}
-        </small>
+        <small>{strings.helpUsMsg}</small>
 
         <h4>{strings.didYouEnjoyMsg}</h4>
 
@@ -139,9 +146,7 @@ export default function ArticleReader({ api }) {
 
       <s.FeedbackBox>
         <h2>{strings.reviewVocabulary}</h2>
-        <small>
-          {strings.reviewVocabExplanation}
-        </small>
+        <small>{strings.reviewVocabExplanation}</small>
         <br />
         <br />
         <s.CenteredContent>

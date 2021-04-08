@@ -29,6 +29,8 @@ export default class InteractiveText {
       .catch((e) => {
         console.error("An error occured while initializing : ", e);
       });
+
+    this.mp3Player = new Audio();
   }
 
   getParagraphs() {
@@ -102,7 +104,8 @@ export default class InteractiveText {
   pronounce(word) {
     if (this.articleInfo.language == "da") {
       this.api.getLinkToDanishSpeech(word.word, (linkToMp3) => {
-        new Audio(this.api.baseAPIurl + linkToMp3).play();
+        this.mp3Player.src = this.api.baseAPIurl + linkToMp3;
+        this.mp3Player.play();
       });
     } else {
       this.speech.speak({
