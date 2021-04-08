@@ -15,10 +15,6 @@ const Zeeguu_API = class {
     this._get("system_languages", callback);
   }
 
-  getCohortsInfo(callback){
-    this._get("/cohorts_info", callback);
-  }
-
   _appendSessionToUrl(endpointName) {
     if (endpointName.includes("?")) {
       return `${this.baseAPIurl}/${endpointName}&session=${this.session}`;
@@ -65,6 +61,7 @@ const Zeeguu_API = class {
     }
   }
 
+  //migrated from old teacher zeeguu dashboard
   async apiPost(endpoint, data, isForm) {
     const params = { session: this.session };
 
@@ -82,13 +79,6 @@ const Zeeguu_API = class {
 
     return res;
   }
-
-  //TODO Remove - created getCohortsInfo() above instead of using the one in teacher.js
-/*   async apiGet(endpoint) {
-    const params = { session: this.session };
-    const res = await axios.get(this.baseAPIurl + endpoint, { params });
-    return res;
-  } */
 };
 
 export { Zeeguu_API };
