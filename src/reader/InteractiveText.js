@@ -100,9 +100,15 @@ export default class InteractiveText {
   }
 
   pronounce(word) {
-    this.speech.speak({
-      text: word.word,
-    });
+    if (this.articleInfo.language == "da") {
+      this.api.getLinkToDanishSpeech(word.word, (linkToMp3) => {
+        new Audio(this.api.baseAPIurl + linkToMp3).play();
+      });
+    } else {
+      this.speech.speak({
+        text: word.word,
+      });
+    }
   }
 
   getContext(word) {
