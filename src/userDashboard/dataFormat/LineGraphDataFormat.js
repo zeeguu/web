@@ -1,13 +1,5 @@
 import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
-
-const PERIOD_OPTIONS = {
-    WEEK: "Week",
-    MONTH: "Month",
-    YEAR: "Year",
-    YEARS: 'Years'
-  };
-
-const DATE_FORMAT = "yyyy-MM-dd";
+import {PERIOD_OPTIONS, DATE_FORMAT} from "./ConstantsUserDashboard";
 
 function getFormattedWordCountData(data){
 
@@ -287,4 +279,4 @@ function getLineDataForWeek(data, dateInWeek){
   
   }
 
-  export { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth, PERIOD_OPTIONS};
+  export { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth};
