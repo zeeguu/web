@@ -102,7 +102,7 @@ export default class InteractiveText {
   }
 
   pronounce(word) {
-    if (this.articleInfo.language == "da") {
+    if (this.articleInfo.language == "da" && !isMobile()) {
       this.api.getLinkToDanishSpeech(word.word, (linkToMp3) => {
         this.mp3Player.src = this.api.baseAPIurl + linkToMp3;
         this.mp3Player.play();
@@ -146,4 +146,13 @@ function _randomElement(x) {
 function _getRandomVoice(voices, language) {
   let x = _randomElement(voices.filter((v) => v.lang.includes(language)));
   return x;
+}
+
+function isMobile() {
+  try {
+    document.createEvent("TouchEvent");
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
