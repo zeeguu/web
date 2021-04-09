@@ -20,7 +20,7 @@ export default function Congratulations({
           <br />
           <br />
           {correctBookmarks.map((each) => (
-            <Word bookmark={each} api={api} />
+            <Word key={each.id} bookmark={each} api={api} />
           ))}
         </h3>
       )}
@@ -32,9 +32,15 @@ export default function Congratulations({
           😳 Pay more attention to
           <br />
           <br />
-          {incorrectBookmarks.map((each) => (
-            <Word bookmark={each} api={api} />
-          ))}
+          {incorrectBookmarks
+            .reduce(
+              (unique, bookmark) =>
+                unique.includes(bookmark) ? unique : [...unique, bookmark],
+              []
+            )
+            .map((each) => (
+              <Word key={each.id} bookmark={each} api={api} />
+            ))}
         </h3>
       )}
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import FindWordInContext from "./findWordInContext/FindWordInContext";
-import MultipleChoice from "./findWordInContext/MultipleChoice";
+import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
+import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
 import Congratulations from "./Congratulations";
 import ProgressBar from "./ProgressBar";
 
@@ -16,9 +16,10 @@ export default function Exercises({ api, articleID }) {
   const [bookmarksToStudyList, setbookmarksToStudyList] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarkToStudy, setCurrentBookmarkToStudy] = useState(null);
-  const [otherBookmarksToStudyList, setOtherBookmarksToStudyList] = useState(
-    null
-  );
+  const [
+    wordsSimilarToCurrentBookmarkToStudy,
+    setWordsSimilarToCurrentBookmarkToStudy,
+  ] = useState(null);
   const [finished, setFinished] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
@@ -33,7 +34,9 @@ export default function Exercises({ api, articleID }) {
         setbookmarksToStudyList(bookmarks);
         NUMBER_OF_EXERCISES = bookmarks.length;
         setCurrentBookmarkToStudy(bookmarks[currentIndex]);
-        setOtherBookmarksToStudyList(filterBookmarks(bookmarks, currentIndex));
+        api.wordsSimilarTo(bookmarks[currentIndex].id, (words) => {
+          setWordsSimilarToCurrentBookmarkToStudy(words);
+        });
         api.getArticleInfo(articleID, (data) => {
           setArticleInfo(data);
           setTitle('Exercises for "' + data.title + '"');
@@ -44,7 +47,9 @@ export default function Exercises({ api, articleID }) {
         setbookmarksToStudyList(bookmarks);
         NUMBER_OF_EXERCISES = bookmarks.length;
         setCurrentBookmarkToStudy(bookmarks[currentIndex]);
-        setOtherBookmarksToStudyList(filterBookmarks(bookmarks, currentIndex));
+        api.wordsSimilarTo(bookmarks[currentIndex].id, (words) => {
+          setWordsSimilarToCurrentBookmarkToStudy(words);
+        });
       });
     }
     setTitle("Exercises");
@@ -63,16 +68,8 @@ export default function Exercises({ api, articleID }) {
     );
   }
 
-  if (!currentBookmarkToStudy) {
+  if (!currentBookmarkToStudy || !wordsSimilarToCurrentBookmarkToStudy) {
     return <LoadingAnimation />;
-  }
-
-  function filterBookmarks(bookmarks, currentIndex) {
-    let filteredBookmarks = bookmarks.filter(
-      (_, index) => index !== currentIndex
-    );
-
-    return filteredBookmarks;
   }
 
   function moveToNextExercise() {
@@ -85,9 +82,9 @@ export default function Exercises({ api, articleID }) {
 
     setCurrentIndex(newIndex);
     setCurrentBookmarkToStudy(bookmarksToStudyList[newIndex]);
-    setOtherBookmarksToStudyList(
-      filterBookmarks(bookmarksToStudyList, newIndex)
-    );
+    api.wordsSimilarTo(bookmarksToStudyList[newIndex].id, (words) => {
+      setWordsSimilarToCurrentBookmarkToStudy(words);
+    });
   }
   function correctAnswer() {
     let currentBookmark = bookmarksToStudyList[currentIndex];
@@ -134,16 +131,18 @@ export default function Exercises({ api, articleID }) {
       <s.ExForm>
         {currentIndex % 2 === 0 && (
           <FindWordInContext
-          bookmarkToStudy={currentBookmarkToStudy}
-          correctAnswer={correctAnswer}
-          notifyIncorrectAnswer={incorrectAnswerNotification}
-          api={api}
-        />
+            bookmarkToStudy={currentBookmarkToStudy}
+            correctAnswer={correctAnswer}
+            notifyIncorrectAnswer={incorrectAnswerNotification}
+            api={api}
+          />
         )}
         {currentIndex % 2 === 1 && (
           <MultipleChoice
             bookmarkToStudy={currentBookmarkToStudy}
-            otherBookmarksToStudyList={otherBookmarksToStudyList}
+            wordsSimilarToCurrentBookmarkToStudy={
+              wordsSimilarToCurrentBookmarkToStudy
+            }
             correctAnswer={correctAnswer}
             notifyIncorrectAnswer={incorrectAnswerNotification}
             key={currentBookmarkToStudy.id}

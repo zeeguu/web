@@ -1,23 +1,28 @@
-import { useState } from "react";
-import * as s from "./Exercise.sc.js";
+import { useState, useEffect } from "react";
+import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 
-import BottomFeedback from "./BottomFeedback";
+import BottomFeedback from "../BottomFeedback";
 
 const EXERCISE_TYPE = "MULTIPLE_CHOICE";
 
 export default function MultipleChoice({
   api,
   bookmarkToStudy,
-  otherBookmarksToStudyList,
+  wordsSimilarToCurrentBookmarkToStudy,
   correctAnswer,
   notifyIncorrectAnswer,
 }) {
   const [isCorrect, setIsCorrect] = useState(false);
-  const [isIncorrect, setIsincorrect] = useState(false);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
   const [firstPressTime, setFirstPressTime] = useState();
+  const [buttonOptions, setButtonOptions] = useState(null);
+
+  useEffect(() => {
+    consolidateChoiceOptions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookmarkToStudy]);
 
   function colorWordInContext(context, word) {
     return context.replace(
@@ -28,17 +33,13 @@ export default function MultipleChoice({
 
   function notifyChoiceSelection(selectedChoice) {
     if (firstPressTime === undefined) setFirstPressTime(new Date());
+    console.log("checking result...");
     if (selectedChoice === bookmarkToStudy.from) {
       handleCorrectAnswer();
     } else {
       setIncorrectAnswer(selectedChoice);
-      handleIncorrectAnswer();
+      notifyIncorrectAnswer();
     }
-  }
-
-  function handleIncorrectAnswer() {
-    setIsincorrect(true);
-    notifyIncorrectAnswer();
   }
 
   function handleCorrectAnswer() {
@@ -58,6 +59,37 @@ export default function MultipleChoice({
 
   function contextWithMissingWord(context, missingWord) {
     return context.replace(missingWord, "______");
+  }
+
+  function consolidateChoiceOptions() {
+    let listOfOptions = [
+      bookmarkToStudy.from,
+      wordsSimilarToCurrentBookmarkToStudy[0],
+      wordsSimilarToCurrentBookmarkToStudy[1],
+    ];
+    let shuffledListOfOptions = shuffle(listOfOptions);
+    setButtonOptions(shuffledListOfOptions);
+  }
+
+  /*Fisher-Yates (aka Knuth) Shuffle - https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array*/
+  function shuffle(array) {
+    var currentIndex = array.length,
+      temporaryValue,
+      randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
   }
 
   return (
@@ -81,10 +113,8 @@ export default function MultipleChoice({
 
       {!isCorrect && (
         <MultipleChoicesInput
-          bookmarkToStudy={bookmarkToStudy}
-          otherBookmarksToStudyList={otherBookmarksToStudyList}
+          buttonOptions={buttonOptions}
           notifyChoiceSelection={notifyChoiceSelection}
-          isIncorrect={isIncorrect}
           incorrectAnswer={incorrectAnswer}
         />
       )}
