@@ -1,8 +1,8 @@
 import { useState } from "react";
-import * as s from "./Exercise.sc.js";
+import * as s from "../Exercise.sc.js";
 
 import BottomInput from "./BottomInput";
-import BottomFeedback from "./BottomFeedback";
+import BottomFeedback from "../BottomFeedback";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
