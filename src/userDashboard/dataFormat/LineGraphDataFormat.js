@@ -1,47 +1,20 @@
 import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
 import {PERIOD_OPTIONS, DATE_FORMAT} from "./ConstantsUserDashboard";
 
-function getFormattedWordCountData(data){
+function getMapData(data){
 
-    var lastDate = new Date(data[data.length-1].date);
-  
-    var counterDate = new Date();
-  
-    counterDate = addDays(counterDate, 1);
-  
-    var dataCounter = 0;
-  
-    var formattedData = new Map();
+    var result = new Map();
     
-    // start from today and go until the last date in the data
-    // add missing dates with 0 counts
-    while (true){
-  
-      counterDate = subDays(counterDate, 1);
-      var stringDate = format(counterDate, DATE_FORMAT);
-  
-      if ( isBefore(counterDate, lastDate) ){
-        break;
+    data.forEach(
+      (row) => {
+        result.set(row.date, row.count);
       }
-      
-      var dataRow = data[dataCounter];
-  
-      var dataKey = dataRow.date;
-  
-      if ( isSameDay(counterDate, new Date(dataKey)) ){
-        formattedData.set(stringDate, dataRow.count);
-        dataCounter++;
-      }
-  
-      else{
-        formattedData.set(stringDate, 0);
-      }
-      
-    }
-  
-    return formattedData;
+    );
+
+    return result;
 
 }
+
 
 function getDataForInterval(data, startDate, endDate, dateFormatString){
 
@@ -107,7 +80,7 @@ function getLineDataForWeek(data, dateInWeek){
   function calculateCountPerMonth(data){
 
     var result = new Map();
-
+    
     for (const [key, value] of data.entries()) {
 
         var date = new Date(key);
@@ -279,4 +252,4 @@ function getLineDataForWeek(data, dateInWeek){
   
   }
 
-  export { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth};
+  export { getLineGraphData, calculateCountPerMonth, getMapData};

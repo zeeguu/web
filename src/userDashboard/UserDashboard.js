@@ -4,7 +4,7 @@ import UserCalendar from "./userGraphs/UserCalendar";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
 import {PERIOD_OPTIONS} from "./dataFormat/ConstantsUserDashboard";
-import { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth} from "./dataFormat/LineGraphDataFormat";
+import { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth, getMapData} from "./dataFormat/LineGraphDataFormat";
 import { getBarGraphData } from "./dataFormat/BarGraphDataFormat";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
@@ -70,7 +70,7 @@ export default function UserDashboard({ api }){
 
       setDataForCalendar(formattedCountsCalendar);
 
-      var formatted = getFormattedWordCountData(counts);
+      var formatted = getMapData(counts);
 
       setAllWordsData(formatted);
       
@@ -80,7 +80,6 @@ export default function UserDashboard({ api }){
 
       api.getUserActivityByDay((activity) => {
 
-        console.log(activity);
         setuserActivityData(activity);
   
       });
