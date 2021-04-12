@@ -49,7 +49,7 @@ export default function UserDashboard({ api }){
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
     const [dateForGraphs, setDateForGraphs] = useState(new Date());
     const [userActivityData, setUserActivityData] = useState({});
-    const [userActivityDataPerMonths, setuserActivityDataPerMonths] = useState({});
+    const [userActivityDataPerMonths, setUserActivityDataPerMonths] = useState({});
 
     function handleActiveTabChange(tabId) {
       setActiveTab(tabId);  
@@ -83,11 +83,11 @@ export default function UserDashboard({ api }){
 
         setUserActivityData(activity);
 
-        //setuserActivityDataPerMonths(calculateCountPerMonth_Activity(activity));
+        setUserActivityDataPerMonths(calculateCountPerMonth_Activity(activity));
   
       });
 
-    }, []);
+    }, [activeOption]);
 
     return (
     <>
@@ -118,8 +118,8 @@ export default function UserDashboard({ api }){
         </div>
         
         {
-        !(allWordsData || dataForCalendar) ? <LoadingAnimation />
-          : (activeTab === 2) ? <UserBarGraph data={getBarGraphData(userActivityData, {}, activeOption, dateForGraphs)}/>
+        !(allWordsData || dataForCalendar || userActivityData) ? <LoadingAnimation />
+          : (activeTab === 2) ? <UserBarGraph data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeOption, dateForGraphs)}/>
           : (activeTab === 3) ? <UserLineGraph data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeOption, dateForGraphs)}/>
           : (activeTab === 1) ? <h2>Press on a tab</h2>
           : <></>
