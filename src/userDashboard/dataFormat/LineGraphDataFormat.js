@@ -1,20 +1,20 @@
 import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
 import {PERIOD_OPTIONS, DATE_FORMAT} from "./ConstantsUserDashboard";
+import {calculatePerMonth} from "./DataFormat";
 
 function getMapData(data){
 
-    var result = new Map();
-    
-    data.forEach(
-      (row) => {
-        result.set(row.date, row.count);
-      }
-    );
+  var result = new Map();
+  
+  data.forEach(
+    (row) => {
+      result.set(row.date, row.count);
+    }
+  );
 
-    return result;
+  return result;
 
 }
-
 
 function getDataForInterval(data, startDate, endDate, dateFormatString){
 
@@ -77,46 +77,9 @@ function getLineDataForWeek(data, dateInWeek){
 
   }
 
-  function calculateCountPerMonth(data){
+  function calculateCountPerMonth_Words(data){
 
-    var result = new Map();
-    
-    for (const [key, value] of data.entries()) {
-
-        var date = new Date(key);
-
-        var year = getYear(date);
-        //in date-fns, as in JavaScript standard library 0 means January, 6 is July and 11 is December (getMonth)
-        var month = getMonth(date);
-
-        if (result.has(year)){
-
-            if (result.get(year).has(month)){
-
-                var prev = result.get(year).get(month);
-                result.get(year).set(month, prev + value);
-
-            }
-
-            else{
-
-              result.get(year).set(month, value);
-
-            }
-
-        } 
-        
-        else{
-
-          var mapMonth = new Map();
-          mapMonth.set(month, value);
-          result.set(year, mapMonth);
-
-        }
-
-      }
-
-    return result;
+    return calculatePerMonth(data);
 
   }
   
@@ -252,4 +215,4 @@ function getLineDataForWeek(data, dateInWeek){
   
   }
 
-  export { getLineGraphData, calculateCountPerMonth, getMapData};
+  export { getLineGraphData, calculateCountPerMonth_Words, getMapData};

@@ -1,11 +1,10 @@
 import { useEffect, useState, useContext } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
-import UserCalendar from "./userGraphs/UserCalendar";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
 import {PERIOD_OPTIONS} from "./dataFormat/ConstantsUserDashboard";
-import { getLineGraphData, getFormattedWordCountData, calculateCountPerMonth, getMapData} from "./dataFormat/LineGraphDataFormat";
-import { getBarGraphData } from "./dataFormat/BarGraphDataFormat";
+import { getLineGraphData, calculateCountPerMonth_Words, getMapData} from "./dataFormat/LineGraphDataFormat";
+import { getBarGraphData, calculateCountPerMonth_Activity } from "./dataFormat/BarGraphDataFormat";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
@@ -49,8 +48,8 @@ export default function UserDashboard({ api }){
     const [allWordsData, setAllWordsData] = useState({});
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
     const [dateForGraphs, setDateForGraphs] = useState(new Date());
-    const [userActivityData, setuserActivityData] = useState({});
-
+    const [userActivityData, setUserActivityData] = useState({});
+    const [userActivityDataPerMonths, setuserActivityDataPerMonths] = useState({});
 
     function handleActiveTabChange(tabId) {
       setActiveTab(tabId);  
@@ -74,17 +73,21 @@ export default function UserDashboard({ api }){
 
       setAllWordsData(formatted);
       
-      setAllWordsDataPerMonths(calculateCountPerMonth(formatted));
+      setAllWordsDataPerMonths(
+        calculateCountPerMonth_Words(formatted)
+        );
 
       });
 
       api.getUserActivityByDay((activity) => {
 
-        setuserActivityData(activity);
+        setUserActivityData(activity);
+
+        //setuserActivityDataPerMonths(calculateCountPerMonth_Activity(activity));
   
       });
 
-    }, [activeTab]);
+    }, []);
 
     return (
     <>
