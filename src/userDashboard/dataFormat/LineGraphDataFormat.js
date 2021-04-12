@@ -93,7 +93,7 @@ function getLineDataForWeek(data, dateInWeek){
 
     while(true){
 
-        if (monthCounter >= 12){ //TODO: make this a constant somewhere or change the number
+        if (monthCounter >= 13){ //TODO: make this a constant somewhere or change the number
             break;
         }
 

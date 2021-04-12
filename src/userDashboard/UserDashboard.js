@@ -8,7 +8,7 @@ import { getBarGraphData, calculateCountPerMonth_Activity } from "./dataFormat/B
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
-const tabs = [ {id: 1, title: "First tab"}, {id: 2, title: "Second tab"}, {id: 3, title: "Third tab"} ]
+const tabs = [ {id: 1, title: "Nothing"}, {id: 2, title: "Bar chart"}, {id: 3, title: "Line chart"} ]
 
 const TabList = ({ children }) => {
     return (
@@ -112,6 +112,7 @@ export default function UserDashboard({ api }){
         </div>
         <div>
           <DatePicker 
+            dateFormat="dd/MM/yyyy"
             selected={dateForGraphs}
             onChange={date => setDateForGraphs(date)}
           />
