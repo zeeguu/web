@@ -1,5 +1,20 @@
 import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
 import {PERIOD_OPTIONS, DATE_FORMAT, BAR_GRAPH_KEYS} from "./ConstantsUserDashboard";
+import {calculatePerMonth} from "./DataFormat";
+
+function getMapData(data){
+
+  var result = new Map();
+  
+  data.forEach(
+    (row) => {
+      result.set(row.date, row.seconds);
+    }
+  );
+
+  return result;
+
+}
 
 function getDataForInterval(data, startDate, endDate, dateFormatString){
 
@@ -68,6 +83,17 @@ function getBarDataForYears(){
     
 }
 
+
+function calculateCountPerMonth_Activity(data){
+
+  var rMap = getMapData(data.reading);
+  var readingMap = calculatePerMonth(rMap);
+  var exercisesMap =  calculatePerMonth(getMapData(data.exercises));
+
+  return ({reading: readingMap, exercises: exercisesMap});
+
+}
+
 function getBarGraphData(data, countPerMonths, period, dateInPeriod){
     
     switch(period) {
@@ -85,4 +111,4 @@ function getBarGraphData(data, countPerMonths, period, dateInPeriod){
   
   }
 
-export {getBarGraphData};
+export {getBarGraphData, calculateCountPerMonth_Activity};
