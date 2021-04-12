@@ -22,7 +22,7 @@ export default function AllTexts({ api }) {
   
   //on initial render
   if (articleList == null) {
-    //TODO here should be an api call 
+    //TODO here should be an api call to get ALL the teachers texts...
       setArticleList(DUMMYLIST);
       originalList = [...DUMMYLIST];
     

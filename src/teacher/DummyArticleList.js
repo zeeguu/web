@@ -15,7 +15,6 @@ export const DUMMYLIST = [
       "Britain will join China in being locked out of research with the EU on cutting-edge quantum technology, such as new breeds of supercomputers, due to security concerns under a European commission proposal opposed by academics and 19 member states.↵↵At a meeting on Friday, commission officials said th",
     title: "EU plan threatens British participation in hi-tech research",
     topics: "Technology Travel Food ",
-
     url:
       "https://www.theguardian.com/world/2021/mar/30/eu-plan-threatens-british-participation-in-hi-tech-research",
   },
@@ -35,5 +34,22 @@ export const DUMMYLIST = [
     title: "Biden Assures Impoverished Countries That Vaccine Donations Coming Right After U.S. Inoculates Trees",
     topics: "Satire ",
     url: "https://www.theonion.com/biden-assures-impoverished-countries-that-vaccine-donat-1846575012",
+  },{
+    authors: "",
+feed_id: [102],
+feed_image_url: "https://zeeguu.unibe.ch/api/resources/onion.jpg",
+icon_name: "onion.jpg",
+id: 1495789,
+language: "en",
+liked: null,
+metrics: {difficulty: 0.68, word_count: 208},
+opened: false,
+published: "2021-04-08T12:00:00.000000Z",
+starred: false,
+summary: "CHICAGO—Squeaking wildly to one another as the almost forgotten sound of human footsteps echoed through the lobby, a swarm of rats scrambled to hide their miniature, fully functioning amusement park and resort before workers returned to a local office building, reports confirmed Wednesday. According",
+title: "Rats Scramble To Hide Fully Functioning Amusement Park And Resort They Built As Workers Return To Office",
+topics: "Satire ",
+
+url: "https://www.theonion.com/rats-scramble-to-hide-fully-functioning-amusement-park-1846606703",
   }
 ];
