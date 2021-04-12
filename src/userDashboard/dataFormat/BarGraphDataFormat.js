@@ -116,7 +116,55 @@ function getBarDataForYear(dataPerMonths, dateInYear){
 }
 
 function getBarDataForYears(dataPerMonths, dateInYear){
-    
+  
+  var result = [];
+
+  const STRING_FORMAT = "yyyy"; 
+
+  var readingData = dataPerMonths.reading;
+  var exercisesData = dataPerMonths.exercises;
+
+  while(true){
+
+    var year = getYear(dateInYear);
+
+    var stringLegend = format(dateInYear, STRING_FORMAT); 
+
+    if ( !( readingData.has(year) && exercisesData.has(year)) ){
+
+      result.push({ date: stringLegend, reading_time: 0, exercises_time: 0});
+
+      break;
+
+    }
+
+    else{
+
+      var readingCount = 0;
+      var exercisesCount = 0;
+
+      if (readingData.has(year)){
+        for (const [ , value] of readingData.get(year).entries()) {
+          readingCount += value;
+        }
+      }
+
+      if (exercisesData.has(year)){
+        for (const [ , value] of exercisesData.get(year).entries()) {
+          exercisesCount += value;
+        }
+      }
+
+
+      result.push({ date: stringLegend, reading_time: readingCount, exercises_time: exercisesCount});
+          
+      dateInYear = subYears(dateInYear, 1);
+
+    }
+  }
+
+  return result.reverse();
+
 }
 
 
