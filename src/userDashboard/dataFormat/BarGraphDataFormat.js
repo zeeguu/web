@@ -1,4 +1,4 @@
-import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
+import { eachMonthOfInterval, isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
 import {PERIOD_OPTIONS, DATE_FORMAT, BAR_GRAPH_KEYS} from "./ConstantsUserDashboard";
 import {calculatePerMonth} from "./DataFormat";
 
@@ -75,11 +75,47 @@ function getBarDataForMonth(data, dateInMonth){
 
 }
 
-function getBarDataForYear(){
+function getBarDataForYear(dataPerMonths, dateInYear){
+
+  var result = [];
+
+  const STRING_FORMAT = "MMM-yy"; 
+
+  var dates = eachMonthOfInterval(
+    { start: subYears(dateInYear, 1), end: dateInYear}
+  )
+
+  var readingData = dataPerMonths.reading;
+  var exercisesData = dataPerMonths.exercises;
+
+  dates.forEach(day => {
+
+    var stringLegend = format(day, STRING_FORMAT); 
+
+    var year = getYear(day);
+    var month = getMonth(day);
+
+    var readingCount = readingData.has(year) ?
+                        readingData.get(year).has(month) ?
+                          readingData.get(year).get(month)
+                            : 0
+                            : 0 ;
+    
+    var exercisesCount = exercisesData.has(year) ?
+                          exercisesData.get(year).has(month) ?
+                            exercisesData.get(year).get(month)
+                              : 0
+                              : 0 ;
+                            
+    result.push({ date: stringLegend, reading_time: readingCount, exercises_time: exercisesCount});
+
+  });
+
+  return result;
 
 }
 
-function getBarDataForYears(){
+function getBarDataForYears(dataPerMonths, dateInYear){
     
 }
 
