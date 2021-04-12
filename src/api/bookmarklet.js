@@ -36,8 +36,7 @@ post_to_url(
     return_type: "list",
     title: document.title,
     url: location.href,
-    page_content:
-      "could also upload document.documentElement.innerHTMLhere... but then we have to (again!) parse it on the server; and we would have liked to parse things on the client side",
+    page_content: document.documentElement.innerHTML,
   },
   "post"
 );
