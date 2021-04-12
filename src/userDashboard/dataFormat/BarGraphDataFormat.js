@@ -132,8 +132,6 @@ function getBarDataForYears(dataPerMonths, dateInYear){
 
     if ( !readingData.has(year) && !exercisesData.has(year) ){
 
-      result.push({ date: stringLegend, reading_time: 0, exercises_time: 0});
-
       break;
 
     }
