@@ -62,6 +62,8 @@ export default class InteractiveText {
       .catch(() => {
         console.log("could not retreive translation");
       });
+
+    this.api.logUserActivity(this.api.TRANSLATE_TEXT);
   }
 
   selectAlternative(word, alternative, onSuccess) {
@@ -76,6 +78,8 @@ export default class InteractiveText {
     );
     word.translation = alternative;
     word.service_name = "Own alternative selection";
+
+    this.api.logUserActivity(this.api.SEND_SUGGESTION);
 
     onSuccess();
   }
@@ -112,6 +116,8 @@ export default class InteractiveText {
         text: word.word,
       });
     }
+
+    this.api.logUserActivity(this.api.SPEAK_TEXT);
   }
 
   getContext(word) {
