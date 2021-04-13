@@ -22,6 +22,9 @@ export default function WordsForArticle({ api }) {
       setArticleInfo(data);
       setTitle('Words in "' + data.title + '"');
     });
+
+    api.logUserActivity(api.WORDS_REVIEW);
+
     // eslint-disable-next-line
   }, []);
 

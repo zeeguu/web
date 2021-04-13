@@ -8,5 +8,6 @@ import "./translations";
 import "./exercises";
 import "./userStats";
 import "./speech";
+import "./activityLogging";
 
 export default Zeeguu_API;
