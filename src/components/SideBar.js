@@ -48,6 +48,11 @@ export default function SideBar(props) {
           <small>{strings.exercises}</small>
         </Link>
       </div>
+      <div className="navigationLink">
+        <Link to="/user_dashboard" onClick={resetSidebarToDefault}>
+          <small>{strings.userDashboard}</small>
+        </Link>
+      </div>
       {(user.is_teacher === "true" || user.is_teacher === true) && (
         <div className="navigationLink">
           <Link
