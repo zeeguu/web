@@ -104,7 +104,7 @@ export default function ArticleReader({ api }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logUserActivity(api.LIKE_ARTICLE, articleID);
+    api.logUserActivity(api.LIKE_ARTICLE, articleID, state);
   }
 
   if (!articleInfo) {
