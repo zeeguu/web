@@ -12,7 +12,7 @@ const BAR_GRAPH_KEYS = {
   EXERCISES: "exercises_time",
   INDEX_BY: "date",
   LEGEND_BOTTOM: "dates",
-  LEGEND_LEFT: "seconds"
+  LEGEND_LEFT: "minutes"
 }
 
 export {
