@@ -5,6 +5,12 @@ const PERIOD_OPTIONS = {
     YEARS: 'Years'
   };
 
+  const ACTIVITY_TIME_FORMAT_OPTIONS = {
+    SECONDS: "Seconds",
+    MINUTES: "Minutes",
+    HOURS: "Hours"
+  };
+
 const DATE_FORMAT = "yyyy-MM-dd";
 
 const BAR_GRAPH_KEYS = {
@@ -12,13 +18,14 @@ const BAR_GRAPH_KEYS = {
   EXERCISES: "exercises_time",
   INDEX_BY: "date",
   LEGEND_BOTTOM: "dates",
-  LEGEND_LEFT: "minutes"
+  LEGEND_LEFT: "time count"
 }
 
 export {
 
     PERIOD_OPTIONS,
     DATE_FORMAT,
-    BAR_GRAPH_KEYS
+    BAR_GRAPH_KEYS,
+    ACTIVITY_TIME_FORMAT_OPTIONS
     
 };

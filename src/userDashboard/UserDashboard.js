@@ -1,8 +1,8 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import UserLineGraph from "./userGraphs/UserLineGraph";
 import UserBarGraph from "./userGraphs/UserBarGraph";
-import {PERIOD_OPTIONS} from "./dataFormat/ConstantsUserDashboard";
+import {PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS} from "./dataFormat/ConstantsUserDashboard";
 import { getLineGraphData, calculateCountPerMonth_Words, getMapData} from "./dataFormat/LineGraphDataFormat";
 import { getBarGraphData, calculateCountPerMonth_Activity } from "./dataFormat/BarGraphDataFormat";
 import "react-datepicker/dist/react-datepicker.css";
@@ -24,9 +24,9 @@ const Tab = ({key, id, title, handleActiveTabChange}) => {
     )
 }
 
-const options = [ {id: 1, title: PERIOD_OPTIONS.WEEK}, {id: 2, title: PERIOD_OPTIONS.MONTH}, {id: 3, title: PERIOD_OPTIONS.YEAR}, {id: 4, title: PERIOD_OPTIONS.YEARS}]
+const periodOptions = [ {id: 1, title: PERIOD_OPTIONS.WEEK}, {id: 2, title: PERIOD_OPTIONS.MONTH}, {id: 3, title: PERIOD_OPTIONS.YEAR}, {id: 4, title: PERIOD_OPTIONS.YEARS}]
 
-const OptionList = ({ children, handleActiveOptionChange }) => {
+const PeriodOptionList = ({ children, handleActiveOptionChange }) => {
   return (
     <select className="user-dashboard-option-list" onChange={(e) => handleActiveOptionChange(e.target.value)}>
      {children}
@@ -34,7 +34,23 @@ const OptionList = ({ children, handleActiveOptionChange }) => {
    )
  }
 
-const Option = ({key, id, title}) => {
+const PeriodOption = ({key, id, title}) => {
+  return (
+      <option className="user-dashboard-option" value={title}>{title}</option>
+  )
+}
+
+const timeFormatOptions = [ {id: 1, title: ACTIVITY_TIME_FORMAT_OPTIONS.SECONDS}, {id: 2, title: ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES}, {id: 3, title: ACTIVITY_TIME_FORMAT_OPTIONS.HOURS}]
+
+const TimeFormatOptionList = ({ children, handleActiveTimeFormatChange, stateValue }) => {
+  return (
+    <select className="user-dashboard-option-list" value={stateValue} onChange={(e) => handleActiveTimeFormatChange(e.target.value)}>
+     {children}
+    </select>
+   )
+ }
+
+const TimeFormatOption = ({key, id, title}) => {
   return (
       <option className="user-dashboard-option" value={title}>{title}</option>
   )
@@ -44,6 +60,7 @@ export default function UserDashboard({ api }){
 
     const [activeTab, setActiveTab] = useState(1);
     const [activeOption, setActiveOption] = useState(PERIOD_OPTIONS.WEEK);
+    const [activeTimeFormatOption, setActiveTimeFormatOption] = useState(ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES);
     const [allWordsData, setAllWordsData] = useState(null);
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
     const [dateForGraphs, setDateForGraphs] = useState(new Date());
@@ -56,6 +73,11 @@ export default function UserDashboard({ api }){
 
     function handleActiveOptionChange(selected) {
       setActiveOption(selected);
+    }
+
+    function handleActiveTimeFormatChange(selected){
+      console.log(selected);
+      setActiveTimeFormatOption(selected);
     }
 
     useEffect(() => {
@@ -97,15 +119,32 @@ export default function UserDashboard({ api }){
               
           }
           </TabList>
-          <OptionList handleActiveOptionChange={handleActiveOptionChange}>
+          <PeriodOptionList handleActiveOptionChange={handleActiveOptionChange}>
           {
-              options.map(
-                  option => <Option key={option.id} id={option.id} title={option.title}/>
+              periodOptions.map(
+                  option => <PeriodOption key={option.id} id={option.id} title={option.title}/>
               )
               
           }
-          </OptionList>
-          <h4>{activeOption}</h4>
+          </PeriodOptionList>
+
+          {
+
+            (activeTab === 1)
+
+            &&
+            
+            <TimeFormatOptionList handleActiveTimeFormatChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption}>
+            {
+                timeFormatOptions.map(
+                    option => <TimeFormatOption key={option.id} id={option.id} title={option.title}/>
+                )
+                
+            }
+            </TimeFormatOptionList>
+          
+          }
+
         </div>
         <div>
           <DatePicker 
@@ -117,7 +156,7 @@ export default function UserDashboard({ api }){
         
         {
           (activeTab === 1) ? 
-                  <UserBarGraph data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeOption, dateForGraphs)}/>
+                  <UserBarGraph data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeOption, dateForGraphs, activeTimeFormatOption)}/>
           : (activeTab === 2) ? 
                   <UserLineGraph data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeOption, dateForGraphs)}/>
           : <></>
