@@ -1,6 +1,5 @@
 import LinkedWordList from "./LinkedWordListClass";
-
-import Speech from "speak-tts";
+import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 export default class InteractiveText {
   constructor(content, articleInfo, api) {
@@ -13,24 +12,7 @@ export default class InteractiveText {
       (each) => new LinkedWordList(each)
     );
 
-    // speech
-    this.speech = new Speech();
-    this.speech
-      .init()
-      .then((data) => {
-        // The "data" object contains the list of available voices and the voice synthesis params
-        let randomVoice = _getRandomVoice(
-          data.voices,
-          this.articleInfo.language
-        );
-
-        this.speech.setVoice(randomVoice.name);
-      })
-      .catch((e) => {
-        console.error("An error occured while initializing : ", e);
-      });
-
-    this.mp3Player = new Audio();
+    this.zeeguuSpeech = new ZeeguuSpeech(api, this.articleInfo.language);
   }
 
   getParagraphs() {
@@ -106,17 +88,7 @@ export default class InteractiveText {
   }
 
   pronounce(word) {
-    if (this.articleInfo.language == "da" && !isMobile()) {
-      this.api.getLinkToDanishSpeech(word.word, (linkToMp3) => {
-        this.mp3Player.src = this.api.baseAPIurl + linkToMp3;
-        this.mp3Player.play();
-      });
-    } else {
-      this.speech.speak({
-        text: word.word,
-      });
-    }
-
+    this.zeeguuSpeech.speakOut(word.word);
     this.api.logUserActivity(this.api.SPEAK_TEXT);
   }
 
@@ -142,23 +114,5 @@ export default class InteractiveText {
       getRightContext(word.next, 2);
 
     return context;
-  }
-}
-
-function _randomElement(x) {
-  return x[Math.floor(Math.random() * x.length)];
-}
-
-function _getRandomVoice(voices, language) {
-  let x = _randomElement(voices.filter((v) => v.lang.includes(language)));
-  return x;
-}
-
-function isMobile() {
-  try {
-    document.createEvent("TouchEvent");
-    return true;
-  } catch (e) {
-    return false;
   }
 }
