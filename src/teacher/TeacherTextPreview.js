@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 //import strings from "../i18n/definitions";
 import { MdHighlightOff } from "react-icons/md/";
@@ -13,7 +13,7 @@ export default function TeacherTextPreview({ article, setReturnPath }) {
   //TODO We need an addedToClassesStringOrArray attribute on each of the articles in the db
   //TODO We need a way to store/filter articles that belongs to certain teacher
   return (
-    <React.Fragment>
+    <Fragment>
       <st.StyledTeacherTextPreview>
         <div className="text-container">
           <div className="lhs">
@@ -44,12 +44,12 @@ export default function TeacherTextPreview({ article, setReturnPath }) {
                 STRINGSEdit text
               </StyledButton>
             </Link>
-            <StyledButton icon style={{margin:"0"}}>
+            <StyledButton icon style={{ margin: "0" }}>
               <MdHighlightOff size={35} />
             </StyledButton>
           </div>
         </div>
       </st.StyledTeacherTextPreview>
-    </React.Fragment>
+    </Fragment>
   );
 }

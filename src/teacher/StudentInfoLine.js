@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { Dialog, DialogContent } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { MdHighlightOff } from "react-icons/md/";
@@ -7,7 +7,7 @@ import { StyledButton} from "./TeacherButtons.sc";
 export default function StudentInfoLine(props) {
     const [isOpen, setIsOpen] = useState(false);
   return (
-    <React.Fragment>
+    <Fragment>
           <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between", margin: "1em"}}>
           <Link
             to={`/teacher/classes/viewStudent/${props.studentID}/class/${props.cohortID}`}
@@ -27,6 +27,6 @@ export default function StudentInfoLine(props) {
           </div>
         </DialogContent>
       </Dialog>
-    </React.Fragment>
+    </Fragment>
   );
 }

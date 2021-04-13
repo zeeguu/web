@@ -33,8 +33,6 @@ export default function NewArticles({ api }) {
     });
   }
 
-  console.log(articleList);
-
   return (
     <>
       <s.MaterialSelection>
