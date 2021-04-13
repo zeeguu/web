@@ -8,7 +8,7 @@ import { getBarGraphData, calculateCountPerMonth_Activity } from "./dataFormat/B
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
-const tabs = [ {id: 1, title: "Nothing"}, {id: 2, title: "Bar chart"}, {id: 3, title: "Line chart"} ]
+const tabs = [ {id: 1, title: "Bar chart"}, {id: 2, title: "Line chart"} ]
 
 const TabList = ({ children }) => {
     return (
@@ -44,11 +44,10 @@ export default function UserDashboard({ api }){
 
     const [activeTab, setActiveTab] = useState(1);
     const [activeOption, setActiveOption] = useState(PERIOD_OPTIONS.WEEK);
-    const [dataForCalendar, setDataForCalendar] = useState([]);
-    const [allWordsData, setAllWordsData] = useState({});
+    const [allWordsData, setAllWordsData] = useState(null);
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
     const [dateForGraphs, setDateForGraphs] = useState(new Date());
-    const [userActivityData, setUserActivityData] = useState({});
+    const [userActivityData, setUserActivityData] = useState(null);
     const [userActivityDataPerMonths, setUserActivityDataPerMonths] = useState({});
 
     function handleActiveTabChange(tabId) {
@@ -62,12 +61,6 @@ export default function UserDashboard({ api }){
     useEffect(() => {
 
       api.getBookmarksCountsByDate((counts) => {
-
-      const formattedCountsCalendar = counts.map(function(row) {     
-          return { day : row.date, value : row.count }
-       });
-
-      setDataForCalendar(formattedCountsCalendar);
 
       var formatted = getMapData(counts);
 
@@ -88,6 +81,10 @@ export default function UserDashboard({ api }){
       });
 
     }, [activeOption]);
+
+    if (!allWordsData || !userActivityData) {
+      return <LoadingAnimation />
+    };
 
     return (
     <>
@@ -119,10 +116,10 @@ export default function UserDashboard({ api }){
         </div>
         
         {
-        !(allWordsData || dataForCalendar || userActivityData) ? <LoadingAnimation />
-          : (activeTab === 2) ? <UserBarGraph data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeOption, dateForGraphs)}/>
-          : (activeTab === 3) ? <UserLineGraph data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeOption, dateForGraphs)}/>
-          : (activeTab === 1) ? <h2>Press on a tab</h2>
+          (activeTab === 1) ? 
+                  <UserBarGraph data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeOption, dateForGraphs)}/>
+          : (activeTab === 2) ? 
+                  <UserLineGraph data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeOption, dateForGraphs)}/>
           : <></>
         }
     </>
