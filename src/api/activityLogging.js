@@ -22,12 +22,13 @@ Zeeguu_API.prototype.WORDS_REVIEW = "WORDS_REVIEW";
 Zeeguu_API.prototype.ARTICLE_CLOSED = "ARTICLE CLOSED";
 Zeeguu_API.prototype.ARTICLE_UNFOCUSED = "ARTICLE LOST FOCUS";
 Zeeguu_API.prototype.ARTICLE_LIST_REQUESTED = "ARTICLES REQUESTED FROM ZEEGUU";
+Zeeguu_API.prototype.TO_EXERCISES_AFTER_REVIEW = "TO EXERCISES AFTER REVIEW";
 
 Zeeguu_API.prototype.logUserActivity = function (
   event,
   article_id = "",
   value = "",
-  extra_data = {}
+  extra_data = ""
 ) {
   let event_information = {
     time: new Date().toJSON(),

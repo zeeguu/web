@@ -66,7 +66,12 @@ export default function WordsForArticle({ api }) {
         </Link>
 
         {words.length > 0 && (
-          <Link to={`/exercises/forArticle/${articleID}`}>
+          <Link
+            to={`/exercises/forArticle/${articleID}`}
+            onClick={(e) =>
+              api.logUserActivity(api.TO_EXERCISES_AFTER_REVIEW, articleID)
+            }
+          >
             <OrangeButton>To Exercises</OrangeButton>
           </Link>
         )}
