@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { MdPeople } from "react-icons/md/";
 import { StyledButton } from "./TeacherButtons.sc";
 import * as s from "./CohortItemCard.sc";
 import strings from "../i18n/definitions";
-import { Dialog, DialogContent } from "@material-ui/core";
+import { Dialog } from "@reach/dialog";
 
 export const CohortItemCard = ({ cohort }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <React.Fragment>
+    <Fragment>
       <s.StyledCohortItemCard>
         <div className="cohort-card">
           <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
@@ -40,21 +40,20 @@ export const CohortItemCard = ({ cohort }) => {
             </div>
           </div>
         </div>
-        <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-          <DialogContent>
+        {isOpen && (
+          <Dialog isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
             {/*           <CohortForm
             primaryButtonText="Create Class"
             onSubmit={addCohort}
             isError={isError}
           /> */}
-            <div>
-              <h1>This is the Edit Class popup!</h1>
-              <p>The CohortForm etc. still needs to be migrated...</p>
-            </div>
-          </DialogContent>
-        </Dialog>
+
+            <h1>This is the Edit Class popup!</h1>
+            <p>The CohortForm etc. still needs to be migrated...</p>
+          </Dialog>
+        )}
       </s.StyledCohortItemCard>
-    </React.Fragment>
+    </Fragment>
   );
 };
 export default CohortItemCard;
