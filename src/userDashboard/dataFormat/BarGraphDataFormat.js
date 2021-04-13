@@ -1,5 +1,5 @@
 import { eachMonthOfInterval, isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
-import {PERIOD_OPTIONS, DATE_FORMAT, BAR_GRAPH_KEYS} from "./ConstantsUserDashboard";
+import {PERIOD_OPTIONS, DATE_FORMAT, BAR_GRAPH_KEYS, ACTIVITY_TIME_FORMAT_OPTIONS} from "./ConstantsUserDashboard";
 import {calculatePerMonth} from "./DataFormat";
 
 function getMapData(data){
@@ -22,7 +22,28 @@ function secondsToMinutes(seconds){
 
 }
 
-function getDataForInterval(data, startDate, endDate, dateFormatString){
+function secondsToHours(seconds){
+
+  return Math.round((seconds / 3600) * 10)/10;
+
+}
+
+function formatSeconds(seconds, formatTo){
+
+  switch(formatTo){
+    case ACTIVITY_TIME_FORMAT_OPTIONS.SECONDS:
+        return seconds; 
+      case ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES:
+        return secondsToMinutes(seconds); 
+      case ACTIVITY_TIME_FORMAT_OPTIONS.HOURS:
+        return secondsToHours(seconds); 
+      default:
+        return secondsToMinutes(seconds);
+  }
+
+}
+
+function getDataForInterval(data, startDate, endDate, dateFormatString, activeTimeFormatOption){
 
   var result = [];
 
@@ -46,7 +67,7 @@ function getDataForInterval(data, startDate, endDate, dateFormatString){
                             exercisesData.find(entry => entry.date === stringDate).seconds
                             : 0;
                             
-    result.push({ date: stringlegend, reading_time: secondsToMinutes(readingCount), exercises_time: secondsToMinutes(exercisesCount)});
+    result.push({ date: stringlegend, reading_time: formatSeconds(readingCount, activeTimeFormatOption), exercises_time: formatSeconds(exercisesCount, activeTimeFormatOption)});
 
   });
 
@@ -55,7 +76,7 @@ function getDataForInterval(data, startDate, endDate, dateFormatString){
 }
 
 
-function getBarDataForWeek(data, dateInWeek){
+function getBarDataForWeek(data, dateInWeek, activeTimeFormatOption){
 
   const STRING_FORMAT = "dd-MM"; 
 
@@ -64,11 +85,11 @@ function getBarDataForWeek(data, dateInWeek){
       end: dateInWeek
   };
 
-  var result =  getDataForInterval(data, datesCurrentWeek.start, datesCurrentWeek.end, STRING_FORMAT);
+  var result =  getDataForInterval(data, datesCurrentWeek.start, datesCurrentWeek.end, STRING_FORMAT, activeTimeFormatOption);
   return result;
 }
 
-function getBarDataForMonth(data, dateInMonth){
+function getBarDataForMonth(data, dateInMonth, activeTimeFormatOption){
 
   const STRING_FORMAT = "dd-MM"; 
 
@@ -77,11 +98,11 @@ function getBarDataForMonth(data, dateInMonth){
       end: dateInMonth
   };
 
-  return getDataForInterval(data, datesCurrentMonth.start, datesCurrentMonth.end, STRING_FORMAT);
+  return getDataForInterval(data, datesCurrentMonth.start, datesCurrentMonth.end, STRING_FORMAT, activeTimeFormatOption);
 
 }
 
-function getBarDataForYear(dataPerMonths, dateInYear){
+function getBarDataForYear(dataPerMonths, dateInYear, activeTimeFormatOption){
 
   var result = [];
 
@@ -113,7 +134,7 @@ function getBarDataForYear(dataPerMonths, dateInYear){
                               : 0
                               : 0 ;
                             
-    result.push({ date: stringLegend, reading_time: secondsToMinutes(readingCount), exercises_time: secondsToMinutes(exercisesCount)});
+    result.push({ date: stringLegend, reading_time: formatSeconds(readingCount, activeTimeFormatOption), exercises_time: formatSeconds(exercisesCount, activeTimeFormatOption)});
 
   });
 
@@ -121,7 +142,7 @@ function getBarDataForYear(dataPerMonths, dateInYear){
 
 }
 
-function getBarDataForYears(dataPerMonths, dateInYear){
+function getBarDataForYears(dataPerMonths, dateInYear, activeTimeFormatOption){
   
   var result = [];
 
@@ -159,13 +180,7 @@ function getBarDataForYears(dataPerMonths, dateInYear){
         }
       }
 
-      console.log({seconds_reading: readingCount, minutes_reading: secondsToMinutes(readingCount) });
-
-      console.log({seconds_ex: exercisesCount, minutes_ex: secondsToMinutes(exercisesCount) });
-
-
-
-      result.push({ date: stringLegend, reading_time: secondsToMinutes(readingCount), exercises_time: secondsToMinutes(exercisesCount)});
+      result.push({ date: stringLegend, reading_time: formatSeconds(readingCount, activeTimeFormatOption), exercises_time: formatSeconds(exercisesCount, activeTimeFormatOption)});
           
       dateInYear = subYears(dateInYear, 1);
 
@@ -186,19 +201,19 @@ function calculateCountPerMonth_Activity(data){
 
 }
 
-function getBarGraphData(data, countPerMonths, period, dateInPeriod){
+function getBarGraphData(data, countPerMonths, period, dateInPeriod, activeTimeFormatOption){
     
     switch(period) {
       case PERIOD_OPTIONS.WEEK:
-        return getBarDataForWeek(data, dateInPeriod); 
+        return getBarDataForWeek(data, dateInPeriod, activeTimeFormatOption); 
       case PERIOD_OPTIONS.MONTH:
-        return getBarDataForMonth(data, dateInPeriod); 
+        return getBarDataForMonth(data, dateInPeriod, activeTimeFormatOption); 
       case PERIOD_OPTIONS.YEAR:
-        return getBarDataForYear(countPerMonths, dateInPeriod); 
+        return getBarDataForYear(countPerMonths, dateInPeriod, activeTimeFormatOption); 
       case PERIOD_OPTIONS.YEARS:
-        return getBarDataForYears(countPerMonths, dateInPeriod); 
+        return getBarDataForYears(countPerMonths, dateInPeriod, activeTimeFormatOption); 
       default:
-        return getBarDataForWeek(data, new Date()); 
+        return getBarDataForWeek(data, new Date(), activeTimeFormatOption); 
     }
   
   }
