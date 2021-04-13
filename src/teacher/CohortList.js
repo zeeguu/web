@@ -1,38 +1,33 @@
-import React, { useState } from "react";
-import { Dialog, DialogContent } from "@material-ui/core";
-//import { toast } from "react-toastify";
+import React, { useState, Fragment } from "react";
+import { Dialog } from "@reach/dialog";
+import "@reach/dialog/styles.css"; //TODO move to an sc.js...
 //import strings from "../i18n/definitions";
-
 import { CohortItemCard } from "./CohortItemCard";
 import { StyledButton, TopButton } from "./TeacherButtons.sc";
+import CohortForm from "./CohortForm";
 
 export default function CohortList({ api, cohorts, setForceUpdate }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isError, setIsError] = useState(false);
 
- //TODO We need the commented-out stuff to implement the functionality of the "Add class"-btn.
-  // const [isError, setIsError] = useState(false);
-
-/*   const addCohort = (form) => {
+  const addCohort = (form) => {
     setIsError(false);
     api
       .createCohort(form)
       .then((result) => {
         setIsOpen(false);
-        toast("👩‍🎓 The class was created successfully! (STRINGS)", {
-          type: toast.TYPE.SUCCESS,
-        });
+        //TODO add system feedback to user here
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
-        toast("🤨 The class could not be created (STRINGS)", {
-          type: toast.TYPE.ERROR,
-        });
+        //TODO add system feedback to user here
         setIsError(true);
       });
-  }; */
+  };
+
 
   return (
-    <React.Fragment>
+    <Fragment>
       <TopButton>
         <StyledButton primary onClick={() => setIsOpen(true)}>
           Add class (STRINGS)
@@ -40,20 +35,15 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
       </TopButton>
       {cohorts.map((cohort) => (
         <CohortItemCard key={cohort.id} cohort={cohort} />
-      ))}
-            <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-        <DialogContent>
-{/*           <CohortForm
-            primaryButtonText="Create Class"
+      )).reverse()}
+      {isOpen && (
+        <Dialog onDismiss={() => setIsOpen(false)} aria-label="Create_class">
+          <CohortForm
             onSubmit={addCohort}
             isError={isError}
-          /> */}
-          <div>
-          <h1>This is the Create Class popup!</h1>
-          <p>The CohortForm etc. still needs to be migrated...</p>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </React.Fragment>
+          />
+        </Dialog>
+      )}
+    </Fragment>
   );
 }
