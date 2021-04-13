@@ -23,7 +23,7 @@ export default function WordsForArticle({ api }) {
       setTitle('Words in "' + data.title + '"');
     });
 
-    api.logUserActivity(api.WORDS_REVIEW);
+    api.logUserActivity(api.WORDS_REVIEW, articleID);
 
     // eslint-disable-next-line
   }, []);
