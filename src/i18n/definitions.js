@@ -25,6 +25,7 @@ let strings = new LocalizedStrings(
       //Sidebar
       teacherSite: "Teacher site",
       logout: "Logout",
+      userDashboard: "Dashboard",
 
       //CreateAccount
       nameIsRequired: "Name is required.",
