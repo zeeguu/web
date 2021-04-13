@@ -16,6 +16,12 @@ function getMapData(data){
 
 }
 
+function secondsToMinutes(seconds){
+
+  return Math.round(seconds / 60);
+
+}
+
 function getDataForInterval(data, startDate, endDate, dateFormatString){
 
   var result = [];
@@ -40,7 +46,7 @@ function getDataForInterval(data, startDate, endDate, dateFormatString){
                             exercisesData.find(entry => entry.date === stringDate).seconds
                             : 0;
                             
-    result.push({ date: stringlegend, reading_time: readingCount, exercises_time: exercisesCount});
+    result.push({ date: stringlegend, reading_time: secondsToMinutes(readingCount), exercises_time: secondsToMinutes(exercisesCount)});
 
   });
 
@@ -107,7 +113,7 @@ function getBarDataForYear(dataPerMonths, dateInYear){
                               : 0
                               : 0 ;
                             
-    result.push({ date: stringLegend, reading_time: readingCount, exercises_time: exercisesCount});
+    result.push({ date: stringLegend, reading_time: secondsToMinutes(readingCount), exercises_time: secondsToMinutes(exercisesCount)});
 
   });
 
@@ -153,8 +159,13 @@ function getBarDataForYears(dataPerMonths, dateInYear){
         }
       }
 
+      console.log({seconds_reading: readingCount, minutes_reading: secondsToMinutes(readingCount) });
 
-      result.push({ date: stringLegend, reading_time: readingCount, exercises_time: exercisesCount});
+      console.log({seconds_ex: exercisesCount, minutes_ex: secondsToMinutes(exercisesCount) });
+
+
+
+      result.push({ date: stringLegend, reading_time: secondsToMinutes(readingCount), exercises_time: secondsToMinutes(exercisesCount)});
           
       dateInYear = subYears(dateInYear, 1);
 
@@ -168,8 +179,7 @@ function getBarDataForYears(dataPerMonths, dateInYear){
 
 function calculateCountPerMonth_Activity(data){
 
-  var rMap = getMapData(data.reading);
-  var readingMap = calculatePerMonth(rMap);
+  var readingMap = calculatePerMonth(getMapData(data.reading));
   var exercisesMap =  calculatePerMonth(getMapData(data.exercises));
 
   return ({reading: readingMap, exercises: exercisesMap});
