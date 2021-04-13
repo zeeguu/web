@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import CohortList from "./CohortList";
 import strings from "../i18n/definitions";
@@ -17,7 +17,7 @@ function Home({ api }) {
   }, [forceUpdate]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <s.NarrowColumn>
         <sc.TopTabs>
           <h1>{strings.myClasses}</h1>
@@ -26,10 +26,10 @@ function Home({ api }) {
         {isLoadingCohorts ? (
           <LoadingAnimation />
         ) : (
-          <CohortList setForceUpdate={setForceUpdate} cohorts={cohorts} />
+          <CohortList api={api} setForceUpdate={setForceUpdate} cohorts={cohorts} />
         )}
       </s.NarrowColumn>
-    </React.Fragment>
+    </Fragment>
   );
 }
 

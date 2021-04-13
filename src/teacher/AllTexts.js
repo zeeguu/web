@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { RoutingContext } from "../contexts/RoutingContext";
 import TeacherTextPreview from "./TeacherTextPreview";
@@ -32,7 +32,7 @@ export default function AllTexts({ api }) {
     return <LoadingAnimation />;
   }
   return (
-    <React.Fragment>
+    <Fragment>
       <s.WideColumn>
         <sc.TopTabs>
           <h1>{strings.myTexts}</h1>
@@ -63,6 +63,6 @@ export default function AllTexts({ api }) {
         ))}
         <br />
       </s.WideColumn>
-    </React.Fragment>
+    </Fragment>
   );
 }

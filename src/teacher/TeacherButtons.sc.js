@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-import { MdHighlightOff } from "react-icons/md/";
 import { lightBlue, darkBlue } from "../components/colors";
 
 const StyledButton = styled.button`
