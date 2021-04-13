@@ -1,4 +1,5 @@
 import { Zeeguu_API } from "./classDef";
+import queryString from "query-string";
 
 // Reader Opening Actions
 Zeeguu_API.prototype.OPEN_ARTICLE = "OPEN ARTICLE";
@@ -24,19 +25,22 @@ Zeeguu_API.prototype.ARTICLE_LIST_REQUESTED = "ARTICLES REQUESTED FROM ZEEGUU";
 
 Zeeguu_API.prototype.logUserActivity = function (
   event,
+  article_id = "",
   value = "",
-  extra_data = {},
-  article_id = ""
+  extra_data = {}
 ) {
   let event_information = {
     time: new Date().toJSON(),
     event: "UMR - " + event,
     value: value,
-    extra_data: JSON.stringify(extra_data),
+    extra_data: extra_data,
     article_id: article_id,
   };
 
   console.log(event);
 
-  return this._post(`upload_user_activity_data`, event_information);
+  return this._post(
+    `upload_user_activity_data`,
+    queryString.stringify(event_information)
+  );
 };
