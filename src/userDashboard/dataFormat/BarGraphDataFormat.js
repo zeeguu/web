@@ -1,5 +1,5 @@
 import { eachMonthOfInterval, isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
-import {PERIOD_OPTIONS, DATE_FORMAT, BAR_GRAPH_KEYS, ACTIVITY_TIME_FORMAT_OPTIONS} from "./ConstantsUserDashboard";
+import {PERIOD_OPTIONS, DATE_FORMAT, ACTIVITY_TIME_FORMAT_OPTIONS} from "./ConstantsUserDashboard";
 import {calculatePerMonth} from "./DataFormat";
 
 function getMapData(data){
