@@ -1,6 +1,7 @@
-import {PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, TOP_TABS} from "./dataFormat/ConstantsUserDashboard";
+import { PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, TOP_TABS, USER_DASHBOARD_TITLES } from "./dataFormat/ConstantsUserDashboard";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+import { UserDashboardTile, UserDashboardTopContainer } from "./UserDashboard.sc";
 
 const tabs = [ {id: 1, title: TOP_TABS.BAR_GRAPH}, {id: 2, title: TOP_TABS.LINE_GRAPH} ]
 
@@ -23,12 +24,23 @@ const Tab = ({key, id, title, handleActiveTabChange}) => {
 }
 
 
-const DropDownList = ({ children, handleChange, stateValue }) => {
-    return (
-      <select value={stateValue} onChange={(e) => handleChange(e.target.value)}>
-       {children}
-      </select>
-     )
+const DropDownList = ({ children, handleChange, stateValue, isDisabled }) => {
+    
+    return isDisabled?
+
+        (      
+        <select disabled value={stateValue} onChange={(e) => handleChange(e.target.value)}>
+            {children}
+        </select>
+        )
+
+        : 
+        (      
+        <select value={stateValue} onChange={(e) => handleChange(e.target.value)}>
+            {children}
+        </select>
+        )
+
    }
 
 const DropDownOption = ({key, id, title}) => {
@@ -42,7 +54,9 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
 
     return (
         
-        <>
+        <UserDashboardTopContainer>
+
+            <UserDashboardTile> { USER_DASHBOARD_TITLES.MAIN_TITLE } </UserDashboardTile>
         
             <div>
 
@@ -55,6 +69,10 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
             }
             </TabList>
 
+            </div>
+            
+            <div>
+            
             <DropDownList handleChange={handleActiveOptionChange} stateValue={activeOption}>
             {
               periodOptions.map(
@@ -62,15 +80,12 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
               )
               
             }
+
             </DropDownList>
 
             {
 
-            (activeTab === 1)
-
-            &&
-
-            <DropDownList handleChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption}>
+            <DropDownList handleChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption} isDisabled={(activeTab===2)}>
             {
                 timeFormatOptions.map(
                     option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
@@ -81,17 +96,15 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
 
             }
 
-            </div>
-
-            <div>
             <DatePicker 
                 dateFormat="dd/MM/yyyy"
                 selected={dateForGraphs}
                 onChange={date => setDateForGraphs(date)}
             />
+
             </div>
         
-        </>
+        </UserDashboardTopContainer>
 
     );
 }
