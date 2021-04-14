@@ -5,11 +5,16 @@ const PERIOD_OPTIONS = {
     YEARS: 'Years'
   };
 
-  const ACTIVITY_TIME_FORMAT_OPTIONS = {
+const ACTIVITY_TIME_FORMAT_OPTIONS = {
     SECONDS: "Seconds",
     MINUTES: "Minutes",
     HOURS: "Hours"
   };
+
+const TOP_TABS = {
+  BAR_GRAPH: "Activity",
+  LINE_GRAPH: "Words"
+}
 
 const DATE_FORMAT = "yyyy-MM-dd";
 
@@ -26,6 +31,7 @@ export {
     PERIOD_OPTIONS,
     DATE_FORMAT,
     BAR_GRAPH_KEYS,
-    ACTIVITY_TIME_FORMAT_OPTIONS
-    
+    ACTIVITY_TIME_FORMAT_OPTIONS,
+    TOP_TABS
+        
 };

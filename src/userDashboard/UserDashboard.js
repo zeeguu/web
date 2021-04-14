@@ -67,6 +67,7 @@ export default function UserDashboard({ api }){
               <UserDashboard_Top
                   activeTab={activeTab}
                   handleActiveTabChange={handleActiveTabChange}
+                  activeOption={activeOption}
                   handleActiveOptionChange={handleActiveOptionChange}
                   handleActiveTimeFormatChange={handleActiveTimeFormatChange}
                   activeTimeFormatOption={activeTimeFormatOption}
@@ -86,7 +87,7 @@ export default function UserDashboard({ api }){
                         <UserLineGraph 
                           data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeOption, dateForGraphs)}
                         />
-                        
+
                 : <></>
               }
 
