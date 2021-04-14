@@ -9,6 +9,7 @@ export const CohortNameTextfield = ({ value, onChange }) => {
     <Fragment>
       <label htmlFor="cohort_name">Choose the class name STRINGS</label>
       <TextField
+        aria-label="cohort_name"
         value={value}
         onChange={onChange}
         name="cohort_name"
@@ -33,6 +34,7 @@ export const InviteCodeTextfield = ({ value, onChange }) => {
     <Fragment>
       <label htmlFor="invite_code">Choose an invitecode STRINGS</label>
       <TextField
+        aria-label="invite_code"
         value={value}
         onChange={onChange}
         name="invite_code"
@@ -56,7 +58,7 @@ export function LanguageSelector({ value, onChange }) {
   return (
     <Fragment>
       <label htmlFor="language_id"></label>
-        Choose the classroom language STRINGS
+      Choose the classroom language STRINGS
       <Listbox
         id="language_id"
         style={{
