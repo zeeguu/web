@@ -17,3 +17,7 @@ Zeeguu_API.prototype.getCohortsInfo = function (callback) {
 Zeeguu_API.prototype.deleteCohort = async function (id) {
   return await this.apiPost(`/remove_cohort/${id}`, id);
 };
+
+Zeeguu_API.prototype.updateCohort = async function (data, id) {
+  return await this.apiPost(`/update_cohort/${id}`, data, true);
+};
