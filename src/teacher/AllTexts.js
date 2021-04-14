@@ -1,6 +1,5 @@
-import React, { useContext, useState, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { Link } from "react-router-dom";
-import { RoutingContext } from "../contexts/RoutingContext";
 import TeacherTextPreview from "./TeacherTextPreview";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -13,9 +12,6 @@ import { DUMMYLIST } from "./DummyArticleList";
 import SortingButtons from "../articles/SortingButtons";
 
 export default function AllTexts({ api }) {
-  //Setting up the routing context to be able to route correctly on Cancel
-  const { setReturnPath } = useContext(RoutingContext);
-  // eslint-disable-next-line;
 
   const [articleList, setArticleList] = useState(null);
   var originalList = null;
@@ -27,7 +23,7 @@ export default function AllTexts({ api }) {
       originalList = [...DUMMYLIST];
     
 
-    setTitle("Find Articles");
+    setTitle("Find Your Texts STRINGS");
 
     return <LoadingAnimation />;
   }
@@ -58,7 +54,6 @@ export default function AllTexts({ api }) {
             key={each.id}
             article={each}
             api={api}
-            setReturnPath={setReturnPath}
           />
         ))}
         <br />
