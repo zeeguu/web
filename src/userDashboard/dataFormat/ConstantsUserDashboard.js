@@ -26,12 +26,25 @@ const BAR_GRAPH_KEYS = {
   LEGEND_LEFT: "time count"
 }
 
+const USER_DASHBOARD_TITLES = {
+  MAIN_TITLE: "Your Dashboard",
+  BAR_GRAPH_TITLE: "Your time spent on reading and exercises",
+  LINE_GRAPH_TITLE: "Your number of translated words"
+}
+
+const USER_DASHBOARD_TEXTS = {
+  BAR_GRAPH_HELPER_TEXT: "Here you can see your activity for a specific period and a specific time format.",
+  LINE_GRAPH_HELPER_TEXT: "Here you can see how many words you translated during a specific period of time.",
+}
+
 export {
 
     PERIOD_OPTIONS,
     DATE_FORMAT,
     BAR_GRAPH_KEYS,
     ACTIVITY_TIME_FORMAT_OPTIONS,
-    TOP_TABS
-        
+    TOP_TABS,
+    USER_DASHBOARD_TITLES,
+    USER_DASHBOARD_TEXTS
+
 };
