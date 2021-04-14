@@ -24,7 +24,7 @@ export default function TeacherTextPreview({ article }) {
           <div className="lhs">
             <Link
               to="/teacher/texts/editText/:articleID"
-              onClick={setReturnPath("/teacher/texts")}
+              onClick={()=>setReturnPath("/teacher/texts")}
             >
               <s.Title>{article.title}</s.Title>
             </Link>
@@ -42,7 +42,7 @@ export default function TeacherTextPreview({ article }) {
             <s.Difficulty>{difficulty}</s.Difficulty>
             <Link
               to="/teacher/texts/editText/:articleID"
-              onClick={setReturnPath("/teacher/texts")}
+              onClick={()=>setReturnPath("/teacher/texts")}
             >
               <StyledButton secondary className="edit-btn">
                 STRINGSEdit text
