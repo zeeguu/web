@@ -23,7 +23,7 @@ export default function AllTexts({ api }) {
       originalList = [...DUMMYLIST];
     
 
-    setTitle("Find Your Texts STRINGS");
+    setTitle("Add Texts STRINGS");
 
     return <LoadingAnimation />;
   }
