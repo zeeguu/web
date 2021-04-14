@@ -3,6 +3,7 @@ import Speech from "speak-tts";
 const ZeeguuSpeech = class {
   constructor(api, language) {
     this.api = api;
+    this.language = language;
 
     this.mp3Player = new Audio();
 
@@ -21,7 +22,11 @@ const ZeeguuSpeech = class {
   }
 
   speakOut(word) {
-    if (this.language == "da" && !_isMobile()) {
+    console.log("speaking out danish");
+    console.log(this.language);
+    console.log(_isMobile());
+    if (this.language === "da" && !_isMobile()) {
+      console.log("about to call the api");
       this.api.getLinkToDanishSpeech(word, (linkToMp3) => {
         this.mp3Player.src = this.api.baseAPIurl + linkToMp3;
         this.mp3Player.play();
@@ -44,12 +49,8 @@ function _getRandomVoice(voices, language) {
 }
 
 function _isMobile() {
-  try {
-    document.createEvent("TouchEvent");
-    return true;
-  } catch (e) {
-    return false;
-  }
+  // cf: https://stackoverflow.com/questions/3514784/what-is-the-best-way-to-detect-a-mobile-device
+  return /Mobi|Android/i.test(navigator.userAgent);
 }
 
 export default ZeeguuSpeech;
