@@ -26,7 +26,11 @@ function Home({ api }) {
         {isLoadingCohorts ? (
           <LoadingAnimation />
         ) : (
-          <CohortList api={api} setForceUpdate={setForceUpdate} cohorts={cohorts} />
+          <CohortList
+            api={api}
+            setForceUpdate={setForceUpdate}
+            cohorts={cohorts}
+          />
         )}
       </s.NarrowColumn>
     </Fragment>

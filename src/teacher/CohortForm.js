@@ -1,19 +1,50 @@
 import React, { useState } from "react";
 import { FormControl } from "@material-ui/core";
-import { SpringSpinner } from "react-epic-spinners";
+//import LoadingAnimation from "../components/LoadingAnimation"
 import { Error } from "./Error";
-//import { DangerZone } from "./DangerZone";
 import {
   languageMap,
   LanguageSelector,
   CohortNameTextfield,
   InviteCodeTextfield,
 } from "./CohortFormInputFields";
-
 import { StyledButton } from "./TeacherButtons.sc";
 
-const CohortForm = ({ cohort, isError, onSubmit }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
+  const setIsLoading = useState(false)[1];
+  const [isError, setIsError] = useState(false);
+
+  const addCohort = (form) => {
+    setIsError(false);
+    api
+      .createCohort(form)
+      .then((result) => {
+        setIsOpen(false);
+        //TODO add system feedback to user here
+        setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
+      })
+      .catch((err) => {
+        //TODO add system feedback to user here
+        setIsError(true);
+      });
+  };
+
+  const deleteCohort = (cohort_id) => {
+    setIsLoading(true);
+    setIsError(false);
+    api
+      .deleteCohort(cohort_id)
+      .then((result) => {
+        setIsOpen(false);
+        //TODO add system feedback to user here
+        setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
+      })
+      .catch((err) => {
+        //TODO add system feedback to user here
+        setIsError(true);
+      });
+    setIsLoading(false);
+  };
 
   const [state, setState] = useState({
     id: cohort ? cohort.id : "",
@@ -49,15 +80,15 @@ const CohortForm = ({ cohort, isError, onSubmit }) => {
   function submitForm(event) {
     setIsLoading(true);
     const form = setupForm();
-    onSubmit(form);
+    addCohort(form);
     event.preventDefault();
     setIsLoading(false);
   }
 
   return (
     <div>
-      <h1>Create Class STRINGS</h1>
-      <form onSubmit={submitForm} style={{ display: "flex", flexWrap: "wrap" }}>
+      {cohort ? <h1>Edit Class STRINGS</h1> : <h1>Create Class STRINGS</h1>}
+      <form style={{ display: "flex", flexWrap: "wrap" }}>
         <CohortNameTextfield
           value={state.cohort_name}
           onChange={handleChange}
@@ -80,16 +111,20 @@ const CohortForm = ({ cohort, isError, onSubmit }) => {
         {isError && (
           <Error
             message={
-              "Something went wrong. Maybe the invite code is already in use."
+              "Something went wrong. Maybe the invite code is already in use. STRINGS"
             }
             setLoading={setIsLoading}
           />
         )}
-        <StyledButton primary type="submit" style={{ minWidth: 120 }}>
-          {isLoading ? <SpringSpinner size={18} /> : "Create class STRINGS"}
-        </StyledButton>
       </form>
-      {/* {cohort && <DangerZone cohortId={cohort.id} />} */}
+      <StyledButton primary onClick={submitForm} style={{ minWidth: 120 }}>
+        {cohort ? "Save changes STRINGS" : "Create class STRINGS"}
+      </StyledButton>
+      {cohort && (
+        <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
+          DeleteSTRING
+        </StyledButton>
+      )}
     </div>
   );
 };

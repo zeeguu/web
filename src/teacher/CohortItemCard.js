@@ -5,8 +5,9 @@ import { StyledButton } from "./TeacherButtons.sc";
 import * as s from "./CohortItemCard.sc";
 import strings from "../i18n/definitions";
 import { Dialog } from "@reach/dialog";
+import CohortForm from "./CohortForm";
 
-export const CohortItemCard = ({ cohort }) => {
+export const CohortItemCard = ({ api, cohort, setForceUpdate }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Fragment>
@@ -41,15 +42,13 @@ export const CohortItemCard = ({ cohort }) => {
           </div>
         </div>
         {isOpen && (
-          <Dialog isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
-            {/*           <CohortForm
-            primaryButtonText="Create Class"
-            onSubmit={addCohort}
-            isError={isError}
-          /> */}
-
-            <h1>This is the Edit Class popup!</h1>
-            <p>The CohortForm etc. still needs to be migrated...</p>
+          <Dialog aria-label="Create or edit class"onDismiss={() => setIsOpen(false)}>
+            <CohortForm
+              api={api}
+              cohort={cohort}
+              setIsOpen={setIsOpen}
+              setForceUpdate={setForceUpdate}
+            />
           </Dialog>
         )}
       </s.StyledCohortItemCard>

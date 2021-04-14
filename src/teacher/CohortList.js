@@ -1,30 +1,27 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Dialog } from "@reach/dialog";
 import "@reach/dialog/styles.css"; //TODO move to an sc.js...
 //import strings from "../i18n/definitions";
-import { CohortItemCard } from "./CohortItemCard";
-import { StyledButton, TopButton } from "./TeacherButtons.sc";
 import CohortForm from "./CohortForm";
+import { CohortItemCard } from "./CohortItemCard";
+import LoadingAnimation from "../components/LoadingAnimation";
+import { StyledButton, TopButton } from "./TeacherButtons.sc";
 
 export default function CohortList({ api, cohorts, setForceUpdate }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [reversedList, setReversedList] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const addCohort = (form) => {
-    setIsError(false);
-    api
-      .createCohort(form)
-      .then((result) => {
-        setIsOpen(false);
-        //TODO add system feedback to user here
-        setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
-      })
-      .catch((err) => {
-        //TODO add system feedback to user here
-        setIsError(true);
-      });
+  //Making sure the latest added class is always on top of the list
+  const getReversedList = () => {
+    return cohorts.map((cohort) => cohort).reverse();
   };
 
+  useEffect(() => {
+    setReversedList(getReversedList());
+    setIsLoading(false);
+    // eslint-disable-next-line
+  }, [cohorts]);
 
   return (
     <Fragment>
@@ -33,14 +30,24 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
           Add class (STRINGS)
         </StyledButton>
       </TopButton>
-      {cohorts.map((cohort) => (
-        <CohortItemCard key={cohort.id} cohort={cohort} />
-      )).reverse()}
+      {!isLoading ? (
+        reversedList.map((cohort) => (
+          <CohortItemCard
+            api={api}
+            key={cohort.id}
+            cohort={cohort}
+            setForceUpdate={setForceUpdate}
+          />
+        ))
+      ) : (
+        <LoadingAnimation />
+      )}
       {isOpen && (
-        <Dialog onDismiss={() => setIsOpen(false)} aria-label="Create_class">
+        <Dialog onDismiss={() => setIsOpen(false)} aria-label="Create class">
           <CohortForm
-            onSubmit={addCohort}
-            isError={isError}
+            api={api}
+            setIsOpen={setIsOpen}
+            setForceUpdate={setForceUpdate}
           />
         </Dialog>
       )}
