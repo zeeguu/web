@@ -5,7 +5,7 @@ import { RoutingContext } from "../contexts/RoutingContext";
 import { useContext } from "react";
 import * as s from "./AddTextOptions.sc";
 
-export function AddFromZeeguuOption(props) {
+export function AddFromZeeguuOption() {
   return (
     <s.StyledAddTextOptions>
       <div className="description">
@@ -29,7 +29,7 @@ export function TypeCopyPasteOption() {
         <Link
           className="link"
           to="/teacher/texts/editText/new"
-          onClick={setReturnPath("/teacher/texts/AddTextsOption")}
+          onClick={()=>setReturnPath("/teacher/texts/AddTextOptions")}
         >
           STRINGSCopy/paste content or type your own text{" "}
           <StyledButton primary className="add-btn">
