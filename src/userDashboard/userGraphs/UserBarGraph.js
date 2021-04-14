@@ -1,16 +1,10 @@
 import { ResponsiveBar } from '@nivo/bar'
 import {BAR_GRAPH_KEYS} from '../dataFormat/ConstantsUserDashboard';
-import { UserDashboardGraphTile } from '../UserDashboard.sc'
-import { USER_DASHBOARD_TITLES, USER_DASHBOARD_TEXTS } from '../dataFormat/ConstantsUserDashboard'
-import * as s from "../../components/TopMessage.sc";
-
 
 export default function UserBarGraph ({ data }) {
     return(
         //parent container has to have height specified in order for the graph to be shown     
         <div style={{height: 500}}> 
-            <UserDashboardGraphTile>{USER_DASHBOARD_TITLES.BAR_GRAPH_TITLE}</UserDashboardGraphTile>
-            <s.TopMessage>{USER_DASHBOARD_TEXTS.BAR_GRAPH_HELPER_TEXT}</s.TopMessage>
             <ResponsiveBar
                 data={data}
                 keys={[ BAR_GRAPH_KEYS.READING, BAR_GRAPH_KEYS.EXERCISES ]}

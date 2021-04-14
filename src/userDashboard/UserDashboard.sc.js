@@ -23,7 +23,14 @@ const UserDashboardGraphTile = styled.h2`
 `;
 
 const UserDashboardHelperText = styled(s.TopMessage)`
-    align-self: left;
+`;
+
+const UserDashBoardTabs = styled.div`
+
+`;
+
+const UserDashBoardOptions = styled.div`
+
 `;
 
 export {
@@ -31,6 +38,8 @@ export {
     UserDashboardTile,
     UserDashboardGraphTile,
     UserDashboardTopContainer,
-    UserDashboardHelperText
+    UserDashboardHelperText,
+    UserDashBoardTabs,
+    UserDashBoardOptions
 
 };

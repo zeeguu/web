@@ -1,7 +1,7 @@
-import { PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, TOP_TABS, USER_DASHBOARD_TITLES } from "./dataFormat/ConstantsUserDashboard";
+import { PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, TOP_TABS, USER_DASHBOARD_TITLES, USER_DASHBOARD_TEXTS } from "./dataFormat/ConstantsUserDashboard";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import { UserDashboardTile, UserDashboardTopContainer } from "./UserDashboard.sc";
+import { UserDashboardGraphTile, UserDashboardHelperText, UserDashboardTile, UserDashboardTopContainer } from "./UserDashboard.sc";
 
 const tabs = [ {id: 1, title: TOP_TABS.BAR_GRAPH}, {id: 2, title: TOP_TABS.LINE_GRAPH} ]
 
@@ -69,6 +69,13 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
             }
             </TabList>
 
+            </div>
+
+            <div>
+
+            <UserDashboardGraphTile>{(activeTab===1)? USER_DASHBOARD_TITLES.BAR_GRAPH_TITLE : USER_DASHBOARD_TITLES.LINE_GRAPH_TITLE}</UserDashboardGraphTile>
+            <UserDashboardHelperText>{(activeTab===1)? USER_DASHBOARD_TEXTS.BAR_GRAPH_HELPER_TEXT : USER_DASHBOARD_TEXTS.LINE_GRAPH_HELPER_TEXT}</UserDashboardHelperText>
+            
             </div>
             
             <div>

@@ -1,14 +1,10 @@
 import { ResponsiveLine } from '@nivo/line'
-import { UserDashboardGraphTile, UserDashboardHelperText } from '../UserDashboard.sc'
-import { USER_DASHBOARD_TITLES, USER_DASHBOARD_TEXTS } from '../dataFormat/ConstantsUserDashboard'
 
 export default function UserLineGraph ({ data }) {
 
     return (
         //parent container has to have height specified in order for the graph to be shown     
         <div style={{height: 500}}> 
-            <UserDashboardGraphTile>{USER_DASHBOARD_TITLES.LINE_GRAPH_TITLE}</UserDashboardGraphTile>
-            <UserDashboardHelperText>{USER_DASHBOARD_TEXTS.LINE_GRAPH_HELPER_TEXT}</UserDashboardHelperText>
             <ResponsiveLine
                 data={data}
                 margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
