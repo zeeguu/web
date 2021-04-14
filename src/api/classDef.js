@@ -6,7 +6,7 @@ const Zeeguu_API = class {
   }
 
   apiLog(what) {
-    // console.log('➡️ ' + what)
+    // console.log("➡️ " + what);
   }
 
   getSystemLanguages(callback) {
@@ -18,6 +18,15 @@ const Zeeguu_API = class {
       return `${this.baseAPIurl}/${endpointName}&session=${this.session}`;
     }
     return `${this.baseAPIurl}/${endpointName}?session=${this.session}`;
+  }
+
+  _getPlainText(endpoint, callback) {
+    this.apiLog("GET" + endpoint);
+    fetch(this._appendSessionToUrl(endpoint, this.session))
+      .then((response) => response.text())
+      .then((data) => {
+        callback(data);
+      });
   }
 
   _get(endpoint, callback) {
@@ -45,13 +54,8 @@ const Zeeguu_API = class {
 
     if (callback) {
       fetch(url, params)
-        .then((data) => {
-          if (data.status === 400) {
-            onError(data);
-          } else {
-            callback(data);
-          }
-        })
+        .then((response) => response.text())
+        .then((data) => callback(data))
         .catch((e) => onError(e));
     } else {
       fetch(url, params);
