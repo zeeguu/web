@@ -7,6 +7,7 @@ import strings from "../i18n/definitions";
 import { StyledButton, TopButton } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
+import * as m from "./AllTexts.sc";
 
 import { DUMMYLIST } from "./DummyArticleList";
 import SortingButtons from "../articles/SortingButtons";
@@ -27,9 +28,11 @@ export default function AllTexts({ api }) {
 
     return <LoadingAnimation />;
   }
+
   return (
     <Fragment>
-      <s.WideColumn>
+       <s.WideColumn>
+         <m.StyledMyTexts>
         <sc.TopTabs>
           <h1>{strings.myTexts}</h1>
         </sc.TopTabs>
@@ -40,23 +43,25 @@ export default function AllTexts({ api }) {
         </Link>
         <br/>
         <br/>
-        <div style={{margin: "0", width: "80%",display: "flex", justifyContent:"space-between" }}>
-         <p>(STRINGS) title of your text</p> 
+        <m.StyledMyTexts>
+        <div className="my-text-box">
         <SortingButtons
         articleList={articleList}
         originalList={originalList}
         setArticleList={setArticleList}
-      />
-      </div>
-        
+        />
+        </div>
+        </m.StyledMyTexts>
         {articleList.map((each) => (
           <TeacherTextPreview
             key={each.id}
             article={each}
             api={api}
           />
+          
         ))}
         <br />
+        </m.StyledMyTexts>
       </s.WideColumn>
     </Fragment>
   );
