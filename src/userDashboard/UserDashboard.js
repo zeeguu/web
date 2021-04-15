@@ -74,6 +74,13 @@ export default function UserDashboard({ api }){
                   dateForGraphs={dateForGraphs}
                   setDateForGraphs={setDateForGraphs}
               />
+              
+              {/*
+              parent container has to have height specified in order for the nivo graphs to be shown
+              this is why the div has height 500; the number can be changed
+              */}
+
+              <div style={{height: 500}}>
 
               {
                 (activeTab === 1) ? 
@@ -90,6 +97,8 @@ export default function UserDashboard({ api }){
 
                 : <></>
               }
+
+              </div>
 
           </>
     );

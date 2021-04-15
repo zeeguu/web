@@ -3,8 +3,6 @@ import { ResponsiveLine } from '@nivo/line'
 export default function UserLineGraph ({ data }) {
 
     return (
-        //parent container has to have height specified in order for the graph to be shown     
-        <div style={{height: 500}}> 
             <ResponsiveLine
                 data={data}
                 margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
@@ -64,7 +62,6 @@ export default function UserLineGraph ({ data }) {
                     }
                 ]}
             />
-        </div>
     )
 }
 

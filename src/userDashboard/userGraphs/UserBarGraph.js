@@ -3,8 +3,6 @@ import {BAR_GRAPH_KEYS} from '../dataFormat/ConstantsUserDashboard';
 
 export default function UserBarGraph ({ data }) {
     return(
-        //parent container has to have height specified in order for the graph to be shown     
-        <div style={{height: 500}}> 
             <ResponsiveBar
                 data={data}
                 keys={[ BAR_GRAPH_KEYS.READING, BAR_GRAPH_KEYS.EXERCISES ]}
@@ -97,7 +95,7 @@ export default function UserBarGraph ({ data }) {
                 animate={true}
                 motionStiffness={90}
                 motionDamping={15}
-    />        </div>
+    />     
     )
 }
 
