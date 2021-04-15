@@ -1,6 +1,5 @@
 import LinkedWordList from "./LinkedWordListClass";
-
-import Speech from "speak-tts";
+import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 export default class InteractiveText {
   constructor(content, articleInfo, api) {
@@ -13,22 +12,7 @@ export default class InteractiveText {
       (each) => new LinkedWordList(each)
     );
 
-    // speech
-    this.speech = new Speech();
-    this.speech
-      .init()
-      .then((data) => {
-        // The "data" object contains the list of available voices and the voice synthesis params
-        let randomVoice = _getRandomVoice(
-          data.voices,
-          this.articleInfo.language
-        );
-
-        this.speech.setVoice(randomVoice.name);
-      })
-      .catch((e) => {
-        console.error("An error occured while initializing : ", e);
-      });
+    this.zeeguuSpeech = new ZeeguuSpeech(api, this.articleInfo.language);
   }
 
   getParagraphs() {
@@ -60,6 +44,8 @@ export default class InteractiveText {
       .catch(() => {
         console.log("could not retreive translation");
       });
+
+    this.api.logUserActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id);
   }
 
   selectAlternative(word, alternative, onSuccess) {
@@ -74,6 +60,8 @@ export default class InteractiveText {
     );
     word.translation = alternative;
     word.service_name = "Own alternative selection";
+
+    this.api.logUserActivity(this.api.SEND_SUGGESTION, this.articleInfo.id);
 
     onSuccess();
   }
@@ -100,9 +88,8 @@ export default class InteractiveText {
   }
 
   pronounce(word) {
-    this.speech.speak({
-      text: word.word,
-    });
+    this.zeeguuSpeech.speakOut(word.word);
+    this.api.logUserActivity(this.api.SPEAK_TEXT, this.articleInfo.id);
   }
 
   getContext(word) {
@@ -128,13 +115,4 @@ export default class InteractiveText {
 
     return context;
   }
-}
-
-function _randomElement(x) {
-  return x[Math.floor(Math.random() * x.length)];
-}
-
-function _getRandomVoice(voices, language) {
-  let x = _randomElement(voices.filter((v) => v.lang.includes(language)));
-  return x;
 }

@@ -89,7 +89,9 @@ export default function SideBar(props) {
     return (
       <s.SideBarToggled>
         {sidebarContent}
-        <s.MainContentToggled>{props.children}</s.MainContentToggled>
+        <s.MainContentToggled id="scrollHolder">
+          {props.children}
+        </s.MainContentToggled>
       </s.SideBarToggled>
     );
   }
@@ -97,7 +99,9 @@ export default function SideBar(props) {
   return (
     <s.SideBarInitial>
       {sidebarContent}
-      <s.MainContentInitial>{props.children}</s.MainContentInitial>
+      <s.MainContentInitial id="scrollHolder">
+        {props.children}
+      </s.MainContentInitial>
     </s.SideBarInitial>
   );
 }

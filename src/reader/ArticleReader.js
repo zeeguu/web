@@ -12,6 +12,9 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 
+let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
+let previous_time = 0; // since sent a scroll update
+
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
@@ -42,10 +45,47 @@ export default function ArticleReader({ api }) {
       setTitle(articleInfo.title);
 
       api.setArticleOpened(articleInfo.id);
+      api.logUserActivity(api.OPEN_ARTICLE, articleID);
     });
 
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("blur", onBlur);
+    document
+      .getElementById("scrollHolder")
+      .addEventListener("scroll", onScroll);
+
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("blur", onBlur);
+      document
+        .getElementById("scrollHolder")
+        .removeEventListener("scroll", onScroll);
+    };
     // eslint-disable-next-line
   }, []);
+
+  function onScroll() {
+    let _current_time = new Date();
+    let current_time = _current_time.getTime();
+
+    if (previous_time == 0) {
+      api.logUserActivity(api.SCROLL, articleID);
+      previous_time = current_time;
+    } else {
+      if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
+        api.logUserActivity(api.SCROLL, articleID);
+        previous_time = current_time;
+      } else {
+      }
+    }
+  }
+
+  function onFocus() {
+    api.logUserActivity(api.ARTICLE_FOCUSED, articleID);
+  }
+  function onBlur() {
+    api.logUserActivity(api.ARTICLE_UNFOCUSED, articleID);
+  }
 
   function toggle(state, togglerFunction) {
     togglerFunction(!state);
@@ -56,6 +96,7 @@ export default function ArticleReader({ api }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
+    api.logUserActivity(api.STAR_ARTICLE, articleID);
   }
 
   function setLikedState(state) {
@@ -63,6 +104,7 @@ export default function ArticleReader({ api }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
+    api.logUserActivity(api.LIKE_ARTICLE, articleID, state);
   }
 
   if (!articleInfo) {
@@ -76,7 +118,10 @@ export default function ArticleReader({ api }) {
           className={translating ? "selected" : ""}
           onClick={(e) => toggle(translating, setTranslating)}
         >
-          <img src="/static/images/translate.svg" alt={strings.translateOnClick} />
+          <img
+            src="/static/images/translate.svg"
+            alt={strings.translateOnClick}
+          />
           <span className="tooltiptext">{strings.translateOnClick}</span>
         </button>
         <button
@@ -115,9 +160,7 @@ export default function ArticleReader({ api }) {
       </s.MainText>
 
       <s.FeedbackBox>
-        <small>
-          {strings.helpUsMsg}
-        </small>
+        <small>{strings.helpUsMsg}</small>
 
         <h4>{strings.didYouEnjoyMsg}</h4>
 
@@ -139,9 +182,7 @@ export default function ArticleReader({ api }) {
 
       <s.FeedbackBox>
         <h2>{strings.reviewVocabulary}</h2>
-        <small>
-          {strings.reviewVocabExplanation}
-        </small>
+        <small>{strings.reviewVocabExplanation}</small>
         <br />
         <br />
         <s.CenteredContent>
