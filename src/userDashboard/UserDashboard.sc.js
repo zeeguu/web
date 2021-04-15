@@ -15,7 +15,7 @@ const UserDashboardTile = styled.h1`
 `;
 
 const UserDashboardGraphTile = styled.h2`
-    font-size: 1.5em;
+    font-size: 1.3em;
     font-weight: 400;
     letter-spacing: 0;
     text-align: center;
@@ -34,7 +34,6 @@ const UserDashBoardTabs = styled.div`
     margin-bottom: 2em;
 
 .userdashboard_tab_list{
-    /* background-color: lightcoral; */
     line-height: 1.4em;
     width: 100%;
     align-items: center;
@@ -54,6 +53,7 @@ const UserDashBoardTab = styled.a`
 
 :hover{
     color: #ffbb54;
+    cursor:pointer;
 }
 
 
