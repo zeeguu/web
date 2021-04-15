@@ -9,7 +9,7 @@ export const StyledMyTexts = styled.div`
 }
 
 .gTVQTU  {
-    padding-right: 1rem;
+    padding-right: 12.5rem;
 }
 
 .kfntb span{
