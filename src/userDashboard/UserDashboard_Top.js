@@ -11,7 +11,7 @@ const timeFormatOptions = [ {id: 1, title: ACTIVITY_TIME_FORMAT_OPTIONS.SECONDS}
 
 const TabList = ({ children }) => {
     return (
-      <UserDashBoardTabs className="userdashboard_tab_list">
+      <UserDashBoardTabs>
        {children}
       </UserDashBoardTabs>
      )
@@ -19,7 +19,7 @@ const TabList = ({ children }) => {
 
 const Tab = ({key, id, title, handleActiveTabChange, isActive}) => {
     return (
-        <UserDashBoardTab className="userdashboard_tab" onClick={() => handleActiveTabChange(id)} isActive={isActive}>{title}</UserDashBoardTab>
+        <UserDashBoardTab onClick={() => handleActiveTabChange(id)} isActive={isActive}>{title}</UserDashBoardTab>
     )
 }
 
