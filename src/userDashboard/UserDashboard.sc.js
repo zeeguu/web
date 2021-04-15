@@ -23,6 +23,7 @@ const UserDashboardGraphTile = styled.h2`
 `;
 
 const UserDashboardHelperText = styled(s.TopMessage)`
+    width: auto;
 `;
 
 const UserDashBoardTabs = styled.div`
