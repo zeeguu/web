@@ -26,11 +26,41 @@ const UserDashboardHelperText = styled(s.TopMessage)`
 `;
 
 const UserDashBoardTabs = styled.div`
+    line-height: 1.4em;
+    width: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2em;
+
+.userdashboard_tab_list{
+    /* background-color: lightcoral; */
+    line-height: 1.4em;
+    width: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2em;
+}
+
+`;
+
+const UserDashBoardTab = styled.a`
+    font-size: 1.2em;
+    font-weight: ${props => props.isActive? 600 : 400};
+    letter-spacing: 0;
+    color: black;
+    padding: 1em;
+
+:hover{
+    color: #ffbb54;
+}
+
 
 `;
 
 const UserDashBoardOptions = styled.div`
-
+    padding: 2em;
 `;
 
 export {
@@ -40,6 +70,7 @@ export {
     UserDashboardTopContainer,
     UserDashboardHelperText,
     UserDashBoardTabs,
-    UserDashBoardOptions
+    UserDashBoardOptions,
+    UserDashBoardTab
 
 };
