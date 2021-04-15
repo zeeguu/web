@@ -7,5 +7,8 @@ import "./userArticles";
 import "./translations";
 import "./exercises";
 import "./userStats";
+import "./speech";
+import "./activityLogging";
+import "./ownTexts";
 
 export default Zeeguu_API;

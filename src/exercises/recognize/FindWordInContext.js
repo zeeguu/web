@@ -71,6 +71,7 @@ export default function FindWordInContext({
       )}
       {isCorrect && (
         <BottomFeedback
+          api={api}
           bookmarkToStudy={bookmarkToStudy}
           correctAnswer={correctAnswer}
         />
