@@ -1,7 +1,7 @@
 import { PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, TOP_TABS, USER_DASHBOARD_TITLES, USER_DASHBOARD_TEXTS } from "./dataFormat/ConstantsUserDashboard";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import { UserDashboardGraphTile, UserDashboardHelperText, UserDashboardTile, UserDashboardTopContainer } from "./UserDashboard.sc";
+import { UserDashboardGraphTile, UserDashboardHelperText, UserDashboardTile, UserDashboardTopContainer, UserDashBoardOptions, UserDashBoardTabs, UserDashBoardTab } from "./UserDashboard.sc";
 
 const tabs = [ {id: 1, title: TOP_TABS.BAR_GRAPH}, {id: 2, title: TOP_TABS.LINE_GRAPH} ]
 
@@ -11,15 +11,15 @@ const timeFormatOptions = [ {id: 1, title: ACTIVITY_TIME_FORMAT_OPTIONS.SECONDS}
 
 const TabList = ({ children }) => {
     return (
-      <ul>
+      <UserDashBoardTabs className="userdashboard_tab_list">
        {children}
-      </ul>
+      </UserDashBoardTabs>
      )
    }
 
-const Tab = ({key, id, title, handleActiveTabChange}) => {
+const Tab = ({key, id, title, handleActiveTabChange, isActive}) => {
     return (
-        <button onClick={() => handleActiveTabChange(id)}>{title}</button>
+        <UserDashBoardTab className="userdashboard_tab" onClick={() => handleActiveTabChange(id)} isActive={isActive}>{title}</UserDashBoardTab>
     )
 }
 
@@ -63,7 +63,7 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
             <TabList>
             {
               tabs.map(
-                  tab => <Tab key={tab.id} id={tab.id} title={tab.title} handleActiveTabChange={handleActiveTabChange}/>
+                  tab => <Tab key={tab.id} id={tab.id} title={tab.title} handleActiveTabChange={handleActiveTabChange} isActive={(activeTab===tab.id)}/>
               )
               
             }
@@ -78,7 +78,7 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
             
             </div>
             
-            <div>
+            <UserDashBoardOptions>
             
             <DropDownList handleChange={handleActiveOptionChange} stateValue={activeOption}>
             {
@@ -109,7 +109,7 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
                 onChange={date => setDateForGraphs(date)}
             />
 
-            </div>
+            </UserDashBoardOptions>
         
         </UserDashboardTopContainer>
 
