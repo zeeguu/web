@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import * as s from "../components/TopMessage.sc";
+import { lightOrange } from '../components/colors';
+
+let lightGray = "#C6C9D1";
+let darkerHueZeeguuOrange = "#9c7130";
 
 const UserDashboardTopContainer = styled.div`
     text-align: center;
@@ -12,18 +16,39 @@ const UserDashboardTile = styled.h1`
     letter-spacing: 0.05em; 
     text-align: center;
     margin-top: 1em;
+
+@media screen and (max-width: 768px) {
+    font-size: 1.5em;
+    padding: 0.5em;
+}
+
 `;
 
-const UserDashboardGraphTile = styled.h2`
+const UserDashboardGraphTitle = styled.h2`
     font-size: 1.3em;
     font-weight: 400;
     letter-spacing: 0;
     text-align: center;
     margin-left: 2em;
+
+@media screen and (max-width: 768px) {
+    font-size: 1em;
+    padding: 0.5em;
+    text-align: left;
+}
+
 `;
 
 const UserDashboardHelperText = styled(s.TopMessage)`
     width: auto;
+    line-height: 3ex;
+
+@media screen and (max-width: 768px) {
+    font-size: 0.8em;
+    line-height: 4ex;
+    text-align: left;
+}
+
 `;
 
 const UserDashBoardTabs = styled.div`
@@ -33,15 +58,6 @@ const UserDashBoardTabs = styled.div`
     display: flex;
     justify-content: center;
     margin-bottom: 2em;
-
-.userdashboard_tab_list{
-    line-height: 1.4em;
-    width: 100%;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2em;
-}
 
 `;
 
@@ -53,25 +69,47 @@ const UserDashBoardTab = styled.a`
     padding: 1em;
 
 :hover{
-    color: #ffbb54;
+    color: ${lightOrange};
     cursor:pointer;
 }
 
+@media screen and (max-width: 768px) {
+    font-size: 0.8em;
+    padding: 0.5em;
+    line-height: 7ex;
+}
 
 `;
 
-const UserDashBoardOptions = styled.div`
-    padding: 2em;
+const UserDashBoardOptionsContainer = styled.div`
+    width: auto;
+    padding: 1em;
+    text-align: center;
+`;
+
+const UserDashBoarDropdown = styled.select`
+    border: none;
+    font-size: 1em;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: ${props => props.disabled? lightGray: 'black'};
+
+:hover{
+    color: ${props => props.disabled? lightGray: darkerHueZeeguuOrange};
+    cursor: ${props => props.disabled? 'not-allowed': 'pointer'};
+}
+
 `;
 
 export {
 
     UserDashboardTile,
-    UserDashboardGraphTile,
+    UserDashboardGraphTitle,
     UserDashboardTopContainer,
     UserDashboardHelperText,
     UserDashBoardTabs,
-    UserDashBoardOptions,
-    UserDashBoardTab
+    UserDashBoardOptionsContainer,
+    UserDashBoardTab,
+    UserDashBoarDropdown,
 
 };
