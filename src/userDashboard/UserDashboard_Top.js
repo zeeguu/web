@@ -1,7 +1,7 @@
 import { PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, TOP_TABS, USER_DASHBOARD_TITLES, USER_DASHBOARD_TEXTS } from "./dataFormat/ConstantsUserDashboard";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import { UserDashboardGraphTile, UserDashboardHelperText, UserDashboardTile, UserDashboardTopContainer, UserDashBoardOptions, UserDashBoardTabs, UserDashBoardTab } from "./UserDashboard.sc";
+import { UserDashboardGraphTitle, UserDashboardHelperText, UserDashboardTile, UserDashboardTopContainer, UserDashBoardOptionsContainer, UserDashBoardTabs, UserDashBoardTab, UserDashBoarDropdown } from "./UserDashboard.sc";
 
 const tabs = [ {id: 1, title: TOP_TABS.BAR_GRAPH}, {id: 2, title: TOP_TABS.LINE_GRAPH} ]
 
@@ -29,16 +29,16 @@ const DropDownList = ({ children, handleChange, stateValue, isDisabled }) => {
     return isDisabled?
 
         (      
-        <select disabled value={stateValue} onChange={(e) => handleChange(e.target.value)}>
+        <UserDashBoarDropdown disabled value={stateValue} onChange={(e) => handleChange(e.target.value)}>
             {children}
-        </select>
+        </UserDashBoarDropdown>
         )
 
         : 
         (      
-        <select value={stateValue} onChange={(e) => handleChange(e.target.value)}>
+        <UserDashBoarDropdown value={stateValue} onChange={(e) => handleChange(e.target.value)}>
             {children}
-        </select>
+        </UserDashBoarDropdown>
         )
 
    }
@@ -73,12 +73,12 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
 
             <div>
 
-            <UserDashboardGraphTile>{(activeTab===1)? USER_DASHBOARD_TITLES.BAR_GRAPH_TITLE : USER_DASHBOARD_TITLES.LINE_GRAPH_TITLE}</UserDashboardGraphTile>
+            <UserDashboardGraphTitle>{(activeTab===1)? USER_DASHBOARD_TITLES.BAR_GRAPH_TITLE : USER_DASHBOARD_TITLES.LINE_GRAPH_TITLE}</UserDashboardGraphTitle>
             <UserDashboardHelperText>{(activeTab===1)? USER_DASHBOARD_TEXTS.BAR_GRAPH_HELPER_TEXT : USER_DASHBOARD_TEXTS.LINE_GRAPH_HELPER_TEXT}</UserDashboardHelperText>
             
             </div>
             
-            <UserDashBoardOptions>
+            <UserDashBoardOptionsContainer>
             
             <DropDownList handleChange={handleActiveOptionChange} stateValue={activeOption}>
             {
@@ -109,7 +109,7 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
                 onChange={date => setDateForGraphs(date)}
             />
 
-            </UserDashBoardOptions>
+            </UserDashBoardOptionsContainer>
         
         </UserDashboardTopContainer>
 

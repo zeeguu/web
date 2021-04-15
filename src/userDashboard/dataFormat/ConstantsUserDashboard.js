@@ -33,7 +33,7 @@ const USER_DASHBOARD_TITLES = {
 }
 
 const USER_DASHBOARD_TEXTS = {
-  BAR_GRAPH_HELPER_TEXT: "Here you can see your activity for a specific period and a specific time format. Use the options below to choose between Week/Month/Year/Years view and Seconds/Minutes/Hours time format. You can also select the end date for the time interval",
+  BAR_GRAPH_HELPER_TEXT: "Here you can see your activity for a specific period of time and a specific time format. Use the options below to choose between Week/Month/Year/Years view and Seconds/Minutes/Hours time format. You can also select the end date for the time interval",
   LINE_GRAPH_HELPER_TEXT: "Here you can see how many words you translated during a specific period of time. Use the options below to choose between Week/Month/Year/Years view and the end date for the time interval.",
 }
 
