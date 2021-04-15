@@ -1,7 +1,7 @@
 import { PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, TOP_TABS, USER_DASHBOARD_TITLES, USER_DASHBOARD_TEXTS } from "./dataFormat/ConstantsUserDashboard";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import { UserDashboardGraphTitle, UserDashboardHelperText, UserDashboardTile, UserDashboardTopContainer, UserDashBoardOptionsContainer, UserDashBoardTabs, UserDashBoardTab, UserDashBoarDropdown } from "./UserDashboard.sc";
+import { UserDashboardGraphTitle, UserDashboardHelperText, UserDashboardTile, UserDashboardTopContainer, UserDashBoardOptionsContainer, UserDashBoardTabs, UserDashBoardTab, UserDashBoarDropdown } from "./UserDashboard_Top.sc";
 
 const tabs = [ {id: 1, title: TOP_TABS.BAR_GRAPH}, {id: 2, title: TOP_TABS.LINE_GRAPH} ]
 
