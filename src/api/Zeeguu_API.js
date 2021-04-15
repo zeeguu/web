@@ -10,5 +10,6 @@ import "./userStats";
 import "./speech";
 import "./activityLogging";
 import "./ownTexts";
+import "./student";
 
 export default Zeeguu_API;
