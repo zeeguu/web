@@ -1,6 +1,6 @@
-import { eachMonthOfInterval, isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
-import {PERIOD_OPTIONS, DATE_FORMAT, ACTIVITY_TIME_FORMAT_OPTIONS} from "./ConstantsUserDashboard";
-import {calculatePerMonth} from "./DataFormat";
+import { eachMonthOfInterval, subDays, format, getYear, getMonth, eachDayOfInterval, subYears } from 'date-fns';
+import { PERIOD_OPTIONS, DATE_FORMAT, ACTIVITY_TIME_FORMAT_OPTIONS } from "./ConstantsUserDashboard";
+import { calculatePerMonth } from "./CommonDataFormat";
 
 function getMapData(data){
 
@@ -24,7 +24,7 @@ function secondsToMinutes(seconds){
 
 function secondsToHours(seconds){
 
-  return Math.round((seconds / 3600) * 10)/10;
+  return Math.round((seconds / 3600) * 10)/10; //multiplied by 10 and divided by 10 to get the first decimal
 
 }
 
@@ -85,8 +85,8 @@ function getBarDataForWeek(data, dateInWeek, activeTimeFormatOption){
       end: dateInWeek
   };
 
-  var result =  getDataForInterval(data, datesCurrentWeek.start, datesCurrentWeek.end, STRING_FORMAT, activeTimeFormatOption);
-  return result;
+  return  getDataForInterval(data, datesCurrentWeek.start, datesCurrentWeek.end, STRING_FORMAT, activeTimeFormatOption);
+
 }
 
 function getBarDataForMonth(data, dateInMonth, activeTimeFormatOption){
@@ -218,4 +218,4 @@ function getBarGraphData(data, countPerMonths, period, dateInPeriod, activeTimeF
   
   }
 
-export {getBarGraphData, calculateCountPerMonth_Activity};
+export { getBarGraphData, calculateCountPerMonth_Activity };

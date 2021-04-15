@@ -1,5 +1,4 @@
-import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
-import {PERIOD_OPTIONS, DATE_FORMAT, BAR_GRAPH_KEYS} from "./ConstantsUserDashboard";
+import { getYear, getMonth } from 'date-fns';
 
 function calculatePerMonth(mapData){
 
@@ -10,6 +9,7 @@ function calculatePerMonth(mapData){
       var date = new Date(key);
   
       var year = getYear(date);
+
       //in date-fns, as in JavaScript standard library 0 means January, 6 is July and 11 is December (getMonth)
       var month = getMonth(date);
   
@@ -44,4 +44,4 @@ function calculatePerMonth(mapData){
   
   }
 
-  export {calculatePerMonth};
+  export { calculatePerMonth };

@@ -3,20 +3,23 @@ const PERIOD_OPTIONS = {
     MONTH: "Month",
     YEAR: "Year",
     YEARS: 'Years'
-  };
+};
 
 const ACTIVITY_TIME_FORMAT_OPTIONS = {
     SECONDS: "Seconds",
     MINUTES: "Minutes",
     HOURS: "Hours"
-  };
+};
 
 const TOP_TABS = {
   BAR_GRAPH: "Activity",
   LINE_GRAPH: "Words"
 }
 
-const DATE_FORMAT = "yyyy-MM-dd";
+//date format used for making sure dates are translated 
+//in the same way when working with the data
+//this is _not_ the date format used for formatting dates to be shown on the graphs or datepicker 
+const DATE_FORMAT = "yyyy-MM-dd"; 
 
 const BAR_GRAPH_KEYS = {
   READING: "reading_time",

@@ -1,6 +1,6 @@
-import { isBefore, subDays, addDays, isSameDay, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
-import {PERIOD_OPTIONS, DATE_FORMAT} from "./ConstantsUserDashboard";
-import {calculatePerMonth} from "./DataFormat";
+import { subDays, format, getYear, getMonth, eachDayOfInterval, subMonths, subYears } from 'date-fns';
+import { PERIOD_OPTIONS, DATE_FORMAT } from "./ConstantsUserDashboard";
+import { calculatePerMonth } from "./CommonDataFormat";
 
 function getMapData(data){
 
@@ -43,18 +43,10 @@ function getLineDataForWeek(data, dateInWeek){
         end: dateInWeek
     };
 
-    var datesPreviousWeek = {
-        start: subDays(datesCurrentWeek.start, 7),
-        end: subDays(datesCurrentWeek.start, 1)
-    };
-
     var currentWeek = getDataForInterval(data, datesCurrentWeek.start, datesCurrentWeek.end, STRING_FORMAT);
 
-    var previousWeek = getDataForInterval(data, datesPreviousWeek.start, datesPreviousWeek.end, STRING_FORMAT);
-
     return [
-        {id: "Word Count Current Week", data: currentWeek}, 
-        //  {id: "Word Count Previous Week// ", data: previousWeek}    
+        {id: "Word Count Current Week", data: currentWeek} 
     ];
   
   }
@@ -83,9 +75,13 @@ function getLineDataForWeek(data, dateInWeek){
 
   }
   
+  //last 12 months (13, including the current month)
+  //the bar graph also shows 13 months in total
   function getLineDataForYear(dataPerMonths, dateInYear){
 
     var result = [];
+
+    const NUMBER_OF_MONTHS = 13;
 
     const STRING_FORMAT = "MMM-yy"; 
 
@@ -93,7 +89,7 @@ function getLineDataForWeek(data, dateInWeek){
 
     while(true){
 
-        if (monthCounter >= 13){ //TODO: make this a constant somewhere or change the number
+        if (monthCounter >= NUMBER_OF_MONTHS){ 
             break;
         }
 
@@ -160,6 +156,10 @@ function getLineDataForWeek(data, dateInWeek){
 
         if (!dataPerMonths.has(year)){
 
+          //Push the first non existing year with 0 count before breaking
+          //Otherwise, the lowest year will look like having "0" count
+          //on the line graph
+
           result.push(
               {
               x: format(dateInYear, STRING_FORMAT), 
@@ -215,4 +215,4 @@ function getLineDataForWeek(data, dateInWeek){
   
   }
 
-  export { getLineGraphData, calculateCountPerMonth_Words, getMapData};
+  export { getLineGraphData, calculateCountPerMonth_Words, getMapData };

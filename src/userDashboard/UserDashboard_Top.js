@@ -17,7 +17,7 @@ const TabList = ({ children }) => {
      )
    }
 
-const Tab = ({key, id, title, handleActiveTabChange, isActive}) => {
+const Tab = ({ id, title, handleActiveTabChange, isActive }) => {
     return (
         <UserDashBoardTab onClick={() => handleActiveTabChange(id)} isActive={isActive}>{title}</UserDashBoardTab>
     )
@@ -35,6 +35,7 @@ const DropDownList = ({ children, handleChange, stateValue, isDisabled }) => {
         )
 
         : 
+
         (      
         <UserDashBoarDropdown value={stateValue} onChange={(e) => handleChange(e.target.value)}>
             {children}
@@ -43,7 +44,7 @@ const DropDownList = ({ children, handleChange, stateValue, isDisabled }) => {
 
    }
 
-const DropDownOption = ({key, id, title}) => {
+const DropDownOption = ({ title }) => {
     return (
         <option value={title}>{title}</option>
     )
