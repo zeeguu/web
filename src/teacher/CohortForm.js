@@ -79,8 +79,8 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     });
   }
 
+  //The LanguageSelector component returns the language selected by the user as a string (not an event like the other input fields)
   function handleLanguageChange(selectedLanguage) {
-    console.log("NEW LANGUAGE: "+ selectedLanguage)
     setState({
       ...state,
       language_id: selectedLanguage,
@@ -88,7 +88,6 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
   }
 
   function setupForm() {
-    console.log("STATE LANGUAGE: " + state.language_id)
     const form = new FormData();
     form.append("name", state.cohort_name);
     form.append("inv_code", state.invite_code);
@@ -111,7 +110,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
       {isLoading ? (
         <LoadingAnimation />
       ) : (
-        <form style={{ display: "flex", flexWrap: "wrap" }}>
+        <form>
           <CohortNameTextfield
             value={state.cohort_name}
             onChange={handleChange}
