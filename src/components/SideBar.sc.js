@@ -166,6 +166,8 @@ const SideBarInitial = styled.div`
       font-size: xx-large;
     }
   }
+
+  background-color: ${(props) => props.bgColor};
 `;
 
 const SideBarToggled = styled.div`
@@ -192,6 +194,8 @@ const SideBarToggled = styled.div`
     ${sidebarMinimizedCommon}
     ${arrowPointsToRight}
   }
+
+  background-color: ${(props) => props.bgColor};
 `;
 
 export {
