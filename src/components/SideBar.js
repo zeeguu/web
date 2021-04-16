@@ -23,12 +23,11 @@ export default function SideBar(props) {
       //in Settings the side is determined by whether the user is a student or a teacher
       if (path.includes("account")) {
         setIsOnStudentSide(!user.is_teacher);
-
       } else {
         setIsOnStudentSide(!path.includes("teacher"));
       }
-      
-    }// eslint-disable-next-line
+    }
+    // eslint-disable-next-line
   }, [path]);
 
   function toggleSidebar(e) {
