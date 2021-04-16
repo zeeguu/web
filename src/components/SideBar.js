@@ -6,7 +6,6 @@ import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 
 import * as s from "./SideBar.sc";
-import { zeeguuOrange } from "./colors";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -24,13 +23,11 @@ export default function SideBar(props) {
       //in Settings the side is determined by whether the user is a student or a teacher
       if (path.includes("account")) {
         setIsOnStudentSide(!user.is_teacher);
-        // eslint-disable-next-line
       } else {
         setIsOnStudentSide(!path.includes("teacher"));
-        // eslint-disable-next-line
       }
-      // eslint-disable-next-line
     }
+    // eslint-disable-next-line
   }, [path]);
 
   function toggleSidebar(e) {
