@@ -10,6 +10,9 @@ let strings = new LocalizedStrings(
       save: "save",
       settings: "Settings",
       exercises: "Exercises",
+      myClasses: "My Classes",
+      myTexts: "My Texts",
+      tutorials: "Tutorials",
       login: "Sign in",
       email: "Email",
       name: "Name",
@@ -18,12 +21,14 @@ let strings = new LocalizedStrings(
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
       code: "Code",
+      interest: "interest",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
 
       //Sidebar
       teacherSite: "Teacher site",
+      studentSite: "Student site",
       logout: "Logout",
 
       //CreateAccount
@@ -207,6 +212,9 @@ let strings = new LocalizedStrings(
       //TagOfFilters
       addPersonalFilter: "Add a personal filter",
 
+       //TagsOfInterests
+       addPersonalInterest: "Add a personal interest",
+
       //Learned
       titleLearnedWords: "Learned Words",
       learnedWordsAreMsg:
@@ -254,6 +262,9 @@ let strings = new LocalizedStrings(
       save: "gem",
       settings: "Indstillinger",
       exercises: "Øvelser",
+      myClasses: "Mine klasser",
+      myTexts: "Mine tekster",
+      tutorials: "Hjælp",
       login: "Log ind",
       email: "Email",
       name: "Navn",
@@ -262,12 +273,14 @@ let strings = new LocalizedStrings(
       resetYourPassword: "nulstille dit kodeord",
       resetPassword: "Nulstil kodeord",
       code: "Kode",
+      interest: "interesse",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
 
       //Sidebar
       teacherSite: "Lærersiden",
+      studentSite: "Elevsiden",
       logout: "Log ud",
 
       //CreateAccount
@@ -460,6 +473,8 @@ let strings = new LocalizedStrings(
       learnedWordsAreMsg:
         "Lærte ord er ord, der har været trænet korrekt i øvelser på fire forskellige dage.",
       numberOfLearnedWordsMsg: "Du har lært {0} ord indtil videre.",
+      correctOn: "Korrekt på: ",
+
 
       //Starred
       titleStarredWords: "Starred Words",
