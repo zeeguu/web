@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { lightOrange } from "../components/colors";
+import { zeeguuOrange, lightOrange, lightBlue, darkBlue } from "../components/colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
@@ -23,10 +23,6 @@ let mainPageContentCommon = css`
 const MainContentInitial = styled.div`
   /* Default (Minimized) on Mobile */
 
-  /* debugging */
-  /* background-color: lightcyan; */
-  /* border: 1px solid lightcoral; */
-
   /* margin-left: 1em;
   margin-top: 1em; */
   margin-bottom: 1em;
@@ -43,7 +39,6 @@ const MainContentInitial = styled.div`
 
 const MainContentToggled = styled.div`
   ${mainPageContentCommon}
-  /* border: 1px solid lightcoral; */
 
   /* Toggled (Open) on Mobile  */
   left: 7em;
@@ -61,8 +56,12 @@ const sidebarCommon = css`
   position: fixed;
   top: 0;
   height: 100vh;
-  background-color: #ffbb54;
   background-color: ${lightOrange};
+`;
+
+const sidebarCommonTeacher = css`
+  ${sidebarCommon}
+  background-color: ${lightBlue};
 `;
 
 const logoOpen = css`
@@ -91,9 +90,17 @@ const arrowPointsToRight = css`
     flex-direction: row-reverse;
 
     .toggleArrow {
-      color: orange;
+      color: ${zeeguuOrange};
       z-index: 100;
       transform: rotate(90deg) translate(20px, -0.5em);
+    }
+  }
+`;
+const arrowPointsToRightTeacher = css`
+  ${arrowPointsToRight}
+  .arrowHolder{
+    .toggleArrow{
+      color:${darkBlue};
     }
   }
 `;
@@ -126,15 +133,21 @@ const navigationVisibleCommon = css`
   .navigationLink {
     display: block;
     color: white;
-    /* font-size: xx-large; */
     margin-bottom: 0.4em;
-    background-color: #ffbb54;
+    background-color: ${zeeguuOrange};
 
     a {
       color: white;
       text-decoration: none;
       padding-left: 10px;
     }
+  }
+`;
+
+const navigationVisibleCommonTeacher = css`
+  ${navigationVisibleCommon}
+  .navigationLink {
+    background-color: ${darkBlue};
   }
 `;
 
@@ -147,8 +160,6 @@ const SideBarInitial = styled.div`
   /*  Arrow */
   ${arrowCommon}
   ${arrowPointsToRight}
-
-  
 
   //   Default for Desktop = Open
   @media (min-width: 768px) {
@@ -168,6 +179,33 @@ const SideBarInitial = styled.div`
   }
 
   background-color: ${(props) => props.bgColor};
+`;
+const SideBarInitialTeacher = styled.div`
+  // Mobile - Initial = Closed
+  ${sidebarCommonTeacher}
+
+  ${sidebarMinimizedCommon}
+
+  /*  Arrow */
+  ${arrowCommon}
+  ${arrowPointsToRightTeacher} 
+
+  //   Default for Desktop = Open
+  @media (min-width: 768px) {
+    width: 12.5em;
+
+    /* Logo */
+    ${logoOpen}
+
+    /* Arrow */
+    ${arrowAsNegativeSpace}
+
+    /* Navigation */
+    ${navigationVisibleCommonTeacher}
+    .navigationLink {
+      font-size: xx-large;
+    }
+  }
 `;
 
 const SideBarToggled = styled.div`
@@ -198,9 +236,37 @@ const SideBarToggled = styled.div`
   background-color: ${(props) => props.bgColor};
 `;
 
+const SideBarToggledTeacher = styled.div`
+  ${sidebarCommonTeacher}
+
+  // Mobile - Open
+  width: 7em;
+
+  ${logoOpen}
+
+  ${arrowCommon}
+
+  ${arrowAsNegativeSpace}
+
+  ${navigationVisibleCommonTeacher}
+  .navigationLink {
+    font-weight: 700;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    font-size: large;
+  }
+
+  @media (min-width: 768px) {
+    ${sidebarMinimizedCommon}
+    ${arrowPointsToRightTeacher}
+  }
+`;
+
 export {
   SideBarInitial,
   SideBarToggled,
+  SideBarInitialTeacher,
+  SideBarToggledTeacher,
   MainContentInitial,
   MainContentToggled,
 };
