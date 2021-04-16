@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useContext, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
 import strings from "../i18n/definitions";
 
@@ -8,6 +8,21 @@ import * as s from "./SideBar.sc";
 export default function SideBar(props) {
   const user = useContext(UserContext);
   const [initialSidebarState, setInitialSidebarState] = useState(true);
+  const [isOnStudentSide, setIsOnStudentSide] = useState();
+
+  //deducting whether we are on student or teacher side for colouring
+  const path = useLocation().pathname;
+  useEffect(() => {
+    //in Settings the side is determined by whether the user is a student or a teacher
+    if (path.includes("account")) {
+      setIsOnStudentSide(!user.is_teacher);
+          // eslint-disable-next-line
+    } else {
+      setIsOnStudentSide(!path.includes("teacher"));
+          // eslint-disable-next-line
+    }
+    // eslint-disable-next-line
+  }, [path]);
 
   function toggleSidebar(e) {
     e.preventDefault();
@@ -33,32 +48,61 @@ export default function SideBar(props) {
           ▲
         </span>
       </div>
-      <div className="navigationLink">
-        <Link to="/articles" onClick={resetSidebarToDefault}>
-          <small>{strings.articles}</small>
-        </Link>
-      </div>
-      <div className="navigationLink">
-        <Link to="/words/history" onClick={resetSidebarToDefault}>
-          <small>{strings.words}</small>
-        </Link>
-      </div>
-      <div className="navigationLink">
-        <Link to="/exercises" onClick={resetSidebarToDefault}>
-          <small>{strings.exercises}</small>
-        </Link>
-      </div>
-      {(user.is_teacher === "true" || user.is_teacher === true) && (
-        <div className="navigationLink">
-          <Link
-            target="_blank"
-            to="/teacher-dashboard"
-            onClick={resetSidebarToDefault}
-          >
-            <small>{strings.teacherSite}</small>
-          </Link>
-        </div>
+      {(!user.is_teacher ||
+        (user.is_teacher &&
+          (isOnStudentSide === "true" || isOnStudentSide === true))) && (
+        <>
+          <div className="navigationLink">
+            <Link to="/articles" onClick={resetSidebarToDefault}>
+              <small>{strings.articles}</small>
+            </Link>
+          </div>
+          <div className="navigationLink">
+            <Link to="/words/history" onClick={resetSidebarToDefault}>
+              <small>{strings.words}</small>
+            </Link>
+          </div>
+          <div className="navigationLink">
+            <Link to="/exercises" onClick={resetSidebarToDefault}>
+              <small>{strings.exercises}</small>
+            </Link>
+          </div>
+        </>
       )}
+      {user.is_teacher &&
+        (isOnStudentSide === "true" || isOnStudentSide === true) && (
+          <div className="navigationLink">
+            <Link to="/teacher/classes" onClick={resetSidebarToDefault}>
+              <small>{strings.teacherSite}</small>
+            </Link>
+          </div>
+        )}
+
+      {user.is_teacher &&
+        (isOnStudentSide === "false" || isOnStudentSide === false) && (
+          <>
+            <div className="navigationLink">
+              <Link to="/teacher/classes" onClick={resetSidebarToDefault}>
+                <small>{strings.myClasses}</small>
+              </Link>
+            </div>
+            <div className="navigationLink">
+              <Link to="/teacher/texts" onClick={resetSidebarToDefault}>
+                <small>{strings.myTexts}</small>
+              </Link>
+            </div>
+            <div className="navigationLink">
+              <Link to="/teacher/tutorials" onClick={resetSidebarToDefault}>
+                <small>{strings.tutorials}</small>
+              </Link>
+            </div>
+            <div className="navigationLink">
+              <Link to="/articles" onClick={resetSidebarToDefault}>
+                <small>{strings.studentSite}</small>
+              </Link>
+            </div>
+          </>
+        )}
 
       <br />
       <div className="navigationLink">
@@ -66,7 +110,6 @@ export default function SideBar(props) {
           <small>{strings.settings}</small>
         </Link>
       </div>
-      <br />
       <div className="navigationLink">
         <Link
           to="/"
@@ -80,23 +123,37 @@ export default function SideBar(props) {
     </>
   );
 
-  if (!initialSidebarState) {
+  if (user.is_teacher && !isOnStudentSide) {
+    if (!initialSidebarState) {
+      return (
+        <s.SideBarToggledTeacher>
+          {sidebarContent}
+          <s.MainContentToggled>{props.children}</s.MainContentToggled>
+        </s.SideBarToggledTeacher>
+      );
+    }
+
     return (
-      <s.SideBarToggled>
+      <s.SideBarInitialTeacher>
         {sidebarContent}
-        <s.MainContentToggled id="scrollHolder">
-          {props.children}
-        </s.MainContentToggled>
-      </s.SideBarToggled>
+        <s.MainContentInitial>{props.children}</s.MainContentInitial>
+      </s.SideBarInitialTeacher>
+    );
+  } else {
+    if (!initialSidebarState) {
+      return (
+        <s.SideBarToggled>
+          {sidebarContent}
+          <s.MainContentToggled id="scrollHolder">{props.children}</s.MainContentToggled>
+        </s.SideBarToggled>
+      );
+    }
+
+    return (
+      <s.SideBarInitial>
+        {sidebarContent}
+        <s.MainContentInitial id="scrollHolder">{props.children}</s.MainContentInitial>
+      </s.SideBarInitial>
     );
   }
-
-  return (
-    <s.SideBarInitial>
-      {sidebarContent}
-      <s.MainContentInitial id="scrollHolder">
-        {props.children}
-      </s.MainContentInitial>
-    </s.SideBarInitial>
-  );
 }
