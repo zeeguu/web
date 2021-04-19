@@ -32,7 +32,7 @@ export default function TeacherTextPreview({ article }) {
               <s.PublishingTime>(STRINGS) Added to:</s.PublishingTime>
               <s.Topics>
                 {cohortlist.map((cohort) => (
-                  <span key={cohort}>{cohort}</span>
+                  <span className="added-to" key={cohort}>{cohort}</span>
                 ))}
               </s.Topics>
             </div>

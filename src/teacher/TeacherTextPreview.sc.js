@@ -20,4 +20,9 @@ export const StyledTeacherTextPreview = styled.div`
     display: flex;
     justify-content: space-between;
   }
+
+  .added-to {
+    color: ${darkBlue};
+    border: solid 3px ${darkBlue};
+  }
 `;
