@@ -41,15 +41,13 @@ export default function AllTexts({ api }) {
           </Link>
           <br />
           <br />
-          <m.StyledMyTexts>
-            <div className="my-text-box">
-              <SortingButtons
-                articleList={articleList}
-                originalList={originalList}
-                setArticleList={setArticleList}
-              />
-            </div>
-          </m.StyledMyTexts>
+          <div className="sorting-btns-box">
+            <SortingButtons
+              articleList={articleList}
+              originalList={originalList}
+              setArticleList={setArticleList}
+            />
+          </div>
           {articleList.map((each) => (
             <TeacherTextPreview key={each.id} article={each} api={api} />
           ))}
