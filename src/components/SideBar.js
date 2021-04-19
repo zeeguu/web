@@ -4,6 +4,7 @@ import { UserContext } from "../UserContext";
 import strings from "../i18n/definitions";
 import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
+import { setColors } from "../components/colors";
 
 import * as s from "./SideBar.sc";
 
@@ -13,8 +14,6 @@ export default function SideBar(props) {
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
 
   const new_site = process.env.REACT_APP_NEW_TEACHER_SITE === "true";
-
-  const bgColor = new_site && !isOnStudentSide ? "blue" : "";
 
   //deducting whether we are on student or teacher side for colouring
   const path = useLocation().pathname;
@@ -29,6 +28,8 @@ export default function SideBar(props) {
     }
     // eslint-disable-next-line
   }, [path]);
+
+  const { light_color, dark_color } = setColors(new_site, isOnStudentSide);
 
   function toggleSidebar(e) {
     e.preventDefault();
@@ -93,7 +94,7 @@ export default function SideBar(props) {
 
   if (!initialSidebarState) {
     return (
-      <s.SideBarToggled bgColor={bgColor}>
+      <s.SideBarToggled light={light_color} dark={dark_color}>
         {sidebarContent}
         <s.MainContentToggled id="scrollHolder">
           {props.children}
@@ -103,7 +104,7 @@ export default function SideBar(props) {
   }
 
   return (
-    <s.SideBarInitial bgColor={bgColor}>
+    <s.SideBarInitial light={light_color} dark={dark_color}>
       {sidebarContent}
       <s.MainContentInitial id="scrollHolder">
         {props.children}
