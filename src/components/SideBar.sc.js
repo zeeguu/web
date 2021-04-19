@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-import { lightOrange } from "../components/colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
@@ -23,10 +22,6 @@ let mainPageContentCommon = css`
 const MainContentInitial = styled.div`
   /* Default (Minimized) on Mobile */
 
-  /* debugging */
-  /* background-color: lightcyan; */
-  /* border: 1px solid lightcoral; */
-
   /* margin-left: 1em;
   margin-top: 1em; */
   margin-bottom: 1em;
@@ -43,7 +38,6 @@ const MainContentInitial = styled.div`
 
 const MainContentToggled = styled.div`
   ${mainPageContentCommon}
-  /* border: 1px solid lightcoral; */
 
   /* Toggled (Open) on Mobile  */
   left: 7em;
@@ -61,8 +55,7 @@ const sidebarCommon = css`
   position: fixed;
   top: 0;
   height: 100vh;
-  background-color: #ffbb54;
-  background-color: ${lightOrange};
+  background-color: ${(props) => props.light};
 `;
 
 const logoOpen = css`
@@ -91,7 +84,7 @@ const arrowPointsToRight = css`
     flex-direction: row-reverse;
 
     .toggleArrow {
-      color: orange;
+      color: ${(props) => props.dark};
       z-index: 100;
       transform: rotate(90deg) translate(20px, -0.5em);
     }
@@ -126,9 +119,8 @@ const navigationVisibleCommon = css`
   .navigationLink {
     display: block;
     color: white;
-    /* font-size: xx-large; */
     margin-bottom: 0.4em;
-    background-color: #ffbb54;
+    background-color: ${(props) => props.dark};
 
     a {
       color: white;
@@ -148,8 +140,6 @@ const SideBarInitial = styled.div`
   ${arrowCommon}
   ${arrowPointsToRight}
 
-  
-
   //   Default for Desktop = Open
   @media (min-width: 768px) {
     width: 12.5em;
@@ -166,8 +156,6 @@ const SideBarInitial = styled.div`
       font-size: xx-large;
     }
   }
-
-  background-color: ${(props) => props.bgColor};
 `;
 
 const SideBarToggled = styled.div`
@@ -194,8 +182,6 @@ const SideBarToggled = styled.div`
     ${sidebarMinimizedCommon}
     ${arrowPointsToRight}
   }
-
-  background-color: ${(props) => props.bgColor};
 `;
 
 export {
