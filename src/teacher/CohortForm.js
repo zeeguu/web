@@ -8,7 +8,7 @@ import {
   CohortNameTextfield,
   InviteCodeTextfield,
 } from "./CohortFormInputFields";
-import { StyledButton } from "./TeacherButtons.sc";
+import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 
 const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +55,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     setIsLoading(false);
   };
 
-  //!It is not yet possible on the backend to change the language of the class 
+  //!It is not yet possible on the backend to change the language of the class
   const updateCohort = (form, cohort_id) => {
     setIsError(false);
     api
@@ -140,14 +140,16 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
           )}
         </form>
       )}
-      <StyledButton primary onClick={submitForm} style={{ minWidth: 120 }}>
-        {cohort ? "Save changes STRINGS" : "Create class STRINGS"}
-      </StyledButton>
-      {cohort && (
-        <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
-          DeleteSTRING
+      <PopupButtonWrapper>
+        <StyledButton primary onClick={submitForm} style={{ minWidth: 120 }}>
+          {cohort ? "Save changes STRINGS" : "Create class STRINGS"}
         </StyledButton>
-      )}
+        {cohort && (
+          <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
+            DeleteSTRING
+          </StyledButton>
+        )}
+      </PopupButtonWrapper>
     </div>
   );
 };

@@ -1,54 +1,31 @@
 import React, { Fragment } from "react";
+import { LabeledTextfield } from "./LabeledTextField";
 import { Listbox, ListboxOption } from "@reach/listbox";
 import * as s from "./CohortFormInputFields.sc";
 
-import { TextField } from "@material-ui/core";
-
 export const CohortNameTextfield = ({ value, onChange }) => {
   return (
-    <Fragment>
-      <s.CohortFormInputFields>
-        <div className="input-container">
-          <label htmlFor="cohort_name">Choose the class name STRINGS</label>
-          <TextField
-            className="input-field"
-            aria-label="cohort_name"
-            value={value}
-            onChange={onChange}
-            name="cohort_name"
-            id="cohort_name"
-            placeholder="  ex: 'B-level 2021'"
-            fullWidth
-            type="text"
-            required
-          />
-        </div>
-      </s.CohortFormInputFields>
-    </Fragment>
+    <LabeledTextfield
+      value={value}
+      onChange={onChange}
+      name="cohort_name"
+      placeholder="ex. 'B-level 2021'"
+    >
+      Choose the class name STRINGS
+    </LabeledTextfield>
   );
 };
 
 export const InviteCodeTextfield = ({ value, onChange }) => {
   return (
-    <Fragment>
-      <s.CohortFormInputFields>
-        <div className="input-container">
-          <label htmlFor="invite_code">Choose an invitecode STRINGS</label>
-          <TextField
-            className="input-field"
-            aria-label="invite_code"
-            value={value}
-            onChange={onChange}
-            name="invite_code"
-            id="invite_code"
-            placeholder="  ex. 'L34n1ng4u'"
-            fullWidth
-            type="text"
-            required
-          />
-        </div>
-      </s.CohortFormInputFields>
-    </Fragment>
+    <LabeledTextfield
+      value={value}
+      onChange={onChange}
+      name="invite_code"
+      placeholder="ex. 'L34n1ng4u'"
+    >
+      Choose an invitecode STRINGS
+    </LabeledTextfield>
   );
 };
 

@@ -4,7 +4,7 @@ import TeacherTextPreview from "./TeacherTextPreview";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import { StyledButton, TopButton } from "./TeacherButtons.sc";
+import { StyledButton, TopButtonWrapper, TopButtonWrapperWrapper } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import * as m from "./AllTexts.sc";
@@ -37,9 +37,9 @@ export default function AllTexts({ api }) {
           <h1>{strings.myTexts}</h1>
         </sc.TopTabs>
         <Link to="/teacher/texts/AddTextOptions">
-          <TopButton>
+          <TopButtonWrapper>
             <StyledButton primary>STRINGSAdd text</StyledButton>
-          </TopButton>
+          </TopButtonWrapper>
         </Link>
         <br/>
         <br/>
