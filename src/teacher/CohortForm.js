@@ -133,7 +133,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
           {isError && (
             <Error
               message={
-                "Something went wrong. Maybe the invite code is already in use. STRINGS"
+                "Something went wrong. Maybe the invite code is already in use. DEV NOTE: cannot edit language or delete non-empty classes.STRINGS"
               }
               setLoading={setIsLoading}
             />
