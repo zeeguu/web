@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-import { zeeguuOrange, lightOrange, lightBlue, darkBlue } from "../components/colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
@@ -56,12 +55,7 @@ const sidebarCommon = css`
   position: fixed;
   top: 0;
   height: 100vh;
-  background-color: ${lightOrange};
-`;
-
-const sidebarCommonTeacher = css`
-  ${sidebarCommon}
-  background-color: ${lightBlue};
+  background-color: ${(props) => props.light};
 `;
 
 const logoOpen = css`
@@ -90,17 +84,9 @@ const arrowPointsToRight = css`
     flex-direction: row-reverse;
 
     .toggleArrow {
-      color: ${zeeguuOrange};
+      color: ${(props) => props.dark};
       z-index: 100;
       transform: rotate(90deg) translate(20px, -0.5em);
-    }
-  }
-`;
-const arrowPointsToRightTeacher = css`
-  ${arrowPointsToRight}
-  .arrowHolder{
-    .toggleArrow{
-      color:${darkBlue};
     }
   }
 `;
@@ -134,20 +120,13 @@ const navigationVisibleCommon = css`
     display: block;
     color: white;
     margin-bottom: 0.4em;
-    background-color: ${zeeguuOrange};
+    background-color: ${(props) => props.dark};
 
     a {
       color: white;
       text-decoration: none;
       padding-left: 10px;
     }
-  }
-`;
-
-const navigationVisibleCommonTeacher = css`
-  ${navigationVisibleCommon}
-  .navigationLink {
-    background-color: ${darkBlue};
   }
 `;
 
@@ -173,35 +152,6 @@ const SideBarInitial = styled.div`
 
     /* Navigation */
     ${navigationVisibleCommon}
-    .navigationLink {
-      font-size: xx-large;
-    }
-  }
-
-  background-color: ${(props) => props.bgColor};
-`;
-const SideBarInitialTeacher = styled.div`
-  // Mobile - Initial = Closed
-  ${sidebarCommonTeacher}
-
-  ${sidebarMinimizedCommon}
-
-  /*  Arrow */
-  ${arrowCommon}
-  ${arrowPointsToRightTeacher} 
-
-  //   Default for Desktop = Open
-  @media (min-width: 768px) {
-    width: 12.5em;
-
-    /* Logo */
-    ${logoOpen}
-
-    /* Arrow */
-    ${arrowAsNegativeSpace}
-
-    /* Navigation */
-    ${navigationVisibleCommonTeacher}
     .navigationLink {
       font-size: xx-large;
     }
@@ -232,41 +182,11 @@ const SideBarToggled = styled.div`
     ${sidebarMinimizedCommon}
     ${arrowPointsToRight}
   }
-
-  background-color: ${(props) => props.bgColor};
-`;
-
-const SideBarToggledTeacher = styled.div`
-  ${sidebarCommonTeacher}
-
-  // Mobile - Open
-  width: 7em;
-
-  ${logoOpen}
-
-  ${arrowCommon}
-
-  ${arrowAsNegativeSpace}
-
-  ${navigationVisibleCommonTeacher}
-  .navigationLink {
-    font-weight: 700;
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
-    font-size: large;
-  }
-
-  @media (min-width: 768px) {
-    ${sidebarMinimizedCommon}
-    ${arrowPointsToRightTeacher}
-  }
 `;
 
 export {
   SideBarInitial,
   SideBarToggled,
-  SideBarInitialTeacher,
-  SideBarToggledTeacher,
   MainContentInitial,
   MainContentToggled,
 };
