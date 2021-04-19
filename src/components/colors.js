@@ -6,6 +6,17 @@ let darkBlue = "#4492b3";
 let darkGrey = "#808080";
 let lightGrey = "#c1c1c1";
 
+const setColors = (new_site, isOnStudentSide) => {
+  let light_color = lightOrange;
+  let dark_color = zeeguuOrange;
+  if (new_site && !isOnStudentSide) {
+    light_color = lightBlue;
+    dark_color = darkBlue;
+  }
+
+  return { light_color, dark_color };
+};
+
 export {
   lightOrange,
   veryPaleOrange,
@@ -14,4 +25,5 @@ export {
   darkBlue,
   darkGrey,
   lightGrey,
+  setColors,
 };
