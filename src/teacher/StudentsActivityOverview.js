@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { useParams, Link } from "react-router-dom";
 import StudentInfoLine from "./StudentInfoLine";
-import { StyledButton, TopButton } from "./TeacherButtons.sc";
+import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 
@@ -18,12 +18,12 @@ export default function StudentsActivityOverview() {
         <div>
           <br />
           <br />
-          <TopButton>
+          <TopButtonWrapper>
             <Link to="/teacher/texts/AddTextOptions">
               <StyledButton primary>STRINGSAdd text</StyledButton>
             </Link>
             <StyledButton primary>STRINGAdd student</StyledButton>
-          </TopButton>
+          </TopButtonWrapper>
           <br />
           <br />
           <StudentInfoLine cohortID={cohortID} studentID={studentID} />

@@ -14,7 +14,6 @@ const StyledButton = styled.button`
   font-weight: 500;
   text-align: center;
   cursor: pointer;
-  // box-sizing: border-box;
 
   //Primary
   ${(props) =>
@@ -42,11 +41,20 @@ const StyledButton = styled.button`
       border: None;
     `}
 `;
-const TopButton = styled.div`
+
+
+const TopButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 4em;
 `;
 
-export { StyledButton, TopButton };
+const PopupButtonWrapper = styled.div`
+margin-top: 25px;
+display: flex;
+justify-content: flex-end
+`;
+
+
+export { StyledButton, TopButtonWrapper, PopupButtonWrapper };

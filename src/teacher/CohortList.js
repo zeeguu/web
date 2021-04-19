@@ -5,7 +5,7 @@ import "@reach/dialog/styles.css"; //TODO move to an sc.js...
 import CohortForm from "./CohortForm";
 import { CohortItemCard } from "./CohortItemCard";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { StyledButton, TopButton } from "./TeacherButtons.sc";
+import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 
 export default function CohortList({ api, cohorts, setForceUpdate }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,11 +25,11 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
 
   return (
     <Fragment>
-      <TopButton>
+      <TopButtonWrapper>
         <StyledButton primary onClick={() => setIsOpen(true)}>
           Add class (STRINGS)
         </StyledButton>
-      </TopButton>
+      </TopButtonWrapper>
       {!isLoading ? (
         reversedList.map((cohort) => (
           <CohortItemCard

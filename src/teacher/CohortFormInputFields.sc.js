@@ -6,6 +6,11 @@ export const CohortFormInputFields = styled.div`
   .input-container {
     margin-top: 1em;
   }
+
+  input {
+    margin-left: 0.7em;
+  }
+
   .input-field {
     border: solid 2px ${darkBlue};
     border-radius: 5;
@@ -13,10 +18,9 @@ export const CohortFormInputFields = styled.div`
     margin-bottom: 10;
   }
 
-  span#button--language_id{
-      width:95%;
-      border:none;
-      margin:4px 0 5px;
+  span#button--language_id {
+    width: 95%;
+    border: none;
+    margin: 4px 0 5px;
   }
-  
 `;
