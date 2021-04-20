@@ -10,6 +10,10 @@ export const CohortFormInputFields = styled.div`
   input {
     margin-left: 0.7em;
   }
+  
+  textarea{
+    margin-left: 0.7em;
+  }
 
   .input-field {
     border: solid 2px ${darkBlue};

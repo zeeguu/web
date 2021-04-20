@@ -1,160 +1,76 @@
-import { Link, useLocation } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../UserContext";
-import strings from "../i18n/definitions";
+import React, { useState } from 'react'
+import { languageMap } from '../helpers/sharedHelperMaps'
+import { Button, TextField } from '@material-ui/core'
+import { uploadArticles } from '../api/apiArticles'
+import { createArticleObject }  from '../helpers/articleUploadHelpers'
 
-import * as s from "./SideBar.sc";
+export const UserInputArticleUpload = ({ user, setForceRerender, cohortData }) => {
+  const languageCode = languageMap[cohortData.language_name]
 
-export default function SideBar(props) {
-  const user = useContext(UserContext);
-  const [initialSidebarState, setInitialSidebarState] = useState(true);
-  const [isOnStudentSide, setIsOnStudentSide] = useState();
+  const [state, setState] = useState({
+    article_title: '',
+    article_content: '',
+  })
 
-  //deducting whether we are on student or teacher side for colouring
-  const path = useLocation().pathname;
-  useEffect(() => {
-    //in Settings the side is determined by whether the user is a student or a teacher
-    if (path.includes("account")) {
-      setIsOnStudentSide(!user.is_teacher);
-          // eslint-disable-next-line
-    } else {
-      setIsOnStudentSide(!path.includes("teacher"));
-          // eslint-disable-next-line
-    }
-    // eslint-disable-next-line
-  }, [path]);
-
-  function toggleSidebar(e) {
-    e.preventDefault();
-    setInitialSidebarState(!initialSidebarState);
+  const handleChange = (event) => {
+    setState({
+      ...state, //for all element in state do ...
+      [event.target.name]: event.target.value, //ie: article_title : "Harry Potter tickets sold out", article_content : "bla bla bla"
+    })
   }
 
-  function resetSidebarToDefault(e) {
-    setInitialSidebarState(true);
+  const submitArticle = (e) => {
+    e.preventDefault()
+    let articleObj = createArticleObject(
+      state.article_title,
+      state.article_content,
+      languageCode,
+      user
+    )
+    uploadArticles(cohortData.id, [articleObj]).then((result) => {
+      setForceRerender(prev => prev + 1)
+    })
+    setState({
+      article_title: '',
+      article_content: '',
+    })
   }
 
-  let sidebarContent = (
-    <>
-      <div className="logo">
-        <a href="/articles" rel="external">
-          <img
-            src="/static/images/zeeguuWhiteLogo.svg"
-            alt="Zeeguu Logo - The Elephant"
-          />
-        </a>
-      </div>
-      <div className="arrowHolder">
-        <span className="toggleArrow" onClick={toggleSidebar}>
-          ▲
-        </span>
-      </div>
-      {(!user.is_teacher ||
-        (user.is_teacher &&
-          (isOnStudentSide === "true" || isOnStudentSide === true))) && (
-        <>
-          <div className="navigationLink">
-            <Link to="/articles" onClick={resetSidebarToDefault}>
-              <small>{strings.articles}</small>
-            </Link>
-          </div>
-          <div className="navigationLink">
-            <Link to="/words/history" onClick={resetSidebarToDefault}>
-              <small>{strings.words}</small>
-            </Link>
-          </div>
-          <div className="navigationLink">
-            <Link to="/exercises" onClick={resetSidebarToDefault}>
-              <small>{strings.exercises}</small>
-            </Link>
-          </div>
-        </>
-      )}
-      {user.is_teacher &&
-        (isOnStudentSide === "true" || isOnStudentSide === true) && (
-          <div className="navigationLink">
-            <Link to="/teacher/classes" onClick={resetSidebarToDefault}>
-              <small>{strings.teacherSite}</small>
-            </Link>
-          </div>
-        )}
-
-      {user.is_teacher &&
-        (isOnStudentSide === "false" || isOnStudentSide === false) && (
-          <>
-            <div className="navigationLink">
-              <Link to="/teacher/classes" onClick={resetSidebarToDefault}>
-                <small>{strings.myClasses}</small>
-              </Link>
-            </div>
-            <div className="navigationLink">
-              <Link to="/teacher/texts" onClick={resetSidebarToDefault}>
-                <small>{strings.myTexts}</small>
-              </Link>
-            </div>
-            <div className="navigationLink">
-              <Link to="/teacher/tutorials" onClick={resetSidebarToDefault}>
-                <small>{strings.tutorials}</small>
-              </Link>
-            </div>
-            <div className="navigationLink">
-              <Link to="/articles" onClick={resetSidebarToDefault}>
-                <small>{strings.studentSite}</small>
-              </Link>
-            </div>
-          </>
-        )}
-
-      <br />
-      <div className="navigationLink">
-        <Link to="/account_settings" onClick={resetSidebarToDefault}>
-          <small>{strings.settings}</small>
-        </Link>
-      </div>
-      <div className="navigationLink">
-        <Link
-          to="/"
-          onClick={() => {
-            user.logoutMethod();
-          }}
+  return (
+    <form onSubmit={submitArticle}>
+      <TextField
+        type="text"
+        placeholder="This will be the title of the article"
+        value={state.article_title}
+        onChange={handleChange}
+        name="article_title"
+        id="article_title"
+        label="Article title"
+        fullWidth
+      />
+      <TextField
+        type="text"
+        placeholder="Type any text here to create an article"
+        multiline={true}
+        value={state.article_content}
+        onChange={handleChange}
+        name="article_content"
+        id="article_content"
+        label="Article content"
+        rows={6}
+        fullWidth
+      />
+      <div>
+        <Button
+          style={{ marginTop: 10 }}
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={!(state.article_title && state.article_content)}
         >
-          <small>{strings.logout}</small>
-        </Link>
+          Submit Article{' '}
+        </Button>
       </div>
-    </>
-  );
-
-  if (user.is_teacher && !isOnStudentSide) {
-    if (!initialSidebarState) {
-      return (
-        <s.SideBarToggledTeacher>
-          {sidebarContent}
-          <s.MainContentToggled>{props.children}</s.MainContentToggled>
-        </s.SideBarToggledTeacher>
-      );
-    }
-
-    return (
-      <s.SideBarInitialTeacher>
-        {sidebarContent}
-        <s.MainContentInitial>{props.children}</s.MainContentInitial>
-      </s.SideBarInitialTeacher>
-    );
-  } else {
-    if (!initialSidebarState) {
-      return (
-        <s.SideBarToggled>
-          {sidebarContent}
-          <s.MainContentToggled id="scrollHolder">{props.children}</s.MainContentToggled>
-        </s.SideBarToggled>
-      );
-    }
-
-    return (
-      <s.SideBarInitial>
-        {sidebarContent}
-        <s.MainContentInitial id="scrollHolder">{props.children}</s.MainContentInitial>
-      </s.SideBarInitial>
-    );
-  }
+    </form>
+  )
 }
-
