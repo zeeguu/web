@@ -18,7 +18,7 @@ export const CohortFormInputFields = styled.div`
     margin-bottom: 10;
   }
 
-  span#button--language_id {
+  span#button--language_code {
     width: 95%;
     border: none;
     margin: 4px 0 5px;
