@@ -2,12 +2,8 @@ import React, { useState } from "react";
 import { FormControl } from "@material-ui/core";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { Error } from "./Error";
-import {
-  languageMap,
-  LanguageSelector,
-  CohortNameTextfield,
-  InviteCodeTextfield,
-} from "./CohortFormInputFields";
+import { CohortNameTextfield, InviteCodeTextfield } from "./CohortFormInputFields";
+import { languageMap, LanguageSelector } from "./LanguageSelector";
 import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 
 const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
