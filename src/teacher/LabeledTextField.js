@@ -26,3 +26,30 @@ export const LabeledTextfield = (props) => {
     </Fragment>
   );
 };
+
+export const LabeledMultilineTextfield = (props) => {
+  return (
+    <Fragment>
+      <s.CohortFormInputFields>
+        <div className="input-container">
+          <label htmlFor={props.name}>{props.children}</label>
+          <TextField
+            InputProps={{ disableUnderline: true }}
+            className="input-field"
+            aria-label={props.name}
+            value={props.value}
+            onChange={props.onChange}
+            name={props.name}
+            id={props.name}
+            placeholder={props.placeholder}
+            multiline={true}
+            rows={6}
+            fullWidth
+            type="text"
+            required
+          />
+        </div>
+      </s.CohortFormInputFields>
+    </Fragment>
+  );
+};
