@@ -17,6 +17,7 @@ export function LanguageSelector(props) {
             onChange={props.onChange}
           >
             {/* <ListboxOption value="zh-CN">Chinese STRINGS</ListboxOption> This language does not work yet*/} 
+            <ListboxOption value="default">Choose a language...</ListboxOption>
             <ListboxOption value="da">Danish STRINGS</ListboxOption>
             <ListboxOption value="nl">Dutch STRINGS</ListboxOption>
             <ListboxOption value="en">English STRINGS</ListboxOption>
