@@ -101,6 +101,13 @@ const UserDashBoarDropdown = styled.select`
 
 `;
 
+//parent container has to have height specified in order for the nivo graphs to be shown
+//this is why the div has height 500; the number can be changed
+const NivoGraphContainer = styled.div`
+${console.log("here")};
+    height: 500px;
+`;
+
 export {
 
     UserDashboardTile,
@@ -111,5 +118,6 @@ export {
     UserDashBoardOptionsContainer,
     UserDashBoardTab,
     UserDashBoarDropdown,
+    NivoGraphContainer
 
 };
