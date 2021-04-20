@@ -23,7 +23,7 @@ export default function TeacherTextPreview({ article }) {
         <div className="text-container">
           <div className="lhs">
             <Link
-              to="/teacher/texts/editText/:articleID"
+              to={`/teacher/texts/editText/${article.id}`}
               onClick={()=>setReturnPath("/teacher/texts")}
             >
               <s.Title>{article.title}</s.Title>
@@ -41,7 +41,7 @@ export default function TeacherTextPreview({ article }) {
             <s.WordCount>{article.metrics.word_count}</s.WordCount>
             <s.Difficulty>{difficulty}</s.Difficulty>
             <Link
-              to="/teacher/texts/editText/:articleID"
+              to={`/teacher/texts/editText/${article.id}`}
               onClick={()=>setReturnPath("/teacher/texts")}
             >
               <StyledButton secondary className="edit-btn">
