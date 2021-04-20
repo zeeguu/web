@@ -13,7 +13,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     id: cohort ? cohort.id : "",
     cohort_name: cohort ? cohort.name : "",
     invite_code: cohort ? cohort.inv_code : "",
-    language_code: cohort ? languageMap[cohort.language_name] : "es",
+    language_code: cohort ? languageMap[cohort.language_name] : "da",
     max_students: 150, //some teachers create one joint class for all the students of an entire year //TODO modify backend etc. to no longer include this...
   });
 
@@ -124,7 +124,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
             <LanguageSelector
               value={state.language_code}
               onChange={handleLanguageChange}
-            />
+            >Choose the classroom language STRINGS</LanguageSelector>
           </FormControl>
           {isError && (
             <Error
