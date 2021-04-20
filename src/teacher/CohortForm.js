@@ -17,7 +17,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     id: cohort ? cohort.id : "",
     cohort_name: cohort ? cohort.name : "",
     invite_code: cohort ? cohort.inv_code : "",
-    language_id: cohort ? languageMap[cohort.language_name] : "es",
+    language_code: cohort ? languageMap[cohort.language_name] : "es",
     max_students: 150, //some teachers create one joint class for all the students of an entire year //TODO modify backend etc. to no longer include this...
   });
 
@@ -83,7 +83,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
   function handleLanguageChange(selectedLanguage) {
     setState({
       ...state,
-      language_id: selectedLanguage,
+      language_code: selectedLanguage,
     });
   }
 
@@ -92,7 +92,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     form.append("name", state.cohort_name);
     form.append("inv_code", state.invite_code);
     form.append("max_students", state.max_students); //TODO modify backend etc. to no longer include this...
-    form.append("language_id", state.language_id);
+    form.append("language_code", state.language_code);
     return form;
   }
 
@@ -126,7 +126,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
             style={{ minWidth: 120 }}
           >
             <LanguageSelector
-              value={state.language_id}
+              value={state.language_code}
               onChange={handleLanguageChange}
             />
           </FormControl>
