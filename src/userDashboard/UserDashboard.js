@@ -5,8 +5,8 @@ import UserBarGraph from "./userGraphs/UserBarGraph";
 import {PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS} from "./dataFormat/ConstantsUserDashboard";
 import { getLineGraphData, calculateCountPerMonth_Words, getMapData} from "./dataFormat/LineGraphDataFormat";
 import { getBarGraphData, calculateCountPerMonth_Activity } from "./dataFormat/BarGraphDataFormat";
-
 import UserDashboard_Top from "./UserDashboard_Top";
+import { NivoGraphContainer } from "./UserDashboard.sc";
 
 export default function UserDashboard({ api }){
 
@@ -74,13 +74,8 @@ export default function UserDashboard({ api }){
                   dateForGraphs={dateForGraphs}
                   setDateForGraphs={setDateForGraphs}
               />
-              
-              {/*
-              parent container has to have height specified in order for the nivo graphs to be shown
-              this is why the div has height 500; the number can be changed
-              */}
 
-              <div style={{height: 500}}>
+              <NivoGraphContainer>
 
               {
                 (activeTab === 1) ? 
@@ -98,7 +93,7 @@ export default function UserDashboard({ api }){
                 : <></>
               }
 
-              </div>
+              </NivoGraphContainer>
 
           </>
     );
