@@ -1,11 +1,10 @@
 import React, { useState, Fragment, useEffect } from "react";
-import { Dialog } from "@reach/dialog";
-import "@reach/dialog/styles.css"; //TODO move to an sc.js...
 //import strings from "../i18n/definitions";
 import CohortForm from "./CohortForm";
 import { CohortItemCard } from "./CohortItemCard";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
+import { StyledDialog } from "./StyledDialog.sc";
 
 export default function CohortList({ api, cohorts, setForceUpdate }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,13 +42,17 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
         <LoadingAnimation />
       )}
       {isOpen && (
-        <Dialog onDismiss={() => setIsOpen(false)} aria-label="Create class">
+        <StyledDialog
+          onDismiss={() => setIsOpen(false)}
+          aria-label="Create class"
+          maxWidth="525px"
+        >
           <CohortForm
             api={api}
             setIsOpen={setIsOpen}
             setForceUpdate={setForceUpdate}
           />
-        </Dialog>
+        </StyledDialog>
       )}
     </Fragment>
   );

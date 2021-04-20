@@ -4,8 +4,8 @@ import { MdPeople } from "react-icons/md/";
 import { StyledButton } from "./TeacherButtons.sc";
 import * as s from "./CohortItemCard.sc";
 import strings from "../i18n/definitions";
-import { Dialog } from "@reach/dialog";
 import CohortForm from "./CohortForm";
+import { StyledDialog } from "./StyledDialog.sc";
 
 export const CohortItemCard = ({ api, cohort, setForceUpdate }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,17 +41,21 @@ export const CohortItemCard = ({ api, cohort, setForceUpdate }) => {
             </div>
           </div>
         </div>
-        {isOpen && (
-          <Dialog aria-label="Create or edit class"onDismiss={() => setIsOpen(false)}>
-            <CohortForm
-              api={api}
-              cohort={cohort}
-              setIsOpen={setIsOpen}
-              setForceUpdate={setForceUpdate}
-            />
-          </Dialog>
-        )}
       </s.StyledCohortItemCard>
+      {isOpen && (
+        <StyledDialog
+          aria-label="Create or edit class"
+          onDismiss={() => setIsOpen(false)}
+          maxWidth="525px"
+        >
+          <CohortForm
+            api={api}
+            cohort={cohort}
+            setIsOpen={setIsOpen}
+            setForceUpdate={setForceUpdate}
+          />
+        </StyledDialog>
+      )}
     </Fragment>
   );
 };
