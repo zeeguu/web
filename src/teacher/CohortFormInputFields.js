@@ -34,12 +34,12 @@ export function LanguageSelector({ value, onChange }) {
     <Fragment>
       <s.CohortFormInputFields>
         <div className="input-container">
-          <label htmlFor="language_id"></label>
+          <label htmlFor="language_code"></label>
           Choose the classroom language STRINGS
           <Listbox
             className="input-field"
-            id="language_id"
-            aria-labelledby="language_id"
+            id="language_code"
+            aria-labelledby="language_code"
             value={value}
             onChange={onChange}
           >
