@@ -3,7 +3,10 @@ import { Link, useHistory } from "react-router-dom";
 //import strings from "../i18n/definitions";
 import { UserContext } from "../UserContext";
 import { RoutingContext } from "../contexts/RoutingContext";
-import { LabeledTextfield, LabeledMultilineTextfield } from "./LabeledTextField";
+import {
+  LabeledTextField,
+  LabeledMultiLineTextField,
+} from "./LabeledInputFields";
 import { StyledButton } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
@@ -31,7 +34,7 @@ export default function EditText({ api }) {
       [event.target.name]: event.target.value, //ie: article_title : "Harry Potter tickets sold out", article_content : "bla bla bla"
     });
   };
-/* 
+  /* 
   const submitArticle = (e) => {
     e.preventDefault();
     let articleObj = createArticleObject(
@@ -65,23 +68,24 @@ export default function EditText({ api }) {
         </StyledButton>
         <br />
         <br />
-        <LabeledTextfield
+        <LabeledTextField
           value={state.article_title}
           onChange={handleChange}
           name="article_title"
           placeholder="STRINGSPaste or type your title here..."
         >
           STRINGSClick in the box below to edit the title
-        </LabeledTextfield>
+        </LabeledTextField>
         <br />
         <br />
-        <LabeledMultilineTextfield
-                  value={state.article_title}
-                  onChange={handleChange}
-                  name="article_title"
-                  placeholder="STRINGSPaste or type the body of your text here...">
-          STRINGSClick in the box below to edit the text body          
-        </LabeledMultilineTextfield>
+        <LabeledMultiLineTextField
+          value={state.article_title}
+          onChange={handleChange}
+          name="article_title"
+          placeholder="STRINGSPaste or type the body of your text here..."
+        >
+          STRINGSClick in the box below to edit the text body
+        </LabeledMultiLineTextField>
         <br />
         <br />
         <br />

@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 import { TextField } from "@material-ui/core";
-import * as s from "./CohortFormInputFields.sc";
+import * as s from "./LabeledInputFields.sc";
 
-export const LabeledTextfield = (props) => {
+export const LabeledTextField = (props) => {
   return (
     <Fragment>
-      <s.CohortFormInputFields>
+      <s.LabeledInputFields>
         <div className="input-container">
           <label htmlFor={props.name}>{props.children}</label>
           <TextField
@@ -22,15 +22,15 @@ export const LabeledTextfield = (props) => {
             required
           />
         </div>
-      </s.CohortFormInputFields>
+      </s.LabeledInputFields>
     </Fragment>
   );
 };
 
-export const LabeledMultilineTextfield = (props) => {
+export const LabeledMultiLineTextField = (props) => {
   return (
     <Fragment>
-      <s.CohortFormInputFields>
+      <s.LabeledInputFields>
         <div className="input-container">
           <label htmlFor={props.name}>{props.children}</label>
           <TextField
@@ -47,9 +47,9 @@ export const LabeledMultilineTextfield = (props) => {
             fullWidth
             type="text"
             required
-          />
+          />  
         </div>
-      </s.CohortFormInputFields>
+      </s.LabeledInputFields>
     </Fragment>
   );
 };
