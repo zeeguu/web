@@ -25,7 +25,7 @@ const BAR_GRAPH_KEYS = {
   EXERCISES: "exercises_time",
   INDEX_BY: "date",
   LEGEND_BOTTOM: "dates",
-  LEGEND_LEFT: "time count"
+  LEGEND_LEFT: ""
 }
 
 const USER_DASHBOARD_TITLES = {
