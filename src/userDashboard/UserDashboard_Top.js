@@ -26,10 +26,10 @@ const Tab = ({ id, title, handleActiveTabChange, isActive }) => {
 }
 
 
-const DropDownList = ({ children, handleChange, stateValue }) => {
+const DropDownList = ({ children, handleChange, stateValue, isCustom }) => {
     
     return (      
-        <UserDashBoarDropdown value={stateValue} onChange={(e) => handleChange(e.target.value)}>
+        <UserDashBoarDropdown value={stateValue} onChange={(e) => handleChange(e.target.value)} isCustom={isCustom}>
             {children}
         </UserDashBoarDropdown>
         )
@@ -65,7 +65,19 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
 
             <div>
 
-            <UserDashboardHelperText>{(activeTab===1)? USER_DASHBOARD_TITLES.BAR_GRAPH_TITLE : USER_DASHBOARD_TITLES.LINE_GRAPH_TITLE}</UserDashboardHelperText>
+            <UserDashboardHelperText>
+                {
+                    (activeTab === 1) ?
+                    
+                        <>
+                            Activity data for {activeCustomOption.toLowerCase()} until date {dateForGraphs.toLocaleDateString("da-DK")}. {"\n"} Time count shown in {activeTimeFormatOption.toLowerCase()}. 
+                        </>
+                    :
+                        <>
+                            Translated words for {activeCustomOption.toLowerCase()} until date {dateForGraphs.toLocaleDateString("da-DK")}. 
+                        </>
+                }
+            </UserDashboardHelperText>
             
             </div>
             
@@ -87,7 +99,7 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
                 &&
 
                 <>
-                    <DropDownList handleChange={handleActiveCustomOptionChange} stateValue={activeCustomOption}>
+                    <DropDownList handleChange={handleActiveCustomOptionChange} stateValue={activeCustomOption} isCustom={true}>
                         {
                         customPeriodOptions.map(
                             option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
@@ -103,7 +115,7 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
 
                         &&
 
-                        <DropDownList handleChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption}>
+                        <DropDownList handleChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption} isCustom={true}>
                         {
                             customTimeFormatOptions.map(
                                 option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
@@ -122,7 +134,6 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
                 </>
 
             }
-
 
             </UserDashBoardOptionsContainer>
         

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import * as s from "../components/TopMessage.sc";
-import { lightOrange } from '../components/colors';
+import { lightOrange, zeeguuOrange } from '../components/colors';
 import { device } from "./Devices";
 
 let lightGray = "#C6C9D1";
@@ -67,7 +67,6 @@ const UserDashBoardTab = styled.a`
 `;
 
 const UserDashBoardOptionsContainer = styled.div`
-    width: auto;
     padding: 1em;
     text-align: center;
 `;
@@ -77,10 +76,9 @@ const UserDashBoarDropdown = styled.select`
     font-size: 1em;
     font-weight: 400;
     letter-spacing: 0;
-    color: ${props => props.disabled? lightGray: 'black'};
+    color: ${props => props.isCustom? 'black' : darkerHueZeeguuOrange};
 
 :hover{
-    color: darkerHueZeeguuOrange; 
     cursor: pointer;
 }
 
@@ -138,6 +136,6 @@ export {
     UserDashBoardOptionsContainer,
     UserDashBoardTab,
     UserDashBoarDropdown,
-    NivoGraphContainer
+    NivoGraphContainer,
 
 };
