@@ -6,7 +6,6 @@ const PERIOD_OPTIONS = {
 };
 
 const ACTIVITY_TIME_FORMAT_OPTIONS = {
-    SECONDS: "Seconds",
     MINUTES: "Minutes",
     HOURS: "Hours"
 };

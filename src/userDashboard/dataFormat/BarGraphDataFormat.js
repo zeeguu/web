@@ -31,8 +31,6 @@ function secondsToHours(seconds){
 function formatSeconds(seconds, formatTo){
 
   switch(formatTo){
-    case ACTIVITY_TIME_FORMAT_OPTIONS.SECONDS:
-        return seconds; 
       case ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES:
         return secondsToMinutes(seconds); 
       case ACTIVITY_TIME_FORMAT_OPTIONS.HOURS:
