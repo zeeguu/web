@@ -2,11 +2,7 @@ import React, { useState, useContext, Fragment, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 //import strings from "../i18n/definitions";
 import { RoutingContext } from "../contexts/RoutingContext";
-import { LanguageSelector } from "./LanguageSelector";
-import {
-  LabeledTextField,
-  LabeledMultiLineTextField,
-} from "./LabeledInputFields";
+import EditTextInputFields from "./EditTextInputFields";
 import {
   StyledButton,
   TopButtonWrapper,
@@ -83,8 +79,8 @@ export default function EditText({ api }) {
       (result) => {
         if ((result = "OK")) {
           history.push("/teacher/texts");
-        }else{
-          console.log(result)
+        } else {
+          console.log(result);
         }
       }
     );
@@ -132,7 +128,6 @@ export default function EditText({ api }) {
               Save changes without sharing STRINGS
             </StyledButton>
           )}
-
           <StyledButton primary onClick={addArticleToCohort}>
             Save and share with classes STRINGS
           </StyledButton>
@@ -140,28 +135,13 @@ export default function EditText({ api }) {
             STRINGSCancel
           </StyledButton>
         </TopButtonWrapper>
-        <LanguageSelector
-          value={state.language_code}
-          onChange={handleLanguageChange}
-        >
-          Please, define the language of the text STRINGS
-        </LanguageSelector>
-        <LabeledTextField
-          value={state.article_title}
-          onChange={handleChange}
-          name="article_title"
-          placeholder="STRINGSPaste or type your title here..."
-        >
-          STRINGSClick in the box below to edit the title
-        </LabeledTextField>
-        <LabeledMultiLineTextField
-          value={state.article_content}
-          onChange={handleChange}
-          name="article_content"
-          placeholder="STRINGSPaste or type the body of your text here..."
-        >
-          STRINGSClick in the box below to edit the text body
-        </LabeledMultiLineTextField>
+        <EditTextInputFields
+          language_code={state.language_code}
+          article_title={state.article_title}
+          article_content={state.article_content}
+          handleLanguageChange={handleLanguageChange}
+          handleChange={handleChange}
+        />
         <PopupButtonWrapper>
           <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
             <StyledButton secondary>STRINGSView as student</StyledButton>
@@ -172,8 +152,6 @@ export default function EditText({ api }) {
             </StyledButton>
           )}
         </PopupButtonWrapper>
-        <br />
-        ("Add to class" and "Delete" open popups.)
       </s.NarrowColumn>
     </Fragment>
   );

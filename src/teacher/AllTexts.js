@@ -17,8 +17,10 @@ export default function AllTexts({ api }) {
   //on initial render
   if (articleList == null) {
     api.getTeacherTexts((articles) => {
-      setArticleList(articles)
-      originalList = [...articles];;
+      //making sure the newest articles are on top
+      const reversedList= articles.reverse()
+      setArticleList(reversedList)
+      originalList = [...reversedList];;
     });
     
 

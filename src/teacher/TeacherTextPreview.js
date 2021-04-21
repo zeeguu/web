@@ -14,8 +14,6 @@ export default function TeacherTextPreview({ article }) {
   const difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
   const cohortList = article.cohorts;
-  console.log(article.title + " " + article.cohorts);
-  console.log(cohortList.length === 0);
 
   return (
     <Fragment>
@@ -31,7 +29,7 @@ export default function TeacherTextPreview({ article }) {
             <div>
               <s.PublishingTime>
                 {cohortList.length === 0
-                  ? "STRINGS Click on 'Edit text' to share this text with one or more classes."
+                  ? <p>STRINGS Remember to share this text with one or more classes.</p>
                   : "STRINGS Added to:"}
               </s.PublishingTime>
               <s.Topics>
