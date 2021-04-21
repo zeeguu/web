@@ -4,7 +4,7 @@ import axios from "axios";
 const Zeeguu_API = class {
   constructor(baseAPIurl) {
     this.baseAPIurl = baseAPIurl;
-    //this.session = currentSession; is initialized in App when the user logs in.
+    //this.session = currentSession; is instantiated in App when the user logs in (causes error to actually instantiate it here).
   }
 
   apiLog(what) {
@@ -13,10 +13,6 @@ const Zeeguu_API = class {
 
   getSystemLanguages(callback) {
     this._get("system_languages", callback);
-  }
-
-  getCohortsInfo(callback){
-    this._get("/cohorts_info", callback);
   }
 
   _appendSessionToUrl(endpointName) {
