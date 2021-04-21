@@ -8,8 +8,6 @@ import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import * as m from "./AllTexts.sc";
-
-import { DUMMYLIST } from "./DummyArticleList";
 import SortingButtons from "../articles/SortingButtons";
 
 export default function AllTexts({ api }) {
@@ -18,9 +16,11 @@ export default function AllTexts({ api }) {
 
   //on initial render
   if (articleList == null) {
-    //TODO here should be an api call to get ALL the teachers texts...
-    setArticleList(DUMMYLIST);
-    originalList = [...DUMMYLIST];
+    api.getTeacherTexts((articles) => {
+      setArticleList(articles)
+      originalList = [...articles];;
+    });
+    
 
     setTitle("Add Texts STRINGS");
 

@@ -1,26 +1,43 @@
-import React, { useState, useContext, Fragment } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useState, useContext, Fragment, useEffect } from "react";
+import { Link, useHistory, useParams } from "react-router-dom";
 //import strings from "../i18n/definitions";
-import { UserContext } from "../UserContext";
 import { RoutingContext } from "../contexts/RoutingContext";
-import {LanguageSelector } from "./LanguageSelector";
+import { LanguageSelector } from "./LanguageSelector";
 import {
   LabeledTextField,
   LabeledMultiLineTextField,
 } from "./LabeledInputFields";
-import { StyledButton } from "./TeacherButtons.sc";
+import {
+  StyledButton,
+  TopButtonWrapper,
+  PopupButtonWrapper,
+} from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 
 export default function EditText({ api }) {
-  //const languageCode = languageMap[cohortData.language_name];
-  const user = useContext(UserContext);
+  const articleID = useParams().articleID;
+  console.log(articleID);
 
   const [state, setState] = useState({
     article_title: "",
     article_content: "",
     language_code: "default",
   });
+
+  //The user is editing an already existing text...
+  useEffect(() => {
+    if (articleID !== "new") {
+      api.getArticleInfo(articleID, (article) => {
+        setState({
+          article_title: article.title,
+          article_content: article.content,
+          language_code: article.language,
+        });
+      });
+    }
+    //eslint-disable-next-line
+  }, []);
 
   //As there are two paths to EditTexts we are using RoutingContext to be able to go back on the right one on Cancel
   const { returnPath } = useContext(RoutingContext);
@@ -32,7 +49,7 @@ export default function EditText({ api }) {
 
   const handleChange = (event) => {
     setState({
-      ...state, //for all element in state do ...
+      ...state,
       [event.target.name]: event.target.value, //ie: article_title : "Harry Potter tickets sold out", article_content : "bla bla bla"
     });
   };
@@ -44,30 +61,50 @@ export default function EditText({ api }) {
       language_code: selectedLanguage,
     });
   }
-  function saveText (event){
-    event.preventDefault();
-    console.log(state.article_title)
-    console.log(state.article_content)
-    console.log(state.language_code)
-  }
-  /* 
-  const submitArticle = (e) => {
-    e.preventDefault();
-    let articleObj = createArticleObject(
+
+  const uploadArticle = () => {
+    api.uploadOwnText(
       state.article_title,
       state.article_content,
       state.language_code,
-      user
+      (newID) => {
+        console.log(`article created with id: ${newID}`);
+      }
     );
-    uploadArticles(cohortData.id, [articleObj]).then((result) => {
-      setForceRerender((prev) => prev + 1);
+    history.push("/teacher/texts")
+  };
+  
+  const updateArticle = () =>{
+    console.log("This should call updateText...")
+    history.push("/teacher/texts")
+  }
+
+  const deleteText = () => {
+    api.deleteOwnText(articleID, (res) => {
+      if (res === "OK") {
+        console.log("Article successfully deleted");
+        history.push("/teacher/texts")
+      } else {
+        console.log(res);
+      }
     });
-    setState({
-      article_title: "",
-      article_content: "",
-      language_code: "",
-    });
-  }; */
+  };
+
+  const addArticleToCohort = (e) => {
+    e.preventDefault();
+    api.addArticleToCohort(
+      articleID,
+      120, //!HARDCODED!!!
+      (res) => {
+        console.log("Connection established...");
+        console.log(res);
+        history.push("/teacher/texts")
+      },
+      () => {
+        console.log("Connection to server failed...");
+      }
+    );
+  };
 
   return (
     <Fragment>
@@ -75,22 +112,37 @@ export default function EditText({ api }) {
         <sc.TopTabs>
           <h1>STRINGSEditText</h1>
         </sc.TopTabs>
-        <StyledButton primary onClick={saveText}>STRINGSAdd to class</StyledButton>
-        <Link to="/teacher/texts/editText/:articleID/studentView">
-          <StyledButton secondary>STRINGSView as student</StyledButton>
-        </Link>
-        <StyledButton secondary>STRINGSDelete</StyledButton>
-        <StyledButton secondary onClick={handleCancel}>
-          STRINGSCancel
-        </StyledButton>
-        <br />
-        <br />
-        <LanguageSelector
-          value={state.language_code}
-          onChange={handleLanguageChange}
-        >
-          Please, define the language of the text STRINGS
-        </LanguageSelector>
+        <TopButtonWrapper>
+         {/*  <Link to="/teacher/texts"> */}
+            {articleID === "new" ? (
+              <StyledButton primary onClick={uploadArticle}>
+                Save text without sharing STRINGS
+              </StyledButton>
+            ) : (
+              <StyledButton
+                primary
+                onClick={updateArticle}
+              >
+                Save changes without sharing STRINGS
+              </StyledButton>
+            )}
+         {/*  </Link> */}
+          <StyledButton primary onClick={addArticleToCohort}>
+            Save and share with classes STRINGS
+          </StyledButton>
+          <StyledButton secondary onClick={handleCancel}>
+            STRINGSCancel
+          </StyledButton>
+        </TopButtonWrapper>
+        {articleID === "new" && (
+          <LanguageSelector
+            value={state.language_code}
+            onChange={handleLanguageChange}
+          >
+            Please, define the language of the text ( - This cannot be changed
+            later! ) STRINGS
+          </LanguageSelector>
+        )}
         <LabeledTextField
           value={state.article_title}
           onChange={handleChange}
@@ -99,8 +151,6 @@ export default function EditText({ api }) {
         >
           STRINGSClick in the box below to edit the title
         </LabeledTextField>
-        <br />
-        <br />
         <LabeledMultiLineTextField
           value={state.article_content}
           onChange={handleChange}
@@ -109,8 +159,16 @@ export default function EditText({ api }) {
         >
           STRINGSClick in the box below to edit the text body
         </LabeledMultiLineTextField>
-        <br />
-        <br />
+        <PopupButtonWrapper>
+          <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
+            <StyledButton secondary>STRINGSView as student</StyledButton>
+          </Link>
+          {articleID !== "new" && (
+              <StyledButton secondary onClick={deleteText}>
+                STRINGSDelete
+              </StyledButton>
+          )}
+        </PopupButtonWrapper>
         <br />
         ("Add to class" and "Delete" open popups.)
       </s.NarrowColumn>
