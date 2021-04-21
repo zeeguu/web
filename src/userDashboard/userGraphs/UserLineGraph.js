@@ -16,9 +16,9 @@ export default function UserLineGraph ({ data }) {
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: '',
+                    legend: 'date',
                     legendOffset: 36,
-                    legendPosition: 'middle'
+                    legendPosition: 'left'
                 }}
                 axisLeft={{
                     orient: 'left',
@@ -37,11 +37,11 @@ export default function UserLineGraph ({ data }) {
                 useMesh={true}
                 legends={[
                     {
-                        anchor: 'bottom-right',
-                        direction: 'column',
+                        anchor: 'bottom',
+                        direction: 'row',
                         justify: false,
                         translateX: 100,
-                        translateY: 0,
+                        translateY: 50,
                         itemsSpacing: 0,
                         itemDirection: 'left-to-right',
                         itemWidth: 80,
