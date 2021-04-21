@@ -13,58 +13,41 @@ const UserDashboardTopContainer = styled.div`
 
 const UserDashboardTile = styled.h1`
     font-weight: 300;
-    font-size: 3em;
+    font-size: 2.5em;
     line-height: 1em;
     letter-spacing: 0.05em; 
     text-align: center;
     margin-top: 1em;
 
 @media screen and (max-width: 768px) {
-    font-size: 1.5em;
-    padding: 0.5em;
-}
-
-`;
-
-const UserDashboardGraphTitle = styled.h2`
-    font-size: 1.3em;
-    font-weight: 400;
-    letter-spacing: 0;
-    text-align: center;
-    margin-left: 2em;
-
-@media screen and (max-width: 768px) {
     font-size: 1em;
     padding: 0.5em;
-    text-align: left;
 }
 
 `;
 
 const UserDashboardHelperText = styled(s.TopMessage)`
-    width: auto;
-    line-height: 3ex;
 
-@media screen and (max-width: 768px) {
-    font-size: 0.8em;
-    line-height: 4ex;
-    text-align: left;
-}
+    @media screen and (max-width: 768px) {
+        font-size: 0.8em;
+        line-height: 4ex;
+        text-align: left;
+    }
 
 `;
 
 const UserDashBoardTabs = styled.div`
-    line-height: 1.4em;
+    line-height: 0.8em;
     width: 100%;
     align-items: center;
     display: flex;
     justify-content: center;
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 
 `;
 
 const UserDashBoardTab = styled.a`
-    font-size: 1.2em;
+    font-size: 1em;
     font-weight: ${props => props.isActive? 600 : 400};
     letter-spacing: 0;
     color: black;
@@ -104,40 +87,44 @@ const UserDashBoarDropdown = styled.select`
 `;
 
 
-//parent container has to have height specified in order for the nivo graphs to be shown
+// parent container has to have height specified in order for the nivo graphs to be shown
 // nivo automatically resizes the graphs' width, but not height
 const NivoGraphContainer = styled.div`
 
+    @media ${device.mobileS} {
+        height: 200px;
+    }
+
     @media ${device.mobileL} {
-        height: 200px;
-    }
-
-    @media ${device.tablet} {
-        height: 200px;
-    }
-
-    @media ${device.laptop1} { 
         height: 250px;
     }
 
-    @media ${device.laptop2} { 
-        height: 300px;
-    }
-
-    @media ${device.laptop3} { 
+    @media ${device.tablet} {
         height: 350px;
     }
 
-    @media ${device.laptop4} { 
+    @media ${device.laptop1} { 
+        height: 350px;
+    }
+
+    @media ${device.laptop2} { 
         height: 400px;
     }
 
-    @media ${device.laptop5} { 
+    @media ${device.laptop3} { 
         height: 450px;
     }
 
-    @media ${device.desktop} {
+    @media ${device.laptop4} { 
+        height: 550px;
+    }
+
+    @media ${device.laptop5} { 
         height: 600px;
+    }
+
+    @media ${device.desktop} {
+        height: 700px;
     }
 
 `;
@@ -145,7 +132,6 @@ const NivoGraphContainer = styled.div`
 export {
 
     UserDashboardTile,
-    UserDashboardGraphTitle,
     UserDashboardTopContainer,
     UserDashboardHelperText,
     UserDashBoardTabs,
