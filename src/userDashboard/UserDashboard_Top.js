@@ -24,24 +24,13 @@ const Tab = ({ id, title, handleActiveTabChange, isActive }) => {
 }
 
 
-const DropDownList = ({ children, handleChange, stateValue, isDisabled }) => {
+const DropDownList = ({ children, handleChange, stateValue }) => {
     
-    return isDisabled?
-
-        (      
-        <UserDashBoarDropdown disabled value={stateValue} onChange={(e) => handleChange(e.target.value)}>
-            {children}
-        </UserDashBoarDropdown>
-        )
-
-        : 
-
-        (      
+    return (      
         <UserDashBoarDropdown value={stateValue} onChange={(e) => handleChange(e.target.value)}>
             {children}
         </UserDashBoarDropdown>
         )
-
    }
 
 const DropDownOption = ({ title }) => {
@@ -91,8 +80,12 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
             </DropDownList>
 
             {
+            
+            (activeTab == 1)
 
-            <DropDownList handleChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption} isDisabled={(activeTab===2)}>
+            &&
+
+            <DropDownList handleChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption}>
             {
                 timeFormatOptions.map(
                     option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
