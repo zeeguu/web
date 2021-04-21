@@ -12,6 +12,7 @@ export default function UserDashboard({ api }){
 
     const [activeTab, setActiveTab] = useState(1);
     const [activeOption, setActiveOption] = useState(PERIOD_OPTIONS.WEEK);
+    const [activeCustomOption, setActiveCustomOption] = useState(PERIOD_OPTIONS.WEEK);
     const [activeTimeFormatOption, setActiveTimeFormatOption] = useState(ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES);
     const [allWordsData, setAllWordsData] = useState(null);
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
@@ -23,8 +24,8 @@ export default function UserDashboard({ api }){
       setActiveTab(tabId);  
     }
 
-    function handleActiveOptionChange(selected) {
-      setActiveOption(selected);
+    function handleActiveCustomOptionChange(selected) {
+      setActiveCustomOption(selected);
     }
 
     function handleActiveTimeFormatChange(selected){
@@ -53,7 +54,7 @@ export default function UserDashboard({ api }){
   
       });
 
-    }, [activeOption]);
+    }, [activeCustomOption]);
 
     if (!allWordsData || !userActivityData) {
 
@@ -68,7 +69,8 @@ export default function UserDashboard({ api }){
                   activeTab={activeTab}
                   handleActiveTabChange={handleActiveTabChange}
                   activeOption={activeOption}
-                  handleActiveOptionChange={handleActiveOptionChange}
+                  activeCustomOption={activeCustomOption}
+                  handleActiveCustomOptionChange={handleActiveCustomOptionChange}
                   handleActiveTimeFormatChange={handleActiveTimeFormatChange}
                   activeTimeFormatOption={activeTimeFormatOption}
                   dateForGraphs={dateForGraphs}
@@ -81,13 +83,13 @@ export default function UserDashboard({ api }){
                 (activeTab === 1) ? 
 
                         <UserBarGraph 
-                          data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeOption, dateForGraphs, activeTimeFormatOption)}
+                          data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeCustomOption, dateForGraphs, activeTimeFormatOption)}
                         />
 
                 : (activeTab === 2) ? 
 
                         <UserLineGraph 
-                          data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeOption, dateForGraphs)}
+                          data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeCustomOption, dateForGraphs)}
                         />
 
                 : <></>

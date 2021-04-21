@@ -1,3 +1,11 @@
+const OPTIONS = {
+  WEEK: "Last 7 days",
+  MONTH: "Last 30 days",
+  YEAR: "Last 12 months",
+  YEARS: "Available Years",
+  CUSTOM: "Other time period"
+};
+
 const PERIOD_OPTIONS = {
     WEEK: "Week",
     MONTH: "Month",
@@ -42,5 +50,6 @@ export {
     ACTIVITY_TIME_FORMAT_OPTIONS,
     TOP_TABS,
     USER_DASHBOARD_TITLES,
+    OPTIONS
 
 };

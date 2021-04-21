@@ -1,13 +1,15 @@
-import { PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, TOP_TABS, USER_DASHBOARD_TITLES } from "./dataFormat/ConstantsUserDashboard";
+import { OPTIONS, PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, TOP_TABS, USER_DASHBOARD_TITLES } from "./dataFormat/ConstantsUserDashboard";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { UserDashboardHelperText, UserDashboardTile, UserDashboardTopContainer, UserDashBoardOptionsContainer, UserDashBoardTabs, UserDashBoardTab, UserDashBoarDropdown } from "./UserDashboard.sc";
 
 const tabs = [ {id: 1, title: TOP_TABS.BAR_GRAPH}, {id: 2, title: TOP_TABS.LINE_GRAPH} ]
 
-const periodOptions = [ {id: 1, title: PERIOD_OPTIONS.WEEK}, {id: 2, title: PERIOD_OPTIONS.MONTH}, {id: 3, title: PERIOD_OPTIONS.YEAR}, {id: 4, title: PERIOD_OPTIONS.YEARS}]
+const options = [ {id: 1, title: OPTIONS.WEEK}, {id: 2, title: OPTIONS.MONTH}, {id: 3, title: OPTIONS.YEAR}, {id: 4, title: OPTIONS.YEARS}, {id: 5, title: OPTIONS.CUSTOM}]
 
-const timeFormatOptions = [ {id: 1, title: ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES}, {id: 2, title: ACTIVITY_TIME_FORMAT_OPTIONS.HOURS}]
+const customPeriodOptions = [ {id: 1, title: PERIOD_OPTIONS.WEEK}, {id: 2, title: PERIOD_OPTIONS.MONTH}, {id: 3, title: PERIOD_OPTIONS.YEAR}, {id: 4, title: PERIOD_OPTIONS.YEARS}]
+
+const customTimeFormatOptions = [ {id: 1, title: ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES}, {id: 2, title: ACTIVITY_TIME_FORMAT_OPTIONS.HOURS}]
 
 const TabList = ({ children }) => {
     return (
@@ -40,7 +42,7 @@ const DropDownOption = ({ title }) => {
   }
 
 
-export default function UserDashboard_Top({ activeTab, handleActiveTabChange, activeOption, handleActiveOptionChange, handleActiveTimeFormatChange, activeTimeFormatOption, dateForGraphs, setDateForGraphs }){
+export default function UserDashboard_Top({ activeTab, handleActiveTabChange, activeOption, activeCustomOption, handleActiveCustomOptionChange, handleActiveTimeFormatChange, activeTimeFormatOption, dateForGraphs, setDateForGraphs }){
 
     return (
         
@@ -69,9 +71,9 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
             
             <UserDashBoardOptionsContainer>
             
-            <DropDownList handleChange={handleActiveOptionChange} stateValue={activeOption}>
+            <DropDownList handleChange={handleActiveCustomOptionChange} stateValue={activeCustomOption}>
             {
-              periodOptions.map(
+              customPeriodOptions.map(
                   option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
               )
               
@@ -87,7 +89,7 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
 
             <DropDownList handleChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption}>
             {
-                timeFormatOptions.map(
+                customTimeFormatOptions.map(
                     option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
                 )
                 
