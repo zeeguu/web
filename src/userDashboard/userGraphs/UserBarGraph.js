@@ -54,7 +54,7 @@ export default function UserBarGraph ({ data }) {
                     tickPadding: 5,
                     tickRotation: 0,
                     legend: BAR_GRAPH_KEYS.LEGEND_BOTTOM,
-                    legendPosition: 'middle',
+                    legendPosition: 'left',
                     legendOffset: 32
                 }}
                 axisLeft={{
@@ -71,11 +71,11 @@ export default function UserBarGraph ({ data }) {
                 legends={[
                     {
                         dataFrom: 'keys',
-                        anchor: 'bottom-right',
-                        direction: 'column',
+                        anchor: 'bottom',
+                        direction: 'row',
                         justify: false,
-                        translateX: 120,
-                        translateY: 0,
+                        translateX: 100,
+                        translateY: 50,
                         itemsSpacing: 2,
                         itemWidth: 100,
                         itemHeight: 20,
