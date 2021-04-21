@@ -71,34 +71,44 @@ export default function EditText({ api }) {
         console.log(`article created with id: ${newID}`);
       }
     );
-    history.push("/teacher/texts")
+    history.push("/teacher/texts");
   };
-  
-  const updateArticle = () =>{
-    console.log("This should call updateText...")
-    history.push("/teacher/texts")
-  }
+
+  const updateArticle = () => {
+    api.updateOwnText(
+      articleID,
+      state.article_title,
+      state.article_content,
+      state.language_code,
+      (result) => {
+        if ((result = "OK")) {
+          history.push("/teacher/texts");
+        }else{
+          console.log(result)
+        }
+      }
+    );
+  };
 
   const deleteText = () => {
     api.deleteOwnText(articleID, (res) => {
       if (res === "OK") {
         console.log("Article successfully deleted");
-        history.push("/teacher/texts")
+        history.push("/teacher/texts");
       } else {
         console.log(res);
       }
     });
   };
 
-  const addArticleToCohort = (e) => {
-    e.preventDefault();
+  const addArticleToCohort = () => {
     api.addArticleToCohort(
       articleID,
       120, //!HARDCODED!!!
       (res) => {
         console.log("Connection established...");
         console.log(res);
-        history.push("/teacher/texts")
+        history.push("/teacher/texts");
       },
       () => {
         console.log("Connection to server failed...");
@@ -113,20 +123,16 @@ export default function EditText({ api }) {
           <h1>STRINGSEditText</h1>
         </sc.TopTabs>
         <TopButtonWrapper>
-         {/*  <Link to="/teacher/texts"> */}
-            {articleID === "new" ? (
-              <StyledButton primary onClick={uploadArticle}>
-                Save text without sharing STRINGS
-              </StyledButton>
-            ) : (
-              <StyledButton
-                primary
-                onClick={updateArticle}
-              >
-                Save changes without sharing STRINGS
-              </StyledButton>
-            )}
-         {/*  </Link> */}
+          {articleID === "new" ? (
+            <StyledButton primary onClick={uploadArticle}>
+              Save text without sharing STRINGS
+            </StyledButton>
+          ) : (
+            <StyledButton primary onClick={updateArticle}>
+              Save changes without sharing STRINGS
+            </StyledButton>
+          )}
+
           <StyledButton primary onClick={addArticleToCohort}>
             Save and share with classes STRINGS
           </StyledButton>
@@ -134,15 +140,12 @@ export default function EditText({ api }) {
             STRINGSCancel
           </StyledButton>
         </TopButtonWrapper>
-        {articleID === "new" && (
-          <LanguageSelector
-            value={state.language_code}
-            onChange={handleLanguageChange}
-          >
-            Please, define the language of the text ( - This cannot be changed
-            later! ) STRINGS
-          </LanguageSelector>
-        )}
+        <LanguageSelector
+          value={state.language_code}
+          onChange={handleLanguageChange}
+        >
+          Please, define the language of the text STRINGS
+        </LanguageSelector>
         <LabeledTextField
           value={state.article_title}
           onChange={handleChange}
@@ -164,9 +167,9 @@ export default function EditText({ api }) {
             <StyledButton secondary>STRINGSView as student</StyledButton>
           </Link>
           {articleID !== "new" && (
-              <StyledButton secondary onClick={deleteText}>
-                STRINGSDelete
-              </StyledButton>
+            <StyledButton secondary onClick={deleteText}>
+              STRINGSDelete
+            </StyledButton>
           )}
         </PopupButtonWrapper>
         <br />
