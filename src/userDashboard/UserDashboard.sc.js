@@ -80,8 +80,8 @@ const UserDashBoarDropdown = styled.select`
     color: ${props => props.disabled? lightGray: 'black'};
 
 :hover{
-    color: ${props => props.disabled? lightGray: darkerHueZeeguuOrange};
-    cursor: ${props => props.disabled? 'not-allowed': 'pointer'};
+    color: darkerHueZeeguuOrange; 
+    cursor: pointer;
 }
 
 `;
