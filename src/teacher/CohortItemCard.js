@@ -46,7 +46,7 @@ export const CohortItemCard = ({ api, cohort, setForceUpdate }) => {
         <StyledDialog
           aria-label="Create or edit class"
           onDismiss={() => setIsOpen(false)}
-          maxWidth="525px"
+          max_width="525px"
         >
           <CohortForm
             api={api}
