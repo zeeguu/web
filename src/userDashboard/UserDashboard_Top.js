@@ -42,7 +42,7 @@ const DropDownOption = ({ title }) => {
   }
 
 
-export default function UserDashboard_Top({ activeTab, handleActiveTabChange, activeOption, activeCustomOption, handleActiveCustomOptionChange, handleActiveTimeFormatChange, activeTimeFormatOption, dateForGraphs, setDateForGraphs }){
+export default function UserDashboard_Top({ activeTab, handleActiveTabChange, activeOption, handleActiveOptionChange, activeCustomOption, handleActiveCustomOptionChange, handleActiveTimeFormatChange, activeTimeFormatOption, dateForGraphs, setDateForGraphs }){
 
     return (
         
@@ -70,10 +70,10 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
             </div>
             
             <UserDashBoardOptionsContainer>
-            
-            <DropDownList handleChange={handleActiveCustomOptionChange} stateValue={activeCustomOption}>
+
+            <DropDownList handleChange={handleActiveOptionChange} stateValue={activeOption}>
             {
-              customPeriodOptions.map(
+              options.map(
                   option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
               )
               
@@ -82,27 +82,47 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
             </DropDownList>
 
             {
-            
-            (activeTab == 1)
+                (activeOption === OPTIONS.CUSTOM)
 
-            &&
+                &&
 
-            <DropDownList handleChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption}>
-            {
-                customTimeFormatOptions.map(
-                    option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
-                )
-                
+                <>
+                    <DropDownList handleChange={handleActiveCustomOptionChange} stateValue={activeCustomOption}>
+                        {
+                        customPeriodOptions.map(
+                            option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
+                        )
+                        
+                        }
+
+                        </DropDownList>
+
+                        {
+                        
+                        (activeTab == 1)
+
+                        &&
+
+                        <DropDownList handleChange={handleActiveTimeFormatChange} stateValue={activeTimeFormatOption}>
+                        {
+                            customTimeFormatOptions.map(
+                                option => <DropDownOption key={option.id} id={option.id} title={option.title}/>
+                            )
+                            
+                        }
+                        </DropDownList>
+
+                        }
+
+                        <DatePicker 
+                            dateFormat="dd/MM/yyyy"
+                            selected={dateForGraphs}
+                            onChange={date => setDateForGraphs(date)}
+                        />
+                </>
+
             }
-            </DropDownList>
 
-            }
-
-            <DatePicker 
-                dateFormat="dd/MM/yyyy"
-                selected={dateForGraphs}
-                onChange={date => setDateForGraphs(date)}
-            />
 
             </UserDashBoardOptionsContainer>
         
