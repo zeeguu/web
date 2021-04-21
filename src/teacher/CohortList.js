@@ -45,7 +45,7 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
         <StyledDialog
           onDismiss={() => setIsOpen(false)}
           aria-label="Create class"
-          maxWidth="525px"
+          max_width="525px"
         >
           <CohortForm
             api={api}
