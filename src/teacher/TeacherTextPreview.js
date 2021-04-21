@@ -11,12 +11,10 @@ export default function TeacherTextPreview({ article }) {
   //Setting up the routing context to be able to route correctly on Cancel
   const { setReturnPath } = useContext(RoutingContext);
 
-  let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
-  let DUMMYCLASSES = "3.X_B-level 2.Y_A-level";
-  let cohortlist = DUMMYCLASSES.split(" ").filter((each) => each !== "");
-  //TODO We need an addedToClassesStringOrArray attribute on each of the articles in the db
-  //TODO We need a way to store/filter articles that belongs to certain teacher
-  
+  const difficulty = Math.round(article.metrics.difficulty * 100) / 10;
+
+  const cohortList = article.cohorts;
+
   return (
     <Fragment>
       <st.StyledTeacherTextPreview>
@@ -24,15 +22,17 @@ export default function TeacherTextPreview({ article }) {
           <div className="lhs">
             <Link
               to={`/teacher/texts/editText/${article.id}`}
-              onClick={()=>setReturnPath("/teacher/texts")}
+              onClick={() => setReturnPath("/teacher/texts")}
             >
               <s.Title>{article.title}</s.Title>
             </Link>
             <div>
               <s.PublishingTime>(STRINGS) Added to:</s.PublishingTime>
               <s.Topics>
-                {cohortlist.map((cohort) => (
-                  <span className="added-to" key={cohort}>{cohort}</span>
+                {cohortList.map((cohort) => (
+                  <span className="added-to" key={cohort}>
+                    {cohort}
+                  </span>
                 ))}
               </s.Topics>
             </div>
@@ -42,7 +42,7 @@ export default function TeacherTextPreview({ article }) {
             <s.Difficulty>{difficulty}</s.Difficulty>
             <Link
               to={`/teacher/texts/editText/${article.id}`}
-              onClick={()=>setReturnPath("/teacher/texts")}
+              onClick={() => setReturnPath("/teacher/texts")}
             >
               <StyledButton secondary className="edit-btn">
                 STRINGSEdit text

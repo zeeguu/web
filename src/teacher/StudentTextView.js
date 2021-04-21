@@ -1,15 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 //import strings from "../i18n/definitions";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 
 export default function StudentsTextView() {
+  const articleID = useParams().articleID;
+
   return (
     <s.NarrowColumn>
       <sc.TopTabs>
         <h1>STRINGSView Text</h1>
       </sc.TopTabs>
-      <Link to="/teacher/texts/editText/:articleID">
+      <Link to={`/teacher/texts/editText/${articleID}`}>
         <button>STRINGEdit text</button>
       </Link>{" "}
       <button>STRINGAdd to class</button>{" "}
