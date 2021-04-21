@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import * as s from "../components/TopMessage.sc";
 import { lightOrange } from '../components/colors';
+import { device } from "./Devices";
 
 let lightGray = "#C6C9D1";
 let darkerHueZeeguuOrange = "#9c7130";
+
 
 const UserDashboardTopContainer = styled.div`
     text-align: center;
@@ -101,11 +103,43 @@ const UserDashBoarDropdown = styled.select`
 
 `;
 
+
 //parent container has to have height specified in order for the nivo graphs to be shown
-//this is why the div has height 500; the number can be changed
+// nivo automatically resizes the graphs' width, but not height
 const NivoGraphContainer = styled.div`
-${console.log("here")};
-    height: 500px;
+
+    @media ${device.mobileL} {
+        height: 200px;
+    }
+
+    @media ${device.tablet} {
+        height: 200px;
+    }
+
+    @media ${device.laptop1} { 
+        height: 250px;
+    }
+
+    @media ${device.laptop2} { 
+        height: 300px;
+    }
+
+    @media ${device.laptop3} { 
+        height: 350px;
+    }
+
+    @media ${device.laptop4} { 
+        height: 400px;
+    }
+
+    @media ${device.laptop5} { 
+        height: 450px;
+    }
+
+    @media ${device.desktop} {
+        height: 600px;
+    }
+
 `;
 
 export {
