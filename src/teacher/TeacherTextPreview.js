@@ -14,6 +14,8 @@ export default function TeacherTextPreview({ article }) {
   const difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
   const cohortList = article.cohorts;
+  console.log(article.title + " " + article.cohorts);
+  console.log(cohortList.length === 0);
 
   return (
     <Fragment>
@@ -27,7 +29,11 @@ export default function TeacherTextPreview({ article }) {
               <s.Title>{article.title}</s.Title>
             </Link>
             <div>
-              <s.PublishingTime>(STRINGS) Added to:</s.PublishingTime>
+              <s.PublishingTime>
+                {cohortList.length === 0
+                  ? "STRINGS Click on 'Edit text' to share this text with one or more classes."
+                  : "STRINGS Added to:"}
+              </s.PublishingTime>
               <s.Topics>
                 {cohortList.map((cohort) => (
                   <span className="added-to" key={cohort}>
