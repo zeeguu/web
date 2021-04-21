@@ -10,7 +10,7 @@ const PERIOD_OPTIONS = {
     WEEK: "Week",
     MONTH: "Month",
     YEAR: "Year",
-    YEARS: 'Years'
+    YEARS: 'Available years'
 };
 
 const ACTIVITY_TIME_FORMAT_OPTIONS = {
