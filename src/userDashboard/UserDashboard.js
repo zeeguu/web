@@ -17,8 +17,8 @@ export default function UserDashboard({ api }){
     const [allWordsData, setAllWordsData] = useState(null);
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
     const [referenceDate, setReferenceDate] = useState(new Date());
-    const [userActivityData, setUserActivityData] = useState(null);
-    const [userActivityDataPerMonths, setUserActivityDataPerMonths] = useState({});
+    const [dailyExerciseAndReadingTimes, setDailyExerciseAndReadingTimes] = useState(null);
+    const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] = useState({});
 
     function handleActiveTabChange(tabId) {
       setActiveTab(tabId);
@@ -73,15 +73,15 @@ export default function UserDashboard({ api }){
 
       api.getUserActivityByDay((activity) => {
 
-        setUserActivityData(activity);
+        setDailyExerciseAndReadingTimes(activity);
 
-        setUserActivityDataPerMonths(calculateCountPerMonth_Activity(activity));
+        setMonthlyExerciseAndReadingTimes(calculateCountPerMonth_Activity(activity));
   
       });
 
     }, [activeCustomTimeInterval]);
 
-    if (!allWordsData || !userActivityData) {
+    if (!allWordsData || !dailyExerciseAndReadingTimes) {
 
       return <LoadingAnimation />
 
@@ -109,7 +109,7 @@ export default function UserDashboard({ api }){
                 (activeTab === 1) ? 
 
                         <UserBarGraph 
-                          data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeCustomTimeInterval, referenceDate, activeTimeFormatOption)}
+                          data={getBarGraphData(dailyExerciseAndReadingTimes, monthlyExerciseAndReadingTimes, activeCustomTimeInterval, referenceDate, activeTimeFormatOption)}
                         />
 
                 : (activeTab === 2) ? 
