@@ -7,7 +7,11 @@ import {
   subMonths,
   subYears,
 } from "date-fns";
-import { PERIOD_OPTIONS, DATE_FORMAT } from "./ConstantsUserDashboard";
+import {
+  PERIOD_OPTIONS,
+  DATE_FORMAT,
+  LINE_GRAPH_BOTTOM_LEGEND,
+} from "./ConstantsUserDashboard";
 import { calculatePerMonth } from "./CommonDataFormat";
 
 /**
@@ -81,7 +85,7 @@ function getLineDataForWeek(data, dateInWeek) {
     STRING_FORMAT
   );
 
-  return [{ id: "Word Count Current Week", data: currentWeek }];
+  return [{ id: LINE_GRAPH_BOTTOM_LEGEND.WEEK, data: currentWeek }];
 }
 
 // last 30 days from given date
@@ -100,7 +104,7 @@ function getLineDataForMonth(data, dateInMonth) {
     STRING_FORMAT
   );
 
-  return [{ id: "Word Count Last 30 Days", data: currentMonth }];
+  return [{ id: LINE_GRAPH_BOTTOM_LEGEND.MONTH, data: currentMonth }];
 }
 
 //last 12 months (13, including the current month)
@@ -146,7 +150,7 @@ function getLineDataForYear(dataPerMonths, dateInYear) {
     dateInYear = subMonths(dateInYear, 1);
   }
 
-  return [{ id: "Word Count Last Year", data: result.reverse() }];
+  return [{ id: LINE_GRAPH_BOTTOM_LEGEND.YEAR, data: result.reverse() }];
 }
 
 function getLineDataForYears(dataPerMonths, dateInYear) {
@@ -184,7 +188,7 @@ function getLineDataForYears(dataPerMonths, dateInYear) {
     dateInYear = subYears(dateInYear, 1);
   }
 
-  return [{ id: "Word Count Available Years", data: result.reverse() }];
+  return [{ id: LINE_GRAPH_BOTTOM_LEGEND.YEARS, data: result.reverse() }];
 }
 
 /**

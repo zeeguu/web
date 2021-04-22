@@ -26,6 +26,11 @@ export default function StudentSpecificSidebarOptions({
           <small>{strings.exercises}</small>
         </Link>
       </div>
+      <div className="navigationLink">
+        <Link to="/user_dashboard" onClick={resetSidebarToDefault}>
+          <small>{strings.userDashboard}</small>
+        </Link>
+      </div>
 
       {!new_site && is_teacher && (
         // Old TD
