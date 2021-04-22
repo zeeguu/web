@@ -42,7 +42,7 @@ const DropDownOption = ({ title }) => {
   }
 
 
-export default function UserDashboard_Top({ activeTab, handleActiveTabChange, activeOption, handleActiveOptionChange, activeCustomOption, handleActiveCustomOptionChange, handleActiveTimeFormatChange, activeTimeFormatOption, dateForGraphs, setDateForGraphs }){
+export default function UserDashboard_Top({ activeTab, handleActiveTabChange, activeOption, handleActiveOptionChange, activeCustomOption, handleActiveCustomOptionChange, handleActiveTimeFormatChange, activeTimeFormatOption, referenceDate, setReferenceDate }){
 
     return (
         
@@ -70,11 +70,11 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
                     (activeTab === 1) ?
                     
                         <>
-                            Activity data for {activeCustomOption.toLowerCase()} up until date {dateForGraphs.toLocaleDateString("da-DK")}. {"\n"} Time count shown in {activeTimeFormatOption.toLowerCase()}. 
+                            Activity data for {activeCustomOption.toLowerCase()} up until date {referenceDate.toLocaleDateString("da-DK")}. {"\n"} Time count shown in {activeTimeFormatOption.toLowerCase()}. 
                         </>
                     :
                         <>
-                            Number of translated words for {activeCustomOption.toLowerCase()} up until date {dateForGraphs.toLocaleDateString("da-DK")}. 
+                            Number of translated words for {activeCustomOption.toLowerCase()} up until date {referenceDate.toLocaleDateString("da-DK")}. 
                         </>
                 }
             </UserDashboardHelperText>
@@ -128,8 +128,8 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
 
                         <DatePicker 
                             dateFormat="dd/MM/yyyy"
-                            selected={dateForGraphs}
-                            onChange={date => setDateForGraphs(date)}
+                            selected={referenceDate}
+                            onChange={date => setReferenceDate(date)}
                         />
                 </>
 
