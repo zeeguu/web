@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
+import LoadingAnimation from "../../../components/LoadingAnimation";
 
 import BottomFeedback from "../BottomFeedback";
 
@@ -9,7 +10,6 @@ const EXERCISE_TYPE = "MULTIPLE_CHOICE";
 export default function MultipleChoice({
   api,
   bookmarkToStudy,
-  wordsSimilarToCurrentBookmarkToStudy,
   correctAnswer,
   notifyIncorrectAnswer,
 }) {
@@ -20,7 +20,9 @@ export default function MultipleChoice({
   const [buttonOptions, setButtonOptions] = useState(null);
 
   useEffect(() => {
-    consolidateChoiceOptions();
+    api.wordsSimilarTo(bookmarkToStudy.id, (words) => {
+      consolidateChoiceOptions(words);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookmarkToStudy]);
 
@@ -61,11 +63,16 @@ export default function MultipleChoice({
     return context.replace(missingWord, "______");
   }
 
-  function consolidateChoiceOptions() {
+  function consolidateChoiceOptions(similarWords) {
+    let firstRandomInt = Math.floor(Math.random() * similarWords.length);
+    let secondRandomInt;
+    do {
+      secondRandomInt = Math.floor(Math.random() * similarWords.length);
+    } while (firstRandomInt === secondRandomInt);
     let listOfOptions = [
       bookmarkToStudy.from,
-      wordsSimilarToCurrentBookmarkToStudy[0],
-      wordsSimilarToCurrentBookmarkToStudy[1],
+      similarWords[firstRandomInt],
+      similarWords[secondRandomInt],
     ];
     let shuffledListOfOptions = shuffle(listOfOptions);
     setButtonOptions(shuffledListOfOptions);
@@ -90,6 +97,10 @@ export default function MultipleChoice({
     }
 
     return array;
+  }
+
+  if (!buttonOptions) {
+    return <LoadingAnimation />;
   }
 
   return (
