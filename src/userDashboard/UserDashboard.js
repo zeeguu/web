@@ -16,7 +16,7 @@ export default function UserDashboard({ api }){
     const [activeTimeFormatOption, setActiveTimeFormatOption] = useState(ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES);
     const [allWordsData, setAllWordsData] = useState(null);
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
-    const [dateForGraphs, setDateForGraphs] = useState(new Date());
+    const [referenceDate, setReferenceDate] = useState(new Date());
     const [userActivityData, setUserActivityData] = useState(null);
     const [userActivityDataPerMonths, setUserActivityDataPerMonths] = useState({});
 
@@ -30,7 +30,7 @@ export default function UserDashboard({ api }){
 
       if (selected !== OPTIONS.CUSTOM){
 
-        setDateForGraphs(new Date()); 
+        setReferenceDate(new Date()); 
 
         var period = (selected === OPTIONS.WEEK) ? PERIOD_OPTIONS.WEEK
                         : (selected === OPTIONS.MONTH) ?
@@ -99,8 +99,8 @@ export default function UserDashboard({ api }){
                   handleActiveCustomOptionChange={handleActiveCustomOptionChange}
                   handleActiveTimeFormatChange={handleActiveTimeFormatChange}
                   activeTimeFormatOption={activeTimeFormatOption}
-                  dateForGraphs={dateForGraphs}
-                  setDateForGraphs={setDateForGraphs}
+                  referenceDate={referenceDate}
+                  setReferenceDate={setReferenceDate}
               />
 
               <NivoGraphContainer>
@@ -109,13 +109,13 @@ export default function UserDashboard({ api }){
                 (activeTab === 1) ? 
 
                         <UserBarGraph 
-                          data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeCustomOption, dateForGraphs, activeTimeFormatOption)}
+                          data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeCustomOption, referenceDate, activeTimeFormatOption)}
                         />
 
                 : (activeTab === 2) ? 
 
                         <UserLineGraph 
-                          data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeCustomOption, dateForGraphs)}
+                          data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeCustomOption, referenceDate)}
                         />
 
                 : <></>
