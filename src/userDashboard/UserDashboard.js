@@ -11,8 +11,8 @@ import { NivoGraphContainer } from "./UserDashboard.sc";
 export default function UserDashboard({ api }){
 
     const [activeTab, setActiveTab] = useState(1);
-    const [activeOption, setActiveOption] = useState(OPTIONS.WEEK);
-    const [activeCustomOption, setActiveCustomOption] = useState(PERIOD_OPTIONS.WEEK);
+    const [activeTimeInterval, setActiveTimeInterval] = useState(OPTIONS.WEEK);
+    const [activeCustomTimeInterval, setActiveCustomTimeInterval] = useState(PERIOD_OPTIONS.WEEK);
     const [activeTimeFormatOption, setActiveTimeFormatOption] = useState(ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES);
     const [allWordsData, setAllWordsData] = useState(null);
     const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
@@ -24,9 +24,9 @@ export default function UserDashboard({ api }){
       setActiveTab(tabId);
       }
 
-    function handleActiveOptionChange(selected) {
+    function handleActiveTimeIntervalChange(selected) {
 
-      setActiveOption(selected);
+      setActiveTimeInterval(selected);
 
       if (selected !== OPTIONS.CUSTOM){
 
@@ -41,7 +41,7 @@ export default function UserDashboard({ api }){
                               PERIOD_OPTIONS.YEARS
                         : PERIOD_OPTIONS.WEEK;
               
-        handleActiveCustomOptionChange(period);
+        handleActiveCustomTimeInterval(period);
 
         handleActiveTimeFormatChange(ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES);
 
@@ -49,8 +49,8 @@ export default function UserDashboard({ api }){
 
     }
 
-    function handleActiveCustomOptionChange(selected) {
-      setActiveCustomOption(selected);
+    function handleActiveCustomTimeInterval(selected) {
+      setActiveCustomTimeInterval(selected);
     }
 
     function handleActiveTimeFormatChange(selected){
@@ -79,7 +79,7 @@ export default function UserDashboard({ api }){
   
       });
 
-    }, [activeCustomOption]);
+    }, [activeCustomTimeInterval]);
 
     if (!allWordsData || !userActivityData) {
 
@@ -93,10 +93,10 @@ export default function UserDashboard({ api }){
               <UserDashboard_Top
                   activeTab={activeTab}
                   handleActiveTabChange={handleActiveTabChange}
-                  activeOption={activeOption}
-                  handleActiveOptionChange={handleActiveOptionChange}
-                  activeCustomOption={activeCustomOption}
-                  handleActiveCustomOptionChange={handleActiveCustomOptionChange}
+                  activeTimeInterval={activeTimeInterval}
+                  handleActiveTimeIntervalChange={handleActiveTimeIntervalChange}
+                  activeCustomTimeInterval={activeCustomTimeInterval}
+                  handleActiveCustomTimeInterval={handleActiveCustomTimeInterval}
                   handleActiveTimeFormatChange={handleActiveTimeFormatChange}
                   activeTimeFormatOption={activeTimeFormatOption}
                   referenceDate={referenceDate}
@@ -109,13 +109,13 @@ export default function UserDashboard({ api }){
                 (activeTab === 1) ? 
 
                         <UserBarGraph 
-                          data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeCustomOption, referenceDate, activeTimeFormatOption)}
+                          data={getBarGraphData(userActivityData, userActivityDataPerMonths, activeCustomTimeInterval, referenceDate, activeTimeFormatOption)}
                         />
 
                 : (activeTab === 2) ? 
 
                         <UserLineGraph 
-                          data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeCustomOption, referenceDate)}
+                          data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeCustomTimeInterval, referenceDate)}
                         />
 
                 : <></>
