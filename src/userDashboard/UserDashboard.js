@@ -3,8 +3,8 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import TranslatedWordsGraph from "./userdashboardGraphs/TranslatedWordsGraph";
 import ReadingAndExercisesTimeGraph from "./userdashboardGraphs/ReadingAndExercisesTimeGraph";
 import { PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, OPTIONS } from "./dataFormat/ConstantsUserDashboard";
-import { getLineGraphData, calculateCountPerMonth_Words, getMapData} from "./dataFormat/LineGraphDataFormat";
-import { getBarGraphData, calculateCountPerMonth_Activity } from "./dataFormat/BarGraphDataFormat";
+import { getLineGraphData, calculateCountPerMonth_Words, getMapData} from "./dataFormat/TranslatedWordsDataFormat";
+import { getBarGraphData, calculateCountPerMonth_Activity } from "./dataFormat/ReadingAndExercisesTimeDataFormat";
 import UserDashboard_Top from "./UserDashboard_Top";
 import { NivoGraphContainer } from "./UserDashboard.sc";
 
