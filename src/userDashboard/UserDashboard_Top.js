@@ -70,11 +70,11 @@ export default function UserDashboard_Top({ activeTab, handleActiveTabChange, ac
                     (activeTab === 1) ?
                     
                         <>
-                            Activity data for {activeCustomOption.toLowerCase()} until date {dateForGraphs.toLocaleDateString("da-DK")}. {"\n"} Time count shown in {activeTimeFormatOption.toLowerCase()}. 
+                            Activity data for {activeCustomOption.toLowerCase()} up until date {dateForGraphs.toLocaleDateString("da-DK")}. {"\n"} Time count shown in {activeTimeFormatOption.toLowerCase()}. 
                         </>
                     :
                         <>
-                            Translated words for {activeCustomOption.toLowerCase()} until date {dateForGraphs.toLocaleDateString("da-DK")}. 
+                            Number of translated words for {activeCustomOption.toLowerCase()} up until date {dateForGraphs.toLocaleDateString("da-DK")}. 
                         </>
                 }
             </UserDashboardHelperText>

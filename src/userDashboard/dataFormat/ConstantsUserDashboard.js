@@ -7,9 +7,9 @@ const OPTIONS = {
 };
 
 const PERIOD_OPTIONS = {
-    WEEK: "Week",
-    MONTH: "Month",
-    YEAR: "Year",
+    WEEK: "7 days",
+    MONTH: "30 days",
+    YEAR: "12 months",
     YEARS: 'Available years'
 };
 
@@ -32,7 +32,7 @@ const BAR_GRAPH_KEYS = {
   READING: "reading_time",
   EXERCISES: "exercises_time",
   INDEX_BY: "date",
-  LEGEND_BOTTOM: "dates",
+  LEGEND_BOTTOM: "date",
   LEGEND_LEFT: ""
 }
 
