@@ -16,43 +16,32 @@ export default function Exercises({ api, articleID }) {
   const [bookmarksToStudyList, setbookmarksToStudyList] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarkToStudy, setCurrentBookmarkToStudy] = useState(null);
-  const [
-    wordsSimilarToCurrentBookmarkToStudy,
-    setWordsSimilarToCurrentBookmarkToStudy,
-  ] = useState(null);
   const [finished, setFinished] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [articleInfo, setArticleInfo] = useState(null);
 
+  function initializeExercises(bookmarks, title) {
+    setbookmarksToStudyList(bookmarks);
+    NUMBER_OF_EXERCISES = bookmarks.length;
+    setCurrentBookmarkToStudy(bookmarks[currentIndex]);
+    setTitle(title);
+  }
+
   if (!bookmarksToStudyList) {
     if (articleID) {
-      // we have an article id ==> we do exercises only for the words in that article
-
       api.bookmarksForArticle(articleID, (bookmarks) => {
-        setbookmarksToStudyList(bookmarks);
-        NUMBER_OF_EXERCISES = bookmarks.length;
-        setCurrentBookmarkToStudy(bookmarks[currentIndex]);
-        api.wordsSimilarTo(bookmarks[currentIndex].id, (words) => {
-          setWordsSimilarToCurrentBookmarkToStudy(words);
-        });
         api.getArticleInfo(articleID, (data) => {
           setArticleInfo(data);
-          setTitle('Exercises for "' + data.title + '"');
+          initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
         });
       });
     } else {
       api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, (bookmarks) => {
-        setbookmarksToStudyList(bookmarks);
-        NUMBER_OF_EXERCISES = bookmarks.length;
-        setCurrentBookmarkToStudy(bookmarks[currentIndex]);
-        api.wordsSimilarTo(bookmarks[currentIndex].id, (words) => {
-          setWordsSimilarToCurrentBookmarkToStudy(words);
-        });
+        initializeExercises(bookmarks, "Exercises");
       });
     }
-    setTitle("Exercises");
   }
 
   if (finished) {
@@ -68,7 +57,7 @@ export default function Exercises({ api, articleID }) {
     );
   }
 
-  if (!currentBookmarkToStudy || !wordsSimilarToCurrentBookmarkToStudy) {
+  if (!currentBookmarkToStudy) {
     return <LoadingAnimation />;
   }
 
@@ -82,9 +71,6 @@ export default function Exercises({ api, articleID }) {
 
     setCurrentIndex(newIndex);
     setCurrentBookmarkToStudy(bookmarksToStudyList[newIndex]);
-    api.wordsSimilarTo(bookmarksToStudyList[newIndex].id, (words) => {
-      setWordsSimilarToCurrentBookmarkToStudy(words);
-    });
   }
   function correctAnswer() {
     let currentBookmark = bookmarksToStudyList[currentIndex];
@@ -140,12 +126,8 @@ export default function Exercises({ api, articleID }) {
         {currentIndex % 2 === 1 && (
           <MultipleChoice
             bookmarkToStudy={currentBookmarkToStudy}
-            wordsSimilarToCurrentBookmarkToStudy={
-              wordsSimilarToCurrentBookmarkToStudy
-            }
             correctAnswer={correctAnswer}
             notifyIncorrectAnswer={incorrectAnswerNotification}
-            key={currentBookmarkToStudy.id}
             api={api}
           />
         )}
