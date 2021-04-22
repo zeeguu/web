@@ -10,6 +10,7 @@ import {
 } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
+import AddToCohortDialog from "./AddToCohortDialog";
 
 export default function EditText({ api }) {
   const articleID = useParams().articleID;
@@ -20,6 +21,8 @@ export default function EditText({ api }) {
     article_content: "",
     language_code: "default",
   });
+
+  const [showDialog, setShowDialog] = useState(false);
 
   //The user is editing an already existing text...
   useEffect(() => {
@@ -98,7 +101,8 @@ export default function EditText({ api }) {
   };
 
   const addArticleToCohort = () => {
-    api.addArticleToCohort(
+    setShowDialog(true)
+ /*    api.addArticleToCohort(
       articleID,
       120, //!HARDCODED!!!
       (res) => {
@@ -109,7 +113,7 @@ export default function EditText({ api }) {
       () => {
         console.log("Connection to server failed...");
       }
-    );
+    ); */
   };
 
   return (
@@ -153,6 +157,9 @@ export default function EditText({ api }) {
           )}
         </PopupButtonWrapper>
       </s.NarrowColumn>
+      {showDialog && (
+        <AddToCohortDialog api={api} setIsOpen={setShowDialog}/>
+      )}
     </Fragment>
   );
 }
