@@ -1,3 +1,7 @@
+/**
+ * Constants used for the UserDashboard module
+ */
+
 const OPTIONS = {
   WEEK: "Last 7 days",
   MONTH: "Last 30 days",
