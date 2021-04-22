@@ -40,8 +40,21 @@ const StyledButton = styled.button`
       padding: 0;
       border: None;
     `}
-`;
 
+    //ChoiceNotSelected
+    ${(props) =>
+    props.choiceNotSelected &&
+    css`
+     border: 3px solid ${lightBlue};
+    `}
+
+        //ChoiceSelected
+        ${(props) =>
+    props.choiceSelected &&
+    css`
+      border: 3px solid ${darkBlue};
+    `}
+`;
 
 const TopButtonWrapper = styled.div`
   display: flex;
@@ -51,10 +64,9 @@ const TopButtonWrapper = styled.div`
 `;
 
 const PopupButtonWrapper = styled.div`
-margin-top: 25px;
-display: flex;
-justify-content: flex-end
+  margin-top: 25px;
+  display: flex;
+  justify-content: flex-end;
 `;
-
 
 export { StyledButton, TopButtonWrapper, PopupButtonWrapper };
