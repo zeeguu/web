@@ -16,10 +16,10 @@ export default function AddToCohortDialog({ api, setIsOpen, setCohorts }) {
   }, []);
 
   const handleChange = (cohort) => {
+      //TODO we need a conditional here if (chosenCohorts.includes(cohort){//deselect}else{//select}
     console.log(cohort);
     var temp = new Array (...chosenCohorts, cohort)
     setChosenCohorts(temp);
-    console.log(chosenCohorts)
     setForceUpdate((prev) => prev + 1);
   };
 
