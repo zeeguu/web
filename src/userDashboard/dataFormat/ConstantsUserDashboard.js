@@ -40,6 +40,13 @@ const BAR_GRAPH_KEYS = {
   LEGEND_LEFT: "",
 };
 
+const LINE_GRAPH_BOTTOM_LEGEND = {
+  WEEK: "Word Count Week",
+  MONTH: "Word Count 30 Days",
+  YEAR: "Word Count 12 Months",
+  YEARS: "Word Count Available Years",
+};
+
 const USER_DASHBOARD_TITLES = {
   MAIN_TITLE: "Your Dashboard",
   BAR_GRAPH_TITLE: "Your time spent on reading and exercises",
@@ -54,4 +61,5 @@ export {
   TOP_TABS,
   USER_DASHBOARD_TITLES,
   OPTIONS,
+  LINE_GRAPH_BOTTOM_LEGEND,
 };
