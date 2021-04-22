@@ -88,7 +88,7 @@ export default function EditText({ api }) {
       }
     );
   };
-
+//!A CONFIRMATION POPUP SHOULD OPEN BEFORE THIS IS ACTUALLY RUN!!!
   const deleteText = () => {
     api.deleteOwnText(articleID, (res) => {
       if (res === "OK") {
@@ -101,8 +101,8 @@ export default function EditText({ api }) {
   };
 
   const addArticleToCohort = () => {
-    setShowDialog(true)
- /*    api.addArticleToCohort(
+    setShowDialog(true);
+    /*    api.addArticleToCohort(
       articleID,
       120, //!HARDCODED!!!
       (res) => {
@@ -125,15 +125,15 @@ export default function EditText({ api }) {
         <TopButtonWrapper>
           {articleID === "new" ? (
             <StyledButton primary onClick={uploadArticle}>
-              Save text without sharing STRINGS
+              Save text STRINGS
             </StyledButton>
           ) : (
             <StyledButton primary onClick={updateArticle}>
-              Save changes without sharing STRINGS
+              Save changes STRINGS
             </StyledButton>
           )}
           <StyledButton primary onClick={addArticleToCohort}>
-            Save and share with classes STRINGS
+            Add to class STRINGS
           </StyledButton>
           <StyledButton secondary onClick={handleCancel}>
             STRINGSCancel
@@ -157,9 +157,7 @@ export default function EditText({ api }) {
           )}
         </PopupButtonWrapper>
       </s.NarrowColumn>
-      {showDialog && (
-        <AddToCohortDialog api={api} setIsOpen={setShowDialog}/>
-      )}
+      {showDialog && <AddToCohortDialog api={api} setIsOpen={setShowDialog} />}
     </Fragment>
   );
 }

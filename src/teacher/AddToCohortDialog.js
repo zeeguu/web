@@ -14,6 +14,8 @@ export default function AddToCohortDialog({ api, setIsOpen, setCohorts }) {
     setForceUpdate((prev) => prev + 1);
     // eslint-disable-next-line
   }, []);
+  //TODO fix hardcoded languages in LanguageSelector
+  api.getSystemLanguages((res)=>console.log(res));
 
   const handleChange = (cohort) => {
       //TODO we need a conditional here if (chosenCohorts.includes(cohort){//deselect}else{//select}
@@ -47,7 +49,7 @@ export default function AddToCohortDialog({ api, setIsOpen, setCohorts }) {
         ))}
       <PopupButtonWrapper>
         <StyledButton primary onClick={handleSubmit}>
-          Share STRINGS
+          Add to class STRINGS
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>
