@@ -1,7 +1,7 @@
 import { ResponsiveBar } from '@nivo/bar'
 import {BAR_GRAPH_KEYS} from '../dataFormat/ConstantsUserDashboard';
 
-export default function UserBarGraph ({ data }) {
+export default function ReadingAndExercisesTimeGraph ({ data }) {
     return(
             <ResponsiveBar
                 data={data}

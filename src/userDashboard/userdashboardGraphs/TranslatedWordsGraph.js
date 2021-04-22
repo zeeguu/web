@@ -1,6 +1,6 @@
 import { ResponsiveLine } from '@nivo/line'
 
-export default function UserLineGraph ({ data }) {
+export default function TranslatedWordsGraph ({ data }) {
 
     return (
             <ResponsiveLine

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
-import UserLineGraph from "./userGraphs/UserLineGraph";
-import UserBarGraph from "./userGraphs/UserBarGraph";
+import TranslatedWordsGraph from "./userdashboardGraphs/TranslatedWordsGraph";
+import ReadingAndExercisesTimeGraph from "./userdashboardGraphs/ReadingAndExercisesTimeGraph";
 import { PERIOD_OPTIONS, ACTIVITY_TIME_FORMAT_OPTIONS, OPTIONS } from "./dataFormat/ConstantsUserDashboard";
 import { getLineGraphData, calculateCountPerMonth_Words, getMapData} from "./dataFormat/LineGraphDataFormat";
 import { getBarGraphData, calculateCountPerMonth_Activity } from "./dataFormat/BarGraphDataFormat";
@@ -108,13 +108,13 @@ export default function UserDashboard({ api }){
               {
                 (activeTab === 1) ? 
 
-                        <UserBarGraph 
+                        <ReadingAndExercisesTimeGraph 
                           data={getBarGraphData(dailyExerciseAndReadingTimes, monthlyExerciseAndReadingTimes, activeCustomTimeInterval, referenceDate, activeTimeFormatOption)}
                         />
 
                 : (activeTab === 2) ? 
 
-                        <UserLineGraph 
+                        <TranslatedWordsGraph 
                           data={getLineGraphData(allWordsData, allWordsDataPerMonths, activeCustomTimeInterval, referenceDate)}
                         />
 
