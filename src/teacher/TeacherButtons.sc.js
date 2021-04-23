@@ -45,14 +45,16 @@ const StyledButton = styled.button`
     ${(props) =>
     props.choiceNotSelected &&
     css`
-     border: 3px solid ${lightBlue};
+      border: 3px solid ${lightBlue};
     `}
 
         //ChoiceSelected
         ${(props) =>
     props.choiceSelected &&
     css`
-      border: 3px solid ${darkBlue};
+      color: white;
+      background: ${lightBlue};
+      border: 3px solid ${lightBlue};
     `}
 `;
 

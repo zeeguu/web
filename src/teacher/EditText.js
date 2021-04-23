@@ -14,7 +14,6 @@ import AddToCohortDialog from "./AddToCohortDialog";
 
 export default function EditText({ api }) {
   const articleID = useParams().articleID;
-  console.log(articleID);
 
   const [state, setState] = useState({
     article_title: "",
