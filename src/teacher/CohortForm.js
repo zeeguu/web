@@ -77,6 +77,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     });
   }
 
+  api.getUserActivityByDay(res => console.log(res))
   //The LanguageSelector component returns the language selected by the user as a string (not an event like the other input fields)
   function handleLanguageChange(selectedLanguage) {
     setState({
@@ -133,7 +134,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
           {isError && (
             <Error
               message={
-                "Something went wrong. Maybe the invite code is already in use. DEV NOTE: cannot edit language or delete non-empty classes.STRINGS"
+                "Something went wrong. Maybe the invite code is already in use. DEV NOTE: Cannot delete class with texts in it. STRINGS"
               }
               setLoading={setIsLoading}
             />
