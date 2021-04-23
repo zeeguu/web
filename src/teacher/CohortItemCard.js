@@ -7,7 +7,7 @@ import strings from "../i18n/definitions";
 import CohortForm from "./CohortForm";
 import { StyledDialog } from "./StyledDialog.sc";
 
-export const CohortItemCard = ({ api, cohort, setForceUpdate }) => {
+export const CohortItemCard = ({ api, cohort, setForceUpdate, isWarning }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Fragment>
@@ -31,14 +31,17 @@ export const CohortItemCard = ({ api, cohort, setForceUpdate }) => {
             <p className="font-light">
               {strings.inviteCode}: {cohort.inv_code}
             </p>
-            <div className="buttons-container">
-              <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
-                <StyledButton secondary>See students (STRINGS)</StyledButton>
-              </Link>
-              <StyledButton secondary onClick={() => setIsOpen(true)}>
-                Edit class (STRINGS)
-              </StyledButton>
-            </div>
+
+            {!isWarning && (
+              <div className="buttons-container">
+                <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
+                  <StyledButton secondary>See students (STRINGS)</StyledButton>
+                </Link>
+                <StyledButton secondary onClick={() => setIsOpen(true)}>
+                  Edit class (STRINGS)
+                </StyledButton>
+              </div>
+            )}
           </div>
         </div>
       </s.StyledCohortItemCard>
