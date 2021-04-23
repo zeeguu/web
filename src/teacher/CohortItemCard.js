@@ -27,7 +27,7 @@ export const CohortItemCard = ({ api, cohort, setForceUpdate }) => {
               {cohort.name} {/*This cannot be strings-yfied*/}
             </h2>
           </Link>
-          <div className="buttom-box">
+          <div className="bottom-box">
             <p className="font-light">
               {strings.inviteCode}: {cohort.inv_code}
             </p>

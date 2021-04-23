@@ -42,7 +42,7 @@ export const StyledCohortItemCard = styled.div`
     color: ${darkGrey};
     font-weight: 400;
   }
-  .buttom-box {
+  .bottom-box {
     display: flex;
     justify-content: space-between;
     padding-right: 1em;
