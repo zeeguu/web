@@ -11,9 +11,15 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
   const history = useHistory();
   //TODO set the chosen cohorts to any cohorts already "in" the article
   useEffect(() => {
-    api.getCohortsInfo((res) => {
-      setCohortsToChoose(res);
+    api.getCohortsInfo((cohortsOfTeacher) => {
+      setCohortsToChoose(cohortsOfTeacher);
     });
+    api.getCohortFromArticle(articleID, (cohortsInArticle) => {
+      console.log("cohortsInArticle:");
+      console.log(cohortsInArticle);
+      setChosenCohorts(cohortsInArticle);
+    });
+
     setForceUpdate((prev) => prev + 1);
     // eslint-disable-next-line
   }, []);
@@ -67,7 +73,8 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       {forceUpdate > 0 &&
         cohortsToChoose.map((cohort) => (
           <StyledButton
-            choiceNotSelected
+            key={cohort.id}
+            choiceSelected
             onClick={() => {
               handleChange(cohort);
             }}

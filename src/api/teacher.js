@@ -43,6 +43,10 @@ Zeeguu_API.prototype.updateCohort = async function (data, id) {
   return await this.apiPost(`/update_cohort/${id}`, data, true);
 };
 
+Zeeguu_API.prototype.getCohortFromArticle = function (article_id, callback) {
+  this._get(`/get_cohorts_for_article/${article_id}`, callback);
+};
+
 Zeeguu_API.prototype.getCohortsInfo = function (callback) {
   /*
   Example return:
