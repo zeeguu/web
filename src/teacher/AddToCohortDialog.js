@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router";
+import SelectCohortsButton from "./SelectCohortsButton";
 import { StyledDialog } from "./StyledDialog.sc";
 import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 
@@ -9,36 +10,47 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
   const [forceUpdate, setForceUpdate] = useState(0);
   const articleID = useParams().articleID;
   const history = useHistory();
-  //TODO set the chosen cohorts to any cohorts already "in" the article
+
   useEffect(() => {
     api.getCohortsInfo((cohortsOfTeacher) => {
       setCohortsToChoose(cohortsOfTeacher);
     });
     api.getCohortFromArticle(articleID, (cohortsInArticle) => {
-      console.log("cohortsInArticle:");
-      console.log(cohortsInArticle);
       setChosenCohorts(cohortsInArticle);
     });
-
-    setForceUpdate((prev) => prev + 1);
     // eslint-disable-next-line
-  }, []);
+  }, [forceUpdate]);
+
+  console.log(chosenCohorts);
 
   const addToCohorts = () => {
-    chosenCohorts.forEach((cohort) => {
-      console.log("Adding " + articleID + " to " + cohort.id);
-      addArticleToCohort(cohort.id);
+    cohortsToChoose.forEach((cohort) => {
+      if (isChosen(cohort)===true){
+        console.log("Adding " + articleID + " to " + cohort.id);
+        addArticleToCohort(cohort.id);
+        
+      }else{
+        deleteArticleFromCohort(cohort.id)
+        console.log("Deleting " + articleID + " to " + cohort.id);
+      }
       setIsOpen(false);
+      history.push("/teacher/texts");
     });
+
   };
 
-  const handleChange = (cohort) => {
-    //TODO we need a conditional here if (chosenCohorts.includes(cohort){//deselect}else{//select}
-    console.log(cohort);
-    if (!chosenCohorts.includes(cohort)) {
-      var temp = [...chosenCohorts, cohort];
+  const handleChange = (cohort_name) => {
+    console.log(cohort_name);
+    if (!chosenCohorts.includes(cohort_name)) {
+      var temp = [...chosenCohorts, cohort_name];
       setChosenCohorts(temp);
-      setForceUpdate((prev) => prev + 1);
+    }
+
+    if (chosenCohorts.includes(cohort_name)) {
+      const temp = chosenCohorts.filter(
+        (chosenCohort) => chosenCohort !== cohort_name
+      );
+      setChosenCohorts(temp);
     }
   };
 
@@ -49,7 +61,6 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       (res) => {
         console.log("Connection established...");
         console.log(res);
-        history.push("/teacher/texts");
       },
       () => {
         console.log("Connection to server failed...");
@@ -57,34 +68,41 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
     );
   };
 
-  const handleSubmit = () => {
-    /* setCohorts(chosenCohorts);
-      setIsOpen(false); */
-    console.log(chosenCohorts);
+  const deleteArticleFromCohort = (cohortID) => {
+    api.deleteArticleFromCohort(
+      articleID,
+      cohortID,
+      (res) => {
+        console.log( cohortID + " deleted from " + articleID);
+        console.log(res);
+      },
+      () => {
+        console.log("Connection to server failed...");
+      }
+    )
   };
+
+  const isChosen = (cohort) => chosenCohorts.includes(cohort.name);
 
   return (
     <StyledDialog
-      aria-label="Choose cohorts"
+      aria-label="Choose classes"
       onDismiss={() => setIsOpen(false)}
       max_width="525px"
     >
       <h1>Choose one or more classes STRING</h1>
-      {forceUpdate > 0 &&
+      {chosenCohorts.length >= 0 &&
         cohortsToChoose.map((cohort) => (
-          <StyledButton
+          <SelectCohortsButton
             key={cohort.id}
-            choiceSelected
-            onClick={() => {
-              handleChange(cohort);
-            }}
-          >
-            {cohort.name}
-          </StyledButton>
+            cohort={cohort}
+            isChosen={isChosen(cohort)}
+            handleChange={handleChange}
+          />
         ))}
       <PopupButtonWrapper>
         <StyledButton primary onClick={addToCohorts}>
-          Add to class STRINGS
+          Save changesTTTSTRINGS
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>
