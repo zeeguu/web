@@ -14,8 +14,6 @@ export default function AddToCohortDialog({ api, setIsOpen, setCohorts }) {
     setForceUpdate((prev) => prev + 1);
     // eslint-disable-next-line
   }, []);
-  //TODO fix hardcoded languages in LanguageSelector
-  api.getSystemLanguages((res)=>console.log(res));
 
   const handleChange = (cohort) => {
       //TODO we need a conditional here if (chosenCohorts.includes(cohort){//deselect}else{//select}

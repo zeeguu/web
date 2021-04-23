@@ -12,7 +12,7 @@ export default function StudentsTextView() {
         <h1>STRINGSView Text</h1>
       </sc.TopTabs>
       <Link to={`/teacher/texts/editText/${articleID}`}>
-        <button>STRINGEdit text</button>
+        <button>STRINGBack to editing</button>
       </Link>{" "}
       <button>STRINGAdd to class</button>{" "}
       <button>ICONTranlate</button>{" "}
