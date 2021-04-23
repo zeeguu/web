@@ -8,9 +8,12 @@ import {
 } from "./CohortFormInputFields";
 import { languageMap, LanguageSelector } from "./LanguageSelector";
 import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
+import { StyledDialog } from "./StyledDialog.sc";
+import CohortItemCard from "./CohortItemCard";
 
 const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const [isError, setIsError] = useState(false);
   const [state, setState] = useState({
     id: cohort ? cohort.id : "",
@@ -77,7 +80,6 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     });
   }
 
-  api.getUserActivityByDay(res => console.log(res))
   //The LanguageSelector component returns the language selected by the user as a string (not an event like the other input fields)
   function handleLanguageChange(selectedLanguage) {
     setState({
@@ -146,11 +148,38 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
           {cohort ? "Save changes STRINGS" : "Create class STRINGS"}
         </StyledButton>
         {cohort && (
-          <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
+          <StyledButton secondary onClick={() => setShowWarning(true)}>
             DeleteSTRING
           </StyledButton>
         )}
       </PopupButtonWrapper>
+      {showWarning && (
+        <StyledDialog
+          aria-label="Delete a class warning"
+          onDismiss={() => setShowWarning(false)}
+          max_width="525px"
+        >
+          <h1>Danger Zone STRINGS</h1>
+          <p>
+            Are you sure you want to delete this class? This cannot be undone.
+            STRINGS
+          </p>
+          <CohortItemCard
+            api={api}
+            cohort={cohort}
+            setForceUpdate={() => console.log("This is never used")}
+            isWarning={true}
+          />
+          <PopupButtonWrapper>
+            <StyledButton primary onClick={() => setShowWarning(false)}>
+              Cancel STRINGS
+            </StyledButton>
+            <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
+              Delete STRINGS
+            </StyledButton>
+          </PopupButtonWrapper>
+        </StyledDialog>
+      )}
     </div>
   );
 };

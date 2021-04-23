@@ -102,7 +102,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
         ))}
       <PopupButtonWrapper>
         <StyledButton primary onClick={addToCohorts}>
-          Save changesTTTSTRINGS
+          Save changes STRINGS
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>
