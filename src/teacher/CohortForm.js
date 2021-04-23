@@ -54,7 +54,6 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     setIsLoading(false);
   };
 
-  //!It is not yet possible on the backend to change the language of the class
   const updateCohort = (form, cohort_id) => {
     setIsError(false);
     api
