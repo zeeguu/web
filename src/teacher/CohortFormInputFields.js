@@ -22,7 +22,7 @@ export const InviteCodeTextfield = ({ value, onChange }) => {
       name="invite_code"
       placeholder="ex. 'L34n1ng4u'"
     >
-      Choose an invitecode STRINGS
+      Create any invite code you like (max. 20 characters)STRINGS
     </LabeledTextField>
   );
 };
