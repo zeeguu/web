@@ -20,6 +20,29 @@ export default function Settings({ api, setUser }) {
   const history = useHistory();
   const user = useContext(UserContext);
   const [languages, setLanguages] = useState();
+  
+  
+  // TODO: Refactor using Zeeguu project logic
+  const sysLanguages = [
+    {
+      name: "Danish",
+      code: "da",
+    },
+    {
+      name: "English",
+      code: "en",
+    },
+  ];
+
+  const [sysLanguage, setSysLanguage] = useState();
+  useEffect(() => {
+    const language = JSON.parse(localStorage.getItem("systemLanguage"));
+    setSysLanguage(language);
+  }, []);
+  function onSysChange(lang) {
+    setSysLanguage(lang);
+  }
+
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -43,8 +66,8 @@ export default function Settings({ api, setUser }) {
 
   function nativeLanguageUpdated(e) {
     let code = e.target[e.target.selectedIndex].getAttribute("code");
-
-    strings.setLanguage(code);
+    // console.log(code)
+    // strings.setLanguage(code);
     setUserDetails({
       ...userDetails,
       native_language: code,
@@ -53,6 +76,9 @@ export default function Settings({ api, setUser }) {
 
   function handleSave(e) {
     e.preventDefault();
+
+    strings.setLanguage(sysLanguage.code);
+    localStorage.setItem("systemLanguage", JSON.stringify(sysLanguage));
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
@@ -116,6 +142,16 @@ export default function Settings({ api, setUser }) {
             languages.native_languages
           )}
           onChange={nativeLanguageUpdated}
+        />
+
+        <label>{strings.systemLanguage}</label>
+        <LanguageSelector
+          languages={sysLanguages}
+          selected={sysLanguage.name}
+          onChange={(e) => {
+            let lang = sysLanguages.find(lang => lang.code === e.target[e.target.selectedIndex].getAttribute("code")) 
+            onSysChange(lang)
+          }}
         />
 
         <div>

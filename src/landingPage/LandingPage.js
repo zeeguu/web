@@ -4,15 +4,27 @@ import News from "./News";
 import * as s from "./LandingPage.sc.js";
 import Contributors from "./Contributors";
 import { Redirect } from "react-router-dom";
+import React, { useState } from "react";
+import LanguageSettings from "../components/LanguageSettings";
 
 export default function LandingPage() {
+  const forceUpdateHook = useState(0)[1];
+
+  localStorage.setItem("systemLanguage", JSON.stringify({
+    name: "Dansk",
+    code: "da",
+  }));
   if (LocalStorage.hasSession()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
+  
   return (
     <div>
       <s.LoginHeader>
         <s.HeaderTitle>Zeeguu</s.HeaderTitle>
+        <LanguageSettings
+          useForceUpdate={() => forceUpdateHook((value) => value + 1)}
+        />
       </s.LoginHeader>
 
       <s.PageContent>

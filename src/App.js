@@ -33,7 +33,7 @@ function App() {
   const [user, setUser] = useState(userDict);
 
   function handleSuccessfulSignIn(userInfo) {
-    strings.setLanguage(userInfo.native_language);
+    // strings.setLanguage(userInfo.native_language);
 
     setUser({
       session: api.session,

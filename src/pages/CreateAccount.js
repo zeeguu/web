@@ -13,6 +13,7 @@ import * as s from "../components/FormPage.sc";
 import PrivacyNotice from "./PrivacyNotice";
 import * as EmailValidator from "email-validator";
 
+
 export default function CreateAccount({ api, notifySuccessfulSignIn }) {
   const [inviteCode, setInviteCode] = useState("");
   const [name, setName] = useState("");
@@ -82,7 +83,6 @@ export default function CreateAccount({ api, notifySuccessfulSignIn }) {
   return (
     <s.PageBackground>
       <s.LogoOnTop />
-
       <s.FormContainer>
         <form action="">
           <s.FormTitle>{strings.createAccount}</s.FormTitle>

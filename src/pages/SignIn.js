@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 
 import { useHistory } from "react-router-dom";
-import strings from "../i18n/definitions"
+import strings from "../i18n/definitions";
 
 import * as s from "../components/FormPage.sc";
 
 export default function SignIn({ api, notifySuccessfulSignIn }) {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");

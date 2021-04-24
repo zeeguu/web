@@ -245,6 +245,7 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Native Language",
+      systemLanguage: "System Language",
     },
 
     da: {
@@ -460,6 +461,7 @@ let strings = new LocalizedStrings(
       learnedWordsAreMsg:
         "Lærte ord er ord, der har været trænet korrekt i øvelser på fire forskellige dage.",
       numberOfLearnedWordsMsg: "Du har lært {0} ord indtil videre.",
+      correctOn: "Korrekt på: ",
 
       //Starred
       titleStarredWords: "Starred Words",
@@ -492,6 +494,7 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Modersmål",
+      systemLanguage: "System Sprog",
     },
   },
   {
