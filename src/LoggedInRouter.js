@@ -5,11 +5,13 @@ import Settings from "./pages/Settings";
 import { PrivateRoute } from "./PrivateRoute";
 import SideBar from "./components/SideBar";
 import ArticleReader from "./reader/ArticleReader";
+import { useState } from "react";
 
 export default function LoggedInRouter({ api, setUser }) {
+
   return (
     <>
-      <SideBar>
+      <SideBar >
         <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
         <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
         <PrivateRoute path="/words" api={api} component={WordsRouter} />
