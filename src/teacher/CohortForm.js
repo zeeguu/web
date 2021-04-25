@@ -8,8 +8,7 @@ import {
 } from "./CohortFormInputFields";
 import { languageMap, LanguageSelector } from "./LanguageSelector";
 import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
-import { StyledDialog } from "./StyledDialog.sc";
-import CohortItemCard from "./CohortItemCard";
+import DeleteCohortWarning from "./DeleteCohortWarning";
 
 const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,21 +23,20 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
   });
 
   const addCohort = (form) => {
+    setIsLoading(true);
     setIsError(false);
     api
       .createCohort(form)
       .then((result) => {
         setIsOpen(false);
-        //TODO add system feedback to user here
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
-        //TODO add system feedback to user here
         setIsError(true);
       });
+    setIsLoading(false);
   };
 
-  //!A CONFIRMATION POPUP SHOULD OPEN BEFORE THIS IS ACTUALLY RUN!!!
   //!Remember that it is not possible to delete a class with students in it.
   const deleteCohort = (cohort_id) => {
     setIsLoading(true);
@@ -47,27 +45,24 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
       .deleteCohort(cohort_id)
       .then((result) => {
         setIsOpen(false);
-        //TODO add system feedback to user here
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
-        //TODO add system feedback to user here
         setIsError(true);
       });
     setIsLoading(false);
   };
 
   const updateCohort = (form, cohort_id) => {
+    setIsLoading(true);
     setIsError(false);
     api
       .updateCohort(form, cohort_id)
       .then((result) => {
         setIsOpen(false);
-        //TODO add system feedback to user here
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
-        //TODO add system feedback to user here
         setIsError(true);
       });
     setIsLoading(false);
@@ -87,7 +82,15 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
       language_code: selectedLanguage,
     });
   }
-  //! There is no form validation so the user can upload classes with data missing!!! Validation should be implented.
+
+  //the submit button is disabled until the input is valid
+  const isValid =
+    state.cohort_name !== "" &&
+    state.cohort_name.length <= 50 &&
+    state.invite_code !== "" &&
+    state.invite_code.length <= 20 &&
+    state.language_code !== "default";
+
   function setupForm() {
     const form = new FormData();
     form.append("name", state.cohort_name);
@@ -143,8 +146,18 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
           )}
         </form>
       )}
+      {!isValid && (
+        <p style={{ color: "red" }}>
+          You must fill out all the input fields. STRINGS
+        </p>
+      )}
       <PopupButtonWrapper>
-        <StyledButton primary onClick={submitForm} style={{ minWidth: 120 }}>
+        <StyledButton
+          primary
+          onClick={submitForm}
+          style={{ minWidth: 120 }}
+          disabled={!isValid}
+        >
           {cohort ? "Save changes STRINGS" : "Create class STRINGS"}
         </StyledButton>
         {cohort && (
@@ -154,30 +167,12 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
         )}
       </PopupButtonWrapper>
       {showWarning && (
-        <StyledDialog
-          aria-label="Delete a class warning"
-          onDismiss={() => setShowWarning(false)}
-          max_width="525px"
-        >
-          <h1>Danger Zone STRINGS</h1>
-          <p>
-            Are you sure you want to delete this class? This cannot be undone.
-            STRINGS
-          </p>
-          <CohortItemCard
-            api={api}
-            cohort={cohort}
-            isWarning={true}
-          />
-          <PopupButtonWrapper>
-            <StyledButton primary onClick={() => setShowWarning(false)}>
-              Cancel STRINGS
-            </StyledButton>
-            <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
-              Delete STRINGS
-            </StyledButton>
-          </PopupButtonWrapper>
-        </StyledDialog>
+        <DeleteCohortWarning
+          api={api}
+          cohort={cohort}
+          setShowWarning={setShowWarning}
+          deleteCohort={deleteCohort}
+        />
       )}
     </div>
   );

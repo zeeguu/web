@@ -21,6 +21,11 @@ export default function EditText({ api }) {
     language_code: "default",
   });
 
+  const buttonDisabled =
+    state.article_title === "" ||
+    state.article_content === "" ||
+    state.language_code === "default";
+
   const [showDialog, setShowDialog] = useState(false);
 
   //The user is editing an already existing text...
@@ -87,8 +92,8 @@ export default function EditText({ api }) {
       }
     );
   };
-  
-//!A CONFIRMATION POPUP SHOULD OPEN BEFORE THIS IS ACTUALLY RUN!!!
+
+  //!A CONFIRMATION POPUP SHOULD OPEN BEFORE THIS IS ACTUALLY RUN!!!
   const deleteText = () => {
     api.deleteOwnText(articleID, (res) => {
       if (res === "OK") {
@@ -112,15 +117,27 @@ export default function EditText({ api }) {
         </sc.TopTabs>
         <TopButtonWrapper>
           {articleID === "new" ? (
-            <StyledButton primary onClick={uploadArticle}>
+            <StyledButton
+              primary
+              onClick={uploadArticle}
+              disabled={buttonDisabled}
+            >
               Save text STRINGS
             </StyledButton>
           ) : (
-            <StyledButton primary onClick={updateArticle}>
+            <StyledButton
+              primary
+              onClick={updateArticle}
+              disabled={buttonDisabled}
+            >
               Save changes STRINGS
             </StyledButton>
           )}
-          <StyledButton primary onClick={addArticleToCohort}>
+          <StyledButton
+            primary
+            onClick={addArticleToCohort}
+            disabled={buttonDisabled}
+          >
             Add to class STRINGS
           </StyledButton>
           <StyledButton secondary onClick={handleCancel}>
@@ -134,9 +151,16 @@ export default function EditText({ api }) {
           handleLanguageChange={handleLanguageChange}
           handleChange={handleChange}
         />
+        {buttonDisabled && (
+          <p style={{ color: "red" }}>
+            You must fill out all the input fields. STRINGS
+          </p>
+        )}
         <PopupButtonWrapper>
           <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
-            <StyledButton secondary>STRINGSView as student</StyledButton>
+            <StyledButton secondary disabled={buttonDisabled}>
+              STRINGSView as student
+            </StyledButton>
           </Link>
           {articleID !== "new" && (
             <StyledButton secondary onClick={deleteText}>

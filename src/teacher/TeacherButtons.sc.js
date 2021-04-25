@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { lightBlue, darkBlue } from "../components/colors";
+import { lightBlue, darkBlue, lightGrey } from "../components/colors";
 
 const StyledButton = styled.button`
   user-select: none;
@@ -14,6 +14,12 @@ const StyledButton = styled.button`
   font-weight: 500;
   text-align: center;
   cursor: pointer;
+
+  :disabled{
+    background-color:${lightGrey};
+    border: 3px solid ${lightGrey};
+    color: white;
+  }
 
   //Primary
   ${(props) =>

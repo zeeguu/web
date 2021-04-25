@@ -9,7 +9,11 @@ export const CohortNameTextField = ({ value, onChange }) => {
       name="cohort_name"
       placeholder="eg. 'B-level 2021'"
     >
-      Choose the class name STRINGS
+      {value.length <= 50 ? (
+        "Choose the class name (max. 50 characters)STRINGS"
+      ) : (
+        <p style={{ color: "red" }}>The class name is too long. STRINGS</p>
+      )}
     </LabeledTextField>
   );
 };
@@ -20,9 +24,13 @@ export const InviteCodeTextField = ({ value, onChange }) => {
       value={value}
       onChange={onChange}
       name="invite_code"
-      placeholder="eg. 'L34n1ng4u'"
+      placeholder="eg. 'L34n!ng'"
     >
-      Create any invite code you like (max. 20 characters)STRINGS
+      {value.length <= 20 ? (
+        "Create any invite code you like (max. 20 characters)STRINGS"
+      ) : (
+        <p style={{ color: "red" }}>The invite code is too long. STRINGS</p>
+      )}
     </LabeledTextField>
   );
 };

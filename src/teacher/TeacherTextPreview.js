@@ -13,6 +13,8 @@ export default function TeacherTextPreview({ article }) {
 
   const difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
+  const shortenedTitle = article.title.substring(0, 128);
+
   const cohortList = article.cohorts;
 
   return (
@@ -24,13 +26,18 @@ export default function TeacherTextPreview({ article }) {
               to={`/teacher/texts/editText/${article.id}`}
               onClick={() => setReturnPath("/teacher/texts")}
             >
-              <s.Title>{article.title}</s.Title>
+              <s.Title>{shortenedTitle}</s.Title>
             </Link>
             <div>
               <s.PublishingTime>
-                {cohortList.length === 0
-                  ? <p>STRINGS Remember to share this text with one or more classes.</p>
-                  : "STRINGS Added to:"}
+                {cohortList.length === 0 ? (
+                  <p>
+                    STRINGS Remember to share this text with one or more
+                    classes.
+                  </p>
+                ) : (
+                  "STRINGS Added to:"
+                )}
               </s.PublishingTime>
               <s.Topics>
                 {cohortList.map((cohort) => (
