@@ -43,11 +43,11 @@ export const LabeledMultiLineTextField = (props) => {
             id={props.name}
             placeholder={props.placeholder}
             multiline={true}
-            rows={6}
+            rows={15}
             fullWidth
             type="text"
             required
-          />  
+          />
         </div>
       </s.LabeledInputFields>
     </Fragment>
