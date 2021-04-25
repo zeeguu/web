@@ -7,7 +7,6 @@ import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 export default function AddToCohortDialog({ api, setIsOpen }) {
   const [cohortsToChoose, setCohortsToChoose] = useState([]);
   var [chosenCohorts, setChosenCohorts] = useState([]);
-  const [forceUpdate, setForceUpdate] = useState(0);
   const articleID = useParams().articleID;
   const history = useHistory();
 
@@ -19,9 +18,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       setChosenCohorts(cohortsInArticle);
     });
     // eslint-disable-next-line
-  }, [forceUpdate]);
-
-  console.log(chosenCohorts);
+  }, []);
 
   const addToCohorts = () => {
     cohortsToChoose.forEach((cohort) => {
@@ -40,7 +37,6 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
   };
 
   const handleChange = (cohort_name) => {
-    console.log(cohort_name);
     if (!chosenCohorts.includes(cohort_name)) {
       var temp = [...chosenCohorts, cohort_name];
       setChosenCohorts(temp);

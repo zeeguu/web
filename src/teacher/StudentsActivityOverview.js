@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import StudentInfoLine from "./StudentInfoLine";
 import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
@@ -8,16 +8,19 @@ import * as sc from "../components/TopTabs.sc";
 export default function StudentsActivityOverview({api}) {
   const cohortID = useParams().cohortID;
   const [cohortName, setCohortName] = useState("");
-  //TODO Would be nicer to have an api-call: api.getCohortName(cohortID){//returns the name of the cohort that has the cohortID} instead of the mess below
   const studentID = "StudentName(HARDCODED)";
- 
-  api.getCohortsInfo((res) => {
-    const b = res.filter(
-      (cohort) => cohort.id ===cohortID
-      );
-      setCohortName(b[0].name)
-      console.log(cohortName);
-  });
+  
+  //TODO Would be nicer to have an api-call: api.getCohortName(cohortID){//returns the name of the cohort that has the cohortID} instead of the mess below
+  useEffect(()=>{
+    api.getCohortsInfo((res) => {
+      const currentCohortArray = res.filter(
+        (cohort) => cohort.id ===cohortID
+        );
+        setCohortName(currentCohortArray[0].name)
+    });
+    //eslint-disable-next-line
+  },[])
+
   return (
     <Fragment>
       <s.WideColumn>

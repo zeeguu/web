@@ -1,8 +1,7 @@
 import React from "react";
 import { StyledButton } from "./TeacherButtons.sc";
 
-export default function ({ cohort, isChosen, handleChange }) {
-    console.log(cohort.name + " " + isChosen)
+export default function SelectCohortsButton({ cohort, isChosen, handleChange }) {
   return (
     <>
       {isChosen && (
