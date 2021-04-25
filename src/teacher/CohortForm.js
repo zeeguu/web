@@ -167,7 +167,6 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
           <CohortItemCard
             api={api}
             cohort={cohort}
-            setForceUpdate={() => console.log("This is never used")}
             isWarning={true}
           />
           <PopupButtonWrapper>

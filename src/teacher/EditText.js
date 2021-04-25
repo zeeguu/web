@@ -102,18 +102,6 @@ export default function EditText({ api }) {
 
   const addArticleToCohort = () => {
     setShowDialog(true);
-    /*    api.addArticleToCohort(
-      articleID,
-      120, //!HARDCODED!!!
-      (res) => {
-        console.log("Connection established...");
-        console.log(res);
-        history.push("/teacher/texts");
-      },
-      () => {
-        console.log("Connection to server failed...");
-      }
-    ); */
   };
 
   return (
