@@ -6,7 +6,7 @@ import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 
 export default function AddToCohortDialog({ api, setIsOpen }) {
   const [cohortsToChoose, setCohortsToChoose] = useState([]);
-  var [chosenCohorts, setChosenCohorts] = useState([]);
+  const [chosenCohorts, setChosenCohorts] = useState([]);
   const articleID = useParams().articleID;
   const history = useHistory();
 
