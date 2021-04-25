@@ -3,8 +3,8 @@ import { FormControl } from "@material-ui/core";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { Error } from "./Error";
 import {
-  CohortNameTextfield,
-  InviteCodeTextfield,
+  CohortNameTextField,
+  InviteCodeTextField,
 } from "./CohortFormInputFields";
 import { languageMap, LanguageSelector } from "./LanguageSelector";
 import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
@@ -112,11 +112,11 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
         <LoadingAnimation />
       ) : (
         <form>
-          <CohortNameTextfield
+          <CohortNameTextField
             value={state.cohort_name}
             onChange={handleChange}
           />
-          <InviteCodeTextfield
+          <InviteCodeTextField
             value={state.invite_code}
             onChange={handleChange}
           />
