@@ -1,26 +1,26 @@
 import React from "react";
 import { LabeledTextField } from "./LabeledInputFields";
 
-export const CohortNameTextfield = ({ value, onChange }) => {
+export const CohortNameTextField = ({ value, onChange }) => {
   return (
     <LabeledTextField
       value={value}
       onChange={onChange}
       name="cohort_name"
-      placeholder="ex. 'B-level 2021'"
+      placeholder="eg. 'B-level 2021'"
     >
       Choose the class name STRINGS
     </LabeledTextField>
   );
 };
 
-export const InviteCodeTextfield = ({ value, onChange }) => {
+export const InviteCodeTextField = ({ value, onChange }) => {
   return (
     <LabeledTextField
       value={value}
       onChange={onChange}
       name="invite_code"
-      placeholder="ex. 'L34n1ng4u'"
+      placeholder="eg. 'L34n1ng4u'"
     >
       Create any invite code you like (max. 20 characters)STRINGS
     </LabeledTextField>
