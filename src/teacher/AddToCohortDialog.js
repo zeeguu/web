@@ -6,6 +6,7 @@ import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 
 export default function AddToCohortDialog({ api, setIsOpen }) {
   const [cohortsToChoose, setCohortsToChoose] = useState([]);
+  const [initiallyChosen, setInitiallyChosen] = useState([]);
   const [chosenCohorts, setChosenCohorts] = useState([]);
   const articleID = useParams().articleID;
   const history = useHistory();
@@ -16,32 +17,30 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
     });
     api.getCohortFromArticle(articleID, (cohortsInArticle) => {
       setChosenCohorts(cohortsInArticle);
+      setInitiallyChosen(cohortsInArticle);
     });
     // eslint-disable-next-line
   }, []);
 
   const addToCohorts = () => {
     cohortsToChoose.forEach((cohort) => {
-      if (isChosen(cohort)===true){
-        console.log("Adding " + articleID + " to " + cohort.id);
+      if (isChosen(cohort) === true) {
         addArticleToCohort(cohort.id);
-        
-      }else{
-        deleteArticleFromCohort(cohort.id)
-        console.log("Deleting " + articleID + " to " + cohort.id);
+      } else if (initiallyChosen.includes(cohort.name)) {
+        deleteArticleFromCohort(cohort.id);
       }
       setIsOpen(false);
       history.push("/teacher/texts");
     });
-
   };
 
   const handleChange = (cohort_name) => {
+    //adding a cohort to the list
     if (!chosenCohorts.includes(cohort_name)) {
       var temp = [...chosenCohorts, cohort_name];
       setChosenCohorts(temp);
     }
-
+    //taking a cohort off the list
     if (chosenCohorts.includes(cohort_name)) {
       const temp = chosenCohorts.filter(
         (chosenCohort) => chosenCohort !== cohort_name
@@ -55,8 +54,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       articleID,
       cohortID,
       (res) => {
-        console.log("Connection established...");
-        console.log(res);
+        console.log("Add article to cohort - status: " + res);
       },
       () => {
         console.log("Connection to server failed...");
@@ -69,13 +67,12 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       articleID,
       cohortID,
       (res) => {
-        console.log( cohortID + " deleted from " + articleID);
-        console.log(res);
+        console.log("Delete article from cohort - status: " + res);
       },
       () => {
         console.log("Connection to server failed...");
       }
-    )
+    );
   };
 
   const isChosen = (cohort) => chosenCohorts.includes(cohort.name);
