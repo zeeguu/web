@@ -95,7 +95,6 @@ export default function EditText({ api }) {
     );
   };
 
-  //!A CONFIRMATION POPUP SHOULD OPEN BEFORE THIS IS ACTUALLY RUN!!!
   const deleteText = () => {
     api.deleteOwnText(articleID, (res) => {
       if (res === "OK") {
