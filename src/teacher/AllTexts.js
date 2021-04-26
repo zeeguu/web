@@ -12,7 +12,7 @@ import SortingButtons from "../articles/SortingButtons";
 
 export default function AllTexts({ api }) {
   const [articleList, setArticleList] = useState(null);
-  var originalList = null;
+  const [originalList, setOriginalList] = useState(null);
 
   //on initial render
   if (articleList == null) {
@@ -20,7 +20,7 @@ export default function AllTexts({ api }) {
       //making sure the newest articles are on top
       const reversedList= articles.reverse()
       setArticleList(reversedList)
-      originalList = [...reversedList];;
+      setOriginalList(reversedList);
     });
     
 
