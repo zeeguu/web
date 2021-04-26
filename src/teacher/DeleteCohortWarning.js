@@ -9,13 +9,15 @@ const DeleteCohortWarning = ({ api, cohort, setShowWarning, deleteCohort }) => {
     <StyledDialog
       aria-label="Delete a class warning"
       onDismiss={() => setShowWarning(false)}
-      max_width="525px"
+      max_width="530px"
     >
-      <h1>Danger Zone STRINGS</h1>
+      <div className="centered">
+      <h1>Danger Zone! STRINGS</h1>
       <p>
         Are you sure you want to delete this class? This cannot be undone.
         STRINGS
       </p>
+      </div>
       <CohortItemCard api={api} cohort={cohort} isWarning={true} />
       <PopupButtonWrapper>
         <StyledButton primary onClick={() => setShowWarning(false)}>

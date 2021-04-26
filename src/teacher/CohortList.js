@@ -4,7 +4,6 @@ import CohortForm from "./CohortForm";
 import { CohortItemCard } from "./CohortItemCard";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
-import { StyledDialog } from "./StyledDialog.sc";
 
 export default function CohortList({ api, cohorts, setForceUpdate }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,17 +41,11 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
         <LoadingAnimation />
       )}
       {isOpen && (
-        <StyledDialog
-          onDismiss={() => setIsOpen(false)}
-          aria-label="Create class"
-          max_width="525px"
-        >
-          <CohortForm
-            api={api}
-            setIsOpen={setIsOpen}
-            setForceUpdate={setForceUpdate}
-          />
-        </StyledDialog>
+        <CohortForm
+          api={api}
+          setIsOpen={setIsOpen}
+          setForceUpdate={setForceUpdate}
+        />
       )}
     </Fragment>
   );
