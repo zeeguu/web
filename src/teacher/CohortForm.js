@@ -9,6 +9,7 @@ import {
 import { languageMap, LanguageSelector } from "./LanguageSelector";
 import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 import DeleteCohortWarning from "./DeleteCohortWarning";
+import { StyledDialog } from "./StyledDialog.sc";
 
 const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -109,7 +110,11 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
   }
 
   return (
-    <div>
+    <StyledDialog
+      onDismiss={() => setIsOpen(false)}
+      aria-label="Create class"
+      max_width="525px"
+    >
       {cohort ? <h1>Edit Class STRINGS</h1> : <h1>Create Class STRINGS</h1>}
       {isLoading ? (
         <LoadingAnimation />
@@ -174,7 +179,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
           deleteCohort={deleteCohort}
         />
       )}
-    </div>
+    </StyledDialog>
   );
 };
 
