@@ -110,9 +110,35 @@ export default function UserDashboard_Top({
         <UserDashboardHelperText>
           {activeTab === 1 ? (
             <>
-              Activity data for {activeCustomTimeInterval.toLowerCase()} up
-              until date {referenceDate.toLocaleDateString("da-DK")}. {"\n"}{" "}
-              Time count shown in {activeTimeFormatOption.toLowerCase()}.
+              Activity data for{" "}
+              <DropDownList
+                handleChange={handleActiveTimeIntervalChange}
+                stateValue={activeTimeInterval}
+              >
+                {options.map((option) => (
+                  <DropDownOption
+                    key={option.id}
+                    id={option.id}
+                    title={option.title}
+                  />
+                ))}
+              </DropDownList>{" "}
+              {activeTimeInterval === OPTIONS.CUSTOM && <>up until date</>}
+              Time count shown in
+              <DropDownList
+                handleChange={handleActiveTimeFormatChange}
+                stateValue={activeTimeFormatOption}
+                isCustom={true}
+              >
+                {customTimeFormatOptions.map((option) => (
+                  <DropDownOption
+                    key={option.id}
+                    id={option.id}
+                    title={option.title}
+                  />
+                ))}
+              </DropDownList>
+              .
             </>
           ) : (
             <>
@@ -125,19 +151,6 @@ export default function UserDashboard_Top({
       </div>
 
       <UserDashBoardOptionsContainer>
-        <DropDownList
-          handleChange={handleActiveTimeIntervalChange}
-          stateValue={activeTimeInterval}
-        >
-          {options.map((option) => (
-            <DropDownOption
-              key={option.id}
-              id={option.id}
-              title={option.title}
-            />
-          ))}
-        </DropDownList>
-
         {activeTimeInterval === OPTIONS.CUSTOM && (
           <>
             <DropDownList
