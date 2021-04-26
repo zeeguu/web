@@ -11,6 +11,7 @@ import {
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import AddToCohortDialog from "./AddToCohortDialog";
+import DeleteTextWarning from "./DeleteTextWarning";
 
 export default function EditText({ api }) {
   const articleID = useParams().articleID;
@@ -27,6 +28,7 @@ export default function EditText({ api }) {
     state.language_code === "default";
 
   const [showDialog, setShowDialog] = useState(false);
+  const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
 
   //The user is editing an already existing text...
   useEffect(() => {
@@ -163,13 +165,20 @@ export default function EditText({ api }) {
             </StyledButton>
           </Link>
           {articleID !== "new" && (
-            <StyledButton secondary onClick={deleteText}>
+            <StyledButton secondary onClick={()=>setShowDeleteTextWarning(true)}>
               STRINGSDelete
             </StyledButton>
           )}
         </PopupButtonWrapper>
       </s.NarrowColumn>
       {showDialog && <AddToCohortDialog api={api} setIsOpen={setShowDialog} />}
+      {showDeleteTextWarning && (
+        <DeleteTextWarning
+          deleteText={deleteText}
+          setShowDeleteTextWarning={setShowDeleteTextWarning}
+          articleTitle={state.article_title}
+        />
+      )}
     </Fragment>
   );
 }
