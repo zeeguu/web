@@ -7,11 +7,10 @@ import SideBar from "./components/SideBar";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 
-
 export default function LoggedInRouter({ api, setUser }) {
   return (
     <>
-      <SideBar>
+      <SideBar api={api}>
         <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
         <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
         <PrivateRoute path="/words" api={api} component={WordsRouter} />
@@ -28,6 +27,7 @@ export default function LoggedInRouter({ api, setUser }) {
           api={api}
           component={ArticleReader}
         />
+
         <PrivateRoute
           path="/user_dashboard"
           api={api}
