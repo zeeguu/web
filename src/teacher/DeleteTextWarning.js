@@ -6,7 +6,6 @@ import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 const DeleteTextWarning = ({
   setShowDeleteTextWarning,
   articleTitle,
-  articleID,
   deleteText
 }) => {
   const history = useHistory();

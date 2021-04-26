@@ -51,7 +51,7 @@ export default function AllTexts({ api }) {
             />
           </div>
           {articleList.map((each) => (
-            <TeacherTextPreview key={each.id} article={each} api={api} />
+            <TeacherTextPreview key={each.id} article={each}/>
           ))}
           <br />
         </m.StyledMyTexts>
