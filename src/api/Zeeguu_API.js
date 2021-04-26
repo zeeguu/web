@@ -1,4 +1,5 @@
 import { Zeeguu_API } from "./classDef";
+import "./feature_toggles";
 import "./accounts";
 import "./userDetails";
 import "./userWords";

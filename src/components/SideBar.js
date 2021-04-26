@@ -10,6 +10,7 @@ import * as s from "./SideBar.sc";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
+  const api = props.api;
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
 
@@ -61,6 +62,7 @@ export default function SideBar(props) {
           resetSidebarToDefault={resetSidebarToDefault}
           user={user}
           setIsOnStudentSide={setIsOnStudentSide}
+          api={api}
         />
       )}
 
