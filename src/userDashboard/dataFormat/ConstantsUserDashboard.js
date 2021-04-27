@@ -2,8 +2,10 @@
  * Constants used for the UserDashboard module
  */
 
+import udstrings from "../../i18n/userDashboard";
+
 const OPTIONS = {
-  WEEK: "Last 7 days",
+  WEEK: udstrings.last7days,
   MONTH: "Last 30 days",
   YEAR: "Last 12 months",
   YEARS: "Available Years",
