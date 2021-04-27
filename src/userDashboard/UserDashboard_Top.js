@@ -94,7 +94,16 @@ export default function UserDashboard_Top({
               activeTimeInterval={activeTimeInterval}
             />
 
-            {activeTimeInterval === OPTIONS.CUSTOM && <>up until date</>}
+            {activeTimeInterval === OPTIONS.CUSTOM && (
+              <>
+                {" "}
+                <DatePicker
+                  dateFormat="dd/MM/yyyy"
+                  selected={referenceDate}
+                  onChange={(date) => setReferenceDate(date)}
+                />
+              </>
+            )}
             <br />
             {activeTab === 1 && (
               <>
@@ -117,48 +126,6 @@ export default function UserDashboard_Top({
           </>
         </UserDashboardHelperText>
       </div>
-
-      <UserDashBoardOptionsContainer>
-        {activeTimeInterval === OPTIONS.CUSTOM && (
-          <>
-            <DropDownList
-              handleChange={handleActiveCustomTimeInterval}
-              stateValue={activeCustomTimeInterval}
-              isCustom={true}
-            >
-              {customPeriodOptions.map((option) => (
-                <DropDownOption
-                  key={option.id}
-                  id={option.id}
-                  title={option.title}
-                />
-              ))}
-            </DropDownList>
-
-            {activeTab == 1 && (
-              <DropDownList
-                handleChange={handleActiveTimeFormatChange}
-                stateValue={activeTimeFormatOption}
-                isCustom={true}
-              >
-                {customTimeFormatOptions.map((option) => (
-                  <DropDownOption
-                    key={option.id}
-                    id={option.id}
-                    title={option.title}
-                  />
-                ))}
-              </DropDownList>
-            )}
-
-            <DatePicker
-              dateFormat="dd/MM/yyyy"
-              selected={referenceDate}
-              onChange={(date) => setReferenceDate(date)}
-            />
-          </>
-        )}
-      </UserDashBoardOptionsContainer>
     </UserDashboardTopContainer>
   );
 }
