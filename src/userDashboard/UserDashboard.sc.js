@@ -65,7 +65,7 @@ const UserDashBoardOptionsContainer = styled.div`
   text-align: center;
 `;
 
-const UserDashBoarDropdown = styled.select`
+const UserDashBoardDropdown = styled.select`
   border: none;
   font-size: 1em;
   font-weight: 400;
@@ -124,6 +124,6 @@ export {
   UserDashBoardTabs,
   UserDashBoardOptionsContainer,
   UserDashBoardTab,
-  UserDashBoarDropdown,
+  UserDashBoardDropdown,
   NivoGraphContainer,
 };
