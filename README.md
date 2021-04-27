@@ -22,12 +22,12 @@ example. This makes it clear what's a styled component and what's
 a normal component
 
 
-    `import * as s from "./Exercises.sc";` 
+```
+    import * as s from "./Exercises.sc";
     ... 
     <s.ExercisesColumn>
     ... 
-
-
+```
 
 ## Notes
 
