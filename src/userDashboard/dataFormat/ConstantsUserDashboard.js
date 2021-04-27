@@ -9,7 +9,7 @@ const OPTIONS = {
   MONTH: "Last 30 days",
   YEAR: "Last 12 months",
   YEARS: "Available Years",
-  CUSTOM: "Other time period",
+  CUSTOM: "7 days until",
 };
 
 const PERIOD_OPTIONS = {
