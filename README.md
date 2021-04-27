@@ -11,9 +11,11 @@ Make sure to install the following plugins for VSCode:
 - vscode-styled-components
 - Prettier - Code formatter 
 
-Write good code.
 
 ### Code Conventions
+
+Write good code.
+
 - folderNames are camelCase
 - js files are named with PascalCase
 - when importing styled components import a full file as `s` 
