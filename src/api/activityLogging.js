@@ -24,6 +24,9 @@ Zeeguu_API.prototype.ARTICLE_UNFOCUSED = "ARTICLE LOST FOCUS";
 Zeeguu_API.prototype.ARTICLE_LIST_REQUESTED = "ARTICLES REQUESTED FROM ZEEGUU";
 Zeeguu_API.prototype.TO_EXERCISES_AFTER_REVIEW = "TO EXERCISES AFTER REVIEW";
 
+// User Activity Dashboard
+Zeeguu_API.prototype.USER_DASHBOARD_OPEN = "USER DASHBOARD OPEN";
+
 Zeeguu_API.prototype.logUserActivity = function (
   event,
   article_id = "",
