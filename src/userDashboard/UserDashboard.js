@@ -84,6 +84,10 @@ export default function UserDashboard({ api }) {
   }
 
   useEffect(() => {
+    api.logUserActivity(api.USER_DASHBOARD_OPEN);
+  }, []);
+
+  useEffect(() => {
     api.getBookmarksCountsByDate((counts) => {
       var formatted = getMapData(counts);
 
