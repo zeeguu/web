@@ -14,20 +14,14 @@ import {
   UserDashBoardOptionsContainer,
   UserDashBoardTabs,
   UserDashBoardTab,
-  UserDashBoarDropdown,
 } from "./UserDashboard.sc";
+
+import IntervalDropdownList from "./IntervalDropdownList";
+import { DropDownList, DropDownOption } from "./DropDownList";
 
 const tabs = [
   { id: 1, title: TOP_TABS.BAR_GRAPH },
   { id: 2, title: TOP_TABS.LINE_GRAPH },
-];
-
-const options = [
-  { id: 1, title: OPTIONS.WEEK },
-  { id: 2, title: OPTIONS.MONTH },
-  { id: 3, title: OPTIONS.YEAR },
-  { id: 4, title: OPTIONS.YEARS },
-  { id: 5, title: OPTIONS.CUSTOM },
 ];
 
 const customPeriodOptions = [
@@ -55,22 +49,6 @@ const Tab = ({ id, title, handleActiveTabChange, isActive }) => {
       {title}
     </UserDashBoardTab>
   );
-};
-
-const DropDownList = ({ children, handleChange, stateValue, isCustom }) => {
-  return (
-    <UserDashBoarDropdown
-      value={stateValue}
-      onChange={(e) => handleChange(e.target.value)}
-      isCustom={isCustom}
-    >
-      {children}
-    </UserDashBoarDropdown>
-  );
-};
-
-const DropDownOption = ({ title }) => {
-  return <option value={title}>{title}</option>;
 };
 
 export default function UserDashboard_Top({
@@ -108,45 +86,35 @@ export default function UserDashboard_Top({
 
       <div>
         <UserDashboardHelperText>
-          {activeTab === 1 ? (
-            <>
-              Activity data for{" "}
-              <DropDownList
-                handleChange={handleActiveTimeIntervalChange}
-                stateValue={activeTimeInterval}
-              >
-                {options.map((option) => (
-                  <DropDownOption
-                    key={option.id}
-                    id={option.id}
-                    title={option.title}
-                  />
-                ))}
-              </DropDownList>{" "}
-              {activeTimeInterval === OPTIONS.CUSTOM && <>up until date</>}
-              Time count shown in
-              <DropDownList
-                handleChange={handleActiveTimeFormatChange}
-                stateValue={activeTimeFormatOption}
-                isCustom={true}
-              >
-                {customTimeFormatOptions.map((option) => (
-                  <DropDownOption
-                    key={option.id}
-                    id={option.id}
-                    title={option.title}
-                  />
-                ))}
-              </DropDownList>
-              .
-            </>
-          ) : (
-            <>
-              Number of translated words for{" "}
-              {activeCustomTimeInterval.toLowerCase()} up until date{" "}
-              {referenceDate.toLocaleDateString("da-DK")}.
-            </>
-          )}
+          <>
+            {activeTab === 1 ? "Activity data for " : "Translated Words for "}
+
+            <IntervalDropdownList
+              handleActiveTimeIntervalChange={handleActiveTimeIntervalChange}
+              activeTimeInterval={activeTimeInterval}
+            />
+
+            {activeTimeInterval === OPTIONS.CUSTOM && <>up until date</>}
+            <br />
+            {activeTab === 1 && (
+              <>
+                Time count shown in
+                <DropDownList
+                  handleChange={handleActiveTimeFormatChange}
+                  stateValue={activeTimeFormatOption}
+                  isCustom={true}
+                >
+                  {customTimeFormatOptions.map((option) => (
+                    <DropDownOption
+                      key={option.id}
+                      id={option.id}
+                      title={option.title}
+                    />
+                  ))}
+                </DropDownList>
+              </>
+            )}
+          </>
         </UserDashboardHelperText>
       </div>
 
