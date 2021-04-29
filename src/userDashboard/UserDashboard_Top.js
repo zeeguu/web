@@ -6,7 +6,6 @@ import {
   USER_DASHBOARD_TITLES,
   DATE_FORMAT_FOR_DATEPICKER,
 } from "./dataFormat/ConstantsUserDashboard";
-import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import {
   UserDashboardHelperText,
@@ -15,6 +14,7 @@ import {
   UserDashBoardOptionsContainer,
   UserDashBoardTabs,
   UserDashBoardTab,
+  UserDatePicker,
 } from "./UserDashboard.sc";
 
 import IntervalDropdownList from "./IntervalDropdownList";
@@ -102,11 +102,13 @@ export default function UserDashboard_Top({
               activeTimeInterval === OPTIONS.CUSTOM_YEAR) && (
               <>
                 {" "}
-                <DatePicker
+                <UserDatePicker>
+                  <DatePicker
                     dateFormat={DATE_FORMAT_FOR_DATEPICKER}
-                  selected={referenceDate}
-                  onChange={(date) => setReferenceDate(date)}
-                />
+                    selected={referenceDate}
+                    onChange={(date) => setReferenceDate(date)}
+                  />
+                </UserDatePicker>
               </>
             )}
             <br />
