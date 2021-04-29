@@ -1,23 +1,13 @@
 import {
   OPTIONS,
-  PERIOD_OPTIONS,
-  ACTIVITY_TIME_FORMAT_OPTIONS,
-  TOP_TABS,
   USER_DASHBOARD_TITLES,
-  DATE_FORMAT_FOR_DATEPICKER,
 } from "../dataFormat/ConstantsUserDashboard";
 import {
   UserDashboardHelperText,
   UserDashboardTile,
   UserDashboardTopContainer,
-  UserDashBoardOptionsContainer,
-  UserDashBoardTabs,
-  UserDashBoardTab,
-  UserDatePicker,
 } from "../UserDashboard.sc";
-
 import IntervalDropdownList from "./IntervalDropdownList";
-import { DropDownList, DropDownOption } from "./DropDownList";
 import TimeFormatDropdownList from "./TimeFormatDropdownList";
 import UserDashboardTabs from "./UserDashboardTabs";
 import UserDashboardDatePicker from "./UserDashboardDatePicker";
@@ -27,8 +17,6 @@ export default function UserDashboard_Top({
   handleActiveTabChange,
   activeTimeInterval,
   handleActiveTimeIntervalChange,
-  activeCustomTimeInterval,
-  handleActiveCustomTimeInterval,
   handleActiveTimeFormatChange,
   activeTimeFormatOption,
   referenceDate,
@@ -43,39 +31,36 @@ export default function UserDashboard_Top({
         handleActiveTabChange={handleActiveTabChange}
       />
 
-      <div>
-        <UserDashboardHelperText>
-          <>
-            {activeTab === 1
-              ? USER_DASHBOARD_TITLES.BAR_GRAPH_TEXT
-              : USER_DASHBOARD_TITLES.LINE_GRAPH_TEXT}
+      <UserDashboardHelperText>
+        <>
+          {activeTab === 1
+            ? USER_DASHBOARD_TITLES.BAR_GRAPH_TEXT
+            : USER_DASHBOARD_TITLES.LINE_GRAPH_TEXT}
 
-            <IntervalDropdownList
-              handleActiveTimeIntervalChange={handleActiveTimeIntervalChange}
-              activeTimeInterval={activeTimeInterval}
+          <IntervalDropdownList
+            handleActiveTimeIntervalChange={handleActiveTimeIntervalChange}
+            activeTimeInterval={activeTimeInterval}
+          />
+
+          {(activeTimeInterval === OPTIONS.CUSTOM_WEEK ||
+            activeTimeInterval === OPTIONS.CUSTOM_MONTH ||
+            activeTimeInterval === OPTIONS.CUSTOM_YEAR) && (
+            <UserDashboardDatePicker
+              referenceDate={referenceDate}
+              setReferenceDate={setReferenceDate}
             />
-
-            {(activeTimeInterval === OPTIONS.CUSTOM_WEEK ||
-              activeTimeInterval === OPTIONS.CUSTOM_MONTH ||
-              activeTimeInterval === OPTIONS.CUSTOM_YEAR) && (
-              <UserDashboardDatePicker
-                referenceDate={referenceDate}
-                setReferenceDate={setReferenceDate}
+          )}
+          {activeTab === 1 && (
+            <>
+              {USER_DASHBOARD_TITLES.TIME_COUNT_IN}
+              <TimeFormatDropdownList
+                activeTimeFormatOption={activeTimeFormatOption}
+                handleActiveTimeFormatChange={handleActiveTimeFormatChange}
               />
-            )}
-            <br />
-            {activeTab === 1 && (
-              <>
-                {USER_DASHBOARD_TITLES.TIME_COUNT_IN}
-                <TimeFormatDropdownList
-                  activeTimeFormatOption={activeTimeFormatOption}
-                  handleActiveTimeFormatChange={handleActiveTimeFormatChange}
-                />
-              </>
-            )}
-          </>
-        </UserDashboardHelperText>
-      </div>
+            </>
+          )}
+        </>
+      </UserDashboardHelperText>
     </UserDashboardTopContainer>
   );
 }
