@@ -32,8 +32,19 @@ const UserDashboardHelperText = styled(s.TopMessage)`
   }
 `;
 
-const UserDatePicker = styled.input`
+const UserDatePicker = styled.div`
   ${datePickerCSS}
+  input {
+    border: none;
+    font-size: 1em;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: ${darkerHueZeeguuOrange};
+    text-align: center;
+    :hover {
+      cursor: pointer;
+    }
+  }
 `;
 
 const UserDashBoardTabs = styled.div`
@@ -75,6 +86,7 @@ const UserDashBoardDropdown = styled.select`
   font-weight: 400;
   letter-spacing: 0;
   color: ${(props) => (props.isCustom ? "black" : darkerHueZeeguuOrange)};
+  text-align: center;
 
   :hover {
     cursor: pointer;
