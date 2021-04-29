@@ -20,4 +20,10 @@ const WideColumn = styled.div`
   padding-bottom: 200px;
 `;
 
-export { NarrowColumn, CenteredContent, WideColumn };
+const WidestColumn = styled.div`
+  max-width: 1150px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 200px;
+`;
+export { NarrowColumn, CenteredContent, WideColumn, WidestColumn };
