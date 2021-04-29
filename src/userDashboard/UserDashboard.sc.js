@@ -2,6 +2,7 @@ import styled from "styled-components";
 import * as s from "../components/TopMessage.sc";
 import { lightOrange } from "../components/colors";
 import { device } from "./Devices";
+import * as datePickerCSS from "react-datepicker/dist/react-datepicker.css";
 
 let darkerHueZeeguuOrange = "#9c7130";
 
@@ -29,6 +30,10 @@ const UserDashboardHelperText = styled(s.TopMessage)`
     line-height: 4ex;
     text-align: left;
   }
+`;
+
+const UserDatePicker = styled.input`
+  ${datePickerCSS}
 `;
 
 const UserDashBoardTabs = styled.div`
@@ -125,4 +130,5 @@ export {
   UserDashBoardTab,
   UserDashBoardDropdown,
   NivoGraphContainer,
+  UserDatePicker,
 };
