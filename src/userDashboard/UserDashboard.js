@@ -98,7 +98,7 @@ export default function UserDashboard({ api }) {
         calculateCountPerMonth_Activity(activity)
       );
     });
-  }, [activeCustomTimeInterval]);
+  }, [activeTab]);
 
   if (!allWordsData || !dailyExerciseAndReadingTimes) {
     return <LoadingAnimation />;
@@ -111,8 +111,6 @@ export default function UserDashboard({ api }) {
         handleActiveTabChange={handleActiveTabChange}
         activeTimeInterval={activeTimeInterval}
         handleActiveTimeIntervalChange={handleActiveTimeIntervalChange}
-        activeCustomTimeInterval={activeCustomTimeInterval}
-        handleActiveCustomTimeInterval={handleActiveCustomTimeInterval}
         handleActiveTimeFormatChange={handleActiveTimeFormatChange}
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
