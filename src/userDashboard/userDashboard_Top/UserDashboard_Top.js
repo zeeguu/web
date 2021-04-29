@@ -5,7 +5,7 @@ import {
   TOP_TABS,
   USER_DASHBOARD_TITLES,
   DATE_FORMAT_FOR_DATEPICKER,
-} from "./dataFormat/ConstantsUserDashboard";
+} from "../dataFormat/ConstantsUserDashboard";
 import DatePicker from "react-datepicker";
 import {
   UserDashboardHelperText,
@@ -15,26 +15,15 @@ import {
   UserDashBoardTabs,
   UserDashBoardTab,
   UserDatePicker,
-} from "./UserDashboard.sc";
+} from "../UserDashboard.sc";
 
 import IntervalDropdownList from "./IntervalDropdownList";
 import { DropDownList, DropDownOption } from "./DropDownList";
+import TimeFormatDropdownList from "./TimeFormatDropdownList";
 
 const tabs = [
   { id: 1, title: TOP_TABS.BAR_GRAPH },
   { id: 2, title: TOP_TABS.LINE_GRAPH },
-];
-
-const customPeriodOptions = [
-  { id: 1, title: PERIOD_OPTIONS.WEEK },
-  { id: 2, title: PERIOD_OPTIONS.MONTH },
-  { id: 3, title: PERIOD_OPTIONS.YEAR },
-  { id: 4, title: PERIOD_OPTIONS.YEARS },
-];
-
-const customTimeFormatOptions = [
-  { id: 1, title: ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES },
-  { id: 2, title: ACTIVITY_TIME_FORMAT_OPTIONS.HOURS },
 ];
 
 const TabList = ({ children }) => {
@@ -115,19 +104,10 @@ export default function UserDashboard_Top({
             {activeTab === 1 && (
               <>
                 {USER_DASHBOARD_TITLES.TIME_COUNT_IN}
-                <DropDownList
-                  handleChange={handleActiveTimeFormatChange}
-                  stateValue={activeTimeFormatOption}
-                  isCustom={true}
-                >
-                  {customTimeFormatOptions.map((option) => (
-                    <DropDownOption
-                      key={option.id}
-                      id={option.id}
-                      title={option.title}
-                    />
-                  ))}
-                </DropDownList>
+                <TimeFormatDropdownList
+                  activeTimeFormatOption={activeTimeFormatOption}
+                  handleActiveTimeFormatChange={handleActiveTimeFormatChange}
+                />
               </>
             )}
           </>
