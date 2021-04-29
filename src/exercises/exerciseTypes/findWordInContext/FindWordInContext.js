@@ -43,6 +43,22 @@ export default function FindWordInContext({
     );
   }
 
+  function handleIncorrectAnswer() {
+    console.log(new Date() - initialTime);
+    console.log("^^^^ time elapsed");
+    console.log(firstTypeTime - initialTime);
+    console.log("^^^^ to first key press");
+
+    notifyIncorrectAnswer();
+    api.uploadExerciseFeedback(
+      "Incorrect",
+      EXERCISE_TYPE,
+      firstTypeTime - initialTime,
+      bookmarkToStudy.id
+    );
+    setFirstTypeTime();
+  }
+
   return (
     <s.Exercise>
       <h3>Find the word in the context</h3>
@@ -65,7 +81,7 @@ export default function FindWordInContext({
           handleCorrectAnswer={handleCorrectAnswer}
           bookmarkToStudy={bookmarkToStudy}
           notifyKeyPress={inputKeyPress}
-          notifyIncorrectAnswer={notifyIncorrectAnswer}
+          handleIncorrectAnswer={handleIncorrectAnswer}
         />
       )}
       {isCorrect && (
