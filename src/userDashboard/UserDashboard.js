@@ -16,7 +16,7 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./dataFormat/ReadingAndExercisesTimeDataFormat";
-import UserDashboard_Top from "./UserDashboard_Top";
+import UserDashboard_Top from "./userDashboard_Top/UserDashboard_Top";
 import { NivoGraphContainer } from "./UserDashboard.sc";
 
 export default function UserDashboard({ api }) {
