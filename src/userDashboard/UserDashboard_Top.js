@@ -4,6 +4,7 @@ import {
   ACTIVITY_TIME_FORMAT_OPTIONS,
   TOP_TABS,
   USER_DASHBOARD_TITLES,
+  DATE_FORMAT_FOR_DATEPICKER,
 } from "./dataFormat/ConstantsUserDashboard";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
@@ -102,7 +103,7 @@ export default function UserDashboard_Top({
               <>
                 {" "}
                 <DatePicker
-                  dateFormat="dd/MM/yyyy"
+                    dateFormat={DATE_FORMAT_FOR_DATEPICKER}
                   selected={referenceDate}
                   onChange={(date) => setReferenceDate(date)}
                 />
