@@ -68,6 +68,8 @@ const PERIOD_OPTIONS = {
 //this is _not_ the date format used for formatting dates to be shown on the graphs or datepicker
 const DATE_FORMAT = "yyyy-MM-dd";
 
+const DATE_FORMAT_FOR_DATEPICKER = "dd/MM/yyyy";
+
 export {
   PERIOD_OPTIONS,
   DATE_FORMAT,
