@@ -20,26 +20,7 @@ import {
 import IntervalDropdownList from "./IntervalDropdownList";
 import { DropDownList, DropDownOption } from "./DropDownList";
 import TimeFormatDropdownList from "./TimeFormatDropdownList";
-
-const tabs = [
-  { id: 1, title: TOP_TABS.BAR_GRAPH },
-  { id: 2, title: TOP_TABS.LINE_GRAPH },
-];
-
-const TabList = ({ children }) => {
-  return <UserDashBoardTabs>{children}</UserDashBoardTabs>;
-};
-
-const Tab = ({ id, title, handleActiveTabChange, isActive }) => {
-  return (
-    <UserDashBoardTab
-      onClick={() => handleActiveTabChange(id)}
-      isActive={isActive}
-    >
-      {title}
-    </UserDashBoardTab>
-  );
-};
+import UserDashboardTabs from "./UserDashboardTabs";
 
 export default function UserDashboard_Top({
   activeTab,
@@ -55,24 +36,12 @@ export default function UserDashboard_Top({
 }) {
   return (
     <UserDashboardTopContainer>
-      <UserDashboardTile>
-        {" "}
-        {USER_DASHBOARD_TITLES.MAIN_TITLE}{" "}
-      </UserDashboardTile>
+      <UserDashboardTile>{USER_DASHBOARD_TITLES.MAIN_TITLE}</UserDashboardTile>
 
-      <div>
-        <TabList>
-          {tabs.map((tab) => (
-            <Tab
-              key={tab.id}
-              id={tab.id}
-              title={tab.title}
-              handleActiveTabChange={handleActiveTabChange}
-              isActive={activeTab === tab.id}
-            />
-          ))}
-        </TabList>
-      </div>
+      <UserDashboardTabs
+        activeTab={activeTab}
+        handleActiveTabChange={handleActiveTabChange}
+      />
 
       <div>
         <UserDashboardHelperText>
