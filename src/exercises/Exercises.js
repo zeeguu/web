@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
 import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
@@ -22,26 +22,32 @@ export default function Exercises({ api, articleID }) {
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [articleInfo, setArticleInfo] = useState(null);
 
+  useEffect(() => {
+    if (!bookmarksToStudyList) {
+      if (articleID) {
+        api.bookmarksForArticle(articleID, (bookmarks) => {
+          api.getArticleInfo(articleID, (data) => {
+            setArticleInfo(data);
+            initializeExercises(
+              bookmarks,
+              'Exercises for "' + data.title + '"'
+            );
+          });
+        });
+      } else {
+        api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, (bookmarks) => {
+          initializeExercises(bookmarks, "Exercises");
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function initializeExercises(bookmarks, title) {
     setbookmarksToStudyList(bookmarks);
     NUMBER_OF_EXERCISES = bookmarks.length;
     setCurrentBookmarkToStudy(bookmarks[currentIndex]);
     setTitle(title);
-  }
-
-  if (!bookmarksToStudyList) {
-    if (articleID) {
-      api.bookmarksForArticle(articleID, (bookmarks) => {
-        api.getArticleInfo(articleID, (data) => {
-          setArticleInfo(data);
-          initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
-        });
-      });
-    } else {
-      api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, (bookmarks) => {
-        initializeExercises(bookmarks, "Exercises");
-      });
-    }
   }
 
   if (finished) {
@@ -72,6 +78,7 @@ export default function Exercises({ api, articleID }) {
     setCurrentIndex(newIndex);
     setCurrentBookmarkToStudy(bookmarksToStudyList[newIndex]);
   }
+
   function correctAnswer() {
     let currentBookmark = bookmarksToStudyList[currentIndex];
 

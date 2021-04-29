@@ -3,7 +3,7 @@ import removeAccents from "remove-accents";
 
 export default function BottomInput({
   handleCorrectAnswer,
-  notifyIncorrectAnswer,
+  handleIncorrectAnswer,
   bookmarkToStudy,
   notifyKeyPress,
 }) {
@@ -38,7 +38,7 @@ export default function BottomInput({
     if (a === b) {
       handleCorrectAnswer();
     } else {
-      notifyIncorrectAnswer();
+      handleIncorrectAnswer();
     }
   }
 

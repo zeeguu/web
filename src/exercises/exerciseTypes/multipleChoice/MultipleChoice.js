@@ -16,7 +16,6 @@ export default function MultipleChoice({
   const [isCorrect, setIsCorrect] = useState(false);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
-  const [firstPressTime, setFirstPressTime] = useState();
   const [buttonOptions, setButtonOptions] = useState(null);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ export default function MultipleChoice({
       consolidateChoiceOptions(words);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookmarkToStudy]);
+  }, []);
 
   function colorWordInContext(context, word) {
     return context.replace(
@@ -34,27 +33,39 @@ export default function MultipleChoice({
   }
 
   function notifyChoiceSelection(selectedChoice) {
-    if (firstPressTime === undefined) setFirstPressTime(new Date());
     console.log("checking result...");
     if (selectedChoice === bookmarkToStudy.from) {
       handleCorrectAnswer();
     } else {
       setIncorrectAnswer(selectedChoice);
-      notifyIncorrectAnswer();
+      handleIncorrectAnswer();
     }
   }
 
   function handleCorrectAnswer() {
-    console.log(new Date() - initialTime);
+    let correctPressTime = new Date();
+    console.log(correctPressTime - initialTime);
     console.log("^^^^ time elapsed");
-    console.log(firstPressTime - initialTime);
-    console.log("^^^^ to first button press");
 
     setIsCorrect(true);
     api.uploadExerciseFeedback(
       "Correct",
       EXERCISE_TYPE,
-      firstPressTime - initialTime,
+      correctPressTime - initialTime,
+      bookmarkToStudy.id
+    );
+  }
+
+  function handleIncorrectAnswer() {
+    let incorrectPressTime = new Date();
+    console.log(incorrectPressTime - initialTime);
+    console.log("^^^^ time elapsed");
+
+    notifyIncorrectAnswer();
+    api.uploadExerciseFeedback(
+      "Incorrect",
+      EXERCISE_TYPE,
+      incorrectPressTime - initialTime,
       bookmarkToStudy.id
     );
   }
@@ -99,10 +110,6 @@ export default function MultipleChoice({
     return array;
   }
 
-  if (!buttonOptions) {
-    return <LoadingAnimation />;
-  }
-
   return (
     <s.Exercise>
       <h3>Choose the word that fits the context</h3>
@@ -121,7 +128,7 @@ export default function MultipleChoice({
           }}
         />
       </div>
-
+      {!buttonOptions && <LoadingAnimation />}
       {!isCorrect && (
         <MultipleChoicesInput
           buttonOptions={buttonOptions}
