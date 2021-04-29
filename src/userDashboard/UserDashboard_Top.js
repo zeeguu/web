@@ -87,7 +87,9 @@ export default function UserDashboard_Top({
       <div>
         <UserDashboardHelperText>
           <>
-            {activeTab === 1 ? "Activity data for " : "Translated Words for "}
+            {activeTab === 1
+              ? USER_DASHBOARD_TITLES.BAR_GRAPH_TEXT
+              : USER_DASHBOARD_TITLES.LINE_GRAPH_TEXT}
 
             <IntervalDropdownList
               handleActiveTimeIntervalChange={handleActiveTimeIntervalChange}
@@ -107,7 +109,7 @@ export default function UserDashboard_Top({
             <br />
             {activeTab === 1 && (
               <>
-                Time count shown in
+                {USER_DASHBOARD_TITLES.TIME_COUNT_IN}
                 <DropDownList
                   handleChange={handleActiveTimeFormatChange}
                   stateValue={activeTimeFormatOption}
