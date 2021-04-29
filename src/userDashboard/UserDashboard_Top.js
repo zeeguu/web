@@ -96,7 +96,9 @@ export default function UserDashboard_Top({
               activeTimeInterval={activeTimeInterval}
             />
 
-            {activeTimeInterval === OPTIONS.CUSTOM && (
+            {(activeTimeInterval === OPTIONS.CUSTOM_WEEK ||
+              activeTimeInterval === OPTIONS.CUSTOM_MONTH ||
+              activeTimeInterval === OPTIONS.CUSTOM_YEAR) && (
               <>
                 {" "}
                 <DatePicker

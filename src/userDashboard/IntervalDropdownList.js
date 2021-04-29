@@ -11,7 +11,9 @@ export default function IntervalDropdownList({
     { id: 2, title: OPTIONS.MONTH },
     { id: 3, title: OPTIONS.YEAR },
     { id: 4, title: OPTIONS.YEARS },
-    { id: 5, title: OPTIONS.CUSTOM },
+    { id: 5, title: OPTIONS.CUSTOM_WEEK },
+    { id: 6, title: OPTIONS.CUSTOM_MONTH },
+    { id: 7, title: OPTIONS.CUSTOM_YEAR },
   ];
 
   return (
