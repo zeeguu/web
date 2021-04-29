@@ -49,6 +49,34 @@ let compactFormat = {
     en: "12 months until",
     da: "12 måneder indtil d.",
   },
+  helperTextActivity: {
+    en: "Your activity data for ",
+    da: "Dit aktivitet data for ",
+  },
+  helperTextWords: {
+    en: "Your number of translated words for ",
+    da: "Dine oversatte ord for ",
+  },
+  helperTextTimeCount: {
+    en: "Time count shown in ",
+    da: "Brugt tid vises i ",
+  },
+  wordsGraphLegendWeek: {
+    en: "Number of Translated Words for 7 days",
+    da: "Oversatte ord for 7 dage",
+  },
+  wordsGraphLegendMonth: {
+    en: "Number of Translated Words for 30 Days",
+    da: "Oversatte ord for 30 dage",
+  },
+  wordsGraphLegendYear: {
+    en: "Number of Translated Words for 12 Months",
+    da: "Oversatte ord for 12 måneder",
+  },
+  wordsGraphLegendYears: {
+    en: "Number of Translated Words for Available Years",
+    da: "Oversatte ord for tilgængelige år",
+  },
 };
 
 function invertKeysInDict(dict) {

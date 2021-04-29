@@ -6,34 +6,49 @@ import udstrings from "../../i18n/userDashboard";
 
 const OPTIONS = {
   WEEK: udstrings.last7days,
-  MONTH: "Last 30 days",
-  YEAR: "Last 12 months",
-  YEARS: "Available Years",
-  CUSTOM: "7 days until",
-};
-
-const PERIOD_OPTIONS = {
-  WEEK: "7 days",
-  MONTH: "30 days",
-  YEAR: "12 months",
-  YEARS: "Available years",
+  MONTH: udstrings.last30days,
+  YEAR: udstrings.last12months,
+  YEARS: udstrings.availableYears,
+  CUSTOM_WEEK: udstrings.custom7DaysUntil,
+  CUSTOM_MONTH: udstrings.custom30DaysUntil,
+  CUSTOM_YEAR: udstrings.custom12MonthsUntil,
+  CUSTOM: "to do",
 };
 
 const ACTIVITY_TIME_FORMAT_OPTIONS = {
-  MINUTES: "Minutes",
-  HOURS: "Hours",
+  MINUTES: udstrings.minutes,
+  HOURS: udstrings.hours,
 };
 
 const TOP_TABS = {
-  BAR_GRAPH: "Activity",
-  LINE_GRAPH: "Words",
+  BAR_GRAPH: udstrings.tabActivity,
+  LINE_GRAPH: udstrings.tabWords,
 };
 
-//date format used for making sure dates are translated
-//in the same way when working with the data
-//this is _not_ the date format used for formatting dates to be shown on the graphs or datepicker
-const DATE_FORMAT = "yyyy-MM-dd";
+const USER_DASHBOARD_TITLES = {
+  MAIN_TITLE: udstrings.userDashboardTitle,
+  BAR_GRAPH_TEXT: udstrings.helperTextActivity,
+  LINE_GRAPH_TEXT: udstrings.helperTextWords,
+  TIME_COUNT_IN: udstrings.helperTextTimeCount,
+};
 
+const LINE_GRAPH_BOTTOM_LEGEND = {
+  WEEK: udstrings.wordsGraphLegendWeek,
+  MONTH: udstrings.wordsGraphLegendMonth,
+  YEAR: udstrings.wordsGraphLegendYear,
+  YEARS: udstrings.wordsGraphLegendYears,
+};
+
+/**
+ * Below
+ * Constants not translatable
+ *
+ */
+
+// this cannot be made translatable
+// if the keys are renamed, the graph will not be shown.
+// Alternatively, there keys in the result array in ReadingAndExercisesDataFromat
+// should change too
 const BAR_GRAPH_KEYS = {
   READING: "reading_time",
   EXERCISES: "exercises_time",
@@ -42,18 +57,17 @@ const BAR_GRAPH_KEYS = {
   LEGEND_LEFT: "",
 };
 
-const LINE_GRAPH_BOTTOM_LEGEND = {
-  WEEK: "Word Count Week",
-  MONTH: "Word Count 30 Days",
-  YEAR: "Word Count 12 Months",
-  YEARS: "Word Count Available Years",
+const PERIOD_OPTIONS = {
+  WEEK: "week",
+  MONTH: "month",
+  YEAR: "year",
+  YEARS: "years",
 };
 
-const USER_DASHBOARD_TITLES = {
-  MAIN_TITLE: "Your Dashboard",
-  BAR_GRAPH_TITLE: "Your time spent on reading and exercises",
-  LINE_GRAPH_TITLE: "Your number of translated words",
-};
+//date format used for making sure dates are translated
+//in the same way when working with the data
+//this is _not_ the date format used for formatting dates to be shown on the graphs or datepicker
+const DATE_FORMAT = "yyyy-MM-dd";
 
 export {
   PERIOD_OPTIONS,
