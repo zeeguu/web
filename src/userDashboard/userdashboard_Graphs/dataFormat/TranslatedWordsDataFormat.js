@@ -11,7 +11,7 @@ import {
   PERIOD_OPTIONS,
   DATE_FORMAT,
   LINE_GRAPH_BOTTOM_LEGEND,
-} from "./ConstantsUserDashboard";
+} from "../../ConstantsUserDashboard";
 import { calculatePerMonth } from "./CommonDataFormat";
 
 /**

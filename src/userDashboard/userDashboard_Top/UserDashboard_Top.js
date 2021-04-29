@@ -1,12 +1,5 @@
-import {
-  OPTIONS,
-  USER_DASHBOARD_TITLES,
-} from "../dataFormat/ConstantsUserDashboard";
-import {
-  UserDashboardHelperText,
-  UserDashboardTile,
-  UserDashboardTopContainer,
-} from "../UserDashboard.sc";
+import { OPTIONS, USER_DASHBOARD_TITLES } from "../ConstantsUserDashboard";
+import * as s from "../userDashboard_Styled/UserDashboard.sc";
 import IntervalDropdownList from "./IntervalDropdownList";
 import TimeFormatDropdownList from "./TimeFormatDropdownList";
 import UserDashboardTabs from "./UserDashboardTabs";
@@ -23,15 +16,17 @@ export default function UserDashboard_Top({
   setReferenceDate,
 }) {
   return (
-    <UserDashboardTopContainer>
-      <UserDashboardTile>{USER_DASHBOARD_TITLES.MAIN_TITLE}</UserDashboardTile>
+    <s.UserDashboardTopContainer>
+      <s.UserDashboardTitle>
+        {USER_DASHBOARD_TITLES.MAIN_TITLE}
+      </s.UserDashboardTitle>
 
       <UserDashboardTabs
         activeTab={activeTab}
         handleActiveTabChange={handleActiveTabChange}
       />
 
-      <UserDashboardHelperText>
+      <s.UserDashboardHelperText>
         <>
           {activeTab === 1
             ? USER_DASHBOARD_TITLES.BAR_GRAPH_TEXT
@@ -60,7 +55,7 @@ export default function UserDashboard_Top({
             </>
           )}
         </>
-      </UserDashboardHelperText>
-    </UserDashboardTopContainer>
+      </s.UserDashboardHelperText>
+    </s.UserDashboardTopContainer>
   );
 }

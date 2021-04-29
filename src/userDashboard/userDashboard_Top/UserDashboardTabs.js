@@ -1,5 +1,5 @@
-import { TOP_TABS } from "../dataFormat/ConstantsUserDashboard";
-import { UserDashBoardTab, UserDashBoardTabs } from "../UserDashboard.sc";
+import { TOP_TABS } from "../ConstantsUserDashboard";
+import * as s from "../userDashboard_Styled/UserDashboard.sc";
 
 export default function UserDashboardTabs({
   activeTab,
@@ -11,18 +11,18 @@ export default function UserDashboardTabs({
   ];
 
   const TabList = ({ children }) => {
-    return <UserDashBoardTabs>{children}</UserDashBoardTabs>;
+    return <s.UserDashBoardTabs>{children}</s.UserDashBoardTabs>;
   };
 
   const Tab = ({ id, title, handleActiveTabChange, isActive }) => {
     return (
       <div>
-        <UserDashBoardTab
+        <s.UserDashBoardTab
           onClick={() => handleActiveTabChange(id)}
           isActive={isActive}
         >
           {title}
-        </UserDashBoardTab>
+        </s.UserDashBoardTab>
       </div>
     );
   };

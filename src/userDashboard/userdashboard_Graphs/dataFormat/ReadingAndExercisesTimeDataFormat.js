@@ -11,7 +11,7 @@ import {
   PERIOD_OPTIONS,
   DATE_FORMAT,
   ACTIVITY_TIME_FORMAT_OPTIONS,
-} from "./ConstantsUserDashboard";
+} from "../../ConstantsUserDashboard";
 import { calculatePerMonth } from "./CommonDataFormat";
 
 /**

@@ -1,4 +1,4 @@
-import * as s from "../UserDashboard.sc";
+import * as s from "../userDashboard_Styled/UserDashboard.sc";
 
 function DropDownList({ children, handleChange, stateValue, isCustom }) {
   return (

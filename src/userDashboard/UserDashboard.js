@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
-import TranslatedWordsGraph from "./userdashboardGraphs/TranslatedWordsGraph";
-import ReadingAndExercisesTimeGraph from "./userdashboardGraphs/ReadingAndExercisesTimeGraph";
+import TranslatedWordsGraph from "./userdashboard_Graphs/TranslatedWordsGraph";
+import ReadingAndExercisesTimeGraph from "./userdashboard_Graphs/ReadingAndExercisesTimeGraph";
 import {
   PERIOD_OPTIONS,
   ACTIVITY_TIME_FORMAT_OPTIONS,
   OPTIONS,
-} from "./dataFormat/ConstantsUserDashboard";
+} from "./ConstantsUserDashboard";
 import {
   getLineGraphData,
   calculateCountPerMonth_Words,
   getMapData,
-} from "./dataFormat/TranslatedWordsDataFormat";
+} from "./userdashboard_Graphs/dataFormat/TranslatedWordsDataFormat";
 import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
-} from "./dataFormat/ReadingAndExercisesTimeDataFormat";
+} from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
 import UserDashboard_Top from "./userDashboard_Top/UserDashboard_Top";
-import { NivoGraphContainer } from "./UserDashboard.sc";
+import * as s from "./userDashboard_Styled/UserDashboard.sc";
 
 export default function UserDashboard({ api }) {
   const [activeTab, setActiveTab] = useState(1);
@@ -117,7 +117,7 @@ export default function UserDashboard({ api }) {
         setReferenceDate={setReferenceDate}
       />
 
-      <NivoGraphContainer>
+      <s.NivoGraphContainer>
         {activeTab === 1 ? (
           <ReadingAndExercisesTimeGraph
             data={getBarGraphData(
@@ -140,7 +140,7 @@ export default function UserDashboard({ api }) {
         ) : (
           <></>
         )}
-      </NivoGraphContainer>
+      </s.NivoGraphContainer>
     </>
   );
 }
