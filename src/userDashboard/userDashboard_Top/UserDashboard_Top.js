@@ -6,7 +6,6 @@ import {
   USER_DASHBOARD_TITLES,
   DATE_FORMAT_FOR_DATEPICKER,
 } from "../dataFormat/ConstantsUserDashboard";
-import DatePicker from "react-datepicker";
 import {
   UserDashboardHelperText,
   UserDashboardTile,
@@ -21,6 +20,7 @@ import IntervalDropdownList from "./IntervalDropdownList";
 import { DropDownList, DropDownOption } from "./DropDownList";
 import TimeFormatDropdownList from "./TimeFormatDropdownList";
 import UserDashboardTabs from "./UserDashboardTabs";
+import UserDashboardDatePicker from "./UserDashboardDatePicker";
 
 export default function UserDashboard_Top({
   activeTab,
@@ -58,16 +58,10 @@ export default function UserDashboard_Top({
             {(activeTimeInterval === OPTIONS.CUSTOM_WEEK ||
               activeTimeInterval === OPTIONS.CUSTOM_MONTH ||
               activeTimeInterval === OPTIONS.CUSTOM_YEAR) && (
-              <>
-                {" "}
-                <UserDatePicker>
-                  <DatePicker
-                    dateFormat={DATE_FORMAT_FOR_DATEPICKER}
-                    selected={referenceDate}
-                    onChange={(date) => setReferenceDate(date)}
-                  />
-                </UserDatePicker>
-              </>
+              <UserDashboardDatePicker
+                referenceDate={referenceDate}
+                setReferenceDate={setReferenceDate}
+              />
             )}
             <br />
             {activeTab === 1 && (
