@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import * as s from "../components/TopMessage.sc";
-import { lightOrange, zeeguuOrange } from "../components/colors";
+import { lightOrange } from "../components/colors";
 import { device } from "./Devices";
 
-let lightGray = "#C6C9D1";
 let darkerHueZeeguuOrange = "#9c7130";
 
 const UserDashboardTopContainer = styled.div`
