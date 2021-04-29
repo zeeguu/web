@@ -1,5 +1,5 @@
 import { ResponsiveBar } from "@nivo/bar";
-import { BAR_GRAPH_KEYS } from "../dataFormat/ConstantsUserDashboard";
+import { BAR_GRAPH_KEYS } from "../ConstantsUserDashboard";
 
 export default function ReadingAndExercisesTimeGraph({ data }) {
   return (

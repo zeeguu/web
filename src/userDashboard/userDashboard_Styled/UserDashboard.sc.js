@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import * as s from "../components/TopMessage.sc";
-import { lightOrange } from "../components/colors";
+import * as s from "../../components/TopMessage.sc";
+import { lightOrange } from "../../components/colors";
 import { device } from "./Devices";
 import * as datePickerCSS from "react-datepicker/dist/react-datepicker.css";
 
@@ -10,7 +10,7 @@ const UserDashboardTopContainer = styled.div`
   text-align: center;
 `;
 
-const UserDashboardTile = styled.h1`
+const UserDashboardTitle = styled.h1`
   font-weight: 300;
   font-size: 2.5em;
   line-height: 1em;
@@ -134,7 +134,7 @@ const NivoGraphContainer = styled.div`
 `;
 
 export {
-  UserDashboardTile,
+  UserDashboardTitle,
   UserDashboardTopContainer,
   UserDashboardHelperText,
   UserDashBoardTabs,

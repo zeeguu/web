@@ -1,5 +1,5 @@
-import { DATE_FORMAT_FOR_DATEPICKER } from "../dataFormat/ConstantsUserDashboard";
-import { UserDatePicker } from "../UserDashboard.sc";
+import { DATE_FORMAT_FOR_DATEPICKER } from "../ConstantsUserDashboard";
+import * as s from "../userDashboard_Styled/UserDashboard.sc";
 import DatePicker from "react-datepicker";
 
 export default function UserDashboardDatePicker({
@@ -9,13 +9,13 @@ export default function UserDashboardDatePicker({
   return (
     <>
       {" "}
-      <UserDatePicker>
+      <s.UserDatePicker>
         <DatePicker
           dateFormat={DATE_FORMAT_FOR_DATEPICKER}
           selected={referenceDate}
           onChange={(date) => setReferenceDate(date)}
         />
-      </UserDatePicker>
+      </s.UserDatePicker>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { ACTIVITY_TIME_FORMAT_OPTIONS } from "../dataFormat/ConstantsUserDashboard";
+import { ACTIVITY_TIME_FORMAT_OPTIONS } from "../ConstantsUserDashboard";
 import { DropDownList, DropDownOption } from "./DropDownList";
 
 export default function TimeFormatDropdownList({

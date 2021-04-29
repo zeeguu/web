@@ -1,4 +1,4 @@
-import { OPTIONS } from "../dataFormat/ConstantsUserDashboard";
+import { OPTIONS } from "../ConstantsUserDashboard";
 
 import { DropDownList, DropDownOption } from "./DropDownList";
 
