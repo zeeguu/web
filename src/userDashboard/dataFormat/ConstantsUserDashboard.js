@@ -12,7 +12,6 @@ const OPTIONS = {
   CUSTOM_WEEK: udstrings.custom7DaysUntil,
   CUSTOM_MONTH: udstrings.custom30DaysUntil,
   CUSTOM_YEAR: udstrings.custom12MonthsUntil,
-  CUSTOM: "to do",
 };
 
 const ACTIVITY_TIME_FORMAT_OPTIONS = {

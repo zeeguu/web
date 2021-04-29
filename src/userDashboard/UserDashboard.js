@@ -47,24 +47,31 @@ export default function UserDashboard({ api }) {
   function handleActiveTimeIntervalChange(selected) {
     setActiveTimeInterval(selected);
 
-    if (selected !== OPTIONS.CUSTOM) {
+    var period =
+      selected === OPTIONS.WEEK || selected === OPTIONS.CUSTOM_WEEK
+        ? PERIOD_OPTIONS.WEEK
+        : selected === OPTIONS.MONTH || selected === OPTIONS.CUSTOM_MONTH
+        ? PERIOD_OPTIONS.MONTH
+        : selected === OPTIONS.YEAR || selected === OPTIONS.CUSTOM_YEAR
+        ? PERIOD_OPTIONS.YEAR
+        : selected === OPTIONS.YEARS
+        ? PERIOD_OPTIONS.YEARS
+        : PERIOD_OPTIONS.WEEK;
+
+    // if it's last week/month/year/years,
+    //set the date to today's date and show time in minutes
+    if (
+      selected === OPTIONS.WEEK ||
+      OPTIONS.MONTH ||
+      OPTIONS.YEAR ||
+      OPTIONS.YEARS
+    ) {
       setReferenceDate(new Date());
-
-      var period =
-        selected === OPTIONS.WEEK
-          ? PERIOD_OPTIONS.WEEK
-          : selected === OPTIONS.MONTH
-          ? PERIOD_OPTIONS.MONTH
-          : selected === OPTIONS.YEAR
-          ? PERIOD_OPTIONS.YEAR
-          : selected === OPTIONS.YEARS
-          ? PERIOD_OPTIONS.YEARS
-          : PERIOD_OPTIONS.WEEK;
-
-      handleActiveCustomTimeInterval(period);
 
       handleActiveTimeFormatChange(ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES);
     }
+
+    handleActiveCustomTimeInterval(period);
   }
 
   function handleActiveCustomTimeInterval(selected) {
