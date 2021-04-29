@@ -9,8 +9,9 @@ import * as s from "./Exercises.sc";
 import FeedbackButtons from "./FeedbackButtons";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
+import Match from "./exerciseTypes/match/Match";
 
-let NUMBER_OF_EXERCISES = 4;
+let NUMBER_OF_EXERCISES = 10;
 
 export default function Exercises({ api, articleID }) {
   const [bookmarksToStudyList, setbookmarksToStudyList] = useState(null);
@@ -99,6 +100,14 @@ export default function Exercises({ api, articleID }) {
     ]);
   }
 
+  function incorrectAnswerNotificationById(id) {
+    bookmarksToStudyList.forEach((bookmark) => {
+      if (bookmark.id === id) {
+        setIncorrectBookmarks([...incorrectBookmarks, bookmark]);
+      }
+    });
+  }
+
   function stopShowingThisFeedback(reason) {
     moveToNextExercise();
     api.uploadExerciseFeedback(
@@ -122,16 +131,25 @@ export default function Exercises({ api, articleID }) {
       <ProgressBar index={currentIndex} total={NUMBER_OF_EXERCISES} />
 
       <s.ExForm>
-        {currentIndex % 2 === 0 && (
-          <FindWordInContext
+        {currentIndex % 3 === 0 && (
+          <Match
+            currentIndex={currentIndex}
+            correctAnswer={correctAnswer}
+            bookmarksToStudyList={bookmarksToStudyList}
+            api={api}
+            notifyIncorrectAnswer={incorrectAnswerNotificationById}
+          />
+        )}
+        {currentIndex % 3 === 1 && (
+          <MultipleChoice
             bookmarkToStudy={currentBookmarkToStudy}
             correctAnswer={correctAnswer}
             notifyIncorrectAnswer={incorrectAnswerNotification}
             api={api}
           />
         )}
-        {currentIndex % 2 === 1 && (
-          <MultipleChoice
+        {currentIndex % 3 === 2 && (
+          <FindWordInContext
             bookmarkToStudy={currentBookmarkToStudy}
             correctAnswer={correctAnswer}
             notifyIncorrectAnswer={incorrectAnswerNotification}
