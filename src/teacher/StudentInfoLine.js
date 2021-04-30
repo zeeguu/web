@@ -1,25 +1,39 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdHighlightOff } from "react-icons/md/";
+import ProgressBar from "./ProgressBar";
 import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 import { StyledDialog } from "./StyledDialog.sc";
 import * as s from "./StudentInfoLine.sc";
 
-export default function StudentInfoLine(props) {
+export default function StudentInfoLine({ api, cohortID, student }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const exerciseArray = student.exercise_time_list.filter((time) => time !== 0);
+  const exerciseCount = exerciseArray.size ? exerciseArray.size : 0 ;
+  const readingList = student.reading_time_list.filter((time) => time !== 0);
+  const readingCount = readingList.length ? readingList.length : 0 ;
+
   return (
     <s.StudentInfoLine>
       <div className="wrapper">
         <Link
-          to={`/teacher/classes/viewStudent/${props.studentID}/class/${props.cohortID}`}
+          to={`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`}
         >
           <div className="sideline">
             <div className="text-box">
-              <div className="student-name">Very Long Student Name Here</div>
-              <div className="activity-count">x texts read STRINGS</div>
-              <div className="activity-count">y exercises completed STRINGS</div>
+              <div className="student-name">{student.name}</div>
+              <div className="activity-count">
+                {readingCount} {" "} texts read STRINGS
+              </div>
+              <div className="activity-count">
+              {exerciseCount} {" "} exercises completed STRINGS
+              </div>
             </div>
-            <div className="progress-bar">PROGRESS-BAR HERE</div>
+
+            <div className="progress-bar">
+              <ProgressBar api={api} student={student} />
+            </div>
             <div className="number-display-wrapper">
               <div className="number-display">{/* avg-text-length */}123</div>
               <div className="number-display">{/* avg-text-level */}4.5</div>
@@ -45,12 +59,16 @@ export default function StudentInfoLine(props) {
         >
           <div className="centered">
             <h1>Danger zone!</h1>
-            <p>Do you wish to delete <b>{props.studentID}</b> from the class?</p>
+            <p>
+              Do you wish to delete <b>{student.name}</b> from the class?
+            </p>
           </div>
-            <PopupButtonWrapper>
-              <StyledButton secondary>Delete STRINGS</StyledButton>
-              <StyledButton primary onClick={()=>setIsOpen(false)}>Cancel STRINGS</StyledButton> 
-            </PopupButtonWrapper>
+          <PopupButtonWrapper>
+            <StyledButton secondary>Delete STRINGS</StyledButton>
+            <StyledButton primary onClick={() => setIsOpen(false)}>
+              Cancel STRINGS
+            </StyledButton>
+          </PopupButtonWrapper>
         </StyledDialog>
       )}
     </s.StudentInfoLine>
