@@ -27,7 +27,7 @@ export default function StudentInfoLine({ api, cohortID, student }) {
                 {readingCount} texts read STRINGS
               </div>
               <div className="activity-count">
-                {exerciseCount} exercises completed STRINGS
+                {exerciseCount} exercise sessions completed STRINGS
               </div>
             </div>
 

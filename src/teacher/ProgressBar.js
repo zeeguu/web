@@ -10,13 +10,17 @@ const ProgressBar = ({ api, student }) => {
   const [exerciseTimeString, setExerciseTimeString] = useState("");
 
   useEffect(() => {
-    const readH = Math.floor(student.reading_time / 3600);
-    const readM = Math.ceil((student.reading_time / 60) % 60);
-    setReadingTimeString(readH + "h " + readM + "m");
+    const readingHours = Math.floor(student.reading_time / 3600);
+    const readingMinutes = Math.ceil((student.reading_time / 60) % 60);
+    readingHours < 1
+      ? setReadingTimeString(readingMinutes + "m")
+      : setReadingTimeString(readingHours + "h " + readingMinutes + "m");
 
-    const exerciseH = Math.floor(student.exercises_done / 3600);
-    const exerciseM = Math.ceil((student.exercises_done / 60) % 60);
-    setExerciseTimeString(exerciseH + "h " + exerciseM + "m");
+    const exerciseHours = Math.floor(student.exercises_done / 3600);
+    const exerciseMinutes = Math.ceil((student.exercises_done / 60) % 60);
+    exerciseHours < 1
+    ? setExerciseTimeString(exerciseMinutes + "m")
+    : setExerciseTimeString(exerciseHours + "h " + exerciseMinutes + "m");
     // eslint-disable-next-line
   }, []);
 

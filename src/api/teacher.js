@@ -111,3 +111,11 @@ Zeeguu_API.prototype.deleteArticleFromCohort = function (
     onError
   );
 };
+
+Zeeguu_API.prototype.getStudents = function(
+  cohortID,
+  duration,
+  callback
+){
+  this._get(`/users_from_cohort/${cohortID}/${duration}`, callback);
+}

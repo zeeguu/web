@@ -6,21 +6,22 @@ import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
-import {DUMMYSTUDENTS} from "./DUMMIES_TO_DELETE"
+import { transformStudents } from "./teacherApiHelpers";
 
 export default function StudentsActivityOverview({ api }) {
   const cohortID = useParams().cohortID;
   const [cohort, setCohort] = useState("");
-  const [students, setStudents] =useState([]);
+  const [students, setStudents] = useState([]);
 
-  useEffect(()=>{
-    setStudents(DUMMYSTUDENTS);
+  useEffect(() => {
+    //!HARDCODED TIMEPERIOD!!!
+    api.getStudents(cohortID, 30, (res) => {
+      const studentWithNeededData = transformStudents(res);
+      setStudents(studentWithNeededData);
+    });
     //eslint-disable-next-line
-  },[])
-  
-  console.log("students are here")
-  console.log(students)
-  
+  }, []);
+
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
 
   //Extracting the cohort data for the page title and deleting students from the cohort.
@@ -50,17 +51,16 @@ export default function StudentsActivityOverview({ api }) {
               STRINGS Add students
             </StyledButton>
           </TopButtonWrapper>
-          <StudentInfoLineHeader/>
+          <StudentInfoLineHeader />
           
-          {students.map((student)=> (
-            <StudentInfoLine key={student.id} api={api} cohortID={cohortID} student={student} />
+          {students.map((student) => (
+            <StudentInfoLine
+              key={student.id}
+              api={api}
+              cohortID={cohortID}
+              student={student}
+            />
           ))}
-          
-          {/* {articleList.map((each) => (
-            <TeacherTextPreview key={each.id} article={each}/>
-          ))} */}
-{/*           <StudentInfoLine cohortID={cohortID} studentID={studentID} />
-          <StudentInfoLine cohortID={cohortID} studentID={studentID} /> */}
         </div>
       </s.WidestColumn>
       {showAddStudentsInfo && (
