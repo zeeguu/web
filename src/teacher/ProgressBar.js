@@ -6,18 +6,17 @@ const ProgressBar = ({ api, student }) => {
   student.learning_proportion =
     student.learning_proportion === 0 ? 50 : student.learning_proportion;
 
-  const [readingTime, setReadingTime] = useState("");
-  const [exerciseTime, setExerciseTime] = useState("");
+  const [readingTimeString, setReadingTimeString] = useState("");
+  const [exerciseTimeString, setExerciseTimeString] = useState("");
 
   useEffect(() => {
-    api.getUserActivityByDay((res) => console.log(res));
     const readH = Math.floor(student.reading_time / 3600);
     const readM = Math.ceil((student.reading_time / 60) % 60);
-    setReadingTime(readH + "h " + readM + "m");
+    setReadingTimeString(readH + "h " + readM + "m");
 
     const exerciseH = Math.floor(student.exercises_done / 3600);
     const exerciseM = Math.ceil((student.exercises_done / 60) % 60);
-    setExerciseTime(exerciseH + "h " + exerciseM + "m");
+    setExerciseTimeString(exerciseH + "h " + exerciseM + "m");
     // eslint-disable-next-line
   }, []);
 
@@ -55,7 +54,7 @@ const ProgressBar = ({ api, student }) => {
             width: student.learning_proportion + "%",
           }}
         >
-          {student.reading_time > 120 ? readingTime : ""}
+          {student.reading_time > 120 ? readingTimeString : ""}
         </div>
         <div
           className="activity-bar"
@@ -64,7 +63,7 @@ const ProgressBar = ({ api, student }) => {
             width: 100 - student.learning_proportion + "%",
           }}
         >
-          {student.exercises_done > 120 ? exerciseTime : ""}
+          {student.exercises_done > 120 ? exerciseTimeString : ""}
         </div>
       </div>
     </s.ProgressBar>

@@ -18,6 +18,7 @@ export default function StudentsActivityOverview({ api }) {
     //eslint-disable-next-line
   },[])
   
+  console.log("students are here")
   console.log(students)
   
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
