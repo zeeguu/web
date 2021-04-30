@@ -8,12 +8,14 @@ import * as sc from "../components/TopTabs.sc";
 import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
 import { transformStudents } from "./teacherApiHelpers";
 import NoStudents from "./NoStudents";
+import TimeSelector from "./TimeSelector";
 
 export default function StudentsActivityOverview({ api }) {
   const cohortID = useParams().cohortID;
   const [cohort, setCohort] = useState("");
   const [students, setStudents] = useState([]);
-
+  const [chosenTimePeriod, setChosenTimePeriod] = useState(30);
+  const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
   useEffect(() => {
     //!HARDCODED TIMEPERIOD!!!
     api.getStudents(cohortID, 30, (res) => {
@@ -22,8 +24,6 @@ export default function StudentsActivityOverview({ api }) {
     });
     //eslint-disable-next-line
   }, []);
-
-  const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
 
   //Extracting the cohort data for the page title and deleting students from the cohort.
   useEffect(() => {
@@ -53,7 +53,12 @@ export default function StudentsActivityOverview({ api }) {
             </StyledButton>
           </TopButtonWrapper>
           {students.length !== 0 ? (
-            <StudentInfoLineHeader />
+            <>
+              <TimeSelector
+                chosenTimePeriod={chosenTimePeriod}
+              />
+              <StudentInfoLineHeader />
+            </>
           ) : (
             <NoStudents inviteCode={cohort.inv_code} />
           )}

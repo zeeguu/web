@@ -15,8 +15,8 @@ const StyledButton = styled.button`
   text-align: center;
   cursor: pointer;
 
-  :disabled{
-    background-color:${lightGrey};
+  :disabled {
+    background-color: ${lightGrey};
     border: 3px solid ${lightGrey};
     color: white;
   }
@@ -46,6 +46,18 @@ const StyledButton = styled.button`
       padding: 0;
       border: None;
     `}
+    //Link
+    ${(props) =>
+    props.link &&
+    css`
+      border: None;
+      padding: 4px;
+      text-decoration:underline;
+      font-weight:600;
+      color: black;
+      font-size: medium;
+    `}
+
 
     //ChoiceNotSelected
     ${(props) =>
@@ -54,8 +66,8 @@ const StyledButton = styled.button`
       border: 3px solid ${lightBlue};
     `}
 
-        //ChoiceSelected
-        ${(props) =>
+    //ChoiceSelected
+    ${(props) =>
     props.choiceSelected &&
     css`
       color: white;
