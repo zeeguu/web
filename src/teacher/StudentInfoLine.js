@@ -10,9 +10,9 @@ export default function StudentInfoLine({ api, cohortID, student }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const exerciseArray = student.exercise_time_list.filter((time) => time !== 0);
-  const exerciseCount = exerciseArray.size ? exerciseArray.size : 0 ;
+  const exerciseCount = exerciseArray.length ? exerciseArray.length : 0;
   const readingList = student.reading_time_list.filter((time) => time !== 0);
-  const readingCount = readingList.length ? readingList.length : 0 ;
+  const readingCount = readingList.length ? readingList.length : 0;
 
   return (
     <s.StudentInfoLine>
@@ -24,10 +24,10 @@ export default function StudentInfoLine({ api, cohortID, student }) {
             <div className="text-box">
               <div className="student-name">{student.name}</div>
               <div className="activity-count">
-                {readingCount} {" "} texts read STRINGS
+                {readingCount} texts read STRINGS
               </div>
               <div className="activity-count">
-              {exerciseCount} {" "} exercises completed STRINGS
+                {exerciseCount} exercises completed STRINGS
               </div>
             </div>
 
