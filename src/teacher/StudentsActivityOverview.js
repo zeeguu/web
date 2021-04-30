@@ -7,6 +7,7 @@ import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
 import { transformStudents } from "./teacherApiHelpers";
+import NoStudents from "./NoStudents";
 
 export default function StudentsActivityOverview({ api }) {
   const cohortID = useParams().cohortID;
@@ -51,8 +52,11 @@ export default function StudentsActivityOverview({ api }) {
               STRINGS Add students
             </StyledButton>
           </TopButtonWrapper>
-          <StudentInfoLineHeader />
-          
+          {students.length !== 0 ? (
+            <StudentInfoLineHeader />
+          ) : (
+            <NoStudents inviteCode={cohort.inv_code} />
+          )}
           {students.map((student) => (
             <StudentInfoLine
               key={student.id}
