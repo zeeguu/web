@@ -4,6 +4,7 @@ import "@reach/dialog/styles.css";
 import {darkBlue} from "../components/colors";
 
 export const StyledDialog = styled(Dialog)`
+  margin:${(props)=>props.margin};
   max-width: ${(props) => props.max_width};
   border-radius: 15px;
 
@@ -11,6 +12,10 @@ export const StyledDialog = styled(Dialog)`
     display:flex;
     flex-direction: column;
     align-items: center;
+  }
+  .centered#row{
+    justify-content:center;
+    flex-direction:row;
   }
 
   .bold-blue{
@@ -27,5 +32,9 @@ export const StyledDialog = styled(Dialog)`
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     padding: 0 1em;
+  }
+  .change-time{
+    font-size:x-large;
+    margin-left: 22px;
   }
 `;
