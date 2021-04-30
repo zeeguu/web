@@ -6,11 +6,20 @@ import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
+import {DUMMYSTUDENTS} from "./DUMMIES_TO_DELETE"
 
 export default function StudentsActivityOverview({ api }) {
   const cohortID = useParams().cohortID;
   const [cohort, setCohort] = useState("");
-  const studentID = "StudentName(HARDCODED)";
+  const [students, setStudents] =useState([]);
+
+  useEffect(()=>{
+    setStudents(DUMMYSTUDENTS);
+    //eslint-disable-next-line
+  },[])
+  
+  console.log(students)
+  
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
 
   //Extracting the cohort data for the page title and deleting students from the cohort.
@@ -41,8 +50,16 @@ export default function StudentsActivityOverview({ api }) {
             </StyledButton>
           </TopButtonWrapper>
           <StudentInfoLineHeader/>
-          <StudentInfoLine cohortID={cohortID} studentID={studentID} />
-          <StudentInfoLine cohortID={cohortID} studentID={studentID} />
+          
+          {students.map((student)=> (
+            <StudentInfoLine key={student.id} api={api} cohortID={cohortID} student={student} />
+          ))}
+          
+          {/* {articleList.map((each) => (
+            <TeacherTextPreview key={each.id} article={each}/>
+          ))} */}
+{/*           <StudentInfoLine cohortID={cohortID} studentID={studentID} />
+          <StudentInfoLine cohortID={cohortID} studentID={studentID} /> */}
         </div>
       </s.WidestColumn>
       {showAddStudentsInfo && (
