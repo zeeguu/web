@@ -5,7 +5,7 @@ Configure the right `REACT_APP_API_URL` in the .env.development and `.env.produc
     npm install
     npm run start
    
-## Development
+## Setting up the Development Environment
 
 Make sure to install the following plugins for VSCode:
 - vscode-styled-components
@@ -14,7 +14,7 @@ Make sure to install the following plugins for VSCode:
 
 
 
-### Coding Conventions and Goals
+## Coding Conventions and Goals
 
 #### 1. Strive to write programs "for people to read, and only incidentally for machines to execute" (Abelson && Sussman)
 
