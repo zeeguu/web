@@ -34,7 +34,7 @@ a normal component
     <s.ExercisesColumn>
     ... 
 ```
-4. Separate styled components to different files (e.g. `Exercises.js` and `Exercises.js.sc`)
+4. Separate styling from the code (e.g. `Exercises.js` and `Exercises.js.sc`)
 ## Notes
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
