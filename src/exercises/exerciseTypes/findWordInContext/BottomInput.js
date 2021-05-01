@@ -1,6 +1,6 @@
 import { useState } from "react";
 import removeAccents from "remove-accents";
-import strings from "../../i18n/definitions";
+import strings from "../../../i18n/definitions";
 
 export default function BottomInput({
   handleCorrectAnswer,
