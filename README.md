@@ -16,8 +16,9 @@ Make sure to install the following plugins for VSCode:
 
 ### Coding Conventions and Goals
 
-1. Strive to write programs "for people to read, and only incidentally for machines to execute" (Abelson && Sussman)
-2. Naming conventions: 
+#### 1. Strive to write programs "for people to read, and only incidentally for machines to execute" (Abelson && Sussman)
+
+#### 2. Naming conventions: 
 
    * camelCase for Folder names; 
    * PascalCase for Javascript file names 
