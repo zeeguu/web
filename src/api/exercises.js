@@ -15,3 +15,7 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
     null
   );
 };
+
+Zeeguu_API.prototype.wordsSimilarTo = function (bookmark_id, callback) {
+  this._get(`similar_words/${bookmark_id}`, callback);
+};

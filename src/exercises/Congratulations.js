@@ -8,6 +8,12 @@ export default function Congratulations({
   incorrectBookmarks,
   api,
 }) {
+  function removeArrayDuplicates(array) {
+    var set = new Set(array);
+    var newArray = Array.from(set);
+    return newArray;
+  }
+
   return (
     <NarrowColumn>
       <br />
@@ -19,8 +25,8 @@ export default function Congratulations({
           😊 Correct
           <br />
           <br />
-          {correctBookmarks.map((each) => (
-            <Word bookmark={each} api={api} />
+          {removeArrayDuplicates(correctBookmarks).map((each) => (
+            <Word key={each.id} bookmark={each} api={api} />
           ))}
         </h3>
       )}
@@ -32,8 +38,8 @@ export default function Congratulations({
           😳 Pay more attention to
           <br />
           <br />
-          {incorrectBookmarks.map((each) => (
-            <Word bookmark={each} api={api} />
+          {removeArrayDuplicates(incorrectBookmarks).map((each) => (
+            <Word key={each.id} bookmark={each} api={api} />
           ))}
         </h3>
       )}
