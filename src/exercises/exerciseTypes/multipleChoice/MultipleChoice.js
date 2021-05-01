@@ -138,6 +138,7 @@ export default function MultipleChoice({
       )}
       {isCorrect && (
         <BottomFeedback
+          api={api}
           bookmarkToStudy={bookmarkToStudy}
           correctAnswer={correctAnswer}
         />
