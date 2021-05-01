@@ -14,7 +14,7 @@ Make sure to install the following plugins for VSCode:
 
 ### Code Conventions
 
-1. Write good code. 
+1. Aim to write understandable code. Remember the dicto of Abelson & Sussman: "Programs must be written for people to read, and only incidentally for machines to execute".
 2. User camelCase for Folder names
 3. Use PascalCase for Javascript file names
 4. Separate styling of styled components in a different file (e.g. Exercises.js and Exercises.js.sc)
