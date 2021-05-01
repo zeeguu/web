@@ -14,11 +14,14 @@ Make sure to install the following plugins for VSCode:
 
 ### Code Conventions
 
-1. Aim to write understandable code. Remember the dicto of Abelson & Sussman: "Programs must be written for people to read, and only incidentally for machines to execute".
-2. User camelCase for Folder names
-3. Use PascalCase for Javascript file names
+1. Let us try to programs "for people to read, and only incidentally for machines to execute" (Abelson && Sussman)
+2. Naming conventions: 
+
+   * camelCase for Folder names; 
+   * PascalCase for Javascript file names 
+    
 4. Separate styling of styled components in a different file (e.g. Exercises.js and Exercises.js.sc)
-6. When importing styled components: import a full file as `s` 
+5. When importing styled components: import a full file as `s` 
 then refer to the components as `s.Component` as in the following
 example. This makes it clear what's a styled component and what's
 a normal component
