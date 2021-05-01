@@ -12,9 +12,11 @@ Make sure to install the following plugins for VSCode:
 - Prettier - Code formatter (after installation, enable "Format On Save" in your IDE)
 
 
-### Code Conventions
 
-1. Let us try to programs "for people to read, and only incidentally for machines to execute" (Abelson && Sussman)
+
+### Coding Conventions and Goals
+
+1. Strive to write programs "for people to read, and only incidentally for machines to execute" (Abelson && Sussman)
 2. Naming conventions: 
 
    * camelCase for Folder names; 
