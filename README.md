@@ -9,16 +9,16 @@ Configure the right `REACT_APP_API_URL` in the .env.development and `.env.produc
 
 Make sure to install the following plugins for VSCode:
 - vscode-styled-components
-- Prettier - Code formatter 
+- Prettier - Code formatter (after installation, enable "Format On Save" in your IDE)
 
 
 ### Code Conventions
 
-Write good code.
-
-- folderNames are camelCase
-- js files are named with PascalCase
-- when importing styled components import a full file as `s` 
+1. Write good code. 
+2. User camelCase for Folder names
+3. Use PascalCase for Javascript file names
+4. Separate styling of styled components in a different file (e.g. Exercises.js and Exercises.js.sc)
+6. When importing styled components: import a full file as `s` 
 then refer to the components as `s.Component` as in the following
 example. This makes it clear what's a styled component and what's
 a normal component
