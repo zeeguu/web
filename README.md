@@ -23,7 +23,8 @@ Make sure to install the following plugins for VSCode:
    * camelCase for Folder names; 
    * PascalCase for Javascript file names 
     
-3. When importing styled components: import a full file as `s` 
+#### 3. Separate styled components from React components in JSX
+When importing styled components: import a full file as `s` 
 then refer to the components as `s.Component` as in the following
 example. This makes it clear what's a styled component and what's
 a normal component
@@ -35,7 +36,8 @@ a normal component
     <s.ExercisesColumn>
     ... 
 ```
-4. Separate styling from the code (e.g. `Exercises.js` and `Exercises.js.sc`)
+#### 4. Separate styling from the code (e.g. `Exercises.js` and `Exercises.js.sc`)
+
 ## Notes
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
