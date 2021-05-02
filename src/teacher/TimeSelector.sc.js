@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { lightBlue, darkBlue, lightGrey } from "../components/colors";
+import { darkBlue } from "../components/colors";
 
 export const TimeSelector = styled.div`
   display: flex;

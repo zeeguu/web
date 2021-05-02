@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { timePeriodMap } from "./TimeSelectorHelperMap";
 import { StyledButton } from "./TeacherButtons.sc";
 import SelectButton from "./SelectButton";
-import * as s from "../components/ColumnWidth.sc";
-import * as sc from "./TimeSelector.sc";
 import { StyledDialog } from "./StyledDialog.sc";
 import { MdHighlightOff } from "react-icons/md";
+import * as s from "../components/ColumnWidth.sc";
+import * as sc from "./TimeSelector.sc";
 
 const TimeSelector = ({ chosenTimePeriod, setChosenTimePeriod }) => {
   const [showTimesToChoose, setShowTimesToChoose] = useState(false);
