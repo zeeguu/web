@@ -16,14 +16,15 @@ export default function StudentsActivityOverview({ api }) {
   const [students, setStudents] = useState([]);
   const [chosenTimePeriod, setChosenTimePeriod] = useState(30);
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
+  console.log("The selected time is: " + chosenTimePeriod)
   useEffect(() => {
-    //!HARDCODED TIMEPERIOD!!!
-    api.getStudents(cohortID, 30, (res) => {
+    //!SEMIHARDCODED TIMEPERIOD!!!
+    api.getStudents(cohortID, chosenTimePeriod, (res) => {
       const studentWithNeededData = transformStudents(res);
       setStudents(studentWithNeededData);
     });
     //eslint-disable-next-line
-  }, []);
+  }, [chosenTimePeriod]);
 
   //Extracting the cohort data for the page title and deleting students from the cohort.
   useEffect(() => {
@@ -52,24 +53,22 @@ export default function StudentsActivityOverview({ api }) {
               STRINGS Add students
             </StyledButton>
           </TopButtonWrapper>
-          {students.length !== 0 ? (
-            <>
-              <TimeSelector
-                chosenTimePeriod={chosenTimePeriod}
-              />
-              <StudentInfoLineHeader />
-            </>
-          ) : (
+          {students.length === 0 ? (
             <NoStudents inviteCode={cohort.inv_code} />
+          ) : (
+            <>
+              <TimeSelector chosenTimePeriod={chosenTimePeriod} setChosenTimePeriod={setChosenTimePeriod} />
+              <StudentInfoLineHeader />
+              {students.map((student) => (
+                <StudentInfoLine
+                  key={student.id}
+                  api={api}
+                  cohortID={cohortID}
+                  student={student}
+                />
+              ))}
+            </>
           )}
-          {students.map((student) => (
-            <StudentInfoLine
-              key={student.id}
-              api={api}
-              cohortID={cohortID}
-              student={student}
-            />
-          ))}
         </div>
       </s.WidestColumn>
       {showAddStudentsInfo && (

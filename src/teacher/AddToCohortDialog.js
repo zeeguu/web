@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router";
-import SelectCohortsButton from "./SelectCohortsButton";
+import SelectButton from "./SelectButton";
 import { StyledDialog } from "./StyledDialog.sc";
 import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 
@@ -86,9 +86,10 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       <h1>Choose one or more classes STRING</h1>
       {chosenCohorts.length >= 0 &&
         cohortsToChoose.map((cohort) => (
-          <SelectCohortsButton
+          <SelectButton
             key={cohort.id}
-            cohort={cohort}
+            value={cohort.name}
+            btnText={cohort.name}
             isChosen={isChosen(cohort)}
             handleChange={handleChange}
           />
