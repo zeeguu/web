@@ -1,29 +1,29 @@
 import React from "react";
 import { StyledButton } from "./TeacherButtons.sc";
 
-export default function SelectCohortsButton({ cohort, isChosen, handleChange }) {
+export default function SelectButton({ key, value, btnText, isChosen, handleChange }) {
   return (
     <>
       {isChosen && (
         <StyledButton
-          key={cohort.id}
+          key={key}
           choiceSelected
           onClick={() => {
-            handleChange(cohort.name);
+            handleChange(value);
           }}
         >
-          {cohort.name}
+          {btnText}
         </StyledButton>
       )}
       {!isChosen && (
         <StyledButton
-          key={cohort.id}
+          key={key}
           choiceNotSelected
           onClick={() => {
-            handleChange(cohort.name);
+            handleChange(value);
           }}
         >
-          {cohort.name}
+          {btnText}
         </StyledButton>
       )}
     </>
