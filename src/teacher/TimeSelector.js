@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {timePeriodMap} from "./TimeSelectorHelperMap"
+import { timePeriodMap } from "./TimeSelectorHelperMap";
 import { StyledButton } from "./TeacherButtons.sc";
 import SelectButton from "./SelectButton";
 import * as s from "../components/ColumnWidth.sc";
@@ -10,18 +10,15 @@ import { MdHighlightOff } from "react-icons/md";
 const TimeSelector = ({ chosenTimePeriod, setChosenTimePeriod }) => {
   const [showTimesToChoose, setShowTimesToChoose] = useState(false);
 
-  const ischosen = (time) => chosenTimePeriod === time
-  const handleSelect = (timePeriod) =>{
-    setChosenTimePeriod(timePeriod)
-    setShowTimesToChoose(false)
-  }
+  const isChosen = (time) => chosenTimePeriod === time;
+
   return (
     <s.CenteredContent>
       <sc.TimeSelector>
         <p>
           This is the overview of the students' activities for the last
           <StyledButton link onClick={() => setShowTimesToChoose(true)}>
-          {timePeriodMap[chosenTimePeriod]}
+            {timePeriodMap[chosenTimePeriod]}
           </StyledButton>
           STRINGS
         </p>
@@ -44,12 +41,41 @@ const TimeSelector = ({ chosenTimePeriod, setChosenTimePeriod }) => {
             <p className="change-time"> Change the time period STRINGS</p>
           </div>
           <div className="centered" id="row">
-            {/* All of these must be localized STRINGS */}
-            <SelectButton key={timePeriodMap[7]} btnText={timePeriodMap[7]} value={7} isChosen={ischosen(7)} handleChange={handleSelect}/>
-            <SelectButton key={timePeriodMap[14]} btnText={timePeriodMap[14]} value={14} isChosen={ischosen(14)} handleChange={handleSelect}/>
-            <SelectButton key={timePeriodMap[30]} btnText={timePeriodMap[30]} value={30} isChosen={ischosen(30)} handleChange={handleSelect}/>
-            <SelectButton key={timePeriodMap[182]} btnText={timePeriodMap[182]} value={182} isChosen={ischosen(182)} handleChange={handleSelect}/>
-            <SelectButton key={timePeriodMap[365]} btnText={timePeriodMap[365]} value={365} isChosen={ischosen(365)} handleChange={handleSelect}/>
+            <SelectButton
+              key={timePeriodMap[7]}
+              btnText={timePeriodMap[7]}
+              value={7}
+              isChosen={isChosen(7)}
+              handleChange={setChosenTimePeriod}
+            />
+            <SelectButton
+              key={timePeriodMap[14]}
+              btnText={timePeriodMap[14]}
+              value={14}
+              isChosen={isChosen(14)}
+              handleChange={setChosenTimePeriod}
+            />
+            <SelectButton
+              key={timePeriodMap[30]}
+              btnText={timePeriodMap[30]}
+              value={30}
+              isChosen={isChosen(30)}
+              handleChange={setChosenTimePeriod}
+            />
+            <SelectButton
+              key={timePeriodMap[182]}
+              btnText={timePeriodMap[182]}
+              value={182}
+              isChosen={isChosen(182)}
+              handleChange={setChosenTimePeriod}
+            />
+            <SelectButton
+              key={timePeriodMap[365]}
+              btnText={timePeriodMap[365]}
+              value={365}
+              isChosen={isChosen(365)}
+              handleChange={setChosenTimePeriod}
+            />
           </div>
         </StyledDialog>
       )}
