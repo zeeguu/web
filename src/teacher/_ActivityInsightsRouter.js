@@ -3,12 +3,12 @@ import { Switch, useParams } from "react-router";
 import { PrivateRoute } from "../PrivateRoute";
 import * as s from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
-import ReadingInsights from "./ReadingInsights";
-import ExercisesInsights from "./ExercisesInsights";
+import StudentReadingInsights from "./StudentReadingInsights";
+import StudentExercisesInsights from "./StudentExercisesInsights";
 
 export default function ActivityInsightsRouter({ api }) {
-    const cohortID = useParams().cohortID
-    const studentID = "HARDCODED"
+  const cohortID = useParams().cohortID;
+  const studentID = "HARDCODED";
 
   return (
     <Switch>
@@ -16,24 +16,22 @@ export default function ActivityInsightsRouter({ api }) {
         <TopTabs
           title="STRINGS Learning Activities"
           tabsAndLinks={{
-            STRINGSReading:
-              "/teacher/classes/viewStudent/"+studentID+"/class/"+cohortID,
-            [strings.exercises]:
-              "/teacher/classes/viewStudent/"+ studentID+ "/class/"+cohortID +"/exercises",
-            STRINGSBackToClassroom: "/teacher/classes/viewClass/"+cohortID,
+            STRINGSReading: "/teacher/classes/viewStudent/" + studentID + "/class/" + cohortID,
+            [strings.exercises]: "/teacher/classes/viewStudent/" + studentID + "/class/" + cohortID + "/exercises",
+            STRINGSBackToClassroom: "/teacher/classes/viewClass/" + cohortID,
           }}
         />
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID"
           exact
           api={api}
-          component={ReadingInsights}
+          component={StudentReadingInsights}
         />
 
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID/exercises"
           api={api}
-          component={ExercisesInsights}
+          component={StudentExercisesInsights}
         />
       </s.NarrowColumn>
     </Switch>
