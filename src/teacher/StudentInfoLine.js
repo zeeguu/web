@@ -2,17 +2,25 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdHighlightOff } from "react-icons/md/";
 import ProgressBar from "./ProgressBar";
-import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
-import { StyledDialog } from "./StyledDialog.sc";
+import { StyledButton } from "./TeacherButtons.sc";
+import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
 
 export default function StudentInfoLine({ api, cohortID, student }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [showDeleteStudentWarning, setShowDeleteStudentWarning] = useState(false);
 
   const exerciseArray = student.exercise_time_list.filter((time) => time !== 0);
   const exerciseCount = exerciseArray.length ? exerciseArray.length : 0;
   const readingList = student.reading_time_list.filter((time) => time !== 0);
   const readingCount = readingList.length ? readingList.length : 0;
+
+  const deleteStudent = () =>{
+    //TODO api call to delete student from cohort goes here. - Waiting for endpoint.
+    console.log("Should be deleting student "+ student.name + " from the "+ cohortID +" in the api now...")
+    setShowDeleteStudentWarning(false)
+  }
+
+  //TODO We still need to extract avg text length and level and ecxercise correctness from the api. - Waiting for endpoint.
 
   return (
     <s.StudentInfoLine>
@@ -46,30 +54,18 @@ export default function StudentInfoLine({ api, cohortID, student }) {
         <StyledButton
           icon
           style={{ marginTop: "15px", marginLeft: "25px" }}
-          onClick={() => setIsOpen(true)}
+          onClick={() => setShowDeleteStudentWarning(true)}
         >
           <MdHighlightOff size={35} />
         </StyledButton>
       </div>
-      {isOpen && (
-        <StyledDialog
-          aria-label="Delete student warning"
-          onDismiss={() => setIsOpen(false)}
-          max_width="625px"
-        >
-          <div className="centered">
-            <h1>Danger zone!</h1>
-            <p>
-              Do you wish to delete <b>{student.name}</b> from the class?
-            </p>
-          </div>
-          <PopupButtonWrapper>
-            <StyledButton secondary>Delete STRINGS</StyledButton>
-            <StyledButton primary onClick={() => setIsOpen(false)}>
-              Cancel STRINGS
-            </StyledButton>
-          </PopupButtonWrapper>
-        </StyledDialog>
+      {showDeleteStudentWarning && (
+        <DeleteStudentWarning 
+        studentName={student.name}
+        cohortID={cohortID}
+        deleteStudent={deleteStudent}
+        setShowDeleteStudentWarning={setShowDeleteStudentWarning}
+        />
       )}
     </s.StudentInfoLine>
   );

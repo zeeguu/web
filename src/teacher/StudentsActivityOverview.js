@@ -34,8 +34,6 @@ export default function StudentsActivityOverview({ api }) {
     //eslint-disable-next-line
   }, []);
 
-  //TODO We still need to extract avg text length and level and ecxercise correctness from the api.
-
   return (
     <Fragment>
       <s.WidestColumn>
