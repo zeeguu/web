@@ -16,9 +16,8 @@ export default function StudentsActivityOverview({ api }) {
   const [students, setStudents] = useState([]);
   const [chosenTimePeriod, setChosenTimePeriod] = useState(30);
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
-  console.log("The selected time is: " + chosenTimePeriod)
+
   useEffect(() => {
-    //!SEMIHARDCODED TIMEPERIOD!!!
     api.getStudents(cohortID, chosenTimePeriod, (res) => {
       const studentWithNeededData = transformStudents(res);
       setStudents(studentWithNeededData);
@@ -34,6 +33,8 @@ export default function StudentsActivityOverview({ api }) {
     });
     //eslint-disable-next-line
   }, []);
+
+  //TODO We still need to extract avg text length and level and ecxercise correctness from the api.
 
   return (
     <Fragment>

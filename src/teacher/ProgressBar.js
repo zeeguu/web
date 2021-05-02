@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as s from "./ProgressBar.sc";
 
-const ProgressBar = ({ api, student }) => {
-  //in case the user hasn't read anything, make the learning proportion 50 %
-  student.learning_proportion =
-    student.learning_proportion === 0 ? 50 : student.learning_proportion;
-
+const ProgressBar = ({ student }) => {
   const [readingTimeString, setReadingTimeString] = useState("");
   const [exerciseTimeString, setExerciseTimeString] = useState("");
 
@@ -22,7 +18,7 @@ const ProgressBar = ({ api, student }) => {
     ? setExerciseTimeString(exerciseMinutes + "m")
     : setExerciseTimeString(exerciseHours + "h " + exerciseMinutes + "m");
     // eslint-disable-next-line
-  }, []);
+  }, [student]);
 
   const setReadingCorners = () => {
     let readingCorners = "25px 0 0 25px";
@@ -58,6 +54,7 @@ const ProgressBar = ({ api, student }) => {
             width: student.learning_proportion + "%",
           }}
         >
+          {/* Not showing the reading time if it is less than 3 min */}
           {student.reading_time > 120 ? readingTimeString : ""}
         </div>
         <div
@@ -67,6 +64,7 @@ const ProgressBar = ({ api, student }) => {
             width: 100 - student.learning_proportion + "%",
           }}
         >
+          {/* Not showing the exercise time if it is less than 3 min */}
           {student.exercises_done > 120 ? exerciseTimeString : ""}
         </div>
       </div>
