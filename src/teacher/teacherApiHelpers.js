@@ -2,8 +2,6 @@ export function transformStudents(students) {
     let maxActivity = 0
     
     let transformedStudents = students.map(student => {
-      console.log("What is a student???")
-      console.log(student)
       const { reading_time, exercises_done } = student
       const learning_proportion = getProportion(reading_time, exercises_done)
       const total_time = reading_time + exercises_done
