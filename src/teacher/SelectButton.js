@@ -1,10 +1,16 @@
 import React from "react";
 import { StyledButton } from "./TeacherButtons.sc";
 
-export default function SelectButton({ key, value, btnText, isChosen, handleChange }) {
+export default function SelectButton({
+  key,
+  value,
+  btnText,
+  isChosen,
+  handleChange,
+}) {
   return (
     <>
-      {isChosen && (
+      {isChosen ? (
         <StyledButton
           key={key}
           choiceSelected
@@ -14,8 +20,7 @@ export default function SelectButton({ key, value, btnText, isChosen, handleChan
         >
           {btnText}
         </StyledButton>
-      )}
-      {!isChosen && (
+      ) : (
         <StyledButton
           key={key}
           choiceNotSelected
