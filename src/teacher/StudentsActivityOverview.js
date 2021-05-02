@@ -56,7 +56,10 @@ export default function StudentsActivityOverview({ api }) {
             <NoStudents inviteCode={cohort.inv_code} />
           ) : (
             <>
-              <TimeSelector chosenTimePeriod={chosenTimePeriod} setChosenTimePeriod={setChosenTimePeriod} />
+              <TimeSelector
+                chosenTimePeriod={chosenTimePeriod}
+                setChosenTimePeriod={setChosenTimePeriod}
+              />
               <StudentInfoLineHeader />
               {students.map((student) => (
                 <StudentInfoLine

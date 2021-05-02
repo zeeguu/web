@@ -10,7 +10,7 @@ export const StudentInfoLine = styled.div`
     justify-content: center;
   }
   .wrapper#header {
-    margin:2em 0 0 0;
+    margin: 2em 0 0 0;
   }
 
   .sideline {
@@ -29,8 +29,8 @@ export const StudentInfoLine = styled.div`
     color: black !important;
     width: 300px;
   }
-  .text-box#header{
-      margin:0;
+  .text-box#header {
+    margin: 0;
   }
 
   .student-name {
@@ -66,7 +66,7 @@ export const StudentInfoLine = styled.div`
     width: 345px;
     padding-right: 3.5em;
   }
-  
+
   .number-display {
     line-height: 4em;
     display: flex;
