@@ -32,25 +32,34 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
     if (url === "" || languageCode === "default") {
       setShowGuidance(true);
     } else {
-      api.parseURL(
-        url,
-        (article) => {
-          //console.log(article);
-          const titleEnd = article.substring(19).indexOf('"') + 19;
-          const newTitle = article.substring(19, titleEnd);
-          const bodyStart = titleEnd + 12;
-          const bodyEnd = article.length - 2;
-          const newBody = article.substring(bodyStart, bodyEnd);
+        api.parseURL(
+          url,
+          (article) => {
+            console.log(article);
+            const titleEnd = article.substring(19).indexOf('"') + 19;
+            const newTitle = article.substring(19, titleEnd);
+            const bodyStart = titleEnd + 12;
+            const bodyEnd = article.length - 2;
+            const newBody = article.substring(bodyStart, bodyEnd);
 
-          //console.log(newTitle);
-          //console.log(newBody);
-          api.uploadOwnText(newTitle, newBody, languageCode, (newID) => {
-            console.log(`article created from the url with id: ${newID}`);
-            history.push(`/teacher/texts/editText/${newID}`);
-          });
+            console.log(newTitle);
+            console.log(newBody);
+            api.uploadOwnText(newTitle, newBody, languageCode, (newID) => {
+              console.log(`article created from the url with id: ${newID}`);
+              history.push(`/teacher/texts/editText/${newID}`);
+            });
+          },
+          (err) => console.log(err)
+        );
+
+      /*       api.parseArticleFromUrl(
+        "https://dagensmedicin.dk/johnson-johnson-vaccine-fjernes-fra-vaccinationsprogram/",
+
+        (articleInfo) => {
+          console.dir(articleInfo);
         },
-        (err) => console.log(err)
-      );
+        (err)=>{console.log(err)}
+      ); */
     }
   };
 
