@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { darkBlue, lightOrange } from "../components/colors";
 
-export const ProgressBar = styled.div`
+export const StudentActivityBar = styled.div`
  
   .activity-bar {
     height: 20px;

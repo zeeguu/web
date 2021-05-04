@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdHighlightOff } from "react-icons/md/";
-import ProgressBar from "./ProgressBar";
+import StudentActivityBar from "./StudentActivityBar";
 import { StyledButton } from "./TeacherButtons.sc";
 import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
@@ -40,7 +40,7 @@ export default function StudentInfoLine({ api, cohortID, student }) {
             </div>
 
             <div className="progress-bar">
-              <ProgressBar api={api} student={student} />
+              <StudentActivityBar api={api} student={student} />
             </div>
             <div className="number-display-wrapper">
               <div className="number-display">{/* avg-text-length */}123</div>
