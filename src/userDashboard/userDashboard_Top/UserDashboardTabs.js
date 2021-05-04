@@ -1,4 +1,4 @@
-import { TOP_TABS } from "../ConstantsUserDashboard";
+import { TABS_IDS, TOP_TABS } from "../ConstantsUserDashboard";
 import * as s from "../userDashboard_Styled/UserDashboard.sc";
 
 export default function UserDashboardTabs({
@@ -6,8 +6,8 @@ export default function UserDashboardTabs({
   handleActiveTabChange,
 }) {
   const tabs = [
-    { id: 1, title: TOP_TABS.BAR_GRAPH },
-    { id: 2, title: TOP_TABS.LINE_GRAPH },
+    { id: TABS_IDS.BAR_GRAPH, title: TOP_TABS.BAR_GRAPH },
+    { id: TABS_IDS.LINE_GRAPH, title: TOP_TABS.LINE_GRAPH },
   ];
 
   const TabList = ({ children }) => {

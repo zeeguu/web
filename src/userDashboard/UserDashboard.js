@@ -6,6 +6,7 @@ import {
   PERIOD_OPTIONS,
   ACTIVITY_TIME_FORMAT_OPTIONS,
   OPTIONS,
+  TABS_IDS,
 } from "./ConstantsUserDashboard";
 import {
   getLineGraphData,
@@ -20,7 +21,7 @@ import UserDashboard_Top from "./userDashboard_Top/UserDashboard_Top";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 
 export default function UserDashboard({ api }) {
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(TABS_IDS.BAR_GRAPH);
   const [activeTimeInterval, setActiveTimeInterval] = useState(OPTIONS.WEEK);
   const [activeCustomTimeInterval, setActiveCustomTimeInterval] = useState(
     PERIOD_OPTIONS.WEEK
@@ -118,7 +119,7 @@ export default function UserDashboard({ api }) {
       />
 
       <s.NivoGraphContainer>
-        {activeTab === 1 ? (
+        {activeTab === TABS_IDS.BAR_GRAPH ? (
           <ReadingAndExercisesTimeGraph
             data={getBarGraphData(
               dailyExerciseAndReadingTimes,
@@ -128,7 +129,7 @@ export default function UserDashboard({ api }) {
               activeTimeFormatOption
             )}
           />
-        ) : activeTab === 2 ? (
+        ) : activeTab === TABS_IDS.LINE_GRAPH ? (
           <TranslatedWordsGraph
             data={getLineGraphData(
               allWordsData,

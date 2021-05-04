@@ -1,4 +1,8 @@
-import { OPTIONS, USER_DASHBOARD_TITLES } from "../ConstantsUserDashboard";
+import {
+  OPTIONS,
+  TABS_IDS,
+  USER_DASHBOARD_TITLES,
+} from "../ConstantsUserDashboard";
 import * as s from "../userDashboard_Styled/UserDashboard.sc";
 import IntervalDropdownList from "./IntervalDropdownList";
 import TimeFormatDropdownList from "./TimeFormatDropdownList";
@@ -28,7 +32,7 @@ export default function UserDashboard_Top({
 
       <s.UserDashboardHelperText>
         <>
-          {activeTab === 1
+          {activeTab === TABS_IDS.BAR_GRAPH
             ? USER_DASHBOARD_TITLES.BAR_GRAPH_TEXT
             : USER_DASHBOARD_TITLES.LINE_GRAPH_TEXT}
 
@@ -45,7 +49,7 @@ export default function UserDashboard_Top({
               setReferenceDate={setReferenceDate}
             />
           )}
-          {activeTab === 1 && (
+          {activeTab === TABS_IDS.BAR_GRAPH && (
             <>
               {USER_DASHBOARD_TITLES.TIME_COUNT_IN}
               <TimeFormatDropdownList
