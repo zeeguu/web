@@ -24,11 +24,10 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
   };
 
   function handleLanguageChange(selectedLanguage) {
-   setLanguageCode(selectedLanguage)
-
+    setLanguageCode(selectedLanguage);
   }
 
- //testURL: https://www.dr.dk/nyheder/indland/danmark-dropper-vaccinen-fra-johnson-johnson
+  //testURL: https://www.dr.dk/nyheder/indland/danmark-dropper-vaccinen-fra-johnson-johnson
   const getArticle = () => {
     if (url === "" || languageCode === "default") {
       setShowGuidance(true);
@@ -45,15 +44,10 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
 
           //console.log(newTitle);
           //console.log(newBody);
-          api.uploadOwnText(
-              newTitle,
-              newBody,
-              languageCode,
-              (newID)=>{
-                  console.log(`article created from the url with id: ${newID}`);
-                  history.push(`/teacher/texts/editText/${newID}`)
-              }
-          )
+          api.uploadOwnText(newTitle, newBody, languageCode, (newID) => {
+            console.log(`article created from the url with id: ${newID}`);
+            history.push(`/teacher/texts/editText/${newID}`);
+          });
         },
         (err) => console.log(err)
       );
