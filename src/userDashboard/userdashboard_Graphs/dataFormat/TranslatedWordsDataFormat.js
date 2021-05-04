@@ -14,6 +14,10 @@ import {
 } from "../../ConstantsUserDashboard";
 import { calculatePerMonth } from "./CommonDataFormat";
 
+const STRING_FORMAT_FOR_DAY = "dd-MM";
+const STRING_FORMAT_FOR_MONTH = "MMM-yy";
+const STRING_FORMAT_FOR_YEAR = "yyyy";
+
 /**
  *
  * Function that transforms an array of pairs to
@@ -70,41 +74,47 @@ function getDataForInterval(data, startDate, endDate, dateFormatString) {
   return result;
 }
 
-function getLineDataForWeek(data, dateInWeek) {
-  const STRING_FORMAT = "dd-MM";
-
-  var datesCurrentWeek = {
-    start: subDays(dateInWeek, 6),
-    end: dateInWeek,
+function getLineDataForDays(
+  data,
+  endDate,
+  daysToSubstract,
+  legendStringFormat,
+  bottomLegend
+) {
+  var datesForInterval = {
+    start: subDays(endDate, daysToSubstract),
+    end: endDate,
   };
 
-  var currentWeek = getDataForInterval(
+  var resultForInterval = getDataForInterval(
     data,
-    datesCurrentWeek.start,
-    datesCurrentWeek.end,
-    STRING_FORMAT
+    datesForInterval.start,
+    datesForInterval.end,
+    legendStringFormat
   );
 
-  return [{ id: LINE_GRAPH_BOTTOM_LEGEND.WEEK, data: currentWeek }];
+  return [{ id: bottomLegend, data: resultForInterval }];
+}
+
+function getLineDataForWeek(data, dateInWeek) {
+  return getLineDataForDays(
+    data,
+    dateInWeek,
+    6,
+    STRING_FORMAT_FOR_DAY,
+    LINE_GRAPH_BOTTOM_LEGEND.WEEK
+  );
 }
 
 // last 30 days from given date
 function getLineDataForMonth(data, dateInMonth) {
-  const STRING_FORMAT = "dd-MM";
-
-  var datesCurrentMonth = {
-    start: subDays(dateInMonth, 30),
-    end: dateInMonth,
-  };
-
-  var currentMonth = getDataForInterval(
+  return getLineDataForDays(
     data,
-    datesCurrentMonth.start,
-    datesCurrentMonth.end,
-    STRING_FORMAT
+    dateInMonth,
+    30,
+    STRING_FORMAT_FOR_DAY,
+    LINE_GRAPH_BOTTOM_LEGEND.MONTH
   );
-
-  return [{ id: LINE_GRAPH_BOTTOM_LEGEND.MONTH, data: currentMonth }];
 }
 
 //last 12 months (13, including the current month)
@@ -113,8 +123,6 @@ function getLineDataForYear(dataPerMonths, dateInYear) {
   var result = [];
 
   const NUMBER_OF_MONTHS = 13;
-
-  const STRING_FORMAT = "MMM-yy";
 
   var monthCounter = 0;
 
@@ -130,18 +138,18 @@ function getLineDataForYear(dataPerMonths, dateInYear) {
     if (dataPerMonths.has(year)) {
       if (dataPerMonths.get(year).has(month)) {
         result.push({
-          x: format(dateInYear, STRING_FORMAT),
+          x: format(dateInYear, STRING_FORMAT_FOR_MONTH),
           y: dataPerMonths.get(year).get(month),
         });
       } else {
         result.push({
-          x: format(dateInYear, STRING_FORMAT),
+          x: format(dateInYear, STRING_FORMAT_FOR_MONTH),
           y: 0,
         });
       }
     } else {
       result.push({
-        x: format(dateInYear, STRING_FORMAT),
+        x: format(dateInYear, STRING_FORMAT_FOR_MONTH),
         y: 0,
       });
     }
@@ -156,8 +164,6 @@ function getLineDataForYear(dataPerMonths, dateInYear) {
 function getLineDataForYears(dataPerMonths, dateInYear) {
   var result = [];
 
-  const STRING_FORMAT = "yyyy";
-
   while (true) {
     var year = getYear(dateInYear);
 
@@ -167,7 +173,7 @@ function getLineDataForYears(dataPerMonths, dateInYear) {
       //on the line graph
 
       result.push({
-        x: format(dateInYear, STRING_FORMAT),
+        x: format(dateInYear, STRING_FORMAT_FOR_YEAR),
         y: 0,
       });
 
@@ -180,7 +186,7 @@ function getLineDataForYears(dataPerMonths, dateInYear) {
       }
 
       result.push({
-        x: format(dateInYear, STRING_FORMAT),
+        x: format(dateInYear, STRING_FORMAT_FOR_YEAR),
         y: sum,
       });
     }
