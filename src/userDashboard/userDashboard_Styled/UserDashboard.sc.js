@@ -76,11 +76,6 @@ const UserDashBoardTab = styled.a`
   }
 `;
 
-const UserDashBoardOptionsContainer = styled.div`
-  padding: 1em;
-  text-align: center;
-`;
-
 const UserDashBoardDropdown = styled.select`
   border: none;
   font-size: 1em;
@@ -139,7 +134,6 @@ export {
   UserDashboardTopContainer,
   UserDashboardHelperText,
   UserDashBoardTabs,
-  UserDashBoardOptionsContainer,
   UserDashBoardTab,
   UserDashBoardDropdown,
   NivoGraphContainer,
