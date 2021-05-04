@@ -126,3 +126,10 @@ Zeeguu_API.prototype.parseURL = function (url, onSuccess, onError) {
     )*/
   this._post(`parse_url`, `url=${url}`, onSuccess, onError);
 };
+
+Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
+  this._post(`parse_url`, `url=${url}`, (response) =>
+    response.json().then((articleInfo) => callback(articleInfo)),
+    onError
+  );
+};
