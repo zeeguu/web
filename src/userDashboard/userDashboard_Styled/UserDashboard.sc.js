@@ -34,6 +34,7 @@ const UserDashboardHelperText = styled(s.TopMessage)`
 
 const UserDatePicker = styled.div`
   ${datePickerCSS}
+  padding: 0.2em;
   input {
     border: none;
     font-size: 1em;
