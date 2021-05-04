@@ -1,29 +1,23 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import LocalStorage from "../assorted/LocalStorage";
+import { transformStudents } from "./teacherApiHelpers";
 import StudentInfoLine from "./StudentInfoLine";
 import StudentInfoLineHeader from "./StudentInfoLineHeader";
+import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
+import NoStudents from "./NoStudents";
+import TimeSelector from "./TimeSelector";
 import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
-import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
-import { transformStudents } from "./teacherApiHelpers";
-import NoStudents from "./NoStudents";
-import TimeSelector from "./TimeSelector";
 
 export default function StudentsActivityOverview({ api }) {
   const cohortID = useParams().cohortID;
   const [cohort, setCohort] = useState("");
   const [students, setStudents] = useState([]);
-  const [chosenTimePeriod, setChosenTimePeriod] = useState(30);
+  const [forceUpdate, setForceUpdate] = useState(0);
+  const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
-
-  useEffect(() => {
-    api.getStudents(cohortID, chosenTimePeriod, (res) => {
-      const studentWithNeededData = transformStudents(res);
-      setStudents(studentWithNeededData);
-    });
-    //eslint-disable-next-line
-  }, [chosenTimePeriod]);
 
   //Extracting the cohort data for the page title and deleting students from the cohort.
   useEffect(() => {
@@ -33,6 +27,15 @@ export default function StudentsActivityOverview({ api }) {
     });
     //eslint-disable-next-line
   }, []);
+
+  //extracting the list of students based on the time period selected by the user.
+  useEffect(() => {
+    api.getStudents(cohortID, selectedTimePeriod, (res) => {
+      const studentWithNeededData = transformStudents(res);
+      setStudents(studentWithNeededData);
+    });
+    //eslint-disable-next-line
+  }, [forceUpdate]);
 
   return (
     <Fragment>
@@ -56,10 +59,7 @@ export default function StudentsActivityOverview({ api }) {
             <NoStudents inviteCode={cohort.inv_code} />
           ) : (
             <>
-              <TimeSelector
-                chosenTimePeriod={chosenTimePeriod}
-                setChosenTimePeriod={setChosenTimePeriod}
-              />
+              <TimeSelector setForceUpdate={setForceUpdate} />
               <StudentInfoLineHeader />
               {students.map((student) => (
                 <StudentInfoLine

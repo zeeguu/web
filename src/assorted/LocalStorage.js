@@ -5,6 +5,7 @@ const LocalStorage = {
     LearnedLanguage: "learned_language",
     NativeLanguage: "native_language",
     IsTeacher: "is_teacher",
+    SelectedTimePeriod: "selected_time_period"
   },
 
   // Getting Info
@@ -23,6 +24,10 @@ const LocalStorage = {
       native_language: localStorage[this.Keys.NativeLanguage],
       is_teacher: localStorage[this.Keys.IsTeacher],
     };
+  },
+
+  selectedTimePeriod: function(){
+    return localStorage[this.Keys.SelectedTimePeriod] ? localStorage[this.Keys.SelectedTimePeriod] : 30;
   },
 
   // Setting info
@@ -51,6 +56,10 @@ const LocalStorage = {
       console.log(e);
     }
   },
+
+  setSelectedTimePeriod: function (time){
+    localStorage[this.Keys.SelectedTimePeriod]=time;
+  }
 };
 
 export default LocalStorage;
