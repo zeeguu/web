@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import * as s from "./ProgressBar.sc";
+import * as s from "./StudentActivityBar.sc";
 
-const ProgressBar = ({ student }) => {
+const StudentActivityBar = ({ student }) => {
   const [readingTimeString, setReadingTimeString] = useState("");
   const [exerciseTimeString, setExerciseTimeString] = useState("");
 
@@ -37,7 +37,7 @@ const ProgressBar = ({ student }) => {
   };
 
   return (
-    <s.ProgressBar
+    <s.StudentActivityBar
       readingCorners={() => setReadingCorners()}
       exerciseCorners={() => setExerciseCorners()}
     >
@@ -68,7 +68,7 @@ const ProgressBar = ({ student }) => {
           {student.exercises_done > 120 ? exerciseTimeString : ""}
         </div>
       </div>
-    </s.ProgressBar>
+    </s.StudentActivityBar>
   );
 };
-export default ProgressBar;
+export default StudentActivityBar;
