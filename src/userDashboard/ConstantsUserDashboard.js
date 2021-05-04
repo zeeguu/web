@@ -63,6 +63,11 @@ const PERIOD_OPTIONS = {
   YEARS: "years",
 };
 
+const TABS_IDS = {
+  BAR_GRAPH: 1,
+  LINE_GRAPH: 2,
+};
+
 //date format used for making sure dates are translated
 //in the same way when working with the data
 //this is _not_ the date format used for formatting dates to be shown on the graphs or datepicker
@@ -80,4 +85,5 @@ export {
   OPTIONS,
   LINE_GRAPH_BOTTOM_LEGEND,
   DATE_FORMAT_FOR_DATEPICKER,
+  TABS_IDS,
 };
