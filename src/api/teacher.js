@@ -112,10 +112,17 @@ Zeeguu_API.prototype.deleteArticleFromCohort = function (
   );
 };
 
-Zeeguu_API.prototype.getStudents = function(
-  cohortID,
-  duration,
-  callback
-){
+Zeeguu_API.prototype.getStudents = function (cohortID, duration, callback) {
   this._get(`/users_from_cohort/${cohortID}/${duration}`, callback);
-}
+};
+
+Zeeguu_API.prototype.parseURL = function (url, onSuccess, onError) {
+  /* example return:
+    json_result(
+      {
+        'article_title':art.title,
+        'text':art.text
+      }
+    )*/
+  this._post(`parse_url`, `url=${url}`, onSuccess, onError);
+};
