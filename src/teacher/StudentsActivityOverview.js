@@ -2,19 +2,18 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import LocalStorage from "../assorted/LocalStorage";
 import { transformStudents } from "./teacherApiHelpers";
-import StudentInfoLine from "./StudentInfoLine";
-import StudentInfoLineHeader from "./StudentInfoLineHeader";
 import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
 import NoStudents from "./NoStudents";
-import TimeSelector from "./TimeSelector";
 import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
+import LoadingAnimation from "../components/LoadingAnimation";
+import StudentsActivityOverviewContent from "./StudentsActivityOverviewContent";
 
 export default function StudentsActivityOverview({ api }) {
   const cohortID = useParams().cohortID;
   const [cohort, setCohort] = useState("");
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState(null);
   const [forceUpdate, setForceUpdate] = useState(0);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
@@ -37,6 +36,10 @@ export default function StudentsActivityOverview({ api }) {
     //eslint-disable-next-line
   }, [forceUpdate]);
 
+  if (cohort === "") {
+    return <LoadingAnimation />;
+  }
+
   return (
     <Fragment>
       <s.WidestColumn>
@@ -55,22 +58,17 @@ export default function StudentsActivityOverview({ api }) {
               STRINGS Add students
             </StyledButton>
           </TopButtonWrapper>
-          {students.length === 0 ? (
-            <NoStudents inviteCode={cohort.inv_code} />
-          ) : (
-            <>
-              <TimeSelector setForceUpdate={setForceUpdate} />
-              <StudentInfoLineHeader />
-              {students.map((student) => (
-                <StudentInfoLine
-                  key={student.id}
-                  api={api}
-                  cohortID={cohortID}
-                  student={student}
-                />
-              ))}
-            </>
-          )}
+          {students !== null &&
+            (students.length === 0 ? (
+              <NoStudents inviteCode={cohort.inv_code} />
+            ) : (
+              <StudentsActivityOverviewContent
+                api={api}
+                cohortID={cohortID}
+                students={students}
+                setForceUpdate={setForceUpdate}
+              />
+            ))}
         </div>
       </s.WidestColumn>
       {showAddStudentsInfo && (
