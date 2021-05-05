@@ -27,38 +27,24 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
     setLanguageCode(selectedLanguage);
   }
 
-  //testURL: https://www.dr.dk/nyheder/indland/danmark-dropper-vaccinen-fra-johnson-johnson
   const getArticle = () => {
     if (url === "" || languageCode === "default") {
       setShowGuidance(true);
     } else {
-        api.parseURL(
-          url,
-          (article) => {
-            console.log(article);
-            const titleEnd = article.substring(11).indexOf('"') + 11;
-            const newTitle = article.substring(11, titleEnd);
-            const bodyStart = titleEnd + 12;
-            const bodyEnd = article.indexOf("top_image")-4;
-            const newBody = article.substring(bodyStart, bodyEnd);
-            console.log(newTitle);
-            console.log(newBody);
- /*            api.uploadOwnText(newTitle, newBody, languageCode, (newID) => {
-              console.log(`article created from the url with id: ${newID}`);
-              history.push(`/teacher/texts/editText/${newID}`);
-            });*/
-          },
-          (err) => console.log(err)
-        );
-
-      /*       api.parseArticleFromUrl(
-        "https://dagensmedicin.dk/johnson-johnson-vaccine-fjernes-fra-vaccinationsprogram/",
-
+      api.parseArticleFromUrl(
+        url,
         (articleInfo) => {
-          console.dir(articleInfo);
+          const newTitle = articleInfo.title
+          const newText = articleInfo.text
+          api.uploadOwnText(newTitle, newText, languageCode, (newID) => {
+            console.log(`article created from the url with id: ${newID}`);
+            history.push(`/teacher/texts/editText/${newID}`);
+          });
         },
-        (err)=>{console.log(err)}
-      ); */
+        (err) => {
+          console.log(err);
+        }
+      );
     }
   };
 

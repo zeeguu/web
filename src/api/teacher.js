@@ -116,7 +116,7 @@ Zeeguu_API.prototype.getStudents = function (cohortID, duration, callback) {
   this._get(`/users_from_cohort/${cohortID}/${duration}`, callback);
 };
 
-Zeeguu_API.prototype.parseURL = function (url, onSuccess, onError) {
+Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
   /* example return:
     json_result(
       {
@@ -125,12 +125,5 @@ Zeeguu_API.prototype.parseURL = function (url, onSuccess, onError) {
         'top_image': art.top_image,
       }
     )*/
-  this._post(`parse_url`, `url=${url}`, onSuccess, onError);
-};
-
-Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
-  this._post(`parse_url`, `url=${url}`, (response) =>
-    response.json().then((articleInfo) => callback(articleInfo)),
-    onError
-  );
+  this._post(`parse_url`, `url=${url}`, callback, onError, true);
 };

@@ -41,7 +41,8 @@ const Zeeguu_API = class {
       });
   }
 
-  _post(endpoint, body, callback, onError) {
+  //returning text or json based on the boolean getJson
+  _post(endpoint, body, callback, onError, getJson) {
     this.apiLog("POST" + endpoint);
 
     const url = this._appendSessionToUrl(endpoint);
@@ -57,7 +58,7 @@ const Zeeguu_API = class {
 
     if (callback) {
       fetch(url, params)
-        .then((response) => response.text())
+        .then((response) => getJson ? response.json(): response.text())
         .then((data) => callback(data))
         .catch((e) => onError(e));
     } else {
