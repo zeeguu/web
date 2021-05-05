@@ -36,18 +36,17 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
           url,
           (article) => {
             console.log(article);
-            const titleEnd = article.substring(19).indexOf('"') + 19;
-            const newTitle = article.substring(19, titleEnd);
+            const titleEnd = article.substring(11).indexOf('"') + 11;
+            const newTitle = article.substring(11, titleEnd);
             const bodyStart = titleEnd + 12;
-            const bodyEnd = article.length - 2;
+            const bodyEnd = article.indexOf("top_image")-4;
             const newBody = article.substring(bodyStart, bodyEnd);
-
             console.log(newTitle);
             console.log(newBody);
-            api.uploadOwnText(newTitle, newBody, languageCode, (newID) => {
+ /*            api.uploadOwnText(newTitle, newBody, languageCode, (newID) => {
               console.log(`article created from the url with id: ${newID}`);
               history.push(`/teacher/texts/editText/${newID}`);
-            });
+            });*/
           },
           (err) => console.log(err)
         );
