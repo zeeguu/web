@@ -120,8 +120,9 @@ Zeeguu_API.prototype.parseURL = function (url, onSuccess, onError) {
   /* example return:
     json_result(
       {
-        'article_title':art.title,
-        'text':art.text
+        'article_title':title,
+        'text':art.text,
+        'top_image': art.top_image,
       }
     )*/
   this._post(`parse_url`, `url=${url}`, onSuccess, onError);
