@@ -11,7 +11,7 @@ import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 import DeleteCohortWarning from "./DeleteCohortWarning";
 import { StyledDialog } from "./StyledDialog.sc";
 
-const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
+const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -29,7 +29,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     api
       .createCohort(form)
       .then((result) => {
-        setIsOpen(false);
+        setShowCohortForm(false);
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
@@ -45,7 +45,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     api
       .deleteCohort(cohort_id)
       .then((result) => {
-        setIsOpen(false);
+        setShowCohortForm(false);
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
@@ -60,7 +60,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     api
       .updateCohort(form, cohort_id)
       .then((result) => {
-        setIsOpen(false);
+        setShowCohortForm(false);
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
@@ -111,7 +111,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
 
   return (
     <StyledDialog
-      onDismiss={() => setIsOpen(false)}
+      onDismiss={() => setShowCohortForm(false)}
       aria-label="Create class"
       max_width="525px"
     >
