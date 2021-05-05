@@ -6,9 +6,10 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 
 export default function CohortList({ api, cohorts, setForceUpdate }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [showCohortForm, setShowCohortForm] = useState(false);
   const [reversedList, setReversedList] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [cohortToEdit, setCohortToEdit] = useState(null);
 
   //Making sure the latest added class is always on top of the list
   const getReversedList = () => {
@@ -21,30 +22,36 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
     // eslint-disable-next-line
   }, [cohorts]);
 
+  const handleAddNewCohort = () => {
+    setCohortToEdit(null);
+    setShowCohortForm(true);
+  };
+
   return (
     <Fragment>
       <TopButtonWrapper>
-        <StyledButton primary onClick={() => setIsOpen(true)}>
+        <StyledButton primary onClick={handleAddNewCohort}>
           Add class (STRINGS)
         </StyledButton>
       </TopButtonWrapper>
       {!isLoading ? (
         reversedList.map((cohort) => (
           <CohortItemCard
-            api={api}
             key={cohort.id}
             cohort={cohort}
-            setForceUpdate={setForceUpdate}
+            setShowCohortForm={setShowCohortForm}
+            setCohortToEdit={setCohortToEdit}
           />
         ))
       ) : (
         <LoadingAnimation />
       )}
-      {isOpen && (
+      {showCohortForm && (
         <CohortForm
           api={api}
-          setIsOpen={setIsOpen}
+          setShowCohortForm={setShowCohortForm}
           setForceUpdate={setForceUpdate}
+          cohort={cohortToEdit}
         />
       )}
     </Fragment>
