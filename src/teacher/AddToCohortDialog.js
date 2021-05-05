@@ -87,7 +87,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       {chosenCohorts.length >= 0 &&
         cohortsToChoose.map((cohort) => (
           <SelectButton
-            key={cohort.id}
+            keyID={cohort.id}
             value={cohort.name}
             btnText={cohort.name}
             isChosen={isChosen(cohort)}

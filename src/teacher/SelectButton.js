@@ -2,7 +2,7 @@ import React from "react";
 import { StyledButton } from "./TeacherButtons.sc";
 
 export default function SelectButton({
-  key,
+  keyID,
   value,
   btnText,
   isChosen,
@@ -12,7 +12,7 @@ export default function SelectButton({
     <>
       {isChosen ? (
         <StyledButton
-          key={key}
+          key={keyID}
           choiceSelected
           onClick={() => {
             handleChange(value);
@@ -22,7 +22,7 @@ export default function SelectButton({
         </StyledButton>
       ) : (
         <StyledButton
-          key={key}
+          key={keyID}
           choiceNotSelected
           onClick={() => {
             handleChange(value);

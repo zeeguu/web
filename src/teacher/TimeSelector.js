@@ -49,35 +49,35 @@ const TimeSelector = ({ setForceUpdate }) => {
           </div>
           <div className="centered" id="row">
             <SelectButton
-              key={timePeriodMap[7]}
+              keyID={timePeriodMap[7]}
               btnText={timePeriodMap[7]}
               value={7}
               isChosen={isChosen(7)}
               handleChange={(time) => handleChange(time)}
             />
             <SelectButton
-              key={timePeriodMap[14]}
+              keyID={timePeriodMap[14]}
               btnText={timePeriodMap[14]}
               value={14}
               isChosen={isChosen(14)}
               handleChange={(time) => handleChange(time)}
             />
             <SelectButton
-              key={timePeriodMap[30]}
+              keyID={timePeriodMap[30]}
               btnText={timePeriodMap[30]}
               value={30}
               isChosen={isChosen(30)}
               handleChange={(time) => handleChange(time)}
             />
             <SelectButton
-              key={timePeriodMap[182]}
+              keyID={timePeriodMap[182]}
               btnText={timePeriodMap[182]}
               value={182}
               isChosen={isChosen(182)}
               handleChange={(time) => handleChange(time)}
             />
             <SelectButton
-              key={timePeriodMap[365]}
+              keyID={timePeriodMap[365]}
               btnText={timePeriodMap[365]}
               value={365}
               isChosen={isChosen(365)}
