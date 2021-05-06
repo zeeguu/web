@@ -6,8 +6,6 @@ const ZeeguuSpeech = class {
     this.api = api;
     this.language = language;
 
-    //this.mp3Player = new Audio();
-
     this.speech = new Speech();
     this.speech
       .init()
