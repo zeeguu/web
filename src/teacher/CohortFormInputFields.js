@@ -9,8 +9,8 @@ export const CohortNameTextField = ({ value, onChange }) => {
       name="cohort_name"
       placeholder="eg. 'B-level 2021'"
     >
-      {value.length <= 50 ? (
-        "Choose the class name (max. 50 characters)STRINGS"
+      {value.length <= 20 ? (
+        "Choose the class name (max. 20 characters)STRINGS"
       ) : (
         <p style={{ color: "red" }}>The class name is too long. STRINGS</p>
       )}
