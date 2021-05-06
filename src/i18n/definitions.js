@@ -12,7 +12,7 @@ let strings = new LocalizedStrings(
       exercises: "Exercises",
       myClasses: "My Classes",
       myTexts: "My Texts",
-      tutorials: "Tutorials",
+      tutorials: "Help",
       login: "Sign in",
       email: "Email",
       name: "Name",
@@ -212,8 +212,8 @@ let strings = new LocalizedStrings(
       //TagOfFilters
       addPersonalFilter: "Add a personal filter",
 
-       //TagsOfInterests
-       addPersonalInterest: "Add a personal interest",
+      //TagsOfInterests
+      addPersonalInterest: "Add a personal interest",
 
       //Learned
       titleLearnedWords: "Learned Words",
@@ -243,11 +243,11 @@ let strings = new LocalizedStrings(
       //FeedbackButtons
       giveFeedback: "Feedback on this Exercise",
 
-      //ButtomInput
+      //ButtonInput
       check: "Check",
       hint: "Hint",
 
-      //ButtomFeedback
+      //ButtonFeedback
       speak: "Speak",
       next: "Next",
 
@@ -497,11 +497,11 @@ let strings = new LocalizedStrings(
       //FeedbackButtons
       giveFeedback: "Feedback på øvelsen",
 
-      //ButtomInput
+      //ButtonInput
       check: "Tjek",
       hint: "Hint",
 
-      //ButtomFeedback
+      //ButtonFeedback
       speak: "Udtale",
       next: "Næste",
 
