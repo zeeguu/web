@@ -14,4 +14,9 @@ let CenteredContent = styled.div`
   justify-content: center;
 `;
 
-export { NarrowColumn, CenteredContent };
+let ContentOnRow = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export { NarrowColumn, CenteredContent, ContentOnRow };
