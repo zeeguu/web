@@ -8,17 +8,20 @@ export default function StudentsActivityOverviewContent({
   api,
   cohortID,
   students,
-  setForceUpdate,
+  setForceUpdate
 }) {
   if (students === null) {
     return <LoadingAnimation />;
   }
 
+  const customText =
+    "This is the overview of the students' activities for the last";
+
   return (
     <Fragment>
-      <TimeSelector setForceUpdate={setForceUpdate} />
+      <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
       <StudentInfoLineHeader />
-      {students.map((student) => (
+      {students.map(student => (
         <StudentInfoLine
           key={student.id}
           api={api}
