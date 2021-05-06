@@ -117,23 +117,12 @@ export default function EditText({ api }) {
           <h1>STRINGSEditText</h1>
         </sc.TopTabs>
         <TopButtonWrapper>
-          {articleID === "new" ? (
-            <StyledButton
-              primary
-              onClick={uploadArticle}
-              disabled={buttonDisabled}
-            >
-              Save text STRINGS
+          <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
+            <StyledButton secondary disabled={buttonDisabled}>
+              STRINGSView as student
             </StyledButton>
-          ) : (
-            <StyledButton
-              primary
-              onClick={updateArticle}
-              disabled={buttonDisabled}
-            >
-              Save changes STRINGS
-            </StyledButton>
-          )}
+          </Link>
+
           <StyledButton
             primary
             onClick={addArticleToCohort}
@@ -158,15 +147,30 @@ export default function EditText({ api }) {
           </p>
         )}
         <PopupButtonWrapper>
-          <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
-            <StyledButton secondary disabled={buttonDisabled}>
-              STRINGSView as student
+          {articleID === "new" ? (
+            <StyledButton
+              primary
+              onClick={uploadArticle}
+              disabled={buttonDisabled}
+            >
+              Save text STRINGS
             </StyledButton>
-          </Link>
-          {articleID !== "new" && (
-            <StyledButton secondary onClick={()=>setShowDeleteTextWarning(true)}>
-              STRINGSDelete
-            </StyledButton>
+          ) : (
+            <Fragment>
+              <StyledButton
+                secondary
+                onClick={() => setShowDeleteTextWarning(true)}
+              >
+                STRINGSDelete
+              </StyledButton>
+              <StyledButton
+                primary
+                onClick={updateArticle}
+                disabled={buttonDisabled}
+              >
+                Save changes STRINGS
+              </StyledButton>
+            </Fragment>
           )}
         </PopupButtonWrapper>
       </s.NarrowColumn>
