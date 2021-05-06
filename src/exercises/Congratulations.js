@@ -1,5 +1,5 @@
 import Word from "../words/Word";
-import { NarrowColumn, CenteredContent } from "../components/NarrowColumn.sc";
+import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
 import { OrangeButton, WhiteButton } from "../reader/ArticleReader.sc";
 
 export default function Congratulations({
