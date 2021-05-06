@@ -15,8 +15,8 @@ const StudentActivityBar = ({ student }) => {
     const exerciseHours = Math.floor(student.exercises_done / 3600);
     const exerciseMinutes = Math.ceil((student.exercises_done / 60) % 60);
     exerciseHours < 1
-    ? setExerciseTimeString(exerciseMinutes + "m")
-    : setExerciseTimeString(exerciseHours + "h " + exerciseMinutes + "m");
+      ? setExerciseTimeString(exerciseMinutes + "m")
+      : setExerciseTimeString(exerciseHours + "h " + exerciseMinutes + "m");
     // eslint-disable-next-line
   }, [student]);
 
@@ -35,6 +35,9 @@ const StudentActivityBar = ({ student }) => {
     }
     return exerciseCorners;
   };
+
+  const computedWidth = student.exercises_done === 0 ? "0%" : 100 - student.learning_proportion + "%"
+
 
   return (
     <s.StudentActivityBar
@@ -61,7 +64,7 @@ const StudentActivityBar = ({ student }) => {
           className="activity-bar"
           id="exercises"
           style={{
-            width: 100 - student.learning_proportion + "%",
+            width: computedWidth,
           }}
         >
           {/* Not showing the exercise time if it is less than 3 min */}
