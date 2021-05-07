@@ -36,6 +36,14 @@ const StyledButton = styled.button`
       border: 3px solid ${lightBlue};
     `}
 
+  //Student view
+  ${(props) =>
+    props.studentView &&
+    css`
+      margin-top: 1.75em; 
+      max-height: 30px;
+    `}  
+
   //Icon
   ${(props) =>
     props.icon &&

@@ -11,6 +11,10 @@ import BookmarkButton from "./BookmarkButton";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import { PopupButtonWrapper, StyledButton } from "../teacher/TeacherButtons.sc";
+import * as c from "../components/ColumnWidth.sc";
+import * as sc from "../components/TopTabs.sc";
+
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -27,7 +31,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   teacherArticleID
     ? (articleID = teacherArticleID)
     : (articleID = query.get("id"));
-    console.log(articleID)
+  console.log(articleID)
 
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
@@ -115,26 +119,39 @@ export default function ArticleReader({ api, teacherArticleID }) {
   }
 
   return (
+
     <s.ArticleReader>
-      <s.Toolbar>
-        <button
-          className={translating ? "selected" : ""}
-          onClick={(e) => toggle(translating, setTranslating)}
-        >
-          <img
-            src="/static/images/translate.svg"
-            alt={strings.translateOnClick}
-          />
-          <span className="tooltiptext">{strings.translateOnClick}</span>
-        </button>
-        <button
-          className={pronouncing ? "selected" : ""}
-          onClick={(e) => toggle(pronouncing, setPronouncing)}
-        >
-          <img src="/static/images/sound.svg" alt={strings.listenOnClick} />
-          <span className="tooltiptext">{strings.listenOnClick}</span>
-        </button>
-      </s.Toolbar>
+
+      <PopupButtonWrapper>
+
+        <Link to={`/teacher/texts/editText/${articleID}`}>
+          <StyledButton secondary studentView>STRINGBack to editing</StyledButton>
+        </Link>
+        <StyledButton primary studentView>STRINGAdd to class</StyledButton>{" "}
+
+        <s.Toolbar>
+
+          <button
+            className={translating ? "selected" : ""}
+            onClick={(e) => toggle(translating, setTranslating)}
+          >
+            <img
+              src="/static/images/translate.svg"
+              alt={strings.translateOnClick}
+            />
+            <span className="tooltiptext">{strings.translateOnClick}</span>
+          </button>
+          <button
+            className={pronouncing ? "selected" : ""}
+            onClick={(e) => toggle(pronouncing, setPronouncing)}
+          >
+            <img src="/static/images/sound.svg" alt={strings.listenOnClick} />
+            <span className="tooltiptext">{strings.listenOnClick}</span>
+          </button>
+
+        </s.Toolbar>
+      </PopupButtonWrapper>
+
       <s.Title>
         <TranslatableText
           interactiveText={interactiveTitle}
