@@ -11,9 +11,9 @@ import { setTitle } from "../assorted/setTitle";
 
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
-
   var originalList = null;
-
+  
+  //on initial render
   if (articleList == null) {
     api.getUserArticles((articles) => {
       setArticleList(articles);
@@ -24,7 +24,7 @@ export default function NewArticles({ api }) {
 
     return <LoadingAnimation />;
   }
-
+  //when the user changes interests...
   function articlesListShouldChange() {
     setArticleList(null);
     api.getUserArticles((articles) => {
