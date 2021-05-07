@@ -7,10 +7,15 @@ const NarrowColumn = styled.div`
   padding-bottom: 200px;
 `;
 
-let CenteredContent = styled.div`
+const CenteredContent = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+`;
+
+const ContentOnRow = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
 const WideColumn = styled.div`
@@ -26,4 +31,4 @@ const WidestColumn = styled.div`
   margin-right: auto;
   padding-bottom: 200px;
 `;
-export { NarrowColumn, CenteredContent, WideColumn, WidestColumn };
+export { NarrowColumn, CenteredContent, ContentOnRow, WideColumn, WidestColumn };

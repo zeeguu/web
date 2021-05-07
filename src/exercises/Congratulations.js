@@ -1,6 +1,6 @@
 import Word from "../words/Word";
-import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
-import { OrangeButton, WhiteButton } from "../reader/ArticleReader.sc";
+import * as s from "../reader/ArticleReader.sc";
+import { Link } from "react-router-dom";
 
 export default function Congratulations({
   articleID,
@@ -15,7 +15,7 @@ export default function Congratulations({
   }
 
   return (
-    <NarrowColumn>
+    <s.NarrowColumn>
       <br />
 
       <h2>&nbsp;&nbsp;&nbsp;Good Job! 🥳 🎉 </h2>
@@ -46,21 +46,16 @@ export default function Congratulations({
 
       <br />
       <br />
-      <br />
-      <br />
-      <CenteredContent>
-        <OrangeButton>
-          <a href="/exercises">
-            <h2>More Exercises </h2>
-          </a>
-        </OrangeButton>
 
-        <WhiteButton>
-          <a href="/articles">
-            <h2>Back to Reading </h2>
-          </a>
-        </WhiteButton>
-      </CenteredContent>
-    </NarrowColumn>
+      <s.ContentOnRow>
+        <Link to={`/exercises`} onClick={(e) => window.location.reload(false)}>
+          <s.OrangeButton>Keep Exercising</s.OrangeButton>
+        </Link>
+
+        <Link to={`/articles`}>
+          <s.WhiteButton>Back to Reading</s.WhiteButton>
+        </Link>
+      </s.ContentOnRow>
+    </s.NarrowColumn>
   );
 }
