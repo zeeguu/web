@@ -21,10 +21,13 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-export default function ArticleReader({ api }) {
+export default function ArticleReader({ api, teacherArticleID }) {
+  let articleID = "";
   let query = useQuery();
-
-  const articleID = query.get("id");
+  teacherArticleID
+    ? (articleID = teacherArticleID)
+    : (articleID = query.get("id"));
+    console.log(articleID)
 
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
