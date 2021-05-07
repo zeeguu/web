@@ -1,11 +1,10 @@
 import Speech from "speak-tts";
+import { trackPromise } from "react-promise-tracker";
 
 const ZeeguuSpeech = class {
   constructor(api, language) {
     this.api = api;
     this.language = language;
-
-    this.mp3Player = new Audio();
 
     this.speech = new Speech();
     this.speech
@@ -22,22 +21,36 @@ const ZeeguuSpeech = class {
   }
 
   speakOut(word) {
-    console.log("speaking out danish");
+    console.log("speaking out");
     console.log(this.language);
     console.log(_isMobile());
     if (this.language === "da" && !_isMobile()) {
       console.log("about to call the api");
       this.api.getLinkToDanishSpeech(word, (linkToMp3) => {
-        this.mp3Player.src = this.api.baseAPIurl + linkToMp3;
-        this.mp3Player.play();
+        trackPromise(play(this.api.baseAPIurl + linkToMp3));
       });
     } else {
-      this.speech.speak({
-        text: word,
-      });
+      trackPromise(
+        this.speech.speak({
+          text: word,
+          listeners: {
+            onend: () => {},
+          },
+        })
+      );
     }
   }
 };
+
+function play(url) {
+  return new Promise(function (resolve, reject) {
+    var mp3Player = new Audio();
+    mp3Player.src = url;
+    mp3Player.autoplay = true;
+    mp3Player.onerror = reject;
+    mp3Player.onended = resolve;
+  });
+}
 
 function _randomElement(x) {
   return x[Math.floor(Math.random() * x.length)];
