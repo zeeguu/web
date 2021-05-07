@@ -5,7 +5,7 @@ import * as sc from "../components/TopTabs.sc";
 import ArticleReader from "../reader/ArticleReader";
 import { StyledButton } from "./TeacherButtons.sc";
 
-export default function StudentsTextView({api}) {
+export default function StudentsTextView({ api }) {
   const articleID = useParams().articleID;
 
   return (
@@ -13,11 +13,11 @@ export default function StudentsTextView({api}) {
       <sc.TopTabs>
         <h1>STRINGSView Text</h1>
       </sc.TopTabs>
-      <Link to={`/teacher/texts/editText/${articleID}`}>
+      {/* <Link to={`/teacher/texts/editText/${articleID}`}>
         <StyledButton secondary>STRINGBack to editing</StyledButton>
-      </Link>
-      <StyledButton primary>STRINGAdd to class</StyledButton>{" "}
-      <ArticleReader api={api} teacherArticleID={articleID}/>
+      </Link> */}
+      {/* <StyledButton primary>STRINGAdd to class</StyledButton>{" "} */}
+      <ArticleReader api={api} teacherArticleID={articleID} />
     </s.NarrowColumn>
   );
 }
