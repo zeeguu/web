@@ -3,12 +3,12 @@ export function transformStudents(students) {
     
     let transformedStudents = students.map(student => {
       const { reading_time, exercises_done } = student
-      const learning_proportion = getProportion(reading_time, exercises_done)
+      const reading_percentage = getReadingPercentage(reading_time, exercises_done)
       const total_time = reading_time + exercises_done
       maxActivity = maxActivity > total_time ? maxActivity : total_time
       return {
         ...student,
-        learning_proportion,
+        reading_percentage,
         total_time
       }
     })
@@ -25,7 +25,7 @@ export function transformStudents(students) {
    * @param {number} a the total amount of reading time
    * @param {number} b the total amount of exercises time
    */
-  export function getProportion(a, b) {
+  export function getReadingPercentage(a, b) {
     //student has done both reading and exercises -> return % of reading time
     if (!(a === 0 && b === 0)) {
       return (100 * a) / (b + a)

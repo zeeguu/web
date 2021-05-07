@@ -51,7 +51,7 @@ const StudentActivityBar = ({ student }) => {
           className="activity-bar"
           id="reading"
           style={{
-            width: student.learning_proportion + "%",
+            width: student.reading_percentage + "%",
           }}
         >
           {/* Not showing the reading time if it is less than 3 min */}
@@ -61,7 +61,7 @@ const StudentActivityBar = ({ student }) => {
           className="activity-bar"
           id="exercises"
           style={{
-            width: 100 - student.learning_proportion + "%",
+            width: 100 - student.reading_percentage + "%",
           }}
         >
           {/* Not showing the exercise time if it is less than 3 min */}
