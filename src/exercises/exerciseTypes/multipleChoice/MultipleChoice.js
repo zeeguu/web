@@ -113,6 +113,7 @@ export default function MultipleChoice({
   return (
     <s.Exercise>
       <h3>Choose the word that fits the context</h3>
+      {isCorrect && <h1>{bookmarkToStudy.to}</h1>}
       <div className="contextExample">
         <div
           dangerouslySetInnerHTML={{
