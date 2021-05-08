@@ -1,6 +1,7 @@
 import { useState } from "react";
 import removeAccents from "remove-accents";
 import strings from "../../../i18n/definitions";
+import * as s from "../Exercise.sc";
 
 export default function BottomInput({
   handleCorrectAnswer,
@@ -45,7 +46,7 @@ export default function BottomInput({
 
   return (
     <div className="bottomInput">
-      <button onClick={(e) => handleHint()}>Hint</button>
+      <s.YellowButton onClick={(e) => handleHint()}>Hint</s.YellowButton>
 
       <input
         type="text"
@@ -63,7 +64,7 @@ export default function BottomInput({
         autoFocus
       />
 
-      <button onClick={checkResult}>{strings.check}</button>
+      <s.YellowButton onClick={checkResult}>{strings.check}</s.YellowButton>
     </div>
   );
 }

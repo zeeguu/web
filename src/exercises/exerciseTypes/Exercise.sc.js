@@ -59,4 +59,76 @@ const Exercise = styled.div`
   }
 `;
 
-export { Exercise };
+let SpeakButton = styled.button`
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  margin-left: 2em;
+
+  width: 55px;
+  height: 2.5em;
+  background-color: #ffe086;
+  border-style: none;
+  box-shadow: none;
+  border-radius: 10px;
+  padding: 5px;
+  user-select: none;
+`;
+
+let NextButton = styled.button`
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  color: #ffffff;
+  height: 2.5em;
+  background-color: #ffbb54;
+  border-style: none;
+  box-shadow: none;
+  border-radius: 10px;
+  padding: 5px;
+  user-select: none;
+  outline: none;
+
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+`;
+
+let YellowButton = styled.button`
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  color: #ffffff;
+  background-color: #ffe086;
+  border-style: none;
+  box-shadow: none;
+  border-radius: 10px;
+  padding: 5px;
+  user-select: none;
+
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+
+  &:disabled {
+    background: none;
+    color: gray;
+  }
+`;
+
+export { Exercise, SpeakButton, NextButton, YellowButton };
