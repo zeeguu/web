@@ -8,12 +8,12 @@ export default function BottomFeedback({
   api,
 }) {
   return (
-    <div className="bottomInput">
+    <s.BottomRow>
       <SpeakButton bookmarkToStudy={bookmarkToStudy} api={api} />
 
-      <s.NextButton onClick={(e) => correctAnswer()} autoFocus>
+      <s.FeedbackButton onClick={(e) => correctAnswer()} autoFocus>
         {strings.next}
-      </s.NextButton>
-    </div>
+      </s.FeedbackButton>
+    </s.BottomRow>
   );
 }
