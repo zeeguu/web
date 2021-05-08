@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import * as s from "../Exercise.sc";
 
 function MultipleChoicesInput({
   buttonOptions,
@@ -18,14 +19,14 @@ function MultipleChoicesInput({
     <div className="bottomInput">
       {buttonOptions ? (
         buttonOptions.map((option) => (
-          <button
+          <s.YellowButton
             key={option}
             id={option}
             onClick={(e) => notifyChoiceSelection(e.target.id)}
             disabled={incorrectAnswer && incorrectAnswers.includes(option)}
           >
             {option}
-          </button>
+          </s.YellowButton>
         ))
       ) : (
         <></>

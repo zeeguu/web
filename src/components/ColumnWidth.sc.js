@@ -16,6 +16,8 @@ const CenteredContent = styled.div`
 const ContentOnRow = styled.div`
   display: flex;
   flex-direction: row;
+  padding: 0.5em;
+  align-items: center;
 `;
 
 const WideColumn = styled.div`
@@ -31,4 +33,10 @@ const WidestColumn = styled.div`
   margin-right: auto;
   padding-bottom: 200px;
 `;
-export { NarrowColumn, CenteredContent, ContentOnRow, WideColumn, WidestColumn };
+export {
+  NarrowColumn,
+  CenteredContent,
+  ContentOnRow,
+  WideColumn,
+  WidestColumn,
+};
