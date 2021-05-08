@@ -17,14 +17,14 @@ export default function SpeakButton({ bookmarkToStudy, api }) {
   return (
     <>
       {isSpeaking && (
-        <s.SpeakButton disabled={true}>
+        <s.FeedbackButton disabled={true}>
           <Loader type="Bars" color="#ffffff" height={20} width={51} />
-        </s.SpeakButton>
+        </s.FeedbackButton>
       )}
       {!isSpeaking && (
-        <s.SpeakButton onClick={(e) => handleSpeak()}>
+        <s.FeedbackButton onClick={(e) => handleSpeak()}>
           <img src="/static/images/sound.svg" alt={strings.speak} />
-        </s.SpeakButton>
+        </s.FeedbackButton>
       )}
     </>
   );

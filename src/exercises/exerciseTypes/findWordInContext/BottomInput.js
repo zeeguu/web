@@ -45,10 +45,10 @@ export default function BottomInput({
   }
 
   return (
-    <div className="bottomInput">
-      <s.YellowButton onClick={(e) => handleHint()}>Hint</s.YellowButton>
+    <s.BottomRow>
+      <s.FeedbackButton onClick={(e) => handleHint()}>Hint</s.FeedbackButton>
 
-      <input
+      <s.Input
         type="text"
         placeholder={hint()}
         value={currentInput}
@@ -64,7 +64,7 @@ export default function BottomInput({
         autoFocus
       />
 
-      <s.YellowButton onClick={checkResult}>{strings.check}</s.YellowButton>
-    </div>
+      <s.FeedbackButton onClick={checkResult}>{strings.check}</s.FeedbackButton>
+    </s.BottomRow>
   );
 }

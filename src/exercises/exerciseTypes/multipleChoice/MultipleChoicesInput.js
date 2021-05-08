@@ -16,22 +16,22 @@ function MultipleChoicesInput({
   }, [notifyChoiceSelection]);
 
   return (
-    <div className="bottomInput">
+    <s.BottomRow>
       {buttonOptions ? (
         buttonOptions.map((option) => (
-          <s.YellowButton
+          <s.OrangeButton
             key={option}
             id={option}
             onClick={(e) => notifyChoiceSelection(e.target.id)}
             disabled={incorrectAnswer && incorrectAnswers.includes(option)}
           >
             {option}
-          </s.YellowButton>
+          </s.OrangeButton>
         ))
       ) : (
         <></>
       )}
-    </div>
+    </s.BottomRow>
   );
 }
 

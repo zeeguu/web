@@ -16,8 +16,8 @@ const CenteredContent = styled.div`
 const ContentOnRow = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 0.5em;
   align-items: center;
+  margin-top: 3em;
 `;
 
 const WideColumn = styled.div`

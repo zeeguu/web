@@ -59,7 +59,7 @@ const Exercise = styled.div`
   }
 `;
 
-let SpeakButton = styled.button`
+let FeedbackButton = styled.button`
   cursor: pointer;
 
   display: flex;
@@ -70,41 +70,24 @@ let SpeakButton = styled.button`
 
   margin-left: 2em;
 
-  width: 55px;
-  height: 2.5em;
-  background-color: #ffe086;
-  border-style: none;
-  box-shadow: none;
-  border-radius: 10px;
-  padding: 5px;
-  user-select: none;
-`;
-
-let NextButton = styled.button`
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-
-  justify-content: center;
-  align-items: center;
-
   color: #ffffff;
   height: 2.5em;
+  width: 4em;
   background-color: #ffbb54;
   border-style: none;
   box-shadow: none;
   border-radius: 10px;
-  padding: 5px;
+  padding: 0.5em;
   user-select: none;
   outline: none;
+  font-weight: 500;
 
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
 `;
 
-let YellowButton = styled.button`
+let OrangeButton = styled.button`
   cursor: pointer;
 
   display: flex;
@@ -114,12 +97,14 @@ let YellowButton = styled.button`
   align-items: center;
 
   color: #ffffff;
-  background-color: #ffe086;
+  background-color: #ffbb54;
   border-style: none;
   box-shadow: none;
   border-radius: 10px;
-  padding: 5px;
+  padding: 0.5em;
   user-select: none;
+
+  font-weight: 500;
 
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
@@ -128,7 +113,24 @@ let YellowButton = styled.button`
   &:disabled {
     background: none;
     color: gray;
+    cursor: default;
+    text-decoration: line-through;
   }
 `;
 
-export { Exercise, SpeakButton, NextButton, YellowButton };
+let Input = styled.input`
+  height: 1.5em;
+  text-align: center;
+`;
+
+let BottomRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 0.5em;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 3em;
+  flex-wrap: wrap;
+`;
+
+export { Exercise, FeedbackButton, OrangeButton, Input, BottomRow };

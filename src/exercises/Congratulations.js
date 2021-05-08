@@ -24,8 +24,6 @@ export default function Congratulations({
       {correctBookmarks.length > 0 && (
         <h3>
           😊 Correct
-          <br />
-          <br />
           {removeArrayDuplicates(correctBookmarks).map((each) => (
             <s.ContentOnRow>
               <Word key={each.id} bookmark={each} api={api} />
@@ -39,8 +37,6 @@ export default function Congratulations({
         <h3>
           <br />
           😳 Pay more attention to
-          <br />
-          <br />
           {removeArrayDuplicates(incorrectBookmarks).map((each) => (
             <s.ContentOnRow>
               <Word key={each.id} bookmark={each} api={api} />
@@ -49,8 +45,6 @@ export default function Congratulations({
           ))}
         </h3>
       )}
-
-      <br />
 
       <s.ContentOnRow>
         <Link to={`/exercises`} onClick={(e) => window.location.reload(false)}>
