@@ -1,5 +1,4 @@
 import Speech from "speak-tts";
-import { trackPromise } from "react-promise-tracker";
 
 const ZeeguuSpeech = class {
   constructor(api, language) {
@@ -27,17 +26,15 @@ const ZeeguuSpeech = class {
     if (this.language === "da" && !_isMobile()) {
       console.log("about to call the api");
       this.api.getLinkToDanishSpeech(word, (linkToMp3) => {
-        trackPromise(play(this.api.baseAPIurl + linkToMp3));
+        return play(this.api.baseAPIurl + linkToMp3);
       });
     } else {
-      trackPromise(
-        this.speech.speak({
-          text: word,
-          listeners: {
-            onend: () => {},
-          },
-        })
-      );
+      return this.speech.speak({
+        text: word,
+        listeners: {
+          onend: () => {},
+        },
+      });
     }
   }
 };
