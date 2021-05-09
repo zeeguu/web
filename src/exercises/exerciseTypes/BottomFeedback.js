@@ -1,35 +1,19 @@
-import { useState } from "react";
 import strings from "../../i18n/definitions";
-import ZeeguuSpeech from "../../speech/ZeeguuSpeech";
-import Loader from "react-loader-spinner";
-import { usePromiseTracker } from "react-promise-tracker";
+import SpeakButton from "./SpeakButton";
+import * as s from "./Exercise.sc";
 
 export default function BottomFeedback({
   bookmarkToStudy,
   correctAnswer,
   api,
 }) {
-  const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
-  const { promiseInProgress } = usePromiseTracker();
-
-  function handleSpeak() {
-    speech.speakOut(bookmarkToStudy.from);
-  }
-
   return (
-    <div className="bottomInput">
-      {promiseInProgress && (
-        <button disabled={true} onClick={(e) => handleSpeak()}>
-          <Loader type="Bars" color="#000000" height={16} width={51} />
-        </button>
-      )}
-      {!promiseInProgress && (
-        <button onClick={(e) => handleSpeak()}>{strings.speak}</button>
-      )}
+    <s.BottomRow>
+      <SpeakButton bookmarkToStudy={bookmarkToStudy} api={api} />
 
-      <button onClick={(e) => correctAnswer()} autoFocus>
+      <s.FeedbackButton onClick={(e) => correctAnswer()} autoFocus>
         {strings.next}
-      </button>
-    </div>
+      </s.FeedbackButton>
+    </s.BottomRow>
   );
 }
