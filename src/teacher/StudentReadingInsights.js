@@ -10,6 +10,7 @@ import {
 } from "@reach/accordion";
 import "@reach/accordion/styles.css";
 import { MdExpandMore } from "react-icons/md/";
+import ReadingInsightHeader from "./ReadingInsightHeader";
 
 export default function StudentReadingInsights({ api }) {
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -51,17 +52,7 @@ export default function StudentReadingInsights({ api }) {
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      <div style={{display:"flex", flexDirection:"row", marginTop: "3vh", height: "7.5vh"}}>
-        <p style={{marginLeft: "2vw", width: "51%", minWidth:"180px"}}><br/>Title STRINGS</p>
-        <div style={{display: "flex", width:"30em", paddingLeft: "10%", justifyContent:"center"}}>
-        <p style={{width: "4em", marginRight: "2em", textAlign: "center"}}>Text level</p>
-        <p style={{width: "5em", marginRight: "1.5em", textAlign: "center"}}>Text length</p>
-        <p style={{width: "5em", marginRight: "1.9em", textAlign: "center"}}>Reading time</p>
-        <p style={{width: "5em", marginRight: "1.8em", textAlign: "center"}}>Translated words</p>
-        <div style={{width:"2.5em"}}/>
-        
-        </div>
-      </div>
+      <ReadingInsightHeader/>
       <div
         style={{
           display: "flex",
