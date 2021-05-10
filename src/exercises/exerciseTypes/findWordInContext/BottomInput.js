@@ -11,6 +11,7 @@ export default function BottomInput({
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [hintLength, setHintLength] = useState(0);
+  const [isIncorrect, setIsIncorrect] = useState(false);
 
   function hint() {
     return bookmarkToStudy.from.substring(0, hintLength);
@@ -40,15 +41,17 @@ export default function BottomInput({
     if (a === b) {
       handleCorrectAnswer();
     } else {
+      setIsIncorrect(true);
       handleIncorrectAnswer();
     }
   }
 
+  const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
     <s.BottomRow>
       <s.FeedbackButton onClick={(e) => handleHint()}>Hint</s.FeedbackButton>
 
-      <s.Input
+      <InputField
         type="text"
         placeholder={hint()}
         value={currentInput}
@@ -61,6 +64,7 @@ export default function BottomInput({
             checkResult();
           }
         }}
+        onAnimationEnd={() => setIsIncorrect(false)}
         autoFocus
       />
 
