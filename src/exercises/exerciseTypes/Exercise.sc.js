@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const Exercise = styled.div`
   display: flex;
@@ -87,6 +87,24 @@ let FeedbackButton = styled.button`
     "Helvetica Neue", sans-serif;
 `;
 
+const shake = keyframes`
+10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+`;
+
 let OrangeButton = styled.button`
   cursor: pointer;
 
@@ -109,18 +127,25 @@ let OrangeButton = styled.button`
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
+`;
 
-  &:disabled {
-    background: none;
-    color: gray;
-    cursor: default;
-    text-decoration: line-through;
-  }
+let AnimatedOrangeButton = styled(OrangeButton)`
+  animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 `;
 
 let Input = styled.input`
   height: 1.5em;
   text-align: center;
+`;
+
+let AnimatedInput = styled(Input)`
+  animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 `;
 
 let BottomRow = styled.div`
@@ -133,4 +158,12 @@ let BottomRow = styled.div`
   flex-wrap: wrap;
 `;
 
-export { Exercise, FeedbackButton, OrangeButton, Input, BottomRow };
+export {
+  Exercise,
+  FeedbackButton,
+  OrangeButton,
+  AnimatedOrangeButton,
+  Input,
+  AnimatedInput,
+  BottomRow,
+};
