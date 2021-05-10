@@ -135,6 +135,7 @@ export default function MultipleChoice({
           buttonOptions={buttonOptions}
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}
+          setIncorrectAnswer={setIncorrectAnswer}
         />
       )}
       {isCorrect && (
