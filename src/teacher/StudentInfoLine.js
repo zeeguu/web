@@ -7,18 +7,26 @@ import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
 
 export default function StudentInfoLine({ api, cohortID, student }) {
-  const [showDeleteStudentWarning, setShowDeleteStudentWarning] = useState(false);
+  const [showDeleteStudentWarning, setShowDeleteStudentWarning] = useState(
+    false
+  );
 
-  const exerciseArray = student.exercise_time_list.filter((time) => time !== 0);
+  const exerciseArray = student.exercise_time_list.filter(time => time !== 0);
   const exerciseCount = exerciseArray.length ? exerciseArray.length : 0;
-  const readingList = student.reading_time_list.filter((time) => time !== 0);
+  const readingList = student.reading_time_list.filter(time => time !== 0);
   const readingCount = readingList.length ? readingList.length : 0;
 
-  const deleteStudent = () =>{
+  const deleteStudent = () => {
     //TODO api call to delete student from cohort goes here. - Waiting for endpoint.
-    console.log("Should be deleting student "+ student.name + " from the "+ cohortID +" in the api now...")
-    setShowDeleteStudentWarning(false)
-  }
+    console.log(
+      "Should be deleting student " +
+        student.name +
+        " from the " +
+        cohortID +
+        " in the api now..."
+    );
+    setShowDeleteStudentWarning(false);
+  };
 
   //TODO We still need to extract avg text length and level and ecxercise correctness from the api. - Waiting for endpoint.
 
@@ -60,11 +68,11 @@ export default function StudentInfoLine({ api, cohortID, student }) {
         </StyledButton>
       </div>
       {showDeleteStudentWarning && (
-        <DeleteStudentWarning 
-        studentName={student.name}
-        cohortID={cohortID}
-        deleteStudent={deleteStudent}
-        setShowDeleteStudentWarning={setShowDeleteStudentWarning}
+        <DeleteStudentWarning
+          studentName={student.name}
+          cohortID={cohortID}
+          deleteStudent={deleteStudent}
+          setShowDeleteStudentWarning={setShowDeleteStudentWarning}
         />
       )}
     </s.StudentInfoLine>
