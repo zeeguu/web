@@ -54,10 +54,5 @@ Zeeguu_API.prototype.logReaderActivity = function (
   value = "",
   extra_data = ""
 ) {
-  return this.logUserActivity(
-    "UMR - " + eventName,
-    article_id,
-    value,
-    extra_data
-  );
+  return this.logUserActivity("UMR - " + event, article_id, value, extra_data);
 };
