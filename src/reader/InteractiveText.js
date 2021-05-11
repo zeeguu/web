@@ -33,7 +33,8 @@ export default class InteractiveText {
         word.word,
         context,
         window.location,
-        this.articleInfo.title
+        this.articleInfo.title,
+        this.articleInfo.id
       )
       .then((response) => response.json())
       .then((data) => {
