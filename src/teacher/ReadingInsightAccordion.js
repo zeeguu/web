@@ -5,10 +5,9 @@ import {
   AccordionButton,
   AccordionPanel,
 } from "@reach/accordion";
-import { StudentActivityDataCircle } from "./StudentActivityDataCircle.sc";
-import { StudentActivityDataCircleWrapper } from "./StudentActivityDataCircleWrapper.sc";
 import * as s from "./ReadingInsightAccordion.sc";
 import ViewMoreLessButton from "./ViewMoreLessButton";
+import StudentActivityDataCircles from "./StudentActivityDataCircles";
 
 const ReadingInsightAccordion = ({
   title,
@@ -28,18 +27,12 @@ const ReadingInsightAccordion = ({
           <AccordionItem>
             <div className="content-wrapper">
               <h2 className="article-title">{title}</h2>
-              <StudentActivityDataCircleWrapper>
-                <StudentActivityDataCircle>{length}</StudentActivityDataCircle>
-                <StudentActivityDataCircle>
-                  {difficulty}
-                </StudentActivityDataCircle>
-                <StudentActivityDataCircle>
-                  {readingTime}
-                </StudentActivityDataCircle>
-                <StudentActivityDataCircle>
-                  {translatedWordsList.length}
-                </StudentActivityDataCircle>
-              </StudentActivityDataCircleWrapper>
+              <StudentActivityDataCircles
+                length={length}
+                difficulty={difficulty}
+                readingTime={readingTime}
+                translatedWords={translatedWordsList.length}
+              />
               <AccordionButton onClick={changeButton}>
                 <ViewMoreLessButton showLessButton={showLessButton} />
               </AccordionButton>
