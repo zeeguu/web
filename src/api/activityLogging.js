@@ -32,7 +32,7 @@ Zeeguu_API.prototype.logUserActivity = function (
 ) {
   let event_information = {
     time: new Date().toJSON(),
-    event: "UMR - " + event,
+    event: event,
     value: value,
     extra_data: extra_data,
     article_id: article_id,
@@ -43,5 +43,21 @@ Zeeguu_API.prototype.logUserActivity = function (
   return this._post(
     `upload_user_activity_data`,
     queryString.stringify(event_information)
+  );
+};
+
+// Used only for events that happen in the text reader;
+// for any other events, use logUserActivity
+Zeeguu_API.prototype.logReaderActivity = function (
+  event,
+  article_id = "",
+  value = "",
+  extra_data = ""
+) {
+  return this.logUserActivity(
+    "UMR - " + eventName,
+    article_id,
+    value,
+    extra_data
   );
 };
