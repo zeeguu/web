@@ -5,11 +5,10 @@ import {
   AccordionButton,
   AccordionPanel,
 } from "@reach/accordion";
-import "@reach/accordion/styles.css";
-import { MdExpandLess, MdExpandMore } from "react-icons/md/";
 import { StudentActivityDataCircle } from "./StudentActivityDataCircle.sc";
 import { StudentActivityDataCircleWrapper } from "./StudentActivityDataCircleWrapper.sc";
 import * as s from "./ReadingInsightAccordion.sc";
+import ViewMoreLessButton from "./ViewMoreLessButton";
 
 const ReadingInsightAccordion = ({
   title,
@@ -42,55 +41,18 @@ const ReadingInsightAccordion = ({
                 </StudentActivityDataCircle>
               </StudentActivityDataCircleWrapper>
               <AccordionButton onClick={changeButton}>
-                {showLessButton ? (
-                  <>
-                    <p style={{ width: "4.5em", fontWeight: "600" }}>
-                      View more
-                    </p>
-                    <MdExpandMore
-                      style={{
-                        marginTop: "-.5em",
-                        fontSize: "45px",
-                        color: "#4492b3",
-                      }}
-                    />
-                  </>
-                ) : (
-                    <div style={{ width: "4.5em"}}>
-                    <p style={{ width: "4.3em", fontWeight: "600" }}>
-                      View less
-                    </p>
-                    <MdExpandLess
-                      style={{
-                        marginTop: "-.5em",
-                        fontSize: "45px",
-                        color: "#4492b3",
-                      }}
-                    />
-                  </div>
-                )}
+                <ViewMoreLessButton showLessButton={showLessButton} />
               </AccordionButton>
             </div>
-            <AccordionPanel
-              style={{
-                minWidth: "300px",
-                maxWidth: "90%",
-                marginLeft: "2%",
-                marginTop: "1vh",
-                boxShadow:
-                  "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
-                borderRadius: "10px",
-                padding: "1em",
-              }}
-            >
-              <h2 style={{ color: "#4492b3" }}>
+            <AccordionPanel className="panel">
+              <h2 className="panel-headline">
                 Translated words in the context of their sencences
               </h2>
               {translatedWordsList.map((word) => (
                 <p>{word}</p>
               ))}
               {translatedWordsList.length == 0 && (
-                <p style={{ textAlign: "center" }}>
+                <p className="panel-no-words">
                   No words were translated in this reading session.
                 </p>
               )}
