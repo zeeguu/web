@@ -23,12 +23,7 @@ export default function StudentReadingInsights({ api }) {
       setActivityData(activityData);
       setNumberOfReadingSessions(0);
       activityData.forEach((day) => {
-        console.log(
-          "Adding " +
-            day.reading_sessions.length +
-            " to " +
-            numberOfReadingSessions
-        );
+        console.log("Adding " + day.reading_sessions.length + " to " + numberOfReadingSessions);
         setNumberOfReadingSessions(
           (prev) => prev + day.reading_sessions.length
         );

@@ -26,4 +26,21 @@ export const ReadingInsightAccordion = styled.div`
     background-color: white;
     align-content: center;
   }
+
+  .panel {
+    min-width: 300px;
+    max-width: 90%;
+    margin-left: 2%;
+    margin-top: 1vh;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    padding: 1em;
+  }
+  .panel-headline{
+    color: ${darkBlue};
+  }
+
+  .panel-no-words{
+    text-align: center;
+  }
 `;
