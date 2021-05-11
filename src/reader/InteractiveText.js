@@ -45,7 +45,7 @@ export default class InteractiveText {
         console.log("could not retreive translation");
       });
 
-    this.api.logUserActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id);
+    this.api.logReaderActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id);
   }
 
   selectAlternative(word, alternative, onSuccess) {
@@ -61,7 +61,7 @@ export default class InteractiveText {
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
-    this.api.logUserActivity(this.api.SEND_SUGGESTION, this.articleInfo.id);
+    this.api.logReaderActivity(this.api.SEND_SUGGESTION, this.articleInfo.id);
 
     onSuccess();
   }
@@ -89,7 +89,7 @@ export default class InteractiveText {
 
   pronounce(word) {
     this.zeeguuSpeech.speakOut(word.word);
-    this.api.logUserActivity(this.api.SPEAK_TEXT, this.articleInfo.id);
+    this.api.logReaderActivity(this.api.SPEAK_TEXT, this.articleInfo.id);
   }
 
   getContext(word) {
