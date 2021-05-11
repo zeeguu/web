@@ -24,7 +24,8 @@ Zeeguu_API.prototype.getOneTranslation = function (
   word,
   context,
   articleUrl,
-  articleTitle
+  articleTitle,
+  articleID
 ) {
   let url = this._appendSessionToUrl(
     `get_one_translation/${from_lang}/${to_lang}`
@@ -33,7 +34,7 @@ Zeeguu_API.prototype.getOneTranslation = function (
   return fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `word=${word}&context=${context}&url=${articleUrl}&title=${articleTitle}`,
+    body: `word=${word}&context=${context}&url=${articleUrl}&title=${articleTitle}&articleID=${articleID}`,
   });
 };
 
