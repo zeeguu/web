@@ -84,6 +84,14 @@ const Zeeguu_API = class {
 
     return res;
   }
+  
+  async apiGet(endpoint) {
+  const params = { session: this.session }
+  const res = await axios.get(this.baseAPIurl + endpoint, { params })
+  return res
+}
 };
+
+
 
 export { Zeeguu_API };

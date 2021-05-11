@@ -12,7 +12,7 @@ export default function ActivityInsightsRouter({ api }) {
 
   return (
     <Switch>
-      <s.NarrowColumn>
+      <s.WidestColumn>
         <TopTabs
           title="STRINGS Learning Activities"
           tabsAndLinks={{
@@ -33,7 +33,7 @@ export default function ActivityInsightsRouter({ api }) {
           api={api}
           component={StudentExercisesInsights}
         />
-      </s.NarrowColumn>
+      </s.WidestColumn>
     </Switch>
   );
 }

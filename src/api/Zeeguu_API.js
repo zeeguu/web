@@ -12,5 +12,6 @@ import "./activityLogging";
 import "./ownTexts";
 import "./student";
 import "./teacher";
+import "./studentStatsForTeachers";
 
 export default Zeeguu_API;
