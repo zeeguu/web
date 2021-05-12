@@ -16,7 +16,7 @@ export default function StudentReadingInsights({ api }) {
 
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
-      console.log(userInfo);
+      //console.log(userInfo);
       setStudentInfo(userInfo);
     });
     api.loadUserSessions(studentID, selectedTimePeriod, (activityData) => {
