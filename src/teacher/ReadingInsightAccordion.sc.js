@@ -4,27 +4,36 @@ import { darkBlue, lightOrange } from "../components/colors";
 
 export const ReadingInsightAccordion = styled.div`
   .accordion-wrapper {
-    display: flex;
-    height: 13vh;
+    min-height: 13vh;
     margin-bottom: 3vh;
-    border-left: solid 3px ${darkBlue};
-    width: 100%;
   }
 
   .content-wrapper {
+    border-left: solid 3px ${darkBlue};
     display: flex;
-    margin-left: 1vw;
   }
 
   .article-title {
     font-weight: 400;
+    margin-left: 1vw;
+    text-align: left;
+    max-width: 100vw;
+    min-width: 38vw;
   }
 
   button {
-    margin-left: -2em;
     border: None;
     background-color: white;
     align-content: center;
+  }
+  button:hover {
+    cursor: pointer;
+  }
+  .h {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    margin-left: 10em;
   }
 
   .panel {
@@ -32,15 +41,16 @@ export const ReadingInsightAccordion = styled.div`
     max-width: 90%;
     margin-left: 2%;
     margin-top: 1vh;
+    margin-bottom: 7vh;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     padding: 1em;
   }
-  .panel-headline{
+  .panel-headline {
     color: ${darkBlue};
   }
 
-  .panel-no-words{
+  .panel-no-words {
     text-align: center;
   }
 `;

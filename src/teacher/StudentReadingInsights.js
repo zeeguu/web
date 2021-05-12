@@ -11,42 +11,39 @@ export default function StudentReadingInsights({ api }) {
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
   const [studentInfo, setStudentInfo] = useState({});
-  const [activityData, setActivityData] = useState(null);
-  const [numberOfReadingSessions, setNumberOfReadingSessions] = useState(0);
+  const [readArticles, setReadArticles] = useState(null);
 
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
       //console.log(userInfo);
       setStudentInfo(userInfo);
     });
-    api.loadUserSessions(studentID, selectedTimePeriod, (activityData) => {
-      setActivityData(activityData);
-      setNumberOfReadingSessions(0);
-      activityData.forEach((day) => {
-        console.log("Adding " + day.reading_sessions.length + " to " + numberOfReadingSessions);
-        setNumberOfReadingSessions(
-          (prev) => prev + day.reading_sessions.length
-        );
-      });
-    });
+    api.getReadingSessions(
+      studentID,
+      cohortID,
+      selectedTimePeriod,
+      (readingSessions) => {
+        console.log(readingSessions);
+        setReadArticles(readingSessions);
+      },
+      (res) => {
+        console.log(res);
+      }
+    );
     // eslint-disable-next-line
   }, [forceUpdate]);
 
   const customText =
+    readArticles &&
     studentInfo.name +
-    " has read " +
-    numberOfReadingSessions +
-    " texts in the last ";
+      " has read " +
+      readArticles.length +
+      " texts in the last ";
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      <ReadingInsightHeader/>
-      <ReadingInsightAccordion
-      title="Shortened article title for article. - Approximately eighty characters long."
-      length="123"
-      difficulty="3.4"
-      readingTime="17"
-      translatedWordsList={["honey", "bee"]}/>
+      <ReadingInsightHeader />
+      <ReadingInsightAccordion readArticles={readArticles} />
     </Fragment>
   );
 }
