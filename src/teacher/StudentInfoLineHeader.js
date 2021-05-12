@@ -18,7 +18,7 @@ export default function StudentInfoLineHeader() {
             STRINGS <br/>average <br /> text level
             </p>
             <p className="number-display-header">
-            STRINGS <br/>exercise <br /> correctness
+            STRINGS <br/> exercises correct <br/> on 1st attempt <br />
             </p>
           </div>
         </div>

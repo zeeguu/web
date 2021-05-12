@@ -11,6 +11,20 @@ Zeeguu_API.prototype.loadUserInfo = function (userID, duration, callback) {
   this._get(`/user_info/${userID}/${duration}`, callback);
 };
 
+Zeeguu_API.prototype.getReadingSessions = function (studentID, cohortID, duration, onSuccess, onError) {
+  let payload = {
+    student_id: studentID,
+    number_of_days: duration,
+    cohort_id: cohortID
+  }
+  this._post(`/student_reading_sessions`,
+    queryString.stringify(payload),
+    onSuccess,
+    onError,
+    true
+  );
+};
+
 Zeeguu_API.prototype.getStudentActivityOverview = function (studentID, duration, cohortID, onSuccess, onError) {
   let payload = {
     student_id: studentID,
