@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import FindWordInContext from "./recognize/FindWordInContext";
+import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
+import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
 import Congratulations from "./Congratulations";
 import ProgressBar from "./ProgressBar";
 
@@ -15,35 +16,39 @@ let NUMBER_OF_EXERCISES = 4;
 export default function Exercises({ api, articleID }) {
   const [bookmarksToStudyList, setbookmarksToStudyList] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentBookmarkToStudy, setCurretBookmarkToStudy] = useState(null);
+  const [currentBookmarkToStudy, setCurrentBookmarkToStudy] = useState(null);
   const [finished, setFinished] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [articleInfo, setArticleInfo] = useState(null);
 
-  if (!bookmarksToStudyList) {
-    if (articleID) {
-      // we have an article id ==> we do exercises only for the words in that article
-
-      api.bookmarksForArticle(articleID, (bookmarks) => {
-        setbookmarksToStudyList(bookmarks);
-        NUMBER_OF_EXERCISES = bookmarks.length;
-        setCurretBookmarkToStudy(bookmarks[currentIndex]);
-        api.getArticleInfo(articleID, (data) => {
-          setArticleInfo(data);
-          setTitle('Exercises for "' + data.title + '"');
+  useEffect(() => {
+    if (!bookmarksToStudyList) {
+      if (articleID) {
+        api.bookmarksForArticle(articleID, (bookmarks) => {
+          api.getArticleInfo(articleID, (data) => {
+            setArticleInfo(data);
+            initializeExercises(
+              bookmarks,
+              'Exercises for "' + data.title + '"'
+            );
+          });
         });
-      });
-    } else {
-      api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, (bookmarks) => {
-        setbookmarksToStudyList(bookmarks);
-        NUMBER_OF_EXERCISES = bookmarks.length;
-        setCurretBookmarkToStudy(bookmarks[currentIndex]);
-      });
+      } else {
+        api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, (bookmarks) => {
+          initializeExercises(bookmarks, "Exercises");
+        });
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    setTitle("Exercises");
+  function initializeExercises(bookmarks, title) {
+    setbookmarksToStudyList(bookmarks);
+    NUMBER_OF_EXERCISES = bookmarks.length;
+    setCurrentBookmarkToStudy(bookmarks[currentIndex]);
+    setTitle(title);
   }
 
   if (finished) {
@@ -72,8 +77,9 @@ export default function Exercises({ api, articleID }) {
     }
 
     setCurrentIndex(newIndex);
-    setCurretBookmarkToStudy(bookmarksToStudyList[newIndex]);
+    setCurrentBookmarkToStudy(bookmarksToStudyList[newIndex]);
   }
+
   function correctAnswer() {
     let currentBookmark = bookmarksToStudyList[currentIndex];
 
@@ -117,13 +123,22 @@ export default function Exercises({ api, articleID }) {
       <ProgressBar index={currentIndex} total={NUMBER_OF_EXERCISES} />
 
       <s.ExForm>
-        <FindWordInContext
-          bookmarkToStudy={currentBookmarkToStudy}
-          correctAnswer={correctAnswer}
-          notifyIncorrectAnswer={incorrectAnswerNotification}
-          key={currentBookmarkToStudy.id}
-          api={api}
-        />
+        {currentIndex % 2 === 0 && (
+          <FindWordInContext
+            bookmarkToStudy={currentBookmarkToStudy}
+            correctAnswer={correctAnswer}
+            notifyIncorrectAnswer={incorrectAnswerNotification}
+            api={api}
+          />
+        )}
+        {currentIndex % 2 === 1 && (
+          <MultipleChoice
+            bookmarkToStudy={currentBookmarkToStudy}
+            correctAnswer={correctAnswer}
+            notifyIncorrectAnswer={incorrectAnswerNotification}
+            api={api}
+          />
+        )}
       </s.ExForm>
 
       <FeedbackButtons

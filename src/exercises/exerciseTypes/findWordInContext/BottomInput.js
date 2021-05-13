@@ -1,15 +1,17 @@
 import { useState } from "react";
 import removeAccents from "remove-accents";
-import strings from "../../i18n/definitions";
+import strings from "../../../i18n/definitions";
+import * as s from "../Exercise.sc";
 
 export default function BottomInput({
   handleCorrectAnswer,
-  notifyIncorrectAnswer,
+  handleIncorrectAnswer,
   bookmarkToStudy,
   notifyKeyPress,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [hintLength, setHintLength] = useState(0);
+  const [isIncorrect, setIsIncorrect] = useState(false);
 
   function hint() {
     return bookmarkToStudy.from.substring(0, hintLength);
@@ -39,15 +41,17 @@ export default function BottomInput({
     if (a === b) {
       handleCorrectAnswer();
     } else {
-      notifyIncorrectAnswer();
+      setIsIncorrect(true);
+      handleIncorrectAnswer();
     }
   }
 
+  const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
-    <div className="bottomInput">
-      <button onClick={(e) => handleHint()}>Hint</button>
+    <s.BottomRow>
+      <s.FeedbackButton onClick={(e) => handleHint()}>Hint</s.FeedbackButton>
 
-      <input
+      <InputField
         type="text"
         placeholder={hint()}
         value={currentInput}
@@ -60,10 +64,11 @@ export default function BottomInput({
             checkResult();
           }
         }}
+        onAnimationEnd={() => setIsIncorrect(false)}
         autoFocus
       />
 
-      <button onClick={checkResult}>{strings.check}</button>
-    </div>
+      <s.FeedbackButton onClick={checkResult}>{strings.check}</s.FeedbackButton>
+    </s.BottomRow>
   );
 }

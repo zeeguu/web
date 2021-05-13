@@ -11,6 +11,9 @@
 # testing
 /coverage
 
+#development
+.env.development
+
 # production
 /build
 
