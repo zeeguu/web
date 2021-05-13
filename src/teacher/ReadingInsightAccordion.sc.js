@@ -4,6 +4,9 @@ import { darkBlue, lightOrange } from "../components/colors";
 
 export const ReadingInsightAccordion = styled.div`
   .accordion-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     min-height: 13vh;
     margin-bottom: 3vh;
   }
@@ -11,14 +14,15 @@ export const ReadingInsightAccordion = styled.div`
   .content-wrapper {
     border-left: solid 3px ${darkBlue};
     display: flex;
+    justify-content: space-between;
   }
 
   .article-title {
     font-weight: 400;
-    margin-left: 1vw;
+    margin-left: 2vw;
     text-align: left;
     max-width: 100vw;
-    min-width: 38vw;
+    min-width: 32vw;
   }
 
   button {
@@ -29,17 +33,15 @@ export const ReadingInsightAccordion = styled.div`
   button:hover {
     cursor: pointer;
   }
-  .h {
+  .data-circle-wrapper {
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
+    justify-content: flex-end;
     margin-left: 10em;
   }
 
   .panel {
-    min-width: 300px;
-    max-width: 90%;
-    margin-left: 2%;
+    margin-left:2.5em;
     margin-top: 1vh;
     margin-bottom: 7vh;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);

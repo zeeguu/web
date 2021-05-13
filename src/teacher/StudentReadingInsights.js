@@ -15,7 +15,6 @@ export default function StudentReadingInsights({ api }) {
 
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
-      //console.log(userInfo);
       setStudentInfo(userInfo);
     });
     api.getReadingSessions(
@@ -23,7 +22,6 @@ export default function StudentReadingInsights({ api }) {
       cohortID,
       selectedTimePeriod,
       (readingSessions) => {
-        console.log(readingSessions);
         setReadArticles(readingSessions);
       },
       (res) => {
