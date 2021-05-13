@@ -18,10 +18,8 @@ export default function StudentInfoLine({ api, cohortID, student }) {
       student.id,
       selectedTimePeriod,
       cohortID,
-      (res) => {
-        console.log("studentAcitivity for " + student.name);
-        console.log(res);
-        setActivity(res);
+      (studentActivityData) => {
+        setActivity(studentActivityData);
       },
       (res) => console.log(res)
     );
