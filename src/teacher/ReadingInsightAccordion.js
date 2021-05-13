@@ -11,21 +11,23 @@ import StudentActivityDataCircles from "./StudentActivityDataCircles";
 import StudentTranslations from "./StudentTranslations";
 
 const ReadingInsightAccordion = ({ readArticles }) => {
-  const [showLessButton, setShowLessButton] = useState(false);
+  const [openedArticle, setOpenedArticle] = useState(null);
   
-  const changeButton = () => {
-    setShowLessButton(!showLessButton);
-  };
-
-
+  const handleClick =(articleID) =>{
+    if (articleID===openedArticle){
+      setOpenedArticle(null)
+    }else{
+      setOpenedArticle(articleID)
+    }
+  }
 
   return (
     <s.ReadingInsightAccordion>
       <Accordion collapsible>
-        {readArticles &&
+        {(readArticles !==null) &&
           readArticles.map((article) => (
-            <AccordionItem className="accordion-wrapper">
-              <AccordionButton onClick={changeButton}>
+            <AccordionItem key={article.article_id} className="accordion-wrapper">
+              <AccordionButton onClick={()=>handleClick(article.article_id)}>
                 <div className="content-wrapper">
                   <h2 className="article-title">
                     {article.title.substring(0, 100)}
@@ -39,7 +41,7 @@ const ReadingInsightAccordion = ({ readArticles }) => {
                       readingTime={article.duration_in_sec}
                       translatedWords={article.translations.length}
                     />
-                    <ViewMoreLessButton showLessButton={showLessButton} />
+                    <ViewMoreLessButton articleID={article.article_id} openedArticle={openedArticle}/>
                   </div>
                 </div>
               </AccordionButton>

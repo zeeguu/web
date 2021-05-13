@@ -18,10 +18,8 @@ const StudentTranslations = ({ article }) => {
     }
     //eslint-disable-next-line
   }, []);
-  console.log(translations);
 
   const DivideSentence = ({ sentence, word, isPracticed }) => {
-    console.log(isPracticed);
     const wordStart = sentence.indexOf(word);
     const prefix = sentence.substring(0, wordStart);
     const wordLength = word.length;
@@ -66,6 +64,7 @@ const StudentTranslations = ({ article }) => {
       {translations &&
         translations.map((translation) => (
           <DivideSentence
+            key={translation.id}
             sentence={translation.context}
             word={translation.word}
             isPracticed={translation.practiced}

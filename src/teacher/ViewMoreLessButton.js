@@ -1,7 +1,17 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md/";
 import * as s from "./ViewMoreLessButton.sc";
-const ViewMoreLessButton = ({ showLessButton }) => {
+const ViewMoreLessButton = ({ articleID, openedArticle }) => {
+  const [showLessButton, setShowLessButton] = useState(false);
+
+  useEffect(() => {
+    if (articleID === openedArticle) {
+      setShowLessButton(true);
+    } else {
+      setShowLessButton(false);
+    }
+  }, [openedArticle]);
+
   return (
     <s.ViewMoreLessButton>
       <Fragment>
