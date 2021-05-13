@@ -45,7 +45,7 @@ export default function ArticleReader({ api }) {
       setTitle(articleInfo.title);
 
       api.setArticleOpened(articleInfo.id);
-      api.logUserActivity(api.OPEN_ARTICLE, articleID);
+      api.logReaderActivity(api.OPEN_ARTICLE, articleID);
     });
 
     window.addEventListener("focus", onFocus);
@@ -69,11 +69,11 @@ export default function ArticleReader({ api }) {
     let current_time = _current_time.getTime();
 
     if (previous_time == 0) {
-      api.logUserActivity(api.SCROLL, articleID);
+      api.logReaderActivity(api.SCROLL, articleID);
       previous_time = current_time;
     } else {
       if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
-        api.logUserActivity(api.SCROLL, articleID);
+        api.logReaderActivity(api.SCROLL, articleID);
         previous_time = current_time;
       } else {
       }
@@ -81,10 +81,10 @@ export default function ArticleReader({ api }) {
   }
 
   function onFocus() {
-    api.logUserActivity(api.ARTICLE_FOCUSED, articleID);
+    api.logReaderActivity(api.ARTICLE_FOCUSED, articleID);
   }
   function onBlur() {
-    api.logUserActivity(api.ARTICLE_UNFOCUSED, articleID);
+    api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleID);
   }
 
   function toggle(state, togglerFunction) {
@@ -96,7 +96,7 @@ export default function ArticleReader({ api }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logUserActivity(api.STAR_ARTICLE, articleID);
+    api.logReaderActivity(api.STAR_ARTICLE, articleID);
   }
 
   function setLikedState(state) {
@@ -104,7 +104,7 @@ export default function ArticleReader({ api }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logUserActivity(api.LIKE_ARTICLE, articleID, state);
+    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state);
   }
 
   if (!articleInfo) {

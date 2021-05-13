@@ -1,9 +1,10 @@
 import { useState } from "react";
-import "./FindWordInContext.css";
+import * as s from "../Exercise.sc.js";
 
 import BottomInput from "./BottomInput";
-import BottomFeedback from "./BottomFeedback";
-import strings from "../../i18n/definitions";
+
+import strings from "../../../i18n/definitions";
+import BottomFeedback from "../BottomFeedback";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -44,8 +45,24 @@ export default function FindWordInContext({
     );
   }
 
+  function handleIncorrectAnswer() {
+    console.log(new Date() - initialTime);
+    console.log("^^^^ time elapsed");
+    console.log(firstTypeTime - initialTime);
+    console.log("^^^^ to first key press");
+
+    notifyIncorrectAnswer();
+    api.uploadExerciseFeedback(
+      "Incorrect",
+      EXERCISE_TYPE,
+      firstTypeTime - initialTime,
+      bookmarkToStudy.id
+    );
+    setFirstTypeTime();
+  }
+
   return (
-    <div className="findWordInContext">
+    <s.Exercise>
       <h3>{strings.findTheWordInContextHeadline}</h3>
       <h1>{bookmarkToStudy.to}</h1>
       <div className="contextExample">
@@ -66,7 +83,7 @@ export default function FindWordInContext({
           handleCorrectAnswer={handleCorrectAnswer}
           bookmarkToStudy={bookmarkToStudy}
           notifyKeyPress={inputKeyPress}
-          notifyIncorrectAnswer={notifyIncorrectAnswer}
+          handleIncorrectAnswer={handleIncorrectAnswer}
         />
       )}
       {isCorrect && (
@@ -76,6 +93,6 @@ export default function FindWordInContext({
           correctAnswer={correctAnswer}
         />
       )}
-    </div>
+    </s.Exercise>
   );
 }

@@ -77,7 +77,7 @@ export default function TagsOfFilters({
           input
           showCancel
           title={strings.addPersonalFilter}
-          placeHolder="interest"
+          placeHolder={strings.interest}
           onConfirm={onConfirm}
           onCancel={onCancel}
         ></SweetAlert>

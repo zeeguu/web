@@ -1,8 +1,10 @@
 import fetch from "cross-fetch";
+import axios from "axios";
 
 const Zeeguu_API = class {
   constructor(baseAPIurl) {
     this.baseAPIurl = baseAPIurl;
+    //this.session = currentSession; is instantiated in App when the user logs in (causes error to actually instantiate it here).
   }
 
   apiLog(what) {
@@ -34,11 +36,13 @@ const Zeeguu_API = class {
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => response.json())
       .then((data) => {
+        //do whatever it is you need to do with the fetched data...
         callback(data);
       });
   }
 
-  _post(endpoint, body, callback, onError) {
+  //returning text or json based on the boolean getJson
+  _post(endpoint, body, callback, onError, getJson) {
     this.apiLog("POST" + endpoint);
 
     const url = this._appendSessionToUrl(endpoint);
@@ -54,12 +58,31 @@ const Zeeguu_API = class {
 
     if (callback) {
       fetch(url, params)
-        .then((response) => response.text())
+        .then((response) => getJson ? response.json(): response.text())
         .then((data) => callback(data))
         .catch((e) => onError(e));
     } else {
       fetch(url, params);
     }
+  }
+
+  //migrated from old teacher zeeguu dashboard
+  async apiPost(endpoint, data, isForm) {
+    const params = { session: this.session };
+
+    const headers = isForm
+      ? { "Content-Type": "multipart/form-data" }
+      : { "Content-Type": "application/json" };
+
+    const res = await axios({
+      method: "post",
+      url: this.baseAPIurl + endpoint,
+      params: params,
+      headers: headers,
+      data: data,
+    });
+
+    return res;
   }
 };
 

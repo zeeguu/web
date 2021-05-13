@@ -33,7 +33,8 @@ export default class InteractiveText {
         word.word,
         context,
         window.location,
-        this.articleInfo.title
+        this.articleInfo.title,
+        this.articleInfo.id
       )
       .then((response) => response.json())
       .then((data) => {
@@ -45,7 +46,7 @@ export default class InteractiveText {
         console.log("could not retreive translation");
       });
 
-    this.api.logUserActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id);
+    this.api.logReaderActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id);
   }
 
   selectAlternative(word, alternative, onSuccess) {
@@ -61,7 +62,7 @@ export default class InteractiveText {
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
-    this.api.logUserActivity(this.api.SEND_SUGGESTION, this.articleInfo.id);
+    this.api.logReaderActivity(this.api.SEND_SUGGESTION, this.articleInfo.id);
 
     onSuccess();
   }
@@ -89,30 +90,52 @@ export default class InteractiveText {
 
   pronounce(word) {
     this.zeeguuSpeech.speakOut(word.word);
-    this.api.logUserActivity(this.api.SPEAK_TEXT, this.articleInfo.id);
+    this.api.logReaderActivity(this.api.SPEAK_TEXT, this.articleInfo.id);
   }
 
+  /**
+   * Homemade... might not work that well for all languages...
+   * - won't catch a sentence that ends with ...
+   * might be tricked by I'm going to N.Y. to see my friend.
+   */
   getContext(word) {
     function endOfSentenceIn(word) {
+      const endOfSentenceSigns = [".", "?", "!"];
       let text = word.word;
-      return text[text.length - 1] === ".";
+
+      let lastLetter = text[text.length - 1];
+
+      if (word.next) {
+        let startOfNextWord = word.next.word[0];
+        let nextWordIsUppercase =
+          startOfNextWord === startOfNextWord.toUpperCase();
+
+        return (
+          nextWordIsUppercase && endOfSentenceSigns.indexOf(lastLetter) > -1
+        );
+      } else {
+        return endOfSentenceSigns.indexOf(lastLetter) > -1;
+      }
     }
+
     function getLeftContext(word, count) {
       if (count === 0 || !word || endOfSentenceIn(word)) return "";
       return getLeftContext(word.prev, count - 1) + " " + word.word;
     }
 
     function getRightContext(word, count) {
-      if (count === 0 || !word || endOfSentenceIn(word)) return "";
+      if (count === 0 || !word) return "";
+      if (endOfSentenceIn(word)) return word.word;
       return word.word + " " + getRightContext(word.next, count - 1);
     }
     let context =
-      getLeftContext(word.prev, 2) +
+      getLeftContext(word.prev, 32) +
       " " +
       word.word +
       " " +
-      getRightContext(word.next, 2);
+      getRightContext(word.next, 32);
 
+    console.log("context is: " + context);
     return context;
   }
 }
