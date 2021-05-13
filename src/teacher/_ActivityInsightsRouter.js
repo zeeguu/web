@@ -8,7 +8,7 @@ import StudentExercisesInsights from "./StudentExercisesInsights";
 
 export default function ActivityInsightsRouter({ api }) {
   const cohortID = useParams().cohortID;
-  const studentID = "HARDCODED";
+  const studentID = useParams().studentID;
 
   return (
     <Switch>
