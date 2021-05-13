@@ -8,3 +8,4 @@ export const StudentActivityDataCircleWrapper = styled.div`
   padding-left: 10%;
   justify-content: center;
 `;
+

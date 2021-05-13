@@ -5,42 +5,79 @@ const StudentTranslations = ({ article }) => {
 
   useEffect(() => {
     if (article) {
-      setTranslations(article.translations);
+      const filteredArray = article.translations.reduce((acc, current) => {
+        const found = acc.find((item) => item.id === current.id);
+        if (!found) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+
+      setTranslations(filteredArray);
     }
     //eslint-disable-next-line
   }, []);
-  //console.log(translations);
+  console.log(translations);
 
-  const DivideSentence = ({sentence, word}) => {
-     const wordStart = sentence.indexOf(word);
-    const prefix = sentence.substring(0, wordStart - 1);
+  const DivideSentence = ({ sentence, word, isPracticed }) => {
+    console.log(isPracticed);
+    const wordStart = sentence.indexOf(word);
+    const prefix = sentence.substring(0, wordStart);
     const wordLength = word.length;
     const suffix = sentence.substring(wordStart + wordLength);
-    console.log(sentence)
-    console.log(prefix + word.toUpperCase() + suffix)
+
     return (
-      <>
-        <p className="prefix">{prefix}</p>
-        <p className="word">{word}</p>
-        <p className="suffix">{suffix}</p>
-      </>
+      <div
+        style={{
+            borderLeft: "solid 3px #4492b3",
+            margin:"0 20px 20px 30px",
+            lineHeight:2,
+            paddingLeft:"15px",
+        }}
+      >
+        {prefix}
+        <span
+          style={{
+            display: "inline",
+            border: "solid 2px #54cdff",
+            margin: "15px 0px 0px 0px",
+            padding:"5px",
+            borderRadius: "25px",
+          }}
+        >
+          <b>{word}</b>
+        </span>
+        {isPracticed === 1 && (
+          <span style={{ color: "#54cdff", fontSize: "25px" }}>
+            <b>*</b>
+          </span>
+        )}
+        {suffix}
+      </div>
     );
   };
 
   return (
     <Fragment>
-      <h2 className="panel-headline">
+      <h4 className="panel-headline">
         Translated words in the context of their sencences
-      </h2>
-        {translations && (translations.map((translation)=>{
-            console.dir(translation)
-            return <DivideSentence sentence={translation.context} word={translation.word}/>
+      </h4>
+      {translations &&
+        translations.map((translation) => (
+          <DivideSentence
+            sentence={translation.context}
+            word={translation.word}
+            isPracticed={translation.practiced}
+          />
+        ))}
 
-      }))}
-
-      <p className="panel-no-words">
-        No words were translated in this reading session.
-      </p>
+      {translations === null ||
+        (translations.length === 0 && (
+          <p className="panel-no-words">
+            The student translated no words in this text.STRINGS
+          </p>
+        ))}
     </Fragment>
   );
 };
