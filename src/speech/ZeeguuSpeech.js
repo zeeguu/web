@@ -24,10 +24,7 @@ const ZeeguuSpeech = class {
     console.log(this.language);
     console.log(_isMobile());
     if (this.language === "da" && !_isMobile()) {
-      console.log("about to call the api");
-      this.api.getLinkToDanishSpeech(word, (linkToMp3) => {
-        return play(this.api.baseAPIurl + linkToMp3);
-      });
+      return playFromAPI(this.api, word);
     } else {
       return this.speech.speak({
         text: word,
@@ -39,13 +36,17 @@ const ZeeguuSpeech = class {
   }
 };
 
-function play(url) {
+function playFromAPI(api, word) {
   return new Promise(function (resolve, reject) {
-    var mp3Player = new Audio();
-    mp3Player.src = url;
-    mp3Player.autoplay = true;
-    mp3Player.onerror = reject;
-    mp3Player.onended = resolve;
+    console.log("about to call the api");
+    api.getLinkToDanishSpeech(word, (linkToMp3) => {
+      console.log("got the link: " + linkToMp3);
+      var mp3Player = new Audio();
+      mp3Player.src = linkToMp3;
+      mp3Player.autoplay = true;
+      mp3Player.onerror = reject;
+      mp3Player.onended = resolve;
+    });
   });
 }
 

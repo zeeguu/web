@@ -10,7 +10,10 @@ Zeeguu_API.prototype.getLinkToDanishSpeech = function (
     `text_to_speech`,
     `language_id=da&text=${textToPronounce}`,
     (linkToMp3) => {
-      callback(linkToMp3);
+      callback(this.baseAPIurl + linkToMp3);
+    },
+    (error) => {
+      console.log(error);
     }
   );
 };
