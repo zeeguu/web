@@ -20,9 +20,6 @@ const ZeeguuSpeech = class {
   }
 
   speakOut(word) {
-    console.log("speaking out");
-    console.log(this.language);
-    console.log(_isMobile());
     if (this.language === "da" && !_isMobile()) {
       return playFromAPI(this.api, word);
     } else {
@@ -38,9 +35,7 @@ const ZeeguuSpeech = class {
 
 function playFromAPI(api, word) {
   return new Promise(function (resolve, reject) {
-    console.log("about to call the api");
     api.getLinkToDanishSpeech(word, (linkToMp3) => {
-      console.log("got the link: " + linkToMp3);
       var mp3Player = new Audio();
       mp3Player.src = linkToMp3;
       mp3Player.autoplay = true;
