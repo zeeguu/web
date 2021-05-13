@@ -30,6 +30,7 @@ let strings = new LocalizedStrings(
       teacherSite: "Teacher site",
       studentSite: "Student site",
       logout: "Logout",
+      userDashboard: "Dashboard",
 
       //CreateAccount
       nameIsRequired: "Name is required.",
