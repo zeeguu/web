@@ -60,6 +60,8 @@ export default function ArticleReader({ api }) {
       document
         .getElementById("scrollHolder")
         .removeEventListener("scroll", onScroll);
+
+      api.logReaderActivity("ARTICLE CLOSED", articleID);
     };
     // eslint-disable-next-line
   }, []);
