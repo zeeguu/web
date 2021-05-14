@@ -3,6 +3,7 @@ import * as s from "../../components/TopMessage.sc";
 import { lightOrange } from "../../components/colors";
 import { device } from "./Devices";
 import * as datePickerCSS from "react-datepicker/dist/react-datepicker.css";
+import { OrangeButton } from "../../reader/ArticleReader.sc";
 
 let darkerHueZeeguuOrange = "#9c7130";
 
@@ -129,6 +130,12 @@ const NivoGraphContainer = styled.div`
   }
 `;
 
+const UserDashboardFeedbackButton = styled(OrangeButton)`
+  display: inline-block;
+  float: none;
+  width: 30%;
+`;
+
 export {
   UserDashboardTitle,
   UserDashboardTopContainer,
@@ -138,4 +145,5 @@ export {
   UserDashBoardDropdown,
   NivoGraphContainer,
   UserDatePicker,
+  UserDashboardFeedbackButton,
 };
