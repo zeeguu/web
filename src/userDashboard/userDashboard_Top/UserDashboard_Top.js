@@ -8,6 +8,7 @@ import IntervalDropdownList from "./IntervalDropdownList";
 import TimeFormatDropdownList from "./TimeFormatDropdownList";
 import UserDashboardTabs from "./UserDashboardTabs";
 import UserDashboardDatePicker from "./UserDashboardDatePicker";
+import FeedbackButton from "./FeedbackButton";
 
 export default function UserDashboard_Top({
   activeTab,
@@ -18,6 +19,7 @@ export default function UserDashboard_Top({
   activeTimeFormatOption,
   referenceDate,
   setReferenceDate,
+  api,
 }) {
   return (
     <s.UserDashboardTopContainer>
@@ -60,6 +62,7 @@ export default function UserDashboard_Top({
           )}
         </>
       </s.UserDashboardHelperText>
+      <FeedbackButton api={api} />
     </s.UserDashboardTopContainer>
   );
 }

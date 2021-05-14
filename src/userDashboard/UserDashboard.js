@@ -32,14 +32,10 @@ export default function UserDashboard({ api }) {
   const [allWordsData, setAllWordsData] = useState(null);
   const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
   const [referenceDate, setReferenceDate] = useState(new Date());
-  const [
-    dailyExerciseAndReadingTimes,
-    setDailyExerciseAndReadingTimes,
-  ] = useState(null);
-  const [
-    monthlyExerciseAndReadingTimes,
-    setMonthlyExerciseAndReadingTimes,
-  ] = useState({});
+  const [dailyExerciseAndReadingTimes, setDailyExerciseAndReadingTimes] =
+    useState(null);
+  const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
+    useState({});
 
   function handleActiveTabChange(tabId) {
     setActiveTab(tabId);
@@ -120,6 +116,7 @@ export default function UserDashboard({ api }) {
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
         setReferenceDate={setReferenceDate}
+        api={api}
       />
 
       <s.NivoGraphContainer>
