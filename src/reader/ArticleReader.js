@@ -70,7 +70,7 @@ export default function ArticleReader({ api }) {
     let _current_time = new Date();
     let current_time = _current_time.getTime();
 
-    if (previous_time == 0) {
+    if (previous_time === 0) {
       api.logReaderActivity(api.SCROLL, articleID);
       previous_time = current_time;
     } else {
