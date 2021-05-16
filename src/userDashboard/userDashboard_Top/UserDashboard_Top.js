@@ -18,7 +18,7 @@ export default function UserDashboard_Top({
   handleActiveTimeFormatChange,
   activeTimeFormatOption,
   referenceDate,
-  setReferenceDate,
+  handleChangeReferenceDate,
   api,
 }) {
   return (
@@ -48,7 +48,7 @@ export default function UserDashboard_Top({
             activeTimeInterval === OPTIONS.CUSTOM_YEAR) && (
             <UserDashboardDatePicker
               referenceDate={referenceDate}
-              setReferenceDate={setReferenceDate}
+              handleChangeReferenceDate={handleChangeReferenceDate}
             />
           )}
           {activeTab === TABS_IDS.BAR_GRAPH && (

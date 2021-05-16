@@ -37,12 +37,19 @@ export default function UserDashboard({ api }) {
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
 
+  function handleChangeReferenceDate(newDate) {
+    setReferenceDate(newDate);
+    api.logUserActivity(api.USER_DASHBOARD_DATE_CHANGE, "", newDate);
+  }
+
   function handleActiveTabChange(tabId) {
     setActiveTab(tabId);
+    api.logUserActivity(api.USER_DASHBOARD_TAB_CHANGE, "", tabId);
   }
 
   function handleActiveTimeIntervalChange(selected) {
     setActiveTimeInterval(selected);
+    api.logUserActivity(api.USER_DASHBOARD_PERIOD_CHANGE, "", selected);
 
     var period =
       selected === OPTIONS.WEEK || selected === OPTIONS.CUSTOM_WEEK
@@ -77,6 +84,7 @@ export default function UserDashboard({ api }) {
 
   function handleActiveTimeFormatChange(selected) {
     setActiveTimeFormatOption(selected);
+    api.logUserActivity(api.USER_DASHBOARD_TIME_COUNT_CHANGE, "", selected);
   }
 
   useEffect(() => {
@@ -115,7 +123,7 @@ export default function UserDashboard({ api }) {
         handleActiveTimeFormatChange={handleActiveTimeFormatChange}
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
-        setReferenceDate={setReferenceDate}
+        handleChangeReferenceDate={handleChangeReferenceDate}
         api={api}
       />
 
