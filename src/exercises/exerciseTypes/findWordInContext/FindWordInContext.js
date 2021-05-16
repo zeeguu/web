@@ -30,15 +30,16 @@ export default function FindWordInContext({
     }
   }
 
-  function handleCorrectAnswer() {
+  function handleCorrectAnswer(message) {
     console.log(new Date() - initialTime);
     console.log("^^^^ time elapsed");
     console.log(firstTypeTime - initialTime);
     console.log("^^^^ to first key press");
 
+    console.log(message);
     setIsCorrect(true);
     api.uploadExerciseFeedback(
-      "Correct",
+      message,
       EXERCISE_TYPE,
       firstTypeTime - initialTime,
       bookmarkToStudy.id
@@ -46,18 +47,7 @@ export default function FindWordInContext({
   }
 
   function handleIncorrectAnswer() {
-    console.log(new Date() - initialTime);
-    console.log("^^^^ time elapsed");
-    console.log(firstTypeTime - initialTime);
-    console.log("^^^^ to first key press");
-
     notifyIncorrectAnswer();
-    api.uploadExerciseFeedback(
-      "Incorrect",
-      EXERCISE_TYPE,
-      firstTypeTime - initialTime,
-      bookmarkToStudy.id
-    );
     setFirstTypeTime();
   }
 
