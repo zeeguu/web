@@ -4,6 +4,7 @@ import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 
 import BottomFeedback from "../BottomFeedback";
+import strings from "../../../i18n/definitions.js";
 
 const EXERCISE_TYPE = "MULTIPLE_CHOICE";
 
@@ -112,7 +113,8 @@ export default function MultipleChoice({
 
   return (
     <s.Exercise>
-      <h3>Choose the word that fits the context</h3>
+      //Need a string definition for this :-)
+      <h3>{strings.chooseTheWordFittingContextHeadline}</h3>
       {isCorrect && <h1>{bookmarkToStudy.to}</h1>}
       <div className="contextExample">
         <div
