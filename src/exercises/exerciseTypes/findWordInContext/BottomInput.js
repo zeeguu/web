@@ -49,7 +49,9 @@ export default function BottomInput({
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
     <s.BottomRow>
-      <s.FeedbackButton onClick={(e) => handleHint()}>Hint</s.FeedbackButton>
+      <s.FeedbackButton onClick={(e) => handleHint()}>
+        {strings.hint}
+      </s.FeedbackButton>
 
       <InputField
         type="text"
