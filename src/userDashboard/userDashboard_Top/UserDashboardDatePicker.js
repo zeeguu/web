@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 
 export default function UserDashboardDatePicker({
   referenceDate,
-  setReferenceDate,
+  handleChangeReferenceDate,
 }) {
   return (
     <>
@@ -13,7 +13,7 @@ export default function UserDashboardDatePicker({
         <DatePicker
           dateFormat={DATE_FORMAT_FOR_DATEPICKER}
           selected={referenceDate}
-          onChange={(date) => setReferenceDate(date)}
+          onChange={(date) => handleChangeReferenceDate(date)}
         />
       </s.UserDatePicker>
     </>
