@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import * as s from "./ArticleReader.sc";
 import { Link } from "react-router-dom";
 
 import { TranslatableText } from "./TranslatableText";
-
 import InteractiveText from "./InteractiveText";
 import BookmarkButton from "./BookmarkButton";
-
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { PopupButtonWrapper, StyledButton } from "../teacher/TeacherButtons.sc";
-import * as c from "../components/ColumnWidth.sc";
-import * as sc from "../components/TopTabs.sc";
-
+import * as s from "./ArticleReader.sc";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update

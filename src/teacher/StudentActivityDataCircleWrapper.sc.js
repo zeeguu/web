@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { darkBlue, lightOrange } from "../components/colors";
 
 export const StudentActivityDataCircleWrapper = styled.div`
   display: flex;

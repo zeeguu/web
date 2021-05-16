@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import "@reach/accordion/styles.css";
-import { darkBlue, lightOrange } from "../components/colors";
+import { darkBlue } from "../components/colors";
 
 export const ReadingInsightAccordion = styled.div`
   .accordion-wrapper {

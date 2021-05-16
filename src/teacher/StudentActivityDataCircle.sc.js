@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { darkBlue, lightOrange } from "../components/colors";
 
 export const StudentActivityDataCircle = styled.div`
   margin-right: 1.5em;
