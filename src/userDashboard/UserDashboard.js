@@ -17,7 +17,7 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
-import UserDashboard_Top from "./userDashboard_Top/UserDashboard_Top";
+import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 
 export default function UserDashboard({ api }) {
@@ -115,7 +115,7 @@ export default function UserDashboard({ api }) {
 
   return (
     <>
-      <UserDashboard_Top
+      <UserDashboardTop
         activeTab={activeTab}
         handleActiveTabChange={handleActiveTabChange}
         activeTimeInterval={activeTimeInterval}

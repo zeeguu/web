@@ -10,7 +10,7 @@ import UserDashboardTabs from "./UserDashboardTabs";
 import UserDashboardDatePicker from "./UserDashboardDatePicker";
 import FeedbackButton from "./FeedbackButton";
 
-export default function UserDashboard_Top({
+export default function UserDashboardTop({
   activeTab,
   handleActiveTabChange,
   activeTimeInterval,
