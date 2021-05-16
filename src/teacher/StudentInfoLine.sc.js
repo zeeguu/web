@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { darkBlue, lightGrey } from "../components/colors";
+import { darkBlue } from "../components/colors";
 import "@reach/listbox/styles.css";
 
 export const StudentInfoLine = styled.div`

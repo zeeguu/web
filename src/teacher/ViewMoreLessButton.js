@@ -10,6 +10,7 @@ const ViewMoreLessButton = ({ articleID, openedArticle }) => {
     } else {
       setShowLessButton(false);
     }
+    //eslint-disable-next-line
   }, [openedArticle]);
 
   return (
