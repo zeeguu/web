@@ -18,6 +18,7 @@ export default function MultipleChoice({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
   const [buttonOptions, setButtonOptions] = useState(null);
+  const [attemptCounter, setAttemptCounter] = useState(0);
 
   useEffect(() => {
     api.wordsSimilarTo(bookmarkToStudy.id, (words) => {
@@ -35,38 +36,39 @@ export default function MultipleChoice({
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
+    let attempt = attemptCounter + 1;
+    let message;
     if (selectedChoice === bookmarkToStudy.from) {
-      handleCorrectAnswer();
+      let ordinal;
+      if (attempt === 1) {
+        ordinal = "1st";
+      } else {
+        ordinal = "2nd";
+      }
+      if (attemptCounter >= 2) {
+        message = "Incorrect";
+      } else {
+        message = `Correct_${ordinal}_attempt`;
+      }
+      handleCorrectAnswer(message);
     } else {
       setIncorrectAnswer(selectedChoice);
-      handleIncorrectAnswer();
+      notifyIncorrectAnswer();
     }
+    setAttemptCounter(attempt);
   }
 
-  function handleCorrectAnswer() {
+  function handleCorrectAnswer(message) {
     let correctPressTime = new Date();
     console.log(correctPressTime - initialTime);
     console.log("^^^^ time elapsed");
 
     setIsCorrect(true);
+    console.log(message);
     api.uploadExerciseFeedback(
-      "Correct",
+      message,
       EXERCISE_TYPE,
       correctPressTime - initialTime,
-      bookmarkToStudy.id
-    );
-  }
-
-  function handleIncorrectAnswer() {
-    let incorrectPressTime = new Date();
-    console.log(incorrectPressTime - initialTime);
-    console.log("^^^^ time elapsed");
-
-    notifyIncorrectAnswer();
-    api.uploadExerciseFeedback(
-      "Incorrect",
-      EXERCISE_TYPE,
-      incorrectPressTime - initialTime,
       bookmarkToStudy.id
     );
   }
@@ -113,7 +115,6 @@ export default function MultipleChoice({
 
   return (
     <s.Exercise>
-      //Need a string definition for this :-)
       <h3>{strings.chooseTheWordFittingContextHeadline}</h3>
       {isCorrect && <h1>{bookmarkToStudy.to}</h1>}
       <div className="contextExample">

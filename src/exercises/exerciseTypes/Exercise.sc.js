@@ -85,6 +85,12 @@ let FeedbackButton = styled.button`
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
+
+  &:disabled {
+    cursor: default;
+    background-color: transparent;
+    color: gray;
+  }
 `;
 
 const shake = keyframes`

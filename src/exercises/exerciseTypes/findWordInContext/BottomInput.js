@@ -10,16 +10,21 @@ export default function BottomInput({
   notifyKeyPress,
 }) {
   const [currentInput, setCurrentInput] = useState("");
-  const [hintLength, setHintLength] = useState(0);
   const [isIncorrect, setIsIncorrect] = useState(false);
-
-  function hint() {
-    return bookmarkToStudy.from.substring(0, hintLength);
-  }
+  const [usedHint, setUsedHint] = useState(false);
+  const [attemptCounter, setAttemptCounter] = useState(0);
 
   function handleHint() {
-    setCurrentInput("");
-    setHintLength(hintLength + 1);
+    setUsedHint(true);
+    let hint;
+    if (
+      currentInput === bookmarkToStudy.from.substring(0, currentInput.length)
+    ) {
+      hint = bookmarkToStudy.from.substring(0, currentInput.length + 1);
+    } else {
+      hint = bookmarkToStudy.from.substring(0, 1);
+    }
+    setCurrentInput(hint);
   }
 
   function eliminateTypos(x) {
@@ -38,24 +43,41 @@ export default function BottomInput({
     console.log("checking result...");
     var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
     var b = removeQuotes(removeAccents(eliminateTypos(bookmarkToStudy.from)));
+    let attempt = attemptCounter + 1;
+    let message;
     if (a === b) {
-      handleCorrectAnswer();
+      let ordinal;
+      if (attempt === 1) {
+        ordinal = "1st";
+      } else {
+        ordinal = "2nd";
+      }
+      if (usedHint && attemptCounter <= 1) {
+        message = `Correct_${ordinal}_attempt_with_hint`;
+      } else if (attemptCounter <= 1) {
+        message = `Correct_${ordinal}_attempt`;
+      } else if (usedHint && attemptCounter > 1) {
+        message = "Incorrect_with_hint";
+      } else {
+        message = "Incorrect";
+      }
+      handleCorrectAnswer(message);
     } else {
       setIsIncorrect(true);
       handleIncorrectAnswer();
     }
+    setAttemptCounter(attempt);
   }
 
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
     <s.BottomRow>
-      <s.FeedbackButton onClick={(e) => handleHint()}>
+      <s.FeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
         {strings.hint}
       </s.FeedbackButton>
 
       <InputField
         type="text"
-        placeholder={hint()}
         value={currentInput}
         onChange={(e) => setCurrentInput(e.target.value)}
         onKeyUp={(e) => {
