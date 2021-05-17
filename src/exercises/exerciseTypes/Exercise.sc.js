@@ -165,7 +165,7 @@ let BottomRow = styled.div`
 `;
 
 let StyledLink = styled(Link)`
-  margin-top: 2em;
+  margin-top: 1em;
   color: gray;
 `;
 
