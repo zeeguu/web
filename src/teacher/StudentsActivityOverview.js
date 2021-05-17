@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useHistory } from "react-router-dom";
 import LocalStorage from "../assorted/LocalStorage";
 import { transformStudents } from "./teacherApiHelpers";
 import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
@@ -17,6 +17,7 @@ export default function StudentsActivityOverview({ api }) {
   const [forceUpdate, setForceUpdate] = useState(0);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
+  const history = useHistory();
 
   //Extracting the cohort data for the page title and deleting students from the cohort.
   useEffect(() => {
@@ -57,6 +58,7 @@ export default function StudentsActivityOverview({ api }) {
             >
               STRINGS Add students
             </StyledButton>
+            <StyledButton secondary onClick={()=>history.push("/teacher/classes")}>STRINGS Back to all classes</StyledButton>
           </TopButtonWrapper>
           {students !== null &&
             (students.length === 0 ? (
