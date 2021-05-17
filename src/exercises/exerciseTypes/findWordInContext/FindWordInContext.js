@@ -36,7 +36,6 @@ export default function FindWordInContext({
     console.log(firstTypeTime - initialTime);
     console.log("^^^^ to first key press");
 
-    console.log(message);
     api.uploadExerciseFeedback(
       message,
       EXERCISE_TYPE,
@@ -61,7 +60,6 @@ export default function FindWordInContext({
     console.log(hintTime - initialTime);
     console.log("^^^^ time elapsed");
 
-    console.log(message);
     api.uploadExerciseFeedback(
       message,
       EXERCISE_TYPE,
