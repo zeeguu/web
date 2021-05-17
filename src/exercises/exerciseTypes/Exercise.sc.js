@@ -1,4 +1,5 @@
 import styled, { keyframes } from "styled-components";
+import { Link } from "react-router-dom";
 
 const Exercise = styled.div`
   display: flex;
@@ -163,6 +164,11 @@ let BottomRow = styled.div`
   flex-wrap: wrap;
 `;
 
+let StyledLink = styled(Link)`
+  margin-top: 2em;
+  color: gray;
+`;
+
 export {
   Exercise,
   FeedbackButton,
@@ -171,4 +177,5 @@ export {
   Input,
   AnimatedInput,
   BottomRow,
+  StyledLink,
 };

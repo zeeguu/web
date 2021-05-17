@@ -6,7 +6,6 @@ import * as s from "../Exercise.sc";
 export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
-  handleHintUse,
   handleShowSolution,
   bookmarkToStudy,
   notifyKeyPress,
@@ -14,6 +13,7 @@ export default function BottomInput({
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
+  const [messageToAPI, setMessageToAPI] = useState("");
 
   function handleHint() {
     setUsedHint(true);
@@ -26,11 +26,13 @@ export default function BottomInput({
       hint = bookmarkToStudy.from.substring(0, 1);
     }
     setCurrentInput(hint);
-    handleHintUse("H");
+    let concatMessage = messageToAPI + "H";
+    setMessageToAPI(concatMessage);
   }
 
   function showSolution() {
-    handleShowSolution();
+    let concatMessage = messageToAPI + "S";
+    handleShowSolution(concatMessage);
   }
 
   function eliminateTypos(x) {
@@ -50,10 +52,13 @@ export default function BottomInput({
     var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
     var b = removeQuotes(removeAccents(eliminateTypos(bookmarkToStudy.from)));
     if (a === b) {
-      handleCorrectAnswer("C");
+      let concatMessage = messageToAPI + "C";
+      handleCorrectAnswer(concatMessage);
     } else {
+      let concatMessage = messageToAPI + "W";
+      setMessageToAPI(concatMessage);
       setIsIncorrect(true);
-      handleIncorrectAnswer("W");
+      handleIncorrectAnswer();
     }
   }
 
@@ -85,11 +90,9 @@ export default function BottomInput({
           {strings.check}
         </s.FeedbackButton>
       </s.BottomRow>
-      <s.BottomRow>
-        <s.OrangeButton onClick={showSolution}>
-          {strings.showSolution}
-        </s.OrangeButton>
-      </s.BottomRow>
+      <s.StyledLink to={"#"} onClick={showSolution}>
+        {strings.showSolution}
+      </s.StyledLink>
     </>
   );
 }

@@ -18,6 +18,7 @@ export default function MultipleChoice({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
   const [buttonOptions, setButtonOptions] = useState(null);
+  const [messageToAPI, setMessageToAPI] = useState("");
 
   useEffect(() => {
     api.wordsSimilarTo(bookmarkToStudy.id, (words) => {
@@ -37,11 +38,13 @@ export default function MultipleChoice({
     console.log("checking result...");
     if (selectedChoice === bookmarkToStudy.from) {
       setIsCorrect(true);
-      handleAnswer("C");
+      let concatMessage = messageToAPI + "C";
+      handleAnswer(concatMessage);
     } else {
       setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer();
-      handleAnswer("W");
+      let concatMessage = messageToAPI + "W";
+      setMessageToAPI(concatMessage);
     }
   }
 
@@ -49,6 +52,8 @@ export default function MultipleChoice({
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
+
+    console.log(message);
 
     api.uploadExerciseFeedback(
       message,
