@@ -7,13 +7,13 @@ export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
   handleHintUse,
+  handleShowSolution,
   bookmarkToStudy,
   notifyKeyPress,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
-  const [attemptCounter, setAttemptCounter] = useState(0);
 
   function handleHint() {
     setUsedHint(true);
@@ -26,9 +26,11 @@ export default function BottomInput({
       hint = bookmarkToStudy.from.substring(0, 1);
     }
     setCurrentInput(hint);
-    let attempt = attemptCounter + 1;
-    setAttemptCounter(attempt);
     handleHintUse("H");
+  }
+
+  function showSolution() {
+    handleShowSolution();
   }
 
   function eliminateTypos(x) {
@@ -47,40 +49,45 @@ export default function BottomInput({
     console.log("checking result...");
     var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
     var b = removeQuotes(removeAccents(eliminateTypos(bookmarkToStudy.from)));
-    let attempt = attemptCounter + 1;
     if (a === b) {
       handleCorrectAnswer("C");
     } else {
       setIsIncorrect(true);
       handleIncorrectAnswer("W");
     }
-    setAttemptCounter(attempt);
   }
 
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
-    <s.BottomRow>
-      <s.FeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
-        {strings.hint}
-      </s.FeedbackButton>
+    <>
+      <s.BottomRow>
+        <s.FeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
+          {strings.hint}
+        </s.FeedbackButton>
 
-      <InputField
-        type="text"
-        value={currentInput}
-        onChange={(e) => setCurrentInput(e.target.value)}
-        onKeyUp={(e) => {
-          if (currentInput !== "") {
-            notifyKeyPress();
-          }
-          if (e.key === "Enter") {
-            checkResult();
-          }
-        }}
-        onAnimationEnd={() => setIsIncorrect(false)}
-        autoFocus
-      />
+        <InputField
+          type="text"
+          value={currentInput}
+          onChange={(e) => setCurrentInput(e.target.value)}
+          onKeyUp={(e) => {
+            if (currentInput !== "") {
+              notifyKeyPress();
+            }
+            if (e.key === "Enter") {
+              checkResult();
+            }
+          }}
+          onAnimationEnd={() => setIsIncorrect(false)}
+          autoFocus
+        />
 
-      <s.FeedbackButton onClick={checkResult}>{strings.check}</s.FeedbackButton>
-    </s.BottomRow>
+        <s.FeedbackButton onClick={checkResult}>
+          {strings.check}
+        </s.FeedbackButton>
+      </s.BottomRow>
+      <s.BottomRow>
+        <s.OrangeButton onClick={showSolution}>Show solution</s.OrangeButton>
+      </s.BottomRow>
+    </>
   );
 }

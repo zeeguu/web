@@ -18,7 +18,6 @@ export default function MultipleChoice({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
   const [buttonOptions, setButtonOptions] = useState(null);
-  const [attemptCounter, setAttemptCounter] = useState(0);
 
   useEffect(() => {
     api.wordsSimilarTo(bookmarkToStudy.id, (words) => {
@@ -36,7 +35,6 @@ export default function MultipleChoice({
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
-    let attempt = attemptCounter + 1;
     if (selectedChoice === bookmarkToStudy.from) {
       setIsCorrect(true);
       handleAnswer("C");
@@ -45,18 +43,17 @@ export default function MultipleChoice({
       notifyIncorrectAnswer();
       handleAnswer("W");
     }
-    setAttemptCounter(attempt);
   }
 
   function handleAnswer(message) {
-    let PressTime = new Date();
-    console.log(PressTime - initialTime);
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
 
     api.uploadExerciseFeedback(
       message,
       EXERCISE_TYPE,
-      PressTime - initialTime,
+      pressTime - initialTime,
       bookmarkToStudy.id
     );
   }
