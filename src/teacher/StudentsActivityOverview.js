@@ -21,8 +21,8 @@ export default function StudentsActivityOverview({ api }) {
 
   //Extracting the cohort data for the page title and deleting students from the cohort.
   useEffect(() => {
-    api.getCohortsInfo(res => {
-      const currentCohortArray = res.filter(cohort => cohort.id === cohortID);
+    api.getCohortsInfo((res) => {
+      const currentCohortArray = res.filter((cohort) => cohort.id === cohortID);
       setCohort(currentCohortArray[0]);
     });
     //eslint-disable-next-line
@@ -30,7 +30,7 @@ export default function StudentsActivityOverview({ api }) {
 
   //extracting the list of students based on the time period selected by the user.
   useEffect(() => {
-    api.getStudents(cohortID, selectedTimePeriod, res => {
+    api.getStudents(cohortID, selectedTimePeriod, (res) => {
       const studentWithNeededData = transformStudents(res);
       setStudents(studentWithNeededData);
     });
@@ -58,7 +58,12 @@ export default function StudentsActivityOverview({ api }) {
             >
               STRINGS Add students
             </StyledButton>
-            <StyledButton secondary onClick={()=>history.push("/teacher/classes")}>STRINGS Back to all classes</StyledButton>
+            <StyledButton
+              secondary
+              onClick={() => history.push("/teacher/classes")}
+            >
+              STRINGS Back to all classes
+            </StyledButton>
           </TopButtonWrapper>
           {students !== null &&
             (students.length === 0 ? (
