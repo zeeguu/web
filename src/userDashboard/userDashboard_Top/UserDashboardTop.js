@@ -8,8 +8,9 @@ import IntervalDropdownList from "./IntervalDropdownList";
 import TimeFormatDropdownList from "./TimeFormatDropdownList";
 import UserDashboardTabs from "./UserDashboardTabs";
 import UserDashboardDatePicker from "./UserDashboardDatePicker";
+import FeedbackButton from "./FeedbackButton";
 
-export default function UserDashboard_Top({
+export default function UserDashboardTop({
   activeTab,
   handleActiveTabChange,
   activeTimeInterval,
@@ -17,7 +18,8 @@ export default function UserDashboard_Top({
   handleActiveTimeFormatChange,
   activeTimeFormatOption,
   referenceDate,
-  setReferenceDate,
+  handleChangeReferenceDate,
+  api,
 }) {
   return (
     <s.UserDashboardTopContainer>
@@ -46,7 +48,7 @@ export default function UserDashboard_Top({
             activeTimeInterval === OPTIONS.CUSTOM_YEAR) && (
             <UserDashboardDatePicker
               referenceDate={referenceDate}
-              setReferenceDate={setReferenceDate}
+              handleChangeReferenceDate={handleChangeReferenceDate}
             />
           )}
           {activeTab === TABS_IDS.BAR_GRAPH && (
@@ -60,6 +62,7 @@ export default function UserDashboard_Top({
           )}
         </>
       </s.UserDashboardHelperText>
+      <FeedbackButton api={api} />
     </s.UserDashboardTopContainer>
   );
 }

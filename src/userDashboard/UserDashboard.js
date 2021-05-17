@@ -17,7 +17,7 @@ import {
   getBarGraphData,
   calculateCountPerMonth_Activity,
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
-import UserDashboard_Top from "./userDashboard_Top/UserDashboard_Top";
+import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 
 export default function UserDashboard({ api }) {
@@ -32,21 +32,24 @@ export default function UserDashboard({ api }) {
   const [allWordsData, setAllWordsData] = useState(null);
   const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
   const [referenceDate, setReferenceDate] = useState(new Date());
-  const [
-    dailyExerciseAndReadingTimes,
-    setDailyExerciseAndReadingTimes,
-  ] = useState(null);
-  const [
-    monthlyExerciseAndReadingTimes,
-    setMonthlyExerciseAndReadingTimes,
-  ] = useState({});
+  const [dailyExerciseAndReadingTimes, setDailyExerciseAndReadingTimes] =
+    useState(null);
+  const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
+    useState({});
+
+  function handleChangeReferenceDate(newDate) {
+    setReferenceDate(newDate);
+    api.logUserActivity(api.USER_DASHBOARD_DATE_CHANGE, "", newDate);
+  }
 
   function handleActiveTabChange(tabId) {
     setActiveTab(tabId);
+    api.logUserActivity(api.USER_DASHBOARD_TAB_CHANGE, "", tabId);
   }
 
   function handleActiveTimeIntervalChange(selected) {
     setActiveTimeInterval(selected);
+    api.logUserActivity(api.USER_DASHBOARD_PERIOD_CHANGE, "", selected);
 
     var period =
       selected === OPTIONS.WEEK || selected === OPTIONS.CUSTOM_WEEK
@@ -81,6 +84,7 @@ export default function UserDashboard({ api }) {
 
   function handleActiveTimeFormatChange(selected) {
     setActiveTimeFormatOption(selected);
+    api.logUserActivity(api.USER_DASHBOARD_TIME_COUNT_CHANGE, "", selected);
   }
 
   useEffect(() => {
@@ -111,7 +115,7 @@ export default function UserDashboard({ api }) {
 
   return (
     <>
-      <UserDashboard_Top
+      <UserDashboardTop
         activeTab={activeTab}
         handleActiveTabChange={handleActiveTabChange}
         activeTimeInterval={activeTimeInterval}
@@ -119,7 +123,8 @@ export default function UserDashboard({ api }) {
         handleActiveTimeFormatChange={handleActiveTimeFormatChange}
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
-        setReferenceDate={setReferenceDate}
+        handleChangeReferenceDate={handleChangeReferenceDate}
+        api={api}
       />
 
       <s.NivoGraphContainer>
