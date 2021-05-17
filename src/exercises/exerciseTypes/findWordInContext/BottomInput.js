@@ -86,7 +86,9 @@ export default function BottomInput({
         </s.FeedbackButton>
       </s.BottomRow>
       <s.BottomRow>
-        <s.OrangeButton onClick={showSolution}>Show solution</s.OrangeButton>
+        <s.OrangeButton onClick={showSolution}>
+          {strings.showSolution}
+        </s.OrangeButton>
       </s.BottomRow>
     </>
   );
