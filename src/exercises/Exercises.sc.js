@@ -39,6 +39,8 @@ const LittleMessageAbove = styled.div`
   padding: 0.2em;
   text-align: center;
   font-size: small;
+  margin-top: -2em;
+  margin-bottom: 2em;
 `;
 
 export { ExercisesColumn, ExForm, LittleMessageAbove };

@@ -88,8 +88,7 @@ let FeedbackButton = styled.button`
 
   &:disabled {
     cursor: default;
-    background-color: transparent;
-    color: gray;
+    text-decoration: line-through;
   }
 `;
 
