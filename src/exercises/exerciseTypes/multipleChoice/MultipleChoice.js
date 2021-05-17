@@ -37,38 +37,27 @@ export default function MultipleChoice({
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
     let attempt = attemptCounter + 1;
-    let message;
     if (selectedChoice === bookmarkToStudy.from) {
-      let ordinal;
-      if (attempt === 1) {
-        ordinal = "1st";
-      } else {
-        ordinal = "2nd";
-      }
-      if (attemptCounter >= 2) {
-        message = "Incorrect";
-      } else {
-        message = `Correct_${ordinal}_attempt`;
-      }
-      handleCorrectAnswer(message);
+      setIsCorrect(true);
+      handleAnswer("C");
     } else {
       setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer();
+      handleAnswer("W");
     }
     setAttemptCounter(attempt);
   }
 
-  function handleCorrectAnswer(message) {
-    let correctPressTime = new Date();
-    console.log(correctPressTime - initialTime);
+  function handleAnswer(message) {
+    let PressTime = new Date();
+    console.log(PressTime - initialTime);
     console.log("^^^^ time elapsed");
 
-    setIsCorrect(true);
     console.log(message);
     api.uploadExerciseFeedback(
       message,
       EXERCISE_TYPE,
-      correctPressTime - initialTime,
+      PressTime - initialTime,
       bookmarkToStudy.id
     );
   }

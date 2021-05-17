@@ -6,6 +6,7 @@ import * as s from "../Exercise.sc";
 export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
+  handleHintUse,
   bookmarkToStudy,
   notifyKeyPress,
 }) {
@@ -25,6 +26,9 @@ export default function BottomInput({
       hint = bookmarkToStudy.from.substring(0, 1);
     }
     setCurrentInput(hint);
+    let attempt = attemptCounter + 1;
+    setAttemptCounter(attempt);
+    handleHintUse("H");
   }
 
   function eliminateTypos(x) {
@@ -44,27 +48,11 @@ export default function BottomInput({
     var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
     var b = removeQuotes(removeAccents(eliminateTypos(bookmarkToStudy.from)));
     let attempt = attemptCounter + 1;
-    let message;
     if (a === b) {
-      let ordinal;
-      if (attempt === 1) {
-        ordinal = "1st";
-      } else {
-        ordinal = "2nd";
-      }
-      if (usedHint && attemptCounter <= 1) {
-        message = `Correct_${ordinal}_attempt_with_hint`;
-      } else if (attemptCounter <= 1) {
-        message = `Correct_${ordinal}_attempt`;
-      } else if (usedHint && attemptCounter > 1) {
-        message = "Incorrect_with_hint";
-      } else {
-        message = "Incorrect";
-      }
-      handleCorrectAnswer(message);
+      handleCorrectAnswer("C");
     } else {
       setIsIncorrect(true);
-      handleIncorrectAnswer();
+      handleIncorrectAnswer("W");
     }
     setAttemptCounter(attempt);
   }
