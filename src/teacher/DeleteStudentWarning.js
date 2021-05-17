@@ -5,8 +5,9 @@ import { StyledDialog } from "./StyledDialog.sc";
 const DeleteStudentWarning = ({
   studentName,
   setShowDeleteStudentWarning,
-  deleteStudent,
+  removeStudent,
 }) => {
+
   return (
     <StyledDialog
       aria-label="Delete student warning"
@@ -14,13 +15,14 @@ const DeleteStudentWarning = ({
       max_width="625px"
     >
       <div className="centered">
-        <h1>Danger zone!</h1>
+        <h1>Danger zone! STRINGS</h1>
         <p>
-          Do you wish to delete <b>{studentName}</b> from the class?
+          Do you wish to remove <b>{studentName}</b> from the class? STRINGS
         </p>
+        <p>Students can rejoin the class if you give them the invite code again. STRINGS</p>
       </div>
       <PopupButtonWrapper>
-        <StyledButton secondary onClick={deleteStudent}>Delete STRINGS</StyledButton>
+        <StyledButton secondary onClick={removeStudent}>Remove STRINGS</StyledButton>
         <StyledButton primary onClick={() => setShowDeleteStudentWarning(false)}>
           Cancel STRINGS
         </StyledButton>

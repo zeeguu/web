@@ -27,6 +27,7 @@ export default function StudentsActivityOverviewContent({
           api={api}
           cohortID={cohortID}
           student={student}
+          setForceUpdate={setForceUpdate}
         />
       ))}
     </Fragment>

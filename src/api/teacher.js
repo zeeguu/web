@@ -127,3 +127,7 @@ Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
     )*/
   this._post(`parse_url`, `url=${url}`, callback, onError, true);
 };
+
+Zeeguu_API.prototype.removeStudentFromCohort = function (studentID, callback) {
+  this._get(`remove_user_from_cohort/${studentID}`, callback);
+};

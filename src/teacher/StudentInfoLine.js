@@ -7,7 +7,12 @@ import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
-export default function StudentInfoLine({ api, cohortID, student }) {
+export default function StudentInfoLine({
+  api,
+  cohortID,
+  student,
+  setForceUpdate,
+}) {
   const [showDeleteStudentWarning, setShowDeleteStudentWarning] =
     useState(false);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
@@ -26,19 +31,14 @@ export default function StudentInfoLine({ api, cohortID, student }) {
     // eslint-disable-next-line
   }, [selectedTimePeriod]);
 
-  const deleteStudent = () => {
-    //TODO api call to delete student from cohort goes here. - Waiting for endpoint.
-    console.log(
-      "Should be deleting student " +
-        student.name +
-        " from the " +
-        cohortID +
-        " in the api now..."
-    );
+  const removeStudentFromCohort = () => {
+    api.removeStudentFromCohort(student.id, res => console.log(res));
+    setForceUpdate((prev) => prev + 1);
     setShowDeleteStudentWarning(false);
   };
-  if (activity === null){
-    return <p>Cannot find data for {student.name}...</p>
+
+  if (activity === null) {
+    return <p>Cannot find data for {student.name}...</p>;
   }
 
   //TODO We still need to extract avg text length and level and ecxercise correctness from the api. - Waiting for endpoint.
@@ -92,7 +92,7 @@ export default function StudentInfoLine({ api, cohortID, student }) {
         <DeleteStudentWarning
           studentName={student.name}
           cohortID={cohortID}
-          deleteStudent={deleteStudent}
+          removeStudent={removeStudentFromCohort}
           setShowDeleteStudentWarning={setShowDeleteStudentWarning}
         />
       )}
