@@ -30,58 +30,42 @@ export default function FindWordInContext({
     }
   }
 
-  function handleShowSolution() {
+  function handleShowSolution(message) {
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
+    let duration = pressTime - initialTime;
 
     notifyIncorrectAnswer();
     setIsCorrect(true);
-
-    api.uploadExerciseFeedback(
-      "S",
-      EXERCISE_TYPE,
-      pressTime - initialTime,
-      bookmarkToStudy.id
-    );
+    handleAnswer(message, duration);
   }
 
-  function handleAnswer(message) {
-    console.log(new Date() - initialTime);
-    console.log("^^^^ time elapsed");
-    console.log(firstTypeTime - initialTime);
-    console.log("^^^^ to first key press");
+  function handleAnswer(message, duration) {
+    console.log(message);
 
     api.uploadExerciseFeedback(
       message,
       EXERCISE_TYPE,
-      firstTypeTime - initialTime,
+      duration,
       bookmarkToStudy.id
     );
   }
 
   function handleCorrectAnswer(message) {
-    setIsCorrect(true);
-    handleAnswer(message);
-  }
-
-  function handleIncorrectAnswer(message) {
-    notifyIncorrectAnswer();
-    handleAnswer(message);
-    setFirstTypeTime();
-  }
-
-  function handleHint(message) {
-    let hintTime = new Date();
-    console.log(hintTime - initialTime);
+    console.log(new Date() - initialTime);
     console.log("^^^^ time elapsed");
+    console.log(firstTypeTime - initialTime);
+    console.log("^^^^ to first key press");
+    let duration = firstTypeTime - initialTime;
 
-    api.uploadExerciseFeedback(
-      message,
-      EXERCISE_TYPE,
-      hintTime - initialTime,
-      bookmarkToStudy.id
-    );
+    setIsCorrect(true);
+    handleAnswer(message, duration);
+  }
+
+  function handleIncorrectAnswer() {
+    notifyIncorrectAnswer();
+    setFirstTypeTime();
   }
 
   return (
@@ -105,7 +89,6 @@ export default function FindWordInContext({
         <BottomInput
           handleCorrectAnswer={handleCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
-          handleHintUse={handleHint}
           handleShowSolution={handleShowSolution}
           bookmarkToStudy={bookmarkToStudy}
           notifyKeyPress={inputKeyPress}
