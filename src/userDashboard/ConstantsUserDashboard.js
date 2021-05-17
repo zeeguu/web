@@ -38,6 +38,11 @@ const LINE_GRAPH_BOTTOM_LEGEND = {
   YEARS: udstrings.wordsGraphLegendYears,
 };
 
+const FEEDBACK = {
+  BUTTON_TEXT: udstrings.feedbackButtonText,
+  ALERT_TEXT: udstrings.feedbackAlertText,
+};
+
 /**
  * Below
  * Constants not translatable
@@ -86,4 +91,5 @@ export {
   LINE_GRAPH_BOTTOM_LEGEND,
   DATE_FORMAT_FOR_DATEPICKER,
   TABS_IDS,
+  FEEDBACK,
 };
