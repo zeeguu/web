@@ -80,6 +80,14 @@ const DATE_FORMAT = "yyyy-MM-dd";
 
 const DATE_FORMAT_FOR_DATEPICKER = "dd/MM/yyyy";
 
+const MAX_VALUE_BAR_GRAPH = {
+  WEEK: 15,
+  MONTH: 15,
+  YEAR: 300,
+  YEARS: 1000,
+  AUTO: "auto",
+};
+
 export {
   PERIOD_OPTIONS,
   DATE_FORMAT,
@@ -92,4 +100,5 @@ export {
   DATE_FORMAT_FOR_DATEPICKER,
   TABS_IDS,
   FEEDBACK,
+  MAX_VALUE_BAR_GRAPH,
 };
