@@ -248,6 +248,7 @@ let strings = new LocalizedStrings(
       //ButtomInput
       check: "Check",
       hint: "Hint",
+      showSolution: "Show solution",
 
       //ButtomFeedback
       speak: "Speak",
@@ -503,6 +504,7 @@ let strings = new LocalizedStrings(
       //ButtomInput
       check: "Tjek",
       hint: "Hint",
+      showSolution: "Vis løsning",
 
       //ButtomFeedback
       speak: "Udtale",
