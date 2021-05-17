@@ -1,7 +1,51 @@
 import { ResponsiveBar } from "@nivo/bar";
-import { BAR_GRAPH_KEYS } from "../ConstantsUserDashboard";
+import {
+  BAR_GRAPH_KEYS,
+  MAX_VALUE_BAR_GRAPH,
+  PERIOD_OPTIONS,
+} from "../ConstantsUserDashboard";
 
-export default function ReadingAndExercisesTimeGraph({ data }) {
+export default function ReadingAndExercisesTimeGraph({
+  data,
+  activeCustomTimeInterval,
+}) {
+  function getMaxYValueFromData(data) {
+    var max = 0;
+
+    data.forEach((entry) =>
+      entry.reading_time + entry.exercises_time > max
+        ? (max = entry.reading_time + entry.exercises_time)
+        : ""
+    );
+
+    return max;
+  }
+
+  function getMaxValueForYScale(activeCustomTimeInterval, data) {
+    var maxValueFromData = getMaxYValueFromData(data);
+
+    switch (activeCustomTimeInterval) {
+      case PERIOD_OPTIONS.WEEK:
+        return maxValueFromData < MAX_VALUE_BAR_GRAPH.WEEK
+          ? MAX_VALUE_BAR_GRAPH.WEEK
+          : MAX_VALUE_BAR_GRAPH.AUTO;
+      case PERIOD_OPTIONS.MONTH:
+        return maxValueFromData < MAX_VALUE_BAR_GRAPH.MONTH
+          ? MAX_VALUE_BAR_GRAPH.MONTH
+          : MAX_VALUE_BAR_GRAPH.AUTO;
+      case PERIOD_OPTIONS.YEAR:
+        return maxValueFromData < MAX_VALUE_BAR_GRAPH.YEAR
+          ? MAX_VALUE_BAR_GRAPH.YEAR
+          : MAX_VALUE_BAR_GRAPH.AUTO;
+      case PERIOD_OPTIONS.YEARS:
+        return maxValueFromData < MAX_VALUE_BAR_GRAPH.YEARS
+          ? MAX_VALUE_BAR_GRAPH.YEARS
+          : MAX_VALUE_BAR_GRAPH.AUTO;
+      default:
+        return MAX_VALUE_BAR_GRAPH.AUTO;
+    }
+  }
+
   return (
     <ResponsiveBar
       data={data}
@@ -9,6 +53,7 @@ export default function ReadingAndExercisesTimeGraph({ data }) {
       indexBy={BAR_GRAPH_KEYS.INDEX_BY}
       margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
       padding={0.3}
+      maxValue={getMaxValueForYScale(activeCustomTimeInterval, data)}
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
       colors={{ scheme: "nivo" }}
