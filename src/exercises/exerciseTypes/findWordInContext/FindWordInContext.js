@@ -42,8 +42,6 @@ export default function FindWordInContext({
   }
 
   function handleAnswer(message, duration) {
-    console.log(message);
-
     api.uploadExerciseFeedback(
       message,
       EXERCISE_TYPE,
