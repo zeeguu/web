@@ -30,6 +30,22 @@ export default function FindWordInContext({
     }
   }
 
+  function handleShowSolution() {
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
+    console.log("^^^^ time elapsed");
+
+    notifyIncorrectAnswer();
+    setIsCorrect(true);
+
+    api.uploadExerciseFeedback(
+      "S",
+      EXERCISE_TYPE,
+      pressTime - initialTime,
+      bookmarkToStudy.id
+    );
+  }
+
   function handleAnswer(message) {
     console.log(new Date() - initialTime);
     console.log("^^^^ time elapsed");
@@ -90,6 +106,7 @@ export default function FindWordInContext({
           handleCorrectAnswer={handleCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
           handleHintUse={handleHint}
+          handleShowSolution={handleShowSolution}
           bookmarkToStudy={bookmarkToStudy}
           notifyKeyPress={inputKeyPress}
         />
