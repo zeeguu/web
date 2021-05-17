@@ -53,8 +53,6 @@ export default function MultipleChoice({
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
 
-    console.log(message);
-
     api.uploadExerciseFeedback(
       message,
       EXERCISE_TYPE,
