@@ -32,16 +32,15 @@ export default function StudentInfoLine({
   }, [selectedTimePeriod]);
 
   const removeStudentFromCohort = () => {
-    api.removeStudentFromCohort(student.id, res => console.log(res));
-    setForceUpdate((prev) => prev + 1);
-    setShowDeleteStudentWarning(false);
+    api.removeStudentFromCohort(student.id, (res) => {
+      setForceUpdate((prev) => prev + 1);
+      setShowDeleteStudentWarning(false);
+    });
   };
 
   if (activity === null) {
-    return <p>Cannot find data for {student.name}...</p>;
+    return <p>Loading data for {student.name}...</p>;
   }
-
-  //TODO We still need to extract avg text length and level and ecxercise correctness from the api. - Waiting for endpoint.
 
   return (
     <s.StudentInfoLine>
