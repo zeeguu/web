@@ -81,10 +81,22 @@ const DATE_FORMAT = "yyyy-MM-dd";
 const DATE_FORMAT_FOR_DATEPICKER = "dd/MM/yyyy";
 
 const DEFAULT_MAX_VALUE_BAR_GRAPH = {
-  WEEK: 15,
-  MONTH: 15,
-  YEAR: 300,
-  YEARS: 1000,
+  WEEK: {
+    MINUTES: 30,
+    HOURS: 0.5,
+  },
+  MONTH: {
+    MINUTES: 30,
+    HOURS: 0.5,
+  },
+  YEAR: {
+    MINUTES: 300,
+    HOURS: 5,
+  },
+  YEARS: {
+    MINUTES: 1200,
+    HOURS: 20,
+  },
   AUTO: "auto",
 };
 

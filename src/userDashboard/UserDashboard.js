@@ -138,6 +138,7 @@ export default function UserDashboard({ api }) {
               activeTimeFormatOption
             )}
             activeCustomTimeInterval={activeCustomTimeInterval}
+            activeTimeFormatOption={activeTimeFormatOption}
           />
         ) : activeTab === TABS_IDS.LINE_GRAPH ? (
           <TranslatedWordsGraph
