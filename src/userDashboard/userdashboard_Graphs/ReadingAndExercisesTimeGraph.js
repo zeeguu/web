@@ -1,7 +1,7 @@
 import { ResponsiveBar } from "@nivo/bar";
 import {
   BAR_GRAPH_KEYS,
-  MAX_VALUE_BAR_GRAPH,
+  DEFAULT_MAX_VALUE_BAR_GRAPH,
   PERIOD_OPTIONS,
 } from "../ConstantsUserDashboard";
 
@@ -26,23 +26,23 @@ export default function ReadingAndExercisesTimeGraph({
 
     switch (activeCustomTimeInterval) {
       case PERIOD_OPTIONS.WEEK:
-        return maxValueFromData < MAX_VALUE_BAR_GRAPH.WEEK
-          ? MAX_VALUE_BAR_GRAPH.WEEK
-          : MAX_VALUE_BAR_GRAPH.AUTO;
+        return maxValueFromData < DEFAULT_MAX_VALUE_BAR_GRAPH.WEEK
+          ? DEFAULT_MAX_VALUE_BAR_GRAPH.WEEK
+          : DEFAULT_MAX_VALUE_BAR_GRAPH.AUTO;
       case PERIOD_OPTIONS.MONTH:
-        return maxValueFromData < MAX_VALUE_BAR_GRAPH.MONTH
-          ? MAX_VALUE_BAR_GRAPH.MONTH
-          : MAX_VALUE_BAR_GRAPH.AUTO;
+        return maxValueFromData < DEFAULT_MAX_VALUE_BAR_GRAPH.MONTH
+          ? DEFAULT_MAX_VALUE_BAR_GRAPH.MONTH
+          : DEFAULT_MAX_VALUE_BAR_GRAPH.AUTO;
       case PERIOD_OPTIONS.YEAR:
-        return maxValueFromData < MAX_VALUE_BAR_GRAPH.YEAR
-          ? MAX_VALUE_BAR_GRAPH.YEAR
-          : MAX_VALUE_BAR_GRAPH.AUTO;
+        return maxValueFromData < DEFAULT_MAX_VALUE_BAR_GRAPH.YEAR
+          ? DEFAULT_MAX_VALUE_BAR_GRAPH.YEAR
+          : DEFAULT_MAX_VALUE_BAR_GRAPH.AUTO;
       case PERIOD_OPTIONS.YEARS:
-        return maxValueFromData < MAX_VALUE_BAR_GRAPH.YEARS
-          ? MAX_VALUE_BAR_GRAPH.YEARS
-          : MAX_VALUE_BAR_GRAPH.AUTO;
+        return maxValueFromData < DEFAULT_MAX_VALUE_BAR_GRAPH.YEARS
+          ? DEFAULT_MAX_VALUE_BAR_GRAPH.YEARS
+          : DEFAULT_MAX_VALUE_BAR_GRAPH.AUTO;
       default:
-        return MAX_VALUE_BAR_GRAPH.AUTO;
+        return DEFAULT_MAX_VALUE_BAR_GRAPH.AUTO;
     }
   }
 
