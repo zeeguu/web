@@ -82,11 +82,11 @@ const DATE_FORMAT_FOR_DATEPICKER = "dd/MM/yyyy";
 
 const DEFAULT_MAX_VALUE_BAR_GRAPH = {
   WEEK: {
-    MINUTES: 30,
+    MINUTES: 15,
     HOURS: 0.5,
   },
   MONTH: {
-    MINUTES: 30,
+    MINUTES: 15,
     HOURS: 0.5,
   },
   YEAR: {
