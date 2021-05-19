@@ -1,6 +1,16 @@
 import { ResponsiveLine } from "@nivo/line";
 
 export default function TranslatedWordsGraph({ data }) {
+  function isAllDataEntriesZero(data) {
+    var sum = 0;
+    data[0].data.forEach((entry) => (sum += entry.y));
+    return sum === 0;
+  }
+
+  function getMaxForYScale(data) {
+    return isAllDataEntriesZero(data) ? 10 : "auto";
+  }
+
   return (
     <ResponsiveLine
       data={data}
@@ -9,7 +19,7 @@ export default function TranslatedWordsGraph({ data }) {
       yScale={{
         type: "linear",
         min: "auto",
-        max: "auto",
+        max: getMaxForYScale(data),
         stacked: true,
         reverse: false,
       }}
