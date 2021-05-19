@@ -44,7 +44,7 @@ const ReadingInsightAccordion = ({ readArticles }) => {
                       {article.title.length > 100 ? "..." : ""}
                     </h2>
                     <p className="date">
-                      Reading date: {formatedDate(article.start_time)}
+                     STRINGS Reading date: {formatedDate(article.start_time)}
                     </p>
                   </div>
                   <div className="data-circle-wrapper">
