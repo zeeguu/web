@@ -18,7 +18,7 @@ export default function TranslatedWordsGraph({ data }) {
       xScale={{ type: "point" }}
       yScale={{
         type: "linear",
-        min: "auto",
+        min: 0,
         max: getMaxForYScale(data),
         stacked: true,
         reverse: false,
