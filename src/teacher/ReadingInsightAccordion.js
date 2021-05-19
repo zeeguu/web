@@ -12,27 +12,41 @@ import StudentTranslations from "./StudentTranslations";
 
 const ReadingInsightAccordion = ({ readArticles }) => {
   const [openedArticle, setOpenedArticle] = useState(null);
-  
-  const handleClick =(articleID) =>{
-    if (articleID===openedArticle){
-      setOpenedArticle(null)
-    }else{
-      setOpenedArticle(articleID)
-    }
-  }
 
+  const handleClick = (articleID) => {
+    if (articleID === openedArticle) {
+      setOpenedArticle(null);
+    } else {
+      setOpenedArticle(articleID);
+    }
+  };
+
+  //TODO could be turned into seperate component
+  const formatedDate = (startTime) => {
+    const date = new Date(startTime);
+    const dateString = date.toDateString();
+    return dateString;
+  };
   return (
     <s.ReadingInsightAccordion>
       <Accordion collapsible>
-        {(readArticles !==null) &&
+        {readArticles !== null &&
           readArticles.map((article) => (
-            <AccordionItem key={article.article_id} className="accordion-wrapper">
-              <AccordionButton onClick={()=>handleClick(article.article_id)}>
+            <AccordionItem
+              key={article.article_id}
+              className="accordion-wrapper"
+            >
+              <AccordionButton onClick={() => handleClick(article.article_id)}>
                 <div className="content-wrapper">
-                  <h2 className="article-title">
-                    {article.title.substring(0, 100)}
-                    {article.title.length > 100 ? "..." : ""}
-                  </h2>
+                  <div className="date-title-wrapper">
+                    <h2 className="article-title">
+                      {article.title.substring(0, 100)}
+                      {article.title.length > 100 ? "..." : ""}
+                    </h2>
+                    <p className="date">
+                      Reading date: {formatedDate(article.start_time)}
+                    </p>
+                  </div>
                   <div className="data-circle-wrapper">
                     <StudentActivityDataCircles
                       className="data-circles"
@@ -41,12 +55,15 @@ const ReadingInsightAccordion = ({ readArticles }) => {
                       readingTime={article.duration_in_sec}
                       translatedWords={article.translations.length}
                     />
-                    <ViewMoreLessButton articleID={article.article_id} openedArticle={openedArticle}/>
+                    <ViewMoreLessButton
+                      articleID={article.article_id}
+                      openedArticle={openedArticle}
+                    />
                   </div>
                 </div>
               </AccordionButton>
               <AccordionPanel className="panel">
-                <StudentTranslations article={article}/>
+                <StudentTranslations article={article} />
               </AccordionPanel>
             </AccordionItem>
           ))}
