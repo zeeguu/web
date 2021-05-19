@@ -8,13 +8,26 @@ export const ReadingInsightAccordion = styled.div`
     flex-direction: column;
     justify-content: center;
     min-height: 13vh;
-    margin-bottom: 3vh;
+    margin-top: 3vh;
   }
 
   .content-wrapper {
     border-left: solid 3px ${darkBlue};
     display: flex;
     justify-content: space-between;
+  }
+
+  .date-title-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100px;
+  }
+
+  .date{
+    display:flex;
+    color: ${darkBlue};
+    margin:0 0 .5em 1em;
   }
 
   .article-title {
