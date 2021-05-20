@@ -36,11 +36,21 @@ const StyledButton = styled.button`
       border: 3px solid ${lightBlue};
     `}
 
+  //Naked
+  ${(props) =>
+  props.naked &&
+  css`
+    background-color: white;
+    border: None;
+    color: black;
+    width:100%;
+  `}
+
   //Student view
   ${(props) =>
     props.studentView &&
     css`
-      margin-top: 1.75em; 
+      margin-top: 1.75em;
       max-height: 30px;
     `}  
 
@@ -60,8 +70,8 @@ const StyledButton = styled.button`
     css`
       border: None;
       padding: 4px;
-      text-decoration:underline;
-      font-weight:600;
+      text-decoration: underline;
+      font-weight: 600;
       color: black;
       font-size: medium;
     `}
