@@ -13,7 +13,7 @@ const ExerciseDataItemCard = (props) => {
         border: "solid 5px #44cdff",
       }}
     >
-      <h3>{props.headline}</h3>
+      <h3 style={{fontSize:"large"}}>{props.headline}</h3>
       <div
         style={{
           display: "flex",
