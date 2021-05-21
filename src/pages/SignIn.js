@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 import { useHistory } from "react-router-dom";
-import strings from "../i18n/definitions"
+import strings from "../i18n/definitions";
 
 import * as s from "../components/FormPage.sc";
 
@@ -21,7 +21,7 @@ export default function SignIn({ api, notifySuccessfulSignIn }) {
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
         notifySuccessfulSignIn(userInfo);
-        userInfo.is_teacher
+        userInfo.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true"
           ? history.push("/teacher/classes")
           : history.push("/articles");
       });
