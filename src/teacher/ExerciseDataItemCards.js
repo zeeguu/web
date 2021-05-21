@@ -5,7 +5,7 @@ const ExerciseDataItemCard = (props) => {
     <div
       style={{
         height: 300,
-        width: "90%",
+        width: "310px",
         margin: "2em 1em",
         paddingTop: "1em",
         textAlign: "center",

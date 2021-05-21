@@ -15,9 +15,9 @@ export default function StudentExercisesInsights({ api }) {
   const [studentInfo, setStudentInfo] = useState({});
   const [doneExercises, setDoneExercises] = useState(null);
   const [isOpen, setIsOpen] = useState("");
-  const practisedWords = ["pWord1", "pWord2"];
-  const learnedWords = ["lWord1", "lWord2"];
-  const nonStudyWords = ["nsWord1", "nsWord2"];
+  const practisedWords = [{word:"pWord1", translation:"pOrd1", exerciseAttemps:"wwhc"}, {word:"pWord2", translation:"pOrd2", exerciseAttemps:"whs"},{word:"pWord3", translation:"pOrd3", exerciseAttemps:"c"}];
+  const learnedWords = [{word:"lWord1", translation:"lOrd1", exerciseAttemps:"wwhc"}, {word:"lWord2", translation:"lOrd2", exerciseAttemps:"whs"},{word:"pWord3", translation:"pOrd3", exerciseAttemps:"c"}];
+  const nonStudyWords = [{word:"nsWord1", translation:"nsOrd1", exerciseAttemps:"wwhc"}, {word:"nsWord2", translation:"nsOrd2", exerciseAttemps:"whs"},{word:"nsWord3", translation:"nsOrd3", exerciseAttemps:"c"}];
 
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
