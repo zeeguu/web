@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "@reach/accordion": "^0.15.1",
     "@reach/dialog": "^0.15.0",
     "@reach/listbox": "^0.15.0",
