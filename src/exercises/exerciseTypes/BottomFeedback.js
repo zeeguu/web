@@ -1,41 +1,19 @@
-import { useState } from "react";
-import Speech from "speak-tts";
+import strings from "../../i18n/definitions";
+import SpeakButton from "./SpeakButton";
+import * as s from "./Exercise.sc";
 
-export default function BottomFeedback({ bookmarkToStudy, correctAnswer }) {
-  const [speech] = useState(new Speech());
-
-  speech
-    .init()
-    .then((data) => {
-      // The "data" object contains the list of available voices and the voice synthesis params
-      let randomVoice = _getRandomVoice(data.voices, bookmarkToStudy.from_lang);
-
-      speech.setVoice(randomVoice.name);
-    })
-    .catch((e) => {
-      console.error("An error occured while initializing : ", e);
-    });
-
-  function handleSpeak() {
-    speech.speak({ text: bookmarkToStudy.from });
-  }
-
+export default function BottomFeedback({
+  bookmarkToStudy,
+  correctAnswer,
+  api,
+}) {
   return (
-    <div className="bottomInput">
-      <button onClick={(e) => handleSpeak()}>Speak</button>
+    <s.BottomRow>
+      <SpeakButton bookmarkToStudy={bookmarkToStudy} api={api} />
 
-      <button onClick={(e) => correctAnswer()} autoFocus>
-        Next
-      </button>
-    </div>
+      <s.FeedbackButton onClick={(e) => correctAnswer()} autoFocus>
+        {strings.next}
+      </s.FeedbackButton>
+    </s.BottomRow>
   );
-}
-
-function _randomElement(x) {
-  return x[Math.floor(Math.random() * x.length)];
-}
-
-function _getRandomVoice(voices, language) {
-  let x = _randomElement(voices.filter((v) => v.lang.includes(language)));
-  return x;
 }

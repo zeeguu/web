@@ -4,7 +4,7 @@ import * as b from "../components/allButtons.sc";
 const SortingButtons = styled.div`
   margin-bottom: 1em;
   margin-left: 1em;
-  /* background-color: lightgrey; */
+  /* background-color: lightgrey; //for testing */
 
   display: flex;
   justify-content: flex-end;

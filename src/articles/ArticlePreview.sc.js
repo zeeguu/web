@@ -1,9 +1,9 @@
 import styled from "styled-components";
+import {zeeguuOrange} from "../components/colors"
 
 const ArticlePreview = styled.div`
-  /* background-color: lightgoldenrodyellow; */
   margin-bottom: 1em;
-  border-left: solid #ffbb54;
+  border-left: solid ${zeeguuOrange};
   margin-top: 2em;
   padding-left: 0.8em;
 `;
@@ -55,12 +55,10 @@ let SourceImage = styled.span`
     background-color: yellow;
     height: 1.5em;
   }
-  /* background-color: red; */
   margin-right: 2em;
 `;
 
 let PublishingTime = styled.span`
-  /* background-color: olivedrab; */
   margin-right: 2em;
   padding-bottom: 1em;
 `;

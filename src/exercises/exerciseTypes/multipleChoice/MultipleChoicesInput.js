@@ -1,36 +1,38 @@
-import { useState, useEffect } from "react";
+import * as s from "../Exercise.sc";
 
 function MultipleChoicesInput({
   buttonOptions,
   notifyChoiceSelection,
   incorrectAnswer,
+  setIncorrectAnswer,
 }) {
-  const [incorrectAnswers, setIncorrectAnswers] = useState([]);
-
-  useEffect(() => {
-    if (incorrectAnswer) {
-      setIncorrectAnswers([...incorrectAnswers, incorrectAnswer]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notifyChoiceSelection]);
-
   return (
-    <div className="bottomInput">
+    <s.BottomRow>
       {buttonOptions ? (
-        buttonOptions.map((option) => (
-          <button
-            key={option}
-            id={option}
-            onClick={(e) => notifyChoiceSelection(e.target.id)}
-            disabled={incorrectAnswer && incorrectAnswers.includes(option)}
-          >
-            {option}
-          </button>
-        ))
+        buttonOptions.map((option) =>
+          incorrectAnswer === option ? (
+            <s.AnimatedOrangeButton
+              key={option}
+              id={option}
+              onClick={(e) => notifyChoiceSelection(e.target.id)}
+              onAnimationEnd={() => setIncorrectAnswer("")}
+            >
+              {option}
+            </s.AnimatedOrangeButton>
+          ) : (
+            <s.OrangeButton
+              key={option}
+              id={option}
+              onClick={(e) => notifyChoiceSelection(e.target.id)}
+            >
+              {option}
+            </s.OrangeButton>
+          )
+        )
       ) : (
         <></>
       )}
-    </div>
+    </s.BottomRow>
   );
 }
 

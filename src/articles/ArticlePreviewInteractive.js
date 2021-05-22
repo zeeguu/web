@@ -26,8 +26,6 @@ export default function ArticleOverview({
     setNotInteresting(true);
   }
 
-  console.log(article);
-
   if (!article.opened && openedInNewTab) {
     return (
       <s.ArticlePreview>

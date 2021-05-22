@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 import { useHistory } from "react-router-dom";
+import strings from "../i18n/definitions"
 
 import * as s from "../components/FormPage.sc";
 
@@ -20,8 +21,9 @@ export default function SignIn({ api, notifySuccessfulSignIn }) {
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
         notifySuccessfulSignIn(userInfo);
-
-        history.push("/articles");
+        userInfo.is_teacher
+          ? history.push("/teacher/classes")
+          : history.push("/articles");
       });
     });
   }
@@ -32,18 +34,18 @@ export default function SignIn({ api, notifySuccessfulSignIn }) {
 
       <s.NarrowFormContainer>
         <form action="" method="post">
-          <s.FormTitle>Sign In</s.FormTitle>
+          <s.FormTitle>{strings.login}</s.FormTitle>
 
           {errorMessage && <div className="error">{errorMessage}</div>}
 
           <div className="inputField">
-            <label>Email</label>
+            <label>{strings.email}</label>
             <input
               type="email"
               className="field"
               id="email"
               name="email"
-              placeholder="Email"
+              placeholder={strings.email}
               background-color="#FFFFFF"
               ref={emailInputDOM}
               value={email}
@@ -52,13 +54,13 @@ export default function SignIn({ api, notifySuccessfulSignIn }) {
           </div>
 
           <div className="inputField">
-            <label>Password</label>
+            <label>{strings.password}</label>
             <input
               type="password"
               className="field"
               id="password"
               name="password"
-              placeholder="Password"
+              placeholder={strings.password}
               background-color="#FFFFFF"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -72,18 +74,18 @@ export default function SignIn({ api, notifySuccessfulSignIn }) {
               value="Login"
               className="loginButton"
             >
-              Sign In
+              {strings.login}
             </s.FormButton>
           </div>
 
           <p>
-            Alternatively you can{" "}
+            {strings.alternativelyYouCan}{" "}
             <a className="links" href="create_account">
-              create an account
+              {strings.createAnAccount}
             </a>{" "}
-            or{" "}
+            {strings.or}{" "}
             <a className="links" href="/reset_pass">
-              reset your password
+              {strings.resetYourPassword}
             </a>
             .
           </p>

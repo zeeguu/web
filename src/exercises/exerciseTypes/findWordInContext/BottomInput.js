@@ -1,22 +1,38 @@
 import { useState } from "react";
 import removeAccents from "remove-accents";
+import strings from "../../../i18n/definitions";
+import * as s from "../Exercise.sc";
 
 export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
+  handleShowSolution,
   bookmarkToStudy,
   notifyKeyPress,
 }) {
   const [currentInput, setCurrentInput] = useState("");
-  const [hintLength, setHintLength] = useState(0);
-
-  function hint() {
-    return bookmarkToStudy.from.substring(0, hintLength);
-  }
+  const [isIncorrect, setIsIncorrect] = useState(false);
+  const [usedHint, setUsedHint] = useState(false);
+  const [messageToAPI, setMessageToAPI] = useState("");
 
   function handleHint() {
-    setCurrentInput("");
-    setHintLength(hintLength + 1);
+    setUsedHint(true);
+    let hint;
+    if (
+      currentInput === bookmarkToStudy.from.substring(0, currentInput.length)
+    ) {
+      hint = bookmarkToStudy.from.substring(0, currentInput.length + 1);
+    } else {
+      hint = bookmarkToStudy.from.substring(0, 1);
+    }
+    setCurrentInput(hint);
+    let concatMessage = messageToAPI + "H";
+    setMessageToAPI(concatMessage);
+  }
+
+  function showSolution() {
+    let concatMessage = messageToAPI + "S";
+    handleShowSolution(concatMessage);
   }
 
   function eliminateTypos(x) {
@@ -36,33 +52,47 @@ export default function BottomInput({
     var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
     var b = removeQuotes(removeAccents(eliminateTypos(bookmarkToStudy.from)));
     if (a === b) {
-      handleCorrectAnswer();
+      let concatMessage = messageToAPI + "C";
+      handleCorrectAnswer(concatMessage);
     } else {
+      let concatMessage = messageToAPI + "W";
+      setMessageToAPI(concatMessage);
+      setIsIncorrect(true);
       handleIncorrectAnswer();
     }
   }
 
+  const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
-    <div className="bottomInput">
-      <button onClick={(e) => handleHint()}>Hint</button>
+    <>
+      <s.BottomRow>
+        <s.FeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
+          {strings.hint}
+        </s.FeedbackButton>
 
-      <input
-        type="text"
-        placeholder={hint()}
-        value={currentInput}
-        onChange={(e) => setCurrentInput(e.target.value)}
-        onKeyUp={(e) => {
-          if (currentInput !== "") {
-            notifyKeyPress();
-          }
-          if (e.key === "Enter") {
-            checkResult();
-          }
-        }}
-        autoFocus
-      />
+        <InputField
+          type="text"
+          value={currentInput}
+          onChange={(e) => setCurrentInput(e.target.value)}
+          onKeyUp={(e) => {
+            if (currentInput !== "") {
+              notifyKeyPress();
+            }
+            if (e.key === "Enter") {
+              checkResult();
+            }
+          }}
+          onAnimationEnd={() => setIsIncorrect(false)}
+          autoFocus
+        />
 
-      <button onClick={checkResult}>Check</button>
-    </div>
+        <s.FeedbackButton onClick={checkResult}>
+          {strings.check}
+        </s.FeedbackButton>
+      </s.BottomRow>
+      <s.StyledLink to={"#"} onClick={showSolution}>
+        {strings.showSolution}
+      </s.StyledLink>
+    </>
   );
 }

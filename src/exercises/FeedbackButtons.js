@@ -1,5 +1,6 @@
 import * as s from "./FeedbackButtons.sc.js";
 import { Link } from "react-router-dom";
+import strings from "../i18n/definitions";
 
 const buttons = [
   { name: "Too Easy", value: "too_easy" },
@@ -16,7 +17,7 @@ export default function FeedbackButtons({ show, setShow, feedbackFunction }) {
     <div>
       <s.FeedbackLinkHolder>
         <Link to={"#"} className="discrete-link" onClick={toggleShow}>
-          Feedback on this Exercise
+          {strings.giveFeedback}
         </Link>
       </s.FeedbackLinkHolder>
 

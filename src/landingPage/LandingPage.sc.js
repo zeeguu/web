@@ -19,23 +19,6 @@ const HeaderTitle = styled.div`
   margin-top: 0.6em;
 `;
 
-const HeaderButton = styled.div`
-  background: white;
-  width: 6em;
-  height: 2em;
-  border-radius: 1em;
-  text-align: center;
-  line-height: 2em;
-  margin-top: 0.9em;
-  margin-right: 1em;
-
-  a {
-    color: #ffbb54;
-    font-size: 1em;
-    font-weight: 500;
-  }
-`;
-
 const PageContent = styled.div`
   position: absolute;
   width: 100%;
@@ -139,14 +122,14 @@ const BigLogo = styled.div`
   }
 `;
 
-const InviteButton = styled.button`
+const PrimaryButton = styled.button`
   height: 4em;
   width: 25em;
   background: #ffbb54;
   border: 0.3em solid #ffbb54;
   border-radius: 7em;
-  margin-bottom: 3em;
-  margin-top: 3em;
+  margin-bottom: 2em;
+  margin-top: 2em;
   overflow: hidden;
 
   a {
@@ -155,15 +138,31 @@ const InviteButton = styled.button`
     color: white;
   }
 `;
+const InverseButton = styled.button`
+  height: 4em;
+  width: 25em;
+  background: #ffffff;
+  border: 0.3em solid #ffbb54;
+  border-radius: 7em;
+  margin-bottom: 3em;
+  margin-top: 0em;
+  overflow: hidden;
+
+  a {
+    font-weight: 600;
+    font-size: 1.5em;
+    color: #ffbb54;
+  }
+`;
 
 export {
   LoginHeader,
   HeaderTitle,
-  HeaderButton,
   PageContent,
   NarrowColumn,
   BigLogo,
-  InviteButton,
+  PrimaryButton,
+  InverseButton,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,

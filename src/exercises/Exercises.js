@@ -10,6 +10,7 @@ import FeedbackButtons from "./FeedbackButtons";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import Match from "./exerciseTypes/match/Match";
+import strings from "../i18n/definitions";
 
 let NUMBER_OF_EXERCISES = 10;
 
@@ -122,12 +123,14 @@ export default function Exercises({ api, articleID }) {
   let wordSourceText = articleInfo ? (
     <>"{articleInfo.title}"</>
   ) : (
-    <>your past readings</>
+    <>{strings.wordSourceDefaultText}</>
   );
 
   return (
     <s.ExercisesColumn>
-      <s.LittleMessageAbove>Words in {wordSourceText}</s.LittleMessageAbove>
+      <s.LittleMessageAbove>
+        {strings.wordSourcePrefix} {wordSourceText}
+      </s.LittleMessageAbove>
       <ProgressBar index={currentIndex} total={NUMBER_OF_EXERCISES} />
 
       <s.ExForm>

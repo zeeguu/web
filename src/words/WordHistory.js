@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { WordsOnDate } from "./WordsOnDate";
 import LoadingAnimation from "../components/LoadingAnimation";
+import strings from "../i18n/definitions";
 
 import * as s from "../components/TopMessage.sc";
 import { setTitle } from "../assorted/setTitle";
@@ -14,14 +15,14 @@ export default function WordHistory({ api }) {
       setWordsByDay(bookmarks_by_day);
     });
 
-    setTitle("Translation History");
+    setTitle(strings.titleTranslationHistory);
     return <LoadingAnimation />;
   }
 
   return (
     <>
       <s.TopMessage>
-        Star a word to ensure it appears in exercises. Delete to avoid it.
+        {strings.starAWordMsg}
       </s.TopMessage>
 
       {wordsByDay.map((day) => (
