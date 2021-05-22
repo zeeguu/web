@@ -2,6 +2,8 @@ import { useState } from "react";
 import * as s from "../Exercise.sc.js";
 
 import BottomInput from "./BottomInput";
+
+import strings from "../../../i18n/definitions";
 import BottomFeedback from "../BottomFeedback";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
@@ -28,40 +30,45 @@ export default function FindWordInContext({
     }
   }
 
-  function handleCorrectAnswer() {
-    console.log(new Date() - initialTime);
+  function handleShowSolution(message) {
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
-    console.log(firstTypeTime - initialTime);
-    console.log("^^^^ to first key press");
+    let duration = pressTime - initialTime;
 
+    notifyIncorrectAnswer();
     setIsCorrect(true);
+    handleAnswer(message, duration);
+  }
+
+  function handleAnswer(message, duration) {
     api.uploadExerciseFeedback(
-      "Correct",
+      message,
       EXERCISE_TYPE,
-      firstTypeTime - initialTime,
+      duration,
       bookmarkToStudy.id
     );
   }
 
-  function handleIncorrectAnswer() {
+  function handleCorrectAnswer(message) {
     console.log(new Date() - initialTime);
     console.log("^^^^ time elapsed");
     console.log(firstTypeTime - initialTime);
     console.log("^^^^ to first key press");
+    let duration = firstTypeTime - initialTime;
 
+    setIsCorrect(true);
+    handleAnswer(message, duration);
+  }
+
+  function handleIncorrectAnswer() {
     notifyIncorrectAnswer();
-    api.uploadExerciseFeedback(
-      "Incorrect",
-      EXERCISE_TYPE,
-      firstTypeTime - initialTime,
-      bookmarkToStudy.id
-    );
     setFirstTypeTime();
   }
 
   return (
     <s.Exercise>
-      <h3>Find the word in the context</h3>
+      <h3>{strings.findTheWordInContextHeadline}</h3>
       <h1>{bookmarkToStudy.to}</h1>
       <div className="contextExample">
         <div
@@ -79,13 +86,15 @@ export default function FindWordInContext({
       {!isCorrect && (
         <BottomInput
           handleCorrectAnswer={handleCorrectAnswer}
+          handleIncorrectAnswer={handleIncorrectAnswer}
+          handleShowSolution={handleShowSolution}
           bookmarkToStudy={bookmarkToStudy}
           notifyKeyPress={inputKeyPress}
-          handleIncorrectAnswer={handleIncorrectAnswer}
         />
       )}
       {isCorrect && (
         <BottomFeedback
+          api={api}
           bookmarkToStudy={bookmarkToStudy}
           correctAnswer={correctAnswer}
         />

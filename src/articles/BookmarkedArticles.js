@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
+import strings from "../i18n/definitions"
 
 import ArticlePreview from "./ArticlePreview";
 
@@ -24,7 +25,7 @@ export default function BookmarkedArticles({ api }) {
   }
 
   if (articleList.length === 0) {
-    return <s.TopMessage>You haven't bookmarked any articles yet</s.TopMessage>;
+    return <s.TopMessage>{strings.noBookmarksYet}</s.TopMessage>;
   }
 
   return (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
+import strings from "../i18n/definitions";
 import * as s from "./TagsOfInterests.sc";
 
 export default function TagsOfInterests({
@@ -85,8 +86,8 @@ export default function TagsOfInterests({
         <SweetAlert
           input
           showCancel
-          title="Add a personal interest"
-          placeHolder="interest"
+          title={strings.addPersonalInterest}
+          placeHolder={strings.interest}
           onConfirm={onConfirm}
           onCancel={onCancel}
         ></SweetAlert>
@@ -107,7 +108,7 @@ export default function TagsOfInterests({
             className="closeTagsOfInterests"
             onClick={(e) => articlesListShouldChange()}
           >
-            save
+            {strings.save}
           </button>
         </div>
 

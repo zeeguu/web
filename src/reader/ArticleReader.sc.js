@@ -4,7 +4,7 @@ import { BigSquareButton } from "../components/allButtons.sc";
 
 import * as color from "../components/colors";
 
-import { NarrowColumn, CenteredContent } from "../components/NarrowColumn.sc";
+import { NarrowColumn, CenteredContent, ContentOnRow } from "../components/ColumnWidth.sc";
 
 let ArticleReader = styled.div`
   /* border: 1px solid lightgray; */
@@ -94,6 +94,10 @@ let WhiteButton = styled(_BottomButton)`
   background-color: white;
   color: orange !important;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   width: 8em;
   @media (min-wdith: 768px) {
     width: 16em;
@@ -163,4 +167,5 @@ export {
   CenteredContent,
   ExtraSpaceAtTheBottom,
   NarrowColumn,
+  ContentOnRow,
 };

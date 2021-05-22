@@ -3,8 +3,9 @@ import WordHistory from "./WordHistory";
 import Starred from "./Starred";
 import Learned from "./Learned";
 import Top from "./Top";
-import * as s from "../components/NarrowColumn.sc";
+import * as s from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
+import strings from "../i18n/definitions"
 import { Switch } from "react-router-dom";
 import WordsForArticle from "./WordsForArticle";
 
@@ -19,12 +20,12 @@ export default function WordsRouter({ api }) {
 
       <s.NarrowColumn>
         <TopTabs
-          title="Your Words"
+          title={strings.yourWordsHeadline}
           tabsAndLinks={{
-            History: "/words/history",
-            Starred: "/words/starred",
-            Ranked: "/words/top",
-            Learned: "/words/learned",
+            [strings.history]: "/words/history",
+            [strings.starred]: "/words/starred",
+            [strings.ranked]: "/words/top",
+            [strings.learned]: "/words/learned",
           }}
         />
 

@@ -1,6 +1,7 @@
 import Word from "../words/Word";
-import { NarrowColumn, CenteredContent } from "../components/NarrowColumn.sc";
-import { OrangeButton, WhiteButton } from "../reader/ArticleReader.sc";
+import * as s from "../reader/ArticleReader.sc";
+import { Link } from "react-router-dom";
+import SpeakButton from "./exerciseTypes/SpeakButton";
 
 export default function Congratulations({
   articleID,
@@ -15,7 +16,7 @@ export default function Congratulations({
   }
 
   return (
-    <NarrowColumn>
+    <s.NarrowColumn>
       <br />
 
       <h2>&nbsp;&nbsp;&nbsp;Good Job! 🥳 🎉 </h2>
@@ -23,10 +24,11 @@ export default function Congratulations({
       {correctBookmarks.length > 0 && (
         <h3>
           😊 Correct
-          <br />
-          <br />
           {removeArrayDuplicates(correctBookmarks).map((each) => (
-            <Word key={each.id} bookmark={each} api={api} />
+            <s.ContentOnRow>
+              <Word key={each.id} bookmark={each} api={api} />
+              <SpeakButton key={each.from} bookmarkToStudy={each} api={api} />
+            </s.ContentOnRow>
           ))}
         </h3>
       )}
@@ -34,33 +36,25 @@ export default function Congratulations({
       {incorrectBookmarks.length > 0 && (
         <h3>
           <br />
-          <br />
           😳 Pay more attention to
-          <br />
-          <br />
           {removeArrayDuplicates(incorrectBookmarks).map((each) => (
-            <Word key={each.id} bookmark={each} api={api} />
+            <s.ContentOnRow>
+              <Word key={each.id} bookmark={each} api={api} />
+              <SpeakButton key={each.from} bookmarkToStudy={each} api={api} />
+            </s.ContentOnRow>
           ))}
         </h3>
       )}
 
-      <br />
-      <br />
-      <br />
-      <br />
-      <CenteredContent>
-        <OrangeButton>
-          <a href="/exercises">
-            <h2>More Exercises </h2>
-          </a>
-        </OrangeButton>
+      <s.ContentOnRow>
+        <Link to={`/exercises`} onClick={(e) => window.location.reload(false)}>
+          <s.OrangeButton>Keep Exercising</s.OrangeButton>
+        </Link>
 
-        <WhiteButton>
-          <a href="/articles">
-            <h2>Back to Reading </h2>
-          </a>
-        </WhiteButton>
-      </CenteredContent>
-    </NarrowColumn>
+        <Link to={`/articles`}>
+          <s.WhiteButton>Back to Reading</s.WhiteButton>
+        </Link>
+      </s.ContentOnRow>
+    </s.NarrowColumn>
   );
 }
