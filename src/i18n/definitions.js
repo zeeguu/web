@@ -238,12 +238,12 @@ let strings = new LocalizedStrings(
       wordSourcePrefix: "Words in",
 
       //ExerciseHeadlines
-      findTheWordInContextHeadline: "Find the word in the context",
+      findTheWordInContextHeadline: "Find the word(s) in the context",
       chooseTheWordFittingContextHeadline:
-        "Choose the word that fits the context",
+        "Choose the word(s) that fits the context",
 
       //FeedbackButtons
-      giveFeedback: "Feedback on this Exercise",
+      giveFeedback: "Give feedback on this exercise",
 
       //ButtomInput
       check: "Check",
@@ -479,7 +479,7 @@ let strings = new LocalizedStrings(
       correctOn: "Korrekt på: ",
 
       //Starred
-      titleStarredWords: "Starred Words",
+      titleStarredWords: "Stjernemarkerede ord",
       noStarredMsg: "Du har ikke markeret nogen ord med stjerne endnu.",
 
       //Top
@@ -499,7 +499,7 @@ let strings = new LocalizedStrings(
         "Vælg ordet/ordene, der passer i sammenhængen",
 
       //FeedbackButtons
-      giveFeedback: "Feedback på øvelsen",
+      giveFeedback: "Giv feedback på øvelsen",
 
       //ButtomInput
       check: "Tjek",
