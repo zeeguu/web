@@ -15,9 +15,102 @@ export default function StudentExercisesInsights({ api }) {
   const [studentInfo, setStudentInfo] = useState({});
   const [doneExercises, setDoneExercises] = useState(null);
   const [isOpen, setIsOpen] = useState("");
-  const practisedWords = [{word:"pWord1", translation:"pOrd1", exerciseAttemps:"wwhc"}, {word:"pWord2", translation:"pOrd2", exerciseAttemps:"whs"},{word:"pWord3", translation:"pOrd3", exerciseAttemps:"c"}];
-  const learnedWords = [{word:"lWord1", translation:"lOrd1", exerciseAttemps:"wwhc"}, {word:"lWord2", translation:"lOrd2", exerciseAttemps:"whs"},{word:"pWord3", translation:"pOrd3", exerciseAttemps:"c"}];
-  const nonStudyWords = [{word:"nsWord1", translation:"nsOrd1", exerciseAttemps:"wwhc"}, {word:"nsWord2", translation:"nsOrd2", exerciseAttemps:"whs"},{word:"nsWord3", translation:"nsOrd3", exerciseAttemps:"c"}];
+  const practisedWords = [
+    {
+      word: "practised1",
+      translation: "oversættelse1",
+      exerciseAttempts: [
+        { date: "Jan 1. 2020", type: "recognise", attempts: "hws" },
+        { date: "Jan 2. 2020", type: "multiple choice", attempts: "whc" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "whhhc" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "hhhhhhhhhhs" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "hc" },
+      ],
+    },
+    {
+      word: "practised2",
+      translation: "oversættelse2",
+      exerciseAttempts: [
+        { date: "Feb 1. 2020", type: "recognise", attempts: "wwhc" },
+        { date: "Feb 2. 2020", type: "multiple choice", attempts: "s" },
+      ],
+    },
+    {
+      word: "practised3",
+      translation: "oversættelse3",
+      exerciseAttempts: [
+        { date: "Mar 1. 2020", type: "recognise", attempts: "wc" },
+        { date: "Mar 2. 2020", type: "multiple choice", attempts: "c" },
+      ],
+    },
+    {
+      word: "practised4",
+      translation: "oversættelse4",
+      exerciseAttempts: [
+        { date: "Apr 1. 2020", type: "recognise", attempts: "hw hc" },
+        { date: "Apr 2. 2020", type: "multiple choice", attempts: "c" },
+      ],
+    },
+    {
+      word: "practised5",
+      translation: "oversættelse5",
+      exerciseAttempts: [
+        { date: "May 1. 2020", type: "recognise", attempts: "hhhc" },
+        { date: "May 2. 2020", type: "multiple choice", attempts: "c" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "wwws" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "hc" },
+      ],
+    },
+  ];
+  const learnedWords = [
+    {
+      word: "learned1",
+      translation: "oversættelse1",
+      exerciseAttempts: [
+        { date: "Jun 1. 2020", type: "recognise", attempts: "wwhc" },
+        { date: "Jun 2. 2020", type: "multiple choice", attempts: "c" },
+      ],
+    },
+    {
+      word: "learned2",
+      translation: "oversættelse2",
+      exerciseAttemps: [{ type: "recognise", attempts: "whs" }],
+    },
+    {
+      word: "learned3",
+      translation: "oversættelse3",
+      exerciseAttempts: [
+        { date: "Jul 1. 2020", type: "recognise", attempts: "wwhc" },
+        { date: "Jul 2. 2020", type: "multiple choice", attempts: "c" },
+      ],
+    },
+  ];
+  const nonStudyWords = [
+    {
+      word: "non-study1",
+      translation: "oversættelse1",
+      exerciseAttempts: [
+        { date: "Aug 1. 2020", type: "recognise", attempts: "wwhc" },
+        { date: "Aug 2. 2020", type: "multiple choice", attempts: "c" },
+      ],
+    },
+    {
+      word: "non-study2",
+      translation: "oversættelse2",
+      exerciseAttempts: [
+        { date: "Sep 1. 2020", type: "recognise", attempts: "wwhc" },
+        { date: "Sep 2. 2020", type: "multiple choice", attempts: "c" },
+      ],
+    },
+    {
+      word: "non-study3",
+      translation: "oversættelse3",
+      exerciseAttempts: [
+        { date: "Oct 1. 2020", type: "recognise", attempts: "wwhc" },
+        { date: "Oct 2. 2020", type: "multiple choice", attempts: "c" },
+      ],
+    },
+  ];
 
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
@@ -67,19 +160,19 @@ export default function StudentExercisesInsights({ api }) {
       </div>
       {isOpen === "practised" && (
         <WordsDropDown
-          headline="Practised words - latest four exercises for each word"
+          headline="Practised words - translated and exercised by the student STRINGS"
           words={practisedWords}
         />
       )}
       {isOpen === "learned" && (
         <WordsDropDown
-          headline="Word practised correctly on four different days"
+          headline="Word practised correctly on four different days STRINGS"
           words={learnedWords}
         />
       )}
       {isOpen === "non-studied" && (
         <WordsDropDown
-          headline="Words translated by the student that will never be studied in Zeeguu"
+          headline="Words translated by the student that will never be studied in Zeeguu STRINGS"
           words={nonStudyWords}
         />
       )}
