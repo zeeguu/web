@@ -4,6 +4,7 @@ import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 
 import BottomFeedback from "../BottomFeedback";
+import strings from "../../../i18n/definitions.js";
 
 const EXERCISE_TYPE = "MULTIPLE_CHOICE";
 
@@ -17,6 +18,7 @@ export default function MultipleChoice({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
   const [buttonOptions, setButtonOptions] = useState(null);
+  const [messageToAPI, setMessageToAPI] = useState("");
 
   useEffect(() => {
     api.wordsSimilarTo(bookmarkToStudy.id, (words) => {
@@ -35,37 +37,26 @@ export default function MultipleChoice({
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
     if (selectedChoice === bookmarkToStudy.from) {
-      handleCorrectAnswer();
+      setIsCorrect(true);
+      let concatMessage = messageToAPI + "C";
+      handleAnswer(concatMessage);
     } else {
       setIncorrectAnswer(selectedChoice);
-      handleIncorrectAnswer();
+      notifyIncorrectAnswer();
+      let concatMessage = messageToAPI + "W";
+      setMessageToAPI(concatMessage);
     }
   }
 
-  function handleCorrectAnswer() {
-    let correctPressTime = new Date();
-    console.log(correctPressTime - initialTime);
+  function handleAnswer(message) {
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
 
-    setIsCorrect(true);
     api.uploadExerciseFeedback(
-      "Correct",
+      message,
       EXERCISE_TYPE,
-      correctPressTime - initialTime,
-      bookmarkToStudy.id
-    );
-  }
-
-  function handleIncorrectAnswer() {
-    let incorrectPressTime = new Date();
-    console.log(incorrectPressTime - initialTime);
-    console.log("^^^^ time elapsed");
-
-    notifyIncorrectAnswer();
-    api.uploadExerciseFeedback(
-      "Incorrect",
-      EXERCISE_TYPE,
-      incorrectPressTime - initialTime,
+      pressTime - initialTime,
       bookmarkToStudy.id
     );
   }
@@ -112,7 +103,7 @@ export default function MultipleChoice({
 
   return (
     <s.Exercise>
-      <h3>Choose the word that fits the context</h3>
+      <h3>{strings.chooseTheWordFittingContextHeadline}</h3>
       {isCorrect && <h1>{bookmarkToStudy.to}</h1>}
       <div className="contextExample">
         <div
