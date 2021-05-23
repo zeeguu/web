@@ -30,34 +30,39 @@ export default function FindWordInContext({
     }
   }
 
-  function handleCorrectAnswer() {
-    console.log(new Date() - initialTime);
+  function handleShowSolution(message) {
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
-    console.log(firstTypeTime - initialTime);
-    console.log("^^^^ to first key press");
+    let duration = pressTime - initialTime;
 
+    notifyIncorrectAnswer();
     setIsCorrect(true);
+    handleAnswer(message, duration);
+  }
+
+  function handleAnswer(message, duration) {
     api.uploadExerciseFeedback(
-      "Correct",
+      message,
       EXERCISE_TYPE,
-      firstTypeTime - initialTime,
+      duration,
       bookmarkToStudy.id
     );
   }
 
-  function handleIncorrectAnswer() {
+  function handleCorrectAnswer(message) {
     console.log(new Date() - initialTime);
     console.log("^^^^ time elapsed");
     console.log(firstTypeTime - initialTime);
     console.log("^^^^ to first key press");
+    let duration = firstTypeTime - initialTime;
 
+    setIsCorrect(true);
+    handleAnswer(message, duration);
+  }
+
+  function handleIncorrectAnswer() {
     notifyIncorrectAnswer();
-    api.uploadExerciseFeedback(
-      "Incorrect",
-      EXERCISE_TYPE,
-      firstTypeTime - initialTime,
-      bookmarkToStudy.id
-    );
     setFirstTypeTime();
   }
 
@@ -81,9 +86,10 @@ export default function FindWordInContext({
       {!isCorrect && (
         <BottomInput
           handleCorrectAnswer={handleCorrectAnswer}
+          handleIncorrectAnswer={handleIncorrectAnswer}
+          handleShowSolution={handleShowSolution}
           bookmarkToStudy={bookmarkToStudy}
           notifyKeyPress={inputKeyPress}
-          handleIncorrectAnswer={handleIncorrectAnswer}
         />
       )}
       {isCorrect && (

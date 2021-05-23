@@ -1,4 +1,5 @@
 import styled, { keyframes } from "styled-components";
+import { Link } from "react-router-dom";
 
 const Exercise = styled.div`
   display: flex;
@@ -85,6 +86,11 @@ let FeedbackButton = styled.button`
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
+
+  &:disabled {
+    cursor: default;
+    text-decoration: line-through;
+  }
 `;
 
 const shake = keyframes`
@@ -158,6 +164,11 @@ let BottomRow = styled.div`
   flex-wrap: wrap;
 `;
 
+let StyledLink = styled(Link)`
+  margin-top: 1em;
+  color: gray;
+`;
+
 export {
   Exercise,
   FeedbackButton,
@@ -166,4 +177,5 @@ export {
   Input,
   AnimatedInput,
   BottomRow,
+  StyledLink,
 };
