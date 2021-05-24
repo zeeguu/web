@@ -1,6 +1,7 @@
 import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
 import PriorityHighRoundedIcon from "@material-ui/icons/PriorityHighRounded";
+import { v4 as uuid } from "uuid";
 
 const CorrectAttempt = () => {
   return (
@@ -38,14 +39,14 @@ export const AttemptIcons = ({ attemptString }) => {
   const setIcon = (char) => {
     switch (char) {
       case "w":
-        return <WrongAttempt />;
+        return <WrongAttempt key={uuid()}/>;
       case "h":
-        return <HintUsed />;
+        return <HintUsed key={uuid()}/>;
       case "s":
-        return <SolutionShown />;
+        return <SolutionShown key={uuid()}/>;
 
       default:
-        return <CorrectAttempt />;
+        return <CorrectAttempt key={uuid()}/>;
     }
   };
 
