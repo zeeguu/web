@@ -21,13 +21,18 @@ export default function SideBar(props) {
     if (new_site) {
       //in Settings the side is determined by whether the user is a student or a teacher
       if (path.includes("account")) {
-        setIsOnStudentSide(!user.is_teacher);
+        setIsOnStudentSide(user.is_teacher.toString() !== "true");
       } else {
         setIsOnStudentSide(!path.includes("teacher"));
       }
     }
     // eslint-disable-next-line
   }, [path]);
+
+  const defaultPage =
+    new_site && user.is_teacher.toString() === "true"
+      ? "/teacher/classes"
+      : "articles";
 
   const { light_color, dark_color } = setColors(new_site, isOnStudentSide);
 
@@ -43,7 +48,7 @@ export default function SideBar(props) {
   let sidebarContent = (
     <>
       <div className="logo">
-        <a href="/articles" rel="external">
+        <a href={defaultPage} rel="external">
           <img
             src="/static/images/zeeguuWhiteLogo.svg"
             alt="Zeeguu Logo - The Elephant"

@@ -14,7 +14,6 @@ import LocalStorage from "../assorted/LocalStorage";
 
 import strings from "../i18n/definitions";
 
-
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -22,6 +21,7 @@ export default function Settings({ api, setUser }) {
   const user = useContext(UserContext);
   const [languages, setLanguages] = useState();
   const [inviteCode, setInviteCode] = useState("");
+  const [showJoinCohortError, setShowJoinCohortError] = useState(false);
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -61,19 +61,24 @@ export default function Settings({ api, setUser }) {
       history.goBack();
     });
   }
- 
+
+  function handleInviteCodeChange(event) {
+    setShowJoinCohortError(false);
+    setInviteCode(event.target.value);
+  }
   //Student enrolls in a class
   function saveStudentToClass() {
-    console.log("INVITE CODE")
-    console.log(inviteCode)
-
-    api.joinCohort(inviteCode, 
-      (result) => {
-      console.log("Result is : " + result)
-      result==="OK" &&
-      history.push("/articles/classroom")
-      }, 
-      (result) => {console.log("OnError - This is an invalid invitecode")}
+    api.joinCohort(
+      inviteCode,
+      (status) => {
+        console.log(status);
+        status === "OK"
+          ? history.push("/articles/classroom")
+          : setShowJoinCohortError(true);
+      },
+      (error) => {
+        console.log(error);
+      }
     );
   }
 
@@ -140,23 +145,29 @@ export default function Settings({ api, setUser }) {
         </div>
       </form>
 
-      <label style={{ paddingTop: "1rem"}}>"STRINGS Join Class"</label>
-          <input
-          type="class"
-          placeholder="Insert class invitecode"
-          value={inviteCode}
-          onChange={(e) => setInviteCode(e.target.value)}
-        />
-        
-        {/* This should only happen if an invalid invite code is entered */}
-        <p style={{ color: "red", marginTop:"0" }}> 
-        The invite code is invalid. Please try again. STRINGS 
-        </p>
+      {user.is_teacher.toString() !== "true" &&
+        process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
+          <div>
+            <label style={{ paddingTop: "1rem" }}>"STRINGS Join class"</label>
+            <input
+              type="text"
+              placeholder="Insert class invite code"
+              value={inviteCode}
+              onChange={(event) => handleInviteCodeChange(event)}
+            />
 
-        <div>
-          <s.FormButton onClick={saveStudentToClass}> STRINGS Enroll </s.FormButton>
-        </div>
-       
+            {showJoinCohortError && (
+              <p style={{ color: "red", marginTop: "0" }}>
+                Something went wrong. Please check that the invite code is valid
+                and try again. STRINGS
+              </p>
+            )}
+
+            <s.FormButton onClick={saveStudentToClass}>
+              STRINGS Join class
+            </s.FormButton>
+          </div>
+        )}
     </s.FormContainer>
   );
 }
