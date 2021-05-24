@@ -14,12 +14,14 @@ import LocalStorage from "../assorted/LocalStorage";
 
 import strings from "../i18n/definitions";
 
+
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const history = useHistory();
   const user = useContext(UserContext);
   const [languages, setLanguages] = useState();
+  const [inviteCode, setInviteCode] = useState("");
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -58,6 +60,21 @@ export default function Settings({ api, setUser }) {
       updateUserInfo(userDetails);
       history.goBack();
     });
+  }
+ 
+  //Student enrolls in a class
+  function saveStudentToClass() {
+    console.log("INVITE CODE")
+    console.log(inviteCode)
+
+    api.joinCohort(inviteCode, 
+      (result) => {
+      console.log("Result is : " + result)
+      result==="OK" &&
+      history.push("/articles/classroom")
+      }, 
+      (result) => {console.log("OnError - This is an invalid invitecode")}
+    );
   }
 
   if (!userDetails || !languages) {
@@ -122,6 +139,24 @@ export default function Settings({ api, setUser }) {
           <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
         </div>
       </form>
+
+      <label style={{ paddingTop: "1rem"}}>"STRINGS Join Class"</label>
+          <input
+          type="class"
+          placeholder="Insert class invitecode"
+          value={inviteCode}
+          onChange={(e) => setInviteCode(e.target.value)}
+        />
+        
+        {/* This should only happen if an invalid invite code is entered */}
+        <p style={{ color: "red", marginTop:"0" }}> 
+        The invite code is invalid. Please try again. STRINGS 
+        </p>
+
+        <div>
+          <s.FormButton onClick={saveStudentToClass}> STRINGS Enroll </s.FormButton>
+        </div>
+       
     </s.FormContainer>
   );
 }
