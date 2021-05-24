@@ -4,7 +4,6 @@ import NonStudiedWordsList from "./NonStudiedWordsList";
 
 const WordsDropDown = ({ words, card }) => {
   const setHeadline = () => {
-    console.log(card)
     switch (card) {
       case "non-studied":
         return "Words translated by the student that will never be studied in Zeeguu STRINGS";

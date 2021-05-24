@@ -19,7 +19,7 @@ export default function StudentExercisesInsights({ api }) {
     {
       word: "learned1",
       translation: "lært1",
-      isStudied:"true",
+      isStudied: "true",
       isLearned: "true",
       exerciseAttempts: [
         { date: "Jan 1. 2020", type: "recognise", attempts: "c" },
@@ -32,7 +32,7 @@ export default function StudentExercisesInsights({ api }) {
     {
       word: "practised1",
       translation: "øvet1",
-      isStudied:"true",
+      isStudied: "true",
       isLearned: "false",
       exerciseAttempts: [
         { date: "Feb 1. 2020", type: "recognise", attempts: "wwhc" },
@@ -42,7 +42,7 @@ export default function StudentExercisesInsights({ api }) {
     {
       word: "practised2",
       translation: "øvet2",
-      isStudied:"true",
+      isStudied: "true",
       isLearned: "false",
       exerciseAttempts: [
         { date: "Mar 1. 2020", type: "recognise", attempts: "wc" },
@@ -52,7 +52,7 @@ export default function StudentExercisesInsights({ api }) {
     {
       word: "practised3",
       translation: "øvet3",
-      isStudied:"true",
+      isStudied: "true",
       isLearned: "false",
       exerciseAttempts: [
         { date: "Apr 1. 2020", type: "recognise", attempts: "hwhc" },
@@ -62,13 +62,13 @@ export default function StudentExercisesInsights({ api }) {
     {
       word: "non-studied1",
       translation: "ikke-øvet1",
-      isStudied:"false",
+      isStudied: "false",
       exerciseAttempts: [],
     },
     {
       word: "practised4",
       translation: "øvet4",
-      isStudied:"true",
+      isStudied: "true",
       isLearned: "false",
       exerciseAttempts: [
         { date: "Apr 1. 2020", type: "recognise", attempts: "hwhc" },
@@ -78,7 +78,7 @@ export default function StudentExercisesInsights({ api }) {
     {
       word: "practised5",
       translation: "øvet5",
-      isStudied:"true",
+      isStudied: "true",
       isLearned: "false",
       exerciseAttempts: [
         { date: "May 1. 2020", type: "recognise", attempts: "hhhc" },
@@ -123,24 +123,29 @@ export default function StudentExercisesInsights({ api }) {
         }}
       >
         <StyledButton naked onClick={() => handleCardClick("practised")}>
-          <PractisedWordsCard wordCount="XX" correctness="XX%" time="X min" />
+          <PractisedWordsCard
+            isOpen={isOpen === "practised"}
+            wordCount="XX"
+            correctness="XX%"
+            time="X min"
+          />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("learned")}>
-          <WordCountCard headline="Learned words" wordCount="XX" />
+          <WordCountCard
+            isOpen={isOpen === "learned"}
+            headline="Learned words"
+            wordCount="XX"
+          />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("non-studied")}>
           <WordCountCard
+            isOpen={isOpen === "non-studied"}
             headline="Words not studied in Zeeguu"
             wordCount="XX"
           />
         </StyledButton>
       </div>
-      {(isOpen !== "") && (
-        <WordsDropDown
-          card={isOpen}
-          words={practisedWords}
-        />
-      )}
+      {isOpen !== "" && <WordsDropDown card={isOpen} words={practisedWords} />}
     </Fragment>
   );
 }
