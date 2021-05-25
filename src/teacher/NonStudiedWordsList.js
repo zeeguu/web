@@ -2,6 +2,16 @@ import { Fragment } from "react";
 import { v4 as uuid } from "uuid";
 
 const NonStudiedWordsList = ({ words }) => {
+  const exclusionReason = (word) =>{
+    if (word.exclusionReason.includes("feedback")){
+      return <p style={{margin: ".5em 0 0 1.2em", fontSize: "small", color:"green"}}>{word.exclusionReason}</p>
+    }
+    if (word.exclusionReason.includes("algorithm")){
+      return <p style={{margin: ".5em 0 0 1.2em", fontSize: "small", color:"red"}}>{word.exclusionReason}</p>
+    }
+    return <p style={{margin: ".5em 0 0 1.2em", fontSize: "small", color:"#808080"}}>{word.exclusionReason}</p>
+  }
+
   return (
     <Fragment>
       {words.map((word) => (
@@ -27,6 +37,7 @@ const NonStudiedWordsList = ({ words }) => {
               <p style={{ marginLeft: "1em", marginBottom: "-5px" }}>
                 <b>{word.word}</b>
               </p>
+              {exclusionReason(word)}
             </div>
           )}
         </div>
