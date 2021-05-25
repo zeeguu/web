@@ -28,6 +28,7 @@ export default function StudentExercisesInsights({ api }) {
         { date: "Jan 4. 2020", type: "multiple choice", attempts: "c" },
         { date: "Jan 5. 2020", type: "multiple choice", attempts: "c" },
       ],
+      exclusionReason:""
     },
     {
       word: "practised1",
@@ -38,6 +39,7 @@ export default function StudentExercisesInsights({ api }) {
         { date: "Feb 1. 2020", type: "recognise", attempts: "wwhc" },
         { date: "Feb 2. 2020", type: "multiple choice", attempts: "s" },
       ],
+      exclusionReason:""
     },
     {
       word: "practised2",
@@ -48,6 +50,7 @@ export default function StudentExercisesInsights({ api }) {
         { date: "Mar 1. 2020", type: "recognise", attempts: "wc" },
         { date: "Mar 2. 2020", type: "multiple choice", attempts: "c" },
       ],
+      exclusionReason:""
     },
     {
       word: "practised3",
@@ -58,12 +61,31 @@ export default function StudentExercisesInsights({ api }) {
         { date: "Apr 1. 2020", type: "recognise", attempts: "hwhc" },
         { date: "Apr 2. 2020", type: "multiple choice", attempts: "c" },
       ],
+      exclusionReason:""
     },
     {
       word: "non-studied1",
       translation: "ikke-øvet1",
       isStudied: "false",
+      isLearned: "false",
       exerciseAttempts: [],
+      exclusionReason:"Student feedback: 'Too hard'"
+    },
+    {
+      word: "non-studied2",
+      translation: "ikke-øvet2",
+      isStudied: "false",
+      isLearned:"false",
+      exerciseAttempts: [],
+      exclusionReason:"Excluded by algorithm"
+    },
+    {
+      word: "non-studied3",
+      translation: "ikke-øvet3",
+      isStudied: "false",
+      isLearned:"false",
+      exerciseAttempts: [],
+      exclusionReason:"Scheduled - not yet practiced"
     },
     {
       word: "practised4",
@@ -74,6 +96,7 @@ export default function StudentExercisesInsights({ api }) {
         { date: "Apr 1. 2020", type: "recognise", attempts: "hwhc" },
         { date: "Apr 2. 2020", type: "multiple choice", attempts: "c" },
       ],
+      exclusionReason:""
     },
     {
       word: "practised5",
@@ -86,6 +109,7 @@ export default function StudentExercisesInsights({ api }) {
         { date: "Jan 3. 2020", type: "multiple choice", attempts: "wwws" },
         { date: "Jan 3. 2020", type: "multiple choice", attempts: "hc" },
       ],
+      exclusionReason:""
     },
   ];
 

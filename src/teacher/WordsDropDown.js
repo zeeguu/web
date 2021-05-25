@@ -6,7 +6,7 @@ const WordsDropDown = ({ words, card }) => {
   const setHeadline = () => {
     switch (card) {
       case "non-studied":
-        return "Words translated by the student that will never be studied in Zeeguu STRINGS";
+        return "Words translated by the student but not studied in Zeeguu STRINGS";
       case "learned":
         return "Word practised correctly on four DIFFERENT days STRINGS";
       default:
