@@ -45,7 +45,7 @@ const PractisedWordsList = ({ words }) => {
                   <p style={{ color: "#808080", marginLeft: ".5em" }}>
                     {exercise.type}
                   </p>
-                  <AttemptIcons attemptString={exercise.attempts} />
+                  <AttemptIcons attemptString={exercise.attempts} feedback={exercise.feedback}/>
                 </div>
               ))}
             </div>

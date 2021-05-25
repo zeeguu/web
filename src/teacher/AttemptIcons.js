@@ -35,7 +35,16 @@ const HintUsed = () => {
   );
 };
 
-export const AttemptIcons = ({ attemptString }) => {
+const FeedbackGiven = (feedback) => {
+  return(
+    <p style={{ fontWeight: 500, margin: "13px 0px 0 2px", fontSize: "14px" }}>
+    {feedback}
+  </p>
+
+  )
+}
+
+export const AttemptIcons = ({ attemptString, feedback }) => {
   const setIcon = (char) => {
     switch (char) {
       case "w":
@@ -52,8 +61,9 @@ export const AttemptIcons = ({ attemptString }) => {
 
   const attemptChars = attemptString.split("");
   return(
-    <div style={{display:"flex", flexDirection:"row", marginLeft:".5em", marginRight:"1em"}}>
+    <div style={{display:"flex", flexDirection:"row", marginLeft:".5em", marginRight:"2em"}}>
     {attemptChars.map((char) => setIcon(char))}
+    {FeedbackGiven(feedback)}
     </div>
   );
 };

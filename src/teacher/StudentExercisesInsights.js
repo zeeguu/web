@@ -22,11 +22,11 @@ export default function StudentExercisesInsights({ api }) {
       isStudied: "true",
       isLearned: "true",
       exerciseAttempts: [
-        { date: "Jan 1. 2020", type: "recognise", attempts: "c" },
-        { date: "Jan 2. 2020", type: "multiple choice", attempts: "whc" },
-        { date: "Jan 3. 2020", type: "multiple choice", attempts: "c" },
-        { date: "Jan 4. 2020", type: "multiple choice", attempts: "c" },
-        { date: "Jan 5. 2020", type: "multiple choice", attempts: "c" },
+        { date: "Jan 1. 2020", type: "recognise", attempts: "c", feedback:"" },
+        { date: "Jan 2. 2020", type: "multiple choice", attempts: "whc", feedback:"" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "c", feedback:"" },
+        { date: "Jan 4. 2020", type: "multiple choice", attempts: "c", feedback:"" },
+        { date: "Jan 5. 2020", type: "multiple choice", attempts: "c", feedback:"" },
       ],
       exclusionReason:""
     },
@@ -36,8 +36,8 @@ export default function StudentExercisesInsights({ api }) {
       isStudied: "true",
       isLearned: "false",
       exerciseAttempts: [
-        { date: "Feb 1. 2020", type: "recognise", attempts: "wwhc" },
-        { date: "Feb 2. 2020", type: "multiple choice", attempts: "s" },
+        { date: "Feb 1. 2020", type: "recognise", attempts: "wwhc", feedback:"" },
+        { date: "Feb 2. 2020", type: "multiple choice", attempts: "s", feedback:"" },
       ],
       exclusionReason:""
     },
@@ -47,8 +47,8 @@ export default function StudentExercisesInsights({ api }) {
       isStudied: "true",
       isLearned: "false",
       exerciseAttempts: [
-        { date: "Mar 1. 2020", type: "recognise", attempts: "wc" },
-        { date: "Mar 2. 2020", type: "multiple choice", attempts: "c" },
+        { date: "Mar 1. 2020", type: "recognise", attempts: "wc", feedback:"" },
+        { date: "Mar 2. 2020", type: "multiple choice", attempts: "c", feedback:"Too easy" },
       ],
       exclusionReason:""
     },
@@ -58,8 +58,8 @@ export default function StudentExercisesInsights({ api }) {
       isStudied: "true",
       isLearned: "false",
       exerciseAttempts: [
-        { date: "Apr 1. 2020", type: "recognise", attempts: "hwhc" },
-        { date: "Apr 2. 2020", type: "multiple choice", attempts: "c" },
+        { date: "Apr 1. 2020", type: "recognise", attempts: "hwhc", feedback:"" },
+        { date: "Apr 2. 2020", type: "multiple choice", attempts: "c", feedback:"" },
       ],
       exclusionReason:""
     },
@@ -93,8 +93,8 @@ export default function StudentExercisesInsights({ api }) {
       isStudied: "true",
       isLearned: "false",
       exerciseAttempts: [
-        { date: "Apr 1. 2020", type: "recognise", attempts: "hwhc" },
-        { date: "Apr 2. 2020", type: "multiple choice", attempts: "c" },
+        { date: "Apr 1. 2020", type: "recognise", attempts: "hwhs", feedback:"" },
+        { date: "Apr 2. 2020", type: "multiple choice", attempts: "hh", feedback:"Too hard" },
       ],
       exclusionReason:""
     },
