@@ -21,7 +21,7 @@ export default function SideBar(props) {
     if (new_site) {
       //in Settings the side is determined by whether the user is a student or a teacher
       if (path.includes("account")) {
-        setIsOnStudentSide(user.is_teacher.toString() !== "true");
+        setIsOnStudentSide(!user.is_teacher);
       } else {
         setIsOnStudentSide(!path.includes("teacher"));
       }
@@ -30,7 +30,7 @@ export default function SideBar(props) {
   }, [path]);
 
   const defaultPage =
-    new_site && user.is_teacher.toString() === "true"
+    new_site && user.is_teacher
       ? "/teacher/classes"
       : "articles";
 

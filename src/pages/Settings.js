@@ -145,7 +145,7 @@ export default function Settings({ api, setUser }) {
         </div>
       </form>
 
-      {user.is_teacher.toString() !== "true" &&
+      {!user.is_teacher &&
         process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
           <div>
             <label style={{ paddingTop: "1rem" }}>"STRINGS Join class"</label>
