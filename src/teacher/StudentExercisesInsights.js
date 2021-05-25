@@ -69,7 +69,7 @@ export default function StudentExercisesInsights({ api }) {
       isStudied: "false",
       isLearned: "false",
       exerciseAttempts: [],
-      exclusionReason:"Student feedback: 'Too hard'"
+      exclusionReason:"Excluded by algorithm"
     },
     {
       word: "non-studied2",
