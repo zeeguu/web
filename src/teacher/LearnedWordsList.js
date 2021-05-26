@@ -13,6 +13,7 @@ const LearnedWordsList = ({ words }) => {
                 borderLeft: "solid 3px #5492b3",
                 marginBottom: "38px",
                 minWidth: 270,
+                userSelect: "none",
               }}
             >
               <p
