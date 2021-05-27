@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as s from "./StudentActivityBar.sc";
 
 const StudentActivityBar = ({ student, readingTime, exerciseTime }) => {
-   const [readingTimeString, setReadingTimeString] = useState("");
+  const [readingTimeString, setReadingTimeString] = useState("");
   const [exerciseTimeString, setExerciseTimeString] = useState("");
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const StudentActivityBar = ({ student, readingTime, exerciseTime }) => {
     exerciseHours < 1
       ? setExerciseTimeString(exerciseMinutes + "m")
       : setExerciseTimeString(exerciseHours + "h " + exerciseMinutes + "m");
-    // eslint-disable-next-line
+    //eslint-disable-next-line
   }, [student]);
 
   const setReadingCorners = () => {
@@ -37,7 +37,8 @@ const StudentActivityBar = ({ student, readingTime, exerciseTime }) => {
   };
 
   const computedWidth = exerciseTime === 0 ? "0%" : 100 - student.reading_percentage + "%"
-
+  //making sure we are not returning an activity bar if time is less than 3 minutes
+  if (student.total_time < 240) { return null }
   return (
     <s.StudentActivityBar
       readingCorners={() => setReadingCorners()}
@@ -56,8 +57,8 @@ const StudentActivityBar = ({ student, readingTime, exerciseTime }) => {
             width: student.reading_percentage + "%",
           }}
         >
-          {/* Not showing the reading time if it is less than 5 min */}
-          {readingTime > 240 ? readingTimeString : ""}
+          {/* Not showing the reading time if it is less than 3 min */}
+          {readingTime > 120 ? readingTimeString : ""}
         </div>
         <div
           className="activity-bar"
@@ -66,8 +67,8 @@ const StudentActivityBar = ({ student, readingTime, exerciseTime }) => {
             width: computedWidth,
           }}
         >
-          {/* Not showing the exercise time if it is less than 5 min */}
-          {exerciseTime > 240 ? exerciseTimeString : ""}
+          {/* Not showing the exercise time if it is less than 3 min */}
+          {exerciseTime > 120 ? exerciseTimeString : ""}
         </div>
       </div>
     </s.StudentActivityBar>
