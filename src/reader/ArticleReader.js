@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -10,6 +10,7 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { PopupButtonWrapper, StyledButton } from "../teacher/TeacherButtons.sc";
 import * as s from "./ArticleReader.sc";
+import { UserContext } from "../UserContext";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -31,9 +32,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
-
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
+  const user = useContext(UserContext);
 
   useEffect(() => {
     api.getArticleInfo(articleID, (articleInfo) => {
@@ -119,10 +120,14 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
       <PopupButtonWrapper>
 
-        <Link to={`/teacher/texts/editText/${articleID}`}>
-          <StyledButton secondary studentView>STRINGBack to editing</StyledButton>
-        </Link>
-        <StyledButton primary studentView>STRINGAdd to class</StyledButton>{" "}
+        {user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (<div>
+          <Link to={`/teacher/texts/editText/${articleID}`}>
+            <StyledButton secondary studentView>STRINGBack to editing</StyledButton>
+          </Link>
+
+          <StyledButton primary studentView>STRINGAdd to class       </StyledButton>
+        </div>
+        )}
 
         <s.Toolbar>
 
