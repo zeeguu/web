@@ -29,6 +29,7 @@ export default function StudentsActivityOverview({ api }) {
   }, []);
 
   //extracting the list of students based on the time period selected by the user.
+  //set a boolean that will return a loading animation until useEffect is done
   useEffect(() => {
     api.getStudents(cohortID, selectedTimePeriod, (res) => {
       const studentWithNeededData = transformStudents(res);
@@ -87,3 +88,4 @@ export default function StudentsActivityOverview({ api }) {
     </Fragment>
   );
 }
+
