@@ -1,6 +1,7 @@
 import { Fragment } from "react";
-import { AttemptIcons } from "./AttemptIcons";
+import { AttemptIcons, IconExplanation } from "./AttemptIcons";
 import { v4 as uuid } from "uuid";
+import { StyledTooltip } from "./StyledTooltip.sc";
 
 const PractisedWordsList = ({ words }) => {
   return (
@@ -8,48 +9,56 @@ const PractisedWordsList = ({ words }) => {
       {words.map((word) => (
         <div key={word + uuid()}>
           {word.isStudied === "true" && (
-            <div
-              key={uuid()}
-              style={{
-                borderLeft: "solid 3px #5492b3",
-                marginBottom: "38px",
-                minWidth: 270,
-                userSelect: "none",
-              }}
+            <StyledTooltip
+              label={IconExplanation}
+
             >
-              <p
+              <div
+                key={uuid()}
                 style={{
-                  color: "#44cdff",
-                  marginBottom: "-15px",
-                  marginTop: "0px",
-                  marginLeft: "1em",
+                  borderLeft: "solid 3px #5492b3",
+                  marginBottom: "38px",
+                  minWidth: 270,
+                  userSelect: "none",
                 }}
               >
-                {word.translation}
-              </p>
-              <p style={{ marginLeft: "1em", marginBottom: "-5px" }}>
-                <b>{word.word}</b>
-              </p>
-
-              {word.exerciseAttempts.map((exercise) => (
-                <div
-                  key={uuid()}
+                <p
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
+                    color: "#44cdff",
+                    marginBottom: "-15px",
+                    marginTop: "0px",
                     marginLeft: "1em",
-                    fontSize: "small",
-                    marginBottom: "-25px",
                   }}
                 >
-                  <p style={{ color: "#808080" }}>{exercise.date}</p>
-                  <p style={{ color: "#808080", marginLeft: ".5em" }}>
-                    {exercise.type}
-                  </p>
-                  <AttemptIcons attemptString={exercise.attempts} feedback={exercise.feedback}/>
-                </div>
-              ))}
-            </div>
+                  {word.translation}
+                </p>
+                <p style={{ marginLeft: "1em", marginBottom: "-5px" }}>
+                  <b>{word.word}</b>
+                </p>
+
+                {word.exerciseAttempts.map((exercise) => (
+                  <div
+                    key={uuid()}
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      marginLeft: "1em",
+                      fontSize: "small",
+                      marginBottom: "-25px",
+                    }}
+                  >
+                    <p style={{ color: "#808080" }}>{exercise.date}</p>
+                    <p style={{ color: "#808080", marginLeft: ".5em" }}>
+                      {exercise.type}
+                    </p>
+                    <AttemptIcons
+                      attemptString={exercise.attempts}
+                      feedback={exercise.feedback}
+                    />
+                  </div>
+                ))}
+              </div>
+            </StyledTooltip>
           )}
         </div>
       ))}

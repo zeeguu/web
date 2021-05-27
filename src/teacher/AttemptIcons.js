@@ -84,29 +84,41 @@ export const AttemptIcons = ({ attemptString, feedback }) => {
 export const IconExplanation = (
   <div>
     <div style={{ display: "flex", flexDirection: "row" }}>
+      <p style={{ color:"#808080", marginRight: ".4em" }}>
+        recognise/multiple choice etc.
+      </p>
+      <p> is the type of exercise the student has practised the word in.</p>
+    </div>
+    <div style={{ display: "flex", flexDirection: "row" }}>
       <WrongAttempt />
-      <p style={{marginLeft:"1em"}}>
+      <p style={{ marginLeft: "1em" }}>
         indicates that the student made an incorrect attempt at solving the
         exercise.
       </p>
     </div>
-    <div style={{ display: "flex", flexDirection: "row"}}>
+    <div style={{ display: "flex", flexDirection: "row" }}>
       <CorrectAttempt />
-      <p style={{marginLeft:"1em"}}>indicates that the student solved the exercise correctly.</p>
+      <p style={{ marginLeft: ".5em" }}>
+        indicates that the student solved the exercise correctly.
+      </p>
     </div>
     <div style={{ display: "flex", flexDirection: "row" }}>
       <HintUsed />
-      <p style={{marginLeft:"1em"}}>indicates that the student asked for a hint in the exercise.</p>
+      <p style={{ marginLeft: ".5em" }}>
+        indicates that the student asked for a hint in the exercise.
+      </p>
     </div>
     <div style={{ display: "flex", flexDirection: "row" }}>
       <SolutionShown />
-      <p style={{marginLeft:"1em"}}>
+      <p style={{ marginLeft: ".5em" }}>
         indicates that the student asked to see the solution to the exercise.
       </p>
     </div>
-    <p>
-      <b>Too hard/Too easy/Bad example</b> etc is feedback that the student has
-      given on the exercise.
-    </p>
+    <div style={{ display: "flex", flexDirection: "row" }}>
+      <p style={{ fontWeight: 500, marginRight: ".6em" }}>
+        Too hard/Too easy/Bad example etc.
+      </p>
+      <p> is feedback that the student has given on the exercise.</p>
+    </div>
   </div>
 );
