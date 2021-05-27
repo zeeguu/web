@@ -84,12 +84,6 @@ export const AttemptIcons = ({ attemptString, feedback }) => {
 export const IconExplanation = (
   <div>
     <div style={{ display: "flex", flexDirection: "row" }}>
-      <p style={{ color:"#808080", marginRight: ".4em" }}>
-        recognise/multiple choice etc.
-      </p>
-      <p> is the type of exercise the student has practised the word in.</p>
-    </div>
-    <div style={{ display: "flex", flexDirection: "row" }}>
       <WrongAttempt />
       <p style={{ marginLeft: "1em" }}>
         indicates that the student made an incorrect attempt at solving the
@@ -119,6 +113,12 @@ export const IconExplanation = (
         Too hard/Too easy/Bad example etc.
       </p>
       <p> is feedback that the student has given on the exercise.</p>
+    </div>
+    <div style={{ display: "flex", flexDirection: "row" }}>
+      <p style={{ color:"#808080", marginRight: ".4em" }}>
+        recognise/multiple choice etc.
+      </p>
+      <p> is the type of exercise the student has practised the word in.</p>
     </div>
   </div>
 );
