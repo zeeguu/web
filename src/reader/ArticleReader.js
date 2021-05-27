@@ -60,10 +60,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
     return () => {
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("blur", onBlur);
-      document
-        .getElementById("scrollHolder")
-        .removeEventListener("scroll", onScroll);
-    };
+      {
+        document.getElementById("scrollHolder") !== null &&
+          document
+            .getElementById("scrollHolder")
+            .removeEventListener("scroll", onScroll);
+      };
+    }
     // eslint-disable-next-line
   }, []);
 
