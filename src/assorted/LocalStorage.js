@@ -22,7 +22,7 @@ const LocalStorage = {
       name: localStorage[this.Keys.Name],
       learned_language: localStorage[this.Keys.LearnedLanguage],
       native_language: localStorage[this.Keys.NativeLanguage],
-      is_teacher: localStorage[this.Keys.IsTeacher],
+      is_teacher: "true" === localStorage[this.Keys.IsTeacher],
     };
   },
 

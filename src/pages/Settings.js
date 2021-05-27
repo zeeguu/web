@@ -20,6 +20,8 @@ export default function Settings({ api, setUser }) {
   const history = useHistory();
   const user = useContext(UserContext);
   const [languages, setLanguages] = useState();
+  const [inviteCode, setInviteCode] = useState("");
+  const [showJoinCohortError, setShowJoinCohortError] = useState(false);
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -58,6 +60,26 @@ export default function Settings({ api, setUser }) {
       updateUserInfo(userDetails);
       history.goBack();
     });
+  }
+
+  function handleInviteCodeChange(event) {
+    setShowJoinCohortError(false);
+    setInviteCode(event.target.value);
+  }
+  //Student enrolls in a class
+  function saveStudentToClass() {
+    api.joinCohort(
+      inviteCode,
+      (status) => {
+        console.log(status);
+        status === "OK"
+          ? history.push("/articles/classroom")
+          : setShowJoinCohortError(true);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   if (!userDetails || !languages) {
@@ -122,6 +144,30 @@ export default function Settings({ api, setUser }) {
           <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
         </div>
       </form>
+
+      {!user.is_teacher &&
+        process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
+          <div>
+            <label style={{ paddingTop: "1rem" }}>"STRINGS Join class"</label>
+            <input
+              type="text"
+              placeholder="Insert class invite code"
+              value={inviteCode}
+              onChange={(event) => handleInviteCodeChange(event)}
+            />
+
+            {showJoinCohortError && (
+              <p style={{ color: "red", marginTop: "0" }}>
+                Something went wrong. Please check that the invite code is valid
+                and try again. STRINGS
+              </p>
+            )}
+
+            <s.FormButton onClick={saveStudentToClass}>
+              STRINGS Join class
+            </s.FormButton>
+          </div>
+        )}
     </s.FormContainer>
   );
 }
