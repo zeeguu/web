@@ -4,12 +4,12 @@ import * as s from "./LabeledInputFields.sc";
 
 export function LanguageSelector(props) {
   const [languages, setLanguages] = useState([]);
-  useEffect(()=>{
+  useEffect(() => {
     props.api.getSystemLanguages((languages) =>
-    setLanguages(languages.learnable_languages)
-  );
-  //eslint-disable-next-line
-  },[])
+      setLanguages(languages.learnable_languages)
+    );
+    //eslint-disable-next-line
+  }, []);
 
   return (
     <Fragment>
@@ -24,8 +24,14 @@ export function LanguageSelector(props) {
             value={props.value}
             onChange={props.onChange}
           >
-            <ListboxOption value="default">STRINGSChoose a language...</ListboxOption>
-            {languages.map((language)=>(<ListboxOption key={language.code} value={language.code}>{language.name}</ListboxOption>))}
+            <ListboxOption value="default">
+              STRINGSChoose a language...
+            </ListboxOption>
+            {languages.map((language) => (
+              <ListboxOption key={language.code} value={language.code}>
+                {language.name}
+              </ListboxOption>
+            ))}
           </Listbox>
         </div>
       </s.LabeledInputFields>

@@ -28,9 +28,9 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
       api.parseArticleFromUrl(
         url,
         (articleInfo) => {
-          const newTitle = articleInfo.title
-          const newText = articleInfo.text
-          const newLanguage = articleInfo.language_code
+          const newTitle = articleInfo.title;
+          const newText = articleInfo.text;
+          const newLanguage = articleInfo.language_code;
           api.uploadOwnText(newTitle, newText, newLanguage, (newID) => {
             console.log(`article created from the url with id: ${newID}`);
             history.push(`/teacher/texts/editText/${newID}`);

@@ -16,7 +16,11 @@ export default function EditTextInputFields({
 }) {
   return (
     <Fragment>
-      <LanguageSelector api={api} value={language_code} onChange={handleLanguageChange}>
+      <LanguageSelector
+        api={api}
+        value={language_code}
+        onChange={handleLanguageChange}
+      >
         Please, define the language of the text STRINGS
       </LanguageSelector>
       <LabeledTextField
