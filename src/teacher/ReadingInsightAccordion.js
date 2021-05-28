@@ -24,7 +24,7 @@ const ReadingInsightAccordion = ({ readArticles }) => {
   //TODO could be turned into seperate component
   const formatedDate = (startTime) => {
     const date = new Date(startTime);
-    const dateString = date.toDateString();
+    const dateString = date.toString();
     return dateString;
   };
   return (
@@ -44,7 +44,7 @@ const ReadingInsightAccordion = ({ readArticles }) => {
                       {article.title.length > 100 ? "..." : ""}
                     </h2>
                     <p className="date">
-                     STRINGS Reading date: {formatedDate(article.start_time)}
+                      STRINGS Reading date: {formatedDate(article.start_time)}
                     </p>
                   </div>
                   <div className="data-circle-wrapper">
