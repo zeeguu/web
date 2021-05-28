@@ -2,41 +2,36 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { LabeledTextField } from "./LabeledInputFields";
-import { LanguageSelector } from "./LanguageSelector";
 import { StyledDialog } from "./StyledDialog.sc";
 import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 
 export default function AddURLDialog({ api, setShowAddURLDialog }) {
   const history = useHistory();
   const [showGuidance, setShowGuidance] = useState(false);
-  const [languageCode, setLanguageCode] = useState("default");
   const [url, setURL] = useState("");
 
   useEffect(() => {
-    if (url !== "" && languageCode !== "default") {
+    if (url !== "") {
       setShowGuidance(false);
     }
-  }, [url, languageCode]);
+  }, [url]);
 
   const handleChange = (event) => {
     console.log("Setting the url to: " + event.target.value);
     setURL(event.target.value);
   };
 
-  function handleLanguageChange(selectedLanguage) {
-    setLanguageCode(selectedLanguage);
-  }
-
   const getArticle = () => {
-    if (url === "" || languageCode === "default") {
+    if (url === "") {
       setShowGuidance(true);
     } else {
       api.parseArticleFromUrl(
         url,
         (articleInfo) => {
-          const newTitle = articleInfo.title
-          const newText = articleInfo.text
-          api.uploadOwnText(newTitle, newText, languageCode, (newID) => {
+          const newTitle = articleInfo.title;
+          const newText = articleInfo.text;
+          const newLanguage = articleInfo.language_code;
+          api.uploadOwnText(newTitle, newText, newLanguage, (newID) => {
             console.log(`article created from the url with id: ${newID}`);
             history.push(`/teacher/texts/editText/${newID}`);
           });
@@ -55,9 +50,6 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
       max_width="525px"
     >
       <h1>Add text from a webpage STRINGS</h1>
-      <LanguageSelector value={languageCode} onChange={handleLanguageChange}>
-        Please, define the language of the text STRINGS
-      </LanguageSelector>
       <LabeledTextField
         value={url}
         onChange={handleChange}
@@ -72,7 +64,7 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
       </p>
       {showGuidance && (
         <p style={{ color: "red" }}>
-          You must fill in both of the input fields above.STRINGS
+          You haven't typed anything in the input field yet.STRINGS
         </p>
       )}
       <PopupButtonWrapper>
