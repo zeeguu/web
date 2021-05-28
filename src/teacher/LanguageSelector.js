@@ -11,7 +11,6 @@ export function LanguageSelector(props) {
   //eslint-disable-next-line
   },[])
 
-  console.log(languages)
   return (
     <Fragment>
       <s.LabeledInputFields>
