@@ -15,9 +15,103 @@ export default function StudentExercisesInsights({ api }) {
   const [studentInfo, setStudentInfo] = useState({});
   const [doneExercises, setDoneExercises] = useState(null);
   const [isOpen, setIsOpen] = useState("");
-  const practisedWords = [{word:"pWord1", translation:"pOrd1", exerciseAttemps:"wwhc"}, {word:"pWord2", translation:"pOrd2", exerciseAttemps:"whs"},{word:"pWord3", translation:"pOrd3", exerciseAttemps:"c"}];
-  const learnedWords = [{word:"lWord1", translation:"lOrd1", exerciseAttemps:"wwhc"}, {word:"lWord2", translation:"lOrd2", exerciseAttemps:"whs"},{word:"pWord3", translation:"pOrd3", exerciseAttemps:"c"}];
-  const nonStudyWords = [{word:"nsWord1", translation:"nsOrd1", exerciseAttemps:"wwhc"}, {word:"nsWord2", translation:"nsOrd2", exerciseAttemps:"whs"},{word:"nsWord3", translation:"nsOrd3", exerciseAttemps:"c"}];
+  const practisedWords = [
+    {
+      word: "learned1",
+      translation: "lært1",
+      isStudied: "true",
+      isLearned: "true",
+      exerciseAttempts: [
+        { date: "Jan 1. 2020", type: "recognise", attempts: "c", feedback:"" },
+        { date: "Jan 2. 2020", type: "multiple choice", attempts: "whc", feedback:"" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "c", feedback:"" },
+        { date: "Jan 4. 2020", type: "multiple choice", attempts: "c", feedback:"" },
+        { date: "Jan 5. 2020", type: "multiple choice", attempts: "c", feedback:"" },
+      ],
+      exclusionReason:""
+    },
+    {
+      word: "practised1",
+      translation: "øvet1",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        { date: "Feb 1. 2020", type: "recognise", attempts: "wwhc", feedback:"" },
+        { date: "Feb 2. 2020", type: "multiple choice", attempts: "s", feedback:"" },
+      ],
+      exclusionReason:""
+    },
+    {
+      word: "practised2",
+      translation: "øvet2",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        { date: "Mar 1. 2020", type: "recognise", attempts: "wc", feedback:"" },
+        { date: "Mar 2. 2020", type: "multiple choice", attempts: "c", feedback:"Too easy" },
+      ],
+      exclusionReason:""
+    },
+    {
+      word: "practised3",
+      translation: "øvet3",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        { date: "Apr 1. 2020", type: "recognise", attempts: "hwhc", feedback:"" },
+        { date: "Apr 2. 2020", type: "multiple choice", attempts: "c", feedback:"" },
+      ],
+      exclusionReason:""
+    },
+    {
+      word: "non-studied1",
+      translation: "ikke-øvet1",
+      isStudied: "false",
+      isLearned: "false",
+      exerciseAttempts: [],
+      exclusionReason:"Excluded by algorithm"
+    },
+    {
+      word: "non-studied2",
+      translation: "ikke-øvet2",
+      isStudied: "false",
+      isLearned:"false",
+      exerciseAttempts: [],
+      exclusionReason:"Excluded by algorithm"
+    },
+    {
+      word: "non-studied3",
+      translation: "ikke-øvet3",
+      isStudied: "false",
+      isLearned:"false",
+      exerciseAttempts: [],
+      exclusionReason:"Scheduled - not yet practiced"
+    },
+    {
+      word: "practised4",
+      translation: "øvet4",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        { date: "Apr 1. 2020", type: "recognise", attempts: "hwhs", feedback:"" },
+        { date: "Apr 2. 2020", type: "multiple choice", attempts: "hh", feedback:"Too hard" },
+      ],
+      exclusionReason:""
+    },
+    {
+      word: "practised5",
+      translation: "øvet5",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        { date: "May 1. 2020", type: "recognise", attempts: "hhhc" },
+        { date: "May 2. 2020", type: "multiple choice", attempts: "c" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "wwws" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "hc" },
+      ],
+      exclusionReason:""
+    },
+  ];
 
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
@@ -53,36 +147,29 @@ export default function StudentExercisesInsights({ api }) {
         }}
       >
         <StyledButton naked onClick={() => handleCardClick("practised")}>
-          <PractisedWordsCard wordCount="XX" correctness="XX%" time="X min" />
+          <PractisedWordsCard
+            isOpen={isOpen === "practised"}
+            wordCount="XX"
+            correctness="XX%"
+            time="X min"
+          />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("learned")}>
-          <WordCountCard headline="Learned words" wordCount="XX" />
+          <WordCountCard
+            isOpen={isOpen === "learned"}
+            headline="Learned words"
+            wordCount="XX"
+          />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("non-studied")}>
           <WordCountCard
+            isOpen={isOpen === "non-studied"}
             headline="Words not studied in Zeeguu"
             wordCount="XX"
           />
         </StyledButton>
       </div>
-      {isOpen === "practised" && (
-        <WordsDropDown
-          headline="Practised words - latest four exercises for each word"
-          words={practisedWords}
-        />
-      )}
-      {isOpen === "learned" && (
-        <WordsDropDown
-          headline="Word practised correctly on four different days"
-          words={learnedWords}
-        />
-      )}
-      {isOpen === "non-studied" && (
-        <WordsDropDown
-          headline="Words translated by the student that will never be studied in Zeeguu"
-          words={nonStudyWords}
-        />
-      )}
+      {isOpen !== "" && <WordsDropDown card={isOpen} words={practisedWords} />}
     </Fragment>
   );
 }
