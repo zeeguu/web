@@ -135,6 +135,7 @@ export default function EditText({ api }) {
           </StyledButton>
         </TopButtonWrapper>
         <EditTextInputFields
+          api={api}
           language_code={state.language_code}
           article_title={state.article_title}
           article_content={state.article_content}
