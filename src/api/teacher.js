@@ -123,6 +123,7 @@ Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
         'article_title':title,
         'text':art.text,
         'top_image': art.top_image,
+         "language_code": art.meta_lang,
       }
     )*/
   this._post(`parse_url`, `url=${url}`, callback, onError, true);
