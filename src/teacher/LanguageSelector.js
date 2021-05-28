@@ -1,8 +1,17 @@
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Listbox, ListboxOption } from "@reach/listbox";
 import * as s from "./LabeledInputFields.sc";
 
 export function LanguageSelector(props) {
+  const [languages, setLanguages] = useState([]);
+  useEffect(()=>{
+    props.api.getSystemLanguages((languages) =>
+    setLanguages(languages.learnable_languages)
+  );
+  //eslint-disable-next-line
+  },[])
+
+  console.log(languages)
   return (
     <Fragment>
       <s.LabeledInputFields>
@@ -17,13 +26,7 @@ export function LanguageSelector(props) {
             onChange={props.onChange}
           >
             <ListboxOption value="default">STRINGSChoose a language...</ListboxOption>
-            <ListboxOption value="da">Danish STRINGS</ListboxOption>
-            <ListboxOption value="nl">Dutch STRINGS</ListboxOption>
-            <ListboxOption value="en">English STRINGS</ListboxOption>
-            <ListboxOption value="fr">French STRINGS</ListboxOption>
-            <ListboxOption value="de">German STRINGS</ListboxOption>
-            <ListboxOption value="it">Italian STRINGS</ListboxOption>
-            <ListboxOption value="es">Spanish STRINGS</ListboxOption>
+            {languages.map((language)=>(<ListboxOption key={language.code} value={language.code}>{language.name}</ListboxOption>))}
           </Listbox>
         </div>
       </s.LabeledInputFields>

@@ -7,6 +7,7 @@ import {
 } from "./LabeledInputFields";
 
 export default function EditTextInputFields({
+  api,
   language_code,
   article_title,
   article_content,
@@ -15,7 +16,7 @@ export default function EditTextInputFields({
 }) {
   return (
     <Fragment>
-      <LanguageSelector value={language_code} onChange={handleLanguageChange}>
+      <LanguageSelector api={api} value={language_code} onChange={handleLanguageChange}>
         Please, define the language of the text STRINGS
       </LanguageSelector>
       <LabeledTextField
