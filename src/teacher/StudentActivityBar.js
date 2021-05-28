@@ -20,9 +20,6 @@ const StudentActivityBar = ({ student }) => {
     //eslint-disable-next-line
   }, [student]);
 
-  console.log(student);
-
-
   const setReadingCorners = () => {
     let readingCorners = "25px 0 0 25px";
     if (student.exercises_done === 0) {
