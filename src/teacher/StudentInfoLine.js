@@ -60,11 +60,7 @@ export default function StudentInfoLine({
             </div>
 
             <div className="progress-bar">
-              <StudentActivityBar
-                student={student}
-                readingTime={activity.reading_time}
-                exerciseTime={activity.exercise_time_in_sec}
-              />
+              <StudentActivityBar student={student} />
             </div>
             <div className="number-display-wrapper">
               <div className="number-display">
