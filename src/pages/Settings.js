@@ -145,29 +145,28 @@ export default function Settings({ api, setUser }) {
         </div>
       </form>
 
-      {!user.is_teacher &&
-        process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
-          <div>
-            <label style={{ paddingTop: "1rem" }}>"STRINGS Join class"</label>
-            <input
-              type="text"
-              placeholder="Insert class invite code"
-              value={inviteCode}
-              onChange={(event) => handleInviteCodeChange(event)}
-            />
+      {!user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
+        <div>
+          <label style={{ paddingTop: "1rem" }}>"STRINGS Join class"</label>
+          <input
+            type="text"
+            placeholder="Insert class invite code"
+            value={inviteCode}
+            onChange={(event) => handleInviteCodeChange(event)}
+          />
 
-            {showJoinCohortError && (
-              <p style={{ color: "red", marginTop: "0" }}>
-                Something went wrong. Please check that the invite code is valid
-                and try again. STRINGS
-              </p>
-            )}
+          {showJoinCohortError && (
+            <p style={{ color: "red", marginTop: "0" }}>
+              Something went wrong. Please check that the invite code is valid
+              and try again. STRINGS
+            </p>
+          )}
 
-            <s.FormButton onClick={saveStudentToClass}>
-              STRINGS Join class
-            </s.FormButton>
-          </div>
-        )}
+          <s.FormButton onClick={saveStudentToClass}>
+            STRINGS Join class
+          </s.FormButton>
+        </div>
+      )}
     </s.FormContainer>
   );
 }

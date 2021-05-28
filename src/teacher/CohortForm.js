@@ -135,6 +135,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
             style={{ minWidth: 120 }}
           >
             <LanguageSelector
+              api={api}
               value={state.language_code}
               onChange={handleLanguageChange}
             >
