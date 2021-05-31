@@ -27,7 +27,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
   teacherArticleID
     ? (articleID = teacherArticleID)
     : (articleID = query.get("id"));
-  console.log(articleID)
 
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
@@ -65,8 +64,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
           document
             .getElementById("scrollHolder")
             .removeEventListener("scroll", onScroll);
-      };
-    }
+      }
+    };
     // eslint-disable-next-line
   }, []);
 
@@ -118,22 +117,23 @@ export default function ArticleReader({ api, teacherArticleID }) {
   }
 
   return (
-
     <s.ArticleReader>
-
       <PopupButtonWrapper>
+        {user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
+          <div>
+            {teacherArticleID && <Link to={`/teacher/texts/editText/${articleID}`}>
+              <StyledButton secondary studentView>
+                STRINGBack to editing
+              </StyledButton>
+            </Link>}
 
-        {user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (<div>
-          <Link to={`/teacher/texts/editText/${articleID}`}>
-            <StyledButton secondary studentView>STRINGBack to editing</StyledButton>
-          </Link>
-
-          <StyledButton primary studentView>STRINGAdd to class       </StyledButton>
-        </div>
+            <StyledButton primary studentView>
+              STRINGAdd to class
+            </StyledButton>
+          </div>
         )}
 
         <s.Toolbar>
-
           <button
             className={translating ? "selected" : ""}
             onClick={(e) => toggle(translating, setTranslating)}
@@ -151,7 +151,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
             <img src="/static/images/sound.svg" alt={strings.listenOnClick} />
             <span className="tooltiptext">{strings.listenOnClick}</span>
           </button>
-
         </s.Toolbar>
       </PopupButtonWrapper>
 
