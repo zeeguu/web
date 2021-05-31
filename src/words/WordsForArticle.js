@@ -43,9 +43,15 @@ export default function WordsForArticle({ api }) {
 
       <h4>Article: {articleInfo.title}</h4>
       <TopMessage>
-        {words.length > 0
-          ? "To ensure that a word is included in exercises: star it. Consequently delete the words you don't want to have in exercises."
-          : "The words you translate in the article will appear here for review"}
+        {words.length > 0 ? (
+          <>
+            Grayed out words don't appear in exercises unless you star them.
+            <br />
+            To prevent a word from being scheduled, delete it below.
+          </>
+        ) : (
+          "The words you translate in the article will appear here for review"
+        )}
       </TopMessage>
 
       {words.map((each) => (

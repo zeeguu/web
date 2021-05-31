@@ -20,11 +20,10 @@ export default class InteractiveText {
   }
 
   translate(word, onSuccess) {
-    // this.history.push(_.cloneDeep(this.paragraphsAsLinkedWordLists));
     let context = this.getContext(word);
 
     console.log(word);
-    word = word.fuseWithNeighborsIfNeeded();
+    word = word.fuseWithNeighborsIfNeeded(this.api);
 
     this.api
       .getOneTranslation(
@@ -41,7 +40,6 @@ export default class InteractiveText {
         word.translation = data["translations"][0].translation;
         word.service_name = data["translations"][0].service_name;
         word.bookmark_id = data["translations"][0].bookmark_id;
-
         onSuccess();
       })
       .catch(() => {
