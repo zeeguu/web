@@ -19,7 +19,7 @@ export default class InteractiveText {
     return this.paragraphsAsLinkedWordLists;
   }
 
-  translate(word, onSucess) {
+  translate(word, onSuccess) {
     // this.history.push(_.cloneDeep(this.paragraphsAsLinkedWordLists));
     let context = this.getContext(word);
 
@@ -40,7 +40,9 @@ export default class InteractiveText {
       .then((data) => {
         word.translation = data["translations"][0].translation;
         word.service_name = data["translations"][0].service_name;
-        onSucess();
+        word.bookmark_id = data["translations"][0].bookmark_id;
+
+        onSuccess();
       })
       .catch(() => {
         console.log("could not retreive translation");
