@@ -208,6 +208,8 @@ let strings = new LocalizedStrings(
       //ClassroomArticles
       noArticlesInClassroom: "There are no articles in your classroom.",
 
+      noOwnArticles: "There are no own articles.",
+
       //BookmarkedArticles
       noBookmarksYet: "You haven't bookmarked any articles yet.",
 
@@ -464,6 +466,8 @@ let strings = new LocalizedStrings(
 
       //ClassroomArticles
       noArticlesInClassroom: "Der er ingen artikler i denne klasse.",
+
+      noOwnArticles: "Der er ingen egen artikler.",
 
       //BookmarkedArticles
       noBookmarksYet: "Du har endnu ingen bogmærker.",

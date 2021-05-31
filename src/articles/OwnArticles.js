@@ -25,7 +25,7 @@ export default function OwnArticles({ api }) {
   }
 
   if (articleList.length === 0) {
-    return <s.TopMessage>{strings.noArticlesInClassroom}</s.TopMessage>;
+    return <s.TopMessage>{strings.noOwnArticles}</s.TopMessage>;
   }
 
   return (
