@@ -416,7 +416,7 @@ let strings = new LocalizedStrings(
       findTab: "Find",
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
-      ownTextsTab: "Egne Texter",
+      ownTextsTab: "Egne Tekster",
 
       //WordsRouter
       yourWordsHeadline: "Dine ord",
