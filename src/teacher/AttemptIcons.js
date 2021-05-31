@@ -54,14 +54,14 @@ export const AttemptIcons = ({ attemptString, feedback }) => {
   const setIcon = (char) => {
     switch (char) {
       case "w":
-        return <WrongAttempt key={uuid()} />;
+        return <WrongAttempt key={char+ uuid()} />;
       case "h":
-        return <HintUsed key={uuid()} />;
+        return <HintUsed key={char + uuid()} />;
       case "s":
-        return <SolutionShown key={uuid()} />;
+        return <SolutionShown key={char + uuid()} />;
 
       default:
-        return <CorrectAttempt key={uuid()} />;
+        return <CorrectAttempt key={char + uuid()} />;
     }
   };
 

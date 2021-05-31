@@ -6,7 +6,7 @@ const LearnedWordsList = ({ words }) => {
   return (
     <Fragment>
       {words.map((word) => (
-        <div key={uuid()}>
+        <div key={uuid()+word}>
           {word.isLearned === "true" && (
             <div
               style={{
@@ -35,7 +35,7 @@ const LearnedWordsList = ({ words }) => {
                   {exercise.attempts.length === 1 &&
                     exercise.attempts[0] === "c" && (
                       <div
-                        key={uuid()}
+                        key={uuid()+exercise.type}
                         style={{
                           display: "flex",
                           flexDirection: "row",
