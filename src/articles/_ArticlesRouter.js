@@ -5,7 +5,9 @@ import { PrivateRoute } from "../PrivateRoute";
 import Search from "./Search";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
-import strings from "../i18n/definitions"
+import strings from "../i18n/definitions";
+
+import OwnArticles from "./OwnArticles";
 
 import * as s from "../components/ColumnWidth.sc";
 
@@ -15,11 +17,12 @@ export default function ArticlesRouter({ api }) {
       {/* Rendering top menu first, then routing to corresponding page */}
       <s.NarrowColumn>
         <TopTabs
-          title= {strings.articles}
+          title={strings.articles}
           tabsAndLinks={{
             [strings.findTab]: "/articles",
             [strings.classroomTab]: "/articles/classroom",
             [strings.bookmarkedTab]: "/articles/bookmarked",
+            "Own Texts (STRINGS)": "articles/ownArticles",
           }}
         />
 
@@ -43,6 +46,12 @@ export default function ArticlesRouter({ api }) {
           path="/articles/classroom"
           api={api}
           component={ClassroomArticles}
+        />
+
+        <PrivateRoute
+          path="/articles/ownTexts"
+          api={api}
+          component={OwnArticles}
         />
       </s.NarrowColumn>
     </>

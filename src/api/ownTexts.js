@@ -66,3 +66,7 @@ Zeeguu_API.prototype.updateOwnText = function (
 Zeeguu_API.prototype.deleteOwnText = function (id, onSuccess) {
   this._getPlainText(`delete_own_text/${id}`, onSuccess);
 };
+
+Zeeguu_API.prototype.getOwnTexts = function (callback) {
+  this._get("own_texts", callback);
+};
