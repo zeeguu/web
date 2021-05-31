@@ -159,6 +159,7 @@ let strings = new LocalizedStrings(
       findTab: "Find",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
+      ownTextsTab: "Own Texts",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
@@ -415,6 +416,7 @@ let strings = new LocalizedStrings(
       findTab: "Find",
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
+      ownTextsTab: "Egne Texter",
 
       //WordsRouter
       yourWordsHeadline: "Dine ord",
