@@ -22,7 +22,7 @@ export default function ArticlesRouter({ api }) {
             [strings.findTab]: "/articles",
             [strings.classroomTab]: "/articles/classroom",
             [strings.bookmarkedTab]: "/articles/bookmarked",
-            [strings.ownTextsTab]: "articles/ownArticles",
+            [strings.ownTextsTab]: "/articles/ownTexts",
           }}
         />
 
