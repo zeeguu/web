@@ -26,6 +26,15 @@ Zeeguu_API.prototype.bookmarksForArticle = function (articleId, callback) {
   );
 };
 
+Zeeguu_API.prototype.bookmarksToStudyForArticle = function (
+  articleId,
+  callback
+) {
+  this._get(`bookmarks_to_study_for_article/${articleId}`, (result) =>
+    callback(result.bookmarks)
+  );
+};
+
 // individual bookmark handling
 
 Zeeguu_API.prototype.unstarBookmark = function (bookmark_id) {
