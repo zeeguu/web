@@ -24,6 +24,19 @@ Zeeguu_API.prototype.ARTICLE_UNFOCUSED = "ARTICLE LOST FOCUS";
 Zeeguu_API.prototype.ARTICLE_LIST_REQUESTED = "ARTICLES REQUESTED FROM ZEEGUU";
 Zeeguu_API.prototype.TO_EXERCISES_AFTER_REVIEW = "TO EXERCISES AFTER REVIEW";
 
+// User Activity Dashboard
+Zeeguu_API.prototype.USER_DASHBOARD_OPEN = "UD - USER DASHBOARD OPEN";
+Zeeguu_API.prototype.USER_DASHBOARD_USER_FEEDBACK =
+  "UD - USER DASHBOARD FEEDBACK";
+Zeeguu_API.prototype.USER_DASHBOARD_TAB_CHANGE =
+  "UD - USER DASHBOARD TAB CHANGE";
+Zeeguu_API.prototype.USER_DASHBOARD_PERIOD_CHANGE =
+  "UD - USER DASHBOARD PERIOD CHANGE";
+Zeeguu_API.prototype.USER_DASHBOARD_TIME_COUNT_CHANGE =
+  "UD - USER DASHBOARD TIME COUNT CHANGE";
+Zeeguu_API.prototype.USER_DASHBOARD_DATE_CHANGE =
+  "UD - USER DASHBOARD DATE CHANGE";
+
 Zeeguu_API.prototype.logUserActivity = function (
   event,
   article_id = "",
@@ -32,7 +45,7 @@ Zeeguu_API.prototype.logUserActivity = function (
 ) {
   let event_information = {
     time: new Date().toJSON(),
-    event: "UMR - " + event,
+    event: event,
     value: value,
     extra_data: extra_data,
     article_id: article_id,
@@ -44,4 +57,15 @@ Zeeguu_API.prototype.logUserActivity = function (
     `upload_user_activity_data`,
     queryString.stringify(event_information)
   );
+};
+
+// Used only for events that happen in the text reader;
+// for any other events, use logUserActivity
+Zeeguu_API.prototype.logReaderActivity = function (
+  event,
+  article_id = "",
+  value = "",
+  extra_data = ""
+) {
+  return this.logUserActivity("UMR - " + event, article_id, value, extra_data);
 };
