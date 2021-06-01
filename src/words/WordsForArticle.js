@@ -17,6 +17,7 @@ export default function WordsForArticle({ api }) {
   useEffect(() => {
     api.bookmarksForArticle(articleID, (bookmarks) => {
       setWords(bookmarks);
+      console.dir(bookmarks);
     });
     api.getArticleInfo(articleID, (data) => {
       setArticleInfo(data);
