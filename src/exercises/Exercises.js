@@ -38,6 +38,7 @@ export default function Exercises({ api, articleID }) {
       } else {
         api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, (bookmarks) => {
           initializeExercises(bookmarks, "Exercises");
+          console.dir(bookmarks);
         });
       }
     }
@@ -119,7 +120,9 @@ export default function Exercises({ api, articleID }) {
 
   return (
     <s.ExercisesColumn>
-      <s.LittleMessageAbove>{strings.wordSourcePrefix} {wordSourceText}</s.LittleMessageAbove>
+      <s.LittleMessageAbove>
+        {strings.wordSourcePrefix} {wordSourceText}
+      </s.LittleMessageAbove>
       <ProgressBar index={currentIndex} total={NUMBER_OF_EXERCISES} />
 
       <s.ExForm>
