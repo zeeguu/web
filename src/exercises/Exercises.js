@@ -26,7 +26,7 @@ export default function Exercises({ api, articleID }) {
   useEffect(() => {
     if (!bookmarksToStudyList) {
       if (articleID) {
-        api.bookmarksForArticle(articleID, (bookmarks) => {
+        api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
           api.getArticleInfo(articleID, (data) => {
             setArticleInfo(data);
             initializeExercises(
