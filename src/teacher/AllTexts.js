@@ -18,11 +18,10 @@ export default function AllTexts({ api }) {
   if (articleList == null) {
     api.getTeacherTexts((articles) => {
       //making sure the newest articles are on top
-      const reversedList= articles.reverse()
-      setArticleList(reversedList)
+      const reversedList = articles.reverse();
+      setArticleList(reversedList);
       setOriginalList(reversedList);
     });
-    
 
     setTitle("Add Texts STRINGS");
 
@@ -43,15 +42,21 @@ export default function AllTexts({ api }) {
           </Link>
           <br />
           <br />
-          <div className="sorting-btns-box">
-            <SortingButtons
-              articleList={articleList}
-              originalList={originalList}
-              setArticleList={setArticleList}
-            />
-          </div>
+          {articleList.length > 0 ? (
+            <div className="sorting-btns-box">
+              <SortingButtons
+                articleList={articleList}
+                originalList={originalList}
+                setArticleList={setArticleList}
+              />
+            </div>
+          ) : (
+            <s.CenteredContent>
+              <h4>You have not added any texts of your own yet. STRINGS</h4>
+            </s.CenteredContent>
+          )}
           {articleList.map((each) => (
-            <TeacherTextPreview key={each.id} article={each}/>
+            <TeacherTextPreview key={each.id} article={each} />
           ))}
           <br />
         </m.StyledMyTexts>
