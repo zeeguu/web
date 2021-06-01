@@ -106,10 +106,6 @@ export default function EditText({ api }) {
     });
   };
 
-  const addArticleToCohort = () => {
-    setShowDialog(true);
-  };
-
   return (
     <Fragment>
       <s.NarrowColumn>
@@ -117,15 +113,17 @@ export default function EditText({ api }) {
           <h1>STRINGSEditText</h1>
         </sc.TopTabs>
         <TopButtonWrapper>
-          <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
-            <StyledButton secondary disabled={buttonDisabled}>
-              STRINGSView as student
-            </StyledButton>
-          </Link>
+          {articleID !== "new" && (
+            <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
+              <StyledButton secondary disabled={buttonDisabled}>
+                STRINGSView as student
+              </StyledButton>
+            </Link>
+          )}
 
           <StyledButton
             primary
-            onClick={addArticleToCohort}
+            onClick={() => setShowDialog(true)}
             disabled={buttonDisabled}
           >
             Add to class STRINGS

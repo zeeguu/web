@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import { TranslatableText } from "./TranslatableText";
@@ -27,7 +27,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
   teacherArticleID
     ? (articleID = teacherArticleID)
     : (articleID = query.get("id"));
-  console.log(articleID)
 
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
@@ -35,6 +34,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
   const user = useContext(UserContext);
+  const history = useHistory();
 
   useEffect(() => {
     api.getArticleInfo(articleID, (articleInfo) => {
@@ -65,8 +65,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
           document
             .getElementById("scrollHolder")
             .removeEventListener("scroll", onScroll);
-      };
-    }
+      }
+    };
     // eslint-disable-next-line
   }, []);
 
@@ -117,23 +117,42 @@ export default function ArticleReader({ api, teacherArticleID }) {
     return <LoadingAnimation />;
   }
 
+  const saveArticleToOwnTexts = () => {
+    api.getArticleInfo(articleID, (article) => {
+      api.uploadOwnText(
+        article.title,
+        article.content,
+        article.language,
+        (newID) => {
+          console.log(`article created with id: ${newID}`);
+          history.push(`/teacher/texts/editText/${newID}`);
+        }
+      );
+    });
+  };
+
   return (
-
     <s.ArticleReader>
-
       <PopupButtonWrapper>
+        {user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
+          <div>
+            {teacherArticleID && (
+              <Link to={`/teacher/texts/editText/${articleID}`}>
+                <StyledButton secondary studentView>
+                  STRINGBack to editing
+                </StyledButton>
+              </Link>
+            )}
 
-        {user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (<div>
-          <Link to={`/teacher/texts/editText/${articleID}`}>
-            <StyledButton secondary studentView>STRINGBack to editing</StyledButton>
-          </Link>
-
-          <StyledButton primary studentView>STRINGAdd to class       </StyledButton>
-        </div>
+            {!teacherArticleID && (
+              <StyledButton primary studentView onClick={saveArticleToOwnTexts}>
+                STRINGSave own copy
+              </StyledButton>
+            )}
+          </div>
         )}
 
         <s.Toolbar>
-
           <button
             className={translating ? "selected" : ""}
             onClick={(e) => toggle(translating, setTranslating)}
@@ -151,7 +170,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
             <img src="/static/images/sound.svg" alt={strings.listenOnClick} />
             <span className="tooltiptext">{strings.listenOnClick}</span>
           </button>
-
         </s.Toolbar>
       </PopupButtonWrapper>
 

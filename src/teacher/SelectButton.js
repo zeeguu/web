@@ -1,18 +1,16 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { StyledButton } from "./TeacherButtons.sc";
 
 export default function SelectButton({
-  keyID,
   value,
   btnText,
   isChosen,
   handleChange,
 }) {
   return (
-    <>
+    <Fragment>
       {isChosen ? (
         <StyledButton
-          key={keyID}
           choiceSelected
           onClick={() => {
             handleChange(value);
@@ -22,7 +20,6 @@ export default function SelectButton({
         </StyledButton>
       ) : (
         <StyledButton
-          key={keyID}
           choiceNotSelected
           onClick={() => {
             handleChange(value);
@@ -31,6 +28,6 @@ export default function SelectButton({
           {btnText}
         </StyledButton>
       )}
-    </>
+    </Fragment>
   );
 }
