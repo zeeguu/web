@@ -168,7 +168,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
         </StyledButton>
         {cohort && (
           <StyledButton secondary onClick={() => setShowWarning(true)}>
-            DeleteSTRING
+            Remove from list STRING
           </StyledButton>
         )}
       </PopupButtonWrapper>

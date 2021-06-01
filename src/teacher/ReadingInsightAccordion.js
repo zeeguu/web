@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { v4 as uuid } from "uuid";
 import {
   Accordion,
   AccordionItem,
@@ -33,7 +34,7 @@ const ReadingInsightAccordion = ({ readArticles }) => {
         {readArticles !== null &&
           readArticles.map((article) => (
             <AccordionItem
-              key={article.article_id}
+              key={uuid() + article.article_id}
               className="accordion-wrapper"
             >
               <AccordionButton onClick={() => handleClick(article.article_id)}>
