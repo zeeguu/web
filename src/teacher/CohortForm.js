@@ -15,6 +15,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isDeleteError, setIsDeleteError] = useState(false);
   const [state, setState] = useState({
     id: cohort ? cohort.id : "",
     cohort_name: cohort ? cohort.name : "",
@@ -38,10 +39,9 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
     setIsLoading(false);
   };
 
-  //!Remember that it is not possible to delete a class with students in it.
   const deleteCohort = (cohort_id) => {
     setIsLoading(true);
-    setIsError(false);
+    setIsDeleteError(false);
     api
       .deleteCohort(cohort_id)
       .then((result) => {
@@ -49,7 +49,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
-        setIsError(true);
+        setIsDeleteError(true);
       });
     setIsLoading(false);
   };
@@ -84,13 +84,16 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
     });
   }
 
+  const inputIsEmpty =
+    state.cohort_name === "" ||
+    state.invite_code === "" ||
+    state.language_code === "default";
+
   //the submit button is disabled until the input is valid
   const isValid =
-    state.cohort_name !== "" &&
-    state.cohort_name.length <= 50 &&
-    state.invite_code !== "" &&
-    state.invite_code.length <= 20 &&
-    state.language_code !== "default";
+    !inputIsEmpty &&
+    state.cohort_name.length <= 30 &&
+    state.invite_code.length <= 20;
 
   function setupForm() {
     const form = new FormData();
@@ -145,17 +148,18 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
           {isError && (
             <Error
               message={
-                "Something went wrong. Maybe the invite code is already in use. DEV NOTE: Cannot delete class with texts in it. STRINGS"
+                "Something went wrong. Maybe the invite code is already in use.STRINGS"
               }
               setLoading={setIsLoading}
             />
           )}
         </form>
       )}
-      {!isValid && (
-        <p style={{ color: "red" }}>
-          You must fill out all the input fields. STRINGS
-        </p>
+      {inputIsEmpty && (
+        <Error
+          message={"You must fill out all the input fields. STRINGS"}
+          setLoading={setIsLoading}
+        />
       )}
       <PopupButtonWrapper>
         <StyledButton
@@ -178,6 +182,9 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
           cohort={cohort}
           setShowWarning={setShowWarning}
           deleteCohort={deleteCohort}
+          isDeleteError={isDeleteError}
+          setIsDeleteError={setIsDeleteError}
+          setIsLoading={setIsLoading}
         />
       )}
     </StyledDialog>
