@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md/";
 import * as s from "./ViewMoreLessButton.sc";
-const ViewMoreLessButton = ({ articleID, openedArticle }) => {
+const ViewMoreLessButton = ({ articleID, openedArticle, isFirst }) => {
   const [showLessButton, setShowLessButton] = useState(false);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const ViewMoreLessButton = ({ articleID, openedArticle }) => {
   }, [openedArticle]);
 
   return (
-    <s.ViewMoreLessButton>
+    <s.ViewMoreLessButton isFirst={isFirst}>
       <Fragment>
         {!showLessButton ? (
           <div className="wrapper">

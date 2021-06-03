@@ -10,7 +10,6 @@ export const StudentActivityDataCircleWrapper = styled.div`
 ${(props) =>
     props.isFirst &&
     css`
- background-color: pink;
  width:30em;
       
     `}

@@ -38,10 +38,11 @@ const ReadingInsightAccordion = ({ readArticles }) => {
     return dateString;
   };
   return (
-    <s.ReadingInsightAccordion>
-      <Accordion collapsible>
-        {readArticles !== null &&
-          readArticles.map((article) => (
+
+    <Accordion collapsible>
+      {readArticles !== null &&
+        readArticles.map((article) => (
+          <s.ReadingInsightAccordion isFirst={isFirstArticle(article.article_id)}>
             <AccordionItem
               key={article.article_id}
               className="accordion-wrapper"
@@ -83,9 +84,10 @@ const ReadingInsightAccordion = ({ readArticles }) => {
                 <StudentTranslations article={article} />
               </AccordionPanel>
             </AccordionItem>
-          ))}
-      </Accordion>
-    </s.ReadingInsightAccordion>
+          </s.ReadingInsightAccordion>
+        ))}
+    </Accordion>
+
   );
 };
 export default ReadingInsightAccordion;
