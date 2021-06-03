@@ -22,6 +22,7 @@ let strings = new LocalizedStrings(
       resetPassword: "Reset Password",
       code: "Code",
       interest: "interest",
+      addTexts: "Add Texts",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -259,9 +260,6 @@ let strings = new LocalizedStrings(
       reading: "Reading",
       backToClassroom: "Back To Classroom",
 
-      //AddTextOptions
-      addTexts: "Add Texts",
-
       //AddTextOptionTypes
       articleFromZeeguuToClass: "Assign an article from Zeeguu to a class",
       copyPasteArticleToClass: "Copy/paste content or type your own text",
@@ -283,7 +281,6 @@ let strings = new LocalizedStrings(
       saveAndEdit: "Save and edit",
 
       //AllTexts
-      addTexts: "Add Texts",
       addText: "Add Text",
       noTextAddedYet: "You have not added any texts of your own yet.",
 
@@ -352,7 +349,7 @@ let strings = new LocalizedStrings(
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
-      shareInviteCode: "Share the invite code",
+      shareTheInviteCode: "Share the invite code",
       shareInviteCodeContinued: "with them,",
       soTheStudentCanJoinClass: "so they can sign up and join the classroom.",
 
@@ -424,6 +421,7 @@ let strings = new LocalizedStrings(
       resetPassword: "Nulstil kodeord",
       code: "Kode",
       interest: "interesse",
+      addTexts: "Tilføj tekster",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -662,9 +660,6 @@ let strings = new LocalizedStrings(
       reading: "Læsning",
       backToClassroom: "Tilbage til klasseværelset",
 
-      //AddTextOptions
-      addTexts: "Tilføj tekster",
-
       //AddTextOptionTypes
       articleFromZeeguuToClass: "Tilføj en artikel fra Zeeguu til en klasse",
       copyPasteArticleToClass: "Kopier/indsæt tekst, eller skriv din egen",
@@ -687,7 +682,6 @@ let strings = new LocalizedStrings(
       saveAndEdit: "Gem og rediger",
 
       //AllTexts
-      addTexts: "Tilføj tekster",
       addText: "Tilføj tekst",
       noTextAddedYet: "Du har ikke tilføjet nogle af dine egne tekster endnu.",
 
@@ -756,7 +750,7 @@ let strings = new LocalizedStrings(
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
-      shareInviteCode: "Del invitationskoden",
+      shareTheInviteCode: "Del invitationskoden",
       shareInviteCodeContinued: "med eleverne,",
       soTheStudentCanJoinClass:
         "så de kan oprette sig og blive en del af klassen.",
