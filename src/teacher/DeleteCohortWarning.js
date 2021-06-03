@@ -30,19 +30,13 @@ const DeleteCohortWarning = ({
         <p>{strings.deleteCohortEnsurance}</p>
       </div>
       <CohortItemCard api={api} cohort={cohort} isWarning={true} />{" "}
-      {isDeleteError && (
-        <Error
-          message={
-            "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again."
-          }
-        />
-      )}
+      {isDeleteError && <Error message={strings.cannotDeleteClassWithText} />}
       <PopupButtonWrapper>
         <StyledButton primary onClick={handleCancel}>
           {strings.cancel}
         </StyledButton>
         <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
-          {strings.delete}
+          {strings.removeFromList}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>
