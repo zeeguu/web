@@ -6,6 +6,7 @@ import PractisedWordsCard from "./PractisedWordsCard";
 import WordCountCard from "./WordCountCard";
 import { StyledButton } from "./TeacherButtons.sc";
 import WordsDropDown from "./WordsDropDown";
+import strings from "../i18n/definitions";
 import { DUMMYWORDS } from "./DUMMIES_TO_DELETE";
 
 export default function StudentExercisesInsights({ api }) {
@@ -17,13 +18,13 @@ export default function StudentExercisesInsights({ api }) {
   const [doneExercises, setDoneExercises] = useState(null);
   const [isOpen, setIsOpen] = useState("");
 
-  const practisedWords = DUMMYWORDS
+  const practisedWords = DUMMYWORDS;
 
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
       setStudentInfo(userInfo);
     });
-    
+
     // eslint-disable-next-line
   }, [forceUpdate]);
 
@@ -47,9 +48,9 @@ export default function StudentExercisesInsights({ api }) {
   const customText =
     doneExercises &&
     studentInfo.name +
-      " has completed " +
+      strings.hasCompleted +
       doneExercises.length +
-      " exercises in the last ";
+      strings.exercisesInTheLast;
 
   const handleCardClick = (cardName) => {
     if (isOpen === cardName) {

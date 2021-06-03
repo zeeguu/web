@@ -2,6 +2,7 @@ import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
 import PriorityHighRoundedIcon from "@material-ui/icons/PriorityHighRounded";
 import { v4 as uuid } from "uuid";
+import strings from "../i18n/definitions";
 
 const CorrectAttempt = () => {
   return (
@@ -54,7 +55,7 @@ export const AttemptIcons = ({ attemptString, feedback }) => {
   const setIcon = (char) => {
     switch (char) {
       case "w":
-        return <WrongAttempt key={char+ uuid()} />;
+        return <WrongAttempt key={char + uuid()} />;
       case "h":
         return <HintUsed key={char + uuid()} />;
       case "s":
@@ -86,39 +87,36 @@ export const IconExplanation = (
     <div style={{ display: "flex", flexDirection: "row" }}>
       <WrongAttempt />
       <p style={{ marginLeft: "1em" }}>
-        indicates that the student made an incorrect attempt at solving the
-        exercise.
+        {strings.incorrectAttemptIconExplanation}
       </p>
     </div>
     <div style={{ display: "flex", flexDirection: "row" }}>
       <CorrectAttempt />
       <p style={{ marginLeft: ".5em" }}>
-        indicates that the student solved the exercise correctly.
+        {strings.correctExerciseIconExplanation}
       </p>
     </div>
     <div style={{ display: "flex", flexDirection: "row" }}>
       <HintUsed />
       <p style={{ marginLeft: ".5em" }}>
-        indicates that the student asked for a hint in the exercise.
+        {strings.hintInExerciseIconExplanation}
       </p>
     </div>
     <div style={{ display: "flex", flexDirection: "row" }}>
       <SolutionShown />
-      <p style={{ marginLeft: ".5em" }}>
-        indicates that the student asked to see the solution to the exercise.
-      </p>
+      <p style={{ marginLeft: ".5em" }}>{strings.askedForSolutionInExercise}</p>
     </div>
     <div style={{ display: "flex", flexDirection: "row" }}>
       <p style={{ fontWeight: 500, marginRight: ".6em" }}>
-        Too hard/Too easy/Bad example etc.
+        {strings.studentExerciseFeedback}
       </p>
-      <p> is feedback that the student has given on the exercise.</p>
+      <p> {strings.exerciseFeedbackFromStudent}</p>
     </div>
     <div style={{ display: "flex", flexDirection: "row" }}>
-      <p style={{ color:"#808080", marginRight: ".4em" }}>
-        recognise/multiple choice etc.
+      <p style={{ marginRight: ".4em", fontWeight: 500 }}>
+        Recognise/multiple choice etc.
       </p>
-      <p> is the type of exercise the student has practised the word in.</p>
+      <p> {strings.typeOfExerciseIconExplanation}</p>
     </div>
   </div>
 );
