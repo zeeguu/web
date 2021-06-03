@@ -93,7 +93,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
   //the submit button is disabled until the input is valid
   const isValid =
     !inputIsEmpty &&
-    state.cohort_name.length <= 30 &&
+    state.cohort_name.length <= 20 &&
     state.invite_code.length <= 20;
 
   function setupForm() {
