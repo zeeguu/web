@@ -47,7 +47,7 @@ export default function StudentReadingInsights({ api }) {
     " has read " +
     readArticles.length +
     " texts in the last ";
-  console.log(readArticles);
+
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />

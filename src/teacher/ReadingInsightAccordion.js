@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -7,11 +7,20 @@ import {
 } from "@reach/accordion";
 import * as s from "./ReadingInsightAccordion.sc";
 import ViewMoreLessButton from "./ViewMoreLessButton";
-import StudentActivityDataCircles from "./StudentActivityDataCircles";
+import StudentActivityDataCircleWrapper from "./StudentActivityDataCircleWrapper";
 import StudentTranslations from "./StudentTranslations";
 
 const ReadingInsightAccordion = ({ readArticles }) => {
   const [openedArticle, setOpenedArticle] = useState(null);
+  const [firstArticle, setFirstArticle] = useState("");
+
+  useEffect(() => {
+    setFirstArticle(readArticles[0].article_id);
+  }, [])
+
+  const isFirstArticle = (articleID) => {
+    return articleID === firstArticle;
+  }
 
   const handleClick = (articleID) => {
     if (articleID === openedArticle) {
@@ -40,7 +49,6 @@ const ReadingInsightAccordion = ({ readArticles }) => {
                 <div className="content-wrapper">
                   <div className="date-title-wrapper">
                     <h2 className="article-title">
-
                       {article.title.substring(0, 100)}
                       {article.title.length > 100 ? "..." : ""}
                     </h2>
@@ -49,12 +57,13 @@ const ReadingInsightAccordion = ({ readArticles }) => {
                     </p>
                   </div>
                   <div className="data-circle-wrapper">
-                    <StudentActivityDataCircles
+                    <StudentActivityDataCircleWrapper
                       className="data-circles"
                       length={article.word_count}
                       difficulty={article.difficulty}
                       readingTime={article.duration_in_sec}
                       translatedWords={article.translations.length}
+                      isFirst={isFirstArticle(article.article_id)}
                     />
                     <ViewMoreLessButton
                       articleID={article.article_id}
