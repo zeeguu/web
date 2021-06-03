@@ -1,17 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-
 import { LanguageSelector } from "../components/LanguageSelector";
-
 import { UserContext } from "../UserContext";
+import { setTitle } from "../assorted/setTitle";
+import LocalStorage from "../assorted/LocalStorage";
 import LoadingAnimation from "../components/LoadingAnimation";
-
 import * as s from "../components/FormPage.sc";
 import * as sc from "../components/TopTabs.sc";
-import { setTitle } from "../assorted/setTitle";
-
-import LocalStorage from "../assorted/LocalStorage";
-
 import strings from "../i18n/definitions";
 import { Error } from "../teacher/Error";
 
@@ -159,34 +154,30 @@ export default function Settings({ api, setUser }) {
           <p style={{ margin: "25px 0 -5px 0" }}>
             <b>
               {studentIsInCohort
-                ? "Your current class is " + currentCohort + "."
-                : "You haven't joined a class yet."}
+                ? strings.yourCurrentClassIs + currentCohort + "."
+                : strings.youHaveNotJoinedAClass}
             </b>
           </p>
           <label style={{ paddingTop: "1rem" }}>
-            {studentIsInCohort ? "Change class STRINGS" : "STRINGS Join class"}
+            {studentIsInCohort ? strings.changeClassbtn : strings.joinClass}
           </label>
           <input
             type="text"
             placeholder={
               studentIsInCohort
-                ? "Insert new invite code STRINGS"
-                : "Insert invite code STRINGS"
+                ? strings.insertNewInviteCode
+                : strings.insertInviteCode
             }
             value={inviteCode}
             onChange={(event) => handleInviteCodeChange(event)}
           />
 
           {showJoinCohortError && (
-       <Error message={
-          "Something went wrong. Please check that the invite code is valid and try again. STRINGS"
-        }
-      />
-
+            <Error message={strings.checkIfInviteCodeIsValid} />
           )}
 
           <s.FormButton onClick={saveStudentToClass}>
-            {studentIsInCohort ? "Change class STRINGS" : "STRINGS Join class"}
+            {studentIsInCohort ? strings.changeClassbtn : strings.joinClass}
           </s.FormButton>
         </div>
       )}
