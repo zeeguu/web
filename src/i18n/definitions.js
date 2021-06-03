@@ -23,6 +23,10 @@ let strings = new LocalizedStrings(
       code: "Code",
       interest: "interest",
       addTexts: "Add Texts",
+      delete: "Delete",
+      cancel: "Cancel",
+      joinClass: "Join Class",
+      youHaveNotJoinedAClass: "You haven't joined a class yet.",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -184,6 +188,8 @@ let strings = new LocalizedStrings(
       reviewVocabulary: "Review Vocabulary",
       reviewVocabExplanation:
         "Review your translations now to ensure better learning and ensure that you tell Zeeguu which of the words you want prioritize in your study.",
+      backToEditing: "Back to editing",
+      saveOwnCopy: "Save own copy",
 
       //BookmarkButton
       addToBookmarks: "Add to bookmarks",
@@ -289,9 +295,9 @@ let strings = new LocalizedStrings(
       createClass: "Create Class",
       classroomLanguage: "Classroom Language",
       errorInviteCode:
-        "Something went wrong. Maybe the invite code is already in use. DEV NOTE: Cannot delete class with texts in it.",
+        "Something went wrong. Maybe the invite code is already in use.",
       errorEmptyInputField: "You must fill out all the input fields.",
-      delete: "Delete",
+      removeFromList: "Remove from list",
 
       //CohortFormInputFields
       chooseClassName: "Choose the class name (max. 20 characters)",
@@ -309,7 +315,8 @@ let strings = new LocalizedStrings(
       dangerzone: "Danger Zone!",
       deleteCohortEnsurance:
         "Are you sure you want to delete this class? This cannot be undone.",
-      cancel: "Cancel",
+      cannotDeleteClassWithText:
+        "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again.",
 
       //DeleteStudentWarning
       wishToDeleteStudent: "Do you wish to remove",
@@ -359,7 +366,7 @@ let strings = new LocalizedStrings(
       numberOfWords: "number of words",
       solvedOnFirstAttempt: "solved on 1st attempt",
 
-      //ReadingIsightAccordion
+      //ReadingInsightAccordion
       readingDate: "Read: ",
 
       //ReadingInsightHeader
@@ -400,6 +407,38 @@ let strings = new LocalizedStrings(
 
       //TimeSelector
       changeTimePeriod: "Change the time period",
+
+      //TimeSelectorHelperMap
+      oneWeek: "1 week",
+      twoWeeks: "2 weeks",
+      oneMonth: "1 month",
+      sixMonths: "6 months",
+      oneYear: "1 year",
+
+      //TutorialItemCard
+      tutorialComingSoon: "This video tutorial is coming soon...",
+
+      //Tutorials
+      howToAddAndEditClass: "How to add and edit a class...",
+      howToDeleteClass: "How to delete a class...",
+      howToAddStudent: "How to add students...",
+      howToDeleteStudents: "How to delete students...",
+      howToAddText: "How to add a text...",
+      howToEditAndDeleteText: "How to edit or delete a text...",
+      howToShareText: "How to share texts with your class/classes...",
+      howToExplainZeeguuData: "The data you can find in Zeeguu explained...",
+
+      //ViewMoreLessButton
+      viewMoreBtn: "View more",
+      viewLessBtn: "View less",
+
+      //WordsDropDown
+      wordsTranslatedButNotInZeeguu:
+        "Words translated by the student but not studied in Zeeguu",
+      wordsTranslatedAndLearned:
+        "Word practised correctly on four different days",
+      wordsTranslatedAndExercised:
+        "Practised words - translated and exercised by the student",
     },
 
     da: {
@@ -422,6 +461,10 @@ let strings = new LocalizedStrings(
       code: "Kode",
       interest: "interesse",
       addTexts: "Tilføj tekster",
+      delete: "Slet",
+      cancel: "Annuller",
+      joinClass: "Deltag i klasse",
+      youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -584,6 +627,8 @@ let strings = new LocalizedStrings(
       reviewVocabulary: "Gennemse ordforråd",
       reviewVocabExplanation:
         "Gennemse dine oversatte ord nu for at sikre bedre læring. Husk at fortælle Zeeguu hvilke ord, du gerne vil prioritere i din træning.",
+      backToEditing: "Tilbage til redigering",
+      saveOwnCopy: "Gem egen kopi",
 
       //BookmarkButton
       addToBookmarks: "Tilføj til bogmærker",
@@ -692,7 +737,7 @@ let strings = new LocalizedStrings(
       errorInviteCode:
         "Noget gik galt. Måske er invitationskoden allerede i brug. DEV BEMÆRKNING: Kan ikke slette klasse, som indeholder tekster.",
       errorEmptyInputField: "Venligst udfyld alle felter.",
-      delete: "Slet",
+      removeFromList: "Fjern fra liste",
 
       //CohortFormInputFields
       chooseClassName: "Angiv navnet på denne klasse (maks. 20 tegn)",
@@ -710,7 +755,8 @@ let strings = new LocalizedStrings(
       dangerzone: "Farezone!",
       deleteCohortEnsurance:
         "Er du sikker på, at du vil slette denne klasse? Du kan ikke fortryde.",
-      cancel: "Annuller",
+      cannotDeleteClassWithText:
+        "Noget gik galt. Hvis du deler tekster med denne klasse, kan du ikke slette klassen. Fjern delte tekster med denne klasse i 'Mine tekster', og prøv igen.",
 
       //DeleteStudentWarning
       wishToDeleteStudent: "Ønsker du at fjerne",
@@ -761,7 +807,7 @@ let strings = new LocalizedStrings(
       numberOfWords: "antal ord",
       solvedOnFirstAttempt: "løst ved 1. forsøg",
 
-      //ReadingIsightAccordion
+      //ReadingInsightAccordion
       readingDate: "Læst: ",
 
       //ReadingInsightHeader
@@ -802,6 +848,36 @@ let strings = new LocalizedStrings(
 
       //TimeSelector
       changeTimePeriod: "Skift tidsperiode",
+
+      //TimeSelectorHelperMap
+      oneWeek: "1 uge",
+      twoWeeks: "2 uger",
+      oneMonth: "1 måned",
+      sixMonths: "6 måneder",
+      oneYear: "1 år",
+
+      //TutorialItemCard
+      tutorialComingSoon: "Denne video kommer snart...",
+
+      //Tutorials
+      howToAddAndEditClass: "Sådan tilføjes og redigeres en klasse...",
+      howToDeleteClass: "Sådan slettes en klasse...",
+      howToAddStudent: "Sådan tilføjes elever...",
+      howToDeleteStudents: "Sådan slettes elever...",
+      howToAddText: "Sådan tilføjes en tekst...",
+      howToEditAndDeleteText: "Sådan redigeres eller slettes en tekst...",
+      howToShareText: "Sådan deler du tekster med din klasse / dine klasser...",
+      howToExplainZeeguuData: "De data, du kan finde i Zeeguu forklaret...",
+
+      //ViewMoreLessButton
+      viewMoreBtn: "Vis mere",
+      viewLessBtn: "Vis mindre",
+
+      //WordsDropDown
+      wordsTranslatedButNotInZeeguu:
+        "Ord oversat af eleven, men ikke inkluderet i øvelser",
+      wordsTranslatedAndLearned: "Ord øvet korrekt på fire forskellige dage",
+      wordsTranslatedAndExercised: "Øvede ord - oversat og øvet af eleven",
     },
   },
   {

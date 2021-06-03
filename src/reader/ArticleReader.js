@@ -60,12 +60,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
     return () => {
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("blur", onBlur);
-      {
-        document.getElementById("scrollHolder") !== null &&
-          document
-            .getElementById("scrollHolder")
-            .removeEventListener("scroll", onScroll);
-      }
+
+      document.getElementById("scrollHolder") !== null &&
+        document
+          .getElementById("scrollHolder")
+          .removeEventListener("scroll", onScroll);
     };
     // eslint-disable-next-line
   }, []);
@@ -139,14 +138,14 @@ export default function ArticleReader({ api, teacherArticleID }) {
             {teacherArticleID && (
               <Link to={`/teacher/texts/editText/${articleID}`}>
                 <StyledButton secondary studentView>
-                  STRINGBack to editing
+                  {strings.backToEditing}
                 </StyledButton>
               </Link>
             )}
 
             {!teacherArticleID && (
               <StyledButton primary studentView onClick={saveArticleToOwnTexts}>
-                STRINGSave own copy
+                {strings.saveOwnCopy}
               </StyledButton>
             )}
           </div>

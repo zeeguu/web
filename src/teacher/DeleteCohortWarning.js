@@ -1,5 +1,5 @@
 import React from "react";
-//import strings from "../i18n/definitions";
+import strings from "../i18n/definitions";
 import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 import { StyledDialog } from "./StyledDialog.sc";
 import CohortItemCard from "./CohortItemCard";
@@ -26,27 +26,22 @@ const DeleteCohortWarning = ({
       max_width="530px"
     >
       <div className="centered">
-        <h1>Danger Zone! STRINGS</h1>
-        <p>
-          Are you sure you want to remove this class from your list? <br />
-          This cannot be undone.STRINGS
-        </p>
+        <h1>{strings.dangerzone}</h1>
+        <p>{strings.deleteCohortEnsurance}</p>
       </div>
       <CohortItemCard api={api} cohort={cohort} isWarning={true} />{" "}
       {isDeleteError && (
         <Error
-          message={
-            "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again."
-          }
+          message={strings.cannotDeleteClassWithText}
           setLoading={setIsLoading}
         />
       )}
       <PopupButtonWrapper>
         <StyledButton primary onClick={handleCancel}>
-          Cancel STRINGS
+          {strings.cancel}
         </StyledButton>
         <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
-          Delete STRINGS
+          {strings.delete}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

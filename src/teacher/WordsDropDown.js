@@ -2,6 +2,7 @@ import PractisedWordsList from "./PractisedWordsList";
 import LearnedWordsList from "./LearnedWordsList";
 import NonStudiedWordsList from "./NonStudiedWordsList";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import strings from "../i18n/definitions";
 import { StyledTooltip } from "./StyledTooltip.sc";
 import { IconExplanation } from "./AttemptIcons";
 
@@ -9,11 +10,11 @@ const WordsDropDown = ({ words, card }) => {
   const setHeadline = () => {
     switch (card) {
       case "non-studied":
-        return "Words translated by the student but not studied in Zeeguu STRINGS";
+        return strings.wordsTranslatedButNotInZeeguu;
       case "learned":
-        return "Word practised correctly on four DIFFERENT days STRINGS";
+        return strings.wordsTranslatedAndLearned;
       default:
-        return "Practised words - translated and exercised by the student STRINGS";
+        return strings.wordsTranslatedAndExercised;
     }
   };
 
