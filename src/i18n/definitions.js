@@ -253,6 +253,156 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Native Language",
+
+      //_ActivityInsightsRouter
+      learningActivities: "Learning Activities",
+      reading: "Reading",
+      backToClassroom: "Back To Classroom",
+
+      //AddTextOptions
+      addTexts: "Add Texts",
+
+      //AddTextOptionTypes
+      articleFromZeeguuToClass: "Assign an article from Zeeguu to a class",
+      copyPasteArticleToClass: "Copy/paste content or type your own text",
+      urlUploadToClass: "Use a URL-address",
+
+      //AddToCohortDialog
+      chooseClass: "Choose one or more classes",
+      saveChanges: "Save changes",
+
+      //AddURLDialog
+      addTextFromWebpage: "Add text from a webpage",
+      insertUrl: "Insert the url address of the text you wish to add",
+      pleaseNote: "Please note: ",
+      textNotExtracted: "Texts cannot be extracted from all webpages.",
+      editTheSavedText:
+        "So you might have to edit or delete the text, we save for you.",
+      nothingInInputField:
+        "You haven't typed in an URL-address in the input field.",
+      saveAndEdit: "Save and edit",
+
+      //AllTexts
+      addTexts: "Add Texts",
+      addText: "Add Text",
+      noTextAddedYet: "You have not added any texts of your own yet.",
+
+      //CohortForm
+      editClass: "Edit Class",
+      createClass: "Create Class",
+      classroomLanguage: "Classroom Language",
+      errorInviteCode:
+        "Something went wrong. Maybe the invite code is already in use. DEV NOTE: Cannot delete class with texts in it.",
+      errorEmptyInputField: "You must fill out all the input fields.",
+      delete: "Delete",
+
+      //CohortFormInputFields
+      chooseClassName: "Choose the class name (max. 20 characters)",
+      classnameTooLong: "The class name is too long.",
+      createInviteCode: "Create any invite code you like (max. 20 characters)",
+      invitecodeTooLong: "The invite code is too long.",
+
+      //CohortItemCard
+      seeStudents: "See Students",
+
+      //CohortList
+      addClass: "Add Class",
+
+      //DeleteCohortWarning
+      dangerzone: "Danger Zone!",
+      deleteCohortEnsurance:
+        "Are you sure you want to delete this class? This cannot be undone.",
+      cancel: "Cancel",
+
+      //DeleteStudentWarning
+      wishToDeleteStudent: "Do you wish to remove",
+      fromTheClass: "from the class?",
+      howStudentsRejoinClass:
+        "Students can rejoin the class if you give them the invite code again.",
+      remove: "Remove",
+
+      //DeleteTextWarning
+      deleteTextWarning: "You are about to delete your text",
+      confirmDeleteText:
+        "Please confirm that you wish to delete the text or press 'Cancel'.",
+
+      //EditText
+      editText: "Edit Text",
+      viewAsStudent: "View as student",
+      addToClass: "Add to class",
+      saveText: "Save Text",
+
+      //EditTextInputFields
+      defineLanguage: "Please, define the language of the text",
+      pasteTitleHere: "Paste or type your title here...",
+      clickToChangeTitle: "Click in the box below to edit the title",
+      pasteBodyHere: "Paste or type the body of your text here...",
+      clickToChangeBody: "Click in the box below to edit the text body",
+
+      //HowToAddStudentsInfo
+      addStudents: "Add Students",
+      shareInviteCode:
+        "Share this code with your students to invite them to the class: ",
+      invitecodeInformation:
+        "Students will not appear in the class until they have signed up for Zeeguu and used the invite code.",
+      goToClass: "Go to class",
+
+      //LanguageSelector
+      chooseLanguage: "Choose a language...",
+
+      //NoStudents
+      noStudentsInClass: "There are no students in this class yet.",
+      shareInviteCode: "Share the invite code",
+      shareInviteCodeContinued: "with them,",
+      soTheStudentCanJoinClass: "so they can sign up and join the classroom.",
+
+      //PractisedWordsCard
+      practisedWords: "Practised words",
+      timeSpendOnExercises: "time spent on exercises",
+      numberOfWords: "number of words",
+      solvedOnFirstAttempt: "solved on 1st attempt",
+
+      //ReadingIsightAccordion
+      readingDate: "Read: ",
+
+      //ReadingInsightHeader
+      title: "Title",
+      textLevel: "Text level",
+      textLength: "Text length",
+      readingTime: "Reading time",
+      translatedWords: "Translated words",
+
+      //StudentInfoLine
+      textsRead: "texts read",
+      exercisesCompleted: "exercises completed",
+
+      //StudentInfoLineHeader
+      studentName: "Student name",
+      readingExerciseTime: "Reading/Exercise time",
+      average: "Average",
+      lengthOfText: "text length",
+      levelOfText: "text level",
+      exercisesCorrect: "Exercises correct ",
+      onFirstAttempt: "on 1st attempt",
+
+      //StudentsActivityOverview
+      backToClasses: "Back to all classes",
+
+      //StudentTextView
+      viewText: "View Text",
+
+      //StudentTranslations
+      translatedWordsInSentence:
+        "Translated words in the context of their sencences",
+      translatedWordInText: "The student translated no words in this text.",
+
+      //TeacherTextPreview
+      shareTextWithClasses:
+        "Remember to share this text with one or more classes.",
+      addedTo: "Added to: ",
+
+      //TimeSelector
+      changeTimePeriod: "Change the time period",
     },
 
     da: {
@@ -475,7 +625,6 @@ let strings = new LocalizedStrings(
       numberOfLearnedWordsMsg: "Du har lært {0} ord indtil videre.",
       correctOn: "Korrekt på: ",
 
-
       //Starred
       titleStarredWords: "Starred Words",
       noStarredMsg: "Du har ikke markeret nogen ord med stjerne endnu.",
@@ -507,6 +656,158 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Modersmål",
+
+      //_ActivityInsightsRouter
+      learningActivities: "Læringsaktiviteter",
+      reading: "Læsning",
+      backToClassroom: "Tilbage til klasseværelset",
+
+      //AddTextOptions
+      addTexts: "Tilføj tekster",
+
+      //AddTextOptionTypes
+      articleFromZeeguuToClass: "Tilføj en artikel fra Zeeguu til en klasse",
+      copyPasteArticleToClass: "Kopier/indsæt tekst, eller skriv din egen",
+      urlUploadToClass: "Brug en URL-addresse",
+
+      //AddToCohortDialog
+      chooseClass: "Vælg en eller flere klasser",
+      saveChanges: "Gem ændringer",
+
+      //AddURLDialog
+      addTextFromWebpage: "Tilføj tekst fra en hjemmeside",
+      insertUrl: "Indsæt url-adressen på den tekst, du ønsker at tilføje",
+      pleaseNote: "Bemærk venligst: ",
+      textNotExtracted:
+        "Det er ikke alle hjemmesider, hvorfra teksten kan udvindes.",
+      editTheSavedText:
+        "Så du bliver muligvis nødt til at redigere eller slette den tekst, vi gemmer til dig.",
+      nothingInInputField:
+        "Du mangler at indsætte en URL-adresse i feltet ovenfor.",
+      saveAndEdit: "Gem og rediger",
+
+      //AllTexts
+      addTexts: "Tilføj tekster",
+      addText: "Tilføj tekst",
+      noTextAddedYet: "Du har ikke tilføjet nogle af dine egne tekster endnu.",
+
+      //CohortForm
+      editClass: "Rediger klasse",
+      createClass: "Opret en klasse",
+      classroomLanguage: "Sprog i klasse",
+      errorInviteCode:
+        "Noget gik galt. Måske er invitationskoden allerede i brug. DEV BEMÆRKNING: Kan ikke slette klasse, som indeholder tekster.",
+      errorEmptyInputField: "Venligst udfyld alle felter.",
+      delete: "Slet",
+
+      //CohortFormInputFields
+      chooseClassName: "Angiv navnet på denne klasse (maks. 20 tegn)",
+      classnameTooLong: "Klassenavnet er desværre for langt.",
+      createInviteCode: "Opret en invitationskode (maks. 20 tegn)",
+      invitecodeTooLong: "Invitationskoden er desværre for lang.",
+
+      //CohortItemCard
+      seeStudents: "Se elever",
+
+      //CohortList
+      addClass: "Tilføj klasse",
+
+      //DeleteCohortWarning
+      dangerzone: "Farezone!",
+      deleteCohortEnsurance:
+        "Er du sikker på, at du vil slette denne klasse? Du kan ikke fortryde.",
+      cancel: "Annuller",
+
+      //DeleteStudentWarning
+      wishToDeleteStudent: "Ønsker du at fjerne",
+      fromTheClass: "fra klassen?",
+      howStudentsRejoinClass:
+        "Elever kan tilføjes til klassen igen, ved at du giver dem invitationskoden.",
+      remove: "Fjern",
+
+      //DeleteTextWarning
+      deleteTextWarning: "Du er igang med at slette din tekst",
+      confirmDeleteText:
+        "Bekræft venligst, at du vil slette teksten, eller tryk på 'Annuller'.",
+
+      //EditText
+      editText: "Rediger tekst",
+      viewAsStudent: "Vis som var du elev",
+      addToClass: "Tilføj til klasse",
+      saveText: "Gem tekst",
+
+      //EditTextInputFields
+      defineLanguage: "Angiv venligst hvilket sprog teksten er på",
+      pasteTitleHere: "Indsæt eller skriv tekstens titlen her...",
+      clickToChangeTitle: "Klik i feltet nedenfor for at redigere titlen",
+      pasteBodyHere: "Indsæt eller skriv selv tekstens brødteksten her...",
+      clickToChangeBody: "Klik i feltet nedenfor for at redigere brødteksten",
+
+      //HowToAddStudentsInfo
+      addStudents: "Tilføj elever",
+      shareInviteCode:
+        "Del denne kode med dine elever for at invitere dem til klassen: ",
+      invitecodeInformation:
+        "Eleverne vil ikke blive vist i klassen før de har oprettet sig i Zeeguu og brugt invitationskoden til at blive en del af klassen.",
+      goToClass: "Bliv ført til klassen",
+
+      //LanguageSelector
+      chooseLanguage: "Vælg sprog...",
+
+      //NoStudents
+      noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
+      shareInviteCode: "Del invitationskoden",
+      shareInviteCodeContinued: "med eleverne,",
+      soTheStudentCanJoinClass:
+        "så de kan oprette sig og blive en del af klassen.",
+
+      //PractisedWordsCard
+      practisedWords: "Øvede ord",
+      timeSpendOnExercises: "tid brugt på øvelser",
+      numberOfWords: "antal ord",
+      solvedOnFirstAttempt: "løst ved 1. forsøg",
+
+      //ReadingIsightAccordion
+      readingDate: "Læst: ",
+
+      //ReadingInsightHeader
+      title: "Titel",
+      textLevel: "Tekst niveau",
+      textLength: "Tekst længde",
+      readingTime: "Læsetid",
+      translatedWords: "Oversatte ord",
+
+      //StudentInfoLine
+      textsRead: "læste tekster",
+      exercisesCompleted: "gennemførte øvelser",
+
+      //StudentInfoLineHeader
+      studentName: "Elevens navn",
+      readingExerciseTime: "Læse/Øvelsestid",
+      average: "Gennemsnitlig",
+      lengthOfText: "tekst længde",
+      levelOfText: "sværhedsgrad",
+      exercisesCorrect: "Korrekt øvelse ",
+      onFirstAttempt: "ved 1. forsøg",
+
+      //StudentsActivityOverview
+      backToClasses: "Tilbage til klasser",
+
+      //StudentTextView
+      viewText: "Vis tekst",
+
+      //StudentTranslations
+      translatedWordsInSentence:
+        "Oversatte ord i kontekst af den sætning ordet indgår",
+      translatedWordInText: "Eleven oversatte ingen ord i denne tekst.",
+
+      //TeacherTextPreview
+      shareTextWithClasses:
+        "Husk at tilføj denne tekst til en eller flere klasser.",
+      addedTo: "Tilføjet til: ",
+
+      //TimeSelector
+      changeTimePeriod: "Skift tidsperiode",
     },
   },
   {

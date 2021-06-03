@@ -6,6 +6,7 @@ import {
   AccordionButton,
   AccordionPanel,
 } from "@reach/accordion";
+import strings from "../i18n/definitions";
 import * as s from "./ReadingInsightAccordion.sc";
 import ViewMoreLessButton from "./ViewMoreLessButton";
 import StudentActivityDataCircles from "./StudentActivityDataCircles";
@@ -41,12 +42,11 @@ const ReadingInsightAccordion = ({ readArticles }) => {
                 <div className="content-wrapper">
                   <div className="date-title-wrapper">
                     <h2 className="article-title">
-
                       {article.title.substring(0, 100)}
                       {article.title.length > 100 ? "..." : ""}
                     </h2>
                     <p className="date">
-                      STRINGS Reading date: {formatedDate(article.start_time)}
+                      {strings.readingDate} {formatedDate(article.start_time)}
                     </p>
                   </div>
                   <div className="data-circle-wrapper">
