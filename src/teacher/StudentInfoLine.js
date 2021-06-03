@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import strings from "../i18n/definitions";
 import { Link } from "react-router-dom";
 import { MdHighlightOff } from "react-icons/md/";
 import StudentActivityBar from "./StudentActivityBar";
@@ -52,10 +53,10 @@ export default function StudentInfoLine({
             <div className="text-box">
               <div className="student-name">{student.name}</div>
               <div className="activity-count">
-                {activity.number_of_texts} texts read STRINGS
+                {activity.number_of_texts} {strings.textsRead}
               </div>
               <div className="activity-count">
-                {activity.exercises_count} exercises completed STRINGS
+                {activity.exercises_count} {strings.exercisesCompleted}
               </div>
             </div>
 

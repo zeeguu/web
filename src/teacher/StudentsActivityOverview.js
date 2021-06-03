@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
+import strings from "../i18n/definitions";
 import { useParams, Link, useHistory } from "react-router-dom";
 import LocalStorage from "../assorted/LocalStorage";
 import { transformStudents } from "./teacherApiHelpers";
@@ -51,19 +52,19 @@ export default function StudentsActivityOverview({ api }) {
         <div>
           <TopButtonWrapper>
             <Link to="/teacher/texts/AddTextOptions">
-              <StyledButton secondary>STRINGS Add text</StyledButton>
+              <StyledButton secondary>{strings.addText}</StyledButton>
             </Link>
             <StyledButton
               secondary
               onClick={() => setShowAddStudentsInfo(true)}
             >
-              STRINGS Add students
+              {strings.addStudents}
             </StyledButton>
             <StyledButton
               secondary
               onClick={() => history.push("/teacher/classes")}
             >
-              STRINGS Back to all classes
+              {strings.backToClasses}
             </StyledButton>
           </TopButtonWrapper>
           {students !== null &&
@@ -88,4 +89,3 @@ export default function StudentsActivityOverview({ api }) {
     </Fragment>
   );
 }
-

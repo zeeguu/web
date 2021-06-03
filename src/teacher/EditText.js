@@ -1,6 +1,6 @@
 import React, { useState, useContext, Fragment, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
-//import strings from "../i18n/definitions";
+import strings from "../i18n/definitions";
 import { RoutingContext } from "../contexts/RoutingContext";
 import EditTextInputFields from "./EditTextInputFields";
 import {
@@ -110,13 +110,13 @@ export default function EditText({ api }) {
     <Fragment>
       <s.NarrowColumn>
         <sc.TopTabs>
-          <h1>STRINGSEditText</h1>
+          <h1>{strings.editText}</h1>
         </sc.TopTabs>
         <TopButtonWrapper>
           {articleID !== "new" && (
             <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
               <StyledButton secondary disabled={buttonDisabled}>
-                STRINGSView as student
+                {strings.viewAsStudent}
               </StyledButton>
             </Link>
           )}
@@ -126,10 +126,10 @@ export default function EditText({ api }) {
             onClick={() => setShowDialog(true)}
             disabled={buttonDisabled}
           >
-            Add to class STRINGS
+            {strings.addToClass}
           </StyledButton>
           <StyledButton secondary onClick={handleCancel}>
-            STRINGSCancel
+            {strings.cancel}
           </StyledButton>
         </TopButtonWrapper>
         <EditTextInputFields
@@ -141,9 +141,7 @@ export default function EditText({ api }) {
           handleChange={handleChange}
         />
         {buttonDisabled && (
-          <p style={{ color: "red" }}>
-            You must fill out all the input fields. STRINGS
-          </p>
+          <p style={{ color: "red" }}>{strings.errorEmptyInputField}</p>
         )}
         <PopupButtonWrapper>
           {articleID === "new" ? (
@@ -152,7 +150,7 @@ export default function EditText({ api }) {
               onClick={uploadArticle}
               disabled={buttonDisabled}
             >
-              Save text STRINGS
+              {strings.saveText}
             </StyledButton>
           ) : (
             <Fragment>
@@ -160,14 +158,14 @@ export default function EditText({ api }) {
                 secondary
                 onClick={() => setShowDeleteTextWarning(true)}
               >
-                STRINGSDelete
+                {strings.delete}
               </StyledButton>
               <StyledButton
                 primary
                 onClick={updateArticle}
                 disabled={buttonDisabled}
               >
-                Save changes STRINGS
+                {strings.saveChanges}
               </StyledButton>
             </Fragment>
           )}

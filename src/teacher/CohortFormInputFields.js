@@ -1,4 +1,5 @@
 import React from "react";
+import strings from "../i18n/definitions";
 import { LabeledTextField } from "./LabeledInputFields";
 
 export const CohortNameTextField = ({ value, onChange }) => {
@@ -10,9 +11,9 @@ export const CohortNameTextField = ({ value, onChange }) => {
       placeholder="eg. 'B-level 2021'"
     >
       {value.length <= 20 ? (
-        "Choose the class name (max. 20 characters)STRINGS"
+        strings.chooseClassName
       ) : (
-        <p style={{ color: "red" }}>The class name is too long. STRINGS</p>
+        <p style={{ color: "red" }}>{strings.classnameTooLong}</p>
       )}
     </LabeledTextField>
   );
@@ -27,9 +28,9 @@ export const InviteCodeTextField = ({ value, onChange }) => {
       placeholder="eg. 'L34n!ng'"
     >
       {value.length <= 20 ? (
-        "Create any invite code you like (max. 20 characters)STRINGS"
+        strings.createInviteCode
       ) : (
-        <p style={{ color: "red" }}>The invite code is too long. STRINGS</p>
+        <p style={{ color: "red" }}>{strings.invitecodeTooLong}</p>
       )}
     </LabeledTextField>
   );

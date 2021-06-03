@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-//import strings from "../i18n/definitions";
+import strings from "../i18n/definitions";
 import { StyledButton } from "./TeacherButtons.sc";
 import { RoutingContext } from "../contexts/RoutingContext";
 import { useContext } from "react";
@@ -10,7 +10,7 @@ export function AddFromZeeguuOption() {
     <s.StyledAddTextOptions>
       <div className="description">
         <Link className="link" to="/articles">
-          STRINGSAssign an article from Zeeguu to a class{" "}
+          {strings.articleFromZeeguuToClass}{" "}
           <StyledButton primary className="add-btn">
             +
           </StyledButton>
@@ -29,9 +29,9 @@ export function TypeCopyPasteOption() {
         <Link
           className="link"
           to="/teacher/texts/editText/new"
-          onClick={()=>setReturnPath("/teacher/texts/AddTextOptions")}
+          onClick={() => setReturnPath("/teacher/texts/AddTextOptions")}
         >
-          STRINGSCopy/paste content or type your own text{" "}
+          {strings.copyPasteArticleToClass}{" "}
           <StyledButton primary className="add-btn">
             +
           </StyledButton>
@@ -45,7 +45,7 @@ export function AddURLOption(props) {
   return (
     <s.StyledAddTextOptions>
       <div className="description" onClick={props.onClick}>
-        STRINGSUse a URL-address
+        {strings.urlUploadToClass}
         <StyledButton primary className="add-btn">
           +
         </StyledButton>

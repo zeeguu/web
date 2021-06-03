@@ -1,4 +1,5 @@
 import { Fragment, useState, useEffect } from "react";
+import strings from "../i18n/definitions";
 import { Listbox, ListboxOption } from "@reach/listbox";
 import * as s from "./LabeledInputFields.sc";
 
@@ -25,7 +26,7 @@ export function LanguageSelector(props) {
             onChange={props.onChange}
           >
             <ListboxOption value="default">
-              STRINGSChoose a language...
+              {strings.chooseLanguage}
             </ListboxOption>
             {languages.map((language) => (
               <ListboxOption key={language.code} value={language.code}>

@@ -1,4 +1,5 @@
 import React from "react";
+import strings from "../i18n/definitions";
 import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 import { StyledDialog } from "./StyledDialog.sc";
 
@@ -7,7 +8,6 @@ const DeleteStudentWarning = ({
   setShowDeleteStudentWarning,
   removeStudent,
 }) => {
-
   return (
     <StyledDialog
       aria-label="Delete student warning"
@@ -15,16 +15,22 @@ const DeleteStudentWarning = ({
       max_width="625px"
     >
       <div className="centered">
-        <h1>Danger zone! STRINGS</h1>
+        <h1>{strings.dangerzone}</h1>
         <p>
-          Do you wish to remove <b>{studentName}</b> from the class? STRINGS
+          {strings.wishToDeleteStudent} <b>{studentName}</b>{" "}
+          {strings.fromTheClass}
         </p>
-        <p>Students can rejoin the class if you give them the invite code again. STRINGS</p>
+        <p>{strings.howStudentsRejoinClass}</p>
       </div>
       <PopupButtonWrapper>
-        <StyledButton secondary onClick={removeStudent}>Remove STRINGS</StyledButton>
-        <StyledButton primary onClick={() => setShowDeleteStudentWarning(false)}>
-          Cancel STRINGS
+        <StyledButton secondary onClick={removeStudent}>
+          {strings.remove}
+        </StyledButton>
+        <StyledButton
+          primary
+          onClick={() => setShowDeleteStudentWarning(false)}
+        >
+          {strings.cancel}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

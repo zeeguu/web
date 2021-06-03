@@ -23,7 +23,7 @@ export default function AllTexts({ api }) {
       setOriginalList(reversedList);
     });
 
-    setTitle("Add Texts STRINGS");
+    setTitle(strings.addTexts);
 
     return <LoadingAnimation />;
   }
@@ -37,7 +37,7 @@ export default function AllTexts({ api }) {
           </sc.TopTabs>
           <Link to="/teacher/texts/AddTextOptions">
             <TopButtonWrapper>
-              <StyledButton primary>STRINGSAdd text</StyledButton>
+              <StyledButton primary>{strings.addText}</StyledButton>
             </TopButtonWrapper>
           </Link>
           <br />
@@ -52,7 +52,7 @@ export default function AllTexts({ api }) {
             </div>
           ) : (
             <s.CenteredContent>
-              <h4>You have not added any texts of your own yet. STRINGS</h4>
+              <h4>{strings.noTextAddedYet}</h4>
             </s.CenteredContent>
           )}
           {articleList.map((each) => (

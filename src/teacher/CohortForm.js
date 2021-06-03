@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import strings from "../i18n/definitions";
 import { FormControl } from "@material-ui/core";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { Error } from "./Error";
@@ -115,7 +116,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
       aria-label="Create class"
       max_width="525px"
     >
-      {cohort ? <h1>Edit Class STRINGS</h1> : <h1>Create Class STRINGS</h1>}
+      {cohort ? <h1>{strings.editClass}</h1> : <h1>{strings.createClass}</h1>}
       {isLoading ? (
         <LoadingAnimation />
       ) : (
@@ -139,23 +140,22 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
               value={state.language_code}
               onChange={handleLanguageChange}
             >
-              Classroom language STRINGS
+              {strings.classroomLanguage}
             </LanguageSelector>
           </FormControl>
           {isError && (
             <Error
-              message={
-                "Something went wrong. Maybe the invite code is already in use. DEV NOTE: Cannot delete class with texts in it. STRINGS"
-              }
+              message={strings.errorInviteCode}
               setLoading={setIsLoading}
             />
           )}
         </form>
       )}
       {!isValid && (
-        <p style={{ color: "red" }}>
-          You must fill out all the input fields. STRINGS
-        </p>
+        <Error
+          message={strings.errorEmptyInputField}
+          setLoading={setIsLoading}
+        />
       )}
       <PopupButtonWrapper>
         <StyledButton
@@ -164,11 +164,11 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
           style={{ minWidth: 120 }}
           disabled={!isValid}
         >
-          {cohort ? "Save changes STRINGS" : "Create class STRINGS"}
+          {cohort ? strings.saveChanges : strings.createClass}
         </StyledButton>
         {cohort && (
           <StyledButton secondary onClick={() => setShowWarning(true)}>
-            DeleteSTRING
+            {strings.delete}
           </StyledButton>
         )}
       </PopupButtonWrapper>

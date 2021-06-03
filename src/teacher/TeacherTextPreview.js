@@ -1,7 +1,7 @@
 import React, { useContext, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { RoutingContext } from "../contexts/RoutingContext";
-//import strings from "../i18n/definitions";
+import strings from "../i18n/definitions";
 import { MdHighlightOff } from "react-icons/md/";
 import { StyledButton } from "./TeacherButtons.sc";
 import * as st from "./TeacherTextPreview.sc";
@@ -31,12 +31,9 @@ export default function TeacherTextPreview({ article }) {
             <div>
               <s.PublishingTime>
                 {cohortList.length === 0 ? (
-                  <p>
-                    STRINGS Remember to share this text with one or more
-                    classes.
-                  </p>
+                  <p>{strings.shareTextWithClasses}</p>
                 ) : (
-                  "STRINGS Added to:"
+                  strings.addedTo
                 )}
               </s.PublishingTime>
               <s.Topics>
@@ -56,7 +53,7 @@ export default function TeacherTextPreview({ article }) {
               onClick={() => setReturnPath("/teacher/texts")}
             >
               <StyledButton secondary className="edit-btn">
-                STRINGSEdit text
+                {strings.editText}
               </StyledButton>
             </Link>
             <StyledButton icon style={{ margin: "0" }}>

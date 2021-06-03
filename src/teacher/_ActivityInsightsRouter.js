@@ -14,11 +14,20 @@ export default function ActivityInsightsRouter({ api }) {
     <Switch>
       <s.WidestColumn>
         <TopTabs
-          title="STRINGS Learning Activities"
+          title={strings.learningActivities}
           tabsAndLinks={{
-            STRINGSReading: "/teacher/classes/viewStudent/" + studentID + "/class/" + cohortID,
-            [strings.exercises]: "/teacher/classes/viewStudent/" + studentID + "/class/" + cohortID + "/exercises",
-            STRINGSBackToClassroom: "/teacher/classes/viewClass/" + cohortID,
+            [strings.reading]:
+              "/teacher/classes/viewStudent/" +
+              studentID +
+              "/class/" +
+              cohortID,
+            [strings.exercises]:
+              "/teacher/classes/viewStudent/" +
+              studentID +
+              "/class/" +
+              cohortID +
+              "/exercises",
+            [strings.backToClassroom]: "/teacher/classes/viewClass/" + cohortID,
           }}
         />
         <PrivateRoute
