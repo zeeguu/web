@@ -290,6 +290,21 @@ let strings = new LocalizedStrings(
       addText: "Add Text",
       noTextAddedYet: "You have not added any texts of your own yet.",
 
+      //AttemptIcons
+      incorrectAttemptIconExplanation:
+        "indicates that the student made an incorrect attempt at solving the exercise.",
+      correctExerciseIconExplanation:
+        "indicates that the student solved the exercise correctly.",
+      hintInExerciseIconExplanation:
+        "indicates that the student asked for a hint in the exercise.",
+      askedForSolutionInExercise:
+        "indicates that the student asked to see the solution to the exercise.",
+      studentExerciseFeedback: "Too hard/Too easy/Bad example etc.",
+      exerciseFeedbackFromStudent:
+        "is feedback that the student has given on the exercise.",
+      typeOfExerciseIconExplanation:
+        "is the type of exercise the student has practised the word in.",
+
       //CohortForm
       editClass: "Edit Class",
       createClass: "Create Class",
@@ -439,6 +454,10 @@ let strings = new LocalizedStrings(
         "Word practised correctly on four different days",
       wordsTranslatedAndExercised:
         "Practised words - translated and exercised by the student",
+
+      //StudentExercisesInsights
+      hasCompleted: " has completed ",
+      exercisesInTheLast: " exercises in the last ",
     },
 
     da: {
@@ -730,6 +749,20 @@ let strings = new LocalizedStrings(
       addText: "Tilføj tekst",
       noTextAddedYet: "Du har ikke tilføjet nogle af dine egne tekster endnu.",
 
+      //AttemptIcons
+      incorrectAttemptIconExplanation:
+        "indikerer, at eleven gjorde et forkert forsøg på at løse øvelsen.",
+      correctExerciseIconExplanation:
+        "indikerer, at eleven løste øvelsen korrekt.",
+      hintInExerciseIconExplanation:
+        "indikerer, at eleven bad om et tip i løbet af øvelsen.",
+      askedForSolutionInExercise:
+        "indikerer, at eleven bad om at se løsningen på øvelsen.",
+      studentExerciseFeedback: "For svær/For nem/Dårligt eksempel.",
+      exerciseFeedbackFromStudent: "er elevens feedback, af øvelsen.",
+      typeOfExerciseIconExplanation:
+        "er den type øvelse, hvor ordet, som eleven har øvet, er i.",
+
       //CohortForm
       editClass: "Rediger klasse",
       createClass: "Opret en klasse",
@@ -878,6 +911,10 @@ let strings = new LocalizedStrings(
         "Ord oversat af eleven, men ikke inkluderet i øvelser",
       wordsTranslatedAndLearned: "Ord øvet korrekt på fire forskellige dage",
       wordsTranslatedAndExercised: "Øvede ord - oversat og øvet af eleven",
+
+      //StudentExercisesInsights
+      hasCompleted: " har gennemført ",
+      exercisesInTheLast: " øvelser i en periode på ",
     },
   },
   {
