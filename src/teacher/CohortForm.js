@@ -146,19 +146,11 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
               {strings.classroomLanguage}
             </LanguageSelector>
           </FormControl>
-          {isError && (
-            <Error
-              message={
-                "Something went wrong. Maybe the invite code is already in use.STRINGS"
-              }
-            />
-          )}
+          {isError && <Error message={strings.errorInviteCode} />}
         </form>
       )}
       {inputIsEmpty && (
-        <Error
-          message={"You must fill out all the input fields. STRINGS"}
-        />
+        <Error message={strings.errorEmptyInputField} />
       )}
       <PopupButtonWrapper>
         <StyledButton
