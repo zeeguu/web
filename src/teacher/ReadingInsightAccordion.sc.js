@@ -27,7 +27,7 @@ export const ReadingInsightAccordion = styled.div`
   .date{
     display:flex;
     color: ${darkBlue};
-    margin:0 0 .5em 1em;
+    margin:0 0 .5vh 2vw;
   }
 
   .article-title {
