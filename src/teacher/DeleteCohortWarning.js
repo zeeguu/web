@@ -12,7 +12,7 @@ const DeleteCohortWarning = ({
   deleteCohort,
   isDeleteError,
   setIsDeleteError,
-  setIsLoading,
+  /* setIsLoading, */
 }) => {
   const handleCancel = () => {
     setIsDeleteError(false);
@@ -32,8 +32,9 @@ const DeleteCohortWarning = ({
       <CohortItemCard api={api} cohort={cohort} isWarning={true} />{" "}
       {isDeleteError && (
         <Error
-          message={strings.cannotDeleteClassWithText}
-          setLoading={setIsLoading}
+          message={
+            "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again."
+          }
         />
       )}
       <PopupButtonWrapper>
