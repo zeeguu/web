@@ -1,10 +1,10 @@
 import React from "react";
+import strings from "../i18n/definitions";
 import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 import { StyledDialog } from "./StyledDialog.sc";
 import CohortItemCard from "./CohortItemCard";
 
 const DeleteCohortWarning = ({ api, cohort, setShowWarning, deleteCohort }) => {
-
   return (
     <StyledDialog
       aria-label="Delete a class warning"
@@ -12,19 +12,16 @@ const DeleteCohortWarning = ({ api, cohort, setShowWarning, deleteCohort }) => {
       max_width="530px"
     >
       <div className="centered">
-      <h1>Danger Zone! STRINGS</h1>
-      <p>
-        Are you sure you want to delete this class? This cannot be undone.
-        STRINGS
-      </p>
+        <h1>{strings.dangerzone}</h1>
+        <p>{strings.deleteCohortEnsurance}</p>
       </div>
       <CohortItemCard api={api} cohort={cohort} isWarning={true} />
       <PopupButtonWrapper>
         <StyledButton primary onClick={() => setShowWarning(false)}>
-          Cancel STRINGS
+          {strings.cancel}
         </StyledButton>
-        <StyledButton secondary onClick={()=>deleteCohort(cohort.id)}>
-          Delete STRINGS
+        <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
+          {strings.delete}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

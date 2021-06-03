@@ -1,5 +1,5 @@
-//import strings from "../i18n/definitions";
 import React, { useEffect, useState } from "react";
+import strings from "../i18n/definitions";
 import { useHistory } from "react-router";
 import { LabeledTextField } from "./LabeledInputFields";
 import { StyledDialog } from "./StyledDialog.sc";
@@ -49,27 +49,25 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
       onDismiss={() => setShowAddURLDialog(false)}
       max_width="525px"
     >
-      <h1>Add text from a webpage STRINGS</h1>
+      <h1>{strings.addTextFromWebpage}</h1>
       <LabeledTextField
         value={url}
         onChange={handleChange}
         name="url_address"
         placeholder="eg. 'http://www.news.com/article/19358538'"
       >
-        Insert the url address of the text your wish to add STRINGS
+        {strings.insertUrl}
       </LabeledTextField>
       <p>
-        <b>Please note:</b> Texts cannot be extracted from all webpages. <br />{" "}
-        So you might have to edit or delete the text, we save for you. STRINGS
+        <b>{strings.pleaseNote}</b> {strings.textNotExtracted} <br />{" "}
+        {strings.editTheSavedText}
       </p>
       {showGuidance && (
-        <p style={{ color: "red" }}>
-          You haven't typed anything in the input field yet.STRINGS
-        </p>
+        <p style={{ color: "red" }}>{strings.nothingInInputField}</p>
       )}
       <PopupButtonWrapper>
         <StyledButton primary onClick={getArticle}>
-          Save and edit STRINGS
+          {strings.saveAndEdit}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

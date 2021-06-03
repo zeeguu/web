@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
+import strings from "../i18n/definitions";
 
 const StudentTranslations = ({ article }) => {
   const [translations, setTranslations] = useState(null);
@@ -28,10 +29,10 @@ const StudentTranslations = ({ article }) => {
     return (
       <div
         style={{
-            borderLeft: "solid 3px #4492b3",
-            margin:"0 20px 20px 30px",
-            lineHeight:2,
-            paddingLeft:"15px",
+          borderLeft: "solid 3px #4492b3",
+          margin: "0 20px 20px 30px",
+          lineHeight: 2,
+          paddingLeft: "15px",
         }}
       >
         {prefix}
@@ -40,7 +41,7 @@ const StudentTranslations = ({ article }) => {
             display: "inline",
             border: "solid 2px #54cdff",
             margin: "15px 0px 0px 0px",
-            padding:"5px",
+            padding: "5px",
             borderRadius: "25px",
           }}
         >
@@ -58,9 +59,7 @@ const StudentTranslations = ({ article }) => {
 
   return (
     <Fragment>
-      <h4 className="panel-headline">
-        Translated words in the context of their sencences
-      </h4>
+      <h4 className="panel-headline">{strings.translatedWordsInSentence}</h4>
       {translations &&
         translations.map((translation) => (
           <DivideSentence
@@ -73,9 +72,7 @@ const StudentTranslations = ({ article }) => {
 
       {translations === null ||
         (translations.length === 0 && (
-          <p className="panel-no-words">
-            The student translated no words in this text.STRINGS
-          </p>
+          <p className="panel-no-words">{strings.translatedWordInText}</p>
         ))}
     </Fragment>
   );
