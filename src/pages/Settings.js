@@ -13,6 +13,7 @@ import { setTitle } from "../assorted/setTitle";
 import LocalStorage from "../assorted/LocalStorage";
 
 import strings from "../i18n/definitions";
+import { Error } from "../teacher/Error";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -22,6 +23,7 @@ export default function Settings({ api, setUser }) {
   const [languages, setLanguages] = useState();
   const [inviteCode, setInviteCode] = useState("");
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
+  const [currentCohort, setCurrentCohort] = useState("");
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -30,8 +32,15 @@ export default function Settings({ api, setUser }) {
         setUserDetails(data);
       });
     });
+    api.getStudent((student) => {
+      if (student.cohort_id !== null) {
+        setCurrentCohort(student.cohort_id);
+      }
+    });
     setTitle("Settings");
   }, [user.session, api]);
+
+  const studentIsInCohort = currentCohort !== "";
 
   function updateUserInfo(info) {
     LocalStorage.setUserInfo(info);
@@ -66,7 +75,7 @@ export default function Settings({ api, setUser }) {
     setShowJoinCohortError(false);
     setInviteCode(event.target.value);
   }
-  //Student enrolls in a class
+
   function saveStudentToClass() {
     api.joinCohort(
       inviteCode,
@@ -147,23 +156,37 @@ export default function Settings({ api, setUser }) {
 
       {!user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
         <div>
-          <label style={{ paddingTop: "1rem" }}>"STRINGS Join class"</label>
+          <p style={{ margin: "25px 0 -5px 0" }}>
+            <b>
+              {studentIsInCohort
+                ? "Your current class is " + currentCohort + "."
+                : "You haven't joined a class yet."}
+            </b>
+          </p>
+          <label style={{ paddingTop: "1rem" }}>
+            {studentIsInCohort ? "Change class STRINGS" : "STRINGS Join class"}
+          </label>
           <input
             type="text"
-            placeholder="Insert class invite code"
+            placeholder={
+              studentIsInCohort
+                ? "Insert new invite code STRINGS"
+                : "Insert invite code STRINGS"
+            }
             value={inviteCode}
             onChange={(event) => handleInviteCodeChange(event)}
           />
 
           {showJoinCohortError && (
-            <p style={{ color: "red", marginTop: "0" }}>
-              Something went wrong. Please check that the invite code is valid
-              and try again. STRINGS
-            </p>
+       <Error message={
+          "Something went wrong. Please check that the invite code is valid and try again. STRINGS"
+        }
+      />
+
           )}
 
           <s.FormButton onClick={saveStudentToClass}>
-            STRINGS Join class
+            {studentIsInCohort ? "Change class STRINGS" : "STRINGS Join class"}
           </s.FormButton>
         </div>
       )}
