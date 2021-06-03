@@ -260,6 +260,12 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Native Language",
+      yourCurrentClassIs: "Your current class is ",
+      changeClassbtn: "Change class",
+      insertNewInviteCode: "Insert new invite code",
+      insertInviteCode: "Insert invite code",
+      checkIfInviteCodeIsValid:
+        "Something went wrong. Please check that the invite code is valid and try again.",
 
       //_ActivityInsightsRouter
       learningActivities: "Learning Activities",
@@ -718,6 +724,12 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Modersmål",
+      yourCurrentClassIs: "Din nuværende klasse er ",
+      changeClassbtn: "Ændre klasse",
+      insertNewInviteCode: "Indsæt ny invitationskode",
+      insertInviteCode: "Indsæt invitationskode",
+      checkIfInviteCodeIsValid:
+        "Something went wrong. Please check that the invite code is valid and try again.",
 
       //_ActivityInsightsRouter
       learningActivities: "Læringsaktiviteter",
