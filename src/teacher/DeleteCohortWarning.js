@@ -12,7 +12,7 @@ const DeleteCohortWarning = ({
   deleteCohort,
   isDeleteError,
   setIsDeleteError,
-  setIsLoading,
+  /* setIsLoading, */
 }) => {
   const handleCancel = () => {
     setIsDeleteError(false);
@@ -38,7 +38,7 @@ const DeleteCohortWarning = ({
           message={
             "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again."
           }
-          setLoading={setIsLoading}
+          /* setLoading={setIsLoading} */
         />
       )}
       <PopupButtonWrapper>
