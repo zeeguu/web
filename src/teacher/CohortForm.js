@@ -148,9 +148,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
           </FormControl>
           {isError && (
             <Error
-              message={
-                "Something went wrong. Maybe the invite code is already in use.STRINGS"
-              }
+              message={strings.errorInviteCode}
               setLoading={setIsLoading}
             />
           )}
@@ -158,7 +156,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
       )}
       {inputIsEmpty && (
         <Error
-          message={"You must fill out all the input fields. STRINGS"}
+          message={strings.errorEmptyInputField}
           setLoading={setIsLoading}
         />
       )}
@@ -173,7 +171,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
         </StyledButton>
         {cohort && (
           <StyledButton secondary onClick={() => setShowWarning(true)}>
-            Remove from list STRING
+            {strings.removeFromList}
           </StyledButton>
         )}
       </PopupButtonWrapper>

@@ -1,18 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-
 import ArticlePreview from "./ArticlePreview";
-
 import SortingButtons from "./SortingButtons";
-
-import { StyledButton, TopButtonWrapper } from "../teacher/TeacherButtons.sc";
 import { OrangeRoundButton } from "../components/allButtons.sc";
-
 import * as s from "../components/TopMessage.sc";
-import * as sc from "../components/ColumnWidth.sc";
-import { Link } from "react-router-dom";
 
 export default function ClassroomArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
@@ -23,7 +17,7 @@ export default function ClassroomArticles({ api }) {
   useEffect(() => {
     api.getStudent((student) =>
       setStudentJoinedCohort(student.cohort_id !== null)
-    );
+    ); // eslint-disable-next-line
   }, []);
 
   if (articleList == null) {
@@ -48,9 +42,9 @@ export default function ClassroomArticles({ api }) {
               textAlign: "center",
             }}
           >
-            <h4> You haven't joined a class yet. </h4>
+            <h4> {strings.youHaveNotJoinedAClass} </h4>
             <Link to={`/account_settings`}>
-              <OrangeRoundButton> STRINGS Join class </OrangeRoundButton>
+              <OrangeRoundButton> {strings.joinClass} </OrangeRoundButton>
             </Link>
           </div>
         ) : (
