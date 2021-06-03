@@ -41,10 +41,10 @@ export const CohortItemCard = ({
             {!isWarning && (
               <div className="buttons-container">
                 <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
-                  <StyledButton secondary>See students (STRINGS)</StyledButton>
+                  <StyledButton secondary>{strings.seeStudents}</StyledButton>
                 </Link>
                 <StyledButton secondary onClick={handleEdit}>
-                  Edit class (STRINGS)
+                  {strings.editClass}
                 </StyledButton>
               </div>
             )}

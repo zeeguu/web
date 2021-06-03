@@ -16,3 +16,8 @@ Zeeguu_API.prototype.joinCohort = function (inv_code, onSuccess, onError) {
   };
   this._post("join_cohort", queryString.stringify(payload), onSuccess, onError);
 };
+
+//Using my id 2794 to not get an 401 Unauthorised erorr
+Zeeguu_API.prototype.getStudent = function (callback) {
+  this._get(`/student_info`, callback);
+};

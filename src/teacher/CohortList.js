@@ -1,5 +1,5 @@
 import React, { useState, Fragment, useEffect } from "react";
-//import strings from "../i18n/definitions";
+import strings from "../i18n/definitions";
 import CohortForm from "./CohortForm";
 import { CohortItemCard } from "./CohortItemCard";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -31,7 +31,7 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
     <Fragment>
       <TopButtonWrapper>
         <StyledButton primary onClick={handleAddNewCohort}>
-          Add class (STRINGS)
+          {strings.addClass}
         </StyledButton>
       </TopButtonWrapper>
       {reversedList.map((cohort) => (
