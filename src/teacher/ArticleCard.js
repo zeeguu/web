@@ -13,17 +13,20 @@ const ArticleCard = ({ article, isFirst, openedArticle }) => {
         return dateString;
     };
     return (
-        <s.ReadingInsightAccordion>
+        <s.ReadingInsightAccordion isFirst={isFirst}>
             <div className="content-wrapper">
                 <div className="date-title-wrapper">
-                    {isFirst && <p>Title</p>}
-                    <h2 className="article-title">
-                        {article.title.substring(0, 100)}
-                        {article.title.length > 100 ? "..." : ""}
-                    </h2>
-                    <p className="date">
-                        STRINGS Reading date: {formatedDate(article.start_time)}
-                    </p>
+                    {isFirst && <p className="head-title">Title</p>}
+
+                    <div className="left-line" >
+                        <h2 className="article-title">
+                            {article.title.substring(0, 100)}
+                            {article.title.length > 100 ? "..." : ""}
+                        </h2>
+                        <p className="date">
+                            STRINGS Reading date: {formatedDate(article.start_time)}
+                        </p>
+                    </div>
                 </div>
                 <div className="data-circle-wrapper">
                     <StudentActivityDataCircleWrapper
@@ -35,6 +38,7 @@ const ArticleCard = ({ article, isFirst, openedArticle }) => {
                         isFirst={isFirst}
                     />
                     <ViewMoreLessButton
+                        isFirst={isFirst}
                         articleID={article.article_id}
                         openedArticle={openedArticle}
                     />

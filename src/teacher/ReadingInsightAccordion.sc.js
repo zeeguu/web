@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import "@reach/accordion/styles.css";
 import { darkBlue } from "../components/colors";
 
@@ -8,7 +8,7 @@ export const ReadingInsightAccordion = styled.div`
     flex-direction: column;
     justify-content: center;
     min-height: 13vh;
-    margin-top: 3vh;
+    margin-top: 1.3vh;
   }
 
   .content-wrapper {
@@ -67,5 +67,67 @@ export const ReadingInsightAccordion = styled.div`
 
   .panel-no-words {
     text-align: center;
+  }
+
+  ${(props) =>
+    props.isFirst &&
+    css`
+
+.accordion-wrapper {
+    margin: 3vh 0 3.2vh 0;
+    
+  }
+
+  .article-title {
+    font-weight: 400;
+    margin: 0 0 1.5vh 2vw;
+    text-align: left;
+    max-width: 100vw;
+    min-width: 32vw;
+  }
+
+  .content-wrapper {
+    border: none;
+  }
+
+  .date-title-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100px;
+  
+    
+  }
+
+  .left-line{
+    display: flex;
+    flex-direction: column;
+    border-left: solid 3px ${darkBlue};
+    min-height: 9vh;
+    padding: 1.5vh 0 0 0;
+  }
+
+  .line {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .date{
+    display:flex;
+    color: ${darkBlue};
+    margin-bottom: 2vw;
+  }
+
+  .head-title{
+    padding-top:2vh;
+  }
+
+  .data-circle-wrapper{
+  margin-top:4vh;
+  }
+
+
+
+  `
   }
 `;

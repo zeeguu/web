@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { darkBlue } from "../components/colors";
 
 export const ViewMoreLessButton = styled.button`
@@ -15,6 +15,12 @@ export const ViewMoreLessButton = styled.button`
       margin-top: -.5em;
       font-size:45px;
       color: ${darkBlue}
-
   }
+
+  ${(props) =>
+    props.isFirst &&
+    css`
+    padding-top: 4.7vh;
+
+    `}
 `;
