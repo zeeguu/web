@@ -9,6 +9,7 @@ import * as s from "./ReadingInsightAccordion.sc";
 import ViewMoreLessButton from "./ViewMoreLessButton";
 import StudentActivityDataCircleWrapper from "./StudentActivityDataCircleWrapper";
 import StudentTranslations from "./StudentTranslations";
+import ArticleCard from "./ArticleCard";
 
 const ReadingInsightAccordion = ({ readArticles }) => {
   const [openedArticle, setOpenedArticle] = useState(null);
@@ -46,8 +47,9 @@ const ReadingInsightAccordion = ({ readArticles }) => {
               className="accordion-wrapper"
             >
               <AccordionButton onClick={() => handleClick(article.article_id)}>
-                <div className="content-wrapper">
+                {/* <div className="content-wrapper">
                   <div className="date-title-wrapper">
+                    {isFirstArticle(article.article_id) && <p>Title</p>}
                     <h2 className="article-title">
                       {article.title.substring(0, 100)}
                       {article.title.length > 100 ? "..." : ""}
@@ -70,7 +72,12 @@ const ReadingInsightAccordion = ({ readArticles }) => {
                       openedArticle={openedArticle}
                     />
                   </div>
-                </div>
+                </div> */}
+                <ArticleCard
+                  isFirst={isFirstArticle(article.article_id)}
+                  article={article}
+                  openedArticle={openedArticle}
+                />
               </AccordionButton>
               <AccordionPanel className="panel">
                 <StudentTranslations article={article} />
