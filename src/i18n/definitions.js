@@ -260,7 +260,7 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Native Language",
-      yourCurrentClassIs: "Your current class is ",
+      yourCurrentClassIs: "Your current class is: ",
       changeClassbtn: "Change class",
       insertNewInviteCode: "Insert new invite code",
       insertInviteCode: "Insert invite code",
@@ -724,7 +724,7 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Modersmål",
-      yourCurrentClassIs: "Din nuværende klasse er ",
+      yourCurrentClassIs: "Din nuværende klasse er: ",
       changeClassbtn: "Ændre klasse",
       insertNewInviteCode: "Indsæt ny invitationskode",
       insertInviteCode: "Indsæt invitationskode",

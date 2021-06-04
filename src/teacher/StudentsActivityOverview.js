@@ -20,7 +20,7 @@ export default function StudentsActivityOverview({ api }) {
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
   const history = useHistory();
 
-  //Extracting the cohort data for the page title and for deleting students from the cohort.
+  //Extracting the cohort data for the page title, for showing no student guidance and for deleting students from the cohort.
   useEffect(() => {
     api.getCohortsInfo((res) => {
       const currentCohortArray = res.filter((cohort) => cohort.id === cohortID);
