@@ -116,6 +116,10 @@ Zeeguu_API.prototype.getStudents = function (cohortID, duration, callback) {
   this._get(`/users_from_cohort/${cohortID}/${duration}`, callback);
 };
 
+Zeeguu_API.prototype.getCohortName = function (cohortID, callback) {
+  this._get(`/cohort_name/${cohortID}`, callback);
+};
+
 Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
   /* example return:
     json_result(

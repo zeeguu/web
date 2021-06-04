@@ -29,7 +29,7 @@ export default function Settings({ api, setUser }) {
     });
     api.getStudent((student) => {
       if (student.cohort_id !== null) {
-        setCurrentCohort(student.cohort_id);
+        api.getCohortName(student.cohort_id, (cohort)=> setCurrentCohort(cohort.name))
       }
     });
     setTitle("Settings");
@@ -154,7 +154,7 @@ export default function Settings({ api, setUser }) {
           <p style={{ margin: "25px 0 -5px 0" }}>
             <b>
               {studentIsInCohort
-                ? strings.yourCurrentClassIs + currentCohort + "."
+                ? strings.yourCurrentClassIs + currentCohort
                 : strings.youHaveNotJoinedAClass}
             </b>
           </p>
