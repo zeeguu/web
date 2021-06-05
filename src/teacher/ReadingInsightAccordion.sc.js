@@ -3,19 +3,24 @@ import "@reach/accordion/styles.css";
 import { darkBlue } from "../components/colors";
 
 export const ReadingInsightAccordion = styled.div`
+
+
   .accordion-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: 13vh;
     margin-top: 1.3vh;
+    margin-left: -3vw;
   }
 
   .content-wrapper {
     border-left: solid 3px ${darkBlue};
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; 
   }
+
+   
 
   .date-title-wrapper{
     display: flex;
@@ -24,7 +29,7 @@ export const ReadingInsightAccordion = styled.div`
     height: 100px;
   }
 
-  .date{
+  .date {
     display:flex;
     color: ${darkBlue};
     margin:0 0 .5vh 2vw;
@@ -43,15 +48,24 @@ export const ReadingInsightAccordion = styled.div`
     background-color: white;
     align-content: center;
   }
+
   button:hover {
     cursor: pointer;
   }
+
   .data-circle-wrapper {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     margin-left: 10em;
+    
   }
+
+  @media (max-width: 600px) {
+    button{
+      width: 100% !important;
+  }
+}
 
   .panel {
     margin-left:2.5em;
@@ -60,7 +74,9 @@ export const ReadingInsightAccordion = styled.div`
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     padding: 1em;
+    width:60vw;
   }
+
   .panel-headline {
     color: ${darkBlue};
   }
@@ -72,62 +88,63 @@ export const ReadingInsightAccordion = styled.div`
   ${(props) =>
     props.isFirst &&
     css`
+    `}
 
 .accordion-wrapper {
-    margin: 3vh 0 3.2vh 0;
+    margin: 3vh 0 3.2vh -3vw;
+    width: 8em;
     
   }
 
-  .article-title {
-    font-weight: 400;
-    margin: 0 0 1.5vh 2vw;
-    text-align: left;
-    max-width: 100vw;
-    min-width: 32vw;
-  }
+.article-title {
+  font-weight: 400;
+  margin: 0 0 1.5vh 2vw;
+  text-align: left;
+  max-width: 100vw;
+  min-width: 32vw;
+  
+}
 
   .content-wrapper {
-    border: none;
-  }
+  border: none;
+}
 
   .date-title-wrapper{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100px;
-  
-    
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+
+}
 
   .left-line{
-    display: flex;
-    flex-direction: column;
-    border-left: solid 3px ${darkBlue};
-    min-height: 9vh;
-    padding: 1.5vh 0 0 0;
-  }
+  display: flex;
+  flex-direction: column;
+  border-left: solid 3px ${darkBlue};
+  min-height: 9vh;
+  padding: 1.5vh 0 0 0;
+}
 
   .line {
-    display: flex;
-    flex-direction: row;
-  }
+  display: flex;
+  flex-direction: row;
+}
 
   .date{
-    display:flex;
-    color: ${darkBlue};
-    margin-bottom: 2vw;
-  }
+  display: flex;
+  color: ${darkBlue};
+  margin-bottom: 2vw;
+}
 
   .head-title{
-    padding-top:2vh;
-  }
+  padding-top: 2vh;
+  margin-left: 2vw;
+  text-align: left;
+  font-size: large;
+  font-family: "Montserrat";
+}
 
   .data-circle-wrapper{
-  margin-top:4vh;
-  }
-
-
-
-  `
-  }
+  margin-top: 4vh;
+}
 `;
