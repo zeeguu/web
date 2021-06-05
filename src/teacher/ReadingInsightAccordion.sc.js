@@ -23,11 +23,11 @@ export const ReadingInsightAccordion = styled.div`
     props.isFirst &&
     css`
       .data-circle-wrapper{
-  margin-top: 5vh;
-}
-.content-wrapper {
-  padding-bottom: 1.7vh;
-}
+       margin-top: 5vh;
+  }
+      .content-wrapper {
+       padding-bottom: 1.7vh;
+  }
     `}
 
 
@@ -101,6 +101,8 @@ export const ReadingInsightAccordion = styled.div`
   text-align: left;
   max-width: 100vw;
   min-width: 32vw;
+ 
+
   
 }
 
@@ -109,7 +111,8 @@ export const ReadingInsightAccordion = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100px;
-
+  margin-top: 1.1vh;
+ 
 }
 
   .left-line{
