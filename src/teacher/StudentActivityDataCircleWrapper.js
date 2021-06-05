@@ -27,19 +27,19 @@ const StudentActivityDataCircles = ({
 
     < StudentActivityDataCircleWrapper isFirst={isFirst} >
       <div>
-        {isFirst && <p className="title"> Text level </p>}
+        {isFirst && <p className="data-circle-title"> Text <br />level </p>}
         <StudentActivityDataCircle key={uuid()}>{difficulty}</StudentActivityDataCircle>
       </div>
       <div>
-        {isFirst && <p className="title"> Text length </p>}
+        {isFirst && <p className="data-circle-title"> Text <br />length </p>}
         <StudentActivityDataCircle key={uuid()}>{length}</StudentActivityDataCircle>
       </div>
       <div>
-        {isFirst && <p className="title"> Reading time </p>}
+        {isFirst && <p className="data-circle-title"> Reading <br />time </p>}
         <StudentActivityDataCircle key={uuid()}>{readingTimeString}</StudentActivityDataCircle>
       </div>
       <div>
-        {isFirst && <p className="title"> Translated words </p>}
+        {isFirst && <p className="data-circle-title"> Translated <br />words </p>}
         <StudentActivityDataCircle key={uuid()}>{translatedWords}</StudentActivityDataCircle>
       </div>
 
