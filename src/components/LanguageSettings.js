@@ -5,29 +5,9 @@ import engSelected from "./icons/eng-selected.png";
 import engDeselected from "./icons/eng-deselected.png";
 
 import strings from "../i18n/definitions";
+import * as s from './LanguageSettings.sc'
 
-import styled from "styled-components";
-
-const Option = styled.input`
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-`;
-
-const Icon = styled.img`
-  width: 30px;
-  height: auto;
-  margin-right: 4px;
-`;
-
-const Container = styled.label`
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-`;
-
-export default ({ useForceUpdate }) => {
+export default function LanguageSettings ({ useForceUpdate }) {
   const languages = [
     {
       name: "dansk",
@@ -43,7 +23,6 @@ export default ({ useForceUpdate }) => {
     },
   ];
 
-  // localStorage.setItem("systemLanguage", JSON.stringify(languages[0]));
   const [language, setLanguage] = useState();
 
   useEffect(() => {
@@ -71,8 +50,8 @@ export default ({ useForceUpdate }) => {
     <div>
       {language &&
         languages.map((lang) => (
-          <Container htmlFor={lang.name}>
-            <Icon
+          <s.Container htmlFor={lang.name}>
+            <s.Icon
               src={
                 language.name === lang.name
                   ? lang.selectedIcon
@@ -80,7 +59,7 @@ export default ({ useForceUpdate }) => {
               }
             />
             {capitalize(lang.name)}
-            <Option
+            <s.Option
               type="radio"
               id={lang.name}
               name={"language"}
@@ -88,7 +67,7 @@ export default ({ useForceUpdate }) => {
                 onChange(lang);
               }}
             />
-          </Container>
+          </s.Container>
         ))}
     </div>
   );

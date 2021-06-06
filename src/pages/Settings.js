@@ -23,7 +23,7 @@ export default function Settings({ api, setUser }) {
   
   
   // TODO: Refactor using Zeeguu project logic
-  const sysLanguages = [
+  const uiLanguages = [
     {
       name: "Danish",
       code: "da",
@@ -34,13 +34,13 @@ export default function Settings({ api, setUser }) {
     },
   ];
 
-  const [sysLanguage, setSysLanguage] = useState();
+  const [uiLanguage, setUiLanguage] = useState();
   useEffect(() => {
     const language = JSON.parse(localStorage.getItem("systemLanguage"));
-    setSysLanguage(language);
+    setUiLanguage(language);
   }, []);
   function onSysChange(lang) {
-    setSysLanguage(lang);
+    setUiLanguage(lang);
   }
 
 
@@ -66,8 +66,6 @@ export default function Settings({ api, setUser }) {
 
   function nativeLanguageUpdated(e) {
     let code = e.target[e.target.selectedIndex].getAttribute("code");
-    // console.log(code)
-    // strings.setLanguage(code);
     setUserDetails({
       ...userDetails,
       native_language: code,
@@ -77,8 +75,8 @@ export default function Settings({ api, setUser }) {
   function handleSave(e) {
     e.preventDefault();
 
-    strings.setLanguage(sysLanguage.code);
-    localStorage.setItem("systemLanguage", JSON.stringify(sysLanguage));
+    strings.setLanguage(uiLanguage.code);
+    localStorage.setItem("systemLanguage", JSON.stringify(uiLanguage));
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
@@ -146,10 +144,10 @@ export default function Settings({ api, setUser }) {
 
         <label>{strings.systemLanguage}</label>
         <LanguageSelector
-          languages={sysLanguages}
-          selected={sysLanguage.name}
+          languages={uiLanguages}
+          selected={uiLanguage.name}
           onChange={(e) => {
-            let lang = sysLanguages.find(lang => lang.code === e.target[e.target.selectedIndex].getAttribute("code")) 
+            let lang = uiLanguages.find(lang => lang.code === e.target[e.target.selectedIndex].getAttribute("code")) 
             onSysChange(lang)
           }}
         />
