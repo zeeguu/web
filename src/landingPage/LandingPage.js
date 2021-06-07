@@ -23,7 +23,7 @@ export default function LandingPage() {
       <s.LoginHeader>
         <s.HeaderTitle>Zeeguu</s.HeaderTitle>
         <LanguageSettings
-          useForceUpdate={() => forceUpdateHook((value) => value + 1)}
+          updateApp={() => forceUpdateHook((value) => value + 1)}
         />
       </s.LoginHeader>
 
