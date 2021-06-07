@@ -7,7 +7,7 @@ import engDeselected from "./icons/eng-deselected.png";
 import strings from "../i18n/definitions";
 import * as s from './LanguageSettings.sc'
 
-export default function LanguageSettings ({ updateApp }) {
+export default function LanguageSettings ({ language, setLanguage }) {
   const languages = [
     {
       name: "dansk",
@@ -23,7 +23,7 @@ export default function LanguageSettings ({ updateApp }) {
     },
   ];
 
-  const [language, setLanguage] = useState();
+  // const [language, setLanguage] = useState();
 
   useEffect(() => {
     const language = JSON.parse(localStorage.getItem("systemLanguage"));
@@ -34,7 +34,7 @@ export default function LanguageSettings ({ updateApp }) {
     if (language !== undefined) {
       strings.setLanguage(language.code);
       // console.log(language,"===", languages[0], "is", language.name.toLowerCase() === languages[0].name)
-      updateApp();
+      // updateApp();
     }
   }, [language]);
 

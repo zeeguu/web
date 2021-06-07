@@ -8,7 +8,9 @@ import React, { useState } from "react";
 import LanguageSettings from "../components/LanguageSettings";
 
 export default function LandingPage() {
-  const [,forceUpdateHook] = useState(0);
+  // const [,forceUpdateHook] = useState(0);
+  const [language, setLanguage] = useState();
+
 
   localStorage.setItem("systemLanguage", JSON.stringify({
     name: "Dansk",
@@ -23,7 +25,8 @@ export default function LandingPage() {
       <s.LoginHeader>
         <s.HeaderTitle>Zeeguu</s.HeaderTitle>
         <LanguageSettings
-          updateApp={() => forceUpdateHook((value) => value + 1)}
+        language={language}
+          setLanguage={setLanguage}
         />
       </s.LoginHeader>
 
