@@ -7,7 +7,7 @@ import engDeselected from "./icons/eng-deselected.png";
 import strings from "../i18n/definitions";
 import * as s from './LanguageSettings.sc'
 
-export default function LanguageSettings ({ useForceUpdate }) {
+export default function LanguageSettings ({ updateApp }) {
   const languages = [
     {
       name: "dansk",
@@ -31,9 +31,10 @@ export default function LanguageSettings ({ useForceUpdate }) {
   }, []);
 
   useEffect(() => {
-    if (language) {
+    if (language !== undefined) {
       strings.setLanguage(language.code);
-      useForceUpdate();
+      // console.log(language,"===", languages[0], "is", language.name.toLowerCase() === languages[0].name)
+      updateApp();
     }
   }, [language]);
 
@@ -41,9 +42,14 @@ export default function LanguageSettings ({ useForceUpdate }) {
     return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
   }
 
-  function onChange(lang) {
-    setLanguage(lang);
-    localStorage.setItem("systemLanguage", JSON.stringify(lang));
+  function onChange({name, code}) {
+    setLanguage({name: name, code: code});
+    // console.log("logging: ",{name: name, code: code})
+    console.log("logging: ",JSON.stringify({name: name, code: code}))
+    localStorage.setItem("systemLanguage", JSON.stringify({name: name, code: code}));
+    const item = JSON.parse(localStorage.getItem('systemLanguage'));
+    console.log("THIS ONE!:",item)
+
   }
 
   return (
@@ -53,7 +59,7 @@ export default function LanguageSettings ({ useForceUpdate }) {
           <s.Container htmlFor={lang.name}>
             <s.Icon
               src={
-                language.name === lang.name
+                language.name.toLowerCase() === lang.name
                   ? lang.selectedIcon
                   : lang.deselectedIcon
               }

@@ -494,7 +494,7 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Modersmål",
-      systemLanguage: "Systemsprog",
+      systemLanguage: "Interface sprog",
     },
   },
   {

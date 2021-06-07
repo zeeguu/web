@@ -4,6 +4,7 @@ const LocalStorage = {
     Name: "name",
     LearnedLanguage: "learned_language",
     NativeLanguage: "native_language",
+    UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
   },
 
@@ -32,6 +33,14 @@ const LocalStorage = {
 
   setSession: function (session) {
     localStorage[this.Keys.Session] = session;
+  },
+
+  setUiLanguage: function (language) {
+    localStorage[this.Keys.UiLanguage] = language;
+  },
+
+  getUiLanguage: function() {
+    return localStorage[this.Keys.UiLanguage]
   },
 
   setUserInfo: function (info) {
