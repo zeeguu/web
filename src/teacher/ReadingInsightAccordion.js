@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { v4 as uuid } from "uuid";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -9,11 +8,21 @@ import {
 import strings from "../i18n/definitions";
 import * as s from "./ReadingInsightAccordion.sc";
 import ViewMoreLessButton from "./ViewMoreLessButton";
-import StudentActivityDataCircles from "./StudentActivityDataCircles";
+import StudentActivityDataCircleWrapper from "./StudentActivityDataCircleWrapper";
 import StudentTranslations from "./StudentTranslations";
+import ArticleCard from "./ArticleCard";
 
 const ReadingInsightAccordion = ({ readArticles }) => {
   const [openedArticle, setOpenedArticle] = useState(null);
+  const [firstArticle, setFirstArticle] = useState("");
+
+  useEffect(() => {
+    setFirstArticle(readArticles[0].article_id);
+  }, [])
+
+  const isFirstArticle = (articleID) => {
+    return articleID === firstArticle;
+  }
 
   const handleClick = (articleID) => {
     if (articleID === openedArticle) {
@@ -30,47 +39,30 @@ const ReadingInsightAccordion = ({ readArticles }) => {
     return dateString;
   };
   return (
-    <s.ReadingInsightAccordion>
-      <Accordion collapsible>
-        {readArticles !== null &&
-          readArticles.map((article) => (
+
+    <Accordion collapsible>
+      {readArticles !== null &&
+        readArticles.map((article) => (
+          <s.ReadingInsightAccordion isFirst={isFirstArticle(article.article_id)}>
             <AccordionItem
               key={uuid() + article.article_id}
               className="accordion-wrapper"
             >
               <AccordionButton onClick={() => handleClick(article.article_id)}>
-                <div className="content-wrapper">
-                  <div className="date-title-wrapper">
-                    <h2 className="article-title">
-                      {article.title.substring(0, 100)}
-                      {article.title.length > 100 ? "..." : ""}
-                    </h2>
-                    <p className="date">
-                      {strings.readingDate} {formatedDate(article.start_time)}
-                    </p>
-                  </div>
-                  <div className="data-circle-wrapper">
-                    <StudentActivityDataCircles
-                      className="data-circles"
-                      length={article.word_count}
-                      difficulty={article.difficulty}
-                      readingTime={article.duration_in_sec}
-                      translatedWords={article.translations.length}
-                    />
-                    <ViewMoreLessButton
-                      articleID={article.article_id}
-                      openedArticle={openedArticle}
-                    />
-                  </div>
-                </div>
+                <ArticleCard
+                  isFirst={isFirstArticle(article.article_id)}
+                  article={article}
+                  openedArticle={openedArticle}
+                />
               </AccordionButton>
               <AccordionPanel className="panel">
                 <StudentTranslations article={article} />
               </AccordionPanel>
             </AccordionItem>
-          ))}
-      </Accordion>
-    </s.ReadingInsightAccordion>
+          </s.ReadingInsightAccordion>
+        ))}
+    </Accordion>
+
   );
 };
 export default ReadingInsightAccordion;

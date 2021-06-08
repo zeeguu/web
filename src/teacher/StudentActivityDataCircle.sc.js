@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const StudentActivityDataCircle = styled.div`
-  margin-right: 1.5em;
+  margin: 1em;
   line-height: 4em;
   text-align: center;
   font-size: medium;
