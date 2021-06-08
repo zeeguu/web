@@ -6,10 +6,7 @@ import {
   AccordionPanel,
 } from "@reach/accordion";
 import { v4 as uuid } from "uuid";
-import strings from "../i18n/definitions";
 import * as s from "./ReadingInsightAccordion.sc";
-import ViewMoreLessButton from "./ViewMoreLessButton";
-import StudentActivityDataCircleWrapper from "./StudentActivityDataCircleWrapper";
 import StudentTranslations from "./StudentTranslations";
 import ArticleCard from "./ArticleCard";
 
@@ -19,11 +16,12 @@ const ReadingInsightAccordion = ({ readArticles }) => {
 
   useEffect(() => {
     setFirstArticle(readArticles[0].article_id);
-  }, [])
+    //eslint-disable-next-line
+  }, []);
 
   const isFirstArticle = (articleID) => {
     return articleID === firstArticle;
-  }
+  };
 
   const handleClick = (articleID) => {
     if (articleID === openedArticle) {
@@ -33,18 +31,13 @@ const ReadingInsightAccordion = ({ readArticles }) => {
     }
   };
 
-  //TODO could be turned into seperate component
-  const formatedDate = (startTime) => {
-    const date = new Date(startTime);
-    const dateString = date.toString();
-    return dateString;
-  };
   return (
-
     <Accordion collapsible>
       {readArticles !== null &&
         readArticles.map((article) => (
-          <s.ReadingInsightAccordion isFirst={isFirstArticle(article.article_id)}>
+          <s.ReadingInsightAccordion
+            isFirst={isFirstArticle(article.article_id)}
+          >
             <AccordionItem
               key={uuid() + article.article_id}
               className="accordion-wrapper"
@@ -63,7 +56,6 @@ const ReadingInsightAccordion = ({ readArticles }) => {
           </s.ReadingInsightAccordion>
         ))}
     </Accordion>
-
   );
 };
 export default ReadingInsightAccordion;
