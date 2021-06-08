@@ -5,6 +5,7 @@ import {
   AccordionButton,
   AccordionPanel,
 } from "@reach/accordion";
+import { v4 as uuid } from "uuid";
 import strings from "../i18n/definitions";
 import * as s from "./ReadingInsightAccordion.sc";
 import ViewMoreLessButton from "./ViewMoreLessButton";
