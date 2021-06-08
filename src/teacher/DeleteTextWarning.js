@@ -1,6 +1,5 @@
 import React from "react";
 import strings from "../i18n/definitions";
-import { useHistory } from "react-router";
 import { StyledDialog } from "./StyledDialog.sc";
 import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 
@@ -9,8 +8,6 @@ const DeleteTextWarning = ({
   articleTitle,
   deleteText,
 }) => {
-  const history = useHistory();
-
   const handleCancel = () => {
     setShowDeleteTextWarning(false);
   };
