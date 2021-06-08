@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { darkBlue } from "../components/colors";
 
-export const ViewMoreLessButton = styled.button`
+export const ViewMoreLessButton = styled.div`
   p {
     font-weight: 600;
     font-family: "Montserrat";

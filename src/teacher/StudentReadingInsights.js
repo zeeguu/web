@@ -52,10 +52,8 @@ export default function StudentReadingInsights({ api }) {
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
       {readArticles.length === 0 ? (
         <CenteredContent>
-          {" "}
           <h3>
-            {" "}
-            {strings.studentHasNotReadAnyArticles} {cohortLang}{" "}
+            {strings.studentHasNotReadAnyArticles} {cohortLang}
           </h3>
         </CenteredContent>
       ) : (
