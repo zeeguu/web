@@ -20,11 +20,12 @@ export default function StudentInfoLineHeader() {
           <div className="number-display-wrapper" id="header">
             <p className="number-display-header">
               <br />
-              {strings.average} <br /> {strings.lengthOfText}
+              {strings.text} <br /> {strings.lengthOnText}
             </p>
             <p className="number-display-header">
               <br />
-              {strings.average} <br /> {strings.levelOfText}
+              {strings.levelOfText}
+              {"-"} <br /> {strings.textLevel}
             </p>
             <p className="number-display-header">
               <br /> {strings.exercisesCorrect}

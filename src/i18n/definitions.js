@@ -5,8 +5,10 @@ let strings = new LocalizedStrings(
   {
     en: {
       //Shared
+      title: "Title",
       words: "Words",
       articles: "Texts",
+      text: "Text",
       save: "save",
       settings: "Settings",
       exercises: "Exercises",
@@ -27,6 +29,7 @@ let strings = new LocalizedStrings(
       cancel: "Cancel",
       joinClass: "Join Class",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
+      reading: "Reading",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -269,7 +272,6 @@ let strings = new LocalizedStrings(
 
       //_ActivityInsightsRouter
       learningActivities: "Learning Activities",
-      reading: "Reading",
       backToClassroom: "Back To Classroom",
 
       //AddTextOptionTypes
@@ -387,24 +389,25 @@ let strings = new LocalizedStrings(
       numberOfWords: "number of words",
       solvedOnFirstAttempt: "solved on 1st attempt",
 
+      //StudentActivityDataCircleWrapper
+      level: "level",
+      lengthOnText: "length",
+      time: "time",
+      translated: "translated",
+      wordsWithLowercase: "words",
+      readingTime: "reading",
+
       //ReadingInsightAccordion
       readingDate: "Read: ",
-
-      //ReadingInsightHeader
-      title: "Title",
-      textLevel: "Text level",
-      textLength: "Text length",
-      readingTime: "Reading time",
-      translatedWords: "Translated words",
 
       //StudentInfoLine
       textsRead: "texts read",
       exercisesCompleted: "exercises completed",
 
       //StudentInfoLineHeader
+      textLevel: "level",
       studentName: "Student name",
       readingExerciseTime: "Reading/Exercise time",
-      average: "Average",
       lengthOfText: "text length",
       levelOfText: "text level",
       exercisesCorrect: "Exercises correct ",
@@ -473,8 +476,10 @@ let strings = new LocalizedStrings(
 
     da: {
       //Shared
+      title: "Titel",
       words: "Ord",
       articles: "Tekster",
+      text: "tekst",
       save: "gem",
       settings: "Indstillinger",
       exercises: "Øvelser",
@@ -495,6 +500,7 @@ let strings = new LocalizedStrings(
       cancel: "Annuller",
       joinClass: "Deltag i klasse",
       youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
+      reading: "Læsning",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -738,7 +744,6 @@ let strings = new LocalizedStrings(
 
       //_ActivityInsightsRouter
       learningActivities: "Læringsaktiviteter",
-      reading: "Læsning",
       backToClassroom: "Tilbage til klasseværelset",
 
       //AddTextOptionTypes
@@ -854,18 +859,19 @@ let strings = new LocalizedStrings(
       //PractisedWordsCard
       practisedWords: "Øvede ord",
       timeSpendOnExercises: "tid brugt på øvelser",
-      numberOfWords: "antal ord",
+      numberOfWords: "samlet antal ord",
       solvedOnFirstAttempt: "løst ved 1. forsøg",
+
+      //StudentActivityDataCircleWrapper
+      level: "niveau",
+      lengthOnText: "længde",
+      time: "tid",
+      translated: "oversatte",
+      wordsWithLowercase: "ord",
+      readingTime: "læse",
 
       //ReadingInsightAccordion
       readingDate: "Læst: ",
-
-      //ReadingInsightHeader
-      title: "Titel",
-      textLevel: "Tekst niveau",
-      textLength: "Tekst længde",
-      readingTime: "Læsetid",
-      translatedWords: "Oversatte ord",
 
       //StudentInfoLine
       textsRead: "læste tekster",
@@ -878,12 +884,12 @@ let strings = new LocalizedStrings(
         "Eleven har endnu ikke læst nogle tekster i",
 
       //StudentInfoLineHeader
+      textLevel: "grad",
       studentName: "Elevens navn",
       readingExerciseTime: "Læse/Øvelsestid",
-      average: "Gennemsnitlig",
       lengthOfText: "tekst længde",
-      levelOfText: "sværhedsgrad",
-      exercisesCorrect: "Korrekt øvelse ",
+      levelOfText: "sværheds",
+      exercisesCorrect: "Korrekt ",
       onFirstAttempt: "ved 1. forsøg",
 
       //StudentsActivityOverview
