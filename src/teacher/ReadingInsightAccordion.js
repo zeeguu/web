@@ -12,16 +12,14 @@ import ArticleCard from "./ArticleCard";
 
 const ReadingInsightAccordion = ({ readArticles }) => {
   const [openedArticle, setOpenedArticle] = useState(null);
-  const [firstArticle, setFirstArticle] = useState("");
+  const [firstArticle, setFirstArticle] = useState(null);
+  const [restOfArticles, setRestOfArticles] = useState(null);
 
   useEffect(() => {
-    setFirstArticle(readArticles[0].article_id);
+    setFirstArticle(readArticles[0]);
+    setRestOfArticles(readArticles.slice(1, readArticles.length));
     //eslint-disable-next-line
   }, []);
-
-  const isFirstArticle = (articleID) => {
-    return articleID === firstArticle;
-  };
 
   const handleClick = (articleID) => {
     if (articleID === openedArticle) {
@@ -33,17 +31,37 @@ const ReadingInsightAccordion = ({ readArticles }) => {
 
   return (
     <Accordion collapsible>
-      {readArticles !== null &&
-        readArticles.map((article) => (
+      {firstArticle !== null &&
+        <s.ReadingInsightAccordion
+          isFirst={true}
+        >
+          <AccordionItem
+            className="accordion-wrapper"
+          >
+            <AccordionButton onClick={() => handleClick(firstArticle.article_id)}>
+              <ArticleCard
+                isFirst={true}
+                article={firstArticle}
+                openedArticle={openedArticle}
+              />
+            </AccordionButton>
+            <AccordionPanel className="panel">
+              <StudentTranslations article={firstArticle} />
+            </AccordionPanel>
+          </AccordionItem>
+        </s.ReadingInsightAccordion>}
+
+      {restOfArticles !== null &&
+        restOfArticles.map((article) => (
           <s.ReadingInsightAccordion key={uuid() + article.article_id}
-            isFirst={isFirstArticle(article.article_id)}
+            isFirst={false}
           >
             <AccordionItem
               className="accordion-wrapper"
             >
               <AccordionButton onClick={() => handleClick(article.article_id)}>
                 <ArticleCard
-                  isFirst={isFirstArticle(article.article_id)}
+                  isFirst={false}
                   article={article}
                   openedArticle={openedArticle}
                 />
