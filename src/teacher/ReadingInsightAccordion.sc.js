@@ -1,33 +1,49 @@
-import styled from "styled-components";
-import "@reach/accordion/styles.css";
+import styled, { css } from "styled-components";
 import { darkBlue } from "../components/colors";
 
 export const ReadingInsightAccordion = styled.div`
+
+
   .accordion-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: 13vh;
-    margin-top: 3vh;
+    margin: 3vh 0 3.2vh -3vw;
+    font-family: "Montserrat";
   }
 
   .content-wrapper {
-    border-left: solid 3px ${darkBlue};
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; 
+  
+    
   }
+
+  ${(props) =>
+    props.isFirst &&
+    css`
+      .data-circle-wrapper{
+       margin-top: 5vh;
+  }
+      .content-wrapper {
+       padding-bottom: 1.7vh;
+  }
+    `}
+
 
   .date-title-wrapper{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 100px;
+    
   }
 
-  .date{
+  .date {
     display:flex;
     color: ${darkBlue};
-    margin:0 0 .5em 1em;
+    margin:0 0 .5vh 2vw;
   }
 
   .article-title {
@@ -36,22 +52,33 @@ export const ReadingInsightAccordion = styled.div`
     text-align: left;
     max-width: 100vw;
     min-width: 32vw;
+    padding-top: 0.2vw;
+    font-family: "Montserrat";
   }
 
   button {
     border: None;
     background-color: white;
     align-content: center;
+    font-family: "Montserrat";
   }
+
   button:hover {
     cursor: pointer;
   }
+
   .data-circle-wrapper {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     margin-left: 10em;
   }
+
+  @media (max-width: 600px) {
+    button{
+      width: 100% !important;
+  }
+}
 
   .panel {
     margin-left:2.5em;
@@ -60,7 +87,9 @@ export const ReadingInsightAccordion = styled.div`
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     padding: 1em;
+    width:60vw;
   }
+
   .panel-headline {
     color: ${darkBlue};
   }
@@ -68,4 +97,55 @@ export const ReadingInsightAccordion = styled.div`
   .panel-no-words {
     text-align: center;
   }
+
+.article-title {
+  font-weight: 400;
+  margin: 0 0 1.5vh 2vw;
+  text-align: left;
+  max-width: 100vw;
+  min-width: 32vw;
+ 
+
+  
+}
+
+  .date-title-wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+  margin-top: 1.1vh;
+ 
+}
+
+  .left-line{
+  display: flex;
+  flex-direction: column;
+  border-left: solid 3px ${darkBlue};
+  min-height: 9vh;
+  padding: 1.5vh 0 0 0;
+  
+}
+
+  .line {
+  display: flex;
+  flex-direction: row;
+}
+
+  .date{
+  display: flex;
+  color: ${darkBlue};
+  margin-bottom: 2vw;
+  font-family: "Montserrat";
+}
+
+  .head-title{
+  padding-top: 2vh;
+  margin-left: 2vw;
+  text-align: left;
+  font-size: large;
+  font-family: "Montserrat";
+}
+
+
 `;
