@@ -8,14 +8,8 @@ import React, { useState } from "react";
 import LanguageSettings from "../components/LanguageSettings";
 
 export default function LandingPage() {
-  // const [,forceUpdateHook] = useState(0);
   const [language, setLanguage] = useState();
 
-
-  localStorage.setItem("systemLanguage", JSON.stringify({
-    name: "Dansk",
-    code: "da",
-  }));
   if (LocalStorage.hasSession()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }

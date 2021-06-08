@@ -20,12 +20,11 @@ export default function Settings({ api, setUser }) {
   const history = useHistory();
   const user = useContext(UserContext);
   const [languages, setLanguages] = useState();
-  
-  
+
   // TODO: Refactor using Zeeguu project logic
   const uiLanguages = [
     {
-      name: "Danish",
+      name: "Dansk",
       code: "da",
     },
     {
@@ -35,14 +34,15 @@ export default function Settings({ api, setUser }) {
   ];
 
   const [uiLanguage, setUiLanguage] = useState();
+
   useEffect(() => {
-    const language = JSON.parse(localStorage.getItem("systemLanguage"));
+    const language = LocalStorage.getUiLanguage();
     setUiLanguage(language);
   }, []);
+
   function onSysChange(lang) {
     setUiLanguage(lang);
   }
-
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -76,7 +76,7 @@ export default function Settings({ api, setUser }) {
     e.preventDefault();
 
     strings.setLanguage(uiLanguage.code);
-    localStorage.setItem("systemLanguage", JSON.stringify(uiLanguage));
+    LocalStorage.setUiLanguage(uiLanguage);
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
@@ -141,16 +141,23 @@ export default function Settings({ api, setUser }) {
           )}
           onChange={nativeLanguageUpdated}
         />
-
-        <label>{strings.systemLanguage}</label>
-        <LanguageSelector
-          languages={uiLanguages}
-          selected={uiLanguage.name}
-          onChange={(e) => {
-            let lang = uiLanguages.find(lang => lang.code === e.target[e.target.selectedIndex].getAttribute("code")) 
-            onSysChange(lang)
-          }}
-        />
+        {uiLanguage.name !== undefined && (
+          <>
+            <label>{strings.systemLanguage}</label>
+            <LanguageSelector
+              languages={uiLanguages}
+              selected={uiLanguage.name}
+              onChange={(e) => {
+                let lang = uiLanguages.find(
+                  (lang) =>
+                    lang.code ===
+                    e.target[e.target.selectedIndex].getAttribute("code")
+                );
+                onSysChange(lang);
+              }}
+            />
+          </>
+        )}
 
         <div>
           <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>

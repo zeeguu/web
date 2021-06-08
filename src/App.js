@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import LandingPage from "./landingPage/LandingPage";
@@ -28,12 +28,27 @@ function App() {
     _api.session = localStorage["sessionID"];
   }
 
+  const [uiLanguage, setUiLanguage] = useState(LocalStorage.getUiLanguage());
+
+  useEffect(() => {
+    const uiLang = LocalStorage.getUiLanguage();
+    console.log(uiLang === undefined);
+    if (uiLang === undefined) {
+      LocalStorage.setUiLanguage({ name: "english", code: "en" });
+    }
+
+    setUiLanguage(uiLang);
+  }, []);
+
+  useEffect(() => {
+    if (uiLanguage !== undefined) strings.setLanguage(uiLanguage.code);
+  }, [uiLanguage]);
+
   const [api] = useState(_api);
 
   const [user, setUser] = useState(userDict);
 
   function handleSuccessfulSignIn(userInfo) {
-
     setUser({
       session: api.session,
       name: userInfo.name,
