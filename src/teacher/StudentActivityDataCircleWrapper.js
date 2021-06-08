@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
+import strings from "../i18n/definitions";
 import { StudentActivityDataCircle } from "./StudentActivityDataCircle.sc";
 import { StudentActivityDataCircleWrapper } from "./StudentActivityDataCircleWrapper.sc";
 
@@ -27,8 +28,8 @@ const StudentActivityDataCircles = ({
         {isFirst && (
           <p className="data-circle-title">
             {" "}
-            Text <br />
-            level{" "}
+            {strings.text} <br />
+            {strings.level}{" "}
           </p>
         )}
         <StudentActivityDataCircle key={uuid()}>
@@ -39,8 +40,8 @@ const StudentActivityDataCircles = ({
         {isFirst && (
           <p className="data-circle-title">
             {" "}
-            Text <br />
-            length{" "}
+            {strings.text} <br />
+            {strings.lengthOnText}{" "}
           </p>
         )}
         <StudentActivityDataCircle key={uuid()}>
@@ -51,8 +52,8 @@ const StudentActivityDataCircles = ({
         {isFirst && (
           <p className="data-circle-title">
             {" "}
-            Reading <br />
-            time{" "}
+            {strings.readingTime} <br />
+            {strings.time}{" "}
           </p>
         )}
         <StudentActivityDataCircle key={uuid()}>
@@ -63,8 +64,8 @@ const StudentActivityDataCircles = ({
         {isFirst && (
           <p className="data-circle-title">
             {" "}
-            Translated <br />
-            words{" "}
+            {strings.translated} <br />
+            {strings.wordsWithLowercase}{" "}
           </p>
         )}
         <StudentActivityDataCircle key={uuid()}>

@@ -1,7 +1,8 @@
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import strings from "../i18n/definitions";
 
 const ExerciseDataItemCard = (props) => {
-  const setBorderColor = props.isOpen ? "#5492b3" : "#44cdff"
+  const setBorderColor = props.isOpen ? "#5492b3" : "#44cdff";
   return (
     <div
       style={{
@@ -37,7 +38,7 @@ const ExerciseDataItemCard = (props) => {
           }}
         >
           <p style={{ fontWeight: 600, width: "4.5em", fontSize: "small" }}>
-            View more
+            {strings.viewMoreBtn}
           </p>
           <MdExpandMore
             style={{ marginTop: "-.5em", fontSize: "45px", color: "#5492b3" }}
@@ -45,20 +46,20 @@ const ExerciseDataItemCard = (props) => {
         </div>
       ) : (
         <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginTop: "1.2em",
-        }}
-      >
-        <p style={{ fontWeight: 600, width: "4.3em", fontSize: "small" }}>
-          View less
-        </p>
-        <MdExpandLess
-          style={{ marginTop: "-.5em", fontSize: "45px", color: "#5492b3" }}
-        />
-      </div>
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginTop: "1.2em",
+          }}
+        >
+          <p style={{ fontWeight: 600, width: "4.3em", fontSize: "small" }}>
+            {strings.viewLessBtn}
+          </p>
+          <MdExpandLess
+            style={{ marginTop: "-.5em", fontSize: "45px", color: "#5492b3" }}
+          />
+        </div>
       )}
     </div>
   );
