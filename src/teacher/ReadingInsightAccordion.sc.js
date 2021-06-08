@@ -10,6 +10,7 @@ export const ReadingInsightAccordion = styled.div`
     justify-content: center;
     min-height: 13vh;
     margin: 3vh 0 3.2vh -3vw;
+    font-family: "Montserrat";
   }
 
   .content-wrapper {
@@ -52,12 +53,14 @@ export const ReadingInsightAccordion = styled.div`
     max-width: 100vw;
     min-width: 32vw;
     padding-top: 0.2vw;
+    font-family: "Montserrat";
   }
 
   button {
     border: None;
     background-color: white;
     align-content: center;
+    font-family: "Montserrat";
   }
 
   button:hover {
@@ -133,6 +136,7 @@ export const ReadingInsightAccordion = styled.div`
   display: flex;
   color: ${darkBlue};
   margin-bottom: 2vw;
+  font-family: "Montserrat";
 }
 
   .head-title{

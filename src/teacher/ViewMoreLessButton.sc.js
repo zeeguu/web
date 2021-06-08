@@ -4,9 +4,11 @@ import { darkBlue } from "../components/colors";
 export const ViewMoreLessButton = styled.button`
   p {
     font-weight: 600;
+    font-family: "Montserrat";
   }
   .wrapper {
     width: 4.5em;
+  
   }
   .viewLess {
     width: 4.3em;
