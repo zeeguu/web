@@ -38,22 +38,27 @@ export default function StudentReadingInsights({ api }) {
       setCohortLang(currentCohort[0].language_name);
     });
     // eslint-disable-next-line
-  }, [])
+  }, []);
 
   const customText =
     readArticles &&
     studentInfo.name +
-    " has read " +
-    readArticles.length +
-    " texts in the last ";
+      " has read " +
+      readArticles.length +
+      " texts in the last ";
   return (
     <Fragment>
-
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      {readArticles.length === 0 ? <CenteredContent> <h3> The student hasn't read any articles in {cohortLang} </h3></CenteredContent> :
+      {readArticles.length === 0 ? (
+        <CenteredContent>
+          {" "}
+          <h3> The student hasn't read any articles in {cohortLang} </h3>
+        </CenteredContent>
+      ) : (
         <div>
           <ReadingInsightAccordion readArticles={readArticles} />
-        </div>}
+        </div>
+      )}
     </Fragment>
   );
 }
