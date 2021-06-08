@@ -1,4 +1,4 @@
-export function LanguageSelector({ languages, selected, onChange }) {
+export default function UiLanguageSelector({ languages, selected, onChange }) {
   return (
     <select
       name="learned_language"
