@@ -36,11 +36,16 @@ const LocalStorage = {
   },
 
   setUiLanguage: function (language) {
-    localStorage[this.Keys.UiLanguage] = language;
+    localStorage[this.Keys.UiLanguage] = JSON.stringify(language);
   },
 
-  getUiLanguage: function() {
-    return localStorage[this.Keys.UiLanguage]
+  getUiLanguage: function () {
+    const uiLang = localStorage[this.Keys.UiLanguage];
+    if (uiLang === undefined) {
+      return undefined; // This is needed for some reason. Returning uiLang will not work
+    } else {
+      return JSON.parse(uiLang); // App breaks if trying to JSON.parse if uiLang is undefined. Therefore abstracting to here.
+    }
   },
 
   setUserInfo: function (info) {
