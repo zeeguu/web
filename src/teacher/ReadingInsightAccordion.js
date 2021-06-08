@@ -35,11 +35,10 @@ const ReadingInsightAccordion = ({ readArticles }) => {
     <Accordion collapsible>
       {readArticles !== null &&
         readArticles.map((article) => (
-          <s.ReadingInsightAccordion
+          <s.ReadingInsightAccordion key={uuid() + article.article_id}
             isFirst={isFirstArticle(article.article_id)}
           >
             <AccordionItem
-              key={uuid() + article.article_id}
               className="accordion-wrapper"
             >
               <AccordionButton onClick={() => handleClick(article.article_id)}>
