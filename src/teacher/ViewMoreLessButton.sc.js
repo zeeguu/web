@@ -8,13 +8,14 @@ export const ViewMoreLessButton = styled.div`
   }
   .wrapper {
     width: 4.5em;
+    margin-top: 2.5em;
   
   }
   .viewLess {
     width: 4.3em;
   }
   .expansionIcon{
-      margin-top: -.5em;
+      margin-top: -0.5em;
       font-size:45px;
       color: ${darkBlue}
   }
@@ -22,7 +23,10 @@ export const ViewMoreLessButton = styled.div`
   ${(props) =>
     props.isFirst &&
     css`
-    padding-top: 4.7vh;
+    .wrapper {
+      margin-top: 4em;
+    }
 
     `}
+
 `;
