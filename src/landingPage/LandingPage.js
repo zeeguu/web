@@ -5,10 +5,10 @@ import * as s from "./LandingPage.sc.js";
 import Contributors from "./Contributors";
 import { Redirect } from "react-router-dom";
 import React, { useState } from "react";
-import LanguageSettings from "../components/LanguageSettings";
+import UiLanguageSettings from "../components/UiLanguageSettings";
 
 export default function LandingPage() {
-  const [language, setLanguage] = useState();
+  const [uiLanguage, setUiLanguage] = useState();
 
   if (LocalStorage.hasSession()) {
     return <Redirect to={{ pathname: "/articles" }} />;
@@ -18,9 +18,9 @@ export default function LandingPage() {
     <div>
       <s.LoginHeader>
         <s.HeaderTitle>Zeeguu</s.HeaderTitle>
-        <LanguageSettings
-        language={language}
-          setLanguage={setLanguage}
+        <UiLanguageSettings
+        uiLanguage={uiLanguage}
+        setUiLanguage={setUiLanguage}
         />
       </s.LoginHeader>
 
