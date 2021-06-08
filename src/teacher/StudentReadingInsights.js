@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
+import strings from "../i18n/definitions";
 import TimeSelector from "./TimeSelector";
 import LocalStorage from "../assorted/LocalStorage";
 import { useParams } from "react-router-dom";
@@ -38,22 +39,30 @@ export default function StudentReadingInsights({ api }) {
       setCohortLang(currentCohort[0].language_name);
     });
     // eslint-disable-next-line
-  }, [])
+  }, []);
 
   const customText =
     readArticles &&
     studentInfo.name +
-    " has read " +
-    readArticles.length +
-    " texts in the last ";
+      strings.studentHasRead +
+      readArticles.length +
+      strings.textsInTheLastPeriod;
   return (
     <Fragment>
-
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      {readArticles.length === 0 ? <CenteredContent> <h3> The student hasn't read any articles in {cohortLang} </h3></CenteredContent> :
+      {readArticles.length === 0 ? (
+        <CenteredContent>
+          {" "}
+          <h3>
+            {" "}
+            {strings.studentHasNotReadAnyArticles} {cohortLang}{" "}
+          </h3>
+        </CenteredContent>
+      ) : (
         <div>
           <ReadingInsightAccordion readArticles={readArticles} />
-        </div>}
+        </div>
+      )}
     </Fragment>
   );
 }

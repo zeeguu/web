@@ -410,6 +410,11 @@ let strings = new LocalizedStrings(
       exercisesCorrect: "Exercises correct ",
       onFirstAttempt: "on 1st attempt",
 
+      //StudentReadingInsights
+      studentHasRead: " has read ",
+      textsInTheLastPeriod: " texts in the last ",
+      studentHasNotReadAnyArticles: "The student hasn't read any articles in",
+
       //StudentsActivityOverview
       backToClasses: "Back to all classes",
 
@@ -865,6 +870,12 @@ let strings = new LocalizedStrings(
       //StudentInfoLine
       textsRead: "læste tekster",
       exercisesCompleted: "gennemførte øvelser",
+
+      //StudentReadingInsights
+      studentHasRead: " har læst ",
+      textsInTheLastPeriod: " tekster i en periode på ",
+      studentHasNotReadAnyArticles:
+        "Eleven har endnu ikke læst nogle tekster i",
 
       //StudentInfoLineHeader
       studentName: "Elevens navn",
