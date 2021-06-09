@@ -5,8 +5,6 @@ import { shortFormatedDate } from "./FormatedDate";
 import ExerciseType from "./ExerciseType";
 
 const PractisedWordsList = ({ words }) => {
-  console.log(words)
-
   return (
     <Fragment>
       {words && words.map((word) => (
@@ -46,9 +44,7 @@ const PractisedWordsList = ({ words }) => {
                   }}
                 >
                   <p style={{ color: "#808080" }}>{shortFormatedDate(exercise.time)}</p>
-                  <p style={{ color: "#808080", marginLeft: ".5em" }}>
                   <ExerciseType source={exercise.source}/>
-                  </p>
                   <AttemptIcons
                     attemptString={exercise.outcome}
                     feedback={exercise.feedback}

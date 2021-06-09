@@ -15,7 +15,8 @@ export default function StudentExercisesInsights({ api }) {
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
   const [studentInfo, setStudentInfo] = useState({});
-  const [doneExercises, setDoneExercises] = useState(null);
+  const [practisedWords, setPractisedWords] = useState(null);
+  const [completedExercises, setCompletedExercises] = useState(0)
   const [isOpen, setIsOpen] = useState("");
 
   useEffect(() => {
@@ -24,8 +25,12 @@ export default function StudentExercisesInsights({ api }) {
       selectedTimePeriod,
       cohortID,
       (res) => {
-        console.log("Success!!!");
-        setDoneExercises(res);
+        console.log(res);
+        setPractisedWords(res);
+        for (const word in res){
+          //setCompletedExercises((prev) => prev + word.exerciseAttempts.length)
+          console.log(word)
+        }
       },
       (error) => {
         console.log(error);
@@ -34,6 +39,7 @@ export default function StudentExercisesInsights({ api }) {
     // eslint-disable-next-line
   }, [selectedTimePeriod]);
 
+console.log(completedExercises)
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
       setStudentInfo(userInfo);
@@ -43,10 +49,10 @@ export default function StudentExercisesInsights({ api }) {
   }, [forceUpdate]);
 
   const customText =
-    doneExercises &&
+    practisedWords &&
     studentInfo.name +
       strings.hasCompleted +
-      "X" +
+      practisedWords.length +
       strings.exercisesInTheLast;
 
   const handleCardClick = (cardName) => {
@@ -90,7 +96,7 @@ export default function StudentExercisesInsights({ api }) {
           />
         </StyledButton>
       </div>
-      {isOpen !== "" && <WordsDropDown card={isOpen} practisedWords={doneExercises} words={DUMMYWORDS} />}
+      {isOpen !== "" && <WordsDropDown card={isOpen} practisedWords={practisedWords} words={DUMMYWORDS} />}
     </Fragment>
   );
 }
