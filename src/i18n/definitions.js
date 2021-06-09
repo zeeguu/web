@@ -7,6 +7,8 @@ let strings = new LocalizedStrings(
       //Shared
       title: "Title",
       words: "Words",
+      lengthWithCapital: "Length",
+      levelWithCapital: "Level",
       articles: "Texts",
       text: "Text",
       save: "save",
@@ -478,6 +480,8 @@ let strings = new LocalizedStrings(
       //Shared
       title: "Titel",
       words: "Ord",
+      lengthWithCapital: "Længde",
+      levelWithCapital: "Sværhed",
       articles: "Tekster",
       text: "tekst",
       save: "gem",
