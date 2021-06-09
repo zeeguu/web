@@ -39,6 +39,20 @@ Zeeguu_API.prototype.getExerciseHistory = function (studentID, duration, cohortI
   );
 };
 
+Zeeguu_API.prototype.getLearnedWords = function (studentID, duration, cohortID, onSuccess, onError) {
+  let payload = {
+    student_id: studentID,
+    number_of_days: duration,
+    cohort_id: cohortID
+  }
+  this._post(`/student_learned_words`,
+    queryString.stringify(payload),
+    onSuccess,
+    onError,
+    true
+  );
+};
+
 
 Zeeguu_API.prototype.getStudentActivityOverview = function (studentID, duration, cohortID, onSuccess, onError) {
   let payload = {

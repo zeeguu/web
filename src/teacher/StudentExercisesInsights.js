@@ -7,7 +7,7 @@ import WordCountCard from "./WordCountCard";
 import { StyledButton } from "./TeacherButtons.sc";
 import WordsDropDown from "./WordsDropDown";
 import strings from "../i18n/definitions";
-import { DUMMYWORDS } from "./DUMMIES_TO_DELETE";
+import { DUMMYWORDS, DUMMYLEARNEDWORDS } from "./DUMMIES_TO_DELETE";
 
 export default function StudentExercisesInsights({ api }) {
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -15,31 +15,47 @@ export default function StudentExercisesInsights({ api }) {
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
   const [studentInfo, setStudentInfo] = useState({});
-  const [practisedWords, setPractisedWords] = useState(null);
-  const [completedExercises, setCompletedExercises] = useState(0)
   const [isOpen, setIsOpen] = useState("");
+  const [practisedWords, setPractisedWords] = useState([]);
+  const [completedExercises, setCompletedExercises] = useState(0);
+  const [learnedWords, setLearnedWords] = useState([])
 
   useEffect(() => {
+    setCompletedExercises(0)
     api.getExerciseHistory(
       studentID,
       selectedTimePeriod,
       cohortID,
-      (res) => {
-        console.log(res);
-        setPractisedWords(res);
-        for (const word in res){
-          //setCompletedExercises((prev) => prev + word.exerciseAttempts.length)
-          console.log(word)
-        }
+      (practisedWordsInDB) => {
+        setPractisedWords(practisedWordsInDB);
+        practisedWordsInDB.forEach((word) => {
+          const attempts = parseInt(word.exerciseAttempts.length)
+          setCompletedExercises((prev)=>prev+attempts)
+        });
       },
       (error) => {
         console.log(error);
       }
     );
+
+    api.getLearnedWords(
+      studentID,
+      selectedTimePeriod,
+      cohortID,
+      (learnedWordsInDB) => {
+        setLearnedWords(learnedWordsInDB);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+    
+
+    
     // eslint-disable-next-line
   }, [selectedTimePeriod]);
-
-console.log(completedExercises)
+  
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
       setStudentInfo(userInfo);
@@ -48,11 +64,14 @@ console.log(completedExercises)
     // eslint-disable-next-line
   }, [forceUpdate]);
 
+  const practisedWordsCount = practisedWords.length
+  const learnedWordsCount = learnedWords.length
+
   const customText =
     practisedWords &&
     studentInfo.name +
       strings.hasCompleted +
-      practisedWords.length +
+      completedExercises +
       strings.exercisesInTheLast;
 
   const handleCardClick = (cardName) => {
@@ -76,7 +95,7 @@ console.log(completedExercises)
         <StyledButton naked onClick={() => handleCardClick("practised")}>
           <PractisedWordsCard
             isOpen={isOpen === "practised"}
-            wordCount="XX"
+            wordCount={practisedWordsCount}
             correctness="XX%"
             time="X min"
           />
@@ -85,7 +104,7 @@ console.log(completedExercises)
           <WordCountCard
             isOpen={isOpen === "learned"}
             headline="Learned words"
-            wordCount="XX"
+            wordCount={learnedWordsCount}
           />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("non-studied")}>
@@ -96,7 +115,14 @@ console.log(completedExercises)
           />
         </StyledButton>
       </div>
-      {isOpen !== "" && <WordsDropDown card={isOpen} practisedWords={practisedWords} words={DUMMYWORDS} />}
+      {isOpen !== "" && (
+        <WordsDropDown
+          card={isOpen}
+          practisedWords={practisedWords}
+          learnedWords={learnedWords}
+          words={DUMMYWORDS}
+        />
+      )}
     </Fragment>
   );
 }

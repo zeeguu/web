@@ -6,7 +6,7 @@ import strings from "../i18n/definitions";
 import { StyledTooltip } from "./StyledTooltip.sc";
 import { IconExplanation } from "./AttemptIcons";
 
-const WordsDropDown = ({ card, words, practisedWords }) => {
+const WordsDropDown = ({ card, words, practisedWords, learnedWords }) => {
 
   const setHeadline = () => {
     switch (card) {
@@ -50,7 +50,7 @@ const WordsDropDown = ({ card, words, practisedWords }) => {
         }}
       >
         {card === "practised" && <PractisedWordsList words={practisedWords} />}
-        {card === "learned" && <LearnedWordsList words={words} />}
+        {card === "learned" && <LearnedWordsList words={learnedWords} />}
         {card === "non-studied" && <NonStudiedWordsList words={words} />}
       </div>
     </div>

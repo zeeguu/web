@@ -5,3 +5,7 @@ export const shortFormatedDate = (time) => {
 export const longFormatedDate = (time) => {
   return new Date(time).toUTCString();
 };
+
+export const formatedDateWithDay = (time)=>{
+ return new Date(time).toDateString()
+}
