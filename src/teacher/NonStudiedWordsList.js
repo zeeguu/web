@@ -3,16 +3,13 @@ import { v4 as uuid } from "uuid";
 import NonStudiedWordCard from "./NonStudiedWordCard";
 
 const NonStudiedWordsList = ({ words }) => {
-  const wordsNotYetScheduled = words.filter((word) => word.fit_for_study === 1);
-  const wordsExcludedByAlgorithm = words.filter((word) => word.fit_for_study === null);
   const [nonStudiedWords, setNonStudiedWords] = useState([]);
+  const wordsNotYetScheduled = nonStudiedWords.filter((word) => word.fit_for_study === 1);
+  const wordsExcludedByAlgorithm = nonStudiedWords.filter((word) => word.fit_for_study === null);
 
   useEffect(() => {
     let tempList = [];
-    wordsNotYetScheduled.forEach((word) => {
-      tempList.push(word);
-    });
-    wordsExcludedByAlgorithm.reverse().forEach((word) => {
+    words.reverse().forEach((word) => {
       if (tempList.length === 0) {
         tempList.push(word);
       } else {
@@ -30,7 +27,15 @@ const NonStudiedWordsList = ({ words }) => {
 
   return (
     <Fragment>
-      {nonStudiedWords.map((word) => (
+      {words.length === 0 && (
+        <p style={{ fontSize: "medium" }}>
+          The student hasn't looked up any words yet. STRINGS
+        </p>
+      )}
+      {wordsExcludedByAlgorithm.map((word) => (
+        <NonStudiedWordCard key={word + uuid()} word={word} />
+      ))}
+      {wordsNotYetScheduled.map((word) => (
         <NonStudiedWordCard key={word + uuid()} word={word} />
       ))}
     </Fragment>

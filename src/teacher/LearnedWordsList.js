@@ -6,6 +6,7 @@ import { formatedDateWithDay } from "./FormatedDate";
 const LearnedWordsList = ({ words }) => {
   return (
     <Fragment>
+      {words.length===0 && <p style={{fontSize:"medium"}}>The student has not learned any words yet. STRINGS</p>}
       {words.map((word) => (
         <div key={uuid() + word}>
           <div
