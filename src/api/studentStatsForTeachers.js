@@ -53,6 +53,20 @@ Zeeguu_API.prototype.getLearnedWords = function (studentID, duration, cohortID, 
   );
 };
 
+Zeeguu_API.prototype.getNonStudiedWords = function (studentID, duration, cohortID, onSuccess, onError) {
+  let payload = {
+    student_id: studentID,
+    number_of_days: duration,
+    cohort_id: cohortID
+  }
+  this._post(`/student_words_not_studied`,
+    queryString.stringify(payload),
+    onSuccess,
+    onError,
+    true
+  );
+};
+
 
 Zeeguu_API.prototype.getStudentActivityOverview = function (studentID, duration, cohortID, onSuccess, onError) {
   let payload = {

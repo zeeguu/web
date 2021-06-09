@@ -24,7 +24,7 @@ const LearnedWordsList = ({ words }) => {
                 marginLeft: "1em",
               }}
             >
-              {word.translation}
+              {word.translation.toLowerCase()}
             </p>
             <p style={{ marginLeft: "1em", marginBottom: "-5px" }}>
               <b>{word.word}</b>
