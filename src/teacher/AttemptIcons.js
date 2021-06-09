@@ -45,13 +45,13 @@ const HintUsed = () => {
 
 const FeedbackGiven = (feedback) => {
   return (
-    <p style={{ fontWeight: 500, margin: "13px 0px 0 2px", fontSize: "14px" }}>
+    <p style={{ fontWeight: 500, margin: "13px 0px 0 7px", fontSize: "small" }}>
       {feedback}
     </p>
   );
 };
 
-export const AttemptIcons = ({ attemptString, feedback }) => {
+export const AttemptIcons = ({ attemptString }) => {
   const setIcon = (char) => {
     switch (char) {
       case "W":
@@ -64,6 +64,12 @@ export const AttemptIcons = ({ attemptString, feedback }) => {
         return <CorrectAttempt key={char + uuid()} />;
     }
   };
+  
+    
+  if (attemptString.includes("_")){
+    const newString = attemptString.replaceAll("_", " ")
+    return FeedbackGiven(newString)
+  }
 
   const attemptChars = attemptString.split("");
   return (
@@ -76,7 +82,6 @@ export const AttemptIcons = ({ attemptString, feedback }) => {
       }}
     >
       {attemptChars.map((char) => setIcon(char))}
-      {FeedbackGiven(feedback)}
     </div>
   );
 };
@@ -113,7 +118,7 @@ export const IconExplanation = (
     </div>
     <div style={{ display: "flex", flexDirection: "row" }}>
       <p style={{ marginRight: ".4em", fontWeight: 500 }}>
-        Recognise/multiple choice etc.
+        Recognise/multiple choice etc.STRINGS
       </p>
       <p> {strings.typeOfExerciseIconExplanation}</p>
     </div>

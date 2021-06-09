@@ -7,7 +7,7 @@ import WordCountCard from "./WordCountCard";
 import { StyledButton } from "./TeacherButtons.sc";
 import WordsDropDown from "./WordsDropDown";
 import strings from "../i18n/definitions";
-import { DUMMYWORDS } from "./DUMMIES_TO_DELETE";
+import { DUMMYLEARNEDWORDS, DUMMYWORDS } from "./DUMMIES_TO_DELETE";
 
 export default function StudentExercisesInsights({ api }) {
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -73,10 +73,6 @@ export default function StudentExercisesInsights({ api }) {
     // eslint-disable-next-line
   }, [forceUpdate]);
 
-  const practisedWordsCount = practisedWords.length
-  const learnedWordsCount = learnedWords.length
-  const nonStudiedWordsCount = nonStudiedWords.length
-
   const customText =
     practisedWords &&
     studentInfo.name +
@@ -105,7 +101,7 @@ export default function StudentExercisesInsights({ api }) {
         <StyledButton naked onClick={() => handleCardClick("practised")}>
           <PractisedWordsCard
             isOpen={isOpen === "practised"}
-            wordCount={practisedWordsCount}
+            wordCount="XX"
             correctness="XX%"
             time="X min"
           />
@@ -113,15 +109,15 @@ export default function StudentExercisesInsights({ api }) {
         <StyledButton naked onClick={() => handleCardClick("learned")}>
           <WordCountCard
             isOpen={isOpen === "learned"}
-            headline="Learned words"
-            wordCount={learnedWordsCount}
+            headline={strings.titleLearnedWords}
+            wordCount="XX"
           />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("non-studied")}>
           <WordCountCard
             isOpen={isOpen === "non-studied"}
-            headline="Words not studied in Zeeguu"
-            wordCount={nonStudiedWordsCount}
+            headline={strings.wordsNotStudiedInZeeguu}
+            wordCount="XX"
           />
         </StyledButton>
       </div>
@@ -131,7 +127,6 @@ export default function StudentExercisesInsights({ api }) {
           practisedWords={practisedWords}
           learnedWords={learnedWords}
           nonStudiedWords={nonStudiedWords}
-          words={DUMMYWORDS}
         />
       )}
     </Fragment>
