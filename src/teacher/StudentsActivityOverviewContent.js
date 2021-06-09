@@ -1,18 +1,35 @@
-import React, { Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import StudentInfoLine from "./StudentInfoLine";
 import StudentInfoLineHeader from "./StudentInfoLineHeader";
 import TimeSelector from "./TimeSelector";
 import LoadingAnimation from "../components/LoadingAnimation";
 
-export default function StudentsActivityOverviewContent({
+const StudentsActivityOverviewContent = ({
   api,
   cohortID,
   students,
   setForceUpdate
-}) {
+}) => {
+  const [firstStudent, setFirstStudent] = useState(null);
+  const [restOfStudents, setRestOfStudents] = useState(null);
+
+  useEffect(() => {
+    setFirstStudent(students[0]);
+    setRestOfStudents(students.slice(1, students.length));
+    //eslint-disable-next-line
+  }, []);
+
   if (students === null) {
     return <LoadingAnimation />;
   }
+
+  console.log(students);
+  console.log("all students above");
+  console.log(firstStudent);
+  console.log("first student above");
+  console.log(restOfStudents);
+  console.log("restOfStudents above");
+
 
   const customText =
     "This is the overview of the students' activities for the last";
@@ -20,16 +37,30 @@ export default function StudentsActivityOverviewContent({
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      <StudentInfoLineHeader />
-      {students.map(student => (
+      {/* <StudentInfoLineHeader /> */}
+      {/* {firstStudent !== null &&
+        <p>Hey we're getting a first student</p>} */}
+      {firstStudent !== null &&
         <StudentInfoLine
-          key={student.id}
+          key={firstStudent.id}
           api={api}
           cohortID={cohortID}
-          student={student}
+          student={firstStudent}
           setForceUpdate={setForceUpdate}
-        />
-      ))}
+          isFirst={true}
+        />}
+      {restOfStudents !== null &&
+        restOfStudents.map((student) => (
+          <StudentInfoLine
+            key={student.id}
+            api={api}
+            cohortID={cohortID}
+            student={student}
+            setForceUpdate={setForceUpdate}
+            isFirst={false}
+          />
+        ))}
     </Fragment>
   );
-}
+};
+export default StudentsActivityOverviewContent;
