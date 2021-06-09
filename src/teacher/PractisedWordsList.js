@@ -1,14 +1,11 @@
 import { Fragment } from "react";
 import { AttemptIcons } from "./AttemptIcons";
 import { v4 as uuid } from "uuid";
+import { shortFormatedDate } from "./FormatedDate";
 import ExerciseType from "./ExerciseType";
 
 const PractisedWordsList = ({ words }) => {
   console.log(words)
-
-  const shortFormatedDate = (time) =>{
-    return new Date(time).toLocaleDateString()  
-  }
 
   return (
     <Fragment>

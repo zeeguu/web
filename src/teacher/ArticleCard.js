@@ -3,12 +3,10 @@ import strings from "../i18n/definitions";
 import * as s from "./ReadingInsightAccordion.sc";
 import ViewMoreLessButton from "./ViewMoreLessButton";
 import StudentActivityDataCircleWrapper from "./StudentActivityDataCircleWrapper";
+import {longFormatedDate} from "./FormatedDate";
 
 const ArticleCard = ({ article, isFirst, openedArticle }) => {
-  const formatedDate = (startTime) => {
-    return new Date(startTime).toUTCString();
-  };
-  
+
   return (
     <s.ReadingInsightAccordion isFirst={isFirst}>
       <div className="content-wrapper">
@@ -21,7 +19,7 @@ const ArticleCard = ({ article, isFirst, openedArticle }) => {
               {article.title.length > 100 ? "..." : ""}
             </h2>
             <p className="date">
-              {strings.readingDate} {formatedDate(article.start_time)}
+              {strings.readingDate} {longFormatedDate(article.start_time)}
             </p>
           </div>
         </div>
