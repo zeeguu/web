@@ -7,7 +7,7 @@ import WordCountCard from "./WordCountCard";
 import { StyledButton } from "./TeacherButtons.sc";
 import WordsDropDown from "./WordsDropDown";
 import strings from "../i18n/definitions";
-import { DUMMYWORDS, DUMMYLEARNEDWORDS } from "./DUMMIES_TO_DELETE";
+import { DUMMYWORDS } from "./DUMMIES_TO_DELETE";
 
 export default function StudentExercisesInsights({ api }) {
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -19,6 +19,7 @@ export default function StudentExercisesInsights({ api }) {
   const [practisedWords, setPractisedWords] = useState([]);
   const [completedExercises, setCompletedExercises] = useState(0);
   const [learnedWords, setLearnedWords] = useState([])
+  const [nonStudiedWords, setNonStudiedWords] = useState([])
 
   useEffect(() => {
     setCompletedExercises(0)
@@ -50,9 +51,17 @@ export default function StudentExercisesInsights({ api }) {
       }
     );
 
-    
-
-    
+    api.getNonStudiedWords(
+      studentID,
+      selectedTimePeriod,
+      cohortID,
+      (nonStudiedWordsInDB) => {
+        setNonStudiedWords(nonStudiedWordsInDB);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );    
     // eslint-disable-next-line
   }, [selectedTimePeriod]);
   
@@ -66,6 +75,7 @@ export default function StudentExercisesInsights({ api }) {
 
   const practisedWordsCount = practisedWords.length
   const learnedWordsCount = learnedWords.length
+  const nonStudiedWordsCount = nonStudiedWords.length
 
   const customText =
     practisedWords &&
@@ -111,7 +121,7 @@ export default function StudentExercisesInsights({ api }) {
           <WordCountCard
             isOpen={isOpen === "non-studied"}
             headline="Words not studied in Zeeguu"
-            wordCount="XX"
+            wordCount={nonStudiedWordsCount}
           />
         </StyledButton>
       </div>
@@ -120,6 +130,7 @@ export default function StudentExercisesInsights({ api }) {
           card={isOpen}
           practisedWords={practisedWords}
           learnedWords={learnedWords}
+          nonStudiedWords={nonStudiedWords}
           words={DUMMYWORDS}
         />
       )}
