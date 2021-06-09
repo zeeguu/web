@@ -18,7 +18,21 @@ export default function StudentExercisesInsights({ api }) {
   const [doneExercises, setDoneExercises] = useState(null);
   const [isOpen, setIsOpen] = useState("");
 
-  const practisedWords = DUMMYWORDS;
+  useEffect(() => {
+    api.getExerciseHistory(
+      studentID,
+      selectedTimePeriod,
+      cohortID,
+      (res) => {
+        console.log("Success!!!");
+        setDoneExercises(res);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    // eslint-disable-next-line
+  }, [selectedTimePeriod]);
 
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
@@ -28,28 +42,11 @@ export default function StudentExercisesInsights({ api }) {
     // eslint-disable-next-line
   }, [forceUpdate]);
 
-  useEffect(() => {
-    api.getExerciseHistory(
-      studentID,
-      selectedTimePeriod,
-      cohortID,
-      (res) => {
-        console.log("Success");
-        console.log(res);
-        setDoneExercises(DUMMYWORDS);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    // eslint-disable-next-line
-  }, [selectedTimePeriod]);
-
   const customText =
     doneExercises &&
     studentInfo.name +
       strings.hasCompleted +
-      doneExercises.length +
+      "X" +
       strings.exercisesInTheLast;
 
   const handleCardClick = (cardName) => {
@@ -93,7 +90,7 @@ export default function StudentExercisesInsights({ api }) {
           />
         </StyledButton>
       </div>
-      {isOpen !== "" && <WordsDropDown card={isOpen} words={practisedWords} />}
+      {isOpen !== "" && <WordsDropDown card={isOpen} practisedWords={doneExercises} words={DUMMYWORDS} />}
     </Fragment>
   );
 }

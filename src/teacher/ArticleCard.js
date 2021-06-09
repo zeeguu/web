@@ -6,10 +6,9 @@ import StudentActivityDataCircleWrapper from "./StudentActivityDataCircleWrapper
 
 const ArticleCard = ({ article, isFirst, openedArticle }) => {
   const formatedDate = (startTime) => {
-    const date = new Date(startTime);
-    const dateString = date.toString();
-    return dateString;
+    return new Date(startTime).toUTCString();
   };
+  
   return (
     <s.ReadingInsightAccordion isFirst={isFirst}>
       <div className="content-wrapper">
