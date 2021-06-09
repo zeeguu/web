@@ -82,4 +82,8 @@ export const StudentInfoLine = styled.div`
     display: flex;
     text-align: center;
   }
+
+  .head-title{
+    
+  }
 `;

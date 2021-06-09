@@ -13,6 +13,7 @@ export default function StudentInfoLine({
   cohortID,
   student,
   setForceUpdate,
+  isFirst
 }) {
   const [showDeleteStudentWarning, setShowDeleteStudentWarning] =
     useState(false);
@@ -45,10 +46,12 @@ export default function StudentInfoLine({
 
   return (
     <s.StudentInfoLine>
-      <div className="wrapper">
+      <div className="wrapper" isFirst={isFirst}>
         <Link
           to={`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`}
         >
+          {isFirst && <p className="head-title">Student name</p>
+          }
           <div className="sideline">
             <div className="text-box">
               <div className="student-name">{student.name}</div>
@@ -61,20 +64,39 @@ export default function StudentInfoLine({
             </div>
 
             <div className="progress-bar">
+              {isFirst && <p className="head-title"> Reading/Exercise time</p>
+              }
               <StudentActivityBar student={student} />
             </div>
+
             <div className="number-display-wrapper">
-              <div className="number-display">
-                {activity.average_text_length}
+
+              <div>
+                {isFirst && <p className="head-title"> Text length</p>
+                }
+                <div className="number-display">
+                  {activity.average_text_length}
+                </div>
               </div>
-              <div className="number-display">
-                {activity.average_text_difficulty}
+
+              <div>
+                {isFirst && <p className="head-title"> Average text difficulty</p>
+                }
+                <div className="number-display">
+                  {activity.average_text_difficulty}
+                </div>
               </div>
-              <div className="number-display">
-                {activity.correct_on_1st_try * 100 + "%"}
+
+              <div>
+                {isFirst && <p className="head-title"> Exercises correct on 1st attempt</p>
+                }
+                <div className="number-display">
+                  {activity.correct_on_1st_try * 100 + "%"}
+                </div>
               </div>
             </div>
           </div>
+
         </Link>
         <StyledButton
           icon
@@ -84,14 +106,16 @@ export default function StudentInfoLine({
           <MdHighlightOff size={35} />
         </StyledButton>
       </div>
-      {showDeleteStudentWarning && (
-        <DeleteStudentWarning
-          studentName={student.name}
-          cohortID={cohortID}
-          removeStudent={removeStudentFromCohort}
-          setShowDeleteStudentWarning={setShowDeleteStudentWarning}
-        />
-      )}
-    </s.StudentInfoLine>
+      {
+        showDeleteStudentWarning && (
+          <DeleteStudentWarning
+            studentName={student.name}
+            cohortID={cohortID}
+            removeStudent={removeStudentFromCohort}
+            setShowDeleteStudentWarning={setShowDeleteStudentWarning}
+          />
+        )
+      }
+    </s.StudentInfoLine >
   );
 }
