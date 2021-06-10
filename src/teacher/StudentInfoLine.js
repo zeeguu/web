@@ -13,7 +13,7 @@ export default function StudentInfoLine({
   cohortID,
   student,
   setForceUpdate,
-  isFirst
+  isFirst,
 }) {
   const [showDeleteStudentWarning, setShowDeleteStudentWarning] =
     useState(false);
@@ -41,7 +41,7 @@ export default function StudentInfoLine({
   };
 
   if (activity === null) {
-    return <p>Loading data for {student.name}...</p>;
+    return <p> STRINGS Loading data for {student.name}...</p>;
   }
 
   return (
@@ -50,11 +50,11 @@ export default function StudentInfoLine({
         <Link
           to={`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`}
         >
-          {isFirst && <p className="head-title">STRINGS Student name</p>
-          }
+          {isFirst && <p className="head-title">STRINGS Student name</p>}
           <div className="sideline">
             <div className="text-box">
               <div className="student-name">{student.name}</div>
+              <div className="student-email">{student.email}</div>
               <div className="activity-count">
                 {activity.number_of_texts} {strings.textsRead}
               </div>
@@ -64,39 +64,42 @@ export default function StudentInfoLine({
             </div>
 
             <div className="progress-bar">
-              {isFirst && <p className="head-title"> STRINGS Reading/Exercise time</p>
-              }
+              {isFirst && (
+                <p className="head-title"> STRINGS Reading/Exercise time</p>
+              )}
               <StudentActivityBar student={student} />
             </div>
 
             <div className="number-display-wrapper">
-
               <div>
-                {isFirst && <p className="head-title"> STRINGS Text length</p>
-                }
+                {isFirst && <p className="head-title"> STRINGS Text length</p>}
                 <div className="number-display">
                   {activity.average_text_length}
                 </div>
               </div>
 
               <div>
-                {isFirst && <p className="head-title"> STRINGS Average text difficulty</p>
-                }
+                {isFirst && (
+                  <p className="head-title"> STRINGS Average text difficulty</p>
+                )}
                 <div className="number-display">
                   {activity.average_text_difficulty}
                 </div>
               </div>
 
               <div>
-                {isFirst && <p className="head-title"> STRINGS Exercises correct on 1st attempt</p>
-                }
+                {isFirst && (
+                  <p className="head-title">
+                    {" "}
+                    STRINGS Exercises correct on 1st attempt
+                  </p>
+                )}
                 <div className="number-display">
                   {activity.correct_on_1st_try * 100 + "%"}
                 </div>
               </div>
             </div>
           </div>
-
         </Link>
         <StyledButton
           icon
@@ -106,16 +109,14 @@ export default function StudentInfoLine({
           <MdHighlightOff size={35} />
         </StyledButton>
       </div>
-      {
-        showDeleteStudentWarning && (
-          <DeleteStudentWarning
-            studentName={student.name}
-            cohortID={cohortID}
-            removeStudent={removeStudentFromCohort}
-            setShowDeleteStudentWarning={setShowDeleteStudentWarning}
-          />
-        )
-      }
-    </s.StudentInfoLine >
+      {showDeleteStudentWarning && (
+        <DeleteStudentWarning
+          studentName={student.name}
+          cohortID={cohortID}
+          removeStudent={removeStudentFromCohort}
+          setShowDeleteStudentWarning={setShowDeleteStudentWarning}
+        />
+      )}
+    </s.StudentInfoLine>
   );
 }

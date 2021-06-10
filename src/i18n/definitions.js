@@ -65,7 +65,7 @@ let strings = new LocalizedStrings(
       thatWeStore: " that we store about you is the ",
       nameAndEmail: "name and email",
       restOfPersonalInfoMsg:
-        "you provide on this page. We do not share it with anybody. We need it to send you a reset password code, important announcements about the platform, and possibly a survey at some point.",
+        "you provide on this page. We will share your name and email with only your teacher. We need you email to send you a reset password code, important announcements about the platform, and possibly a survey at some point.",
       weStore: "We store ",
       anonymizedData: "anonymized data",
       aboutYour: " about your ",
@@ -540,7 +540,7 @@ let strings = new LocalizedStrings(
       thatWeStore: ", vi gemmer om dig er ",
       nameAndEmail: "det navn og den email",
       restOfPersonalInfoMsg:
-        " du giver os på denne side. Vi deler ikke din email med nogen overhovedet. Vi har brug for den til at kunne sende kodeord, vigtig information om Zeeguu samt muligvis en brugerundersøgelse på et tidspunkt.",
+        " du giver os på denne side. Vi deler kun dit navn og din e-mail med din lærer. Vi har brug for din email til at kunne sende et nyt kodeord, vigtig information om Zeeguu samt muligvis en brugerundersøgelse på et tidspunkt.",
       weStore: "Vi gemmer ",
       anonymizedData: "anonymiseret data",
       aboutYour: " om din ",
@@ -943,7 +943,8 @@ let strings = new LocalizedStrings(
       //WordsDropDown
       wordsTranslatedButNotInZeeguu:
         "Ord/sætninger oversat af eleven, men ikke inkluderet i øvelser",
-      wordsTranslatedAndLearned: "Ord/sætninger øvet korrekt på fire forskellige dage",
+      wordsTranslatedAndLearned:
+        "Ord/sætninger øvet korrekt på fire forskellige dage",
       wordsTranslatedAndExercised: "Ord/sætninger - oversat og øvet af eleven",
 
       //StudentExercisesInsights
