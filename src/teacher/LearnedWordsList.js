@@ -1,9 +1,31 @@
-import { Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
+import { useParams } from "react-router";
 import { v4 as uuid } from "uuid";
+import LocalStorage from "../assorted/LocalStorage";
 import ExerciseType from "./ExerciseType";
 import { formatedDateWithDay } from "./FormatedDate";
 
-const LearnedWordsList = ({ words }) => {
+const LearnedWordsList = ({ api }) => {
+  const selectedTimePeriod = LocalStorage.selectedTimePeriod();
+  const studentID = useParams().studentID;
+  const cohortID = useParams().cohortID;
+  const [learnedWords, setLearnedWords] = useState([]);
+
+  useEffect(() => {
+    api.getLearnedWords(
+      studentID,
+      selectedTimePeriod,
+      cohortID,
+      (learnedWordsInDB) => {
+        setLearnedWords(learnedWordsInDB);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    //eslint-disable-next-line
+  }, [selectedTimePeriod]);
+
   const reason = (word) => {
     if (word.self_reported === true) {
       return <ExerciseType source="FEEDBACK" />;
@@ -18,14 +40,15 @@ const LearnedWordsList = ({ words }) => {
       );
     }
   };
+
   return (
     <Fragment>
-      {words.length === 0 && (
+      {learnedWords.length === 0 && (
         <p style={{ fontSize: "medium" }}>
           The student has not learned any words yet. STRINGS
         </p>
       )}
-      {words.map((word) => (
+      {learnedWords.map((word) => (
         <div key={uuid() + word}>
           <div
             style={{
@@ -48,7 +71,6 @@ const LearnedWordsList = ({ words }) => {
             <p style={{ marginLeft: "1em", marginBottom: "-5px" }}>
               <b>{word.word}</b>
             </p>
-
             <div
               style={{
                 display: "flex",
@@ -58,10 +80,6 @@ const LearnedWordsList = ({ words }) => {
                 marginBottom: "-25px",
               }}
             >
-              {/* <ExerciseType source="LEARNED" />
-              <p style={{ color: "#808080" }}>
-                {formatedDateWithDay(word.learned_time)}
-              </p> */}
               {reason(word)}
             </div>
           </div>

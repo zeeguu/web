@@ -67,7 +67,6 @@ Zeeguu_API.prototype.getNonStudiedWords = function (studentID, duration, cohortI
   );
 };
 
-
 Zeeguu_API.prototype.getStudentActivityOverview = function (studentID, duration, cohortID, onSuccess, onError) {
   let payload = {
     student_id: studentID,

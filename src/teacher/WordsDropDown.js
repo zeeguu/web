@@ -7,10 +7,9 @@ import { StyledTooltip } from "./StyledTooltip.sc";
 import { IconExplanation } from "./AttemptIcons";
 
 const WordsDropDown = ({
+  api,
   card,
   practisedWords,
-  learnedWords,
-  nonStudiedWords,
 }) => {
   const setHeadline = () => {
     switch (card) {
@@ -56,8 +55,8 @@ const WordsDropDown = ({
         }}
       >
         {card === "practised" && <PractisedWordsList words={practisedWords} />}
-        {card === "learned" && <LearnedWordsList words={learnedWords} />}
-        {card === "non-studied" && (<NonStudiedWordsList words={nonStudiedWords} />)}
+        {card === "learned" && <LearnedWordsList api={api} />}
+        {card === "non-studied" && (<NonStudiedWordsList api={api} />)}
       </div>
     </div>
   );
