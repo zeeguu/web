@@ -50,7 +50,7 @@ export default function StudentInfoLine({
         <Link
           to={`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`}
         >
-          {isFirst && <p className="head-title">Student name</p>
+          {isFirst && <p className="head-title">STRINGS Student name</p>
           }
           <div className="sideline">
             <div className="text-box">
@@ -64,7 +64,7 @@ export default function StudentInfoLine({
             </div>
 
             <div className="progress-bar">
-              {isFirst && <p className="head-title"> Reading/Exercise time</p>
+              {isFirst && <p className="head-title"> STRINGS Reading/Exercise time</p>
               }
               <StudentActivityBar student={student} />
             </div>
@@ -72,7 +72,7 @@ export default function StudentInfoLine({
             <div className="number-display-wrapper">
 
               <div>
-                {isFirst && <p className="head-title"> Text length</p>
+                {isFirst && <p className="head-title"> STRINGS Text length</p>
                 }
                 <div className="number-display">
                   {activity.average_text_length}
@@ -80,7 +80,7 @@ export default function StudentInfoLine({
               </div>
 
               <div>
-                {isFirst && <p className="head-title"> Average text difficulty</p>
+                {isFirst && <p className="head-title"> STRINGS Average text difficulty</p>
                 }
                 <div className="number-display">
                   {activity.average_text_difficulty}
@@ -88,7 +88,7 @@ export default function StudentInfoLine({
               </div>
 
               <div>
-                {isFirst && <p className="head-title"> Exercises correct on 1st attempt</p>
+                {isFirst && <p className="head-title"> STRINGS Exercises correct on 1st attempt</p>
                 }
                 <div className="number-display">
                   {activity.correct_on_1st_try * 100 + "%"}

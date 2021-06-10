@@ -84,6 +84,10 @@ export const StudentInfoLine = styled.div`
   }
 
   .head-title{
+    font-family: "Montserrat";
+    font-size: large;
+    color: black;
+    
     
   }
 `;
