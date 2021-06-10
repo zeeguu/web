@@ -8,7 +8,7 @@ const StudentsActivityOverviewContent = ({
   api,
   cohortID,
   students,
-  setForceUpdate
+  setForceUpdate,
 }) => {
   const [firstStudent, setFirstStudent] = useState(null);
   const [restOfStudents, setRestOfStudents] = useState(null);
@@ -30,9 +30,8 @@ const StudentsActivityOverviewContent = ({
   console.log(restOfStudents);
   console.log("restOfStudents above");
 
-
   const customText =
-    "This is the overview of the students' activities for the last";
+    "STRINGS This is the overview of the students' activities for the last";
 
   return (
     <Fragment>
@@ -40,7 +39,7 @@ const StudentsActivityOverviewContent = ({
       {/* <StudentInfoLineHeader /> */}
       {/* {firstStudent !== null &&
         <p>Hey we're getting a first student</p>} */}
-      {firstStudent !== null &&
+      {firstStudent !== null && (
         <StudentInfoLine
           key={firstStudent.id}
           api={api}
@@ -48,7 +47,8 @@ const StudentsActivityOverviewContent = ({
           student={firstStudent}
           setForceUpdate={setForceUpdate}
           isFirst={true}
-        />}
+        />
+      )}
       {restOfStudents !== null &&
         restOfStudents.map((student) => (
           <StudentInfoLine

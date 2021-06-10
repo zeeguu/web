@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { darkBlue } from "../components/colors";
+import { darkBlue, lightGrey, darkGrey } from "../components/colors";
 import "@reach/listbox/styles.css";
 
 export const StudentInfoLine = styled.div`
@@ -39,6 +39,11 @@ export const StudentInfoLine = styled.div`
   .student-name-header {
     font-size: medium;
     margin-left: 3em;
+  }
+
+  .student-email {
+    color: ${darkGrey};
+    font-size: small;
   }
 
   .activity-count {
@@ -83,11 +88,9 @@ export const StudentInfoLine = styled.div`
     text-align: center;
   }
 
-  .head-title{
+  .head-title {
     font-family: "Montserrat";
     font-size: large;
     color: black;
-    
-    
   }
 `;
