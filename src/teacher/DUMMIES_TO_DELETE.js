@@ -251,3 +251,12 @@ export const DUMMYLIST = [
       exclusionReason: "",
     },
   ];
+
+  export const DUMMYLEARNEDWORDS = [
+    {
+      bookmark_id:123456,
+      word: "styrelsen",
+      translation: "the board",
+      learned_time: "2021-06-04T00:03:10"
+    }
+  ]
