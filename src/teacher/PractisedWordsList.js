@@ -1,19 +1,21 @@
 import { Fragment } from "react";
 import { AttemptIcons } from "./AttemptIcons";
 import { v4 as uuid } from "uuid";
+import { shortFormatedDate } from "./FormatedDate";
+import ExerciseType from "./ExerciseType";
 
 const PractisedWordsList = ({ words }) => {
   return (
     <Fragment>
-      {words.map((word) => (
+      {words.length===0 && <p style={{fontSize:"medium"}}>The student has not practised any words yet. STRINGS</p>}
+      {words && words.map((word) => (
         <div key={word + uuid()}>
-          {word.isStudied === "true" && (
             <div
               key={uuid()}
               style={{
                 borderLeft: "solid 3px #5492b3",
                 marginBottom: "38px",
-                minWidth: 270,
+                minWidth: 325,
                 userSelect: "none",
               }}
             >
@@ -25,7 +27,7 @@ const PractisedWordsList = ({ words }) => {
                   marginLeft: "1em",
                 }}
               >
-                {word.translation}
+                {word.translation.toLowerCase()}
               </p>
               <p style={{ marginLeft: "1em", marginBottom: "-5px" }}>
                 <b>{word.word}</b>
@@ -42,18 +44,14 @@ const PractisedWordsList = ({ words }) => {
                     marginBottom: "-25px",
                   }}
                 >
-                  <p style={{ color: "#808080" }}>{exercise.date}</p>
-                  <p style={{ color: "#808080", marginLeft: ".5em" }}>
-                    {exercise.type}
-                  </p>
+                  <p style={{ color: "#808080" }}>{shortFormatedDate(exercise.time)}</p>
+                  <ExerciseType source={exercise.source}/>
                   <AttemptIcons
-                    attemptString={exercise.attempts}
-                    feedback={exercise.feedback}
+                    attemptString={exercise.outcome}
                   />
                 </div>
               ))}
             </div>
-          )}
         </div>
       ))}
     </Fragment>

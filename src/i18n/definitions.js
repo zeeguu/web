@@ -32,6 +32,7 @@ let strings = new LocalizedStrings(
       joinClass: "Join Class",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       reading: "Reading",
+      titleLearnedWords: "Learned Words",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -228,7 +229,6 @@ let strings = new LocalizedStrings(
       addPersonalInterest: "Add a personal interest",
 
       //Learned
-      titleLearnedWords: "Learned Words",
       learnedWordsAreMsg:
         "Learned words are words that were correct in exercises on four different days.",
       numberOfLearnedWordsMsg: "You have learned {0} words so far.",
@@ -465,15 +465,16 @@ let strings = new LocalizedStrings(
 
       //WordsDropDown
       wordsTranslatedButNotInZeeguu:
-        "Words translated by the student but not studied in Zeeguu",
+        "Words/sentences translated by the student but not studied in Zeeguu",
       wordsTranslatedAndLearned:
-        "Word practised correctly on four different days",
+        "Words/sentences practised correctly on four different days",
       wordsTranslatedAndExercised:
-        "Practised words - translated and exercised by the student",
+        "Practised words/sentences - translated and exercised by the student",
 
       //StudentExercisesInsights
       hasCompleted: " has completed ",
       exercisesInTheLast: " exercises in the last ",
+      wordsNotStudiedInZeeguu: "Words not studied in Zeeguu",
     },
 
     da: {
@@ -941,13 +942,14 @@ let strings = new LocalizedStrings(
 
       //WordsDropDown
       wordsTranslatedButNotInZeeguu:
-        "Ord oversat af eleven, men ikke inkluderet i øvelser",
-      wordsTranslatedAndLearned: "Ord øvet korrekt på fire forskellige dage",
-      wordsTranslatedAndExercised: "Øvede ord - oversat og øvet af eleven",
+        "Ord/sætninger oversat af eleven, men ikke inkluderet i øvelser",
+      wordsTranslatedAndLearned: "Ord/sætninger øvet korrekt på fire forskellige dage",
+      wordsTranslatedAndExercised: "Ord/sætninger - oversat og øvet af eleven",
 
       //StudentExercisesInsights
       hasCompleted: " har gennemført ",
       exercisesInTheLast: " øvelser i en periode på ",
+      wordsNotStudiedInZeeguu: "Ord ikke øvet i Zeeguu",
     },
   },
   {
