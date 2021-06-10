@@ -4,16 +4,19 @@ import { useHistory } from "react-router";
 import { LabeledTextField } from "./LabeledInputFields";
 import { StyledDialog } from "./StyledDialog.sc";
 import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
+import { Error } from "../teacher/Error";
 
 export default function AddURLDialog({ api, setShowAddURLDialog }) {
   const history = useHistory();
   const [showGuidance, setShowGuidance] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [url, setURL] = useState("");
 
   useEffect(() => {
     if (url !== "") {
       setShowGuidance(false);
     }
+    setShowError(false);
   }, [url]);
 
   const handleChange = (event) => {
@@ -37,6 +40,10 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
           });
         },
         (err) => {
+          setShowError(true);
+          console.log(
+            "An error occurred. It might be caused by an invalid URL: "
+          );
           console.log(err);
         }
       );
@@ -62,8 +69,11 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
         <b>{strings.pleaseNote}</b> {strings.textNotExtracted} <br />{" "}
         {strings.editTheSavedText}
       </p>
-      {showGuidance && (
-        <p style={{ color: "red" }}>{strings.nothingInInputField}</p>
+      {showGuidance && <Error message={strings.nothingInInputField} />}
+      {showError && (
+        <Error
+          message={"STRINGS Something went wrong. The URL might be invalid."}
+        />
       )}
       <PopupButtonWrapper>
         <StyledButton primary onClick={getArticle}>
