@@ -6,7 +6,12 @@ import strings from "../i18n/definitions";
 import { StyledTooltip } from "./StyledTooltip.sc";
 import { IconExplanation } from "./AttemptIcons";
 
-const WordsDropDown = ({ words, card }) => {
+const WordsDropDown = ({
+  card,
+  practisedWords,
+  learnedWords,
+  nonStudiedWords,
+}) => {
   const setHeadline = () => {
     switch (card) {
       case "non-studied":
@@ -36,9 +41,11 @@ const WordsDropDown = ({ words, card }) => {
         }}
       >
         <h3 style={{ color: "#5492b3" }}>{setHeadline()}</h3>
-        <StyledTooltip label={IconExplanation}>
-          <InfoOutlinedIcon style={{ color: "#5492b3", fontSize: "45px" }} />
-        </StyledTooltip>
+        {card === "practised" && (
+          <StyledTooltip label={IconExplanation}>
+            <InfoOutlinedIcon style={{ color: "#5492b3", fontSize: "45px" }} />
+          </StyledTooltip>
+        )}
       </div>
       <div
         style={{
@@ -48,9 +55,9 @@ const WordsDropDown = ({ words, card }) => {
           flexWrap: "wrap",
         }}
       >
-        {card === "practised" && <PractisedWordsList words={words} />}
-        {card === "learned" && <LearnedWordsList words={words} />}
-        {card === "non-studied" && <NonStudiedWordsList words={words} />}
+        {card === "practised" && <PractisedWordsList words={practisedWords} />}
+        {card === "learned" && <LearnedWordsList words={learnedWords} />}
+        {card === "non-studied" && (<NonStudiedWordsList words={nonStudiedWords} />)}
       </div>
     </div>
   );
