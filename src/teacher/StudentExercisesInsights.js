@@ -18,11 +18,10 @@ export default function StudentExercisesInsights({ api }) {
   const [isOpen, setIsOpen] = useState("");
   const [practisedWords, setPractisedWords] = useState([]);
   const [completedExercises, setCompletedExercises] = useState(0);
-  const [learnedWords, setLearnedWords] = useState([])
-  const [nonStudiedWords, setNonStudiedWords] = useState([])
+  const [activity, setActivity] = useState(null);
 
   useEffect(() => {
-    setCompletedExercises(0)
+    setCompletedExercises(0);
     api.getExerciseHistory(
       studentID,
       selectedTimePeriod,
@@ -30,8 +29,8 @@ export default function StudentExercisesInsights({ api }) {
       (practisedWordsInDB) => {
         setPractisedWords(practisedWordsInDB);
         practisedWordsInDB.forEach((word) => {
-          const attempts = parseInt(word.exerciseAttempts.length)
-          setCompletedExercises((prev)=>prev+attempts)
+          const attempts = parseInt(word.exerciseAttempts.length);
+          setCompletedExercises((prev) => prev + attempts);
         });
       },
       (error) => {
@@ -39,37 +38,26 @@ export default function StudentExercisesInsights({ api }) {
       }
     );
 
-    api.getLearnedWords(
+    api.getStudentActivityOverview(
       studentID,
       selectedTimePeriod,
       cohortID,
-      (learnedWordsInDB) => {
-        setLearnedWords(learnedWordsInDB);
+      (activity) => {
+        console.log(activity);
+        setActivity(activity);
       },
       (error) => {
         console.log(error);
       }
     );
 
-    api.getNonStudiedWords(
-      studentID,
-      selectedTimePeriod,
-      cohortID,
-      (nonStudiedWordsInDB) => {
-        setNonStudiedWords(nonStudiedWordsInDB);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );    
     // eslint-disable-next-line
   }, [selectedTimePeriod]);
-  
+
   useEffect(() => {
     api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
       setStudentInfo(userInfo);
     });
-
     // eslint-disable-next-line
   }, [forceUpdate]);
 
@@ -102,31 +90,30 @@ export default function StudentExercisesInsights({ api }) {
           <PractisedWordsCard
             isOpen={isOpen === "practised"}
             wordCount="XX"
-            correctness="XX%"
-            time="X min"
+            correctness={activity && activity.correct_on_1st_try * 100 + "%"}
+            time="XX min"
           />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("learned")}>
           <WordCountCard
             isOpen={isOpen === "learned"}
             headline={strings.titleLearnedWords}
-            wordCount="XX"
+            wordCount={activity ? activity.learned_words_count: ""}
           />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("non-studied")}>
           <WordCountCard
             isOpen={isOpen === "non-studied"}
             headline={strings.wordsNotStudiedInZeeguu}
-            wordCount="XX"
+            wordCount={activity ? activity.translated_but_not_practiced_words_count : ""}
           />
         </StyledButton>
       </div>
       {isOpen !== "" && (
         <WordsDropDown
+          api={api}
           card={isOpen}
           practisedWords={practisedWords}
-          learnedWords={learnedWords}
-          nonStudiedWords={nonStudiedWords}
         />
       )}
     </Fragment>
