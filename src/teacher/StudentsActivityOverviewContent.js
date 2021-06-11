@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import StudentInfoLine from "./StudentInfoLine";
-import StudentInfoLineHeader from "./StudentInfoLineHeader";
 import TimeSelector from "./TimeSelector";
 import LoadingAnimation from "../components/LoadingAnimation";
 
@@ -36,9 +35,6 @@ const StudentsActivityOverviewContent = ({
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      {/* <StudentInfoLineHeader /> */}
-      {/* {firstStudent !== null &&
-        <p>Hey we're getting a first student</p>} */}
       {firstStudent !== null && (
         <StudentInfoLine
           key={firstStudent.id}
