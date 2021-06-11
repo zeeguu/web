@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { darkBlue } from "../components/colors";
+import { darkBlue, darkGrey } from "../components/colors";
 import "@reach/listbox/styles.css";
 
 export const StudentInfoLine = styled.div`
@@ -25,15 +25,10 @@ export const StudentInfoLine = styled.div`
   }
 
   .text-box {
-    margin: 0.5em;
+    margin: 1.5em;
     color: black !important;
     width: 300px;
     margin-left: 1em;
-   
-  }
-
-  .student-name {
-    font-size: large;
   }
 
   .student-name-header {
@@ -94,7 +89,7 @@ export const StudentInfoLine = styled.div`
   }
 
   .name-activity-wrapper{
-  margin-left: 1em;
+  margin-left: 2em;
   }
 
   .left-line {
@@ -103,6 +98,18 @@ export const StudentInfoLine = styled.div`
     border-left: solid 3px ${darkBlue};
     height: 6vh;
     padding: 1vh 0 0 0;
+  }
+  .student-name{
+    font-size: 20px;
+  }
+
+  .student-email{
+    color: ${darkGrey};
+    font-size: 16px;
+  }
+
+  .activity-count{
+    font-size: 16px;
   }
 
   ${(props) =>

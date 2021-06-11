@@ -4,14 +4,10 @@ let Word = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-
-  /* background-color: green; */
-  /* align-items: stretch; */
 `;
 
 let StarIcon = styled.div`
   cursor: pointer;
-  /* background-color: yellow; */
   color: yellow;
 
   margin-right: 0.3em;
