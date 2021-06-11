@@ -136,6 +136,6 @@ export const ReadingInsightAccordion = styled.div`
     font-size: large;
     font-family: "Montserrat";
     color: #000000 !important;
-    background-color: yellow;
+    
   }
 `;

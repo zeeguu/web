@@ -36,10 +36,17 @@ const StyledButton = styled.button`
       border: 3px solid ${lightBlue};
     `}
 
+  //isFirst
+    ${(props) =>
+    props.isFirst &&
+    css`
+      padding-top: 2.3em !important;
+    `}
+
   //Naked
   ${(props) =>
-  props.naked &&
-  css`
+    props.naked &&
+    css`
     background-color: white;
     border: None;
     color: black;
@@ -52,18 +59,18 @@ const StyledButton = styled.button`
     css`
       margin-top: 1.75em;
       max-height: 30px;
-    `}  
-
+    `}
+    
   //Icon
   ${(props) =>
     props.icon &&
     css`
       display: flex;
-      margin: 0;
-      margin-top: -8px;
-      padding: 0;
+      padding: -4em;
       border: None;
+      padding-top: 1.5em;
     `}
+
     //Link
     ${(props) =>
     props.link &&

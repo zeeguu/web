@@ -8,6 +8,10 @@ import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
+
+//localize everything on this page 
+//STRINGS
+
 export default function StudentInfoLine({
   api,
   cohortID,
@@ -45,55 +49,58 @@ export default function StudentInfoLine({
   }
 
   return (
-    <s.StudentInfoLine>
-      <div className="wrapper" isFirst={isFirst}>
+    <s.StudentInfoLine isFirst={isFirst}>
+      <div className="wrapper" >
         <Link
           to={`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`}
         >
-          {isFirst && <p className="head-title">STRINGS Student name</p>}
           <div className="sideline">
+
             <div className="text-box">
-              <div className="student-name">{student.name}</div>
-              <div className="student-email">{student.email}</div>
-              <div className="activity-count">
-                {activity.number_of_texts} {strings.textsRead}
-              </div>
-              <div className="activity-count">
-                {activity.exercises_count} {strings.exercisesCompleted}
+              {isFirst && <p className="head-title">Student name</p>
+              }
+              <div className="left-line">
+                <div className="name-activity-wrapper">
+                  <div className="student-name">{student.name}</div>
+                  <div className="activity-count">
+                    {activity.number_of_texts} {strings.textsRead}
+                  </div>
+                  <div className="activity-count">
+                    {activity.exercises_count} {strings.exercisesCompleted}
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="progress-bar">
-              {isFirst && (
-                <p className="head-title"> STRINGS Reading/Exercise time</p>
-              )}
-              <StudentActivityBar student={student} />
+            <div classname="title-progress-bar-wrapper">
+              <div className="progress-bar-wrapper">
+                {isFirst && <p className="head-title">Reading/Exercise time</p>
+                }
+                <StudentActivityBar isFirst={isFirst} student={student} />
+              </div>
             </div>
 
             <div className="number-display-wrapper">
-              <div>
-                {isFirst && <p className="head-title"> STRINGS Text length</p>}
+
+              <div className="title-circle-wrapper">
+                {isFirst && <p className="head-title">Text length</p>
+                }
                 <div className="number-display">
                   {activity.average_text_length}
                 </div>
               </div>
 
-              <div>
-                {isFirst && (
-                  <p className="head-title"> STRINGS Average text difficulty</p>
-                )}
+              <div className="title-circle-wrapper">
+                {isFirst && <p className="head-title">Avg text difficulty</p>
+                }
                 <div className="number-display">
                   {activity.average_text_difficulty}
                 </div>
               </div>
 
-              <div>
-                {isFirst && (
-                  <p className="head-title">
-                    {" "}
-                    STRINGS Exercises correct on 1st attempt
-                  </p>
-                )}
+              <div className="title-circle-wrapper">
+                {isFirst && <p className="head-title">Exercises correctness</p>
+                }
                 <div className="number-display">
                   {activity.correct_on_1st_try * 100 + "%"}
                 </div>
@@ -102,6 +109,7 @@ export default function StudentInfoLine({
           </div>
         </Link>
         <StyledButton
+          isFirst={isFirst}
           icon
           style={{ marginTop: "15px", marginLeft: "25px" }}
           onClick={() => setShowDeleteStudentWarning(true)}
