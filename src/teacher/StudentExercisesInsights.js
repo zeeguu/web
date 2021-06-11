@@ -14,15 +14,15 @@ export default function StudentExercisesInsights({ api }) {
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
-  const [studentName, setStudentName] = useState({});
+  const [studentInfo, setStudentInfo] = useState({});
   const [exerciseTime, setExerciseTime] = useState("");
   const [practisedWordsCount, setPractisedWordsCount] = useState(0);
   const [activity, setActivity] = useState(null);
   const [isOpen, setIsOpen] = useState("");
 
   useEffect(() => {
-    api.loadUserInfo(studentID, selectedTimePeriod, (student) =>
-      setStudentName(student.name)
+    api.loadUserInfo(studentID, selectedTimePeriod, (studentInfo) =>
+      setStudentInfo(studentInfo)
     );
 
     api.getStudentActivityOverview(
@@ -43,8 +43,7 @@ export default function StudentExercisesInsights({ api }) {
   }, [forceUpdate]);
 
   const customText =
-    activity &&
-    studentName.name +
+    studentInfo.name +
       strings.hasCompleted +
       practisedWordsCount +
       strings.exercisesInTheLast;
