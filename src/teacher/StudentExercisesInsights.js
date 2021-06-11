@@ -44,9 +44,9 @@ export default function StudentExercisesInsights({ api }) {
 
   const customText =
     studentInfo.name +
-      strings.hasCompleted +
-      practisedWordsCount +
-      strings.exercisesInTheLast;
+    strings.hasCompleted +
+    practisedWordsCount +
+    strings.exercisesInTheLast;
 
   const handleCardClick = (cardName) => {
     if (isOpen === cardName) {
@@ -70,7 +70,9 @@ export default function StudentExercisesInsights({ api }) {
           <PractisedWordsCard
             isOpen={isOpen === "practised"}
             wordCount={practisedWordsCount}
-            correctness={activity && activity.correct_on_1st_try * 100 + "%"}
+            correctness={
+              activity && Math.round(activity.correct_on_1st_try * 100) + "%"
+            }
             time={exerciseTime}
           />
         </StyledButton>
