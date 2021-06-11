@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { convertTime } from "./FormatedTime";
 import * as s from "./StudentActivityBar.sc";
 
 const StudentActivityBar = ({ student }) => {
@@ -6,18 +7,9 @@ const StudentActivityBar = ({ student }) => {
   const [exerciseTimeString, setExerciseTimeString] = useState("");
 
   useEffect(() => {
-    const readingHours = Math.floor(student.reading_time / 3600);
-    const readingMinutes = Math.ceil((student.reading_time / 60) % 60);
-    readingHours < 1
-      ? setReadingTimeString(readingMinutes + "m")
-      : setReadingTimeString(readingHours + "h " + readingMinutes + "m");
+    convertTime(student.reading_time, setReadingTimeString)
+    convertTime(student.exercises_done, setExerciseTimeString)
 
-    const exerciseHours = Math.floor(student.exercises_done / 3600);
-    const exerciseMinutes = Math.ceil((student.exercises_done / 60) % 60);
-    exerciseHours < 1
-      ? setExerciseTimeString(exerciseMinutes + "m")
-      : setExerciseTimeString(exerciseHours + "h " + exerciseMinutes + "m");
-    //eslint-disable-next-line
   }, [student]);
 
   const setReadingCorners = () => {
