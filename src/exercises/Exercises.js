@@ -4,7 +4,6 @@ import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInConte
 import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
 import Congratulations from "./Congratulations";
 import ProgressBar from "./ProgressBar";
-
 import * as s from "./Exercises.sc";
 import FeedbackButtons from "./FeedbackButtons";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -22,6 +21,7 @@ export default function Exercises({ api, articleID }) {
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [articleInfo, setArticleInfo] = useState(null);
+  const [hasNoBookmarks, setHasNoBookmarks] = useState(null);
 
   useEffect(() => {
     if (!bookmarksToStudyList) {
@@ -45,6 +45,7 @@ export default function Exercises({ api, articleID }) {
   }, []);
 
   function initializeExercises(bookmarks, title) {
+    setHasNoBookmarks(bookmarks.length === 0);
     setbookmarksToStudyList(bookmarks);
     NUMBER_OF_EXERCISES = bookmarks.length;
     setCurrentBookmarkToStudy(bookmarks[currentIndex]);
@@ -65,6 +66,15 @@ export default function Exercises({ api, articleID }) {
   }
 
   if (!currentBookmarkToStudy) {
+    if (hasNoBookmarks === true)
+      return (
+        <s.LittleMessageAbove>
+          <h3>
+            You have not translated any words yet. STRINGS<br/>
+            Go to Texts if you want to read and translate words to get exercises.
+          </h3>
+        </s.LittleMessageAbove>
+      );
     return <LoadingAnimation />;
   }
 
@@ -119,7 +129,9 @@ export default function Exercises({ api, articleID }) {
 
   return (
     <s.ExercisesColumn>
-      <s.LittleMessageAbove>{strings.wordSourcePrefix} {wordSourceText}</s.LittleMessageAbove>
+      <s.LittleMessageAbove>
+        {strings.wordSourcePrefix} {wordSourceText}
+      </s.LittleMessageAbove>
       <ProgressBar index={currentIndex} total={NUMBER_OF_EXERCISES} />
 
       <s.ExForm>

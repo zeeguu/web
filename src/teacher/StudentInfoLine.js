@@ -29,6 +29,8 @@ export default function StudentInfoLine({
       selectedTimePeriod,
       cohortID,
       (studentActivityData) => {
+        console.log("Activity:")
+        console.log(studentActivityData)
         setActivity(studentActivityData);
       },
       (res) => console.log(res)
@@ -67,7 +69,7 @@ export default function StudentInfoLine({
                     {activity.number_of_texts} {strings.textsRead}
                   </div>
                   <div className="activity-count">
-                    {activity.exercises_count} {strings.exercisesCompleted}
+                    {activity.practiced_words_count} {strings.exercisesCompleted}
                   </div>
                 </div>
               </div>
