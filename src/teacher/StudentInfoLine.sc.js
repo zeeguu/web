@@ -27,7 +27,7 @@ export const StudentInfoLine = styled.div`
   .text-box {
     margin: 1.5em;
     color: black !important;
-    width: 300px;
+    width: 400px;
     margin-left: 1em;
   }
 
@@ -42,7 +42,7 @@ export const StudentInfoLine = styled.div`
 
   .progress-bar-wrapper{
     width: 300px;
-    margin: 0 2em;
+    margin: 0 5em 0 0;
     line-height: 1.4em;
     padding-top: 1.5em;
   }
@@ -58,22 +58,19 @@ export const StudentInfoLine = styled.div`
     margin-top: 2em;
   }
 
-  .number-display-wrapper#header {
-    width: 345px;
-    padding-right: 3.5em;
-  }
-
   .number-display {
     line-height: 4em;
     display: flex;
-    height: 4em;
+    height: 3.8em;
     width: 2.8em;
     background-color: #e5e5e5;
     color: black;
     border-radius: 30px;
     padding-left: 1.1em;
     margin-left: 1.2em;
-    margin-top: -1em;
+    margin-top: 2em;
+    font-weight: 400;
+    
   }
 
   .number-display-header {
@@ -84,6 +81,7 @@ export const StudentInfoLine = styled.div`
   .head-title{
     font-family: "Montserrat";
     font-size: large;
+    font-weight: 300;
     color: black;
     text-align: center;
   }
@@ -101,15 +99,21 @@ export const StudentInfoLine = styled.div`
   }
   .student-name{
     font-size: 20px;
+    font-weight:400;
+    margin-bottom: 0.3em;
   }
 
   .student-email{
     color: ${darkGrey};
     font-size: 16px;
+    font-weight:400;
+    margin-bottom: 0.2em;
   }
 
   .activity-count{
     font-size: 16px;
+       font-weight:400;
+       margin-bottom: 0.2em;
   }
 
   ${(props) =>
@@ -118,7 +122,7 @@ export const StudentInfoLine = styled.div`
 
      .wrapper {
       padding-top: 5em;
-      padding-bottom: 1em;;
+      padding-bottom: 0;
      }
 
      .progress-bar-wrapper{
@@ -126,15 +130,11 @@ export const StudentInfoLine = styled.div`
      }
 
      .number-display{
-      margin-top: 1.5em;
+      margin-top: 3.5em;
      }
 
      .title-progress-bar-wrapper{
       margin-top: -50em;
-     }
-
-     .progress-bar{
-       margin-top:1.5em;
      }
 
      .number-display-wrapper{
