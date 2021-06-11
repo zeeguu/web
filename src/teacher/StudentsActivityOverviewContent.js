@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import StudentInfoLine from "./StudentInfoLine";
-import StudentInfoLineHeader from "./StudentInfoLineHeader";
 import TimeSelector from "./TimeSelector";
 import LoadingAnimation from "../components/LoadingAnimation";
 
