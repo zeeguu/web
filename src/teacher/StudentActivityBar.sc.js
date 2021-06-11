@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { darkBlue, lightOrange } from "../components/colors";
 
 export const StudentActivityBar = styled.div`
@@ -7,8 +7,8 @@ export const StudentActivityBar = styled.div`
     height: 20px;
     display: flex;
     color: black;
-    display: flex;
-    justify-content: center;
+    justify-content: center; 
+    margin-top:0.5em;
   }
 
   .activity-bar#reading {
@@ -19,4 +19,12 @@ export const StudentActivityBar = styled.div`
     border-radius: ${(props) => props.exerciseCorners};
     background-color: ${lightOrange};
   }
+
+  ${(props) =>
+    props.isFirst &&
+    css`
+      .activity-bar {
+        margin-top: 1.4em;
+      }
+    `}
 `;
