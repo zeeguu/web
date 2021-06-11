@@ -6,7 +6,6 @@ const StyledButton = styled.button`
   display: inline-block;
   color: ${darkBlue};
   background-color: white;
-  margin-top: 3px;
   margin-right: 0.5em;
   border-radius: 1.0625em;
   padding: 0.3125em 1.1875em;
@@ -40,7 +39,7 @@ const StyledButton = styled.button`
     ${(props) =>
     props.isFirst &&
     css`
-      padding-top: 2.3em !important;
+      padding-top: 4.5em !important;
     `}
 
   //Naked
@@ -68,7 +67,7 @@ const StyledButton = styled.button`
       display: flex;
       padding: -4em;
       border: None;
-      padding-top: 1.5em;
+      padding-top: 4.5em;
     `}
 
     //Link

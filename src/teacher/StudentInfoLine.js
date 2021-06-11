@@ -86,7 +86,7 @@ export default function StudentInfoLine({
             <div className="number-display-wrapper">
 
               <div className="title-circle-wrapper">
-                {isFirst && <p className="head-title">Text length</p>
+                {isFirst && <p className="head-title">Text <br /> length</p>
                 }
                 <div className="number-display">
                   {activity.average_text_length}
