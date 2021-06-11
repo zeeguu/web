@@ -54,7 +54,7 @@ const WordsDropDown = ({
           flexWrap: "wrap",
         }}
       >
-        {card === "practised" && <PractisedWordsList words={practisedWords} />}
+        {card === "practised" && <PractisedWordsList api={api} words={practisedWords} />}
         {card === "learned" && <LearnedWordsList api={api} />}
         {card === "non-studied" && (<NonStudiedWordsList api={api} />)}
       </div>
