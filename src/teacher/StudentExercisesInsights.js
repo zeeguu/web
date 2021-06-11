@@ -6,36 +6,23 @@ import PractisedWordsCard from "./PractisedWordsCard";
 import WordCountCard from "./WordCountCard";
 import { StyledButton } from "./TeacherButtons.sc";
 import WordsDropDown from "./WordsDropDown";
+import { convertTime } from "./FormatedTime";
 import strings from "../i18n/definitions";
-import { DUMMYLEARNEDWORDS, DUMMYWORDS } from "./DUMMIES_TO_DELETE";
 
 export default function StudentExercisesInsights({ api }) {
   const [forceUpdate, setForceUpdate] = useState(0);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
-  const [studentInfo, setStudentInfo] = useState({});
-  const [isOpen, setIsOpen] = useState("");
-  const [practisedWords, setPractisedWords] = useState([]);
-  const [completedExercises, setCompletedExercises] = useState(0);
+  const [studentName, setStudentName] = useState({});
+  const [exerciseTime, setExerciseTime] = useState("");
+  const [practisedWordsCount, setPractisedWordsCount] = useState(0);
   const [activity, setActivity] = useState(null);
+  const [isOpen, setIsOpen] = useState("");
 
   useEffect(() => {
-    setCompletedExercises(0);
-    api.getExerciseHistory(
-      studentID,
-      selectedTimePeriod,
-      cohortID,
-      (practisedWordsInDB) => {
-        setPractisedWords(practisedWordsInDB);
-        practisedWordsInDB.forEach((word) => {
-          const attempts = parseInt(word.exerciseAttempts.length);
-          setCompletedExercises((prev) => prev + attempts);
-        });
-      },
-      (error) => {
-        console.log(error);
-      }
+    api.loadUserInfo(studentID, selectedTimePeriod, (student) =>
+      setStudentName(student.name)
     );
 
     api.getStudentActivityOverview(
@@ -43,8 +30,9 @@ export default function StudentExercisesInsights({ api }) {
       selectedTimePeriod,
       cohortID,
       (activity) => {
-        console.log(activity);
         setActivity(activity);
+        convertTime(activity.exercise_time_in_sec, setExerciseTime);
+        setPractisedWordsCount(activity.practiced_words_count);
       },
       (error) => {
         console.log(error);
@@ -52,20 +40,13 @@ export default function StudentExercisesInsights({ api }) {
     );
 
     // eslint-disable-next-line
-  }, [selectedTimePeriod]);
-
-  useEffect(() => {
-    api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
-      setStudentInfo(userInfo);
-    });
-    // eslint-disable-next-line
   }, [forceUpdate]);
 
   const customText =
-    practisedWords &&
-    studentInfo.name +
+    activity &&
+    studentName.name +
       strings.hasCompleted +
-      completedExercises +
+      practisedWordsCount +
       strings.exercisesInTheLast;
 
   const handleCardClick = (cardName) => {
@@ -89,33 +70,29 @@ export default function StudentExercisesInsights({ api }) {
         <StyledButton naked onClick={() => handleCardClick("practised")}>
           <PractisedWordsCard
             isOpen={isOpen === "practised"}
-            wordCount="XX"
+            wordCount={practisedWordsCount}
             correctness={activity && activity.correct_on_1st_try * 100 + "%"}
-            time="XX min"
+            time={exerciseTime}
           />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("learned")}>
           <WordCountCard
             isOpen={isOpen === "learned"}
             headline={strings.titleLearnedWords}
-            wordCount={activity ? activity.learned_words_count: ""}
+            wordCount={activity ? activity.learned_words_count : ""}
           />
         </StyledButton>
         <StyledButton naked onClick={() => handleCardClick("non-studied")}>
           <WordCountCard
             isOpen={isOpen === "non-studied"}
             headline={strings.wordsNotStudiedInZeeguu}
-            wordCount={activity ? activity.translated_but_not_practiced_words_count : ""}
+            wordCount={
+              activity ? activity.translated_but_not_practiced_words_count : ""
+            }
           />
         </StyledButton>
       </div>
-      {isOpen !== "" && (
-        <WordsDropDown
-          api={api}
-          card={isOpen}
-          practisedWords={practisedWords}
-        />
-      )}
+      {isOpen !== "" && <WordsDropDown api={api} card={isOpen} />}
     </Fragment>
   );
 }

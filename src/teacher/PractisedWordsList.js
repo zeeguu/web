@@ -1,15 +1,42 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { AttemptIcons } from "./AttemptIcons";
 import { v4 as uuid } from "uuid";
 import { shortFormatedDate } from "./FormatedDate";
 import ExerciseType from "./ExerciseType";
+import { useParams } from "react-router";
+import LocalStorage from "../assorted/LocalStorage";
 
-const PractisedWordsList = ({ words }) => {
+const PractisedWordsList = ({ api }) => {
+  const [practisedWords, setPractisedWords] = useState([]);
+  const selectedTimePeriod = LocalStorage.selectedTimePeriod();
+  const studentID = useParams().studentID;
+  const cohortID = useParams().cohortID;
+
+  useEffect(() => {
+    api.getExerciseHistory(
+      studentID,
+      selectedTimePeriod,
+      cohortID,
+      (practisedWordsInDB) => {
+        setPractisedWords(practisedWordsInDB);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    //eslint-disable-next-line
+  }, []);
+
   return (
     <Fragment>
-      {words.length===0 && <p style={{fontSize:"medium"}}>The student has not practised any words yet. STRINGS</p>}
-      {words && words.map((word) => (
-        <div key={word + uuid()}>
+      {practisedWords.length === 0 && (
+        <p style={{ fontSize: "medium" }}>
+          The student has not practised any words yet. STRINGS
+        </p>
+      )}
+      {practisedWords &&
+        practisedWords.map((word) => (
+          <div key={word + uuid()}>
             <div
               key={uuid()}
               style={{
@@ -44,16 +71,16 @@ const PractisedWordsList = ({ words }) => {
                     marginBottom: "-25px",
                   }}
                 >
-                  <p style={{ color: "#808080" }}>{shortFormatedDate(exercise.time)}</p>
-                  <ExerciseType source={exercise.source}/>
-                  <AttemptIcons
-                    attemptString={exercise.outcome}
-                  />
+                  <p style={{ color: "#808080" }}>
+                    {shortFormatedDate(exercise.time)}
+                  </p>
+                  <ExerciseType source={exercise.source} />
+                  <AttemptIcons attemptString={exercise.outcome} />
                 </div>
               ))}
             </div>
-        </div>
-      ))}
+          </div>
+        ))}
     </Fragment>
   );
 };
