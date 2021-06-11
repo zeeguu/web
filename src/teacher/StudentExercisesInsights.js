@@ -43,7 +43,6 @@ export default function StudentExercisesInsights({ api }) {
   }, [forceUpdate]);
 
   const customText =
-    activity &&
     studentInfo.name +
       strings.hasCompleted +
       practisedWordsCount +
