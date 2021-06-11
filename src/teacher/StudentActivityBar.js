@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { convertTime } from "./FormatedTime";
 import * as s from "./StudentActivityBar.sc";
 
-const StudentActivityBar = ({ student }) => {
+const StudentActivityBar = ({ student, isFirst }) => {
   const [readingTimeString, setReadingTimeString] = useState("");
   const [exerciseTimeString, setExerciseTimeString] = useState("");
+
 
   useEffect(() => {
     convertTime(student.reading_time, setReadingTimeString)
@@ -33,6 +34,7 @@ const StudentActivityBar = ({ student }) => {
   if (student.total_time < 240) { return null }
   return (
     <s.StudentActivityBar
+      isFirst={isFirst}
       readingCorners={() => setReadingCorners()}
       exerciseCorners={() => setExerciseCorners()}
     >
