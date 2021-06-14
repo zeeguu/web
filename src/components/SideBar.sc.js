@@ -116,6 +116,11 @@ const sidebarMinimizedCommon = css`
 `;
 
 const navigationVisibleCommon = css`
+  .newLink {
+    color: #d82323;
+    font-size: small;
+    font-weight: bolder;
+  }
   .navigationLink {
     display: block;
     color: white;

@@ -38,6 +38,7 @@ export default function StudentSpecificSidebarOptions({
         <div className="navigationLink">
           <Link to="/user_dashboard" onClick={resetSidebarToDefault}>
             <small>{strings.userDashboard}</small>
+            <sup className="newLink">New!</sup>
           </Link>
         </div>
       )}
