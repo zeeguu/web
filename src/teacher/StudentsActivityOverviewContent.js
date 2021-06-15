@@ -22,22 +22,12 @@ const StudentsActivityOverviewContent = ({
     return <LoadingAnimation />;
   }
 
-  console.log(students);
-  console.log("all students above");
-  console.log(firstStudent);
-  console.log("first student above");
-  console.log(restOfStudents);
-  console.log("restOfStudents above");
-
   const customText =
     "STRINGS This is the overview of the students' activities for the last";
 
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      {/* <StudentInfoLineHeader /> */}
-      {/* {firstStudent !== null &&
-        <p>Hey we're getting a first student</p>} */}
       {firstStudent !== null && (
         <StudentInfoLine
           key={firstStudent.id}

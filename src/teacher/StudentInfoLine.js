@@ -115,6 +115,7 @@ export default function StudentInfoLine({
         <StyledButton
           isFirst={isFirst}
           icon
+          deleteastudent
           style={{ marginTop: "15px", marginLeft: "25px" }}
           onClick={() => setShowDeleteStudentWarning(true)}
         >

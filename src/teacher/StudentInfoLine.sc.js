@@ -4,12 +4,11 @@ import "@reach/listbox/styles.css";
 
 export const StudentInfoLine = styled.div`
   .wrapper {
-    margin: 0 0 2em 0;
+    margin-bottom: 2em;
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding-bottom: 50 em;
+    justify-content: space-between;
     min-height: 10vh;
+    margin: 3vh 0 3.2vh -3vw;
   }
 
   .sideline {
@@ -29,6 +28,7 @@ export const StudentInfoLine = styled.div`
     color: black !important;
     width: 400px;
     margin-left: 1em;
+    
   }
 
   .student-name-header {
@@ -41,7 +41,7 @@ export const StudentInfoLine = styled.div`
   }
 
   .progress-bar-wrapper{
-    width: 300px;
+    width: 200px;
     margin: 0 5em 0 0;
     line-height: 1.4em;
     padding-top: 1.5em;
@@ -66,11 +66,12 @@ export const StudentInfoLine = styled.div`
     background-color: #e5e5e5;
     color: black;
     border-radius: 30px;
-    padding-left: 1.1em;
+    padding: 0 0.55em;
     margin-left: 1.2em;
     margin-top: 2em;
     font-weight: 400;
-    
+    text-align: center;
+    justify-content: center;
   }
 
   .number-display-header {
@@ -94,7 +95,7 @@ export const StudentInfoLine = styled.div`
     display: flex;
     flex-direction: column;
     border-left: solid 3px ${darkBlue};
-    height: 6vh;
+    height: 11.5vh;
     padding: 1vh 0 0 0;
   }
   .student-name{
