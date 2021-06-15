@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import strings from "../i18n/definitions";
+import { convertTime } from "./FormatedTime";
 import { StudentActivityDataCircle } from "./StudentActivityDataCircle.sc";
 import { StudentActivityDataCircleWrapper } from "./StudentActivityDataCircleWrapper.sc";
 
@@ -14,11 +15,7 @@ const StudentActivityDataCircles = ({
   const [readingTimeString, setReadingTimeString] = useState("");
 
   useEffect(() => {
-    const readingHours = Math.floor(readingTime / 3600);
-    const readingMinutes = Math.ceil((readingTime / 60) % 60);
-    readingHours < 1
-      ? setReadingTimeString(readingMinutes + "m")
-      : setReadingTimeString(readingHours + "h " + readingMinutes + "m");
+    convertTime(readingTime, setReadingTimeString);
     //eslint-disable-next-line
   }, []);
 
@@ -27,9 +24,8 @@ const StudentActivityDataCircles = ({
       <div>
         {isFirst && (
           <p className="data-circle-title">
-            {" "}
             {strings.text} <br />
-            {strings.level}{" "}
+            {strings.level}
           </p>
         )}
         <StudentActivityDataCircle key={uuid()}>
@@ -39,9 +35,8 @@ const StudentActivityDataCircles = ({
       <div>
         {isFirst && (
           <p className="data-circle-title">
-            {" "}
             {strings.text} <br />
-            {strings.lengthOnText}{" "}
+            {strings.lengthOnText}
           </p>
         )}
         <StudentActivityDataCircle key={uuid()}>
@@ -51,9 +46,8 @@ const StudentActivityDataCircles = ({
       <div>
         {isFirst && (
           <p className="data-circle-title">
-            {" "}
             {strings.readingTime} <br />
-            {strings.time}{" "}
+            {strings.time}
           </p>
         )}
         <StudentActivityDataCircle key={uuid()}>
@@ -63,9 +57,8 @@ const StudentActivityDataCircles = ({
       <div>
         {isFirst && (
           <p className="data-circle-title">
-            {" "}
             {strings.translated} <br />
-            {strings.wordsWithLowercase}{" "}
+            {strings.wordsWithLowercase}
           </p>
         )}
         <StudentActivityDataCircle key={uuid()}>
