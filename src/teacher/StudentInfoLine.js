@@ -8,15 +8,14 @@ import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
-//localize everything on this page 
-//STRINGS
+//localize everything on this page STRINGS
 
 export default function StudentInfoLine({
   api,
   cohortID,
   student,
   setForceUpdate,
-  isFirst
+  isFirst,
 }) {
   const [showDeleteStudentWarning, setShowDeleteStudentWarning] =
     useState(false);
@@ -29,11 +28,9 @@ export default function StudentInfoLine({
       selectedTimePeriod,
       cohortID,
       (studentActivityData) => {
-        console.log("Activity:")
-        console.log(studentActivityData)
         setActivity(studentActivityData);
       },
-      (res) => console.log(res)
+      (error) => console.log(error)
     );
     // eslint-disable-next-line
   }, [selectedTimePeriod]);
@@ -51,16 +48,13 @@ export default function StudentInfoLine({
 
   return (
     <s.StudentInfoLine isFirst={isFirst}>
-      <div className="wrapper" >
+      <div className="wrapper">
         <Link
           to={`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`}
         >
-
           <div className="sideline">
-
             <div className="text-box">
-              {isFirst && <p className="head-title">Student name</p>
-              }
+              {isFirst && <p className="head-title">Student name</p>}
               <div className="left-line">
                 <div className="name-activity-wrapper">
                   <div className="student-name">{student.name}</div>
@@ -69,7 +63,7 @@ export default function StudentInfoLine({
                     {activity.number_of_texts} {strings.textsRead}
                   </div>
                   <div className="activity-count">
-                    {activity.practiced_words_count} {strings.exercisesCompleted}
+                    {activity.number_of_exercises} {strings.exercisesCompleted}
                   </div>
                 </div>
               </div>
@@ -77,40 +71,38 @@ export default function StudentInfoLine({
 
             <div classname="title-progress-bar-wrapper">
               <div className="progress-bar-wrapper">
-                {isFirst && <p className="head-title">Reading/Exercise time</p>
-                }
+                {isFirst && <p className="head-title">Reading/Exercise time</p>}
                 <StudentActivityBar isFirst={isFirst} student={student} />
               </div>
             </div>
 
             <div className="number-display-wrapper">
-
               <div className="title-circle-wrapper">
-                {isFirst && <p className="head-title">Text <br /> length</p>
-                }
+                {isFirst && (
+                  <p className="head-title">
+                    Text <br /> length
+                  </p>
+                )}
                 <div className="number-display">
                   {activity.average_text_length}
                 </div>
               </div>
 
               <div className="title-circle-wrapper">
-                {isFirst && <p className="head-title">Avg text difficulty</p>
-                }
+                {isFirst && <p className="head-title">Avg text difficulty</p>}
                 <div className="number-display">
                   {activity.average_text_difficulty}
                 </div>
               </div>
 
               <div className="title-circle-wrapper">
-                {isFirst && <p className="head-title">Exercises correctness</p>
-                }
+                {isFirst && <p className="head-title">Exercises correctness</p>}
                 <div className="number-display">
                   {activity.correct_on_1st_try * 100 + "%"}
                 </div>
               </div>
             </div>
           </div>
-
         </Link>
         <StyledButton
           isFirst={isFirst}
@@ -122,16 +114,14 @@ export default function StudentInfoLine({
           <MdHighlightOff size={35} />
         </StyledButton>
       </div>
-      {
-        showDeleteStudentWarning && (
-          <DeleteStudentWarning
-            studentName={student.name}
-            cohortID={cohortID}
-            removeStudent={removeStudentFromCohort}
-            setShowDeleteStudentWarning={setShowDeleteStudentWarning}
-          />
-        )
-      }
-    </s.StudentInfoLine >
+      {showDeleteStudentWarning && (
+        <DeleteStudentWarning
+          studentName={student.name}
+          cohortID={cohortID}
+          removeStudent={removeStudentFromCohort}
+          setShowDeleteStudentWarning={setShowDeleteStudentWarning}
+        />
+      )}
+    </s.StudentInfoLine>
   );
 }

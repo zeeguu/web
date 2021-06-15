@@ -16,6 +16,7 @@ export default function StudentExercisesInsights({ api }) {
   const cohortID = useParams().cohortID;
   const [studentInfo, setStudentInfo] = useState({});
   const [exerciseTime, setExerciseTime] = useState("");
+  const [completedExercisesCount, setCompletedExercisesCount] = useState(0);
   const [practisedWordsCount, setPractisedWordsCount] = useState(0);
   const [activity, setActivity] = useState(null);
   const [isOpen, setIsOpen] = useState("");
@@ -30,9 +31,11 @@ export default function StudentExercisesInsights({ api }) {
       selectedTimePeriod,
       cohortID,
       (activity) => {
+        console.log(activity)
         setActivity(activity);
-        convertTime(activity.exercise_time_in_sec, setExerciseTime);
+        convertTime(activity.exercise_time, setExerciseTime);
         setPractisedWordsCount(activity.practiced_words_count);
+        setCompletedExercisesCount(activity.number_of_exercises)
       },
       (error) => {
         console.log(error);
@@ -45,7 +48,7 @@ export default function StudentExercisesInsights({ api }) {
   const customText =
     studentInfo.name +
     strings.hasCompleted +
-    practisedWordsCount +
+    completedExercisesCount +
     strings.exercisesInTheLast;
 
   const handleCardClick = (cardName) => {

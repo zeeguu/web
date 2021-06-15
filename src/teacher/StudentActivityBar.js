@@ -8,13 +8,13 @@ const StudentActivityBar = ({ student, isFirst }) => {
 
   useEffect(() => {
     convertTime(student.reading_time, setReadingTimeString)
-    convertTime(student.exercises_done, setExerciseTimeString)
+    convertTime(student.exercise_time, setExerciseTimeString)
 
   }, [student]);
 
   const setReadingCorners = () => {
     let readingCorners = "25px 0 0 25px";
-    if (student.exercises_done === 0) {
+    if (student.exercise_time === 0) {
       readingCorners = "25px";
     }
     return readingCorners;
@@ -28,7 +28,7 @@ const StudentActivityBar = ({ student, isFirst }) => {
     return exerciseCorners;
   };
 
-  const computedWidth = student.exercises_done === 0 ? "0%" : 100 - student.reading_percentage + "%"
+  const computedWidth = student.exercise_time === 0 ? "0%" : 100 - student.reading_percentage + "%"
   //making sure we are not returning an activity bar if time is less than 3 minutes
   if (student.total_time < 240) { return null }
   return (
@@ -61,7 +61,7 @@ const StudentActivityBar = ({ student, isFirst }) => {
           }}
         >
           {/* Not showing the exercise time if it is less than 3 min */}
-          {student.exercises_done > 120 ? exerciseTimeString : ""}
+          {student.exercise_time > 120 ? exerciseTimeString : ""}
         </div>
       </div>
     </s.StudentActivityBar>
