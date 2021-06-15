@@ -3,12 +3,12 @@ export function transformStudents(students) {
   let maxActivity = 0;
 
   let transformedStudents = students.map((student) => {
-    const { reading_time, exercises_done } = student;
+    const { reading_time, exercise_time } = student;
     const reading_percentage = getReadingPercentage(
       reading_time,
-      exercises_done
+      exercise_time
     );
-    const total_time = reading_time + exercises_done;
+    const total_time = reading_time + exercise_time;
 
     maxActivity = maxActivity > total_time ? maxActivity : total_time;
     return {
