@@ -6,9 +6,9 @@ export const ReadingInsightAccordion = styled.div`
   .accordion-wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     min-height: 13vh;
-    margin: 3vh 0 3.2vh -3vw;
+    margin: 3vh 0 3.2vh 0;
     font-family: "Montserrat";
   }
 

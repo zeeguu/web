@@ -35,6 +35,13 @@ const StyledButton = styled.button`
       border: 3px solid ${lightBlue};
     `}
 
+  //deleteastudent 
+  ${(props) =>
+    props.deleteastudent &&
+    css`
+      padding-top: 4.5em !important;
+    `}
+
   //isFirst
     ${(props) =>
     props.isFirst &&
@@ -67,7 +74,6 @@ const StyledButton = styled.button`
       display: flex;
       padding: -4em;
       border: None;
-      padding-top: 4.5em;
     `}
 
     //Link
