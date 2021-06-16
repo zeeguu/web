@@ -42,7 +42,6 @@ export default function StudentExercisesInsights({ api }) {
       },
       (error) => console.log(error)
     );
-
     // eslint-disable-next-line
   }, [forceUpdate]);
 
