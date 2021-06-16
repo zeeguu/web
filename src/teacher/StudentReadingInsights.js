@@ -17,13 +17,6 @@ export default function StudentReadingInsights({ api }) {
   const [articleCount, setArticleCount] = useState(0);
 
   useEffect(() => {
-    api.getStudentInfo(
-      studentID,
-      cohortID,
-      selectedTimePeriod,
-      (studentInfo) => setStudentName(studentInfo.name),
-      (error) => console.log(error)
-    );
     api.getReadingSessions(
       studentID,
       cohortID,
@@ -31,7 +24,6 @@ export default function StudentReadingInsights({ api }) {
       (readingSessions) => setReadArticles(readingSessions),
       (error) => console.log(error)
     );
-
     api.getStudentActivityOverview(
       studentID,
       selectedTimePeriod,
@@ -39,7 +31,6 @@ export default function StudentReadingInsights({ api }) {
       (activity) => setArticleCount(activity.number_of_texts),
       (error) => console.log(error)
     );
-
     // eslint-disable-next-line
   }, [forceUpdate]);
 
@@ -48,6 +39,13 @@ export default function StudentReadingInsights({ api }) {
       let currentCohort = cohortInfo.filter((each) => each.id === cohortID);
       setCohortLang(currentCohort[0].language_name);
     });
+    api.getStudentInfo(
+      studentID,
+      cohortID,
+      selectedTimePeriod,
+      (studentInfo) => setStudentName(studentInfo.name),
+      (error) => console.log(error)
+    );
     // eslint-disable-next-line
   }, []);
 
