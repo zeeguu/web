@@ -778,17 +778,17 @@ let strings = new LocalizedStrings(
 
       //AttemptIcons
       incorrectAttemptIconExplanation:
-        "indikerer, at eleven gjorde et forkert forsøg på at løse øvelsen.",
+        "indikerer, at eleven lavede et forkert forsøg på at løse øvelsen.",
       correctExerciseIconExplanation:
         "indikerer, at eleven løste øvelsen korrekt.",
       hintInExerciseIconExplanation:
         "indikerer, at eleven bad om et tip i løbet af øvelsen.",
       askedForSolutionInExercise:
         "indikerer, at eleven bad om at se løsningen på øvelsen.",
-      studentExerciseFeedback: "For svær/For nem/Dårligt eksempel.",
-      exerciseFeedbackFromStudent: "er elevens feedback, af øvelsen.",
+      studentExerciseFeedback: "For svær/For nem/Dårligt eksempel",
+      exerciseFeedbackFromStudent: "er elevens feedback på øvelsen.",
       typeOfExerciseIconExplanation:
-        "er den type øvelse, hvor ordet, som eleven har øvet, er i.",
+        "indikerer, hvilken type øvelse eleven har øvet ordet i.",
 
       //CohortForm
       editClass: "Rediger klasse",
