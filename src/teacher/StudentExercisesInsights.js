@@ -40,9 +40,7 @@ export default function StudentExercisesInsights({ api }) {
         setPractisedWordsCount(activity.practiced_words_count);
         setCompletedExercisesCount(activity.number_of_exercises);
       },
-      (error) => {
-        console.log(error);
-      }
+      (error) => console.log(error)
     );
 
     // eslint-disable-next-line

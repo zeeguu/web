@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { convertTime } from "./FormatedTime";
+import { convertTime, convertTimeForActivityBar } from "./FormatedTime";
 import * as s from "./StudentActivityBar.sc";
 
 const StudentActivityBar = ({ student, isFirst }) => {
@@ -7,8 +7,8 @@ const StudentActivityBar = ({ student, isFirst }) => {
   const [exerciseTimeString, setExerciseTimeString] = useState("");
 
   useEffect(() => {
-    convertTime(student.reading_time, setReadingTimeString)
-    convertTime(student.exercise_time, setExerciseTimeString)
+    convertTimeForActivityBar(student.reading_time, setReadingTimeString)
+    convertTimeForActivityBar(student.exercise_time, setExerciseTimeString)
 
   }, [student]);
 
@@ -28,7 +28,13 @@ const StudentActivityBar = ({ student, isFirst }) => {
     return exerciseCorners;
   };
 
-  const computedWidth = student.exercise_time === 0 ? "0%" : 100 - student.reading_percentage + "%"
+  const computedWidth = 100 - student.reading_percentage + "%"
+
+  console.log(student.name)
+  console.log(student.normalized_activity_proportion)
+  console.log(student.reading_time + " " + student.reading_percentage)
+  console.log(student.exercise_time + " " + computedWidth)
+
   //making sure we are not returning an activity bar if time is less than 3 minutes
   if (student.total_time < 240) { return null }
   return (
@@ -51,7 +57,7 @@ const StudentActivityBar = ({ student, isFirst }) => {
           }}
         >
           {/* Not showing the reading time if it is less than 3 min */}
-          {student.reading_time > 120 ? readingTimeString : ""}
+          {student.reading_time > 120 ? <p style={{fontSize:"small", marginTop:"20px"}}>{readingTimeString}</p> : ""}
         </div>
         <div
           className="activity-bar"
@@ -61,7 +67,7 @@ const StudentActivityBar = ({ student, isFirst }) => {
           }}
         >
           {/* Not showing the exercise time if it is less than 3 min */}
-          {student.exercise_time > 120 ? exerciseTimeString : ""}
+          {student.exercise_time > 120 ? <p style={{fontSize:"small", marginTop:"20px"}}>{exerciseTimeString}  </p> : ""}
         </div>
       </div>
     </s.StudentActivityBar>
