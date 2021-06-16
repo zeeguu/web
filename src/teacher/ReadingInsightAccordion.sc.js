@@ -26,6 +26,10 @@ export const ReadingInsightAccordion = styled.div`
       .content-wrapper {
         padding-bottom: 1.7vh;
       }
+      .left-line {
+        border-left: solid 3px ${darkBlue};
+        min-height: 11vh !important;
+  }
     `}
 
   .date-title-wrapper {

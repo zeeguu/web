@@ -95,7 +95,7 @@ export const StudentInfoLine = styled.div`
     display: flex;
     flex-direction: column;
     border-left: solid 3px ${darkBlue};
-    height: 11.5vh;
+    height: 13vh;
     padding: 1vh 0 0 0;
   }
   .student-name{

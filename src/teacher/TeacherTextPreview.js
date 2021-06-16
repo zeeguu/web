@@ -48,20 +48,24 @@ export default function TeacherTextPreview({ article }) {
           <div className="action-container">
             <s.WordCount>{article.metrics.word_count}</s.WordCount>
             <s.Difficulty>{difficulty}</s.Difficulty>
+
             <Link
               to={`/teacher/texts/editText/${article.id}`}
-              onClick={() => setReturnPath("/teacher/texts")}
+              onClick={() => setReturnPath("/teacher/texts")
+              }
+
             >
               <StyledButton secondary className="edit-btn">
                 {strings.editText}
               </StyledButton>
             </Link>
-            <StyledButton icon style={{ margin: "0" }}>
-              <MdHighlightOff size={35} />
-            </StyledButton>
           </div>
+          <StyledButton icon style={{ marginTop: "2.3vh" }} >
+            <MdHighlightOff size={35} />
+          </StyledButton>
         </div>
+
       </st.StyledTeacherTextPreview>
-    </Fragment>
+    </Fragment >
   );
 }
