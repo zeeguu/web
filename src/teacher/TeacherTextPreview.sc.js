@@ -5,6 +5,12 @@ export const StyledTeacherTextPreview = styled.div`
   .lhs {
     display: flex;
     flex-direction: column;
+    width: 500px;
+    padding-right: 2vw;
+  }
+
+  .edit-btn {
+    margin-top: 2vh;
   }
 
   .text-container {
@@ -19,6 +25,8 @@ export const StyledTeacherTextPreview = styled.div`
   .action-container {
     display: flex;
     justify-content: space-between;
+    margin-top: 1vh;
+    margin-left: 5vh;
   }
 
   .added-to {
