@@ -69,7 +69,7 @@ export default function StudentInfoLine({
               </div>
             </div>
 
-            <div classname="title-progress-bar-wrapper">
+            <div className="title-progress-bar-wrapper">
               <div className="progress-bar-wrapper">
                 {isFirst && <p className="head-title">Reading/Exercise time</p>}
                 <StudentActivityBar isFirst={isFirst} student={student} />
