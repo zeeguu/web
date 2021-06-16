@@ -14,7 +14,7 @@ export default function StudentReadingInsights({ api }) {
   const [studentName, setStudentName] = useState("");
   const [cohortLang, setCohortLang] = useState("");
   const [readArticles, setReadArticles] = useState([]);
-  const [articleCount, setArticleCount] = useState(0)
+  const [articleCount, setArticleCount] = useState(0);
 
   useEffect(() => {
     api.getStudentInfo(
@@ -28,10 +28,7 @@ export default function StudentReadingInsights({ api }) {
       studentID,
       cohortID,
       selectedTimePeriod,
-      (readingSessions) => {
-        console.log(readingSessions)
-        setReadArticles(readingSessions);
-      },
+      (readingSessions) => setReadArticles(readingSessions),
       (error) => console.log(error)
     );
 
@@ -39,10 +36,7 @@ export default function StudentReadingInsights({ api }) {
       studentID,
       selectedTimePeriod,
       cohortID,
-      (activity) => {
-        console.log(activity.number_of_texts)
-        setArticleCount(activity.number_of_texts)
-      },
+      (activity) => setArticleCount(activity.number_of_texts),
       (error) => console.log(error)
     );
 
@@ -63,6 +57,7 @@ export default function StudentReadingInsights({ api }) {
       strings.studentHasRead +
       articleCount +
       strings.textsInTheLastPeriod;
+
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
