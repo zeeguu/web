@@ -1,5 +1,5 @@
 export const convertTime = (accumulatedTime, setTime) => {
-  console.log("converting " + accumulatedTime + " seconds into:");
+  //console.log("converting " + accumulatedTime + " seconds into:");
   const hours = Math.floor(accumulatedTime / 3600);
   const minutes = Math.floor((accumulatedTime / 60) % 60);
   const seconds = Math.floor(accumulatedTime - minutes * 60)
