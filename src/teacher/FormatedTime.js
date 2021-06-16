@@ -4,7 +4,7 @@ export const convertToHoursMinSec = (accumulatedTime) => {
   const seconds = Math.round(accumulatedTime - hours * 3600 - minutes * 60);
   return { hours, minutes, seconds };
 };
-
+//This should be localised: "h" = "t" in Danish STRINGS
 export const convertTime = (accumulatedTime, setTime) => {
   const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
   if (accumulatedTime < 60) {
@@ -15,7 +15,7 @@ export const convertTime = (accumulatedTime, setTime) => {
       : setTime(hours + "h " + minutes + "m");
   }
 };
-
+//This should be localised: "h" = "t" in Danish STRINGS
 export const convertTimeForActivityBar = (accumulatedTime, setTime) => {
   const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
   if (accumulatedTime < 240) {
@@ -24,7 +24,7 @@ export const convertTimeForActivityBar = (accumulatedTime, setTime) => {
     hours < 1 ? setTime(minutes + "m ") : setTime(hours + "h " + minutes + "m");
   }
 };
-
+//This should be localised: "h" = "t" in Danish STRINGS
 export const convertExactTimeString = (accumulatedTime) =>{
   const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
   if (hours > 0) return hours + "h " + minutes + "m " + seconds + "s"
@@ -32,6 +32,7 @@ export const convertExactTimeString = (accumulatedTime) =>{
   return minutes + "m " + seconds + "s"
 }
 
+//This should be localised STRINGS
 export const timeExplanation = (student) =>{
   const readingTime = convertExactTimeString(student.reading_time)
   const exerciseTime = convertExactTimeString(student.exercise_time)
