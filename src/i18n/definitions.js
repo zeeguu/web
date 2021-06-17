@@ -11,7 +11,7 @@ let strings = new LocalizedStrings(
       levelWithCapital: "Level",
       articles: "Texts",
       text: "Text",
-      save: "save",
+      save: "Save",
       settings: "Settings",
       exercises: "Exercises",
       myClasses: "My Classes",
@@ -39,8 +39,8 @@ let strings = new LocalizedStrings(
       loadingMsg: "Loading...",
 
       //Sidebar
-      teacherSite: "Teacher site",
-      studentSite: "Student site",
+      teacherSite: "Teacher Site",
+      studentSite: "Student Site",
       logout: "Logout",
 
       //CreateAccount
@@ -196,7 +196,7 @@ let strings = new LocalizedStrings(
       reviewVocabExplanation:
         "Review your translations now to ensure better learning and ensure that you tell Zeeguu which of the words you want prioritize in your study.",
       backToEditing: "Back to editing",
-      saveOwnCopy: "Save own copy",
+      saveOwnCopy: "Save Own Copy",
 
       //BookmarkButton
       addToBookmarks: "Add to bookmarks",
@@ -268,6 +268,10 @@ let strings = new LocalizedStrings(
       //NonStudiedWordsList
       NoLoookedupWordsYet: "The student hasn't looked up any words yet.",
 
+      //NonStudiedWordCard
+      excludedByAlgorithm: "Excluded by algorithm",
+      scheduledNotYetStudied: "Scheduled - not yet studied",
+
       //FindWordsInContext
       findTheWordInContextHeadline: "Find the word in context",
 
@@ -285,7 +289,7 @@ let strings = new LocalizedStrings(
       //Settings
       nativeLanguage: "Native Language",
       yourCurrentClassIs: "Your current class is: ",
-      changeClassbtn: "Change class",
+      changeClass: "Change Class",
       insertNewInviteCode: "Insert new invite code",
       insertInviteCode: "Insert invite code",
       checkIfInviteCodeIsValid:
@@ -293,7 +297,7 @@ let strings = new LocalizedStrings(
 
       //_ActivityInsightsRouter
       learningActivities: "Learning Activities",
-      backToClassroom: "Back To Classroom",
+      backToClassroom: "Back to Classroom",
 
       //AddTextOptionTypes
       articleFromZeeguuToClass: "Assign an article from Zeeguu to a class",
@@ -302,7 +306,7 @@ let strings = new LocalizedStrings(
 
       //AddToCohortDialog
       chooseClass: "Choose one or more classes",
-      saveChanges: "Save changes",
+      saveChanges: "Save Changes",
 
       //AddURLDialog
       addTextFromWebpage: "Add text from a webpage",
@@ -339,7 +343,7 @@ let strings = new LocalizedStrings(
       //CohortForm
       editClass: "Edit Class",
       createClass: "Create Class",
-      classroomLanguage: "Classroom Language",
+      classroomLanguage: "Classroom language",
       errorInviteCode:
         "Something went wrong. Maybe the invite code is already in use.",
       errorEmptyInputField: "You must fill out all the input fields.",
@@ -377,8 +381,8 @@ let strings = new LocalizedStrings(
 
       //EditText
       editText: "Edit Text",
-      viewAsStudent: "View as student",
-      addToClass: "Add to class",
+      viewAsStudent: "View as Student",
+      addToClass: "Add to Class",
       saveText: "Save Text",
 
       //EditTextInputFields
@@ -398,7 +402,7 @@ let strings = new LocalizedStrings(
         "Share this code with your students to invite them to the class: ",
       invitecodeInformation:
         "Students will not appear in the class until they have signed up for Zeeguu and used the invite code.",
-      goToClass: "Go to class",
+      goToClass: "Go to Class",
 
       //LanguageSelector
       chooseLanguage: "Choose a language...",
@@ -410,10 +414,10 @@ let strings = new LocalizedStrings(
       soTheStudentCanJoinClass: "so they can sign up and join the classroom.",
 
       //PractisedWordsCard
-      practisedWords: "Practised words",
-      timeSpendOnExercises: "time spent on exercises",
-      numberOfWords: "number of words",
-      solvedOnFirstAttempt: "solved on 1st attempt",
+      practisedWords: "Practised Words",
+      timeSpendOnExercises: "Time spent on exercises",
+      numberOfWords: "Number of words",
+      solvedOnFirstAttempt: "Solved on 1st attempt",
 
       //PractisedWordsList
       noPractisedWordsYet: "The student has not practised any words yet.",
@@ -422,9 +426,9 @@ let strings = new LocalizedStrings(
       level: "level",
       lengthOnText: "length",
       time: "time",
-      translated: "translated",
+      translated: "Translated",
       wordsWithLowercase: "words",
-      readingTime: "reading",
+      readingTime: "Reading",
 
       //ReadingInsightAccordion
       readingDate: "Read: ",
@@ -432,8 +436,8 @@ let strings = new LocalizedStrings(
       //StudentInfoLine
       textsRead: "texts read",
       exercisesCompleted: "exercises completed",
-      avgText: "Avg text",
-      difficulty: "difficulty",
+      avgText: "Avg. text",
+      difficultyLowerCase: "difficulty",
       exercisesCorrectness: "Exercises correctness",
 
       //StudentInfoLineHeader
@@ -451,7 +455,7 @@ let strings = new LocalizedStrings(
       studentHasNotReadAnyArticles: "The student hasn't read any articles in",
 
       //StudentsActivityOverview
-      backToClasses: "Back to all classes",
+      backToClasses: "Back to My Classes",
 
       //StudentsActivityOverviewContent
       customTextInTimeSelector:
@@ -508,7 +512,7 @@ let strings = new LocalizedStrings(
       //StudentExercisesInsights
       hasCompleted: " has completed ",
       exercisesInTheLast: " exercises in the last ",
-      wordsNotStudiedInZeeguu: "Words not studied in Zeeguu",
+      wordsNotStudiedInZeeguu: "Words Not Studied in Zeeguu",
     },
 
     da: {
@@ -519,7 +523,7 @@ let strings = new LocalizedStrings(
       levelWithCapital: "Sværhed",
       articles: "Tekster",
       text: "tekst",
-      save: "gem",
+      save: "Gem",
       settings: "Indstillinger",
       exercises: "Øvelser",
       myClasses: "Mine klasser",
@@ -540,7 +544,7 @@ let strings = new LocalizedStrings(
       joinClass: "Deltag i klasse",
       youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
       reading: "Læsning",
-      deleteFromMyClasses: "Slet fra mine klasser",
+      deleteFromMyClasses: "Slet fra 'Mine klasser'",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -777,6 +781,10 @@ let strings = new LocalizedStrings(
       //NonStudiedWordsList
       NoLoookedupWordsYet: "Elevn har ikke slået nogen ord op enndu.",
 
+            //NonStudiedWordCard
+            excludedByAlgorithm: "Udelukket af algoritmen",
+            scheduledNotYetStudied: "Planlagt - endnu ikke øvet",
+
       //FindWordsInContext
       findTheWordInContextHeadline: "Find ordet/ordene i sammenhængen",
 
@@ -794,7 +802,7 @@ let strings = new LocalizedStrings(
       //Settings
       nativeLanguage: "Modersmål",
       yourCurrentClassIs: "Din nuværende klasse er: ",
-      changeClassbtn: "Ændre klasse",
+      changeClass: "Skift klasse",
       insertNewInviteCode: "Indsæt ny invitationskode",
       insertInviteCode: "Indsæt invitationskode",
       checkIfInviteCodeIsValid:
@@ -886,7 +894,7 @@ let strings = new LocalizedStrings(
 
       //EditText
       editText: "Rediger",
-      viewAsStudent: "Vis som var du elev",
+      viewAsStudent: "Se som elev",
       addToClass: "Tilføj til klasse",
       saveText: "Gem tekst",
 
@@ -921,9 +929,9 @@ let strings = new LocalizedStrings(
 
       //PractisedWordsCard
       practisedWords: "Øvede ord",
-      timeSpendOnExercises: "tid brugt på øvelser",
-      numberOfWords: "samlet antal ord",
-      solvedOnFirstAttempt: "løst ved 1. forsøg",
+      timeSpendOnExercises: "Tid brugt på øvelser",
+      numberOfWords: "Samlet antal ord",
+      solvedOnFirstAttempt: "Løst ved 1. forsøg",
 
       //PractisedWordsList
       noPractisedWordsYet: "Eleven har ikke øvet nogen ord endnu.",
@@ -943,7 +951,7 @@ let strings = new LocalizedStrings(
       textsRead: "læste tekster",
       exercisesCompleted: "gennemførte øvelser",
       avgText: "tekst",
-      difficulty:"sværhed",
+      difficultyLowerCase:"sværhed",
       exercisesCorrectness: "korrekte øvelser",
 
       //StudentReadingInsights
@@ -962,7 +970,7 @@ let strings = new LocalizedStrings(
       onFirstAttempt: "ved 1. forsøg",
 
       //StudentsActivityOverview
-      backToClasses: "Tilbage til klasser",
+      backToClasses: "Tilbage til 'Mine klasser'",
 
       //StudentsActivityOverviewContent
       customTextInTimeSelector:

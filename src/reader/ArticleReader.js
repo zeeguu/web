@@ -123,7 +123,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
         article.content,
         article.language,
         (newID) => {
-          console.log(`article created with id: ${newID}`);
           history.push(`/teacher/texts/editText/${newID}`);
         }
       );

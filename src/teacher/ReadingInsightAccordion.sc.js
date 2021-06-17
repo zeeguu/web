@@ -28,7 +28,7 @@ export const ReadingInsightAccordion = styled.div`
       }
       .left-line {
         border-left: solid 3px ${darkBlue};
-        min-height: 9vh !important;
+        min-height: 88px !important;
   }
     `}
 
@@ -79,7 +79,7 @@ export const ReadingInsightAccordion = styled.div`
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     padding: 1em;
-    width: 60vw;
+    width: 72vw;
   }
 
   .panel-headline {

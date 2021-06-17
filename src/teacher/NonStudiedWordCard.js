@@ -1,9 +1,11 @@
+import strings from "../i18n/definitions";
+
 const NonStudiedWordCard = ({ word }) => {
   const exclusionReason = () => {
     if (word.fit_for_study === null) {
       return (
         <p style={{ margin: ".5em 0 0 1.2em", fontSize: "small", color: "red" }}>
-          Excluded by algorithm
+          {strings.excludedByAlgorithm}
         </p>
       );
     }
@@ -15,7 +17,7 @@ const NonStudiedWordCard = ({ word }) => {
           color: "#808080",
         }}
       >
-        Scheduled - not yet practised
+        {strings.scheduledNotYetStudied}
       </p>
     );
   };

@@ -159,7 +159,7 @@ export default function Settings({ api, setUser }) {
             </b>
           </p>
           <label style={{ paddingTop: "1rem" }}>
-            {studentIsInCohort ? strings.changeClassbtn : strings.joinClass}
+            {studentIsInCohort ? strings.changeClass : strings.joinClass}
           </label>
           <input
             type="text"
@@ -177,7 +177,7 @@ export default function Settings({ api, setUser }) {
           )}
 
           <s.FormButton onClick={saveStudentToClass}>
-            {studentIsInCohort ? strings.changeClassbtn : strings.joinClass}
+            {studentIsInCohort ? strings.changeClass : strings.joinClass}
           </s.FormButton>
         </div>
       )}

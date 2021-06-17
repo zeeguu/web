@@ -67,6 +67,7 @@ export const AttemptIcons = ({ attemptString }) => {
 
   if (attemptString.includes("_")) {
     const newString = attemptString.replaceAll("_", " ");
+    //TODO intercept for localization STRINGS here
     return FeedbackGiven(newString);
   }
 
