@@ -6,7 +6,7 @@ export const convertToHoursMinSec = (accumulatedTime) => {
   const seconds = Math.round(accumulatedTime - hours * 3600 - minutes * 60);
   return { hours, minutes, seconds };
 };
-//This should be localised: "h" = "t" in Danish STRINGS
+
 export const convertTime = (accumulatedTime, setTime) => {
   const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
   if (accumulatedTime < 60) {
@@ -14,22 +14,22 @@ export const convertTime = (accumulatedTime, setTime) => {
   } else {
     hours < 1
       ? setTime(minutes + "m " + seconds + "s")
-      : setTime(hours + "h " + minutes + "m");
+      : setTime(hours + strings.hours + minutes + "m");
   }
 };
-//This should be localised: "h" = "t" in Danish STRINGS
+
 export const convertTimeForActivityBar = (accumulatedTime, setTime) => {
   const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
   if (accumulatedTime < 240) {
     setTime("");
   } else {
-    hours < 1 ? setTime(minutes + "m ") : setTime(hours + "h " + minutes + "m");
+    hours < 1 ? setTime(minutes + strings.hours) : setTime(hours + strings.hours + minutes + "m");
   }
 };
-//This should be localised: "h" = "t" in Danish STRINGS
+
 export const convertExactTimeString = (accumulatedTime) => {
   const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
-  if (hours > 0) return hours + "h " + minutes + "m " + seconds + "s";
+  if (hours > 0) return hours + strings.hours + minutes + "m " + seconds + "s";
   if (accumulatedTime < 60) return seconds + "s";
   return minutes + "m " + seconds + "s";
 };
@@ -41,10 +41,10 @@ export const timeExplanation = (student) => {
   return (
     <div>
       <p>
-        {strings.exactReadingTime} {readingTime}{" "}
+        {strings.exactReadingTime} {readingTime}
       </p>
       <p>
-        {strings.exactExerciseTime} {exerciseTime}{" "}
+        {strings.exactExerciseTime} {exerciseTime}
       </p>
     </div>
   );

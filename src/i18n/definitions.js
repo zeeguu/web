@@ -400,6 +400,7 @@ let strings = new LocalizedStrings(
       //FormatedTime
       exactReadingTime: "Exact reading time:",
       exactExerciseTime: "Exact exercise time:",
+      hours: "h ",
 
       //HowToAddStudentsInfo
       addStudents: "Add Students",
@@ -917,6 +918,7 @@ let strings = new LocalizedStrings(
       //FormatedTime
       exactReadingTime: "Nøjagtig læsetid:",
       exactExerciseTime: "Nøjagtig øvelsestid:",
+      hours: "t ",
 
       //HowToAddStudentsInfo
       addStudents: "Tilføj elever",
