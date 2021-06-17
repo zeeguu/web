@@ -34,6 +34,7 @@ let strings = new LocalizedStrings(
       reading: "Reading",
       titleLearnedWords: "Learned Words",
       deleteFromMyClasses: "Delete from My Classes",
+      tooEasy: "too easy",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -252,7 +253,7 @@ let strings = new LocalizedStrings(
       findInText: "find in text",
       learnedOn: "Learned on:",
       studentFeedback: "Student feedback:",
-      tooEasy: "too easy",
+
       noType: "No type",
 
       //Exercises
@@ -339,6 +340,10 @@ let strings = new LocalizedStrings(
       typeOfExerciseIconExplanation:
         "is the type of exercise the student has practised the word in.",
       recogniseOrMultipleChoice: "Recognise/multiple choice etc.",
+      tooHard: "too hard",
+      badWord: "bad word",
+      badExample: "bad example",
+      dontShowAgain: "don't show again",
 
       //CohortForm
       editClass: "Edit Class",
@@ -545,6 +550,7 @@ let strings = new LocalizedStrings(
       youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
       reading: "Læsning",
       deleteFromMyClasses: "Slet fra 'Mine klasser'",
+      tooEasy: "for nem",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -765,7 +771,6 @@ let strings = new LocalizedStrings(
       findInText: "find i tekst",
       learnedOn: "Lært på:",
       studentFeedback: "Elev feedback:",
-      tooEasy: "for nem",
       noType: "Ingen type",
 
       //Exercises
@@ -781,9 +786,9 @@ let strings = new LocalizedStrings(
       //NonStudiedWordsList
       NoLoookedupWordsYet: "Elevn har ikke slået nogen ord op enndu.",
 
-            //NonStudiedWordCard
-            excludedByAlgorithm: "Udelukket af algoritmen",
-            scheduledNotYetStudied: "Planlagt - endnu ikke øvet",
+      //NonStudiedWordCard
+      excludedByAlgorithm: "Udelukket af algoritmen",
+      scheduledNotYetStudied: "Planlagt - endnu ikke øvet",
 
       //FindWordsInContext
       findTheWordInContextHeadline: "Find ordet/ordene i sammenhængen",
@@ -852,6 +857,10 @@ let strings = new LocalizedStrings(
       typeOfExerciseIconExplanation:
         "indikerer, hvilken type øvelse eleven har øvet ordet i.",
       recogniseOrMultipleChoice: "Genkend/multiple choice osv.",
+      tooHard: "for svær",
+      badWord: "dårligt ord",
+      badExample: "dårligt eksempel",
+      dontShowAgain: "vis ikke igen",
 
       //CohortForm
       editClass: "Rediger klasse",
@@ -951,7 +960,7 @@ let strings = new LocalizedStrings(
       textsRead: "læste tekster",
       exercisesCompleted: "gennemførte øvelser",
       avgText: "tekst",
-      difficultyLowerCase:"sværhed",
+      difficultyLowerCase: "sværhed",
       exercisesCorrectness: "korrekte øvelser",
 
       //StudentReadingInsights
