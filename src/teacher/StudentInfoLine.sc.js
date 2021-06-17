@@ -134,10 +134,6 @@ export const StudentInfoLine = styled.div`
       margin-top: 3.5em;
      }
 
-     .title-progress-bar-wrapper{
-      margin-top: -50em;
-     }
-
      .number-display-wrapper{
        margin-top: -3.4em;
      }
