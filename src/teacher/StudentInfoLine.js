@@ -89,7 +89,7 @@ export default function StudentInfoLine({
 
               <div className="title-circle-wrapper">
                 {isFirst && (
-                  <p className="head-title" id="length-level-correctness">{strings.avgTextDifficulty}</p>
+                  <p className="head-title" id="length-level-correctness">{strings.avgText}<br/>{strings.difficulty}</p>
                 )}
                 <div className="number-display">
                   {activity.average_text_difficulty}
@@ -111,7 +111,7 @@ export default function StudentInfoLine({
           isFirst={isFirst}
           icon
           deleteastudent
-          style={{ marginTop: "15px", marginLeft: "25px" }}
+          style={{ marginTop: "15px", marginLeft: "10px" }}
           onClick={() => setShowDeleteStudentWarning(true)}
         >
           <MdHighlightOff size={35} />
