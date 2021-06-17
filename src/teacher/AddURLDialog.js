@@ -54,7 +54,7 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
       onDismiss={() => setShowAddURLDialog(false)}
       max_width="525px"
     >
-      <h1>{strings.addTextFromWebpage}</h1>
+      <h1 style={{ textAlign: "center" }}>{strings.addTextFromWebpage}</h1>
       <LabeledTextField
         value={url}
         onChange={handleChange}
