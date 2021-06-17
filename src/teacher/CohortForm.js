@@ -149,9 +149,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
           {isError && <Error message={strings.errorInviteCode} />}
         </form>
       )}
-      {inputIsEmpty && (
-        <Error message={strings.errorEmptyInputField} />
-      )}
+      {inputIsEmpty && <Error message={strings.errorEmptyInputField} />}
       <PopupButtonWrapper>
         <StyledButton
           primary
@@ -163,7 +161,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
         </StyledButton>
         {cohort && (
           <StyledButton secondary onClick={() => setShowWarning(true)}>
-            {strings.removeFromList}
+            {strings.deleteFromMyClasses}
           </StyledButton>
         )}
       </PopupButtonWrapper>
