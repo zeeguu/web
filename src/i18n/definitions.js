@@ -388,6 +388,10 @@ let strings = new LocalizedStrings(
       pasteBodyHere: "Paste or type the body of your text here...",
       clickToChangeBody: "Click in the box below to edit the text body",
 
+      //FormatedTime
+      exactReadingTime: "Exact reading time:",
+      exactExerciseTime: "Exact exercise time:",
+
       //HowToAddStudentsInfo
       addStudents: "Add Students",
       shareInviteCode:
@@ -880,7 +884,7 @@ let strings = new LocalizedStrings(
         "Bekræft venligst, at du vil slette teksten, eller tryk på 'Annuller'.",
 
       //EditText
-      editText: "Rediger tekst",
+      editText: "Rediger",
       viewAsStudent: "Vis som var du elev",
       addToClass: "Tilføj til klasse",
       saveText: "Gem tekst",
@@ -891,6 +895,10 @@ let strings = new LocalizedStrings(
       clickToChangeTitle: "Klik i feltet nedenfor for at redigere titlen",
       pasteBodyHere: "Indsæt eller skriv selv tekstens brødteksten her...",
       clickToChangeBody: "Klik i feltet nedenfor for at redigere brødteksten",
+
+      //FormatedTime
+      exactReadingTime: "Nøjagtig læsetid:",
+      exactExerciseTime: "Nøjagtig øvelsestid:",
 
       //HowToAddStudentsInfo
       addStudents: "Tilføj elever",

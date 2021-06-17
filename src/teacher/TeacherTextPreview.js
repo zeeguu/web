@@ -51,21 +51,18 @@ export default function TeacherTextPreview({ article }) {
 
             <Link
               to={`/teacher/texts/editText/${article.id}`}
-              onClick={() => setReturnPath("/teacher/texts")
-              }
-
+              onClick={() => setReturnPath("/teacher/texts")}
             >
               <StyledButton secondary className="edit-btn">
                 {strings.editText}
               </StyledButton>
             </Link>
           </div>
-          <StyledButton icon style={{ marginTop: "2.3vh" }} >
+          <StyledButton icon style={{ marginTop: "2.3vh" }}>
             <MdHighlightOff size={35} />
           </StyledButton>
         </div>
-
       </st.StyledTeacherTextPreview>
-    </Fragment >
+    </Fragment>
   );
 }
