@@ -33,6 +33,7 @@ let strings = new LocalizedStrings(
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       reading: "Reading",
       titleLearnedWords: "Learned Words",
+      deleteFromMyClasses: "Delete from My Classes",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -342,7 +343,6 @@ let strings = new LocalizedStrings(
       errorInviteCode:
         "Something went wrong. Maybe the invite code is already in use.",
       errorEmptyInputField: "You must fill out all the input fields.",
-      removeFromList: "Remove from list",
 
       //CohortFormInputFields
       chooseClassName: "Choose the class name (max. 20 characters)",
@@ -535,6 +535,7 @@ let strings = new LocalizedStrings(
       joinClass: "Deltag i klasse",
       youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
       reading: "Læsning",
+      deleteFromMyClasses: "Slet fra mine klasser",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -846,7 +847,6 @@ let strings = new LocalizedStrings(
       errorInviteCode:
         "Noget gik galt. Måske er invitationskoden allerede i brug. DEV BEMÆRKNING: Kan ikke slette klasse, som indeholder tekster.",
       errorEmptyInputField: "Venligst udfyld alle felter.",
-      removeFromList: "Fjern fra liste",
 
       //CohortFormInputFields
       chooseClassName: "Angiv navnet på denne klasse (maks. 20 tegn)",
