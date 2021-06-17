@@ -43,12 +43,30 @@ const HintUsed = () => {
   );
 };
 
-const FeedbackGiven = (feedback) => {
+const FeedBack = (props) => {
   return (
     <p style={{ fontWeight: 500, margin: "13px 0px 0 7px", fontSize: "small" }}>
-      {feedback}
+      {props.children}
     </p>
   );
+};
+
+const FeedbackGiven = (feedback) => {
+  switch (feedback) {
+    case "too_easy":
+      return <FeedBack>{strings.tooEasy}</FeedBack>;
+    case "too_hard":
+      return <FeedBack>{strings.tooHard}</FeedBack>;
+    case "bad_word":
+      return <FeedBack>{strings.badWord}</FeedBack>;
+    case "not_a_good_example":
+      return <FeedBack>{strings.badExample}</FeedBack>;
+    case "dont_show_it_to_me_again":
+      return <FeedBack>{strings.dontShowAgain}</FeedBack>;
+    default:
+      const newString = feedback.replaceAll("_", " ");
+      return <FeedBack>{newString}</FeedBack>;
+  }
 };
 
 export const AttemptIcons = ({ attemptString }) => {
@@ -66,9 +84,7 @@ export const AttemptIcons = ({ attemptString }) => {
   };
 
   if (attemptString.includes("_")) {
-    const newString = attemptString.replaceAll("_", " ");
-    //TODO intercept for localization STRINGS here
-    return FeedbackGiven(newString);
+    return FeedbackGiven(attemptString);
   }
 
   const attemptChars = attemptString.split("");
