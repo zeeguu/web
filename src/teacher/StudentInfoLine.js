@@ -52,7 +52,7 @@ export default function StudentInfoLine({
         >
           <div className="sideline">
             <div className="text-box">
-              {isFirst && <p className="head-title">{strings.studentName}</p>}
+              {isFirst && <p className="head-title" id="student">{strings.studentName}</p>}
               <div className="left-line">
                 <div className="name-activity-wrapper">
                   <div className="student-name">{student.name}</div>
@@ -69,7 +69,7 @@ export default function StudentInfoLine({
             <div className="title-progress-bar-wrapper">
               <div className="progress-bar-wrapper">
                 {isFirst && (
-                  <p className="head-title">{strings.readingExerciseTime}</p>
+                  <p className="head-title" id="reading-exercise-time">{strings.readingExerciseTime}</p>
                 )}
                 <StudentActivityBar isFirst={isFirst} student={student} />
               </div>
@@ -78,7 +78,7 @@ export default function StudentInfoLine({
             <div className="number-display-wrapper">
               <div className="title-circle-wrapper">
                 {isFirst && (
-                  <p className="head-title">
+                  <p className="head-title" id="length-level-correctness">
                     {strings.text} <br /> {strings.lengthOnText}
                   </p>
                 )}
@@ -89,7 +89,7 @@ export default function StudentInfoLine({
 
               <div className="title-circle-wrapper">
                 {isFirst && (
-                  <p className="head-title">{strings.avgTextDifficulty}</p>
+                  <p className="head-title" id="length-level-correctness">{strings.avgTextDifficulty}</p>
                 )}
                 <div className="number-display">
                   {activity.average_text_difficulty}
@@ -98,7 +98,7 @@ export default function StudentInfoLine({
 
               <div className="title-circle-wrapper">
                 {isFirst && (
-                  <p className="head-title">{strings.exercisesCorrectness}</p>
+                  <p className="head-title" id="length-level-correctness">{strings.exercisesCorrectness}</p>
                 )}
                 <div className="number-display">
                   {activity.correct_on_1st_try * 100 + "%"}

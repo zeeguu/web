@@ -81,11 +81,28 @@ export const StudentInfoLine = styled.div`
 
   .head-title{
     font-family: "Montserrat";
-    font-size: large;
+    font-size: small;
     font-weight: 300;
     color: black;
     text-align: center;
   }
+
+    .head-title#student{
+      text-align: left;
+    margin-left: 2.2vw;
+    }
+
+    .head-title#reading-exercise-time{
+     
+      margin: 9px 0 11px 0;
+    }
+
+    .head-title#length-level-correctness{
+      margin: 18px 0 11px 0;
+    }
+
+    
+  
 
   .name-activity-wrapper{
   margin-left: 2em;
@@ -95,7 +112,7 @@ export const StudentInfoLine = styled.div`
     display: flex;
     flex-direction: column;
     border-left: solid 3px ${darkBlue};
-    height: 13vh;
+    height: 11vh;
     padding: 1vh 0 0 0;
   }
   .student-name{
@@ -124,6 +141,7 @@ export const StudentInfoLine = styled.div`
      .wrapper {
       padding-top: 5em;
       padding-bottom: 0;
+      margin-bottom: 0;
      }
 
      .progress-bar-wrapper{
@@ -144,6 +162,8 @@ export const StudentInfoLine = styled.div`
     .name-activity-wrapper{
       margin-top: 0;
     }
+
+
 
   
     
