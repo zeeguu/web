@@ -1,3 +1,5 @@
+import strings from "../i18n/definitions";
+
 export const convertToHoursMinSec = (accumulatedTime) => {
   const hours = Math.floor(accumulatedTime / 3600);
   const minutes = Math.floor((accumulatedTime / 60) % 60);
@@ -25,21 +27,25 @@ export const convertTimeForActivityBar = (accumulatedTime, setTime) => {
   }
 };
 //This should be localised: "h" = "t" in Danish STRINGS
-export const convertExactTimeString = (accumulatedTime) =>{
+export const convertExactTimeString = (accumulatedTime) => {
   const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
-  if (hours > 0) return hours + "h " + minutes + "m " + seconds + "s"
-  if (accumulatedTime < 60) return seconds + "s"
-  return minutes + "m " + seconds + "s"
-}
+  if (hours > 0) return hours + "h " + minutes + "m " + seconds + "s";
+  if (accumulatedTime < 60) return seconds + "s";
+  return minutes + "m " + seconds + "s";
+};
 
 //This should be localised STRINGS
-export const timeExplanation = (student) =>{
-  const readingTime = convertExactTimeString(student.reading_time)
-  const exerciseTime = convertExactTimeString(student.exercise_time)
-  return(
+export const timeExplanation = (student) => {
+  const readingTime = convertExactTimeString(student.reading_time);
+  const exerciseTime = convertExactTimeString(student.exercise_time);
+  return (
     <div>
-      <p>Exact reading time: {readingTime} </p>
-      <p>Exact exercise time: {exerciseTime} </p>
+      <p>
+        {strings.exactReadingTime} {readingTime}{" "}
+      </p>
+      <p>
+        {strings.exactExerciseTime} {exerciseTime}{" "}
+      </p>
     </div>
-  )
-}
+  );
+};
