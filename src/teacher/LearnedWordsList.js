@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid";
 import LocalStorage from "../assorted/LocalStorage";
 import ExerciseType from "./ExerciseType";
 import { formatedDateWithDay } from "./FormatedDate";
+import strings from "../i18n/definitions";
 
 const LearnedWordsList = ({ api }) => {
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
@@ -45,7 +46,7 @@ const LearnedWordsList = ({ api }) => {
     <Fragment>
       {learnedWords.length === 0 && (
         <p style={{ fontSize: "medium" }}>
-          The student has not learned any words yet. STRINGS
+          {strings.studentHasNotLearnedWords}
         </p>
       )}
       {learnedWords.map((word) => (
