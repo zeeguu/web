@@ -432,7 +432,8 @@ let strings = new LocalizedStrings(
       //StudentInfoLine
       textsRead: "texts read",
       exercisesCompleted: "exercises completed",
-      avgTextDifficulty: "Avg text difficulty",
+      avgText: "Avg text",
+      difficulty: "difficulty",
       exercisesCorrectness: "Exercises correctness",
 
       //StudentInfoLineHeader
@@ -941,7 +942,8 @@ let strings = new LocalizedStrings(
       //StudentInfoLine
       textsRead: "læste tekster",
       exercisesCompleted: "gennemførte øvelser",
-      avgTextDifficulty: "tekst sværhed",
+      avgText: "tekst",
+      difficulty:"sværhed",
       exercisesCorrectness: "korrekte øvelser",
 
       //StudentReadingInsights

@@ -7,8 +7,9 @@ export const StudentInfoLine = styled.div`
     margin-bottom: 2em;
     display: flex;
     justify-content: space-between;
+    width: 80%;
     min-height: 10vh;
-    margin: 3vh 0 3.2vh -3vw;
+    margin: 3vh 0 3.2vh 3vw;
   }
 
   .sideline {
@@ -24,11 +25,9 @@ export const StudentInfoLine = styled.div`
   }
 
   .text-box {
-    margin: 1.5em;
+    margin: 1.5em 1.5em 1.5em 1em;
     color: black !important;
-    width: 400px;
-    margin-left: 1em;
-    
+    width: 300px;
   }
 
   .student-name-header {
@@ -40,21 +39,21 @@ export const StudentInfoLine = styled.div`
     font-size: small;
   }
 
-  .progress-bar-wrapper{
+  .progress-bar-wrapper {
     width: 200px;
-    margin: 0 5em 0 0;
+    margin: 0 2em 0 0;
     line-height: 1.4em;
     padding-top: 1.5em;
   }
 
-  .title-circle-wrapper{
-    width:100px;
+  .title-circle-wrapper {
+    width: 100px;
   }
 
   .number-display-wrapper {
     display: flex;
     justify-content: space-between;
-    width: 350px;
+    width: 300px;
     margin-top: 2em;
   }
 
@@ -79,7 +78,7 @@ export const StudentInfoLine = styled.div`
     text-align: center;
   }
 
-  .head-title{
+  .head-title {
     font-family: "Montserrat";
     font-size: small;
     font-weight: 300;
@@ -87,85 +86,75 @@ export const StudentInfoLine = styled.div`
     text-align: center;
   }
 
-    .head-title#student{
-      text-align: left;
+  .head-title#student {
+    text-align: left;
     margin-left: 2.2vw;
-    }
+  }
 
-    .head-title#reading-exercise-time{
-     
-      margin: 9px 0 11px 0;
-    }
+  .head-title#reading-exercise-time {
+    margin: 9px 0 11px 0;
+  }
 
-    .head-title#length-level-correctness{
-      margin: 18px 0 11px 0;
-    }
+  .head-title#length-level-correctness {
+    margin: 18px 0 11px 0;
+  }
 
-    
-  
-
-  .name-activity-wrapper{
-  margin-left: 2em;
+  .name-activity-wrapper {
+    margin-left: 2em;
   }
 
   .left-line {
     display: flex;
     flex-direction: column;
     border-left: solid 3px ${darkBlue};
-    height: 11vh;
+    height: 100px;
     padding: 1vh 0 0 0;
   }
-  .student-name{
+  .student-name {
     font-size: 20px;
-    font-weight:400;
+    font-weight: 400;
     margin-bottom: 0.3em;
   }
 
-  .student-email{
+  .student-email {
     color: ${darkGrey};
     font-size: 16px;
-    font-weight:400;
+    font-weight: 400;
     margin-bottom: 0.2em;
   }
 
-  .activity-count{
+  .activity-count {
     font-size: 16px;
-       font-weight:400;
-       margin-bottom: 0.2em;
+    font-weight: 400;
+    margin-bottom: 0.2em;
   }
 
   ${(props) =>
     props.isFirst &&
     css`
+      .wrapper {
+        padding-top: 5em;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
 
-     .wrapper {
-      padding-top: 5em;
-      padding-bottom: 0;
-      margin-bottom: 0;
-     }
+      .progress-bar-wrapper {
+        margin-top: -3.5em;
+      }
 
-     .progress-bar-wrapper{
-       margin-top: -3.5em;
-     }
+      .number-display {
+        margin-top: 3.5em;
+      }
 
-     .number-display{
-      margin-top: 3.5em;
-     }
+      .number-display-wrapper {
+        margin-top: -3.4em;
+      }
 
-     .number-display-wrapper{
-       margin-top: -3.4em;
-     }
-
-     .text-box{
-       margin-top: -2em;
-     }
-    .name-activity-wrapper{
-      margin-top: 0;
-    }
-
-
-
-  
-    
+      .text-box {
+        margin-top: -2em;
+      }
+      .name-activity-wrapper {
+        margin-top: 0;
+      }
     `}
 `;
