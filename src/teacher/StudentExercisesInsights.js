@@ -67,7 +67,7 @@ export default function StudentExercisesInsights({ api }) {
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",
-          marginTop:"2em"
+          marginTop:"2em",
         }}
       >
         <StyledButton naked onClick={() => handleCardClick("practised")}>
