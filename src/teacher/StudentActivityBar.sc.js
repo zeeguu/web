@@ -16,7 +16,7 @@ export const StudentActivityBar = styled.div`
     props.isFirst &&
     css`
    .activity-bar{
-     margin-top: 2.5em;
+     margin-top: 2.3em;
    }
     `}
 

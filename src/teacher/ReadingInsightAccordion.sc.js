@@ -24,11 +24,11 @@ export const ReadingInsightAccordion = styled.div`
         margin-top: 5vh;
       }
       .content-wrapper {
-        padding-bottom: 1.7vh;
+        padding-bottom: 0.6vh;
       }
       .left-line {
         border-left: solid 3px ${darkBlue};
-        min-height: 11vh !important;
+        min-height: 9vh !important;
   }
     `}
 
@@ -70,13 +70,6 @@ export const ReadingInsightAccordion = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    margin-left: 10em;
-  }
-
-  @media (max-width: 600px) {
-    button {
-      width: 100% !important;
-    }
   }
 
   .panel {
@@ -137,7 +130,7 @@ export const ReadingInsightAccordion = styled.div`
     padding-top: 2vh;
     margin-left: 2vw;
     text-align: left;
-    font-size: large;
+    font-size: small;
     font-family: "Montserrat";
     color: #000000 !important;
   }

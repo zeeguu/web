@@ -46,7 +46,7 @@ const StyledButton = styled.button`
     ${(props) =>
     props.isFirst &&
     css`
-      padding-top: 4.5em !important;
+      padding-top: 3.8em !important;
     `}
 
   //Naked
