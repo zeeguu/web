@@ -29,7 +29,7 @@ const ArticleCard = ({ article, isFirst, openedArticle }) => {
       <div className="content-wrapper">
         <div className="date-title-wrapper">
           {isFirst && <p className="head-title">{strings.title}</p>}
-          <div className="left-line" >
+          <div className="left-line">
             <h2 className="article-title">
               {article.title.substring(0, 100)}
               {article.title.length > 100 ? "..." : ""}
@@ -50,7 +50,7 @@ const ArticleCard = ({ article, isFirst, openedArticle }) => {
           />
           <ViewMoreLessButton
             isFirst={isFirst}
-            articleID={article.article_id}
+            sessionID={article.session_id}
             openedArticle={openedArticle}
           />
         </div>
