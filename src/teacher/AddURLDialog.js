@@ -20,7 +20,6 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
   }, [url]);
 
   const handleChange = (event) => {
-    console.log("Setting the url to: " + event.target.value);
     setURL(event.target.value);
   };
 
@@ -35,7 +34,6 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
           const newText = articleInfo.text;
           const newLanguage = articleInfo.language_code;
           api.uploadOwnText(newTitle, newText, newLanguage, (newID) => {
-            console.log(`article created from the url with id: ${newID}`);
             history.push(`/teacher/texts/editText/${newID}`);
           });
         },

@@ -98,7 +98,6 @@ export default function EditText({ api }) {
   const deleteText = () => {
     api.deleteOwnText(articleID, (res) => {
       if (res === "OK") {
-        console.log("Article successfully deleted");
         history.push("/teacher/texts");
       } else {
         console.log(res);
