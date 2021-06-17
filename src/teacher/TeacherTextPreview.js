@@ -2,7 +2,6 @@ import React, { useContext, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { RoutingContext } from "../contexts/RoutingContext";
 import strings from "../i18n/definitions";
-import { MdHighlightOff } from "react-icons/md/";
 import { StyledButton } from "./TeacherButtons.sc";
 import * as st from "./TeacherTextPreview.sc";
 import * as s from "../articles/ArticlePreview.sc";
@@ -31,7 +30,7 @@ export default function TeacherTextPreview({ article }) {
             <div>
               <s.PublishingTime>
                 {cohortList.length === 0 ? (
-                  <p>{strings.shareTextWithClasses}</p>
+                  <p className="not-added">{strings.shareTextWithClasses}</p>
                 ) : (
                   strings.addedTo
                 )}
@@ -58,9 +57,6 @@ export default function TeacherTextPreview({ article }) {
               </StyledButton>
             </Link>
           </div>
-          <StyledButton icon style={{ marginTop: "2.3vh" }}>
-            <MdHighlightOff size={35} />
-          </StyledButton>
         </div>
       </st.StyledTeacherTextPreview>
     </Fragment>

@@ -15,7 +15,7 @@ const SortingButtons = styled.div`
   ${(props) =>
     props.isOnTeacherSite &&
     css`
-    margin-right: 13.5em;
+    margin-right: 13.7em;
     `}
 
   .descending::after {
@@ -45,7 +45,7 @@ const SortButton = styled(b.RoundButton)`
   ${(props) =>
     props.isOnTeacherSite &&
     css`
-    margin-left: 1vw;
+    margin-left: 2vw;
     font-size: medium;
     
     `
