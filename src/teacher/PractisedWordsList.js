@@ -41,7 +41,7 @@ const PractisedWordsList = ({ api }) => {
               style={{
                 borderLeft: "solid 3px #5492b3",
                 marginBottom: "38px",
-                minWidth: 325,
+                minWidth: 350,
                 userSelect: "none",
               }}
             >
