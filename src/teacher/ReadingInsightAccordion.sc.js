@@ -15,6 +15,7 @@ export const ReadingInsightAccordion = styled.div`
   .content-wrapper {
     display: flex;
     justify-content: space-between;
+    margin: 0 5.5vw 0 5.5vw;
   }
 
   ${(props) =>
@@ -29,7 +30,7 @@ export const ReadingInsightAccordion = styled.div`
       .left-line {
         border-left: solid 3px ${darkBlue};
         min-height: 88px !important;
-  }
+      }
     `}
 
   .date-title-wrapper {
@@ -73,17 +74,18 @@ export const ReadingInsightAccordion = styled.div`
   }
 
   .panel {
-    margin-left: 2.5em;
+    margin-left: 5em;
     margin-top: 1vh;
     margin-bottom: 7vh;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     padding: 1em;
-    width: 72vw;
+    width: 70vw;
   }
 
   .panel-headline {
     color: ${darkBlue};
+    padding-left: 1.5em;
   }
 
   .panel-no-words {
