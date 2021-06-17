@@ -245,9 +245,27 @@ let strings = new LocalizedStrings(
       //WordsOnDate
       open: "Open",
 
+      //ExerciseType
+      matchThreePairs: " match 3 pairs",
+      pickTheWord: "pick the word",
+      findInText: "find in text",
+      learnedOn: "Learned on:",
+      studentFeedback: "Student feedback:",
+      tooEasy: "too easy",
+      noType: "No type",
+
       //Exercises
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
+      noTranslatedWords: "You have not translated any words yet.",
+      goToTextsToTranslateWords:
+        "Go to Texts if you want to read and translate words to get exercises.",
+
+      //LearnedWordsList
+      studentHasNotLearnedWords: "The student has not learned any words yet.",
+
+      //NonStudiedWordsList
+      NoLoookedupWordsYet: "The student hasn't looked up any words yet.",
 
       //FindWordsInContext
       findTheWordInContextHeadline: "Find the word in context",
@@ -295,6 +313,7 @@ let strings = new LocalizedStrings(
       nothingInInputField:
         "You haven't typed in an URL-address in the input field.",
       saveAndEdit: "Save and edit",
+      invalidUrl: "Something went wrong. The URL might be invalid.",
 
       //AllTexts
       addText: "Add Text",
@@ -314,6 +333,7 @@ let strings = new LocalizedStrings(
         "is feedback that the student has given on the exercise.",
       typeOfExerciseIconExplanation:
         "is the type of exercise the student has practised the word in.",
+      recogniseOrMultipleChoice: "Recognise/multiple choice etc.",
 
       //CohortForm
       editClass: "Edit Class",
@@ -391,6 +411,9 @@ let strings = new LocalizedStrings(
       numberOfWords: "number of words",
       solvedOnFirstAttempt: "solved on 1st attempt",
 
+      //PractisedWordsList
+      noPractisedWordsYet: "The student has not practised any words yet.",
+
       //StudentActivityDataCircleWrapper
       level: "level",
       lengthOnText: "length",
@@ -405,6 +428,8 @@ let strings = new LocalizedStrings(
       //StudentInfoLine
       textsRead: "texts read",
       exercisesCompleted: "exercises completed",
+      avgTextDifficulty: "Avg text difficulty",
+      exercisesCorrectness: "Exercises correctness",
 
       //StudentInfoLineHeader
       textLevel: "level",
@@ -422,6 +447,10 @@ let strings = new LocalizedStrings(
 
       //StudentsActivityOverview
       backToClasses: "Back to all classes",
+
+      //StudentsActivityOverviewContent
+      customTextInTimeSelector:
+        "This is the overview of the students' activities for the last",
 
       //StudentTextView
       viewText: "View Text",
@@ -720,9 +749,27 @@ let strings = new LocalizedStrings(
       //WordsOnDate
       open: "Åben",
 
+      //ExerciseType
+      matchThreePairs: " match 3 par",
+      pickTheWord: "vælg ordet",
+      findInText: "find i tekst",
+      learnedOn: "Lært på:",
+      studentFeedback: "Elev feedback:",
+      tooEasy: "for nem",
+      noType: "Ingen type",
+
       //Exercises
       wordSourceDefaultText: "din tidligere læsning",
       wordSourcePrefix: "Ord fra",
+      noTranslatedWords: "Du har ikke oversat nogen ord endnu.",
+      goToTextsToTranslateWords:
+        "Gå til Tekster, hvis du vill læse tekster og oversætte ord, som derefter kan bruges i øvelser.",
+
+      //LearnedWordsList
+      studentHasNotLearnedWords: "Eleven har ikke lært nogen ord endnu.",
+
+      //NonStudiedWordsList
+      NoLoookedupWordsYet: "Elevn har ikke slået nogen ord op enndu.",
 
       //FindWordsInContext
       findTheWordInContextHeadline: "Find ordet/ordene i sammenhængen",
@@ -771,6 +818,7 @@ let strings = new LocalizedStrings(
       nothingInInputField:
         "Du mangler at indsætte en URL-adresse i feltet ovenfor.",
       saveAndEdit: "Gem og rediger",
+      invalidUrl: "Noget gik galt. URL addressen er muligvis ugyldig.",
 
       //AllTexts
       addText: "Tilføj tekst",
@@ -789,6 +837,7 @@ let strings = new LocalizedStrings(
       exerciseFeedbackFromStudent: "er elevens feedback på øvelsen.",
       typeOfExerciseIconExplanation:
         "indikerer, hvilken type øvelse eleven har øvet ordet i.",
+      recogniseOrMultipleChoice: "Genkend/multiple choice osv.",
 
       //CohortForm
       editClass: "Rediger klasse",
@@ -867,6 +916,9 @@ let strings = new LocalizedStrings(
       numberOfWords: "samlet antal ord",
       solvedOnFirstAttempt: "løst ved 1. forsøg",
 
+      //PractisedWordsList
+      noPractisedWordsYet: "Eleven har ikke øvet nogen ord endnu.",
+
       //StudentActivityDataCircleWrapper
       level: "niveau",
       lengthOnText: "længde",
@@ -881,6 +933,8 @@ let strings = new LocalizedStrings(
       //StudentInfoLine
       textsRead: "læste tekster",
       exercisesCompleted: "gennemførte øvelser",
+      avgTextDifficulty: "tekst sværhed",
+      exercisesCorrectness: "korrekte øvelser",
 
       //StudentReadingInsights
       studentHasRead: " har læst ",
@@ -899,6 +953,10 @@ let strings = new LocalizedStrings(
 
       //StudentsActivityOverview
       backToClasses: "Tilbage til klasser",
+
+      //StudentsActivityOverviewContent
+      customTextInTimeSelector:
+        "Dette er en oversigt over elevernes aktiviteter i en periode på",
 
       //StudentTextView
       viewText: "Vis tekst",

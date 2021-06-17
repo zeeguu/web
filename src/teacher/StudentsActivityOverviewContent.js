@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import StudentInfoLine from "./StudentInfoLine";
 import TimeSelector from "./TimeSelector";
 import LoadingAnimation from "../components/LoadingAnimation";
+import strings from "../i18n/definitions";
 
 const StudentsActivityOverviewContent = ({
   api,
@@ -22,8 +23,7 @@ const StudentsActivityOverviewContent = ({
     return <LoadingAnimation />;
   }
 
-  const customText =
-    "STRINGS This is the overview of the students' activities for the last";
+  const customText = [strings.customTextInTimeSelector];
 
   return (
     <Fragment>

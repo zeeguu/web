@@ -70,11 +70,7 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
         {strings.editTheSavedText}
       </p>
       {showGuidance && <Error message={strings.nothingInInputField} />}
-      {showError && (
-        <Error
-          message={"STRINGS Something went wrong. The URL might be invalid."}
-        />
-      )}
+      {showError && <Error message={strings.invalidUrl} />}
       <PopupButtonWrapper>
         <StyledButton primary onClick={getArticle}>
           {strings.saveAndEdit}

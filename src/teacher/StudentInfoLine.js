@@ -8,8 +8,6 @@ import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
-//localize everything on this page STRINGS
-
 export default function StudentInfoLine({
   api,
   cohortID,
@@ -54,7 +52,7 @@ export default function StudentInfoLine({
         >
           <div className="sideline">
             <div className="text-box">
-              {isFirst && <p className="head-title">Student name</p>}
+              {isFirst && <p className="head-title">{strings.studentName}</p>}
               <div className="left-line">
                 <div className="name-activity-wrapper">
                   <div className="student-name">{student.name}</div>
@@ -71,7 +69,9 @@ export default function StudentInfoLine({
 
             <div className="title-progress-bar-wrapper">
               <div className="progress-bar-wrapper">
-                {isFirst && <p className="head-title">Reading/Exercise time</p>}
+                {isFirst && (
+                  <p className="head-title">{strings.readingExerciseTime}</p>
+                )}
                 <StudentActivityBar isFirst={isFirst} student={student} />
               </div>
             </div>
@@ -80,7 +80,7 @@ export default function StudentInfoLine({
               <div className="title-circle-wrapper">
                 {isFirst && (
                   <p className="head-title">
-                    Text <br /> length
+                    {strings.text} <br /> {strings.lengthOnText}
                   </p>
                 )}
                 <div className="number-display">
@@ -89,14 +89,18 @@ export default function StudentInfoLine({
               </div>
 
               <div className="title-circle-wrapper">
-                {isFirst && <p className="head-title">Avg text difficulty</p>}
+                {isFirst && (
+                  <p className="head-title">{strings.avgTextDifficulty}</p>
+                )}
                 <div className="number-display">
                   {activity.average_text_difficulty}
                 </div>
               </div>
 
               <div className="title-circle-wrapper">
-                {isFirst && <p className="head-title">Exercises correctness</p>}
+                {isFirst && (
+                  <p className="head-title">{strings.exercisesCorrectness}</p>
+                )}
                 <div className="number-display">
                   {activity.correct_on_1st_try * 100 + "%"}
                 </div>

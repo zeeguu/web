@@ -5,6 +5,7 @@ import { shortFormatedDate } from "./FormatedDate";
 import ExerciseType from "./ExerciseType";
 import { useParams } from "react-router";
 import LocalStorage from "../assorted/LocalStorage";
+import strings from "../i18n/definitions";
 
 const PractisedWordsList = ({ api }) => {
   const [practisedWords, setPractisedWords] = useState([]);
@@ -30,9 +31,7 @@ const PractisedWordsList = ({ api }) => {
   return (
     <Fragment>
       {practisedWords.length === 0 && (
-        <p style={{ fontSize: "medium" }}>
-          The student has not practised any words yet. STRINGS
-        </p>
+        <p style={{ fontSize: "medium" }}>{strings.noPractisedWordsYet}</p>
       )}
       {practisedWords &&
         practisedWords.map((word) => (

@@ -70,8 +70,9 @@ export default function Exercises({ api, articleID }) {
       return (
         <s.LittleMessageAbove>
           <h3>
-            You have not translated any words yet. STRINGS<br/>
-            Go to Texts if you want to read and translate words to get exercises.
+            {strings.noTranslatedWords}
+            <br />
+            {strings.goToTextsToTranslateWords}
           </h3>
         </s.LittleMessageAbove>
       );
