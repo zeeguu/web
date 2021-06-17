@@ -884,7 +884,7 @@ let strings = new LocalizedStrings(
         "Bekræft venligst, at du vil slette teksten, eller tryk på 'Annuller'.",
 
       //EditText
-      editText: "Rediger tekst",
+      editText: "Rediger",
       viewAsStudent: "Vis som var du elev",
       addToClass: "Tilføj til klasse",
       saveText: "Gem tekst",
