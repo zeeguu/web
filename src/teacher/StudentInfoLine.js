@@ -66,7 +66,6 @@ export default function StudentInfoLine({
                 </div>
               </div>
             </div>
-
             <div className="title-progress-bar-wrapper">
               <div className="progress-bar-wrapper">
                 {isFirst && (

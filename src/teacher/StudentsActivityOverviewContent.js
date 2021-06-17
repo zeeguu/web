@@ -17,7 +17,7 @@ const StudentsActivityOverviewContent = ({
     setFirstStudent(students[0]);
     setRestOfStudents(students.slice(1, students.length));
     //eslint-disable-next-line
-  }, []);
+  }, [students]);
 
   if (students === null) {
     return <LoadingAnimation />;
