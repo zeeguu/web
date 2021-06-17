@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { v4 as uuid } from "uuid";
 import LocalStorage from "../assorted/LocalStorage";
 import ExerciseType from "./ExerciseType";
-import { formatedDateWithDay } from "./FormatedDate";
+import { shortFormatedDate } from "./FormatedDate";
 import strings from "../i18n/definitions";
 
 const LearnedWordsList = ({ api }) => {
@@ -35,7 +35,7 @@ const LearnedWordsList = ({ api }) => {
         <Fragment>
           <ExerciseType source="LEARNED" />
           <p style={{ color: "#808080" }}>
-            {formatedDateWithDay(word.learned_time)}
+            {shortFormatedDate(word.learned_time)}
           </p>
         </Fragment>
       );
