@@ -2,7 +2,6 @@ import styled, { css } from "styled-components";
 import { darkBlue, lightOrange } from "../components/colors";
 
 export const StudentActivityBar = styled.div`
- 
   .activity-bar {
     height: 20px;
     display: flex;
@@ -15,9 +14,9 @@ export const StudentActivityBar = styled.div`
   ${(props) =>
     props.isFirst &&
     css`
-   .activity-bar{
-     margin-top: 2.3em;
-   }
+      .activity-bar {
+        margin-top: 2.3em;
+      }
     `}
 
   .activity-bar#reading {

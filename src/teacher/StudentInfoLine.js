@@ -89,7 +89,7 @@ export default function StudentInfoLine({
 
               <div className="title-circle-wrapper">
                 {isFirst && (
-                  <p className="head-title" id="length-level-correctness">{strings.avgText}<br/>{strings.difficultyLowerCase}</p>
+                  <p className="head-title" id="length-level-correctness">{strings.avgText}<br />{strings.difficultyLowerCase}</p>
                 )}
                 <div className="number-display">
                   {activity.average_text_difficulty}

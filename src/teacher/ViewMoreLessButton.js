@@ -3,11 +3,11 @@ import { MdExpandLess, MdExpandMore } from "react-icons/md/";
 import strings from "../i18n/definitions";
 import * as s from "./ViewMoreLessButton.sc";
 
-const ViewMoreLessButton = ({ articleID, openedArticle, isFirst }) => {
+const ViewMoreLessButton = ({ sessionID, openedArticle, isFirst }) => {
   const [showLessButton, setShowLessButton] = useState(false);
 
   useEffect(() => {
-    if (articleID === openedArticle) {
+    if (sessionID === openedArticle) {
       setShowLessButton(true);
     } else {
       setShowLessButton(false);
