@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import strings from "../i18n/definitions";
 import { useHistory, useParams } from "react-router";
 import SelectButton from "./SelectButton";
 import { StyledDialog } from "./StyledDialog.sc";
@@ -83,7 +84,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       onDismiss={() => setIsOpen(false)}
       max_width="525px"
     >
-      <h1>Choose one or more classes STRING</h1>
+      <h1>{strings.chooseClass}</h1>
       {chosenCohorts.length >= 0 &&
         cohortsToChoose.map((cohort) => (
           <SelectButton
@@ -96,7 +97,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
         ))}
       <PopupButtonWrapper>
         <StyledButton primary onClick={addToCohorts}>
-          Save changes STRINGS
+          {strings.saveChanges}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

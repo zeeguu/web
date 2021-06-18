@@ -18,13 +18,12 @@ export default function AllTexts({ api }) {
   if (articleList == null) {
     api.getTeacherTexts((articles) => {
       //making sure the newest articles are on top
-      const reversedList= articles.reverse()
-      setArticleList(reversedList)
+      const reversedList = articles.reverse();
+      setArticleList(reversedList);
       setOriginalList(reversedList);
     });
-    
 
-    setTitle("Add Texts STRINGS");
+    setTitle(strings.addTexts);
 
     return <LoadingAnimation />;
   }
@@ -38,20 +37,26 @@ export default function AllTexts({ api }) {
           </sc.TopTabs>
           <Link to="/teacher/texts/AddTextOptions">
             <TopButtonWrapper>
-              <StyledButton primary>STRINGSAdd text</StyledButton>
+              <StyledButton primary>{strings.addText}</StyledButton>
             </TopButtonWrapper>
           </Link>
           <br />
           <br />
-          <div className="sorting-btns-box">
-            <SortingButtons
-              articleList={articleList}
-              originalList={originalList}
-              setArticleList={setArticleList}
-            />
-          </div>
+          {articleList.length > 0 ? (
+            <div className="sorting-btns-box">
+              <SortingButtons
+                articleList={articleList}
+                originalList={originalList}
+                setArticleList={setArticleList}
+              />
+            </div>
+          ) : (
+            <s.CenteredContent>
+              <h4>{strings.noTextAddedYet}</h4>
+            </s.CenteredContent>
+          )}
           {articleList.map((each) => (
-            <TeacherTextPreview key={each.id} article={each}/>
+            <TeacherTextPreview key={each.id} article={each} />
           ))}
           <br />
         </m.StyledMyTexts>

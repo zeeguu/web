@@ -1,14 +1,21 @@
-import React, { useState, Fragment } from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { MdPeople } from "react-icons/md/";
 import { StyledButton } from "./TeacherButtons.sc";
 import * as s from "./CohortItemCard.sc";
 import strings from "../i18n/definitions";
-import CohortForm from "./CohortForm";
-import { StyledDialog } from "./StyledDialog.sc";
 
-export const CohortItemCard = ({ api, cohort, setForceUpdate, isWarning }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const CohortItemCard = ({
+  cohort,
+  isWarning,
+  setShowCohortForm,
+  setCohortToEdit,
+}) => {
+  const handleEdit = () => {
+    setCohortToEdit(cohort);
+    setShowCohortForm(true);
+  };
+
   return (
     <Fragment>
       <s.StyledCohortItemCard>
@@ -31,34 +38,19 @@ export const CohortItemCard = ({ api, cohort, setForceUpdate, isWarning }) => {
             <p className="font-light">
               {strings.inviteCode}: {cohort.inv_code}
             </p>
-
             {!isWarning && (
               <div className="buttons-container">
                 <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
-                  <StyledButton secondary>See students (STRINGS)</StyledButton>
+                  <StyledButton secondary>{strings.seeStudents}</StyledButton>
                 </Link>
-                <StyledButton secondary onClick={() => setIsOpen(true)}>
-                  Edit class (STRINGS)
+                <StyledButton secondary onClick={handleEdit}>
+                  {strings.editClass}
                 </StyledButton>
               </div>
             )}
           </div>
         </div>
       </s.StyledCohortItemCard>
-      {isOpen && (
-        <StyledDialog
-          aria-label="Create or edit class"
-          onDismiss={() => setIsOpen(false)}
-          max_width="525px"
-        >
-          <CohortForm
-            api={api}
-            cohort={cohort}
-            setIsOpen={setIsOpen}
-            setForceUpdate={setForceUpdate}
-          />
-        </StyledDialog>
-      )}
     </Fragment>
   );
 };

@@ -30,6 +30,11 @@ export default function SideBar(props) {
     // eslint-disable-next-line
   }, [path]);
 
+  const defaultPage =
+    new_site && user.is_teacher
+      ? "/teacher/classes"
+      : "articles";
+
   const { light_color, dark_color } = setColors(new_site, isOnStudentSide);
 
   function toggleSidebar(e) {
@@ -44,7 +49,7 @@ export default function SideBar(props) {
   let sidebarContent = (
     <>
       <div className="logo">
-        <a href="/articles" rel="external">
+        <a href={defaultPage} rel="external">
           <img
             src="/static/images/zeeguuWhiteLogo.svg"
             alt="Zeeguu Logo - The Elephant"

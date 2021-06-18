@@ -8,17 +8,26 @@ import StudentExercisesInsights from "./StudentExercisesInsights";
 
 export default function ActivityInsightsRouter({ api }) {
   const cohortID = useParams().cohortID;
-  const studentID = "HARDCODED";
+  const studentID = useParams().studentID;
 
   return (
     <Switch>
-      <s.NarrowColumn>
+      <s.WidestColumn>
         <TopTabs
-          title="STRINGS Learning Activities"
+          title={strings.learningActivities}
           tabsAndLinks={{
-            STRINGSReading: "/teacher/classes/viewStudent/" + studentID + "/class/" + cohortID,
-            [strings.exercises]: "/teacher/classes/viewStudent/" + studentID + "/class/" + cohortID + "/exercises",
-            STRINGSBackToClassroom: "/teacher/classes/viewClass/" + cohortID,
+            [strings.reading]:
+              "/teacher/classes/viewStudent/" +
+              studentID +
+              "/class/" +
+              cohortID,
+            [strings.exercises]:
+              "/teacher/classes/viewStudent/" +
+              studentID +
+              "/class/" +
+              cohortID +
+              "/exercises",
+            [strings.backToClassroom]: "/teacher/classes/viewClass/" + cohortID,
           }}
         />
         <PrivateRoute
@@ -33,7 +42,7 @@ export default function ActivityInsightsRouter({ api }) {
           api={api}
           component={StudentExercisesInsights}
         />
-      </s.NarrowColumn>
+      </s.WidestColumn>
     </Switch>
   );
 }

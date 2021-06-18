@@ -1,57 +1,116 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import strings from "../i18n/definitions";
 import { Link } from "react-router-dom";
 import { MdHighlightOff } from "react-icons/md/";
 import StudentActivityBar from "./StudentActivityBar";
 import { StyledButton } from "./TeacherButtons.sc";
 import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
+import LocalStorage from "../assorted/LocalStorage";
 
-export default function StudentInfoLine({ api, cohortID, student }) {
-  const [showDeleteStudentWarning, setShowDeleteStudentWarning] = useState(false);
 
-  const exerciseArray = student.exercise_time_list.filter((time) => time !== 0);
-  const exerciseCount = exerciseArray.length ? exerciseArray.length : 0;
-  const readingList = student.reading_time_list.filter((time) => time !== 0);
-  const readingCount = readingList.length ? readingList.length : 0;
 
-  const deleteStudent = () =>{
-    //TODO api call to delete student from cohort goes here. - Waiting for endpoint.
-    console.log("Should be deleting student "+ student.name + " from the "+ cohortID +" in the api now...")
-    setShowDeleteStudentWarning(false)
+//localize everything on this page 
+//STRINGS
+
+export default function StudentInfoLine({
+  api,
+  cohortID,
+  student,
+  setForceUpdate,
+  isFirst,
+}) {
+  const [showDeleteStudentWarning, setShowDeleteStudentWarning] =
+    useState(false);
+  const selectedTimePeriod = LocalStorage.selectedTimePeriod();
+  const [activity, setActivity] = useState(null);
+
+  useEffect(() => {
+    api.getStudentActivityOverview(
+      student.id,
+      selectedTimePeriod,
+      cohortID,
+      (studentActivityData) => {
+        setActivity(studentActivityData);
+      },
+      (res) => console.log(res)
+    );
+    // eslint-disable-next-line
+  }, [selectedTimePeriod]);
+
+  const removeStudentFromCohort = () => {
+    api.removeStudentFromCohort(student.id, (res) => {
+      setForceUpdate((prev) => prev + 1);
+      setShowDeleteStudentWarning(false);
+    });
+  };
+
+  if (activity === null) {
+    return <p> STRINGS Loading data for {student.name}...</p>;
   }
 
-  //TODO We still need to extract avg text length and level and ecxercise correctness from the api. - Waiting for endpoint.
-
   return (
-    <s.StudentInfoLine>
-      <div className="wrapper">
+    <s.StudentInfoLine isFirst={isFirst}>
+      <div className="wrapper" >
         <Link
           to={`/teacher/classes/viewStudent/${student.id}/class/${cohortID}`}
         >
           <div className="sideline">
+
             <div className="text-box">
-              <div className="student-name">{student.name}</div>
-              <div className="activity-count">
-                {readingCount} texts read STRINGS
-              </div>
-              <div className="activity-count">
-                {exerciseCount} exercise sessions completed STRINGS
+              {isFirst && <p className="head-title">Student name</p>
+              }
+              <div className="left-line">
+                <div className="name-activity-wrapper">
+                  <div className="student-name">{student.name}</div>
+                  <div className="activity-count">
+                    {activity.number_of_texts} {strings.textsRead}
+                  </div>
+                  <div className="activity-count">
+                    {activity.exercises_count} {strings.exercisesCompleted}
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="progress-bar">
-              <StudentActivityBar api={api} student={student} />
+            <div className="title-progress-bar-wrapper">
+              <div className="progress-bar-wrapper">
+                {isFirst && <p className="head-title">Reading/Exercise time</p>
+                }
+                <StudentActivityBar isFirst={isFirst} student={student} />
+              </div>
             </div>
+
             <div className="number-display-wrapper">
-              <div className="number-display">{/* avg-text-length */}123</div>
-              <div className="number-display">{/* avg-text-level */}4.5</div>
-              <div className="number-display">
-                {/* exercise-correctness */}67%
+
+              <div className="title-circle-wrapper">
+                {isFirst && <p className="head-title">Text length</p>
+                }
+                <div className="number-display">
+                  {activity.average_text_length}
+                </div>
+              </div>
+
+              <div className="title-circle-wrapper">
+                {isFirst && <p className="head-title">Avg text difficulty</p>
+                }
+                <div className="number-display">
+                  {activity.average_text_difficulty}
+                </div>
+              </div>
+
+              <div className="title-circle-wrapper">
+                {isFirst && <p className="head-title">Exercises correctness</p>
+                }
+                <div className="number-display">
+                  {activity.correct_on_1st_try * 100 + "%"}
+                </div>
               </div>
             </div>
           </div>
         </Link>
         <StyledButton
+          isFirst={isFirst}
           icon
           style={{ marginTop: "15px", marginLeft: "25px" }}
           onClick={() => setShowDeleteStudentWarning(true)}
@@ -60,11 +119,11 @@ export default function StudentInfoLine({ api, cohortID, student }) {
         </StyledButton>
       </div>
       {showDeleteStudentWarning && (
-        <DeleteStudentWarning 
-        studentName={student.name}
-        cohortID={cohortID}
-        deleteStudent={deleteStudent}
-        setShowDeleteStudentWarning={setShowDeleteStudentWarning}
+        <DeleteStudentWarning
+          studentName={student.name}
+          cohortID={cohortID}
+          removeStudent={removeStudentFromCohort}
+          setShowDeleteStudentWarning={setShowDeleteStudentWarning}
         />
       )}
     </s.StudentInfoLine>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import strings from "../i18n/definitions";
 import { FormControl } from "@material-ui/core";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { Error } from "./Error";
@@ -11,10 +12,11 @@ import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 import DeleteCohortWarning from "./DeleteCohortWarning";
 import { StyledDialog } from "./StyledDialog.sc";
 
-const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
+const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isDeleteError, setIsDeleteError] = useState(false);
   const [state, setState] = useState({
     id: cohort ? cohort.id : "",
     cohort_name: cohort ? cohort.name : "",
@@ -29,7 +31,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     api
       .createCohort(form)
       .then((result) => {
-        setIsOpen(false);
+        setShowCohortForm(false);
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
@@ -38,18 +40,17 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     setIsLoading(false);
   };
 
-  //!Remember that it is not possible to delete a class with students in it.
   const deleteCohort = (cohort_id) => {
     setIsLoading(true);
-    setIsError(false);
+    setIsDeleteError(false);
     api
       .deleteCohort(cohort_id)
       .then((result) => {
-        setIsOpen(false);
+        setShowCohortForm(false);
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
-        setIsError(true);
+        setIsDeleteError(true);
       });
     setIsLoading(false);
   };
@@ -60,7 +61,7 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     api
       .updateCohort(form, cohort_id)
       .then((result) => {
-        setIsOpen(false);
+        setShowCohortForm(false);
         setForceUpdate((prev) => prev + 1); // reloads the classes to update the UI
       })
       .catch((err) => {
@@ -84,13 +85,16 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
     });
   }
 
+  const inputIsEmpty =
+    state.cohort_name === "" ||
+    state.invite_code === "" ||
+    state.language_code === "default";
+
   //the submit button is disabled until the input is valid
   const isValid =
-    state.cohort_name !== "" &&
-    state.cohort_name.length <= 50 &&
-    state.invite_code !== "" &&
-    state.invite_code.length <= 20 &&
-    state.language_code !== "default";
+    !inputIsEmpty &&
+    state.cohort_name.length <= 20 &&
+    state.invite_code.length <= 20;
 
   function setupForm() {
     const form = new FormData();
@@ -111,11 +115,11 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
 
   return (
     <StyledDialog
-      onDismiss={() => setIsOpen(false)}
+      onDismiss={() => setShowCohortForm(false)}
       aria-label="Create class"
       max_width="525px"
     >
-      {cohort ? <h1>Edit Class STRINGS</h1> : <h1>Create Class STRINGS</h1>}
+      {cohort ? <h1>{strings.editClass}</h1> : <h1>{strings.createClass}</h1>}
       {isLoading ? (
         <LoadingAnimation />
       ) : (
@@ -135,26 +139,18 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
             style={{ minWidth: 120 }}
           >
             <LanguageSelector
+              api={api}
               value={state.language_code}
               onChange={handleLanguageChange}
             >
-              Classroom language STRINGS
+              {strings.classroomLanguage}
             </LanguageSelector>
           </FormControl>
-          {isError && (
-            <Error
-              message={
-                "Something went wrong. Maybe the invite code is already in use. DEV NOTE: Cannot delete class with texts in it. STRINGS"
-              }
-              setLoading={setIsLoading}
-            />
-          )}
+          {isError && <Error message={strings.errorInviteCode} />}
         </form>
       )}
-      {!isValid && (
-        <p style={{ color: "red" }}>
-          You must fill out all the input fields. STRINGS
-        </p>
+      {inputIsEmpty && (
+        <Error message={strings.errorEmptyInputField} />
       )}
       <PopupButtonWrapper>
         <StyledButton
@@ -163,11 +159,11 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
           style={{ minWidth: 120 }}
           disabled={!isValid}
         >
-          {cohort ? "Save changes STRINGS" : "Create class STRINGS"}
+          {cohort ? strings.saveChanges : strings.createClass}
         </StyledButton>
         {cohort && (
           <StyledButton secondary onClick={() => setShowWarning(true)}>
-            DeleteSTRING
+            {strings.removeFromList}
           </StyledButton>
         )}
       </PopupButtonWrapper>
@@ -177,6 +173,9 @@ const CohortForm = ({ api, cohort, setForceUpdate, setIsOpen }) => {
           cohort={cohort}
           setShowWarning={setShowWarning}
           deleteCohort={deleteCohort}
+          isDeleteError={isDeleteError}
+          setIsDeleteError={setIsDeleteError}
+          setIsLoading={setIsLoading}
         />
       )}
     </StyledDialog>

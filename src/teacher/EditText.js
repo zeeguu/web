@@ -1,6 +1,6 @@
 import React, { useState, useContext, Fragment, useEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
-//import strings from "../i18n/definitions";
+import strings from "../i18n/definitions";
 import { RoutingContext } from "../contexts/RoutingContext";
 import EditTextInputFields from "./EditTextInputFields";
 import {
@@ -106,46 +106,34 @@ export default function EditText({ api }) {
     });
   };
 
-  const addArticleToCohort = () => {
-    setShowDialog(true);
-  };
-
   return (
     <Fragment>
       <s.NarrowColumn>
         <sc.TopTabs>
-          <h1>STRINGSEditText</h1>
+          <h1>{strings.editText}</h1>
         </sc.TopTabs>
         <TopButtonWrapper>
-          {articleID === "new" ? (
-            <StyledButton
-              primary
-              onClick={uploadArticle}
-              disabled={buttonDisabled}
-            >
-              Save text STRINGS
-            </StyledButton>
-          ) : (
-            <StyledButton
-              primary
-              onClick={updateArticle}
-              disabled={buttonDisabled}
-            >
-              Save changes STRINGS
-            </StyledButton>
+          {articleID !== "new" && (
+            <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
+              <StyledButton secondary disabled={buttonDisabled}>
+                {strings.viewAsStudent}
+              </StyledButton>
+            </Link>
           )}
+
           <StyledButton
             primary
-            onClick={addArticleToCohort}
+            onClick={() => setShowDialog(true)}
             disabled={buttonDisabled}
           >
-            Add to class STRINGS
+            {strings.addToClass}
           </StyledButton>
           <StyledButton secondary onClick={handleCancel}>
-            STRINGSCancel
+            {strings.cancel}
           </StyledButton>
         </TopButtonWrapper>
         <EditTextInputFields
+          api={api}
           language_code={state.language_code}
           article_title={state.article_title}
           article_content={state.article_content}
@@ -153,20 +141,33 @@ export default function EditText({ api }) {
           handleChange={handleChange}
         />
         {buttonDisabled && (
-          <p style={{ color: "red" }}>
-            You must fill out all the input fields. STRINGS
-          </p>
+          <p style={{ color: "red" }}>{strings.errorEmptyInputField}</p>
         )}
         <PopupButtonWrapper>
-          <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
-            <StyledButton secondary disabled={buttonDisabled}>
-              STRINGSView as student
+          {articleID === "new" ? (
+            <StyledButton
+              primary
+              onClick={uploadArticle}
+              disabled={buttonDisabled}
+            >
+              {strings.saveText}
             </StyledButton>
-          </Link>
-          {articleID !== "new" && (
-            <StyledButton secondary onClick={()=>setShowDeleteTextWarning(true)}>
-              STRINGSDelete
-            </StyledButton>
+          ) : (
+            <Fragment>
+              <StyledButton
+                secondary
+                onClick={() => setShowDeleteTextWarning(true)}
+              >
+                {strings.delete}
+              </StyledButton>
+              <StyledButton
+                primary
+                onClick={updateArticle}
+                disabled={buttonDisabled}
+              >
+                {strings.saveChanges}
+              </StyledButton>
+            </Fragment>
           )}
         </PopupButtonWrapper>
       </s.NarrowColumn>

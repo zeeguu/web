@@ -1,4 +1,5 @@
 import React from "react";
+import strings from "../i18n/definitions";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "./NoStudent.sc";
 
@@ -6,13 +7,14 @@ const NoStudents = ({ inviteCode }) => {
   return (
     <s.CenteredContent>
       <sc.NoStudents>
-          <p>
-            There are no students in this class yet. STRINGS
-            <br />
-            Share the invite code <b>{inviteCode}</b> with them, STRINGS
-            <br />
-            so they can sign up and join the classroom. STRINGS
-          </p>
+        <p>
+          {strings.noStudentsInClass}
+          <br />
+          {strings.shareTheInviteCode} <b>{inviteCode}</b>{" "}
+          {strings.shareInviteCodeContinued}
+          <br />
+          {strings.soTheStudentCanJoinClass}
+        </p>
       </sc.NoStudents>
     </s.CenteredContent>
   );

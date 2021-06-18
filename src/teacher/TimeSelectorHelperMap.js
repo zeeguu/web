@@ -1,8 +1,9 @@
+import strings from "../i18n/definitions";
+
 export const timePeriodMap = {
-  //TODO These must be localized STRINGS
-    7: '1 week',
-    14: '2 weeks',
-    30: '1 month',
-    182: '6 months',
-    365: '1 year',
-  }
+  7: strings.oneWeek,
+  14: strings.twoWeeks,
+  30: strings.oneMonth,
+  182: strings.sixMonths,
+  365: strings.oneYear,
+};

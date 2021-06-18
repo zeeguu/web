@@ -1,23 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { convertTime } from "./FormatedTime";
 import * as s from "./StudentActivityBar.sc";
 
-const StudentActivityBar = ({ student }) => {
+const StudentActivityBar = ({ student, isFirst }) => {
   const [readingTimeString, setReadingTimeString] = useState("");
   const [exerciseTimeString, setExerciseTimeString] = useState("");
 
-  useEffect(() => {
-    const readingHours = Math.floor(student.reading_time / 3600);
-    const readingMinutes = Math.ceil((student.reading_time / 60) % 60);
-    readingHours < 1
-      ? setReadingTimeString(readingMinutes + "m")
-      : setReadingTimeString(readingHours + "h " + readingMinutes + "m");
 
-    const exerciseHours = Math.floor(student.exercises_done / 3600);
-    const exerciseMinutes = Math.ceil((student.exercises_done / 60) % 60);
-    exerciseHours < 1
-    ? setExerciseTimeString(exerciseMinutes + "m")
-    : setExerciseTimeString(exerciseHours + "h " + exerciseMinutes + "m");
-    // eslint-disable-next-line
+  useEffect(() => {
+    convertTime(student.reading_time, setReadingTimeString)
+    convertTime(student.exercises_done, setExerciseTimeString)
+
   }, [student]);
 
   const setReadingCorners = () => {
@@ -36,8 +29,12 @@ const StudentActivityBar = ({ student }) => {
     return exerciseCorners;
   };
 
+  const computedWidth = student.exercises_done === 0 ? "0%" : 100 - student.reading_percentage + "%"
+  //making sure we are not returning an activity bar if time is less than 3 minutes
+  if (student.total_time < 240) { return null }
   return (
     <s.StudentActivityBar
+      isFirst={isFirst}
       readingCorners={() => setReadingCorners()}
       exerciseCorners={() => setExerciseCorners()}
     >
@@ -51,7 +48,7 @@ const StudentActivityBar = ({ student }) => {
           className="activity-bar"
           id="reading"
           style={{
-            width: student.learning_proportion + "%",
+            width: student.reading_percentage + "%",
           }}
         >
           {/* Not showing the reading time if it is less than 3 min */}
@@ -61,7 +58,7 @@ const StudentActivityBar = ({ student }) => {
           className="activity-bar"
           id="exercises"
           style={{
-            width: 100 - student.learning_proportion + "%",
+            width: computedWidth,
           }}
         >
           {/* Not showing the exercise time if it is less than 3 min */}
