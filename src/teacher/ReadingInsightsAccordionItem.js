@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     AccordionItem,
     AccordionButton,
@@ -8,24 +8,24 @@ import * as s from "./ReadingInsightAccordion.sc";
 import StudentTranslations from "./StudentTranslations";
 import ArticleCard from "./ArticleCard";
 
-
-const ReadingInsightAccordionItem = ({ isFirst, article }) => {
-    const [openedArticle, setOpenedArticle] = useState(null);
-
-    const handleClick = (articleID) => {
-        if (articleID === openedArticle) {
+const ReadingInsightAccordionItem = ({
+    isFirst,
+    article,
+    setOpenedArticle,
+    openedArticle,
+}) => {
+    const handleClick = (sessionID) => {
+        if (sessionID === openedArticle) {
             setOpenedArticle(null);
         } else {
-            setOpenedArticle(articleID);
+            setOpenedArticle(sessionID);
         }
     };
 
     return (
         <s.ReadingInsightAccordion isFirst={isFirst}>
-            <AccordionItem
-                className="accordion-wrapper"
-            >
-                <AccordionButton onClick={() => handleClick(article.article_id)}>
+            <AccordionItem className="accordion-wrapper">
+                <AccordionButton onClick={() => handleClick(article.session_id)}>
                     <ArticleCard
                         isFirst={isFirst}
                         article={article}

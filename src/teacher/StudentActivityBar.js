@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { convertTime } from "./FormatedTime";
+import { convertTimeForActivityBar, timeExplanation } from "./FormatedTime";
 import * as s from "./StudentActivityBar.sc";
+import { StyledTooltip } from "./StyledTooltip.sc";
 
 const StudentActivityBar = ({ student, isFirst }) => {
   const [readingTimeString, setReadingTimeString] = useState("");
@@ -8,14 +9,13 @@ const StudentActivityBar = ({ student, isFirst }) => {
 
 
   useEffect(() => {
-    convertTime(student.reading_time, setReadingTimeString)
-    convertTime(student.exercises_done, setExerciseTimeString)
-
+    convertTimeForActivityBar(student.reading_time, setReadingTimeString);
+    convertTimeForActivityBar(student.exercise_time, setExerciseTimeString);
   }, [student]);
 
   const setReadingCorners = () => {
     let readingCorners = "25px 0 0 25px";
-    if (student.exercises_done === 0) {
+    if (student.exercise_time === 0) {
       readingCorners = "25px";
     }
     return readingCorners;
@@ -29,15 +29,19 @@ const StudentActivityBar = ({ student, isFirst }) => {
     return exerciseCorners;
   };
 
-  const computedWidth = student.exercises_done === 0 ? "0%" : 100 - student.reading_percentage + "%"
-  //making sure we are not returning an activity bar if time is less than 3 minutes
-  if (student.total_time < 240) { return null }
+  const computedWidth = 100 - student.reading_percentage + "%";
+
+  if (student.total_time === 0) {
+    return null;
+  }
+  
   return (
     <s.StudentActivityBar
       isFirst={isFirst}
       readingCorners={() => setReadingCorners()}
       exerciseCorners={() => setExerciseCorners()}
     >
+      <StyledTooltip label={timeExplanation(student)}>
       <div
         className="activity-bar"
         style={{
@@ -51,8 +55,9 @@ const StudentActivityBar = ({ student, isFirst }) => {
             width: student.reading_percentage + "%",
           }}
         >
-          {/* Not showing the reading time if it is less than 3 min */}
-          {student.reading_time > 120 ? readingTimeString : ""}
+          <p style={{ fontSize: "small", marginTop: "20px" }}>
+            {readingTimeString}
+          </p>
         </div>
         <div
           className="activity-bar"
@@ -61,10 +66,12 @@ const StudentActivityBar = ({ student, isFirst }) => {
             width: computedWidth,
           }}
         >
-          {/* Not showing the exercise time if it is less than 3 min */}
-          {student.exercises_done > 120 ? exerciseTimeString : ""}
+          <p style={{ fontSize: "small", marginTop: "20px" }}>
+            {exerciseTimeString}
+          </p>
         </div>
       </div>
+      </StyledTooltip>
     </s.StudentActivityBar>
   );
 };

@@ -9,14 +9,14 @@ export const StudentActivityDataCircleWrapper = styled.div`
 
 
 ${(props) =>
-        props.isFirst &&
-        css`
+    props.isFirst &&
+    css`
 
 .data-circle-title {
     margin:-3vh 0 3vh 0;
     justify-content: center;
     text-align: center;
-    font-size: medium;
+    font-size: small;
     font-family: "Montserrat";
 }
       

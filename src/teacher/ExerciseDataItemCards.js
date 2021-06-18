@@ -6,16 +6,16 @@ const ExerciseDataItemCard = (props) => {
   return (
     <div
       style={{
-        height: 300,
-        width: "310px",
-        margin: "2em 1em",
-        paddingTop: "1em",
+        height: 280,
+        width: 290,
+        marginBottom: "2em",
+        paddingTop: ".5em",
         textAlign: "center",
         borderRadius: "15px",
         border: `solid 5px ${setBorderColor}`,
       }}
     >
-      <h3 style={{ fontSize: "large" }}>{props.headline}</h3>
+      <h3 style={{ fontSize: "medium" }}>{props.headline}</h3>
       <div
         style={{
           display: "flex",
@@ -34,7 +34,6 @@ const ExerciseDataItemCard = (props) => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            marginTop: "1.2em",
           }}
         >
           <p style={{ fontWeight: 600, width: "4.5em", fontSize: "small" }}>
@@ -50,7 +49,6 @@ const ExerciseDataItemCard = (props) => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            marginTop: "1.2em",
           }}
         >
           <p style={{ fontWeight: 600, width: "4.3em", fontSize: "small" }}>

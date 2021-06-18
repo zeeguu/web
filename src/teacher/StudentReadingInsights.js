@@ -11,24 +11,25 @@ export default function StudentReadingInsights({ api }) {
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
-  const [studentInfo, setStudentInfo] = useState({});
+  const [studentName, setStudentName] = useState("");
   const [cohortLang, setCohortLang] = useState("");
   const [readArticles, setReadArticles] = useState([]);
+  const [articleCount, setArticleCount] = useState(0);
 
   useEffect(() => {
-    api.loadUserInfo(studentID, selectedTimePeriod, (userInfo) => {
-      setStudentInfo(userInfo);
-    });
     api.getReadingSessions(
       studentID,
       cohortID,
       selectedTimePeriod,
-      (readingSessions) => {
-        setReadArticles(readingSessions);
-      },
-      (res) => {
-        console.log(res);
-      }
+      (readingSessions) => setReadArticles(readingSessions),
+      (error) => console.log(error)
+    );
+    api.getStudentActivityOverview(
+      studentID,
+      selectedTimePeriod,
+      cohortID,
+      (activity) => setArticleCount(activity.number_of_texts),
+      (error) => console.log(error)
     );
     // eslint-disable-next-line
   }, [forceUpdate]);
@@ -38,15 +39,23 @@ export default function StudentReadingInsights({ api }) {
       let currentCohort = cohortInfo.filter((each) => each.id === cohortID);
       setCohortLang(currentCohort[0].language_name);
     });
+    api.getStudentInfo(
+      studentID,
+      cohortID,
+      selectedTimePeriod,
+      (studentInfo) => setStudentName(studentInfo.name),
+      (error) => console.log(error)
+    );
     // eslint-disable-next-line
   }, []);
 
   const customText =
     readArticles &&
-    studentInfo.name +
+    studentName +
       strings.studentHasRead +
-      readArticles.length +
+      articleCount +
       strings.textsInTheLastPeriod;
+
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />

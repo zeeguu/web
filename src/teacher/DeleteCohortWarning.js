@@ -36,7 +36,7 @@ const DeleteCohortWarning = ({
           {strings.cancel}
         </StyledButton>
         <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
-          {strings.removeFromList}
+          {strings.deleteFromMyClasses}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

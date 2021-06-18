@@ -20,7 +20,6 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
   }, [url]);
 
   const handleChange = (event) => {
-    console.log("Setting the url to: " + event.target.value);
     setURL(event.target.value);
   };
 
@@ -35,7 +34,6 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
           const newText = articleInfo.text;
           const newLanguage = articleInfo.language_code;
           api.uploadOwnText(newTitle, newText, newLanguage, (newID) => {
-            console.log(`article created from the url with id: ${newID}`);
             history.push(`/teacher/texts/editText/${newID}`);
           });
         },
@@ -56,7 +54,7 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
       onDismiss={() => setShowAddURLDialog(false)}
       max_width="525px"
     >
-      <h1>{strings.addTextFromWebpage}</h1>
+      <h1 style={{ textAlign: "center" }}>{strings.addTextFromWebpage}</h1>
       <LabeledTextField
         value={url}
         onChange={handleChange}
@@ -70,11 +68,7 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
         {strings.editTheSavedText}
       </p>
       {showGuidance && <Error message={strings.nothingInInputField} />}
-      {showError && (
-        <Error
-          message={"STRINGS Something went wrong. The URL might be invalid."}
-        />
-      )}
+      {showError && <Error message={strings.invalidUrl} />}
       <PopupButtonWrapper>
         <StyledButton primary onClick={getArticle}>
           {strings.saveAndEdit}

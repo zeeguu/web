@@ -1,9 +1,12 @@
 export const shortFormatedDate = (time) => {
-  return new Date(time).toLocaleDateString();
+  const options = { weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric' };
+  return new Date(time).toLocaleDateString(undefined, options);
 };
 
 export const longFormatedDate = (time) => {
-  return new Date(time).toUTCString();
+  const newDate = shortFormatedDate(time)
+  const newTime = new Date(time).toLocaleTimeString(undefined)
+  return newDate + " " + newTime
 };
 
 export const formatedDateWithDay = (time)=>{

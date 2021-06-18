@@ -1,7 +1,51 @@
-export const convertTime = (seconds, setTime) =>{
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.ceil((seconds/ 60) % 60);
+import strings from "../i18n/definitions";
+
+export const convertToHoursMinSec = (accumulatedTime) => {
+  const hours = Math.floor(accumulatedTime / 3600);
+  const minutes = Math.floor((accumulatedTime / 60) % 60);
+  const seconds = Math.round(accumulatedTime - hours * 3600 - minutes * 60);
+  return { hours, minutes, seconds };
+};
+
+export const convertTime = (accumulatedTime, setTime) => {
+  const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
+  if (accumulatedTime < 60) {
+    setTime(seconds + "s");
+  } else {
     hours < 1
-      ? setTime(minutes + "m")
-      : setTime(hours + "h " + minutes + "m");
+      ? setTime(minutes + "m " + seconds + "s")
+      : setTime(hours + strings.hours + minutes + "m");
   }
+};
+
+export const convertTimeForActivityBar = (accumulatedTime, setTime) => {
+  const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
+  if (accumulatedTime < 240) {
+    setTime("");
+  } else {
+    hours < 1 ? setTime(minutes + strings.hours) : setTime(hours + strings.hours + minutes + "m");
+  }
+};
+
+export const convertExactTimeString = (accumulatedTime) => {
+  const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
+  if (hours > 0) return hours + strings.hours + minutes + "m " + seconds + "s";
+  if (accumulatedTime < 60) return seconds + "s";
+  return minutes + "m " + seconds + "s";
+};
+
+//This should be localised STRINGS
+export const timeExplanation = (student) => {
+  const readingTime = convertExactTimeString(student.reading_time);
+  const exerciseTime = convertExactTimeString(student.exercise_time);
+  return (
+    <div>
+      <p>
+        {strings.exactReadingTime} {readingTime}
+      </p>
+      <p>
+        {strings.exactExerciseTime} {exerciseTime}
+      </p>
+    </div>
+  );
+};

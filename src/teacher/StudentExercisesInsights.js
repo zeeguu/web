@@ -14,15 +14,20 @@ export default function StudentExercisesInsights({ api }) {
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
-  const [studentInfo, setStudentInfo] = useState({});
+  const [studentName, setStudentName] = useState("");
   const [exerciseTime, setExerciseTime] = useState("");
+  const [completedExercisesCount, setCompletedExercisesCount] = useState(0);
   const [practisedWordsCount, setPractisedWordsCount] = useState(0);
   const [activity, setActivity] = useState(null);
   const [isOpen, setIsOpen] = useState("");
 
   useEffect(() => {
-    api.loadUserInfo(studentID, selectedTimePeriod, (studentInfo) =>
-      setStudentInfo(studentInfo)
+    api.getStudentInfo(
+      studentID,
+      cohortID,
+      selectedTimePeriod,
+      (studentInfo) => setStudentName(studentInfo.name),
+      (error) => console.log(error)
     );
 
     api.getStudentActivityOverview(
@@ -31,22 +36,20 @@ export default function StudentExercisesInsights({ api }) {
       cohortID,
       (activity) => {
         setActivity(activity);
-        convertTime(activity.exercise_time_in_sec, setExerciseTime);
+        convertTime(activity.exercise_time, setExerciseTime);
         setPractisedWordsCount(activity.practiced_words_count);
+        setCompletedExercisesCount(activity.number_of_exercises);
       },
-      (error) => {
-        console.log(error);
-      }
+      (error) => console.log(error)
     );
-
     // eslint-disable-next-line
   }, [forceUpdate]);
 
   const customText =
-    studentInfo.name +
-      strings.hasCompleted +
-      practisedWordsCount +
-      strings.exercisesInTheLast;
+    studentName +
+    strings.hasCompleted +
+    completedExercisesCount +
+    strings.exercisesInTheLast;
 
   const handleCardClick = (cardName) => {
     if (isOpen === cardName) {
@@ -64,13 +67,17 @@ export default function StudentExercisesInsights({ api }) {
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",
+          marginTop: "2em",
+          marginLeft: "1.5%",
         }}
       >
         <StyledButton naked onClick={() => handleCardClick("practised")}>
           <PractisedWordsCard
             isOpen={isOpen === "practised"}
             wordCount={practisedWordsCount}
-            correctness={activity && activity.correct_on_1st_try * 100 + "%"}
+            correctness={
+              activity && Math.round(activity.correct_on_1st_try * 100) + "%"
+            }
             time={exerciseTime}
           />
         </StyledButton>

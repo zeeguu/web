@@ -6,7 +6,6 @@ const StyledButton = styled.button`
   display: inline-block;
   color: ${darkBlue};
   background-color: white;
-  margin-top: 3px;
   margin-right: 0.5em;
   border-radius: 1.0625em;
   padding: 0.3125em 1.1875em;
@@ -36,22 +35,30 @@ const StyledButton = styled.button`
       border: 3px solid ${lightBlue};
     `}
 
+
+  //deleteastudent 
+  ${(props) =>
+    props.deleteastudent &&
+    css`
+      padding-top: 4.5em !important;
+    `}
+
   //isFirst
     ${(props) =>
     props.isFirst &&
     css`
-      padding-top: 2.3em !important;
+      padding-top: 3.8em !important;
     `}
 
   //Naked
   ${(props) =>
     props.naked &&
     css`
-    background-color: white;
-    border: None;
-    color: black;
-    width:100%;
-  `}
+      background-color: white;
+      border: None;
+      color: black;
+      width: 100%;
+    `}
 
   //Student view
   ${(props) =>

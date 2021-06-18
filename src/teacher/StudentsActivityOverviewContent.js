@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import StudentInfoLine from "./StudentInfoLine";
 import TimeSelector from "./TimeSelector";
 import LoadingAnimation from "../components/LoadingAnimation";
+import strings from "../i18n/definitions";
 
 const StudentsActivityOverviewContent = ({
   api,
@@ -16,21 +17,13 @@ const StudentsActivityOverviewContent = ({
     setFirstStudent(students[0]);
     setRestOfStudents(students.slice(1, students.length));
     //eslint-disable-next-line
-  }, []);
+  }, [students]);
 
   if (students === null) {
     return <LoadingAnimation />;
   }
 
-  console.log(students);
-  console.log("all students above");
-  console.log(firstStudent);
-  console.log("first student above");
-  console.log(restOfStudents);
-  console.log("restOfStudents above");
-
-  const customText =
-    "STRINGS This is the overview of the students' activities for the last";
+  const customText = [strings.customTextInTimeSelector];
 
   return (
     <Fragment>
