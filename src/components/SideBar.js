@@ -7,6 +7,7 @@ import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 import { setColors } from "../components/colors";
 
 import * as s from "./SideBar.sc";
+import LocalStorage from "../assorted/LocalStorage";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -14,7 +15,7 @@ export default function SideBar(props) {
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
 
-  const new_site = process.env.REACT_APP_NEW_TEACHER_SITE === "true";
+  const new_site = LocalStorage.isEMSTeacherDashboard();
 
   //deducting whether we are on student or teacher side for colouring
   const path = useLocation().pathname;
@@ -31,9 +32,7 @@ export default function SideBar(props) {
   }, [path]);
 
   const defaultPage =
-    new_site && user.is_teacher
-      ? "/teacher/classes"
-      : "articles";
+    new_site && user.is_teacher ? "/teacher/classes" : "articles";
 
   const { light_color, dark_color } = setColors(new_site, isOnStudentSide);
 

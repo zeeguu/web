@@ -29,7 +29,9 @@ export default function Settings({ api, setUser }) {
     });
     api.getStudent((student) => {
       if (student.cohort_id !== null) {
-        api.getCohortName(student.cohort_id, (cohort)=> setCurrentCohort(cohort.name))
+        api.getCohortName(student.cohort_id, (cohort) =>
+          setCurrentCohort(cohort.name)
+        );
       }
     });
     setTitle("Settings");
@@ -149,7 +151,7 @@ export default function Settings({ api, setUser }) {
         </div>
       </form>
 
-      {!user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
+      {!user.is_teacher && LocalStorage.isEMSTeacherDashboard() && (
         <div>
           <p style={{ margin: "25px 0 -5px 0" }}>
             <b>

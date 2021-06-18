@@ -4,7 +4,11 @@ import { BigSquareButton } from "../components/allButtons.sc";
 
 import * as color from "../components/colors";
 
-import { NarrowColumn, CenteredContent, ContentOnRow } from "../components/ColumnWidth.sc";
+import {
+  NarrowColumn,
+  CenteredContent,
+  ContentOnRow,
+} from "../components/ColumnWidth.sc";
 
 let ArticleReader = styled.div`
   /* border: 1px solid lightgray; */

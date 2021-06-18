@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import strings from "../i18n/definitions";
 
 import * as s from "../components/FormPage.sc";
+import LocalStorage from "../assorted/LocalStorage";
 
 export default function SignIn({ api, notifySuccessfulSignIn }) {
   const [email, setEmail] = useState("");
@@ -20,10 +21,13 @@ export default function SignIn({ api, notifySuccessfulSignIn }) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
-        notifySuccessfulSignIn(userInfo);
-        userInfo.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true"
-          ? history.push("/teacher/classes")
-          : history.push("/articles");
+        api.getEMSTeacherDashboard((isDeployed) => {
+          LocalStorage.setEMSTeacherDashboard(isDeployed);
+          notifySuccessfulSignIn(userInfo);
+          userInfo.is_teacher && LocalStorage.isEMSTeacherDashboard()
+            ? history.push("/teacher/classes")
+            : history.push("/articles");
+        });
       });
     });
   }

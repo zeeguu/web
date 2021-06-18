@@ -6,6 +6,7 @@ const LocalStorage = {
     NativeLanguage: "native_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
+    EMSTeacherDashboard: "EMSTeacherDashboard",
   },
 
   // Getting Info
@@ -54,6 +55,7 @@ const LocalStorage = {
       localStorage.removeItem(this.Keys.LearnedLanguage);
       localStorage.removeItem(this.Keys.NativeLanguage);
       localStorage.removeItem(this.Keys.Session);
+      localStorage.removeItem(this.Keys.EMSTeacherDashboard);
     } catch (e) {
       console.log(e);
     }
@@ -61,6 +63,14 @@ const LocalStorage = {
 
   setSelectedTimePeriod: function (time) {
     localStorage[this.Keys.SelectedTimePeriod] = time;
+  },
+
+  setEMSTeacherDashboard(value) {
+    localStorage[this.Keys.EMSTeacherDashboard] = value;
+  },
+
+  isEMSTeacherDashboard() {
+    return localStorage[this.Keys.EMSTeacherDashboard] === "YES";
   },
 };
 
