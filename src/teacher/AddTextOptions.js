@@ -1,5 +1,5 @@
-//import strings from "../i18n/definitions";
 import React, { Fragment, useState } from "react";
+import strings from "../i18n/definitions";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import {
@@ -16,7 +16,7 @@ export default function AddTextOptions({ api }) {
     <Fragment>
       <s.NarrowColumn>
         <sc.TopTabs>
-          <h1>STRINGSAddTexts</h1>
+          <h1>{strings.addTexts}</h1>
         </sc.TopTabs>
         <br />
         <br />

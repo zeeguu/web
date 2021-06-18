@@ -1,18 +1,14 @@
 import { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-
 import { LanguageSelector } from "../components/LanguageSelector";
-
 import { UserContext } from "../UserContext";
+import { setTitle } from "../assorted/setTitle";
+import LocalStorage from "../assorted/LocalStorage";
 import LoadingAnimation from "../components/LoadingAnimation";
-
 import * as s from "../components/FormPage.sc";
 import * as sc from "../components/TopTabs.sc";
-import { setTitle } from "../assorted/setTitle";
-
-import LocalStorage from "../assorted/LocalStorage";
-
 import strings from "../i18n/definitions";
+import { Error } from "../teacher/Error";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -20,6 +16,9 @@ export default function Settings({ api, setUser }) {
   const history = useHistory();
   const user = useContext(UserContext);
   const [languages, setLanguages] = useState();
+  const [inviteCode, setInviteCode] = useState("");
+  const [showJoinCohortError, setShowJoinCohortError] = useState(false);
+  const [currentCohort, setCurrentCohort] = useState("");
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -28,8 +27,15 @@ export default function Settings({ api, setUser }) {
         setUserDetails(data);
       });
     });
+    api.getStudent((student) => {
+      if (student.cohort_id !== null) {
+        api.getCohortName(student.cohort_id, (cohort)=> setCurrentCohort(cohort.name))
+      }
+    });
     setTitle("Settings");
   }, [user.session, api]);
+
+  const studentIsInCohort = currentCohort !== "";
 
   function updateUserInfo(info) {
     LocalStorage.setUserInfo(info);
@@ -58,6 +64,26 @@ export default function Settings({ api, setUser }) {
       updateUserInfo(userDetails);
       history.goBack();
     });
+  }
+
+  function handleInviteCodeChange(event) {
+    setShowJoinCohortError(false);
+    setInviteCode(event.target.value);
+  }
+
+  function saveStudentToClass() {
+    api.joinCohort(
+      inviteCode,
+      (status) => {
+        console.log(status);
+        status === "OK"
+          ? history.push("/articles/classroom")
+          : setShowJoinCohortError(true);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   if (!userDetails || !languages) {
@@ -122,6 +148,39 @@ export default function Settings({ api, setUser }) {
           <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
         </div>
       </form>
+
+      {!user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
+        <div>
+          <p style={{ margin: "25px 0 -5px 0" }}>
+            <b>
+              {studentIsInCohort
+                ? strings.yourCurrentClassIs + currentCohort
+                : strings.youHaveNotJoinedAClass}
+            </b>
+          </p>
+          <label style={{ paddingTop: "1rem" }}>
+            {studentIsInCohort ? strings.changeClassbtn : strings.joinClass}
+          </label>
+          <input
+            type="text"
+            placeholder={
+              studentIsInCohort
+                ? strings.insertNewInviteCode
+                : strings.insertInviteCode
+            }
+            value={inviteCode}
+            onChange={(event) => handleInviteCodeChange(event)}
+          />
+
+          {showJoinCohortError && (
+            <Error message={strings.checkIfInviteCodeIsValid} />
+          )}
+
+          <s.FormButton onClick={saveStudentToClass}>
+            {studentIsInCohort ? strings.changeClassbtn : strings.joinClass}
+          </s.FormButton>
+        </div>
+      )}
     </s.FormContainer>
   );
 }

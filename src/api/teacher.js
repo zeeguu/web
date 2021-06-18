@@ -116,6 +116,10 @@ Zeeguu_API.prototype.getStudents = function (cohortID, duration, callback) {
   this._get(`/users_from_cohort/${cohortID}/${duration}`, callback);
 };
 
+Zeeguu_API.prototype.getCohortName = function (cohortID, callback) {
+  this._get(`/cohort_name/${cohortID}`, callback);
+};
+
 Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
   /* example return:
     json_result(
@@ -123,7 +127,12 @@ Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
         'article_title':title,
         'text':art.text,
         'top_image': art.top_image,
+         "language_code": art.meta_lang,
       }
     )*/
   this._post(`parse_url`, `url=${url}`, callback, onError, true);
+};
+
+Zeeguu_API.prototype.removeStudentFromCohort = function (studentID, callback) {
+  this._getPlainText(`remove_user_from_cohort/${studentID}`, callback);
 };

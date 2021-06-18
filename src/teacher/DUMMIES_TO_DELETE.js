@@ -71,7 +71,7 @@ export const DUMMYLIST = [
         exercises_done: 145.414,
         id: "2671",
         last_article: "place holder article",
-        learning_proportion: 18.03690802304215,
+        reading_percentage: 18.03690802304215,
         name: "Olivia One",
         normalized_activity_proportion: 23.942510121457488,
         reading_time: 32,
@@ -85,11 +85,178 @@ export const DUMMYLIST = [
         exercises_done: 0,
         id: "2673",
         last_article: "place holder article",
-        learning_proportion: 100,
+        reading_percentage: 100,
         name: "Toby Two",
         normalized_activity_proportion: 100,
         reading_time: 741,
         reading_time_list:[741, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         total_time: 741,
+    }
+  ]
+
+  export const DUMMYWORDS = [
+    {
+      word: "learned1",
+      translation: "lært1",
+      isStudied: "true",
+      isLearned: "true",
+      exerciseAttempts: [
+        { date: "Jan 1. 2020", type: "recognise", attempts: "c", feedback: "" },
+        {
+          date: "Jan 2. 2020",
+          type: "multiple choice",
+          attempts: "whc",
+          feedback: "",
+        },
+        {
+          date: "Jan 3. 2020",
+          type: "multiple choice",
+          attempts: "c",
+          feedback: "",
+        },
+        {
+          date: "Jan 4. 2020",
+          type: "multiple choice",
+          attempts: "c",
+          feedback: "",
+        },
+        {
+          date: "Jan 5. 2020",
+          type: "multiple choice",
+          attempts: "c",
+          feedback: "",
+        },
+      ],
+      exclusionReason: "",
+    },
+    {
+      word: "practised1",
+      translation: "øvet1",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        {
+          date: "Feb 1. 2020",
+          type: "recognise",
+          attempts: "wwhc",
+          feedback: "",
+        },
+        {
+          date: "Feb 2. 2020",
+          type: "multiple choice",
+          attempts: "s",
+          feedback: "",
+        },
+      ],
+      exclusionReason: "",
+    },
+    {
+      word: "practised2",
+      translation: "øvet2",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        {
+          date: "Mar 1. 2020",
+          type: "recognise",
+          attempts: "wc",
+          feedback: "",
+        },
+        {
+          date: "Mar 2. 2020",
+          type: "multiple choice",
+          attempts: "c",
+          feedback: "Too easy",
+        },
+      ],
+      exclusionReason: "",
+    },
+    {
+      word: "practised3",
+      translation: "øvet3",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        {
+          date: "Apr 1. 2020",
+          type: "recognise",
+          attempts: "hwhc",
+          feedback: "",
+        },
+        {
+          date: "Apr 2. 2020",
+          type: "multiple choice",
+          attempts: "c",
+          feedback: "",
+        },
+      ],
+      exclusionReason: "",
+    },
+    {
+      word: "non-studied1",
+      translation: "ikke-øvet1",
+      isStudied: "false",
+      isLearned: "false",
+      exerciseAttempts: [],
+      exclusionReason: "Excluded by algorithm",
+    },
+    {
+      word: "non-studied2",
+      translation: "ikke-øvet2",
+      isStudied: "false",
+      isLearned: "false",
+      exerciseAttempts: [],
+      exclusionReason: "Excluded by algorithm",
+    },
+    {
+      word: "non-studied3",
+      translation: "ikke-øvet3",
+      isStudied: "false",
+      isLearned: "false",
+      exerciseAttempts: [],
+      exclusionReason: "Scheduled - not yet practiced",
+    },
+    {
+      word: "practised4",
+      translation: "øvet4",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        {
+          date: "Apr 1. 2020",
+          type: "recognise",
+          attempts: "hwhs",
+          feedback: "",
+        },
+        {
+          date: "Apr 2. 2020",
+          type: "multiple choice",
+          attempts: "hh",
+          feedback: "Too hard",
+        },
+      ],
+      exclusionReason: "",
+    },
+    {
+      word: "practised5",
+      translation: "øvet5",
+      isStudied: "true",
+      isLearned: "false",
+      exerciseAttempts: [
+        { date: "May 1. 2020", type: "recognise", attempts: "hhhc" },
+        { date: "May 2. 2020", type: "multiple choice", attempts: "c" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "wwws" },
+        { date: "Jan 3. 2020", type: "multiple choice", attempts: "hc" },
+      ],
+      exclusionReason: "",
+    },
+  ];
+
+  export const DUMMYLEARNEDWORDS = [
+    {
+      bookmark_id:123456,
+      word: "styrelsen",
+      translation: "the board",
+      learned_time: "2021-06-04T00:03:10"
     }
   ]

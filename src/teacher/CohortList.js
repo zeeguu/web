@@ -1,50 +1,53 @@
 import React, { useState, Fragment, useEffect } from "react";
-//import strings from "../i18n/definitions";
+import strings from "../i18n/definitions";
 import CohortForm from "./CohortForm";
 import { CohortItemCard } from "./CohortItemCard";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 
 export default function CohortList({ api, cohorts, setForceUpdate }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [showCohortForm, setShowCohortForm] = useState(false);
   const [reversedList, setReversedList] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [cohortToEdit, setCohortToEdit] = useState(null);
 
   //Making sure the latest added class is always on top of the list
-  const getReversedList = () => {
-    return cohorts.map((cohort) => cohort).reverse();
-  };
+  const getReversedList = cohorts.map((cohort) => cohort).reverse();
 
   useEffect(() => {
-    setReversedList(getReversedList());
-    setIsLoading(false);
+    setReversedList(getReversedList);
     // eslint-disable-next-line
   }, [cohorts]);
+
+  const handleAddNewCohort = () => {
+    setCohortToEdit(null);
+    setShowCohortForm(true);
+  };
+
+  if (reversedList === null) {
+    return <LoadingAnimation />;
+  }
 
   return (
     <Fragment>
       <TopButtonWrapper>
-        <StyledButton primary onClick={() => setIsOpen(true)}>
-          Add class (STRINGS)
+        <StyledButton primary onClick={handleAddNewCohort}>
+          {strings.addClass}
         </StyledButton>
       </TopButtonWrapper>
-      {!isLoading ? (
-        reversedList.map((cohort) => (
-          <CohortItemCard
-            api={api}
-            key={cohort.id}
-            cohort={cohort}
-            setForceUpdate={setForceUpdate}
-          />
-        ))
-      ) : (
-        <LoadingAnimation />
-      )}
-      {isOpen && (
+      {reversedList.map((cohort) => (
+        <CohortItemCard
+          key={cohort.id}
+          cohort={cohort}
+          setShowCohortForm={setShowCohortForm}
+          setCohortToEdit={setCohortToEdit}
+        />
+      ))}
+      {showCohortForm && (
         <CohortForm
           api={api}
-          setIsOpen={setIsOpen}
+          setShowCohortForm={setShowCohortForm}
           setForceUpdate={setForceUpdate}
+          cohort={cohortToEdit}
         />
       )}
     </Fragment>

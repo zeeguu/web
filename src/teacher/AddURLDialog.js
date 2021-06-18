@@ -1,47 +1,49 @@
-//import strings from "../i18n/definitions";
 import React, { useEffect, useState } from "react";
+import strings from "../i18n/definitions";
 import { useHistory } from "react-router";
 import { LabeledTextField } from "./LabeledInputFields";
-import { LanguageSelector } from "./LanguageSelector";
 import { StyledDialog } from "./StyledDialog.sc";
 import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
+import { Error } from "../teacher/Error";
 
 export default function AddURLDialog({ api, setShowAddURLDialog }) {
   const history = useHistory();
   const [showGuidance, setShowGuidance] = useState(false);
-  const [languageCode, setLanguageCode] = useState("default");
+  const [showError, setShowError] = useState(false);
   const [url, setURL] = useState("");
 
   useEffect(() => {
-    if (url !== "" && languageCode !== "default") {
+    if (url !== "") {
       setShowGuidance(false);
     }
-  }, [url, languageCode]);
+    setShowError(false);
+  }, [url]);
 
   const handleChange = (event) => {
     console.log("Setting the url to: " + event.target.value);
     setURL(event.target.value);
   };
 
-  function handleLanguageChange(selectedLanguage) {
-    setLanguageCode(selectedLanguage);
-  }
-
   const getArticle = () => {
-    if (url === "" || languageCode === "default") {
+    if (url === "") {
       setShowGuidance(true);
     } else {
       api.parseArticleFromUrl(
         url,
         (articleInfo) => {
-          const newTitle = articleInfo.title
-          const newText = articleInfo.text
-          api.uploadOwnText(newTitle, newText, languageCode, (newID) => {
+          const newTitle = articleInfo.title;
+          const newText = articleInfo.text;
+          const newLanguage = articleInfo.language_code;
+          api.uploadOwnText(newTitle, newText, newLanguage, (newID) => {
             console.log(`article created from the url with id: ${newID}`);
             history.push(`/teacher/texts/editText/${newID}`);
           });
         },
         (err) => {
+          setShowError(true);
+          console.log(
+            "An error occurred. It might be caused by an invalid URL: "
+          );
           console.log(err);
         }
       );
@@ -54,30 +56,28 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
       onDismiss={() => setShowAddURLDialog(false)}
       max_width="525px"
     >
-      <h1>Add text from a webpage STRINGS</h1>
-      <LanguageSelector value={languageCode} onChange={handleLanguageChange}>
-        Please, define the language of the text STRINGS
-      </LanguageSelector>
+      <h1>{strings.addTextFromWebpage}</h1>
       <LabeledTextField
         value={url}
         onChange={handleChange}
         name="url_address"
         placeholder="eg. 'http://www.news.com/article/19358538'"
       >
-        Insert the url address of the text your wish to add STRINGS
+        {strings.insertUrl}
       </LabeledTextField>
       <p>
-        <b>Please note:</b> Texts cannot be extracted from all webpages. <br />{" "}
-        So you might have to edit or delete the text, we save for you. STRINGS
+        <b>{strings.pleaseNote}</b> {strings.textNotExtracted} <br />{" "}
+        {strings.editTheSavedText}
       </p>
-      {showGuidance && (
-        <p style={{ color: "red" }}>
-          You must fill in both of the input fields above.STRINGS
-        </p>
+      {showGuidance && <Error message={strings.nothingInInputField} />}
+      {showError && (
+        <Error
+          message={"STRINGS Something went wrong. The URL might be invalid."}
+        />
       )}
       <PopupButtonWrapper>
         <StyledButton primary onClick={getArticle}>
-          Save and edit STRINGS
+          {strings.saveAndEdit}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import * as s from "./ArticleReader.sc";
+import { useEffect, useState, useContext } from "react";
+import { useLocation, useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import { TranslatableText } from "./TranslatableText";
-
 import InteractiveText from "./InteractiveText";
 import BookmarkButton from "./BookmarkButton";
-
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import { PopupButtonWrapper, StyledButton } from "../teacher/TeacherButtons.sc";
+import * as s from "./ArticleReader.sc";
+import { UserContext } from "../UserContext";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -21,17 +21,20 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-export default function ArticleReader({ api }) {
+export default function ArticleReader({ api, teacherArticleID }) {
+  let articleID = "";
   let query = useQuery();
-
-  const articleID = query.get("id");
+  teacherArticleID
+    ? (articleID = teacherArticleID)
+    : (articleID = query.get("id"));
 
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
-
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
+  const user = useContext(UserContext);
+  const history = useHistory();
 
   useEffect(() => {
     api.getArticleInfo(articleID, (articleInfo) => {
@@ -57,10 +60,11 @@ export default function ArticleReader({ api }) {
     return () => {
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("blur", onBlur);
-      document
-        .getElementById("scrollHolder")
-        .removeEventListener("scroll", onScroll);
 
+      document.getElementById("scrollHolder") !== null &&
+        document
+          .getElementById("scrollHolder")
+          .removeEventListener("scroll", onScroll);
       api.logReaderActivity("ARTICLE CLOSED", articleID);
     };
     // eslint-disable-next-line
@@ -113,27 +117,62 @@ export default function ArticleReader({ api }) {
     return <LoadingAnimation />;
   }
 
+  const saveArticleToOwnTexts = () => {
+    api.getArticleInfo(articleID, (article) => {
+      api.uploadOwnText(
+        article.title,
+        article.content,
+        article.language,
+        (newID) => {
+          console.log(`article created with id: ${newID}`);
+          history.push(`/teacher/texts/editText/${newID}`);
+        }
+      );
+    });
+  };
+
   return (
     <s.ArticleReader>
-      <s.Toolbar>
-        <button
-          className={translating ? "selected" : ""}
-          onClick={(e) => toggle(translating, setTranslating)}
-        >
-          <img
-            src="/static/images/translate.svg"
-            alt={strings.translateOnClick}
-          />
-          <span className="tooltiptext">{strings.translateOnClick}</span>
-        </button>
-        <button
-          className={pronouncing ? "selected" : ""}
-          onClick={(e) => toggle(pronouncing, setPronouncing)}
-        >
-          <img src="/static/images/sound.svg" alt={strings.listenOnClick} />
-          <span className="tooltiptext">{strings.listenOnClick}</span>
-        </button>
-      </s.Toolbar>
+      <PopupButtonWrapper>
+        {user.is_teacher && process.env.REACT_APP_NEW_TEACHER_SITE === "true" && (
+          <div>
+            {teacherArticleID && (
+              <Link to={`/teacher/texts/editText/${articleID}`}>
+                <StyledButton secondary studentView>
+                  {strings.backToEditing}
+                </StyledButton>
+              </Link>
+            )}
+
+            {!teacherArticleID && (
+              <StyledButton primary studentView onClick={saveArticleToOwnTexts}>
+                {strings.saveOwnCopy}
+              </StyledButton>
+            )}
+          </div>
+        )}
+
+        <s.Toolbar>
+          <button
+            className={translating ? "selected" : ""}
+            onClick={(e) => toggle(translating, setTranslating)}
+          >
+            <img
+              src="/static/images/translate.svg"
+              alt={strings.translateOnClick}
+            />
+            <span className="tooltiptext">{strings.translateOnClick}</span>
+          </button>
+          <button
+            className={pronouncing ? "selected" : ""}
+            onClick={(e) => toggle(pronouncing, setPronouncing)}
+          >
+            <img src="/static/images/sound.svg" alt={strings.listenOnClick} />
+            <span className="tooltiptext">{strings.listenOnClick}</span>
+          </button>
+        </s.Toolbar>
+      </PopupButtonWrapper>
+
       <s.Title>
         <TranslatableText
           interactiveText={interactiveTitle}
