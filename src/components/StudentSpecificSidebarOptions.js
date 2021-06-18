@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
+import LocalStorage from "../assorted/LocalStorage";
 
 export default function StudentSpecificSidebarOptions({
   resetSidebarToDefault,
@@ -9,7 +10,7 @@ export default function StudentSpecificSidebarOptions({
   api,
 }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
-  const new_site = process.env.REACT_APP_NEW_TEACHER_SITE === "true";
+  const new_site = LocalStorage.isEMSTeacherDashboard();
   const [showActivityDashboard, setShowActivityDashboard] = useState(false);
 
   useEffect(() => {
