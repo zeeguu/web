@@ -19,11 +19,11 @@ export const convertTime = (accumulatedTime, setTime) => {
 };
 
 export const convertTimeForActivityBar = (accumulatedTime, setTime) => {
-  const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
+  const time = convertToHoursMinSec(accumulatedTime);
   if (accumulatedTime < 240) {
     setTime("");
   } else {
-    hours < 1 ? setTime(minutes + "m") : setTime(hours + strings.hours + minutes + "m");
+    time.hours < 1 ? setTime(time.minutes + "m") : setTime(time.hours + strings.hours + time.minutes + "m");
   }
 };
 
