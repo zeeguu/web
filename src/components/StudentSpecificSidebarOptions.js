@@ -15,6 +15,7 @@ export default function StudentSpecificSidebarOptions({
 
   useEffect(() => {
     api.ifActivityDashboard(setShowActivityDashboard);
+    // eslint-disable-next-line
   }, []);
 
   return (
