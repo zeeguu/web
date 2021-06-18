@@ -6,41 +6,16 @@ const SortingButtons = styled.div`
   margin-left: 1em;
   display: flex;
   justify-content: flex-end;
+  font-size: medium;
+  
+  .sort-by {
+    padding-top: 0.3em;
+  }
 
   ${(props) =>
     props.isOnTeacherSite &&
     css`
-      @media (min-width: 768px) {
-        padding-right: 18vw;
-      }
-
-      @media (min-width: 1024px) {
-        padding-right: 15.5vw;
-      }
-
-      @media (min-width: 1150px) and (max-width: 1365px) {
-        padding-right: 13.7vw;
-      }
-
-      @media (min-width: 1366px) and (max-width: 1439px) {
-        padding-right: 13vw;
-      }
-
-      @media (min-width: 1440px) {
-        padding-right: 12.2vw;
-      }
-
-      @media (min-width: 1500px) and (max-width: 1920px) {
-        padding-right: 9.2vw;
-      }
-
-      @media (min-width: 2560px) and (max-width: 2879px) {
-        padding-right: 6.8vw;
-      }
-
-      @media (min-width: 2880px) {
-        padding-right: 6vw;
-      }
+    margin-right: 13.7em;
     `}
 
   .descending::after {
@@ -66,6 +41,15 @@ const SortButton = styled(b.RoundButton)`
   font-size: small;
   background-color: #efefef;
   color: #444444 !important;
+
+  ${(props) =>
+    props.isOnTeacherSite &&
+    css`
+    margin-left: 2vw;
+    font-size: medium;
+    
+    `
+  }
 `;
 
 export { SortingButtons, SortButton };

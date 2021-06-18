@@ -39,8 +39,9 @@ export default function SortingButtons({
 
   return (
     <s.SortingButtons isOnTeacherSite={isOnTeacherSite}>
-      {strings.sortBy}&nbsp;
+      <div className="sort-by"> {strings.sortBy}&nbsp; </div>
       <s.SortButton
+        isOnTeacherSite={isOnTeacherSite}
         className={wordCountSortState}
         onClick={(e) =>
           changeDifficultySorting(
@@ -55,6 +56,7 @@ export default function SortingButtons({
         {strings.lengthWithCapital}
       </s.SortButton>
       <s.SortButton
+        isOnTeacherSite={isOnTeacherSite}
         className={difficultySortState}
         onClick={(e) =>
           changeDifficultySorting(

@@ -6,6 +6,7 @@ import ReadingInsightAccordionItem from "./ReadingInsightsAccordionItem";
 const ReadingInsightAccordion = ({ readArticles }) => {
   const [firstArticle, setFirstArticle] = useState(null);
   const [restOfArticles, setRestOfArticles] = useState(null);
+  const [openedArticle, setOpenedArticle] = useState(null);
 
   useEffect(() => {
     setFirstArticle(readArticles[0]);
@@ -15,12 +16,23 @@ const ReadingInsightAccordion = ({ readArticles }) => {
 
   return (
     <Accordion collapsible>
-      {firstArticle !== null &&
-        <ReadingInsightAccordionItem isFirst={true} article={firstArticle} />
-      }
+      {firstArticle !== null && (
+        <ReadingInsightAccordionItem
+          isFirst={true}
+          article={firstArticle}
+          openedArticle={openedArticle}
+          setOpenedArticle={setOpenedArticle}
+        />
+      )}
       {restOfArticles !== null &&
         restOfArticles.map((article) => (
-          <ReadingInsightAccordionItem key={uuid() + article.article_id} isFirst={false} article={article} />
+          <ReadingInsightAccordionItem
+            key={uuid() + article.session_id}
+            isFirst={false}
+            article={article}
+            openedArticle={openedArticle}
+            setOpenedArticle={setOpenedArticle}
+          />
         ))}
     </Accordion>
   );

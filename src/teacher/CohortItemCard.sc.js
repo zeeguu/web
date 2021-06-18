@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { darkGrey } from "../components/colors";
 
 export const StyledCohortItemCard = styled.div`
+ 
   .cohort-card {
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
@@ -13,6 +14,8 @@ export const StyledCohortItemCard = styled.div`
     padding-left: 1em;
     padding-bottom: 1em;
     margin-bottom: 1em;
+    width: 80%;
+    margin-left: 10%;
   }
   .top-line-box {
     display: flex;

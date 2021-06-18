@@ -6,15 +6,16 @@ export const ReadingInsightAccordion = styled.div`
   .accordion-wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     min-height: 13vh;
-    margin: 3vh 0 3.2vh -3vw;
+    margin: 3vh 0 3.2vh 0;
     font-family: "Montserrat";
   }
 
   .content-wrapper {
     display: flex;
     justify-content: space-between;
+    margin: 0 auto;
   }
 
   ${(props) =>
@@ -24,7 +25,11 @@ export const ReadingInsightAccordion = styled.div`
         margin-top: 5vh;
       }
       .content-wrapper {
-        padding-bottom: 1.7vh;
+        padding-bottom: 0.6vh;
+      }
+      .left-line {
+        border-left: solid 3px ${darkBlue};
+        min-height: 88px !important;
       }
     `}
 
@@ -66,19 +71,10 @@ export const ReadingInsightAccordion = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    margin-left: 10em;
-  }
-
-  @media (max-width: 600px) {
-    button {
-      width: 100% !important;
-    }
   }
 
   .panel {
-    margin-left: 2.5em;
-    margin-top: 1vh;
-    margin-bottom: 7vh;
+    margin: 2vh auto 7vh auto;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     padding: 1em;
@@ -87,6 +83,7 @@ export const ReadingInsightAccordion = styled.div`
 
   .panel-headline {
     color: ${darkBlue};
+    padding-left: 1.5em;
   }
 
   .panel-no-words {
@@ -133,9 +130,8 @@ export const ReadingInsightAccordion = styled.div`
     padding-top: 2vh;
     margin-left: 2vw;
     text-align: left;
-    font-size: large;
+    font-size: small;
     font-family: "Montserrat";
     color: #000000 !important;
-    
   }
 `;

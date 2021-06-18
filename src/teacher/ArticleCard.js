@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import strings from "../i18n/definitions";
 import * as s from "./ReadingInsightAccordion.sc";
 import ViewMoreLessButton from "./ViewMoreLessButton";
@@ -6,6 +6,24 @@ import StudentActivityDataCircleWrapper from "./StudentActivityDataCircleWrapper
 import { longFormatedDate } from "./FormatedDate";
 
 const ArticleCard = ({ article, isFirst, openedArticle }) => {
+  const [translationCount, setTranslationCount] = useState(0);
+
+  useEffect(() => {
+    setTranslationCount(0);
+    let previousTranslation = {};
+    article.translations.forEach((translation) => {
+      if (
+        previousTranslation === {} ||
+        (previousTranslation !== {} &&
+          translation.id !== previousTranslation.id)
+      ) {
+        setTranslationCount((prev) => prev + 1);
+        previousTranslation = translation;
+      }
+    });
+    //eslint-disable-next-line
+  }, []);
+
   return (
     <s.ReadingInsightAccordion isFirst={isFirst}>
       <div className="content-wrapper">
@@ -27,12 +45,12 @@ const ArticleCard = ({ article, isFirst, openedArticle }) => {
             length={article.word_count}
             difficulty={article.difficulty}
             readingTime={article.duration_in_sec}
-            translatedWords={article.translations.length}
+            translatedWords={translationCount}
             isFirst={isFirst}
           />
           <ViewMoreLessButton
             isFirst={isFirst}
-            articleID={article.article_id}
+            sessionID={article.session_id}
             openedArticle={openedArticle}
           />
         </div>
