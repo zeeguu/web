@@ -13,7 +13,7 @@ export const convertTime = (accumulatedTime, setTime) => {
     setTime(seconds + "s");
   } else {
     hours < 1
-      ? setTime(minutes + "m " + seconds + "s")
+      ? setTime(minutes + "m")
       : setTime(hours + strings.hours + minutes + "m");
   }
 };
@@ -23,7 +23,7 @@ export const convertTimeForActivityBar = (accumulatedTime, setTime) => {
   if (accumulatedTime < 240) {
     setTime("");
   } else {
-    hours < 1 ? setTime(minutes + strings.hours) : setTime(hours + strings.hours + minutes + "m");
+    hours < 1 ? setTime(minutes + "m") : setTime(hours + strings.hours + minutes + "m");
   }
 };
 
