@@ -452,6 +452,9 @@ let strings = new LocalizedStrings(
       avgText: "Avg. text",
       difficultyLowerCase: "difficulty",
       exercisesCorrectness: "Exercises correctness",
+      textLengthExplanation: "Average length of the read texts",
+      difficultyExplanation: "Average difficulty of the read texts",
+      exercisesExplaination: "Exercises solved correctly on first attempt",
 
       //StudentInfoLineHeader
       textLevel: "level",
@@ -982,7 +985,11 @@ let strings = new LocalizedStrings(
       studentHasRead: " har læst ",
       textsInTheLastPeriod: " tekster i en periode på ",
       studentHasNotReadAnyArticles:
-        "Eleven har endnu ikke læst nogle tekster i",
+        "Eleven har endnu ikke læst nogle tekster i",      
+      textLengthExplanation: "Gennemsnitlig længde af de tekster eleven har læst",
+      difficultyExplanation: "Gennemsnitlig sværhedsgrad af de tekster eleven har læst",
+      exercisesExplaination: "Øvelser løst korrekt i først forsøg",
+  
 
       //StudentInfoLineHeader
       textLevel: "grad",
