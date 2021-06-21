@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { convertTimeForActivityBar, timeExplanation } from "./FormatedTime";
+import { convertTime, timeExplanation } from "./FormatedTime";
 import * as s from "./StudentActivityBar.sc";
 import { StyledTooltip } from "./StyledTooltip.sc";
 
@@ -9,8 +9,9 @@ const StudentActivityBar = ({ student, isFirst }) => {
 
 
   useEffect(() => {
-    convertTimeForActivityBar(student.reading_time, setReadingTimeString);
-    convertTimeForActivityBar(student.exercise_time, setExerciseTimeString);
+    convertTime(student.reading_time, setReadingTimeString);
+    convertTime(student.exercise_time, setExerciseTimeString);
+    
   }, [student]);
 
   const setReadingCorners = () => {
@@ -42,6 +43,7 @@ const StudentActivityBar = ({ student, isFirst }) => {
       exerciseCorners={() => setExerciseCorners()}
     >
       <StyledTooltip label={timeExplanation(student)}>
+      <div>
       <div
         className="activity-bar"
         style={{
@@ -55,9 +57,6 @@ const StudentActivityBar = ({ student, isFirst }) => {
             width: student.reading_percentage + "%",
           }}
         >
-          <p style={{ fontSize: "small", marginTop: "20px" }}>
-            {readingTimeString}
-          </p>
         </div>
         <div
           className="activity-bar"
@@ -66,10 +65,11 @@ const StudentActivityBar = ({ student, isFirst }) => {
             width: computedWidth,
           }}
         >
-          <p style={{ fontSize: "small", marginTop: "20px" }}>
-            {exerciseTimeString}
-          </p>
         </div>
+      </div>
+      <p style={{color: "black", fontSize: "x-small", marginTop: "30px" }}>
+            {readingTimeString} | {exerciseTimeString}
+          </p>
       </div>
       </StyledTooltip>
     </s.StudentActivityBar>
