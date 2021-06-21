@@ -63,7 +63,11 @@ export default function StudentInfoLine({
               )}
               <div className="left-line">
                 <div className="name-activity-wrapper">
-                  <div className="student-name">{student.name.length > 19 ? student.name.substring(0,19)+"...": student.name}</div>
+                  <div className="student-name">
+                    {student.name.length > 19
+                      ? student.name.substring(0, 19) + "..."
+                      : student.name}
+                  </div>
                   <div className="student-email">{student.email}</div>
                   <div className="activity-count">
                     {activity.number_of_texts} {strings.textsRead}
@@ -107,8 +111,7 @@ export default function StudentInfoLine({
                     {strings.difficultyLowerCase}
                   </p>
                 )}
-                <StyledTooltip
-                  label={strings.difficultyExplanation}>
+                <StyledTooltip label={strings.difficultyExplanation}>
                   <div className="number-display">
                     {activity.average_text_difficulty}
                   </div>

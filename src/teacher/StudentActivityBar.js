@@ -7,11 +7,9 @@ const StudentActivityBar = ({ student, isFirst }) => {
   const [readingTimeString, setReadingTimeString] = useState("");
   const [exerciseTimeString, setExerciseTimeString] = useState("");
 
-
   useEffect(() => {
     convertTime(student.reading_time, setReadingTimeString);
     convertTime(student.exercise_time, setExerciseTimeString);
-    
   }, [student]);
 
   const setReadingCorners = () => {
@@ -35,7 +33,7 @@ const StudentActivityBar = ({ student, isFirst }) => {
   if (student.total_time === 0) {
     return null;
   }
-  
+
   return (
     <s.StudentActivityBar
       isFirst={isFirst}
@@ -43,34 +41,32 @@ const StudentActivityBar = ({ student, isFirst }) => {
       exerciseCorners={() => setExerciseCorners()}
     >
       <StyledTooltip label={timeExplanation(student)}>
-      <div>
-      <div
-        className="activity-bar"
-        style={{
-          width: student.normalized_activity_proportion + "%",
-        }}
-      >
-        <div
-          className="activity-bar"
-          id="reading"
-          style={{
-            width: student.reading_percentage + "%",
-          }}
-        >
-        </div>
-        <div
-          className="activity-bar"
-          id="exercises"
-          style={{
-            width: computedWidth,
-          }}
-        >
-        </div>
-      </div>
-      <p style={{color: "black", fontSize: "x-small", marginTop: "30px" }}>
+        <div>
+          <div
+            className="activity-bar"
+            style={{
+              width: student.normalized_activity_proportion + "%",
+            }}
+          >
+            <div
+              className="activity-bar"
+              id="reading"
+              style={{
+                width: student.reading_percentage + "%",
+              }}
+            ></div>
+            <div
+              className="activity-bar"
+              id="exercises"
+              style={{
+                width: computedWidth,
+              }}
+            ></div>
+          </div>
+          <p style={{ color: "black", fontSize: "x-small", marginTop: "30px" }}>
             {readingTimeString} | {exerciseTimeString}
           </p>
-      </div>
+        </div>
       </StyledTooltip>
     </s.StudentActivityBar>
   );
