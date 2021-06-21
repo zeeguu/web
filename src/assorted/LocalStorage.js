@@ -1,3 +1,5 @@
+import uiLanguages from "./uiLanguages";
+
 const LocalStorage = {
   Keys: {
     Session: "sessionID",
@@ -36,15 +38,16 @@ const LocalStorage = {
   },
 
   setUiLanguage: function (language) {
-    localStorage[this.Keys.UiLanguage] = JSON.stringify(language);
+    localStorage[this.Keys.UiLanguage] = language.code;
   },
 
   getUiLanguage: function () {
-    const uiLang = localStorage[this.Keys.UiLanguage];
-    if (uiLang === undefined) {
-      return undefined; // This is needed for some reason. Returning uiLang will not work
+    const uiLangCode = localStorage[this.Keys.UiLanguage];
+    if (uiLangCode === undefined) {
+      return undefined;
     } else {
-      return JSON.parse(uiLang); // App breaks if trying to JSON.parse if uiLang is undefined. Therefore abstracting to here.
+      const uiLang = uiLanguages.find((item) => item.code === uiLangCode)
+      return uiLang
     }
   },
 

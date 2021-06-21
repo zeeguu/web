@@ -32,11 +32,9 @@ function App() {
 
   useEffect(() => {
     const uiLang = LocalStorage.getUiLanguage();
-    console.log(uiLang === undefined);
     if (uiLang === undefined) {
-      LocalStorage.setUiLanguage({ name: "english", code: "en" });
+      LocalStorage.setUiLanguage({ code: "en" });
     }
-
     setUiLanguage(uiLang);
   }, []);
 
