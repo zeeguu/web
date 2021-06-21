@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
-import uiLanguages from '../assorted/uiLanguages'
+import uiLanguages from "../assorted/uiLanguages";
 import LocalStorage from "../assorted/LocalStorage";
 
 import strings from "../i18n/definitions";
 import * as s from "./UiLanguageSettings.sc";
 
 export default function UiLanguageSettings({ uiLanguage, setUiLanguage }) {
-
   useEffect(() => {
     let language = LocalStorage.getUiLanguage();
     if (language === undefined) {
@@ -23,7 +22,6 @@ export default function UiLanguageSettings({ uiLanguage, setUiLanguage }) {
     setUiLanguage(language);
     LocalStorage.setUiLanguage(language);
     strings.setLanguage(language.code);
-
   }
 
   return (

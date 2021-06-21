@@ -11,7 +11,7 @@ import * as sc from "../components/TopTabs.sc";
 import { setTitle } from "../assorted/setTitle";
 
 import LocalStorage from "../assorted/LocalStorage";
-import uiLanguages from '../assorted/uiLanguages'
+import uiLanguages from "../assorted/uiLanguages";
 
 import strings from "../i18n/definitions";
 
@@ -23,7 +23,6 @@ export default function Settings({ api, setUser }) {
   const [languages, setLanguages] = useState();
 
   // TODO: Refactor using Zeeguu project logic
-
 
   const [uiLanguage, setUiLanguage] = useState();
 
