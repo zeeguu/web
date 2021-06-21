@@ -33,12 +33,12 @@ export default function UiLanguageSettings({ uiLanguage, setUiLanguage }) {
           <s.Container htmlFor={lang.name}>
             <s.Icon
               src={
-                uiLanguage.name.toLowerCase() === lang.name
+                uiLanguage.name === lang.name
                   ? lang.selectedIcon
                   : lang.deselectedIcon
               }
             />
-            {capitalize(lang.name)}
+            {lang.name}
             <s.Option
               type="radio"
               id={lang.name}
