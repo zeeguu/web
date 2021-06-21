@@ -116,7 +116,7 @@ export default function StudentInfoLine({
                   </p>
                 )}
                 <div className="number-display">
-                  {activity.correct_on_1st_try * 100 + "%"}
+                  {Math.round(activity.correct_on_1st_try * 100) + "%"}
                 </div>
               </div>
             </div>
