@@ -31,7 +31,7 @@ export const CohortItemCard = ({
               </div>
             </div>
             <h2 className="cohort-card-headline">
-              {cohort.name} {/*This cannot be strings-yfied*/}
+              {cohort.name} {/*This cannot be localized*/}
             </h2>
           </Link>
           <div className="bottom-box">
