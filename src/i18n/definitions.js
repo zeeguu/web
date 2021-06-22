@@ -417,8 +417,18 @@ let strings = new LocalizedStrings(
         "Students will not appear in the class until they have signed up for Zeeguu and used the invite code.",
       goToClass: "Go to Class",
 
-      //LanguageSelector
+      //LanguageSelector (both of them)
       chooseLanguage: "Choose a language...",
+      german: "German",
+      spanish: "Spanish",
+      french: "French",
+      dutch: "Dutch",
+      english: "English",
+      italian: "Italian",
+      danish: "Danish",
+      polish: "Polish",
+      romanian: "Romanian",
+      chinese: "Chinese",
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -946,6 +956,17 @@ let strings = new LocalizedStrings(
 
       //LanguageSelector
       chooseLanguage: "Vælg sprog...",
+      german: "Tysk",
+      spanish: "Spansk",
+      french: "Fransk",
+      dutch: "Hollandsk",
+      english: "Engelsk",
+      italian: "Italiensk",
+      danish: "Dansk",
+      polish: "Polsk",
+      romanian: "Romansk",
+      chinese: "Kinesisk",
+
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
