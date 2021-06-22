@@ -254,7 +254,7 @@ let strings = new LocalizedStrings(
       //ExerciseType
       matchThreePairs: " match 3 pairs",
       pickTheWord: "pick the word",
-      findInText: "find in text",
+      typeTheWord: "type the word",
       learnedOn: "Learned on:",
       studentFeedback: "Student feedback:",
 
@@ -346,7 +346,7 @@ let strings = new LocalizedStrings(
         "is feedback that the student has given on the exercise.",
       typeOfExerciseIconExplanation:
         "is the type of exercise the student has practised the word in.",
-      recogniseOrMultipleChoice: "Recognise/multiple choice etc.",
+      pickTheWordOrMatchThreePairs: "Pick a word/Match 3 pairs etc.",
       tooHard: "too hard",
       badWord: "bad word",
       badExample: "bad example",
@@ -792,7 +792,7 @@ let strings = new LocalizedStrings(
       //ExerciseType
       matchThreePairs: " match 3 par",
       pickTheWord: "vælg ordet",
-      findInText: "find i tekst",
+      typeTheWord: "skriv ordet",
       learnedOn: "Lært på:",
       studentFeedback: "Elev feedback:",
       noType: "Ingen type",
@@ -883,7 +883,7 @@ let strings = new LocalizedStrings(
       exerciseFeedbackFromStudent: "er elevens feedback på øvelsen.",
       typeOfExerciseIconExplanation:
         "indikerer, hvilken type øvelse eleven har øvet ordet i.",
-      recogniseOrMultipleChoice: "Genkend/multiple choice osv.",
+      pickTheWordOrMatchThreePairs: "Vælg ordet/Match 3 par osv.",
       tooHard: "for svær",
       badWord: "dårligt ord",
       badExample: "dårligt eksempel",

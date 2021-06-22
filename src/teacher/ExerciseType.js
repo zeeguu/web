@@ -9,23 +9,23 @@ const ExerciseType = ({ source }) => {
           {strings.matchThreePairs}
         </p>
       );
-    case "Select_L2W_fitting_L2T":
-      return (
-        <p style={{ color: "#808080", margin: "1em 0 0 .5em" }}>
+      case "Select_L2W_fitting_L2T":
+        return (
+          <p style={{ color: "#808080", margin: "1em 0 0 .5em" }}>
           {strings.pickTheWord}
         </p>
       );
-    case "Recognize_L1W_in_L2T":
-      return (
-        <p style={{ color: "#808080", margin: "1em 0 0 .5em" }}>
-          {strings.findInText}
+      case "Recognize_L1W_in_L2T":
+        return (
+          <p style={{ color: "#808080", margin: "1em 0 0 .5em" }}>
+          {strings.typeTheWord}
         </p>
       );
-    //TODO the MULTIPLE_CHOICE case can be deleted when the logging in exercises has been changed.
-    case "MULTIPLE_CHOICE":
-      return (
+      //TODO the MULTIPLE_CHOICE case can be deleted when the logging in exercises has been changed.
+      case "MULTIPLE_CHOICE":
+        return (
         <p style={{ color: "#808080", margin: "1em 0 0 .5em" }}>
-          {strings.matchThreePairs}
+          {strings.pickTheWord}
         </p>
       );
     case "LEARNED":
