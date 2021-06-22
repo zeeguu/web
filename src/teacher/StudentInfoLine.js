@@ -64,8 +64,8 @@ export default function StudentInfoLine({
               <div className="left-line">
                 <div className="name-activity-wrapper">
                   <div className="student-name">
-                    {student.name.length > 19
-                      ? student.name.substring(0, 19) + "..."
+                    {student.name.length > 20
+                      ? student.name.substring(0, 20) + "..."
                       : student.name}
                   </div>
                   <div className="student-email">{student.email}</div>
