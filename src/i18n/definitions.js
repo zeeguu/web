@@ -199,7 +199,7 @@ let strings = new LocalizedStrings(
       reviewVocabExplanation:
         "Review your translations now to ensure better learning and ensure that you tell Zeeguu which of the words you want prioritize in your study.",
       backToEditing: "Back to editing",
-      saveOwnCopy: "Save Own Copy",
+      saveCopyToShare: "Save Copy to Share",
 
       //BookmarkButton
       addToBookmarks: "Add to bookmarks",
@@ -736,7 +736,7 @@ let strings = new LocalizedStrings(
       reviewVocabExplanation:
         "Gennemse dine oversatte ord nu for at sikre bedre læring. Husk at fortælle Zeeguu hvilke ord, du gerne vil prioritere i din træning.",
       backToEditing: "Tilbage til redigering",
-      saveOwnCopy: "Gem egen kopi",
+      saveCopyToShare: "Gem kopi til deling",
 
       //BookmarkButton
       addToBookmarks: "Tilføj til bogmærker",
@@ -967,7 +967,6 @@ let strings = new LocalizedStrings(
       romanian: "Romansk",
       chinese: "Kinesisk",
 
-
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
       shareTheInviteCode: "Del invitationskoden",
@@ -1006,11 +1005,12 @@ let strings = new LocalizedStrings(
       studentHasRead: " har læst ",
       textsInTheLastPeriod: " tekster i en periode på ",
       studentHasNotReadAnyArticles:
-        "Eleven har endnu ikke læst nogle tekster i",      
-      textLengthExplanation: "Gennemsnitlig længde af de tekster eleven har læst",
-      difficultyExplanation: "Gennemsnitlig sværhedsgrad af de tekster eleven har læst",
+        "Eleven har endnu ikke læst nogle tekster i",
+      textLengthExplanation:
+        "Gennemsnitlig længde af de tekster eleven har læst",
+      difficultyExplanation:
+        "Gennemsnitlig sværhedsgrad af de tekster eleven har læst",
       exercisesExplaination: "Øvelser løst korrekt i først forsøg",
-  
 
       //StudentInfoLineHeader
       textLevel: "grad",

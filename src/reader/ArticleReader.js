@@ -145,7 +145,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
             {!teacherArticleID && (
               <StyledButton primary studentView onClick={saveArticleToOwnTexts}>
-                {strings.saveOwnCopy}
+                {strings.saveCopyToShare}
               </StyledButton>
             )}
           </div>
