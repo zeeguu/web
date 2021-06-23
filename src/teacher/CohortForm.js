@@ -12,7 +12,13 @@ import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 import DeleteCohortWarning from "./DeleteCohortWarning";
 import { StyledDialog } from "./StyledDialog.sc";
 
-const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
+const CohortForm = ({
+  api,
+  cohort,
+  setForceUpdate,
+  setShowCohortForm,
+  cohorts,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -90,11 +96,30 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
     state.invite_code === "" ||
     state.language_code === "default";
 
+  const invalidClassName = () => {
+    const invalid = cohorts.filter(
+      (cohort) => cohort.name === state.cohort_name
+    );
+    return invalid.length > 0;
+  };
+
+  const invalidInviteCode = () => {
+    const invalid = cohorts.filter(
+      (cohort) => cohort.inv_code === state.invite_code
+    );
+    return invalid.length > 0;
+  };
+
   //the submit button is disabled until the input is valid
-  const isValid =
-    !inputIsEmpty &&
-    state.cohort_name.length <= 20 &&
-    state.invite_code.length <= 20;
+  const isValid = cohort
+    ? !inputIsEmpty &&
+      state.cohort_name.length <= 20 &&
+      state.invite_code.length <= 20
+    : !inputIsEmpty &&
+      state.cohort_name.length <= 20 &&
+      !invalidClassName() &&
+      state.invite_code.length <= 20 &&
+      !invalidInviteCode();
 
   function setupForm() {
     const form = new FormData();
@@ -128,10 +153,16 @@ const CohortForm = ({ api, cohort, setForceUpdate, setShowCohortForm }) => {
             value={state.cohort_name}
             onChange={handleChange}
           />
+          {invalidClassName() && !cohort && (
+            <Error message="You already have a class with that name" />
+          )}
           <InviteCodeTextField
             value={state.invite_code}
             onChange={handleChange}
           />
+          {invalidInviteCode() && !cohort && (
+            <Error message="You already used that invite code for a class" />
+          )}
           <FormControl
             fullWidth
             disabled={!!cohort}
