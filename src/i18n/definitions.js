@@ -964,7 +964,7 @@ let strings = new LocalizedStrings(
       italian: "Italiensk",
       danish: "Dansk",
       polish: "Polsk",
-      romanian: "Romansk",
+      romanian: "Rumænsk",
       chinese: "Kinesisk",
 
       //NoStudents
