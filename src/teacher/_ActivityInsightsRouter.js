@@ -22,10 +22,9 @@ export default function ActivityInsightsRouter({ api }) {
     const fullName = name.split(" ");
     return fullName[0];
   };
+  const isOnExercisePage = path.includes("exercises");
 
-  const title = path.includes("exercises")
-    ? strings.s_exercises
-    : strings.s_reading;
+  const title = isOnExercisePage ? strings.s_exercises : strings.s_reading;
 
   useEffect(() => {
     api.getCohortName(cohortID, (cohort) => setCohortName(cohort.name));
@@ -36,6 +35,7 @@ export default function ActivityInsightsRouter({ api }) {
       (studentInfo) => setStudentName(trimName(studentInfo.name)),
       (error) => console.log(error)
     );
+    //eslint-disable-next-line
   }, []);
 
   return (
@@ -48,16 +48,19 @@ export default function ActivityInsightsRouter({ api }) {
           </h1>
         </sc.TopTabs>
         <TopButtonWrapper>
-          <Link
-            to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}`}
-          >
-            <StyledButton primary>{strings.seeReading}</StyledButton>
-          </Link>
-          <Link
-            to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}/exercises`}
-          >
-            <StyledButton primary>{strings.seeExercises}</StyledButton>
-          </Link>
+          {isOnExercisePage ? (
+            <Link
+              to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}`}
+            >
+              <StyledButton primary>{strings.seeReading}</StyledButton>
+            </Link>
+          ) : (
+            <Link
+              to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}/exercises`}
+            >
+              <StyledButton primary>{strings.seeExercises}</StyledButton>
+            </Link>
+          )}
           <Link to={`/teacher/classes/viewClass/${cohortID}`}>
             <StyledButton secondary>
               {strings.backTo}
