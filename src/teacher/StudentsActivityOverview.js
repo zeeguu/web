@@ -52,10 +52,10 @@ export default function StudentsActivityOverview({ api }) {
         <div>
           <TopButtonWrapper>
             <Link to="/teacher/texts/AddTextOptions">
-              <StyledButton secondary>{strings.addText}</StyledButton>
+              <StyledButton primary>{strings.addText}</StyledButton>
             </Link>
             <StyledButton
-              secondary
+              primary
               onClick={() => setShowAddStudentsInfo(true)}
             >
               {strings.addStudents}

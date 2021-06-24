@@ -31,7 +31,6 @@ let strings = new LocalizedStrings(
       cancel: "Cancel",
       joinClass: "Join Class",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
-      reading: "Reading",
       titleLearnedWords: "Learned Words",
       deleteFromMyClasses: "Delete from My Classes",
       tooEasy: "too easy",
@@ -304,8 +303,11 @@ let strings = new LocalizedStrings(
         "Something went wrong. Please check that the invite code is valid and try again.",
 
       //_ActivityInsightsRouter
-      learningActivities: "Learning Activities",
-      backToClassroom: "Back to Classroom",
+      backTo: "Back to ",
+      s_reading: "'s Reading",
+      s_exercises: "'s Exercises",
+      seeReading: "See Reading",
+      seeExercises: "See Exercises",
 
       //AddTextOptionTypes
       articleFromZeeguuToClass: "Assign an article from Zeeguu to a class",
@@ -569,7 +571,6 @@ let strings = new LocalizedStrings(
       cancel: "Annuller",
       joinClass: "Deltag i klasse",
       youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
-      reading: "Læsning",
       deleteFromMyClasses: "Slet fra 'Mine klasser'",
       tooEasy: "for nem",
 
@@ -802,13 +803,13 @@ let strings = new LocalizedStrings(
       wordSourcePrefix: "Ord fra",
       noTranslatedWords: "Du har ikke oversat nogen ord endnu.",
       goToTextsToTranslateWords:
-        "Gå til Tekster, hvis du vill læse tekster og oversætte ord, som derefter kan bruges i øvelser.",
+        "Gå til Tekster, hvis du ville læse tekster og oversætte ord, som derefter kan bruges i øvelser.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "Eleven har ikke lært nogen ord endnu.",
 
       //NonStudiedWordsList
-      NoLoookedupWordsYet: "Elevn har ikke slået nogen ord op enndu.",
+      NoLoookedupWordsYet: "Eleven har ikke slået nogen ord op enndu.",
 
       //NonStudiedWordCard
       excludedByAlgorithm: "Udelukket af algoritmen",
@@ -838,11 +839,14 @@ let strings = new LocalizedStrings(
       insertNewInviteCode: "Indsæt ny invitationskode",
       insertInviteCode: "Indsæt invitationskode",
       checkIfInviteCodeIsValid:
-        "Something went wrong. Please check that the invite code is valid and try again.",
+        "Noget gik galt. Tjek venligst at invitationskoden er korrekt og prøv igen.",
 
       //_ActivityInsightsRouter
-      learningActivities: "Læringsaktiviteter",
-      backToClassroom: "Tilbage til klasseværelset",
+      backTo: "Tilbage til ",
+      s_reading: "s læsning",
+      s_exercises: "s øvelser",
+      seeReading: "Se læsning",
+      seeExercises: "Se øvelser",
 
       //AddTextOptionTypes
       articleFromZeeguuToClass: "Tilføj en artikel fra Zeeguu til en klasse",
