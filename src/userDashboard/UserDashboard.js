@@ -89,6 +89,7 @@ export default function UserDashboard({ api }) {
 
   useEffect(() => {
     api.logUserActivity(api.USER_DASHBOARD_OPEN);
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -107,6 +108,7 @@ export default function UserDashboard({ api }) {
         calculateCountPerMonth_Activity(activity)
       );
     });
+    // eslint-disable-next-line
   }, [activeTab]);
 
   if (!allWordsData || !dailyExerciseAndReadingTimes) {

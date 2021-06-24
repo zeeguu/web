@@ -15,7 +15,7 @@ export const ReadingInsightAccordion = styled.div`
   .content-wrapper {
     display: flex;
     justify-content: space-between;
-    margin: 0 auto;
+    margin: 0 5.5vw 0 5.5vw;
   }
 
   ${(props) =>
@@ -78,7 +78,7 @@ export const ReadingInsightAccordion = styled.div`
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     padding: 1em;
-    width: 60vw;
+    width: 70vw;
   }
 
   .panel-headline {

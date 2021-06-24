@@ -30,7 +30,7 @@ export function LanguageSelector(props) {
             </ListboxOption>
             {languages.map((language) => (
               <ListboxOption key={language.code} value={language.code}>
-                {language.name}
+                {strings[language.name.toLowerCase()]}
               </ListboxOption>
             ))}
           </Listbox>

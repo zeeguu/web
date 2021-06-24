@@ -1,3 +1,4 @@
+import strings from "../i18n/definitions"
 export function LanguageSelector({ languages, selected, onChange }) {
   return (
     <select
@@ -7,7 +8,7 @@ export function LanguageSelector({ languages, selected, onChange }) {
     >
       {languages.map((lang) => (
         <option key={lang.code} code={lang.code}>
-          {lang.name}
+          {strings[lang.name.toLowerCase()]}
         </option>
       ))}
     </select>

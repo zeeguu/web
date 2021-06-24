@@ -31,7 +31,6 @@ let strings = new LocalizedStrings(
       cancel: "Cancel",
       joinClass: "Join Class",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
-      reading: "Reading",
       titleLearnedWords: "Learned Words",
       deleteFromMyClasses: "Delete from My Classes",
       tooEasy: "too easy",
@@ -199,7 +198,7 @@ let strings = new LocalizedStrings(
       reviewVocabExplanation:
         "Review your translations now to ensure better learning and ensure that you tell Zeeguu which of the words you want prioritize in your study.",
       backToEditing: "Back to editing",
-      saveOwnCopy: "Save Own Copy",
+      saveCopyToShare: "Save Copy to Share",
 
       //BookmarkButton
       addToBookmarks: "Add to bookmarks",
@@ -254,7 +253,7 @@ let strings = new LocalizedStrings(
       //ExerciseType
       matchThreePairs: " match 3 pairs",
       pickTheWord: "pick the word",
-      findInText: "find in text",
+      typeTheWord: "type the word",
       learnedOn: "Learned on:",
       studentFeedback: "Student feedback:",
 
@@ -304,8 +303,11 @@ let strings = new LocalizedStrings(
         "Something went wrong. Please check that the invite code is valid and try again.",
 
       //_ActivityInsightsRouter
-      learningActivities: "Learning Activities",
-      backToClassroom: "Back to Classroom",
+      backTo: "Back to ",
+      s_reading: "'s Reading",
+      s_exercises: "'s Exercises",
+      seeReading: "See Reading",
+      seeExercises: "See Exercises",
 
       //AddTextOptionTypes
       articleFromZeeguuToClass: "Assign an article from Zeeguu to a class",
@@ -346,7 +348,7 @@ let strings = new LocalizedStrings(
         "is feedback that the student has given on the exercise.",
       typeOfExerciseIconExplanation:
         "is the type of exercise the student has practised the word in.",
-      recogniseOrMultipleChoice: "Recognise/multiple choice etc.",
+      pickTheWordOrMatchThreePairs: "Pick a word/Match 3 pairs etc.",
       tooHard: "too hard",
       badWord: "bad word",
       badExample: "bad example",
@@ -417,8 +419,18 @@ let strings = new LocalizedStrings(
         "Students will not appear in the class until they have signed up for Zeeguu and used the invite code.",
       goToClass: "Go to Class",
 
-      //LanguageSelector
+      //LanguageSelector (both of them)
       chooseLanguage: "Choose a language...",
+      german: "German",
+      spanish: "Spanish",
+      french: "French",
+      dutch: "Dutch",
+      english: "English",
+      italian: "Italian",
+      danish: "Danish",
+      polish: "Polish",
+      romanian: "Romanian",
+      chinese: "Chinese",
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -452,6 +464,9 @@ let strings = new LocalizedStrings(
       avgText: "Avg. text",
       difficultyLowerCase: "difficulty",
       exercisesCorrectness: "Exercises correctness",
+      textLengthExplanation: "Average length of the read texts",
+      difficultyExplanation: "Average difficulty of the read texts",
+      exercisesExplaination: "Exercises solved correctly on first attempt",
 
       //StudentInfoLineHeader
       textLevel: "level",
@@ -556,7 +571,6 @@ let strings = new LocalizedStrings(
       cancel: "Annuller",
       joinClass: "Deltag i klasse",
       youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
-      reading: "Læsning",
       deleteFromMyClasses: "Slet fra 'Mine klasser'",
       tooEasy: "for nem",
 
@@ -723,7 +737,7 @@ let strings = new LocalizedStrings(
       reviewVocabExplanation:
         "Gennemse dine oversatte ord nu for at sikre bedre læring. Husk at fortælle Zeeguu hvilke ord, du gerne vil prioritere i din træning.",
       backToEditing: "Tilbage til redigering",
-      saveOwnCopy: "Gem egen kopi",
+      saveCopyToShare: "Gem kopi til deling",
 
       //BookmarkButton
       addToBookmarks: "Tilføj til bogmærker",
@@ -779,7 +793,7 @@ let strings = new LocalizedStrings(
       //ExerciseType
       matchThreePairs: " match 3 par",
       pickTheWord: "vælg ordet",
-      findInText: "find i tekst",
+      typeTheWord: "skriv ordet",
       learnedOn: "Lært på:",
       studentFeedback: "Elev feedback:",
       noType: "Ingen type",
@@ -789,13 +803,13 @@ let strings = new LocalizedStrings(
       wordSourcePrefix: "Ord fra",
       noTranslatedWords: "Du har ikke oversat nogen ord endnu.",
       goToTextsToTranslateWords:
-        "Gå til Tekster, hvis du vill læse tekster og oversætte ord, som derefter kan bruges i øvelser.",
+        "Gå til Tekster, hvis du ville læse tekster og oversætte ord, som derefter kan bruges i øvelser.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "Eleven har ikke lært nogen ord endnu.",
 
       //NonStudiedWordsList
-      NoLoookedupWordsYet: "Elevn har ikke slået nogen ord op enndu.",
+      NoLoookedupWordsYet: "Eleven har ikke slået nogen ord op enndu.",
 
       //NonStudiedWordCard
       excludedByAlgorithm: "Udelukket af algoritmen",
@@ -825,11 +839,14 @@ let strings = new LocalizedStrings(
       insertNewInviteCode: "Indsæt ny invitationskode",
       insertInviteCode: "Indsæt invitationskode",
       checkIfInviteCodeIsValid:
-        "Something went wrong. Please check that the invite code is valid and try again.",
+        "Noget gik galt. Tjek venligst at invitationskoden er korrekt og prøv igen.",
 
       //_ActivityInsightsRouter
-      learningActivities: "Læringsaktiviteter",
-      backToClassroom: "Tilbage til klasseværelset",
+      backTo: "Tilbage til ",
+      s_reading: "s læsning",
+      s_exercises: "s øvelser",
+      seeReading: "Se læsning",
+      seeExercises: "Se øvelser",
 
       //AddTextOptionTypes
       articleFromZeeguuToClass: "Tilføj en artikel fra Zeeguu til en klasse",
@@ -870,7 +887,7 @@ let strings = new LocalizedStrings(
       exerciseFeedbackFromStudent: "er elevens feedback på øvelsen.",
       typeOfExerciseIconExplanation:
         "indikerer, hvilken type øvelse eleven har øvet ordet i.",
-      recogniseOrMultipleChoice: "Genkend/multiple choice osv.",
+      pickTheWordOrMatchThreePairs: "Vælg ordet/Match 3 par osv.",
       tooHard: "for svær",
       badWord: "dårligt ord",
       badExample: "dårligt eksempel",
@@ -943,6 +960,16 @@ let strings = new LocalizedStrings(
 
       //LanguageSelector
       chooseLanguage: "Vælg sprog...",
+      german: "Tysk",
+      spanish: "Spansk",
+      french: "Fransk",
+      dutch: "Hollandsk",
+      english: "Engelsk",
+      italian: "Italiensk",
+      danish: "Dansk",
+      polish: "Polsk",
+      romanian: "Rumænsk",
+      chinese: "Kinesisk",
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
@@ -983,6 +1010,11 @@ let strings = new LocalizedStrings(
       textsInTheLastPeriod: " tekster i en periode på ",
       studentHasNotReadAnyArticles:
         "Eleven har endnu ikke læst nogle tekster i",
+      textLengthExplanation:
+        "Gennemsnitlig længde af de tekster eleven har læst",
+      difficultyExplanation:
+        "Gennemsnitlig sværhedsgrad af de tekster eleven har læst",
+      exercisesExplaination: "Øvelser løst korrekt i først forsøg",
 
       //StudentInfoLineHeader
       textLevel: "grad",

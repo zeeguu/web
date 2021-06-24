@@ -48,6 +48,7 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
           setShowCohortForm={setShowCohortForm}
           setForceUpdate={setForceUpdate}
           cohort={cohortToEdit}
+          cohorts={cohorts}
         />
       )}
     </Fragment>

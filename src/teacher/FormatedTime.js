@@ -18,15 +18,6 @@ export const convertTime = (accumulatedTime, setTime) => {
   }
 };
 
-export const convertTimeForActivityBar = (accumulatedTime, setTime) => {
-  const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
-  if (accumulatedTime < 240) {
-    setTime("");
-  } else {
-    hours < 1 ? setTime(minutes + "m") : setTime(hours + strings.hours + minutes + "m");
-  }
-};
-
 export const convertExactTimeString = (accumulatedTime) => {
   const { hours, minutes, seconds } = convertToHoursMinSec(accumulatedTime);
   if (hours > 0) return hours + strings.hours + minutes + "m " + seconds + "s";

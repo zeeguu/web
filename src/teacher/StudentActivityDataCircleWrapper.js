@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import strings from "../i18n/definitions";
 import { convertTime } from "./FormatedTime";
 import { StudentActivityDataCircle } from "./StudentActivityDataCircle.sc";
-import { StudentActivityDataCircleWrapper } from "./StudentActivityDataCircleWrapper.sc";
+import * as s from "./StudentActivityDataCircleWrapper.sc";
 
 const StudentActivityDataCircles = ({
   length,
@@ -20,7 +20,7 @@ const StudentActivityDataCircles = ({
   }, []);
 
   return (
-    <StudentActivityDataCircleWrapper isFirst={isFirst}>
+    <s.StudentActivityDataCircleWrapper isFirst={isFirst}>
       <div>
         {isFirst && (
           <p className="data-circle-title">
@@ -65,7 +65,7 @@ const StudentActivityDataCircles = ({
           {translatedWords}
         </StudentActivityDataCircle>
       </div>
-    </StudentActivityDataCircleWrapper>
+    </s.StudentActivityDataCircleWrapper>
   );
 };
 

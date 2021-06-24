@@ -134,7 +134,7 @@ export const IconExplanation = (
     </div>
     <div style={{ display: "flex", flexDirection: "row" }}>
       <p style={{ marginRight: ".4em", fontWeight: 500 }}>
-        {strings.recogniseOrMultipleChoice}
+        {strings.pickTheWordOrMatchThreePairs}
       </p>
       <p> {strings.typeOfExerciseIconExplanation}</p>
     </div>
