@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import strings from "../i18n/definitions";
-import { useParams, Link, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import LocalStorage from "../assorted/LocalStorage";
 import { transformStudents } from "./teacherApiHelpers";
 import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
@@ -51,10 +51,7 @@ export default function StudentsActivityOverview({ api }) {
         </sc.TopTabs>
         <div>
           <TopButtonWrapper>
-            <StyledButton
-              primary
-              onClick={() => setShowAddStudentsInfo(true)}
-            >
+            <StyledButton primary onClick={() => setShowAddStudentsInfo(true)}>
               {strings.addStudents}
             </StyledButton>
             <StyledButton
