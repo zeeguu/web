@@ -51,9 +51,6 @@ export default function StudentsActivityOverview({ api }) {
         </sc.TopTabs>
         <div>
           <TopButtonWrapper>
-            <Link to="/teacher/texts/AddTextOptions">
-              <StyledButton primary>{strings.addText}</StyledButton>
-            </Link>
             <StyledButton
               primary
               onClick={() => setShowAddStudentsInfo(true)}
