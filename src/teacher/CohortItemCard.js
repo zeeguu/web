@@ -23,7 +23,7 @@ export const CohortItemCard = ({
           <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
             <div>
               <div className="top-line-box">
-                <p className="font-light">{cohort.language_name}</p>
+                <p className="font-light">{strings[cohort.language_name.toLowerCase()]}</p>
                 <p className="student-count">
                   {cohort.cur_students}
                   <MdPeople className="cohort-card-icon-people" size="22px" />
@@ -31,7 +31,7 @@ export const CohortItemCard = ({
               </div>
             </div>
             <h2 className="cohort-card-headline">
-              {cohort.name} {/*This cannot be strings-yfied*/}
+              {cohort.name} {/*This cannot be localized*/}
             </h2>
           </Link>
           <div className="bottom-box">

@@ -1,35 +1,75 @@
 import strings from "../i18n/definitions";
 import { Switch, useParams } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
+import LocalStorage from "../assorted/LocalStorage";
+import { StyledButton, TopButtonWrapper } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
-import TopTabs from "../components/TopTabs";
+import * as sc from "../components/TopTabs.sc";
 import StudentReadingInsights from "./StudentReadingInsights";
 import StudentExercisesInsights from "./StudentExercisesInsights";
+import { useEffect, useState } from "react";
 
 export default function ActivityInsightsRouter({ api }) {
+  const selectedTimePeriod = LocalStorage.selectedTimePeriod(); //this is only needed for the api call
   const cohortID = useParams().cohortID;
   const studentID = useParams().studentID;
+  const path = useLocation().pathname;
+  const [studentName, setStudentName] = useState("");
+  const [cohortName, setCohortName] = useState("");
+
+  const trimName = (name) => {
+    const fullName = name.split(" ");
+    return fullName[0];
+  };
+  const isOnExercisePage = path.includes("exercises");
+
+  const title = isOnExercisePage ? strings.s_exercises : strings.s_reading;
+
+  useEffect(() => {
+    api.getCohortName(cohortID, (cohort) => setCohortName(cohort.name));
+    api.getStudentInfo(
+      studentID,
+      cohortID,
+      selectedTimePeriod,
+      (studentInfo) => setStudentName(trimName(studentInfo.name)),
+      (error) => console.log(error)
+    );
+    //eslint-disable-next-line
+  }, []);
 
   return (
     <Switch>
       <s.WidestColumn>
-        <TopTabs
-          title={strings.learningActivities}
-          tabsAndLinks={{
-            [strings.reading]:
-              "/teacher/classes/viewStudent/" +
-              studentID +
-              "/class/" +
-              cohortID,
-            [strings.exercises]:
-              "/teacher/classes/viewStudent/" +
-              studentID +
-              "/class/" +
-              cohortID +
-              "/exercises",
-            [strings.backToClassroom]: "/teacher/classes/viewClass/" + cohortID,
-          }}
-        />
+        <sc.TopTabs>
+          <h1>
+            {studentName}
+            {title}
+          </h1>
+        </sc.TopTabs>
+        <TopButtonWrapper>
+          {isOnExercisePage ? (
+            <Link
+              to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}`}
+            >
+              <StyledButton primary>{strings.seeReading}</StyledButton>
+            </Link>
+          ) : (
+            <Link
+              to={`/teacher/classes/viewStudent/${studentID}/class/${cohortID}/exercises`}
+            >
+              <StyledButton primary>{strings.seeExercises}</StyledButton>
+            </Link>
+          )}
+          <Link to={`/teacher/classes/viewClass/${cohortID}`}>
+            <StyledButton secondary>
+              {strings.backTo}
+              {cohortName}
+            </StyledButton>
+          </Link>
+        </TopButtonWrapper>
+        <br />
+        <br />
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID"
           exact

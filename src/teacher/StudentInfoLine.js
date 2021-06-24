@@ -7,6 +7,7 @@ import { StyledButton } from "./TeacherButtons.sc";
 import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import { StyledTooltip } from "./StyledTooltip.sc";
 
 //localize everything on this page
 //STRINGS
@@ -62,7 +63,11 @@ export default function StudentInfoLine({
               )}
               <div className="left-line">
                 <div className="name-activity-wrapper">
-                  <div className="student-name">{student.name}</div>
+                  <div className="student-name">
+                    {student.name.length > 20
+                      ? student.name.substring(0, 20) + "..."
+                      : student.name}
+                  </div>
                   <div className="student-email">{student.email}</div>
                   <div className="activity-count">
                     {activity.number_of_texts} {strings.textsRead}
@@ -91,9 +96,11 @@ export default function StudentInfoLine({
                     {strings.text} <br /> {strings.lengthOnText}
                   </p>
                 )}
-                <div className="number-display">
-                  {activity.average_text_length}
-                </div>
+                <StyledTooltip label={strings.textLengthExplanation}>
+                  <div className="number-display">
+                    {activity.average_text_length}
+                  </div>
+                </StyledTooltip>
               </div>
 
               <div className="title-circle-wrapper">
@@ -104,9 +111,11 @@ export default function StudentInfoLine({
                     {strings.difficultyLowerCase}
                   </p>
                 )}
-                <div className="number-display">
-                  {activity.average_text_difficulty}
-                </div>
+                <StyledTooltip label={strings.difficultyExplanation}>
+                  <div className="number-display">
+                    {activity.average_text_difficulty}
+                  </div>
+                </StyledTooltip>
               </div>
 
               <div className="title-circle-wrapper">
@@ -115,9 +124,11 @@ export default function StudentInfoLine({
                     {strings.exercisesCorrectness}
                   </p>
                 )}
-                <div className="number-display">
-                  {activity.correct_on_1st_try * 100 + "%"}
-                </div>
+                <StyledTooltip label={strings.exercisesExplaination}>
+                  <div className="number-display">
+                    {Math.round(activity.correct_on_1st_try * 100) + "%"}
+                  </div>
+                </StyledTooltip>
               </div>
             </div>
           </div>
