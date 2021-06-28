@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 
 import BottomInput from "./BottomInput";
 
 import strings from "../../../i18n/definitions";
-import BottomFeedback from "../BottomFeedback";
+import NextNavigation from "../NextNavigation";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -12,10 +12,18 @@ export default function FindWordInContext({
   bookmarkToStudy,
   correctAnswer,
   notifyIncorrectAnswer,
+  setExerciseType,
+  isCorrect,
+  setIsCorrect,
+  moveToNextExercise,
 }) {
-  const [isCorrect, setIsCorrect] = useState(false);
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
+
+  useEffect(() => {
+    setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function colorWordInContext(context, word) {
     return context.replace(
@@ -36,7 +44,7 @@ export default function FindWordInContext({
     console.log("^^^^ time elapsed");
     let duration = pressTime - initialTime;
 
-    notifyIncorrectAnswer();
+    notifyIncorrectAnswer(bookmarkToStudy);
     setIsCorrect(true);
     handleAnswer(message, duration);
   }
@@ -57,12 +65,13 @@ export default function FindWordInContext({
     console.log("^^^^ to first key press");
     let duration = firstTypeTime - initialTime;
 
+    correctAnswer(bookmarkToStudy);
     setIsCorrect(true);
     handleAnswer(message, duration);
   }
 
   function handleIncorrectAnswer() {
-    notifyIncorrectAnswer();
+    notifyIncorrectAnswer(bookmarkToStudy);
     setFirstTypeTime();
   }
 
@@ -93,10 +102,10 @@ export default function FindWordInContext({
         />
       )}
       {isCorrect && (
-        <BottomFeedback
+        <NextNavigation
           api={api}
           bookmarkToStudy={bookmarkToStudy}
-          correctAnswer={correctAnswer}
+          moveToNextExercise={moveToNextExercise}
         />
       )}
     </s.Exercise>

@@ -1,74 +1,136 @@
 import * as s from "./FeedbackButtons.sc.js";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import strings from "../i18n/definitions";
-import { useState } from "react";
 
-const buttons = [
-  { name: "Too Easy", value: "too_easy" },
-  { name: "Too Hard", value: "too_hard" },
-  { name: "Bad example", value: "not_a_good_example" },
-  { name: "Bad word", value: "bad_word" },
-  { name: "Other", value: "other" },
-];
-export default function FeedbackButtons({ show, setShow, feedbackFunction }) {
+export default function FeedbackButtons({
+  feedbackFunction,
+  currentExerciseType,
+  currentBookmarkToStudy,
+}) {
+  const buttons = [
+    { name: "Too Easy", value: "too_easy" },
+    { name: "Too Hard", value: "too_hard" },
+    { name: "Bad Translation", value: "bad_translation" },
+    { name: "Other", value: "other" },
+  ];
+
+  if (currentExerciseType !== "Match_three_L1W_to_three_L2W") {
+    buttons.splice(3, 0, { name: "Bad Context", value: "not_a_good_context" });
+  }
   const [showInput, setShowInput] = useState(false);
+  const [className, setClassName] = useState("");
   const [input, setInput] = useState("");
+  const [selectedId, setSelectedId] = useState();
 
-  function toggleShow() {
-    setShow(!show);
+  useEffect(() => {
+    if (currentExerciseType !== "Match_three_L1W_to_three_L2W") {
+      setSelectedId(currentBookmarkToStudy.id);
+    }
+    console.log(selectedId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function isIterable(obj) {
+    if (obj == null) {
+      return false;
+    }
+    return typeof obj[Symbol.iterator] === "function";
   }
 
   function buttonClick(value) {
-    if (value !== "other") {
-      feedbackFunction(value);
+    if (!selectedId) {
+      alert("Please select the word(s) for which you are providing feedback.");
     } else {
-      setShowInput(true);
+      if (value !== "other") {
+        feedbackFunction(value, selectedId);
+      } else {
+        setClassName("selected");
+        setShowInput(true);
+      }
     }
   }
 
-  function handleChange(event) {
+  function handleTyping(event) {
     setInput(event.target.value);
   }
 
+  function handleSelection(event) {
+    setSelectedId(Number(event.target.value));
+  }
+
   function handleSubmit(event) {
-    let re1 = /[.,'´`?!:;]/g;
-    let re2 = /\s{2,}/g;
-    const newFeedback = input
-      .toLowerCase()
-      .trim()
-      .replace(re1, "")
-      .replace(re2, "")
-      .replaceAll(" ", "_");
-    feedbackFunction(newFeedback);
-    event.preventDefault();
+    if (input === "") {
+      alert("Please type your feedback before submitting.");
+      event.preventDefault();
+    } else {
+      let re1 = /[.,'´`?!:;]/g;
+      let re2 = /\s{2,}/g;
+      const newFeedback = input
+        .toLowerCase()
+        .trim()
+        .replace(re1, "")
+        .replace(re2, "")
+        .replaceAll(" ", "_");
+      feedbackFunction(newFeedback, selectedId);
+      setInput("");
+      event.preventDefault();
+    }
   }
 
   return (
-    <div>
-      <s.FeedbackLinkHolder>
-        <Link to={"#"} className="discrete-link" onClick={toggleShow}>
-          {strings.giveFeedback}
-        </Link>
-      </s.FeedbackLinkHolder>
-
-      {show && (
-        <s.FeedbackButtonsHolder>
-          {buttons.map((each) => (
-            <button key={each.value} onClick={() => buttonClick(each.value)}>
+    <s.FeedbackHolder>
+      {currentExerciseType === "Match_three_L1W_to_three_L2W" &&
+        isIterable(currentBookmarkToStudy) && (
+          <>
+            <s.FeedbackInstruction>{strings.selectWords}</s.FeedbackInstruction>
+            <s.FeedbackSelector>
+              {currentBookmarkToStudy.map((bookmark) => (
+                <s.FeedbackLabel key={bookmark.id}>
+                  <input
+                    type="radio"
+                    value={bookmark.id}
+                    checked={Number(selectedId) === bookmark.id}
+                    onChange={handleSelection}
+                  />
+                  {bookmark.from}
+                </s.FeedbackLabel>
+              ))}
+            </s.FeedbackSelector>
+          </>
+        )}
+      <s.FeedbackButtonsHolder>
+        {buttons.map((each) =>
+          each.value === "other" ? (
+            <s.FeedbackButton
+              key={each.value}
+              className={className}
+              onClick={() => buttonClick(each.value)}
+            >
               {each.name}
-            </button>
-          ))}
-          {showInput && (
-            <form onSubmit={handleSubmit}>
-              <label>
-                Other feedback:
-                <input type="text" value={input} onChange={handleChange} />
-              </label>
-              <input type="submit" value="Submit" />
-            </form>
-          )}
-        </s.FeedbackButtonsHolder>
+            </s.FeedbackButton>
+          ) : (
+            <s.FeedbackButton
+              key={each.value}
+              onClick={() => buttonClick(each.value)}
+            >
+              {each.name}
+            </s.FeedbackButton>
+          )
+        )}
+      </s.FeedbackButtonsHolder>
+      {showInput && (
+        <s.FeedbackForm onSubmit={handleSubmit}>
+          <s.FeedbackLabel>
+            {strings.otherFeedback}
+            <s.FeedbackInput
+              type="text"
+              value={input}
+              onChange={handleTyping}
+            />
+          </s.FeedbackLabel>
+          <s.FeedbackSubmit type="submit" value="Submit" />
+        </s.FeedbackForm>
       )}
-    </div>
+    </s.FeedbackHolder>
   );
 }

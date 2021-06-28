@@ -37,40 +37,6 @@ const Exercise = styled.div`
     margin-right: 2em;
   }
 
-  .matchInput {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-  }
-
-  .matchButtons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .matchButton {
-    width: fit-content;
-    margin: 2em;
-    border-radius: 1em;
-    padding: 0.5em;
-    background-color: none;
-    color: black;
-    border: 0.125em solid #ffbb54;
-    cursor: pointer;
-    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-      "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-      "Helvetica Neue", sans-serif;
-  }
-
-  .matchButton:focus {
-    outline: 0;
-  }
-
-  .matchButton:hover {
-    background-color: #ffbb5440;
-  }
-
   /* Mobile version */
   @media screen and (max-width: 768px) {
     .contextExample {
@@ -91,6 +57,53 @@ const Exercise = styled.div`
       margin-top: 0px;
       margin-bottom: 0px;
     }
+  }
+`;
+
+let MatchInputHolder = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+`;
+
+let MatchButtonHolder = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+let MatchSpeakButtonHolder = styled.div`
+  width: fit-content;
+  margin: 2em;
+  margin-left: -0.75em;
+  border-radius: 0.75em;
+  padding: 0.5em;
+`;
+
+let MatchButton = styled.button`
+  width: fit-content;
+  margin: 2em;
+  border-radius: 0.75em;
+  padding: 0.5em;
+  background: #ffd04799;
+  color: black;
+  border: 0.125em solid #ffbb54;
+  border-style: none;
+  box-shadow: none;
+  user-select: none;
+
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:hover {
+    background-color: #ffbb5440;
   }
 `;
 
@@ -176,6 +189,13 @@ let AnimatedOrangeButton = styled(OrangeButton)`
   perspective: 1000px;
 `;
 
+let AnimatedMatchButton = styled(MatchButton)`
+  animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+`;
+
 let Input = styled.input`
   height: 1.5em;
   text-align: center;
@@ -212,4 +232,9 @@ export {
   AnimatedInput,
   BottomRow,
   StyledLink,
+  MatchButton,
+  AnimatedMatchButton,
+  MatchButtonHolder,
+  MatchInputHolder,
+  MatchSpeakButtonHolder,
 };

@@ -241,9 +241,13 @@ let strings = new LocalizedStrings(
       findTheWordInContextHeadline: "Find the word(s) in the context",
       chooseTheWordFittingContextHeadline:
         "Choose the word(s) that fits the context",
+      matchWordWithTranslation:
+        "Match each word (set of words) with its translation",
 
       //FeedbackButtons
       giveFeedback: "Give feedback on this exercise",
+      selectWords: "Select the word(s):",
+      otherFeedback: "Other feedback:",
 
       //ButtomInput
       check: "Check",
@@ -497,9 +501,13 @@ let strings = new LocalizedStrings(
       findTheWordInContextHeadline: "Find ordet/ordene i sammenhængen",
       chooseTheWordFittingContextHeadline:
         "Vælg ordet/ordene, der passer i sammenhængen",
+      matchWordWithTranslation:
+        "Match hvert ord (ordsæt) med dets oversættelse",
 
       //FeedbackButtons
       giveFeedback: "Giv feedback på øvelsen",
+      selectWords: "Vælg ordet/ordene:",
+      otherFeedback: "Anden feedback:",
 
       //ButtomInput
       check: "Tjek",
