@@ -39,6 +39,13 @@ a normal component
 ```
 #### 4. Separate styling from the code (e.g. `Exercises.js` and `Exercises.js.sc`)
 
+#### 5. Avoid hardcoded string contstans
+
+You're more prone to a mis-typing error that way.
+If you define a constant, you can benefit from auto-completion from your IDE.
+
+
+
 ## Notes
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
