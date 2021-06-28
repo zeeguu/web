@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import SpeakButton from "../SpeakButton";
+import * as s from "../Exercise.sc";
 
 function MatchInput({
   fromButtonOptions,
@@ -6,6 +8,12 @@ function MatchInput({
   notifyChoiceSelection,
   inputFirstClick,
   buttonsToDisable,
+  isCorrect,
+  api,
+  isIncorrect,
+  setIsIncorrect,
+  isMatch,
+  setIsMatch,
 }) {
   const buttonColors = [
     {
@@ -33,6 +41,14 @@ function MatchInput({
   const [firstSelection, setFirstSelection] = useState(0);
   const [firstSelectionColumn, setFirstSelectionColumn] = useState("");
 
+  useEffect(() => {
+    if (isMatch) {
+      setFirstSelection(0);
+      setIsMatch(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMatch]);
+
   function handleClick(column, id) {
     if (firstSelection !== 0) {
       if (
@@ -47,7 +63,6 @@ function MatchInput({
         } else {
           notifyChoiceSelection(id, firstSelection);
         }
-        setFirstSelection(0);
       }
     } else {
       inputFirstClick();
@@ -58,6 +73,11 @@ function MatchInput({
         setFirstSelectionColumn("to");
       }
     }
+  }
+
+  function endAnimation() {
+    setFirstSelection(0);
+    setIsIncorrect(false);
   }
 
   const buttonPairStyle = (column, id) => {
@@ -71,44 +91,77 @@ function MatchInput({
   };
 
   return (
-    <div className="matchInput">
-      <div className="matchButtons">
+    <s.MatchInputHolder>
+      <s.MatchButtonHolder>
         {fromButtonOptions ? (
-          fromButtonOptions.map((option) => (
-            <button
-              style={buttonPairStyle("from", option.id)}
-              className="matchButton"
-              key={option.from}
-              id={option.id}
-              onClick={(e) => handleClick("from", Number(e.target.id))}
-              disabled={buttonsToDisable.includes(option.id)}
-            >
-              {option.from}
-            </button>
-          ))
+          fromButtonOptions.map((option) =>
+            isIncorrect &&
+            firstSelection === option.id &&
+            firstSelectionColumn === "from" ? (
+              <s.AnimatedMatchButton
+                key={"L2_" + option.id}
+                id={option.id}
+                onClick={(e) => handleClick("from", Number(e.target.id))}
+                onAnimationEnd={() => endAnimation()}
+              >
+                {option.from}
+              </s.AnimatedMatchButton>
+            ) : (
+              <s.MatchButton
+                style={buttonPairStyle("from", option.id)}
+                key={"L2_" + option.id}
+                id={option.id}
+                onClick={(e) => handleClick("from", Number(e.target.id))}
+                disabled={buttonsToDisable.includes(option.id)}
+              >
+                {option.from}
+              </s.MatchButton>
+            )
+          )
         ) : (
           <></>
         )}
-      </div>
-      <div className="matchButtons">
+      </s.MatchButtonHolder>
+      {isCorrect && (
+        <s.MatchButtonHolder>
+          {fromButtonOptions.map((option) => (
+            <s.MatchSpeakButtonHolder>
+              <SpeakButton bookmarkToStudy={option} api={api} />
+            </s.MatchSpeakButtonHolder>
+          ))}
+        </s.MatchButtonHolder>
+      )}
+      <s.MatchButtonHolder>
         {toButtonOptions ? (
-          toButtonOptions.map((option) => (
-            <button
-              style={buttonPairStyle("to", option.id)}
-              className="matchButton"
-              key={option.to}
-              id={option.id}
-              onClick={(e) => handleClick("to", Number(e.target.id))}
-              disabled={buttonsToDisable.includes(option.id)}
-            >
-              {option.to}
-            </button>
-          ))
+          toButtonOptions.map((option) =>
+            isIncorrect &&
+            firstSelection === option.id &&
+            firstSelectionColumn === "to" ? (
+              <s.AnimatedMatchButton
+                key={"L1_" + option.id}
+                id={option.id}
+                onClick={(e) => handleClick("to", Number(e.target.id))}
+                onAnimationEnd={() => endAnimation()}
+              >
+                {option.to}
+              </s.AnimatedMatchButton>
+            ) : (
+              <s.MatchButton
+                style={buttonPairStyle("to", option.id)}
+                key={"L1_" + option.id}
+                id={option.id}
+                onClick={(e) => handleClick("to", Number(e.target.id))}
+                disabled={buttonsToDisable.includes(option.id)}
+              >
+                {option.to}
+              </s.MatchButton>
+            )
+          )
         ) : (
           <></>
         )}
-      </div>
-    </div>
+      </s.MatchButtonHolder>
+    </s.MatchInputHolder>
   );
 }
 

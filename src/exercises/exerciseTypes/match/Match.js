@@ -1,34 +1,56 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
+import strings from "../../../i18n/definitions";
 
-import BottomFeedback from "../BottomFeedback";
+import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
 
-const EXERCISE_TYPE = "MATCH";
+const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
 
 export default function Match({
   api,
-  bookmarksToStudyList,
-  notifyIncorrectAnswer,
-  currentIndex,
+  bookmarkToStudy,
   correctAnswer,
+  notifyIncorrectAnswer,
+  setExerciseType,
+  isCorrect,
+  setIsCorrect,
+  moveToNextExercise,
+  shuffle,
 }) {
-  const [isCorrect, setIsCorrect] = useState(false);
+  const initialBookmarkState = [
+    {
+      bookmark: bookmarkToStudy[0],
+      messageToAPI: "",
+    },
+    {
+      bookmark: bookmarkToStudy[1],
+      messageToAPI: "",
+    },
+    {
+      bookmark: bookmarkToStudy[2],
+      messageToAPI: "",
+    },
+  ];
+
   const [initialTime] = useState(new Date());
   const [firstPressTime, setFirstPressTime] = useState();
+  const [bookmarksToStudy, setBookmarksToStudy] =
+    useState(initialBookmarkState);
   const [fromButtonOptions, setFromButtonOptions] = useState(null);
   const [toButtonOptions, setToButtonOptions] = useState(null);
   const [buttonsToDisable, setButtonsToDisable] = useState([]);
-
-  //TODO: Have button colors as constants - not only in CSS (see name your bébé on GitHub for reference)
+  const [isIncorrect, setIsIncorrect] = useState(false);
+  const [isMatch, setIsMatch] = useState(false);
 
   useEffect(() => {
+    setExerciseType(EXERCISE_TYPE);
     setButtonsToDisable([]);
     setFromButtonOptions(null);
     setToButtonOptions(null);
     setButtonOptions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex]);
+  }, []);
 
   function inputFirstClick() {
     if (firstPressTime === undefined) setFirstPressTime(new Date());
@@ -36,122 +58,82 @@ export default function Match({
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
     console.log("checking result...");
-    if (firstChoice === secondChoice) {
-      setButtonsToDisable((arr) => [...arr, firstChoice]);
-      if (buttonsToDisable.length <= 2) {
-        handleCorrectAnswer(Number(firstChoice));
+    let bookmarksCopy = { ...bookmarksToStudy };
+    let i;
+    for (i = 0; i < bookmarkToStudy.length; i++) {
+      let currentBookmark = bookmarksCopy[i];
+      if (currentBookmark.bookmark.id === Number(firstChoice)) {
+        if (firstChoice === secondChoice) {
+          setIsMatch(true);
+          setButtonsToDisable((arr) => [...arr, firstChoice]);
+          let concatMessage = currentBookmark.messageToAPI + "C";
+          bookmarksCopy[i].messageToAPI = concatMessage;
+          setBookmarksToStudy(bookmarksCopy);
+          correctAnswer(currentBookmark.bookmark);
+          handleAnswer(concatMessage, currentBookmark.bookmark.id);
+          if (buttonsToDisable.length === 1) {
+            setIsCorrect(true);
+          }
+        } else {
+          setIsIncorrect(true);
+          notifyIncorrectAnswer(currentBookmark.bookmark);
+          let concatMessage = currentBookmark.messageToAPI + "W";
+          bookmarksCopy[i].messageToAPI = concatMessage;
+          setBookmarksToStudy(bookmarksCopy);
+        }
+        break;
       }
-    } else {
-      handleIncorrectAnswer(Number(firstChoice));
     }
   }
 
-  function handleCorrectAnswer(id) {
-    let correctPressTime = new Date();
-    console.log(correctPressTime - initialTime);
+  function handleAnswer(message, id) {
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
 
-    if (buttonsToDisable.length === 2) {
-      setIsCorrect(true);
-    }
-
     api.uploadExerciseFeedback(
-      "Correct",
+      message,
       EXERCISE_TYPE,
-      correctPressTime - initialTime,
-      id
-    );
-  }
-
-  function handleIncorrectAnswer(id) {
-    let incorrectPressTime = new Date();
-    console.log(incorrectPressTime - initialTime);
-    console.log("^^^^ time elapsed");
-
-    notifyIncorrectAnswer(id);
-    api.uploadExerciseFeedback(
-      "Incorrect",
-      EXERCISE_TYPE,
-      incorrectPressTime - initialTime,
+      pressTime - initialTime,
       id
     );
   }
 
   function setButtonOptions() {
-    let threeOptions = chooseThreeOptions();
-    setFromButtonOptions(threeOptions);
-    let optionsToShuffle = [threeOptions[0], threeOptions[1], threeOptions[2]];
+    setFromButtonOptions(bookmarkToStudy);
+    let optionsToShuffle = [
+      bookmarksToStudy[0].bookmark,
+      bookmarksToStudy[1].bookmark,
+      bookmarksToStudy[2].bookmark,
+    ];
     let shuffledOptions = shuffle(optionsToShuffle);
     setToButtonOptions(shuffledOptions);
   }
 
-  function chooseThreeOptions() {
-    if (currentIndex === 0) {
-      let threeCurrentBookmarks = [
-        bookmarksToStudyList[currentIndex],
-        bookmarksToStudyList[currentIndex + 1],
-        bookmarksToStudyList[currentIndex + 2],
-      ];
-      return threeCurrentBookmarks;
-    } else {
-      let threeCurrentBookmarks = [
-        bookmarksToStudyList[currentIndex],
-        bookmarksToStudyList[currentIndex - 1],
-        bookmarksToStudyList[currentIndex - 2],
-      ];
-      return threeCurrentBookmarks;
-    }
-  }
-
-  //TODO: Move shuffle out of Match & MultipleChoice
-
-  /*Fisher-Yates (aka Knuth) Shuffle - https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array*/
-  function shuffle(array) {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-  }
-
   return (
     <s.Exercise>
-      <h3>Match each word with its translation</h3>
-      {!isCorrect && (
-        <MatchInput
-          fromButtonOptions={fromButtonOptions}
-          toButtonOptions={toButtonOptions}
-          notifyChoiceSelection={notifyChoiceSelection}
-          inputFirstClick={inputFirstClick}
-          buttonsToDisable={buttonsToDisable}
-        />
-      )}
+      <h3>{strings.matchWordWithTranslation}</h3>
+
+      <MatchInput
+        fromButtonOptions={fromButtonOptions}
+        toButtonOptions={toButtonOptions}
+        notifyChoiceSelection={notifyChoiceSelection}
+        inputFirstClick={inputFirstClick}
+        buttonsToDisable={buttonsToDisable}
+        isCorrect={isCorrect}
+        api={api}
+        isIncorrect={isIncorrect}
+        setIsIncorrect={setIsIncorrect}
+        isMatch={isMatch}
+        setIsMatch={setIsMatch}
+      />
+
       {isCorrect && (
-        <div>
-          <MatchInput
-            fromButtonOptions={fromButtonOptions}
-            toButtonOptions={toButtonOptions}
-            notifyChoiceSelection={notifyChoiceSelection}
-            inputFirstClick={inputFirstClick}
-            buttonsToDisable={buttonsToDisable}
-          />
-          <BottomFeedback
-            bookmarkToStudy={toButtonOptions}
-            correctAnswer={correctAnswer}
-          />
-        </div>
+        <NextNavigation
+          api={api}
+          bookmarkToStudy={toButtonOptions}
+          moveToNextExercise={moveToNextExercise}
+        />
       )}
     </s.Exercise>
   );

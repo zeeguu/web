@@ -3,24 +3,29 @@ import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 
-import BottomFeedback from "../BottomFeedback";
+import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 
-const EXERCISE_TYPE = "MULTIPLE_CHOICE";
+const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
 export default function MultipleChoice({
   api,
   bookmarkToStudy,
   correctAnswer,
   notifyIncorrectAnswer,
+  setExerciseType,
+  isCorrect,
+  setIsCorrect,
+  moveToNextExercise,
+  shuffle,
 }) {
-  const [isCorrect, setIsCorrect] = useState(false);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
 
   useEffect(() => {
+    setExerciseType(EXERCISE_TYPE);
     api.wordsSimilarTo(bookmarkToStudy.id, (words) => {
       consolidateChoiceOptions(words);
     });
@@ -37,12 +42,13 @@ export default function MultipleChoice({
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
     if (selectedChoice === bookmarkToStudy.from) {
+      correctAnswer(bookmarkToStudy);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
     } else {
       setIncorrectAnswer(selectedChoice);
-      notifyIncorrectAnswer();
+      notifyIncorrectAnswer(bookmarkToStudy);
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
     }
@@ -80,27 +86,6 @@ export default function MultipleChoice({
     setButtonOptions(shuffledListOfOptions);
   }
 
-  /*Fisher-Yates (aka Knuth) Shuffle - https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array*/
-  function shuffle(array) {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-  }
-
   return (
     <s.Exercise>
       <h3>{strings.chooseTheWordFittingContextHeadline}</h3>
@@ -130,10 +115,10 @@ export default function MultipleChoice({
         />
       )}
       {isCorrect && (
-        <BottomFeedback
+        <NextNavigation
           api={api}
           bookmarkToStudy={bookmarkToStudy}
-          correctAnswer={correctAnswer}
+          moveToNextExercise={moveToNextExercise}
         />
       )}
     </s.Exercise>
