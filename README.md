@@ -44,6 +44,13 @@ a normal component
 You're more prone to a mis-typing error that way.
 If you define a constant, you can benefit from auto-completion from your IDE.
 
+#### 6. General functions should be defined in general modules (e.g. utils)
+
+E.g. If you end up definig a general `random` function, or a `isUppercaseString(obj)` function, etc.
+inside a component defintion, you're better moving them out of there. Two reasons:
+1. it's likely that you'll need to use them in other places than that component
+2. keeping things at the same abstraction level: the code in a component should worry about the main business of that component; not about defining generic functions. 
+
 
 
 ## Notes
