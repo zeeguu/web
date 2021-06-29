@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import LandingPage from "./landingPage/LandingPage";
@@ -12,7 +12,7 @@ import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 
-import strings from "./i18n/definitions";
+import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 function App() {
   let userDict = {};
@@ -28,19 +28,7 @@ function App() {
     _api.session = localStorage["sessionID"];
   }
 
-  const [uiLanguage, setUiLanguage] = useState(LocalStorage.getUiLanguage());
-
-  useEffect(() => {
-    const uiLang = LocalStorage.getUiLanguage();
-    if (uiLang === undefined) {
-      LocalStorage.setUiLanguage({ code: "en" });
-    }
-    setUiLanguage(uiLang);
-  }, []);
-
-  useEffect(() => {
-    if (uiLanguage !== undefined) strings.setLanguage(uiLanguage.code);
-  }, [uiLanguage]);
+  useUILanguage();
 
   const [api] = useState(_api);
 
