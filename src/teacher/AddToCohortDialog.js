@@ -31,7 +31,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
         deleteArticleFromCohort(cohort.id);
       }
       setIsOpen(false);
-      history.push("/teacher/texts");
+      //history.push("/teacher/texts");
     });
   };
 
