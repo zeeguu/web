@@ -10,7 +10,7 @@ import UserDashboard from "./userDashboard/UserDashboard";
 
 export default function LoggedInRouter({ api, setUser }) {
   return (
-    <SideBar>
+    <SideBar api={api}>
       <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
       <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
       <PrivateRoute path="/words" api={api} component={WordsRouter} />
