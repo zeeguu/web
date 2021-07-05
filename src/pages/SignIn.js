@@ -7,6 +7,7 @@ import * as s from "../components/FormPage.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
 export default function SignIn({ api, notifySuccessfulSignIn }) {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");

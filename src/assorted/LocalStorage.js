@@ -1,9 +1,12 @@
+import uiLanguages from "./uiLanguages";
+
 const LocalStorage = {
   Keys: {
     Session: "sessionID",
     Name: "name",
     LearnedLanguage: "learned_language",
     NativeLanguage: "native_language",
+    UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
     EMSTeacherDashboard: "EMSTeacherDashboard",
@@ -40,6 +43,20 @@ const LocalStorage = {
 
   setSession: function (session) {
     localStorage[this.Keys.Session] = session;
+  },
+
+  setUiLanguage: function (language) {
+    localStorage[this.Keys.UiLanguage] = language.code;
+  },
+
+  getUiLanguage: function () {
+    const uiLangCode = localStorage[this.Keys.UiLanguage];
+    if (uiLangCode === undefined) {
+      return undefined;
+    } else {
+      const uiLang = uiLanguages.find((item) => item.code === uiLangCode)
+      return uiLang
+    }
   },
 
   setUserInfo: function (info) {

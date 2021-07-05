@@ -541,6 +541,7 @@ let strings = new LocalizedStrings(
       hasCompleted: " has completed ",
       exercisesInTheLast: " exercises in the last ",
       wordsNotStudiedInZeeguu: "Words Not Studied in Zeeguu",
+      systemLanguage: "System Language",
     },
 
     da: {
@@ -1083,6 +1084,7 @@ let strings = new LocalizedStrings(
       hasCompleted: " har gennemført ",
       exercisesInTheLast: " øvelser i en periode på ",
       wordsNotStudiedInZeeguu: "Ord ikke øvet i Zeeguu",
+      systemLanguage: "Interface sprog",
     },
   },
   {

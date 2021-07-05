@@ -1,5 +1,6 @@
-import strings from "../i18n/definitions"
-export function LanguageSelector({ languages, selected, onChange }) {
+import strings from "../i18n/definitions";
+
+export default function UiLanguageSelector({ languages, selected, onChange }) {
   return (
     <select
       name="learned_language"
