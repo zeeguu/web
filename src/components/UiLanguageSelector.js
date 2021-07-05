@@ -4,7 +4,7 @@ export default function UiLanguageSelector({ languages, selected, onChange }) {
   return (
     <select
       name="learned_language"
-      value={selected}
+      value={strings[selected.toLowerCase()]}
       onChange={(e) => onChange(e)}
     >
       {languages.map((lang) => (
