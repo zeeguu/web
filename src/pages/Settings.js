@@ -9,9 +9,7 @@ import LocalStorage from "../assorted/LocalStorage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import * as s from "../components/FormPage.sc";
 import * as sc from "../components/TopTabs.sc";
-import { setTitle } from "../assorted/setTitle";
 
-import LocalStorage from "../assorted/LocalStorage";
 import uiLanguages from "../assorted/uiLanguages";
 
 import strings from "../i18n/definitions";
