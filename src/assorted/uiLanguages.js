@@ -1,6 +1,6 @@
 export default [
   {
-    name: "Dansk",
+    name: "Danish",
     code: "da",
     selectedIcon: "/static/icons/dan-selected.png",
     deselectedIcon: "/static/icons/dan-deselected.png",
