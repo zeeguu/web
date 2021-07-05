@@ -7,14 +7,13 @@ import strings from "../../i18n/definitions";
 // the useEffect initializes the UI language with a default 'en'
 
 export default function useUILanguage() {
-  const [uiLanguage, setUiLanguage] = useState(LocalStorage.getUiLanguage());
+  let defaultUILanguage = { code: "en" };
+  if (LocalStorage.getUiLanguage() !== undefined) {
+    defaultUILanguage = LocalStorage.getUiLanguage();
+  }
+  const [uiLanguage, setUiLanguage] = useState(defaultUILanguage);
 
   useEffect(() => {
-    const uiLang = LocalStorage.getUiLanguage();
-    if (uiLang === undefined) {
-      LocalStorage.setUiLanguage({ code: "en" });
-    }
-    strings.setLanguage(uiLang.code);
-    setUiLanguage(uiLang);
+    strings.setLanguage(uiLanguage.code);
   }, []);
 }

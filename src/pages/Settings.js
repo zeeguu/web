@@ -111,6 +111,8 @@ export default function Settings({ api, setUser }) {
     return <LoadingAnimation />;
   }
 
+  console.log(uiLanguages);
+
   return (
     <s.FormContainer>
       <form className="formSettings">
@@ -170,23 +172,20 @@ export default function Settings({ api, setUser }) {
           )}
           onChange={nativeLanguageUpdated}
         />
-        {uiLanguage.name !== undefined && (
-          <>
-            <label>{strings.systemLanguage}</label>
-            <UiLanguageSelector
-              languages={uiLanguages}
-              selected={uiLanguage.name}
-              onChange={(e) => {
-                let lang = uiLanguages.find(
-                  (lang) =>
-                    lang.code ===
-                    e.target[e.target.selectedIndex].getAttribute("code")
-                );
-                onSysChange(lang);
-              }}
-            />
-          </>
-        )}
+
+        <label>{strings.systemLanguage}</label>
+        <UiLanguageSelector
+          languages={uiLanguages}
+          selected={uiLanguage.name}
+          onChange={(e) => {
+            let lang = uiLanguages.find(
+              (lang) =>
+                lang.code ===
+                e.target[e.target.selectedIndex].getAttribute("code")
+            );
+            onSysChange(lang);
+          }}
+        />
 
         <div>
           <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
