@@ -1,12 +1,19 @@
 import { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { LanguageSelector } from "../components/LanguageSelector";
+
+import UiLanguageSelector from "../components/UiLanguageSelector";
+
 import { UserContext } from "../UserContext";
 import { setTitle } from "../assorted/setTitle";
 import LocalStorage from "../assorted/LocalStorage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import * as s from "../components/FormPage.sc";
 import * as sc from "../components/TopTabs.sc";
+import { setTitle } from "../assorted/setTitle";
+
+import LocalStorage from "../assorted/LocalStorage";
+import uiLanguages from "../assorted/uiLanguages";
+
 import strings from "../i18n/definitions";
 import { Error } from "../teacher/Error";
 
@@ -19,6 +26,19 @@ export default function Settings({ api, setUser }) {
   const [inviteCode, setInviteCode] = useState("");
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [currentCohort, setCurrentCohort] = useState("");
+
+  // TODO: Refactor using Zeeguu project logic
+
+  const [uiLanguage, setUiLanguage] = useState();
+
+  useEffect(() => {
+    const language = LocalStorage.getUiLanguage();
+    setUiLanguage(language);
+  }, []);
+
+  function onSysChange(lang) {
+    setUiLanguage(lang);
+  }
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -51,8 +71,6 @@ export default function Settings({ api, setUser }) {
 
   function nativeLanguageUpdated(e) {
     let code = e.target[e.target.selectedIndex].getAttribute("code");
-
-    strings.setLanguage(code);
     setUserDetails({
       ...userDetails,
       native_language: code,
@@ -61,6 +79,9 @@ export default function Settings({ api, setUser }) {
 
   function handleSave(e) {
     e.preventDefault();
+
+    strings.setLanguage(uiLanguage.code);
+    LocalStorage.setUiLanguage(uiLanguage);
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
@@ -121,7 +142,7 @@ export default function Settings({ api, setUser }) {
         />
 
         <label>{strings.learnedLanguage}</label>
-        <LanguageSelector
+        <UiLanguageSelector
           languages={languages.learnable_languages}
           selected={language_for_id(
             userDetails.learned_language,
@@ -143,7 +164,7 @@ export default function Settings({ api, setUser }) {
         />
 
         <label>{strings.nativeLanguage}</label>
-        <LanguageSelector
+        <UiLanguageSelector
           languages={languages.native_languages}
           selected={language_for_id(
             userDetails.native_language,
@@ -151,6 +172,23 @@ export default function Settings({ api, setUser }) {
           )}
           onChange={nativeLanguageUpdated}
         />
+        {uiLanguage.name !== undefined && (
+          <>
+            <label>{strings.systemLanguage}</label>
+            <UiLanguageSelector
+              languages={uiLanguages}
+              selected={uiLanguage.name}
+              onChange={(e) => {
+                let lang = uiLanguages.find(
+                  (lang) =>
+                    lang.code ===
+                    e.target[e.target.selectedIndex].getAttribute("code")
+                );
+                onSysChange(lang);
+              }}
+            />
+          </>
+        )}
 
         <div>
           <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
