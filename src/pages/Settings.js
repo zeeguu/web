@@ -128,7 +128,13 @@ export default function Settings({ api, setUser }) {
             languages.learnable_languages
           )}
           onChange={(e) => {
+            console.log("e");
             let code = e.target[e.target.selectedIndex].getAttribute("code");
+            console.log(code);
+            console.log({
+              ...userDetails,
+              learned_language: code,
+            });
             setUserDetails({
               ...userDetails,
               learned_language: code,
