@@ -7,8 +7,9 @@ export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
   handleShowSolution,
-  bookmarkToStudy,
+  bookmarksToStudy,
   notifyKeyPress,
+  toggleShow,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
@@ -19,11 +20,12 @@ export default function BottomInput({
     setUsedHint(true);
     let hint;
     if (
-      currentInput === bookmarkToStudy.from.substring(0, currentInput.length)
+      currentInput ===
+      bookmarksToStudy[0].from.substring(0, currentInput.length)
     ) {
-      hint = bookmarkToStudy.from.substring(0, currentInput.length + 1);
+      hint = bookmarksToStudy[0].from.substring(0, currentInput.length + 1);
     } else {
-      hint = bookmarkToStudy.from.substring(0, 1);
+      hint = bookmarksToStudy[0].from.substring(0, 1);
     }
     setCurrentInput(hint);
     let concatMessage = messageToAPI + "H";
@@ -50,7 +52,9 @@ export default function BottomInput({
     }
     console.log("checking result...");
     var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
-    var b = removeQuotes(removeAccents(eliminateTypos(bookmarkToStudy.from)));
+    var b = removeQuotes(
+      removeAccents(eliminateTypos(bookmarksToStudy[0].from))
+    );
     if (a === b) {
       let concatMessage = messageToAPI + "C";
       handleCorrectAnswer(concatMessage);
@@ -90,9 +94,15 @@ export default function BottomInput({
           {strings.check}
         </s.FeedbackButton>
       </s.BottomRow>
-      <s.StyledLink to={"#"} onClick={showSolution}>
-        {strings.showSolution}
-      </s.StyledLink>
+      <s.CenteredRow>
+        <s.StyledLink to={"#"} onClick={showSolution}>
+          {strings.showSolution}
+        </s.StyledLink>
+        <s.StyledDiv>&nbsp;|&nbsp;</s.StyledDiv>
+        <s.StyledLink to={"#"} onClick={toggleShow}>
+          {strings.giveFeedback}
+        </s.StyledLink>
+      </s.CenteredRow>
     </>
   );
 }

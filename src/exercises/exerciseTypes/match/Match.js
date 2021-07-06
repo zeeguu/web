@@ -1,47 +1,48 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
+import shuffle from "../../../assorted/fisherYatesShuffle";
 
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
+import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 
 const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
 
 export default function Match({
   api,
-  bookmarkToStudy,
+  bookmarksToStudy,
   correctAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
   setIsCorrect,
   moveToNextExercise,
-  shuffle,
+  toggleShow,
 }) {
   const initialBookmarkState = [
     {
-      bookmark: bookmarkToStudy[0],
+      bookmark: bookmarksToStudy[0],
       messageToAPI: "",
     },
     {
-      bookmark: bookmarkToStudy[1],
+      bookmark: bookmarksToStudy[1],
       messageToAPI: "",
     },
     {
-      bookmark: bookmarkToStudy[2],
+      bookmark: bookmarksToStudy[2],
       messageToAPI: "",
     },
   ];
 
   const [initialTime] = useState(new Date());
   const [firstPressTime, setFirstPressTime] = useState();
-  const [bookmarksToStudy, setBookmarksToStudy] =
+  const [currentBookmarksToStudy, setcurrentBookmarksToStudy] =
     useState(initialBookmarkState);
   const [fromButtonOptions, setFromButtonOptions] = useState(null);
   const [toButtonOptions, setToButtonOptions] = useState(null);
   const [buttonsToDisable, setButtonsToDisable] = useState([]);
-  const [isIncorrect, setIsIncorrect] = useState(false);
-  const [isMatch, setIsMatch] = useState(false);
+  const [incorrectAnswer, setIncorrectAnswer] = useState("");
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -58,32 +59,70 @@ export default function Match({
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
     console.log("checking result...");
-    let bookmarksCopy = { ...bookmarksToStudy };
+    let bookmarksCopy = { ...currentBookmarksToStudy };
     let i;
-    for (i = 0; i < bookmarkToStudy.length; i++) {
+    for (i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmark = bookmarksCopy[i];
       if (currentBookmark.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
-          setIsMatch(true);
           setButtonsToDisable((arr) => [...arr, firstChoice]);
           let concatMessage = currentBookmark.messageToAPI + "C";
           bookmarksCopy[i].messageToAPI = concatMessage;
-          setBookmarksToStudy(bookmarksCopy);
+          setcurrentBookmarksToStudy(bookmarksCopy);
           correctAnswer(currentBookmark.bookmark);
           handleAnswer(concatMessage, currentBookmark.bookmark.id);
           if (buttonsToDisable.length === 1) {
             setIsCorrect(true);
           }
+          break;
         } else {
-          setIsIncorrect(true);
+          setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmark.bookmark);
           let concatMessage = currentBookmark.messageToAPI + "W";
           bookmarksCopy[i].messageToAPI = concatMessage;
-          setBookmarksToStudy(bookmarksCopy);
+          setcurrentBookmarksToStudy(bookmarksCopy);
         }
-        break;
+      } else if (currentBookmark.bookmark.id === Number(secondChoice)) {
+        if (firstChoice !== secondChoice) {
+          setIncorrectAnswer(secondChoice);
+          notifyIncorrectAnswer(currentBookmark.bookmark);
+          let concatMessage = currentBookmark.messageToAPI + "W";
+          bookmarksCopy[i].messageToAPI = concatMessage;
+          setcurrentBookmarksToStudy(bookmarksCopy);
+        }
       }
     }
+  }
+
+  function handleShowSolution() {
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
+    console.log("^^^^ time elapsed");
+    let duration = pressTime - initialTime;
+
+    for (let i = 0; i < bookmarksToStudy.length; i++) {
+      if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
+        notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
+        let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
+        console.log(
+          "Sending to the API. Message: ",
+          concatMessage,
+          " Exercise type: ",
+          EXERCISE_TYPE,
+          " Duration: ",
+          duration,
+          " and word: ",
+          currentBookmarksToStudy[i].bookmark.id
+        );
+        api.uploadExerciseFeedback(
+          concatMessage,
+          EXERCISE_TYPE,
+          duration,
+          currentBookmarksToStudy[i].bookmark.id
+        );
+      }
+    }
+    setIsCorrect(true);
   }
 
   function handleAnswer(message, id) {
@@ -100,11 +139,11 @@ export default function Match({
   }
 
   function setButtonOptions() {
-    setFromButtonOptions(bookmarkToStudy);
+    setFromButtonOptions(bookmarksToStudy);
     let optionsToShuffle = [
-      bookmarksToStudy[0].bookmark,
-      bookmarksToStudy[1].bookmark,
-      bookmarksToStudy[2].bookmark,
+      currentBookmarksToStudy[0].bookmark,
+      currentBookmarksToStudy[1].bookmark,
+      currentBookmarksToStudy[2].bookmark,
     ];
     let shuffledOptions = shuffle(optionsToShuffle);
     setToButtonOptions(shuffledOptions);
@@ -122,19 +161,22 @@ export default function Match({
         buttonsToDisable={buttonsToDisable}
         isCorrect={isCorrect}
         api={api}
-        isIncorrect={isIncorrect}
-        setIsIncorrect={setIsIncorrect}
-        isMatch={isMatch}
-        setIsMatch={setIsMatch}
+        incorrectAnswer={incorrectAnswer}
+        setIncorrectAnswer={setIncorrectAnswer}
       />
 
       {isCorrect && (
         <NextNavigation
           api={api}
-          bookmarkToStudy={toButtonOptions}
+          bookmarksToStudy={toButtonOptions}
           moveToNextExercise={moveToNextExercise}
         />
       )}
+      <SolutionFeedbackLinks
+        handleShowSolution={handleShowSolution}
+        toggleShow={toggleShow}
+        isCorrect={isCorrect}
+      />
     </s.Exercise>
   );
 }

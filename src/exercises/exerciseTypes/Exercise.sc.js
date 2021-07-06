@@ -60,6 +60,15 @@ const Exercise = styled.div`
   }
 `;
 
+const StyledButton = styled.button`
+  cursor: pointer;
+  padding: 0.5em;
+  font-weight: 500;
+  border-radius: 0.625em;
+  border-style: none;
+  user-select: none;
+`;
+
 let MatchInputHolder = styled.div`
   display: flex;
   flex-direction: row;
@@ -74,29 +83,19 @@ let MatchButtonHolder = styled.div`
 
 let MatchSpeakButtonHolder = styled.div`
   width: fit-content;
-  margin: 2em;
-  margin-left: -0.75em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  margin-left: -1.5em;
   border-radius: 0.75em;
-  padding: 0.5em;
 `;
 
-let MatchButton = styled.button`
+let MatchButton = styled(StyledButton)`
   width: fit-content;
-  margin: 2em;
-  border-radius: 0.75em;
-  padding: 0.5em;
+  margin-top: 2em;
+  margin-bottom: 2em;
   background: #ffd04799;
   color: black;
-  border: 0.125em solid #ffbb54;
-  border-style: none;
-  box-shadow: none;
-  user-select: none;
-
-  font-weight: 500;
-  cursor: pointer;
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+  border: 0.125em solid #ffbb5440;
 
   &:focus {
     outline: 0;
@@ -107,32 +106,26 @@ let MatchButton = styled.button`
   }
 `;
 
-let FeedbackButton = styled.button`
-  cursor: pointer;
+let MatchingWords = styled.p`
+  margin: 2.125em;
+  padding: 0.5em;
+`;
 
+let OrangeButton = styled(StyledButton)`
   display: flex;
   flex-direction: column;
 
   justify-content: center;
   align-items: center;
 
-  margin-left: 2em;
-
   color: #ffffff;
-  height: 2.5em;
-  width: 4em;
   background-color: #ffbb54;
-  border-style: none;
-  box-shadow: none;
-  border-radius: 10px;
-  padding: 0.5em;
-  user-select: none;
-  outline: none;
-  font-weight: 500;
+`;
 
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+let FeedbackButton = styled(OrangeButton)`
+  height: fit-content;
+  width: fit-content;
+  outline: none;
 
   &:disabled {
     cursor: default;
@@ -156,30 +149,6 @@ const shake = keyframes`
   40%, 60% {
     transform: translate3d(4px, 0, 0);
   }
-`;
-
-let OrangeButton = styled.button`
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-
-  justify-content: center;
-  align-items: center;
-
-  color: #ffffff;
-  background-color: #ffbb54;
-  border-style: none;
-  box-shadow: none;
-  border-radius: 10px;
-  padding: 0.5em;
-  user-select: none;
-
-  font-weight: 500;
-
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
 `;
 
 let AnimatedOrangeButton = styled(OrangeButton)`
@@ -213,7 +182,7 @@ let BottomRow = styled.div`
   flex-direction: row;
   padding: 0.5em;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-around;
   margin-top: 3em;
   flex-wrap: wrap;
 `;
@@ -221,6 +190,26 @@ let BottomRow = styled.div`
 let StyledLink = styled(Link)`
   margin-top: 1em;
   color: gray;
+  text-decoration: underline;
+`;
+
+let StyledDiv = styled.div`
+  margin-top: 1em;
+  color: gray;
+`;
+
+let ButtonRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+let CenteredRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 `;
 
 export {
@@ -232,9 +221,15 @@ export {
   AnimatedInput,
   BottomRow,
   StyledLink,
+  StyledDiv,
   MatchButton,
+  MatchingWords,
   AnimatedMatchButton,
   MatchButtonHolder,
   MatchInputHolder,
   MatchSpeakButtonHolder,
+  ButtonRow,
+  CenteredRow,
 };
+
+export default StyledButton;

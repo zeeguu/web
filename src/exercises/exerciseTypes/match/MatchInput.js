@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
 
@@ -10,44 +10,32 @@ function MatchInput({
   buttonsToDisable,
   isCorrect,
   api,
-  isIncorrect,
-  setIsIncorrect,
-  isMatch,
-  setIsMatch,
+  incorrectAnswer,
+  setIncorrectAnswer,
 }) {
-  const buttonColors = [
+  const answerColors = [
     {
-      background: "#ffbb54",
-      color: "white",
-      border: "0.125em solid #ffbb54",
+      fontWeight: "500",
+      color: "#00665C",
     },
     {
-      background: "#ffd047",
-      color: "white",
-      border: "0.125em solid #ffd047",
+      fontWeight: "500",
+      color: "#1770B3",
     },
     {
-      background: "#ffd04740",
-      color: "black",
-      border: "0.125em solid #ffd04740",
-    },
-    {
-      background: "#ffd04799",
-      color: "black",
-      border: "0.125em solid #ffbb54",
+      fontWeight: "500",
+      color: "#B34F20",
     },
   ];
 
+  const selectedButtonColor = {
+    background: "#ffd04799",
+    color: "black",
+    border: "0.15em solid #ffbb54",
+  };
+
   const [firstSelection, setFirstSelection] = useState(0);
   const [firstSelectionColumn, setFirstSelectionColumn] = useState("");
-
-  useEffect(() => {
-    if (isMatch) {
-      setFirstSelection(0);
-      setIsMatch(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMatch]);
 
   function handleClick(column, id) {
     if (firstSelection !== 0) {
@@ -63,6 +51,7 @@ function MatchInput({
         } else {
           notifyChoiceSelection(id, firstSelection);
         }
+        setFirstSelection(0);
       }
     } else {
       inputFirstClick();
@@ -75,93 +64,102 @@ function MatchInput({
     }
   }
 
-  function endAnimation() {
-    setFirstSelection(0);
-    setIsIncorrect(false);
-  }
-
-  const buttonPairStyle = (column, id) => {
-    if (firstSelectionColumn === column && firstSelection === id) {
-      return buttonColors[3];
-    } else {
-      for (let i = 0; i < buttonsToDisable.length; i++) {
-        if (id === buttonsToDisable[i]) return buttonColors[i];
-      }
+  const answerPairStyle = (id) => {
+    for (let i = 0; i < fromButtonOptions.length; i++) {
+      if (id === fromButtonOptions[i].id) return answerColors[i];
     }
   };
 
+  const selectedButtonStyle = (column, id) => {
+    if (firstSelectionColumn === column && firstSelection === id) {
+      return selectedButtonColor;
+    }
+    return null;
+  };
+
+  const small = "small";
+
   return (
-    <s.MatchInputHolder>
-      <s.MatchButtonHolder>
-        {fromButtonOptions ? (
-          fromButtonOptions.map((option) =>
-            isIncorrect &&
-            firstSelection === option.id &&
-            firstSelectionColumn === "from" ? (
-              <s.AnimatedMatchButton
-                key={"L2_" + option.id}
-                id={option.id}
-                onClick={(e) => handleClick("from", Number(e.target.id))}
-                onAnimationEnd={() => endAnimation()}
-              >
-                {option.from}
-              </s.AnimatedMatchButton>
-            ) : (
-              <s.MatchButton
-                style={buttonPairStyle("from", option.id)}
-                key={"L2_" + option.id}
-                id={option.id}
-                onClick={(e) => handleClick("from", Number(e.target.id))}
-                disabled={buttonsToDisable.includes(option.id)}
-              >
-                {option.from}
-              </s.MatchButton>
-            )
-          )
-        ) : (
-          <></>
-        )}
-      </s.MatchButtonHolder>
-      {isCorrect && (
+    <>
+      <s.MatchInputHolder>
         <s.MatchButtonHolder>
-          {fromButtonOptions.map((option) => (
-            <s.MatchSpeakButtonHolder>
-              <SpeakButton bookmarkToStudy={option} api={api} />
-            </s.MatchSpeakButtonHolder>
-          ))}
-        </s.MatchButtonHolder>
-      )}
-      <s.MatchButtonHolder>
-        {toButtonOptions ? (
-          toButtonOptions.map((option) =>
-            isIncorrect &&
-            firstSelection === option.id &&
-            firstSelectionColumn === "to" ? (
-              <s.AnimatedMatchButton
-                key={"L1_" + option.id}
-                id={option.id}
-                onClick={(e) => handleClick("to", Number(e.target.id))}
-                onAnimationEnd={() => endAnimation()}
-              >
-                {option.to}
-              </s.AnimatedMatchButton>
-            ) : (
-              <s.MatchButton
-                style={buttonPairStyle("to", option.id)}
-                key={"L1_" + option.id}
-                id={option.id}
-                onClick={(e) => handleClick("to", Number(e.target.id))}
-                disabled={buttonsToDisable.includes(option.id)}
-              >
-                {option.to}
-              </s.MatchButton>
+          {fromButtonOptions ? (
+            fromButtonOptions.map((option) =>
+              Number(incorrectAnswer) === option.id &&
+              firstSelectionColumn !== "from" ? (
+                <s.AnimatedMatchButton
+                  key={"L2_" + option.id}
+                  id={option.id}
+                  onClick={(e) => handleClick("from", Number(e.target.id))}
+                  onAnimationEnd={() => setIncorrectAnswer("")}
+                >
+                  {option.from}
+                </s.AnimatedMatchButton>
+              ) : buttonsToDisable.includes(option.id) || isCorrect ? (
+                <s.ButtonRow>
+                  <p style={answerPairStyle(option.id)} key={"L2_" + option.id}>
+                    {option.from}
+                  </p>
+                  <s.MatchSpeakButtonHolder>
+                    <SpeakButton
+                      bookmarkToStudy={option}
+                      api={api}
+                      styling={small}
+                    />
+                  </s.MatchSpeakButtonHolder>
+                </s.ButtonRow>
+              ) : (
+                <s.MatchButton
+                  style={selectedButtonStyle("from", option.id)}
+                  key={"L2_" + option.id}
+                  id={option.id}
+                  onClick={(e) => handleClick("from", Number(e.target.id))}
+                >
+                  {option.from}
+                </s.MatchButton>
+              )
             )
-          )
-        ) : (
-          <></>
-        )}
-      </s.MatchButtonHolder>
-    </s.MatchInputHolder>
+          ) : (
+            <></>
+          )}
+        </s.MatchButtonHolder>
+        <s.MatchButtonHolder>
+          {toButtonOptions ? (
+            toButtonOptions.map((option) =>
+              Number(incorrectAnswer) === option.id &&
+              firstSelectionColumn !== "to" ? (
+                <s.AnimatedMatchButton
+                  key={"L1_" + option.id}
+                  id={option.id}
+                  onClick={(e) => handleClick("to", Number(e.target.id))}
+                  onAnimationEnd={() => setIncorrectAnswer("")}
+                >
+                  {option.to}
+                </s.AnimatedMatchButton>
+              ) : buttonsToDisable.includes(option.id) || isCorrect ? (
+                <s.MatchingWords
+                  style={answerPairStyle(option.id)}
+                  key={"L1_" + option.id}
+                >
+                  {option.to}
+                </s.MatchingWords>
+              ) : (
+                <s.MatchButton
+                  style={selectedButtonStyle("to", option.id)}
+                  key={"L1_" + option.id}
+                  id={option.id}
+                  onClick={(e) => handleClick("to", Number(e.target.id))}
+                >
+                  {option.to}
+                </s.MatchButton>
+              )
+            )
+          ) : (
+            <></>
+          )}
+        </s.MatchButtonHolder>
+      </s.MatchInputHolder>
+    </>
   );
 }
 
