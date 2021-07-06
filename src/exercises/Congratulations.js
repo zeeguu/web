@@ -15,6 +15,8 @@ export default function Congratulations({
     return newArray;
   }
 
+  const small = "small";
+
   return (
     <s.NarrowColumn>
       <br />
@@ -27,7 +29,12 @@ export default function Congratulations({
           {removeArrayDuplicates(correctBookmarks).map((each) => (
             <s.ContentOnRow>
               <Word key={each.id} bookmark={each} api={api} />
-              <SpeakButton key={each.from} bookmarkToStudy={each} api={api} />
+              <SpeakButton
+                key={each.from}
+                bookmarkToStudy={each}
+                api={api}
+                styling={small}
+              />
             </s.ContentOnRow>
           ))}
         </h3>
@@ -40,7 +47,12 @@ export default function Congratulations({
           {removeArrayDuplicates(incorrectBookmarks).map((each) => (
             <s.ContentOnRow>
               <Word key={each.id} bookmark={each} api={api} />
-              <SpeakButton key={each.from} bookmarkToStudy={each} api={api} />
+              <SpeakButton
+                key={each.from}
+                bookmarkToStudy={each}
+                api={api}
+                styling={small}
+              />
             </s.ContentOnRow>
           ))}
         </h3>

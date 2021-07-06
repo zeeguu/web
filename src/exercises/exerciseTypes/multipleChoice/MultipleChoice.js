@@ -1,23 +1,25 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
+import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
+import shuffle from "../../../assorted/fisherYatesShuffle";
 
 const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
 export default function MultipleChoice({
   api,
-  bookmarkToStudy,
+  bookmarksToStudy,
   correctAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
   setIsCorrect,
   moveToNextExercise,
-  shuffle,
+  toggleShow,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
@@ -26,7 +28,7 @@ export default function MultipleChoice({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.wordsSimilarTo(bookmarkToStudy.id, (words) => {
+    api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
       consolidateChoiceOptions(words);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,17 +43,29 @@ export default function MultipleChoice({
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
-    if (selectedChoice === bookmarkToStudy.from) {
-      correctAnswer(bookmarkToStudy);
+    if (selectedChoice === bookmarksToStudy[0].from) {
+      correctAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
     } else {
       setIncorrectAnswer(selectedChoice);
-      notifyIncorrectAnswer(bookmarkToStudy);
+      notifyIncorrectAnswer(bookmarksToStudy[0]);
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
     }
+  }
+
+  function handleShowSolution() {
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
+    console.log("^^^^ time elapsed");
+    let duration = pressTime - initialTime;
+    let message = messageToAPI + "S";
+
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    setIsCorrect(true);
+    handleAnswer(message, duration);
   }
 
   function handleAnswer(message) {
@@ -63,7 +77,7 @@ export default function MultipleChoice({
       message,
       EXERCISE_TYPE,
       pressTime - initialTime,
-      bookmarkToStudy.id
+      bookmarksToStudy[0].id
     );
   }
 
@@ -78,7 +92,7 @@ export default function MultipleChoice({
       secondRandomInt = Math.floor(Math.random() * similarWords.length);
     } while (firstRandomInt === secondRandomInt);
     let listOfOptions = [
-      bookmarkToStudy.from,
+      bookmarksToStudy[0].from,
       similarWords[firstRandomInt],
       similarWords[secondRandomInt],
     ];
@@ -89,18 +103,18 @@ export default function MultipleChoice({
   return (
     <s.Exercise>
       <h3>{strings.chooseTheWordFittingContextHeadline}</h3>
-      {isCorrect && <h1>{bookmarkToStudy.to}</h1>}
+      {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
       <div className="contextExample">
         <div
           dangerouslySetInnerHTML={{
             __html: isCorrect
               ? colorWordInContext(
-                  bookmarkToStudy.context,
-                  bookmarkToStudy.from
+                  bookmarksToStudy[0].context,
+                  bookmarksToStudy[0].from
                 )
               : contextWithMissingWord(
-                  bookmarkToStudy.context,
-                  bookmarkToStudy.from
+                  bookmarksToStudy[0].context,
+                  bookmarksToStudy[0].from
                 ),
           }}
         />
@@ -112,15 +126,22 @@ export default function MultipleChoice({
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}
           setIncorrectAnswer={setIncorrectAnswer}
+          handleShowSolution={handleShowSolution}
+          toggleShow={toggleShow}
         />
       )}
       {isCorrect && (
         <NextNavigation
           api={api}
-          bookmarkToStudy={bookmarkToStudy}
+          bookmarksToStudy={bookmarksToStudy}
           moveToNextExercise={moveToNextExercise}
         />
       )}
+      <SolutionFeedbackLinks
+        handleShowSolution={handleShowSolution}
+        toggleShow={toggleShow}
+        isCorrect={isCorrect}
+      />
     </s.Exercise>
   );
 }

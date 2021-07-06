@@ -3,24 +3,31 @@ import SpeakButton from "./SpeakButton";
 import * as s from "./Exercise.sc";
 
 export default function NextNavigation({
-  bookmarkToStudy,
+  bookmarksToStudy,
   moveToNextExercise,
   api,
 }) {
-  function isIterable(obj) {
-    if (obj == null) {
-      return false;
-    }
-    return typeof obj[Symbol.iterator] === "function";
-  }
+  const bookmarkToStudy = bookmarksToStudy[0];
+  const next = "next";
 
   return (
     <s.BottomRow>
-      {!isIterable(bookmarkToStudy) && (
-        <SpeakButton bookmarkToStudy={bookmarkToStudy} api={api} />
+      {bookmarksToStudy.length === 1 && (
+        <SpeakButton
+          bookmarkToStudy={bookmarkToStudy}
+          api={api}
+          styling={next}
+        />
       )}
 
-      <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
+      <s.FeedbackButton
+        style={{
+          width: "4em",
+          height: "2.5em",
+        }}
+        onClick={(e) => moveToNextExercise()}
+        autoFocus
+      >
         {strings.next}
       </s.FeedbackButton>
     </s.BottomRow>

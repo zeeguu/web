@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import StyledButton from "./exerciseTypes/Exercise.sc";
 
 const FeedbackHolder = styled.div`
   display: flex;
@@ -21,9 +22,7 @@ const FeedbackButtonsHolder = styled.div`
   flex-wrap: wrap;
 `;
 
-const FeedbackButton = styled.button`
-  cursor: pointer;
-
+const FeedbackButton = styled(StyledButton)`
   display: flex;
   flex-direction: column;
 
@@ -36,15 +35,7 @@ const FeedbackButton = styled.button`
 
   font-size: 0.875em;
   background-color: #ffd04740;
-  border-style: none;
-  border-radius: 0.65em;
-  padding: 0.5em;
-  user-select: none;
   outline: none;
-
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
 
   &.selected {
     background-color: #ffbb54;
@@ -98,15 +89,10 @@ const FeedbackSubmit = styled.input`
   font-size: 0.875em;
   background-color: #ffd04740;
   border: 0.1em solid #ffd047;
-  box-shadow: none;
   border-radius: 0.65em;
   padding: 0.5em;
   user-select: none;
   outline: none;
-
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
 `;
 
 export {

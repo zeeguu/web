@@ -245,8 +245,11 @@ let strings = new LocalizedStrings(
         "Match each word (set of words) with its translation",
 
       //FeedbackButtons
-      giveFeedback: "Give feedback on this exercise",
+      giveFeedback: "Give exercise feedback",
+      giveFeedbackAlert: "Please type your feedback before submitting.",
       selectWords: "Select the word(s):",
+      selectWordsAlert:
+        "Please select the word(s) for which you are providing feedback.",
       otherFeedback: "Other feedback:",
 
       //ButtomInput
@@ -506,7 +509,9 @@ let strings = new LocalizedStrings(
 
       //FeedbackButtons
       giveFeedback: "Giv feedback på øvelsen",
+      giveFeedbackAlert: "Indtast din feedback inden du sender.",
       selectWords: "Vælg ordet/ordene:",
+      selectWordsAlert: "Vælg ordet/ordene, som du giver feedback til.",
       otherFeedback: "Anden feedback:",
 
       //ButtomInput

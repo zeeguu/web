@@ -30,7 +30,7 @@ let EXERCISES = [
 
 export default function Exercises({ api, articleID }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentBookmarkToStudy, setCurrentBookmarkToStudy] = useState(null);
+  const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
   const [finished, setFinished] = useState(false);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
@@ -38,6 +38,7 @@ export default function Exercises({ api, articleID }) {
   const [exerciseSession, setExerciseSession] = useState([]);
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -62,14 +63,20 @@ export default function Exercises({ api, articleID }) {
 
   function initializeExercises(bookmarks, title) {
     NUMBER_OF_EXERCISES = bookmarks.length;
-    setSession(bookmarks);
+    setCurrentExerciseSession(bookmarks);
     setTitle(title);
   }
 
-  function setSession(bookmarks) {
+  function setCurrentExerciseSession(bookmarks) {
     let bookmarkSum = EXERCISES.reduce((a, b) => a + b.requiredBookmarks, 0);
     let batches = parseInt(NUMBER_OF_EXERCISES / bookmarkSum);
     let rest = NUMBER_OF_EXERCISES % bookmarkSum;
+    let exercises = defineExerciseSession(batches, rest);
+    setExerciseSession(exercises);
+    setBookmarksByExercise(bookmarks, exercises);
+  }
+
+  function defineExerciseSession(batches, rest) {
     let exercises = [];
     if (NUMBER_OF_EXERCISES < 7) {
       let bookmarks = NUMBER_OF_EXERCISES;
@@ -110,10 +117,13 @@ export default function Exercises({ api, articleID }) {
         }
       }
     }
-    setExerciseSession(exercises);
-    setBookmarksByExercise(bookmarks, exercises);
+    return exercises;
   }
 
+  /**The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
+   * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
+   * currentBookmarksToStudy to begin the exercise session.
+   */
   function setBookmarksByExercise(bookmarkList, session) {
     let k = 0;
     for (let i = 0; i < session.length; i++) {
@@ -128,12 +138,8 @@ export default function Exercises({ api, articleID }) {
       }
     }
 
-    if (currentBookmarkToStudy === null) {
-      if (session[0].requiredBookmarks > 1) {
-        setCurrentBookmarkToStudy(session[0].bookmarks);
-      } else {
-        setCurrentBookmarkToStudy(session[0].bookmarks[0]);
-      }
+    if (currentBookmarksToStudy === null) {
+      setCurrentBookmarksToStudy(session[0].bookmarks);
     }
     setExerciseSession(session);
   }
@@ -151,12 +157,13 @@ export default function Exercises({ api, articleID }) {
     );
   }
 
-  if (!currentBookmarkToStudy) {
+  if (!currentBookmarksToStudy) {
     return <LoadingAnimation />;
   }
 
   function moveToNextExercise() {
     setIsCorrect(false);
+    setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
 
     if (newIndex === exerciseSession.length) {
@@ -164,23 +171,25 @@ export default function Exercises({ api, articleID }) {
       return;
     }
 
-    if (exerciseSession[newIndex].requiredBookmarks > 1) {
-      setCurrentBookmarkToStudy(exerciseSession[newIndex].bookmarks);
-    } else {
-      setCurrentBookmarkToStudy(exerciseSession[newIndex].bookmarks[0]);
-    }
-
+    setCurrentBookmarksToStudy(exerciseSession[newIndex].bookmarks);
     setCurrentIndex(newIndex);
   }
 
+  let correctBookmarksCopy = [...correctBookmarks];
   function correctAnswer(currentBookmark) {
-    if (!incorrectBookmarks.includes(currentBookmark)) {
-      setCorrectBookmarks([...correctBookmarks, currentBookmark]);
+    if (
+      !incorrectBookmarks.includes(currentBookmark) ||
+      !incorrectBookmarksCopy.includes(currentBookmark)
+    ) {
+      correctBookmarksCopy.push(currentBookmark);
+      setCorrectBookmarks(correctBookmarksCopy);
     }
   }
 
+  let incorrectBookmarksCopy = [...incorrectBookmarks];
   function incorrectAnswerNotification(currentBookmark) {
-    setIncorrectBookmarks([...incorrectBookmarks, currentBookmark]);
+    incorrectBookmarksCopy.push(currentBookmark);
+    setIncorrectBookmarks(incorrectBookmarksCopy);
   }
 
   function stopShowingThisFeedback(reason, id) {
@@ -196,25 +205,8 @@ export default function Exercises({ api, articleID }) {
     api.uploadExerciseFeedback(reason, currentExerciseType, 0, id);
   }
 
-  /*Fisher-Yates (aka Knuth) Shuffle - https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array*/
-  function shuffle(array) {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
+  function toggleShow() {
+    setShowFeedbackButtons(!showFeedbackButtons);
   }
 
   let wordSourceText = articleInfo ? (
@@ -233,7 +225,7 @@ export default function Exercises({ api, articleID }) {
 
       <s.ExForm>
         <CurrentExercise
-          bookmarkToStudy={currentBookmarkToStudy}
+          bookmarksToStudy={currentBookmarksToStudy}
           correctAnswer={correctAnswer}
           notifyIncorrectAnswer={incorrectAnswerNotification}
           api={api}
@@ -241,7 +233,7 @@ export default function Exercises({ api, articleID }) {
           isCorrect={isCorrect}
           setIsCorrect={setIsCorrect}
           moveToNextExercise={moveToNextExercise}
-          shuffle={shuffle}
+          toggleShow={toggleShow}
         />
       </s.ExForm>
 
@@ -250,9 +242,10 @@ export default function Exercises({ api, articleID }) {
       <br />
 
       <FeedbackButtons
+        show={showFeedbackButtons}
         feedbackFunction={stopShowingThisFeedback}
         currentExerciseType={currentExerciseType}
-        currentBookmarkToStudy={currentBookmarkToStudy}
+        currentBookmarksToStudy={currentBookmarksToStudy}
       />
     </s.ExercisesColumn>
   );
