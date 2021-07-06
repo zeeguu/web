@@ -6,6 +6,22 @@ const Exercise = styled.div`
   flex-direction: column;
   text-align: center;
   transition: all 0.5s;
+  padding-bottom: 1em;
+
+  .headline {
+    font-size: small;
+    color: gray;
+    margin-top: 1em;
+    font-weight: 500;
+  }
+
+  .headlineWithMoreSpace {
+    font-size: small;
+    color: gray;
+    margin-top: 3em;
+    margin-bottom: 2em;
+    /* font-weight: 600; */
+  }
 
   .bottomInput {
     display: flex;
@@ -32,9 +48,11 @@ const Exercise = styled.div`
   }
 
   .contextExample {
-    margin-top: 2em;
+    margin-top: 1em;
     margin-left: 2em;
     margin-right: 2em;
+    font-weight: 400;
+    line-height: 1.4em;
   }
 
   /* Mobile version */
@@ -60,32 +78,78 @@ const Exercise = styled.div`
   }
 `;
 
-let FeedbackButton = styled.button`
+const StyledButton = styled.button`
   cursor: pointer;
+  padding: 0.5em;
+  font-weight: 500;
+  border-radius: 0.625em;
+  border-style: none;
+  user-select: none;
+`;
 
+let MatchInputHolder = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+`;
+
+let MatchButtonHolder = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+let MatchButtonHolderRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+let MatchSpeakButtonHolder = styled.div`
+  width: fit-content;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  margin-left: -1.5em;
+  border-radius: 0.75em;
+`;
+
+let MatchButton = styled(StyledButton)`
+  width: fit-content;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  background: #ffd04799;
+  color: black;
+  border: 0.125em solid #ffbb5440;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:hover {
+    background-color: #ffbb5440;
+  }
+`;
+
+let MatchingWords = styled.p`
+  margin: 2.125em;
+  padding: 0.5em;
+`;
+
+let OrangeButton = styled(StyledButton)`
   display: flex;
   flex-direction: column;
 
   justify-content: center;
   align-items: center;
 
-  margin-left: 2em;
-
   color: #ffffff;
-  height: 2.5em;
-  width: 4em;
   background-color: #ffbb54;
-  border-style: none;
-  box-shadow: none;
-  border-radius: 10px;
-  padding: 0.5em;
-  user-select: none;
-  outline: none;
-  font-weight: 500;
+`;
 
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+let FeedbackButton = styled(OrangeButton)`
+  height: fit-content;
+  width: fit-content;
+  outline: none;
 
   &:disabled {
     cursor: default;
@@ -111,31 +175,14 @@ const shake = keyframes`
   }
 `;
 
-let OrangeButton = styled.button`
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-
-  justify-content: center;
-  align-items: center;
-
-  color: #ffffff;
-  background-color: #ffbb54;
-  border-style: none;
-  box-shadow: none;
-  border-radius: 10px;
-  padding: 0.5em;
-  user-select: none;
-
-  font-weight: 500;
-
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+let AnimatedOrangeButton = styled(OrangeButton)`
+  animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 `;
 
-let AnimatedOrangeButton = styled(OrangeButton)`
+let AnimatedMatchButton = styled(MatchButton)`
   animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
@@ -159,14 +206,36 @@ let BottomRow = styled.div`
   flex-direction: row;
   padding: 0.5em;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-around;
   margin-top: 3em;
+  margin-bottom: 3em;
   flex-wrap: wrap;
 `;
 
 let StyledLink = styled(Link)`
   margin-top: 1em;
   color: gray;
+  text-decoration: underline;
+  font-size: small;
+`;
+
+let StyledDiv = styled.div`
+  margin-top: 1em;
+  color: gray;
+`;
+
+let ButtonRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+let CenteredRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 `;
 
 export {
@@ -178,4 +247,16 @@ export {
   AnimatedInput,
   BottomRow,
   StyledLink,
+  StyledDiv,
+  MatchButton,
+  MatchingWords,
+  AnimatedMatchButton,
+  MatchButtonHolder,
+  MatchButtonHolderRight,
+  MatchInputHolder,
+  MatchSpeakButtonHolder,
+  ButtonRow,
+  CenteredRow,
 };
+
+export default StyledButton;
