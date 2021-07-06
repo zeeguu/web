@@ -102,7 +102,10 @@ export default function MultipleChoice({
 
   return (
     <s.Exercise>
-      <h3>{strings.chooseTheWordFittingContextHeadline}</h3>
+      <div className="headlineWithMoreSpace">
+        {strings.chooseTheWordFittingContextHeadline}{" "}
+      </div>
+
       {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
       <div className="contextExample">
         <div
