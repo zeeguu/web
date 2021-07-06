@@ -4,7 +4,7 @@ import StyledButton from "./exerciseTypes/Exercise.sc";
 const FeedbackHolder = styled.div`
   display: flex;
   background-color: rgba(211, 211, 211, 0.139);
-  border: 1px solid rgba(128, 128, 128, 0.228);
+  border: 0px;
   border-radius: 0.5em;
 
   width: 100%;
