@@ -1,4 +1,4 @@
-export default [
+const uiLanguages = [
   {
     name: "Danish",
     code: "da",
@@ -12,3 +12,7 @@ export default [
     deselectedIcon: "/static/icons/eng-deselected.png",
   },
 ];
+
+const defaultUILanguage = uiLanguages[1];
+
+export { uiLanguages as default, defaultUILanguage };
