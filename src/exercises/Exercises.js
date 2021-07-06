@@ -12,8 +12,9 @@ import { setTitle } from "../assorted/setTitle";
 import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
 
-let NUMBER_OF_EXERCISES = 10;
-let EXERCISES = [
+let BOOKMARKS_TO_PRACTICE = 10;
+
+let BOOKMARKS_FOR_EXERCISE = [
   {
     type: Match,
     requiredBookmarks: 3,
@@ -53,7 +54,7 @@ export default function Exercises({ api, articleID }) {
           });
         });
       } else {
-        api.getUserBookmarksToStudy(NUMBER_OF_EXERCISES, (bookmarks) => {
+        api.getUserBookmarksToStudy(BOOKMARKS_TO_PRACTICE, (bookmarks) => {
           initializeExercises(bookmarks, "Exercises");
         });
       }
@@ -62,86 +63,92 @@ export default function Exercises({ api, articleID }) {
   }, []);
 
   function initializeExercises(bookmarks, title) {
-    NUMBER_OF_EXERCISES = bookmarks.length;
+    BOOKMARKS_TO_PRACTICE = bookmarks.length;
     setCurrentExerciseSession(bookmarks);
     setTitle(title);
   }
 
   function setCurrentExerciseSession(bookmarks) {
-    let bookmarkSum = EXERCISES.reduce((a, b) => a + b.requiredBookmarks, 0);
-    let batches = parseInt(NUMBER_OF_EXERCISES / bookmarkSum);
-    let rest = NUMBER_OF_EXERCISES % bookmarkSum;
-    let exercises = defineExerciseSession(batches, rest);
-    setExerciseSession(exercises);
-    setBookmarksByExercise(bookmarks, exercises);
+    let bookmarksPerBatch = BOOKMARKS_FOR_EXERCISE.reduce(
+      (a, b) => a + b.requiredBookmarks,
+      0
+    );
+    let batchCount = parseInt(BOOKMARKS_TO_PRACTICE / bookmarksPerBatch);
+    let remainingExercises = BOOKMARKS_TO_PRACTICE % bookmarksPerBatch;
+    let exerciseSequence = defineExerciseSession(
+      batchCount,
+      remainingExercises
+    );
+    setExerciseSession(exerciseSequence);
+    assignBookmarksToExercises(bookmarks, exerciseSequence);
   }
 
   function defineExerciseSession(batches, rest) {
-    let exercises = [];
-    if (NUMBER_OF_EXERCISES < 7) {
-      let bookmarks = NUMBER_OF_EXERCISES;
+    let exerciseSession = [];
+    if (BOOKMARKS_TO_PRACTICE < 7) {
+      let bookmarks = BOOKMARKS_TO_PRACTICE;
       while (bookmarks > 0) {
-        for (let i = EXERCISES.length - 1; i > 0; i--) {
+        for (let i = BOOKMARKS_FOR_EXERCISE.length - 1; i > 0; i--) {
           if (bookmarks === 0) break;
           let exercise = {
-            type: EXERCISES[i].type,
-            requiredBookmarks: EXERCISES[i].requiredBookmarks,
+            type: BOOKMARKS_FOR_EXERCISE[i].type,
+            requiredBookmarks: BOOKMARKS_FOR_EXERCISE[i].requiredBookmarks,
             bookmarks: [],
           };
-          exercises.push(exercise);
+          exerciseSession.push(exercise);
           bookmarks--;
         }
       }
     } else {
       for (let i = 0; i < batches; i++) {
-        for (let j = EXERCISES.length - 1; j >= 0; j--) {
+        for (let j = BOOKMARKS_FOR_EXERCISE.length - 1; j >= 0; j--) {
           let exercise = {
-            type: EXERCISES[j].type,
-            requiredBookmarks: EXERCISES[j].requiredBookmarks,
+            type: BOOKMARKS_FOR_EXERCISE[j].type,
+            requiredBookmarks: BOOKMARKS_FOR_EXERCISE[j].requiredBookmarks,
             bookmarks: [],
           };
-          exercises.push(exercise);
+          exerciseSession.push(exercise);
         }
       }
       while (rest > 0) {
-        for (let k = EXERCISES.length - 1; k >= 0; k--) {
-          if (rest >= EXERCISES[k].requiredBookmarks) {
+        for (let k = BOOKMARKS_FOR_EXERCISE.length - 1; k >= 0; k--) {
+          if (rest >= BOOKMARKS_FOR_EXERCISE[k].requiredBookmarks) {
             let exercise = {
-              type: EXERCISES[k].type,
-              requiredBookmarks: EXERCISES[k].requiredBookmarks,
+              type: BOOKMARKS_FOR_EXERCISE[k].type,
+              requiredBookmarks: BOOKMARKS_FOR_EXERCISE[k].requiredBookmarks,
               bookmarks: [],
             };
-            exercises.push(exercise);
+            exerciseSession.push(exercise);
             rest--;
           }
         }
       }
     }
-    return exercises;
+    return exerciseSession;
   }
 
   /**The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
    * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
    * currentBookmarksToStudy to begin the exercise session.
    */
-  function setBookmarksByExercise(bookmarkList, session) {
+  function assignBookmarksToExercises(bookmarkList, exerciseSession) {
     let k = 0;
-    for (let i = 0; i < session.length; i++) {
-      if (session[i].requiredBookmarks > 1) {
-        for (let j = i; j < i + session[i].requiredBookmarks; j++) {
-          session[i].bookmarks.push(bookmarkList[k]);
+    for (let i = 0; i < exerciseSession.length; i++) {
+      if (exerciseSession[i].requiredBookmarks > 1) {
+        for (let j = i; j < i + exerciseSession[i].requiredBookmarks; j++) {
+          exerciseSession[i].bookmarks.push(bookmarkList[k]);
           k++;
         }
       } else {
-        session[i].bookmarks.push(bookmarkList[k]);
+        exerciseSession[i].bookmarks.push(bookmarkList[k]);
         k++;
       }
     }
 
     if (currentBookmarksToStudy === null) {
-      setCurrentBookmarksToStudy(session[0].bookmarks);
+      setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
     }
-    setExerciseSession(session);
+    setExerciseSession(exerciseSession);
   }
 
   if (finished) {
