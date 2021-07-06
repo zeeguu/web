@@ -245,7 +245,7 @@ let strings = new LocalizedStrings(
         "Match each word (set of words) with its translation",
 
       //FeedbackButtons
-      giveFeedback: "Give exercise feedback",
+      giveFeedback: "Give feedback",
       giveFeedbackAlert: "Please type your feedback before submitting.",
       selectWords: "Select the word(s):",
       selectWordsAlert:
