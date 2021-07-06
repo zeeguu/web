@@ -15,15 +15,15 @@ function MatchInput({
 }) {
   const answerColors = [
     {
-      fontWeight: "500",
+      fontWeight: "700",
       color: "#00665C",
     },
     {
-      fontWeight: "500",
+      fontWeight: "700",
       color: "#1770B3",
     },
     {
-      fontWeight: "500",
+      fontWeight: "700",
       color: "#B34F20",
     },
   ];
@@ -123,7 +123,7 @@ function MatchInput({
             <></>
           )}
         </s.MatchButtonHolder>
-        <s.MatchButtonHolder>
+        <s.MatchButtonHolderRight>
           {toButtonOptions ? (
             toButtonOptions.map((option) =>
               Number(incorrectAnswer) === option.id &&
@@ -157,7 +157,7 @@ function MatchInput({
           ) : (
             <></>
           )}
-        </s.MatchButtonHolder>
+        </s.MatchButtonHolderRight>
       </s.MatchInputHolder>
     </>
   );

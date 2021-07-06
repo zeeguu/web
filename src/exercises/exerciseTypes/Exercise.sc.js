@@ -6,6 +6,22 @@ const Exercise = styled.div`
   flex-direction: column;
   text-align: center;
   transition: all 0.5s;
+  padding-bottom: 1em;
+
+  .headline {
+    font-size: small;
+    color: gray;
+    margin-top: 1em;
+    font-weight: 500;
+  }
+
+  .headlineWithMoreSpace {
+    font-size: small;
+    color: gray;
+    margin-top: 3em;
+    margin-bottom: 2em;
+    /* font-weight: 600; */
+  }
 
   .bottomInput {
     display: flex;
@@ -32,9 +48,11 @@ const Exercise = styled.div`
   }
 
   .contextExample {
-    margin-top: 2em;
+    margin-top: 1em;
     margin-left: 2em;
     margin-right: 2em;
+    font-weight: 400;
+    line-height: 1.4em;
   }
 
   /* Mobile version */
@@ -78,7 +96,13 @@ let MatchInputHolder = styled.div`
 let MatchButtonHolder = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
+`;
+
+let MatchButtonHolderRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 let MatchSpeakButtonHolder = styled.div`
@@ -184,6 +208,7 @@ let BottomRow = styled.div`
   align-items: center;
   justify-content: space-around;
   margin-top: 3em;
+  margin-bottom: 3em;
   flex-wrap: wrap;
 `;
 
@@ -191,6 +216,7 @@ let StyledLink = styled(Link)`
   margin-top: 1em;
   color: gray;
   text-decoration: underline;
+  font-size: small;
 `;
 
 let StyledDiv = styled.div`
@@ -226,6 +252,7 @@ export {
   MatchingWords,
   AnimatedMatchButton,
   MatchButtonHolder,
+  MatchButtonHolderRight,
   MatchInputHolder,
   MatchSpeakButtonHolder,
   ButtonRow,

@@ -151,7 +151,9 @@ export default function Match({
 
   return (
     <s.Exercise>
-      <h3>{strings.matchWordWithTranslation}</h3>
+      <div className="headlineWithMoreSpace">
+        {strings.matchWordWithTranslation}{" "}
+      </div>
 
       <MatchInput
         fromButtonOptions={fromButtonOptions}

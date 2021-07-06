@@ -78,7 +78,8 @@ export default function FindWordInContext({
 
   return (
     <s.Exercise>
-      <h3>{strings.findTheWordInContextHeadline}</h3>
+      <div className="headline">{strings.findTheWordInContextHeadline} </div>
+
       <h1>{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
         <div

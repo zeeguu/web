@@ -238,11 +238,10 @@ let strings = new LocalizedStrings(
       wordSourcePrefix: "Words in",
 
       //ExerciseHeadlines
-      findTheWordInContextHeadline: "Find the word(s) in the context",
+      findTheWordInContextHeadline: "Find the word in the context below",
       chooseTheWordFittingContextHeadline:
-        "Choose the word(s) that fits the context",
-      matchWordWithTranslation:
-        "Match each word (set of words) with its translation",
+        "Choose the word that fits the context",
+      matchWordWithTranslation: "Match each word with its translation",
 
       //FeedbackButtons
       giveFeedback: "Give feedback",
@@ -501,11 +500,10 @@ let strings = new LocalizedStrings(
       wordSourcePrefix: "Ord fra",
 
       //ExerciseHeadlines
-      findTheWordInContextHeadline: "Find ordet/ordene i sammenhængen",
+      findTheWordInContextHeadline: "Find ordet i sammenhængen",
       chooseTheWordFittingContextHeadline:
-        "Vælg ordet/ordene, der passer i sammenhængen",
-      matchWordWithTranslation:
-        "Match hvert ord (ordsæt) med dets oversættelse",
+        "Vælg ordet, der passer i sammenhængen",
+      matchWordWithTranslation: "Match hvert ord med dets oversættelse",
 
       //FeedbackButtons
       giveFeedback: "Giv feedback på øvelsen",
