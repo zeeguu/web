@@ -1,27 +1,34 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
+import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 
-import BottomFeedback from "../BottomFeedback";
+import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
+import shuffle from "../../../assorted/fisherYatesShuffle";
 
-const EXERCISE_TYPE = "MULTIPLE_CHOICE";
+const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
 export default function MultipleChoice({
   api,
-  bookmarkToStudy,
+  bookmarksToStudy,
   correctAnswer,
   notifyIncorrectAnswer,
+  setExerciseType,
+  isCorrect,
+  setIsCorrect,
+  moveToNextExercise,
+  toggleShow,
 }) {
-  const [isCorrect, setIsCorrect] = useState(false);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
 
   useEffect(() => {
-    api.wordsSimilarTo(bookmarkToStudy.id, (words) => {
+    setExerciseType(EXERCISE_TYPE);
+    api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
       consolidateChoiceOptions(words);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -36,16 +43,29 @@ export default function MultipleChoice({
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
-    if (selectedChoice === bookmarkToStudy.from) {
+    if (selectedChoice === bookmarksToStudy[0].from) {
+      correctAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
     } else {
       setIncorrectAnswer(selectedChoice);
-      notifyIncorrectAnswer();
+      notifyIncorrectAnswer(bookmarksToStudy[0]);
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
     }
+  }
+
+  function handleShowSolution() {
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
+    console.log("^^^^ time elapsed");
+    let duration = pressTime - initialTime;
+    let message = messageToAPI + "S";
+
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    setIsCorrect(true);
+    handleAnswer(message, duration);
   }
 
   function handleAnswer(message) {
@@ -57,7 +77,7 @@ export default function MultipleChoice({
       message,
       EXERCISE_TYPE,
       pressTime - initialTime,
-      bookmarkToStudy.id
+      bookmarksToStudy[0].id
     );
   }
 
@@ -72,7 +92,7 @@ export default function MultipleChoice({
       secondRandomInt = Math.floor(Math.random() * similarWords.length);
     } while (firstRandomInt === secondRandomInt);
     let listOfOptions = [
-      bookmarkToStudy.from,
+      bookmarksToStudy[0].from,
       similarWords[firstRandomInt],
       similarWords[secondRandomInt],
     ];
@@ -80,42 +100,24 @@ export default function MultipleChoice({
     setButtonOptions(shuffledListOfOptions);
   }
 
-  /*Fisher-Yates (aka Knuth) Shuffle - https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array*/
-  function shuffle(array) {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-  }
-
   return (
     <s.Exercise>
-      <h3>{strings.chooseTheWordFittingContextHeadline}</h3>
-      {isCorrect && <h1>{bookmarkToStudy.to}</h1>}
+      <div className="headlineWithMoreSpace">
+        {strings.chooseTheWordFittingContextHeadline}{" "}
+      </div>
+
+      {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
       <div className="contextExample">
         <div
           dangerouslySetInnerHTML={{
             __html: isCorrect
               ? colorWordInContext(
-                  bookmarkToStudy.context,
-                  bookmarkToStudy.from
+                  bookmarksToStudy[0].context,
+                  bookmarksToStudy[0].from
                 )
               : contextWithMissingWord(
-                  bookmarkToStudy.context,
-                  bookmarkToStudy.from
+                  bookmarksToStudy[0].context,
+                  bookmarksToStudy[0].from
                 ),
           }}
         />
@@ -127,15 +129,22 @@ export default function MultipleChoice({
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}
           setIncorrectAnswer={setIncorrectAnswer}
+          handleShowSolution={handleShowSolution}
+          toggleShow={toggleShow}
         />
       )}
       {isCorrect && (
-        <BottomFeedback
+        <NextNavigation
           api={api}
-          bookmarkToStudy={bookmarkToStudy}
-          correctAnswer={correctAnswer}
+          bookmarksToStudy={bookmarksToStudy}
+          moveToNextExercise={moveToNextExercise}
         />
       )}
+      <SolutionFeedbackLinks
+        handleShowSolution={handleShowSolution}
+        toggleShow={toggleShow}
+        isCorrect={isCorrect}
+      />
     </s.Exercise>
   );
 }

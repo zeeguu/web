@@ -1,21 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 
 import BottomInput from "./BottomInput";
 
 import strings from "../../../i18n/definitions";
-import BottomFeedback from "../BottomFeedback";
+import NextNavigation from "../NextNavigation";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
   api,
-  bookmarkToStudy,
+  bookmarksToStudy,
   correctAnswer,
   notifyIncorrectAnswer,
+  setExerciseType,
+  isCorrect,
+  setIsCorrect,
+  moveToNextExercise,
+  toggleShow,
 }) {
-  const [isCorrect, setIsCorrect] = useState(false);
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
+
+  useEffect(() => {
+    setExerciseType(EXERCISE_TYPE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function colorWordInContext(context, word) {
     return context.replace(
@@ -36,7 +45,7 @@ export default function FindWordInContext({
     console.log("^^^^ time elapsed");
     let duration = pressTime - initialTime;
 
-    notifyIncorrectAnswer();
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     handleAnswer(message, duration);
   }
@@ -46,7 +55,7 @@ export default function FindWordInContext({
       message,
       EXERCISE_TYPE,
       duration,
-      bookmarkToStudy.id
+      bookmarksToStudy[0].id
     );
   }
 
@@ -57,28 +66,30 @@ export default function FindWordInContext({
     console.log("^^^^ to first key press");
     let duration = firstTypeTime - initialTime;
 
+    correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     handleAnswer(message, duration);
   }
 
   function handleIncorrectAnswer() {
-    notifyIncorrectAnswer();
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
     setFirstTypeTime();
   }
 
   return (
     <s.Exercise>
-      <h3>{strings.findTheWordInContextHeadline}</h3>
-      <h1>{bookmarkToStudy.to}</h1>
+      <div className="headline">{strings.findTheWordInContextHeadline} </div>
+
+      <h1>{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
         <div
           dangerouslySetInnerHTML={{
             __html: isCorrect
               ? colorWordInContext(
-                  bookmarkToStudy.context,
-                  bookmarkToStudy.from
+                  bookmarksToStudy[0].context,
+                  bookmarksToStudy[0].from
                 )
-              : bookmarkToStudy.context,
+              : bookmarksToStudy[0].context,
           }}
         />
       </div>
@@ -88,16 +99,24 @@ export default function FindWordInContext({
           handleCorrectAnswer={handleCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
           handleShowSolution={handleShowSolution}
-          bookmarkToStudy={bookmarkToStudy}
+          bookmarksToStudy={bookmarksToStudy}
           notifyKeyPress={inputKeyPress}
+          toggleShow={toggleShow}
         />
       )}
       {isCorrect && (
-        <BottomFeedback
+        <NextNavigation
           api={api}
-          bookmarkToStudy={bookmarkToStudy}
-          correctAnswer={correctAnswer}
+          bookmarksToStudy={bookmarksToStudy}
+          moveToNextExercise={moveToNextExercise}
         />
+      )}
+      {isCorrect && (
+        <s.CenteredRow>
+          <s.StyledLink to={"#"} onClick={toggleShow}>
+            {strings.giveFeedback}
+          </s.StyledLink>
+        </s.CenteredRow>
       )}
     </s.Exercise>
   );
