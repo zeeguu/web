@@ -113,7 +113,7 @@ export default function StudentInfoLine({
                 )}
                 <StyledTooltip label={strings.difficultyExplanation}>
                   <div className="number-display">
-                    {activity.average_text_difficulty}
+                    {activity.average_text_difficulty/10}
                   </div>
                 </StyledTooltip>
               </div>
