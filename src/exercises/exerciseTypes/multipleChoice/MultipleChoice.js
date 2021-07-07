@@ -106,7 +106,6 @@ export default function MultipleChoice({
         {strings.chooseTheWordFittingContextHeadline}{" "}
       </div>
 
-      {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
       <div className="contextExample">
         <div
           dangerouslySetInnerHTML={{
@@ -122,6 +121,9 @@ export default function MultipleChoice({
           }}
         />
       </div>
+
+      {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
+
       {!buttonOptions && <LoadingAnimation />}
       {!isCorrect && (
         <MultipleChoicesInput
