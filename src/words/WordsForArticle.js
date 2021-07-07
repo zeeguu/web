@@ -40,15 +40,25 @@ export default function WordsForArticle({ api }) {
   return (
     <NarrowColumn>
       <br />
-      <h1>Review Your Words</h1>
+      <h1>Review Translations for Your Exercises </h1>
 
-      <h4>Article: {articleInfo.title}</h4>
-      <TopMessage>
+      <small>From "{articleInfo.title}"</small>
+      <br />
+      <br />
+      <br />
+      <TopMessage style={{ textAlign: "left" }}>
         {words.length > 0 ? (
           <>
-            Grayed out words don't appear in exercises unless you star them.
+            * Delete a translation if you don't want it in exercises.
             <br />
-            To prevent a word from being scheduled, delete it below.
+            <br />
+            * Star a translations to make it have priority in exercises
+            <br />
+            <br />
+            * If a translation is grayed out, it means that Zeeguu does not
+            think it is appropriate for exercises; to overload this decision you
+            can star the translation
+            <br />
           </>
         ) : (
           "The words you translate in the article will appear here for review"
