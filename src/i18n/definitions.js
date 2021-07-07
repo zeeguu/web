@@ -183,7 +183,7 @@ let strings = new LocalizedStrings(
       //WordsHistory
       titleTranslationHistory: "Translation History",
       starAWordMsg:
-        "Star a word to ensure it appears in exercises. Delete to avoid it.",
+        "Star a word to ensure it appears in exercises. Delete to avoid it. Gray words don't appear unless starred.",
 
       //ArticleReader
       translateOnClick: "translate on click",
