@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { defaultUILanguage } from "../uiLanguages";
 import LocalStorage from "../LocalStorage";
 import strings from "../../i18n/definitions";
 
@@ -7,11 +8,11 @@ import strings from "../../i18n/definitions";
 // the useEffect initializes the UI language with a default 'en'
 
 export default function useUILanguage() {
-  let defaultUILanguage = { code: "en" };
-  if (LocalStorage.getUiLanguage() !== undefined) {
-    defaultUILanguage = LocalStorage.getUiLanguage();
+  if (LocalStorage.getUiLanguage() === undefined) {
+    LocalStorage.setUiLanguage(defaultUILanguage);
   }
-  const [uiLanguage, setUiLanguage] = useState(defaultUILanguage);
+
+  const [uiLanguage, setUiLanguage] = useState(LocalStorage.getUiLanguage());
 
   useEffect(() => {
     strings.setLanguage(uiLanguage.code);

@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
-import LinkedList from "linked-list";
+import { List, Item } from "linked-list";
 
-export class Word extends LinkedList.Item {
+export class Word extends Item {
   constructor(word) {
     super();
     this.id = uuid();
@@ -74,7 +74,7 @@ export class Word extends LinkedList.Item {
 
 export default class LinkedWordList {
   constructor(text) {
-    this.linkedWords = LinkedList.from(splitTextIntoWords(text));
+    this.linkedWords = List.from(splitTextIntoWords(text));
   }
 
   getWords() {

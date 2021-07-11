@@ -7,6 +7,8 @@ import * as s from "../components/FormPage.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
 export default function SignIn({ api, notifySuccessfulSignIn }) {
+  // TODO: Fix this bug in a different way. Requires understanding why strings._language changes to "da" without it being asked to, whenever this component renders. Perhaps it imports an un-updated version of strings?
+  strings.setLanguage(LocalStorage.getUiLanguage().code)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
