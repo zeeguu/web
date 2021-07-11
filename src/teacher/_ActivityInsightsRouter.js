@@ -42,10 +42,12 @@ export default function ActivityInsightsRouter({ api }) {
     <Switch>
       <s.WidestColumn>
         <sc.TopTabs>
+          {studentName !== "" ?
           <h1>
             {studentName}
             {title}
-          </h1>
+          </h1>:
+          <h1>{strings.loadingMsg}</h1>}
         </sc.TopTabs>
         <TopButtonWrapper>
           {isOnExercisePage ? (
