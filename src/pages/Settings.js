@@ -32,6 +32,7 @@ export default function Settings({ api, setUser }) {
   useEffect(() => {
     const language = LocalStorage.getUiLanguage();
     setUiLanguage(language);
+    // eslint-disable-next-line 
   }, []);
 
   function onSysChange(lang) {
