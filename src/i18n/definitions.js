@@ -183,7 +183,7 @@ let strings = new LocalizedStrings(
       //WordsHistory
       titleTranslationHistory: "Translation History",
       starAWordMsg:
-        "Star a word to ensure it appears in exercises. Delete to avoid it.",
+        "Star a word to ensure it appears in exercises. Delete to avoid it. Gray words don't appear unless starred.",
 
       //ArticleReader
       translateOnClick: "translate on click",
@@ -277,12 +277,18 @@ let strings = new LocalizedStrings(
       scheduledNotYetStudied: "Scheduled - not yet studied",
 
       //ExerciseHeadlines
-      findTheWordInContextHeadline: "Find the word(s) in the context",
+      findTheWordInContextHeadline: "Find the word in the context below",
       chooseTheWordFittingContextHeadline:
-        "Choose the word(s) that fits the context",
+        "Choose the word that fits the context",
+      matchWordWithTranslation: "Match each word with its translation",
 
       //FeedbackButtons
-      giveFeedback: "Give feedback on this exercise",
+      giveFeedback: "Give feedback",
+      giveFeedbackAlert: "Please type your feedback before submitting.",
+      selectWords: "Select the word(s):",
+      selectWordsAlert:
+        "Please select the word(s) for which you are providing feedback.",
+      otherFeedback: "Other feedback:",
 
       //ButtonInput
       check: "Check",
@@ -817,12 +823,17 @@ let strings = new LocalizedStrings(
       scheduledNotYetStudied: "Planlagt - endnu ikke øvet",
 
       //ExerciseHeadlines
-      findTheWordInContextHeadline: "Find ordet/ordene i sammenhængen",
+      findTheWordInContextHeadline: "Find ordet i sammenhængen",
       chooseTheWordFittingContextHeadline:
-        "Vælg ordet/ordene, der passer i sammenhængen",
+        "Vælg ordet, der passer i sammenhængen",
+      matchWordWithTranslation: "Match hvert ord med dets oversættelse",
 
       //FeedbackButtons
       giveFeedback: "Giv feedback på øvelsen",
+      giveFeedbackAlert: "Indtast din feedback inden du sender.",
+      selectWords: "Vælg ordet/ordene:",
+      selectWordsAlert: "Vælg ordet/ordene, som du giver feedback til.",
+      otherFeedback: "Anden feedback:",
 
       //ButtonInput
       check: "Tjek",
