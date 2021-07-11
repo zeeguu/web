@@ -20,7 +20,14 @@ export default function StudentsActivityOverview({ api }) {
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
   const history = useHistory();
 
-  //Extracting the cohort data for the page title, for showing no student guidance and for deleting students from the cohort.
+  const getStudentsToShow = () =>{
+    api.getStudents(cohortID, selectedTimePeriod, (res) => {
+      const studentWithNeededData = transformStudents(res);
+      setStudents(studentWithNeededData);
+    });
+  }
+
+  //Extracting the cohort data for the page title - for showing "no students" guidance and for deleting students from the cohort.
   useEffect(() => {
     api.getCohortsInfo((res) => {
       const currentCohortArray = res.filter((cohort) => cohort.id === cohortID);
@@ -29,15 +36,17 @@ export default function StudentsActivityOverview({ api }) {
     //eslint-disable-next-line
   }, []);
 
-  //extracting the list of students based on the time period selected by the user.
-  //set a boolean that will return a loading animation until useEffect is done
   useEffect(() => {
-    api.getStudents(cohortID, selectedTimePeriod, (res) => {
-      const studentWithNeededData = transformStudents(res);
-      setStudents(studentWithNeededData);
-    });
+    setStudents(null)
+    getStudentsToShow()
     //eslint-disable-next-line
-  }, [forceUpdate]);
+  }, [selectedTimePeriod]);
+
+  const removeStudentFromCohort = (studentID) => {
+    api.removeStudentFromCohort(studentID, (res) => {
+      getStudentsToShow()
+    });
+  };
 
   if (cohort === "") {
     return <LoadingAnimation />;
@@ -61,6 +70,7 @@ export default function StudentsActivityOverview({ api }) {
               {strings.backToClasses}
             </StyledButton>
           </TopButtonWrapper>
+          {students === null && <LoadingAnimation/>}
           {students !== null &&
             (students.length === 0 ? (
               <NoStudents inviteCode={cohort.inv_code} />
@@ -70,6 +80,7 @@ export default function StudentsActivityOverview({ api }) {
                 cohortID={cohortID}
                 students={students}
                 setForceUpdate={setForceUpdate}
+                removeStudentFromCohort={removeStudentFromCohort}
               />
             ))}
         </div>

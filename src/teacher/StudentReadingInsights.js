@@ -5,6 +5,7 @@ import LocalStorage from "../assorted/LocalStorage";
 import { useParams } from "react-router-dom";
 import ReadingInsightAccordion from "./ReadingInsightAccordion";
 import { CenteredContent } from "../components/ColumnWidth.sc";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function StudentReadingInsights({ api }) {
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -14,7 +15,22 @@ export default function StudentReadingInsights({ api }) {
   const [studentName, setStudentName] = useState("");
   const [cohortLang, setCohortLang] = useState("");
   const [readArticles, setReadArticles] = useState([]);
-  const [articleCount, setArticleCount] = useState(0);
+  const [articleCount, setArticleCount] = useState(-1);
+
+  useEffect(() => {
+    api.getCohortsInfo((cohortInfo) => {
+      let currentCohort = cohortInfo.filter((each) => each.id === cohortID);
+      setCohortLang(currentCohort[0].language_name);
+    });
+    api.getStudentInfo(
+      studentID,
+      cohortID,
+      selectedTimePeriod,
+      (studentInfo) => setStudentName(studentInfo.name),
+      (error) => console.log(error)
+    );
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     api.getReadingSessions(
@@ -34,21 +50,6 @@ export default function StudentReadingInsights({ api }) {
     // eslint-disable-next-line
   }, [forceUpdate]);
 
-  useEffect(() => {
-    api.getCohortsInfo((cohortInfo) => {
-      let currentCohort = cohortInfo.filter((each) => each.id === cohortID);
-      setCohortLang(currentCohort[0].language_name);
-    });
-    api.getStudentInfo(
-      studentID,
-      cohortID,
-      selectedTimePeriod,
-      (studentInfo) => setStudentName(studentInfo.name),
-      (error) => console.log(error)
-    );
-    // eslint-disable-next-line
-  }, []);
-
   const customText =
     readArticles &&
     studentName +
@@ -56,6 +57,10 @@ export default function StudentReadingInsights({ api }) {
       articleCount +
       strings.textsInTheLastPeriod;
 
+  if (studentName === "" || articleCount === -1) {
+    return <LoadingAnimation />;
+  }
+  
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
