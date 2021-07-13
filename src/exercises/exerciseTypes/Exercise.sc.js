@@ -131,8 +131,12 @@ let MatchButton = styled(StyledButton)`
 `;
 
 let MatchingWords = styled.p`
-  margin: 2.125em;
-  padding: 0.5em;
+  margin-top: 2.125em;
+  margin-bottom: 2.125em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-left: 0.5em;
+  font-size: 1.125em;
 `;
 
 let OrangeButton = styled(StyledButton)`

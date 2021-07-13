@@ -10,6 +10,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
+import SnackbarProvider from "react-simple-snackbar";
 
 let BOOKMARKS_TO_PRACTICE = 10;
 
@@ -68,6 +69,14 @@ export default function Exercises({ api, articleID }) {
     setTitle(title);
   }
 
+  /**
+   * Calculates the exercise batches based on the amount of bookmarks received by the API and the amount of
+   * bookmarks required per exercise type. A batch contains all exercise types. If there are not enough
+   * bookmarks for a full batch, "remainingExercises" holds the amount of exercises requiring a single
+   * bookmark to be added to the exercise session.
+   *
+   * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
+   */
   function setCurrentExerciseSession(bookmarks) {
     let bookmarksPerBatch = BOOKMARKS_FOR_EXERCISE.reduce(
       (a, b) => a + b.requiredBookmarks,
@@ -127,7 +136,8 @@ export default function Exercises({ api, articleID }) {
     return exerciseSession;
   }
 
-  /**The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
+  /**
+   * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
    * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
    * currentBookmarksToStudy to begin the exercise session.
    */
@@ -243,17 +253,14 @@ export default function Exercises({ api, articleID }) {
           toggleShow={toggleShow}
         />
       </s.ExForm>
-
-      <br />
-      <br />
-      <br />
-
-      <FeedbackButtons
-        show={showFeedbackButtons}
-        feedbackFunction={stopShowingThisFeedback}
-        currentExerciseType={currentExerciseType}
-        currentBookmarksToStudy={currentBookmarksToStudy}
-      />
+      <SnackbarProvider>
+        <FeedbackButtons
+          show={showFeedbackButtons}
+          feedbackFunction={stopShowingThisFeedback}
+          currentExerciseType={currentExerciseType}
+          currentBookmarksToStudy={currentBookmarksToStudy}
+        />
+      </SnackbarProvider>
     </s.ExercisesColumn>
   );
 }

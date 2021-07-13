@@ -1,6 +1,7 @@
 import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect } from "react";
 import strings from "../i18n/definitions";
+import { useSnackbar } from "react-simple-snackbar";
 
 export default function FeedbackButtons({
   show,
@@ -11,27 +12,53 @@ export default function FeedbackButtons({
   const matchExerciseType = "Match_three_L1W_to_three_L2W";
 
   const buttons = [
-    { name: "Too Easy", value: "too_easy" },
-    { name: "Too Hard", value: "too_hard" },
-    { name: "Bad Translation", value: "bad_translation" },
-    { name: "Other", value: "other" },
+    { name: strings.bookmarkTooEasy, value: "too_easy" },
+    { name: strings.bookmarkTooHard, value: "too_hard" },
+    { name: strings.badTranslation, value: "bad_translation" },
+    { name: strings.other, value: "other" },
   ];
 
   if (currentExerciseType !== matchExerciseType) {
-    buttons.splice(3, 0, { name: "Bad Context", value: "not_a_good_context" });
+    buttons.splice(3, 0, {
+      name: strings.badContext,
+      value: "not_a_good_context",
+    });
   }
+
+  const options = {
+    position: "bottom-right",
+    style: {
+      backgroundColor: "#00665C",
+      color: "#ffffff",
+      textAlign: "center",
+      minWidth: "fit-content",
+      fontFamily: "",
+    },
+    closeStyle: {
+      marginLeft: "-1em",
+    },
+  };
+
   const [showInput, setShowInput] = useState(false);
   const [className, setClassName] = useState("");
   const [input, setInput] = useState("");
-  const [selectedId, setSelectedId] = useState();
+  const [selectedId, setSelectedId] = useState(null);
+
+  const [openSnackbar, closeSnackbar] = useSnackbar(options);
 
   useEffect(() => {
     if (currentExerciseType !== matchExerciseType) {
       setSelectedId(currentBookmarksToStudy[0].id);
+    } else {
+      setSelectedId(null);
     }
     console.log(selectedId);
+    closeSnackbar();
+    setInput("");
+    setShowInput(false);
+    setClassName("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentExerciseType]);
 
   function buttonClick(value) {
     if (!selectedId) {
@@ -39,6 +66,10 @@ export default function FeedbackButtons({
     } else {
       if (value !== "other") {
         feedbackFunction(value, selectedId);
+        openSnackbar(strings.sentFeedback, 4500);
+        if (currentExerciseType === matchExerciseType) {
+          setSelectedId(null);
+        }
       } else {
         setClassName("selected");
         setShowInput(true);
@@ -69,6 +100,12 @@ export default function FeedbackButtons({
         .replaceAll(" ", "_");
       feedbackFunction(newFeedback, selectedId);
       setInput("");
+      setShowInput(false);
+      setClassName("");
+      if (currentExerciseType === matchExerciseType) {
+        setSelectedId(null);
+      }
+      openSnackbar(strings.sentFeedback, 4500);
       event.preventDefault();
     }
   }
