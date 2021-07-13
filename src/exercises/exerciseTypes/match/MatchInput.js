@@ -97,9 +97,12 @@ function MatchInput({
                 </s.AnimatedMatchButton>
               ) : buttonsToDisable.includes(option.id) || isCorrect ? (
                 <s.ButtonRow>
-                  <p style={answerPairStyle(option.id)} key={"L2_" + option.id}>
+                  <s.MatchingWords
+                    style={answerPairStyle(option.id)}
+                    key={"L2_" + option.id}
+                  >
                     {option.from}
-                  </p>
+                  </s.MatchingWords>
                   <s.MatchSpeakButtonHolder>
                     <SpeakButton
                       bookmarkToStudy={option}
