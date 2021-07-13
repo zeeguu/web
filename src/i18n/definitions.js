@@ -291,7 +291,8 @@ let strings = new LocalizedStrings(
       selectWordsAlert:
         "Please select the word(s) for which you are providing feedback.",
       otherFeedback: "Other feedback:",
-      sentFeedback: "Feedback sent!",
+      sentFeedback1: "Feedback",
+      sentFeedback2: "sent!",
 
       //FeedbackOptions
       bookmarkTooEasy: "Too Easy",
@@ -845,7 +846,8 @@ let strings = new LocalizedStrings(
       selectWords: "Vælg ordet/ordene:",
       selectWordsAlert: "Vælg ordet/ordene, som du giver feedback til.",
       otherFeedback: "Anden feedback:",
-      sentFeedback: "Feedback sendt!",
+      sentFeedback1: "Feedback",
+      sentFeedback2: "sendt!",
 
       //FeedbackOptions
       bookmarkTooEasy: "For nemt",

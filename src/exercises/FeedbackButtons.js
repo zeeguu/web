@@ -66,7 +66,14 @@ export default function FeedbackButtons({
     } else {
       if (value !== "other") {
         feedbackFunction(value, selectedId);
-        openSnackbar(strings.sentFeedback, 4500);
+        let feedback = "";
+        buttons.forEach((button) => {
+          if (button.value === value) feedback = button.name;
+        });
+        openSnackbar(
+          `${strings.sentFeedback1} "${feedback}" ${strings.sentFeedback2}`,
+          4500
+        );
         if (currentExerciseType === matchExerciseType) {
           setSelectedId(null);
         }
@@ -99,13 +106,17 @@ export default function FeedbackButtons({
         .replace(re2, "")
         .replaceAll(" ", "_");
       feedbackFunction(newFeedback, selectedId);
+      let feedback = input;
       setInput("");
       setShowInput(false);
       setClassName("");
       if (currentExerciseType === matchExerciseType) {
         setSelectedId(null);
       }
-      openSnackbar(strings.sentFeedback, 4500);
+      openSnackbar(
+        `${strings.sentFeedback1} "${feedback}" ${strings.sentFeedback2}`,
+        4500
+      );
       event.preventDefault();
     }
   }
