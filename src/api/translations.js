@@ -1,23 +1,5 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.prototype.getPossibleTranslations = function (
-  from_lang,
-  to_lang,
-  word,
-  context,
-  pageUrl
-) {
-  let url = this._appendSessionToUrl(
-    `get_possible_translations/${from_lang}/${to_lang}`
-  );
-
-  return fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `word=${word}&context=${context}&url=${pageUrl}`,
-  });
-};
-
 Zeeguu_API.prototype.getOneTranslation = function (
   from_lang,
   to_lang,
