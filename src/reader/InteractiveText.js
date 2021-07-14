@@ -83,7 +83,7 @@ export default class InteractiveText {
       )
       .then((response) => response.json())
       .then((data) => {
-        word.alternatives = data.translations.map((each) => each.translation);
+        word.alternatives = data.translations;
         onSuccess();
       });
   }
