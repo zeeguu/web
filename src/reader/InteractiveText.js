@@ -70,7 +70,7 @@ export default class InteractiveText {
   alternativeTranslations(word, onSuccess) {
     let context = this.getContext(word);
     this.api
-      .getNextTranslations(
+      .getMultipleTranslations(
         this.articleInfo.language,
         localStorage.native_language,
         word.word,
