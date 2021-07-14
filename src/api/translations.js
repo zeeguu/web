@@ -20,29 +20,29 @@ Zeeguu_API.prototype.getOneTranslation = function (
   });
 };
 
-Zeeguu_API.prototype.getNextTranslations = function (
+Zeeguu_API.prototype.getMultipleTranslations = function (
   from_lang,
   to_lang,
   word,
   context,
   pageUrl,
   numberOfResults,
-  service,
-  currentTranslation,
+  serviceToExclude,
+  translationToExclude,
   articleID
 ) {
   let url = this._appendSessionToUrl(
-    `get_next_translations/${from_lang}/${to_lang}`
+    `get_multiple_translations/${from_lang}/${to_lang}`
   );
 
   let body = `word=${word}&context=${context}&url=${pageUrl}&numberOfResults=${numberOfResults}&articleID=${articleID}`;
 
-  if (service) {
-    body += `&service=${service}`;
+  if (serviceToExclude) {
+    body += `&service=${serviceToExclude}`;
   }
 
-  if (currentTranslation) {
-    body += `&currentTranslation=${currentTranslation}`;
+  if (translationToExclude) {
+    body += `&currentTranslation=${translationToExclude}`;
   }
 
   return fetch(url, {
