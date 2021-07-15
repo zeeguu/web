@@ -119,6 +119,9 @@ const PopupButtonWrapper = styled.div`
   margin-top: 25px;
   display: flex;
   justify-content: flex-end;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
 `;
 
 export { StyledButton, TopButtonWrapper, PopupButtonWrapper };
