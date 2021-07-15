@@ -19,11 +19,8 @@ let ArticleReader = styled.div`
 
 let Toolbar = styled.div`
   /* border: 1px solid wheat; */
-  position: sticky;
   background-color: white;
-  right: 1em;
   height: 110px;
-  top: -10px;
 
   display: flexbox;
   flex-direction: row;
@@ -159,6 +156,12 @@ let ExtraSpaceAtTheBottom = styled.div`
   margin-bottom: 8em;
 `;
 
+let StickyButton = styled.button`
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+`;
+
 export {
   ArticleReader,
   Toolbar,
@@ -172,4 +175,5 @@ export {
   ExtraSpaceAtTheBottom,
   NarrowColumn,
   ContentOnRow,
+  StickyButton,
 };
