@@ -82,8 +82,12 @@ let BookmarkButton = styled.div`
 
 let MainText = styled.div`
   font-size: 1.3em;
-  line-height: 2.5em;
+  line-height: 2.3em;
   padding: 0.2em;
+
+  .textParagraph {
+    margin-bottom: 1em;
+  }
 `;
 
 let _BottomButton = styled(BigSquareButton)`

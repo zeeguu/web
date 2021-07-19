@@ -31,7 +31,7 @@ const TranslatableText = styled.div`
     display: block;
 
     margin-top: -9px;
-    margin-bottom: 0;
+    margin-bottom: -4px;
 
     padding: 2px;
 
