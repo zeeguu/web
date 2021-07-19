@@ -60,6 +60,7 @@ let Title = styled.div`
   font-size: x-large;
   font-weight: 800;
   margin-top: 0.5em;
+  line-height: 2em;
 `;
 
 let BookmarkButton = styled.div`
@@ -81,7 +82,7 @@ let BookmarkButton = styled.div`
 
 let MainText = styled.div`
   font-size: 1.3em;
-  line-height: 3em;
+  line-height: 2.5em;
   padding: 0.2em;
 `;
 
