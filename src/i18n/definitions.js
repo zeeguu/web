@@ -262,9 +262,8 @@ let strings = new LocalizedStrings(
       //Exercises
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
-      noTranslatedWords: "You have not translated any words yet.",
-      goToTextsToTranslateWords:
-        "Go to Texts if you want to read and translate words to get exercises.",
+      noTranslatedWords: "You have no translated words.",
+      goToTextsToTranslateWords: "Read and translate words to get exercises.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "The student has not learned any words yet.",
@@ -819,9 +818,9 @@ let strings = new LocalizedStrings(
       //Exercises
       wordSourceDefaultText: "din tidligere læsning",
       wordSourcePrefix: "Ord fra",
-      noTranslatedWords: "Du har ikke oversat nogen ord endnu.",
+      noTranslatedWords: "Du har ingen oversatte ord.",
       goToTextsToTranslateWords:
-        "Gå til Tekster, hvis du ville læse tekster og oversætte ord, som derefter kan bruges i øvelser.",
+        "Læs tekster og oversæt ord, som derefter kan bruges i øvelser.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "Eleven har ikke lært nogen ord endnu.",
