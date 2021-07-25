@@ -21,15 +21,36 @@ export default function AlterMenu({
     }
   }
 
+  function shortenSource(word) {
+    if (word.source === "Microsoft - without context") {
+      return "msft";
+    }
+    if (word.source === "Microsoft - with context") {
+      return "contextual msft";
+    }
+
+    if (word.source === "Google - without context") {
+      return "goog";
+    }
+    if (word.source === "Google - with context") {
+      return "contextual goog";
+    }
+
+    return word.source;
+  }
+
   return (
     <div ref={refToAlterMenu} className="altermenu">
       {word.alternatives.map((each) => (
         <div
-          key={each}
-          onClick={(e) => selectAlternative(each)}
+          key={each.translation}
+          onClick={(e) => selectAlternative(each.translation)}
           className="additionalTrans"
         >
-          {each}
+          {each.translation}
+          <div style={{ fontSize: 9, color: "#ffcc66" }}>
+            {shortenSource(each)}
+          </div>
         </div>
       ))}
 
