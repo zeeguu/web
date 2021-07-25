@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
 import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
@@ -30,6 +31,8 @@ let BOOKMARKS_FOR_EXERCISE = [
 ];
 
 export default function Exercises({ api, articleID }) {
+  const history = useHistory();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
   const [finished, setFinished] = useState(false);
@@ -65,8 +68,18 @@ export default function Exercises({ api, articleID }) {
 
   function initializeExercises(bookmarks, title) {
     BOOKMARKS_TO_PRACTICE = bookmarks.length;
-    calculateExerciseBatches(bookmarks);
-    setTitle(title);
+    if (bookmarks.length === 0 && !articleID) {
+      alert(
+        strings.noTranslatedWords + " " + strings.goToTextsToTranslateWords
+      );
+      history.push("/articles");
+    } else if (bookmarks.length === 0) {
+      alert(strings.noTranslatedWords);
+      history.goBack();
+    } else {
+      calculateExerciseBatches(bookmarks);
+      setTitle(title);
+    }
   }
 
   /**
