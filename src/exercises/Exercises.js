@@ -65,7 +65,7 @@ export default function Exercises({ api, articleID }) {
 
   function initializeExercises(bookmarks, title) {
     BOOKMARKS_TO_PRACTICE = bookmarks.length;
-    setCurrentExerciseSession(bookmarks);
+    calculateExerciseBatches(bookmarks);
     setTitle(title);
   }
 
@@ -77,7 +77,7 @@ export default function Exercises({ api, articleID }) {
    *
    * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
    */
-  function setCurrentExerciseSession(bookmarks) {
+  function calculateExerciseBatches(bookmarks) {
     let bookmarksPerBatch = BOOKMARKS_FOR_EXERCISE.reduce(
       (a, b) => a + b.requiredBookmarks,
       0
@@ -256,6 +256,7 @@ export default function Exercises({ api, articleID }) {
       <SnackbarProvider>
         <FeedbackButtons
           show={showFeedbackButtons}
+          setShow={setShowFeedbackButtons}
           feedbackFunction={stopShowingThisFeedback}
           currentExerciseType={currentExerciseType}
           currentBookmarksToStudy={currentBookmarksToStudy}
