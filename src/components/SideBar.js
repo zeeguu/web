@@ -45,6 +45,12 @@ export default function SideBar(props) {
     setInitialSidebarState(true);
   }
 
+  function sendFeedback(e) {
+    window.location = "mailto:zeeguu.team@gmail.com?subject=General Feedback";
+    e.preventDefault();
+    resetSidebarToDefault(e);
+  }
+
   let sidebarContent = (
     <>
       <div className="logo">
@@ -82,6 +88,11 @@ export default function SideBar(props) {
       <div className="navigationLink">
         <Link to="/account_settings" onClick={resetSidebarToDefault}>
           <small>{strings.settings}</small>
+        </Link>
+      </div>
+      <div className="navigationLink">
+        <Link to="#" onClick={sendFeedback}>
+          <small>{strings.sentFeedback1}</small>
         </Link>
       </div>
       <br />
