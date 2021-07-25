@@ -5,11 +5,13 @@ import { useSnackbar } from "react-simple-snackbar";
 
 export default function FeedbackButtons({
   show,
+  setShow,
   feedbackFunction,
   currentExerciseType,
   currentBookmarksToStudy,
 }) {
-  const matchExerciseType = "Match_three_L1W_to_three_L2W";
+  const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
+  const SNACK_DURATION = 4500;
 
   const buttons = [
     { name: strings.bookmarkTooEasy, value: "too_easy" },
@@ -18,36 +20,22 @@ export default function FeedbackButtons({
     { name: strings.other, value: "other" },
   ];
 
-  if (currentExerciseType !== matchExerciseType) {
+  if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
     buttons.splice(3, 0, {
       name: strings.badContext,
       value: "not_a_good_context",
     });
   }
 
-  const options = {
-    position: "bottom-right",
-    style: {
-      backgroundColor: "#00665C",
-      color: "#ffffff",
-      textAlign: "center",
-      minWidth: "fit-content",
-      fontFamily: "",
-    },
-    closeStyle: {
-      marginLeft: "-1em",
-    },
-  };
-
   const [showInput, setShowInput] = useState(false);
   const [className, setClassName] = useState("");
   const [input, setInput] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
-  const [openSnackbar, closeSnackbar] = useSnackbar(options);
+  const [openSnackbar, closeSnackbar] = useSnackbar(s.SnackbarOptions);
 
   useEffect(() => {
-    if (currentExerciseType !== matchExerciseType) {
+    if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
       setSelectedId(currentBookmarksToStudy[0].id);
     } else {
       setSelectedId(null);
@@ -72,9 +60,10 @@ export default function FeedbackButtons({
         });
         openSnackbar(
           `${strings.sentFeedback1} "${feedback}" ${strings.sentFeedback2}`,
-          4500
+          SNACK_DURATION
         );
-        if (currentExerciseType === matchExerciseType) {
+        setShow(false);
+        if (currentExerciseType === MATCH_EXERCISE_TYPE) {
           setSelectedId(null);
         }
       } else {
@@ -110,20 +99,21 @@ export default function FeedbackButtons({
       setInput("");
       setShowInput(false);
       setClassName("");
-      if (currentExerciseType === matchExerciseType) {
+      if (currentExerciseType === MATCH_EXERCISE_TYPE) {
         setSelectedId(null);
       }
       openSnackbar(
         `${strings.sentFeedback1} "${feedback}" ${strings.sentFeedback2}`,
-        4500
+        SNACK_DURATION
       );
+      setShow(false);
       event.preventDefault();
     }
   }
 
   return (
     <s.FeedbackHolder>
-      {show && currentExerciseType === matchExerciseType && (
+      {show && currentExerciseType === MATCH_EXERCISE_TYPE && (
         <>
           <s.FeedbackInstruction>{strings.selectWords}</s.FeedbackInstruction>
           <s.FeedbackSelector>
