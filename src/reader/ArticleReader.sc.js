@@ -161,12 +161,6 @@ let ExtraSpaceAtTheBottom = styled.div`
   margin-bottom: 8em;
 `;
 
-let StickyButton = styled.button`
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-`;
-
 export {
   ArticleReader,
   Toolbar,
@@ -180,5 +174,4 @@ export {
   ExtraSpaceAtTheBottom,
   NarrowColumn,
   ContentOnRow,
-  StickyButton,
 };
