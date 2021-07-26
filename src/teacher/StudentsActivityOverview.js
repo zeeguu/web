@@ -20,7 +20,7 @@ export default function StudentsActivityOverview({ api }) {
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
   const history = useHistory();
 
-  const getStudentsToShow = () =>{
+  function updateShownStudents() {
     api.getStudents(cohortID, selectedTimePeriod, (res) => {
       const studentWithNeededData = transformStudents(res);
       setStudents(studentWithNeededData);
@@ -38,13 +38,13 @@ export default function StudentsActivityOverview({ api }) {
 
   useEffect(() => {
     setStudents(null)
-    getStudentsToShow()
+    updateShownStudents()
     //eslint-disable-next-line
   }, [selectedTimePeriod]);
 
   const removeStudentFromCohort = (studentID) => {
     api.removeStudentFromCohort(studentID, (res) => {
-      getStudentsToShow()
+      updateShownStudents()
     });
   };
 
