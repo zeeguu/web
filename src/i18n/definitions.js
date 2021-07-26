@@ -262,9 +262,8 @@ let strings = new LocalizedStrings(
       //Exercises
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
-      noTranslatedWords: "You have not translated any words yet.",
-      goToTextsToTranslateWords:
-        "Go to Texts if you want to read and translate words to get exercises.",
+      noTranslatedWords: "You have no translated words.",
+      goToTextsToTranslateWords: "Read and translate words to get exercises.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "The student has not learned any words yet.",
@@ -278,8 +277,10 @@ let strings = new LocalizedStrings(
 
       //ExerciseHeadlines
       findTheWordInContextHeadline: "Find the word in the context below",
+      findTheExpressionInContextHeadline:
+        "Find the expression in the context below",
       chooseTheWordFittingContextHeadline:
-        "Choose the word that fits the context",
+        "Choose the alternative that fits the context",
       matchWordWithTranslation: "Match each word with its translation",
 
       //FeedbackButtons
@@ -289,6 +290,15 @@ let strings = new LocalizedStrings(
       selectWordsAlert:
         "Please select the word(s) for which you are providing feedback.",
       otherFeedback: "Other feedback:",
+      sentFeedback1: "Feedback",
+      sentFeedback2: "sent!",
+
+      //FeedbackOptions
+      bookmarkTooEasy: "Too Easy",
+      bookmarkTooHard: "Too Hard",
+      badTranslation: "Bad Translation",
+      badContext: "Bad Context",
+      other: "Other",
 
       //ButtonInput
       check: "Check",
@@ -808,9 +818,9 @@ let strings = new LocalizedStrings(
       //Exercises
       wordSourceDefaultText: "din tidligere læsning",
       wordSourcePrefix: "Ord fra",
-      noTranslatedWords: "Du har ikke oversat nogen ord endnu.",
+      noTranslatedWords: "Du har ingen oversatte ord.",
       goToTextsToTranslateWords:
-        "Gå til Tekster, hvis du ville læse tekster og oversætte ord, som derefter kan bruges i øvelser.",
+        "Læs tekster og oversæt ord, som derefter kan bruges i øvelser.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "Eleven har ikke lært nogen ord endnu.",
@@ -824,16 +834,26 @@ let strings = new LocalizedStrings(
 
       //ExerciseHeadlines
       findTheWordInContextHeadline: "Find ordet i sammenhængen",
+      findTheExpressionInContextHeadline: "Find udtrykket i sammenhængen",
       chooseTheWordFittingContextHeadline:
-        "Vælg ordet, der passer i sammenhængen",
+        "Vælg alternativet, der passer i sammenhængen",
       matchWordWithTranslation: "Match hvert ord med dets oversættelse",
 
       //FeedbackButtons
-      giveFeedback: "Giv feedback på øvelsen",
+      giveFeedback: "Giv feedback",
       giveFeedbackAlert: "Indtast din feedback inden du sender.",
       selectWords: "Vælg ordet/ordene:",
       selectWordsAlert: "Vælg ordet/ordene, som du giver feedback til.",
       otherFeedback: "Anden feedback:",
+      sentFeedback1: "Feedback",
+      sentFeedback2: "sendt!",
+
+      //FeedbackOptions
+      bookmarkTooEasy: "For nemt",
+      bookmarkTooHard: "For svært",
+      badTranslation: "Dårlig oversættelse",
+      badContext: "Dårlig kontekst",
+      other: "Andet",
 
       //ButtonInput
       check: "Tjek",
