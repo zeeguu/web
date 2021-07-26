@@ -17,15 +17,17 @@ function Home({ api }) {
   return (
     <Fragment>
       <s.NarrowColumn>
-        <sc.TopTabs>
-          <h1>{strings.myClasses}</h1>
-        </sc.TopTabs>
         {cohorts ? (
-          <CohortList
-            api={api}
-            setForceUpdate={setForceUpdate}
-            cohorts={cohorts}
-          />
+          <div>
+            <sc.TopTabs>
+              <h1>{strings.myClasses}</h1>
+            </sc.TopTabs>
+            <CohortList
+              api={api}
+              setForceUpdate={setForceUpdate}
+              cohorts={cohorts}
+            />
+          </div>
         ) : (
           <LoadingAnimation />
         )}
