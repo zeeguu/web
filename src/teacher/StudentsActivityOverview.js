@@ -21,6 +21,7 @@ export default function StudentsActivityOverview({ api }) {
   const history = useHistory();
 
   function updateShownStudents() {
+    setStudents(null);
     api.getStudents(cohortID, selectedTimePeriod, (res) => {
       const studentWithNeededData = transformStudents(res);
       setStudents(studentWithNeededData);
@@ -37,18 +38,18 @@ export default function StudentsActivityOverview({ api }) {
   }, []);
 
   useEffect(() => {
-    setStudents(null)
-    updateShownStudents()
+    setStudents(null);
+    updateShownStudents();
     //eslint-disable-next-line
   }, [selectedTimePeriod]);
 
   const removeStudentFromCohort = (studentID) => {
     api.removeStudentFromCohort(studentID, (res) => {
-      updateShownStudents()
+      updateShownStudents();
     });
   };
 
-  if (cohort === "") {
+  if (cohort === "" || students === null) {
     return <LoadingAnimation />;
   }
 
@@ -70,19 +71,19 @@ export default function StudentsActivityOverview({ api }) {
               {strings.backToClasses}
             </StyledButton>
           </TopButtonWrapper>
-          {students === null && <LoadingAnimation/>}
-          {students !== null &&
-            (students.length === 0 ? (
-              <NoStudents inviteCode={cohort.inv_code} />
-            ) : (
-              <StudentsActivityOverviewContent
-                api={api}
-                cohortID={cohortID}
-                students={students}
-                setForceUpdate={setForceUpdate}
-                removeStudentFromCohort={removeStudentFromCohort}
-              />
-            ))}
+          {students === null ? (
+            <LoadingAnimation />
+          ) : students.length === 0 ? (
+            <NoStudents inviteCode={cohort.inv_code} />
+          ) : (
+            <StudentsActivityOverviewContent
+              api={api}
+              cohortID={cohortID}
+              students={students}
+              setForceUpdate={setForceUpdate}
+              removeStudentFromCohort={removeStudentFromCohort}
+            />
+          )}
         </div>
       </s.WidestColumn>
       {showAddStudentsInfo && (

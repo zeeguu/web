@@ -12,15 +12,15 @@ export default function StudentReadingInsights({ api }) {
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
-  const [studentName, setStudentName] = useState("");
+  const [studentName, setStudentName] = useState(null);
   const [cohortLang, setCohortLang] = useState("");
   const [readArticles, setReadArticles] = useState([]);
-  const [articleCount, setArticleCount] = useState(-1);
+  const [articleCount, setArticleCount] = useState(null);
 
   useEffect(() => {
     api.getCohortsInfo((cohortInfo) => {
-      let currentCohort = cohortInfo.filter((each) => each.id === cohortID);
-      setCohortLang(currentCohort[0].language_name);
+      let currentCohort = cohortInfo.find((each) => each.id === cohortID);
+      setCohortLang(currentCohort.language_name);
     });
     api.getStudentInfo(
       studentID,
@@ -33,6 +33,7 @@ export default function StudentReadingInsights({ api }) {
   }, []);
 
   useEffect(() => {
+    setArticleCount(null)
     api.getReadingSessions(
       studentID,
       cohortID,
@@ -57,7 +58,7 @@ export default function StudentReadingInsights({ api }) {
       articleCount +
       strings.textsInTheLastPeriod;
 
-  if (studentName === "" || articleCount === -1) {
+  if (studentName === null || articleCount === null) {
     return <LoadingAnimation />;
   }
   
