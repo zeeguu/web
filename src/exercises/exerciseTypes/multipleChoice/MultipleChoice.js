@@ -7,6 +7,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
+import removePunctuation from "../../../assorted/removePunctuation";
 
 const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
@@ -43,7 +44,10 @@ export default function MultipleChoice({
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
-    if (selectedChoice === bookmarksToStudy[0].from) {
+    if (
+      selectedChoice ===
+      removePunctuation(bookmarksToStudy[0].from.toLowerCase())
+    ) {
       correctAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
@@ -92,9 +96,9 @@ export default function MultipleChoice({
       secondRandomInt = Math.floor(Math.random() * similarWords.length);
     } while (firstRandomInt === secondRandomInt);
     let listOfOptions = [
-      bookmarksToStudy[0].from,
-      similarWords[firstRandomInt],
-      similarWords[secondRandomInt],
+      removePunctuation(bookmarksToStudy[0].from.toLowerCase()),
+      removePunctuation(similarWords[firstRandomInt].toLowerCase()),
+      removePunctuation(similarWords[secondRandomInt].toLowerCase()),
     ];
     let shuffledListOfOptions = shuffle(listOfOptions);
     setButtonOptions(shuffledListOfOptions);

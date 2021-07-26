@@ -6,10 +6,17 @@ import Word from "./Word";
 
 import { TopMessage } from "../components/TopMessage.sc";
 import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
-import { OrangeButton, WhiteButton } from "../reader/ArticleReader.sc";
+import {
+  OrangeButton,
+  WhiteButton,
+  ContentOnRow,
+} from "../reader/ArticleReader.sc";
 import { setTitle } from "../assorted/setTitle";
+import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 
 export default function WordsForArticle({ api }) {
+  const small = "small";
+
   let { articleID } = useParams();
   const [words, setWords] = useState(null);
   const [articleInfo, setArticleInfo] = useState(null);
@@ -66,12 +73,20 @@ export default function WordsForArticle({ api }) {
       </TopMessage>
 
       {words.map((each) => (
-        <Word
-          key={each.id}
-          bookmark={each}
-          notifyDelete={deleteBookmark}
-          api={api}
-        />
+        <ContentOnRow>
+          <Word
+            key={each.id}
+            bookmark={each}
+            notifyDelete={deleteBookmark}
+            api={api}
+          />
+          <SpeakButton
+            key={each.id}
+            bookmarkToStudy={each}
+            api={api}
+            styling={small}
+          />
+        </ContentOnRow>
       ))}
 
       <br />

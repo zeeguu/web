@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
+import removePunctuation from "../../../assorted/removePunctuation";
 
 function MatchInput({
   fromButtonOptions,
@@ -93,13 +94,16 @@ function MatchInput({
                   onClick={(e) => handleClick("from", Number(e.target.id))}
                   onAnimationEnd={() => setIncorrectAnswer("")}
                 >
-                  {option.from}
+                  {removePunctuation(option.from.toLowerCase())}
                 </s.AnimatedMatchButton>
               ) : buttonsToDisable.includes(option.id) || isCorrect ? (
                 <s.ButtonRow>
-                  <p style={answerPairStyle(option.id)} key={"L2_" + option.id}>
-                    {option.from}
-                  </p>
+                  <s.MatchingWords
+                    style={answerPairStyle(option.id)}
+                    key={"L2_" + option.id}
+                  >
+                    {removePunctuation(option.from.toLowerCase())}
+                  </s.MatchingWords>
                   <s.MatchSpeakButtonHolder>
                     <SpeakButton
                       bookmarkToStudy={option}
@@ -115,7 +119,7 @@ function MatchInput({
                   id={option.id}
                   onClick={(e) => handleClick("from", Number(e.target.id))}
                 >
-                  {option.from}
+                  {removePunctuation(option.from.toLowerCase())}
                 </s.MatchButton>
               )
             )
@@ -134,14 +138,14 @@ function MatchInput({
                   onClick={(e) => handleClick("to", Number(e.target.id))}
                   onAnimationEnd={() => setIncorrectAnswer("")}
                 >
-                  {option.to}
+                  {removePunctuation(option.to.toLowerCase())}
                 </s.AnimatedMatchButton>
               ) : buttonsToDisable.includes(option.id) || isCorrect ? (
                 <s.MatchingWords
                   style={answerPairStyle(option.id)}
                   key={"L1_" + option.id}
                 >
-                  {option.to}
+                  {removePunctuation(option.to.toLowerCase())}
                 </s.MatchingWords>
               ) : (
                 <s.MatchButton
@@ -150,7 +154,7 @@ function MatchInput({
                   id={option.id}
                   onClick={(e) => handleClick("to", Number(e.target.id))}
                 >
-                  {option.to}
+                  {removePunctuation(option.to.toLowerCase())}
                 </s.MatchButton>
               )
             )

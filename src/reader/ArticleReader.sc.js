@@ -19,11 +19,8 @@ let ArticleReader = styled.div`
 
 let Toolbar = styled.div`
   /* border: 1px solid wheat; */
-  position: sticky;
   background-color: white;
-  right: 1em;
   height: 110px;
-  top: -10px;
 
   display: flexbox;
   flex-direction: row;
@@ -63,6 +60,7 @@ let Title = styled.div`
   font-size: x-large;
   font-weight: 800;
   margin-top: 0.5em;
+  line-height: 2em;
 `;
 
 let BookmarkButton = styled.div`
@@ -84,8 +82,12 @@ let BookmarkButton = styled.div`
 
 let MainText = styled.div`
   font-size: 1.3em;
-  line-height: 3em;
+  line-height: 2.3em;
   padding: 0.2em;
+
+  .textParagraph {
+    margin-bottom: 1em;
+  }
 `;
 
 let _BottomButton = styled(BigSquareButton)`
