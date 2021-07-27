@@ -5,18 +5,35 @@ import LocalStorage from "../assorted/LocalStorage";
 import { useParams } from "react-router-dom";
 import ReadingInsightAccordion from "./ReadingInsightAccordion";
 import { CenteredContent } from "../components/ColumnWidth.sc";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function StudentReadingInsights({ api }) {
   const [forceUpdate, setForceUpdate] = useState(0);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
-  const [studentName, setStudentName] = useState("");
+  const [studentName, setStudentName] = useState(null);
   const [cohortLang, setCohortLang] = useState("");
   const [readArticles, setReadArticles] = useState([]);
-  const [articleCount, setArticleCount] = useState(0);
+  const [articleCount, setArticleCount] = useState(null);
 
   useEffect(() => {
+    api.getCohortsInfo((cohortInfo) => {
+      let currentCohort = cohortInfo.find((each) => each.id === cohortID);
+      setCohortLang(currentCohort.language_name);
+    });
+    api.getStudentInfo(
+      studentID,
+      cohortID,
+      selectedTimePeriod,
+      (studentInfo) => setStudentName(studentInfo.name),
+      (error) => console.log(error)
+    );
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    setArticleCount(null)
     api.getReadingSessions(
       studentID,
       cohortID,
@@ -34,21 +51,6 @@ export default function StudentReadingInsights({ api }) {
     // eslint-disable-next-line
   }, [forceUpdate]);
 
-  useEffect(() => {
-    api.getCohortsInfo((cohortInfo) => {
-      let currentCohort = cohortInfo.filter((each) => each.id === cohortID);
-      setCohortLang(currentCohort[0].language_name);
-    });
-    api.getStudentInfo(
-      studentID,
-      cohortID,
-      selectedTimePeriod,
-      (studentInfo) => setStudentName(studentInfo.name),
-      (error) => console.log(error)
-    );
-    // eslint-disable-next-line
-  }, []);
-
   const customText =
     readArticles &&
     studentName +
@@ -56,6 +58,10 @@ export default function StudentReadingInsights({ api }) {
       articleCount +
       strings.textsInTheLastPeriod;
 
+  if (studentName === null || articleCount === null) {
+    return <LoadingAnimation />;
+  }
+  
   return (
     <Fragment>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />

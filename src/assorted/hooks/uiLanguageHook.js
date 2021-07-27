@@ -16,5 +16,6 @@ export default function useUILanguage() {
 
   useEffect(() => {
     strings.setLanguage(uiLanguage.code);
+    // eslint-disable-next-line 
   }, []);
 }

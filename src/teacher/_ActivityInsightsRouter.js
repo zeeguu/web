@@ -9,6 +9,7 @@ import * as sc from "../components/TopTabs.sc";
 import StudentReadingInsights from "./StudentReadingInsights";
 import StudentExercisesInsights from "./StudentExercisesInsights";
 import { useEffect, useState } from "react";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function ActivityInsightsRouter({ api }) {
   const selectedTimePeriod = LocalStorage.selectedTimePeriod(); //this is only needed for the api call
@@ -37,6 +38,8 @@ export default function ActivityInsightsRouter({ api }) {
     );
     //eslint-disable-next-line
   }, []);
+
+  if (studentName === "") return <LoadingAnimation />;
 
   return (
     <Switch>

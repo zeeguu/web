@@ -9,6 +9,7 @@ const StudentsActivityOverviewContent = ({
   cohortID,
   students,
   setForceUpdate,
+  removeStudentFromCohort
 }) => {
   const [firstStudent, setFirstStudent] = useState(null);
   const [restOfStudents, setRestOfStudents] = useState(null);
@@ -34,7 +35,7 @@ const StudentsActivityOverviewContent = ({
           api={api}
           cohortID={cohortID}
           student={firstStudent}
-          setForceUpdate={setForceUpdate}
+          removeStudentFromCohort={removeStudentFromCohort}
           isFirst={true}
         />
       )}
@@ -45,7 +46,7 @@ const StudentsActivityOverviewContent = ({
             api={api}
             cohortID={cohortID}
             student={student}
-            setForceUpdate={setForceUpdate}
+            removeStudentFromCohort={removeStudentFromCohort}
             isFirst={false}
           />
         ))}

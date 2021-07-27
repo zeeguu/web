@@ -739,7 +739,7 @@ let strings = new LocalizedStrings(
       //WordsHistory
       titleTranslationHistory: "Oversættelseshistorik",
       starAWordMsg:
-        "Stjernemarkér et ord for at være sikker på, at det indgår i øvelserne. Delete ordet for at undgå øvelser med det.",
+        "Stjernemarkér et ord for at være sikker på, at det indgår i øvelserne. Delete ordet for at undgå øvelser med det. Grå ord vises ikke, medmindre de er stjernemarkerede.",
 
       //ArticleReader
       translateOnClick: "klik og oversæt",
