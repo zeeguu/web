@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import strings from "../i18n/definitions";
-import { useHistory, useParams } from "react-router";
+import { useParams } from "react-router";
 import SelectButton from "./SelectButton";
 import { StyledDialog } from "./StyledDialog.sc";
 import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
@@ -10,7 +10,6 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
   const [initiallyChosen, setInitiallyChosen] = useState([]);
   const [chosenCohorts, setChosenCohorts] = useState([]);
   const articleID = useParams().articleID;
-  const history = useHistory();
 
   useEffect(() => {
     api.getCohortsInfo((cohortsOfTeacher) => {
@@ -31,7 +30,6 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
         deleteArticleFromCohort(cohort.id);
       }
       setIsOpen(false);
-      //history.push("/teacher/texts");
     });
   };
 

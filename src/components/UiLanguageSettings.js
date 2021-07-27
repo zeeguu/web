@@ -12,11 +12,8 @@ export default function UiLanguageSettings({ uiLanguage, setUiLanguage }) {
       language = uiLanguages[1];
     }
     setUiLanguage(language);
+    // eslint-disable-next-line 
   }, []);
-
-  function capitalize(str) {
-    return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
-  }
 
   function onChange(language) {
     setUiLanguage(language);
