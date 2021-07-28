@@ -9,7 +9,10 @@ export default function Tutorials() {
       <sc.TopTabs>
         <h1>{strings.tutorials}</h1>
       </sc.TopTabs>
-      <TutorialItemCard headline={strings.howToAddAndEditClass} />
+      <TutorialItemCard
+        headline={strings.howToAddAndEditClass}
+        embedId="_u-PAZvHuwQ"
+      />
       <TutorialItemCard headline={strings.howToDeleteClass} />
       <TutorialItemCard headline={strings.howToAddStudent} />
       <TutorialItemCard headline={strings.howToDeleteStudents} />
