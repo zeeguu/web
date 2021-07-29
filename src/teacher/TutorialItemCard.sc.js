@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { darkGrey, darkBlue, lightBlue } from "../components/colors";
 
 export const StyledTutorialItemCard = styled.div`
-  font-size: 22px;
+  /* font-size: 20px; */
 
   /* .vertical-line-border-box {
     margin-top: 2em;
@@ -21,9 +21,6 @@ export const StyledTutorialItemCard = styled.div`
     background-color: ${darkGrey};
     border: solid 5px ${lightBlue};
 */
-  /* p {
-    margin-top: 25%;
-  } */
 
   .video-responsive {
     overflow: hidden;
@@ -38,8 +35,7 @@ export const StyledTutorialItemCard = styled.div`
     height: 100%;
     width: 100%;
     position: absolute;
-    //  margin-top: 1em;
-    padding-bottom: 4em;
+    margin-top: 1em;
     padding: 0.05em 0.5em;
     border-left: solid 3px ${darkBlue};
   }
