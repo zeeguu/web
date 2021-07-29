@@ -1,9 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
 import * as s from "./TutorialItemCard.sc";
-//import strings from "../i18n/definitions";
-
-//https://youtu.be/_u-PAZvHuwQ
 
 // function TutorialItemCard(props) {
 //   return (
@@ -22,11 +18,10 @@ import * as s from "./TutorialItemCard.sc";
 
 // export default TutorialItemCard;
 
-const TutorialItemCard = (props, { embedId }) => (
+//source: https://dev.to/bravemaster619/simplest-way-to-embed-a-youtube-video-in-your-react-app-3bk2
+
+const TutorialItemCard = ({ embedId }) => (
   <s.StyledTutorialItemCard>
-    <div className="vertical-line-border-box">
-      <p className="tutorialTitle">{props.headline}</p>
-    </div>
     <div className="video-responsive">
       <iframe
         width="853"
@@ -40,9 +35,5 @@ const TutorialItemCard = (props, { embedId }) => (
     </div>
   </s.StyledTutorialItemCard>
 );
-
-TutorialItemCard.propTypes = {
-  embedId: PropTypes.string.isRequired,
-};
 
 export default TutorialItemCard;
