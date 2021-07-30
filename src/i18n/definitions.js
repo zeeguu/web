@@ -536,10 +536,14 @@ let strings = new LocalizedStrings(
       howToDeleteClass: "How to delete a class...",
       howToAddStudent: "How to add students...",
       howToDeleteStudents: "How to delete students...",
-      howToAddText: "How to add a text...",
+      howToAddTextUrl: "How to add a text using a URL...",
+      howToAddTextFromZeeguu: "How to add a text from Zeeguu...",
+      howToAddTextCopyPaste:
+        "How to add a text by copy-pasting or writing text...",
       howToEditAndDeleteText: "How to edit or delete a text...",
       howToShareText: "How to share texts with your class/classes...",
       howToExplainZeeguuData: "The data you can find in Zeeguu explained...",
+      howToUnderstandTextLevel: "How to understand the text level...",
 
       //ViewMoreLessButton
       viewMoreBtn: "View more",
@@ -1095,10 +1099,14 @@ let strings = new LocalizedStrings(
       howToDeleteClass: "Sådan slettes en klasse...",
       howToAddStudent: "Sådan tilføjes elever...",
       howToDeleteStudents: "Sådan slettes elever...",
-      howToAddText: "Sådan tilføjes en tekst...",
+      howToAddTextUrl: "Sådan tilføjes en tekst ved hjælp af en URL...",
+      howToAddTextFromZeeguu: "Sådan tilføjes en tekst fra Zeeguu...",
+      howToAddTextCopyPaste:
+        "Sådan tilføjes en tekst ved enten at kopiere eller selv skrive tekst...",
       howToEditAndDeleteText: "Sådan redigeres eller slettes en tekst...",
       howToShareText: "Sådan deler du tekster med din klasse / dine klasser...",
       howToExplainZeeguuData: "De data, du kan finde i Zeeguu forklaret...",
+      howToUnderstandTextLevel: "Sådan skal tekst niveau forståes...",
 
       //ViewMoreLessButton
       viewMoreBtn: "Vis mere",
