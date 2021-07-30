@@ -14,7 +14,7 @@ export default function Tutorials() {
         <p>{strings.howToAddAndEditClass}</p>
         <TutorialItemCard embedId="UUJ5Ezjs1KY" />
         <p>{strings.howToDeleteClass}</p>
-        <TutorialItemCard embedId="J9Y3Ar5CI-s" />
+        <TutorialItemCard embedId="2Kf95KT5Bqw" />
         <p>{strings.howToAddStudent}</p>
         <TutorialItemCard embedId="UA44KiW1qXg" />
         <p>{strings.howToDeleteStudents}</p>
@@ -26,13 +26,13 @@ export default function Tutorials() {
         <p>{strings.howToAddTextUrl}</p>
         <TutorialItemCard embedId="jjMVwT1CtXc" />
         <p>{strings.howToEditAndDeleteText}</p>
-        <TutorialItemCard embedId="2Kf95KT5Bqw" />
+        <TutorialItemCard embedId="" />
         <p>{strings.howToShareText}</p>
-        <TutorialItemCard embedId="_u-PAZvHuwQ" />
+        <TutorialItemCard embedId="" />
         <p>{strings.howToExplainZeeguuData}</p>
-        <TutorialItemCard embedId="_u-PAZvHuwQ" />
+        <TutorialItemCard embedId="" />
         <p>{strings.howToUnderstandTextLevel}</p>
-        <TutorialItemCard embedId="_u-PAZvHuwQ" />
+        <TutorialItemCard embedId="" />
       </scs.StyledTutorialItemCard>
     </s.NarrowColumn>
   );
