@@ -528,12 +528,9 @@ let strings = new LocalizedStrings(
       sixMonths: "6 months",
       oneYear: "1 year",
 
-      //TutorialItemCard
-      tutorialComingSoon: "This video tutorial is coming soon...",
-
       //Tutorials
-      howToAddAndEditClass: "How to add and edit a class...",
-      howToDeleteClass: "How to delete a class...",
+      howToAddAndEditClass: "How to add a class...",
+      howToDeleteClass: "How to edit or delete a class...",
       howToAddStudent: "How to add students...",
       howToDeleteStudents: "How to delete students...",
       howToAddTextUrl: "How to add a text using a URL...",
@@ -1091,12 +1088,9 @@ let strings = new LocalizedStrings(
       sixMonths: "6 måneder",
       oneYear: "1 år",
 
-      //TutorialItemCard
-      tutorialComingSoon: "Denne video kommer snart...",
-
       //Tutorials
-      howToAddAndEditClass: "Sådan tilføjes og redigeres en klasse...",
-      howToDeleteClass: "Sådan slettes en klasse...",
+      howToAddAndEditClass: "Sådan tilføjes en klasse...",
+      howToDeleteClass: "Sådan redigeres eller slettes en klasse...",
       howToAddStudent: "Sådan tilføjes elever...",
       howToDeleteStudents: "Sådan slettes elever...",
       howToAddTextUrl: "Sådan tilføjes en tekst ved hjælp af en URL...",
