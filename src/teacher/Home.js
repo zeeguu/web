@@ -6,31 +6,30 @@ import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 
 function Home({ api }) {
-  const [cohorts, setCohortsInfo] = useState([]);
-  const [isLoadingCohorts, setIsLoadingCohorts] = useState(true);
+  const [cohorts, setCohorts] = useState();
   const [forceUpdate, setForceUpdate] = useState(0);
 
   useEffect(() => {
-    api.getCohortsInfo(setCohortsInfo);
-    setIsLoadingCohorts(false);
+    api.getCohortsInfo(setCohorts);
     // eslint-disable-next-line
   }, [forceUpdate]);
 
   return (
     <Fragment>
       <s.NarrowColumn>
-        <sc.TopTabs>
-          <h1>{strings.myClasses}</h1>
-        </sc.TopTabs>
-
-        {isLoadingCohorts ? (
-          <LoadingAnimation />
+        {cohorts ? (
+          <div>
+            <sc.TopTabs>
+              <h1>{strings.myClasses}</h1>
+            </sc.TopTabs>
+            <CohortList
+              api={api}
+              setForceUpdate={setForceUpdate}
+              cohorts={cohorts}
+            />
+          </div>
         ) : (
-          <CohortList
-            api={api}
-            setForceUpdate={setForceUpdate}
-            cohorts={cohorts}
-          />
+          <LoadingAnimation />
         )}
       </s.NarrowColumn>
     </Fragment>

@@ -32,6 +32,7 @@ export default function Settings({ api, setUser }) {
   useEffect(() => {
     const language = LocalStorage.getUiLanguage();
     setUiLanguage(language);
+    // eslint-disable-next-line 
   }, []);
 
   function onSysChange(lang) {
@@ -184,7 +185,7 @@ export default function Settings({ api, setUser }) {
         </div>
       </form>
 
-      {!user.is_teacher && LocalStorage.isEMSTeacherDashboard() && (
+      {!user.is_teacher && (
         <div>
           <p style={{ margin: "25px 0 -5px 0" }}>
             <b>
