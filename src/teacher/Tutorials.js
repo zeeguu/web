@@ -26,13 +26,13 @@ export default function Tutorials() {
         <p>{strings.howToAddTextUrl}</p>
         <TutorialItemCard embedId="jjMVwT1CtXc" />
         <p>{strings.howToEditAndDeleteText}</p>
-        <TutorialItemCard embedId="" />
+        <TutorialItemCard embedId="uFGRHgIZhRc" />
         <p>{strings.howToShareText}</p>
-        <TutorialItemCard embedId="" />
+        <TutorialItemCard embedId="Dsrl7kxmQM4" />
         <p>{strings.howToExplainZeeguuData}</p>
         <TutorialItemCard embedId="" />
         <p>{strings.howToUnderstandTextLevel}</p>
-        <TutorialItemCard embedId="" />
+        <TutorialItemCard embedId="B7CVsGhRWfM" />
       </scs.StyledTutorialItemCard>
     </s.NarrowColumn>
   );
