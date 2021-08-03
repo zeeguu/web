@@ -8,6 +8,7 @@ import DeleteStudentWarning from "./DeleteStudentWarning";
 import * as s from "./StudentInfoLine.sc";
 import LocalStorage from "../assorted/LocalStorage";
 import { StyledTooltip } from "./StyledTooltip.sc";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 //localize everything on this page
 //STRINGS
@@ -16,7 +17,7 @@ export default function StudentInfoLine({
   api,
   cohortID,
   student,
-  setForceUpdate,
+  removeStudentFromCohort,
   isFirst,
 }) {
   const [showDeleteStudentWarning, setShowDeleteStudentWarning] =
@@ -29,23 +30,19 @@ export default function StudentInfoLine({
       student.id,
       selectedTimePeriod,
       cohortID,
-      (studentActivityData) => {
-        setActivity(studentActivityData);
-      },
+      (studentActivityData) => setActivity(studentActivityData),
       (error) => console.log(error)
     );
     // eslint-disable-next-line
   }, [selectedTimePeriod]);
 
-  const removeStudentFromCohort = () => {
-    api.removeStudentFromCohort(student.id, (res) => {
-      setForceUpdate((prev) => prev + 1);
-      setShowDeleteStudentWarning(false);
-    });
+  const handleRemove = () => {
+    removeStudentFromCohort(student.id)
+    setShowDeleteStudentWarning(false);;
   };
 
   if (activity === null) {
-    return <p>Loading data for {student.name}...</p>;
+    return <LoadingAnimation/>;
   }
 
   return (
@@ -113,7 +110,7 @@ export default function StudentInfoLine({
                 )}
                 <StyledTooltip label={strings.difficultyExplanation}>
                   <div className="number-display">
-                    {activity.average_text_difficulty}
+                    {activity.average_text_difficulty/10}
                   </div>
                 </StyledTooltip>
               </div>
@@ -147,7 +144,7 @@ export default function StudentInfoLine({
         <DeleteStudentWarning
           studentName={student.name}
           cohortID={cohortID}
-          removeStudent={removeStudentFromCohort}
+          removeStudent={handleRemove}
           setShowDeleteStudentWarning={setShowDeleteStudentWarning}
         />
       )}

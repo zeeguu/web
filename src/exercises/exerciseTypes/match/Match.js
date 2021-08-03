@@ -63,7 +63,10 @@ export default function Match({
     let i;
     for (i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmark = bookmarksCopy[i];
-      if (currentBookmark.bookmark.id === Number(firstChoice)) {
+      if (buttonsToDisable.length === 2) {
+        setIsCorrect(true);
+        break;
+      } else if (currentBookmark.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
           setButtonsToDisable((arr) => [...arr, firstChoice]);
           let concatMessage = currentBookmark.messageToAPI + "C";
@@ -71,10 +74,6 @@ export default function Match({
           setcurrentBookmarksToStudy(bookmarksCopy);
           correctAnswer(currentBookmark.bookmark);
           handleAnswer(concatMessage, currentBookmark.bookmark.id);
-          if (buttonsToDisable.length === 1) {
-            setIsCorrect(true);
-          }
-          break;
         } else {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmark.bookmark);
@@ -104,16 +103,7 @@ export default function Match({
       if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
         notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
         let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
-        console.log(
-          "Sending to the API. Message: ",
-          concatMessage,
-          " Exercise type: ",
-          EXERCISE_TYPE,
-          " Duration: ",
-          duration,
-          " and word: ",
-          currentBookmarksToStudy[i].bookmark.id
-        );
+
         api.uploadExerciseFeedback(
           concatMessage,
           EXERCISE_TYPE,

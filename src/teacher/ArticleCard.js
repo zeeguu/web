@@ -43,7 +43,7 @@ const ArticleCard = ({ article, isFirst, openedArticle }) => {
           <StudentActivityDataCircleWrapper
             className="data-circles"
             length={article.word_count}
-            difficulty={article.difficulty}
+            difficulty={article.difficulty/10}
             readingTime={article.duration_in_sec}
             translatedWords={translationCount}
             isFirst={isFirst}
