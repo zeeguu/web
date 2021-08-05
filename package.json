@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
     "@nivo/bar": "^0.72.0",
     "@nivo/core": "^0.72.0",
     "@nivo/line": "^0.72.0",
@@ -29,7 +30,6 @@
     "react-loader-spinner": "^4.0.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
-    "react-simple-snackbar": "^1.1.11",
     "remove-accents": "^0.4.2",
     "speak-tts": "^2.0.8",
     "styled-components": "^5.2.1",
