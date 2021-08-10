@@ -13,27 +13,10 @@ const TutorialItemCard = ({ embedId }) => (
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
-        title="Embedded youtube videos"
+        title="Tutorial video"
       />
     </div>
   </s.StyledTutorialItemCard>
 );
 
 export default TutorialItemCard;
-
-// function TutorialItemCard(props) {
-//   return (
-//     <>
-//       <s.StyledTutorialItemCard>
-//         <div className="vertical-line-border-box">
-//           <p className="tutorialTitle">{props.headline}</p>
-//         </div>
-//         <div className="placeholder">
-//           <p>{strings.tutorialComingSoon}</p>
-//         </div>
-//       </s.StyledTutorialItemCard>
-//     </>
-//   );
-// }
-
-// export default TutorialItemCard;

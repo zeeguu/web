@@ -326,7 +326,7 @@ let strings = new LocalizedStrings(
       seeExercises: "See Exercises",
 
       //AddTextOptionTypes
-      articleFromZeeguuToClass: "Assign an article from Zeeguu to a class",
+      articleFromZeeguuToClass: "Find an article in Zeeguu",
       copyPasteArticleToClass: "Copy/paste content or type your own text",
       urlUploadToClass: "Use a URL-address",
 
@@ -529,18 +529,18 @@ let strings = new LocalizedStrings(
       oneYear: "1 year",
 
       //Tutorials
-      howToAddAndEditClass: "How to add a class...",
-      howToDeleteClass: "How to edit or delete a class...",
-      howToAddStudent: "How to add students...",
-      howToDeleteStudents: "How to delete students...",
-      howToAddTextUrl: "How to add a text using a URL...",
-      howToAddTextFromZeeguu: "How to add a text from Zeeguu...",
+      howToAddAndEditClass: "How to add a class",
+      howToDeleteClass: "How to edit or delete a class",
+      howToAddStudent: "How to add students",
+      howToDeleteStudents: "How to delete students",
+      howToAddTextUrl: "How to add a text using a URL",
+      howToAddTextFromZeeguu: "How to add a text from Zeeguu",
       howToAddTextCopyPaste:
-        "How to add a text by copy-pasting or writing text...",
-      howToEditAndDeleteText: "How to edit or delete a text...",
-      howToShareText: "How to share texts with your class/classes...",
-      howToExplainZeeguuData: "The data you can find in Zeeguu explained...",
-      howToUnderstandTextLevel: "How to understand the text level...",
+        "How to add a text by copy-pasting or writing text",
+      howToEditAndDeleteText: "How to edit or delete a text",
+      howToShareText: "How to share texts with your class/classes",
+      howToExplainZeeguuData: "The data you can find in Zeeguu explained",
+      howToUnderstandTextLevel: "How to understand the text level",
 
       //ViewMoreLessButton
       viewMoreBtn: "View more",
@@ -882,7 +882,7 @@ let strings = new LocalizedStrings(
       seeExercises: "Se øvelser",
 
       //AddTextOptionTypes
-      articleFromZeeguuToClass: "Tilføj en artikel fra Zeeguu til en klasse",
+      articleFromZeeguuToClass: "Find en article på Zeeguu",
       copyPasteArticleToClass: "Kopier/indsæt tekst, eller skriv din egen",
       urlUploadToClass: "Brug en URL-addresse",
 
@@ -1089,18 +1089,18 @@ let strings = new LocalizedStrings(
       oneYear: "1 år",
 
       //Tutorials
-      howToAddAndEditClass: "Sådan tilføjes en klasse...",
-      howToDeleteClass: "Sådan redigeres eller slettes en klasse...",
-      howToAddStudent: "Sådan tilføjes elever...",
-      howToDeleteStudents: "Sådan slettes elever...",
-      howToAddTextUrl: "Sådan tilføjes en tekst ved hjælp af en URL...",
-      howToAddTextFromZeeguu: "Sådan tilføjes en tekst fra Zeeguu...",
+      howToAddAndEditClass: "Sådan tilføjes en klasse",
+      howToDeleteClass: "Sådan redigeres eller slettes en klasse",
+      howToAddStudent: "Sådan tilføjes elever",
+      howToDeleteStudents: "Sådan slettes elever",
+      howToAddTextUrl: "Sådan tilføjes en tekst ved hjælp af en URL",
+      howToAddTextFromZeeguu: "Sådan tilføjes en tekst fra Zeeguu",
       howToAddTextCopyPaste:
-        "Sådan tilføjes en tekst ved enten at kopiere eller selv skrive tekst...",
-      howToEditAndDeleteText: "Sådan redigeres eller slettes en tekst...",
-      howToShareText: "Sådan deler du tekster med din klasse / dine klasser...",
-      howToExplainZeeguuData: "De data, du kan finde i Zeeguu forklaret...",
-      howToUnderstandTextLevel: "Sådan skal tekst niveau forståes...",
+        "Sådan tilføjes en tekst ved enten at kopiere eller selv skrive tekst",
+      howToEditAndDeleteText: "Sådan redigeres eller slettes en tekst",
+      howToShareText: "Sådan deler du tekster med din klasse / dine klasser",
+      howToExplainZeeguuData: "De data, du kan finde i Zeeguu forklaret",
+      howToUnderstandTextLevel: "Sådan skal tekst niveau forstås",
 
       //ViewMoreLessButton
       viewMoreBtn: "Vis mere",
