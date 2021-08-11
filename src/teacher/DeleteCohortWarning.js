@@ -12,7 +12,6 @@ const DeleteCohortWarning = ({
   deleteCohort,
   isDeleteError,
   setIsDeleteError,
-  /* setIsLoading, */
 }) => {
   const handleCancel = () => {
     setIsDeleteError(false);

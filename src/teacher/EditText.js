@@ -1,8 +1,10 @@
 import React, { useState, useContext, Fragment, useEffect } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import strings from "../i18n/definitions";
 import { RoutingContext } from "../contexts/RoutingContext";
 import EditTextInputFields from "./EditTextInputFields";
+import AddToCohortDialog from "./AddToCohortDialog";
+import DeleteTextWarning from "./DeleteTextWarning";
 import {
   StyledButton,
   TopButtonWrapper,
@@ -10,11 +12,15 @@ import {
 } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
-import AddToCohortDialog from "./AddToCohortDialog";
-import DeleteTextWarning from "./DeleteTextWarning";
+import {
+  ShareWithClassesButton,
+  ViewAsStudentButton,
+} from "./TooltipedButtons";
 
 export default function EditText({ api }) {
   const articleID = useParams().articleID;
+  const isNew = articleID === "new";
+  const [stateChanged, setStateChanged] = useState(false);
 
   const [state, setState] = useState({
     article_title: "",
@@ -22,17 +28,18 @@ export default function EditText({ api }) {
     language_code: "default",
   });
 
-  const buttonDisabled =
+  const inputInvalid =
     state.article_title === "" ||
     state.article_content === "" ||
     state.language_code === "default";
 
+  const viewAsStudentAndShareDisabled = inputInvalid || stateChanged;
   const [showDialog, setShowDialog] = useState(false);
   const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
 
   //The user is editing an already existing text...
   useEffect(() => {
-    if (articleID !== "new") {
+    if (!isNew) {
       api.getArticleInfo(articleID, (article) => {
         setState({
           article_title: article.title,
@@ -53,6 +60,7 @@ export default function EditText({ api }) {
   };
 
   const handleChange = (event) => {
+    setStateChanged(true);
     setState({
       ...state,
       [event.target.name]: event.target.value, //ie: article_title : "Harry Potter tickets sold out", article_content : "bla bla bla"
@@ -61,6 +69,7 @@ export default function EditText({ api }) {
 
   //The LanguageSelector component returns the language selected by the user as a string (not an event like the other input fields)
   function handleLanguageChange(selectedLanguage) {
+    setStateChanged(true);
     setState({
       ...state,
       language_code: selectedLanguage,
@@ -76,6 +85,7 @@ export default function EditText({ api }) {
         console.log(`article created with id: ${newID}`);
       }
     );
+    setStateChanged(false);
     history.push("/teacher/texts");
   };
 
@@ -87,6 +97,7 @@ export default function EditText({ api }) {
       state.language_code,
       (result) => {
         if ((result = "OK")) {
+          setStateChanged(false);
           history.push("/teacher/texts");
         } else {
           console.log(result);
@@ -98,6 +109,7 @@ export default function EditText({ api }) {
   const deleteText = () => {
     api.deleteOwnText(articleID, (res) => {
       if (res === "OK") {
+        setStateChanged(false);
         history.push("/teacher/texts");
       } else {
         console.log(res);
@@ -112,21 +124,16 @@ export default function EditText({ api }) {
           <h1>{strings.editText}</h1>
         </sc.TopTabs>
         <TopButtonWrapper>
-          {articleID !== "new" && (
-            <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
-              <StyledButton secondary disabled={buttonDisabled}>
-                {strings.viewAsStudent}
-              </StyledButton>
-            </Link>
-          )}
-
-          <StyledButton
-            primary
-            onClick={() => setShowDialog(true)}
-            disabled={buttonDisabled}
-          >
-            {strings.addToClass}
-          </StyledButton>
+          <ViewAsStudentButton
+            articleID={articleID}
+            disabled={viewAsStudentAndShareDisabled}
+            isNew={isNew}
+          />
+          <ShareWithClassesButton
+            onclick={() => setShowDialog(true)}
+            disabled={viewAsStudentAndShareDisabled}
+            isNew={isNew}
+          />
           <StyledButton secondary onClick={handleCancel}>
             {strings.cancel}
           </StyledButton>
@@ -139,15 +146,15 @@ export default function EditText({ api }) {
           handleLanguageChange={handleLanguageChange}
           handleChange={handleChange}
         />
-        {buttonDisabled && (
+        {inputInvalid && (
           <p style={{ color: "red" }}>{strings.errorEmptyInputField}</p>
         )}
         <PopupButtonWrapper>
-          {articleID === "new" ? (
+          {isNew ? (
             <StyledButton
               primary
               onClick={uploadArticle}
-              disabled={buttonDisabled}
+              disabled={inputInvalid}
             >
               {strings.saveText}
             </StyledButton>
@@ -162,7 +169,7 @@ export default function EditText({ api }) {
               <StyledButton
                 primary
                 onClick={updateArticle}
-                disabled={buttonDisabled}
+                disabled={inputInvalid}
               >
                 {strings.saveChanges}
               </StyledButton>
