@@ -3,8 +3,10 @@ import TutorialItemCard from "./TutorialItemCard";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import * as scs from "./TutorialItemCard.sc";
+import { setTitle } from "../assorted/setTitle";
 
 export default function Tutorials() {
+  setTitle(strings.tutorials);
   return (
     <s.NarrowColumn>
       <scs.StyledTutorialItemCard>

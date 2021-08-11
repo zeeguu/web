@@ -13,7 +13,7 @@ import SortingButtons from "../articles/SortingButtons";
 export default function AllTexts({ api }) {
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
-
+  setTitle(strings.myTexts);
   //on initial render
   if (articleList == null) {
     api.getTeacherTexts((articles) => {
@@ -22,9 +22,6 @@ export default function AllTexts({ api }) {
       setArticleList(reversedList);
       setOriginalList(reversedList);
     });
-
-    setTitle(strings.addTexts);
-
     return <LoadingAnimation />;
   }
 
