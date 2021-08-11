@@ -417,9 +417,19 @@ let strings = new LocalizedStrings(
 
       //EditText
       editText: "Edit Text",
+      saveText: "Save Text",
+
+      //TooltipedButtons
       viewAsStudent: "View as Student",
       addToClass: "Share/Unshare",
-      saveText: "Save Text",
+      saveTextBeforeViewAsStudent:
+        "The text must be saved before you can view it as a student.",
+      saveChangesBeforeViewAsStudent:
+        "The changes must be saved before you can view the text as a student.",
+      textMustBeSavedBeforeSharing:
+        "The text must be saved before you can share it with your classes.",
+      changesMustBeSavedBeforeSharing:
+        "The changes must be saved before you can share the text with your classes.",
 
       //EditTextInputFields
       defineLanguage: "Please, define the language of the text",
@@ -979,9 +989,19 @@ let strings = new LocalizedStrings(
 
       //EditText
       editText: "Rediger",
+      saveText: "Gem tekst",
+
+      //TooltipedButtons
       viewAsStudent: "Se som elev",
       addToClass: "Deling",
-      saveText: "Gem tekst",
+      saveTextBeforeViewAsStudent:
+        "Teksten skal gemmes, før du kan se den som elev.",
+      saveChangesBeforeViewAsStudent:
+        "Ændingerne skal gemmes, før du kan se teksten som elev.",
+      textMustBeSavedBeforeSharing:
+        "Teksten skal gemmes, før du kan dele den med dine klasser",
+      changesMustBeSavedBeforeSharing:
+        "Ændringerne skal gemmes, før du kan dele teksten med dine klasser",
 
       //EditTextInputFields
       defineLanguage: "Angiv venligst hvilket sprog teksten er på",
