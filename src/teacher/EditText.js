@@ -51,7 +51,7 @@ export default function EditText({ api }) {
     //eslint-disable-next-line
   }, []);
 
-  //As there are two paths to EditTexts we are using RoutingContext to be able to go back on the right one on Cancel
+  //As there are three paths to EditText, we are using RoutingContext to go back correctly on Cancel
   const { returnPath } = useContext(RoutingContext);
   const history = useHistory();
 
