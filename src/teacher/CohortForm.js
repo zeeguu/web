@@ -11,6 +11,7 @@ import { languageMap, LanguageSelector } from "./LanguageSelector";
 import { StyledButton, PopupButtonWrapper } from "./TeacherButtons.sc";
 import DeleteCohortWarning from "./DeleteCohortWarning";
 import { StyledDialog } from "./StyledDialog.sc";
+import * as s from "./CohortForm.sc";
 
 const CohortForm = ({
   api,
@@ -139,75 +140,78 @@ const CohortForm = ({
   }
 
   return (
-    <StyledDialog
-      onDismiss={() => setShowCohortForm(false)}
-      aria-label="Create class"
-      max_width="525px"
-    >
-      {cohort ? <h1>{strings.editClass}</h1> : <h1>{strings.createClass}</h1>}
-      {isLoading ? (
-        <LoadingAnimation />
-      ) : (
-        <form>
-          <CohortNameTextField
-            value={state.cohort_name}
-            onChange={handleChange}
-          />
-          {invalidClassName() && !cohort && (
-            <Error message="You already have a class with that name" />
-          )}
-          <InviteCodeTextField
-            value={state.invite_code}
-            onChange={handleChange}
-          />
-          {invalidInviteCode() && !cohort && (
-            <Error message="You already used that invite code for a class" />
-          )}
-          <FormControl
-            fullWidth
-            disabled={!!cohort}
-            required
-            style={{ minWidth: 120 }}
-          >
-            <LanguageSelector
-              api={api}
-              value={state.language_code}
-              onChange={handleLanguageChange}
+    <s.StyledCohortForm>
+      <StyledDialog
+        onDismiss={() => setShowCohortForm(false)}
+        aria-label="Create class"
+        max_width="525px"
+      >
+        {cohort ? <h1>{strings.editClass}</h1> : <h1>{strings.createClass}</h1>}
+        {isLoading ? (
+          <LoadingAnimation />
+        ) : (
+          <form>
+            <CohortNameTextField
+              value={state.cohort_name}
+              onChange={handleChange}
+            />
+            {invalidClassName() && !cohort && (
+              <Error message="You already have a class with that name" />
+            )}
+            <InviteCodeTextField
+              value={state.invite_code}
+              onChange={handleChange}
+            />
+            {invalidInviteCode() && !cohort && (
+              <Error message="You already used that invite code for a class" />
+            )}
+            <FormControl
+              fullWidth
+              disabled={!!cohort}
+              required
+              className="form-control"
             >
-              {strings.classroomLanguage}
-            </LanguageSelector>
-          </FormControl>
-          {isError && <Error message={strings.errorInviteCode} />}
-        </form>
-      )}
-      {inputIsEmpty && <Error message={strings.errorEmptyInputField} />}
-      <PopupButtonWrapper>
-        <StyledButton
-          primary
-          onClick={submitForm}
-          style={{ minWidth: 120 }}
-          disabled={!isValid}
-        >
-          {cohort ? strings.saveChanges : strings.createClass}
-        </StyledButton>
-        {cohort && (
-          <StyledButton secondary onClick={() => setShowWarning(true)}>
-            {strings.deleteFromMyClasses}
-          </StyledButton>
+              <LanguageSelector
+                api={api}
+                value={state.language_code}
+                onChange={handleLanguageChange}
+              >
+                {strings.classroomLanguage}
+              </LanguageSelector>
+            </FormControl>
+
+            {isError && <Error message={strings.errorInviteCode} />}
+          </form>
         )}
-      </PopupButtonWrapper>
-      {showWarning && (
-        <DeleteCohortWarning
-          api={api}
-          cohort={cohort}
-          setShowWarning={setShowWarning}
-          deleteCohort={deleteCohort}
-          isDeleteError={isDeleteError}
-          setIsDeleteError={setIsDeleteError}
-          setIsLoading={setIsLoading}
-        />
-      )}
-    </StyledDialog>
+        {inputIsEmpty && <Error message={strings.errorEmptyInputField} />}
+        <PopupButtonWrapper>
+          <StyledButton
+            primary
+            onClick={submitForm}
+            className="form-control"
+            disabled={!isValid}
+          >
+            {cohort ? strings.saveChanges : strings.createClass}
+          </StyledButton>
+          {cohort && (
+            <StyledButton secondary onClick={() => setShowWarning(true)}>
+              {strings.deleteFromMyClasses}
+            </StyledButton>
+          )}
+        </PopupButtonWrapper>
+        {showWarning && (
+          <DeleteCohortWarning
+            api={api}
+            cohort={cohort}
+            setShowWarning={setShowWarning}
+            deleteCohort={deleteCohort}
+            isDeleteError={isDeleteError}
+            setIsDeleteError={setIsDeleteError}
+            setIsLoading={setIsLoading}
+          />
+        )}
+      </StyledDialog>
+    </s.StyledCohortForm>
   );
 };
 

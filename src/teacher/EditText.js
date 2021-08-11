@@ -10,6 +10,7 @@ import {
 } from "./TeacherButtons.sc";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
+import * as scs from "./EditText.sc";
 import AddToCohortDialog from "./AddToCohortDialog";
 import DeleteTextWarning from "./DeleteTextWarning";
 
@@ -108,67 +109,71 @@ export default function EditText({ api }) {
   return (
     <Fragment>
       <s.NarrowColumn>
-        <sc.TopTabs>
-          <h1>{strings.editText}</h1>
-        </sc.TopTabs>
-        <TopButtonWrapper>
-          {articleID !== "new" && (
-            <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
-              <StyledButton secondary disabled={buttonDisabled}>
-                {strings.viewAsStudent}
-              </StyledButton>
-            </Link>
-          )}
+        <scs.StyledEditText>
+          <sc.TopTabs>
+            <h1>{strings.editText}</h1>
+          </sc.TopTabs>
+          <TopButtonWrapper>
+            {articleID !== "new" && (
+              <Link to={`/teacher/texts/editText/${articleID}/studentView`}>
+                <StyledButton secondary disabled={buttonDisabled}>
+                  {strings.viewAsStudent}
+                </StyledButton>
+              </Link>
+            )}
 
-          <StyledButton
-            primary
-            onClick={() => setShowDialog(true)}
-            disabled={buttonDisabled}
-          >
-            {strings.addToClass}
-          </StyledButton>
-          <StyledButton secondary onClick={handleCancel}>
-            {strings.cancel}
-          </StyledButton>
-        </TopButtonWrapper>
-        <EditTextInputFields
-          api={api}
-          language_code={state.language_code}
-          article_title={state.article_title}
-          article_content={state.article_content}
-          handleLanguageChange={handleLanguageChange}
-          handleChange={handleChange}
-        />
-        {buttonDisabled && (
-          <p style={{ color: "red" }}>{strings.errorEmptyInputField}</p>
-        )}
-        <PopupButtonWrapper>
-          {articleID === "new" ? (
             <StyledButton
               primary
-              onClick={uploadArticle}
+              onClick={() => setShowDialog(true)}
               disabled={buttonDisabled}
             >
-              {strings.saveText}
+              {strings.addToClass}
             </StyledButton>
-          ) : (
-            <Fragment>
-              <StyledButton
-                secondary
-                onClick={() => setShowDeleteTextWarning(true)}
-              >
-                {strings.delete}
-              </StyledButton>
+            <StyledButton secondary onClick={handleCancel}>
+              {strings.cancel}
+            </StyledButton>
+          </TopButtonWrapper>
+          <EditTextInputFields
+            api={api}
+            language_code={state.language_code}
+            article_title={state.article_title}
+            article_content={state.article_content}
+            handleLanguageChange={handleLanguageChange}
+            handleChange={handleChange}
+          />
+          {buttonDisabled && (
+            <p className="empty-string-warning">
+              {strings.errorEmptyInputField}
+            </p>
+          )}
+          <PopupButtonWrapper>
+            {articleID === "new" ? (
               <StyledButton
                 primary
-                onClick={updateArticle}
+                onClick={uploadArticle}
                 disabled={buttonDisabled}
               >
-                {strings.saveChanges}
+                {strings.saveText}
               </StyledButton>
-            </Fragment>
-          )}
-        </PopupButtonWrapper>
+            ) : (
+              <Fragment>
+                <StyledButton
+                  secondary
+                  onClick={() => setShowDeleteTextWarning(true)}
+                >
+                  {strings.delete}
+                </StyledButton>
+                <StyledButton
+                  primary
+                  onClick={updateArticle}
+                  disabled={buttonDisabled}
+                >
+                  {strings.saveChanges}
+                </StyledButton>
+              </Fragment>
+            )}
+          </PopupButtonWrapper>
+        </scs.StyledEditText>
       </s.NarrowColumn>
       {showDialog && <AddToCohortDialog api={api} setIsOpen={setShowDialog} />}
       {showDeleteTextWarning && (
