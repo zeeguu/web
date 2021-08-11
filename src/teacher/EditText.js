@@ -83,10 +83,10 @@ export default function EditText({ api }) {
       state.language_code,
       (newID) => {
         console.log(`article created with id: ${newID}`);
+        setStateChanged(false);
+        history.push("/teacher/texts");
       }
     );
-    setStateChanged(false);
-    history.push("/teacher/texts");
   };
 
   const updateArticle = () => {

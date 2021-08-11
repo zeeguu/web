@@ -16,12 +16,10 @@ export default function AllTexts({ api }) {
   setTitle(strings.myTexts);
 
   useEffect(() => {
-    if (articleList == null) {
-      api.getTeacherTexts((articles) => {
-        setArticleList(articles);
-        setOriginalList(articles);
-      });
-    }
+    api.getTeacherTexts((articles) => {
+      setArticleList(articles);
+      setOriginalList(articles);
+    });
     // eslint-disable-next-line
   }, []);
 
