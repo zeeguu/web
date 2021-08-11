@@ -5,9 +5,7 @@ import strings from "../i18n/definitions";
 import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 import { setColors } from "../components/colors";
-
 import * as s from "./SideBar.sc";
-import LocalStorage from "../assorted/LocalStorage";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -15,26 +13,21 @@ export default function SideBar(props) {
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
 
-  const new_site = LocalStorage.isEMSTeacherDashboard();
-
   //deducting whether we are on student or teacher side for colouring
   const path = useLocation().pathname;
   useEffect(() => {
-    if (new_site) {
-      //in Settings the side is determined by whether the user is a student or a teacher
-      if (path.includes("account")) {
-        setIsOnStudentSide(!user.is_teacher);
-      } else {
-        setIsOnStudentSide(!path.includes("teacher"));
-      }
+    //in Settings the side is determined by whether the user is a student or a teacher
+    if (path.includes("account")) {
+      setIsOnStudentSide(!user.is_teacher);
+    } else {
+      setIsOnStudentSide(!path.includes("teacher"));
     }
     // eslint-disable-next-line
   }, [path]);
 
-  const defaultPage =
-    new_site && user.is_teacher ? "/teacher/classes" : "articles";
+  const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
 
-  const { light_color, dark_color } = setColors(new_site, isOnStudentSide);
+  const { light_color, dark_color } = setColors(isOnStudentSide);
 
   function toggleSidebar(e) {
     e.preventDefault();
@@ -65,7 +58,6 @@ export default function SideBar(props) {
         <StudentSpecificSidebarOptions
           resetSidebarToDefault={resetSidebarToDefault}
           user={user}
-          setIsOnStudentSide={setIsOnStudentSide}
           api={api}
         />
       )}
