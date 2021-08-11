@@ -32,7 +32,7 @@ let strings = new LocalizedStrings(
       joinClass: "Join Class",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
-      deleteFromMyClasses: "Delete from My Classes",
+      deleteFromMyClasses: "Delete From My Classes",
       tooEasy: "too easy",
 
       //LoadingAnimation
@@ -401,7 +401,7 @@ let strings = new LocalizedStrings(
       wishToDeleteStudent: "Do you wish to remove",
       fromTheClass: "from the class?",
       howStudentsRejoinClass:
-        "Students can rejoin the class if you give them the invite code again.",
+        "Students can rejoin the class (in 'Settings') if you give them the invite code again.",
       remove: "Remove",
 
       //DeleteTextWarning
@@ -412,7 +412,7 @@ let strings = new LocalizedStrings(
       //EditText
       editText: "Edit Text",
       viewAsStudent: "View as Student",
-      addToClass: "Add to Class",
+      addToClass: "Share/Unshare",
       saveText: "Save Text",
 
       //EditTextInputFields
@@ -432,7 +432,7 @@ let strings = new LocalizedStrings(
       shareInviteCode:
         "Share this code with your students to invite them to the class: ",
       invitecodeInformation:
-        "Students will not appear in the class until they have signed up for Zeeguu and used the invite code.",
+        "Students will not appear in the class until they have signed up for Zeeguu and used the invite code (in their Settings) to join the class.",
       goToClass: "Go to Class",
 
       //LanguageSelector (both of them)
@@ -957,7 +957,7 @@ let strings = new LocalizedStrings(
       wishToDeleteStudent: "Ønsker du at fjerne",
       fromTheClass: "fra klassen?",
       howStudentsRejoinClass:
-        "Elever kan tilføjes til klassen igen, ved at du giver dem invitationskoden.",
+        "Elever kan tilmelde sig til klassen igen (under 'Indstillinger'), hvis du giver dem invitationskoden.",
       remove: "Fjern",
 
       //DeleteTextWarning
@@ -968,7 +968,7 @@ let strings = new LocalizedStrings(
       //EditText
       editText: "Rediger",
       viewAsStudent: "Se som elev",
-      addToClass: "Tilføj til klasse",
+      addToClass: "Deling",
       saveText: "Gem tekst",
 
       //EditTextInputFields
@@ -988,7 +988,7 @@ let strings = new LocalizedStrings(
       shareInviteCode:
         "Del denne kode med dine elever for at invitere dem til klassen: ",
       invitecodeInformation:
-        "Eleverne vil ikke blive vist i klassen før de har oprettet sig i Zeeguu og brugt invitationskoden til at blive en del af klassen.",
+        "Eleverne vil ikke blive vist i klassen før de har oprettet sig i Zeeguu og brugt invitationskoden (under Indstillinger) til at blive en del af klassen.",
       goToClass: "Bliv ført til klassen",
 
       //LanguageSelector
