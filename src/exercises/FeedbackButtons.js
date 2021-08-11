@@ -1,7 +1,12 @@
 import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect } from "react";
 import strings from "../i18n/definitions";
-import { useSnackbar } from "react-simple-snackbar";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function FeedbackButtons({
   show,
@@ -11,7 +16,6 @@ export default function FeedbackButtons({
   currentBookmarksToStudy,
 }) {
   const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
-  const SNACK_DURATION = 4500;
 
   const buttons = [
     { name: strings.bookmarkTooEasy, value: "too_easy" },
@@ -31,8 +35,8 @@ export default function FeedbackButtons({
   const [className, setClassName] = useState("");
   const [input, setInput] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-
-  const [openSnackbar, closeSnackbar] = useSnackbar(s.SnackbarOptions);
+  const [feedback, setFeedback] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
@@ -41,7 +45,7 @@ export default function FeedbackButtons({
       setSelectedId(null);
     }
     console.log(selectedId);
-    closeSnackbar();
+    setOpenSnackbar(false);
     setInput("");
     setShowInput(false);
     setClassName("");
@@ -54,14 +58,10 @@ export default function FeedbackButtons({
     } else {
       if (value !== "other") {
         feedbackFunction(value, selectedId);
-        let feedback = "";
         buttons.forEach((button) => {
-          if (button.value === value) feedback = button.name;
+          if (button.value === value) setFeedback(button.name);
         });
-        openSnackbar(
-          `${strings.sentFeedback1} "${feedback}" ${strings.sentFeedback2}`,
-          SNACK_DURATION
-        );
+        setOpenSnackbar(true);
         setShow(false);
         if (currentExerciseType === MATCH_EXERCISE_TYPE) {
           setSelectedId(null);
@@ -95,21 +95,26 @@ export default function FeedbackButtons({
         .replace(re2, "")
         .replaceAll(" ", "_");
       feedbackFunction(newFeedback, selectedId);
-      let feedback = input;
+      setFeedback(input);
       setInput("");
       setShowInput(false);
       setClassName("");
       if (currentExerciseType === MATCH_EXERCISE_TYPE) {
         setSelectedId(null);
       }
-      openSnackbar(
-        `${strings.sentFeedback1} "${feedback}" ${strings.sentFeedback2}`,
-        SNACK_DURATION
-      );
+      setOpenSnackbar(true);
       setShow(false);
       event.preventDefault();
     }
   }
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
 
   return (
     <s.FeedbackHolder>
@@ -166,6 +171,19 @@ export default function FeedbackButtons({
           <s.FeedbackSubmit type="submit" value="Submit" />
         </s.FeedbackForm>
       )}
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        open={openSnackbar}
+        autoHideDuration={4500}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success">
+          {`${strings.sentFeedback1} "${feedback}" ${strings.sentFeedback2}`}
+        </Alert>
+      </Snackbar>
     </s.FeedbackHolder>
   );
 }
