@@ -11,7 +11,6 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
-import SnackbarProvider from "react-simple-snackbar";
 
 let BOOKMARKS_TO_PRACTICE = 10;
 
@@ -266,15 +265,13 @@ export default function Exercises({ api, articleID }) {
           toggleShow={toggleShow}
         />
       </s.ExForm>
-      <SnackbarProvider>
-        <FeedbackButtons
-          show={showFeedbackButtons}
-          setShow={setShowFeedbackButtons}
-          feedbackFunction={stopShowingThisFeedback}
-          currentExerciseType={currentExerciseType}
-          currentBookmarksToStudy={currentBookmarksToStudy}
-        />
-      </SnackbarProvider>
+      <FeedbackButtons
+        show={showFeedbackButtons}
+        setShow={setShowFeedbackButtons}
+        feedbackFunction={stopShowingThisFeedback}
+        currentExerciseType={currentExerciseType}
+        currentBookmarksToStudy={currentBookmarksToStudy}
+      />
     </s.ExercisesColumn>
   );
 }

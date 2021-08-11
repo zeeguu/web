@@ -95,20 +95,6 @@ const FeedbackSubmit = styled.input`
   outline: none;
 `;
 
-const SnackbarOptions = {
-  position: "bottom-right",
-  style: {
-    backgroundColor: "#00665C",
-    color: "#ffffff",
-    textAlign: "center",
-    minWidth: "fit-content",
-    fontFamily: "",
-  },
-  closeStyle: {
-    marginLeft: "-1em",
-  },
-};
-
 export {
   FeedbackHolder,
   FeedbackButtonsHolder,
@@ -119,5 +105,4 @@ export {
   FeedbackForm,
   FeedbackInput,
   FeedbackSubmit,
-  SnackbarOptions,
 };
