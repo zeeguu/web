@@ -373,6 +373,8 @@ let strings = new LocalizedStrings(
       badWord: "bad word",
       badExample: "bad example",
       dontShowAgain: "don't show again",
+      starExplanation:
+        "The asterix next to the word indicates that the student has exercised the word at least once.",
 
       //CohortForm
       editClass: "Edit Class",
@@ -933,6 +935,8 @@ let strings = new LocalizedStrings(
       badWord: "dårligt ord",
       badExample: "dårligt eksempel",
       dontShowAgain: "vis ikke igen",
+      starExplanation:
+        "Stjernen ved siden af ordet indikerer, at eleven har lavet mindst én øvelse med ordet.",
 
       //CohortForm
       editClass: "Rediger klasse",
