@@ -107,6 +107,7 @@ let strings = new LocalizedStrings(
       setNewPassword: "Set New Password",
 
       //LandingPage
+      landingPage: "Landing Page",
       projectDescription_UltraShort:
         "A research project aiming to personalize reading and vocabulary practice in foreign languages",
       betaTester: "Become a Betatester!",
@@ -184,6 +185,9 @@ let strings = new LocalizedStrings(
       titleTranslationHistory: "Translation History",
       starAWordMsg:
         "Star a word to ensure it appears in exercises. Delete to avoid it. Gray words don't appear unless starred.",
+
+      //FindArticles
+      findArticles: "Find Articles",
 
       //ArticleReader
       translateOnClick: "translate on click",
@@ -664,6 +668,7 @@ let strings = new LocalizedStrings(
       setNewPassword: "Gem nyt kodeord",
 
       //LandingPage
+      landingPage: "Forside",
       projectDescription_UltraShort:
         "Et forskningsprojekt på vej mod at tilpasse fremmedsprogslæsning og ordforrådstræning til den enkelte.",
       betaTester: "Bliv Betatester!",
@@ -741,6 +746,9 @@ let strings = new LocalizedStrings(
       titleTranslationHistory: "Oversættelseshistorik",
       starAWordMsg:
         "Stjernemarkér et ord for at være sikker på, at det indgår i øvelserne. Delete ordet for at undgå øvelser med det. Grå ord vises ikke, medmindre de er stjernemarkerede.",
+
+      //FindArticles
+      findArticles: "Find artikler",
 
       //ArticleReader
       translateOnClick: "klik og oversæt",
@@ -882,7 +890,7 @@ let strings = new LocalizedStrings(
       seeExercises: "Se øvelser",
 
       //AddTextOptionTypes
-      articleFromZeeguuToClass: "Find en article på Zeeguu",
+      articleFromZeeguuToClass: "Find en artikel på Zeeguu",
       copyPasteArticleToClass: "Kopier/indsæt tekst, eller skriv din egen",
       urlUploadToClass: "Brug en URL-addresse",
 

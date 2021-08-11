@@ -5,6 +5,7 @@ import * as s from "./LandingPage.sc.js";
 import Contributors from "./Contributors";
 import { Redirect } from "react-router-dom";
 import React, { useState } from "react";
+import { setTitle } from "../assorted/setTitle";
 import UiLanguageSettings from "../components/UiLanguageSettings";
 
 export default function LandingPage() {
@@ -13,14 +14,14 @@ export default function LandingPage() {
   if (LocalStorage.hasSession()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
-  
+  setTitle(strings.landingPage);
   return (
     <div>
       <s.LoginHeader>
         <s.HeaderTitle>Zeeguu</s.HeaderTitle>
         <UiLanguageSettings
-        uiLanguage={uiLanguage}
-        setUiLanguage={setUiLanguage}
+          uiLanguage={uiLanguage}
+          setUiLanguage={setUiLanguage}
         />
       </s.LoginHeader>
 
