@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
-import LocalStorage from "../assorted/LocalStorage";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
 import BookmarkButton from "./BookmarkButton";
@@ -133,7 +132,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   return (
     <s.ArticleReader>
       <PopupButtonWrapper>
-        {user.is_teacher && LocalStorage.isEMSTeacherDashboard() && (
+        {user.is_teacher && (
           <div>
             {teacherArticleID && (
               <Link to={`/teacher/texts/editText/${articleID}`}>
