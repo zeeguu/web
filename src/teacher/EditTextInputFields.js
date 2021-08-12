@@ -16,13 +16,6 @@ export default function EditTextInputFields({
 }) {
   return (
     <Fragment>
-      <LanguageSelector
-        api={api}
-        value={language_code}
-        onChange={handleLanguageChange}
-      >
-        {strings.defineLanguage}
-      </LanguageSelector>
       <LabeledTextField
         value={article_title}
         onChange={handleChange}
@@ -39,6 +32,13 @@ export default function EditTextInputFields({
       >
         {strings.clickToChangeBody}
       </LabeledMultiLineTextField>
+      <LanguageSelector
+        api={api}
+        value={language_code}
+        onChange={handleLanguageChange}
+      >
+        {strings.defineLanguage}
+      </LanguageSelector>
     </Fragment>
   );
 }
