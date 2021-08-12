@@ -21,8 +21,8 @@ export function AddFromZeeguuOption() {
 }
 
 export function TypeCopyPasteOption() {
-  //We are updating the returnPath context upon taking the path to editText in order to be able to use Cancel correctly.
-  const { setReturnPath } = useContext(RoutingContext);
+  const { setReturnPath } = useContext(RoutingContext); //Doing this to be able to use Cancel correctly in EditText.
+
   return (
     <s.StyledAddTextOptions>
       <div className="description">
