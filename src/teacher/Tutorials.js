@@ -14,27 +14,27 @@ export default function Tutorials() {
           <h1>{strings.tutorials}</h1>
         </sc.TopTabs>
         <p>{strings.howToAddAndEditClass}</p>
-        <TutorialItemCard embedId="UUJ5Ezjs1KY" />
+        <TutorialItemCard embedId="9uoTad2J14I" />
         <p>{strings.howToDeleteClass}</p>
-        <TutorialItemCard embedId="2Kf95KT5Bqw" />
+        <TutorialItemCard embedId="yxn1Fv2awbE" />
         <p>{strings.howToAddStudent}</p>
-        <TutorialItemCard embedId="UA44KiW1qXg" />
+        <TutorialItemCard embedId="NRWPxpbqR3I" />
         <p>{strings.howToDeleteStudents}</p>
-        <TutorialItemCard embedId="J9Y3Ar5CI-s" />
+        <TutorialItemCard embedId="huvypq6hI1o" />
         <p>{strings.howToAddTextFromZeeguu} </p>
-        <TutorialItemCard embedId="nr8a0k_pSIo" />
+        <TutorialItemCard embedId="B_9iTt6Ktxc" />
         <p>{strings.howToAddTextCopyPaste} </p>
-        <TutorialItemCard embedId="_4lmQsEqWXg" />
+        <TutorialItemCard embedId="Q07gT7ZKYC8" />
         <p>{strings.howToAddTextUrl}</p>
-        <TutorialItemCard embedId="jjMVwT1CtXc" />
+        <TutorialItemCard embedId="tmYHEWm7ks4" />
         <p>{strings.howToEditAndDeleteText}</p>
-        <TutorialItemCard embedId="uFGRHgIZhRc" />
+        <TutorialItemCard embedId="-t7TjCUQCX4" />
         <p>{strings.howToShareText}</p>
-        <TutorialItemCard embedId="Dsrl7kxmQM4" />
+        <TutorialItemCard embedId="OfjBEzshG44" />
         <p>{strings.howToExplainZeeguuData}</p>
-        <TutorialItemCard embedId="" />
+        <TutorialItemCard embedId="WmyVNxZn1RA" />
         <p>{strings.howToUnderstandTextLevel}</p>
-        <TutorialItemCard embedId="B7CVsGhRWfM" />
+        <TutorialItemCard embedId="J4WUKEGShJI" />
       </scs.StyledTutorialItemCard>
     </s.NarrowColumn>
   );
