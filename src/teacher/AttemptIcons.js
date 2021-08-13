@@ -3,51 +3,45 @@ import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
 import PriorityHighRoundedIcon from "@material-ui/icons/PriorityHighRounded";
 import { v4 as uuid } from "uuid";
 import strings from "../i18n/definitions";
+import * as s from "./AttemptIcons.sc";
 
 const CorrectAttempt = () => {
   return (
-    <CheckRoundedIcon
-      style={{ color: "green", margin: "12px -3px 0 -2px", fontSize: 18 }}
-    />
+    <s.StyledAttemptIcons>
+      <CheckRoundedIcon className="correct-attempt-icon" />
+    </s.StyledAttemptIcons>
   );
 };
 
 const WrongAttempt = () => {
   return (
-    <ClearRoundedIcon
-      style={{ color: "red", margin: "12px -3px 0 -2px", fontSize: 18 }}
-    />
+    <s.StyledAttemptIcons>
+      <ClearRoundedIcon className="wrong-attempt-icon" />
+    </s.StyledAttemptIcons>
   );
 };
 
 const SolutionShown = () => {
   return (
-    <PriorityHighRoundedIcon
-      style={{ margin: "13px -5px 0 -3.5px", fontSize: "15px" }}
-    />
+    <s.StyledAttemptIcons>
+      <PriorityHighRoundedIcon className="solution-shown-icon" />
+    </s.StyledAttemptIcons>
   );
 };
 
 const HintUsed = () => {
   return (
-    <p
-      style={{
-        color: "orange",
-        fontWeight: 600,
-        margin: "12px 0px 0 1.5px",
-        fontSize: "14px",
-      }}
-    >
-      ?
-    </p>
+    <s.StyledAttemptIcons>
+      <p className="hint-used-icon">?</p>
+    </s.StyledAttemptIcons>
   );
 };
 
 const FeedBack = (props) => {
   return (
-    <p style={{ fontWeight: 500, margin: "13px 0px 0 7px", fontSize: "small" }}>
-      {props.children}
-    </p>
+    <s.StyledAttemptIcons>
+      <p className="student-feedback">{props.children}</p>
+    </s.StyledAttemptIcons>
   );
 };
 
@@ -89,68 +83,67 @@ export const AttemptIcons = ({ attemptString }) => {
 
   const attemptChars = attemptString.split("");
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        marginLeft: ".5em",
-        marginRight: "2em",
-      }}
-    >
-      {attemptChars.map((char) => setIcon(char))}
-    </div>
+    <s.StyledAttemptIcons>
+      <div className="used-attempt-icon">
+        {attemptChars.map((char) => setIcon(char))}
+      </div>
+    </s.StyledAttemptIcons>
   );
 };
 
 export const IconExplanation = () => {
   return (
-    <div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <WrongAttempt />
-        <p style={{ marginLeft: "1em" }}>
-          {strings.incorrectAttemptIconExplanation}
-        </p>
+    <s.StyledAttemptIcons>
+      <div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <WrongAttempt />
+          <p style={{ marginLeft: "1em" }}>
+            {strings.incorrectAttemptIconExplanation}
+          </p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <CorrectAttempt />
+          <p style={{ marginLeft: ".5em" }}>
+            {strings.correctExerciseIconExplanation}
+          </p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <HintUsed />
+          <p style={{ marginLeft: ".5em" }}>
+            {strings.hintInExerciseIconExplanation}
+          </p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <SolutionShown />
+          <p style={{ marginLeft: ".5em" }}>
+            {strings.askedForSolutionInExercise}
+          </p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <p style={{ fontWeight: 500, marginRight: ".6em" }}>
+            {strings.studentExerciseFeedback}
+          </p>
+          <p> {strings.exerciseFeedbackFromStudent}</p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <p style={{ marginRight: ".4em", fontWeight: 500 }}>
+            {strings.pickTheWordOrMatchThreePairs}
+          </p>
+          <p> {strings.typeOfExerciseIconExplanation}</p>
+        </div>
       </div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <CorrectAttempt />
-        <p style={{ marginLeft: ".5em" }}>
-          {strings.correctExerciseIconExplanation}
-        </p>
-      </div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <HintUsed />
-        <p style={{ marginLeft: ".5em" }}>
-          {strings.hintInExerciseIconExplanation}
-        </p>
-      </div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <SolutionShown />
-        <p style={{ marginLeft: ".5em" }}>
-          {strings.askedForSolutionInExercise}
-        </p>
-      </div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <p style={{ fontWeight: 500, marginRight: ".6em" }}>
-          {strings.studentExerciseFeedback}
-        </p>
-        <p> {strings.exerciseFeedbackFromStudent}</p>
-      </div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <p style={{ marginRight: ".4em", fontWeight: 500 }}>
-          {strings.pickTheWordOrMatchThreePairs}
-        </p>
-        <p> {strings.typeOfExerciseIconExplanation}</p>
-      </div>
-    </div>
+    </s.StyledAttemptIcons>
   );
 };
 
 export const StarExplanation = () => {
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <p style={{ marginRight: ".4em", fontWeight: 500 }}>
-        {strings.starExplanation}
-      </p>
-    </div>
+    <s.StyledAttemptIcons>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <p style={{ marginRight: ".4em", fontWeight: 500 }}>
+          {strings.starExplanation}
+        </p>
+      </div>
+    </s.StyledAttemptIcons>
   );
 };
