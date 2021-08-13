@@ -8,7 +8,7 @@ import LocalStorage from "../assorted/LocalStorage";
 
 export default function SignIn({ api, notifySuccessfulSignIn }) {
   // TODO: Fix this bug in a different way. Requires understanding why strings._language changes to "da" without it being asked to, whenever this component renders. Perhaps it imports an un-updated version of strings?
-  strings.setLanguage(LocalStorage.getUiLanguage().code)
+  strings.setLanguage(LocalStorage.getUiLanguage().code);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,13 +24,10 @@ export default function SignIn({ api, notifySuccessfulSignIn }) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
-        api.getEMSTeacherDashboard((isDeployed) => {
-          LocalStorage.setEMSTeacherDashboard(isDeployed);
-          notifySuccessfulSignIn(userInfo);
-          userInfo.is_teacher && LocalStorage.isEMSTeacherDashboard()
-            ? history.push("/teacher/classes")
-            : history.push("/articles");
-        });
+        notifySuccessfulSignIn(userInfo);
+        userInfo.is_teacher
+          ? history.push("/teacher/classes")
+          : history.push("/articles");
       });
     });
   }

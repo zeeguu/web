@@ -1,19 +1,22 @@
+import React from "react";
 import * as s from "./TutorialItemCard.sc";
-import strings from "../i18n/definitions";
+import LoadingAnimation from "../components/LoadingAnimation";
 
-function TutorialItemCard(props) {
-  return (
-    <>
-      <s.StyledTutorialItemCard>
-        <div className="vertical-line-border-box">
-          <p className="tutorialTitle">{props.headline}</p>
-        </div>
-        <div className="placeholder">
-          <p>{strings.tutorialComingSoon}</p>
-        </div>
-      </s.StyledTutorialItemCard>
-    </>
-  );
-}
+//source: https://dev.to/bravemaster619/simplest-way-to-embed-a-youtube-video-in-your-react-app-3bk2
+
+const TutorialItemCard = ({ embedId }) => (
+  <s.StyledTutorialItemCard>
+    <div className="video-responsive">
+      <LoadingAnimation />
+      <iframe
+        src={`https://www.youtube.com/embed/${embedId}`}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        title="Tutorial video"
+      />
+    </div>
+  </s.StyledTutorialItemCard>
+);
 
 export default TutorialItemCard;

@@ -1,17 +1,13 @@
 import { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-
 import UiLanguageSelector from "../components/UiLanguageSelector";
-
 import { UserContext } from "../UserContext";
 import { setTitle } from "../assorted/setTitle";
 import LocalStorage from "../assorted/LocalStorage";
 import LoadingAnimation from "../components/LoadingAnimation";
 import * as s from "../components/FormPage.sc";
 import * as sc from "../components/TopTabs.sc";
-
 import uiLanguages from "../assorted/uiLanguages";
-
 import strings from "../i18n/definitions";
 import { Error } from "../teacher/Error";
 
@@ -32,7 +28,7 @@ export default function Settings({ api, setUser }) {
   useEffect(() => {
     const language = LocalStorage.getUiLanguage();
     setUiLanguage(language);
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, []);
 
   function onSysChange(lang) {
@@ -53,7 +49,7 @@ export default function Settings({ api, setUser }) {
         );
       }
     });
-    setTitle("Settings");
+    setTitle(strings.settings);
   }, [user.session, api]);
 
   const studentIsInCohort = currentCohort !== "";

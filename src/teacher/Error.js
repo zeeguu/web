@@ -1,5 +1,10 @@
-import React from 'react'
+import React from "react";
+import * as s from "./Error.sc";
 
 export const Error = ({ message }) => {
-  return <p style={{ color: 'red', width: '100%' }}>{message}</p>
-}
+  return (
+    <s.StyledError>
+      <p className="error-message-name">{message}</p>
+    </s.StyledError>
+  );
+};

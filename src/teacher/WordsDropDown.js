@@ -38,7 +38,7 @@ const WordsDropDown = ({ api, card }) => {
       >
         <h3 style={{ color: "#5492b3" }}>{setHeadline()}</h3>
         {card === "practised" && (
-          <StyledTooltip label={IconExplanation}>
+          <StyledTooltip label={IconExplanation()}>
             <InfoOutlinedIcon style={{ color: "#5492b3", fontSize: "45px" }} />
           </StyledTooltip>
         )}

@@ -3,6 +3,7 @@ import strings from "../i18n/definitions";
 import { useHistory } from "react-router";
 import { LabeledTextField } from "./LabeledInputFields";
 import { StyledDialog } from "./StyledDialog.sc";
+import * as s from "./AddURLDialog.sc";
 import { PopupButtonWrapper, StyledButton } from "./TeacherButtons.sc";
 import { Error } from "../teacher/Error";
 
@@ -54,7 +55,9 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
       onDismiss={() => setShowAddURLDialog(false)}
       max_width="525px"
     >
-      <h1 style={{ textAlign: "center" }}>{strings.addTextFromWebpage}</h1>
+      <s.StyledURLDialog>
+        <h1 className="add-text-headline">{strings.addTextFromWebpage}</h1>
+      </s.StyledURLDialog>
       <LabeledTextField
         value={url}
         onChange={handleChange}
