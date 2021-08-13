@@ -102,41 +102,55 @@ export const AttemptIcons = ({ attemptString }) => {
   );
 };
 
-export const IconExplanation = (
-  <div>
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <WrongAttempt />
-      <p style={{ marginLeft: "1em" }}>
-        {strings.incorrectAttemptIconExplanation}
-      </p>
+export const IconExplanation = () => {
+  return (
+    <div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <WrongAttempt />
+        <p style={{ marginLeft: "1em" }}>
+          {strings.incorrectAttemptIconExplanation}
+        </p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <CorrectAttempt />
+        <p style={{ marginLeft: ".5em" }}>
+          {strings.correctExerciseIconExplanation}
+        </p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <HintUsed />
+        <p style={{ marginLeft: ".5em" }}>
+          {strings.hintInExerciseIconExplanation}
+        </p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <SolutionShown />
+        <p style={{ marginLeft: ".5em" }}>
+          {strings.askedForSolutionInExercise}
+        </p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <p style={{ fontWeight: 500, marginRight: ".6em" }}>
+          {strings.studentExerciseFeedback}
+        </p>
+        <p> {strings.exerciseFeedbackFromStudent}</p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <p style={{ marginRight: ".4em", fontWeight: 500 }}>
+          {strings.pickTheWordOrMatchThreePairs}
+        </p>
+        <p> {strings.typeOfExerciseIconExplanation}</p>
+      </div>
     </div>
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <CorrectAttempt />
-      <p style={{ marginLeft: ".5em" }}>
-        {strings.correctExerciseIconExplanation}
-      </p>
-    </div>
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <HintUsed />
-      <p style={{ marginLeft: ".5em" }}>
-        {strings.hintInExerciseIconExplanation}
-      </p>
-    </div>
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <SolutionShown />
-      <p style={{ marginLeft: ".5em" }}>{strings.askedForSolutionInExercise}</p>
-    </div>
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <p style={{ fontWeight: 500, marginRight: ".6em" }}>
-        {strings.studentExerciseFeedback}
-      </p>
-      <p> {strings.exerciseFeedbackFromStudent}</p>
-    </div>
+  );
+};
+
+export const StarExplanation = () => {
+  return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       <p style={{ marginRight: ".4em", fontWeight: 500 }}>
-        {strings.pickTheWordOrMatchThreePairs}
+        {strings.starExplanation}
       </p>
-      <p> {strings.typeOfExerciseIconExplanation}</p>
     </div>
-  </div>
-);
+  );
+};

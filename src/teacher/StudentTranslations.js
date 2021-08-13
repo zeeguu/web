@@ -1,4 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
+import { StyledTooltip } from "./StyledTooltip.sc";
+import { StarExplanation } from "./AttemptIcons";
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import strings from "../i18n/definitions";
 
 const StudentTranslations = ({ article }) => {
@@ -59,7 +62,18 @@ const StudentTranslations = ({ article }) => {
 
   return (
     <Fragment>
-      <h4 className="panel-headline">{strings.translatedWordsInSentence}</h4>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <h4 className="panel-headline">{strings.translatedWordsInSentence}</h4>
+        <StyledTooltip label={StarExplanation()}>
+          <InfoOutlinedIcon style={{ color: "#5492b3", fontSize: "45px" }} />
+        </StyledTooltip>
+      </div>
       {translations &&
         translations.map((translation) => (
           <DivideSentence

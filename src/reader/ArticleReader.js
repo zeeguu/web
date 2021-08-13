@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
-import LocalStorage from "../assorted/LocalStorage";
+import { RoutingContext } from "../contexts/RoutingContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
 import BookmarkButton from "./BookmarkButton";
@@ -27,6 +27,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   teacherArticleID
     ? (articleID = teacherArticleID)
     : (articleID = query.get("id"));
+  const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
@@ -130,10 +131,15 @@ export default function ArticleReader({ api, teacherArticleID }) {
     });
   };
 
+  const handleSaveCopyToShare = () => {
+    setReturnPath("/teacher/texts/AddTextOptions");
+    saveArticleToOwnTexts();
+  };
+
   return (
     <s.ArticleReader>
       <PopupButtonWrapper>
-        {user.is_teacher && LocalStorage.isEMSTeacherDashboard() && (
+        {user.is_teacher && (
           <div>
             {teacherArticleID && (
               <Link to={`/teacher/texts/editText/${articleID}`}>
@@ -144,7 +150,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
             )}
 
             {!teacherArticleID && (
-              <StyledButton primary studentView onClick={saveArticleToOwnTexts}>
+              <StyledButton primary studentView onClick={handleSaveCopyToShare}>
                 {strings.saveCopyToShare}
               </StyledButton>
             )}

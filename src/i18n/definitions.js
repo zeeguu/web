@@ -32,7 +32,7 @@ let strings = new LocalizedStrings(
       joinClass: "Join Class",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
-      deleteFromMyClasses: "Delete from My Classes",
+      deleteFromMyClasses: "Delete From My Classes",
       tooEasy: "too easy",
 
       //LoadingAnimation
@@ -107,6 +107,7 @@ let strings = new LocalizedStrings(
       setNewPassword: "Set New Password",
 
       //LandingPage
+      landingPage: "Landing Page",
       projectDescription_UltraShort:
         "A research project aiming to personalize reading and vocabulary practice in foreign languages",
       betaTester: "Become a Betatester!",
@@ -184,6 +185,9 @@ let strings = new LocalizedStrings(
       titleTranslationHistory: "Translation History",
       starAWordMsg:
         "Star a word to ensure it appears in exercises. Delete to avoid it. Gray words don't appear unless starred.",
+
+      //FindArticles
+      findArticles: "Find Articles",
 
       //ArticleReader
       translateOnClick: "translate on click",
@@ -326,7 +330,7 @@ let strings = new LocalizedStrings(
       seeExercises: "See Exercises",
 
       //AddTextOptionTypes
-      articleFromZeeguuToClass: "Assign an article from Zeeguu to a class",
+      articleFromZeeguuToClass: "Find an article in Zeeguu",
       copyPasteArticleToClass: "Copy/paste content or type your own text",
       urlUploadToClass: "Use a URL-address",
 
@@ -369,6 +373,8 @@ let strings = new LocalizedStrings(
       badWord: "bad word",
       badExample: "bad example",
       dontShowAgain: "don't show again",
+      starExplanation:
+        "The asterix next to the word indicates that the student has exercised the word at least once.",
 
       //CohortForm
       editClass: "Edit Class",
@@ -401,7 +407,7 @@ let strings = new LocalizedStrings(
       wishToDeleteStudent: "Do you wish to remove",
       fromTheClass: "from the class?",
       howStudentsRejoinClass:
-        "Students can rejoin the class if you give them the invite code again.",
+        "Students can rejoin the class (in 'Settings') if you give them the invite code again.",
       remove: "Remove",
 
       //DeleteTextWarning
@@ -411,9 +417,19 @@ let strings = new LocalizedStrings(
 
       //EditText
       editText: "Edit Text",
-      viewAsStudent: "View as Student",
-      addToClass: "Add to Class",
       saveText: "Save Text",
+
+      //TooltipedButtons
+      viewAsStudent: "View as Student",
+      addToClass: "Share/Unshare",
+      saveTextBeforeViewAsStudent:
+        "The text must be saved before you can view it as a student.",
+      saveChangesBeforeViewAsStudent:
+        "The changes must be saved before you can view the text as a student.",
+      textMustBeSavedBeforeSharing:
+        "The text must be saved before you can share it with your classes.",
+      changesMustBeSavedBeforeSharing:
+        "The changes must be saved before you can share the text with your classes.",
 
       //EditTextInputFields
       defineLanguage: "Please, define the language of the text",
@@ -432,7 +448,7 @@ let strings = new LocalizedStrings(
       shareInviteCode:
         "Share this code with your students to invite them to the class: ",
       invitecodeInformation:
-        "Students will not appear in the class until they have signed up for Zeeguu and used the invite code.",
+        "Students will not appear in the class until they have signed up for Zeeguu and used the invite code (in their Settings) to join the class.",
       goToClass: "Go to Class",
 
       //LanguageSelector (both of them)
@@ -528,18 +544,19 @@ let strings = new LocalizedStrings(
       sixMonths: "6 months",
       oneYear: "1 year",
 
-      //TutorialItemCard
-      tutorialComingSoon: "This video tutorial is coming soon...",
-
       //Tutorials
-      howToAddAndEditClass: "How to add and edit a class...",
-      howToDeleteClass: "How to delete a class...",
-      howToAddStudent: "How to add students...",
-      howToDeleteStudents: "How to delete students...",
-      howToAddText: "How to add a text...",
-      howToEditAndDeleteText: "How to edit or delete a text...",
-      howToShareText: "How to share texts with your class/classes...",
-      howToExplainZeeguuData: "The data you can find in Zeeguu explained...",
+      howToAddAndEditClass: "How to add a class",
+      howToDeleteClass: "How to edit or delete a class",
+      howToAddStudent: "How to add students",
+      howToDeleteStudents: "How to delete students",
+      howToAddTextUrl: "How to add a text using a URL",
+      howToAddTextFromZeeguu: "How to add a text from Zeeguu",
+      howToAddTextCopyPaste:
+        "How to add a text by copy-pasting or writing text",
+      howToEditAndDeleteText: "How to edit or delete a text",
+      howToShareText: "How to share texts with your class/classes",
+      howToExplainZeeguuData: "The data you can find in Zeeguu explained",
+      howToUnderstandTextLevel: "How to understand the text level",
 
       //ViewMoreLessButton
       viewMoreBtn: "View more",
@@ -663,6 +680,7 @@ let strings = new LocalizedStrings(
       setNewPassword: "Gem nyt kodeord",
 
       //LandingPage
+      landingPage: "Forside",
       projectDescription_UltraShort:
         "Et forskningsprojekt på vej mod at tilpasse fremmedsprogslæsning og ordforrådstræning til den enkelte.",
       betaTester: "Bliv Betatester!",
@@ -740,6 +758,9 @@ let strings = new LocalizedStrings(
       titleTranslationHistory: "Oversættelseshistorik",
       starAWordMsg:
         "Stjernemarkér et ord for at være sikker på, at det indgår i øvelserne. Delete ordet for at undgå øvelser med det. Grå ord vises ikke, medmindre de er stjernemarkerede.",
+
+      //FindArticles
+      findArticles: "Find artikler",
 
       //ArticleReader
       translateOnClick: "klik og oversæt",
@@ -881,7 +902,7 @@ let strings = new LocalizedStrings(
       seeExercises: "Se øvelser",
 
       //AddTextOptionTypes
-      articleFromZeeguuToClass: "Tilføj en artikel fra Zeeguu til en klasse",
+      articleFromZeeguuToClass: "Find en artikel på Zeeguu",
       copyPasteArticleToClass: "Kopier/indsæt tekst, eller skriv din egen",
       urlUploadToClass: "Brug en URL-addresse",
 
@@ -924,6 +945,8 @@ let strings = new LocalizedStrings(
       badWord: "dårligt ord",
       badExample: "dårligt eksempel",
       dontShowAgain: "vis ikke igen",
+      starExplanation:
+        "Stjernen ved siden af ordet indikerer, at eleven har lavet mindst én øvelse med ordet.",
 
       //CohortForm
       editClass: "Rediger klasse",
@@ -956,7 +979,7 @@ let strings = new LocalizedStrings(
       wishToDeleteStudent: "Ønsker du at fjerne",
       fromTheClass: "fra klassen?",
       howStudentsRejoinClass:
-        "Elever kan tilføjes til klassen igen, ved at du giver dem invitationskoden.",
+        "Elever kan tilmelde sig til klassen igen (under 'Indstillinger'), hvis du giver dem invitationskoden.",
       remove: "Fjern",
 
       //DeleteTextWarning
@@ -966,9 +989,19 @@ let strings = new LocalizedStrings(
 
       //EditText
       editText: "Rediger",
-      viewAsStudent: "Se som elev",
-      addToClass: "Tilføj til klasse",
       saveText: "Gem tekst",
+
+      //TooltipedButtons
+      viewAsStudent: "Se som elev",
+      addToClass: "Deling",
+      saveTextBeforeViewAsStudent:
+        "Teksten skal gemmes, før du kan se den som elev.",
+      saveChangesBeforeViewAsStudent:
+        "Ændingerne skal gemmes, før du kan se teksten som elev.",
+      textMustBeSavedBeforeSharing:
+        "Teksten skal gemmes, før du kan dele den med dine klasser",
+      changesMustBeSavedBeforeSharing:
+        "Ændringerne skal gemmes, før du kan dele teksten med dine klasser",
 
       //EditTextInputFields
       defineLanguage: "Angiv venligst hvilket sprog teksten er på",
@@ -987,7 +1020,7 @@ let strings = new LocalizedStrings(
       shareInviteCode:
         "Del denne kode med dine elever for at invitere dem til klassen: ",
       invitecodeInformation:
-        "Eleverne vil ikke blive vist i klassen før de har oprettet sig i Zeeguu og brugt invitationskoden til at blive en del af klassen.",
+        "Eleverne vil ikke blive vist i klassen før de har oprettet sig i Zeeguu og brugt invitationskoden (under Indstillinger) til at blive en del af klassen.",
       goToClass: "Bliv ført til klassen",
 
       //LanguageSelector
@@ -1087,18 +1120,19 @@ let strings = new LocalizedStrings(
       sixMonths: "6 måneder",
       oneYear: "1 år",
 
-      //TutorialItemCard
-      tutorialComingSoon: "Denne video kommer snart...",
-
       //Tutorials
-      howToAddAndEditClass: "Sådan tilføjes og redigeres en klasse...",
-      howToDeleteClass: "Sådan slettes en klasse...",
-      howToAddStudent: "Sådan tilføjes elever...",
-      howToDeleteStudents: "Sådan slettes elever...",
-      howToAddText: "Sådan tilføjes en tekst...",
-      howToEditAndDeleteText: "Sådan redigeres eller slettes en tekst...",
-      howToShareText: "Sådan deler du tekster med din klasse / dine klasser...",
-      howToExplainZeeguuData: "De data, du kan finde i Zeeguu forklaret...",
+      howToAddAndEditClass: "Sådan tilføjes en klasse",
+      howToDeleteClass: "Sådan redigeres eller slettes en klasse",
+      howToAddStudent: "Sådan tilføjes elever",
+      howToDeleteStudents: "Sådan slettes elever",
+      howToAddTextUrl: "Sådan tilføjes en tekst ved hjælp af en URL",
+      howToAddTextFromZeeguu: "Sådan tilføjes en tekst fra Zeeguu",
+      howToAddTextCopyPaste:
+        "Sådan tilføjes en tekst ved enten at kopiere eller selv skrive tekst",
+      howToEditAndDeleteText: "Sådan redigeres eller slettes en tekst",
+      howToShareText: "Sådan deler du tekster med din klasse / dine klasser",
+      howToExplainZeeguuData: "De data, du kan finde i Zeeguu forklaret",
+      howToUnderstandTextLevel: "Sådan skal tekst niveau forstås",
 
       //ViewMoreLessButton
       viewMoreBtn: "Vis mere",

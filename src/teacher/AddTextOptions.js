@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import strings from "../i18n/definitions";
+import { setTitle } from "../assorted/setTitle";
 import * as s from "../components/ColumnWidth.sc";
 import * as sc from "../components/TopTabs.sc";
 import {
@@ -11,7 +12,7 @@ import AddURLDialog from "./AddURLDialog";
 
 export default function AddTextOptions({ api }) {
   const [showAddURLDialog, setShowAddURLDialog] = useState(false);
-
+  setTitle(strings.addTexts);
   return (
     <Fragment>
       <s.NarrowColumn>

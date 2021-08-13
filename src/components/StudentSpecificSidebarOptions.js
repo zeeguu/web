@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
-import LocalStorage from "../assorted/LocalStorage";
 
 export default function StudentSpecificSidebarOptions({
   resetSidebarToDefault,
   user,
-  setIsOnStudentSide,
   api,
 }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
-  const new_site = LocalStorage.isEMSTeacherDashboard();
   const [showActivityDashboard, setShowActivityDashboard] = useState(false);
 
   useEffect(() => {
@@ -45,21 +42,7 @@ export default function StudentSpecificSidebarOptions({
         </div>
       )}
 
-      {!new_site && is_teacher && (
-        // Old TD
-        <div className="navigationLink">
-          <Link
-            target="_blank"
-            to="/teacher-dashboard"
-            onClick={resetSidebarToDefault}
-          >
-            <small>{strings.teacherSite}</small>
-          </Link>
-        </div>
-      )}
-
-      {new_site && is_teacher && (
-        // New TD
+      {is_teacher && (
         <div className="navigationLink">
           <Link to="/teacher/classes" onClick={resetSidebarToDefault}>
             <small>{strings.teacherSite}</small>

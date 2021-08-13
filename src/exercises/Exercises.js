@@ -57,7 +57,7 @@ export default function Exercises({ api, articleID }) {
         });
       } else {
         api.getUserBookmarksToStudy(BOOKMARKS_TO_PRACTICE, (bookmarks) => {
-          initializeExercises(bookmarks, "Exercises");
+          initializeExercises(bookmarks, strings.exercises);
           console.dir(bookmarks);
         });
       }
