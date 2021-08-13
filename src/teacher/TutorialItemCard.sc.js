@@ -21,7 +21,7 @@ export const StyledTutorialItemCard = styled.div`
     width: 100%;
     position: absolute;
     margin-top: 0.5em;
-    padding: 0.05em 0.5em 0 1.5em;
+    padding: 0.05em 0.5em 0 1em;
     border-left: solid 3px ${darkBlue};
   }
 
