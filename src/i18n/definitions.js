@@ -296,11 +296,16 @@ let strings = new LocalizedStrings(
       otherFeedback: "Other feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
+      adjustTranslationFeedback1: "Translation of",
+      adjustTranslationFeedback2: "is now",
+      submitTranslation: "Provide an improved translation of",
+      currently: "currently",
 
       //FeedbackOptions
       bookmarkTooEasy: "Too Easy",
       bookmarkTooHard: "Too Hard",
       badTranslation: "Bad Translation",
+      adjustTranslation: "Adjust Translation",
       badContext: "Bad Context",
       other: "Other",
 
@@ -868,11 +873,16 @@ let strings = new LocalizedStrings(
       otherFeedback: "Anden feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sendt!",
+      adjustTranslationFeedback1: "Oversættelse af",
+      adjustTranslationFeedback2: "er nu",
+      submitTranslation: "Giv en forbedret oversættelse af",
+      currently: "for tiden",
 
       //FeedbackOptions
       bookmarkTooEasy: "For nemt",
       bookmarkTooHard: "For svært",
       badTranslation: "Dårlig oversættelse",
+      adjustTranslation: "Juster oversættelse",
       badContext: "Dårlig kontekst",
       other: "Andet",
 
