@@ -234,6 +234,18 @@ export default function Exercises({ api, articleID }) {
     api.uploadExerciseFeedback(reason, currentExerciseType, 0, id);
   }
 
+  function adjustCurrentTranslation(currentBookmark, newTranslation) {
+    api.contributeTranslation(
+      currentBookmark.from_lang,
+      currentBookmark.to_lang,
+      currentBookmark.from,
+      newTranslation,
+      currentBookmark.context,
+      currentBookmark.url,
+      currentBookmark.article_title
+    );
+  }
+
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
@@ -271,6 +283,7 @@ export default function Exercises({ api, articleID }) {
         feedbackFunction={stopShowingThisFeedback}
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
+        adjustCurrentTranslation={adjustCurrentTranslation}
       />
     </s.ExercisesColumn>
   );

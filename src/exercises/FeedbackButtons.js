@@ -14,6 +14,7 @@ export default function FeedbackButtons({
   feedbackFunction,
   currentExerciseType,
   currentBookmarksToStudy,
+  adjustCurrentTranslation,
 }) {
   const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
 
@@ -21,6 +22,7 @@ export default function FeedbackButtons({
     { name: strings.bookmarkTooEasy, value: "too_easy" },
     { name: strings.bookmarkTooHard, value: "too_hard" },
     { name: strings.badTranslation, value: "bad_translation" },
+    { name: strings.adjustTranslation, value: "adjust_translation" },
     { name: strings.other, value: "other" },
   ];
 
@@ -56,20 +58,56 @@ export default function FeedbackButtons({
     if (!selectedId) {
       alert(strings.selectWordsAlert);
     } else {
-      if (value !== "other") {
+      if (value !== "other" && value !== "adjust_translation") {
         feedbackFunction(value, selectedId);
         buttons.forEach((button) => {
-          if (button.value === value) setFeedback(button.name);
+          if (button.value === value)
+            setFeedback(
+              `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`
+            );
         });
         setOpenSnackbar(true);
         setShow(false);
         if (currentExerciseType === MATCH_EXERCISE_TYPE) {
           setSelectedId(null);
         }
-      } else {
+      } else if (value === "other") {
         setClassName("selected");
         setShowInput(true);
+      } else {
+        if (currentExerciseType === MATCH_EXERCISE_TYPE) {
+          let currentBookmark = currentBookmarksToStudy.filter(
+            (bookmark) => bookmark.id === selectedId
+          );
+          console.log(currentBookmark[0]);
+          adjustTranslationPrompt(currentBookmark[0]);
+        } else {
+          adjustTranslationPrompt(currentBookmarksToStudy[0]);
+        }
       }
+    }
+  }
+
+  function adjustTranslationPrompt(currentBookmark) {
+    let newTranslation = prompt(
+      strings.submitTranslation +
+        ": " +
+        currentBookmark.from +
+        "\n" +
+        "(" +
+        strings.currently +
+        ": " +
+        currentBookmark.to +
+        ")"
+    );
+    adjustCurrentTranslation(currentBookmark, newTranslation);
+    setFeedback(
+      `${strings.adjustTranslationFeedback1} "${currentBookmark.from}" ${strings.adjustTranslationFeedback2} "${newTranslation}"`
+    );
+    setOpenSnackbar(true);
+    setShow(false);
+    if (currentExerciseType === MATCH_EXERCISE_TYPE) {
+      setSelectedId(null);
     }
   }
 
@@ -95,7 +133,9 @@ export default function FeedbackButtons({
         .replace(re2, "")
         .replaceAll(" ", "_");
       feedbackFunction(newFeedback, selectedId);
-      setFeedback(input);
+      setFeedback(
+        `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`
+      );
       setInput("");
       setShowInput(false);
       setClassName("");
@@ -181,7 +221,7 @@ export default function FeedbackButtons({
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity="success">
-          {`${strings.sentFeedback1} "${feedback}" ${strings.sentFeedback2}`}
+          {feedback}
         </Alert>
       </Snackbar>
     </s.FeedbackHolder>
