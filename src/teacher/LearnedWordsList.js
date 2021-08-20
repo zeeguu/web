@@ -5,6 +5,7 @@ import LocalStorage from "../assorted/LocalStorage";
 import ExerciseType from "./ExerciseType";
 import { shortFormatedDate } from "./FormatedDate";
 import strings from "../i18n/definitions";
+import * as s from "./LearnedWordsList.sc";
 
 const LearnedWordsList = ({ api }) => {
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
@@ -32,61 +33,43 @@ const LearnedWordsList = ({ api }) => {
       return <ExerciseType source="FEEDBACK" />;
     } else {
       return (
-        <Fragment>
-          <ExerciseType source="LEARNED" />
-          <p style={{ color: "#808080" }}>
-            {shortFormatedDate(word.learned_time)}
-          </p>
-        </Fragment>
+        <s.StyledLearnedWordsList>
+          <Fragment>
+            <ExerciseType source="LEARNED" />
+            <p className="date-of-word-learned">
+              {shortFormatedDate(word.learned_time)}
+            </p>
+          </Fragment>
+        </s.StyledLearnedWordsList>
       );
     }
   };
 
   return (
-    <Fragment>
-      {learnedWords.length === 0 && (
-        <p style={{ fontSize: "medium" }}>
-          {strings.studentHasNotLearnedWords}
-        </p>
-      )}
-      {learnedWords.map((word) => (
-        <div key={uuid() + word}>
-          <div
-            style={{
-              borderLeft: "solid 3px #5492b3",
-              marginBottom: "38px",
-              minWidth: 270,
-              userSelect: "none",
-            }}
-          >
-            <p
-              style={{
-                color: "#44cdff",
-                marginBottom: "-15px",
-                marginTop: "0px",
-                marginLeft: "1em",
-              }}
-            >
-              {word.translation.toLowerCase()}
-            </p>
-            <p style={{ marginLeft: "1em", marginBottom: "-5px" }}>
-              <b>{word.word}</b>
-            </p>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginLeft: "1em",
-                fontSize: "small",
-                marginBottom: "-25px",
-              }}
-            >
-              {reason(word)}
+    <s.StyledLearnedWordsList>
+      <Fragment>
+        {learnedWords.length === 0 && (
+          <p className="no-learned-words-string">
+            {strings.studentHasNotLearnedWords}
+          </p>
+        )}
+        {learnedWords.map((word) => (
+          <div key={uuid() + word}>
+            <div className="learned-words-container">
+              <p className="learned-word-translation">
+                {word.translation.toLowerCase()}
+              </p>
+              <p className="learned-word-string">
+                <b>{word.word}</b>
+              </p>
+              <div className="learned-words-student-feedback-container">
+                {reason(word)}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </Fragment>
+        ))}
+      </Fragment>
+    </s.StyledLearnedWordsList>
   );
 };
 export default LearnedWordsList;
