@@ -95,38 +95,38 @@ export const IconExplanation = () => {
   return (
     <s.StyledAttemptIcons>
       <div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
+        <div className="icon-explained-row">
           <WrongAttempt />
-          <p style={{ marginLeft: "1em" }}>
+          <p className="wrong-attempt-string">
             {strings.incorrectAttemptIconExplanation}
           </p>
         </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
+        <div className="icon-explained-row">
           <CorrectAttempt />
-          <p style={{ marginLeft: ".5em" }}>
+          <p className="correct-attempt-string">
             {strings.correctExerciseIconExplanation}
           </p>
         </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
+        <div className="icon-explained-row">
           <HintUsed />
-          <p style={{ marginLeft: ".5em" }}>
+          <p className="hint-used-string">
             {strings.hintInExerciseIconExplanation}
           </p>
         </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
+        <div className="icon-explained-row">
           <SolutionShown />
-          <p style={{ marginLeft: ".5em" }}>
+          <p className="solution-shown-string">
             {strings.askedForSolutionInExercise}
           </p>
         </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <p style={{ fontWeight: 500, marginRight: ".6em" }}>
+        <div className="icon-explained-row">
+          <p className="student-feedback-string">
             {strings.studentExerciseFeedback}
           </p>
           <p> {strings.exerciseFeedbackFromStudent}</p>
         </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <p style={{ marginRight: ".4em", fontWeight: 500 }}>
+        <div className="icon-explained-row">
+          <p className="exercise-type-string">
             {strings.pickTheWordOrMatchThreePairs}
           </p>
           <p> {strings.typeOfExerciseIconExplanation}</p>
@@ -139,10 +139,8 @@ export const IconExplanation = () => {
 export const StarExplanation = () => {
   return (
     <s.StyledAttemptIcons>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <p style={{ marginRight: ".4em", fontWeight: 500 }}>
-          {strings.starExplanation}
-        </p>
+      <div className="icon-explained-row">
+        <p className="asterix-explanation-string">{strings.starExplanation}</p>
       </div>
     </s.StyledAttemptIcons>
   );

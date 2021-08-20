@@ -37,4 +37,40 @@ export const StyledAttemptIcons = styled.div`
     margin: 13px 0px 0 7px;
     font-size: small;
   }
+
+  .icon-explained-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .wrong-attempt-string {
+    margin-left: 1em;
+  }
+
+  .correct-attempt-string {
+    margin-left: 0.5em;
+  }
+
+  .hint-used-string {
+    margin-left: 0.5em;
+  }
+
+  .solution-shown-string {
+    margin-left: 0.5em;
+  }
+
+  .student-feedback-string {
+    font-weight: 500;
+    margin-right: 0.6em;
+  }
+
+  .exercise-type-string {
+    margin-right: 0.4em;
+    font-weight: 500;
+  }
+
+  .asterix-explanation-string {
+    margin-right: 0.4em;
+    font-weight: 500;
+  }
 `;
