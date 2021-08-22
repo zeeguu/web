@@ -37,12 +37,12 @@ export default function StudentInfoLine({
   }, [selectedTimePeriod]);
 
   const handleRemove = () => {
-    removeStudentFromCohort(student.id)
-    setShowDeleteStudentWarning(false);;
+    removeStudentFromCohort(student.id);
+    setShowDeleteStudentWarning(false);
   };
 
   if (activity === null) {
-    return <LoadingAnimation/>;
+    return <LoadingAnimation />;
   }
 
   return (
@@ -110,7 +110,7 @@ export default function StudentInfoLine({
                 )}
                 <StyledTooltip label={strings.difficultyExplanation}>
                   <div className="number-display">
-                    {activity.average_text_difficulty/10}
+                    {activity.average_text_difficulty / 10}
                   </div>
                 </StyledTooltip>
               </div>
@@ -134,7 +134,7 @@ export default function StudentInfoLine({
           isFirst={isFirst}
           icon
           deleteastudent
-          style={{ marginTop: "15px", marginLeft: "10px" }}
+          className="delete-student-button"
           onClick={() => setShowDeleteStudentWarning(true)}
         >
           <MdHighlightOff size={35} />

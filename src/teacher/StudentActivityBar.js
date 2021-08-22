@@ -63,7 +63,7 @@ const StudentActivityBar = ({ student, isFirst }) => {
               }}
             ></div>
           </div>
-          <p style={{ color: "black", fontSize: "x-small", marginTop: "30px" }}>
+          <p className="activtybar-hours-minutes">
             {readingTimeString} | {exerciseTimeString}
           </p>
         </div>
