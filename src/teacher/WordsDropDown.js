@@ -3,6 +3,7 @@ import LearnedWordsList from "./LearnedWordsList";
 import NonStudiedWordsList from "./NonStudiedWordsList";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import strings from "../i18n/definitions";
+import * as s from "./WordsDropDown.sc";
 import { StyledTooltip } from "./StyledTooltip.sc";
 import { IconExplanation } from "./AttemptIcons";
 
@@ -19,43 +20,23 @@ const WordsDropDown = ({ api, card }) => {
   };
 
   return (
-    <div
-      style={{
-        padding: 20,
-        boxShadow:
-          "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
-        borderRadius: "15px",
-        width: "90%",
-        margin: "auto",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <h3 style={{ color: "#5492b3" }}>{setHeadline()}</h3>
-        {card === "practised" && (
-          <StyledTooltip label={IconExplanation()}>
-            <InfoOutlinedIcon style={{ color: "#5492b3", fontSize: "45px" }} />
-          </StyledTooltip>
-        )}
+    <s.StyledWordsDropDown>
+      <div className="exercise-categories-drop-down">
+        <div className="exercise-categories-drop-down-headline-container">
+          <h3 className="exercise-drop-down-headlines">{setHeadline()}</h3>
+          {card === "practised" && (
+            <StyledTooltip label={IconExplanation()}>
+              <InfoOutlinedIcon className="information-icon" />
+            </StyledTooltip>
+          )}
+        </div>
+        <div className="exercise-drop-down-container">
+          {card === "practised" && <PractisedWordsList api={api} />}
+          {card === "learned" && <LearnedWordsList api={api} />}
+          {card === "non-studied" && <NonStudiedWordsList api={api} />}
+        </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          flexWrap: "wrap",
-        }}
-      >
-        {card === "practised" && <PractisedWordsList api={api} />}
-        {card === "learned" && <LearnedWordsList api={api} />}
-        {card === "non-studied" && <NonStudiedWordsList api={api} />}
-      </div>
-    </div>
+    </s.StyledWordsDropDown>
   );
 };
 export default WordsDropDown;
