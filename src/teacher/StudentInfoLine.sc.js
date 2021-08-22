@@ -73,6 +73,11 @@ export const StudentInfoLine = styled.div`
     justify-content: center;
   }
 
+  .delete-student-button {
+    margin-top: 15px;
+    margin-left: 10px;
+  }
+
   .number-display-header {
     display: flex;
     text-align: center;

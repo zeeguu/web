@@ -8,6 +8,7 @@ import { StyledButton } from "./TeacherButtons.sc";
 import WordsDropDown from "./WordsDropDown";
 import { convertTime } from "./FormatedTime";
 import strings from "../i18n/definitions";
+import * as s from "./StudentExercisesInsights.sc";
 
 export default function StudentExercisesInsights({ api }) {
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -60,45 +61,41 @@ export default function StudentExercisesInsights({ api }) {
   };
 
   return (
-    <Fragment>
-      <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          marginTop: "2em",
-          marginLeft: "1.5%",
-        }}
-      >
-        <StyledButton naked onClick={() => handleCardClick("practised")}>
-          <PractisedWordsCard
-            isOpen={isOpen === "practised"}
-            wordCount={practisedWordsCount}
-            correctness={
-              activity && Math.round(activity.correct_on_1st_try * 100) + "%"
-            }
-            time={exerciseTime}
-          />
-        </StyledButton>
-        <StyledButton naked onClick={() => handleCardClick("learned")}>
-          <WordCountCard
-            isOpen={isOpen === "learned"}
-            headline={strings.titleLearnedWords}
-            wordCount={activity ? activity.learned_words_count : ""}
-          />
-        </StyledButton>
-        <StyledButton naked onClick={() => handleCardClick("non-studied")}>
-          <WordCountCard
-            isOpen={isOpen === "non-studied"}
-            headline={strings.wordsNotStudiedInZeeguu}
-            wordCount={
-              activity ? activity.translated_but_not_practiced_words_count : ""
-            }
-          />
-        </StyledButton>
-      </div>
-      {isOpen !== "" && <WordsDropDown api={api} card={isOpen} />}
-    </Fragment>
+    <s.StyledStudentExercisesInsights>
+      <Fragment>
+        <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
+        <div className="exercise-insight-sections">
+          <StyledButton naked onClick={() => handleCardClick("practised")}>
+            <PractisedWordsCard
+              isOpen={isOpen === "practised"}
+              wordCount={practisedWordsCount}
+              correctness={
+                activity && Math.round(activity.correct_on_1st_try * 100) + "%"
+              }
+              time={exerciseTime}
+            />
+          </StyledButton>
+          <StyledButton naked onClick={() => handleCardClick("learned")}>
+            <WordCountCard
+              isOpen={isOpen === "learned"}
+              headline={strings.titleLearnedWords}
+              wordCount={activity ? activity.learned_words_count : ""}
+            />
+          </StyledButton>
+          <StyledButton naked onClick={() => handleCardClick("non-studied")}>
+            <WordCountCard
+              isOpen={isOpen === "non-studied"}
+              headline={strings.wordsNotStudiedInZeeguu}
+              wordCount={
+                activity
+                  ? activity.translated_but_not_practiced_words_count
+                  : ""
+              }
+            />
+          </StyledButton>
+        </div>
+        {isOpen !== "" && <WordsDropDown api={api} card={isOpen} />}
+      </Fragment>
+    </s.StyledStudentExercisesInsights>
   );
 }
