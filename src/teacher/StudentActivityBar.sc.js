@@ -23,9 +23,16 @@ export const StudentActivityBar = styled.div`
     border-radius: ${(props) => props.readingCorners};
     background-color: ${darkBlue};
   }
+
   .activity-bar#exercises {
     border-radius: ${(props) => props.exerciseCorners};
     background-color: ${lightOrange};
+  }
+
+  .activtybar-hours-minutes {
+    color: black;
+    font-size: x-small;
+    margin-top: 30px;
   }
 
   ${(props) =>
