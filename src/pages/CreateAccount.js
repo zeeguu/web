@@ -13,8 +13,7 @@ import * as s from "../components/FormPage.sc";
 import PrivacyNotice from "./PrivacyNotice";
 import * as EmailValidator from "email-validator";
 
-
-export default function CreateAccount({ api, notifySuccessfulSignIn }) {
+export default function CreateAccount({ api, signInAndRedirect }) {
   const [inviteCode, setInviteCode] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -71,8 +70,12 @@ export default function CreateAccount({ api, notifySuccessfulSignIn }) {
       password,
       userInfo,
       (session) => {
-        notifySuccessfulSignIn(userInfo);
-        history.push("/articles");
+        // if the created user is a teacher, we only know
+        // by asking the api; so we do that
+        api.isTeacher((teacher_status) => {
+          userInfo["is_teacher"] = teacher_status;
+          signInAndRedirect(userInfo, history);
+        });
       },
       (error) => {
         setErrorMessage(error);
