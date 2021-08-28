@@ -140,6 +140,7 @@ let strings = new LocalizedStrings(
       sep: "Sep",
       oct: "Oct",
       dec: "Dec",
+      mirceaKeynoteAtEASEAI:'Mircea gives a keynote about Zeeguu at the ',
       pernilleObtainsFundingPrefix:
         "Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
       pernilleObtainsFundingLinkTitle:
@@ -713,6 +714,7 @@ let strings = new LocalizedStrings(
       oct: "Okt",
       sep: "Sep",
       dec: "Dec",
+      mirceaKeynoteAtEASEAI:'Mircea giver en keynote om Zeeguu på ',
       pernilleObtainsFundingPrefix:
         "Pernille Hvalsoe modtager bevillinger fra Styrelsen for International Rekruttering og Integration til et ",
       pernilleObtainsFundingLinkTitle:
