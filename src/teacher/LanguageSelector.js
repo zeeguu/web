@@ -49,4 +49,5 @@ export const languageMap = {
   Italian: "it",
   Chinese: "zh-CN",
   Danish: "da",
+  Turkish: "tr",
 };
