@@ -50,4 +50,7 @@ export const languageMap = {
   Chinese: "zh-CN",
   Danish: "da",
   Turkish: "tr",
+  Arabic: "ar",
+  Somali: "so",
+  Kurdish: "ku",
 };

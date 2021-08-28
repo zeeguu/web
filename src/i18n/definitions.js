@@ -464,6 +464,9 @@ let strings = new LocalizedStrings(
       romanian: "Romanian",
       chinese: "Chinese",
       turkish: "Turkish",
+      arabic: "Arabic",
+      somali: "Somali",
+      kurdish: "Kurdish",
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -1037,6 +1040,9 @@ let strings = new LocalizedStrings(
       romanian: "Rumænsk",
       chinese: "Kinesisk",
       turkish: "Tyrkisk",
+      arabic: "Arabisk",
+      somali: "Somalisk",
+      kurdish: "Kurdisk",
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
