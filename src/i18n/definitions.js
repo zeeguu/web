@@ -140,12 +140,14 @@ let strings = new LocalizedStrings(
       sep: "Sep",
       oct: "Oct",
       dec: "Dec",
-      mirceaKeynoteAtEASEAI:'Mircea gives a keynote about Zeeguu at the ',
+      betaTesters200K:
+      "📈 The beta-testers of Zeeguu have collectively reached 200'000 translations in their foreign language readings ",
+      mirceaKeynoteAtEASEAI:'👨‍🏫 Mircea gives a keynote about Zeeguu at the ',
       pernilleObtainsFundingPrefix:
-        "Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
+        "👩‍🔬 Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
       pernilleObtainsFundingLinkTitle:
-        "project which uses Zeeguu to increase personalization",
-      pernilleObtainsFundingSuffix: " in the Danish classroom",
+        "project which uses Zeeguu to study how to increase personalization",
+      pernilleObtainsFundingSuffix: " in Danish language courses",
       procrastinationPaper:
         "Paper using Zeeguu to teach vocabulary in moments of online procrastination accepted at CHI 2021 ",
       rotterdamStarts:
@@ -714,6 +716,8 @@ let strings = new LocalizedStrings(
       oct: "Okt",
       sep: "Sep",
       dec: "Dec",
+      betaTesters200K:
+      "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
       mirceaKeynoteAtEASEAI:'Mircea giver en keynote om Zeeguu på ',
       pernilleObtainsFundingPrefix:
         "Pernille Hvalsoe modtager bevillinger fra Styrelsen for International Rekruttering og Integration til et ",
