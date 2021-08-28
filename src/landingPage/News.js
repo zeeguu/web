@@ -32,6 +32,17 @@ export default function News() {
         )
       }
 
+
+      {
+        item(
+          strings.jul,
+          <>
+          {strings.betaTesters200K }
+          </>
+        )
+      }
+
+
       {item(
         strings.feb,
         <>
