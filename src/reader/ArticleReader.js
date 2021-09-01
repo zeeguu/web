@@ -9,7 +9,7 @@ import BookmarkButton from "./BookmarkButton";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import { PopupButtonWrapper, StyledButton } from "../teacher/TeacherButtons.sc";
+import { PopupButtonWrapper, StyledButton } from "../teacher/styledComponents/TeacherButtons.sc";
 import * as s from "./ArticleReader.sc";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
