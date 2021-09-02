@@ -3,7 +3,7 @@ import { PrivateRoute } from "./PrivateRoute";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import WordsRouter from "./words/_WordsRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
-import TeacherRouter from "./teacher/_TeacherRouter";
+import TeacherRouter from "./teacher/_routing/_TeacherRouter";
 import Settings from "./pages/Settings";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";

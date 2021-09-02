@@ -10,7 +10,7 @@ import * as sc from "../components/TopTabs.sc";
 import * as scs from "./Settings.sc";
 import uiLanguages from "../assorted/uiLanguages";
 import strings from "../i18n/definitions";
-import { Error } from "../teacher/Error";
+import { Error } from "../teacher/sharedComponents/Error";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
