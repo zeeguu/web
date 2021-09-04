@@ -11,6 +11,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
+import ImproveTranslationButtons from "./ImproveTranslationButtons";
 
 let BOOKMARKS_TO_PRACTICE = 10;
 
@@ -42,6 +43,7 @@ export default function Exercises({ api, articleID }) {
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
+  const [showWordSelector, setShowWordSelector] = useState(false);
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -235,6 +237,14 @@ export default function Exercises({ api, articleID }) {
   }
 
   function adjustCurrentTranslation(currentBookmark, newTranslation) {
+    console.log(
+      "Sending to the API. New translation: ",
+      newTranslation,
+      " instead of: ",
+      currentBookmark.to,
+      " for word: ",
+      currentBookmark.from
+    );
     api.contributeTranslation(
       currentBookmark.from_lang,
       currentBookmark.to_lang,
@@ -247,7 +257,13 @@ export default function Exercises({ api, articleID }) {
   }
 
   function toggleShow() {
+    if (showWordSelector) setShowWordSelector(false);
     setShowFeedbackButtons(!showFeedbackButtons);
+  }
+
+  function toggleShowImproveTranslation() {
+    if (showFeedbackButtons) setShowFeedbackButtons(false);
+    setShowWordSelector(!showWordSelector);
   }
 
   let wordSourceText = articleInfo ? (
@@ -275,12 +291,19 @@ export default function Exercises({ api, articleID }) {
           setIsCorrect={setIsCorrect}
           moveToNextExercise={moveToNextExercise}
           toggleShow={toggleShow}
+          toggleShowImproveTranslation={toggleShowImproveTranslation}
         />
       </s.ExForm>
       <FeedbackButtons
         show={showFeedbackButtons}
         setShow={setShowFeedbackButtons}
         feedbackFunction={stopShowingThisFeedback}
+        currentExerciseType={currentExerciseType}
+        currentBookmarksToStudy={currentBookmarksToStudy}
+      />
+      <ImproveTranslationButtons
+        show={showWordSelector}
+        setShow={setShowWordSelector}
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
         adjustCurrentTranslation={adjustCurrentTranslation}

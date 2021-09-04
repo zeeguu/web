@@ -21,6 +21,7 @@ export default function MultipleChoice({
   setIsCorrect,
   moveToNextExercise,
   toggleShow,
+  toggleShowImproveTranslation,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
@@ -149,6 +150,7 @@ export default function MultipleChoice({
       <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
+        toggleShowImproveTranslation={toggleShowImproveTranslation}
         isCorrect={isCorrect}
       />
     </s.Exercise>

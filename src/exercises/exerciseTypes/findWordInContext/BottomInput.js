@@ -6,15 +6,14 @@ import * as s from "../Exercise.sc";
 export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
-  handleShowSolution,
   bookmarksToStudy,
   notifyKeyPress,
-  toggleShow,
+  messageToAPI,
+  setMessageToAPI,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
-  const [messageToAPI, setMessageToAPI] = useState("");
 
   function handleHint() {
     setUsedHint(true);
@@ -30,11 +29,6 @@ export default function BottomInput({
     setCurrentInput(hint);
     let concatMessage = messageToAPI + "H";
     setMessageToAPI(concatMessage);
-  }
-
-  function showSolution() {
-    let concatMessage = messageToAPI + "S";
-    handleShowSolution(concatMessage);
   }
 
   function eliminateTypos(x) {
@@ -57,7 +51,8 @@ export default function BottomInput({
     );
     if (a === b) {
       let concatMessage = messageToAPI + "C";
-      handleCorrectAnswer(concatMessage);
+      setMessageToAPI(concatMessage);
+      handleCorrectAnswer();
     } else {
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
@@ -94,15 +89,6 @@ export default function BottomInput({
           {strings.check}
         </s.FeedbackButton>
       </s.BottomRow>
-      <s.CenteredRow>
-        <s.StyledLink to={"#"} onClick={showSolution}>
-          {strings.showSolution}
-        </s.StyledLink>
-        <s.StyledDiv>&nbsp;|&nbsp;</s.StyledDiv>
-        <s.StyledLink to={"#"} onClick={toggleShow}>
-          {strings.giveFeedback}
-        </s.StyledLink>
-      </s.CenteredRow>
     </>
   );
 }
