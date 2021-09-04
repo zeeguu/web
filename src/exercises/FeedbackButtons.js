@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import strings from "../i18n/definitions";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import Tooltip from "@material-ui/core/Tooltip";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -14,22 +15,33 @@ export default function FeedbackButtons({
   feedbackFunction,
   currentExerciseType,
   currentBookmarksToStudy,
-  adjustCurrentTranslation,
 }) {
   const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
+  const THUMBS_DOWN_VALUE = "dislike_bookmark";
 
   const buttons = [
-    { name: strings.bookmarkTooEasy, value: "too_easy" },
-    { name: strings.bookmarkTooHard, value: "too_hard" },
-    { name: strings.badTranslation, value: "bad_translation" },
-    { name: strings.adjustTranslation, value: "adjust_translation" },
-    { name: strings.other, value: "other" },
+    {
+      name: strings.bookmarkTooEasy,
+      value: "too_easy",
+      tooltip: strings.bookmarkTooEasyTooltip,
+    },
+    {
+      name: strings.bookmarkTooHard,
+      value: "too_hard",
+      tooltip: strings.bookmarkTooHardTooltip,
+    },
+    {
+      name: strings.other,
+      value: "other",
+      tooltip: strings.otherTooltip,
+    },
   ];
 
   if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
-    buttons.splice(3, 0, {
+    buttons.splice(2, 0, {
       name: strings.badContext,
       value: "not_a_good_context",
+      tooltip: strings.badContextTooltip,
     });
   }
 
@@ -39,6 +51,7 @@ export default function FeedbackButtons({
   const [selectedId, setSelectedId] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [userFeedback, setUserFeedback] = useState();
 
   useEffect(() => {
     if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
@@ -58,56 +71,28 @@ export default function FeedbackButtons({
     if (!selectedId) {
       alert(strings.selectWordsAlert);
     } else {
-      if (value !== "other" && value !== "adjust_translation") {
-        feedbackFunction(value, selectedId);
+      if (value !== "other") {
+        setUserFeedback(value);
         buttons.forEach((button) => {
-          if (button.value === value)
+          if (button.value === value) {
             setFeedback(
               `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`
             );
+          } else if (value === THUMBS_DOWN_VALUE) {
+            setFeedback(
+              `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`
+            );
+          }
         });
         setOpenSnackbar(true);
         setShow(false);
         if (currentExerciseType === MATCH_EXERCISE_TYPE) {
           setSelectedId(null);
         }
-      } else if (value === "other") {
+      } else {
         setClassName("selected");
         setShowInput(true);
-      } else {
-        if (currentExerciseType === MATCH_EXERCISE_TYPE) {
-          let currentBookmark = currentBookmarksToStudy.filter(
-            (bookmark) => bookmark.id === selectedId
-          );
-          console.log(currentBookmark[0]);
-          adjustTranslationPrompt(currentBookmark[0]);
-        } else {
-          adjustTranslationPrompt(currentBookmarksToStudy[0]);
-        }
       }
-    }
-  }
-
-  function adjustTranslationPrompt(currentBookmark) {
-    let newTranslation = prompt(
-      strings.submitTranslation +
-        ": " +
-        currentBookmark.from +
-        "\n" +
-        "(" +
-        strings.currently +
-        ": " +
-        currentBookmark.to +
-        ")"
-    );
-    adjustCurrentTranslation(currentBookmark, newTranslation);
-    setFeedback(
-      `${strings.adjustTranslationFeedback1} "${currentBookmark.from}" ${strings.adjustTranslationFeedback2} "${newTranslation}"`
-    );
-    setOpenSnackbar(true);
-    setShow(false);
-    if (currentExerciseType === MATCH_EXERCISE_TYPE) {
-      setSelectedId(null);
     }
   }
 
@@ -132,7 +117,7 @@ export default function FeedbackButtons({
         .replace(re1, "")
         .replace(re2, "")
         .replaceAll(" ", "_");
-      feedbackFunction(newFeedback, selectedId);
+      setUserFeedback(newFeedback);
       setFeedback(
         `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`
       );
@@ -148,11 +133,16 @@ export default function FeedbackButtons({
     }
   }
 
+  function stopSendingFeedback() {
+    setOpenSnackbar(false);
+  }
+
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
 
+    feedbackFunction(userFeedback, selectedId);
     setOpenSnackbar(false);
   };
 
@@ -178,22 +168,38 @@ export default function FeedbackButtons({
       )}
       {show && (
         <s.FeedbackButtonsHolder>
+          <Tooltip title={strings.dislikeTooltip}>
+            <s.FeedbackButton
+              key="dislike"
+              onClick={() => buttonClick(THUMBS_DOWN_VALUE)}
+            >
+              <img
+                src="/static/images/thumb_down_black_18dp.svg"
+                alt={strings.dislike}
+                width={18}
+              />
+            </s.FeedbackButton>
+          </Tooltip>
           {buttons.map((each) =>
             each.value === "other" ? (
-              <s.FeedbackButton
-                key={each.value}
-                className={className}
-                onClick={() => buttonClick(each.value)}
-              >
-                {each.name}
-              </s.FeedbackButton>
+              <Tooltip title={each.tooltip}>
+                <s.FeedbackButton
+                  key={each.value}
+                  className={className}
+                  onClick={() => buttonClick(each.value)}
+                >
+                  {each.name}
+                </s.FeedbackButton>
+              </Tooltip>
             ) : (
-              <s.FeedbackButton
-                key={each.value}
-                onClick={() => buttonClick(each.value)}
-              >
-                {each.name}
-              </s.FeedbackButton>
+              <Tooltip title={each.tooltip}>
+                <s.FeedbackButton
+                  key={each.value}
+                  onClick={() => buttonClick(each.value)}
+                >
+                  {each.name}
+                </s.FeedbackButton>
+              </Tooltip>
             )
           )}
         </s.FeedbackButtonsHolder>
@@ -221,7 +227,10 @@ export default function FeedbackButtons({
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity="success">
-          {feedback}
+          {feedback}{" "}
+          <s.UndoButton type="button" onClick={stopSendingFeedback}>
+            {strings.undo}
+          </s.UndoButton>
         </Alert>
       </Snackbar>
     </s.FeedbackHolder>
