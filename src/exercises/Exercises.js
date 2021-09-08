@@ -6,11 +6,11 @@ import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
 import Congratulations from "./Congratulations";
 import ProgressBar from "./ProgressBar";
 import * as s from "./Exercises.sc";
-import FeedbackButtons from "./FeedbackButtons";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
+import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 
 let BOOKMARKS_TO_PRACTICE = 10;
 
@@ -42,6 +42,8 @@ export default function Exercises({ api, articleID }) {
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
+  const [showNewTranslationPrompt, setShowNewTranslationPrompt] =
+    useState(false);
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -234,8 +236,34 @@ export default function Exercises({ api, articleID }) {
     api.uploadExerciseFeedback(reason, currentExerciseType, 0, id);
   }
 
+  function adjustCurrentTranslation(currentBookmark, newTranslation) {
+    console.log(
+      "Sending to the API. New translation: ",
+      newTranslation,
+      " instead of: ",
+      currentBookmark.to,
+      " for word: ",
+      currentBookmark.from
+    );
+    api.contributeTranslation(
+      currentBookmark.from_lang,
+      currentBookmark.to_lang,
+      currentBookmark.from,
+      newTranslation,
+      currentBookmark.context,
+      currentBookmark.url,
+      currentBookmark.article_title
+    );
+  }
+
   function toggleShow() {
+    if (showNewTranslationPrompt) setShowNewTranslationPrompt(false);
     setShowFeedbackButtons(!showFeedbackButtons);
+  }
+
+  function toggleShowImproveTranslation() {
+    if (showFeedbackButtons) setShowFeedbackButtons(false);
+    setShowNewTranslationPrompt(!showNewTranslationPrompt);
   }
 
   let wordSourceText = articleInfo ? (
@@ -263,14 +291,18 @@ export default function Exercises({ api, articleID }) {
           setIsCorrect={setIsCorrect}
           moveToNextExercise={moveToNextExercise}
           toggleShow={toggleShow}
+          toggleShowImproveTranslation={toggleShowImproveTranslation}
         />
       </s.ExForm>
-      <FeedbackButtons
-        show={showFeedbackButtons}
-        setShow={setShowFeedbackButtons}
-        feedbackFunction={stopShowingThisFeedback}
+      <FeedbackDisplay
+        showFeedbackButtons={showFeedbackButtons}
+        setShowFeedbackButtons={setShowFeedbackButtons}
+        showNewTranslationPrompt={showNewTranslationPrompt}
+        setShowNewTranslationPrompt={setShowNewTranslationPrompt}
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
+        adjustCurrentTranslation={adjustCurrentTranslation}
+        feedbackFunction={stopShowingThisFeedback}
       />
     </s.ExercisesColumn>
   );

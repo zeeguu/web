@@ -1,51 +1,53 @@
 import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect } from "react";
-import strings from "../i18n/definitions";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import strings from "../../i18n/definitions";
+import Tooltip from "@material-ui/core/Tooltip";
 
 export default function FeedbackButtons({
   show,
   setShow,
-  feedbackFunction,
   currentExerciseType,
   currentBookmarksToStudy,
+  selectedId,
+  setSelectedId,
+  setFeedback,
+  setOpenSnackbar,
+  setUserFeedback,
 }) {
   const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
+  const THUMBS_DOWN_VALUE = "dislike_bookmark";
 
   const buttons = [
-    { name: strings.bookmarkTooEasy, value: "too_easy" },
-    { name: strings.bookmarkTooHard, value: "too_hard" },
-    { name: strings.badTranslation, value: "bad_translation" },
-    { name: strings.other, value: "other" },
+    {
+      name: strings.bookmarkTooEasy,
+      value: "too_easy",
+      tooltip: strings.bookmarkTooEasyTooltip,
+    },
+    {
+      name: strings.bookmarkTooHard,
+      value: "too_hard",
+      tooltip: strings.bookmarkTooHardTooltip,
+    },
+    {
+      name: strings.other,
+      value: "other",
+      tooltip: strings.otherTooltip,
+    },
   ];
 
   if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
-    buttons.splice(3, 0, {
+    buttons.splice(2, 0, {
       name: strings.badContext,
       value: "not_a_good_context",
+      tooltip: strings.badContextTooltip,
     });
   }
 
   const [showInput, setShowInput] = useState(false);
   const [className, setClassName] = useState("");
   const [input, setInput] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
-  const [feedback, setFeedback] = useState("");
-  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
-    if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
-      setSelectedId(currentBookmarksToStudy[0].id);
-    } else {
-      setSelectedId(null);
-    }
-    console.log(selectedId);
-    setOpenSnackbar(false);
     setInput("");
     setShowInput(false);
     setClassName("");
@@ -57,9 +59,17 @@ export default function FeedbackButtons({
       alert(strings.selectWordsAlert);
     } else {
       if (value !== "other") {
-        feedbackFunction(value, selectedId);
+        setUserFeedback(value);
         buttons.forEach((button) => {
-          if (button.value === value) setFeedback(button.name);
+          if (button.value === value) {
+            setFeedback(
+              `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`
+            );
+          } else if (value === THUMBS_DOWN_VALUE) {
+            setFeedback(
+              `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`
+            );
+          }
         });
         setOpenSnackbar(true);
         setShow(false);
@@ -94,8 +104,10 @@ export default function FeedbackButtons({
         .replace(re1, "")
         .replace(re2, "")
         .replaceAll(" ", "_");
-      feedbackFunction(newFeedback, selectedId);
-      setFeedback(input);
+      setUserFeedback(newFeedback);
+      setFeedback(
+        `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`
+      );
       setInput("");
       setShowInput(false);
       setClassName("");
@@ -108,16 +120,8 @@ export default function FeedbackButtons({
     }
   }
 
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSnackbar(false);
-  };
-
   return (
-    <s.FeedbackHolder>
+    <>
       {show && currentExerciseType === MATCH_EXERCISE_TYPE && (
         <>
           <s.FeedbackInstruction>{strings.selectWords}</s.FeedbackInstruction>
@@ -138,22 +142,38 @@ export default function FeedbackButtons({
       )}
       {show && (
         <s.FeedbackButtonsHolder>
+          <Tooltip title={strings.dislikeTooltip}>
+            <s.FeedbackButton
+              key="dislike"
+              onClick={() => buttonClick(THUMBS_DOWN_VALUE)}
+            >
+              <img
+                src="/static/images/thumb_down_black_18dp.svg"
+                alt={strings.dislike}
+                width={18}
+              />
+            </s.FeedbackButton>
+          </Tooltip>
           {buttons.map((each) =>
             each.value === "other" ? (
-              <s.FeedbackButton
-                key={each.value}
-                className={className}
-                onClick={() => buttonClick(each.value)}
-              >
-                {each.name}
-              </s.FeedbackButton>
+              <Tooltip title={each.tooltip}>
+                <s.FeedbackButton
+                  key={each.value}
+                  className={className}
+                  onClick={() => buttonClick(each.value)}
+                >
+                  {each.name}
+                </s.FeedbackButton>
+              </Tooltip>
             ) : (
-              <s.FeedbackButton
-                key={each.value}
-                onClick={() => buttonClick(each.value)}
-              >
-                {each.name}
-              </s.FeedbackButton>
+              <Tooltip title={each.tooltip}>
+                <s.FeedbackButton
+                  key={each.value}
+                  onClick={() => buttonClick(each.value)}
+                >
+                  {each.name}
+                </s.FeedbackButton>
+              </Tooltip>
             )
           )}
         </s.FeedbackButtonsHolder>
@@ -171,19 +191,6 @@ export default function FeedbackButtons({
           <s.FeedbackSubmit type="submit" value="Submit" />
         </s.FeedbackForm>
       )}
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        open={openSnackbar}
-        autoHideDuration={4500}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose} severity="success">
-          {`${strings.sentFeedback1} "${feedback}" ${strings.sentFeedback2}`}
-        </Alert>
-      </Snackbar>
-    </s.FeedbackHolder>
+    </>
   );
 }

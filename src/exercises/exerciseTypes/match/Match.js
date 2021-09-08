@@ -19,6 +19,7 @@ export default function Match({
   setIsCorrect,
   moveToNextExercise,
   toggleShow,
+  toggleShowImproveTranslation,
 }) {
   const initialBookmarkState = [
     {
@@ -167,6 +168,7 @@ export default function Match({
       <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
+        toggleShowImproveTranslation={toggleShowImproveTranslation}
         isCorrect={isCorrect}
       />
     </s.Exercise>
