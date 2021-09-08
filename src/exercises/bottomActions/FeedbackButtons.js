@@ -1,20 +1,18 @@
 import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect } from "react";
-import strings from "../i18n/definitions";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
+import strings from "../../i18n/definitions";
 import Tooltip from "@material-ui/core/Tooltip";
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 export default function FeedbackButtons({
   show,
   setShow,
-  feedbackFunction,
   currentExerciseType,
   currentBookmarksToStudy,
+  selectedId,
+  setSelectedId,
+  setFeedback,
+  setOpenSnackbar,
+  setUserFeedback,
 }) {
   const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
   const THUMBS_DOWN_VALUE = "dislike_bookmark";
@@ -48,19 +46,8 @@ export default function FeedbackButtons({
   const [showInput, setShowInput] = useState(false);
   const [className, setClassName] = useState("");
   const [input, setInput] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
-  const [feedback, setFeedback] = useState("");
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [userFeedback, setUserFeedback] = useState();
 
   useEffect(() => {
-    if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
-      setSelectedId(currentBookmarksToStudy[0].id);
-    } else {
-      setSelectedId(null);
-    }
-    console.log(selectedId);
-    setOpenSnackbar(false);
     setInput("");
     setShowInput(false);
     setClassName("");
@@ -133,21 +120,8 @@ export default function FeedbackButtons({
     }
   }
 
-  function stopSendingFeedback() {
-    setOpenSnackbar(false);
-  }
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    feedbackFunction(userFeedback, selectedId);
-    setOpenSnackbar(false);
-  };
-
   return (
-    <s.FeedbackHolder>
+    <>
       {show && currentExerciseType === MATCH_EXERCISE_TYPE && (
         <>
           <s.FeedbackInstruction>{strings.selectWords}</s.FeedbackInstruction>
@@ -217,22 +191,6 @@ export default function FeedbackButtons({
           <s.FeedbackSubmit type="submit" value="Submit" />
         </s.FeedbackForm>
       )}
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        open={openSnackbar}
-        autoHideDuration={4500}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose} severity="success">
-          {feedback}{" "}
-          <s.UndoButton type="button" onClick={stopSendingFeedback}>
-            {strings.undo}
-          </s.UndoButton>
-        </Alert>
-      </Snackbar>
-    </s.FeedbackHolder>
+    </>
   );
 }
