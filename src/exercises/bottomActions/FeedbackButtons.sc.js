@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import StyledButton from "./exerciseTypes/Exercise.sc";
+import StyledButton from "../exerciseTypes/Exercise.sc";
 
 const FeedbackHolder = styled.div`
   display: flex;

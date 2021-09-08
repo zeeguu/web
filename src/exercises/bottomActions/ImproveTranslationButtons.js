@@ -1,38 +1,20 @@
 import * as s from "./FeedbackButtons.sc.js";
-import { useState, useEffect } from "react";
-import strings from "../i18n/definitions";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { useEffect } from "react";
+import strings from "../../i18n/definitions";
 
 export default function ImproveTranslationButtons({
   show,
   setShow,
   currentExerciseType,
   currentBookmarksToStudy,
-  adjustCurrentTranslation,
+  selectedId,
+  setSelectedId,
+  setFeedback,
+  setOpenSnackbar,
+  setCurrentBookmark,
+  setNewTranslation,
 }) {
   const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
-
-  const [selectedId, setSelectedId] = useState(null);
-  const [feedback, setFeedback] = useState("");
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [currentBookmark, setCurrentBookmark] = useState();
-  const [newTranslation, setNewTranslation] = useState();
-
-  useEffect(() => {
-    if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
-      setSelectedId(currentBookmarksToStudy[0].id);
-    } else {
-      setSelectedId(null);
-    }
-    console.log(selectedId);
-    setOpenSnackbar(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentExerciseType]);
 
   useEffect(() => {
     if (show && selectedId) {
@@ -73,25 +55,12 @@ export default function ImproveTranslationButtons({
     }
   }
 
-  function stopSendingModification() {
-    setOpenSnackbar(false);
-  }
-
   function handleSelection(event) {
     setSelectedId(Number(event.target.value));
   }
 
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    adjustCurrentTranslation(currentBookmark, newTranslation);
-    setOpenSnackbar(false);
-  };
-
   return (
-    <s.FeedbackHolder>
+    <>
       {show && currentExerciseType === MATCH_EXERCISE_TYPE && (
         <>
           <s.FeedbackInstruction>{strings.clickWords}</s.FeedbackInstruction>{" "}
@@ -111,22 +80,6 @@ export default function ImproveTranslationButtons({
           </s.FeedbackSelector>
         </>
       )}
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        open={openSnackbar}
-        autoHideDuration={4500}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose} severity="success">
-          {feedback}{" "}
-          <s.UndoButton type="button" onClick={stopSendingModification}>
-            UNDO
-          </s.UndoButton>
-        </Alert>
-      </Snackbar>
-    </s.FeedbackHolder>
+    </>
   );
 }
