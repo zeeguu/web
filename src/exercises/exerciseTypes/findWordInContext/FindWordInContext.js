@@ -5,6 +5,7 @@ import BottomInput from "./BottomInput";
 
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
+import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -17,9 +18,11 @@ export default function FindWordInContext({
   setIsCorrect,
   moveToNextExercise,
   toggleShow,
+  toggleShowImproveTranslation,
 }) {
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
+  const [messageToAPI, setMessageToAPI] = useState("");
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -39,27 +42,25 @@ export default function FindWordInContext({
     }
   }
 
-  function handleShowSolution(message) {
+  function handleShowSolution() {
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
     let duration = pressTime - initialTime;
+    let concatMessage = messageToAPI + "S";
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    handleAnswer(message, duration);
-  }
 
-  function handleAnswer(message, duration) {
     api.uploadExerciseFeedback(
-      message,
+      concatMessage,
       EXERCISE_TYPE,
       duration,
       bookmarksToStudy[0].id
     );
   }
 
-  function handleCorrectAnswer(message) {
+  function handleCorrectAnswer() {
     console.log(new Date() - initialTime);
     console.log("^^^^ time elapsed");
     console.log(firstTypeTime - initialTime);
@@ -68,7 +69,12 @@ export default function FindWordInContext({
 
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    handleAnswer(message, duration);
+    api.uploadExerciseFeedback(
+      messageToAPI,
+      EXERCISE_TYPE,
+      duration,
+      bookmarksToStudy[0].id
+    );
   }
 
   function handleIncorrectAnswer() {
@@ -104,10 +110,10 @@ export default function FindWordInContext({
         <BottomInput
           handleCorrectAnswer={handleCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
-          handleShowSolution={handleShowSolution}
           bookmarksToStudy={bookmarksToStudy}
           notifyKeyPress={inputKeyPress}
-          toggleShow={toggleShow}
+          messageToAPI={messageToAPI}
+          setMessageToAPI={setMessageToAPI}
         />
       )}
       {isCorrect && (
@@ -117,13 +123,12 @@ export default function FindWordInContext({
           moveToNextExercise={moveToNextExercise}
         />
       )}
-      {isCorrect && (
-        <s.CenteredRow>
-          <s.StyledLink to={"#"} onClick={toggleShow}>
-            {strings.giveFeedback}
-          </s.StyledLink>
-        </s.CenteredRow>
-      )}
+      <SolutionFeedbackLinks
+        handleShowSolution={handleShowSolution}
+        toggleShow={toggleShow}
+        toggleShowImproveTranslation={toggleShowImproveTranslation}
+        isCorrect={isCorrect}
+      />
     </s.Exercise>
   );
 }

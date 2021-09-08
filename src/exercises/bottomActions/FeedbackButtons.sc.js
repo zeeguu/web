@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import StyledButton from "./exerciseTypes/Exercise.sc";
+import StyledButton from "../exerciseTypes/Exercise.sc";
 
 const FeedbackHolder = styled.div`
   display: flex;
@@ -56,6 +56,11 @@ const FeedbackLabel = styled.label`
   display: flex;
   align-items: center;
   margin: 0.3em;
+  margin-left: 1.5em;
+  margin-right: 1.5em;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const FeedbackInstruction = styled.p`
@@ -95,6 +100,21 @@ const FeedbackSubmit = styled.input`
   outline: none;
 `;
 
+const HiddenRadioButton = styled.input`
+  position: absolute;
+  opacity: 0;
+  width: 0;
+`;
+
+const UndoButton = styled.button`
+  margin-left: 1em;
+  background-color: #4caf50;
+  border: none;
+  color: #b34f20;
+  font-weight: bold;
+  cursor: pointer;
+`;
+
 export {
   FeedbackHolder,
   FeedbackButtonsHolder,
@@ -105,4 +125,6 @@ export {
   FeedbackForm,
   FeedbackInput,
   FeedbackSubmit,
+  HiddenRadioButton,
+  UndoButton,
 };

@@ -296,21 +296,47 @@ let strings = new LocalizedStrings(
       selectWords: "Select the word(s):",
       selectWordsAlert:
         "Please select the word(s) for which you are providing feedback.",
+      clickWords:
+        "Click on the word(s) for which you are improving the translation:",
       otherFeedback: "Other feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
+      improveTranslationFeedback1: "Translation of",
+      improveTranslationFeedback2: "is now",
+      submitTranslation: "Provide an improved translation of",
+      currently: "currently",
+      undo: "UNDO",
 
       //FeedbackOptions
       bookmarkTooEasy: "Too Easy",
+      bookmarkTooEasyTooltip:
+        "I know this already! I don't need to practice it any longer.",
       bookmarkTooHard: "Too Hard",
-      badTranslation: "Bad Translation",
+      bookmarkTooHardTooltip:
+        "This is a little too difficult. I'd rather focus on simpler words for now.",
+      dislike: "Thumb Down",
+      dislikeTooltip: (
+        <div>
+          I'm not sure about this... And I'd rather not practice something that
+          feels wrong.
+          <br />
+          <br />
+          NB: You can improve the translation after finding/showing the
+          solution. If you wish to do so, do not click on this feedback button.
+        </div>
+      ),
       badContext: "Bad Context",
+      badContextTooltip:
+        "The context provided is bad. I can't figure out the solution with such bad context.",
       other: "Other",
+      otherTooltip:
+        "None of the other options apply. I would like to submit personalised feedback.",
 
       //ButtonInput
       check: "Check",
       hint: "Hint",
       showSolution: "Show solution",
+      improveTranslation: "Improve Translation",
 
       //ButtonFeedback
       speak: "Speak",
@@ -875,21 +901,47 @@ let strings = new LocalizedStrings(
       giveFeedbackAlert: "Indtast din feedback inden du sender.",
       selectWords: "Vælg ordet/ordene:",
       selectWordsAlert: "Vælg ordet/ordene, som du giver feedback til.",
+      clickWords: "Klik på ordet/ordene, du forbedrer oversættelsen til:",
       otherFeedback: "Anden feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sendt!",
+      improveTranslationFeedback1: "Oversættelse af",
+      improveTranslationFeedback2: "er nu",
+      submitTranslation: "Giv en forbedret oversættelse af",
+      currently: "for tiden",
+      undo: "FORTRYDE",
 
       //FeedbackOptions
       bookmarkTooEasy: "For nemt",
+      bookmarkTooEasyTooltip:
+        "Jeg ved det allerede! Jeg behøver ikke øve det mere.",
       bookmarkTooHard: "For svært",
-      badTranslation: "Dårlig oversættelse",
+      bookmarkTooHardTooltip:
+        "Dette er lidt for svært. Jeg vil hellere fokusere på enklere ord for nu.",
+      dislike: "Tommelfinger ned",
+      dislikeTooltip: (
+        <div>
+          Jeg er ikke sikker på dette... Og jeg vil hellere ikke øve noget, der
+          føles forkert.
+          <br />
+          <br />
+          OBS: Du kan forbedre oversættelsen efter at have fundet/vist
+          løsningen. Hvis du ønsker at gøre det, skal du ikke klikke på denne
+          feedback-knap.
+        </div>
+      ),
       badContext: "Dårlig kontekst",
+      badContextTooltip:
+        "Den givne kontekst er dårlig. Jeg kan ikke finde ud af løsningen med en så dårlig kontekst.",
       other: "Andet",
+      otherTooltip:
+        "Ingen af ​​de andre muligheder gælder. Jeg vil gerne indsende personlig feedback.",
 
       //ButtonInput
       check: "Tjek",
       hint: "Hint",
       showSolution: "Vis løsning",
+      improveTranslation: "Forbedre oversættelse",
 
       //ButtonFeedback
       speak: "Udtale",
