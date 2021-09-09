@@ -318,8 +318,12 @@ let strings = new LocalizedStrings(
           feels wrong.
           <br />
           <br />
-          NB: You can improve the translation after finding/showing the
-          solution. If you wish to do so, do not click on this feedback button.
+          <strong>NB:</strong> You can improve the translation after
+          finding/showing the solution. If you wish to do so,{" "}
+          <u>
+            <strong>do not</strong>
+          </u>{" "}
+          click on this feedback button.
         </div>
       ),
       badContext: "Bad Context",
@@ -915,9 +919,12 @@ let strings = new LocalizedStrings(
           føles forkert.
           <br />
           <br />
-          OBS: Du kan forbedre oversættelsen efter at have fundet/vist
-          løsningen. Hvis du ønsker at gøre det, skal du ikke klikke på denne
-          feedback-knap.
+          <strong>OBS:</strong> Du kan forbedre oversættelsen efter at have
+          fundet/vist løsningen. Hvis du ønsker at gøre det,{" "}
+          <u>
+            <strong>skal du ikke</strong>
+          </u>{" "}
+          klikke på denne feedback-knap.
         </div>
       ),
       badContext: "Dårlig kontekst",

@@ -142,7 +142,11 @@ export default function FeedbackButtons({
       )}
       {show && (
         <s.FeedbackButtonsHolder>
-          <Tooltip title={strings.dislikeTooltip}>
+          <Tooltip
+            title={
+              <p style={{ fontSize: "small" }}>{strings.dislikeTooltip}</p>
+            }
+          >
             <s.FeedbackButton
               key="dislike"
               onClick={() => buttonClick(THUMBS_DOWN_VALUE)}
@@ -156,7 +160,9 @@ export default function FeedbackButtons({
           </Tooltip>
           {buttons.map((each) =>
             each.value === "other" ? (
-              <Tooltip title={each.tooltip}>
+              <Tooltip
+                title={<p style={{ fontSize: "small" }}>{each.tooltip}</p>}
+              >
                 <s.FeedbackButton
                   key={each.value}
                   className={className}
@@ -166,7 +172,9 @@ export default function FeedbackButtons({
                 </s.FeedbackButton>
               </Tooltip>
             ) : (
-              <Tooltip title={each.tooltip}>
+              <Tooltip
+                title={<p style={{ fontSize: "small" }}>{each.tooltip}</p>}
+              >
                 <s.FeedbackButton
                   key={each.value}
                   onClick={() => buttonClick(each.value)}
