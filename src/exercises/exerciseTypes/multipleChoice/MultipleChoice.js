@@ -39,14 +39,7 @@ export default function MultipleChoice({
     });
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
-        new InteractiveText(
-          contextWithMissingWord(
-            bookmarksToStudy[0].context,
-            bookmarksToStudy[0].from
-          ),
-          articleInfo,
-          api
-        )
+        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
       );
       setArticleInfo(articleInfo);
     });
@@ -103,10 +96,6 @@ export default function MultipleChoice({
     );
   }
 
-  function contextWithMissingWord(context, missingWord) {
-    return context.replace(missingWord, "______");
-  }
-
   function consolidateChoiceOptions(similarWords) {
     let firstRandomInt = Math.floor(Math.random() * similarWords.length);
     let secondRandomInt;
@@ -148,6 +137,7 @@ export default function MultipleChoice({
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
+          bookmarkToStudy={bookmarksToStudy[0].from}
         />
       )}
 

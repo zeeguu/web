@@ -14,11 +14,9 @@ export default function TranslatableWord({
 
   function clickOnWord(word) {
     if (translating) {
-      if (word.word !== "______") {
-        interactiveText.translate(word, () => {
-          wordUpdated();
-        });
-      }
+      interactiveText.translate(word, () => {
+        wordUpdated();
+      });
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
         copyOfWords.push(word.word);
