@@ -6,6 +6,9 @@ import BottomInput from "./BottomInput";
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
+import LoadingAnimation from "../../../components/LoadingAnimation.js";
+import InteractiveText from "../../../reader/InteractiveText.js";
+import { TranslatableText } from "../../../reader/TranslatableText.js";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -23,17 +26,43 @@ export default function FindWordInContext({
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
   const [messageToAPI, setMessageToAPI] = useState("");
+  const [articleInfo, setArticleInfo] = useState();
+  const [interactiveText, setInteractiveText] = useState();
+  const [translatedWords, setTranslatedWords] = useState([]);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
+      );
+      setArticleInfo(articleInfo);
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    checkTranslations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [translatedWords]);
 
   function colorWordInContext(context, word) {
     return context.replace(
       word,
       `<span class='highlightedWord'>${word}</span>`
     );
+  }
+
+  function checkTranslations() {
+    let bookmarkWords = bookmarksToStudy[0].from.split(" ");
+    bookmarkWords.forEach((word) => {
+      if (translatedWords.includes(word)) {
+        let concatMessage = messageToAPI + "T";
+        setMessageToAPI(concatMessage);
+        notifyIncorrectAnswer(bookmarksToStudy[0]);
+      }
+    });
   }
 
   function inputKeyPress() {
@@ -82,6 +111,10 @@ export default function FindWordInContext({
     setFirstTypeTime();
   }
 
+  if (!articleInfo) {
+    return <LoadingAnimation />;
+  }
+
   return (
     <s.Exercise>
       {bookmarksToStudy[0].to.includes(" ") ? (
@@ -93,18 +126,26 @@ export default function FindWordInContext({
       )}
 
       <h1>{bookmarksToStudy[0].to}</h1>
-      <div className="contextExample">
-        <div
-          dangerouslySetInnerHTML={{
-            __html: isCorrect
-              ? colorWordInContext(
-                  bookmarksToStudy[0].context,
-                  bookmarksToStudy[0].from
-                )
-              : bookmarksToStudy[0].context,
-          }}
+      {isCorrect ? (
+        <div className="contextExample">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: colorWordInContext(
+                bookmarksToStudy[0].context,
+                bookmarksToStudy[0].from
+              ),
+            }}
+          />
+        </div>
+      ) : (
+        <TranslatableText
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          translatedWords={translatedWords}
+          setTranslatedWords={setTranslatedWords}
         />
-      </div>
+      )}
 
       {!isCorrect && (
         <BottomInput

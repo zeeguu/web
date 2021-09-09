@@ -6,6 +6,8 @@ export function TranslatableText({
   interactiveText,
   translating,
   pronouncing,
+  translatedWords,
+  setTranslatedWords,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
 
@@ -24,6 +26,8 @@ export function TranslatableText({
               wordUpdated={wordUpdated}
               translating={translating}
               pronouncing={pronouncing}
+              translatedWords={translatedWords}
+              setTranslatedWords={setTranslatedWords}
             />
           ))}
         </div>
