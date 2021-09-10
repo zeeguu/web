@@ -3,6 +3,8 @@ import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
+import InteractiveText from "../../../reader/InteractiveText.js";
+import { TranslatableText } from "../../../reader/TranslatableText.js";
 
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
@@ -27,11 +29,19 @@ export default function MultipleChoice({
   const [initialTime] = useState(new Date());
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
+  const [articleInfo, setArticleInfo] = useState();
+  const [interactiveText, setInteractiveText] = useState();
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
       consolidateChoiceOptions(words);
+    });
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
+      );
+      setArticleInfo(articleInfo);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -86,10 +96,6 @@ export default function MultipleChoice({
     );
   }
 
-  function contextWithMissingWord(context, missingWord) {
-    return context.replace(missingWord, "______");
-  }
-
   function consolidateChoiceOptions(similarWords) {
     let firstRandomInt = Math.floor(Math.random() * similarWords.length);
     let secondRandomInt;
@@ -105,27 +111,35 @@ export default function MultipleChoice({
     setButtonOptions(shuffledListOfOptions);
   }
 
+  if (!articleInfo) {
+    return <LoadingAnimation />;
+  }
+
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">
         {strings.chooseTheWordFittingContextHeadline}{" "}
       </div>
 
-      <div className="contextExample">
-        <div
-          dangerouslySetInnerHTML={{
-            __html: isCorrect
-              ? colorWordInContext(
-                  bookmarksToStudy[0].context,
-                  bookmarksToStudy[0].from
-                )
-              : contextWithMissingWord(
-                  bookmarksToStudy[0].context,
-                  bookmarksToStudy[0].from
-                ),
-          }}
+      {isCorrect ? (
+        <div className="contextExample">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: colorWordInContext(
+                bookmarksToStudy[0].context,
+                bookmarksToStudy[0].from
+              ),
+            }}
+          />
+        </div>
+      ) : (
+        <TranslatableText
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          bookmarkToStudy={bookmarksToStudy[0].from}
         />
-      </div>
+      )}
 
       {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
 
