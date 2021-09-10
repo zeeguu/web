@@ -109,6 +109,7 @@ function MatchInput({
                       bookmarkToStudy={option}
                       api={api}
                       styling={small}
+                      key={"L2_Speak_" + option.id}
                     />
                   </s.MatchSpeakButtonHolder>
                 </s.ButtonRow>
