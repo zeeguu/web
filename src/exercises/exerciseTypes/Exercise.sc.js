@@ -148,6 +148,7 @@ let OrangeButton = styled(StyledButton)`
 
   color: #ffffff;
   background-color: #ffbb54;
+  margin: 1em;
 `;
 
 let FeedbackButton = styled(OrangeButton)`
@@ -203,6 +204,7 @@ let AnimatedOrangeButton = styled(OrangeButton)`
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
+  margin: 1em;
 `;
 
 let AnimatedMatchButton = styled(MatchButton)`
