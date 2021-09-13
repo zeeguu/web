@@ -161,6 +161,25 @@ let FeedbackButton = styled(OrangeButton)`
   }
 `;
 
+let LeftFeedbackButton = styled(FeedbackButton)`
+  margin: 1em;
+
+  @media (max-width: 430px) {
+    order: 1;
+  }
+`;
+
+let RightFeedbackButton = styled(FeedbackButton)`
+  margin: 1em;
+
+  @media (max-width: 430px) {
+    order: 2;
+  }
+  @media (max-width: 250px) {
+    order: 3;
+  }
+`;
+
 const shake = keyframes`
 10%, 90% {
     transform: translate3d(-1px, 0, 0);
@@ -196,6 +215,13 @@ let AnimatedMatchButton = styled(MatchButton)`
 let Input = styled.input`
   height: 1.5em;
   text-align: center;
+
+  @media (max-width: 430px) {
+    order: 3;
+  }
+  @media (max-width: 250px) {
+    order: 2;
+  }
 `;
 
 let AnimatedInput = styled(Input)`
@@ -203,17 +229,26 @@ let AnimatedInput = styled(Input)`
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
+
+  @media (max-width: 430px) {
+    order: 3;
+  }
+  @media (max-width: 250px) {
+    order: 2;
+  }
 `;
 
 let BottomRow = styled.div`
   display: flex;
-  flex-direction: row;
   padding: 0.5em;
   align-items: center;
   justify-content: space-around;
   margin-top: 3em;
   margin-bottom: 3em;
-  flex-wrap: wrap;
+
+  @media (max-width: 430px) {
+    flex-flow: row wrap;
+  }
 `;
 
 let StyledLink = styled(Link)`
@@ -261,6 +296,8 @@ export {
   MatchSpeakButtonHolder,
   ButtonRow,
   CenteredRow,
+  LeftFeedbackButton,
+  RightFeedbackButton,
 };
 
 export default StyledButton;
