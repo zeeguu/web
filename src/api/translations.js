@@ -1,30 +1,13 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.prototype.getPossibleTranslations = function (
-  from_lang,
-  to_lang,
-  word,
-  context,
-  pageUrl
-) {
-  let url = this._appendSessionToUrl(
-    `get_possible_translations/${from_lang}/${to_lang}`
-  );
-
-  return fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `word=${word}&context=${context}&url=${pageUrl}`,
-  });
-};
-
 Zeeguu_API.prototype.getOneTranslation = function (
   from_lang,
   to_lang,
   word,
   context,
   articleUrl,
-  articleTitle
+  articleTitle,
+  articleID
 ) {
   let url = this._appendSessionToUrl(
     `get_one_translation/${from_lang}/${to_lang}`
@@ -33,33 +16,33 @@ Zeeguu_API.prototype.getOneTranslation = function (
   return fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `word=${word}&context=${context}&url=${articleUrl}&title=${articleTitle}`,
+    body: `word=${word}&context=${context}&url=${articleUrl}&title=${articleTitle}&articleID=${articleID}`,
   });
 };
 
-Zeeguu_API.prototype.getNextTranslations = function (
+Zeeguu_API.prototype.getMultipleTranslations = function (
   from_lang,
   to_lang,
   word,
   context,
   pageUrl,
   numberOfResults,
-  service,
-  currentTranslation,
+  serviceToExclude,
+  translationToExclude,
   articleID
 ) {
   let url = this._appendSessionToUrl(
-    `get_next_translations/${from_lang}/${to_lang}`
+    `get_multiple_translations/${from_lang}/${to_lang}`
   );
 
   let body = `word=${word}&context=${context}&url=${pageUrl}&numberOfResults=${numberOfResults}&articleID=${articleID}`;
 
-  if (service) {
-    body += `&service=${service}`;
+  if (serviceToExclude) {
+    body += `&service=${serviceToExclude}`;
   }
 
-  if (currentTranslation) {
-    body += `&currentTranslation=${currentTranslation}`;
+  if (translationToExclude) {
+    body += `&currentTranslation=${translationToExclude}`;
   }
 
   return fetch(url, {

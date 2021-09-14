@@ -1,9 +1,9 @@
 import styled from "styled-components";
+import { zeeguuOrange } from "../components/colors"
 
 const ArticlePreview = styled.div`
-  /* background-color: lightgoldenrodyellow; */
   margin-bottom: 1em;
-  border-left: solid #ffbb54;
+  border-left: solid ${zeeguuOrange};
   margin-top: 2em;
   padding-left: 0.8em;
 `;
@@ -17,19 +17,16 @@ const Title = styled.div`
   color: black;
   max-width: 24em;
   padding-right: 0.3em;
-
-  a {
-    text-decoration: none;
-  }
+  font-weight: 400;
 `;
 
 const Difficulty = styled.div`
-  padding: 0.3em;
-  width: 1.8em;
-  height: 1.8em;
+  padding: 0 0.55em;
+  width: 2.8em;
+  height: 3.8em;
   text-align: center;
   border-radius: 50%;
-  background: #f1f0f0;
+  background-color: #e5e5e5;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -39,7 +36,7 @@ const Difficulty = styled.div`
 `;
 
 const WordCount = styled(Difficulty)`
-  background: #f1f0f0;
+  background-color: #e5e5e5;
 `;
 
 let Summary = styled.div`
@@ -55,12 +52,10 @@ let SourceImage = styled.span`
     background-color: yellow;
     height: 1.5em;
   }
-  /* background-color: red; */
   margin-right: 2em;
 `;
 
 let PublishingTime = styled.span`
-  /* background-color: olivedrab; */
   margin-right: 2em;
   padding-bottom: 1em;
 `;

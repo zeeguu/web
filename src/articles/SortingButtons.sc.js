@@ -1,13 +1,22 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import * as b from "../components/allButtons.sc";
 
 const SortingButtons = styled.div`
   margin-bottom: 1em;
   margin-left: 1em;
-  /* background-color: lightgrey; //for testing */
-
   display: flex;
   justify-content: flex-end;
+  font-size: medium;
+  
+  .sort-by {
+    padding-top: 0.3em;
+  }
+
+  ${(props) =>
+    props.isOnTeacherSite &&
+    css`
+    margin-right: 13.7em;
+    `}
 
   .descending::after {
     content: "↑";
@@ -32,6 +41,15 @@ const SortButton = styled(b.RoundButton)`
   font-size: small;
   background-color: #efefef;
   color: #444444 !important;
+
+  ${(props) =>
+    props.isOnTeacherSite &&
+    css`
+    margin-left: 2vw;
+    font-size: medium;
+    
+    `
+  }
 `;
 
 export { SortingButtons, SortButton };

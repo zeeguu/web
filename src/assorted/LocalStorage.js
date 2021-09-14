@@ -1,10 +1,14 @@
+import uiLanguages from "./uiLanguages";
+
 const LocalStorage = {
   Keys: {
     Session: "sessionID",
     Name: "name",
     LearnedLanguage: "learned_language",
     NativeLanguage: "native_language",
+    UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
+    SelectedTimePeriod: "selected_time_period",
   },
 
   // Getting Info
@@ -21,8 +25,14 @@ const LocalStorage = {
       name: localStorage[this.Keys.Name],
       learned_language: localStorage[this.Keys.LearnedLanguage],
       native_language: localStorage[this.Keys.NativeLanguage],
-      is_teacher: localStorage[this.Keys.IsTeacher],
+      is_teacher: "true" === localStorage[this.Keys.IsTeacher],
     };
+  },
+
+  selectedTimePeriod: function () {
+    return localStorage[this.Keys.SelectedTimePeriod]
+      ? localStorage[this.Keys.SelectedTimePeriod]
+      : 30;
   },
 
   // Setting info
@@ -32,6 +42,20 @@ const LocalStorage = {
 
   setSession: function (session) {
     localStorage[this.Keys.Session] = session;
+  },
+
+  setUiLanguage: function (language) {
+    localStorage[this.Keys.UiLanguage] = language.code;
+  },
+
+  getUiLanguage: function () {
+    const uiLangCode = localStorage[this.Keys.UiLanguage];
+    if (uiLangCode === undefined) {
+      return undefined;
+    } else {
+      const uiLang = uiLanguages.find((item) => item.code === uiLangCode);
+      return uiLang;
+    }
   },
 
   setUserInfo: function (info) {
@@ -50,6 +74,10 @@ const LocalStorage = {
     } catch (e) {
       console.log(e);
     }
+  },
+
+  setSelectedTimePeriod: function (time) {
+    localStorage[this.Keys.SelectedTimePeriod] = time;
   },
 };
 

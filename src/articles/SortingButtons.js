@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router";
 import strings from "../i18n/definitions";
 import * as s from "./SortingButtons.sc";
 
@@ -9,6 +10,7 @@ export default function SortingButtons({
 }) {
   const [difficultySortState, setCurrentSort] = useState("");
   const [wordCountSortState, setwordCountSortState] = useState("");
+  const isOnTeacherSite = useLocation().pathname.includes("teacher");
 
   function sortArticleList(sorting) {
     setArticleList([...articleList].sort(sorting));
@@ -36,9 +38,10 @@ export default function SortingButtons({
   }
 
   return (
-    <s.SortingButtons>
-     {strings.sortBy}&nbsp;
+    <s.SortingButtons isOnTeacherSite={isOnTeacherSite}>
+      <div className="sort-by"> {strings.sortBy}&nbsp; </div>
       <s.SortButton
+        isOnTeacherSite={isOnTeacherSite}
         className={wordCountSortState}
         onClick={(e) =>
           changeDifficultySorting(
@@ -50,9 +53,10 @@ export default function SortingButtons({
           )
         }
       >
-        {strings.words}
+        {strings.lengthWithCapital}
       </s.SortButton>
       <s.SortButton
+        isOnTeacherSite={isOnTeacherSite}
         className={difficultySortState}
         onClick={(e) =>
           changeDifficultySorting(
@@ -64,7 +68,7 @@ export default function SortingButtons({
           )
         }
       >
-        {strings.difficulty}
+        {strings.levelWithCapital}
       </s.SortButton>
     </s.SortingButtons>
   );

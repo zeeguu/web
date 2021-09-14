@@ -7,6 +7,8 @@ export default function TranslatableWord({
   wordUpdated,
   translating,
   pronouncing,
+  translatedWords,
+  setTranslatedWords,
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
@@ -15,6 +17,11 @@ export default function TranslatableWord({
       interactiveText.translate(word, () => {
         wordUpdated();
       });
+      if (translatedWords) {
+        let copyOfWords = [...translatedWords];
+        copyOfWords.push(word.word);
+        setTranslatedWords(copyOfWords);
+      }
     }
     if (pronouncing) {
       interactiveText.pronounce(word);

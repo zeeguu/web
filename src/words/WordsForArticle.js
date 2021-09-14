@@ -5,11 +5,18 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import Word from "./Word";
 
 import { TopMessage } from "../components/TopMessage.sc";
-import { NarrowColumn, CenteredContent } from "../components/NarrowColumn.sc";
-import { OrangeButton, WhiteButton } from "../reader/ArticleReader.sc";
+import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
+import {
+  OrangeButton,
+  WhiteButton,
+  ContentOnRow,
+} from "../reader/ArticleReader.sc";
 import { setTitle } from "../assorted/setTitle";
+import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 
 export default function WordsForArticle({ api }) {
+  const small = "small";
+
   let { articleID } = useParams();
   const [words, setWords] = useState(null);
   const [articleInfo, setArticleInfo] = useState(null);
@@ -17,11 +24,15 @@ export default function WordsForArticle({ api }) {
   useEffect(() => {
     api.bookmarksForArticle(articleID, (bookmarks) => {
       setWords(bookmarks);
+      console.dir(bookmarks);
     });
     api.getArticleInfo(articleID, (data) => {
       setArticleInfo(data);
       setTitle('Words in "' + data.title + '"');
     });
+
+    api.logReaderActivity(api.WORDS_REVIEW, articleID);
+
     // eslint-disable-next-line
   }, []);
 
@@ -36,22 +47,46 @@ export default function WordsForArticle({ api }) {
   return (
     <NarrowColumn>
       <br />
-      <h1>Review Your Words</h1>
+      <h1>Review Translations for Your Exercises </h1>
 
-      <h4>Article: {articleInfo.title}</h4>
-      <TopMessage>
-        {words.length > 0
-          ? "To ensure that a word is included in exercises: star it. Consequently delete the words you don't want to have in exercises."
-          : "The words you translate in the article will appear here for review"}
+      <small>From "{articleInfo.title}"</small>
+      <br />
+      <br />
+      <br />
+      <TopMessage style={{ textAlign: "left" }}>
+        {words.length > 0 ? (
+          <>
+            * Delete a translation if you don't want it in exercises.
+            <br />
+            <br />
+            * Star a translations to make it have priority in exercises
+            <br />
+            <br />
+            * If a translation is grayed out, it means that Zeeguu does not
+            think it is appropriate for exercises; to overload this decision you
+            can star the translation
+            <br />
+          </>
+        ) : (
+          "The words you translate in the article will appear here for review"
+        )}
       </TopMessage>
 
       {words.map((each) => (
-        <Word
-          key={each.id}
-          bookmark={each}
-          notifyDelete={deleteBookmark}
-          api={api}
-        />
+        <ContentOnRow>
+          <Word
+            key={each.id}
+            bookmark={each}
+            notifyDelete={deleteBookmark}
+            api={api}
+          />
+          <SpeakButton
+            key={each.id}
+            bookmarkToStudy={each}
+            api={api}
+            styling={small}
+          />
+        </ContentOnRow>
       ))}
 
       <br />
@@ -63,7 +98,12 @@ export default function WordsForArticle({ api }) {
         </Link>
 
         {words.length > 0 && (
-          <Link to={`/exercises/forArticle/${articleID}`}>
+          <Link
+            to={`/exercises/forArticle/${articleID}`}
+            onClick={(e) =>
+              api.logReaderActivity(api.TO_EXERCISES_AFTER_REVIEW, articleID)
+            }
+          >
             <OrangeButton>To Exercises</OrangeButton>
           </Link>
         )}
