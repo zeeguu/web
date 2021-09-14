@@ -65,9 +65,9 @@ export default function BottomInput({
   return (
     <>
       <s.BottomRow>
-        <s.FeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
+        <s.LeftFeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
           {strings.hint}
-        </s.FeedbackButton>
+        </s.LeftFeedbackButton>
 
         <InputField
           type="text"
@@ -85,9 +85,9 @@ export default function BottomInput({
           autoFocus
         />
 
-        <s.FeedbackButton onClick={checkResult}>
+        <s.RightFeedbackButton onClick={checkResult}>
           {strings.check}
-        </s.FeedbackButton>
+        </s.RightFeedbackButton>
       </s.BottomRow>
     </>
   );
