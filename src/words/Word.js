@@ -51,6 +51,11 @@ export default function Word({
     return <></>;
   }
 
+  let grayed_out_if_not_scheduled_for_study = { color: "gray" };
+  if (bookmark.fit_for_study || bookmark.starred) {
+    grayed_out_if_not_scheduled_for_study = {};
+  }
+
   return (
     <>
       <s.Word key={bookmark.id}>
@@ -71,13 +76,17 @@ export default function Word({
         )}
 
         <s.WordPair>
-          <div className="from">{bookmark.from}</div>
+          <div className="from" style={grayed_out_if_not_scheduled_for_study}>
+            {bookmark.from}
+          </div>
 
           <s.Importance>
             <span className={"im" + importance}>{importanceBars}</span>
           </s.Importance>
 
-          <div className="to">{bookmark.to}</div>
+          <div className="to" style={grayed_out_if_not_scheduled_for_study}>
+            {bookmark.to}
+          </div>
         </s.WordPair>
       </s.Word>
       {children}

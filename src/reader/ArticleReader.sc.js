@@ -4,7 +4,11 @@ import { BigSquareButton } from "../components/allButtons.sc";
 
 import * as color from "../components/colors";
 
-import { NarrowColumn, CenteredContent } from "../components/NarrowColumn.sc";
+import {
+  NarrowColumn,
+  CenteredContent,
+  ContentOnRow,
+} from "../components/ColumnWidth.sc";
 
 let ArticleReader = styled.div`
   /* border: 1px solid lightgray; */
@@ -15,11 +19,8 @@ let ArticleReader = styled.div`
 
 let Toolbar = styled.div`
   /* border: 1px solid wheat; */
-  position: sticky;
   background-color: white;
-  right: 1em;
   height: 110px;
-  top: -10px;
 
   display: flexbox;
   flex-direction: row;
@@ -59,6 +60,7 @@ let Title = styled.div`
   font-size: x-large;
   font-weight: 800;
   margin-top: 0.5em;
+  line-height: 2em;
 `;
 
 let BookmarkButton = styled.div`
@@ -80,8 +82,12 @@ let BookmarkButton = styled.div`
 
 let MainText = styled.div`
   font-size: 1.3em;
-  line-height: 3em;
+  line-height: 2.3em;
   padding: 0.2em;
+
+  .textParagraph {
+    margin-bottom: 1em;
+  }
 `;
 
 let _BottomButton = styled(BigSquareButton)`
@@ -93,6 +99,10 @@ let _BottomButton = styled(BigSquareButton)`
 let WhiteButton = styled(_BottomButton)`
   background-color: white;
   color: orange !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   width: 8em;
   @media (min-wdith: 768px) {
@@ -163,4 +173,5 @@ export {
   CenteredContent,
   ExtraSpaceAtTheBottom,
   NarrowColumn,
+  ContentOnRow,
 };

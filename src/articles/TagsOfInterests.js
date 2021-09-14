@@ -87,7 +87,7 @@ export default function TagsOfInterests({
           input
           showCancel
           title={strings.addPersonalInterest}
-          placeHolder="interest"
+          placeHolder={strings.interest}
           onConfirm={onConfirm}
           onCancel={onCancel}
         ></SweetAlert>

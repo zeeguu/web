@@ -1,18 +1,17 @@
 import "./App.css";
 import React, { useState } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-
 import LandingPage from "./landingPage/LandingPage";
 import SignIn from "./pages/SignIn";
 import { UserContext } from "./UserContext";
-
+import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
 import Zeeguu_API from "./api/Zeeguu_API";
 import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 
-import strings from "./i18n/definitions";
+import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 function App() {
   let userDict = {};
@@ -28,13 +27,13 @@ function App() {
     _api.session = localStorage["sessionID"];
   }
 
+  useUILanguage();
+
   const [api] = useState(_api);
 
   const [user, setUser] = useState(userDict);
 
-  function handleSuccessfulSignIn(userInfo) {
-    strings.setLanguage(userInfo.native_language);
-
+  function handleSuccessfulSignIn(userInfo, history) {
     setUser({
       session: api.session,
       name: userInfo.name,
@@ -49,6 +48,10 @@ function App() {
     // could be cool to remove it from there and make that
     // one also use the localStorage
     document.cookie = `sessionID=${api.session};`;
+
+    userInfo.is_teacher
+      ? history.push("/teacher/classes")
+      : history.push("/articles");
   }
 
   function logout() {
@@ -62,42 +65,43 @@ function App() {
         .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
   }
+  //Setting up the routing context to be able to use the cancel-button in EditText correctly
+  const [returnPath, setReturnPath] = useState("");
 
   return (
     <BrowserRouter>
-      <UserContext.Provider value={{ ...user, logoutMethod: logout }}>
-        <Switch>
-          <Route path="/" exact component={LandingPage} />
+      <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
+        <UserContext.Provider value={{ ...user, logoutMethod: logout }}>
+          <Switch>
+            <Route path="/" exact component={LandingPage} />
 
-          {/* cf: https://ui.dev/react-router-v4-pass-props-to-components/ */}
-          <Route
-            path="/login"
-            render={() => (
-              <SignIn
-                api={api}
-                notifySuccessfulSignIn={handleSuccessfulSignIn}
-              />
-            )}
-          />
+            {/* cf: https://ui.dev/react-router-v4-pass-props-to-components/ */}
+            <Route
+              path="/login"
+              render={() => (
+                <SignIn api={api} signInAndRedirect={handleSuccessfulSignIn} />
+              )}
+            />
 
-          <Route
-            path="/create_account"
-            render={() => (
-              <CreateAccount
-                api={api}
-                notifySuccessfulSignIn={handleSuccessfulSignIn}
-              />
-            )}
-          />
+            <Route
+              path="/create_account"
+              render={() => (
+                <CreateAccount
+                  api={api}
+                  signInAndRedirect={handleSuccessfulSignIn}
+                />
+              )}
+            />
 
-          <Route
-            path="/reset_pass"
-            render={() => <ResetPassword api={api} />}
-          />
+            <Route
+              path="/reset_pass"
+              render={() => <ResetPassword api={api} />}
+            />
 
-          <LoggedInRouter api={api} user={user} setUser={setUser} />
-        </Switch>
-      </UserContext.Provider>
+            <LoggedInRouter api={api} user={user} setUser={setUser} />
+          </Switch>
+        </UserContext.Provider>
+      </RoutingContext.Provider>
     </BrowserRouter>
   );
 }

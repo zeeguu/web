@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-import { lightOrange } from "../components/colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
@@ -16,16 +15,14 @@ let mainPageContentCommon = css`
   top: 0;
   overflow-y: scroll;
   height: 100vh;
-  padding: 6px;
+  padding-bottom: 6px;
+  padding-left: 6px;
+  padding-right: 6px;
   overflow-x: hidden;
 `;
 
 const MainContentInitial = styled.div`
   /* Default (Minimized) on Mobile */
-
-  /* debugging */
-  /* background-color: lightcyan; */
-  /* border: 1px solid lightcoral; */
 
   /* margin-left: 1em;
   margin-top: 1em; */
@@ -43,7 +40,6 @@ const MainContentInitial = styled.div`
 
 const MainContentToggled = styled.div`
   ${mainPageContentCommon}
-  /* border: 1px solid lightcoral; */
 
   /* Toggled (Open) on Mobile  */
   left: 7em;
@@ -61,8 +57,7 @@ const sidebarCommon = css`
   position: fixed;
   top: 0;
   height: 100vh;
-  background-color: #ffbb54;
-  background-color: ${lightOrange};
+  background-color: ${(props) => props.light};
 `;
 
 const logoOpen = css`
@@ -91,7 +86,7 @@ const arrowPointsToRight = css`
     flex-direction: row-reverse;
 
     .toggleArrow {
-      color: orange;
+      color: ${(props) => props.dark};
       z-index: 100;
       transform: rotate(90deg) translate(20px, -0.5em);
     }
@@ -123,12 +118,16 @@ const sidebarMinimizedCommon = css`
 `;
 
 const navigationVisibleCommon = css`
+  .newLink {
+    color: #d82323;
+    font-size: small;
+    font-weight: bolder;
+  }
   .navigationLink {
     display: block;
     color: white;
-    /* font-size: xx-large; */
     margin-bottom: 0.4em;
-    background-color: #ffbb54;
+    background-color: ${(props) => props.dark};
 
     a {
       color: white;
@@ -147,8 +146,6 @@ const SideBarInitial = styled.div`
   /*  Arrow */
   ${arrowCommon}
   ${arrowPointsToRight}
-
-  
 
   //   Default for Desktop = Open
   @media (min-width: 768px) {

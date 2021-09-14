@@ -7,7 +7,7 @@ let TopMessage = styled.div`
   background-color: ${veryPaleOrange};
   border-radius: 0.9em;
   max-width: 80%;
-  margin-bottom: 0.5em;
+  margin-bottom: 1.5em;
   padding: 0.4em 0.6em;
 
   @media (min-width: 768px) {
