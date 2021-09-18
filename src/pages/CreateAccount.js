@@ -73,7 +73,7 @@ export default function CreateAccount({ api, signInAndRedirect }) {
         // if the created user is a teacher, we only know
         // by asking the api; so we do that
         api.isTeacher((teacher_status) => {
-          userInfo["is_teacher"] = teacher_status;
+          userInfo["is_teacher"] = teacher_status === "True";
           signInAndRedirect(userInfo, history);
         });
       },
