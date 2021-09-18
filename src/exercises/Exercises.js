@@ -12,7 +12,7 @@ import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 
-let BOOKMARKS_TO_PRACTICE = 10;
+const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 
 let BOOKMARKS_FOR_EXERCISE = [
   {
@@ -58,17 +58,19 @@ export default function Exercises({ api, articleID }) {
           });
         });
       } else {
-        api.getUserBookmarksToStudy(BOOKMARKS_TO_PRACTICE, (bookmarks) => {
-          initializeExercises(bookmarks, strings.exercises);
-          console.dir(bookmarks);
-        });
+        api.getUserBookmarksToStudy(
+          DEFAULT_BOOKMARKS_TO_PRACTICE,
+          (bookmarks) => {
+            initializeExercises(bookmarks, strings.exercises);
+            console.dir(bookmarks);
+          }
+        );
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function initializeExercises(bookmarks, title) {
-    BOOKMARKS_TO_PRACTICE = bookmarks.length;
     if (bookmarks.length === 0 && !articleID) {
       alert(
         strings.noTranslatedWords + " " + strings.goToTextsToTranslateWords
@@ -96,20 +98,21 @@ export default function Exercises({ api, articleID }) {
       (a, b) => a + b.requiredBookmarks,
       0
     );
-    let batchCount = parseInt(BOOKMARKS_TO_PRACTICE / bookmarksPerBatch);
-    let remainingExercises = BOOKMARKS_TO_PRACTICE % bookmarksPerBatch;
+    let batchCount = parseInt(bookmarks.length / bookmarksPerBatch);
+    let remainingExercises = bookmarks.length % bookmarksPerBatch;
     let exerciseSequence = defineExerciseSession(
       batchCount,
-      remainingExercises
+      remainingExercises,
+      bookmarks.length
     );
     setExerciseSession(exerciseSequence);
     assignBookmarksToExercises(bookmarks, exerciseSequence);
   }
 
-  function defineExerciseSession(batches, rest) {
+  function defineExerciseSession(batches, rest, bookmark_count) {
     let exerciseSession = [];
-    if (BOOKMARKS_TO_PRACTICE < 7) {
-      let bookmarks = BOOKMARKS_TO_PRACTICE;
+    if (bookmark_count < 7) {
+      let bookmarks = bookmark_count;
       while (bookmarks > 0) {
         for (let i = BOOKMARKS_FOR_EXERCISE.length - 1; i > 0; i--) {
           if (bookmarks === 0) break;
