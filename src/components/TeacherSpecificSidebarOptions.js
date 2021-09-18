@@ -23,6 +23,7 @@ export default function TeacherSpecificSidebarOptions({
           <small>{strings.tutorials}</small>
         </Link>
       </div>
+      <br />
       <div className="navigationLink">
         <Link to="/articles" onClick={resetSidebarToDefault}>
           <small>{strings.studentSite}</small>
