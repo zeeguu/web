@@ -47,22 +47,29 @@ export default function FindWordInContext({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [translatedWords]);
 
-  function colorWordInContext(context, word) {
-    return context.replace(
-      word,
-      `<span class='highlightedWord'>${word}</span>`
-    );
-  }
-
   function checkTranslations() {
     let bookmarkWords = bookmarksToStudy[0].from.split(" ");
     bookmarkWords.forEach((word) => {
-      if (translatedWords.includes(word)) {
-        let concatMessage = messageToAPI + "T";
-        setMessageToAPI(concatMessage);
-        notifyIncorrectAnswer(bookmarksToStudy[0]);
-      }
+      translatedWords.forEach((translation) => {
+        let splitTranslation = translation.split(" ");
+        if (splitTranslation.length > 1) {
+          splitTranslation.forEach((translatedWord) => {
+            if (translatedWord === word) {
+              notifyBookmarkTranslation();
+            }
+          });
+        } else {
+          if (translation === word) {
+            notifyBookmarkTranslation();
+          }
+        }
+      });
     });
+  }
+
+  function notifyBookmarkTranslation() {
+    let concatMessage = messageToAPI + "T";
+    handleShowSolution(concatMessage);
   }
 
   function inputKeyPress() {
@@ -71,12 +78,17 @@ export default function FindWordInContext({
     }
   }
 
-  function handleShowSolution() {
+  function handleShowSolution(message) {
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
     let duration = pressTime - initialTime;
-    let concatMessage = messageToAPI + "S";
+    let concatMessage = "";
+    if (!message) {
+      concatMessage = messageToAPI + "S";
+    } else {
+      concatMessage = message;
+    }
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
@@ -124,29 +136,18 @@ export default function FindWordInContext({
       ) : (
         <div className="headline">{strings.findTheWordInContextHeadline}</div>
       )}
-
       <h1>{bookmarksToStudy[0].to}</h1>
-      {isCorrect ? (
-        <div className="contextExample">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: colorWordInContext(
-                bookmarksToStudy[0].context,
-                bookmarksToStudy[0].from
-              ),
-            }}
-          />
-        </div>
-      ) : (
+      <div className="contextExample">
         <TranslatableText
+          isCorrect={isCorrect}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
+          bookmarkToStudy={bookmarksToStudy[0].from}
         />
-      )}
-
+      </div>
       {!isCorrect && (
         <BottomInput
           handleCorrectAnswer={handleCorrectAnswer}
