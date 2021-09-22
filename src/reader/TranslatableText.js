@@ -30,21 +30,13 @@ export function TranslatableText({
     let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
     while (word) {
       if (word.word === bookmarkWords[0]) {
-        if (bookmarkWords.length > 1) {
-          let copyOfFoundInstances = [...foundInstances];
-          for (let index = 0; index < bookmarkWords.length; index++) {
-            copyOfFoundInstances.push(word.id);
-            word = word.next;
-          }
-          setFoundInstances(copyOfFoundInstances);
-          break;
-        } else {
-          let copyOfFoundInstances = [...foundInstances];
+        let copyOfFoundInstances = [...foundInstances];
+        for (let index = 0; index < bookmarkWords.length; index++) {
           copyOfFoundInstances.push(word.id);
-          setFoundInstances(copyOfFoundInstances);
-          if (word.next) word = word.next;
-          else break;
+          word = word.next;
         }
+        setFoundInstances(copyOfFoundInstances);
+        break;
       } else {
         if (word.next) word = word.next;
         else break;
