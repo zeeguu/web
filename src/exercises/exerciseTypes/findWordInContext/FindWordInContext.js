@@ -101,7 +101,7 @@ export default function FindWordInContext({
     );
   }
 
-  function handleCorrectAnswer() {
+  function handleCorrectAnswer(message) {
     console.log(new Date() - initialTime);
     console.log("^^^^ time elapsed");
     console.log(firstTypeTime - initialTime);
@@ -111,7 +111,7 @@ export default function FindWordInContext({
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFeedback(
-      messageToAPI,
+      message,
       EXERCISE_TYPE,
       duration,
       bookmarksToStudy[0].id
