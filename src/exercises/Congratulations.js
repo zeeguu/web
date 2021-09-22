@@ -27,7 +27,7 @@ export default function Congratulations({
         <h3>
           😊 Correct
           {removeArrayDuplicates(correctBookmarks).map((each) => (
-            <s.ContentOnRow>
+            <s.ContentOnRow key={"row_" + each.id}>
               <Word key={each.id} bookmark={each} api={api} />
               <SpeakButton
                 key={each.from}
@@ -45,7 +45,7 @@ export default function Congratulations({
           <br />
           😳 Pay more attention to
           {removeArrayDuplicates(incorrectBookmarks).map((each) => (
-            <s.ContentOnRow>
+            <s.ContentOnRow key={"row_" + each.id}>
               <Word key={each.id} bookmark={each} api={api} />
               <SpeakButton
                 key={each.from}
