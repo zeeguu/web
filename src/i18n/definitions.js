@@ -313,7 +313,7 @@ let strings = new LocalizedStrings(
         "This is a little too difficult. I'd rather focus on simpler words for now.",
       dislike: "Thumb Down",
       dislikeTooltip: (
-        <div>
+        <span>
           I'm not sure about this... And I'd rather not practice something that
           feels wrong.
           <br />
@@ -324,7 +324,7 @@ let strings = new LocalizedStrings(
             <strong>do not</strong>
           </u>{" "}
           click on this feedback button.
-        </div>
+        </span>
       ),
       badContext: "Bad Context",
       badContextTooltip:
@@ -914,7 +914,7 @@ let strings = new LocalizedStrings(
         "Dette er lidt for svært. Jeg vil hellere fokusere på enklere ord for nu.",
       dislike: "Tommelfinger ned",
       dislikeTooltip: (
-        <div>
+        <span>
           Jeg er ikke sikker på dette... Og jeg vil hellere ikke øve noget, der
           føles forkert.
           <br />
@@ -925,7 +925,7 @@ let strings = new LocalizedStrings(
             <strong>skal du ikke</strong>
           </u>{" "}
           klikke på denne feedback-knap.
-        </div>
+        </span>
       ),
       badContext: "Dårlig kontekst",
       badContextTooltip:

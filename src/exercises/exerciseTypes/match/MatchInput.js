@@ -97,7 +97,7 @@ function MatchInput({
                   {removePunctuation(option.from.toLowerCase())}
                 </s.AnimatedMatchButton>
               ) : buttonsToDisable.includes(option.id) || isCorrect ? (
-                <s.ButtonRow>
+                <s.ButtonRow key={"L2_Row_" + option.id}>
                   <s.MatchingWords
                     style={answerPairStyle(option.id)}
                     key={"L2_" + option.id}
