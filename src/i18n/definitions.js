@@ -268,6 +268,8 @@ let strings = new LocalizedStrings(
       wordSourcePrefix: "Words in",
       noTranslatedWords: "You have no translated words.",
       goToTextsToTranslateWords: "Read and translate words to get exercises.",
+      goStarTranslations:
+        "Go back and star translations for Zeeguu to include them in your exercises.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "The student has not learned any words yet.",
@@ -342,6 +344,16 @@ let strings = new LocalizedStrings(
       //ButtonFeedback
       speak: "Speak",
       next: "Next",
+
+      //ExerciseNavigation
+      backToReading: "Back to Reading",
+      backToWords: "Back to Words",
+      keepExercising: "Keep Exercising",
+
+      //CongratulationsPage
+      goodJob: "Good Job!",
+      correct: "Correct",
+      payMoreAttentionTo: "Pay more attention to",
 
       //Settings
       nativeLanguage: "Native Language",
@@ -872,6 +884,8 @@ let strings = new LocalizedStrings(
       noTranslatedWords: "Du har ingen oversatte ord.",
       goToTextsToTranslateWords:
         "Læs tekster og oversæt ord, som derefter kan bruges i øvelser.",
+      goStarTranslations:
+        "Gå tilbage og stjerne oversættelser, så Zeeguu kan inkludere dem i dine øvelser.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "Eleven har ikke lært nogen ord endnu.",
@@ -943,6 +957,16 @@ let strings = new LocalizedStrings(
       //ButtonFeedback
       speak: "Udtale",
       next: "Næste",
+
+      //ExerciseNavigation
+      backToReading: "Tilbage til læsning",
+      backToWords: "Tilbage til ord",
+      keepExercising: "Øve dig videre",
+
+      //CongratulationsPage
+      goodJob: "Bravo!",
+      correct: "Rigtig",
+      payMoreAttentionTo: "Vær mere opmærksom på",
 
       //Settings
       nativeLanguage: "Modersmål",

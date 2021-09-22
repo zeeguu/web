@@ -2,6 +2,7 @@ import Word from "../words/Word";
 import * as s from "../reader/ArticleReader.sc";
 import { Link } from "react-router-dom";
 import SpeakButton from "./exerciseTypes/SpeakButton";
+import strings from "../i18n/definitions";
 
 export default function Congratulations({
   articleID,
@@ -21,11 +22,11 @@ export default function Congratulations({
     <s.NarrowColumn>
       <br />
 
-      <h2>&nbsp;&nbsp;&nbsp;Good Job! 🥳 🎉 </h2>
+      <h2>&nbsp;&nbsp;&nbsp;{strings.goodJob} 🥳 🎉 </h2>
 
       {correctBookmarks.length > 0 && (
         <h3>
-          😊 Correct
+          😊 {strings.correct}
           {removeArrayDuplicates(correctBookmarks).map((each) => (
             <s.ContentOnRow key={"row_" + each.id}>
               <Word key={each.id} bookmark={each} api={api} />
@@ -43,7 +44,7 @@ export default function Congratulations({
       {incorrectBookmarks.length > 0 && (
         <h3>
           <br />
-          😳 Pay more attention to
+          😳 {strings.payMoreAttentionTo}
           {removeArrayDuplicates(incorrectBookmarks).map((each) => (
             <s.ContentOnRow key={"row_" + each.id}>
               <Word key={each.id} bookmark={each} api={api} />
@@ -60,11 +61,11 @@ export default function Congratulations({
 
       <s.ContentOnRow>
         <Link to={`/exercises`} onClick={(e) => window.location.reload(false)}>
-          <s.OrangeButton>Keep Exercising</s.OrangeButton>
+          <s.OrangeButton>{strings.keepExercising}</s.OrangeButton>
         </Link>
 
         <Link to={`/articles`}>
-          <s.WhiteButton>Back to Reading</s.WhiteButton>
+          <s.WhiteButton>{strings.backToReading}</s.WhiteButton>
         </Link>
       </s.ContentOnRow>
     </s.NarrowColumn>

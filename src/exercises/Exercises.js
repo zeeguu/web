@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 
 import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
 import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
@@ -11,6 +10,7 @@ import { setTitle } from "../assorted/setTitle";
 import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
+import OutOfWordsMessage from "./OutOfWordsMessage";
 
 let BOOKMARKS_TO_PRACTICE = 10;
 
@@ -30,8 +30,9 @@ let BOOKMARKS_FOR_EXERCISE = [
 ];
 
 export default function Exercises({ api, articleID }) {
-  const history = useHistory();
-
+  const [bookmarksToPractice, setBookmarksToPractice] = useState(
+    BOOKMARKS_TO_PRACTICE
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
   const [finished, setFinished] = useState(false);
@@ -69,15 +70,8 @@ export default function Exercises({ api, articleID }) {
 
   function initializeExercises(bookmarks, title) {
     BOOKMARKS_TO_PRACTICE = bookmarks.length;
-    if (bookmarks.length === 0 && !articleID) {
-      alert(
-        strings.noTranslatedWords + " " + strings.goToTextsToTranslateWords
-      );
-      history.push("/articles");
-    } else if (bookmarks.length === 0) {
-      alert(strings.noTranslatedWords);
-      history.goBack();
-    } else {
+    setBookmarksToPractice(bookmarks.length);
+    if (bookmarks.length > 0) {
       calculateExerciseBatches(bookmarks);
       setTitle(title);
     }
@@ -188,8 +182,23 @@ export default function Exercises({ api, articleID }) {
     );
   }
 
-  if (!currentBookmarksToStudy) {
+  if (!currentBookmarksToStudy && bookmarksToPractice !== 0) {
     return <LoadingAnimation />;
+  }
+
+  if (bookmarksToPractice === 0 && !articleID) {
+    return (
+      <s.ExercisesColumn>
+        <OutOfWordsMessage />
+      </s.ExercisesColumn>
+    );
+  }
+  if (bookmarksToPractice === 0 && articleID) {
+    return (
+      <s.ExercisesColumn>
+        <OutOfWordsMessage action={"back"} />
+      </s.ExercisesColumn>
+    );
   }
 
   function moveToNextExercise() {
