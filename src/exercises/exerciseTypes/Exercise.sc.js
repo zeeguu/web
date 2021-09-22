@@ -97,18 +97,18 @@ let MatchButtonHolder = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  justify-content: space-evenly;
 `;
 
 let MatchButtonHolderRight = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: space-evenly;
 `;
 
 let MatchSpeakButtonHolder = styled.div`
   width: fit-content;
-  margin-top: 2em;
-  margin-bottom: 2em;
   margin-left: -1.5em;
   border-radius: 0.75em;
 `;
