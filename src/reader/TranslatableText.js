@@ -33,14 +33,19 @@ export function TranslatableText({
       if (removePunctuation(word.word) === bookmarkWords[0]) {
         let copyOfFoundInstances = [...foundInstances];
         for (let index = 0; index < bookmarkWords.length; index++) {
-          copyOfFoundInstances.push(word.id);
-          word = word.next;
+          if (removePunctuation(word.word) === bookmarkWords[index]) {
+            copyOfFoundInstances.push(word.id);
+            word = word.next;
+          } else {
+            copyOfFoundInstances = [...foundInstances];
+            word = word.next;
+            break;
+          }
         }
         setFoundInstances(copyOfFoundInstances);
-        break;
+        if (copyOfFoundInstances.length === bookmarkWords.length) break;
       } else {
-        if (word.next) word = word.next;
-        else break;
+        word = word.next;
       }
     }
   }
