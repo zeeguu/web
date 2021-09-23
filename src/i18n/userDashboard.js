@@ -2,8 +2,8 @@ import LocalizedStrings from "localized-strings";
 
 let compactFormat = {
   userDashboardTitle: {
-    en: "Dashboard",
-    da: "Dashboard",
+    en: "Statistics",
+    da: "Statistik",
   },
   tabActivity: {
     en: "Activity",
@@ -76,14 +76,6 @@ let compactFormat = {
   wordsGraphLegendYears: {
     en: "Number of Translated Words for Available Years",
     da: "Oversatte ord for tilgængelige år",
-  },
-  feedbackButtonText: {
-    en: "Do you have some feedback for us?",
-    da: "Har du noget feedback for os?",
-  },
-  feedbackAlertText: {
-    en: "\n The User Dashboard is a new Zeeguu feature that we are working on. \n\nWrite here any feedback you want to send us. \n\nThank you in advance! \n",
-    da: "\n Denne er en ny Zeeguu funktion, vi arbejder på. \n\nSkriv til os her, hvis du har noget feedback, du gerne vil dele med os. \n På forhånd tak!",
   },
 };
 

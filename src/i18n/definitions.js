@@ -42,7 +42,7 @@ let strings = new LocalizedStrings(
       teacherSite: "Teacher Site",
       studentSite: "Student Site",
       logout: "Logout",
-      userDashboard: "Dashboard",
+      userDashboard: "Statistics",
 
       //CreateAccount
       nameIsRequired: "Name is required.",
@@ -140,11 +140,14 @@ let strings = new LocalizedStrings(
       sep: "Sep",
       oct: "Oct",
       dec: "Dec",
+      betaTesters200K:
+        "📈 The beta-testers of Zeeguu have collectively reached 200'000 translations in their foreign language readings ",
+      mirceaKeynoteAtEASEAI: "👨‍🏫 Mircea gives a keynote about Zeeguu at the ",
       pernilleObtainsFundingPrefix:
-        "Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
+        "👩‍🔬 Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
       pernilleObtainsFundingLinkTitle:
-        "project which uses Zeeguu to increase personalization",
-      pernilleObtainsFundingSuffix: " in the Danish classroom",
+        "project which uses Zeeguu to study how to increase personalization",
+      pernilleObtainsFundingSuffix: " in Danish language courses",
       procrastinationPaper:
         "Paper using Zeeguu to teach vocabulary in moments of online procrastination accepted at CHI 2021 ",
       rotterdamStarts:
@@ -505,6 +508,10 @@ let strings = new LocalizedStrings(
       polish: "Polish",
       romanian: "Romanian",
       chinese: "Chinese",
+      turkish: "Turkish",
+      arabic: "Arabic",
+      somali: "Somali",
+      kurdish: "Kurdish",
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -657,6 +664,7 @@ let strings = new LocalizedStrings(
       teacherSite: "Lærersiden",
       studentSite: "Elevsiden",
       logout: "Log ud",
+      userDashboard: "Statistik",
 
       //CreateAccount
       nameIsRequired: "Vi mangler et navn.",
@@ -755,6 +763,9 @@ let strings = new LocalizedStrings(
       oct: "Okt",
       sep: "Sep",
       dec: "Dec",
+      betaTesters200K:
+        "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
+      mirceaKeynoteAtEASEAI: "Mircea giver en keynote om Zeeguu på ",
       pernilleObtainsFundingPrefix:
         "Pernille Hvalsoe modtager bevillinger fra Styrelsen for International Rekruttering og Integration til et ",
       pernilleObtainsFundingLinkTitle:
@@ -1118,6 +1129,10 @@ let strings = new LocalizedStrings(
       polish: "Polsk",
       romanian: "Rumænsk",
       chinese: "Kinesisk",
+      turkish: "Tyrkisk",
+      arabic: "Arabisk",
+      somali: "Somalisk",
+      kurdish: "Kurdisk",
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
