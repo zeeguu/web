@@ -76,7 +76,6 @@ export default function SideBar(props) {
         />
       )}
 
-      <br />
       <div className="navigationLink">
         <Link to="/account_settings" onClick={resetSidebarToDefault}>
           <small>{strings.settings}</small>

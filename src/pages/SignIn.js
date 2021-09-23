@@ -6,7 +6,7 @@ import strings from "../i18n/definitions";
 import * as s from "../components/FormPage.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
-export default function SignIn({ api, notifySuccessfulSignIn }) {
+export default function SignIn({ api, signInAndRedirect }) {
   // TODO: Fix this bug in a different way. Requires understanding why strings._language changes to "da" without it being asked to, whenever this component renders. Perhaps it imports an un-updated version of strings?
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
@@ -24,10 +24,7 @@ export default function SignIn({ api, notifySuccessfulSignIn }) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
-        notifySuccessfulSignIn(userInfo);
-        userInfo.is_teacher
-          ? history.push("/teacher/classes")
-          : history.push("/articles");
+        signInAndRedirect(userInfo, history);
       });
     });
   }
