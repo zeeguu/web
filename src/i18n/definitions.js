@@ -271,6 +271,8 @@ let strings = new LocalizedStrings(
       wordSourcePrefix: "Words in",
       noTranslatedWords: "You have no translated words.",
       goToTextsToTranslateWords: "Read and translate words to get exercises.",
+      goStarTranslations:
+        "Go back and star translations for Zeeguu to include them in your exercises.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "The student has not learned any words yet.",
@@ -316,7 +318,7 @@ let strings = new LocalizedStrings(
         "This is a little too difficult. I'd rather focus on simpler words for now.",
       dislike: "Thumb Down",
       dislikeTooltip: (
-        <div>
+        <span>
           I'm not sure about this... And I'd rather not practice something that
           feels wrong.
           <br />
@@ -327,7 +329,7 @@ let strings = new LocalizedStrings(
             <strong>do not</strong>
           </u>{" "}
           click on this feedback button.
-        </div>
+        </span>
       ),
       badContext: "Bad Context",
       badContextTooltip:
@@ -345,6 +347,16 @@ let strings = new LocalizedStrings(
       //ButtonFeedback
       speak: "Speak",
       next: "Next",
+
+      //ExerciseNavigation
+      backToReading: "Back to Reading",
+      backToWords: "Back to Words",
+      keepExercising: "Keep Exercising",
+
+      //CongratulationsPage
+      goodJob: "Good Job!",
+      correct: "Correct",
+      payMoreAttentionTo: "Pay more attention to",
 
       //Settings
       nativeLanguage: "Native Language",
@@ -883,6 +895,8 @@ let strings = new LocalizedStrings(
       noTranslatedWords: "Du har ingen oversatte ord.",
       goToTextsToTranslateWords:
         "Læs tekster og oversæt ord, som derefter kan bruges i øvelser.",
+      goStarTranslations:
+        "Gå tilbage og stjerne oversættelser, så Zeeguu kan inkludere dem i dine øvelser.",
 
       //LearnedWordsList
       studentHasNotLearnedWords: "Eleven har ikke lært nogen ord endnu.",
@@ -925,7 +939,7 @@ let strings = new LocalizedStrings(
         "Dette er lidt for svært. Jeg vil hellere fokusere på enklere ord for nu.",
       dislike: "Tommelfinger ned",
       dislikeTooltip: (
-        <div>
+        <span>
           Jeg er ikke sikker på dette... Og jeg vil hellere ikke øve noget, der
           føles forkert.
           <br />
@@ -936,7 +950,7 @@ let strings = new LocalizedStrings(
             <strong>skal du ikke</strong>
           </u>{" "}
           klikke på denne feedback-knap.
-        </div>
+        </span>
       ),
       badContext: "Dårlig kontekst",
       badContextTooltip:
@@ -954,6 +968,16 @@ let strings = new LocalizedStrings(
       //ButtonFeedback
       speak: "Udtale",
       next: "Næste",
+
+      //ExerciseNavigation
+      backToReading: "Tilbage til læsning",
+      backToWords: "Tilbage til ord",
+      keepExercising: "Øve dig videre",
+
+      //CongratulationsPage
+      goodJob: "Bravo!",
+      correct: "Rigtig",
+      payMoreAttentionTo: "Vær mere opmærksom på",
 
       //Settings
       nativeLanguage: "Modersmål",

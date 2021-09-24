@@ -51,8 +51,7 @@ export default function BottomInput({
     );
     if (a === b) {
       let concatMessage = messageToAPI + "C";
-      setMessageToAPI(concatMessage);
-      handleCorrectAnswer();
+      handleCorrectAnswer(concatMessage);
     } else {
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);

@@ -56,7 +56,7 @@ export default class InteractiveText {
       word.word,
       alternative,
       this.getContext(word),
-      window.location,
+      this.articleInfo.url,
       this.articleInfo.title
     );
     word.translation = alternative;
