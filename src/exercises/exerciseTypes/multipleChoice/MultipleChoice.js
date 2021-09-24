@@ -46,13 +46,6 @@ export default function MultipleChoice({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function colorWordInContext(context, word) {
-    return context.replace(
-      word,
-      `<span class='highlightedWord'>${word}</span>`
-    );
-  }
-
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
     if (
@@ -121,25 +114,15 @@ export default function MultipleChoice({
         {strings.chooseTheWordFittingContextHeadline}{" "}
       </div>
 
-      {isCorrect ? (
-        <div className="contextExample">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: colorWordInContext(
-                bookmarksToStudy[0].context,
-                bookmarksToStudy[0].from
-              ),
-            }}
-          />
-        </div>
-      ) : (
+      <div className="contextExample">
         <TranslatableText
+          isCorrect={isCorrect}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
           bookmarkToStudy={bookmarksToStudy[0].from}
         />
-      )}
+      </div>
 
       {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
 

@@ -1,5 +1,5 @@
 import * as s from "./FeedbackButtons.sc.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createRef } from "react";
 import strings from "../../i18n/definitions";
 import Tooltip from "@material-ui/core/Tooltip";
 
@@ -46,6 +46,7 @@ export default function FeedbackButtons({
   const [showInput, setShowInput] = useState(false);
   const [className, setClassName] = useState("");
   const [input, setInput] = useState("");
+  const wrapper = createRef();
 
   useEffect(() => {
     setInput("");
@@ -129,6 +130,7 @@ export default function FeedbackButtons({
             {currentBookmarksToStudy.map((bookmark) => (
               <s.FeedbackLabel key={bookmark.id}>
                 <input
+                  key={"radio_" + bookmark.id}
                   type="radio"
                   value={bookmark.id}
                   checked={Number(selectedId) === bookmark.id}
@@ -143,6 +145,8 @@ export default function FeedbackButtons({
       {show && (
         <s.FeedbackButtonsHolder>
           <Tooltip
+            ref={wrapper}
+            key={"tooltip_dislike"}
             title={
               <p style={{ fontSize: "small" }}>{strings.dislikeTooltip}</p>
             }
@@ -161,6 +165,8 @@ export default function FeedbackButtons({
           {buttons.map((each) =>
             each.value === "other" ? (
               <Tooltip
+                ref={wrapper}
+                key={"tooltip_" + each.value}
                 title={<p style={{ fontSize: "small" }}>{each.tooltip}</p>}
               >
                 <s.FeedbackButton
@@ -173,6 +179,8 @@ export default function FeedbackButtons({
               </Tooltip>
             ) : (
               <Tooltip
+                ref={wrapper}
+                key={"tooltip_" + each.value}
                 title={<p style={{ fontSize: "small" }}>{each.tooltip}</p>}
               >
                 <s.FeedbackButton
