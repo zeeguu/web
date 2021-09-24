@@ -30,8 +30,8 @@ let BOOKMARKS_FOR_EXERCISE = [
 ];
 
 export default function Exercises({ api, articleID }) {
-  const [bookmarksToPractice, setBookmarksToPractice] = useState(
-    BOOKMARKS_TO_PRACTICE
+  const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
+    DEFAULT_BOOKMARKS_TO_PRACTICE
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
@@ -72,8 +72,7 @@ export default function Exercises({ api, articleID }) {
   }, []);
 
   function initializeExercises(bookmarks, title) {
-    BOOKMARKS_TO_PRACTICE = bookmarks.length;
-    setBookmarksToPractice(bookmarks.length);
+    setCountBookmarksToPractice(bookmarks.length);
     if (bookmarks.length > 0) {
       calculateExerciseBatches(bookmarks);
       setTitle(title);
@@ -186,18 +185,18 @@ export default function Exercises({ api, articleID }) {
     );
   }
 
-  if (!currentBookmarksToStudy && bookmarksToPractice !== 0) {
+  if (!currentBookmarksToStudy && countBookmarksToPractice !== 0) {
     return <LoadingAnimation />;
   }
 
-  if (bookmarksToPractice === 0 && !articleID) {
+  if (countBookmarksToPractice === 0 && !articleID) {
     return (
       <s.ExercisesColumn>
         <OutOfWordsMessage />
       </s.ExercisesColumn>
     );
   }
-  if (bookmarksToPractice === 0 && articleID) {
+  if (countBookmarksToPractice === 0 && articleID) {
     return (
       <s.ExercisesColumn>
         <OutOfWordsMessage action={"back"} />
