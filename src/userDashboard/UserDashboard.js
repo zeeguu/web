@@ -126,7 +126,6 @@ export default function UserDashboard({ api }) {
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
         handleChangeReferenceDate={handleChangeReferenceDate}
-        api={api}
       />
 
       <s.NivoGraphContainer>

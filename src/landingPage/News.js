@@ -20,6 +20,29 @@ export default function News() {
 
       <h2>2021</h2>
 
+      {
+        item(
+          strings.aug,
+          <>
+          {strings.mirceaKeynoteAtEASEAI }
+          <a href="https://easeai.github.io/" target="blank">
+            EASEAI 2021 (<b>Education, Software Engineering, and AI 2021</b>)
+          </a>
+          </>
+        )
+      }
+
+
+      {
+        item(
+          strings.jul,
+          <>
+          {strings.betaTesters200K }
+          </>
+        )
+      }
+
+
       {item(
         strings.feb,
         <>
