@@ -31,7 +31,7 @@ let BOOKMARKS_FOR_EXERCISE = [
 
 export default function Exercises({ api, articleID }) {
   const [bookmarksToPractice, setBookmarksToPractice] = useState(
-    BOOKMARKS_TO_PRACTICE
+    DEFAULT_BOOKMARKS_TO_PRACTICE
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
@@ -72,7 +72,6 @@ export default function Exercises({ api, articleID }) {
   }, []);
 
   function initializeExercises(bookmarks, title) {
-    BOOKMARKS_TO_PRACTICE = bookmarks.length;
     setBookmarksToPractice(bookmarks.length);
     if (bookmarks.length > 0) {
       calculateExerciseBatches(bookmarks);
