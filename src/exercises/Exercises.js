@@ -263,6 +263,7 @@ export default function Exercises({ api, articleID }) {
       currentBookmark.url,
       currentBookmark.article_title
     );
+    currentBookmark.to = newTranslation;
   }
 
   function toggleShow() {
