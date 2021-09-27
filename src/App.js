@@ -33,7 +33,7 @@ function App() {
 
   const [user, setUser] = useState(userDict);
 
-  function handleSuccessfulSignIn(userInfo) {
+  function handleSuccessfulSignIn(userInfo, history) {
     setUser({
       session: api.session,
       name: userInfo.name,
@@ -48,6 +48,10 @@ function App() {
     // could be cool to remove it from there and make that
     // one also use the localStorage
     document.cookie = `sessionID=${api.session};`;
+
+    userInfo.is_teacher
+      ? history.push("/teacher/classes")
+      : history.push("/articles");
   }
 
   function logout() {
@@ -75,10 +79,7 @@ function App() {
             <Route
               path="/login"
               render={() => (
-                <SignIn
-                  api={api}
-                  notifySuccessfulSignIn={handleSuccessfulSignIn}
-                />
+                <SignIn api={api} signInAndRedirect={handleSuccessfulSignIn} />
               )}
             />
 
@@ -87,7 +88,7 @@ function App() {
               render={() => (
                 <CreateAccount
                   api={api}
-                  notifySuccessfulSignIn={handleSuccessfulSignIn}
+                  signInAndRedirect={handleSuccessfulSignIn}
                 />
               )}
             />
