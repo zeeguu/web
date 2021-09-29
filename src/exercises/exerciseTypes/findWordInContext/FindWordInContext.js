@@ -9,6 +9,7 @@ import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
+import EditButton from "../../../words/EditButton.js";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -21,7 +22,8 @@ export default function FindWordInContext({
   setIsCorrect,
   moveToNextExercise,
   toggleShow,
-  toggleShowImproveTranslation,
+  reload,
+  setReload,
 }) {
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
@@ -127,6 +129,8 @@ export default function FindWordInContext({
     return <LoadingAnimation />;
   }
 
+  const exercise = "exercise";
+
   return (
     <s.Exercise>
       {bookmarksToStudy[0].to.includes(" ") ? (
@@ -135,6 +139,19 @@ export default function FindWordInContext({
         </div>
       ) : (
         <div className="headline">{strings.findTheWordInContextHeadline}</div>
+      )}
+      {isCorrect ? (
+        <s.RightAlignedRow>
+          <EditButton
+            bookmark={bookmarksToStudy[0]}
+            api={api}
+            styling={exercise}
+            reload={reload}
+            setReload={setReload}
+          />
+        </s.RightAlignedRow>
+      ) : (
+        <></>
       )}
       <h1>{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
@@ -168,7 +185,6 @@ export default function FindWordInContext({
       <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
-        toggleShowImproveTranslation={toggleShowImproveTranslation}
         isCorrect={isCorrect}
       />
     </s.Exercise>

@@ -11,7 +11,7 @@ let StarIcon = styled.div`
   color: yellow;
 
   margin-right: 0.3em;
-  margin-left: 1em;
+  margin-left: 0.5em;
 
   display: flex;
   flex-direction: column;
@@ -22,6 +22,40 @@ let StarIcon = styled.div`
   img {
     height: 26px;
     /* background-color: red; */
+  }
+`;
+
+let EditIcon = styled.div`
+  cursor: pointer;
+
+  margin-right: 0.3em;
+  margin-left: 0.7em;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding-top: 10px;
+
+  img {
+    height: 26px;
+    width: 26px;
+  }
+`;
+
+let EditIconNoPadding = styled.div`
+  cursor: pointer;
+
+  margin-right: 0.3em;
+  margin-left: 0.7em;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  img {
+    height: 26px;
+    width: 26px;
   }
 `;
 
@@ -112,5 +146,14 @@ let Spacer = styled.div`
   margin-bottom: 20px;
 `;
 
-export { Word, TrashIcon, StarIcon, WordPair, Importance, Spacer };
+export {
+  Word,
+  TrashIcon,
+  StarIcon,
+  WordPair,
+  Importance,
+  Spacer,
+  EditIcon,
+  EditIconNoPadding,
+};
 //
