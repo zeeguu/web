@@ -133,22 +133,44 @@ export default function WordEditAccordions({ bookmark, updateBookmark }) {
         onChange={handleChange("panel2")}
       >
         <s.AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-          <p>{strings.editExpression}</p>
+          {bookmark.from.includes(" ") ? (
+            <p>{strings.editExpression}</p>
+          ) : (
+            <p>{strings.editWord}</p>
+          )}
         </s.AccordionSummary>
         <s.AccordionDetails>
-          <s.Paragraph>
-            {strings.currentExpression}
-            <span style={{ fontStyle: "normal" }}>{bookmark.from}</span>
-          </s.Paragraph>
+          {bookmark.from.includes(" ") ? (
+            <s.Paragraph>
+              {strings.currentExpression}
+              <span style={{ fontStyle: "normal" }}>{bookmark.from}</span>
+            </s.Paragraph>
+          ) : (
+            <s.Paragraph>
+              {strings.currentWord}
+              <span style={{ fontStyle: "normal" }}>{bookmark.from}</span>
+            </s.Paragraph>
+          )}
           <form onSubmit={handleSubmit}>
-            <TextField
-              id="outlined-basic"
-              label={strings.editExpression}
-              variant="outlined"
-              fullWidth
-              value={expression}
-              onChange={handleTyping}
-            />
+            {bookmark.from.includes(" ") ? (
+              <TextField
+                id="outlined-basic"
+                label={strings.editExpression}
+                variant="outlined"
+                fullWidth
+                value={expression}
+                onChange={handleTyping}
+              />
+            ) : (
+              <TextField
+                id="outlined-basic"
+                label={strings.editWord}
+                variant="outlined"
+                fullWidth
+                value={expression}
+                onChange={handleTyping}
+              />
+            )}
             {bookmark.from === expression ? (
               <></>
             ) : (
