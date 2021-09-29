@@ -279,6 +279,13 @@ let CenteredRow = styled.div`
   justify-content: center;
 `;
 
+let RightAlignedRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
 export {
   Exercise,
   FeedbackButton,
@@ -300,6 +307,7 @@ export {
   CenteredRow,
   LeftFeedbackButton,
   RightFeedbackButton,
+  RightAlignedRow,
 };
 
 export default StyledButton;

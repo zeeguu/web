@@ -1,6 +1,8 @@
 import * as s from "./Word.sc";
 
 import { useState } from "react";
+import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
+import EditButton from "./EditButton";
 
 export default function Word({
   bookmark,
@@ -12,6 +14,7 @@ export default function Word({
 }) {
   const [starred, setStarred] = useState(bookmark.starred);
   const [deleted, setDeleted] = useState(false);
+  const [reload, setReload] = useState(false);
   let importance = Math.min(10, Math.floor(bookmark.origin_importance));
   let importanceBars = "";
   if (importance) {
@@ -56,18 +59,26 @@ export default function Word({
     grayed_out_if_not_scheduled_for_study = {};
   }
 
+  const small = "small";
+
   return (
     <>
       <s.Word key={bookmark.id}>
         <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
           <img src="/static/images/trash.svg" alt="trash" />
         </s.TrashIcon>
+        <EditButton
+          bookmark={bookmark}
+          api={api}
+          reload={reload}
+          setReload={setReload}
+        />
 
         {!hideStar && (
           <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
             <img
               src={
-                "/static/images/star" +
+                "/static/images/yellow_star" +
                 (bookmark.starred ? ".svg" : "_empty.svg")
               }
               alt="star"
@@ -88,6 +99,7 @@ export default function Word({
             {bookmark.to}
           </div>
         </s.WordPair>
+        <SpeakButton bookmarkToStudy={bookmark} api={api} styling={small} />
       </s.Word>
       {children}
 

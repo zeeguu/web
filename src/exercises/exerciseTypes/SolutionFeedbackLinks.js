@@ -4,7 +4,6 @@ import * as s from "./Exercise.sc";
 export default function SolutionFeedbackLinks({
   handleShowSolution,
   toggleShow,
-  toggleShowImproveTranslation,
   isCorrect,
 }) {
   return (
@@ -13,14 +12,6 @@ export default function SolutionFeedbackLinks({
         <>
           <s.StyledLink to={"#"} onClick={handleShowSolution}>
             {strings.showSolution}
-          </s.StyledLink>
-          <s.StyledDiv>&nbsp;|&nbsp;</s.StyledDiv>
-        </>
-      )}
-      {isCorrect && (
-        <>
-          <s.StyledLink to={"#"} onClick={toggleShowImproveTranslation}>
-            {strings.improveTranslation}
           </s.StyledLink>
           <s.StyledDiv>&nbsp;|&nbsp;</s.StyledDiv>
         </>

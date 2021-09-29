@@ -257,6 +257,18 @@ let strings = new LocalizedStrings(
       //WordsOnDate
       open: "Open",
 
+      //WordEditAccordion
+      done: "Done",
+      rememberToSubmit:
+        'Remember to click "Submit" in each accordion to save changes.',
+      editTranslation: "Edit Translation",
+      currentTranslation: "Current translation: ",
+      editExpression: "Edit Expression",
+      currentExpression: "Current expression: ",
+      editContext: "Edit Context",
+      currentContext: "Current context: ",
+      submit: "Submit",
+
       //ExerciseType
       matchThreePairs: " match 3 pairs",
       pickTheWord: "pick the word",
@@ -303,10 +315,6 @@ let strings = new LocalizedStrings(
       otherFeedback: "Other feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
-      improveTranslationFeedback1: "Translation of",
-      improveTranslationFeedback2: "is now",
-      submitTranslation: "Provide an improved translation of",
-      currently: "currently",
       undo: "UNDO",
 
       //FeedbackOptions
@@ -881,6 +889,18 @@ let strings = new LocalizedStrings(
       //WordsOnDate
       open: "Åben",
 
+      //WordEditAccordion
+      done: "Færdig",
+      rememberToSubmit:
+        'Husk at klikke på "Send" i hver del for at gemme ændringer.',
+      editTranslation: "Rediger oversættelse",
+      currentTranslation: "Nuværende oversættelse: ",
+      editExpression: "Rediger udtryk",
+      currentExpression: "Nuværende udtryk: ",
+      editContext: "Rediger sammenhæng",
+      currentContext: "Nuværende sammenhæng: ",
+      submit: "Send",
+
       //ExerciseType
       matchThreePairs: " match 3 par",
       pickTheWord: "vælg ordet",
@@ -924,10 +944,6 @@ let strings = new LocalizedStrings(
       otherFeedback: "Anden feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sendt!",
-      improveTranslationFeedback1: "Oversættelse af",
-      improveTranslationFeedback2: "er nu",
-      submitTranslation: "Giv en forbedret oversættelse af",
-      currently: "for tiden",
       undo: "FORTRYDE",
 
       //FeedbackOptions

@@ -2,6 +2,7 @@ import { useState } from "react";
 import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
 import removePunctuation from "../../../assorted/removePunctuation";
+import EditButton from "../../../words/EditButton.js";
 
 function MatchInput({
   fromButtonOptions,
@@ -13,6 +14,8 @@ function MatchInput({
   api,
   incorrectAnswer,
   setIncorrectAnswer,
+  reload,
+  setReload,
 }) {
   const answerColors = [
     {
@@ -79,6 +82,7 @@ function MatchInput({
   };
 
   const small = "small";
+  const match = "match";
 
   return (
     <>
@@ -98,6 +102,13 @@ function MatchInput({
                 </s.AnimatedMatchButton>
               ) : buttonsToDisable.includes(option.id) || isCorrect ? (
                 <s.ButtonRow key={"L2_Row_" + option.id}>
+                  <EditButton
+                    bookmark={option}
+                    api={api}
+                    styling={match}
+                    reload={reload}
+                    setReload={setReload}
+                  />
                   <s.MatchingWords
                     style={answerPairStyle(option.id)}
                     key={"L2_" + option.id}
