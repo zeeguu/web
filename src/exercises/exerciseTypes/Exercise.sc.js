@@ -279,6 +279,12 @@ let CenteredRow = styled.div`
   justify-content: center;
 `;
 
+let EditSpeakButtonHolder = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
 export {
   Exercise,
   FeedbackButton,
@@ -300,6 +306,7 @@ export {
   CenteredRow,
   LeftFeedbackButton,
   RightFeedbackButton,
+  EditSpeakButtonHolder,
 };
 
 export default StyledButton;

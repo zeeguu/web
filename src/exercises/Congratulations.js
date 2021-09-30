@@ -1,7 +1,6 @@
 import Word from "../words/Word";
 import * as s from "../reader/ArticleReader.sc";
 import { Link } from "react-router-dom";
-import SpeakButton from "./exerciseTypes/SpeakButton";
 import strings from "../i18n/definitions";
 
 export default function Congratulations({
@@ -16,8 +15,6 @@ export default function Congratulations({
     return newArray;
   }
 
-  const small = "small";
-
   return (
     <s.NarrowColumn>
       <br />
@@ -30,12 +27,6 @@ export default function Congratulations({
           {removeArrayDuplicates(correctBookmarks).map((each) => (
             <s.ContentOnRow key={"row_" + each.id}>
               <Word key={each.id} bookmark={each} api={api} />
-              <SpeakButton
-                key={each.from}
-                bookmarkToStudy={each}
-                api={api}
-                styling={small}
-              />
             </s.ContentOnRow>
           ))}
         </h3>
@@ -48,12 +39,6 @@ export default function Congratulations({
           {removeArrayDuplicates(incorrectBookmarks).map((each) => (
             <s.ContentOnRow key={"row_" + each.id}>
               <Word key={each.id} bookmark={each} api={api} />
-              <SpeakButton
-                key={each.from}
-                bookmarkToStudy={each}
-                api={api}
-                styling={small}
-              />
             </s.ContentOnRow>
           ))}
         </h3>

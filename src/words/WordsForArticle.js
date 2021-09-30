@@ -12,7 +12,6 @@ import {
   ContentOnRow,
 } from "../reader/ArticleReader.sc";
 import { setTitle } from "../assorted/setTitle";
-import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 
 export default function WordsForArticle({ api }) {
   const small = "small";
@@ -79,12 +78,6 @@ export default function WordsForArticle({ api }) {
             bookmark={each}
             notifyDelete={deleteBookmark}
             api={api}
-          />
-          <SpeakButton
-            key={each.id}
-            bookmarkToStudy={each}
-            api={api}
-            styling={small}
           />
         </ContentOnRow>
       ))}

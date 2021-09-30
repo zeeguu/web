@@ -43,8 +43,7 @@ export default function Exercises({ api, articleID }) {
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
-  const [showNewTranslationPrompt, setShowNewTranslationPrompt] =
-    useState(false);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -248,35 +247,8 @@ export default function Exercises({ api, articleID }) {
     api.uploadExerciseFeedback(reason, currentExerciseType, 0, id);
   }
 
-  function adjustCurrentTranslation(currentBookmark, newTranslation) {
-    console.log(
-      "Sending to the API. New translation: ",
-      newTranslation,
-      " instead of: ",
-      currentBookmark.to,
-      " for word: ",
-      currentBookmark.from
-    );
-    api.contributeTranslation(
-      currentBookmark.from_lang,
-      currentBookmark.to_lang,
-      currentBookmark.from,
-      newTranslation,
-      currentBookmark.context,
-      currentBookmark.url,
-      currentBookmark.article_title
-    );
-    currentBookmark.to = newTranslation;
-  }
-
   function toggleShow() {
-    if (showNewTranslationPrompt) setShowNewTranslationPrompt(false);
     setShowFeedbackButtons(!showFeedbackButtons);
-  }
-
-  function toggleShowImproveTranslation() {
-    if (showFeedbackButtons) setShowFeedbackButtons(false);
-    setShowNewTranslationPrompt(!showNewTranslationPrompt);
   }
 
   let wordSourceText = articleInfo ? (
@@ -304,17 +276,15 @@ export default function Exercises({ api, articleID }) {
           setIsCorrect={setIsCorrect}
           moveToNextExercise={moveToNextExercise}
           toggleShow={toggleShow}
-          toggleShowImproveTranslation={toggleShowImproveTranslation}
+          reload={reload}
+          setReload={setReload}
         />
       </s.ExForm>
       <FeedbackDisplay
         showFeedbackButtons={showFeedbackButtons}
         setShowFeedbackButtons={setShowFeedbackButtons}
-        showNewTranslationPrompt={showNewTranslationPrompt}
-        setShowNewTranslationPrompt={setShowNewTranslationPrompt}
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
-        adjustCurrentTranslation={adjustCurrentTranslation}
         feedbackFunction={stopShowingThisFeedback}
       />
     </s.ExercisesColumn>

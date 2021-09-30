@@ -2,8 +2,8 @@ import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect } from "react";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-import ImproveTranslationButtons from "./ImproveTranslationButtons.js";
 import FeedbackButtons from "./FeedbackButtons.js";
+import strings from "../../i18n/definitions.js";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -12,11 +12,8 @@ function Alert(props) {
 export default function FeedbackDisplay({
   showFeedbackButtons,
   setShowFeedbackButtons,
-  showNewTranslationPrompt,
-  setShowNewTranslationPrompt,
   currentExerciseType,
   currentBookmarksToStudy,
-  adjustCurrentTranslation,
   feedbackFunction,
 }) {
   const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
@@ -24,8 +21,6 @@ export default function FeedbackDisplay({
   const [selectedId, setSelectedId] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [currentBookmark, setCurrentBookmark] = useState();
-  const [newTranslation, setNewTranslation] = useState();
   const [userFeedback, setUserFeedback] = useState();
 
   useEffect(() => {
@@ -41,7 +36,6 @@ export default function FeedbackDisplay({
 
   function stopSendingModification() {
     setUserFeedback(null);
-    setNewTranslation(null);
     setOpenSnackbar(false);
   }
 
@@ -50,30 +44,14 @@ export default function FeedbackDisplay({
       return;
     }
 
-    if (userFeedback) {
-      feedbackFunction(userFeedback, selectedId);
-      setUserFeedback(null);
-    } else if (newTranslation) {
-      adjustCurrentTranslation(currentBookmark, newTranslation);
-      setNewTranslation(null);
-    }
+    feedbackFunction(userFeedback, selectedId);
+    setUserFeedback(null);
+
     setOpenSnackbar(false);
   };
 
   return (
     <s.FeedbackHolder>
-      <ImproveTranslationButtons
-        show={showNewTranslationPrompt}
-        setShow={setShowNewTranslationPrompt}
-        currentExerciseType={currentExerciseType}
-        currentBookmarksToStudy={currentBookmarksToStudy}
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
-        setFeedback={setFeedback}
-        setOpenSnackbar={setOpenSnackbar}
-        setCurrentBookmark={setCurrentBookmark}
-        setNewTranslation={setNewTranslation}
-      />
       <FeedbackButtons
         show={showFeedbackButtons}
         setShow={setShowFeedbackButtons}
@@ -97,7 +75,7 @@ export default function FeedbackDisplay({
         <Alert onClose={handleSnackbarClose} severity="success">
           {feedback}{" "}
           <s.UndoButton type="button" onClick={stopSendingModification}>
-            UNDO
+            {strings.undo}
           </s.UndoButton>
         </Alert>
       </Snackbar>

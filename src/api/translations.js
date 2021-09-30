@@ -73,3 +73,20 @@ Zeeguu_API.prototype.contributeTranslation = function (
     body: body,
   });
 };
+
+Zeeguu_API.prototype.updateBookmark = function (
+  bookmark_id,
+  word,
+  translation,
+  context
+) {
+  let url = this._appendSessionToUrl(`update_bookmark/${bookmark_id}`);
+
+  let body = `word=${word}&translation=${translation}&context=${context}`;
+
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: body,
+  });
+};
