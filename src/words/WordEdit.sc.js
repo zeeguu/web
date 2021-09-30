@@ -1,46 +1,7 @@
 import { styled } from "@mui/material/styles";
 import scStyled from "styled-components";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MuiAccordion from "@mui/material/Accordion";
-import MuiAccordionSummary from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import { OrangeButton } from "../exercises/exerciseTypes/Exercise.sc";
-
-const Accordion = styled((props) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  "&:not(:last-child)": {
-    borderBottom: 0,
-  },
-  "&:before": {
-    display: "none",
-  },
-}));
-
-const AccordionSummary = styled((props) => (
-  <MuiAccordionSummary
-    expandIcon={<ExpandMoreIcon sx={{ fontSize: "1.75rem" }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === "dark"
-      ? "rgba(255, 255, 255, .05)"
-      : "rgba(0, 0, 0, .03)",
-  flexDirection: "row",
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(180deg)",
-  },
-  "& .MuiAccordionSummary-content": {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
-}));
+import { FeedbackButton } from "../exercises/exerciseTypes/Exercise.sc";
+import TextField from "@mui/material/TextField";
 
 const style = {
   position: "absolute",
@@ -82,42 +43,28 @@ let DoneButtonHolder = scStyled.div`
   flex-direction: row;
   justify-content: flex-end;`;
 
-let DoneButton = scStyled.button`
-  cursor: pointer;
+let EditButton = scStyled(FeedbackButton)`
+  background-color: rgba(255,255,255,0);
 
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1.75em;
-  width: max-content;
-
-  color: #000000;
-  background-color: #ffbb5440;
-  border: 0.1em solid #ffbb54;
-  border-radius: 0.65em;
-  padding: 0.5em;
-  user-select: none;
-  outline: none;
-`;
-
-let EditButton = scStyled(OrangeButton)`
-  width: 2em;
-  height: 2em;
+  margin-left: -0.25em;
 
   img {
-    height: 26px;
-    width: 26px;
+    height: 36px;
+    width: 36px;
   }
 `;
 
+let CustomTextField = styled(TextField)`
+  margin-top: 1em;
+  margin-bottom: 1em;
+`;
+
 export {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   style,
   Headline,
-  DoneButton,
   DoneButtonHolder,
   Small,
   Paragraph,
   EditButton,
+  CustomTextField,
 };

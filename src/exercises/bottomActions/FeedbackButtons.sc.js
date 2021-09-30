@@ -100,6 +100,11 @@ const FeedbackSubmit = styled.input`
   outline: none;
 `;
 
+const FeedbackCancel = styled(FeedbackSubmit)`
+  background-color: #ffbb5440;
+  border: 0.1em solid #ffbb54;
+`;
+
 const UndoButton = styled.button`
   margin-left: 1em;
   background-color: #4caf50;
@@ -119,5 +124,6 @@ export {
   FeedbackForm,
   FeedbackInput,
   FeedbackSubmit,
+  FeedbackCancel,
   UndoButton,
 };

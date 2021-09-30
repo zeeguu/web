@@ -279,11 +279,10 @@ let CenteredRow = styled.div`
   justify-content: center;
 `;
 
-let RightAlignedRow = styled.div`
+let EditSpeakButtonHolder = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
 `;
 
 export {
@@ -307,7 +306,7 @@ export {
   CenteredRow,
   LeftFeedbackButton,
   RightFeedbackButton,
-  RightAlignedRow,
+  EditSpeakButtonHolder,
 };
 
 export default StyledButton;
