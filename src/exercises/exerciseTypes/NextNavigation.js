@@ -1,23 +1,36 @@
 import strings from "../../i18n/definitions";
 import SpeakButton from "./SpeakButton";
+import EditButton from "../../words/EditButton";
 import * as s from "./Exercise.sc";
 
 export default function NextNavigation({
   bookmarksToStudy,
   moveToNextExercise,
   api,
+  reload,
+  setReload,
 }) {
   const bookmarkToStudy = bookmarksToStudy[0];
   const next = "next";
+  const exercise = "exercise";
 
   return (
     <s.BottomRow>
       {bookmarksToStudy.length === 1 && (
-        <SpeakButton
-          bookmarkToStudy={bookmarkToStudy}
-          api={api}
-          styling={next}
-        />
+        <s.EditSpeakButtonHolder>
+          <SpeakButton
+            bookmarkToStudy={bookmarkToStudy}
+            api={api}
+            styling={next}
+          />
+          <EditButton
+            bookmark={bookmarksToStudy[0]}
+            api={api}
+            styling={exercise}
+            reload={reload}
+            setReload={setReload}
+          />
+        </s.EditSpeakButtonHolder>
       )}
 
       <s.FeedbackButton

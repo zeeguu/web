@@ -23,7 +23,8 @@ export default function MultipleChoice({
   setIsCorrect,
   moveToNextExercise,
   toggleShow,
-  toggleShowImproveTranslation,
+  reload,
+  setReload,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
@@ -111,7 +112,7 @@ export default function MultipleChoice({
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">
-        {strings.chooseTheWordFittingContextHeadline}{" "}
+        {strings.chooseTheWordFittingContextHeadline}
       </div>
 
       <div className="contextExample">
@@ -142,12 +143,13 @@ export default function MultipleChoice({
           api={api}
           bookmarksToStudy={bookmarksToStudy}
           moveToNextExercise={moveToNextExercise}
+          reload={reload}
+          setReload={setReload}
         />
       )}
       <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
-        toggleShowImproveTranslation={toggleShowImproveTranslation}
         isCorrect={isCorrect}
       />
     </s.Exercise>

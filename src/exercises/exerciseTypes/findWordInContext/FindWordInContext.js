@@ -21,7 +21,8 @@ export default function FindWordInContext({
   setIsCorrect,
   moveToNextExercise,
   toggleShow,
-  toggleShowImproveTranslation,
+  reload,
+  setReload,
 }) {
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
@@ -163,12 +164,13 @@ export default function FindWordInContext({
           api={api}
           bookmarksToStudy={bookmarksToStudy}
           moveToNextExercise={moveToNextExercise}
+          reload={reload}
+          setReload={setReload}
         />
       )}
       <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
-        toggleShowImproveTranslation={toggleShowImproveTranslation}
         isCorrect={isCorrect}
       />
     </s.Exercise>

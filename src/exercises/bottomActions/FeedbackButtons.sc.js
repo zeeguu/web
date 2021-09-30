@@ -100,10 +100,9 @@ const FeedbackSubmit = styled.input`
   outline: none;
 `;
 
-const HiddenRadioButton = styled.input`
-  position: absolute;
-  opacity: 0;
-  width: 0;
+const FeedbackCancel = styled(FeedbackSubmit)`
+  background-color: #ffbb5440;
+  border: 0.1em solid #ffbb54;
 `;
 
 const UndoButton = styled.button`
@@ -125,6 +124,6 @@ export {
   FeedbackForm,
   FeedbackInput,
   FeedbackSubmit,
-  HiddenRadioButton,
+  FeedbackCancel,
   UndoButton,
 };

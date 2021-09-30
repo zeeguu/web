@@ -257,6 +257,17 @@ let strings = new LocalizedStrings(
       //WordsOnDate
       open: "Open",
 
+      //WordEditAccordion
+      done: "Done",
+      rememberToSubmit:
+        'Remember to click "Submit" in each accordion to save changes.',
+      translation: "Translation",
+      word: "Word",
+      editWord: "Edit this word",
+      expression: "Expression",
+      editExpression: "Edit this expression",
+      context: "Context",
+
       //ExerciseType
       matchThreePairs: " match 3 pairs",
       pickTheWord: "pick the word",
@@ -303,10 +314,6 @@ let strings = new LocalizedStrings(
       otherFeedback: "Other feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
-      improveTranslationFeedback1: "Translation of",
-      improveTranslationFeedback2: "is now",
-      submitTranslation: "Provide an improved translation of",
-      currently: "currently",
       undo: "UNDO",
 
       //FeedbackOptions
@@ -881,6 +888,17 @@ let strings = new LocalizedStrings(
       //WordsOnDate
       open: "Åben",
 
+      //WordEditAccordion
+      done: "Færdig",
+      rememberToSubmit:
+        'Husk at klikke på "Send" i hver del for at gemme ændringer.',
+      translation: "Oversættelse",
+      word: "Ordet",
+      editWord: "Rediger dette ord",
+      expression: "Udtryk",
+      editExpression: "Rediger dette udtryk",
+      context: "Sammenhængen",
+
       //ExerciseType
       matchThreePairs: " match 3 par",
       pickTheWord: "vælg ordet",
@@ -924,10 +942,6 @@ let strings = new LocalizedStrings(
       otherFeedback: "Anden feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sendt!",
-      improveTranslationFeedback1: "Oversættelse af",
-      improveTranslationFeedback2: "er nu",
-      submitTranslation: "Giv en forbedret oversættelse af",
-      currently: "for tiden",
       undo: "FORTRYDE",
 
       //FeedbackOptions
