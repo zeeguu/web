@@ -261,15 +261,12 @@ let strings = new LocalizedStrings(
       done: "Done",
       rememberToSubmit:
         'Remember to click "Submit" in each accordion to save changes.',
-      editTranslation: "Edit Translation",
-      currentTranslation: "Current translation: ",
-      editWord: "Edit Word",
-      currentWord: "Current word: ",
-      editExpression: "Edit Expression",
-      currentExpression: "Current expression: ",
-      editContext: "Edit Context",
-      currentContext: "Current context: ",
-      submit: "Submit",
+      translation: "Translation",
+      word: "Word",
+      editWord: "Edit this word",
+      expression: "Expression",
+      editExpression: "Edit this expression",
+      context: "Context",
 
       //ExerciseType
       matchThreePairs: " match 3 pairs",
@@ -895,15 +892,12 @@ let strings = new LocalizedStrings(
       done: "Færdig",
       rememberToSubmit:
         'Husk at klikke på "Send" i hver del for at gemme ændringer.',
-      editTranslation: "Rediger oversættelse",
-      currentTranslation: "Nuværende oversættelse: ",
-      editWord: "Rediger ordet",
-      currentWord: "Nuværende ord: ",
-      editExpression: "Rediger udtryk",
-      currentExpression: "Nuværende udtryk: ",
-      editContext: "Rediger sammenhængen",
-      currentContext: "Nuværende sammenhæng: ",
-      submit: "Send",
+      translation: "Oversættelse",
+      word: "Ordet",
+      editWord: "Rediger dette ord",
+      expression: "Udtryk",
+      editExpression: "Rediger dette udtryk",
+      context: "Sammenhængen",
 
       //ExerciseType
       matchThreePairs: " match 3 par",

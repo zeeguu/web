@@ -10,7 +10,6 @@ import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import removePunctuation from "../../../assorted/removePunctuation";
-import EditButton from "../../../words/EditButton.js";
 
 const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
@@ -110,26 +109,11 @@ export default function MultipleChoice({
     return <LoadingAnimation />;
   }
 
-  const exercise = "exercise";
-
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">
         {strings.chooseTheWordFittingContextHeadline}
       </div>
-      {isCorrect ? (
-        <s.RightAlignedRow>
-          <EditButton
-            bookmark={bookmarksToStudy[0]}
-            api={api}
-            styling={exercise}
-            reload={reload}
-            setReload={setReload}
-          />
-        </s.RightAlignedRow>
-      ) : (
-        <></>
-      )}
 
       <div className="contextExample">
         <TranslatableText
@@ -159,6 +143,8 @@ export default function MultipleChoice({
           api={api}
           bookmarksToStudy={bookmarksToStudy}
           moveToNextExercise={moveToNextExercise}
+          reload={reload}
+          setReload={setReload}
         />
       )}
       <SolutionFeedbackLinks
