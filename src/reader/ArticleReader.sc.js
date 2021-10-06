@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { BigSquareButton } from "../components/allButtons.sc";
 
@@ -100,14 +100,28 @@ let WhiteButton = styled(_BottomButton)`
   background-color: white;
   color: orange !important;
 
-  display: flex;
+  display: inline;
   align-items: center;
   justify-content: center;
 
-  width: 8em;
-  @media (min-wdith: 768px) {
-    width: 16em;
-  }
+  min-width: 5em;
+
+  //Small
+  ${(props) =>
+    props.small &&
+    css`
+      font-size: 10px;
+    `}
+
+  // Gray
+  ${(props) =>
+    props.small &&
+    css`
+      color: hsla(21, 15%, 60%, 1) !important;
+      border-color: hsla(21, 15%, 60%, 1);
+      border-width: 1px;
+      background-color: hsla(21, 15%, 99%, 1);
+    `}
 `;
 
 let OrangeButton = styled(_BottomButton)`

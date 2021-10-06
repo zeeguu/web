@@ -9,7 +9,10 @@ import BookmarkButton from "./BookmarkButton";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import { PopupButtonWrapper, StyledButton } from "../teacher/styledComponents/TeacherButtons.sc";
+import {
+  PopupButtonWrapper,
+  StyledButton,
+} from "../teacher/styledComponents/TeacherButtons.sc";
 import * as s from "./ArticleReader.sc";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
@@ -136,6 +139,15 @@ export default function ArticleReader({ api, teacherArticleID }) {
     saveArticleToOwnTexts();
   };
 
+  function reportBroken(e) {
+    let answer = prompt("What is wrong with the article?");
+    if (answer) {
+      let feedback = "broken_" + answer.replace(/ /g, "_");
+      api.logReaderActivity(api.USER_FEEDBACK, articleID, feedback);
+      setTimeout(() => history.push("/articles"), 500);
+    }
+  }
+
   return (
     <s.ArticleReader>
       <PopupButtonWrapper>
@@ -177,6 +189,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
           </button>
         </s.Toolbar>
       </PopupButtonWrapper>
+      <s.WhiteButton small gray onClick={reportBroken}>
+        Report Broken Article
+      </s.WhiteButton>
+
+      <br />
 
       <s.Title>
         <TranslatableText
@@ -197,6 +214,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
         {strings.source}
       </a>
       <hr />
+
+      <br />
+
       <s.MainText>
         <TranslatableText
           interactiveText={interactiveText}
