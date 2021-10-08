@@ -324,20 +324,13 @@ let strings = new LocalizedStrings(
       bookmarkTooHardTooltip:
         "This is a little too difficult. I'd rather focus on simpler words for now.",
       dislike: "Thumb Down",
-      dislikeTooltip: (
-        <span>
-          I'm not sure about this... And I'd rather not practice something that
-          feels wrong.
-          <br />
-          <br />
-          <strong>NB:</strong> You can improve the translation after
-          finding/showing the solution. If you wish to do so,{" "}
-          <u>
-            <strong>do not</strong>
-          </u>{" "}
-          click on this feedback button.
-        </span>
-      ),
+      imNotsure:
+        "I'm not sure about this... And I'd rather not practice something that feels wrong.",
+      nb: "NB:",
+      youCanImprove:
+        "You can improve the translation after finding/showing the solution. If you wish to do so, ",
+      doNot: "do not",
+      clickOnThisFeedbackButton: " click on this feedback button.",
       badContext: "Bad Context",
       badContextTooltip:
         "The context provided is bad. I can't figure out the solution with such bad context.",
@@ -952,20 +945,13 @@ let strings = new LocalizedStrings(
       bookmarkTooHardTooltip:
         "Dette er lidt for svært. Jeg vil hellere fokusere på enklere ord for nu.",
       dislike: "Tommelfinger ned",
-      dislikeTooltip: (
-        <span>
-          Jeg er ikke sikker på dette... Og jeg vil hellere ikke øve noget, der
-          føles forkert.
-          <br />
-          <br />
-          <strong>OBS:</strong> Du kan forbedre oversættelsen efter at have
-          fundet/vist løsningen. Hvis du ønsker at gøre det,{" "}
-          <u>
-            <strong>skal du ikke</strong>
-          </u>{" "}
-          klikke på denne feedback-knap.
-        </span>
-      ),
+      imNotsure:
+        "Jeg er ikke sikker på dette... Og jeg vil hellere lade være med at øve noget, der føles forkert.",
+      nb: "OBS:",
+      youCanImprove:
+        "Du kan forbedre oversættelsen efter at have fundet/set løsningen. Hvis du ønsker at gøre det, ",
+      doNot: "skal du ikke",
+      clickOnThisFeedbackButton: " klikke på denne feedback-knap.",
       badContext: "Dårlig kontekst",
       badContextTooltip:
         "Den givne kontekst er dårlig. Jeg kan ikke finde ud af løsningen med en så dårlig kontekst.",
