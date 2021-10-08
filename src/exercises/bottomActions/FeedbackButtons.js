@@ -148,7 +148,18 @@ export default function FeedbackButtons({
             ref={wrapper}
             key={"tooltip_dislike"}
             title={
-              <p style={{ fontSize: "small" }}>{strings.dislikeTooltip}</p>
+              <p style={{ fontSize: "small" }}>
+                <span>
+                  {strings.imNotsure}
+                  <br />
+                  <br />
+                  <strong>{strings.nb}</strong> {strings.youCanImprove}
+                  <u>
+                    <strong>{strings.doNot}</strong>
+                  </u>
+                  {strings.clickOnThisFeedbackButton}
+                </span>
+              </p>
             }
           >
             <s.FeedbackButton
