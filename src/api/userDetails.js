@@ -1,4 +1,5 @@
 import { Zeeguu_API } from "./classDef";
+import queryString from "query-string";
 
 Zeeguu_API.prototype.getUserDetails = function (callback) {
   this._get("get_user_details", callback);
@@ -31,4 +32,24 @@ Zeeguu_API.prototype.saveUserDetails = function (
       console.log(error);
       setErrorMessage("Invalid credentials");
     });
+};
+
+Zeeguu_API.prototype.modifyCEFRlevel = function (
+  languageID,
+  cefrLevel,
+  onSuccess,
+  onError
+) {
+  let payload = {
+    language_id: languageID,
+    //language_reading: languageID,
+    //language_exercises: languageID,
+    language_level: cefrLevel,
+  };
+  this._post(
+    `user_languages/modify`,
+    queryString.stringify(payload),
+    onSuccess,
+    onError
+  );
 };
