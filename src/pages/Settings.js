@@ -11,6 +11,8 @@ import * as scs from "./Settings.sc";
 import uiLanguages from "../assorted/uiLanguages";
 import strings from "../i18n/definitions";
 import { Error } from "../teacher/sharedComponents/Error";
+import Select from "../components/Select";
+import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -21,6 +23,7 @@ export default function Settings({ api, setUser }) {
   const [inviteCode, setInviteCode] = useState("");
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [currentCohort, setCurrentCohort] = useState("");
+  const [cefr, setCEFR] = useState("");
 
   // TODO: Refactor using Zeeguu project logic
 
@@ -29,6 +32,7 @@ export default function Settings({ api, setUser }) {
   useEffect(() => {
     const language = LocalStorage.getUiLanguage();
     setUiLanguage(language);
+    setTitle(strings.settings);
     // eslint-disable-next-line
   }, []);
 
@@ -36,11 +40,57 @@ export default function Settings({ api, setUser }) {
     setUiLanguage(lang);
   }
 
+  function setCEFRlevel(data) {
+    const levelKey = data.learned_language + "_cefr_level";
+    const levelNumber = data[levelKey];
+    console.log(
+      "/get_user_details returns " + levelNumber + " as the current CEFR."
+    );
+    setCEFR("" + levelNumber);
+  }
+
+  const modifyCEFRlevel = (languageID, cefrLevel) => {
+    api.modifyCEFRlevel(
+      languageID,
+      cefrLevel,
+      (res) => {
+        console.log("Clicked on 'Save'...");
+        console.log(
+          "Modifying language: '" +
+            languageID +
+            "' to CEFR level: " +
+            cefrLevel +
+            " using: /user_languages/modify"
+        );
+        console.log("API returns update status: " + res);
+        console.log(
+          "Clicking on 'Save' automatically redirects to 'My Texts'..."
+        );
+        console.log(
+          "Going back to 'Settings', /get_user_details should return: " +
+            cefr +
+            " - BUT..."
+        );
+      },
+      () => {
+        console.log("Connection to server failed...");
+      }
+    );
+  };
+
   useEffect(() => {
+    if (cefr !== "" && cefr !== "4") {
+      console.log("Changed CEFR to " + cefr + " in the dropdown...");
+    }
+  }, [cefr]);
+
+  useEffect(() => {
+    console.log("Clicked on 'Settings'...");
     api.getUserDetails((data) => {
       api.getSystemLanguages((systemLanguages) => {
         setLanguages(systemLanguages);
         setUserDetails(data);
+        setCEFRlevel(data);
       });
     });
     api.getStudent((student) => {
@@ -50,7 +100,6 @@ export default function Settings({ api, setUser }) {
         );
       }
     });
-    setTitle(strings.settings);
   }, [user.session, api]);
 
   const studentIsInCohort = currentCohort !== "";
@@ -78,6 +127,8 @@ export default function Settings({ api, setUser }) {
 
     strings.setLanguage(uiLanguage.code);
     LocalStorage.setUiLanguage(uiLanguage);
+
+    modifyCEFRlevel(userDetails.learned_language, cefr);
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
@@ -152,6 +203,15 @@ export default function Settings({ api, setUser }) {
                 learned_language: code,
               });
             }}
+          />
+
+          <label>{strings.levelOfLearnedLanguage}</label>
+          <Select
+            elements={CEFR_LEVELS}
+            label={(e) => e.label}
+            val={(e) => e.value}
+            updateFunction={setCEFR}
+            current={cefr}
           />
 
           <label>{strings.nativeLanguage}</label>
