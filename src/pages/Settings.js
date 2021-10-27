@@ -25,7 +25,7 @@ export default function Settings({ api, setUser }) {
   const [currentCohort, setCurrentCohort] = useState("");
   const [cefr, setCEFR] = useState("");
 
-  // TODO: Refactor using Zeeguu project logic
+  //TODO: Refactor using Zeeguu project logic
 
   const [uiLanguage, setUiLanguage] = useState();
 
@@ -43,9 +43,6 @@ export default function Settings({ api, setUser }) {
   function setCEFRlevel(data) {
     const levelKey = data.learned_language + "_cefr_level";
     const levelNumber = data[levelKey];
-    console.log(
-      "/get_user_details returns " + levelNumber + " as the current CEFR."
-    );
     setCEFR("" + levelNumber);
   }
 
@@ -54,23 +51,8 @@ export default function Settings({ api, setUser }) {
       languageID,
       cefrLevel,
       (res) => {
-        console.log("Clicked on 'Save'...");
-        console.log(
-          "Modifying language: '" +
-            languageID +
-            "' to CEFR level: " +
-            cefrLevel +
-            " using: /user_languages/modify"
-        );
+        console.log("Update '" + languageID + "' CEFR level to: " + cefrLevel);
         console.log("API returns update status: " + res);
-        console.log(
-          "Clicking on 'Save' automatically redirects to 'My Texts'..."
-        );
-        console.log(
-          "Going back to 'Settings', /get_user_details should return: " +
-            cefr +
-            " - BUT..."
-        );
       },
       () => {
         console.log("Connection to server failed...");
@@ -79,19 +61,12 @@ export default function Settings({ api, setUser }) {
   };
 
   useEffect(() => {
-    if (cefr !== "" && cefr !== "4") {
-      console.log("Changed CEFR to " + cefr + " in the dropdown...");
-    }
-  }, [cefr]);
-
-  useEffect(() => {
-    console.log("Clicked on 'Settings'...");
     api.getUserDetails((data) => {
-      api.getSystemLanguages((systemLanguages) => {
-        setLanguages(systemLanguages);
-        setUserDetails(data);
-        setCEFRlevel(data);
-      });
+      setUserDetails(data);
+      setCEFRlevel(data);
+    });
+    api.getSystemLanguages((systemLanguages) => {
+      setLanguages(systemLanguages);
     });
     api.getStudent((student) => {
       if (student.cohort_id !== null) {
@@ -145,7 +120,6 @@ export default function Settings({ api, setUser }) {
     api.joinCohort(
       inviteCode,
       (status) => {
-        console.log(status);
         status === "OK"
           ? history.push("/articles/classroom")
           : setShowJoinCohortError(true);
