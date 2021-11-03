@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { darkBlue, lightBlue, darkGrey } from "../../components/colors";
 
 export const StyledNonStudiesWordCard = styled.div`
   .excluded-by-algorithm-string {
@@ -10,18 +11,18 @@ export const StyledNonStudiesWordCard = styled.div`
   .not-yet-studied-string {
     margin: 0.5em 0 0 1.2em;
     font-size: small;
-    color: #808080;
+    color: ${darkGrey};
   }
 
   .non-studied-words-row {
-    border-left: solid 3px #5492b3;
+    border-left: solid 3px ${darkBlue};
     margin-bottom: 38px;
     min-width: 270px;
     user-select: none;
   }
 
   .words-not-studied-translations {
-    color: #44cdff;
+    color: ${lightBlue};
     margin-bottom: -15px;
     margin-top: 0px;
     margin-left: 1em;

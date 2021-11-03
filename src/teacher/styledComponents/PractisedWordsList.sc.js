@@ -1,15 +1,16 @@
 import styled from "styled-components";
+import { darkBlue, darkGrey, lightBlue } from "../../components/colors";
 
 export const StyledPractisedWordsList = styled.div`
   .practised-words-container {
-    border-left: solid 3px #5492b3;
+    border-left: solid 3px ${darkBlue};
     margin-bottom: 38px;
     min-width: 350px;
     user-select: none;
   }
 
   .translation-of-practised-word {
-    color: #44cdff;
+    color: ${lightBlue};
     margin-bottom: -15px;
     margin-top: 0px;
     margin-left: 1em;
@@ -29,6 +30,6 @@ export const StyledPractisedWordsList = styled.div`
   }
 
   .word-practised-date {
-    color: #808080;
+    color: ${darkGrey};
   }
 `;
