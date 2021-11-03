@@ -16,17 +16,15 @@ export default function Select({
     <select onChange={(e) => updateFunction(e.target.value)}>
       <option style={{ display: "none" }} />
 
-      {elements.map((each) =>
-        current === val(each) ? (
-          <option key={val(each)} value={val(each)} selected>
-            {label(each)}
-          </option>
-        ) : (
-          <option key={val(each)} value={val(each)}>
-            {label(each)}
-          </option>
-        )
-      )}
+      {elements.map((each) => (
+        <option
+          key={val(each)}
+          value={val(each)}
+          selected={current === val(each)}
+        >
+          {label(each)}
+        </option>
+      ))}
     </select>
   );
 }
