@@ -242,7 +242,7 @@ let strings = new LocalizedStrings(
 
       //Learned
       learnedWordsAreMsg:
-        "Learned words are words that were correct in exercises on four different days.",
+        "Learned words are words that were correct in exercises on four different days or words that have been tagged to be 'Too easy'.",
       numberOfLearnedWordsMsg: "You have learned {0} words so far.",
       correctOn: "Correct on: ",
 
@@ -866,7 +866,7 @@ let strings = new LocalizedStrings(
       //Learned
       titleLearnedWords: "Indlærte ord",
       learnedWordsAreMsg:
-        "Lærte ord er ord, der har været trænet korrekt i øvelser på fire forskellige dage.",
+        "Lærte ord er ord, der har været trænet korrekt i øvelser på fire forskellige dage eller ord, der er blevet markeret som 'For lette'.",
       numberOfLearnedWordsMsg: "Du har lært {0} ord indtil videre.",
       correctOn: "Korrekt på: ",
 
