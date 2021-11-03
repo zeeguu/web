@@ -42,8 +42,6 @@ Zeeguu_API.prototype.modifyCEFRlevel = function (
 ) {
   let payload = {
     language_id: languageID,
-    //language_reading: languageID,
-    //language_exercises: languageID,
     language_level: cefrLevel,
   };
   this._post(
