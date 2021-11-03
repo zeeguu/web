@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { darkBlue } from "../../components/colors";
 
 export const StyledExerciseDataItemCard = styled.div`
   .exercise-data-item-card-box {
@@ -39,7 +40,8 @@ export const StyledExerciseDataItemCard = styled.div`
   .view-more-icon {
     margin-top: -0.5em;
     font-size: 45px;
-    color: #5492b3;
+    color: ${darkBlue};
+    
   }
 
   .view-less-box {
@@ -57,6 +59,6 @@ export const StyledExerciseDataItemCard = styled.div`
   .view-less-icon {
     margin-top: -0.5em;
     font-size: 45px;
-    color: #5492b3;
+    color: ${darkBlue};
   }
 `;
