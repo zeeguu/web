@@ -20,6 +20,12 @@ export default function Contributors() {
 
       {member("Mircea Lungu", "Production, maintenance")}
 
+      {member("Sara Tolstrup Husum", "Teacher Dashboard Modernization")}
+
+      {member("Eleonora Kurilchik", "Teacher Dashboard Modernization")}
+
+      {member("Maja Albin Groes Ludvigsen", "Teacher Dashboard Modernization")}
+
       {member("Katrine Iversen", "UI Modernization")}
 
       {member("Konstantina Argyropoulou", "UI Modernization")}
