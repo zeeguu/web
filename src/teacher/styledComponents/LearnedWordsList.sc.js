@@ -2,6 +2,11 @@ import styled from "styled-components";
 import { darkBlue, lightBlue } from "../../components/colors";
 
 export const StyledLearnedWordsList = styled.div`
+  .list-container{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
   .no-learned-words-string {
     font-size: medium;
   }
