@@ -42,7 +42,7 @@ const LearnedWordsList = ({ api }) => {
 
   return (
     <s.StyledLearnedWordsList>
-      <Fragment>
+      <div className="list-container">
         {learnedWords.length === 0 && (
           <p className="no-learned-words-string">
             {strings.studentHasNotLearnedWords}
@@ -61,7 +61,7 @@ const LearnedWordsList = ({ api }) => {
             </div>
           </div>
         ))}
-      </Fragment>
+      </div>
     </s.StyledLearnedWordsList>
   );
 };
