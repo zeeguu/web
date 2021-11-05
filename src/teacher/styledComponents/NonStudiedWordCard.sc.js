@@ -11,23 +11,24 @@ export const StyledNonStudiesWordCard = styled.div`
 
   .non-studied-word {
     margin-bottom: 0;
-    padding: 0.4em 2em 0 1em;
+    padding: 0.4em 2em 0.1em 1em;
   }
 
   .non-studied-word-translation {
     color: ${lightBlue};
-    margin: 0 1em;
+    margin: 0 1.2em;
+    font-size: smaller;
   }
 
   .red-reason {
-    margin: 0.5em 0 0 1.2em;
-    font-size: smaller;
+    margin: 0.7em 0 0 1.2em;
+    font-size: small;
     color: red;
   }
 
   .grey-reason {
-    margin: 0.5em 0 0 1.2em;
-    font-size: smaller;
+    margin: 0.7em 0 0 1.2em;
+    font-size: small;
     color: ${darkGrey};
   }
 `;

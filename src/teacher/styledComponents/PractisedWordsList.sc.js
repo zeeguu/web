@@ -2,34 +2,36 @@ import styled from "styled-components";
 import { darkBlue, darkGrey, lightBlue } from "../../components/colors";
 
 export const StyledPractisedWordsList = styled.div`
+  p {
+    margin: 0;
+  }
+
   .practised-words-container {
     border-left: solid 3px ${darkBlue};
-    margin-bottom: 38px;
-    min-width: 350px;
+    min-width: 340px;
     user-select: none;
+    margin: 20px 0;
+  }
+
+  .word-practised {
+    margin: 0 0 0 1em;
   }
 
   .translation-of-practised-word {
     color: ${lightBlue};
-    margin-bottom: -15px;
-    margin-top: 0px;
-    margin-left: 1em;
-  }
-
-  .word-practised {
-    margin-left: 1em;
-    margin-bottom: -5px;
+    font-size: smaller;
+    margin: 0 0 1em 1.2em;
   }
 
   .practised-word-date-and-icons {
     display: flex;
     flex-direction: row;
-    margin-left: 1em;
+    margin: 0 0 0 1.2em;
     font-size: small;
-    margin-bottom: -25px;
   }
 
   .word-practised-date {
     color: ${darkGrey};
+    min-width: 85px;
   }
 `;
