@@ -39,13 +39,12 @@ const PractisedWordsList = ({ api }) => {
           <div key={word + uuid()}>
             <s.StyledPractisedWordsList>
               <div key={uuid()} className="practised-words-container">
-                <p className="translation-of-practised-word">
-                  {word.translation.toLowerCase()}
-                </p>
                 <p className="word-practised">
                   <b>{word.word}</b>
                 </p>
-
+                <p className="translation-of-practised-word">
+                  {word.translation.toLowerCase()}
+                </p>
                 {word.exerciseAttempts.map((exercise) => (
                   <div key={uuid()} className="practised-word-date-and-icons">
                     <p className="word-practised-date">

@@ -5,7 +5,7 @@ export const StyledExerciseType = styled.div`
   .type-explanation {
     font-size: small;
     color: ${darkGrey};
-    margin: 1em 0 1em 1.1em;
+    margin: 0 1.1em;
   }
 
   .feedback-container {
@@ -13,10 +13,16 @@ export const StyledExerciseType = styled.div`
     flex-direction: row;
   }
 
+  .feedback-explanation {
+    font-size: small;
+    color: ${darkGrey};
+    margin: 0 0 0 1.1em;
+  }
+
   .feedback {
     font-size: small;
     font-weight: 500;
     color: black;
-    margin-left:3px;
+    margin: 0 3px;
   }
 `;

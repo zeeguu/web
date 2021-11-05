@@ -6,17 +6,13 @@ const NonStudiedWordCard = ({ word }) => {
     if (word.fit_for_study === null) {
       return (
         <s.StyledNonStudiesWordCard>
-          <p className="red-reason">
-            {strings.excludedByAlgorithm}
-          </p>
+          <p className="red-reason">{strings.excludedByAlgorithm}</p>
         </s.StyledNonStudiesWordCard>
       );
     }
     return (
       <s.StyledNonStudiesWordCard>
-        <p className="grey-reason">
-          {strings.scheduledNotYetStudied}
-        </p>
+        <p className="grey-reason">{strings.scheduledNotYetStudied}</p>
       </s.StyledNonStudiesWordCard>
     );
   };

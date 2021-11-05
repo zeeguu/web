@@ -40,7 +40,7 @@ const ExerciseType = ({ source, date}) => {
       return (
         <s.StyledExerciseType>
           <div className="feedback-container">
-            <p className="type-explanation">{strings.studentFeedback}</p>
+            <p className="feedback-explanation">{strings.studentFeedback}</p>
             <p className="feedback">{strings.tooEasy}</p>
           </div>
         </s.StyledExerciseType>
