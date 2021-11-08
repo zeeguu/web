@@ -12,7 +12,7 @@ const Zeeguu_API = class {
   }
 
   getSystemLanguages(callback) {
-    this._get("system_languages", callback);
+    this._getJSON("system_languages", callback);
   }
 
   _appendSessionToUrl(endpointName) {
@@ -31,7 +31,7 @@ const Zeeguu_API = class {
       });
   }
 
-  _get(endpoint, callback) {
+  _getJSON(endpoint, callback) {
     this.apiLog("GET" + endpoint);
     fetch(this._appendSessionToUrl(endpoint, this.session))
       .then((response) => response.json())

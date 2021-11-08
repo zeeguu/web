@@ -1,27 +1,27 @@
 import { Zeeguu_API } from "./classDef";
 
 Zeeguu_API.prototype.getBookmarksByDay = function (callback) {
-  this._get("bookmarks_by_day/with_context", callback);
+  this._getJSON("bookmarks_by_day/with_context", callback);
 };
 
 Zeeguu_API.prototype.getBookmarksCountsByDate = function (callback) {
-  this._get("bookmark_counts_by_date", callback);
+  this._getJSON("bookmark_counts_by_date", callback);
 };
 
 Zeeguu_API.prototype.starredBookmarks = function (count, callback) {
-  this._get(`starred_bookmarks/${count}`, callback);
+  this._getJSON(`starred_bookmarks/${count}`, callback);
 };
 
 Zeeguu_API.prototype.learnedBookmarks = function (count, callback) {
-  this._get(`learned_bookmarks/${count}`, callback);
+  this._getJSON(`learned_bookmarks/${count}`, callback);
 };
 
 Zeeguu_API.prototype.topBookmarks = function (count, callback) {
-  this._get(`top_bookmarks/${count}`, callback);
+  this._getJSON(`top_bookmarks/${count}`, callback);
 };
 
 Zeeguu_API.prototype.bookmarksForArticle = function (articleId, callback) {
-  this._get(`bookmarks_for_article/${articleId}`, (result) =>
+  this._getJSON(`bookmarks_for_article/${articleId}`, (result) =>
     callback(result.bookmarks)
   );
 };
@@ -30,7 +30,7 @@ Zeeguu_API.prototype.bookmarksToStudyForArticle = function (
   articleId,
   callback
 ) {
-  this._get(`bookmarks_to_study_for_article/${articleId}`, (result) =>
+  this._getJSON(`bookmarks_to_study_for_article/${articleId}`, (result) =>
     callback(result.bookmarks)
   );
 };

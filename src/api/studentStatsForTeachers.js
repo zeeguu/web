@@ -8,7 +8,7 @@ import queryString from "query-string";
  * @returns {object} object containing (id, name, email, reading time, exercises done, last article)
  */
 Zeeguu_API.prototype.loadUserInfo = function (userID, duration, callback) {
-  this._get(`/user_info/${userID}/${duration}`, callback);
+  this._getJSON(`/user_info/${userID}/${duration}`, callback);
 };
 
 Zeeguu_API.prototype.getStudentInfo = function (studentID, cohortID, duration, onSuccess, onError) {
