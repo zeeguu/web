@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { v4 as uuid } from "uuid";
 import LocalStorage from "../../../assorted/LocalStorage";
 import ExerciseType from "./ExerciseType";
-import { shortFormattedDate } from "../../sharedComponents/FormattedDate";
+//import { shortFormattedDate } from "../../sharedComponents/FormattedDate";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/LearnedWordsList.sc";
 
@@ -34,12 +34,7 @@ const LearnedWordsList = ({ api }) => {
     } else {
       return (
         <s.StyledLearnedWordsList>
-          <Fragment>
-            <ExerciseType source="LEARNED" />
-            <p className="date-of-word-learned">
-              {shortFormattedDate(word.learned_time)}
-            </p>
-          </Fragment>
+          <ExerciseType source="LEARNED" date={word.learned_time} />
         </s.StyledLearnedWordsList>
       );
     }
@@ -47,7 +42,7 @@ const LearnedWordsList = ({ api }) => {
 
   return (
     <s.StyledLearnedWordsList>
-      <Fragment>
+      <div className="list-container">
         {learnedWords.length === 0 && (
           <p className="no-learned-words-string">
             {strings.studentHasNotLearnedWords}
@@ -55,20 +50,18 @@ const LearnedWordsList = ({ api }) => {
         )}
         {learnedWords.map((word) => (
           <div key={uuid() + word}>
-            <div className="learned-words-container">
+            <div className="learned-word-card">
+              <p className="learned-word">
+                <b>{word.word}</b>
+              </p>
               <p className="learned-word-translation">
                 {word.translation.toLowerCase()}
               </p>
-              <p className="learned-word-string">
-                <b>{word.word}</b>
-              </p>
-              <div className="learned-words-student-feedback-container">
-                {reason(word)}
-              </div>
+              {reason(word)}
             </div>
           </div>
         ))}
-      </Fragment>
+      </div>
     </s.StyledLearnedWordsList>
   );
 };
