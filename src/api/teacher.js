@@ -28,7 +28,7 @@ Zeeguu_API.prototype.getTeacherTexts = function (callback) {
       }
     ]
 */
-  this._get(`teacher_texts`, callback);
+  this._getJSON(`teacher_texts`, callback);
 };
 
 Zeeguu_API.prototype.createCohort = async function (data) {
@@ -44,7 +44,7 @@ Zeeguu_API.prototype.updateCohort = async function (data, id) {
 };
 
 Zeeguu_API.prototype.getCohortFromArticle = function (article_id, callback) {
-  this._get(`/get_cohorts_for_article/${article_id}`, callback);
+  this._getJSON(`/get_cohorts_for_article/${article_id}`, callback);
 };
 
 Zeeguu_API.prototype.getCohortsInfo = function (callback) {
@@ -63,7 +63,7 @@ Zeeguu_API.prototype.getCohortsInfo = function (callback) {
     }
   ]
   */
-  this._get(`cohorts_info`, callback);
+  this._getJSON(`cohorts_info`, callback);
 };
 
 Zeeguu_API.prototype.addArticleToCohort = function (
@@ -113,11 +113,11 @@ Zeeguu_API.prototype.deleteArticleFromCohort = function (
 };
 
 Zeeguu_API.prototype.getStudents = function (cohortID, duration, callback) {
-  this._get(`/users_from_cohort/${cohortID}/${duration}`, callback);
+  this._getJSON(`/users_from_cohort/${cohortID}/${duration}`, callback);
 };
 
 Zeeguu_API.prototype.getCohortName = function (cohortID, callback) {
-  this._get(`/cohort_name/${cohortID}`, callback);
+  this._getJSON(`/cohort_name/${cohortID}`, callback);
 };
 
 Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {

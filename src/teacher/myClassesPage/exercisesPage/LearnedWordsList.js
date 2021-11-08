@@ -1,9 +1,8 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { v4 as uuid } from "uuid";
 import LocalStorage from "../../../assorted/LocalStorage";
 import ExerciseType from "./ExerciseType";
-//import { shortFormattedDate } from "../../sharedComponents/FormattedDate";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/LearnedWordsList.sc";
 

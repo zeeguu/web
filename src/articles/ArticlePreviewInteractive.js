@@ -4,6 +4,8 @@ import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
+//TODO If this file is included in the running code, it should be localized:
+//TODO import strings from "../i18n/definitions";
 
 export default function ArticleOverview({
   article,

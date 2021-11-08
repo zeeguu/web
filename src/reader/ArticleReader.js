@@ -190,7 +190,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
         </s.Toolbar>
       </PopupButtonWrapper>
       <s.WhiteButton small gray onClick={reportBroken}>
-        Report Broken Article
+        {strings.reportBrokenArticle}
       </s.WhiteButton>
 
       <br />
