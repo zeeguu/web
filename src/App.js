@@ -1,4 +1,3 @@
-import "./App.css";
 import React, { useState } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
@@ -10,7 +9,6 @@ import Zeeguu_API from "./api/Zeeguu_API";
 import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
-
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 function App() {
