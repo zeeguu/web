@@ -242,7 +242,7 @@ let strings = new LocalizedStrings(
 
       //Learned
       learnedWordsAreMsg:
-        "Learned words are words that were correct in exercises on four different days.",
+        "Learned words are words that were correct in exercises on four different days or words that have been tagged to be 'Too easy'.",
       numberOfLearnedWordsMsg: "You have learned {0} words so far.",
       correctOn: "Correct on: ",
 
@@ -615,7 +615,7 @@ let strings = new LocalizedStrings(
       wordsTranslatedButNotInZeeguu:
         "Words/sentences translated by the student but not studied in Zeeguu",
       wordsTranslatedAndLearned:
-        "Words/sentences practised correctly on four different days",
+        "Words/sentences practised correctly on four different days or tagged 'Too easy'",
       wordsTranslatedAndExercised:
         "Practised words/sentences - translated and exercised by the student",
 
@@ -866,7 +866,7 @@ let strings = new LocalizedStrings(
       //Learned
       titleLearnedWords: "Indlærte ord",
       learnedWordsAreMsg:
-        "Lærte ord er ord, der har været trænet korrekt i øvelser på fire forskellige dage.",
+        "Lærte ord er ord, der har været trænet korrekt i øvelser på fire forskellige dage eller ord, der er blevet markeret som 'for nemme'.",
       numberOfLearnedWordsMsg: "Du har lært {0} ord indtil videre.",
       correctOn: "Korrekt på: ",
 
@@ -896,8 +896,8 @@ let strings = new LocalizedStrings(
       matchThreePairs: " match 3 par",
       pickTheWord: "vælg ordet",
       typeTheWord: "skriv ordet",
-      learnedOn: "Lært på:",
-      studentFeedback: "Elev feedback:",
+      learnedOn: "Lært den:",
+      studentFeedback: "Elevfeedback:",
       noType: "Ingen type",
 
       //Exercises
@@ -913,7 +913,7 @@ let strings = new LocalizedStrings(
       studentHasNotLearnedWords: "Eleven har ikke lært nogen ord endnu.",
 
       //NonStudiedWordsList
-      NoLoookedupWordsYet: "Eleven har ikke slået nogen ord op enndu.",
+      NoLoookedupWordsYet: "Eleven har ikke slået nogen ord op endnu.",
 
       //NonStudiedWordCard
       excludedByAlgorithm: "Udelukket af algoritmen",
@@ -1240,7 +1240,7 @@ let strings = new LocalizedStrings(
       wordsTranslatedButNotInZeeguu:
         "Ord/sætninger oversat af eleven, men ikke inkluderet i øvelser",
       wordsTranslatedAndLearned:
-        "Ord/sætninger øvet korrekt på fire forskellige dage",
+        "Ord/sætninger øvet korrekt på fire forskellige dage eller markeret som 'for nemme'.",
       wordsTranslatedAndExercised: "Ord/sætninger - oversat og øvet af eleven",
 
       //StudentExercisesInsights
