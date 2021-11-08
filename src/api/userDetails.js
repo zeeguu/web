@@ -2,7 +2,7 @@ import { Zeeguu_API } from "./classDef";
 import queryString from "query-string";
 
 Zeeguu_API.prototype.getUserDetails = function (callback) {
-  this._get("get_user_details", callback);
+  this._getJSON("get_user_details", callback);
 };
 
 Zeeguu_API.prototype.saveUserDetails = function (
