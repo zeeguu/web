@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdPeople } from "react-icons/md/";
 import { StyledButton } from "../../styledComponents/TeacherButtons.sc";
@@ -11,10 +11,18 @@ export const CohortItemCard = ({
   setShowCohortForm,
   setCohortToEdit,
 }) => {
+  const [cohortTeacherNames, setCohortTeacherNames] = useState("");
+
   const handleEdit = () => {
     setCohortToEdit(cohort);
     setShowCohortForm(true);
   };
+
+  useEffect(() => {
+    const teacherNames = cohort.teachers_for_cohort.map((each) => each.name);
+    const teacherNameList = teacherNames.join(",");
+    setCohortTeacherNames(teacherNameList);
+  }, []);
 
   return (
     <Fragment>
@@ -22,8 +30,10 @@ export const CohortItemCard = ({
         <div className="cohort-card">
           <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
             <div>
-              <div className="top-line-box">
-                <p className="font-light">{strings[cohort.language_name.toLowerCase()]}</p>
+              <div className="space-between-container">
+                <p className="font-light">
+                  {strings[cohort.language_name.toLowerCase()]}
+                </p>
                 <p className="student-count">
                   {cohort.cur_students}
                   <MdPeople className="cohort-card-icon-people" size="22px" />
@@ -34,7 +44,11 @@ export const CohortItemCard = ({
               {cohort.name} {/*This cannot be localized*/}
             </h2>
           </Link>
-          <div className="bottom-box">
+  
+            <p className="font-light">
+              {strings.teachers} {cohortTeacherNames}
+            </p>
+          <div className="space-between-container">
             <p className="font-light">
               {strings.inviteCode}: {cohort.inv_code}
             </p>
