@@ -455,6 +455,7 @@ let strings = new LocalizedStrings(
 
       //CohortItemCard
       seeStudents: "See Students",
+      teachers: "Teachers: ",
 
       //CohortList
       addClass: "Add Class",
@@ -1095,6 +1096,7 @@ let strings = new LocalizedStrings(
 
       //CohortItemCard
       seeStudents: "Se elever",
+      teachers: "Lærere:",
 
       //CohortList
       addClass: "Tilføj klasse",

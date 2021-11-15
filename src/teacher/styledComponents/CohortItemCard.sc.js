@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { darkGrey } from "../../components/colors";
 
 export const StyledCohortItemCard = styled.div`
- 
   .cohort-card {
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
@@ -17,7 +16,7 @@ export const StyledCohortItemCard = styled.div`
     width: 80%;
     margin-left: 10%;
   }
-  .top-line-box {
+  .space-between-container {
     display: flex;
     justify-content: space-between;
     padding-right: 1em;
@@ -35,26 +34,26 @@ export const StyledCohortItemCard = styled.div`
       margin-left: 5px;
     }
   }
+
   .cohort-card-headline {
     color: black;
     font-size: xx-large;
     margin-top: -4px;
-    height: 50px;
+    margin-bottom: 0;
   }
+
   .font-light {
     color: ${darkGrey};
     font-weight: 400;
   }
-  .bottom-box {
+
+  .float-left-container {
     display: flex;
-    justify-content: space-between;
     padding-right: 1em;
+    font-size: small;
   }
+
   .buttons-container {
     padding-top: 0.49em;
-
-    /*  To put the buttons on top of each other:
-      display:flex;
-      flex-direction: column; */
   }
 `;
