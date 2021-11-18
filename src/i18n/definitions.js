@@ -268,15 +268,19 @@ let strings = new LocalizedStrings(
       expression: "Expression",
       editExpression: "Edit this expression",
       context: "Context",
-      
+
       //WordsForArticle
-      reviewTranslations:"Review Translations for Your Exercises ",
+      reviewTranslations: "Review Translations for Your Exercises ",
       from: "From: ",
-      deleteTranslation: "Delete a translation if you don't want it in exercises.",
-      starTranslation: "Star a translation to make it have priority in exercises.",
-      ifGreyedTranslation: "If a translation is grayed out, it means that Zeeguu does not think it is appropriate for exercises; to overload this decision you can star the translation.",
-      theWordsYouTranslate: "The words you translate in the article will appear here for review",
-      backToArticle:"Back to Article",
+      deleteTranslation:
+        "Delete a translation if you don't want it in exercises.",
+      starTranslation:
+        "Star a translation to make it have priority in exercises.",
+      ifGreyedTranslation:
+        "If a translation is grayed out, it means that Zeeguu does not think it is appropriate for exercises; to overload this decision you can star the translation.",
+      theWordsYouTranslate:
+        "The words you translate in the article will appear here for review",
+      backToArticle: "Back to Article",
       toExercises: "To Exercises",
 
       //ExerciseType
@@ -378,13 +382,13 @@ let strings = new LocalizedStrings(
         "Something went wrong. Please check that the invite code is valid and try again.",
 
       //CEFR_LEVELS
-      beginner:"Beginner",
+      beginner: "Beginner",
       elementary: "Elementary",
       intermediate: "Intermediate",
       upperIntermediate: "Upper Intermediate",
       advanced: "Avanced",
       proficiency: "Proficiency",
-      
+
       //_ActivityInsightsRouter
       backTo: "Back to ",
       s_reading: "'s Reading",
@@ -455,8 +459,8 @@ let strings = new LocalizedStrings(
 
       //CohortItemCard
       seeStudents: "See Students",
+      teacher: "Teacher: ",
       teachers: "Teachers: ",
-
       //CohortList
       addClass: "Add Class",
 
@@ -913,14 +917,18 @@ let strings = new LocalizedStrings(
       context: "Sammenhængen",
 
       //WordsForArticle
-      reviewTranslations:"Gennemse oversættelser til din øvelser ",
+      reviewTranslations: "Gennemse oversættelser til din øvelser ",
       from: "Fra: ",
-      deleteTranslation: "Slet en oversættelse, hvis du ikke vil have den i øvelserne.",
-      starTranslation: "Stjernemarkér en oversættelse for at prioritere den i øvelserne.",
-      ifGreyedTranslation: "Hvis en oversættelse er grå, betyder det at Zeeguu finder den uegnet til øvelser; for at overskrive denne kendelse kan du stjernemarkere oversættelsen.",
-      theWordsYouTranslate: "De ord, du oversætter i artiklen, vil blive vist til gennemgang her.",
-      backToArticle:"Tilbage til artiklen",
-      toExercises:"Til øvelserne",
+      deleteTranslation:
+        "Slet en oversættelse, hvis du ikke vil have den i øvelserne.",
+      starTranslation:
+        "Stjernemarkér en oversættelse for at prioritere den i øvelserne.",
+      ifGreyedTranslation:
+        "Hvis en oversættelse er grå, betyder det at Zeeguu finder den uegnet til øvelser; for at overskrive denne kendelse kan du stjernemarkere oversættelsen.",
+      theWordsYouTranslate:
+        "De ord, du oversætter i artiklen, vil blive vist til gennemgang her.",
+      backToArticle: "Tilbage til artiklen",
+      toExercises: "Til øvelserne",
 
       //ExerciseType
       matchThreePairs: " match 3 par",
@@ -1019,7 +1027,7 @@ let strings = new LocalizedStrings(
         "Noget gik galt. Tjek venligst at invitationskoden er korrekt og prøv igen.",
 
       //CEFR_LEVELS
-      beginner:"Begynder",
+      beginner: "Begynder",
       elementary: "Basis",
       intermediate: "Øvet",
       upperIntermediate: "Meget øvet",
@@ -1096,7 +1104,8 @@ let strings = new LocalizedStrings(
 
       //CohortItemCard
       seeStudents: "Se elever",
-      teachers: "Lærere:",
+      teacher: "Lærer: ",
+      teachers: "Lærere: ",
 
       //CohortList
       addClass: "Tilføj klasse",
