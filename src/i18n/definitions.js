@@ -32,7 +32,6 @@ let strings = new LocalizedStrings(
       joinClass: "Join Class",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
-      deleteFromMyClasses: "Delete From My Classes",
       tooEasy: "too easy",
 
       //LoadingAnimation
@@ -54,7 +53,7 @@ let strings = new LocalizedStrings(
       thankYouMsgPrefix:
         "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
-      inviteCode: "Invite Code",
+      inviteCode: "Invite code",
       levelOfLearnedLanguage: "Level in Learned Language",
       baseLanguage: "Base languange",
 
@@ -677,7 +676,6 @@ let strings = new LocalizedStrings(
       cancel: "Annuller",
       joinClass: "Deltag i klasse",
       youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
-      deleteFromMyClasses: "Slet fra 'Mine klasser'",
       tooEasy: "for nem",
 
       //LoadingAnimation
