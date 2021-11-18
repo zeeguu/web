@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import strings from "../../../i18n/definitions";
-import { useHistory } from "react-router";
 import { LabeledTextField } from "../../sharedComponents/LabeledInputFields";
 import * as s from "../../styledComponents/AddURLDialog.sc";
 import {
@@ -10,8 +9,12 @@ import {
 import { Error } from "../../sharedComponents/Error";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 
-export default function AddTeacherDialog({ api, cohort, setIsOpen }) {
-  const history = useHistory();
+export default function AddTeacherDialog({
+  api,
+  cohort,
+  setIsOpen,
+  setForceUpdate,
+}) {
   const [showGuidance, setShowGuidance] = useState(false);
   const [showError, setShowError] = useState(false);
   const [colleagueEmail, setColleagueEmail] = useState("");
@@ -27,6 +30,11 @@ export default function AddTeacherDialog({ api, cohort, setIsOpen }) {
     setColleagueEmail(event.target.value);
   }
 
+  function handleSuccess() {
+    setForceUpdate((prev) => prev + 1);
+    setIsOpen(false);
+  }
+
   const shareWithColleague = () => {
     if (colleagueEmail === "") {
       setShowGuidance(true);
@@ -37,7 +45,7 @@ export default function AddTeacherDialog({ api, cohort, setIsOpen }) {
         (success) => {
           console.log("Succeeded!!!");
           console.log(success);
-          success === "OK" ? setIsOpen(false) : setShowError(true);
+          success === "OK" ? handleSuccess() : setShowError(true);
         },
         (error) => {
           console.log(error);
@@ -54,7 +62,9 @@ export default function AddTeacherDialog({ api, cohort, setIsOpen }) {
       max_width="525px"
     >
       <s.StyledURLDialog>
-        <h1 className="add-text-headline">ADD ANOTHER TEACHER TO THE CLASS*</h1>
+        <h1 className="add-text-headline">
+          ADD ANOTHER TEACHER TO THE CLASS***
+        </h1>
       </s.StyledURLDialog>
       <LabeledTextField
         value={colleagueEmail}
@@ -62,11 +72,13 @@ export default function AddTeacherDialog({ api, cohort, setIsOpen }) {
         name="colleague_email"
         placeholder="eg. 'COLLEAGUE@WORKMAIL.COM'"
       >
-        ADD EMAIL OF COLLEAGUE*
+        ADD EMAIL OF COLLEAGUE***
       </LabeledTextField>
       <p>
-        <b>{strings.pleaseNote}</b>
-        THIS ADDS THE CLASS TO YOUR COLLEAGUES LIST OF CLASSES BLABLABLA*
+        ***<b>{strings.pleaseNote}</b>
+        This adds the class to your colleague's list of classes. If you delete
+        the class, you also irriversibly delete the class from your colleagues
+        list of classes.***
       </p>
       {showGuidance && (
         <Error message="YOU HAVE TO ADD THE EMAIL OF A TEACHER." />
@@ -76,7 +88,7 @@ export default function AddTeacherDialog({ api, cohort, setIsOpen }) {
       )}
       <PopupButtonWrapper>
         <StyledButton primary onClick={shareWithColleague}>
-          ADD COLLEAGUE
+          ADD COLLEAGUE***
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

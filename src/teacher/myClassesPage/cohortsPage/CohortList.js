@@ -62,6 +62,7 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
           api={api}
           cohort={cohortToEdit}
           setIsOpen={setShowAddTeacherDialog}
+          setForceUpdate={setForceUpdate}
         />
       )}
     </Fragment>

@@ -1,6 +1,9 @@
 import React from "react";
 import strings from "../../../i18n/definitions";
-import { StyledButton, PopupButtonWrapper } from "../../styledComponents/TeacherButtons.sc";
+import {
+  StyledButton,
+  PopupButtonWrapper,
+} from "../../styledComponents/TeacherButtons.sc";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 import CohortItemCard from "./CohortItemCard";
 import { Error } from "../../sharedComponents/Error";
@@ -26,16 +29,21 @@ const DeleteCohortWarning = ({
     >
       <div className="centered">
         <h1>{strings.dangerzone}</h1>
-        <p>{strings.deleteCohortEnsurance}</p>
       </div>
-      <CohortItemCard api={api} cohort={cohort} isWarning={true} />{" "}
+      <CohortItemCard api={api} cohort={cohort} isWarning={true} />
+      <p>{strings.deleteCohortEnsurance}</p>
       {isDeleteError && <Error message={strings.cannotDeleteClassWithText} />}
+      {cohort.teachers_for_cohort.length > 1 && (
+        <b>
+          <Error message="You are sharing this class with at least one colleague. If you delete it here, you also irreversibly delete it from their list of classes.***" />
+        </b>
+      )}
       <PopupButtonWrapper>
         <StyledButton primary onClick={handleCancel}>
           {strings.cancel}
         </StyledButton>
         <StyledButton secondary onClick={() => deleteCohort(cohort.id)}>
-          {strings.deleteFromMyClasses}
+          {strings.delete}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>
