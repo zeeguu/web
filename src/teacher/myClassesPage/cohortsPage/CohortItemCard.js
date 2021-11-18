@@ -10,19 +10,30 @@ export const CohortItemCard = ({
   isWarning,
   setShowCohortForm,
   setCohortToEdit,
+  setShowAddTeacherDialog,
 }) => {
   const [cohortTeacherNames, setCohortTeacherNames] = useState("");
 
-  const handleEdit = () => {
+  useEffect(() => {
+    updateCohortTeacherNames();
+    //eslint-disable-next-line
+  }, [cohort]);
+
+  function handleEdit() {
     setCohortToEdit(cohort);
     setShowCohortForm(true);
-  };
+  }
 
-  useEffect(() => {
+  function updateCohortTeacherNames() {
     const teacherNames = cohort.teachers_for_cohort.map((each) => each.name);
     const teacherNameList = teacherNames.join(",");
     setCohortTeacherNames(teacherNameList);
-  }, []);
+  }
+
+  function handleAddTeacher() {
+    setCohortToEdit(cohort);
+    setShowAddTeacherDialog(true);
+  }
 
   return (
     <Fragment>
@@ -34,35 +45,41 @@ export const CohortItemCard = ({
                 <p className="font-light">
                   {strings[cohort.language_name.toLowerCase()]}
                 </p>
-                <p className="student-count">
-                  {cohort.cur_students}
-                  <MdPeople className="cohort-card-icon-people" size="22px" />
-                </p>
               </div>
             </div>
             <h2 className="cohort-card-headline">
               {cohort.name} {/*This cannot be localized*/}
             </h2>
+            <p className="student-count">
+              {cohort.cur_students}
+              <MdPeople className="cohort-card-icon-people" size="22px" />
+            </p>
           </Link>
-  
-            <p className="font-light">
-              {strings.teachers} {cohortTeacherNames}
-            </p>
-          <div className="space-between-container">
-            <p className="font-light">
-              {strings.inviteCode}: {cohort.inv_code}
-            </p>
-            {!isWarning && (
-              <div className="buttons-container">
-                <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
-                  <StyledButton secondary>{strings.seeStudents}</StyledButton>
-                </Link>
-                <StyledButton secondary onClick={handleEdit}>
-                  {strings.editClass}
-                </StyledButton>
-              </div>
-            )}
-          </div>
+          <p className="font-lightk">
+            {strings.inviteCode}: {cohort.inv_code}
+          </p>
+          <p className="font-light">
+            {cohort.teachers_for_cohort.length > 1
+              ? strings.teachers
+              : strings.teacher}{" "}
+            <br />
+            {cohortTeacherNames}
+          </p>
+
+          {!isWarning && (
+            <div className="buttons-container">
+              <StyledButton secondary onClick={handleEdit}>
+                {strings.editClass}
+              </StyledButton>
+
+              <StyledButton secondary onClick={handleAddTeacher}>
+                Add teacher*
+              </StyledButton>
+              <Link to={`/teacher/classes/viewClass/${cohort.id}`}>
+                <StyledButton secondary>{strings.seeStudents}</StyledButton>
+              </Link>
+            </div>
+          )}
         </div>
       </s.StyledCohortItemCard>
     </Fragment>
