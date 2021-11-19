@@ -460,6 +460,21 @@ let strings = new LocalizedStrings(
       seeStudents: "See Students",
       teacher: "Teacher: ",
       teachers: "Teachers: ",
+      addTeacher: "Add Teacher",
+
+      //AddTeacherDialog
+      addAnotherTeacherToTheClass: "Add another teacher to the class",
+      colleagueEmailExample: "eg. 'colleague@work.mail.com'",
+      addEmailOfColleague: "Add email of colleague",
+      addTeacherWarningPartOne:
+        "This adds the class to your colleague's list of classes.",
+      addTeacherWarningPartTwo:
+        "If you later delete this class, you also irriversibly delete the class from your colleague's list of classes.",
+      youHaveToAddEmail: "You have to add the email of a teacher.",
+      errorMsg:
+        "Something went wrong. It can be that the email is not matching anyone in the system or a server error. Feel free to contact us if the error persists.",
+      addColleague: "Add Colleague",
+
       //CohortList
       addClass: "Add Class",
 
@@ -469,7 +484,8 @@ let strings = new LocalizedStrings(
         "Are you sure you want to delete this class? This cannot be undone.",
       cannotDeleteClassWithText:
         "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again.",
-
+      youAreSharingThisClassWarning:"You are sharing this class with at least one colleague. If you delete it here, you also irreversibly delete it from their list of classes.",
+      
       //DeleteStudentWarning
       wishToDeleteStudent: "Do you wish to remove",
       fromTheClass: "from the class?",
@@ -1104,6 +1120,18 @@ let strings = new LocalizedStrings(
       seeStudents: "Se elever",
       teacher: "Lærer: ",
       teachers: "Lærere: ",
+      addTeacher: "Tilfør lærer",
+
+      //AddTeacherDialog
+      addAnotherTeacherToTheClass: "Tilføj en lærer mere til klassen",
+      colleagueEmailExample: "f.eks: 'kollega@arbejds.mail.dk'",
+      addEmailOfColleague: "Tilføj kollegas email",
+      addTeacherWarning:
+        "Dette tilføje klassen til din kollegas liste af klasser. Hvis du senere sletter klassen her, bliver den også uigenkaldeligt slettet fra din kollegas list af klasser.",
+      youHaveToAddEmail: "Du skal tilføje en lærers email.",
+      errorMsg:
+        "Noget gik galt. Måske matcher emailen ikke en bruger i systemet eller det kan være en serverfejl. Kontakt os gerne, hvis fejlen fortsætter.",
+      addColleague: "Tilføj kollega",
 
       //CohortList
       addClass: "Tilføj klasse",
@@ -1114,7 +1142,8 @@ let strings = new LocalizedStrings(
         "Er du sikker på, at du vil slette denne klasse? Du kan ikke fortryde.",
       cannotDeleteClassWithText:
         "Noget gik galt. Hvis du deler tekster med denne klasse, kan du ikke slette klassen. Fjern delte tekster med denne klasse i 'Mine tekster', og prøv igen.",
-
+      youAreSharingThisClassWarning:"Du deler denne klasse med mindst én kollega. Hvis du sletter klassen her, bliver den også uigenkaldeligt slettet fra din kollegas list af klasser.",
+      
       //DeleteStudentWarning
       wishToDeleteStudent: "Ønsker du at fjerne",
       fromTheClass: "fra klassen?",

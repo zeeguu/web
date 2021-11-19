@@ -63,32 +63,27 @@ export default function AddTeacherDialog({
     >
       <s.StyledURLDialog>
         <h1 className="add-text-headline">
-          ADD ANOTHER TEACHER TO THE CLASS***
+          {strings.addAnotherTeacherToTheClass}
         </h1>
       </s.StyledURLDialog>
       <LabeledTextField
         value={colleagueEmail}
         onChange={handleChange}
         name="colleague_email"
-        placeholder="eg. 'COLLEAGUE@WORKMAIL.COM'"
+        placeholder={strings.colleagueEmailExample}
       >
-        ADD EMAIL OF COLLEAGUE***
+        {strings.addEmailOfColleague}
       </LabeledTextField>
       <p>
-        ***<b>{strings.pleaseNote}</b>
-        This adds the class to your colleague's list of classes. If you delete
-        the class, you also irriversibly delete the class from your colleagues
-        list of classes.***
+        <b>{strings.pleaseNote}</b>
+        {strings.addTeacherWarningPartOne}
       </p>
-      {showGuidance && (
-        <Error message="YOU HAVE TO ADD THE EMAIL OF A TEACHER." />
-      )}
-      {showError && (
-        <Error message="SOMETHING WENT WRONG. IT CAN BE THAT THE EMAIL IS NOT MATCHING ANYONE IN THE SYSTEM OR A SERVER ERROR. FEEL FREE TO CONTACT US IF THE ERROR PERSISTS." />
-      )}
+      <Error message={strings.addTeacherWarningPartTwo} />
+      {showGuidance && <Error message={strings.youHaveToAddEmail} />}
+      {showError && <Error message={strings.errorMSg} />}
       <PopupButtonWrapper>
         <StyledButton primary onClick={shareWithColleague}>
-          ADD COLLEAGUE***
+          {strings.addColleague}
         </StyledButton>
       </PopupButtonWrapper>
     </StyledDialog>

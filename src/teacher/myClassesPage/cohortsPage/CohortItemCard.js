@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { MdPeople } from "react-icons/md/";
 import { StyledButton } from "../../styledComponents/TeacherButtons.sc";
@@ -63,7 +63,7 @@ export const CohortItemCard = ({
                   {strings.editClass}
                 </StyledButton>
                 <StyledButton secondary onClick={handleAddTeacher}>
-                  Add Teacher***
+                  {strings.addTeacher}
                 </StyledButton>
               </div>
             </div>

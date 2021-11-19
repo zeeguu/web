@@ -35,7 +35,7 @@ const DeleteCohortWarning = ({
       {isDeleteError && <Error message={strings.cannotDeleteClassWithText} />}
       {cohort.teachers_for_cohort.length > 1 && (
         <b>
-          <Error message="You are sharing this class with at least one colleague. If you delete it here, you also irreversibly delete it from their list of classes.***" />
+          <Error message={strings.youAreSharingThisClassWarning} />
         </b>
       )}
       <PopupButtonWrapper>
