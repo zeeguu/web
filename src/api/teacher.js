@@ -79,6 +79,18 @@ Zeeguu_API.prototype.getCohortsInfo = function (callback) {
         "language_name": "Spanish",
         "declared_level_min": 0,
         "declared_level_max": 10
+        "teachers_for_cohort:
+          [
+            {
+              email: "teacher1@email.org"
+              name: "Morgan Black"
+              user_id: 1234"
+            },
+            { 
+              email: "teacher2@email.org"
+              name: "Ruby Red"
+              user_id: 4567"
+            }
     }
   ]
   */
