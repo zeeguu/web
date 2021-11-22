@@ -42,6 +42,25 @@ Zeeguu_API.prototype.deleteCohort = async function (id) {
 Zeeguu_API.prototype.updateCohort = async function (data, id) {
   return await this.apiPost(`/update_cohort/${id}`, data, true);
 };
+//TODO: We should refactor to only use the this._post(...) api-call for easier readability of the code.
+
+Zeeguu_API.prototype.addColleagueToCohort = function (
+  cohortID,
+  colleagueEmail,
+  onSuccess,
+  onError
+) {
+  let payload = {
+    cohort_id: cohortID,
+    colleague_email: colleagueEmail,
+  };
+  this._post(
+    `/add_colleague_to_cohort`,
+    queryString.stringify(payload),
+    onSuccess,
+    onError
+  );
+};
 
 Zeeguu_API.prototype.getCohortFromArticle = function (article_id, callback) {
   this._getJSON(`/get_cohorts_for_article/${article_id}`, callback);

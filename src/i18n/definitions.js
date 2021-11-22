@@ -32,7 +32,6 @@ let strings = new LocalizedStrings(
       joinClass: "Join Class",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
-      deleteFromMyClasses: "Delete From My Classes",
       tooEasy: "too easy",
 
       //LoadingAnimation
@@ -54,7 +53,7 @@ let strings = new LocalizedStrings(
       thankYouMsgPrefix:
         "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
-      inviteCode: "Invite Code",
+      inviteCode: "Invite code",
       levelOfLearnedLanguage: "Level in Learned Language",
       baseLanguage: "Base languange",
 
@@ -268,15 +267,19 @@ let strings = new LocalizedStrings(
       expression: "Expression",
       editExpression: "Edit this expression",
       context: "Context",
-      
+
       //WordsForArticle
-      reviewTranslations:"Review Translations for Your Exercises ",
+      reviewTranslations: "Review Translations for Your Exercises ",
       from: "From: ",
-      deleteTranslation: "Delete a translation if you don't want it in exercises.",
-      starTranslation: "Star a translation to make it have priority in exercises.",
-      ifGreyedTranslation: "If a translation is grayed out, it means that Zeeguu does not think it is appropriate for exercises; to overload this decision you can star the translation.",
-      theWordsYouTranslate: "The words you translate in the article will appear here for review",
-      backToArticle:"Back to Article",
+      deleteTranslation:
+        "Delete a translation if you don't want it in exercises.",
+      starTranslation:
+        "Star a translation to make it have priority in exercises.",
+      ifGreyedTranslation:
+        "If a translation is grayed out, it means that Zeeguu does not think it is appropriate for exercises; to overload this decision you can star the translation.",
+      theWordsYouTranslate:
+        "The words you translate in the article will appear here for review",
+      backToArticle: "Back to Article",
       toExercises: "To Exercises",
 
       //ExerciseType
@@ -378,13 +381,13 @@ let strings = new LocalizedStrings(
         "Something went wrong. Please check that the invite code is valid and try again.",
 
       //CEFR_LEVELS
-      beginner:"Beginner",
+      beginner: "Beginner",
       elementary: "Elementary",
       intermediate: "Intermediate",
       upperIntermediate: "Upper Intermediate",
       advanced: "Avanced",
       proficiency: "Proficiency",
-      
+
       //_ActivityInsightsRouter
       backTo: "Back to ",
       s_reading: "'s Reading",
@@ -455,6 +458,22 @@ let strings = new LocalizedStrings(
 
       //CohortItemCard
       seeStudents: "See Students",
+      teacher: "Teacher: ",
+      teachers: "Teachers: ",
+      addTeacher: "Add Teacher",
+
+      //AddTeacherDialog
+      addAnotherTeacherToTheClass: "Add another teacher to the class",
+      colleagueEmailExample: "eg. 'colleague@work.mail.com'",
+      addEmailOfColleague: "Add email of colleague",
+      addTeacherWarningPartOne:
+        "This adds the class to your colleague's list of classes.",
+      addTeacherWarningPartTwo:
+        "If you later delete this class, you also irriversibly delete the class from your colleague's list of classes.",
+      youHaveToAddEmail: "You have to add the email of a teacher.",
+      errorMsg:
+        "Something went wrong. It can be that the email is not matching anyone in the system or a server error. Feel free to contact us if the error persists.",
+      addColleague: "Add Colleague",
 
       //CohortList
       addClass: "Add Class",
@@ -465,7 +484,8 @@ let strings = new LocalizedStrings(
         "Are you sure you want to delete this class? This cannot be undone.",
       cannotDeleteClassWithText:
         "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again.",
-
+      youAreSharingThisClassWarning:"You are sharing this class with at least one colleague. If you delete it here, you also irreversibly delete it from their list of classes.",
+      
       //DeleteStudentWarning
       wishToDeleteStudent: "Do you wish to remove",
       fromTheClass: "from the class?",
@@ -672,7 +692,6 @@ let strings = new LocalizedStrings(
       cancel: "Annuller",
       joinClass: "Deltag i klasse",
       youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
-      deleteFromMyClasses: "Slet fra 'Mine klasser'",
       tooEasy: "for nem",
 
       //LoadingAnimation
@@ -912,14 +931,18 @@ let strings = new LocalizedStrings(
       context: "Sammenhængen",
 
       //WordsForArticle
-      reviewTranslations:"Gennemse oversættelser til din øvelser ",
+      reviewTranslations: "Gennemse oversættelser til din øvelser ",
       from: "Fra: ",
-      deleteTranslation: "Slet en oversættelse, hvis du ikke vil have den i øvelserne.",
-      starTranslation: "Stjernemarkér en oversættelse for at prioritere den i øvelserne.",
-      ifGreyedTranslation: "Hvis en oversættelse er grå, betyder det at Zeeguu finder den uegnet til øvelser; for at overskrive denne kendelse kan du stjernemarkere oversættelsen.",
-      theWordsYouTranslate: "De ord, du oversætter i artiklen, vil blive vist til gennemgang her.",
-      backToArticle:"Tilbage til artiklen",
-      toExercises:"Til øvelserne",
+      deleteTranslation:
+        "Slet en oversættelse, hvis du ikke vil have den i øvelserne.",
+      starTranslation:
+        "Stjernemarkér en oversættelse for at prioritere den i øvelserne.",
+      ifGreyedTranslation:
+        "Hvis en oversættelse er grå, betyder det at Zeeguu finder den uegnet til øvelser; for at overskrive denne kendelse kan du stjernemarkere oversættelsen.",
+      theWordsYouTranslate:
+        "De ord, du oversætter i artiklen, vil blive vist til gennemgang her.",
+      backToArticle: "Tilbage til artiklen",
+      toExercises: "Til øvelserne",
 
       //ExerciseType
       matchThreePairs: " match 3 par",
@@ -1018,7 +1041,7 @@ let strings = new LocalizedStrings(
         "Noget gik galt. Tjek venligst at invitationskoden er korrekt og prøv igen.",
 
       //CEFR_LEVELS
-      beginner:"Begynder",
+      beginner: "Begynder",
       elementary: "Basis",
       intermediate: "Øvet",
       upperIntermediate: "Meget øvet",
@@ -1095,6 +1118,20 @@ let strings = new LocalizedStrings(
 
       //CohortItemCard
       seeStudents: "Se elever",
+      teacher: "Lærer: ",
+      teachers: "Lærere: ",
+      addTeacher: "Tilfør lærer",
+
+      //AddTeacherDialog
+      addAnotherTeacherToTheClass: "Tilføj en lærer mere til klassen",
+      colleagueEmailExample: "f.eks: 'kollega@arbejds.mail.dk'",
+      addEmailOfColleague: "Tilføj kollegas email",
+      addTeacherWarning:
+        "Dette tilføje klassen til din kollegas liste af klasser. Hvis du senere sletter klassen her, bliver den også uigenkaldeligt slettet fra din kollegas list af klasser.",
+      youHaveToAddEmail: "Du skal tilføje en lærers email.",
+      errorMsg:
+        "Noget gik galt. Måske matcher emailen ikke en bruger i systemet eller det kan være en serverfejl. Kontakt os gerne, hvis fejlen fortsætter.",
+      addColleague: "Tilføj kollega",
 
       //CohortList
       addClass: "Tilføj klasse",
@@ -1105,7 +1142,8 @@ let strings = new LocalizedStrings(
         "Er du sikker på, at du vil slette denne klasse? Du kan ikke fortryde.",
       cannotDeleteClassWithText:
         "Noget gik galt. Hvis du deler tekster med denne klasse, kan du ikke slette klassen. Fjern delte tekster med denne klasse i 'Mine tekster', og prøv igen.",
-
+      youAreSharingThisClassWarning:"Du deler denne klasse med mindst én kollega. Hvis du sletter klassen her, bliver den også uigenkaldeligt slettet fra din kollegas list af klasser.",
+      
       //DeleteStudentWarning
       wishToDeleteStudent: "Ønsker du at fjerne",
       fromTheClass: "fra klassen?",
