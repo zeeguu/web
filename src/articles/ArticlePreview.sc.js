@@ -1,15 +1,16 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "../components/colors"
+import {
+  almostBlack,
+  veryLightGrey,
+  zeeguuOrange,
+  zeeguuVarmYellow,
+} from "../components/colors";
 
 const ArticlePreview = styled.div`
   margin-bottom: 1em;
   border-left: solid ${zeeguuOrange};
   margin-top: 2em;
   padding-left: 0.8em;
-`;
-
-const Header = styled.div`
-  /* display: flex; */
 `;
 
 const Title = styled.div`
@@ -26,7 +27,7 @@ const Difficulty = styled.div`
   height: 3.8em;
   text-align: center;
   border-radius: 50%;
-  background-color: #e5e5e5;
+  background-color: ${veryLightGrey};
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -36,12 +37,12 @@ const Difficulty = styled.div`
 `;
 
 const WordCount = styled(Difficulty)`
-  background-color: #e5e5e5;
+  background-color: ${veryLightGrey};
 `;
 
 let Summary = styled.div`
   font-size: 0.83em;
-  color: #6d6d6d;
+  color: ${almostBlack};
   max-width: 44em;
   line-height: 1.5em;
   margin-top: 0.36em;
@@ -49,7 +50,7 @@ let Summary = styled.div`
 
 let SourceImage = styled.span`
   img {
-    background-color: yellow;
+    background-color: ${zeeguuVarmYellow};
     height: 1.5em;
   }
   margin-right: 2em;
@@ -69,7 +70,7 @@ let Topics = styled.span`
     margin-left: 1em;
     height: 1.2em;
     margin-left: 0.2em;
-    border: solid #ffbb54;
+    border: solid ${zeeguuOrange};
     border-radius: 1.0416666666666667em;
     padding: 0.20833333333333334em 1.3541666666666667em;
     font-size: 0.8333333333333334em;
@@ -77,7 +78,6 @@ let Topics = styled.span`
 `;
 
 export {
-  Header,
   Title,
   Difficulty,
   WordCount,

@@ -10,9 +10,6 @@ import LocalStorage from "../../../assorted/LocalStorage";
 import { StyledTooltip } from "../../styledComponents/StyledTooltip.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 
-//localize everything on this page
-//STRINGS
-
 export default function StudentInfoLine({
   api,
   cohortID,

@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import { alertGreen, zeeguuOrange } from "../../components/colors";
 
 export const StyledAttemptIcons = styled.div`
   .correct-attempt-icon {
-    color: green;
+    color: ${alertGreen};
     font-size: 18px;
   }
 
@@ -23,7 +24,7 @@ export const StyledAttemptIcons = styled.div`
   }
 
   .hint-used-icon {
-    color: orange;
+    color: ${zeeguuOrange};
     font-weight: 600;
     margin: 0 2px;
     font-size: 14px;
