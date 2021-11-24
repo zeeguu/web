@@ -63,7 +63,6 @@ export default function ArticleOverview({
   return (
     <s.ArticlePreview>
       <div style={openedStyle}>
-        <s.Header>
           <s.Title>
             <TranslatableText
               interactiveText={new InteractiveText(article.title, article, api)}
@@ -72,7 +71,6 @@ export default function ArticleOverview({
           </s.Title>
           <s.Difficulty>{difficulty}</s.Difficulty>
           <s.WordCount>{article.metrics.word_count}</s.WordCount>
-        </s.Header>
         <s.Summary>
           <TranslatableText
             interactiveText={new InteractiveText(article.summary, article, api)}

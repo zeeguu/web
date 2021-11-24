@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { zeeguuOrange } from "./colors";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -9,7 +10,7 @@ const RoundButton = styled.div`
   padding: 0.3125em 1.1875em;
 
   background-color: lightgray;
-  color: #ffffff !important;
+  color: white !important;
   font-weight: 500;
   text-align: center;
 
@@ -19,7 +20,7 @@ const RoundButton = styled.div`
 `;
 
 const OrangeRoundButton = styled(RoundButton)`
-  background-color: #ffbb54;
+  background-color: ${zeeguuOrange};
 `;
 
 const ClosePopupButton = styled.div`
@@ -39,7 +40,7 @@ const BigSquareButton = styled(RoundButton)`
   margin: 5px;
   width: 180px;
   height: 45px;
-  border-color: #ffbb54;
+  border-color: ${zeeguuOrange};
   border-style: solid;
   border-width: 2px;
   border-radius: 10px;
