@@ -6,7 +6,7 @@ import {
   darkGrey,
   veryDarkGrey,
   zeeguuSalmonOrange,
-  almostWhite,
+  veryLightGrey,
   alertGreen,
 } from "../components/colors";
 
@@ -207,7 +207,7 @@ const TagsOfInterests = styled.div`
     position: relative;
   }
   .sweet-alert .sa-error-container {
-    background-color: ${almostWhite};
+    background-color: ${veryLightGrey};
     margin-left: -17px;
     margin-right: -17px;
     overflow: hidden;

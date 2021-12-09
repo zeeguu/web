@@ -12,11 +12,11 @@ import {
 } from "../styledComponents/TeacherButtons.sc";
 import * as s from "../../components/ColumnWidth.sc";
 import * as sc from "../../components/TopTabs.sc";
-import * as scs from "../styledComponents/EditText.sc";
 import {
   ShareWithClassesButton,
   ViewAsStudentButton,
 } from "./TooltippedButtons";
+import { Error } from "../sharedComponents/Error";
 
 export default function EditText({ api }) {
   const articleID = useParams().articleID;
@@ -121,7 +121,6 @@ export default function EditText({ api }) {
   return (
     <Fragment>
       <s.NarrowColumn>
-        <scs.StyledEditText>
           <sc.TopTabs>
             <h1>{strings.editText}</h1>
           </sc.TopTabs>
@@ -148,11 +147,7 @@ export default function EditText({ api }) {
             handleLanguageChange={handleLanguageChange}
             handleChange={handleChange}
           />
-          {inputInvalid && (
-            <p className="empty-string-warning">
-              {strings.errorEmptyInputField}
-            </p>
-          )}
+          {inputInvalid && <Error message={strings.errorEmptyInputField} />}
           <PopupButtonWrapper>
             {isNew ? (
               <StyledButton
@@ -180,7 +175,6 @@ export default function EditText({ api }) {
               </Fragment>
             )}
           </PopupButtonWrapper>
-        </scs.StyledEditText>
       </s.NarrowColumn>
       {showDialog && <AddToCohortDialog api={api} setIsOpen={setShowDialog} />}
       {showDeleteTextWarning && (
