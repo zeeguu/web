@@ -1,5 +1,5 @@
 import { css } from "styled-components";
-import { almostBlack, zeeguuOrange, zeeguuTransparentLightOrange } from "./colors";
+import { almostBlack, errorRed, zeeguuOrange, zeeguuTransparentLightOrange } from "./colors";
 
 let formStyling = css`
   input,
@@ -42,7 +42,7 @@ let formStyling = css`
   .error {
     background-color: ${zeeguuTransparentLightOrange};
     border: 1px solid ${zeeguuOrange};
-    color: red;
+    color: ${errorRed};
     border-radius: 5px;
 
     margin-bottom: 1em;

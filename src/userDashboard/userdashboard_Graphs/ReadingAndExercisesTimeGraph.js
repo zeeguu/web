@@ -1,4 +1,5 @@
 import { ResponsiveBar } from "@nivo/bar";
+import { darkBlue, zeeguuVarmYellow } from "../../components/colors";
 import {
   BAR_GRAPH_KEYS,
   DEFAULT_MAX_VALUE_BAR_GRAPH,
@@ -101,7 +102,7 @@ export default function ReadingAndExercisesTimeGraph({
           id: "dots",
           type: "patternDots",
           background: "inherit",
-          color: "#38bcb2",
+          color: darkBlue,
           size: 4,
           padding: 1,
           stagger: true,
@@ -110,7 +111,7 @@ export default function ReadingAndExercisesTimeGraph({
           id: "lines",
           type: "patternLines",
           background: "inherit",
-          color: "#eed312",
+          color: zeeguuVarmYellow,
           rotation: -45,
           lineWidth: 6,
           spacing: 10,

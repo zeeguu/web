@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { alertGreen, zeeguuOrange } from "../../components/colors";
+import { alertGreen, zeeguuOrange, errorRed } from "../../components/colors";
 
 export const StyledAttemptIcons = styled.div`
   .correct-attempt-icon {
@@ -8,7 +8,7 @@ export const StyledAttemptIcons = styled.div`
   }
 
   .wrong-attempt-icon {
-    color: red;
+    color: ${errorRed};
     margin: 0 -3px;
     font-size: 18px;
   }
