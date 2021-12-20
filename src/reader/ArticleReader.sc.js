@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 
 import { BigSquareButton } from "../components/allButtons.sc";
 
-import * as color from "../components/colors";
+import { veryLightGrey, zeeguuLightYellow, zeeguuOrange, zeeguuVarmYellow } from "../components/colors";
 
 import {
   NarrowColumn,
@@ -11,25 +11,18 @@ import {
 } from "../components/ColumnWidth.sc";
 
 let ArticleReader = styled.div`
-  /* border: 1px solid lightgray; */
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
 `;
 
 let Toolbar = styled.div`
-  /* border: 1px solid wheat; */
-  background-color: white;
   height: 110px;
-
-  display: flexbox;
-  flex-direction: row;
-  justify-content: flex-end;
 
   button {
     width: 55px;
     height: 55px;
-    background-color: #ffe086;
+    background-color: ${zeeguuLightYellow};
     border-style: none;
     box-shadow: none;
     border-radius: 10px;
@@ -43,12 +36,12 @@ let Toolbar = styled.div`
   }
 
   button.selected {
-    background-color: #ffbb54;
+    background-color: ${zeeguuOrange};
   }
 
   .tooltiptext {
     visibility: hidden;
-    color: #ffbb54;
+    color: ${zeeguuOrange};
   }
 
   button:hover .tooltiptext {
@@ -72,7 +65,7 @@ let BookmarkButton = styled.div`
 
   .tooltiptext {
     visibility: hidden;
-    color: #ffbb54;
+    color: ${zeeguuOrange};
   }
 
   :hover .tooltiptext {
@@ -148,7 +141,7 @@ let OrangeButton = styled(_BottomButton)`
 
 let FeedbackBox = styled.div`
   border: 1px solid lightgray;
-  background-color: #f8f8f8;
+  background-color: ${veryLightGrey};
   border-radius: 1em;
   padding: 1em;
   padding-bottom: 1em;
@@ -166,7 +159,7 @@ let FeedbackBox = styled.div`
     text-align: center;
   }
   .selected {
-    background-color: ${color.lightOrange} !important;
+    background-color: ${zeeguuVarmYellow} !important;
     color: white !important;
   }
 `;

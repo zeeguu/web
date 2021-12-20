@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { darkGrey, zeeguuOrange } from "./colors";
 
 const TopTabs = styled.div`
   h1 {
@@ -11,7 +12,6 @@ const TopTabs = styled.div`
   }
 
   .all__tabs {
-    /* background-color: lightcoral; */
     line-height: 1.4em;
     width: 100%;
     align-items: center;
@@ -34,7 +34,7 @@ const TopTabs = styled.div`
 
   .headmenuTab:hover,
   a:hover {
-    color: #ffbb54;
+    color: ${zeeguuOrange};
   }
 
   .row__bar {
@@ -45,7 +45,7 @@ const TopTabs = styled.div`
   .bar {
     width: 1em;
     height: 0px;
-    border: 1px solid #acacac;
+    border: 1px solid ${darkGrey};
     transform: rotate(-90deg);
   }
 
@@ -62,7 +62,7 @@ const TopTabs = styled.div`
     .bar {
       width: 1em;
       height: 0px;
-      border: 0.5px solid #acacac;
+      border: 0.5px solid ${darkGrey};
     }
   }
 

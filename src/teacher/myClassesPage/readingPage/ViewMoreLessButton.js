@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md/";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/ViewMoreLessButton.sc";
@@ -17,7 +17,6 @@ const ViewMoreLessButton = ({ sessionID, openedArticle, isFirst }) => {
 
   return (
     <s.ViewMoreLessButton isFirst={isFirst}>
-      <Fragment>
         {!showLessButton ? (
           <div className="wrapper">
             <p>{strings.viewMoreBtn}</p>
@@ -29,7 +28,6 @@ const ViewMoreLessButton = ({ sessionID, openedArticle, isFirst }) => {
             <MdExpandLess className="expansionIcon" />
           </div>
         )}
-      </Fragment>
     </s.ViewMoreLessButton>
   );
 };

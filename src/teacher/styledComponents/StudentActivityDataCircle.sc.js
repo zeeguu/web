@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { veryLightGrey } from "../../components/colors";
 
 export const StudentActivityDataCircle = styled.div`
   margin: 1em;
@@ -7,6 +8,6 @@ export const StudentActivityDataCircle = styled.div`
   font-size: medium;
   width: 4em;
   height: 4em;
-  background-color: #e5e5e5;
+  background-color: ${veryLightGrey};
   border-radius: 2em;
 `;

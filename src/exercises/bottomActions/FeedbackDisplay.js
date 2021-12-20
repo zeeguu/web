@@ -73,7 +73,7 @@ export default function FeedbackDisplay({
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity="success">
-          {feedback}{" "}
+          {feedback}
           <s.UndoButton type="button" onClick={stopSendingModification}>
             {strings.undo}
           </s.UndoButton>

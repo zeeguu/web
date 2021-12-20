@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import * as b from "../components/allButtons.sc";
+import { almostBlack, veryLightGrey } from "../components/colors";
 
 const SortingButtons = styled.div`
   margin-bottom: 1em;
@@ -39,8 +40,8 @@ const SortButton = styled(b.RoundButton)`
   padding: 0.15em 0.35em;
 
   font-size: small;
-  background-color: #efefef;
-  color: #444444 !important;
+  background-color: ${veryLightGrey};
+  color: ${almostBlack} !important;
 
   ${(props) =>
     props.isOnTeacherSite &&

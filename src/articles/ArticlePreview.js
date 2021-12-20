@@ -12,13 +12,11 @@ export default function ArticleOverview({
 
   return (
     <s.ArticlePreview>
-      <s.Header>
         <s.Title>
           <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
         </s.Title>
         <s.Difficulty>{difficulty}</s.Difficulty>
         <s.WordCount>{article.metrics.word_count}</s.WordCount>
-      </s.Header>
 
       <s.Summary>{article.summary}</s.Summary>
 

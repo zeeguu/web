@@ -1,11 +1,12 @@
 import styled, { keyframes, css } from "styled-components";
+import {zeeguuOrange, zeeguuTransparentLightYellow} from "../components/colors";
 
 const LoginHeader = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
   height: 4em;
-  background: #ffbb54;
+  background: ${zeeguuOrange};
   color: white;
   font-size: 18px;
   margin: 0;
@@ -34,7 +35,7 @@ const _mainHeader = css`
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   font-weight: bold;
-  color: #ffbb54;
+  color: ${zeeguuOrange};
 `;
 
 const NarrowColumn = styled.div`
@@ -79,7 +80,7 @@ const AdaptableColumn = styled.div`
 `;
 
 const PaleAdaptableColumn = styled(AdaptableColumn)`
-  background-color: #ffe59e10;
+  background-color: ${zeeguuTransparentLightYellow};
   padding-top: 0.1em;
 `;
 
@@ -126,8 +127,8 @@ const BigLogo = styled.div`
 const PrimaryButton = styled.button`
   height: 4em;
   width: 25em;
-  background: #ffbb54;
-  border: 0.3em solid #ffbb54;
+  background: ${zeeguuOrange};
+  border: 0.3em solid ${zeeguuOrange};
   border-radius: 7em;
   margin-bottom: 2em;
   margin-top: 2em;
@@ -142,8 +143,8 @@ const PrimaryButton = styled.button`
 const InverseButton = styled.button`
   height: 4em;
   width: 25em;
-  background: #ffffff;
-  border: 0.3em solid #ffbb54;
+  background: white;
+  border: 0.3em solid ${zeeguuOrange};
   border-radius: 7em;
   margin-bottom: 3em;
   margin-top: 0em;
@@ -152,7 +153,7 @@ const InverseButton = styled.button`
   a {
     font-weight: 600;
     font-size: 1.5em;
-    color: #ffbb54;
+    color: ${zeeguuOrange};
   }
 `;
 

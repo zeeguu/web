@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { zeeguuOrange } from "../components/colors";
 
 const SearchField = styled.div`
   margin-bottom: 1em;
@@ -9,7 +10,7 @@ const SearchField = styled.div`
 
   #search-expandable {
     all: unset;
-    border: 0.17em solid #ffbb54;
+    border: 0.17em solid ${zeeguuOrange};
     border-radius: 0.9375em;
     padding: 0.125em;
     padding-left: 0.5em;

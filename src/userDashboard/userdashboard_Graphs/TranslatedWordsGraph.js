@@ -1,4 +1,5 @@
 import { ResponsiveLine } from "@nivo/line";
+import { veryLightGrey } from "../../components/colors";
 
 export default function TranslatedWordsGraph({ data }) {
   function isAllDataEntriesZero(data) {
@@ -64,12 +65,12 @@ export default function TranslatedWordsGraph({ data }) {
           itemOpacity: 0.75,
           symbolSize: 12,
           symbolShape: "circle",
-          symbolBorderColor: "rgba(0, 0, 0, .5)",
+          symbolBorderColor: veryLightGrey,
           effects: [
             {
               on: "hover",
               style: {
-                itemBackground: "rgba(0, 0, 0, .03)",
+                itemBackground: veryLightGrey,
                 itemOpacity: 1,
               },
             },
