@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { darkBlue, lightBlue, darkGrey } from "../../components/colors";
+import { darkBlue, lightBlue, darkGrey, errorRed } from "../../components/colors";
 
 export const StyledNonStudiesWordCard = styled.div`
   .non-studied-word-container {
@@ -23,7 +23,7 @@ export const StyledNonStudiesWordCard = styled.div`
   .red-reason {
     margin: 0.7em 0 0 1.2em;
     font-size: small;
-    color: red;
+    color: ${errorRed};
   }
 
   .grey-reason {

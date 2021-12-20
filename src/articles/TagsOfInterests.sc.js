@@ -1,10 +1,20 @@
 import styled from "styled-components";
+import {
+  zeeguuOrange,
+  lightGrey,
+  zeeguuTransparentLightOrange,
+  darkGrey,
+  veryDarkGrey,
+  zeeguuSalmonOrange,
+  veryLightGrey,
+  alertGreen,
+} from "../components/colors";
 
 const TagsOfInterests = styled.div`
   .tagsOfInterests,
   .tagsWithFilters {
     cursor: pointer;
-    background: #fff4e2;
+    background: ${zeeguuTransparentLightOrange};
     margin-top: 10px;
     border-radius: 0.5em;
     display: none;
@@ -29,11 +39,11 @@ const TagsOfInterests = styled.div`
   .addNonInterestButton {
     box-shadow: none;
     all: unset;
-    border: 0.0625em solid #ffbb54;
+    border: 0.0625em solid ${zeeguuOrange};
     border-radius: 100%;
-    background-color: #ffffff;
-    -webkit-text-fill-color: #ffbb54;
-    color: #ffbb54;
+    background-color: white;
+    -webkit-text-fill-color: ${zeeguuOrange};
+    color: ${zeeguuOrange};
     font-size: 1em;
     width: 1.5em;
     height: 1.5em;
@@ -42,26 +52,26 @@ const TagsOfInterests = styled.div`
 
   .addInterestButton:hover,
   .addNonInterestButton:hover {
-    background-color: #ffbb54;
+    background-color: ${zeeguuOrange};
     -webkit-text-fill-color: white;
-    color: #ffffff;
+    color: white;
   }
 
   .addInterestButton:active,
   .addNonInterestButton:active {
-    border: 0.06em solid #ffbb54;
+    border: 0.06em solid ${zeeguuOrange};
   }
 
   .closeTagsOfInterests,
   .closeTagsOfNonInterests {
     box-shadow: none;
     all: unset;
-    border: 0.07em solid #ffbb54;
+    border: 0.07em solid ${zeeguuOrange};
     border-radius: 1em;
     padding: 0.2em 1em;
-    background-color: #ffbb54;
+    background-color: ${zeeguuOrange};
     -webkit-text-fill-color: white;
-    color: #ffffff;
+    color: white;
     font-size: 1em;
     font-family: Montserrat;
     font-weight: 300;
@@ -74,13 +84,13 @@ const TagsOfInterests = styled.div`
 
   .closeTagsOfInterests:active,
   .closeTagsOfNonInterests:active {
-    border: 0.07em solid #ffbb54 !important;
+    border: 0.07em solid ${zeeguuOrange} !important;
   }
 
   .addInterestButton:hover,
   .addNonInterestButton:hover {
-    background-color: #ffbb54;
-    color: #ffffff;
+    background-color: ${zeeguuOrange};
+    color: white;
   }
 
   .interests,
@@ -102,25 +112,25 @@ const TagsOfInterests = styled.div`
   }
 
   .interests {
-    background-color: #ffbb54;
+    background-color: ${zeeguuOrange};
     color: white;
     -webkit-text-fill-color: white;
   }
 
   .interests.unsubscribed {
     background-color: white;
-    color: #ffbb54;
-    -webkit-text-fill-color: #ffbb54;
+    color: ${zeeguuOrange};
+    -webkit-text-fill-color: ${zeeguuOrange};
   }
 
   .noninterest {
     background-color: white;
-    color: #ffbb54;
-    -webkit-text-fill-color: #ffbb54;
+    color: ${zeeguuOrange};
+    -webkit-text-fill-color: ${zeeguuOrange};
   }
 
   .noninterest.subscribed {
-    background-color: #ffbb54;
+    background-color: ${zeeguuOrange};
     color: white;
     -webkit-text-fill-color: white;
   }
@@ -166,7 +176,7 @@ const TagsOfInterests = styled.div`
     }
   }
   .sweet-alert h2 {
-    color: #575757;
+    color: ${veryDarkGrey};
     font-size: 30px;
     text-align: center;
     font-family: Montserrat;
@@ -180,7 +190,7 @@ const TagsOfInterests = styled.div`
     display: block;
   }
   .sweet-alert p {
-    color: #797979;
+    color: ${darkGrey};
     font-family: Montserrat;
     font-size: 16px;
     text-align: center;
@@ -197,7 +207,7 @@ const TagsOfInterests = styled.div`
     position: relative;
   }
   .sweet-alert .sa-error-container {
-    background-color: #f1f1f1;
+    background-color: ${veryLightGrey};
     margin-left: -17px;
     margin-right: -17px;
     overflow: hidden;
@@ -266,7 +276,7 @@ const TagsOfInterests = styled.div`
     width: 100%;
     box-sizing: border-box;
     border-radius: 3px;
-    border: 1px solid #d7d7d7;
+    border: 1px solid ${lightGrey};
     font-family: Montserrat;
     height: 43px;
     margin-top: 10px;
@@ -274,14 +284,13 @@ const TagsOfInterests = styled.div`
     font-size: 18px;
     box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.06);
     padding: 0 12px;
-    /* display: none; */
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
   }
   .sweet-alert input:focus {
     outline: none;
-    box-shadow: 0px 0px 3px #ffbb54;
-    border: 1px solid #ffbb54;
+    box-shadow: 0px 0px 3px ${zeeguuOrange};
+    border: 1px solid ${zeeguuOrange};
   }
   .sweet-alert input:focus::-moz-placeholder {
     transition: opacity 0.3s 0.03s ease;
@@ -296,16 +305,16 @@ const TagsOfInterests = styled.div`
     opacity: 0.5;
   }
   .sweet-alert input::-moz-placeholder {
-    color: #bdbdbd;
+    color: ${lightGrey};
   }
   .sweet-alert input::-ms-clear {
     display: none;
   }
   .sweet-alert input:-ms-input-placeholder {
-    color: #bdbdbd;
+    color: ${lightGrey};
   }
   .sweet-alert input::-webkit-input-placeholder {
-    color: #bdbdbd;
+    color: ${lightGrey};
   }
   .sweet-alert.show-input input {
     display: block;
@@ -324,7 +333,7 @@ const TagsOfInterests = styled.div`
     visibility: hidden;
   }
   .sweet-alert a {
-    background-color: #ffbb54;
+    background-color: ${zeeguuOrange};
     font-family: Montserrat;
     color: white;
     width: 120px;
@@ -342,23 +351,22 @@ const TagsOfInterests = styled.div`
     outline: none;
   }
   .sweet-alert button:hover {
-    background-color: #ffbb52;
+    background-color: ${zeeguuOrange};
   }
   .sweet-alert button:active {
-    background-color: #ffbb54;
+    background-color: ${zeeguuOrange};
   }
   .sweet-alert a.cancel {
-    background-color: #c1c1c1;
+    background-color: ${lightGrey};
   }
   .sweet-alert button.cancel:hover {
-    background-color: #b9b9b9;
+    background-color: ${lightGrey};
   }
   .sweet-alert button.cancel:active {
-    background-color: #a8a8a8;
+    background-color: ${lightGrey};
   }
   .sweet-alert button.cancel:focus {
-    box-shadow: rgba(197, 205, 211, 0.8) 0px 0px 2px,
-      rgba(0, 0, 0, 0.0470588) 0px 0px 0px 1px inset !important;
+    box-shadow: ${lightGrey} 0px 0px 2px, white 0px 0px 0px 1px inset !important;
   }
   .sweet-alert button[disabled] {
     opacity: 0.6;
@@ -384,7 +392,7 @@ const TagsOfInterests = styled.div`
   .sweet-alert .sa-icon {
     width: 80px;
     height: 80px;
-    border: 4px solid gray;
+    border: 4px solid ${darkGrey};
     -webkit-border-radius: 40px;
     border-radius: 40px;
     border-radius: 50%;
@@ -418,7 +426,7 @@ const TagsOfInterests = styled.div`
     right: 16px;
   }
   .sweet-alert .sa-icon.sa-warning {
-    border-color: #f8bb86;
+    border-color: ${zeeguuSalmonOrange};
   }
   .sweet-alert .sa-icon.sa-warning .sa-body {
     position: absolute;
@@ -429,7 +437,7 @@ const TagsOfInterests = styled.div`
     -webkit-border-radius: 2px;
     border-radius: 2px;
     margin-left: -2px;
-    background-color: #f8bb86;
+    background-color: ${zeeguuSalmonOrange};
   }
   .sweet-alert .sa-icon.sa-warning .sa-dot {
     position: absolute;
@@ -440,10 +448,10 @@ const TagsOfInterests = styled.div`
     margin-left: -3px;
     left: 50%;
     bottom: 10px;
-    background-color: #f8bb86;
+    background-color: ${zeeguuSalmonOrange};
   }
   .sweet-alert .sa-icon.sa-info {
-    border-color: #c9dae1;
+    border-color: ${lightGrey};
   }
   .sweet-alert .sa-icon.sa-info::before {
     content: "";
@@ -454,7 +462,7 @@ const TagsOfInterests = styled.div`
     bottom: 17px;
     border-radius: 2px;
     margin-left: -2px;
-    background-color: #c9dae1;
+    background-color: ${lightGrey};
   }
   .sweet-alert .sa-icon.sa-info::after {
     content: "";
@@ -464,11 +472,11 @@ const TagsOfInterests = styled.div`
     border-radius: 50%;
     margin-left: -3px;
     top: 19px;
-    background-color: #c9dae1;
+    background-color: ${lightGrey};
     left: 50%;
   }
   .sweet-alert .sa-icon.sa-success {
-    border-color: #a5dc86;
+    border-color: ${alertGreen};
   }
   .sweet-alert .sa-icon.sa-success::before,
   .sweet-alert .sa-icon.sa-success::after {
@@ -506,7 +514,7 @@ const TagsOfInterests = styled.div`
   .sweet-alert .sa-icon.sa-success .sa-placeholder {
     width: 80px;
     height: 80px;
-    border: 4px solid rgba(165, 220, 134, 0.2);
+    border: 4px solid ${alertGreen};
     -webkit-border-radius: 40px;
     border-radius: 40px;
     border-radius: 50%;
@@ -529,7 +537,7 @@ const TagsOfInterests = styled.div`
   }
   .sweet-alert .sa-icon.sa-success .sa-line {
     height: 5px;
-    background-color: #a5dc86;
+    background-color: ${alertGreen};
     display: block;
     border-radius: 2px;
     position: absolute;

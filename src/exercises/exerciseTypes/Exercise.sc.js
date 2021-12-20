@@ -1,5 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
+import { zeeguuTransparentLightOrange, zeeguuOrange } from "../../components/colors";
 
 const Exercise = styled.div`
   display: flex;
@@ -119,14 +120,14 @@ let MatchButton = styled(StyledButton)`
   margin-bottom: 2em;
   background: #ffd04799;
   color: black;
-  border: 0.125em solid #ffbb5440;
+  border: 0.125em solid ${zeeguuTransparentLightOrange};
 
   &:focus {
     outline: 0;
   }
 
   &:hover {
-    background-color: #ffbb5440;
+    background-color: ${zeeguuTransparentLightOrange};
   }
 `;
 
@@ -146,8 +147,8 @@ let OrangeButton = styled(StyledButton)`
   justify-content: center;
   align-items: center;
 
-  color: #ffffff;
-  background-color: #ffbb54;
+  color: white;
+  background-color: ${zeeguuOrange};
   margin: 1em;
 `;
 

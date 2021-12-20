@@ -1,4 +1,10 @@
 import styled from "styled-components";
+import {
+  alertGreen,
+  zeeguuOrange,
+  zeeguuTransparentLightOrange,
+  zeeguuVarmYellow,
+} from "../../components/colors";
 import StyledButton from "../exerciseTypes/Exercise.sc";
 
 const FeedbackHolder = styled.div`
@@ -25,21 +31,17 @@ const FeedbackButtonsHolder = styled.div`
 const FeedbackButton = styled(StyledButton)`
   display: flex;
   flex-direction: column;
-
   justify-content: center;
   align-items: center;
-
-  color: #000000;
-
+  color: black;
   margin: 0.3em;
-
   font-size: 0.875em;
-  background-color: #ffd04740;
+  background-color: ${zeeguuTransparentLightOrange};
   outline: none;
 
   &.selected {
-    background-color: #ffbb54;
-    border: 0.125em solid #ffbb54;
+    background-color: ${zeeguuOrange};
+    border: 0.125em solid ${zeeguuOrange};
   }
 `;
 
@@ -80,20 +82,15 @@ const FeedbackInput = styled.input`
 
 const FeedbackSubmit = styled.input`
   cursor: pointer;
-
   display: flex;
   flex-direction: column;
-
   justify-content: center;
   align-items: center;
-
-  color: #000000;
-
+  color: black;
   margin: 0.3em;
-
   font-size: 0.875em;
-  background-color: #ffd04740;
-  border: 0.1em solid #ffd047;
+  background-color: ${zeeguuTransparentLightOrange};
+  border: 0.1em solid ${zeeguuVarmYellow};
   border-radius: 0.65em;
   padding: 0.5em;
   user-select: none;
@@ -101,15 +98,15 @@ const FeedbackSubmit = styled.input`
 `;
 
 const FeedbackCancel = styled(FeedbackSubmit)`
-  background-color: #ffbb5440;
-  border: 0.1em solid #ffbb54;
+  background-color: ${zeeguuTransparentLightOrange};
+  border: 0.1em solid ${zeeguuOrange};
 `;
 
 const UndoButton = styled.button`
   margin-left: 1em;
-  background-color: #4caf50;
+  background-color: ${alertGreen};
   border: none;
-  color: #b34f20;
+  color: ${zeeguuVarmYellow}; //red will not work for color blind people on green background
   font-weight: bold;
   cursor: pointer;
 `;

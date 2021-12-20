@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { darkBlue, darkGrey } from "../../components/colors";
+import { darkBlue, darkGrey, veryLightGrey } from "../../components/colors";
 import "@reach/listbox/styles.css";
 
 export const StudentInfoLine = styled.div`
@@ -62,7 +62,7 @@ export const StudentInfoLine = styled.div`
     display: flex;
     height: 3.8em;
     width: 2.8em;
-    background-color: #e5e5e5;
+    background-color: ${veryLightGrey};
     color: black;
     border-radius: 30px;
     padding: 0 0.55em;
