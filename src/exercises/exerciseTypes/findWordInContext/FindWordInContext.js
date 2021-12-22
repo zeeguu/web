@@ -79,7 +79,8 @@ export default function FindWordInContext({
     }
   }
 
-  function handleShowSolution(message) {
+  function handleShowSolution(e, message) {
+    e.preventDefault()
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
@@ -93,7 +94,6 @@ export default function FindWordInContext({
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-
     api.uploadExerciseFeedback(
       concatMessage,
       EXERCISE_TYPE,
@@ -104,9 +104,7 @@ export default function FindWordInContext({
 
   function handleCorrectAnswer(message) {
     console.log(new Date() - initialTime);
-    console.log("^^^^ time elapsed");
     console.log(firstTypeTime - initialTime);
-    console.log("^^^^ to first key press");
     let duration = firstTypeTime - initialTime;
 
     correctAnswer(bookmarksToStudy[0]);
