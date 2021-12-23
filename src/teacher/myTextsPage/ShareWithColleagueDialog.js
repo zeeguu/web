@@ -68,10 +68,10 @@ const ShareWithCollegueDialog = ({ api, articleID, setShowDialog }) => {
           </LabeledTextField>
           <Error message={errorMsg} />
           <PopupButtonWrapper>
-            <StyledButton primary onClick={() => setShowDialog(false)}>
+            <StyledButton secondary onClick={() => setShowDialog(false)}>
               {strings.cancel}
             </StyledButton>
-            <StyledButton secondary onClick={shareText}>
+            <StyledButton primary onClick={shareText}>
               {strings.share}
             </StyledButton>
           </PopupButtonWrapper>
