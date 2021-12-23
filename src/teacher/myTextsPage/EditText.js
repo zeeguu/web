@@ -17,32 +17,35 @@ import {
   ViewAsStudentButton,
 } from "./TooltippedButtons";
 import { Error } from "../sharedComponents/Error";
+import ShareWithCollegueDialog from "./ShareWithColleagueDialog";
 
 export default function EditText({ api }) {
-  const articleID = useParams().articleID;
-  const isNew = articleID === "new";
-  const [stateChanged, setStateChanged] = useState(false);
-
-  const [state, setState] = useState({
+  const [articleState, setArticleState] = useState({
     article_title: "",
     article_content: "",
     language_code: "default",
   });
+  const [showAddToCohortDialog, setShowAddToCohortDialog] =
+    useState(false);
+  const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
+  const [showShareWithColleagueDialog, setShowShareWithColleagueDialog] =
+    useState(false);
 
+  const [stateChanged, setStateChanged] = useState(false);
+  const articleID = useParams().articleID;
+  const isNew = articleID === "new";
   const inputInvalid =
-    state.article_title === "" ||
-    state.article_content === "" ||
-    state.language_code === "default";
+    articleState.article_title === "" ||
+    articleState.article_content === "" ||
+    articleState.language_code === "default";
 
   const viewAsStudentAndShareDisabled = inputInvalid || stateChanged;
-  const [showDialog, setShowDialog] = useState(false);
-  const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
 
   //The user is editing an already existing text...
   useEffect(() => {
     if (!isNew) {
       api.getArticleInfo(articleID, (article) => {
-        setState({
+        setArticleState({
           article_title: article.title,
           article_content: article.content,
           language_code: article.language,
@@ -62,8 +65,8 @@ export default function EditText({ api }) {
 
   const handleChange = (event) => {
     setStateChanged(true);
-    setState({
-      ...state,
+    setArticleState({
+      ...articleState,
       [event.target.name]: event.target.value, //ie: article_title : "Harry Potter tickets sold out", article_content : "bla bla bla"
     });
   };
@@ -71,17 +74,17 @@ export default function EditText({ api }) {
   //The LanguageSelector component returns the language selected by the user as a string (not an event like the other input fields)
   function handleLanguageChange(selectedLanguage) {
     setStateChanged(true);
-    setState({
-      ...state,
+    setArticleState({
+      ...articleState,
       language_code: selectedLanguage,
     });
   }
 
   const uploadArticle = () => {
     api.uploadOwnText(
-      state.article_title,
-      state.article_content,
-      state.language_code,
+      articleState.article_title,
+      articleState.article_content,
+      articleState.language_code,
       (newID) => {
         console.log(`article created with id: ${newID}`);
         setStateChanged(false);
@@ -93,9 +96,9 @@ export default function EditText({ api }) {
   const updateArticle = () => {
     api.updateOwnText(
       articleID,
-      state.article_title,
-      state.article_content,
-      state.language_code,
+      articleState.article_title,
+      articleState.article_content,
+      articleState.language_code,
       (result) => {
         if ((result = "OK")) {
           setStateChanged(false);
@@ -121,67 +124,83 @@ export default function EditText({ api }) {
   return (
     <Fragment>
       <s.NarrowColumn>
-          <sc.TopTabs>
-            <h1>{strings.editText}</h1>
-          </sc.TopTabs>
-          <TopButtonWrapper>
-            <ViewAsStudentButton
-              articleID={articleID}
-              disabled={viewAsStudentAndShareDisabled}
-              isNew={isNew}
-            />
-            <ShareWithClassesButton
-              onclick={() => setShowDialog(true)}
-              disabled={viewAsStudentAndShareDisabled}
-              isNew={isNew}
-            />
-            <StyledButton secondary onClick={handleCancel}>
-              {strings.cancel}
-            </StyledButton>
-          </TopButtonWrapper>
-          <EditTextInputFields
-            api={api}
-            language_code={state.language_code}
-            article_title={state.article_title}
-            article_content={state.article_content}
-            handleLanguageChange={handleLanguageChange}
-            handleChange={handleChange}
+        <sc.TopTabs>
+          <h1>{strings.editText}</h1>
+        </sc.TopTabs>
+        <TopButtonWrapper>
+          <ViewAsStudentButton
+            articleID={articleID}
+            disabled={viewAsStudentAndShareDisabled}
+            isNew={isNew}
           />
-          {inputInvalid && <Error message={strings.errorEmptyInputField} />}
-          <PopupButtonWrapper>
-            {isNew ? (
+          <StyledButton
+            secondary
+            onClick={() => setShowShareWithColleagueDialog(true)}
+            disabled={viewAsStudentAndShareDisabled}
+          >
+            {strings.shareWithColleague}
+          </StyledButton>
+          <ShareWithClassesButton
+            onclick={() => setShowAddToCohortDialog(true)}
+            disabled={viewAsStudentAndShareDisabled}
+            isNew={isNew}
+          />
+          <StyledButton secondary onClick={handleCancel}>
+            {strings.cancel}
+          </StyledButton>
+        </TopButtonWrapper>
+        <EditTextInputFields
+          api={api}
+          language_code={articleState.language_code}
+          article_title={articleState.article_title}
+          article_content={articleState.article_content}
+          handleLanguageChange={handleLanguageChange}
+          handleChange={handleChange}
+        />
+        {inputInvalid && <Error message={strings.errorEmptyInputField} />}
+        <PopupButtonWrapper>
+          {isNew ? (
+            <StyledButton
+              primary
+              onClick={uploadArticle}
+              disabled={inputInvalid}
+            >
+              {strings.saveText}
+            </StyledButton>
+          ) : (
+            <Fragment>
+              <StyledButton
+                secondary
+                onClick={() => setShowDeleteTextWarning(true)}
+              >
+                {strings.delete}
+              </StyledButton>
               <StyledButton
                 primary
-                onClick={uploadArticle}
+                onClick={updateArticle}
                 disabled={inputInvalid}
               >
-                {strings.saveText}
+                {strings.saveChanges}
               </StyledButton>
-            ) : (
-              <Fragment>
-                <StyledButton
-                  secondary
-                  onClick={() => setShowDeleteTextWarning(true)}
-                >
-                  {strings.delete}
-                </StyledButton>
-                <StyledButton
-                  primary
-                  onClick={updateArticle}
-                  disabled={inputInvalid}
-                >
-                  {strings.saveChanges}
-                </StyledButton>
-              </Fragment>
-            )}
-          </PopupButtonWrapper>
+            </Fragment>
+          )}
+        </PopupButtonWrapper>
       </s.NarrowColumn>
-      {showDialog && <AddToCohortDialog api={api} setIsOpen={setShowDialog} />}
+      {showAddToCohortDialog && (
+        <AddToCohortDialog api={api} setIsOpen={setShowAddToCohortDialog} />
+      )}
       {showDeleteTextWarning && (
         <DeleteTextWarning
           deleteText={deleteText}
           setShowDeleteTextWarning={setShowDeleteTextWarning}
-          articleTitle={state.article_title}
+          articleTitle={articleState.article_title}
+        />
+      )}
+      {showShareWithColleagueDialog && (
+        <ShareWithCollegueDialog
+          api={api}
+          articleID={articleID}
+          setShowDialog={setShowShareWithColleagueDialog}
         />
       )}
     </Fragment>

@@ -70,3 +70,21 @@ Zeeguu_API.prototype.deleteOwnText = function (id, onSuccess) {
 Zeeguu_API.prototype.getOwnTexts = function (callback) {
   this._getJSON("own_texts", callback);
 };
+
+Zeeguu_API.prototype.shareTextWithColleague = function (
+  articleID,
+  receiverEmail,
+  onSuccess,
+  onError
+) {
+  let payload = {
+    article_id: articleID,
+    email: receiverEmail,
+  };
+  this._post(
+    `send_article_to_colleague`,
+    queryString.stringify(payload),
+    onSuccess,
+    onError
+  );
+};
