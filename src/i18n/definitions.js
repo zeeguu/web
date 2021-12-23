@@ -33,6 +33,8 @@ let strings = new LocalizedStrings(
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
       tooEasy: "too easy",
+      shareWithColleague: "Share with colleague",
+      colleagueEmailExample: "eg. 'colleague@work.mail.com'",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -464,7 +466,6 @@ let strings = new LocalizedStrings(
 
       //AddTeacherDialog
       addAnotherTeacherToTheClass: "Add another teacher to the class",
-      colleagueEmailExample: "eg. 'colleague@work.mail.com'",
       addEmailOfColleague: "Add email of colleague",
       addTeacherWarningPartOne:
         "This adds the class to your colleague's list of classes.",
@@ -502,9 +503,17 @@ let strings = new LocalizedStrings(
       editText: "Edit Text",
       saveText: "Save Text",
 
+      //ShareTextWithColleagueDialog
+      somethingWentWrongMostLikelyEmail: "Something went wrong. Most likely, the email is not registered in Zeeguu. Please, try a different one.",
+      theConnectionFailed: "The connection to the server seems unstable at the moment. Please, let us know if this continues to happen.",
+      enterEmailYourColleagueUse: "Enter the email, your colleague use for Zeeguu.",
+      share: "Share",
+      yourColleagueShouldHaveTheTextShortly:"Your colleague should be able to find the text under 'My Texts' in a moment.",
+      ok: "OK",
+
       //TooltipedButtons
       viewAsStudent: "View as Student",
-      addToClass: "Share/Unshare",
+      addToClass: "Share/unshare with class",
       saveTextBeforeViewAsStudent:
         "The text must be saved before you can view it as a student.",
       saveChangesBeforeViewAsStudent:
@@ -693,6 +702,8 @@ let strings = new LocalizedStrings(
       joinClass: "Deltag i klasse",
       youHaveNotJoinedAClass: "Du er endnu ikke tilmeldt en klasse.",
       tooEasy: "for nem",
+      shareWithColleague: "Del med kollega",
+      colleagueEmailExample: "f.eks: 'kollega@arbejdsmail.dk'",
 
       //LoadingAnimation
       loadingMsg: "Loader...",
@@ -1124,7 +1135,6 @@ let strings = new LocalizedStrings(
 
       //AddTeacherDialog
       addAnotherTeacherToTheClass: "Tilføj en lærer mere til klassen",
-      colleagueEmailExample: "f.eks: 'kollega@arbejds.mail.dk'",
       addEmailOfColleague: "Tilføj kollegas email",
       addTeacherWarning:
         "Dette tilføje klassen til din kollegas liste af klasser. Hvis du senere sletter klassen her, bliver den også uigenkaldeligt slettet fra din kollegas list af klasser.",
@@ -1160,9 +1170,17 @@ let strings = new LocalizedStrings(
       editText: "Rediger",
       saveText: "Gem tekst",
 
+      //ShareTextWithColleagueDialog
+      somethingWentWrongMostLikelyEmail: "Noget gik galt. Det kan være din kollega bruger en anden email til Zeeguu. Tjek venligst og prøv igen.",
+      theConnectionFailed: "Forbindelsen til serveren virker ustabil. Giv os gerne besked, hvis dette problem fortsætter.",
+      enterEmailYourColleagueUse: "Indsæt den email, din kollega bruger til Zeeguu",
+      share: "Del",
+      yourColleagueShouldHaveTheTextShortly:"Din kollega burde have teksten i 'Mine tekster' om et øjeblik.",
+      ok: "OK",
+
       //TooltipedButtons
       viewAsStudent: "Se som elev",
-      addToClass: "Deling",
+      addToClass: "Del med/fjern fra klasse",
       saveTextBeforeViewAsStudent:
         "Teksten skal gemmes, før du kan se den som elev.",
       saveChangesBeforeViewAsStudent:
