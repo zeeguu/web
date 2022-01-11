@@ -53,4 +53,6 @@ export const languageMap = {
   Arabic: "ar",
   Somali: "so",
   Kurdish: "ku",
+  Swedish: "sv",
+  Russian: "ru",
 };
