@@ -143,11 +143,7 @@ let strings = new LocalizedStrings(
       dec: "Dec",
       betaTesters200K:
         "📈 The beta-testers of Zeeguu have collectively reached 200'000 translations in their foreign language readings ",
-<<<<<<< HEAD
-      mirceaKeynoteAtEASEAI: "👨‍🏫 Mircea gives a keynote about Zeeguu at the ",
-=======
       mirceaKeynoteAtEASEAI: '👨‍🏫 Mircea gives a keynote about Zeeguu at the ',
->>>>>>> 71d4b18 (added sv and ru)
       pernilleObtainsFundingPrefix:
         "👩‍🔬 Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
       pernilleObtainsFundingLinkTitle:
