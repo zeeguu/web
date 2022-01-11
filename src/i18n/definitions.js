@@ -141,8 +141,8 @@ let strings = new LocalizedStrings(
       oct: "Oct",
       dec: "Dec",
       betaTesters200K:
-      "📈 The beta-testers of Zeeguu have collectively reached 200'000 translations in their foreign language readings ",
-      mirceaKeynoteAtEASEAI:'👨‍🏫 Mircea gives a keynote about Zeeguu at the ',
+        "📈 The beta-testers of Zeeguu have collectively reached 200'000 translations in their foreign language readings ",
+      mirceaKeynoteAtEASEAI: '👨‍🏫 Mircea gives a keynote about Zeeguu at the ',
       pernilleObtainsFundingPrefix:
         "👩‍🔬 Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
       pernilleObtainsFundingLinkTitle:
@@ -500,6 +500,8 @@ let strings = new LocalizedStrings(
       arabic: "Arabic",
       somali: "Somali",
       kurdish: "Kurdish",
+      swedish: "Swedish",
+      russian: "Russian",
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -751,8 +753,8 @@ let strings = new LocalizedStrings(
       sep: "Sep",
       dec: "Dec",
       betaTesters200K:
-      "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
-      mirceaKeynoteAtEASEAI:'Mircea giver en keynote om Zeeguu på ',
+        "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
+      mirceaKeynoteAtEASEAI: 'Mircea giver en keynote om Zeeguu på ',
       pernilleObtainsFundingPrefix:
         "Pernille Hvalsoe modtager bevillinger fra Styrelsen for International Rekruttering og Integration til et ",
       pernilleObtainsFundingLinkTitle:
@@ -1108,6 +1110,8 @@ let strings = new LocalizedStrings(
       arabic: "Arabisk",
       somali: "Somalisk",
       kurdish: "Kurdisk",
+      swedish: "Svensk",
+      russian: "Russisk",
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
