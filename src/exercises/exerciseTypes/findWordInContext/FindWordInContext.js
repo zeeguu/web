@@ -137,15 +137,7 @@ export default function FindWordInContext({
       )}
       <h1>{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
-        <TranslatableText
-          isCorrect={isCorrect}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          bookmarkToStudy={bookmarksToStudy[0].from}
-        />
+        {bookmarksToStudy[0].context}
       </div>
       {!isCorrect && (
         <BottomInput
