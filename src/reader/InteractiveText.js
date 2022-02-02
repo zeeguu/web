@@ -62,7 +62,7 @@ export default class InteractiveText {
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
-    this.api.logReaderActivity(this.api.SEND_SUGGESTION, this.articleInfo.id, word.word + " => " + alternative);
+    this.api.logReaderActivity(this.api.SEND_SUGGESTION, this.articleInfo.id, word.translation + " => " + alternative);
 
     onSuccess();
   }
