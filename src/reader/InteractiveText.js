@@ -49,7 +49,7 @@ export default class InteractiveText {
     this.api.logReaderActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id, word.word);
   }
 
-  selectAlternative(word, alternative, onSuccess) {
+  selectAlternative(word, alternative, preferredSource, onSuccess) {
     this.api.contributeTranslation(
       this.articleInfo.language,
       localStorage.native_language,
@@ -62,7 +62,8 @@ export default class InteractiveText {
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
-    this.api.logReaderActivity(this.api.SEND_SUGGESTION, this.articleInfo.id, word.translation + " => " + alternative);
+    let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`
+    this.api.logReaderActivity(this.api.SEND_SUGGESTION,this.articleInfo.id,alternative_info);
 
     onSuccess();
   }

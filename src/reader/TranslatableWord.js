@@ -39,8 +39,8 @@ export default function TranslatableWord({
     });
   }
 
-  function selectAlternative(alternative) {
-    interactiveText.selectAlternative(word, alternative, () => {
+  function selectAlternative(alternative, preferredSource) {
+    interactiveText.selectAlternative(word, alternative, preferredSource, () => {
       wordUpdated();
       setShowingAlternatives(false);
     });
