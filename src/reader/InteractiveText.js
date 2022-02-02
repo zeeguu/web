@@ -90,7 +90,7 @@ export default class InteractiveText {
 
   pronounce(word) {
     this.zeeguuSpeech.speakOut(word.word);
-    this.api.logReaderActivity(this.api.SPEAK_TEXT, this.articleInfo.id);
+    this.api.logReaderActivity(this.api.SPEAK_TEXT, this.articleInfo.id, word.word);
   }
 
   /**
