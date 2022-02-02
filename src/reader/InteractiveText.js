@@ -46,7 +46,7 @@ export default class InteractiveText {
         console.log("could not retreive translation");
       });
 
-    this.api.logReaderActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id, word);
+    this.api.logReaderActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id, word.word);
   }
 
   selectAlternative(word, alternative, onSuccess) {
