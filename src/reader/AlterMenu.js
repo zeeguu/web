@@ -18,7 +18,7 @@ export default function AlterMenu({
 
   function handleKeyDown(e) {
     if (e.code === "Enter") {
-      selectAlternative(inputValue);
+      selectAlternative(inputValue, "User Suggested");
     }
   }
 
@@ -45,7 +45,7 @@ export default function AlterMenu({
       {word.alternatives.map((each) => (
         <div
           key={each.translation}
-          onClick={(e) => selectAlternative(each.translation)}
+          onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
           className="additionalTrans"
         >
           {each.translation}
