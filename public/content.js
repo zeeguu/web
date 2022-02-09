@@ -1,4 +1,5 @@
 var tabs;
+/*global chrome*/
 chrome.storage.local.get("tabId", function (data) {
   if (typeof data.tabId == "undefined") {
     console.log("nothing to see here");
