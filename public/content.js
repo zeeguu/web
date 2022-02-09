@@ -74,32 +74,32 @@ document.addEventListener("keydown", function (event) {
 });
 
 function cleanImages(content){
-var div = document.createElement("div");
-div.innerHTML = content; 
-var firstImage = div.getElementsByTagName("img")[0]
-if(firstImage != undefined){
-    firstImage.setAttribute("id", "zeeguuImage"); 
-    var images = div.getElementsByTagName("img"), index;
-    for (index = images.length - 1; index >= 0; index--) {
-        if(index != 0){
-        images[index].parentNode.removeChild(images[index]);
-        }
-    }
-    content = div.innerHTML; 
-}
-return content
-}
+  var div = document.createElement("div");
+  div.innerHTML = content; 
+  var firstImage = div.getElementsByTagName("img")[0]
+  if(firstImage !== undefined){
+      firstImage.setAttribute("id", "zeeguuImage"); 
+      var images = div.getElementsByTagName("img"), index;
+      for (index = images.length - 1; index >= 0; index--) {
+          if(index !== 0){
+          images[index].parentNode.removeChild(images[index]);
+          }
+      }
+      content = div.innerHTML; 
+  }
+  return content
+  }
 
 function removeSVG(content){
-    var div = document.createElement("div");
-    div.innerHTML = content; 
-    var allSVG = div.getElementsByTagName("svg")
-    if(allSVG != undefined){
-        var svg = allSVG, index;
-        for (index = svg.length - 1; index >= 0; index--) {
-            svg[index].parentNode.removeChild(svg[index]);
-        }
-        content = div.innerHTML; 
-    }
-    return content
-    }
+      var div = document.createElement("div");
+      div.innerHTML = content; 
+      var allSVG = div.getElementsByTagName("svg")
+      if(allSVG !== undefined){
+          var svg = allSVG, index;
+          for (index = svg.length - 1; index >= 0; index--) {
+              svg[index].parentNode.removeChild(svg[index]);
+          }
+          content = div.innerHTML; 
+      }
+      return content
+      }
