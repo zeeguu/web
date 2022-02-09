@@ -35,3 +35,10 @@
     cursor: pointer;
 
 }
+
+.modal.div,
+.modal.div *,
+.modal.div *::before,
+.modal.div *::after {
+    all: initial;
+}
