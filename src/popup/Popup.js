@@ -8,7 +8,7 @@ export default function Popup() {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       function: reading(tab.url),
-      files: ["./content.js"],
+      files: ["./main.js"],
     });
     chrome.scripting.insertCSS({
       target: { tabId: tab.id },
