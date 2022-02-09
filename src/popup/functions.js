@@ -6,16 +6,16 @@ import {
 } from "@mozilla/readability";
 
 export async function getCurrentTab() {
-  let queryOptions = { active: true, currentWindow: true };
-  let [tab] = await chrome.tabs.query(queryOptions);
+  const queryOptions = { active: true, currentWindow: true };
+  const [tab] = await chrome.tabs.query(queryOptions);
   return tab;
 }
 
 export function reading(currentTabURL) {
-  var documentFromTab = getSourceAsDOM(currentTabURL);
-  var documentClone = documentFromTab.cloneNode(true);
+  const documentFromTab = getSourceAsDOM(currentTabURL);
+  const documentClone = documentFromTab.cloneNode(true);
   if (isProbablyReaderable(documentClone, minContentLength)) {
-    var article = new Readability(documentClone).parse();
+    const article = new Readability(documentClone).parse();
     chrome.storage.local.set({ article: article });
     chrome.storage.local.set({ isProbablyReaderable: true });
   } else {
@@ -25,9 +25,9 @@ export function reading(currentTabURL) {
 }
 
 function getSourceAsDOM(url) {
-  var xmlhttp = new XMLHttpRequest();
+  const xmlhttp = new XMLHttpRequest();
   xmlhttp.open("GET", url, false);
   xmlhttp.send();
-  var parser = new DOMParser();
+  const parser = new DOMParser();
   return parser.parseFromString(xmlhttp.responseText, "text/html");
 }

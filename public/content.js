@@ -1,4 +1,4 @@
-
+/*global chrome*/
 /* Changes to current URL's DOM */
 chrome.storage.local.get("isProbablyReaderable", function (data) {
   console.log(data);
@@ -7,14 +7,14 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
     alert("This content is not readable");
   } else {
     console.log("YES! This content is readable");
-    var dataText;
+    let dataText;
     chrome.storage.local.get("article", function (data) {
-      if (data.article == undefined) {
+      if (data.article === undefined) {
         console.log("No article is defined");
       } else {
         dataText = data.article;
-        let cleanContent = cleanImages(dataText.content);
-        let cleanSVG = removeSVG(cleanContent);
+        const cleanContent = cleanImages(dataText.content);
+        const cleanSVG = removeSVG(cleanContent);
         let dialogWindow = document.createElement("dialog");
         let dialogContent = document.createElement("div");
         dialogContent.setAttribute("class", "modal-content");
@@ -77,15 +77,15 @@ document.addEventListener("keydown", function (event) {
 
 /* Functions */
 function cleanImages(content) {
-  var div = document.createElement("div");
+  const div = document.createElement("div");
   div.innerHTML = content;
-  var firstImage = div.getElementsByTagName("img")[0];
-  if (firstImage != undefined) {
+  const firstImage = div.getElementsByTagName("img")[0];
+  if (firstImage !== undefined) {
     firstImage.setAttribute("id", "zeeguuImage");
-    var images = div.getElementsByTagName("img"),
+    let images = div.getElementsByTagName("img"),
       index;
     for (index = images.length - 1; index >= 0; index--) {
-      if (index != 0) {
+      if (index !== 0) {
         images[index].parentNode.removeChild(images[index]);
       }
     }
@@ -95,11 +95,11 @@ function cleanImages(content) {
 }
 
 function removeSVG(content) {
-  var div = document.createElement("div");
+  const div = document.createElement("div");
   div.innerHTML = content;
-  var allSVG = div.getElementsByTagName("svg");
-  if (allSVG != undefined) {
-    var svg = allSVG,
+  const allSVG = div.getElementsByTagName("svg");
+  if (allSVG !== undefined) {
+    let svg = allSVG,
       index;
     for (index = svg.length - 1; index >= 0; index--) {
       svg[index].parentNode.removeChild(svg[index]);
