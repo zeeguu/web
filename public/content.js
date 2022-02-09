@@ -68,7 +68,6 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
   }
 });
 
-
 /* Event listeners */
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
