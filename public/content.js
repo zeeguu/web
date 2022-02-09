@@ -25,16 +25,12 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
         xClose.textContent = "X";
 
         let div = document.createElement("div");
-        div.innerHTML = cleanSVG; //dataText.content;
+        div.innerHTML = cleanSVG; 
         div.setAttribute("style", `width: 95%`);
 
         let h1 = document.createElement("h1");
         let headline = document.createTextNode(dataText.title);
         h1.appendChild(headline);
-
-        let numChar = document.createElement("div");
-        let num = document.createTextNode(dataText.length);
-        numChar.appendChild(num);
 
         dialogWindow.setAttribute("id", "myDialog");
         dialogWindow.setAttribute("class", "modal");
@@ -57,7 +53,6 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
         dialogWindow.appendChild(dialogContent);
         dialogContent.appendChild(h1);
         dialogContent.appendChild(div);
-        dialogContent.appendChild(numChar);
 
         document.body.appendChild(dialogWindow);
         document.getElementById("myDialog").showModal();
