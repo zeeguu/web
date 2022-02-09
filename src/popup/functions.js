@@ -1,5 +1,9 @@
 /*global chrome*/
-import { Readability } from '@mozilla/readability'
+import {
+  Readability,
+  isProbablyReaderable,
+  minContentLength,
+} from "@mozilla/readability";
 
 export async function getCurrentTab() {
   let queryOptions = { active: true, currentWindow: true };
@@ -9,8 +13,15 @@ export async function getCurrentTab() {
 
 export function reading(currentTabURL) {
   var documentFromTab = getSourceAsDOM(currentTabURL);
-  var article = new Readability(documentFromTab).parse();
-  chrome.storage.local.set({ article: article });
+  var documentClone = documentFromTab.cloneNode(true);
+  if (isProbablyReaderable(documentClone, minContentLength)) {
+    var article = new Readability(documentClone).parse();
+    chrome.storage.local.set({ article: article });
+    chrome.storage.local.set({ isProbablyReaderable: true });
+  } else {
+    chrome.storage.local.set({ article: undefined });
+    chrome.storage.local.set({ isProbablyReaderable: false });
+  }
 }
 
 function getSourceAsDOM(url) {

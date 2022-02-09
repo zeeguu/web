@@ -1,6 +1,6 @@
+/*global chrome*/
 import Login from "./Login"
 import {getCurrentTab, reading} from "./functions";
-/*global chrome*/
 
 export default function Popup() {  
   async function openModal(){
@@ -18,6 +18,7 @@ export default function Popup() {
 
   let currentTab = getCurrentTab();
   chrome.storage.local.set({ tabId: currentTab });
+  
     return (
         <>
         <Login/>
