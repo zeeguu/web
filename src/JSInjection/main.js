@@ -1,4 +1,7 @@
 /*global chrome*/
+import {removeSVG} from "./removesvg";
+import {canWeReturnJSX} from "./test.js";
+
 /* Changes to current URL's DOM */
 chrome.storage.local.get("isProbablyReaderable", function (data) {
   console.log(data);
@@ -12,6 +15,7 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
       if (data.article === undefined) {
         console.log("No article is defined");
       } else {
+        canWeReturnJSX()
         dataText = data.article;
         const cleanContent = cleanImages(dataText.content);
         const cleanSVG = removeSVG(cleanContent);
@@ -94,17 +98,4 @@ function cleanImages(content) {
   return content;
 }
 
-function removeSVG(content) {
-  const div = document.createElement("div");
-  div.innerHTML = content;
-  const allSVG = div.getElementsByTagName("svg");
-  if (allSVG !== undefined) {
-    let svg = allSVG,
-      index;
-    for (index = svg.length - 1; index >= 0; index--) {
-      svg[index].parentNode.removeChild(svg[index]);
-    }
-    content = div.innerHTML;
-  }
-  return content;
-}
+
