@@ -15,6 +15,7 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
         dataText = data.article;
         const cleanContent = cleanImages(dataText.content);
         const cleanSVG = removeSVG(cleanContent);
+        const cleanLinks = removeLinks(cleanSVG);
         let dialogWindow = document.createElement("dialog");
         let dialogContent = document.createElement("div");
         dialogContent.setAttribute("class", "modal-content");
@@ -25,7 +26,7 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
         xClose.textContent = "X";
 
         let div = document.createElement("div");
-        div.innerHTML = cleanSVG; 
+        div.innerHTML = cleanLinks;
         div.setAttribute("style", `width: 95%`);
 
         let h1 = document.createElement("h1");
@@ -53,6 +54,21 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
     });
   }
 });
+
+function removeLinks(content) {
+  const div = document.createElement("div");
+  div.innerHTML = content;
+  var links = div.getElementsByTagName("a");
+  while (links.length) {
+    var parent = links[0].parentNode;
+    while (links[0].firstChild) {
+      parent.insertBefore(links[0].firstChild, links[0]);
+    }
+    parent.removeChild(links[0]);
+  }
+  content = div.innerHTML;
+  return content;
+}
 
 /* Event listeners */
 document.addEventListener("keydown", function (event) {
