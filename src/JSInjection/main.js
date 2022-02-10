@@ -38,20 +38,6 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
 
         dialogWindow.setAttribute("id", "myDialog");
         dialogWindow.setAttribute("class", "modal");
-        dialogWindow.setAttribute("data-backdrop", "true");
-        dialogWindow.setAttribute("data-keyboard", "false");
-        dialogWindow.setAttribute(
-          "style",
-          `
-            font-size: 20px;
-            height:90%;
-            width: 70%;
-            border: none;
-            background-color:white;
-            position: fixed;
-            box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
-            `
-        );
 
         dialogWindow.appendChild(xClose);
         dialogWindow.appendChild(dialogContent);
