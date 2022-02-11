@@ -1,9 +1,17 @@
 /*global chrome*/
 /* Changes to current URL's DOM */
+import {removefromWiki, wikiRegex} from "./Pages/wiki"
+//import {getCurrentURL} from "../popup/functions"
+
+//
+
+//(async () => {
+//  let currentURL = await getCurrentURL();})();
+
+
 chrome.storage.local.get("isProbablyReaderable", function (data) {
   console.log(data);
   if (!data.isProbablyReaderable) {
-    console.log("This content is not readable");
     alert("This content is not readable");
   } else {
     console.log("YES! This content is readable");
@@ -16,6 +24,17 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
         const cleanContent = cleanImages(dataText.content);
         const cleanSVG = removeSVG(cleanContent);
         const cleanLinks = removeLinks(cleanSVG);
+        let finalClean = cleanLinks
+        
+        chrome.storage.local.get("tabURL", function (data) {
+          if (data.tabURL === undefined) {
+            console.log("No tabURL is defined");
+          } else {
+            const currentURL = data.tabURL
+            if(currentURL.match(wikiRegex)){
+              finalClean = removefromWiki(cleanLinks)
+            }
+
         let dialogWindow = document.createElement("dialog");
         let dialogContent = document.createElement("div");
         dialogContent.setAttribute("class", "modal-content");
@@ -26,7 +45,7 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
         xClose.textContent = "X";
 
         let div = document.createElement("div");
-        div.innerHTML = cleanLinks;
+        div.innerHTML = finalClean;
         div.setAttribute("style", `width: 95%`);
 
         let h1 = document.createElement("h1");
@@ -51,7 +70,9 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
           document.getElementById("myDialog").close();
         });
       }
+      
     });
+  }})
   }
 });
 
