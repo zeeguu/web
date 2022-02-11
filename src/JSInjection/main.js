@@ -1,6 +1,8 @@
 /*global chrome*/
 import {removeSVG} from "./removesvg";
-import {canWeReturnJSX} from "./test.js";
+import {cleanImages} from "./cleanImages";
+import {CanWeReturnJSX} from "./test.js";
+import ReactDom from "react-dom";
 
 /* Changes to current URL's DOM */
 chrome.storage.local.get("isProbablyReaderable", function (data) {
@@ -15,48 +17,67 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
       if (data.article === undefined) {
         console.log("No article is defined");
       } else {
-        canWeReturnJSX()
-        dataText = data.article;
+        dataText = data.article
+        console.log(dataText)
         const cleanContent = cleanImages(dataText.content);
         const cleanSVG = removeSVG(cleanContent);
-        let dialogWindow = document.createElement("dialog");
-        let dialogContent = document.createElement("div");
-        dialogContent.setAttribute("class", "modal-content");
+       // make container for jsx:
+        const dialog = document.createElement('dialog');
+        dialog.id = "myDialog";
+        dialog.setAttribute("class", "modal");
+        document.body.appendChild(dialog);
 
-        var xClose = document.createElement("span");
-        xClose.setAttribute("id", "qtClose");
-        xClose.setAttribute("role", "button");
-        xClose.textContent = "X";
+        ReactDom.render(
+          CanWeReturnJSX(dataText.title, cleanSVG),
+          dialog
+        );
+        
 
-        let div = document.createElement("div");
-        div.innerHTML = cleanSVG; 
-        div.setAttribute("style", `width: 95%`);
 
-        let h1 = document.createElement("h1");
-        let headline = document.createTextNode(dataText.title);
-        h1.appendChild(headline);
+        //  const cleanContent = cleanImages(dataText.content);
+        //  const cleanSVG = removeSVG(cleanContent);
+        //  let dialogWindow = document.createElement("dialog");
+        //  let dialogContent = document.createElement("div");
+        //  dialogContent.setAttribute("class", "modal-content");
 
-        dialogWindow.setAttribute("id", "myDialog");
-        dialogWindow.setAttribute("class", "modal");
+        //  var xClose = document.createElement("span");
+        //  xClose.setAttribute("id", "qtClose");
+        //  xClose.setAttribute("role", "button");
+        //  xClose.textContent = "X";
 
-        dialogWindow.appendChild(xClose);
-        dialogWindow.appendChild(dialogContent);
-        dialogContent.appendChild(h1);
-        dialogContent.appendChild(div);
+        //  let div = document.createElement("div");
+        //  div.innerHTML = cleanSVG; 
+        //  div.setAttribute("style", `width: 95%`);
 
-        document.body.appendChild(dialogWindow);
-        document.getElementById("myDialog").showModal();
-        document.body.style.overflow = "hidden";
+        //  let h1 = document.createElement("h1");
+        //  let headline = document.createTextNode(dataText.title);
+        //  h1.appendChild(headline);
 
-        let button = document.getElementById("qtClose");
-        button.addEventListener("click", function () {
-          document.body.style.overflow = "auto";
-          document.getElementById("myDialog").close();
-        });
+        //  dialogWindow.setAttribute("id", "myDialog");
+        //  dialogWindow.setAttribute("class", "modal");
+
+        //  dialogWindow.appendChild(xClose);
+        //  dialogWindow.appendChild(dialogContent);
+        //  dialogContent.appendChild(h1);
+        //  dialogContent.appendChild(div);
+
+        //  document.body.appendChild(dialogWindow);
+        //  document.getElementById("myDialog").showModal();
+        //  document.body.style.overflow = "hidden";
+
+        //  let button = document.getElementById("qtClose");
+        //  button.addEventListener("click", function () {
+        //    document.body.style.overflow = "auto";
+        //    document.getElementById("myDialog").close();
+        //  });
+
+        //  
+
       }
     });
   }
 });
+
 
 /* Event listeners */
 document.addEventListener("keydown", function (event) {
@@ -65,23 +86,5 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-/* Functions */
-function cleanImages(content) {
-  const div = document.createElement("div");
-  div.innerHTML = content;
-  const firstImage = div.getElementsByTagName("img")[0];
-  if (firstImage !== undefined) {
-    firstImage.setAttribute("id", "zeeguuImage");
-    let images = div.getElementsByTagName("img"),
-      index;
-    for (index = images.length - 1; index >= 0; index--) {
-      if (index !== 0) {
-        images[index].parentNode.removeChild(images[index]);
-      }
-    }
-    content = div.innerHTML;
-  }
-  return content;
-}
 
 
