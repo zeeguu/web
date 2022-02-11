@@ -33,7 +33,7 @@ export function reading(currentTabURL) {
   }
 }
 
-function getSourceAsDOM(url) {
+export function getSourceAsDOM(url) {
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.open("GET", url, false);
   xmlhttp.send();
