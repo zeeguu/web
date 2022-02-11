@@ -58,11 +58,14 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
         dialogWindow.appendChild(xClose);
         dialogWindow.appendChild(dialogContent);
         dialogContent.appendChild(h1);
-        dialogContent.appendChild(div);
+        dialogContent.appendChild(div)
+        document.open()
+        document.write(dialogWindow)
+        document.close()
 
         document.body.appendChild(dialogWindow);
         document.getElementById("myDialog").showModal();
-        document.body.style.overflow = "hidden";
+        //document.body.style.overflow = "hidden";
 
         let button = document.getElementById("qtClose");
         button.addEventListener("click", function () {
