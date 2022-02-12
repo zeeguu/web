@@ -1,0 +1,31 @@
+#myDialog,
+#myDialog *{
+    all: revert;
+}
+
+
+#zeeguuImage {
+    max-height: 400px !important;
+    width: auto !important;
+  }
+
+#qtClose{
+    position: sticky;
+    top: 0;
+    left: 100%;
+    border-radius: 10%;
+    width: 30px;
+    height: 25px;
+    display: block;
+    cursor: pointer;
+
+}
+
+.Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255,208,71);
+  }

@@ -1,7 +1,6 @@
 /*global chrome*/
 import Login from "./Login"
-import {getCurrentTab, reading} from "./functions";
-import { mainScript } from "../JSInjection/main";
+import {getCurrentTab, reading, setCurrentURL} from "./functions";
 
 export default function Popup() {  
   async function openModal(){
@@ -14,6 +13,10 @@ export default function Popup() {
     chrome.scripting.insertCSS({
       target: { tabId: tab.id },
       files: ["./modal.css"]
+  });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: setCurrentURL(tab.url),
   });
   }
 
