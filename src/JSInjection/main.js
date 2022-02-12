@@ -42,7 +42,8 @@ export function Main() {
     />
   );
 }
-
+//document.open()
+//document.close()
 const div = document.createElement("div");
 document.body.appendChild(div);
 ReactDOM.render(<Main />, div);
