@@ -1,7 +1,7 @@
-.modal,
-.modal *{
+/*.Modal,
+.Modal *{
     all: revert;
-}
+}*/
 
 #zeeguuImage {
     max-height: 400px !important;

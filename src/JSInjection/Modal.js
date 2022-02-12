@@ -8,7 +8,7 @@ export function ModalWithArticle({ title, content, modalIsOpen, setModalIsOpen }
 
   return (
     <div>
-    <StyledModal isOpen={modalIsOpen} overlayClassName="Overlay">
+    <StyledModal isOpen={modalIsOpen} className="Modal" overlayClassName="Overlay">
           <StyledButton onClick={handleClose} id="qtClose">X</StyledButton>
           <h1>{title}</h1>
           {parse(content)}

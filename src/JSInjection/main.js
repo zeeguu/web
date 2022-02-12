@@ -44,6 +44,7 @@ export function Main() {
   );
 }
 document.open()
+document.write()
 document.close()
 
 const div = document.createElement("div");
