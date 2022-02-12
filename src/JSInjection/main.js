@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { useState, useEffect } from "react";
 import { getCurrentURL } from "../popup/functions";
 import { Article } from "./Modal/Article";
-import { generalClean } from "./Cleaning/cleanArticle";
+import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
 
 export function Main() {

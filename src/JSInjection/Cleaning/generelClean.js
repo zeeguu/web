@@ -1,3 +1,12 @@
+/*Final cleanup function */
+export function generalClean(content) {
+  let cleanContent = cleanImages(content);
+  cleanContent = removeSVG(cleanContent);
+  cleanContent = removeLinks(cleanContent);
+  return cleanContent
+
+}
+
 /* Functions */
 function cleanImages(content) {
   const div = document.createElement("div");
@@ -47,12 +56,5 @@ function removeLinks(content) {
   return content;
 }
 
-/*Final cleanup function */
-export function generalClean(content) {
-  let cleanContent = cleanImages(content);
-  cleanContent = removeSVG(cleanContent);
-  cleanContent = removeLinks(cleanContent);
-  //make html?
-  return cleanContent
 
-}
+

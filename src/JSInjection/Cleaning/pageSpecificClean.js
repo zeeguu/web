@@ -1,4 +1,4 @@
-import {wikiRegex, removefromWiki} from "./wiki";
+import {wikiRegex, removefromWiki} from "./Pages/wiki";
 
 export function pageSpecificClean(articleContent, url) {
     const div = document.createElement("div");
