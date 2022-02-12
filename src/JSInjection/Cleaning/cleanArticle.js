@@ -1,5 +1,5 @@
 /* Functions */
-export function cleanImages(content) {
+function cleanImages(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   const firstImage = div.getElementsByTagName("img")[0];
@@ -17,7 +17,7 @@ export function cleanImages(content) {
   return content;
 }
 
-export function removeSVG(content) {
+function removeSVG(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   const allSVG = div.getElementsByTagName("svg");
@@ -32,7 +32,7 @@ export function removeSVG(content) {
   return content;
 }
 
-export function removeLinks(content) {
+function removeLinks(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   var links = div.getElementsByTagName("a");
@@ -45,4 +45,14 @@ export function removeLinks(content) {
   }
   content = div.innerHTML;
   return content;
+}
+
+/*Final cleanup function */
+export function generalClean(content) {
+  let cleanContent = cleanImages(content);
+  cleanContent = removeSVG(cleanContent);
+  cleanContent = removeLinks(cleanContent);
+  //make html?
+  return cleanContent
+
 }

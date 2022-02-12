@@ -1,5 +1,5 @@
 /*global chrome*/
-import {getSourceAsDOM} from "../popup/functions"
+import {getSourceAsDOM} from "../../popup/functions"
 import {
     Readability,} from "@mozilla/readability";
 

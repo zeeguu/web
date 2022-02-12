@@ -12,3 +12,5 @@ export function removefromWiki(content){
     return div.innerHTML;
   }
   
+
+  //note to self: måske kan vi også fjerne fodnoter fra wiki

@@ -1,12 +1,11 @@
 /*global chrome*/
-
-import { removefromWiki, wikiRegex } from "./Pages/wiki";
-import { ModalWithArticle } from "./Modal";
+import { ModalWithArticle } from "./Modal/ModalWithArticle";
 import ReactDOM from "react-dom";
 import { useState, useEffect } from "react";
 import { getCurrentURL } from "../popup/functions";
-import { Article } from "./Article";
-import { cleanImages, removeSVG, removeLinks } from "./cleanArticle";
+import { Article } from "./Modal/Article";
+import { generalClean } from "./Cleaning/cleanArticle";
+import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
 
 export function Main() {
   const [article, setArticle] = useState();
@@ -25,20 +24,15 @@ export function Main() {
   if (article === undefined) {
     return <div>Loading</div>;
   }
-
-  let finalClean = cleanImages(article.content);
-  if (url.match(wikiRegex)) {
-    finalClean = removefromWiki(finalClean);
-  }
-  finalClean = removeSVG(finalClean);
-  finalClean = removeLinks(finalClean);
+  let cleanedContent = pageSpecificClean(article.content, url)
+  cleanedContent = generalClean(cleanedContent);
 
   return (
     <ModalWithArticle
       modalIsOpen={modalIsOpen}
       setModalIsOpen={setModalIsOpen}
       title={article.title}
-      content={finalClean}
+      content={cleanedContent}
     />
   );
 }
