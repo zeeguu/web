@@ -2,7 +2,7 @@
 import {removeSVG} from "./removesvg";
 import {cleanImages} from "./cleanImages";
 import {CanWeReturnJSX} from "./test.js";
-import ReactDom from "react-dom";
+import ReactDOM from "react-dom";
 
 /* Changes to current URL's DOM */
 chrome.storage.local.get("isProbablyReaderable", function (data) {
@@ -21,16 +21,18 @@ chrome.storage.local.get("isProbablyReaderable", function (data) {
         console.log(dataText)
         const cleanContent = cleanImages(dataText.content);
         const cleanSVG = removeSVG(cleanContent);
+        document.close()
        // make container for jsx:
         const dialog = document.createElement('dialog');
         dialog.id = "myDialog";
         dialog.setAttribute("class", "modal");
         document.body.appendChild(dialog);
 
-        ReactDom.render(
-          CanWeReturnJSX(dataText.title, cleanSVG),
-          dialog
-        );
+       ReactDOM.render(
+           CanWeReturnJSX(dataText.title, cleanSVG),
+           dialog
+         );
+
         
 
 

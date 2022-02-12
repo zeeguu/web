@@ -2,8 +2,10 @@ import useState from "react";
 import parse from 'html-react-parser'
 
 export function CanWeReturnJSX(title, content) {
+    
     const handleClose=()=>{
         document.getElementById("myDialog").close()
+  
     }
 
     return (
@@ -14,6 +16,5 @@ export function CanWeReturnJSX(title, content) {
             {parse(content)}
             {console.log(content)}
         </div>
-
     )
 }
