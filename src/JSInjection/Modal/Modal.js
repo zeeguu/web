@@ -1,6 +1,6 @@
 import parse from "html-react-parser";
 import {StyledModal, StyledButton} from "./Modal.styles"
-export function ModalWithArticle({ title, content, modalIsOpen, setModalIsOpen }) {
+export function Modal({ title, content, modalIsOpen, setModalIsOpen }) {
   const handleClose = () => {
     location.reload();
     setModalIsOpen(false);

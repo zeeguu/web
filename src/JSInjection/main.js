@@ -1,5 +1,5 @@
 /*global chrome*/
-import { ModalWithArticle } from "./Modal/ModalWithArticle";
+import { Modal } from "./Modal/Modal";
 import ReactDOM from "react-dom";
 import { useState, useEffect } from "react";
 import { getCurrentURL } from "../popup/functions";
@@ -29,7 +29,7 @@ export function Main() {
   cleanedContent = generalClean(cleanedContent);
 
   return (
-    <ModalWithArticle
+    <Modal
       modalIsOpen={modalIsOpen}
       setModalIsOpen={setModalIsOpen}
       title={article.title}
