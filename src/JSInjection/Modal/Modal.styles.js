@@ -53,6 +53,20 @@ box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
 }
 `;
 
+export const StyledButton = styled.button`
+position: sticky;
+top: 0px;
+left: 100%;
+border-radius: 10%;
+width: 30px;
+height: 25px !important;
+display: block;
+cursor: pointer;
+background-color: rgba(255,208,71);
+`
+
+
+
 //font-size: 20px;
 //height:90%;
 //width: 70%;
