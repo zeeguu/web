@@ -14,8 +14,7 @@ export default function Popup() {
     
   //readability check
     const documentFromTab = getSourceAsDOM(tab.url);
-    const documentClone = documentFromTab.cloneNode(true);
-    const isProbablyReadable = isProbablyReaderable(documentClone, minLength, minScore);
+    const isProbablyReadable = isProbablyReaderable(documentFromTab, minLength, minScore);
     if (!isProbablyReadable) {
       return (
         alert("This page is not readable")
