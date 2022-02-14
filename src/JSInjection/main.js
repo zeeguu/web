@@ -21,11 +21,11 @@ export function Main() {
     });
   }, [url]);
 
-
   if (article === undefined) {
     return <div>Loading</div>;
   }
-  let cleanedContent = pageSpecificClean(article.content, url)
+  
+  let cleanedContent = pageSpecificClean(article.content, url);
   cleanedContent = generalClean(cleanedContent);
 
   return (
@@ -37,9 +37,9 @@ export function Main() {
     />
   );
 }
-document.open()
-document.write()
-document.close()
+document.open();
+document.write();
+document.close();
 
 const div = document.createElement("div");
 document.body.appendChild(div);
