@@ -4,6 +4,7 @@ import {
   isProbablyReaderable,
   minContentLength,
 } from "@mozilla/readability";
+import DOMPurify from "dompurify";
 
 export async function getCurrentTab() {
   const queryOptions = { active: true, currentWindow: true };
@@ -38,5 +39,6 @@ export function getSourceAsDOM(url) {
   xmlhttp.open("GET", url, false);
   xmlhttp.send();
   const parser = new DOMParser();
-  return parser.parseFromString(xmlhttp.responseText, "text/html");
+  const clean = DOMPurify.sanitize(xmlhttp.responseText);
+  return parser.parseFromString(clean, "text/html");
 }
