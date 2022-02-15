@@ -19,18 +19,6 @@ export function Main() {
         setArticle(article);
       });
     });
-
-    const script = document.createElement('script')
-    //Development version. Change to production version, when in production
-    script.src = "src/purify.js";
-    script.type = "text/javascript";
-    script.async = true;
-    document.body.appendChild(script);
-
-
-    return () => {
-      document.body.removeChild(script)
-    }
   }, [url]);
 
   if (article === undefined) {
@@ -52,7 +40,6 @@ export function Main() {
 document.open();
 document.write();
 document.close();
-
 
 const div = document.createElement("div");
 document.body.appendChild(div);
