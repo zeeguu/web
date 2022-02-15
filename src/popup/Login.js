@@ -20,7 +20,7 @@ export default function Login({ setLoggedIn }) {
     <form action="" method="post">
       <div class="container">
         <label for="email">
-          <b>Username</b>
+          <b>Email</b>
         </label>
         <input
           type="email"
