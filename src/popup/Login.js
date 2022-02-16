@@ -18,19 +18,19 @@ export default function Login({ setLoggedIn }) {
 
   /****  This is what Zeeguu does with sessionID  ****/
 
-      //let userDict = {};
-      //// we use the _api to initialize the api state variable
-      //let _api = new Zeeguu_API(process.env.REACT_APP_API_URL);
-      //if (LocalStorage.hasSession()) {
-      //  userDict = {
-      //    session: localStorage["sessionID"],
-      //    ...LocalStorage.userInfo(),
-      //  };
-      //  _api.session = localStorage["sessionID"];
-      //}
-      //useUILanguage();
-      //const [api] = useState(_api);
-      //const [user, setUser] = useState(userDict);     
+     // let userDict = {};
+     // // we use the _api to initialize the api state variable
+     // let _api = new Zeeguu_API(process.env.REACT_APP_API_URL);
+     // if (LocalStorage.hasSession()) {
+     //   userDict = {
+     //     session: localStorage["sessionID"],
+     //     ...LocalStorage.userInfo(),
+     //   };
+     //   _api.session = localStorage["sessionID"];
+     // }
+     // useUILanguage();
+     // const [api] = useState(_api);
+     // const [user, setUser] = useState(userDict);     
 
 
       // function handleSuccessfulSignIn(userInfo, history) {
