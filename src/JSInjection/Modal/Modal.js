@@ -18,15 +18,16 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   useEffect(() => {
     let articleInfo = {
       url: "http://test.it/articleurl",
-      content: parse(content),
+      content: "This is content",
       id: "11833417",
       title: title,
       language: "da",
       starred: true,
     };
-    let it = new InteractiveText(articleInfo, api);
+    let it = new InteractiveText(content, articleInfo, api);
     setInteractiveText(it);
   }, []);
+  
 
   return (
     <div>
