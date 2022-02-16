@@ -40,6 +40,7 @@ export function Main() {
       setModalIsOpen={setModalIsOpen}
       title={article.title}
       content={cleanedContent}
+      api={api}
     />
   );
 }
