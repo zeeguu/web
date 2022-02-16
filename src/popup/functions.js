@@ -39,6 +39,6 @@ export function getSourceAsDOM(url) {
   xmlhttp.open("GET", url, false);
   xmlhttp.send();
   const parser = new DOMParser();
-  const clean = DOMPurify.sanitize(xmlhttp.responseText);
-  return parser.parseFromString(clean, "text/html");
+  //const clean = DOMPurify.sanitize(xmlhttp.responseText);
+  return parser.parseFromString(xmlhttp.responseText, "text/html");
 }
