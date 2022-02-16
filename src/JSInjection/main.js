@@ -6,6 +6,13 @@ import { getCurrentURL } from "../popup/functions";
 import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
+import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
+
+let api = new Zeeguu_API("https://api.zeeguu.org");
+
+api.signIn("lal", "lala", () => {
+  console.log("obviously didn't login");
+});
 
 export function Main() {
   const [article, setArticle] = useState();
@@ -21,11 +28,10 @@ export function Main() {
     });
   }, [url]);
 
-
   if (article === undefined) {
     return <div>Loading</div>;
   }
-  let cleanedContent = pageSpecificClean(article.content, url)
+  let cleanedContent = pageSpecificClean(article.content, url);
   cleanedContent = generalClean(cleanedContent);
 
   return (
@@ -37,9 +43,9 @@ export function Main() {
     />
   );
 }
-document.open()
-document.write()
-document.close()
+document.open();
+document.write();
+document.close();
 
 const div = document.createElement("div");
 document.body.appendChild(div);
