@@ -6,6 +6,13 @@ import { getCurrentURL } from "../popup/functions";
 import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
+import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
+
+let api = new Zeeguu_API("https://api.zeeguu.org");
+
+api.signIn("lal", "lala", () => {
+  console.log("obviously didn't login");
+});
 
 export function Main() {
   const [article, setArticle] = useState();
@@ -24,7 +31,6 @@ export function Main() {
   if (article === undefined) {
     return <div>Loading</div>;
   }
-
   let cleanedContent = pageSpecificClean(article.content, url);
   cleanedContent = generalClean(cleanedContent);
 
@@ -34,6 +40,7 @@ export function Main() {
       setModalIsOpen={setModalIsOpen}
       title={article.title}
       content={cleanedContent}
+      api={api}
     />
   );
 }

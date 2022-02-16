@@ -2,18 +2,18 @@
 import Login from "./Login";
 import {
   getCurrentTab,
-  reading,
   setCurrentURL,
   getSourceAsDOM,
 } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
-import useState from "react";
+import logo from "../images/zeeguu128.png";
 
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
 
-export default function Popup() {
+export default function Popup({loggedIn, setLoggedIn}) {
+
   async function openModal() {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -38,17 +38,31 @@ export default function Popup() {
     });
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      func: setCurrentURL(tab.url),
+      function: setCurrentURL(tab.url),
     });
   }
 
   let currentTab = getCurrentTab();
   chrome.storage.local.set({ tabId: currentTab });
 
+  function handleSignOut(e){
+    e.preventDefault();
+    chrome.storage.local.set({ loggedIn: false });
+    setLoggedIn(false)
+  }
+
   return (
     <>
-      <Login />
-      <button onClick={openModal}>Read article</button>
+      <div class="imgcontainer">
+        <img src={logo} alt="Zeeguu logo" class="logo" />
+      </div>
+      {loggedIn === false && <Login setLoggedIn={setLoggedIn} />}
+      {loggedIn === true && (
+        <>
+          <button onClick={openModal}>Read article</button>
+          <button onClick={handleSignOut}>Logout</button>
+        </>
+      )}
     </>
   );
 }
