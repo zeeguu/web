@@ -1,19 +1,20 @@
 /*global chrome*/
 
 import { useState } from "react";
+import Zeeguu_API from "./api/Zeeguu_API"
 export default function Login({ setLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   function handleSignIn(e) {
     e.preventDefault();
-    chrome.storage.local.set({ loggedIn: true });
-    setLoggedIn(true);
-    //api.signIn(email, password, setErrorMessage, (sessionId) => {
-    //  api.getUserDetails((userInfo) => {
-    //    signInAndRedirect(userInfo, history);
-    // });
-    //});
+    let api = new Zeeguu_API("https://api.zeeguu.org");
+    api.signIn(email, password, () => {
+      console.log("Wrong credentials")
+    }, ()=>{
+      chrome.storage.local.set({ loggedIn: true });
+      setLoggedIn(true);
+      console.log("Hurray")});
   }
 
   /****  This is what Zeeguu does with sessionID  ****/
