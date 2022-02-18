@@ -8,6 +8,7 @@ import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
 import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
 
+
 let api = new Zeeguu_API("https://api.zeeguu.org");
 
 api.signIn("lal", "lala", () => {
@@ -26,6 +27,7 @@ export function Main() {
         setArticle(article);
       });
     });
+    
   }, [url]);
 
   if (article === undefined) {

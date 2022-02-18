@@ -1,9 +1,9 @@
-import parse from "html-react-parser";
+
 import { useEffect, useState } from "react";
 import { StyledModal, StyledButton } from "./Modal.styles";
-
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText";
+import { parse } from "query-string";
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   const handleClose = () => {
@@ -14,7 +14,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   const [interactiveText, setInteractiveText] = useState();
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
-
+  
   useEffect(() => {
     let articleInfo = {
       url: "http://test.it/articleurl",
@@ -24,10 +24,12 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
       language: "da",
       starred: true,
     };
+
     let it = new InteractiveText(content, articleInfo, api);
     setInteractiveText(it);
   }, []);
   
+
 
   return (
     <div>

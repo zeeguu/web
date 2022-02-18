@@ -1,8 +1,11 @@
+import parse from "html-react-parser";
+
 /*Final cleanup function */
 export function generalClean(content) {
   let cleanContent = cleanImages(content);
   cleanContent = removeSVG(cleanContent);
   cleanContent = removeLinks(cleanContent);
+  //cleanContent = extractTextFromHTML(cleanContent);
   return cleanContent
 
 }
@@ -54,6 +57,17 @@ function removeLinks(content) {
   }
   content = div.innerHTML;
   return content;
+}
+
+function extractTextFromHTML(content) {
+  const div = document.createElement("div");
+  div.innerHTML = content;
+  const nodes = [div];
+  const text = nodes
+    .filter((node) => !!node.textContent)
+    .map((node) => node.textContent)
+    .join(" ");
+  return text;
 }
 
 
