@@ -18,7 +18,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
     var allTags = div.getElementsByTagName("*");
     for (var i = 0, len = allTags.length; i < len; i++) {
       const content = allTags[i].textContent;
-      let it = new InteractiveHTML(content, articleInfo, api)
+      let it = new InteractiveHTML(content, articleInfo, api, allTags[i].nodeName)
       // allTags[i].id is the id of the element (if there is one)
       arrOfInteractive.push(it)
     }
@@ -41,20 +41,12 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
       starred: true,
     };
 
-    //let it = new InteractiveHTML(content, articleInfo, api);
-    //setInteractiveText(it);
+
     let arrInteractive = mapTags(content, articleInfo, api)
     setInteractiveText(arrInteractive)
     let itTitle = new InteractiveHTML(title, articleInfo, api);
     setInteractiveTitle(itTitle);
-    // const div = document.createElement("div");
-    // div.innerHTML = content;
-    // const arr = [div];
-    // arr.forEach(element => {
-    //   if (element.get) {
-    //     console.log(element)
-    //   }
-    // })
+
   }, []);
   if (interactiveText === undefined) {
     return <p>
@@ -80,17 +72,30 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
           />
         </h1>
       {interactiveText.map(
-        (inter) => {
-        let tag = inter.getElementsByTagName()
+        (text) => {
+        if (text.tag === "P")
           return (
+          <p>
           <TranslatableText
-          interactiveText={inter}
+          interactiveText={text}
           translating={translating}
           pronouncing={pronouncing}
           >
           </TranslatableText>
-      
+          </p>
       )
+      if (text.tag === "H2") {
+        return (
+          <h2>
+          <TranslatableText
+          interactiveText={text}
+          translating={translating}
+          pronouncing={pronouncing}
+          >
+          </TranslatableText>
+          </h2>
+        )
+      }
       })}
       </StyledModal>
     </div>

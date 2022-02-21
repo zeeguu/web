@@ -2,10 +2,10 @@ import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 export default class InteractiveHTML {
-  constructor(content, articleInfo, api) {
+  constructor(content, articleInfo, api, tag) {
     this.articleInfo = articleInfo;
     this.api = api;
-
+    this.tag = tag;
     this.paragraphs = content.split(/<p><\/p>/)
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (each) => new LinkedWordList(each)
