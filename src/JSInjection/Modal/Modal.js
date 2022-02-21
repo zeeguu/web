@@ -4,7 +4,6 @@ import InteractiveHTML from "./reader/InteractiveHTML";
 import { TranslatableText } from "./reader/TranslatableText";
 import { parse } from "query-string";
 
-
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   const handleClose = () => {
     location.reload();
@@ -14,16 +13,21 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   function mapTags(content, articleInfo, api) {
     const div = document.createElement("div");
     div.innerHTML = content;
-    let arrOfInteractive = []
+    let arrOfInteractive = [];
     var allTags = div.getElementsByTagName("*");
     for (var i = 0, len = allTags.length; i < len; i++) {
       const content = allTags[i].textContent;
-      let it = new InteractiveHTML(content, articleInfo, api, allTags[i].nodeName)
+      let it = new InteractiveHTML(
+        content,
+        articleInfo,
+        api,
+        allTags[i].nodeName
+      );
       // allTags[i].id is the id of the element (if there is one)
-      arrOfInteractive.push(it)
+      arrOfInteractive.push(it);
     }
-    return arrOfInteractive
-    }
+    return arrOfInteractive;
+  }
 
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
@@ -41,17 +45,13 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
       starred: true,
     };
 
-
-    let arrInteractive = mapTags(content, articleInfo, api)
-    setInteractiveText(arrInteractive)
+    let arrInteractive = mapTags(content, articleInfo, api);
+    setInteractiveText(arrInteractive);
     let itTitle = new InteractiveHTML(title, articleInfo, api);
     setInteractiveTitle(itTitle);
-
   }, []);
   if (interactiveText === undefined) {
-    return <p>
-      loading
-    </p>
+    return <p>loading</p>;
   }
 
   return (
@@ -71,32 +71,29 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
             pronouncing={pronouncing}
           />
         </h1>
-      {interactiveText.map(
-        (text) => {
-        if (text.tag === "P")
-          return (
-          <p>
-          <TranslatableText
-          interactiveText={text}
-          translating={translating}
-          pronouncing={pronouncing}
-          >
-          </TranslatableText>
-          </p>
-      )
-      if (text.tag === "H2") {
-        return (
-          <h2>
-          <TranslatableText
-          interactiveText={text}
-          translating={translating}
-          pronouncing={pronouncing}
-          >
-          </TranslatableText>
-          </h2>
-        )
-      }
-      })}
+        {interactiveText.map((text) => {
+          if (text.tag === "P")
+            return (
+              <p>
+                <TranslatableText
+                  interactiveText={text}
+                  translating={translating}
+                  pronouncing={pronouncing}
+                ></TranslatableText>
+              </p>
+            );
+          if (text.tag === "H2") {
+            return (
+              <h2>
+                <TranslatableText
+                  interactiveText={text}
+                  translating={translating}
+                  pronouncing={pronouncing}
+                ></TranslatableText>
+              </h2>
+            );
+          }
+        })}
       </StyledModal>
     </div>
   );
