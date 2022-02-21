@@ -84,7 +84,9 @@ export default class LinkedWordList {
 
 // Private functions
 function splitTextIntoWords(text) {
-  let splitWords = text
+  const div = document.createElement("div");
+  div.innerHTML = text;
+  let splitWords = div.textContent
     .trim()
     .split(/[\s,]+/)
     .map((word) => new Word(word));

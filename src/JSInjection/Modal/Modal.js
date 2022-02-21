@@ -1,14 +1,29 @@
 import { useEffect, useState } from "react";
 import { StyledModal, StyledButton } from "./Modal.styles";
-import InteractiveText from "./reader/InteractiveText";
+import InteractiveHTML from "./reader/InteractiveHTML";
 import { TranslatableText } from "./reader/TranslatableText";
 import { parse } from "query-string";
+
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   const handleClose = () => {
     location.reload();
     setModalIsOpen(false);
   };
+
+  function mapTags(content, articleInfo, api) {
+    const div = document.createElement("div");
+    div.innerHTML = content;
+    let arrOfInteractive = []
+    var allTags = div.getElementsByTagName("*");
+    for (var i = 0, len = allTags.length; i < len; i++) {
+      const content = allTags[i].textContent;
+      let it = new InteractiveHTML(content, articleInfo, api)
+      // allTags[i].id is the id of the element (if there is one)
+      arrOfInteractive.push(it)
+    }
+    return arrOfInteractive
+    }
 
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
@@ -26,13 +41,26 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
       starred: true,
     };
 
-    let it = new InteractiveText(content, articleInfo, api);
-    setInteractiveText(it);
-    let itTitle = new InteractiveText(title, articleInfo, api);
+    //let it = new InteractiveHTML(content, articleInfo, api);
+    //setInteractiveText(it);
+    let arrInteractive = mapTags(content, articleInfo, api)
+    setInteractiveText(arrInteractive)
+    let itTitle = new InteractiveHTML(title, articleInfo, api);
     setInteractiveTitle(itTitle);
-    const arr = [content];
-    setContentArray(arr);
+    // const div = document.createElement("div");
+    // div.innerHTML = content;
+    // const arr = [div];
+    // arr.forEach(element => {
+    //   if (element.get) {
+    //     console.log(element)
+    //   }
+    // })
   }, []);
+  if (interactiveText === undefined) {
+    return <p>
+      loading
+    </p>
+  }
 
   return (
     <div>
@@ -51,14 +79,19 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
             pronouncing={pronouncing}
           />
         </h1>
-        <TranslatableText
-          interactiveText={interactiveText}
+      {interactiveText.map(
+        (inter) => {
+        let tag = inter.getElementsByTagName()
+          return (
+          <TranslatableText
+          interactiveText={inter}
           translating={translating}
           pronouncing={pronouncing}
-        />
-        {/* {contentArray.forEach(element => {
-          if (element )
-        });} */}
+          >
+          </TranslatableText>
+      
+      )
+      })}
       </StyledModal>
     </div>
   );
