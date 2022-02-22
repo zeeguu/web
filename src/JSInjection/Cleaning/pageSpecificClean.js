@@ -1,5 +1,6 @@
 import {btRegex, addImageBT} from "./Pages/bt";
 import {wikiRegex, removefromWiki} from "./Pages/wiki";
+import { lefigaroRegex, addImageLefirago } from "./Pages/lefigaro";
 
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
@@ -16,6 +17,9 @@ export function pageSpecificClean(articleContent, url) {
     } 
     if(url.match(btRegex)){
       return addImageBT(getEntireHTML(url), articleContent)
+    }
+    if(url.match(lefigaroRegex)){
+      return addImageLefirago(getEntireHTML(url), articleContent)
     }
     //many other if-statements with checks for urls
     return div.innerHTML

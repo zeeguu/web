@@ -54,7 +54,6 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   }
   return (
     <div>
-      {console.log(interactiveText)}
       <StyledModal
         isOpen={modalIsOpen}
         className="Modal"
