@@ -1,5 +1,3 @@
-import parse from "html-react-parser";
-
 /*Final cleanup function */
 export function generalClean(content) {
   let cleanContent = cleanImages(content);
@@ -27,6 +25,16 @@ function cleanImages(content) {
     content = div.innerHTML;
   }
   return content;
+}
+
+export function getImage(content) {
+  const div = document.createElement("div");
+  div.innerHTML = content;
+  const firstImage = div.getElementsByTagName("img")[0];
+  if((firstImage != undefined)){
+  const image = {src:firstImage.getAttribute("src"), alt:firstImage.getAttribute("alt")};
+  return image
+  }
 }
 
 function removeSVG(content) {

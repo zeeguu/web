@@ -11,10 +11,6 @@ import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
 
 let api = new Zeeguu_API("https://api.zeeguu.org");
 
-api.signIn("lal", "lala", () => {
-  console.log("obviously didn't login");
-});
-
 export function Main() {
   const [article, setArticle] = useState();
   const [url, setUrl] = useState();

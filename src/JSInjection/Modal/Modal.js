@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { StyledModal, StyledButton } from "./Modal.styles";
 import InteractiveHTML from "./reader/InteractiveHTML";
 import { TranslatableText } from "./reader/TranslatableText";
-import { parse } from "query-string";
+import { getImage } from "../Cleaning/generelClean";
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   const handleClose = () => {
@@ -26,6 +26,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
 
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
+  const [articleImage, setArticleImage] = useState();
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
   const [contentArray, setContentArray] = useState();
@@ -40,6 +41,8 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
       starred: true,
     };
 
+    let image = getImage(content)
+    setArticleImage(image)
     let arrInteractive = mapTags(content, articleInfo, api);
     setInteractiveText(arrInteractive);
     let itTitle = new InteractiveHTML(title, articleInfo, api);
@@ -49,7 +52,6 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   if (interactiveText === undefined) {
     return <p>loading</p>;
   }
-
   return (
     <div>
       {console.log(interactiveText)}
@@ -68,6 +70,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
             pronouncing={pronouncing}
           />
         </h1>
+        {articleImage === undefined ? null : <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>}
         {interactiveText.map((text) => {
             if ((text.tag === "P") || (text.tag === "H3") || (text.tag === "H2") || (text.tag === "H4") || (text.tag === "H5")){
             const CustomTag = `${text.tag}`;
