@@ -1,7 +1,7 @@
 import {btRegex, addImageBT} from "./Pages/bt";
 import {wikiRegex, removefromWiki} from "./Pages/wiki";
 import { lefigaroRegex, addImageLefirago } from "./Pages/lefigaro";
-
+import { ekstrabladetRegex, addImageEkstraBladet } from "./Pages/ekstrabladet";
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -20,6 +20,9 @@ export function pageSpecificClean(articleContent, url) {
     }
     if(url.match(lefigaroRegex)){
       return addImageLefirago(getEntireHTML(url), articleContent)
+    }
+    if(url.match(ekstrabladetRegex)){
+      return addImageEkstraBladet(getEntireHTML(url), articleContent)
     }
     //many other if-statements with checks for urls
     return div.innerHTML
