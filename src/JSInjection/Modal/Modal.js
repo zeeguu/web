@@ -69,36 +69,17 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
           />
         </h1>
         {interactiveText.map((text) => {
-          if (text.tag === "P")
+            if ((text.tag === "P") || (text.tag === "H3") || (text.tag === "H2") || (text.tag === "H4") || (text.tag === "H5")){
+            const CustomTag = `${text.tag}`;
             return (
-              <p>
+              <CustomTag>
                 <TranslatableText
                   interactiveText={text}
                   translating={translating}
                   pronouncing={pronouncing}
                 />
-              </p>
-            )
-          if (text.tag === "H2") 
-            return (
-              <h2>
-                <TranslatableText
-                  interactiveText={text}
-                  translating={translating}
-                  pronouncing={pronouncing}
-                />
-              </h2>
-            )
-          if (text.tag === "H3") 
-          return (
-            <h3>
-              <TranslatableText
-                interactiveText={text}
-                translating={translating}
-                pronouncing={pronouncing}
-              />
-            </h3>
-          )
+              </CustomTag>
+            )}
         })}
       </StyledModal>
     </div>
