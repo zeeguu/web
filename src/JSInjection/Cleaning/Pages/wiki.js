@@ -8,6 +8,14 @@ export function removefromWiki(content){
     Array.from(elems).filter(span => span.textContent.includes('rediger kildetekst') ? span.remove() : span);
     Array.from(elems).filter(span => span.textContent.includes('Quelltext bearbeiten') ? span.remove() : span);
     Array.from(elems).filter(span => span.textContent.includes('modifier le code') ? span.remove() : span);
+    Array.from(elems).filter(span => span.textContent.includes('redigera') ? span.remove() : span);
+    Array.from(elems).filter(span => span.textContent.includes('edit') ? span.remove() : span);
+    let smallElems = div.querySelectorAll("small")
+    Array.from(smallElems).filter(small => small.textContent.includes('redigér på Wikidata') ? small.remove() : small);
+    let references = div.querySelectorAll("sup")
+    Array.from(references).filter(references => references.remove());
+    let dl = div.querySelectorAll("dl")
+    Array.from(dl).filter(dl => dl.remove());
     content = div.innerHTML;
     return div.innerHTML;
   }

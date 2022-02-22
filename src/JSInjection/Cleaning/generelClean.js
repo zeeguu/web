@@ -31,7 +31,6 @@ export function getImage(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   const firstImage = div.getElementsByTagName("img")[0];
-  console.log(firstImage)
   if((firstImage != undefined)){
   const image = {src:firstImage.getAttribute("src"), alt:firstImage.getAttribute("alt")};
   return image
