@@ -17,12 +17,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
     var allTags = div.getElementsByTagName("*");
     for (var i = 0, len = allTags.length; i < len; i++) {
       const content = allTags[i].textContent;
-      let it = new InteractiveHTML(
-        content,
-        articleInfo,
-        api,
-        allTags[i].nodeName
-      );
+      let it = new InteractiveHTML(content, articleInfo, api, allTags[i].nodeName);
       // allTags[i].id is the id of the element (if there is one)
       arrOfInteractive.push(it);
     }
@@ -50,12 +45,14 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
     let itTitle = new InteractiveHTML(title, articleInfo, api);
     setInteractiveTitle(itTitle);
   }, []);
+  
   if (interactiveText === undefined) {
     return <p>loading</p>;
   }
 
   return (
     <div>
+      {console.log(interactiveText)}
       <StyledModal
         isOpen={modalIsOpen}
         className="Modal"
@@ -79,20 +76,29 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
                   interactiveText={text}
                   translating={translating}
                   pronouncing={pronouncing}
-                ></TranslatableText>
+                />
               </p>
-            );
-          if (text.tag === "H2") {
+            )
+          if (text.tag === "H2") 
             return (
               <h2>
                 <TranslatableText
                   interactiveText={text}
                   translating={translating}
                   pronouncing={pronouncing}
-                ></TranslatableText>
+                />
               </h2>
-            );
-          }
+            )
+          if (text.tag === "H3") 
+          return (
+            <h3>
+              <TranslatableText
+                interactiveText={text}
+                translating={translating}
+                pronouncing={pronouncing}
+              />
+            </h3>
+          )
         })}
       </StyledModal>
     </div>
