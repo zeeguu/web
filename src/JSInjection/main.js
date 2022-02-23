@@ -31,6 +31,8 @@ export function Main() {
   }
   let cleanedContent = pageSpecificClean(article.content, url);
   cleanedContent = generalClean(cleanedContent);
+  console.log(article.lang)
+  console.log(cleanedContent)
 
   return (
     <Modal
