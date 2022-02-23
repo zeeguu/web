@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { StyledModal, StyledButton } from "./Modal.styles";
-import InteractiveHTML from "./InteractiveHTML";
+import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 //import { TranslatableText } from "./reader/TranslatableText";
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 
-export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
+export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url }) {
   const handleClose = () => {
     location.reload();
     setModalIsOpen(false);
@@ -33,9 +33,10 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
     for (var i = 0, len = allTags.length; i < len; i++) {
       const content = allTags[i].textContent;
       const HTMLTag = allTags[i].nodeName;
-      let it = new InteractiveHTML(content, articleInfo, api, HTMLTag);
+      let it = new InteractiveText(content, articleInfo, api);
       // allTags[i].id is the id of the element (if there is one)
-      arrOfInteractive.push(it);
+      const paragraphObject = {text: it, tag:HTMLTag}
+      arrOfInteractive.push(paragraphObject);
     }
     return arrOfInteractive;
   }
@@ -48,21 +49,20 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
 
   useEffect(() => {
     let articleInfo = {
-      url: "http://test.it/articleurl",
-      content: "This is content",
+      url: url,
+      content: content,
       id: "11833417",
       title: title,
       language: "da",
-      starred: true,
+      starred: false,
     };
-
     let image = getImage(content)
     setArticleImage(image)
 
     let arrInteractive = mapTags(content, articleInfo, api);
     setInteractiveTextArray(arrInteractive);
 
-    let itTitle = new InteractiveHTML(title, articleInfo, api);
+    let itTitle = new InteractiveText(title, articleInfo, api);
     setInteractiveTitle(itTitle);
   }, []);
   
@@ -87,13 +87,13 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
           />
         </h1>
         {articleImage === undefined ? null : <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>}
-        {interactiveTextArray.map((text) => {
-            if ((text.tag === "P") || (text.tag === "H3") || (text.tag === "H2") || (text.tag === "H4") || (text.tag === "H5")){
-            const CustomTag = `${text.tag}`;
+        {interactiveTextArray.map((paragraph) => {
+            if ((paragraph.tag === "P") || (paragraph.tag === "H3") || (paragraph.tag === "H2") || (paragraph.tag === "H4") || (paragraph.tag === "H5")){
+            const CustomTag = `${paragraph.tag}`;
             return (
               <CustomTag>
                 <TranslatableText
-                  interactiveText={text}
+                  interactiveText={paragraph.text}
                   translating={translating}
                   pronouncing={pronouncing}
                 />
