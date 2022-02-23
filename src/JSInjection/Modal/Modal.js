@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { StyledModal, StyledButton } from "./Modal.styles";
-import InteractiveHTML from "./reader/InteractiveHTML";
-import { TranslatableText } from "./reader/TranslatableText";
+import InteractiveHTML from "./InteractiveHTML";
+//import { TranslatableText } from "./reader/TranslatableText";
+import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
@@ -10,6 +11,20 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
     setModalIsOpen(false);
   };
 
+
+  /*
+  convert 
+
+  output = ""
+  for each in children
+  if each is a textnode
+  then create an interactive text and append it to the list of interactive texts
+  if its not (just an container)
+  each is containter of text
+  output append (each tag)
+  convert(on the children)
+  
+  */
   function mapTags(content, articleInfo, api) {
     const div = document.createElement("div");
     div.innerHTML = content;
@@ -17,6 +32,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
     var allTags = div.getElementsByTagName("*");
     for (var i = 0, len = allTags.length; i < len; i++) {
       const content = allTags[i].textContent;
+      console.log(content)
       let it = new InteractiveHTML(content, articleInfo, api, allTags[i].nodeName);
       // allTags[i].id is the id of the element (if there is one)
       arrOfInteractive.push(it);

@@ -1,12 +1,12 @@
-import LinkedWordList from "./LinkedWordListClass";
-import ZeeguuSpeech from "../speech/ZeeguuSpeech";
+import LinkedWordList from "../../zeeguu-react/src/reader/LinkedWordListClass"
+import ZeeguuSpeech from "../../zeeguu-react/src/speech/ZeeguuSpeech"
 
-export default class InteractiveText {
-  constructor(content, articleInfo, api) {
+export default class InteractiveHTML {
+  constructor(content, articleInfo, api, tag) {
     this.articleInfo = articleInfo;
     this.api = api;
-    
-    this.paragraphs = content.split(/\n\n/);
+    this.tag = tag;
+    this.paragraphs = content.split(/<p><\/p>/)
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (each) => new LinkedWordList(each)
     );
