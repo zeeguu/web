@@ -40,7 +40,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
     return arrOfInteractive;
   }
 
-  const [interactiveText, setInteractiveText] = useState();
+  const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [articleImage, setArticleImage] = useState();
   const [translating, setTranslating] = useState(true);
@@ -59,8 +59,10 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
 
     let image = getImage(content)
     setArticleImage(image)
+
     let arrInteractive = mapTags(content, articleInfo, api);
-    setInteractiveText(arrInteractive);
+    setInteractiveTextArray(arrInteractive);
+    
     let itTitle = new InteractiveHTML(title, articleInfo, api);
     setInteractiveTitle(itTitle);
   }, []);
@@ -86,7 +88,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
           />
         </h1>
         {articleImage === undefined ? null : <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>}
-        {interactiveText.map((text) => {
+        {interactiveTextArray.map((text) => {
             if ((text.tag === "P") || (text.tag === "H3") || (text.tag === "H2") || (text.tag === "H4") || (text.tag === "H5")){
             const CustomTag = `${text.tag}`;
             return (
