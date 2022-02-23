@@ -39,6 +39,7 @@ export function Main() {
       title={article.title}
       content={cleanedContent}
       api={api}
+      url={url}
     />
   );
 }

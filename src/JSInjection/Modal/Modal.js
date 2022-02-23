@@ -5,7 +5,7 @@ import InteractiveHTML from "./InteractiveHTML";
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 
-export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
+export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url }) {
   const handleClose = () => {
     location.reload();
     setModalIsOpen(false);
@@ -48,14 +48,13 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
 
   useEffect(() => {
     let articleInfo = {
-      url: "http://test.it/articleurl",
-      content: "This is content",
+      url: url,
+      content: content,
       id: "11833417",
       title: title,
       language: "da",
-      starred: true,
+      starred: false,
     };
-
     let image = getImage(content)
     setArticleImage(image)
 
