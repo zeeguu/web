@@ -29,14 +29,27 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url })
     const div = document.createElement("div");
     div.innerHTML = content;
     let arrOfInteractive = [];
-    var allTags = div.getElementsByTagName("*");
-    for (var i = 0, len = allTags.length; i < len; i++) {
+    let allTags = div.getElementsByTagName("*");
+    for (var i = 0; i < allTags.length; i++) {
       const content = allTags[i].textContent;
       const HTMLTag = allTags[i].nodeName;
-      let it = new InteractiveText(content, articleInfo, api);
-      // allTags[i].id is the id of the element (if there is one)
+      if ((HTMLTag === "OL") ||( HTMLTag === "UL")){
+        const children = Array.from(allTags[i].children)
+        let list = [];
+        children.forEach(child => {
+          const content = child.textContent;
+          const it = new InteractiveText(content, articleInfo, api)
+          const paragraphObject = {text: it}
+          list.push(paragraphObject)
+        });
+        const paragraphObject = {tag:HTMLTag, list: list}
+        arrOfInteractive.push(paragraphObject);
+      }
+      else{
+      const it = new InteractiveText(content, articleInfo, api);
       const paragraphObject = {text: it, tag:HTMLTag}
       arrOfInteractive.push(paragraphObject);
+      }
     }
     return arrOfInteractive;
   }
@@ -88,8 +101,8 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url })
         </h1>
         {articleImage === undefined ? null : <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>}
         {interactiveTextArray.map((paragraph) => {
-            if ((paragraph.tag === "P") || (paragraph.tag === "H3") || (paragraph.tag === "H2") || (paragraph.tag === "H4") || (paragraph.tag === "H5")){
             const CustomTag = `${paragraph.tag}`;
+            if ((paragraph.tag === "P") || (paragraph.tag === "H3") || (paragraph.tag === "H2") || (paragraph.tag === "H4") || (paragraph.tag === "H5")){
             return (
               <CustomTag>
                 <TranslatableText
@@ -99,6 +112,23 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url })
                 />
               </CustomTag>
             )}
+          if((paragraph.tag ==="OL") || (paragraph.tag ==="UL")){
+            let list = Array.from(paragraph.list)
+            return (
+              <CustomTag>
+              {list.map((element, i) => {
+                return(
+                <li key={i}>
+                <TranslatableText
+                  interactiveText={element.text}
+                  translating={translating}
+                  pronouncing={pronouncing}
+                />
+                </li>)})}
+                </CustomTag>
+            )
+         
+          }
         })}
       </StyledModal>
     </div>
