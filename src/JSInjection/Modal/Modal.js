@@ -32,8 +32,8 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
     var allTags = div.getElementsByTagName("*");
     for (var i = 0, len = allTags.length; i < len; i++) {
       const content = allTags[i].textContent;
-      console.log(content)
-      let it = new InteractiveHTML(content, articleInfo, api, allTags[i].nodeName);
+      const HTMLTag = allTags[i].nodeName;
+      let it = new InteractiveHTML(content, articleInfo, api, HTMLTag);
       // allTags[i].id is the id of the element (if there is one)
       arrOfInteractive.push(it);
     }
