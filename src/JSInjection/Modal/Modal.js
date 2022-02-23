@@ -1,22 +1,16 @@
 import { useEffect, useState } from "react";
 import { StyledModal, StyledButton } from "./Modal.styles";
-import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
+import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 //import { TranslatableText } from "./reader/TranslatableText";
-import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText";
+import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 
-export function Modal({
-  title,
-  content,
-  modalIsOpen,
-  setModalIsOpen,
-  api,
-  url,
-}) {
+export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url }) {
   const handleClose = () => {
     location.reload();
     setModalIsOpen(false);
   };
+
 
   /*
   convert 
@@ -39,21 +33,22 @@ export function Modal({
     for (var i = 0; i < allTags.length; i++) {
       const content = allTags[i].textContent;
       const HTMLTag = allTags[i].nodeName;
-      if (HTMLTag === "OL" || HTMLTag === "UL") {
-        const children = Array.from(allTags[i].children);
+      if ((HTMLTag === "OL") ||( HTMLTag === "UL")){
+        const children = Array.from(allTags[i].children)
         let list = [];
-        children.forEach((child) => {
+        children.forEach(child => {
           const content = child.textContent;
-          const it = new InteractiveText(content, articleInfo, api);
-          const paragraphObject = { text: it };
-          list.push(paragraphObject);
+          const it = new InteractiveText(content, articleInfo, api)
+          const paragraphObject = {text: it}
+          list.push(paragraphObject)
         });
-        const paragraphObject = { tag: HTMLTag, list: list };
+        const paragraphObject = {tag:HTMLTag, list: list}
         arrOfInteractive.push(paragraphObject);
-      } else {
-        const it = new InteractiveText(content, articleInfo, api);
-        const paragraphObject = { text: it, tag: HTMLTag };
-        arrOfInteractive.push(paragraphObject);
+      }
+      else{
+      const it = new InteractiveText(content, articleInfo, api);
+      const paragraphObject = {text: it, tag:HTMLTag}
+      arrOfInteractive.push(paragraphObject);
       }
     }
     return arrOfInteractive;
@@ -74,8 +69,8 @@ export function Modal({
       language: "da",
       starred: false,
     };
-    let image = getImage(content);
-    setArticleImage(image);
+    let image = getImage(content)
+    setArticleImage(image)
 
     let arrInteractive = mapTags(content, articleInfo, api);
     setInteractiveTextArray(arrInteractive);
@@ -83,7 +78,7 @@ export function Modal({
     let itTitle = new InteractiveText(title, articleInfo, api);
     setInteractiveTitle(itTitle);
   }, []);
-
+  
   if (interactiveTextArray === undefined) {
     return <p>loading</p>;
   }
@@ -104,22 +99,10 @@ export function Modal({
             pronouncing={pronouncing}
           />
         </h1>
-        {articleImage === undefined ? null : (
-          <img
-            id="zeeguuImage"
-            alt={articleImage.alt}
-            src={articleImage.src}
-          ></img>
-        )}
+        {articleImage === undefined ? null : <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>}
         {interactiveTextArray.map((paragraph) => {
-          const CustomTag = `${paragraph.tag}`;
-          if (
-            paragraph.tag === "P" ||
-            paragraph.tag === "H3" ||
-            paragraph.tag === "H2" ||
-            paragraph.tag === "H4" ||
-            paragraph.tag === "H5"
-          ) {
+            const CustomTag = `${paragraph.tag}`;
+            if ((paragraph.tag === "P") || (paragraph.tag === "H3") || (paragraph.tag === "H2") || (paragraph.tag === "H4") || (paragraph.tag === "H5")){
             return (
               <CustomTag>
                 <TranslatableText
@@ -128,25 +111,23 @@ export function Modal({
                   pronouncing={pronouncing}
                 />
               </CustomTag>
-            );
-          }
-          if (paragraph.tag === "OL" || paragraph.tag === "UL") {
-            let list = Array.from(paragraph.list);
+            )}
+          if((paragraph.tag ==="OL") || (paragraph.tag ==="UL")){
+            let list = Array.from(paragraph.list)
             return (
               <CustomTag>
-                {list.map((paragraph, i) => {
-                  return (
-                    <li key={i}>
-                      <TranslatableText
-                        interactiveText={paragraph.text}
-                        translating={translating}
-                        pronouncing={pronouncing}
-                      />
-                    </li>
-                  );
-                })}
-              </CustomTag>
-            );
+              {list.map((paragraph, i) => {
+                return(
+                <li key={i}>
+                <TranslatableText
+                  interactiveText={paragraph.text}
+                  translating={translating}
+                  pronouncing={pronouncing}
+                />
+                </li>)})}
+                </CustomTag>
+            )
+         
           }
         })}
       </StyledModal>
