@@ -25,12 +25,12 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url })
   convert(on the children)
   
   */
-  function mapTags(content, articleInfo, api) {
+  function interactiveTextsWithTags(content, articleInfo, api) {
     const div = document.createElement("div");
     div.innerHTML = content;
     let arrOfInteractive = [];
     let allTags = div.getElementsByTagName("*");
-    for (var i = 0; i < allTags.length; i++) {
+    for (let i = 0; i < allTags.length; i++) {
       const content = allTags[i].textContent;
       const HTMLTag = allTags[i].nodeName;
       if ((HTMLTag === "OL") ||( HTMLTag === "UL")){
@@ -72,7 +72,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url })
     let image = getImage(content)
     setArticleImage(image)
 
-    let arrInteractive = mapTags(content, articleInfo, api);
+    let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
     setInteractiveTextArray(arrInteractive);
 
     let itTitle = new InteractiveText(title, articleInfo, api);
