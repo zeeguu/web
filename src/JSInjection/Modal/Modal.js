@@ -45,7 +45,6 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
   const [articleImage, setArticleImage] = useState();
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
-  const [contentArray, setContentArray] = useState();
 
   useEffect(() => {
     let articleInfo = {
