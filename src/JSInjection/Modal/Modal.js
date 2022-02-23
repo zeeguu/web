@@ -62,12 +62,12 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api }) {
 
     let arrInteractive = mapTags(content, articleInfo, api);
     setInteractiveTextArray(arrInteractive);
-    
+
     let itTitle = new InteractiveHTML(title, articleInfo, api);
     setInteractiveTitle(itTitle);
   }, []);
   
-  if (interactiveText === undefined) {
+  if (interactiveTextArray === undefined) {
     return <p>loading</p>;
   }
   return (
