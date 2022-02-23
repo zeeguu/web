@@ -31,7 +31,6 @@ export function Main() {
   }
   let cleanedContent = pageSpecificClean(article.content, url);
   cleanedContent = generalClean(cleanedContent);
-  console.log(article.lang)
 
   return (
     <Modal
@@ -41,6 +40,7 @@ export function Main() {
       content={cleanedContent}
       api={api}
       url={url}
+      language={article.lang}
     />
   );
 }

@@ -5,7 +5,7 @@ import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 
-export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url }) {
+export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language }) {
   const handleClose = () => {
     location.reload();
     setModalIsOpen(false);
@@ -66,7 +66,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url })
       content: content,
       id: "11833417",
       title: title,
-      language: "da",
+      language: language,
       starred: false,
     };
     let image = getImage(content)
