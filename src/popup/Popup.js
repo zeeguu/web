@@ -54,6 +54,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
     });
+    //localStorage.setItem("native_language", userInfo.native_language)
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
   }
