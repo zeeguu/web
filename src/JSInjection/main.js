@@ -7,6 +7,7 @@ import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
 import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
+import DOMPurify from "dompurify";
 
 
 let api = new Zeeguu_API("https://api.zeeguu.org");
@@ -31,6 +32,7 @@ export function Main() {
   }
   let cleanedContent = pageSpecificClean(article.content, url);
   cleanedContent = generalClean(cleanedContent);
+  cleanedContent = DOMPurify.sanitize(cleanedContent);
 
   return (
     <Modal

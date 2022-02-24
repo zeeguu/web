@@ -2,6 +2,7 @@ import {btRegex, addImageBT} from "./Pages/bt";
 import {wikiRegex, removefromWiki} from "./Pages/wiki";
 import { lefigaroRegex, addImageLefirago } from "./Pages/lefigaro";
 import { ekstrabladetRegex, addImageEkstraBladet } from "./Pages/ekstrabladet";
+import { lemondeRegex, removeListElementsHeaders } from "./Pages/lemonde";
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -23,6 +24,10 @@ export function pageSpecificClean(articleContent, url) {
     }
     if(url.match(ekstrabladetRegex)){
       return addImageEkstraBladet(getEntireHTML(url), articleContent)
+    }
+    if(url.match(lemondeRegex)) {
+      console.log("does it go into page specific?")
+      return removeListElementsHeaders(div.innerHTML)
     }
     //many other if-statements with checks for urls
     return div.innerHTML
