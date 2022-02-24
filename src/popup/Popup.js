@@ -4,11 +4,13 @@ import {setCurrentURL, getSourceAsDOM } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
+import Zeeguu_API from "./api/Zeeguu_API"
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
 
 export default function Popup({ loggedIn, setLoggedIn }) {
+  let api = new Zeeguu_API("https://api.zeeguu.org");
   const [user, setUser] = useState();
 
   useEffect(() => {
@@ -74,6 +76,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         <Login
           setLoggedIn={setLoggedIn}
           handleSuccessfulSignIn={handleSuccessfulSignIn}
+          api={api}
         />
       )}
       {loggedIn === true && (

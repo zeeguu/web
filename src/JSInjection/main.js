@@ -6,14 +6,11 @@ import { getCurrentURL } from "../popup/functions";
 import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
-import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
-
-
-let api = new Zeeguu_API("https://api.zeeguu.org");
 
 export function Main() {
   const [article, setArticle] = useState();
   const [url, setUrl] = useState();
+  const [api, setApi] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(true);
 
   useEffect(() => {
@@ -26,11 +23,18 @@ export function Main() {
     
   }, [url]);
 
+  useEffect(() => {
+    chrome.storage.local.get("api", function (result) {
+      setApi(result)
+    });
+  }, []);
+
   if (article === undefined) {
     return <div>Loading</div>;
   }
   let cleanedContent = pageSpecificClean(article.content, url);
   cleanedContent = generalClean(cleanedContent);
+
 
   return (
     <Modal

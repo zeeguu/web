@@ -11,10 +11,10 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
     setModalIsOpen(false);
   };
 
+  console.log(api)
 
   /*
   convert 
-
   output = ""
   for each in children
   if each is a textnode

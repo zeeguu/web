@@ -1,16 +1,15 @@
 /*global chrome*/
 import { useState } from "react";
-import Zeeguu_API from "./api/Zeeguu_API"
-export default function Login({ setLoggedIn, handleSuccessfulSignIn }) {
+export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   function handleSignIn(e) {
     e.preventDefault();
-    let api = new Zeeguu_API("https://api.zeeguu.org");
     api.signIn(email, password, setErrorMessage, (sessionId)=>{
       chrome.storage.local.set({ loggedIn: true });
+      chrome.storage.local.set({ api: api });
       setLoggedIn(true);
       api.getUserDetails((userInfo) => {
         handleSuccessfulSignIn(userInfo, api.session);
