@@ -21,11 +21,6 @@ const value = await chrome.storage.local.get("tabURL")
 return value.tabURL;
 }
 
-export async function getAPI() {
-  const value = await chrome.storage.local.get("api")
-  return value.api;
-  }
-
 export function reading(currentTabURL) {
   const documentFromTab = getSourceAsDOM(currentTabURL);
   const documentClone = documentFromTab.cloneNode(true);

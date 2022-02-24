@@ -9,7 +9,6 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId)=>{
       chrome.storage.local.set({ loggedIn: true });
-      chrome.storage.local.set({ api: api });
       setLoggedIn(true);
       api.getUserDetails((userInfo) => {
         handleSuccessfulSignIn(userInfo, api.session);

@@ -1,6 +1,6 @@
 /*global chrome*/
 import Login from "./Login";
-import {setCurrentURL, getSourceAsDOM } from "./functions";
+import {setCurrentURL, getSourceAsDOM} from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
@@ -12,6 +12,7 @@ const minScore = 20;
 export default function Popup({ loggedIn, setLoggedIn }) {
   let api = new Zeeguu_API("https://api.zeeguu.org");
   const [user, setUser] = useState();
+  console.log(api)
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {
@@ -34,7 +35,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     }
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      //function: reading(tab.url),
       files: ["./main.js"],
     });
     chrome.scripting.insertCSS({

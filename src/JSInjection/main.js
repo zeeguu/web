@@ -2,27 +2,30 @@
 import { Modal } from "./Modal/Modal";
 import ReactDOM from "react-dom";
 import { useState, useEffect } from "react";
-import { getCurrentURL, getAPI } from "../popup/functions";
+import { getCurrentURL} from "../popup/functions";
 import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
+import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API"
 
 export function Main() {
+  let api = new Zeeguu_API("https://api.zeeguu.org");
+
   const [article, setArticle] = useState();
   const [url, setUrl] = useState();
-  const [api, setApi] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(true);
 
+  api.signIn("emmateglbraender@gmail.com", "zeeguuResearch", ()=>{}, (sessionId)=>{
+    })
+
   useEffect(() => {
-    getAPI().then((api) =>{
-      setApi(api)
     getCurrentURL().then((url) => {
       setUrl(url);
       Article(url).then((article) => {
         setArticle(article);
       });
     });
-     })
+     
   }, [url]);
 
   if (article === undefined) {
