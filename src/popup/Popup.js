@@ -1,18 +1,21 @@
 /*global chrome*/
 import Login from "./Login";
-import {
-  getCurrentTab,
-  setCurrentURL,
-  getSourceAsDOM,
-} from "./functions";
+import {setCurrentURL, getSourceAsDOM } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
-
+import { useState, useEffect } from "react";
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
 
-export default function Popup({loggedIn, setLoggedIn}) {
+export default function Popup({ loggedIn, setLoggedIn }) {
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    chrome.storage.local.get("userInfo", function (result) {
+      setUser(result.userInfo);
+    });
+  }, []);
 
   async function openModal() {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -42,13 +45,24 @@ export default function Popup({loggedIn, setLoggedIn}) {
     });
   }
 
-  let currentTab = getCurrentTab();
-  chrome.storage.local.set({ tabId: currentTab });
+  function handleSuccessfulSignIn(userInfo, session) {
+    setUser({
+      session: session,
+      name: userInfo.name,
+      learned_language: userInfo.learned_language,
+      native_language: userInfo.native_language,
+    });
+    chrome.storage.local.set({ userInfo: userInfo });
+    chrome.storage.local.set({ sessionId: session });
+  }
 
-  function handleSignOut(e){
+  function handleSignOut(e) {
     e.preventDefault();
+    setLoggedIn(false);
+    setUser(null);
     chrome.storage.local.set({ loggedIn: false });
-    setLoggedIn(false)
+    chrome.storage.local.remove(["sessionId"]);
+    chrome.storage.local.remove(["userInfo"]);
   }
 
   return (
@@ -56,9 +70,15 @@ export default function Popup({loggedIn, setLoggedIn}) {
       <div class="imgcontainer">
         <img src={logo} alt="Zeeguu logo" class="logo" />
       </div>
-      {loggedIn === false && <Login setLoggedIn={setLoggedIn} />}
+      {loggedIn === false && (
+        <Login
+          setLoggedIn={setLoggedIn}
+          handleSuccessfulSignIn={handleSuccessfulSignIn}
+        />
+      )}
       {loggedIn === true && (
         <>
+          <p>{user ? <p>Welcome {user.name}</p> : null}</p>
           <button onClick={openModal}>Read article</button>
           <button onClick={handleSignOut}>Logout</button>
         </>
