@@ -2,38 +2,40 @@
 import { Modal } from "./Modal/Modal";
 import ReactDOM from "react-dom";
 import { useState, useEffect } from "react";
-import { getCurrentURL} from "../popup/functions";
+import { getCurrentURL, getSessionId } from "../popup/functions";
 import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
-import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API"
+import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
 
 export function Main() {
   let api = new Zeeguu_API("https://api.zeeguu.org");
 
   const [article, setArticle] = useState();
   const [url, setUrl] = useState();
+  const [sessionId, setSessionId] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(true);
 
-  api.signIn("emmateglbraender@gmail.com", "zeeguuResearch", ()=>{}, (sessionId)=>{
-    })
-
   useEffect(() => {
-    getCurrentURL().then((url) => {
-      setUrl(url);
-      Article(url).then((article) => {
-        setArticle(article);
+    getSessionId().then((sessionId) => {
+      setSessionId(sessionId);
+      getCurrentURL().then((url) => {
+        setUrl(url);
+        Article(url).then((article) => {
+          setArticle(article);
+        });
       });
     });
-     
   }, [url]);
+
+  api.session = sessionId;
 
   if (article === undefined) {
     return <div>Loading</div>;
   }
+
   let cleanedContent = pageSpecificClean(article.content, url);
   cleanedContent = generalClean(cleanedContent);
-
 
   return (
     <Modal

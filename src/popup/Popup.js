@@ -12,7 +12,6 @@ const minScore = 20;
 export default function Popup({ loggedIn, setLoggedIn }) {
   let api = new Zeeguu_API("https://api.zeeguu.org");
   const [user, setUser] = useState();
-  console.log(api)
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {

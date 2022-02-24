@@ -21,6 +21,12 @@ const value = await chrome.storage.local.get("tabURL")
 return value.tabURL;
 }
 
+//We have to remenber to delete sessionId from localStorage, when we logout
+export async function getSessionId() {
+  const value = await chrome.storage.local.get("sessionId")
+  return value.sessionId;
+  }
+
 export function reading(currentTabURL) {
   const documentFromTab = getSourceAsDOM(currentTabURL);
   const documentClone = documentFromTab.cloneNode(true);
