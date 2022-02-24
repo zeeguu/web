@@ -11,7 +11,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
     setModalIsOpen(false);
   };
 
-  console.log(api)
+  //console.log(api)
 
   /*
   convert 
@@ -46,6 +46,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
         arrOfInteractive.push(paragraphObject);
       }
       else{
+        //console.log(api)
       const it = new InteractiveText(content, articleInfo, api);
       const paragraphObject = {text: it, tag:HTMLTag}
       arrOfInteractive.push(paragraphObject);

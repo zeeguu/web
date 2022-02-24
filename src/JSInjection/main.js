@@ -2,7 +2,7 @@
 import { Modal } from "./Modal/Modal";
 import ReactDOM from "react-dom";
 import { useState, useEffect } from "react";
-import { getCurrentURL } from "../popup/functions";
+import { getCurrentURL, getAPI } from "../popup/functions";
 import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
@@ -14,20 +14,16 @@ export function Main() {
   const [modalIsOpen, setModalIsOpen] = useState(true);
 
   useEffect(() => {
+    getAPI().then((api) =>{
+      setApi(api)
     getCurrentURL().then((url) => {
       setUrl(url);
       Article(url).then((article) => {
         setArticle(article);
       });
     });
-    
+     })
   }, [url]);
-
-  useEffect(() => {
-    chrome.storage.local.get("api", function (result) {
-      setApi(result)
-    });
-  }, []);
 
   if (article === undefined) {
     return <div>Loading</div>;
