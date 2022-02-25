@@ -26,6 +26,18 @@ export function removeListElementsHeaders(content) {
     return div.innerHTML;
 }
 
-export function removeInjectedContent() {
+export function removeInjectedContent(content) {
     //remove services header and everything below
+    const div = document.createElement("div");
+    div.innerHTML = content;
+    let h4 = Array.from(div.querySelectorAll("H4"))
+    for (let i = 0; i < h4.length; i++) {
+        const element = h4[i];
+        if (element.textContent === "Services") {
+            
+        }
+        
+    }
+
+
 }
