@@ -57,16 +57,27 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   const [articleImage, setArticleImage] = useState();
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
+  const [articleId, setArticleId] = useState();
 
   useEffect(() => {
     let articleInfo = {
       url: url,
       content: content,
-      id: "11833417",
+      id: articleId,
       title: title,
       language: language,
       starred: false,
     };
+
+    let info = {
+      url: url,
+      htmlContent: content,
+      title: title
+    }
+    console.log(info)
+
+    api.findCreateArticle(info, (articleId)=> setArticleId(articleId));
+
     let image = getImage(content)
     setArticleImage(image)
 
