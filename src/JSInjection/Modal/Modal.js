@@ -1,56 +1,10 @@
 import { useEffect, useState } from "react";
 import { StyledModal, StyledButton } from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
-//import { TranslatableText } from "./reader/TranslatableText";
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
-
+import { interactiveTextsWithTags } from "./interactivityFunctions";
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language }) {
-  const handleClose = () => {
-    location.reload();
-    setModalIsOpen(false);
-  };
-
-  /*
-  convert 
-  output = ""
-  for each in children
-  if each is a textnode
-  then create an interactive text and append it to the list of interactive texts
-  if its not (just an container)
-  each is containter of text
-  output append (each tag)
-  convert(on the children)
-  
-  */
-  function interactiveTextsWithTags(content, articleInfo, api) {
-    const div = document.createElement("div");
-    div.innerHTML = content;
-    let arrOfInteractive = [];
-    let allTags = div.getElementsByTagName("*");
-    for (let i = 0; i < allTags.length; i++) {
-      const content = allTags[i].textContent;
-      const HTMLTag = allTags[i].nodeName;
-      if ((HTMLTag === "OL") ||( HTMLTag === "UL")){
-        const children = Array.from(allTags[i].children)
-        let list = [];
-        children.forEach(child => {
-          const content = child.textContent;
-          const it = new InteractiveText(content, articleInfo, api)
-          const paragraphObject = {text: it}
-          list.push(paragraphObject)
-        });
-        const paragraphObject = {tag:HTMLTag, list: list}
-        arrOfInteractive.push(paragraphObject);
-      }
-      else{
-      const it = new InteractiveText(content, articleInfo, api);
-      const paragraphObject = {text: it, tag:HTMLTag}
-      arrOfInteractive.push(paragraphObject);
-      }
-    }
-    return arrOfInteractive;
-  }
 
   const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
@@ -68,18 +22,8 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
       language: language,
       starred: false,
     };
-
-    let info = {
-      url: url,
-      htmlContent: content,
-      title: title
-    }
-    console.log(info)
-
-    api.findCreateArticle(info, (articleId)=> setArticleId(articleId));
-
-    let image = getImage(content)
-    setArticleImage(image)
+    let image = getImage(content);
+    setArticleImage(image);
 
     let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
     setInteractiveTextArray(arrInteractive);
@@ -87,6 +31,24 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
     let itTitle = new InteractiveText(title, articleInfo, api);
     setInteractiveTitle(itTitle);
   }, []);
+
+  useEffect(() => {
+    if (content != undefined) {
+      let info = {
+        url: url,
+        htmlContent: content,
+        title: title,
+      };
+      console.log(info);
+      api.findCreateArticle(info, (articleId) => console.log(articleId));
+    }
+  }, []);
+
+
+const handleClose = () => {
+  location.reload();
+  setModalIsOpen(false);
+};
   
   if (interactiveTextArray === undefined) {
     return <p>loading</p>;
