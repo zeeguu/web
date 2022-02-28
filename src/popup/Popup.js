@@ -36,6 +36,7 @@ export default function Popup({loggedIn, setLoggedIn}) {
       target: { tabId: tab.id },
       files: ["./modal.css"],
     });
+    window.close();
   }
 
   let currentTab = getCurrentTab();
