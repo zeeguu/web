@@ -3,6 +3,7 @@ export function generalClean(content) {
   //let cleanContent = cleanImages(content);
   let cleanContent = removeSVG(content);
   cleanContent = removeLinks(cleanContent);
+  cleanContent = removeFigcaption(cleanContent);
   //cleanContent = extractTextFromHTML(cleanContent);
   return cleanContent
 
@@ -77,6 +78,24 @@ function extractTextFromHTML(content) {
     .join(" ");
   return text;
 }
+
+function removeFigcaption(content){
+  const div = document.createElement("div");
+  div.innerHTML = content;
+  const figcaption = div.getElementsByTagName("figcaption");
+  if (figcaption  !== undefined) {
+    console.log(figcaption)
+    let caption = figcaption ,
+      index;
+    for (index = caption.length - 1; index >= 0; index--) {
+      caption[index].parentNode.removeChild(caption[index]);
+    }
+    content = div.innerHTML;
+  }
+  return content;
+
+}
+
 
 
 
