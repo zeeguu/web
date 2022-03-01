@@ -63,6 +63,7 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
       setIconHeight(75);
       setAnimationWidth(64);
       setAnimationHeight(75);
+      setButtonLeftMargin("0em");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
