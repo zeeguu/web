@@ -3,6 +3,7 @@ import strings from "../../i18n/definitions";
 import ZeeguuSpeech from "../../speech/ZeeguuSpeech";
 import Loader from "react-loader-spinner";
 import * as s from "./Exercise.sc";
+import { textAlign } from "@mui/system";
 
 export default function SpeakButton({ bookmarkToStudy, api, styling }) {
   const initialAnimationStyle = {
@@ -25,6 +26,7 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
   const [animationWidth, setAnimationWidth] = useState(0);
   const [animationHeight, setAnimationHeight] = useState(0);
   const [iconWidth, setIconWidth] = useState(0);
+  const [iconHeight, setIconHeight] = useState(0);
   const [buttonLeftMargin, setButtonLeftMargin] = useState("2em");
 
   useEffect(() => {
@@ -55,6 +57,12 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
     }
     if (styling === "next") {
       setButtonLeftMargin("0");
+    }
+    if (styling === "audio") {
+      setIconWidth(75);
+      setIconHeight(75);
+      setAnimationWidth(64);
+      setAnimationHeight(75);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -97,6 +105,7 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
             src="/static/images/volume_up.svg"
             alt={strings.speak}
             width={iconWidth}
+            
             style={{
               paddingLeft: iconStyle.paddingLeft,
               paddingRight: iconStyle.paddingRight,

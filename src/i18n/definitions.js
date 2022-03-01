@@ -317,6 +317,8 @@ let strings = new LocalizedStrings(
       chooseTheWordFittingContextHeadline:
         "Choose the alternative that fits the context",
       matchWordWithTranslation: "Match each word with its translation",
+      audioExerciseHeadline: "Write the word your hear. Click to have it repeated!",
+      audioExerciseTwoHeadline: "No. 2",
 
       //FeedbackButtons
       giveFeedback: "Give feedback",
