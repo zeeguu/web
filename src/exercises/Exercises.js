@@ -7,8 +7,10 @@ import ProgressBar from "./ProgressBar";
 import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
-import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
+import Match from "./exerciseTypes/match/Match";
+import AudioExerciseOne from "./exerciseTypes/audioExerciseOne/AudioExerciseOne";
+import AudioExerciseTwo from "./exerciseTypes/audioExerciseTwo/AudioExerciseTwo";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 
@@ -26,6 +28,14 @@ let BOOKMARKS_FOR_EXERCISE = [
   {
     type: FindWordInContext,
     requiredBookmarks: 1,
+  },
+  {
+    type: AudioExerciseOne,
+    requiredBookmarks: 1,
+  },
+  {
+    type: AudioExerciseTwo,
+    requiredBookmarks: 3,
   },
 ];
 
