@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import strings from "../../i18n/definitions";
 import ZeeguuSpeech from "../../speech/ZeeguuSpeech";
 import Loader from "react-loader-spinner";
-import * as s from "./Exercise.sc";
-import { textAlign } from "@mui/system";
+import * as s from "./SpeakButton.sc";
 
 export default function SpeakButton({ bookmarkToStudy, api, styling }) {
   const initialAnimationStyle = {
@@ -12,17 +11,10 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
     marginTop: "-0.25em",
     marginBottom: "-0.25em",
   };
-  const initialIconStyle = {
-    paddingLeft: "0.5em",
-    paddingRight: "0.5em",
-    marginTop: "-0.25em",
-    marginBottom: "-0.25em",
-  };
 
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [animationStyle, setAnimationStyle] = useState(initialAnimationStyle);
-  const [iconStyle, setIconStyle] = useState(initialIconStyle);
   const [animationWidth, setAnimationWidth] = useState(0);
   const [animationHeight, setAnimationHeight] = useState(0);
   const [iconWidth, setIconWidth] = useState(0);
@@ -37,28 +29,19 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
         marginTop: "0",
         marginBottom: "0",
       };
-      let icon = {
-        paddingLeft: "0",
-        paddingRight: "0",
-        marginTop: "0",
-        marginBottom: "0",
-      };
+
       setAnimationHeight(20);
       setAnimationWidth(15);
       setIconWidth(20);
       setAnimationStyle(animation);
-      setIconStyle(icon);
     } else {
       setAnimationHeight(36);
       setAnimationWidth(25);
       setIconWidth(36);
       setAnimationStyle(initialAnimationStyle);
-      setIconStyle(initialIconStyle);
     }
-    if (styling === "next") {
-      setButtonLeftMargin("0");
-    }
-    if (styling === "audio") {
+
+    if (styling === "large") {
       setIconWidth(75);
       setIconHeight(75);
       setAnimationWidth(64);
@@ -75,47 +58,38 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
   }
 
   return (
-    <>
+    <s.SpeakButton
+      disabled={isSpeaking}
+      onClick={(e) => !isSpeaking && handleSpeak()}
+      style={{ marginLeft: buttonLeftMargin }}
+    >
       {isSpeaking && (
-        <s.FeedbackButton
-          disabled={true}
-          style={{ marginLeft: buttonLeftMargin }}
-        >
-          <Loader
-            type="Bars"
-            color="#ffffff"
-            width={animationWidth}
-            height={animationHeight}
-            style={{
-              paddingLeft: animationStyle.paddingLeft,
-              paddingRight: animationStyle.paddingRight,
-              marginTop: animationStyle.marginTop,
-              marginBottom: animationStyle.marginBottom,
-              display: "flex",
-              justifyContent: "center",
-            }}
-          />
-        </s.FeedbackButton>
+        <Loader
+          type="Bars"
+          color="#ffffff"
+          width={animationWidth}
+          height={animationHeight}
+          className={styling}
+          style={{
+            paddingLeft: animationStyle.paddingLeft,
+            paddingRight: animationStyle.paddingRight,
+            marginTop: animationStyle.marginTop,
+            marginBottom: animationStyle.marginBottom,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
       )}
+
       {!isSpeaking && (
-        <s.FeedbackButton
-          onClick={(e) => handleSpeak()}
-          style={{ marginLeft: buttonLeftMargin }}
-        >
+        <s.SpeakerImage className={styling}>
           <img
             src="/static/images/volume_up.svg"
             alt={strings.speak}
             width={iconWidth}
-            
-            style={{
-              paddingLeft: iconStyle.paddingLeft,
-              paddingRight: iconStyle.paddingRight,
-              marginTop: iconStyle.marginTop,
-              marginBottom: iconStyle.marginBottom,
-            }}
           />
-        </s.FeedbackButton>
+        </s.SpeakerImage>
       )}
-    </>
+    </s.SpeakButton>
   );
 }

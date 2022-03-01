@@ -29,9 +29,9 @@ export default function AudioExerciseOne({
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
-  
+
   const bookmarkToStudy = bookmarksToStudy[0];
-  const audio = "audio";
+
   const initialBookmarkState = [
     {
       bookmark: bookmarksToStudy[0],
@@ -41,23 +41,23 @@ export default function AudioExerciseOne({
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-   async function handleSpeak() {
+  async function handleSpeak() {
     setIsSpeaking(true);
     await speech.speakOut(bookmarkToStudy.from);
     setIsSpeaking(false);
-  };
+  }
   useEffect(() => {
-    setTimeout(() => {handleSpeak()}, 1500)
+    setTimeout(() => {
+      handleSpeak();
+    }, 1500);
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      
       setInteractiveText(
         new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
       );
-      
-       console.log(bookmarksToStudy[0].from);
+
+      console.log(bookmarksToStudy[0].from);
       setArticleInfo(articleInfo);
-      
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,7 +77,7 @@ export default function AudioExerciseOne({
           splitTranslation.forEach((translatedWord) => {
             if (translatedWord === word) {
               notifyBookmarkTranslation();
-            } 
+            }
           });
         } else {
           if (translation === word) {
@@ -100,7 +100,7 @@ export default function AudioExerciseOne({
   }
 
   function handleShowSolution(e, message) {
-    e.preventDefault()
+    e.preventDefault();
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
@@ -144,47 +144,47 @@ export default function AudioExerciseOne({
   if (!articleInfo) {
     return <LoadingAnimation />;
   }
- 
+
   return (
     <s.Exercise>
-        <div className="headline">
-          {strings.audioExerciseHeadline}
-        </div>
-     {!isCorrect && (
+      <div className="headline">{strings.audioExerciseHeadline}</div>
+      {!isCorrect && (
         <>
-        <s.CenteredRow>
-        <SpeakButton
-            bookmarkToStudy={bookmarkToStudy}
-            api={api}
-            styling={audio}
-        />
-        </s.CenteredRow>
+          <s.CenteredRow>
+            <SpeakButton
+              bookmarkToStudy={bookmarkToStudy}
+              api={api}
+              styling="large"
+            />
+          </s.CenteredRow>
 
-        <BotInput
-          handleCorrectAnswer={handleCorrectAnswer}
-          handleIncorrectAnswer={handleIncorrectAnswer}
-          bookmarksToStudy={bookmarksToStudy}
-          notifyKeyPress={inputKeyPress}
-          messageToAPI={messageToAPI}
-          setMessageToAPI={setMessageToAPI} />
-            </>
+          <BotInput
+            handleCorrectAnswer={handleCorrectAnswer}
+            handleIncorrectAnswer={handleIncorrectAnswer}
+            bookmarksToStudy={bookmarksToStudy}
+            notifyKeyPress={inputKeyPress}
+            messageToAPI={messageToAPI}
+            setMessageToAPI={setMessageToAPI}
+          />
+        </>
       )}
       {isCorrect && (
-        <><h1>{bookmarksToStudy[0].to}</h1>
-        <NextNavigation
-          api={api}
-          bookmarksToStudy={bookmarksToStudy}
-          moveToNextExercise={moveToNextExercise}
-          reload={reload}
-          setReload={setReload}
-        /></>
+        <>
+          <h1>{bookmarksToStudy[0].to}</h1>
+          <NextNavigation
+            api={api}
+            bookmarksToStudy={bookmarksToStudy}
+            moveToNextExercise={moveToNextExercise}
+            reload={reload}
+            setReload={setReload}
+          />
+        </>
       )}
-       <SolutionFeedbackLinks
+      <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
       />
-     
     </s.Exercise>
   );
 }
