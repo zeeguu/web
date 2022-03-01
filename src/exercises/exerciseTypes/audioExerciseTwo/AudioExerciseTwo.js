@@ -32,7 +32,6 @@ export default function AudioExerciseTwo({
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
-  const audio = "audio";
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -129,14 +128,14 @@ export default function AudioExerciseTwo({
 
       {!buttonOptions && <LoadingAnimation />}
       {!isCorrect && (
-            <AudioTwoBotInput
-                  buttonOptions={buttonOptions}
-                  notifyChoiceSelection={notifyChoiceSelection}
-                  incorrectAnswer={incorrectAnswer}
-                  setIncorrectAnswer={setIncorrectAnswer}
-                  handleShowSolution={handleShowSolution}
-                  toggleShow={toggleShow} 
-            />
+        <AudioTwoBotInput
+          buttonOptions={buttonOptions}
+          notifyChoiceSelection={notifyChoiceSelection}
+          incorrectAnswer={incorrectAnswer}
+          setIncorrectAnswer={setIncorrectAnswer}
+          handleShowSolution={handleShowSolution}
+          toggleShow={toggleShow}
+        />
       )}
       {isCorrect && (
         <NextNavigation
@@ -155,4 +154,3 @@ export default function AudioExerciseTwo({
     </s.Exercise>
   );
 }
-
