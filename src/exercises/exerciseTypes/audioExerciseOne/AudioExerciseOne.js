@@ -152,11 +152,14 @@ export default function AudioExerciseOne({
         </div>
      {!isCorrect && (
         <>
+        <s.CenteredRow>
         <SpeakButton
             bookmarkToStudy={bookmarkToStudy}
             api={api}
             styling={audio}
         />
+        </s.CenteredRow>
+
         <BotInput
           handleCorrectAnswer={handleCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
@@ -167,13 +170,14 @@ export default function AudioExerciseOne({
             </>
       )}
       {isCorrect && (
+        <><h1>{bookmarksToStudy[0].to}</h1>
         <NextNavigation
           api={api}
           bookmarksToStudy={bookmarksToStudy}
           moveToNextExercise={moveToNextExercise}
           reload={reload}
           setReload={setReload}
-        />    
+        /></>
       )}
        <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
