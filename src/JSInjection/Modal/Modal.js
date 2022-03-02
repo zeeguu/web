@@ -4,6 +4,7 @@ import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
+import { getNativeLanguage } from "../../popup/functions";
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language }) {
 
@@ -13,6 +14,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
   const [articleId, setArticleId] = useState();
+  const [nativeLang, setNativeLang] = useState();
 
   useEffect(() => {
     let articleInfo = {
@@ -40,11 +42,14 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
         htmlContent: content,
         title: title,
       };
-      console.log(info);
       api.findCreateArticle(info, (articleId) => setArticleId(articleId));
     }
+    getNativeLanguage().then((result)=>
+      setNativeLang(result)
+    )
   }, []);
 
+localStorage.setItem("native_language", nativeLang)
 
 const handleClose = () => {
   location.reload();
