@@ -84,7 +84,6 @@ function removeFigcaption(content){
   div.innerHTML = content;
   const figcaption = div.getElementsByTagName("figcaption");
   if (figcaption  !== undefined) {
-    console.log(figcaption)
     let caption = figcaption ,
       index;
     for (index = caption.length - 1; index >= 0; index--) {
