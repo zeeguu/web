@@ -11,7 +11,7 @@ export default function NextNavigation({
   setReload,
 }) {
   const bookmarkToStudy = bookmarksToStudy[0];
-  const next = "next";
+
   const exercise = "exercise";
 
   return (
@@ -21,7 +21,7 @@ export default function NextNavigation({
           <SpeakButton
             bookmarkToStudy={bookmarkToStudy}
             api={api}
-            styling={next}
+            style="small"
           />
           <EditButton
             bookmark={bookmarksToStudy[0]}
