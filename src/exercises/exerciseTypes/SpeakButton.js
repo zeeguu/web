@@ -1,55 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import strings from "../../i18n/definitions";
 import ZeeguuSpeech from "../../speech/ZeeguuSpeech";
 import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
 
-export default function SpeakButton({ bookmarkToStudy, api, styling }) {
-  const initialAnimationStyle = {
-    paddingLeft: "0.8125em",
-    paddingRight: "0.8125em",
-    marginTop: "-0.25em",
-    marginBottom: "-0.25em",
-  };
+const small_style = {
+  // Icon properties
+  img_height: 15,
+  img_width: 30,
+  // Loader properties
+  loader_width: 30,
+  loader_height: 15,
+};
 
+const small_next_style = {
+  // Icon properties
+  img_height: 30,
+  img_width: 60,
+  // Loader properties
+  loader_width: 60,
+  loader_height: 30,
+};
+
+const large_style = {
+  // Icon properties
+  img_height: 60,
+  img_width: 120,
+  // Loader properties
+  loader_width: 120,
+  loader_height: 60,
+};
+
+const styles = {
+  small: small_style,
+  next: small_next_style,
+  large: large_style,
+};
+
+export default function SpeakButton({ bookmarkToStudy, api, styling }) {
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [animationStyle, setAnimationStyle] = useState(initialAnimationStyle);
-  const [animationWidth, setAnimationWidth] = useState(0);
-  const [animationHeight, setAnimationHeight] = useState(0);
-  const [iconWidth, setIconWidth] = useState(0);
-  const [iconHeight, setIconHeight] = useState(0);
-  const [buttonLeftMargin, setButtonLeftMargin] = useState("2em");
 
-  useEffect(() => {
-    if (styling === "small") {
-      let animation = {
-        paddingLeft: "0.125em",
-        paddingRight: "0.125em",
-        marginTop: "0",
-        marginBottom: "0",
-      };
-
-      setAnimationHeight(20);
-      setAnimationWidth(15);
-      setIconWidth(20);
-      setAnimationStyle(animation);
-    } else {
-      setAnimationHeight(36);
-      setAnimationWidth(25);
-      setIconWidth(36);
-      setAnimationStyle(initialAnimationStyle);
-    }
-
-    if (styling === "large") {
-      setIconWidth(75);
-      setIconHeight(75);
-      setAnimationWidth(64);
-      setAnimationHeight(75);
-      setButtonLeftMargin("0em");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  let style = styles[styling] || small_next_style; // default is next style
 
   async function handleSpeak() {
     setIsSpeaking(true);
@@ -61,20 +53,18 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
     <s.SpeakButton
       disabled={isSpeaking}
       onClick={(e) => !isSpeaking && handleSpeak()}
-      style={{ marginLeft: buttonLeftMargin }}
     >
       {isSpeaking && (
         <Loader
           type="Bars"
           color="#ffffff"
-          width={animationWidth}
-          height={animationHeight}
-          className={styling}
+          width={style.loader_width}
+          height={style.loader_height}
           style={{
-            paddingLeft: animationStyle.paddingLeft,
-            paddingRight: animationStyle.paddingRight,
-            marginTop: animationStyle.marginTop,
-            marginBottom: animationStyle.marginBottom,
+            paddingLeft: style.loader_paddingLeft,
+            paddingRight: style.loader_paddingRight,
+            marginTop: style.loader_marginTop,
+            marginBottom: style.loader_marginBottom,
             display: "flex",
             justifyContent: "center",
           }}
@@ -82,13 +72,16 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
       )}
 
       {!isSpeaking && (
-        <s.SpeakerImage className={styling}>
-          <img
-            src="/static/images/volume_up.svg"
-            alt={strings.speak}
-            width={iconWidth}
-          />
-        </s.SpeakerImage>
+        <img
+          src="/static/images/volume_up.svg"
+          alt={strings.speak}
+          width={style.img_width}
+          height={style.img_height}
+          style={{
+            paddingLeft: style.img_paddingLeft,
+            paddingRight: style.img_paddingRight,
+          }}
+        />
       )}
     </s.SpeakButton>
   );
