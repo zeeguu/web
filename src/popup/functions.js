@@ -21,6 +21,12 @@ const value = await chrome.storage.local.get("tabURL")
 return value.tabURL;
 }
 
+export async function getNativeLanguage() {
+  const value = await chrome.storage.local.get("userInfo")
+  return value.userInfo.native_language;
+  }
+  
+
 //We have to remenber to delete sessionId from localStorage, when we logout
 export async function getSessionId() {
   const value = await chrome.storage.local.get("sessionId")

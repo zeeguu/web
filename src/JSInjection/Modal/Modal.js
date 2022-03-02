@@ -4,6 +4,7 @@ import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
+import { getNativeLanguage } from "../../popup/functions";
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language }) {
 
@@ -13,38 +14,45 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
   const [articleId, setArticleId] = useState();
-
+  const [nativeLang, setNativeLang] = useState();
+  
   useEffect(() => {
-    let articleInfo = {
-      url: url,
-      content: content,
-      id: articleId,
-      title: title,
-      language: language,
-      starred: false,
-    };
-    let image = getImage(content);
-    setArticleImage(image);
-
-    let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
-    setInteractiveTextArray(arrInteractive);
-
-    let itTitle = new InteractiveText(title, articleInfo, api);
-    setInteractiveTitle(itTitle);
-  }, []);
-
-  useEffect(() => {
-    if (content != undefined) {
+    if (content !== undefined) {
       let info = {
         url: url,
         htmlContent: content,
         title: title,
       };
-      console.log(info);
-      api.findCreateArticle(info, (articleId) => setArticleId(articleId));
+      api.findCreateArticle(info, (articleId) => setArticleId(JSON.parse(articleId)));
     }
+    getNativeLanguage().then((result)=>
+      setNativeLang(result)
+    )
   }, []);
 
+  useEffect(() => {
+    if (articleId !== undefined) {
+      let articleInfo = {
+        url: url,
+        content: content,
+        id: articleId.article_id,
+        title: title,
+        language: language,
+        starred: false,
+      };
+      let image = getImage(content);
+      setArticleImage(image);
+  
+      let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
+      setInteractiveTextArray(arrInteractive);
+  
+      let itTitle = new InteractiveText(title, articleInfo, api);
+      setInteractiveTitle(itTitle);
+    }
+      
+  }, [articleId]);
+
+localStorage.setItem("native_language", nativeLang)
 
 const handleClose = () => {
   location.reload();
