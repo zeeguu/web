@@ -7,8 +7,10 @@ export function removeListElementsHeaders(content) {
   for (let i = 0; i < listElements.length; i++) {
     let li = listElements[i].children[0];
     let ul = listElements[i];
+    if(li != undefined){
     if (li.nodeName === "LI") {
       const element = li.children[0];
+      if(element != undefined){
       if (element.nodeName === "H2") {
         let siblingToUl = listElements[i].nextSibling;
         let parent = listElements[i].parentNode;
@@ -17,7 +19,7 @@ export function removeListElementsHeaders(content) {
         frag.appendChild(newH);
         parent.removeChild(ul);
         siblingToUl.parentNode.insertBefore(frag, siblingToUl);
-      }
+      }}}
     }
   }
   return div.innerHTML;
@@ -33,12 +35,13 @@ export function removeInjectedContent(content) {
   for (let i = 0; i < allElements.length; i++) {
     if (!isFound) {
       const element = allElements[i];
+      if(element != undefined){
       if (element.nodeName === "H4") {
         if (element.textContent === "Services") {
           element.remove();
           isFound = true;
         }
-      }
+      }}
     } else if (isFound) {
       allElements[i].remove();
     }
