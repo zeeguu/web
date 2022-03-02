@@ -1,6 +1,9 @@
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
-import { zeeguuTransparentLightOrange, zeeguuOrange } from "../../components/colors";
+import {
+  zeeguuTransparentLightOrange,
+  zeeguuOrange,
+} from "../../components/colors";
 
 const Exercise = styled.div`
   display: flex;
@@ -10,7 +13,7 @@ const Exercise = styled.div`
   padding-bottom: 1em;
 
   .headline {
-    font-size: small;
+    font-size: ;
     color: gray;
     margin-top: 1em;
     font-weight: 500;

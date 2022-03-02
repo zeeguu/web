@@ -21,7 +21,7 @@ export default function NextNavigation({
           <SpeakButton
             bookmarkToStudy={bookmarkToStudy}
             api={api}
-            style="small"
+            style="next"
           />
           <EditButton
             bookmark={bookmarksToStudy[0]}

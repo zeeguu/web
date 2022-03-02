@@ -3,21 +3,16 @@ import { OrangeButton } from "./Exercise.sc.js";
 
 let SpeakerImage = styled.div`
   &.small {
-    padding-left: 0;
-    padding-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
     height: 20px;
     width: 20px;
-    background-color: red;
   }
 
   &.large {
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-    margin-top: -0.25em;
-    margin-bottom: -0.25em;
-    /* background-color: red; */
+    height: 200px;
+    width: 200px;
+  }
+
+  &.next {
     height: 75px;
     width: 75px;
   }

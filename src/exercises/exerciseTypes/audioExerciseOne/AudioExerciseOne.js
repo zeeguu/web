@@ -170,7 +170,7 @@ export default function AudioExerciseOne({
       )}
       {isCorrect && (
         <>
-          <h1>{bookmarksToStudy[0].to}</h1>
+          <h1>{bookmarksToStudy[0].from + " = " + bookmarksToStudy[0].to}</h1>
           <NextNavigation
             api={api}
             bookmarksToStudy={bookmarksToStudy}
