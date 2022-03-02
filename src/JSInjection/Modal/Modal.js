@@ -15,28 +15,9 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   const [pronouncing, setPronouncing] = useState(false);
   const [articleId, setArticleId] = useState();
   const [nativeLang, setNativeLang] = useState();
-
+  
   useEffect(() => {
-    let articleInfo = {
-      url: url,
-      content: content,
-      id: articleId,
-      title: title,
-      language: language,
-      starred: false,
-    };
-    let image = getImage(content);
-    setArticleImage(image);
-
-    let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
-    setInteractiveTextArray(arrInteractive);
-
-    let itTitle = new InteractiveText(title, articleInfo, api);
-    setInteractiveTitle(itTitle);
-  }, []);
-
-  useEffect(() => {
-    if (content != undefined) {
+    if (content !== undefined) {
       let info = {
         url: url,
         htmlContent: content,
@@ -48,6 +29,30 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
       setNativeLang(result)
     )
   }, []);
+
+  useEffect(() => {
+    if (articleId !== undefined) {
+      console.log("on ", articleId)
+      console.log(".id ", articleId.article_id)
+      let articleInfo = {
+        url: url,
+        content: content,
+        id: articleId,
+        title: title,
+        language: language,
+        starred: false,
+      };
+      let image = getImage(content);
+      setArticleImage(image);
+  
+      let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
+      setInteractiveTextArray(arrInteractive);
+  
+      let itTitle = new InteractiveText(title, articleInfo, api);
+      setInteractiveTitle(itTitle);
+    }
+      
+  }, [articleId]);
 
 localStorage.setItem("native_language", nativeLang)
 
