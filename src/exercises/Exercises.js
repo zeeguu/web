@@ -33,10 +33,6 @@ let BOOKMARKS_FOR_EXERCISE = [
     type: AudioExerciseOne,
     requiredBookmarks: 1,
   },
-  {
-    type: AudioExerciseTwo,
-    requiredBookmarks: 3,
-  },
 ];
 
 export default function Exercises({ api, articleID }) {
