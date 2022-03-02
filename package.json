@@ -33,7 +33,7 @@
     "start": "react-scripts start",
     "prebuild": "rimraf build",
     "build": "npm-run-all build:*",
-    "build:app": "INLINE_RUNTIME_CHUNK=false react-scripts build",
+    "build:app": "INLINE_RUNTIME_CHUNK=false DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "build:bg": "webpack --mode production ./src/JSInjection/main.js --output-path ./build/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

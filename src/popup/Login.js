@@ -1,5 +1,6 @@
 /*global chrome*/
 import { useState } from "react";
+
 export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

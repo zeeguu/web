@@ -5,6 +5,7 @@ import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
 import Zeeguu_API from "./api/Zeeguu_API"
+//import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API"
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
