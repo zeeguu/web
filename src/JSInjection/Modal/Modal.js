@@ -23,7 +23,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
         htmlContent: content,
         title: title,
       };
-      api.findCreateArticle(info, (articleId) => setArticleId(articleId));
+      api.findCreateArticle(info, (articleId) => setArticleId(JSON.parse(articleId)));
     }
     getNativeLanguage().then((result)=>
       setNativeLang(result)
@@ -32,12 +32,10 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
 
   useEffect(() => {
     if (articleId !== undefined) {
-      console.log("on ", articleId)
-      console.log(".id ", articleId.article_id)
       let articleInfo = {
         url: url,
         content: content,
-        id: articleId,
+        id: articleId.article_id,
         title: title,
         language: language,
         starred: false,
