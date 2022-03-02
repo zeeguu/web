@@ -39,12 +39,12 @@ input[type=email], input[type=password] {
 
   /* Avatar image */
 img.logo {
-    width: 40%;
+    width: 35%;
     border-radius: 50%;
   }
 
   body{
     width: 300px;
-    height: 450px;
+    height: 310px;
     padding-bottom: 20px;
 }
