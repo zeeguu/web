@@ -4,6 +4,7 @@ import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
+
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language }) {
 
   const [interactiveTextArray, setInteractiveTextArray] = useState();
@@ -40,7 +41,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
         title: title,
       };
       console.log(info);
-      api.findCreateArticle(info, (articleId) => console.log(articleId));
+      api.findCreateArticle(info, (articleId) => setArticleId(articleId));
     }
   }, []);
 
