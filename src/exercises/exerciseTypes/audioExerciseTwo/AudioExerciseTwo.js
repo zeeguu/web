@@ -37,6 +37,11 @@ export default function AudioExerciseTwo({
   const bookmarkToStudy1 = bookmarksToStudy[1];
   const bookmarkToStudy2 = bookmarksToStudy[2];
 
+  const [choiceOptions, setChoiceOptions] = useState(null);
+  
+  
+  
+
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
@@ -48,7 +53,11 @@ export default function AudioExerciseTwo({
       );
       setArticleInfo(articleInfo);
     });
+    consolidateChoice();
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
+   
   }, []);
 
   function notifyChoiceSelection(selectedChoice) {
@@ -96,12 +105,18 @@ export default function AudioExerciseTwo({
 
   function consolidateChoiceOptions(similarWords) {
     let listOfOptions = [
-      bookmarksToStudy[0].from,
-      bookmarksToStudy[1].from,
-      bookmarksToStudy[2].from,
+      bookmarksToStudy[0].bookmark,
+      bookmarksToStudy[1].bookmark,
+      bookmarksToStudy[2].bookmark,
     ];
     let shuffledListOfOptions = shuffle(listOfOptions);
     setButtonOptions(shuffledListOfOptions);
+  }
+
+  function consolidateChoice(){
+    let listOfchoices = [0,1,2];
+    let shuffledListOfChoices = shuffle(listOfchoices);
+    setChoiceOptions(shuffledListOfChoices);
   }
 
   if (!articleInfo) {
@@ -141,12 +156,13 @@ export default function AudioExerciseTwo({
           styling={next}
           />
       </s.CenteredRow>
+     <h1>{choiceOptions[0]}</h1>
       <s.CenteredRow>
-      {buttonOptions ? (
-        buttonOptions.map((option) =>
-          incorrectAnswer === option ? (
+      {choiceOptions ? (
+        choiceOptions.map((option) =>
+        0 !== option ? (
             <SpeakButton 
-              bookmarkToStudy={bookmarkToStudy0}
+              bookmarkToStudy={bookmarksToStudy[option]}
               api={api}
               styling={next}
             />
