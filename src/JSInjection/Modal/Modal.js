@@ -1,3 +1,4 @@
+/*global chrome*/
 import { useEffect, useState } from "react";
 import { StyledModal, StyledButton, StyledPersonalCopy } from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
