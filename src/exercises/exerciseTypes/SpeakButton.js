@@ -31,16 +31,31 @@ const large_style = {
   loader_height: 60,
 };
 
+const selected_style = {
+  // Icon properties
+  img_height: 50,
+  img_width: 100,
+  // Loader properties
+  loader_width: 100,
+  loader_height: 50,
+};
+
 const styles = {
   small: small_style,
   next: small_next_style,
   large: large_style,
+  selected: selected_style,
 };
 
-export default function SpeakButton({ bookmarkToStudy, api, styling }) {
+export default function SpeakButton({
+  bookmarkToStudy,
+  api,
+  styling,
+  handleSelect,
+}) {
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
-
+  const [cls, setCls] = useState("");
   let style = styles[styling] || small_next_style; // default is next style
 
   async function handleSpeak() {
@@ -49,10 +64,15 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
     setIsSpeaking(false);
   }
 
+  function handleSelect() {}
+
   return (
     <s.SpeakButton
       disabled={isSpeaking}
-      onClick={(e) => !isSpeaking && handleSpeak()}
+      className={cls}
+      onClick={(e) =>
+        !isSpeaking && handleSpeak() && handleSelect() && setCls("selected")
+      }
     >
       {isSpeaking && (
         <Loader
