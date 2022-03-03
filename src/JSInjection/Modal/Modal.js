@@ -49,7 +49,6 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   
       let itTitle = new InteractiveText(title, articleInfo, api);
       setInteractiveTitle(itTitle);
-
     }
       
   }, [articleId]);
@@ -65,7 +64,6 @@ function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
 };
   
-
 function toggle(state, togglerFunction) {
   togglerFunction(!state);
 }
