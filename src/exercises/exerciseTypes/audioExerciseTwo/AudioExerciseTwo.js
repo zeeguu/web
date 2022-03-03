@@ -32,16 +32,8 @@ export default function AudioExerciseTwo({
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
-  const next = "next";
-  const bookmarkToStudy0 = bookmarksToStudy[0];
-  const bookmarkToStudy1 = bookmarksToStudy[1];
-  const bookmarkToStudy2 = bookmarksToStudy[2];
-
   const [choiceOptions, setChoiceOptions] = useState(null);
-  
-  
-  
-
+  let selected = false;
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
@@ -54,10 +46,8 @@ export default function AudioExerciseTwo({
       setArticleInfo(articleInfo);
     });
     consolidateChoice();
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
 
-   
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function notifyChoiceSelection(selectedChoice) {
@@ -76,6 +66,11 @@ export default function AudioExerciseTwo({
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
     }
+  }
+
+  function buttonSelect() {
+    console.log("button select detected");
+    selected = true;
   }
 
   function handleShowSolution() {
@@ -113,8 +108,8 @@ export default function AudioExerciseTwo({
     setButtonOptions(shuffledListOfOptions);
   }
 
-  function consolidateChoice(){
-    let listOfchoices = [0,1,2];
+  function consolidateChoice() {
+    let listOfchoices = [0, 1, 2];
     let shuffledListOfChoices = shuffle(listOfchoices);
     setChoiceOptions(shuffledListOfChoices);
   }
@@ -138,48 +133,30 @@ export default function AudioExerciseTwo({
         />
       </div>
       <s.CenteredRow>
-          <SpeakButton 
-          bookmarkToStudy={bookmarkToStudy0}
-          api={api}
-          styling={next}
-          />
-
-          <SpeakButton 
-          bookmarkToStudy={bookmarkToStudy1}
-          api={api}
-          styling={next}
-          />
-
-          <SpeakButton 
-          bookmarkToStudy={bookmarkToStudy2}
-          api={api}
-          styling={next}
-          />
-      </s.CenteredRow>
-     <h1>{choiceOptions[0]}</h1>
-      <s.CenteredRow>
-      {choiceOptions ? (
-        choiceOptions.map((option) =>
-        0 !== option ? (
-            <SpeakButton 
-              bookmarkToStudy={bookmarksToStudy[option]}
-              api={api}
-              styling={next}
-            />
-          ) : (
-            <SpeakButton 
-              bookmarkToStudy={bookmarkToStudy0}
-              api={api}
-              styling={next}
-          />
+        {choiceOptions ? (
+          choiceOptions.map((option) =>
+            0 !== option ? (
+              <SpeakButton
+                handleSelect={buttonSelect}
+                bookmarkToStudy={bookmarksToStudy[option]}
+                api={api}
+                styling="selected"
+                selected={selected}
+              />
+            ) : (
+              <SpeakButton
+                handleSelect={buttonSelect}
+                bookmarkToStudy={bookmarksToStudy[option]}
+                api={api}
+                styling="selected"
+              />
+            )
           )
-        )
-      ) : (
-        <></>
-      )}
-
+        ) : (
+          <></>
+        )}
       </s.CenteredRow>
-      
+
       {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
 
       {!buttonOptions && <LoadingAnimation />}

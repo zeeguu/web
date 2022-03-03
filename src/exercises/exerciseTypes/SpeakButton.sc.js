@@ -29,6 +29,11 @@ let SpeakButton = styled(OrangeButton)`
     text-decoration: line-through;
   }
 
+  &.selected {
+    background-color: red;
+    border: 5px solid black;
+  }
+
   &#loader {
     background-color: green;
   }
