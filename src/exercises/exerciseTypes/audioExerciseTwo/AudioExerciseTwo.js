@@ -32,7 +32,10 @@ export default function AudioExerciseTwo({
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
-  const audio = "audio";
+  const next = "next";
+  const bookmarkToStudy0 = bookmarksToStudy[0];
+  const bookmarkToStudy1 = bookmarksToStudy[1];
+  const bookmarkToStudy2 = bookmarksToStudy[2];
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -92,15 +95,10 @@ export default function AudioExerciseTwo({
   }
 
   function consolidateChoiceOptions(similarWords) {
-    let firstRandomInt = Math.floor(Math.random() * similarWords.length);
-    let secondRandomInt;
-    do {
-      secondRandomInt = Math.floor(Math.random() * similarWords.length);
-    } while (firstRandomInt === secondRandomInt);
     let listOfOptions = [
-      removePunctuation(bookmarksToStudy[0].from.toLowerCase()),
-      removePunctuation(similarWords[firstRandomInt].toLowerCase()),
-      removePunctuation(similarWords[secondRandomInt].toLowerCase()),
+      bookmarksToStudy[0].from,
+      bookmarksToStudy[1].from,
+      bookmarksToStudy[2].from,
     ];
     let shuffledListOfOptions = shuffle(listOfOptions);
     setButtonOptions(shuffledListOfOptions);
@@ -124,7 +122,48 @@ export default function AudioExerciseTwo({
           bookmarkToStudy={bookmarksToStudy[0].from}
         />
       </div>
+      <s.CenteredRow>
+          <SpeakButton 
+          bookmarkToStudy={bookmarkToStudy0}
+          api={api}
+          styling={next}
+          />
 
+          <SpeakButton 
+          bookmarkToStudy={bookmarkToStudy1}
+          api={api}
+          styling={next}
+          />
+
+          <SpeakButton 
+          bookmarkToStudy={bookmarkToStudy2}
+          api={api}
+          styling={next}
+          />
+      </s.CenteredRow>
+      <s.CenteredRow>
+      {buttonOptions ? (
+        buttonOptions.map((option) =>
+          incorrectAnswer === option ? (
+            <SpeakButton 
+              bookmarkToStudy={bookmarkToStudy0}
+              api={api}
+              styling={next}
+            />
+          ) : (
+            <SpeakButton 
+              bookmarkToStudy={bookmarkToStudy0}
+              api={api}
+              styling={next}
+          />
+          )
+        )
+      ) : (
+        <></>
+      )}
+
+      </s.CenteredRow>
+      
       {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
 
       {!buttonOptions && <LoadingAnimation />}
