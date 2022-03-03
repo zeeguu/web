@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton } from "./Modal.styles";
+import { StyledModal, StyledButton, StyledPersonalCopy } from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
@@ -48,6 +48,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   
       let itTitle = new InteractiveText(title, articleInfo, api);
       setInteractiveTitle(itTitle);
+
     }
       
   }, [articleId]);
@@ -58,9 +59,13 @@ const handleClose = () => {
   location.reload();
   setModalIsOpen(false);
 };
+
+function handlePostCopy() {
+  api.makePersonalCopy(articleId, (message) => alert(message));
+};
   
   if (interactiveTextArray === undefined) {
-    return <p>loading</p>;
+    return <p>Loading</p>;
   }
   return (
     <div>
@@ -72,6 +77,9 @@ const handleClose = () => {
         <StyledButton onClick={handleClose} id="qtClose">
           X
         </StyledButton>
+        <StyledPersonalCopy onClick={handlePostCopy}>
+          Make Personal Copy
+          </StyledPersonalCopy>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}

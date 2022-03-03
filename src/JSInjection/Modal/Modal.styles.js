@@ -64,7 +64,9 @@ display: block;
 cursor: pointer;
 background-color: rgba(255,208,71);
 `
-
+export const StyledPersonalCopy = styled.button`
+    background-color: rgba(255,208,71);
+`
 
 
 //font-size: 20px;
