@@ -1,5 +1,5 @@
-import { Zeeguu_API } from "./classDef";
-import queryString from "query-string";
+//import { Zeeguu_API } from "./classDef";
+//import queryString from "query-string";
 
 // Zeeguu_API.prototype.findCreateArticle = function (articleInfo, callback) {
 //     let article = {
