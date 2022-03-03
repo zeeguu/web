@@ -5,9 +5,10 @@ import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage } from "../../popup/functions";
+import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
+import strings from "../../zeeguu-react/src/i18n/definitions"
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language }) {
-
   const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [articleImage, setArticleImage] = useState();
@@ -59,9 +60,15 @@ const handleClose = () => {
   setModalIsOpen(false);
 };
   
-  if (interactiveTextArray === undefined) {
+
+function toggle(state, togglerFunction) {
+  togglerFunction(!state);
+}
+
+if (interactiveTextArray === undefined) {
     return <p>loading</p>;
-  }
+}
+
   return (
     <div>
       <StyledModal
@@ -69,6 +76,25 @@ const handleClose = () => {
         className="Modal"
         overlayClassName="Overlay"
       >
+          <s.Toolbar>
+          <button
+            className={translating ? "selected" : ""}
+            onClick={(e) => toggle(translating, setTranslating)}
+          >
+            <img
+              src={chrome.runtime.getURL("images/translate.svg")} 
+              alt={strings.translateOnClick}
+            />
+            <span className="tooltiptext">{strings.translateOnClick}</span>
+          </button>
+          <button
+            className={pronouncing ? "selected" : ""}
+            onClick={(e) => toggle(pronouncing, setPronouncing)}
+          >
+            <img src={chrome.runtime.getURL("images/sound.svg")}  alt={strings.listenOnClick} />
+            <span className="tooltiptext">{strings.listenOnClick}</span>
+          </button>
+        </s.Toolbar>
         <StyledButton onClick={handleClose} id="qtClose">
           X
         </StyledButton>
@@ -107,7 +133,6 @@ const handleClose = () => {
                 </li>)})}
                 </CustomTag>
             )
-         
           }
         })}
       </StyledModal>

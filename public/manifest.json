@@ -19,5 +19,8 @@
       "32": "/images/zeeguu32.png",
       "48": "/images/zeeguu48.png",
       "128": "/images/zeeguu128.png"
-    }
+    },
+    "web_accessible_resources": [{
+      "resources": ["images/translate.svg", "images/sound.svg"],
+      "matches": ["<all_urls>"]}]
 }
