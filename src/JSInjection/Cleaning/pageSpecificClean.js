@@ -3,6 +3,7 @@ import {wikiRegex, removefromWiki} from "./Pages/wiki";
 import { lefigaroRegex, addImageLefirago } from "./Pages/lefigaro";
 import { ekstrabladetRegex, addImageEkstraBladet } from "./Pages/ekstrabladet";
 import { lemondeRegex, removeListElementsHeaders, removeServices, removeInjectedContent} from "./Pages/lemonde";
+import { lexpressRegex, removeasides } from "./Pages/lexpress";
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -28,6 +29,9 @@ export function pageSpecificClean(articleContent, url) {
     if(url.match(lemondeRegex)) {
       let lemonde = removeInjectedContent(div.innerHTML)
       return removeListElementsHeaders(removeServices(lemonde))
+    }
+    if(url.match(lexpressRegex)) {
+      return removeasides(div.innerHTML)
     }
     //many other if-statements with checks for urls
     return div.innerHTML
