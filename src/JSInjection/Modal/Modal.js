@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton } from "./Modal.styles";
+import { StyledModal, StyledButton, StyledHeading} from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
@@ -76,6 +76,10 @@ if (interactiveTextArray === undefined) {
         className="Modal"
         overlayClassName="Overlay"
       >
+         <StyledHeading >
+          <StyledButton role="button" onClick={handleClose} id="qtClose">
+            X
+          </StyledButton>
           <s.Toolbar>
           <button
             className={translating ? "selected" : ""}
@@ -95,9 +99,7 @@ if (interactiveTextArray === undefined) {
             <span className="tooltiptext">{strings.listenOnClick}</span>
           </button>
         </s.Toolbar>
-        <StyledButton onClick={handleClose} id="qtClose">
-          X
-        </StyledButton>
+        </StyledHeading>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}
@@ -136,6 +138,7 @@ if (interactiveTextArray === undefined) {
           }
         })}
       </StyledModal>
+      
     </div>
   );
 }
