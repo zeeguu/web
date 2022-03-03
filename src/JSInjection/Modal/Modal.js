@@ -1,5 +1,6 @@
+/*global chrome*/
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton, StyledHeading} from "./Modal.styles";
+import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy} from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
@@ -59,16 +60,18 @@ const handleClose = () => {
   location.reload();
   setModalIsOpen(false);
 };
-  
 
+function handlePostCopy() {
+  api.makePersonalCopy(articleId, (message) => alert(message));
+};
+  
 function toggle(state, togglerFunction) {
   togglerFunction(!state);
 }
 
-if (interactiveTextArray === undefined) {
-    return <p>loading</p>;
-}
-
+  if (interactiveTextArray === undefined) {
+    return <p>Loading</p>;
+  }
   return (
     <div>
       <StyledModal
@@ -100,6 +103,9 @@ if (interactiveTextArray === undefined) {
           </button>
         </s.Toolbar>
         </StyledHeading>
+        <StyledPersonalCopy onClick={handlePostCopy}>
+          Make Personal Copy
+          </StyledPersonalCopy>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}

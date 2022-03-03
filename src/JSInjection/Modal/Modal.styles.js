@@ -73,7 +73,9 @@ position: sticky;
 width: 100%;
 border-bottom: 1px solid rgb(239, 239, 239);
 `
-
+export const StyledPersonalCopy = styled.button`
+    background-color: rgba(255,208,71);
+`
 
 
 //font-size: 20px;
