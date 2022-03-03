@@ -168,14 +168,14 @@ export default function AudioExerciseTwo({
 
       {!buttonOptions && <LoadingAnimation />}
       {!isCorrect && (
-            <AudioTwoBotInput
-                  buttonOptions={buttonOptions}
-                  notifyChoiceSelection={notifyChoiceSelection}
-                  incorrectAnswer={incorrectAnswer}
-                  setIncorrectAnswer={setIncorrectAnswer}
-                  handleShowSolution={handleShowSolution}
-                  toggleShow={toggleShow} 
-            />
+        <AudioTwoBotInput
+          buttonOptions={buttonOptions}
+          notifyChoiceSelection={notifyChoiceSelection}
+          incorrectAnswer={incorrectAnswer}
+          setIncorrectAnswer={setIncorrectAnswer}
+          handleShowSolution={handleShowSolution}
+          toggleShow={toggleShow}
+        />
       )}
       {isCorrect && (
         <NextNavigation
@@ -194,4 +194,3 @@ export default function AudioExerciseTwo({
     </s.Exercise>
   );
 }
-
