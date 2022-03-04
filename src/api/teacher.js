@@ -1,5 +1,5 @@
 import { Zeeguu_API } from "./classDef";
-import queryString from "query-string";
+import queryString from "qs";
 
 //Plugging teacher-related functions into the Zeeguu_API
 

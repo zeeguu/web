@@ -1,5 +1,5 @@
 import { Zeeguu_API } from "./classDef";
-import queryString from "query-string";
+import qs from "qs";
 
 // Reader Opening Actions
 Zeeguu_API.prototype.OPEN_ARTICLE = "OPEN ARTICLE";
@@ -55,7 +55,7 @@ Zeeguu_API.prototype.logUserActivity = function (
 
   return this._post(
     `upload_user_activity_data`,
-    queryString.stringify(event_information)
+    qs.stringify(event_information)
   );
 };
 
