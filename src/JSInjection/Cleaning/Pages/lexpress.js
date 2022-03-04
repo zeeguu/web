@@ -1,4 +1,4 @@
-export const lexpressRegex = /(http|https):\/\/(www.lexpress.fr).*/;
+export const lexpressRegex = /(http|https):\/\/(.*)(.express.fr).*/;
 
 export function removeasides(content) {
   let div = document.createElement("div");
