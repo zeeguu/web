@@ -11,6 +11,8 @@ import * as scs from "./Settings.sc";
 import uiLanguages from "../assorted/uiLanguages";
 import strings from "../i18n/definitions";
 import { Error } from "../teacher/sharedComponents/Error";
+import Select from "../components/Select";
+import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -21,14 +23,16 @@ export default function Settings({ api, setUser }) {
   const [inviteCode, setInviteCode] = useState("");
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [currentCohort, setCurrentCohort] = useState("");
+  const [cefr, setCEFR] = useState("");
 
-  // TODO: Refactor using Zeeguu project logic
+  //TODO: Refactor using Zeeguu project logic
 
   const [uiLanguage, setUiLanguage] = useState();
 
   useEffect(() => {
     const language = LocalStorage.getUiLanguage();
     setUiLanguage(language);
+    setTitle(strings.settings);
     // eslint-disable-next-line
   }, []);
 
@@ -36,12 +40,33 @@ export default function Settings({ api, setUser }) {
     setUiLanguage(lang);
   }
 
+  function setCEFRlevel(data) {
+    const levelKey = data.learned_language + "_cefr_level";
+    const levelNumber = data[levelKey];
+    setCEFR("" + levelNumber);
+  }
+
+  const modifyCEFRlevel = (languageID, cefrLevel) => {
+    api.modifyCEFRlevel(
+      languageID,
+      cefrLevel,
+      (res) => {
+        console.log("Update '" + languageID + "' CEFR level to: " + cefrLevel);
+        console.log("API returns update status: " + res);
+      },
+      () => {
+        console.log("Connection to server failed...");
+      }
+    );
+  };
+
   useEffect(() => {
     api.getUserDetails((data) => {
-      api.getSystemLanguages((systemLanguages) => {
-        setLanguages(systemLanguages);
-        setUserDetails(data);
-      });
+      setUserDetails(data);
+      setCEFRlevel(data);
+    });
+    api.getSystemLanguages((systemLanguages) => {
+      setLanguages(systemLanguages);
     });
     api.getStudent((student) => {
       if (student.cohort_id !== null) {
@@ -50,7 +75,6 @@ export default function Settings({ api, setUser }) {
         );
       }
     });
-    setTitle(strings.settings);
   }, [user.session, api]);
 
   const studentIsInCohort = currentCohort !== "";
@@ -79,6 +103,8 @@ export default function Settings({ api, setUser }) {
     strings.setLanguage(uiLanguage.code);
     LocalStorage.setUiLanguage(uiLanguage);
 
+    modifyCEFRlevel(userDetails.learned_language, cefr);
+
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
       history.goBack();
@@ -94,7 +120,6 @@ export default function Settings({ api, setUser }) {
     api.joinCohort(
       inviteCode,
       (status) => {
-        console.log(status);
         status === "OK"
           ? history.push("/articles/classroom")
           : setShowJoinCohortError(true);
@@ -152,6 +177,15 @@ export default function Settings({ api, setUser }) {
                 learned_language: code,
               });
             }}
+          />
+
+          <label>{strings.levelOfLearnedLanguage}</label>
+          <Select
+            elements={CEFR_LEVELS}
+            label={(e) => e.label}
+            val={(e) => e.value}
+            updateFunction={setCEFR}
+            current={cefr}
           />
 
           <label>{strings.nativeLanguage}</label>

@@ -1,29 +1,56 @@
-let lightOrange = "#ffd047";
-let veryPaleOrange = "#ffbe007a";
+let zeeguuVeryLightYellow = "#fafad2";
+let zeeguuTransparentLightYellow = "#ffe59e10";
+let zeeguuLightYellow = "#ffe59e";
+let zeeguuVarmYellow = "#ffd047";
+let zeeguuSalmonOrange = "#f8bb86";
+let zeeguuTransparentLightOrange = "#ffbb5440";
+let zeeguuTransparentMediumOrange = "#ffbe007a";
 let zeeguuOrange = "#ffbb54";
+let zeeguuDarkOrange = "#9c7130";
 let lightBlue = "#54cdff";
 let darkBlue = "#4492b3";
-let darkGrey = "#808080";
+let veryLightGrey = "#efefef";
 let lightGrey = "#c1c1c1";
+let darkGrey = "#808080";
+let veryDarkGrey = "#575757";
+let almostBlack = "#444444";
+let zeeguuRed = "#d7263d";
+let errorRed = "red";
+let zeeguuViolet = "#4a0d67";
+let alertGreen = "#4caf50"; //careful when changing this color. It is defined to match the color in the success-alert to undo feedback submits.
+//black - the css standard color is used throughout the repo.
+//white - the css standard color is used throughout the repo.
 
 const setColors = (isOnStudentSide) => {
-  let light_color = lightOrange;
+  let light_color = zeeguuVarmYellow;
   let dark_color = zeeguuOrange;
   if (!isOnStudentSide) {
     light_color = lightBlue;
     dark_color = darkBlue;
   }
-
   return { light_color, dark_color };
 };
 
 export {
-  lightOrange,
-  veryPaleOrange,
+  zeeguuVeryLightYellow,
+  zeeguuTransparentLightYellow,
+  zeeguuLightYellow,
+  zeeguuVarmYellow,
+  zeeguuSalmonOrange,
+  zeeguuTransparentLightOrange,
+  zeeguuTransparentMediumOrange,
   zeeguuOrange,
+  zeeguuDarkOrange,
   lightBlue,
   darkBlue,
-  darkGrey,
+  veryLightGrey,
   lightGrey,
+  darkGrey,
+  veryDarkGrey,
+  almostBlack,
+  zeeguuRed,
+  errorRed,
+  zeeguuViolet,
+  alertGreen,
   setColors,
 };

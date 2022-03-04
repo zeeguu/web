@@ -1,15 +1,14 @@
 import { css } from "styled-components";
+import { almostBlack, errorRed, zeeguuOrange, zeeguuTransparentLightOrange } from "./colors";
 
 let formStyling = css`
   input,
   select {
-    border: 1px solid #ffbb54;
+    border: 1px solid ${zeeguuOrange};
     border-radius: 5px;
-
-    color: #222222;
+    color: ${almostBlack};
     margin-bottom: 1em;
     font-size: large;
-
     padding: 0.5em 0.5em;
     width: 90%;
 
@@ -22,7 +21,6 @@ let formStyling = css`
 
   label {
     display: block;
-
     margin-bottom: 0.5em;
 
     @media (min-width: 768px) {
@@ -37,14 +35,14 @@ let formStyling = css`
   }
 
   input:focus {
-    border: 2px solid #ffbb54;
+    border: 2px solid ${zeeguuOrange};
     outline: none;
   }
 
   .error {
-    background-color: lightyellow;
-    border: 1px solid orange;
-    color: red;
+    background-color: ${zeeguuTransparentLightOrange};
+    border: 1px solid ${zeeguuOrange};
+    color: ${errorRed};
     border-radius: 5px;
 
     margin-bottom: 1em;

@@ -23,7 +23,8 @@ export default function MultipleChoice({
   setIsCorrect,
   moveToNextExercise,
   toggleShow,
-  toggleShowImproveTranslation,
+  reload,
+  setReload,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
@@ -45,13 +46,6 @@ export default function MultipleChoice({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function colorWordInContext(context, word) {
-    return context.replace(
-      word,
-      `<span class='highlightedWord'>${word}</span>`
-    );
-  }
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
@@ -118,28 +112,18 @@ export default function MultipleChoice({
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">
-        {strings.chooseTheWordFittingContextHeadline}{" "}
+        {strings.chooseTheWordFittingContextHeadline}
       </div>
 
-      {isCorrect ? (
-        <div className="contextExample">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: colorWordInContext(
-                bookmarksToStudy[0].context,
-                bookmarksToStudy[0].from
-              ),
-            }}
-          />
-        </div>
-      ) : (
+      <div className="contextExample">
         <TranslatableText
+          isCorrect={isCorrect}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
           bookmarkToStudy={bookmarksToStudy[0].from}
         />
-      )}
+      </div>
 
       {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
 
@@ -159,12 +143,13 @@ export default function MultipleChoice({
           api={api}
           bookmarksToStudy={bookmarksToStudy}
           moveToNextExercise={moveToNextExercise}
+          reload={reload}
+          setReload={setReload}
         />
       )}
       <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
-        toggleShowImproveTranslation={toggleShowImproveTranslation}
         isCorrect={isCorrect}
       />
     </s.Exercise>

@@ -132,6 +132,6 @@ export const ReadingInsightAccordion = styled.div`
     text-align: left;
     font-size: small;
     font-family: "Montserrat";
-    color: #000000 !important;
+    color: black !important;
   }
 `;

@@ -20,7 +20,7 @@ const ZeeguuSpeech = class {
   }
 
   speakOut(word) {
-    if (this.language === "da" && !_isMobile()) {
+    if (this.language === "da") {
       return playFromAPI(this.api, word);
     } else {
       return this.speech.speak({

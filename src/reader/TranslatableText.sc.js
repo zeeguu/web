@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { almostBlack, zeeguuLightYellow, zeeguuOrange, zeeguuVeryLightYellow } from "../components/colors";
 
 const TranslatableText = styled.div`
   z-tag {
@@ -17,8 +18,8 @@ const TranslatableText = styled.div`
   /*  z-tag tag hover changes color, translated word hover no underline or color*/
 
   z-tag:hover {
-    color: #ffbb54;
-    border-bottom: 1px dashed #ffbb54;
+    color: ${zeeguuOrange};
+    border-bottom: 1px dashed ${zeeguuOrange};
     border: none;
   }
 
@@ -29,22 +30,17 @@ const TranslatableText = styled.div`
 
   z-tag z-tran {
     display: block;
-
     margin-top: -9px;
     margin-bottom: -4px;
-
     padding: 2px;
-
     border-radius: 0.3em 0.3em 0.3em 0.3em;
     background-clip: padding-box;
-
-    background-color: #ffe086;
-
+    background-color: ${zeeguuLightYellow};
     font-size: medium;
     line-height: 1em;
     max-width: 24em;
     font-weight: 300;
-    color: #4f4f4f;
+    color: ${almostBlack};
     text-transform: lowercase;
     text-align: center;
   }
@@ -60,9 +56,9 @@ const TranslatableText = styled.div`
     uploads a new translation
 */
   z-tag z-orig {
-    border-bottom: 1px dashed #ffbb54;
+    border-bottom: 1px dashed ${zeeguuOrange};
     width: 100%;
-    color: #ffbb54;
+    color: ${zeeguuOrange};
   }
 
   /* when there are multiple translations, we mark this with a little
@@ -94,7 +90,7 @@ green downwards pointing triangle; we used to mark also single alternatives
 
   z-tag z-tran moreAlternatives:after {
     content: "▼";
-    color: #4f4f4f;
+    color: ${almostBlack};
   }
 
   /* once the user has
@@ -150,27 +146,17 @@ that made the UI too heavy ... */
   .altermenu {
     position: absolute;
     max-width: 30em;
-
-    background-color: lightgoldenrodyellow;
-    /* background: #ffe086; */
-
-    color: white;
-    /* text-align: center; */
-
+    background-color: ${zeeguuVeryLightYellow};
     border-radius: 0.3em;
-    /* width: 8em; */
-    /* padding: 0.3em; */
     margin-top: 0.5em;
-    /* margin-top: 3.3em; */
   }
 
   .altermenu .additionalTrans {
-    /* width: 100%; */
     height: 100%;
     text-transform: lowercase;
     white-space: normal;
-    border-bottom: 1px solid #f8d486 !important;
-    color: #383838;
+    border-bottom: 1px solid ${zeeguuLightYellow}!important;
+    color: ${almostBlack};
     line-height: 1em;
     padding: 0.3em;
     border: none;
@@ -189,13 +175,12 @@ that made the UI too heavy ... */
   }
 
   .searchTextfieldInput {
-    color: #484848;
+    color: ${almostBlack};
     font-weight: 400;
-    /* text-align: center; */
     border: none;
     padding: 0.3em;
     font-size: x-small;
-    background: lightgoldenrodyellow;
+    background: ${zeeguuVeryLightYellow};
   }
 `;
 

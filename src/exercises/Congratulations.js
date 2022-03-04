@@ -1,7 +1,8 @@
 import Word from "../words/Word";
 import * as s from "../reader/ArticleReader.sc";
 import { Link } from "react-router-dom";
-import SpeakButton from "./exerciseTypes/SpeakButton";
+import strings from "../i18n/definitions";
+import { useState } from "react";
 
 export default function Congratulations({
   articleID,
@@ -9,49 +10,60 @@ export default function Congratulations({
   incorrectBookmarks,
   api,
 }) {
+  const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
+    removeArrayDuplicates(correctBookmarks)
+  );
+  const [incorrectBookmarksToDisplay, setIncorrectBookmarksToDisplay] =
+    useState(removeArrayDuplicates(incorrectBookmarks));
+
   function removeArrayDuplicates(array) {
     var set = new Set(array);
     var newArray = Array.from(set);
     return newArray;
   }
 
-  const small = "small";
+  function deleteBookmark(bookmark) {
+    setCorrectBookmarksToDisplay(
+      correctBookmarksToDisplay.filter((e) => e.id !== bookmark.id)
+    );
+    setIncorrectBookmarksToDisplay(
+      incorrectBookmarksToDisplay.filter((e) => e.id !== bookmark.id)
+    );
+  }
 
   return (
     <s.NarrowColumn>
       <br />
 
-      <h2>&nbsp;&nbsp;&nbsp;Good Job! 🥳 🎉 </h2>
+      <h2>&nbsp;&nbsp;&nbsp;{strings.goodJob} 🥳 🎉 </h2>
 
-      {correctBookmarks.length > 0 && (
+      {correctBookmarksToDisplay.length > 0 && (
         <h3>
-          😊 Correct
-          {removeArrayDuplicates(correctBookmarks).map((each) => (
-            <s.ContentOnRow>
-              <Word key={each.id} bookmark={each} api={api} />
-              <SpeakButton
-                key={each.from}
-                bookmarkToStudy={each}
+          😊 {strings.correct}
+          {correctBookmarksToDisplay.map((each) => (
+            <s.ContentOnRow key={"row_" + each.id}>
+              <Word
+                key={each.id}
+                bookmark={each}
+                notifyDelete={deleteBookmark}
                 api={api}
-                styling={small}
               />
             </s.ContentOnRow>
           ))}
         </h3>
       )}
 
-      {incorrectBookmarks.length > 0 && (
+      {incorrectBookmarksToDisplay.length > 0 && (
         <h3>
           <br />
-          😳 Pay more attention to
-          {removeArrayDuplicates(incorrectBookmarks).map((each) => (
-            <s.ContentOnRow>
-              <Word key={each.id} bookmark={each} api={api} />
-              <SpeakButton
-                key={each.from}
-                bookmarkToStudy={each}
+          😳 {strings.payMoreAttentionTo}
+          {incorrectBookmarksToDisplay.map((each) => (
+            <s.ContentOnRow key={"row_" + each.id}>
+              <Word
+                key={each.id}
+                bookmark={each}
+                notifyDelete={deleteBookmark}
                 api={api}
-                styling={small}
               />
             </s.ContentOnRow>
           ))}
@@ -60,11 +72,11 @@ export default function Congratulations({
 
       <s.ContentOnRow>
         <Link to={`/exercises`} onClick={(e) => window.location.reload(false)}>
-          <s.OrangeButton>Keep Exercising</s.OrangeButton>
+          <s.OrangeButton>{strings.keepExercising}</s.OrangeButton>
         </Link>
 
         <Link to={`/articles`}>
-          <s.WhiteButton>Back to Reading</s.WhiteButton>
+          <s.WhiteButton>{strings.backToReading}</s.WhiteButton>
         </Link>
       </s.ContentOnRow>
     </s.NarrowColumn>

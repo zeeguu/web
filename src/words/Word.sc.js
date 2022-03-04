@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { zeeguuOrange, zeeguuVarmYellow } from "../components/colors";
 
 let Word = styled.div`
   display: flex;
@@ -8,10 +9,10 @@ let Word = styled.div`
 
 let StarIcon = styled.div`
   cursor: pointer;
-  color: yellow;
+  color: ${zeeguuVarmYellow};
 
   margin-right: 0.3em;
-  margin-left: 1em;
+  margin-left: 0.5em;
 
   display: flex;
   flex-direction: column;
@@ -21,16 +22,40 @@ let StarIcon = styled.div`
 
   img {
     height: 26px;
-    /* background-color: red; */
+  }
+`;
+
+let EditIcon = styled.div`
+  cursor: pointer;
+  margin-right: 0.3em;
+  margin-left: 0.7em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 10px;
+
+  img {
+    height: 26px;
+    width: 26px;
+  }
+`;
+
+let EditIconNoPadding = styled.div`
+  cursor: pointer;
+  margin-right: 0.3em;
+  margin-left: 0.7em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  img {
+    height: 26px;
+    width: 26px;
   }
 `;
 
 let WordPair = styled.div`
-  /* color: rebeccapurple; */
-  /* background-color: #f0f0f0; */
-
   word-break: break-all;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -48,26 +73,19 @@ let WordPair = styled.div`
 
 let TrashIcon = styled.div`
   cursor: pointer;
-
-  /* background-color: #e0e0e0; */
-
   display: flex;
   flex-direction: column;
-
   justify-content: center;
-
   margin-left: 0.5em;
-
   padding-top: 10px;
 
   img {
     height: 30px;
-    /* background-color: red; */
   }
 `;
 
 let Importance = styled.div`
-  color: orange;
+  color: ${zeeguuOrange};
   font-size: xx-small;
 
   .imp1 {
@@ -112,5 +130,14 @@ let Spacer = styled.div`
   margin-bottom: 20px;
 `;
 
-export { Word, TrashIcon, StarIcon, WordPair, Importance, Spacer };
+export {
+  Word,
+  TrashIcon,
+  StarIcon,
+  WordPair,
+  Importance,
+  Spacer,
+  EditIcon,
+  EditIconNoPadding,
+};
 //

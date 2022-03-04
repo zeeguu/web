@@ -7,8 +7,14 @@ import {
   CohortNameTextField,
   InviteCodeTextField,
 } from "./CohortFormInputFields";
-import { languageMap, LanguageSelector } from "../../sharedComponents/LanguageSelector";
-import { StyledButton, PopupButtonWrapper } from "../../styledComponents/TeacherButtons.sc";
+import {
+  languageMap,
+  LanguageSelector,
+} from "../../sharedComponents/LanguageSelector";
+import {
+  StyledButton,
+  PopupButtonWrapper,
+} from "../../styledComponents/TeacherButtons.sc";
 import DeleteCohortWarning from "./DeleteCohortWarning";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
 import * as s from "../../styledComponents/CohortForm.sc";
@@ -114,13 +120,13 @@ const CohortForm = ({
   //the submit button is disabled until the input is valid
   const isValid = cohort
     ? !inputIsEmpty &&
-    state.cohort_name.length <= 20 &&
-    state.invite_code.length <= 20
+      state.cohort_name.length <= 20 &&
+      state.invite_code.length <= 20
     : !inputIsEmpty &&
-    state.cohort_name.length <= 20 &&
-    !invalidClassName() &&
-    state.invite_code.length <= 20 &&
-    !invalidInviteCode();
+      state.cohort_name.length <= 20 &&
+      !invalidClassName() &&
+      state.invite_code.length <= 20 &&
+      !invalidInviteCode();
 
   function setupForm() {
     const form = new FormData();
@@ -195,7 +201,7 @@ const CohortForm = ({
           </StyledButton>
           {cohort && (
             <StyledButton secondary onClick={() => setShowWarning(true)}>
-              {strings.deleteFromMyClasses}
+              {strings.delete}
             </StyledButton>
           )}
         </PopupButtonWrapper>

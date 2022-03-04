@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useClickOutside } from "react-click-outside-hook";
+import { zeeguuDarkOrange } from "../components/colors";
 
 export default function AlterMenu({
   word,
@@ -17,23 +18,23 @@ export default function AlterMenu({
 
   function handleKeyDown(e) {
     if (e.code === "Enter") {
-      selectAlternative(inputValue);
+      selectAlternative(inputValue, "User Suggested");
     }
   }
 
   function shortenSource(word) {
     if (word.source === "Microsoft - without context") {
-      return "msft";
+      return "Microsoft translate";
     }
     if (word.source === "Microsoft - with context") {
-      return "contextual msft";
+      return "contextual Microsoft translate";
     }
 
     if (word.source === "Google - without context") {
-      return "goog";
+      return "Google translate";
     }
     if (word.source === "Google - with context") {
-      return "contextual goog";
+      return "contextual Google translate";
     }
 
     return word.source;
@@ -44,11 +45,11 @@ export default function AlterMenu({
       {word.alternatives.map((each) => (
         <div
           key={each.translation}
-          onClick={(e) => selectAlternative(each.translation)}
+          onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
           className="additionalTrans"
         >
           {each.translation}
-          <div style={{ fontSize: 9, color: "#ffcc66" }}>
+          <div style={{ fontSize: 9, color: zeeguuDarkOrange}}>
             {shortenSource(each)}
           </div>
         </div>
