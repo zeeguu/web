@@ -13,3 +13,13 @@ export function removeasides(content) {
   }
   return div.innerHTML;
 }
+
+export function unavailableContent(content) {
+  if(content.includes("Offrez gratuitement la lecture de cet article à un proche")) {
+    return "<p>This article cannot be read in zeeguu reader</p>";
+  } else {
+    let div = document.createElement("div");
+    div.innerHTML = content;
+    return div.innerHTML;
+  }
+}
