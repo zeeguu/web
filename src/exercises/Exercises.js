@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 
 import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
 import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
@@ -11,8 +10,9 @@ import { setTitle } from "../assorted/setTitle";
 import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
+import OutOfWordsMessage from "./OutOfWordsMessage";
 
-let BOOKMARKS_TO_PRACTICE = 10;
+const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 
 let BOOKMARKS_FOR_EXERCISE = [
   {
@@ -30,8 +30,9 @@ let BOOKMARKS_FOR_EXERCISE = [
 ];
 
 export default function Exercises({ api, articleID }) {
-  const history = useHistory();
-
+  const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
+    DEFAULT_BOOKMARKS_TO_PRACTICE
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
   const [finished, setFinished] = useState(false);
@@ -42,8 +43,7 @@ export default function Exercises({ api, articleID }) {
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
-  const [showNewTranslationPrompt, setShowNewTranslationPrompt] =
-    useState(false);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -58,26 +58,21 @@ export default function Exercises({ api, articleID }) {
           });
         });
       } else {
-        api.getUserBookmarksToStudy(BOOKMARKS_TO_PRACTICE, (bookmarks) => {
-          initializeExercises(bookmarks, strings.exercises);
-          console.dir(bookmarks);
-        });
+        api.getUserBookmarksToStudy(
+          DEFAULT_BOOKMARKS_TO_PRACTICE,
+          (bookmarks) => {
+            initializeExercises(bookmarks, strings.exercises);
+            console.dir(bookmarks);
+          }
+        );
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function initializeExercises(bookmarks, title) {
-    BOOKMARKS_TO_PRACTICE = bookmarks.length;
-    if (bookmarks.length === 0 && !articleID) {
-      alert(
-        strings.noTranslatedWords + " " + strings.goToTextsToTranslateWords
-      );
-      history.push("/articles");
-    } else if (bookmarks.length === 0) {
-      alert(strings.noTranslatedWords);
-      history.goBack();
-    } else {
+    setCountBookmarksToPractice(bookmarks.length);
+    if (bookmarks.length > 0) {
       calculateExerciseBatches(bookmarks);
       setTitle(title);
     }
@@ -96,20 +91,21 @@ export default function Exercises({ api, articleID }) {
       (a, b) => a + b.requiredBookmarks,
       0
     );
-    let batchCount = parseInt(BOOKMARKS_TO_PRACTICE / bookmarksPerBatch);
-    let remainingExercises = BOOKMARKS_TO_PRACTICE % bookmarksPerBatch;
+    let batchCount = parseInt(bookmarks.length / bookmarksPerBatch);
+    let remainingExercises = bookmarks.length % bookmarksPerBatch;
     let exerciseSequence = defineExerciseSession(
       batchCount,
-      remainingExercises
+      remainingExercises,
+      bookmarks.length
     );
     setExerciseSession(exerciseSequence);
     assignBookmarksToExercises(bookmarks, exerciseSequence);
   }
 
-  function defineExerciseSession(batches, rest) {
+  function defineExerciseSession(batches, rest, bookmark_count) {
     let exerciseSession = [];
-    if (BOOKMARKS_TO_PRACTICE < 7) {
-      let bookmarks = BOOKMARKS_TO_PRACTICE;
+    if (bookmark_count < 7) {
+      let bookmarks = bookmark_count;
       while (bookmarks > 0) {
         for (let i = BOOKMARKS_FOR_EXERCISE.length - 1; i > 0; i--) {
           if (bookmarks === 0) break;
@@ -188,8 +184,23 @@ export default function Exercises({ api, articleID }) {
     );
   }
 
-  if (!currentBookmarksToStudy) {
+  if (!currentBookmarksToStudy && countBookmarksToPractice !== 0) {
     return <LoadingAnimation />;
+  }
+
+  if (countBookmarksToPractice === 0 && !articleID) {
+    return (
+      <s.ExercisesColumn>
+        <OutOfWordsMessage />
+      </s.ExercisesColumn>
+    );
+  }
+  if (countBookmarksToPractice === 0 && articleID) {
+    return (
+      <s.ExercisesColumn>
+        <OutOfWordsMessage action={"back"} />
+      </s.ExercisesColumn>
+    );
   }
 
   function moveToNextExercise() {
@@ -236,34 +247,8 @@ export default function Exercises({ api, articleID }) {
     api.uploadExerciseFeedback(reason, currentExerciseType, 0, id);
   }
 
-  function adjustCurrentTranslation(currentBookmark, newTranslation) {
-    console.log(
-      "Sending to the API. New translation: ",
-      newTranslation,
-      " instead of: ",
-      currentBookmark.to,
-      " for word: ",
-      currentBookmark.from
-    );
-    api.contributeTranslation(
-      currentBookmark.from_lang,
-      currentBookmark.to_lang,
-      currentBookmark.from,
-      newTranslation,
-      currentBookmark.context,
-      currentBookmark.url,
-      currentBookmark.article_title
-    );
-  }
-
   function toggleShow() {
-    if (showNewTranslationPrompt) setShowNewTranslationPrompt(false);
     setShowFeedbackButtons(!showFeedbackButtons);
-  }
-
-  function toggleShowImproveTranslation() {
-    if (showFeedbackButtons) setShowFeedbackButtons(false);
-    setShowNewTranslationPrompt(!showNewTranslationPrompt);
   }
 
   let wordSourceText = articleInfo ? (
@@ -291,17 +276,15 @@ export default function Exercises({ api, articleID }) {
           setIsCorrect={setIsCorrect}
           moveToNextExercise={moveToNextExercise}
           toggleShow={toggleShow}
-          toggleShowImproveTranslation={toggleShowImproveTranslation}
+          reload={reload}
+          setReload={setReload}
         />
       </s.ExForm>
       <FeedbackDisplay
         showFeedbackButtons={showFeedbackButtons}
         setShowFeedbackButtons={setShowFeedbackButtons}
-        showNewTranslationPrompt={showNewTranslationPrompt}
-        setShowNewTranslationPrompt={setShowNewTranslationPrompt}
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
-        adjustCurrentTranslation={adjustCurrentTranslation}
         feedbackFunction={stopShowingThisFeedback}
       />
     </s.ExercisesColumn>

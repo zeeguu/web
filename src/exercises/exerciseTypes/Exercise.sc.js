@@ -1,5 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
+import { zeeguuTransparentLightOrange, zeeguuOrange } from "../../components/colors";
 
 const Exercise = styled.div`
   display: flex;
@@ -97,18 +98,18 @@ let MatchButtonHolder = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  justify-content: space-evenly;
 `;
 
 let MatchButtonHolderRight = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: space-evenly;
 `;
 
 let MatchSpeakButtonHolder = styled.div`
   width: fit-content;
-  margin-top: 2em;
-  margin-bottom: 2em;
   margin-left: -1.5em;
   border-radius: 0.75em;
 `;
@@ -119,14 +120,14 @@ let MatchButton = styled(StyledButton)`
   margin-bottom: 2em;
   background: #ffd04799;
   color: black;
-  border: 0.125em solid #ffbb5440;
+  border: 0.125em solid ${zeeguuTransparentLightOrange};
 
   &:focus {
     outline: 0;
   }
 
   &:hover {
-    background-color: #ffbb5440;
+    background-color: ${zeeguuTransparentLightOrange};
   }
 `;
 
@@ -146,8 +147,9 @@ let OrangeButton = styled(StyledButton)`
   justify-content: center;
   align-items: center;
 
-  color: #ffffff;
-  background-color: #ffbb54;
+  color: white;
+  background-color: ${zeeguuOrange};
+  margin: 1em;
 `;
 
 let FeedbackButton = styled(OrangeButton)`
@@ -158,6 +160,25 @@ let FeedbackButton = styled(OrangeButton)`
   &:disabled {
     cursor: default;
     text-decoration: line-through;
+  }
+`;
+
+let LeftFeedbackButton = styled(FeedbackButton)`
+  margin: 1em;
+
+  @media (max-width: 430px) {
+    order: 1;
+  }
+`;
+
+let RightFeedbackButton = styled(FeedbackButton)`
+  margin: 1em;
+
+  @media (max-width: 430px) {
+    order: 2;
+  }
+  @media (max-width: 250px) {
+    order: 3;
   }
 `;
 
@@ -184,6 +205,7 @@ let AnimatedOrangeButton = styled(OrangeButton)`
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
+  margin: 1em;
 `;
 
 let AnimatedMatchButton = styled(MatchButton)`
@@ -196,6 +218,13 @@ let AnimatedMatchButton = styled(MatchButton)`
 let Input = styled.input`
   height: 1.5em;
   text-align: center;
+
+  @media (max-width: 430px) {
+    order: 3;
+  }
+  @media (max-width: 250px) {
+    order: 2;
+  }
 `;
 
 let AnimatedInput = styled(Input)`
@@ -203,17 +232,26 @@ let AnimatedInput = styled(Input)`
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
+
+  @media (max-width: 430px) {
+    order: 3;
+  }
+  @media (max-width: 250px) {
+    order: 2;
+  }
 `;
 
 let BottomRow = styled.div`
   display: flex;
-  flex-direction: row;
   padding: 0.5em;
   align-items: center;
   justify-content: space-around;
   margin-top: 3em;
   margin-bottom: 3em;
-  flex-wrap: wrap;
+
+  @media (max-width: 430px) {
+    flex-flow: row wrap;
+  }
 `;
 
 let StyledLink = styled(Link)`
@@ -242,6 +280,12 @@ let CenteredRow = styled.div`
   justify-content: center;
 `;
 
+let EditSpeakButtonHolder = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
 export {
   Exercise,
   FeedbackButton,
@@ -261,6 +305,9 @@ export {
   MatchSpeakButtonHolder,
   ButtonRow,
   CenteredRow,
+  LeftFeedbackButton,
+  RightFeedbackButton,
+  EditSpeakButtonHolder,
 };
 
 export default StyledButton;

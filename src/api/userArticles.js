@@ -2,19 +2,19 @@ import { Zeeguu_API } from "./classDef";
 
 // articles
 Zeeguu_API.prototype.getUserArticles = function (callback) {
-  this._get("user_articles/recommended", callback);
+  this._getJSON("user_articles/recommended", callback);
 };
 
 Zeeguu_API.prototype.getBookmarkedArticles = function (callback) {
-  this._get("user_articles/starred_or_liked", callback);
+  this._getJSON("user_articles/starred_or_liked", callback);
 };
 
 Zeeguu_API.prototype.getCohortArticles = function (callback) {
-  this._get("cohort_articles", callback);
+  this._getJSON("cohort_articles", callback);
 };
 
 Zeeguu_API.prototype.getArticleInfo = function (articleID, callback) {
-  this._get(`user_article?article_id=${articleID}`, callback);
+  this._getJSON(`user_article?article_id=${articleID}`, callback);
 };
 
 Zeeguu_API.prototype.setArticleInfo = function (articleInfo, callback) {

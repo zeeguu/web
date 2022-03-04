@@ -1,11 +1,9 @@
 import styled from "styled-components";
 import * as s from "../../components/TopMessage.sc";
-import { lightOrange } from "../../components/colors";
+import { zeeguuVarmYellow, zeeguuDarkOrange } from "../../components/colors";
 import { device } from "./Devices";
 import * as datePickerCSS from "react-datepicker/dist/react-datepicker.css";
 import { OrangeButton } from "../../reader/ArticleReader.sc";
-
-let darkerHueZeeguuOrange = "#9c7130";
 
 const UserDashboardTopContainer = styled.div`
   text-align: center;
@@ -41,7 +39,7 @@ const UserDatePicker = styled.div`
     font-size: 1em;
     font-weight: 400;
     letter-spacing: 0;
-    color: ${darkerHueZeeguuOrange};
+    color: ${zeeguuDarkOrange};
     text-align: center;
     :hover {
       cursor: pointer;
@@ -66,7 +64,7 @@ const UserDashBoardTab = styled.a`
   padding: 1em;
 
   :hover {
-    color: ${lightOrange};
+    color: ${zeeguuVarmYellow};
     cursor: pointer;
   }
 
@@ -82,7 +80,7 @@ const UserDashBoardDropdown = styled.select`
   font-size: 1em;
   font-weight: 400;
   letter-spacing: 0;
-  color: ${(props) => (props.isCustom ? "black" : darkerHueZeeguuOrange)};
+  color: ${(props) => (props.isCustom ? "black" : zeeguuDarkOrange)};
   text-align: center;
 
   :hover {

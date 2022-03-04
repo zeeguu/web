@@ -1,5 +1,5 @@
 import { Zeeguu_API } from "./classDef";
-import queryString from "query-string";
+import queryString from "qs";
 
 //Plugging teacher-related functions into the Zeeguu_API
 
@@ -28,7 +28,7 @@ Zeeguu_API.prototype.getTeacherTexts = function (callback) {
       }
     ]
 */
-  this._get(`teacher_texts`, callback);
+  this._getJSON(`teacher_texts`, callback);
 };
 
 Zeeguu_API.prototype.createCohort = async function (data) {
@@ -42,9 +42,28 @@ Zeeguu_API.prototype.deleteCohort = async function (id) {
 Zeeguu_API.prototype.updateCohort = async function (data, id) {
   return await this.apiPost(`/update_cohort/${id}`, data, true);
 };
+//TODO: We should refactor to only use the this._post(...) api-call for easier readability of the code.
+
+Zeeguu_API.prototype.addColleagueToCohort = function (
+  cohortID,
+  colleagueEmail,
+  onSuccess,
+  onError
+) {
+  let payload = {
+    cohort_id: cohortID,
+    colleague_email: colleagueEmail,
+  };
+  this._post(
+    `/add_colleague_to_cohort`,
+    queryString.stringify(payload),
+    onSuccess,
+    onError
+  );
+};
 
 Zeeguu_API.prototype.getCohortFromArticle = function (article_id, callback) {
-  this._get(`/get_cohorts_for_article/${article_id}`, callback);
+  this._getJSON(`/get_cohorts_for_article/${article_id}`, callback);
 };
 
 Zeeguu_API.prototype.getCohortsInfo = function (callback) {
@@ -60,10 +79,22 @@ Zeeguu_API.prototype.getCohortsInfo = function (callback) {
         "language_name": "Spanish",
         "declared_level_min": 0,
         "declared_level_max": 10
+        "teachers_for_cohort": [
+          {
+            "email": "aristotle@athens.gr",
+            "user_id": 123,
+            "name": "Berti",
+          },
+          {
+            "email": "maria.montessori@bellaitalia.it",
+            "user_id": 124,
+            "name": "Maria",
+          }
+        ]
     }
   ]
   */
-  this._get(`cohorts_info`, callback);
+  this._getJSON(`cohorts_info`, callback);
 };
 
 Zeeguu_API.prototype.addArticleToCohort = function (
@@ -113,11 +144,11 @@ Zeeguu_API.prototype.deleteArticleFromCohort = function (
 };
 
 Zeeguu_API.prototype.getStudents = function (cohortID, duration, callback) {
-  this._get(`/users_from_cohort/${cohortID}/${duration}`, callback);
+  this._getJSON(`/users_from_cohort/${cohortID}/${duration}`, callback);
 };
 
 Zeeguu_API.prototype.getCohortName = function (cohortID, callback) {
-  this._get(`/cohort_name/${cohortID}`, callback);
+  this._getJSON(`/cohort_name/${cohortID}`, callback);
 };
 
 Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {

@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { lightBlue, darkBlue, lightGrey } from "../../components/colors";
+import { lightBlue, darkBlue, lightGrey, veryLightGrey } from "../../components/colors";
 
 const StyledButton = styled.button`
   user-select: none;
@@ -123,7 +123,7 @@ const PopupButtonWrapper = styled.div`
   position: -webkit-sticky;
   top: 0;
   background: white;
-  border-bottom: 1px solid #f8f8f0;
+  border-bottom: 1px solid ${veryLightGrey};
 `;
 
 export { StyledButton, TopButtonWrapper, PopupButtonWrapper };

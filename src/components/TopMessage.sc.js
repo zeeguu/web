@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { veryPaleOrange } from "./colors";
+import { zeeguuTransparentMediumOrange } from "./colors";
 
 let TopMessage = styled.div`
   text-align: center;
   margin: auto;
-  background-color: ${veryPaleOrange};
+  background-color: ${zeeguuTransparentMediumOrange};
   border-radius: 0.9em;
   max-width: 80%;
   margin-bottom: 1.5em;

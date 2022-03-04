@@ -14,6 +14,7 @@ export default function LoggedInRouter({ api, setUser }) {
       <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
       <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
       <PrivateRoute path="/words" api={api} component={WordsRouter} />
+
       <PrivateRoute path="/teacher" api={api} component={TeacherRouter} />
 
       <PrivateRoute

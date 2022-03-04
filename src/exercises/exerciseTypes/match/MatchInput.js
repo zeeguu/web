@@ -2,6 +2,8 @@ import { useState } from "react";
 import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
 import removePunctuation from "../../../assorted/removePunctuation";
+import EditButton from "../../../words/EditButton.js";
+import { zeeguuOrange, darkBlue, zeeguuRed, zeeguuViolet } from "../../../components/colors";
 
 function MatchInput({
   fromButtonOptions,
@@ -13,26 +15,28 @@ function MatchInput({
   api,
   incorrectAnswer,
   setIncorrectAnswer,
+  reload,
+  setReload,
 }) {
   const answerColors = [
     {
       fontWeight: "700",
-      color: "#00665C",
+      color: `${zeeguuRed}`
     },
     {
       fontWeight: "700",
-      color: "#1770B3",
+      color: `${darkBlue}`,
     },
     {
       fontWeight: "700",
-      color: "#B34F20",
+      color: `${zeeguuViolet}`
     },
   ];
 
   const selectedButtonColor = {
-    background: "#ffd04799",
+    background: `${zeeguuOrange}`,
     color: "black",
-    border: "0.15em solid #ffbb54",
+    border: `0.15em solid ${zeeguuOrange}`,
   };
 
   const [firstSelection, setFirstSelection] = useState(0);
@@ -79,6 +83,7 @@ function MatchInput({
   };
 
   const small = "small";
+  const match = "match";
 
   return (
     <>
@@ -97,7 +102,14 @@ function MatchInput({
                   {removePunctuation(option.from.toLowerCase())}
                 </s.AnimatedMatchButton>
               ) : buttonsToDisable.includes(option.id) || isCorrect ? (
-                <s.ButtonRow>
+                <s.ButtonRow key={"L2_Row_" + option.id}>
+                  <EditButton
+                    bookmark={option}
+                    api={api}
+                    styling={match}
+                    reload={reload}
+                    setReload={setReload}
+                  />
                   <s.MatchingWords
                     style={answerPairStyle(option.id)}
                     key={"L2_" + option.id}

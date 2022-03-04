@@ -12,11 +12,9 @@ import {
   ContentOnRow,
 } from "../reader/ArticleReader.sc";
 import { setTitle } from "../assorted/setTitle";
-import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
+import strings from "../i18n/definitions";
 
 export default function WordsForArticle({ api }) {
-  const small = "small";
-
   let { articleID } = useParams();
   const [words, setWords] = useState(null);
   const [articleInfo, setArticleInfo] = useState(null);
@@ -47,28 +45,26 @@ export default function WordsForArticle({ api }) {
   return (
     <NarrowColumn>
       <br />
-      <h1>Review Translations for Your Exercises </h1>
+      <h1>{strings.ReviewTranslations}</h1>
 
-      <small>From "{articleInfo.title}"</small>
+      <small>{strings.from}{articleInfo.title}</small>
       <br />
       <br />
       <br />
       <TopMessage style={{ textAlign: "left" }}>
         {words.length > 0 ? (
           <>
-            * Delete a translation if you don't want it in exercises.
+            * {strings.deleteTranslation}
             <br />
             <br />
-            * Star a translations to make it have priority in exercises
+            * {strings.starTranslation}
             <br />
             <br />
-            * If a translation is grayed out, it means that Zeeguu does not
-            think it is appropriate for exercises; to overload this decision you
-            can star the translation
+            * {strings.ifGreyedTranslation}
             <br />
           </>
         ) : (
-          "The words you translate in the article will appear here for review"
+          strings.theWordsYouTranslate
         )}
       </TopMessage>
 
@@ -80,12 +76,6 @@ export default function WordsForArticle({ api }) {
             notifyDelete={deleteBookmark}
             api={api}
           />
-          <SpeakButton
-            key={each.id}
-            bookmarkToStudy={each}
-            api={api}
-            styling={small}
-          />
         </ContentOnRow>
       ))}
 
@@ -94,7 +84,7 @@ export default function WordsForArticle({ api }) {
       <br />
       <CenteredContent>
         <Link to={`/read/article?id=${articleID}`}>
-          <WhiteButton>Back to Article</WhiteButton>
+          <WhiteButton>{strings.backToArticle}</WhiteButton>
         </Link>
 
         {words.length > 0 && (
@@ -104,7 +94,7 @@ export default function WordsForArticle({ api }) {
               api.logReaderActivity(api.TO_EXERCISES_AFTER_REVIEW, articleID)
             }
           >
-            <OrangeButton>To Exercises</OrangeButton>
+            <OrangeButton>{strings.toExercises}</OrangeButton>
           </Link>
         )}
       </CenteredContent>

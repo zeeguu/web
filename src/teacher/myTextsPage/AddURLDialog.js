@@ -4,7 +4,10 @@ import { useHistory } from "react-router";
 import { LabeledTextField } from "../sharedComponents/LabeledInputFields";
 import { StyledDialog } from "../styledComponents/StyledDialog.sc";
 import * as s from "../styledComponents/AddURLDialog.sc";
-import { PopupButtonWrapper, StyledButton } from "../styledComponents/TeacherButtons.sc";
+import {
+  PopupButtonWrapper,
+  StyledButton,
+} from "../styledComponents/TeacherButtons.sc";
 import { Error } from "../sharedComponents/Error";
 
 export default function AddURLDialog({ api, setShowAddURLDialog }) {
@@ -51,7 +54,7 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
 
   return (
     <StyledDialog
-      aria-label="Add a text from a url address."
+      aria-label={strings.addTextFromWebpage}
       onDismiss={() => setShowAddURLDialog(false)}
       max_width="525px"
     >

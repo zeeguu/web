@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 
@@ -8,12 +7,6 @@ export default function StudentSpecificSidebarOptions({
   api,
 }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
-  const [showActivityDashboard, setShowActivityDashboard] = useState(false);
-
-  useEffect(() => {
-    api.ifActivityDashboard(setShowActivityDashboard);
-    // eslint-disable-next-line
-  }, []);
 
   return (
     <>
@@ -33,14 +26,13 @@ export default function StudentSpecificSidebarOptions({
         </Link>
       </div>
 
-      {showActivityDashboard && (
-        <div className="navigationLink">
-          <Link to="/user_dashboard" onClick={resetSidebarToDefault}>
-            <small>{strings.userDashboard}</small>
-            <sup className="newLink">New!</sup>
-          </Link>
-        </div>
-      )}
+      <div className="navigationLink">
+        <Link to="/user_dashboard" onClick={resetSidebarToDefault}>
+          <small>{strings.userDashboard}</small>
+        </Link>
+      </div>
+
+      <br />
 
       {is_teacher && (
         <div className="navigationLink">

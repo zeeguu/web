@@ -21,7 +21,8 @@ export default function FindWordInContext({
   setIsCorrect,
   moveToNextExercise,
   toggleShow,
-  toggleShowImproveTranslation,
+  reload,
+  setReload,
 }) {
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
@@ -47,22 +48,29 @@ export default function FindWordInContext({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [translatedWords]);
 
-  function colorWordInContext(context, word) {
-    return context.replace(
-      word,
-      `<span class='highlightedWord'>${word}</span>`
-    );
-  }
-
   function checkTranslations() {
     let bookmarkWords = bookmarksToStudy[0].from.split(" ");
     bookmarkWords.forEach((word) => {
-      if (translatedWords.includes(word)) {
-        let concatMessage = messageToAPI + "T";
-        setMessageToAPI(concatMessage);
-        notifyIncorrectAnswer(bookmarksToStudy[0]);
-      }
+      translatedWords.forEach((translation) => {
+        let splitTranslation = translation.split(" ");
+        if (splitTranslation.length > 1) {
+          splitTranslation.forEach((translatedWord) => {
+            if (translatedWord === word) {
+              notifyBookmarkTranslation();
+            }
+          });
+        } else {
+          if (translation === word) {
+            notifyBookmarkTranslation();
+          }
+        }
+      });
     });
+  }
+
+  function notifyBookmarkTranslation() {
+    let concatMessage = messageToAPI + "T";
+    handleShowSolution(concatMessage);
   }
 
   function inputKeyPress() {
@@ -71,16 +79,21 @@ export default function FindWordInContext({
     }
   }
 
-  function handleShowSolution() {
+  function handleShowSolution(e, message) {
+    e.preventDefault()
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
     let duration = pressTime - initialTime;
-    let concatMessage = messageToAPI + "S";
+    let concatMessage = "";
+    if (!message) {
+      concatMessage = messageToAPI + "S";
+    } else {
+      concatMessage = message;
+    }
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-
     api.uploadExerciseFeedback(
       concatMessage,
       EXERCISE_TYPE,
@@ -89,17 +102,15 @@ export default function FindWordInContext({
     );
   }
 
-  function handleCorrectAnswer() {
+  function handleCorrectAnswer(message) {
     console.log(new Date() - initialTime);
-    console.log("^^^^ time elapsed");
     console.log(firstTypeTime - initialTime);
-    console.log("^^^^ to first key press");
     let duration = firstTypeTime - initialTime;
 
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFeedback(
-      messageToAPI,
+      message,
       EXERCISE_TYPE,
       duration,
       bookmarksToStudy[0].id
@@ -124,29 +135,10 @@ export default function FindWordInContext({
       ) : (
         <div className="headline">{strings.findTheWordInContextHeadline}</div>
       )}
-
       <h1>{bookmarksToStudy[0].to}</h1>
-      {isCorrect ? (
-        <div className="contextExample">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: colorWordInContext(
-                bookmarksToStudy[0].context,
-                bookmarksToStudy[0].from
-              ),
-            }}
-          />
-        </div>
-      ) : (
-        <TranslatableText
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-        />
-      )}
-
+      <div className="contextExample">
+        {bookmarksToStudy[0].context}
+      </div>
       {!isCorrect && (
         <BottomInput
           handleCorrectAnswer={handleCorrectAnswer}
@@ -162,12 +154,13 @@ export default function FindWordInContext({
           api={api}
           bookmarksToStudy={bookmarksToStudy}
           moveToNextExercise={moveToNextExercise}
+          reload={reload}
+          setReload={setReload}
         />
       )}
       <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
-        toggleShowImproveTranslation={toggleShowImproveTranslation}
         isCorrect={isCorrect}
       />
     </s.Exercise>

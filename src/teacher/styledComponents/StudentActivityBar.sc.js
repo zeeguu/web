@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { darkBlue, lightOrange } from "../../components/colors";
+import { darkBlue, zeeguuVarmYellow } from "../../components/colors";
 
 export const StudentActivityBar = styled.div`
   .activity-bar {
@@ -26,7 +26,7 @@ export const StudentActivityBar = styled.div`
 
   .activity-bar#exercises {
     border-radius: ${(props) => props.exerciseCorners};
-    background-color: ${lightOrange};
+    background-color: ${zeeguuVarmYellow};
   }
 
   .activtybar-hours-minutes {
