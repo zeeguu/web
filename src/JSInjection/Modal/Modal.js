@@ -1,6 +1,6 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton, StyledPersonalCopy } from "./Modal.styles";
+import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy} from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
@@ -72,6 +72,7 @@ function toggle(state, togglerFunction) {
   if (interactiveTextArray === undefined) {
     return <p>Loading</p>;
   }
+
   return (
     <div>
       <StyledModal
@@ -79,6 +80,10 @@ function toggle(state, togglerFunction) {
         className="Modal"
         overlayClassName="Overlay"
       >
+         <StyledHeading >
+          <StyledButton role="button" onClick={handleClose} id="qtClose">
+            X
+          </StyledButton>
           <s.Toolbar>
           <button
             className={translating ? "selected" : ""}
@@ -98,9 +103,7 @@ function toggle(state, togglerFunction) {
             <span className="tooltiptext">{strings.listenOnClick}</span>
           </button>
         </s.Toolbar>
-        <StyledButton onClick={handleClose} id="qtClose">
-          X
-        </StyledButton>
+        </StyledHeading>
         <StyledPersonalCopy onClick={handlePostCopy}>
           Make Personal Copy
           </StyledPersonalCopy>
@@ -142,6 +145,7 @@ function toggle(state, togglerFunction) {
           }
         })}
       </StyledModal>
+      
     </div>
   );
 }

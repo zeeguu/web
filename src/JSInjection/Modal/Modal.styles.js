@@ -24,22 +24,21 @@ p{
 }
 
 
-
 font-family: Arial, sans-serif;
-position: absolute;
-top: 0;
+position: fixed;
+top: 0px;
 left: 0;
 right: 0;
 bottom: 0;
 z-index: 2000;
 margin: 40px auto;
 background-color: white;
-padding:2%;
-height:80%;
-width: 70%;
+padding: 0% 2% 2% 2%;
+height:85%;
+width: 75%;
 overflow-y: auto;
 box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
-
+outline: none;
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -53,16 +52,26 @@ box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
 }
 `;
 
-export const StyledButton = styled.button`
-position: sticky;
-top: 0px;
-left: 100%;
-border-radius: 10%;
-width: 30px;
-height: 25px !important;
-display: block;
+export const StyledButton = styled.div`
 cursor: pointer;
-background-color: rgba(255,208,71);
+right: 0px;
+padding: 20px;
+cursor: pointer;
+height: 55px;
+margin: 10px;
+padding: 1px;
+float: right;
+`
+
+export const StyledHeading = styled.div`
+height: 110px;
+background-color: white;
+padding-top:20px;
+right: 0px;
+top:0px;
+position: sticky;
+width: 100%;
+border-bottom: 1px solid rgb(239, 239, 239);
 `
 export const StyledPersonalCopy = styled.button`
     background-color: rgba(255,208,71);
