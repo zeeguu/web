@@ -72,6 +72,7 @@ function toggle(state, togglerFunction) {
   if (interactiveTextArray === undefined) {
     return <p>Loading</p>;
   }
+
   return (
     <div>
       <StyledModal
