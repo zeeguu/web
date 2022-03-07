@@ -84,7 +84,7 @@ function toggle(state, togglerFunction) {
           <StyledButton role="button" onClick={handleClose} id="qtClose">
             X
           </StyledButton>
-          <s.Toolbar>
+          <s.Toolbar  style={{"display": "flex", "justify-content": "flex-end"}}>
           <button
             className={translating ? "selected" : ""}
             onClick={(e) => toggle(translating, setTranslating)}
