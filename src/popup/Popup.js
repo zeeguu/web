@@ -1,6 +1,6 @@
 /*global chrome*/
 import Login from "./Login";
-import {setCurrentURL, getSourceAsDOM} from "./functions";
+import {setCurrentURL, getSourceAsDOM, checkReadability} from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
@@ -30,9 +30,13 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       minLength,
       minScore
     );
-    if (!isProbablyReadable) {
+    const ownIsProbablyReadable = checkReadability(tab.url)
+
+
+    if (!isProbablyReadable || !ownIsProbablyReadable) {
       return alert("This page is not readable");
     }
+
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["./main.js"],
