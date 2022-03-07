@@ -56,7 +56,6 @@ export const StyledButton = styled.div`
 cursor: pointer;
 right: 0px;
 padding: 20px;
-cursor: pointer;
 height: 55px;
 margin: 10px;
 padding: 1px;
@@ -74,7 +73,12 @@ width: 100%;
 border-bottom: 1px solid rgb(239, 239, 239);
 `
 export const StyledPersonalCopy = styled.button`
-    background-color: rgba(255,208,71);
+    background-color: rgba(255,229,158);
+    cursor: pointer;
+
+    :hover {
+        background-color: rgba(255,187,84);
+      }
 `
 
 
