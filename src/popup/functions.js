@@ -1,7 +1,7 @@
 /*global chrome*/
-import { drRegex, liveArticleDR } from "./Pages/dr";
+import { liveArticleDR } from "./Pages/dr";
 import { getEntireHTML } from "../JSInjection/Cleaning/pageSpecificClean";
-
+import { drRegex } from "../JSInjection/Cleaning/Pages/dr";
 export async function getCurrentTab() {
   const queryOptions = { active: true, currentWindow: true };
   const [tab] = await chrome.tabs.query(queryOptions);
