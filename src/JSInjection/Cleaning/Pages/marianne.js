@@ -12,15 +12,14 @@ export function removeArticleLinks(content) {
     return div.innerHTML;
     
 }
-//not working yet. How to get the right image, when all images have the same class name?
 
 export function getImage(content, html) {
-    //readability content
+    //search for image in readability content
     let readabilitydiv = document.createElement("div");
     readabilitydiv.innerHTML = content;
     let hasImage = readabilitydiv.getElementsByTagName("img");
     if (hasImage.length === 0) {
-        //entire html
+        //get image from entire html
         let div = document.createElement("div");
         div.innerHTML = html;
         const images = div.getElementsByClassName("article__image article__item")[0];
