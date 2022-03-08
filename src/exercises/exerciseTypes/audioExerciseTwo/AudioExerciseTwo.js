@@ -33,7 +33,6 @@ export default function AudioExerciseTwo({
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [choiceOptions, setChoiceOptions] = useState(null);
-
   const [currentChoice, setCurrentChoice] = useState(false);
 
   useEffect(() => {
@@ -68,19 +67,18 @@ export default function AudioExerciseTwo({
   }
 
   function buttonSelectTrue() {
-    if (currentChoice !== true){
-        setCurrentChoice(true);
+    if (currentChoice !== true) {
+      setCurrentChoice(true);
     }
-    console.log(currentChoice);
+    console.log(currentChoice + " " + bookmarksToStudy[0].id);
   }
-  
+
   function buttonSelectFalse() {
-    if (currentChoice !== false){
-        setCurrentChoice(false);
+    if (currentChoice !== false) {
+      setCurrentChoice(false);
     }
     console.log(currentChoice);
   }
-  
 
   function handleShowSolution() {
     let pressTime = new Date();
@@ -144,7 +142,7 @@ export default function AudioExerciseTwo({
               />
             ) : (
               <SpeakButton
-                 handleClick={buttonSelectTrue}
+                handleClick={buttonSelectTrue}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
                 styling="selected"
@@ -160,7 +158,7 @@ export default function AudioExerciseTwo({
       {!isCorrect && (
         <AudioTwoBotInput
           buttonOptions={buttonOptions}
-          currentChoice ={currentChoice}
+          currentChoice={currentChoice}
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}
           setIncorrectAnswer={setIncorrectAnswer}

@@ -64,15 +64,14 @@ export default function SpeakButton({
     setIsSpeaking(false);
   }
 
-
-
   return (
     <s.SpeakButton
       disabled={isSpeaking}
       className={cls}
       onClick={(e) => {
-        !isSpeaking && handleSpeak(); handleClick()}
-      }
+        !isSpeaking && handleSpeak();
+        handleClick();
+      }}
     >
       {isSpeaking && (
         <Loader
