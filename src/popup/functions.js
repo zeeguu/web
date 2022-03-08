@@ -40,4 +40,7 @@ export function checkReadability(url){
   if(url.match(drRegex)){
     return liveArticleDR(getEntireHTML(url))
   }
+  else{
+    return true;
+  }
 }

@@ -38,12 +38,12 @@ export function Main() {
   let cleanedContent = pageSpecificClean(article.content, url);
   cleanedContent = generalClean(cleanedContent);
   cleanedContent = DOMPurify.sanitize(cleanedContent);
-
   return (
     <Modal
       modalIsOpen={modalIsOpen}
       setModalIsOpen={setModalIsOpen}
       title={article.title}
+      author={article.byline}
       content={cleanedContent}
       api={api}
       url={url}

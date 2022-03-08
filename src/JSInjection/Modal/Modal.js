@@ -12,7 +12,7 @@ import strings from "../../zeeguu-react/src/i18n/definitions"
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
 
-export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language }) {
+export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language, author }) {
   const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [articleImage, setArticleImage] = useState();
@@ -162,6 +162,8 @@ function toggle(state, togglerFunction) {
             pronouncing={pronouncing}
           />
         </h1>
+        <p>{author}</p>
+        <hr />
         {articleImage === undefined ? null : <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>}
         {interactiveTextArray.map((paragraph) => {
             const CustomTag = `${paragraph.tag}`;
