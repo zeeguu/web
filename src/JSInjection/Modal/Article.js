@@ -1,13 +1,11 @@
-import {getSourceAsDOM} from "../../popup/functions"
-import { Readability} from "@mozilla/readability";
+import { getSourceAsDOM } from "../../popup/functions";
+import { Readability } from "@mozilla/readability";
+import { cleanDocumentClone } from "../Cleaning/pageSpecificClean";
 
-
-export async function Article(currentTabURL){
-    const documentFromTab = getSourceAsDOM(currentTabURL);
-    console.log("tab", documentFromTab)
-    const documentClone = documentFromTab.cloneNode(true);
-    console.log("clone", documentClone)
-    const article = new Readability(documentClone).parse();
-    console.log(article.content)
-    return article
+export async function Article(currentTabURL) {
+  const documentFromTab = getSourceAsDOM(currentTabURL);
+  const documentClone = documentFromTab.cloneNode(true);
+  const cleanedDocumentClone = cleanDocumentClone(documentClone, currentTabURL);
+  const article = new Readability(cleanedDocumentClone).parse();
+  return article;
 }

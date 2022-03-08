@@ -1,6 +1,6 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy} from "./Modal.styles";
+import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy, GlobalStyle } from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
@@ -9,7 +9,10 @@ import { getNativeLanguage } from "../../popup/functions";
 import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
 import strings from "../../zeeguu-react/src/i18n/definitions"
 
-export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language }) {
+let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
+let previous_time = 0; // since sent a scroll update
+
+export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language, author }) {
   const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [articleImage, setArticleImage] = useState();
@@ -50,16 +53,60 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   
       let itTitle = new InteractiveText(title, articleInfo, api);
       setInteractiveTitle(itTitle);
+      api.logReaderActivity(api.OPEN_ARTICLE,  articleId.article_id);
+
+      window.addEventListener("focus", onFocus);
+      window.addEventListener("blur", onBlur);
+
+      let getModalClass = document.getElementsByClassName("Modal")
+      if ((getModalClass !== undefined) && (getModalClass !== null)){
+        setTimeout(() => {
+          if(getModalClass.item(0) != undefined){
+            getModalClass.item(0).addEventListener("scroll", onScroll);
+          }
+        }, 0);
+      }
     }
       
   }, [articleId]);
 
 localStorage.setItem("native_language", nativeLang)
 
+function onFocus() {
+  api.logReaderActivity(api.ARTICLE_FOCUSED, articleId.article_id);
+}
+function onBlur() {
+  api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleId.article_id);
+}
+
 const handleClose = () => {
   location.reload();
   setModalIsOpen(false);
+  api.logReaderActivity("ARTICLE CLOSED", articleId.article_id);
+  window.removeEventListener("focus", onFocus);
+  window.removeEventListener("blur", onBlur);
+  document.getElementById("scrollHolder") !== null &&
+  document
+    .getElementById("scrollHolder")
+    .removeEventListener("scroll", onScroll);
 };
+
+function onScroll() {
+  let _current_time = new Date();
+  let current_time = _current_time.getTime();
+console.log(previous_time)
+  if (previous_time === 0) {
+    api.logReaderActivity(api.SCROLL, articleId.article_id);
+    previous_time = current_time;
+  } else {
+    if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
+      api.logReaderActivity(api.SCROLL, articleId.article_id);
+      previous_time = current_time;
+      console.log(previous_time)
+    } else {
+    }
+  }
+}
 
 function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
@@ -75,16 +122,17 @@ function toggle(state, togglerFunction) {
 
   return (
     <div>
+      <GlobalStyle/>
       <StyledModal
         isOpen={modalIsOpen}
         className="Modal"
-        overlayClassName="Overlay"
+        id="scrollHolder"
       >
          <StyledHeading >
           <StyledButton role="button" onClick={handleClose} id="qtClose">
             X
           </StyledButton>
-          <s.Toolbar>
+          <s.Toolbar  style={{"display": "flex", "justify-content": "flex-end"}}>
           <button
             className={translating ? "selected" : ""}
             onClick={(e) => toggle(translating, setTranslating)}
@@ -114,6 +162,8 @@ function toggle(state, togglerFunction) {
             pronouncing={pronouncing}
           />
         </h1>
+        <p>{author}</p>
+        <hr />
         {articleImage === undefined ? null : <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>}
         {interactiveTextArray.map((paragraph) => {
             const CustomTag = `${paragraph.tag}`;
@@ -145,6 +195,7 @@ function toggle(state, togglerFunction) {
           }
         })}
       </StyledModal>
+
       
     </div>
   );
