@@ -8,6 +8,7 @@ export default function MultipleChoicesInput({
   notifyChoiceSelection,
   incorrectAnswer,
   setIncorrectAnswer,
+  currentChoice,
   handleCorrectAnswer,
   handleIncorrectAnswer,
   bookmarksToStudy,
@@ -16,24 +17,9 @@ export default function MultipleChoicesInput({
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
-  const [usedHint, setUsedHint] = useState(false);
   const [currentChoice, setCurrentChoice] = useState(null);
 
-  function selectChoice(choice) {
-    if (currentChoice !== choice) {
-      setCurrentChoice(choice);
-    }
-    console.log(choice);
-  }
-
-  function eliminateTypos(x) {
-    return x.trim().toUpperCase();
-    // .replace(/[^a-zA-Z ]/g, '')
-  }
-
-  function removeQuotes(x) {
-    return x.replace(/[^a-zA-Z ]/g, "");
-  }
+  
   function checkResult() {
     if (currentInput === "") {
       return;
