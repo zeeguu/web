@@ -33,12 +33,11 @@ export default function AudioExerciseTwo({
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [choiceOptions, setChoiceOptions] = useState(null);
-  let selected = false;
+
+  const [currentChoice, setCurrentChoice] = useState(false);
+
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
-      consolidateChoiceOptions(words);
-    });
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
@@ -68,9 +67,12 @@ export default function AudioExerciseTwo({
     }
   }
 
-  function buttonSelect() {
+  function buttonSelect(choice) {
     console.log("button select detected");
-    selected = true;
+    if (currentChoice !== choice) {
+      setCurrentChoice(choice);
+    }
+    console.log(choice);
   }
 
   function handleShowSolution() {
@@ -98,17 +100,8 @@ export default function AudioExerciseTwo({
     );
   }
 
-  function consolidateChoiceOptions(similarWords) {
-    let listOfOptions = [
-      bookmarksToStudy[0].bookmark,
-      bookmarksToStudy[1].bookmark,
-      bookmarksToStudy[2].bookmark,
-    ];
-    let shuffledListOfOptions = shuffle(listOfOptions);
-    setButtonOptions(shuffledListOfOptions);
-  }
-
   function consolidateChoice() {
+    // Index 0 is the correct bookmark and index 1 and 2 are incorrect
     let listOfchoices = [0, 1, 2];
     let shuffledListOfChoices = shuffle(listOfchoices);
     setChoiceOptions(shuffledListOfChoices);
@@ -137,11 +130,10 @@ export default function AudioExerciseTwo({
           choiceOptions.map((option) =>
             0 !== option ? (
               <SpeakButton
-                handleSelect={buttonSelect}
+                handleSelect={buttonSelect(false)}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
                 styling="selected"
-                selected={selected}
               />
             ) : (
               <SpeakButton
@@ -158,8 +150,6 @@ export default function AudioExerciseTwo({
       </s.CenteredRow>
 
       {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
-
-      {!buttonOptions && <LoadingAnimation />}
       {!isCorrect && (
         <AudioTwoBotInput
           buttonOptions={buttonOptions}
