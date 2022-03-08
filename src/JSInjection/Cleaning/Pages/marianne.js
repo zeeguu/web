@@ -13,7 +13,7 @@ export function removeArticleLinks(content) {
     
 }
 
-export function getImage(content, html) {
+export function getImageMarianne(content, html) {
     //search for image in readability content
     let readabilitydiv = document.createElement("div");
     readabilitydiv.innerHTML = content;

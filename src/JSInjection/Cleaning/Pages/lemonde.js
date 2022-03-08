@@ -34,7 +34,7 @@ export function removeServices(content) {
   let allElements = Array.from(div.getElementsByTagName("h4"));
   for (let i = 0; i < allElements.length; i++) {
     const element = allElements[i];
-    if (element !== undefined) {
+    if ((element !== undefined) && (element !== null)) {
       if (element.textContent === "Services") {
         element.remove();
       }
@@ -47,7 +47,10 @@ export function removeInjectedContent(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   let element = div.querySelector("#js-capping");
-  element.remove();
-  content = div.innerHTML;
-  return content;
+  if ((element !== undefined) && (element !== null)) {
+    element.remove();
+    content = div.innerHTML;
+  }
+
+  return div.innerHTML;
 }
