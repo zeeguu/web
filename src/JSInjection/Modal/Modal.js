@@ -1,6 +1,6 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy} from "./Modal.styles";
+import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy, GlobalStyle } from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
@@ -122,10 +122,10 @@ function toggle(state, togglerFunction) {
 
   return (
     <div>
+      <GlobalStyle/>
       <StyledModal
         isOpen={modalIsOpen}
         className="Modal"
-        overlayClassName="Overlay"
         id="scrollHolder"
       >
          <StyledHeading >
@@ -193,6 +193,7 @@ function toggle(state, togglerFunction) {
           }
         })}
       </StyledModal>
+
       
     </div>
   );

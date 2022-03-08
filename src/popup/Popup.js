@@ -42,10 +42,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       files: ["./main.js"],
       func: setCurrentURL(tab.url),
     });
-    chrome.scripting.insertCSS({
-      target: { tabId: tab.id },
-      files: ["./modal.css"],
-    });
     window.close();
   }
 
