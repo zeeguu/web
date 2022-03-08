@@ -67,12 +67,8 @@ export default function AudioExerciseTwo({
     }
   }
 
-  function buttonSelect(choice) {
+  function buttonSelect(option) {
     console.log("button select detected");
-    if (currentChoice !== choice) {
-      setCurrentChoice(choice);
-    }
-    console.log(choice);
   }
 
   function handleShowSolution() {
@@ -130,14 +126,14 @@ export default function AudioExerciseTwo({
           choiceOptions.map((option) =>
             0 !== option ? (
               <SpeakButton
-                handleSelect={buttonSelect(false)}
+                handleClick={buttonSelect(option)}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
                 styling="selected"
               />
             ) : (
               <SpeakButton
-                handleSelect={buttonSelect}
+                handleClick={buttonSelect}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
                 styling="selected"

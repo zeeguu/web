@@ -51,7 +51,7 @@ export default function SpeakButton({
   bookmarkToStudy,
   api,
   styling,
-  handleSelect,
+  handleClick,
 }) {
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -64,14 +64,14 @@ export default function SpeakButton({
     setIsSpeaking(false);
   }
 
-  function handleSelect() {}
+
 
   return (
     <s.SpeakButton
       disabled={isSpeaking}
       className={cls}
-      onClick={(e) =>
-        !isSpeaking && handleSpeak() && handleSelect() && setCls("selected")
+      onClick={(e) => {
+        !isSpeaking && handleSpeak(); handleClick()}
       }
     >
       {isSpeaking && (
