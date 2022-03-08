@@ -67,9 +67,20 @@ export default function AudioExerciseTwo({
     }
   }
 
-  function buttonSelect(option) {
-    console.log("button select detected");
+  function buttonSelectTrue() {
+    if (currentChoice !== true){
+        setCurrentChoice(true);
+    }
+    console.log(currentChoice);
   }
+  
+  function buttonSelectFalse() {
+    if (currentChoice !== false){
+        setCurrentChoice(false);
+    }
+    console.log(currentChoice);
+  }
+  
 
   function handleShowSolution() {
     let pressTime = new Date();
@@ -126,14 +137,14 @@ export default function AudioExerciseTwo({
           choiceOptions.map((option) =>
             0 !== option ? (
               <SpeakButton
-                handleClick={buttonSelect(option)}
+                handleClick={buttonSelectFalse}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
                 styling="selected"
               />
             ) : (
               <SpeakButton
-                handleClick={buttonSelect}
+                 handleClick={buttonSelectTrue}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
                 styling="selected"
@@ -149,6 +160,7 @@ export default function AudioExerciseTwo({
       {!isCorrect && (
         <AudioTwoBotInput
           buttonOptions={buttonOptions}
+          currentChoice ={currentChoice}
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}
           setIncorrectAnswer={setIncorrectAnswer}
