@@ -3,7 +3,7 @@ import {wikiRegex, removefromWiki} from "./Pages/wiki";
 import { lefigaroRegex, addImageLefirago } from "./Pages/lefigaro";
 import { ekstrabladetRegex, addImageEkstraBladet } from "./Pages/ekstrabladet";
 import { lemondeRegex, removeListElementsHeaders, removeServices, removeInjectedContent} from "./Pages/lemonde";
-import { drRegex, cleanDR } from "./Pages/dr";
+import { drRegex, cleanDR, cleanDRBefore} from "./Pages/dr";
 import { lexpressRegex, removeasides, unavailableContent } from "./Pages/lexpress";
 import { marianneRegex, removeArticleLinks, getImage as getImageMarianne } from "./Pages/marianne";
 export function getEntireHTML(url) {
@@ -46,5 +46,21 @@ export function pageSpecificClean(articleContent, url) {
     //many other if-statements with checks for urls
     return div.innerHTML
   }
+
+  export function cleanDocumentClone(documentClone, currentTabURL) {
+    if (currentTabURL.match(drRegex)) {
+      return cleanDRBefore(documentClone)
+    //  const dateInByline = documentClone.getElementsByClassName("dre-byline__dates");
+    //  if (dateInByline[0].parentNode) {
+    //    dateInByline[0].parentNode.removeChild(dateInByline[0]);
+    //  }
+    //  const prefixInByLine = documentClone.getElementsByClassName("dre-byline__prefix");
+    //  if (prefixInByLine[0].parentNode) {
+    //    prefixInByLine[0].parentNode.removeChild(prefixInByLine[0]);
+    //  }
+    }
+    return documentClone;
+  }
+  
 
 

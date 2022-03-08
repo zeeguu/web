@@ -13,3 +13,15 @@ export function cleanDR(readabilityContent) {
   }
    return div.innerHTML;
 }
+
+export function cleanDRBefore(documentClone){
+  const dateInByline = documentClone.getElementsByClassName("dre-byline__dates");
+  if (dateInByline[0].parentNode) {
+    dateInByline[0].parentNode.removeChild(dateInByline[0]);
+  }
+  const prefixInByLine = documentClone.getElementsByClassName("dre-byline__prefix");
+  if (prefixInByLine[0].parentNode) {
+    prefixInByLine[0].parentNode.removeChild(prefixInByLine[0]);
+  }
+  return documentClone;
+}
