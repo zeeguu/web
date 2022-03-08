@@ -2,7 +2,7 @@ import {btRegex, addImageBT} from "./Pages/bt";
 import {wikiRegex, removefromWiki} from "./Pages/wiki";
 import { lefigaroRegex, addImageLefirago } from "./Pages/lefigaro";
 import { ekstrabladetRegex, addImageEkstraBladet } from "./Pages/ekstrabladet";
-import { lemondeRegex, removeListElementsHeaders, removeServices, removeInjectedContent} from "./Pages/lemonde";
+import { lemondeRegex, removeAuthorDetail, cleanLemonde} from "./Pages/lemonde";
 import { drRegex, cleanDR, cleanDRBefore} from "./Pages/dr";
 import { lexpressRegex, removeasides, unavailableContent } from "./Pages/lexpress";
 import { marianneRegex, removeArticleLinks, getImageMarianne} from "./Pages/marianne";
@@ -30,8 +30,7 @@ export function pageSpecificClean(articleContent, url) {
       return addImageEkstraBladet(getEntireHTML(url), articleContent)
     }
     if (url.match(lemondeRegex)) {
-      let lemonde = removeInjectedContent(div.innerHTML)
-      return removeListElementsHeaders(removeServices(lemonde))
+      return cleanLemonde(articleContent)
     }
     if(url.match(drRegex)){
       return cleanDR(articleContent)
@@ -55,6 +54,9 @@ export function pageSpecificClean(articleContent, url) {
   export function cleanDocumentClone(documentClone, currentTabURL) {
     if (currentTabURL.match(drRegex)) {
       return cleanDRBefore(documentClone)
+    }
+    if (currentTabURL.match(lemondeRegex)) {
+      return removeAuthorDetail(documentClone)
     }
     return documentClone;
   }

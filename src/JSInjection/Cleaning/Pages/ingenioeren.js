@@ -31,7 +31,6 @@ export function removeComments(content, html) {
     let div = document.createElement("div");
     div.innerHTML = html;
     let articleContent = div.getElementsByClassName("panel-panel panel-col")[0];
-    console.log("panel-panel", articleContent)
     let newContent = document.createElement("div");
     newContent.innerHTML = articleContent;
     return articleContent.innerHTML;

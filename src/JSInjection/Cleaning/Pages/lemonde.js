@@ -1,6 +1,6 @@
 export const lemondeRegex = /(http|https):\/\/(www.lemonde.fr).*/;
 
-export function removeListElementsHeaders(content) {
+function removeListElementsHeaders(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   let listElements = Array.from(div.querySelectorAll("UL"));
@@ -27,7 +27,7 @@ export function removeListElementsHeaders(content) {
   return div.innerHTML;
 }
 
-export function removeServices(content) {
+function removeServices(content) {
   //remove services header and everything below that is injected by lemonde
   const div = document.createElement("div");
   div.innerHTML = content;
@@ -43,7 +43,7 @@ export function removeServices(content) {
   return div.innerHTML;
 }
 
-export function removeInjectedContent(content) {
+function removeInjectedContent(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   let element = div.querySelector("#js-capping");
@@ -53,4 +53,18 @@ export function removeInjectedContent(content) {
   }
 
   return div.innerHTML;
+}
+
+export function removeAuthorDetail(documentClone) {
+  let detail = documentClone.getElementsByClassName("author__detail")[0];
+  if ((detail !== undefined) && (detail !== null)) {
+    detail.remove();
+  }
+  return documentClone
+}
+
+export function cleanLemonde(content) {
+  let lemonde = removeInjectedContent(content)
+  lemonde = removeServices(lemonde)
+  return removeListElementsHeaders(lemonde)
 }
