@@ -4,14 +4,8 @@ import { useState } from "react";
 import removeAccents from "remove-accents";
 
 export default function MultipleChoicesInput({
-  buttonOptions,
-  notifyChoiceSelection,
-  incorrectAnswer,
-  setIncorrectAnswer,
-  currentChoice,
   handleCorrectAnswer,
   handleIncorrectAnswer,
-  bookmarksToStudy,
   messageToAPI,
   setMessageToAPI,
 }) {
@@ -19,17 +13,12 @@ export default function MultipleChoicesInput({
   const [isIncorrect, setIsIncorrect] = useState(false);
   const [currentChoice, setCurrentChoice] = useState(null);
 
-  
   function checkResult() {
     if (currentInput === "") {
       return;
     }
     console.log("checking result...");
-    var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
-    var b = removeQuotes(
-      removeAccents(eliminateTypos(bookmarksToStudy[0].from))
-    );
-    if (a === b) {
+    if (currentChoice === true) {
       let concatMessage = messageToAPI + "C";
       handleCorrectAnswer(concatMessage);
     } else {
