@@ -10,9 +10,6 @@ import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
 import strings from "../../zeeguu-react/src/i18n/definitions"
 import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader"
 
-let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
-let previous_time = 0; // since sent a scroll update
-
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language, author }) {
   const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
@@ -86,31 +83,11 @@ const handleClose = () => {
     .removeEventListener("scroll", function(){onScroll("EXTENSION - ", api, articleId.article_id)});
 };
 
-//function onScroll() {
-//  let _current_time = new Date();
-//  let current_time = _current_time.getTime();
-//console.log(previous_time)
-//  if (previous_time === 0) {
-//    api.logReaderActivity(api.SCROLL, articleId.article_id);
-//    previous_time = current_time;
-//  } else {
-//    if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
-//      api.logReaderActivity(api.SCROLL, articleId.article_id);
-//      previous_time = current_time;
-//      console.log(previous_time)
-//    } else {
-//    }
-//  }
-//}
-
 function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
   api.logReaderActivity("EXTENSION - ", api.PERSONAL_COPY,  articleId.article_id);
 };
   
-//function toggle(state, togglerFunction) {
-//  togglerFunction(!state);
-//}
 
   if (interactiveTextArray === undefined) {
     return <p>Loading</p>;
