@@ -34,6 +34,7 @@ export default function AudioExerciseTwo({
   const [interactiveText, setInteractiveText] = useState();
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [currentChoice, setCurrentChoice] = useState(false);
+  const [firstTypeTime, setFirstTypeTime] = useState();
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -81,28 +82,28 @@ export default function AudioExerciseTwo({
   }
 
   function handleShowSolution() {
-    let pressTime = new Date();
-    console.log(pressTime - initialTime);
-    console.log("^^^^ time elapsed");
-    let duration = pressTime - initialTime;
-    let message = messageToAPI + "S";
+    // let pressTime = new Date();
+    // console.log(pressTime - initialTime);
+    // console.log("^^^^ time elapsed");
+    // let duration = pressTime - initialTime;
+    // let message = messageToAPI + "S";
 
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
-    setIsCorrect(true);
-    handleAnswer(message, duration);
+    // notifyIncorrectAnswer(bookmarksToStudy[0]);
+    // setIsCorrect(true);
+    // handleAnswer(message, duration);
   }
 
   function handleAnswer(message) {
-    let pressTime = new Date();
-    console.log(pressTime - initialTime);
-    console.log("^^^^ time elapsed");
+    // let pressTime = new Date();
+    // console.log(pressTime - initialTime);
+    // console.log("^^^^ time elapsed");
 
-    api.uploadExerciseFeedback(
-      message,
-      EXERCISE_TYPE,
-      pressTime - initialTime,
-      bookmarksToStudy[0].id
-    );
+    // api.uploadExerciseFeedback(
+    //   message,
+    //   EXERCISE_TYPE,
+    //   pressTime - initialTime,
+    //   bookmarksToStudy[0].id
+    // );
   }
 
   function consolidateChoice() {
@@ -110,6 +111,26 @@ export default function AudioExerciseTwo({
     let listOfchoices = [0, 1, 2];
     let shuffledListOfChoices = shuffle(listOfchoices);
     setChoiceOptions(shuffledListOfChoices);
+  }
+
+  function handleCorrectAnswer(message) {
+    console.log(new Date() - initialTime);
+    console.log(firstTypeTime - initialTime);
+    let duration = firstTypeTime - initialTime;
+
+    correctAnswer(bookmarksToStudy[0]);
+    setIsCorrect(true);
+    api.uploadExerciseFeedback(
+      message,
+      EXERCISE_TYPE,
+      duration,
+      bookmarksToStudy[0].id
+    );
+  }
+
+  function handleIncorrectAnswer() {
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    setFirstTypeTime();
   }
 
   if (!articleInfo) {
@@ -164,6 +185,10 @@ export default function AudioExerciseTwo({
           setIncorrectAnswer={setIncorrectAnswer}
           handleShowSolution={handleShowSolution}
           toggleShow={toggleShow}
+          handleCorrectAnswer={handleCorrectAnswer}
+          handleIncorrectAnswer={handleIncorrectAnswer}
+          messageToAPI={messageToAPI}
+          setMessageToAPI={setMessageToAPI}
         />
       )}
       {isCorrect && (
