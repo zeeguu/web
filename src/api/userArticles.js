@@ -1,4 +1,5 @@
 import { Zeeguu_API } from "./classDef";
+import qs from "qs";
 
 // articles
 Zeeguu_API.prototype.getUserArticles = function (callback) {
@@ -29,4 +30,24 @@ Zeeguu_API.prototype.setArticleInfo = function (articleInfo, callback) {
 
 Zeeguu_API.prototype.setArticleOpened = function (articleID) {
   this._post("article_opened", `article_id=${articleID}`);
+};
+
+Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback) {
+  let article = {
+      url: articleInfo.url,
+      htmlContent: articleInfo.htmlContent,
+      title: articleInfo.title,
+      authors: articleInfo.authors
+    }
+  this._post(`/find_or_create_article`,
+  qs.stringify(article),
+      callback
+  );
+}; 
+
+Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {
+  this._post(`/make_personal_copy`,
+  qs.stringify(articleId),
+      callback
+  );
 };
