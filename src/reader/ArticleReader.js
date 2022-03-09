@@ -24,6 +24,33 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+export function onScroll(source, api, articleID) {
+  let _current_time = new Date();
+  let current_time = _current_time.getTime();
+  if (previous_time === 0) {
+    api.logReaderActivity(source, api.SCROLL, articleID);
+    previous_time = current_time;
+  } else {
+    if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
+      api.logReaderActivity(source, api.SCROLL, articleID);
+      previous_time = current_time;
+    } else {
+    }
+  }
+}
+
+export function onFocus(source, api, articleID) {
+  api.logReaderActivity(source, api.ARTICLE_FOCUSED, articleID);
+}
+
+export function onBlur(source, api, articleID) {
+  api.logReaderActivity(source, api.ARTICLE_UNFOCUSED, articleID);
+}
+
+export function toggle(state, togglerFunction) {
+  togglerFunction(!state);
+}
+
 export default function ArticleReader({ api, teacherArticleID }) {
   let articleID = "";
   let query = useQuery();
@@ -52,61 +79,34 @@ export default function ArticleReader({ api, teacherArticleID }) {
       setTitle(articleInfo.title);
 
       api.setArticleOpened(articleInfo.id);
-      api.logReaderActivity(api.OPEN_ARTICLE, articleID);
+      api.logReaderActivity("UMR - ", api.OPEN_ARTICLE, articleID);
     });
 
-    window.addEventListener("focus", onFocus);
-    window.addEventListener("blur", onBlur);
+    window.addEventListener("focus", function(){onFocus("UMR - ", api, articleID)});
+    window.addEventListener("blur", function(){onBlur("UMR - ", api, articleID)});
     document
       .getElementById("scrollHolder")
-      .addEventListener("scroll", onScroll);
+      .addEventListener("scroll", function(){onScroll("UMR - ", api, articleID)});
 
     return () => {
-      window.removeEventListener("focus", onFocus);
-      window.removeEventListener("blur", onBlur);
+      window.removeEventListener("focus", function(){onFocus("UMR - ", api, articleID)});
+      window.removeEventListener("blur", function(){onBlur("UMR - ", api, articleID)});
 
       document.getElementById("scrollHolder") !== null &&
         document
           .getElementById("scrollHolder")
-          .removeEventListener("scroll", onScroll);
-      api.logReaderActivity("ARTICLE CLOSED", articleID);
+          .removeEventListener("scroll", function(){onScroll("UMR - ", api, articleID)});
+      api.logReaderActivity("UMR - ", "ARTICLE CLOSED", articleID);
     };
     // eslint-disable-next-line
   }, []);
-
-  function onScroll() {
-    let _current_time = new Date();
-    let current_time = _current_time.getTime();
-
-    if (previous_time === 0) {
-      api.logReaderActivity(api.SCROLL, articleID);
-      previous_time = current_time;
-    } else {
-      if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
-        api.logReaderActivity(api.SCROLL, articleID);
-        previous_time = current_time;
-      } else {
-      }
-    }
-  }
-
-  function onFocus() {
-    api.logReaderActivity(api.ARTICLE_FOCUSED, articleID);
-  }
-  function onBlur() {
-    api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleID);
-  }
-
-  function toggle(state, togglerFunction) {
-    togglerFunction(!state);
-  }
 
   function toggleBookmarkedState() {
     let newArticleInfo = { ...articleInfo, starred: !articleInfo.starred };
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.STAR_ARTICLE, articleID);
+    api.logReaderActivity("UMR - ", api.LIKE_ARTICLE, articleID);
   }
 
   function setLikedState(state) {
@@ -114,7 +114,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state);
+    api.logReaderActivity("UMR - ", api.LIKE_ARTICLE, articleID, state);
   }
 
   if (!articleInfo) {
@@ -143,7 +143,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     let answer = prompt("What is wrong with the article?");
     if (answer) {
       let feedback = "broken_" + answer.replace(/ /g, "_");
-      api.logReaderActivity(api.USER_FEEDBACK, articleID, feedback);
+      api.logReaderActivity("UMR - ", api.USER_FEEDBACK, articleID, feedback);
       setTimeout(() => history.push("/articles"), 500);
     }
   }
