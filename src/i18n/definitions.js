@@ -319,7 +319,7 @@ let strings = new LocalizedStrings(
       matchWordWithTranslation: "Match each word with its translation",
       audioExerciseHeadline:
         "Write the word your hear. Click to have it repeated!",
-      audioExerciseTwoHeadline: "Select the word whioch fits the context",
+      audioExerciseTwoHeadline: "Select the word which fits the context",
 
       //FeedbackButtons
       giveFeedback: "Give feedback",
