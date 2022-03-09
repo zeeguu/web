@@ -18,7 +18,7 @@ import * as s from "./ArticleReader.sc";
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
 
-export const UMRsource = "UMR - ";
+export const UMR_SOURCE = "UMR - ";
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -81,24 +81,24 @@ export default function ArticleReader({ api, teacherArticleID }) {
       setTitle(articleInfo.title);
 
       api.setArticleOpened(articleInfo.id);
-      api.logReaderActivity(UMRsource, api.OPEN_ARTICLE, articleID);
+      api.logReaderActivity(UMR_SOURCE, api.OPEN_ARTICLE, articleID);
     });
 
-    window.addEventListener("focus", function(){onFocus(UMRsource, api, articleID)});
-    window.addEventListener("blur", function(){onBlur(UMRsource, api, articleID)});
+    window.addEventListener("focus", function(){onFocus(UMR_SOURCE, api, articleID)});
+    window.addEventListener("blur", function(){onBlur(UMR_SOURCE, api, articleID)});
     document
       .getElementById("scrollHolder")
-      .addEventListener("scroll", function(){onScroll(UMRsource, api, articleID)});
+      .addEventListener("scroll", function(){onScroll(UMR_SOURCE, api, articleID)});
 
     return () => {
-      window.removeEventListener("focus", function(){onFocus(UMRsource, api, articleID)});
-      window.removeEventListener("blur", function(){onBlur(UMRsource, api, articleID)});
+      window.removeEventListener("focus", function(){onFocus(UMR_SOURCE, api, articleID)});
+      window.removeEventListener("blur", function(){onBlur(UMR_SOURCE, api, articleID)});
 
       document.getElementById("scrollHolder") !== null &&
         document
           .getElementById("scrollHolder")
-          .removeEventListener("scroll", function(){onScroll(UMRsource, api, articleID)});
-      api.logReaderActivity(UMRsource, "ARTICLE CLOSED", articleID);
+          .removeEventListener("scroll", function(){onScroll(UMR_SOURCE, api, articleID)});
+      api.logReaderActivity(UMR_SOURCE, "ARTICLE CLOSED", articleID);
     };
     // eslint-disable-next-line
   }, []);
@@ -108,7 +108,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(UMRsource, api.STAR_ARTICLE, articleID);
+    api.logReaderActivity(UMR_SOURCE, api.STAR_ARTICLE, articleID);
   }
 
   function setLikedState(state) {
@@ -116,7 +116,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(UMRsource, api.LIKE_ARTICLE, articleID, state);
+    api.logReaderActivity(UMR_SOURCE, api.LIKE_ARTICLE, articleID, state);
   }
 
   if (!articleInfo) {
@@ -145,7 +145,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     let answer = prompt("What is wrong with the article?");
     if (answer) {
       let feedback = "broken_" + answer.replace(/ /g, "_");
-      api.logReaderActivity(UMRsource, api.USER_FEEDBACK, articleID, feedback);
+      api.logReaderActivity(UMR_SOURCE, api.USER_FEEDBACK, articleID, feedback);
       setTimeout(() => history.push("/articles"), 500);
     }
   }
