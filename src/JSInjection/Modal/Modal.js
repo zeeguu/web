@@ -6,9 +6,9 @@ import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage } from "../../popup/functions";
-import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
-import strings from "../../zeeguu-react/src/i18n/definitions";
-import {Link} from "react-router-dom";
+import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
+import strings from "../../zeeguu-react/src/i18n/definitions"
+import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader"
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -28,8 +28,9 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
         url: url,
         htmlContent: content,
         title: title,
+        authors: author,
       };
-      api.findCreateArticle(info, (articleId) => setArticleId(JSON.parse(articleId)));
+      api.findOrCreateArticle(info, (articleId) => setArticleId(JSON.parse(articleId)));
     }
     getNativeLanguage().then((result)=>
       setNativeLang(result)
@@ -54,16 +55,16 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   
       let itTitle = new InteractiveText(title, articleInfo, api);
       setInteractiveTitle(itTitle);
-      api.logReaderActivity(api.OPEN_ARTICLE,  articleId.article_id);
+      api.logReaderActivity("EXTENSION - ", api.OPEN_ARTICLE,  articleId.article_id);
 
-      window.addEventListener("focus", onFocus);
-      window.addEventListener("blur", onBlur);
+      window.addEventListener("focus", function(){onFocus("EXTENSION - ", api, articleId.article_id)});
+      window.addEventListener("blur", function(){onBlur("EXTENSION - ", api, articleId.article_id)});
 
       let getModalClass = document.getElementsByClassName("Modal")
       if ((getModalClass !== undefined) && (getModalClass !== null)){
         setTimeout(() => {
           if(getModalClass.item(0) != undefined){
-            getModalClass.item(0).addEventListener("scroll", onScroll);
+            getModalClass.item(0).addEventListener("scroll", function(){onScroll("EXTENSION - ", api, articleId.article_id)});
           }
         }, 0);
       }
@@ -73,49 +74,43 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
 
 localStorage.setItem("native_language", nativeLang)
 
-function onFocus() {
-  api.logReaderActivity(api.ARTICLE_FOCUSED, articleId.article_id);
-}
-function onBlur() {
-  api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleId.article_id);
-}
-
 const handleClose = () => {
   location.reload();
   setModalIsOpen(false);
-  api.logReaderActivity("ARTICLE CLOSED", articleId.article_id);
-  window.removeEventListener("focus", onFocus);
-  window.removeEventListener("blur", onBlur);
+  api.logReaderActivity("EXTENSION - ", "ARTICLE CLOSED", articleId.article_id);
+  window.removeEventListener("focus", function(){onFocus("EXTENSION - ", api, articleId.article_id)});
+  window.removeEventListener("blur", function(){onBlur("EXTENSION - ", api, articleId.article_id)});
   document.getElementById("scrollHolder") !== null &&
   document
     .getElementById("scrollHolder")
-    .removeEventListener("scroll", onScroll);
+    .removeEventListener("scroll", function(){onScroll("EXTENSION - ", api, articleId.article_id)});
 };
 
-function onScroll() {
-  let _current_time = new Date();
-  let current_time = _current_time.getTime();
-console.log(previous_time)
-  if (previous_time === 0) {
-    api.logReaderActivity(api.SCROLL, articleId.article_id);
-    previous_time = current_time;
-  } else {
-    if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
-      api.logReaderActivity(api.SCROLL, articleId.article_id);
-      previous_time = current_time;
-      console.log(previous_time)
-    } else {
-    }
-  }
-}
+//function onScroll() {
+//  let _current_time = new Date();
+//  let current_time = _current_time.getTime();
+//console.log(previous_time)
+//  if (previous_time === 0) {
+//    api.logReaderActivity(api.SCROLL, articleId.article_id);
+//    previous_time = current_time;
+//  } else {
+//    if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
+//      api.logReaderActivity(api.SCROLL, articleId.article_id);
+//      previous_time = current_time;
+//      console.log(previous_time)
+//    } else {
+//    }
+//  }
+//}
 
 function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
+  api.logReaderActivity("EXTENSION - ", api.PERSONAL_COPY,  articleId.article_id);
 };
   
-function toggle(state, togglerFunction) {
-  togglerFunction(!state);
-}
+//function toggle(state, togglerFunction) {
+//  togglerFunction(!state);
+//}
 
   if (interactiveTextArray === undefined) {
     return <p>Loading</p>;
