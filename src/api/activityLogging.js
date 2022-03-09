@@ -16,6 +16,8 @@ Zeeguu_API.prototype.SCROLL = "SCROLL";
 Zeeguu_API.prototype.STAR_ARTICLE = "STAR ARTICLE";
 Zeeguu_API.prototype.LIKE_ARTICLE = "LIKE ARTICLE";
 Zeeguu_API.prototype.USER_FEEDBACK = "USER FEEDBACK";
+Zeeguu_API.prototype.EXTENSION_FEEDBACK = "EXTENSION FEEDBACK";
+Zeeguu_API.prototype.PERSONAL_COPY = "PERSONAL COPY";
 Zeeguu_API.prototype.WORDS_REVIEW = "WORDS_REVIEW";
 
 // Reader Closing Actions
@@ -62,10 +64,11 @@ Zeeguu_API.prototype.logUserActivity = function (
 // Used only for events that happen in the text reader;
 // for any other events, use logUserActivity
 Zeeguu_API.prototype.logReaderActivity = function (
+  source,
   event,
   article_id = "",
   value = "",
   extra_data = ""
 ) {
-  return this.logUserActivity("UMR - " + event, article_id, value, extra_data);
+  return this.logUserActivity(source + event, article_id, value, extra_data);
 };
