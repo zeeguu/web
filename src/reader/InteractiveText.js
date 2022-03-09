@@ -46,7 +46,7 @@ export default class InteractiveText {
         console.log("could not retreive translation");
       });
 
-    this.api.logReaderActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id, word.word);
+    this.api.logReaderActivity("UMR - ", this.api.TRANSLATE_TEXT, this.articleInfo.id, word.word);
   }
 
   selectAlternative(word, alternative, preferredSource, onSuccess) {
@@ -63,7 +63,7 @@ export default class InteractiveText {
     word.service_name = "Own alternative selection";
 
     let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`
-    this.api.logReaderActivity(this.api.SEND_SUGGESTION,this.articleInfo.id,alternative_info);
+    this.api.logReaderActivity("UMR - ", this.api.SEND_SUGGESTION,this.articleInfo.id,alternative_info);
 
     onSuccess();
   }
@@ -91,7 +91,7 @@ export default class InteractiveText {
 
   pronounce(word) {
     this.zeeguuSpeech.speakOut(word.word);
-    this.api.logReaderActivity(this.api.SPEAK_TEXT, this.articleInfo.id, word.word);
+    this.api.logReaderActivity("UMR - ", this.api.SPEAK_TEXT, this.articleInfo.id, word.word);
   }
 
   /**
