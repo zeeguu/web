@@ -817,6 +817,7 @@ let strings = new LocalizedStrings(
         "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
 
       mirceaKeynoteAtEASEAI: "Mircea giver en keynote om Zeeguu på ",
+
       pernilleObtainsFundingPrefix:
         "Pernille Hvalsoe modtager bevillinger fra Styrelsen for International Rekruttering og Integration til et ",
       pernilleObtainsFundingLinkTitle:
