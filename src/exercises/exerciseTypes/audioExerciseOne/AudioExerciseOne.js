@@ -49,7 +49,7 @@ export default function AudioExerciseOne({
   useEffect(() => {
     setTimeout(() => {
       handleSpeak();
-    }, 1500);
+    }, 500);
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
