@@ -6,8 +6,9 @@ import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage } from "../../popup/functions";
-import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
-import strings from "../../zeeguu-react/src/i18n/definitions"
+import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
+import strings from "../../zeeguu-react/src/i18n/definitions";
+import {Link} from "react-router-dom";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -194,6 +195,16 @@ function toggle(state, togglerFunction) {
             )
           }
         })}
+        <s.FeedbackBox>
+        <h2>{strings.reviewVocabulary}</h2>
+        <small>{strings.reviewVocabExplanation}</small>
+        <br />
+        <br />
+        <s.CenteredContent>
+          <a href={"www.zeeguu.org/words/forArticle/" + {articleId}}>{strings.reviewVocabulary}(Broken link)</a>
+          </s.CenteredContent>
+        </s.FeedbackBox>
+
       </StyledModal>
 
       

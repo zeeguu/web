@@ -13,6 +13,7 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 export const StyledModal = styled(ReactModal)`
+  max-width: 700px;
   h1 {
     font-size: 1.9em !important;
   }
