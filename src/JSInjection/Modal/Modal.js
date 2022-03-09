@@ -104,6 +104,7 @@ const handleClose = () => {
 
 function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
+  api.logReaderActivity("EXTENSION - ", api.PERSONAL_COPY,  articleId.article_id);
 };
   
 //function toggle(state, togglerFunction) {
