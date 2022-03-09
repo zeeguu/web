@@ -7,6 +7,7 @@ import { drRegex, cleanDR, cleanDRBefore} from "./Pages/dr";
 import { lexpressRegex, removeasides, unavailableContent } from "./Pages/lexpress";
 import { marianneRegex, removeArticleLinks, getImageMarianne} from "./Pages/marianne";
 import { getImageIngenioren, ingenioerRegex, removeComments } from "./Pages/ingenioeren";
+import { nuRegex, removeNoScript } from "./Pages/nu";
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -57,6 +58,9 @@ export function pageSpecificClean(articleContent, url) {
     }
     if (currentTabURL.match(lemondeRegex)) {
       return removeAuthorDetail(documentClone)
+    }
+    if (currentTabURL.match(nuRegex)) {
+      return removeNoScript(documentClone)
     }
     return documentClone;
   }

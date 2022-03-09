@@ -36,6 +36,7 @@ export function Main() {
   }
 
   let cleanedContent = pageSpecificClean(article.content, url);
+  console.log("page speific clean", cleanedContent)
   cleanedContent = generalClean(cleanedContent);
   cleanedContent = DOMPurify.sanitize(cleanedContent);
   return (
