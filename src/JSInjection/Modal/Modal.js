@@ -28,6 +28,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
         url: url,
         htmlContent: content,
         title: title,
+        authors: author,
       };
       api.findOrCreateArticle(info, (articleId) => setArticleId(JSON.parse(articleId)));
     }
