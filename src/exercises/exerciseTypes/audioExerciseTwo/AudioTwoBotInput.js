@@ -3,20 +3,19 @@ import strings from "../../../i18n/definitions";
 import { useState } from "react";
 import removeAccents from "remove-accents";
 
-export default function MultipleChoicesInput({
+export default function AudioTwoBotInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
   messageToAPI,
   setMessageToAPI,
+  currentChoice,
 }) {
-  const [currentInput, setCurrentInput] = useState("");
+ 
   const [isIncorrect, setIsIncorrect] = useState(false);
-  const [currentChoice, setCurrentChoice] = useState(null);
+ 
 
   function checkResult() {
-    if (currentInput === "") {
-      return;
-    }
+    console.log(currentChoice);
     console.log("checking result...");
     if (currentChoice === true) {
       let concatMessage = messageToAPI + "C";
@@ -29,14 +28,12 @@ export default function MultipleChoicesInput({
     }
   }
 
-  function consoleAlert() {
-    console.log("handle click");
-  }
+  
 
   return (
     <s.BottomRow>
       <>
-        <s.RightFeedbackButton onClick={(checkResult, consoleAlert)}>
+        <s.RightFeedbackButton onClick={(checkResult)}>
           {strings.check}
         </s.RightFeedbackButton>
       </>
