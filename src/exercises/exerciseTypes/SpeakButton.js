@@ -65,6 +65,8 @@ export default function SpeakButton({
   }
 
   return (
+    <>
+    {handleClick !== undefined && (
     <s.SpeakButton
       disabled={isSpeaking}
       className={cls}
@@ -103,5 +105,50 @@ export default function SpeakButton({
         />
       )}
     </s.SpeakButton>
+    
+    )}
+
+{handleClick === undefined && (
+    <s.SpeakButton
+      disabled={isSpeaking}
+      className={cls}
+      onClick={(e) => {
+        !isSpeaking && handleSpeak();
+      }}
+    >
+      {isSpeaking && (
+        <Loader
+          type="Bars"
+          color="#ffffff"
+          width={style.loader_width}
+          height={style.loader_height}
+          style={{
+            paddingLeft: style.loader_paddingLeft,
+            paddingRight: style.loader_paddingRight,
+            marginTop: style.loader_marginTop,
+            marginBottom: style.loader_marginBottom,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        />
+      )}
+
+      {!isSpeaking && (
+        <img
+          src="/static/images/volume_up.svg"
+          alt={strings.speak}
+          width={style.img_width}
+          height={style.img_height}
+          style={{
+            paddingLeft: style.img_paddingLeft,
+            paddingRight: style.img_paddingRight,
+          }}
+        />
+      )}
+    </s.SpeakButton>
+    
+    )}
+    </>
   );
+  
 }

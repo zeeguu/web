@@ -33,9 +33,11 @@ export default function AudioTwoBotInput({
   return (
     <s.BottomRow>
       <>
-        <s.RightFeedbackButton onClick={(checkResult)}>
+        <s.AnimatedOrangeButton 
+        onClick={(checkResult)}
+        >
           {strings.check}
-        </s.RightFeedbackButton>
+        </s.AnimatedOrangeButton>
       </>
     </s.BottomRow>
   );
