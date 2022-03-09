@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-
+import { UMRsource } from "../reader/ArticleReader";
 import { useState, useEffect } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import Word from "./Word";
@@ -29,7 +29,7 @@ export default function WordsForArticle({ api }) {
       setTitle('Words in "' + data.title + '"');
     });
 
-    api.logReaderActivity("UMR - ", api.WORDS_REVIEW, articleID);
+    api.logReaderActivity(UMRsource, api.WORDS_REVIEW, articleID);
 
     // eslint-disable-next-line
   }, []);
@@ -91,7 +91,7 @@ export default function WordsForArticle({ api }) {
           <Link
             to={`/exercises/forArticle/${articleID}`}
             onClick={(e) =>
-              api.logReaderActivity("UMR - ", api.TO_EXERCISES_AFTER_REVIEW, articleID)
+              api.logReaderActivity(UMRsource, api.TO_EXERCISES_AFTER_REVIEW, articleID)
             }
           >
             <OrangeButton>{strings.toExercises}</OrangeButton>
