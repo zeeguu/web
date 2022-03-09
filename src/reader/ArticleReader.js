@@ -106,7 +106,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity("UMR - ", api.LIKE_ARTICLE, articleID);
+    api.logReaderActivity("UMR - ", api.STAR_ARTICLE, articleID);
   }
 
   function setLikedState(state) {
