@@ -6,11 +6,10 @@ import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage } from "../../popup/functions";
-import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
-import strings from "../../zeeguu-react/src/i18n/definitions"
-import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader"
+import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader"
 import ZeeguuLoader from "../ZeeguuLoader";
 import { EXTENSION_SOURCE } from "../constants";
+import ToolbarButtons from "./ToolbarButtons";
 
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language, author }) {
@@ -122,25 +121,12 @@ if (interactiveTextArray === undefined) {
           <StyledButton role="button" onClick={handleClose} id="qtClose">
             X
           </StyledButton>
-          <s.Toolbar  style={{"display": "flex", "justify-content": "flex-end"}}>
-          <button
-            className={translating ? "selected" : ""}
-            onClick={(e) => toggle(translating, setTranslating)}
-          >
-            <img
-              src={chrome.runtime.getURL("images/translate.svg")} 
-              alt={strings.translateOnClick}
-            />
-            <span className="tooltiptext">{strings.translateOnClick}</span>
-          </button>
-          <button
-            className={pronouncing ? "selected" : ""}
-            onClick={(e) => toggle(pronouncing, setPronouncing)}
-          >
-            <img src={chrome.runtime.getURL("images/sound.svg")}  alt={strings.listenOnClick} />
-            <span className="tooltiptext">{strings.listenOnClick}</span>
-          </button>
-        </s.Toolbar>
+          <ToolbarButtons
+           translating={translating}
+           pronouncing={pronouncing}
+           setTranslating={setTranslating}
+           setPronouncing={setPronouncing}
+          />
         </StyledHeading>
         <StyledPersonalCopy onClick={handlePostCopy}>
           Make Personal Copy
