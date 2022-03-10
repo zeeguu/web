@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle`
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(255,208,71) !important;
+        background-color: #FFE59E !important;
       }
 `;
 
