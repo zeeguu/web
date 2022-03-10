@@ -27,17 +27,19 @@ export default function AudioTwoBotInput({
       handleIncorrectAnswer();
     }
   }
-
+  
+  const OrangeButton = isIncorrect ? s.AnimatedOrangeButton : s.OrangeButton;
   
 
   return (
     <s.BottomRow>
       <>
-        <s.AnimatedOrangeButton 
+        <OrangeButton 
         onClick={(checkResult)}
+        onAnimationEnd={() => setIsIncorrect(false)}
         >
           {strings.check}
-        </s.AnimatedOrangeButton>
+        </OrangeButton>
       </>
     </s.BottomRow>
   );
