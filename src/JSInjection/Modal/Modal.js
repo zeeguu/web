@@ -59,7 +59,6 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
       };
       let image = getImage(content);
       setArticleImage(image);
-      console.log(articleInfo)
       let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
       setInteractiveTextArray(arrInteractive);
   
