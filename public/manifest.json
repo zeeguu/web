@@ -21,6 +21,6 @@
       "128": "/images/zeeguu128.png"
     },
     "web_accessible_resources": [{
-      "resources": ["images/translate.svg", "images/sound.svg"],
+      "resources": ["images/translate.svg", "images/sound.svg", "images/zeeguuLogo.svg"],
       "matches": ["<all_urls>"]}]
 }

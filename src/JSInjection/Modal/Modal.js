@@ -1,6 +1,6 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy, GlobalStyle } from "./Modal.styles";
+import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy, GlobalStyle} from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
@@ -9,6 +9,7 @@ import { getNativeLanguage } from "../../popup/functions";
 import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
 import strings from "../../zeeguu-react/src/i18n/definitions"
 import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader"
+import ZeeguuLoader from "../ZeeguuLoader";
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language, author }) {
   const [interactiveTextArray, setInteractiveTextArray] = useState();
@@ -88,10 +89,9 @@ function handlePostCopy() {
   api.logReaderActivity("EXTENSION - ", api.PERSONAL_COPY,  articleId.article_id);
 };
   
-
-  if (interactiveTextArray === undefined) {
-    return <p>Loading</p>;
-  }
+if (interactiveTextArray === undefined) {
+  return <ZeeguuLoader/>
+}
 
   return (
     <div>
