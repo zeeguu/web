@@ -10,6 +10,8 @@ import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
 import strings from "../../zeeguu-react/src/i18n/definitions"
 import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader"
 import ZeeguuLoader from "../ZeeguuLoader";
+import { EXTENSION_SOURCE } from "../constants";
+
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language, author }) {
   const [interactiveTextArray, setInteractiveTextArray] = useState();
@@ -53,16 +55,16 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   
       let itTitle = new InteractiveText(title, articleInfo, api);
       setInteractiveTitle(itTitle);
-      api.logReaderActivity("EXTENSION - ", api.OPEN_ARTICLE,  articleId.article_id);
+      api.logReaderActivity(EXTENSION_SOURCE, api.OPEN_ARTICLE,  articleId.article_id);
 
-      window.addEventListener("focus", function(){onFocus("EXTENSION - ", api, articleId.article_id)});
-      window.addEventListener("blur", function(){onBlur("EXTENSION - ", api, articleId.article_id)});
+      window.addEventListener("focus", function(){onFocus(EXTENSION_SOURCE, api, articleId.article_id)});
+      window.addEventListener("blur", function(){onBlur(EXTENSION_SOURCE, api, articleId.article_id)});
 
       let getModalClass = document.getElementsByClassName("Modal")
       if ((getModalClass !== undefined) && (getModalClass !== null)){
         setTimeout(() => {
           if(getModalClass.item(0) != undefined){
-            getModalClass.item(0).addEventListener("scroll", function(){onScroll("EXTENSION - ", api, articleId.article_id)});
+            getModalClass.item(0).addEventListener("scroll", function(){onScroll(EXTENSION_SOURCE, api, articleId.article_id)});
           }
         }, 0);
       }
@@ -75,18 +77,18 @@ localStorage.setItem("native_language", nativeLang)
 const handleClose = () => {
   location.reload();
   setModalIsOpen(false);
-  api.logReaderActivity("EXTENSION - ", "ARTICLE CLOSED", articleId.article_id);
-  window.removeEventListener("focus", function(){onFocus("EXTENSION - ", api, articleId.article_id)});
-  window.removeEventListener("blur", function(){onBlur("EXTENSION - ", api, articleId.article_id)});
+  api.logReaderActivity(EXTENSION_SOURCE, "ARTICLE CLOSED", articleId.article_id);
+  window.removeEventListener("focus", function(){onFocus(EXTENSION_SOURCE, api, articleId.article_id)});
+  window.removeEventListener("blur", function(){onBlur(EXTENSION_SOURCE, api, articleId.article_id)});
   document.getElementById("scrollHolder") !== null &&
   document
     .getElementById("scrollHolder")
-    .removeEventListener("scroll", function(){onScroll("EXTENSION - ", api, articleId.article_id)});
+    .removeEventListener("scroll", function(){onScroll(EXTENSION_SOURCE, api, articleId.article_id)});
 };
 
 function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
-  api.logReaderActivity("EXTENSION - ", api.PERSONAL_COPY,  articleId.article_id);
+  api.logReaderActivity(EXTENSION_SOURCE, api.PERSONAL_COPY,  articleId.article_id);
 };
   
 if (interactiveTextArray === undefined) {
