@@ -8,35 +8,41 @@ export const GlobalStyle = createGlobalStyle`
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(255,208,71) !important;
+        background-color: #FFE59E !important;
       }
 `;
 
 export const StyledModal = styled(ReactModal)`
-  max-width: 700px; 
+  max-width: 700px;
   h1 {
     font-size: 1.9em !important;
+    font-weight: 800;
   }
 
   h2 {
-    font-size: 1.7rem !important;
+    font-size: 1.5rem !important;
   }
 
   h3 {
-    font-size: 1.5rem !important;
+    font-size: 1.3rem !important;
   }
 
   h4,
   h5,
   h6 {
-    font-size: 1.4rem !important;
+    font-size: 1.2rem !important;
   }
 
   p {
     font-size: 1.1rem !important;
   }
 
-  font-family: Arial, sans-serif;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   position: fixed;
   top: 0px;
   left: 0;
@@ -56,11 +62,11 @@ export const StyledModal = styled(ReactModal)`
   }
 
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(255, 208, 71);
+    box-shadow: inset 0 0 6px rgb(230, 227, 220) ;
   }
 
   ::-webkit-scrollbar-thumb {
-    box-shadow: inset 0 0 6px rgb(255, 209, 71);
+    box-shadow: inset 0 0 6px rgb(204, 203, 200);
   }
 
   #zeeguuImage {
@@ -69,7 +75,7 @@ export const StyledModal = styled(ReactModal)`
   }
 `;
 
-export const StyledButton = styled.div`
+export const StyledCloseButton = styled.div`
   cursor: pointer;
   right: 0px;
   padding: 20px;
@@ -77,23 +83,34 @@ export const StyledButton = styled.div`
   margin: 10px;
   padding: 1px;
   float: right;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
 `;
 
 export const StyledHeading = styled.div`
-  height: 110px;
+  height: 90x;
   background-color: white;
   padding-top: 20px;
   right: 0px;
   top: 0px;
   position: sticky;
   width: 100%;
-  border-bottom: 1px solid rgb(239, 239, 239);
+  border-bottom: 1px solid rgb(250, 250, 250);
 `;
-export const StyledPersonalCopy = styled.button`
-  background-color: rgba(255, 229, 158);
+export const StyledButton = styled.button`
+  background-color: #e7e7e9;
   cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  padding: 7px;
+  margin: 5px;
 
-  :hover {
-    background-color: rgba(255, 187, 84);
-  }
+:hover,
+:focus {
+  box-shadow: 0 0.5em 0.5em -0.4em rgba(255,208,71);
+}
 `;

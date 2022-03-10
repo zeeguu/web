@@ -8,6 +8,7 @@ import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
 import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
 import DOMPurify from "dompurify";
+import ZeeguuLoader from "./ZeeguuLoader";
 
 export function Main() {
   let api = new Zeeguu_API("https://api.zeeguu.org");
@@ -32,7 +33,7 @@ export function Main() {
   api.session = sessionId;
 
   if (article === undefined) {
-    return <div>Loading</div>;
+    return <ZeeguuLoader/>  
   }
 
   let cleanedContent = pageSpecificClean(article.content, url);
@@ -55,6 +56,8 @@ export function Main() {
 document.open();
 document.write();
 document.close();
+
+
 
 const div = document.createElement("div");
 document.body.appendChild(div);

@@ -1,16 +1,18 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy, GlobalStyle } from "./Modal.styles";
+import { StyledModal, StyledCloseButton, StyledHeading, StyledButton, GlobalStyle } from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage } from "../../popup/functions";
-import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
-import strings from "../../zeeguu-react/src/i18n/definitions"
+import ZeeguuLoader from "../ZeeguuLoader";
+import { EXTENSION_SOURCE } from "../constants";
+import ToolbarButtons from "./ToolbarButtons";
+import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
+import strings from "../../zeeguu-react/src/i18n/definitions";
+import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader";
 
-let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
-let previous_time = 0; // since sent a scroll update
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language, author }) {
   const [interactiveTextArray, setInteractiveTextArray] = useState();
@@ -20,49 +22,59 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
   const [pronouncing, setPronouncing] = useState(false);
   const [articleId, setArticleId] = useState();
   const [nativeLang, setNativeLang] = useState();
-  
+  const [DBArticleInfo, setDBArticleInfo] = useState();
+  const [articleLanguage, setArticleLanguage] = useState();
+ 
   useEffect(() => {
     if (content !== undefined) {
       let info = {
         url: url,
         htmlContent: content,
         title: title,
+        authors: author,
       };
-      api.findCreateArticle(info, (articleId) => setArticleId(JSON.parse(articleId)));
+      api.findOrCreateArticle(info, (result_dict) =>
+        setDBArticleInfo(JSON.parse(result_dict))
+      );
     }
-    getNativeLanguage().then((result)=>
-      setNativeLang(result)
-    )
+    getNativeLanguage().then((result) => setNativeLang(result));
   }, []);
+
+  useEffect(() => {
+    if (DBArticleInfo !== undefined) {
+      setArticleId(DBArticleInfo.id);
+      setArticleLanguage(DBArticleInfo.language);
+      console.log(DBArticleInfo.language);
+    }
+  }, [DBArticleInfo]);
 
   useEffect(() => {
     if (articleId !== undefined) {
       let articleInfo = {
         url: url,
         content: content,
-        id: articleId.article_id,
+        id: articleId,
         title: title,
-        language: language,
+        language: articleLanguage,
         starred: false,
       };
       let image = getImage(content);
       setArticleImage(image);
-  
       let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
       setInteractiveTextArray(arrInteractive);
   
       let itTitle = new InteractiveText(title, articleInfo, api);
       setInteractiveTitle(itTitle);
-      api.logReaderActivity(api.OPEN_ARTICLE,  articleId.article_id);
+      api.logReaderActivity(EXTENSION_SOURCE, api.OPEN_ARTICLE,  articleId.article_id);
 
-      window.addEventListener("focus", onFocus);
-      window.addEventListener("blur", onBlur);
+      window.addEventListener("focus", function(){onFocus(EXTENSION_SOURCE, api, articleId.article_id)});
+      window.addEventListener("blur", function(){onBlur(EXTENSION_SOURCE, api, articleId.article_id)});
 
       let getModalClass = document.getElementsByClassName("Modal")
       if ((getModalClass !== undefined) && (getModalClass !== null)){
         setTimeout(() => {
           if(getModalClass.item(0) != undefined){
-            getModalClass.item(0).addEventListener("scroll", onScroll);
+            getModalClass.item(0).addEventListener("scroll", function(){onScroll(EXTENSION_SOURCE, api, articleId.article_id)});
           }
         }, 0);
       }
@@ -72,53 +84,39 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
 
 localStorage.setItem("native_language", nativeLang)
 
-function onFocus() {
-  api.logReaderActivity(api.ARTICLE_FOCUSED, articleId.article_id);
-}
-function onBlur() {
-  api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleId.article_id);
-}
 
-const handleClose = () => {
+function handleClose() {
   location.reload();
   setModalIsOpen(false);
-  api.logReaderActivity("ARTICLE CLOSED", articleId.article_id);
-  window.removeEventListener("focus", onFocus);
-  window.removeEventListener("blur", onBlur);
+  api.logReaderActivity(EXTENSION_SOURCE, "ARTICLE CLOSED", articleId.article_id);
+  window.removeEventListener("focus", function(){onFocus(EXTENSION_SOURCE, api, articleId.article_id)});
+  window.removeEventListener("blur", function(){onBlur(EXTENSION_SOURCE, api, articleId.article_id)});
   document.getElementById("scrollHolder") !== null &&
   document
     .getElementById("scrollHolder")
-    .removeEventListener("scroll", onScroll);
+    .removeEventListener("scroll", function(){onScroll(EXTENSION_SOURCE, api, articleId.article_id)});
 };
 
-function onScroll() {
-  let _current_time = new Date();
-  let current_time = _current_time.getTime();
-console.log(previous_time)
-  if (previous_time === 0) {
-    api.logReaderActivity(api.SCROLL, articleId.article_id);
-    previous_time = current_time;
-  } else {
-    if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
-      api.logReaderActivity(api.SCROLL, articleId.article_id);
-      previous_time = current_time;
-      console.log(previous_time)
-    } else {
-    }
-  }
+if (!modalIsOpen) {
+  location.reload();
 }
 
 function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
+  api.logReaderActivity(EXTENSION_SOURCE, api.PERSONAL_COPY,  articleId.article_id);
 };
-  
-function toggle(state, togglerFunction) {
-  togglerFunction(!state);
-}
 
-  if (interactiveTextArray === undefined) {
-    return <p>Loading</p>;
+function reportProblem(e) {
+  let answer = prompt("What is wrong with the article?");
+  if (answer) {
+    let feedback = "problem_" + answer.replace(/ /g, "_");
+    api.logReaderActivity("EXTENSION - ", api.EXTENSION_FEEDBACK, articleId, feedback);
   }
+}
+  
+if (interactiveTextArray === undefined) {
+  return <ZeeguuLoader/>
+}
 
   return (
     <div>
@@ -129,32 +127,20 @@ function toggle(state, togglerFunction) {
         id="scrollHolder"
       >
          <StyledHeading >
-          <StyledButton role="button" onClick={handleClose} id="qtClose">
+          <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
             X
-          </StyledButton>
-          <s.Toolbar  style={{"display": "flex", "justify-content": "flex-end"}}>
-          <button
-            className={translating ? "selected" : ""}
-            onClick={(e) => toggle(translating, setTranslating)}
-          >
-            <img
-              src={chrome.runtime.getURL("images/translate.svg")} 
-              alt={strings.translateOnClick}
-            />
-            <span className="tooltiptext">{strings.translateOnClick}</span>
-          </button>
-          <button
-            className={pronouncing ? "selected" : ""}
-            onClick={(e) => toggle(pronouncing, setPronouncing)}
-          >
-            <img src={chrome.runtime.getURL("images/sound.svg")}  alt={strings.listenOnClick} />
-            <span className="tooltiptext">{strings.listenOnClick}</span>
-          </button>
-        </s.Toolbar>
+            </StyledCloseButton>
+          <ToolbarButtons
+           translating={translating}
+           pronouncing={pronouncing}
+           setTranslating={setTranslating}
+           setPronouncing={setPronouncing}
+          />
         </StyledHeading>
-        <StyledPersonalCopy onClick={handlePostCopy}>
+        <StyledButton onClick={reportProblem} >Report problems</StyledButton>
+        <StyledButton onClick={handlePostCopy}>
           Make Personal Copy
-          </StyledPersonalCopy>
+          </StyledButton>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}
@@ -194,9 +180,16 @@ function toggle(state, togglerFunction) {
             )
           }
         })}
+        <s.FeedbackBox>
+        <h2>{strings.reviewVocabulary}</h2>
+        <small>{strings.reviewVocabExplanation}</small>
+        <br />
+        <br />
+        <s.CenteredContent>
+          <a href="http://zeeguu.org" target="_blank" rel="noopener noreferrer">{strings.reviewVocabulary} » (Broken link)</a>
+          </s.CenteredContent>
+        </s.FeedbackBox>
       </StyledModal>
-
-      
     </div>
   );
 }
