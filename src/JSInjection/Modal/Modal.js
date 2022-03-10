@@ -86,6 +86,10 @@ const handleClose = () => {
     .removeEventListener("scroll", function(){onScroll(EXTENSION_SOURCE, api, articleId.article_id)});
 };
 
+if(!modalIsOpen){
+  location.reload();
+}
+
 function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
   api.logReaderActivity(EXTENSION_SOURCE, api.PERSONAL_COPY,  articleId.article_id);
