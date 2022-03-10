@@ -107,7 +107,7 @@ export const StyledButton = styled.button`
   border-radius: 10px;
   border: none;
   padding: 7px;
-  margin: 5px;
+  margin: 5px 5px 5px 0px;
 
 :hover,
 :focus {
