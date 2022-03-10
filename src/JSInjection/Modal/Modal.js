@@ -1,15 +1,17 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy, GlobalStyle} from "./Modal.styles";
+import { StyledModal, StyledCloseButton, StyledHeading, StyledButton, GlobalStyle } from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage } from "../../popup/functions";
-import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader"
 import ZeeguuLoader from "../ZeeguuLoader";
 import { EXTENSION_SOURCE } from "../constants";
 import ToolbarButtons from "./ToolbarButtons";
+import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
+import strings from "../../zeeguu-react/src/i18n/definitions";
+import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader";
 
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language, author }) {
@@ -83,8 +85,7 @@ export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, l
 localStorage.setItem("native_language", nativeLang)
 
 
-
-const handleClose = () => {
+function handleClose() {
   location.reload();
   setModalIsOpen(false);
   api.logReaderActivity(EXTENSION_SOURCE, "ARTICLE CLOSED", articleId.article_id);
@@ -96,7 +97,7 @@ const handleClose = () => {
     .removeEventListener("scroll", function(){onScroll(EXTENSION_SOURCE, api, articleId.article_id)});
 };
 
-if(!modalIsOpen){
+if (!modalIsOpen) {
   location.reload();
 }
 
@@ -104,6 +105,14 @@ function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
   api.logReaderActivity(EXTENSION_SOURCE, api.PERSONAL_COPY,  articleId.article_id);
 };
+
+function reportProblem(e) {
+  let answer = prompt("What is wrong with the article?");
+  if (answer) {
+    let feedback = "problem_" + answer.replace(/ /g, "_");
+    api.logReaderActivity("EXTENSION - ", api.EXTENSION_FEEDBACK, articleId, feedback);
+  }
+}
   
 if (interactiveTextArray === undefined) {
   return <ZeeguuLoader/>
@@ -118,9 +127,9 @@ if (interactiveTextArray === undefined) {
         id="scrollHolder"
       >
          <StyledHeading >
-          <StyledButton role="button" onClick={handleClose} id="qtClose">
+          <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
             X
-          </StyledButton>
+            </StyledCloseButton>
           <ToolbarButtons
            translating={translating}
            pronouncing={pronouncing}
@@ -128,9 +137,10 @@ if (interactiveTextArray === undefined) {
            setPronouncing={setPronouncing}
           />
         </StyledHeading>
-        <StyledPersonalCopy onClick={handlePostCopy}>
+        <StyledButton onClick={reportProblem} >Report problems</StyledButton>
+        <StyledButton onClick={handlePostCopy}>
           Make Personal Copy
-          </StyledPersonalCopy>
+          </StyledButton>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}
@@ -170,9 +180,16 @@ if (interactiveTextArray === undefined) {
             )
           }
         })}
+        <s.FeedbackBox>
+        <h2>{strings.reviewVocabulary}</h2>
+        <small>{strings.reviewVocabExplanation}</small>
+        <br />
+        <br />
+        <s.CenteredContent>
+          <a href="http://zeeguu.org" target="_blank" rel="noopener noreferrer">{strings.reviewVocabulary} » (Broken link)</a>
+          </s.CenteredContent>
+        </s.FeedbackBox>
       </StyledModal>
-
-      
     </div>
   );
 }

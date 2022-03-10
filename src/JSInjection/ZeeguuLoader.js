@@ -8,6 +8,7 @@ export default function ZeeguuLoader() {
         <img
           className="logo"
           src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+          alt="Zeeguu logo"
         />
       </div>
     </StyledLoader>
