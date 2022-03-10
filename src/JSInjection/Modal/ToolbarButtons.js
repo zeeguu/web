@@ -4,7 +4,7 @@ import {toggle} from "../../zeeguu-react/src/reader/ArticleReader"
 
 export default function ToolbarButtons({translating, setTranslating, pronouncing, setPronouncing}) {
   return (
-    <s.Toolbar style={{ display: "flex", "justify-content": "flex-end" }}>
+    <s.Toolbar style={{ display: "flex", "justify-content": "flex-end", height: "75px"}}>
       <button
         className={translating ? "selected" : ""}
         onClick={(e) => toggle(translating, setTranslating)}
