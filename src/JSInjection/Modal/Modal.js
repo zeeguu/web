@@ -33,7 +33,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
         authors: author,
       };
       api.findOrCreateArticle(info, (result_dict) =>
-        setDBArticleInfo(JSON.parse(result_dict))
+      setDBArticleInfo(JSON.parse(result_dict))
       );
     }
     getNativeLanguage().then((result) => setNativeLang(result));
