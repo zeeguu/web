@@ -63,7 +63,7 @@ export default function BotInput({
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
     <>
-      <s.BottomRow>
+      <s.BottomRowCompact>
         <s.LeftFeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
           {strings.hint}
         </s.LeftFeedbackButton>
@@ -86,7 +86,7 @@ export default function BotInput({
         <s.RightFeedbackButton onClick={checkResult}>
           {strings.check}
         </s.RightFeedbackButton>
-      </s.BottomRow>
+      </s.BottomRowCompact>
     </>
   );
 }
