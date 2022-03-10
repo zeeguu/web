@@ -1,14 +1,14 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
-import { StyledModal, StyledButton, StyledHeading, StyledPersonalCopy, GlobalStyle } from "./Modal.styles";
+import { StyledModal, StyledCloseButton, StyledHeading, StyledButton, GlobalStyle } from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText"
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage } from "../../popup/functions";
-import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc"
-import strings from "../../zeeguu-react/src/i18n/definitions"
-import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader"
+import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
+import strings from "../../zeeguu-react/src/i18n/definitions";
+import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -86,32 +86,18 @@ const handleClose = () => {
     .removeEventListener("scroll", function(){onScroll("EXTENSION - ", api, articleId.article_id)});
 };
 
-//function onScroll() {
-//  let _current_time = new Date();
-//  let current_time = _current_time.getTime();
-//console.log(previous_time)
-//  if (previous_time === 0) {
-//    api.logReaderActivity(api.SCROLL, articleId.article_id);
-//    previous_time = current_time;
-//  } else {
-//    if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
-//      api.logReaderActivity(api.SCROLL, articleId.article_id);
-//      previous_time = current_time;
-//      console.log(previous_time)
-//    } else {
-//    }
-//  }
-//}
-
 function handlePostCopy() {
   api.makePersonalCopy(articleId, (message) => alert(message));
   api.logReaderActivity("EXTENSION - ", api.PERSONAL_COPY,  articleId.article_id);
 };
-  
-//function toggle(state, togglerFunction) {
-//  togglerFunction(!state);
-//}
 
+function reportProblem(e) {
+  let answer = prompt("What is wrong with the article?");
+  if (answer) {
+    let feedback = "problem_" + answer.replace(/ /g, "_");
+    api.logReaderActivity("EXTENSION - ", api.EXTENSION_FEEDBACK, articleId, feedback);
+  }
+}
   if (interactiveTextArray === undefined) {
     return <p>Loading</p>;
   }
@@ -125,9 +111,9 @@ function handlePostCopy() {
         id="scrollHolder"
       >
          <StyledHeading >
-          <StyledButton role="button" onClick={handleClose} id="qtClose">
+          <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
             X
-          </StyledButton>
+          </StyledCloseButton>
           <s.Toolbar  style={{"display": "flex", "justify-content": "flex-end"}}>
           <button
             className={translating ? "selected" : ""}
@@ -148,9 +134,10 @@ function handlePostCopy() {
           </button>
         </s.Toolbar>
         </StyledHeading>
-        <StyledPersonalCopy onClick={handlePostCopy}>
+        <StyledButton onClick={reportProblem}>Report problems</StyledButton>
+        <StyledButton onClick={handlePostCopy}>
           Make Personal Copy
-          </StyledPersonalCopy>
+          </StyledButton>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}
@@ -196,7 +183,7 @@ function handlePostCopy() {
         <br />
         <br />
         <s.CenteredContent>
-          <a href={"www.zeeguu.org/words/forArticle/" + {articleId}}>{strings.reviewVocabulary}(Broken link)</a>
+          <a href="http://zeeguu.org" target="_blank" rel="noopener noreferrer">{strings.reviewVocabulary} » (Broken link)</a>
           </s.CenteredContent>
         </s.FeedbackBox>
 

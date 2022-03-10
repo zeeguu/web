@@ -69,7 +69,7 @@ export const StyledModal = styled(ReactModal)`
   }
 `;
 
-export const StyledButton = styled.div`
+export const StyledCloseButton = styled.div`
   cursor: pointer;
   right: 0px;
   padding: 20px;
@@ -89,11 +89,16 @@ export const StyledHeading = styled.div`
   width: 100%;
   border-bottom: 1px solid rgb(239, 239, 239);
 `;
-export const StyledPersonalCopy = styled.button`
-  background-color: rgba(255, 229, 158);
+export const StyledButton = styled.button`
+  background-color: #e7e7e9;
   cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  padding: 7px;
+  margin: 5px;
 
-  :hover {
-    background-color: rgba(255, 187, 84);
-  }
+:hover,
+:focus {
+  box-shadow: 0 0.5em 0.5em -0.4em rgba(255,208,71);
+}
 `;
