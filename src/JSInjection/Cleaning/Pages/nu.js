@@ -3,14 +3,14 @@ export const nuRegex = /^(http|https):\/\/(www.)nu.nl\/.*/;
 export function removeNoScript(documentClone) {
     const noscript = documentClone.getElementsByTagName("noscript");
     console.log("noscript", noscript)
-        for (let i = 0; i< noscript.length; i++) {
-            if (noscript[i].parentNode) {
-                while (noscript[i].firstChild) {
-                    noscript[i].removeChild(noscript[i].firstChild)
-                }
-            //noscript[i].parentNode.removeChild(noscript[i])
+        while(noscript.length > 0) {
+            let elem = noscript[0];
+            console.log("element ", elem)
+            console.log(elem.parentElement);
+            elem.parentElement.removeChild(elem);
         }
         console.log("loop", documentClone)
-        }
+        
     return documentClone
 }
+//not working - whyyyyyy
