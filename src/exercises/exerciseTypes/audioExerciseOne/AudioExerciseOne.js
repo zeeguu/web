@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
-
 import BotInput from "./BotInput";
 import SpeakButton from "../SpeakButton";
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
-import LoadingAnimation from "../../../components/LoadingAnimation.js";
-import InteractiveText from "../../../reader/InteractiveText.js";
 import ZeeguuSpeech from "../../../speech/ZeeguuSpeech.js";
+
 const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
 export default function AudioExerciseOne({
   api,
@@ -26,72 +24,21 @@ export default function AudioExerciseOne({
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
-  const [interactiveText, setInteractiveText] = useState();
-  const [translatedWords, setTranslatedWords] = useState([]);
 
   const bookmarkToStudy = bookmarksToStudy[0];
 
-  const initialBookmarkState = [
-    {
-      bookmark: bookmarksToStudy[0],
-      messageToAPI: "",
-    },
-  ];
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
-  const [isSpeaking, setIsSpeaking] = useState(false);
 
   async function handleSpeak() {
-    setIsSpeaking(true);
     await speech.speakOut(bookmarkToStudy.from);
-    setIsSpeaking(false);
   }
+
   useEffect(() => {
     setTimeout(() => {
       handleSpeak();
     }, 500);
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
-      );
-
-      console.log(bookmarksToStudy[0].from);
-      setArticleInfo(articleInfo);
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    checkTranslations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [translatedWords]);
-
-  function checkTranslations() {
-    let bookmarkWords = bookmarksToStudy[0].from.split(" ");
-    bookmarkWords.forEach((word) => {
-      translatedWords.forEach((translation) => {
-        let splitTranslation = translation.split(" ");
-        if (splitTranslation.length > 1) {
-          splitTranslation.forEach((translatedWord) => {
-            if (translatedWord === word) {
-              notifyBookmarkTranslation();
-            }
-          });
-        } else {
-          if (translation === word) {
-            notifyBookmarkTranslation();
-          }
-        }
-      });
-    });
-  }
-
-  function notifyBookmarkTranslation() {
-    let concatMessage = messageToAPI + "T";
-    handleShowSolution(concatMessage);
-  }
+  });
 
   function inputKeyPress() {
     if (firstTypeTime === undefined) {
@@ -141,22 +88,19 @@ export default function AudioExerciseOne({
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setFirstTypeTime();
   }
-  if (!articleInfo) {
-    return <LoadingAnimation />;
-  }
 
   return (
     <s.Exercise>
       <div className="headline">{strings.audioExerciseHeadline}</div>
       {!isCorrect && (
         <>
-          <s.CenteredRow>
+          <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={bookmarkToStudy}
               api={api}
               styling="large"
             />
-          </s.CenteredRow>
+          </s.CenteredRowTall>
 
           <BotInput
             handleCorrectAnswer={handleCorrectAnswer}
@@ -170,7 +114,7 @@ export default function AudioExerciseOne({
       )}
       {isCorrect && (
         <>
-          <h1>{bookmarksToStudy[0].from + " = " + bookmarksToStudy[0].to}</h1>
+          <h1>{bookmarksToStudy[0].from}</h1>
           <NextNavigation
             api={api}
             bookmarksToStudy={bookmarksToStudy}
