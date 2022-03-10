@@ -110,7 +110,7 @@ function reportProblem(e) {
   let answer = prompt("What is wrong with the article?");
   if (answer) {
     let feedback = "problem_" + answer.replace(/ /g, "_");
-    api.logReaderActivity("EXTENSION - ", api.EXTENSION_FEEDBACK, articleId, feedback);
+    api.logReaderActivity(EXTENSION_SOURCE, api.EXTENSION_FEEDBACK, articleId, feedback);
   }
 }
   
