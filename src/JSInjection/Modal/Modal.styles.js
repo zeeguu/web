@@ -71,6 +71,7 @@ export const StyledModal = styled(ReactModal)`
 
   #zeeguuImage {
     max-height: 250px !important;
+    max-width: 600px;
     width: auto !important;
   }
 `;
