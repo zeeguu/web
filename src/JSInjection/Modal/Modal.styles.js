@@ -15,27 +15,33 @@ export const GlobalStyle = createGlobalStyle`
 export const StyledModal = styled(ReactModal)`
   h1 {
     font-size: 1.9em !important;
+    font-weight: 800;
   }
 
   h2 {
-    font-size: 1.7rem !important;
+    font-size: 1.5rem !important;
   }
 
   h3 {
-    font-size: 1.5rem !important;
+    font-size: 1.3rem !important;
   }
 
   h4,
   h5,
   h6 {
-    font-size: 1.4rem !important;
+    font-size: 1.2rem !important;
   }
 
   p {
     font-size: 1.1rem !important;
   }
 
-  font-family: Arial, sans-serif;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   position: fixed;
   top: 0px;
   left: 0;
@@ -76,6 +82,12 @@ export const StyledButton = styled.div`
   margin: 10px;
   padding: 1px;
   float: right;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
 `;
 
 export const StyledHeading = styled.div`
