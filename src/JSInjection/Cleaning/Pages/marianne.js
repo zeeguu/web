@@ -1,6 +1,6 @@
 export const marianneRegex = /(http|https):\/\/(www\.marianne\.net).*/;
 
-export function removeArticleLinks(content) {
+function removeArticleLinks(content) {
     let div = document.createElement("div");
     div.innerHTML = content;
     let elements = div.getElementsByTagName("p");
@@ -13,7 +13,7 @@ export function removeArticleLinks(content) {
     
 }
 
-export function getImageMarianne(content, html) {
+function getImageMarianne(content, html) {
     //search for image in readability content
     let readabilitydiv = document.createElement("div");
     readabilitydiv.innerHTML = content;
@@ -30,4 +30,10 @@ export function getImageMarianne(content, html) {
     }
     return readabilitydiv.innerHTML
 
+}
+
+export function cleanMarianne(content, html) {
+    let cleanedContent = removeArticleLinks(content);
+    let a = getImageMarianne(cleanedContent, html);
+    return a
 }

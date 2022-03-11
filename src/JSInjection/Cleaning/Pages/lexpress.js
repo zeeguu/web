@@ -1,6 +1,6 @@
 export const lexpressRegex = /(http|https):\/\/(.*)(.express.fr).*/;
 
-export function removeasides(content) {
+function removeAsides(content) {
   let div = document.createElement("div");
   div.innerHTML = content;
   let opinions = div.querySelector("#placeholder--plus-lus");
@@ -14,7 +14,7 @@ export function removeasides(content) {
   return div.innerHTML;
 }
 
-export function unavailableContent(content) {
+function unavailableContent(content) {
   //TODO: find better solution
   if(content.includes("Offrez gratuitement la lecture de cet article à un proche")) {
     return "<p>This article cannot be read in zeeguu reader</p>";
@@ -23,4 +23,20 @@ export function unavailableContent(content) {
     div.innerHTML = content;
     return div.innerHTML;
   }
+}
+
+//remove illustration__caption class - not working
+export function removeCaption(documentClone) {
+  const captions = documentClone.getElementsByClassName("illustration__caption");
+  console.log(captions)
+  while(captions.length > 0) {
+    captions[0].parentNode.removeChild(captions[0])
+  }
+  return documentClone
+}  
+
+export function cleanLexpress(content) {
+  let cleanedContent = removeAsides(content);
+  cleanedContent = unavailableContent(cleanedContent)
+  return cleanedContent;
 }

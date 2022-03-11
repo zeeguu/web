@@ -1,6 +1,6 @@
 export const ingenioerRegex = /^(http|https):\/\/ing.dk\/.*/;
 
-export function getImageIngenioren(content, html) {
+function getImageIngenioren(content, html) {
   //search for image in readability content
   let readabilitydiv = document.createElement("div");
   readabilitydiv.innerHTML = content;
@@ -21,7 +21,7 @@ export function getImageIngenioren(content, html) {
   return readabilitydiv.innerHTML;
 }
 
-export function removeComments(content, html) {
+function removeComments(content, html) {
   //for pages where only comments are displayed
   //content of the article is inside div class=panel-panel panel-col
   let div = document.createElement("div");
@@ -31,10 +31,14 @@ export function removeComments(content, html) {
     let div = document.createElement("div");
     div.innerHTML = html;
     let articleContent = div.getElementsByClassName("panel-panel panel-col")[0];
-    console.log("panel-panel", articleContent)
     let newContent = document.createElement("div");
     newContent.innerHTML = articleContent;
     return articleContent.innerHTML;
   }
   return div.innerHTML;
+}
+export function ingenioerenClean(content, html) {
+  let contentWithImage = getImageIngenioren(content, html);
+  contentWithImage = removeComments(contentWithImage, html);
+  return contentWithImage;
 }

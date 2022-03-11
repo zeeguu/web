@@ -12,7 +12,6 @@ import ToolbarButtons from "./ToolbarButtons";
 import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader";
 import ReviewVocabulary from "./ReviewVocabulary";
 
-
 export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, author}) {
   const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
