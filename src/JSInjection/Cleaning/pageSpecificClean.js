@@ -1,14 +1,14 @@
-import {btRegex, addImageBT} from "./Pages/bt";
-import {wikiRegex, removefromWiki} from "./Pages/wiki";
+import { btRegex, addImageBT } from "./Pages/bt";
+import { wikiRegex, removefromWiki } from "./Pages/wiki";
 import { lefigaroRegex, addImageLefirago } from "./Pages/lefigaro";
 import { ekstrabladetRegex, addImageEkstraBladet } from "./Pages/ekstrabladet";
 import { lemondeRegex, removeAuthorDetail, cleanLemonde} from "./Pages/lemonde";
 import { drRegex, cleanDR, cleanDRBefore} from "./Pages/dr";
-import { lexpressRegex, removeasides, unavailableContent } from "./Pages/lexpress";
-import { marianneRegex, removeArticleLinks, getImageMarianne} from "./Pages/marianne";
-import { getImageIngenioren, ingenioerenClean, ingenioerRegex, removeComments } from "./Pages/ingenioeren";
-import { getImageAndRemoveFigures, nuRegex, removeBlockTitle } from "./Pages/nu";
-import { getLequipeImage, leqiupeRegex } from "./Pages/lequipe";
+import { cleanLexpress, lexpressRegex } from "./Pages/lexpress";
+import { marianneRegex, cleanMarianne} from "./Pages/marianne";
+import { ingenioerenClean, ingenioerRegex} from "./Pages/ingenioeren";
+import { nuRegex, removeBlockTitle } from "./Pages/nu";
+import { getLequipeImage, leqiupeRegex, removeDateTime } from "./Pages/lequipe";
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -38,12 +38,10 @@ export function pageSpecificClean(articleContent, url) {
       return cleanDR(articleContent)
     }
     if (url.match(lexpressRegex)) {
-      let lexpress = unavailableContent(articleContent)
-      return removeasides(lexpress)
+      return cleanLexpress(div.innerHTML)
     }
     if (url.match(marianneRegex)) {
-      let marianne = getImageMarianne(articleContent, getEntireHTML(url),)
-      return removeArticleLinks(marianne)
+      return cleanMarianne(div.innerHTML, getEntireHTML(url))
     }
     if (url.match(ingenioerRegex)) {
       return ingenioerenClean(articleContent, getEntireHTML(url))
@@ -51,7 +49,6 @@ export function pageSpecificClean(articleContent, url) {
     if (url.match(leqiupeRegex)) {
       return getLequipeImage(articleContent, getEntireHTML(url))
     }
-    //many other if-statements with checks for urls
     return div.innerHTML
   }
 
@@ -65,7 +62,13 @@ export function pageSpecificClean(articleContent, url) {
     if (currentTabURL.match(nuRegex)) {
       return removeBlockTitle(documentClone)
     }
-    return documentClone;
+    // if (currentTabURL.match(lexpressRegex)) {
+    //    return removeCaption(documentClone) 
+    // }
+    if (currentTabURL.match(leqiupeRegex)) {
+      return removeDateTime(documentClone);
+    }
+    return documentClone
   }
   
 

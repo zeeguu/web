@@ -11,7 +11,7 @@ import { EXTENSION_SOURCE } from "../constants";
 import ToolbarButtons from "./ToolbarButtons";
 import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
 import strings from "../../zeeguu-react/src/i18n/definitions";
-import {onScroll, onBlur, onFocus, toggle} from "../../zeeguu-react/src/reader/ArticleReader";
+import {onScroll, onBlur, onFocus } from "../../zeeguu-react/src/reader/ArticleReader";
 
 
 export function Modal({ title, content, modalIsOpen, setModalIsOpen, api, url, language, author }) {
