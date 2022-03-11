@@ -6,8 +6,9 @@ import { lemondeRegex, removeAuthorDetail, cleanLemonde} from "./Pages/lemonde";
 import { drRegex, cleanDR, cleanDRBefore} from "./Pages/dr";
 import { lexpressRegex, removeasides, unavailableContent } from "./Pages/lexpress";
 import { marianneRegex, removeArticleLinks, getImageMarianne} from "./Pages/marianne";
-import { getImageIngenioren, ingenioerRegex, removeComments } from "./Pages/ingenioeren";
-import { nuRegex, removeNoScript } from "./Pages/nu";
+import { getImageIngenioren, ingenioerenClean, ingenioerRegex, removeComments } from "./Pages/ingenioeren";
+import { getImageAndRemoveFigures, nuRegex, removeBlockTitle } from "./Pages/nu";
+import { getLequipeImage, leqiupeRegex } from "./Pages/lequipe";
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -45,8 +46,10 @@ export function pageSpecificClean(articleContent, url) {
       return removeArticleLinks(marianne)
     }
     if (url.match(ingenioerRegex)) {
-      let ingenioer = removeComments(articleContent, getEntireHTML(url))
-      return getImageIngenioren(ingenioer, getEntireHTML(url))
+      return ingenioerenClean(articleContent, getEntireHTML(url))
+    }
+    if (url.match(leqiupeRegex)) {
+      return getLequipeImage(articleContent, getEntireHTML(url))
     }
     //many other if-statements with checks for urls
     return div.innerHTML
@@ -60,7 +63,7 @@ export function pageSpecificClean(articleContent, url) {
       return removeAuthorDetail(documentClone)
     }
     if (currentTabURL.match(nuRegex)) {
-      return removeNoScript(documentClone)
+      return removeBlockTitle(documentClone)
     }
     return documentClone;
   }

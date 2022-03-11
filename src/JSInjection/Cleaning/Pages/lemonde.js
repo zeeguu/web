@@ -58,7 +58,7 @@ function removeInjectedContent(content) {
 export function removeAuthorDetail(documentClone) {
   let detail = documentClone.getElementsByClassName("author__detail")[0];
   if ((detail !== undefined) && (detail !== null)) {
-    detail.remove();
+    detail.parentNode.removeChild(detail);
   }
   return documentClone
 }
