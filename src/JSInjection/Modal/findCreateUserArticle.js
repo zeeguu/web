@@ -19,15 +19,3 @@
 //         callback
 //     );
 // };
-
-
-//Zeeguu_API.prototype.makePersonalCopy = function (articleID, callback) {
-//    let article = {
-//      article_id: articleID
-//    }
-//    this._post(`/make_personal_copy`,
-//    qs.stringify(article),
-//        callback
-//    );
-//  };
-//  
