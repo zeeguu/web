@@ -33,7 +33,7 @@ export const StyledModal = styled(ReactModal)`
     font-size: 1.2rem !important;
   }
 
-  p {
+  p, li {
     font-size: 1.1rem !important;
   }
 
