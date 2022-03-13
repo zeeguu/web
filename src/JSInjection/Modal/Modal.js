@@ -106,7 +106,8 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
 
   //Could be moved into another file
   function handlePostCopy() {
-    api.makePersonalCopy(articleId, (message) => alert(message));
+    let article = {article_id: articleId}
+    api.makePersonalCopy(article, (message) => alert(message));
     api.logReaderActivity(EXTENSION_SOURCE, api.PERSONAL_COPY, articleId);
   }
 
