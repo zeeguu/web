@@ -17,6 +17,7 @@ export function cleanDR(readabilityContent) {
 export function cleanDRBefore(documentClone) {
   let cleanedDocumentClone = removePrefixandDate(documentClone)
   cleanedDocumentClone = multipleAuthors(cleanedDocumentClone);
+  cleanedDocumentClone = removeNumberInHeadline(cleanedDocumentClone)
   return documentClone;
 }
 
@@ -47,4 +48,17 @@ function multipleAuthors(documentClone){
     }
   }
   return documentClone;
+}
+
+function removeNumberInHeadline(documentClone){
+  const headlineNumber = documentClone.getElementsByClassName("dre-article-body-emphasized-list-sub-heading__marker");
+  const arrayOfHeadlineNumbers = Array.from(headlineNumber)
+  arrayOfHeadlineNumbers.forEach(element => {
+    if (element != undefined) {
+      if (element.parentNode) {
+        element.parentNode.removeChild(element);
+      }
+    }
+  });
+  return documentClone
 }

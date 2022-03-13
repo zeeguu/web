@@ -7,7 +7,7 @@ import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage } from "../../popup/functions";
 import ZeeguuLoader from "../ZeeguuLoader";
-import { EXTENSION_SOURCE, LIST_CONTENT, TEXT_CONTENT } from "../constants";
+import { EXTENSION_SOURCE, LIST_CONTENT, PARAGRAPH_CONTENT, HEADER_CONTENT } from "../constants";
 import ToolbarButtons from "./ToolbarButtons";
 import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader";
 import ReviewVocabulary from "./ReviewVocabulary";
@@ -154,7 +154,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
         )}
         {interactiveTextArray.map((paragraph) => {
           const CustomTag = `${paragraph.tag}`;
-          if (TEXT_CONTENT.includes(paragraph.tag)) {
+          if (HEADER_CONTENT.includes(paragraph.tag) || PARAGRAPH_CONTENT.includes(paragraph.tag)) {
             return (
               <CustomTag>
                 <TranslatableText
