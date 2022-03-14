@@ -15,7 +15,8 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
       children.forEach((child) => {
         child.innerHTML = child.innerHTML
           .replaceAll(/<\/?p>|<\/?h[1-6]>/g, "")
-          .replaceAll("•", "");
+          .replaceAll("•", "")
+          .replaceAll("-", "");
         const content = child.textContent;
         const it = new InteractiveText(content, articleInfo, api);
         const paragraphObject = { text: it };
