@@ -138,6 +138,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
             setPronouncing={setPronouncing}
           />
         </StyledHeading>
+        <div class="article-container">
         <StyledButton onClick={reportProblem}>Report problems</StyledButton>
         <StyledButton onClick={handlePostCopy}>Make Personal Copy</StyledButton>
         <h1>
@@ -185,6 +186,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
           }
         })}
         <ReviewVocabulary />
+        </div>
       </StyledModal>
     </div>
   );
