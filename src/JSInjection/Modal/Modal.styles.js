@@ -36,7 +36,7 @@ export const StyledModal = styled(ReactModal)`
 
   p, li {
     font-size: 1.2rem !important;
-    line-height: 2.3 !important;
+    line-height: 40px !important;
   }
 
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -78,6 +78,15 @@ export const StyledModal = styled(ReactModal)`
   }
   .article-container {
     padding: 5px 50px 0px 50px;
+  }
+  z-tag:hover {
+    color: #a46a00 !Important;
+  }
+  z-tag z-tran {
+    margin-bottom: -7px !important;
+  }
+  z-orig {
+    color: #a46a00 !important;
   }
 `;
 
