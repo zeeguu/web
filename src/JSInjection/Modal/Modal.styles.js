@@ -77,7 +77,7 @@ export const StyledModal = styled(ReactModal)`
     width: auto !important;
   }
   .article-container {
-    padding: 5px 50px 0px 50px;
+    padding: 5px 45px 0px 45px;
   }
   z-tag:hover {
     color: #a46a00 !Important;
