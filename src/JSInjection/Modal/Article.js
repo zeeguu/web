@@ -4,6 +4,7 @@ import { cleanDocumentClone } from "../Cleaning/pageSpecificClean";
 import { displayEntireArticle, fazRegex } from "../Cleaning/Pages/faz";
 
 export async function Article(currentTabURL) {
+  //if a paginated article on faz:
   if(currentTabURL.match(fazRegex)){
     currentTabURL = displayEntireArticle(currentTabURL)
   }
