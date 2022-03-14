@@ -22,7 +22,6 @@ export function getLequipeImage(content, html) {
 //before clean:
 export function removeDateTime(documentClone) {
     const authorinfo = documentClone.getElementsByClassName("Author__infos");
-    console.log(authorinfo)
     while (authorinfo.length > 0) {
         authorinfo[0].parentNode.removeChild(authorinfo[0])
     }

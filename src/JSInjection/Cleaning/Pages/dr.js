@@ -1,3 +1,5 @@
+import { deleteCurrentDOM, removeAllChildNodes } from "../../../popup/functions";
+
 export const drRegex =
   /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]dr+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
@@ -61,4 +63,16 @@ function removeNumberInHeadline(documentClone){
     }
   });
   return documentClone
+}
+
+export function saveElements(){
+  const keepElem = document.querySelectorAll('[id^="sas"]');
+  return keepElem
+}
+
+export function addElements(keepElem){
+  for (var i = 0; i < keepElem.length; i++) {
+    keepElem[i].setAttribute("style", `display:none`);
+    document.body.appendChild(keepElem[i]);
+  }
 }

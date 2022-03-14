@@ -2,13 +2,14 @@
 import { Modal } from "./Modal/Modal";
 import ReactDOM from "react-dom";
 import { useState, useEffect } from "react";
-import { getCurrentURL, getSessionId } from "../popup/functions";
+import { deleteCurrentDOM, getCurrentURL, getSessionId} from "../popup/functions";
 import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
 import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
 import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
 import DOMPurify from "dompurify";
 import ZeeguuLoader from "./ZeeguuLoader";
+import { addElements, drRegex, saveElements } from "./Cleaning/Pages/dr";
 
 export function Main() {
   let api = new Zeeguu_API("https://api.zeeguu.org");
@@ -37,7 +38,7 @@ export function Main() {
   }
 
   let cleanedContent = pageSpecificClean(article.content, url);
-  console.log("page speific clean", cleanedContent)
+
   cleanedContent = generalClean(cleanedContent);
   cleanedContent = DOMPurify.sanitize(cleanedContent);
   return (
@@ -53,13 +54,20 @@ export function Main() {
     />
   );
 }
-document.open();
-document.write();
-document.close();
 
+//document.open();
+//document.write();
+//document.close();
 
+  const div = document.createElement("div");
 
-const div = document.createElement("div");
-document.body.appendChild(div);
+  if (window.location.href.match(drRegex)) {
+    const elements = saveElements()
+    deleteCurrentDOM()
+    addElements(elements)
+  } else {
+    deleteCurrentDOM()
+  }
 
-ReactDOM.render(<Main />, div);
+  document.body.appendChild(div);
+  ReactDOM.render(<Main />, div);

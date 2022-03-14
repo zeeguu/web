@@ -44,3 +44,16 @@ export function checkReadability(url){
     return true;
   }
 }
+
+export function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+  }
+}
+
+export function deleteCurrentDOM(){
+  const body = document.querySelector("body");
+  removeAllChildNodes(body);
+  const head = document.querySelector("head");
+  removeAllChildNodes(head);
+}
