@@ -19,6 +19,7 @@ export function Main() {
   const [sessionId, setSessionId] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(true);
 
+
   useEffect(() => {
     getSessionId().then((sessionId) => {
       setSessionId(sessionId);
