@@ -2,6 +2,8 @@
 import { liveArticleDR } from "./Pages/dr";
 import { getEntireHTML } from "../JSInjection/Cleaning/pageSpecificClean";
 import { drRegex } from "../JSInjection/Cleaning/Pages/dr";
+import { lefigaroRegex } from "../JSInjection/Cleaning/Pages/lefigaro";
+import { liveArticleLefiagro } from "./Pages/lefigaro";
 export async function getCurrentTab() {
   const queryOptions = { active: true, currentWindow: true };
   const [tab] = await chrome.tabs.query(queryOptions);
@@ -39,6 +41,8 @@ export function getSourceAsDOM(url) {
 export function checkReadability(url){
   if(url.match(drRegex)){
     return liveArticleDR(getEntireHTML(url))
+  } if (url.match(lefigaroRegex)) {
+    return liveArticleLefiagro(getEntireHTML(url))
   }
   else{
     return true;
