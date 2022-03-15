@@ -61,8 +61,8 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
       setArticleImage(image);
       let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
       setInteractiveTextArray(arrInteractive);
-
-      let itTitle = new InteractiveText(title, articleInfo, api);
+      let source = EXTENSION_SOURCE
+      let itTitle = new InteractiveText(title, articleInfo, api, source);
       setInteractiveTitle(itTitle);
       api.logReaderActivity(EXTENSION_SOURCE, api.OPEN_ARTICLE, articleId);
 

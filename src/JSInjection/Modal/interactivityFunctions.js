@@ -19,7 +19,7 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
           .replaceAll("•", "")
           .replaceAll("-", "");
         const content = child.textContent;
-        const it = new InteractiveText(content, articleInfo, api);
+        const it = new InteractiveText(content, articleInfo, api, "EXTENSION");
         const paragraphObject = { text: it };
         list.push(paragraphObject);
       });
@@ -28,11 +28,11 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
     } else if (HEADER_CONTENT.includes(HTMLTag)) {
       allTags[i].innerHTML = allTags[i].innerHTML
         .replaceAll(/<\/?p>/g, "")
-      const it = new InteractiveText(content, articleInfo, api);
+      const it = new InteractiveText(content, articleInfo, api, "EXTENSION");
       const paragraphObject = { text: it, tag: HTMLTag };
       arrOfInteractive.push(paragraphObject);
     } else {
-      const it = new InteractiveText(content, articleInfo, api);
+      const it = new InteractiveText(content, articleInfo, api, "EXTENSION");
       const paragraphObject = { text: it, tag: HTMLTag };
       arrOfInteractive.push(paragraphObject);
       }
