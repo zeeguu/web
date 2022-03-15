@@ -9,6 +9,7 @@ import { marianneRegex, cleanMarianne} from "./Pages/marianne";
 import { ingenioerenClean, ingenioerRegex} from "./Pages/ingenioeren";
 import { nuRegex, removeBlockTitle } from "./Pages/nu";
 import { getLequipeImage, leqiupeRegex, removeDateTime } from "./Pages/lequipe";
+import { berlingskeRegex, cleanBerlingske } from "./Pages/berlingske";
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -48,6 +49,10 @@ export function pageSpecificClean(articleContent, url) {
     }
     if (url.match(leqiupeRegex)) {
       return getLequipeImage(articleContent, getEntireHTML(url))
+    }
+    if (url.match(berlingskeRegex)) {
+      console.log("true")
+      return cleanBerlingske(articleContent)
     }
     return div.innerHTML
   }
