@@ -4,6 +4,8 @@ import { getEntireHTML } from "../JSInjection/Cleaning/pageSpecificClean";
 import { drRegex } from "../JSInjection/Cleaning/Pages/dr";
 import { lefigaroRegex } from "../JSInjection/Cleaning/Pages/lefigaro";
 import { readableLefigaro } from "./Pages/lefigaro";
+import { berlingskeRegex } from "../JSInjection/Cleaning/Pages/berlingske";
+import { readableBerlingske } from "./Pages/berlingske";
 export async function getCurrentTab() {
   const queryOptions = { active: true, currentWindow: true };
   const [tab] = await chrome.tabs.query(queryOptions);
@@ -44,6 +46,9 @@ export function checkReadability(url){
   }
   if(url.match(lefigaroRegex)){
     return readableLefigaro(getEntireHTML(url))
+  }
+  if(url.match(berlingskeRegex)){
+    return readableBerlingske(getEntireHTML(url))
   }
   else{
     return true;
