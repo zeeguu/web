@@ -80,11 +80,25 @@ export const StyledModal = styled(ReactModal)`
     padding: 5px 50px 0px 50px;
   }
   z-tag:hover {
-    color: #a46a00 !Important;
+    color: #a46a00 !important;
   }
   z-tag z-tran {
-    margin-bottom: -7px !important;
+    margin-bottom: -5px !important;
+    color: black !important;
   }
+
+  h1 z-tag z-tran {
+  margin-bottom: 2px !important;
+  }
+
+  h2 z-tag z-tran {
+  margin-bottom: -1px !important;
+  }
+
+  h3 z-tag z-tran {
+  margin-bottom: -1px !important;
+  }
+
   z-orig {
     color: #a46a00 !important;
   }
