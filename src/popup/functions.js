@@ -1,5 +1,5 @@
 /*global chrome*/
-import { liveArticleDR } from "./Pages/dr";
+import { readableDR } from "./Pages/dr";
 import { getEntireHTML } from "../JSInjection/Cleaning/pageSpecificClean";
 import { drRegex } from "../JSInjection/Cleaning/Pages/dr";
 export async function getCurrentTab() {
@@ -38,7 +38,7 @@ export function getSourceAsDOM(url) {
 
 export function checkReadability(url){
   if(url.match(drRegex)){
-    return liveArticleDR(getEntireHTML(url))
+    return readableDR(getEntireHTML(url))
   }
   else{
     return true;
