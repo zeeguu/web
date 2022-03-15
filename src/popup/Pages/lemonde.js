@@ -1,9 +1,10 @@
-export function liveArticleLefiagro(html) {
+export function liveArticleLemonde(html) {
     const div = document.createElement("div");
     div.innerHTML = html;
-    if (div.classList.contains("live")) {
-        return true
-    } else {
+    const isLive = div.querySelector(".live__hero")
+    if (isLive !== null) {
         return false
+    } else {
+        return true
     }
 }
