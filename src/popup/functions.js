@@ -2,6 +2,8 @@
 import { readableDR } from "./Pages/dr";
 import { getEntireHTML } from "../JSInjection/Cleaning/pageSpecificClean";
 import { drRegex } from "../JSInjection/Cleaning/Pages/dr";
+import { lefigaroRegex } from "../JSInjection/Cleaning/Pages/lefigaro";
+import { readableLefigaro } from "./Pages/lefigaro";
 export async function getCurrentTab() {
   const queryOptions = { active: true, currentWindow: true };
   const [tab] = await chrome.tabs.query(queryOptions);
@@ -39,6 +41,9 @@ export function getSourceAsDOM(url) {
 export function checkReadability(url){
   if(url.match(drRegex)){
     return readableDR(getEntireHTML(url))
+  }
+  if(url.match(lefigaroRegex)){
+    return readableLefigaro(getEntireHTML(url))
   }
   else{
     return true;
