@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle`
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: #FFE59E !important;
+        background-color: rgb(239, 239, 239) !important;
       }
 `;
 
@@ -22,6 +22,7 @@ export const StyledModal = styled(ReactModal)`
 
   h2 {
     font-size: 1.5rem !important;
+    line-height: 1.5;
   }
 
   h3 {
@@ -37,6 +38,12 @@ export const StyledModal = styled(ReactModal)`
   p, li {
     font-size: 1.2rem !important;
     line-height: 40px !important;
+  }
+
+  .author{
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    line-height: 20px !important;
   }
 
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",

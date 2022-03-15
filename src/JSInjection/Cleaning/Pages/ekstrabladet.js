@@ -20,3 +20,51 @@ export function addImageEkstraBladet(HTMLContent, readabilityContent) {
   }
   return newDiv.innerHTML;
 }
+
+export function removePrefix(readabilityContent) {
+  const div = document.createElement("div");
+  div.innerHTML = readabilityContent;
+  const header = div.getElementsByTagName("header")[0];
+  if (header) {
+    let firstDiv = header.getElementsByTagName("div")[0];
+    if (firstDiv) {
+      firstDiv.remove();
+    }
+  }
+  return div.innerHTML;
+}
+
+export function ekstraBladetClean(HTMLContent, readabilityContent) {
+  const removedDate = removePrefix(readabilityContent)
+  let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
+  cleaned = removeFigure(cleaned)
+  return cleaned;
+}
+
+export function removeFigure(readabilityContent){
+const div = document.createElement("div");
+div.innerHTML = readabilityContent;
+const figure = div.getElementsByTagName("figure");
+while (figure.length > 0) {
+  figure[0].parentNode.removeChild(figure[0])
+}
+return div.innerHTML;
+}
+
+export function cleanEkstraBladetBefore(documentClone) {
+  const splitElement = documentClone.getElementsByClassName("d-block is-breakout--wide split-element--ekstra");
+  while (splitElement.length > 0) {
+    splitElement[0].parentNode.removeChild(splitElement[0])
+  }
+  const videoElement = documentClone.getElementsByClassName("jw-video jw-reset");
+  while (videoElement.length > 0) {
+    videoElement[0].parentNode.removeChild(videoElement[0])
+  }
+  const imageElement = documentClone.getElementsByClassName("figure image-container");
+  while (imageElement.length > 0) {
+    imageElement[0].parentNode.removeChild(imageElement[0])
+  }
+  let elems = documentClone.querySelectorAll("p")
+  Array.from(elems).filter(p => p.textContent.includes('Artiklen fortsætter under') ? p.remove() : p);
+  return documentClone
+}

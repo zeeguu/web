@@ -13,6 +13,7 @@ export function cleanDR(readabilityContent) {
       }
     }
   }
+  
    return div.innerHTML;
 }
 
