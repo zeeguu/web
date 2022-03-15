@@ -14,10 +14,10 @@ export const GlobalStyle = createGlobalStyle`
 
 export const StyledModal = styled(ReactModal)`
   max-width: 800px;
-  
   h1 {
     font-size: 1.9em !important;
     font-weight: 800;
+    line-height: 1.5;
   }
 
   h2 {
@@ -25,17 +25,18 @@ export const StyledModal = styled(ReactModal)`
   }
 
   h3 {
-    font-size: 1.3rem !important;
+    font-size: 1.4rem !important;
   }
 
   h4,
   h5,
   h6 {
-    font-size: 1.2rem !important;
+    font-size: 1.3rem !important;
   }
 
   p, li {
-    font-size: 1.1rem !important;
+    font-size: 1.2rem !important;
+    line-height: 40px !important;
   }
 
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -74,6 +75,18 @@ export const StyledModal = styled(ReactModal)`
     max-height: 250px !important;
     max-width: 600px;
     width: auto !important;
+  }
+  .article-container {
+    padding: 5px 45px 0px 45px;
+  }
+  z-tag:hover {
+    color: #a46a00 !Important;
+  }
+  z-tag z-tran {
+    margin-bottom: -7px !important;
+  }
+  z-orig {
+    color: #a46a00 !important;
   }
 `;
 
