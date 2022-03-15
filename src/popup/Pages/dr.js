@@ -1,10 +1,16 @@
-export function liveArticleDR(HTMLContent) {
+export function readableDR(HTMLContent) {
   const div = document.createElement("div");
   div.innerHTML = HTMLContent;
-  if (div.innerHTML.indexOf("livecenter") !== -1) {
-    return false
+  //Check if it is a live article
+  const liveArticle = div.getElementsByClassName("lc-feed-container");
+  if (liveArticle.length > 0) {
+    return false;
   }
-  else {
-    return true
+  //Check if it is a gallery article
+  const galleryArticle = div.getElementsByClassName("dre-photo-feature-article");
+  if (galleryArticle.length > 0) {
+    return false;
+  } else {
+    return true;
   }
 }

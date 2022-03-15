@@ -138,6 +138,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
             setPronouncing={setPronouncing}
           />
         </StyledHeading>
+        <div className="article-container">
         <StyledButton onClick={reportProblem}>Report problems</StyledButton>
         <StyledButton onClick={handlePostCopy}>Make Personal Copy</StyledButton>
         <h1>
@@ -147,7 +148,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
             pronouncing={pronouncing}
           />
         </h1>
-        <p>{author}</p>
+        <p className="author">{author}</p>
         <hr />
         {articleImage === undefined ? null : (
           <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>
@@ -185,6 +186,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
           }
         })}
         <ReviewVocabulary articleId={articleId}  api={api}/>
+        </div>
       </StyledModal>
     </div>
   );
