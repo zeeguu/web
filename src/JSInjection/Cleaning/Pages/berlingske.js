@@ -16,6 +16,14 @@ export function cleanBerlingske(readabilityContent) {
   if (consent !== undefined && consent !== null) {
     consent.remove();
   }
-  console.log(div.innerHTML);
   return div.innerHTML;
+}
+
+export function cleanBerlingskeBefore(documentClone){
+  const figcaption = documentClone.getElementsByTagName("figcaption")[0]
+  figcaption.remove()
+  const bylineClass = documentClone.getElementsByClassName("article-byline article-byline--regular")[0]
+  const authorsName = documentClone.getElementsByClassName("article-byline__author-name")[0]
+  bylineClass.insertBefore(authorsName, bylineClass.firstChild);
+  return documentClone;
 }

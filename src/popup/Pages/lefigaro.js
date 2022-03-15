@@ -3,7 +3,6 @@ export function readableLefigaro(HTMLContent) {
     div.innerHTML = HTMLContent;
     //Check if it is behind paywall
     const paywall = div.getElementsByClassName("fig-premium-paywall__wrapper");
-    console.log(paywall)
     if (paywall.length > 0) {
       return false;
     }
