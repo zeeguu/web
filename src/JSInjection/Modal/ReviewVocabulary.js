@@ -1,8 +1,10 @@
 import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
 import strings from "../../zeeguu-react/src/i18n/definitions";
+import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 
 export default function ReviewVocabulary(articleId) {
   const id =  articleId.articleId
+  useUILanguage(); 
   return (
     <s.FeedbackBox>
       <h2>{strings.reviewVocabulary}</h2>

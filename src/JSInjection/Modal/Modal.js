@@ -11,6 +11,8 @@ import { EXTENSION_SOURCE, LIST_CONTENT, PARAGRAPH_CONTENT, HEADER_CONTENT } fro
 import ToolbarButtons from "./ToolbarButtons";
 import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader";
 import ReviewVocabulary from "./ReviewVocabulary";
+import UiLanguageSettings from "../../zeeguu-react/src/components/UiLanguageSettings";
+import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 
 export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, author}) {
   const [interactiveTextArray, setInteractiveTextArray] = useState();
@@ -22,7 +24,9 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
   const [nativeLang, setNativeLang] = useState();
   const [DBArticleInfo, setDBArticleInfo] = useState();
   const [articleLanguage, setArticleLanguage] = useState();
+  const [uiLanguage, setUiLanguage] = useState();
 
+  useUILanguage();
   useEffect(() => {
     if (content !== undefined) {
       let info = {
@@ -36,6 +40,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
       );
     }
     getNativeLanguage().then((result) => setNativeLang(result));
+
   }, []);
 
   useEffect(() => {
@@ -126,6 +131,11 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
   return (
     <div>
       <GlobalStyle />
+      <UiLanguageSettings
+          uiLanguage={uiLanguage}
+          setUiLanguage={setUiLanguage}
+        />
+        {console.log("uilanguage", uiLanguage)}
       <StyledModal isOpen={modalIsOpen} className="Modal" id="scrollHolder">
         <StyledHeading>
           <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
