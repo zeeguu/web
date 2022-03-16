@@ -1,33 +1,13 @@
 /*Final cleanup function */
 export function generalClean(content) {
-  //let cleanContent = cleanImages(content);
   let cleanContent = removeSVG(content);
   cleanContent = removeLinks(cleanContent);
   cleanContent = removeFigcaption(cleanContent);
-  //cleanContent = extractTextFromHTML(cleanContent);
   return cleanContent
 
 }
 
 /* Functions */
-function cleanImages(content) {
-  const div = document.createElement("div");
-  div.innerHTML = content;
-  const firstImage = div.getElementsByTagName("img")[0];
-  if (firstImage !== undefined) {
-    firstImage.setAttribute("id", "zeeguuImage");
-    let images = div.getElementsByTagName("img"),
-      index;
-    for (index = images.length - 1; index >= 0; index--) {
-      if (index !== 0) {
-        images[index].parentNode.removeChild(images[index]);
-      }
-    }
-    content = div.innerHTML;
-  }
-  return content;
-}
-
 export function getImage(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
@@ -68,16 +48,6 @@ function removeLinks(content) {
   return content;
 }
 
-function extractTextFromHTML(content) {
-  const div = document.createElement("div");
-  div.innerHTML = content;
-  const nodes = [div];
-  const text = nodes
-    .filter((node) => !!node.textContent)
-    .map((node) => node.textContent)
-    .join(" ");
-  return text;
-}
 
 function removeFigcaption(content){
   const div = document.createElement("div");
@@ -92,8 +62,9 @@ function removeFigcaption(content){
     content = div.innerHTML;
   }
   return content;
-
 }
+
+
 
 
 

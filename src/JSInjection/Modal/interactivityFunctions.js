@@ -14,6 +14,7 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
       const children = Array.from(allTags[i].children);
       let list = [];
       children.forEach((child) => {
+        if (child.innerHTML !== "") {
         child.innerHTML = child.innerHTML
           .replaceAll(/<\/?p>|<\/?h[1-6]>/g, "")
           .replaceAll("•", "")
@@ -22,7 +23,7 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
         const it = new InteractiveText(content, articleInfo, api);
         const paragraphObject = { text: it };
         list.push(paragraphObject);
-      });
+      }});
       const paragraphObject = { tag: HTMLTag, list: list };
       arrOfInteractive.push(paragraphObject);
     } else if (HEADER_CONTENT.includes(HTMLTag)) {

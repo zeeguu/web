@@ -6,6 +6,10 @@ import { lefigaroRegex } from "../JSInjection/Cleaning/Pages/lefigaro";
 import { readableLefigaro } from "./Pages/lefigaro";
 import { berlingskeRegex } from "../JSInjection/Cleaning/Pages/berlingske";
 import { readableBerlingske } from "./Pages/berlingske";
+import { liveArticleLefiagro } from "./Pages/lefigaro";
+import { lemondeRegex } from "../JSInjection/Cleaning/Pages/lemonde";
+import { liveArticleLemonde } from "./Pages/lemonde";
+
 export async function getCurrentTab() {
   const queryOptions = { active: true, currentWindow: true };
   const [tab] = await chrome.tabs.query(queryOptions);
@@ -49,6 +53,14 @@ export function checkReadability(url){
   }
   if(url.match(berlingskeRegex)){
     return readableBerlingske(getEntireHTML(url))
+  } 
+  if (url.match(lefigaroRegex)) {
+    if (liveArticleLefiagro(getEntireHTML(url) === true)) {
+      return liveArticleLefiagro(getEntireHTML(url))
+    }
+  } 
+  if (url.match(lemondeRegex)) {
+    return liveArticleLemonde(getEntireHTML(url))
   }
   else{
     return true;
