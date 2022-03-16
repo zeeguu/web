@@ -29,7 +29,7 @@ export default function WordsForArticle({ api }) {
       setTitle('Words in "' + data.title + '"');
     });
 
-    api.logReaderActivity(UMR_SOURCE, api.WORDS_REVIEW, articleID);
+    api.logReaderActivity(api.WORDS_REVIEW, articleID, "", UMR_SOURCE);
 
     // eslint-disable-next-line
   }, []);
@@ -91,7 +91,7 @@ export default function WordsForArticle({ api }) {
           <Link
             to={`/exercises/forArticle/${articleID}`}
             onClick={(e) =>
-              api.logReaderActivity(UMR_SOURCE, api.TO_EXERCISES_AFTER_REVIEW, articleID)
+              api.logReaderActivity(api.TO_EXERCISES_AFTER_REVIEW, articleID, "", UMR_SOURCE)
             }
           >
             <OrangeButton>{strings.toExercises}</OrangeButton>
