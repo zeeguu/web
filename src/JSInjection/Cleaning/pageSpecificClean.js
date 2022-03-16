@@ -62,9 +62,6 @@ export function pageSpecificClean(articleContent, url) {
     if (currentTabURL.match(nuRegex)) {
       return removeBlockTitle(documentClone)
     }
-    // if (currentTabURL.match(lexpressRegex)) { //removed the captions, but it also somehow changes what image is shown
-    //    return removeCaption(documentClone) 
-    // }
     if (currentTabURL.match(leqiupeRegex)) {
       return removeDateTime(documentClone);
     }
