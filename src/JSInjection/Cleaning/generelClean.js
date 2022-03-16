@@ -1,10 +1,8 @@
 /*Final cleanup function */
 export function generalClean(content) {
-  //let cleanContent = cleanImages(content);
   let cleanContent = removeSVG(content);
   cleanContent = removeLinks(cleanContent);
   cleanContent = removeFigcaption(cleanContent);
-  //cleanContent = extractTextFromHTML(cleanContent);
   return cleanContent
 
 }
@@ -68,16 +66,6 @@ function removeLinks(content) {
   return content;
 }
 
-function extractTextFromHTML(content) {
-  const div = document.createElement("div");
-  div.innerHTML = content;
-  const nodes = [div];
-  const text = nodes
-    .filter((node) => !!node.textContent)
-    .map((node) => node.textContent)
-    .join(" ");
-  return text;
-}
 
 function removeFigcaption(content){
   const div = document.createElement("div");
@@ -94,6 +82,8 @@ function removeFigcaption(content){
   return content;
 
 }
+
+
 
 
 
