@@ -1,5 +1,5 @@
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
-import { HEADER_CONTENT, LIST_CONTENT } from "../constants";
+import { EXTENSION_SOURCE, HEADER_CONTENT, LIST_CONTENT } from "../constants";
 export function interactiveTextsWithTags(content, articleInfo, api) {
   const div = document.createElement("div");
   div.innerHTML = content;
@@ -19,7 +19,7 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
           .replaceAll("•", "")
           .replaceAll("-", "");
         const content = child.textContent;
-        const it = new InteractiveText(content, articleInfo, api, "EXTENSION");
+        const it = new InteractiveText(content, articleInfo, api, EXTENSION_SOURCE);
         const paragraphObject = { text: it };
         list.push(paragraphObject);
       });
@@ -28,11 +28,11 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
     } else if (HEADER_CONTENT.includes(HTMLTag)) {
       allTags[i].innerHTML = allTags[i].innerHTML
         .replaceAll(/<\/?p>/g, "")
-      const it = new InteractiveText(content, articleInfo, api, "EXTENSION");
+      const it = new InteractiveText(content, articleInfo, api, EXTENSION_SOURCE);
       const paragraphObject = { text: it, tag: HTMLTag };
       arrOfInteractive.push(paragraphObject);
     } else {
-      const it = new InteractiveText(content, articleInfo, api, "EXTENSION");
+      const it = new InteractiveText(content, articleInfo, api, EXTENSION_SOURCE);
       const paragraphObject = { text: it, tag: HTMLTag };
       arrOfInteractive.push(paragraphObject);
       }
