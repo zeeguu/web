@@ -9,6 +9,7 @@ import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
+import { UMR_SOURCE } from "../../../reader/ArticleReader.js";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -35,7 +36,7 @@ export default function FindWordInContext({
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
-        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
+        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api, UMR_SOURCE)
       );
       setArticleInfo(articleInfo);
     });

@@ -64,11 +64,10 @@ Zeeguu_API.prototype.logUserActivity = function (
 // Used only for events that happen in the text reader;
 // for any other events, use logUserActivity
 Zeeguu_API.prototype.logReaderActivity = function (
-  source,
   event,
   article_id = "",
   value = "",
   extra_data = ""
 ) {
-  return this.logUserActivity(source + event, article_id, value, extra_data);
+  return this.logUserActivity(event, article_id, value, extra_data);
 };
