@@ -2,6 +2,7 @@ import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
 import strings from "../../zeeguu-react/src/i18n/definitions";
 import WordsForArticleModal from "./WordsForArticleModal";
 import { useState } from "react";
+import { StyledButton } from "./Modal.styles";
 
 export default function ReviewVocabulary({articleId, api}) {
 const [displayReview, setDisplayReview] = useState(false)
@@ -17,20 +18,20 @@ const [displayReview, setDisplayReview] = useState(false)
   return (
     <>
     {displayReview === false && (
-    <s.FeedbackBox>
+    <s.FeedbackBox className="feedbackBox">
       <h2>{strings.reviewVocabulary}</h2>
       <small>{strings.reviewVocabExplanation}</small>
       <br />
       <br />
       <s.CenteredContent>
-      <button onClick={setDisplayReviewTrue}>{strings.reviewVocabulary}</button>
+      <StyledButton onClick={setDisplayReviewTrue}>{strings.reviewVocabulary}</StyledButton>
       </s.CenteredContent>
     </s.FeedbackBox>
     )}
     {displayReview === true && (
       <>
       <WordsForArticleModal api={api} articleID={articleId}/>
-      <button onClick={setDisplayReviewFalse}>Go back {":)"}</button>
+      <StyledButton onClick={setDisplayReviewFalse}>Go back {":)"}</StyledButton>
   </>
     )}
 

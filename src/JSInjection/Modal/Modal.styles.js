@@ -109,6 +109,13 @@ export const StyledModal = styled(ReactModal)`
   z-orig {
     color: #a46a00 !important;
   }
+
+  .feedbackBox{
+  background-color: rgb(255, 229, 158);
+  line-height: 1.2em;
+  border: 0px solid rgb(255, 229, 158);
+  font-size: 1.2em;
+  }
 `;
 
 export const StyledCloseButton = styled.div`
