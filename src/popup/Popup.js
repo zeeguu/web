@@ -1,6 +1,7 @@
 /*global chrome*/
 import Login from "./Login";
-import {setCurrentURL, getSourceAsDOM, checkReadability} from "./functions";
+import { checkReadability} from "./checkReadability";
+import {setCurrentURL, getSourceAsDOM} from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";

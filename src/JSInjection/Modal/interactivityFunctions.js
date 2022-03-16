@@ -42,16 +42,3 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
   return arrOfInteractive;
 }
 
-
-    /*
-  convert 
-  output = ""
-  for each in children
-  if each is a textnode
-  then create an interactive text and append it to the list of interactive texts
-  if its not (just an container)
-  each is containter of text
-  output append (each tag)
-  convert(on the children)
-  
-  */

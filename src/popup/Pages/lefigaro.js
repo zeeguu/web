@@ -10,10 +10,12 @@ export function readableLefigaro(HTMLContent) {
         return true;
     }
   }
+
+//TODO: Fix. stopped working
 export function liveArticleLefiagro(html) {
     const div = document.createElement("div");
     div.innerHTML = html;
-    const isLive = div.querySelector(".live-list")
+    const isLive = div.querySelector(".live-messages")
     if (isLive !== null) {
         return false
     } else {

@@ -34,6 +34,6 @@ function getImageMarianne(content, html) {
 
 export function cleanMarianne(content, html) {
     let cleanedContent = removeArticleLinks(content);
-    let a = getImageMarianne(cleanedContent, html);
-    return a
+    cleanedContent = getImageMarianne(cleanedContent, html);
+    return cleanedContent;
 }

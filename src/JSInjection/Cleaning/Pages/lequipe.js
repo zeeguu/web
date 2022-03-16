@@ -18,7 +18,6 @@ export function getLequipeImage(content, html) {
     return div.innerHTML
 }
 
-//get "Author__name" class for the actual author name
 //before clean:
 export function removeDateTime(documentClone) {
     const authorinfo = documentClone.getElementsByClassName("Author__infos");
