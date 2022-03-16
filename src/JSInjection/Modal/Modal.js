@@ -13,6 +13,7 @@ import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleRe
 import ReviewVocabulary from "./ReviewVocabulary";
 import UiLanguageSettings from "../../zeeguu-react/src/components/UiLanguageSettings";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
+import UserFeedback from "./UserFeedback";
 
 export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, author}) {
   const [interactiveTextArray, setInteractiveTextArray] = useState();
@@ -135,7 +136,6 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
           uiLanguage={uiLanguage}
           setUiLanguage={setUiLanguage}
         />
-        {console.log("uilanguage", uiLanguage)}
       <StyledModal isOpen={modalIsOpen} className="Modal" id="scrollHolder">
         <StyledHeading>
           <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
@@ -196,6 +196,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
           }
         })}
         <ReviewVocabulary articleId={articleId} />
+        <UserFeedback api={api} url={url}/>
         </div>
       </StyledModal>
     </div>
