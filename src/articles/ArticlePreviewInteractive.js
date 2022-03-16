@@ -4,6 +4,7 @@ import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import { TranslatableText } from "../reader/TranslatableText";
 import InteractiveText from "../reader/InteractiveText";
+import { UMR_SOURCE } from "../reader/ArticleReader";
 //TODO If this file is included in the running code, it should be localized:
 //TODO import strings from "../i18n/definitions";
 
@@ -65,7 +66,7 @@ export default function ArticleOverview({
       <div style={openedStyle}>
           <s.Title>
             <TranslatableText
-              interactiveText={new InteractiveText(article.title, article, api)}
+              interactiveText={new InteractiveText(article.title, article, api, UMR_SOURCE)}
               translating={true}
             />
           </s.Title>
@@ -73,7 +74,7 @@ export default function ArticleOverview({
           <s.WordCount>{article.metrics.word_count}</s.WordCount>
         <s.Summary>
           <TranslatableText
-            interactiveText={new InteractiveText(article.summary, article, api)}
+            interactiveText={new InteractiveText(article.summary, article, api, UMR_SOURCE)}
             translating={true}
           />
         </s.Summary>

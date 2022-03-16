@@ -1,12 +1,11 @@
 import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/ZeeguuSpeech";
-import { UMR_SOURCE } from "./ArticleReader";
 
 export default class InteractiveText {
-  constructor(content, articleInfo, api) {
+  constructor(content, articleInfo, api, source) {
     this.articleInfo = articleInfo;
     this.api = api;
-
+    this.source = source;
     //
     this.paragraphs = content.split(/\n\n/);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
@@ -47,7 +46,7 @@ export default class InteractiveText {
         console.log("could not retreive translation");
       });
 
-    this.api.logReaderActivity(UMR_SOURCE, this.api.TRANSLATE_TEXT, this.articleInfo.id, word.word);
+    this.api.logReaderActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id, word.word, this.source);
   }
 
   selectAlternative(word, alternative, preferredSource, onSuccess) {
@@ -64,7 +63,7 @@ export default class InteractiveText {
     word.service_name = "Own alternative selection";
 
     let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`
-    this.api.logReaderActivity(UMR_SOURCE, this.api.SEND_SUGGESTION,this.articleInfo.id,alternative_info);
+    this.api.logReaderActivity(this.api.SEND_SUGGESTION,this.articleInfo.id,alternative_info, this.source);
 
     onSuccess();
   }
@@ -92,7 +91,7 @@ export default class InteractiveText {
 
   pronounce(word) {
     this.zeeguuSpeech.speakOut(word.word);
-    this.api.logReaderActivity(UMR_SOURCE, this.api.SPEAK_TEXT, this.articleInfo.id, word.word);
+    this.api.logReaderActivity(this.api.SPEAK_TEXT, this.articleInfo.id, word.word, this.source);
   }
 
   /**
