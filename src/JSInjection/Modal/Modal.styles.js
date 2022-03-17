@@ -150,3 +150,36 @@ export const StyledButton = styled.button`
   box-shadow: 0 0.5em 0.5em -0.4em rgba(255,208,71);
 }
 `;
+
+export const StyledTextarea = styled.textarea`
+  resize: none;
+  min-width: 99%;
+  min-height: 70px;
+  align-items: center;
+  display: block;
+
+`;
+
+export const StyledForm = styled.form`
+  display: block;
+  justify-content: center;
+
+  button {
+    display: block;
+    background-color: rgb(255, 187, 84);
+    color: black;
+    border-radius: 10px;
+    border: none;
+    padding: 7px;
+    margin: 5px 5px 5px 0px;
+
+  :hover,
+  :focus {
+    box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
+  }
+  }
+`;
+
+export const StyledContainer = styled.div`
+  padding: 10px;
+`;

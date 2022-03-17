@@ -196,7 +196,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
           }
         })}
         <ReviewVocabulary articleId={articleId} />
-        <UserFeedback api={api} url={url}/>
+        <UserFeedback api={api} articleId={articleId}/>
         </div>
       </StyledModal>
     </div>
