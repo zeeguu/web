@@ -2,15 +2,21 @@ import * as s from "./exerciseTypes/Exercise.sc";
 import * as sc from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import { useHistory } from "react-router-dom";
+import { EXTENSION_SOURCE } from "./Congratulations";
 
-export default function OutOfWordsMessage({ action }) {
+export default function OutOfWordsMessage({ action, source, openReview }) {
   const history = useHistory();
 
   function onClickAction() {
-    if (!action) {
-      return history.push("/articles");
-    } else {
-      return history.goBack();
+    if (source != EXTENSION_SOURCE) {
+      if (!action) {
+        return history.push("/articles");
+      } else {
+        return history.goBack();
+      }
+    }
+    else{
+      openReview()
     }
   }
   return (

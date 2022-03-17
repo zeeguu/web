@@ -29,7 +29,7 @@ let BOOKMARKS_FOR_EXERCISE = [
   },
 ];
 
-export default function Exercises({ api, articleID }) {
+export default function Exercises({ api, articleID, source, openArticle, reloadExercises, openReview}) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
   );
@@ -179,6 +179,9 @@ export default function Exercises({ api, articleID }) {
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
           api={api}
+          source={source}
+          openArticle={openArticle}
+          reloadExercises={reloadExercises}
         />
       </div>
     );
@@ -191,14 +194,14 @@ export default function Exercises({ api, articleID }) {
   if (countBookmarksToPractice === 0 && !articleID) {
     return (
       <s.ExercisesColumn>
-        <OutOfWordsMessage />
+        <OutOfWordsMessage source={source} openReview={openReview}/>
       </s.ExercisesColumn>
     );
   }
   if (countBookmarksToPractice === 0 && articleID) {
     return (
       <s.ExercisesColumn>
-        <OutOfWordsMessage action={"back"} />
+        <OutOfWordsMessage action={"back"} source={source} openReview={openReview}/>
       </s.ExercisesColumn>
     );
   }
