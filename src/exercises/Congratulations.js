@@ -1,6 +1,5 @@
 import Word from "../words/Word";
 import * as s from "../reader/ArticleReader.sc";
-import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 import { useState } from "react";
 
@@ -11,7 +10,6 @@ export default function Congratulations({
   correctBookmarks,
   incorrectBookmarks,
   api,
-  source,
   backToReading,
   keepExercising,
 }) {

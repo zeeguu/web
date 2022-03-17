@@ -189,7 +189,6 @@ export default function Exercises({
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
           api={api}
-          source={source}
           backToReading={() => history.push("/articles")}
           keepExercising={() => window.location.reload(false)}
         />
@@ -201,23 +200,26 @@ export default function Exercises({
     return <LoadingAnimation />;
   }
 
-  if (countBookmarksToPractice === 0 && !articleID) {
-    return (
-      <s.ExercisesColumn>
-        <OutOfWordsMessage source={source} openReview={openReview} />
-      </s.ExercisesColumn>
-    );
-  }
-  if (countBookmarksToPractice === 0 && articleID) {
-    return (
-      <s.ExercisesColumn>
+  if (countBookmarksToPractice === 0) {
+    if (!articleID) {
+      return (
         <OutOfWordsMessage
-          action={"back"}
-          source={source}
-          openReview={openReview}
+          message={strings.goToTextsToTranslateWords}
+          buttonText={strings.backToReading}
+          buttonAction={() => history.push("/articles")}
         />
-      </s.ExercisesColumn>
-    );
+      );
+    }
+
+    if (articleID) {
+      return (
+        <OutOfWordsMessage
+          message={strings.goStarTranslations}
+          buttonText={strings.backToWords}
+          buttonAction={() => history.goBack()}
+        />
+      );
+    }
   }
 
   function moveToNextExercise() {
