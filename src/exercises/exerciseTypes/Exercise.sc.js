@@ -254,12 +254,18 @@ let BottomRow = styled.div`
   }
 `;
 
-let StyledLink = styled(Link)`
+let StyledGreyButton = styled.button`
+  background: none!important;
+  border: none!important;
+  padding: 0!important;
   margin-top: 1em;
   color: gray;
   text-decoration: underline;
-  font-size: small;
-`;
+  font-size: small !important;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Montserrat";
+  `;
 
 let StyledDiv = styled.div`
   margin-top: 1em;
@@ -294,7 +300,7 @@ export {
   Input,
   AnimatedInput,
   BottomRow,
-  StyledLink,
+  StyledGreyButton,
   StyledDiv,
   MatchButton,
   MatchingWords,

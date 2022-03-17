@@ -4,11 +4,16 @@ import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 import { useState } from "react";
 
+export const EXTENSION_SOURCE = "EXTENSION";
+
 export default function Congratulations({
   articleID,
   correctBookmarks,
   incorrectBookmarks,
   api,
+  source,
+  openArticle,
+  reloadExercises,
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks)
@@ -71,13 +76,25 @@ export default function Congratulations({
       )}
 
       <s.ContentOnRow>
-        <Link to={`/exercises`} onClick={(e) => window.location.reload(false)}>
-          <s.OrangeButton>{strings.keepExercising}</s.OrangeButton>
-        </Link>
+        {source === EXTENSION_SOURCE ? (
+          <>
+            <s.OrangeButton onClick={reloadExercises}>{strings.keepExercising}</s.OrangeButton>
+            <s.WhiteButton onClick={openArticle}>{strings.backToReading}</s.WhiteButton>
+          </>
+        ) : (
+          <>
+            <Link
+              to={`/exercises`}
+              onClick={(e) => window.location.reload(false)}
+            >
+              <s.OrangeButton>{strings.keepExercising}</s.OrangeButton>
+            </Link>
 
-        <Link to={`/articles`}>
-          <s.WhiteButton>{strings.backToReading}</s.WhiteButton>
-        </Link>
+            <Link to={`/articles`}>
+              <s.WhiteButton>{strings.backToReading}</s.WhiteButton>
+            </Link>
+          </>
+        )}
       </s.ContentOnRow>
     </s.NarrowColumn>
   );
