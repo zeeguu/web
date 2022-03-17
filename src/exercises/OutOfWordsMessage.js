@@ -8,7 +8,7 @@ export default function OutOfWordsMessage({ action, source, openReview }) {
   const history = useHistory();
 
   function onClickAction() {
-    if (source != EXTENSION_SOURCE) {
+    if (source !== EXTENSION_SOURCE) {
       if (!action) {
         return history.push("/articles");
       } else {
