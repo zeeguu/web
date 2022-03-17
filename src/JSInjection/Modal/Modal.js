@@ -116,15 +116,6 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
     api.logReaderActivity(api.PERSONAL_COPY, articleId, EXTENSION_SOURCE);
   }
 
-  //Could be moved into another file
-  function reportProblem(e) {
-    let answer = prompt("What is wrong with the article?");
-    if (answer) {
-      let feedback = "problem_" + answer.replace(/ /g, "_");
-      api.logReaderActivity(api.EXTENSION_FEEDBACK, articleId, feedback, EXTENSION_SOURCE);
-    }
-  }
-
   if (interactiveTextArray === undefined) {
     return <ZeeguuLoader />;
   }
@@ -145,7 +136,6 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
           />
         </StyledHeading>
         <div className="article-container">
-        <StyledButton onClick={reportProblem}>Report problems</StyledButton>
         <StyledButton onClick={handlePostCopy}>Make Personal Copy</StyledButton>
         <h1>
           <TranslatableText
