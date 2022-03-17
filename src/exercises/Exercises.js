@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { useHistory } from "react-router-dom";
+
 import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
 import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
 import Congratulations from "./Congratulations";
@@ -29,7 +31,14 @@ let BOOKMARKS_FOR_EXERCISE = [
   },
 ];
 
-export default function Exercises({ api, articleID, source, openArticle, reloadExercises, openReview}) {
+export default function Exercises({
+  api,
+  articleID,
+  source,
+  openArticle,
+  reloadExercises,
+  openReview,
+}) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
   );
@@ -44,6 +53,7 @@ export default function Exercises({ api, articleID, source, openArticle, reloadE
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -180,8 +190,8 @@ export default function Exercises({ api, articleID, source, openArticle, reloadE
           incorrectBookmarks={incorrectBookmarks}
           api={api}
           source={source}
-          openArticle={openArticle}
-          reloadExercises={reloadExercises}
+          backToReading={() => history.push("/articles")}
+          keepExercising={() => window.location.reload(false)}
         />
       </div>
     );
@@ -194,14 +204,18 @@ export default function Exercises({ api, articleID, source, openArticle, reloadE
   if (countBookmarksToPractice === 0 && !articleID) {
     return (
       <s.ExercisesColumn>
-        <OutOfWordsMessage source={source} openReview={openReview}/>
+        <OutOfWordsMessage source={source} openReview={openReview} />
       </s.ExercisesColumn>
     );
   }
   if (countBookmarksToPractice === 0 && articleID) {
     return (
       <s.ExercisesColumn>
-        <OutOfWordsMessage action={"back"} source={source} openReview={openReview}/>
+        <OutOfWordsMessage
+          action={"back"}
+          source={source}
+          openReview={openReview}
+        />
       </s.ExercisesColumn>
     );
   }

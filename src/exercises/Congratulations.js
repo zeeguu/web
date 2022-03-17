@@ -12,8 +12,8 @@ export default function Congratulations({
   incorrectBookmarks,
   api,
   source,
-  openArticle,
-  reloadExercises,
+  backToReading,
+  keepExercising,
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks)
@@ -76,25 +76,12 @@ export default function Congratulations({
       )}
 
       <s.ContentOnRow>
-        {source === EXTENSION_SOURCE ? (
-          <>
-            <s.OrangeButton onClick={reloadExercises}>{strings.keepExercising}</s.OrangeButton>
-            <s.WhiteButton onClick={openArticle}>{strings.backToReading}</s.WhiteButton>
-          </>
-        ) : (
-          <>
-            <Link
-              to={`/exercises`}
-              onClick={(e) => window.location.reload(false)}
-            >
-              <s.OrangeButton>{strings.keepExercising}</s.OrangeButton>
-            </Link>
-
-            <Link to={`/articles`}>
-              <s.WhiteButton>{strings.backToReading}</s.WhiteButton>
-            </Link>
-          </>
-        )}
+        <s.OrangeButton onClick={keepExercising}>
+          {strings.keepExercising}
+        </s.OrangeButton>
+        <s.WhiteButton onClick={backToReading}>
+          {strings.backToReading}
+        </s.WhiteButton>
       </s.ContentOnRow>
     </s.NarrowColumn>
   );
