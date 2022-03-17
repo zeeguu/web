@@ -183,16 +183,14 @@ export default function Exercises({
 
   if (finished) {
     return (
-      <div>
-        <Congratulations
-          articleID={articleID}
-          correctBookmarks={correctBookmarks}
-          incorrectBookmarks={incorrectBookmarks}
-          api={api}
-          backToReadingAction={() => history.push("/articles")}
-          keepExercisingAction={() => window.location.reload(false)}
-        />
-      </div>
+      <Congratulations
+        articleID={articleID}
+        correctBookmarks={correctBookmarks}
+        incorrectBookmarks={incorrectBookmarks}
+        api={api}
+        backToReadingAction={() => history.push("/articles")}
+        keepExercisingAction={() => window.location.reload(false)}
+      />
     );
   }
 
