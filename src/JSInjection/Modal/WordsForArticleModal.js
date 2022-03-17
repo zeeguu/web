@@ -23,7 +23,7 @@ export default function WordsForArticleModal({ api, articleID }) {
       setArticleInfo(data);
       setTitle('Words in "' + data.title + '"');
     });
-    api.logReaderActivity(EXTENSION_SOURCE, api.WORDS_REVIEW, articleID);
+    api.logReaderActivity(api.WORDS_REVIEW, articleID, "", EXTENSION_SOURCE);
 
     // eslint-disable-next-line
   }, []);
@@ -38,7 +38,7 @@ export default function WordsForArticleModal({ api, articleID }) {
 
   function openExercises(){
     setExercises(true)
-    api.logReaderActivity(EXTENSION_SOURCE, api.TO_EXERCISES_AFTER_REVIEW, articleID)
+    api.logReaderActivity(api.TO_EXERCISES_AFTER_REVIEW, articleID, "", EXTENSION_SOURCE)
 
   }
 
