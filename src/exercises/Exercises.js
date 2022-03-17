@@ -189,8 +189,8 @@ export default function Exercises({
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
           api={api}
-          backToReading={() => history.push("/articles")}
-          keepExercising={() => window.location.reload(false)}
+          backToReadingAction={() => history.push("/articles")}
+          keepExercisingAction={() => window.location.reload(false)}
         />
       </div>
     );

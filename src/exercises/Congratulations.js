@@ -8,8 +8,8 @@ export default function Congratulations({
   correctBookmarks,
   incorrectBookmarks,
   api,
-  backToReading,
-  keepExercising,
+  backToReadingAction,
+  keepExercisingAction,
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks)
@@ -72,10 +72,10 @@ export default function Congratulations({
       )}
 
       <s.ContentOnRow>
-        <s.OrangeButton onClick={keepExercising}>
+        <s.OrangeButton onClick={keepExercisingAction}>
           {strings.keepExercising}
         </s.OrangeButton>
-        <s.WhiteButton onClick={backToReading}>
+        <s.WhiteButton onClick={backToReadingAction}>
           {strings.backToReading}
         </s.WhiteButton>
       </s.ContentOnRow>
