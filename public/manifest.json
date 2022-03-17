@@ -21,6 +21,6 @@
       "128": "/images/zeeguu128.png"
     },
     "web_accessible_resources": [{
-      "resources": ["images/translate.svg", "images/sound.svg", "images/zeeguuLogo.svg", "https://zeeguu.org/static/images/trash.svg", "https://zeeguu.org//static/images/yellow_star", "https://zeeguu.org/static/images/file_rename_orange_36dp.svg", "https://zeeguu.org/static/images/volume_up.svg"],
+      "resources": ["images/translate.svg", "images/sound.svg", "images/zeeguuLogo.svg", "https://zeeguu.org/static/images/trash.svg", "https://zeeguu.org//static/images/yellow_star", "https://zeeguu.org/static/images/file_rename_orange_36dp.svg", "https://zeeguu.org/static/images/volume_up.svg", "https://zeeguu.org/static/images/thumb_down_black_18dp.svg"],
       "matches": ["<all_urls>"]}]
 }
