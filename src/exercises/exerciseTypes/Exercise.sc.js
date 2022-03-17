@@ -141,6 +141,7 @@ let MatchingWords = styled.p`
   padding-bottom: 0.5em;
   padding-left: 0.5em;
   font-size: 1.125em;
+  margin-right:1em;
 `;
 
 let OrangeButton = styled(StyledButton)`
