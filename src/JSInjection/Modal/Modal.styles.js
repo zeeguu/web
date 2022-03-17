@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from "styled-components";
 import ReactModal from "react-modal";
-
+import { zeeguuOrange } from "../../zeeguu-react/src/components/colors";
 export const GlobalStyle = createGlobalStyle`
    .ReactModal__Overlay{
         position: fixed;
@@ -116,6 +116,11 @@ export const StyledModal = styled(ReactModal)`
   border: 0px solid rgb(255, 229, 158);
   font-size: 1.2em;
   }
+
+  .logoModal{
+    height: 50px;
+    margin: 10px;
+  }
 `;
 
 export const StyledCloseButton = styled.div`
@@ -135,16 +140,17 @@ export const StyledCloseButton = styled.div`
 `;
 
 export const StyledHeading = styled.div`
-  height: 90x;
+  height: 100px;
   background-color: white;
   padding-top: 20px;
   right: 0px;
   top: 0px;
   position: sticky;
   width: 100%;
-  border-bottom: 1px solid rgb(250, 250, 250);
+  border-bottom: 2px solid rgb(246, 246, 246);
 `;
-export const StyledButton = styled.button`
+
+export const StyledButtonGrey = styled.button`
   background-color: #e7e7e9;
   cursor: pointer;
   border-radius: 10px;
@@ -156,4 +162,40 @@ export const StyledButton = styled.button`
 :focus {
   box-shadow: 0 0.5em 0.5em -0.4em rgba(255,208,71);
 }
+`;
+
+export const StyledButtonOrange = styled.button`
+ background-color: ${zeeguuOrange};
+ font-weight: bold;
+ color: white;
+ height: 45px;
+ display: inline-block;
+ margin: 5px;
+ height: 45px;
+ border-color: ${zeeguuOrange};
+ border-style: solid;
+ border-width: 2px;
+ border-radius: 10px;
+ font-size: 18px;
+ cursor: pointer;
+`;
+
+export const StyledButtonWhite = styled.button`
+ background-color: white;
+ font-weight: bold;
+ color: ${zeeguuOrange};
+ height: 45px;
+ display: inline-block;
+ margin: 5px;
+ height: 45px;
+ border-color: ${zeeguuOrange};
+ border-style: solid;
+ border-width: 2px;
+ border-radius: 10px;
+ font-size: 18px;
+ cursor: pointer;
+`;
+
+export const MarginTop = styled.div`
+margin-top: 20px;
 `;
