@@ -3,8 +3,6 @@ import * as s from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import { useState } from "react";
 
-export const EXTENSION_SOURCE = "EXTENSION";
-
 export default function Congratulations({
   articleID,
   correctBookmarks,
