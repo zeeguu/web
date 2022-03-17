@@ -61,20 +61,19 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
       setArticleImage(image);
       let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
       setInteractiveTextArray(arrInteractive);
-
-      let itTitle = new InteractiveText(title, articleInfo, api);
+      let itTitle = new InteractiveText(title, articleInfo, api, EXTENSION_SOURCE);
       setInteractiveTitle(itTitle);
-      api.logReaderActivity(EXTENSION_SOURCE, api.OPEN_ARTICLE, articleId);
+      api.logReaderActivity(api.OPEN_ARTICLE, articleId, "",EXTENSION_SOURCE);
 
-      window.addEventListener("focus", function () {onFocus(EXTENSION_SOURCE, api, articleId);});
-      window.addEventListener("blur", function () {onBlur(EXTENSION_SOURCE, api, articleId);});
+      window.addEventListener("focus", function () {onFocus(api, articleId, EXTENSION_SOURCE);});
+      window.addEventListener("blur", function () {onBlur(api, articleId, EXTENSION_SOURCE);});
 
       let getModalClass = document.getElementsByClassName("Modal");
       if (getModalClass !== undefined && getModalClass !== null) {
         setTimeout(() => {
           if (getModalClass.item(0) != undefined) {
             getModalClass.item(0).addEventListener("scroll", function () {
-              onScroll(EXTENSION_SOURCE, api, articleId);
+              onScroll(api, articleId, EXTENSION_SOURCE);
             });
           }
         }, 0);
@@ -88,14 +87,14 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
   function handleClose() {
     location.reload();
     setModalIsOpen(false);
-    api.logReaderActivity(EXTENSION_SOURCE, "ARTICLE CLOSED", articleId);
-    window.removeEventListener("focus", function () {onFocus(EXTENSION_SOURCE, api, articleId);});
-    window.removeEventListener("blur", function () {onBlur(EXTENSION_SOURCE, api, articleId);});
+    api.logReaderActivity("ARTICLE CLOSED", articleId, "", EXTENSION_SOURCE);
+    window.removeEventListener("focus", function () {onFocus(api, articleId, EXTENSION_SOURCE);});
+    window.removeEventListener("blur", function () {onBlur(api, articleId, EXTENSION_SOURCE);});
     document.getElementById("scrollHolder") !== null &&
       document
         .getElementById("scrollHolder")
         .removeEventListener("scroll", function () {
-          onScroll(EXTENSION_SOURCE, api, articleId);
+          onScroll(api, articleId, EXTENSION_SOURCE);
         });
   }
 
@@ -107,7 +106,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
   function handlePostCopy() {
     let article = {article_id: articleId}
     api.makePersonalCopy(article, (message) => alert(message));
-    api.logReaderActivity(EXTENSION_SOURCE, api.PERSONAL_COPY, articleId);
+    api.logReaderActivity(api.PERSONAL_COPY, articleId, "", EXTENSION_SOURCE);
   }
 
   //Could be moved into another file
@@ -115,7 +114,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
     let answer = prompt("What is wrong with the article?");
     if (answer) {
       let feedback = "problem_" + answer.replace(/ /g, "_");
-      api.logReaderActivity(EXTENSION_SOURCE, api.EXTENSION_FEEDBACK, articleId, feedback);
+      api.logReaderActivity(api.EXTENSION_FEEDBACK, articleId, feedback, EXTENSION_SOURCE);
     }
   }
 
