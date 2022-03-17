@@ -9,7 +9,6 @@ const [feedback, setFeedback] = useState("");
 
    function handleChange(e) {
         setFeedback(e.target.value)
-        console.log("text", feedback)
       }
     function submitFeedback(e) {
         e.preventDefault();
@@ -33,7 +32,7 @@ const [feedback, setFeedback] = useState("");
       <br/>
       <br/>
       <StyledForm onSubmit={submitFeedback}>
-        <StyledTextarea name="feedback" onChange={handleChange} value={feedback}/>
+        <StyledTextarea name="feedback" onChange={handleChange} value={feedback} placeholder="Write here"/>
         <button type="submit" value = "Send feedback">Submit feedback</button>
       </StyledForm>
       </StyledContainer>
