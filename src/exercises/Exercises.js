@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { useHistory } from "react-router-dom";
-
 import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
 import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
 import Congratulations from "./Congratulations";
@@ -34,10 +32,9 @@ let BOOKMARKS_FOR_EXERCISE = [
 export default function Exercises({
   api,
   articleID,
-  source,
-  openArticle,
-  reloadExercises,
-  openReview,
+  backToReadingAction,
+  keepExercisingAction,
+  goBackAction,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
@@ -53,7 +50,8 @@ export default function Exercises({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
-  const history = useHistory();
+
+
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -188,8 +186,8 @@ export default function Exercises({
         correctBookmarks={correctBookmarks}
         incorrectBookmarks={incorrectBookmarks}
         api={api}
-        backToReadingAction={() => history.push("/articles")}
-        keepExercisingAction={() => window.location.reload(false)}
+        backToReadingAction={backToReadingAction}
+        keepExercisingAction={keepExercisingAction}
       />
     );
   }
@@ -204,7 +202,7 @@ export default function Exercises({
         <OutOfWordsMessage
           message={strings.goToTextsToTranslateWords}
           buttonText={strings.backToReading}
-          buttonAction={() => history.push("/articles")}
+          buttonAction={backToReadingAction}
         />
       );
     }
@@ -214,7 +212,7 @@ export default function Exercises({
         <OutOfWordsMessage
           message={strings.goStarTranslations}
           buttonText={strings.backToWords}
-          buttonAction={() => history.goBack()}
+          buttonAction={goBackAction}
         />
       );
     }
