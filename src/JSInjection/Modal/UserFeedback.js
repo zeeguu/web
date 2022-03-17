@@ -26,8 +26,7 @@ const [feedback, setFeedback] = useState("");
       <h2>We are always trying to improve the Zeeguu Extension</h2>
       <small>
         Please let us know
-        if you experience any problems, or if you cannot access the
-        article
+        if you experience any problems, or if the article looks wrong
       </small>
       <br/>
       <br/>
