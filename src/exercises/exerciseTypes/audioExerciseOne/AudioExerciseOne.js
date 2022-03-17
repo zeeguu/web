@@ -38,7 +38,7 @@ export default function AudioExerciseOne({
       handleSpeak();
     }, 500);
     setExerciseType(EXERCISE_TYPE);
-  });
+  }, []);
 
   function inputKeyPress() {
     if (firstTypeTime === undefined) {
