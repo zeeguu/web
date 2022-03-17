@@ -2,15 +2,9 @@ import { useParams, Link } from "react-router-dom";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 import { useState, useEffect } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
-import Word from "./Word";
-
-import { TopMessage } from "../components/TopMessage.sc";
+import WordsToReview from "./WordsToReview";
 import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
-import {
-  OrangeButton,
-  WhiteButton,
-  ContentOnRow,
-} from "../reader/ArticleReader.sc";
+import {OrangeButton, WhiteButton} from "../reader/ArticleReader.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 
@@ -44,49 +38,11 @@ export default function WordsForArticle({ api }) {
 
   return (
     <NarrowColumn>
-      <br />
-      <h1>{strings.ReviewTranslations}</h1>
-
-      <small>{strings.from}{articleInfo.title}</small>
-      <br />
-      <br />
-      <br />
-      <TopMessage style={{ textAlign: "left" }}>
-        {words.length > 0 ? (
-          <>
-            * {strings.deleteTranslation}
-            <br />
-            <br />
-            * {strings.starTranslation}
-            <br />
-            <br />
-            * {strings.ifGreyedTranslation}
-            <br />
-          </>
-        ) : (
-          strings.theWordsYouTranslate
-        )}
-      </TopMessage>
-
-      {words.map((each) => (
-        <ContentOnRow>
-          <Word
-            key={each.id}
-            bookmark={each}
-            notifyDelete={deleteBookmark}
-            api={api}
-          />
-        </ContentOnRow>
-      ))}
-
-      <br />
-      <br />
-      <br />
+      <WordsToReview words={words} deleteBookmark={deleteBookmark} articleInfo={articleInfo} api={api}/>
       <CenteredContent>
         <Link to={`/read/article?id=${articleID}`}>
           <WhiteButton>{strings.backToArticle}</WhiteButton>
         </Link>
-
         {words.length > 0 && (
           <Link
             to={`/exercises/forArticle/${articleID}`}
