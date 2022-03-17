@@ -132,10 +132,6 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
   return (
     <div>
       <GlobalStyle />
-      <UiLanguageSettings
-          uiLanguage={uiLanguage}
-          setUiLanguage={setUiLanguage}
-        />
       <StyledModal isOpen={modalIsOpen} className="Modal" id="scrollHolder">
         <StyledHeading>
           <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
