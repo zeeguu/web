@@ -177,7 +177,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
             onClick={(e) => toggle(translating, setTranslating)}
           >
             <img
-              src="/static/images/translate.svg"
+              src="https://zeeguu.org/static/images/translate.svg"
               alt={strings.translateOnClick}
             />
             <span className="tooltiptext">{strings.translateOnClick}</span>
@@ -186,7 +186,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
             className={pronouncing ? "selected" : ""}
             onClick={(e) => toggle(pronouncing, setPronouncing)}
           >
-            <img src="/static/images/sound.svg" alt={strings.listenOnClick} />
+            <img src="https://zeeguu.org/static/images/sound.svg" alt={strings.listenOnClick} />
             <span className="tooltiptext">{strings.listenOnClick}</span>
           </button>
         </s.Toolbar>

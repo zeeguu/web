@@ -63,7 +63,7 @@ export default function Word({
     <>
       <s.Word key={bookmark.id}>
         <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
-          <img src="/static/images/trash.svg" alt="trash" />
+          <img src="https://zeeguu.org/static/images/trash.svg" alt="trash" />
         </s.TrashIcon>
         <EditButton
           bookmark={bookmark}
@@ -76,7 +76,7 @@ export default function Word({
           <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
             <img
               src={
-                "/static/images/yellow_star" +
+                "https://zeeguu.org/static/images/yellow_star" +
                 (bookmark.starred ? ".svg" : "_empty.svg")
               }
               alt="star"
