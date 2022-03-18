@@ -12,6 +12,7 @@ export const GlobalStyle = createGlobalStyle`
       }
 `;
 
+// see through: rgba(255,255,255,0.5)
 export const StyledModal = styled(ReactModal)`
   max-width: 800px;
   h1 {
@@ -35,12 +36,13 @@ export const StyledModal = styled(ReactModal)`
     font-size: 1.3rem !important;
   }
 
-  p, li {
+  p,
+  li {
     font-size: 1.2rem !important;
     line-height: 40px !important;
   }
 
-  .author{
+  .author {
     margin-block-start: 0em;
     margin-block-end: 0em;
     line-height: 20px !important;
@@ -71,7 +73,7 @@ export const StyledModal = styled(ReactModal)`
   }
 
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgb(230, 227, 220) ;
+    box-shadow: inset 0 0 6px rgb(230, 227, 220);
   }
 
   ::-webkit-scrollbar-thumb {
@@ -95,15 +97,15 @@ export const StyledModal = styled(ReactModal)`
   }
 
   h1 z-tag z-tran {
-  margin-bottom: 2px !important;
+    margin-bottom: 2px !important;
   }
 
   h2 z-tag z-tran {
-  margin-bottom: -1px !important;
+    margin-bottom: -1px !important;
   }
 
   h3 z-tag z-tran {
-  margin-bottom: -1px !important;
+    margin-bottom: -1px !important;
   }
 
   z-orig {
@@ -124,7 +126,6 @@ export const StyledCloseButton = styled.div`
     "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 `;
 
 export const StyledHeading = styled.div`
@@ -145,10 +146,10 @@ export const StyledButton = styled.button`
   padding: 7px;
   margin: 5px 5px 5px 0px;
 
-:hover,
-:focus {
-  box-shadow: 0 0.5em 0.5em -0.4em rgba(255,208,71);
-}
+  :hover,
+  :focus {
+    box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
+  }
 `;
 
 export const StyledTextarea = styled.textarea`
@@ -157,7 +158,6 @@ export const StyledTextarea = styled.textarea`
   min-height: 70px;
   align-items: center;
   display: block;
-
 `;
 
 export const StyledForm = styled.form`
@@ -165,21 +165,35 @@ export const StyledForm = styled.form`
   justify-content: center;
 
   button {
-    display: block;
+    display: left;
     background-color: rgb(255, 187, 84);
     color: black;
     border-radius: 10px;
     border: none;
     padding: 7px;
-    margin: 5px 5px 5px 0px;
+    margin: 5px 0px 5px 0px;
+    right: 10px;
+    float: right;
 
-  :hover,
-  :focus {
-    box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
-  }
+    :hover,
+    :focus {
+      box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
+    }
   }
 `;
 
 export const StyledContainer = styled.div`
   padding: 10px;
+  overflow: hidden;
+`;
+
+export const StyledPopup = styled(ReactModal)`
+  background-color: white;
+  position: fixed;
+  margin-left: 35%;
+  padding: 20px;
+  margin-right: 35%;
+  margin-top: 25%;
+  margin-bottom: 35%;
+  box-shadow: 0px 10px 30px rgba(29, 5, 64, 0.32);
 `;

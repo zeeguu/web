@@ -1,6 +1,6 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
-import {StyledModal, StyledCloseButton, StyledHeading, StyledButton, GlobalStyle} from "./Modal.styles";
+import {StyledModal, StyledCloseButton, StyledHeading, StyledButton, GlobalStyle, StyledReaderOverlay} from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText";
 import { getImage } from "../Cleaning/generelClean";
@@ -118,11 +118,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
 
   //Could be moved into another file
   function reportProblem(e) {
-    let answer = prompt("What is wrong with the article?");
-    if (answer) {
-      let feedback = "problem_" + answer.replace(/ /g, "_");
-      api.logReaderActivity(api.EXTENSION_FEEDBACK, articleId, feedback, EXTENSION_SOURCE);
-    }
+    document.getElementById('feedback-box').scrollIntoView();
   }
 
   if (interactiveTextArray === undefined) {
