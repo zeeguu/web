@@ -34,7 +34,6 @@ export default function Exercises({
   articleID,
   backToReadingAction,
   keepExercisingAction,
-  goBackAction,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
@@ -50,8 +49,6 @@ export default function Exercises({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
-
-
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -197,25 +194,13 @@ export default function Exercises({
   }
 
   if (countBookmarksToPractice === 0) {
-    if (!articleID) {
-      return (
-        <OutOfWordsMessage
-          message={strings.goToTextsToTranslateWords}
-          buttonText={strings.backToReading}
-          buttonAction={backToReadingAction}
-        />
-      );
-    }
-
-    if (articleID) {
-      return (
-        <OutOfWordsMessage
-          message={strings.goStarTranslations}
-          buttonText={strings.backToWords}
-          buttonAction={goBackAction}
-        />
-      );
-    }
+    return (
+      <OutOfWordsMessage
+        message={strings.goToTextsToTranslateWords}
+        buttonText={strings.backToReading}
+        buttonAction={backToReadingAction}
+      />
+    );
   }
 
   function moveToNextExercise() {
