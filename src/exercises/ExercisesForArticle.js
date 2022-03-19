@@ -1,9 +1,19 @@
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Exercises from "./Exercises";
 
-
-export default function ExercisesForArticle({ api, backToReadingAction, keepExercisingAction, goBackAction}) {
+export default function ExercisesForArticle({
+  api,
+  backToReadingAction,
+  keepExercisingAction,
+}) {
   let { articleID } = useParams();
 
-  return <Exercises api={api} articleID={articleID} backToReadingAction={backToReadingAction} keepExercisingAction={keepExercisingAction} goBackAction={goBackAction} />;
+  return (
+    <Exercises
+      api={api}
+      articleID={articleID}
+      backToReadingAction={backToReadingAction}
+      keepExercisingAction={keepExercisingAction}
+    />
+  );
 }

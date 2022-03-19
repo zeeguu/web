@@ -14,13 +14,9 @@ export default function ExercisesRouter({ api }) {
   const backToReadingAction = () => {
     history.push("/articles");
   };
-  
+
   const keepExercisingAction = () => {
     window.location.reload(false);
-  };
-
-  const goBackAction = () => {
-    history.goBack();
   };
 
   return (
@@ -36,7 +32,6 @@ export default function ExercisesRouter({ api }) {
           component={ExercisesForArticle}
           backToReadingAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
-          goBackAction={goBackAction}
         />
 
         <PrivateRoute
@@ -45,7 +40,6 @@ export default function ExercisesRouter({ api }) {
           component={Exercises}
           backToReadingAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
-          goBackAction={goBackAction}
         />
       </Switch>
     </s.NarrowColumn>
