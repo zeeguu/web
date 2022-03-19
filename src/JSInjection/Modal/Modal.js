@@ -14,7 +14,7 @@ import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import { CenteredContent } from "../../zeeguu-react/src/components/ColumnWidth.sc";
 import strings from "../../zeeguu-react/src/i18n/definitions";
-
+import * as sc from "../../zeeguu-react/src/components/TopTabs.sc";
 export function Modal({
   title,
   content,
@@ -142,9 +142,8 @@ export function Modal({
   }
 
   function reloadExercises(){
-    alert("go back")
     setExerciseOpen(false)
-    setExerciseOpen(true)
+    setTimeout(() => {setExerciseOpen(true)}, 0);
   }
 
   function openArticle() {
@@ -202,7 +201,11 @@ export function Modal({
         )}
         {exerciseOpen === true && (
           <>
+            <sc.TopTabs>
+              <h1>{strings.exercises}</h1>
+            </sc.TopTabs>
             <Exercises
+              className="exercises"
               api={api}
               articleID={articleId}
               source={EXTENSION_SOURCE}

@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle, css } from "styled-components";
 import ReactModal from "react-modal";
-import { zeeguuOrange} from "../../zeeguu-react/src/components/colors";
+import { zeeguuOrange } from "../../zeeguu-react/src/components/colors";
 export const GlobalStyle = createGlobalStyle`
    .ReactModal__Overlay{
         position: fixed;
@@ -13,7 +13,28 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 export const StyledModal = styled(ReactModal)`
+
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   max-width: 800px;
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  margin: 40px auto;
+  background-color: white;
+  padding: 0% 2% 2% 2%;
+  height: 85%;
+  width: 75%;
+  overflow-y: auto;
+  box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
+  outline: none;
+
   h1 {
     font-size: 1.9em !important;
     font-weight: 800;
@@ -35,47 +56,29 @@ export const StyledModal = styled(ReactModal)`
     font-size: 1.3rem !important;
   }
 
-  p, li {
+  p,
+  li {
     font-size: 1.2rem !important;
     line-height: normal;
   }
 
-  .article-container p, .article-container li{
+  .article-container p,
+  .article-container li {
     line-height: 40px !important;
   }
 
-  .author{
+  .author {
     margin-block-start: 0em;
     margin-block-end: 0em;
     line-height: 20px !important;
   }
 
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  position: fixed;
-  top: 0px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2000;
-  margin: 40px auto;
-  background-color: white;
-  padding: 0% 2% 2% 2%;
-  height: 85%;
-  width: 75%;
-  overflow-y: auto;
-  box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
-  outline: none;
   ::-webkit-scrollbar {
     width: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgb(230, 227, 220) ;
+    box-shadow: inset 0 0 6px rgb(230, 227, 220);
   }
 
   ::-webkit-scrollbar-thumb {
@@ -87,9 +90,25 @@ export const StyledModal = styled(ReactModal)`
     max-width: 600px;
     width: auto !important;
   }
+
   .article-container {
     padding: 5px 45px 0px 45px;
   }
+
+  .feedbackBox {
+  background-color: rgb(255, 229, 158);
+  line-height: 1.2em;
+  border: 0px solid rgb(255, 229, 158);
+  font-size: 1.2em;
+  }
+
+  .logoModal {
+    height: 50px;
+    margin: 10px;
+  } 
+
+
+  /*** Overwriting zeeguu-react ***/
   z-tag:hover {
     color: #a46a00 !important;
   }
@@ -99,33 +118,53 @@ export const StyledModal = styled(ReactModal)`
   }
 
   h1 z-tag z-tran {
-  margin-bottom: 2px !important;
+    margin-bottom: 2px !important;
   }
 
   h2 z-tag z-tran {
-  margin-bottom: -1px !important;
+    margin-bottom: -1px !important;
   }
 
   h3 z-tag z-tran {
-  margin-bottom: -1px !important;
+    margin-bottom: -1px !important;
   }
 
   z-orig {
     color: #a46a00 !important;
   }
 
-  .feedbackBox{
-  background-color: rgb(255, 229, 158);
-  line-height: 1.2em;
-  border: 0px solid rgb(255, 229, 158);
-  font-size: 1.2em;
+  .llyViG h1 {
+    font-size: 2.8em !important;
+    margin-top: 0.3em;
+    margin-block-end: 0.3em !important;
   }
 
-  .logoModal{
-    height: 50px;
-    margin: 10px;
+  .sc-dPaNzc.fqbJCS {
+    margin-top: 0em !important;
+    margin-bottom: 0em !important;
   }
-  
+
+  .sc-ezzafa.dvHFX h1 {
+    margin-block-start: 0.3em !important;
+    margin-block-end: 0em !important;
+  }
+
+  .sc-khIgEk.hQhHpX {
+    margin-top: -1em !important;
+  }
+
+  .dvHFX .headlineWithMoreSpace {
+    margin-top: 2em;
+    margin-bottom: 0em;
+  }
+
+  .sc-hmbstg.iriXCP {
+    display: none;
+  }
+
+  .sc-pNWdM.XJxhY {
+    padding-bottom: 0px;
+  }
 `;
 
 export const StyledCloseButton = styled.div`
@@ -141,7 +180,6 @@ export const StyledCloseButton = styled.div`
     "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 `;
 
 export const StyledHeading = styled.div`
@@ -153,6 +191,7 @@ export const StyledHeading = styled.div`
   position: sticky;
   width: 100%;
   border-bottom: 2px solid rgb(246, 246, 246);
+  z-index: 1;
 `;
 
 export const StyledButtonGrey = styled.button`
@@ -163,48 +202,47 @@ export const StyledButtonGrey = styled.button`
   padding: 7px;
   margin: 5px 5px 5px 0px;
 
-:hover,
-:focus {
-  box-shadow: 0 0.5em 0.5em -0.4em rgba(255,208,71);
-}
+  :hover,
+  :focus {
+    box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
+  }
 `;
 
 export const StyledButtonOrange = styled.button`
- background-color: ${zeeguuOrange};
- font-weight: 600;
- color: white;
- height: 45px;
- display: inline-block;
- margin: 5px;
- height: 45px;
- border-color: ${zeeguuOrange};
- border-style: solid;
- border-width: 2px;
- border-radius: 10px;
- font-size: 18px;
- cursor: pointer;
+  background-color: ${zeeguuOrange};
+  font-weight: 600;
+  color: white;
+  height: 45px;
+  display: inline-block;
+  margin: 5px;
+  height: 45px;
+  border-color: ${zeeguuOrange};
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
 `;
 
 export const StyledButtonWhite = styled.button`
- background-color: white;
- font-weight: 600;
- color: ${zeeguuOrange};
- height: 45px;
- cursor: pointer;
- display: inline-block;
- margin: 5px;
- height: 45px;
- border-color: ${zeeguuOrange};
- border-style: solid;
- border-width: 2px;
- border-radius: 10px;
- font-size: 18px;
+  background-color: white;
+  font-weight: 600;
+  color: ${zeeguuOrange};
+  height: 45px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 5px;
+  height: 45px;
+  border-color: ${zeeguuOrange};
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 10px;
+  font-size: 18px;
 `;
 
 export const MarginTop = styled.div`
-margin-top: 20px;
+  margin-top: 11px;
 `;
-
 
 export let NavigationButton = styled.button`
   display: flex;
@@ -240,7 +278,7 @@ export let NavigationButton = styled.button`
   ${(props) =>
     props.primary &&
     css`
-      background-color: orange !important;
+      background-color: ${zeeguuOrange} !important;
       color: white !important;
       border-color: ${zeeguuOrange};
       border-style: solid;
@@ -251,9 +289,9 @@ export let NavigationButton = styled.button`
   ${(props) =>
     props.secondary &&
     css`
-      border:none !important;
+      border: none !important;
       background-color: white !important;
-      color: orange !important;
+      color: ${zeeguuOrange} !important;
     `}
     // Disabled
     ${(props) =>
