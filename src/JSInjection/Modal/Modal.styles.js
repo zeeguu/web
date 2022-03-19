@@ -1,6 +1,6 @@
-import styled, { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle, css } from "styled-components";
 import ReactModal from "react-modal";
-import { zeeguuOrange } from "../../zeeguu-react/src/components/colors";
+import { zeeguuOrange} from "../../zeeguu-react/src/components/colors";
 export const GlobalStyle = createGlobalStyle`
    .ReactModal__Overlay{
         position: fixed;
@@ -37,6 +37,10 @@ export const StyledModal = styled(ReactModal)`
 
   p, li {
     font-size: 1.2rem !important;
+    line-height: normal;
+  }
+
+  .article-container p, .article-container li{
     line-height: 40px !important;
   }
 
@@ -121,6 +125,7 @@ export const StyledModal = styled(ReactModal)`
     height: 50px;
     margin: 10px;
   }
+  
 `;
 
 export const StyledCloseButton = styled.div`
@@ -166,7 +171,7 @@ export const StyledButtonGrey = styled.button`
 
 export const StyledButtonOrange = styled.button`
  background-color: ${zeeguuOrange};
- font-weight: bold;
+ font-weight: 600;
  color: white;
  height: 45px;
  display: inline-block;
@@ -182,9 +187,10 @@ export const StyledButtonOrange = styled.button`
 
 export const StyledButtonWhite = styled.button`
  background-color: white;
- font-weight: bold;
+ font-weight: 600;
  color: ${zeeguuOrange};
  height: 45px;
+ cursor: pointer;
  display: inline-block;
  margin: 5px;
  height: 45px;
@@ -193,9 +199,70 @@ export const StyledButtonWhite = styled.button`
  border-width: 2px;
  border-radius: 10px;
  font-size: 18px;
- cursor: pointer;
 `;
 
 export const MarginTop = styled.div`
 margin-top: 20px;
+`;
+
+
+export let NavigationButton = styled.button`
+  display: flex;
+  font-weight: 600;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  min-width: 8em;
+  min-height: 2em;
+  padding: 0.5em;
+  font-size: 1.2em;
+  margin-left: 1em;
+  @media (min-wdith: 768px) {
+    width: 16em;
+  }
+  // Next
+  ${(props) =>
+    props.next &&
+    css`
+      :after {
+        content: ">>";
+      }
+    `}
+  // Previous
+  ${(props) =>
+    props.prev &&
+    css`
+      :before {
+        content: "<<";
+      }
+    `}
+  // Primary
+  ${(props) =>
+    props.primary &&
+    css`
+      background-color: orange !important;
+      color: white !important;
+      border-color: ${zeeguuOrange};
+      border-style: solid;
+      border-width: 2px;
+      border-radius: 10px;
+    `}
+  // Secondary
+  ${(props) =>
+    props.secondary &&
+    css`
+      border:none !important;
+      background-color: white !important;
+      color: orange !important;
+    `}
+    // Disabled
+    ${(props) =>
+    props.disabled &&
+    css`
+      background-color: white !important;
+      color: #999999 !important;
+      cursor: not-allowed;
+      pointer-events: none;
+      border-width: 0;
+    `}
 `;

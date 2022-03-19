@@ -206,9 +206,8 @@ export function Modal({
               api={api}
               articleID={articleId}
               source={EXTENSION_SOURCE}
-              openArticle={openArticle}
-              reloadExercises={reloadExercises}
-              openReview={openReview}
+              backToReadingAction={openArticle}
+              keepExercisingAction={reloadExercises}
             />
             <MarginTop>
             <CenteredContent>
