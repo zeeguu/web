@@ -165,6 +165,7 @@ export const StyledModal = styled(ReactModal)`
   .sc-pNWdM.XJxhY {
     padding-bottom: 0px;
   }
+
 `;
 
 export const StyledCloseButton = styled.div`
@@ -292,6 +293,10 @@ export let NavigationButton = styled.button`
       border: none !important;
       background-color: white !important;
       color: ${zeeguuOrange} !important;
+      border-color: ${zeeguuOrange}!important;
+      border-style: solid!important;
+      border-width: 2px!important;
+      border-radius: 10px!important;
     `}
     // Disabled
     ${(props) =>
@@ -300,7 +305,11 @@ export let NavigationButton = styled.button`
       background-color: white !important;
       color: #999999 !important;
       cursor: not-allowed;
+      border-color: #999999 !important;
       pointer-events: none;
       border-width: 0;
+      border-style: solid;
+      border-width: 2px;
+      border-radius: 10px;
     `}
 `;
