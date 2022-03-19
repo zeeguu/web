@@ -4,19 +4,24 @@ import { useState, useEffect } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import WordsToReview from "./WordsToReview";
 import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
-import {OrangeButton, WhiteButton} from "../reader/ArticleReader.sc";
+import { NavigationLink } from "../reader/ArticleReader.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+
+function fit_for_study(words) {
+  return words.filter((b) => b.fit_for_study || b.starred).length > 0;
+}
 
 export default function WordsForArticle({ api }) {
   let { articleID } = useParams();
   const [words, setWords] = useState(null);
   const [articleInfo, setArticleInfo] = useState(null);
+  const [exercisesEnabled, setExercisesEnabled] = useState(false);
 
   useEffect(() => {
     api.bookmarksForArticle(articleID, (bookmarks) => {
       setWords(bookmarks);
-      console.dir(bookmarks);
+      setExercisesEnabled(fit_for_study(bookmarks));
     });
     api.getArticleInfo(articleID, (data) => {
       setArticleInfo(data);
@@ -33,26 +38,48 @@ export default function WordsForArticle({ api }) {
   }
 
   function deleteBookmark(bookmark) {
-    setWords(words.filter((e) => e.id !== bookmark.id));
+    let newWords = words.filter((e) => e.id !== bookmark.id);
+    setWords(newWords);
+    setExercisesEnabled(fit_for_study(newWords));
+  }
+
+  function notifyWordChanged() {
+    setExercisesEnabled(fit_for_study(words));
+  }
+
+  function logGoingToExercisesAfterReview(e) {
+    api.logReaderActivity(
+      api.TO_EXERCISES_AFTER_REVIEW,
+      articleID,
+      "",
+      UMR_SOURCE
+    );
   }
 
   return (
     <NarrowColumn>
-      <WordsToReview words={words} deleteBookmark={deleteBookmark} articleInfo={articleInfo} api={api}/>
+      <WordsToReview
+        words={words}
+        deleteBookmark={deleteBookmark}
+        articleInfo={articleInfo}
+        api={api}
+        notifyWordChanged={notifyWordChanged}
+      />
+
       <CenteredContent>
-        <Link to={`/read/article?id=${articleID}`}>
-          <WhiteButton>{strings.backToArticle}</WhiteButton>
-        </Link>
-        {words.length > 0 && (
-          <Link
-            to={`/exercises/forArticle/${articleID}`}
-            onClick={(e) =>
-              api.logReaderActivity(api.TO_EXERCISES_AFTER_REVIEW, articleID, "", UMR_SOURCE)
-            }
-          >
-            <OrangeButton>{strings.toExercises}</OrangeButton>
-          </Link>
-        )}
+        <NavigationLink prev secondary to={`/read/article?id=${articleID}`}>
+          {strings.backToArticle}
+        </NavigationLink>
+
+        <NavigationLink
+          primary
+          next
+          {...(exercisesEnabled || { disabled: true })}
+          to={`/exercises/forArticle/${articleID}`}
+          onClick={logGoingToExercisesAfterReview}
+        >
+          {strings.toExercises}
+        </NavigationLink>
       </CenteredContent>
     </NarrowColumn>
   );

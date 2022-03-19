@@ -9,6 +9,8 @@ export default function Word({
   bookmark,
   notifyUnstar,
   notifyDelete,
+  notifyStar,
+  notifyEdit,
   children,
   api,
   hideStar,
@@ -29,14 +31,16 @@ export default function Word({
       api.unstarBookmark(bookmark.id);
       bookmark.starred = false;
       setStarred(false);
+      if (notifyUnstar) {
+        notifyUnstar(bookmark);
+      }
     } else {
       api.starBookmark(bookmark.id);
       setStarred(true);
       bookmark.starred = true;
-    }
-
-    if (notifyUnstar) {
-      notifyUnstar(bookmark);
+      if (notifyStar) {
+        notifyStar(bookmark);
+      }
     }
   }
 
