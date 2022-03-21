@@ -181,9 +181,11 @@ export const StyledContainer = styled.div`
 export const StyledPopup = styled(ReactModal)`
   background-color: white;
   position: fixed;
-  padding: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 25px;
+  padding-right: 25px;
   box-shadow: 0px 10px 30px rgba(29, 5, 64, 0.32);
-  justify-content: center;
   border-radius: 2px;
   top: 50%;
   left: 50%;
@@ -199,7 +201,6 @@ export const StyledFeedbackButton = styled.button`
   border: none;
   padding: 7px;
   margin: 5px 0px 5px 0px;
-  right: 10px;
   float: right;
   height: 30px;
   width: 120px;
