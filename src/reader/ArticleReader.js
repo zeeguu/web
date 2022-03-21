@@ -84,20 +84,32 @@ export default function ArticleReader({ api, teacherArticleID }) {
       api.logReaderActivity(api.OPEN_ARTICLE, articleID, "", UMR_SOURCE);
     });
 
-    window.addEventListener("focus", function(){onFocus(api, articleID, UMR_SOURCE)});
-    window.addEventListener("blur", function(){onBlur(api, articleID, UMR_SOURCE)});
+    window.addEventListener("focus", function () {
+      onFocus(api, articleID, UMR_SOURCE);
+    });
+    window.addEventListener("blur", function () {
+      onBlur(api, articleID, UMR_SOURCE);
+    });
     document
       .getElementById("scrollHolder")
-      .addEventListener("scroll", function(){onScroll(api, articleID, UMR_SOURCE)});
+      .addEventListener("scroll", function () {
+        onScroll(api, articleID, UMR_SOURCE);
+      });
 
     return () => {
-      window.removeEventListener("focus", function(){onFocus(api, articleID, UMR_SOURCE)});
-      window.removeEventListener("blur", function(){onBlur(api, articleID, UMR_SOURCE)});
+      window.removeEventListener("focus", function () {
+        onFocus(api, articleID, UMR_SOURCE);
+      });
+      window.removeEventListener("blur", function () {
+        onBlur(api, articleID, UMR_SOURCE);
+      });
 
       document.getElementById("scrollHolder") !== null &&
         document
           .getElementById("scrollHolder")
-          .removeEventListener("scroll", function(){onScroll(api, articleID, UMR_SOURCE)});
+          .removeEventListener("scroll", function () {
+            onScroll(api, articleID, UMR_SOURCE);
+          });
       api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
     };
     // eslint-disable-next-line
@@ -186,7 +198,10 @@ export default function ArticleReader({ api, teacherArticleID }) {
             className={pronouncing ? "selected" : ""}
             onClick={(e) => toggle(pronouncing, setPronouncing)}
           >
-            <img src="https://zeeguu.org/static/images/sound.svg" alt={strings.listenOnClick} />
+            <img
+              src="https://zeeguu.org/static/images/sound.svg"
+              alt={strings.listenOnClick}
+            />
             <span className="tooltiptext">{strings.listenOnClick}</span>
           </button>
         </s.Toolbar>
@@ -254,9 +269,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
         <br />
         <br />
         <s.CenteredContent>
-          <Link to={`/words/forArticle/${articleID}`}>
-            <s.OrangeButton>{strings.reviewVocabulary}</s.OrangeButton>
-          </Link>
+          <s.NavigationLink primary to={`/words/forArticle/${articleID}`}>
+            {strings.reviewVocabulary}
+          </s.NavigationLink>
         </s.CenteredContent>
       </s.FeedbackBox>
       <s.ExtraSpaceAtTheBottom />
