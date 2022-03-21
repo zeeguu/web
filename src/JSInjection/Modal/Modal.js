@@ -1,6 +1,6 @@
 /*global chrome*/
 import { useEffect, useState } from "react";
-import {StyledModal, StyledCloseButton, StyledHeading, StyledButton, GlobalStyle} from "./Modal.styles";
+import {StyledModal, StyledCloseButton, StyledHeading, StyledButton, GlobalStyle, StyledReaderOverlay} from "./Modal.styles";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText";
 import { getImage } from "../Cleaning/generelClean";
@@ -116,6 +116,11 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
     api.logReaderActivity(api.PERSONAL_COPY, articleId, EXTENSION_SOURCE);
   }
 
+  //Could be moved into another file
+  function reportProblem(e) {
+    document.getElementById('feedback-box').scrollIntoView();
+  }
+
   if (interactiveTextArray === undefined) {
     return <ZeeguuLoader />;
   }
@@ -123,7 +128,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
   return (
     <div>
       <GlobalStyle />
-      <StyledModal isOpen={modalIsOpen} className="Modal" id="scrollHolder">
+      <StyledModal isOpen={modalIsOpen} className="Modal" id="scrollHolder" overlayClassName={"reader-overlay"}>
         <StyledHeading>
           <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
             X
