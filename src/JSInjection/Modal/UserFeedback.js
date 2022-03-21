@@ -65,7 +65,7 @@ export default function UserFeedback({ api, articleId }) {
             placeholder="Write here"
           />
           {isEmpty ? (
-            <ErrorMessage>Please write something</ErrorMessage>
+            <ErrorMessage><p>Please write something</p></ErrorMessage>
           ) : null}
           <StyledFeedbackButton
             type="submit"

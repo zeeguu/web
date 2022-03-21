@@ -21,7 +21,6 @@ export const GlobalStyle = createGlobalStyle`
     }
 `;
 
-// see through: rgba(255,255,255,0.5)
 export const StyledModal = styled(ReactModal)`
   max-width: 800px;
   h1 {
