@@ -212,14 +212,16 @@ export function Modal({
               backToReadingAction={openArticle}
               keepExercisingAction={reloadExercises}
             />
-            <MarginTop>
-            <CenteredContent>
-            <StyledButtonWhite onClick={openArticle}>{strings.backToArticle}</StyledButtonWhite>
-            </CenteredContent>
-            </MarginTop>
           </>
         )}
       </StyledModal>
     </div>
   );
 }
+
+
+//<MarginTop>
+//<CenteredContent>
+//<StyledButtonWhite onClick={openArticle}>{strings.backToArticle}</StyledButtonWhite>
+//</CenteredContent>
+//</MarginTop>//

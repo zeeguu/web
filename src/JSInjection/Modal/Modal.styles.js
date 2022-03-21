@@ -58,7 +58,7 @@ export const StyledModal = styled(ReactModal)`
 
   p,
   li {
-    font-size: 1.2rem !important;
+    font-size: 1.0rem !important;
     line-height: normal;
   }
 
@@ -112,6 +112,9 @@ export const StyledModal = styled(ReactModal)`
   z-tag:hover {
     color: #a46a00 !important;
   }
+  z-tag{
+    font-size: 1.2em !important;
+  }
   z-tag z-tran {
     margin-bottom: -5px !important;
     color: black !important;
@@ -133,10 +136,10 @@ export const StyledModal = styled(ReactModal)`
     color: #a46a00 !important;
   }
 
-  .llyViG h1 {
+  .dXiuJH h1 {
     font-size: 2.8em !important;
     margin-top: 0.3em;
-    margin-block-end: 0.3em !important;
+    margin-block-end: 0.4em !important;
   }
 
   .sc-dPaNzc.fqbJCS {
@@ -154,16 +157,29 @@ export const StyledModal = styled(ReactModal)`
   }
 
   .dvHFX .headlineWithMoreSpace {
-    margin-top: 2em;
-    margin-bottom: 0em;
+    margin-top: 2em!important;
+    margin-bottom: 0em!important;
   }
 
   .sc-hmbstg.iriXCP {
-    display: none;
+    display: none!important;
   }
 
   .sc-pNWdM.XJxhY {
-    padding-bottom: 0px;
+    padding-bottom: 0px!important;
+  }
+
+  .sc-bYwzuL.sc-gXfVKN.fDDjHD.jKLUHq {
+    margin-top: 1em!important;
+    margin-bottom: 1em!important;
+  }
+  .lRfdj {
+    margin-top: 0em!important;
+    margin-bottom: 0em!important;
+  }
+
+  .sc-bYwzuL.sc-ciSkZP.sc-jcwpoC.fDDjHD.bwSYJA.kyvWZW{
+    height: 2em!important;
   }
 
 `;
@@ -211,7 +227,6 @@ export const StyledButtonGrey = styled.button`
 
 export const StyledButtonOrange = styled.button`
   background-color: ${zeeguuOrange};
-  font-weight: 600;
   color: white;
   height: 45px;
   display: inline-block;
@@ -227,7 +242,6 @@ export const StyledButtonOrange = styled.button`
 
 export const StyledButtonWhite = styled.button`
   background-color: white;
-  font-weight: 600;
   color: ${zeeguuOrange};
   height: 45px;
   cursor: pointer;
@@ -247,7 +261,6 @@ export const MarginTop = styled.div`
 
 export let NavigationButton = styled.button`
   display: flex;
-  font-weight: 600;
   cursor: pointer;
   align-items: center;
   justify-content: center;
