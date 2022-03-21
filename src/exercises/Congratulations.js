@@ -1,6 +1,5 @@
 import Word from "../words/Word";
 import * as s from "../reader/ArticleReader.sc";
-import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 import { useState } from "react";
 
@@ -9,6 +8,8 @@ export default function Congratulations({
   correctBookmarks,
   incorrectBookmarks,
   api,
+  backToReadingAction,
+  keepExercisingAction,
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks)
@@ -71,13 +72,12 @@ export default function Congratulations({
       )}
 
       <s.ContentOnRow>
-        <Link to={`/exercises`} onClick={(e) => window.location.reload(false)}>
-          <s.OrangeButton>{strings.keepExercising}</s.OrangeButton>
-        </Link>
-
-        <Link to={`/articles`}>
-          <s.WhiteButton>{strings.backToReading}</s.WhiteButton>
-        </Link>
+        <s.OrangeButton onClick={keepExercisingAction}>
+          {strings.keepExercising}
+        </s.OrangeButton>
+        <s.WhiteButton onClick={backToReadingAction}>
+          {strings.backToReading}
+        </s.WhiteButton>
       </s.ContentOnRow>
     </s.NarrowColumn>
   );

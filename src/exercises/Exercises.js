@@ -29,7 +29,12 @@ let BOOKMARKS_FOR_EXERCISE = [
   },
 ];
 
-export default function Exercises({ api, articleID }) {
+export default function Exercises({
+  api,
+  articleID,
+  backToReadingAction,
+  keepExercisingAction,
+}) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
   );
@@ -173,14 +178,14 @@ export default function Exercises({ api, articleID }) {
 
   if (finished) {
     return (
-      <div>
-        <Congratulations
-          articleID={articleID}
-          correctBookmarks={correctBookmarks}
-          incorrectBookmarks={incorrectBookmarks}
-          api={api}
-        />
-      </div>
+      <Congratulations
+        articleID={articleID}
+        correctBookmarks={correctBookmarks}
+        incorrectBookmarks={incorrectBookmarks}
+        api={api}
+        backToReadingAction={backToReadingAction}
+        keepExercisingAction={keepExercisingAction}
+      />
     );
   }
 
@@ -188,18 +193,13 @@ export default function Exercises({ api, articleID }) {
     return <LoadingAnimation />;
   }
 
-  if (countBookmarksToPractice === 0 && !articleID) {
+  if (countBookmarksToPractice === 0) {
     return (
-      <s.ExercisesColumn>
-        <OutOfWordsMessage />
-      </s.ExercisesColumn>
-    );
-  }
-  if (countBookmarksToPractice === 0 && articleID) {
-    return (
-      <s.ExercisesColumn>
-        <OutOfWordsMessage action={"back"} />
-      </s.ExercisesColumn>
+      <OutOfWordsMessage
+        message={strings.goToTextsToTranslateWords}
+        buttonText={strings.backToReading}
+        buttonAction={backToReadingAction}
+      />
     );
   }
 
