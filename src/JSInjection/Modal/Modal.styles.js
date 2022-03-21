@@ -181,6 +181,9 @@ export const StyledModal = styled(ReactModal)`
   .sc-bYwzuL.sc-ciSkZP.sc-jcwpoC.fDDjHD.bwSYJA.kyvWZW{
     height: 2em!important;
   }
+  .sc-gtsrHT.gfuSqG{
+    margin-bottom: 70px;
+  }
 
 `;
 
