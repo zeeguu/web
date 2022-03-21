@@ -143,7 +143,7 @@ let strings = new LocalizedStrings(
       dec: "Dec",
       betaTesters200K:
         "📈 The beta-testers of Zeeguu have collectively reached 200'000 translations in their foreign language readings ",
-      mirceaKeynoteAtEASEAI: '👨‍🏫 Mircea gives a keynote about Zeeguu at the ',
+      mirceaKeynoteAtEASEAI: "👨‍🏫 Mircea gives a keynote about Zeeguu at the ",
       pernilleObtainsFundingPrefix:
         "👩‍🔬 Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
       pernilleObtainsFundingLinkTitle:
@@ -278,7 +278,7 @@ let strings = new LocalizedStrings(
       starTranslation:
         "Star a translation to make it have priority in exercises.",
       ifGreyedTranslation:
-        "If a translation is grayed out, it means that Zeeguu does not think it is appropriate for exercises; to overload this decision you can star the translation.",
+        "A grayed out translation is not going to appear in exercises unless you star it.",
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
@@ -295,7 +295,7 @@ let strings = new LocalizedStrings(
       //Exercises
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
-      noTranslatedWords: "You have no translated words.",
+      noTranslatedWords: "You have no words to practice.",
       goToTextsToTranslateWords: "Read and translate words to get exercises.",
       goStarTranslations:
         "Go back and star translations for Zeeguu to include them in your exercises.",
@@ -485,7 +485,8 @@ let strings = new LocalizedStrings(
         "Are you sure you want to delete this class? This cannot be undone.",
       cannotDeleteClassWithText:
         "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again.",
-      youAreSharingThisClassWarning: "You are sharing this class with at least one colleague. If you delete it here, you also irreversibly delete it from their list of classes.",
+      youAreSharingThisClassWarning:
+        "You are sharing this class with at least one colleague. If you delete it here, you also irreversibly delete it from their list of classes.",
 
       //DeleteStudentWarning
       wishToDeleteStudent: "Do you wish to remove",
@@ -504,11 +505,15 @@ let strings = new LocalizedStrings(
       saveText: "Save Text",
 
       //ShareTextWithColleagueDialog
-      somethingWentWrongMostLikelyEmail: "Something went wrong. Most likely, the email is not registered in Zeeguu. Please, try a different one.",
-      theConnectionFailed: "The connection to the server seems unstable at the moment. Please, let us know if this continues to happen.",
-      enterEmailYourColleagueUse: "Enter the email, your colleague use for Zeeguu.",
+      somethingWentWrongMostLikelyEmail:
+        "Something went wrong. Most likely, the email is not registered in Zeeguu. Please, try a different one.",
+      theConnectionFailed:
+        "The connection to the server seems unstable at the moment. Please, let us know if this continues to happen.",
+      enterEmailYourColleagueUse:
+        "Enter the email, your colleague use for Zeeguu.",
       share: "Share",
-      yourColleagueShouldHaveTheTextShortly: "Your colleague should be able to find the text under 'My Texts' in a moment.",
+      yourColleagueShouldHaveTheTextShortly:
+        "Your colleague should be able to find the text under 'My Texts' in a moment.",
       ok: "OK",
 
       //TooltipedButtons
@@ -1156,7 +1161,8 @@ let strings = new LocalizedStrings(
         "Er du sikker på, at du vil slette denne klasse? Du kan ikke fortryde.",
       cannotDeleteClassWithText:
         "Noget gik galt. Hvis du deler tekster med denne klasse, kan du ikke slette klassen. Fjern delte tekster med denne klasse i 'Mine tekster', og prøv igen.",
-      youAreSharingThisClassWarning: "Du deler denne klasse med mindst én kollega. Hvis du sletter klassen her, bliver den også uigenkaldeligt slettet fra din kollegas list af klasser.",
+      youAreSharingThisClassWarning:
+        "Du deler denne klasse med mindst én kollega. Hvis du sletter klassen her, bliver den også uigenkaldeligt slettet fra din kollegas list af klasser.",
 
       //DeleteStudentWarning
       wishToDeleteStudent: "Ønsker du at fjerne",
@@ -1175,11 +1181,15 @@ let strings = new LocalizedStrings(
       saveText: "Gem tekst",
 
       //ShareTextWithColleagueDialog
-      somethingWentWrongMostLikelyEmail: "Noget gik galt. Det kan være din kollega bruger en anden email til Zeeguu. Tjek venligst og prøv igen.",
-      theConnectionFailed: "Forbindelsen til serveren virker ustabil. Giv os gerne besked, hvis dette problem fortsætter.",
-      enterEmailYourColleagueUse: "Indsæt den email, din kollega bruger til Zeeguu",
+      somethingWentWrongMostLikelyEmail:
+        "Noget gik galt. Det kan være din kollega bruger en anden email til Zeeguu. Tjek venligst og prøv igen.",
+      theConnectionFailed:
+        "Forbindelsen til serveren virker ustabil. Giv os gerne besked, hvis dette problem fortsætter.",
+      enterEmailYourColleagueUse:
+        "Indsæt den email, din kollega bruger til Zeeguu",
       share: "Del",
-      yourColleagueShouldHaveTheTextShortly: "Din kollega burde have teksten i 'Mine tekster' om et øjeblik.",
+      yourColleagueShouldHaveTheTextShortly:
+        "Din kollega burde have teksten i 'Mine tekster' om et øjeblik.",
       ok: "OK",
 
       //TooltipedButtons

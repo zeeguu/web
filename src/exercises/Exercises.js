@@ -29,7 +29,12 @@ let BOOKMARKS_FOR_EXERCISE = [
   },
 ];
 
-export default function Exercises({ api, articleID, source, openArticle, reloadExercises, openReview}) {
+export default function Exercises({
+  api,
+  articleID,
+  backToReadingAction,
+  keepExercisingAction,
+}) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
   );
@@ -173,17 +178,14 @@ export default function Exercises({ api, articleID, source, openArticle, reloadE
 
   if (finished) {
     return (
-      <div>
-        <Congratulations
-          articleID={articleID}
-          correctBookmarks={correctBookmarks}
-          incorrectBookmarks={incorrectBookmarks}
-          api={api}
-          source={source}
-          openArticle={openArticle}
-          reloadExercises={reloadExercises}
-        />
-      </div>
+      <Congratulations
+        articleID={articleID}
+        correctBookmarks={correctBookmarks}
+        incorrectBookmarks={incorrectBookmarks}
+        api={api}
+        backToReadingAction={backToReadingAction}
+        keepExercisingAction={keepExercisingAction}
+      />
     );
   }
 
@@ -191,18 +193,13 @@ export default function Exercises({ api, articleID, source, openArticle, reloadE
     return <LoadingAnimation />;
   }
 
-  if (countBookmarksToPractice === 0 && !articleID) {
+  if (countBookmarksToPractice === 0) {
     return (
-      <s.ExercisesColumn>
-        <OutOfWordsMessage source={source} openReview={openReview}/>
-      </s.ExercisesColumn>
-    );
-  }
-  if (countBookmarksToPractice === 0 && articleID) {
-    return (
-      <s.ExercisesColumn>
-        <OutOfWordsMessage action={"back"} source={source} openReview={openReview}/>
-      </s.ExercisesColumn>
+      <OutOfWordsMessage
+        message={strings.goToTextsToTranslateWords}
+        buttonText={strings.backToReading}
+        buttonAction={backToReadingAction}
+      />
     );
   }
 
