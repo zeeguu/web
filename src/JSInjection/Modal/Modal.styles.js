@@ -2,7 +2,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import ReactModal from "react-modal";
 
 export const GlobalStyle = createGlobalStyle`
-   .ReactModal__Overlay{
+   .reader-overlay{
         position: fixed;
         top: 0;
         left: 0;
@@ -10,6 +10,15 @@ export const GlobalStyle = createGlobalStyle`
         bottom: 0;
         background-color: rgb(239, 239, 239) !important;
       }
+
+    .feedback-overlay{
+      position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      background-color: rgba(255,255,255,0.75) !important;
+    }
 `;
 
 // see through: rgba(255,255,255,0.5)
@@ -86,7 +95,7 @@ export const StyledModal = styled(ReactModal)`
     width: auto !important;
   }
   .article-container {
-    padding: 5px 45px 0px 45px;
+    padding: 5px 50px 0px 50px;
   }
   z-tag:hover {
     color: #a46a00 !important;
@@ -163,23 +172,6 @@ export const StyledTextarea = styled.textarea`
 export const StyledForm = styled.form`
   display: block;
   justify-content: center;
-
-  button {
-    display: left;
-    background-color: rgb(255, 187, 84);
-    color: black;
-    border-radius: 10px;
-    border: none;
-    padding: 7px;
-    margin: 5px 0px 5px 0px;
-    right: 10px;
-    float: right;
-
-    :hover,
-    :focus {
-      box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
-    }
-  }
 `;
 
 export const StyledContainer = styled.div`
@@ -190,10 +182,35 @@ export const StyledContainer = styled.div`
 export const StyledPopup = styled(ReactModal)`
   background-color: white;
   position: fixed;
-  margin-left: 35%;
   padding: 20px;
-  margin-right: 35%;
-  margin-top: 25%;
-  margin-bottom: 35%;
   box-shadow: 0px 10px 30px rgba(29, 5, 64, 0.32);
+  justify-content: center;
+  border-radius: 2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+`;
+
+export const StyledFeedbackButton = styled.button`
+  display: left;
+  background-color: rgb(255, 187, 84);
+  color: black;
+  border-radius: 10px;
+  border: none;
+  padding: 7px;
+  margin: 5px 0px 5px 0px;
+  right: 10px;
+  float: right;
+  height: 30px;
+  width: 120px;
+
+  :hover,
+  :focus {
+    box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
+  }
+`;
+
+export const ErrorMessage = styled.span`
+  color: red;
 `;

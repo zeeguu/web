@@ -5,18 +5,23 @@ import {
   StyledTextarea,
   StyledForm,
   StyledContainer,
-  StyledButton,
   StyledPopup,
+  StyledFeedbackButton,
+  ErrorMessage,
 } from "./Modal.styles";
-import Modal from "react-modal";
 
 export default function UserFeedback({ api, articleId }) {
   const [feedback, setFeedback] = useState("");
-
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const setModalIsOpenToTrue = () => {
-    setModalIsOpen(true);
+    if (feedback === "") {
+      setIsEmpty(true);
+    } else {
+      setIsEmpty(false);
+      setModalIsOpen(true);
+    }
   };
 
   const setModalIsOpenToFalse = () => {
@@ -25,13 +30,20 @@ export default function UserFeedback({ api, articleId }) {
 
   function handleChange(e) {
     setFeedback(e.target.value);
+    if (feedback !== "") {
+      setIsEmpty(false);
+    }
   }
+
   function submitFeedback(e) {
     e.preventDefault();
-    let feedbackForDB = "problem_" + feedback.replace(/ /g, "_");
-    //api.logReaderActivity(EXTENSION_SOURCE, api.EXTENSION_FEEDBACK, articleId, feedbackForDB);
-    resetInput(e);
+    if (!isEmpty) {
+      let feedbackForDB = "problem_" + feedback.replace(/ /g, "_");
+      //api.logReaderActivity(EXTENSION_SOURCE, api.EXTENSION_FEEDBACK, articleId, feedbackForDB);
+      resetInput(e);
+    }
   }
+
   function resetInput(e) {
     setFeedback((e.target.value = ""));
   }
@@ -52,23 +64,28 @@ export default function UserFeedback({ api, articleId }) {
             value={feedback}
             placeholder="Write here"
           />
-          <button
+          {isEmpty ? (
+            <ErrorMessage>Please write something</ErrorMessage>
+          ) : null}
+          <StyledFeedbackButton
             type="submit"
             value="Send feedback"
             onClick={setModalIsOpenToTrue}
             id="feedback-box"
           >
             Submit feedback
-          </button>
+          </StyledFeedbackButton>
         </StyledForm>
       </StyledContainer>
       <StyledPopup
-        style={{ overlay: { backgroundColor: "rgba(255, 255, 255, 0.75) !important" } }}
         className="feedback-modal"
         isOpen={modalIsOpen}
+        overlayClassName={"feedback-overlay"}
       >
-        <h2>Thank you for your feedback!</h2>
-        <StyledButton onClick={setModalIsOpenToFalse}>Close</StyledButton>
+        <h3>Thank you for your feedback!</h3>
+        <StyledFeedbackButton onClick={setModalIsOpenToFalse}>
+          Close
+        </StyledFeedbackButton>
       </StyledPopup>
     </s.FeedbackBox>
   );

@@ -128,7 +128,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
   return (
     <div>
       <GlobalStyle />
-      <StyledModal isOpen={modalIsOpen} className="Modal" id="scrollHolder">
+      <StyledModal isOpen={modalIsOpen} className="Modal" id="scrollHolder" overlayClassName={"reader-overlay"}>
         <StyledHeading>
           <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
             X
