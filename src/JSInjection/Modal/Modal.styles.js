@@ -230,6 +230,7 @@ export const StyledButtonGrey = styled.button`
 
 export const StyledButtonOrange = styled.button`
   background-color: ${zeeguuOrange};
+  font-weight: 500;
   color: white;
   height: 45px;
   display: inline-block;
@@ -244,6 +245,7 @@ export const StyledButtonOrange = styled.button`
 `;
 
 export const StyledButtonWhite = styled.button`
+  font-weight: 500;
   background-color: white;
   color: ${zeeguuOrange};
   height: 45px;
