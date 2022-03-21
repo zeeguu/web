@@ -9,6 +9,8 @@ export default function Word({
   bookmark,
   notifyUnstar,
   notifyDelete,
+  notifyStar,
+  notifyEdit,
   children,
   api,
   hideStar,
@@ -29,14 +31,16 @@ export default function Word({
       api.unstarBookmark(bookmark.id);
       bookmark.starred = false;
       setStarred(false);
+      if (notifyUnstar) {
+        notifyUnstar(bookmark);
+      }
     } else {
       api.starBookmark(bookmark.id);
       setStarred(true);
       bookmark.starred = true;
-    }
-
-    if (notifyUnstar) {
-      notifyUnstar(bookmark);
+      if (notifyStar) {
+        notifyStar(bookmark);
+      }
     }
   }
 
@@ -63,7 +67,7 @@ export default function Word({
     <>
       <s.Word key={bookmark.id}>
         <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
-          <img src="/static/images/trash.svg" alt="trash" />
+          <img src="https://zeeguu.org/static/images/trash.svg" alt="trash" />
         </s.TrashIcon>
         <EditButton
           bookmark={bookmark}
@@ -76,7 +80,7 @@ export default function Word({
           <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
             <img
               src={
-                "/static/images/yellow_star" +
+                "https://zeeguu.org/static/images/yellow_star" +
                 (bookmark.starred ? ".svg" : "_empty.svg")
               }
               alt="star"
