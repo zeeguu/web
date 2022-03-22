@@ -1,6 +1,6 @@
-import styled, { createGlobalStyle, css } from "styled-components";
-
+import styled, { createGlobalStyle } from "styled-components";
 import ReactModal from "react-modal";
+
 export const GlobalStyle = createGlobalStyle`
    .reader-overlay{
         position: fixed;
@@ -21,9 +21,7 @@ export const GlobalStyle = createGlobalStyle`
     }
 `;
 
-
 export const StyledModal = styled(ReactModal)`
-
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
@@ -68,13 +66,12 @@ export const StyledModal = styled(ReactModal)`
 
   p,
   li {
-    font-size: 1.0rem !important;
+    font-size: 1rem !important;
     line-height: normal;
   }
 
   .article-container p,
   .article-container li {
-   
     line-height: 40px !important;
   }
 
@@ -82,6 +79,10 @@ export const StyledModal = styled(ReactModal)`
     margin-block-start: 0em;
     margin-block-end: 0em;
     line-height: 20px !important;
+  }
+
+  button {
+    font-weight: 600 !important;
   }
 
   ::-webkit-scrollbar {
@@ -106,144 +107,123 @@ export const StyledModal = styled(ReactModal)`
     padding: 5px 50px 0px 50px;
   }
 
-  //grey box
   .feedbackBox {
-  background-color: #f2f3f4;
-  line-height: 1.2em;
-  border: 0px solid rgb(255, 229, 158);
-  font-size: 1.2em;
+    background-color: #f2f3f4;
+    line-height: 1.2em;
+    border: 0px solid rgb(255, 229, 158);
+    font-size: 1.2em;
   }
 
-  .floatRight{
-  float:right;
-  margin: 10px 0px 0px 0px;
+  .floatRight {
+    float: right;
+    margin: 10px 0px 0px 0px;
   }
 
   .logoModal {
     height: 50px;
     margin: 10px;
-  } 
+  }
+`;
+
+export const OverwriteZeeguu = styled.div`
+
+/** Zeeguu Reader **/
+z-tag:hover {
+  color: #2f76ac !important;
+}
+z-tag {
+  font-size: 1.2em !important;
+}
+z-tag z-tran {
+  margin-bottom: -5px !important;
+  color: black !important;
+  font-weight: 400 !important;
+}
+h1 z-tag z-tran {
+  margin-bottom: 2px !important;
+}
+h2 z-tag z-tran {
+  margin-bottom: -1px !important;
+}
+h3 z-tag z-tran {
+  margin-bottom: -1px !important;
+}
+
+z-orig {
+  color: black !important;
+  border-bottom: 2px dashed #2f76ac !important;
+}
 
 
-  /*** Overwriting zeeguu-react ***/
-  
-  //blue
-  z-tag:hover {
-    color: #2F76AC !important;
-  }
-  z-tag{
-    font-size: 1.2em !important;
-  }
-  z-tag z-tran {
-    margin-bottom: -5px !important;
-    color: black !important;
-    font-weight: 400 !important;
-  }
+/** Exercises **/
+.iNWOJK h1 {
+  font-size: 2.8em !important;
+  margin-top: 0.3em;
+  margin-block-end: 0.4em !important;
+}
 
-  h1 z-tag z-tran {
-    margin-bottom: 2px !important;
-  }
+.sc-pNWdM.XJxhY h3 {
+  font-size: 1.17em !important;
+}
 
-  h2 z-tag z-tran {
-    margin-bottom: -1px !important;
-  }
+.topnav a {
+  float: none;
+  width: 100%;
+}
 
-  h3 z-tag z-tran {
-    margin-bottom: -1px !important;
-  }
+.sc-hmbstg.iriXCP {
+  display: none !important;
+}
 
-  //blue dashed
-  z-orig {
-    color: black !important;
-    border-bottom: 2px dashed #2F76AC !important;
+/** Buttons from Exercises **/
+.sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-iemWCZ.jcTaHb.eysHZq.eEJWPz.hKymwP,
+.sc-jSFjdj.sc-fujyAs.sc-eKYRIR.jcTaHb.eysHZq.llyViG,
+.sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-iemWCZ.jcTaHb.eysHZq.eEJWPz.hKymwP,
+.sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-bkbkJK.jcTaHb.eysHZq.eEJWPz.bIINLz {
+  color: white !important;
+  background-color: #2f77ad !important;
+  border-color: #3079b0 !important;
+  :hover {
+    background-color: #4f97cf !important;
   }
+  font-weight: 600 !important;
+}
 
-  .iNWOJK h1 {
-    font-size: 2.8em !important;
-    margin-top: 0.3em;
-    margin-block-end: 0.4em !important;
-  }
-
-  .sc-pNWdM.XJxhY h3 {
-    font-size: 1.17em!important;
-  }
-
+/** Exercises on a smaller screen **/
+@media screen and (max-height: 950px) {
   .sc-dPaNzc.fqbJCS {
     margin-top: 0em !important;
     margin-bottom: 0em !important;
   }
-
   .sc-ezzafa.dvHFX h1 {
     margin-block-start: 0.3em !important;
     margin-block-end: 0em !important;
   }
-
   .sc-khIgEk.hQhHpX {
     margin-top: -1em !important;
   }
-
   .dvHFX .headlineWithMoreSpace {
-    margin-top: 2em!important;
-    margin-bottom: 0em!important;
+    margin-top: 2em !important;
+    margin-bottom: 0em !important;
   }
-
-  .sc-hmbstg.iriXCP {
-    display: none!important;
-  }
-
   .sc-pNWdM.XJxhY {
-    padding-bottom: 0px!important;
+    padding-bottom: 0px !important;
   }
-
   .sc-bYwzuL.sc-gXfVKN.fDDjHD.jKLUHq {
-    margin-top: 1em!important;
-    margin-bottom: 1em!important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
   }
   .lRfdj {
-    margin-top: 0em!important;
-    margin-bottom: 0em!important;
+    margin-top: 0em !important;
+    margin-bottom: 0em !important;
   }
-
-  .sc-bYwzuL.sc-ciSkZP.sc-jcwpoC.fDDjHD.bwSYJA.kyvWZW{
-    height: 2em!important;
+  .sc-bYwzuL.sc-ciSkZP.sc-jcwpoC.fDDjHD.bwSYJA.kyvWZW {
+    height: 2em !important;
   }
-  .sc-gtsrHT.gfuSqG{
+  .sc-gtsrHT.gfuSqG {
     margin-bottom: 70px;
   }
-  button{
-    font-weight: 600!important;
-  }
-
-  //blue buttons from zeeguu-react
-  .sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-iemWCZ.jcTaHb.eysHZq.eEJWPz.hKymwP,
-  .sc-jSFjdj.sc-fujyAs.sc-eKYRIR.jcTaHb.eysHZq.llyViG,
-  .sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-iemWCZ.jcTaHb.eysHZq.eEJWPz.hKymwP,
-  .sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-bkbkJK.jcTaHb.eysHZq.eEJWPz.bIINLz
-  {
-    color: white !important;
-    background-color: #2F77AD!important;
-    border-color: #3079B0!important;
-    :hover{
-      background-color: #4F97CF!important;
-    }
-    font-weight: 600;
-  }
-
-`;
-
-export const StyledCloseButton = styled.div`
-  cursor: pointer;
-  right: 0px;
-  padding: 20px;
-  height: 55px;
-  margin: 10px;
-  padding: 1px;
-  float: right;
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+}
 `;
 
 export const StyledHeading = styled.div`
@@ -258,158 +238,4 @@ export const StyledHeading = styled.div`
   z-index: 1;
 `;
 
-export const StyledSmallButtonBlue = styled.button`
-  color: white !important;
-  background-color: #2F77AD!important;
-  border-color: #3079B0!important;
-  :hover{
-    background-color: #4F97CF!important;
-  }
-  cursor: pointer;
-  border-radius: 10px;
-  border: none;
-  padding: 7px;
-  margin: 5px 5px 5px 0px;
-  font-weight: 600;
-`;
 
-export const StyledButtonBlue = styled.button`
-  color: white !important;
-  background-color: #2F77AD!important;
-  border-color: #3079B0!important;
-
-  :hover{
-    background-color: #4F97CF!important;
-  }
-
-  font-weight: 600;
-  color: white;
-  height: 45px;
-  display: inline-block;
-  margin: 5px;
-  height: 45px;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 10px;
-  font-size: 18px;
-  cursor: pointer;
-`;
-
-
-export const MarginTop = styled.div`
-  margin-top: 11px;
-`;
-
-export let NavigationButton = styled.button`
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  min-width: 8em;
-  min-height: 2em;
-  padding: 0.5em;
-  font-size: 1.2em;
-  margin-left: 1em;
-  @media (min-wdith: 768px) {
-    width: 16em;
-  }
-  // Next
-  ${(props) =>
-    props.next &&
-    css`
-      :after {
-        content: ">>";
-      }
-    `}
-  // Previous
-  ${(props) =>
-    props.prev &&
-    css`
-      :before {
-        content: "<<";
-      }
-    `}
-  // Primary
-  ${(props) =>
-    props.primary &&
-    css`
-     color: white !important;
-     background-color: #2F77AD!important;
-     border-color: #3079B0!important;
-     :hover{
-         background-color: #4F97CF!important;
-      }
-      border-style: solid;
-      border-width: 2px;
-      border-radius: 10px;
-    `}
-  // Secondary
-  ${(props) =>
-    props.secondary &&
-    css`
-      color: white !important;
-      background-color: #2F77AD!important;
-      border-color: #3079B0!important;
-      :hover{
-        background-color: #4F97CF!important;
-      }
-      border-style: solid!important;
-      border-width: 2px!important;
-      border-radius: 10px!important;
-    `}
-    // Disabled
-    ${(props) =>
-    props.disabled &&
-    css`
-      background-color: white !important;
-      color: #999999 !important;
-      cursor: not-allowed;
-      border-color: #999999 !important;
-      pointer-events: none;
-      border-width: 0;
-      border-style: solid;
-      border-width: 2px;
-      border-radius: 10px;
-    `}
-`;
-
-export const StyledTextarea = styled.textarea`
-  resize: none;
-  min-width: 99%;
-  min-height: 70px;
-  align-items: center;
-  display: block;
-`;
-
-export const StyledForm = styled.form`
-  display: block;
-  justify-content: center;
-`;
-
-export const StyledContainer = styled.div`
-  padding: 10px;
-  overflow: hidden;
-`;
-
-export const StyledPopup = styled(ReactModal)`
-  background-color: white;
-  position: fixed;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  padding-left: 25px;
-  padding-right: 25px;
-  box-shadow: 0px 10px 30px rgba(29, 5, 64, 0.32);
-  border-radius: 2px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-  "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-  "Helvetica Neue", sans-serif;
-  font-size: 1.0rem !important;
-`;
-
-export const ErrorMessage = styled.span`
-  color: red;
-`;

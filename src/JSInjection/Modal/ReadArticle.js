@@ -6,7 +6,7 @@ import {
   PARAGRAPH_CONTENT,
   HEADER_CONTENT,
 } from "../constants";
-import { StyledSmallButtonBlue } from "./Modal.styles";
+import { StyledSmallButtonBlue } from "./Buttons.styles";
 import ReviewVocabulary from "./ReviewVocabulary";
 import UserFeedback from "./UserFeedback";
 

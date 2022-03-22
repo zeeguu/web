@@ -1,6 +1,7 @@
 /*global chrome*/
 import {useState, useEffect} from "react";
-import {StyledModal, StyledCloseButton, StyledHeading, GlobalStyle} from "./Modal.styles";
+import {StyledModal, StyledHeading, GlobalStyle, OverwriteZeeguu} from "./Modal.styles";
+import { StyledCloseButton } from "./Buttons.styles";
 import ZeeguuLoader from "../ZeeguuLoader";
 import { EXTENSION_SOURCE} from "../constants";
 import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader";
@@ -167,70 +168,68 @@ export function Modal({
   return (
     <div>
       <GlobalStyle />
-      <StyledModal isOpen={modalIsOpen} className="Modal" id="scrollHolder" overlayClassName={"reader-overlay"}>
-        <StyledHeading>
-        <img
-           src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
-           alt={"Zeeguu logo"}
-           className="logoModal"
-         />
-          <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
-            X
-          </StyledCloseButton>
-          {readArticleOpen ? 
-          <ToolbarButtons
-            translating={translating}
-            pronouncing={pronouncing}
-            setTranslating={setTranslating}
-            setPronouncing={setPronouncing}
-          /> : null
-          }
-        </StyledHeading>
-        {readArticleOpen === true && (
-          <ReadArticle
-            articleId={articleId}
-            api={api}
-            author={author}
-            interactiveTextArray={interactiveTextArray}
-            interactiveTitle={interactiveTitle}
-            articleImage={articleImage}
-            openReview={openReview}
-            translating={translating}
-            pronouncing={pronouncing}
-            url={url}
-          />
-        )}
-        {reviewOpen === true && (
+      <StyledModal
+        isOpen={modalIsOpen}
+        className="Modal"
+        id="scrollHolder"
+        overlayClassName={"reader-overlay"}
+      >
+        <OverwriteZeeguu>
+          <StyledHeading>
+            <img
+              src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+              alt={"Zeeguu logo"}
+              className="logoModal"
+            />
+            <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
+              X
+            </StyledCloseButton>
+            {readArticleOpen ? (
+              <ToolbarButtons
+                translating={translating}
+                pronouncing={pronouncing}
+                setTranslating={setTranslating}
+                setPronouncing={setPronouncing}
+              />
+            ) : null}
+          </StyledHeading>
+          {readArticleOpen === true && (
+            <ReadArticle
+              articleId={articleId}
+              api={api}
+              author={author}
+              interactiveTextArray={interactiveTextArray}
+              interactiveTitle={interactiveTitle}
+              articleImage={articleImage}
+              openReview={openReview}
+              translating={translating}
+              pronouncing={pronouncing}
+              url={url}
+            />
+          )}
+          {reviewOpen === true && (
             <WordsForArticleModal
               api={api}
               articleID={articleId}
               openExercises={openExercises}
               openArticle={openArticle}
             />
-        )}
-        {exerciseOpen === true && (
-          <>
-            <sc.TopTabs>
-              <h1>{strings.exercises}</h1>
-            </sc.TopTabs>
-            <Exercises
-              className="exercises"
-              api={api}
-              articleID={articleId}
-              source={EXTENSION_SOURCE}
-              backToReadingAction={openArticle}
-              keepExercisingAction={reloadExercises}
-            />
-          </>
-        )}
+          )}
+          {exerciseOpen === true && (
+            <>
+              <sc.TopTabs><h1>{strings.exercises}</h1></sc.TopTabs>
+              <Exercises
+                className="exercises"
+                api={api}
+                articleID={articleId}
+                source={EXTENSION_SOURCE}
+                backToReadingAction={openArticle}
+                keepExercisingAction={reloadExercises}
+              />
+            </>
+          )}
+        </OverwriteZeeguu>
       </StyledModal>
     </div>
   );
 }
-
-
-//<MarginTop>
-//<CenteredContent>
-//<StyledButtonWhite onClick={openArticle}>{strings.backToArticle}</StyledButtonWhite>
-//</CenteredContent>
-//</MarginTop>//

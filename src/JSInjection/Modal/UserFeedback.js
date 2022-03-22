@@ -6,8 +6,8 @@ import {
   StyledContainer,
   StyledPopup,
   ErrorMessage,
-  StyledSmallButtonBlue,
-} from "./Modal.styles";
+} from "./UserFeedback.styles";
+import { StyledSmallButtonBlue } from "./Buttons.styles";
 import sendFeedbackEmail from "./sendEmail";
 
 export default function UserFeedback({ api, articleId, url }) {
