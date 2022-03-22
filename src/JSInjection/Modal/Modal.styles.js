@@ -74,7 +74,7 @@ export const StyledModal = styled(ReactModal)`
 
   .article-container p,
   .article-container li {
-    font-size: 1.2rem !important;
+   
     line-height: 40px !important;
   }
 
@@ -153,10 +153,14 @@ export const StyledModal = styled(ReactModal)`
     border-bottom: 2px dashed #2F76AC !important;
   }
 
-  .dXiuJH h1 {
+  .iNWOJK h1 {
     font-size: 2.8em !important;
     margin-top: 0.3em;
     margin-block-end: 0.4em !important;
+  }
+
+  .sc-pNWdM.XJxhY h3 {
+    font-size: 1.17em!important;
   }
 
   .sc-dPaNzc.fqbJCS {
