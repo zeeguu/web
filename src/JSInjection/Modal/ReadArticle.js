@@ -8,6 +8,7 @@ import {
 } from "../constants";
 import { StyledSmallButtonBlue } from "./Modal.styles";
 import ReviewVocabulary from "./ReviewVocabulary";
+import UserFeedback from "./UserFeedback";
 
 export function ReadArticle({
   articleId,
@@ -85,6 +86,7 @@ export function ReadArticle({
           }
         })}
         <ReviewVocabulary articleId={articleId} api={api} openReview={openReview}/>
+        <UserFeedback api={api} articleId={articleId}/>
       </div>
     </>
   );
