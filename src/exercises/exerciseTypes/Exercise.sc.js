@@ -1,6 +1,9 @@
 import styled, { keyframes } from "styled-components";
-import { Link } from "react-router-dom";
-import { zeeguuTransparentLightOrange, zeeguuOrange } from "../../components/colors";
+
+import {
+  zeeguuTransparentLightOrange,
+  zeeguuOrange,
+} from "../../components/colors";
 
 const Exercise = styled.div`
   display: flex;
@@ -255,9 +258,9 @@ let BottomRow = styled.div`
 `;
 
 let StyledGreyButton = styled.button`
-  background: none!important;
-  border: none!important;
-  padding: 0!important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
   margin-top: 1em;
   color: gray;
   text-decoration: underline;
@@ -265,7 +268,7 @@ let StyledGreyButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   font-family: "Montserrat";
-  `;
+`;
 
 let StyledDiv = styled.div`
   margin-top: 1em;

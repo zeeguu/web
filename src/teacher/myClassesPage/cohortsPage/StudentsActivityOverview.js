@@ -5,7 +5,10 @@ import LocalStorage from "../../../assorted/LocalStorage";
 import { transformStudents } from "./teacherApiHelpers";
 import HowToAddStudentsInfo from "./HowToAddStudentsInfo";
 import NoStudents from "./NoStudents";
-import { StyledButton, TopButtonWrapper } from "../../styledComponents/TeacherButtons.sc";
+import {
+  StyledButton,
+  TopButtonWrapper,
+} from "../../styledComponents/TeacherButtons.sc";
 import * as s from "../../../components/ColumnWidth.sc";
 import * as sc from "../../../components/TopTabs.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -15,6 +18,9 @@ export default function StudentsActivityOverview({ api }) {
   const cohortID = useParams().cohortID;
   const [cohort, setCohort] = useState("");
   const [students, setStudents] = useState(null);
+
+  // ML: when we'll find the time, we should fix this forceUpdate business...
+  // eslint-disable-next-line
   const [forceUpdate, setForceUpdate] = useState(0);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const [showAddStudentsInfo, setShowAddStudentsInfo] = useState(false);
