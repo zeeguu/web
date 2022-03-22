@@ -63,6 +63,7 @@ export default function UserFeedback({ api, articleId, url }) {
         <StyledForm onSubmit={submitFeedback}>
           <StyledTextarea
             name="feedback"
+            id="textarea-feedback"
             onChange={handleChange}
             value={feedback}
             placeholder="Write here"

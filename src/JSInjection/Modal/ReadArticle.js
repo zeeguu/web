@@ -31,6 +31,7 @@ export function ReadArticle({
 
   function reportProblem(e) {
     document.getElementById('feedback-box').scrollIntoView();
+    document.getElementById('textarea-feedback').focus();
   }
 
   return (
