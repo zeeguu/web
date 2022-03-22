@@ -42,7 +42,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       files: ["./main.js"],
       func: setCurrentURL(tab.url),
     });
-    //window.close();
+    window.close();
   }
 
   function handleSuccessfulSignIn(userInfo, session) {
