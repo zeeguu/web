@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 import { useState, useEffect } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
