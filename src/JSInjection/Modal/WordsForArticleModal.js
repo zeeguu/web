@@ -5,8 +5,8 @@ import { setTitle } from "../../zeeguu-react/src/assorted/setTitle";
 import strings from "../../zeeguu-react/src/i18n/definitions";
 import { EXTENSION_SOURCE } from "../constants";
 //import WordsToReview from "./WordsInReview";
-import {NavigationButton} from "./Modal.styles";
 import WordsToReview from "../../zeeguu-react/src/words/WordsToReview";
+import { NavigationButton } from "./Buttons.styles";
 
 function fit_for_study(words) {
   return words.filter((b) => b.fit_for_study || b.starred).length > 0;
