@@ -9,8 +9,9 @@ import {
   StyledFeedbackButton,
   ErrorMessage,
 } from "./Modal.styles";
+import sendFeedbackEmail from "./sendEmail";
 
-export default function UserFeedback({ api, articleId }) {
+export default function UserFeedback({ api, articleId, url }) {
   const [feedback, setFeedback] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -40,6 +41,7 @@ export default function UserFeedback({ api, articleId }) {
     if (!isEmpty) {
       let feedbackForDB = "problem_" + feedback.replace(/ /g, "_");
       //api.logReaderActivity(EXTENSION_SOURCE, api.EXTENSION_FEEDBACK, articleId, feedbackForDB);
+      sendFeedbackEmail(feedback, url, articleId)
       resetInput(e);
     }
   }

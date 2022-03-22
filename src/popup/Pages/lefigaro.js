@@ -15,8 +15,8 @@ export function readableLefigaro(HTMLContent) {
 export function liveArticleLefiagro(html) {
     const div = document.createElement("div");
     div.innerHTML = html;
-    const isLive = div.querySelector(".live-messages")
-    if (isLive !== null) {
+    const isLive = div.getElementsByClassName(".live-list")
+    if (isLive.length > 0) {
         return false
     } else {
         return true

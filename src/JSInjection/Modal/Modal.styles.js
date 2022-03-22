@@ -154,9 +154,8 @@ export const StyledButton = styled.button`
   padding: 7px;
   margin: 5px 5px 5px 0px;
 
-  :hover,
-  :focus {
-    box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
+  :hover {
+    box-shadow:rgba(255, 208, 71, 0.4);
   }
 `;
 
@@ -195,7 +194,7 @@ export const StyledPopup = styled(ReactModal)`
 
 export const StyledFeedbackButton = styled.button`
   display: left;
-  background-color: rgb(255, 187, 84);
+  background-color: rgb(255, 187, 84, 0.6);
   color: black;
   border-radius: 10px;
   border: none;
@@ -205,9 +204,8 @@ export const StyledFeedbackButton = styled.button`
   height: 30px;
   width: 120px;
 
-  :hover,
-  :focus {
-    box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
+  :hover {
+    background-color: rgba(255, 208, 71, 0.4);
   }
 `;
 
