@@ -1,6 +1,6 @@
 /*global chrome*/
 import {useState, useEffect} from "react";
-import {MarginTop, StyledModal, StyledCloseButton, StyledHeading, GlobalStyle, StyledButtonOrange, StyledButtonWhite} from "./Modal.styles";
+import {StyledModal, StyledCloseButton, StyledHeading, GlobalStyle} from "./Modal.styles";
 import ZeeguuLoader from "../ZeeguuLoader";
 import { EXTENSION_SOURCE} from "../constants";
 import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader";
@@ -12,7 +12,6 @@ import {ReadArticle} from "./ReadArticle"
 import WordsForArticleModal from "./WordsForArticleModal";
 import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
-import { CenteredContent } from "../../zeeguu-react/src/components/ColumnWidth.sc";
 import strings from "../../zeeguu-react/src/i18n/definitions";
 import * as sc from "../../zeeguu-react/src/components/TopTabs.sc";
 export function Modal({

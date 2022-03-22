@@ -12,6 +12,7 @@ export const GlobalStyle = createGlobalStyle`
       }
 `;
 
+
 export const StyledModal = styled(ReactModal)`
 
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -95,8 +96,9 @@ export const StyledModal = styled(ReactModal)`
     padding: 5px 45px 0px 45px;
   }
 
+  //grey box
   .feedbackBox {
-  background-color: rgb(255, 229, 158);
+  background-color: #f2f3f4;
   line-height: 1.2em;
   border: 0px solid rgb(255, 229, 158);
   font-size: 1.2em;
@@ -109,8 +111,10 @@ export const StyledModal = styled(ReactModal)`
 
 
   /*** Overwriting zeeguu-react ***/
+  
+  //blue
   z-tag:hover {
-    color: #a46a00 !important;
+    color: #2F76AC !important;
   }
   z-tag{
     font-size: 1.2em !important;
@@ -118,6 +122,7 @@ export const StyledModal = styled(ReactModal)`
   z-tag z-tran {
     margin-bottom: -5px !important;
     color: black !important;
+    font-weight: 400 !important;
   }
 
   h1 z-tag z-tran {
@@ -132,8 +137,10 @@ export const StyledModal = styled(ReactModal)`
     margin-bottom: -1px !important;
   }
 
+  //blue dashed
   z-orig {
-    color: #a46a00 !important;
+    color: black !important;
+    border-bottom: 2px dashed #2F76AC !important;
   }
 
   .dXiuJH h1 {
@@ -185,6 +192,20 @@ export const StyledModal = styled(ReactModal)`
     margin-bottom: 70px;
   }
 
+  //blue buttons from zeeguu-react
+  .sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-iemWCZ.jcTaHb.eysHZq.eEJWPz.hKymwP,
+  .sc-jSFjdj.sc-fujyAs.sc-eKYRIR.jcTaHb.eysHZq.llyViG,
+  .sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-iemWCZ.jcTaHb.eysHZq.eEJWPz.hKymwP,
+  .sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-bkbkJK.jcTaHb.eysHZq.eEJWPz.bIINLz
+  {
+    color: white !important;
+    background-color: #2F77AD!important;
+    border-color: #3079B0!important;
+    :hover{
+      background-color: #4F97CF!important;
+    }
+  }
+
 `;
 
 export const StyledCloseButton = styled.div`
@@ -214,29 +235,35 @@ export const StyledHeading = styled.div`
   z-index: 1;
 `;
 
-export const StyledButtonGrey = styled.button`
-  background-color: #e7e7e9;
+export const StyledSmallButtonBlue = styled.button`
+  color: white !important;
+  background-color: #2F77AD!important;
+  border-color: #3079B0!important;
+  :hover{
+    background-color: #4F97CF!important;
+  }
   cursor: pointer;
   border-radius: 10px;
   border: none;
   padding: 7px;
   margin: 5px 5px 5px 0px;
-
-  :hover,
-  :focus {
-    box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
-  }
 `;
 
-export const StyledButtonOrange = styled.button`
-  background-color: ${zeeguuOrange};
+export const StyledButtonBlue = styled.button`
+  color: white !important;
+  background-color: #2F77AD!important;
+  border-color: #3079B0!important;
+
+  :hover{
+    background-color: #4F97CF!important;
+  }
+
   font-weight: 500;
   color: white;
   height: 45px;
   display: inline-block;
   margin: 5px;
   height: 45px;
-  border-color: ${zeeguuOrange};
   border-style: solid;
   border-width: 2px;
   border-radius: 10px;
@@ -244,21 +271,6 @@ export const StyledButtonOrange = styled.button`
   cursor: pointer;
 `;
 
-export const StyledButtonWhite = styled.button`
-  font-weight: 500;
-  background-color: white;
-  color: ${zeeguuOrange};
-  height: 45px;
-  cursor: pointer;
-  display: inline-block;
-  margin: 5px;
-  height: 45px;
-  border-color: ${zeeguuOrange};
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 10px;
-  font-size: 18px;
-`;
 
 export const MarginTop = styled.div`
   margin-top: 11px;
@@ -297,9 +309,12 @@ export let NavigationButton = styled.button`
   ${(props) =>
     props.primary &&
     css`
-      background-color: ${zeeguuOrange} !important;
-      color: white !important;
-      border-color: ${zeeguuOrange};
+     color: white !important;
+     background-color: #2F77AD!important;
+     border-color: #3079B0!important;
+     :hover{
+         background-color: #4F97CF!important;
+      }
       border-style: solid;
       border-width: 2px;
       border-radius: 10px;
@@ -308,10 +323,12 @@ export let NavigationButton = styled.button`
   ${(props) =>
     props.secondary &&
     css`
-      border: none !important;
-      background-color: white !important;
-      color: ${zeeguuOrange} !important;
-      border-color: ${zeeguuOrange}!important;
+      color: white !important;
+      background-color: #2F77AD!important;
+      border-color: #3079B0!important;
+      :hover{
+        background-color: #4F97CF!important;
+      }
       border-style: solid!important;
       border-width: 2px!important;
       border-radius: 10px!important;

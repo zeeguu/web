@@ -1,6 +1,6 @@
 import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
 import strings from "../../zeeguu-react/src/i18n/definitions";
-import { StyledButtonOrange, StyledButtonWhite } from "./Modal.styles";
+import {StyledButtonBlue} from "./Modal.styles";
 export default function ReviewVocabulary({openReview}) {
 
   return (
@@ -11,7 +11,7 @@ export default function ReviewVocabulary({openReview}) {
       <br />
       <br />
       <s.CenteredContent>
-      <StyledButtonOrange onClick={openReview}>{strings.reviewVocabulary}</StyledButtonOrange>
+      <StyledButtonBlue onClick={openReview}>{strings.reviewVocabulary}</StyledButtonBlue>
       </s.CenteredContent>
     </s.FeedbackBox>
     </>

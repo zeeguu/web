@@ -6,7 +6,7 @@ import {
   PARAGRAPH_CONTENT,
   HEADER_CONTENT,
 } from "../constants";
-import { StyledButtonGrey } from "./Modal.styles";
+import { StyledSmallButtonBlue } from "./Modal.styles";
 import ReviewVocabulary from "./ReviewVocabulary";
 
 export function ReadArticle({
@@ -38,8 +38,8 @@ export function ReadArticle({
   return (
     <>
       <div className="article-container">
-        <StyledButtonGrey onClick={reportProblem}>Report problems</StyledButtonGrey>
-        <StyledButtonGrey onClick={handlePostCopy}>Make Personal Copy</StyledButtonGrey>
+        <StyledSmallButtonBlue onClick={reportProblem}>Report problems</StyledSmallButtonBlue>
+        <StyledSmallButtonBlue onClick={handlePostCopy}>Make Personal Copy</StyledSmallButtonBlue>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}
