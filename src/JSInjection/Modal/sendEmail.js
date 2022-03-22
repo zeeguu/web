@@ -1,5 +1,4 @@
-import emailjs from '@emailjs/browser';
-import{ init } from '@emailjs/browser';
+import emailjs, { init } from '@emailjs/browser';
 
 init("d3k1rxdzrwjzQ3ro6");
 

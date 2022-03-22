@@ -114,6 +114,10 @@ export const StyledModal = styled(ReactModal)`
   font-size: 1.2em;
   }
 
+  .floatRight{
+  float:right;
+  }
+
   .logoModal {
     height: 50px;
     margin: 10px;
@@ -205,6 +209,9 @@ export const StyledModal = styled(ReactModal)`
   .sc-gtsrHT.gfuSqG{
     margin-bottom: 70px;
   }
+  button{
+    font-weight: 600!important;
+  }
 
   //blue buttons from zeeguu-react
   .sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-iemWCZ.jcTaHb.eysHZq.eEJWPz.hKymwP,
@@ -218,6 +225,7 @@ export const StyledModal = styled(ReactModal)`
     :hover{
       background-color: #4F97CF!important;
     }
+    font-weight: 600;
   }
 
 `;
@@ -261,6 +269,7 @@ export const StyledSmallButtonBlue = styled.button`
   border: none;
   padding: 7px;
   margin: 5px 5px 5px 0px;
+  font-weight: 600;
 `;
 
 export const StyledButtonBlue = styled.button`
@@ -272,7 +281,7 @@ export const StyledButtonBlue = styled.button`
     background-color: #4F97CF!important;
   }
 
-  font-weight: 500;
+  font-weight: 600;
   color: white;
   height: 45px;
   display: inline-block;
@@ -295,6 +304,7 @@ export let NavigationButton = styled.button`
   cursor: pointer;
   align-items: center;
   justify-content: center;
+  font-weight: 600;
   min-width: 8em;
   min-height: 2em;
   padding: 0.5em;
@@ -393,25 +403,28 @@ export const StyledPopup = styled(ReactModal)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+  "Helvetica Neue", sans-serif;
+  font-size: 1.0rem !important;
 `;
 
-export const StyledFeedbackButton = styled.button`
-  display: left;
-  background-color: rgb(255, 187, 84, 0.6);
-  color: black;
-  border-radius: 10px;
-  border: none;
-  padding: 7px;
-  margin: 5px 0px 5px 0px;
-  float: right;
-  height: 30px;
-  width: 120px;
+//export const StyledFeedbackButton = styled.button`
+//  display: left;
+//  background-color: rgb(255, 187, 84, 0.6);
+//  color: black;
+//  border-radius: 10px;
+//  border: none;
+//  padding: 7px;
+//  margin: 5px 0px 5px 0px;
+//  float: right;
+//  height: 30px;
+//  width: 120px;//
 
-  :hover {
-    background-color: rgba(255, 208, 71, 0.4);
-  }
-`;
+//  :hover {
+//    background-color: rgba(255, 208, 71, 0.4);
+//  }
+//`;
 
 export const ErrorMessage = styled.span`
   color: red;

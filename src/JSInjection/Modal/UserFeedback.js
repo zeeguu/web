@@ -1,13 +1,12 @@
 import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
 import { useState } from "react";
-import { EXTENSION_SOURCE } from "../constants";
 import {
   StyledTextarea,
   StyledForm,
   StyledContainer,
   StyledPopup,
-  StyledFeedbackButton,
   ErrorMessage,
+  StyledSmallButtonBlue,
 } from "./Modal.styles";
 import sendFeedbackEmail from "./sendEmail";
 
@@ -46,11 +45,13 @@ export default function UserFeedback({ api, articleId, url }) {
     }
   }
 
-  function resetInput(e) {
-    setFeedback((e.target.value = ""));
+  function resetInput(e){
+    e.target.value = "";
+    setFeedback(e.target.value);
   }
+
   return (
-    <s.FeedbackBox>
+    <s.FeedbackBox className="feedbackBox">
       <StyledContainer>
         <h2>We are always trying to improve the Zeeguu Extension</h2>
         <small>
@@ -69,14 +70,15 @@ export default function UserFeedback({ api, articleId, url }) {
           {isEmpty ? (
             <ErrorMessage>Please write something</ErrorMessage>
           ) : null}
-          <StyledFeedbackButton
+          <StyledSmallButtonBlue
+            className="floatRight"
             type="submit"
             value="Send feedback"
             onClick={setModalIsOpenToTrue}
             id="feedback-box"
           >
             Submit feedback
-          </StyledFeedbackButton>
+          </StyledSmallButtonBlue>
         </StyledForm>
       </StyledContainer>
       <StyledPopup
@@ -84,10 +86,10 @@ export default function UserFeedback({ api, articleId, url }) {
         isOpen={modalIsOpen}
         overlayClassName={"feedback-overlay"}
       >
-        <h3>Thank you for your feedback!</h3>
-        <StyledFeedbackButton onClick={setModalIsOpenToFalse}>
+        <p>Thank you for your feedback!</p>
+        <StyledSmallButtonBlue className="floatRight" onClick={setModalIsOpenToFalse}>
           Close
-        </StyledFeedbackButton>
+        </StyledSmallButtonBlue>
       </StyledPopup>
     </s.FeedbackBox>
   );
