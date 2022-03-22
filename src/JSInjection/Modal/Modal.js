@@ -1,31 +1,48 @@
 /*global chrome*/
-import { useEffect, useState } from "react";
-import {StyledModal, StyledCloseButton, StyledHeading, StyledButton, GlobalStyle} from "./Modal.styles";
+import {useState, useEffect} from "react";
+import {StyledModal, StyledCloseButton, StyledHeading, GlobalStyle} from "./Modal.styles";
+import ZeeguuLoader from "../ZeeguuLoader";
+import { EXTENSION_SOURCE} from "../constants";
+import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
-import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText";
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage } from "../../popup/functions";
-import ZeeguuLoader from "../ZeeguuLoader";
-import { EXTENSION_SOURCE, LIST_CONTENT, PARAGRAPH_CONTENT, HEADER_CONTENT } from "../constants";
+import {ReadArticle} from "./ReadArticle"
+import WordsForArticleModal from "./WordsForArticleModal";
+import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
-import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader";
 import ReviewVocabulary from "./ReviewVocabulary";
 import UiLanguageSettings from "../../zeeguu-react/src/components/UiLanguageSettings";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
-import UserFeedback from "./UserFeedback";
+import strings from "../../zeeguu-react/src/i18n/definitions";
+import * as sc from "../../zeeguu-react/src/components/TopTabs.sc";
+export function Modal({
+  title,
+  content,
+  modalIsOpen,
+  setModalIsOpen,
+  api,
+  url,
+  author,
+}) {
+  const [readArticleOpen, setReadArticleOpen] = useState(true);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [exerciseOpen, setExerciseOpen] = useState(false);
 
-export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, author}) {
+  const [translating, setTranslating] = useState(true);
+  const [pronouncing, setPronouncing] = useState(false);
+
+  const [articleId, setArticleId] = useState();
   const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [articleImage, setArticleImage] = useState();
-  const [translating, setTranslating] = useState(true);
-  const [pronouncing, setPronouncing] = useState(false);
-  const [articleId, setArticleId] = useState();
   const [nativeLang, setNativeLang] = useState();
   const [DBArticleInfo, setDBArticleInfo] = useState();
   const [articleLanguage, setArticleLanguage] = useState();
   const [uiLanguage, setUiLanguage] = useState();
+
+
 
   useUILanguage();
   useEffect(() => {
@@ -37,7 +54,7 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
         authors: author,
       };
       api.findOrCreateArticle(info, (result_dict) =>
-      setDBArticleInfo(JSON.parse(result_dict))
+        setDBArticleInfo(JSON.parse(result_dict))
       );
     }
     getNativeLanguage().then((result) => setNativeLang(result));
@@ -67,13 +84,21 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
       setArticleImage(image);
       let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
       setInteractiveTextArray(arrInteractive);
-
-      let itTitle = new InteractiveText(title, articleInfo, api, EXTENSION_SOURCE);
+      let itTitle = new InteractiveText(
+        title,
+        articleInfo,
+        api,
+        EXTENSION_SOURCE
+      );
       setInteractiveTitle(itTitle);
-      api.logReaderActivity(api.OPEN_ARTICLE, articleId, EXTENSION_SOURCE);
+      api.logReaderActivity(api.OPEN_ARTICLE, articleId, "", EXTENSION_SOURCE);
 
-      window.addEventListener("focus", function () {onFocus(api, articleId, EXTENSION_SOURCE);});
-      window.addEventListener("blur", function () {onBlur(api, articleId, EXTENSION_SOURCE);});
+      window.addEventListener("focus", function () {
+        onFocus(api, articleId, EXTENSION_SOURCE);
+      });
+      window.addEventListener("blur", function () {
+        onBlur(api, articleId, EXTENSION_SOURCE);
+      });
 
       let getModalClass = document.getElementsByClassName("Modal");
       if (getModalClass !== undefined && getModalClass !== null) {
@@ -90,30 +115,49 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
 
   localStorage.setItem("native_language", nativeLang);
 
-  //Could be moved into another file
   function handleClose() {
-    location.reload();
     setModalIsOpen(false);
     api.logReaderActivity("ARTICLE CLOSED", articleId, EXTENSION_SOURCE);
-    window.removeEventListener("focus", function () {onFocus(api, articleId, EXTENSION_SOURCE);});
-    window.removeEventListener("blur", function () {onBlur(api, articleId, EXTENSION_SOURCE);});
+    window.removeEventListener("focus", function () {
+      onFocus(api, articleId, EXTENSION_SOURCE);
+    });
+    window.removeEventListener("blur", function () {
+      onBlur(api, articleId, EXTENSION_SOURCE);
+    });
     document.getElementById("scrollHolder") !== null &&
       document
         .getElementById("scrollHolder")
         .removeEventListener("scroll", function () {
           onScroll(api, articleId, EXTENSION_SOURCE);
         });
+    location.reload();
   }
 
   if (!modalIsOpen) {
     location.reload();
   }
 
-  //Could be moved into another file
-  function handlePostCopy() {
-    let article = {article_id: articleId}
-    api.makePersonalCopy(article, (message) => alert(message));
-    api.logReaderActivity(api.PERSONAL_COPY, articleId, EXTENSION_SOURCE);
+  function openReview(){
+    setReviewOpen(true)
+    setReadArticleOpen(false)
+    setExerciseOpen(false)
+  }
+
+  function openExercises(){
+    setExerciseOpen(true)
+    setReviewOpen(false)
+    api.logReaderActivity(api.TO_EXERCISES_AFTER_REVIEW, articleId, "", EXTENSION_SOURCE)
+  }
+
+  function reloadExercises(){
+    setExerciseOpen(false)
+    setTimeout(() => {setExerciseOpen(true)}, 0);
+  }
+
+  function openArticle() {
+    setReadArticleOpen(true);
+    setExerciseOpen(false);
+    setReviewOpen(false);
   }
 
   if (interactiveTextArray === undefined) {
@@ -125,66 +169,67 @@ export function Modal({title, content, modalIsOpen, setModalIsOpen, api, url, au
       <GlobalStyle />
       <StyledModal isOpen={modalIsOpen} className="Modal" id="scrollHolder">
         <StyledHeading>
+        <img
+           src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+           alt={"Zeeguu logo"}
+           className="logoModal"
+         />
           <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
             X
           </StyledCloseButton>
+          {readArticleOpen ? 
           <ToolbarButtons
             translating={translating}
             pronouncing={pronouncing}
             setTranslating={setTranslating}
             setPronouncing={setPronouncing}
-          />
+          /> : null
+          }
         </StyledHeading>
-        <div className="article-container">
-        <StyledButton onClick={handlePostCopy}>Make Personal Copy</StyledButton>
-        <h1>
-          <TranslatableText
-            interactiveText={interactiveTitle}
+        {readArticleOpen === true && (
+          <ReadArticle
+            articleId={articleId}
+            api={api}
+            author={author}
+            interactiveTextArray={interactiveTextArray}
+            interactiveTitle={interactiveTitle}
+            articleImage={articleImage}
+            openReview={openReview}
             translating={translating}
             pronouncing={pronouncing}
           />
-        </h1>
-        <p className="author">{author}</p>
-        <hr />
-        {articleImage === undefined ? null : (
-          <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>
         )}
-        {interactiveTextArray.map((paragraph) => {
-          const CustomTag = `${paragraph.tag}`;
-          if (HEADER_CONTENT.includes(paragraph.tag) || PARAGRAPH_CONTENT.includes(paragraph.tag)) {
-            return (
-              <CustomTag>
-                <TranslatableText
-                  interactiveText={paragraph.text}
-                  translating={translating}
-                  pronouncing={pronouncing}
-                />
-              </CustomTag>
-            );
-          }
-          if (LIST_CONTENT.includes(paragraph.tag)) {
-            let list = Array.from(paragraph.list);
-            return (
-              <CustomTag>
-                {list.map((paragraph, i) => {
-                  return (
-                    <li key={i}>
-                      <TranslatableText
-                        interactiveText={paragraph.text}
-                        translating={translating}
-                        pronouncing={pronouncing}
-                      />
-                    </li>
-                  );
-                })}
-              </CustomTag>
-            );
-          }
-        })}
-        <ReviewVocabulary articleId={articleId} />
-        <UserFeedback api={api} articleId={articleId}/>
-        </div>
+        {reviewOpen === true && (
+            <WordsForArticleModal
+              api={api}
+              articleID={articleId}
+              openExercises={openExercises}
+              openArticle={openArticle}
+            />
+        )}
+        {exerciseOpen === true && (
+          <>
+            <sc.TopTabs>
+              <h1>{strings.exercises}</h1>
+            </sc.TopTabs>
+            <Exercises
+              className="exercises"
+              api={api}
+              articleID={articleId}
+              source={EXTENSION_SOURCE}
+              backToReadingAction={openArticle}
+              keepExercisingAction={reloadExercises}
+            />
+          </>
+        )}
       </StyledModal>
     </div>
   );
 }
+
+
+//<MarginTop>
+//<CenteredContent>
+//<StyledButtonWhite onClick={openArticle}>{strings.backToArticle}</StyledButtonWhite>
+//</CenteredContent>
+//</MarginTop>//
