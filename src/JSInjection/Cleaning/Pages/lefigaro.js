@@ -1,4 +1,4 @@
-export const lefigaroRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]lefigaro+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+export const lefigaroRegex = /(http|https):\/\/(www.lefigaro.fr).*/;
 
 export function addImageLefirago(HTMLContent, readabilityContent) {
   // create new div with raw HTML content from the entire webpage
@@ -20,4 +20,8 @@ export function addImageLefirago(HTMLContent, readabilityContent) {
     newDiv.prepend(newImage);
   }
   return newDiv.innerHTML;
+}
+
+export function removeLireAussiU(HTMLContent) {
+
 }
