@@ -160,11 +160,6 @@ export function Modal({
     setReviewOpen(false);
   }
 
-  //Could be moved into another file
-  function reportProblem(e) {
-    document.getElementById('feedback-box').scrollIntoView();
-  }
-
   if (interactiveTextArray === undefined) {
     return <ZeeguuLoader />;
   }
@@ -202,6 +197,7 @@ export function Modal({
             openReview={openReview}
             translating={translating}
             pronouncing={pronouncing}
+            url={url}
           />
         )}
         {reviewOpen === true && (

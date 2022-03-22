@@ -20,6 +20,7 @@ export function ReadArticle({
   openReview,
   translating,
   pronouncing,
+  url
 }) {
 
   function handlePostCopy() {
@@ -29,11 +30,7 @@ export function ReadArticle({
   }
 
   function reportProblem(e) {
-    let answer = prompt("What is wrong with the article?");
-    if (answer) {
-      let feedback = "problem_" + answer.replace(/ /g, "_");
-      api.logReaderActivity(api.EXTENSION_FEEDBACK, articleId, feedback, EXTENSION_SOURCE);
-    }
+    document.getElementById('feedback-box').scrollIntoView();
   }
 
   return (
@@ -86,7 +83,7 @@ export function ReadArticle({
           }
         })}
         <ReviewVocabulary articleId={articleId} api={api} openReview={openReview}/>
-        <UserFeedback api={api} articleId={articleId}/>
+        <UserFeedback api={api} articleId={articleId} url={url}/>
       </div>
     </>
   );

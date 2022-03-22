@@ -12,6 +12,7 @@
     "axios": "^0.26.0",
     "cross-fetch": "^3.1.5",
     "dompurify": "^2.3.5",
+    "emailjs": "^3.8.0",
     "html-react-parser": "^1.4.8",
     "i": "^0.3.7",
     "linked-list": "^3.0.2",
