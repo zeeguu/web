@@ -116,6 +116,7 @@ export const StyledModal = styled(ReactModal)`
 
   .floatRight{
   float:right;
+  margin: 10px 0px 0px 0px;
   }
 
   .logoModal {
@@ -408,23 +409,6 @@ export const StyledPopup = styled(ReactModal)`
   "Helvetica Neue", sans-serif;
   font-size: 1.0rem !important;
 `;
-
-//export const StyledFeedbackButton = styled.button`
-//  display: left;
-//  background-color: rgb(255, 187, 84, 0.6);
-//  color: black;
-//  border-radius: 10px;
-//  border: none;
-//  padding: 7px;
-//  margin: 5px 0px 5px 0px;
-//  float: right;
-//  height: 30px;
-//  width: 120px;//
-
-//  :hover {
-//    background-color: rgba(255, 208, 71, 0.4);
-//  }
-//`;
 
 export const ErrorMessage = styled.span`
   color: red;
