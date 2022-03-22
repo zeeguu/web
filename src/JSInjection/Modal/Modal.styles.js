@@ -131,7 +131,7 @@ export const OverwriteZeeguu = styled.div`
 z-tag:hover {
   color: #2f76ac !important;
 }
-z-tag {
+.article-container z-tag {
   font-size: 1.2em !important;
 }
 z-tag z-tran {
