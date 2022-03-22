@@ -33,7 +33,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     );
     const ownIsProbablyReadable = checkReadability(tab.url)
 
-
     if (!isProbablyReadable || !ownIsProbablyReadable) {
       return alert("This page is not readable");
     }
@@ -43,7 +42,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       files: ["./main.js"],
       func: setCurrentURL(tab.url),
     });
-    window.close();
+    //window.close();
   }
 
   function handleSuccessfulSignIn(userInfo, session) {

@@ -2,7 +2,7 @@ import { readableDR } from "./Pages/dr";
 import { getEntireHTML } from "../JSInjection/Cleaning/pageSpecificClean";
 import { drRegex } from "../JSInjection/Cleaning/Pages/dr";
 import { lefigaroRegex } from "../JSInjection/Cleaning/Pages/lefigaro";
-import { readableLefigaro } from "./Pages/lefigaro";
+import { liveArticleLefiagro, readableLefigaro } from "./Pages/lefigaro";
 import { berlingskeRegex } from "../JSInjection/Cleaning/Pages/berlingske";
 import { readableBerlingske } from "./Pages/berlingske";
 import { lemondeRegex } from "../JSInjection/Cleaning/Pages/lemonde";

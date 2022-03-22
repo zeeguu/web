@@ -1,8 +1,8 @@
 import styled, { createGlobalStyle, css } from "styled-components";
+
 import ReactModal from "react-modal";
-import { zeeguuOrange } from "../../zeeguu-react/src/components/colors";
 export const GlobalStyle = createGlobalStyle`
-   .ReactModal__Overlay{
+   .reader-overlay{
         position: fixed;
         top: 0;
         left: 0;
@@ -10,6 +10,15 @@ export const GlobalStyle = createGlobalStyle`
         bottom: 0;
         background-color: rgb(239, 239, 239) !important;
       }
+
+    .feedback-overlay{
+      position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      background-color: rgba(255,255,255,0.75) !important;
+    }
 `;
 
 
@@ -65,6 +74,7 @@ export const StyledModal = styled(ReactModal)`
 
   .article-container p,
   .article-container li {
+    font-size: 1.2rem !important;
     line-height: 40px !important;
   }
 
@@ -93,7 +103,7 @@ export const StyledModal = styled(ReactModal)`
   }
 
   .article-container {
-    padding: 5px 45px 0px 45px;
+    padding: 5px 50px 0px 50px;
   }
 
   //grey box
@@ -355,29 +365,50 @@ export const StyledTextarea = styled.textarea`
   min-height: 70px;
   align-items: center;
   display: block;
-
 `;
 
 export const StyledForm = styled.form`
   display: block;
   justify-content: center;
-
-  button {
-    display: block;
-    background-color: rgb(255, 187, 84);
-    color: black;
-    border-radius: 10px;
-    border: none;
-    padding: 7px;
-    margin: 5px 5px 5px 0px;
-
-  :hover,
-  :focus {
-    box-shadow: 0 0.5em 0.5em -0.4em rgba(255, 208, 71);
-  }
-  }
 `;
 
 export const StyledContainer = styled.div`
   padding: 10px;
+  overflow: hidden;
+`;
+
+export const StyledPopup = styled(ReactModal)`
+  background-color: white;
+  position: fixed;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 25px;
+  padding-right: 25px;
+  box-shadow: 0px 10px 30px rgba(29, 5, 64, 0.32);
+  border-radius: 2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+`;
+
+export const StyledFeedbackButton = styled.button`
+  display: left;
+  background-color: rgb(255, 187, 84, 0.6);
+  color: black;
+  border-radius: 10px;
+  border: none;
+  padding: 7px;
+  margin: 5px 0px 5px 0px;
+  float: right;
+  height: 30px;
+  width: 120px;
+
+  :hover {
+    background-color: rgba(255, 208, 71, 0.4);
+  }
+`;
+
+export const ErrorMessage = styled.span`
+  color: red;
 `;
