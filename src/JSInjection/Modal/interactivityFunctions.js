@@ -1,5 +1,6 @@
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText"
 import { EXTENSION_SOURCE, HEADER_CONTENT, LIST_CONTENT } from "../constants";
+
 export function interactiveTextsWithTags(content, articleInfo, api) {
   const div = document.createElement("div");
   div.innerHTML = content;

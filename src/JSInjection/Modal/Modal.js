@@ -13,11 +13,10 @@ import {ReadArticle} from "./ReadArticle"
 import WordsForArticleModal from "./WordsForArticleModal";
 import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
-import ReviewVocabulary from "./ReviewVocabulary";
-import UiLanguageSettings from "../../zeeguu-react/src/components/UiLanguageSettings";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 import strings from "../../zeeguu-react/src/i18n/definitions";
 import * as sc from "../../zeeguu-react/src/components/TopTabs.sc";
+
 export function Modal({
   title,
   content,
