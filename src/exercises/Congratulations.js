@@ -3,6 +3,8 @@ import * as s from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import { useState } from "react";
 
+import { removeArrayDuplicates } from "../utils/basic/arrays";
+
 export default function Congratulations({
   articleID,
   correctBookmarks,
@@ -16,12 +18,6 @@ export default function Congratulations({
   );
   const [incorrectBookmarksToDisplay, setIncorrectBookmarksToDisplay] =
     useState(removeArrayDuplicates(incorrectBookmarks));
-
-  function removeArrayDuplicates(array) {
-    var set = new Set(array);
-    var newArray = Array.from(set);
-    return newArray;
-  }
 
   function deleteBookmark(bookmark) {
     setCorrectBookmarksToDisplay(
