@@ -43,4 +43,8 @@ const LittleMessageAbove = styled.div`
   margin-bottom: 2em;
 `;
 
-export { ExercisesColumn, ExForm, LittleMessageAbove };
+const AlignLeft = styled.div`
+  display: flex;
+`;
+
+export { ExercisesColumn, ExForm, LittleMessageAbove, AlignLeft };
