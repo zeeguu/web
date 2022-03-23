@@ -11,6 +11,7 @@ import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
+import {StyledGreyButton} from "./exerciseTypes/Exercise.sc"
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 
@@ -34,6 +35,7 @@ export default function Exercises({
   articleID,
   backToReadingAction,
   keepExercisingAction,
+  backToArticleAction,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
@@ -251,20 +253,15 @@ export default function Exercises({
     setShowFeedbackButtons(!showFeedbackButtons);
   }
 
-  let wordSourceText = articleInfo ? (
-    <>"{articleInfo.title}"</>
-  ) : (
-    <>{strings.wordSourceDefaultText}</>
-  );
-
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
     <s.ExercisesColumn>
-      <s.LittleMessageAbove>
-        {strings.wordSourcePrefix} {wordSourceText}
-      </s.LittleMessageAbove>
+      {!articleID ? (
+        <s.LittleMessageAbove>
+          {strings.wordSourcePrefix} {strings.wordSourceDefaultText}
+        </s.LittleMessageAbove>
+      ) : null}
       <ProgressBar index={currentIndex} total={exerciseSession.length} />
-
       <s.ExForm>
         <CurrentExercise
           bookmarksToStudy={currentBookmarksToStudy}
@@ -287,6 +284,13 @@ export default function Exercises({
         currentBookmarksToStudy={currentBookmarksToStudy}
         feedbackFunction={stopShowingThisFeedback}
       />
+      {articleID ? (
+        <s.AlignLeft>
+          <StyledGreyButton onClick={backToArticleAction}>
+            {strings.backToArticle}
+          </StyledGreyButton>
+        </s.AlignLeft>
+      ) : null}
     </s.ExercisesColumn>
   );
 }

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams,useHistory  } from "react-router-dom";
 import Exercises from "./Exercises";
 
 export default function ExercisesForArticle({
@@ -6,7 +6,15 @@ export default function ExercisesForArticle({
   backToReadingAction,
   keepExercisingAction,
 }) {
+  const history = useHistory();
   let { articleID } = useParams();
+
+  const backToArticleAction = () => {
+    history.push({
+      pathname: "/read/article",
+      search: `?id=${articleID}`,
+    });
+  };
 
   return (
     <Exercises
@@ -14,6 +22,7 @@ export default function ExercisesForArticle({
       articleID={articleID}
       backToReadingAction={backToReadingAction}
       keepExercisingAction={keepExercisingAction}
+      backToArticleAction={backToArticleAction}
     />
   );
 }
