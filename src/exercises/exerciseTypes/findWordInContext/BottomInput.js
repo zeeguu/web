@@ -63,7 +63,7 @@ export default function BottomInput({
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
     <>
-      <s.BottomRow>
+      <s.BottomRow className="bottomRow">
         <s.LeftFeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
           {strings.hint}
         </s.LeftFeedbackButton>

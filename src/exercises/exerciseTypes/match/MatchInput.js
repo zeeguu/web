@@ -87,7 +87,7 @@ function MatchInput({
 
   return (
     <>
-      <s.MatchInputHolder>
+      <s.MatchInputHolder className="matchInputHolder">
         <s.MatchButtonHolder>
           {fromButtonOptions ? (
             fromButtonOptions.map((option) =>
@@ -111,6 +111,7 @@ function MatchInput({
                     setReload={setReload}
                   />
                   <s.MatchingWords
+                    className="matchingWords"
                     style={answerPairStyle(option.id)}
                     key={"L2_" + option.id}
                   >
@@ -155,6 +156,7 @@ function MatchInput({
                 </s.AnimatedMatchButton>
               ) : buttonsToDisable.includes(option.id) || isCorrect ? (
                 <s.MatchingWords
+                  className="matchingWords"
                   style={answerPairStyle(option.id)}
                   key={"L1_" + option.id}
                 >
