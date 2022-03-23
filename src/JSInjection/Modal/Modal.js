@@ -208,6 +208,7 @@ export function Modal({
           )}
           {reviewOpen === true && (
             <WordsForArticleModal
+              className="wordsForArticle"
               api={api}
               articleID={articleId}
               openExercises={openExercises}
@@ -216,7 +217,7 @@ export function Modal({
           )}
           {exerciseOpen === true && (
             <>
-              <sc.TopTabs><h1>{strings.exercises}</h1></sc.TopTabs>
+              <sc.TopTabs className="topTabs"><h1>{strings.exercises}</h1></sc.TopTabs>
               <Exercises
                 className="exercises"
                 api={api}
@@ -224,6 +225,7 @@ export function Modal({
                 source={EXTENSION_SOURCE}
                 backToReadingAction={openArticle}
                 keepExercisingAction={reloadExercises}
+                backToArticleAction={openArticle}
               />
             </>
           )}
