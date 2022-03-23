@@ -286,7 +286,7 @@ export default function Exercises({
       />
       {articleID ? (
         <s.AlignLeft>
-          <StyledGreyButton onClick={backToArticleAction}>
+          <StyledGreyButton className="styledGreyButton" onClick={backToArticleAction}>
             {strings.backToArticle}
           </StyledGreyButton>
         </s.AlignLeft>

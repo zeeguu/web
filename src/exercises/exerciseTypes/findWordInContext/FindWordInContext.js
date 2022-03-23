@@ -128,7 +128,7 @@ export default function FindWordInContext({
   }
 
   return (
-    <s.Exercise>
+    <s.Exercise className="findWordInContext">
       {bookmarksToStudy[0].to.includes(" ") ? (
         <div className="headline">
           {strings.findTheExpressionInContextHeadline}
@@ -136,7 +136,7 @@ export default function FindWordInContext({
       ) : (
         <div className="headline">{strings.findTheWordInContextHeadline}</div>
       )}
-      <h1>{bookmarksToStudy[0].to}</h1>
+      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}

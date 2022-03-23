@@ -7,7 +7,7 @@ function MultipleChoicesInput({
   setIncorrectAnswer,
 }) {
   return (
-    <s.BottomRow>
+    <s.BottomRow className="bottomRow">
       {buttonOptions ? (
         buttonOptions.map((option) =>
           incorrectAnswer === option ? (
@@ -20,7 +20,7 @@ function MultipleChoicesInput({
               {option}
             </s.AnimatedOrangeButton>
           ) : (
-            <s.OrangeButton
+            <s.OrangeButton 
               key={option}
               id={option}
               onClick={(e) => notifyChoiceSelection(e.target.id)}
