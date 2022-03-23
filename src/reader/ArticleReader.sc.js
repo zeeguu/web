@@ -91,7 +91,7 @@ let MainText = styled.div`
 `;
 
 let _BottomButton = styled(BigSquareButton)`
-  width: 5em;
+  width: 8em;
   height: auto;
   display: inline-block;
 `;
@@ -103,8 +103,6 @@ let WhiteButton = styled(_BottomButton)`
   display: inline;
   align-items: center;
   justify-content: center;
-
-  min-width: 5em;
 
   //Small
   ${(props) =>
@@ -138,8 +136,6 @@ let OrangeButton = styled(_BottomButton)`
   a {
     color: white;
   }
-
-  width: 8em;
 
   @media (min-wdith: 768px) {
     width: 16em;
