@@ -1,5 +1,9 @@
 import styled, { css } from "styled-components";
 import { OrangeButton } from "./Exercise.sc.js";
+import {
+  zeeguuTransparentLightOrange,
+  zeeguuOrange,
+} from "../../components/colors";
 
 let SpeakerImage = styled.div`
   &.small {
@@ -29,14 +33,33 @@ let SpeakButton = styled(OrangeButton)`
     text-decoration: line-through;
   }
 
-  &.selected {
-    background-color: red;
-    border: 5px solid black;
-  }
-
   &#loader {
     background-color: green;
   }
 `;
 
-export { SpeakButton, SpeakerImage };
+let SelectedSpeakButton = styled(OrangeButton)`
+  width: fit-content;
+  height: fit-content;
+  background: #ffd04799;
+  color: black;
+  border: 0.125em solid ${zeeguuTransparentLightOrange};
+  &:disabled {
+    cursor: default;
+    text-decoration: line-through;
+  }
+
+  &#loader {
+    background-color: green;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:hover {
+    background-color: ${zeeguuTransparentLightOrange};
+  }
+`;
+
+export { SpeakButton, SpeakerImage, SelectedSpeakButton };

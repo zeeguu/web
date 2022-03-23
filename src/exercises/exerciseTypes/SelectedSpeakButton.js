@@ -47,7 +47,7 @@ const styles = {
   selected: selected_style,
 };
 
-export default function SelectedSpeakButton({
+export default function SpeakButton({
   bookmarkToStudy,
   api,
   styling,
@@ -67,7 +67,7 @@ export default function SelectedSpeakButton({
   return (
     <>
       {handleClick !== undefined && (
-        <s.SpeakButton
+        <s.SelectedSpeakButton
           disabled={isSpeaking}
           className={cls}
           onClick={(e) => {
@@ -104,11 +104,11 @@ export default function SelectedSpeakButton({
               }}
             />
           )}
-        </s.SpeakButton>
+        </s.SelectedSpeakButton>
       )}
 
       {handleClick === undefined && (
-        <s.SpeakButton
+        <s.SelectedSpeakButton
           disabled={isSpeaking}
           className={cls}
           onClick={(e) => {
@@ -144,7 +144,7 @@ export default function SelectedSpeakButton({
               }}
             />
           )}
-        </s.SpeakButton>
+        </s.SelectedSpeakButton>
       )}
     </>
   );

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
-
-import SpeakButton from "../SpeakButton.js";
+import SelectedSpeakButton from "../SelectedSpeakButton.js";
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
@@ -11,6 +10,12 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import removePunctuation from "../../../assorted/removePunctuation";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./AudioTwoBotInput";
+import {
+  zeeguuOrange,
+  darkBlue,
+  zeeguuRed,
+  zeeguuViolet,
+} from "../../../components/colors";
 
 const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
 export default function AudioExerciseTwo({
@@ -25,6 +30,7 @@ export default function AudioExerciseTwo({
   toggleShow,
   reload,
   setReload,
+  inputFirstClick,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
@@ -35,7 +41,7 @@ export default function AudioExerciseTwo({
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [currentChoice, setCurrentChoice] = useState(false);
   const [firstTypeTime, setFirstTypeTime] = useState();
-
+  const [firstSelection, setFirstSelection] = useState(0);
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
@@ -137,6 +143,24 @@ export default function AudioExerciseTwo({
     return <LoadingAnimation />;
   }
 
+  const selectedButtonColor = {
+    background: `${zeeguuOrange}`,
+    color: "black",
+    border: `0.15em solid ${zeeguuOrange}`,
+  };
+  const selectedButtonStyle = (id) => {
+    if (firstSelection === id) {
+      return selectedButtonColor;
+    }
+    return null;
+  };
+
+  function handleClick(id) {
+    inputFirstClick();
+    setFirstSelection(id);
+    console.log(id + " selected");
+  }
+
   return (
     <s.Exercise>
       <div className="headlineWithMoreSpace">
@@ -154,19 +178,23 @@ export default function AudioExerciseTwo({
       <s.CenteredRow>
         {choiceOptions ? (
           choiceOptions.map((option) =>
-            0 !== option ? (
-              <SpeakButton
+            Number(0) !== option ? (
+              <SelectedSpeakButton
                 handleClick={buttonSelectFalse}
+                onClick={(e) => handleClick("to", Number(e.target.id))}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
-                styling="selected"
+                id={option.id}
+                style={selectedButtonStyle("to" + option.id)}
               />
             ) : (
-              <SpeakButton
+              <SelectedSpeakButton
                 handleClick={buttonSelectTrue}
+                onClick={(e) => handleClick("from", Number(e.target.id))}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
-                styling="selected"
+                id={option.id}
+                style={selectedButtonStyle("from" + option.id)}
               />
             )
           )
