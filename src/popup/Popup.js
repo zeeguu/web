@@ -1,11 +1,11 @@
 /*global chrome*/
 import Login from "./Login";
-import { checkReadability} from "./checkReadability";
-import {setCurrentURL, getSourceAsDOM} from "./functions";
+import { checkReadability } from "./checkReadability";
+import { setCurrentURL, getSourceAsDOM } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
-import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API"
+import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -31,18 +31,17 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       minLength,
       minScore
     );
-    const ownIsProbablyReadable = checkReadability(tab.url)
+    const ownIsProbablyReadable = checkReadability(tab.url);
 
     if (!isProbablyReadable || !ownIsProbablyReadable) {
       return alert("This page is not readable");
     }
-
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["./main.js"],
       func: setCurrentURL(tab.url),
     });
-    window.close();
+    //window.close();
   }
 
   function handleSuccessfulSignIn(userInfo, session) {
@@ -63,6 +62,10 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ loggedIn: false });
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
+    chrome.cookies.remove(
+      { url: "https://www.zeeguu.org", name: "sessionID" },
+      () => console.log("Logged out, cookie removed")
+    );
   }
 
   return (

@@ -42,9 +42,8 @@ export function Modal({
   const [articleLanguage, setArticleLanguage] = useState();
   const [uiLanguage, setUiLanguage] = useState();
 
-
-
   useUILanguage();
+
   useEffect(() => {
     if (content !== undefined) {
       let info = {
@@ -79,7 +78,7 @@ export function Modal({
         language: articleLanguage,
         starred: false,
       };
-
+      console.log("info ", articleInfo)
       let image = getImage(content);
       setArticleImage(image);
       let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
