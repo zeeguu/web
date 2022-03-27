@@ -47,7 +47,7 @@ const styles = {
   selected: selected_style,
 };
 
-export default function SelectedSpeakButton({
+export default function SpeakButton({
   bookmarkToStudy,
   api,
   styling,

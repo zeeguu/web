@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
-import SelectedSpeakButton from "../SelectedSpeakButton.js";
+import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
@@ -10,12 +10,8 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import removePunctuation from "../../../assorted/removePunctuation";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./AudioTwoBotInput";
-import {
-  zeeguuOrange,
-  darkBlue,
-  zeeguuRed,
-  zeeguuViolet,
-} from "../../../components/colors";
+
+import { zeeguuOrange } from "../../../components/colors";
 
 const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
 export default function AudioExerciseTwo({
@@ -39,9 +35,9 @@ export default function AudioExerciseTwo({
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [choiceOptions, setChoiceOptions] = useState(null);
-  const [currentChoice, setCurrentChoice] = useState(false);
+  const [currentChoice, setCurrentChoice] = useState("");
   const [firstTypeTime, setFirstTypeTime] = useState();
-  const [firstSelection, setFirstSelection] = useState(0);
+  const [selectedButtonId, setSelectedButtonId] = useState("");
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
@@ -73,18 +69,20 @@ export default function AudioExerciseTwo({
     }
   }
 
-  function buttonSelectTrue() {
-    if (currentChoice !== true) {
+  function buttonSelectTrue(id) {
+    if (currentChoice !== 0) {
       setCurrentChoice(true);
+      setSelectedButtonId(id);
     }
-    console.log(currentChoice + " " + bookmarksToStudy[0].id);
+    console.log(id + " true");
   }
 
-  function buttonSelectFalse() {
-    if (currentChoice !== false) {
+  function buttonSelectFalse(id) {
+    if (currentChoice !== 1 || currentChoice !== 2) {
       setCurrentChoice(false);
+      setSelectedButtonId(id);
     }
-    console.log(currentChoice);
+    console.log(id + " false");
   }
 
   function handleShowSolution() {
@@ -148,16 +146,16 @@ export default function AudioExerciseTwo({
     color: "black",
     border: `0.15em solid ${zeeguuOrange}`,
   };
+
   const selectedButtonStyle = (id) => {
-    if (firstSelection === id) {
-      return selectedButtonColor;
+    if (selectedButtonId === id) {
+      return "selected";
     }
     return null;
   };
 
   function handleClick(id) {
-    inputFirstClick();
-    setFirstSelection(id);
+    setSelectedButtonId(id);
     console.log(id + " selected");
   }
 
@@ -178,23 +176,23 @@ export default function AudioExerciseTwo({
       <s.CenteredRow>
         {choiceOptions ? (
           choiceOptions.map((option) =>
-            Number(0) !== option ? (
-              <SelectedSpeakButton
-                handleClick={buttonSelectFalse}
-                onClick={(e) => handleClick("to", Number(e.target.id))}
+            0 !== option ? (
+              <SpeakButton
+                handleClick={() => buttonSelectFalse(option)}
+                onClick={(e) => handleClick(option)}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
                 id={option.id}
-                style={selectedButtonStyle("to" + option.id)}
+                styling={selectedButtonStyle(option)}
               />
             ) : (
-              <SelectedSpeakButton
-                handleClick={buttonSelectTrue}
-                onClick={(e) => handleClick("from", Number(e.target.id))}
+              <SpeakButton
+                handleClick={() => buttonSelectTrue(option)}
+                onClick={(e) => handleClick(option)}
                 bookmarkToStudy={bookmarksToStudy[option]}
                 api={api}
                 id={option.id}
-                style={selectedButtonStyle("from" + option.id)}
+                styling={selectedButtonStyle(option)}
               />
             )
           )
