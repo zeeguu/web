@@ -38,28 +38,4 @@ let SpeakButton = styled(OrangeButton)`
   }
 `;
 
-let SelectedSpeakButton = styled(OrangeButton)`
-  width: fit-content;
-  height: fit-content;
-  background: #ffd04799;
-  color: black;
-  border: 0.125em solid ${zeeguuTransparentLightOrange};
-  &:disabled {
-    cursor: default;
-    text-decoration: line-through;
-  }
-
-  &#loader {
-    background-color: green;
-  }
-
-  &:focus {
-    outline: 0;
-  }
-
-  &:hover {
-    background-color: ${zeeguuTransparentLightOrange};
-  }
-`;
-
-export { SpeakButton, SpeakerImage, SelectedSpeakButton };
+export { SpeakButton, SpeakerImage };
