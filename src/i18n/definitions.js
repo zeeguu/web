@@ -274,11 +274,11 @@ let strings = new LocalizedStrings(
       reviewTranslations: "Review Translations for Your Exercises ",
       from: "From: ",
       deleteTranslation:
-        "Delete a translation if you don't want it in exercises.",
+        "Delete a translation if you don't want it to appear in exercises.",
       starTranslation:
-        "Star a translation to make it have priority in exercises.",
+        "Starred translations have priority in exercises.",
       ifGreyedTranslation:
-        "A grayed out translation is not going to appear in exercises unless you star it.",
+        "A grayed out translation won't appear in exercises unless you star it.",
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
