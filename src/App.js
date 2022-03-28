@@ -47,7 +47,7 @@ function App() {
     // TODO: this is required by the teacher dashboard
     // could be cool to remove it from there and make that
     // one also use the localStorage
-    let far_into_the_future = 365*2
+    let far_into_the_future = 365*5;
     Cookies.set('sessionID', api.session, {expires: far_into_the_future});
     Cookies.set('nativeLanguage', userInfo.native_language, {expires: far_into_the_future});
     Cookies.set('name', userInfo.name, {expires: far_into_the_future});
