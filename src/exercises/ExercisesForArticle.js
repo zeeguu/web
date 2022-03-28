@@ -20,7 +20,7 @@ export default function ExercisesForArticle({
     <Exercises
       api={api}
       articleID={articleID}
-      backToReadingAction={backToArticleAction}
+      backButtonAction={backToArticleAction}
       keepExercisingAction={keepExercisingAction}
     />
   );
