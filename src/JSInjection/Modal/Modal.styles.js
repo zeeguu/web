@@ -40,6 +40,7 @@ export const StyledModal = styled(ReactModal)`
   height: 85%;
   width: 75%;
   overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
   outline: none;
 
