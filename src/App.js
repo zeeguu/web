@@ -44,9 +44,8 @@ function App() {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
 
-    // TODO: this is required by the teacher dashboard
-    // could be cool to remove it from there and make that
-    // one also use the localStorage
+    // Cookies are the mechanism via which we share a login
+    // between the extension and the website
     let far_into_the_future = 365*5;
     Cookies.set('sessionID', api.session, {expires: far_into_the_future});
     Cookies.set('nativeLanguage', userInfo.native_language, {expires: far_into_the_future});
