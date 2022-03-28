@@ -11,7 +11,6 @@ import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
-
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 
 let BOOKMARKS_FOR_EXERCISE = [
@@ -32,7 +31,7 @@ let BOOKMARKS_FOR_EXERCISE = [
 export default function Exercises({
   api,
   articleID,
-  backToReadingAction,
+  backButtonAction,
   keepExercisingAction,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
@@ -151,6 +150,24 @@ export default function Exercises({
     return exerciseSession;
   }
 
+  function truncate(str, n){
+    return (str.length > n) ? str.substr(0, n-1) + '...' : str;
+  };
+
+  let wordSourceText = articleInfo ? (
+    <><a href="#" className="wordSourceText" onClick={backButtonAction}>{truncate(articleInfo.title, 40)}</a></>
+  ) : (
+    <>{strings.wordSourceDefaultText}</>
+  );
+
+  let wordSourcePrefix = articleInfo ? (
+    <>{strings.goBackArticlePrefix}</>
+  ) : (
+    <>{strings.wordSourcePrefix}</>
+  );
+
+
+
   /**
    * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
    * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
@@ -183,7 +200,7 @@ export default function Exercises({
         correctBookmarks={correctBookmarks}
         incorrectBookmarks={incorrectBookmarks}
         api={api}
-        backToReadingAction={backToReadingAction}
+        backButtonAction={backButtonAction}
         keepExercisingAction={keepExercisingAction}
       />
     );
@@ -198,7 +215,7 @@ export default function Exercises({
       <OutOfWordsMessage
         message={strings.goToTextsToTranslateWords}
         buttonText={strings.backToReading}
-        buttonAction={backToReadingAction}
+        buttonAction={backButtonAction}
       />
     );
   }
@@ -251,20 +268,13 @@ export default function Exercises({
     setShowFeedbackButtons(!showFeedbackButtons);
   }
 
-  let wordSourceText = articleInfo ? (
-    <>"{articleInfo.title}"</>
-  ) : (
-    <>{strings.wordSourceDefaultText}</>
-  );
-
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
     <s.ExercisesColumn>
-      <s.LittleMessageAbove>
-        {strings.wordSourcePrefix} {wordSourceText}
-      </s.LittleMessageAbove>
+        <s.LittleMessageAbove>
+          {wordSourcePrefix} {wordSourceText}
+        </s.LittleMessageAbove>
       <ProgressBar index={currentIndex} total={exerciseSession.length} />
-
       <s.ExForm>
         <CurrentExercise
           bookmarksToStudy={currentBookmarksToStudy}

@@ -110,7 +110,7 @@ export default function MultipleChoice({
   }
 
   return (
-    <s.Exercise>
+    <s.Exercise className="multipleChoice">
       <div className="headlineWithMoreSpace">
         {strings.chooseTheWordFittingContextHeadline}
       </div>

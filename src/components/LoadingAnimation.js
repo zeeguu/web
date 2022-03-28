@@ -3,5 +3,5 @@ import strings from "../i18n/definitions";
 
 export default function LoadingAnimation({ text }) {
   let _text = text ? text : strings.loadingMsg;
-  return <s.LoadingAnimation>{_text}</s.LoadingAnimation>;
+  return <s.LoadingAnimation className="loadingAnimation">{_text}</s.LoadingAnimation>;
 }

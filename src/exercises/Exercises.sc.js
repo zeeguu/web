@@ -5,7 +5,7 @@ const ExercisesColumn = styled.div`
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-
+  margin-top: 8em;
   display: flex;
   flex-direction: column;
 `;
@@ -43,4 +43,4 @@ const LittleMessageAbove = styled.div`
   margin-bottom: 2em;
 `;
 
-export { ExercisesColumn, ExForm, LittleMessageAbove };
+export { ExercisesColumn, ExForm, LittleMessageAbove};

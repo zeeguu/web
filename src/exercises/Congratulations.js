@@ -10,7 +10,7 @@ export default function Congratulations({
   correctBookmarks,
   incorrectBookmarks,
   api,
-  backToReadingAction,
+  backButtonAction,
   keepExercisingAction,
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
@@ -29,7 +29,7 @@ export default function Congratulations({
   }
 
   return (
-    <s.NarrowColumn>
+    <s.NarrowColumn className="narrowColumn">
       <br />
 
       <h2>&nbsp;&nbsp;&nbsp;{strings.goodJob} 🥳 🎉 </h2>
@@ -38,7 +38,7 @@ export default function Congratulations({
         <h3>
           😊 {strings.correct}
           {correctBookmarksToDisplay.map((each) => (
-            <s.ContentOnRow key={"row_" + each.id}>
+            <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
               <Word
                 key={each.id}
                 bookmark={each}
@@ -55,7 +55,7 @@ export default function Congratulations({
           <br />
           😳 {strings.payMoreAttentionTo}
           {incorrectBookmarksToDisplay.map((each) => (
-            <s.ContentOnRow key={"row_" + each.id}>
+            <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
               <Word
                 key={each.id}
                 bookmark={each}
@@ -67,11 +67,11 @@ export default function Congratulations({
         </h3>
       )}
 
-      <s.ContentOnRow>
-        <s.OrangeButton onClick={keepExercisingAction}>
+      <s.ContentOnRow className="contentOnRow">
+        <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
           {strings.keepExercising}
         </s.OrangeButton>
-        <s.WhiteButton onClick={backToReadingAction}>
+        <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
           {strings.backToReading}
         </s.WhiteButton>
       </s.ContentOnRow>
