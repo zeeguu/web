@@ -7,6 +7,7 @@ import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 
+
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
@@ -14,12 +15,52 @@ const minScore = 20;
 export default function Popup({ loggedIn, setLoggedIn }) {
   let api = new Zeeguu_API("https://api.zeeguu.org");
   const [user, setUser] = useState();
+  const [sessionId, setSession] = useState();
+  const [name, setName] = useState();
+  const [nativeLang, setNativeLang] = useState();
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {
       setUser(result.userInfo);
     });
   }, []);
+
+  useEffect(() => {
+    chrome.cookies.get({ url: "https://www.zeeguu.org", name: "name" }, 
+    function (cookie) {
+      if (cookie) {
+        chrome.storage.local.set({ name: cookie.value}, () => console.log("name is set in local storage"))
+        setName(cookie.value)
+      }
+    })
+    
+    chrome.cookies.get({ url: "https://www.zeeguu.org", name: "nativeLanguage" },
+    function (cookie) {
+      if (cookie) {
+        chrome.storage.local.set({nativeLanguage: cookie.value}, () => {console.log("native lang is set in local storage")})
+        setNativeLang(cookie.value)
+      }
+    })
+  chrome.storage.local.get("sessionId", function (result) {
+    if (result) {
+      setSession(result.sessionId)
+      console.log("sessionid", result.sessionId)
+    }
+    });
+  }, [])
+
+    useEffect(()=> {
+      if (loggedIn) {
+        let userInfo = {
+            session: sessionId,
+            name: name,
+            learned_language: "en",
+            native_language: nativeLang
+        }
+        console.log("userinfo,", userInfo) 
+        handleSuccessfulSignIn(userInfo, sessionId)
+      }
+    }, [sessionId, name, nativeLang])
 
   async function openModal() {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
