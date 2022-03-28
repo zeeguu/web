@@ -46,3 +46,26 @@ export function deleteCurrentDOM(){
   const head = document.querySelector("head");
   removeAllChildNodes(head);
 }
+
+export function isAlreadyLoggedInToZeeguu(setName, setNativeLang, setSession) {
+  chrome.cookies.get({ url: "https://www.zeeguu.org", name: "name" }, 
+    function (cookie) {
+      if (cookie) {
+        setName(decodeURI(cookie.value))
+        console.log("name", decodeURI(cookie.value))
+      }
+    })
+    chrome.cookies.get({ url: "https://www.zeeguu.org", name: "nativeLanguage" },
+    function (cookie) {
+      if (cookie) {
+        setNativeLang(cookie.value)
+        console.log("lang", cookie.value)
+      }
+    })
+  chrome.storage.local.get("sessionId", function (result) {
+    if (result) {
+      setSession(result.sessionId)
+      console.log("sessionid", result.sessionId)
+    }
+    });
+}

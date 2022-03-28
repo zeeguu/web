@@ -32,9 +32,6 @@ function App() {
     console.log("is loggedin? ", loggedIn);
   });
 
-  //if logged in already on zeeguu
-  
-
   return <Popup loggedIn={loggedIn} setLoggedIn={setLoggedIn} />;
 }
 

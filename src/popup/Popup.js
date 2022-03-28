@@ -1,7 +1,7 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import { setCurrentURL, getSourceAsDOM } from "./functions";
+import { setCurrentURL, getSourceAsDOM, isAlreadyLoggedInToZeeguu } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
@@ -23,44 +23,23 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.get("userInfo", function (result) {
       setUser(result.userInfo);
     });
+    if (loggedIn) {
+      isAlreadyLoggedInToZeeguu(setName, setNativeLang, setSession)
+    }
   }, []);
 
-  useEffect(() => {
-    chrome.cookies.get({ url: "https://www.zeeguu.org", name: "name" }, 
-    function (cookie) {
-      if (cookie) {
-        chrome.storage.local.set({ name: cookie.value}, () => console.log("name is set in local storage"))
-        setName(cookie.value)
-      }
-    })
-    
-    chrome.cookies.get({ url: "https://www.zeeguu.org", name: "nativeLanguage" },
-    function (cookie) {
-      if (cookie) {
-        chrome.storage.local.set({nativeLanguage: cookie.value}, () => {console.log("native lang is set in local storage")})
-        setNativeLang(cookie.value)
-      }
-    })
-  chrome.storage.local.get("sessionId", function (result) {
-    if (result) {
-      setSession(result.sessionId)
-      console.log("sessionid", result.sessionId)
-    }
-    });
-  }, [])
-
     useEffect(()=> {
-      if (loggedIn) {
+      if ((name !== undefined) && (nativeLang !== undefined) && (sessionId !== undefined)) {
         let userInfo = {
             session: sessionId,
             name: name,
-            learned_language: "en",
+            learned_language: "",
             native_language: nativeLang
         }
-        console.log("userinfo,", userInfo) 
-        handleSuccessfulSignIn(userInfo, sessionId)
+          console.log("userinfo,", userInfo) 
+          handleSuccessfulSignIn(userInfo, sessionId)
       }
-    }, [sessionId, name, nativeLang])
+    }, [name, nativeLang, sessionId])
 
   async function openModal() {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
