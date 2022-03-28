@@ -55,7 +55,7 @@ export function pageSpecificClean(articleContent, url) {
     }
     return div.innerHTML
   }
-
+  
   export function cleanDocumentClone(documentClone, currentTabURL) {
     if (currentTabURL.match(drRegex)) {
       return cleanDRBefore(documentClone)

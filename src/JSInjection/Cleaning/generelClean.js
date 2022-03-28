@@ -2,9 +2,8 @@
 export function generalClean(content) {
   let cleanContent = removeSVG(content);
   cleanContent = removeLinks(cleanContent);
-  cleanContent = removeFigcaption(cleanContent);
-  return cleanContent
-
+  cleanContent = removeFigures(cleanContent);
+  return cleanContent;
 }
 
 /* Functions */
@@ -12,9 +11,12 @@ export function getImage(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   const firstImage = div.getElementsByTagName("img")[0];
-  if((firstImage != undefined)){
-  const image = {src:firstImage.getAttribute("src"), alt:firstImage.getAttribute("alt")};
-  return image
+  if (firstImage != undefined) {
+    const image = {
+      src: firstImage.getAttribute("src"),
+      alt: firstImage.getAttribute("alt"),
+    };
+    return image;
   }
 }
 
@@ -48,24 +50,18 @@ function removeLinks(content) {
   return content;
 }
 
-
-function removeFigcaption(content){
+function removeFigures(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
-  const figcaption = div.getElementsByTagName("figcaption");
-  if (figcaption  !== undefined) {
-    let caption = figcaption ,
-      index;
-    for (index = caption.length - 1; index >= 0; index--) {
-      caption[index].parentNode.removeChild(caption[index]);
+  let figures = div.getElementsByTagName("figure"),
+    index;
+  if (figures.length > 1) {
+    for (index = figures.length - 1; index >= 0; index--) {
+      if (index !== 0) {
+        figures[index].parentNode.removeChild(figures[index]);
+      }
     }
-    content = div.innerHTML;
   }
+  content = div.innerHTML;
   return content;
 }
-
-
-
-
-
-
