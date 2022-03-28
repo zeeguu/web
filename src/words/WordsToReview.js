@@ -23,8 +23,8 @@ export default function WordsToReview({
       <TopMessage style={{ textAlign: "left" }}>
         {words.length > 0 ? (
           <>
-            <p>{strings.deleteTranslation}</p>
             <p>{strings.starTranslation}</p>
+            <p>{strings.deleteTranslation}</p>
             <p>{strings.ifGreyedTranslation}</p>
           </>
         ) : (
