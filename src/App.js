@@ -58,8 +58,6 @@ function App() {
     setUser({});
 
     removeUserInfoFromCookies();
-
-
   }
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
