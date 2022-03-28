@@ -126,104 +126,128 @@ export const StyledModal = styled(ReactModal)`
 `;
 
 export const OverwriteZeeguu = styled.div`
-
-/** Zeeguu Reader **/
-z-tag:hover {
-  color: #2f76ac !important;
-}
-.article-container z-tag {
-  font-size: 1.2em !important;
-}
-z-tag z-tran {
-  margin-bottom: -5px !important;
-  color: black !important;
-  font-weight: 400 !important;
-}
-h1 z-tag z-tran {
-  margin-bottom: 2px !important;
-}
-h2 z-tag z-tran {
-  margin-bottom: -1px !important;
-}
-h3 z-tag z-tran {
-  margin-bottom: -1px !important;
-}
-
-z-orig {
-  color: black !important;
-  border-bottom: 2px dashed #2f76ac !important;
-}
-
-
-/** Exercises **/
-.iNWOJK h1 {
-  font-size: 2.8em !important;
-  margin-top: 0.3em;
-  margin-block-end: 0.4em !important;
-}
-
-.sc-pNWdM.XJxhY h3 {
-  font-size: 1.17em !important;
-}
-
-.topnav a {
-  float: none;
-  width: 100%;
-}
-
-.sc-hmbstg.iriXCP {
-  display: none !important;
-}
-
-/** Buttons from Exercises **/
-.sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-iemWCZ.jcTaHb.eysHZq.eEJWPz.hKymwP,
-.sc-jSFjdj.sc-fujyAs.sc-eKYRIR.jcTaHb.eysHZq.llyViG,
-.sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-iemWCZ.jcTaHb.eysHZq.eEJWPz.hKymwP,
-.sc-jSFjdj.sc-fujyAs.sc-fFSPTT.sc-bkbkJK.jcTaHb.eysHZq.eEJWPz.bIINLz {
-  color: white !important;
-  background-color: #2f77ad !important;
-  border-color: #3079b0 !important;
-  :hover {
-    background-color: #4f97cf !important;
+  /** Zeeguu Reader **/
+  z-tag:hover {
+    color: #2f76ac !important;
   }
-  font-weight: 600 !important;
-}
+  .article-container z-tag {
+    font-size: 1.2em !important;
+  }
+  z-tag z-tran {
+    margin-bottom: -5px !important;
+    color: black !important;
+    font-weight: 400 !important;
+  }
+  h1 z-tag z-tran {
+    margin-bottom: 2px !important;
+  }
+  h2 z-tag z-tran {
+    margin-bottom: -1px !important;
+  }
+  h3 z-tag z-tran {
+    margin-bottom: -1px !important;
+  }
 
-/** Exercises on a smaller screen **/
-@media screen and (max-height: 950px) {
-  .sc-dPaNzc.fqbJCS {
-    margin-top: 0em !important;
-    margin-bottom: 0em !important;
+  z-orig {
+    color: black !important;
+    border-bottom: 2px dashed #2f76ac !important;
   }
-  .sc-ezzafa.dvHFX h1 {
-    margin-block-start: 0.3em !important;
-    margin-block-end: 0em !important;
+
+  /** Exercises **/
+
+  .wordSourceText {
+    color: #2f77ad;
   }
-  .sc-khIgEk.hQhHpX {
-    margin-top: -1em !important;
+
+  .exercisesColumn {
+    margin-top: 3em;
   }
-  .dvHFX .headlineWithMoreSpace {
-    margin-top: 2em !important;
-    margin-bottom: 0em !important;
+  .contentOnRow {
+    margin-top: 1.5em;
   }
-  .sc-pNWdM.XJxhY {
-    padding-bottom: 0px !important;
+
+  .topTabs h1 {
+    font-size: 2.8em !important;
+    margin-top: 0.3em;
+    margin-block-end: 0.4em !important;
   }
-  .sc-bYwzuL.sc-gXfVKN.fDDjHD.jKLUHq {
-    margin-top: 1em !important;
-    margin-bottom: 1em !important;
+
+  .narrowColumn h3 {
+    font-size: 1.17em !important;
   }
-  .lRfdj {
-    margin-top: 0em !important;
-    margin-bottom: 0em !important;
+
+  .topnav a {
+    float: none;
+    width: 100%;
   }
-  .sc-bYwzuL.sc-ciSkZP.sc-jcwpoC.fDDjHD.bwSYJA.kyvWZW {
-    height: 2em !important;
+
+  /** Buttons from Exercises **/
+  .whiteButton,
+  .orangeButton {
+    color: white !important;
+    background-color: #2f77ad !important;
+    border-color: #3079b0 !important;
+    :hover {
+      background-color: #4f97cf !important;
+    }
+    font-weight: 600 !important;
   }
-  .sc-gtsrHT.gfuSqG {
+
+  .styledGreyButton {
+    font-weight: 400 !important;
+  }
+
+  .loadingAnimation {
     margin-bottom: 70px;
   }
-}
+
+  /** Exercises on a smaller screen **/
+  @media screen and (max-height: 950px) {
+    // FindWordInContext Exercises
+    .bottomRow {
+      margin-top: -1em !important;
+      margin-bottom: 0em !important;
+    }
+
+    .multipleChoice h1 {
+      margin-block-start: 0em;
+      margin-block-end: 0em;
+    }
+
+    .wordInContextHeadline {
+      margin-block-start: 0.3em !important;
+      margin-block-end: 0em !important;
+    }
+
+    // MultipleChoice Exercises
+    .headlineWithMoreSpace {
+      margin-top: 2em !important;
+      margin-bottom: 0em !important;
+    }
+
+    // Match Exercises
+    .matchInputHolder button {
+      margin-top: 0.4em !important;
+      margin-bottom: 0.4em !important;
+    }
+
+    .matchInputHolder {
+      margin-bottom: 1em;
+    }
+
+    .matchingWords {
+      margin-top: 0em;
+      margin-bottom: 0em;
+    }
+
+    // General
+    .centeredRow {
+      margin-top: -1.3em !important;
+    }
+    .narrowColumn {
+      padding-bottom: 0px !important;
+    }
+  }
 `;
 
 export const StyledHeading = styled.div`
@@ -237,5 +261,3 @@ export const StyledHeading = styled.div`
   border-bottom: 2px solid rgb(246, 246, 246);
   z-index: 1;
 `;
-
-

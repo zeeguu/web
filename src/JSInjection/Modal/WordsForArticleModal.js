@@ -4,7 +4,6 @@ import { NarrowColumn, CenteredContent} from "../../zeeguu-react/src/components/
 import { setTitle } from "../../zeeguu-react/src/assorted/setTitle";
 import strings from "../../zeeguu-react/src/i18n/definitions";
 import { EXTENSION_SOURCE } from "../constants";
-//import WordsToReview from "./WordsInReview";
 import WordsToReview from "../../zeeguu-react/src/words/WordsToReview";
 import { NavigationButton } from "./Buttons.styles";
 
@@ -49,7 +48,7 @@ export default function WordsForArticleModal({
   }
 
   return (
-    <NarrowColumn>
+    <NarrowColumn className="narrowColumn">
       <WordsToReview
         words={words}
         deleteBookmark={deleteBookmark}
