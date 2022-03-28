@@ -13,6 +13,7 @@ import strings from "../i18n/definitions";
 import { Error } from "../teacher/sharedComponents/Error";
 import Select from "../components/Select";
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
+import Cookies from 'js-cookie'
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -87,6 +88,11 @@ export default function Settings({ api, setUser }) {
       learned_language: info.learned_language,
       native_language: info.native_language,
     });
+
+    let far_into_the_future = 365*5;
+    Cookies.set('nativeLanguage', info.native_language, {expires: far_into_the_future});
+    Cookies.set('name', info.name, {expires: far_into_the_future});
+
   }
 
   function nativeLanguageUpdated(e) {
