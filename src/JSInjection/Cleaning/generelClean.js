@@ -20,15 +20,15 @@ export function getImage(content) {
   }
 }
 
+
 function removeSVG(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
-  const allSVG = div.getElementsByTagName("svg");
-  if (allSVG !== undefined) {
-    let svg = allSVG,
-      index;
-    for (index = svg.length - 1; index >= 0; index--) {
-      svg[index].parentNode.removeChild(svg[index]);
+  let allSVG = div.getElementsByTagName("svg"),
+    index;
+  if (allSVG.length > 0) {
+    for (index = allSVG.length - 1; index >= 0; index--) {
+      allSVG[index].parentNode.removeChild(allSVG[index]);
     }
     content = div.innerHTML;
   }

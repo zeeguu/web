@@ -34,9 +34,11 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
       const paragraphObject = { text: it, tag: HTMLTag };
       arrOfInteractive.push(paragraphObject);
     } else {
+      if(!allTags[i].innerHTML.includes("img")){
       const it = new InteractiveText(content, articleInfo, api, EXTENSION_SOURCE);
       const paragraphObject = { text: it, tag: HTMLTag };
       arrOfInteractive.push(paragraphObject);
+      }
       }
     }
   }
