@@ -217,15 +217,13 @@ export function Modal({
           )}
           {exerciseOpen === true && (
             <>
-              <sc.TopTabs className="topTabs"><h1>{strings.exercises}</h1></sc.TopTabs>
               <Exercises
                 className="exercises"
                 api={api}
                 articleID={articleId}
                 source={EXTENSION_SOURCE}
-                backToReadingAction={openArticle}
+                backButtonAction={openArticle}
                 keepExercisingAction={reloadExercises}
-                backToArticleAction={openArticle}
               />
             </>
           )}

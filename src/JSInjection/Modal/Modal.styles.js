@@ -155,6 +155,13 @@ export const OverwriteZeeguu = styled.div`
 
   /** Exercises **/
 
+  .wordSourceText {
+    color: #2f77ad;
+  }
+
+  .exercisesColumn {
+    margin-top: 3em;
+  }
   .contentOnRow {
     margin-top: 1.5em;
   }
@@ -196,7 +203,6 @@ export const OverwriteZeeguu = styled.div`
 
   /** Exercises on a smaller screen **/
   @media screen and (max-height: 950px) {
-    
     // FindWordInContext Exercises
     .bottomRow {
       margin-top: -1em !important;
@@ -234,7 +240,7 @@ export const OverwriteZeeguu = styled.div`
       margin-bottom: 0em;
     }
 
-    // General 
+    // General
     .centeredRow {
       margin-top: -1.3em !important;
     }
