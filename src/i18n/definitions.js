@@ -295,6 +295,7 @@ let strings = new LocalizedStrings(
       //Exercises
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
+      goBackArticlePrefix: "Go back to reading: ",
       noTranslatedWords: "You have no words to practice.",
       goToTextsToTranslateWords: "Read and translate words to get exercises.",
       goStarTranslations:
