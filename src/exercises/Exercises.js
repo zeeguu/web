@@ -270,7 +270,7 @@ export default function Exercises({
 
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
-    <s.ExercisesColumn>
+    <s.ExercisesColumn className="exercisesColumn">
         <s.LittleMessageAbove>
           {wordSourcePrefix} {wordSourceText}
         </s.LittleMessageAbove>
