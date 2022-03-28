@@ -3,13 +3,13 @@ import Exercises from "./Exercises";
 
 export default function ExercisesForArticle({
   api,
-  backToReadingAction,
   keepExercisingAction,
 }) {
   const history = useHistory();
   let { articleID } = useParams();
 
-  const backToArticleAction = () => {
+  const backToArticleAction = (e) => {
+    e.preventDefault();
     history.push({
       pathname: "/read/article",
       search: `?id=${articleID}`,
@@ -20,9 +20,8 @@ export default function ExercisesForArticle({
     <Exercises
       api={api}
       articleID={articleID}
-      backToReadingAction={backToReadingAction}
+      backToReadingAction={backToArticleAction}
       keepExercisingAction={keepExercisingAction}
-      backToArticleAction={backToArticleAction}
     />
   );
 }

@@ -21,16 +21,11 @@ export default function ExercisesRouter({ api }) {
 
   return (
     <s.NarrowColumn>
-      <sc.TopTabs>
-        <h1>{strings.exercises}</h1>
-      </sc.TopTabs>
-
       <Switch>
         <PrivateRoute
           path="/exercises/forArticle/:articleID"
           api={api}
           component={ExercisesForArticle}
-          backToReadingAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
         />
 

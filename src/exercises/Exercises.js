@@ -11,8 +11,6 @@ import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
-import {StyledGreyButton} from "./exerciseTypes/Exercise.sc"
-
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 
 let BOOKMARKS_FOR_EXERCISE = [
@@ -35,7 +33,6 @@ export default function Exercises({
   articleID,
   backToReadingAction,
   keepExercisingAction,
-  backToArticleAction,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
@@ -153,6 +150,24 @@ export default function Exercises({
     return exerciseSession;
   }
 
+  function truncate(str, n){
+    return (str.length > n) ? str.substr(0, n-1) + '...' : str;
+  };
+
+  let wordSourceText = articleInfo ? (
+    <><a href="#" className="wordSourceText" onClick={backToReadingAction}>{truncate(articleInfo.title, 40)}</a></>
+  ) : (
+    <>{strings.wordSourceDefaultText}</>
+  );
+
+  let wordSourcePrefix = articleInfo ? (
+    <>{strings.goBackArticlePrefix}</>
+  ) : (
+    <>{strings.wordSourcePrefix}</>
+  );
+
+
+
   /**
    * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
    * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
@@ -256,11 +271,9 @@ export default function Exercises({
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
     <s.ExercisesColumn>
-      {!articleID ? (
         <s.LittleMessageAbove>
-          {strings.wordSourcePrefix} {strings.wordSourceDefaultText}
+          {wordSourcePrefix} {wordSourceText}
         </s.LittleMessageAbove>
-      ) : null}
       <ProgressBar index={currentIndex} total={exerciseSession.length} />
       <s.ExForm>
         <CurrentExercise
@@ -284,13 +297,6 @@ export default function Exercises({
         currentBookmarksToStudy={currentBookmarksToStudy}
         feedbackFunction={stopShowingThisFeedback}
       />
-      {articleID ? (
-        <s.AlignLeft>
-          <StyledGreyButton className="styledGreyButton" onClick={backToArticleAction}>
-            {strings.backToArticle}
-          </StyledGreyButton>
-        </s.AlignLeft>
-      ) : null}
     </s.ExercisesColumn>
   );
 }
