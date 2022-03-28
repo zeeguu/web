@@ -50,7 +50,6 @@ function App() {
     Cookies.set('sessionID', api.session, {expires: far_into_the_future});
     Cookies.set('nativeLanguage', userInfo.native_language, {expires: far_into_the_future});
     Cookies.set('name', userInfo.name, {expires: far_into_the_future});
-    console.log(Cookies.get('name'));
     
 
     userInfo.is_teacher
