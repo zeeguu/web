@@ -10,6 +10,8 @@ import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
+import Cookies from 'js-cookie'
+
 
 function App() {
   let userDict = {};
@@ -45,7 +47,12 @@ function App() {
     // TODO: this is required by the teacher dashboard
     // could be cool to remove it from there and make that
     // one also use the localStorage
-    document.cookie = `sessionID=${api.session};`;
+    let far_into_the_future = 365*2
+    Cookies.set('sessionID', api.session, {expires: far_into_the_future});
+    Cookies.set('native_language', userInfo.native_language, {expires: far_into_the_future});
+    Cookies.set('name', userInfo.name, {expires: far_into_the_future});
+    console.log(Cookies.get('name'));
+    
 
     userInfo.is_teacher
       ? history.push("/teacher/classes")
@@ -56,12 +63,10 @@ function App() {
     LocalStorage.deleteUserInfo();
     setUser({});
 
-    // expire cookies, cf. https://stackoverflow.com/a/27374365/1200070
-    document.cookie.split(";").forEach(function (c) {
-      document.cookie = c
-        .replace(/^ +/, "")
-        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-    });
+    Cookies.remove('sessionID');
+    Cookies.remove('nativeLanguage');
+    Cookies.remove('name');
+
   }
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
