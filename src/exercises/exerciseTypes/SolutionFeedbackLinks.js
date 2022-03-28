@@ -10,13 +10,13 @@ export default function SolutionFeedbackLinks({
     <s.CenteredRow>
       {!isCorrect && (
         <>
-          <s.StyledGreyButton onClick={handleShowSolution}>
+          <s.StyledGreyButton className="styledGreyButton" onClick={handleShowSolution}>
             {strings.showSolution}
           </s.StyledGreyButton>
           <s.StyledDiv>&nbsp;|&nbsp;</s.StyledDiv>
         </>
       )}
-      <s.StyledGreyButton onClick={toggleShow}>
+      <s.StyledGreyButton className="styledGreyButton" onClick={toggleShow}>
         {strings.giveFeedback}
       </s.StyledGreyButton>
     </s.CenteredRow>

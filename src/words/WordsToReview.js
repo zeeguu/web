@@ -32,7 +32,7 @@ export default function WordsToReview({
         )}
       </TopMessage>
       {words.map((each) => (
-        <ContentOnRow>
+        <ContentOnRow className="contentOnRow">
           <Word
             key={each.id}
             bookmark={each}
