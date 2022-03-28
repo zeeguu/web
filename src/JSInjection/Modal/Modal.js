@@ -116,7 +116,7 @@ export function Modal({
 
   function handleClose() {
     setModalIsOpen(false);
-    api.logReaderActivity("ARTICLE CLOSED", articleId, EXTENSION_SOURCE);
+    api.logReaderActivity("ARTICLE CLOSED", articleId, "", EXTENSION_SOURCE);
     window.removeEventListener("focus", function () {
       onFocus(api, articleId, EXTENSION_SOURCE);
     });
