@@ -31,7 +31,7 @@ let BOOKMARKS_FOR_EXERCISE = [
 export default function Exercises({
   api,
   articleID,
-  backToReadingAction,
+  backButtonAction,
   keepExercisingAction,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
@@ -155,7 +155,7 @@ export default function Exercises({
   };
 
   let wordSourceText = articleInfo ? (
-    <><a href="#" className="wordSourceText" onClick={backToReadingAction}>{truncate(articleInfo.title, 40)}</a></>
+    <><a href="#" className="wordSourceText" onClick={backButtonAction}>{truncate(articleInfo.title, 40)}</a></>
   ) : (
     <>{strings.wordSourceDefaultText}</>
   );
@@ -200,7 +200,7 @@ export default function Exercises({
         correctBookmarks={correctBookmarks}
         incorrectBookmarks={incorrectBookmarks}
         api={api}
-        backToReadingAction={backToReadingAction}
+        backButtonAction={backButtonAction}
         keepExercisingAction={keepExercisingAction}
       />
     );
@@ -215,7 +215,7 @@ export default function Exercises({
       <OutOfWordsMessage
         message={strings.goToTextsToTranslateWords}
         buttonText={strings.backToReading}
-        buttonAction={backToReadingAction}
+        buttonAction={backButtonAction}
       />
     );
   }

@@ -33,7 +33,7 @@ export default function ExercisesRouter({ api }) {
           path="/exercises"
           api={api}
           component={Exercises}
-          backToReadingAction={backToReadingAction}
+          backButtonAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
         />
       </Switch>

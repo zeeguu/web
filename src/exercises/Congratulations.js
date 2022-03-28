@@ -10,7 +10,7 @@ export default function Congratulations({
   correctBookmarks,
   incorrectBookmarks,
   api,
-  backToReadingAction,
+  backButtonAction,
   keepExercisingAction,
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
@@ -71,7 +71,7 @@ export default function Congratulations({
         <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
           {strings.keepExercising}
         </s.OrangeButton>
-        <s.WhiteButton className="whiteButton" onClick={backToReadingAction}>
+        <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
           {strings.backToReading}
         </s.WhiteButton>
       </s.ContentOnRow>
