@@ -10,7 +10,7 @@ import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
-import Cookies from 'js-cookie'
+import {saveUserInfoIntoCookies, removeUserInfoFromCookies} from './utils/cookies/userInfo'
 
 
 function App() {
@@ -46,11 +46,7 @@ function App() {
 
     // Cookies are the mechanism via which we share a login
     // between the extension and the website
-    let far_into_the_future = 365*5;
-    Cookies.set('sessionID', api.session, {expires: far_into_the_future});
-    Cookies.set('nativeLanguage', userInfo.native_language, {expires: far_into_the_future});
-    Cookies.set('name', userInfo.name, {expires: far_into_the_future});
-    
+    saveUserInfoIntoCookies(userInfo, api.session);    
 
     userInfo.is_teacher
       ? history.push("/teacher/classes")
@@ -61,9 +57,8 @@ function App() {
     LocalStorage.deleteUserInfo();
     setUser({});
 
-    Cookies.remove('sessionID');
-    Cookies.remove('nativeLanguage');
-    Cookies.remove('name');
+    removeUserInfoFromCookies();
+
 
   }
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
