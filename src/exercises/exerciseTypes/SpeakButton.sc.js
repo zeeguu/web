@@ -1,9 +1,5 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { OrangeButton } from "./Exercise.sc.js";
-import {
-  zeeguuTransparentLightOrange,
-  zeeguuOrange,
-} from "../../components/colors";
 
 let SpeakerImage = styled.div`
   &.small {

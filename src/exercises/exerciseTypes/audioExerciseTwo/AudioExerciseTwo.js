@@ -11,9 +11,8 @@ import removePunctuation from "../../../assorted/removePunctuation";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./AudioTwoBotInput";
 
-import { zeeguuOrange } from "../../../components/colors";
-
 const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
+
 export default function AudioExerciseTwo({
   api,
   bookmarksToStudy,
@@ -26,11 +25,9 @@ export default function AudioExerciseTwo({
   toggleShow,
   reload,
   setReload,
-  inputFirstClick,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
-  const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
@@ -141,12 +138,6 @@ export default function AudioExerciseTwo({
     return <LoadingAnimation />;
   }
 
-  const selectedButtonColor = {
-    background: `${zeeguuOrange}`,
-    color: "black",
-    border: `0.15em solid ${zeeguuOrange}`,
-  };
-
   const selectedButtonStyle = (id) => {
     if (selectedButtonId === id) {
       return "selected";
@@ -204,7 +195,6 @@ export default function AudioExerciseTwo({
       {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
       {!isCorrect && (
         <AudioTwoBotInput
-          buttonOptions={buttonOptions}
           currentChoice={currentChoice}
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}

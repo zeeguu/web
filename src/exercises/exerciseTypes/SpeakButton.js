@@ -55,7 +55,6 @@ export default function SpeakButton({
 }) {
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [cls, setCls] = useState("");
   let style = styles[styling] || small_next_style; // default is next style
 
   async function handleSpeak() {
@@ -69,8 +68,7 @@ export default function SpeakButton({
       {handleClick !== undefined && (
         <s.SpeakButton
           disabled={isSpeaking}
-          className={cls}
-          onClick={(e) => {
+          onClick={() => {
             !isSpeaking && handleSpeak();
             handleClick();
           }}
@@ -110,8 +108,7 @@ export default function SpeakButton({
       {handleClick === undefined && (
         <s.SpeakButton
           disabled={isSpeaking}
-          className={cls}
-          onClick={(e) => {
+          onClick={() => {
             !isSpeaking && handleSpeak();
           }}
         >
