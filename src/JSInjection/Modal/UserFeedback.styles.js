@@ -8,6 +8,7 @@ export const StyledTextarea = styled.textarea`
   min-height: 70px;
   align-items: center;
   display: block;
+  font-family: Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 `;
 
 export const StyledForm = styled.form`

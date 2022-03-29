@@ -175,6 +175,14 @@ export const OverwriteZeeguu = styled.div`
 
   .narrowColumn h3 {
     font-size: 1.17em !important;
+
+    small {
+      display: none;
+    }
+  }
+
+  .narrowColumn small {
+    display: none;
   }
 
   .topnav a {

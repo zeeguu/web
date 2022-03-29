@@ -97,30 +97,33 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     );
   }
 
-  if (user === undefined || isReadable === undefined) {
-    return <PopUp><div className="loader"></div></PopUp>;
-  }
-
   if (loggedIn === true) {
-  return (
-    <PopUp>
-      <HeadingContainer>
-        <img src={logo} alt="Zeeguu logo" />
-      </HeadingContainer>
-      <MiddleContainer>
-        <p>{user ? <p>Welcome {user.name}</p> : null}</p>
-        <ButtonContainer>
-          {isReadable ? (
-            <PopUpButton primary onClick={openModal}>
-              Read article
-            </PopUpButton>
-          ) : (
-            <PopUpButton disabled>Article not readable</PopUpButton>
-          )}
-        </ButtonContainer>
-      </MiddleContainer>
-      <LogoutButton onClick={handleSignOut}>Logout</LogoutButton>
-    </PopUp>
-  );
-}
+    if (user === undefined || isReadable === undefined) {
+      return (
+        <PopUp>
+          <div className="loader"></div>
+        </PopUp>
+      );
+    }
+    return (
+      <PopUp>
+        <HeadingContainer>
+          <img src={logo} alt="Zeeguu logo" />
+        </HeadingContainer>
+        <MiddleContainer>
+          <p>{user ? <p>Welcome {user.name}</p> : null}</p>
+          <ButtonContainer>
+            {isReadable ? (
+              <PopUpButton primary onClick={openModal}>
+                Read article
+              </PopUpButton>
+            ) : (
+              <PopUpButton disabled>Article not readable</PopUpButton>
+            )}
+          </ButtonContainer>
+        </MiddleContainer>
+        <LogoutButton onClick={handleSignOut}>Logout</LogoutButton>
+      </PopUp>
+    );
+  }
 }
