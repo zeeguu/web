@@ -7,26 +7,29 @@ import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 
-
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
 
-export default function Popup({ loggedIn, setLoggedIn }) {
+export default function Popup({ loggedIn, setLoggedIn, loggedInOnZeeguu, setLoggedInOnZeeguu }) {
   let api = new Zeeguu_API("https://api.zeeguu.org");
+
   const [user, setUser] = useState();
   const [sessionId, setSession] = useState();
   const [name, setName] = useState();
   const [nativeLang, setNativeLang] = useState();
 
   useEffect(() => {
-    chrome.storage.local.get("userInfo", function (result) {
-      setUser(result.userInfo);
-    });
-    if (loggedIn) {
+    if (!loggedInOnZeeguu) {
+      chrome.storage.local.get("userInfo", function (result) {
+        setUser(result.userInfo);
+      });
+      console.log("logged in in extension")
+    } else {
       isAlreadyLoggedInToZeeguu(setName, setNativeLang, setSession)
+      console.log("logged in on zeeguu")
     }
-  }, []);
+  }, [loggedInOnZeeguu]);
 
     useEffect(()=> {
       if ((name !== undefined) && (nativeLang !== undefined) && (sessionId !== undefined)) {
@@ -61,7 +64,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       files: ["./main.js"],
       func: setCurrentURL(tab.url),
     });
-    //window.close();
+    window.close();
   }
 
   function handleSuccessfulSignIn(userInfo, session) {
@@ -82,10 +85,14 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ loggedIn: false });
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
-    chrome.cookies.remove(
-      { url: "https://www.zeeguu.org", name: "sessionID" },
-      () => console.log("Logged out, cookie removed")
-    );
+    if (loggedInOnZeeguu) {
+      //we should maybe also remove the other two cookies? and reset the states? 
+      chrome.cookies.remove(
+        { url: "https://www.zeeguu.org", name: "sessionID" },
+        () => console.log("Logged out, cookie removed")
+      );
+      setLoggedInOnZeeguu(false);
+    }
   }
 
   return (
