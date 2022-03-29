@@ -15,6 +15,7 @@ export const StyledCloseButton = styled.div`
   -moz-osx-font-smoothing: grayscale;
 `;
 
+
 export const StyledSmallButtonBlue = styled.button`
   color: white !important;
   background-color: #2F77AD!important;

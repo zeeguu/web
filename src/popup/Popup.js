@@ -1,11 +1,19 @@
 /*global chrome*/
 import Login from "./Login";
-import { checkReadability} from "./checkReadability";
-import {setCurrentURL, getSourceAsDOM} from "./functions";
+import { checkReadability } from "./checkReadability";
+import { setCurrentURL, getSourceAsDOM } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
-import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API"
+import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
+import {
+  ButtonContainer,
+  PopUpButton,
+  HeadingContainer,
+  PopUp,
+  LogoutButton,
+  MiddleContainer,
+} from "./Popup.styles";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -14,29 +22,38 @@ const minScore = 20;
 export default function Popup({ loggedIn, setLoggedIn }) {
   let api = new Zeeguu_API("https://api.zeeguu.org");
   const [user, setUser] = useState();
+  const [tab, setTab] = useState();
+  const [isReadable, setIsReadable] = useState();
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {
       setUser(result.userInfo);
     });
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      setTab(tabs[0]);
+    });
   }, []);
 
-  async function openModal() {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  useEffect(() => {
+    if (tab !== undefined) {
+      //readability check
+      const documentFromTab = getSourceAsDOM(tab.url);
+      const isProbablyReadable = isProbablyReaderable(
+        documentFromTab,
+        minLength,
+        minScore
+      );
+      const ownIsProbablyReadable = checkReadability(tab.url);
 
-    //readability check
-    const documentFromTab = getSourceAsDOM(tab.url);
-    const isProbablyReadable = isProbablyReaderable(
-      documentFromTab,
-      minLength,
-      minScore
-    );
-    const ownIsProbablyReadable = checkReadability(tab.url)
-
-    if (!isProbablyReadable || !ownIsProbablyReadable) {
-      return alert("This page is not readable");
+      if (!isProbablyReadable || !ownIsProbablyReadable) {
+        setIsReadable(false);
+      } else {
+        setIsReadable(true);
+      }
     }
+  }, [tab]);
 
+  async function openModal() {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ["./main.js"],
@@ -65,25 +82,45 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.remove(["userInfo"]);
   }
 
-  return (
-    <>
-      <div class="imgcontainer">
-        <img src={logo} alt="Zeeguu logo" class="logo" />
-      </div>
-      {loggedIn === false && (
+  if (loggedIn === false) {
+    return (
+      <PopUp>
+        <HeadingContainer>
+          <img src={logo} alt="Zeeguu logo" />
+        </HeadingContainer>
         <Login
           setLoggedIn={setLoggedIn}
           handleSuccessfulSignIn={handleSuccessfulSignIn}
           api={api}
         />
-      )}
-      {loggedIn === true && (
-        <>
-          <p>{user ? <p>Welcome {user.name}</p> : null}</p>
-          <button onClick={openModal}>Read article</button>
-          <button onClick={handleSignOut}>Logout</button>
-        </>
-      )}
-    </>
+      </PopUp>
+    );
+  }
+
+  if (user === undefined || isReadable === undefined) {
+    return <PopUp><div className="loader"></div></PopUp>;
+  }
+
+  if (loggedIn === true) {
+  return (
+    <PopUp>
+      <HeadingContainer>
+        <img src={logo} alt="Zeeguu logo" />
+      </HeadingContainer>
+      <MiddleContainer>
+        <p>{user ? <p>Welcome {user.name}</p> : null}</p>
+        <ButtonContainer>
+          {isReadable ? (
+            <PopUpButton primary onClick={openModal}>
+              Read article
+            </PopUpButton>
+          ) : (
+            <PopUpButton disabled>Article not readable</PopUpButton>
+          )}
+        </ButtonContainer>
+      </MiddleContainer>
+      <LogoutButton onClick={handleSignOut}>Logout</LogoutButton>
+    </PopUp>
   );
+}
 }
