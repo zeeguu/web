@@ -1,7 +1,6 @@
 import * as s from "../Exercise.sc";
 import strings from "../../../i18n/definitions";
 import { useState } from "react";
-import removeAccents from "remove-accents";
 
 export default function AudioTwoBotInput({
   handleCorrectAnswer,
@@ -10,9 +9,7 @@ export default function AudioTwoBotInput({
   setMessageToAPI,
   currentChoice,
 }) {
- 
   const [isIncorrect, setIsIncorrect] = useState(false);
- 
 
   function checkResult() {
     console.log(currentChoice);
@@ -27,16 +24,15 @@ export default function AudioTwoBotInput({
       handleIncorrectAnswer();
     }
   }
-  
+
   const OrangeButton = isIncorrect ? s.AnimatedOrangeButton : s.OrangeButton;
-  
 
   return (
     <s.BottomRow>
       <>
-        <OrangeButton 
-        onClick={(checkResult)}
-        onAnimationEnd={() => setIsIncorrect(false)}
+        <OrangeButton
+          onClick={checkResult}
+          onAnimationEnd={() => setIsIncorrect(false)}
         >
           {strings.check}
         </OrangeButton>
