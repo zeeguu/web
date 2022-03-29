@@ -47,7 +47,7 @@ export function deleteCurrentDOM(){
   removeAllChildNodes(head);
 }
 
-export function isAlreadyLoggedInToZeeguu(setName, setNativeLang, setSession) {
+export function alreadyLoggedInToZeeguu(setName, setNativeLang, setSession) {
   chrome.cookies.get({ url: "https://www.zeeguu.org", name: "name" }, 
     function (cookie) {
       if (cookie) {

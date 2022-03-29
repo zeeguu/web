@@ -1,7 +1,7 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import { setCurrentURL, getSourceAsDOM, isAlreadyLoggedInToZeeguu } from "./functions";
+import { setCurrentURL, getSourceAsDOM, alreadyLoggedInToZeeguu } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
@@ -26,7 +26,7 @@ export default function Popup({ loggedIn, setLoggedIn, loggedInOnZeeguu, setLogg
       });
       console.log("logged in in extension")
     } else {
-      isAlreadyLoggedInToZeeguu(setName, setNativeLang, setSession)
+      alreadyLoggedInToZeeguu(setName, setNativeLang, setSession)
       console.log("logged in on zeeguu")
     }
   }, [loggedInOnZeeguu]);
