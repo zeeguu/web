@@ -76,18 +76,21 @@ export const PopUp = styled.div`
   }
 `;
 
-export const LogoutButton = styled.div`
+export const PopupButton = styled.div`
   cursor: pointer;
   color: #2f77ad;
   font-weight: 500;
   position: relative;
   bottom: -2em;
-  left: 82%;
   font-size: 1em !important;
   font-weight: 600 !important;
   :hover {
     color: #4f97cf !important;
   }
+
+  :only-child {
+    left: 82%;
+}
 `;
 
 export const ButtonContainer = styled.div`
@@ -103,4 +106,9 @@ export const HeadingContainer = styled.div`
 
 export const MiddleContainer = styled.div`
   font-weight: bold;
+`;
+
+export const BottomContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;

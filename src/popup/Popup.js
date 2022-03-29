@@ -11,8 +11,9 @@ import {
   PopUpButton,
   HeadingContainer,
   PopUp,
-  LogoutButton,
+  PopupButton,
   MiddleContainer,
+  BottomContainer,
 } from "./Popup.styles";
 
 //for isProbablyReadable options object
@@ -122,7 +123,14 @@ export default function Popup({ loggedIn, setLoggedIn }) {
             )}
           </ButtonContainer>
         </MiddleContainer>
-        <LogoutButton onClick={handleSignOut}>Logout</LogoutButton>
+        <BottomContainer>
+          {!isReadable ? (
+            <PopupButton onClick={() => alert("Create endpoint API")}>
+              Should this be readable?
+            </PopupButton>
+          ) : null}
+          <PopupButton onClick={handleSignOut}>Logout</PopupButton>
+        </BottomContainer>
       </PopUp>
     );
   }
