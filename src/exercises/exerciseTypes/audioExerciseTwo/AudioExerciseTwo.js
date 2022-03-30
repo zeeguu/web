@@ -44,8 +44,6 @@ export default function AudioExerciseTwo({
       setArticleInfo(articleInfo);
     });
     consolidateChoice();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function notifyChoiceSelection(selectedChoice) {
@@ -66,6 +64,7 @@ export default function AudioExerciseTwo({
     }
   }
 
+  // Setting current choice and id if the correct index is chosen
   function buttonSelectTrue(id) {
     if (currentChoice !== 0) {
       setCurrentChoice(true);
@@ -74,6 +73,7 @@ export default function AudioExerciseTwo({
     console.log(id + " true");
   }
 
+  // Setting current choice and id if the incorrect index is chosen
   function buttonSelectFalse(id) {
     if (currentChoice !== 1 || currentChoice !== 2) {
       setCurrentChoice(false);
@@ -165,6 +165,7 @@ export default function AudioExerciseTwo({
         />
       </div>
       <s.CenteredRow>
+        {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
         {choiceOptions ? (
           choiceOptions.map((option) =>
             0 !== option ? (
@@ -191,7 +192,6 @@ export default function AudioExerciseTwo({
           <></>
         )}
       </s.CenteredRow>
-
       {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
       {!isCorrect && (
         <AudioTwoBotInput
