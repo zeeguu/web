@@ -214,8 +214,8 @@ export const OverwriteZeeguu = styled.div`
   @media screen and (max-height: 950px) {
     // FindWordInContext Exercises
     .bottomRow {
-      margin-top: -1em !important;
-      margin-bottom: 0em !important;
+      margin-top: 1em !important;
+      margin-bottom: 1em !important;
     }
 
     .multipleChoice h1 {
@@ -224,14 +224,13 @@ export const OverwriteZeeguu = styled.div`
     }
 
     .wordInContextHeadline {
-      margin-block-start: 0.3em !important;
+      margin-block-start: 0.6em !important;
       margin-block-end: 0em !important;
     }
 
     // MultipleChoice Exercises
     .headlineWithMoreSpace {
-      margin-top: 2em !important;
-      margin-bottom: 0em !important;
+      //margin-bottom: 1em !important;
     }
 
     // Match Exercises
