@@ -19,10 +19,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
 
   useEffect(() => {
     if (loggedIn) {
-      getUserInfo("https://www.zeeguu.org", setUser);
-      if (user === null) {
-        getUserInfo("https://zeeguu.org", setUser);
-      }
+      getUserInfo("https://zeeguu.org", setUser);
     }
   }, [loggedIn]);
   console.log("after useeffect", user)
