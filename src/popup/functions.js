@@ -71,13 +71,13 @@ export async function getUserInfo(cookieUrl, setUser) {
 
 export function saveCookiesOnZeeguu(userInfo, session) {
   let stringSession = String(session);
-  chrome.cookies.set({ name: "sessionID", url: "https://www.zeeguu.org", value: stringSession },
+  chrome.cookies.set({ name: "sessionID", url: "https://www.zeeguu.org", domain: "zeeguu.org", value: stringSession },
     (cookie) => console.log("success", cookie)
   );
-  chrome.cookies.set({ name: "name", url: "https://www.zeeguu.org", value: userInfo.name },
+  chrome.cookies.set({ name: "name", url: "https://www.zeeguu.org", domain: "zeeguu.org", value: userInfo.name },
     (cookie) => console.log("success", cookie)
   );
-  chrome.cookies.set({ name: "native_language", url: "https://www.zeeguu.org", value: userInfo.native_language },
+  chrome.cookies.set({ name: "native_language", url: "https://www.zeeguu.org", domain: "zeeguu.org", value: userInfo.native_language },
     (cookie) => console.log("success", cookie)
   );
 }
