@@ -14,6 +14,7 @@ export default function Word({
   children,
   api,
   hideStar,
+  source
 }) {
   const [starred, setStarred] = useState(bookmark.starred);
   const [deleted, setDeleted] = useState(false);
@@ -34,6 +35,7 @@ export default function Word({
       if (notifyUnstar) {
         notifyUnstar(bookmark);
       }
+      api.logReaderActivity(api.UNSTAR_WORD, bookmark.article_id, bookmark.from, source);
     } else {
       api.starBookmark(bookmark.id);
       setStarred(true);
@@ -41,6 +43,7 @@ export default function Word({
       if (notifyStar) {
         notifyStar(bookmark);
       }
+      api.logReaderActivity(api.STAR_WORD, bookmark.article_id, bookmark.from, source);
     }
   }
 
@@ -50,6 +53,7 @@ export default function Word({
     if (notifyDelete) {
       notifyDelete(bookmark);
     }
+    api.logReaderActivity(api.DELETE_WORD, bookmark.article_id, bookmark.from, source);
   }
 
   if (deleted) {

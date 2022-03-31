@@ -9,6 +9,7 @@ export default function WordsToReview({
   deleteBookmark,
   api,
   notifyWordChanged,
+  source
 }) {
   return (
     <>
@@ -40,6 +41,7 @@ export default function WordsToReview({
             api={api}
             notifyStar={notifyWordChanged}
             notifyUnstar={notifyWordChanged}
+            source={source}
           />
         </ContentOnRow>
       ))}

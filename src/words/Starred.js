@@ -5,6 +5,7 @@ import Word from "./Word";
 
 import * as s from "../components/TopMessage.sc";
 import strings from "../i18n/definitions";
+import { UMR_SOURCE } from "../reader/ArticleReader";
 
 export default function Starred({ api }) {
   const [words, setWords] = useState(null);
@@ -37,6 +38,7 @@ export default function Starred({ api }) {
           bookmark={bookmark}
           api={api}
           notifyUnstar={bookmarkHasBeenUnstared}
+          source={UMR_SOURCE}
         />
       ))}
     </>
