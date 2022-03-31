@@ -12,6 +12,7 @@ export default function Congratulations({
   api,
   backButtonAction,
   keepExercisingAction,
+  source
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks)
@@ -59,6 +60,7 @@ export default function Congratulations({
                   bookmark={each}
                   notifyDelete={deleteBookmark}
                   api={api}
+                  source={source}
                 />
               </s.ContentOnRow>
             ))}
@@ -80,6 +82,7 @@ export default function Congratulations({
                   bookmark={each}
                   notifyDelete={deleteBookmark}
                   api={api}
+                  source={source}
                 />
               </s.ContentOnRow>
             ))}
