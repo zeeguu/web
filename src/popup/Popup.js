@@ -1,11 +1,12 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import { setCurrentURL, getSourceAsDOM, alreadyLoggedInToZeeguu as getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu } from "./functions";
+import { setCurrentURL, getSourceAsDOM, getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
+import { saveUserInfoIntoCookies } from "../zeeguu-react/src/utils/cookies/userInfo";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -18,7 +19,10 @@ export default function Popup({ loggedIn, setLoggedIn }) {
 
   useEffect(() => {
     if (loggedIn) {
-      getUserInfo(setUser);
+      getUserInfo("https://www.zeeguu.org", setUser);
+      if (user === null) {
+        getUserInfo("https://zeeguu.org", setUser);
+      }
     }
   }, [loggedIn]);
   console.log("after useeffect", user)
@@ -56,8 +60,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
     console.log("user has been set")
-    saveCookiesOnZeeguu(userInfo, session); 
-  
+    saveCookiesOnZeeguu(userInfo, session);
+    //saveUserInfoIntoCookies(userInfo, session)
   }
 
   function handleSignOut(e) {

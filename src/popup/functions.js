@@ -1,4 +1,5 @@
 /*global chrome*/
+const ZEEGUU_REGEX = /(http|https):\/\/(www\.)?zeeguu.org/;
 
 export async function getCurrentTab() {
   const queryOptions = { active: true, currentWindow: true };
@@ -47,29 +48,23 @@ export function deleteCurrentDOM() {
   removeAllChildNodes(head);
 }
 
-export async function getUserInfo(setUser) {
-  chrome.cookies.get({ url: "https://www.zeeguu.org", name: "name" }, (cookie) => {
+export async function getUserInfo(cookieUrl, setUser) {
+  chrome.cookies.get({ url: cookieUrl, name: "name" }, 
+  (cookie) => {
     if (cookie) {
-      setUser((prevState) => ({
-        ...prevState,
-        name: cookie.value,
-      }));
+      setUser((prevState) => ({...prevState, name: cookie.value}));
+    } 
+  });
+  chrome.cookies.get({ url: cookieUrl, name: "native_language" }, 
+  (cookie) => {
+    if (cookie) {
+      setUser((prevState) => ({...prevState, native_language: cookie.value}));
     }
   });
-  chrome.cookies.get({ url: "https://www.zeeguu.org", name: "native_language" }, (cookie) => {
+  chrome.cookies.get({ url: cookieUrl, name: "sessionID" }, 
+  (cookie) => {
     if (cookie) {
-      setUser((prevState) => ({
-        ...prevState,
-        native_language: cookie.value,
-      }));
-    }
-  });
-  chrome.cookies.get({ url: "https://www.zeeguu.org", name: "sessionID" }, (cookie) => {
-    if (cookie) {
-      setUser((prevState) => ({
-        ...prevState,
-        session: cookie.value,
-      }));
+      setUser((prevState) => ({...prevState, session: cookie.value}));
     }
   });
 }
