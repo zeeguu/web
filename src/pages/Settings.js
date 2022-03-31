@@ -13,6 +13,8 @@ import strings from "../i18n/definitions";
 import { Error } from "../teacher/sharedComponents/Error";
 import Select from "../components/Select";
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
+import {saveUserInfoIntoCookies} from "../utils/cookies/userInfo";
+
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -87,6 +89,8 @@ export default function Settings({ api, setUser }) {
       learned_language: info.learned_language,
       native_language: info.native_language,
     });
+
+    saveUserInfoIntoCookies(info);
   }
 
   function nativeLanguageUpdated(e) {

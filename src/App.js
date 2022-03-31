@@ -10,6 +10,8 @@ import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
+import {saveUserInfoIntoCookies, removeUserInfoFromCookies} from './utils/cookies/userInfo'
+
 
 function App() {
   let userDict = {};
@@ -42,10 +44,9 @@ function App() {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
 
-    // TODO: this is required by the teacher dashboard
-    // could be cool to remove it from there and make that
-    // one also use the localStorage
-    document.cookie = `sessionID=${api.session};`;
+    // Cookies are the mechanism via which we share a login
+    // between the extension and the website
+    saveUserInfoIntoCookies(userInfo, api.session);    
 
     userInfo.is_teacher
       ? history.push("/teacher/classes")
@@ -56,12 +57,7 @@ function App() {
     LocalStorage.deleteUserInfo();
     setUser({});
 
-    // expire cookies, cf. https://stackoverflow.com/a/27374365/1200070
-    document.cookie.split(";").forEach(function (c) {
-      document.cookie = c
-        .replace(/^ +/, "")
-        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-    });
+    removeUserInfoFromCookies();
   }
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
