@@ -370,9 +370,9 @@ let strings = new LocalizedStrings(
       keepExercising: "Keep Exercising",
 
       //CongratulationsPage
-      goodJob: "Good Job!",
-      correct: "Correct",
-      payMoreAttentionTo: "Pay more attention to",
+      goodJob: "Good Job, ",
+      correct: "Seems like you know these words:",
+      payMoreAttentionTo: "Pay more attention to these words:",
 
       //Settings
       nativeLanguage: "Native Language",
@@ -1048,9 +1048,9 @@ let strings = new LocalizedStrings(
       keepExercising: "Øve dig videre",
 
       //CongratulationsPage
-      goodJob: "Bravo!",
-      correct: "Rigtig",
-      payMoreAttentionTo: "Vær mere opmærksom på",
+      goodJob: "Bravo, ",
+      correct: "Det ser ud til, at du har styr på disse ord: ",
+      payMoreAttentionTo: "Vær mere opmærksom på disse ord: ",
 
       //Settings
       nativeLanguage: "Modersmål",
