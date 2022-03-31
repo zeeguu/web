@@ -51,7 +51,6 @@ export function Main() {
       content={cleanedContent}
       api={api}
       url={url}
-      language={article.lang}
     />
   );
 }

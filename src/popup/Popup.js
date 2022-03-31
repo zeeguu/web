@@ -8,12 +8,13 @@ import { useState, useEffect } from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 import {
   ButtonContainer,
-  PopUpButton,
+  PrimaryButton,
   HeadingContainer,
   PopUp,
-  PopupButton,
-  MiddleContainer,
+  BottomButton,
+  NotifyButton,
   BottomContainer,
+  NotReadableContainer,
 } from "./Popup.styles";
 
 //for isProbablyReadable options object
@@ -83,6 +84,18 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.remove(["userInfo"]);
   }
 
+  let languageSupported;
+
+  const supportedLanguages = ["de", "es", "fr", "nl", "en", "it", "da", "pl", "sv", "ru"];
+  
+  if (supportedLanguages.includes("Mango")){
+    languageSupported = true
+  }
+  else{
+    languageSupported = false;
+  }
+  
+
   if (loggedIn === false) {
     return (
       <PopUp>
@@ -111,25 +124,37 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         <HeadingContainer>
           <img src={logo} alt="Zeeguu logo" />
         </HeadingContainer>
-        <MiddleContainer>
-          <p>{user ? <p>Welcome {user.name}</p> : null}</p>
+
+        {user ? <p>Welcome {user.name}</p> : null}
+        {isReadable === true && (
           <ButtonContainer>
-            {isReadable ? (
-              <PopUpButton primary onClick={openModal}>
-                Read article
-              </PopUpButton>
-            ) : (
-              <PopUpButton disabled>Article not readable</PopUpButton>
-            )}
+            <PrimaryButton primary onClick={openModal}>
+              Read article
+            </PrimaryButton>
           </ButtonContainer>
-        </MiddleContainer>
+        )}
+        {languageSupported === false && (
+          <NotReadableContainer>
+            <p>Article language not supported</p>
+            <NotifyButton>Do you want us to support this?</NotifyButton>
+          </NotReadableContainer>
+        )}
+        {isReadable === false && languageSupported === true && (
+          <NotReadableContainer>
+            <p>Article is not readable</p>
+            <NotifyButton>Should this be readable?</NotifyButton>
+          </NotReadableContainer>
+        )}
+
         <BottomContainer>
-          {!isReadable ? (
-            <PopupButton onClick={() => alert("Create endpoint API")}>
-              Should this be readable?
-            </PopupButton>
-          ) : null}
-          <PopupButton onClick={handleSignOut}>Logout</PopupButton>
+          <BottomButton
+            onClick={() =>
+              window.open("https://zeeguu.org/account_settings", "_blank")
+            }
+          >
+            Settings
+          </BottomButton>
+          <BottomButton onClick={handleSignOut}>Logout</BottomButton>
         </BottomContainer>
       </PopUp>
     );

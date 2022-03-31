@@ -58,7 +58,6 @@ export function Modal({
       );
     }
     getNativeLanguage().then((result) => setNativeLang(result));
-
   }, []);
 
   useEffect(() => {

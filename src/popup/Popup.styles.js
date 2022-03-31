@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import { zeeguuOrange } from "../zeeguu-react/src/components/colors";
-export const PopUpButton = styled.button`
+
+export const PrimaryButton = styled.button`
   display: flex;
   cursor: pointer;
   align-items: center;
@@ -12,30 +13,16 @@ export const PopUpButton = styled.button`
   border-style: solid;
   border-width: 2px;
   border-radius: 10px;
-  // Primary
-  ${(props) =>
-    props.primary &&
-    css`
-      color: white !important;
-      background-color: #2f77ad !important;
-      border-color: #3079b0 !important;
-      :hover {
-        background-color: #4f97cf !important;
-      }
-    `}
-  // Disabled
-    ${(props) =>
-    props.disabled &&
-    css`
-      background-color: white !important;
-      color: #999999 !important;
-      cursor: not-allowed;
-      border-color: #999999 !important;
-      pointer-events: none;
-    `}
+  color: white !important;
+  background-color: #2f77ad !important;
+  border-color: #3079b0 !important;
+  :hover {
+    background-color: #4f97cf !important;
+  }
 `;
 
 export const PopUp = styled.div`
+  font-weight: 600;
   display: flex;
   background-color: aqua;
   flex-direction: column;
@@ -51,7 +38,7 @@ export const PopUp = styled.div`
     padding: 14px 20px;
     margin: 8px 0;
     width: 100%;
-    font-size: 1rem !important;
+    font-size: 1rem;
     font-weight: 600;
   }
 
@@ -76,7 +63,7 @@ export const PopUp = styled.div`
   }
 `;
 
-export const PopupButton = styled.div`
+export const BottomButton = styled.div`
   cursor: pointer;
   color: #2f77ad;
   font-weight: 500;
@@ -87,10 +74,20 @@ export const PopupButton = styled.div`
   :hover {
     color: #4f97cf !important;
   }
+`;
 
-  :only-child {
-    left: 82%;
-}
+export const NotifyButton = styled.button`
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  font-family: "Montserrat";
+  cursor: pointer;
+  color: #2f77ad;
+  font-weight: 600 !important;
+  :hover {
+    color: #4f97cf !important;
+  }
+  font-size: 1em !important;
 `;
 
 export const ButtonContainer = styled.div`
@@ -104,11 +101,20 @@ export const HeadingContainer = styled.div`
   }
 `;
 
-export const MiddleContainer = styled.div`
-  font-weight: bold;
-`;
-
 export const BottomContainer = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+export const NotReadableContainer = styled.div`
+  p {
+    margin-block-start: 0em !important;
+    margin-block-end: 0em !important;
+    font-weight: normal;
+    font-size: 1.2em!important;
+  }
+
+  button {
+    margin-bottom: 25px;
+  }
 `;
