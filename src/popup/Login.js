@@ -12,7 +12,7 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
       chrome.storage.local.set({ loggedIn: true });
       setLoggedIn(true);
       api.getUserDetails((userInfo) => {
-        handleSuccessfulSignIn(userInfo, api.session);
+        handleSuccessfulSignIn(userInfo, sessionId);
       })
     })}
   

@@ -1,7 +1,7 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import { setCurrentURL, getSourceAsDOM, alreadyLoggedInToZeeguu } from "./functions";
+import { setCurrentURL, getSourceAsDOM, alreadyLoggedInToZeeguu as getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
@@ -11,38 +11,17 @@ import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 const minLength = 120;
 const minScore = 20;
 
-export default function Popup({ loggedIn, setLoggedIn, loggedInOnZeeguu, setLoggedInOnZeeguu }) {
+export default function Popup({ loggedIn, setLoggedIn }) {
   let api = new Zeeguu_API("https://api.zeeguu.org");
 
   const [user, setUser] = useState();
-  const [sessionId, setSession] = useState();
-  const [name, setName] = useState();
-  const [nativeLang, setNativeLang] = useState();
 
   useEffect(() => {
-    if (!loggedInOnZeeguu) {
-      chrome.storage.local.get("userInfo", function (result) {
-        setUser(result.userInfo);
-      });
-      console.log("logged in in extension")
-    } else {
-      alreadyLoggedInToZeeguu(setName, setNativeLang, setSession)
-      console.log("logged in on zeeguu")
+    if (loggedIn) {
+      getUserInfo(setUser);
     }
-  }, [loggedInOnZeeguu]);
-
-    useEffect(()=> {
-      if ((name !== undefined) && (nativeLang !== undefined) && (sessionId !== undefined)) {
-        let userInfo = {
-            session: sessionId,
-            name: name,
-            learned_language: "",
-            native_language: nativeLang
-        }
-          console.log("userinfo,", userInfo) 
-          handleSuccessfulSignIn(userInfo, sessionId)
-      }
-    }, [name, nativeLang, sessionId])
+  }, [loggedIn]);
+  console.log("after useeffect", user)
 
   async function openModal() {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -76,6 +55,9 @@ export default function Popup({ loggedIn, setLoggedIn, loggedInOnZeeguu, setLogg
     });
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
+    console.log("user has been set")
+    saveCookiesOnZeeguu(userInfo, session); 
+  
   }
 
   function handleSignOut(e) {
@@ -85,14 +67,8 @@ export default function Popup({ loggedIn, setLoggedIn, loggedInOnZeeguu, setLogg
     chrome.storage.local.set({ loggedIn: false });
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
-    if (loggedInOnZeeguu) {
-      //we should maybe also remove the other two cookies? and reset the states? 
-      chrome.cookies.remove(
-        { url: "https://www.zeeguu.org", name: "sessionID" },
-        () => console.log("Logged out, cookie removed")
-      );
-      setLoggedInOnZeeguu(false);
-    }
+    removeCookiesOnZeeguu();
+    
   }
 
   return (

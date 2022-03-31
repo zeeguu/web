@@ -5,12 +5,10 @@ import { useState } from "react";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [loggedInOnZeeguu, setLoggedInOnZeeguu] = useState(false);
 
   chrome.cookies.get({ url: "https://www.zeeguu.org", name: "sessionID" },
     function (cookie) {
       if (cookie) {
-        setLoggedInOnZeeguu(true);
         chrome.storage.local.set({ loggedIn: true }, () =>
           console.log("Cookie is present. Loggedin = ", true)
         );
@@ -36,8 +34,6 @@ function App() {
     <Popup
       loggedIn={loggedIn}
       setLoggedIn={setLoggedIn}
-      loggedInOnZeeguu={loggedInOnZeeguu}
-      setLoggedInOnZeeguu={setLoggedInOnZeeguu}
     />
   );
 }
