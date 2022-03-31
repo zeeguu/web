@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
+import { getUsername } from "../utils/cookies/userInfo";
 export default function Congratulations({
   articleID,
   correctBookmarks,
@@ -12,7 +13,7 @@ export default function Congratulations({
   api,
   backButtonAction,
   keepExercisingAction,
-  source
+  source,
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks)
@@ -32,9 +33,8 @@ export default function Congratulations({
   }
 
   useEffect(() => {
-    api.getUserDetails((data) => {
-      setUsername(data.name);
-    });
+    let name = getUsername();
+    setUsername(name);
   }, []);
 
   if (username === undefined) {
