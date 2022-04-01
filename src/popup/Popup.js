@@ -22,7 +22,10 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       getUserInfo("https://zeeguu.org", setUser);
     }
   }, [loggedIn]);
-  console.log("after useeffect", user)
+
+  if (user) {
+    chrome.storage.local.set({userInfo: user}, () => console.log("user is set in local storage"))
+  }
 
   async function openModal() {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -56,9 +59,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     });
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
-    console.log("user has been set")
     saveCookiesOnZeeguu(userInfo, session);
-    //saveUserInfoIntoCookies(userInfo, session)
   }
 
   function handleSignOut(e) {
@@ -69,7 +70,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
     removeCookiesOnZeeguu();
-    
   }
 
   return (

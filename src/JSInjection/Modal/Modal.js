@@ -16,6 +16,7 @@ import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 import strings from "../../zeeguu-react/src/i18n/definitions";
 import * as sc from "../../zeeguu-react/src/components/TopTabs.sc";
+//import { getNativeLanguage } from "../../zeeguu-react/src/utils/cookies/userInfo";
 
 export function Modal({
   title,
@@ -57,7 +58,6 @@ export function Modal({
       );
     }
     getNativeLanguage().then((result) => setNativeLang(result));
-
   }, []);
 
   useEffect(() => {
