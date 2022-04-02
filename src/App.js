@@ -28,13 +28,7 @@ function App() {
     } else if (data.loggedIn === true) {
       setLoggedIn(true);
     }
-    console.log("is loggedin? ", loggedIn);
   });
-
-  if (loggedIn === undefined) {
-    //return loader? or white screen?
-    return <p></p>
-  }
 
   return (
     <Popup

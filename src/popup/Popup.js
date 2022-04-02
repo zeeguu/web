@@ -1,12 +1,12 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import { setCurrentURL, getSourceAsDOM, getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu } from "./functions";
+import { setCurrentURL, getSourceAsDOM } from "./functions";
+import {getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu} from "./cookies";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
-import { saveUserInfoIntoCookies } from "../zeeguu-react/src/utils/cookies/userInfo";
 
 //for isProbablyReadable options object
 const minLength = 120;
