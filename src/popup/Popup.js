@@ -1,7 +1,7 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import { setCurrentURL, getSourceAsDOM } from "./functions";
+import { setCurrentURL, getSourceAsDOM, getSessionId } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
@@ -16,7 +16,7 @@ import {
   BottomContainer,
   NotReadableContainer,
 } from "./Popup.styles";
-
+import { Article } from "../JSInjection/Modal/Article";
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
@@ -26,8 +26,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [user, setUser] = useState();
   const [tab, setTab] = useState();
   const [isReadable, setIsReadable] = useState();
-  const [languageSupported, setLanguageSupported] = useState(true);
-  const [article, setArticle] = useState();
+  const [languageSupported, setLanguageSupported] = useState();
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {
@@ -41,14 +40,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
 
   useEffect(() => {
     if (tab !== undefined) {
-      // Language check
-    //  api.findOrCreateArticle(info, (result_dict) =>{
-    //    if(result_dict.includes("Language not supported")){
-    //    setLanguageSupported(false)
-    //    }
-    //  });
-
-      // Readability check
+      // Readability check and language check
       const documentFromTab = getSourceAsDOM(tab.url);
       const isProbablyReadable = isProbablyReaderable(
         documentFromTab,
@@ -56,11 +48,28 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         minScore
       );
       const ownIsProbablyReadable = checkReadability(tab.url);
-
       if (!isProbablyReadable || !ownIsProbablyReadable) {
         setIsReadable(false);
+        setLanguageSupported(false);
       } else {
         setIsReadable(true);
+        getSessionId().then((session) => {
+          api.session = session;
+          Article(tab.url).then((article) => {
+            api.isArticleLanguageSupported(
+              article.textContent,
+              (result_dict) => {
+                console.log(result_dict);
+                if (result_dict === "NO") {
+                  setLanguageSupported(false);
+                }
+                if (result_dict === "YES") {
+                  setLanguageSupported(true);
+                }
+              }
+            );
+          });
+        });
       }
     }
   }, [tab]);
@@ -110,7 +119,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   }
 
   if (loggedIn === true) {
-    if (user === undefined || isReadable === undefined) {
+    if (user === undefined || isReadable === undefined || languageSupported === undefined) {
       return (
         <PopUp>
           <div className="loader"></div>
@@ -125,20 +134,20 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         </HeadingContainer>
 
         {user ? <p>Welcome {user.name}</p> : null}
-        {isReadable === true && (
+        {(isReadable === true && languageSupported === true) && (
           <ButtonContainer>
             <PrimaryButton primary onClick={openModal}>
               Read article
             </PrimaryButton>
           </ButtonContainer>
         )}
-        {languageSupported === false && (
+        {(isReadable === true && languageSupported === false) && (
           <NotReadableContainer>
             <p>Article language not supported</p>
             <NotifyButton>Do you want us to support this?</NotifyButton>
           </NotReadableContainer>
         )}
-        {isReadable === false && languageSupported === true && (
+        {(isReadable === false && languageSupported === false) && (
           <NotReadableContainer>
             <p>Article is not readable</p>
             <NotifyButton>Should this be readable?</NotifyButton>
