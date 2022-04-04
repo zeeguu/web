@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from "styled-components";
 import ReactModal from "react-modal";
-
+import { zeeguuTransparentMediumOrange } from "../../zeeguu-react/src/components/colors";
 export const GlobalStyle = createGlobalStyle`
    .reader-overlay{
         position: fixed;
@@ -152,6 +152,14 @@ export const OverwriteZeeguu = styled.div`
   z-orig {
     color: black !important;
     border-bottom: 2px dashed #2f76ac !important;
+  }
+
+  .topMessage{
+    background-color: ${zeeguuTransparentMediumOrange};
+  }
+
+  .centeredColumn{
+    margin-top: 0px !important;
   }
 
   /** Exercises **/

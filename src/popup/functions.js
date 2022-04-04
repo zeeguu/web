@@ -19,6 +19,11 @@ export async function getNativeLanguage() {
   const value = await chrome.storage.local.get("userInfo")
   return value.userInfo.native_language;
   }
+
+  export async function getUsername() {
+    const value = await chrome.storage.local.get("userInfo")
+    return value.userInfo.name;
+    }
   
 export async function getSessionId() {
   const value = await chrome.storage.local.get("sessionId")

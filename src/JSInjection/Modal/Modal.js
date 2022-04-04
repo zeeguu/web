@@ -8,14 +8,12 @@ import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleRe
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
 import { getImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
-import { getNativeLanguage } from "../../popup/functions";
+import { getNativeLanguage, getUsername } from "../../popup/functions";
 import {ReadArticle} from "./ReadArticle"
 import WordsForArticleModal from "./WordsForArticleModal";
 import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
-import strings from "../../zeeguu-react/src/i18n/definitions";
-import * as sc from "../../zeeguu-react/src/components/TopTabs.sc";
 
 export function Modal({
   title,
@@ -38,6 +36,7 @@ export function Modal({
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [articleImage, setArticleImage] = useState();
   const [nativeLang, setNativeLang] = useState();
+  const [username, setUsername] = useState();
   const [DBArticleInfo, setDBArticleInfo] = useState();
   const [articleLanguage, setArticleLanguage] = useState();
   const [uiLanguage, setUiLanguage] = useState();
@@ -58,8 +57,11 @@ export function Modal({
       );
     }
     getNativeLanguage().then((result) => setNativeLang(result));
+    getUsername().then((result) => setUsername(result));
+
   }, []);
 
+  console.log(articleLanguage)
   useEffect(() => {
     if (DBArticleInfo !== undefined) {
       setArticleId(DBArticleInfo.id);
@@ -113,6 +115,7 @@ export function Modal({
   }, [articleId]);
 
   localStorage.setItem("native_language", nativeLang);
+  localStorage.setItem("name", username);
 
   function handleClose() {
     setModalIsOpen(false);
