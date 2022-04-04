@@ -40,12 +40,12 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!getUserSession()) {
-          setUser({})
+        setUser({});
       }
     }, 1000);
-    return () => clearInterval(interval); 
-  }, [])
-  
+    return () => clearInterval(interval);
+  }, []);
+
   function handleSuccessfulSignIn(userInfo, history) {
     setUser({
       session: api.session,
