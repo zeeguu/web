@@ -52,8 +52,12 @@ export function Modal({
         title: title,
         authors: author,
       };
-      api.findOrCreateArticle(info, (result_dict) =>
+      api.findOrCreateArticle(info, (result_dict) =>{
+        if(result_dict.includes("Language not supported")){
+          return alert("not readable")
+          }
         setDBArticleInfo(JSON.parse(result_dict))
+      }
       );
     }
     getNativeLanguage().then((result) => setNativeLang(result));

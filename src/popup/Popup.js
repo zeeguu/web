@@ -26,6 +26,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [user, setUser] = useState();
   const [tab, setTab] = useState();
   const [isReadable, setIsReadable] = useState();
+  const [languageSupported, setLanguageSupported] = useState(true);
+  const [article, setArticle] = useState();
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {
@@ -36,9 +38,17 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     });
   }, []);
 
+
   useEffect(() => {
     if (tab !== undefined) {
-      //readability check
+      // Language check
+    //  api.findOrCreateArticle(info, (result_dict) =>{
+    //    if(result_dict.includes("Language not supported")){
+    //    setLanguageSupported(false)
+    //    }
+    //  });
+
+      // Readability check
       const documentFromTab = getSourceAsDOM(tab.url);
       const isProbablyReadable = isProbablyReaderable(
         documentFromTab,
@@ -61,7 +71,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       files: ["./main.js"],
       func: setCurrentURL(tab.url),
     });
-    window.close();
+    ///window.close();
   }
 
   function handleSuccessfulSignIn(userInfo, session) {
@@ -82,19 +92,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ loggedIn: false });
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
-  }
-
-  let languageSupported;
-
-  const supportedLanguages = ["de", "es", "fr", "nl", "en", "it", "da", "pl", "sv", "ru"];
-  
-  if (supportedLanguages.includes("Mango")){
-    languageSupported = true
-  }
-  else{
-    languageSupported = false;
-  }
-  
+  }  
 
   if (loggedIn === false) {
     return (
@@ -119,6 +117,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         </PopUp>
       );
     }
+
     return (
       <PopUp>
         <HeadingContainer>
