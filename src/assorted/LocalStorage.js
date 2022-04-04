@@ -15,6 +15,7 @@ const LocalStorage = {
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
+    Features: "features",
   },
 
   userInfo: function () {
@@ -56,11 +57,20 @@ const LocalStorage = {
     }
   },
 
+  hasFeature: function (featureName) {
+    try {
+      return JSON.parse(localStorage[this.Keys.Features]).includes(featureName);
+    } catch (e) {
+      return false;
+    }
+  },
+
   setUserInfo: function (info) {
     localStorage[this.Keys.Name] = info.name;
     localStorage[this.Keys.LearnedLanguage] = info.learned_language;
     localStorage[this.Keys.NativeLanguage] = info.native_language;
     localStorage[this.Keys.IsTeacher] = info.is_teacher;
+    localStorage[this.Keys.Features] = JSON.stringify(info.features);
   },
 
   deleteUserInfo: function () {
@@ -69,6 +79,8 @@ const LocalStorage = {
       localStorage.removeItem(this.Keys.LearnedLanguage);
       localStorage.removeItem(this.Keys.NativeLanguage);
       localStorage.removeItem(this.Keys.IsTeacher);
+      localStorage.removeItem(this.Keys.Session);
+      localStorage.removeItem(this.Keys.Features);
       removeUserInfoFromCookies();
     } catch (e) {
       console.log(e);
