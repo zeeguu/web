@@ -16,8 +16,4 @@ function removeUserInfoFromCookies() {
     Cookies.remove('name');
 }
 
-function getUsername(){
-    return Cookies.get('name')
-}
-
-export {saveUserInfoIntoCookies, removeUserInfoFromCookies, getUsername}
+export {saveUserInfoIntoCookies, removeUserInfoFromCookies}
