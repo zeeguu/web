@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
-import { getUsername } from "../utils/cookies/userInfo";
+import LocalStorage from "../assorted/LocalStorage";
+
 export default function Congratulations({
   articleID,
   correctBookmarks,
@@ -33,7 +34,8 @@ export default function Congratulations({
   }
 
   useEffect(() => {
-    let name = getUsername();
+    let userInfo = LocalStorage.userInfo()
+    let name = userInfo.name
     setUsername(name);
   }, []);
 
@@ -44,7 +46,7 @@ export default function Congratulations({
   return (
     <s.NarrowColumn className="narrowColumn">
       <br />
-      <CenteredColumn>
+      <CenteredColumn className="centeredColumn">
         <h1>
           {strings.goodJob} {username}!
         </h1>
