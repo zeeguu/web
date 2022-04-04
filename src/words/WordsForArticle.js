@@ -64,6 +64,7 @@ export default function WordsForArticle({ api }) {
         articleInfo={articleInfo}
         api={api}
         notifyWordChanged={notifyWordChanged}
+        source={UMR_SOURCE}
       />
 
       <CenteredContent>
