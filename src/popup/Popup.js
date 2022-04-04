@@ -144,13 +144,13 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         {(isReadable === true && languageSupported === false) && (
           <NotReadableContainer>
             <p>Article language not supported</p>
-            <NotifyButton>Do you want us to support this?</NotifyButton>
+            <NotifyButton onClick={()=>alert("Thanks for the feedback")}>Do you want us to support this?</NotifyButton>
           </NotReadableContainer>
         )}
         {(isReadable === false && languageSupported === false) && (
           <NotReadableContainer>
             <p>Article is not readable</p>
-            <NotifyButton>Should this be readable?</NotifyButton>
+            <NotifyButton onClick={()=>alert("Thanks for the feedback")}>Should this be readable?</NotifyButton>
           </NotReadableContainer>
         )}
 
