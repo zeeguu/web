@@ -21,7 +21,7 @@ export default function WordsToReview({
 
       <br />
       <br />
-      <TopMessage style={{ textAlign: "left" }}>
+      <TopMessage className="topMessage" style={{ textAlign: "left" }}>
         {words.length > 0 ? (
           <>
             <p>{strings.starTranslation}</p>
