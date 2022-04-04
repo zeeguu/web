@@ -8,12 +8,12 @@ export default function ReviewVocabulary({openReview}) {
   return (
     <>
     <s.FeedbackBox className="feedbackBox">
-      <h2>{strings.reviewVocabulary}</h2>
-      <small>{strings.reviewVocabExplanation}</small>
+      <h2>Practice your Vocabulary</h2>
+      <small> Review your translations to ensure better learning and practice the vocabulary from this article in the exercises.</small>
       <br />
       <br />
       <s.CenteredContent>
-      <StyledButtonBlue onClick={openReview}>{strings.reviewVocabulary}</StyledButtonBlue>
+      <StyledButtonBlue onClick={openReview}>Practice Vocabulary</StyledButtonBlue>
       </s.CenteredContent>
     </s.FeedbackBox>
     </>

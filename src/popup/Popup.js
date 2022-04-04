@@ -84,18 +84,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.remove(["userInfo"]);
   }
 
-  let languageSupported;
-
-  const supportedLanguages = ["de", "es", "fr", "nl", "en", "it", "da", "pl", "sv", "ru"];
-  
-  if (supportedLanguages.includes("Mango")){
-    languageSupported = true
-  }
-  else{
-    languageSupported = false;
-  }
-  
-
   if (loggedIn === false) {
     return (
       <PopUp>
@@ -133,13 +121,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
             </PrimaryButton>
           </ButtonContainer>
         )}
-        {languageSupported === false && (
-          <NotReadableContainer>
-            <p>Article language not supported</p>
-            <NotifyButton>Do you want us to support this?</NotifyButton>
-          </NotReadableContainer>
-        )}
-        {isReadable === false && languageSupported === true && (
+        {isReadable === false && (
           <NotReadableContainer>
             <p>Article is not readable</p>
             <NotifyButton>Should this be readable?</NotifyButton>

@@ -5,7 +5,7 @@ import styled from "styled-components";
 export const StyledTextarea = styled.textarea`
   resize: none;
   min-width: 99%;
-  min-height: 70px;
+  min-height: 40px;
   align-items: center;
   display: block;
   font-family: Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -17,7 +17,6 @@ export const StyledForm = styled.form`
 `;
 
 export const StyledContainer = styled.div`
-  padding: 10px;
   overflow: hidden;
 `;
 
