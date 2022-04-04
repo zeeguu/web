@@ -5,7 +5,7 @@ import { setCurrentURL, getSourceAsDOM } from "./functions";
 import {getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu} from "./cookies";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 
 //for isProbablyReadable options object
@@ -20,6 +20,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   useEffect(() => {
     if (loggedIn) {
       getUserInfo("https://zeeguu.org", setUser);
+      getUserInfo("https://www.zeeguu.org", setUser)
     }
   }, [loggedIn]);
 
@@ -59,7 +60,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     });
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
-    saveCookiesOnZeeguu(userInfo, session);
+    setLoggedIn(true);
+    saveCookiesOnZeeguu(userInfo, session, "https://zeeguu.org");
   }
 
   function handleSignOut(e) {
@@ -69,7 +71,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ loggedIn: false });
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
-    removeCookiesOnZeeguu();
+    removeCookiesOnZeeguu("https://zeeguu.org");
+    removeCookiesOnZeeguu("https://www.zeeguu.org");
   }
 
   return (

@@ -1,4 +1,20 @@
 /*global chrome*/
+export async function isLoggedIn(cookieUrl) {
+  chrome.cookies.get({ url: cookieUrl, name: "sessionID" },
+    function (cookie) {
+      if (cookie) {
+        chrome.storage.local.set({ loggedIn: true }, () =>
+          console.log(cookieUrl, "Session cookie is present, Loggedin = ", true)
+        );
+      } else {
+        console.log(cookieUrl, "No cookie")
+        chrome.storage.local.set({loggedIn: false})
+      }
+    }
+  );
+}
+
+
 export async function getUserInfo(cookieUrl, setUser) {
     chrome.cookies.get({ url: cookieUrl, name: "name" }, 
     (cookie) => {
@@ -20,7 +36,7 @@ export async function getUserInfo(cookieUrl, setUser) {
     });
   }
   
-  export function saveCookiesOnZeeguu(userInfo, session) {
+  export function saveCookiesOnZeeguu(userInfo, session, url) {
     let stringSession = String(session);
     chrome.cookies.set({ name: "sessionID", url: "https://zeeguu.org", domain: "zeeguu.org", value: stringSession },
       (cookie) => console.log("Cookie saved:", cookie)
@@ -33,14 +49,14 @@ export async function getUserInfo(cookieUrl, setUser) {
     );
   }
   
-  export function removeCookiesOnZeeguu() {
-    chrome.cookies.remove({ url: "https://zeeguu.org", name: "sessionID" },
+  export function removeCookiesOnZeeguu(cookieUrl) {
+    chrome.cookies.remove({ url: cookieUrl, name: "sessionID" },
       () => console.log("sessionid cookie removed")
     );
-    chrome.cookies.remove({ url: "https://zeeguu.org", name: "name" }, 
+    chrome.cookies.remove({ url: cookieUrl, name: "name" }, 
       () => console.log("name cookie removed")
     );
-    chrome.cookies.remove({ url: "https://zeeguu.org", name: "nativeLanguage" },
+    chrome.cookies.remove({ url: cookieUrl, name: "nativeLanguage" },
       () => console.log("native_language cookie removed")
     );
   }
