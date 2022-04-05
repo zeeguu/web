@@ -88,6 +88,16 @@ export const NotifyButton = styled.button`
     color: #4f97cf !important;
   }
   font-size: 1em !important;
+
+   //Small
+ ${(props) =>
+   props.disabled &&
+   css`
+      cursor: text;
+      pointer-events: none;
+      text-decoration: underline;
+      color: #000 !important;
+   `}
 `;
 
 export const ButtonContainer = styled.div`
@@ -113,9 +123,5 @@ export const NotReadableContainer = styled.div`
     margin-block-end: 0em !important;
     font-weight: normal;
     font-size: 1.2em!important;
-  }
-
-  button {
-    margin-bottom: 25px;
   }
 `;

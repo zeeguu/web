@@ -1,7 +1,7 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import { setCurrentURL, getSourceAsDOM, getSessionId } from "./functions";
+import { setCurrentURL, getSourceAsDOM} from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
@@ -30,6 +30,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [isReadable, setIsReadable] = useState();
   const [sessionId, setSessionId] = useState();
   const [languageSupported, setLanguageSupported] = useState();
+  const [feedbackSent, setFeedbackSent] = useState(false);
 
   const LANGUAGE_FEEDBACK = "I want this language to be supported"
   const READABILITY_FEEDBACK = "I think this article should be readable"
@@ -44,6 +45,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       setTab(tabs[0]);
     });
+    setFeedbackSent(false)
   }, []);
 
   useEffect(() => {
@@ -115,6 +117,11 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.remove(["userInfo"]);
   }
 
+  function sendFeedback(feedback, url, articleId){
+    sendFeedbackEmail(feedback, url, articleId)
+    setFeedbackSent(true)
+  }
+
   if (loggedIn === false) {
     return (
       <PopUp>
@@ -146,32 +153,42 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         </HeadingContainer>
 
         {user ? <p>Welcome {user.name}</p> : null}
-        {(isReadable === true && languageSupported === true) && (
+        {isReadable === true && languageSupported === true && (
           <ButtonContainer>
             <PrimaryButton primary onClick={openModal}>
               Read article
             </PrimaryButton>
           </ButtonContainer>
         )}
-        {(isReadable === true && languageSupported === false) && (
+        {isReadable === true && languageSupported === false && (
           <NotReadableContainer>
             <p>This article language is not supported</p>
-            <NotifyButton onClick={()=>sendFeedbackEmail(LANGUAGE_FEEDBACK, tab.url, undefined)}>Do you want us to support this?</NotifyButton>
+            {!feedbackSent ? (
+              <NotifyButton
+                onClick={() =>sendFeedback(LANGUAGE_FEEDBACK, tab.url, undefined)}>
+                Do you want us to support this?
+              </NotifyButton>
+            ) : (
+              <NotifyButton disabled>Thanks for the feedback</NotifyButton>
+            )}
           </NotReadableContainer>
         )}
-        {(isReadable === false && languageSupported === false) && (
+        {isReadable === false && languageSupported === false && (
           <NotReadableContainer>
-            <p>Zeeguu can't read this text. Try another one.</p>
-            <NotifyButton onClick={()=>sendFeedbackEmail(READABILITY_FEEDBACK, tab.url, undefined)}>Should this be readable?</NotifyButton>
+            <p>Zeeguu can't read this text. Try another one</p>
+            {!feedbackSent ? (
+              <NotifyButton
+                onClick={() =>sendFeedback(READABILITY_FEEDBACK, tab.url, undefined)}>
+                Should this be readable?
+              </NotifyButton>
+            ) : (
+              <NotifyButton disabled>Thanks for the feedback</NotifyButton>
+            )}
           </NotReadableContainer>
         )}
-
         <BottomContainer>
           <BottomButton
-            onClick={() =>
-              window.open("https://zeeguu.org/account_settings", "_blank")
-            }
-          >
+            onClick={() => window.open("https://zeeguu.org/account_settings", "_blank")}>
             Settings
           </BottomButton>
           <BottomButton onClick={handleSignOut}>Logout</BottomButton>
