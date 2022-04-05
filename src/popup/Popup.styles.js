@@ -68,7 +68,7 @@ export const BottomButton = styled.div`
   color: #2f77ad;
   font-weight: 500;
   position: relative;
-  bottom: -2em;
+  bottom: -0.7em;
   font-size: 1em !important;
   font-weight: 600 !important;
   :hover {

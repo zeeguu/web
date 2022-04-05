@@ -40,7 +40,7 @@ export default function UserFeedback({ api, articleId, url }) {
     if (!isEmpty) {
       let feedbackForDB = "problem_" + feedback.replace(/ /g, "_");
       api.logReaderActivity(EXTENSION_SOURCE, api.EXTENSION_FEEDBACK, articleId, feedbackForDB);
-      //sendFeedbackEmail(feedback, url, articleId)
+      sendFeedbackEmail(feedback, url, articleId)
       resetInput(e);
     }
   }

@@ -17,6 +17,8 @@ import {
   NotReadableContainer,
 } from "./Popup.styles";
 import { Article } from "../JSInjection/Modal/Article";
+import sendFeedbackEmail from "../JSInjection/Modal/sendEmail"
+
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
@@ -28,6 +30,9 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [isReadable, setIsReadable] = useState();
   const [sessionId, setSessionId] = useState();
   const [languageSupported, setLanguageSupported] = useState();
+
+  const LANGUAGE_FEEDBACK = "I want this language to be supported"
+  const READABILITY_FEEDBACK = "I think this article should be readable"
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {
@@ -150,14 +155,14 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         )}
         {(isReadable === true && languageSupported === false) && (
           <NotReadableContainer>
-            <p>Article language not supported</p>
-            <NotifyButton onClick={()=>alert("Thanks for the feedback")}>Do you want us to support this?</NotifyButton>
+            <p>This article language is not supported</p>
+            <NotifyButton onClick={()=>sendFeedbackEmail(LANGUAGE_FEEDBACK, tab.url, undefined)}>Do you want us to support this?</NotifyButton>
           </NotReadableContainer>
         )}
         {(isReadable === false && languageSupported === false) && (
           <NotReadableContainer>
-            <p>Article is not readable</p>
-            <NotifyButton onClick={()=>alert("Thanks for the feedback")}>Should this be readable?</NotifyButton>
+            <p>Zeeguu can't read this text. Try another one.</p>
+            <NotifyButton onClick={()=>sendFeedbackEmail(READABILITY_FEEDBACK, tab.url, undefined)}>Should this be readable?</NotifyButton>
           </NotReadableContainer>
         )}
 
