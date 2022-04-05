@@ -56,6 +56,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         getSessionId().then((session) => {
           if(session !== undefined){
           api.session = session;
+          console.log(session)
           Article(tab.url).then((article) => {
             api.isArticleLanguageSupported(
               article.textContent,
@@ -91,8 +92,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
     });
-    console.log(session)
-    console.log(userInfo)
+    
+    
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
   }
