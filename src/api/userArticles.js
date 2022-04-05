@@ -51,3 +51,12 @@ Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {
       callback
   );
 };
+
+
+Zeeguu_API.prototype.isArticleLanguageSupported = function (htmlContent, callback) {
+  let article = {htmlContent: htmlContent}
+  this._post(`/is_article_language_supported`,
+  qs.stringify(article),
+  callback
+  );
+};
