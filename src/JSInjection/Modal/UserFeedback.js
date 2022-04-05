@@ -53,9 +53,8 @@ export default function UserFeedback({ api, articleId, url }) {
   return (
     <s.FeedbackBox className="feedbackBox">
       <StyledContainer>
-        <h2>We are always trying to improve the Zeeguu Extension</h2>
-        <small>
-          Please let us know if you experience any problems, or if the article
+        <h2>Report Problems</h2>
+        <small> We are always trying to improve the Zeeguu Extension. Please let us know if you experience any problems, or if the article
           looks wrong.
         </small>
         <br />

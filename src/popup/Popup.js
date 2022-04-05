@@ -101,7 +101,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ loggedIn: false });
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
-  }  
+  }
 
   if (loggedIn === false) {
     return (
