@@ -54,6 +54,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       } else {
         setIsReadable(true);
         getSessionId().then((session) => {
+          if(session !== undefined){
           api.session = session;
           Article(tab.url).then((article) => {
             api.isArticleLanguageSupported(
@@ -68,7 +69,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
                 }
               }
             );
-          });
+          });}
         });
       }
     }
@@ -90,6 +91,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
     });
+    console.log(session)
+    console.log(userInfo)
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
   }
