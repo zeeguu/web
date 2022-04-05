@@ -26,20 +26,27 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [user, setUser] = useState();
   const [tab, setTab] = useState();
   const [isReadable, setIsReadable] = useState();
+  const [sessionId, setSessionId] = useState();
   const [languageSupported, setLanguageSupported] = useState();
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {
       setUser(result.userInfo);
     });
+    chrome.storage.local.get("sessionId", function (result) {
+      setSessionId(result.sessionId);
+    });
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       setTab(tabs[0]);
     });
   }, []);
 
+  useEffect(() => {
+      api.session = sessionId
+  }, [sessionId]);
 
   useEffect(() => {
-    if (tab !== undefined) {
+    if (tab !== undefined && sessionId !== undefined) {
       // Readability check and language check
       const documentFromTab = getSourceAsDOM(tab.url);
       const isProbablyReadable = isProbablyReaderable(
@@ -53,10 +60,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         setLanguageSupported(false);
       } else {
         setIsReadable(true);
-        getSessionId().then((session) => {
-          if(session !== undefined){
-          api.session = session;
-          console.log(session)
+        api.session = sessionId
           Article(tab.url).then((article) => {
             api.isArticleLanguageSupported(
               article.textContent,
@@ -70,11 +74,11 @@ export default function Popup({ loggedIn, setLoggedIn }) {
                 }
               }
             );
-          });}
-        });
+          });
+        
       }
     }
-  }, [tab]);
+  }, [tab, sessionId]);
 
   async function openModal() {
     chrome.scripting.executeScript({
@@ -82,7 +86,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       files: ["./main.js"],
       func: setCurrentURL(tab.url),
     });
-    ///window.close();
+    window.close();
   }
 
   function handleSuccessfulSignIn(userInfo, session) {
@@ -92,10 +96,9 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
     });
-    
-    
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
+    setSessionId(session)
   }
 
   function handleSignOut(e) {
