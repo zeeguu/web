@@ -22,7 +22,7 @@ export const PrimaryButton = styled.button`
 `;
 
 export const PopUp = styled.div`
-  //font-weight: 600;
+ font-weight: 600;
   display: flex;
   background-color: aqua;
   flex-direction: column;
@@ -68,7 +68,7 @@ export const BottomButton = styled.div`
   color: #2f77ad;
   font-weight: 500;
   position: relative;
-  bottom: -0.7em;
+  bottom: -0.4em;
   font-size: 1em !important;
   font-weight: 600 !important;
   :hover {
@@ -104,6 +104,7 @@ export const HeadingContainer = styled.div`
 export const BottomContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 17px;
 `;
 
 export const NotReadableContainer = styled.div`
