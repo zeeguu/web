@@ -19,6 +19,8 @@ export const PrimaryButton = styled.button`
   :hover {
     background-color: #4f97cf !important;
   }
+  margin-bottom: 1em!important;
+  margin-top: 1em !important;
 `;
 
 export const PopUp = styled.div`
@@ -100,11 +102,6 @@ export const NotifyButton = styled.button`
    `}
 `;
 
-export const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
 export const HeadingContainer = styled.div`
   img {
     width: 15%;
@@ -124,4 +121,13 @@ export const NotReadableContainer = styled.div`
     font-weight: normal;
     font-size: 1.2em!important;
   }
+`;
+
+export const Welcome = styled.p`
+    margin-block-start: 0.5em !important;
+    margin-block-end: 0.5em !important;
+`;
+
+export const MiddleContainer = styled.div`
+margin-bottom: 1.4em;
 `;
