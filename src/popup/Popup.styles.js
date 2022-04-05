@@ -22,7 +22,7 @@ export const PrimaryButton = styled.button`
 `;
 
 export const PopUp = styled.div`
-  font-weight: 600;
+  //font-weight: 600;
   display: flex;
   background-color: aqua;
   flex-direction: column;
