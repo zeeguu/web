@@ -93,6 +93,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     window.close();
   }
 
+//chrome.runtime.sendMessage('Hi from content script')
+
   function handleSuccessfulSignIn(userInfo, session) {
     setUser({
       session: session,
