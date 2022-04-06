@@ -1,7 +1,8 @@
 
 chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => {
     console.log("Received message from " + sender + ": ", request);
-    sendResponse("hi there" + sender + request); //respond however you like
+    //sendResponse("hi there" + sender + request); //respond however you like
+    sendResponse({message: true}); //respond however you like
 });
 
 //chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
