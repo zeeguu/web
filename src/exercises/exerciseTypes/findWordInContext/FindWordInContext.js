@@ -71,7 +71,7 @@ export default function FindWordInContext({
 
   function notifyBookmarkTranslation() {
     let concatMessage = messageToAPI + "T";
-    handleShowSolution(concatMessage);
+    handleShowSolution(undefined, concatMessage);
   }
 
   function inputKeyPress() {
@@ -81,7 +81,9 @@ export default function FindWordInContext({
   }
 
   function handleShowSolution(e, message) {
-    e.preventDefault()
+    if (e) {
+      e.preventDefault();
+    }
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
