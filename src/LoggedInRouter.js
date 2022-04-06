@@ -11,6 +11,7 @@ import React, { useState, useEffect } from "react";
 import ExtensionMessage from "./components/ExtensionMessage";
 
 /*global chrome*/
+
 export default function LoggedInRouter({ api, setUser }) {
   const EXTENSION_ID = "ghnfbnnmkbhhbcionebpncddbpflehmp";
 
@@ -18,11 +19,10 @@ export default function LoggedInRouter({ api, setUser }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    let userAgent = navigator.userAgent;
+    if(userAgent.match(/chrome|chromium|crios/i)){
     if (chrome.runtime) {
-      chrome.runtime.sendMessage(
-        EXTENSION_ID,
-        "This is a message from Zeeguu.org",
-        function (reply) {
+      chrome.runtime.sendMessage(EXTENSION_ID, "Message from Zeeguu.org", function (reply) {
           if (chrome.runtime.lastError) {
             console.log(chrome.runtime.lastError);
           }
@@ -38,7 +38,9 @@ export default function LoggedInRouter({ api, setUser }) {
     } else {
       handleOpen();
     }
+  }
   }, []);
+
 
   function handleClose() {
     setOpen(false);
