@@ -166,7 +166,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
                 {!feedbackSent ? (
                   <NotifyButton
                     onClick={() =>sendFeedback(LANGUAGE_FEEDBACK, tab.url, undefined)}>
-                    Do you want us to support this?
+                    I want you to support this
                   </NotifyButton>
                 ) : (
                   <NotifyButton disabled>Thanks for the feedback</NotifyButton>
@@ -178,7 +178,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
                 <p>Zeeguu can't read this text. Try another one</p>
                 {!feedbackSent ? (
                   <NotifyButton onClick={() => sendFeedback(READABILITY_FEEDBACK, tab.url, undefined)}>
-                    Should this be readable?
+                    This should be readable
                   </NotifyButton>
                 ) : (
                   <NotifyButton disabled>Thanks for the feedback</NotifyButton>
