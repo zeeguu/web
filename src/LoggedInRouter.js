@@ -10,27 +10,29 @@ import UserDashboard from "./userDashboard/UserDashboard";
 import React, { useState, useEffect } from "react";
 import ExtensionMessage from "./components/ExtensionMessage";
 import Feature from "../src/features/Feature";
+import LocalStorage from "./assorted/LocalStorage";
+
 /*global chrome*/
 
 export default function LoggedInRouter({ api, setUser }) {
   const EXTENSION_ID = "ghnfbnnmkbhhbcionebpncddbpflehmp";
   const [hasExtension, setHasExtension] = useState(false);
+  const [isChrome, setIsChrome] = useState(false);
   const [open, setOpen] = useState(false);
+  const [displayedPopup, setDisplayedPopup] = useState(false);
 
   useEffect(() => {
-    if (Feature.extension_experiment1()) {
-      let userAgent = navigator.userAgent;
-      if (userAgent.match(/chrome|chromium|crios/i)) {
+    setDisplayedPopup(LocalStorage.displayedPopup())
+    let userAgent = navigator.userAgent;
+    if (userAgent.match(/chrome|chromium|crios/i)) {
+      setIsChrome(true);
+      if (Feature.extension_experiment1() && !displayedPopup) {
         if (chrome.runtime) {
-          chrome.runtime.sendMessage(
-            EXTENSION_ID,
-            "You are on Zeeguu.org!",
-            function (reply) {
+          chrome.runtime.sendMessage(EXTENSION_ID, "You are on Zeeguu.org!", function (response) {
               if (chrome.runtime.lastError) {
                 console.log(chrome.runtime.lastError);
               }
-              if (reply.message === true) {
-                setOpen(false);
+              if (response.message === true) {
                 setHasExtension(true);
                 console.log("Extension installed!");
               }
@@ -47,17 +49,25 @@ export default function LoggedInRouter({ api, setUser }) {
 
   function handleClose() {
     setOpen(false);
+    setDisplayedPopup(true)
+    LocalStorage.setDisplayedPopup(true);
   }
 
   return (
     <SideBar api={api}>
-      {(!hasExtension && Feature.extension_experiment1()) ? (
+      {(!hasExtension && Feature.extension_experiment1() && !displayedPopup) ? (
         <ExtensionMessage
           handleClose={handleClose}
           open={open}
         ></ExtensionMessage>
       ) : null}
-      <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
+      <PrivateRoute
+        path="/articles"
+        api={api}
+        component={ArticlesRouter}
+        hasExtension={hasExtension}
+        isChrome={isChrome}
+      />
       <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
       <PrivateRoute path="/words" api={api} component={WordsRouter} />
 

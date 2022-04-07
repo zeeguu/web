@@ -1,7 +1,8 @@
 import Modal from "@mui/material/Modal";
 import * as s from "./ExtensionMessage.sc";
 
-export default function ExtensionMessage({ handleClose, open }) {
+export default function ExtensionMessage({ handleClose, open}) {
+
   return (
     <Modal
       open={open}
