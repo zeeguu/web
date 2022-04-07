@@ -9,7 +9,7 @@ import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import React, { useState, useEffect } from "react";
 import ExtensionMessage from "./components/ExtensionMessage";
-
+import Feature from "../src/features/Feature";
 /*global chrome*/
 
 export default function LoggedInRouter({ api, setUser }) {
@@ -18,27 +18,29 @@ export default function LoggedInRouter({ api, setUser }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    let userAgent = navigator.userAgent;
-    if (userAgent.match(/chrome|chromium|crios/i)) {
-      if (chrome.runtime) {
-        chrome.runtime.sendMessage(
-          EXTENSION_ID,
-          "You are on Zeeguu.org!",
-          function (reply) {
-            if (chrome.runtime.lastError) {
-              console.log(chrome.runtime.lastError);
+    if (Feature.extension_experiment1()) {
+      let userAgent = navigator.userAgent;
+      if (userAgent.match(/chrome|chromium|crios/i)) {
+        if (chrome.runtime) {
+          chrome.runtime.sendMessage(
+            EXTENSION_ID,
+            "You are on Zeeguu.org!",
+            function (reply) {
+              if (chrome.runtime.lastError) {
+                console.log(chrome.runtime.lastError);
+              }
+              if (reply.message === true) {
+                setOpen(false);
+                setHasExtension(true);
+                console.log("Extension installed!");
+              }
             }
-            if (reply.message === true) {
-              setOpen(false);
-              setHasExtension(true);
-              console.log("Extension installed!");
-            }
-          }
-        );
-      } else {
-        setOpen(true);
-        setHasExtension(false);
-        console.log("No extension installed!");
+          );
+        } else {
+          setOpen(true);
+          setHasExtension(false);
+          console.log("No extension installed!");
+        }
       }
     }
   }, []);
@@ -49,7 +51,7 @@ export default function LoggedInRouter({ api, setUser }) {
 
   return (
     <SideBar api={api}>
-      {!hasExtension ? (
+      {(!hasExtension && Feature.extension_experiment1()) ? (
         <ExtensionMessage
           handleClose={handleClose}
           open={open}
