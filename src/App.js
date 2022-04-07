@@ -10,8 +10,11 @@ import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
-import {saveUserInfoIntoCookies, removeUserInfoFromCookies} from './utils/cookies/userInfo'
-
+import {
+  saveUserInfoIntoCookies,
+  removeUserInfoFromCookies,
+  getUserSession,
+} from "./utils/cookies/userInfo";
 
 function App() {
   let userDict = {};
@@ -19,12 +22,12 @@ function App() {
   // we use the _api to initialize the api state variable
   let _api = new Zeeguu_API(process.env.REACT_APP_API_URL);
 
-  if (LocalStorage.hasSession()) {
+  if (getUserSession()) {
     userDict = {
-      session: localStorage["sessionID"],
+      session: getUserSession(),
       ...LocalStorage.userInfo(),
     };
-    _api.session = localStorage["sessionID"];
+    _api.session = getUserSession();
   }
 
   useUILanguage();
@@ -46,7 +49,7 @@ function App() {
 
     // Cookies are the mechanism via which we share a login
     // between the extension and the website
-    saveUserInfoIntoCookies(userInfo, api.session);    
+    saveUserInfoIntoCookies(userInfo, api.session);
 
     userInfo.is_teacher
       ? history.push("/teacher/classes")
