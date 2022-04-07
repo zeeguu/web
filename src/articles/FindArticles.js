@@ -7,8 +7,9 @@ import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import Reminder from "./Reminder";
 
-export default function NewArticles({ api }) {
+export default function NewArticles({ api, hasExtension, isChrome }) {
   const [articleList, setArticleList] = useState(null);
   var originalList = null;
 
@@ -34,6 +35,7 @@ export default function NewArticles({ api }) {
 
   return (
     <>
+    
       <s.MaterialSelection>
         <Interests
           api={api}
@@ -42,13 +44,12 @@ export default function NewArticles({ api }) {
 
         <SearchField />
       </s.MaterialSelection>
-
       <SortingButtons
         articleList={articleList}
         originalList={originalList}
         setArticleList={setArticleList}
       />
-
+     <Reminder hasExtension={hasExtension} isChrome={isChrome}></Reminder>
       {articleList.map((each) => (
         <ArticlePreview key={each.id} article={each} api={api} />
       ))}
