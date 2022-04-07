@@ -1,5 +1,11 @@
+import {
+  removeUserInfoFromCookies,
+  getUserSession,
+  setUserSession,
+} from "../utils/cookies/userInfo";
 import uiLanguages from "./uiLanguages";
 
+// Note that session info is in the Cookies
 const LocalStorage = {
   Keys: {
     Session: "sessionID",
@@ -9,15 +15,6 @@ const LocalStorage = {
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
-  },
-
-  // Getting Info
-  hasSession: function () {
-    return localStorage[this.Keys.Session];
-  },
-
-  session: function () {
-    return localStorage[this.Keys.Session];
   },
 
   userInfo: function () {
@@ -41,7 +38,8 @@ const LocalStorage = {
   },
 
   setSession: function (session) {
-    localStorage[this.Keys.Session] = session;
+    // localStorage[this.Keys.Session] = session;
+    setUserSession(session);
   },
 
   setUiLanguage: function (language) {
@@ -70,7 +68,8 @@ const LocalStorage = {
       localStorage.removeItem(this.Keys.Name);
       localStorage.removeItem(this.Keys.LearnedLanguage);
       localStorage.removeItem(this.Keys.NativeLanguage);
-      localStorage.removeItem(this.Keys.Session);
+      localStorage.removeItem(this.Keys.IsTeacher);
+      removeUserInfoFromCookies();
     } catch (e) {
       console.log(e);
     }
