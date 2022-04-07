@@ -55,18 +55,14 @@ export function Main() {
   );
 }
 
-//document.open();
-//document.write();
-//document.close();
-
   const div = document.createElement("div");
 
   if (window.location.href.match(drRegex)) {
-    const elements = saveElements()
-    deleteCurrentDOM()
-    addElements(elements)
+    const elements = saveElements();
+    deleteCurrentDOM();
+    addElements(elements);
   } else {
-    deleteCurrentDOM()
+    deleteCurrentDOM();
   }
 
   document.body.appendChild(div);

@@ -19,10 +19,12 @@ export const PrimaryButton = styled.button`
   :hover {
     background-color: #4f97cf !important;
   }
+  margin-bottom: 1em!important;
+  margin-top: 1em !important;
 `;
 
 export const PopUp = styled.div`
-  font-weight: 600;
+ font-weight: 600;
   display: flex;
   background-color: aqua;
   flex-direction: column;
@@ -68,7 +70,7 @@ export const BottomButton = styled.div`
   color: #2f77ad;
   font-weight: 500;
   position: relative;
-  bottom: -2em;
+  bottom: -0.4em;
   font-size: 1em !important;
   font-weight: 600 !important;
   :hover {
@@ -88,11 +90,16 @@ export const NotifyButton = styled.button`
     color: #4f97cf !important;
   }
   font-size: 1em !important;
-`;
 
-export const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
+   //Small
+ ${(props) =>
+   props.disabled &&
+   css`
+      cursor: text;
+      pointer-events: none;
+      text-decoration: underline;
+      color: #000 !important;
+   `}
 `;
 
 export const HeadingContainer = styled.div`
@@ -104,6 +111,7 @@ export const HeadingContainer = styled.div`
 export const BottomContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 17px;
 `;
 
 export const NotReadableContainer = styled.div`
@@ -113,8 +121,13 @@ export const NotReadableContainer = styled.div`
     font-weight: normal;
     font-size: 1.2em!important;
   }
+`;
 
-  button {
-    margin-bottom: 25px;
-  }
+export const Welcome = styled.p`
+    margin-block-start: 0.5em !important;
+    margin-block-end: 0.5em !important;
+`;
+
+export const MiddleContainer = styled.div`
+margin-bottom: 1.4em;
 `;

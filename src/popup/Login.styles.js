@@ -17,6 +17,7 @@ export const MainContainer = styled.div`
 export const BottomContainer = styled.div`
   p {
     font-size: small !important;
+    font-weight: 400!important;
   }
   a {
     color: #2f77ad;

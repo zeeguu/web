@@ -10,6 +10,7 @@ import { ingenioerenClean, ingenioerRegex} from "./Pages/ingenioeren";
 import { nuRegex, removeBlockTitle } from "./Pages/nu";
 import { getLequipeImage, leqiupeRegex, removeDateTime } from "./Pages/lequipe";
 import { berlingskeRegex, cleanBerlingske, cleanBerlingskeBefore } from "./Pages/berlingske";
+import {spiegelRegex, cleanSpiegelBefore} from "./Pages/spiegel"
 
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
@@ -70,6 +71,9 @@ export function pageSpecificClean(articleContent, url) {
     }
     if (currentTabURL.match(berlingskeRegex)) {
       return cleanBerlingskeBefore(documentClone)
+    }
+    if(currentTabURL.match(spiegelRegex)){
+      return cleanSpiegelBefore(documentClone)
     }
     return documentClone
   }

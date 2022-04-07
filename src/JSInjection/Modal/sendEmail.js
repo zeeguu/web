@@ -12,3 +12,4 @@ export default function sendFeedbackEmail(feedback, url, articleId) {
     	console.log('Email successfully sent!')
   	})
 }
+

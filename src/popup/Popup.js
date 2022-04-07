@@ -7,7 +7,6 @@ import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 import {
-  ButtonContainer,
   PrimaryButton,
   HeadingContainer,
   PopUp,
@@ -15,7 +14,11 @@ import {
   NotifyButton,
   BottomContainer,
   NotReadableContainer,
+  Welcome,
+  MiddleContainer,
 } from "./Popup.styles";
+import { Article } from "../JSInjection/Modal/Article";
+import sendFeedbackEmail from "../JSInjection/Modal/sendEmail";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -26,19 +29,33 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [user, setUser] = useState();
   const [tab, setTab] = useState();
   const [isReadable, setIsReadable] = useState();
+  const [sessionId, setSessionId] = useState();
+  const [languageSupported, setLanguageSupported] = useState();
+  const [feedbackSent, setFeedbackSent] = useState(false);
+
+  const LANGUAGE_FEEDBACK = "I want this language to be supported";
+  const READABILITY_FEEDBACK = "I think this article should be readable";
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {
       setUser(result.userInfo);
     });
+    chrome.storage.local.get("sessionId", function (result) {
+      setSessionId(result.sessionId);
+    });
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       setTab(tabs[0]);
     });
+    setFeedbackSent(false);
   }, []);
 
   useEffect(() => {
-    if (tab !== undefined) {
-      //readability check
+    api.session = sessionId;
+  }, [sessionId]);
+
+  useEffect(() => {
+    if (tab !== undefined && sessionId !== undefined) {
+      // Readability check and language check
       const documentFromTab = getSourceAsDOM(tab.url);
       const isProbablyReadable = isProbablyReaderable(
         documentFromTab,
@@ -46,14 +63,26 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         minScore
       );
       const ownIsProbablyReadable = checkReadability(tab.url);
-
       if (!isProbablyReadable || !ownIsProbablyReadable) {
         setIsReadable(false);
+        setLanguageSupported(false);
       } else {
         setIsReadable(true);
+        api.session = sessionId;
+        Article(tab.url).then((article) => {
+          api.isArticleLanguageSupported(article.textContent, (result_dict) => {
+            console.log(result_dict);
+            if (result_dict === "NO") {
+              setLanguageSupported(false);
+            }
+            if (result_dict === "YES") {
+              setLanguageSupported(true);
+            }
+          });
+        });
       }
     }
-  }, [tab]);
+  }, [tab, sessionId]);
 
   async function openModal() {
     chrome.scripting.executeScript({
@@ -73,6 +102,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     });
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
+    setSessionId(session);
   }
 
   function handleSignOut(e) {
@@ -82,6 +112,11 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ loggedIn: false });
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
+  }
+
+  function sendFeedback(feedback, url, articleId) {
+    sendFeedbackEmail(feedback, url, articleId);
+    setFeedbackSent(true);
   }
 
   if (loggedIn === false) {
@@ -100,40 +135,61 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   }
 
   if (loggedIn === true) {
-    if (user === undefined || isReadable === undefined) {
+    if (
+      user === undefined ||
+      isReadable === undefined ||
+      languageSupported === undefined
+    ) {
       return (
         <PopUp>
           <div className="loader"></div>
         </PopUp>
       );
     }
+
     return (
       <PopUp>
         <HeadingContainer>
           <img src={logo} alt="Zeeguu logo" />
         </HeadingContainer>
-
-        {user ? <p>Welcome {user.name}</p> : null}
-        {isReadable === true && (
-          <ButtonContainer>
+        <MiddleContainer>
+          {user ? <Welcome>Welcome {user.name}</Welcome> : null}
+          {isReadable === true && languageSupported === true && (
             <PrimaryButton primary onClick={openModal}>
               Read article
             </PrimaryButton>
-          </ButtonContainer>
-        )}
-        {isReadable === false && (
+          )}
           <NotReadableContainer>
-            <p>Article is not readable</p>
-            <NotifyButton>Should this be readable?</NotifyButton>
+            {isReadable === true && languageSupported === false && (
+              <>
+                <p>This article language is not supported</p>
+                {!feedbackSent ? (
+                  <NotifyButton
+                    onClick={() =>sendFeedback(LANGUAGE_FEEDBACK, tab.url, undefined)}>
+                    I want you to support this
+                  </NotifyButton>
+                ) : (
+                  <NotifyButton disabled>Thanks for the feedback</NotifyButton>
+                )}
+              </>
+            )}
+            {isReadable === false && languageSupported === false && (
+              <>
+                <p>Zeeguu can't read this text. Try another one</p>
+                {!feedbackSent ? (
+                  <NotifyButton onClick={() => sendFeedback(READABILITY_FEEDBACK, tab.url, undefined)}>
+                    This should be readable
+                  </NotifyButton>
+                ) : (
+                  <NotifyButton disabled>Thanks for the feedback</NotifyButton>
+                )}
+              </>
+            )}
           </NotReadableContainer>
-        )}
-
+        </MiddleContainer>
         <BottomContainer>
           <BottomButton
-            onClick={() =>
-              window.open("https://zeeguu.org/account_settings", "_blank")
-            }
-          >
+            onClick={() => window.open("https://zeeguu.org/account_settings", "_blank")}>
             Settings
           </BottomButton>
           <BottomButton onClick={handleSignOut}>Logout</BottomButton>

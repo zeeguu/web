@@ -50,4 +50,6 @@ export function deleteCurrentDOM(){
   removeAllChildNodes(body);
   const head = document.querySelector("head");
   removeAllChildNodes(head);
+  const div = document.querySelector("div");
+  removeAllChildNodes(div);
 }
