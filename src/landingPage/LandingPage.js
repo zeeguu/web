@@ -7,11 +7,12 @@ import { Redirect } from "react-router-dom";
 import React, { useState } from "react";
 import { setTitle } from "../assorted/setTitle";
 import UiLanguageSettings from "../components/UiLanguageSettings";
+import { getUserSession } from "../utils/cookies/userInfo";
 
 export default function LandingPage() {
   const [uiLanguage, setUiLanguage] = useState();
 
-  if (LocalStorage.hasSession()) {
+  if (getUserSession()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
   setTitle(strings.landingPage);
