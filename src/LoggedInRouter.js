@@ -11,6 +11,7 @@ import React, { useState, useEffect } from "react";
 import ExtensionMessage from "./components/ExtensionMessage";
 import Feature from "../src/features/Feature";
 import LocalStorage from "./assorted/LocalStorage";
+import {isMobile} from "./utils/misc/mobileDetection";
 
 /*global chrome*/
 
@@ -20,11 +21,10 @@ export default function LoggedInRouter({ api, setUser }) {
   const [isChrome, setIsChrome] = useState(false);
   const [open, setOpen] = useState(false);
   const [displayedPopup, setDisplayedPopup] = useState(false);
-
   useEffect(() => {
     setDisplayedPopup(LocalStorage.displayedPopup())
     let userAgent = navigator.userAgent;
-    if (userAgent.match(/chrome|chromium|crios/i)) {
+    if ((userAgent.match(/chrome|chromium|crios/i)) && (isMobile() === false)) {
       setIsChrome(true);
       if (Feature.extension_experiment1() && !displayedPopup) {
         if (chrome.runtime) {
