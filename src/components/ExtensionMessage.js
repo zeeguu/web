@@ -1,8 +1,7 @@
 import Modal from "@mui/material/Modal";
 import * as s from "./ExtensionMessage.sc";
 
-export default function ExtensionMessage({ handleClose, open}) {
-
+export default function ExtensionMessage({ handleClose, open }) {
   return (
     <Modal
       open={open}
@@ -11,6 +10,9 @@ export default function ExtensionMessage({ handleClose, open}) {
       aria-describedby="modal-modal-description"
     >
       <s.MyBox>
+        <s.StyledCloseButton role="button" onClick={handleClose}>
+          X
+        </s.StyledCloseButton>
         <h1>Install the Zeeguu Chrome Extension to read articles</h1>
         <p>
           The extension allows you to enrich your vocabulary in a foreign

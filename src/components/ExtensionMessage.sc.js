@@ -9,6 +9,7 @@ const MyBox = styled(Box)`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 40%;
+  max-width: 600px;
   background-color: white;
   border: 0 !important;
   border-radius: 0.65em;
@@ -19,8 +20,17 @@ const MyBox = styled(Box)`
 
   h1 {
     font-size: 1.3em;
-    text-align: center;
   }
 `;
 
-export { MyBox };
+const StyledCloseButton = styled.div`
+  cursor: pointer;
+  padding: 1px;
+  text-align: right;
+  position: absolute;
+  float: right;
+  right: 16px;
+  margin-top: -15px;
+`;
+
+export { MyBox, StyledCloseButton };
