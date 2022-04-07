@@ -14,40 +14,37 @@ import ExtensionMessage from "./components/ExtensionMessage";
 
 export default function LoggedInRouter({ api, setUser }) {
   const EXTENSION_ID = "ghnfbnnmkbhhbcionebpncddbpflehmp";
-
   const [hasExtension, setHasExtension] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let userAgent = navigator.userAgent;
-    if(userAgent.match(/chrome|chromium|crios/i)){
-    if (chrome.runtime) {
-      chrome.runtime.sendMessage(EXTENSION_ID, "Message from Zeeguu.org", function (reply) {
-          if (chrome.runtime.lastError) {
-            console.log(chrome.runtime.lastError);
+    if (userAgent.match(/chrome|chromium|crios/i)) {
+      if (chrome.runtime) {
+        chrome.runtime.sendMessage(
+          EXTENSION_ID,
+          "You are on Zeeguu.org!",
+          function (reply) {
+            if (chrome.runtime.lastError) {
+              console.log(chrome.runtime.lastError);
+            }
+            if (reply.message === true) {
+              setOpen(false);
+              setHasExtension(true);
+              console.log("Extension installed!");
+            }
           }
-          if (reply.message === true) {
-            setHasExtension(true);
-            console.log("Extension installed!");
-          }
-          else{
-            handleOpen()
-          }
-        }
-      );
-    } else {
-      handleOpen();
+        );
+      } else {
+        setOpen(true);
+        setHasExtension(false);
+        console.log("No extension installed!");
+      }
     }
-  }
   }, []);
-
 
   function handleClose() {
     setOpen(false);
-  }
-
-  function handleOpen() {
-    setOpen(true);
   }
 
   return (
