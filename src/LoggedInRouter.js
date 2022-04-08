@@ -7,69 +7,16 @@ import TeacherRouter from "./teacher/_routing/_TeacherRouter";
 import Settings from "./pages/Settings";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
-import React, { useState, useEffect } from "react";
-import ExtensionMessage from "./components/ExtensionMessage";
-import Feature from "../src/features/Feature";
-import LocalStorage from "./assorted/LocalStorage";
-import { isMobile } from "./utils/misc/mobileDetection";
-
-/*global chrome*/
-// (this will let our linter know we are accessing Chrome browser methods)
+import React from "react";
 
 export default function LoggedInRouter({ api, setUser }) {
-  const [hasExtension, setHasExtension] = useState(false);
-  const [isChrome, setIsChrome] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [displayedPopup, setDisplayedPopup] = useState(false);
-  useEffect(() => {
-    setDisplayedPopup(LocalStorage.displayedPopup());
-    let userAgent = navigator.userAgent;
-    if (userAgent.match(/chrome|chromium|crios/i) && isMobile() === false) {
-      setIsChrome(true);
-      if (Feature.extension_experiment1() && !displayedPopup) {
-        if (chrome.runtime) {
-          chrome.runtime.sendMessage(
-            process.env.EXTENSION_ID,
-            "You are on Zeeguu.org!",
-            function (response) {
-              if (chrome.runtime.lastError) {
-                console.log(chrome.runtime.lastError);
-              }
-              if (response.message === true) {
-                setHasExtension(true);
-                console.log("Extension installed!");
-              }
-            }
-          );
-        } else {
-          setOpen(true);
-          setHasExtension(false);
-          console.log("No extension installed!");
-        }
-      }
-    }
-  }, []);
-
-  function handleClose() {
-    setOpen(false);
-    setDisplayedPopup(true);
-    LocalStorage.setDisplayedPopup(true);
-  }
 
   return (
     <SideBar api={api}>
-      {!hasExtension && Feature.extension_experiment1() && !displayedPopup ? (
-        <ExtensionMessage
-          handleClose={handleClose}
-          open={open}
-        ></ExtensionMessage>
-      ) : null}
       <PrivateRoute
         path="/articles"
         api={api}
         component={ArticlesRouter}
-        hasExtension={hasExtension}
-        isChrome={isChrome}
       />
       <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
       <PrivateRoute path="/words" api={api} component={WordsRouter} />
