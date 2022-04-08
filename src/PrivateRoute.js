@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./UserContext";
+import { getUserSession } from "./utils/cookies/userInfo";
 
 // inspired from:
 // https://dev.to/mychal/protected-routes-with-react-function-components-dh
@@ -11,7 +12,7 @@ import { UserContext } from "./UserContext";
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const user = useContext(UserContext);
 
-  if (!user.session) {
+  if (!getUserSession()) {
     return <Redirect to={{ pathname: "/login" }} />;
   }
   return (
