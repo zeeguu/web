@@ -11,24 +11,26 @@ import React, { useState, useEffect } from "react";
 import ExtensionMessage from "./components/ExtensionMessage";
 import Feature from "../src/features/Feature";
 import LocalStorage from "./assorted/LocalStorage";
-import {isMobile} from "./utils/misc/mobileDetection";
+import { isMobile } from "./utils/misc/mobileDetection";
 
 /*global chrome*/
 
 export default function LoggedInRouter({ api, setUser }) {
-  const EXTENSION_ID = "ghnfbnnmkbhhbcionebpncddbpflehmp";
   const [hasExtension, setHasExtension] = useState(false);
   const [isChrome, setIsChrome] = useState(false);
   const [open, setOpen] = useState(false);
   const [displayedPopup, setDisplayedPopup] = useState(false);
   useEffect(() => {
-    setDisplayedPopup(LocalStorage.displayedPopup())
+    setDisplayedPopup(LocalStorage.displayedPopup());
     let userAgent = navigator.userAgent;
-    if ((userAgent.match(/chrome|chromium|crios/i)) && (isMobile() === false)) {
+    if (userAgent.match(/chrome|chromium|crios/i) && isMobile() === false) {
       setIsChrome(true);
       if (Feature.extension_experiment1() && !displayedPopup) {
         if (chrome.runtime) {
-          chrome.runtime.sendMessage(EXTENSION_ID, "You are on Zeeguu.org!", function (response) {
+          chrome.runtime.sendMessage(
+            process.env.EXTENSION_ID,
+            "You are on Zeeguu.org!",
+            function (response) {
               if (chrome.runtime.lastError) {
                 console.log(chrome.runtime.lastError);
               }
@@ -49,13 +51,13 @@ export default function LoggedInRouter({ api, setUser }) {
 
   function handleClose() {
     setOpen(false);
-    setDisplayedPopup(true)
+    setDisplayedPopup(true);
     LocalStorage.setDisplayedPopup(true);
   }
 
   return (
     <SideBar api={api}>
-      {(!hasExtension && Feature.extension_experiment1() && !displayedPopup) ? (
+      {!hasExtension && Feature.extension_experiment1() && !displayedPopup ? (
         <ExtensionMessage
           handleClose={handleClose}
           open={open}
