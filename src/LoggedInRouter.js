@@ -14,6 +14,7 @@ import LocalStorage from "./assorted/LocalStorage";
 import { isMobile } from "./utils/misc/mobileDetection";
 
 /*global chrome*/
+// (this will let our linter know we are accessing Chrome browser methods)
 
 export default function LoggedInRouter({ api, setUser }) {
   const [hasExtension, setHasExtension] = useState(false);
