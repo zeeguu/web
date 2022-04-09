@@ -8,7 +8,8 @@ import {
   ErrorMessage,
 } from "./UserFeedback.styles";
 import { StyledSmallButtonBlue } from "./Buttons.styles";
-import sendFeedbackEmail from "./sendEmail";
+import sendFeedbackEmail from "./sendFeedbackEmail";
+import { EXTENSION_SOURCE } from "../constants";
 
 export default function UserFeedback({ api, articleId, url }) {
   const [feedback, setFeedback] = useState("");
@@ -39,8 +40,8 @@ export default function UserFeedback({ api, articleId, url }) {
     e.preventDefault();
     if (!isEmpty) {
       let feedbackForDB = "problem_" + feedback.replace(/ /g, "_");
-      //api.logReaderActivity(EXTENSION_SOURCE, api.EXTENSION_FEEDBACK, articleId, feedbackForDB);
-      //sendFeedbackEmail(feedback, url, articleId)
+      api.logReaderActivity(api.EXTENSION_FEEDBACK, articleId, feedbackForDB, EXTENSION_SOURCE);
+      sendFeedbackEmail(api, feedback, url, articleId)
       resetInput(e);
     }
   }

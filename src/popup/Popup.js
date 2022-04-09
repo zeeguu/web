@@ -18,7 +18,7 @@ import {
   MiddleContainer,
 } from "./Popup.styles";
 import { Article } from "../JSInjection/Modal/Article";
-import sendFeedbackEmail from "../JSInjection/Modal/sendEmail";
+import sendFeedbackEmail from "../JSInjection/Modal/sendFeedbackEmail";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -115,7 +115,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   }
 
   function sendFeedback(feedback, url, articleId) {
-    sendFeedbackEmail(feedback, url, articleId);
+    api.session = sessionId;
+    sendFeedbackEmail(api, feedback, url, articleId);
     setFeedbackSent(true);
   }
 
@@ -166,7 +167,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
                 {!feedbackSent ? (
                   <NotifyButton
                     onClick={() =>sendFeedback(LANGUAGE_FEEDBACK, tab.url, undefined)}>
-                    I want you to support this
+                    Do you want us to support this language? Send feedback.
                   </NotifyButton>
                 ) : (
                   <NotifyButton disabled>Thanks for the feedback</NotifyButton>
@@ -178,7 +179,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
                 <p>Zeeguu can't read this text. Try another one</p>
                 {!feedbackSent ? (
                   <NotifyButton onClick={() => sendFeedback(READABILITY_FEEDBACK, tab.url, undefined)}>
-                    This should be readable
+                    Should this be readable? Send feedback.
                   </NotifyButton>
                 ) : (
                   <NotifyButton disabled>Thanks for the feedback</NotifyButton>
