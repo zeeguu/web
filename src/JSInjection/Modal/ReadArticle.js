@@ -38,7 +38,7 @@ export function ReadArticle({
     <>
       <div className="article-container">
         <StyledSmallButtonBlue onClick={reportProblem}>Report problems</StyledSmallButtonBlue>
-        <StyledSmallButtonBlue onClick={handlePostCopy}>Save to Zeeguu.org</StyledSmallButtonBlue>
+        <StyledSmallButtonBlue onClick={handlePostCopy}>Save article to Zeeguu.org</StyledSmallButtonBlue>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}

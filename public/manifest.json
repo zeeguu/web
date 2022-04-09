@@ -14,6 +14,12 @@
         "128": "/images/zeeguu128.png"
     }
   },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "matches": ["*://localhost/*", "*://*.zeeguu.org/*"]
+  },
     "icons": {
       "16": "/images/zeeguu16.png",
       "32": "/images/zeeguu32.png",
