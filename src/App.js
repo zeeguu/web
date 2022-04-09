@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
 import SignIn from "./pages/SignIn";
@@ -36,6 +36,16 @@ function App() {
 
   const [user, setUser] = useState(userDict);
 
+  //resets user on zeeguu.org if they log out of the extension
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!getUserSession()) {
+          setUser({})
+      }
+    }, 1000);
+    return () => clearInterval(interval); 
+  }, [])
+  
   function handleSuccessfulSignIn(userInfo, history) {
     setUser({
       session: api.session,
