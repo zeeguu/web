@@ -7,26 +7,26 @@ export async function getCurrentTab() {
 }
 
 export function setCurrentURL(tabURL) {
-  chrome.storage.local.set({tabURL: tabURL });
+  chrome.storage.local.set({ tabURL: tabURL });
 }
 
 export async function getCurrentURL() {
-const value = await chrome.storage.local.get("tabURL")
-return value.tabURL;
+  const value = await chrome.storage.local.get("tabURL");
+  return value.tabURL;
 }
 
 export async function getNativeLanguage() {
-  const value = await chrome.storage.local.get("userInfo")
+  const value = await chrome.storage.local.get("userInfo");
   return value.userInfo.native_language;
-  }
+}
 
-  export async function getUsername() {
-    const value = await chrome.storage.local.get("userInfo")
-    return value.userInfo.name;
-    }
-  
+export async function getUsername() {
+  const value = await chrome.storage.local.get("userInfo");
+  return value.userInfo.name;
+}
+
 export async function getSessionId() {
-  const value = await chrome.storage.local.get("sessionId")
+  const value = await chrome.storage.local.get("sessionId");
   return value.sessionId;
 }
 
@@ -41,15 +41,21 @@ export function getSourceAsDOM(url) {
 
 export function removeAllChildNodes(parent) {
   while (parent.firstChild) {
-      parent.removeChild(parent.firstChild);
+    parent.removeChild(parent.firstChild);
   }
 }
 
-export function deleteCurrentDOM(){
+export function deleteCurrentDOM() {
   const body = document.querySelector("body");
-  removeAllChildNodes(body);
+  if (body) {
+    removeAllChildNodes(body);
+  }
   const head = document.querySelector("head");
-  removeAllChildNodes(head);
+  if (head) {
+    removeAllChildNodes(head);
+  }
   const div = document.querySelector("div");
-  removeAllChildNodes(div);
+  if (div) {
+    removeAllChildNodes(div);
+  }
 }
