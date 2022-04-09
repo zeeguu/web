@@ -18,7 +18,7 @@ import {
   MiddleContainer,
 } from "./Popup.styles";
 import { Article } from "../JSInjection/Modal/Article";
-import sendFeedbackEmail from "../JSInjection/Modal/sendEmail";
+import sendFeedbackEmail from "../JSInjection/Modal/sendFeedbackEmail";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -115,7 +115,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   }
 
   function sendFeedback(feedback, url, articleId) {
-    sendFeedbackEmail(feedback, url, articleId);
+    api.session = sessionId;
+    sendFeedbackEmail(api, feedback, url, articleId);
     setFeedbackSent(true);
   }
 
