@@ -18,8 +18,7 @@
     "service_worker": "background.js"
   },
   "externally_connectable": {
-    "matches": ["*://localhost/*"],
-    "ids": ["ghnfbnnmkbhhbcionebpncddbpflehmp"]
+    "matches": ["*://localhost/*", "*://*.zeeguu.org/*"]
   },
     "icons": {
       "16": "/images/zeeguu16.png",
