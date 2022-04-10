@@ -1,8 +1,10 @@
 import { ExtensionReminder } from "./Reminder.sc";
 import Feature from "../features/Feature";
+import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 
-export default function Reminder({ hasExtension, isChrome }) {
-  if (!hasExtension && isChrome && Feature.extension_experiment1()) {
+export default function Reminder({ hasExtension }) {
+
+  if (!hasExtension && runningInChromeDesktop() && Feature.extension_experiment1()) {
     return (
       <ExtensionReminder>
         To read articles with the help of Zeeguu you need to read them from the
