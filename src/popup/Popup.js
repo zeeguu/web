@@ -13,8 +13,6 @@ import {
   BottomButton,
   NotifyButton,
   BottomContainer,
-  NotReadableContainer,
-  Welcome,
   MiddleContainer,
 } from "./Popup.styles";
 import { Article } from "../JSInjection/Modal/Article";
@@ -154,43 +152,50 @@ export default function Popup({ loggedIn, setLoggedIn }) {
           <img src={logo} alt="Zeeguu logo" />
         </HeadingContainer>
         <MiddleContainer>
-          {user ? <Welcome>Welcome {user.name}</Welcome> : null}
           {isReadable === true && languageSupported === true && (
-            <PrimaryButton primary onClick={openModal}>
-              Read article
-            </PrimaryButton>
+            <>
+              {user ? <h1>Happy reading, {user.name}!</h1> : null}
+              <PrimaryButton primary onClick={openModal}>
+                Read article
+              </PrimaryButton>
+            </>
           )}
-          <NotReadableContainer>
-            {isReadable === true && languageSupported === false && (
-              <>
-                <p>This article language is not supported</p>
-                {!feedbackSent ? (
-                  <NotifyButton
-                    onClick={() =>sendFeedback(LANGUAGE_FEEDBACK, tab.url, undefined)}>
-                    Do you want us to support this language? Send feedback.
-                  </NotifyButton>
-                ) : (
-                  <NotifyButton disabled>Thanks for the feedback</NotifyButton>
-                )}
-              </>
-            )}
-            {isReadable === false && languageSupported === false && (
-              <>
-                <p>Zeeguu can't read this text. Try another one</p>
-                {!feedbackSent ? (
-                  <NotifyButton onClick={() => sendFeedback(READABILITY_FEEDBACK, tab.url, undefined)}>
-                    Should this be readable? Send feedback.
-                  </NotifyButton>
-                ) : (
-                  <NotifyButton disabled>Thanks for the feedback</NotifyButton>
-                )}
-              </>
-            )}
-          </NotReadableContainer>
+
+          {isReadable === true && languageSupported === false && (
+            <>
+              {user ? <h1>Oh no, {user.name}!</h1> : null}
+              <p>This article language is not supported</p>
+              {!feedbackSent ? (
+                <NotifyButton
+                  onClick={() =>
+                    sendFeedback(LANGUAGE_FEEDBACK, tab.url, undefined)
+                  }
+                >
+                  Do you want us to support this language? Send feedback.
+                </NotifyButton>
+              ) : (
+                <NotifyButton disabled>Thanks for the feedback</NotifyButton>
+              )}
+            </>
+          )}
+          {isReadable === false && languageSupported === false && (
+            <>
+              {user ? <h1>Oh no, {user.name}!</h1> : null}
+              <p>Zeeguu can't read this text. Try another one</p>
+              {!feedbackSent ? (
+                <NotifyButton onClick={() => sendFeedback(READABILITY_FEEDBACK, tab.url, undefined)}>
+                  Should this be readable? Send feedback.
+                </NotifyButton>) 
+                : (<NotifyButton disabled>Thanks for the feedback</NotifyButton>)}
+            </>
+          )}
         </MiddleContainer>
         <BottomContainer>
           <BottomButton
-            onClick={() => window.open("https://zeeguu.org/account_settings", "_blank")}>
+            onClick={() =>
+              window.open("https://zeeguu.org/account_settings", "_blank")
+            }
+          >
             Settings
           </BottomButton>
           <BottomButton onClick={handleSignOut}>Logout</BottomButton>

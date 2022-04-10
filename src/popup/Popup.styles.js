@@ -19,12 +19,12 @@ export const PrimaryButton = styled.button`
   :hover {
     background-color: #4f97cf !important;
   }
-  margin-bottom: 1em!important;
+  margin-bottom: 1em !important;
   margin-top: 1em !important;
 `;
 
 export const PopUp = styled.div`
- font-weight: 600;
+  font-weight: 600;
   display: flex;
   background-color: aqua;
   flex-direction: column;
@@ -34,7 +34,6 @@ export const PopUp = styled.div`
   border-width: 2px;
   padding: 10px;
   width: 230px;
-  min-height: 190px;
 
   button {
     padding: 14px 20px;
@@ -91,15 +90,15 @@ export const NotifyButton = styled.button`
   }
   font-size: 1em !important;
 
-   //Small
- ${(props) =>
-   props.disabled &&
-   css`
+  //Small
+  ${(props) =>
+    props.disabled &&
+    css`
       cursor: text;
       pointer-events: none;
       text-decoration: underline;
       color: #000 !important;
-   `}
+    `}
 `;
 
 export const HeadingContainer = styled.div`
@@ -111,23 +110,21 @@ export const HeadingContainer = styled.div`
 export const BottomContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 17px;
 `;
 
-export const NotReadableContainer = styled.div`
+export const MiddleContainer = styled.div`
+  margin-bottom: 1.4em;
+  h1 {
+    margin-block-start: 0.5em !important;
+    margin-block-end: 0.5em !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    text-align: center;
+  }
   p {
     margin-block-start: 0em !important;
     margin-block-end: 0em !important;
     font-weight: normal;
-    font-size: 1.2em!important;
+    font-size: 1.2em !important;
   }
-`;
-
-export const Welcome = styled.p`
-    margin-block-start: 0.5em !important;
-    margin-block-end: 0.5em !important;
-`;
-
-export const MiddleContainer = styled.div`
-margin-bottom: 1.4em;
 `;
