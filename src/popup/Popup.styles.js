@@ -34,6 +34,7 @@ export const PopUp = styled.div`
   border-width: 2px;
   padding: 10px;
   width: 230px;
+  min-height: 180px;
 
   button {
     padding: 14px 20px;
