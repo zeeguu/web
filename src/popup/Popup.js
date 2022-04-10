@@ -17,7 +17,7 @@ import {
 } from "./Popup.styles";
 import { Article } from "../JSInjection/Modal/Article";
 import sendFeedbackEmail from "../JSInjection/Modal/sendFeedbackEmail";
-
+import PopupLoading from "./PopupLoading";
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
@@ -30,6 +30,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [sessionId, setSessionId] = useState();
   const [languageSupported, setLanguageSupported] = useState();
   const [feedbackSent, setFeedbackSent] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
 
   const LANGUAGE_FEEDBACK = "I want this language to be supported";
   const READABILITY_FEEDBACK = "I think this article should be readable";
@@ -82,6 +83,18 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     }
   }, [tab, sessionId]);
 
+  // if we display the loader, display it for at least 800 ms
+  useEffect(() => {
+    if (showLoader === true) {
+      let timer = setTimeout(() => {
+        setShowLoader(false);
+      }, 900);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [showLoader]);
+
   async function openModal() {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
@@ -133,19 +146,16 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     );
   }
 
+
   if (loggedIn === true) {
-    if (
-      user === undefined ||
-      isReadable === undefined ||
-      languageSupported === undefined
-    ) {
+    if ((user === undefined || isReadable === undefined || languageSupported === undefined) || (showLoader === true)) {
       return (
         <PopUp>
-          <div className="loader"></div>
+        <PopupLoading showLoader={showLoader} setShowLoader={setShowLoader}></PopupLoading>
         </PopUp>
       );
     }
-
+   
     return (
       <PopUp>
         <HeadingContainer>
@@ -202,5 +212,4 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         </BottomContainer>
       </PopUp>
     );
-  }
-}
+}}
