@@ -1,23 +1,22 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import { setCurrentURL, getSourceAsDOM } from "./functions";
+import { getSourceAsDOM } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect } from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 import {
-  PrimaryButton,
   HeadingContainer,
   PopUp,
   BottomButton,
-  NotifyButton,
   BottomContainer,
   MiddleContainer,
 } from "./Popup.styles";
 import { Article } from "../JSInjection/Modal/Article";
-import sendFeedbackEmail from "../JSInjection/Modal/sendFeedbackEmail";
 import PopupLoading from "./PopupLoading";
+import PopupContent from "./PopupContent";
+
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
@@ -29,11 +28,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [isReadable, setIsReadable] = useState();
   const [sessionId, setSessionId] = useState();
   const [languageSupported, setLanguageSupported] = useState();
-  const [feedbackSent, setFeedbackSent] = useState(false);
-  const [showLoader, setShowLoader] = useState(false);
 
-  const LANGUAGE_FEEDBACK = "I want this language to be supported";
-  const READABILITY_FEEDBACK = "I think this article should be readable";
+  const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
     chrome.storage.local.get("userInfo", function (result) {
@@ -45,7 +41,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       setTab(tabs[0]);
     });
-    setFeedbackSent(false);
   }, []);
 
   useEffect(() => {
@@ -95,15 +90,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     }
   }, [showLoader]);
 
-  async function openModal() {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["./main.js"],
-      func: setCurrentURL(tab.url),
-    });
-    window.close();
-  }
-
   function handleSuccessfulSignIn(userInfo, session) {
     setUser({
       session: session,
@@ -125,12 +111,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.remove(["userInfo"]);
   }
 
-  function sendFeedback(feedback, url, articleId) {
-    api.session = sessionId;
-    sendFeedbackEmail(api, feedback, url, articleId);
-    setFeedbackSent(true);
-  }
-
   if (loggedIn === false) {
     return (
       <PopUp>
@@ -146,70 +126,40 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     );
   }
 
-
   if (loggedIn === true) {
-    if ((user === undefined || isReadable === undefined || languageSupported === undefined) || (showLoader === true)) {
+    if (user === undefined || isReadable === undefined || languageSupported === undefined || showLoader === true) {
       return (
         <PopUp>
-        <PopupLoading showLoader={showLoader} setShowLoader={setShowLoader}></PopupLoading>
+          <PopupLoading
+            showLoader={showLoader}
+            setShowLoader={setShowLoader}
+          ></PopupLoading>
         </PopUp>
       );
     }
-   
     return (
       <PopUp>
         <HeadingContainer>
           <img src={logo} alt="Zeeguu logo" />
         </HeadingContainer>
         <MiddleContainer>
-          {isReadable === true && languageSupported === true && (
-            <>
-              {user ? <h1>Happy reading, {user.name}!</h1> : null}
-              <PrimaryButton primary onClick={openModal}>
-                Read article
-              </PrimaryButton>
-            </>
-          )}
-
-          {isReadable === true && languageSupported === false && (
-            <>
-              {user ? <h1>Oh no, {user.name}!</h1> : null}
-              <p>This article language is not supported</p>
-              {!feedbackSent ? (
-                <NotifyButton
-                  onClick={() =>
-                    sendFeedback(LANGUAGE_FEEDBACK, tab.url, undefined)
-                  }
-                >
-                  Do you want us to support this language? Send feedback.
-                </NotifyButton>
-              ) : (
-                <NotifyButton disabled>Thanks for the feedback</NotifyButton>
-              )}
-            </>
-          )}
-          {isReadable === false && languageSupported === false && (
-            <>
-              {user ? <h1>Oh no, {user.name}!</h1> : null}
-              <p>Zeeguu can't read this text. Try another one</p>
-              {!feedbackSent ? (
-                <NotifyButton onClick={() => sendFeedback(READABILITY_FEEDBACK, tab.url, undefined)}>
-                  Should this be readable? Send feedback.
-                </NotifyButton>) 
-                : (<NotifyButton disabled>Thanks for the feedback</NotifyButton>)}
-            </>
-          )}
+          <PopupContent
+            isReadable={isReadable}
+            languageSupported={languageSupported}
+            user={user}
+            tab={tab}
+            api={api}
+            sessionId={sessionId}
+          ></PopupContent>
         </MiddleContainer>
         <BottomContainer>
           <BottomButton
-            onClick={() =>
-              window.open("https://zeeguu.org/account_settings", "_blank")
-            }
-          >
+            onClick={() => window.open("https://zeeguu.org/account_settings", "_blank")}>
             Settings
           </BottomButton>
           <BottomButton onClick={handleSignOut}>Logout</BottomButton>
         </BottomContainer>
       </PopUp>
     );
-}}
+  }
+}
