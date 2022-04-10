@@ -5,11 +5,13 @@ function removeServices(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   let allElements = Array.from(div.getElementsByTagName("h4"));
-  for (let i = 0; i < allElements.length; i++) {
-    const element = allElements[i];
-    if ((element !== undefined) && (element !== null)) {
-      if (element.textContent === "Services") {
-        element.remove();
+  if (allElements) {
+    for (let i = 0; i < allElements.length; i++) {
+      const element = allElements[i];
+      if (element !== undefined && element !== null) {
+        if (element.textContent === "Services") {
+          element.remove();
+        }
       }
     }
   }
@@ -20,7 +22,7 @@ function removeInjectedContent(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
   let element = div.querySelector("#js-capping");
-  if ((element !== undefined) && (element !== null)) {
+  if (element !== undefined && element !== null) {
     element.remove();
     content = div.innerHTML;
   }
@@ -30,13 +32,13 @@ function removeInjectedContent(content) {
 
 export function removeAuthorDetail(documentClone) {
   let detail = documentClone.getElementsByClassName("author__detail")[0];
-  if ((detail !== undefined) && (detail !== null)) {
+  if (detail !== undefined && detail !== null) {
     detail.parentNode.removeChild(detail);
   }
-  return documentClone
+  return documentClone;
 }
 
 export function cleanLemonde(content) {
-  let lemonde = removeInjectedContent(content)
-  return removeServices(lemonde)
+  let lemonde = removeInjectedContent(content);
+  return removeServices(lemonde);
 }

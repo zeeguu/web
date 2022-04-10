@@ -11,8 +11,8 @@ export function addImageEkstraBladet(HTMLContent, readabilityContent) {
 
   // If a main image exists add it to the readability content
   if (imageClass != undefined) {
-    const imageAlt = imageClass.getAttribute("alt")
-    const image = imageClass.currentSrc
+    const imageAlt = imageClass.getAttribute("alt");
+    const image = imageClass.currentSrc;
     const newImage = document.createElement("img");
     newImage.setAttribute("src", image);
     newImage.setAttribute("alt", imageAlt);
@@ -35,36 +35,51 @@ export function removePrefix(readabilityContent) {
 }
 
 export function ekstraBladetClean(HTMLContent, readabilityContent) {
-  const removedDate = removePrefix(readabilityContent)
+  const removedDate = removePrefix(readabilityContent);
   let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
-  cleaned = removeFigure(cleaned)
+  cleaned = removeFigure(cleaned);
   return cleaned;
 }
 
-export function removeFigure(readabilityContent){
-const div = document.createElement("div");
-div.innerHTML = readabilityContent;
-const figure = div.getElementsByTagName("figure");
-while (figure.length > 0) {
-  figure[0].parentNode.removeChild(figure[0])
-}
-return div.innerHTML;
+export function removeFigure(readabilityContent) {
+  const div = document.createElement("div");
+  div.innerHTML = readabilityContent;
+  const figure = div.getElementsByTagName("figure");
+  if (figure) {
+    while (figure.length > 0) {
+      figure[0].parentNode.removeChild(figure[0]);
+    }
+  }
+  return div.innerHTML;
 }
 
 export function cleanEkstraBladetBefore(documentClone) {
-  const splitElement = documentClone.getElementsByClassName("d-block is-breakout--wide split-element--ekstra");
-  while (splitElement.length > 0) {
-    splitElement[0].parentNode.removeChild(splitElement[0])
+  const splitElement = documentClone.getElementsByClassName(
+    "d-block is-breakout--wide split-element--ekstra"
+  );
+  if (splitElement) {
+    while (splitElement.length > 0) {
+      splitElement[0].parentNode.removeChild(splitElement[0]);
+    }
   }
-  const videoElement = documentClone.getElementsByClassName("jw-video jw-reset");
-  while (videoElement.length > 0) {
-    videoElement[0].parentNode.removeChild(videoElement[0])
+  const videoElement =
+    documentClone.getElementsByClassName("jw-video jw-reset");
+  if (videoElement) {
+    while (videoElement.length > 0) {
+      videoElement[0].parentNode.removeChild(videoElement[0]);
+    }
   }
-  const imageElement = documentClone.getElementsByClassName("figure image-container");
-  while (imageElement.length > 0) {
-    imageElement[0].parentNode.removeChild(imageElement[0])
+  const imageElement = documentClone.getElementsByClassName(
+    "figure image-container"
+  );
+  if (imageElement) {
+    while (imageElement.length > 0) {
+      imageElement[0].parentNode.removeChild(imageElement[0]);
+    }
   }
-  let elems = documentClone.querySelectorAll("p")
-  Array.from(elems).filter(p => p.textContent.includes('Artiklen fortsætter under') ? p.remove() : p);
-  return documentClone
+  let elems = documentClone.querySelectorAll("p");
+  Array.from(elems).filter((p) =>
+    p.textContent.includes("Artiklen fortsætter under") ? p.remove() : p
+  );
+  return documentClone;
 }
