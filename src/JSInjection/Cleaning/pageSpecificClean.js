@@ -36,10 +36,10 @@ export function pageSpecificClean(articleContent, url) {
        return cleanLemonde(articleContent)
     }
     if (url.match(lexpressRegex)) {
-      return cleanLexpress(div.innerHTML)
+      return cleanLexpress(articleContent)
     }
     if (url.match(marianneRegex)) {
-      return cleanMarianne(div.innerHTML, getEntireHTML(url))
+      return cleanMarianne(articleContent, getEntireHTML(url))
     }
     if (url.match(ingenioerRegex)) {
       return ingenioerenClean(articleContent, getEntireHTML(url))
