@@ -19,13 +19,6 @@ export default function Word({
   const [starred, setStarred] = useState(bookmark.starred);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
-  let importance = Math.min(10, Math.floor(bookmark.origin_importance));
-  let importanceBars = "";
-  if (importance) {
-    importanceBars = "■".repeat(importance) + "□".repeat(11 - importance);
-
-    // ideas from: https://changaco.oy.lc/unicode-progress-bars/
-  }
 
   function toggleStarred(bookmark) {
     if (starred) {
@@ -96,11 +89,6 @@ export default function Word({
           <div className="from" style={grayed_out_if_not_scheduled_for_study}>
             {bookmark.from}
           </div>
-
-          <s.Importance>
-            <span className={"imp" + importance}>{importanceBars}</span>
-          </s.Importance>
-
           <div className="to" style={grayed_out_if_not_scheduled_for_study}>
             {bookmark.to}
           </div>

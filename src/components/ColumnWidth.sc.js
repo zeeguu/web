@@ -18,6 +18,9 @@ const ContentOnRow = styled.div`
   flex-direction: row;
   align-items: center;
   margin-top: 3em;
+  button{
+    margin: 0.2em;
+  }
 `;
 
 const WideColumn = styled.div`
