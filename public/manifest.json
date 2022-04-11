@@ -1,6 +1,6 @@
 {
-  "name": "Zeeguu Extension",
-  "description": "This is a Wicked Cool Extension!",
+  "name": "The Zeeguu Reader",
+  "description": "The Zeeguu Reader helps you to read articles that are interesting to you in the language that you want to practice. These could be articles on news sites, blogs, or encyclopedias like Wikipedia. For better readability, the extension removes all excess clutter, like adverts, buttons, and videos from the article, and instead offers you one-click translation and pronunciation for the words you don’t know. Furthermore, the words that you translate are saved for you so you can practice them later in personalized exercises.",
   "version": "1.0",
   "manifest_version": 3,
     "permissions": ["storage", "activeTab", "scripting", "tabs"],
