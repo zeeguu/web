@@ -1,6 +1,10 @@
 function runningInChromeDesktop() {
   let userAgent = navigator.userAgent;
-  return userAgent.match(/chrome|chromium|crios/i) && isMobile() === false;
+  if (userAgent.match(/chrome|chromium|crios/i) && isMobile() === false) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // cf: https://stackoverflow.com/questions/3514784/what-is-the-best-way-to-detect-a-mobile-device

@@ -16,19 +16,22 @@ import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
-  const [hasExtension, setHasExtension] = useState(false);
+  const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
     if (runningInChromeDesktop() && Feature.extension_experiment1() && !displayedExtensionPopup) {
-        checkExtensionInstalled(setHasExtension);
-        if(!hasExtension){
-          setExtensionMessageOpen(true)
-        }
+      checkExtensionInstalled(setHasExtension);
     }
   }, []);
+
+  useEffect(() => {
+    if (!hasExtension) {
+      setExtensionMessageOpen(true);
+    }
+  }, [hasExtension]);
 
   var originalList = null;
 
