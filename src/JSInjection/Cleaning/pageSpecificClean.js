@@ -11,6 +11,7 @@ import { nuRegex, removeBlockTitle } from "./Pages/nu";
 import { getLequipeImage, leqiupeRegex, removeDateTime } from "./Pages/lequipe";
 import { berlingskeRegex, cleanBerlingske, cleanBerlingskeBefore } from "./Pages/berlingske";
 import {spiegelRegex, cleanSpiegelBefore} from "./Pages/spiegel"
+import { addImageCNN, cnnRegex } from "./Pages/cnn";
 
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
@@ -49,6 +50,9 @@ export function pageSpecificClean(articleContent, url) {
     }
     if (url.match(berlingskeRegex)) {
       return cleanBerlingske(articleContent)
+    }
+    if(url.match(cnnRegex)){
+      return addImageCNN(articleContent, getEntireHTML(url))
     }
     return articleContent;
   }
