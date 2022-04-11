@@ -1,5 +1,5 @@
 /*global chrome*/
-export async function isLoggedIn(cookieUrl) {
+export function isLoggedIn(cookieUrl) {
   chrome.cookies.get({ url: cookieUrl, name: "sessionID" },
     function (cookie) {
       if (cookie) {
@@ -15,7 +15,7 @@ export async function isLoggedIn(cookieUrl) {
 }
 
 
-export async function getUserInfo(cookieUrl, setUser) {
+export function getUserInfo(cookieUrl, setUser) {
     chrome.cookies.get({ url: cookieUrl, name: "name" }, 
     (cookie) => {
       if (cookie) {
@@ -38,13 +38,13 @@ export async function getUserInfo(cookieUrl, setUser) {
   
   export function saveCookiesOnZeeguu(userInfo, session, url) {
     let stringSession = String(session);
-    chrome.cookies.set({ name: "sessionID", url: "https://zeeguu.org", domain: "zeeguu.org", value: stringSession },
+    chrome.cookies.set({ name: "sessionID", url: url,  value: stringSession },
       (cookie) => console.log("Cookie saved:", cookie)
     );
-    chrome.cookies.set({ name: "name", url: "https://zeeguu.org", domain: "zeeguu.org", value: userInfo.name },
+    chrome.cookies.set({ name: "name", url: url,  value: userInfo.name },
       (cookie) => console.log("Cookie saved:", cookie)
     );
-    chrome.cookies.set({ name: "nativeLanguage", url: "https://zeeguu.org", domain: "zeeguu.org", value: userInfo.native_language },
+    chrome.cookies.set({ name: "nativeLanguage", url: url, value: userInfo.native_language },
       (cookie) => console.log("Cookie saved:", cookie)
     );
   }

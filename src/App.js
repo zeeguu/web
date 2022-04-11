@@ -4,10 +4,10 @@ import Popup from "./popup/Popup";
 import { useState } from "react";
 import { isLoggedIn } from "./popup/cookies";
 
+
 function App() {
   const [loggedIn, setLoggedIn] = useState();
 
-  isLoggedIn("https://zeeguu.org");
   isLoggedIn("https://www.zeeguu.org");
 
   chrome.storage.local.get("loggedIn", function (data) {

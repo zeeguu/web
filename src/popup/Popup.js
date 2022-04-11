@@ -2,7 +2,7 @@
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
 import { setCurrentURL, getSourceAsDOM } from "./functions";
-import {getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu} from "./cookies";
+import {getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu } from "./cookies";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
 import { useState, useEffect} from "react";
@@ -12,6 +12,9 @@ import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 const minLength = 120;
 const minScore = 20;
 
+const ZEEGUU_ORG = "https://www.zeeguu.org";
+export const LOCALHOST = "http://localhost/";
+
 export default function Popup({ loggedIn, setLoggedIn }) {
   let api = new Zeeguu_API("https://api.zeeguu.org");
 
@@ -19,9 +22,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
 
   useEffect(() => {
     if (loggedIn) {
-      getUserInfo("https://zeeguu.org", setUser);
-      getUserInfo("https://www.zeeguu.org", setUser)
-    }
+      getUserInfo(ZEEGUU_ORG, setUser);
+  }
   }, [loggedIn]);
 
   if (user) {
@@ -61,7 +63,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ userInfo: userInfo });
     chrome.storage.local.set({ sessionId: session });
     setLoggedIn(true);
-    saveCookiesOnZeeguu(userInfo, session, "https://zeeguu.org");
+    saveCookiesOnZeeguu(userInfo, session, ZEEGUU_ORG);
   }
 
   function handleSignOut(e) {
@@ -71,8 +73,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ loggedIn: false });
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
-    removeCookiesOnZeeguu("https://zeeguu.org");
-    removeCookiesOnZeeguu("https://www.zeeguu.org");
+    removeCookiesOnZeeguu(ZEEGUU_ORG);
   }
 
   return (
