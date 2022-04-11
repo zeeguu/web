@@ -24,6 +24,7 @@ let strings = new LocalizedStrings(
       plsProvideValidEmail: "Please provide a valid email.",
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
+      alreadyHaveAccount: "Already have an account? Login instead",
       code: "Code",
       interest: "interest",
       addTexts: "Add Texts",
