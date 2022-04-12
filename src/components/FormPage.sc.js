@@ -70,6 +70,10 @@ let FormTitle = styled.div`
   margin-bottom: 1em;
 `;
 
+let FormLink = styled.div`
+  margin-top: -1.4em;
+`;
+
 let FormButton = styled.button`
   background-color: orange;
   padding: 0.5em 1em;
@@ -96,4 +100,5 @@ export {
   LogoOnTop,
   FormTitle,
   FormButton,
+  FormLink,
 };

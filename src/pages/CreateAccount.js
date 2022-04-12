@@ -89,10 +89,16 @@ export default function CreateAccount({ api, signInAndRedirect }) {
       <s.FormContainer>
         <form action="">
           <s.FormTitle>{strings.createAccount}</s.FormTitle>
-
+          <s.FormLink>
+            <p>
+              <a className="links" href="/login">
+                {strings.alreadyHaveAccount}
+              </a>
+            </p>
+          </s.FormLink>
           <p>
             {strings.thankYouMsgPrefix}
-            <b>zeeguu.team@gmail.com</b>
+            <b> zeeguu.team@gmail.com</b>
             {strings.thankYouMsgSuffix}
           </p>
 
