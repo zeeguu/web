@@ -13,6 +13,7 @@ import { berlingskeRegex, cleanBerlingske, cleanBerlingskeBefore } from "./Pages
 import {spiegelRegex, cleanSpiegelBefore} from "./Pages/spiegel"
 import { addImageCNN, cnnRegex } from "./Pages/cnn";
 import { bbcRegex, cleanBBC } from "./Pages/bbc";
+import { cleanExpressBefore, expressRegex } from "./Pages/express";
 
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
@@ -82,6 +83,9 @@ export function pageSpecificClean(articleContent, url) {
     }
     if(currentTabURL.match(spiegelRegex)){
       return cleanSpiegelBefore(documentClone)
+    }
+    if(currentTabURL.match(expressRegex)){
+      return cleanExpressBefore(documentClone)
     }
     return documentClone
   }
