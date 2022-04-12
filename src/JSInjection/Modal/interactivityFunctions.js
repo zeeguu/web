@@ -10,7 +10,7 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
   for (let i = 0; i < allTags.length; i++) {
     const content = allTags[i].textContent;
     const HTMLTag = allTags[i].nodeName;
-    if(allTags[i].innerHTML != ""){
+    if(allTags[i].innerHTML !== ""){
     if (LIST_CONTENT.includes(HTMLTag)) {
       const children = Array.from(allTags[i].children);
       let list = [];

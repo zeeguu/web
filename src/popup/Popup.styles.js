@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-import { zeeguuOrange } from "../zeeguu-react/src/components/colors";
 
 export const PrimaryButton = styled.button`
   display: flex;

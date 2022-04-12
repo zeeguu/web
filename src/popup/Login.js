@@ -57,7 +57,7 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
         
         </StyledSmallButtonBlue>
           <BottomContainer>
-          <p>Alternatively, you can <a class="links" target="_blank" href="https://zeeguu.org/create_account">create an account</a> or <a class="links" target="_blank" href="https://zeeguu.org/reset_pass">reset your password</a>.</p>
+          <p>Alternatively, you can <a class="links" target="_blank" rel="noreferrer" href="https://zeeguu.org/create_account">create an account</a> or <a class="links" target="_blank" href="https://zeeguu.org/reset_pass">reset your password</a>.</p>
           </BottomContainer>
       </MainContainer>
     </form>

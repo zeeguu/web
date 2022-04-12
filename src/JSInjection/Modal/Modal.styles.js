@@ -73,7 +73,7 @@ export const StyledModal = styled(ReactModal)`
 
   .article-container p,
   .article-container li {
-    line-height: 40px !important;
+    line-height: 43px !important;
   }
 
   .author {
