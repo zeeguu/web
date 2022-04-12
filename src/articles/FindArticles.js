@@ -22,6 +22,8 @@ export default function NewArticles({ api }) {
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
+    console.log("Running in chrome desktop: " + runningInChromeDesktop())
+    console.log("Localstorage displayed extension: "+ LocalStorage.displayedExtensionPopup())
     if (runningInChromeDesktop() && Feature.extension_experiment1() && !displayedExtensionPopup) {
       checkExtensionInstalled(setHasExtension);
     }
@@ -29,6 +31,7 @@ export default function NewArticles({ api }) {
 
   useEffect(() => {
     if (!hasExtension) {
+      console.log("extension not installed")
       setExtensionMessageOpen(true);
     }
   }, [hasExtension]);
