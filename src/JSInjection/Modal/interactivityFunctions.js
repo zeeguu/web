@@ -10,7 +10,7 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
   for (let i = 0; i < allTags.length; i++) {
     const content = allTags[i].textContent;
     const HTMLTag = allTags[i].nodeName;
-    if(allTags[i].innerHTML != ""){
+    if(allTags[i].innerHTML !== ""){
     if (LIST_CONTENT.includes(HTMLTag)) {
       const children = Array.from(allTags[i].children);
       let list = [];
@@ -34,9 +34,11 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
       const paragraphObject = { text: it, tag: HTMLTag };
       arrOfInteractive.push(paragraphObject);
     } else {
+      if(!allTags[i].innerHTML.includes("img")){
       const it = new InteractiveText(content, articleInfo, api, EXTENSION_SOURCE);
       const paragraphObject = { text: it, tag: HTMLTag };
       arrOfInteractive.push(paragraphObject);
+      }
       }
     }
   }

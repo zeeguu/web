@@ -1,12 +1,22 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import { setCurrentURL, getSourceAsDOM } from "./functions";
 import {getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu } from "./cookies";
-import { isProbablyReaderable } from "@mozilla/readability";
-import logo from "../images/zeeguu128.png";
 import { useState, useEffect} from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
+import { getSourceAsDOM } from "./functions";
+import { isProbablyReaderable } from "@mozilla/readability";
+import logo from "../images/zeeguu128.png";
+import {
+  HeadingContainer,
+  PopUp,
+  BottomButton,
+  BottomContainer,
+  MiddleContainer,
+} from "./Popup.styles";
+import { Article } from "../JSInjection/Modal/Article";
+import PopupLoading from "./PopupLoading";
+import PopupContent from "./PopupContent";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -19,6 +29,12 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   let api = new Zeeguu_API("https://api.zeeguu.org");
 
   const [user, setUser] = useState();
+  const [tab, setTab] = useState();
+  const [isReadable, setIsReadable] = useState();
+  const [sessionId, setSessionId] = useState();
+  const [languageSupported, setLanguageSupported] = useState();
+
+  const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
     if (loggedIn) {
@@ -30,28 +46,57 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({userInfo: user}, () => console.log("user is set in local storage"))
   }
 
-  async function openModal() {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-    //readability check
-    const documentFromTab = getSourceAsDOM(tab.url);
-    const isProbablyReadable = isProbablyReaderable(
-      documentFromTab,
-      minLength,
-      minScore
-    );
-    const ownIsProbablyReadable = checkReadability(tab.url);
-
-    if (!isProbablyReadable || !ownIsProbablyReadable) {
-      return alert("This page is not readable");
-    }
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["./main.js"],
-      func: setCurrentURL(tab.url),
+  useEffect(()=> {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      setTab(tabs[0]);
     });
-    window.close();
-  }
+  })
+  useEffect(() => {
+    api.session = sessionId;
+  }, [sessionId]);
+
+  useEffect(() => {
+    if (tab !== undefined && sessionId !== undefined) {
+      // Readability check and language check
+      const documentFromTab = getSourceAsDOM(tab.url);
+      const isProbablyReadable = isProbablyReaderable(
+        documentFromTab,
+        minLength,
+        minScore
+      );
+      const ownIsProbablyReadable = checkReadability(tab.url);
+      if (!isProbablyReadable || !ownIsProbablyReadable) {
+        setIsReadable(false);
+        setLanguageSupported(false);
+      } else {
+        setIsReadable(true);
+        api.session = sessionId;
+        Article(tab.url).then((article) => {
+          api.isArticleLanguageSupported(article.textContent, (result_dict) => {
+            console.log(result_dict);
+            if (result_dict === "NO") {
+              setLanguageSupported(false);
+            }
+            if (result_dict === "YES") {
+              setLanguageSupported(true);
+            }
+          });
+        });
+      }
+    }
+  }, [tab, sessionId]);
+
+  // if we display the loader, display it for at least 800 ms
+  useEffect(() => {
+    if (showLoader === true) {
+      let timer = setTimeout(() => {
+        setShowLoader(false);
+      }, 900);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [showLoader]);
 
   function handleSuccessfulSignIn(userInfo, session) {
     setUser({
@@ -64,6 +109,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ sessionId: session });
     setLoggedIn(true);
     saveCookiesOnZeeguu(userInfo, session, ZEEGUU_ORG);
+    //TODO: is this needed?
+    setSessionId(session);
   }
 
   function handleSignOut(e) {
@@ -76,25 +123,55 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     removeCookiesOnZeeguu(ZEEGUU_ORG);
   }
 
-  return (
-    <>
-      <div class="imgcontainer">
-        <img src={logo} alt="Zeeguu logo" class="logo" />
-      </div>
-      {loggedIn === false && (
+  if (loggedIn === false) {
+    return (
+      <PopUp>
+        <HeadingContainer>
+          <img src={logo} alt="Zeeguu logo" />
+        </HeadingContainer>
         <Login
           setLoggedIn={setLoggedIn}
           handleSuccessfulSignIn={handleSuccessfulSignIn}
           api={api}
         />
-      )}
-      {loggedIn === true && (
-        <>
-          <p>{user ? <p>Welcome {user.name}</p> : null}</p>
-          <button onClick={openModal}>Read article</button>
-          <button onClick={handleSignOut}>Logout</button>
-        </>
-      )}
-    </>
-  );
+      </PopUp>
+    );
+  }
+
+  if (loggedIn === true) {
+    if (user === undefined || isReadable === undefined || languageSupported === undefined || showLoader === true) {
+      return (
+        <PopUp>
+          <PopupLoading
+            showLoader={showLoader}
+            setShowLoader={setShowLoader}
+          ></PopupLoading>
+        </PopUp>
+      );
+    }
+    return (
+      <PopUp>
+        <HeadingContainer>
+          <img src={logo} alt="Zeeguu logo" />
+        </HeadingContainer>
+        <MiddleContainer>
+          <PopupContent
+            isReadable={isReadable}
+            languageSupported={languageSupported}
+            user={user}
+            tab={tab}
+            api={api}
+            sessionId={sessionId}
+          ></PopupContent>
+        </MiddleContainer>
+        <BottomContainer>
+          <BottomButton
+            onClick={() => window.open("https://zeeguu.org/account_settings", "_blank")}>
+            Settings
+          </BottomButton>
+          <BottomButton onClick={handleSignOut}>Logout</BottomButton>
+        </BottomContainer>
+      </PopUp>
+    );
+  }
 }

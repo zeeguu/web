@@ -1,4 +1,5 @@
-export const btRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]bt+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+export const btRegex =
+  /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]bt+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
 export function addImageBT(HTMLContent, readabilityContent) {
   // create new div with raw HTML content from the entire webpage
@@ -16,14 +17,15 @@ export function addImageBT(HTMLContent, readabilityContent) {
     newDiv.prepend(image);
   } else {
     const videoContent = div.getElementsByClassName("mediaplayer")[0];
-    if(videoContent != undefined){
-    var videoContentString = document.createTextNode(videoContent.textContent).wholeText;
-    const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
-    if (videoContentString.match(urlRegex)) {
-      const newImg = document.createElement("img");
-      newImg.src = videoContentString.match(urlRegex);
-      newDiv.prepend(newImg);
-    }}
+    if (videoContent != undefined) {
+      var videoContentString = document.createTextNode(videoContent.textContent).wholeText;
+      const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
+      if (videoContentString.match(urlRegex)) {
+        const newImg = document.createElement("img");
+        newImg.src = videoContentString.match(urlRegex);
+        newDiv.prepend(newImg);
+      }
+    }
   }
   return newDiv.innerHTML;
 }

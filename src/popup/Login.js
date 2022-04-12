@@ -1,5 +1,7 @@
 /*global chrome*/
 import { useState } from "react";
+import { StyledSmallButtonBlue } from "../JSInjection/Modal/Buttons.styles";
+import { MainContainer, BottomContainer } from "./Login.styles";
 
 export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
   const [email, setEmail] = useState("");
@@ -17,7 +19,7 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
   
   return (
     <form action="" method="post">
-      <div class="container">
+      <MainContainer>
         <label for="email">
           <b>Email</b>
         </label>
@@ -43,7 +45,7 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
           required
         />
          {errorMessage && <div className="error">{errorMessage}</div>}
-        <button
+         <StyledSmallButtonBlue
           type="submit"
           onClick={handleSignIn}
           name="login"
@@ -51,8 +53,12 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
           className="loginButton"
         >
           Login
-        </button>
-      </div>
+        
+        </StyledSmallButtonBlue>
+          <BottomContainer>
+          <p>Alternatively, you can <a class="links" target="_blank" rel="noreferrer" href="https://zeeguu.org/create_account">create an account</a> or <a class="links" target="_blank" href="https://zeeguu.org/reset_pass">reset your password</a>.</p>
+          </BottomContainer>
+      </MainContainer>
     </form>
   );
   }

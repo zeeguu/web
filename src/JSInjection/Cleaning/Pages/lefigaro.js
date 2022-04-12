@@ -21,7 +21,3 @@ export function addImageLefirago(HTMLContent, readabilityContent) {
   }
   return newDiv.innerHTML;
 }
-
-export function removeLireAussiU(HTMLContent) {
-
-}

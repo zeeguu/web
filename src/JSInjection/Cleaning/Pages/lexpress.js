@@ -16,7 +16,11 @@ function removeAsides(content) {
 
 function unavailableContent(content) {
   //TODO: find better solution
-  if(content.includes("Offrez gratuitement la lecture de cet article à un proche")) {
+  if (
+    content.includes(
+      "Offrez gratuitement la lecture de cet article à un proche"
+    )
+  ) {
     return "<p>This article cannot be read in zeeguu reader</p>";
   } else {
     let div = document.createElement("div");
@@ -27,16 +31,19 @@ function unavailableContent(content) {
 
 //remove illustration__caption class - not working
 export function removeCaption(documentClone) {
-  const captions = documentClone.getElementsByClassName("illustration__caption");
-  console.log(captions)
-  while(captions.length > 0) {
-    captions[0].parentNode.removeChild(captions[0])
+  const captions = documentClone.getElementsByClassName(
+    "illustration__caption"
+  );
+  if (captions) {
+    while (captions.length > 0) {
+      captions[0].parentNode.removeChild(captions[0]);
+    }
   }
-  return documentClone
-}  
+  return documentClone;
+}
 
 export function cleanLexpress(content) {
   let cleanedContent = removeAsides(content);
-  cleanedContent = unavailableContent(cleanedContent)
+  cleanedContent = unavailableContent(cleanedContent);
   return cleanedContent;
 }

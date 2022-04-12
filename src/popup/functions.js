@@ -21,6 +21,11 @@ export async function getNativeLanguage() {
   return value.userInfo.native_language;
 }
 
+export async function getUsername() {
+  const value = await chrome.storage.local.get("userInfo");
+  return value.userInfo.name;
+}
+
 export async function getSessionId() {
   const value = await chrome.storage.local.get("sessionId");
   return value.sessionId;
@@ -43,7 +48,15 @@ export function removeAllChildNodes(parent) {
 
 export function deleteCurrentDOM() {
   const body = document.querySelector("body");
-  removeAllChildNodes(body);
+  if (body) {
+    removeAllChildNodes(body);
+  }
   const head = document.querySelector("head");
-  removeAllChildNodes(head);
+  if (head) {
+    removeAllChildNodes(head);
+  }
+  const div = document.querySelector("div");
+  if (div) {
+    removeAllChildNodes(div);
+  }
 }

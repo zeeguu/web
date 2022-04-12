@@ -1,6 +1,13 @@
 export const wikiRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]wikipedia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/
 
-export function removefromWiki(content){
+export function removefromWiki(HTMLContent, content){
+    let cleanedContent = removeText(content)
+    cleanedContent = removeTable(cleanedContent)
+    cleanedContent = getWikiImage(HTMLContent, cleanedContent)
+    return cleanedContent
+  }
+
+  function removeText(content){
     const div = document.createElement("div");
     div.innerHTML = content;
     let elems = div.querySelectorAll("span")
@@ -17,8 +24,42 @@ export function removefromWiki(content){
     let dl = div.querySelectorAll("dl")
     Array.from(dl).filter(dl => dl.remove());
     content = div.innerHTML;
-    return div.innerHTML;
+    return content;
   }
-  
 
-  //note to self: måske kan vi også fjerne fodnoter fra wiki
+  function removeTable(content) {
+    const div = document.createElement("div");
+    div.innerHTML = content;
+    let tables = div.getElementsByTagName("table"),
+      index;
+    if (tables.length > 0) {
+      for (index = tables.length - 1; index >= 0; index--) {
+        tables[index].parentNode.removeChild(tables[index]);
+      }
+      content = div.innerHTML;
+    }
+    return content;
+  }
+
+  function getWikiImage(HTMLContent, readabilityContent) {
+    const div = document.createElement("div");
+    div.innerHTML = HTMLContent;
+    const images = div.getElementsByTagName("img")
+
+    // create a new div with the content from readability
+    const newDiv = document.createElement("div");
+    newDiv.innerHTML = readabilityContent;
+
+    for (var i = 0; i < images.length; i++) {
+      if (images[i].height > 200) {
+        const imageAlt = images[i].getAttribute("alt")
+        const image = images[i].currentSrc
+        const newImage = document.createElement("img");
+        newImage.setAttribute("src", image);
+        newImage.setAttribute("alt", imageAlt);
+        newDiv.prepend(newImage);
+        break;
+      } 
+    }
+    return newDiv.innerHTML;
+  }
