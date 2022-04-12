@@ -32,7 +32,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [tab, setTab] = useState();
   const [isReadable, setIsReadable] = useState();
   const [languageSupported, setLanguageSupported] = useState();
-
   const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
@@ -58,7 +57,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
 
   useEffect(() => {
     if (tab !== undefined && user !== undefined) {
-      console.log("does it go here?")
       // Readability check and language check
       const documentFromTab = getSourceAsDOM(tab.url);
       const isProbablyReadable = isProbablyReaderable(
@@ -73,7 +71,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
       } else {
         setIsReadable(true);
         api.session = user.session;
-        console.log(api.session)
+        if (api.session !== undefined) {
         Article(tab.url).then((article) => {
           api.isArticleLanguageSupported(article.textContent, (result_dict) => {
             console.log(result_dict);
@@ -85,6 +83,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
             }
           });
         });
+      }
       }
     }
   }, [tab, user]);
@@ -152,7 +151,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     }
     return (
       <PopUp>
-        {console.log(user, isReadable, user.session, languageSupported, showLoader)}
         <HeadingContainer>
           <img src={logo} alt="Zeeguu logo" />
         </HeadingContainer>

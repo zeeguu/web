@@ -17,7 +17,7 @@ function App() {
     });
 
   if (loggedIn === undefined) {
-    return <p>...</p>
+    return <></>
   }
     return (
       <Popup
