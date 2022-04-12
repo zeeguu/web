@@ -41,7 +41,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     if (loggedIn) {
       getUserInfo(ZEEGUU_ORG, setUser);
     }
-  }, []);
+  }, [loggedIn]);
 
   useEffect(() => {
     if (user !== undefined) {
