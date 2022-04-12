@@ -1,4 +1,3 @@
-import { PopUp } from "./Popup.styles";
 import { useEffect } from "react";
 import { LoadingCircle } from "./PopupLoading.styles";
 

@@ -1,7 +1,7 @@
 /*global chrome*/
 import "./App.css";
 import Popup from "./popup/Popup";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { isLoggedIn } from "./popup/cookies";
 
 function App() {
