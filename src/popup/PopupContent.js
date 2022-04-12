@@ -17,9 +17,9 @@ export default function PopupContent({isReadable, languageSupported, user, tab, 
       window.close();
     }
 
-    function sendFeedback(feedback, url, articleId) {
+    function sendFeedback(feedback, url, articleId, feedbackType) {
       api.session = sessionId;
-      sendFeedbackEmail(api, feedback, url, articleId);
+      sendFeedbackEmail(api, feedback, url, articleId, feedbackType);
       setFeedbackSent(true);
     }
 
@@ -39,7 +39,7 @@ export default function PopupContent({isReadable, languageSupported, user, tab, 
           <p>This article language is not supported</p>
           {!feedbackSent ? (
             <NotifyButton
-              onClick={() => sendFeedback(LANGUAGE_FEEDBACK, tab.url, undefined)}>
+              onClick={() => sendFeedback(LANGUAGE_FEEDBACK, tab.url, undefined, "LANGUAGE_")}>
               Do you want us to support this language? Send feedback.
             </NotifyButton>
           ) : (
@@ -52,7 +52,7 @@ export default function PopupContent({isReadable, languageSupported, user, tab, 
           {user ? <h1>Oh no, {user.name}!</h1> : null}
           <p>Zeeguu can't read this text. Try another one</p>
           {!feedbackSent ? (
-            <NotifyButton onClick={() => sendFeedback(READABILITY_FEEDBACK, tab.url, undefined)}>
+            <NotifyButton onClick={() => sendFeedback(READABILITY_FEEDBACK, tab.url, undefined , "READABLE_")}>
               Should this be readable? Send feedback.
             </NotifyButton>
           ) : (
