@@ -59,4 +59,8 @@ export function deleteCurrentDOM() {
   if (div) {
     removeAllChildNodes(div);
   }
+  const iframe = document.querySelector("iframe");
+  if (iframe) {
+    removeAllChildNodes(iframe);
+  }
 }

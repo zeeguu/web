@@ -12,6 +12,8 @@ import { getLequipeImage, leqiupeRegex, removeDateTime } from "./Pages/lequipe";
 import { berlingskeRegex, cleanBerlingske, cleanBerlingskeBefore } from "./Pages/berlingske";
 import {spiegelRegex, cleanSpiegelBefore} from "./Pages/spiegel"
 import { addImageCNN, cnnRegex } from "./Pages/cnn";
+import { bbcRegex, cleanBBC } from "./Pages/bbc";
+import { cleanExpressBefore, expressRegex } from "./Pages/express";
 
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
@@ -54,6 +56,9 @@ export function pageSpecificClean(articleContent, url) {
     if(url.match(cnnRegex)){
       return addImageCNN(articleContent, getEntireHTML(url))
     }
+    if(url.match(bbcRegex)){
+      return cleanBBC(articleContent)
+    }
     return articleContent;
   }
   
@@ -78,6 +83,9 @@ export function pageSpecificClean(articleContent, url) {
     }
     if(currentTabURL.match(spiegelRegex)){
       return cleanSpiegelBefore(documentClone)
+    }
+    if(currentTabURL.match(expressRegex)){
+      return cleanExpressBefore(documentClone)
     }
     return documentClone
   }
