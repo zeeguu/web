@@ -16,6 +16,7 @@ import { bbcRegex, cleanBBC } from "./Pages/bbc";
 import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanFakt, faktRegex } from "./Pages/fakt";
+import { removeAllChildNodes } from "../../popup/functions";
 
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
@@ -99,4 +100,17 @@ export function pageSpecificClean(articleContent, url) {
   }
   
 
+  export function cleanDOMAfter(url) {
+    if (url.match(faktRegex)) {
+      const otherArticles = document.getElementById("slot-flat-plista");
+      if (otherArticles) {
+        removeAllChildNodes(otherArticles);
+      }
+      const iframe = document.querySelector("iframe");
+      if (iframe) {
+        removeAllChildNodes(iframe);
+      }
+    }
+  }
+  
 
