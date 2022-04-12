@@ -39,25 +39,25 @@ export function getUserInfo(cookieUrl, setUser) {
   export function saveCookiesOnZeeguu(userInfo, session, url) {
     let stringSession = String(session);
     chrome.cookies.set({ name: "sessionID", url: url,  value: stringSession },
-      (cookie) => console.log("Cookie saved:", cookie)
+      (cookie) => console.log("sessionID cookie saved:", cookie)
     );
     chrome.cookies.set({ name: "name", url: url,  value: userInfo.name },
-      (cookie) => console.log("Cookie saved:", cookie)
+      (cookie) => console.log("name cookie saved:", cookie)
     );
     chrome.cookies.set({ name: "nativeLanguage", url: url, value: userInfo.native_language },
-      (cookie) => console.log("Cookie saved:", cookie)
+      () => console.log("nativeLanaguage cookie saved")
     );
   }
   
   export function removeCookiesOnZeeguu(cookieUrl) {
     chrome.cookies.remove({ url: cookieUrl, name: "sessionID" },
-      () => console.log("sessionid cookie removed")
+      () => console.log("sessionID cookie removed")
     );
     chrome.cookies.remove({ url: cookieUrl, name: "name" }, 
       () => console.log("name cookie removed")
     );
     chrome.cookies.remove({ url: cookieUrl, name: "nativeLanguage" },
-      () => console.log("native_language cookie removed")
+      () => console.log("nativeLanguage cookie removed")
     );
   }
   

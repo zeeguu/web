@@ -1,8 +1,12 @@
 /*global chrome*/
 import Login from "./Login";
 import { checkReadability } from "./checkReadability";
-import {getUserInfo, saveCookiesOnZeeguu, removeCookiesOnZeeguu } from "./cookies";
-import { useState, useEffect} from "react";
+import {
+  getUserInfo,
+  saveCookiesOnZeeguu,
+  removeCookiesOnZeeguu,
+} from "./cookies";
+import { useState, useEffect } from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 import { getSourceAsDOM } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
@@ -23,7 +27,6 @@ const minLength = 120;
 const minScore = 20;
 
 const ZEEGUU_ORG = "https://www.zeeguu.org";
-export const LOCALHOST = "http://localhost/";
 
 export default function Popup({ loggedIn, setLoggedIn }) {
   let api = new Zeeguu_API("https://api.zeeguu.org");
@@ -37,17 +40,18 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   useEffect(() => {
     if (loggedIn) {
       getUserInfo(ZEEGUU_ORG, setUser);
-  }
+    }
   }, [loggedIn]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (user !== undefined) {
-      chrome.storage.local.set({userInfo: user}, () => console.log("user is set in local storage"))
+      chrome.storage.local.set({ userInfo: user }, () =>
+        console.log("user is set in local storage")
+      );
       chrome.storage.local.set({ sessionId: user.session });
       api.session = user.session;
     }
-  },[user])
-
+  }, [user]);
 
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -72,33 +76,36 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         setIsReadable(true);
         api.session = user.session;
         if (api.session !== undefined) {
-        Article(tab.url).then((article) => {
-          api.isArticleLanguageSupported(article.textContent, (result_dict) => {
-            console.log(result_dict);
-            if (result_dict === "NO") {
-              setLanguageSupported(false);
-            }
-            if (result_dict === "YES") {
-              setLanguageSupported(true);
-            }
+          Article(tab.url).then((article) => {
+            api.isArticleLanguageSupported(
+              article.textContent,
+              (result_dict) => {
+                console.log(result_dict);
+                if (result_dict === "NO") {
+                  setLanguageSupported(false);
+                }
+                if (result_dict === "YES") {
+                  setLanguageSupported(true);
+                }
+              }
+            );
           });
-        });
-      }
+        }
       }
     }
   }, [tab, user]);
 
   // if we display the loader, display it for at least 800 ms
   useEffect(() => {
-     if (showLoader === true) {
-       let timer = setTimeout(() => {
-         setShowLoader(false);
-       }, 900);
-       return () => {
-         clearTimeout(timer);
+    if (showLoader === true) {
+      let timer = setTimeout(() => {
+        setShowLoader(false);
+      }, 900);
+      return () => {
+        clearTimeout(timer);
       };
-     }
-   }, [showLoader]);
+    }
+  }, [showLoader]);
 
   function handleSuccessfulSignIn(userInfo, session) {
     setUser({
@@ -139,7 +146,12 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   }
 
   if (loggedIn === true) {
-    if (user === undefined || isReadable === undefined || languageSupported === undefined || showLoader === true) {
+    if (
+      user === undefined ||
+      isReadable === undefined ||
+      languageSupported === undefined ||
+      showLoader === true
+    ) {
       return (
         <PopUp>
           <PopupLoading
@@ -166,7 +178,10 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         </MiddleContainer>
         <BottomContainer>
           <BottomButton
-            onClick={() => window.open("https://zeeguu.org/account_settings", "_blank")}>
+            onClick={() =>
+              window.open("https://zeeguu.org/account_settings", "_blank")
+            }
+          >
             Settings
           </BottomButton>
           <BottomButton onClick={handleSignOut}>Logout</BottomButton>
