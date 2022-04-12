@@ -31,7 +31,6 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   const [user, setUser] = useState();
   const [tab, setTab] = useState();
   const [isReadable, setIsReadable] = useState();
-  const [sessionId, setSessionId] = useState();
   const [languageSupported, setLanguageSupported] = useState();
 
   const [showLoader, setShowLoader] = useState(false);
@@ -42,21 +41,24 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   }
   }, [loggedIn]);
 
-  if (user) {
-    chrome.storage.local.set({userInfo: user}, () => console.log("user is set in local storage"))
-  }
+  useEffect(()=>{
+    if (user !== undefined) {
+      chrome.storage.local.set({userInfo: user}, () => console.log("user is set in local storage"))
+      chrome.storage.local.set({ sessionId: user.session });
+      api.session = user.session;
+    }
+  },[user])
 
-  useEffect(()=> {
+
+  useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       setTab(tabs[0]);
     });
-  })
-  useEffect(() => {
-    api.session = sessionId;
-  }, [sessionId]);
+  }, []);
 
   useEffect(() => {
-    if (tab !== undefined && sessionId !== undefined) {
+    if (tab !== undefined && user !== undefined) {
+      console.log("does it go here?")
       // Readability check and language check
       const documentFromTab = getSourceAsDOM(tab.url);
       const isProbablyReadable = isProbablyReaderable(
@@ -70,7 +72,8 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         setLanguageSupported(false);
       } else {
         setIsReadable(true);
-        api.session = sessionId;
+        api.session = user.session;
+        console.log(api.session)
         Article(tab.url).then((article) => {
           api.isArticleLanguageSupported(article.textContent, (result_dict) => {
             console.log(result_dict);
@@ -84,19 +87,19 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         });
       }
     }
-  }, [tab, sessionId]);
+  }, [tab, user]);
 
   // if we display the loader, display it for at least 800 ms
   useEffect(() => {
-    if (showLoader === true) {
-      let timer = setTimeout(() => {
-        setShowLoader(false);
-      }, 900);
-      return () => {
-        clearTimeout(timer);
+     if (showLoader === true) {
+       let timer = setTimeout(() => {
+         setShowLoader(false);
+       }, 900);
+       return () => {
+         clearTimeout(timer);
       };
-    }
-  }, [showLoader]);
+     }
+   }, [showLoader]);
 
   function handleSuccessfulSignIn(userInfo, session) {
     setUser({
@@ -109,14 +112,12 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     chrome.storage.local.set({ sessionId: session });
     setLoggedIn(true);
     saveCookiesOnZeeguu(userInfo, session, ZEEGUU_ORG);
-    //TODO: is this needed?
-    setSessionId(session);
   }
 
   function handleSignOut(e) {
     e.preventDefault();
     setLoggedIn(false);
-    setUser(null);
+    setUser();
     chrome.storage.local.set({ loggedIn: false });
     chrome.storage.local.remove(["sessionId"]);
     chrome.storage.local.remove(["userInfo"]);
@@ -151,6 +152,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
     }
     return (
       <PopUp>
+        {console.log(user, isReadable, user.session, languageSupported, showLoader)}
         <HeadingContainer>
           <img src={logo} alt="Zeeguu logo" />
         </HeadingContainer>
@@ -161,7 +163,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
             user={user}
             tab={tab}
             api={api}
-            sessionId={sessionId}
+            sessionId={user.session}
           ></PopupContent>
         </MiddleContainer>
         <BottomContainer>

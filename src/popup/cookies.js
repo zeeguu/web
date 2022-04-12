@@ -31,7 +31,7 @@ export function getUserInfo(cookieUrl, setUser) {
     chrome.cookies.get({ url: cookieUrl, name: "sessionID" }, 
     (cookie) => {
       if (cookie) {
-        setUser((prevState) => ({...prevState, sessionID: cookie.value}));
+        setUser((prevState) => ({...prevState, session: cookie.value}));
       } 
     });
   }
