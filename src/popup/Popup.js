@@ -46,7 +46,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   useEffect(() => {
     if (user !== undefined) {
       chrome.storage.local.set({ userInfo: user }, () =>
-        console.log("user is set in local storage")
+        console.log("user set in local storage")
       );
       chrome.storage.local.set({ sessionId: user.session });
       api.session = user.session;

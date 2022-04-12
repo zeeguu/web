@@ -15,6 +15,7 @@ import { addImageCNN, cnnRegex } from "./Pages/cnn";
 import { bbcRegex, cleanBBC } from "./Pages/bbc";
 import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
+import { cleanRzecz, rzeczRegex } from "./Pages/rzecz";
 
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
@@ -63,6 +64,9 @@ export function pageSpecificClean(articleContent, url) {
     if(url.match(wyborczaRegex)){
       return cleanWyborcza(articleContent)
     }
+    if (url.match(rzeczRegex)) {
+       return cleanRzecz(articleContent)
+   }
     return articleContent;
   }
   

@@ -4,7 +4,7 @@ export function isLoggedIn(cookieUrl) {
     function (cookie) {
       if (cookie) {
         chrome.storage.local.set({ loggedIn: true }, () =>
-          console.log(cookieUrl, "Session cookie is present, Loggedin = ", true)
+          console.log(cookieUrl, "User already is logged in")
         );
       } else {
         console.log(cookieUrl, "No cookie")
