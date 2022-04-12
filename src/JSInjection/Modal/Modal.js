@@ -15,6 +15,7 @@ import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 //import { getNativeLanguage } from "../../zeeguu-react/src/utils/cookies/userInfo";
+import { cleanDOMAfter } from "../Cleaning/pageSpecificClean";
 
 export function Modal({
   title,
@@ -84,7 +85,6 @@ export function Modal({
         language: articleLanguage,
         starred: false,
       };
-      console.log("info ", articleInfo)
       let image = getImage(content);
       setArticleImage(image);
       let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
@@ -116,6 +116,7 @@ export function Modal({
         }, 0);
       }
     }
+    cleanDOMAfter(url);
   }, [articleId]);
 
   localStorage.setItem("native_language", nativeLang);
