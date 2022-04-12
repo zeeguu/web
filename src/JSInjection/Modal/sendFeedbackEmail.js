@@ -1,8 +1,6 @@
-export default function sendFeedbackEmail(api, feedback, url, articleId) {
-  if (articleId === "" || articleId === undefined) {
-    articleId = "articleId is undefined";
-  }
+import { EXTENSION_SOURCE } from "../constants";
 
+export default function sendFeedbackEmail(api, feedback, url, articleId) {
   let sendFeedback = {
     message: feedback,
     context: "url is: " + url + " and articleId is: " + articleId,
