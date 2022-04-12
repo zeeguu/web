@@ -33,7 +33,7 @@ export function ReadArticle({
     document.getElementById('feedback-box').scrollIntoView();
     document.getElementById('textarea-feedback').focus();
   }
-
+  
   return (
     <>
       <div className="article-container">
@@ -48,7 +48,7 @@ export function ReadArticle({
         </h1>
         <p className="author">{author}</p>
         <hr />
-        {articleImage === undefined ? null : (
+        {(articleImage === undefined || articleImage.src === null)  ? null : (
         <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>
         )}
         {interactiveTextArray.map((paragraph) => {
