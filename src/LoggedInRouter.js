@@ -7,11 +7,17 @@ import TeacherRouter from "./teacher/_routing/_TeacherRouter";
 import Settings from "./pages/Settings";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
+import React from "react";
 
 export default function LoggedInRouter({ api, setUser }) {
+
   return (
     <SideBar api={api}>
-      <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
+      <PrivateRoute
+        path="/articles"
+        api={api}
+        component={ArticlesRouter}
+      />
       <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
       <PrivateRoute path="/words" api={api} component={WordsRouter} />
 

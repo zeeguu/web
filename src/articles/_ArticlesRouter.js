@@ -11,7 +11,7 @@ import OwnArticles from "./OwnArticles";
 
 import * as s from "../components/ColumnWidth.sc";
 
-export default function ArticlesRouter({ api }) {
+export default function ArticlesRouter({ api, hasExtension, isChrome }) {
   return (
     <>
       {/* Rendering top menu first, then routing to corresponding page */}
@@ -31,6 +31,8 @@ export default function ArticlesRouter({ api }) {
           exact
           api={api}
           component={FindArticles}
+          hasExtension={hasExtension}
+          isChrome={isChrome}
         />
         <PrivateRoute
           path="/articles/search/:term"

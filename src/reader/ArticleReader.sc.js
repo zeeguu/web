@@ -143,6 +143,7 @@ let OrangeButton = styled(_BottomButton)`
 `;
 
 let NavigationLink = styled(Link)`
+  margin:20px;
   display: flex;
   align-items: center;
   justify-content: center;

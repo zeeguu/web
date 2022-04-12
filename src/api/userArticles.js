@@ -60,3 +60,11 @@ Zeeguu_API.prototype.isArticleLanguageSupported = function (htmlContent, callbac
   callback
   );
 };
+
+Zeeguu_API.prototype.sendFeedback = function (feedback, callback) {
+  this._post(`/send_feedback`,
+  qs.stringify(feedback),
+  callback
+  );
+};
+
