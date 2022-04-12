@@ -12,10 +12,13 @@ function checkExtensionInstalled(setHasExtension) {
         if (chrome.runtime.lastError) {
           console.log(chrome.runtime.lastError);
         }
-        if (response.message === true) {
+        if (response) {
           console.log("Extension installed!");
           setHasExtension(true);
-        }
+        } else {
+          setHasExtension(false);
+          console.log("setHasExtension is false")
+          }
       }
     );
   } else {
