@@ -15,7 +15,7 @@ import { addImageCNN, cnnRegex } from "./Pages/cnn";
 import { bbcRegex, cleanBBC } from "./Pages/bbc";
 import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
-import { cleanRzecz, rzeczRegex } from "./Pages/rzecz";
+import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
 import { cleanFakt, faktRegex } from "./Pages/fakt";
 import { removeAllChildNodes } from "../../popup/functions";
 
@@ -99,6 +99,9 @@ export function pageSpecificClean(articleContent, url) {
     }
     if(currentTabURL.match(faktRegex)){
       return cleanFakt(documentClone)
+    }
+    if(currentTabURL.match(rzeczRegex)){
+      return cleanRzeczBefore(documentClone)
     }
     return documentClone
   }
