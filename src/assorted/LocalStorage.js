@@ -10,6 +10,7 @@ const LocalStorage = {
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
     Features: "features",
+    DisplayedExtensionPopup: "displayed_extension_popup"
   },
 
   // Getting Info
@@ -34,6 +35,10 @@ const LocalStorage = {
     return localStorage[this.Keys.SelectedTimePeriod]
       ? localStorage[this.Keys.SelectedTimePeriod]
       : 30;
+  },
+
+  displayedExtensionPopup: function () {
+    return localStorage[this.Keys.DisplayedExtensionPopup];
   },
 
   // Setting info
@@ -89,6 +94,10 @@ const LocalStorage = {
 
   setSelectedTimePeriod: function (time) {
     localStorage[this.Keys.SelectedTimePeriod] = time;
+  },
+
+  setDisplayedExtensionPopup: function (displayedExtensionPopup) {
+    localStorage[this.Keys.DisplayedExtensionPopup] = displayedExtensionPopup;
   },
 };
 

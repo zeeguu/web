@@ -33,6 +33,7 @@ export default function Exercises({
   articleID,
   backButtonAction,
   keepExercisingAction,
+  source
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
@@ -194,6 +195,7 @@ export default function Exercises({
   }
 
   if (finished) {
+    api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     return (
       <Congratulations
         articleID={articleID}
@@ -202,6 +204,7 @@ export default function Exercises({
         api={api}
         backButtonAction={backButtonAction}
         keepExercisingAction={keepExercisingAction}
+        source={source}
       />
     );
   }

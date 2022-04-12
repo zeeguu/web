@@ -26,6 +26,20 @@ Zeeguu_API.prototype.ARTICLE_UNFOCUSED = "ARTICLE LOST FOCUS";
 Zeeguu_API.prototype.ARTICLE_LIST_REQUESTED = "ARTICLES REQUESTED FROM ZEEGUU";
 Zeeguu_API.prototype.TO_EXERCISES_AFTER_REVIEW = "TO EXERCISES AFTER REVIEW";
 
+// Exercises Interaction
+Zeeguu_API.prototype.STAR_WORD = "STAR WORD";
+Zeeguu_API.prototype.UNSTAR_WORD = "UNSTAR WORD";
+Zeeguu_API.prototype.DELETE_WORD = "DELETE WORD";
+Zeeguu_API.prototype.BACK_TO_READING = "BACK TO READING";
+Zeeguu_API.prototype.COMPLETED_EXERCISES = "COMPLETED EXERCISES";
+Zeeguu_API.prototype.KEEP_EXERCISING = "KEEP EXERCISING";
+
+// Extension Interaction
+Zeeguu_API.prototype.OPEN_POPUP = "OPEN POPUP";
+Zeeguu_API.prototype.OPEN_MODAL = "OPEN MODAL";
+Zeeguu_API.prototype.CLOSE_MODAL = "CLOSE MODAL";
+
+
 // User Activity Dashboard
 Zeeguu_API.prototype.USER_DASHBOARD_OPEN = "UD - USER DASHBOARD OPEN";
 Zeeguu_API.prototype.USER_DASHBOARD_USER_FEEDBACK =
