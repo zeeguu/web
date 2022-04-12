@@ -60,7 +60,6 @@ export function deleteCurrentDOM() {
   }
   const iframe = document.querySelector("iframe");
   if (iframe) {
-    console.log(iframe)
     removeAllChildNodes(iframe);
   }
 }
