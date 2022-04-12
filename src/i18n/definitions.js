@@ -279,7 +279,7 @@ let strings = new LocalizedStrings(
       starTranslation:
         "Starred translations have priority in exercises.",
       ifGreyedTranslation:
-        "A grayed out translation won't appear in exercises unless you star it.",
+      "Translations are grayed out because they are not suitable for the exercises. Star them if you disagree.",
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
