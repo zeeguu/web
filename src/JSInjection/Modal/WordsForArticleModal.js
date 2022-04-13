@@ -6,6 +6,7 @@ import strings from "../../zeeguu-react/src/i18n/definitions";
 import { EXTENSION_SOURCE } from "../constants";
 import WordsToReview from "../../zeeguu-react/src/words/WordsToReview";
 import { NavigationButton } from "./Buttons.styles";
+import { ToolTipsContainer } from "./WordsForArticleModal.styles";
 
 function fit_for_study(words) {
   return words.filter((b) => b.fit_for_study || b.starred).length > 0;
@@ -60,14 +61,22 @@ export default function WordsForArticleModal({
         <NavigationButton prev secondary onClick={openArticle}>
           {strings.backToArticle}
         </NavigationButton>
-        <NavigationButton
-          primary
-          next
-          {...(exercisesEnabled || { disabled: true })}
-          onClick={openExercises}
-        >
-          {strings.toExercises}
-        </NavigationButton>
+        <ToolTipsContainer>
+          <NavigationButton
+            primary
+            next
+            {...(exercisesEnabled || { disabled: true })}
+            onClick={openExercises}
+          >
+            {strings.toExercises}
+          </NavigationButton>
+          {!exercisesEnabled ? (
+            <span className="tooltiptext">
+              You need to star words <br />
+              before going to exercises
+            </span>
+          ) : null}{" "}
+        </ToolTipsContainer>
       </CenteredContent>
     </NarrowColumn>
   );

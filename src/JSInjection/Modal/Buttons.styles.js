@@ -59,6 +59,7 @@ export let NavigationButton = styled.button`
   justify-content: center;
   min-width: 8em;
   min-height: 2em;
+  height: 2.3em;
   padding: 0.5em;
   font-size: 1.2em;
   margin-left: 1em;
