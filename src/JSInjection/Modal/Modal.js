@@ -14,7 +14,6 @@ import WordsForArticleModal from "./WordsForArticleModal";
 import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
-//import { getNativeLanguage } from "../../zeeguu-react/src/utils/cookies/userInfo";
 import { cleanDOMAfter } from "../Cleaning/pageSpecificClean";
 
 export function Modal({
@@ -41,7 +40,6 @@ export function Modal({
   const [username, setUsername] = useState();
   const [DBArticleInfo, setDBArticleInfo] = useState();
   const [articleLanguage, setArticleLanguage] = useState();
-  const [uiLanguage, setUiLanguage] = useState();
 
   useUILanguage();
 
