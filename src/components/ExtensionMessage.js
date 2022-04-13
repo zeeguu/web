@@ -35,7 +35,7 @@ console.log("Extensionmessage- feature experiment 1 " + Feature.extension_experi
             encyclopedias like Wikipedia.
             <br /> <br />
             To read articles with the help of Zeeguu you need to read them from
-            the Chrome Extension or by adding the texts to "Own Texts" through
+            the Chrome Extension or by adding the texts to "My Texts" through
             the "Save article to Zeeguu.org" button from within the extension.
             <br /> <br />
             For better readability, the extension removes all excess clutter,
