@@ -1,15 +1,35 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { FormContainer } from "./FormPage.sc";
 
 const ExtensionInstalledWrapper = styled.div`
-    position: absolute;
-    top: 10%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
-`
-const PaddedLink = styled(Link)`
-    padding: 1em;
-`
+  text-align: center;
+  img {
+    max-width: 100%;
+    margin-bottom: 1em;
+  }
+  h1 {
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+  }
+  p {
+    font-size: 0.9em;
+    margin-block-end: 0em;
+  }
+`;
 
-export {ExtensionInstalledWrapper, PaddedLink}
+let LinkContainer = styled.div`
+  margin: 0.8em;
+  display: flex;
+  justify-content: space-evenly;
+`;
+
+let ExtensionContainer = styled(FormContainer)`
+  width: 40em;
+  padding: 1.2em;
+`;
+
+export {
+  ExtensionInstalledWrapper,
+  ExtensionContainer,
+  LinkContainer,
+};
