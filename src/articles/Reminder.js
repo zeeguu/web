@@ -3,9 +3,9 @@ import Feature from "../features/Feature";
 import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 
 export default function Reminder({ hasExtension }) {
-  console.log("Reminder - has extension? " + hasExtension)
-  console.log("Reminder - running in chrome " + runningInChromeDesktop())
-  console.log("Reminder - feature experiment 1 " + Feature.extension_experiment1())
+  console.log("Running in Chrome Desktop: " + runningInChromeDesktop())
+  console.log("Feature experiment 1: " + Feature.extension_experiment1())
+  
   if (!hasExtension && runningInChromeDesktop() && Feature.extension_experiment1()) {
     return (
       <ExtensionReminder>
