@@ -39,9 +39,7 @@ export default function UserFeedback({ api, articleId, url }) {
   function submitFeedback(e) {
     e.preventDefault();
     if (!isEmpty) {
-      let feedbackForDB = "problem_" + feedback.replace(/ /g, "_");
-      api.logReaderActivity(api.EXTENSION_FEEDBACK, articleId, feedbackForDB, EXTENSION_SOURCE);
-      sendFeedbackEmail(api, feedback, url, articleId)
+      sendFeedbackEmail(api, feedback, url, articleId, "PROBLEM_")
       resetInput(e);
     }
   }
