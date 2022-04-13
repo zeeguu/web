@@ -10,10 +10,12 @@ import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
+
+import ExtensionInstalled from "./pages/ExtensionInstalled";
 import {
+  getUserSession,
   saveUserInfoIntoCookies,
   removeUserInfoFromCookies,
-  getUserSession,
 } from "./utils/cookies/userInfo";
 
 function App() {
@@ -98,6 +100,11 @@ function App() {
                   signInAndRedirect={handleSuccessfulSignIn}
                 />
               )}
+            />
+
+            <Route
+              path="/extension_installed"
+              render={() => <ExtensionInstalled />}
             />
 
             <Route
