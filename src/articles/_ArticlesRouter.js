@@ -22,7 +22,7 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
             [strings.findTab]: "/articles",
             [strings.classroomTab]: "/articles/classroom",
             [strings.bookmarkedTab]: "/articles/bookmarked",
-            [strings.ownTextsTab]: "/articles/ownTexts",
+            [strings.myTextsTab]: "/articles/ownTexts",
           }}
         />
 
