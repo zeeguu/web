@@ -39,7 +39,6 @@ export default function ExtensionMessage({open, hasExtension, displayedExtension
             <br /> <br />
             <a
               href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
-              target="_blank"
               rel="noopener noreferrer"
             >
               Install it in the Chrome Web Store
