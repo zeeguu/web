@@ -9,7 +9,7 @@ export default function ExtensionInstalled() {
       <z.LogoOnTop />
       <s.ExtensionContainer>
         <s.ExtensionInstalledWrapper>
-          <h1>Congratulations</h1>
+          <h1>Congratulations!</h1>
           <p>
             Welcome to Zeeguu! You are now ready to enrich your vocabulary in a
             foreign language while browsing the web. Don't forget to pin the

@@ -5,7 +5,6 @@ const ExtensionInstalledWrapper = styled.div`
   text-align: center;
   img {
     max-width: 100%;
-    margin-bottom: 1em;
   }
   h1 {
     margin-block-start: 0em;
