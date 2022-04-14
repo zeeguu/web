@@ -35,7 +35,6 @@ console.log("Extensionmessage- feature experiment 1 " + Feature.extension_experi
             {strings.extensionReadability} <br /> <br />
             <a
               href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
-              target="_blank"
               rel="noopener noreferrer"
             >
               {strings.extensionInstall}
