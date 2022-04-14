@@ -285,6 +285,11 @@ let strings = new LocalizedStrings(
       backToArticle: "Back to Article",
       toExercises: "To Exercises",
 
+
+      //EmptyArticles
+      noArticles: "We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome extension. You can also add articles to \"My Texts\" through the \"Save article to Zeeguu.org\" button from within the extension.",
+      newssites: "Examples of some of the most popular news sites are:",
+
       //ExerciseType
       matchThreePairs: " match 3 pairs",
       pickTheWord: "pick the word",
@@ -983,6 +988,10 @@ let strings = new LocalizedStrings(
         "De ord, du oversætter i artiklen, vil blive vist til gennemgang her.",
       backToArticle: "Tilbage til artiklen",
       toExercises: "Til øvelserne",
+
+      //EmptyArticles
+      noArticles: "Vi har ikke indhentet artikler i det sprog, som du gerne vil studere. For at læse artikler med Zeeguu kan du i stedet browse på nettet og læse artikler ved hjælp af vores Chrome udvidelse. Du kan også tilføje artikler til \“Egne Tekster\” via \“Save article to zeeguu.org\” knappen inde i udvidelsen.",
+      newssites: "Herunder finder du eksempler på nogle af de mest populære nyhedssider:",
 
       //ExerciseType
       matchThreePairs: " match 3 par",
