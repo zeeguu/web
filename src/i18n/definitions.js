@@ -580,6 +580,12 @@ let strings = new LocalizedStrings(
       kurdish: "Kurdish",
       swedish: "Swedish",
       russian: "Russian",
+      hungarian: "Hungarian",
+      ukrainian: "Ukrainian",
+      vietnamese: "Vietnamese",
+      norwegian: "Norwegian",
+      portughese: "Portuguese",
+      albanian: "Albanian",
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -1256,6 +1262,12 @@ let strings = new LocalizedStrings(
       kurdish: "Kurdisk",
       swedish: "Svensk",
       russian: "Russisk",
+      hungarian: "Ungarnsk",
+      ukrainian: "Ukrainsk",
+      vietnamese: "Vietnamesisk",
+      norwegian: "Norsk",
+      portughese: "Portugisisk",
+      albanian: "Albansk",
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
