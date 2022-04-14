@@ -14,7 +14,6 @@ export default function Reminder({ hasExtension }) {
         article to Zeeguu.org" button from within the extension.
         <a
           href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
-          target="_blank"
           rel="noopener noreferrer"
         > Install the extension in the Chrome Web Store.
         </a>
@@ -30,7 +29,6 @@ export default function Reminder({ hasExtension }) {
         article to Zeeguu.org" button.
         <a
           href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
-          target="_blank"
           rel="noopener noreferrer"
         > Install the extension in the Chrome Web Store.
         </a>
