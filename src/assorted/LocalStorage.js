@@ -15,7 +15,6 @@ const LocalStorage = {
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
     Features: "features",
-
     DisplayedExtensionPopup: "displayed_extension_popup",
   },
 
