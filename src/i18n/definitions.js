@@ -518,6 +518,11 @@ let strings = new LocalizedStrings(
         "Your colleague should be able to find the text under 'My Texts' in a moment.",
       ok: "OK",
 
+      //Extension installed
+      goToArticles: "Go to articles",
+      pinExtension: " Welcome to Zeeguu! You are now ready to enrich your vocabulary in a foreign language while browsing the web. Don't forget to pin the extension to the Chrome Toolbar.",
+      congratulations: "Congratulations!",
+
       //TooltipedButtons
       viewAsStudent: "View as Student",
       addToClass: "Share/unshare with class",

@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import { FormContainer } from "./FormPage.sc";
+import { FormContainer } from "../components/FormPage.sc";
+import { zeeguuOrange } from "../components/colors";
 
 const ExtensionInstalledWrapper = styled.div`
   text-align: center;
   img {
-    max-width: 100%;
+    width: 100%;
   }
   h1 {
     margin-block-start: 0em;
@@ -24,11 +25,28 @@ let LinkContainer = styled.div`
 
 let ExtensionContainer = styled(FormContainer)`
   width: 40em;
-  padding: 1.2em;
+  max-width: 80%;
+  padding: 1.3em;
+`;
+
+const OrangeButton = styled.button`
+  height: 4em;
+  width: 14em;
+  margin: 0em 1em 0em 1em;
+  background: ${zeeguuOrange};
+  border: 0.3em solid ${zeeguuOrange};
+  border-radius: 7em;
+
+  a {
+    font-weight: 600;
+    font-size: 1.5em;
+    color: white;
+  }
 `;
 
 export {
   ExtensionInstalledWrapper,
   ExtensionContainer,
   LinkContainer,
+  OrangeButton,
 };
