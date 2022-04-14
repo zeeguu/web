@@ -43,7 +43,6 @@ console.log("Extensionmessage- feature experiment 1 " + Feature.extension_experi
             <br /> <br />
             <a
               href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
-              target="_blank"
               rel="noopener noreferrer"
             >
               Install it in the Chrome Web Store
