@@ -5,7 +5,7 @@ import strings from "../i18n/definitions";
 
 export default function ExtensionInstalled() {
   return (
-    <z.PageBackground>
+    <s.PageBackground>
       <z.LogoOnTop />
       <s.ExtensionContainer>
         <s.ExtensionInstalledWrapper>
@@ -35,6 +35,6 @@ export default function ExtensionInstalled() {
           </s.LinkContainer>
         </s.ExtensionInstalledWrapper>
       </s.ExtensionContainer>
-    </z.PageBackground>
+    </s.PageBackground>
   );
 }
