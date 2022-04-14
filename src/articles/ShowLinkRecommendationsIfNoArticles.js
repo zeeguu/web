@@ -2,7 +2,7 @@ import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
 import React, { useState, useEffect } from "react";
 
-export default function NoArticles({ articleList }) {
+export default function ShowLinkRecommendationsIfNoArticles({ articleList }) {
   const [learnedLanguage, setLearnedLanguage] = useState(null);
 
   useEffect(() => {

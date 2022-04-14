@@ -976,6 +976,10 @@ let strings = new LocalizedStrings(
       backToArticle: "Tilbage til artiklen",
       toExercises: "Til øvelserne",
 
+      //EmptyArticles
+      noArticles: "Vi har ikke indhentet artikler i det sprog, som du gerne vil studere. For at læse artikler med Zeeguu kan du i stedet browse på nettet og læse artikler ved hjælp af vores Chrome udvidelse. Du kan også tilføje artikler til \“Egne Tekster\” via \“Save article to zeeguu.org\” knappen inde i udvidelsen.",
+      newssites: "Herunder finder du eksempler på nogle af de mest populære nyhedssider:",
+
       //ExerciseType
       matchThreePairs: " match 3 par",
       pickTheWord: "vælg ordet",

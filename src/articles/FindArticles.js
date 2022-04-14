@@ -13,7 +13,7 @@ import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
-import NoArticles from "./NoArticles";
+import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 
 
 export default function NewArticles({ api }) {
@@ -84,7 +84,7 @@ export default function NewArticles({ api }) {
       {articleList.map((each) => (
         <ArticlePreview key={each.id} article={each} api={api} />
       ))}
-      <NoArticles articleList={articleList}></NoArticles>
+      <ShowLinkRecommendationsIfNoArticles articleList={articleList}></ShowLinkRecommendationsIfNoArticles>
     </>
   );
 }
