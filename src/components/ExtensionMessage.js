@@ -11,9 +11,6 @@ export default function ExtensionMessage({open, hasExtension, displayedExtension
     setDisplayedExtensionPopup(true);
     LocalStorage.setDisplayedExtensionPopup(true);
   }
-console.log("Extensionmessage - has extension? " + hasExtension)
-console.log("Extensionmessage - displayed extension popup? " + displayedExtensionPopup)
-console.log("Extensionmessage- feature experiment 1 " + Feature.extension_experiment1())
 
   if (!hasExtension && Feature.extension_experiment1() && !displayedExtensionPopup) {
     return (

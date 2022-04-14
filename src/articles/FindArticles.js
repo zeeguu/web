@@ -13,6 +13,8 @@ import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
+import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
+
 
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
@@ -24,7 +26,6 @@ export default function NewArticles({ api }) {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
     console.log("Running in chrome desktop: " + runningInChromeDesktop())
     console.log("Localstorage displayed extension: "+ LocalStorage.displayedExtensionPopup())
-    
     if (runningInChromeDesktop() && Feature.extension_experiment1() && !displayedExtensionPopup) {
       checkExtensionInstalled(setHasExtension);
     }
@@ -32,24 +33,24 @@ export default function NewArticles({ api }) {
 
   useEffect(() => {
     if (!hasExtension) {
-      console.log("extension not installed")
       setExtensionMessageOpen(true);
     }
   }, [hasExtension]);
 
+
   var originalList = null;
 
   //on initial render
+
   if (articleList == null) {
     api.getUserArticles((articles) => {
       setArticleList(articles);
       originalList = [...articles];
     });
-
     setTitle(strings.findArticles);
-
     return <LoadingAnimation />;
   }
+
   //when the user changes interests...
   function articlesListShouldChange() {
     setArticleList(null);
@@ -81,10 +82,11 @@ export default function NewArticles({ api }) {
         originalList={originalList}
         setArticleList={setArticleList}
       />
-      <Reminder hasExtension={hasExtension} ></Reminder>
+      <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each) => (
         <ArticlePreview key={each.id} article={each} api={api} />
       ))}
+      <ShowLinkRecommendationsIfNoArticles articleList={articleList}></ShowLinkRecommendationsIfNoArticles>
     </>
   );
 }
