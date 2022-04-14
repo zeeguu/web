@@ -13,10 +13,13 @@ import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
+import { articlesInLanguage } from "./articleLanguages";
+import Newssites from "./Newssites";
 
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
   const [hasExtension, setHasExtension] = useState(true);
+  const [learnedLanguage, setLearnedLanguage] = useState(null);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
 
@@ -28,24 +31,33 @@ export default function NewArticles({ api }) {
   }, []);
 
   useEffect(() => {
+    let userInfo = LocalStorage.userInfo()
+    let learned = userInfo.learned_language
+    setLearnedLanguage(learned)
+  }, []);
+
+  useEffect(() => {
     if (!hasExtension) {
       setExtensionMessageOpen(true);
     }
   }, [hasExtension]);
 
+
   var originalList = null;
 
   //on initial render
-  if (articleList == null) {
+
+  if (articleList == null && !articlesInLanguage(learnedLanguage)) {
     api.getUserArticles((articles) => {
       setArticleList(articles);
       originalList = [...articles];
     });
-
     setTitle(strings.findArticles);
-
     return <LoadingAnimation />;
   }
+
+
+
   //when the user changes interests...
   function articlesListShouldChange() {
     setArticleList(null);
@@ -54,6 +66,7 @@ export default function NewArticles({ api }) {
       originalList = [...articles];
     });
   }
+  console.log(articlesInLanguage())
 
   return (
     <>
@@ -78,9 +91,15 @@ export default function NewArticles({ api }) {
         setArticleList={setArticleList}
       />
       <Reminder hasExtension={hasExtension} ></Reminder>
-      {articleList.map((each) => (
+      {!articlesInLanguage(learnedLanguage) ? (
+      articleList.map((each) => (
         <ArticlePreview key={each.id} article={each} api={api} />
-      ))}
+      ))
+      ): <>
+      <p> We have not collected articles in the language you want to study. But you browse the web and use the extension to read articles. You can for example go to some of the most popular newssite:</p>
+      <Newssites learnedLanguage={learnedLanguage}></Newssites>
+      </>
+      }
     </>
   );
 }
