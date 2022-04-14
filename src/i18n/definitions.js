@@ -523,6 +523,13 @@ let strings = new LocalizedStrings(
       pinExtension: " Welcome to Zeeguu! You are now ready to enrich your vocabulary in a foreign language while browsing the web. Don't forget to pin the extension to the Chrome Toolbar.",
       congratulations: "Congratulations!",
 
+      //ExtensionMessage
+      extensionHeadline: "Install the Zeeguu Chrome Extension to read articles",
+      extensionAllow: " The extension allows you to enrich your vocabulary in a foreign language while browsing the web and reading articles that are interesting to you. These could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
+      extensionToRead: "To read articles with the help of Zeeguu you need to read them from the Chrome Extension or by adding the texts to \"My Texts\" through the \"Save article to Zeeguu.org\" button from within the extension.",
+      extensionReadability: "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos.",
+      extensionInstall: "Install it in the Chrome Web Store",
+
       //TooltipedButtons
       viewAsStudent: "View as Student",
       addToClass: "Share/unshare with class",
