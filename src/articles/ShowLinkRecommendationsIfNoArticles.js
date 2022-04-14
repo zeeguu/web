@@ -10,7 +10,6 @@ export default function ShowLinkRecommendationsIfNoArticles({ articleList }) {
     setLearnedLanguage(userInfo.learned_language);
   }, []);
 
-  console.log(learnedLanguage)
   if (articleList.length === 0 && learnedLanguage) {
     return (
       <>
