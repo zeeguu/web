@@ -285,6 +285,11 @@ let strings = new LocalizedStrings(
       backToArticle: "Back to Article",
       toExercises: "To Exercises",
 
+
+      //EmptyArticles
+      noArticles: "We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome extension. You can also add articles to \"My Texts\" through the \"Save article to Zeeguu.org\" button from within the extension.",
+      newssites: "Examples of some of the most popular news sites are:",
+
       //ExerciseType
       matchThreePairs: " match 3 pairs",
       pickTheWord: "pick the word",
