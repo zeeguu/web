@@ -2,12 +2,19 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import Feature from "../features/Feature";
-
+import { useState, useEffect } from "react";
+import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
   dontShowImage,
 }) {
+  const [hasExtension, setHasExtension] = useState(false);
+
+  useEffect(() => {
+      checkExtensionInstalled(setHasExtension);
+  }, []);
+
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
@@ -21,8 +28,8 @@ export default function ArticleOverview({
       </a>
     );
 
-    if (!Feature.extension_experiment1()) {
-      // if the feature is not enabled we always open in zeeguu
+    if (!Feature.extension_experiment1() && !hasExtension) {
+      // if the feature is not enabled and if they don't have the extension we always open in zeeguu
       return open_in_zeeguu;
     }
 
