@@ -1,5 +1,10 @@
+import {
+  removeUserInfoFromCookies,
+  setUserSession,
+} from "../utils/cookies/userInfo";
 import uiLanguages from "./uiLanguages";
 
+// Note that session info is in the Cookies
 const LocalStorage = {
   Keys: {
     Session: "sessionID",
@@ -9,15 +14,8 @@ const LocalStorage = {
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
-  },
-
-  // Getting Info
-  hasSession: function () {
-    return localStorage[this.Keys.Session];
-  },
-
-  session: function () {
-    return localStorage[this.Keys.Session];
+    Features: "features",
+    DisplayedExtensionPopup: "displayed_extension_popup",
   },
 
   userInfo: function () {
@@ -35,13 +33,18 @@ const LocalStorage = {
       : 30;
   },
 
+  displayedExtensionPopup: function () {
+    return localStorage[this.Keys.DisplayedExtensionPopup];
+  },
+
   // Setting info
   locallySetName: function (newName) {
     localStorage[this.Keys.Name] = newName;
   },
 
   setSession: function (session) {
-    localStorage[this.Keys.Session] = session;
+    // localStorage[this.Keys.Session] = session;
+    setUserSession(session);
   },
 
   setUiLanguage: function (language) {
@@ -58,11 +61,20 @@ const LocalStorage = {
     }
   },
 
+  hasFeature: function (featureName) {
+    try {
+      return JSON.parse(localStorage[this.Keys.Features]).includes(featureName);
+    } catch (e) {
+      return false;
+    }
+  },
+
   setUserInfo: function (info) {
     localStorage[this.Keys.Name] = info.name;
     localStorage[this.Keys.LearnedLanguage] = info.learned_language;
     localStorage[this.Keys.NativeLanguage] = info.native_language;
     localStorage[this.Keys.IsTeacher] = info.is_teacher;
+    localStorage[this.Keys.Features] = JSON.stringify(info.features);
   },
 
   deleteUserInfo: function () {
@@ -70,7 +82,10 @@ const LocalStorage = {
       localStorage.removeItem(this.Keys.Name);
       localStorage.removeItem(this.Keys.LearnedLanguage);
       localStorage.removeItem(this.Keys.NativeLanguage);
+      localStorage.removeItem(this.Keys.IsTeacher);
       localStorage.removeItem(this.Keys.Session);
+      localStorage.removeItem(this.Keys.Features);
+      removeUserInfoFromCookies();
     } catch (e) {
       console.log(e);
     }
@@ -78,6 +93,10 @@ const LocalStorage = {
 
   setSelectedTimePeriod: function (time) {
     localStorage[this.Keys.SelectedTimePeriod] = time;
+  },
+
+  setDisplayedExtensionPopup: function (displayedExtensionPopup) {
+    localStorage[this.Keys.DisplayedExtensionPopup] = displayedExtensionPopup;
   },
 };
 

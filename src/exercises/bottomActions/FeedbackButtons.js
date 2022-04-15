@@ -167,7 +167,7 @@ export default function FeedbackButtons({
               onClick={() => buttonClick(THUMBS_DOWN_VALUE)}
             >
               <img
-                src="/static/images/thumb_down_black_18dp.svg"
+                src="https://zeeguu.org/static/images/thumb_down_black_18dp.svg"
                 alt={strings.dislike}
                 width={18}
               />

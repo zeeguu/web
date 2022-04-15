@@ -9,6 +9,7 @@ import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
+import { UMR_SOURCE } from "../../../reader/ArticleReader.js";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -35,7 +36,7 @@ export default function FindWordInContext({
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
-        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
+        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api, UMR_SOURCE)
       );
       setArticleInfo(articleInfo);
     });
@@ -70,7 +71,7 @@ export default function FindWordInContext({
 
   function notifyBookmarkTranslation() {
     let concatMessage = messageToAPI + "T";
-    handleShowSolution(concatMessage);
+    handleShowSolution(undefined, concatMessage);
   }
 
   function inputKeyPress() {
@@ -80,7 +81,9 @@ export default function FindWordInContext({
   }
 
   function handleShowSolution(e, message) {
-    e.preventDefault()
+    if (e) {
+      e.preventDefault();
+    }
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
@@ -127,7 +130,7 @@ export default function FindWordInContext({
   }
 
   return (
-    <s.Exercise>
+    <s.Exercise className="findWordInContext">
       {bookmarksToStudy[0].to.includes(" ") ? (
         <div className="headline">
           {strings.findTheExpressionInContextHeadline}
@@ -135,9 +138,17 @@ export default function FindWordInContext({
       ) : (
         <div className="headline">{strings.findTheWordInContextHeadline}</div>
       )}
-      <h1>{bookmarksToStudy[0].to}</h1>
+      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
-        {bookmarksToStudy[0].context}
+        <TranslatableText
+          isCorrect={isCorrect}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          translatedWords={translatedWords}
+          setTranslatedWords={setTranslatedWords}
+          bookmarkToStudy={bookmarksToStudy[0].from}
+        />
       </div>
       {!isCorrect && (
         <BottomInput

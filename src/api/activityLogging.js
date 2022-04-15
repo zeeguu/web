@@ -16,6 +16,8 @@ Zeeguu_API.prototype.SCROLL = "SCROLL";
 Zeeguu_API.prototype.STAR_ARTICLE = "STAR ARTICLE";
 Zeeguu_API.prototype.LIKE_ARTICLE = "LIKE ARTICLE";
 Zeeguu_API.prototype.USER_FEEDBACK = "USER FEEDBACK";
+Zeeguu_API.prototype.EXTENSION_FEEDBACK = "EXTENSION FEEDBACK";
+Zeeguu_API.prototype.PERSONAL_COPY = "PERSONAL COPY";
 Zeeguu_API.prototype.WORDS_REVIEW = "WORDS_REVIEW";
 
 // Reader Closing Actions
@@ -23,6 +25,20 @@ Zeeguu_API.prototype.ARTICLE_CLOSED = "ARTICLE CLOSED";
 Zeeguu_API.prototype.ARTICLE_UNFOCUSED = "ARTICLE LOST FOCUS";
 Zeeguu_API.prototype.ARTICLE_LIST_REQUESTED = "ARTICLES REQUESTED FROM ZEEGUU";
 Zeeguu_API.prototype.TO_EXERCISES_AFTER_REVIEW = "TO EXERCISES AFTER REVIEW";
+
+// Exercises Interaction
+Zeeguu_API.prototype.STAR_WORD = "STAR WORD";
+Zeeguu_API.prototype.UNSTAR_WORD = "UNSTAR WORD";
+Zeeguu_API.prototype.DELETE_WORD = "DELETE WORD";
+Zeeguu_API.prototype.BACK_TO_READING = "BACK TO READING";
+Zeeguu_API.prototype.COMPLETED_EXERCISES = "COMPLETED EXERCISES";
+Zeeguu_API.prototype.KEEP_EXERCISING = "KEEP EXERCISING";
+
+// Extension Interaction
+Zeeguu_API.prototype.OPEN_POPUP = "OPEN POPUP";
+Zeeguu_API.prototype.OPEN_MODAL = "OPEN MODAL";
+Zeeguu_API.prototype.CLOSE_MODAL = "CLOSE MODAL";
+
 
 // User Activity Dashboard
 Zeeguu_API.prototype.USER_DASHBOARD_OPEN = "UD - USER DASHBOARD OPEN";
@@ -67,5 +83,5 @@ Zeeguu_API.prototype.logReaderActivity = function (
   value = "",
   extra_data = ""
 ) {
-  return this.logUserActivity("UMR - " + event, article_id, value, extra_data);
+  return this.logUserActivity(event, article_id, value, extra_data);
 };
