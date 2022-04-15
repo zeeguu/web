@@ -11,7 +11,6 @@ const ZeeguuSpeech = class {
       .then((data) => {
         // The "data" object contains the list of available voices and the voice synthesis params
         let randomVoice = _getRandomVoice(data.voices, language);
-
         this.speech.setVoice(randomVoice.name);
       })
       .catch((e) => {
@@ -50,7 +49,7 @@ function _randomElement(x) {
 }
 
 function _getRandomVoice(voices, language) {
-  let x = _randomElement(voices.filter((v) => v.lang.includes(language)));
+  let x = _randomElement(voices.filter((v) => v.lang.toLowerCase().includes(language)));
   return x;
 }
 

@@ -14,7 +14,7 @@ export default function ShowLinkRecommendationsIfNoArticles({ articleList }) {
     return (
       <>
         <p> {strings.noArticles}</p>
-        {learnedLanguage === "ua" && (
+        {learnedLanguage === "uk" && (
           <>
             <p> {strings.newssites}</p>
             <ul>
