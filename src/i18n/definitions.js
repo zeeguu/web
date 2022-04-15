@@ -276,18 +276,17 @@ let strings = new LocalizedStrings(
       from: "From: ",
       deleteTranslation:
         "Delete a translation if you don't want it to appear in exercises.",
-      starTranslation:
-        "Starred translations have priority in exercises.",
+      starTranslation: "Starred translations have priority in exercises.",
       ifGreyedTranslation:
-      "Translations are grayed out because they are not suitable for the exercises. Star them if you disagree.",
+        "Translations are grayed out because they are not suitable for the exercises. Star them if you disagree.",
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
       toExercises: "To Exercises",
 
-
       //EmptyArticles
-      noArticles: "We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome extension. You can also add articles to \"My Texts\" through the \"Save article to Zeeguu.org\" button from within the extension.",
+      noArticles:
+        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
       newssites: "Examples of some of the most popular news sites are:",
 
       //ExerciseType
@@ -525,14 +524,17 @@ let strings = new LocalizedStrings(
 
       //Extension installed
       goToArticles: "Go to articles",
-      pinExtension: " Welcome to Zeeguu! You are now ready to enrich your vocabulary in a foreign language while browsing the web. Don't forget to pin the extension to the Chrome Toolbar.",
-      congratulations: "Congratulations!",
+      pinExtension: "Pin it to the toolbar to make it easy to access.",
+      congratulations: "Extension is installed!",
 
       //ExtensionMessage
       extensionHeadline: "Install the Zeeguu Chrome Extension to read articles",
-      extensionAllow: " The extension allows you to enrich your vocabulary in a foreign language while browsing the web and reading articles that are interesting to you. These could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
-      extensionToRead: "To read articles with the help of Zeeguu you need to read them from the Chrome Extension or by adding the texts to \"My Texts\" through the \"Save article to Zeeguu.org\" button from within the extension.",
-      extensionReadability: "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos.",
+      extensionAllow:
+        " The extension allows you to enrich your vocabulary in a foreign language while browsing the web and reading articles that are interesting to you. These could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
+      extensionToRead:
+        'To read articles with the help of Zeeguu you need to read them from the Chrome Extension or by adding the texts to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+      extensionReadability:
+        "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos.",
       extensionInstall: "Install it in the Chrome Web Store",
 
       //TooltipedButtons
@@ -990,8 +992,10 @@ let strings = new LocalizedStrings(
       toExercises: "Til øvelserne",
 
       //EmptyArticles
-      noArticles: "Vi har ikke indhentet artikler i det sprog, som du gerne vil studere. For at læse artikler med Zeeguu kan du i stedet browse på nettet og læse artikler ved hjælp af vores Chrome udvidelse. Du kan også tilføje artikler til \“Egne Tekster\” via \“Save article to zeeguu.org\” knappen inde i udvidelsen.",
-      newssites: "Herunder finder du eksempler på nogle af de mest populære nyhedssider:",
+      noArticles:
+        "Vi har ikke indhentet artikler i det sprog, som du gerne vil studere. For at læse artikler med Zeeguu kan du i stedet browse på nettet og læse artikler ved hjælp af vores Chrome udvidelse. Du kan også tilføje artikler til “Egne Tekster” via “Save article to zeeguu.org” knappen inde i udvidelsen.",
+      newssites:
+        "Herunder finder du eksempler på nogle af de mest populære nyhedssider:",
 
       //ExerciseType
       matchThreePairs: " match 3 par",
