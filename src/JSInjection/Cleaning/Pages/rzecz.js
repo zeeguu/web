@@ -6,7 +6,6 @@ function removeImages(readabilityContent) {
 
   const images = newDiv.querySelectorAll("img")
   for (let i = 0; i < images.length; i++) {
-      console.log(images[i])
       images[i].remove()
   }
 

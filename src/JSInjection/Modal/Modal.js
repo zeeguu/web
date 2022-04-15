@@ -64,7 +64,7 @@ export function Modal({
 
   }, []);
 
-  console.log(articleLanguage)
+  
   useEffect(() => {
     if (DBArticleInfo !== undefined) {
       setArticleId(DBArticleInfo.id);
