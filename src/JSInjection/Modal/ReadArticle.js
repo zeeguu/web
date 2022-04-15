@@ -8,6 +8,7 @@ import {
 } from "../constants";
 import { StyledSmallButtonBlue } from "./Buttons.styles";
 import ReviewVocabulary from "./ReviewVocabulary";
+import SaveToZeeguu from "./SaveToZeeguu";
 import UserFeedback from "./UserFeedback";
 
 export function ReadArticle({
@@ -23,17 +24,11 @@ export function ReadArticle({
   url
 }) {
 
-  function handlePostCopy() {
-    let article = { article_id: articleId };
-    api.makePersonalCopy(article, (message) => alert(message));
-    api.logReaderActivity(api.PERSONAL_COPY, articleId, "", EXTENSION_SOURCE);
-  }
-
   function reportProblem(e) {
     document.getElementById('feedback-box').scrollIntoView();
     document.getElementById('textarea-feedback').focus();
   }
-
+ 
   if(articleImage){
     if (articleImage.src === null){
     articleImage = undefined
@@ -44,7 +39,7 @@ export function ReadArticle({
     <>
       <div className="article-container">
         <StyledSmallButtonBlue onClick={reportProblem}>Report problems</StyledSmallButtonBlue>
-        <StyledSmallButtonBlue onClick={handlePostCopy}>Save article to Zeeguu.org</StyledSmallButtonBlue>
+        <SaveToZeeguu api={api} articleId={articleId}/>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}

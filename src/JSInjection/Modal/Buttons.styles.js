@@ -30,6 +30,17 @@ export const StyledSmallButtonBlue = styled.button`
   margin: 5px 5px 5px 0px;
 `;
 
+export const StyledSmallDisabledButton = styled.button`
+  color: #696969!important;
+  background-color: #EAEBEB!important;
+  border-color: #696969!important;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  padding: 7px;
+  margin: 5px 5px 5px 0px;
+`;
+
 export const StyledButtonBlue = styled.button`
   color: white !important;
   background-color: #2F77AD!important;
