@@ -1,7 +1,9 @@
 /*global chrome*/
 // (this will let our linter know we are accessing Chrome browser methods)
+import { runningInChromeDesktop } from "./browserDetection";
 
 function checkExtensionInstalled(setHasExtension) {
+  if(runningInChromeDesktop()){
   if (chrome.runtime) {
     chrome.runtime.sendMessage(
       process.env.REACT_APP_EXTENSION_ID,
@@ -20,6 +22,10 @@ function checkExtensionInstalled(setHasExtension) {
       }
     );
   } else {
+    console.log("Extension not installed!")
+    setHasExtension(false);
+  }}
+  else {
     console.log("Extension not installed!")
     setHasExtension(false);
   }

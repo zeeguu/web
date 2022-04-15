@@ -23,7 +23,7 @@ export default function Reminder({ hasExtension }) {
   if (!runningInChromeDesktop() && Feature.extension_experiment1()) {
     return (
       <ExtensionReminder>
-        To read articles with the help of Zeeguu you need to read them from the
+        To read articles with the help of Zeeguu you should read them from the
         Chrome extension. Thus you must use a Chrome browser. From within the
         extension you can then add texts to "My Texts" through the "Save
         article to Zeeguu.org" button.
