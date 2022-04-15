@@ -34,7 +34,7 @@ export const StyledSmallDisabledButton = styled.button`
   color: #696969!important;
   background-color: #EAEBEB!important;
   border-color: #696969!important;
-  cursor: pointer;
+  cursor: default;
   border-radius: 10px;
   border: none;
   padding: 7px;
