@@ -4,6 +4,8 @@ import * as s from "./ArticlePreview.sc";
 import Feature from "../features/Feature";
 import { useState, useEffect } from "react";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
+import {runningInChromeDesktop} from "../utils/misc/browserDetection";
+
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
@@ -36,7 +38,7 @@ export default function ArticleOverview({
     // else, we only open in zeegu if it's a personal copy or the article
     // has an uploader, thus it's uploaded from our own platform
     // either by the user themselves or by a teacher maybe
-    if (article.has_personal_copy || article.has_uploader) {
+    if (article.has_personal_copy || article.has_uploader || !runningInChromeDesktop()) {
       return open_in_zeeguu;
     } else {
       return open_externally;
