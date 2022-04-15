@@ -1,6 +1,11 @@
 import styled from "styled-components";
 import { FormContainer } from "../components/FormPage.sc";
-import { zeeguuOrange, zeeguuLightYellow} from "../components/colors";
+import {
+  zeeguuOrange,
+  zeeguuVeryLightYellow,
+  zeeguuVeryLightOrange,
+  zeeguuTransparentLightOrange,
+} from "../components/colors";
 
 const ExtensionInstalledWrapper = styled.div`
   text-align: center;
@@ -50,7 +55,7 @@ let PageBackground = styled.div`
   margin-top: -1em;
   padding-top: 1em;
   padding-bottom: 1em;
-  background: ${zeeguuLightYellow};
+  background: ${zeeguuVeryLightOrange};
 `;
 
 export {
