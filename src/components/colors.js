@@ -1,4 +1,5 @@
 let zeeguuVeryLightYellow = "#fafad2";
+let zeeguuVeryLightOrange = "hsl(46, 90%, 90%)";
 let zeeguuTransparentLightYellow = "#ffe59e10";
 let zeeguuLightYellow = "#ffe59e";
 let zeeguuVarmYellow = "#ffd047";
@@ -33,6 +34,7 @@ const setColors = (isOnStudentSide) => {
 
 export {
   zeeguuVeryLightYellow,
+  zeeguuVeryLightOrange,
   zeeguuTransparentLightYellow,
   zeeguuLightYellow,
   zeeguuVarmYellow,
