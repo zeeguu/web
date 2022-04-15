@@ -24,6 +24,7 @@ let strings = new LocalizedStrings(
       plsProvideValidEmail: "Please provide a valid email.",
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
+      alreadyHaveAccount: "Already have an account? Login instead",
       code: "Code",
       interest: "interest",
       addTexts: "Add Texts",
@@ -143,7 +144,7 @@ let strings = new LocalizedStrings(
       dec: "Dec",
       betaTesters200K:
         "📈 The beta-testers of Zeeguu have collectively reached 200'000 translations in their foreign language readings ",
-      mirceaKeynoteAtEASEAI: '👨‍🏫 Mircea gives a keynote about Zeeguu at the ',
+      mirceaKeynoteAtEASEAI: "👨‍🏫 Mircea gives a keynote about Zeeguu at the ",
       pernilleObtainsFundingPrefix:
         "👩‍🔬 Pernille Hvalsoe obtains funding from The Danish Agency for International Recruitment and Integration for a ",
       pernilleObtainsFundingLinkTitle:
@@ -176,7 +177,7 @@ let strings = new LocalizedStrings(
       findTab: "Find",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
-      ownTextsTab: "Own Texts",
+      myTextsTab: "My Texts",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
@@ -274,15 +275,19 @@ let strings = new LocalizedStrings(
       reviewTranslations: "Review Translations for Your Exercises ",
       from: "From: ",
       deleteTranslation:
-        "Delete a translation if you don't want it in exercises.",
-      starTranslation:
-        "Star a translation to make it have priority in exercises.",
+        "Delete a translation if you don't want it to appear in exercises.",
+      starTranslation: "Starred translations have priority in exercises.",
       ifGreyedTranslation:
-        "If a translation is grayed out, it means that Zeeguu does not think it is appropriate for exercises; to overload this decision you can star the translation.",
+        "Translations are grayed out because they are not suitable for the exercises. Star them if you disagree.",
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
       toExercises: "To Exercises",
+
+      //EmptyArticles
+      noArticles:
+        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+      newssites: "Examples of some of the most popular news sites are:",
 
       //ExerciseType
       matchThreePairs: " match 3 pairs",
@@ -295,7 +300,8 @@ let strings = new LocalizedStrings(
       //Exercises
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
-      noTranslatedWords: "You have no translated words.",
+      goBackArticlePrefix: "Go back to reading: ",
+      noTranslatedWords: "You have no words to practice.",
       goToTextsToTranslateWords: "Read and translate words to get exercises.",
       goStarTranslations:
         "Go back and star translations for Zeeguu to include them in your exercises.",
@@ -369,9 +375,9 @@ let strings = new LocalizedStrings(
       keepExercising: "Keep Exercising",
 
       //CongratulationsPage
-      goodJob: "Good Job!",
-      correct: "Correct",
-      payMoreAttentionTo: "Pay more attention to",
+      goodJob: "Good Job, ",
+      correct: "Seems like you know these words:",
+      payMoreAttentionTo: "Pay more attention to these words:",
 
       //Settings
       nativeLanguage: "Native Language",
@@ -485,7 +491,8 @@ let strings = new LocalizedStrings(
         "Are you sure you want to delete this class? This cannot be undone.",
       cannotDeleteClassWithText:
         "Something went wrong. If you still share texts with this class, you cannot remove it from your list. Please, check that in 'My texts' and try again.",
-      youAreSharingThisClassWarning: "You are sharing this class with at least one colleague. If you delete it here, you also irreversibly delete it from their list of classes.",
+      youAreSharingThisClassWarning:
+        "You are sharing this class with at least one colleague. If you delete it here, you also irreversibly delete it from their list of classes.",
 
       //DeleteStudentWarning
       wishToDeleteStudent: "Do you wish to remove",
@@ -504,12 +511,31 @@ let strings = new LocalizedStrings(
       saveText: "Save Text",
 
       //ShareTextWithColleagueDialog
-      somethingWentWrongMostLikelyEmail: "Something went wrong. Most likely, the email is not registered in Zeeguu. Please, try a different one.",
-      theConnectionFailed: "The connection to the server seems unstable at the moment. Please, let us know if this continues to happen.",
-      enterEmailYourColleagueUse: "Enter the email, your colleague use for Zeeguu.",
+      somethingWentWrongMostLikelyEmail:
+        "Something went wrong. Most likely, the email is not registered in Zeeguu. Please, try a different one.",
+      theConnectionFailed:
+        "The connection to the server seems unstable at the moment. Please, let us know if this continues to happen.",
+      enterEmailYourColleagueUse:
+        "Enter the email, your colleague use for Zeeguu.",
       share: "Share",
-      yourColleagueShouldHaveTheTextShortly: "Your colleague should be able to find the text under 'My Texts' in a moment.",
+      yourColleagueShouldHaveTheTextShortly:
+        "Your colleague should be able to find the text under 'My Texts' in a moment.",
       ok: "OK",
+
+      //Extension installed
+      goToArticles: "Go to articles",
+      pinExtension: "Pin it to the toolbar to make it easy to access.",
+      congratulations: "Extension is installed!",
+
+      //ExtensionMessage
+      extensionHeadline: "Install the Zeeguu Chrome Extension to read articles",
+      extensionAllow:
+        " The extension allows you to enrich your vocabulary in a foreign language while browsing the web and reading articles that are interesting to you. These could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
+      extensionToRead:
+        'To read articles with the help of Zeeguu you need to read them from the Chrome Extension or by adding the texts to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+      extensionReadability:
+        "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos.",
+      extensionInstall: "Install it in the Chrome Web Store",
 
       //TooltipedButtons
       viewAsStudent: "View as Student",
@@ -561,6 +587,12 @@ let strings = new LocalizedStrings(
       kurdish: "Kurdish",
       swedish: "Swedish",
       russian: "Russian",
+      hungarian: "Hungarian",
+      ukrainian: "Ukrainian",
+      vietnamese: "Vietnamese",
+      norwegian: "Norwegian",
+      portughese: "Portuguese",
+      albanian: "Albanian",
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -850,7 +882,7 @@ let strings = new LocalizedStrings(
       findTab: "Find",
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
-      ownTextsTab: "Egne Tekster",
+      myTextsTab: "Mine Tekster",
 
       //WordsRouter
       yourWordsHeadline: "Dine ord",
@@ -959,6 +991,12 @@ let strings = new LocalizedStrings(
       backToArticle: "Tilbage til artiklen",
       toExercises: "Til øvelserne",
 
+      //EmptyArticles
+      noArticles:
+        "Vi har ikke indhentet artikler i det sprog, som du gerne vil studere. For at læse artikler med Zeeguu kan du i stedet browse på nettet og læse artikler ved hjælp af vores Chrome udvidelse. Du kan også tilføje artikler til “Egne Tekster” via “Save article to zeeguu.org” knappen inde i udvidelsen.",
+      newssites:
+        "Herunder finder du eksempler på nogle af de mest populære nyhedssider:",
+
       //ExerciseType
       matchThreePairs: " match 3 par",
       pickTheWord: "vælg ordet",
@@ -1042,9 +1080,9 @@ let strings = new LocalizedStrings(
       keepExercising: "Øve dig videre",
 
       //CongratulationsPage
-      goodJob: "Bravo!",
-      correct: "Rigtig",
-      payMoreAttentionTo: "Vær mere opmærksom på",
+      goodJob: "Bravo, ",
+      correct: "Det ser ud til, at du har styr på disse ord: ",
+      payMoreAttentionTo: "Vær mere opmærksom på disse ord: ",
 
       //Settings
       nativeLanguage: "Modersmål",
@@ -1156,7 +1194,8 @@ let strings = new LocalizedStrings(
         "Er du sikker på, at du vil slette denne klasse? Du kan ikke fortryde.",
       cannotDeleteClassWithText:
         "Noget gik galt. Hvis du deler tekster med denne klasse, kan du ikke slette klassen. Fjern delte tekster med denne klasse i 'Mine tekster', og prøv igen.",
-      youAreSharingThisClassWarning: "Du deler denne klasse med mindst én kollega. Hvis du sletter klassen her, bliver den også uigenkaldeligt slettet fra din kollegas list af klasser.",
+      youAreSharingThisClassWarning:
+        "Du deler denne klasse med mindst én kollega. Hvis du sletter klassen her, bliver den også uigenkaldeligt slettet fra din kollegas list af klasser.",
 
       //DeleteStudentWarning
       wishToDeleteStudent: "Ønsker du at fjerne",
@@ -1175,11 +1214,15 @@ let strings = new LocalizedStrings(
       saveText: "Gem tekst",
 
       //ShareTextWithColleagueDialog
-      somethingWentWrongMostLikelyEmail: "Noget gik galt. Det kan være din kollega bruger en anden email til Zeeguu. Tjek venligst og prøv igen.",
-      theConnectionFailed: "Forbindelsen til serveren virker ustabil. Giv os gerne besked, hvis dette problem fortsætter.",
-      enterEmailYourColleagueUse: "Indsæt den email, din kollega bruger til Zeeguu",
+      somethingWentWrongMostLikelyEmail:
+        "Noget gik galt. Det kan være din kollega bruger en anden email til Zeeguu. Tjek venligst og prøv igen.",
+      theConnectionFailed:
+        "Forbindelsen til serveren virker ustabil. Giv os gerne besked, hvis dette problem fortsætter.",
+      enterEmailYourColleagueUse:
+        "Indsæt den email, din kollega bruger til Zeeguu",
       share: "Del",
-      yourColleagueShouldHaveTheTextShortly: "Din kollega burde have teksten i 'Mine tekster' om et øjeblik.",
+      yourColleagueShouldHaveTheTextShortly:
+        "Din kollega burde have teksten i 'Mine tekster' om et øjeblik.",
       ok: "OK",
 
       //TooltipedButtons
@@ -1232,6 +1275,12 @@ let strings = new LocalizedStrings(
       kurdish: "Kurdisk",
       swedish: "Svensk",
       russian: "Russisk",
+      hungarian: "Ungarnsk",
+      ukrainian: "Ukrainsk",
+      vietnamese: "Vietnamesisk",
+      norwegian: "Norsk",
+      portughese: "Portugisisk",
+      albanian: "Albansk",
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",

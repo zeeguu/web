@@ -94,7 +94,7 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
           style={{ marginLeft: buttonLeftMargin }}
         >
           <img
-            src="/static/images/volume_up.svg"
+            src="https://zeeguu.org/static/images/volume_up.svg"
             alt={strings.speak}
             width={iconWidth}
             style={{
