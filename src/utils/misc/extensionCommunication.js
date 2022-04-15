@@ -4,7 +4,6 @@ import { runningInChromeDesktop } from "./browserDetection";
 
 function checkExtensionInstalled(setHasExtension) {
   if(runningInChromeDesktop()){
-    console.log(chrome.runtime)
   if (chrome.runtime) {
     chrome.runtime.sendMessage(
       process.env.REACT_APP_EXTENSION_ID,
