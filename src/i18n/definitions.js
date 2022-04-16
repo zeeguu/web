@@ -174,7 +174,7 @@ let strings = new LocalizedStrings(
       contributors: "Contributors",
 
       //ArticleRouter
-      findTab: "Recommendations",
+      findTab: "Recommended",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
       myTextsTab: "My Texts",
