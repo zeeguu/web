@@ -14,28 +14,38 @@ export default function ShowLinkRecommendationsIfNoArticles({ articleList }) {
     return (
       <>
         <p> {strings.noArticles}</p>
-        {learnedLanguage === "uk" && (
+        {(learnedLanguage === "pt" || learnedLanguage === "pt-br") && (
           <>
             <p> {strings.newssites}</p>
             <ul>
               <li>
-                <a href="https://censor.net/" rel="noopener">
-                  <p>censor.net</p>
+                <a href="https://www.sapo.pt/" rel="noopener">
+                  <p>sapo.pt</p>
                 </a>
               </li>
               <li>
-                <a href="https://www.pravda.com.ua/" rel="noopener">
-                  <p>pravda.com.ua</p>
+                <a href="https://cnnportugal.iol.pt/" rel="noopener">
+                  <p>cnnportugal.iol.pt</p>
                 </a>
               </li>
               <li>
-                <a href="https://tsn.ua/" rel="noopener">
-                  <p>tsn.ua</p>
+                <a href="https://www.noticiasaominuto.com/" rel="noopener">
+                  <p>noticiasaominuto.com</p>
                 </a>
               </li>
               <li>
-                <a href="https://www.rbc.ua/" rel="noopener">
-                  <p>rbc.ua</p>
+                <a href="https://abola.pt/" rel="noopener">
+                  <p>abola.pt</p>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.rtp.pt/noticias/" rel="noopener">
+                  <p>rtp.pt</p>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.cmjornal.pt/" rel="noopener">
+                  <p>cmjornal.pt</p>
                 </a>
               </li>
             </ul>
