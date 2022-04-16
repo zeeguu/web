@@ -174,7 +174,7 @@ let strings = new LocalizedStrings(
       contributors: "Contributors",
 
       //ArticleRouter
-      findTab: "Find",
+      findTab: "Recommended",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
       myTextsTab: "My Texts",
@@ -522,8 +522,21 @@ let strings = new LocalizedStrings(
         "Your colleague should be able to find the text under 'My Texts' in a moment.",
       ok: "OK",
 
+      // New user created
+      userCreated: "Welcome to Zeeguu",
+      installExtension: " Time to install the Zeeguu Reader Chrome extension",
+      extensionDescription:
+        "Here on zeeguu.org you can see your words, find article recommendation links, do exercises, see statistics, etc. You can also read, but only articles that were shared with you by your teacher, or articles that you have saved from the extension.",
+      extensionFunctionality:
+        "When you follow an article recommendation link, or you find an article on the net, you should activate the extension which:",
+      extensionAdvantage1: "Offers you one-click translation and pronunciation",
+      extensionAdvantage2:
+        "Removes all excess clutter, like adverts, buttons, and videos from the article",
+      extensionAdvantage3:
+        "Generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
+
       //Extension installed
-      goToArticles: "Go to articles",
+      goToArticles: "Go to article recommendations",
       pinExtension: "Pin it to the toolbar to make it easy to access.",
       congratulations: "Extension is installed!",
 
@@ -600,7 +613,6 @@ let strings = new LocalizedStrings(
       urdu: "Urdu",
       tamil: "Tamil",
       bengali: "Bengali",
-
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -1296,7 +1308,6 @@ let strings = new LocalizedStrings(
       urdu: "Urdu",
       tamil: "Tamil",
       bengali: "Bengali",
-      
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
