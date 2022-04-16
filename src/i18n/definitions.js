@@ -522,6 +522,15 @@ let strings = new LocalizedStrings(
         "Your colleague should be able to find the text under 'My Texts' in a moment.",
       ok: "OK",
 
+      // New user created
+      userCreated: "Welcome to Zeeguu",
+      installExtension: " Remember to install the Chrome extension",
+      extensionDescription: "The extension \"The Zeeguu Reader\" helps you read articles in the language that you want to practice and offers one-click translation and pronunciation.",
+      extensionFunctionality: "The Zeeguu Reader allows you to enrich your vocabulary in a foreign language while you browse the web and read articles that are interesting to you. It supports you in the following way:" ,
+      extensionAdvantage1: "You read articles in the language that you want to practice; these could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
+      extensionAdvantage2: "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos from the article",
+      extensionAdvantage3: "The extension then generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
+
       //Extension installed
       goToArticles: "Go to articles",
       pinExtension: "Pin it to the toolbar to make it easy to access.",

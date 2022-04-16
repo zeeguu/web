@@ -10,13 +10,14 @@ import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
-
+import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
 import {
   getUserSession,
   saveUserInfoIntoCookies,
   removeUserInfoFromCookies,
 } from "./utils/cookies/userInfo";
+import InstallExtension from "./pages/InstallExtension";
 
 function App() {
   let userDict = {};
@@ -37,6 +38,8 @@ function App() {
   const [api] = useState(_api);
 
   const [user, setUser] = useState(userDict);
+  const [hasExtension, setHasExtension] = useState(false);
+
 
   //resets user on zeeguu.org if they log out of the extension
   useEffect(() => {
@@ -45,6 +48,7 @@ function App() {
         setUser({});
       }
     }, 1000);
+    checkExtensionInstalled(setHasExtension)
     return () => clearInterval(interval);
   }, []);
 
@@ -63,9 +67,13 @@ function App() {
     // between the extension and the website
     saveUserInfoIntoCookies(userInfo, api.session);
 
-    userInfo.is_teacher
-      ? history.push("/teacher/classes")
-      : history.push("/articles");
+    if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
+      history.push("/install_extension");
+    } else {
+      userInfo.is_teacher
+        ? history.push("/teacher/classes")
+        : history.push("/articles");
+    }
   }
 
   function logout() {
@@ -106,6 +114,11 @@ function App() {
               path="/extension_installed"
               render={() => <ExtensionInstalled />}
             />
+
+            <Route
+               path="/install_extension"
+               render={() => <InstallExtension />}
+             />
 
             <Route
               path="/reset_pass"
