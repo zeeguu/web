@@ -58,7 +58,7 @@ let strings = new LocalizedStrings(
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
       inviteCode: "Invite code",
       levelOfLearnedLanguage: "Level in Learned Language",
-      baseLanguage: "Base languange",
+      baseLanguage: "Base languange (English recommended)",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
