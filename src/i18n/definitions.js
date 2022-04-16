@@ -524,12 +524,16 @@ let strings = new LocalizedStrings(
 
       // New user created
       userCreated: "Welcome to Zeeguu",
-      installExtension: " Remember to install the Chrome extension",
-      extensionDescription: "The extension \"The Zeeguu Reader\" helps you read articles in the language that you want to practice and offers one-click translation and pronunciation.",
-      extensionFunctionality: "The Zeeguu Reader allows you to enrich your vocabulary in a foreign language while you browse the web and read articles that are interesting to you. It supports you in the following way:" ,
-      extensionAdvantage1: "You read articles in the language that you want to practice; these could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
-      extensionAdvantage2: "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos from the article",
-      extensionAdvantage3: "The extension then generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
+      installExtension: " Time to install the Zeeguu Reader Chrome extension",
+      extensionDescription:
+        "Here on zeeguu.org you can see your words, find article recommendation links, do exercises, see statistics, etc. You can also read, but only articles that were shared with you by your teacher, or articles that you have saved from the extension.",
+      extensionFunctionality:
+        "When you follow an article recommendation link, or you find an article on the net, you should activate the extension which:",
+      extensionAdvantage1: "Offers you one-click translation and pronunciation",
+      extensionAdvantage2:
+        "Removes all excess clutter, like adverts, buttons, and videos from the article",
+      extensionAdvantage3:
+        "Generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
 
       //Extension installed
       goToArticles: "Go to articles",
@@ -609,7 +613,6 @@ let strings = new LocalizedStrings(
       urdu: "Urdu",
       tamil: "Tamil",
       bengali: "Bengali",
-
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -1305,7 +1308,6 @@ let strings = new LocalizedStrings(
       urdu: "Urdu",
       tamil: "Tamil",
       bengali: "Bengali",
-      
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",
