@@ -536,7 +536,7 @@ let strings = new LocalizedStrings(
         "Generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
 
       //Extension installed
-      goToArticles: "Go to articles",
+      goToArticles: "Go to article recommendations",
       pinExtension: "Pin it to the toolbar to make it easy to access.",
       congratulations: "Extension is installed!",
 
