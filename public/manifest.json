@@ -5,7 +5,6 @@
   "manifest_version": 3,
   "host_permissions": [
     "*://www.zeeguu.org/",
-    "*://localhost/3000/",
     "https://api.zeeguu.org/"
   ],
   "permissions": ["storage", "activeTab", "scripting", "tabs", "cookies"],
@@ -24,7 +23,7 @@
     "service_worker": "background.js"
   },
   "externally_connectable": {
-    "matches": ["*://localhost/*", "*://*.zeeguu.org/*", "*://www.zeeguu.org/*"]
+    "matches": ["*://*.zeeguu.org/*", "*://www.zeeguu.org/*"]
   },
   "icons": {
     "16": "/images/zeeguu16.png",
