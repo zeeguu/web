@@ -4,7 +4,7 @@
   "version": "2.0.3",
   "manifest_version": 3,
   "host_permissions": [
-    "*://www.zeeguu.org/",
+    "https://www.zeeguu.org/",
     "https://api.zeeguu.org/"
   ],
   "permissions": ["storage", "activeTab", "scripting", "tabs", "cookies"],
