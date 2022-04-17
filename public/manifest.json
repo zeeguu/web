@@ -23,7 +23,7 @@
     "service_worker": "background.js"
   },
   "externally_connectable": {
-    "matches": ["*://*.zeeguu.org/*", "*://www.zeeguu.org/*"]
+    "matches": ["*://*.zeeguu.org/*"]
   },
   "icons": {
     "16": "/images/zeeguu16.png",
