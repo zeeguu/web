@@ -13,11 +13,11 @@ export default function TranslatableWord({
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
   function clickOnWord(e, word) {
-    e.target.id = "loading"   
+    e.target.className = "loading"  
     if (translating) {
       interactiveText.translate(word, () => {
         wordUpdated();
-        e.target.id = null; 
+        e.target.className = null; 
       });
       if (translatedWords) {
         let copyOfWords = [...translatedWords];

@@ -12,8 +12,29 @@ const TranslatableText = styled.div`
   }
 
   z-tag.loading {
-    animation: fadein 1s 0s infinite linear alternate;
+    animation: blink 1.5s linear infinite;
+    color: ${zeeguuOrange};
+    //animation: blinker 1s linear infinite;
   }
+  @keyframes blink {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.7;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  //@keyframes blinker {
+  //  0% {
+  //    border-bottom: 1px dashed rgb(255, 187, 84, 0);
+  //  }
+  //  100% {
+  //    border-bottom: 1px dashed rgb(255, 187, 84, 1);
+  //  }
+  //}
 
   /*  z-tag tag hover changes color, translated word hover no underline or color*/
 
@@ -60,34 +81,6 @@ const TranslatableText = styled.div`
     width: 100%;
     color: ${zeeguuOrange};
   }
-
-  z-tag#loading {
-    animation: blink 1.5s linear infinite;
-    color: ${zeeguuOrange};
-    //animation: blinker 1s linear infinite;
-  }
-
-  @keyframes blink {
-    0% {
-      opacity: 0.2;
-    }
-    50% {
-      opacity: 0.7;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  //@keyframes blinker {
-  //  0% {
-  //    border-bottom: 1px dashed rgb(255, 187, 84, 0);
-  //  }
-  //  100% {
-  //    border-bottom: 1px dashed rgb(255, 187, 84, 1);
-  //  }
-  //}
-
 
   /* when there are multiple translations, we mark this with a little
 green downwards pointing triangle; we used to mark also single alternatives
