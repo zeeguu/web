@@ -35,8 +35,8 @@ let ExtensionContainer = styled(FormContainer)`
 `;
 
 const OrangeButton = styled.button`
-  height: 4em;
-  width: 14em;
+  min-height: 4em;
+  width: 20em;
   margin: 0em 1em 0em 1em;
   background: ${zeeguuOrange};
   border: 0.3em solid ${zeeguuOrange};
