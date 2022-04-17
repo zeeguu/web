@@ -21,7 +21,9 @@ export function ReadArticle({
   openReview,
   translating,
   pronouncing,
-  url
+  url,
+  setPersonalCopySaved,
+  personalCopySaved
 }) {
 
   function reportProblem(e) {
@@ -39,7 +41,7 @@ export function ReadArticle({
     <>
       <div className="article-container">
         <StyledSmallButtonBlue onClick={reportProblem}>Report problems</StyledSmallButtonBlue>
-        <SaveToZeeguu api={api} articleId={articleId}/>
+        <SaveToZeeguu api={api} articleId={articleId} setPersonalCopySaved={setPersonalCopySaved} personalCopySaved={personalCopySaved}/>
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}

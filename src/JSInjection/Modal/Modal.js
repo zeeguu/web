@@ -40,6 +40,8 @@ export function Modal({
   const [username, setUsername] = useState();
   const [DBArticleInfo, setDBArticleInfo] = useState();
   const [articleLanguage, setArticleLanguage] = useState();
+  const [loadingPersonalCopy, setLoadingPersonalCopy] = useState(true);
+  const [personalCopySaved, setPersonalCopySaved] = useState(false);
 
   useUILanguage();
 
@@ -103,6 +105,11 @@ export function Modal({
         onBlur(api, articleId, EXTENSION_SOURCE);
       });
 
+      api.getOwnTexts((articles) => {
+        checkOwnTexts(articles);
+        setLoadingPersonalCopy(false);
+      });
+
       let getModalClass = document.getElementsByClassName("Modal");
       if (getModalClass !== undefined && getModalClass !== null) {
         setTimeout(() => {
@@ -142,6 +149,18 @@ export function Modal({
     location.reload();
   }
 
+
+  function checkOwnTexts(articles) {
+    if (articles.length !== 0) {
+      for (var i = 0; i < articles.length; i++) {
+        if (articles[i].id === articleId) {
+          setPersonalCopySaved(true);
+          break;
+        }
+      }
+    }
+  }
+
   function openReview(){
     setReviewOpen(true)
     setReadArticleOpen(false)
@@ -165,7 +184,8 @@ export function Modal({
     setReviewOpen(false);
   }
 
-  if (interactiveTextArray === undefined) {
+
+  if (interactiveTextArray === undefined || loadingPersonalCopy) {
     return <ZeeguuLoader />;
   }
 
@@ -209,6 +229,8 @@ export function Modal({
               translating={translating}
               pronouncing={pronouncing}
               url={url}
+              setPersonalCopySaved={setPersonalCopySaved}
+              personalCopySaved={personalCopySaved}
             />
           )}
           {reviewOpen === true && (
