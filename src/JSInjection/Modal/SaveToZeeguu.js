@@ -7,6 +7,7 @@ import EXTENSION_SOURCE from "../constants";
 
 export default function SaveToZeeguu({ api, articleId }) {
   const [isSaved, setSaved] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api.getOwnTexts((articles) => {
@@ -19,6 +20,7 @@ export default function SaveToZeeguu({ api, articleId }) {
       for (var i = 0; i < articles.length; i++) {
         if (articles[i].id === articleId) {
           setSaved(true);
+          setLoading(false);
           break;
         }
       }
@@ -30,6 +32,10 @@ export default function SaveToZeeguu({ api, articleId }) {
     api.makePersonalCopy(article, (message) => console.log(message));
     api.logReaderActivity(api.PERSONAL_COPY, articleId, "", EXTENSION_SOURCE);
     setSaved(true);
+  }
+
+  if (loading) {
+    return "";
   }
 
   return (
