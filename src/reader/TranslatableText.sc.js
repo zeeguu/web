@@ -61,6 +61,34 @@ const TranslatableText = styled.div`
     color: ${zeeguuOrange};
   }
 
+  z-tag#loading {
+    animation: blink 1.5s linear infinite;
+    color: ${zeeguuOrange};
+    //animation: blinker 1s linear infinite;
+  }
+
+  @keyframes blink {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.7;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  //@keyframes blinker {
+  //  0% {
+  //    border-bottom: 1px dashed rgb(255, 187, 84, 0);
+  //  }
+  //  100% {
+  //    border-bottom: 1px dashed rgb(255, 187, 84, 1);
+  //  }
+  //}
+
+
   /* when there are multiple translations, we mark this with a little
 green downwards pointing triangle; we used to mark also single alternatives
  but for now there's no marking for them */

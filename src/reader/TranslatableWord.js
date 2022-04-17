@@ -12,10 +12,12 @@ export default function TranslatableWord({
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
-  function clickOnWord(word) {
+  function clickOnWord(e, word) {
+    e.target.id = "loading"   
     if (translating) {
       interactiveText.translate(word, () => {
         wordUpdated();
+        e.target.id = null; 
       });
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
@@ -60,7 +62,7 @@ export default function TranslatableWord({
   if (!word.translation) {
     return (
       <>
-        <z-tag onClick={(e) => clickOnWord(word)}>{word.word}</z-tag>
+        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word}</z-tag>
         <span> </span>
       </>
     );
