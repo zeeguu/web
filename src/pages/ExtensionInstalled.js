@@ -13,7 +13,7 @@ export default function ExtensionInstalled() {
           <h4>{strings.pinExtension}</h4>
 
           <img
-            src={"/static/images/zeeguuExtension.gif"}
+            src={"https://zeeguu.org/static/images/zeeguuExtension.gif"}
             alt="How to pin Chrome Extension to Chrome Toolbar gif"
           />
           <s.LinkContainer>
