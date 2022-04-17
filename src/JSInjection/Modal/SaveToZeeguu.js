@@ -12,6 +12,7 @@ export default function SaveToZeeguu({ api, articleId }) {
   useEffect(() => {
     api.getOwnTexts((articles) => {
       checkOwnTexts(articles);
+      setLoading(false);
     });
   }, []);
 
@@ -20,7 +21,6 @@ export default function SaveToZeeguu({ api, articleId }) {
       for (var i = 0; i < articles.length; i++) {
         if (articles[i].id === articleId) {
           setSaved(true);
-          setLoading(false);
           break;
         }
       }
