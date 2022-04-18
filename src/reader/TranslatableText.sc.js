@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import { almostBlack, zeeguuLightYellow, zeeguuOrange, zeeguuVeryLightYellow } from "../components/colors";
+import {
+  almostBlack,
+  zeeguuLightYellow,
+  zeeguuOrange,
+  zeeguuVeryLightYellow,
+} from "../components/colors";
 
 const TranslatableText = styled.div`
   z-tag {
@@ -14,7 +19,6 @@ const TranslatableText = styled.div`
   z-tag.loading {
     animation: blink 1.5s linear infinite;
     color: ${zeeguuOrange};
-    //animation: blinker 1s linear infinite;
   }
   @keyframes blink {
     0% {
@@ -27,14 +31,6 @@ const TranslatableText = styled.div`
       opacity: 1;
     }
   }
-  //@keyframes blinker {
-  //  0% {
-  //    border-bottom: 1px dashed rgb(255, 187, 84, 0);
-  //  }
-  //  100% {
-  //    border-bottom: 1px dashed rgb(255, 187, 84, 1);
-  //  }
-  //}
 
   /*  z-tag tag hover changes color, translated word hover no underline or color*/
 
