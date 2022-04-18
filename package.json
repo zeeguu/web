@@ -40,7 +40,8 @@
     "build:app": "INLINE_RUNTIME_CHUNK=false DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "build:bg": "webpack --mode production ./src/JSInjection/main.js --output-path ./build/",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "publish": "rm -rf build* && npm-run-all build:* && zip -r build.zip build && open https://chrome.google.com/webstore/devconsole/"
   },
   "eslintConfig": {
     "extends": [
