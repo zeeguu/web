@@ -10,20 +10,20 @@ export default function ToolbarButtons({translating, setTranslating, pronouncing
         onClick={(e) => toggle(translating, setTranslating)}
       >
         <img
-          src={chrome.runtime.getURL("images/translate.svg")}
+          src="https://zeeguu.org/static/images/translate.svg"
           alt={strings.translateOnClick}
         />
-        <span className="tooltiptext">{strings.translateOnClick}</span>
+        <div className="tooltiptext">{strings.translateOnClick}</div>
       </button>
       <button
         className={pronouncing ? "selected" : ""}
         onClick={(e) => toggle(pronouncing, setPronouncing)}
       >
         <img
-          src={chrome.runtime.getURL("images/sound.svg")}
+          src="https://zeeguu.org/static/images/sound.svg"
           alt={strings.listenOnClick}
         />
-        <span className="tooltiptext">{strings.listenOnClick}</span>
+        <div className="tooltiptext">{strings.listenOnClick}</div>
       </button>
     </s.Toolbar>
   );
