@@ -18,7 +18,7 @@ import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
 import { cleanFakt, faktRegex } from "./Pages/fakt";
 import { removeAllChildNodes } from "../../popup/functions";
-
+import { politikenRegex, removeSignUp} from "./Pages/politiken";
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -69,6 +69,9 @@ export function pageSpecificClean(articleContent, url) {
     if (url.match(rzeczRegex)) {
        return cleanRzecz(articleContent)
    }
+   if (url.match(politikenRegex)) {
+    return removeSignUp(articleContent)
+    }
     return articleContent;
   }
   

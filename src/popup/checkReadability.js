@@ -7,6 +7,8 @@ import { berlingskeRegex } from "../JSInjection/Cleaning/Pages/berlingske";
 import { readableBerlingske } from "./Pages/berlingske";
 import { lemondeRegex } from "../JSInjection/Cleaning/Pages/lemonde";
 import { liveArticleLemonde } from "./Pages/lemonde";
+import { paywallPolitiken } from "./Pages/politiken";
+import { politikenRegex } from "../JSInjection/Cleaning/Pages/politiken";
 
 export function checkReadability(url){
     if(url.match(drRegex)){
@@ -23,6 +25,9 @@ export function checkReadability(url){
     } 
     if (url.match(lemondeRegex)) {
       return liveArticleLemonde(getEntireHTML(url))
+    }
+    if (url.match(politikenRegex)) {
+      return paywallPolitiken(getEntireHTML(url))
     }
     else{
       return true;
