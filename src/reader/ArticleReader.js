@@ -192,7 +192,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
               src="https://zeeguu.org/static/images/translate.svg"
               alt={strings.translateOnClick}
             />
-            <span className="tooltiptext">{strings.translateOnClick}</span>
+            <div className="tooltiptext">{strings.translateOnClick}</div>
           </button>
           <button
             className={pronouncing ? "selected" : ""}
@@ -202,7 +202,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
               src="https://zeeguu.org/static/images/sound.svg"
               alt={strings.listenOnClick}
             />
-            <span className="tooltiptext">{strings.listenOnClick}</span>
+            <div className="tooltiptext">{strings.listenOnClick}</div>
           </button>
         </s.Toolbar>
       </PopupButtonWrapper>
