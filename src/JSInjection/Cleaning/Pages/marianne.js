@@ -4,11 +4,12 @@ function removeArticleLinks(content) {
   let div = document.createElement("div");
   div.innerHTML = content;
   let elements = div.getElementsByTagName("p");
+  if(elements){
   for (let i = 0; i < elements.length; i++) {
     if (elements[i].textContent.includes("À LIRE AUSSI")) {
       elements[i].remove();
     }
-  }
+  }}
   return div.innerHTML;
 }
 

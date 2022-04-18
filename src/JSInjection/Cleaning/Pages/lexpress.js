@@ -16,11 +16,7 @@ function removeAsides(content) {
 
 function unavailableContent(content) {
   //TODO: find better solution
-  if (
-    content.includes(
-      "Offrez gratuitement la lecture de cet article à un proche"
-    )
-  ) {
+  if (content.includes("Offrez gratuitement la lecture de cet article à un proche")) {
     return "<p>This article cannot be read in zeeguu reader</p>";
   } else {
     let div = document.createElement("div");

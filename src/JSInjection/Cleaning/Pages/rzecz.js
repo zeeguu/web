@@ -3,12 +3,11 @@ export const rzeczRegex = /(http|https):\/\/(www.rp.pl).*/;
 function removeImages(readabilityContent) {
   const newDiv = document.createElement("div");
   newDiv.innerHTML = readabilityContent;
-
   const images = newDiv.querySelectorAll("img")
+  if(images){
   for (let i = 0; i < images.length; i++) {
       images[i].remove()
-  }
-
+  }}
   return newDiv.innerHTML;
 }
 
@@ -16,10 +15,11 @@ function removePromo(readabilityContent) {
     const newDiv = document.createElement("div");
     newDiv.innerHTML = readabilityContent;
     const promotion = newDiv.querySelectorAll(".content");
+    if(promotion){
     for (let i = 0; i < promotion.length; i++) {
         promotion[i].remove()
         
-    }
+    }}
     return newDiv.innerHTML
 }
 
