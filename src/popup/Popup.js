@@ -21,6 +21,7 @@ import {
 import { Article } from "../JSInjection/Modal/Article";
 import PopupLoading from "./PopupLoading";
 import PopupContent from "./PopupContent";
+import { EXTENSION_SOURCE } from "../JSInjection/constants";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -61,6 +62,9 @@ export default function Popup({ loggedIn, setLoggedIn }) {
 
   useEffect(() => {
     if (tab !== undefined && user !== undefined) {
+      api.session = user.session;
+      api.logReaderActivity(api.OPEN_POPUP, "", tab.url, EXTENSION_SOURCE);
+
       // Readability check and language check
       const documentFromTab = getSourceAsDOM(tab.url);
       const isProbablyReadable = isProbablyReaderable(
