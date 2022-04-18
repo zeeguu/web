@@ -40,15 +40,22 @@ function App() {
   const [user, setUser] = useState(userDict);
   const [hasExtension, setHasExtension] = useState(false);
 
-
-  //resets user on zeeguu.org if they log out of the extension
   useEffect(() => {
+    // when creating the app component we also load the
+    // user details from the server; this also ensures that
+    // we get the latest feature flags for this user and save
+    // them in the LocalStorage
+    api.getUserDetails((data) => {
+      LocalStorage.setUserInfo(data);
+    });
+
+    //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
       if (!getUserSession()) {
         setUser({});
       }
     }, 1000);
-    checkExtensionInstalled(setHasExtension)
+    checkExtensionInstalled(setHasExtension);
     return () => clearInterval(interval);
   }, []);
 
@@ -116,9 +123,9 @@ function App() {
             />
 
             <Route
-               path="/install_extension"
-               render={() => <InstallExtension />}
-             />
+              path="/install_extension"
+              render={() => <InstallExtension />}
+            />
 
             <Route
               path="/reset_pass"
