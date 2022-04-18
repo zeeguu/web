@@ -149,6 +149,10 @@ export const OverwriteZeeguu = styled.div`
     margin-bottom: -1px !important;
   }
 
+  z-tag.loading {
+  color:#2f76ac !important;
+  }
+
   z-orig {
     color: black !important;
     border-bottom: 2px dashed #2f76ac !important;
