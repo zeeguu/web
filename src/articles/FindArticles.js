@@ -11,7 +11,7 @@ import Reminder from "./Reminder";
 import ExtensionMessage from "../components/ExtensionMessage";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
-import { runningInChromeDesktop } from "../utils/misc/browserDetection";
+import { runningInChromeDesktop, runningInFirefoxDesktop } from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 
@@ -25,8 +25,8 @@ export default function NewArticles({ api }) {
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
     console.log("Running in chrome desktop: " + runningInChromeDesktop())
-    console.log("Localstorage displayed extension: "+ LocalStorage.displayedExtensionPopup())
-    if (runningInChromeDesktop() && Feature.extension_experiment1() && !displayedExtensionPopup) {
+    console.log("Running in firefox desktop: " + runningInFirefoxDesktop())
+    if ((runningInChromeDesktop() || runningInFirefoxDesktop) && Feature.extension_experiment1() && !displayedExtensionPopup) {
       checkExtensionInstalled(setHasExtension);
     }
   }, []);
