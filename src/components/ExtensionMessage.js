@@ -34,7 +34,14 @@ export default function ExtensionMessage({open, hasExtension, displayedExtension
               href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
               rel="noopener noreferrer"
             >
-              {strings.extensionInstall}
+              {strings.extensionChromeInstall}
+            </a>
+            <br /> <br />
+            <a
+              href=""
+              rel="noopener noreferrer"
+            >
+            {strings.extensionFirefoxInstall}
             </a>
           </p>
         </s.MyBox>

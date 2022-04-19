@@ -286,7 +286,7 @@ let strings = new LocalizedStrings(
 
       //EmptyArticles
       noArticles:
-        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome or Firefox extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
       newssites: "Examples of some of the most popular news sites are:",
 
       //ExerciseType
@@ -524,7 +524,7 @@ let strings = new LocalizedStrings(
 
       // New user created
       userCreated: "Welcome to Zeeguu",
-      installExtension: " Time to install the Zeeguu Reader Chrome extension",
+      installExtension: " Time to install the Zeeguu Reader Chrome or Firefox extension",
       extensionDescription:
         "Here on zeeguu.org you can see your words, find article recommendation links, do exercises, see statistics, etc. You can also read, but only articles that were shared with you by your teacher, or articles that you have saved from the extension.",
       extensionFunctionality:
@@ -541,14 +541,15 @@ let strings = new LocalizedStrings(
       congratulations: "Extension is installed!",
 
       //ExtensionMessage
-      extensionHeadline: "Install the Zeeguu Chrome Extension to read articles",
+      extensionHeadline: "Install the Zeeguu Chrome or Firefox Extension to read articles",
       extensionAllow:
         " The extension allows you to enrich your vocabulary in a foreign language while browsing the web and reading articles that are interesting to you. These could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
       extensionToRead:
-        'To read articles with the help of Zeeguu you need to read them from the Chrome Extension or by adding the texts to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+        'To read articles with the help of Zeeguu you need to read them from the Chrome or Firefox Extension or by adding the texts to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
       extensionReadability:
         "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos.",
-      extensionInstall: "Install it in the Chrome Web Store",
+      extensionChromeInstall: "Install it in the Chrome Web Store",
+      extensionFirefoxInstall: "Install it in the Firefox Add-ons library",
 
       //TooltipedButtons
       viewAsStudent: "View as Student",
