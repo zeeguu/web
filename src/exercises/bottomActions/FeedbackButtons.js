@@ -45,7 +45,6 @@ export default function FeedbackButtons({
 
   useEffect(() => {
     setInput("");
-    setShowInput(false);
     setClassName("");
     setShowInput(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
