@@ -1,5 +1,5 @@
 import { Zeeguu_API } from "./classDef";
-import queryString from "query-string";
+import qs from "qs";
 
 /*
   Example:
@@ -8,6 +8,11 @@ import queryString from "query-string";
     (newID)=>{
         console.log(`article created with id: ${newID}`)
       })
+
+      37 vulnerabilities (2 low, 18 moderate, 14 high, 3 critical)
+87 vulnerabilities (11 low, 50 moderate, 25 high, 1 critical)
+6 moderate severity vulnerabilities
+
 */
 
 Zeeguu_API.prototype.uploadOwnText = function (
@@ -22,12 +27,7 @@ Zeeguu_API.prototype.uploadOwnText = function (
     content: content,
     language: language,
   };
-  this._post(
-    "upload_own_text",
-    queryString.stringify(payload),
-    onSuccess,
-    onError
-  );
+  this._post("upload_own_text", qs.stringify(payload), onSuccess, onError);
 };
 
 /*
@@ -48,11 +48,7 @@ Zeeguu_API.prototype.updateOwnText = function (
     content: content,
     language: language,
   };
-  this._post(
-    `update_own_text/${id}`,
-    queryString.stringify(payload),
-    onSuccess
-  );
+  this._post(`update_own_text/${id}`, qs.stringify(payload), onSuccess);
 };
 
 /*
@@ -83,7 +79,7 @@ Zeeguu_API.prototype.shareTextWithColleague = function (
   };
   this._post(
     `send_article_to_colleague`,
-    queryString.stringify(payload),
+    qs.stringify(payload),
     onSuccess,
     onError
   );

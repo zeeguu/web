@@ -84,48 +84,6 @@ let TrashIcon = styled.div`
   }
 `;
 
-let Importance = styled.div`
-  color: ${zeeguuOrange};
-  font-size: xx-small;
-
-  .imp1 {
-    color: #fbf4d8;
-  }
-
-  .imp2 {
-    color: #f9e7bd;
-  }
-
-  .imp3 {
-    color: #f6d6a2;
-  }
-
-  .imp10 {
-    color: #bf1e06;
-  }
-  .imp9 {
-    color: #bf1e06;
-  }
-
-  .imp8 {
-    color: #f28750;
-  }
-  .imp7 {
-    color: #f28750;
-  }
-
-  .imp6 {
-    color: #f3a66c;
-  }
-  .imp5 {
-    color: #f5c187;
-  }
-
-  .imp4 {
-    color: #ffc187;
-  }
-`;
-
 let Spacer = styled.div`
   margin-bottom: 20px;
 `;
@@ -135,7 +93,6 @@ export {
   TrashIcon,
   StarIcon,
   WordPair,
-  Importance,
   Spacer,
   EditIcon,
   EditIconNoPadding,

@@ -1,5 +1,5 @@
 import { Zeeguu_API } from "./classDef";
-import queryString from "query-string";
+import qs from "qs";
 
 /*
   Example:
@@ -14,7 +14,7 @@ Zeeguu_API.prototype.joinCohort = function (inv_code, onSuccess, onError) {
   let payload = {
     invite_code: inv_code,
   };
-  this._post("join_cohort", queryString.stringify(payload), onSuccess, onError);
+  this._post("join_cohort", qs.stringify(payload), onSuccess, onError);
 };
 
 //Using my id 2794 to not get an 401 Unauthorised erorr

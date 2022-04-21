@@ -15,7 +15,7 @@ export default function NextNavigation({
   const exercise = "exercise";
 
   return (
-    <s.BottomRow>
+    <s.BottomRow className="bottomRow">
       {bookmarksToStudy.length === 1 && (
         <s.EditSpeakButtonHolder>
           <SpeakButton

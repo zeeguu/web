@@ -2,13 +2,20 @@ import styled, { css } from "styled-components";
 
 import { BigSquareButton } from "../components/allButtons.sc";
 
-import { veryLightGrey, zeeguuLightYellow, zeeguuOrange, zeeguuVarmYellow } from "../components/colors";
+import {
+  veryLightGrey,
+  zeeguuLightYellow,
+  zeeguuOrange,
+  zeeguuVarmYellow,
+} from "../components/colors";
 
 import {
   NarrowColumn,
   CenteredContent,
   ContentOnRow,
 } from "../components/ColumnWidth.sc";
+
+import { Link } from "react-router-dom";
 
 let ArticleReader = styled.div`
   max-width: 768px;
@@ -84,7 +91,7 @@ let MainText = styled.div`
 `;
 
 let _BottomButton = styled(BigSquareButton)`
-  width: 5em;
+  width: 8em;
   height: auto;
   display: inline-block;
 `;
@@ -96,8 +103,6 @@ let WhiteButton = styled(_BottomButton)`
   display: inline;
   align-items: center;
   justify-content: center;
-
-  min-width: 5em;
 
   //Small
   ${(props) =>
@@ -132,11 +137,71 @@ let OrangeButton = styled(_BottomButton)`
     color: white;
   }
 
-  width: 8em;
+  @media (min-wdith: 768px) {
+    width: 16em;
+  }
+`;
+
+let NavigationLink = styled(Link)`
+  margin:20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 8em;
+  min-height: 2em;
+  padding: 0.5em;
+  margin-left: 1em;
 
   @media (min-wdith: 768px) {
     width: 16em;
   }
+
+  // Next
+  ${(props) =>
+    props.next &&
+    css`
+      :after {
+        content: ">>";
+      }
+    `}
+  // Previous
+  ${(props) =>
+    props.prev &&
+    css`
+      :before {
+        content: " <<";
+      }
+    `}
+
+  // Primary
+  ${(props) =>
+    props.primary &&
+    css`
+      background-color: orange !important;
+      color: white !important;
+      border-color: ${zeeguuOrange};
+      border-style: solid;
+      border-width: 2px;
+      border-radius: 10px;
+    `}
+  // Secondary
+  ${(props) =>
+    props.secondary &&
+    css`
+      background-color: white !important;
+      color: orange !important;
+    `}
+    // Disabled
+    ${(props) =>
+    props.disabled &&
+    css`
+      background-color: white !important;
+      color: #999999 !important;
+      cursor: not-allowed;
+      pointer-events: none;
+      border-width: 0;
+    `}
 `;
 
 let FeedbackBox = styled.div`
@@ -181,4 +246,5 @@ export {
   ExtraSpaceAtTheBottom,
   NarrowColumn,
   ContentOnRow,
+  NavigationLink,
 };

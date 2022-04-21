@@ -13,11 +13,32 @@ const CenteredContent = styled.div`
   justify-content: center;
 `;
 
+const ToolTipsContainer = styled.div`
+display: flex;
+flex-direction: column;
+
+.tooltiptext {
+  visibility: hidden;
+  color: #999999 !important;
+  text-align: center;
+  margin-top: -2.4em;
+  font-size:small;
+  }
+
+  :hover .tooltiptext {
+    visibility: visible;
+  }
+`;
+
+
 const ContentOnRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   margin-top: 3em;
+  button{
+    margin: 0.2em;
+  }
 `;
 
 const WideColumn = styled.div`
@@ -39,4 +60,5 @@ export {
   ContentOnRow,
   WideColumn,
   WidestColumn,
+  ToolTipsContainer,
 };

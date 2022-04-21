@@ -1,5 +1,9 @@
 import styled, { keyframes } from "styled-components";
+<<<<<<< HEAD
 import { Link } from "react-router-dom";
+=======
+
+>>>>>>> origin/development
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
@@ -258,6 +262,7 @@ let BottomRow = styled.div`
   }
 `;
 
+<<<<<<< HEAD
 let BottomRowCompact = styled.div`
   display: flex;
   padding: 0.5em;
@@ -271,10 +276,19 @@ let BottomRowCompact = styled.div`
 `;
 
 let StyledLink = styled(Link)`
+=======
+let StyledGreyButton = styled.button`
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+>>>>>>> origin/development
   margin-top: 1em;
   color: gray;
   text-decoration: underline;
-  font-size: small;
+  font-size: small !important;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "Montserrat";
 `;
 
 let StyledDiv = styled.div`
@@ -318,8 +332,12 @@ export {
   Input,
   AnimatedInput,
   BottomRow,
+<<<<<<< HEAD
   BottomRowCompact,
   StyledLink,
+=======
+  StyledGreyButton,
+>>>>>>> origin/development
   StyledDiv,
   MatchButton,
   MatchingWords,

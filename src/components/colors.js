@@ -1,9 +1,10 @@
 let zeeguuVeryLightYellow = "#fafad2";
+let zeeguuVeryLightOrange = "hsl(46, 90%, 90%)";
 let zeeguuTransparentLightYellow = "#ffe59e10";
 let zeeguuLightYellow = "#ffe59e";
 let zeeguuVarmYellow = "#ffd047";
 let zeeguuSalmonOrange = "#f8bb86";
-let zeeguuTransparentLightOrange = "#ffbb5440";
+let zeeguuTransparentLightOrange = "hsl(54,100%,95%)";
 let zeeguuTransparentMediumOrange = "#ffbe007a";
 let zeeguuOrange = "#ffbb54";
 let zeeguuDarkOrange = "#9c7130";
@@ -33,6 +34,7 @@ const setColors = (isOnStudentSide) => {
 
 export {
   zeeguuVeryLightYellow,
+  zeeguuVeryLightOrange,
   zeeguuTransparentLightYellow,
   zeeguuLightYellow,
   zeeguuVarmYellow,
