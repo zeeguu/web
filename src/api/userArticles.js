@@ -2,8 +2,15 @@ import { Zeeguu_API } from "./classDef";
 import qs from "qs";
 
 // articles
+// articles
 Zeeguu_API.prototype.getUserArticles = function (callback) {
-  this._getJSON("user_articles/recommended", callback);
+  this._getJSON("user_articles/recommended", (articles) => {
+      // sometimes we get duplicates from the server
+      // deduplicate them here
+      const ids = articles.map(o => o.id)
+      const deduplicated = articles.filter(({id}, index) => !ids.includes(id, index + 1))
+      callback(deduplicated);
+  });
 };
 
 Zeeguu_API.prototype.getBookmarkedArticles = function (callback) {
