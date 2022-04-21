@@ -30,6 +30,14 @@ export default function NewArticles({ api }) {
     if (runningInChromeDesktop() && Feature.extension_experiment1() && !displayedExtensionPopup) {
       checkExtensionInstalled(setHasExtension);
     }
+    
+    // load articles
+    api.getUserArticles((articles) => {
+      setArticleList(articles);
+      setOriginalList ([...articles]);
+    });
+    setTitle(strings.findArticles);
+
   }, []);
 
   useEffect(() => {
@@ -40,11 +48,6 @@ export default function NewArticles({ api }) {
 
 
   if (articleList == null) {
-    api.getUserArticles((articles) => {
-      setArticleList(articles);
-      setOriginalList ([...articles]);
-    });
-    setTitle(strings.findArticles);
     return <LoadingAnimation />;
   }
 
