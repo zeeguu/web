@@ -1,8 +1,33 @@
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import Exercises from "./Exercises";
+import { UMR_SOURCE } from "../reader/ArticleReader";
 
 export default function ExercisesForArticle({ api }) {
+  const history = useHistory();
   let { articleID } = useParams();
 
-  return <Exercises api={api} articleID={articleID} />;
+  const backToArticleAction = (e) => {
+    e.preventDefault();
+    history.push({
+      pathname: "/read/article",
+      search: `?id=${articleID}`,
+    });
+    api.logReaderActivity(api.BACK_TO_READING, articleID, "", UMR_SOURCE);
+  };
+
+  const keepExercisingAction = () => {
+    window.location.reload(false);
+    api.logReaderActivity(api.KEEP_EXERCISING, articleID, "", UMR_SOURCE);
+  };
+
+
+  return (
+    <Exercises
+      api={api}
+      articleID={articleID}
+      backButtonAction={backToArticleAction}
+      keepExercisingAction={keepExercisingAction}
+      source={UMR_SOURCE}
+    />
+  );
 }

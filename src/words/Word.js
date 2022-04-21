@@ -9,34 +9,34 @@ export default function Word({
   bookmark,
   notifyUnstar,
   notifyDelete,
+  notifyStar,
+  notifyEdit,
   children,
   api,
   hideStar,
+  source
 }) {
   const [starred, setStarred] = useState(bookmark.starred);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
-  let importance = Math.min(10, Math.floor(bookmark.origin_importance));
-  let importanceBars = "";
-  if (importance) {
-    importanceBars = "■".repeat(importance) + "□".repeat(11 - importance);
-
-    // ideas from: https://changaco.oy.lc/unicode-progress-bars/
-  }
 
   function toggleStarred(bookmark) {
     if (starred) {
       api.unstarBookmark(bookmark.id);
       bookmark.starred = false;
       setStarred(false);
+      if (notifyUnstar) {
+        notifyUnstar(bookmark);
+      }
+      api.logReaderActivity(api.UNSTAR_WORD, bookmark.article_id, bookmark.from, source);
     } else {
       api.starBookmark(bookmark.id);
       setStarred(true);
       bookmark.starred = true;
-    }
-
-    if (notifyUnstar) {
-      notifyUnstar(bookmark);
+      if (notifyStar) {
+        notifyStar(bookmark);
+      }
+      api.logReaderActivity(api.STAR_WORD, bookmark.article_id, bookmark.from, source);
     }
   }
 
@@ -46,6 +46,7 @@ export default function Word({
     if (notifyDelete) {
       notifyDelete(bookmark);
     }
+    api.logReaderActivity(api.DELETE_WORD, bookmark.article_id, bookmark.from, source);
   }
 
   if (deleted) {
@@ -63,7 +64,7 @@ export default function Word({
     <>
       <s.Word key={bookmark.id}>
         <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
-          <img src="/static/images/trash.svg" alt="trash" />
+          <img src="https://zeeguu.org/static/images/trash.svg" alt="trash" />
         </s.TrashIcon>
         <EditButton
           bookmark={bookmark}
@@ -76,7 +77,7 @@ export default function Word({
           <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
             <img
               src={
-                "/static/images/yellow_star" +
+                "https://zeeguu.org/static/images/yellow_star" +
                 (bookmark.starred ? ".svg" : "_empty.svg")
               }
               alt="star"
@@ -88,11 +89,6 @@ export default function Word({
           <div className="from" style={grayed_out_if_not_scheduled_for_study}>
             {bookmark.from}
           </div>
-
-          <s.Importance>
-            <span className={"imp" + importance}>{importanceBars}</span>
-          </s.Importance>
-
           <div className="to" style={grayed_out_if_not_scheduled_for_study}>
             {bookmark.to}
           </div>

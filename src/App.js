@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
 import SignIn from "./pages/SignIn";
@@ -10,6 +10,14 @@ import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
+import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
+import ExtensionInstalled from "./pages/ExtensionInstalled";
+import {
+  getUserSession,
+  saveUserInfoIntoCookies,
+  removeUserInfoFromCookies,
+} from "./utils/cookies/userInfo";
+import InstallExtension from "./pages/InstallExtension";
 
 function App() {
   let userDict = {};
@@ -17,12 +25,12 @@ function App() {
   // we use the _api to initialize the api state variable
   let _api = new Zeeguu_API(process.env.REACT_APP_API_URL);
 
-  if (LocalStorage.hasSession()) {
+  if (getUserSession()) {
     userDict = {
-      session: localStorage["sessionID"],
+      session: getUserSession(),
       ...LocalStorage.userInfo(),
     };
-    _api.session = localStorage["sessionID"];
+    _api.session = getUserSession();
   }
 
   useUILanguage();
@@ -30,6 +38,26 @@ function App() {
   const [api] = useState(_api);
 
   const [user, setUser] = useState(userDict);
+  const [hasExtension, setHasExtension] = useState(false);
+
+  useEffect(() => {
+    // when creating the app component we also load the
+    // user details from the server; this also ensures that
+    // we get the latest feature flags for this user and save
+    // them in the LocalStorage
+    api.getUserDetails((data) => {
+      LocalStorage.setUserInfo(data);
+    });
+
+    //logs out user on zeeguu.org if they log out of the extension
+    const interval = setInterval(() => {
+      if (!getUserSession()) {
+        setUser({});
+      }
+    }, 1000);
+    checkExtensionInstalled(setHasExtension);
+    return () => clearInterval(interval);
+  }, []);
 
   function handleSuccessfulSignIn(userInfo, history) {
     setUser({
@@ -42,26 +70,24 @@ function App() {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
 
-    // TODO: this is required by the teacher dashboard
-    // could be cool to remove it from there and make that
-    // one also use the localStorage
-    document.cookie = `sessionID=${api.session};`;
+    // Cookies are the mechanism via which we share a login
+    // between the extension and the website
+    saveUserInfoIntoCookies(userInfo, api.session);
 
-    userInfo.is_teacher
-      ? history.push("/teacher/classes")
-      : history.push("/articles");
+    if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
+      history.push("/install_extension");
+    } else {
+      userInfo.is_teacher
+        ? history.push("/teacher/classes")
+        : history.push("/articles");
+    }
   }
 
   function logout() {
     LocalStorage.deleteUserInfo();
     setUser({});
 
-    // expire cookies, cf. https://stackoverflow.com/a/27374365/1200070
-    document.cookie.split(";").forEach(function (c) {
-      document.cookie = c
-        .replace(/^ +/, "")
-        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-    });
+    removeUserInfoFromCookies();
   }
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
@@ -89,6 +115,16 @@ function App() {
                   signInAndRedirect={handleSuccessfulSignIn}
                 />
               )}
+            />
+
+            <Route
+              path="/extension_installed"
+              render={() => <ExtensionInstalled />}
+            />
+
+            <Route
+              path="/install_extension"
+              render={() => <InstallExtension />}
             />
 
             <Route

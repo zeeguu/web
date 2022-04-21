@@ -1,5 +1,5 @@
 import { Zeeguu_API } from "./classDef";
-import queryString from "query-string";
+import qs from "qs";
 
 Zeeguu_API.prototype.getUserDetails = function (callback) {
   this._getJSON("get_user_details", callback);
@@ -46,7 +46,7 @@ Zeeguu_API.prototype.modifyCEFRlevel = function (
   };
   this._post(
     `user_languages/modify`,
-    queryString.stringify(payload),
+    qs.stringify(payload),
     onSuccess,
     onError
   );

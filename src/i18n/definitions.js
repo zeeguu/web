@@ -24,6 +24,7 @@ let strings = new LocalizedStrings(
       plsProvideValidEmail: "Please provide a valid email.",
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
+      alreadyHaveAccount: "Already have an account? Login instead",
       code: "Code",
       interest: "interest",
       addTexts: "Add Texts",
@@ -57,7 +58,7 @@ let strings = new LocalizedStrings(
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
       inviteCode: "Invite code",
       levelOfLearnedLanguage: "Level in Learned Language",
-      baseLanguage: "Base languange",
+      baseLanguage: "Base languange (English recommended)",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
@@ -173,10 +174,10 @@ let strings = new LocalizedStrings(
       contributors: "Contributors",
 
       //ArticleRouter
-      findTab: "Find",
+      findTab: "Recommended",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
-      ownTextsTab: "Own Texts",
+      myTextsTab: "My Texts",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
@@ -274,15 +275,19 @@ let strings = new LocalizedStrings(
       reviewTranslations: "Review Translations for Your Exercises ",
       from: "From: ",
       deleteTranslation:
-        "Delete a translation if you don't want it in exercises.",
-      starTranslation:
-        "Star a translation to make it have priority in exercises.",
+        "Delete a translation if you don't want it to appear in exercises.",
+      starTranslation: "Starred translations have priority in exercises.",
       ifGreyedTranslation:
-        "If a translation is grayed out, it means that Zeeguu does not think it is appropriate for exercises; to overload this decision you can star the translation.",
+        "Translations are grayed out because they are not suitable for the exercises. Star them if you disagree.",
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
       toExercises: "To Exercises",
+
+      //EmptyArticles
+      noArticles:
+        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+      newssites: "Examples of some of the most popular news sites are:",
 
       //ExerciseType
       matchThreePairs: " match 3 pairs",
@@ -295,7 +300,8 @@ let strings = new LocalizedStrings(
       //Exercises
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
-      noTranslatedWords: "You have no translated words.",
+      goBackArticlePrefix: "Go back to reading: ",
+      noTranslatedWords: "You have no words to practice.",
       goToTextsToTranslateWords: "Read and translate words to get exercises.",
       goStarTranslations:
         "Go back and star translations for Zeeguu to include them in your exercises.",
@@ -372,9 +378,9 @@ let strings = new LocalizedStrings(
       keepExercising: "Keep Exercising",
 
       //CongratulationsPage
-      goodJob: "Good Job!",
-      correct: "Correct",
-      payMoreAttentionTo: "Pay more attention to",
+      goodJob: "Good Job, ",
+      correct: "Seems like you know these words:",
+      payMoreAttentionTo: "Pay more attention to these words:",
 
       //Settings
       nativeLanguage: "Native Language",
@@ -519,6 +525,34 @@ let strings = new LocalizedStrings(
         "Your colleague should be able to find the text under 'My Texts' in a moment.",
       ok: "OK",
 
+      // New user created
+      userCreated: "Welcome to Zeeguu",
+      installExtension: " Time to install the Zeeguu Reader Chrome extension",
+      extensionDescription:
+        "Here on zeeguu.org you can see your words, find article recommendation links, do exercises, see statistics, etc. You can also read, but only articles that were shared with you by your teacher, or articles that you have saved from the extension.",
+      extensionFunctionality:
+        "When you follow an article recommendation link, or you find an article on the net, you should activate the extension which:",
+      extensionAdvantage1: "Offers you one-click translation and pronunciation",
+      extensionAdvantage2:
+        "Removes all excess clutter, like adverts, buttons, and videos from the article",
+      extensionAdvantage3:
+        "Generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
+
+      //Extension installed
+      goToArticles: "Go to article recommendations",
+      pinExtension: "Pin it to the toolbar to make it easy to access.",
+      congratulations: "Extension is installed!",
+
+      //ExtensionMessage
+      extensionHeadline: "Install the Zeeguu Chrome Extension to read articles",
+      extensionAllow:
+        " The extension allows you to enrich your vocabulary in a foreign language while browsing the web and reading articles that are interesting to you. These could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
+      extensionToRead:
+        'To read articles with the help of Zeeguu you need to read them from the Chrome Extension or by adding the texts to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+      extensionReadability:
+        "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos.",
+      extensionInstall: "Install it in the Chrome Web Store",
+
       //TooltipedButtons
       viewAsStudent: "View as Student",
       addToClass: "Share/unshare with class",
@@ -569,6 +603,19 @@ let strings = new LocalizedStrings(
       kurdish: "Kurdish",
       swedish: "Swedish",
       russian: "Russian",
+      hungarian: "Hungarian",
+      ukrainian: "Ukrainian",
+      vietnamese: "Vietnamese",
+      norwegian: "Norwegian",
+      portughese: "Portuguese",
+      albanian: "Albanian",
+      japanese: "Japanese",
+      serbian: "Serbian",
+      latvian: "Latvian",
+      indonesian: "Indonesian",
+      urdu: "Urdu",
+      tamil: "Tamil",
+      bengali: "Bengali",
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -825,6 +872,7 @@ let strings = new LocalizedStrings(
         "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
 
       mirceaKeynoteAtEASEAI: "Mircea giver en keynote om Zeeguu på ",
+
       pernilleObtainsFundingPrefix:
         "Pernille Hvalsoe modtager bevillinger fra Styrelsen for International Rekruttering og Integration til et ",
       pernilleObtainsFundingLinkTitle:
@@ -857,7 +905,7 @@ let strings = new LocalizedStrings(
       findTab: "Find",
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
-      ownTextsTab: "Egne Tekster",
+      myTextsTab: "Mine Tekster",
 
       //WordsRouter
       yourWordsHeadline: "Dine ord",
@@ -966,6 +1014,12 @@ let strings = new LocalizedStrings(
       backToArticle: "Tilbage til artiklen",
       toExercises: "Til øvelserne",
 
+      //EmptyArticles
+      noArticles:
+        "Vi har ikke indhentet artikler i det sprog, som du gerne vil studere. For at læse artikler med Zeeguu kan du i stedet browse på nettet og læse artikler ved hjælp af vores Chrome udvidelse. Du kan også tilføje artikler til “Egne Tekster” via “Save article to zeeguu.org” knappen inde i udvidelsen.",
+      newssites:
+        "Herunder finder du eksempler på nogle af de mest populære nyhedssider:",
+
       //ExerciseType
       matchThreePairs: " match 3 par",
       pickTheWord: "vælg ordet",
@@ -1049,9 +1103,9 @@ let strings = new LocalizedStrings(
       keepExercising: "Øve dig videre",
 
       //CongratulationsPage
-      goodJob: "Bravo!",
-      correct: "Rigtig",
-      payMoreAttentionTo: "Vær mere opmærksom på",
+      goodJob: "Bravo, ",
+      correct: "Det ser ud til, at du har styr på disse ord: ",
+      payMoreAttentionTo: "Vær mere opmærksom på disse ord: ",
 
       //Settings
       nativeLanguage: "Modersmål",
@@ -1244,6 +1298,19 @@ let strings = new LocalizedStrings(
       kurdish: "Kurdisk",
       swedish: "Svensk",
       russian: "Russisk",
+      hungarian: "Ungarnsk",
+      ukrainian: "Ukrainsk",
+      vietnamese: "Vietnamesisk",
+      norwegian: "Norsk",
+      portughese: "Portugisisk",
+      albanian: "Albansk",
+      japanese: "Japansk",
+      serbian: "Serbisk",
+      latvian: "Lettisk",
+      indonesian: "Indonesisk",
+      urdu: "Urdu",
+      tamil: "Tamil",
+      bengali: "Bengali",
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",

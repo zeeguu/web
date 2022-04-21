@@ -48,15 +48,15 @@ export default function EditButton({
     <div>
       {styling === "exercise" ? (
         <s.EditButton onClick={handleOpen}>
-          <img src="/static/images/file_rename_orange_36dp.svg" alt="edit" />
+          <img src="https://zeeguu.org/static/images/file_rename_orange_36dp.svg" alt="edit" />
         </s.EditButton>
       ) : styling === "match" ? (
         <sc.EditIconNoPadding onClick={handleOpen}>
-          <img src="/static/images/file_rename_orange_36dp.svg" alt="edit" />
+          <img src="https://zeeguu.org/static/images/file_rename_orange_36dp.svg" alt="edit" />
         </sc.EditIconNoPadding>
       ) : (
         <sc.EditIcon onClick={handleOpen}>
-          <img src="/static/images/file_rename_orange_36dp.svg" alt="edit" />
+          <img src="https://zeeguu.org/static/images/file_rename_orange_36dp.svg" alt="edit" />
         </sc.EditIcon>
       )}
       <Modal

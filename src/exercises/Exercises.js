@@ -13,7 +13,6 @@ import AudioExerciseOne from "./exerciseTypes/audioExerciseOne/AudioExerciseOne"
 import AudioExerciseTwo from "./exerciseTypes/audioExerciseTwo/AudioExerciseTwo";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
-
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 
 let BOOKMARKS_FOR_EXERCISE = [
@@ -39,7 +38,13 @@ let BOOKMARKS_FOR_EXERCISE = [
   },
 ];
 
-export default function Exercises({ api, articleID }) {
+export default function Exercises({
+  api,
+  articleID,
+  backButtonAction,
+  keepExercisingAction,
+  source
+}) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
   );
@@ -156,6 +161,24 @@ export default function Exercises({ api, articleID }) {
     return exerciseSession;
   }
 
+  function truncate(str, n){
+    return (str.length > n) ? str.substr(0, n-1) + '...' : str;
+  };
+
+  let wordSourceText = articleInfo ? (
+    <><a href="#" className="wordSourceText" onClick={backButtonAction}>{truncate(articleInfo.title, 40)}</a></>
+  ) : (
+    <>{strings.wordSourceDefaultText}</>
+  );
+
+  let wordSourcePrefix = articleInfo ? (
+    <>{strings.goBackArticlePrefix}</>
+  ) : (
+    <>{strings.wordSourcePrefix}</>
+  );
+
+
+
   /**
    * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
    * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
@@ -182,15 +205,17 @@ export default function Exercises({ api, articleID }) {
   }
 
   if (finished) {
+    api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     return (
-      <div>
-        <Congratulations
-          articleID={articleID}
-          correctBookmarks={correctBookmarks}
-          incorrectBookmarks={incorrectBookmarks}
-          api={api}
-        />
-      </div>
+      <Congratulations
+        articleID={articleID}
+        correctBookmarks={correctBookmarks}
+        incorrectBookmarks={incorrectBookmarks}
+        api={api}
+        backButtonAction={backButtonAction}
+        keepExercisingAction={keepExercisingAction}
+        source={source}
+      />
     );
   }
 
@@ -198,18 +223,13 @@ export default function Exercises({ api, articleID }) {
     return <LoadingAnimation />;
   }
 
-  if (countBookmarksToPractice === 0 && !articleID) {
+  if (countBookmarksToPractice === 0) {
     return (
-      <s.ExercisesColumn>
-        <OutOfWordsMessage />
-      </s.ExercisesColumn>
-    );
-  }
-  if (countBookmarksToPractice === 0 && articleID) {
-    return (
-      <s.ExercisesColumn>
-        <OutOfWordsMessage action={"back"} />
-      </s.ExercisesColumn>
+      <OutOfWordsMessage
+        message={strings.goToTextsToTranslateWords}
+        buttonText={strings.backToReading}
+        buttonAction={backButtonAction}
+      />
     );
   }
 
@@ -261,20 +281,13 @@ export default function Exercises({ api, articleID }) {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
 
-  let wordSourceText = articleInfo ? (
-    <>"{articleInfo.title}"</>
-  ) : (
-    <>{strings.wordSourceDefaultText}</>
-  );
-
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
-    <s.ExercisesColumn>
-      <s.LittleMessageAbove>
-        {strings.wordSourcePrefix} {wordSourceText}
-      </s.LittleMessageAbove>
+    <s.ExercisesColumn className="exercisesColumn">
+        <s.LittleMessageAbove>
+          {wordSourcePrefix} {wordSourceText}
+        </s.LittleMessageAbove>
       <ProgressBar index={currentIndex} total={exerciseSession.length} />
-
       <s.ExForm>
         <CurrentExercise
           bookmarksToStudy={currentBookmarksToStudy}

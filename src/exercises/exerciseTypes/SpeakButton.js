@@ -112,6 +112,7 @@ export default function SpeakButton({
             !isSpeaking && handleSpeak();
           }}
         >
+<<<<<<< HEAD
           {isSpeaking && (
             <Loader
               type="Bars"
@@ -142,6 +143,20 @@ export default function SpeakButton({
             />
           )}
         </s.SpeakButton>
+=======
+          <img
+            src="https://zeeguu.org/static/images/volume_up.svg"
+            alt={strings.speak}
+            width={iconWidth}
+            style={{
+              paddingLeft: iconStyle.paddingLeft,
+              paddingRight: iconStyle.paddingRight,
+              marginTop: iconStyle.marginTop,
+              marginBottom: iconStyle.marginBottom,
+            }}
+          />
+        </s.FeedbackButton>
+>>>>>>> origin/development
       )}
     </>
   );
