@@ -18,6 +18,7 @@ import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoAr
 
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
+  const [originalList, setOriginalList] = useState(null);
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
@@ -38,14 +39,10 @@ export default function NewArticles({ api }) {
   }, [hasExtension]);
 
 
-  var originalList = null;
-
-  //on initial render
-
   if (articleList == null) {
     api.getUserArticles((articles) => {
       setArticleList(articles);
-      originalList = [...articles];
+      setOriginalList ([...articles]);
     });
     setTitle(strings.findArticles);
     return <LoadingAnimation />;
@@ -56,7 +53,7 @@ export default function NewArticles({ api }) {
     setArticleList(null);
     api.getUserArticles((articles) => {
       setArticleList(articles);
-      originalList = [...articles];
+      setOriginalList ([...articles]);
     });
   }
 
