@@ -24,7 +24,6 @@ export default function SortingButtons({
     sortingFunction
   ) {
     if (currentSort === "ascending") {
-      console.log("currentsort was ascending; switching to descending")
       sortArticleList(sortingFunction);
       setCurrentSort("descending");
       setOtherSort("");
@@ -32,7 +31,6 @@ export default function SortingButtons({
       setArticleList(originalList);
       setCurrentSort("");
     } else {
-      console.log("there was no current sort; setting it to ascending")
       sortArticleList((a, b) => 0 - sortingFunction(a, b));
       setCurrentSort("ascending");
       setOtherSort("");
