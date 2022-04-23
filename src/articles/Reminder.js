@@ -38,13 +38,13 @@ export default function Reminder({ hasExtension }) {
     return (
       <ExtensionReminder>
         To read articles with the help of Zeeguu you should read them from the
-        Chrome or Firefox extension. Thus you must use a Chrome or Firefox
-        browser. From within the extension you can then add texts to "My Texts"
+        Chrome or Firefox extension. Thus you must use a Chrome, Edge or Firefox
+        browser on desktop. From within the extension you can then add texts to "My Texts"
         through the "Save article to Zeeguu.org" button. Install the extension in the 
         <a
           href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
           rel="noopener noreferrer"
-        > Chrome Web Store 
+        > Chrome Web Store (also for an Edge browser) 
         </a> or install it in the 
         <a
           href=""
