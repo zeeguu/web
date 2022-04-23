@@ -36,14 +36,15 @@
   "scripts": {
     "start": "react-scripts start",
     "prebuild": "rimraf build",
-    "build": "npm-run-all build:*",
-    "copyChrome": "cp ./public/manifest.chrome.json ./public/manifest.json",
-    "copyFirefox": "cp ./public/manifest.firefox.json ./public/manifest.json",
+    "build": "cp ./public/manifest.chrome.json ./public/manifest.json && npm-run-all build:*",
+    "buildFirefox": "cp ./public/manifest.firefox.json ./public/manifest.json && npm-run-all build:*",
     "build:app": "INLINE_RUNTIME_CHUNK=false DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "build:bg": "webpack --mode production ./src/JSInjection/main.js --output-path ./build/",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "pub": "rm -rf build* && (cd src/zeeguu-react/ && git pull) && npm-run-all build:* && zip -r build.zip build && open https://chrome.google.com/webstore/devconsole/7f6da896-c12c-4cb3-8ad7-b1641fc8efbc/ckncjmaednfephhbpeookmknhmjjodcd/edit/package"
+    "pub": "rm -rf build* && (cd src/zeeguu-react/ && git pull) && cp ./public/manifest.chrome.json ./public/manifest.json && npm-run-all build:* && zip -r build.zip build && open https://chrome.google.com/webstore/devconsole/7f6da896-c12c-4cb3-8ad7-b1641fc8efbc/ckncjmaednfephhbpeookmknhmjjodcd/edit/package",
+    "pubFirefox": "rm -rf build* && (cd src/zeeguu-react/ && git pull) && cp ./public/manifest.firefox.json ./public/manifest.json && npm-run-all build:* && (cd build && zip -r ../build.zip *) && open https://addons.mozilla.org/en-US/firefox/"
+
   },
   "eslintConfig": {
     "extends": [
