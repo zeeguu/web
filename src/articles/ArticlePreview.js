@@ -2,21 +2,14 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import Feature from "../features/Feature";
-import { useState, useEffect } from "react";
-import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import {runningInChromeDesktop} from "../utils/misc/browserDetection";
 
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
   dontShowImage,
+  hasExtension
 }) {
-  const [hasExtension, setHasExtension] = useState(false);
-
-  useEffect(() => {
-      checkExtensionInstalled(setHasExtension);
-  }, []);
-
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
