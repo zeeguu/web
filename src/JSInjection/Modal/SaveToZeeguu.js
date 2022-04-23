@@ -17,11 +17,11 @@ export default function SaveToZeeguu({ api, articleId, setPersonalCopySaved, per
     <>
       {personalCopySaved ? (
         <StyledSmallDisabledButton>
-          Saved article on zeeguu.org
+          Saved on zeeguu.org
         </StyledSmallDisabledButton>
       ) : (
         <StyledSmallButtonBlue onClick={handlePostCopy}>
-          Save article article to zeeguu.org
+          Save article to zeeguu.org
         </StyledSmallButtonBlue>
       )}
     </>
