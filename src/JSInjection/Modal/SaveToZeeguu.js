@@ -21,7 +21,7 @@ export default function SaveToZeeguu({ api, articleId, setPersonalCopySaved, per
         </StyledSmallDisabledButton>
       ) : (
         <StyledSmallButtonBlue onClick={handlePostCopy}>
-          Save to zeeguu.org
+          Save article to zeeguu.org
         </StyledSmallButtonBlue>
       )}
     </>
