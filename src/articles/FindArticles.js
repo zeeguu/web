@@ -84,7 +84,7 @@ export default function NewArticles({ api }) {
       />
       <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} api={api} />
+        <ArticlePreview key={each.id} article={each} api={api} hasExtension={hasExtension}/>
       ))}
       <ShowLinkRecommendationsIfNoArticles articleList={articleList}></ShowLinkRecommendationsIfNoArticles>
     </>
