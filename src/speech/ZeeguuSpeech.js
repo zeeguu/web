@@ -11,8 +11,8 @@ const ZeeguuSpeech = class {
       .then((data) => {
         // The "data" object contains the list of available voices and the voice synthesis params
         if (language === "nl") {
-          let randomVoice = _getDutchNetherlandsVoice(data.voices);
-          this.speech.setVoice(randomVoice.name);
+          let dutchVoice = _getDutchNetherlandsVoice(data.voices);
+          this.speech.setVoice(dutchVoice.name);
         } else {
           let randomVoice = _getRandomVoice(data.voices, language);
           this.speech.setVoice(randomVoice.name);
