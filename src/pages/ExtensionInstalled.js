@@ -11,7 +11,6 @@ export default function ExtensionInstalled() {
         <s.ExtensionInstalledWrapper>
           <h1>{strings.congratulations}</h1>
           <h4>{strings.pinExtension}</h4>
-
           <img
             src={"https://zeeguu.org/static/images/zeeguuExtension.gif"}
             alt="How to pin Chrome Extension to Chrome Toolbar gif"
