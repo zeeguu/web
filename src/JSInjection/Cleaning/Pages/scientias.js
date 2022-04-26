@@ -4,10 +4,10 @@ export function convertStrongToHeader(readabilityContent) {
   const newDiv = document.createElement("div");
   newDiv.innerHTML = readabilityContent;
   const pTags = newDiv.getElementsByTagName("p")
-  if (pTags.length !== 0) {
+  if (pTags) {
     for (let i = 0; i < pTags.length; i++) {
       const children = pTags[i].children;
-      if (children.length !== 0) {
+      if (children) {
         for (let j = 0; j < children.length; j++) {
           if (children[j].tagName === "STRONG") {
             const header = document.createElement("H4");
