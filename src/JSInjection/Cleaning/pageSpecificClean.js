@@ -19,6 +19,8 @@ import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
 import { cleanFakt, faktRegex } from "./Pages/fakt";
 import { removeAllChildNodes } from "../../popup/functions";
 import { politikenRegex, removeSignUp} from "./Pages/politiken";
+import { scientiasRegex, convertStrongToHeader } from "./Pages/scientias";
+
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -71,7 +73,10 @@ export function pageSpecificClean(articleContent, url) {
    }
    if (url.match(politikenRegex)) {
     return removeSignUp(articleContent)
-    }
+  }
+  if (url.match(scientiasRegex)) {
+    return convertStrongToHeader(articleContent)
+  }
     return articleContent;
   }
   
