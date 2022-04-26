@@ -19,6 +19,8 @@ import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
 import { cleanFakt, faktRegex } from "./Pages/fakt";
 import { removeAllChildNodes } from "../../popup/functions";
 import { politikenRegex, removeSignUp} from "./Pages/politiken";
+import { egyszervoltRegex, removeIMGTag } from "./Pages/egyszervolt";
+
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -58,19 +60,22 @@ export function pageSpecificClean(articleContent, url) {
       return cleanBerlingske(articleContent)
     }
     if(url.match(cnnRegex)){
-      return addImageCNN(articleContent, getEntireHTML(url))
+      return addImageCNN(articleContent, getEntireHTML(url));
     }
-    if(url.match(bbcRegex)){
-      return cleanBBC(articleContent)
+    if (url.match(bbcRegex)) {
+      return cleanBBC(articleContent);
     }
-    if(url.match(wyborczaRegex)){
-      return cleanWyborcza(articleContent)
+    if (url.match(wyborczaRegex)) {
+      return cleanWyborcza(articleContent);
     }
     if (url.match(rzeczRegex)) {
-       return cleanRzecz(articleContent)
-   }
-   if (url.match(politikenRegex)) {
-    return removeSignUp(articleContent)
+      return cleanRzecz(articleContent);
+    }
+    if (url.match(politikenRegex)) {
+      return removeSignUp(articleContent);
+    }
+    if (url.match(egyszervoltRegex)) {
+      return removeIMGTag(articleContent);
     }
     return articleContent;
   }

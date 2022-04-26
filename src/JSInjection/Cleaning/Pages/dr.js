@@ -31,9 +31,7 @@ function removePrefixandDate(documentClone) {
 }
 
 function multipleAuthors(documentClone) {
-  const authors = documentClone.getElementsByClassName(
-    "dre-byline__contribution"
-  );
+  const authors = documentClone.getElementsByClassName("dre-byline__contribution");
   if (authors) {
     if (authors.length > 0) {
       for (let i = 0; i < authors.length; i++) {
@@ -47,16 +45,16 @@ function multipleAuthors(documentClone) {
 }
 
 function removeNumberInHeadline(documentClone) {
-  const headlineNumber = documentClone.getElementsByClassName(
-    "dre-article-body-emphasized-list-sub-heading__marker"
-  );
-  if (headlineNumber.length > 0) {
-    const arrayOfHeadlineNumbers = Array.from(headlineNumber);
-    arrayOfHeadlineNumbers.forEach((element) => {
-      if (element.parentNode) {
-        element.parentNode.removeChild(element);
-      }
-    });
+  const headlineNumber = documentClone.getElementsByClassName("dre-article-body-emphasized-list-sub-heading__marker");
+  if (headlineNumber) {
+    if (headlineNumber.length > 0) {
+      const arrayOfHeadlineNumbers = Array.from(headlineNumber);
+      arrayOfHeadlineNumbers.forEach((element) => {
+        if (element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      });
+    }
   }
   return documentClone;
 }
