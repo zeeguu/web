@@ -13,37 +13,57 @@ import AudioExerciseOne from "./exerciseTypes/audioExerciseOne/AudioExerciseOne"
 import AudioExerciseTwo from "./exerciseTypes/audioExerciseTwo/AudioExerciseTwo";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
-const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
+import Feature from "../features/Feature";
+import LocalStorage from "../assorted/LocalStorage";
 
-let BOOKMARKS_FOR_EXERCISE = [
-  {
-    type: Match,
-    requiredBookmarks: 3,
-  },
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 1,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
-  {
-    type: AudioExerciseOne,
-    requiredBookmarks: 1,
-  },
-  {
-    type: AudioExerciseTwo,
-    requiredBookmarks: 3,
-  },
-];
+const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
+let BOOKMARKS_FOR_EXERCISE = [];
+if (Feature.audio_exercises && !LocalStorage.audioExperimentCompleted) {
+  BOOKMARKS_FOR_EXERCISE = [
+    {
+      type: Match,
+      requiredBookmarks: 3,
+    },
+    {
+      type: MultipleChoice,
+      requiredBookmarks: 1,
+    },
+    {
+      type: FindWordInContext,
+      requiredBookmarks: 1,
+    },
+    {
+      type: AudioExerciseOne,
+      requiredBookmarks: 1,
+    },
+    {
+      type: AudioExerciseTwo,
+      requiredBookmarks: 3,
+    },
+  ];
+} else {
+  BOOKMARKS_FOR_EXERCISE = [
+    {
+      type: Match,
+      requiredBookmarks: 3,
+    },
+    {
+      type: MultipleChoice,
+      requiredBookmarks: 1,
+    },
+    {
+      type: FindWordInContext,
+      requiredBookmarks: 1,
+    },
+  ];
+}
 
 export default function Exercises({
   api,
   articleID,
   backButtonAction,
   keepExercisingAction,
-  source
+  source,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
@@ -161,12 +181,16 @@ export default function Exercises({
     return exerciseSession;
   }
 
-  function truncate(str, n){
-    return (str.length > n) ? str.substr(0, n-1) + '...' : str;
-  };
+  function truncate(str, n) {
+    return str.length > n ? str.substr(0, n - 1) + "..." : str;
+  }
 
   let wordSourceText = articleInfo ? (
-    <><a href="#" className="wordSourceText" onClick={backButtonAction}>{truncate(articleInfo.title, 40)}</a></>
+    <>
+      <a href="#" className="wordSourceText" onClick={backButtonAction}>
+        {truncate(articleInfo.title, 40)}
+      </a>
+    </>
   ) : (
     <>{strings.wordSourceDefaultText}</>
   );
@@ -176,8 +200,6 @@ export default function Exercises({
   ) : (
     <>{strings.wordSourcePrefix}</>
   );
-
-
 
   /**
    * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
@@ -284,9 +306,9 @@ export default function Exercises({
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
     <s.ExercisesColumn className="exercisesColumn">
-        <s.LittleMessageAbove>
-          {wordSourcePrefix} {wordSourceText}
-        </s.LittleMessageAbove>
+      <s.LittleMessageAbove>
+        {wordSourcePrefix} {wordSourceText}
+      </s.LittleMessageAbove>
       <ProgressBar index={currentIndex} total={exerciseSession.length} />
       <s.ExForm>
         <CurrentExercise
