@@ -254,7 +254,7 @@ export default function Exercises({
     !LocalStorage.audioExperimentCompleted &&
     LocalStorage.displayedAudioExperimentPopup
   ) {
-    api.logReaderActivity(api.AUDIO_EXP, articleID, "", source);
+    api.logReaderActivity(api.AUDIO_EXP, api.COMPLETED_EXERCISES, articleID, "", source);
     return (
       <Congratulations
         articleID={articleID}
