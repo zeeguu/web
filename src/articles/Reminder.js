@@ -9,8 +9,8 @@ export default function Reminder({ hasExtension }) {
   if (!hasExtension && runningInChromeDesktop() && Feature.extension_experiment1()) {
     return (
       <ExtensionReminder>
-        To read articles with the help of Zeeguu you need to read them from the
-        Chrome extension or by adding the texts to "My Texts" through the "Save
+        To read articles with the help of Zeeguu you need to read them from the 
+        browser extension or by adding the texts to "My Texts" through the "Save
         article to Zeeguu.org" button from within the extension.
         <a
           href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
@@ -24,7 +24,7 @@ export default function Reminder({ hasExtension }) {
     return (
       <ExtensionReminder>
         To read articles with the help of Zeeguu you need to read them from the
-        Firefox extension or by adding the texts to "My Texts" through the "Save
+        browser extension or by adding the texts to "My Texts" through the "Save
         article to Zeeguu.org" button from within the extension.
         <a
           href=""
@@ -37,9 +37,8 @@ export default function Reminder({ hasExtension }) {
   if (!runningInChromeDesktop()  && !runningInFirefoxDesktop() &&  Feature.extension_experiment1()) {
     return (
       <ExtensionReminder>
-        To read articles with the help of Zeeguu you should read them from the
-        Chrome or Firefox extension. Thus you must use a Chrome, Edge or Firefox
-        browser on desktop. 
+        To read articles with the help of Zeeguu you should read them from the 
+        browser extension. Thus you must use a Chrome, Edge or Firefox browser on desktop. 
         <br/><br/>
         From within the extension you can then add texts to "My Texts"
         through the "Save article to Zeeguu.org" button. Install the extension in the 
