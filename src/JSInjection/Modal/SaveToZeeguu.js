@@ -2,7 +2,7 @@ import {
   StyledSmallButtonBlue,
   StyledSmallDisabledButton,
 } from "./Buttons.styles";
-import EXTENSION_SOURCE from "../constants";
+import {EXTENSION_SOURCE} from "../constants";
 
 export default function SaveToZeeguu({ api, articleId, setPersonalCopySaved, personalCopySaved}) {
 
