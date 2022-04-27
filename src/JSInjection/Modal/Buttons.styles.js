@@ -74,9 +74,6 @@ export let NavigationButton = styled.button`
   padding: 0.5em;
   font-size: 1.2em;
   margin-left: 1em;
-  @media (min-wdith: 768px) {
-    width: 16em;
-  }
   // Next
   ${(props) =>
     props.next &&

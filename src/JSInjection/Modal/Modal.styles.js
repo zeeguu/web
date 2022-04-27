@@ -102,6 +102,10 @@ export const StyledModal = styled(ReactModal)`
     max-height: 250px !important;
     max-width: 600px;
     width: auto !important;
+
+  @media (max-width: 650px) {
+    max-width: 250px;
+  }
   }
 
   .article-container {
@@ -113,6 +117,7 @@ export const StyledModal = styled(ReactModal)`
     line-height: 1.2em;
     border: 0px solid rgb(255, 229, 158);
     font-size: 1.2em;
+    max-width: 90%;
   }
 
   .floatRight {
