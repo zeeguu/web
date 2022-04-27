@@ -16,6 +16,11 @@ const LocalStorage = {
     SelectedTimePeriod: "selected_time_period",
     Features: "features",
     DisplayedExtensionPopup: "displayed_extension_popup",
+    //AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
+    DisplayedAudioExperimentPopup: "displayed_audio_experiment_popup",
+    AudioExperimentCompleted: "audio_experiment_completed",
+    DisplayedAudioExperimentQuestionnaire:
+      "displayed_audio_experiment_questionnaire",
   },
 
   userInfo: function () {
@@ -98,6 +103,43 @@ const LocalStorage = {
   setDisplayedExtensionPopup: function (displayedExtensionPopup) {
     localStorage[this.Keys.DisplayedExtensionPopup] = displayedExtensionPopup;
   },
+
+  displayedAudioExperimentPopup: function () {
+    return localStorage[this.Keys.DisplayedAudioExperimentPopup];
+  },
+
+  setDisplayedAudioExperimentPopup: function (DisplayedAudioExperimentPopup) {
+    localStorage[this.Keys.DisplayedAudioExperimentPopup] =
+      DisplayedAudioExperimentPopup;
+  },
+
+  audioExperimentCompleted: function () {
+    return localStorage[this.Keys.AudioExperimentCompleted];
+  },
+
+  setAudioExperimentCompleted: function (AudioExperimentCompleted) {
+    localStorage[this.Keys.AudioExperimentCompleted] = AudioExperimentCompleted;
+  },
+
+  displayedAudioExperimentQuestionnaire: function () {
+    return localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire];
+  },
+
+  setDisplayedAudioExperimentQuestionnaire: function (
+    DisplayedAudioExperimentQuestionnaire
+  ) {
+    localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire] =
+      DisplayedAudioExperimentQuestionnaire;
+  },
+
+  // audioExperimentNoOfSessions: function (int) {
+  //   return localStorage[this.Keys.AudioExperimentNoOfSessions];
+  // },
+
+  // setAudioExperimentNoOfSessions: function (AudioExperimentNoOfSessions) {
+  //   localStorage[this.Keys.AudioExperimentNoOfSessions] =
+  //     AudioExperimentNoOfSessions;
+  // },
 };
 
 export default LocalStorage;
