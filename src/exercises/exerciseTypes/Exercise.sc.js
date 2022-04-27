@@ -156,6 +156,18 @@ let OrangeButton = styled(StyledButton)`
   margin: 1em;
 `;
 
+let OrangeButtonMessage = styled(StyledButton)`
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  justify-content: center;
+  align-items: center;
+
+  color: black;
+  background-color: ${zeeguuOrange};
+  margin: 1em;
+`;
+
 let FeedbackButton = styled(OrangeButton)`
   height: fit-content;
   width: fit-content;
@@ -340,6 +352,7 @@ export {
   LeftFeedbackButton,
   RightFeedbackButton,
   EditSpeakButtonHolder,
+  OrangeButtonMessage,
 };
 
 export default StyledButton;
