@@ -27,7 +27,7 @@ export default function InstallExtension() {
           <s.LinkContainer>
             <s.OrangeButton>
               <a href="https://chrome.google.com/webstore/detail/the-zeeguu-reader/ckncjmaednfephhbpeookmknhmjjodcd">
-                Install for Chrome
+                Install for Chrome or Edge
               </a>
             </s.OrangeButton>
             <s.OrangeButton>
