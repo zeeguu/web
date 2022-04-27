@@ -3,17 +3,29 @@ import * as s from "./ExtensionMessage.sc";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
-import * as t from "../exercises/exerciseTypes/Exercise.sc"
+import * as t from "../exercises/exerciseTypes/Exercise.sc";
 
-export default function AudioExerciseMessage({open, displayedAudioExercisePopup, setDisplayedAudioExercisePopup, setAudioExerciseMessageOpen}) {
-  
+export default function AudioExerciseMessage({
+  open,
+  displayedAudioExperimentPopup,
+  setDisplayedAudioExperimentPopup,
+  setAudioExerciseMessageOpen,
+}) {
   function handleClose() {
     setAudioExerciseMessageOpen(false);
-    setDisplayedAudioExercisePopup(true);
-    LocalStorage.setDisplayedAudioExercisePopup(true);
+    setDisplayedAudioExperimentPopup(true);
+    LocalStorage.setDisplayedAudioExperimentPopup(true);
   }
 
-  if (/*Feature.audio_exercises() && !displayedAudioExercisePopup*/ 1==1) {
+  function handleSelection(sessions) {
+    LocalStorage.setTargetNoOfAudioSessions(sessions);
+    setAudioExerciseMessageOpen(false);
+    setDisplayedAudioExperimentPopup(true);
+    LocalStorage.setDisplayedAudioExperimentPopup(true);
+    console.log("handleSelection");
+  }
+
+  if (Feature.audio_exercises() && !displayedAudioExperimentPopup) {
     return (
       <Modal
         open={open}
@@ -30,23 +42,24 @@ export default function AudioExerciseMessage({open, displayedAudioExercisePopup,
             {strings.audioExerciseMessageText1}
             <br /> <br />
             {strings.audioExerciseMessageText2} <br /> <br />
-            {strings.audioExerciseMessageText3} <br /> 
+            {strings.audioExerciseMessageText3} <br />
           </p>
-          <t.OrangeButtonMessage>
-          {strings.audioExerciseMessageOption5}
+          <t.OrangeButtonMessage role="button"onClick={() => handleSelection("5")}>
+            {strings.audioExerciseMessageOption5}
           </t.OrangeButtonMessage>
-          <t.OrangeButtonMessage>
-          {strings.audioExerciseMessageOption3}
+
+          <t.OrangeButtonMessage role="button" onClick={() => handleSelection("3")}>
+            {strings.audioExerciseMessageOption3}
           </t.OrangeButtonMessage>
-          <t.OrangeButtonMessage>
-          {strings.audioExerciseMessageOption1}
+
+          <t.OrangeButtonMessage role="button" onClick={() => handleSelection("1")}>
+            {strings.audioExerciseMessageOption1}
           </t.OrangeButtonMessage>
-          <t.OrangeButtonMessage>
-          {strings.audioExerciseMessageOptionNo}
+
+          <t.OrangeButtonMessage role="button" onClick={() => handleClose}>
+            {strings.audioExerciseMessageOptionNo}
           </t.OrangeButtonMessage>
-          <p>
-            {strings.audioExerciseMessageText4}
-          </p>
+          <p>{strings.audioExerciseMessageText4}</p>
         </s.MyBox>
       </Modal>
     );
