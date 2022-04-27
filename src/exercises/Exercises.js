@@ -18,7 +18,11 @@ import LocalStorage from "../assorted/LocalStorage";
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let BOOKMARKS_FOR_EXERCISE = [];
-if (Feature.audio_exercises && !LocalStorage.audioExperimentCompleted) {
+if (
+  Feature.audio_exercises &&
+  !LocalStorage.audioExperimentCompleted &&
+  LocalStorage.displayedAudioExperimentPopup
+) {
   BOOKMARKS_FOR_EXERCISE = [
     {
       type: Match,
@@ -226,8 +230,54 @@ export default function Exercises({
     setExerciseSession(exerciseSession);
   }
 
+  // Standard flow when user completes exercise session
   if (finished) {
     api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
+    return (
+      <Congratulations
+        articleID={articleID}
+        correctBookmarks={correctBookmarks}
+        incorrectBookmarks={incorrectBookmarks}
+        api={api}
+        backButtonAction={backButtonAction}
+        keepExercisingAction={keepExercisingAction}
+        source={source}
+      />
+    );
+  }
+
+  // If completed session with audio_exercises feature flag but it wasn't the last session of audio experiment
+  // TODO, implement increment of sessions completed, also number of sessions completed
+  if (
+    finished &&
+    Feature.audio_exercises &&
+    !LocalStorage.audioExperimentCompleted &&
+    LocalStorage.displayedAudioExperimentPopup
+  ) {
+    api.logReaderActivity(api.AUDIO_EXP, articleID, "", source);
+    return (
+      <Congratulations
+        articleID={articleID}
+        correctBookmarks={correctBookmarks}
+        incorrectBookmarks={incorrectBookmarks}
+        api={api}
+        backButtonAction={backButtonAction}
+        keepExercisingAction={keepExercisingAction}
+        source={source}
+      />
+    );
+  }
+
+  // If completed session and it was the last session of audio experiment
+  // TODO, check number of sessions complete, then see if experiment is complete and promt modal with questionnaire
+  if (
+    finished &&
+    Feature.audio_exercises &&
+    LocalStorage.audioExperimentCompleted &&
+    LocalStorage.displayedAudioExperimentPopup &&
+    !localStorage.DisplayedAudioExperimentQuestionnaire
+  ) {
+    api.logReaderActivity(api.AUDIO_EXP, articleID, "", source);
     return (
       <Congratulations
         articleID={articleID}
