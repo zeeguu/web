@@ -453,6 +453,18 @@ let strings = new LocalizedStrings(
       starExplanation:
         "The asterix next to the word indicates that the student has exercised the word at least once.",
 
+      //AudioExerciseMessage
+      audioExerciseMessageHeadline: "Please help us out by trying our new exercises!",
+      audioExerciseMessageText1: "We're currently looking for feedback on a couple of new audio-based exercises for the platform, and we'd like your help!",
+      audioExerciseMessageText2: "You'll be completing a set of exercises that includes the new ones, and give us feedback in a short survey afterwards.",
+      audioExerciseMessageText3: "You're free to choose below wether you'd like to try the exercises out once or five times. When you've completed the desired amount of exercise sets, we'll ask you to complete the survey.",
+      audioExerciseMessageText4: "Thank you in advance.",
+      audioExerciseMessageOption5: "I'd like to try the exercises five times before the survey",
+      audioExerciseMessageOption3: "I'd like to try the exercises three times the survey",
+      audioExerciseMessageOption1: "I'd like to try the exercises once before the survey",
+      audioExerciseMessageOptionNo: "I don't want to try out the exercises",
+
+
       //CohortForm
       editClass: "Edit Class",
       createClass: "Create Class",

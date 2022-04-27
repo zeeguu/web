@@ -9,6 +9,7 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Reminder from "./Reminder";
 import ExtensionMessage from "../components/ExtensionMessage";
+import AudioExerciseMessage from "../components/AudioExerciseMessage";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import { runningInChromeDesktop } from "../utils/misc/browserDetection";
@@ -22,6 +23,9 @@ export default function NewArticles({ api }) {
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
 
+  const [AudioExerciseMessageOpen, setAudioExerciseMessageOpen] = useState(true);
+  const [displayedAudioExercisePopup, setDisplayedAudioExercisePopup] = useState(false);
+
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
     console.log("Running in chrome desktop: " + runningInChromeDesktop())
@@ -29,6 +33,7 @@ export default function NewArticles({ api }) {
     if (runningInChromeDesktop() && Feature.extension_experiment1() && !displayedExtensionPopup) {
       checkExtensionInstalled(setHasExtension);
     }
+    console.log("Localstorage displayed audio popup: "+ LocalStorage.displayedAudioExercisePopup)
   }, []);
 
   useEffect(() => {
@@ -62,6 +67,14 @@ export default function NewArticles({ api }) {
 
   return (
     <>
+      <AudioExerciseMessage
+      open={AudioExerciseMessageOpen}
+      displayedAudioExercisePopup={displayedAudioExercisePopup}
+      setAudioExerciseMessageOpen={setAudioExerciseMessageOpen}
+      setDisplayedAudioExercisePopup = {setDisplayedAudioExercisePopup}
+      >
+        
+      </AudioExerciseMessage>
       <ExtensionMessage
         open={extensionMessageOpen}
         hasExtension={hasExtension}
