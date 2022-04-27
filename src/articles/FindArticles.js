@@ -16,24 +16,31 @@ import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 
-
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
 
-  const [AudioExerciseMessageOpen, setAudioExerciseMessageOpen] = useState(true);
-  const [displayedAudioExercisePopup, setDisplayedAudioExercisePopup] = useState(false);
+  const [AudioExerciseMessageOpen, setAudioExerciseMessageOpen] =
+    useState(true);
+  const [displayedAudioExperimentPopup, setDisplayedAudioExperimentPopup] =
+    useState(false);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
-    console.log("Running in chrome desktop: " + runningInChromeDesktop())
-    console.log("Localstorage displayed extension: "+ LocalStorage.displayedExtensionPopup())
-    if (runningInChromeDesktop() && Feature.extension_experiment1() && !displayedExtensionPopup) {
+    console.log("Running in chrome desktop: " + runningInChromeDesktop());
+    console.log(
+      "Localstorage displayed extension: " +
+        LocalStorage.displayedExtensionPopup()
+    );
+    if (
+      runningInChromeDesktop() &&
+      Feature.extension_experiment1() &&
+      !displayedExtensionPopup
+    ) {
       checkExtensionInstalled(setHasExtension);
     }
-    console.log("Localstorage displayed audio popup: "+ LocalStorage.displayedAudioExercisePopup)
   }, []);
 
   useEffect(() => {
@@ -42,6 +49,16 @@ export default function NewArticles({ api }) {
     }
   }, [hasExtension]);
 
+  useEffect(() => {
+    setDisplayedAudioExperimentPopup(
+      LocalStorage.displayedAudioExperimentPopup()
+    );
+    setAudioExerciseMessageOpen(true);
+    console.log(
+      "Localstorage displayed audio popup: " +
+        LocalStorage.displayedAudioExperimentPopup
+    );
+  }, []);
 
   var originalList = null;
 
@@ -68,13 +85,11 @@ export default function NewArticles({ api }) {
   return (
     <>
       <AudioExerciseMessage
-      open={AudioExerciseMessageOpen}
-      displayedAudioExercisePopup={displayedAudioExercisePopup}
-      setAudioExerciseMessageOpen={setAudioExerciseMessageOpen}
-      setDisplayedAudioExercisePopup = {setDisplayedAudioExercisePopup}
-      >
-        
-      </AudioExerciseMessage>
+        open={AudioExerciseMessageOpen}
+        displayedAudioExperimentPopup={displayedAudioExperimentPopup}
+        setAudioExerciseMessageOpen={setAudioExerciseMessageOpen}
+        setDisplayedAudioExperimentPopup={setDisplayedAudioExperimentPopup}
+      ></AudioExerciseMessage>
       <ExtensionMessage
         open={extensionMessageOpen}
         hasExtension={hasExtension}
@@ -99,7 +114,9 @@ export default function NewArticles({ api }) {
       {articleList.map((each) => (
         <ArticlePreview key={each.id} article={each} api={api} />
       ))}
-      <ShowLinkRecommendationsIfNoArticles articleList={articleList}></ShowLinkRecommendationsIfNoArticles>
+      <ShowLinkRecommendationsIfNoArticles
+        articleList={articleList}
+      ></ShowLinkRecommendationsIfNoArticles>
     </>
   );
 }
