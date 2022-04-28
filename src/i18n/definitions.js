@@ -465,6 +465,10 @@ let strings = new LocalizedStrings(
       audioExerciseMessageOptionNo: "I don't want to try out the exercises",
 
 
+      // QuestionnaireMessage
+      questionnaireMessageHeadline: "It's time to answer the questionnaire!",
+      questionnaireMessageText: "You've reached your target number of exercise sessions - we hope you enjoyed it! Please click below and follow the link to the questionnaire.",
+      questionnaireLinkText: "Questionnaire",
       //CohortForm
       editClass: "Edit Class",
       createClass: "Create Class",
