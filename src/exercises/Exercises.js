@@ -15,6 +15,7 @@ import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
+import QuestionnaireMessage from "../components/QuestionnaireMessage";
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let BOOKMARKS_FOR_EXERCISE = [];
@@ -83,6 +84,14 @@ export default function Exercises({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
+  const [audioQuestionnaireMessageOpen, setAudioQuestionnaireMessageOpen] = useState(false);
+  const [displayedAudioQuestionnairePopup, setDisplayedAudioQuestionnairePopup] = useState(false);
+
+  useEffect(() => {
+    setDisplayedAudioQuestionnairePopup(LocalStorage.displayedAudioExperimentQuestionnaire());
+    setAudioQuestionnaireMessageOpen(true);
+    console.log("Localstorage displayed questionnaire popup " + LocalStorage.displayedAudioExperimentQuestionnaire());
+  }, []);
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -231,12 +240,20 @@ export default function Exercises({
   }
 
   // Standard flow when user completes exercise session
-  if (finished) {
+  if (finished && Feature.audio_exercises() && LocalStorage.audioExperimentCompleted()) {
     api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     LocalStorage.incrementAudioExperimentNoOfSessions();
     LocalStorage.checkAudioExperimentCompleted();
     // api.log(api.AUDIO_EXP, articleID, "", source);
     return (
+      <>
+      <QuestionnaireMessage
+      open={audioQuestionnaireMessageOpen}
+      displayedAudioExperimentQuestionnaire={displayedAudioQuestionnairePopup}
+      setDisplayedAudioExperimentQuestionnaire={setDisplayedAudioQuestionnairePopup}
+      setQuestionnaireMessageOpen={setAudioQuestionnaireMessageOpen}
+      >
+      </QuestionnaireMessage>
       <Congratulations
         articleID={articleID}
         correctBookmarks={correctBookmarks}
@@ -246,6 +263,7 @@ export default function Exercises({
         keepExercisingAction={keepExercisingAction}
         source={source}
       />
+      </>
     );
   }
 
