@@ -34,13 +34,16 @@ export const StyledModal = styled(ReactModal)`
   right: 0;
   bottom: 0;
   z-index: 2000;
-  margin: 40px auto;
   background-color: white;
   padding: 0% 2% 2% 2%;
-  height: 85%;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
   width: 75%;
   overflow-y: auto;
-  overflow-x: hidden;
+ overflow-x: hidden;
   box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
   outline: none;
 
@@ -102,10 +105,15 @@ export const StyledModal = styled(ReactModal)`
     max-height: 250px !important;
     max-width: 600px;
     width: auto !important;
+
+  @media (max-width: 650px) {
+    max-width: 250px;
+  }
   }
 
   .article-container {
     padding: 5px 50px 0px 50px;
+    margin-bottom: 3em;
   }
 
   .feedbackBox {
@@ -113,6 +121,7 @@ export const StyledModal = styled(ReactModal)`
     line-height: 1.2em;
     border: 0px solid rgb(255, 229, 158);
     font-size: 1.2em;
+    max-width: 90%;
   }
 
   .floatRight {
