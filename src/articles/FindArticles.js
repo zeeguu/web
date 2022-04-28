@@ -23,7 +23,7 @@ export default function NewArticles({ api }) {
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
 
   const [AudioExerciseMessageOpen, setAudioExerciseMessageOpen] =
-    useState(true);
+    useState(false);
   const [displayedAudioExperimentPopup, setDisplayedAudioExperimentPopup] =
     useState(false);
 
@@ -50,14 +50,10 @@ export default function NewArticles({ api }) {
   }, [hasExtension]);
 
   useEffect(() => {
-    setDisplayedAudioExperimentPopup(
-      LocalStorage.displayedAudioExperimentPopup()
-    );
+    console.log("(Start useEffect) Localstorage displayed audio popup: " + LocalStorage.displayedAudioExperimentPopup());
+    setDisplayedAudioExperimentPopup(LocalStorage.displayedAudioExperimentPopup());
     setAudioExerciseMessageOpen(true);
-    console.log(
-      "Localstorage displayed audio popup: " +
-        LocalStorage.displayedAudioExperimentPopup
-    );
+    console.log("(End useEffect) Localstorage displayed audio popup: " + LocalStorage.displayedAudioExperimentPopup());
   }, []);
 
   var originalList = null;
