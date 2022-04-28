@@ -10,6 +10,10 @@ export default function AudioExerciseMessage({
   displayedAudioExperimentPopup,
   setDisplayedAudioExperimentPopup,
   setAudioExerciseMessageOpen,
+  setAudioExperimentCompleted,
+  audioExperimentCompleted,
+  setAudioExperimentNoOfSessions,
+  AudioExperimentNoOfSessions,
 }) {
   function handleClose() {
     setAudioExerciseMessageOpen(false);
@@ -18,11 +22,20 @@ export default function AudioExerciseMessage({
   }
 
   function handleSelection(sessions) {
-    LocalStorage.setTargetNoOfAudioSessions(sessions);
     setAudioExerciseMessageOpen(false);
-    setDisplayedAudioExperimentPopup(true);
+
+    console.log("popup displayed " + LocalStorage.displayedAudioExperimentPopup());
     LocalStorage.setDisplayedAudioExperimentPopup(true);
-    console.log("handleSelection");
+    console.log("popup displayed " + LocalStorage.displayedAudioExperimentPopup());
+
+    LocalStorage.setTargetNoOfAudioSessions((sessions*2)-1);
+    console.log("Target no of sessions chosen: " + LocalStorage.getTargetNoOfAudioSessions());
+    
+    LocalStorage.setAudioExperimentNoOfSessions(0);
+    console.log("No of sessions completed: " + LocalStorage.getAudioExperimentNoOfSessions());
+
+    LocalStorage.setAudioExperimentCompleted(false);
+    console.log("Experiment completed: " + LocalStorage.audioExperimentCompleted());
   }
 
   if (Feature.audio_exercises() && !displayedAudioExperimentPopup) {
@@ -44,7 +57,7 @@ export default function AudioExerciseMessage({
             {strings.audioExerciseMessageText2} <br /> <br />
             {strings.audioExerciseMessageText3} <br />
           </p>
-          <t.OrangeButtonMessage role="button"onClick={() => handleSelection("5")}>
+          <t.OrangeButtonMessage role="button"onClick={() => handleSelection("")}>
             {strings.audioExerciseMessageOption5}
           </t.OrangeButtonMessage>
 
