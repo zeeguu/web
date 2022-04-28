@@ -94,6 +94,11 @@ export default function AudioExerciseTwo({
     handleAnswer(message, duration);
   }
 
+  function handleIncorrectAnswer() {
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    setFirstTypeTime();
+  }
+  
   function handleAnswer(message) {
     let pressTime = new Date();
     console.log(pressTime - initialTime);
