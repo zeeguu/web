@@ -3,7 +3,7 @@ name: Publish to Chrome store
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -19,10 +19,13 @@ jobs:
       run: |
         npm ci
         npm run pub-ci
-    - name: Upload & release
-      uses: mnao305/chrome-extension-upload@2.2.0
-      with:
-        file-path: dist/file.zip
-        extension-id: hogefuga(extension id)
-        client-id: ${{ secrets.CLIENT_ID }}
-        refresh-token: ${{ secrets.REFRESH_TOKEN }}
+    - name: Install the webstore-upload-cli
+      run: |
+        npm install chrome-webstore-upload-cli
+        pwd
+    - name: Upload 
+      run: |
+        ./node_modules/chrome-webstore-upload-cli/cli.js upload --source build.zip --extension-id ckncjmaednfephhbpeookmknhmjjodcd --client-id ${{ secrets.CLIENT_ID }} --client-secret ${{ secrets.CLIENT_SECRET }} --refresh-token ${{ secrets.REFRESH_TOKEN }}
+    - name: Publish 
+      run: |
+        ./node_modules/chrome-webstore-upload-cli/cli.js publish --extension-id ckncjmaednfephhbpeookmknhmjjodcd --client-id ${{ secrets.CLIENT_ID }} --client-secret ${{ secrets.CLIENT_SECRET }} --refresh-token ${{ secrets.REFRESH_TOKEN }}
