@@ -1,22 +1,66 @@
 /*global chrome*/
-import { Readability } from '@mozilla/readability'
+const ZEEGUU_REGEX = /(http|https):\/\/(www\.)?zeeguu.org/;
 
 export async function getCurrentTab() {
-  let queryOptions = { active: true, currentWindow: true };
-  let [tab] = await chrome.tabs.query(queryOptions);
+  const queryOptions = { active: true, currentWindow: true };
+  const [tab] = await chrome.tabs.query(queryOptions);
   return tab;
 }
 
-export function reading(currentTabURL) {
-  var documentFromTab = getSourceAsDOM(currentTabURL);
-  var article = new Readability(documentFromTab).parse();
-  chrome.storage.local.set({ article: article });
+export function setCurrentURL(tabURL) {
+  chrome.storage.local.set({ tabURL: tabURL });
 }
 
-function getSourceAsDOM(url) {
-  var xmlhttp = new XMLHttpRequest();
+export async function getCurrentURL() {
+  const value = await chrome.storage.local.get("tabURL");
+  return value.tabURL;
+}
+
+export async function getNativeLanguage() {
+  const value = await chrome.storage.local.get("userInfo");
+  return value.userInfo.native_language;
+}
+
+export async function getUsername() {
+  const value = await chrome.storage.local.get("userInfo");
+  return value.userInfo.name;
+}
+
+export async function getSessionId() {
+  const value = await chrome.storage.local.get("sessionId");
+  return value.sessionId;
+}
+
+export function getSourceAsDOM(url) {
+  const xmlhttp = new XMLHttpRequest();
   xmlhttp.open("GET", url, false);
   xmlhttp.send();
-  var parser = new DOMParser();
+  const parser = new DOMParser();
+  //const clean = DOMPurify.sanitize(xmlhttp.responseText);
   return parser.parseFromString(xmlhttp.responseText, "text/html");
+}
+
+export function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}
+
+export function deleteCurrentDOM() {
+  const body = document.querySelector("body");
+  if (body) {
+    removeAllChildNodes(body);
+  }
+  const head = document.querySelector("head");
+  if (head) {
+    removeAllChildNodes(head);
+  }
+  const div = document.querySelector("div");
+  if (div) {
+    removeAllChildNodes(div);
+  }
+  const iframe = document.querySelector("iframe");
+  if (iframe) {
+    removeAllChildNodes(iframe);
+  }
 }

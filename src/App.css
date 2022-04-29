@@ -1,50 +1,17 @@
-  /* Set a style for all buttons */
-  button {
-    background-color: #FFBB54;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-  }
-  
-  button.current {
-    box-shadow: 0 0 0 2px white,
-                0 0 0 4px black;
-  }
 
-  .border {
-    border: 3px solid #f1f1f1;
-    padding: 5%;
-    margin: 1%;
-  }
-
-  /* Full-width inputs */
-input[type=text], input[type=password] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-  /* Center the avatar image inside this container */
-.imgcontainer {
-    text-align: center;
-    margin: 1px 0 12px 0;
-  }
-
-
-  /* Avatar image */
-img.logo {
-    width: 40%;
-    border-radius: 50%;
-  }
 
   body{
-    width: 300px;
-    height: 450px;
-    padding-bottom: 20px;
+    background-color: #F4F4F6 !important;
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 2px !important;
+}
+
+p {
+  font-size: 1.0rem !important;
+  color: black;
+  text-align: center;
 }

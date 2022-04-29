@@ -1,0 +1,95 @@
+import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
+import { useState } from "react";
+import {
+  StyledTextarea,
+  StyledForm,
+  StyledContainer,
+  StyledPopup,
+  ErrorMessage,
+} from "./UserFeedback.styles";
+import { StyledSmallButtonBlue } from "./Buttons.styles";
+import sendFeedbackEmail from "./sendFeedbackEmail";
+import { EXTENSION_SOURCE } from "../constants";
+
+export default function UserFeedback({ api, articleId, url }) {
+  const [feedback, setFeedback] = useState("");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
+
+  const setModalIsOpenToTrue = () => {
+    if (feedback === "") {
+      setIsEmpty(true);
+    } else {
+      setIsEmpty(false);
+      setModalIsOpen(true);
+    }
+  };
+
+  const setModalIsOpenToFalse = () => {
+    setModalIsOpen(false);
+  };
+
+  function handleChange(e) {
+    setFeedback(e.target.value);
+    if (feedback !== "") {
+      setIsEmpty(false);
+    }
+  }
+
+  function submitFeedback(e) {
+    e.preventDefault();
+    if (!isEmpty) {
+      sendFeedbackEmail(api, feedback, url, articleId, "PROBLEM_")
+      resetInput(e);
+    }
+  }
+
+  function resetInput(e){
+    e.target.value = "";
+    setFeedback(e.target.value);
+  }
+
+  return (
+    <s.FeedbackBox className="feedbackBox">
+      <StyledContainer>
+        <h2>Report Problems</h2>
+        <small> We are always trying to improve the Zeeguu Extension. Please let us know if you experience any problems, or if the article
+          looks wrong.
+        </small>
+        <br />
+        <br />
+        <StyledForm onSubmit={submitFeedback}>
+          <StyledTextarea
+            name="feedback"
+            id="textarea-feedback"
+            onChange={handleChange}
+            value={feedback}
+            placeholder="Write here"
+          />
+          {isEmpty ? (
+            <ErrorMessage>Please write something</ErrorMessage>
+          ) : null}
+          <StyledSmallButtonBlue
+            className="floatRight"
+            type="submit"
+            value="Send feedback"
+            onClick={setModalIsOpenToTrue}
+            id="feedback-box"
+          >
+            Submit feedback
+          </StyledSmallButtonBlue>
+        </StyledForm>
+      </StyledContainer>
+      <StyledPopup
+        className="feedback-modal"
+        isOpen={modalIsOpen}
+        overlayClassName={"feedback-overlay"}
+      >
+        <p>Thank you for your feedback!</p>
+        <StyledSmallButtonBlue className="floatRight" onClick={setModalIsOpenToFalse}>
+          Close
+        </StyledSmallButtonBlue>
+      </StyledPopup>
+    </s.FeedbackBox>
+  );
+}
