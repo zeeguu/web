@@ -42,7 +42,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "pub": "rm -rf build* && (cd src/zeeguu-react/ && git pull) && npm-run-all build:* && zip -r build.zip build && open https://chrome.google.com/webstore/devconsole/7f6da896-c12c-4cb3-8ad7-b1641fc8efbc/ckncjmaednfephhbpeookmknhmjjodcd/edit/package",
-    "pub-ci": "cd src && git clone https://github.com/zeeguu-ecosystem/zeeguu-react.git && npm-run-all build:* && zip -r build.zip build"
+    "pub-ci": "(cd src && git clone https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm-run-all build:* && zip -r build.zip build"
   },
   "eslintConfig": {
     "extends": [
