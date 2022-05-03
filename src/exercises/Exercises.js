@@ -239,12 +239,9 @@ export default function Exercises({
   // Standard flow when user completes exercise session
   if (finished) {
     api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
-    LocalStorage.incrementAudioExperimentNoOfSessions();
-    LocalStorage.checkAudioExperimentCompleted();
     return (
       <>
       <QuestionnaireMessage
-      api={api.logReaderActivity(api.AUDIO_EXP, articleID, "", source)}
       open={audioQuestionnaireMessageOpen}
       displayedAudioExperimentQuestionnaire={displayedAudioQuestionnairePopup}
       setDisplayedAudioExperimentQuestionnaire={setDisplayedAudioQuestionnairePopup}
@@ -285,9 +282,11 @@ export default function Exercises({
 
     if (newIndex === exerciseSession.length) {
       setFinished(true);
+      LocalStorage.incrementAudioExperimentNoOfSessions();
+      LocalStorage.checkAudioExperimentCompleted();
+      api.logReaderActivity(api.AUDIO_EXP, articleID, "", source);
       return;
     }
-
     setCurrentBookmarksToStudy(exerciseSession[newIndex].bookmarks);
     setCurrentIndex(newIndex);
   }

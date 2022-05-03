@@ -28,7 +28,7 @@ export default function AudioExerciseMessage({
     LocalStorage.setDisplayedAudioExperimentPopup(true);
     console.log("popup displayed " + LocalStorage.displayedAudioExperimentPopup());
 
-    LocalStorage.setTargetNoOfAudioSessions((sessions*2)-1);
+    LocalStorage.setTargetNoOfAudioSessions(sessions);
     console.log("Target no of sessions chosen: " + LocalStorage.getTargetNoOfAudioSessions());
     
     LocalStorage.setAudioExperimentNoOfSessions(0);
@@ -57,7 +57,7 @@ export default function AudioExerciseMessage({
             {strings.audioExerciseMessageText2} <br /> <br />
             {strings.audioExerciseMessageText3} <br />
           </p>
-          <t.OrangeButtonMessage role="button"onClick={() => handleSelection("")}>
+          <t.OrangeButtonMessage role="button"onClick={() => handleSelection("5")}>
             {strings.audioExerciseMessageOption5}
           </t.OrangeButtonMessage>
 

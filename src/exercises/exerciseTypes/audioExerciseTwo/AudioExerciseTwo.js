@@ -11,7 +11,7 @@ import removePunctuation from "../../../assorted/removePunctuation";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./AudioTwoBotInput";
 
-const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
+const EXERCISE_TYPE = "Select_AudioL2W_fitting_L2T";
 
 export default function AudioExerciseTwo({
   api,
