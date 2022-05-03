@@ -241,10 +241,10 @@ export default function Exercises({
     api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     LocalStorage.incrementAudioExperimentNoOfSessions();
     LocalStorage.checkAudioExperimentCompleted();
-    api.logReaderActivity(api.AUDIO_EXP, articleID, "", source);
     return (
       <>
       <QuestionnaireMessage
+      api={api.logReaderActivity(api.AUDIO_EXP, articleID, "", source)}
       open={audioQuestionnaireMessageOpen}
       displayedAudioExperimentQuestionnaire={displayedAudioQuestionnairePopup}
       setDisplayedAudioExperimentQuestionnaire={setDisplayedAudioQuestionnairePopup}
