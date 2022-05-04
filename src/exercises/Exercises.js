@@ -20,7 +20,7 @@ import QuestionnaireMessage from "../components/QuestionnaireMessage";
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let BOOKMARKS_FOR_EXERCISE = [];
 
-if (Feature.audio_exercises() && (LocalStorage.getTargetNoOfAudioSessions > LocalStorage.getAudioExperimentNoOfSessions)) {
+if (Feature.audio_exercises() && !LocalStorage.checkAudioExperimentCompleted()) {
   BOOKMARKS_FOR_EXERCISE = [
     {
       type: Match,
