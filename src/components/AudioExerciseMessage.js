@@ -34,6 +34,7 @@ export default function AudioExerciseMessage({
     LocalStorage.setAudioExperimentNoOfSessions(0);
     console.log("No of sessions completed: " + LocalStorage.getAudioExperimentNoOfSessions());
 
+    setAudioExperimentCompleted(false);
     LocalStorage.setAudioExperimentCompleted(false);
     console.log("Experiment completed: " + LocalStorage.audioExperimentCompleted());
   }
