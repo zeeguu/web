@@ -133,6 +133,7 @@ const LocalStorage = {
     console.log("completed boolean log " + temp);
     return true; 
   } 
+    this.setAudioExperimentCompleted(false);
     return false;
   },
 
