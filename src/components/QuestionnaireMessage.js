@@ -6,7 +6,6 @@ import strings from "../i18n/definitions";
 
 export default function QuestionnaireMessage({
   open,
-  displayedAudioExperimentQuestionnaire,
   setDisplayedAudioExperimentQuestionnaire,
   setQuestionnaireMessageOpen,
 }) {
@@ -16,7 +15,7 @@ export default function QuestionnaireMessage({
     LocalStorage.setDisplayedAudioExperimentQuestionnaire(true);
   }
 
-  if (Feature.audio_exercises() && !displayedAudioExperimentQuestionnaire && LocalStorage.checkAudioExperimentCompleted()) {
+  if (Feature.audio_exercises() && !LocalStorage.displayedAudioExperimentQuestionnaire() && LocalStorage.checkAudioExperimentCompleted()) {
     return (
       <Modal
         open={open}
