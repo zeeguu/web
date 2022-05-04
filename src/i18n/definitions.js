@@ -556,7 +556,7 @@ let strings = new LocalizedStrings(
 
       //Extension installed
       goToArticles: "Go to article recommendations",
-      pinExtension: "Pin it to the toolbar to make it easy to access.",
+      pinExtension: "Pin it to the toolbar to make it easy to access",
       congratulations: "Extension is installed!",
 
       //ExtensionMessage
