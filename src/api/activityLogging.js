@@ -41,6 +41,7 @@ Zeeguu_API.prototype.CLOSE_MODAL = "CLOSE MODAL";
 
 // Audio Experiment
 Zeeguu_API.prototype.AUDIO_EXP = "AUDIO_EXP";
+Zeeguu_API.prototype.AUDIO_EXP_COMPLETED = "AUDIO_EXP_COMPLETED";
 
 // User Activity Dashboard
 Zeeguu_API.prototype.USER_DASHBOARD_OPEN = "UD - USER DASHBOARD OPEN";
