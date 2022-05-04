@@ -20,7 +20,7 @@ import QuestionnaireMessage from "../components/QuestionnaireMessage";
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let BOOKMARKS_FOR_EXERCISE = [];
 
-if (Feature.audio_exercises() && LocalStorage.checkAudioExperimentCompleted()) {
+if (Feature.audio_exercises() && !LocalStorage.checkAudioExperimentCompleted()) {
   BOOKMARKS_FOR_EXERCISE = [
     {
       type: Match,
@@ -285,6 +285,9 @@ export default function Exercises({
       LocalStorage.incrementAudioExperimentNoOfSessions();
       LocalStorage.checkAudioExperimentCompleted();
       api.logReaderActivity(api.AUDIO_EXP, articleID, "", source);
+      if (LocalStorage.checkAudioExperimentCompleted()) {
+        api.logReaderActivity(api.AUDIO_EXP_COMPLETED, articleID, "", source);
+      }
       return;
     }
     setCurrentBookmarksToStudy(exerciseSession[newIndex].bookmarks);
