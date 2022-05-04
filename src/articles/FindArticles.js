@@ -18,6 +18,7 @@ import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoAr
 
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
+  const [originalList, setOriginalList] = useState(null);
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
@@ -41,6 +42,14 @@ export default function NewArticles({ api }) {
     ) {
       checkExtensionInstalled(setHasExtension);
     }
+    
+    // load articles
+    api.getUserArticles((articles) => {
+      setArticleList(articles);
+      setOriginalList ([...articles]);
+    });
+    setTitle(strings.findArticles);
+
   }, []);
 
   useEffect(() => {
@@ -56,16 +65,7 @@ export default function NewArticles({ api }) {
     console.log("(End useEffect) Localstorage displayed audio popup: " + LocalStorage.displayedAudioExperimentPopup());
   }, []);
 
-  var originalList = null;
-
-  //on initial render
-
   if (articleList == null) {
-    api.getUserArticles((articles) => {
-      setArticleList(articles);
-      originalList = [...articles];
-    });
-    setTitle(strings.findArticles);
     return <LoadingAnimation />;
   }
 
@@ -74,7 +74,7 @@ export default function NewArticles({ api }) {
     setArticleList(null);
     api.getUserArticles((articles) => {
       setArticleList(articles);
-      originalList = [...articles];
+      setOriginalList ([...articles]);
     });
   }
 
@@ -108,7 +108,7 @@ export default function NewArticles({ api }) {
       />
       <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} api={api} />
+        <ArticlePreview key={each.id} article={each} api={api} hasExtension={hasExtension}/>
       ))}
       <ShowLinkRecommendationsIfNoArticles
         articleList={articleList}

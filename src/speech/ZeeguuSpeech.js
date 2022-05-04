@@ -10,8 +10,13 @@ const ZeeguuSpeech = class {
       .init()
       .then((data) => {
         // The "data" object contains the list of available voices and the voice synthesis params
-        let randomVoice = _getRandomVoice(data.voices, language);
-        this.speech.setVoice(randomVoice.name);
+        if (language === "nl") {
+          let dutchVoice = _getDutchNetherlandsVoice(data.voices);
+          this.speech.setVoice(dutchVoice.name);
+        } else {
+          let randomVoice = _getRandomVoice(data.voices, language);
+          this.speech.setVoice(randomVoice.name);
+        }
       })
       .catch((e) => {
         console.error("An error occured while initializing : ", e);
@@ -52,5 +57,11 @@ function _getRandomVoice(voices, language) {
   let x = _randomElement(voices.filter((v) => v.lang.toLowerCase().includes(language)));
   return x;
 }
+
+function _getDutchNetherlandsVoice(voices) {
+  let x = _randomElement(voices.filter((v) => v.lang.includes("NL")));
+  return x;
+}
+
 
 export default ZeeguuSpeech;
