@@ -20,7 +20,7 @@ import QuestionnaireMessage from "../components/QuestionnaireMessage";
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let BOOKMARKS_FOR_EXERCISE = [];
 
-if (Feature.audio_exercises() && !LocalStorage.checkAudioExperimentCompleted()) {
+if (Feature.audio_exercises() && (LocalStorage.getTargetNoOfAudioSessions > LocalStorage.getAudioExperimentNoOfSessions)) {
   BOOKMARKS_FOR_EXERCISE = [
     {
       type: Match,
@@ -88,6 +88,8 @@ export default function Exercises({
     setDisplayedAudioQuestionnairePopup(LocalStorage.displayedAudioExperimentQuestionnaire());
     setAudioQuestionnaireMessageOpen(true);
     console.log("Localstorage displayed questionnaire popup " + LocalStorage.displayedAudioExperimentQuestionnaire());
+    console.log("Audio feature flag " + Feature.audio_exercises());
+    console.log("Audio completed " + LocalStorage.audioExperimentCompleted());
   }, []);
 
   useEffect(() => {
