@@ -20,7 +20,7 @@ import QuestionnaireMessage from "../components/QuestionnaireMessage";
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let BOOKMARKS_FOR_EXERCISE = [];
 
-if (Feature.audio_exercises() && !LocalStorage.checkAudioExperimentCompleted()) {
+if (Feature.audio_exercises())  {
   BOOKMARKS_FOR_EXERCISE = [
     {
       type: Match,
@@ -286,9 +286,9 @@ export default function Exercises({
       setFinished(true);
       LocalStorage.incrementAudioExperimentNoOfSessions();
       LocalStorage.checkAudioExperimentCompleted();
-      api.logReaderActivity(api.AUDIO_EXP, articleID, "", source);
+      api.logReaderActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), source);
       if (LocalStorage.checkAudioExperimentCompleted()) {
-        api.logReaderActivity(api.AUDIO_EXP_COMPLETED, articleID, "", source);
+        api.logReaderActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", source);
       }
       return;
     }
