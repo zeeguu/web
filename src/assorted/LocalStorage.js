@@ -123,14 +123,11 @@ const LocalStorage = {
 
   checkAudioExperimentCompleted: function () {
   let temp = localStorage[this.Keys.AudioExperimentCompleted];
-  console.log("completed boolean log " + temp);
   let audioExperimentNoOfSessions = Number(localStorage[this.Keys.AudioExperimentNoOfSessions]);   
   let targetNoOfAudioSessions = Number(localStorage[this.Keys.TargetNoOfAudioSessions]);
   if (audioExperimentNoOfSessions === targetNoOfAudioSessions || audioExperimentNoOfSessions > targetNoOfAudioSessions) {
     this.setAudioExperimentCompleted(true);
     localStorage[this.Keys.AudioExperimentCompleted] = true;
-    console.log("completed no log "  + LocalStorage.getAudioExperimentNoOfSessions());
-    console.log("completed boolean log " + temp);
     return true; 
   } 
     this.setAudioExperimentCompleted(false);
@@ -173,12 +170,8 @@ const LocalStorage = {
 
   incrementAudioExperimentNoOfSessions: function () {
     let audioExperimentNoOfSessions = Number(localStorage[this.Keys.AudioExperimentNoOfSessions]); 
-    console.log("Before parsed value " + LocalStorage.getAudioExperimentNoOfSessions());
     let temp = audioExperimentNoOfSessions+1; 
-    
     localStorage[this.Keys.AudioExperimentNoOfSessions] = temp;
-    console.log("After parsed value " + LocalStorage.getAudioExperimentNoOfSessions());
-
   },
 };
 
