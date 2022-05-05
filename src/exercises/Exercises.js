@@ -247,10 +247,6 @@ export default function Exercises({
       articleID={articleID}
       api={api}
       source={source}
-      open={audioQuestionnaireMessageOpen}
-      displayedAudioExperimentQuestionnaire={displayedAudioQuestionnairePopup}
-      setDisplayedAudioExperimentQuestionnaire={setDisplayedAudioQuestionnairePopup}
-      setQuestionnaireMessageOpen={setAudioQuestionnaireMessageOpen}
       >
       </QuestionnaireMessage>
       <Congratulations
