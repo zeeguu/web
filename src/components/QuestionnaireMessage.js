@@ -3,18 +3,24 @@ import * as s from "./ExtensionMessage.sc";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
+import { useEffect, useState } from "react";
 
 export default function QuestionnaireMessage({
-  open,
-  setDisplayedAudioExperimentQuestionnaire,
-  setQuestionnaireMessageOpen,
   api,
   articleID,
   source,
 }) {
+
+  const [open, setAudioQuestionnaireMessageOpen] = useState(false);
+
+  useEffect(() => {
+    if(!LocalStorage.displayedAudioExperimentQuestionnaire()) {
+      setAudioQuestionnaireMessageOpen(true);
+    }
+  }, [])
+
   function handleClose() {
-    setQuestionnaireMessageOpen(false);
-    setDisplayedAudioExperimentQuestionnaire(true);
+    setAudioQuestionnaireMessageOpen(false);
     LocalStorage.setDisplayedAudioExperimentQuestionnaire(true);
     api.logUserActivity(api.AUDIO_EXP, articleID, "Closed questionnaire, send reminder", source);
   }

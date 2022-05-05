@@ -3,15 +3,23 @@ import * as s from "./ExtensionMessage.sc";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as t from "../exercises/exerciseTypes/Exercise.sc";
 
+
 export default function AudioExerciseMessage({
-  open,
   displayedAudioExperimentPopup,
   setDisplayedAudioExperimentPopup,
-  setAudioExerciseMessageOpen,
 }) {
+
+  const [open, setAudioExerciseMessageOpen] = useState(false);
+
+  useEffect(() => {
+    if (!LocalStorage.displayedAudioExperimentPopup()) {
+      setAudioExerciseMessageOpen(true);
+    }
+  }, [])
+
   function handleClose() {
     setAudioExerciseMessageOpen(false);
     setDisplayedAudioExperimentPopup(true);
@@ -46,7 +54,6 @@ export default function AudioExerciseMessage({
         setDisplayedAudioExperimentPopup={setDisplayedAudioExperimentPopup}
       >
         <s.MyBox>
-          
           <s.StyledCloseButton role="button" onClick={handleClose}>
             X
           </s.StyledCloseButton>

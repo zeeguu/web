@@ -23,8 +23,6 @@ export default function NewArticles({ api }) {
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
 
-  const [AudioExerciseMessageOpen, setAudioExerciseMessageOpen] =
-    useState(false);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
@@ -48,11 +46,6 @@ export default function NewArticles({ api }) {
       setExtensionMessageOpen(true);
     }
   }, [hasExtension]);
-  useEffect(() => {
-    if (!LocalStorage.displayedAudioExperimentPopup()) {
-      setAudioExerciseMessageOpen(true);
-    }
-  }, []);
 
 
 
@@ -71,10 +64,7 @@ export default function NewArticles({ api }) {
 
   return (
     <>
-      <AudioExerciseMessage
-        open={AudioExerciseMessageOpen}
-        setAudioExerciseMessageOpen={setAudioExerciseMessageOpen}
-      ></AudioExerciseMessage>
+      <AudioExerciseMessage/>
       <ExtensionMessage
         open={extensionMessageOpen}
         hasExtension={hasExtension}
