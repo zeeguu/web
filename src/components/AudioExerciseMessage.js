@@ -3,6 +3,7 @@ import * as s from "./ExtensionMessage.sc";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
+import React, { useEffect } from "react";
 import * as t from "../exercises/exerciseTypes/Exercise.sc";
 
 export default function AudioExerciseMessage({
@@ -10,10 +11,6 @@ export default function AudioExerciseMessage({
   displayedAudioExperimentPopup,
   setDisplayedAudioExperimentPopup,
   setAudioExerciseMessageOpen,
-  setAudioExperimentCompleted,
-  audioExperimentCompleted,
-  setAudioExperimentNoOfSessions,
-  AudioExperimentNoOfSessions,
 }) {
   function handleClose() {
     setAudioExerciseMessageOpen(false);
@@ -34,10 +31,10 @@ export default function AudioExerciseMessage({
     LocalStorage.setAudioExperimentNoOfSessions(0);
     console.log("No of sessions completed: " + LocalStorage.getAudioExperimentNoOfSessions());
 
-    LocalStorage.checkAudioExperimentCompleted(false);
+    LocalStorage.checkAndUpdateAudioExperimentCompleted(false);
     console.log("Experiment completed: " + LocalStorage.audioExperimentCompleted());
   }
-
+  
   if (Feature.audio_exercises() && !displayedAudioExperimentPopup) {
     return (
       <Modal
@@ -45,8 +42,11 @@ export default function AudioExerciseMessage({
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        displayedAudioExperimentPopup={displayedAudioExperimentPopup}
+        setDisplayedAudioExperimentPopup={setDisplayedAudioExperimentPopup}
       >
         <s.MyBox>
+          
           <s.StyledCloseButton role="button" onClick={handleClose}>
             X
           </s.StyledCloseButton>

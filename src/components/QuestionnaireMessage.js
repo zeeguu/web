@@ -8,14 +8,18 @@ export default function QuestionnaireMessage({
   open,
   setDisplayedAudioExperimentQuestionnaire,
   setQuestionnaireMessageOpen,
+  api,
+  articleID,
+  source,
 }) {
   function handleClose() {
     setQuestionnaireMessageOpen(false);
     setDisplayedAudioExperimentQuestionnaire(true);
     LocalStorage.setDisplayedAudioExperimentQuestionnaire(true);
+    api.logUserActivity(api.AUDIO_EXP, articleID, "Closed questionnaire, send reminder", source);
   }
 
-  if (Feature.audio_exercises() && !LocalStorage.displayedAudioExperimentQuestionnaire() && LocalStorage.checkAudioExperimentCompleted()) {
+  if (Feature.audio_exercises() && !LocalStorage.displayedAudioExperimentQuestionnaire() && LocalStorage.checkAndUpdateAudioExperimentCompleted()) {
     return (
       <Modal
         open={open}

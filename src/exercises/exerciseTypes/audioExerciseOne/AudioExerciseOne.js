@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
-import BotInput from "./BotInput";
+import BottomInput from "../findWordInContext/BottomInput.js";
 import SpeakButton from "../SpeakButton";
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
@@ -33,6 +33,7 @@ export default function AudioExerciseOne({
     await speech.speakOut(bookmarkToStudy.from);
   }
 
+  // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
   useEffect(() => {
     setTimeout(() => {
       handleSpeak();
@@ -102,7 +103,7 @@ export default function AudioExerciseOne({
             />
           </s.CenteredRowTall>
 
-          <BotInput
+          <BottomInput
             handleCorrectAnswer={handleCorrectAnswer}
             handleIncorrectAnswer={handleIncorrectAnswer}
             bookmarksToStudy={bookmarksToStudy}

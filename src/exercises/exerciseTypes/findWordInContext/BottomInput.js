@@ -83,7 +83,6 @@ export default function BottomInput({
           onAnimationEnd={() => setIsIncorrect(false)}
           autoFocus
         />
-
         <s.RightFeedbackButton onClick={checkResult}>
           {strings.check}
         </s.RightFeedbackButton>

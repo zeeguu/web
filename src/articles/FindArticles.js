@@ -25,8 +25,6 @@ export default function NewArticles({ api }) {
 
   const [AudioExerciseMessageOpen, setAudioExerciseMessageOpen] =
     useState(false);
-  const [displayedAudioExperimentPopup, setDisplayedAudioExperimentPopup] =
-    useState(false);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
@@ -50,20 +48,20 @@ export default function NewArticles({ api }) {
     });
     setTitle(strings.findArticles);
 
-  }, []);
+    }, []);
 
   useEffect(() => {
     if (!hasExtension) {
       setExtensionMessageOpen(true);
     }
   }, [hasExtension]);
-
   useEffect(() => {
-    console.log("(Start useEffect) Localstorage displayed audio popup: " + LocalStorage.displayedAudioExperimentPopup());
-    setDisplayedAudioExperimentPopup(LocalStorage.displayedAudioExperimentPopup());
-    setAudioExerciseMessageOpen(true);
-    console.log("(End useEffect) Localstorage displayed audio popup: " + LocalStorage.displayedAudioExperimentPopup());
+    if (!LocalStorage.displayedAudioExperimentPopup()) {
+      setAudioExerciseMessageOpen(true);
+    }
   }, []);
+
+
 
   if (articleList == null) {
     return <LoadingAnimation />;
@@ -82,9 +80,7 @@ export default function NewArticles({ api }) {
     <>
       <AudioExerciseMessage
         open={AudioExerciseMessageOpen}
-        displayedAudioExperimentPopup={displayedAudioExperimentPopup}
         setAudioExerciseMessageOpen={setAudioExerciseMessageOpen}
-        setDisplayedAudioExperimentPopup={setDisplayedAudioExperimentPopup}
       ></AudioExerciseMessage>
       <ExtensionMessage
         open={extensionMessageOpen}
@@ -98,7 +94,6 @@ export default function NewArticles({ api }) {
           api={api}
           articlesListShouldChange={articlesListShouldChange}
         />
-
         <SearchField />
       </s.MaterialSelection>
       <SortingButtons
