@@ -40,7 +40,8 @@
     "speak-tts": "^2.0.8",
     "styled-components": "^5.2.1",
     "uuid": "^8.3.1",
-    "web-vitals": "^2.1.0"
+    "web-vitals": "^2.1.0",
+    "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build"
   },
   "scripts": {
     "start": "react-scripts start",
