@@ -19,8 +19,7 @@ const LocalStorage = {
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
-    DisplayedAudioExperimentQuestionnaire:
-      "audio_experiment_displayed_questionnaire",
+    DisplayedAudioExperimentQuestionnaire: "audio_experiment_displayed_questionnaire",
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
   },
 
