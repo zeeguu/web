@@ -244,6 +244,9 @@ export default function Exercises({
     return (
       <>
       <QuestionnaireMessage
+      articleID={articleID}
+      api={api}
+      source={source}
       open={audioQuestionnaireMessageOpen}
       displayedAudioExperimentQuestionnaire={displayedAudioQuestionnairePopup}
       setDisplayedAudioExperimentQuestionnaire={setDisplayedAudioQuestionnairePopup}
@@ -285,10 +288,10 @@ export default function Exercises({
     if (newIndex === exerciseSession.length) {
       setFinished(true);
       LocalStorage.incrementAudioExperimentNoOfSessions();
-      LocalStorage.checkAudioExperimentCompleted();
-      api.logReaderActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), source);
-      if (LocalStorage.checkAudioExperimentCompleted()) {
-        api.logReaderActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", source);
+      LocalStorage.checkAndUpdateAudioExperimentCompleted();
+      api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), source);
+      if (LocalStorage.checkAndUpdateAudioExperimentCompleted()) {
+        api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", source);
       }
       return;
     }
