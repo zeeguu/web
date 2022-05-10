@@ -30,7 +30,7 @@ jobs:
         uses: kewisch/action-web-ext@v1
         with:
           cmd: build
-          source: .
+          source: ./build
 
       - name: "web-ext sign"
         id: web-ext-sign
