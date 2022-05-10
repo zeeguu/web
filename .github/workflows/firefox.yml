@@ -9,15 +9,19 @@ on:
       - FirefoxPublishing
 
 jobs:
+
   Submit:
     name: Publish to Firefox store
     runs-on: ubuntu-latest
     steps:
+      - name: Install the webstore-ext
+        run: |
+          npm install --global web-ext
+          pwd
       - uses: actions/checkout@v1
       - name: install
         run: npm ci || npm install
       - run: npm run pub-ci-firefox --if-present
       - name: Submit
         run: |
-            cd $DIRECTORY && web-ext sign --api-key=${{ secrets.FIREFOX_API_KEY }} --api-secret=${{ secrets.FIREFOX_API_SECRET }} --id="{f2222964-e685-4342-a484-9c4820f317fc}"
-            
+            cd $DIRECTORY && web-ext sign --channel=listed --api-key=${{ secrets.FIREFOX_API_KEY }} --api-secret=${{ secrets.FIREFOX_API_SECRET }}
