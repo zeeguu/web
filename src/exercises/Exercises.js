@@ -61,6 +61,7 @@ if (Feature.audio_exercises())  {
   ];
 }
 
+export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
   api,
   articleID,
@@ -240,11 +241,7 @@ export default function Exercises({
     api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     return (
       <>
-      <QuestionnaireMessage>
-        articleID={articleID}
-        api={api}
-        source={source}
-      </QuestionnaireMessage>
+      <QuestionnaireMessage/>
       <Congratulations
         articleID={articleID}
         correctBookmarks={correctBookmarks}
@@ -280,10 +277,10 @@ export default function Exercises({
     if (newIndex === exerciseSession.length) {
       setFinished(true);
       LocalStorage.incrementAudioExperimentNoOfSessions();
-      LocalStorage.checkAndUpdateAudioExperimentCompleted();
-      api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), source);
-      if (LocalStorage.checkAndUpdateAudioExperimentCompleted()) {
-        api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", source);
+      let completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
+      api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+      if (completed) {
+        api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", AUDIO_SOURCE);
       }
       return;
     }
