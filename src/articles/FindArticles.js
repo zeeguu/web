@@ -13,7 +13,6 @@ import LocalStorage from "../assorted/LocalStorage";
 import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
-import AudioExerciseMessage from "../components/AudioExerciseMessage.js"
 
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
@@ -64,7 +63,6 @@ export default function NewArticles({ api }) {
 
   return (
     <>
-      <AudioExerciseMessage/>
       <ExtensionMessage
         open={extensionMessageOpen}
         hasExtension={hasExtension}

@@ -28,7 +28,7 @@ export default function AudioExerciseMessage({
 
   function handleSelection(sessions) {
     setAudioExerciseMessageOpen(false);
-
+    
     console.log("popup displayed " + LocalStorage.displayedAudioExperimentPopup());
     LocalStorage.setDisplayedAudioExperimentPopup(true);
     console.log("popup displayed " + LocalStorage.displayedAudioExperimentPopup());
@@ -43,7 +43,7 @@ export default function AudioExerciseMessage({
     console.log("Experiment completed: " + LocalStorage.audioExperimentCompleted());
   }
   
-  if (Feature.audio_exercises() && !displayedAudioExperimentPopup) {
+  if (Feature.audio_exercises() && !LocalStorage.displayedAudioExperimentPopup()) {
     return (
       <Modal
         open={open}
