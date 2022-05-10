@@ -19,7 +19,5 @@ jobs:
       - run: npm run pub-ci-firefox --if-present
       - name: Submit
         run: |
-            cd $DIRECTORY && npx web-ext-submit@6
-        env:
-          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
-          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
+            cd $DIRECTORY && web-ext sign --api-key=${{ secrets.FIREFOX_API_KEY }} --api-secret=${{ secrets.FIREFOX_API_SECRET }} --id="{f2222964-e685-4342-a484-9c4820f317fc}"
+            
