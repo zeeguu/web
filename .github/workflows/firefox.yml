@@ -16,6 +16,7 @@ jobs:
         node-version: 16
     - name: Build
       run: |
+        cp ./public/manifest.firefox.json ./public/manifest.json
         npm install
         npm run pub-ci-firefox
   sign:
