@@ -21,7 +21,7 @@ jobs:
         run: |
             cd $DIRECTORY && npx web-ext-submit@6
         env:
-          EXTENSION_ID: "f2222964-e685-4342-a484-9c4820f317fc"
+          EXTENSION_ID: "{f2222964-e685-4342-a484-9c4820f317fc}"
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           WEB_EXT_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
