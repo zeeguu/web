@@ -9,6 +9,8 @@ export default function QuestionnaireMessage({
   api,
   articleID,
   source,
+  displayedAudioExperimentQuestionnaire,
+  setDisplayedAudioExperimentQuestionnaire,
 }) {
 
   const [open, setAudioQuestionnaireMessageOpen] = useState(false);
@@ -25,13 +27,18 @@ export default function QuestionnaireMessage({
     api.logUserActivity(api.AUDIO_EXP, articleID, "Closed questionnaire, send reminder", source);
   }
 
-  if (Feature.audio_exercises() && !LocalStorage.displayedAudioExperimentQuestionnaire() && LocalStorage.checkAndUpdateAudioExperimentCompleted()) {
+  if (Feature.audio_exercises() && !LocalStorage.displayedAudioExperimentQuestionnaire()) {
     return (
       <Modal
+        articleID={articleID}
+        api={api}
+        source={source}
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        displayedAudioExperimentQuestionnaire={displayedAudioExperimentQuestionnaire}
+        setDisplayedAudioExperimentQuestionnaire={setDisplayedAudioExperimentQuestionnaire}
       >
         <s.MyBox>
           <s.StyledCloseButton role="button" onClick={handleClose}>
@@ -41,7 +48,7 @@ export default function QuestionnaireMessage({
           <p>
             {strings.questionnaireMessageText}
             <br /> <br />
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeUMh8wJCGU6dd84zqKQBp6wpZim4gYOrXWoVkmlEafanS7Mw/viewform?usp=sf_link" 
+            <a onClick={handleClose} href="https://docs.google.com/forms/d/e/1FAIpQLSeUMh8wJCGU6dd84zqKQBp6wpZim4gYOrXWoVkmlEafanS7Mw/viewform?usp=sf_link" 
               rel="noopener noreferrer" target="_blank">
                   {strings.questionnaireLinkText}
             </a>

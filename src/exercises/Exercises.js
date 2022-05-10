@@ -15,7 +15,8 @@ import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
-import QuestionnaireMessage from "../components/QuestionnaireMessage";
+import QuestionnaireMessage from "../components/QuestionnaireMessage.js";
+import AudioExerciseMessage from "../components/AudioExerciseMessage.js"
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let BOOKMARKS_FOR_EXERCISE = [];
@@ -81,12 +82,8 @@ export default function Exercises({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
-  const [audioQuestionnaireMessageOpen, setAudioQuestionnaireMessageOpen] = useState(false);
-  const [displayedAudioQuestionnairePopup, setDisplayedAudioQuestionnairePopup] = useState(false);
 
   useEffect(() => {
-    setDisplayedAudioQuestionnairePopup(LocalStorage.displayedAudioExperimentQuestionnaire());
-    setAudioQuestionnaireMessageOpen(true);
     console.log("Localstorage displayed questionnaire popup " + LocalStorage.displayedAudioExperimentQuestionnaire());
     console.log("Audio feature flag " + Feature.audio_exercises());
     console.log("Audio completed " + LocalStorage.audioExperimentCompleted());
@@ -243,11 +240,10 @@ export default function Exercises({
     api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     return (
       <>
-      <QuestionnaireMessage
-      articleID={articleID}
-      api={api}
-      source={source}
-      >
+      <QuestionnaireMessage>
+        articleID={articleID}
+        api={api}
+        source={source}
       </QuestionnaireMessage>
       <Congratulations
         articleID={articleID}
@@ -331,6 +327,7 @@ export default function Exercises({
 
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
+    <><AudioExerciseMessage/>
     <s.ExercisesColumn className="exercisesColumn">
       <s.LittleMessageAbove>
         {wordSourcePrefix} {wordSourceText}
@@ -348,16 +345,14 @@ export default function Exercises({
           moveToNextExercise={moveToNextExercise}
           toggleShow={toggleShow}
           reload={reload}
-          setReload={setReload}
-        />
+          setReload={setReload} />
       </s.ExForm>
       <FeedbackDisplay
         showFeedbackButtons={showFeedbackButtons}
         setShowFeedbackButtons={setShowFeedbackButtons}
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
-        feedbackFunction={stopShowingThisFeedback}
-      />
-    </s.ExercisesColumn>
+        feedbackFunction={stopShowingThisFeedback} />
+    </s.ExercisesColumn></>
   );
 }
