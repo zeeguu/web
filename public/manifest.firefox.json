@@ -2,6 +2,13 @@
     "name": "The Zeeguu Reader",
     "description": "The extension helps you read articles in the language that you want to practice and offers one-click translation and pronunciation.",
     "version": "2.0.7",
+
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "{f2222964-e685-4342-a484-9c4820f317fc}"
+      }
+    },
+
     "manifest_version": 2,
     "permissions": ["storage", "activeTab", "tabs", "cookies",  "https://www.zeeguu.org/", "https://api.zeeguu.org/", "<all_urls>"],
   
