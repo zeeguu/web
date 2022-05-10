@@ -1,4 +1,4 @@
-name: "Publish to Firefox store"
+name: Release
 
 on:
   push:
@@ -6,46 +6,20 @@ on:
       - FirefoxPublishing
 
 jobs:
-  build:
+  Submit:
     name: Publish to Firefox store
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 16
-    - name: Build
-      run: |
-        cp ./public/manifest.firefox.json ./public/manifest.json
-        npm install
-        npm run pub-ci-firefox
-  sign:
-    name: "Release"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v1
-      - name: "web-ext build"
-        id: web-ext-build
-        uses: kewisch/action-web-ext@v1
-        with:
-          cmd: build
-          source: .
-
-      - name: "web-ext sign"
-        id: web-ext-sign
-        uses: kewisch/action-web-ext@v1
-        with:
-          cmd: sign
-          source: ${{ steps.web-ext-build.outputs.target }}
-          channel: listed
-          apiKey: ${{ secrets.FIREFOX_API_KEY }}
-          apiSecret: ${{ secrets.FIREFOX_API_SECRET }}
-          timeout: 900000
-
-      - name: "Create Release"
-        uses: softprops/action-gh-release@v1
+      - uses: actions/checkout@v1
+      - name: install
+        run: npm ci || npm install
+      - run: npm run pub-ci-firefox --if-present
+      - name: Submit
+        run: |
+            cd $DIRECTORY && npx web-ext-submit@6
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: ${{ steps.web-ext-sign.outputs.target }}
+          EXTENSION_ID: "f2222964-e685-4342-a484-9c4820f317fc"
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          WEB_EXT_API_KEY: ${{ secrets.FIREFOX_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.FIREFOX_API_SECRET }}
