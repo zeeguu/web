@@ -128,7 +128,8 @@ const LocalStorage = {
     localStorage[this.Keys.AudioExperimentCompleted] = true;
     return true; 
   } 
-    this.setAudioExperimentCompleted(false);
+  this.setAudioExperimentCompleted(false);
+  localStorage[this.Keys.AudioExperimentCompleted] = false;
     return false;
   },
 
@@ -160,8 +161,8 @@ const LocalStorage = {
   },
 
   incrementAudioExperimentNoOfSessions: function () {
-    let audioExperimentNoOfSessions = Number(localStorage[this.Keys.AudioExperimentNoOfSessions]); 
-    let temp = audioExperimentNoOfSessions+1; 
+    var audioExperimentNoOfSessions = Number(localStorage[this.Keys.AudioExperimentNoOfSessions]); 
+    var temp = audioExperimentNoOfSessions+1; 
     localStorage[this.Keys.AudioExperimentNoOfSessions] = temp;
   },
 };

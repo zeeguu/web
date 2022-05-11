@@ -62,7 +62,8 @@ export default function AudioExerciseMessage({
             {strings.audioExerciseMessageText1}
             <br /> <br />
             {strings.audioExerciseMessageText2} <br /> <br />
-            {strings.audioExerciseMessageText3} <br />
+            {strings.audioExerciseMessageText3} <br /> <br />
+            {strings.audioExerciseMessageText4}
           </p>
           <t.OrangeButtonMessage role="button"onClick={() => handleSelection("5")}>
             {strings.audioExerciseMessageOption5}
@@ -79,7 +80,6 @@ export default function AudioExerciseMessage({
           <t.OrangeButtonMessage role="button" onClick={() => handleClose}>
             {strings.audioExerciseMessageOptionNo}
           </t.OrangeButtonMessage>
-          <p>{strings.audioExerciseMessageText4}</p>
         </s.MyBox>
       </Modal>
     );
