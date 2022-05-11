@@ -28,4 +28,4 @@ jobs:
           pwd     
       - name: Publish
         run: |
-            cd $DIRECTORY && web-ext sign --channel=listed --api-key=${{ secrets.FIREFOX_API_KEY }} --api-secret=${{ secrets.FIREFOX_API_SECRET }} || test $? -eq 1 && echo "error code 1 => the usual"
+            cd $DIRECTORY && web-ext sign --channel=listed --api-key=${{ secrets.FIREFOX_API_KEY }} --api-secret=${{ secrets.FIREFOX_API_SECRET }} || test $? -eq 1 && echo "error code 1 => The add-on has been submitted for review, but can not automatically be approved."
