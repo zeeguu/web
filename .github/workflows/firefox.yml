@@ -1,4 +1,4 @@
-name: Release
+name: Publish to Firefox Add-ons
 
 env:
   DIRECTORY: ./build
@@ -9,19 +9,23 @@ on:
       - FirefoxPublishing
 
 jobs:
-
   Submit:
-    name: Publish to Firefox store
+    name: Publish to Firefox Add-ons
     runs-on: ubuntu-latest
+
     steps:
-      - name: Install the webstore-ext
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+            node-version: 16
+      - name: Build
+        run: |
+          npm ci
+          npm run pub-ci-firefox
+      - name: Install Mozillas web-ext
         run: |
           npm install --global web-ext
-          pwd
-      - uses: actions/checkout@v1
-      - name: install
-        run: npm ci || npm install
-      - run: npm run pub-ci-firefox --if-present
-      - name: Submit
+          pwd     
+      - name: Publish
         run: |
             cd $DIRECTORY && web-ext sign --channel=listed --api-key=${{ secrets.FIREFOX_API_KEY }} --api-secret=${{ secrets.FIREFOX_API_SECRET }}
