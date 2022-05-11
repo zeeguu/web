@@ -8,7 +8,7 @@ export default function ReviewVocabulary({openReview}) {
   return (
     <>
     <s.FeedbackBox className="feedbackBox">
-      <h2>Practice your Vocabulary!</h2>
+      <h2>Practice your Vocabulary</h2>
       <small> Review your translations to ensure better learning and practice the vocabulary from this article in the exercises.</small>
       <br />
       <br />
