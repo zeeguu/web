@@ -42,7 +42,6 @@ export default function AudioExerciseOne({
     setTimeout(() => {
       handleSpeak();
     }, 500);
-    setArticleInfo(articleInfo);
   }, []);
 
   function inputKeyPress() {
