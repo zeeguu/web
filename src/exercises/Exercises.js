@@ -17,19 +17,12 @@ import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import QuestionnaireMessage from "../components/QuestionnaireMessage.js";
 
-const DEFAULT_BOOKMARKS_TO_PRACTICE = 18;
+const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let BOOKMARKS_FOR_EXERCISE = [];
+
 BOOKMARKS_FOR_EXERCISE = [
     {
-      type: Match,
-      requiredBookmarks: 3,
-    },
-    {
       type: AudioExerciseOne,
-      requiredBookmarks: 1,
-    },
-    {
-      type: MultipleChoice,
       requiredBookmarks: 1,
     },
     {
@@ -40,24 +33,26 @@ BOOKMARKS_FOR_EXERCISE = [
       type: AudioExerciseTwo,
       requiredBookmarks: 3,
     },
-  ];
-if (Feature.audio_exercises())  {
-} else {
-  BOOKMARKS_FOR_EXERCISE = [
     {
-      type: Match,
-      requiredBookmarks: 3,
+        type: Match,
+        requiredBookmarks: 3,
     },
-    {
+        {
       type: MultipleChoice,
       requiredBookmarks: 1,
     },
     {
-      type: FindWordInContext,
-      requiredBookmarks: 1,
-    },
+       type: FindWordInContext,
+       requiredBookmarks: 1,
+   },
   ];
-}
+ 
+// else {
+//   BOOKMARKS_FOR_EXERCISE = [
+
+//     
+//   ];
+// }
 
 export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
@@ -101,6 +96,7 @@ export default function Exercises({
           });
         });
       } else {
+        console.log(DEFAULT_BOOKMARKS_TO_PRACTICE);
         api.getUserBookmarksToStudy(
           DEFAULT_BOOKMARKS_TO_PRACTICE,
           (bookmarks) => {
@@ -115,7 +111,7 @@ export default function Exercises({
 
   function initializeExercises(bookmarks, title) {
     setCountBookmarksToPractice(bookmarks.length);
-    if (bookmarks.length >= 18) {
+    if (bookmarks.length > 0) {
       calculateExerciseBatches(bookmarks);
       setTitle(title);
     }
@@ -257,7 +253,7 @@ export default function Exercises({
     return <LoadingAnimation />;
   }
 
-  if (countBookmarksToPractice === 0) {
+  if (countBookmarksToPractice < 10) {
     return (
       <OutOfWordsMessage
         message={strings.goToTextsToTranslateWords}
