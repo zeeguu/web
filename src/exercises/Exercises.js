@@ -19,9 +19,7 @@ import QuestionnaireMessage from "../components/QuestionnaireMessage.js";
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 18;
 let BOOKMARKS_FOR_EXERCISE = [];
-
-if (Feature.audio_exercises())  {
-  BOOKMARKS_FOR_EXERCISE = [
+BOOKMARKS_FOR_EXERCISE = [
     {
       type: Match,
       requiredBookmarks: 3,
@@ -35,14 +33,15 @@ if (Feature.audio_exercises())  {
       requiredBookmarks: 1,
     },
     {
-      type: AudioExerciseTwo,
-      requiredBookmarks: 3,
-    },
-    {
       type: FindWordInContext,
       requiredBookmarks: 1,
     },
+    {
+      type: AudioExerciseTwo,
+      requiredBookmarks: 3,
+    },
   ];
+if (Feature.audio_exercises())  {
 } else {
   BOOKMARKS_FOR_EXERCISE = [
     {
@@ -116,7 +115,7 @@ export default function Exercises({
 
   function initializeExercises(bookmarks, title) {
     setCountBookmarksToPractice(bookmarks.length);
-    if (bookmarks.length > 0) {
+    if (bookmarks.length >= 18) {
       calculateExerciseBatches(bookmarks);
       setTitle(title);
     }
@@ -258,7 +257,7 @@ export default function Exercises({
     return <LoadingAnimation />;
   }
 
-  if (countBookmarksToPractice < DEFAULT_BOOKMARKS_TO_PRACTICE) {
+  if (countBookmarksToPractice === 0) {
     return (
       <OutOfWordsMessage
         message={strings.goToTextsToTranslateWords}
