@@ -16,9 +16,8 @@ import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import QuestionnaireMessage from "../components/QuestionnaireMessage.js";
-import AudioExerciseMessage from "../components/AudioExerciseMessage.js"
 
-const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
+const DEFAULT_BOOKMARKS_TO_PRACTICE = 18;
 let BOOKMARKS_FOR_EXERCISE = [];
 
 if (Feature.audio_exercises())  {
@@ -28,20 +27,20 @@ if (Feature.audio_exercises())  {
       requiredBookmarks: 3,
     },
     {
-      type: MultipleChoice,
-      requiredBookmarks: 1,
-    },
-    {
-      type: FindWordInContext,
-      requiredBookmarks: 1,
-    },
-    {
       type: AudioExerciseOne,
+      requiredBookmarks: 1,
+    },
+    {
+      type: MultipleChoice,
       requiredBookmarks: 1,
     },
     {
       type: AudioExerciseTwo,
       requiredBookmarks: 3,
+    },
+    {
+      type: FindWordInContext,
+      requiredBookmarks: 1,
     },
   ];
 } else {
@@ -259,7 +258,7 @@ export default function Exercises({
     return <LoadingAnimation />;
   }
 
-  if (countBookmarksToPractice === 0) {
+  if (countBookmarksToPractice < DEFAULT_BOOKMARKS_TO_PRACTICE) {
     return (
       <OutOfWordsMessage
         message={strings.goToTextsToTranslateWords}
@@ -267,7 +266,7 @@ export default function Exercises({
         buttonAction={backButtonAction}
       />
     );
-  }
+  } 
 
   function moveToNextExercise() {
     setIsCorrect(false);
