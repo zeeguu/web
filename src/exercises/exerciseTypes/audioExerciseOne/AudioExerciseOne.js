@@ -5,6 +5,7 @@ import SpeakButton from "../SpeakButton";
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
+import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import ZeeguuSpeech from "../../../speech/ZeeguuSpeech.js";
 
 const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
@@ -24,9 +25,8 @@ export default function AudioExerciseOne({
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
   const [messageToAPI, setMessageToAPI] = useState("");
-
   const bookmarkToStudy = bookmarksToStudy[0];
-
+  const [articleInfo, setArticleInfo] = useState();
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
 
   async function handleSpeak() {
@@ -35,10 +35,14 @@ export default function AudioExerciseOne({
 
   // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
   useEffect(() => {
+    setExerciseType(EXERCISE_TYPE);
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setArticleInfo(articleInfo);
+    });
     setTimeout(() => {
       handleSpeak();
     }, 500);
-    setExerciseType(EXERCISE_TYPE);
+    setArticleInfo(articleInfo);
   }, []);
 
   function inputKeyPress() {
@@ -68,6 +72,9 @@ export default function AudioExerciseOne({
       duration,
       bookmarksToStudy[0].id
     );
+  }
+   if (!articleInfo) {
+    return <LoadingAnimation />;
   }
 
   function handleCorrectAnswer(message) {
