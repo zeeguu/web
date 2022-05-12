@@ -26,7 +26,6 @@ export default function AudioExerciseOne({
   const [firstTypeTime, setFirstTypeTime] = useState();
   const [messageToAPI, setMessageToAPI] = useState("");
   const bookmarkToStudy = bookmarksToStudy[0];
-  const [articleInfo, setArticleInfo] = useState();
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
 
   async function handleSpeak() {
@@ -36,9 +35,6 @@ export default function AudioExerciseOne({
   // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setArticleInfo(articleInfo);
-    });
     setTimeout(() => {
       handleSpeak();
     }, 500);
@@ -71,9 +67,6 @@ export default function AudioExerciseOne({
       duration,
       bookmarksToStudy[0].id
     );
-  }
-   if (!articleInfo) {
-    return <LoadingAnimation />;
   }
 
   function handleCorrectAnswer(message) {
