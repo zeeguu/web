@@ -276,11 +276,16 @@ export default function Exercises({
 
     if (newIndex === exerciseSession.length) {
       setFinished(true);
+      var completed;
+      if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
       LocalStorage.incrementAudioExperimentNoOfSessions();
-      let completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
-      api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
-      if (completed) {
-        api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", AUDIO_SOURCE);
+      completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
+        if (completed) {
+          api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+          api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", AUDIO_SOURCE);
+        } else {
+          api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+        }
       }
       return;
     }
@@ -324,7 +329,7 @@ export default function Exercises({
 
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
-    <><AudioExerciseMessage/>
+    
     <s.ExercisesColumn className="exercisesColumn">
       <s.LittleMessageAbove>
         {wordSourcePrefix} {wordSourceText}
@@ -350,6 +355,6 @@ export default function Exercises({
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
         feedbackFunction={stopShowingThisFeedback} />
-    </s.ExercisesColumn></>
+    </s.ExercisesColumn>
   );
 }
