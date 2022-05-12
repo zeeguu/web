@@ -77,7 +77,7 @@ export default function AudioExerciseMessage({
             {strings.audioExerciseMessageOption1}
           </t.OrangeButtonMessage>
 
-          <t.OrangeButtonMessage role="button" onClick={() => handleClose}>
+          <t.OrangeButtonMessage role="button" onClick={handleClose}>
             {strings.audioExerciseMessageOptionNo}
           </t.OrangeButtonMessage>
         </s.MyBox>
