@@ -301,7 +301,7 @@ let strings = new LocalizedStrings(
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
       goBackArticlePrefix: "Go back to reading: ",
-      noTranslatedWords: "You have no words or not enough words to practice.",
+      noTranslatedWords: "You have no words to practice.",
       goToTextsToTranslateWords: "Read and translate words to get exercises.",
       goStarTranslations:
         "Go back and star translations for Zeeguu to include them in your exercises.",
