@@ -27,7 +27,7 @@ export default function QuestionnaireMessage({
     api.logUserActivity(api.AUDIO_EXP, articleID, "Closed questionnaire, send reminder", source);
   }
 
-  if (Feature.audio_exercises() && !LocalStorage.displayedAudioExperimentQuestionnaire()) {
+  if (Feature.audio_exercises() && LocalStorage.getTargetNoOfAudioSessions() <= LocalStorage.getAudioExperimentNoOfSessions()) {
     return (
       <Modal
         articleID={articleID}
