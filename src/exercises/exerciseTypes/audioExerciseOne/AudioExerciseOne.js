@@ -5,8 +5,8 @@ import SpeakButton from "../SpeakButton";
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
-import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import ZeeguuSpeech from "../../../speech/ZeeguuSpeech.js";
+import * as w from "../../../words/Word.sc";
 
 const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
 export default function AudioExerciseOne({
@@ -114,7 +114,15 @@ export default function AudioExerciseOne({
       )}
       {isCorrect && (
         <>
-          <h1>{bookmarksToStudy[0].from}</h1>
+          <br></br>
+            <w.WordPairAudioExerciseOne>
+              <div className="from">
+                {`${bookmarksToStudy[0].from}`}
+              </div>
+              <div className="to">
+                {`${bookmarksToStudy[0].to}`}
+              </div>
+            </w.WordPairAudioExerciseOne>
           <NextNavigation
             api={api}
             bookmarksToStudy={bookmarksToStudy}
