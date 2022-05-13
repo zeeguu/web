@@ -455,10 +455,10 @@ let strings = new LocalizedStrings(
 
       //AudioExerciseMessage
       audioExerciseMessageHeadline: "Please help us out by trying our new exercises!",
-      audioExerciseMessageText1: "We're currently looking for feedback on a couple of new audio-based exercises for the platform, and we'd like your help!",
-      audioExerciseMessageText2: "You'll be completing a set of exercises that includes the new ones, and give us feedback in a short survey afterwards.",
-      audioExerciseMessageText3: "You're free to choose below wether you'd like to try the exercises out once or five times. When you've completed the desired amount of exercise sets, we'll ask you to complete the survey.",
-      audioExerciseMessageText4: "Thank you in advance.",
+      audioExerciseMessageText1: "We have added two new kinds of audio-based exercises for you 😃",
+      audioExerciseMessageText2: "Would you like to try them out and give us feedback? ",
+      audioExerciseMessageText3: "Please choose below how many exercise sets would you like to try before completing a very short survey.",
+      audioExerciseMessageText4: "Thank you in advance. We hope you'll like the new exercises 😃",
       audioExerciseMessageOption5: "I'd like to try the exercises five times before the survey",
       audioExerciseMessageOption3: "I'd like to try the exercises three times the survey",
       audioExerciseMessageOption1: "I'd like to try the exercises once before the survey",

@@ -16,51 +16,31 @@ import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import QuestionnaireMessage from "../components/QuestionnaireMessage.js";
-import AudioExerciseMessage from "../components/AudioExerciseMessage.js"
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
-let BOOKMARKS_FOR_EXERCISE = [];
-
-if (Feature.audio_exercises())  {
-  BOOKMARKS_FOR_EXERCISE = [
-    {
-      type: Match,
-      requiredBookmarks: 3,
-    },
-    {
-      type: MultipleChoice,
-      requiredBookmarks: 1,
-    },
-    {
-      type: FindWordInContext,
-      requiredBookmarks: 1,
-    },
-    {
-      type: AudioExerciseOne,
-      requiredBookmarks: 1,
-    },
-    {
-      type: AudioExerciseTwo,
-      requiredBookmarks: 3,
-    },
+let EXERCISE_TYPES = [
+  {
+    type: Match,
+    requiredBookmarks: 3,
+  },
+  {
+    type: MultipleChoice,
+    requiredBookmarks: 1,
+  },
+  {
+    type: FindWordInContext,
+    requiredBookmarks: 1,
+  },
+  {
+    type: AudioExerciseTwo,
+    requiredBookmarks: 3,
+  },
+  {
+    type: AudioExerciseOne,
+    requiredBookmarks: 1,
+  },
   ];
-} else {
-  BOOKMARKS_FOR_EXERCISE = [
-    {
-      type: Match,
-      requiredBookmarks: 3,
-    },
-    {
-      type: MultipleChoice,
-      requiredBookmarks: 1,
-    },
-    {
-      type: FindWordInContext,
-      requiredBookmarks: 1,
-    },
-  ];
-}
-
+ 
 export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
   api,
@@ -132,7 +112,7 @@ export default function Exercises({
    * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
    */
   function calculateExerciseBatches(bookmarks) {
-    let bookmarksPerBatch = BOOKMARKS_FOR_EXERCISE.reduce(
+    let bookmarksPerBatch = EXERCISE_TYPES.reduce(
       (a, b) => a + b.requiredBookmarks,
       0
     );
@@ -149,37 +129,39 @@ export default function Exercises({
 
   function defineExerciseSession(batches, rest, bookmark_count) {
     let exerciseSession = [];
-    if (bookmark_count < 7) {
-      let bookmarks = bookmark_count;
-      while (bookmarks > 0) {
-        for (let i = BOOKMARKS_FOR_EXERCISE.length - 1; i > 0; i--) {
-          if (bookmarks === 0) break;
+    if (bookmark_count < 9) {
+      let count = bookmark_count;
+      while (count > 0) {
+        for (let i = EXERCISE_TYPES.length - 1; i > 0; i--) {
+          let currentTypeRequiredCount = EXERCISE_TYPES[i].requiredBookmarks;
+          if (count < currentTypeRequiredCount) continue;
+          if (count === 0) break;
           let exercise = {
-            type: BOOKMARKS_FOR_EXERCISE[i].type,
-            requiredBookmarks: BOOKMARKS_FOR_EXERCISE[i].requiredBookmarks,
+            type: EXERCISE_TYPES[i].type,
+            requiredBookmarks: currentTypeRequiredCount,
             bookmarks: [],
           };
           exerciseSession.push(exercise);
-          bookmarks--;
+          count = count-currentTypeRequiredCount;
         }
       }
     } else {
       for (let i = 0; i < batches; i++) {
-        for (let j = BOOKMARKS_FOR_EXERCISE.length - 1; j >= 0; j--) {
+        for (let j = EXERCISE_TYPES.length - 1; j >= 0; j--) {
           let exercise = {
-            type: BOOKMARKS_FOR_EXERCISE[j].type,
-            requiredBookmarks: BOOKMARKS_FOR_EXERCISE[j].requiredBookmarks,
+            type: EXERCISE_TYPES[j].type,
+            requiredBookmarks: EXERCISE_TYPES[j].requiredBookmarks,
             bookmarks: [],
           };
           exerciseSession.push(exercise);
         }
       }
       while (rest > 0) {
-        for (let k = BOOKMARKS_FOR_EXERCISE.length - 1; k >= 0; k--) {
-          if (rest >= BOOKMARKS_FOR_EXERCISE[k].requiredBookmarks) {
+        for (let k = EXERCISE_TYPES.length - 1; k >= 0; k--) {
+          if (rest >= EXERCISE_TYPES[k].requiredBookmarks) {
             let exercise = {
-              type: BOOKMARKS_FOR_EXERCISE[k].type,
-              requiredBookmarks: BOOKMARKS_FOR_EXERCISE[k].requiredBookmarks,
+              type: EXERCISE_TYPES[k].type,
+              requiredBookmarks: EXERCISE_TYPES[k].requiredBookmarks,
               bookmarks: [],
             };
             exerciseSession.push(exercise);
@@ -267,7 +249,7 @@ export default function Exercises({
         buttonAction={backButtonAction}
       />
     );
-  }
+  } 
 
   function moveToNextExercise() {
     setIsCorrect(false);
@@ -276,11 +258,16 @@ export default function Exercises({
 
     if (newIndex === exerciseSession.length) {
       setFinished(true);
+      var completed;
+      if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
       LocalStorage.incrementAudioExperimentNoOfSessions();
-      let completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
-      api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
-      if (completed) {
-        api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", AUDIO_SOURCE);
+      completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
+        if (completed) {
+          api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+          api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", AUDIO_SOURCE);
+        } else {
+          api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+        }
       }
       return;
     }
@@ -324,7 +311,7 @@ export default function Exercises({
 
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
-    <><AudioExerciseMessage/>
+    
     <s.ExercisesColumn className="exercisesColumn">
       <s.LittleMessageAbove>
         {wordSourcePrefix} {wordSourceText}
@@ -350,6 +337,6 @@ export default function Exercises({
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
         feedbackFunction={stopShowingThisFeedback} />
-    </s.ExercisesColumn></>
+    </s.ExercisesColumn>
   );
 }
