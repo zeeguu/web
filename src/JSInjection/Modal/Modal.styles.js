@@ -9,6 +9,7 @@ export const GlobalStyle = createGlobalStyle`
         right: 0;
         bottom: 0;
         background-color: rgb(239, 239, 239) !important;
+        z-index: 5000000;
       }
 
     .feedback-overlay{

@@ -21,6 +21,8 @@ import { removeAllChildNodes } from "../../popup/functions";
 import { politikenRegex, removeSignUp } from "./Pages/politiken";
 import { scientiasRegex, convertStrongToHeader } from "./Pages/scientias";
 import { egyszervoltRegex, removeIMGTag } from "./Pages/egyszervolt";
+import { corriereRegex } from "./Pages/corriere";
+
 
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
@@ -129,6 +131,26 @@ export function cleanDOMAfter(url) {
     if (iframe) {
       removeAllChildNodes(iframe);
     }
+  }
+  if (url.match(corriereRegex)) {
+    setTimeout(function () {
+      const iframe = document.querySelectorAll("iframe");
+      if (iframe) {
+        for (let i = 0; i < iframe.length; i++) {
+          iframe[i].remove();
+        }
+      }
+      const script = document.querySelectorAll("script");
+      if (script) {
+        for (let i = 0; i < script.length; i++) {
+          script[i].remove();
+        }
+      }
+      const banner = document.getElementsByClassName("tp-modal")[0];
+      if (banner) {
+        banner.remove();
+      }
+    }, 10000);
   }
 }
 

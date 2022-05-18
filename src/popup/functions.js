@@ -64,3 +64,10 @@ export function deleteCurrentDOM() {
     removeAllChildNodes(iframe);
   }
 }
+
+export function deleteTimeouts() {
+var id = window.setTimeout(function() {}, 0);
+while (id--) {
+    window.clearTimeout(id);
+}
+}
