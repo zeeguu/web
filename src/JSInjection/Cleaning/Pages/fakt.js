@@ -21,3 +21,17 @@ export function cleanFakt(documentClone) {
   }
   return documentClone;
 }
+
+
+export function removeIFrames(){
+  const otherArticles = document.getElementById("slot-flat-plista");
+  if (otherArticles) {
+    otherArticles.remove()
+  }
+  const iframe = document.querySelectorAll("iframe");
+  if (iframe) {
+    for (let i = 0; i < iframe.length; i++) {
+      iframe[i].remove();
+    }
+  }
+}

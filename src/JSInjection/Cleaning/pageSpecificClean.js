@@ -16,12 +16,12 @@ import { bbcRegex, cleanBBC } from "./Pages/bbc";
 import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
-import { cleanFakt, faktRegex } from "./Pages/fakt";
+import { cleanFakt, faktRegex, removeIFrames } from "./Pages/fakt";
 import { removeAllChildNodes } from "../../popup/functions";
 import { politikenRegex, removeSignUp } from "./Pages/politiken";
 import { scientiasRegex, convertStrongToHeader } from "./Pages/scientias";
 import { egyszervoltRegex, removeIMGTag } from "./Pages/egyszervolt";
-import { corriereRegex } from "./Pages/corriere";
+import { corriereRegex, removeScripts } from "./Pages/corriere";
 
 
 export function getEntireHTML(url) {
@@ -123,34 +123,14 @@ export function cleanDocumentClone(documentClone, currentTabURL) {
 
 export function cleanDOMAfter(url) {
   if (url.match(faktRegex)) {
-    const otherArticles = document.getElementById("slot-flat-plista");
-    if (otherArticles) {
-      removeAllChildNodes(otherArticles);
-    }
-    const iframe = document.querySelector("iframe");
-    if (iframe) {
-      removeAllChildNodes(iframe);
-    }
+    setTimeout(function () {
+    removeIFrames();
+  }, 10000);
   }
   if (url.match(corriereRegex)) {
     setTimeout(function () {
-      const iframe = document.querySelectorAll("iframe");
-      if (iframe) {
-        for (let i = 0; i < iframe.length; i++) {
-          iframe[i].remove();
-        }
-      }
-      const script = document.querySelectorAll("script");
-      if (script) {
-        for (let i = 0; i < script.length; i++) {
-          script[i].remove();
-        }
-      }
-      const banner = document.getElementsByClassName("tp-modal")[0];
-      if (banner) {
-        banner.remove();
-      }
-    }, 10000);
+    removeScripts();
+  }, 10000);
   }
 }
 
