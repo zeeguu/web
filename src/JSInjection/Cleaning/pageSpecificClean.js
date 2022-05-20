@@ -17,7 +17,7 @@ import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
 import { cleanFakt, faktRegex, removeIFrames } from "./Pages/fakt";
-import { removeAllChildNodes } from "../../popup/functions";
+import { deleteIntervals, deleteTimeouts} from "../../popup/functions";
 import { politikenRegex, removeSignUp } from "./Pages/politiken";
 import { scientiasRegex, convertStrongToHeader } from "./Pages/scientias";
 import { egyszervoltRegex, removeIMGTag } from "./Pages/egyszervolt";
@@ -122,15 +122,18 @@ export function cleanDocumentClone(documentClone, currentTabURL) {
 
 
 export function cleanDOMAfter(url) {
+  deleteIntervals();
+  deleteTimeouts();
+
   if (url.match(faktRegex)) {
     setTimeout(function () {
-    removeIFrames();
-  }, 10000);
+      removeIFrames();
+    }, 10000);
   }
   if (url.match(corriereRegex)) {
     setTimeout(function () {
-    removeScripts();
-  }, 10000);
+      removeScripts();
+    }, 10000);
   }
 }
 
