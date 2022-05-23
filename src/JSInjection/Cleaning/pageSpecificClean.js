@@ -16,11 +16,13 @@ import { bbcRegex, cleanBBC } from "./Pages/bbc";
 import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
-import { cleanFakt, faktRegex } from "./Pages/fakt";
-import { removeAllChildNodes } from "../../popup/functions";
+import { cleanFakt, faktRegex, removeIFrames } from "./Pages/fakt";
+import { deleteIntervals, deleteTimeouts} from "../../popup/functions";
 import { politikenRegex, removeSignUp } from "./Pages/politiken";
 import { scientiasRegex, convertStrongToHeader } from "./Pages/scientias";
 import { egyszervoltRegex, removeIMGTag } from "./Pages/egyszervolt";
+import { corriereRegex, removeScripts } from "./Pages/corriere";
+
 
 export function getEntireHTML(url) {
   var xmlHttp = new XMLHttpRequest();
@@ -120,15 +122,18 @@ export function cleanDocumentClone(documentClone, currentTabURL) {
 
 
 export function cleanDOMAfter(url) {
+  deleteIntervals();
+  deleteTimeouts();
+
   if (url.match(faktRegex)) {
-    const otherArticles = document.getElementById("slot-flat-plista");
-    if (otherArticles) {
-      removeAllChildNodes(otherArticles);
-    }
-    const iframe = document.querySelector("iframe");
-    if (iframe) {
-      removeAllChildNodes(iframe);
-    }
+    setTimeout(function () {
+      removeIFrames();
+    }, 10000);
+  }
+  if (url.match(corriereRegex)) {
+    setTimeout(function () {
+      removeScripts();
+    }, 10000);
   }
 }
 
