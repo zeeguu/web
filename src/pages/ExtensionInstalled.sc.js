@@ -65,10 +65,16 @@ let PageBackground = styled.div`
   background: ${zeeguuVeryLightOrange};
 `;
 
+let VideoLink = styled.p`
+  margin: 0em;
+  padding-bottom: 1em;
+`
+
 export {
   ExtensionInstalledWrapper,
   ExtensionContainer,
   LinkContainer,
   OrangeButton,
   PageBackground,
+  VideoLink
 };
