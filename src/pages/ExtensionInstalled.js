@@ -9,7 +9,7 @@ export default function ExtensionInstalled({ api }) {
   useEffect(() => {
     api.logUserActivity(api.OPEN_EXTENSION_INSTALLED);
   }, []);
-  
+
   return (
     <s.PageBackground>
       <z.LogoOnTop />
@@ -18,7 +18,7 @@ export default function ExtensionInstalled({ api }) {
           <h1>{strings.congratulations}</h1>
           <h4>{strings.pinExtension}</h4>
           <s.VideoLink>Learn how it works by watching
-          <a href="https://vimeo.com/715531198" target="_blank" rel="noreferrer"> this video</a>
+            <a href="https://vimeo.com/715531198" target="_blank" rel="noreferrer"> this video</a>
           </s.VideoLink>
           <img
             src={"https://zeeguu.org/static/images/zeeguuExtension.gif"}
