@@ -23,12 +23,12 @@ export default function Reminder({ hasExtension }) {
   if (hasExtension && runningInChromeDesktop() && Feature.extension_experiment1()) {
     return(
     <ExtensionReminder>
-      To learn how to use the Zeeguu Reader Chrome extension, 
+      Learn how to use the Zeeguu Reader Chrome extension by watching
       <a
           href="https://vimeo.com/715531198"
           rel="noopener noreferrer"
           target="_blank"
-        > watch this video.
+        > this video.
         </a>
     </ExtensionReminder>
     )
