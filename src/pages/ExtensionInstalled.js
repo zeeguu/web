@@ -2,8 +2,14 @@ import * as s from "./ExtensionInstalled.sc";
 import { getUserSession } from "../utils/cookies/userInfo";
 import * as z from "../components/FormPage.sc";
 import strings from "../i18n/definitions";
+import { useEffect } from "react";
 
-export default function ExtensionInstalled() {
+export default function ExtensionInstalled({ api }) {
+
+  useEffect(() => {
+    api.logUserActivity(api.OPEN_EXTENSION_INSTALLED);
+  }, []);
+
   return (
     <s.PageBackground>
       <z.LogoOnTop />

@@ -4,6 +4,7 @@ import qs from "qs";
 // Reader Opening Actions
 Zeeguu_API.prototype.OPEN_ARTICLE = "OPEN ARTICLE";
 Zeeguu_API.prototype.ARTICLE_FOCUSED = "ARTICLE FOCUSED";
+Zeeguu_API.prototype.OPEN_EXTENSION_INSTALLED = "OPEN EXTENSION INSTALLED";
 
 // Reader Interaction Actions
 Zeeguu_API.prototype.TRANSLATE_TEXT = "TRANSLATE TEXT";
