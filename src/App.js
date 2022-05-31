@@ -119,7 +119,7 @@ function App() {
 
             <Route
               path="/extension_installed"
-              render={() => <ExtensionInstalled />}
+              render={() => <ExtensionInstalled api={api}/>}
             />
 
             <Route
