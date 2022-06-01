@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
+let far_into_the_future = 365 * 5;
 
 function saveUserInfoIntoCookies(userInfo, sessionID = null) {
-  let far_into_the_future = 365 * 5;
   Cookies.set("nativeLanguage", userInfo.native_language, {
     expires: far_into_the_future,
   });
@@ -26,9 +26,19 @@ function setUserSession(val) {
   return Cookies.set("sessionID", val);
 }
 
+function saveClickedVideoCookie() {
+  Cookies.set("clickedVideo", true, {expires: far_into_the_future})
+}
+
+function getClickedVideo() {
+  return Cookies.get("clickedVideo");
+}
+
 export {
   saveUserInfoIntoCookies,
   removeUserInfoFromCookies,
   getUserSession,
   setUserSession,
+  saveClickedVideoCookie,
+  getClickedVideo
 };
