@@ -1,11 +1,12 @@
 import { ExtensionReminder } from "./Reminder.sc";
 import Feature from "../features/Feature";
 import { runningInChromeDesktop } from "../utils/misc/browserDetection";
+import LocalStorage from "../assorted/LocalStorage";
 
 export default function Reminder({ hasExtension }) {
   console.log("Running in Chrome Desktop: " + runningInChromeDesktop())
   console.log("Feature experiment 1: " + Feature.extension_experiment1())
-
+  
   if (!hasExtension && runningInChromeDesktop() && Feature.extension_experiment1()) {
     return (
       <ExtensionReminder>
@@ -20,7 +21,7 @@ export default function Reminder({ hasExtension }) {
       </ExtensionReminder>
     );
   }
-  if (hasExtension && runningInChromeDesktop() && Feature.extension_experiment1()) {
+  if (hasExtension && runningInChromeDesktop() && Feature.extension_experiment1() && !LocalStorage.getClickedVideo()) {
     return(
     <ExtensionReminder>
       Learn how to use the Zeeguu Reader Chrome extension by watching
@@ -28,6 +29,7 @@ export default function Reminder({ hasExtension }) {
           href="https://vimeo.com/715531198"
           rel="noopener noreferrer"
           target="_blank"
+          onClick={() => LocalStorage.setClickedVideo()}
         > this video.
         </a>
     </ExtensionReminder>
