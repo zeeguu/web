@@ -1,7 +1,9 @@
 export const btRegex =
   /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]bt+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
-export function addImageBT(HTMLContent, readabilityContent) {
+import { removeIdIfExistent } from "../util";
+
+function addImageBT(HTMLContent, readabilityContent) {
   // create new div with raw HTML content from the entire webpage
   const div = document.createElement("div");
   div.innerHTML = HTMLContent;
@@ -18,8 +20,11 @@ export function addImageBT(HTMLContent, readabilityContent) {
   } else {
     const videoContent = div.getElementsByClassName("mediaplayer")[0];
     if (videoContent != undefined) {
-      var videoContentString = document.createTextNode(videoContent.textContent).wholeText;
-      const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
+      var videoContentString = document.createTextNode(
+        videoContent.textContent
+      ).wholeText;
+      const urlRegex =
+        /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
       if (videoContentString.match(urlRegex)) {
         const newImg = document.createElement("img");
         newImg.src = videoContentString.match(urlRegex);
@@ -28,4 +33,21 @@ export function addImageBT(HTMLContent, readabilityContent) {
     }
   }
   return newDiv.innerHTML;
+}
+
+function removeTTSNotice(readabilityContent) {
+  const div = document.createElement("div");
+  div.innerHTML = readabilityContent;
+
+  ["#tts-notice", "#tts-shift", "#tts-consent-box"].forEach((id) => {
+    removeIdIfExistent(id, div);
+  });
+
+  return div.innerHTML;
+}
+
+export function cleanupBT(HTMLContent, readabilityContent) {
+  readabilityContent = addImageBT(HTMLContent, readabilityContent);
+  readabilityContent = removeTTSNotice(readabilityContent);
+  return readabilityContent;
 }
