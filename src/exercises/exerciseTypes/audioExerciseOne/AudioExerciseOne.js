@@ -7,6 +7,9 @@ import NextNavigation from "../NextNavigation";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import ZeeguuSpeech from "../../../speech/ZeeguuSpeech.js";
 import * as w from "../../../words/Word.sc";
+import { TranslatableText } from "../../../reader/TranslatableText.js";
+import InteractiveText from "../../../reader/InteractiveText.js";
+import LoadingAnimation from "../../../components/LoadingAnimation.js";
 
 const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
 export default function AudioExerciseOne({
@@ -27,6 +30,8 @@ export default function AudioExerciseOne({
   const [messageToAPI, setMessageToAPI] = useState("");
   const bookmarkToStudy = bookmarksToStudy[0];
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
+  const [interactiveText, setInteractiveText] = useState();
+  const [articleInfo, setArticleInfo] = useState();
 
   async function handleSpeak() {
     await speech.speakOut(bookmarkToStudy.from);
@@ -38,12 +43,23 @@ export default function AudioExerciseOne({
     setTimeout(() => {
       handleSpeak();
     }, 500);
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
+      );
+      setArticleInfo(articleInfo);
+    });
   }, []);
+
 
   function inputKeyPress() {
     if (firstTypeTime === undefined) {
       setFirstTypeTime(new Date());
     }
+  }
+
+  if (!articleInfo) {
+    return <LoadingAnimation />;
   }
 
   function handleShowSolution(e, message) {
@@ -94,6 +110,15 @@ export default function AudioExerciseOne({
       <div className="headline">{strings.audioExerciseHeadline}</div>
       {!isCorrect && (
         <>
+          <div className="contextExample">
+        <TranslatableText
+          isCorrect={isCorrect}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          bookmarkToStudy={bookmarksToStudy[0].from}
+        />
+        </div>
           <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={bookmarkToStudy}
