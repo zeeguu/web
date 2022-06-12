@@ -40,6 +40,7 @@ const ZeeguuSpeech = class {
 function playFromAPI(api, word) {
   return new Promise(function (resolve, reject) {
     api.getLinkToDanishSpeech(word, (linkToMp3) => {
+      console.log("about to play..." + linkToMp3);
       var mp3Player = new Audio();
       mp3Player.src = linkToMp3;
       mp3Player.autoplay = true;
