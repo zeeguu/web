@@ -140,10 +140,16 @@ export default function AudioExerciseOne({
       {isCorrect && (
         <>
           <br></br>
+          <div className="contextExample">
+        <TranslatableText
+          isCorrect={isCorrect}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          bookmarkToStudy={bookmarksToStudy[0].from}
+        />
+        </div>
             <w.WordPairAudioExerciseOne>
-              <div className="from">
-                {`${bookmarksToStudy[0].from}`}
-              </div>
               <div className="to">
                 {`${bookmarksToStudy[0].to}`}
               </div>

@@ -6,6 +6,7 @@ import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import SpeakButton from "./exerciseTypes/SpeakButton";
 
 export default function Congratulations({
   articleID,
@@ -42,7 +43,7 @@ export default function Congratulations({
   if (username === undefined) {
     return <LoadingAnimation />;
   }
-
+  const small = "large";
   return (
     <s.NarrowColumn className="narrowColumn">
       <br />
