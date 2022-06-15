@@ -43,7 +43,7 @@ export default function Congratulations({
   if (username === undefined) {
     return <LoadingAnimation />;
   }
-  const small = "large";
+
   return (
     <s.NarrowColumn className="narrowColumn">
       <br />
