@@ -40,11 +40,21 @@ const selected_style = {
   loader_height: 50,
 };
 
+const square_style = {
+  // Icon properties
+  img_height: 25,
+  img_width: 25,
+  // Loader properties
+  loader_width: 25,
+  loader_height: 25,
+};
+
 const styles = {
   small: small_style,
   next: small_next_style,
   large: large_style,
   selected: selected_style,
+  square: square_style,
 };
 
 export default function SpeakButton({
@@ -83,6 +93,7 @@ export default function SpeakButton({
                 paddingLeft: style.loader_paddingLeft,
                 paddingRight: style.loader_paddingRight,
                 marginTop: style.loader_marginTop,
+                marginLeft: style.loader_marginLeft,
                 marginBottom: style.loader_marginBottom,
                 display: "flex",
                 justifyContent: "center",

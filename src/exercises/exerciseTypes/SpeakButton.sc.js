@@ -28,10 +28,6 @@ let SpeakButton = styled(OrangeButton)`
     cursor: default;
     text-decoration: line-through;
   }
-
-  &#loader {
-    background-color: green;
-  }
 `;
 
 export { SpeakButton, SpeakerImage };

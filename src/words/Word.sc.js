@@ -60,6 +60,7 @@ let WordPair = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-left: 1em;
+  margin-right: 1.5em;
 
   .from {
     font-weight: 600;
