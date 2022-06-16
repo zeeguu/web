@@ -139,7 +139,9 @@ export default function AudioExerciseOne({
       )}
       {isCorrect && (
         <>
+        
           <br></br>
+          <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
           <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
@@ -149,11 +151,7 @@ export default function AudioExerciseOne({
           bookmarkToStudy={bookmarksToStudy[0].from}
         />
         </div>
-            <w.WordPairAudioExerciseOne>
-              <div className="to">
-                {`${bookmarksToStudy[0].to}`}
-              </div>
-            </w.WordPairAudioExerciseOne>
+          
           <NextNavigation
             api={api}
             bookmarksToStudy={bookmarksToStudy}
@@ -161,6 +159,7 @@ export default function AudioExerciseOne({
             reload={reload}
             setReload={setReload}
           />
+          
         </>
       )}
       <SolutionFeedbackLinks
