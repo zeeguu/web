@@ -197,7 +197,7 @@ export default function AudioExerciseTwo({
           <></>
         )}
       </s.CenteredRow>
-      {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
+      
       {!isCorrect && (
         <AudioTwoBotInput
           currentChoice={currentChoice}
@@ -213,6 +213,8 @@ export default function AudioExerciseTwo({
         />
       )}
       {isCorrect && (
+        <>
+        {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
         <NextNavigation
           api={api}
           bookmarksToStudy={bookmarksToStudy}
@@ -220,6 +222,7 @@ export default function AudioExerciseTwo({
           reload={reload}
           setReload={setReload}
         />
+        </>
       )}
       <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
