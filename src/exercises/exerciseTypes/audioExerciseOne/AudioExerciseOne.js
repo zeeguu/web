@@ -6,7 +6,6 @@ import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import ZeeguuSpeech from "../../../speech/ZeeguuSpeech.js";
-import * as w from "../../../words/Word.sc";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -139,10 +138,9 @@ export default function AudioExerciseOne({
       )}
       {isCorrect && (
         <>
-        
           <br></br>
           <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
-          <div className="contextExample">
+        <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
           interactiveText={interactiveText}
@@ -151,7 +149,6 @@ export default function AudioExerciseOne({
           bookmarkToStudy={bookmarksToStudy[0].from}
         />
         </div>
-          
           <NextNavigation
             api={api}
             bookmarksToStudy={bookmarksToStudy}
@@ -159,7 +156,6 @@ export default function AudioExerciseOne({
             reload={reload}
             setReload={setReload}
           />
-          
         </>
       )}
       <SolutionFeedbackLinks
