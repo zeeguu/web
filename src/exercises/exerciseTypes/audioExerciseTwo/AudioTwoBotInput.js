@@ -36,6 +36,7 @@ export default function AudioTwoBotInput({
         >
           {strings.check}
         </OrangeButton>
+        
       </>
     </s.BottomRow>
   );
