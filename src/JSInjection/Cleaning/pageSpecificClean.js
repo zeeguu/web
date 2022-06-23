@@ -31,7 +31,7 @@ import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
 import { cleanFakt, faktRegex, removeIFrames } from "./Pages/fakt";
 import { deleteIntervals, deleteTimeouts } from "../../popup/functions";
 import { politikenRegex, removeSignUp } from "./Pages/politiken";
-import { scientiasRegex, convertStrongToHeader } from "./Pages/scientias";
+import { scientiasRegex, cleanScientias } from "./Pages/scientias";
 import { egyszervoltRegex, removeIMGTag } from "./Pages/egyszervolt";
 import { corriereRegex, removeScripts } from "./Pages/corriere";
 
@@ -86,7 +86,7 @@ export function pageSpecificClean(articleContent, url) {
     return removeSignUp(articleContent);
   }
   if (url.match(scientiasRegex)) {
-    return convertStrongToHeader(articleContent);
+    return cleanScientias(articleContent);
   }
   if (url.match(egyszervoltRegex)) {
     return removeIMGTag(articleContent);
