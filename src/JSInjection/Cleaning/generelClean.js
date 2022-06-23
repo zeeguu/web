@@ -1,3 +1,5 @@
+import { removeAllElementsIfExistent } from "./util";
+
 export function getImage(cleanedContent) {
   const div = document.createElement("div");
   div.innerHTML = cleanedContent;
@@ -23,13 +25,7 @@ export function generalClean(readabilityContent) {
 function removeSVG(readabilityContent) {
   const div = document.createElement("div");
   div.innerHTML = readabilityContent;
-  let allSVG = div.getElementsByTagName("svg"),
-    index;
-  if (allSVG.length > 0) {
-    for (index = allSVG.length - 1; index >= 0; index--) {
-      allSVG[index].parentNode.removeChild(allSVG[index]);
-    }
-  }
+  removeAllElementsIfExistent("svg", div)
   return div.innerHTML;
 }
 
@@ -50,14 +46,6 @@ function removeLinks(readabilityContent) {
 function removeFigures(readabilityContent) {
   const div = document.createElement("div");
   div.innerHTML = readabilityContent;
-  let figures = div.getElementsByTagName("figure"),
-    index;
-  if (figures.length > 1) {
-    for (index = figures.length - 1; index >= 0; index--) {
-      if (index !== 0) {
-        figures[index].parentNode.removeChild(figures[index]);
-      }
-    }
-  }
+  removeAllElementsIfExistent("figure", div)
   return div.innerHTML;
 }

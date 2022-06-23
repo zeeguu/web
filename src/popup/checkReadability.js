@@ -1,5 +1,5 @@
 import { readableDR } from "./Pages/dr";
-import { getEntireHTML } from "../JSInjection/Cleaning/pageSpecificClean";
+import { getHTMLContent } from "../JSInjection/Cleaning/pageSpecificClean";
 import { drRegex } from "../JSInjection/Cleaning/Pages/dr";
 import { lefigaroRegex } from "../JSInjection/Cleaning/Pages/lefigaro";
 import { readableLefigaro } from "./Pages/lefigaro";
@@ -12,22 +12,22 @@ import { politikenRegex } from "../JSInjection/Cleaning/Pages/politiken";
 
 export function checkReadability(url){
     if(url.match(drRegex)){
-      return readableDR(getEntireHTML(url))
+      return readableDR(getHTMLContent(url))
     }
     if(url.match(lefigaroRegex)){
-      return readableLefigaro(getEntireHTML(url))
+      return readableLefigaro(getHTMLContent(url))
     }
     if(url.match(berlingskeRegex)){
-      return readableBerlingske(getEntireHTML(url))
+      return readableBerlingske(getHTMLContent(url))
     } 
     if (url.match(lefigaroRegex)) {
-        return readableLefigaro(getEntireHTML(url))
+        return readableLefigaro(getHTMLContent(url))
     } 
     if (url.match(lemondeRegex)) {
-      return liveArticleLemonde(getEntireHTML(url))
+      return liveArticleLemonde(getHTMLContent(url))
     }
     if (url.match(politikenRegex)) {
-      return paywallPolitiken(getEntireHTML(url))
+      return paywallPolitiken(getHTMLContent(url))
     }
     else{
       return true;
