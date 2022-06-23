@@ -1,6 +1,6 @@
 export const fazRegex = /(http|https):\/\/(www.faz.net).*/;
 
-export function displayEntireArticle(url) {
+export function displayEntireArticleFaz(url) {
     let entireArticleUrl = url + "?printPagedArticle=true"
     return entireArticleUrl
 }
