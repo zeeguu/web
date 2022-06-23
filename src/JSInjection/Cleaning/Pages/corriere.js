@@ -1,21 +1,10 @@
 export const corriereRegex = /(http|https):\/\/(www.corriere.it).*/;
-
+import { removeAllElementsIfExistent, removeFirstElementIfExistent } from "../util";
 
 export function removeScripts(){
-        const iframe = document.querySelectorAll("iframe");
-        if (iframe) {
-          for (let i = 0; i < iframe.length; i++) {
-            iframe[i].remove();
-          }
-        }
-        const script = document.querySelectorAll("script");
-        if (script) {
-          for (let i = 0; i < script.length; i++) {
-            script[i].remove();
-          }
-        }
-        const banner = document.getElementsByClassName("tp-modal")[0];
-        if (banner) {
-          banner.remove();
-        }
+  ["iframe", "script"].forEach((elem) => {
+    removeAllElementsIfExistent(elem, document);
+  });
+
+  removeFirstElementIfExistent(".tp-modal", document)
 }
