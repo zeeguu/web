@@ -13,7 +13,7 @@ import {
 } from "./Pages/lemonde";
 import { drRegex, cleanDRBefore } from "./Pages/dr";
 import { cleanLexpress, lexpressRegex, cleanLexpressBefore} from "./Pages/lexpress";
-import { marianneRegex, cleanMarianne } from "./Pages/marianne";
+import { marianneRegex, cleanMarianne, cleanMarianneBefore } from "./Pages/marianne";
 import { ingenioerenClean, ingenioerRegex } from "./Pages/ingenioeren";
 import { nuRegex, removeBlockTitle } from "./Pages/nu";
 import { leqiupeRegex, cleanLequipeBefore } from "./Pages/lequipe";
@@ -128,6 +128,10 @@ export function cleanDocumentClone(documentClone, currentTabURL) {
   if (currentTabURL.match(lexpressRegex)) {
     return cleanLexpressBefore(documentClone);
   }
+  if (currentTabURL.match(marianneRegex)) {
+    return cleanMarianneBefore(documentClone);
+  }
+
   return documentClone;
 }
 
