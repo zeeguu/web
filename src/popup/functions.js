@@ -75,7 +75,6 @@ while (id--) {
 export function deleteIntervals() {
   var id = window.setInterval(function() {}, 0);
   while (id--) {
-    console.log(id + " interval")
       window.clearInterval(id);
   }
   }
