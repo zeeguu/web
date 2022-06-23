@@ -113,7 +113,7 @@ export function Modal({
       let getModalClass = document.getElementsByClassName("Modal");
       if (getModalClass !== undefined && getModalClass !== null) {
         setTimeout(() => {
-          if (getModalClass.item(0) != undefined) {
+          if (getModalClass.item(0) !== undefined) {
             getModalClass.item(0).addEventListener("scroll", function () {
               onScroll(api, articleId, EXTENSION_SOURCE);
             });

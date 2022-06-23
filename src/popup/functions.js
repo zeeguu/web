@@ -1,5 +1,5 @@
 /*global chrome*/
-const ZEEGUU_REGEX = /(http|https):\/\/(www\.)?zeeguu.org/;
+import { Article } from "../JSInjection/Modal/Article";
 
 export async function getCurrentTab() {
   const queryOptions = { active: true, currentWindow: true };
@@ -66,15 +66,42 @@ export function deleteCurrentDOM() {
 }
 
 export function deleteTimeouts() {
-var id = window.setTimeout(function() {}, 0);
-while (id--) {
+  var id = window.setTimeout(function () {}, 0);
+  while (id--) {
     window.clearTimeout(id);
-}
+  }
 }
 
 export function deleteIntervals() {
-  var id = window.setInterval(function() {}, 0);
+  var id = window.setInterval(function () {}, 0);
   while (id--) {
-      window.clearInterval(id);
+    window.clearInterval(id);
   }
+}
+
+export function checkLanguageSupport(api, tab, setLanguageSupported) {
+  Article(tab.url).then((article) => {
+    api.isArticleLanguageSupported(
+      article.textContent,
+      (result_dict) => {
+        console.log(result_dict);
+        if (result_dict === "NO") {
+          setLanguageSupported(false);
+        }
+        if (result_dict === "YES") {
+          setLanguageSupported(true);
+        }
+      }
+    );
+  });
+}
+
+export function setUserInLocalStorage(user, api) {
+  if (user !== undefined) {
+    chrome.storage.local.set({ userInfo: user }, () =>
+      console.log("user set in local storage")
+    );
+    chrome.storage.local.set({ sessionId: user.session });
+    api.session = user.session;
   }
+}
