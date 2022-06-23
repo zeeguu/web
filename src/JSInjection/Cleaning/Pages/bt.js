@@ -7,7 +7,7 @@ function addImageBT(HTMLContent, readabilityContent) {
   // create new div with raw HTML content from the entire webpage
   const div = document.createElement("div");
   div.innerHTML = HTMLContent;
-  const imageClass = div.getElementsByClassName("article-image-main")[0];
+  const imageClass = div.querySelector(".article-image-main");
 
   // create a new div with the content from readability
   const newDiv = document.createElement("div");
@@ -15,10 +15,10 @@ function addImageBT(HTMLContent, readabilityContent) {
 
   // If a main image exists add it to the readability content - else see if a static image from the mediaplayer exists and add it to the readability content
   if (imageClass != undefined) {
-    const image = imageClass.getElementsByTagName("img")[0];
+    const image = imageClass.querySelector("img");
     newDiv.prepend(image);
   } else {
-    const videoContent = div.getElementsByClassName("mediaplayer")[0];
+    const videoContent = div.querySelector(".mediaplayer");
     if (videoContent != undefined) {
       var videoContentString = document.createTextNode(
         videoContent.textContent
