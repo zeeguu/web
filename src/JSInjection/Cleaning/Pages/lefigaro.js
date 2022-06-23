@@ -4,7 +4,7 @@ export function addImageLefirago(HTMLContent, readabilityContent) {
   // create new div with raw HTML content from the entire webpage
   const div = document.createElement("div");
   div.innerHTML = HTMLContent;
-  const imageClass = div.getElementsByClassName("fig-media-photo")[0];
+  const imageClass = div.querySelector(".fig-media-photo");
 
   // create a new div with the content from readability
   const newDiv = document.createElement("div");
