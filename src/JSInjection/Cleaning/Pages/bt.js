@@ -1,7 +1,7 @@
 export const btRegex =
   /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]bt+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
-import { removeIdIfExistent } from "../util";
+import { removeFirstElementIfExistent } from "../util";
 
 function addImageBT(HTMLContent, readabilityContent) {
   // create new div with raw HTML content from the entire webpage
@@ -40,7 +40,7 @@ function removeTTSNotice(readabilityContent) {
   div.innerHTML = readabilityContent;
 
   ["#tts-notice", "#tts-shift", "#tts-consent-box"].forEach((id) => {
-    removeIdIfExistent(id, div);
+    removeFirstElementIfExistent(id, div);
   });
 
   return div.innerHTML;
