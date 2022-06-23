@@ -18,10 +18,10 @@ import {
   BottomContainer,
   MiddleContainer,
 } from "./Popup.styles";
-import { Article } from "../JSInjection/Modal/Article";
 import PopupLoading from "./PopupLoading";
 import PopupContent from "./PopupContent";
 import { EXTENSION_SOURCE } from "../JSInjection/constants";
+import { checkLanguageSupport, setUserInLocalStorage } from "./functions";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -45,13 +45,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
   }, [loggedIn]);
 
   useEffect(() => {
-    if (user !== undefined) {
-      chrome.storage.local.set({ userInfo: user }, () =>
-        console.log("user set in local storage")
-      );
-      chrome.storage.local.set({ sessionId: user.session });
-      api.session = user.session;
-    }
+    setUserInLocalStorage(user, api)
   }, [user]);
 
   useEffect(() => {
@@ -80,20 +74,7 @@ export default function Popup({ loggedIn, setLoggedIn }) {
         setIsReadable(true);
         api.session = user.session;
         if (api.session !== undefined) {
-          Article(tab.url).then((article) => {
-            api.isArticleLanguageSupported(
-              article.textContent,
-              (result_dict) => {
-                console.log(result_dict);
-                if (result_dict === "NO") {
-                  setLanguageSupported(false);
-                }
-                if (result_dict === "YES") {
-                  setLanguageSupported(true);
-                }
-              }
-            );
-          });
+          checkLanguageSupport(api, tab, setLanguageSupported)
         }
       }
     }
