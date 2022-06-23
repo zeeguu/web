@@ -16,7 +16,7 @@ import { cleanLexpress, lexpressRegex } from "./Pages/lexpress";
 import { marianneRegex, cleanMarianne } from "./Pages/marianne";
 import { ingenioerenClean, ingenioerRegex } from "./Pages/ingenioeren";
 import { nuRegex, removeBlockTitle } from "./Pages/nu";
-import { getLequipeImage, leqiupeRegex, removeDateTime } from "./Pages/lequipe";
+import { leqiupeRegex, cleanLequipeBefore } from "./Pages/lequipe";
 import {
   berlingskeRegex,
   cleanBerlingske,
@@ -67,9 +67,6 @@ export function pageSpecificClean(articleContent, url) {
   if (url.match(ingenioerRegex)) {
     return ingenioerenClean(articleContent, getEntireHTML(url));
   }
-  if (url.match(leqiupeRegex)) {
-    return getLequipeImage(articleContent, getEntireHTML(url));
-  }
   if (url.match(berlingskeRegex)) {
     return cleanBerlingske(articleContent);
   }
@@ -111,7 +108,7 @@ export function cleanDocumentClone(documentClone, currentTabURL) {
     return cleanEkstraBladetBefore(documentClone);
   }
   if (currentTabURL.match(leqiupeRegex)) {
-    return removeDateTime(documentClone);
+    return cleanLequipeBefore(documentClone);
   }
   if (currentTabURL.match(berlingskeRegex)) {
     return cleanBerlingskeBefore(documentClone);
