@@ -6,6 +6,7 @@ export function cleanDRBefore(documentClone) {
   let cleanedDocumentClone = removePrefixandDate(documentClone);
   cleanedDocumentClone = multipleAuthors(cleanedDocumentClone);
   cleanedDocumentClone = removeNumberInHeadline(cleanedDocumentClone);
+  cleanedDocumentClone = removeFigureCaptions(cleanedDocumentClone);
   return cleanedDocumentClone;
 }
 
@@ -26,6 +27,11 @@ removeAllElementsIfExistent(".dre-article-body-emphasized-list-sub-heading__mark
 return documentClone;
 }
 
+function removeFigureCaptions(documentClone) {
+  removeAllElementsIfExistent(".dre-caption", documentClone)
+  return documentClone;
+  }
+  
 export function saveElements() {
   const keepElem = document.querySelectorAll('[id^="sas"]');
   return keepElem;
