@@ -1,8 +1,8 @@
 export const egyszervoltRegex = /(http|https):\/\/(egyszervolt.hu).*/;
 
-function removeIMGTag(content) {
+function removeIMGTag(readabilityContent) {
   const div = document.createElement("div");
-  div.innerHTML = content;
+  div.innerHTML = readabilityContent;
   let image = div.querySelector("img");
   if (image) {
     image.remove();
@@ -11,6 +11,6 @@ function removeIMGTag(content) {
   return div.innerHTML;
 }
 
-export function cleanEgyszervolt(content) {
-  return removeIMGTag(content);
+export function cleanEgyszervolt(readabilityContent) {
+  return removeIMGTag(readabilityContent);
 }

@@ -2,16 +2,16 @@ import { removeAllElementsIfExistent } from "../util"
 
 export const wikiRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]wikipedia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/
 
-export function cleanWiki(HTMLContent, content){
-    let cleanedContent = removeText(content)
+export function cleanWiki(HTMLContent, readabilityContent){
+    let cleanedContent = removeText(readabilityContent)
     cleanedContent = removeTable(cleanedContent)
     cleanedContent = getWikiImage(HTMLContent, cleanedContent)
     return cleanedContent
   }
 
-  function removeText(content){
+  function removeText(readabilityContent){
     const div = document.createElement("div");
-    div.innerHTML = content;
+    div.innerHTML = readabilityContent;
     let elems = div.querySelectorAll("span")
     Array.from(elems).filter(span => span.textContent.includes('edit source') ? span.remove() : span);
     Array.from(elems).filter(span => span.textContent.includes('rediger kildetekst') ? span.remove() : span);
@@ -28,17 +28,17 @@ export function cleanWiki(HTMLContent, content){
     return div.innerHTML;
   }
 
-  function removeTable(content) {
+  function removeTable(readabilityContent) {
     const div = document.createElement("div");
-    div.innerHTML = content;
+    div.innerHTML = readabilityContent;
     removeAllElementsIfExistent("table", div)
     return div.innerHTML;
   }
 
   function getWikiImage(HTMLContent, readabilityContent) {
-    const htmlDIV = document.createElement("div");
-    htmlDIV.innerHTML = HTMLContent;
-    const images = htmlDIV.querySelectorAll("img")
+    const HTMLDiv = document.createElement("div");
+    HTMLDiv.innerHTML = HTMLContent;
+    const images = HTMLDiv.querySelectorAll("img")
 
     // create a new div with the content from readability
     const div = document.createElement("div");

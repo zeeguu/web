@@ -3,13 +3,13 @@ import { removeAllElementsIfExistent, removeAllElementsWithText } from "../util"
 export const ekstrabladetRegex = /^(http|https):\/\/ekstrabladet.dk\/.*/;
 
 export function addImageEkstraBladet(HTMLContent, readabilityContent) {
-  const div = document.createElement("div");
-  div.innerHTML = HTMLContent;
-  const imageClass = div.querySelector(".figure-image border-radius");
+  const HTMLDiv = document.createElement("div");
+  HTMLDiv.innerHTML = HTMLContent;
+  const imageClass = HTMLDiv.querySelector(".figure-image border-radius");
 
   // create a new div with the content from readability
-  const newDiv = document.createElement("div");
-  newDiv.innerHTML = readabilityContent;
+  const div = document.createElement("div");
+  div.innerHTML = readabilityContent;
 
   // If a main image exists add it to the readability content
   if (imageClass != undefined) {
@@ -18,9 +18,9 @@ export function addImageEkstraBladet(HTMLContent, readabilityContent) {
     const newImage = document.createElement("img");
     newImage.setAttribute("src", image);
     newImage.setAttribute("alt", imageAlt);
-    newDiv.prepend(newImage);
+    div.prepend(newImage);
   }
-  return newDiv.innerHTML;
+  return div.innerHTML;
 }
 
 export function removePrefix(readabilityContent) {
