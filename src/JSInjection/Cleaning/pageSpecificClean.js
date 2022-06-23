@@ -12,7 +12,7 @@ import {
   cleanLemonde,
 } from "./Pages/lemonde";
 import { drRegex, cleanDRBefore } from "./Pages/dr";
-import { cleanLexpress, lexpressRegex } from "./Pages/lexpress";
+import { cleanLexpress, lexpressRegex, cleanLexpressBefore} from "./Pages/lexpress";
 import { marianneRegex, cleanMarianne } from "./Pages/marianne";
 import { ingenioerenClean, ingenioerRegex } from "./Pages/ingenioeren";
 import { nuRegex, removeBlockTitle } from "./Pages/nu";
@@ -124,6 +124,9 @@ export function cleanDocumentClone(documentClone, currentTabURL) {
   }
   if (currentTabURL.match(rzeczRegex)) {
     return cleanRzeczBefore(documentClone);
+  }
+  if (currentTabURL.match(lexpressRegex)) {
+    return cleanLexpressBefore(documentClone);
   }
   return documentClone;
 }
