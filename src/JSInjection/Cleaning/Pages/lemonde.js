@@ -1,7 +1,8 @@
+import { removeFirstElementIfExistent } from "../util";
+
 export const lemondeRegex = /(http|https):\/\/(www.lemonde.fr).*/;
 
 function removeServices(content) {
-  //remove services header and everything below that is injected by lemonde
   const div = document.createElement("div");
   div.innerHTML = content;
   let allElements = Array.from(div.getElementsByTagName("h4"));
@@ -21,20 +22,12 @@ function removeServices(content) {
 function removeInjectedContent(content) {
   const div = document.createElement("div");
   div.innerHTML = content;
-  let element = div.querySelector("#js-capping");
-  if (element !== undefined && element !== null) {
-    element.remove();
-    content = div.innerHTML;
-  }
-
+  removeFirstElementIfExistent("#js-capping", div)
   return div.innerHTML;
 }
 
 export function removeAuthorDetail(documentClone) {
-  let detail = documentClone.getElementsByClassName("author__detail")[0];
-  if (detail !== undefined && detail !== null) {
-    detail.parentNode.removeChild(detail);
-  }
+  removeFirstElementIfExistent(".author__detail", documentClone)
   return documentClone;
 }
 
