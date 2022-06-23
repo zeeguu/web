@@ -9,7 +9,6 @@ import {
 } from "./UserFeedback.styles";
 import { StyledSmallButtonBlue } from "./Buttons.styles";
 import sendFeedbackEmail from "./sendFeedbackEmail";
-import { EXTENSION_SOURCE } from "../constants";
 
 export default function UserFeedback({ api, articleId, url }) {
   const [feedback, setFeedback] = useState("");
