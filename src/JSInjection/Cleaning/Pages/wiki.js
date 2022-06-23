@@ -2,7 +2,7 @@ import { removeAllElementsIfExistent } from "../util"
 
 export const wikiRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]wikipedia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/
 
-export function removefromWiki(HTMLContent, content){
+export function cleanWiki(HTMLContent, content){
     let cleanedContent = removeText(content)
     cleanedContent = removeTable(cleanedContent)
     cleanedContent = getWikiImage(HTMLContent, cleanedContent)

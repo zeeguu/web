@@ -46,7 +46,7 @@ function removeTTSNotice(readabilityContent) {
   return div.innerHTML;
 }
 
-export function cleanupBT(HTMLContent, readabilityContent) {
+export function cleanBT(HTMLContent, readabilityContent) {
   readabilityContent = addImageBT(HTMLContent, readabilityContent);
   readabilityContent = removeTTSNotice(readabilityContent);
   return readabilityContent;

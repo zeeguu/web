@@ -26,9 +26,13 @@ function removeInjectedContent(content) {
   return div.innerHTML;
 }
 
-export function removeAuthorDetail(documentClone) {
+function removeAuthorDetail(documentClone) {
   removeFirstElementIfExistent(".author__detail", documentClone)
   return documentClone;
+}
+
+export function cleanLemondeBefore(documentClone){
+return removeAuthorDetail(documentClone)
 }
 
 export function cleanLemonde(content) {

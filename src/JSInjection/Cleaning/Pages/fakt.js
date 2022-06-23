@@ -2,7 +2,7 @@ import { removeAllElementsIfExistent, removeFirstElementIfExistent } from "../ut
 
 export const faktRegex = /(http|https):\/\/(www.fakt.pl).*/;
 
-export function cleanFakt(documentClone) {
+export function cleanFaktBefore(documentClone) {
   [".article-gallery-p", ".article-gallery-counter", ".article-contact"].forEach((elem) => {
     removeAllElementsIfExistent(elem, documentClone);
   });
@@ -10,7 +10,7 @@ export function cleanFakt(documentClone) {
   return documentClone;
 }
 
-export function removeIFrames(){
+export function removeFaktIFrames(){
   removeFirstElementIfExistent("#slot-flat-plista", document)
   removeAllElementsIfExistent("iframe", document)
 }

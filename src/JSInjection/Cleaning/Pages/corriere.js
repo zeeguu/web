@@ -1,7 +1,7 @@
 export const corriereRegex = /(http|https):\/\/(www.corriere.it).*/;
 import { removeAllElementsIfExistent, removeFirstElementIfExistent } from "../util";
 
-export function removeScripts(){
+export function removeCorriereScripts(){
   ["iframe", "script"].forEach((elem) => {
     removeAllElementsIfExistent(elem, document);
   });

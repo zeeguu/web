@@ -13,7 +13,7 @@ function removeArticleLinks(content) {
   return div.innerHTML;
 }
 
-function getImageMarianne(content, html) {
+function getImageMarianne(html, content) {
   //search for image in readability content
   let div = document.createElement("div");
   div.innerHTML = content;
@@ -37,7 +37,7 @@ function getImageMarianne(content, html) {
 
 export function cleanMarianne(content, html) {
   let cleanedContent = removeArticleLinks(content);
-  cleanedContent = getImageMarianne(cleanedContent, html);
+  cleanedContent = getImageMarianne(html, cleanedContent);
   return cleanedContent;
 }
 

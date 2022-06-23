@@ -1,6 +1,6 @@
 export const lefigaroRegex = /(http|https):\/\/(www.lefigaro.fr).*/;
 
-export function addImageLefirago(HTMLContent, readabilityContent) {
+function addImageLefirago(HTMLContent, readabilityContent) {
   // create new div with raw HTML content from the entire webpage
   const div = document.createElement("div");
   div.innerHTML = HTMLContent;
@@ -20,4 +20,8 @@ export function addImageLefirago(HTMLContent, readabilityContent) {
     newDiv.prepend(newImage);
   }
   return newDiv.innerHTML;
+}
+
+export function cleanLefigaro(HTMLContent, readabilityContent){
+  return addImageLefirago(HTMLContent, readabilityContent)
 }

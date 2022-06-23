@@ -1,6 +1,6 @@
 export const cnnRegex = /(http|https):\/\/(edition.cnn.com).*/;
 
-export function addImageCNN(readabilityContent, HTMLContent) {
+export function addImageCNN(HTMLContent, readabilityContent) {
   // create a div with content from HTML
   const div = document.createElement("div");
   div.innerHTML = HTMLContent;
@@ -22,4 +22,8 @@ export function addImageCNN(readabilityContent, HTMLContent) {
     }
   }
   return newDiv.innerHTML;
+}
+
+export function cleanCNN(HTMLContent, readabilityContent){
+  return addImageCNN(HTMLContent, readabilityContent)
 }

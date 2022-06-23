@@ -1,5 +1,5 @@
 export const ingenioerRegex = /^(http|https):\/\/ing.dk\/.*/;
-function removeComments(content, html) {
+function removeComments(html, content) {
   //for pages where only comments are displayed
   //content of the article is inside div class=panel-panel panel-col
   let div = document.createElement("div");
@@ -16,7 +16,7 @@ function removeComments(content, html) {
   }}
   return div.innerHTML;
 }
-export function ingenioerenClean(content, html) {
-  let cleanedContent = removeComments(content, html);
+export function cleanIngenioeren(html, content) {
+  let cleanedContent = removeComments(html, content);
   return cleanedContent;
 }

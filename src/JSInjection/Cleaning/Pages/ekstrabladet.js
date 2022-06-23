@@ -36,7 +36,7 @@ export function removePrefix(readabilityContent) {
   return div.innerHTML;
 }
 
-export function ekstraBladetClean(HTMLContent, readabilityContent) {
+export function cleanEkstraBladet(HTMLContent, readabilityContent) {
   const removedDate = removePrefix(readabilityContent);
   let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
   return cleaned;
