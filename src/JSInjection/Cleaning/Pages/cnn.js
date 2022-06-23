@@ -8,7 +8,7 @@ export function addImageCNN(readabilityContent, HTMLContent) {
   // create a new div with the content from readability
   const newDiv = document.createElement("div");
   newDiv.innerHTML = readabilityContent;
-  const image = div.querySelectorAll("[data-src-medium]")[0];
+  const image = div.querySelector("[data-src-medium]");
   if (image) {
     const imageDataset = image.dataset;
     if (imageDataset) {
