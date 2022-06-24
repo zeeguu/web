@@ -1,5 +1,6 @@
 import ReactModal from "react-modal";
 import styled from "styled-components";
+import colors from "../colors";
 
 
 export const StyledTextarea = styled.textarea`
@@ -21,7 +22,7 @@ export const StyledContainer = styled.div`
 `;
 
 export const StyledPopup = styled(ReactModal)`
-  background-color: white;
+  background-color: ${colors.white};
   position: fixed;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -39,5 +40,5 @@ export const StyledPopup = styled(ReactModal)`
 `;
 
 export const ErrorMessage = styled.span`
-  color: red;
+  color: ${colors.red};
 `;

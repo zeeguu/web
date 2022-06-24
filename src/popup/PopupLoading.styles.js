@@ -1,9 +1,10 @@
 import styled from "styled-components";
+import colors from "../JSInjection/colors";
 import { zeeguuOrange } from "../zeeguu-react/src/components/colors";
 export const LoadingCircle = styled.div`
     margin-top: 25%;
     align-self: center;
-    border: 6px solid #f4f4f6;
+    border: 6px solid ${colors.circleBorderGray};
     border-top: 6px solid ${zeeguuOrange};
     border-radius: 50%;
     width: 50px;

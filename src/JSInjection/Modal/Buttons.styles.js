@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import colors from "../colors";
 
 export const StyledCloseButton = styled.div`
   cursor: pointer;
@@ -17,11 +18,11 @@ export const StyledCloseButton = styled.div`
 
 
 export const StyledSmallButtonBlue = styled.button`
-  color: white !important;
-  background-color: #2F77AD!important;
-  border-color: #3079B0!important;
+  color: ${colors.white} !important;
+  background-color: ${colors.darkBlue} !important;
+  border-color: ${colors.buttonBorder} !important;
   :hover{
-    background-color: #4F97CF!important;
+    background-color: ${colors.hoverBlue}!important;
   }
   cursor: pointer;
   border-radius: 10px;
@@ -32,8 +33,8 @@ export const StyledSmallButtonBlue = styled.button`
 
 export const StyledSmallDisabledButton = styled.button`
   color: #696969!important;
-  background-color: #EAEBEB!important;
-  border-color: #696969!important;
+  background-color: ${colors.lightGray} !important;
+  border-color: ${colors.darkGray} !important;
   cursor: default;
   border-radius: 10px;
   border: none;
@@ -42,15 +43,15 @@ export const StyledSmallDisabledButton = styled.button`
 `;
 
 export const StyledButtonBlue = styled.button`
-  color: white !important;
-  background-color: #2F77AD!important;
-  border-color: #3079B0!important;
+  color: ${colors.white} !important;
+  background-color: ${colors.darkBlue} !important;
+  border-color:  ${colors.buttonBorder} !important;
 
   :hover{
-    background-color: #4F97CF!important;
+    background-color: ${colors.hoverBlue} !important;
   }
 
-  color: white;
+  color: ${colors.white};
   height: 45px;
   display: inline-block;
   margin: 5px;
@@ -94,11 +95,11 @@ export let NavigationButton = styled.button`
   ${(props) =>
     props.primary &&
     css`
-     color: white !important;
-     background-color: #2F77AD!important;
-     border-color: #3079B0!important;
+     color: ${colors.white} !important;
+     background-color: ${colors.darkBlue} !important;
+     border-color: ${colors.buttonBorder} !important;
      :hover{
-         background-color: #4F97CF!important;
+         background-color: ${colors.hoverBlue}!important;
       }
       border-style: solid;
       border-width: 2px;
@@ -108,11 +109,11 @@ export let NavigationButton = styled.button`
   ${(props) =>
     props.secondary &&
     css`
-      color: white !important;
-      background-color: #2F77AD!important;
-      border-color: #3079B0!important;
+      color:${colors.white} !important;
+      background-color: ${colors.darkBlue} !important;
+      border-color: ${colors.buttonBorder}!important;
       :hover{
-        background-color: #4F97CF!important;
+        background-color: ${colors.hoverBlue} !important;
       }
       border-style: solid!important;
       border-width: 2px!important;
@@ -122,10 +123,10 @@ export let NavigationButton = styled.button`
     ${(props) =>
     props.disabled &&
     css`
-      background-color: white !important;
-      color: #999999 !important;
+      background-color: ${colors.white} !important;
+      color: ${colors.gray} !important;
       cursor: not-allowed;
-      border-color: #999999 !important;
+      border-color: ${colors.gray} !important;
       pointer-events: none;
       border-width: 0;
       border-style: solid;

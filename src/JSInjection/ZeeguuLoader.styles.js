@@ -1,4 +1,5 @@
 import styled from "styled-components"; 
+import colors from "./colors";
 
 export const StyledLoader = styled.div`
  .wrapper {
@@ -9,8 +10,8 @@ export const StyledLoader = styled.div`
  }
  
   .loader {
-    border: 10px solid #ffe5b9;
-    border-top: 10px solid #ffbb54;
+    border: 10px solid ${colors.lightOrange};
+    border-top: 10px solid ${colors.zeeguuOrange};
     border-radius: 50%;
     width: 120px;
     height: 120px;
