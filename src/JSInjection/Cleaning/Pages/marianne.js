@@ -1,5 +1,6 @@
 import {
   changeTagToParagraph,
+  createDivWithContent,
   removeAllElementsIfExistent,
   removeAllElementsWithText,
 } from "../util";
@@ -7,29 +8,19 @@ import {
 export const marianneRegex = /(http|https):\/\/(www\.marianne\.net).*/;
 
 function removeArticleLinks(readabilityContent) {
-  let div = document.createElement("div");
-  div.innerHTML = readabilityContent;
+  let div = createDivWithContent(readabilityContent);
   removeAllElementsWithText("p", "À LIRE AUSSI", div);
   return div.innerHTML;
 }
 
 function getImageMarianne(HTMLContent, readabilityContent) {
-  //search for image in readability content
-  let div = document.createElement("div");
-  div.innerHTML = readabilityContent;
-  let hasImage = div.querySelectorAll("img");
-  if (hasImage) {
-    if (hasImage.length === 0) {
-      //get image from entire html
-      let newDiv = document.createElement("div");
-      newDiv.innerHTML = HTMLContent;
-      const images = newDiv.querySelector(".article__image.article__item");
-      if (images) {
-        const image = images.querySelectorAll("img");
-        if (image) {
-          div.prepend(image[0]);
-        }
-      }
+  let div = createDivWithContent(readabilityContent);
+  let HTMLDiv = createDivWithContent(HTMLContent);
+  const images = HTMLDiv.querySelector(".article__image.article__item");
+  if (images) {
+    const image = images.querySelector("img");
+    if (image) {
+      div.prepend(image);
     }
   }
   return div.innerHTML;

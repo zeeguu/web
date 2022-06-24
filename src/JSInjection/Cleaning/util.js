@@ -40,3 +40,9 @@ export function changeTagToParagraph(element, div) {
     currentElement.parentNode.replaceChild(newElement, currentElement);
   }
 }
+
+export function createDivWithContent(content){
+  let div = document.createElement("div");
+  div.innerHTML = content
+  return div
+}
