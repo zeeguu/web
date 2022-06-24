@@ -11,6 +11,9 @@ In the project directory, you can run:
 ### `npm install` 
 This command installs a package and any packages that it depends on.
 
+## `npm run installZeeguu`
+This command runs 'npm install' inside of the src/zeeguu-react folder.
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\
