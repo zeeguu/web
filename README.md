@@ -2,11 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## reguires  npm: "^8.5.1",
+## Requires  npm: "^8.5.1",
 https://nodejs.org/en/download/
 
-# In Goolge Chrome
-## Available Scripts
+## Available Scripts in Chrome
 In the project directory, you can run:
 
 ### `npm install` 
@@ -20,8 +19,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Go to chrome://extensions/ and unpack the build folder
 
-# In Firefox
-## Available Scripts
+## Available Scripts in Firefox
 
 In the project directory, you can run:
 
