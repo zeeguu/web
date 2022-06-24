@@ -1,13 +1,14 @@
+import { removeAllElementsIfExistent } from "../util";
+
 export const politikenRegex = /(http|https):\/\/(politiken.dk).*/;
 
-export function removeSignUp(readabilityContent) {
-  const newDiv = document.createElement("div");
-  newDiv.innerHTML = readabilityContent;
-  const signUp = newDiv.querySelectorAll('[data-element-type="relation"]');
-  if (signUp) {
-    for (let i = 0; i < signUp.length; i++) {
-      signUp[i].remove();
-    }
-  }
-  return newDiv.innerHTML;
+function removeSignUp(readabilityContent) {
+  const div = document.createElement("div");
+  div.innerHTML = readabilityContent;
+  removeAllElementsIfExistent('[data-element-type="relation"]', div)
+  return div.innerHTML;
+}
+
+export function cleanPolitiken(readabilityContent){
+  return removeSignUp(readabilityContent)
 }

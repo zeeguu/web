@@ -1,12 +1,12 @@
 import { getSourceAsDOM } from "../../popup/functions";
 import { Readability } from "@mozilla/readability";
 import { cleanDocumentClone } from "../Cleaning/pageSpecificClean";
-import { displayEntireArticle, fazRegex } from "../Cleaning/Pages/faz";
+import { displayEntireArticleFaz, fazRegex } from "../Cleaning/Pages/faz";
 
 export async function Article(currentTabURL) {
   //if a paginated article on faz:
   if(currentTabURL.match(fazRegex)){
-    currentTabURL = displayEntireArticle(currentTabURL)
+    currentTabURL = displayEntireArticleFaz(currentTabURL)
   }
   const documentFromTab = getSourceAsDOM(currentTabURL);
   const documentClone = documentFromTab.cloneNode(true);

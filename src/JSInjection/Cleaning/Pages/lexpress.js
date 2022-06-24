@@ -1,45 +1,35 @@
-export const lexpressRegex = /(http|https):\/\/(.*)(.express.fr).*/;
+import { removeAllElementsIfExistent, removeFirstElementIfExistent } from "../util";
 
-function removeAsides(content) {
+export const lexpressRegex = /(http|https):\/\/(.*)(.lexpress.fr).*/;
+
+function removeAsides(readabilityContent) {
   let div = document.createElement("div");
-  div.innerHTML = content;
-  let opinions = div.querySelector("#placeholder--plus-lus");
-  if (opinions !== null) {
-    opinions.remove();
-  }
-  let pluslus = div.querySelector("#placeholder--opinion");
-  if (pluslus !== null) {
-    pluslus.remove();
-  }
+  div.innerHTML = readabilityContent;
+  ["#placeholder--plus-lus", "#placeholder--opinion"].forEach((id) => {
+    removeFirstElementIfExistent(id, div);
+  })
   return div.innerHTML;
 }
 
-function unavailableContent(content) {
-  //TODO: find better solution
-  if (content.includes("Offrez gratuitement la lecture de cet article à un proche")) {
+function unavailableContent(readabilityContent) {
+  if (readabilityContent.includes("Offrez gratuitement la lecture de cet article à un proche")) {
     return "<p>This article cannot be read in zeeguu reader</p>";
   } else {
     let div = document.createElement("div");
-    div.innerHTML = content;
+    div.innerHTML = readabilityContent;
     return div.innerHTML;
   }
 }
 
-//remove illustration__caption class - not working
-export function removeCaption(documentClone) {
-  const captions = documentClone.getElementsByClassName(
-    "illustration__caption"
-  );
-  if (captions) {
-    while (captions.length > 0) {
-      captions[0].parentNode.removeChild(captions[0]);
-    }
-  }
+export function cleanLexpressBefore(documentClone) {
+  [".legend"].forEach((className) => {
+    removeAllElementsIfExistent(className, documentClone);
+  })
   return documentClone;
 }
 
-export function cleanLexpress(content) {
-  let cleanedContent = removeAsides(content);
+export function cleanLexpress(readabilityContent) {
+  let cleanedContent = removeAsides(readabilityContent);
   cleanedContent = unavailableContent(cleanedContent);
   return cleanedContent;
 }

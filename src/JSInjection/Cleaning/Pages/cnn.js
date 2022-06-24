@@ -1,14 +1,14 @@
 export const cnnRegex = /(http|https):\/\/(edition.cnn.com).*/;
 
-export function addImageCNN(readabilityContent, HTMLContent) {
+export function addImageCNN(HTMLContent, readabilityContent) {
   // create a div with content from HTML
-  const div = document.createElement("div");
-  div.innerHTML = HTMLContent;
+  const HTMLDiv = document.createElement("div");
+  HTMLDiv.innerHTML = HTMLContent;
 
   // create a new div with the content from readability
-  const newDiv = document.createElement("div");
-  newDiv.innerHTML = readabilityContent;
-  const image = div.querySelectorAll("[data-src-medium]")[0];
+  const div = document.createElement("div");
+  div.innerHTML = readabilityContent;
+  const image = HTMLDiv.querySelector("[data-src-medium]");
   if (image) {
     const imageDataset = image.dataset;
     if (imageDataset) {
@@ -18,8 +18,12 @@ export function addImageCNN(readabilityContent, HTMLContent) {
       const newImage = document.createElement("img");
       newImage.setAttribute("src", imageSrc);
       newImage.setAttribute("alt", imageAlt);
-      newDiv.prepend(newImage);
+      div.prepend(newImage);
     }
   }
-  return newDiv.innerHTML;
+  return div.innerHTML;
+}
+
+export function cleanCNN(HTMLContent, readabilityContent){
+  return addImageCNN(HTMLContent, readabilityContent)
 }

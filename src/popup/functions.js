@@ -66,16 +66,15 @@ export function deleteCurrentDOM() {
 }
 
 export function deleteTimeouts() {
-  var id = window.setTimeout(function () { }, 0);
+  var id = window.setTimeout(function () {}, 0);
   while (id--) {
     window.clearTimeout(id);
   }
 }
 
 export function deleteIntervals() {
-  var id = window.setInterval(function () { }, 0);
+  var id = window.setInterval(function () {}, 0);
   while (id--) {
-    console.log(id + " interval")
     window.clearInterval(id);
   }
 }

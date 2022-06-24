@@ -1,9 +1,10 @@
+import { removeFirstElementIfExistent } from "../util";
+
 export const lemondeRegex = /(http|https):\/\/(www.lemonde.fr).*/;
 
-function removeServices(content) {
-  //remove services header and everything below that is injected by lemonde
+function removeServices(readabilityContent) {
   const div = document.createElement("div");
-  div.innerHTML = content;
+  div.innerHTML = readabilityContent;
   let allElements = Array.from(div.getElementsByTagName("h4"));
   if (allElements) {
     for (let i = 0; i < allElements.length; i++) {
@@ -18,27 +19,23 @@ function removeServices(content) {
   return div.innerHTML;
 }
 
-function removeInjectedContent(content) {
+function removeInjectedContent(readabilityContent) {
   const div = document.createElement("div");
-  div.innerHTML = content;
-  let element = div.querySelector("#js-capping");
-  if (element !== undefined && element !== null) {
-    element.remove();
-    content = div.innerHTML;
-  }
-
+  div.innerHTML = readabilityContent;
+  removeFirstElementIfExistent("#js-capping", div)
   return div.innerHTML;
 }
 
-export function removeAuthorDetail(documentClone) {
-  let detail = documentClone.getElementsByClassName("author__detail")[0];
-  if (detail !== undefined && detail !== null) {
-    detail.parentNode.removeChild(detail);
-  }
+function removeAuthorDetail(documentClone) {
+  removeFirstElementIfExistent(".author__detail", documentClone)
   return documentClone;
 }
 
-export function cleanLemonde(content) {
-  let lemonde = removeInjectedContent(content);
-  return removeServices(lemonde);
+export function cleanLemondeBefore(documentClone){
+return removeAuthorDetail(documentClone)
+}
+
+export function cleanLemonde(readabilityContent) {
+  let cleanedContent = removeInjectedContent(readabilityContent);
+  return removeServices(cleanedContent);
 }

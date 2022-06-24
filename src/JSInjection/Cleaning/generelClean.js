@@ -1,15 +1,8 @@
-/*Final cleanup function */
-export function generalClean(content) {
-  let cleanContent = removeSVG(content);
-  cleanContent = removeLinks(cleanContent);
-  cleanContent = removeFigures(cleanContent);
-  return cleanContent;
-}
+import { removeAllElementsIfExistent } from "./util";
 
-/* Functions */
-export function getImage(content) {
+export function getImage(cleanedContent) {
   const div = document.createElement("div");
-  div.innerHTML = content;
+  div.innerHTML = cleanedContent;
   const firstImage = div.getElementsByTagName("img")[0];
   if (firstImage != undefined) {
     const image = {
@@ -20,24 +13,25 @@ export function getImage(content) {
   }
 }
 
-
-function removeSVG(content) {
-  const div = document.createElement("div");
-  div.innerHTML = content;
-  let allSVG = div.getElementsByTagName("svg"),
-    index;
-  if (allSVG.length > 0) {
-    for (index = allSVG.length - 1; index >= 0; index--) {
-      allSVG[index].parentNode.removeChild(allSVG[index]);
-    }
-    content = div.innerHTML;
-  }
-  return content;
+/*Final cleanup function */
+export function generalClean(readabilityContent) {
+  let cleanContent = removeSVG(readabilityContent);
+  cleanContent = removeLinks(cleanContent);
+  cleanContent = removeFigures(cleanContent);
+  return cleanContent;
 }
 
-function removeLinks(content) {
+/* Functions */
+function removeSVG(readabilityContent) {
   const div = document.createElement("div");
-  div.innerHTML = content;
+  div.innerHTML = readabilityContent;
+  removeAllElementsIfExistent("svg", div)
+  return div.innerHTML;
+}
+
+function removeLinks(readabilityContent) {
+  const div = document.createElement("div");
+  div.innerHTML = readabilityContent;
   var links = div.getElementsByTagName("a");
   while (links.length) {
     var parent = links[0].parentNode;
@@ -46,22 +40,12 @@ function removeLinks(content) {
     }
     parent.removeChild(links[0]);
   }
-  content = div.innerHTML;
-  return content;
+  return div.innerHTML;
 }
 
-function removeFigures(content) {
+function removeFigures(readabilityContent) {
   const div = document.createElement("div");
-  div.innerHTML = content;
-  let figures = div.getElementsByTagName("figure"),
-    index;
-  if (figures.length > 1) {
-    for (index = figures.length - 1; index >= 0; index--) {
-      if (index !== 0) {
-        figures[index].parentNode.removeChild(figures[index]);
-      }
-    }
-  }
-  content = div.innerHTML;
-  return content;
+  div.innerHTML = readabilityContent;
+  removeAllElementsIfExistent("figure", div)
+  return div.innerHTML;
 }

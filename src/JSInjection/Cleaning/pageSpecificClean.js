@@ -1,133 +1,137 @@
-import { btRegex, cleanupBT } from "./Pages/bt";
-import { wikiRegex, removefromWiki } from "./Pages/wiki";
-import { lefigaroRegex, addImageLefirago } from "./Pages/lefigaro";
+import { btRegex, cleanBT } from "./Pages/bt";
+import { wikiRegex, cleanWiki } from "./Pages/wiki";
+import { lefigaroRegex, cleanLefigaro } from "./Pages/lefigaro";
 import {
   ekstrabladetRegex,
-  ekstraBladetClean,
+  cleanEkstraBladet,
   cleanEkstraBladetBefore,
 } from "./Pages/ekstrabladet";
 import {
   lemondeRegex,
-  removeAuthorDetail,
+  cleanLemondeBefore,
   cleanLemonde,
 } from "./Pages/lemonde";
 import { drRegex, cleanDRBefore } from "./Pages/dr";
-import { cleanLexpress, lexpressRegex } from "./Pages/lexpress";
-import { marianneRegex, cleanMarianne } from "./Pages/marianne";
-import { ingenioerenClean, ingenioerRegex } from "./Pages/ingenioeren";
-import { nuRegex, removeBlockTitle } from "./Pages/nu";
-import { getLequipeImage, leqiupeRegex, removeDateTime } from "./Pages/lequipe";
+import { cleanLexpress, lexpressRegex, cleanLexpressBefore} from "./Pages/lexpress";
+import { marianneRegex, cleanMarianne, cleanMarianneBefore } from "./Pages/marianne";
+import { cleanIngenioeren, ingenioerRegex } from "./Pages/ingenioeren";
+import { nuRegex, cleanNuBefore } from "./Pages/nu";
+import { leqiupeRegex, cleanLequipeBefore } from "./Pages/lequipe";
 import {
   berlingskeRegex,
   cleanBerlingske,
   cleanBerlingskeBefore,
 } from "./Pages/berlingske";
 import { spiegelRegex, cleanSpiegelBefore } from "./Pages/spiegel";
-import { addImageCNN, cnnRegex } from "./Pages/cnn";
+import { cleanCNN, cnnRegex } from "./Pages/cnn";
 import { bbcRegex, cleanBBC } from "./Pages/bbc";
 import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
-import { cleanFakt, faktRegex, removeIFrames } from "./Pages/fakt";
+import { cleanFaktBefore, faktRegex, removeFaktIFrames } from "./Pages/fakt";
 import { deleteIntervals, deleteTimeouts } from "../../popup/functions";
-import { politikenRegex, removeSignUp } from "./Pages/politiken";
-import { scientiasRegex, convertStrongToHeader } from "./Pages/scientias";
-import { egyszervoltRegex, removeIMGTag } from "./Pages/egyszervolt";
-import { corriereRegex, removeScripts } from "./Pages/corriere";
+import { politikenRegex, cleanPolitiken } from "./Pages/politiken";
+import { scientiasRegex, cleanScientias } from "./Pages/scientias";
+import { egyszervoltRegex, cleanEgyszervolt } from "./Pages/egyszervolt";
+import { corriereRegex, removeCorriereScripts } from "./Pages/corriere";
 
-export function getEntireHTML(url) {
+export function getHTMLContent(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open("GET", url, false); // false for synchronous request
   xmlHttp.send(null);
   return xmlHttp.responseText;
 }
 
-export function pageSpecificClean(articleContent, url) {
+export function pageSpecificClean(readabilityContent, url) {
   if (url.match(wikiRegex)) {
-    return removefromWiki(getEntireHTML(url), articleContent);
+    return cleanWiki(getHTMLContent(url), readabilityContent);
   }
   if (url.match(btRegex)) {
-    return cleanupBT(getEntireHTML(url), articleContent);
+    return cleanBT(getHTMLContent(url), readabilityContent);
   }
   if (url.match(lefigaroRegex)) {
-    return addImageLefirago(getEntireHTML(url), articleContent);
+    return cleanLefigaro(getHTMLContent(url), readabilityContent);
   }
   if (url.match(ekstrabladetRegex)) {
-    return ekstraBladetClean(getEntireHTML(url), articleContent);
+    return cleanEkstraBladet(getHTMLContent(url), readabilityContent);
   }
   if (url.match(lemondeRegex)) {
-    return cleanLemonde(articleContent);
+    return cleanLemonde(readabilityContent);
   }
   if (url.match(lexpressRegex)) {
-    return cleanLexpress(articleContent);
+    return cleanLexpress(readabilityContent);
   }
   if (url.match(marianneRegex)) {
-    return cleanMarianne(articleContent, getEntireHTML(url));
+    return cleanMarianne(getHTMLContent(url), readabilityContent);
   }
   if (url.match(ingenioerRegex)) {
-    return ingenioerenClean(articleContent, getEntireHTML(url));
-  }
-  if (url.match(leqiupeRegex)) {
-    return getLequipeImage(articleContent, getEntireHTML(url));
+    return cleanIngenioeren(getHTMLContent(url), readabilityContent);
   }
   if (url.match(berlingskeRegex)) {
-    return cleanBerlingske(articleContent);
+    return cleanBerlingske(readabilityContent);
   }
   if (url.match(cnnRegex)) {
-    return addImageCNN(articleContent, getEntireHTML(url));
+    return cleanCNN(getHTMLContent(url), readabilityContent);
   }
   if (url.match(bbcRegex)) {
-    return cleanBBC(articleContent);
+    return cleanBBC(readabilityContent);
   }
   if (url.match(wyborczaRegex)) {
-    return cleanWyborcza(articleContent);
+    return cleanWyborcza(readabilityContent);
   }
   if (url.match(rzeczRegex)) {
-    return cleanRzecz(articleContent);
+    return cleanRzecz(readabilityContent);
   }
   if (url.match(politikenRegex)) {
-    return removeSignUp(articleContent);
+    return cleanPolitiken(readabilityContent);
   }
   if (url.match(scientiasRegex)) {
-    return convertStrongToHeader(articleContent);
+    return cleanScientias(readabilityContent);
   }
   if (url.match(egyszervoltRegex)) {
-    return removeIMGTag(articleContent);
+    return cleanEgyszervolt(readabilityContent);
   }
-  return articleContent;
+  return readabilityContent;
 }
 
-export function cleanDocumentClone(documentClone, currentTabURL) {
-  if (currentTabURL.match(drRegex)) {
+export function cleanDocumentClone(documentClone, url) {
+  if (url.match(drRegex)) {
     return cleanDRBefore(documentClone);
   }
-  if (currentTabURL.match(lemondeRegex)) {
-    return removeAuthorDetail(documentClone);
+  if (url.match(lemondeRegex)) {
+    return cleanLemondeBefore(documentClone);
   }
-  if (currentTabURL.match(nuRegex)) {
-    return removeBlockTitle(documentClone);
+  if (url.match(nuRegex)) {
+    return cleanNuBefore(documentClone);
   }
-  if (currentTabURL.match(ekstrabladetRegex)) {
+  if (url.match(ekstrabladetRegex)) {
     return cleanEkstraBladetBefore(documentClone);
   }
-  if (currentTabURL.match(leqiupeRegex)) {
-    return removeDateTime(documentClone);
+  if (url.match(leqiupeRegex)) {
+    return cleanLequipeBefore(documentClone);
   }
-  if (currentTabURL.match(berlingskeRegex)) {
+  if (url.match(berlingskeRegex)) {
     return cleanBerlingskeBefore(documentClone);
   }
-  if (currentTabURL.match(spiegelRegex)) {
+  if (url.match(spiegelRegex)) {
     return cleanSpiegelBefore(documentClone);
   }
-  if (currentTabURL.match(expressRegex)) {
+  if (url.match(expressRegex)) {
     return cleanExpressBefore(documentClone);
   }
-  if (currentTabURL.match(faktRegex)) {
-    return cleanFakt(documentClone);
+  if (url.match(faktRegex)) {
+    return cleanFaktBefore(documentClone);
   }
-  if (currentTabURL.match(rzeczRegex)) {
+  if (url.match(rzeczRegex)) {
     return cleanRzeczBefore(documentClone);
   }
+  if (url.match(lexpressRegex)) {
+    return cleanLexpressBefore(documentClone);
+  }
+  if (url.match(marianneRegex)) {
+    return cleanMarianneBefore(documentClone);
+  }
+
   return documentClone;
 }
 
@@ -137,12 +141,12 @@ export function cleanDOMAfter(url) {
 
   if (url.match(faktRegex)) {
     setTimeout(function () {
-      removeIFrames();
+      removeFaktIFrames();
     }, 10000);
   }
   if (url.match(corriereRegex)) {
     setTimeout(function () {
-      removeScripts();
+      removeCorriereScripts();
     }, 10000);
   }
 }
