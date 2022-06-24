@@ -1,6 +1,7 @@
 export function removeFirstElementIfExistent(element, div) {
   let elem = div.querySelector(element);
   if (elem) {
+    console.log(elem)
     elem.remove();
   }
 }
@@ -9,6 +10,7 @@ export function removeAllElementsIfExistent(element, div) {
   let elements = div.querySelectorAll(element);
   if (elements) {
     for (let i = 0; i < elements.length; i++) {
+      console.log(elements[i])
       elements[i].remove();
     }
   }
@@ -42,7 +44,7 @@ export function changeTagToParagraph(element, div) {
 }
 
 export function createDivWithContent(content){
-  let div = document.createElement("div");
+  const div = document.createElement("div");
   div.innerHTML = content
   return div
 }
