@@ -15,7 +15,7 @@ export const PrimaryButton = styled.button`
   border-radius: 10px;
   color: white !important;
   background-color: ${colors.darkBlue} !important;
-  border-color: #3079b0 !important;
+  border-color: ${colors.buttonBorder} !important;
   :hover {
     background-color: ${colors.hoverBlue} !important;
   }
@@ -64,10 +64,10 @@ export const NotifyButton = styled.button`
   padding: 0 !important;
   font-family: "Montserrat";
   cursor: pointer;
-  color: #2f77ad;
+  color: ${colors.darkBlue};
   font-weight: 600 !important;
   :hover {
-    color: #4f97cf !important;
+    color: ${colors.hoverBlue} !important;
   }
   font-size: 1em !important;
 
@@ -78,7 +78,7 @@ export const NotifyButton = styled.button`
       cursor: text;
       pointer-events: none;
       text-decoration: underline;
-      color: #000 !important;
+      color: ${colors.black} !important;
     `}
 `;
 
