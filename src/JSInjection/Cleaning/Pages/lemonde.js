@@ -1,10 +1,18 @@
-import { removeFirstElementIfExistent } from "../util";
+import { createDivWithContent, removeFirstElementIfExistent } from "../util";
 
 export const lemondeRegex = /(http|https):\/\/(www.lemonde.fr).*/;
 
+export function cleanLemondeBefore(documentClone) {
+  return removeAuthorDetail(documentClone);
+}
+
+export function cleanLemonde(readabilityContent) {
+  let cleanedContent = removeInjectedContent(readabilityContent);
+  return removeServices(cleanedContent);
+}
+  
 function removeServices(readabilityContent) {
-  const div = document.createElement("div");
-  div.innerHTML = readabilityContent;
+  const div = createDivWithContent(readabilityContent)
   let allElements = Array.from(div.getElementsByTagName("h4"));
   if (allElements) {
     for (let i = 0; i < allElements.length; i++) {
@@ -20,8 +28,7 @@ function removeServices(readabilityContent) {
 }
 
 function removeInjectedContent(readabilityContent) {
-  const div = document.createElement("div");
-  div.innerHTML = readabilityContent;
+  const div = createDivWithContent(readabilityContent)
   removeFirstElementIfExistent("#js-capping", div)
   return div.innerHTML;
 }
@@ -31,11 +38,3 @@ function removeAuthorDetail(documentClone) {
   return documentClone;
 }
 
-export function cleanLemondeBefore(documentClone){
-return removeAuthorDetail(documentClone)
-}
-
-export function cleanLemonde(readabilityContent) {
-  let cleanedContent = removeInjectedContent(readabilityContent);
-  return removeServices(cleanedContent);
-}

@@ -1,13 +1,15 @@
+import { createDivWithContent } from "../util";
+
 export const cnnRegex = /(http|https):\/\/(edition.cnn.com).*/;
 
-export function addImageCNN(HTMLContent, readabilityContent) {
-  // create a div with content from HTML
-  const HTMLDiv = document.createElement("div");
-  HTMLDiv.innerHTML = HTMLContent;
+export function cleanCNN(HTMLContent, readabilityContent){
+  return addImageCNN(HTMLContent, readabilityContent)
+}
 
-  // create a new div with the content from readability
-  const div = document.createElement("div");
-  div.innerHTML = readabilityContent;
+function addImageCNN(HTMLContent, readabilityContent) {
+  const HTMLDiv = createDivWithContent(HTMLContent)
+  const div = createDivWithContent(readabilityContent)
+
   const image = HTMLDiv.querySelector("[data-src-medium]");
   if (image) {
     const imageDataset = image.dataset;
@@ -22,8 +24,4 @@ export function addImageCNN(HTMLContent, readabilityContent) {
     }
   }
   return div.innerHTML;
-}
-
-export function cleanCNN(HTMLContent, readabilityContent){
-  return addImageCNN(HTMLContent, readabilityContent)
 }

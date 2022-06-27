@@ -1,5 +1,12 @@
-export const berlingskeRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]berlingske+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 import { createDivWithContent, removeFirstElementIfExistent } from "../util";
+
+export const berlingskeRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]berlingske+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+
+export function cleanBerlingskeBefore(documentClone) {
+  removeFirstElementIfExistent("figcaption", documentClone);
+  addAuthorBerlingske(documentClone);
+  return documentClone;
+}
 
 export function cleanBerlingske(readabilityContent) {
   const div = createDivWithContent(readabilityContent);
@@ -11,12 +18,6 @@ export function cleanBerlingske(readabilityContent) {
     "#tts-consent-box",
   ].forEach((id) => {removeFirstElementIfExistent(id, div)});
   return div.innerHTML;
-}
-
-export function cleanBerlingskeBefore(documentClone) {
-  removeFirstElementIfExistent("figcaption", documentClone);
-  addAuthorBerlingske(documentClone);
-  return documentClone;
 }
 
 function addAuthorBerlingske(documentClone) {

@@ -1,16 +1,25 @@
-import { removeAllElementsIfExistent, removeAllElementsWithText } from "../util";
+import { createDivWithContent, removeAllElementsIfExistent, removeAllElementsWithText } from "../util";
 
 export const ekstrabladetRegex = /^(http|https):\/\/ekstrabladet.dk\/.*/;
 
-export function addImageEkstraBladet(HTMLContent, readabilityContent) {
-  const HTMLDiv = document.createElement("div");
-  HTMLDiv.innerHTML = HTMLContent;
+export function cleanEkstraBladetBefore(documentClone) {
+  [".split-element--ekstra", ".jw-reset", ".figure.image-container"].forEach((elem) => {
+    removeAllElementsIfExistent(elem, documentClone)
+  });
+  removeAllElementsWithText("p", "Artiklen fortsætter under", documentClone)
+  return documentClone;
+}
+
+export function cleanEkstraBladet(HTMLContent, readabilityContent) {
+  const removedDate = removePrefix(readabilityContent);
+  let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
+  return cleaned;
+}
+
+function addImageEkstraBladet(HTMLContent, readabilityContent) {
+  const HTMLDiv = createDivWithContent(HTMLContent)
+  const div = createDivWithContent(readabilityContent)
   const imageClass = HTMLDiv.querySelector(".figure-image border-radius");
-
-  // create a new div with the content from readability
-  const div = document.createElement("div");
-  div.innerHTML = readabilityContent;
-
   // If a main image exists add it to the readability content
   if (imageClass != undefined) {
     const imageAlt = imageClass.getAttribute("alt");
@@ -23,9 +32,8 @@ export function addImageEkstraBladet(HTMLContent, readabilityContent) {
   return div.innerHTML;
 }
 
-export function removePrefix(readabilityContent) {
-  const div = document.createElement("div");
-  div.innerHTML = readabilityContent;
+function removePrefix(readabilityContent) {
+  const div = createDivWithContent(readabilityContent)
   const header = div.querySelector("header");
   if (header) {
     let firstDiv = header.querySelector("div");
@@ -34,18 +42,4 @@ export function removePrefix(readabilityContent) {
     }
   }
   return div.innerHTML;
-}
-
-export function cleanEkstraBladet(HTMLContent, readabilityContent) {
-  const removedDate = removePrefix(readabilityContent);
-  let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
-  return cleaned;
-}
-
-export function cleanEkstraBladetBefore(documentClone) {
-  [".split-element--ekstra", ".jw-reset", ".figure.image-container"].forEach((elem) => {
-    removeAllElementsIfExistent(elem, documentClone)
-  });
-  removeAllElementsWithText("p", "Artiklen fortsætter under", documentClone)
-  return documentClone;
 }

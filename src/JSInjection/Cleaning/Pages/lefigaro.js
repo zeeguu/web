@@ -1,14 +1,18 @@
+import { createDivWithContent } from "../util";
+
 export const lefigaroRegex = /(http|https):\/\/(www.lefigaro.fr).*/;
+
+export function cleanLefigaro(HTMLContent, readabilityContent){
+  return addImageLefirago(HTMLContent, readabilityContent)
+}
 
 function addImageLefirago(HTMLContent, readabilityContent) {
   // create new div with raw HTML content from the entire webpage
-  const HTMLDiv = document.createElement("div");
-  HTMLDiv.innerHTML = HTMLContent;
+  const HTMLDiv = createDivWithContent(HTMLContent)
   const imageClass = HTMLDiv.querySelector(".fig-media-photo");
 
   // create a new div with the content from readability
-  const div = document.createElement("div");
-  div.innerHTML = readabilityContent;
+  const div = createDivWithContent(readabilityContent)
 
   // If a main image exists add it to the readability content
   if (imageClass != undefined) {
@@ -20,8 +24,4 @@ function addImageLefirago(HTMLContent, readabilityContent) {
     div.prepend(newImage);
   }
   return div.innerHTML;
-}
-
-export function cleanLefigaro(HTMLContent, readabilityContent){
-  return addImageLefirago(HTMLContent, readabilityContent)
 }
