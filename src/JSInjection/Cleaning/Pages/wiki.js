@@ -2,10 +2,9 @@ import { createDivWithContent, removeAllElementsIfExistent } from "../util"
 
 export const wikiRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]wikipedia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/
 
-export function cleanWiki(HTMLContent, readabilityContent){
+export function cleanWiki(readabilityContent){
     let cleanedContent = removeText(readabilityContent)
     cleanedContent = removeTable(cleanedContent)
-    cleanedContent = getWikiImage(HTMLContent, cleanedContent)
     return cleanedContent
   }
 
@@ -30,26 +29,5 @@ export function cleanWiki(HTMLContent, readabilityContent){
   function removeTable(readabilityContent) {
     const div = createDivWithContent(readabilityContent)
     removeAllElementsIfExistent("table", div)
-    return div.innerHTML;
-  }
-
-  function getWikiImage(HTMLContent, readabilityContent) {
-    const HTMLDiv = createDivWithContent(HTMLContent)
-    const images = HTMLDiv.querySelectorAll("img")
-
-    // create a new div with the content from readability
-    const div = createDivWithContent(readabilityContent)
-
-    for (var i = 0; i < images.length; i++) {
-      if (images[i].height > 200) {
-        const imageAlt = images[i].getAttribute("alt")
-        const image = images[i].currentSrc
-        const newImage = document.createElement("img");
-        newImage.setAttribute("src", image);
-        newImage.setAttribute("alt", imageAlt);
-        div.prepend(newImage);
-        break;
-      } 
-    }
     return div.innerHTML;
   }
