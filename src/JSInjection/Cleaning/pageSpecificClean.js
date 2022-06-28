@@ -1,6 +1,5 @@
 import { btRegex, cleanBT } from "./Pages/bt";
 import { wikiRegex, cleanWiki } from "./Pages/wiki";
-import { lefigaroRegex, cleanLefigaro } from "./Pages/lefigaro";
 import {
   ekstrabladetRegex,
   cleanEkstraBladet,
@@ -23,7 +22,6 @@ import {
   cleanBerlingskeBefore,
 } from "./Pages/berlingske";
 import { spiegelRegex, cleanSpiegelBefore } from "./Pages/spiegel";
-import { cleanCNN, cnnRegex } from "./Pages/cnn";
 import { bbcRegex, cleanBBC } from "./Pages/bbc";
 import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
@@ -44,13 +42,10 @@ export function getHTMLContent(url) {
 
 export function pageSpecificClean(readabilityContent, url) {
   if (url.match(wikiRegex)) {
-    return cleanWiki(getHTMLContent(url), readabilityContent);
+    return cleanWiki(readabilityContent);
   }
   if (url.match(btRegex)) {
-    return cleanBT(getHTMLContent(url), readabilityContent);
-  }
-  if (url.match(lefigaroRegex)) {
-    return cleanLefigaro(getHTMLContent(url), readabilityContent);
+    return cleanBT(readabilityContent);
   }
   if (url.match(ekstrabladetRegex)) {
     return cleanEkstraBladet(getHTMLContent(url), readabilityContent);
@@ -62,16 +57,13 @@ export function pageSpecificClean(readabilityContent, url) {
     return cleanLexpress(readabilityContent);
   }
   if (url.match(marianneRegex)) {
-    return cleanMarianne(getHTMLContent(url), readabilityContent);
+    return cleanMarianne(readabilityContent);
   }
   if (url.match(ingenioerRegex)) {
     return cleanIngenioeren(getHTMLContent(url), readabilityContent);
   }
   if (url.match(berlingskeRegex)) {
     return cleanBerlingske(readabilityContent);
-  }
-  if (url.match(cnnRegex)) {
-    return cleanCNN(getHTMLContent(url), readabilityContent);
   }
   if (url.match(bbcRegex)) {
     return cleanBBC(readabilityContent);

@@ -1,8 +1,13 @@
+import { createDivWithContent } from "../util";
+
 export const scientiasRegex = /(http|https):\/\/(scientias.nl).*/;
 
+export function cleanScientias(readabilityContent) {
+  return convertStrongToHeader(readabilityContent);
+}
+
 function convertStrongToHeader(readabilityContent) {
-  const div = document.createElement("div");
-  div.innerHTML = readabilityContent;
+  const div = createDivWithContent(readabilityContent)
   const pTags = div.querySelectorAll("p")
   if (pTags) {
     for (let i = 0; i < pTags.length; i++) {
@@ -21,8 +26,4 @@ function convertStrongToHeader(readabilityContent) {
     }
   }
   return div.innerHTML
-}
-
-export function cleanScientias(readabilityContent){
-return convertStrongToHeader(readabilityContent)
 }

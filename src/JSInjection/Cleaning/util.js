@@ -11,8 +11,7 @@ export function removeAllElementsIfExistent(element, div) {
     for (let i = 0; i < elements.length; i++) {
       elements[i].remove();
     }
-  }
-}
+}}
 
 export function removeAllElementsWithText(element, text, div) {
   let elems = div.querySelectorAll(element);
@@ -39,4 +38,10 @@ export function changeTagToParagraph(element, div) {
     newElement.innerHTML = currentElement.innerHTML;
     currentElement.parentNode.replaceChild(newElement, currentElement);
   }
+}
+
+export function createDivWithContent(content){
+  const div = document.createElement("div");
+  div.innerHTML = content
+  return div
 }
