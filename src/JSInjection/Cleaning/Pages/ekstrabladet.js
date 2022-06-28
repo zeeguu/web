@@ -1,3 +1,4 @@
+import { getHTMLContent } from "../pageSpecificClean";
 import { createDivWithContent, removeAllElementsIfExistent, removeAllElementsWithText } from "../util";
 
 export const ekstrabladetRegex = /^(http|https):\/\/ekstrabladet.dk\/.*/;
@@ -10,9 +11,10 @@ export function cleanEkstraBladetBefore(documentClone) {
   return documentClone;
 }
 
-export function cleanEkstraBladet(readabilityContent) {
-  const cleaned = removePrefix(readabilityContent);
-  return cleaned;
+export function cleanEkstraBladet(readabilityContent, url) {
+  const HTMLContent = getHTMLContent(url)
+  const removedDate = removePrefix(readabilityContent);
+  let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
 }
 
 function removePrefix(readabilityContent) {
