@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { deleteCurrentDOM, getCurrentURL, getSessionId} from "../popup/functions";
 import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
-import { pageSpecificClean } from "./Cleaning/pageSpecificClean";
+import { cleanAfterArray, cleanDocument } from "./Cleaning/pageSpecificClean";
 import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
 import DOMPurify from "dompurify";
 import ZeeguuLoader from "./ZeeguuLoader";
@@ -38,7 +38,7 @@ export function Main() {
     return <ZeeguuLoader/>  
   }
 
-  let cleanedContent = pageSpecificClean(article.content, url);
+  let cleanedContent = cleanDocument(article.content, url, cleanAfterArray);
 
   cleanedContent = generalClean(cleanedContent);
   cleanedContent = DOMPurify.sanitize(cleanedContent);

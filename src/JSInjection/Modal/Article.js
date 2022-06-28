@@ -1,6 +1,6 @@
 import { getSourceAsDOM } from "../../popup/functions";
 import { Readability } from "@mozilla/readability";
-import { cleanDocumentClone } from "../Cleaning/pageSpecificClean";
+import { cleanBeforeArray, cleanDocument } from "../Cleaning/pageSpecificClean";
 import { displayEntireArticleFaz, fazRegex } from "../Cleaning/Pages/faz";
 
 export async function Article(currentTabURL) {
@@ -10,7 +10,7 @@ export async function Article(currentTabURL) {
   }
   const documentFromTab = getSourceAsDOM(currentTabURL);
   const documentClone = documentFromTab.cloneNode(true);
-  const cleanedDocumentClone = cleanDocumentClone(documentClone, currentTabURL);
+  const cleanedDocumentClone = cleanDocument(documentClone, currentTabURL, cleanBeforeArray);
   const article = new Readability(cleanedDocumentClone).parse();
   return article;
 }
