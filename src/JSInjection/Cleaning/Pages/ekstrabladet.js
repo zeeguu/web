@@ -1,16 +1,15 @@
-import { createDivWithContent, removeAllElementsIfExistent, removeAllElementsWithText } from "../util";
+import { getHTMLContent } from "../pageSpecificClean";
+import { createDivWithContent, removeAllElementsWithText } from "../util";
 
 export const ekstrabladetRegex = /^(http|https):\/\/ekstrabladet.dk\/.*/;
 
 export function cleanEkstraBladetBefore(documentClone) {
-  [".split-element--ekstra", ".jw-reset", ".figure.image-container"].forEach((elem) => {
-    removeAllElementsIfExistent(elem, documentClone)
-  });
   removeAllElementsWithText("p", "Artiklen fortsætter under", documentClone)
   return documentClone;
 }
 
-export function cleanEkstraBladet(HTMLContent, readabilityContent) {
+export function cleanEkstraBladet(readabilityContent, url) {
+  const HTMLContent = getHTMLContent(url)
   const removedDate = removePrefix(readabilityContent);
   let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
   return cleaned;

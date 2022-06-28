@@ -1,8 +1,10 @@
+import { getHTMLContent } from "../pageSpecificClean";
 import { createDivWithContent } from "../util";
 
 export const ingenioerRegex = /^(http|https):\/\/ing.dk\/.*/;
 
-export function cleanIngenioeren(HTMLContent, readabilityContent) {
+export function cleanIngenioeren(readabilityContent, url) {
+  const HTMLContent = getHTMLContent(url)
   let cleanedContent = removeComments(HTMLContent, readabilityContent);
   return cleanedContent;
 }
