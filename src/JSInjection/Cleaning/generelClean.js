@@ -66,7 +66,7 @@ function correctImageFormat(imgScr) {
 export function generalClean(readabilityContent) {
   let cleanContent = removeSVG(readabilityContent);
   cleanContent = removeLinks(cleanContent);
-  //cleanContent = removeFigures(cleanContent);
+  cleanContent = removeFigures(cleanContent);
   return cleanContent;
 }
 

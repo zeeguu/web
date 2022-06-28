@@ -48,7 +48,7 @@ export function pageSpecificClean(readabilityContent, url) {
     return cleanBT(readabilityContent);
   }
   if (url.match(ekstrabladetRegex)) {
-    return cleanEkstraBladet(getHTMLContent(url), readabilityContent);
+    return cleanEkstraBladet(readabilityContent);
   }
   if (url.match(lemondeRegex)) {
     return cleanLemonde(readabilityContent);

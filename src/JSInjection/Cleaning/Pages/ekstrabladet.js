@@ -10,26 +10,9 @@ export function cleanEkstraBladetBefore(documentClone) {
   return documentClone;
 }
 
-export function cleanEkstraBladet(HTMLContent, readabilityContent) {
-  const removedDate = removePrefix(readabilityContent);
-  let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
+export function cleanEkstraBladet(readabilityContent) {
+  const cleaned = removePrefix(readabilityContent);
   return cleaned;
-}
-
-function addImageEkstraBladet(HTMLContent, readabilityContent) {
-  const HTMLDiv = createDivWithContent(HTMLContent)
-  const div = createDivWithContent(readabilityContent)
-  const imageClass = HTMLDiv.querySelector(".figure-image border-radius");
-  // If a main image exists add it to the readability content
-  if (imageClass != undefined) {
-    const imageAlt = imageClass.getAttribute("alt");
-    const image = imageClass.currentSrc;
-    const newImage = document.createElement("img");
-    newImage.setAttribute("src", image);
-    newImage.setAttribute("alt", imageAlt);
-    div.prepend(newImage);
-  }
-  return div.innerHTML;
 }
 
 function removePrefix(readabilityContent) {
