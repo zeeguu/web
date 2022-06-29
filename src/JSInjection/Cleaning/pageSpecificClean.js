@@ -28,7 +28,7 @@ export function getHTMLContent(url) {
   return xmlHttp.responseText;
 }
 
-export function cleanDocument(content, url, cleaningArray) {
+export function cleanIndividualDocument(content, url, cleaningArray) {
   for (let i = 0; i < cleaningArray.length; i++) {
     const regx = cleaningArray[i].regex;
     const cleaningFunction = cleaningArray[i].function;
