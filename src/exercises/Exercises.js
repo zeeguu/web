@@ -32,12 +32,12 @@ let EXERCISE_TYPES = [
     requiredBookmarks: 1,
   },
   {
-    type: AudioExerciseTwo,
-    requiredBookmarks: 3,
-  },
-  {
     type: AudioExerciseOne,
     requiredBookmarks: 1,
+  },
+  { 
+    type: AudioExerciseTwo,
+    requiredBookmarks: 3,
   },
   ];
  
@@ -259,14 +259,20 @@ export default function Exercises({
     if (newIndex === exerciseSession.length) {
       setFinished(true);
       var completed;
-      if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
-      LocalStorage.incrementAudioExperimentNoOfSessions();
-      completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
-        if (completed) {
-          api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
-          api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", AUDIO_SOURCE);
+      if (Feature.audio_exercises()) {
+        if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
+        LocalStorage.incrementAudioExperimentNoOfSessions();
+        completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
+          if (completed) {
+            api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+            api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", AUDIO_SOURCE);
+          } else {
+            api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+          }
         } else {
-          api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+          LocalStorage.setAudioExperimentNoOfSessions("1");
+          api.logUserActivity(api.AUDIO_EXP, articleID, "First session completed ", AUDIO_SOURCE);
+          LocalStorage.setTargetNoOfAudioSessions("100");
         }
       }
       return;
