@@ -142,8 +142,12 @@ const LocalStorage = {
   },
 
   getTargetNoOfAudioSessions: function () {
-    let noofsessions = Number(localStorage[this.Keys.TargetNoOfAudioSessions]);
+    try {
+      let noofsessions = Number(localStorage[this.Keys.TargetNoOfAudioSessions]);
       return noofsessions;
+    } catch (e) {
+      return false;
+    }
   },
 
   setTargetNoOfAudioSessions: function (targetNoOfAudioSessions) {
