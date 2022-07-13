@@ -12,6 +12,10 @@ const Feature = {
   audio_exercises: function () {
     return this.is_enabled("audio_exercises");
   },
+
+  no_audio_exercises: function () {
+    return this.is_enabled("no_audio_exercises");
+  },
 };
 
 export default Feature;

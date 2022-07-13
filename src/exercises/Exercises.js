@@ -18,8 +18,9 @@ import LocalStorage from "../assorted/LocalStorage";
 import QuestionnaireMessage from "../components/QuestionnaireMessage.js";
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
-let EXERCISE_TYPES = [
-  {
+let EXERCISE_TYPES;
+  if(Feature.audio_exercises()) {
+    EXERCISE_TYPES = [{
     type: Match,
     requiredBookmarks: 3,
   },
@@ -40,6 +41,22 @@ let EXERCISE_TYPES = [
     requiredBookmarks: 3,
   },
   ];
+  } else {
+    EXERCISE_TYPES = [
+      {
+    type: Match,
+    requiredBookmarks: 3,
+  },
+  {
+    type: MultipleChoice,
+    requiredBookmarks: 1,
+  },
+  {
+    type: FindWordInContext,
+    requiredBookmarks: 1,
+  },
+  ];
+  }
  
 export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
@@ -272,6 +289,21 @@ export default function Exercises({
         } else {
           LocalStorage.setAudioExperimentNoOfSessions("1");
           api.logUserActivity(api.AUDIO_EXP, articleID, "First session completed ", AUDIO_SOURCE);
+          LocalStorage.setTargetNoOfAudioSessions("100");
+        }
+      } else if (Feature.no_audio_exercises()) {
+        if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
+        LocalStorage.incrementAudioExperimentNoOfSessions();
+        completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
+          if (completed) {
+            api.logUserActivity(api.AUDIO_EXP, articleID, "Session without audio no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+            api.logUserActivity(api.AUDIO_EXP, articleID, "Experiment without audio completed!", AUDIO_SOURCE);
+          } else {
+            api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
+          }
+        } else {
+          LocalStorage.setAudioExperimentNoOfSessions("1");
+          api.logUserActivity(api.AUDIO_EXP, articleID, "First session without audio completed ", AUDIO_SOURCE);
           LocalStorage.setTargetNoOfAudioSessions("100");
         }
       }
