@@ -19,45 +19,46 @@ import QuestionnaireMessage from "../components/QuestionnaireMessage.js";
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let EXERCISE_TYPES;
-  if(Feature.audio_exercises()) {
-    EXERCISE_TYPES = [{
-    type: Match,
-    requiredBookmarks: 3,
-  },
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 1,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
-  {
-    type: AudioExerciseOne,
-    requiredBookmarks: 1,
-  },
-  { 
-    type: AudioExerciseTwo,
-    requiredBookmarks: 3,
-  },
+if (Feature.audio_exercises()) {
+  EXERCISE_TYPES = [
+    {
+      type: Match,
+      requiredBookmarks: 3,
+    },
+    {
+      type: MultipleChoice,
+      requiredBookmarks: 1,
+    },
+    {
+      type: FindWordInContext,
+      requiredBookmarks: 1,
+    },
+    {
+      type: AudioExerciseOne,
+      requiredBookmarks: 1,
+    },
+    {
+      type: AudioExerciseTwo,
+      requiredBookmarks: 3,
+    },
   ];
-  } else {
-    EXERCISE_TYPES = [
-      {
-    type: Match,
-    requiredBookmarks: 3,
-  },
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 1,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
+} else {
+  EXERCISE_TYPES = [
+    {
+      type: Match,
+      requiredBookmarks: 3,
+    },
+    {
+      type: MultipleChoice,
+      requiredBookmarks: 1,
+    },
+    {
+      type: FindWordInContext,
+      requiredBookmarks: 1,
+    },
   ];
-  }
- 
+}
+
 export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
   api,
@@ -82,7 +83,10 @@ export default function Exercises({
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    console.log("Localstorage displayed questionnaire popup " + LocalStorage.displayedAudioExperimentQuestionnaire());
+    console.log(
+      "Localstorage displayed questionnaire popup " +
+        LocalStorage.displayedAudioExperimentQuestionnaire()
+    );
     console.log("Audio feature flag " + Feature.audio_exercises());
     console.log("Audio completed " + LocalStorage.audioExperimentCompleted());
   }, []);
@@ -159,7 +163,7 @@ export default function Exercises({
             bookmarks: [],
           };
           exerciseSession.push(exercise);
-          count = count-currentTypeRequiredCount;
+          count = count - currentTypeRequiredCount;
         }
       }
     } else {
@@ -240,16 +244,16 @@ export default function Exercises({
     api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     return (
       <>
-      <QuestionnaireMessage/>
-      <Congratulations
-        articleID={articleID}
-        correctBookmarks={correctBookmarks}
-        incorrectBookmarks={incorrectBookmarks}
-        api={api}
-        backButtonAction={backButtonAction}
-        keepExercisingAction={keepExercisingAction}
-        source={source}
-      />
+        <QuestionnaireMessage />
+        <Congratulations
+          articleID={articleID}
+          correctBookmarks={correctBookmarks}
+          incorrectBookmarks={incorrectBookmarks}
+          api={api}
+          backButtonAction={backButtonAction}
+          keepExercisingAction={keepExercisingAction}
+          source={source}
+        />
       </>
     );
   }
@@ -266,7 +270,88 @@ export default function Exercises({
         buttonAction={backButtonAction}
       />
     );
-  } 
+  }
+
+  function exerciseSessionWithAudioCompleted() {
+    var completed;
+    if (Feature.audio_exercises()) {
+      if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
+        LocalStorage.incrementAudioExperimentNoOfSessions();
+        completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
+        if (completed) {
+          api.logUserActivity(
+            api.AUDIO_EXP,
+            articleID,
+            "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(),
+            AUDIO_SOURCE
+          );
+          api.logUserActivity(
+            api.AUDIO_EXP,
+            articleID,
+            "Audio experiment completed!",
+            AUDIO_SOURCE
+          );
+        } else {
+          api.logUserActivity(
+            api.AUDIO_EXP,
+            articleID,
+            "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(),
+            AUDIO_SOURCE
+          );
+        }
+      } else {
+        LocalStorage.setAudioExperimentNoOfSessions("1");
+        api.logUserActivity(
+          api.AUDIO_EXP,
+          articleID,
+          "First session completed ",
+          AUDIO_SOURCE
+        );
+        LocalStorage.setTargetNoOfAudioSessions("100");
+      }
+    }
+    return;
+  }
+
+  function exerciseSessionNoAudioCompleted() {
+    var completed;
+    if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
+      LocalStorage.incrementAudioExperimentNoOfSessions();
+      completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
+      if (completed) {
+        api.logUserActivity(
+          api.AUDIO_EXP,
+          articleID,
+          "Session without audio no: " +
+            LocalStorage.getAudioExperimentNoOfSessions(),
+          AUDIO_SOURCE
+        );
+        api.logUserActivity(
+          api.AUDIO_EXP,
+          articleID,
+          "Experiment without audio completed!",
+          AUDIO_SOURCE
+        );
+      } else {
+        api.logUserActivity(
+          api.AUDIO_EXP,
+          articleID,
+          "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(),
+          AUDIO_SOURCE
+        );
+      }
+    } else {
+      LocalStorage.setAudioExperimentNoOfSessions("1");
+      api.logUserActivity(
+        api.AUDIO_EXP,
+        articleID,
+        "First session without audio completed ",
+        AUDIO_SOURCE
+      );
+      LocalStorage.setTargetNoOfAudioSessions("100");
+    }
+    return;
+  }
 
   function moveToNextExercise() {
     setIsCorrect(false);
@@ -275,37 +360,10 @@ export default function Exercises({
 
     if (newIndex === exerciseSession.length) {
       setFinished(true);
-      var completed;
       if (Feature.audio_exercises()) {
-        if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
-        LocalStorage.incrementAudioExperimentNoOfSessions();
-        completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
-          if (completed) {
-            api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
-            api.logUserActivity(api.AUDIO_EXP, articleID, "Audio experiment completed!", AUDIO_SOURCE);
-          } else {
-            api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
-          }
-        } else {
-          LocalStorage.setAudioExperimentNoOfSessions("1");
-          api.logUserActivity(api.AUDIO_EXP, articleID, "First session completed ", AUDIO_SOURCE);
-          LocalStorage.setTargetNoOfAudioSessions("100");
-        }
+        exerciseSessionWithAudioCompleted();
       } else if (Feature.no_audio_exercises()) {
-        if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
-        LocalStorage.incrementAudioExperimentNoOfSessions();
-        completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
-          if (completed) {
-            api.logUserActivity(api.AUDIO_EXP, articleID, "Session without audio no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
-            api.logUserActivity(api.AUDIO_EXP, articleID, "Experiment without audio completed!", AUDIO_SOURCE);
-          } else {
-            api.logUserActivity(api.AUDIO_EXP, articleID, "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(), AUDIO_SOURCE);
-          }
-        } else {
-          LocalStorage.setAudioExperimentNoOfSessions("1");
-          api.logUserActivity(api.AUDIO_EXP, articleID, "First session without audio completed ", AUDIO_SOURCE);
-          LocalStorage.setTargetNoOfAudioSessions("100");
-        }
+        exerciseSessionNoAudioCompleted();
       }
       return;
     }
@@ -349,7 +407,6 @@ export default function Exercises({
 
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
-    
     <s.ExercisesColumn className="exercisesColumn">
       <s.LittleMessageAbove>
         {wordSourcePrefix} {wordSourceText}
@@ -367,14 +424,16 @@ export default function Exercises({
           moveToNextExercise={moveToNextExercise}
           toggleShow={toggleShow}
           reload={reload}
-          setReload={setReload} />
+          setReload={setReload}
+        />
       </s.ExForm>
       <FeedbackDisplay
         showFeedbackButtons={showFeedbackButtons}
         setShowFeedbackButtons={setShowFeedbackButtons}
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
-        feedbackFunction={stopShowingThisFeedback} />
+        feedbackFunction={stopShowingThisFeedback}
+      />
     </s.ExercisesColumn>
   );
 }
