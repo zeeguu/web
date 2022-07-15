@@ -13,7 +13,6 @@ import LocalStorage from "../assorted/LocalStorage";
 import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
-// import AudioExerciseMessage from "../components/AudioExerciseMessage";
 
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
@@ -22,32 +21,31 @@ export default function NewArticles({ api }) {
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
 
-
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
-    console.log("Running in chrome desktop: " + runningInChromeDesktop())
-    console.log("Localstorage displayed extension: "+ LocalStorage.displayedExtensionPopup())
+    console.log("Running in chrome desktop: " + runningInChromeDesktop());
+    console.log(
+      "Localstorage displayed extension: " +
+        LocalStorage.displayedExtensionPopup()
+    );
 
     if (runningInChromeDesktop()) {
       checkExtensionInstalled(setHasExtension);
     }
-    
+
     // load articles
     api.getUserArticles((articles) => {
       setArticleList(articles);
-      setOriginalList ([...articles]);
+      setOriginalList([...articles]);
     });
     setTitle(strings.findArticles);
-
-    }, []);
+  }, []);
 
   useEffect(() => {
     if (!hasExtension) {
       setExtensionMessageOpen(true);
     }
   }, [hasExtension]);
-
-
 
   if (articleList == null) {
     return <LoadingAnimation />;
@@ -58,13 +56,12 @@ export default function NewArticles({ api }) {
     setArticleList(null);
     api.getUserArticles((articles) => {
       setArticleList(articles);
-      setOriginalList ([...articles]);
+      setOriginalList([...articles]);
     });
   }
 
   return (
-    <> 
-      {/* <AudioExerciseMessage/> */}
+    <>
       <ExtensionMessage
         open={extensionMessageOpen}
         hasExtension={hasExtension}
@@ -86,7 +83,12 @@ export default function NewArticles({ api }) {
       />
       <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} api={api} hasExtension={hasExtension}/>
+        <ArticlePreview
+          key={each.id}
+          article={each}
+          api={api}
+          hasExtension={hasExtension}
+        />
       ))}
       <ShowLinkRecommendationsIfNoArticles
         articleList={articleList}
