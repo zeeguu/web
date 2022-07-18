@@ -9,7 +9,8 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import removePunctuation from "../../../assorted/removePunctuation";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
-import AudioTwoBotInput from "./AudioTwoBotInput";
+import AudioTwoBotInput from "./AudioTwoBotInput.js";
+import EditButton from "../../../words/EditButton.js";
 
 const EXERCISE_TYPE = "Select_AudioL2W_fitting_L2T";
 
@@ -35,6 +36,8 @@ export default function AudioExerciseTwo({
   const [currentChoice, setCurrentChoice] = useState("");
   const [firstTypeTime, setFirstTypeTime] = useState();
   const [selectedButtonId, setSelectedButtonId] = useState("");
+  const bookmarkToStudy = bookmarksToStudy[0];
+  const exercise = "exercise";
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
@@ -61,6 +64,12 @@ export default function AudioExerciseTwo({
       notifyIncorrectAnswer(bookmarksToStudy[0]);
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
+    }
+  }
+
+  function inputKeyPress() {
+    if (firstTypeTime === undefined) {
+      setFirstTypeTime(new Date());
     }
   }
 
@@ -98,7 +107,7 @@ export default function AudioExerciseTwo({
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setFirstTypeTime();
   }
-  
+
   function handleAnswer(message) {
     let pressTime = new Date();
     console.log(pressTime - initialTime);
@@ -157,47 +166,51 @@ export default function AudioExerciseTwo({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">
-        {strings.audioExerciseTwoHeadline}
-      </div>
-      <div className="contextExample">
-        <TranslatableText
-          isCorrect={isCorrect}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          bookmarkToStudy={bookmarksToStudy[0].from}
-        />
-      </div>
-      <s.CenteredRow>
-        {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
-        {choiceOptions ? (
-          choiceOptions.map((option) =>
-            0 !== option ? (
-              <SpeakButton
-                handleClick={() => buttonSelectFalse(option)}
-                onClick={(e) => handleClick(option)}
-                bookmarkToStudy={bookmarksToStudy[option]}
-                api={api}
-                id={option.id}
-                styling={selectedButtonStyle(option)}
-              />
+      {!isCorrect && (
+        <>
+          <div className="headlineWithMoreSpace">
+            {strings.audioExerciseTwoHeadline}
+          </div>
+          <div className="contextExample">
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={bookmarksToStudy[0].from}
+            />
+          </div>
+          <s.CenteredRow>
+            {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
+            {choiceOptions ? (
+              choiceOptions.map((option) =>
+                0 !== option ? (
+                  <SpeakButton
+                    handleClick={() => buttonSelectFalse(option)}
+                    onClick={(e) => handleClick(option)}
+                    bookmarkToStudy={bookmarksToStudy[option]}
+                    api={api}
+                    id={option.id}
+                    styling={selectedButtonStyle(option)}
+                  />
+                ) : (
+                  <SpeakButton
+                    handleClick={() => buttonSelectTrue(option)}
+                    onClick={(e) => handleClick(option)}
+                    bookmarkToStudy={bookmarksToStudy[option]}
+                    api={api}
+                    id={option.id}
+                    styling={selectedButtonStyle(option)}
+                  />
+                )
+              )
             ) : (
-              <SpeakButton
-                handleClick={() => buttonSelectTrue(option)}
-                onClick={(e) => handleClick(option)}
-                bookmarkToStudy={bookmarksToStudy[option]}
-                api={api}
-                id={option.id}
-                styling={selectedButtonStyle(option)}
-              />
-            )
-          )
-        ) : (
-          <></>
-        )}
-      </s.CenteredRow>
-      
+              <></>
+            )}
+          </s.CenteredRow>
+        </>
+      )}
+
       {!isCorrect && (
         <AudioTwoBotInput
           currentChoice={currentChoice}
@@ -210,18 +223,44 @@ export default function AudioExerciseTwo({
           handleIncorrectAnswer={handleIncorrectAnswer}
           messageToAPI={messageToAPI}
           setMessageToAPI={setMessageToAPI}
+          notifyKeyPress={inputKeyPress}
         />
       )}
       {isCorrect && (
         <>
-        {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
-        <NextNavigation
-          api={api}
-          bookmarksToStudy={bookmarksToStudy}
-          moveToNextExercise={moveToNextExercise}
-          reload={reload}
-          setReload={setReload}
-        />
+          <br></br>
+          <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+          <div className="contextExample">
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={bookmarksToStudy[0].from}
+            />
+          </div>
+          <s.CenteredRow>
+            <SpeakButton
+              bookmarkToStudy={bookmarkToStudy}
+              api={api}
+              style="next"
+            />
+            <br></br>
+            <EditButton
+              bookmark={bookmarksToStudy[0]}
+              api={api}
+              styling={exercise}
+              reload={reload}
+              setReload={setReload}
+            />
+            <NextNavigation
+              api={api}
+              bookmarksToStudy={bookmarksToStudy}
+              moveToNextExercise={moveToNextExercise}
+              reload={reload}
+              setReload={setReload}
+            />
+          </s.CenteredRow>
         </>
       )}
       <SolutionFeedbackLinks
