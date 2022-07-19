@@ -9,26 +9,35 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Reminder from "./Reminder";
 import ExtensionMessage from "../components/ExtensionMessage";
-import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import { runningInChromeDesktop, runningInFirefoxDesktop } from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 
-
 export default function NewArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
+  const [originalList, setOriginalList] = useState(null);
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
-    console.log("Running in chrome desktop: " + runningInChromeDesktop())
-    console.log("Running in firefox desktop: " + runningInFirefoxDesktop())
-    if ((runningInChromeDesktop() || runningInFirefoxDesktop) && Feature.extension_experiment1() && !displayedExtensionPopup) {
+    console.log(
+      "Localstorage displayed extension: " +
+        LocalStorage.displayedExtensionPopup()
+    );
+
+    if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
       checkExtensionInstalled(setHasExtension);
     }
+
+    // load articles
+    api.getUserArticles((articles) => {
+      setArticleList(articles);
+      setOriginalList([...articles]);
+    });
+    setTitle(strings.findArticles);
   }, []);
 
   useEffect(() => {
@@ -37,17 +46,7 @@ export default function NewArticles({ api }) {
     }
   }, [hasExtension]);
 
-
-  var originalList = null;
-
-  //on initial render
-
   if (articleList == null) {
-    api.getUserArticles((articles) => {
-      setArticleList(articles);
-      originalList = [...articles];
-    });
-    setTitle(strings.findArticles);
     return <LoadingAnimation />;
   }
 
@@ -56,7 +55,7 @@ export default function NewArticles({ api }) {
     setArticleList(null);
     api.getUserArticles((articles) => {
       setArticleList(articles);
-      originalList = [...articles];
+      setOriginalList([...articles]);
     });
   }
 
@@ -74,7 +73,6 @@ export default function NewArticles({ api }) {
           api={api}
           articlesListShouldChange={articlesListShouldChange}
         />
-
         <SearchField />
       </s.MaterialSelection>
       <SortingButtons
@@ -84,9 +82,16 @@ export default function NewArticles({ api }) {
       />
       <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} api={api} />
+        <ArticlePreview
+          key={each.id}
+          article={each}
+          api={api}
+          hasExtension={hasExtension}
+        />
       ))}
-      <ShowLinkRecommendationsIfNoArticles articleList={articleList}></ShowLinkRecommendationsIfNoArticles>
+      <ShowLinkRecommendationsIfNoArticles
+        articleList={articleList}
+      ></ShowLinkRecommendationsIfNoArticles>
     </>
   );
 }

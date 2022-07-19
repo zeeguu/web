@@ -323,6 +323,9 @@ let strings = new LocalizedStrings(
       chooseTheWordFittingContextHeadline:
         "Choose the alternative that fits the context",
       matchWordWithTranslation: "Match each word with its translation",
+      audioExerciseHeadline:
+        "Write the word your hear. Click to have it repeated!",
+      audioExerciseTwoHeadline: "Select the word which fits the context",
 
       //FeedbackButtons
       giveFeedback: "Give feedback",
@@ -450,6 +453,22 @@ let strings = new LocalizedStrings(
       starExplanation:
         "The asterix next to the word indicates that the student has exercised the word at least once.",
 
+      //AudioExerciseMessage
+      audioExerciseMessageHeadline: "Please help us out by trying our new exercises!",
+      audioExerciseMessageText1: "We have added two new kinds of audio-based exercises for you 😃",
+      audioExerciseMessageText2: "Would you like to try them out and give us feedback? ",
+      audioExerciseMessageText3: "Please choose below how many exercise sets would you like to try before completing a very short survey.",
+      audioExerciseMessageText4: "Thank you in advance. We hope you'll like the new exercises 😃",
+      audioExerciseMessageOption5: "I'd like to try the exercises five times before the survey",
+      audioExerciseMessageOption3: "I'd like to try the exercises three times the survey",
+      audioExerciseMessageOption1: "I'd like to try the exercises once before the survey",
+      audioExerciseMessageOptionNo: "I don't want to try out the exercises",
+
+
+      // QuestionnaireMessage
+      questionnaireMessageHeadline: "It's time to answer the questionnaire!",
+      questionnaireMessageText: "You've reached your target number of exercise sessions - we hope you enjoyed it! Please click below and follow the link to the questionnaire.",
+      questionnaireLinkText: "Questionnaire",
       //CohortForm
       editClass: "Edit Class",
       createClass: "Create Class",
@@ -537,7 +556,7 @@ let strings = new LocalizedStrings(
 
       //Extension installed
       goToArticles: "Go to article recommendations",
-      pinExtension: "Pin it to the toolbar to make it easy to access.",
+      pinExtension: "Pin it to the toolbar to make it easy to access",
       congratulations: "Extension is installed!",
 
       //ExtensionMessage

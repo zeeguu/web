@@ -1,5 +1,38 @@
 {
   "hiddenFiles": [
-    "react/package-lock.json"
+    "react/package-lock.json",
+    "react/public",
+    "react/src/i18n"
+  ],
+  "unionedAuthors": [
+    [
+      "Beatrice AdMV",
+      "Beatrice Verzier"
+    ],
+    [
+      "SaraTolstrupHusum",
+      "saraTolstrupHusum",
+      "Sara Tolstrup Husum"
+    ],
+    [
+      "Mircea Filip Lungu",
+      "Mircea Lungu"
+    ],
+    [
+      "Frida Helene Beck-Larsen",
+      "fribl"
+    ],
+    [
+      "Maja Albin Beicker Petersen",
+      "Maja Petersen"
+    ],
+    [
+      "Bjørn Westh",
+      "bwesth"
+    ],
+    [
+      "emte",
+      "Emmategl"
+    ]
   ]
 }

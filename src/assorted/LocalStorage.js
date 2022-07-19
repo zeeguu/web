@@ -16,6 +16,13 @@ const LocalStorage = {
     SelectedTimePeriod: "selected_time_period",
     Features: "features",
     DisplayedExtensionPopup: "displayed_extension_popup",
+    AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
+    DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
+    AudioExperimentCompleted: "audio_experiment_completed",
+    DisplayedAudioExperimentQuestionnaire:
+      "audio_experiment_displayed_questionnaire",
+    TargetNoOfAudioSessions: "audio_target_no_of_sessions",
+    clickedVideoLink: "clicked_video_link"
   },
 
   userInfo: function () {
@@ -98,6 +105,94 @@ const LocalStorage = {
   setDisplayedExtensionPopup: function (displayedExtensionPopup) {
     localStorage[this.Keys.DisplayedExtensionPopup] = displayedExtensionPopup;
   },
+
+  displayedAudioExperimentPopup: function () {
+    return localStorage[this.Keys.DisplayedAudioExperimentPopup];
+  },
+
+  setDisplayedAudioExperimentPopup: function (displayedAudioExperimentPopup) {
+    localStorage[this.Keys.DisplayedAudioExperimentPopup] =
+      displayedAudioExperimentPopup;
+  },
+
+  audioExperimentCompleted: function () {
+    return localStorage[this.Keys.AudioExperimentCompleted];
+  },
+
+  setAudioExperimentCompleted: function (audioExperimentCompleted) {
+    localStorage[this.Keys.AudioExperimentCompleted] = audioExperimentCompleted;
+  },
+
+  checkAndUpdateAudioExperimentCompleted: function () {
+    let noOfSessions = Number(
+      localStorage[this.Keys.AudioExperimentNoOfSessions]
+    );
+    let targetNoOfAudioSessions = Number(
+      localStorage[this.Keys.TargetNoOfAudioSessions]
+    );
+    if (noOfSessions >= targetNoOfAudioSessions) {
+      this.setAudioExperimentCompleted(true);
+      localStorage[this.Keys.AudioExperimentCompleted] = true;
+      return true;
+    }
+    this.setAudioExperimentCompleted(false);
+    localStorage[this.Keys.AudioExperimentCompleted] = false;
+    return false;
+  },
+
+  displayedAudioExperimentQuestionnaire: function () {
+    return localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire];
+  },
+
+  setDisplayedAudioExperimentQuestionnaire: function (
+    displayedAudioExperimentQuestionnaire
+  ) {
+    localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire] =
+      displayedAudioExperimentQuestionnaire;
+  },
+
+  getTargetNoOfAudioSessions: function () {
+    try {
+      let noofsessions = Number(
+        localStorage[this.Keys.TargetNoOfAudioSessions]
+      );
+      return noofsessions;
+    } catch (e) {
+      return 0;
+    }
+  },
+
+  setTargetNoOfAudioSessions: function (targetNoOfAudioSessions) {
+    localStorage[this.Keys.TargetNoOfAudioSessions] = targetNoOfAudioSessions;
+  },
+
+  getAudioExperimentNoOfSessions: function () {
+    let noofsessions = Number(
+      localStorage[this.Keys.AudioExperimentNoOfSessions]
+    );
+    return noofsessions;
+  },
+
+  setAudioExperimentNoOfSessions: function (audioExperimentNoOfSessions) {
+    localStorage[this.Keys.AudioExperimentNoOfSessions] =
+      audioExperimentNoOfSessions;
+  },
+
+  incrementAudioExperimentNoOfSessions: function () {
+    var audioExperimentNoOfSessions = Number(
+      localStorage[this.Keys.AudioExperimentNoOfSessions]
+    );
+    var temp = audioExperimentNoOfSessions + 1;
+    localStorage[this.Keys.AudioExperimentNoOfSessions] = temp;
+  },
+
+  setClickedVideo: function () {
+    localStorage[this.Keys.clickedVideoLink] = true;
+  },
+
+  getClickedVideo: function () {
+    return localStorage[this.Keys.clickedVideoLink];
+  } 
 };
 
 export default LocalStorage;

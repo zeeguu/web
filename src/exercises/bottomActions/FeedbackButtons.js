@@ -28,11 +28,6 @@ export default function FeedbackButtons({
       value: "too_hard",
       tooltip: strings.bookmarkTooHardTooltip,
     },
-    {
-      name: strings.other,
-      value: "other",
-      tooltip: strings.otherTooltip,
-    },
   ];
 
   if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
@@ -50,8 +45,8 @@ export default function FeedbackButtons({
 
   useEffect(() => {
     setInput("");
-    setShowInput(false);
     setClassName("");
+    setShowInput(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentExerciseType]);
 
@@ -79,7 +74,6 @@ export default function FeedbackButtons({
         }
       } else {
         setClassName("selected");
-        setShowInput(true);
       }
     }
   }

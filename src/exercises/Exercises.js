@@ -7,33 +7,65 @@ import ProgressBar from "./ProgressBar";
 import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
-import Match from "./exerciseTypes/match/Match";
 import strings from "../i18n/definitions";
+import Match from "./exerciseTypes/match/Match";
+import AudioExerciseOne from "./exerciseTypes/audioExerciseOne/AudioExerciseOne";
+import AudioExerciseTwo from "./exerciseTypes/audioExerciseTwo/AudioExerciseTwo";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
+import Feature from "../features/Feature";
+import LocalStorage from "../assorted/LocalStorage";
+import QuestionnaireMessage from "../components/QuestionnaireMessage.js";
+
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
+let EXERCISE_TYPES;
+if (Feature.audio_exercises()) {
+  EXERCISE_TYPES = [
+    {
+      type: Match,
+      requiredBookmarks: 3,
+    },
+    {
+      type: MultipleChoice,
+      requiredBookmarks: 1,
+    },
+    {
+      type: FindWordInContext,
+      requiredBookmarks: 1,
+    },
+    {
+      type: AudioExerciseOne,
+      requiredBookmarks: 1,
+    },
+    {
+      type: AudioExerciseTwo,
+      requiredBookmarks: 3,
+    },
+  ];
+} else {
+  EXERCISE_TYPES = [
+    {
+      type: Match,
+      requiredBookmarks: 3,
+    },
+    {
+      type: MultipleChoice,
+      requiredBookmarks: 1,
+    },
+    {
+      type: FindWordInContext,
+      requiredBookmarks: 1,
+    },
+  ];
+}
 
-let BOOKMARKS_FOR_EXERCISE = [
-  {
-    type: Match,
-    requiredBookmarks: 3,
-  },
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 1,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
-];
-
+export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
   api,
   articleID,
   backButtonAction,
   keepExercisingAction,
-  source
+  source,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     DEFAULT_BOOKMARKS_TO_PRACTICE
@@ -49,6 +81,15 @@ export default function Exercises({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
+
+  useEffect(() => {
+    console.log(
+      "Localstorage displayed questionnaire popup " +
+        LocalStorage.displayedAudioExperimentQuestionnaire()
+    );
+    console.log("Audio feature flag " + Feature.audio_exercises());
+    console.log("Audio completed " + LocalStorage.audioExperimentCompleted());
+  }, []);
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -92,7 +133,7 @@ export default function Exercises({
    * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
    */
   function calculateExerciseBatches(bookmarks) {
-    let bookmarksPerBatch = BOOKMARKS_FOR_EXERCISE.reduce(
+    let bookmarksPerBatch = EXERCISE_TYPES.reduce(
       (a, b) => a + b.requiredBookmarks,
       0
     );
@@ -109,37 +150,39 @@ export default function Exercises({
 
   function defineExerciseSession(batches, rest, bookmark_count) {
     let exerciseSession = [];
-    if (bookmark_count < 7) {
-      let bookmarks = bookmark_count;
-      while (bookmarks > 0) {
-        for (let i = BOOKMARKS_FOR_EXERCISE.length - 1; i > 0; i--) {
-          if (bookmarks === 0) break;
+    if (bookmark_count < 9) {
+      let count = bookmark_count;
+      while (count > 0) {
+        for (let i = EXERCISE_TYPES.length - 1; i > 0; i--) {
+          let currentTypeRequiredCount = EXERCISE_TYPES[i].requiredBookmarks;
+          if (count < currentTypeRequiredCount) continue;
+          if (count === 0) break;
           let exercise = {
-            type: BOOKMARKS_FOR_EXERCISE[i].type,
-            requiredBookmarks: BOOKMARKS_FOR_EXERCISE[i].requiredBookmarks,
+            type: EXERCISE_TYPES[i].type,
+            requiredBookmarks: currentTypeRequiredCount,
             bookmarks: [],
           };
           exerciseSession.push(exercise);
-          bookmarks--;
+          count = count - currentTypeRequiredCount;
         }
       }
     } else {
       for (let i = 0; i < batches; i++) {
-        for (let j = BOOKMARKS_FOR_EXERCISE.length - 1; j >= 0; j--) {
+        for (let j = EXERCISE_TYPES.length - 1; j >= 0; j--) {
           let exercise = {
-            type: BOOKMARKS_FOR_EXERCISE[j].type,
-            requiredBookmarks: BOOKMARKS_FOR_EXERCISE[j].requiredBookmarks,
+            type: EXERCISE_TYPES[j].type,
+            requiredBookmarks: EXERCISE_TYPES[j].requiredBookmarks,
             bookmarks: [],
           };
           exerciseSession.push(exercise);
         }
       }
       while (rest > 0) {
-        for (let k = BOOKMARKS_FOR_EXERCISE.length - 1; k >= 0; k--) {
-          if (rest >= BOOKMARKS_FOR_EXERCISE[k].requiredBookmarks) {
+        for (let k = EXERCISE_TYPES.length - 1; k >= 0; k--) {
+          if (rest >= EXERCISE_TYPES[k].requiredBookmarks) {
             let exercise = {
-              type: BOOKMARKS_FOR_EXERCISE[k].type,
-              requiredBookmarks: BOOKMARKS_FOR_EXERCISE[k].requiredBookmarks,
+              type: EXERCISE_TYPES[k].type,
+              requiredBookmarks: EXERCISE_TYPES[k].requiredBookmarks,
               bookmarks: [],
             };
             exerciseSession.push(exercise);
@@ -151,12 +194,16 @@ export default function Exercises({
     return exerciseSession;
   }
 
-  function truncate(str, n){
-    return (str.length > n) ? str.substr(0, n-1) + '...' : str;
-  };
+  function truncate(str, n) {
+    return str.length > n ? str.substr(0, n - 1) + "..." : str;
+  }
 
   let wordSourceText = articleInfo ? (
-    <><a href="#" className="wordSourceText" onClick={backButtonAction}>{truncate(articleInfo.title, 40)}</a></>
+    <>
+      <a href="#" className="wordSourceText" onClick={backButtonAction}>
+        {truncate(articleInfo.title, 40)}
+      </a>
+    </>
   ) : (
     <>{strings.wordSourceDefaultText}</>
   );
@@ -166,8 +213,6 @@ export default function Exercises({
   ) : (
     <>{strings.wordSourcePrefix}</>
   );
-
-
 
   /**
    * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
@@ -194,18 +239,22 @@ export default function Exercises({
     setExerciseSession(exerciseSession);
   }
 
+  // Standard flow when user completes exercise session
   if (finished) {
     api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     return (
-      <Congratulations
-        articleID={articleID}
-        correctBookmarks={correctBookmarks}
-        incorrectBookmarks={incorrectBookmarks}
-        api={api}
-        backButtonAction={backButtonAction}
-        keepExercisingAction={keepExercisingAction}
-        source={source}
-      />
+      <>
+        <QuestionnaireMessage />
+        <Congratulations
+          articleID={articleID}
+          correctBookmarks={correctBookmarks}
+          incorrectBookmarks={incorrectBookmarks}
+          api={api}
+          backButtonAction={backButtonAction}
+          keepExercisingAction={keepExercisingAction}
+          source={source}
+        />
+      </>
     );
   }
 
@@ -223,6 +272,87 @@ export default function Exercises({
     );
   }
 
+  function exerciseSessionWithAudioCompleted() {
+    var completed;
+    if (Feature.audio_exercises()) {
+      if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
+        LocalStorage.incrementAudioExperimentNoOfSessions();
+        completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
+        if (completed) {
+          api.logUserActivity(
+            api.AUDIO_EXP,
+            articleID,
+            "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(),
+            AUDIO_SOURCE
+          );
+          api.logUserActivity(
+            api.AUDIO_EXP,
+            articleID,
+            "Audio experiment completed!",
+            AUDIO_SOURCE
+          );
+        } else {
+          api.logUserActivity(
+            api.AUDIO_EXP,
+            articleID,
+            "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(),
+            AUDIO_SOURCE
+          );
+        }
+      } else {
+        LocalStorage.setAudioExperimentNoOfSessions("1");
+        api.logUserActivity(
+          api.AUDIO_EXP,
+          articleID,
+          "First session completed ",
+          AUDIO_SOURCE
+        );
+        LocalStorage.setTargetNoOfAudioSessions("100");
+      }
+    }
+    return;
+  }
+
+  function exerciseSessionNoAudioCompleted() {
+    var completed;
+    if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
+      LocalStorage.incrementAudioExperimentNoOfSessions();
+      completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
+      if (completed) {
+        api.logUserActivity(
+          api.AUDIO_EXP,
+          articleID,
+          "Session without audio no: " +
+            LocalStorage.getAudioExperimentNoOfSessions(),
+          AUDIO_SOURCE
+        );
+        api.logUserActivity(
+          api.AUDIO_EXP,
+          articleID,
+          "Experiment without audio completed!",
+          AUDIO_SOURCE
+        );
+      } else {
+        api.logUserActivity(
+          api.AUDIO_EXP,
+          articleID,
+          "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(),
+          AUDIO_SOURCE
+        );
+      }
+    } else {
+      LocalStorage.setAudioExperimentNoOfSessions("1");
+      api.logUserActivity(
+        api.AUDIO_EXP,
+        articleID,
+        "First session without audio completed ",
+        AUDIO_SOURCE
+      );
+      LocalStorage.setTargetNoOfAudioSessions("100");
+    }
+    return;
+  }
+
   function moveToNextExercise() {
     setIsCorrect(false);
     setShowFeedbackButtons(false);
@@ -230,9 +360,13 @@ export default function Exercises({
 
     if (newIndex === exerciseSession.length) {
       setFinished(true);
+      if (Feature.audio_exercises()) {
+        exerciseSessionWithAudioCompleted();
+      } else if (Feature.no_audio_exercises()) {
+        exerciseSessionNoAudioCompleted();
+      }
       return;
     }
-
     setCurrentBookmarksToStudy(exerciseSession[newIndex].bookmarks);
     setCurrentIndex(newIndex);
   }
@@ -274,9 +408,9 @@ export default function Exercises({
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
     <s.ExercisesColumn className="exercisesColumn">
-        <s.LittleMessageAbove>
-          {wordSourcePrefix} {wordSourceText}
-        </s.LittleMessageAbove>
+      <s.LittleMessageAbove>
+        {wordSourcePrefix} {wordSourceText}
+      </s.LittleMessageAbove>
       <ProgressBar index={currentIndex} total={exerciseSession.length} />
       <s.ExForm>
         <CurrentExercise
