@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import colors from "../JSInjection/colors";
 
 export const MainContainer = styled.div`
   margin-top: 10px;
@@ -20,10 +21,10 @@ export const BottomContainer = styled.div`
     font-weight: 400!important;
   }
   a {
-    color: #2f77ad;
+    color: ${colors.darkBlue};
     font-weight: 600;
     :hover {
-      color: #4f97cf !important;
+      color: ${colors.hoverBlue} !important;
     }
   }
 `;

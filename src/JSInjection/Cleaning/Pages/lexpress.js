@@ -1,45 +1,33 @@
-export const lexpressRegex = /(http|https):\/\/(.*)(.express.fr).*/;
+import { createDivWithContent, removeAllElementsIfExistent, removeFirstElementIfExistent } from "../util";
 
-function removeAsides(content) {
-  let div = document.createElement("div");
-  div.innerHTML = content;
-  let opinions = div.querySelector("#placeholder--plus-lus");
-  if (opinions !== null) {
-    opinions.remove();
-  }
-  let pluslus = div.querySelector("#placeholder--opinion");
-  if (pluslus !== null) {
-    pluslus.remove();
-  }
-  return div.innerHTML;
-}
+export const lexpressRegex = /(http|https):\/\/(.*)(.lexpress.fr).*/;
 
-function unavailableContent(content) {
-  //TODO: find better solution
-  if (content.includes("Offrez gratuitement la lecture de cet article à un proche")) {
-    return "<p>This article cannot be read in zeeguu reader</p>";
-  } else {
-    let div = document.createElement("div");
-    div.innerHTML = content;
-    return div.innerHTML;
-  }
-}
-
-//remove illustration__caption class - not working
-export function removeCaption(documentClone) {
-  const captions = documentClone.getElementsByClassName(
-    "illustration__caption"
-  );
-  if (captions) {
-    while (captions.length > 0) {
-      captions[0].parentNode.removeChild(captions[0]);
-    }
-  }
+export function cleanLexpressBefore(documentClone) {
+  [".legend"].forEach((className) => {
+    removeAllElementsIfExistent(className, documentClone);
+  })
   return documentClone;
 }
 
-export function cleanLexpress(content) {
-  let cleanedContent = removeAsides(content);
+export function cleanLexpress(readabilityContent) {
+  let cleanedContent = removeAsides(readabilityContent);
   cleanedContent = unavailableContent(cleanedContent);
   return cleanedContent;
+}
+
+function removeAsides(readabilityContent) {
+  const div = createDivWithContent(readabilityContent);
+  ["#placeholder--plus-lus", "#placeholder--opinion"].forEach((id) => {
+    removeFirstElementIfExistent(id, div);
+  })
+  return div.innerHTML;
+}
+
+function unavailableContent(readabilityContent) {
+  if (readabilityContent.includes("Offrez gratuitement la lecture de cet article à un proche")) {
+    return "<p>This article cannot be read in zeeguu reader</p>";
+  } else {
+    const div = createDivWithContent(readabilityContent)
+    return div.innerHTML;
+  }
 }

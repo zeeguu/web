@@ -1,6 +1,7 @@
 import styled, { createGlobalStyle } from "styled-components";
 import ReactModal from "react-modal";
 import { zeeguuTransparentMediumOrange } from "../../zeeguu-react/src/components/colors";
+import colors from "../colors";
 export const GlobalStyle = createGlobalStyle`
    .reader-overlay{
         position: fixed;
@@ -8,7 +9,7 @@ export const GlobalStyle = createGlobalStyle`
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgb(239, 239, 239) !important;
+        background-color: ${colors.overlay} !important;
         z-index: 5000000;
       }
 
@@ -35,7 +36,7 @@ export const StyledModal = styled(ReactModal)`
   right: 0;
   bottom: 0;
   z-index: 2000;
-  background-color: white;
+  background-color: ${colors.white};
   padding: 0% 2% 2% 2%;
   margin-top: 0px;
   margin-bottom: 0px;
@@ -95,11 +96,11 @@ export const StyledModal = styled(ReactModal)`
   }
 
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgb(230, 227, 220);
+    box-shadow: inset 0 0 6px ${colors.scrollTrackGray};
   }
 
   ::-webkit-scrollbar-thumb {
-    box-shadow: inset 0 0 6px rgb(204, 203, 200);
+    box-shadow: inset 0 0 6px ${colors.scrollThumbGray};
   }
 
   #zeeguuImage {
@@ -118,9 +119,9 @@ export const StyledModal = styled(ReactModal)`
   }
 
   .feedbackBox {
-    background-color: #f2f3f4;
+    background-color: ${colors.boxGray};
     line-height: 1.2em;
-    border: 0px solid rgb(255, 229, 158);
+    border: 0px solid ${colors.boxGrayBorder};
     font-size: 1.2em;
     max-width: 90%;
   }
@@ -139,14 +140,14 @@ export const StyledModal = styled(ReactModal)`
 export const OverwriteZeeguu = styled.div`
   /** Zeeguu Reader **/
   z-tag:hover {
-    color: #2f76ac !important;
+    color: ${colors.translationHover} !important;
   }
   .article-container z-tag {
     font-size: 1.2em !important;
   }
   z-tag z-tran {
     margin-bottom: -5px !important;
-    color: black !important;
+    color: ${colors.black} !important;
     font-weight: 400 !important;
   }
   h1 z-tag z-tran {
@@ -160,12 +161,12 @@ export const OverwriteZeeguu = styled.div`
   }
 
   z-tag.loading {
-  color:#2f76ac !important;
+  color: ${colors.translationHover} !important;
   }
 
   z-orig {
-    color: black !important;
-    border-bottom: 2px dashed #2f76ac !important;
+    color: ${colors.black} !important;
+    border-bottom: 2px dashed ${colors.translationHover} !important;
   }
 
   .topMessage{
@@ -179,7 +180,7 @@ export const OverwriteZeeguu = styled.div`
   /** Exercises **/
 
   .wordSourceText {
-    color: #2f77ad;
+    color: ${colors.darkBlue};
   }
 
   .exercisesColumn {
@@ -215,11 +216,11 @@ export const OverwriteZeeguu = styled.div`
   /** Buttons from Exercises **/
   .whiteButton,
   .orangeButton {
-    color: white !important;
-    background-color: #2f77ad !important;
-    border-color: #3079b0 !important;
+    color: ${colors.white} !important;
+    background-color: ${colors.darkBlue} !important;
+    border-color: ${colors.buttonBorder} !important;
     :hover {
-      background-color: #4f97cf !important;
+      background-color: ${colors.hoverBlue} !important;
     }
     font-weight: 600 !important;
   }
@@ -282,7 +283,7 @@ export const OverwriteZeeguu = styled.div`
 
 export const StyledHeading = styled.div`
   height: 100px;
-  background-color: white;
+  background-color: ${colors.white};
   padding-top: 20px;
   right: 0px;
   top: 0px;

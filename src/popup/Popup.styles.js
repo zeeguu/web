@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import colors from "../JSInjection/colors";
 
 export const PrimaryButton = styled.button`
   display: flex;
@@ -13,10 +14,10 @@ export const PrimaryButton = styled.button`
   border-width: 2px;
   border-radius: 10px;
   color: white !important;
-  background-color: #2f77ad !important;
-  border-color: #3079b0 !important;
+  background-color: ${colors.darkBlue} !important;
+  border-color: ${colors.buttonBorder} !important;
   :hover {
-    background-color: #4f97cf !important;
+    background-color: ${colors.hoverBlue} !important;
   }
   margin-bottom: 1em !important;
   margin-top: 1em !important;
@@ -27,7 +28,7 @@ export const PopUp = styled.div`
   display: flex;
   background-color: aqua;
   flex-direction: column;
-  background-color: white;
+  background-color: ${colors.white};
   border-color: rgb(246, 246, 246);
   border-style: solid;
   border-width: 2px;
@@ -46,14 +47,14 @@ export const PopUp = styled.div`
 
 export const BottomButton = styled.div`
   cursor: pointer;
-  color: #2f77ad;
+  color: ${colors.darkBlue};
   font-weight: 500;
   position: relative;
   bottom: -0.4em;
   font-size: 1em !important;
   font-weight: 600 !important;
   :hover {
-    color: #4f97cf !important;
+    color: ${colors.hoverBlue} !important;
   }
 `;
 
@@ -63,10 +64,10 @@ export const NotifyButton = styled.button`
   padding: 0 !important;
   font-family: "Montserrat";
   cursor: pointer;
-  color: #2f77ad;
+  color: ${colors.darkBlue};
   font-weight: 600 !important;
   :hover {
-    color: #4f97cf !important;
+    color: ${colors.hoverBlue} !important;
   }
   font-size: 1em !important;
 
@@ -77,7 +78,7 @@ export const NotifyButton = styled.button`
       cursor: text;
       pointer-events: none;
       text-decoration: underline;
-      color: #000 !important;
+      color: ${colors.black} !important;
     `}
 `;
 

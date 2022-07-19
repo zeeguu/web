@@ -1,135 +1,79 @@
-import { btRegex, cleanupBT } from "./Pages/bt";
-import { wikiRegex, removefromWiki } from "./Pages/wiki";
-import { lefigaroRegex, addImageLefirago } from "./Pages/lefigaro";
-import {
-  ekstrabladetRegex,
-  ekstraBladetClean,
-  cleanEkstraBladetBefore,
-} from "./Pages/ekstrabladet";
-import {
-  lemondeRegex,
-  removeAuthorDetail,
-  cleanLemonde,
-} from "./Pages/lemonde";
+import { btRegex, cleanBT } from "./Pages/bt";
+import { wikiRegex, cleanWiki } from "./Pages/wiki";
+import {ekstrabladetRegex, cleanEkstraBladet, cleanEkstraBladetBefore } from "./Pages/ekstrabladet";
+import {lemondeRegex, cleanLemondeBefore, cleanLemonde } from "./Pages/lemonde";
 import { drRegex, cleanDRBefore } from "./Pages/dr";
-import { cleanLexpress, lexpressRegex } from "./Pages/lexpress";
-import { marianneRegex, cleanMarianne } from "./Pages/marianne";
-import { ingenioerenClean, ingenioerRegex } from "./Pages/ingenioeren";
-import { nuRegex, removeBlockTitle } from "./Pages/nu";
-import { getLequipeImage, leqiupeRegex, removeDateTime } from "./Pages/lequipe";
-import {
-  berlingskeRegex,
-  cleanBerlingske,
-  cleanBerlingskeBefore,
-} from "./Pages/berlingske";
+import { cleanLexpress, lexpressRegex, cleanLexpressBefore } from "./Pages/lexpress";
+import { marianneRegex, cleanMarianne, cleanMarianneBefore } from "./Pages/marianne";
+import { cleanIngenioeren, ingenioerRegex } from "./Pages/ingenioeren";
+import { nuRegex, cleanNuBefore } from "./Pages/nu";
+import { leqiupeRegex, cleanLequipeBefore } from "./Pages/lequipe";
+import { berlingskeRegex, cleanBerlingske, cleanBerlingskeBefore } from "./Pages/berlingske";
 import { spiegelRegex, cleanSpiegelBefore } from "./Pages/spiegel";
-import { addImageCNN, cnnRegex } from "./Pages/cnn";
 import { bbcRegex, cleanBBC } from "./Pages/bbc";
 import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
-import { cleanFakt, faktRegex, removeIFrames } from "./Pages/fakt";
+import { cleanFaktBefore, faktRegex, removeFaktIFrames } from "./Pages/fakt";
 import { deleteIntervals, deleteTimeouts } from "../../popup/functions";
-import { politikenRegex, removeSignUp } from "./Pages/politiken";
-import { scientiasRegex, convertStrongToHeader } from "./Pages/scientias";
-import { egyszervoltRegex, removeIMGTag } from "./Pages/egyszervolt";
-import { corriereRegex, removeScripts } from "./Pages/corriere";
+import { politikenRegex, cleanPolitiken } from "./Pages/politiken";
+import { scientiasRegex, cleanScientias } from "./Pages/scientias";
+import { egyszervoltRegex, cleanEgyszervolt } from "./Pages/egyszervolt";
+import { corriereRegex, removeCorriereScripts } from "./Pages/corriere";
 
-export function getEntireHTML(url) {
+export function getHTMLContent(url) {
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open("GET", url, false); // false for synchronous request
   xmlHttp.send(null);
   return xmlHttp.responseText;
 }
 
-export function pageSpecificClean(articleContent, url) {
-  if (url.match(wikiRegex)) {
-    return removefromWiki(getEntireHTML(url), articleContent);
+export function cleanIndividualDocument(content, url, cleaningArray) {
+  for (let i = 0; i < cleaningArray.length; i++) {
+    const regx = cleaningArray[i].regex;
+    const cleaningFunction = cleaningArray[i].function;
+    if (url.match(regx)) {
+      return cleaningFunction(content, url)
+    }
   }
-  if (url.match(btRegex)) {
-    return cleanupBT(getEntireHTML(url), articleContent);
-  }
-  if (url.match(lefigaroRegex)) {
-    return addImageLefirago(getEntireHTML(url), articleContent);
-  }
-  if (url.match(ekstrabladetRegex)) {
-    return ekstraBladetClean(getEntireHTML(url), articleContent);
-  }
-  if (url.match(lemondeRegex)) {
-    return cleanLemonde(articleContent);
-  }
-  if (url.match(lexpressRegex)) {
-    return cleanLexpress(articleContent);
-  }
-  if (url.match(marianneRegex)) {
-    return cleanMarianne(articleContent, getEntireHTML(url));
-  }
-  if (url.match(ingenioerRegex)) {
-    return ingenioerenClean(articleContent, getEntireHTML(url));
-  }
-  if (url.match(leqiupeRegex)) {
-    return getLequipeImage(articleContent, getEntireHTML(url));
-  }
-  if (url.match(berlingskeRegex)) {
-    return cleanBerlingske(articleContent);
-  }
-  if (url.match(cnnRegex)) {
-    return addImageCNN(articleContent, getEntireHTML(url));
-  }
-  if (url.match(bbcRegex)) {
-    return cleanBBC(articleContent);
-  }
-  if (url.match(wyborczaRegex)) {
-    return cleanWyborcza(articleContent);
-  }
-  if (url.match(rzeczRegex)) {
-    return cleanRzecz(articleContent);
-  }
-  if (url.match(politikenRegex)) {
-    return removeSignUp(articleContent);
-  }
-  if (url.match(scientiasRegex)) {
-    return convertStrongToHeader(articleContent);
-  }
-  if (url.match(egyszervoltRegex)) {
-    return removeIMGTag(articleContent);
-  }
-  return articleContent;
+  return content
 }
 
-export function cleanDocumentClone(documentClone, currentTabURL) {
-  if (currentTabURL.match(drRegex)) {
-    return cleanDRBefore(documentClone);
-  }
-  if (currentTabURL.match(lemondeRegex)) {
-    return removeAuthorDetail(documentClone);
-  }
-  if (currentTabURL.match(nuRegex)) {
-    return removeBlockTitle(documentClone);
-  }
-  if (currentTabURL.match(ekstrabladetRegex)) {
-    return cleanEkstraBladetBefore(documentClone);
-  }
-  if (currentTabURL.match(leqiupeRegex)) {
-    return removeDateTime(documentClone);
-  }
-  if (currentTabURL.match(berlingskeRegex)) {
-    return cleanBerlingskeBefore(documentClone);
-  }
-  if (currentTabURL.match(spiegelRegex)) {
-    return cleanSpiegelBefore(documentClone);
-  }
-  if (currentTabURL.match(expressRegex)) {
-    return cleanExpressBefore(documentClone);
-  }
-  if (currentTabURL.match(faktRegex)) {
-    return cleanFakt(documentClone);
-  }
-  if (currentTabURL.match(rzeczRegex)) {
-    return cleanRzeczBefore(documentClone);
-  }
-  return documentClone;
-}
+//Arrays with url regex and associated cleaning function, that has to be applied to 
+//the page
+
+export const cleanBeforeArray = [
+  { regex: drRegex, function: cleanDRBefore },
+  { regex: lemondeRegex, function: cleanLemondeBefore },
+  { regex: nuRegex, function: cleanNuBefore },
+  { regex: ekstrabladetRegex, function: cleanEkstraBladetBefore },
+  { regex: leqiupeRegex, function: cleanLequipeBefore },
+  { regex: berlingskeRegex, function: cleanBerlingskeBefore },
+  { regex: spiegelRegex, function: cleanSpiegelBefore },
+  { regex: expressRegex, function: cleanExpressBefore },
+  { regex: faktRegex, function: cleanFaktBefore },
+  { regex: rzeczRegex, function: cleanRzeczBefore },
+  { regex: lexpressRegex, function: cleanLexpressBefore },
+  { regex: marianneRegex, function: cleanMarianneBefore }
+];
+
+export const cleanAfterArray = [
+  { regex: wikiRegex, function: cleanWiki },
+  { regex: btRegex, function: cleanBT },
+  { regex: ekstrabladetRegex, function: cleanEkstraBladet },
+  { regex: lemondeRegex, function: cleanLemonde },
+  { regex: lexpressRegex, function: cleanLexpress },
+  { regex: marianneRegex, function: cleanMarianne },
+  { regex: ingenioerRegex, function: cleanIngenioeren },
+  { regex: berlingskeRegex, function: cleanBerlingske },
+  { regex: bbcRegex, function: cleanBBC },
+  { regex: wyborczaRegex, function: cleanWyborcza },
+  { regex: rzeczRegex, function: cleanRzecz },
+  { regex: politikenRegex, function: cleanPolitiken },
+  { regex: scientiasRegex, function: cleanScientias },
+  { regex: egyszervoltRegex, function: cleanEgyszervolt }
+]
+
 
 export function cleanDOMAfter(url) {
   deleteIntervals();
@@ -137,12 +81,12 @@ export function cleanDOMAfter(url) {
 
   if (url.match(faktRegex)) {
     setTimeout(function () {
-      removeIFrames();
+      removeFaktIFrames();
     }, 10000);
   }
   if (url.match(corriereRegex)) {
     setTimeout(function () {
-      removeScripts();
+      removeCorriereScripts();
     }, 10000);
   }
 }

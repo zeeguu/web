@@ -1,11 +1,12 @@
+import { removeAllElementsIfExistent } from "../util";
+
 export const nuRegex = /^(http|https):\/\/(www.)nu.nl\/.*/;
 
-export function removeBlockTitle(documentClone) {
-  const blockTitle = documentClone.getElementsByClassName("block-title");
-  if(blockTitle){
-  while (blockTitle.length > 0) {
-    let elem = blockTitle[0];
-    elem.parentElement.removeChild(elem);
-  }}
+export function cleanNuBefore(documentClone){
+  return removeBlockTitle(documentClone)
+}
+
+function removeBlockTitle(documentClone) {
+  removeAllElementsIfExistent(".block-title", documentClone)
   return documentClone;
 }

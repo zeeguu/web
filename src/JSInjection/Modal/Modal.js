@@ -6,7 +6,7 @@ import ZeeguuLoader from "../ZeeguuLoader";
 import { EXTENSION_SOURCE} from "../constants";
 import {onScroll, onBlur, onFocus} from "../../zeeguu-react/src/reader/ArticleReader";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
-import { getImage } from "../Cleaning/generelClean";
+import { getMainImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactivityFunctions";
 import { getNativeLanguage, getUsername } from "../../popup/functions";
 import {ReadArticle} from "./ReadArticle"
@@ -14,7 +14,7 @@ import WordsForArticleModal from "./WordsForArticleModal";
 import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
-import { cleanDOMAfter } from "../Cleaning/pageSpecificClean";
+import { cleanDOMAfter, getHTMLContent } from "../Cleaning/pageSpecificClean";
 
 export function Modal({
   title,
@@ -35,13 +35,14 @@ export function Modal({
   const [articleId, setArticleId] = useState();
   const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
-  const [articleImage, setArticleImage] = useState();
   const [nativeLang, setNativeLang] = useState();
   const [username, setUsername] = useState();
   const [DBArticleInfo, setDBArticleInfo] = useState();
   const [articleLanguage, setArticleLanguage] = useState();
   const [loadingPersonalCopy, setLoadingPersonalCopy] = useState(true);
   const [personalCopySaved, setPersonalCopySaved] = useState(false);
+  const [articleImage, setarticleImage] = useState();
+
 
   useUILanguage();
 
@@ -63,7 +64,7 @@ export function Modal({
     }
     getNativeLanguage().then((result) => setNativeLang(result));
     getUsername().then((result) => setUsername(result));
-
+    setarticleImage(getMainImage(getHTMLContent(url), url))
   }, []);
 
   
@@ -85,8 +86,6 @@ export function Modal({
         language: articleLanguage,
         starred: false,
       };
-      let image = getImage(content);
-      setArticleImage(image);
       let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
       setInteractiveTextArray(arrInteractive);
       let itTitle = new InteractiveText(
@@ -113,7 +112,7 @@ export function Modal({
       let getModalClass = document.getElementsByClassName("Modal");
       if (getModalClass !== undefined && getModalClass !== null) {
         setTimeout(() => {
-          if (getModalClass.item(0) != undefined) {
+          if (getModalClass.item(0) !== undefined) {
             getModalClass.item(0).addEventListener("scroll", function () {
               onScroll(api, articleId, EXTENSION_SOURCE);
             });

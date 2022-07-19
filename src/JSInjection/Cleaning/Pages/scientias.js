@@ -1,9 +1,14 @@
+import { createDivWithContent } from "../util";
+
 export const scientiasRegex = /(http|https):\/\/(scientias.nl).*/;
 
-export function convertStrongToHeader(readabilityContent) {
-  const newDiv = document.createElement("div");
-  newDiv.innerHTML = readabilityContent;
-  const pTags = newDiv.getElementsByTagName("p")
+export function cleanScientias(readabilityContent) {
+  return convertStrongToHeader(readabilityContent);
+}
+
+function convertStrongToHeader(readabilityContent) {
+  const div = createDivWithContent(readabilityContent)
+  const pTags = div.querySelectorAll("p")
   if (pTags) {
     for (let i = 0; i < pTags.length; i++) {
       const children = pTags[i].children;
@@ -20,5 +25,5 @@ export function convertStrongToHeader(readabilityContent) {
       }
     }
   }
-  return newDiv.innerHTML
+  return div.innerHTML
 }
