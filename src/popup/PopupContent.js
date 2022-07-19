@@ -2,18 +2,27 @@ import { useState } from "react";
 import { setCurrentURL } from "./functions";
 import { PrimaryButton, NotifyButton } from "./Popup.styles";
 import sendFeedbackEmail from "../JSInjection/Modal/sendFeedbackEmail";
+import { runningInChromeDesktop} from "../zeeguu-react/src/utils/misc/browserDetection";
 
 export default function PopupContent({isReadable, languageSupported, user, tab, api, sessionId}) {
     const [feedbackSent, setFeedbackSent] = useState(false);
     const LANGUAGE_FEEDBACK = "I want this language to be supported";
     const READABILITY_FEEDBACK = "I think this article should be readable";
-
+    
     async function openModal() {
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ["./main.js"],
-        func: setCurrentURL(tab.url),
-      });
+      if (runningInChromeDesktop()) {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ["./main.js"],
+          func: setCurrentURL(tab.url),
+        });
+      } else {
+        browser.tabs.executeScript(
+          tab.id,
+          { file: "./main.js" },
+          setCurrentURL(tab.url)
+        );
+      }
       window.close();
     }
 

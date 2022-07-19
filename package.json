@@ -37,13 +37,17 @@
     "installZeeguu": "cd src/zeeguu-react/ && npm install",
     "start": "react-scripts start",
     "prebuild": "rimraf build",
-    "build": "npm-run-all build:*",
+    "build": "cp ./public/manifest.chrome.json ./public/manifest.json && npm-run-all build:*",
+    "buildFirefox": "cp ./public/manifest.firefox.json ./public/manifest.json && npm-run-all build:*",
     "build:app": "INLINE_RUNTIME_CHUNK=false DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "build:bg": "webpack --mode production ./src/JSInjection/main.js --output-path ./build/",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "pubFirefox": "rm -rf build* && (cd src/zeeguu-react/ && git pull) && cp ./public/manifest.firefox.json ./public/manifest.json && npm-run-all build:* && (cd build && zip -r ../build.zip *) && open https://addons.mozilla.org/en-US/firefox/",
     "pub": "rm -rf build* && (cd src/zeeguu-react/ && git pull) && npm-run-all build:* && zip -r build.zip build && open https://chrome.google.com/webstore/devconsole/7f6da896-c12c-4cb3-8ad7-b1641fc8efbc/ckncjmaednfephhbpeookmknhmjjodcd/edit/package",
-    "pub-ci": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm-run-all build:* && zip -r build.zip build"
+    "pub-ci": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm-run-all build:* && zip -r build.zip build",
+    "pub-ci-firefox": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && cp ./public/manifest.firefox.json ./public/manifest.json && npm-run-all build:* && zip -r build.zip build"
+
   },
   "eslintConfig": {
     "extends": [
