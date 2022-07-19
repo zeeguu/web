@@ -3,7 +3,7 @@ import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
 import removePunctuation from "../../../assorted/removePunctuation";
 import EditButton from "../../../words/EditButton.js";
-import { zeeguuOrange, darkBlue, zeeguuRed, zeeguuViolet } from "../../../components/colors";
+import { zeeguuOrange, darkBlue, matchGreen, zeeguuViolet} from "../../../components/colors";
 
 function MatchInput({
   fromButtonOptions,
@@ -21,7 +21,7 @@ function MatchInput({
   const answerColors = [
     {
       fontWeight: "700",
-      color: `${zeeguuRed}`
+        color: `${matchGreen}`
     },
     {
       fontWeight: "700",

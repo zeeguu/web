@@ -15,6 +15,13 @@ const ExtensionInstalledWrapper = styled.div`
   h1 {
     margin-block-start: 0em;
     margin-block-end: 0em;
+    font-size: 1.3em;
+    font-weight: 400;
+  }
+  h4{
+    font-size: 1.5em;
+    margin-block-start: 0.3em;
+    margin-block-end: 0.3em;
   }
   p {
     font-size: 0.9em;
@@ -58,10 +65,16 @@ let PageBackground = styled.div`
   background: ${zeeguuVeryLightOrange};
 `;
 
+let VideoLink = styled.p`
+  margin: 0em;
+  padding-bottom: 1em;
+`
+
 export {
   ExtensionInstalledWrapper,
   ExtensionContainer,
   LinkContainer,
   OrangeButton,
   PageBackground,
+  VideoLink
 };

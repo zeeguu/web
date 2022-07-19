@@ -4,6 +4,7 @@ import { useState } from "react";
 import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
+import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 
 export default function Word({
   bookmark,
@@ -58,10 +59,11 @@ export default function Word({
     grayed_out_if_not_scheduled_for_study = {};
   }
 
-  const small = "small";
+  const square = "square";
 
   return (
     <>
+    
       <s.Word key={bookmark.id}>
         <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
           <img src="https://zeeguu.org/static/images/trash.svg" alt="trash" />
@@ -84,7 +86,7 @@ export default function Word({
             />
           </s.StarIcon>
         )}
-
+        <CenteredRow>
         <s.WordPair>
           <div className="from" style={grayed_out_if_not_scheduled_for_study}>
             {bookmark.from}
@@ -93,7 +95,8 @@ export default function Word({
             {bookmark.to}
           </div>
         </s.WordPair>
-        <SpeakButton bookmarkToStudy={bookmark} api={api} styling={small} />
+        <SpeakButton bookmarkToStudy={bookmark} api={api} styling={square} />
+      </CenteredRow>
       </s.Word>
       {children}
 
