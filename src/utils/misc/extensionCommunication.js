@@ -10,11 +10,7 @@ function checkExtensionInstalled(setHasExtension) {
     if (chrome.runtime) {
       chrome.runtime.sendMessage(
         process.env.REACT_APP_EXTENSION_ID, "You are on Zeeguu.org!", function (response) {
-          if (chrome.runtime.lastError) {
-            console.log(chrome.runtime.lastError);
-          }
           if (response) {
-            console.log("Extension installed!");
             setHasExtension(true);
           } else {
             setHasExtension(false);
@@ -34,7 +30,6 @@ function checkExtensionInstalled(setHasExtension) {
       ) {
         setHasExtension(true);
         firefoxExtension = true;
-        console.log("Extension installed!");
       }
       if (!firefoxExtension) {
         setHasExtension(false);
