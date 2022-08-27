@@ -2,6 +2,7 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+This additional README file is required when uploading the extension to Firefox.
 
 ## reguires  npm: "^8.5.1",
 https://nodejs.org/en/download/
