@@ -70,8 +70,7 @@ export default function Reminder({ hasExtension }) {
         </a>
       </ExtensionReminder>
     );
-  } else {
+  }} else {
     return null;
   }
-}
 }
