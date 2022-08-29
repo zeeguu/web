@@ -72,7 +72,7 @@ let WordPair = styled.div`
   }
 `;
 
-let WordPairAudioExerciseOne = styled.div`
+let WordPairSpellWhatYouHear = styled.div`
   word-break: break-all;
   display: flex;
   flex-direction: column;
@@ -116,6 +116,6 @@ export {
   Spacer,
   EditIcon,
   EditIconNoPadding,
-  WordPairAudioExerciseOne,
+  WordPairSpellWhatYouHear,
 };
 //

@@ -9,8 +9,8 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Match from "./exerciseTypes/match/Match";
-import AudioExerciseOne from "./exerciseTypes/audioExerciseOne/AudioExerciseOne";
-import AudioExerciseTwo from "./exerciseTypes/audioExerciseTwo/AudioExerciseTwo";
+import SpellWhatYouHear from "./exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
+import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleChoiceAudio";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
@@ -34,11 +34,11 @@ if (Feature.audio_exercises()) {
       requiredBookmarks: 1,
     },
     {
-      type: AudioExerciseOne,
+      type: SpellWhatYouHear,
       requiredBookmarks: 1,
     },
     {
-      type: AudioExerciseTwo,
+      type: MultipleChoiceAudio,
       requiredBookmarks: 3,
     },
   ];
