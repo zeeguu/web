@@ -570,11 +570,11 @@ let strings = new LocalizedStrings(
       //ExtensionMessage
       extensionHeadline: "Browser Extension For Reading Articles",
       extensionAllow:
-        "Starting with the summer of 2022 you need to install a browser extension to read most of the articles recommended by Zeeguu.",
+        "Starting with the summer of 2022 you need to install a browser extension to read the articles recommended by Zeeguu.",
       extensionToRead:
-        "From the Recommendations page here on Zeeguu you will be redirected to the original article where you can activate the extension. The extension removes all excess clutter (e.g. adverts) and formats the article for reading. It also allows you to read any article you find online!",
+        "From the Recommendations page on Zeeguu you will be redirected to the original article where you can activate the extension. The extension removes all excess clutter (e.g. adverts) and formats the article for reading. You can also read other articles you find online the same way!",
       extensionReadability:
-        'If when you read an article with the extension you click the "Save article to Zeeguu" link, the article is saved here in the "My Texts" page. These texts are are also readable from your phone or tablet.',
+        'When reading an article with the extension, you can click the "Save article to Zeeguu" button. The article is saved here in the "My Texts" page and will also be readable from your phone or tablet.',
       extensionChromeInstall: "Install for Chrome or Edge",
       extensionFirefoxInstall: "Install for Firefox",
 
