@@ -278,7 +278,7 @@ let strings = new LocalizedStrings(
         "Delete a translation if you don't want it to appear in exercises.",
       starTranslation: "Starred translations have priority in exercises.",
       ifGreyedTranslation:
-        "Translations are grayed out because they are not suitable for the exercises. Star them if you disagree.",
+        "Translations are grayed out because Zeeguu thinks they are not suitable for the exercises. Star them if you disagree.",
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
@@ -570,11 +570,11 @@ let strings = new LocalizedStrings(
       //ExtensionMessage
       extensionHeadline: "Browser Extension For Reading Articles",
       extensionAllow:
-        "Starting with the summer of 2022 you need to install a browser extension to read the articles recommended by Zeeguu.",
+        "Starting with the summer of 2022 you need to install the browser extension to read the articles recommended by Zeeguu.",
       extensionToRead:
-        "From the Recommendations page on Zeeguu you will be redirected to the original article where you can activate the extension. The extension removes all excess clutter (e.g. adverts) and formats the article for reading. You can also read other articles you find online the same way!",
+        "From the Recommendations page on Zeeguu you will be redirected to the original article where you can activate the extension. The extension removes all excess clutter (e.g. adverts) and formats the article for reading. It also enables you to read any other article you find online.",
       extensionReadability:
-        'When reading an article with the extension, you can click the "Save article to Zeeguu" button. The article is saved here in the "My Texts" page and will also be readable from your phone or tablet.',
+        'When reading an article with the extension, you can click the "Save article to Zeeguu" button. The article is saved here in the "My Texts" page from where it will also be readable on phone or tablet.',
       extensionChromeInstall: "Install for Chrome or Edge",
       extensionFirefoxInstall: "Install for Firefox",
 
