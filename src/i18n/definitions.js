@@ -454,20 +454,28 @@ let strings = new LocalizedStrings(
         "The asterix next to the word indicates that the student has exercised the word at least once.",
 
       //AudioExerciseMessage
-      audioExerciseMessageHeadline: "Please help us out by trying our new exercises!",
-      audioExerciseMessageText1: "We have added two new kinds of audio-based exercises for you 😃",
-      audioExerciseMessageText2: "Would you like to try them out and give us feedback? ",
-      audioExerciseMessageText3: "Please choose below how many exercise sets would you like to try before completing a very short survey.",
-      audioExerciseMessageText4: "Thank you in advance. We hope you'll like the new exercises 😃",
-      audioExerciseMessageOption5: "I'd like to try the exercises five times before the survey",
-      audioExerciseMessageOption3: "I'd like to try the exercises three times the survey",
-      audioExerciseMessageOption1: "I'd like to try the exercises once before the survey",
+      audioExerciseMessageHeadline:
+        "Please help us out by trying our new exercises!",
+      audioExerciseMessageText1:
+        "We have added two new kinds of audio-based exercises for you 😃",
+      audioExerciseMessageText2:
+        "Would you like to try them out and give us feedback? ",
+      audioExerciseMessageText3:
+        "Please choose below how many exercise sets would you like to try before completing a very short survey.",
+      audioExerciseMessageText4:
+        "Thank you in advance. We hope you'll like the new exercises 😃",
+      audioExerciseMessageOption5:
+        "I'd like to try the exercises five times before the survey",
+      audioExerciseMessageOption3:
+        "I'd like to try the exercises three times the survey",
+      audioExerciseMessageOption1:
+        "I'd like to try the exercises once before the survey",
       audioExerciseMessageOptionNo: "I don't want to try out the exercises",
-
 
       // QuestionnaireMessage
       questionnaireMessageHeadline: "It's time to answer the questionnaire!",
-      questionnaireMessageText: "You've reached your target number of exercise sessions - we hope you enjoyed it! Please click below and follow the link to the questionnaire.",
+      questionnaireMessageText:
+        "You've reached your target number of exercise sessions - we hope you enjoyed it! Please click below and follow the link to the questionnaire.",
       questionnaireLinkText: "Questionnaire",
       //CohortForm
       editClass: "Edit Class",
@@ -560,15 +568,15 @@ let strings = new LocalizedStrings(
       congratulations: "Extension is installed!",
 
       //ExtensionMessage
-      extensionHeadline: "Install the browser extension to read articles",
+      extensionHeadline: "Browser Extension For Reading Articles",
       extensionAllow:
-        " The extension allows you to enrich your vocabulary in a foreign language while browsing the web and reading articles that are interesting to you. These could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
+        "Starting with the summer of 2022 you will need to install the browser extension to read the articles recommended by Zeeguu. This because from the recommendations page you are now redirected to the original article page and there you can activate the extension.",
       extensionToRead:
-        'To read articles with the help of Zeeguu you need to read them from the Chrome or Firefox Extension or by adding the texts to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+        "The extension removes all excess clutter (e.g. adverts) and formats the article for reading. It also allows you to read any text from the net even if not recommended by Zeeguu!",
       extensionReadability:
-        "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos.",
-      extensionChromeInstall: "Install it in the Chrome Web Store (also for Edge browsers)",
-      extensionFirefoxInstall: "Install it in the Firefox Add-ons library",
+        'You can still access a text here at zeeguu.org (also from phones and tablets) if you save it to your “My Texts” page. To do this activate the extension and click the "Save article to zeeguu.org" link.',
+      extensionChromeInstall: "Install for Chrome or Edge",
+      extensionFirefoxInstall: "Install for Firefox",
 
       //TooltipedButtons
       viewAsStudent: "View as Student",

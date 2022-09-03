@@ -22,7 +22,15 @@ const MyBox = styled(Box)`
     font-size: 1.3em;
     text-align: center;
   }
-  a{
+  a {
+    text-align: center;
+  }
+
+  .newAnnotation {
+    color: orange;
+    font-weight: 500;
+  }
+  .installLinks {
     text-align: center;
   }
 `;
