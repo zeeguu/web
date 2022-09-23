@@ -58,7 +58,7 @@ let strings = new LocalizedStrings(
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
       inviteCode: "Invite code",
       levelOfLearnedLanguage: "Level in Learned Language",
-      baseLanguage: "Base languange",
+      baseLanguage: "Base languange (English recommended)",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
@@ -174,7 +174,7 @@ let strings = new LocalizedStrings(
       contributors: "Contributors",
 
       //ArticleRouter
-      findTab: "Find",
+      findTab: "Recommended",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
       myTextsTab: "My Texts",
@@ -278,7 +278,7 @@ let strings = new LocalizedStrings(
         "Delete a translation if you don't want it to appear in exercises.",
       starTranslation: "Starred translations have priority in exercises.",
       ifGreyedTranslation:
-        "Translations are grayed out because they are not suitable for the exercises. Star them if you disagree.",
+        "Translations are grayed out because Zeeguu thinks they are not suitable for the exercises. Star them if you disagree.",
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
@@ -286,7 +286,7 @@ let strings = new LocalizedStrings(
 
       //EmptyArticles
       noArticles:
-        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome or Firefox extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
       newssites: "Examples of some of the most popular news sites are:",
 
       //ExerciseType
@@ -323,6 +323,9 @@ let strings = new LocalizedStrings(
       chooseTheWordFittingContextHeadline:
         "Choose the alternative that fits the context",
       matchWordWithTranslation: "Match each word with its translation",
+      audioExerciseHeadline:
+        "Write the word your hear. Click to have it repeated!",
+      multipleChoiceAudioHeadline: "Select the word which fits the context",
 
       //FeedbackButtons
       giveFeedback: "Give feedback",
@@ -522,20 +525,34 @@ let strings = new LocalizedStrings(
         "Your colleague should be able to find the text under 'My Texts' in a moment.",
       ok: "OK",
 
+      // New user created
+      userCreated: "Welcome to Zeeguu",
+      installExtension: " Time to install the Zeeguu Reader browser extension",
+      extensionDescription:
+        "Here on zeeguu.org you can see your words, find article recommendation links, do exercises, see statistics, etc. You can also read, but only articles that were shared with you by your teacher, or articles that you have saved from the extension.",
+      extensionFunctionality:
+        "When you follow an article recommendation link, or you find an article on the net, you should activate the extension which:",
+      extensionAdvantage1: "Offers you one-click translation and pronunciation",
+      extensionAdvantage2:
+        "Removes all excess clutter, like adverts, buttons, and videos from the article",
+      extensionAdvantage3:
+        "Generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
+
       //Extension installed
-      goToArticles: "Go to articles",
-      pinExtension: "Pin it to the toolbar to make it easy to access.",
+      goToArticles: "Go to article recommendations",
+      pinExtension: "Pin it to the toolbar to make it easy to access",
       congratulations: "Extension is installed!",
 
       //ExtensionMessage
-      extensionHeadline: "Install the Zeeguu Chrome Extension to read articles",
+      extensionHeadline: "Browser Extension For Reading Articles",
       extensionAllow:
-        " The extension allows you to enrich your vocabulary in a foreign language while browsing the web and reading articles that are interesting to you. These could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
+        "Starting with the summer of 2022 you need to install the browser extension to read the articles recommended by Zeeguu.",
       extensionToRead:
-        'To read articles with the help of Zeeguu you need to read them from the Chrome Extension or by adding the texts to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+        "From the Recommendations page on Zeeguu you will be redirected to the original article where you can activate the extension. The extension removes all excess clutter (e.g. adverts) and formats the article for reading. It also enables you to read any other article you find online.",
       extensionReadability:
-        "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos.",
-      extensionInstall: "Install it in the Chrome Web Store",
+        'When reading an article with the extension, you can click the "Save article to Zeeguu" button. The article is saved here in the "My Texts" page from where it will also be readable on phone or tablet.',
+      extensionChromeInstall: "Install for Chrome or Edge",
+      extensionFirefoxInstall: "Install for Firefox",
 
       //TooltipedButtons
       viewAsStudent: "View as Student",
@@ -593,6 +610,13 @@ let strings = new LocalizedStrings(
       norwegian: "Norwegian",
       portughese: "Portuguese",
       albanian: "Albanian",
+      japanese: "Japanese",
+      serbian: "Serbian",
+      latvian: "Latvian",
+      indonesian: "Indonesian",
+      urdu: "Urdu",
+      tamil: "Tamil",
+      bengali: "Bengali",
 
       //NoStudents
       noStudentsInClass: "There are no students in this class yet.",
@@ -1281,6 +1305,13 @@ let strings = new LocalizedStrings(
       norwegian: "Norsk",
       portughese: "Portugisisk",
       albanian: "Albansk",
+      japanese: "Japansk",
+      serbian: "Serbisk",
+      latvian: "Lettisk",
+      indonesian: "Indonesisk",
+      urdu: "Urdu",
+      tamil: "Tamil",
+      bengali: "Bengali",
 
       //NoStudents
       noStudentsInClass: "Der er ikke nogen elever i denne klasse endnu.",

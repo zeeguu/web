@@ -20,6 +20,18 @@ const MyBox = styled(Box)`
 
   h1 {
     font-size: 1.3em;
+    text-align: center;
+  }
+  a {
+    text-align: center;
+  }
+
+  .newAnnotation {
+    color: orange;
+    font-weight: 500;
+  }
+  .installLinks {
+    text-align: center;
   }
 `;
 
