@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import Feature from "../features/Feature";
+import {runningInChromeDesktop} from "../utils/misc/browserDetection";
 
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
   dontShowImage,
+  hasExtension
 }) {
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
@@ -21,15 +23,15 @@ export default function ArticleOverview({
       </a>
     );
 
-    if (!Feature.extension_experiment1()) {
-      // if the feature is not enabled we always open in zeeguu
+    if (!Feature.extension_experiment1() && !hasExtension) {
+      // if the feature is not enabled and if they don't have the extension we always open in zeeguu
       return open_in_zeeguu;
     }
 
     // else, we only open in zeegu if it's a personal copy or the article
     // has an uploader, thus it's uploaded from our own platform
     // either by the user themselves or by a teacher maybe
-    if (article.has_personal_copy || article.has_uploader) {
+    if (article.has_personal_copy || article.has_uploader || !runningInChromeDesktop()) {
       return open_in_zeeguu;
     } else {
       return open_externally;

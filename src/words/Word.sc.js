@@ -60,6 +60,7 @@ let WordPair = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-left: 1em;
+  margin-right: 1.5em;
 
   .from {
     font-weight: 600;
@@ -68,6 +69,25 @@ let WordPair = styled.div`
     margin-top: 0px;
     margin-bottom: 0px;
     font-weight: 300;
+  }
+`;
+
+let WordPairSpellWhatYouHear = styled.div`
+  word-break: break-all;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 1em;
+
+  .from {
+    font-size: 150%;
+    font-weight: 700;
+  }
+  .to {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-weight: 300;
+    font-size: 150%;
   }
 `;
 
@@ -96,5 +116,6 @@ export {
   Spacer,
   EditIcon,
   EditIconNoPadding,
+  WordPairSpellWhatYouHear,
 };
 //

@@ -19,7 +19,7 @@ export default function CreateAccount({ api, signInAndRedirect }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [learned_language, setLearned_language] = useState("");
-  const [native_language, setNative_language] = useState("");
+  const [native_language, setNative_language] = useState("en");
   const [learned_cefr_level, setLearned_cefr_level] = useState("");
 
   const [systemLanguages, setSystemLanguages] = useState();
@@ -31,6 +31,8 @@ export default function CreateAccount({ api, signInAndRedirect }) {
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
+      languages.learnable_languages.sort((a, b) => (a.name > b.name) ? 1 : -1)
+      languages.native_languages.sort((a, b) => (a.name > b.name) ? 1 : -1)
       setSystemLanguages(languages);
       inviteCodeInputDOM.current.focus();
     });
@@ -70,10 +72,7 @@ export default function CreateAccount({ api, signInAndRedirect }) {
       password,
       userInfo,
       (session) => {
-        // if the created user is a teacher, we only know
-        // by asking the api; so we do that
-        api.isTeacher((teacher_status) => {
-          userInfo["is_teacher"] = teacher_status === "True";
+        api.getUserDetails((userInfo) => {
           signInAndRedirect(userInfo, history);
         });
       },
@@ -170,6 +169,7 @@ export default function CreateAccount({ api, signInAndRedirect }) {
               label={(e) => e.name}
               val={(e) => e.code}
               updateFunction={setNative_language}
+              current={"en"}
             />
           </div>
 

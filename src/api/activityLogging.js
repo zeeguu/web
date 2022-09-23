@@ -4,6 +4,7 @@ import qs from "qs";
 // Reader Opening Actions
 Zeeguu_API.prototype.OPEN_ARTICLE = "OPEN ARTICLE";
 Zeeguu_API.prototype.ARTICLE_FOCUSED = "ARTICLE FOCUSED";
+Zeeguu_API.prototype.OPEN_EXTENSION_INSTALLED = "OPEN EXTENSION INSTALLED";
 
 // Reader Interaction Actions
 Zeeguu_API.prototype.TRANSLATE_TEXT = "TRANSLATE TEXT";
@@ -39,6 +40,8 @@ Zeeguu_API.prototype.OPEN_POPUP = "OPEN POPUP";
 Zeeguu_API.prototype.OPEN_MODAL = "OPEN MODAL";
 Zeeguu_API.prototype.CLOSE_MODAL = "CLOSE MODAL";
 
+// Audio Experiment
+Zeeguu_API.prototype.AUDIO_EXP = "AUDIO_EXP";
 
 // User Activity Dashboard
 Zeeguu_API.prototype.USER_DASHBOARD_OPEN = "UD - USER DASHBOARD OPEN";

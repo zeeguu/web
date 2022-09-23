@@ -19,6 +19,7 @@
     "@reach/listbox": "^0.15.0",
     "@reach/tooltip": "^0.15.0",
     "axios": "^0.21.1",
+    "cross-env": "^7.0.3",
     "cross-fetch": "^3.0.6",
     "date-fns": "^2.19.0",
     "email-validator": "^2.0.4",
@@ -43,10 +44,10 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts start",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build"
   },
   "eslintConfig": {
     "extends": [

@@ -8,6 +8,14 @@ const Feature = {
   extension_experiment1: function () {
     return this.is_enabled("extension_experiment_1");
   },
+
+  audio_exercises: function () {
+    return this.is_enabled("audio_exercises");
+  },
+
+  no_audio_exercises: function () {
+    return this.is_enabled("no_audio_exercises");
+  },
 };
 
 export default Feature;

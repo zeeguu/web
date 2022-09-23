@@ -1,63 +1,71 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import strings from "../../i18n/definitions";
 import ZeeguuSpeech from "../../speech/ZeeguuSpeech";
 import Loader from "react-loader-spinner";
-import * as s from "./Exercise.sc";
+import * as s from "./SpeakButton.sc";
 
-export default function SpeakButton({ bookmarkToStudy, api, styling }) {
-  const initialAnimationStyle = {
-    paddingLeft: "0.8125em",
-    paddingRight: "0.8125em",
-    marginTop: "-0.25em",
-    marginBottom: "-0.25em",
-  };
-  const initialIconStyle = {
-    paddingLeft: "0.5em",
-    paddingRight: "0.5em",
-    marginTop: "-0.25em",
-    marginBottom: "-0.25em",
-  };
+const small_style = {
+  // Icon properties
+  img_height: 15,
+  img_width: 30,
+  // Loader properties
+  loader_width: 30,
+  loader_height: 15,
+};
 
+const small_next_style = {
+  // Icon properties
+  img_height: 30,
+  img_width: 60,
+  // Loader properties
+  loader_width: 60,
+  loader_height: 30,
+};
+
+const large_style = {
+  // Icon properties
+  img_height: 60,
+  img_width: 120,
+  // Loader properties
+  loader_width: 120,
+  loader_height: 60,
+};
+
+const selected_style = {
+  // Icon properties
+  img_height: 50,
+  img_width: 100,
+  // Loader properties
+  loader_width: 100,
+  loader_height: 50,
+};
+
+const square_style = {
+  // Icon properties
+  img_height: 25,
+  img_width: 25,
+  // Loader properties
+  loader_width: 25,
+  loader_height: 25,
+};
+
+const styles = {
+  small: small_style,
+  next: small_next_style,
+  large: large_style,
+  selected: selected_style,
+  square: square_style,
+};
+
+export default function SpeakButton({
+  bookmarkToStudy,
+  api,
+  styling,
+  handleClick,
+}) {
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [animationStyle, setAnimationStyle] = useState(initialAnimationStyle);
-  const [iconStyle, setIconStyle] = useState(initialIconStyle);
-  const [animationWidth, setAnimationWidth] = useState(0);
-  const [animationHeight, setAnimationHeight] = useState(0);
-  const [iconWidth, setIconWidth] = useState(0);
-  const [buttonLeftMargin, setButtonLeftMargin] = useState("2em");
-
-  useEffect(() => {
-    if (styling === "small") {
-      let animation = {
-        paddingLeft: "0.125em",
-        paddingRight: "0.125em",
-        marginTop: "0",
-        marginBottom: "0",
-      };
-      let icon = {
-        paddingLeft: "0",
-        paddingRight: "0",
-        marginTop: "0",
-        marginBottom: "0",
-      };
-      setAnimationHeight(20);
-      setAnimationWidth(15);
-      setIconWidth(20);
-      setAnimationStyle(animation);
-      setIconStyle(icon);
-    } else {
-      setAnimationHeight(36);
-      setAnimationWidth(25);
-      setIconWidth(36);
-      setAnimationStyle(initialAnimationStyle);
-      setIconStyle(initialIconStyle);
-    }
-    if (styling === "next") {
-      setButtonLeftMargin("0");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  let style = styles[styling] || small_next_style; // default is next style
 
   async function handleSpeak() {
     setIsSpeaking(true);
@@ -67,44 +75,84 @@ export default function SpeakButton({ bookmarkToStudy, api, styling }) {
 
   return (
     <>
-      {isSpeaking && (
-        <s.FeedbackButton
-          disabled={true}
-          style={{ marginLeft: buttonLeftMargin }}
+      {handleClick !== undefined && (
+        <s.SpeakButton
+          disabled={isSpeaking}
+          onClick={() => {
+            !isSpeaking && handleSpeak();
+            handleClick();
+          }}
         >
-          <Loader
-            type="Bars"
-            color="#ffffff"
-            width={animationWidth}
-            height={animationHeight}
-            style={{
-              paddingLeft: animationStyle.paddingLeft,
-              paddingRight: animationStyle.paddingRight,
-              marginTop: animationStyle.marginTop,
-              marginBottom: animationStyle.marginBottom,
-              display: "flex",
-              justifyContent: "center",
-            }}
-          />
-        </s.FeedbackButton>
+          {isSpeaking && (
+            <Loader
+              type="Bars"
+              color="#ffffff"
+              width={style.loader_width}
+              height={style.loader_height}
+              style={{
+                paddingLeft: style.loader_paddingLeft,
+                paddingRight: style.loader_paddingRight,
+                marginTop: style.loader_marginTop,
+                marginLeft: style.loader_marginLeft,
+                marginBottom: style.loader_marginBottom,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            />
+          )}
+
+          {!isSpeaking && (
+            <img
+              src="https://zeeguu.org/static/images/volume_up.svg"
+              alt={strings.speak}
+              width={style.img_width}
+              height={style.img_height}
+              style={{
+                paddingLeft: style.img_paddingLeft,
+                paddingRight: style.img_paddingRight,
+              }}
+            />
+          )}
+        </s.SpeakButton>
       )}
-      {!isSpeaking && (
-        <s.FeedbackButton
-          onClick={(e) => handleSpeak()}
-          style={{ marginLeft: buttonLeftMargin }}
+
+      {handleClick === undefined && (
+        <s.SpeakButton
+          disabled={isSpeaking}
+          onClick={() => {
+            !isSpeaking && handleSpeak();
+          }}
         >
-          <img
-            src="https://zeeguu.org/static/images/volume_up.svg"
-            alt={strings.speak}
-            width={iconWidth}
-            style={{
-              paddingLeft: iconStyle.paddingLeft,
-              paddingRight: iconStyle.paddingRight,
-              marginTop: iconStyle.marginTop,
-              marginBottom: iconStyle.marginBottom,
-            }}
-          />
-        </s.FeedbackButton>
+          {isSpeaking && (
+            <Loader
+              type="Bars"
+              color="#ffffff"
+              width={style.loader_width}
+              height={style.loader_height}
+              style={{
+                paddingLeft: style.loader_paddingLeft,
+                paddingRight: style.loader_paddingRight,
+                marginTop: style.loader_marginTop,
+                marginBottom: style.loader_marginBottom,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            />
+          )}
+
+          {!isSpeaking && (
+            <img
+              src="https://zeeguu.org/static/images/volume_up.svg"
+              alt={strings.speak}
+              width={style.img_width}
+              height={style.img_height}
+              style={{
+                paddingLeft: style.img_paddingLeft,
+                paddingRight: style.img_paddingRight,
+              }}
+            />
+          )}
+        </s.SpeakButton>
       )}
     </>
   );

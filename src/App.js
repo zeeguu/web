@@ -10,18 +10,21 @@ import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
 import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
-
+import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
 import {
   getUserSession,
   saveUserInfoIntoCookies,
   removeUserInfoFromCookies,
 } from "./utils/cookies/userInfo";
+import InstallExtension from "./pages/InstallExtension";
 
 function App() {
   let userDict = {};
 
   // we use the _api to initialize the api state variable
+  console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
+  console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
   let _api = new Zeeguu_API(process.env.REACT_APP_API_URL);
 
   if (getUserSession()) {
@@ -37,14 +40,24 @@ function App() {
   const [api] = useState(_api);
 
   const [user, setUser] = useState(userDict);
+  const [hasExtension, setHasExtension] = useState(false);
 
-  //resets user on zeeguu.org if they log out of the extension
   useEffect(() => {
+    // when creating the app component we also load the
+    // user details from the server; this also ensures that
+    // we get the latest feature flags for this user and save
+    // them in the LocalStorage
+    api.getUserDetails((data) => {
+      LocalStorage.setUserInfo(data);
+    });
+
+    //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
       if (!getUserSession()) {
         setUser({});
       }
     }, 1000);
+    checkExtensionInstalled(setHasExtension);
     return () => clearInterval(interval);
   }, []);
 
@@ -63,9 +76,13 @@ function App() {
     // between the extension and the website
     saveUserInfoIntoCookies(userInfo, api.session);
 
-    userInfo.is_teacher
-      ? history.push("/teacher/classes")
-      : history.push("/articles");
+    if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
+      history.push("/install_extension");
+    } else {
+      userInfo.is_teacher
+        ? history.push("/teacher/classes")
+        : history.push("/articles");
+    }
   }
 
   function logout() {
@@ -104,7 +121,12 @@ function App() {
 
             <Route
               path="/extension_installed"
-              render={() => <ExtensionInstalled />}
+              render={() => <ExtensionInstalled api={api} />}
+            />
+
+            <Route
+              path="/install_extension"
+              render={() => <InstallExtension />}
             />
 
             <Route

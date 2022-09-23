@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-
+import { Link } from "react-router-dom";
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
@@ -13,7 +13,7 @@ const Exercise = styled.div`
   padding-bottom: 1em;
 
   .headline {
-    font-size: small;
+    font-size: ;
     color: gray;
     margin-top: 1em;
     font-weight: 500;
@@ -141,6 +141,7 @@ let MatchingWords = styled.p`
   padding-bottom: 0.5em;
   padding-left: 0.5em;
   font-size: 1.125em;
+  margin-right: 1em;
 `;
 
 let OrangeButton = styled(StyledButton)`
@@ -151,6 +152,18 @@ let OrangeButton = styled(StyledButton)`
   align-items: center;
 
   color: white;
+  background-color: ${zeeguuOrange};
+  margin: 1em;
+`;
+
+let OrangeButtonMessage = styled(StyledButton)`
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  justify-content: center;
+  align-items: center;
+
+  color: black;
   background-color: ${zeeguuOrange};
   margin: 1em;
 `;
@@ -257,6 +270,18 @@ let BottomRow = styled.div`
   }
 `;
 
+let BottomRowCompact = styled.div`
+  display: flex;
+  padding: 0.5em;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 3em;
+
+  @media (max-width: 430px) {
+    flex-flow: row wrap;
+  }
+`;
+
 let StyledGreyButton = styled.button`
   background: none !important;
   border: none !important;
@@ -289,6 +314,14 @@ let CenteredRow = styled.div`
   justify-content: center;
 `;
 
+let CenteredRowTall = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5em;
+`;
+
 let EditSpeakButtonHolder = styled.div`
   display: flex;
   align-items: center;
@@ -303,6 +336,7 @@ export {
   Input,
   AnimatedInput,
   BottomRow,
+  BottomRowCompact,
   StyledGreyButton,
   StyledDiv,
   MatchButton,
@@ -314,9 +348,11 @@ export {
   MatchSpeakButtonHolder,
   ButtonRow,
   CenteredRow,
+  CenteredRowTall,
   LeftFeedbackButton,
   RightFeedbackButton,
   EditSpeakButtonHolder,
+  OrangeButtonMessage,
 };
 
 export default StyledButton;

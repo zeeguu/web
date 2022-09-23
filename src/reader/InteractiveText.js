@@ -50,14 +50,11 @@ export default class InteractiveText {
   }
 
   selectAlternative(word, alternative, preferredSource, onSuccess) {
-    this.api.contributeTranslation(
-      this.articleInfo.language,
-      localStorage.native_language,
+    this.api.updateBookmark(
+      word.bookmark_id,
       word.word,
       alternative,
-      this.getContext(word),
-      this.articleInfo.url,
-      this.articleInfo.title
+      this.getContext(word)
     );
     word.translation = alternative;
     word.service_name = "Own alternative selection";
