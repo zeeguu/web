@@ -278,7 +278,7 @@ let strings = new LocalizedStrings(
         "Delete a translation if you don't want it to appear in exercises.",
       starTranslation: "Starred translations have priority in exercises.",
       ifGreyedTranslation:
-        "Translations are grayed out because they are not suitable for the exercises. Star them if you disagree.",
+        "Translations are grayed out because Zeeguu thinks they are not suitable for the exercises. Star them if you disagree.",
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
@@ -286,7 +286,7 @@ let strings = new LocalizedStrings(
 
       //EmptyArticles
       noArticles:
-        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome or Firefox extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
       newssites: "Examples of some of the most popular news sites are:",
 
       //ExerciseType
@@ -527,7 +527,7 @@ let strings = new LocalizedStrings(
 
       // New user created
       userCreated: "Welcome to Zeeguu",
-      installExtension: " Time to install the Zeeguu Reader Chrome extension",
+      installExtension: " Time to install the Zeeguu Reader browser extension",
       extensionDescription:
         "Here on zeeguu.org you can see your words, find article recommendation links, do exercises, see statistics, etc. You can also read, but only articles that were shared with you by your teacher, or articles that you have saved from the extension.",
       extensionFunctionality:
@@ -544,14 +544,15 @@ let strings = new LocalizedStrings(
       congratulations: "Extension is installed!",
 
       //ExtensionMessage
-      extensionHeadline: "Install the Zeeguu Chrome Extension to read articles",
+      extensionHeadline: "Browser Extension For Reading Articles",
       extensionAllow:
-        " The extension allows you to enrich your vocabulary in a foreign language while browsing the web and reading articles that are interesting to you. These could be articles on news sites, blogs, or encyclopedias like Wikipedia.",
+        "Starting with the summer of 2022 you need to install the browser extension to read the articles recommended by Zeeguu.",
       extensionToRead:
-        'To read articles with the help of Zeeguu you need to read them from the Chrome Extension or by adding the texts to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+        "From the Recommendations page on Zeeguu you will be redirected to the original article where you can activate the extension. The extension removes all excess clutter (e.g. adverts) and formats the article for reading. It also enables you to read any other article you find online.",
       extensionReadability:
-        "For better readability, the extension removes all excess clutter, like adverts, buttons, and videos.",
-      extensionInstall: "Install it in the Chrome Web Store",
+        'When reading an article with the extension, you can click the "Save article to Zeeguu" button. The article is saved here in the "My Texts" page from where it will also be readable on phone or tablet.',
+      extensionChromeInstall: "Install for Chrome or Edge",
+      extensionFirefoxInstall: "Install for Firefox",
 
       //TooltipedButtons
       viewAsStudent: "View as Student",

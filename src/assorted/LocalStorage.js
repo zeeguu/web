@@ -22,6 +22,7 @@ const LocalStorage = {
     DisplayedAudioExperimentQuestionnaire:
       "audio_experiment_displayed_questionnaire",
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
+    clickedVideoLink: "clicked_video_link"
   },
 
   userInfo: function () {
@@ -184,6 +185,14 @@ const LocalStorage = {
     var temp = audioExperimentNoOfSessions + 1;
     localStorage[this.Keys.AudioExperimentNoOfSessions] = temp;
   },
+
+  setClickedVideo: function () {
+    localStorage[this.Keys.clickedVideoLink] = true;
+  },
+
+  getClickedVideo: function () {
+    return localStorage[this.Keys.clickedVideoLink];
+  } 
 };
 
 export default LocalStorage;
