@@ -9,55 +9,36 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Match from "./exerciseTypes/match/Match";
-import AudioExerciseOne from "./exerciseTypes/audioExerciseOne/AudioExerciseOne";
-import AudioExerciseTwo from "./exerciseTypes/audioExerciseTwo/AudioExerciseTwo";
+import SpellWhatYouHear from "./exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
+import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleChoiceAudio";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
-import QuestionnaireMessage from "../components/QuestionnaireMessage.js";
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
-let EXERCISE_TYPES;
-if (Feature.audio_exercises()) {
-  EXERCISE_TYPES = [
-    {
-      type: Match,
-      requiredBookmarks: 3,
-    },
-    {
-      type: MultipleChoice,
-      requiredBookmarks: 1,
-    },
-    {
-      type: FindWordInContext,
-      requiredBookmarks: 1,
-    },
-    {
-      type: AudioExerciseOne,
-      requiredBookmarks: 1,
-    },
-    {
-      type: AudioExerciseTwo,
-      requiredBookmarks: 3,
-    },
-  ];
-} else {
-  EXERCISE_TYPES = [
-    {
-      type: Match,
-      requiredBookmarks: 3,
-    },
-    {
-      type: MultipleChoice,
-      requiredBookmarks: 1,
-    },
-    {
-      type: FindWordInContext,
-      requiredBookmarks: 1,
-    },
-  ];
-}
+let EXERCISE_TYPES = [
+  {
+    type: Match,
+    requiredBookmarks: 3,
+  },
+  {
+    type: MultipleChoice,
+    requiredBookmarks: 1,
+  },
+  {
+    type: FindWordInContext,
+    requiredBookmarks: 1,
+  },
+  {
+    type: SpellWhatYouHear,
+    requiredBookmarks: 1,
+  },
+  {
+    type: MultipleChoiceAudio,
+    requiredBookmarks: 3,
+  },
+];
 
 export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
@@ -81,15 +62,6 @@ export default function Exercises({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
-
-  useEffect(() => {
-    console.log(
-      "Localstorage displayed questionnaire popup " +
-        LocalStorage.displayedAudioExperimentQuestionnaire()
-    );
-    console.log("Audio feature flag " + Feature.audio_exercises());
-    console.log("Audio completed " + LocalStorage.audioExperimentCompleted());
-  }, []);
 
   useEffect(() => {
     if (exerciseSession.length === 0) {
@@ -244,7 +216,6 @@ export default function Exercises({
     api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     return (
       <>
-        <QuestionnaireMessage />
         <Congratulations
           articleID={articleID}
           correctBookmarks={correctBookmarks}

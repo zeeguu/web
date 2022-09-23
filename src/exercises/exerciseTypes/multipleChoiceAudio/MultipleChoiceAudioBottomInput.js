@@ -2,7 +2,7 @@ import * as s from "../Exercise.sc";
 import strings from "../../../i18n/definitions";
 import { useState } from "react";
 
-export default function AudioTwoBotInput({
+export default function MultipleChoiceAudioBottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
   messageToAPI,
@@ -36,7 +36,6 @@ export default function AudioTwoBotInput({
         >
           {strings.check}
         </OrangeButton>
-        
       </>
     </s.BottomRow>
   );
