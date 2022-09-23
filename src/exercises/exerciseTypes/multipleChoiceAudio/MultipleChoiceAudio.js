@@ -9,12 +9,12 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import removePunctuation from "../../../assorted/removePunctuation";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
-import AudioTwoBotInput from "./AudioTwoBotInput.js";
+import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import EditButton from "../../../words/EditButton.js";
 
 const EXERCISE_TYPE = "Select_AudioL2W_fitting_L2T";
 
-export default function AudioExerciseTwo({
+export default function MultipleChoiceAudio({
   api,
   bookmarksToStudy,
   correctAnswer,
@@ -169,7 +169,7 @@ export default function AudioExerciseTwo({
       {!isCorrect && (
         <>
           <div className="headlineWithMoreSpace">
-            {strings.audioExerciseTwoHeadline}
+            {strings.multipleChoiceAudioHeadline}
           </div>
           <div className="contextExample">
             <TranslatableText

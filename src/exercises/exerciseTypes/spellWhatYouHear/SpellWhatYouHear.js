@@ -11,7 +11,7 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 
 const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
-export default function AudioExerciseOne({
+export default function SpellWhatYouHear({
   api,
   bookmarksToStudy,
   correctAnswer,
@@ -49,7 +49,6 @@ export default function AudioExerciseOne({
       setArticleInfo(articleInfo);
     });
   }, []);
-
 
   function inputKeyPress() {
     if (firstTypeTime === undefined) {
@@ -110,14 +109,14 @@ export default function AudioExerciseOne({
       {!isCorrect && (
         <>
           <div className="contextExample">
-        <TranslatableText
-          isCorrect={isCorrect}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          bookmarkToStudy={bookmarksToStudy[0].from}
-        />
-        </div>
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={bookmarksToStudy[0].from}
+            />
+          </div>
           <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={bookmarkToStudy}
@@ -140,15 +139,15 @@ export default function AudioExerciseOne({
         <>
           <br></br>
           <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
-        <div className="contextExample">
-        <TranslatableText
-          isCorrect={isCorrect}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          bookmarkToStudy={bookmarksToStudy[0].from}
-        />
-        </div>
+          <div className="contextExample">
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={bookmarksToStudy[0].from}
+            />
+          </div>
           <NextNavigation
             api={api}
             bookmarksToStudy={bookmarksToStudy}
