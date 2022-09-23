@@ -10,7 +10,7 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 
-const EXERCISE_TYPE = "TypeL2W_in_AudioL2";
+const EXERCISE_TYPE = "Spell_What_You_Hear";
 export default function SpellWhatYouHear({
   api,
   bookmarksToStudy,
