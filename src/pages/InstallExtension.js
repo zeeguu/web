@@ -14,19 +14,26 @@ export default function InstallExtension() {
           <p>{strings.extensionDescription}</p>
           <p>{strings.extensionFunctionality}</p>
           <ul>
-            <li><p>{strings.extensionAdvantage1}</p></li>
-            <li> <p>{strings.extensionAdvantage2}</p></li>
-            <li> <p>{strings.extensionAdvantage3}</p></li>
+            <li>
+              <p>{strings.extensionAdvantage1}</p>
+            </li>
+            <li>
+              <p>{strings.extensionAdvantage2}</p>
+            </li>
+            <li>
+              <p>{strings.extensionAdvantage3}</p>
+            </li>
           </ul>
           <s.LinkContainer>
             <s.OrangeButton>
               <a href="https://chrome.google.com/webstore/detail/the-zeeguu-reader/ckncjmaednfephhbpeookmknhmjjodcd">
-                Install "The Zeeguu Reader"
+                Install for Chrome or Edge
               </a>
             </s.OrangeButton>
-            <a href="/articles">
-                Don't want the extension? Go to articles.
-              </a>
+            <s.OrangeButton>
+              <a href="">Install for Firefox</a>
+            </s.OrangeButton>
+            <a href="/articles">Don't want the extension? Go to articles.</a>
           </s.LinkContainer>
         </s.InstallExtensionWrapper>
       </ExtensionContainer>

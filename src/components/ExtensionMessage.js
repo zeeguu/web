@@ -4,15 +4,24 @@ import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
 
-export default function ExtensionMessage({open, hasExtension, displayedExtensionPopup, setDisplayedExtensionPopup, setExtensionMessageOpen}) {
-  
+export default function ExtensionMessage({
+  open,
+  hasExtension,
+  displayedExtensionPopup,
+  setDisplayedExtensionPopup,
+  setExtensionMessageOpen,
+}) {
   function handleClose() {
     setExtensionMessageOpen(false);
     setDisplayedExtensionPopup(true);
     LocalStorage.setDisplayedExtensionPopup(true);
   }
 
-  if (!hasExtension && Feature.extension_experiment1() && !displayedExtensionPopup) {
+  if (
+    !hasExtension &&
+    Feature.extension_experiment1() &&
+    !displayedExtensionPopup
+  ) {
     return (
       <Modal
         open={open}
@@ -24,17 +33,26 @@ export default function ExtensionMessage({open, hasExtension, displayedExtension
           <s.StyledCloseButton role="button" onClick={handleClose}>
             X
           </s.StyledCloseButton>
-          <h1>{strings.extensionHeadline}</h1>
+          <h1>
+            <span className="newAnnotation">New!</span>&nbsp;
+            {strings.extensionHeadline}
+          </h1>
           <p>
             {strings.extensionAllow}
             <br /> <br />
             {strings.extensionToRead} <br /> <br />
             {strings.extensionReadability} <br /> <br />
+          </p>
+          <p className="installLinks">
             <a
               href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
               rel="noopener noreferrer"
             >
-              {strings.extensionInstall}
+              {strings.extensionChromeInstall}
+            </a>
+            <br /> <br />
+            <a href="" rel="noopener noreferrer">
+              {strings.extensionFirefoxInstall}
             </a>
           </p>
         </s.MyBox>

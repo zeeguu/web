@@ -103,7 +103,7 @@ export default function SpeakButton({
 
           {!isSpeaking && (
             <img
-              src="/static/images/volume_up.svg"
+              src="https://zeeguu.org/static/images/volume_up.svg"
               alt={strings.speak}
               width={style.img_width}
               height={style.img_height}
@@ -142,7 +142,7 @@ export default function SpeakButton({
 
           {!isSpeaking && (
             <img
-              src="/static/images/volume_up.svg"
+              src="https://zeeguu.org/static/images/volume_up.svg"
               alt={strings.speak}
               width={style.img_width}
               height={style.img_height}
