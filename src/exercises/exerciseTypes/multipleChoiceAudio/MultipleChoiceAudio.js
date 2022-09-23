@@ -12,7 +12,7 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import EditButton from "../../../words/EditButton.js";
 
-const EXERCISE_TYPE = "Select_AudioL2W_fitting_L2T";
+const EXERCISE_TYPE = "Multiple_Choice_Audio";
 
 export default function MultipleChoiceAudio({
   api,
