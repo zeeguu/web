@@ -14,7 +14,12 @@ const ZeeguuSpeech = class {
           let dutchVoice = _getDutchNetherlandsVoice(data.voices);
           this.speech.setVoice(dutchVoice.name);
         } else {
-          let randomVoice = _getRandomVoice(data.voices, language);
+          let target_lang_voices = data.voices.filter((v) => v.lang.toLowerCase().includes(language));
+          let l = "lang: " + language + " targetLangVoices: " + target_lang_voices.map(e=>e.lang) + " allVoices: " + data.voices.map(e=>e.lang.toLowerCase());
+          this.api.logUserActivity("SPEAK VOICE INFO", "", "", l);
+          
+          let randomVoice = _randomElement(target_lang_voices);
+      
           this.speech.setVoice(randomVoice.name);
         }
       })
@@ -22,6 +27,8 @@ const ZeeguuSpeech = class {
         console.error("An error occured while initializing : ", e);
       });
   }
+
+  
 
   speakOut(word) {
     if (this.language === "da") {
@@ -54,10 +61,6 @@ function _randomElement(x) {
   return x[Math.floor(Math.random() * x.length)];
 }
 
-function _getRandomVoice(voices, language) {
-  let x = _randomElement(voices.filter((v) => v.lang.toLowerCase().includes(language)));
-  return x;
-}
 
 function _getDutchNetherlandsVoice(voices) {
   let x = _randomElement(voices.filter((v) => v.lang.includes("NL")));
