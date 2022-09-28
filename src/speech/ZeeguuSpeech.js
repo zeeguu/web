@@ -15,10 +15,11 @@ const ZeeguuSpeech = class {
           this.speech.setVoice(dutchVoice.name);
         } else {
           let target_lang_voices = data.voices.filter((v) => v.lang.toLowerCase().includes(language));
-          let l = "lang: " + language + " targetLangVoices: " + target_lang_voices.map(e=>e.lang) + " allVoices: " + data.voices.map(e=>e.lang.toLowerCase());
-          this.api.logUserActivity("SPEAK VOICES INFO", "", "", l);
           
           let randomVoice = _randomElement(target_lang_voices);
+          let l = "lang: " + language + " selected: (" + randomVoice.name + " "  + randomVoice.lang + ") targetLangVoices: " + target_lang_voices.map(e=>e.name + " " + e.lang) + " allVoices: " + data.voices.map(e=>e.lang.toLowerCase());
+          console.log(l);
+          this.api.logUserActivity("SPEAK VOICES INFO", "", "", l);
       
           this.speech.setVoice(randomVoice.name);
         }
