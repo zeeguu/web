@@ -89,8 +89,12 @@ export default class InteractiveText {
   pronounce(word) {
     this.zeeguuSpeech.speakOut(word.word);
     this.api.logReaderActivity(this.api.SPEAK_TEXT, this.articleInfo.id, word.word, this.source);
-    let s =  this.zeeguuSpeech.speech;
-    let l = s.voiceURI + " " + s.name + " " + s.lang + " " + s.localService + " " + s.default;
+    
+    // extra logging for debugging purposes
+    let s =  this.zeeguuSpeech.speech.synthesisVoice;
+    let l = s.voiceURI + " " + s.name + " " + s.lang + " local:" + s.localService + " default:" + s.default;
+    console.log(s);
+    console.log(l);
     this.api.logReaderActivity("SPEAK VOICE INFO", this.articleInfo.id, l, this.source);
     
   }
