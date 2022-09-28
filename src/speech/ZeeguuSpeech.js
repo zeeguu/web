@@ -22,7 +22,7 @@ const ZeeguuSpeech = class {
           this.api.logUserActivity("SPEAK VOICES INFO", "", "", l);
       
           console.log(randomVoice);
-          this.speech.setVoice(randomVoice);
+          this.speech.setVoice(randomVoice.name);
         }
       })
       .catch((e) => {
