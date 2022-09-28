@@ -17,11 +17,12 @@ const ZeeguuSpeech = class {
           let target_lang_voices = data.voices.filter((v) => v.lang.toLowerCase().includes(language));
           
           let randomVoice = _randomElement(target_lang_voices);
-          let l = "lang: " + language + " selected: (" + randomVoice.name + " "  + randomVoice.lang + ") targetLangVoices: " + target_lang_voices.map(e=>e.name + " " + e.lang) + " allVoices: " + data.voices.map(e=>e.lang.toLowerCase());
+          let l = "lang: " + language + " selected: (" + randomVoice.name + " "  + randomVoice.lang + ") targetLangVoices: " + target_lang_voices.map(e=>e.name + " " + e.lang) + " allVoices: " + data.voices.map(e=>e.name + " " + e.lang);
           console.log(l);
           this.api.logUserActivity("SPEAK VOICES INFO", "", "", l);
       
-          this.speech.setVoice(randomVoice.name);
+          console.log(randomVoice);
+          this.speech.setVoice(randomVoice);
         }
       })
       .catch((e) => {
