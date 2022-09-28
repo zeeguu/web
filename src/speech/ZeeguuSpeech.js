@@ -16,7 +16,7 @@ const ZeeguuSpeech = class {
         } else {
           let target_lang_voices = data.voices.filter((v) => v.lang.toLowerCase().includes(language));
           let l = "lang: " + language + " targetLangVoices: " + target_lang_voices.map(e=>e.lang) + " allVoices: " + data.voices.map(e=>e.lang.toLowerCase());
-          this.api.logUserActivity("SPEAK VOICE INFO", "", "", l);
+          this.api.logUserActivity("SPEAK VOICES INFO", "", "", l);
           
           let randomVoice = _randomElement(target_lang_voices);
       
