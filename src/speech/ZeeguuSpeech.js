@@ -14,7 +14,14 @@ const ZeeguuSpeech = class {
           let dutchVoice = _getDutchNetherlandsVoice(data.voices);
           this.speech.setVoice(dutchVoice.name);
         } else {
-          let target_lang_voices = data.voices.filter((v) => v.lang.toLowerCase().includes(language));
+          let allNames = data.voices.map(e=>e.name);
+          let counts = allNames.reduce((acc, val) => acc.set(val, 1 + (acc.get(val) || 0)), new Map());
+          console.log(counts);
+          let uniqueNames = [...counts].filter(([k,v])=>v==1).map(([k,v])=>k);
+          console.log(uniqueNames);
+
+
+          let target_lang_voices = data.voices.filter((v) => uniqueNames.includes(v.name) && v.lang.toLowerCase().includes(language) );
           
           let randomVoice = _randomElement(target_lang_voices);
           let l = "lang: " + language + " selected: (" + randomVoice.name + " "  + randomVoice.lang + ") targetLangVoices: " + target_lang_voices.map(e=>e.name + " " + e.lang) + " allVoices: " + data.voices.map(e=>e.name + " " + e.lang);
@@ -23,6 +30,7 @@ const ZeeguuSpeech = class {
       
           console.log(randomVoice);
           this.speech.setVoice(randomVoice.name);
+
         }
       })
       .catch((e) => {
