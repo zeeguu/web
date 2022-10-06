@@ -10,6 +10,17 @@ const ZeeguuSpeech = class {
     console.log("after Speech() created");
     console.dir(this.speech);
 
+    const speech = new Speech();
+    speech
+      .init()
+      .then((data) => {
+        // The "data" object contains the list of available voices and the voice synthesis params
+        console.log("Speech is ready, voices are available", data);
+      })
+      .catch((e) => {
+        console.error("An error occured while initializing : ", e);
+      });
+
     this.speech
       .init()
       .then((data) => {
