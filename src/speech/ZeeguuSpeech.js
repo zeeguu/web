@@ -8,6 +8,7 @@ const ZeeguuSpeech = class {
     console.log("initializing the ZeeguuSpeech object");
     this.speech = new Speech();
     console.log("after Speech() created");
+    console.dir(speech);
 
     this.speech
       .init()
