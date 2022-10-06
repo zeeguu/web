@@ -7,10 +7,12 @@ const ZeeguuSpeech = class {
 
     console.log("initializing the ZeeguuSpeech object");
     this.speech = new Speech();
+    console.log("after Speech() created");
 
     this.speech
       .init()
       .then((data) => {
+        console.log("after speech init()");
         // The "data" object contains the list of available voices and the voice synthesis params
         if (language === "nl") {
           let dutchVoice = _getDutchNetherlandsVoice(data.voices);
