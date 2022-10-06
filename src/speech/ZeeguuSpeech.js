@@ -5,8 +5,9 @@ const ZeeguuSpeech = class {
     this.api = api;
     this.language = language;
 
-    this.speech = new Speech();
     console.log("initializing the ZeeguuSpeech object");
+    this.speech = new Speech();
+
     this.speech
       .init()
       .then((data) => {
