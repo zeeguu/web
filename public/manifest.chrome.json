@@ -4,7 +4,14 @@
   "version": "2.0.22",
   "manifest_version": 3,
   "host_permissions": ["https://www.zeeguu.org/", "https://api.zeeguu.org/"],
-  "permissions": ["storage", "activeTab", "scripting", "tabs", "cookies"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "cookies",
+    "tts"
+  ],
 
   "action": {
     "default_popup": "index.html",
