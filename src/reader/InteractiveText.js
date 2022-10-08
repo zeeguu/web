@@ -11,7 +11,7 @@ export default class InteractiveText {
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (each) => new LinkedWordList(each)
     );
-    
+
     this.zeeguuSpeech = new ZeeguuSpeech(api, this.articleInfo.language);
   }
 
@@ -46,7 +46,12 @@ export default class InteractiveText {
         console.log("could not retreive translation");
       });
 
-    this.api.logReaderActivity(this.api.TRANSLATE_TEXT, this.articleInfo.id, word.word, this.source);
+    this.api.logReaderActivity(
+      this.api.TRANSLATE_TEXT,
+      this.articleInfo.id,
+      word.word,
+      this.source
+    );
   }
 
   selectAlternative(word, alternative, preferredSource, onSuccess) {
@@ -59,8 +64,13 @@ export default class InteractiveText {
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
-    let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`
-    this.api.logReaderActivity(this.api.SEND_SUGGESTION,this.articleInfo.id,alternative_info, this.source);
+    let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`;
+    this.api.logReaderActivity(
+      this.api.SEND_SUGGESTION,
+      this.articleInfo.id,
+      alternative_info,
+      this.source
+    );
 
     onSuccess();
   }
@@ -88,15 +98,13 @@ export default class InteractiveText {
 
   pronounce(word) {
     this.zeeguuSpeech.speakOut(word.word);
-    this.api.logReaderActivity(this.api.SPEAK_TEXT, this.articleInfo.id, word.word, this.source);
-    
-    // extra logging for debugging purposes
-    let s =  this.zeeguuSpeech.speech.synthesisVoice;
-    let l = s.voiceURI + " " + s.name + " " + s.lang + " local:" + s.localService + " default:" + s.default;
-    console.log(s);
-    console.log(l);
-    this.api.logReaderActivity("SPEAK VOICE INFO", this.articleInfo.id, l, this.source);
-    
+
+    this.api.logReaderActivity(
+      this.api.SPEAK_TEXT,
+      this.articleInfo.id,
+      word.word,
+      this.source
+    );
   }
 
   /**
@@ -141,7 +149,7 @@ export default class InteractiveText {
       " " +
       getRightContext(word.next, 32);
 
-    console.log("context is: " + context);
+    // console.log("context is: " + context);
     return context;
   }
 }
