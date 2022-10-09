@@ -15,6 +15,16 @@ chrome.runtime.onInstalled.addListener(function (object) {
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender) {
-  if (request.type == "SPEAK")
-    chrome.tts.speak(request.options.text, { lang: request.options.language });
+  if (request.type == "SPEAK") {
+    try {
+      chrome.tts.speak(request.options.text, {
+        lang: request.options.language,
+      });
+    } catch (error) {
+      // trying to make this work also for Firefox
+      var utterance = new SpeechSynthesisUtterance(request.options.text);
+      utterance.lang = request.options.language;
+      speechSynthesis.speak(utterance);
+    }
+  }
 });
