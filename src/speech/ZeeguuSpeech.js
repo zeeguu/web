@@ -3,10 +3,14 @@
 function voiceForLanguageCode(code, voices) {
   var specificCode = code;
 
-  let preferredLocales = { fr: "fr-FR", nl: "nl-NL", en: "en-US" };
+  // console.log(voices.map((e) => e.lang + " " + e.name));
+
+  let preferredLocales = { fr: "fr-FR", nl: "nl-NL", en: "en-US", es: "es-ES" };
   specificCode = preferredLocales[code] ?? code;
 
-  let voice = voices.filter((x) => x.lang.startsWith(specificCode))[0];
+  let languageVoices = voices.filter((x) => x.lang.startsWith(specificCode));
+  console.log(languageVoices.map((e) => e.lang + " " + e.name));
+  let voice = languageVoices[0];
   console.log(voice);
   return voice;
 }
