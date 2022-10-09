@@ -9,6 +9,7 @@ function voiceForLanguageCode(code, voices) {
   } catch (e) {
     localeCode = code;
   }
+  console.log(localeCode);
   let voice = voices.filter((x) => x.lang.startsWith(localeCode))[0];
   console.log(voice);
   return voice;
