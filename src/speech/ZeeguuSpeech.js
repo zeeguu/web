@@ -4,7 +4,9 @@ import Speech from "speak-tts";
 
 const ZeeguuSpeech = class {
   runningFromExtension() {
-    return typeof chrome.runtime !== "undefined";
+    return (
+      typeof chrome !== "undefined" && typeof chrome.runtime !== "undefined"
+    );
   }
 
   constructor(api, language) {
