@@ -1,18 +1,12 @@
 /*global chrome*/
 
 function voiceForLanguageCode(code, voices) {
-  console.log(code);
-  console.log(voices);
-  console.log(voices.map((e) => e.lang));
-  let localeCode = code;
+  var specificCode = code;
+
   let preferredLocales = { fr: "fr-FR", nl: "nl-NL", en: "en-US" };
-  try {
-    localeCode = preferredLocales[code];
-  } catch (e) {
-    localeCode = code;
-  }
-  console.log(localeCode);
-  let voice = voices.filter((x) => x.lang.startsWith(localeCode))[0];
+  specificCode = preferredLocales[code] ?? code;
+
+  let voice = voices.filter((x) => x.lang.startsWith(specificCode))[0];
   console.log(voice);
   return voice;
 }
