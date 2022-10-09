@@ -3,22 +3,29 @@
 import Speech from "speak-tts";
 
 const ZeeguuSpeech = class {
-  runningFromExtension() {
-    return (
-      typeof chrome !== "undefined" && typeof chrome.runtime !== "undefined"
-    );
-  }
-
   constructor(api, language) {
     this.api = api;
     this.language = language;
+    this.runningFromExtension = true;
 
-    if (this.runningFromExtension()) {
-      // there's no need for initializing the speech object
-      // if we're running from the extension; in that case
-      // the speech is done by sending messages to the
-      // background page and using the chrome.tts api
-      return;
+    if (
+      typeof chrome !== "undefined" &&
+      typeof chrome.runtime !== "undefined"
+    ) {
+      try {
+        chrome.runtime.sendMessage({
+          type: "SPEAK",
+          options: {
+            text: "",
+            language: this.language,
+          },
+        });
+        console.log("we're running from extension");
+      } catch (error) {
+        this.runningFromExtension = false;
+      }
+    } else {
+      this.runningFromExtension = false;
     }
 
     this.speech = new Speech();
@@ -70,8 +77,7 @@ const ZeeguuSpeech = class {
   }
 
   speakOut(word) {
-    if (this.runningFromExtension()) {
-      console.log("running from extension!");
+    if (this.runningFromExtension) {
       chrome.runtime.sendMessage({
         type: "SPEAK",
         options: {
