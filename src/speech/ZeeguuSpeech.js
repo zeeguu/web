@@ -57,7 +57,7 @@ const ZeeguuSpeech = class {
     });
 
     allVoicesObtained.then(
-      (voices) => (this.voice = voiceForLanguageCode(language, voices))
+      (voices) => (this.voice = voiceForLanguageCode(this.language, voices))
     );
   }
 
