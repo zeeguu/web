@@ -1,7 +1,9 @@
 /*global chrome*/
 
 function voiceForLanguageCode(code, voices) {
+  console.log(code);
   console.log(voices);
+  console.log(voices.map((e) => e.lang));
   let localeCode = code;
   let preferredLocales = { fr: "fr-FR", nl: "nl-NL", en: "en-US" };
   try {
