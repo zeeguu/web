@@ -1,38 +1,81 @@
-import Speech from "speak-tts";
+/*global chrome*/
+
+function voiceForLanguageCode(code, voices) {
+  var specificCode = code;
+
+  // console.log(voices.map((e) => e.lang + " " + e.name));
+
+  let preferredLocales = { fr: "fr-FR", nl: "nl-NL", en: "en-US", es: "es-ES" };
+  specificCode = preferredLocales[code] ?? code;
+
+  let languageVoices = voices.filter((x) => x.lang.startsWith(specificCode));
+  console.log(languageVoices.map((e) => e.lang + " " + e.name));
+  let voice = languageVoices[0];
+  console.log(voice);
+  return voice;
+}
 
 const ZeeguuSpeech = class {
   constructor(api, language) {
     this.api = api;
     this.language = language;
+    this.runningFromExtension = true;
 
-    this.speech = new Speech();
-    this.speech
-      .init()
-      .then((data) => {
-        // The "data" object contains the list of available voices and the voice synthesis params
-        if (language === "nl") {
-          let dutchVoice = _getDutchNetherlandsVoice(data.voices);
-          this.speech.setVoice(dutchVoice.name);
-        } else {
-          let randomVoice = _getRandomVoice(data.voices, language);
-          this.speech.setVoice(randomVoice.name);
-        }
-      })
-      .catch((e) => {
-        console.error("An error occured while initializing : ", e);
-      });
+    console.log("IN ZEEGUU SPEECH");
+    if (
+      typeof chrome !== "undefined" &&
+      typeof chrome.runtime !== "undefined"
+    ) {
+      try {
+        chrome.runtime.sendMessage({
+          type: "SPEAK",
+          options: {
+            text: "",
+            language: this.language,
+          },
+        });
+        console.log("we're running from extension");
+      } catch (error) {
+        this.runningFromExtension = false;
+      }
+    } else {
+      this.runningFromExtension = false;
+    }
+
+    const allVoicesObtained = new Promise(function (resolve, reject) {
+      let voices = window.speechSynthesis.getVoices();
+      if (voices.length !== 0) {
+        resolve(voices);
+      } else {
+        window.speechSynthesis.addEventListener("voiceschanged", function () {
+          voices = window.speechSynthesis.getVoices();
+          resolve(voices);
+        });
+      }
+    });
+
+    allVoicesObtained.then(
+      (voices) => (this.voice = voiceForLanguageCode(this.language, voices))
+    );
   }
 
   speakOut(word) {
-    if (this.language === "da") {
-      return playFromAPI(this.api, word);
-    } else {
-      return this.speech.speak({
-        text: word,
-        listeners: {
-          onend: () => {},
+    if (this.runningFromExtension) {
+      chrome.runtime.sendMessage({
+        type: "SPEAK",
+        options: {
+          text: word,
+          language: this.language,
         },
       });
+    } else {
+      if (this.language === "da") {
+        return playFromAPI(this.api, word);
+      } else {
+        var utterance = new SpeechSynthesisUtterance(word);
+        utterance.voice = this.voice;
+        speechSynthesis.speak(utterance);
+      }
     }
   }
 };
@@ -40,7 +83,7 @@ const ZeeguuSpeech = class {
 function playFromAPI(api, word) {
   return new Promise(function (resolve, reject) {
     api.getLinkToDanishSpeech(word, (linkToMp3) => {
-      console.log("about to play..." + linkToMp3);
+      // console.log("about to play..." + linkToMp3);
       var mp3Player = new Audio();
       mp3Player.src = linkToMp3;
       mp3Player.autoplay = true;
@@ -53,16 +96,5 @@ function playFromAPI(api, word) {
 function _randomElement(x) {
   return x[Math.floor(Math.random() * x.length)];
 }
-
-function _getRandomVoice(voices, language) {
-  let x = _randomElement(voices.filter((v) => v.lang.toLowerCase().includes(language)));
-  return x;
-}
-
-function _getDutchNetherlandsVoice(voices) {
-  let x = _randomElement(voices.filter((v) => v.lang.includes("NL")));
-  return x;
-}
-
 
 export default ZeeguuSpeech;
