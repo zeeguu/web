@@ -13,7 +13,7 @@ export const convertTime = (accumulatedTime, setTime) => {
     setTime(seconds + "s");
   } else {
     hours < 1
-      ? setTime(minutes + "m")
+      ? setTime(minutes + "m" + seconds + "s")
       : setTime(hours + strings.hours + minutes + "m");
   }
 };
