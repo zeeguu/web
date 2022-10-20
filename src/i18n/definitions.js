@@ -128,8 +128,9 @@ let strings = new LocalizedStrings(
         "The system also provides word pronunciation support. For some languages, e.g. Danish, this is actually very important.",
       personalizedPractise: "Personalized Practice",
       personalizedPractiseEllaboration1:
-        "Zeeguu generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand. We do this because contextual learning works better." +
-        " Different exercise types ensure that learners do not get bored",
+        "Zeeguu generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand. We do this because contextual learning works better.",
+      personalizedMultipleExerciseTypes:
+        " Different exercise types ensure that you do not get bored",
       personalizedPractiseEllaboration2:
         "Spaced repetition algorithms optimize your practice. Moreover, if you have limited time, our algorithms will prioritize frequent words in your exercises.",
 
