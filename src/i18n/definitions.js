@@ -119,16 +119,17 @@ let strings = new LocalizedStrings(
         "Our system continuously searches the net for texts based on your personalized interests. We believe that personally relevant texts will motivate you to study more.",
       personalizedRecommandationsEllaboration2:
         'Moreover, we aim to help you to find texts that are at the right difficulty level since you learn best when materials are challenging but not too difficult (this is what is called "studying in the zone of proximal development").',
-      easyTranslations: "Easy Translations",
+      easyTranslations: "Easy Translation & Pronounciation",
       easyTranslationsEllaboration1:
-        "If a text is challenging it will also include words that you don't understand.",
+        "If a text is challenging it will also include words that you don't understand or don't know how to pronounce.",
       easyTranslationsEllaboration2:
         "By using machine translation our system helps you obtain translations in any text with a simple click (or tap on touch-enabled devices).",
       easyTranslationsEllaboration3:
         "The system also provides word pronunciation support. For some languages, e.g. Danish, this is actually very important.",
       personalizedPractise: "Personalized Practice",
       personalizedPractiseEllaboration1:
-        "Zeeguu generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand. We do this because contextual learning works better.",
+        "Zeeguu generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand. We do this because contextual learning works better." +
+        " Different exercise types ensure that learners do not get bored",
       personalizedPractiseEllaboration2:
         "Spaced repetition algorithms optimize your practice. Moreover, if you have limited time, our algorithms will prioritize frequent words in your exercises.",
 
@@ -142,6 +143,10 @@ let strings = new LocalizedStrings(
       sep: "Sep",
       oct: "Oct",
       dec: "Dec",
+      moreThan1000Frenchies:
+        "🇫🇷 More than 1000 users have used Zeeguu to study French by now! Together, they have interacted with more than 10.000 articles and translated more than 250.000 words. Trés bien, nos amis! 🎉",
+      newsEmmaAndFrida:
+        "Emma and Frida, 👩‍🎓👩‍🎓, release the cool new browser extension that cleans up the visual noise on news pages letting the reader focus on the text.",
       betaTesters200K:
         "📈 The beta-testers of Zeeguu have collectively reached 200'000 translations in their foreign language readings ",
       mirceaKeynoteAtEASEAI: "👨‍🏫 Mircea gives a keynote about Zeeguu at the ",
