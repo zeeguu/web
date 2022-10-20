@@ -862,6 +862,8 @@ let strings = new LocalizedStrings(
       personalizedPractise: "Personlig træning",
       personalizedPractiseEllaboration1:
         'Zeeguu genererer personligt tilpassede ordforråds- øvelser ved at bruge den originale kontekst af dine "ikke-umiddelbart-forståede ord". Dette gør vi, fordi der er større udbytte af kontekstuel læring.',
+      personalizedMultipleExerciseTypes:
+        "Forskellige typer øvelser medvirker desuden til, at du ikke kommer til at kede dig.",
       personalizedPractiseEllaboration2:
         "Algoritmer til regelmæssig gentagelse sikrer, at du får den bedst mulige ordforrådstræning. Hvis du har begrænset tid, vil algoritmerne priortere træningen af dine hyppigt anvendte ord.",
 
