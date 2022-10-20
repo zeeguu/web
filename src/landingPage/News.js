@@ -17,9 +17,20 @@ export default function News() {
   return (
     <>
       <h1>{strings.news}</h1>
+      <h2>2022</h2>
+      {
+        (item(strings.aug),
+        (
+          <>
+            🇫🇷 More than 1000 users have used Zeeguu to study French since we
+            started beta-testing. Together, these French readers have read more
+            than 10.000 articles and translated more than 250.000 words during
+            their readings. Trés bien, nos amis! 🎉
+          </>
+        ))
+      }
 
       <h2>2021</h2>
-
       {item(
         strings.aug,
         <>
@@ -29,9 +40,7 @@ export default function News() {
           </a>
         </>
       )}
-
       {item(strings.jul, <>{strings.betaTesters200K}</>)}
-
       {item(
         strings.feb,
         <>
@@ -45,9 +54,7 @@ export default function News() {
           {strings.pernilleObtainsFundingSuffix}
         </>
       )}
-
       <h2>2020</h2>
-
       {item(
         strings.jan,
         <>
@@ -61,21 +68,13 @@ export default function News() {
           )
         </>
       )}
-
       {item(strings.sep, <>👨‍🎓 {strings.rotterdamStarts}</>)}
-
       {item(strings.aug, <> {strings.euroCall2020}</>)}
-
       {item(strings.jul, <>{strings.betaTesters40K}</>)}
-
       <h2>2019</h2>
-
       {item(strings.oct, <>{strings.betaTesters100K}</>)}
-
       {item(strings.sep, <>👩‍🎓 {strings.amsterdamStarts}</>)}
-
       {item(strings.aug, <>{strings.euroCall2019}</>)}
-
       <h2>2018</h2>
       {item(
         strings.jan,
@@ -92,13 +91,9 @@ export default function News() {
           <br />
         </>
       )}
-
       {item(strings.sep, <>👩‍🎓 {strings.groningenStarts}</>)}
-
       <h2>2017</h2>
-
       {item(strings.may, <> 👩‍🎓 {strings.gomarusStarts}</>)}
-
       <h2>2016</h2>
       {item(strings.dec, <> {strings.zeeguuIsReady}</>)}
     </>
