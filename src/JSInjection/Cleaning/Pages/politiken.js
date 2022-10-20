@@ -11,3 +11,11 @@ function removeSignUp(readabilityContent) {
   removeAllElementsIfExistent('[data-element-type="relation"]', div)
   return div.innerHTML;
 }
+
+export function cleanPolitikenBefore(documentClone) {
+  [".text-to-speech__disclaimer"].forEach((className) => {
+    removeAllElementsIfExistent(className, documentClone);
+  })
+  return documentClone;
+}
+
