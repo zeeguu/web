@@ -852,9 +852,9 @@ let strings = new LocalizedStrings(
         "Vores system søger løbende på nettet efter tekster baseret på dine personlige interesser. Vi mener, at personligt relevante tekster vil motivere dig til at studere mere.",
       personalizedRecommandationsEllaboration2:
         'Ydermere forsøger vi at finde tekster, der passer i sværhedsgrad. Det gør vi, fordi man lærer bedst, når materialet er udfordrende uden at være for svært. (Dette kaldes: "Læring i zonen for nærmeste udvikling").',
-      easyTranslations: "Lette oversættelser",
+      easyTranslations: "Nem oversættelse og udtale",
       easyTranslationsEllaboration1:
-        "Hvis en tekst er udfordrende, indeholder den også ord, du ikke forstår.",
+        "Hvis en tekst er udfordrende, indeholder den også ord, du ikke forstår, eller ikke ved, hvordan man skal udtale.",
       easyTranslationsEllaboration2:
         "Gennem maskinoversættelse hjælper vores system dig med at få oversættelser med et simpelt museklik (eller en skærmberøring på touch-skærme).",
       easyTranslationsEllaboration3:
@@ -877,8 +877,12 @@ let strings = new LocalizedStrings(
       oct: "Okt",
       sep: "Sep",
       dec: "Dec",
+      moreThan1000Frenchies:
+      "🇫🇷 Mere end 1000 brugere har nu brugt Zeeguu til at studere fransk! Sammen har de interageret med mere end 10.000 artikler og oversat mere end 250.000 ord. Trés bien, nos amis! 🎉",
+      newsEmmaAndFrida:
+      "Emma og Frida, 👩‍🎓👩‍🎓, lancerer den seje nye browserudvidelse, der fjerner den visuelle støj på nyhedssider og lader læseren fokusere på teksten.",
       betaTesters200K:
-        "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
+      "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
 
       mirceaKeynoteAtEASEAI: "Mircea giver en keynote om Zeeguu på ",
 
