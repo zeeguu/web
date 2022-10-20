@@ -20,9 +20,9 @@ export default function Contributors() {
 
       {member("Mircea Lungu", "Production & maintenance")}
 
-      {member("Emma Lerche Teglbrænder", "Browser Extension 2.0")}
+      {member("Emma Lerche Teglbrænder", "Browser Extension")}
 
-      {member("Frida Helene Beck-Larsen ", "Browser Extension 2.0")}
+      {member("Frida Helene Beck-Larsen ", "Browser Extension")}
 
       {member("Sara Tolstrup Husum", "Teacher Dashboard Modernization")}
 
