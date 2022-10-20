@@ -3,7 +3,7 @@ import { createDivWithContent, removeAllElementsIfExistent, removeFirstElementIf
 export const lexpressRegex = /(http|https):\/\/(.*)(.lexpress.fr).*/;
 
 export function cleanLexpressBefore(documentClone) {
-  [".legend"].forEach((className) => {
+  [".legend", ".abo-inread"].forEach((className) => {
     removeAllElementsIfExistent(className, documentClone);
   })
   return documentClone;
