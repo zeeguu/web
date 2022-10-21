@@ -119,9 +119,9 @@ let strings = new LocalizedStrings(
         "Our system continuously searches the net for texts based on your personalized interests. We believe that personally relevant texts will motivate you to study more.",
       personalizedRecommandationsEllaboration2:
         'Moreover, we aim to help you to find texts that are at the right difficulty level since you learn best when materials are challenging but not too difficult (this is what is called "studying in the zone of proximal development").',
-      easyTranslations: "Easy Translations",
+      easyTranslations: "Easy Translation & Pronounciation",
       easyTranslationsEllaboration1:
-        "If a text is challenging it will also include words that you don't understand.",
+        "If a text is challenging it will also include words that you don't understand or don't know how to pronounce.",
       easyTranslationsEllaboration2:
         "By using machine translation our system helps you obtain translations in any text with a simple click (or tap on touch-enabled devices).",
       easyTranslationsEllaboration3:
@@ -129,6 +129,8 @@ let strings = new LocalizedStrings(
       personalizedPractise: "Personalized Practice",
       personalizedPractiseEllaboration1:
         "Zeeguu generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand. We do this because contextual learning works better.",
+      personalizedMultipleExerciseTypes:
+        " Different exercise types ensure that you do not get bored",
       personalizedPractiseEllaboration2:
         "Spaced repetition algorithms optimize your practice. Moreover, if you have limited time, our algorithms will prioritize frequent words in your exercises.",
 
@@ -142,6 +144,10 @@ let strings = new LocalizedStrings(
       sep: "Sep",
       oct: "Oct",
       dec: "Dec",
+      moreThan1000Frenchies:
+        "🇫🇷 More than 1000 users have used Zeeguu to study French by now! Together, they have interacted with more than 10.000 articles and translated more than 250.000 words. Trés bien, nos amis! 🎉",
+      newsEmmaAndFrida:
+        "Emma and Frida, 👩‍🎓👩‍🎓, release the cool new browser extension that cleans up the visual noise on news pages letting the reader focus on the text.",
       betaTesters200K:
         "📈 The beta-testers of Zeeguu have collectively reached 200'000 translations in their foreign language readings ",
       mirceaKeynoteAtEASEAI: "👨‍🏫 Mircea gives a keynote about Zeeguu at the ",
@@ -846,9 +852,9 @@ let strings = new LocalizedStrings(
         "Vores system søger løbende på nettet efter tekster baseret på dine personlige interesser. Vi mener, at personligt relevante tekster vil motivere dig til at studere mere.",
       personalizedRecommandationsEllaboration2:
         'Ydermere forsøger vi at finde tekster, der passer i sværhedsgrad. Det gør vi, fordi man lærer bedst, når materialet er udfordrende uden at være for svært. (Dette kaldes: "Læring i zonen for nærmeste udvikling").',
-      easyTranslations: "Lette oversættelser",
+      easyTranslations: "Nem oversættelse og udtale",
       easyTranslationsEllaboration1:
-        "Hvis en tekst er udfordrende, indeholder den også ord, du ikke forstår.",
+        "Hvis en tekst er udfordrende, indeholder den også ord, du ikke forstår, eller ikke ved, hvordan man skal udtale.",
       easyTranslationsEllaboration2:
         "Gennem maskinoversættelse hjælper vores system dig med at få oversættelser med et simpelt museklik (eller en skærmberøring på touch-skærme).",
       easyTranslationsEllaboration3:
@@ -856,6 +862,8 @@ let strings = new LocalizedStrings(
       personalizedPractise: "Personlig træning",
       personalizedPractiseEllaboration1:
         'Zeeguu genererer personligt tilpassede ordforråds- øvelser ved at bruge den originale kontekst af dine "ikke-umiddelbart-forståede ord". Dette gør vi, fordi der er større udbytte af kontekstuel læring.',
+      personalizedMultipleExerciseTypes:
+        "Forskellige typer øvelser medvirker desuden til, at du ikke kommer til at kede dig.",
       personalizedPractiseEllaboration2:
         "Algoritmer til regelmæssig gentagelse sikrer, at du får den bedst mulige ordforrådstræning. Hvis du har begrænset tid, vil algoritmerne priortere træningen af dine hyppigt anvendte ord.",
 
@@ -869,8 +877,12 @@ let strings = new LocalizedStrings(
       oct: "Okt",
       sep: "Sep",
       dec: "Dec",
+      moreThan1000Frenchies:
+      "🇫🇷 Mere end 1000 brugere har nu brugt Zeeguu til at studere fransk! Sammen har de interageret med mere end 10.000 artikler og oversat mere end 250.000 ord. Trés bien, nos amis! 🎉",
+      newsEmmaAndFrida:
+      "Emma og Frida, 👩‍🎓👩‍🎓, lancerer den seje nye browserudvidelse, der fjerner den visuelle støj på nyhedssider og lader læseren fokusere på teksten.",
       betaTesters200K:
-        "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
+      "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
 
       mirceaKeynoteAtEASEAI: "Mircea giver en keynote om Zeeguu på ",
 

@@ -19,23 +19,9 @@ export default function News() {
       <h1>{strings.news}</h1>
       <h2>2022</h2>
 
-      {item(
-        strings.oct,
-        <>
-          🇫🇷 More than 1000 users have used Zeeguu to study French since we
-          started beta-testing. Together, these readers have read more than
-          10.000 articles and translated more than 250.000 words. Trés bien, nos
-          amis! 🎉
-        </>
-      )}
+      {item(strings.oct, strings.moreThan1000Frenchies)}
 
-      {item(
-        strings.aug,
-        <>
-          Emma and Frida release the cool new browser extension that works with
-          Chrome, Firefox, and Edge.
-        </>
-      )}
+      {item(strings.aug, strings.newsEmmaAndFrida)}
 
       <h2>2021</h2>
       {item(
