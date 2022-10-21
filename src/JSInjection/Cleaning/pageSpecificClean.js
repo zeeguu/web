@@ -16,7 +16,7 @@ import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
 import { cleanFaktBefore, faktRegex, removeFaktIFrames } from "./Pages/fakt";
 import { deleteIntervals, deleteTimeouts } from "../../popup/functions";
-import { politikenRegex, cleanPolitiken } from "./Pages/politiken";
+import { politikenRegex, cleanPolitiken, cleanPolitikenBefore } from "./Pages/politiken";
 import { scientiasRegex, cleanScientias } from "./Pages/scientias";
 import { egyszervoltRegex, cleanEgyszervolt } from "./Pages/egyszervolt";
 import { corriereRegex, removeCorriereScripts } from "./Pages/corriere";
@@ -54,7 +54,8 @@ export const cleanBeforeArray = [
   { regex: faktRegex, function: cleanFaktBefore },
   { regex: rzeczRegex, function: cleanRzeczBefore },
   { regex: lexpressRegex, function: cleanLexpressBefore },
-  { regex: marianneRegex, function: cleanMarianneBefore }
+  { regex: marianneRegex, function: cleanMarianneBefore },
+  { regex: politikenRegex, function: cleanPolitikenBefore }
 ];
 
 export const cleanAfterArray = [
