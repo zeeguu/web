@@ -11,6 +11,8 @@ import ReviewVocabulary from "./ReviewVocabulary";
 import SaveToZeeguu from "./SaveToZeeguu";
 import UserFeedback from "./UserFeedback";
 
+import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/DifficultyFeedbackBox";
+
 export function ReadArticle({
   articleId,
   api,
@@ -23,25 +25,31 @@ export function ReadArticle({
   pronouncing,
   url,
   setPersonalCopySaved,
-  personalCopySaved
+  personalCopySaved,
 }) {
-
   function reportProblem(e) {
-    document.getElementById('feedback-box').scrollIntoView();
-    document.getElementById('textarea-feedback').focus();
+    document.getElementById("feedback-box").scrollIntoView();
+    document.getElementById("textarea-feedback").focus();
   }
- 
-  if(articleImage){
-    if (articleImage.src === null){
-    articleImage = undefined
+
+  if (articleImage) {
+    if (articleImage.src === null) {
+      articleImage = undefined;
     }
   }
 
   return (
     <>
       <div className="article-container">
-        <StyledSmallButtonBlue onClick={reportProblem}>Report problems</StyledSmallButtonBlue>
-        <SaveToZeeguu api={api} articleId={articleId} setPersonalCopySaved={setPersonalCopySaved} personalCopySaved={personalCopySaved}/>
+        <StyledSmallButtonBlue onClick={reportProblem}>
+          Report problems
+        </StyledSmallButtonBlue>
+        <SaveToZeeguu
+          api={api}
+          articleId={articleId}
+          setPersonalCopySaved={setPersonalCopySaved}
+          personalCopySaved={personalCopySaved}
+        />
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}
@@ -51,12 +59,19 @@ export function ReadArticle({
         </h1>
         <p className="author">{author}</p>
         <hr />
-        {(articleImage === undefined)  ? null : (
-        <img id="zeeguuImage" alt={articleImage.alt} src={articleImage.src}></img>
+        {articleImage === undefined ? null : (
+          <img
+            id="zeeguuImage"
+            alt={articleImage.alt}
+            src={articleImage.src}
+          ></img>
         )}
         {interactiveTextArray.map((paragraph) => {
           const CustomTag = `${paragraph.tag}`;
-          if (HEADER_CONTENT.includes(paragraph.tag) || PARAGRAPH_CONTENT.includes(paragraph.tag)) {
+          if (
+            HEADER_CONTENT.includes(paragraph.tag) ||
+            PARAGRAPH_CONTENT.includes(paragraph.tag)
+          ) {
             return (
               <CustomTag>
                 <TranslatableText
@@ -86,8 +101,16 @@ export function ReadArticle({
             );
           }
         })}
-        <ReviewVocabulary articleId={articleId} api={api} openReview={openReview}/>
-        <UserFeedback api={api} articleId={articleId} url={url}/>
+
+        <DifficultyFeedbackBox api={api} articleId={articleId} />
+
+        <ReviewVocabulary
+          articleId={articleId}
+          api={api}
+          openReview={openReview}
+        />
+
+        <UserFeedback api={api} articleId={articleId} url={url} />
       </div>
     </>
   );
