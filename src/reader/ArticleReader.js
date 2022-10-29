@@ -14,6 +14,8 @@ import {
   StyledButton,
 } from "../teacher/styledComponents/TeacherButtons.sc";
 import * as s from "./ArticleReader.sc";
+import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
+import LikeFeedbackBox from "./LikeFeedbackBox";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -121,14 +123,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
       setArticleInfo(newArticleInfo);
     });
     api.logReaderActivity(api.STAR_ARTICLE, articleID, "", UMR_SOURCE);
-  }
-
-  function setLikedState(state) {
-    let newArticleInfo = { ...articleInfo, liked: state };
-    api.setArticleInfo(newArticleInfo, () => {
-      setArticleInfo(newArticleInfo);
-    });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, UMR_SOURCE);
   }
 
   if (!articleInfo) {
@@ -242,26 +236,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
         />
       </s.MainText>
 
-      <s.FeedbackBox>
-        <small>{strings.helpUsMsg}</small>
-
-        <h4>{strings.didYouEnjoyMsg}</h4>
-
-        <s.CenteredContent>
-          <s.WhiteButton
-            onClick={(e) => setLikedState(true)}
-            className={articleInfo.liked === true && "selected"}
-          >
-            {strings.yes}
-          </s.WhiteButton>
-          <s.WhiteButton
-            onClick={(e) => setLikedState(false)}
-            className={articleInfo.liked === false && "selected"}
-          >
-            {strings.no}
-          </s.WhiteButton>
-        </s.CenteredContent>
-      </s.FeedbackBox>
+      <DifficultyFeedbackBox api={api} articleID={articleID} />
 
       <s.FeedbackBox>
         <h2>{strings.reviewVocabulary}</h2>
