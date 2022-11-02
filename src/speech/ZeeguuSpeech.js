@@ -93,8 +93,4 @@ function playFromAPI(api, word) {
   });
 }
 
-function _randomElement(x) {
-  return x[Math.floor(Math.random() * x.length)];
-}
-
 export default ZeeguuSpeech;
