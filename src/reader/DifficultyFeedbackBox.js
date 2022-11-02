@@ -1,6 +1,7 @@
 import * as s from "./ArticleReader.sc";
 
 import { useState } from "react";
+import { random } from "../utils/basic/arrays";
 
 let FEEDBACK_OPTIONS = { "Too Easy": 1, Ok: 3, "Too Hard": 5 };
 
@@ -17,17 +18,19 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
   }
 
   if (answerSubmitted) {
-    return <s.FeedbackBox>Thank You!</s.FeedbackBox>;
+    return (
+      <s.FeedbackBox>
+        <p align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</p>
+      </s.FeedbackBox>
+    );
   }
 
   return (
     <s.FeedbackBox>
       <small>
-        Let's ensure that Zeeguu finds articles of the right difficulty for you
-        in the future
+        To improve future recommendations please answer the following:
       </small>
-
-      <h4>How was the difficulty of the article for you?</h4>
+      <h4>How difficult was this article for you?</h4>
 
       <s.CenteredContent>
         {Object.keys(FEEDBACK_OPTIONS).map((option) => (
