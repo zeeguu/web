@@ -102,7 +102,7 @@ export function ReadArticle({
           }
         })}
 
-        <DifficultyFeedbackBox api={api} articleId={articleId} />
+        <DifficultyFeedbackBox api={api} articleID={articleId} />
 
         <ReviewVocabulary
           articleId={articleId}
