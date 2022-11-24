@@ -1,9 +1,5 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.prototype.search = function (term, callback) {
-  return this._getJSON(`search/${term}`, callback);
-};
-
 Zeeguu_API.prototype.getInterestingTopics = function (callback) {
   this._getJSON("interesting_topics", callback);
 };
