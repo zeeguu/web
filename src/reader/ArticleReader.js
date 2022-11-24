@@ -15,7 +15,7 @@ import {
 } from "../teacher/styledComponents/TeacherButtons.sc";
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
-import LikeFeedbackBox from "./LikeFeedbackBox";
+import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -228,6 +228,18 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
       <br />
 
+      {articleInfo.video ? (
+        <iframe
+          width="620"
+          height="415"
+          src={
+            "https://www.youtube.com/embed/" +
+            extractVideoIDFromURL(articleInfo.url)
+          }
+        ></iframe>
+      ) : (
+        ""
+      )}
       <s.MainText>
         <TranslatableText
           interactiveText={interactiveText}
