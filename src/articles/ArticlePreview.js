@@ -24,6 +24,10 @@ export default function ArticleOverview({
       </a>
     );
 
+    if (article.video) {
+      return open_in_zeeguu;
+    }
+
     if (!Feature.extension_experiment1() && !hasExtension) {
       // if the feature is not enabled and if they don't have the extension we always open in zeeguu
       return open_in_zeeguu;
