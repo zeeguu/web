@@ -24,16 +24,19 @@ const OrangeRoundButton = styled(RoundButton)`
 `;
 
 const ClosePopupButton = styled.div`
-  height: 1.2em;
-  width: 1.2em;
+  height: 1.5em;
+  width: 1.4em;
   border-radius: 50%;
   float: right;
   cursor: pointer;
-  background-color: orange;
-  color: white;
   font-size: 0.8em;
-  padding: 0.1em;
-  font-weight: 400;
+
+  font-weight: 500;
+  background-color: white;
+  color: orange;
+  border: 1px solid orange;
+  text-align: center;
+  margin-left: 0.2em;
 `;
 
 const BigSquareButton = styled(RoundButton)`
