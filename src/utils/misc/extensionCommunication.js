@@ -9,7 +9,9 @@ function checkExtensionInstalled(setHasExtension) {
   if (runningInChromeDesktop()) {
     if (chrome.runtime) {
       chrome.runtime.sendMessage(
-        process.env.REACT_APP_EXTENSION_ID, "You are on Zeeguu.org!", function (response) {
+        process.env.REACT_APP_EXTENSION_ID,
+        "You are on Zeeguu.org!",
+        function (response) {
           if (response) {
             setHasExtension(true);
           } else {
@@ -24,6 +26,8 @@ function checkExtensionInstalled(setHasExtension) {
   if (runningInFirefoxDesktop()) {
     let firefoxExtension;
     window.addEventListener("message", function (event) {
+      console.log(">>>>>>");
+      console.log(event);
       if (
         event.source == window &&
         event.data.direction === "from-content-script"

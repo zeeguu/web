@@ -23,4 +23,4 @@ function isMobile() {
   );
 }
 
-export { isMobile, runningInChromeDesktop,runningInFirefoxDesktop };
+export { isMobile, runningInChromeDesktop, runningInFirefoxDesktop };
