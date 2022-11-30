@@ -27,27 +27,28 @@ const OrangeRoundButton = styled(RoundButton)`
 const ClearSearchButton = styled.div`
   display: block;
   float: left;
-  margin: 3px;
+  margin-top: 3px;
+  margin-left: -1.6em;
   box-sizing: border-box;
-  width: 1.3em;
-  height: 1.3em;
+  width: 1.4em;
+  height: 1.4em;
 
   border-width: 3px;
   border-style: solid;
-  border-color: ${zeeguuOrange};
+  border-color: white;
   border-radius: 100%;
   background: -webkit-linear-gradient(
       -45deg,
       transparent 0%,
       transparent 46%,
-      white 46%,
-      white 56%,
+      gray 46%,
+      gray 56%,
       transparent 56%,
       transparent 100%
     ),
-    -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, white 46%, white
+    -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, gray 46%, gray
           56%, transparent 56%, transparent 100%);
-  background-color: ${zeeguuOrange};
+  background-color: white;
 
   transition: all 0.3s ease;
 `;
