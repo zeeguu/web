@@ -24,6 +24,7 @@ function checkExtensionInstalled(setHasExtension) {
     }
   }
   if (runningInFirefoxDesktop()) {
+    console.log("adding the listener for the message from the extension");
     let firefoxExtension;
     window.addEventListener("message", function (event) {
       console.log(">>>>>>");
@@ -32,7 +33,7 @@ function checkExtensionInstalled(setHasExtension) {
         event.source == window &&
         event.data.direction === "from-content-script"
       ) {
-        setHasExtension(true);
+        console.setHasExtension(true);
         firefoxExtension = true;
       }
       if (!firefoxExtension) {
