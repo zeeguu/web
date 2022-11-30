@@ -203,9 +203,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
       <s.WhiteButton small gray onClick={reportBroken}>
         {strings.reportBrokenArticle}
       </s.WhiteButton>
-
       <br />
-
       <s.Title>
         <TranslatableText
           interactiveText={interactiveTitle}
@@ -220,14 +218,20 @@ export default function ArticleReader({ api, teacherArticleID }) {
         />
       </s.BookmarkButton>
       <br />
-      <div>{articleInfo.authors}</div>
-      <a href={articleInfo.url} target="_blank" rel="noreferrer" id="source">
-        {strings.source}
-      </a>
-      <hr />
 
+      <div>
+        {articleInfo.authors && "Author(s):"} {articleInfo.authors}
+      </div>
       <br />
-
+      <small>
+        From: &nbsp;
+        <a href={articleInfo.url} target="_blank" rel="noreferrer" id="source">
+          {articleInfo.url.slice(0, 80) +
+            (articleInfo.url.length > 80 ? "..." : "")}
+        </a>
+      </small>
+      <hr />
+      <br />
       {articleInfo.video ? (
         <iframe
           width="620"
@@ -247,9 +251,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </s.MainText>
-
       <DifficultyFeedbackBox api={api} articleID={articleID} />
-
       <s.FeedbackBox>
         <h2>{strings.reviewVocabulary}</h2>
         <small>{strings.reviewVocabExplanation}</small>

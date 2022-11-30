@@ -14,7 +14,6 @@ export default function ArticleOverview({
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
-  console.log("Article preview generated with has extension: " + hasExtension);
   function titleLink(article) {
     let open_in_zeeguu = (
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
