@@ -28,7 +28,7 @@ function checkExtensionInstalled(setHasExtension) {
     window.addEventListener("message", function (event) {
       if (
         event.source == window &&
-        event.data.message === "Greetings from the Zeeguu Extension"
+        event.data.direction === "from-content-script"
       ) {
         setHasExtension(true);
         firefoxExtension = true;
