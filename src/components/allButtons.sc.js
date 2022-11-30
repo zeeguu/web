@@ -23,6 +23,7 @@ const OrangeRoundButton = styled(RoundButton)`
   background-color: ${zeeguuOrange};
 `;
 
+// from: https://stackoverflow.com/questions/10019797/pure-css-close-button
 const ClearSearchButton = styled.div`
   display: block;
   float: left;
