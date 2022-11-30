@@ -16,7 +16,7 @@ export default function SearchField({ query }) {
   return (
     <s.SearchField>
       <input
-        style={{ float: "left" }}
+        style={{ float: "left", fontWeight: query ? "bold" : "normal" }}
         className="searchTextfieldInput"
         type="text"
         id="search-expandable"
