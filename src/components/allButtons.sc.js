@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "./colors";
+import { zeeguuOrange, zeeguuLightYellow } from "./colors";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -27,14 +27,14 @@ const OrangeRoundButton = styled(RoundButton)`
 const ClearSearchButton = styled.div`
   display: block;
   float: left;
-  margin: 2px;
+  margin: 3px;
   box-sizing: border-box;
-  width: 1.5em;
-  height: 1.5em;
+  width: 1.3em;
+  height: 1.3em;
 
   border-width: 3px;
   border-style: solid;
-  border-color: orange;
+  border-color: ${zeeguuOrange};
   border-radius: 100%;
   background: -webkit-linear-gradient(
       -45deg,
@@ -47,7 +47,7 @@ const ClearSearchButton = styled.div`
     ),
     -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, white 46%, white
           56%, transparent 56%, transparent 100%);
-  background-color: orange;
+  background-color: ${zeeguuOrange};
 
   transition: all 0.3s ease;
 `;
