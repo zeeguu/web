@@ -57,7 +57,7 @@ export default function ArticleOverview({
         <img
           style={{ float: "left", marginRight: "1em" }}
           src={
-            "http://img.youtube.com/vi/" +
+            "https://img.youtube.com/vi/" +
             extractVideoIDFromURL(article.url) +
             "/default.jpg"
           }
