@@ -23,20 +23,32 @@ const OrangeRoundButton = styled(RoundButton)`
   background-color: ${zeeguuOrange};
 `;
 
-const ClosePopupButton = styled.div`
+const ClearSearchButton = styled.div`
+  display: block;
+  float: left;
+  margin: 2px;
+  box-sizing: border-box;
+  width: 1.5em;
   height: 1.5em;
-  width: 1.4em;
-  border-radius: 50%;
-  float: right;
-  cursor: pointer;
-  font-size: 0.8em;
 
-  font-weight: 500;
-  background-color: white;
-  color: orange;
-  border: 1px solid orange;
-  text-align: center;
-  margin-left: 0.2em;
+  border-width: 3px;
+  border-style: solid;
+  border-color: orange;
+  border-radius: 100%;
+  background: -webkit-linear-gradient(
+      -45deg,
+      transparent 0%,
+      transparent 46%,
+      white 46%,
+      white 56%,
+      transparent 56%,
+      transparent 100%
+    ),
+    -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, white 46%, white
+          56%, transparent 56%, transparent 100%);
+  background-color: orange;
+
+  transition: all 0.3s ease;
 `;
 
 const BigSquareButton = styled(RoundButton)`
@@ -50,4 +62,4 @@ const BigSquareButton = styled(RoundButton)`
   font-size: 18px;
 `;
 
-export { RoundButton, OrangeRoundButton, BigSquareButton, ClosePopupButton };
+export { RoundButton, OrangeRoundButton, BigSquareButton, ClearSearchButton };
