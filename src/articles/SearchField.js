@@ -1,7 +1,7 @@
 import { useState } from "react";
 import strings from "../i18n/definitions";
 import * as s from "./SearchField.sc";
-import { ClosePopupButton } from "../components/allButtons.sc";
+import { ClearSearchButton } from "../components/allButtons.sc";
 
 export default function SearchField({ query }) {
   const [searchTerm, setSearchTerm] = useState(query);
@@ -16,6 +16,7 @@ export default function SearchField({ query }) {
   return (
     <s.SearchField>
       <input
+        style={{ float: "left" }}
         className="searchTextfieldInput"
         type="text"
         id="search-expandable"
@@ -26,9 +27,9 @@ export default function SearchField({ query }) {
       />
 
       {query && (
-        <ClosePopupButton onClick={(e) => (window.location = "/articles")}>
-          X
-        </ClosePopupButton>
+        <a onClick={(e) => (window.location = "/articles")}>
+          <ClearSearchButton />
+        </a>
       )}
     </s.SearchField>
   );
