@@ -2,7 +2,6 @@ import FindArticles from "./FindArticles";
 import BookmarkedArticles from "./BookmarkedArticles";
 
 import { PrivateRoute } from "../PrivateRoute";
-import Search from "./Search";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
@@ -33,11 +32,6 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
           component={FindArticles}
           hasExtension={hasExtension}
           isChrome={isChrome}
-        />
-        <PrivateRoute
-          path="/articles/search/:term"
-          api={api}
-          component={Search}
         />
         <PrivateRoute
           path="/articles/bookmarked"
