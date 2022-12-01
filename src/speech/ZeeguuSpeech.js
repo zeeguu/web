@@ -9,9 +9,9 @@ function voiceForLanguageCode(code, voices) {
   specificCode = preferredLocales[code] ?? code;
 
   let languageVoices = voices.filter((x) => x.lang.startsWith(specificCode));
-  console.log(languageVoices.map((e) => e.lang + " " + e.name));
+  // console.log(languageVoices.map((e) => e.lang + " " + e.name));
   let voice = languageVoices[0];
-  console.log(voice);
+  // console.log(voice);
   return voice;
 }
 
@@ -21,7 +21,6 @@ const ZeeguuSpeech = class {
     this.language = language;
     this.runningFromExtension = true;
 
-    console.log("IN ZEEGUU SPEECH");
     if (
       typeof chrome !== "undefined" &&
       typeof chrome.runtime !== "undefined"
@@ -34,7 +33,7 @@ const ZeeguuSpeech = class {
             language: this.language,
           },
         });
-        console.log("we're running from extension");
+        // console.log("we're running from extension");
       } catch (error) {
         this.runningFromExtension = false;
       }
