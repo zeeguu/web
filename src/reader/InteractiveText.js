@@ -11,9 +11,7 @@ export default class InteractiveText {
   ) {
     this.articleInfo = articleInfo;
     this.api = api;
-
-    // If the source is not specified - we don't log anything
-    // This is the case for the exercises
+    this.translationEvent = translationEvent;
     this.source = source;
     //
     this.paragraphs = content.split(/\n\n/);
