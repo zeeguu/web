@@ -74,10 +74,22 @@ export default function ArticleReader({ api, teacherArticleID }) {
   useEffect(() => {
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
-        new InteractiveText(articleInfo.content, articleInfo, api, UMR_SOURCE)
+        new InteractiveText(
+          articleInfo.content,
+          articleInfo,
+          api,
+          api.TRANSLATE_TEXT,
+          UMR_SOURCE
+        )
       );
       setInteractiveTitle(
-        new InteractiveText(articleInfo.title, articleInfo, api, UMR_SOURCE)
+        new InteractiveText(
+          articleInfo.title,
+          articleInfo,
+          api,
+          api.TRANSLATE_TEXT,
+          UMR_SOURCE
+        )
       );
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);
