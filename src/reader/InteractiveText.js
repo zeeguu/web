@@ -2,9 +2,18 @@ import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 export default class InteractiveText {
-  constructor(content, articleInfo, api, source) {
+  constructor(
+    content,
+    articleInfo,
+    api,
+    translationEvent = api.TRANSLATE_TEXT,
+    source = ""
+  ) {
     this.articleInfo = articleInfo;
     this.api = api;
+
+    // If the source is not specified - we don't log anything
+    // This is the case for the exercises
     this.source = source;
     //
     this.paragraphs = content.split(/\n\n/);
@@ -22,7 +31,6 @@ export default class InteractiveText {
   translate(word, onSuccess) {
     let context = this.getContext(word);
 
-    console.log(word);
     word = word.fuseWithNeighborsIfNeeded(this.api);
 
     this.api
@@ -47,7 +55,7 @@ export default class InteractiveText {
       });
 
     this.api.logReaderActivity(
-      this.api.TRANSLATE_TEXT,
+      this.translationEvent,
       this.articleInfo.id,
       word.word,
       this.source
