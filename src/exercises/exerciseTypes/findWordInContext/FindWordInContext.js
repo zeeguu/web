@@ -36,7 +36,12 @@ export default function FindWordInContext({
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
-        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api, UMR_SOURCE)
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE"
+        )
       );
       setArticleInfo(articleInfo);
     });
