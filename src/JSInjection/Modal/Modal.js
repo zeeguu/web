@@ -37,13 +37,12 @@ export function Modal({
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(false);
 
-  const [articleId, setArticleId] = useState();
+  const [articleInfo, setArticleInfo] = useState();
   const [interactiveTextArray, setInteractiveTextArray] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [nativeLang, setNativeLang] = useState();
   const [username, setUsername] = useState();
 
-  const [articleLanguage, setArticleLanguage] = useState();
   const [loadingPersonalCopy, setLoadingPersonalCopy] = useState(true);
   const [personalCopySaved, setPersonalCopySaved] = useState(false);
   const [articleImage, setarticleImage] = useState();
@@ -51,15 +50,19 @@ export function Modal({
   const [logContext, setLogContext] = useState("ARTICLE");
   const logContextRef = useRef({});
   logContextRef.current = logContext;
-  const articleIdRef = useRef({});
-  articleIdRef.current = articleId;
+  const articleInfoRef = useRef({});
+  articleInfoRef.current = articleInfo;
 
   useUILanguage();
+
+  function articleId() {
+    return articleInfoRef.current.id;
+  }
 
   function logFocus() {
     api.logReaderActivity(
       logContextRef.current + " FOCUSED",
-      articleIdRef.current,
+      articleId(),
       "",
       "EXTENSION"
     );
@@ -68,7 +71,7 @@ export function Modal({
   function logBlur() {
     api.logReaderActivity(
       logContextRef.current + " LOST FOCUS",
-      articleIdRef.current,
+      articleId(),
       "",
       "EXTENSION"
     );
@@ -87,8 +90,9 @@ export function Modal({
           return alert("not readable");
         }
         let artinfo = JSON.parse(result_dict);
-        setArticleId(artinfo.id);
-        setArticleLanguage(artinfo.language);
+        console.log("ARTICLE INFO in the Modal JS constructore...: ");
+        console.dir(artinfo);
+        setArticleInfo(artinfo);
       });
     }
     getNativeLanguage().then((result) => setNativeLang(result));
@@ -105,15 +109,7 @@ export function Modal({
   }, []);
 
   useEffect(() => {
-    if (articleId !== undefined) {
-      let articleInfo = {
-        url: url,
-        content: content,
-        id: articleId,
-        title: title,
-        language: articleLanguage,
-        starred: false,
-      };
+    if (articleInfo !== undefined) {
       let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
       setInteractiveTextArray(arrInteractive);
       let itTitle = new InteractiveText(
@@ -124,7 +120,12 @@ export function Modal({
         EXTENSION_SOURCE
       );
       setInteractiveTitle(itTitle);
-      api.logReaderActivity(api.OPEN_ARTICLE, articleId, "", EXTENSION_SOURCE);
+      api.logReaderActivity(
+        api.OPEN_ARTICLE,
+        articleId(),
+        "",
+        EXTENSION_SOURCE
+      );
 
       api.getOwnTexts((articles) => {
         checkOwnTexts(articles);
@@ -136,28 +137,28 @@ export function Modal({
         setTimeout(() => {
           if (getModalClass.item(0) !== undefined) {
             getModalClass.item(0).addEventListener("scroll", function () {
-              onScroll(api, articleId, EXTENSION_SOURCE);
+              onScroll(api, articleId(), EXTENSION_SOURCE);
             });
           }
         }, 0);
       }
     }
     cleanDOMAfter(url);
-  }, [articleId]);
+  }, [articleInfo]);
 
   localStorage.setItem("native_language", nativeLang);
   localStorage.setItem("name", username);
 
   function handleClose() {
     setModalIsOpen(false);
-    api.logReaderActivity("ARTICLE CLOSED", articleId, "", EXTENSION_SOURCE);
+    api.logReaderActivity("ARTICLE CLOSED", articleId(), "", EXTENSION_SOURCE);
     window.removeEventListener("focus", logFocus);
     window.removeEventListener("blur", logBlur);
     document.getElementById("scrollHolder") !== null &&
       document
         .getElementById("scrollHolder")
         .removeEventListener("scroll", function () {
-          onScroll(api, articleId, EXTENSION_SOURCE);
+          onScroll(api, articleId(), EXTENSION_SOURCE);
         });
     location.reload();
   }
@@ -169,7 +170,7 @@ export function Modal({
   function checkOwnTexts(articles) {
     if (articles.length !== 0) {
       for (var i = 0; i < articles.length; i++) {
-        if (articles[i].id === articleId) {
+        if (articles[i].id === articleId()) {
           setPersonalCopySaved(true);
           break;
         }
@@ -191,7 +192,7 @@ export function Modal({
     setLogContext("EXERCISES");
     api.logReaderActivity(
       api.TO_EXERCISES_AFTER_REVIEW,
-      articleId,
+      articleId(),
       "",
       EXTENSION_SOURCE
     );
@@ -245,7 +246,7 @@ export function Modal({
           </StyledHeading>
           {readArticleOpen === true && (
             <ReadArticle
-              articleId={articleId}
+              articleId={articleId()}
               api={api}
               author={author}
               interactiveTextArray={interactiveTextArray}
@@ -263,7 +264,7 @@ export function Modal({
             <WordsForArticleModal
               className="wordsForArticle"
               api={api}
-              articleID={articleId}
+              articleID={articleId()}
               openExercises={openExercises}
               openArticle={openArticle}
             />
@@ -273,7 +274,7 @@ export function Modal({
               <Exercises
                 className="exercises"
                 api={api}
-                articleID={articleId}
+                articleID={articleId()}
                 source={EXTENSION_SOURCE}
                 backButtonAction={openArticle}
                 keepExercisingAction={reloadExercises}
