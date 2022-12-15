@@ -292,7 +292,7 @@ let strings = new LocalizedStrings(
 
       //EmptyArticles
       noArticles:
-        'We have not collected articles in the language you want to study. To read articles with the help of Zeeguu you can instead browse the web and read articles with the Chrome or Firefox extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+        'We can not find articles in the language you want to study and for your current interests. Consider changing your interests. Alternatively read articles with the help of the Zeeguu browser extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
       newssites: "Examples of some of the most popular news sites are:",
 
       //ExerciseType
@@ -878,11 +878,11 @@ let strings = new LocalizedStrings(
       sep: "Sep",
       dec: "Dec",
       moreThan1000Frenchies:
-      "🇫🇷 Mere end 1000 brugere har nu brugt Zeeguu til at studere fransk! Sammen har de interageret med mere end 10.000 artikler og oversat mere end 250.000 ord. Trés bien, nos amis! 🎉",
+        "🇫🇷 Mere end 1000 brugere har nu brugt Zeeguu til at studere fransk! Sammen har de interageret med mere end 10.000 artikler og oversat mere end 250.000 ord. Trés bien, nos amis! 🎉",
       newsEmmaAndFrida:
-      "Emma og Frida, 👩‍🎓👩‍🎓, lancerer den seje nye browserudvidelse, der fjerner den visuelle støj på nyhedssider og lader læseren fokusere på teksten.",
+        "Emma og Frida, 👩‍🎓👩‍🎓, lancerer den seje nye browserudvidelse, der fjerner den visuelle støj på nyhedssider og lader læseren fokusere på teksten.",
       betaTesters200K:
-      "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
+        "Beta-testerne af Zeeguu har nået 200.000 oversættelser i deres fremmedsprogslæsning.",
 
       mirceaKeynoteAtEASEAI: "Mircea giver en keynote om Zeeguu på ",
 

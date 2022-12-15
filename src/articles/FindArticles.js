@@ -111,9 +111,16 @@ export default function NewArticles({ api }) {
           hasExtension={hasExtension}
         />
       ))}
-      <ShowLinkRecommendationsIfNoArticles
-        articleList={articleList}
-      ></ShowLinkRecommendationsIfNoArticles>
+
+      {searchQuery && articleList.length === 0 && (
+        <>No articles found that match your search</>
+      )}
+
+      {!searchQuery && (
+        <ShowLinkRecommendationsIfNoArticles
+          articleList={articleList}
+        ></ShowLinkRecommendationsIfNoArticles>
+      )}
     </>
   );
 }
