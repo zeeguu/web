@@ -28,6 +28,10 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+function multipleAuthors(authors_str) {
+  return authors_str.split(",").length > 1;
+}
+
 export function onScroll(api, articleID, source) {
   let _current_time = new Date();
   let current_time = _current_time.getTime();
@@ -232,7 +236,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
       <br />
 
       <div>
-        {articleInfo.authors && "Author(s):"} {articleInfo.authors}
+        {articleInfo.authors &&
+          "Author" +
+            (multipleAuthors(articleInfo.authors) ? "s" : "") +
+            ": "}{" "}
+        {articleInfo.authors}
       </div>
       <br />
       {articleInfo.url && (
