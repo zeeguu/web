@@ -235,13 +235,20 @@ export default function ArticleReader({ api, teacherArticleID }) {
         {articleInfo.authors && "Author(s):"} {articleInfo.authors}
       </div>
       <br />
-      <small>
-        From: &nbsp;
-        <a href={articleInfo.url} target="_blank" rel="noreferrer" id="source">
-          {articleInfo.url.slice(0, 80) +
-            (articleInfo.url.length > 80 ? "..." : "")}
-        </a>
-      </small>
+      {articleInfo.url && (
+        <small>
+          From: &nbsp;
+          <a
+            href={articleInfo.url}
+            target="_blank"
+            rel="noreferrer"
+            id="source"
+          >
+            {articleInfo.url.slice(0, 80) +
+              (articleInfo.url.length > 80 ? "..." : "")}
+          </a>
+        </small>
+      )}
       <hr />
       <br />
       {articleInfo.video ? (
