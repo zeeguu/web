@@ -16,6 +16,8 @@ import {
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
+import ArticleAuthors from "./ArticleAuthors";
+import ArticleSource from "./ArticleSource";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -26,10 +28,6 @@ export const UMR_SOURCE = "UMR";
 // the query string for you.
 function useQuery() {
   return new URLSearchParams(useLocation().search);
-}
-
-function multipleAuthors(authors_str) {
-  return authors_str.split(",").length > 1;
 }
 
 export function onScroll(api, articleID, source) {
@@ -216,6 +214,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
           </button>
         </s.Toolbar>
       </PopupButtonWrapper>
+
       <s.WhiteButton small gray onClick={reportBroken}>
         {strings.reportBrokenArticle}
       </s.WhiteButton>
@@ -233,32 +232,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
           toggleBookmarkedState={toggleBookmarkedState}
         />
       </s.BookmarkButton>
-      <br />
 
-      <div>
-        {articleInfo.authors &&
-          "Author" +
-            (multipleAuthors(articleInfo.authors) ? "s" : "") +
-            ": "}{" "}
-        {articleInfo.authors}
-      </div>
-      <br />
-      {articleInfo.url && (
-        <small>
-          From: &nbsp;
-          <a
-            href={articleInfo.url}
-            target="_blank"
-            rel="noreferrer"
-            id="source"
-          >
-            {articleInfo.url.slice(0, 80) +
-              (articleInfo.url.length > 80 ? "..." : "")}
-          </a>
-        </small>
-      )}
+      <ArticleSource url={articleInfo.url} />
+      <ArticleAuthors articleInfo={articleInfo} />
       <hr />
-      <br />
+
       {articleInfo.video ? (
         <iframe
           width="620"
@@ -271,6 +249,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
       ) : (
         ""
       )}
+
       <s.MainText>
         <TranslatableText
           interactiveText={interactiveText}
@@ -278,6 +257,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </s.MainText>
+
       <DifficultyFeedbackBox api={api} articleID={articleID} />
       <s.FeedbackBox>
         <h2>{strings.reviewVocabulary}</h2>
