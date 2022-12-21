@@ -18,6 +18,7 @@ import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import ArticleAuthors from "./ArticleAuthors";
 import ArticleSource from "./ArticleSource";
+import ReportBroken from "./ReportBroken";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -161,15 +162,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     saveArticleToOwnTexts();
   };
 
-  function reportBroken(e) {
-    let answer = prompt("What is wrong with the article?");
-    if (answer) {
-      let feedback = "broken_" + answer.replace(/ /g, "_");
-      api.logReaderActivity(api.USER_FEEDBACK, articleID, feedback, UMR_SOURCE);
-      setTimeout(() => history.push("/articles"), 500);
-    }
-  }
-
   return (
     <s.ArticleReader>
       <PopupButtonWrapper>
@@ -215,10 +207,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
         </s.Toolbar>
       </PopupButtonWrapper>
 
-      <s.WhiteButton small gray onClick={reportBroken}>
-        {strings.reportBrokenArticle}
-      </s.WhiteButton>
-      <br />
+      <ReportBroken
+        api={api}
+        UMR_SOURCE={UMR_SOURCE}
+        history={history}
+        articleID={articleID}
+      />
+
       <s.Title>
         <TranslatableText
           interactiveText={interactiveTitle}
