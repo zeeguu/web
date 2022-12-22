@@ -1,16 +1,12 @@
 import LocalizedStrings from "localized-strings";
 
 let compactFormat = {
-  userDashboardTitle: {
-    en: "Statistics",
-    da: "Statistik",
-  },
   tabActivity: {
-    en: "Activity",
-    da: "Aktivitet",
+    en: "Time",
+    da: "Time",
   },
   tabWords: {
-    en: "Words",
+    en: "Translations",
     da: "Ord",
   },
   minutes: {

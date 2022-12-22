@@ -9,20 +9,6 @@ const UserDashboardTopContainer = styled.div`
   text-align: center;
 `;
 
-const UserDashboardTitle = styled.h1`
-  font-weight: 300;
-  font-size: 2.5em;
-  line-height: 1em;
-  letter-spacing: 0.05em;
-  text-align: center;
-  margin-top: 1em;
-
-  @media screen and (max-width: 768px) {
-    font-size: 1em;
-    padding: 0.5em;
-  }
-`;
-
 const UserDashboardHelperText = styled(s.TopMessage)`
   @media screen and (max-width: 768px) {
     font-size: 0.8em;
@@ -135,7 +121,6 @@ const UserDashboardFeedbackButton = styled(OrangeButton)`
 `;
 
 export {
-  UserDashboardTitle,
   UserDashboardTopContainer,
   UserDashboardHelperText,
   UserDashBoardTabs,
