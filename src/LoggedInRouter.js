@@ -8,18 +8,16 @@ import Settings from "./pages/Settings";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import React from "react";
+import ReadingHistory from "./words/WordHistory";
 
 export default function LoggedInRouter({ api, setUser }) {
-
   return (
     <SideBar api={api}>
-      <PrivateRoute
-        path="/articles"
-        api={api}
-        component={ArticlesRouter}
-      />
+      <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
       <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
       <PrivateRoute path="/words" api={api} component={WordsRouter} />
+
+      <PrivateRoute path="/history" api={api} component={ReadingHistory} />
 
       <PrivateRoute path="/teacher" api={api} component={TeacherRouter} />
 
