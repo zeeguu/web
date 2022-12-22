@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import strings from "../i18n/definitions";
 
 export default function StudentSpecificSidebarOptions({
@@ -8,46 +8,55 @@ export default function StudentSpecificSidebarOptions({
 }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
 
+  const path = useLocation().pathname;
+  console.log(path);
+
+  function SidebarLink({ text, to }) {
+    // if path starts with to, then we are on that page
+    const active = path.startsWith(to);
+    const fontWeight = active ? "700" : "500";
+
+    return (
+      <div className="navigationLink">
+        <Link to={to} onClick={resetSidebarToDefault}>
+          <small style={{ fontWeight: fontWeight }}>{text}</small>
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="navigationLink">
-        <Link to="/articles" onClick={resetSidebarToDefault}>
-          <small>{strings.articles}</small>
-        </Link>
-      </div>
+      <SidebarLink text={strings.articles} to="/articles" />
 
-      <div className="navigationLink">
-        <Link to="/history" onClick={resetSidebarToDefault}>
-          <small>{strings.history}</small>
-        </Link>
-      </div>
+      <SidebarLink text={strings.words} to="/words" />
 
-      <div className="navigationLink">
-        <Link to="/words/translated" onClick={resetSidebarToDefault}>
-          <small>{strings.words}</small>
-        </Link>
-      </div>
-      <div className="navigationLink">
-        <Link to="/exercises" onClick={resetSidebarToDefault}>
-          <small>{strings.exercises}</small>
-        </Link>
-      </div>
+      <SidebarLink text={strings.exercises} to="/exercises" />
 
-      <div className="navigationLink">
-        <Link to="/user_dashboard" onClick={resetSidebarToDefault}>
-          <small>{strings.userDashboard}</small>
-        </Link>
-      </div>
+      <br />
+
+      <SidebarLink text={strings.history} to="/history" />
+
+      <SidebarLink text={strings.userDashboard} to="/user_dashboard" />
 
       <br />
 
       {is_teacher && (
-        <div className="navigationLink">
-          <Link to="/teacher/classes" onClick={resetSidebarToDefault}>
-            <small>{strings.teacherSite}</small>
-          </Link>
-        </div>
+        <SidebarLink text={strings.teacherSite} to="/teacher/classes" />
       )}
+
+      <SidebarLink text={strings.settings} to="/account_settings" />
+
+      <div className="navigationLink">
+        <Link
+          to="/"
+          onClick={() => {
+            user.logoutMethod();
+          }}
+        >
+          <small>{strings.logout}</small>
+        </Link>
+      </div>
     </>
   );
 }
