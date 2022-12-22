@@ -1,29 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 
-export default function StudentSpecificSidebarOptions({
-  resetSidebarToDefault,
-  user,
-  api,
-}) {
+export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
-
-  const path = useLocation().pathname;
-  console.log(path);
-
-  function SidebarLink({ text, to }) {
-    // if path starts with to, then we are on that page
-    const active = path.startsWith(to);
-    const fontWeight = active ? "700" : "500";
-
-    return (
-      <div className="navigationLink">
-        <Link to={to} onClick={resetSidebarToDefault}>
-          <small style={{ fontWeight: fontWeight }}>{text}</small>
-        </Link>
-      </div>
-    );
-  }
 
   return (
     <>
