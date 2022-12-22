@@ -75,23 +75,6 @@ export default function SideBar(props) {
           setIsOnStudentSide={setIsOnStudentSide}
         />
       )}
-
-      <div className="navigationLink">
-        <Link to="/account_settings" onClick={resetSidebarToDefault}>
-          <small>{strings.settings}</small>
-        </Link>
-      </div>
-      <br />
-      <div className="navigationLink">
-        <Link
-          to="/"
-          onClick={() => {
-            user.logoutMethod();
-          }}
-        >
-          <small>{strings.logout}</small>
-        </Link>
-      </div>
     </>
   );
 

@@ -22,7 +22,7 @@ export default function WordsRouter({ api }) {
         <TopTabs
           title={strings.yourWordsHeadline}
           tabsAndLinks={{
-            [strings.translated]: "/words/translated",
+            [strings.translated]: "/words",
             [strings.learned]: "/words/learned",
             // [strings.starred]: "/words/starred",
           }}
@@ -32,7 +32,7 @@ export default function WordsRouter({ api }) {
 
         <PrivateRoute path="/words/learned" api={api} component={Learned} />
 
-        <PrivateRoute path="/words/translated" api={api} component={Top} />
+        <PrivateRoute path="/words" api={api} component={Top} />
       </s.NarrowColumn>
     </Switch>
   );
