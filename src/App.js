@@ -68,7 +68,7 @@ function App() {
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
       is_teacher: userInfo.is_teacher,
-      cohort_id: userInfo.cohort_id,
+      is_student: userInfo.is_student,
     });
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
