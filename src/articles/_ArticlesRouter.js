@@ -20,8 +20,8 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
           tabsAndLinks={{
             [strings.findTab]: "/articles",
             [strings.classroomTab]: "/articles/classroom",
+            [strings.saved]: "/articles/ownTexts",
             [strings.bookmarkedTab]: "/articles/bookmarked",
-            [strings.myTextsTab]: "/articles/ownTexts",
           }}
         />
 

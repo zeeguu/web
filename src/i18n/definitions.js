@@ -9,7 +9,7 @@ let strings = new LocalizedStrings(
       words: "Words",
       lengthWithCapital: "Length",
       levelWithCapital: "Level",
-      articles: "Texts",
+      articles: "Home",
       text: "Text",
       save: "Save",
       settings: "Settings",
@@ -183,7 +183,7 @@ let strings = new LocalizedStrings(
       findTab: "Recommended",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
-      myTextsTab: "My Texts",
+      saved: "Saved",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
@@ -743,7 +743,7 @@ let strings = new LocalizedStrings(
       words: "Ord",
       lengthWithCapital: "Længde",
       levelWithCapital: "Sværhed",
-      articles: "Tekster",
+      articles: "Hjem",
       text: "tekst",
       save: "Gem",
       settings: "Indstillinger",
@@ -918,7 +918,7 @@ let strings = new LocalizedStrings(
       findTab: "Find",
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
-      myTextsTab: "Mine Tekster",
+      saved: "Gemt",
 
       //WordsRouter
       yourWordsHeadline: "Dine ord",
