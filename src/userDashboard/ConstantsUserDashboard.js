@@ -25,7 +25,7 @@ const TOP_TABS = {
 };
 
 const USER_DASHBOARD_TITLES = {
-  MAIN_TITLE: udstrings.userDashboardTitle,
+  MAIN_TITLE: udstrings.activity,
   BAR_GRAPH_TEXT: udstrings.helperTextActivity,
   LINE_GRAPH_TEXT: udstrings.helperTextWords,
   TIME_COUNT_IN: udstrings.helperTextTimeCount,
