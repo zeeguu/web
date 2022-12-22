@@ -15,8 +15,15 @@ export default function StudentSpecificSidebarOptions({
           <small>{strings.articles}</small>
         </Link>
       </div>
+
       <div className="navigationLink">
-        <Link to="/words/history" onClick={resetSidebarToDefault}>
+        <Link to="/history" onClick={resetSidebarToDefault}>
+          <small>{strings.history}</small>
+        </Link>
+      </div>
+
+      <div className="navigationLink">
+        <Link to="/words/translated" onClick={resetSidebarToDefault}>
           <small>{strings.words}</small>
         </Link>
       </div>
