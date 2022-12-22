@@ -102,6 +102,21 @@ export default class InteractiveText {
       });
   }
 
+  playAll() {
+    console.log("playing all");
+    this.zeeguuSpeech.playAll(this.articleInfo);
+  }
+
+  pause() {
+    console.log("pausing");
+    this.zeeguuSpeech.pause();
+  }
+
+  resume() {
+    console.log("resuming");
+    this.zeeguuSpeech.resume();
+  }
+
   pronounce(word) {
     this.zeeguuSpeech.speakOut(word.word);
 

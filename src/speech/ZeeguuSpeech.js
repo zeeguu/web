@@ -69,27 +69,57 @@ const ZeeguuSpeech = class {
       });
     } else {
       if (this.language === "da") {
-        return playFromAPI(this.api, word);
+        return this.playFromAPI(this.api, word);
       } else {
         var utterance = new SpeechSynthesisUtterance(word);
         utterance.voice = this.voice;
+        speechSynthesis.cancel();
         speechSynthesis.speak(utterance);
       }
     }
   }
-};
 
-function playFromAPI(api, word) {
-  return new Promise(function (resolve, reject) {
-    api.getLinkToDanishSpeech(word, (linkToMp3) => {
-      // console.log("about to play..." + linkToMp3);
-      var mp3Player = new Audio();
-      mp3Player.src = linkToMp3;
-      mp3Player.autoplay = true;
-      mp3Player.onerror = reject;
-      mp3Player.onended = resolve;
+  playAll(articleInfo) {
+    this.playFullArticle(articleInfo, this.api);
+  }
+
+  pause() {
+    this.mp3Player.pause();
+  }
+
+  resume() {
+    this.mp3Player.play();
+  }
+
+  playFullArticle(articleInfo, api) {
+    return new Promise(function (resolve, reject) {
+      api.getLinkToFullArticleReadout(
+        articleInfo.content,
+        articleInfo.id,
+        (linkToMp3) => {
+          console.log("about to play..." + linkToMp3);
+          this.mp3Player = new Audio();
+          this.mp3Player.src = linkToMp3;
+          this.mp3Player.autoplay = true;
+          this.mp3Player.onerror = reject;
+          this.mp3Player.onended = resolve;
+        }
+      );
     });
-  });
-}
+  }
+
+  playFromAPI(api, word) {
+    return new Promise(function (resolve, reject) {
+      api.getLinkToDanishSpeech(word, (linkToMp3) => {
+        // console.log("about to play..." + linkToMp3);
+        this.mp3Player = new Audio();
+        this.mp3Player.src = linkToMp3;
+        this.mp3Player.autoplay = true;
+        this.mp3Player.onerror = reject;
+        this.mp3Player.onended = resolve;
+      });
+    });
+  }
+};
 
 export default ZeeguuSpeech;
