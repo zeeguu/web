@@ -7,23 +7,26 @@ import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
 
 import OwnArticles from "./OwnArticles";
+import ReadingHistory from "../words/WordHistory";
 
 import * as s from "../components/ColumnWidth.sc";
+import LocalStorage from "../assorted/LocalStorage";
 
 export default function ArticlesRouter({ api, hasExtension, isChrome }) {
+  let tabsAndLinks = {
+    [strings.findTab]: "/articles",
+    [strings.saved]: "/articles/ownTexts",
+  };
+
+  if (LocalStorage.isStudent()) {
+    tabsAndLinks[strings.classroomTab] = "/articles/classroom";
+  }
+
   return (
     <>
       {/* Rendering top menu first, then routing to corresponding page */}
       <s.NarrowColumn>
-        <TopTabs
-          title={strings.articles}
-          tabsAndLinks={{
-            [strings.findTab]: "/articles",
-            [strings.classroomTab]: "/articles/classroom",
-            [strings.saved]: "/articles/ownTexts",
-            [strings.bookmarkedTab]: "/articles/bookmarked",
-          }}
-        />
+        <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />
 
         <PrivateRoute
           path="/articles"
@@ -48,6 +51,12 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
           path="/articles/ownTexts"
           api={api}
           component={OwnArticles}
+        />
+
+        <PrivateRoute
+          path="/articles/history"
+          api={api}
+          component={ReadingHistory}
         />
       </s.NarrowColumn>
     </>

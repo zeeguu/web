@@ -189,7 +189,7 @@ let strings = new LocalizedStrings(
       yourWordsHeadline: "Your Words",
       history: "History",
       starred: "Starred",
-      ranked: "Ranked",
+      translated: "Translated",
       learned: "Learned",
 
       //WordsHistory
@@ -261,7 +261,8 @@ let strings = new LocalizedStrings(
 
       //Top
       titleRankedWords: "Ranked Words",
-      rankedMsg: "Words that you have translated ranked by importance.",
+      rankedMsg:
+        "All the words that you ever translated. Ordered by frequency of occurrence in your learned language.",
 
       //WordsOnDate
       open: "Open",
@@ -924,7 +925,7 @@ let strings = new LocalizedStrings(
       yourWordsHeadline: "Dine ord",
       history: "Oversatte",
       starred: "Stjernemarkerede",
-      ranked: "Rangerede",
+      translated: "Oversatte",
       learned: "Indlærte",
 
       //WordsHistory
