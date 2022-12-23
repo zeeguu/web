@@ -20,6 +20,13 @@ const ZeeguuSpeech = class {
     this.api = api;
     this.language = language;
     this.runningFromExtension = true;
+    this.mp3Player = new Audio();
+    soundEffect.autoplay = true;
+
+    // onClick of first interaction on page before I need the sounds
+    // (This is a tiny MP3 file that is silent and extremely short - retrieved from https://bigsoundbank.com and then modified)
+    soundEffect.src =
+      "data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
 
     if (
       typeof chrome !== "undefined" &&
@@ -80,7 +87,7 @@ const ZeeguuSpeech = class {
   }
 
   playAll(articleInfo) {
-    this.playFullArticle(articleInfo, this.api);
+    this.playFullArticle(articleInfo, this.api, this.mp3Player);
   }
 
   pause() {
@@ -91,18 +98,17 @@ const ZeeguuSpeech = class {
     this.mp3Player.play();
   }
 
-  playFullArticle(articleInfo, api) {
+  playFullArticle(articleInfo, api, mp3Player) {
     return new Promise(function (resolve, reject) {
       api.getLinkToFullArticleReadout(
         articleInfo.content,
         articleInfo.id,
         (linkToMp3) => {
           console.log("about to play..." + linkToMp3);
-          this.mp3Player = new Audio();
-          this.mp3Player.src = linkToMp3;
-          this.mp3Player.autoplay = true;
-          this.mp3Player.onerror = reject;
-          this.mp3Player.onended = resolve;
+          mp3Player.src = linkToMp3;
+          mp3Player.autoplay = true;
+          mp3Player.onerror = reject;
+          mp3Player.onended = resolve;
         }
       );
     });
@@ -112,11 +118,11 @@ const ZeeguuSpeech = class {
     return new Promise(function (resolve, reject) {
       api.getLinkToDanishSpeech(word, (linkToMp3) => {
         // console.log("about to play..." + linkToMp3);
-        this.mp3Player = new Audio();
-        this.mp3Player.src = linkToMp3;
-        this.mp3Player.autoplay = true;
-        this.mp3Player.onerror = reject;
-        this.mp3Player.onended = resolve;
+        let mp3Player = new Audio();
+        mp3Player.src = linkToMp3;
+        mp3Player.autoplay = true;
+        mp3Player.onerror = reject;
+        mp3Player.onended = resolve;
       });
     });
   }
