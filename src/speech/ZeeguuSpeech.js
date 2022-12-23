@@ -76,7 +76,7 @@ const ZeeguuSpeech = class {
       });
     } else {
       if (this.language === "da") {
-        return this.playFromAPI(this.api, word);
+        return this.playFromAPI(this.api, word, this.mp3Player);
       } else {
         var utterance = new SpeechSynthesisUtterance(word);
         utterance.voice = this.voice;
@@ -114,11 +114,11 @@ const ZeeguuSpeech = class {
     });
   }
 
-  playFromAPI(api, word) {
+  playFromAPI(api, word, mp3Player) {
     return new Promise(function (resolve, reject) {
       api.getLinkToDanishSpeech(word, (linkToMp3) => {
         // console.log("about to play..." + linkToMp3);
-        let mp3Player = new Audio();
+        // let mp3Player = new Audio();
         mp3Player.src = linkToMp3;
         mp3Player.autoplay = true;
         mp3Player.onerror = reject;
