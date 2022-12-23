@@ -165,14 +165,14 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   return (
     <s.ArticleReader>
-      {
-        // if user name starts with Mir show the button
-        user.name.startsWith("Mir") && (
-          <SoundPlayer interactiveText={interactiveText} />
-        )
-      }
-
       <PopupButtonWrapper>
+        {
+          // if user name starts with Mir show the button
+          user.name.startsWith("Mir") && (
+            <SoundPlayer api={api} interactiveText={interactiveText} />
+          )
+        }
+
         {user.is_teacher && (
           <div>
             {teacherArticleID && (
