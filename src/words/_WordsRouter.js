@@ -32,7 +32,7 @@ export default function WordsRouter({ api }) {
 
         <PrivateRoute path="/words/learned" api={api} component={Learned} />
 
-        <PrivateRoute path="/words" api={api} component={Top} />
+        <PrivateRoute exact path="/words" api={api} component={Top} />
       </s.NarrowColumn>
     </Switch>
   );
