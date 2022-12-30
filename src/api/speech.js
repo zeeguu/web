@@ -21,13 +21,13 @@ Zeeguu_API.prototype.getLinkToDanishSpeech = function (
 };
 
 Zeeguu_API.prototype.getLinkToFullArticleReadout = function (
-  textToPronounce,
+  articleInfo,
   article_id,
   callback
 ) {
   this._post(
     `mp3_of_full_article`,
-    `language_id=da&article_id=${article_id}&text=${textToPronounce}`,
+    `language_id=${articleInfo.language}&article_id=${article_id}&text=${artcleInfo.content}`,
     (linkToMp3) => {
       let final_link = this.baseAPIurl + linkToMp3;
       console.log("got link to full article readout: " + final_link);

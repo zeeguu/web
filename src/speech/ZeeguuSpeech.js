@@ -101,7 +101,7 @@ const ZeeguuSpeech = class {
   playFullArticle(articleInfo, api, mp3Player) {
     return new Promise(function (resolve, reject) {
       api.getLinkToFullArticleReadout(
-        articleInfo.content,
+        articleInfo,
         articleInfo.id,
         (linkToMp3) => {
           console.log("about to play..." + linkToMp3);
