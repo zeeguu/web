@@ -170,30 +170,39 @@ export default function ArticleReader({ api, teacherArticleID }) {
   return (
     <s.ArticleReader>
       <PopupButtonWrapper>
-        {user.is_teacher && (
-          <div>
-            {teacherArticleID && (
-              <Link to={`/teacher/texts/editText/${articleID}`}>
-                <StyledButton secondary studentView>
-                  {strings.backToEditing}
-                </StyledButton>
-              </Link>
-            )}
-
-            {!teacherArticleID && (
-              <StyledButton primary studentView onClick={handleSaveCopyToShare}>
-                {strings.saveCopyToShare}
-              </StyledButton>
-            )}
-          </div>
-        )}
-
         <s.Toolbar>
+          {user.is_teacher && (
+            <>
+              {teacherArticleID && (
+                <Link to={`/teacher/texts/editText/${articleID}`}>
+                  <StyledButton secondary studentView>
+                    {strings.backToEditing}
+                  </StyledButton>
+                </Link>
+              )}
+
+              {!teacherArticleID && (
+                <StyledButton
+                  primary
+                  studentView
+                  onClick={handleSaveCopyToShare}
+                >
+                  <img
+                    width="40px"
+                    src="/static/images/share-button.svg"
+                    alt="share"
+                  />
+                </StyledButton>
+              )}
+            </>
+          )}
+
           {userIsTesterForAudio(user) && (
             <s.PlayerControl>
               <SoundPlayer api={api} interactiveText={interactiveText} />
             </s.PlayerControl>
           )}
+
           <s.RightHandSide>
             <button
               className={translating ? "selected" : ""}
