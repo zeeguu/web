@@ -12,7 +12,6 @@ export default function ArticleAuthors({ articleInfo }) {
             ": "}{" "}
         {articleInfo.authors}
       </div>
-      <br />
     </div>
   );
 }
