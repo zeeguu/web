@@ -236,11 +236,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
         />
       </s.BookmarkButton> */}
 
-      <div style={{ margin: "1em" }}>
-        <ArticleAuthors articleInfo={articleInfo} />
+      <div style={{ marginTop: "1em" }}>
+        {/* <ArticleAuthors articleInfo={articleInfo} /> */}
         <ArticleSource url={articleInfo.url} />
       </div>
 
+      <br />
       <div style={{ float: "right" }}>
         <ReportBroken
           api={api}
@@ -249,7 +250,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
           articleID={articleID}
         />
       </div>
-      <hr />
+
+      <br />
+      <br />
 
       {articleInfo.video ? (
         <iframe

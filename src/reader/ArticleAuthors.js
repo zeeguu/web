@@ -10,8 +10,9 @@ export default function ArticleAuthors({ articleInfo }) {
           "Author" +
             (multipleAuthors(articleInfo.authors) ? "s" : "") +
             ": "}{" "}
-        {articleInfo.authors}
+        <b>{articleInfo.authors}</b>
       </div>
+      <br />
     </div>
   );
 }
