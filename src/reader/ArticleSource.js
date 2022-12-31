@@ -1,11 +1,15 @@
+function shorten(url, maxLength = 120) {
+  return url.slice(0, maxLength) + (url.length > maxLength ? "..." : "");
+}
+
 export default function ArticleSource({ url }) {
   return (
     <div>
       {url && (
         <>
-          Source: &nbsp;
+          Source:{" "}
           <a href={url} target="_blank" rel="noreferrer" id="source">
-            {url.slice(0, 80) + (url.length > 80 ? "..." : "")}
+            {shorten(url, 256)}
           </a>
         </>
       )}
