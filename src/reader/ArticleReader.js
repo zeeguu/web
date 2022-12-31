@@ -189,14 +189,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
         )}
 
         <s.Toolbar>
-          {
-            // if user name starts with Mir show the button
-            userIsTesterForAudio(user) && (
-              <s.PlayerControl>
-                <SoundPlayer api={api} interactiveText={interactiveText} />
-              </s.PlayerControl>
-            )
-          }
+          {userIsTesterForAudio(user) && (
+            <s.PlayerControl>
+              <SoundPlayer api={api} interactiveText={interactiveText} />
+            </s.PlayerControl>
+          )}
           <s.RightHandSide>
             <button
               className={translating ? "selected" : ""}
