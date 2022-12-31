@@ -23,13 +23,34 @@ let ArticleReader = styled.div`
   margin-right: auto;
 `;
 
+let PlayerControl = styled.div`
+  float: left;
+
+  button {
+    background-color: #aaaaff;
+  }
+
+  .buttonText {
+    font-size: small;
+    color: #aaaaff;
+  }
+`;
+
+let RightHandSide = styled.div`
+  float: right;
+  button {
+    background-color: ${zeeguuLightYellow};
+  }
+`;
 let Toolbar = styled.div`
   height: 110px;
+  // background-color: ${veryLightGrey};
+  width: 100%;
 
   button {
     width: 55px;
     height: 55px;
-    background-color: ${zeeguuLightYellow};
+
     border-style: none;
     box-shadow: none;
     border-radius: 10px;
@@ -143,7 +164,7 @@ let OrangeButton = styled(_BottomButton)`
 `;
 
 let NavigationLink = styled(Link)`
-  margin:20px;
+  margin: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -247,4 +268,6 @@ export {
   NarrowColumn,
   ContentOnRow,
   NavigationLink,
+  RightHandSide,
+  PlayerControl,
 };

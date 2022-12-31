@@ -32,6 +32,10 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+function userIsTesterForAudio(user) {
+  return user.name.startsWith("Michalis") || user.name.startsWith("Mir");
+}
+
 export function onScroll(api, articleID, source) {
   let _current_time = new Date();
   let current_time = _current_time.getTime();
@@ -185,35 +189,38 @@ export default function ArticleReader({ api, teacherArticleID }) {
         )}
 
         <s.Toolbar>
-          <button
-            className={translating ? "selected" : ""}
-            onClick={(e) => toggle(translating, setTranslating)}
-          >
-            <img
-              src="https://zeeguu.org/static/images/translate.svg"
-              alt={strings.translateOnClick}
-            />
-            <div className="tooltiptext">{strings.translateOnClick}</div>
-          </button>
-          <button
-            className={pronouncing ? "selected" : ""}
-            onClick={(e) => toggle(pronouncing, setPronouncing)}
-          >
-            <img
-              src="https://zeeguu.org/static/images/sound.svg"
-              alt={strings.listenOnClick}
-            />
-            <div className="tooltiptext">{strings.listenOnClick}</div>
-          </button>
+          {
+            // if user name starts with Mir show the button
+            userIsTesterForAudio(user) && (
+              <s.PlayerControl>
+                <SoundPlayer api={api} interactiveText={interactiveText} />
+              </s.PlayerControl>
+            )
+          }
+          <s.RightHandSide>
+            <button
+              className={translating ? "selected" : ""}
+              onClick={(e) => toggle(translating, setTranslating)}
+            >
+              <img
+                src="https://zeeguu.org/static/images/translate.svg"
+                alt={strings.translateOnClick}
+              />
+              <div className="tooltiptext">{strings.translateOnClick}</div>
+            </button>
+            <button
+              className={pronouncing ? "selected" : ""}
+              onClick={(e) => toggle(pronouncing, setPronouncing)}
+            >
+              <img
+                src="https://zeeguu.org/static/images/sound.svg"
+                alt={strings.listenOnClick}
+              />
+              <div className="tooltiptext">{strings.listenOnClick}</div>
+            </button>
+          </s.RightHandSide>
         </s.Toolbar>
       </PopupButtonWrapper>
-
-      <ReportBroken
-        api={api}
-        UMR_SOURCE={UMR_SOURCE}
-        history={history}
-        articleID={articleID}
-      />
 
       <s.Title>
         <TranslatableText
@@ -222,24 +229,27 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </s.Title>
-      <s.BookmarkButton>
+      {/* <s.BookmarkButton>
         <BookmarkButton
           bookmarked={articleInfo.starred}
           toggleBookmarkedState={toggleBookmarkedState}
         />
-      </s.BookmarkButton>
+      </s.BookmarkButton> */}
 
-      <ArticleSource url={articleInfo.url} />
-      <ArticleAuthors articleInfo={articleInfo} />
+      <div style={{ margin: "1em" }}>
+        <ArticleAuthors articleInfo={articleInfo} />
+        <ArticleSource url={articleInfo.url} />
+      </div>
 
+      <div style={{ float: "right" }}>
+        <ReportBroken
+          api={api}
+          UMR_SOURCE={UMR_SOURCE}
+          history={history}
+          articleID={articleID}
+        />
+      </div>
       <hr />
-
-      {
-        // if user name starts with Mir show the button
-        user.name.startsWith("Mir") && (
-          <SoundPlayer api={api} interactiveText={interactiveText} />
-        )
-      }
 
       {articleInfo.video ? (
         <iframe

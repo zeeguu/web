@@ -6,34 +6,37 @@ export default function SoundPlayer({ api, interactiveText }) {
 
   if (state === "initial") {
     return (
-      <button
-        onClick={() => {
-          console.log("starting to play");
-          setState("playing");
-          // interactiveText.playAll();
-          let player = new Audio();
-          player.autoplay = true;
+      <div>
+        <button
+          onClick={() => {
+            console.log("starting to play");
+            setState("playing");
+            // interactiveText.playAll();
+            let player = new Audio();
+            player.autoplay = true;
 
-          // onClick of first interaction on page before I need the sounds
-          // (This is a tiny MP3 file that is silent and extremely short - retrieved from https://bigsoundbank.com and then modified)
-          player.src =
-            "data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+            // onClick of first interaction on page before I need the sounds
+            // (This is a tiny MP3 file that is silent and extremely short - retrieved from https://bigsoundbank.com and then modified)
+            player.src =
+              "data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
 
-          api.getLinkToFullArticleReadout(
-            interactiveText.articleInfo,
-            interactiveText.articleInfo.id,
-            (linkToMp3) => {
-              player.src = linkToMp3;
-              player.autoplay = true;
-              setMp3Player(player);
-              // mp3Player.onerror = reject;
-              // mp3Player.onended = resolve;
-            }
-          );
-        }}
-      >
-        Play
-      </button>
+            api.getLinkToFullArticleReadout(
+              interactiveText.articleInfo,
+              interactiveText.articleInfo.id,
+              (linkToMp3) => {
+                player.src = linkToMp3;
+                player.autoplay = true;
+                setMp3Player(player);
+                // mp3Player.onerror = reject;
+                // mp3Player.onended = resolve;
+              }
+            );
+          }}
+        >
+          <img width="35px" src="/static/images/play-button.svg" />
+        </button>
+        <div class="buttonText">Read aloud</div>
+      </div>
     );
   } else if (state === "playing") {
     return (
@@ -44,7 +47,7 @@ export default function SoundPlayer({ api, interactiveText }) {
           mp3Player.pause();
         }}
       >
-        Pause
+        <img width="35px" src="/static/images/pause-button.svg" />
       </button>
     );
   } else if (state === "paused") {
@@ -56,7 +59,7 @@ export default function SoundPlayer({ api, interactiveText }) {
           mp3Player.play();
         }}
       >
-        Resume
+        <img width="35px" src="/static/images/play-button.svg" />
       </button>
     );
   }
