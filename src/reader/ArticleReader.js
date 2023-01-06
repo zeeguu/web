@@ -16,7 +16,7 @@ import {
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
-import ArticleAuthors from "./ArticleAuthors";
+
 import ArticleSource from "./ArticleSource";
 import ReportBroken from "./ReportBroken";
 import SoundPlayer from "./SoundPlayer";
@@ -80,6 +80,14 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const history = useHistory();
 
   useEffect(() => {
+    onCreate();
+    return () => {
+      onDestruct();
+    };
+    // eslint-disable-next-line
+  }, []);
+
+  function onCreate() {
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -117,25 +125,24 @@ export default function ArticleReader({ api, teacherArticleID }) {
       .addEventListener("scroll", function () {
         onScroll(api, articleID, UMR_SOURCE);
       });
+  }
 
-    return () => {
-      window.removeEventListener("focus", function () {
-        onFocus(api, articleID, UMR_SOURCE);
-      });
-      window.removeEventListener("blur", function () {
-        onBlur(api, articleID, UMR_SOURCE);
-      });
+  function onDestruct() {
+    window.removeEventListener("focus", function () {
+      onFocus(api, articleID, UMR_SOURCE);
+    });
+    window.removeEventListener("blur", function () {
+      onBlur(api, articleID, UMR_SOURCE);
+    });
 
-      document.getElementById("scrollHolder") !== null &&
-        document
-          .getElementById("scrollHolder")
-          .removeEventListener("scroll", function () {
-            onScroll(api, articleID, UMR_SOURCE);
-          });
-      api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
-    };
-    // eslint-disable-next-line
-  }, []);
+    document.getElementById("scrollHolder") !== null &&
+      document
+        .getElementById("scrollHolder")
+        .removeEventListener("scroll", function () {
+          onScroll(api, articleID, UMR_SOURCE);
+        });
+    api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
+  }
 
   function toggleBookmarkedState() {
     let newArticleInfo = { ...articleInfo, starred: !articleInfo.starred };
