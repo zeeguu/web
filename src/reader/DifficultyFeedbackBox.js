@@ -35,6 +35,7 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
       <s.CenteredContent>
         {Object.keys(FEEDBACK_OPTIONS).map((option) => (
           <s.WhiteButton
+            key={option}
             onClick={(e) => submitAnswer(FEEDBACK_OPTIONS[option])}
           >
             {option}
