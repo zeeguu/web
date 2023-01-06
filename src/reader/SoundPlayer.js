@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function SoundPlayer({ api, interactiveText }) {
   const [state, setState] = useState("initial");
   const [mp3Player, setMp3Player] = useState();
+
+  useEffect(() => {
+    return () => {
+      if (mp3Player) {
+        mp3Player.pause();
+      }
+    };
+  }, [mp3Player]);
 
   if (state === "initial") {
     return (
       <div>
         <button
           onClick={() => {
-            console.log("starting to play");
-            setState("playing");
             // interactiveText.playAll();
             let player = new Audio();
             player.autoplay = true;
@@ -26,9 +32,9 @@ export default function SoundPlayer({ api, interactiveText }) {
               (linkToMp3) => {
                 player.src = linkToMp3;
                 player.autoplay = true;
+                console.log(player);
                 setMp3Player(player);
-                // mp3Player.onerror = reject;
-                // mp3Player.onended = resolve;
+                setState("playing");
               }
             );
           }}
