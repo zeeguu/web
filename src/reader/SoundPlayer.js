@@ -77,7 +77,7 @@ export default function SoundPlayer({ api, interactiveText }) {
         <button onClick={startPlaying}>
           <img width="35px" src="/static/images/play-button.svg" />
         </button>
-        <div class="buttonText">Read aloud</div>
+        <div className="buttonText">Read aloud</div>
       </div>
     );
   } else if (state === "playing") {
@@ -86,7 +86,7 @@ export default function SoundPlayer({ api, interactiveText }) {
         <button onClick={pausePlay}>
           <img width="35px" src="/static/images/pause-button.svg" />
         </button>
-        <div class="buttonText">{currentTime}</div>
+        <div className="buttonText">{currentTime}</div>
       </div>
     );
   } else if (state === "paused") {
@@ -95,7 +95,7 @@ export default function SoundPlayer({ api, interactiveText }) {
         <button onClick={resumePlay}>
           <img width="35px" src="/static/images/play-button.svg" />
         </button>
-        <div class="buttonText">{currentTime}</div>
+        <div className="buttonText">{currentTime}</div>
       </div>
     );
   }
