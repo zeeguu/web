@@ -57,6 +57,7 @@ let Toolbar = styled.div`
     margin: 10px;
     padding: 1px;
     user-select: none;
+    cursor: pointer;
   }
 
   button:focus {
