@@ -33,7 +33,11 @@ function useQuery() {
 }
 
 function userIsTesterForAudio(user) {
-  return user.name.startsWith("Michalis") || user.name.startsWith("Mir");
+  return (
+    user.name.startsWith("Michalis") ||
+    user.name.startsWith("Mir") ||
+    user.name.startsWith("Wim")
+  );
 }
 
 export function onScroll(api, articleID, source) {
