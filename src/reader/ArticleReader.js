@@ -33,7 +33,15 @@ function useQuery() {
 }
 
 function userIsTesterForAudio(user) {
-  let testers = ["Michalis", "Mir", "Wim", "Pauline", "Arno", "Geertje"];
+  let testers = [
+    "Michalis",
+    "Mir",
+    "Wim",
+    "Pauline",
+    "Arno",
+    "Geertje",
+    "Pieter",
+  ];
   return testers.some((tester) => user.name.startsWith(tester));
 }
 
