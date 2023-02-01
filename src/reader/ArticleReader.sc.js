@@ -255,6 +255,14 @@ let ExtraSpaceAtTheBottom = styled.div`
   margin-bottom: 8em;
 `;
 
+const StickyVideo = styled.iframe`
+  width: 100%;
+  height: 40vh;
+  max-height: 415px;
+  position: sticky;
+  top: 110px;
+`
+
 export {
   ArticleReader,
   Toolbar,
@@ -271,4 +279,5 @@ export {
   NavigationLink,
   RightHandSide,
   PlayerControl,
+  StickyVideo
 };

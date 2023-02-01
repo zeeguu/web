@@ -276,17 +276,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
       <br />
       <br />
 
-      {articleInfo.video ? (
-        <iframe
-          width="620"
-          height="415"
+      {articleInfo?.video && (
+        <s.StickyVideo
           src={
             "https://www.youtube.com/embed/" +
             extractVideoIDFromURL(articleInfo.url)
           }
-        ></iframe>
-      ) : (
-        ""
+        />
       )}
 
       <s.MainText>
