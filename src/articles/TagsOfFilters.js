@@ -15,7 +15,7 @@ export default function TagsOfFilters({
   const [showingModal, setShowingModal] = useState(false);
 
   useEffect(() => {
-    api.interestingButNotSubscribedTopics((topics) => {
+    api.availableFilters((topics) => {
       setAvailableFilters(topics);
     });
 
