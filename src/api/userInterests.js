@@ -1,8 +1,12 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.prototype.getInterestingTopics = function (callback) {
-  this._getJSON("interesting_topics", callback);
-};
+/* Note the distinction between topics and searches:
+  - topics are predefined
+  - searches are user-defined
+
+  */
+
+// INTERESTS
 
 Zeeguu_API.prototype.getSubscribedTopics = function (callback) {
   this._getJSON("subscribed_topics", callback);
@@ -12,22 +16,31 @@ Zeeguu_API.prototype.getSubscribedSearchers = function (callback) {
   this._getJSON("subscribed_searches", callback);
 };
 
+/* 
+  Subscribes to predefined topic (e.g. sports, politics, etc.)
+  */
 Zeeguu_API.prototype.subscribeToTopic = function (topic) {
   return this._post(`subscribe_topic`, `topic_id=${topic.id}`);
 };
 
+/* Opposite of subscribe */
 Zeeguu_API.prototype.unsubscribeFromTopic = function (topic) {
   return this._post(`unsubscribe_topic`, `topic_id=${topic.id}`);
 };
 
+/* 
+  Subscribes to a search term (e.g. "Trump", "Corona", etc.)
+  */
 Zeeguu_API.prototype.subscribeToSearch = function (searchTerm, callback) {
   return this._getJSON(`subscribe_search/${searchTerm}`, callback);
 };
+/* Opposite of unsubscribe */
 Zeeguu_API.prototype.unsubscribeFromSearch = function (search) {
   return this._post(`unsubscribe_search`, `search_id=${search.id}`);
 };
 
-// Filters / Uninteresting Topics
+// NON-INTERESTS
+// These are topics and searches that the user has explicitly filtered out because they don't want to see them
 Zeeguu_API.prototype.getFilteredTopics = function (callback) {
   this._getJSON("filtered_topics", callback);
 };
@@ -52,6 +65,16 @@ Zeeguu_API.prototype.unsubscribeFromFilter = function (filter) {
   // here it's topic_id / above it's filter_id;
   // stupid bug in the API...
   return this._post("unfilter_topic", `topic_id=${filter.id}`);
+};
+
+// GETTING THE CURRENT STATUS
+
+/*
+  Topics that are available but not subscribed yet to
+  See: https://github.com/zeeguu/api/blob/master/zeeguu/api/api/topics.py
+*/
+Zeeguu_API.prototype.getInterestingTopics = function (callback) {
+  this._getJSON("interesting_topics", callback);
 };
 
 Zeeguu_API.prototype.interestingButNotSubscribedTopics = function (callback) {
