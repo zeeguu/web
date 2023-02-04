@@ -8,6 +8,12 @@ import { Zeeguu_API } from "./classDef";
 
 // INTERESTS
 
+// Topics that can be subscribed to
+Zeeguu_API.prototype.getAvailableTopics = function (callback) {
+  this._getJSON("available_topics", callback);
+};
+
+// Topics already subscribed to
 Zeeguu_API.prototype.getSubscribedTopics = function (callback) {
   this._getJSON("subscribed_topics", callback);
 };
@@ -67,12 +73,8 @@ Zeeguu_API.prototype.unsubscribeFromFilter = function (filter) {
   return this._post("unfilter_topic", `topic_id=${filter.id}`);
 };
 
-Zeeguu_API.prototype.getInterestingTopics = function (callback) {
-  this._getJSON("interesting_topics", callback);
-};
-
-Zeeguu_API.prototype.interestingButNotSubscribedTopics = function (callback) {
-  this.getInterestingTopics((interesting) => {
+Zeeguu_API.prototype.availableFilters = function (callback) {
+  this.getAvailableTopics((interesting) => {
     this.getSubscribedTopics((subscribed) => {
       this.getFilteredTopics((filtered) => {
         var available = interesting.filter((e) => !subscribed.includes(e));
