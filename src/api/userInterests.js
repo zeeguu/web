@@ -67,12 +67,6 @@ Zeeguu_API.prototype.unsubscribeFromFilter = function (filter) {
   return this._post("unfilter_topic", `topic_id=${filter.id}`);
 };
 
-// GETTING THE CURRENT STATUS
-
-/*
-  Topics that are available but not subscribed yet to
-  See: https://github.com/zeeguu/api/blob/master/zeeguu/api/api/topics.py
-*/
 Zeeguu_API.prototype.getInterestingTopics = function (callback) {
   this._getJSON("interesting_topics", callback);
 };
