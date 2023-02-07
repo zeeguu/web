@@ -7,6 +7,10 @@ let zeeguuSalmonOrange = "#f8bb86";
 let zeeguuTransparentLightOrange = "hsl(54,100%,95%)";
 let zeeguuTransparentMediumOrange = "#ffbe007a";
 let zeeguuOrange = "#ffbb54";
+const zeeguuSecondOrange = "#FF912C";
+const zeeguuGray = "#616161";
+const zeeguuSecondGray = "#414141";
+const zeeguuThirdGray = "#CBCBCB";
 let zeeguuDarkOrange = "#9c7130";
 let lightBlue = "#54cdff";
 let darkBlue = "#4492b3";
@@ -57,4 +61,8 @@ export {
   alertGreen,
   matchGreen,
   setColors,
+  zeeguuSecondOrange,
+  zeeguuGray,
+  zeeguuSecondGray,
+  zeeguuThirdGray,
 };
