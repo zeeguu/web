@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import strings from "../i18n/definitions";
@@ -6,6 +6,7 @@ import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 import { setColors } from "../components/colors";
 import * as s from "./SideBar.sc";
+import { Icon } from "@mui/material";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -29,7 +30,7 @@ export default function SideBar(props) {
 
   const { light_color, dark_color } = setColors(isOnStudentSide);
 
-  function SidebarLink({ text, to }) {
+  function SidebarLink({ text, to, icon }) {
     // if path starts with to, then we are on that page
     const active = path.startsWith(to);
     const fontWeight = active ? "700" : "500";
@@ -37,6 +38,7 @@ export default function SideBar(props) {
     return (
       <div className="navigationLink">
         <Link to={to} onClick={resetSidebarToDefault}>
+          {icon}
           <small style={{ fontWeight: fontWeight }}>{text}</small>
         </Link>
       </div>
@@ -52,38 +54,51 @@ export default function SideBar(props) {
     setInitialSidebarState(true);
   }
 
-  let sidebarContent = (
-    <>
-      <div className="logo">
-        <a href={defaultPage} rel="external">
-          <img
-            src="/static/images/zeeguuWhiteLogo.svg"
-            alt="Zeeguu Logo - The Elephant"
+  let sidebarContent = useMemo(
+    () => (
+      <>
+        <div className="logo">
+          <a href={defaultPage} rel="external">
+            <img
+              src="/static/images/zeeguuWhiteLogo.svg"
+              alt="Zeeguu Logo - The Elephant"
+            />
+          </a>
+        </div>
+        <div className="arrowHolder">
+          <span className="toggleArrow" onClick={toggleSidebar}>
+            ▲
+          </span>
+        </div>
+        <s.Sidebar>
+          {isOnStudentSide && (
+            <StudentSpecificSidebarOptions
+              SidebarLink={SidebarLink}
+              user={user}
+              api={api}
+            />
+          )}
+        </s.Sidebar>
+
+        {!isOnStudentSide && (
+          <TeacherSpecificSidebarOptions
+            SidebarLink={SidebarLink}
+            user={user}
+            setIsOnStudentSide={setIsOnStudentSide}
           />
-        </a>
-      </div>
-      <div className="arrowHolder">
-        <span className="toggleArrow" onClick={toggleSidebar}>
-          ▲
-        </span>
-      </div>
-
-      {isOnStudentSide && (
-        <StudentSpecificSidebarOptions
-          SidebarLink={SidebarLink}
-          user={user}
-          api={api}
-        />
-      )}
-
-      {!isOnStudentSide && (
-        <TeacherSpecificSidebarOptions
-          SidebarLink={SidebarLink}
-          user={user}
-          setIsOnStudentSide={setIsOnStudentSide}
-        />
-      )}
-    </>
+        )}
+      </>
+    ),
+    [
+      defaultPage,
+      isOnStudentSide,
+      user,
+      SidebarLink,
+      api,
+      isOnStudentSide,
+      user,
+      setIsOnStudentSide,
+    ]
   );
 
   if (!initialSidebarState) {

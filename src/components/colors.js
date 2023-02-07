@@ -11,6 +11,7 @@ const zeeguuSecondOrange = "#FF912C";
 const zeeguuGray = "#616161";
 const zeeguuSecondGray = "#414141";
 const zeeguuThirdGray = "#CBCBCB";
+const iconsGray = "#B8B8C2";
 let zeeguuDarkOrange = "#9c7130";
 let lightBlue = "#54cdff";
 let darkBlue = "#4492b3";
@@ -65,4 +66,5 @@ export {
   zeeguuGray,
   zeeguuSecondGray,
   zeeguuThirdGray,
+  iconsGray,
 };
