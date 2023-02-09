@@ -1,24 +1,17 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "../components/colors";
 
 const SearchField = styled.div`
-  margin-bottom: 1em;
-  margin-left: 1em;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  display: inline-block;
-  padding: 4px;
+  .search-box {
+    width: 90%;
+  }
 
-  #search-expandable {
-    all: unset;
-    border: 0.17em solid ${zeeguuOrange};
-    border-radius: 0.9375em;
-    padding: 0.125em;
-    padding-left: 0.5em;
-    padding-right: 5px;
-    font-family: Montserrat;
-    font-weight: 300;
-    font-size: 0.875em;
-    height: 1.5em;
+  .search-input {
+    border-radius: 50px;
   }
 `;
 

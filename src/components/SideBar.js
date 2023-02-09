@@ -1,21 +1,23 @@
-import { useContext, useState, useEffect, useMemo } from "react";
+import { useContext, useState, useEffect, useMemo, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../UserContext";
-import strings from "../i18n/definitions";
 import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
-import { setColors } from "../components/colors";
+import { setColors } from "./colors";
 import * as s from "./SideBar.sc";
-import { Icon } from "@mui/material";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
   const api = props.api;
+  const path = useLocation().pathname;
+  const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
+
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
 
+  const { light_color, dark_color } = setColors(isOnStudentSide);
+
   //deducting whether we are on student or teacher side for colouring
-  const path = useLocation().pathname;
   useEffect(() => {
     //in Settings the side is determined by whether the user is a student or a teacher
     if (path.includes("account")) {
@@ -26,33 +28,19 @@ export default function SideBar(props) {
     // eslint-disable-next-line
   }, [path]);
 
-  const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
-
-  const { light_color, dark_color } = setColors(isOnStudentSide);
-
-  function SidebarLink({ text, to, icon }) {
-    // if path starts with to, then we are on that page
+  const SidebarLink = useCallback(({ text, to, icon }) => {
     const active = path.startsWith(to);
     const fontWeight = active ? "700" : "500";
 
     return (
       <div className="navigationLink">
-        <Link to={to} onClick={resetSidebarToDefault}>
+        <Link to={to}>
           {icon}
           <small style={{ fontWeight: fontWeight }}>{text}</small>
         </Link>
       </div>
     );
-  }
-
-  function toggleSidebar(e) {
-    e.preventDefault();
-    setInitialSidebarState(!initialSidebarState);
-  }
-
-  function resetSidebarToDefault(e) {
-    setInitialSidebarState(true);
-  }
+  }, []);
 
   let sidebarContent = useMemo(
     () => (
@@ -65,8 +53,18 @@ export default function SideBar(props) {
             />
           </a>
         </div>
-        <div className="arrowHolder">
-          <span className="toggleArrow" onClick={toggleSidebar}>
+        <div
+          style={{ cursor: window.innerWidth > 768 && "default" }}
+          className="arrowHolder"
+        >
+          <span
+            className={`arrow ${
+              window.innerWidth < 768 && initialSidebarState
+                ? "toggleArrow"
+                : ""
+            }`}
+            onClick={() => setInitialSidebarState(!initialSidebarState)}
+          >
             ▲
           </span>
         </div>
@@ -98,25 +96,23 @@ export default function SideBar(props) {
       isOnStudentSide,
       user,
       setIsOnStudentSide,
+      initialSidebarState,
     ]
   );
 
-  if (!initialSidebarState) {
-    return (
-      <s.SideBarToggled light={light_color} dark={dark_color}>
-        {sidebarContent}
-        <s.MainContentToggled id="scrollHolder">
-          {props.children}
-        </s.MainContentToggled>
-      </s.SideBarToggled>
-    );
-  }
-
   return (
     <s.SideBarInitial light={light_color} dark={dark_color}>
-      {sidebarContent}
+      <s.SidebarContainer
+        light={light_color}
+        dark={dark_color}
+        style={{
+          left: window.innerWidth < 768 && initialSidebarState ? 0 : "-230px",
+        }}
+      >
+        {sidebarContent}
+      </s.SidebarContainer>
       <s.MainContentInitial id="scrollHolder">
-        {props.children}
+        <s.MainContent>{props.children}</s.MainContent>
       </s.MainContentInitial>
     </s.SideBarInitial>
   );
