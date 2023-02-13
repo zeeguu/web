@@ -21,9 +21,22 @@ const TopTabs = styled.div`
   }
 
   .headmenuTab {
-    font-size: 1.2em;
+    font-size: 17px;
     font-weight: 400;
     letter-spacing: 0;
+
+    @media (min-width: 768px) {
+      font-size: 18px;
+    }
+  }
+
+  .all__tabs {
+    display: flex;
+    gap: 10px;
+
+    @media (min-width: 768px) {
+      gap: 25px;
+    }
   }
 
   .headmenuTab,
@@ -44,7 +57,7 @@ const TopTabs = styled.div`
 
   .bar {
     width: 1em;
-    height: 0px;
+    height: 0;
     border: 1px solid ${darkGrey};
     transform: rotate(-90deg);
   }
@@ -52,7 +65,6 @@ const TopTabs = styled.div`
   /*******MEDIA QUERIES **********/
   @media screen and (max-width: 768px) {
     .headmenuTab {
-      font-size: 0.8em;
       line-height: 7ex;
     }
 

@@ -1,24 +1,35 @@
 import styled from "styled-components";
 import {
   almostBlack,
+  darkGrey,
   veryLightGrey,
   zeeguuOrange,
+  zeeguuSecondGray,
+  zeeguuSecondOrange,
   zeeguuVarmYellow,
 } from "../components/colors";
 
 const ArticlePreview = styled.div`
-  margin-bottom: 1em;
-  border-left: solid ${zeeguuOrange};
-  margin-top: 2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-width: 100%;
+  margin: 2em auto 1em;
+  border-left: solid ${zeeguuSecondOrange};
   padding-left: 0.8em;
+
+  @media (min-width: 817px) {
+    max-width: 45.5%;
+    margin: 2em 0 0;
+  }
 `;
 
 const Title = styled.div`
-  font-size: 1.4em;
-  color: black;
   max-width: 24em;
   padding-right: 0.3em;
-  font-weight: 400;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 130%;
 `;
 
 const Difficulty = styled.div`
@@ -41,19 +52,19 @@ const WordCount = styled(Difficulty)`
 `;
 
 let Summary = styled.div`
-  font-size: 0.83em;
-  color: ${almostBlack};
-  max-width: 44em;
-  line-height: 1.5em;
-  margin-top: 0.36em;
+  color: ${darkGrey};
+  margin-top: 8px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
 `;
 
 let SourceImage = styled.span`
   img {
     background-color: ${zeeguuVarmYellow};
-    height: 1.5em;
+    height: 25px;
   }
-  margin-right: 2em;
+  margin-right: 0.5em;
 `;
 
 let PublishingTime = styled.span`
@@ -77,6 +88,33 @@ let Topics = styled.span`
   }
 `;
 
+const ArticleFooterBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
+const TitleBox = styled.div`
+  display: inline-block;
+
+  & a {
+    margin-right: 10px;
+    line-height: 130%;
+    color: ${zeeguuSecondGray};
+  }
+`;
+
+const LabelsBox = styled.div`
+  display: inline-block;
+`;
+
+const TopicsBox = styled.div`
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+`;
+
 export {
   Title,
   Difficulty,
@@ -86,4 +124,8 @@ export {
   SourceImage,
   PublishingTime,
   Topics,
+  ArticleFooterBox,
+  TitleBox,
+  LabelsBox,
+  TopicsBox,
 };

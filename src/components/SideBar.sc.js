@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { blueDark, iconsGray, zeeguuSecondOrange } from "./colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
@@ -6,28 +7,31 @@ import styled, { css } from "styled-components";
 //   Desktop = initially open, and
 //   Mobile = initiallly closed
 
-let arrowSize = "80px";
+let arrowSize = "60px";
 
 let mainPageContentCommon = css`
   top: 0;
-  overflow-y: scroll;
-  height: 100vh;
+  height: 100%;
   overflow-x: hidden;
 `;
 
 const MainContentInitial = styled.div`
-  margin-bottom: 1em;
   overflow-y: hidden;
+  width: 99%;
+
   @media (min-width: 768px) {
-    width: calc(100% - 230px);
+    width: calc(100% - 160px);
   }
   ${mainPageContentCommon}
 `;
 
 const MainContent = styled.div`
   margin-bottom: 1em;
+  padding: 20px 10px;
   ${mainPageContentCommon}
   @media(min-width: 768 px) {
+    padding: 24px 10px;
+
     width: 100%;
     margin: auto;
   }
@@ -55,29 +59,56 @@ const SideBarInitial = styled.div`
   ${sidebarCommon}
   ${arrowCommon}
   .navigationLink {
-    display: block;
-    color: white;
-    margin-bottom: 0.4em;
-    font-size: xx-large;
-    background-color: ${(props) => props.dark};
+    display: flex;
+    align-items: center;
+    color: ${iconsGray};
+    padding: 14px 0 14px 12px;
+    font-size: medium;
+
+    :hover {
+      background-color: ${blueDark};
+    }
+
+    span {
+      align-self: flex-end;
+    }
+
+    svg {
+      margin-bottom: 2px;
+    }
 
     a {
-      color: white;
+      color: ${iconsGray};
       text-decoration: none;
       padding-left: 10px;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
     }
   }
 
   .logo {
-    display: block;
-    text-align: center;
+    display: flex;
+    align-items: center;
     width: 100%;
-    margin-top: 2em;
+    margin: 12px 0 0 12px;
+
+    & a {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 100%;
+      color: white;
+      display: flex;
+      align-items: center;
+
+      & span {
+        align-self: center;
+        margin-left: 5px;
+      }
+    }
 
     img {
-      width: 50%;
+      width: 20px;
     }
   }
 `;
@@ -99,17 +130,26 @@ const Sidebar = styled.div`
 `;
 
 const SidebarContainer = styled.div`
-  width: 230px;
+  width: 160px;
   display: flex;
   flex-direction: column;
   height: 100%;
   background-color: ${(props) => props.light};
+  position: absolute;
+  left: -160px;
+  z-index: 10;
 
   .arrowHolder {
     display: flex;
     flex-direction: row-reverse;
-    transition: 200ms;
     color: ${(props) => props.light};
+    cursor: pointer;
+    user-select: none;
+
+    @media (min-width: 768px) {
+      pointer-events: none;
+      cursor: default;
+    }
 
     .arrow {
       transform: rotate(90deg) translate(-8px, -0.5em);
@@ -118,14 +158,13 @@ const SidebarContainer = styled.div`
 
     .toggleArrow {
       color: white;
-      transform: rotate(-90deg) translate(10px, 6px);
+      transform: rotate(-90deg) translate(10px, 10px);
     }
   }
 
-  @media (max-width: 768px) {
-    position: absolute;
-    left: -230px;
-    z-index: 10;
+  @media (min-width: 768px) {
+    position: relative;
+    left: 0 !important;
   }
 `;
 

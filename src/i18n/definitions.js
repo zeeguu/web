@@ -4,7 +4,10 @@ Definitions that are rendered in multiple components are under "Shared". */
 let strings = new LocalizedStrings(
   {
     en: {
+      all: "All",
+      yourOwnInterest: "Your own interest",
       //Shared
+      filters: "Filters",
       title: "Title",
       words: "Words",
       lengthWithCapital: "Length",
@@ -21,6 +24,7 @@ let strings = new LocalizedStrings(
       email: "Email",
       name: "Name",
       learnedLanguage: "Learned Language",
+      chooseLearnedLanguage: "Choose learned language",
       plsProvideValidEmail: "Please provide a valid email.",
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
@@ -58,6 +62,7 @@ let strings = new LocalizedStrings(
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
       inviteCode: "Invite code",
       levelOfLearnedLanguage: "Level in Learned Language",
+      choseLevelOfLearnedLanguage: "Chose level in learned language",
       baseLanguage: "Base languange (English recommended)",
 
       //PrivacyNotice
@@ -392,6 +397,7 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Native Language",
+      choseNativeLanguage: "Choose native language",
       yourCurrentClassIs: "Your current class is: ",
       changeClass: "Change Class",
       insertNewInviteCode: "Insert new invite code",
@@ -737,6 +743,7 @@ let strings = new LocalizedStrings(
       exercisesInTheLast: " exercises in the last ",
       wordsNotStudiedInZeeguu: "Words Not Studied in Zeeguu",
       systemLanguage: "System Language",
+      choseSystemLanguage: "Chose system Language",
 
       class: "Class",
       personalData: "Personal data",
@@ -748,7 +755,10 @@ let strings = new LocalizedStrings(
     },
 
     da: {
+      all: "All",
+      yourOwnInterest: "Your own interest",
       //Shared
+      filters: "Filters",
       title: "Titel",
       words: "Ord",
       lengthWithCapital: "Længde",
@@ -765,6 +775,7 @@ let strings = new LocalizedStrings(
       email: "Email",
       name: "Navn",
       learnedLanguage: "Sprog, du vil lære",
+      chooseLearnedLanguage: "Choose learned language",
       plsProvideValidEmail: "Angiv venligst en gyldig email.",
       resetYourPassword: "nulstille dit kodeord",
       resetPassword: "Nulstil kodeord",
@@ -802,6 +813,7 @@ let strings = new LocalizedStrings(
         ". Du kan også kontakte os, hvis du mangler en invitationskode.",
       inviteCode: "Invitationskode",
       levelOfLearnedLanguage: "Niveau på dit læringssprog",
+      choseLevelOfLearnedLanguage: "Chose level in learned language",
       baseLanguage: "Basesprog",
 
       //PrivacyNotice
@@ -1133,6 +1145,7 @@ let strings = new LocalizedStrings(
 
       //Settings
       nativeLanguage: "Modersmål",
+      choseNativeLanguage: "Choose native language",
       yourCurrentClassIs: "Din nuværende klasse er: ",
       changeClass: "Skift klasse",
       insertNewInviteCode: "Indsæt ny invitationskode",
@@ -1450,6 +1463,7 @@ let strings = new LocalizedStrings(
       exercisesInTheLast: " øvelser i en periode på ",
       wordsNotStudiedInZeeguu: "Ord ikke øvet i Zeeguu",
       systemLanguage: "Interface sprog",
+      choseSystemLanguage: "Chose system Language",
 
       class: "Class",
       personalData: "Personal data",

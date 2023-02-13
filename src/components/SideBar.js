@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
-import { setColors } from "./colors";
+import { blueDark, iconsGray, setColors, zeeguuSecondOrange } from "./colors";
 import * as s from "./SideBar.sc";
 
 export default function SideBar(props) {
@@ -20,43 +20,53 @@ export default function SideBar(props) {
   //deducting whether we are on student or teacher side for colouring
   useEffect(() => {
     //in Settings the side is determined by whether the user is a student or a teacher
-    if (path.includes("account")) {
-      setIsOnStudentSide(!user.is_teacher);
-    } else {
-      setIsOnStudentSide(!path.includes("teacher"));
-    }
+    setIsOnStudentSide(
+      path.includes("account") ? !user.is_teacher : !path.includes("teacher")
+    );
     // eslint-disable-next-line
   }, [path]);
 
-  const SidebarLink = useCallback(({ text, to, icon }) => {
-    const active = path.startsWith(to);
-    const fontWeight = active ? "700" : "500";
+  const SidebarLink = useCallback(
+    ({ text, to, icon }) => {
+      const active = path.startsWith(to);
 
-    return (
-      <div className="navigationLink">
+      return (
         <Link to={to}>
-          {icon}
-          <small style={{ fontWeight: fontWeight }}>{text}</small>
+          <div
+            className="navigationLink"
+            style={{
+              borderLeft: active ? `2px solid ${zeeguuSecondOrange}` : "",
+              backgroundColor: active ? blueDark : "",
+            }}
+          >
+            {icon}
+            <span style={{ color: active ? "white" : iconsGray }}>{text}</span>
+          </div>
         </Link>
-      </div>
-    );
-  }, []);
+      );
+    },
+    [path]
+  );
 
-  let sidebarContent = useMemo(
-    () => (
-      <>
+  return (
+    <s.SideBarInitial light={light_color} dark={dark_color}>
+      <s.SidebarContainer
+        light={light_color}
+        dark={dark_color}
+        style={{
+          left: initialSidebarState ? 0 : "-160px",
+        }}
+      >
         <div className="logo">
           <a href={defaultPage} rel="external">
             <img
               src="/static/images/zeeguuWhiteLogo.svg"
               alt="Zeeguu Logo - The Elephant"
             />
+            <span>zeeguu</span>
           </a>
         </div>
-        <div
-          style={{ cursor: window.innerWidth > 768 && "default" }}
-          className="arrowHolder"
-        >
+        <div className="arrowHolder">
           <span
             className={`arrow ${
               window.innerWidth < 768 && initialSidebarState
@@ -85,31 +95,6 @@ export default function SideBar(props) {
             setIsOnStudentSide={setIsOnStudentSide}
           />
         )}
-      </>
-    ),
-    [
-      defaultPage,
-      isOnStudentSide,
-      user,
-      SidebarLink,
-      api,
-      isOnStudentSide,
-      user,
-      setIsOnStudentSide,
-      initialSidebarState,
-    ]
-  );
-
-  return (
-    <s.SideBarInitial light={light_color} dark={dark_color}>
-      <s.SidebarContainer
-        light={light_color}
-        dark={dark_color}
-        style={{
-          left: window.innerWidth < 768 && initialSidebarState ? 0 : "-230px",
-        }}
-      >
-        {sidebarContent}
       </s.SidebarContainer>
       <s.MainContentInitial id="scrollHolder">
         <s.MainContent>{props.children}</s.MainContent>

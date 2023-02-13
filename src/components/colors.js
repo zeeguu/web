@@ -6,6 +6,9 @@ let zeeguuVarmYellow = "#ffd047";
 let zeeguuSalmonOrange = "#f8bb86";
 let zeeguuTransparentLightOrange = "hsl(54,100%,95%)";
 let zeeguuTransparentMediumOrange = "#ffbe007a";
+let zeeguuYellow = "#FABF26";
+let zeeguuGreen = "#66CA56";
+let zeeguuDark = "#0B0C0A";
 let zeeguuOrange = "#ffbb54";
 const zeeguuSecondOrange = "#FF912C";
 const zeeguuGray = "#616161";
@@ -25,12 +28,14 @@ let errorRed = "red";
 let zeeguuViolet = "#4a0d67";
 let alertGreen = "#4caf50"; //careful when changing this color. It is defined to match the color in the success-alert to undo feedback submits.
 let matchGreen = "#B3F78F";
+let blue = "#4A4964";
+let blueDark = "#43435B";
 //black - the css standard color is used throughout the repo.
 //white - the css standard color is used throughout the repo.
 
 const setColors = (isOnStudentSide) => {
-  let light_color = zeeguuVarmYellow;
-  let dark_color = zeeguuOrange;
+  let light_color = blue;
+  let dark_color = blueDark;
   if (!isOnStudentSide) {
     light_color = lightBlue;
     dark_color = darkBlue;
@@ -67,4 +72,9 @@ export {
   zeeguuSecondGray,
   zeeguuThirdGray,
   iconsGray,
+  zeeguuYellow,
+  zeeguuGreen,
+  zeeguuDark,
+  blueDark,
+  blue,
 };

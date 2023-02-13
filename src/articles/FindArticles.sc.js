@@ -5,4 +5,16 @@ const MaterialSelection = styled.div`
   flex-direction: column;
   width: 100%;
 `;
-export { MaterialSelection };
+
+const ArticlesContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+
+  @media (min-width: 817px) {
+    gap: 4%;
+  }
+`;
+
+export { MaterialSelection, ArticlesContainer };

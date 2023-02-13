@@ -2,8 +2,14 @@ import React, { useState } from "react";
 
 import { Popover, Typography } from "@mui/material";
 import * as s from "./AvatarSettings.sc";
+import { LogOut, Settings } from "../icons/sidebar";
+import { iconsGray, setColors, zeeguuSecondOrange } from "../colors";
+import strings from "../../i18n/definitions";
+import { Link, useLocation } from "react-router-dom";
 
 const AvatarSettings = ({ user }) => {
+  const path = useLocation().pathname;
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClose = () => {
@@ -20,7 +26,9 @@ const AvatarSettings = ({ user }) => {
 
   return (
     <s.AvatarBox onClick={handleClick}>
-      <img src="/static/images/defaultAvatar.png" alt="defaultAvatar" />
+      <s.Avatar>
+        <img src="/static/images/default-avatar.svg" alt="default-avatar" />
+      </s.Avatar>
       <Popover
         id={id}
         open={open}
@@ -31,7 +39,40 @@ const AvatarSettings = ({ user }) => {
           horizontal: "left",
         }}
       >
-        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+        <Link to="/account_settings">
+          <s.NavigationLink
+            style={{
+              borderBottom: path.startsWith("/account_settings")
+                ? `2px solid ${zeeguuSecondOrange}`
+                : "",
+            }}
+          >
+            <Settings
+              color={path.startsWith("/account_settings") ? "white" : iconsGray}
+              style={{ marginRight: "10px" }}
+              width="15px"
+              height="15px"
+            />
+            <span>{strings.settings}</span>
+          </s.NavigationLink>
+        </Link>
+
+        <Link
+          to="/"
+          onClick={() => {
+            user.logoutMethod();
+          }}
+        >
+          <s.NavigationLink>
+            <LogOut
+              color={iconsGray}
+              style={{ marginRight: "10px" }}
+              width="15px"
+              height="15px"
+            />
+            <span>{strings.logout}</span>
+          </s.NavigationLink>
+        </Link>
       </Popover>
     </s.AvatarBox>
   );

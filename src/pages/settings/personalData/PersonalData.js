@@ -1,131 +1,189 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../../../components/input/Input";
 import strings from "../../../i18n/definitions";
 import { Dropdown } from "../../../components/dropdown/Dropdown";
-import { CEFR_LEVELS } from "../../../assorted/cefrLevels";
+import { CEFR_LEVELS_FOR_SETTINGS } from "../../../assorted/cefrLevels";
 import * as scs from "../Settings.sc";
+import LocalStorage from "../../../assorted/LocalStorage";
+import uiLanguages from "../../../assorted/uiLanguages";
+import { useHistory } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
 
-const countriesData = [
-  {
-    label: "Chinese",
-    icon: (
-      <img src="/static/images/countries/china.png" width="25px" alt="china" />
-    ),
-  },
-  {
-    label: "Danish",
-    icon: (
-      <img
-        src="/static/images/countries/denmark.png"
-        width="25px"
-        alt="denmark"
-      />
-    ),
-  },
-  {
-    label: "French",
-    icon: (
-      <img
-        src="/static/images/countries/france.png"
-        width="25px"
-        alt="france"
-      />
-    ),
-  },
-  {
-    label: "German",
-    icon: (
-      <img
-        src="/static/images/countries/germany.png"
-        width="25px"
-        alt="germany"
-      />
-    ),
-  },
-  {
-    label: "English",
-    icon: (
-      <img
-        src="/static/images/countries/great_britain.png"
-        width="25px"
-        alt="great_britain"
-      />
-    ),
-  },
-  {
-    label: "Italian",
-    icon: (
-      <img src="/static/images/countries/italy.png" width="25px" alt="italy" />
-    ),
-  },
-  {
-    label: "Dutch",
-    icon: (
-      <img
-        src="/static/images/countries/netherlands.png"
-        width="25px"
-        alt="netherlands"
-      />
-    ),
-  },
-  {
-    label: "Spanish",
-    icon: (
-      <img src="/static/images/countries/spain.png" width="25px" alt="spain" />
-    ),
-  },
-];
+export const PersonalData = ({ api, setUser, user }) => {
+  const history = useHistory();
 
-export const PersonalData = ({ userDetails, setUserDetails }) => {
+  const [showJoinCohortError, setShowJoinCohortError] = useState(false);
+  const [currentCohort, setCurrentCohort] = useState("");
+  const [userDetails, setUserDetails] = useState(null);
+  const [inviteCode, setInviteCode] = useState("");
+  const [languages, setLanguages] = useState();
+  const [learnedLanguage, setLearnedLanguage] = useState(null);
+  const [cefr, setCEFR] = useState("");
+  const [nativeLanguage, setNativeLanguage] = useState(null);
+  const [uiLanguage, setUiLanguage] = useState(null);
+
+  const handleChangeUiLanguage = (languageItem) => {
+    setUiLanguage(uiLanguages.find((lang) => lang.code === languageItem.code));
+  };
+
+  // const studentIsInCohort = currentCohort !== "";
+  //
+
+  // function handleInviteCodeChange(event) {
+  //   setShowJoinCohortError(false);
+  //   setInviteCode(event.target.value);
+  // }
+
+  const saveStudentToClass = (e) => {
+    e.preventDefault();
+
+    api.joinCohort(
+      inviteCode,
+      (status) => {
+        status === "OK"
+          ? history.push("/articles/classroom")
+          : setShowJoinCohortError(true);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  const handleSave = () => {
+    strings.setLanguage(uiLanguage.code);
+    LocalStorage.setUiLanguage(uiLanguage);
+
+    api.modifyCEFRlevel(
+      userDetails.learned_language,
+      cefr,
+      (res) => {
+        console.log(
+          "Update '" + userDetails.learned_language + "' CEFR level to: " + cefr
+        );
+        console.log("API returns update status: " + res);
+      },
+      () => {
+        console.log("Connection to server failed...");
+      }
+    );
+    console.log(userDetails);
+    api.saveUserDetails(
+      {
+        ...userDetails,
+        learned_language: learnedLanguage?.code,
+        native_language: nativeLanguage?.code,
+      },
+      () => {},
+      () => {
+        LocalStorage.setUserInfo(userDetails);
+        setUser({
+          ...user,
+          name: userDetails.name,
+          learned_language: userDetails.learned_language,
+          native_language: userDetails.native_language,
+        });
+      }
+    );
+  };
+
+  const handleSetSefr = (item) => {
+    setCEFR(item.value);
+  };
+
+  useEffect(() => {
+    api.getUserDetails((data) => {
+      setUserDetails(data);
+      setCEFR(data[data.learned_language + "_cefr_level"]);
+    });
+    api.getSystemLanguages((systemLanguages) => {
+      setLanguages(systemLanguages);
+    });
+    api.getStudent((student) => {
+      if (student.cohort_id !== null) {
+        api.getCohortName(student.cohort_id, (cohort) =>
+          setCurrentCohort(cohort.name)
+        );
+      }
+    });
+  }, [user?.session, api]);
+
+  useEffect(() => {
+    setUiLanguage(LocalStorage.getUiLanguage());
+  }, []);
+
+  useEffect(() => {
+    if (userDetails?.learned_language && languages)
+      setLearnedLanguage(
+        languages?.learnable_languages.find(
+          (item) => item.code === userDetails?.learned_language
+        )
+      );
+  }, [userDetails?.learned_language, languages]);
+
+  useEffect(() => {
+    if (userDetails?.native_language && languages) {
+      setNativeLanguage(
+        languages?.native_languages.find(
+          (item) => item.code === userDetails?.native_language
+        )
+      );
+    }
+  }, [userDetails?.native_language, languages]);
+
+  if (!userDetails || !languages) {
+    return <CircularProgress style={{ alignSelf: "center" }} />;
+  }
+
   return (
-    <form>
+    <div>
       <Input
         isPlainText
         title={strings.name}
         value={userDetails.name}
-        onChange={(e) =>
-          setUserDetails({ ...userDetails, name: e.target.value })
-        }
+        onChange={(value) => setUserDetails({ ...userDetails, name: value })}
       />
 
       <Input
         isEmail
         title={strings.email}
         value={userDetails.email}
-        onChange={(e) =>
-          setUserDetails({ ...userDetails, email: e.target.value })
-        }
+        onChange={(value) => setUserDetails({ ...userDetails, email: value })}
       />
 
       <Dropdown
         title={strings.learnedLanguage}
-        placeholder="placeholder"
-        value="value"
-        items={countriesData}
+        placeholder={strings.chooseLearnedLanguage}
+        value={learnedLanguage?.name}
+        items={languages?.learnable_languages}
+        onChange={setLearnedLanguage}
       />
 
       <Dropdown
         title={strings.levelOfLearnedLanguage}
-        placeholder="placeholder"
-        value="value"
-        items={CEFR_LEVELS}
+        placeholder={strings.choseLevelOfLearnedLanguage}
+        value={CEFR_LEVELS_FOR_SETTINGS[cefr - 1].name}
+        items={CEFR_LEVELS_FOR_SETTINGS}
+        onChange={handleSetSefr}
       />
 
       <Dropdown
         title={strings.nativeLanguage}
-        placeholder="placeholder"
-        value="value"
-        items={countriesData}
+        placeholder={strings.choseNativeLanguage}
+        value={nativeLanguage?.name}
+        items={languages?.native_languages}
+        onChange={setNativeLanguage}
       />
 
       <Dropdown
         title={strings.systemLanguage}
-        placeholder="placeholder"
-        value="value"
-        items={countriesData}
+        placeholder={strings.choseSystemLanguage}
+        value={uiLanguage?.name}
+        items={uiLanguages}
+        onChange={handleChangeUiLanguage}
       />
 
-      <scs.SettingButton onClick={() => {}}>{strings.save}</scs.SettingButton>
-    </form>
+      <scs.SettingButton onClick={handleSave}>{strings.save}</scs.SettingButton>
+    </div>
   );
 };

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ArticlePreview from "./ArticlePreview";
-import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import Reminder from "./Reminder";
 import ExtensionMessage from "../components/ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
 import {
@@ -16,13 +14,17 @@ import {
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import { useLocation } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import { FiltersWrapper } from "./filters/FiltersWrapper";
+
+const useQuery = () => {
+  return new URLSearchParams(useLocation().search);
+};
 
 export default function NewArticles({ api }) {
-  const searchQuery = useLocation().search;
+  const query = useQuery();
 
   const [isLoading, setIsLoading] = useState(true);
   const [articleList, setArticleList] = useState([]);
-  const [originalList, setOriginalList] = useState([]);
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
@@ -41,37 +43,25 @@ export default function NewArticles({ api }) {
     }
 
     setIsLoading(true);
-    if (searchQuery) {
-      api.search(searchQuery, (articles) => {
+
+    if (query?.get("search")) {
+      return api.search(query.get("search"), (articles) => {
         setIsLoading(false);
 
         setArticleList(articles);
-        setOriginalList([...articles]);
-      });
-    } else {
-      api.getUserArticles((articles) => {
-        setIsLoading(false);
-
-        setArticleList(articles);
-        setOriginalList([...articles]);
       });
     }
+
+    return api.getUserArticles((articles) => {
+      setIsLoading(false);
+
+      setArticleList(articles);
+    });
   }, []);
 
   useEffect(() => {
-    if (!hasExtension) {
-      setExtensionMessageOpen(true);
-    }
+    if (!hasExtension) setExtensionMessageOpen(true);
   }, [hasExtension]);
-
-  //when the user changes interests...
-  function articlesListShouldChange() {
-    setArticleList(null);
-    api.getUserArticles((articles) => {
-      setArticleList(articles);
-      setOriginalList([...articles]);
-    });
-  }
 
   const searchArticlesBySearchField = async (searchText) => {
     setIsLoading(true);
@@ -80,7 +70,6 @@ export default function NewArticles({ api }) {
         setIsLoading(false);
 
         setArticleList(articles);
-        setOriginalList([...articles]);
       });
     }
 
@@ -88,10 +77,9 @@ export default function NewArticles({ api }) {
       setIsLoading(false);
 
       setArticleList(articles);
-      setOriginalList([...articles]);
     });
   };
-
+  console.log(articleList);
   return (
     <s.MaterialSelection>
       <ExtensionMessage
@@ -106,28 +94,31 @@ export default function NewArticles({ api }) {
 
       <Interests />
 
-      {isLoading ? (
-        <CircularProgress style={{ alignSelf: "center" }} />
-      ) : articleList?.length !== 0 ? (
-        <>
-          <SortingButtons
-            articleList={articleList}
-            originalList={originalList}
-            setArticleList={setArticleList}
+      <FiltersWrapper>
+        {isLoading ? (
+          <CircularProgress
+            style={{
+              alignSelf: "center",
+              marginTop: "50px",
+            }}
           />
-          <Reminder hasExtension={hasExtension}></Reminder>
-          {articleList?.map((each) => (
-            <ArticlePreview
-              key={each.id}
-              article={each}
-              api={api}
-              hasExtension={hasExtension}
-            />
-          ))}
-        </>
-      ) : (
-        <p>No articles found that match your search</p>
-      )}
+        ) : articleList?.length !== 0 ? (
+          <>
+            <s.ArticlesContainer>
+              {articleList?.map((article) => (
+                <ArticlePreview
+                  key={article.id}
+                  article={article}
+                  api={api}
+                  hasExtension={hasExtension}
+                />
+              ))}
+            </s.ArticlesContainer>
+          </>
+        ) : (
+          <p>No articles found that match your search</p>
+        )}
+      </FiltersWrapper>
     </s.MaterialSelection>
   );
 }

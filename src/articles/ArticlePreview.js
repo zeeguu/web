@@ -1,83 +1,108 @@
 import { Link } from "react-router-dom";
-import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import Feature from "../features/Feature";
-import { runningInChromeDesktop } from "../utils/misc/browserDetection";
-import { extractVideoIDFromURL } from "../utils/misc/youtube";
+import { useMemo } from "react";
+import {
+  InterestButton,
+  variants,
+} from "../components/interestButton/InterestButton";
+import { levels, LevelLabel } from "../components/levelLabel/LevelLabel";
+import { TimeLabel } from "../components/timeLabel/TimeLabel";
+
+const maxArticleTitleLength = 70;
+const maxArticleLength = 230;
+const wordCountPerMin = 80;
 
 export default function ArticleOverview({
   article,
-  dontShowPublishingTime,
   dontShowImage,
   hasExtension,
 }) {
-  let topics = article.topics.split(" ").filter((each) => each !== "");
-  let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
+  let readingTime = Math.round(article.metrics.word_count / wordCountPerMin);
 
-  function titleLink(article) {
-    let open_in_zeeguu = (
-      <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
-    );
-    let open_externally = (
-      <a target="_blank" href={article.url}>
-        {article.title}
-      </a>
-    );
+  let topics = useMemo(
+    () => article?.topics?.split(" ").filter((topic) => topic !== ""),
+    []
+  );
 
-    if (article.video) {
-      return open_in_zeeguu;
-    }
+  const articleTitle = useMemo(
+    () =>
+      article.title.length > maxArticleTitleLength
+        ? `${article.title.slice(0, maxArticleTitleLength)}...`
+        : article.title,
+    []
+  );
 
-    if (!Feature.extension_experiment1() && !hasExtension) {
-      // if the feature is not enabled and if they don't have the extension we always open in zeeguu
-      return open_in_zeeguu;
-    }
+  const articleText = useMemo(
+    () =>
+      article.summary.length > maxArticleLength
+        ? `${article.summary.slice(0, maxArticleLength)}...`
+        : article.summary,
+    []
+  );
 
-    // else, we only open in zeegu if it's a personal copy or the article
-    // has an uploader, thus it's uploaded from our own platform
-    // either by the user themselves or by a teacher maybe
-    if (article.has_personal_copy || article.has_uploader) {
-      return open_in_zeeguu;
-    } else {
-      return open_externally;
-    }
-  }
+  const difficulty = useMemo(() => {
+    const countedDifficulty = Math.round(article.metrics.difficulty * 100) / 10;
+
+    if (countedDifficulty >= 0 && countedDifficulty < 4) return levels.easy;
+    if (countedDifficulty >= 4 && countedDifficulty < 8) return levels.fair;
+    if (countedDifficulty >= 8) return levels.challenging;
+  }, []);
 
   return (
     <s.ArticlePreview>
-      <s.Title>{titleLink(article)}</s.Title>
-      <s.Difficulty>{difficulty}</s.Difficulty>
-      <s.WordCount>{article.metrics.word_count}</s.WordCount>
+      <div
+        style={{
+          marginBottom: "18px",
+        }}
+      >
+        <s.Title>
+          {article?.has_personal_copy ||
+          article?.has_uploader ||
+          article?.video ||
+          (!Feature.extension_experiment1() && !hasExtension) ? (
+            <s.TitleBox>
+              <Link to={`/read/article?id=${article.id}`}>{articleTitle}</Link>
+              <div style={{ display: "inline-block", marginLeft: "15px" }}>
+                <TimeLabel title={`${readingTime} min`} />
+                <LevelLabel level={difficulty} />
+              </div>
+            </s.TitleBox>
+          ) : (
+            <s.TitleBox>
+              <a target="_blank" href={article.url}>
+                {articleTitle}
+              </a>
+              <s.LabelsBox>
+                <TimeLabel title={`${readingTime} min`} />
+                <LevelLabel level={difficulty} />
+              </s.LabelsBox>
+            </s.TitleBox>
+          )}
+        </s.Title>
+        <s.Summary>{articleText}</s.Summary>
+      </div>
 
-      {article.video ? (
-        <img
-          style={{ float: "left", marginRight: "1em" }}
-          src={
-            "https://img.youtube.com/vi/" +
-            extractVideoIDFromURL(article.url) +
-            "/default.jpg"
-          }
-        />
-      ) : (
-        ""
-      )}
+      <s.ArticleFooterBox>
+        {!dontShowImage && (
+          <s.SourceImage>
+            <img
+              src={"/news-icons/" + article?.icon_name}
+              alt={article?.icon_name || ""}
+            />
+          </s.SourceImage>
+        )}
 
-      <s.Summary>{article.summary}</s.Summary>
-      {!dontShowImage && (
-        <s.SourceImage>
-          <img src={"/news-icons/" + article.icon_name} alt="" />
-        </s.SourceImage>
-      )}
-      {!dontShowPublishingTime && (
-        <s.PublishingTime>
-          ({moment.utc(article.published).fromNow()})
-        </s.PublishingTime>
-      )}
-      <s.Topics>
-        {topics.map((topic) => (
-          <span key={topic}>{topic}</span>
-        ))}
-      </s.Topics>
+        <s.TopicsBox>
+          {topics?.map((topic) => (
+            <InterestButton
+              key={topic}
+              variant={variants.grayOutlined}
+              title={topic}
+            ></InterestButton>
+          ))}
+        </s.TopicsBox>
+      </s.ArticleFooterBox>
     </s.ArticlePreview>
   );
 }
