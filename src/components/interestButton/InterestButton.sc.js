@@ -8,6 +8,7 @@ import {
 import { variants } from "./InterestButton";
 
 const InterestButton = styled(RoundButton)`
+  white-space: nowrap;
   border: 1px solid ${zeeguuThirdGray};
   cursor: ${(props) => (props.disabled ? "default" : "pointer")};
   display: flex;

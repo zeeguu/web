@@ -4,6 +4,7 @@ const MaterialSelection = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  overflow-x: hidden;
 `;
 
 const ArticlesContainer = styled.div`

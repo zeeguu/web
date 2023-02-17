@@ -15,6 +15,8 @@ import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import { useLocation } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { FiltersWrapper } from "./filters/FiltersWrapper";
+import Filters from "../utils/filters/filters";
+import { MobileFilters } from "./filters/MobileFilters";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -28,6 +30,7 @@ export default function NewArticles({ api }) {
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   useEffect(() => {
     setTitle(strings.findArticles);
@@ -48,6 +51,8 @@ export default function NewArticles({ api }) {
       return api.search(query.get("search"), (articles) => {
         setIsLoading(false);
 
+        Filters.setArticlesList(articles);
+        Filters.setCurrentFilter(null);
         setArticleList(articles);
       });
     }
@@ -55,6 +60,8 @@ export default function NewArticles({ api }) {
     return api.getUserArticles((articles) => {
       setIsLoading(false);
 
+      Filters.setArticlesList(articles);
+      Filters.setCurrentFilter(null);
       setArticleList(articles);
     });
   }, []);
@@ -69,6 +76,8 @@ export default function NewArticles({ api }) {
       return api.getUserArticles((articles) => {
         setIsLoading(false);
 
+        Filters.setArticlesList(articles);
+        Filters.setCurrentFilter(null);
         setArticleList(articles);
       });
     }
@@ -76,10 +85,12 @@ export default function NewArticles({ api }) {
     await api.search(searchText, (articles) => {
       setIsLoading(false);
 
+      Filters.setArticlesList(articles);
+      Filters.setCurrentFilter(null);
       setArticleList(articles);
     });
   };
-  console.log(articleList);
+
   return (
     <s.MaterialSelection>
       <ExtensionMessage
@@ -90,11 +101,14 @@ export default function NewArticles({ api }) {
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
 
-      <SearchField searchFunc={searchArticlesBySearchField} />
+      <SearchField
+        onOpenFilters={() => setIsFiltersOpen(true)}
+        searchFunc={searchArticlesBySearchField}
+      />
 
-      <Interests />
+      <Interests setArticles={setArticleList} />
 
-      <FiltersWrapper>
+      <FiltersWrapper setArticles={setArticleList}>
         {isLoading ? (
           <CircularProgress
             style={{
@@ -119,6 +133,11 @@ export default function NewArticles({ api }) {
           <p>No articles found that match your search</p>
         )}
       </FiltersWrapper>
+      <MobileFilters
+        setArticles={setArticleList}
+        isFiltersOpen={isFiltersOpen}
+        onClose={() => setIsFiltersOpen(false)}
+      />
     </s.MaterialSelection>
   );
 }

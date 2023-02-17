@@ -1,10 +1,12 @@
-import { useContext, useState, useEffect, useMemo, useCallback } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 import { blueDark, iconsGray, setColors, zeeguuSecondOrange } from "./colors";
 import * as s from "./SideBar.sc";
+import { Header } from "./layout/header/Header";
+import { Menu } from "./icons/Menu";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -12,7 +14,7 @@ export default function SideBar(props) {
   const path = useLocation().pathname;
   const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
 
-  const [initialSidebarState, setInitialSidebarState] = useState(true);
+  const [initialSidebarState, setInitialSidebarState] = useState(false);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
 
   const { light_color, dark_color } = setColors(isOnStudentSide);
@@ -40,7 +42,13 @@ export default function SideBar(props) {
             }}
           >
             {icon}
-            <span style={{ color: active ? "white" : iconsGray }}>{text}</span>
+            <span
+              style={{
+                color: active ? "white" : iconsGray,
+              }}
+            >
+              {text}
+            </span>
           </div>
         </Link>
       );
@@ -50,13 +58,21 @@ export default function SideBar(props) {
 
   return (
     <s.SideBarInitial light={light_color} dark={dark_color}>
+      <Header
+        onMenuClick={() => setInitialSidebarState(!initialSidebarState)}
+      />
       <s.SidebarContainer
         light={light_color}
         dark={dark_color}
         style={{
-          left: initialSidebarState ? 0 : "-160px",
+          left: initialSidebarState ? 0 : "-100%",
         }}
       >
+        <s.SideBarMenuIconContainer
+          onClick={() => setInitialSidebarState(false)}
+        >
+          <Menu color="white" />
+        </s.SideBarMenuIconContainer>
         <div className="logo">
           <a href={defaultPage} rel="external">
             <img
@@ -66,24 +82,13 @@ export default function SideBar(props) {
             <span>zeeguu</span>
           </a>
         </div>
-        <div className="arrowHolder">
-          <span
-            className={`arrow ${
-              window.innerWidth < 768 && initialSidebarState
-                ? "toggleArrow"
-                : ""
-            }`}
-            onClick={() => setInitialSidebarState(!initialSidebarState)}
-          >
-            ▲
-          </span>
-        </div>
         <s.Sidebar>
           {isOnStudentSide && (
             <StudentSpecificSidebarOptions
               SidebarLink={SidebarLink}
               user={user}
               api={api}
+              onClick={() => setInitialSidebarState(false)}
             />
           )}
         </s.Sidebar>
@@ -93,6 +98,7 @@ export default function SideBar(props) {
             SidebarLink={SidebarLink}
             user={user}
             setIsOnStudentSide={setIsOnStudentSide}
+            onClick={() => setInitialSidebarState(false)}
           />
         )}
       </s.SidebarContainer>
