@@ -80,7 +80,7 @@ function App() {
     if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
       history.push("/install_extension");
     } else {
-      userInfo.is_teacher
+      userInfo.is_teacher && userInfo.name != "Mircea Lungu"
         ? history.push("/teacher/classes")
         : history.push("/articles");
     }
