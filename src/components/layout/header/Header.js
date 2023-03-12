@@ -16,6 +16,7 @@ const pagesPerRoute = {
   "/account_settings/personalData": strings.settings,
   "/account_settings/class": strings.settings,
   "/account_settings/content": strings.settings,
+  "/articles/ownTexts": strings.ownText,
 };
 export const Header = ({ onMenuClick }) => {
   const path = useLocation().pathname;

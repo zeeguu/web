@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
-import strings from "../i18n/definitions"
+import strings from "../i18n/definitions";
 
 import ArticlePreview from "./ArticlePreview";
 
@@ -37,13 +37,19 @@ export default function BookmarkedArticles({ api }) {
         originalList={originalList}
         setArticleList={setArticleList}
       />
-      {articleList.map((each) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          dontShowPublishingTime={true}
-        />
-      ))}
+      <div
+        style={{
+          maxWidth: "80%",
+        }}
+      >
+        {articleList.map((each) => (
+          <ArticlePreview
+            key={each.id}
+            article={each}
+            dontShowPublishingTime={true}
+          />
+        ))}
+      </div>
     </>
   );
 }

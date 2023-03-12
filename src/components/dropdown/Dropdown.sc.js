@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const ListItem = styled.div`
   padding: 3px 16px;
@@ -38,12 +38,21 @@ const DropdownField = styled.div`
   display: flex;
   align-items: center;
   padding: 0 16px;
-  cursor: pointer;
   user-select: none;
   font-style: normal;
   font-weight: 500;
   font-size: 15px;
   color: #616161;
+
+  ${({ disabled }) =>
+    !!disabled
+      ? css`
+          cursor: auto;
+          background-color: rgba(239, 239, 239, 0.3);
+        `
+      : css`
+          cursor: pointer;
+        `}
 `;
 
 const DropdownIcon = styled.img`

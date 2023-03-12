@@ -12,9 +12,9 @@ const LevelLabel = styled.span`
   background-color: ${({ level }) => {
     switch (level) {
       case levels.easy:
-        return zeeguuYellow;
-      case levels.fair:
         return zeeguuGreen;
+      case levels.fair:
+        return zeeguuYellow;
       case levels.challenging:
         return zeeguuDark;
     }

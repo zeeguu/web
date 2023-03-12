@@ -38,7 +38,7 @@ const SettingButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${zeeguuSecondOrange};
+  background-color: ${({ bg }) => bg || zeeguuSecondOrange};
   border-radius: 50px;
   border: none;
   color: white;

@@ -1,6 +1,5 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
-  almostBlack,
   darkGrey,
   veryLightGrey,
   zeeguuOrange,
@@ -18,10 +17,21 @@ const ArticlePreview = styled.div`
   border-left: solid ${zeeguuSecondOrange};
   padding-left: 0.8em;
 
-  @media (min-width: 817px) {
-    max-width: 45.5%;
-    margin: 2em 0 0;
-  }
+  ${({ isTwoColumns }) => {
+    return !!isTwoColumns
+      ? css`
+          @media (min-width: 817px) {
+            max-width: 45.5%;
+            margin: 2em 0 0;
+          }
+        `
+      : css`
+          @media (min-width: 817px) {
+            max-width: 100%;
+            margin: 2em 0 0;
+          }
+        `;
+  }};
 `;
 
 const Title = styled.div`
@@ -64,6 +74,7 @@ let SourceImage = styled.span`
     background-color: ${zeeguuVarmYellow};
     height: 25px;
   }
+
   margin-right: 0.5em;
 `;
 
@@ -78,7 +89,6 @@ let Topics = styled.span`
   margin-top: 1em;
 
   span {
-    margin-left: 1em;
     height: 1.2em;
     margin-left: 0.2em;
     border: solid ${zeeguuOrange};

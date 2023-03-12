@@ -32,6 +32,7 @@ let strings = new LocalizedStrings(
       resetPassword: "Reset Password",
       alreadyHaveAccount: "Already have an account? Login instead",
       code: "Code",
+      ownText: "Own texts",
       interest: "interest",
       addTexts: "Add Texts",
       delete: "Delete",
@@ -757,6 +758,7 @@ let strings = new LocalizedStrings(
     },
 
     da: {
+      ownText: "Own texts",
       settingsSuccess: "Your account has been successfully updated.",
       all: "All",
       yourOwnInterest: "Your own interest",

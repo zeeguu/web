@@ -155,6 +155,8 @@ export const nonInterestsData = [
 
 export const Content = () => {
   const [interests, setInterests] = useState(interestsData);
+  const [isAllInterests, setIsAllInterests] = useState(false);
+  const [isAllNonInterests, setIsAllNonInterests] = useState(false);
   const [nonInterests, setNonInterests] = useState(nonInterestsData);
 
   const handleInterestPress = useCallback(
@@ -163,7 +165,10 @@ export const Content = () => {
         const newInterests = (
           type === "nonInterests" ? nonInterests : interests
         ).map((interest) => {
-          const newInterest = { name: interestName, value: interest.value };
+          const newInterest = {
+            ...interest,
+            value: interest.value,
+          };
 
           if (interest.name === interestName) {
             newInterest.value = !interest.value;
@@ -184,10 +189,19 @@ export const Content = () => {
       return () => {
         const newInterests = (
           type === "nonInterests" ? nonInterests : interests
-        ).map((interest) => ({ ...interest, value: true }));
+        ).map((interest) => ({
+          ...interest,
+          value: type === "nonInterests" ? !isAllNonInterests : !isAllInterests,
+        }));
 
-        if (type === "nonInterests") setNonInterests(newInterests);
-        if (type === "interests") setInterests(newInterests);
+        if (type === "nonInterests") {
+          setNonInterests(newInterests);
+          setIsAllNonInterests(!isAllNonInterests);
+        }
+        if (type === "interests") {
+          setInterests(newInterests);
+          setIsAllInterests(!isAllInterests);
+        }
       };
     },
     [interests, nonInterests]
@@ -199,20 +213,11 @@ export const Content = () => {
       <div>
         <s.InterestsBox>
           <InterestButton
-            variant={variants.grayOutlined}
+            variant={
+              isAllInterests ? variants.orangeFilled : variants.grayOutlined
+            }
             title={strings.all}
             onClick={handleSelectAllInterests("interests")}
-          />
-          <InterestButton
-            variant={variants.orangeOutlined}
-            icon={
-              <img
-                src="/static/icons/plus.svg"
-                alt="plus"
-                style={{ width: "10px", height: "10px", marginRight: "7px" }}
-              />
-            }
-            title={strings.yourOwnInterest}
           />
         </s.InterestsBox>
         <s.InterestsContainer>
@@ -233,20 +238,11 @@ export const Content = () => {
       <div>
         <s.InterestsBox>
           <InterestButton
-            variant={variants.grayOutlined}
+            variant={
+              isAllNonInterests ? variants.grayFilled : variants.grayOutlined
+            }
             title={strings.all}
             onClick={handleSelectAllInterests("nonInterests")}
-          />
-          <InterestButton
-            variant={variants.orangeOutlined}
-            icon={
-              <img
-                src="/static/icons/plus.svg"
-                alt="plus"
-                style={{ width: "10px", height: "10px", marginRight: "7px" }}
-              />
-            }
-            title={strings.yourOwnInterest}
           />
         </s.InterestsBox>
         <s.InterestsContainer>

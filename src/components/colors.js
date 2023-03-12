@@ -32,6 +32,8 @@ let blue = "#4A4964";
 let blueDark = "#43435B";
 let gray = "#CFCFD2";
 let lightGray = "#e8e8e8";
+let savedBG = "#DF6B00";
+
 //black - the css standard color is used throughout the repo.
 //white - the css standard color is used throughout the repo.
 
@@ -81,4 +83,5 @@ export {
   blue,
   gray,
   lightGray,
+  savedBG,
 };
