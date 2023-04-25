@@ -322,6 +322,8 @@ let strings = new LocalizedStrings(
         "Find the expression in the context below",
       chooseTheWordFittingContextHeadline:
         "Choose the alternative that fits the context",
+      orderTheWordsToMakeTheFollowingSentence:
+        "Order the words to make the following sentence",
       matchWordWithTranslation: "Match each word with its translation",
       audioExerciseHeadline:
         "Write the word your hear. Click to have it repeated!",
@@ -363,6 +365,7 @@ let strings = new LocalizedStrings(
         "None of the other options apply. I would like to submit personalised feedback.",
 
       //ButtonInput
+      reset: "Reset",
       check: "Check",
       hint: "Hint",
       showSolution: "Show solution",
@@ -1089,6 +1092,7 @@ let strings = new LocalizedStrings(
         "Ingen af ​​de andre muligheder gælder. Jeg vil gerne indsende personlig feedback.",
 
       //ButtonInput
+      reset: "Nulstil",
       check: "Tjek",
       hint: "Hint",
       showSolution: "Vis løsning",
