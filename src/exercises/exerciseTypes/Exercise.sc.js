@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
+  darkGreen,
+  zeeguuRed,
+  zeeguuDarkOrange,
+  darkBlue,
 } from "../../components/colors";
 
 const Exercise = styled.div`
@@ -16,6 +20,7 @@ const Exercise = styled.div`
     font-size: ;
     color: gray;
     margin-top: 1em;
+  
     font-weight: 500;
   }
 
@@ -49,6 +54,52 @@ const Exercise = styled.div`
   .highlightedWord {
     color: orange;
     font-weight: 800;
+  }
+
+  .cluesRow {
+    text-align: left;
+    display: inline-block;
+    margin-left: 2em;
+    h4 {
+      margin-top: 0px;
+    }
+    p {
+      margin-bottom: 0px;
+    }
+
+  }
+
+  .orderWordsItem{
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    min-height: 50px;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0.5em;
+    border-style: solid;
+    border-radius: 16px;
+    background-color: #dbdbdba6;
+    border: 1px;
+    padding: 5px;
+    margin: 5px 30px;
+  }
+
+  .incorrect {
+    background-color: ${zeeguuRed};
+  }
+
+  .correct {
+    background-color: ${darkGreen};
+    :hover{ }
+  }
+
+  .toSwap {
+    background-color: ${darkBlue};
+  }
+
+  .selected {
+    background-color: grey;
   }
 
   .contextExample {
@@ -154,6 +205,50 @@ let OrangeButton = styled(StyledButton)`
   color: white;
   background-color: ${zeeguuOrange};
   margin: 1em;
+`;
+
+let OrangeItemCompact = styled(StyledButton)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: ${zeeguuOrange};
+  margin: 0.3em;
+  &:hover {
+    filter: brightness(0.8);
+  }
+`;
+
+let OrangeItemCompactConstruct = styled(StyledButton)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  height: 40px;
+  background-color: ${zeeguuOrange};
+  margin: 0.1em;
+  & .correct :hover {
+  }
+  & .feedbackText {
+    visibility: hidden;
+    width: 150px;
+    overflow: visible;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    margin-bottom: 110px;
+  }
+
+  &:hover .feedbackText {
+    visibility: visible;
+  }
 `;
 
 let OrangeButtonMessage = styled(StyledButton)`
@@ -282,6 +377,30 @@ let BottomRowCompact = styled.div`
   }
 `;
 
+let ItemRowCompactWrap = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.5em;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 1em;
+  @media (max-width: 430px) {
+    flex-flow: row wrap;
+  }
+`;
+let ItemRowCompactWrapConstruct = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.3em;
+  align-items: left;
+  min-height:80px;
+  //justify-content: ;
+  margin-bottom: 0.1em;
+  @media (max-width: 430px) {
+    flex-flow: row wrap;
+  }
+`;
+
 let StyledGreyButton = styled.button`
   background: none !important;
   border: none !important;
@@ -332,11 +451,15 @@ export {
   Exercise,
   FeedbackButton,
   OrangeButton,
+  OrangeItemCompact,
+  OrangeItemCompactConstruct,
   AnimatedOrangeButton,
   Input,
   AnimatedInput,
   BottomRow,
   BottomRowCompact,
+  ItemRowCompactWrap,
+  ItemRowCompactWrapConstruct,
   StyledGreyButton,
   StyledDiv,
   MatchButton,

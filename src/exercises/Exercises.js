@@ -11,6 +11,7 @@ import strings from "../i18n/definitions";
 import Match from "./exerciseTypes/match/Match";
 import SpellWhatYouHear from "./exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
 import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleChoiceAudio";
+import OrderWords from "./exerciseTypes/orderWords/OrderWords"
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
@@ -38,6 +39,10 @@ let EXERCISE_TYPES = [
     type: MultipleChoiceAudio,
     requiredBookmarks: 3,
   },
+  {
+    type: OrderWords,
+    requiredBookmarks:1,
+  }
 ];
 
 export const AUDIO_SOURCE = "Exercises";
