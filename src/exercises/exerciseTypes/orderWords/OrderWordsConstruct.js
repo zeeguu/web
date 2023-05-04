@@ -19,9 +19,6 @@ function OrderWordsConstruct({
        className={word.status} 
        onClick={() => notifyChoiceSelection(word.id, word.inUse)}>
        {word.word}
-       {(word.feedback !== "") && (
-        <span className="feedbackText">{word.feedback}</span>
-       )}
       </s.OrangeItemCompactConstruct>)}
     </s.ItemRowCompactWrapConstruct>
   );
