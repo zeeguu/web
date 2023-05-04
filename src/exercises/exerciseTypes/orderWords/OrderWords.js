@@ -33,7 +33,7 @@ export default function OrderWords({
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
-  const [clueText, setClueText] = useState("Clues go here.");
+  const [clueText, setClueText] = useState(["Clues go here."]);
   const [translatedText, setTranslatedText] = useState("");
   const [originalText, setOriginalText] = useState("");
   const [hasClues, setHasClues] = useState(false);
@@ -43,12 +43,14 @@ export default function OrderWords({
   const [wordSwapStatus, setWordSwapStatus] = useState("");
   const [solutionWords, setSolutionWords] = useState([]);
   const [solutionText, setSolutionText] = useState("");
+  const [resetConfirmDiv, setResetConfirmDiv] = useState(false)
 
   console.log("Running ORDER WORDS EXERCISE")
   function getWordsInArticle(sentence) {
     // Create an Word Object, that contains the 
     // id, word, status (Correct, Incorrect, Feedback), inUse (true/false)
-    let wordsWithPunct = removePunctuation(sentence).toLowerCase().split(" ")
+    let wordsWithPunct = removePunctuation(sentence).split(" ")
+    //let wordsWithPunct = removePunctuation(sentence).toLowerCase().split(" ")
     return wordsWithPunct
   }
 
@@ -104,7 +106,19 @@ export default function OrderWords({
     return wordObj
   }
 
+  function getWordId(id, list){
+    let wordProps = {}
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].id === id) {
+        wordProps = list[i]
+        break
+      }
+    }
+    return wordProps
+  }
+
   function notifyChoiceSelection(selectedChoice, inUse) {
+    undoResetStatus();
     if (isCorrect) return // Avoid swapping Words when it is correct.
     let current_status = [...wordsMasterStatus]
     let wordSelected = {}
@@ -176,10 +190,10 @@ export default function OrderWords({
     }
 
     if (newWordsInOrder.length > 0) {
-      newWordsInOrder[0] = caseFirstChar(newWordsInOrder[0], true)
+      newWordsInOrder[0] = newWordsInOrder[0]
     }
     else {
-      newWordsInOrder = [caseFirstChar(wordSelected, true)]
+      newWordsInOrder = [wordSelected]
     }
     if (!wordSelected.inUse) {
       if (wordsInOrder.length > 0) {
@@ -188,7 +202,6 @@ export default function OrderWords({
       setWordsInOrder(newWordsInOrder);
     }
     else {
-      wordSelected = caseFirstChar(wordSelected, false)
       newWordsInOrder = newWordsInOrder.filter((wordElement) => wordElement.id !== wordSelected.id)
       setWordsInOrder(newWordsInOrder);
     }
@@ -204,6 +217,10 @@ export default function OrderWords({
   }
 
   function handleShowSolution() {
+    // Ensure Rest and Swap are reset
+    undoResetStatus();
+    handleUndoSelection();
+
     let pressTime = new Date();
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
@@ -250,7 +267,8 @@ export default function OrderWords({
     //setButtonOptions(shuffledListOfOptions);
   }
 
-  function handleReset() {
+  function resetStatus() {
+    handleUndoSelection();
     let resetWords = [...wordsMasterStatus]
     for (let i = 0; i < resetWords.length; i++) {
       resetWords[i].inUse = false;
@@ -258,6 +276,17 @@ export default function OrderWords({
     setWordsInOrder([]);
     setIsCorrect(false);
     setWordsMasterStatus(resetWords);
+    undoResetStatus();
+  }
+  function handleReset() {
+    if (wordsInOrder.length > 0) {
+      setResetConfirmDiv(true);
+    }
+    
+  }
+
+  function undoResetStatus(){
+    setResetConfirmDiv(false);
   }
 
   function setAllInWordsStatus(status) {
@@ -281,12 +310,35 @@ export default function OrderWords({
     setWordsInOrder(updateWordsInOrder)
   }
 
+  function resetSwapWordStatus(){
+    setWordSwapStatus("")
+    setwordSwapId(-1)
+  }
+
+  function handleUndoSelection(){
+
+    let newWordsInOrder = [...wordsInOrder];
+    let newWordMasterStatus = [...wordsMasterStatus];
+
+    let inOrderWord = getWordId(wordSwapId, newWordsInOrder);
+    let wordMastStatus = getWordId(wordSwapId, newWordMasterStatus);
+
+    // Set to previous state
+    inOrderWord.status = wordSwapStatus;
+    wordMastStatus.status = wordSwapStatus;
+
+    resetSwapWordStatus();
+    setWordsInOrder(newWordsInOrder);
+    setWordsMasterStatus(newWordMasterStatus);
+  }
+
 
   function handleCheck() {
     // Check if the solution is already the same
+    resetSwapWordStatus();
     if (wordsInOrder.length === 0) {
       setHasClues(true);
-      setClueText("You have not added any words.");
+      setClueText(["You have not added any words."]);
       return
     }
     let constructedSentence = []
@@ -309,7 +361,7 @@ export default function OrderWords({
       console.log(JSON.stringify(solutionText));
       setAllInWordsStatus("incorrect");
       setHasClues(true);
-      setClueText("Hover the words to see clues.");
+      setClueText(["You need to swap the 'word' with a preposition.", "You are almost there, try a different article for 'word'."]);
       let addFeedbackList = [...wordsInOrder];
       for (let i = 0; i < addFeedbackList.length; i++) {
         addFeedbackList[i].feedback = "Feedback is here, you do this then."
@@ -332,12 +384,13 @@ export default function OrderWords({
       </div>
       {hasClues && (
         <s.ItemRowCompactWrap className="cluesRow">
-          <h4>Clues: </h4>
-          <p>{clueText}</p>
+          <h4>Clues</h4>
+          {clueText.length > 0 && clueText.map(feedback => <p>{feedback}</p>)}
         </s.ItemRowCompactWrap>
       )}
+
       {(wordsInOrder.length > 0 || !isCorrect) && (
-        <div className="orderWordsItem">
+        <div className={`orderWordsItem ${wordSwapId !== -1 ? 'select' : ''}`}>
           <OrderWordsConstruct
             buttonOptions={wordsInOrder}
             notifyChoiceSelection={notifyChoiceSelection}
@@ -348,6 +401,7 @@ export default function OrderWords({
           />
         </div>
       )}
+
 
       {/*
       <div className="contextExample">
@@ -378,17 +432,33 @@ export default function OrderWords({
           toggleShow={toggleShow}
         />
       )}
+
       {!isCorrect && (
         <s.ItemRowCompactWrap className="ItemRowCompactWrap">
-          <button onClick={handleReset}>{strings.reset}</button>
-          <button onClick={handleCheck}>{strings.check}</button>
+          <button onClick={handleReset} className="owButton undo">{strings.reset}</button>
+          <button onClick={handleCheck} className="owButton check">{strings.check}</button>
         </s.ItemRowCompactWrap>
       )}
+            {(wordSwapId !== -1) && (!resetConfirmDiv) && (
+        <div className="swapModeBar">
+          <button onClick={handleUndoSelection} className="owButton undo">Undo</button>
+          <p>Click a word to swap, or click again to remove.</p>
+        </div>
+      )
+      }
+      {(resetConfirmDiv) && (
+        <div className="resetConfirmBar">
+          <button onClick={undoResetStatus} className="owButton undo">Undo</button>
+          <p>Are you sure? This will reset all words.</p>
+          <button onClick={resetStatus} className="owButton check">Confirm</button>
+        </div>
+      )
+      }
 
       {isCorrect && (
         <NextNavigation
           api={api}
-          bookmarksToStudy={bookmarksToStudy}
+          bookmarksToStudy={[...bookmarksToStudy,"test"]}
           moveToNextExercise={moveToNextExercise}
           reload={reload}
           setReload={setReload}
