@@ -29,6 +29,20 @@ export default function SideBar(props) {
 
   const { light_color, dark_color } = setColors(isOnStudentSide);
 
+  function SidebarLink({ text, to }) {
+    // if path starts with to, then we are on that page
+    const active = path.startsWith(to);
+    const fontWeight = active ? "700" : "500";
+
+    return (
+      <div className="navigationLink">
+        <Link to={to} onClick={resetSidebarToDefault}>
+          <small style={{ fontWeight: fontWeight }}>{text}</small>
+        </Link>
+      </div>
+    );
+  }
+
   function toggleSidebar(e) {
     e.preventDefault();
     setInitialSidebarState(!initialSidebarState);
@@ -36,12 +50,6 @@ export default function SideBar(props) {
 
   function resetSidebarToDefault(e) {
     setInitialSidebarState(true);
-  }
-
-  function sendFeedback(e) {
-    window.location = "mailto:zeeguu.team@gmail.com?subject=General Feedback";
-    e.preventDefault();
-    resetSidebarToDefault(e);
   }
 
   let sidebarContent = (
@@ -62,7 +70,7 @@ export default function SideBar(props) {
 
       {isOnStudentSide && (
         <StudentSpecificSidebarOptions
-          resetSidebarToDefault={resetSidebarToDefault}
+          SidebarLink={SidebarLink}
           user={user}
           api={api}
         />
@@ -70,33 +78,11 @@ export default function SideBar(props) {
 
       {!isOnStudentSide && (
         <TeacherSpecificSidebarOptions
-          resetSidebarToDefault={resetSidebarToDefault}
+          SidebarLink={SidebarLink}
           user={user}
           setIsOnStudentSide={setIsOnStudentSide}
         />
       )}
-
-      <div className="navigationLink">
-        <Link to="/account_settings" onClick={resetSidebarToDefault}>
-          <small>{strings.settings}</small>
-        </Link>
-      </div>
-      <div className="navigationLink">
-        <Link to="#" onClick={sendFeedback}>
-          <small>{strings.sentFeedback1}</small>
-        </Link>
-      </div>
-      <br />
-      <div className="navigationLink">
-        <Link
-          to="/"
-          onClick={() => {
-            user.logoutMethod();
-          }}
-        >
-          <small>{strings.logout}</small>
-        </Link>
-      </div>
     </>
   );
 

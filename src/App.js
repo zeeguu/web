@@ -68,6 +68,7 @@ function App() {
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
       is_teacher: userInfo.is_teacher,
+      is_student: userInfo.is_student,
     });
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
@@ -79,7 +80,7 @@ function App() {
     if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
       history.push("/install_extension");
     } else {
-      userInfo.is_teacher
+      userInfo.is_teacher && userInfo.name != "Mircea Lungu"
         ? history.push("/teacher/classes")
         : history.push("/articles");
     }

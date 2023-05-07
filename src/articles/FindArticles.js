@@ -10,11 +10,23 @@ import strings from "../i18n/definitions";
 import Reminder from "./Reminder";
 import ExtensionMessage from "../components/ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
-import { runningInChromeDesktop, runningInFirefoxDesktop } from "../utils/misc/browserDetection";
+import {
+  runningInChromeDesktop,
+  runningInFirefoxDesktop,
+} from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
+import { useLocation } from "react-router-dom";
+
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 export default function NewArticles({ api }) {
+  const searchQuery = useQuery().get("search");
+
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
   const [hasExtension, setHasExtension] = useState(true);
@@ -32,11 +44,18 @@ export default function NewArticles({ api }) {
       checkExtensionInstalled(setHasExtension);
     }
 
-    // load articles
-    api.getUserArticles((articles) => {
-      setArticleList(articles);
-      setOriginalList([...articles]);
-    });
+    // load articles)
+    if (searchQuery) {
+      api.search(searchQuery, (articles) => {
+        setArticleList(articles);
+        setOriginalList([...articles]);
+      });
+    } else {
+      api.getUserArticles((articles) => {
+        setArticleList(articles);
+        setOriginalList([...articles]);
+      });
+    }
     setTitle(strings.findArticles);
   }, []);
 
@@ -68,13 +87,16 @@ export default function NewArticles({ api }) {
         setExtensionMessageOpen={setExtensionMessageOpen}
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
+
       <s.MaterialSelection>
         <Interests
           api={api}
           articlesListShouldChange={articlesListShouldChange}
         />
-        <SearchField />
+
+        <SearchField query={searchQuery} />
       </s.MaterialSelection>
+
       <SortingButtons
         articleList={articleList}
         originalList={originalList}
@@ -89,9 +111,16 @@ export default function NewArticles({ api }) {
           hasExtension={hasExtension}
         />
       ))}
-      <ShowLinkRecommendationsIfNoArticles
-        articleList={articleList}
-      ></ShowLinkRecommendationsIfNoArticles>
+
+      {searchQuery && articleList.length === 0 && (
+        <>No articles found that match your search</>
+      )}
+
+      {!searchQuery && (
+        <ShowLinkRecommendationsIfNoArticles
+          articleList={articleList}
+        ></ShowLinkRecommendationsIfNoArticles>
+      )}
     </>
   );
 }

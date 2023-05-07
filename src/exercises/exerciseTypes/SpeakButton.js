@@ -63,7 +63,6 @@ export default function SpeakButton({
   styling,
   handleClick,
 }) {
-  console.log("before creating the ZeeguuSpeech object..");
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
   let style = styles[styling] || small_next_style; // default is next style

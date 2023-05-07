@@ -1,13 +1,19 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.prototype.search = function (term, callback) {
-  return this._getJSON(`search/${term}`, callback);
+/* Note the distinction between topics and searches:
+  - topics are predefined
+  - searches are user-defined
+
+  */
+
+// INTERESTS
+
+// Topics that can be subscribed to
+Zeeguu_API.prototype.getAvailableTopics = function (callback) {
+  this._getJSON("available_topics", callback);
 };
 
-Zeeguu_API.prototype.getInterestingTopics = function (callback) {
-  this._getJSON("interesting_topics", callback);
-};
-
+// Topics already subscribed to
 Zeeguu_API.prototype.getSubscribedTopics = function (callback) {
   this._getJSON("subscribed_topics", callback);
 };
@@ -16,22 +22,31 @@ Zeeguu_API.prototype.getSubscribedSearchers = function (callback) {
   this._getJSON("subscribed_searches", callback);
 };
 
+/* 
+  Subscribes to predefined topic (e.g. sports, politics, etc.)
+  */
 Zeeguu_API.prototype.subscribeToTopic = function (topic) {
   return this._post(`subscribe_topic`, `topic_id=${topic.id}`);
 };
 
+/* Opposite of subscribe */
 Zeeguu_API.prototype.unsubscribeFromTopic = function (topic) {
   return this._post(`unsubscribe_topic`, `topic_id=${topic.id}`);
 };
 
+/* 
+  Subscribes to a search term (e.g. "Trump", "Corona", etc.)
+  */
 Zeeguu_API.prototype.subscribeToSearch = function (searchTerm, callback) {
   return this._getJSON(`subscribe_search/${searchTerm}`, callback);
 };
+/* Opposite of unsubscribe */
 Zeeguu_API.prototype.unsubscribeFromSearch = function (search) {
   return this._post(`unsubscribe_search`, `search_id=${search.id}`);
 };
 
-// Filters / Uninteresting Topics
+// NON-INTERESTS
+// These are topics and searches that the user has explicitly filtered out because they don't want to see them
 Zeeguu_API.prototype.getFilteredTopics = function (callback) {
   this._getJSON("filtered_topics", callback);
 };
@@ -58,8 +73,8 @@ Zeeguu_API.prototype.unsubscribeFromFilter = function (filter) {
   return this._post("unfilter_topic", `topic_id=${filter.id}`);
 };
 
-Zeeguu_API.prototype.interestingButNotSubscribedTopics = function (callback) {
-  this.getInterestingTopics((interesting) => {
+Zeeguu_API.prototype.availableFilters = function (callback) {
+  this.getAvailableTopics((interesting) => {
     this.getSubscribedTopics((subscribed) => {
       this.getFilteredTopics((filtered) => {
         var available = interesting.filter((e) => !subscribed.includes(e));

@@ -14,6 +14,12 @@ import {
   StyledButton,
 } from "../teacher/styledComponents/TeacherButtons.sc";
 import * as s from "./ArticleReader.sc";
+import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
+import { extractVideoIDFromURL } from "../utils/misc/youtube";
+
+import ArticleSource from "./ArticleSource";
+import ReportBroken from "./ReportBroken";
+import SoundPlayer from "./SoundPlayer";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -24,6 +30,19 @@ export const UMR_SOURCE = "UMR";
 // the query string for you.
 function useQuery() {
   return new URLSearchParams(useLocation().search);
+}
+
+function userIsTesterForAudio(user) {
+  let testers = [
+    "Michalis",
+    "Mir",
+    "Wim",
+    "Pauline",
+    "Arno",
+    "Geertje",
+    "Pieter",
+  ];
+  return testers.some((tester) => user.name.startsWith(tester));
 }
 
 export function onScroll(api, articleID, source) {
@@ -70,12 +89,32 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const history = useHistory();
 
   useEffect(() => {
+    onCreate();
+    return () => {
+      onDestruct();
+    };
+    // eslint-disable-next-line
+  }, []);
+
+  function onCreate() {
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
-        new InteractiveText(articleInfo.content, articleInfo, api, UMR_SOURCE)
+        new InteractiveText(
+          articleInfo.content,
+          articleInfo,
+          api,
+          api.TRANSLATE_TEXT,
+          UMR_SOURCE
+        )
       );
       setInteractiveTitle(
-        new InteractiveText(articleInfo.title, articleInfo, api, UMR_SOURCE)
+        new InteractiveText(
+          articleInfo.title,
+          articleInfo,
+          api,
+          api.TRANSLATE_TEXT,
+          UMR_SOURCE
+        )
       );
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);
@@ -95,25 +134,24 @@ export default function ArticleReader({ api, teacherArticleID }) {
       .addEventListener("scroll", function () {
         onScroll(api, articleID, UMR_SOURCE);
       });
+  }
 
-    return () => {
-      window.removeEventListener("focus", function () {
-        onFocus(api, articleID, UMR_SOURCE);
-      });
-      window.removeEventListener("blur", function () {
-        onBlur(api, articleID, UMR_SOURCE);
-      });
+  function onDestruct() {
+    window.removeEventListener("focus", function () {
+      onFocus(api, articleID, UMR_SOURCE);
+    });
+    window.removeEventListener("blur", function () {
+      onBlur(api, articleID, UMR_SOURCE);
+    });
 
-      document.getElementById("scrollHolder") !== null &&
-        document
-          .getElementById("scrollHolder")
-          .removeEventListener("scroll", function () {
-            onScroll(api, articleID, UMR_SOURCE);
-          });
-      api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
-    };
-    // eslint-disable-next-line
-  }, []);
+    document.getElementById("scrollHolder") !== null &&
+      document
+        .getElementById("scrollHolder")
+        .removeEventListener("scroll", function () {
+          onScroll(api, articleID, UMR_SOURCE);
+        });
+    api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
+  }
 
   function toggleBookmarkedState() {
     let newArticleInfo = { ...articleInfo, starred: !articleInfo.starred };
@@ -121,14 +159,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
       setArticleInfo(newArticleInfo);
     });
     api.logReaderActivity(api.STAR_ARTICLE, articleID, "", UMR_SOURCE);
-  }
-
-  function setLikedState(state) {
-    let newArticleInfo = { ...articleInfo, liked: state };
-    api.setArticleInfo(newArticleInfo, () => {
-      setArticleInfo(newArticleInfo);
-    });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, UMR_SOURCE);
   }
 
   if (!articleInfo) {
@@ -153,64 +183,66 @@ export default function ArticleReader({ api, teacherArticleID }) {
     saveArticleToOwnTexts();
   };
 
-  function reportBroken(e) {
-    let answer = prompt("What is wrong with the article?");
-    if (answer) {
-      let feedback = "broken_" + answer.replace(/ /g, "_");
-      api.logReaderActivity(api.USER_FEEDBACK, articleID, feedback, UMR_SOURCE);
-      setTimeout(() => history.push("/articles"), 500);
-    }
-  }
-
   return (
     <s.ArticleReader>
       <PopupButtonWrapper>
-        {user.is_teacher && (
-          <div>
-            {teacherArticleID && (
-              <Link to={`/teacher/texts/editText/${articleID}`}>
-                <StyledButton secondary studentView>
-                  {strings.backToEditing}
-                </StyledButton>
-              </Link>
-            )}
-
-            {!teacherArticleID && (
-              <StyledButton primary studentView onClick={handleSaveCopyToShare}>
-                {strings.saveCopyToShare}
-              </StyledButton>
-            )}
-          </div>
-        )}
-
         <s.Toolbar>
-          <button
-            className={translating ? "selected" : ""}
-            onClick={(e) => toggle(translating, setTranslating)}
-          >
-            <img
-              src="https://zeeguu.org/static/images/translate.svg"
-              alt={strings.translateOnClick}
-            />
-            <div className="tooltiptext">{strings.translateOnClick}</div>
-          </button>
-          <button
-            className={pronouncing ? "selected" : ""}
-            onClick={(e) => toggle(pronouncing, setPronouncing)}
-          >
-            <img
-              src="https://zeeguu.org/static/images/sound.svg"
-              alt={strings.listenOnClick}
-            />
-            <div className="tooltiptext">{strings.listenOnClick}</div>
-          </button>
+          {user.is_teacher && (
+            <>
+              {teacherArticleID && (
+                <Link to={`/teacher/texts/editText/${articleID}`}>
+                  <StyledButton secondary studentView>
+                    {strings.backToEditing}
+                  </StyledButton>
+                </Link>
+              )}
+
+              {!teacherArticleID && (
+                <StyledButton
+                  primary
+                  studentView
+                  onClick={handleSaveCopyToShare}
+                >
+                  <img
+                    width="40px"
+                    src="/static/images/share-button.svg"
+                    alt="share"
+                  />
+                </StyledButton>
+              )}
+            </>
+          )}
+
+          {userIsTesterForAudio(user) && (
+            <s.PlayerControl>
+              <SoundPlayer api={api} interactiveText={interactiveText} />
+            </s.PlayerControl>
+          )}
+
+          <s.RightHandSide>
+            <button
+              className={translating ? "selected" : ""}
+              onClick={(e) => toggle(translating, setTranslating)}
+            >
+              <img
+                src="https://zeeguu.org/static/images/translate.svg"
+                alt={strings.translateOnClick}
+              />
+              <div className="tooltiptext">{strings.translateOnClick}</div>
+            </button>
+            <button
+              className={pronouncing ? "selected" : ""}
+              onClick={(e) => toggle(pronouncing, setPronouncing)}
+            >
+              <img
+                src="https://zeeguu.org/static/images/sound.svg"
+                alt={strings.listenOnClick}
+              />
+              <div className="tooltiptext">{strings.listenOnClick}</div>
+            </button>
+          </s.RightHandSide>
         </s.Toolbar>
       </PopupButtonWrapper>
-      <s.WhiteButton small gray onClick={reportBroken}>
-        {strings.reportBrokenArticle}
-      </s.WhiteButton>
-
-      <br />
 
       <s.Title>
         <TranslatableText
@@ -219,20 +251,43 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </s.Title>
-      <s.BookmarkButton>
+      {/* <s.BookmarkButton>
         <BookmarkButton
           bookmarked={articleInfo.starred}
           toggleBookmarkedState={toggleBookmarkedState}
         />
-      </s.BookmarkButton>
-      <br />
-      <div>{articleInfo.authors}</div>
-      <a href={articleInfo.url} target="_blank" rel="noreferrer" id="source">
-        {strings.source}
-      </a>
-      <hr />
+      </s.BookmarkButton> */}
+
+      <div style={{ marginTop: "1em" }}>
+        {/* <ArticleAuthors articleInfo={articleInfo} /> */}
+        <ArticleSource url={articleInfo.url} />
+      </div>
 
       <br />
+      <div style={{ float: "right" }}>
+        <ReportBroken
+          api={api}
+          UMR_SOURCE={UMR_SOURCE}
+          history={history}
+          articleID={articleID}
+        />
+      </div>
+
+      <br />
+      <br />
+
+      {articleInfo.video ? (
+        <iframe
+          width="620"
+          height="415"
+          src={
+            "https://www.youtube.com/embed/" +
+            extractVideoIDFromURL(articleInfo.url)
+          }
+        ></iframe>
+      ) : (
+        ""
+      )}
 
       <s.MainText>
         <TranslatableText
@@ -242,27 +297,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
         />
       </s.MainText>
 
-      <s.FeedbackBox>
-        <small>{strings.helpUsMsg}</small>
-
-        <h4>{strings.didYouEnjoyMsg}</h4>
-
-        <s.CenteredContent>
-          <s.WhiteButton
-            onClick={(e) => setLikedState(true)}
-            className={articleInfo.liked === true && "selected"}
-          >
-            {strings.yes}
-          </s.WhiteButton>
-          <s.WhiteButton
-            onClick={(e) => setLikedState(false)}
-            className={articleInfo.liked === false && "selected"}
-          >
-            {strings.no}
-          </s.WhiteButton>
-        </s.CenteredContent>
-      </s.FeedbackBox>
-
+      <DifficultyFeedbackBox api={api} articleID={articleID} />
       <s.FeedbackBox>
         <h2>{strings.reviewVocabulary}</h2>
         <small>{strings.reviewVocabExplanation}</small>
