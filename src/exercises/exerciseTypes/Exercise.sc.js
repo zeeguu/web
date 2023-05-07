@@ -30,6 +30,7 @@ const Exercise = styled.div`
     color: gray;
     margin-top: 3em;
     margin-bottom: 2em;
+    
     /* font-weight: 600; */
   }
 
@@ -55,6 +56,21 @@ const Exercise = styled.div`
   .highlightedWord {
     color: orange;
     font-weight: 800;
+  }
+
+  .headlineOrderWords {
+    font-size: small;
+    color: gray;
+    margin-top: 1.5em;
+    margin-bottom: 1em;
+
+
+    /* font-weight: 600; */
+    h2 {
+      font-size: medium;
+      margin-left:8px;
+      margin-right:8px;
+    }
   }
 
   .cluesRow {
@@ -138,13 +154,13 @@ const Exercise = styled.div`
   }
 
   .check {
-      box-shadow: 0px 2px #004800;
       background-color: darkgreen;
+      //outline: 3px darkgreen solid;
   }
 
   .undo {
       background-color: ${zeeguuRed};
-      box-shadow: 0px 2px #992030;
+
   }
 
   .owButton{
@@ -155,7 +171,8 @@ const Exercise = styled.div`
     color: #fff;
     border: none;
     padding: 0.5em 0.5em;
-    border-radius: 10px;
+    border-radius: 100px;
+    box-shadow: 0px 2px #595959;
 
     :hover {filter: brightness(0.8);}
 
@@ -204,8 +221,21 @@ const Exercise = styled.div`
     color: #000000bf;
   }
 
-  .selected {
+  .greyOut {
     background-color: #595959;
+  }
+  
+  .disable {
+    background-color: #595959;
+    
+    :hover{
+      filter: brightness(1);
+    }
+    :active {
+      filter: brightness(1);
+      box-shadow: 0px 2px #595959;
+      transform: translateY(0px);
+    }
   }
 
   .contextExample {

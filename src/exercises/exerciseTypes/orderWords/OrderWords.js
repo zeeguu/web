@@ -67,6 +67,26 @@ export default function OrderWords({
     }
     return arrayWords
   }
+
+  useEffect(() => {
+    console.log("Getting Translation");
+    api
+    .getBasicTranslate(
+      bookmarksToStudy[0].from_lang, 
+      localStorage.native_language, 
+      bookmarksToStudy[0].context
+    )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data)
+      setTranslatedText(data["translation"])
+    })
+    .catch(() => {
+      setTranslatedText("error");
+      console.log("could not retreive translation");
+    });
+  }, [])
+
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
@@ -91,7 +111,6 @@ export default function OrderWords({
     let solText = [...initialWords].join(" ");
     solText = solText.charAt(0).toUpperCase() + solText.slice(1);
     setSolutionText(solText);
-    setTranslatedText(bookmarksToStudy[0].context);
     setOriginalText(bookmarksToStudy[0].context);
     setWordsMasterStatus(propWords);
   }, [confuseWords])

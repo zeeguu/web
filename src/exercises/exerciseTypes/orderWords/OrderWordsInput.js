@@ -13,7 +13,7 @@ function OrderWordsInput({
     {buttonOptions.length > 0 && buttonOptions.map(word => <s.OrangeItemCompact
        key={word.id} 
        status={word.inUse}
-       className={word.inUse ? word.status + " selected" : word.status } 
+       className={word.inUse ? word.status + " greyOut" : word.status } 
        onClick={() => notifyChoiceSelection(word.id, word.inUse)}>
        {word.word} 
       </s.OrangeItemCompact>)}
