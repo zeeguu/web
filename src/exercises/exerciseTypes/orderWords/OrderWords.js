@@ -71,7 +71,7 @@ export default function OrderWords({
   useEffect(() => {
     console.log("Getting Translation");
     api
-    .getBasicTranslate(
+    .basicTranlsate(
       bookmarksToStudy[0].from_lang, 
       localStorage.native_language, 
       bookmarksToStudy[0].context
@@ -114,7 +114,6 @@ export default function OrderWords({
     setOriginalText(bookmarksToStudy[0].context);
     setWordsMasterStatus(propWords);
   }, [confuseWords])
-
   function caseFirstChar(wordObj, is_upper) {
     if (is_upper) {
       wordObj.word = wordObj.word.charAt(0).toUpperCase() + wordObj.word.slice(1);
@@ -276,10 +275,7 @@ export default function OrderWords({
     do {
       secondRandomInt = Math.floor(Math.random() * similarWords.length);
     } while (firstRandomInt === secondRandomInt);
-    let listOfOptions = [
-      removePunctuation(similarWords[firstRandomInt].toLowerCase()),
-      removePunctuation(similarWords[secondRandomInt].toLowerCase()),
-    ];
+    let listOfOptions = removePunctuation(similarWords[firstRandomInt].toLowerCase()).split(" ").concat(removePunctuation(similarWords[secondRandomInt].toLowerCase()).split(" "));
     //let shuffledListOfOptions = shuffle(listOfOptions);
     setConfuseWords(listOfOptions)
     return listOfOptions
@@ -356,8 +352,8 @@ export default function OrderWords({
     // Check if the solution is already the same
     resetSwapWordStatus();
     if (wordsInOrder.length === 0) {
-      setHasClues(true);
-      setClueText(["You have not added any words."]);
+      //setHasClues(true);
+      //setClueText(["You have not added any words."]);
       return
     }
     let constructedSentence = []
@@ -397,7 +393,7 @@ export default function OrderWords({
 
   return (
     <s.Exercise className="orderWords">
-      <div className="headlineWithMoreSpace">
+      <div className="headlineOrderWords">
         {strings.orderTheWordsToMakeTheFollowingSentence}
         <h2>{translatedText}</h2>
       </div>
@@ -454,8 +450,8 @@ export default function OrderWords({
 
       {!isCorrect && (
         <s.ItemRowCompactWrap className="ItemRowCompactWrap">
-          <button onClick={handleReset} className="owButton undo">{strings.reset}</button>
-          <button onClick={handleCheck} className="owButton check">{strings.check}</button>
+          <button onClick={handleReset} className={wordsInOrder.length > 0 ? "owButton undo" : "owButton disable"}>↻ {strings.reset}</button>
+          <button onClick={handleCheck} className={wordsInOrder.length > 0 ? "owButton check" : "owButton disable"}>{strings.check} ✔</button>
         </s.ItemRowCompactWrap>
       )}
             {(wordSwapId !== -1) && (!resetConfirmDiv) && (
