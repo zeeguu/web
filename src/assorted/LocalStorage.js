@@ -15,6 +15,7 @@ const LocalStorage = {
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
     Features: "features",
+    IsStudent: "is_student",
     DisplayedExtensionPopup: "displayed_extension_popup",
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
@@ -22,7 +23,7 @@ const LocalStorage = {
     DisplayedAudioExperimentQuestionnaire:
       "audio_experiment_displayed_questionnaire",
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
-    clickedVideoLink: "clicked_video_link"
+    clickedVideoLink: "clicked_video_link",
   },
 
   userInfo: function () {
@@ -32,6 +33,10 @@ const LocalStorage = {
       native_language: localStorage[this.Keys.NativeLanguage],
       is_teacher: "true" === localStorage[this.Keys.IsTeacher],
     };
+  },
+
+  isStudent: function () {
+    return localStorage[this.Keys.IsStudent] !== "false";
   },
 
   selectedTimePeriod: function () {
@@ -82,6 +87,7 @@ const LocalStorage = {
     localStorage[this.Keys.NativeLanguage] = info.native_language;
     localStorage[this.Keys.IsTeacher] = info.is_teacher;
     localStorage[this.Keys.Features] = JSON.stringify(info.features);
+    localStorage[this.Keys.IsStudent] = JSON.stringify(info.is_student);
   },
 
   deleteUserInfo: function () {
@@ -92,6 +98,7 @@ const LocalStorage = {
       localStorage.removeItem(this.Keys.IsTeacher);
       localStorage.removeItem(this.Keys.Session);
       localStorage.removeItem(this.Keys.Features);
+      localStorage.removeItem(this.Keys.IsStudent);
       removeUserInfoFromCookies();
     } catch (e) {
       console.log(e);
@@ -192,7 +199,7 @@ const LocalStorage = {
 
   getClickedVideo: function () {
     return localStorage[this.Keys.clickedVideoLink];
-  } 
+  },
 };
 
 export default LocalStorage;

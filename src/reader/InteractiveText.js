@@ -2,9 +2,16 @@ import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 export default class InteractiveText {
-  constructor(content, articleInfo, api, source) {
+  constructor(
+    content,
+    articleInfo,
+    api,
+    translationEvent = api.TRANSLATE_TEXT,
+    source = ""
+  ) {
     this.articleInfo = articleInfo;
     this.api = api;
+    this.translationEvent = translationEvent;
     this.source = source;
     //
     this.paragraphs = content.split(/\n\n/);
@@ -22,7 +29,6 @@ export default class InteractiveText {
   translate(word, onSuccess) {
     let context = this.getContext(word);
 
-    console.log(word);
     word = word.fuseWithNeighborsIfNeeded(this.api);
 
     this.api
@@ -47,7 +53,7 @@ export default class InteractiveText {
       });
 
     this.api.logReaderActivity(
-      this.api.TRANSLATE_TEXT,
+      this.translationEvent,
       this.articleInfo.id,
       word.word,
       this.source
@@ -94,6 +100,21 @@ export default class InteractiveText {
         word.alternatives = data.translations;
         onSuccess();
       });
+  }
+
+  playAll() {
+    console.log("playing all");
+    this.zeeguuSpeech.playAll(this.articleInfo);
+  }
+
+  pause() {
+    console.log("pausing");
+    this.zeeguuSpeech.pause();
+  }
+
+  resume() {
+    console.log("resuming");
+    this.zeeguuSpeech.resume();
   }
 
   pronounce(word) {

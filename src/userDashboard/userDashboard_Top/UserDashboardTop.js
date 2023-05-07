@@ -21,9 +21,8 @@ export default function UserDashboardTop({
 }) {
   return (
     <s.UserDashboardTopContainer>
-      <s.UserDashboardTitle>
-        {USER_DASHBOARD_TITLES.MAIN_TITLE}
-      </s.UserDashboardTitle>
+      <br />
+      <br />
 
       <UserDashboardTabs
         activeTab={activeTab}

@@ -4,4 +4,8 @@ function removeArrayDuplicates(array) {
   return newArray;
 }
 
-export { removeArrayDuplicates };
+function random(x) {
+  return x[Math.floor(Math.random() * x.length)];
+}
+
+export { removeArrayDuplicates, random };

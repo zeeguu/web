@@ -9,16 +9,14 @@ export default function TagsOfInterests({
   api,
   articlesListShouldChange,
 }) {
-  const [interestingTopics, setInterestingTopics] = useState(null);
+  const [availableTopics, setInterestingTopics] = useState(null);
   const [subscribedTopics, setSubscribedTopics] = useState(null);
   const [subscribedSearches, setSubscribedSearches] = useState(null);
-  const [
-    showingSpecialInterestModal,
-    setshowingSpecialInterestModal,
-  ] = useState(false);
+  const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
+    useState(false);
 
   useEffect(() => {
-    api.getInterestingTopics((data) => {
+    api.getAvailableTopics((data) => {
       setInterestingTopics(data);
     });
 
@@ -31,15 +29,15 @@ export default function TagsOfInterests({
     });
   }, [api]);
 
-  if (!interestingTopics || !subscribedTopics || !subscribedSearches) return "";
+  if (!availableTopics || !subscribedTopics || !subscribedSearches) return "";
 
-  let allTopics = [...interestingTopics, ...subscribedTopics];
+  let allTopics = [...availableTopics, ...subscribedTopics];
   allTopics.sort((a, b) => a.title.localeCompare(b.title));
 
   function subscribeToTopicOfInterest(topic) {
     setSubscribedTopics([...subscribedTopics, topic]);
     setInterestingTopics(
-      interestingTopics.filter((each) => each.id !== topic.id)
+      availableTopics.filter((each) => each.id !== topic.id)
     );
     api.subscribeToTopic(topic);
   }
@@ -48,7 +46,7 @@ export default function TagsOfInterests({
     setSubscribedTopics(
       subscribedTopics.filter((each) => each.id !== topic.id)
     );
-    setInterestingTopics([...interestingTopics, topic]);
+    setInterestingTopics([...availableTopics, topic]);
     api.unsubscribeFromTopic(topic);
   }
 

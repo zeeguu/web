@@ -9,9 +9,9 @@ function voiceForLanguageCode(code, voices) {
   specificCode = preferredLocales[code] ?? code;
 
   let languageVoices = voices.filter((x) => x.lang.startsWith(specificCode));
-  console.log(languageVoices.map((e) => e.lang + " " + e.name));
+  // console.log(languageVoices.map((e) => e.lang + " " + e.name));
   let voice = languageVoices[0];
-  console.log(voice);
+  // console.log(voice);
   return voice;
 }
 
@@ -21,7 +21,14 @@ const ZeeguuSpeech = class {
     this.language = language;
     this.runningFromExtension = true;
 
-    console.log("IN ZEEGUU SPEECH");
+    this.pronunciationPlayer = new Audio();
+    this.pronunciationPlayer.autoplay = true;
+
+    // onClick of first interaction on page before I need the sounds
+    // (This is a tiny MP3 file that is silent and extremely short - retrieved from https://bigsoundbank.com and then modified)
+    this.pronunciationPlayer.src =
+      "data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+
     if (
       typeof chrome !== "undefined" &&
       typeof chrome.runtime !== "undefined"
@@ -34,7 +41,7 @@ const ZeeguuSpeech = class {
             language: this.language,
           },
         });
-        console.log("we're running from extension");
+        // console.log("we're running from extension");
       } catch (error) {
         this.runningFromExtension = false;
       }
@@ -70,31 +77,42 @@ const ZeeguuSpeech = class {
       });
     } else {
       if (this.language === "da") {
-        return playFromAPI(this.api, word);
+        return this.playFromAPI(this.api, word, this.pronunciationPlayer);
       } else {
         var utterance = new SpeechSynthesisUtterance(word);
         utterance.voice = this.voice;
+        speechSynthesis.cancel();
         speechSynthesis.speak(utterance);
       }
     }
   }
-};
 
-function playFromAPI(api, word) {
-  return new Promise(function (resolve, reject) {
-    api.getLinkToDanishSpeech(word, (linkToMp3) => {
-      // console.log("about to play..." + linkToMp3);
-      var mp3Player = new Audio();
-      mp3Player.src = linkToMp3;
-      mp3Player.autoplay = true;
-      mp3Player.onerror = reject;
-      mp3Player.onended = resolve;
+  playFullArticle(articleInfo, api, player) {
+    return new Promise(function (resolve, reject) {
+      api.getLinkToFullArticleReadout(
+        articleInfo,
+        articleInfo.id,
+        (linkToMp3) => {
+          console.log("about to play..." + linkToMp3);
+          player.src = linkToMp3;
+          player.autoplay = true;
+          player.onerror = reject;
+          player.onended = resolve;
+        }
+      );
     });
-  });
-}
+  }
 
-function _randomElement(x) {
-  return x[Math.floor(Math.random() * x.length)];
-}
+  playFromAPI(api, word, player) {
+    return new Promise(function (resolve, reject) {
+      api.getLinkToDanishSpeech(word, (linkToMp3) => {
+        player.src = linkToMp3;
+        player.autoplay = true;
+        player.onerror = reject;
+        player.onended = resolve;
+      });
+    });
+  }
+};
 
 export default ZeeguuSpeech;
