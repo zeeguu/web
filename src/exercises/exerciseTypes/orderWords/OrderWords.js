@@ -34,7 +34,7 @@ export default function OrderWords({
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [clueText, setClueText] = useState(["Clues go here."]);
-  const [translatedText, setTranslatedText] = useState("");
+  const [translatedText, setTranslatedText] = useState();
   const [originalText, setOriginalText] = useState("");
   const [hasClues, setHasClues] = useState(false);
   const [wordsInOrder, setWordsInOrder] = useState([]);
@@ -387,7 +387,7 @@ export default function OrderWords({
 
   }
 
-  if (!articleInfo || !confuseWords) {
+  if (!articleInfo || !confuseWords || !translatedText) {
     return <LoadingAnimation />;
   }
 
