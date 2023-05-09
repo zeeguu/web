@@ -36,7 +36,7 @@ export default function OrderWords({
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [clueText, setClueText] = useState(["Clues go here."]);
-  const [translatedText, setTranslatedText] = useState();
+  const [translatedText, setTranslatedText] = useState("Text goes here");
   const [originalText, setOriginalText] = useState("");
   const [hasClues, setHasClues] = useState(false);
   const [wordsInOrder, setWordsInOrder] = useState([]);
@@ -357,6 +357,7 @@ export default function OrderWords({
 
   function handleCheck() {
     // Check if the solution is already the same
+    let filterPunctuationOGText = removePunctuation(originalText)
     resetSwapWordStatus();
     if (wordsInOrder.length === 0) {
       //setHasClues(true);
@@ -370,7 +371,7 @@ export default function OrderWords({
     // Get the Sentence
 
     constructedSentence = constructedSentence.join(" ")
-    if (constructedSentence === originalText) {
+    if (constructedSentence === filterPunctuationOGText) {
       setHasClues(false);
       setIsCorrect(true);
       setAllInWordsStatus("correct");
@@ -382,7 +383,7 @@ export default function OrderWords({
 
       // We need to ensure that we don't send the entire sentence,
       // or alignment might align very distant words.
-      let resizeSol = "" + originalText
+      let resizeSol = "" + filterPunctuationOGText
       resizeSol = resizeSol.split(" ")
       resizeSol = resizeSol.slice(0, wordsInOrder.length + 1).join(" ")
       api.annotateClues(wordsInOrder, resizeSol, exerciseLang, (updatedStatus) => {
@@ -414,7 +415,7 @@ export default function OrderWords({
     }
   }
 
-  if (!articleInfo || !confuseWords || !translatedText) {
+  if (!articleInfo || !confuseWords ) {
     return <LoadingAnimation />;
   }
 
@@ -422,7 +423,7 @@ export default function OrderWords({
     <s.Exercise className="orderWords">
       <div className="headlineOrderWords">
         {strings.orderTheWordsToMakeTheFollowingSentence}
-        <h2>{translatedText}</h2>
+        <h2>Bias-aware managers, a safe culture and diversity when it comes to hiring and bookings</h2>
       </div>
       {hasClues && (
         <s.ItemRowCompactWrap className="cluesRow">
@@ -496,11 +497,12 @@ export default function OrderWords({
         </div>
       )
       }
-
       {isCorrect && (
         <NextNavigation
           api={api}
-          bookmarksToStudy={[...bookmarksToStudy, "test"]}
+          // Added an empty bookmark to avoid showing the
+          // Listen Button.
+          bookmarksToStudy={[...bookmarksToStudy, ""]}
           moveToNextExercise={moveToNextExercise}
           reload={reload}
           setReload={setReload}
@@ -511,6 +513,7 @@ export default function OrderWords({
         toggleShow={toggleShow}
         isCorrect={isCorrect}
       />
+      <p className="tipText">{strings.orderWordsTipMessage}</p>
     </s.Exercise>
   );
 }

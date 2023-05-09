@@ -237,6 +237,9 @@ const Exercise = styled.div`
       transform: translateY(0px);
     }
   }
+  .tipText{
+    font-size:small
+  }
 
   .contextExample {
     margin-top: 1em;

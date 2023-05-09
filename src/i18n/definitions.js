@@ -331,6 +331,8 @@ let strings = new LocalizedStrings(
         "Choose the alternative that fits the context",
       orderTheWordsToMakeTheFollowingSentence:
         "Order the words to make the following sentence",
+      orderWordsTipMessage:
+        "You can click 'Check ✔' at any time to get clues.",
       matchWordWithTranslation: "Match each word with its translation",
       audioExerciseHeadline:
         "Write the word your hear. Click to have it repeated!",
