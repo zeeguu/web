@@ -44,27 +44,26 @@ export default function OrderWords({
   const [wordSwapId, setwordSwapId] = useState(-1);
   const [wordSwapStatus, setWordSwapStatus] = useState("");
   const [solutionWords, setSolutionWords] = useState([]);
-  const [solutionText, setSolutionText] = useState("");
   const [solTextNoPunct, setSolTextNoPunct] = useState("");
   const [resetConfirmDiv, setResetConfirmDiv] = useState(false);
 
   console.log("Running ORDER WORDS EXERCISE")
   console.log(wordsInOrder);
   function getWordsInArticle(sentence) {
-    // Create an Word Object, that contains the 
-    // id, word, status (Correct, Incorrect, Feedback), inUse (true/false)
-    let wordsWithPunct = removePunctuation(sentence)
-    setSolTextNoPunct(wordsWithPunct)
-    //let wordsWithPunct = removePunctuation(sentence).toLowerCase().split(" ")
-    return wordsWithPunct.split(" ")
+    return sentence.split(" ")
   }
 
   function setWordAttributes(word_list) {
+    // Create an Word Object, that contains the 
+    // id, word, status (Correct, Incorrect, Feedback), inUse (true/false)
+    // To keep punctuation at the spaCy pipeline, we simply hide it from the UI, but
+    // 
     let arrayWords = []
     for (let i = 0; i < word_list.length; i++) {
       arrayWords.push({
         "id": i,
-        "word": word_list[i],
+        "word_w_punct":word_list[i],
+        "word": removePunctuation(word_list[i]),
         "status": "",
         "inUse": false,
         "feedback": "",
@@ -76,21 +75,21 @@ export default function OrderWords({
   useEffect(() => {
     console.log("Getting Translation");
     setTranslatedText("error")
-    //api
-    //  .basicTranlsate(
-    //    bookmarksToStudy[0].from_lang,
-    //    localStorage.native_language,
-    //    bookmarksToStudy[0].context
-    //  )
-    //  .then((response) => response.json())
-    //  .then((data) => {
-    //    console.log(data)
-    //    setTranslatedText(data["translation"])
-    //  })
-    //  .catch(() => {
-    //    setTranslatedText("error");
-    //    console.log("could not retreive translation");
-    //  });    
+    api
+      .basicTranlsate(
+        bookmarksToStudy[0].from_lang,
+        localStorage.native_language,
+        bookmarksToStudy[0].context
+      )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        setTranslatedText(data["translation"])
+      })
+      .catch(() => {
+        setTranslatedText("error");
+        console.log("could not retreive translation");
+      });    
   }, [])
 
   useEffect(() => {
@@ -118,9 +117,6 @@ export default function OrderWords({
     exerciseWords = shuffle(exerciseWords)
     const propWords = setWordAttributes(exerciseWords);
     setSolutionWords(setWordAttributes([...initialWords]));
-    let solText = [...initialWords].join(" ");
-    solText = solText.charAt(0).toUpperCase() + solText.slice(1);
-    setSolutionText(solText);
     setOriginalText(bookmarksToStudy[0].context);
     setWordsMasterStatus(propWords);
   }, [confuseWords])
@@ -264,7 +260,7 @@ export default function OrderWords({
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     setHasClues(false);
-    handleAnswer(solutionText, duration);
+    handleAnswer(originalText, duration);
   }
 
   function handleAnswer(message) {
@@ -374,7 +370,7 @@ export default function OrderWords({
     // Get the Sentence
 
     constructedSentence = constructedSentence.join(" ")
-    if (constructedSentence === solutionText) {
+    if (constructedSentence === originalText) {
       setHasClues(false);
       setIsCorrect(true);
       setAllInWordsStatus("correct");
@@ -386,7 +382,7 @@ export default function OrderWords({
 
       // We need to ensure that we don't send the entire sentence,
       // or alignment might align very distant words.
-      let resizeSol = "" + solTextNoPunct
+      let resizeSol = "" + originalText
       resizeSol = resizeSol.split(" ")
       resizeSol = resizeSol.slice(0, wordsInOrder.length + 1).join(" ")
       api.annotateClues(wordsInOrder, resizeSol, exerciseLang, (updatedStatus) => {
