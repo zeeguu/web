@@ -29,8 +29,10 @@ export default function OrderWords({
 }) {
   const [initialTime] = useState(new Date());
   //const [buttonOptions, setButtonOptions] = useState(null);
-  const [wordsMasterStatus, setWordsMasterStatus] = useState([])
+  const [wordsMasterStatus, setWordsMasterStatus] = useState([]);
+  const [masterIDtoPosMap, setMasterIDtoPosMap] = useState({});
   const [messageToAPI, setMessageToAPI] = useState("");
+  const [exerciseLang, setExerciseLang] = useState(bookmarksToStudy[0].from_lang);
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [clueText, setClueText] = useState(["Clues go here."]);
@@ -43,15 +45,18 @@ export default function OrderWords({
   const [wordSwapStatus, setWordSwapStatus] = useState("");
   const [solutionWords, setSolutionWords] = useState([]);
   const [solutionText, setSolutionText] = useState("");
-  const [resetConfirmDiv, setResetConfirmDiv] = useState(false)
+  const [solTextNoPunct, setSolTextNoPunct] = useState("");
+  const [resetConfirmDiv, setResetConfirmDiv] = useState(false);
 
   console.log("Running ORDER WORDS EXERCISE")
+  console.log(wordsInOrder);
   function getWordsInArticle(sentence) {
     // Create an Word Object, that contains the 
     // id, word, status (Correct, Incorrect, Feedback), inUse (true/false)
-    let wordsWithPunct = removePunctuation(sentence).split(" ")
+    let wordsWithPunct = removePunctuation(sentence)
+    setSolTextNoPunct(wordsWithPunct)
     //let wordsWithPunct = removePunctuation(sentence).toLowerCase().split(" ")
-    return wordsWithPunct
+    return wordsWithPunct.split(" ")
   }
 
   function setWordAttributes(word_list) {
@@ -70,38 +75,43 @@ export default function OrderWords({
 
   useEffect(() => {
     console.log("Getting Translation");
-    api
-    .basicTranlsate(
-      bookmarksToStudy[0].from_lang, 
-      localStorage.native_language, 
-      bookmarksToStudy[0].context
-    )
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data)
-      setTranslatedText(data["translation"])
-    })
-    .catch(() => {
-      setTranslatedText("error");
-      console.log("could not retreive translation");
-    });
+    setTranslatedText("error")
+    //api
+    //  .basicTranlsate(
+    //    bookmarksToStudy[0].from_lang,
+    //    localStorage.native_language,
+    //    bookmarksToStudy[0].context
+    //  )
+    //  .then((response) => response.json())
+    //  .then((data) => {
+    //    console.log(data)
+    //    setTranslatedText(data["translation"])
+    //  })
+    //  .catch(() => {
+    //    setTranslatedText("error");
+    //    console.log("could not retreive translation");
+    //  });    
   }, [])
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
-      getSimilarWords(words);
-    });
+    console.log("GETTING WORDS");
+    console.log(bookmarksToStudy[0].from_lang);
+    api.getConfusionWords(exerciseLang, bookmarksToStudy[0].context, (cWords) => {
+      setConfuseWords(JSON.parse(cWords));
+    }
+    );
+
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setArticleInfo(articleInfo);
       //console.log("Running Set Sate")
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [exerciseLang]);
 
   useEffect(() => {
     const initialWords = getWordsInArticle(bookmarksToStudy[0].context)
-    let exerciseWords = [...initialWords].concat([...confuseWords]);
+    let exerciseWords = [...initialWords].concat(confuseWords);
     console.log(confuseWords);
     console.log("Exercise Words");
     console.log(exerciseWords);
@@ -114,6 +124,7 @@ export default function OrderWords({
     setOriginalText(bookmarksToStudy[0].context);
     setWordsMasterStatus(propWords);
   }, [confuseWords])
+
   function caseFirstChar(wordObj, is_upper) {
     if (is_upper) {
       wordObj.word = wordObj.word.charAt(0).toUpperCase() + wordObj.word.slice(1);
@@ -124,7 +135,7 @@ export default function OrderWords({
     return wordObj
   }
 
-  function getWordId(id, list){
+  function getWordId(id, list) {
     let wordProps = {}
     for (let i = 0; i < list.length; i++) {
       if (list[i].id === id) {
@@ -173,7 +184,7 @@ export default function OrderWords({
       let wordToSwapWith = {}
       for (let i = 0; i < newWordsInOrder.length; i++) {
         if (newWordsInOrder[i].id === wordSwapId) {
-          wordToSwapWith = {...newWordsInOrder[i]}
+          wordToSwapWith = { ...newWordsInOrder[i] }
           break
         }
       }
@@ -182,14 +193,14 @@ export default function OrderWords({
       wordToSwapWith.status = wordSwapStatus;
       setWordSwapStatus("");
       // If the word was not in use.
-      if (wordToSwapWith.inUse !== wordSelected.inUse) { wordToSwapWith.inUse = !wordToSwapWith.inUse ; }
+      if (wordToSwapWith.inUse !== wordSelected.inUse) { wordToSwapWith.inUse = !wordToSwapWith.inUse; }
 
       for (let i = 0; i < newWordsInOrder.length; i++) {
         if (newWordsInOrder[i].id === wordSwapId) {
-          if (!wordSelected.inUse) { wordSelected.inUse = true}
+          if (!wordSelected.inUse) { wordSelected.inUse = true }
           newWordsInOrder[i] = wordSelected
         }
-        else if (newWordsInOrder[i].id === selectedChoice){
+        else if (newWordsInOrder[i].id === selectedChoice) {
           newWordsInOrder[i] = wordToSwapWith
         }
       }
@@ -225,7 +236,7 @@ export default function OrderWords({
     }
     wordSelected.inUse = !wordSelected.inUse
     console.log("COMPARING STATUS: " + wordSelected.status)
-    if(wordSelected.status === "toSwap") { 
+    if (wordSelected.status === "toSwap") {
       wordSelected.status = wordSwapStatus;
       setWordSwapStatus("");
     }
@@ -297,10 +308,10 @@ export default function OrderWords({
     if (wordsInOrder.length > 0) {
       setResetConfirmDiv(true);
     }
-    
+
   }
 
-  function undoResetStatus(){
+  function undoResetStatus() {
     setResetConfirmDiv(false);
   }
 
@@ -325,12 +336,12 @@ export default function OrderWords({
     setWordsInOrder(updateWordsInOrder)
   }
 
-  function resetSwapWordStatus(){
+  function resetSwapWordStatus() {
     setWordSwapStatus("")
     setwordSwapId(-1)
   }
 
-  function handleUndoSelection(){
+  function handleUndoSelection() {
 
     let newWordsInOrder = [...wordsInOrder];
     let newWordMasterStatus = [...wordsMasterStatus];
@@ -372,19 +383,39 @@ export default function OrderWords({
       // Handle the Errors and Set the feedback
       // API should return the status, then update the MasterStatus
       console.log("Sentence incorrect!");
-      console.log(JSON.stringify(wordsInOrder));
-      console.log(JSON.stringify(solutionText));
-      setAllInWordsStatus("incorrect");
-      setHasClues(true);
-      setClueText(["You need to swap the 'word' with a preposition.", "You are almost there, try a different article for 'word'."]);
-      let addFeedbackList = [...wordsInOrder];
-      for (let i = 0; i < addFeedbackList.length; i++) {
-        addFeedbackList[i].feedback = "Feedback is here, you do this then."
-      }
-    }
-    console.log(constructedSentence)
-    console.log(solutionText);
 
+      // We need to ensure that we don't send the entire sentence,
+      // or alignment might align very distant words.
+      let resizeSol = "" + solTextNoPunct
+      resizeSol = resizeSol.split(" ")
+      resizeSol = resizeSol.slice(0, wordsInOrder.length + 1).join(" ")
+      api.annotateClues(wordsInOrder, resizeSol, exerciseLang, (updatedStatus) => {
+        let updatedWordStatus = JSON.parse(updatedStatus);
+        let cluesText = [];
+        let copy_props = [...updatedWordStatus];
+        console.log(updatedWordStatus);
+        let newWordMasterStatus = [...wordsMasterStatus];
+        for (let i = 0; i < copy_props.length; i++) {
+          let wordProp = copy_props[i];
+          newWordMasterStatus[wordProp.id] = wordProp;
+          if (wordProp.feedback != "" && !wordProp.isCorrect) { cluesText.push(wordProp.feedback) };
+        }
+        console.log(cluesText);
+        if (cluesText.length > 0) { setHasClues(true); }
+        if (cluesText.length < 2) {
+          setClueText(cluesText.slice(0, 2));
+        }
+        else {
+          setClueText(cluesText.slice(0, 2).concat(["Only the first 2 errors are shown."]));
+        }
+        setWordsInOrder(updatedWordStatus);
+        setWordsMasterStatus(newWordMasterStatus);
+      }
+      );
+
+      //setAllInWordsStatus("incorrect");
+
+    }
   }
 
   if (!articleInfo || !confuseWords || !translatedText) {
@@ -400,7 +431,7 @@ export default function OrderWords({
       {hasClues && (
         <s.ItemRowCompactWrap className="cluesRow">
           <h4>Clues</h4>
-          {clueText.length > 0 && clueText.map(feedback => <p>{feedback}</p>)}
+          {clueText.length > 0 && clueText.map(clue => <p key={clue}>{clue}</p>)}
         </s.ItemRowCompactWrap>
       )}
 
@@ -454,7 +485,7 @@ export default function OrderWords({
           <button onClick={handleCheck} className={wordsInOrder.length > 0 ? "owButton check" : "owButton disable"}>{strings.check} ✔</button>
         </s.ItemRowCompactWrap>
       )}
-            {(wordSwapId !== -1) && (!resetConfirmDiv) && (
+      {(wordSwapId !== -1) && (!resetConfirmDiv) && (
         <div className="swapModeBar">
           <button onClick={handleUndoSelection} className="owButton undo">Undo</button>
           <p>Click a word to swap, or click again to remove.</p>
@@ -473,7 +504,7 @@ export default function OrderWords({
       {isCorrect && (
         <NextNavigation
           api={api}
-          bookmarksToStudy={[...bookmarksToStudy,"test"]}
+          bookmarksToStudy={[...bookmarksToStudy, "test"]}
           moveToNextExercise={moveToNextExercise}
           reload={reload}
           setReload={setReload}
