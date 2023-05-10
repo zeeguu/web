@@ -45,6 +45,15 @@ let EXERCISE_TYPES = [
   }
 ];
 
+let EXERCISE_TYPES_TIAGO = [
+  {
+    type: OrderWords,
+    requiredBookmarks:1,
+  }
+];
+
+
+
 export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
   api,
@@ -110,7 +119,11 @@ export default function Exercises({
    * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
    */
   function calculateExerciseBatches(bookmarks) {
-    let bookmarksPerBatch = EXERCISE_TYPES.reduce(
+    let exerciseList = EXERCISE_TYPES
+    if (Feature.tiago_exercises()){
+      exerciseList = EXERCISE_TYPES_TIAGO
+    }
+    let bookmarksPerBatch = exerciseList.reduce(
       (a, b) => a + b.requiredBookmarks,
       0
     );
@@ -126,16 +139,20 @@ export default function Exercises({
   }
 
   function defineExerciseSession(batches, rest, bookmark_count) {
+    let exerciseList = EXERCISE_TYPES
+    if (Feature.tiago_exercises()){
+      exerciseList = EXERCISE_TYPES_TIAGO
+    }
     let exerciseSession = [];
     if (bookmark_count < 9) {
       let count = bookmark_count;
       while (count > 0) {
-        for (let i = EXERCISE_TYPES.length - 1; i > 0; i--) {
-          let currentTypeRequiredCount = EXERCISE_TYPES[i].requiredBookmarks;
+        for (let i = exerciseList.length - 1; i > 0; i--) {
+          let currentTypeRequiredCount = exerciseList[i].requiredBookmarks;
           if (count < currentTypeRequiredCount) continue;
           if (count === 0) break;
           let exercise = {
-            type: EXERCISE_TYPES[i].type,
+            type: exerciseList[i].type,
             requiredBookmarks: currentTypeRequiredCount,
             bookmarks: [],
           };
@@ -145,21 +162,21 @@ export default function Exercises({
       }
     } else {
       for (let i = 0; i < batches; i++) {
-        for (let j = EXERCISE_TYPES.length - 1; j >= 0; j--) {
+        for (let j = exerciseList.length - 1; j >= 0; j--) {
           let exercise = {
-            type: EXERCISE_TYPES[j].type,
-            requiredBookmarks: EXERCISE_TYPES[j].requiredBookmarks,
+            type: exerciseList[j].type,
+            requiredBookmarks: exerciseList[j].requiredBookmarks,
             bookmarks: [],
           };
           exerciseSession.push(exercise);
         }
       }
       while (rest > 0) {
-        for (let k = EXERCISE_TYPES.length - 1; k >= 0; k--) {
-          if (rest >= EXERCISE_TYPES[k].requiredBookmarks) {
+        for (let k = exerciseList.length - 1; k >= 0; k--) {
+          if (rest >= exerciseList[k].requiredBookmarks) {
             let exercise = {
-              type: EXERCISE_TYPES[k].type,
-              requiredBookmarks: EXERCISE_TYPES[k].requiredBookmarks,
+              type: exerciseList[k].type,
+              requiredBookmarks: exerciseList[k].requiredBookmarks,
               bookmarks: [],
             };
             exerciseSession.push(exercise);
@@ -205,6 +222,7 @@ export default function Exercises({
           k++;
         }
       } else {
+        console.log(bookmarkList[k])
         exerciseSession[i].bookmarks.push(bookmarkList[k]);
         k++;
       }
@@ -212,6 +230,8 @@ export default function Exercises({
 
     if (currentBookmarksToStudy === null) {
       setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
+      
+      
     }
     setExerciseSession(exerciseSession);
   }

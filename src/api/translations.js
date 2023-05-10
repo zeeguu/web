@@ -93,7 +93,6 @@ Zeeguu_API.prototype.updateBookmark = function (
 
 Zeeguu_API.prototype.basicTranlsate = function (from_lang, to_lang, phrase) {
   let url = this._appendSessionToUrl(`basic_translate/${from_lang}/${to_lang}`);
-
   return fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },

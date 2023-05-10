@@ -12,7 +12,7 @@ import removePunctuation from "../../../assorted/removePunctuation";
 import OrderWordsConstruct from "./OrderWordsConstruct.js";
 import { nb } from "date-fns/locale";
 
-const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
+const EXERCISE_TYPE = "OrderWords_L2T_from_L1T";
 
 export default function OrderWords({
   api,
@@ -30,13 +30,10 @@ export default function OrderWords({
   const [initialTime] = useState(new Date());
   //const [buttonOptions, setButtonOptions] = useState(null);
   const [wordsMasterStatus, setWordsMasterStatus] = useState([]);
-  const [masterIDtoPosMap, setMasterIDtoPosMap] = useState({});
   const [messageToAPI, setMessageToAPI] = useState("");
   const [exerciseLang, setExerciseLang] = useState(bookmarksToStudy[0].from_lang);
-  const [articleInfo, setArticleInfo] = useState();
-  const [interactiveText, setInteractiveText] = useState();
   const [clueText, setClueText] = useState(["Clues go here."]);
-  const [translatedText, setTranslatedText] = useState("Text goes here");
+  const [translatedText, setTranslatedText] = useState();
   const [originalText, setOriginalText] = useState("");
   const [hasClues, setHasClues] = useState(false);
   const [wordsInOrder, setWordsInOrder] = useState([]);
@@ -44,13 +41,13 @@ export default function OrderWords({
   const [wordSwapId, setwordSwapId] = useState(-1);
   const [wordSwapStatus, setWordSwapStatus] = useState("");
   const [solutionWords, setSolutionWords] = useState([]);
-  const [solTextNoPunct, setSolTextNoPunct] = useState("");
   const [resetConfirmDiv, setResetConfirmDiv] = useState(false);
 
   console.log("Running ORDER WORDS EXERCISE")
   console.log(wordsInOrder);
+  console.log(bookmarksToStudy);
   function getWordsInArticle(sentence) {
-    return sentence.split(" ")
+    return removePunctuation(sentence).split(" ")
   }
 
   function setWordAttributes(word_list) {
@@ -74,7 +71,7 @@ export default function OrderWords({
 
   useEffect(() => {
     console.log("Getting Translation");
-    setTranslatedText("error")
+    resetStatus();
     api
       .basicTranlsate(
         bookmarksToStudy[0].from_lang,
@@ -89,49 +86,29 @@ export default function OrderWords({
       .catch(() => {
         setTranslatedText("error");
         console.log("could not retreive translation");
-      });    
-  }, [])
+      });
+      console.log("GETTING WORDS");
+      console.log(bookmarksToStudy[0].from_lang);
+      api.getConfusionWords(exerciseLang, bookmarksToStudy[0].context, (cWords) => {
+        let apiConfuseWords = JSON.parse(cWords)
+        console.log(apiConfuseWords);
+        console.log("Exercise Words");
+        console.log(exerciseWords);
+        setConfuseWords(apiConfuseWords);   
 
-  useEffect(() => {
-    setExerciseType(EXERCISE_TYPE);
-    console.log("GETTING WORDS");
-    console.log(bookmarksToStudy[0].from_lang);
-    api.getConfusionWords(exerciseLang, bookmarksToStudy[0].context, (cWords) => {
-      setConfuseWords(JSON.parse(cWords));
-    }
-    );
-
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setArticleInfo(articleInfo);
-      //console.log("Running Set Sate")
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseLang]);
-
-  useEffect(() => {
+      });
+    // This should be moved to getConfusionWords callback.
     const initialWords = getWordsInArticle(bookmarksToStudy[0].context)
     let exerciseWords = [...initialWords].concat(confuseWords);
-    console.log(confuseWords);
-    console.log("Exercise Words");
-    console.log(exerciseWords);
-    exerciseWords = shuffle(exerciseWords)
+    exerciseWords = shuffle(exerciseWords);
     const propWords = setWordAttributes(exerciseWords);
     setSolutionWords(setWordAttributes([...initialWords]));
     setOriginalText(bookmarksToStudy[0].context);
     setWordsMasterStatus(propWords);
-  }, [confuseWords])
+    
+  }, [bookmarksToStudy])
 
-  function caseFirstChar(wordObj, is_upper) {
-    if (is_upper) {
-      wordObj.word = wordObj.word.charAt(0).toUpperCase() + wordObj.word.slice(1);
-    }
-    else {
-      wordObj.word = wordObj.word.charAt(0).toLowerCase() + wordObj.word.slice(1);
-    }
-    return wordObj
-  }
-
-  function getWordId(id, list) {
+  function getWordById(id, list) {
     let wordProps = {}
     for (let i = 0; i < list.length; i++) {
       if (list[i].id === id) {
@@ -145,16 +122,11 @@ export default function OrderWords({
   function notifyChoiceSelection(selectedChoice, inUse) {
     undoResetStatus();
     if (isCorrect) return // Avoid swapping Words when it is correct.
-    let current_status = [...wordsMasterStatus]
-    let wordSelected = {}
-    for (let i = 0; i < current_status.length; i++) {
-      if (current_status[i].id === selectedChoice) {
-        wordSelected = current_status[i]
-        break
-      }
-    }
-
+    // Create objects to update.
+    let updatedStatus = [...wordsMasterStatus]
     let newWordsInOrder = [...wordsInOrder]
+    
+    let wordSelected = getWordById(selectedChoice, updatedStatus)
 
     if (inUse && (wordSwapId === -1)) {
       // Select the Word for Swapping. Set the Color to Orange
@@ -162,14 +134,12 @@ export default function OrderWords({
       console.log(selectedChoice);
       console.log("Selected: " + wordSwapId);
       setWordSwapStatus(wordSelected.status);
+      let wordInOrder = getWordById(wordSwapId, newWordsInOrder)
+
       wordSelected.status = "toSwap"
-      for (let i = 0; i < newWordsInOrder.length; i++) {
-        if (newWordsInOrder[i].id === wordSwapId) {
-          newWordsInOrder[i] = wordSelected
-          break
-        }
-      }
-      setWordsMasterStatus(current_status);
+      wordInOrder.status = "toSwap"
+
+      setWordsMasterStatus(updatedStatus);
       setWordsInOrder(newWordsInOrder);
       return
     }
@@ -177,13 +147,8 @@ export default function OrderWords({
     // Handle the case where we swap a selected word.
     if (wordSwapId !== -1 && selectedChoice !== wordSwapId) {
       console.log("Swapping words!")
-      let wordToSwapWith = {}
-      for (let i = 0; i < newWordsInOrder.length; i++) {
-        if (newWordsInOrder[i].id === wordSwapId) {
-          wordToSwapWith = { ...newWordsInOrder[i] }
-          break
-        }
-      }
+      let wordToSwapWith = getWordById(wordSwapId, newWordsInOrder)
+      wordToSwapWith = { ...wordToSwapWith }
       console.log(wordSelected)
       console.log(wordToSwapWith)
       wordToSwapWith.status = wordSwapStatus;
@@ -201,14 +166,14 @@ export default function OrderWords({
         }
       }
 
-      for (let i = 0; i < current_status.length; i++) {
-        if (current_status[i].id === wordSwapId) {
-          current_status[i] = wordToSwapWith
+      for (let i = 0; i < updatedStatus.length; i++) {
+        if (updatedStatus[i].id === wordSwapId) {
+          updatedStatus[i] = wordToSwapWith
           break
         }
       }
 
-      setWordsMasterStatus(current_status);
+      setWordsMasterStatus(updatedStatus);
       setWordsInOrder(newWordsInOrder);
       setwordSwapId(-1)
       return
@@ -238,7 +203,7 @@ export default function OrderWords({
     }
     console.log("AFTER COMPARING STATUS: " + wordSelected.status)
     setwordSwapId(-1)
-    setWordsMasterStatus(current_status)
+    setWordsMasterStatus(updatedStatus)
   }
 
   function handleShowSolution() {
@@ -276,20 +241,8 @@ export default function OrderWords({
     );
   }
 
-  function getSimilarWords(similarWords) {
-    let firstRandomInt = Math.floor(Math.random() * similarWords.length);
-    let secondRandomInt;
-    do {
-      secondRandomInt = Math.floor(Math.random() * similarWords.length);
-    } while (firstRandomInt === secondRandomInt);
-    let listOfOptions = removePunctuation(similarWords[firstRandomInt].toLowerCase()).split(" ").concat(removePunctuation(similarWords[secondRandomInt].toLowerCase()).split(" "));
-    //let shuffledListOfOptions = shuffle(listOfOptions);
-    setConfuseWords(listOfOptions)
-    return listOfOptions
-    //setButtonOptions(shuffledListOfOptions);
-  }
-
   function resetStatus() {
+    setTranslatedText();
     handleUndoSelection();
     let resetWords = [...wordsMasterStatus]
     for (let i = 0; i < resetWords.length; i++) {
@@ -312,6 +265,7 @@ export default function OrderWords({
   }
 
   function setAllInWordsStatus(status) {
+    // Aligns all the status to be the same.
     let updatedWords = [...wordsMasterStatus]
     let inUseIds = [...wordsInOrder].map(word => word.id)
     console.log(inUseIds)
@@ -321,8 +275,7 @@ export default function OrderWords({
       }
     }
     setWordsMasterStatus(updatedWords)
-    // API would update the wordsInOrder Status, here I just set all
-    // to wrong.
+
     let updateWordsInOrder = [...wordsInOrder]
     for (let i = 0; i < updateWordsInOrder.length; i++) {
       if (inUseIds.includes(updateWordsInOrder[i].id)) {
@@ -342,8 +295,8 @@ export default function OrderWords({
     let newWordsInOrder = [...wordsInOrder];
     let newWordMasterStatus = [...wordsMasterStatus];
 
-    let inOrderWord = getWordId(wordSwapId, newWordsInOrder);
-    let wordMastStatus = getWordId(wordSwapId, newWordMasterStatus);
+    let inOrderWord = getWordById(wordSwapId, newWordsInOrder);
+    let wordMastStatus = getWordById(wordSwapId, newWordMasterStatus);
 
     // Set to previous state
     inOrderWord.status = wordSwapStatus;
@@ -414,16 +367,18 @@ export default function OrderWords({
 
     }
   }
-
-  if (!articleInfo || !confuseWords ) {
+  
+  if (!translatedText || !wordsMasterStatus ) {
+    console.log("Running load animation.")
     return <LoadingAnimation />;
   }
 
   return (
     <s.Exercise className="orderWords">
+      
       <div className="headlineOrderWords">
         {strings.orderTheWordsToMakeTheFollowingSentence}
-        <h2>Bias-aware managers, a safe culture and diversity when it comes to hiring and bookings</h2>
+        <h2>{translatedText}</h2>
       </div>
       {hasClues && (
         <s.ItemRowCompactWrap className="cluesRow">
@@ -445,25 +400,10 @@ export default function OrderWords({
         </div>
       )}
 
-
-      {/*
-      <div className="contextExample">
-        <TranslatableText
-          isCorrect={isCorrect}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          bookmarkToStudy={bookmarksToStudy[0].from}
-        />
-      </div>
-      */
-      }
-
       {isCorrect && <div>
         <h4>Original Sentence:</h4>
         <p>{originalText}</p>
       </div>}
-
       {!wordsMasterStatus && <LoadingAnimation />}
       {!isCorrect && (
         <OrderWordsInput
@@ -502,7 +442,7 @@ export default function OrderWords({
           api={api}
           // Added an empty bookmark to avoid showing the
           // Listen Button.
-          bookmarksToStudy={[...bookmarksToStudy, ""]}
+          bookmarksToStudy={bookmarksToStudy}
           moveToNextExercise={moveToNextExercise}
           reload={reload}
           setReload={setReload}

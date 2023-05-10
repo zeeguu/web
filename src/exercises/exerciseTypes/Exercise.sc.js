@@ -18,10 +18,8 @@ const Exercise = styled.div`
   padding-bottom: 1em;
 
   .headline {
-    font-size: ;
     color: gray;
     margin-top: 1em;
-  
     font-weight: 500;
   }
 
