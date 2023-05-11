@@ -3,14 +3,10 @@ import * as s from "../Exercise.sc.js";
 import OrderWordsInput from "./OrderWordsInput.js";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
-import InteractiveText from "../../../reader/InteractiveText.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import removePunctuation from "../../../assorted/removePunctuation";
-import OrderWordsConstruct from "./OrderWordsConstruct.js";
-import { nb } from "date-fns/locale";
 
 const EXERCISE_TYPE = "OrderWords_L2T_from_L1T";
 
@@ -109,24 +105,24 @@ export default function OrderWords({
   }, [bookmarksToStudy])
 
   function getWordById(id, list) {
-    let wordProps = {}
+    let wordProps = {};
     for (let i = 0; i < list.length; i++) {
       if (list[i].id === id) {
-        wordProps = list[i]
-        break
+        wordProps = list[i];
+        break;
       }
     }
-    return wordProps
+    return wordProps;
   }
 
   function notifyChoiceSelection(selectedChoice, inUse) {
     undoResetStatus();
     if (isCorrect) return // Avoid swapping Words when it is correct.
     // Create objects to update.
-    let updatedStatus = [...wordsMasterStatus]
+    let updatedMasterStatus = [...wordsMasterStatus]
     let newWordsInOrder = [...wordsInOrder]
     
-    let wordSelected = getWordById(selectedChoice, updatedStatus)
+    let wordSelected = getWordById(selectedChoice, updatedMasterStatus)
 
     if (inUse && (wordSwapId === -1)) {
       // Select the Word for Swapping. Set the Color to Orange
@@ -139,7 +135,7 @@ export default function OrderWords({
       wordSelected.status = "toSwap"
       wordInOrder.status = "toSwap"
 
-      setWordsMasterStatus(updatedStatus);
+      setWordsMasterStatus(updatedMasterStatus);
       setWordsInOrder(newWordsInOrder);
       return
     }
@@ -147,14 +143,16 @@ export default function OrderWords({
     // Handle the case where we swap a selected word.
     if (wordSwapId !== -1 && selectedChoice !== wordSwapId) {
       console.log("Swapping words!")
-      let wordToSwapWith = getWordById(wordSwapId, newWordsInOrder)
-      wordToSwapWith = { ...wordToSwapWith }
-      console.log(wordSelected)
-      console.log(wordToSwapWith)
-      wordToSwapWith.status = wordSwapStatus;
+      // Update the Word to have the previous status
+      let wordInSwapStatus = getWordById(wordSwapId, newWordsInOrder)
+      wordInSwapStatus = { ...wordInSwapStatus }
+      wordInSwapStatus.status = wordSwapStatus;
       setWordSwapStatus("");
+
       // If the word was not in use.
-      if (wordToSwapWith.inUse !== wordSelected.inUse) { wordToSwapWith.inUse = !wordToSwapWith.inUse; }
+      if (wordInSwapStatus.inUse !== wordSelected.inUse) { 
+        wordInSwapStatus.inUse = !wordInSwapStatus.inUse; 
+      }
 
       for (let i = 0; i < newWordsInOrder.length; i++) {
         if (newWordsInOrder[i].id === wordSwapId) {
@@ -162,18 +160,21 @@ export default function OrderWords({
           newWordsInOrder[i] = wordSelected
         }
         else if (newWordsInOrder[i].id === selectedChoice) {
-          newWordsInOrder[i] = wordToSwapWith
+          newWordsInOrder[i] = wordInSwapStatus
         }
       }
-
-      for (let i = 0; i < updatedStatus.length; i++) {
-        if (updatedStatus[i].id === wordSwapId) {
-          updatedStatus[i] = wordToSwapWith
+      let updatedSwapWordMasterStatus = getWordById(wordSwapId, updatedMasterStatus)
+      console.log(updatedSwapWordMasterStatus)
+      console.log(wordInSwapStatus)
+      //updatedSwapWordMasterStatus = wordInSwapStatus
+      for (let i = 0; i < updatedMasterStatus.length; i++) {
+        if (updatedMasterStatus[i].id === wordSwapId) {
+          updatedMasterStatus[i] = wordInSwapStatus
           break
         }
       }
 
-      setWordsMasterStatus(updatedStatus);
+      setWordsMasterStatus(updatedMasterStatus);
       setWordsInOrder(newWordsInOrder);
       setwordSwapId(-1)
       return
@@ -203,7 +204,7 @@ export default function OrderWords({
     }
     console.log("AFTER COMPARING STATUS: " + wordSelected.status)
     setwordSwapId(-1)
-    setWordsMasterStatus(updatedStatus)
+    setWordsMasterStatus(updatedMasterStatus)
   }
 
   function handleShowSolution() {
@@ -242,12 +243,12 @@ export default function OrderWords({
   }
 
   function resetStatus() {
-    setTranslatedText();
     handleUndoSelection();
-    let resetWords = [...wordsMasterStatus]
+    let resetWords = [... wordsMasterStatus]
     for (let i = 0; i < resetWords.length; i++) {
       resetWords[i].inUse = false;
     }
+    console.log(resetWords);
     setWordsInOrder([]);
     setIsCorrect(false);
     setWordsMasterStatus(resetWords);
@@ -273,7 +274,7 @@ export default function OrderWords({
       if (inUseIds.includes(updatedWords[i].id)) {
         updatedWords[i].status = status
       }
-    }
+    } 
     setWordsMasterStatus(updatedWords)
 
     let updateWordsInOrder = [...wordsInOrder]
@@ -309,20 +310,23 @@ export default function OrderWords({
 
 
   function handleCheck() {
-    // Check if the solution is already the same
-    let filterPunctuationOGText = removePunctuation(originalText)
     resetSwapWordStatus();
+    // Do nothing if empty
     if (wordsInOrder.length === 0) {
       //setHasClues(true);
       //setClueText(["You have not added any words."]);
       return
     }
+
+    // Check if the solution is already the same
+    let filterPunctuationOGText = removePunctuation(originalText)
+    
     let constructedSentence = []
     for (let i = 0; i < wordsInOrder.length; i++) {
       constructedSentence.push(wordsInOrder[i].word);
     }
-    // Get the Sentence
 
+    // Get the Sentence
     constructedSentence = constructedSentence.join(" ")
     if (constructedSentence === filterPunctuationOGText) {
       setHasClues(false);
@@ -339,8 +343,8 @@ export default function OrderWords({
       let resizeSol = "" + filterPunctuationOGText
       resizeSol = resizeSol.split(" ")
       resizeSol = resizeSol.slice(0, wordsInOrder.length + 1).join(" ")
-      api.annotateClues(wordsInOrder, resizeSol, exerciseLang, (updatedStatus) => {
-        let updatedWordStatus = JSON.parse(updatedStatus);
+      api.annotateClues(wordsInOrder, resizeSol, exerciseLang, (updatedMasterStatus) => {
+        let updatedWordStatus = JSON.parse(updatedMasterStatus);
         let cluesText = [];
         let copy_props = [...updatedWordStatus];
         console.log(updatedWordStatus);
@@ -389,19 +393,20 @@ export default function OrderWords({
 
       {(wordsInOrder.length > 0 || !isCorrect) && (
         <div className={`orderWordsItem ${wordSwapId !== -1 ? 'select' : ''}`}>
-          <OrderWordsConstruct
+          <OrderWordsInput
             buttonOptions={wordsInOrder}
             notifyChoiceSelection={notifyChoiceSelection}
             incorrectAnswer={isCorrect}
             setIncorrectAnswer={setIsCorrect}
             handleShowSolution={handleShowSolution}
             toggleShow={toggleShow}
+            isWordSoup={false}
           />
         </div>
       )}
 
       {isCorrect && <div>
-        <h4>Original Sentence:</h4>
+        <h4>{strings.orderWordsCorrectMessage}</h4>
         <p>{originalText}</p>
       </div>}
       {!wordsMasterStatus && <LoadingAnimation />}
@@ -413,6 +418,7 @@ export default function OrderWords({
           setIncorrectAnswer={setIsCorrect}
           handleShowSolution={handleShowSolution}
           toggleShow={toggleShow}
+          isWordSoup={true}
         />
       )}
 
@@ -424,16 +430,16 @@ export default function OrderWords({
       )}
       {(wordSwapId !== -1) && (!resetConfirmDiv) && (
         <div className="swapModeBar">
-          <button onClick={handleUndoSelection} className="owButton undo">Undo</button>
-          <p>Click a word to swap, or click again to remove.</p>
+          <button onClick={handleUndoSelection} className="owButton undo">{strings.undo}</button>
+          <p>{strings.swapInfo}</p>
         </div>
       )
       }
       {(resetConfirmDiv) && (
         <div className="resetConfirmBar">
-          <button onClick={undoResetStatus} className="owButton undo">Undo</button>
-          <p>Are you sure? This will reset all words.</p>
-          <button onClick={resetStatus} className="owButton check">Confirm</button>
+          <button onClick={undoResetStatus} className="owButton undo">{strings.undo}</button>
+          <p>{strings.corfirmReset}</p>
+          <button onClick={resetStatus} className="owButton check">{strings.confirm}</button>
         </div>
       )
       }
