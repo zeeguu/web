@@ -19,7 +19,7 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
     bookmark_id: bookmark_id,
     other_feedback: other_feedback,
   };
-
+  console.log(payload);
   this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 
