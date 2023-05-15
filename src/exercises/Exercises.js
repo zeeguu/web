@@ -384,17 +384,17 @@ export default function Exercises({
     setIncorrectBookmarks(incorrectBookmarksCopy);
   }
 
-  function stopShowingThisFeedback(reason, id) {
+  function uploadUserFeedback(userWrittenFeedback, id) {
     console.log(
       "Sending to the API. Feedback: ",
-      reason,
+      userWrittenFeedback,
       " Exercise type: ",
       currentExerciseType,
       " and word: ",
       id
     );
     setIsCorrect(true);
-    api.uploadExerciseFeedback(reason, currentExerciseType, 0, id);
+    api.uploadExerciseFeedback(userWrittenFeedback, currentExerciseType, 0, id);
   }
 
   function toggleShow() {
@@ -428,7 +428,7 @@ export default function Exercises({
         setShowFeedbackButtons={setShowFeedbackButtons}
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
-        feedbackFunction={stopShowingThisFeedback}
+        feedbackFunction={uploadUserFeedback}
       />
     </s.ExercisesColumn>
   );
