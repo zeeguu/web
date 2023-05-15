@@ -40,6 +40,7 @@ export default function OrderWords({
   const [resetConfirmDiv, setResetConfirmDiv] = useState(false);
 
   console.log("Running ORDER WORDS EXERCISE")
+  console.log("Context: " + bookmarksToStudy[0].context.split(" ").length + ", " + bookmarksToStudy[0].context)
   console.log(constructorWordArray);
   console.log(bookmarksToStudy);
   function getWordsInArticle(sentence) {
@@ -360,7 +361,7 @@ export default function OrderWords({
     }
   }
 
-  if (!wordsMasterStatus && !confuseWords) {
+  if (wordsMasterStatus.length == 0 && !confuseWords) {
     console.log("Running load animation.")
     return <LoadingAnimation />;
   }
@@ -397,7 +398,7 @@ export default function OrderWords({
         <h4>{strings.orderWordsCorrectMessage}</h4>
         <p>{originalText}</p>
       </div>}
-      {!wordsMasterStatus && <LoadingAnimation />}
+      {wordsMasterStatus.length == 0 && <LoadingAnimation />}
       {!isCorrect && (
         <OrderWordsInput
           buttonOptions={wordsMasterStatus}
