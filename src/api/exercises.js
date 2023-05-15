@@ -1,4 +1,5 @@
 import { Zeeguu_API } from "./classDef";
+import qs from "qs";
 
 Zeeguu_API.prototype.getUserBookmarksToStudy = function (count, callback) {
   this._getJSON(`bookmarks_to_study/${count}`, callback);
@@ -14,8 +15,7 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
   let payload = {
     outcome: exercise_outcome,
     source: exercise_source,
-    solving_speed,
-    exercise_solving_speed,
+    solving_speed: exercise_solving_speed,
     bookmark_id: bookmark_id,
     other_feedback: other_feedback,
   };
