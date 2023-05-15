@@ -118,7 +118,7 @@ export default function MultipleChoiceAudio({
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
 
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       pressTime - initialTime,
@@ -140,7 +140,7 @@ export default function MultipleChoiceAudio({
 
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       duration,

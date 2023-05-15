@@ -6,15 +6,38 @@ Zeeguu_API.prototype.getUserBookmarksToStudy = function (count, callback) {
 };
 
 Zeeguu_API.prototype.uploadExerciseFeedback = function (
-  exercise_outcome,
+  user_feedback,
   exercise_source,
   exercise_solving_speed,
   bookmark_id
 ) {
-  this._post(
-    `report_exercise_outcome/${exercise_outcome}/${exercise_source}/${exercise_solving_speed}/${bookmark_id}`,
-    null
-  );
+  let payload = {
+    outcome: "other_feedback",
+    source: exercise_source,
+    solving_speed: exercise_solving_speed,
+    bookmark_id: bookmark_id,
+    other_feedback: user_feedback,
+  };
+  console.log(payload);
+  this._post(`report_exercise_outcome`, qs.stringify(payload));
+};
+
+Zeeguu_API.prototype.uploadExerciseFinalizedData = function (
+  exercise_outcome,
+  exercise_source,
+  exercise_solving_speed,
+  bookmark_id,
+  other_feedback
+) {
+  let payload = {
+    outcome: exercise_outcome,
+    source: exercise_source,
+    solving_speed: exercise_solving_speed,
+    bookmark_id: bookmark_id,
+    other_feedback: other_feedback,
+  };
+  console.log(payload);
+  this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 
 Zeeguu_API.prototype.wordsSimilarTo = function (bookmark_id, callback) {
