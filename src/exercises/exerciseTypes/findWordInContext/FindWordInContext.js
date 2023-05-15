@@ -102,7 +102,7 @@ export default function FindWordInContext({
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
       duration,
@@ -117,7 +117,7 @@ export default function FindWordInContext({
 
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       duration,
