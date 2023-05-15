@@ -80,7 +80,7 @@ export default function SpellWhatYouHear({
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
       duration,
@@ -95,7 +95,7 @@ export default function SpellWhatYouHear({
 
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       duration,

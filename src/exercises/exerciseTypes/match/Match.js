@@ -106,7 +106,7 @@ export default function Match({
         notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
         let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
 
-        api.uploadExerciseFeedback(
+        api.uploadExerciseFinalizedData(
           concatMessage,
           EXERCISE_TYPE,
           duration,
@@ -122,7 +122,7 @@ export default function Match({
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
 
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       pressTime - initialTime,
