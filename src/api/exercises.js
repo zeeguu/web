@@ -8,12 +8,19 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
   exercise_outcome,
   exercise_source,
   exercise_solving_speed,
-  bookmark_id
+  bookmark_id,
+  other_feedback
 ) {
-  this._post(
-    `report_exercise_outcome/${exercise_outcome}/${exercise_source}/${exercise_solving_speed}/${bookmark_id}`,
-    null
-  );
+  let payload = {
+    outcome: exercise_outcome,
+    source: exercise_source,
+    solving_speed,
+    exercise_solving_speed,
+    bookmark_id: bookmark_id,
+    other_feedback: other_feedback,
+  };
+
+  this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 
 Zeeguu_API.prototype.wordsSimilarTo = function (bookmark_id, callback) {
