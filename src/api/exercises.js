@@ -9,7 +9,8 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
   user_feedback,
   exercise_source,
   exercise_solving_speed,
-  bookmark_id
+  bookmark_id,
+  other_feedback
 ) {
   let payload = {
     outcome: "other_feedback",
