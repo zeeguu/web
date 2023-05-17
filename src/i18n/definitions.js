@@ -304,8 +304,9 @@ let strings = new LocalizedStrings(
       studentFeedback: "Student feedback:",
       noType: "No type",
       orderWordsTipMessage:
-      "You can click 'Check ✔' at any time to get clues",
+      "You can click 'Hint ✔' at any time to get clues",
       orderWordsCorrectMessage: "Original sentence you read",
+      orderWordsOnlyTwoMessagesShown: "Only the first 2 clues are shown",
 
       //Exercises
       wordSourceDefaultText: "your past readings",
