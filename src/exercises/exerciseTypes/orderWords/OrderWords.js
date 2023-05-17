@@ -25,24 +25,28 @@ export default function OrderWords({
 }) {
   const [initialTime] = useState(new Date());
   //const [buttonOptions, setButtonOptions] = useState(null);
+  const [resetCounter, setResetCounter] = useState(0);
+  const [hintCounter, setHintCounter] = useState(0);
+  const [totalErrorCounter, setTotalErrorCounter] = useState(0);
+  const [posSelected, setPosSelected] = useState("");
   const [wordsMasterStatus, setWordsMasterStatus] = useState([]);
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [exerciseLang, setExerciseLang] = useState(bookmarksToStudy[0].from_lang);
+  const [exerciseLang] = useState(bookmarksToStudy[0].from_lang);
+  const [exerciseContext, setExerciseContext] = useState("");
   const [clueText, setClueText] = useState(["Clues go here."]);
-  const [translatedText, setTranslatedText] = useState();
-  const [originalText, setOriginalText] = useState("");
+  const [translatedText, setTranslatedText] = useState("");
   const [hasClues, setHasClues] = useState(false);
   const [constructorWordArray, setConstructorWordArray] = useState([]);
   const [confuseWords, setConfuseWords] = useState();
+  const [wordForConfusion, setWordForConfuson] = useState();
   const [wordSwapId, setwordSwapId] = useState(-1);
   const [wordSwapStatus, setWordSwapStatus] = useState("");
   const [solutionWords, setSolutionWords] = useState([]);
   const [resetConfirmDiv, setResetConfirmDiv] = useState(false);
+  const [sentenceWasTooLong, setSentenceWasTooLong] = useState(false);
+  const handleLongSentences = false;
 
   console.log("Running ORDER WORDS EXERCISE")
-  console.log("Context: " + bookmarksToStudy[0].context.split(" ").length + ", " + bookmarksToStudy[0].context)
-  console.log(constructorWordArray);
-  console.log(bookmarksToStudy);
   function getWordsInArticle(sentence) {
     return removePunctuation(sentence).split(" ")
   }
@@ -50,8 +54,6 @@ export default function OrderWords({
   function setWordAttributes(word_list) {
     // Create an Word Object, that contains the 
     // id, word, status (Correct, Incorrect, Feedback), inUse (true/false)
-    // To keep punctuation at the spaCy pipeline, we simply hide it from the UI, but
-    // 
     let arrayWords = []
     for (let i = 0; i < word_list.length; i++) {
       arrayWords.push({
@@ -65,22 +67,22 @@ export default function OrderWords({
     return arrayWords
   }
 
-  useEffect(() => {
-    console.log("Getting Translation");
-    resetStatus();
-    const initialWords = getWordsInArticle(bookmarksToStudy[0].context)
+  function prepareExercise(contextToUse){
+    console.log("CONTEXT: " + contextToUse);
+
+    const initialWords = getWordsInArticle(contextToUse);
     setSolutionWords(setWordAttributes([...initialWords]));
-    setOriginalText(bookmarksToStudy[0].context);
+    console.log("Getting Translation for ->" + contextToUse);
     api
       .basicTranlsate(
-        bookmarksToStudy[0].from_lang,
+        exerciseLang,
         localStorage.native_language,
-        bookmarksToStudy[0].context
+        contextToUse
       )
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
-        setTranslatedText(data["translation"])
+        setTranslatedText(data["translation"] + ".")
       })
       .catch(() => {
         setTranslatedText("error");
@@ -88,8 +90,9 @@ export default function OrderWords({
       });
     console.log("GETTING WORDS");
     console.log(bookmarksToStudy[0].from_lang);
-    api.getConfusionWords(exerciseLang, bookmarksToStudy[0].context, (cWords) => {
-      let apiConfuseWords = JSON.parse(cWords)
+    api.getConfusionWords(exerciseLang, contextToUse, (cWords) => {
+      let jsonCWords = JSON.parse(cWords)
+      let apiConfuseWords = jsonCWords["confusion_words"]
       let exerciseWords = [...initialWords].concat(apiConfuseWords);
       console.log(apiConfuseWords);
       console.log("Exercise Words");
@@ -99,7 +102,50 @@ export default function OrderWords({
       let propWords = setWordAttributes(exerciseWords);
       setWordsMasterStatus(propWords);
       setConfuseWords(apiConfuseWords);
+      setPosSelected(jsonCWords["pos_picked"]);
+      setWordForConfuson(jsonCWords["word_used"]);
+      let configuration_wo_start = {
+        "sentence_was_too_long": sentenceWasTooLong,
+        "translation": translatedText,
+        "context": contextToUse,
+        "confusionWords": apiConfuseWords,
+        "pos": posSelected,
+        "word_for_confusion": wordForConfusion,
+        "total_words": exerciseWords.length,
+        "exercise_start": initialTime,
+      }
+      api.logUserActivity(
+        "WO_START",
+        "",
+        bookmarksToStudy[0].id,
+        JSON.stringify(configuration_wo_start)
+      )
     });
+    setExerciseContext(contextToUse);
+  }
+
+  useEffect(() => {
+    let orgiinalContext = bookmarksToStudy[0].context;
+    resetStatus();
+    // Handle the case of long sentences, this relies on activating the functionality. 
+    if (orgiinalContext.split(" ").length > 15 && handleLongSentences) {
+      api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+        console.log(articleInfo);
+        api.getWOsentences(articleInfo["content"], orgiinalContext,
+          exerciseLang, (candidateSents) => {
+            setSentenceWasTooLong(true);
+            console.log("SENTENCES THAT ARE GOOD FOR WO")
+            console.log(candidateSents);
+            let candidatesSent = JSON.parse(candidateSents)[0][1]
+            console.log(candidatesSent);
+            prepareExercise(candidatesSent);
+          });
+      });
+    }
+    else{
+      console.log("Using default context.");
+      prepareExercise(bookmarksToStudy[0].context);
+    }
   }, [bookmarksToStudy])
 
   function getWordById(id, list) {
@@ -214,22 +260,49 @@ export default function OrderWords({
     setIsCorrect(true);
     setHasClues(false);
     handleAnswer(message, duration);
+    setWordsMasterStatus([]);
   }
 
   function handleAnswer(message) {
     let pressTime = new Date();
-    console.log(pressTime - initialTime);
+    let duration = pressTime - initialTime
+    console.log(duration);
     console.log("^^^^ time elapsed");
-
     api.uploadExerciseFeedback(
       message,
       EXERCISE_TYPE,
-      pressTime - initialTime,
+      duration,
       bookmarksToStudy[0].id
+    );
+
+    let configuration_wo_end = {
+      "sentence_was_too_long": sentenceWasTooLong,
+      "outcome": message,
+      "total_time": duration,
+      "total_errors": totalErrorCounter,
+      "total_hints": hintCounter,
+      "total_resets": resetCounter,
+      "translation": translatedText,
+      "context": exerciseContext,
+      "confusionWords": confuseWords,
+      "pos": posSelected,
+      "word_for_confusion": wordForConfusion,
+      "exercise_start": initialTime,
+    };
+
+    api.logUserActivity(
+      "WO_END",
+      "",
+      bookmarksToStudy[0].id,
+      JSON.stringify(configuration_wo_end)
     );
   }
 
   function resetStatus() {
+    if (resetConfirmDiv) {
+      console.log("Run update counter.")
+      setResetCounter(resetCounter + 1);
+    }
     handleUndoSelection();
     let resetWords = [...wordsMasterStatus]
     for (let i = 0; i < resetWords.length; i++) {
@@ -241,11 +314,11 @@ export default function OrderWords({
     setWordsMasterStatus(resetWords);
     undoResetStatus();
   }
+
   function handleReset() {
     if (constructorWordArray.length > 0) {
       setResetConfirmDiv(true);
     }
-
   }
 
   function undoResetStatus() {
@@ -254,28 +327,28 @@ export default function OrderWords({
 
   function setAllInWordsStatus(status) {
     // Aligns all the status to be the same.
-    let updatedWords = [...wordsMasterStatus]
-    let inUseIds = [...constructorWordArray].map(word => word.id)
+    let updatedWords = [...wordsMasterStatus];
+    let inUseIds = [...constructorWordArray].map(word => word.id);
     console.log(inUseIds)
     for (let i = 0; i < updatedWords.length; i++) {
       if (inUseIds.includes(updatedWords[i].id)) {
-        updatedWords[i].status = status
+        updatedWords[i].status = status;
       }
     }
-    setWordsMasterStatus(updatedWords)
+    setWordsMasterStatus(updatedWords);
 
-    let newConstructorWordArray = [...constructorWordArray]
+    let newConstructorWordArray = [...constructorWordArray];
     for (let i = 0; i < newConstructorWordArray.length; i++) {
       if (inUseIds.includes(newConstructorWordArray[i].id)) {
-        newConstructorWordArray[i].status = status
+        newConstructorWordArray[i].status = status;
       }
     }
-    setConstructorWordArray(newConstructorWordArray)
+    setConstructorWordArray(newConstructorWordArray);
   }
 
   function resetSwapWordStatus() {
-    setWordSwapStatus("")
-    setwordSwapId(-1)
+    setWordSwapStatus("");
+    setwordSwapId(-1);
   }
 
   function handleUndoSelection() {
@@ -298,17 +371,12 @@ export default function OrderWords({
 
   function handleCheck() {
     resetSwapWordStatus();
+    setHintCounter(hintCounter + 1);
     // Do nothing if empty
-    if (constructorWordArray.length === 0) {
-      //setHasClues(true);
-      //setClueText(["You have not added any words."]);
-      let concatMessage = messageToAPI + "C";
-      handleAnswer(concatMessage);
-      return
-    }
+    if (constructorWordArray.length === 0) { return; };
 
     // Check if the solution is already the same
-    let filterPunctuationOGText = removePunctuation(originalText)
+    let filterPunctuationOGText = removePunctuation(exerciseContext);
 
     let constructedSentence = []
     for (let i = 0; i < constructorWordArray.length; i++) {
@@ -321,6 +389,11 @@ export default function OrderWords({
       setHasClues(false);
       setIsCorrect(true);
       setAllInWordsStatus("correct");
+      let concatMessage = messageToAPI + "C";
+      handleAnswer(concatMessage);
+      // Need to reset MasterStatus, so when the new exercise is loaded, there are no words.
+      // This happens when you don't change the exercise.
+      setWordsMasterStatus([]);
     }
     else {
       // Handle the Errors and Set the feedback
@@ -333,26 +406,53 @@ export default function OrderWords({
       resizeSol = resizeSol.split(" ")
       resizeSol = resizeSol.slice(0, constructorWordArray.length + 1).join(" ")
       api.annotateClues(constructorWordArray, resizeSol, exerciseLang, (updatedMasterStatus) => {
+        // Variable to update and store in the user Activity.
         let updatedWordStatus = JSON.parse(updatedMasterStatus);
         let cluesText = [];
+        let errorTypes = [];
         let copy_props = [...updatedWordStatus];
-        console.log(updatedWordStatus);
         let newWordMasterStatus = [...wordsMasterStatus];
+        let errorCount = 0;
+
+        console.log(updatedWordStatus);
         for (let i = 0; i < copy_props.length; i++) {
           let wordProp = copy_props[i];
           newWordMasterStatus[wordProp.id] = wordProp;
-          if (wordProp.feedback != "" && !wordProp.isCorrect) { cluesText.push(wordProp.feedback) };
+          if (wordProp.feedback != "" && !wordProp.isCorrect) {
+            cluesText.push(wordProp.feedback);
+            errorTypes.push(wordProp.error_type);
+          };
+          if (!wordProp.isCorrect) { errorCount++; }
         }
+
         console.log(cluesText);
-        if (cluesText.length > 0) { setHasClues(true); }
-        if (cluesText.length < 2) {
-          setClueText(cluesText.slice(0, 2));
+        let finalClueText = [];
+        if (errorCount > 0) { setHasClues(true); }
+        if (errorCount <= 2) {
+          finalClueText = cluesText.slice(0, 2);
         }
         else {
-          setClueText(cluesText.slice(0, 2).concat(["Only the first 2 errors are shown."]));
+          finalClueText = cluesText.slice(0, 2).concat([strings.orderWordsOnlyTwoMessagesShown]);;
         }
+        setTotalErrorCounter(totalErrorCounter + errorCount);
+        setClueText(finalClueText);
         setConstructorWordArray(updatedWordStatus);
         setWordsMasterStatus(newWordMasterStatus);
+        let activityLog = {
+          "constructed_sent": constructedSentence,
+          "solution_sent": resizeSol,
+          "n_errors": errorCount,
+          "feedback_given": finalClueText,
+          "error_types": errorTypes,
+          "total_errors": totalErrorCounter,
+          "exercise_start": initialTime
+        }
+        api.logUserActivity(
+          "WO_CHECK",
+          "",
+          bookmarksToStudy[0].id,
+          JSON.stringify(activityLog)
+        )
       }
       );
 
@@ -361,14 +461,15 @@ export default function OrderWords({
     }
   }
 
-  if (wordsMasterStatus.length == 0 && !confuseWords) {
+  // Handle the Loading screen while getting the test.
+  if ((wordsMasterStatus.length === 0 | translatedText === "") && !isCorrect) {
     console.log("Running load animation.")
     return <LoadingAnimation />;
   }
 
   return (
     <s.Exercise className="orderWords">
-
+      {translatedText === "" && !isCorrect && <LoadingAnimation />}
       <div className="headlineOrderWords">
         {strings.orderTheWordsToMakeTheFollowingSentence}
         <h2>{translatedText}</h2>
@@ -396,9 +497,9 @@ export default function OrderWords({
 
       {isCorrect && <div>
         <h4>{strings.orderWordsCorrectMessage}</h4>
-        <p>{originalText}</p>
+        <p>{exerciseContext}</p>
       </div>}
-      {wordsMasterStatus.length == 0 && <LoadingAnimation />}
+      {wordsMasterStatus.length === 0 && !isCorrect && <LoadingAnimation />}
       {!isCorrect && (
         <OrderWordsInput
           buttonOptions={wordsMasterStatus}
@@ -414,7 +515,7 @@ export default function OrderWords({
       {!isCorrect && (
         <s.ItemRowCompactWrap className="ItemRowCompactWrap">
           <button onClick={handleReset} className={constructorWordArray.length > 0 ? "owButton undo" : "owButton disable"}>↻ {strings.reset}</button>
-          <button onClick={handleCheck} className={constructorWordArray.length > 0 ? "owButton check" : "owButton disable"}>{strings.check} ✔</button>
+          <button onClick={handleCheck} className={constructorWordArray.length > 0 ? "owButton check" : "owButton disable"}>{solutionWords.length === constructorWordArray.length ? strings.check : strings.hint} ✔</button>
         </s.ItemRowCompactWrap>
       )}
       {(wordSwapId !== -1) && (!resetConfirmDiv) && (

@@ -47,21 +47,32 @@ Zeeguu_API.prototype.wordsSimilarTo = function (bookmark_id, callback) {
 
 
 Zeeguu_API.prototype.getConfusionWords = function (lang, original_sentence, callback) {
-  let sent_to_conf = {
+  let payload = {
     original_sent: original_sentence,
     language: lang
   }
   
-  return this._post(`/create_confusion_words`, qs.stringify(sent_to_conf), callback)
+  return this._post(`/create_confusion_words`, qs.stringify(payload), callback)
 };
 
 Zeeguu_API.prototype.annotateClues = function (word_props, og_sent, lang, callback) {
   
-  let words_to_correct = {
+  let payload = {
     word_with_props: JSON.stringify(word_props),
     original_sentence: og_sent,
     language: lang
   }
-  console.log(words_to_correct);
-  return this._post(`/annotate_clues`, qs.stringify(words_to_correct), callback)
+  console.log(payload);
+  return this._post(`/annotate_clues`, qs.stringify(payload), callback)
+};
+
+Zeeguu_API.prototype.getWOsentences = function (articleText, contextBookmark, lang, callback) {
+  
+  let payload = {
+    article_text: articleText,
+    bookmark_context: contextBookmark,
+    language: lang
+  }
+  console.log(payload);
+  return this._post(`/get_sentences_for_wo`, qs.stringify(payload), callback)
 };
