@@ -115,11 +115,11 @@ export default function Exercises({
    * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
    */
   function calculateExerciseBatches(bookmarks) {
-    let exerciseList = EXERCISE_TYPES;
+    let exerciseTypesList = EXERCISE_TYPES;
     if (Feature.tiago_exercises()){
-      exerciseList = EXERCISE_TYPES_TIAGO;
+      exerciseTypesList = EXERCISE_TYPES_TIAGO;
     }
-    let bookmarksPerBatch = exerciseList.reduce(
+    let bookmarksPerBatch = exerciseTypesList.reduce(
       (a, b) => a + b.requiredBookmarks,
       0
     );
@@ -135,20 +135,20 @@ export default function Exercises({
   }
 
   function defineExerciseSession(batches, rest, bookmark_count) {
-    let exerciseList = EXERCISE_TYPES
+    let exerciseTypesList = EXERCISE_TYPES
     if (Feature.tiago_exercises()){
-      exerciseList = EXERCISE_TYPES_TIAGO
+      exerciseTypesList = EXERCISE_TYPES_TIAGO
     }
     let exerciseSession = [];
     if (bookmark_count < 9) {
       let count = bookmark_count;
       while (count > 0) {
-        for (let i = exerciseList.length - 1; i > 0; i--) {
-          let currentTypeRequiredCount = exerciseList[i].requiredBookmarks;
+        for (let i = exerciseTypesList.length - 1; i > 0; i--) {
+          let currentTypeRequiredCount = exerciseTypesList[i].requiredBookmarks;
           if (count < currentTypeRequiredCount) continue;
           if (count === 0) break;
           let exercise = {
-            type: exerciseList[i].type,
+            type: exerciseTypesList[i].type,
             requiredBookmarks: currentTypeRequiredCount,
             bookmarks: [],
           };
@@ -158,21 +158,21 @@ export default function Exercises({
       }
     } else {
       for (let i = 0; i < batches; i++) {
-        for (let j = exerciseList.length - 1; j >= 0; j--) {
+        for (let j = exerciseTypesList.length - 1; j >= 0; j--) {
           let exercise = {
-            type: exerciseList[j].type,
-            requiredBookmarks: exerciseList[j].requiredBookmarks,
+            type: exerciseTypesList[j].type,
+            requiredBookmarks: exerciseTypesList[j].requiredBookmarks,
             bookmarks: [],
           };
           exerciseSession.push(exercise);
         }
       }
       while (rest > 0) {
-        for (let k = exerciseList.length - 1; k >= 0; k--) {
-          if (rest >= exerciseList[k].requiredBookmarks) {
+        for (let k = exerciseTypesList.length - 1; k >= 0; k--) {
+          if (rest >= exerciseTypesList[k].requiredBookmarks) {
             let exercise = {
-              type: exerciseList[k].type,
-              requiredBookmarks: exerciseList[k].requiredBookmarks,
+              type: exerciseTypesList[k].type,
+              requiredBookmarks: exerciseTypesList[k].requiredBookmarks,
               bookmarks: [],
             };
             exerciseSession.push(exercise);
