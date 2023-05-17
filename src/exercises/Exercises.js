@@ -39,16 +39,12 @@ let EXERCISE_TYPES = [
     type: MultipleChoiceAudio,
     requiredBookmarks: 3,
   },
-  {
-    type: OrderWords,
-    requiredBookmarks:1,
-  }
 ];
 
 let EXERCISE_TYPES_TIAGO = [
   {
     type: OrderWords,
-    requiredBookmarks:1,
+    requiredBookmarks: 1,
   }
 ];
 
@@ -119,9 +115,9 @@ export default function Exercises({
    * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
    */
   function calculateExerciseBatches(bookmarks) {
-    let exerciseList = EXERCISE_TYPES
+    let exerciseList = EXERCISE_TYPES;
     if (Feature.tiago_exercises()){
-      exerciseList = EXERCISE_TYPES_TIAGO
+      exerciseList = EXERCISE_TYPES_TIAGO;
     }
     let bookmarksPerBatch = exerciseList.reduce(
       (a, b) => a + b.requiredBookmarks,

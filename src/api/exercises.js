@@ -62,7 +62,6 @@ Zeeguu_API.prototype.annotateClues = function (word_props, og_sent, lang, callba
     original_sentence: og_sent,
     language: lang
   }
-  console.log(payload);
   return this._post(`/annotate_clues`, qs.stringify(payload), callback)
 };
 
@@ -73,6 +72,5 @@ Zeeguu_API.prototype.getWOsentences = function (articleText, contextBookmark, la
     bookmark_context: contextBookmark,
     language: lang
   }
-  console.log(payload);
   return this._post(`/get_sentences_for_wo`, qs.stringify(payload), callback)
 };
