@@ -218,7 +218,6 @@ export default function Exercises({
           k++;
         }
       } else {
-        console.log(bookmarkList[k])
         exerciseSession[i].bookmarks.push(bookmarkList[k]);
         k++;
       }
@@ -226,8 +225,6 @@ export default function Exercises({
 
     if (currentBookmarksToStudy === null) {
       setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
-      
-      
     }
     setExerciseSession(exerciseSession);
   }
