@@ -1,4 +1,4 @@
-import * as s from "../Exercise.sc";
+import * as sOW from "./ExerciseTypeOW.sc.js"
 
 function OrderWordsInput({
   buttonOptions,
@@ -10,29 +10,29 @@ function OrderWordsInput({
 
   if (isWordSoup) {
     return (
-      <s.ItemRowCompactWrap className="ItemRowCompactWrap">
-      {buttonOptions.length > 0 && buttonOptions.map(word => <s.OrangeItemCompact
+      <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
+      {buttonOptions.length > 0 && buttonOptions.map(word => <sOW.OrangeItemCompact
          key={word.id} 
          status={word.inUse}
          className={word.inUse ? word.status + " greyOut" : word.status } 
          onClick={() => notifyChoiceSelection(word.id, word.inUse)}>
          {word.word} 
-        </s.OrangeItemCompact>)}
-      </s.ItemRowCompactWrap>
+        </sOW.OrangeItemCompact>)}
+      </sOW.ItemRowCompactWrap>
     );
   }
   else{
     return (
-      <s.ItemRowCompactWrapConstruct className="ItemRowCompactWrapConstruct">
-      {buttonOptions.length > 0 && buttonOptions.map(word => <s.OrangeItemCompactConstruct
+      <sOW.ItemRowCompactWrapConstruct className="ItemRowCompactWrapConstruct">
+      {buttonOptions.length > 0 && buttonOptions.map(word => <sOW.OrangeItemCompactConstruct
          key={word.id} 
          title={word.feedback}
          status={word.status}
          className={word.status} 
          onClick={() => notifyChoiceSelection(word.id, word.inUse)}>
          {word.word}
-        </s.OrangeItemCompactConstruct>)}
-      </s.ItemRowCompactWrapConstruct>
+        </sOW.OrangeItemCompactConstruct>)}
+      </sOW.ItemRowCompactWrapConstruct>
     );
   }
 

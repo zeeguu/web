@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
+import * as sOW from "./ExerciseTypeOW.sc.js"
 import OrderWordsInput from "./OrderWordsInput.js";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -67,7 +68,7 @@ export default function OrderWords({
     return arrayWords
   }
 
-  function prepareExercise(contextToUse){
+  function prepareExercise(contextToUse) {
     console.log("CONTEXT: " + contextToUse);
 
     const initialWords = getWordsInArticle(contextToUse);
@@ -142,7 +143,7 @@ export default function OrderWords({
           });
       });
     }
-    else{
+    else {
       console.log("Using default context.");
       prepareExercise(bookmarksToStudy[0].context);
     }
@@ -168,6 +169,7 @@ export default function OrderWords({
 
     let wordSelected = getWordById(selectedChoice, updatedMasterStatus)
 
+    // Handle Case where Word is in ConstructorBox & No word is selected.
     if (inUse && (wordSwapId === -1)) {
       // Select the Word for Swapping. 
       // Set the Color to Blue
@@ -182,7 +184,7 @@ export default function OrderWords({
 
       setWordsMasterStatus(updatedMasterStatus);
       setConstructorWordArray(newConstructorWordArray);
-      return
+      return;
     }
 
     // Handle the case where we swap a selected word.
@@ -217,9 +219,10 @@ export default function OrderWords({
       // Update all the statuses.
       setWordsMasterStatus(updatedMasterStatus);
       setConstructorWordArray(newConstructorWordArray);
-      setwordSwapId(-1)
-      return
+      setwordSwapId(-1);
+      return;
     }
+
     // Add the Word to the Constructor
     if (!wordSelected.inUse) {
       newConstructorWordArray.push(wordSelected)
@@ -304,7 +307,7 @@ export default function OrderWords({
       setResetCounter(resetCounter + 1);
     }
     handleUndoSelection();
-    let resetWords = [...wordsMasterStatus]
+    let resetWords = [...wordsMasterStatus];
     for (let i = 0; i < resetWords.length; i++) {
       resetWords[i].inUse = false;
     }
@@ -368,6 +371,66 @@ export default function OrderWords({
     setWordsMasterStatus(newWordMasterStatus);
   }
 
+  function updateWordsFromAPI(updatedStatusFromAPI, resizeSol, constructedSentence) {
+    // Variable to update and store in the user Activity.
+    let updatedWordStatus = JSON.parse(updatedStatusFromAPI);
+    let cluesTextList = [];
+    let errorTypesList = [];
+    let copyProps = [...updatedWordStatus];
+    let newWordMasterStatus = [...wordsMasterStatus];
+    let errorCount = 0;
+
+    console.log(updatedWordStatus);
+    for (let i = 0; i < copyProps.length; i++) {
+      let wordProp = copyProps[i];
+      newWordMasterStatus[wordProp.id] = wordProp;
+      if (wordProp.feedback != "" && !wordProp.isCorrect) {
+        cluesTextList.push(wordProp.feedback);
+        errorTypesList.push(wordProp.error_type);
+      };
+      if (!wordProp.isCorrect) { errorCount++; }
+    }
+    setConstructorWordArray(updatedWordStatus);
+    setWordsMasterStatus(newWordMasterStatus);
+    setTotalErrorCounter(totalErrorCounter + errorCount);
+    updateClueText(cluesTextList, errorCount)
+    logUserActivityCheck(constructedSentence,
+      resizeSol, errorCount, clueText, errorTypesList);
+  }
+  function updateClueText(cluesTextList, errorCount){
+    console.log(cluesTextList);
+    let finalClueText = [];
+
+    if (errorCount > 0) { setHasClues(true); }
+    if (errorCount <= 2) {
+      finalClueText = cluesTextList.slice(0, 2);
+    }
+    else {
+      finalClueText = cluesTextList.slice(0, 2).concat([strings.orderWordsOnlyTwoMessagesShown]);
+    }
+    setClueText(finalClueText);
+    return finalClueText
+  }
+
+  function logUserActivityCheck(constructedSentence,
+    resizeSol, errorCount, finalClueText, errorTypesList) {
+    let activityLog = {
+      "constructed_sent": constructedSentence,
+      "solution_sent": resizeSol,
+      "n_errors": errorCount,
+      "feedback_given": finalClueText,
+      "error_types": errorTypesList,
+      "total_errors": totalErrorCounter,
+      "exercise_start": initialTime
+    };
+
+    api.logUserActivity(
+      "WO_CHECK",
+      "",
+      bookmarksToStudy[0].id,
+      JSON.stringify(activityLog)
+    );
+  }
 
   function handleCheck() {
     resetSwapWordStatus();
@@ -376,7 +439,7 @@ export default function OrderWords({
     if (constructorWordArray.length === 0) { return; };
 
     // Check if the solution is already the same
-    let filterPunctuationOGText = removePunctuation(exerciseContext);
+    let filterPunctuationSolText = removePunctuation(exerciseContext);
 
     let constructedSentence = []
     for (let i = 0; i < constructorWordArray.length; i++) {
@@ -385,7 +448,7 @@ export default function OrderWords({
 
     // Get the Sentence
     constructedSentence = constructedSentence.join(" ")
-    if (constructedSentence === filterPunctuationOGText) {
+    if (constructedSentence === filterPunctuationSolText) {
       setHasClues(false);
       setIsCorrect(true);
       setAllInWordsStatus("correct");
@@ -402,62 +465,13 @@ export default function OrderWords({
 
       // We need to ensure that we don't send the entire sentence,
       // or alignment might align very distant words.
-      let resizeSol = "" + filterPunctuationOGText
+      let resizeSol = "" + filterPunctuationSolText
       resizeSol = resizeSol.split(" ")
       resizeSol = resizeSol.slice(0, constructorWordArray.length + 1).join(" ")
-      api.annotateClues(constructorWordArray, resizeSol, exerciseLang, (updatedMasterStatus) => {
-        // Variable to update and store in the user Activity.
-        let updatedWordStatus = JSON.parse(updatedMasterStatus);
-        let cluesText = [];
-        let errorTypes = [];
-        let copy_props = [...updatedWordStatus];
-        let newWordMasterStatus = [...wordsMasterStatus];
-        let errorCount = 0;
-
-        console.log(updatedWordStatus);
-        for (let i = 0; i < copy_props.length; i++) {
-          let wordProp = copy_props[i];
-          newWordMasterStatus[wordProp.id] = wordProp;
-          if (wordProp.feedback != "" && !wordProp.isCorrect) {
-            cluesText.push(wordProp.feedback);
-            errorTypes.push(wordProp.error_type);
-          };
-          if (!wordProp.isCorrect) { errorCount++; }
-        }
-
-        console.log(cluesText);
-        let finalClueText = [];
-        if (errorCount > 0) { setHasClues(true); }
-        if (errorCount <= 2) {
-          finalClueText = cluesText.slice(0, 2);
-        }
-        else {
-          finalClueText = cluesText.slice(0, 2).concat([strings.orderWordsOnlyTwoMessagesShown]);;
-        }
-        setTotalErrorCounter(totalErrorCounter + errorCount);
-        setClueText(finalClueText);
-        setConstructorWordArray(updatedWordStatus);
-        setWordsMasterStatus(newWordMasterStatus);
-        let activityLog = {
-          "constructed_sent": constructedSentence,
-          "solution_sent": resizeSol,
-          "n_errors": errorCount,
-          "feedback_given": finalClueText,
-          "error_types": errorTypes,
-          "total_errors": totalErrorCounter,
-          "exercise_start": initialTime
-        }
-        api.logUserActivity(
-          "WO_CHECK",
-          "",
-          bookmarksToStudy[0].id,
-          JSON.stringify(activityLog)
-        )
+      api.annotateClues(constructorWordArray, resizeSol, exerciseLang, (updatedConstructedWords) => {
+        updateWordsFromAPI(updatedConstructedWords, resizeSol, constructedSentence);
       }
       );
-
-      //setAllInWordsStatus("incorrect");
-
     }
   }
 
@@ -468,17 +482,17 @@ export default function OrderWords({
   }
 
   return (
-    <s.Exercise className="orderWords">
+    <sOW.ExerciseOW className="orderWords">
       {translatedText === "" && !isCorrect && <LoadingAnimation />}
       <div className="headlineOrderWords">
         {strings.orderTheWordsToMakeTheFollowingSentence}
         <h2>{translatedText}</h2>
       </div>
       {hasClues && (
-        <s.ItemRowCompactWrap className="cluesRow">
+        <sOW.ItemRowCompactWrap className="cluesRow">
           <h4>Clues</h4>
           {clueText.length > 0 && clueText.map(clue => <p key={clue}>{clue}</p>)}
-        </s.ItemRowCompactWrap>
+        </sOW.ItemRowCompactWrap>
       )}
 
       {(constructorWordArray.length > 0 || !isCorrect) && (
@@ -513,10 +527,10 @@ export default function OrderWords({
       )}
 
       {!isCorrect && (
-        <s.ItemRowCompactWrap className="ItemRowCompactWrap">
+        <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
           <button onClick={handleReset} className={constructorWordArray.length > 0 ? "owButton undo" : "owButton disable"}>↻ {strings.reset}</button>
           <button onClick={handleCheck} className={constructorWordArray.length > 0 ? "owButton check" : "owButton disable"}>{solutionWords.length === constructorWordArray.length ? strings.check : strings.hint} ✔</button>
-        </s.ItemRowCompactWrap>
+        </sOW.ItemRowCompactWrap>
       )}
       {(wordSwapId !== -1) && (!resetConfirmDiv) && (
         <div className="swapModeBar">
@@ -550,6 +564,6 @@ export default function OrderWords({
         isCorrect={isCorrect}
       />
       {!isCorrect && (<p className="tipText">{strings.orderWordsTipMessage}</p>)}
-    </s.Exercise>
+    </sOW.ExerciseOW>
   );
 }
