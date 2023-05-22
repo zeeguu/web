@@ -128,6 +128,7 @@ export default function OrderWords({
   useEffect(() => {
     let orgiinalContext = bookmarksToStudy[0].context;
     resetStatus();
+    setTranslatedText("");
     // Handle the case of long sentences, this relies on activating the functionality. 
     if (orgiinalContext.split(" ").length > 15 && handleLongSentences) {
       api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
