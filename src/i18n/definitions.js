@@ -303,6 +303,10 @@ let strings = new LocalizedStrings(
       learnedOn: "Learned on:",
       studentFeedback: "Student feedback:",
       noType: "No type",
+      orderWordsTipMessage:
+      "You can click 'Hint ✔' at any time to get clues",
+      orderWordsCorrectMessage: "Original sentence you read",
+      orderWordsOnlyTwoMessagesShown: "Only the first 2 clues are shown",
 
       //Exercises
       wordSourceDefaultText: "your past readings",
@@ -329,6 +333,8 @@ let strings = new LocalizedStrings(
         "Find the expression in the context below",
       chooseTheWordFittingContextHeadline:
         "Choose the alternative that fits the context",
+      orderTheWordsToMakeTheFollowingSentence:
+        "Order the words to make the following sentence",
       matchWordWithTranslation: "Match each word with its translation",
       audioExerciseHeadline:
         "Write the word your hear. Click to have it repeated!",
@@ -370,10 +376,15 @@ let strings = new LocalizedStrings(
         "None of the other options apply. I would like to submit personalised feedback.",
 
       //ButtonInput
+      undo: "Undo",
+      confirm: "Confirm",
+      reset: "Reset",
       check: "Check",
       hint: "Hint",
       showSolution: "Show solution",
       improveTranslation: "Improve Translation",
+      corfirmReset: "Are you sure? This will reset all words.",
+      swapInfo: "Click a word to swap, or click again to remove.",
 
       //ButtonFeedback
       speak: "Speak",
@@ -1102,6 +1113,7 @@ let strings = new LocalizedStrings(
         "Ingen af ​​de andre muligheder gælder. Jeg vil gerne indsende personlig feedback.",
 
       //ButtonInput
+      reset: "Nulstil",
       check: "Tjek",
       hint: "Hint",
       showSolution: "Vis løsning",
