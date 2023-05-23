@@ -121,7 +121,7 @@ export default function OrderWords({
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        let translatedContext = data["translation"] + "."
+        let translatedContext = data["translation"] + ".";
         setTranslatedText(translatedContext);
         createConfusionWords(contextToUse, translatedContext);
 
@@ -407,7 +407,7 @@ export default function OrderWords({
     setTotalErrorCounter(totalErrorCounter + errorCount);
     updateClueText(cluesTextList, errorCount)
     logUserActivityCheck(constructedSentence,
-      resizeSol, errorCount, clueText, errorTypesList);
+      resizeSol, errorCount, cluesTextList, errorTypesList);
   }
   function updateClueText(cluesTextList, errorCount){
     console.log(cluesTextList);
