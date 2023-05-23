@@ -143,7 +143,7 @@ export default function Exercises({
     if (bookmark_count < 9) {
       let count = bookmark_count;
       while (count > 0) {
-        for (let i = exerciseTypesList.length - 1; i > 0; i--) {
+        for (let i = exerciseTypesList.length - 1; i >= 0; i--) {
           let currentTypeRequiredCount = exerciseTypesList[i].requiredBookmarks;
           if (count < currentTypeRequiredCount) continue;
           if (count === 0) break;
