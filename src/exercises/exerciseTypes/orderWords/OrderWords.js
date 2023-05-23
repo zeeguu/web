@@ -68,7 +68,7 @@ export default function OrderWords({
     return arrayWords
   }
 
-  function createConfusionWords(contextToUse, translatedContext){
+  function createConfusionWords(contextToUse, translatedContext) {
     const initialWords = getWordsInArticle(contextToUse);
     setSolutionWords(setWordAttributes([...initialWords]));
     console.log("Info: Getting Confusion Words");
@@ -133,7 +133,7 @@ export default function OrderWords({
         setWordsMasterStatus([""]);
       });
 
-    
+
   }
 
   useEffect(() => {
@@ -283,7 +283,7 @@ export default function OrderWords({
     let duration = pressTime - initialTime
     console.log(duration);
     console.log("^^^^ time elapsed");
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       duration,
@@ -412,7 +412,7 @@ export default function OrderWords({
     logUserActivityCheck(constructedSentence,
       resizeSol, errorCount, cluesTextList, errorTypesList, updatedErrorCounter);
   }
-  function updateClueText(cluesTextList, errorCount){
+  function updateClueText(cluesTextList, errorCount) {
     console.log(cluesTextList);
     let finalClueText = [];
 
