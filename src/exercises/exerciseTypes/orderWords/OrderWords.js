@@ -85,43 +85,45 @@ export default function OrderWords({
       .then((data) => {
         console.log(data)
         setTranslatedText(data["translation"] + ".")
+        console.log("GETTING WORDS");
+        console.log(bookmarksToStudy[0].from_lang);
+        api.getConfusionWords(exerciseLang, contextToUse, (cWords) => {
+          let jsonCWords = JSON.parse(cWords)
+          let apiConfuseWords = jsonCWords["confusion_words"]
+          let exerciseWords = [...initialWords].concat(apiConfuseWords);
+          console.log(apiConfuseWords);
+          console.log("Exercise Words");
+          console.log(exerciseWords);
+          exerciseWords = shuffle(exerciseWords);
+          let propWords = setWordAttributes(exerciseWords);
+          setWordsMasterStatus(propWords);
+          setConfuseWords(apiConfuseWords);
+          setPosSelected(jsonCWords["pos_picked"]);
+          setWordForConfuson(jsonCWords["word_used"]);
+          let confExerciseStart = {
+            "sentence_was_too_long": sentenceWasTooLong,
+            "translation": data["translation"],
+            "context": contextToUse,
+            "confusionWords": apiConfuseWords,
+            "pos": jsonCWords["pos_picked"],
+            "word_for_confusion": jsonCWords["word_used"],
+            "total_words": exerciseWords.length,
+            "exercise_start": initialTime,
+          }
+          console.log(confExerciseStart)
+          api.logUserActivity(
+            "WO_START",
+            "",
+            bookmarksToStudy[0].id,
+            JSON.stringify(confExerciseStart)
+          )
+        });
       })
       .catch(() => {
         setTranslatedText("error");
         console.log("could not retreive translation");
       });
-    console.log("GETTING WORDS");
-    console.log(bookmarksToStudy[0].from_lang);
-    api.getConfusionWords(exerciseLang, contextToUse, (cWords) => {
-      let jsonCWords = JSON.parse(cWords)
-      let apiConfuseWords = jsonCWords["confusion_words"]
-      let exerciseWords = [...initialWords].concat(apiConfuseWords);
-      console.log(apiConfuseWords);
-      console.log("Exercise Words");
-      console.log(exerciseWords);
-      exerciseWords = shuffle(exerciseWords);
-      let propWords = setWordAttributes(exerciseWords);
-      setWordsMasterStatus(propWords);
-      setConfuseWords(apiConfuseWords);
-      setPosSelected(jsonCWords["pos_picked"]);
-      setWordForConfuson(jsonCWords["word_used"]);
-      let confExerciseStart = {
-        "sentence_was_too_long": sentenceWasTooLong,
-        "translation": translatedText,
-        "context": contextToUse,
-        "confusionWords": apiConfuseWords,
-        "pos": posSelected,
-        "word_for_confusion": wordForConfusion,
-        "total_words": exerciseWords.length,
-        "exercise_start": initialTime,
-      }
-      api.logUserActivity(
-        "WO_START",
-        "",
-        bookmarksToStudy[0].id,
-        JSON.stringify(confExerciseStart)
-      )
-    });
+
     setExerciseContext(contextToUse);
   }
 
