@@ -69,8 +69,9 @@ export default function OrderWords({
   }
 
   function prepareExercise(contextToUse) {
-    console.log("CONTEXT: " + contextToUse);
-
+    console.log("CONTEXT: '" + contextToUse + "'");
+    contextToUse = contextToUse.trim()
+    console.log("CONTEXT AFTER TRIM: '" + contextToUse + "'");
     const initialWords = getWordsInArticle(contextToUse);
     setSolutionWords(setWordAttributes([...initialWords]));
     console.log("Getting Translation for ->" + contextToUse);
@@ -98,14 +99,13 @@ export default function OrderWords({
       console.log(apiConfuseWords);
       console.log("Exercise Words");
       console.log(exerciseWords);
-      setConfuseWords(apiConfuseWords);
       exerciseWords = shuffle(exerciseWords);
       let propWords = setWordAttributes(exerciseWords);
       setWordsMasterStatus(propWords);
       setConfuseWords(apiConfuseWords);
       setPosSelected(jsonCWords["pos_picked"]);
       setWordForConfuson(jsonCWords["word_used"]);
-      let configuration_wo_start = {
+      let confExerciseStart = {
         "sentence_was_too_long": sentenceWasTooLong,
         "translation": translatedText,
         "context": contextToUse,
@@ -119,7 +119,7 @@ export default function OrderWords({
         "WO_START",
         "",
         bookmarksToStudy[0].id,
-        JSON.stringify(configuration_wo_start)
+        JSON.stringify(confExerciseStart)
       )
     });
     setExerciseContext(contextToUse);
@@ -146,7 +146,7 @@ export default function OrderWords({
     }
     else {
       console.log("Using default context.");
-      prepareExercise(bookmarksToStudy[0].context);
+      prepareExercise("    "+ bookmarksToStudy[0].context + "      ");
     }
   }, [bookmarksToStudy])
 
@@ -279,7 +279,7 @@ export default function OrderWords({
       bookmarksToStudy[0].id
     );
 
-    let configuration_wo_end = {
+    let confExerciseEnd = {
       "sentence_was_too_long": sentenceWasTooLong,
       "outcome": message,
       "total_time": duration,
@@ -298,7 +298,7 @@ export default function OrderWords({
       "WO_END",
       "",
       bookmarksToStudy[0].id,
-      JSON.stringify(configuration_wo_end)
+      JSON.stringify(confExerciseEnd)
     );
   }
 
