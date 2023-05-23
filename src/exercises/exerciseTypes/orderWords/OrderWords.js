@@ -68,8 +68,10 @@ export default function OrderWords({
     return arrayWords
   }
 
-  function createConfusionWords(contextToUse){
-    console.log("GETTING WORDS");
+  function createConfusionWords(contextToUse, translatedContext){
+    const initialWords = getWordsInArticle(contextToUse);
+    setSolutionWords(setWordAttributes([...initialWords]));
+    console.log("Info: Getting Confusion Words");
     console.log(bookmarksToStudy[0].from_lang);
     api.getConfusionWords(exerciseLang, contextToUse, (cWords) => {
       let jsonCWords = JSON.parse(cWords)
@@ -86,7 +88,7 @@ export default function OrderWords({
       setWordForConfuson(jsonCWords["word_used"]);
       let confExerciseStart = {
         "sentence_was_too_long": sentenceWasTooLong,
-        "translation": data["translation"],
+        "translation": translatedContext,
         "context": contextToUse,
         "confusionWords": apiConfuseWords,
         "pos": jsonCWords["pos_picked"],
@@ -109,8 +111,6 @@ export default function OrderWords({
     contextToUse = contextToUse.trim()
     console.log("CONTEXT AFTER TRIM: '" + contextToUse + "'");
     setExerciseContext(contextToUse);
-    const initialWords = getWordsInArticle(contextToUse);
-    setSolutionWords(setWordAttributes([...initialWords]));
     console.log("Getting Translation for ->" + contextToUse);
     api
       .basicTranlsate(
@@ -121,8 +121,9 @@ export default function OrderWords({
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setTranslatedText(data["translation"] + ".");
-        createConfusionWords(contextToUse);
+        let translatedContext = data["translation"] + "."
+        setTranslatedText(translatedContext);
+        createConfusionWords(contextToUse, translatedContext);
 
       })
       .catch(() => {
@@ -156,7 +157,7 @@ export default function OrderWords({
     }
     else {
       console.log("Using default context.");
-      prepareExercise("    "+ bookmarksToStudy[0].context + "      ");
+      prepareExercise(bookmarksToStudy[0].context);
     }
   }, [bookmarksToStudy])
 
