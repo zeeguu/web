@@ -31,16 +31,16 @@ export default function OrderWords({
   const [totalErrorCounter, setTotalErrorCounter] = useState(0);
   const [posSelected, setPosSelected] = useState("");
   const [wordsMasterStatus, setWordsMasterStatus] = useState([]);
-  const [messageToAPI, setMessageToAPI] = useState("");
+  const [messageToAPI] = useState("");
   const [exerciseLang] = useState(bookmarksToStudy[0].from_lang);
   const [exerciseContext, setExerciseContext] = useState("");
-  const [clueText, setClueText] = useState(["Clues go here."]);
+  const [clueText, setClueText] = useState([]);
   const [translatedText, setTranslatedText] = useState("");
   const [hasClues, setHasClues] = useState(false);
   const [constructorWordArray, setConstructorWordArray] = useState([]);
   const [confuseWords, setConfuseWords] = useState();
   const [wordForConfusion, setWordForConfuson] = useState();
-  const [wordSwapId, setwordSwapId] = useState(-1);
+  const [wordSwapId, setWordSwapId] = useState(-1);
   const [wordSwapStatus, setWordSwapStatus] = useState("");
   const [solutionWords, setSolutionWords] = useState([]);
   const [resetConfirmDiv, setResetConfirmDiv] = useState(false);
@@ -48,6 +48,27 @@ export default function OrderWords({
   const handleLongSentences = false;
 
   console.log("Running ORDER WORDS EXERCISE")
+
+  function resetReactStates(){
+    setResetCounter(0);
+    setHintCounter(0);
+    setTotalErrorCounter(0);
+    setPosSelected("");
+    setWordsMasterStatus([]);
+    setExerciseContext("");
+    setClueText([]);
+    setTranslatedText("");
+    setHasClues(false);
+    setConstructorWordArray([]);
+    setConfuseWords();
+    setWordForConfuson();
+    setWordSwapStatus("");
+    setWordSwapId(-1);
+    setSolutionWords([]);
+    setResetConfirmDiv(false);
+    setSentenceWasTooLong(false);
+  }
+
   function getWordsInArticle(sentence) {
     return removePunctuation(sentence).split(" ")
   }
@@ -68,11 +89,51 @@ export default function OrderWords({
     return arrayWords
   }
 
-  function prepareExercise(contextToUse) {
-    console.log("CONTEXT: " + contextToUse);
-
+  function createConfusionWords(contextToUse, translatedContext) {
     const initialWords = getWordsInArticle(contextToUse);
     setSolutionWords(setWordAttributes([...initialWords]));
+    console.log("Info: Getting Confusion Words");
+    console.log(bookmarksToStudy[0].from_lang);
+    api.getConfusionWords(exerciseLang, contextToUse, (cWords) => {
+      let jsonCWords = JSON.parse(cWords)
+      let apiConfuseWords = jsonCWords["confusion_words"]
+      let exerciseWords = [...initialWords].concat(apiConfuseWords);
+      console.log(apiConfuseWords);
+      console.log("Exercise Words");
+      console.log(exerciseWords);
+      exerciseWords = shuffle(exerciseWords);
+      let propWords = setWordAttributes(exerciseWords);
+      setWordsMasterStatus(propWords);
+      setConfuseWords(apiConfuseWords);
+      setPosSelected(jsonCWords["pos_picked"]);
+      setWordForConfuson(jsonCWords["word_used"]);
+      let confExerciseStart = {
+        "sentence_was_too_long": sentenceWasTooLong,
+        "translation": translatedContext,
+        "context": contextToUse,
+        "confusionWords": apiConfuseWords,
+        "pos": jsonCWords["pos_picked"],
+        "word_for_confusion": jsonCWords["word_used"],
+        "total_words": exerciseWords.length,
+        "exercise_start": initialTime,
+      }
+      console.log(confExerciseStart)
+      api.logUserActivity(
+        "WO_START",
+        "",
+        bookmarksToStudy[0].id,
+        JSON.stringify(confExerciseStart)
+      )
+    });
+  }
+
+
+
+  function prepareExercise(contextToUse) {
+    console.log("CONTEXT: '" + contextToUse + "'");
+    contextToUse = contextToUse.trim()
+    console.log("CONTEXT AFTER TRIM: '" + contextToUse + "'");
+    setExerciseContext(contextToUse);
     console.log("Getting Translation for ->" + contextToUse);
     api
       .basicTranlsate(
@@ -82,53 +143,25 @@ export default function OrderWords({
       )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
-        setTranslatedText(data["translation"] + ".")
+        console.log(data);
+        let translatedContext = data["translation"] + ".";
+        setTranslatedText(translatedContext);
+        createConfusionWords(contextToUse, translatedContext);
+
       })
       .catch(() => {
-        setTranslatedText("error");
+        setTranslatedText("Error retrieving the translation.");
         console.log("could not retreive translation");
+        setConfuseWords([]);
+        setWordsMasterStatus([""]);
       });
-    console.log("GETTING WORDS");
-    console.log(bookmarksToStudy[0].from_lang);
-    api.getConfusionWords(exerciseLang, contextToUse, (cWords) => {
-      let jsonCWords = JSON.parse(cWords)
-      let apiConfuseWords = jsonCWords["confusion_words"]
-      let exerciseWords = [...initialWords].concat(apiConfuseWords);
-      console.log(apiConfuseWords);
-      console.log("Exercise Words");
-      console.log(exerciseWords);
-      setConfuseWords(apiConfuseWords);
-      exerciseWords = shuffle(exerciseWords);
-      let propWords = setWordAttributes(exerciseWords);
-      setWordsMasterStatus(propWords);
-      setConfuseWords(apiConfuseWords);
-      setPosSelected(jsonCWords["pos_picked"]);
-      setWordForConfuson(jsonCWords["word_used"]);
-      let configuration_wo_start = {
-        "sentence_was_too_long": sentenceWasTooLong,
-        "translation": translatedText,
-        "context": contextToUse,
-        "confusionWords": apiConfuseWords,
-        "pos": posSelected,
-        "word_for_confusion": wordForConfusion,
-        "total_words": exerciseWords.length,
-        "exercise_start": initialTime,
-      }
-      api.logUserActivity(
-        "WO_START",
-        "",
-        bookmarksToStudy[0].id,
-        JSON.stringify(configuration_wo_start)
-      )
-    });
-    setExerciseContext(contextToUse);
+
+
   }
 
   useEffect(() => {
     let orgiinalContext = bookmarksToStudy[0].context;
-    resetStatus();
-    setTranslatedText("");
+    resetReactStates();
     // Handle the case of long sentences, this relies on activating the functionality. 
     if (orgiinalContext.split(" ").length > 15 && handleLongSentences) {
       api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
@@ -174,7 +207,7 @@ export default function OrderWords({
     if (inUse && (wordSwapId === -1)) {
       // Select the Word for Swapping. 
       // Set the Color to Blue
-      setwordSwapId(selectedChoice)
+      setWordSwapId(selectedChoice)
       console.log(selectedChoice);
       console.log("Selected: " + wordSwapId);
       setWordSwapStatus(wordSelected.status);
@@ -220,7 +253,7 @@ export default function OrderWords({
       // Update all the statuses.
       setWordsMasterStatus(updatedMasterStatus);
       setConstructorWordArray(newConstructorWordArray);
-      setwordSwapId(-1);
+      setWordSwapId(-1);
       return;
     }
 
@@ -239,7 +272,7 @@ export default function OrderWords({
       setWordSwapStatus("");
     }
     console.log("AFTER COMPARING STATUS: " + wordSelected.status)
-    setwordSwapId(-1)
+    setWordSwapId(-1)
     setWordsMasterStatus(updatedMasterStatus)
     setConstructorWordArray(newConstructorWordArray);
   }
@@ -272,14 +305,14 @@ export default function OrderWords({
     let duration = pressTime - initialTime
     console.log(duration);
     console.log("^^^^ time elapsed");
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       duration,
       bookmarksToStudy[0].id
     );
 
-    let configuration_wo_end = {
+    let confExerciseEnd = {
       "sentence_was_too_long": sentenceWasTooLong,
       "outcome": message,
       "total_time": duration,
@@ -294,11 +327,13 @@ export default function OrderWords({
       "exercise_start": initialTime,
     };
 
+
+    console.log(confExerciseEnd);
     api.logUserActivity(
       "WO_END",
       "",
       bookmarksToStudy[0].id,
-      JSON.stringify(configuration_wo_end)
+      JSON.stringify(confExerciseEnd)
     );
   }
 
@@ -352,7 +387,7 @@ export default function OrderWords({
 
   function resetSwapWordStatus() {
     setWordSwapStatus("");
-    setwordSwapId(-1);
+    setWordSwapId(-1);
   }
 
   function handleUndoSelection() {
@@ -391,14 +426,15 @@ export default function OrderWords({
       };
       if (!wordProp.isCorrect) { errorCount++; }
     }
+    let updatedErrorCounter = totalErrorCounter + errorCount
     setConstructorWordArray(updatedWordStatus);
     setWordsMasterStatus(newWordMasterStatus);
-    setTotalErrorCounter(totalErrorCounter + errorCount);
+    setTotalErrorCounter(updatedErrorCounter);
     updateClueText(cluesTextList, errorCount)
     logUserActivityCheck(constructedSentence,
-      resizeSol, errorCount, clueText, errorTypesList);
+      resizeSol, errorCount, cluesTextList, errorTypesList, updatedErrorCounter);
   }
-  function updateClueText(cluesTextList, errorCount){
+  function updateClueText(cluesTextList, errorCount) {
     console.log(cluesTextList);
     let finalClueText = [];
 
@@ -414,17 +450,17 @@ export default function OrderWords({
   }
 
   function logUserActivityCheck(constructedSentence,
-    resizeSol, errorCount, finalClueText, errorTypesList) {
+    resizeSol, errorCount, finalClueText, errorTypesList, updatedErrorCounter) {
     let activityLog = {
       "constructed_sent": constructedSentence,
       "solution_sent": resizeSol,
       "n_errors": errorCount,
       "feedback_given": finalClueText,
       "error_types": errorTypesList,
-      "total_errors": totalErrorCounter,
+      "total_errors": updatedErrorCounter,
       "exercise_start": initialTime
     };
-
+    console.log(activityLog);
     api.logUserActivity(
       "WO_CHECK",
       "",
