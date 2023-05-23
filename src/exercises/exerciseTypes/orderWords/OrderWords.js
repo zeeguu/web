@@ -305,6 +305,8 @@ export default function OrderWords({
       "exercise_start": initialTime,
     };
 
+
+    console.log(confExerciseEnd);
     api.logUserActivity(
       "WO_END",
       "",
@@ -402,9 +404,10 @@ export default function OrderWords({
       };
       if (!wordProp.isCorrect) { errorCount++; }
     }
+    let updatedErrorCounter = totalErrorCounter + errorCount
     setConstructorWordArray(updatedWordStatus);
     setWordsMasterStatus(newWordMasterStatus);
-    setTotalErrorCounter(totalErrorCounter + errorCount);
+    setTotalErrorCounter(updatedErrorCounter);
     updateClueText(cluesTextList, errorCount)
     logUserActivityCheck(constructedSentence,
       resizeSol, errorCount, cluesTextList, errorTypesList);
@@ -432,10 +435,10 @@ export default function OrderWords({
       "n_errors": errorCount,
       "feedback_given": finalClueText,
       "error_types": errorTypesList,
-      "total_errors": totalErrorCounter,
+      "total_errors": updatedErrorCounter,
       "exercise_start": initialTime
     };
-
+    console.log(activityLog);
     api.logUserActivity(
       "WO_CHECK",
       "",
