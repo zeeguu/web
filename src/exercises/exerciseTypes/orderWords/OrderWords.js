@@ -31,16 +31,16 @@ export default function OrderWords({
   const [totalErrorCounter, setTotalErrorCounter] = useState(0);
   const [posSelected, setPosSelected] = useState("");
   const [wordsMasterStatus, setWordsMasterStatus] = useState([]);
-  const [messageToAPI, setMessageToAPI] = useState("");
+  const [messageToAPI] = useState("");
   const [exerciseLang] = useState(bookmarksToStudy[0].from_lang);
   const [exerciseContext, setExerciseContext] = useState("");
-  const [clueText, setClueText] = useState(["Clues go here."]);
+  const [clueText, setClueText] = useState([]);
   const [translatedText, setTranslatedText] = useState("");
   const [hasClues, setHasClues] = useState(false);
   const [constructorWordArray, setConstructorWordArray] = useState([]);
   const [confuseWords, setConfuseWords] = useState();
   const [wordForConfusion, setWordForConfuson] = useState();
-  const [wordSwapId, setwordSwapId] = useState(-1);
+  const [wordSwapId, setWordSwapId] = useState(-1);
   const [wordSwapStatus, setWordSwapStatus] = useState("");
   const [solutionWords, setSolutionWords] = useState([]);
   const [resetConfirmDiv, setResetConfirmDiv] = useState(false);
@@ -48,6 +48,27 @@ export default function OrderWords({
   const handleLongSentences = false;
 
   console.log("Running ORDER WORDS EXERCISE")
+
+  function resetReactStates(){
+    setResetCounter(0);
+    setHintCounter(0);
+    setTotalErrorCounter(0);
+    setPosSelected("");
+    setWordsMasterStatus([]);
+    setExerciseContext("");
+    setClueText([]);
+    setTranslatedText("");
+    setHasClues(false);
+    setConstructorWordArray([]);
+    setConfuseWords();
+    setWordForConfuson();
+    setWordSwapStatus("");
+    setWordSwapId(-1);
+    setSolutionWords([]);
+    setResetConfirmDiv(false);
+    setSentenceWasTooLong(false);
+  }
+
   function getWordsInArticle(sentence) {
     return removePunctuation(sentence).split(" ")
   }
@@ -106,6 +127,8 @@ export default function OrderWords({
     });
   }
 
+
+
   function prepareExercise(contextToUse) {
     console.log("CONTEXT: '" + contextToUse + "'");
     contextToUse = contextToUse.trim()
@@ -138,8 +161,7 @@ export default function OrderWords({
 
   useEffect(() => {
     let orgiinalContext = bookmarksToStudy[0].context;
-    resetStatus();
-    setTranslatedText("");
+    resetReactStates();
     // Handle the case of long sentences, this relies on activating the functionality. 
     if (orgiinalContext.split(" ").length > 15 && handleLongSentences) {
       api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
@@ -185,7 +207,7 @@ export default function OrderWords({
     if (inUse && (wordSwapId === -1)) {
       // Select the Word for Swapping. 
       // Set the Color to Blue
-      setwordSwapId(selectedChoice)
+      setWordSwapId(selectedChoice)
       console.log(selectedChoice);
       console.log("Selected: " + wordSwapId);
       setWordSwapStatus(wordSelected.status);
@@ -231,7 +253,7 @@ export default function OrderWords({
       // Update all the statuses.
       setWordsMasterStatus(updatedMasterStatus);
       setConstructorWordArray(newConstructorWordArray);
-      setwordSwapId(-1);
+      setWordSwapId(-1);
       return;
     }
 
@@ -250,7 +272,7 @@ export default function OrderWords({
       setWordSwapStatus("");
     }
     console.log("AFTER COMPARING STATUS: " + wordSelected.status)
-    setwordSwapId(-1)
+    setWordSwapId(-1)
     setWordsMasterStatus(updatedMasterStatus)
     setConstructorWordArray(newConstructorWordArray);
   }
@@ -365,7 +387,7 @@ export default function OrderWords({
 
   function resetSwapWordStatus() {
     setWordSwapStatus("");
-    setwordSwapId(-1);
+    setWordSwapId(-1);
   }
 
   function handleUndoSelection() {
