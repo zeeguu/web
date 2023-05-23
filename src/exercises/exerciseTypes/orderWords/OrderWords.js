@@ -410,7 +410,7 @@ export default function OrderWords({
     setTotalErrorCounter(updatedErrorCounter);
     updateClueText(cluesTextList, errorCount)
     logUserActivityCheck(constructedSentence,
-      resizeSol, errorCount, cluesTextList, errorTypesList);
+      resizeSol, errorCount, cluesTextList, errorTypesList, updatedErrorCounter);
   }
   function updateClueText(cluesTextList, errorCount){
     console.log(cluesTextList);
@@ -428,7 +428,7 @@ export default function OrderWords({
   }
 
   function logUserActivityCheck(constructedSentence,
-    resizeSol, errorCount, finalClueText, errorTypesList) {
+    resizeSol, errorCount, finalClueText, errorTypesList, updatedErrorCounter) {
     let activityLog = {
       "constructed_sent": constructedSentence,
       "solution_sent": resizeSol,
