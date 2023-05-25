@@ -69,8 +69,15 @@ export default function OrderWords({
     setSentenceWasTooLong(false);
   }
 
+  function removeEmptyTokens(tokenList){
+    // In some instance, there will be punctuation in the middle, which
+    // results in trailing spaces. The loop below ensures those get removed.
+    return tokenList.filter((token) => token !== "")
+  }
+
   function getWordsInArticle(sentence) {
-    return removePunctuation(sentence).split(" ")
+    let wordsForExercise = removePunctuation(sentence).split(" ")
+    return removeEmptyTokens(wordsForExercise)
   }
 
   function setWordAttributes(word_list) {
