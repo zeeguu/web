@@ -97,6 +97,17 @@ export default function OrderWords({
     return arrayWords
   }
 
+  function orderWordsLogUserActivity(eventType, jsonData){
+    console.log("LOG EVENT, type: " + eventType);
+    console.log(jsonData);
+    api.logUserActivity(
+      eventType,
+      "",
+      bookmarksToStudy[0].id,
+      JSON.stringify(jsonData)
+    );
+  }
+
   function createConfusionWords(contextToUse, translatedContext, sentenceTooLong) {
     const initialWords = getWordsInArticle(contextToUse);
     setSolutionWords(setWordAttributes([...initialWords]));
@@ -115,7 +126,7 @@ export default function OrderWords({
       setConfuseWords(apiConfuseWords);
       setPosSelected(jsonCWords["pos_picked"]);
       setWordForConfuson(jsonCWords["word_used"]);
-      let confExerciseStart = {
+      let jsonDataExerciseStart = {
         "sentence_was_too_long": sentenceTooLong,
         "translation": translatedContext,
         "context": contextToUse,
@@ -126,13 +137,7 @@ export default function OrderWords({
         "bookmark": bookmarksToStudy[0].from,
         "exercise_start": initialTime,
       }
-      console.log(confExerciseStart)
-      api.logUserActivity(
-        "WO_START",
-        "",
-        bookmarksToStudy[0].id,
-        JSON.stringify(confExerciseStart)
-      )
+      orderWordsLogUserActivity("WO_START", jsonDataExerciseStart);
     });
   }
 
@@ -323,7 +328,7 @@ export default function OrderWords({
       bookmarksToStudy[0].id
     );
 
-    let confExerciseEnd = {
+    let jsonDataExerciseEnd = {
       "sentence_was_too_long": sentenceWasTooLong,
       "outcome": message,
       "total_time": duration,
@@ -338,15 +343,7 @@ export default function OrderWords({
       "word_for_confusion": wordForConfusion,
       "exercise_start": initialTime,
     };
-
-
-    console.log(confExerciseEnd);
-    api.logUserActivity(
-      "WO_END",
-      "",
-      bookmarksToStudy[0].id,
-      JSON.stringify(confExerciseEnd)
-    );
+    orderWordsLogUserActivity("WO_END", jsonDataExerciseEnd);
   }
 
   function resetStatus() {
@@ -445,6 +442,7 @@ export default function OrderWords({
     updateClueText(cluesTextList, errorCount)
     logUserActivityCheck(constructedSentence,
       resizeSol, errorCount, cluesTextList, errorTypesList, updatedErrorCounter);
+    
   }
   function updateClueText(cluesTextList, errorCount) {
     console.log(cluesTextList);
@@ -463,7 +461,7 @@ export default function OrderWords({
 
   function logUserActivityCheck(constructedSentence,
     resizeSol, errorCount, finalClueText, errorTypesList, updatedErrorCounter) {
-    let activityLog = {
+    let jsonDataExerciseCheck = {
       "constructed_sent": constructedSentence,
       "solution_sent": resizeSol,
       "n_errors": errorCount,
@@ -472,13 +470,7 @@ export default function OrderWords({
       "total_errors": updatedErrorCounter,
       "exercise_start": initialTime
     };
-    console.log(activityLog);
-    api.logUserActivity(
-      "WO_CHECK",
-      "",
-      bookmarksToStudy[0].id,
-      JSON.stringify(activityLog)
-    );
+    orderWordsLogUserActivity("WO_CHECK", jsonDataExerciseCheck);
   }
 
   function handleCheck() {
@@ -577,8 +569,14 @@ export default function OrderWords({
 
       {!isCorrect && (
         <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
-          <button onClick={handleReset} className={constructorWordArray.length > 0 ? "owButton undo" : "owButton disable"}>↻ {strings.reset}</button>
-          <button onClick={handleCheck} className={constructorWordArray.length > 0 ? "owButton check" : "owButton disable"}>{solutionWords.length === constructorWordArray.length ? strings.check : strings.hint} ✔</button>
+          <button onClick={handleReset} 
+            className={constructorWordArray.length > 0 ? "owButton undo" : "owButton disable"}>
+              ↻ {strings.reset}
+          </button>
+          <button onClick={handleCheck} 
+          className={constructorWordArray.length > 0 ? "owButton check" : "owButton disable"}>
+            {solutionWords.length === constructorWordArray.length ? strings.check : strings.hint} ✔
+          </button>
         </sOW.ItemRowCompactWrap>
       )}
       {(wordSwapId !== -1) && (!resetConfirmDiv) && (
