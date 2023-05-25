@@ -97,7 +97,7 @@ export default function OrderWords({
     return arrayWords
   }
 
-  function createConfusionWords(contextToUse, translatedContext) {
+  function createConfusionWords(contextToUse, translatedContext, sentenceTooLong) {
     const initialWords = getWordsInArticle(contextToUse);
     setSolutionWords(setWordAttributes([...initialWords]));
     console.log("Info: Getting Confusion Words");
@@ -116,13 +116,14 @@ export default function OrderWords({
       setPosSelected(jsonCWords["pos_picked"]);
       setWordForConfuson(jsonCWords["word_used"]);
       let confExerciseStart = {
-        "sentence_was_too_long": sentenceWasTooLong,
+        "sentence_was_too_long": sentenceTooLong,
         "translation": translatedContext,
         "context": contextToUse,
         "confusionWords": apiConfuseWords,
         "pos": jsonCWords["pos_picked"],
         "word_for_confusion": jsonCWords["word_used"],
         "total_words": exerciseWords.length,
+        "bookmark": bookmarksToStudy[0].from,
         "exercise_start": initialTime,
       }
       console.log(confExerciseStart)
@@ -135,7 +136,7 @@ export default function OrderWords({
     });
   }
 
-  function prepareExercise(contextToUse) {
+  function prepareExercise(contextToUse, sentenceTooLong) {
     console.log("CONTEXT: '" + contextToUse + "'");
     contextToUse = contextToUse.trim()
     console.log("CONTEXT AFTER TRIM: '" + contextToUse + "'");
@@ -152,7 +153,7 @@ export default function OrderWords({
         console.log(data);
         let translatedContext = data["translation"] + ".";
         setTranslatedText(translatedContext);
-        createConfusionWords(contextToUse, translatedContext);
+        createConfusionWords(contextToUse, translatedContext, sentenceTooLong);
 
       })
       .catch(() => {
@@ -166,27 +167,31 @@ export default function OrderWords({
   }
 
   useEffect(() => {
-    let orgiinalContext = bookmarksToStudy[0].context;
+    let originalContext = bookmarksToStudy[0].context;
+    let sentenceTooLong = false
+    if (originalContext.split(" ").length > 15) {
+      sentenceTooLong = true
+    }
     resetReactStates();
     // Handle the case of long sentences, this relies on activating the functionality. 
-    if (orgiinalContext.split(" ").length > 15 && handleLongSentences) {
+    if (sentenceTooLong > 15 && handleLongSentences) {
       api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
         console.log(articleInfo);
-        api.getWOsentences(articleInfo["content"], orgiinalContext,
+        api.getWOsentences(articleInfo["content"], originalContext,
           exerciseLang, (candidateSents) => {
-            setSentenceWasTooLong(true);
             console.log("SENTENCES THAT ARE GOOD FOR WO")
             console.log(candidateSents);
             let candidatesSent = JSON.parse(candidateSents)[0][1]
             console.log(candidatesSent);
-            prepareExercise(candidatesSent);
+            prepareExercise(candidatesSent, sentenceTooLong);
           });
       });
     }
     else {
       console.log("Using default context.");
-      prepareExercise(bookmarksToStudy[0].context);
+      prepareExercise(bookmarksToStudy[0].context, sentenceTooLong);
     }
+    setSentenceWasTooLong(sentenceTooLong);
   }, [bookmarksToStudy])
 
   function getWordById(id, list) {
@@ -327,6 +332,7 @@ export default function OrderWords({
       "total_resets": resetCounter,
       "translation": translatedText,
       "context": exerciseContext,
+      "bookmark": bookmarksToStudy[0].from,
       "confusionWords": confuseWords,
       "pos": posSelected,
       "word_for_confusion": wordForConfusion,
