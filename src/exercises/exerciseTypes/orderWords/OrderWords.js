@@ -24,7 +24,7 @@ export default function OrderWords({
   reload,
   setReload,
 }) {
-  const [initialTime] = useState(new Date());
+  const [initialTime, setInitialTime] = useState(new Date());
   //const [buttonOptions, setButtonOptions] = useState(null);
   const [resetCounter, setResetCounter] = useState(0);
   const [hintCounter, setHintCounter] = useState(0);
@@ -49,7 +49,8 @@ export default function OrderWords({
 
   console.log("Running ORDER WORDS EXERCISE")
 
-  function resetReactStates(){
+  function resetReactStates() {
+    setInitialTime(new Date());
     setResetCounter(0);
     setHintCounter(0);
     setTotalErrorCounter(0);
@@ -69,7 +70,7 @@ export default function OrderWords({
     setSentenceWasTooLong(false);
   }
 
-  function removeEmptyTokens(tokenList){
+  function removeEmptyTokens(tokenList) {
     // In some instance, there will be punctuation in the middle, which
     // results in trailing spaces. The loop below ensures those get removed.
     return tokenList.filter((token) => token !== "")
@@ -133,8 +134,6 @@ export default function OrderWords({
       )
     });
   }
-
-
 
   function prepareExercise(contextToUse) {
     console.log("CONTEXT: '" + contextToUse + "'");
