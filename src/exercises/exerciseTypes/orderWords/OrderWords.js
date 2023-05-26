@@ -242,12 +242,22 @@ export default function OrderWords({
       console.log("Selected Choice: " + selectedChoice);
       // Save the previous status.
       setWordSwapStatus(wordSelected.status);
+      let constructorWordWithPlaceholders = []
+      for(let i=0; i < newConstructorWordArray.length; i++){
+        let placeholderId = updatedMasterStatus.length+i
+        constructorWordWithPlaceholders.push({"word":"•", "id":placeholderId, "inUse":true})
+        constructorWordWithPlaceholders.push(newConstructorWordArray[i])
+      }
+      constructorWordWithPlaceholders.push({"word":"•", 
+      "id":updatedMasterStatus.length+constructorWordWithPlaceholders.length,
+      "inUse":true})
 
       wordSelected.status = "toSwap";
-
+      console.log(updatedMasterStatus);
+      console.log(constructorWordWithPlaceholders);
       setWordSwapId(selectedChoice);
       setWordsMasterStatus(updatedMasterStatus);
-      setConstructorWordArray(newConstructorWordArray);
+      setConstructorWordArray(constructorWordWithPlaceholders);
       return;
     }
 
@@ -278,7 +288,10 @@ export default function OrderWords({
           newConstructorWordArray[i] = wordInSwapStatus;
         }
       }
-
+      console.log(newConstructorWordArray);
+      newConstructorWordArray = newConstructorWordArray.filter((wordElement) => 
+      wordElement.id < updatedMasterStatus.length);
+      console.log(newConstructorWordArray);
       // wordsMasterStatus index match the id in words.
       updatedMasterStatus[wordSwapId] = wordInSwapStatus;
 
