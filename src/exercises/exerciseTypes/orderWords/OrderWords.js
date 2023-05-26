@@ -108,7 +108,12 @@ export default function OrderWords({
     );
   }
 
-  function createConfusionWords(contextToUse, translatedContext, sentenceTooLong) {
+  function createConfusionWords(
+    contextToUse, 
+    translatedContext, 
+    sentenceTooLong, 
+    startTime) 
+  {
     const initialWords = getWordsInArticle(contextToUse);
     setSolutionWords(setWordAttributes([...initialWords]));
     console.log("Info: Getting Confusion Words");
@@ -135,13 +140,13 @@ export default function OrderWords({
         "word_for_confusion": jsonCWords["word_used"],
         "total_words": exerciseWords.length,
         "bookmark": bookmarksToStudy[0].from,
-        "exercise_start": initialTime,
+        "exercise_start": startTime,
       }
       orderWordsLogUserActivity("WO_START", jsonDataExerciseStart);
     });
   }
 
-  function prepareExercise(contextToUse, sentenceTooLong) {
+  function prepareExercise(contextToUse, sentenceTooLong, startTime) {
     console.log("CONTEXT: '" + contextToUse + "'");
     contextToUse = contextToUse.trim()
     console.log("CONTEXT AFTER TRIM: '" + contextToUse + "'");
@@ -158,22 +163,29 @@ export default function OrderWords({
         console.log(data);
         let translatedContext = data["translation"] + ".";
         setTranslatedText(translatedContext);
-        createConfusionWords(contextToUse, translatedContext, sentenceTooLong);
+        createConfusionWords(contextToUse, translatedContext, sentenceTooLong, startTime);
 
       })
       .catch(() => {
-        setTranslatedText("Error retrieving the translation.");
+        let translationError = "Error retrieving the translation.";
+        setTranslatedText(translationError);
         console.log("could not retreive translation");
         setConfuseWords([]);
         setWordsMasterStatus([""]);
+        let jsonDataExerciseStart = {
+          "error": translationError,
+          "bookmark": bookmarksToStudy[0].from,
+          "exercise_start": startTime,
+        }
+        orderWordsLogUserActivity("WO_START", jsonDataExerciseStart);
       });
-
 
   }
 
   useEffect(() => {
     let originalContext = bookmarksToStudy[0].context;
     let sentenceTooLong = false
+    let newExerciseStart = new Date();
     if (originalContext.split(" ").length > 15) {
       sentenceTooLong = true
     }
@@ -188,14 +200,17 @@ export default function OrderWords({
             console.log(candidateSents);
             let candidatesSent = JSON.parse(candidateSents)[0][1]
             console.log(candidatesSent);
-            prepareExercise(candidatesSent, sentenceTooLong);
+            prepareExercise(candidatesSent, sentenceTooLong, newExerciseStart);
           });
       });
     }
     else {
       console.log("Using default context.");
-      prepareExercise(bookmarksToStudy[0].context, sentenceTooLong);
+      prepareExercise(bookmarksToStudy[0].context, sentenceTooLong, newExerciseStart);
     }
+    // Ensure the exercise time is set to the same that was used 
+    // to prepare the exercise, as well as the sentenceTooLong.
+    setInitialTime(newExerciseStart);
     setSentenceWasTooLong(sentenceTooLong);
   }, [bookmarksToStudy])
 
@@ -294,16 +309,18 @@ export default function OrderWords({
     setWordsMasterStatus(updatedMasterStatus);
     setConstructorWordArray(newConstructorWordArray);
   }
-
+  function getCurrentExerciseTime(){
+    let pressTime = new Date();
+    console.log(pressTime - initialTime);
+    console.log("^^^^ time elapsed");
+    return pressTime - initialTime;
+  }
   function handleShowSolution() {
     // Ensure Rest and Swap are reset
     undoResetStatus();
     handleUndoSelection();
 
-    let pressTime = new Date();
-    console.log(pressTime - initialTime);
-    console.log("^^^^ time elapsed");
-    let duration = pressTime - initialTime;
+    let duration = getCurrentExerciseTime();
     let message = messageToAPI + "S";
     // Construct the Sentence to show the solution.
     let solutionWord = [...solutionWords]
@@ -463,6 +480,7 @@ export default function OrderWords({
 
   function logUserActivityCheck(constructedSentence,
     resizeSol, errorCount, finalClueText, errorTypesList, updatedErrorCounter) {
+    let currentDuration = getCurrentExerciseTime();
     let jsonDataExerciseCheck = {
       "constructed_sent": constructedSentence,
       "solution_sent": resizeSol,
@@ -470,6 +488,7 @@ export default function OrderWords({
       "feedback_given": finalClueText,
       "error_types": errorTypesList,
       "total_errors": updatedErrorCounter,
+      "exercise_time": currentDuration,
       "exercise_start": initialTime
     };
     orderWordsLogUserActivity("WO_CHECK", jsonDataExerciseCheck);
