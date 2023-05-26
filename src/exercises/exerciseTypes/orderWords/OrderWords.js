@@ -92,6 +92,7 @@ export default function OrderWords({
         "status": "",
         "inUse": false,
         "feedback": "",
+        "hasPlaceholders": false,
       })
     }
     return arrayWords
@@ -234,6 +235,11 @@ export default function OrderWords({
 
     let wordSelected = getWordById(selectedChoice, updatedMasterStatus);
 
+    if (selectedChoice < -1){
+      if ( wordSwapId < -1 ) { return }
+      wordSelected = getWordById(selectedChoice, newConstructorWordArray)
+    }
+
     // Handle Case where Word is in ConstructorBox & No word is selected.
     if (inUse && (wordSwapId === -1)) {
       // Select the Word for Swapping. 
@@ -242,22 +248,13 @@ export default function OrderWords({
       console.log("Selected Choice: " + selectedChoice);
       // Save the previous status.
       setWordSwapStatus(wordSelected.status);
-      let constructorWordWithPlaceholders = []
-      for(let i=0; i < newConstructorWordArray.length; i++){
-        let placeholderId = updatedMasterStatus.length+i
-        constructorWordWithPlaceholders.push({"word":"•", "id":placeholderId, "inUse":true})
-        constructorWordWithPlaceholders.push(newConstructorWordArray[i])
-      }
-      constructorWordWithPlaceholders.push({"word":"•", 
-      "id":updatedMasterStatus.length+constructorWordWithPlaceholders.length,
-      "inUse":true})
 
       wordSelected.status = "toSwap";
+
       console.log(updatedMasterStatus);
-      console.log(constructorWordWithPlaceholders);
       setWordSwapId(selectedChoice);
       setWordsMasterStatus(updatedMasterStatus);
-      setConstructorWordArray(constructorWordWithPlaceholders);
+      setConstructorWordArray(newConstructorWordArray);
       return;
     }
 
@@ -289,12 +286,11 @@ export default function OrderWords({
         }
       }
       console.log(newConstructorWordArray);
-      newConstructorWordArray = newConstructorWordArray.filter((wordElement) => 
-      wordElement.id < updatedMasterStatus.length);
-      console.log(newConstructorWordArray);
       // wordsMasterStatus index match the id in words.
       updatedMasterStatus[wordSwapId] = wordInSwapStatus;
-
+      if (wordSwapId < -1 && selectedChoice > -1){
+        newConstructorWordArray = filterPlaceholders(newConstructorWordArray) 
+      }
       // Update all the statuses.
       setWordsMasterStatus(updatedMasterStatus);
       setConstructorWordArray(newConstructorWordArray);
@@ -316,6 +312,9 @@ export default function OrderWords({
     if (wordSelected.status === "toSwap") {
       wordSelected.status = wordSwapStatus;
       setWordSwapStatus("");
+    }
+    if (wordSwapId < -1 && selectedChoice > -1){
+      newConstructorWordArray = filterPlaceholders(newConstructorWordArray) 
     }
 
     setWordSwapId(-1);
@@ -418,6 +417,7 @@ export default function OrderWords({
     setWordsMasterStatus(updatedWords);
 
     let newConstructorWordArray = [...constructorWordArray];
+    newConstructorWordArray = filterPlaceholders(newConstructorWordArray);
     for (let i = 0; i < newConstructorWordArray.length; i++) {
       if (inUseIds.includes(newConstructorWordArray[i].id)) {
         newConstructorWordArray[i].status = status;
@@ -447,7 +447,25 @@ export default function OrderWords({
     setConstructorWordArray(newConstructorWordArray);
     setWordsMasterStatus(newWordMasterStatus);
   }
-
+  function createPlaceholderWordProp(idToUse, symbol){
+    let placeholderWProp = {
+      "id" : idToUse,
+      "word": symbol,
+      "isPlaceholder": true,
+      "inUse": true,
+      "status": "placeholder incorrect",
+    }
+    return placeholderWProp
+  }
+  function filterPlaceholders(constructedWordArray){
+    let filterArray = constructedWordArray.filter((wordElement) => 
+    wordElement.id < wordsMasterStatus.length && wordElement.id  > -1);
+    for (let i = 0; i < filterArray.length; i++) { 
+      let wordProp = filterArray[i]
+      wordProp["hasPlaceholders"] = false
+    }
+    return filterArray
+  }
   function updateWordsFromAPI(updatedStatusFromAPI, resizeSol, constructedSentence) {
     // Variable to update and store in the user Activity.
     let updatedWordStatus = JSON.parse(updatedStatusFromAPI);
@@ -455,20 +473,37 @@ export default function OrderWords({
     let errorTypesList = [];
     let copyProps = [...updatedWordStatus];
     let newWordMasterStatus = [...wordsMasterStatus];
+    let newConstructorWordArray = []
     let errorCount = 0;
 
     console.log(updatedWordStatus);
+    let placeHolderCounter = -2
     for (let i = 0; i < copyProps.length; i++) {
+      let wordWasPushed = false;
       let wordProp = copyProps[i];
       newWordMasterStatus[wordProp.id] = wordProp;
       if (wordProp.feedback != "" && !wordProp.isCorrect) {
         cluesTextList.push(wordProp.feedback);
         errorTypesList.push(wordProp.error_type);
+        if (wordProp.error_type.slice(0,2) === "M:" && !wordProp["hasPlaceholders"]){
+          if (i == 0) { newConstructorWordArray.push(createPlaceholderWordProp(placeHolderCounter--, "+")); }
+          wordProp["hasPlaceholders"] = true;
+          wordProp["status"] = "correct";
+          newConstructorWordArray.push(wordProp);
+          newConstructorWordArray.push(createPlaceholderWordProp(placeHolderCounter--, "+"));
+          wordWasPushed = true;
+        }
+        else{
+          wordProp["hasPlaceholders"] = false;
+        }
       };
       if (!wordProp.isCorrect) { errorCount++; }
+      if (!wordWasPushed) { newConstructorWordArray.push(wordProp); }
     }
+    console.log("After adding the placeholders.")
+    console.log(newConstructorWordArray);
     let updatedErrorCounter = totalErrorCounter + errorCount
-    setConstructorWordArray(updatedWordStatus);
+    setConstructorWordArray(newConstructorWordArray);
     setWordsMasterStatus(newWordMasterStatus);
     setTotalErrorCounter(updatedErrorCounter);
     let finalClueText = updateClueText(cluesTextList, errorCount);
@@ -515,14 +550,18 @@ export default function OrderWords({
 
     // Check if the solution is already the same
     let filterPunctuationSolText = removePunctuation(exerciseContext);
+    let newConstructedSentence = filterPlaceholders([... constructorWordArray]);
+    console.log("Filtering...")
+    console.log(newConstructedSentence);
 
     let constructedSentence = []
-    for (let i = 0; i < constructorWordArray.length; i++) {
-      constructedSentence.push(constructorWordArray[i].word);
+    for (let i = 0; i < newConstructedSentence.length; i++) {
+      constructedSentence.push(newConstructedSentence[i].word);
     }
 
     // Get the Sentence
     constructedSentence = constructedSentence.join(" ")
+
     if (constructedSentence === filterPunctuationSolText) {
       setHasClues(false);
       setIsCorrect(true);
@@ -542,8 +581,8 @@ export default function OrderWords({
       // or alignment might align very distant words.
       let resizeSol = "" + filterPunctuationSolText;
       resizeSol = resizeSol.split(" ");
-      resizeSol = resizeSol.slice(0, constructorWordArray.length + 1).join(" ");
-      api.annotateClues(constructorWordArray, resizeSol, exerciseLang, (updatedConstructedWords) => {
+      resizeSol = resizeSol.slice(0, newConstructedSentence.length + 1).join(" ");
+      api.annotateClues(newConstructedSentence, resizeSol, exerciseLang, (updatedConstructedWords) => {
         updateWordsFromAPI(updatedConstructedWords, resizeSol, constructedSentence);
       }
       );

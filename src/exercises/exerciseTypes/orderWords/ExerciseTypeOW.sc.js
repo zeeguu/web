@@ -115,6 +115,10 @@ const ExerciseOW = styled.div`
     :hover{ }
   }
 
+  .placeholder {
+    
+  }
+
   .swapModeBar {
     //background-color: ${darkBlue};
     background-color: #6db9d92b;
