@@ -212,26 +212,25 @@ export default function OrderWords({
 
   function notifyChoiceSelection(selectedChoice, inUse) {
     undoResetStatus();
-    if (isCorrect) return // Avoid swapping Words when it is correct.
+    if (isCorrect) { return } // Avoid swapping Words when it is correct.
     // Create objects to update.
-    let updatedMasterStatus = [...wordsMasterStatus]
-    let newConstructorWordArray = [...constructorWordArray]
+    let updatedMasterStatus = [...wordsMasterStatus];
+    let newConstructorWordArray = [...constructorWordArray];
 
-    let wordSelected = getWordById(selectedChoice, updatedMasterStatus)
+    let wordSelected = getWordById(selectedChoice, updatedMasterStatus);
 
     // Handle Case where Word is in ConstructorBox & No word is selected.
     if (inUse && (wordSwapId === -1)) {
       // Select the Word for Swapping. 
       // Set the Color to Blue
-      setWordSwapId(selectedChoice)
-      console.log(selectedChoice);
-      console.log("Selected: " + wordSwapId);
+      console.log("Word Swap Id: " + wordSwapId);
+      console.log("Selected Choice: " + selectedChoice);
+      // Save the previous status.
       setWordSwapStatus(wordSelected.status);
-      let wordInOrder = getWordById(wordSwapId, newConstructorWordArray)
 
-      wordSelected.status = "toSwap"
-      wordInOrder.status = "toSwap"
+      wordSelected.status = "toSwap";
 
+      setWordSwapId(selectedChoice);
       setWordsMasterStatus(updatedMasterStatus);
       setConstructorWordArray(newConstructorWordArray);
       return;
@@ -240,6 +239,8 @@ export default function OrderWords({
     // Handle the case where we swap a selected word.
     if (wordSwapId !== -1 && selectedChoice !== wordSwapId) {
       console.log("Swapping words!")
+      console.log("Word Swap Id: " + wordSwapId);
+      console.log("Selected Choice: " + selectedChoice);
       // Update the Word to have the previous status
       let wordInSwapStatus = getWordById(wordSwapId, newConstructorWordArray)
       wordInSwapStatus = { ...wordInSwapStatus }
@@ -256,15 +257,15 @@ export default function OrderWords({
       for (let i = 0; i < newConstructorWordArray.length; i++) {
         if (newConstructorWordArray[i].id === wordSwapId) {
           if (!wordSelected.inUse) { wordSelected.inUse = true }
-          newConstructorWordArray[i] = wordSelected
+          newConstructorWordArray[i] = wordSelected;
         }
         else if (newConstructorWordArray[i].id === selectedChoice) {
-          newConstructorWordArray[i] = wordInSwapStatus
+          newConstructorWordArray[i] = wordInSwapStatus;
         }
       }
 
       // wordsMasterStatus index match the id in words.
-      updatedMasterStatus[wordSwapId] = wordInSwapStatus
+      updatedMasterStatus[wordSwapId] = wordInSwapStatus;
 
       // Update all the statuses.
       setWordsMasterStatus(updatedMasterStatus);
@@ -275,21 +276,22 @@ export default function OrderWords({
 
     // Add the Word to the Constructor
     if (!wordSelected.inUse) {
-      newConstructorWordArray.push(wordSelected)
+      newConstructorWordArray.push(wordSelected);
     }
     else {
-      newConstructorWordArray = newConstructorWordArray.filter((wordElement) => wordElement.id !== wordSelected.id)
+      newConstructorWordArray = newConstructorWordArray.filter((wordElement) => 
+        wordElement.id !== wordSelected.id);
     }
-    wordSelected.inUse = !wordSelected.inUse
+    wordSelected.inUse = !wordSelected.inUse;
+    
     // If there was a selected word, we return it to the previous state.
-    console.log("COMPARING STATUS: " + wordSelected.status)
     if (wordSelected.status === "toSwap") {
       wordSelected.status = wordSwapStatus;
       setWordSwapStatus("");
     }
-    console.log("AFTER COMPARING STATUS: " + wordSelected.status)
-    setWordSwapId(-1)
-    setWordsMasterStatus(updatedMasterStatus)
+
+    setWordSwapId(-1);
+    setWordsMasterStatus(updatedMasterStatus);
     setConstructorWordArray(newConstructorWordArray);
   }
 
@@ -377,7 +379,7 @@ export default function OrderWords({
     // Aligns all the status to be the same.
     let updatedWords = [...wordsMasterStatus];
     let inUseIds = [...constructorWordArray].map(word => word.id);
-    console.log(inUseIds)
+    console.log(inUseIds);
     for (let i = 0; i < updatedWords.length; i++) {
       if (inUseIds.includes(updatedWords[i].id)) {
         updatedWords[i].status = status;
@@ -439,7 +441,7 @@ export default function OrderWords({
     setConstructorWordArray(updatedWordStatus);
     setWordsMasterStatus(newWordMasterStatus);
     setTotalErrorCounter(updatedErrorCounter);
-    updateClueText(cluesTextList, errorCount)
+    updateClueText(cluesTextList, errorCount);
     logUserActivityCheck(constructedSentence,
       resizeSol, errorCount, cluesTextList, errorTypesList, updatedErrorCounter);
     
@@ -506,9 +508,9 @@ export default function OrderWords({
 
       // We need to ensure that we don't send the entire sentence,
       // or alignment might align very distant words.
-      let resizeSol = "" + filterPunctuationSolText
-      resizeSol = resizeSol.split(" ")
-      resizeSol = resizeSol.slice(0, constructorWordArray.length + 1).join(" ")
+      let resizeSol = "" + filterPunctuationSolText;
+      resizeSol = resizeSol.split(" ");
+      resizeSol = resizeSol.slice(0, constructorWordArray.length + 1).join(" ");
       api.annotateClues(constructorWordArray, resizeSol, exerciseLang, (updatedConstructedWords) => {
         updateWordsFromAPI(updatedConstructedWords, resizeSol, constructedSentence);
       }
