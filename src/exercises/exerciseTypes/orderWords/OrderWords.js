@@ -458,9 +458,9 @@ export default function OrderWords({
     setConstructorWordArray(updatedWordStatus);
     setWordsMasterStatus(newWordMasterStatus);
     setTotalErrorCounter(updatedErrorCounter);
-    updateClueText(cluesTextList, errorCount);
+    let finalClueText = updateClueText(cluesTextList, errorCount);
     logUserActivityCheck(constructedSentence,
-      resizeSol, errorCount, cluesTextList, errorTypesList, updatedErrorCounter);
+      resizeSol, errorCount, finalClueText, errorTypesList, updatedErrorCounter);
     
   }
   function updateClueText(cluesTextList, errorCount) {
