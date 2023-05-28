@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import * as s from "../Exercise.sc.js";
 import * as sOW from "./ExerciseTypeOW.sc.js"
 import OrderWordsInput from "./OrderWordsInput.js";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
@@ -81,21 +80,24 @@ export default function OrderWords({
     return removeEmptyTokens(wordsForExercise)
   }
 
-  function setWordAttributes(word_list) {
+  function setWordAttributes(wordList, sentenceWords) {
     // Create an Word Object, that contains the 
     // id, word, status (Correct, Incorrect, Feedback), inUse (true/false)
-    let arrayWords = []
-    for (let i = 0; i < word_list.length; i++) {
-      arrayWords.push({
+    let arrayWordsProps = []
+    for (let i = 0; i < wordList.length; i++) {
+      let isInSetence = sentenceWords.includes(wordList[i]) ? true : false
+      arrayWordsProps.push({
         "id": i,
-        "word": word_list[i],
+        "word": wordList[i],
         "status": "",
         "inUse": false,
         "feedback": "",
+        "missBefore": false,
+        "isInSentence": isInSetence,
         "hasPlaceholders": false,
       })
     }
-    return arrayWords
+    return arrayWordsProps
   }
 
   function orderWordsLogUserActivity(eventType, jsonData){
@@ -116,7 +118,7 @@ export default function OrderWords({
     startTime) 
   {
     const initialWords = getWordsInArticle(contextToUse);
-    setSolutionWords(setWordAttributes([...initialWords]));
+    setSolutionWords(setWordAttributes([...initialWords], initialWords));
     console.log("Info: Getting Confusion Words");
     console.log(bookmarksToStudy[0].from_lang);
     api.getConfusionWords(exerciseLang, contextToUse, (cWords) => {
@@ -127,7 +129,7 @@ export default function OrderWords({
       console.log("Exercise Words");
       console.log(exerciseWords);
       exerciseWords = shuffle(exerciseWords);
-      let propWords = setWordAttributes(exerciseWords);
+      let propWords = setWordAttributes(exerciseWords, initialWords);
       setWordsMasterStatus(propWords);
       setConfuseWords(apiConfuseWords);
       setPosSelected(jsonCWords["pos_picked"]);
@@ -162,7 +164,7 @@ export default function OrderWords({
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        let translatedContext = data["translation"] + ".";
+        let translatedContext = data["translation"];
         setTranslatedText(translatedContext);
         createConfusionWords(contextToUse, translatedContext, sentenceTooLong, startTime);
 
@@ -186,7 +188,7 @@ export default function OrderWords({
   useEffect(() => {
     let originalContext = bookmarksToStudy[0].context;
     let sentenceTooLong = false
-    let newExerciseStart = new Date();
+    let newExerciseStartTime = new Date();
     if (originalContext.split(" ").length > 15) {
       sentenceTooLong = true
     }
@@ -201,17 +203,17 @@ export default function OrderWords({
             console.log(candidateSents);
             let candidatesSent = JSON.parse(candidateSents)[0][1]
             console.log(candidatesSent);
-            prepareExercise(candidatesSent, sentenceTooLong, newExerciseStart);
+            prepareExercise(candidatesSent, sentenceTooLong, newExerciseStartTime);
           });
       });
     }
     else {
       console.log("Using default context.");
-      prepareExercise(bookmarksToStudy[0].context, sentenceTooLong, newExerciseStart);
+      prepareExercise(bookmarksToStudy[0].context, sentenceTooLong, newExerciseStartTime);
     }
     // Ensure the exercise time is set to the same that was used 
     // to prepare the exercise, as well as the sentenceTooLong.
-    setInitialTime(newExerciseStart);
+    setInitialTime(newExerciseStartTime);
     setSentenceWasTooLong(sentenceTooLong);
   }, [bookmarksToStudy])
 
@@ -289,7 +291,7 @@ export default function OrderWords({
       // wordsMasterStatus index match the id in words.
       updatedMasterStatus[wordSwapId] = wordInSwapStatus;
       if (wordSwapId < -1 && selectedChoice > -1){
-        newConstructorWordArray = filterPlaceholders(newConstructorWordArray) 
+        newConstructorWordArray = filterPlaceholders(newConstructorWordArray);
       }
       // Update all the statuses.
       setWordsMasterStatus(updatedMasterStatus);
@@ -313,9 +315,7 @@ export default function OrderWords({
       wordSelected.status = wordSwapStatus;
       setWordSwapStatus("");
     }
-    if (wordSwapId < -1 && selectedChoice > -1){
-      newConstructorWordArray = filterPlaceholders(newConstructorWordArray) 
-    }
+    newConstructorWordArray = filterPlaceholders(newConstructorWordArray);
 
     setWordSwapId(-1);
     setWordsMasterStatus(updatedMasterStatus);
@@ -482,15 +482,18 @@ export default function OrderWords({
       let wordWasPushed = false;
       let wordProp = copyProps[i];
       newWordMasterStatus[wordProp.id] = wordProp;
-      if (wordProp.feedback != "" && !wordProp.isCorrect) {
+      if (wordProp.feedback !== "" && !wordProp.isCorrect) {
         cluesTextList.push(wordProp.feedback);
         errorTypesList.push(wordProp.error_type);
         if (wordProp.error_type.slice(0,2) === "M:" && !wordProp["hasPlaceholders"]){
-          if (i == 0) { newConstructorWordArray.push(createPlaceholderWordProp(placeHolderCounter--, "+")); }
+          if (i === 0 && wordProp["missBefore"]) { 
+            newConstructorWordArray.push(createPlaceholderWordProp(placeHolderCounter--, "✎")); 
+          }
           wordProp["hasPlaceholders"] = true;
-          wordProp["status"] = "correct";
           newConstructorWordArray.push(wordProp);
-          newConstructorWordArray.push(createPlaceholderWordProp(placeHolderCounter--, "+"));
+          if (!wordProp["missBefore"]){
+            newConstructorWordArray.push(createPlaceholderWordProp(placeHolderCounter--, "✎"));
+          }
           wordWasPushed = true;
         }
         else{
@@ -550,7 +553,7 @@ export default function OrderWords({
 
     // Check if the solution is already the same
     let filterPunctuationSolText = removePunctuation(exerciseContext);
-    let newConstructedSentence = filterPlaceholders([... constructorWordArray]);
+    let newConstructedSentence = filterPlaceholders([...constructorWordArray]);
     console.log("Filtering...")
     console.log(newConstructedSentence);
 
@@ -648,14 +651,14 @@ export default function OrderWords({
           </button>
           <button onClick={handleCheck} 
           className={constructorWordArray.length > 0 ? "owButton check" : "owButton disable"}>
-            {solutionWords.length === constructorWordArray.length ? strings.check : strings.hint} ✔
+            {solutionWords.length <= constructorWordArray.length ? strings.check : strings.hint} ✔
           </button>
         </sOW.ItemRowCompactWrap>
       )}
       {(wordSwapId !== -1) && (!resetConfirmDiv) && (
         <div className="swapModeBar">
           <button onClick={handleUndoSelection} className="owButton undo">{strings.undo}</button>
-          <p>{strings.swapInfo}</p>
+          <p>{wordSwapId < -1 ? strings.swapInfoPlaceholderToken : strings.swapInfo}</p>
         </div>
       )
       }

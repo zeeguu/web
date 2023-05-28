@@ -116,7 +116,8 @@ const ExerciseOW = styled.div`
   }
 
   .placeholder {
-    
+    font-size: x-large;
+    border-radius: 1000px;
   }
 
   .swapModeBar {
