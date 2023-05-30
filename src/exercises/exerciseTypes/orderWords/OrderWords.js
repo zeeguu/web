@@ -80,6 +80,14 @@ export default function OrderWords({
     return removeEmptyTokens(wordsForExercise)
   }
 
+  function getWordsFromWordProps(wordPropList){
+    let wordList = []
+    for(let i = 0; i < wordPropList.length; i++){
+      wordList.push(wordPropList[i]["word"])
+    }
+    return wordList
+  }
+
   function setWordAttributes(wordList, sentenceWords) {
     // Create an Word Object, that contains the 
     // id, word, status (Correct, Incorrect, Feedback), inUse (true/false)
@@ -552,18 +560,13 @@ export default function OrderWords({
     if (constructorWordArray.length === 0) { return; };
 
     // Check if the solution is already the same
-    let filterPunctuationSolText = removePunctuation(exerciseContext);
+    let filterPunctuationSolText = getWordsFromWordProps(solutionWords).join(" ");
     let newConstructedSentence = filterPlaceholders([...constructorWordArray]);
     console.log("Filtering...")
-    console.log(newConstructedSentence);
-
-    let constructedSentence = []
-    for (let i = 0; i < newConstructedSentence.length; i++) {
-      constructedSentence.push(newConstructedSentence[i].word);
-    }
-
-    // Get the Sentence
-    constructedSentence = constructedSentence.join(" ")
+    console.log(newConstructedSentence)
+    
+    // Get the Constructed Sentence
+    let constructedSentence = getWordsFromWordProps(newConstructedSentence).join(" ");
 
     if (constructedSentence === filterPunctuationSolText) {
       setHasClues(false);
