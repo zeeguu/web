@@ -44,9 +44,7 @@ export default function OrderWords({
   const [solutionWords, setSolutionWords] = useState([]);
   const [resetConfirmDiv, setResetConfirmDiv] = useState(false);
   const [sentenceWasTooLong, setSentenceWasTooLong] = useState(false);
-  const [beforeTranslatedText, setBeforeTranslatedText] = useState("");
-  const [afterTranslatedText, setAfterTranslatedText] = useState("");
-  const [handleLongSentences, setHandleLongSentences] = useState(false);
+  const handleLongSentences = false;
 
   console.log("Running ORDER WORDS EXERCISE")
 
@@ -69,8 +67,6 @@ export default function OrderWords({
     setSolutionWords([]);
     setResetConfirmDiv(false);
     setSentenceWasTooLong(false);
-    setBeforeTranslatedText("");
-    setAfterTranslatedText("");
   }
 
   function removeEmptyTokens(tokenList) {
@@ -126,9 +122,8 @@ export default function OrderWords({
   function createConfusionWords(
     contextToUse, 
     translatedContext, 
-    sentenceTooLong,
-    toggleSmallerContext, 
-    exerciseInitialTime) 
+    sentenceTooLong, 
+    startTime) 
   {
     const initialWords = getWordsInArticle(contextToUse);
     setSolutionWords(setWordAttributes([...initialWords], initialWords));
@@ -149,7 +144,6 @@ export default function OrderWords({
       setWordForConfuson(jsonCWords["word_used"]);
       let jsonDataExerciseStart = {
         "sentence_was_too_long": sentenceTooLong,
-        "smaller_context_toggle": toggleSmallerContext,
         "translation": translatedContext,
         "context": contextToUse,
         "confusionWords": apiConfuseWords,
@@ -157,13 +151,13 @@ export default function OrderWords({
         "word_for_confusion": jsonCWords["word_used"],
         "total_words": exerciseWords.length,
         "bookmark": bookmarksToStudy[0].from,
-        "exercise_start": exerciseInitialTime,
+        "exercise_start": startTime,
       }
       orderWordsLogUserActivity("WO_START", jsonDataExerciseStart);
     });
   }
 
-  function prepareExercise(contextToUse, sentenceTooLong, toggleSmallerContext, startTime ) {
+  function prepareExercise(contextToUse, sentenceTooLong, startTime) {
     console.log("CONTEXT: '" + contextToUse + "'");
     contextToUse = contextToUse.trim()
     console.log("CONTEXT AFTER TRIM: '" + contextToUse + "'");
@@ -179,20 +173,8 @@ export default function OrderWords({
       .then((data) => {
         console.log(data);
         let translatedContext = data["translation"];
-        console.log(translatedContext)
-        console.log("Before IF: " + translatedContext);
-        if (!translatedContext) { translatedContext = contextToUse; }
-        if (contextToUse.length < bookmarksToStudy[0].context.trim().length){
-          console.log("Inside IF");
-          let startPos = bookmarksToStudy[0].context.search(contextToUse);
-          let contextLen = bookmarksToStudy[0].context.length
-          setBeforeTranslatedText(bookmarksToStudy[0].context.slice(0,startPos))
-          setAfterTranslatedText(bookmarksToStudy[0].context.slice(startPos+contextToUse.length,contextLen))
-          translatedContext = contextToUse;
-        }        
         setTranslatedText(translatedContext);
-        createConfusionWords(contextToUse, translatedContext, 
-          sentenceTooLong, toggleSmallerContext, startTime);
+        createConfusionWords(contextToUse, translatedContext, sentenceTooLong, startTime);
 
       })
       .catch(() => {
@@ -219,33 +201,23 @@ export default function OrderWords({
       sentenceTooLong = true
     }
     resetReactStates();
-    console.log("Handling long sentences: " + handleLongSentences);
     // Handle the case of long sentences, this relies on activating the functionality. 
-    if (handleLongSentences) {
-      api.getSmallerContext(originalContext, bookmarksToStudy[0].from,
-        exerciseLang, 15, (apiCandidateSubSent) => {
-          let parsedCandidatesent = JSON.parse(apiCandidateSubSent)
-          console.log("SENTENCES THAT ARE GOOD FOR WO")
-          console.log(parsedCandidatesent);
-          prepareExercise(parsedCandidatesent, sentenceWasTooLong, handleLongSentences, newExerciseStartTime);
-        });
-      /*
+    if (sentenceTooLong > 15 && handleLongSentences) {
       api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
         console.log(articleInfo);
         api.getWOsentences(articleInfo["content"], originalContext,
           exerciseLang, (candidateSents) => {
             console.log("SENTENCES THAT ARE GOOD FOR WO")
             console.log(candidateSents);
-            let candidatesSent = JSON.parse(candidateSents)
+            let candidatesSent = JSON.parse(candidateSents)[0][1]
             console.log(candidatesSent);
             prepareExercise(candidatesSent, sentenceTooLong, newExerciseStartTime);
           });
       });
-      */
     }
     else {
       console.log("Using default context.");
-      prepareExercise(bookmarksToStudy[0].context, sentenceTooLong, handleLongSentences, newExerciseStartTime);
+      prepareExercise(bookmarksToStudy[0].context, sentenceTooLong, newExerciseStartTime);
     }
     // Ensure the exercise time is set to the same that was used 
     // to prepare the exercise, as well as the sentenceTooLong.
@@ -622,28 +594,6 @@ export default function OrderWords({
       );
     }
   }
-  function handleReduceContext(){
-    let newHandleLongSentences = !handleLongSentences;
-    let newExerciseStartTime = new Date();
-    let originalContext = bookmarksToStudy[0].context;
-    resetReactStates();
-    console.log(newHandleLongSentences);
-    // Handle the case of long sentences, this relies on activating the functionality. 
-    if (newHandleLongSentences) {
-        api.getSmallerContext(originalContext, bookmarksToStudy[0].from,
-          exerciseLang, 15, (apiCandidateSubSent) => {
-            let parsedCandidatesent = JSON.parse(apiCandidateSubSent)
-            console.log("SENTENCES THAT ARE GOOD FOR WO")
-            console.log(parsedCandidatesent);
-            prepareExercise(parsedCandidatesent, sentenceWasTooLong, newHandleLongSentences, newExerciseStartTime);
-          });
-    }
-    else {
-      console.log("Using default context.");
-      prepareExercise(bookmarksToStudy[0].context, sentenceWasTooLong, newHandleLongSentences, newExerciseStartTime);
-    }
-    setHandleLongSentences(newHandleLongSentences);
-  }
 
   // Handle the Loading screen while getting the test.
   if ((wordsMasterStatus.length === 0 | translatedText === "") && !isCorrect) {
@@ -656,7 +606,7 @@ export default function OrderWords({
       {translatedText === "" && !isCorrect && <LoadingAnimation />}
       <div className="headlineOrderWords">
         {strings.orderTheWordsToMakeTheFollowingSentence}
-        <p className="translatedText">{beforeTranslatedText}<b>{translatedText}</b>{afterTranslatedText}</p>
+        <h2>{translatedText}</h2>
       </div>
       {hasClues && (
         <sOW.ItemRowCompactWrap className="cluesRow">
@@ -679,11 +629,9 @@ export default function OrderWords({
         </div>
       )}
 
-      {isCorrect && 
-      <div className="OWBottomRow">
+      {isCorrect && <div>
         <h4>{strings.orderWordsCorrectMessage}</h4>
-        <p>{bookmarksToStudy[0].context}</p>
-        <p>Word you bookmarked: <b>'{bookmarksToStudy[0].from}'</b></p>
+        <p>{exerciseContext}</p>
       </div>}
       {wordsMasterStatus.length === 0 && !isCorrect && <LoadingAnimation />}
       {!isCorrect && (
@@ -742,12 +690,6 @@ export default function OrderWords({
         isCorrect={isCorrect}
       />
       {!isCorrect && (<p className="tipText">{strings.orderWordsTipMessage}</p>)}
-      {!isCorrect && (
-        <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
-          <button onClick={handleReduceContext} className={handleLongSentences ? "owButton reduceContext correct" : "owButton reduceContext disable"}>Toggle Short Context</button>
-        </sOW.ItemRowCompactWrap>  
-      )
-      }
     </sOW.ExerciseOW>
   );
 }

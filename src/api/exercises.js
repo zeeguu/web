@@ -74,14 +74,3 @@ Zeeguu_API.prototype.getWOsentences = function (articleText, contextBookmark, la
   }
   return this._post(`/get_sentences_for_wo`, qs.stringify(payload), callback)
 };
-
-Zeeguu_API.prototype.getSmallerContext = function (contextBookmark, wordBookmark, lang, contextLen, callback) {
-  
-  let payload = {
-    bookmark_context: contextBookmark,
-    bookmark_word: wordBookmark, 
-    language: lang,
-    max_context_len: contextLen
-  }
-  return this._post(`/get_smaller_context`, qs.stringify(payload), callback)
-};

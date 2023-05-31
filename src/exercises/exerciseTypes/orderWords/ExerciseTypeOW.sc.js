@@ -20,13 +20,6 @@ const ExerciseOW = styled.div`
     font-weight: 500;
   }
 
-  .translatedText {
-    font-size: medium;
-    margin-left:8px;
-    margin-right:8px;
-
-  }
-
   .headlineWithMoreSpace {
     font-size: small;
     color: gray;
@@ -34,11 +27,6 @@ const ExerciseOW = styled.div`
     margin-bottom: 2em;
     
     /* font-weight: 600; */
-  }
-
-  .reduceContext {
-    font-size: 10px;
-    width: 80%;
   }
 
   .bottomInput {
@@ -174,18 +162,6 @@ const ExerciseOW = styled.div`
       background-color: ${zeeguuRed};
 
   }
-  .OWBottomRow{
-    display:block
-    padding: 0.5em;
-    align-items: center;
-    justify-content: space-around;
-    margin-top: 1em;
-    margin-bottom: -2.5em;
-
-    @media (max-width: 430px) {
-      flex-flow: row wrap;
-    }
-  } 
 
   .owButton{
     
