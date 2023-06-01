@@ -286,10 +286,14 @@ export default function OrderWords({
 
   function prepareExercise(exerciseContext, isSentenceTooLong, isHandlingLongSentences, startTime) {
     console.log("CONTEXT: '" + exerciseContext + "'");
-    exerciseContext = exerciseContext.trim()
+    exerciseContext = exerciseContext.trim();
     console.log("CONTEXT AFTER TRIM: '" + exerciseContext + "'");
-    setExerciseContext(exerciseContext);
     console.log("Getting Translation for ->" + exerciseContext);
+    
+    setExerciseContext(exerciseContext);
+    
+    let originalContext = bookmarksToStudy[0].context.trim();
+
     api
       .basicTranlsate(
         exerciseLang,
@@ -298,17 +302,14 @@ export default function OrderWords({
       )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         let translatedContext = data["translation"];
-        console.log(translatedContext)
-        console.log("Before IF: " + translatedContext);
-        if (!translatedContext) { translatedContext = exerciseContext; }
-        if (exerciseContext.length < bookmarksToStudy[0].context.trim().length){
-          console.log("Inside IF");
-          let startPos = bookmarksToStudy[0].context.search(exerciseContext);
-          let contextLen = bookmarksToStudy[0].context.length
-          setTextBeforeTranslatedText(bookmarksToStudy[0].context.slice(0,startPos))
-          setTextAfterTranslatedText(bookmarksToStudy[0].context.slice(startPos+exerciseContext.length,contextLen))
+        // Line below is used for development with no API key (translatedContext is Null)
+        // if (!translatedContext) { translatedContext = exerciseContext; }
+        if (exerciseContext.length < originalContext.length){
+          let startPos = originalContext.search(exerciseContext);
+          let contextLen = originalContext.length;
+          setTextBeforeTranslatedText(originalContext.slice(0,startPos));
+          setTextAfterTranslatedText(originalContext.slice(startPos+exerciseContext.length,contextLen));
           translatedContext = exerciseContext;
         }        
         setTranslatedText(translatedContext);
@@ -525,7 +526,7 @@ export default function OrderWords({
   function handleResetClick() {
     // Don't allow the user to click rest if no words
     // are in the userSolutionArray
-    if (userSolutionWordArray.length == 0) { return }
+    if (userSolutionWordArray.length === 0) { return }
     setIsResetConfirmVisible(true);
   }
 
@@ -694,7 +695,7 @@ export default function OrderWords({
     <sOW.ExerciseOW className="orderWords">
       {translatedText === "" && !isCorrect && <LoadingAnimation />}
       <div className="headlineOrderWords">
-        {strings.orderTheWordsToMakeTheFollowingSentence}
+        {strings.orderTheWordsToMakeTheHighlightedPhrase}
         <p className="translatedText">{textBeforeTranslatedText}<b>{translatedText}</b>{textAfterTranslatedText}</p>
       </div>
       {isCluesRowVisible && (

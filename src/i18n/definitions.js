@@ -333,8 +333,8 @@ let strings = new LocalizedStrings(
         "Find the expression in the context below",
       chooseTheWordFittingContextHeadline:
         "Choose the alternative that fits the context",
-      orderTheWordsToMakeTheFollowingSentence:
-        "Order the words to make the following sentence. You don't need to use all the words.",
+      orderTheWordsToMakeTheHighlightedPhrase:
+        "Order the words to make the highlighted phrase. You don't need to use all the words.",
       matchWordWithTranslation: "Match each word with its translation",
       audioExerciseHeadline:
         "Write the word your hear. Click to have it repeated!",
