@@ -20,6 +20,13 @@ const ExerciseOW = styled.div`
     font-weight: 500;
   }
 
+  .translatedText {
+    font-size: medium;
+    margin-left:8px;
+    margin-right:8px;
+
+  }
+
   .headlineWithMoreSpace {
     font-size: small;
     color: gray;
@@ -27,6 +34,11 @@ const ExerciseOW = styled.div`
     margin-bottom: 2em;
     
     /* font-weight: 600; */
+  }
+
+  .reduceContext {
+    font-size: 10px;
+    width: 80%;
   }
 
   .bottomInput {
@@ -71,8 +83,12 @@ const ExerciseOW = styled.div`
   .cluesRow {
     text-align: center;
     display: inline-block;
-    margin-left: 0em;
-    margin-top: -25px;
+    margin-top: -10px;
+    margin-bottom: -5px;
+    border-style: solid;
+    border-width: 2px 0px 0px 0px;
+    border-radius: 10px;
+    border-color: #e5e5e5;
     
     h4 {
       margin-top: 0px;
@@ -162,6 +178,20 @@ const ExerciseOW = styled.div`
       background-color: ${zeeguuRed};
 
   }
+  .OWBottomRow{
+    display:block
+    padding: 0.5em;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: -3em;
+
+    @media (max-width: 430px) {
+      flex-flow: row wrap;
+    }
+  } 
 
   .owButton{
     
