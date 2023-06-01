@@ -65,14 +65,14 @@ Zeeguu_API.prototype.annotateClues = function (word_props, og_sent, lang, callba
   return this._post(`/annotate_clues`, qs.stringify(payload), callback)
 };
 
-Zeeguu_API.prototype.getWOsentences = function (articleText, contextBookmark, lang, callback) {
+Zeeguu_API.prototype.getShorterSimilarSentsInArticle = function (articleText, contextBookmark, lang, callback) {
   
   let payload = {
     article_text: articleText,
     bookmark_context: contextBookmark,
     language: lang
   }
-  return this._post(`/get_sentences_for_wo`, qs.stringify(payload), callback)
+  return this._post(`/get_shorter_similar_sents_in_article`, qs.stringify(payload), callback)
 };
 
 Zeeguu_API.prototype.getSmallerContext = function (contextBookmark, wordBookmark, lang, contextLen, callback) {
