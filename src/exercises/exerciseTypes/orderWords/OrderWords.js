@@ -310,7 +310,6 @@ export default function OrderWords({
           let contextLen = originalContext.length;
           setTextBeforeTranslatedText(originalContext.slice(0,startPos));
           setTextAfterTranslatedText(originalContext.slice(startPos+exerciseContext.length,contextLen));
-          translatedContext = exerciseContext;
         }        
         setTranslatedText(translatedContext);
         createConfusionWords(exerciseContext, translatedContext, 
