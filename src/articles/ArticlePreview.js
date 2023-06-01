@@ -39,7 +39,7 @@ export default function ArticleOverview({
     if (article.has_personal_copy || article.has_uploader) {
       return open_in_zeeguu;
     } else {
-      return open_in_zeeguu;
+      return open_externally;
     }
   }
 
