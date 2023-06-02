@@ -403,6 +403,7 @@ export default function Exercises({
       <ProgressBar index={currentIndex} total={exerciseSession.length} />
       <s.ExForm>
         <CurrentExercise
+          key={currentIndex}
           bookmarksToStudy={currentBookmarksToStudy}
           correctAnswer={correctAnswer}
           notifyIncorrectAnswer={incorrectAnswerNotification}

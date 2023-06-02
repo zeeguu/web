@@ -53,32 +53,7 @@ export default function OrderWords({
   const [textBeforeTranslatedText, setTextBeforeTranslatedText] = useState("");
   const [textAfterTranslatedText, setTextAfterTranslatedText] = useState("");
   
-
   console.log("Running ORDER WORDS EXERCISE")
-
-  // Util Functions for the Component
-  function _resetReactStates() {
-    setInitialTime(new Date());
-    setResetCounter(0);
-    setHintCounter(0);
-    setTotalErrorCounter(0);
-    setPosSelected("");
-    setWordsReferenceStatus([]);
-    setExerciseContext("");
-    setClueText([]);
-    setTranslatedText("");
-    setIsCluesRowVisible(false);
-    setUserSolutionWordArray([]);
-    setConfuseWords();
-    setWordSelected();
-    setWordSwapStatus("");
-    setWordSwapId(NO_WORD_SELECTED_ID);
-    setSolutionWords([]);
-    setIsResetConfirmVisible(false);
-    setIsSentenceTooLong(false);
-    setTextBeforeTranslatedText("");
-    setTextAfterTranslatedText("");
-  }
 
   function _removeEmptyTokens(tokenList) {
     // In some instance, there will be punctuation in the middle, which
@@ -247,7 +222,6 @@ export default function OrderWords({
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     let exerciseIntializeVariables = _get_exercise_start_variables()
-    _resetReactStates();
     // Handle the case of long sentences, this relies on activating the functionality. 
     prepareContext(
       exerciseIntializeVariables["originalBookmarkContext"],
@@ -260,7 +234,7 @@ export default function OrderWords({
     // to prepare the exercise, as well as the sentenceTooLong.
     setInitialTime(exerciseIntializeVariables["exerciseStartTime"]);
     setIsSentenceTooLong(exerciseIntializeVariables["isLongSentence"]);
-  }, [bookmarksToStudy])
+  },[])
 
   function prepareContext(
     originalContext,
@@ -304,7 +278,7 @@ export default function OrderWords({
       .then((data) => {
         let translatedContext = data["translation"];
         // Line below is used for development with no API key (translatedContext is Null)
-        // if (!translatedContext) { translatedContext = exerciseContext; }
+        if (!translatedContext) { translatedContext = exerciseContext; }
         if (exerciseContext.length < originalContext.length){
           let startPos = originalContext.search(exerciseContext);
           let contextLen = originalContext.length;
@@ -457,6 +431,7 @@ export default function OrderWords({
       newUserSolutionWordArray.push(wordSelected);
     }
     else {
+      // In case the user selected the same word twice, we remove it.
       newUserSolutionWordArray = newUserSolutionWordArray.filter((wordElement) => 
         wordElement.id !== wordSelected.id);
     }
@@ -490,7 +465,6 @@ export default function OrderWords({
     setIsCorrect(true);
     setIsCluesRowVisible(false);
     handleAnswer(message, duration);
-    setWordsReferenceStatus([]);
   }
 
   function handleAnswer(message) {
@@ -590,18 +564,19 @@ export default function OrderWords({
       setUserSolutionWordArray(newUserSolutionWordArray);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
-      // Need to reset MasterStatus, so when the new exercise is loaded, there are no words.
-      // This happens when you don't change the exercise.
-      setWordsReferenceStatus([]);
     }
     else {
       // We need to ensure that we don't send the entire sentence,
       // or alignment might align very distant words.
       // We provide only the context up to + 1 what the user has constructed.
       let resizedSolutionText = filterPunctuationSolArray.slice(0, newUserSolutionWordArray.length + 1).join(" ");
-      api.annotateClues(newUserSolutionWordArray, resizedSolutionText, exerciseLang, (updatedUserSolutionWords) => {
-        updateWordsFromAPI(updatedUserSolutionWords, resizedSolutionText, userSolutionSentence);
-      }
+      api.annotateClues(
+        newUserSolutionWordArray, 
+        resizedSolutionText, 
+        exerciseLang, 
+        (updatedUserSolutionWords) => {
+          updateWordsFromAPI(updatedUserSolutionWords, resizedSolutionText, userSolutionSentence);
+        }
       );
     }
   }
@@ -661,7 +636,6 @@ export default function OrderWords({
   function handleReduceContext(){
     let newIsHandleLongSentences = !isHandlingLongSentences;
     let exerciseIntializeVariables = _get_exercise_start_variables()
-    _resetReactStates();
     // Handle the case of long sentences, this relies on activating the functionality. 
     prepareContext(
       exerciseIntializeVariables["originalBookmarkContext"],
@@ -784,7 +758,12 @@ export default function OrderWords({
       {!isCorrect && (<p className="tipText">{strings.orderWordsTipMessage}</p>)}
       {!isCorrect && ENABLE_SHORTER_CONTEXT_BUTTON &&(
         <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
-          <button onClick={handleReduceContext} className={isHandlingLongSentences ? "owButton reduceContext correct" : "owButton reduceContext disable"}>Toggle Short Context</button>
+          <button 
+            onClick={handleReduceContext} 
+            className={isHandlingLongSentences ? "owButton reduceContext correct" 
+            : "owButton reduceContext disable"}>
+              Toggle Short Context
+          </button>
         </sOW.ItemRowCompactWrap>  
       )
       }
