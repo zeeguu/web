@@ -431,6 +431,7 @@ export default function OrderWords({
       newUserSolutionWordArray.push(wordSelected);
     }
     else {
+      // In case the user selected the same word twice, we remove it.
       newUserSolutionWordArray = newUserSolutionWordArray.filter((wordElement) => 
         wordElement.id !== wordSelected.id);
     }
@@ -464,7 +465,6 @@ export default function OrderWords({
     setIsCorrect(true);
     setIsCluesRowVisible(false);
     handleAnswer(message, duration);
-    setWordsReferenceStatus([]);
   }
 
   function handleAnswer(message) {
@@ -564,18 +564,19 @@ export default function OrderWords({
       setUserSolutionWordArray(newUserSolutionWordArray);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
-      // Need to reset MasterStatus, so when the new exercise is loaded, there are no words.
-      // This happens when you don't change the exercise.
-      setWordsReferenceStatus([]);
     }
     else {
       // We need to ensure that we don't send the entire sentence,
       // or alignment might align very distant words.
       // We provide only the context up to + 1 what the user has constructed.
       let resizedSolutionText = filterPunctuationSolArray.slice(0, newUserSolutionWordArray.length + 1).join(" ");
-      api.annotateClues(newUserSolutionWordArray, resizedSolutionText, exerciseLang, (updatedUserSolutionWords) => {
-        updateWordsFromAPI(updatedUserSolutionWords, resizedSolutionText, userSolutionSentence);
-      }
+      api.annotateClues(
+        newUserSolutionWordArray, 
+        resizedSolutionText, 
+        exerciseLang, 
+        (updatedUserSolutionWords) => {
+          updateWordsFromAPI(updatedUserSolutionWords, resizedSolutionText, userSolutionSentence);
+        }
       );
     }
   }
@@ -756,7 +757,12 @@ export default function OrderWords({
       {!isCorrect && (<p className="tipText">{strings.orderWordsTipMessage}</p>)}
       {!isCorrect && ENABLE_SHORTER_CONTEXT_BUTTON &&(
         <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
-          <button onClick={handleReduceContext} className={isHandlingLongSentences ? "owButton reduceContext correct" : "owButton reduceContext disable"}>Toggle Short Context</button>
+          <button 
+            onClick={handleReduceContext} 
+            className={isHandlingLongSentences ? "owButton reduceContext correct" 
+            : "owButton reduceContext disable"}>
+              Toggle Short Context
+          </button>
         </sOW.ItemRowCompactWrap>  
       )
       }
