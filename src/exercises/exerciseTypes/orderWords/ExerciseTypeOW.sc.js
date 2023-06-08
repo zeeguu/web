@@ -84,11 +84,14 @@ const ExerciseOW = styled.div`
     text-align: center;
     display: inline-block;
     margin-top: -10px;
-    margin-bottom: -5px;
+    margin-bottom: 2px;
     border-style: solid;
-    border-width: 2px 0px 0px 0px;
+    border-width: 4px 0px 4px 0px;
     border-radius: 10px;
-    border-color: #e5e5e5;
+    border-color: #006400;
+    background-color: #0064001c;
+    margin-left: 10px;
+    margin-right: 10px;
     
     h4 {
       margin-top: 0px;
