@@ -22,22 +22,20 @@ import InstallExtension from "./pages/InstallExtension";
 function App() {
   let userDict = {};
 
-  // we use the _api to initialize the api state variable
   console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
   console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
-  let _api = new Zeeguu_API(process.env.REACT_APP_API_URL);
+  let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
 
   if (getUserSession()) {
     userDict = {
       session: getUserSession(),
       ...LocalStorage.userInfo(),
     };
-    _api.session = getUserSession();
+    api.session = getUserSession();
   }
 
   useUILanguage();
 
-  const [api] = useState(_api);
 
   const [user, setUser] = useState(userDict);
   const [hasExtension, setHasExtension] = useState(false);
@@ -66,6 +64,8 @@ function App() {
     }, 1000);
     checkExtensionInstalled(setHasExtension);
     return () => clearInterval(interval);
+    
+    // eslint-disable-next-line
   }, []);
 
   function handleSuccessfulSignIn(userInfo, history) {
