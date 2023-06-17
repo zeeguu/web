@@ -50,6 +50,7 @@ export default function ArticleOverview({
 
       {article.video ? (
         <img
+          alt=""
           style={{ float: "left", marginRight: "1em" }}
           src={
             "https://img.youtube.com/vi/" +
