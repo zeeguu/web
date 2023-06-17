@@ -18,7 +18,7 @@ export default function ArticleOverview({
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
     let open_externally = (
-      <a target="_blank" href={article.url}>
+      <a target="_blank" rel="noreferrer" href={article.url}>
         {article.title}
       </a>
     );
