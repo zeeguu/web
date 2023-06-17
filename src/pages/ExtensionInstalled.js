@@ -9,7 +9,7 @@ export default function ExtensionInstalled({ api }) {
 
   useEffect(() => {
     api.logUserActivity(api.OPEN_EXTENSION_INSTALLED);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <s.PageBackground>

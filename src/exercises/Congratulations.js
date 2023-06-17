@@ -6,7 +6,6 @@ import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import LocalStorage from "../assorted/LocalStorage";
-import SpeakButton from "./exerciseTypes/SpeakButton";
 
 export default function Congratulations({
   articleID,

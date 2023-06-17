@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import Feature from "../features/Feature";
-import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
 export default function ArticleOverview({
