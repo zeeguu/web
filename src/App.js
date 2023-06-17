@@ -47,9 +47,16 @@ function App() {
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
-    api.getUserDetails((data) => {
-      LocalStorage.setUserInfo(data);
-    });
+    
+    if (getUserSession()) {
+
+      console.log("getting user details...");
+      api.getUserDetails((data) => {
+        LocalStorage.setUserInfo(data);
+      });
+    }
+
+
 
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
