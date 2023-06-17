@@ -40,7 +40,12 @@ export default function MultipleChoice({
     });
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
-        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE"
+        )
       );
       setArticleInfo(articleInfo);
     });
@@ -82,7 +87,7 @@ export default function MultipleChoice({
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
 
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       pressTime - initialTime,

@@ -1,5 +1,10 @@
 import styled, { css } from "styled-components";
-import { lightBlue, darkBlue, lightGrey, veryLightGrey } from "../../components/colors";
+import {
+  lightBlue,
+  darkBlue,
+  lightGrey,
+  veryLightGrey,
+} from "../../components/colors";
 
 const StyledButton = styled.button`
   user-select: none;
@@ -64,8 +69,8 @@ const StyledButton = styled.button`
   ${(props) =>
     props.studentView &&
     css`
-      margin-top: 1.75em;
-      max-height: 30px;
+      margin-top: 10px;
+      max-height: 55px;
     `}
     
   //Icon

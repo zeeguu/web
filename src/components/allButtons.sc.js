@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "./colors";
+import { zeeguuOrange, zeeguuLightYellow } from "./colors";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -23,17 +23,34 @@ const OrangeRoundButton = styled(RoundButton)`
   background-color: ${zeeguuOrange};
 `;
 
-const ClosePopupButton = styled.div`
-  height: 1.2em;
-  width: 1.2em;
-  border-radius: 50%;
-  float: right;
-  cursor: pointer;
-  background-color: orange;
-  color: white;
-  font-size: 0.8em;
-  padding: 0.1em;
-  font-weight: 400;
+// from: https://stackoverflow.com/questions/10019797/pure-css-close-button
+const ClearSearchButton = styled.div`
+  display: block;
+  float: left;
+  margin-top: 3px;
+  margin-left: -1.6em;
+  box-sizing: border-box;
+  width: 1.4em;
+  height: 1.4em;
+
+  border-width: 3px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 100%;
+  background: -webkit-linear-gradient(
+      -45deg,
+      transparent 0%,
+      transparent 46%,
+      gray 46%,
+      gray 56%,
+      transparent 56%,
+      transparent 100%
+    ),
+    -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, gray 46%, gray
+          56%, transparent 56%, transparent 100%);
+  background-color: white;
+
+  transition: all 0.3s ease;
 `;
 
 const BigSquareButton = styled(RoundButton)`
@@ -47,4 +64,4 @@ const BigSquareButton = styled(RoundButton)`
   font-size: 18px;
 `;
 
-export { RoundButton, OrangeRoundButton, BigSquareButton, ClosePopupButton };
+export { RoundButton, OrangeRoundButton, BigSquareButton, ClearSearchButton };

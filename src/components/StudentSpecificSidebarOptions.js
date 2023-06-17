@@ -1,46 +1,41 @@
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 
-export default function StudentSpecificSidebarOptions({
-  resetSidebarToDefault,
-  user,
-  api,
-}) {
+export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
 
   return (
     <>
-      <div className="navigationLink">
-        <Link to="/articles" onClick={resetSidebarToDefault}>
-          <small>{strings.articles}</small>
-        </Link>
-      </div>
-      <div className="navigationLink">
-        <Link to="/words/history" onClick={resetSidebarToDefault}>
-          <small>{strings.words}</small>
-        </Link>
-      </div>
-      <div className="navigationLink">
-        <Link to="/exercises" onClick={resetSidebarToDefault}>
-          <small>{strings.exercises}</small>
-        </Link>
-      </div>
+      <SidebarLink text={strings.articles} to="/articles" />
 
-      <div className="navigationLink">
-        <Link to="/user_dashboard" onClick={resetSidebarToDefault}>
-          <small>{strings.userDashboard}</small>
-        </Link>
-      </div>
+      <SidebarLink text={strings.words} to="/words" />
+
+      <SidebarLink text={strings.exercises} to="/exercises" />
+
+      <br />
+
+      <SidebarLink text={strings.history} to="/history" />
+
+      <SidebarLink text={strings.userDashboard} to="/user_dashboard" />
 
       <br />
 
       {is_teacher && (
-        <div className="navigationLink">
-          <Link to="/teacher/classes" onClick={resetSidebarToDefault}>
-            <small>{strings.teacherSite}</small>
-          </Link>
-        </div>
+        <SidebarLink text={strings.teacherSite} to="/teacher/classes" />
       )}
+
+      <SidebarLink text={strings.settings} to="/account_settings" />
+
+      <div className="navigationLink">
+        <Link
+          to="/"
+          onClick={() => {
+            user.logoutMethod();
+          }}
+        >
+          <small>{strings.logout}</small>
+        </Link>
+      </div>
     </>
   );
 }

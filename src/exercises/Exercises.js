@@ -11,6 +11,7 @@ import strings from "../i18n/definitions";
 import Match from "./exerciseTypes/match/Match";
 import SpellWhatYouHear from "./exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
 import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleChoiceAudio";
+import OrderWords from "./exerciseTypes/orderWords/OrderWords"
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
@@ -39,6 +40,15 @@ let EXERCISE_TYPES = [
     requiredBookmarks: 3,
   },
 ];
+
+let EXERCISE_TYPES_TIAGO = [
+  {
+    type: OrderWords,
+    requiredBookmarks: 1,
+  }
+];
+
+
 
 export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
@@ -105,7 +115,11 @@ export default function Exercises({
    * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
    */
   function calculateExerciseBatches(bookmarks) {
-    let bookmarksPerBatch = EXERCISE_TYPES.reduce(
+    let exerciseTypesList = EXERCISE_TYPES;
+    if (Feature.tiago_exercises()){
+      exerciseTypesList = EXERCISE_TYPES_TIAGO;
+    }
+    let bookmarksPerBatch = exerciseTypesList.reduce(
       (a, b) => a + b.requiredBookmarks,
       0
     );
@@ -121,16 +135,20 @@ export default function Exercises({
   }
 
   function defineExerciseSession(batches, rest, bookmark_count) {
+    let exerciseTypesList = EXERCISE_TYPES
+    if (Feature.tiago_exercises()){
+      exerciseTypesList = EXERCISE_TYPES_TIAGO
+    }
     let exerciseSession = [];
     if (bookmark_count < 9) {
       let count = bookmark_count;
       while (count > 0) {
-        for (let i = EXERCISE_TYPES.length - 1; i > 0; i--) {
-          let currentTypeRequiredCount = EXERCISE_TYPES[i].requiredBookmarks;
+        for (let i = exerciseTypesList.length - 1; i >= 0; i--) {
+          let currentTypeRequiredCount = exerciseTypesList[i].requiredBookmarks;
           if (count < currentTypeRequiredCount) continue;
           if (count === 0) break;
           let exercise = {
-            type: EXERCISE_TYPES[i].type,
+            type: exerciseTypesList[i].type,
             requiredBookmarks: currentTypeRequiredCount,
             bookmarks: [],
           };
@@ -140,21 +158,21 @@ export default function Exercises({
       }
     } else {
       for (let i = 0; i < batches; i++) {
-        for (let j = EXERCISE_TYPES.length - 1; j >= 0; j--) {
+        for (let j = exerciseTypesList.length - 1; j >= 0; j--) {
           let exercise = {
-            type: EXERCISE_TYPES[j].type,
-            requiredBookmarks: EXERCISE_TYPES[j].requiredBookmarks,
+            type: exerciseTypesList[j].type,
+            requiredBookmarks: exerciseTypesList[j].requiredBookmarks,
             bookmarks: [],
           };
           exerciseSession.push(exercise);
         }
       }
       while (rest > 0) {
-        for (let k = EXERCISE_TYPES.length - 1; k >= 0; k--) {
-          if (rest >= EXERCISE_TYPES[k].requiredBookmarks) {
+        for (let k = exerciseTypesList.length - 1; k >= 0; k--) {
+          if (rest >= exerciseTypesList[k].requiredBookmarks) {
             let exercise = {
-              type: EXERCISE_TYPES[k].type,
-              requiredBookmarks: EXERCISE_TYPES[k].requiredBookmarks,
+              type: exerciseTypesList[k].type,
+              requiredBookmarks: exerciseTypesList[k].requiredBookmarks,
               bookmarks: [],
             };
             exerciseSession.push(exercise);
@@ -359,17 +377,17 @@ export default function Exercises({
     setIncorrectBookmarks(incorrectBookmarksCopy);
   }
 
-  function stopShowingThisFeedback(reason, id) {
+  function uploadUserFeedback(userWrittenFeedback, id) {
     console.log(
       "Sending to the API. Feedback: ",
-      reason,
+      userWrittenFeedback,
       " Exercise type: ",
       currentExerciseType,
       " and word: ",
       id
     );
     setIsCorrect(true);
-    api.uploadExerciseFeedback(reason, currentExerciseType, 0, id);
+    api.uploadExerciseFeedback(userWrittenFeedback, currentExerciseType, 0, id);
   }
 
   function toggleShow() {
@@ -385,6 +403,7 @@ export default function Exercises({
       <ProgressBar index={currentIndex} total={exerciseSession.length} />
       <s.ExForm>
         <CurrentExercise
+          key={currentIndex}
           bookmarksToStudy={currentBookmarksToStudy}
           correctAnswer={correctAnswer}
           notifyIncorrectAnswer={incorrectAnswerNotification}
@@ -403,7 +422,7 @@ export default function Exercises({
         setShowFeedbackButtons={setShowFeedbackButtons}
         currentExerciseType={currentExerciseType}
         currentBookmarksToStudy={currentBookmarksToStudy}
-        feedbackFunction={stopShowingThisFeedback}
+        feedbackFunction={uploadUserFeedback}
       />
     </s.ExercisesColumn>
   );

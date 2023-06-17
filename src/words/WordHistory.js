@@ -3,11 +3,12 @@ import { useState } from "react";
 import { WordsOnDate } from "./WordsOnDate";
 import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
+import * as sc from "../components/ColumnWidth.sc";
 
 import * as s from "../components/TopMessage.sc";
 import { setTitle } from "../assorted/setTitle";
 
-export default function WordHistory({ api }) {
+export default function ReadingHistory({ api }) {
   const [wordsByDay, setWordsByDay] = useState(null);
 
   if (!wordsByDay) {
@@ -20,14 +21,14 @@ export default function WordHistory({ api }) {
   }
 
   return (
-    <>
-      <s.TopMessage>
-        {strings.starAWordMsg}
-      </s.TopMessage>
+    <sc.NarrowColumn>
+      <br />
+      <br />
+      <s.TopMessage>{strings.starAWordMsg}</s.TopMessage>
 
       {wordsByDay.map((day) => (
         <WordsOnDate key={day.date} day={day} api={api} />
       ))}
-    </>
+    </sc.NarrowColumn>
   );
 }

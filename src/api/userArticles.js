@@ -5,12 +5,27 @@ import qs from "qs";
 // articles
 Zeeguu_API.prototype.getUserArticles = function (callback) {
   this._getJSON("user_articles/recommended", (articles) => {
-      // sometimes we get duplicates from the server
-      // deduplicate them here
-      // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
-      const ids = articles.map(o => o.id)
-      const deduplicated = articles.filter(({id}, index) => !ids.includes(id, index + 1))
-      callback(deduplicated);
+    // sometimes we get duplicates from the server
+    // deduplicate them here
+    // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
+    const ids = articles.map((o) => o.id);
+    const deduplicated = articles.filter(
+      ({ id }, index) => !ids.includes(id, index + 1)
+    );
+    callback(deduplicated);
+  });
+};
+
+Zeeguu_API.prototype.search = function (term, callback) {
+  return this._getJSON(`search/${term}`, (articles) => {
+    // sometimes we get duplicates from the server
+    // deduplicate them here
+    // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
+    const ids = articles.map((o) => o.id);
+    const deduplicated = articles.filter(
+      ({ id }, index) => !ids.includes(id, index + 1)
+    );
+    callback(deduplicated);
   });
 };
 
@@ -64,4 +79,11 @@ Zeeguu_API.prototype.isArticleLanguageSupported = function (
 
 Zeeguu_API.prototype.sendFeedback = function (feedback, callback) {
   this._post(`/send_feedback`, qs.stringify(feedback), callback);
+};
+
+Zeeguu_API.prototype.submitArticleDifficultyFeedback = function (
+  feedback,
+  callback
+) {
+  this._post(`/article_difficulty_feedback`, qs.stringify(feedback), callback);
 };

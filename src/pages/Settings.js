@@ -13,8 +13,7 @@ import strings from "../i18n/definitions";
 import { Error } from "../teacher/sharedComponents/Error";
 import Select from "../components/Select";
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
-import {saveUserInfoIntoCookies} from "../utils/cookies/userInfo";
-
+import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);

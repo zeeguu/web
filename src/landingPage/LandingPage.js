@@ -65,6 +65,8 @@ export default function LandingPage() {
           <s.DescriptionText>
             <p>{strings.personalizedPractiseEllaboration1}</p>
 
+            <p>{strings.personalizedMultipleExerciseTypes}</p>
+
             <p>{strings.personalizedPractiseEllaboration2}</p>
           </s.DescriptionText>
         </s.PaleAdaptableColumn>

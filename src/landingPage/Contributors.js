@@ -18,7 +18,11 @@ export default function Contributors() {
     <>
       <h1>{strings.contributors}</h1>
 
-      {member("Mircea Lungu", "Production, maintenance")}
+      {member("Mircea Lungu", "Production & maintenance")}
+
+      {member("Emma Lerche Teglbrænder", "Browser Extension")}
+
+      {member("Frida Helene Beck-Larsen ", "Browser Extension")}
 
       {member("Sara Tolstrup Husum", "Teacher Dashboard Modernization")}
 

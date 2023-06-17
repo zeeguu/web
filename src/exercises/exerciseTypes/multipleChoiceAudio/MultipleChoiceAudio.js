@@ -42,7 +42,12 @@ export default function MultipleChoiceAudio({
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
-        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api)
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE"
+        )
       );
       setArticleInfo(articleInfo);
     });
@@ -113,7 +118,7 @@ export default function MultipleChoiceAudio({
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
 
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       pressTime - initialTime,
@@ -135,7 +140,7 @@ export default function MultipleChoiceAudio({
 
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       duration,

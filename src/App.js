@@ -47,9 +47,16 @@ function App() {
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
-    api.getUserDetails((data) => {
-      LocalStorage.setUserInfo(data);
-    });
+    
+    if (getUserSession()) {
+
+      console.log("getting user details...");
+      api.getUserDetails((data) => {
+        LocalStorage.setUserInfo(data);
+      });
+    }
+
+
 
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
@@ -68,6 +75,7 @@ function App() {
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
       is_teacher: userInfo.is_teacher,
+      is_student: userInfo.is_student,
     });
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
@@ -79,7 +87,7 @@ function App() {
     if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
       history.push("/install_extension");
     } else {
-      userInfo.is_teacher
+      userInfo.is_teacher && userInfo.name !== "Mircea Lungu"
         ? history.push("/teacher/classes")
         : history.push("/articles");
     }

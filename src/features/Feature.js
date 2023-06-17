@@ -5,6 +5,10 @@ const Feature = {
     return LocalStorage.hasFeature(featureName);
   },
 
+  tiago_exercises : function () {
+    return this.is_enabled("tiago_exercises");
+  },
+
   extension_experiment1: function () {
     return this.is_enabled("extension_experiment_1");
   },

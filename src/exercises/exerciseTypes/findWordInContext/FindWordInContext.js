@@ -36,7 +36,12 @@ export default function FindWordInContext({
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
-        new InteractiveText(bookmarksToStudy[0].context, articleInfo, api, UMR_SOURCE)
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE"
+        )
       );
       setArticleInfo(articleInfo);
     });
@@ -97,7 +102,7 @@ export default function FindWordInContext({
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
       duration,
@@ -112,7 +117,7 @@ export default function FindWordInContext({
 
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    api.uploadExerciseFeedback(
+    api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       duration,
