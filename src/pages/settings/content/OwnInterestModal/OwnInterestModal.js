@@ -4,7 +4,12 @@ import * as sc from "../Content.sc";
 
 const recommendations = ["Art", "Business", "Culture"];
 
-const OwnInterestModal = ({ modalOpened, setModalOpened }) => {
+const OwnInterestModal = ({
+  api,
+  modalOpened,
+  setModalOpened,
+  setSearchers,
+}) => {
   const [activeRecs, setActiveRecs] = useState([]);
   const [customInterest, setCustomInterest] = useState("");
 
@@ -19,8 +24,24 @@ const OwnInterestModal = ({ modalOpened, setModalOpened }) => {
   };
 
   const handleInterestsSave = () => {
+    if (modalOpened === "interests") {
+      if (customInterest) {
+        api.subscribeToSearch(customInterest, (res) => {
+          setSearchers((prev) => [...prev, res]);
+        });
+      }
+
+      activeRecs.forEach((rec) => {
+        api.subscribeToSearch(rec, (res) => {
+          api.subscribeToSearch(rec, (res) => {
+            setSearchers((prev) => [...prev, res]);
+          });
+        });
+      });
+    }
+
+    setModalOpened(false);
     // ModalOpened could be false, 'interests', 'non-interests'
-    // Function to add activeRecs to searchers;
   };
 
   return (

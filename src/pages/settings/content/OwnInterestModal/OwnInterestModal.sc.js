@@ -38,6 +38,7 @@ const Close = styled.button`
   border: none;
   display: grid;
   place-items: center;
+  margin-top: -2px;
   &:hover {
     opacity: 0.8;
   }
