@@ -8,6 +8,7 @@ import LocalStorage from "../../../assorted/LocalStorage";
 import uiLanguages from "../../../assorted/uiLanguages";
 import { useHistory } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import { savedBG, zeeguuSecondOrange } from "../../../components/colors";
 
 export const PersonalData = ({ api, setUser, user }) => {
   const history = useHistory();
@@ -210,9 +211,12 @@ export const PersonalData = ({ api, setUser, user }) => {
         <scs.SuccessText>{strings.settingsSuccess}</scs.SuccessText>
       )}
       {isError && <scs.ErrorText>{strings.settingsSuccess}</scs.ErrorText>}
-      <scs.SettingButton onClick={handleSave}>
+      <scs.SettingButton
+        bg={isSuccess ? savedBG : !isLoading && zeeguuSecondOrange}
+        onClick={handleSave}
+      >
         {isLoading && <CircularProgress />}
-        {!isLoading && strings.save}
+        {isSuccess ? strings.saved : !isLoading && strings.save}
       </scs.SettingButton>
     </div>
   );

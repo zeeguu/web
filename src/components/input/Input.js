@@ -10,7 +10,7 @@ export const Input = ({
   value,
   onChange,
   errorText,
-  ...props
+  isDisabled,
 }) => {
   return (
     <s.InputContainer>
@@ -20,6 +20,7 @@ export const Input = ({
       </sc.LabelWithError>
       {(isEmail || isPlainText) && (
         <s.Input
+          disabled={isDisabled}
           name={isEmail ? "email" : "name"}
           value={value}
           placeholder={placeholder}

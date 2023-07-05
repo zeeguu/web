@@ -65,11 +65,13 @@ export const FiltersWrapper = ({ children, setArticles }) => {
   const [currentFilter, setCurrentFilter] = useState(
     FiltersClass.getCurrentFilter() || null
   );
-  const [blockHeight, setBlockHeight] = useState(0);
+  const [blockHeight, setBlockHeight] = useState(500);
 
   useEffect(() => {
     if (blockRef?.current?.clientHeight && isLargerThan768) {
-      setBlockHeight(blockRef?.current?.clientHeight + 20);
+      if (blockRef?.current?.clientHeight + 20 > 400) {
+        setBlockHeight(blockRef?.current?.clientHeight + 20);
+      }
     }
   }, [
     blockRef,
@@ -111,7 +113,9 @@ export const FiltersWrapper = ({ children, setArticles }) => {
     } else {
       setArticles(FiltersClass.getArticlesList());
     }
-    setBlockHeight(blockRef?.current?.clientHeight + 20);
+    if (blockRef?.current?.clientHeight + 20 > 400) {
+      setBlockHeight(blockRef?.current?.clientHeight + 20);
+    }
   }, [currentFilter]);
 
   const handleSetCurrentFilter = (id, value) => {

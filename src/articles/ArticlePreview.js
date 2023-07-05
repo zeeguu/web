@@ -6,7 +6,7 @@ import {
   InterestButton,
   variants,
 } from "../components/interestButton/InterestButton";
-import { levels, LevelLabel } from "../components/levelLabel/LevelLabel";
+import { LevelLabel, levels } from "../components/levelLabel/LevelLabel";
 import { TimeLabel } from "../components/timeLabel/TimeLabel";
 
 const maxArticleTitleLength = 70;
@@ -16,6 +16,7 @@ export default function ArticleOverview({
   article,
   dontShowImage,
   hasExtension,
+  isTwoColumns,
 }) {
   let readingTime = useMemo(
     () => Math.round(article?.metrics?.word_count / 80),
@@ -52,7 +53,7 @@ export default function ArticleOverview({
   }, []);
 
   return (
-    <s.ArticlePreview>
+    <s.ArticlePreview isTwoColumns={isTwoColumns}>
       <div
         style={{
           marginBottom: "18px",

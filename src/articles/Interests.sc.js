@@ -27,8 +27,10 @@ const ScrollContainer = styled.div`
   overflow-x: scroll;
   scroll-behavior: smooth;
 
-  &::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     width: 0;
+    opacity: 0;
+    display: none;
   }
 `;
 

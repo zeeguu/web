@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-import { Popover, Typography } from "@mui/material";
+import { Popover } from "@mui/material";
 import * as s from "./AvatarSettings.sc";
 import { LogOut, Settings } from "../icons/sidebar";
-import { iconsGray, setColors, zeeguuSecondOrange } from "../colors";
+import { iconsGray, zeeguuSecondOrange } from "../colors";
 import strings from "../../i18n/definitions";
 import { Link, useLocation } from "react-router-dom";
 
@@ -39,7 +39,7 @@ const AvatarSettings = ({ user }) => {
           horizontal: "left",
         }}
       >
-        <Link to="/account_settings">
+        <Link to="/account_settings/personalData">
           <s.NavigationLink
             style={{
               borderBottom: path.startsWith("/account_settings")

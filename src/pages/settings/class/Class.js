@@ -83,6 +83,7 @@ export const Class = () => {
   return (
     <form>
       <Input
+        isDisabled
         isPlainText
         title={strings.className}
         placeholder={strings.chooseClass}
@@ -99,6 +100,7 @@ export const Class = () => {
       />
 
       <Dropdown
+        isDisabled
         title={strings.classroomLanguage}
         placeholder={strings.chooseClassroomLanguage}
         value={currentLang?.name}

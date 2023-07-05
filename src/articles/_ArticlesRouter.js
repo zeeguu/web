@@ -25,7 +25,7 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
   return (
     <>
       {/* Rendering top menu first, then routing to corresponding page */}
-      <s.NarrowColumn>
+      <s.NarrowColumn isOnCenter={true}>
         <TopTabs title={strings.articles} tabsAndLinks={tabsAndLinks} />
 
         <PrivateRoute

@@ -4,18 +4,35 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import Filters from "../utils/filters/filters";
 import { interestsData } from "../pages/settings/content/Content";
 
+const interestsWithAll = [
+  {
+    name: "All",
+    value: false,
+    id: "All",
+  },
+  ...interestsData,
+];
+
 export default function InterestsAndSearch({ setArticles }) {
   const anchorLeft = useRef();
   const anchorRight = useRef();
 
   const [isVisibleLeft, setIsVisibleLeft] = useState(false);
   const [isVisibleRight, setIsVisibleRight] = useState(true);
-  const [interests, setInterests] = useState(interestsData);
+  const [interests, setInterests] = useState(interestsWithAll);
 
   const handleInterestPress = useCallback(
     (interestName) => {
+      const isAllPressed =
+        interestName === "All" ? interests[0].value : undefined;
+
       const newInterests = interests.map((interest) => {
-        const newInterest = { name: interestName, value: interest.value };
+        const newInterest = { name: interest.name, value: interest.value };
+
+        if (isAllPressed !== undefined) {
+          newInterest.value = !isAllPressed;
+          return newInterest;
+        }
 
         if (interest.name === interestName) {
           newInterest.value = !interest.value;

@@ -125,6 +125,7 @@ export default function NewArticles({ api }) {
                   article={article}
                   api={api}
                   hasExtension={hasExtension}
+                  isTwoColumns={true}
                 />
               ))}
             </s.ArticlesContainer>

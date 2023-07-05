@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import * as s from "./Dropdown.sc";
 import * as sc from "../Theme.sc";
@@ -10,14 +10,37 @@ export const Dropdown = ({
   items,
   onChange,
   errorText,
+  isDisabled = false,
 }) => {
   const [isListOpen, setIsListOpen] = useState(false);
+  const refDropdown = useRef(null);
+  const refDropdownInput = useRef(null);
 
   const handleItemClick = (item) => {
     setIsListOpen(!isListOpen);
     onChange(item);
   };
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        refDropdownInput?.current &&
+        refDropdownInput?.current.contains(event.target)
+      ) {
+        return;
+      }
+
+      if (
+        refDropdown?.current &&
+        !refDropdown?.current.contains(event.target)
+      ) {
+        setIsListOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [refDropdown]);
   return (
     <s.DropdownContainer>
       <sc.LabelWithError>
@@ -26,7 +49,11 @@ export const Dropdown = ({
       </sc.LabelWithError>
 
       <s.Dropdown>
-        <s.DropdownField onClick={() => setIsListOpen(!isListOpen)}>
+        <s.DropdownField
+          ref={refDropdownInput}
+          disabled={isDisabled}
+          onClick={!isDisabled && (() => setIsListOpen(!isListOpen))}
+        >
           {!value && placeholder && <span>{placeholder}</span>}
           {value && <span>{value}</span>}
           <s.DropdownIcon
@@ -36,8 +63,8 @@ export const Dropdown = ({
           />
         </s.DropdownField>
 
-        {isListOpen && (
-          <s.DropdownList>
+        {!isDisabled && isListOpen && (
+          <s.DropdownList ref={refDropdown}>
             {items?.map((item, id) => (
               <s.ListItem key={id} onClick={() => handleItemClick(item)}>
                 {item.icon && item.icon}
