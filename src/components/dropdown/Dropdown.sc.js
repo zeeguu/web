@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 const ListItem = styled.div`
-  padding: 3px 16px;
+  padding: 7px 16px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -75,7 +75,8 @@ const DropdownList = styled.div`
 `;
 
 const ListText = styled.span`
-  margin-left: 8px;
+  /* margin-left: 8px; */
+  font-size: 14px;
 `;
 
 export {

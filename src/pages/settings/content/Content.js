@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import strings from "../../../i18n/definitions";
 import * as sc from "../../../components/Theme.sc";
 import * as s from "./Content.sc";
@@ -132,6 +132,9 @@ export const nonInterestsData = [
 ];
 
 export const Content = ({ api }) => {
+  const [allInterestsActive, setAllInterestsActive] = useState(false);
+  const [allNonInterestsActive, setAllNonInterestsActive] = useState(false);
+
   const [dividedNonInterests, setDividedNonInterests] = useState([]);
   const [nonSearchers, setNonSearchers] = useState([]);
 
@@ -240,25 +243,57 @@ export const Content = ({ api }) => {
     }
   };
 
-  const handleSearchPress = (search, isInterests) => {
+  const handleSearchPress = useCallback(
+    (search, isInterests) => {
+      if (isInterests) {
+        api.unsubscribeFromSearch(search);
+
+        const newSearchers = searchers.filter(
+          (currentSearch) => currentSearch.id !== search.id
+        );
+
+        setSearchers(newSearchers);
+      } else {
+        api.unsubscribeFromSearchFilter(search);
+
+        const newNonSearchers = nonSearchers.filter(
+          (currentSearch) => currentSearch.id !== search.id
+        );
+
+        setNonSearchers(newNonSearchers);
+      }
+    },
+    [searchers, nonSearchers]
+  );
+
+  const handleAllClick = (isInterests) => {
     if (isInterests) {
-      api.unsubscribeFromSearch(search);
-
-      const newSearchers = searchers.filter(
-        (currentSearch) => currentSearch.id !== search.id
-      );
-
-      setSearchers(newSearchers);
+      setAllInterestsActive((prev) => !prev);
     } else {
-      api.unsubscribeFromSearchFilter(search);
-
-      const newNonSearchers = nonSearchers.filter(
-        (currentSearch) => currentSearch.id !== search.id
-      );
-
-      setNonSearchers(newNonSearchers);
+      setAllNonInterestsActive((prev) => !prev);
     }
   };
+
+  // No such function for non-interests because there is no filtered topics got from server
+  useEffect(() => {
+    if (allInterestsActive) {
+      dividedInterests.available.forEach((interest) =>
+        api.subscribeToTopic(interest)
+      );
+      setDividedInterests((prev) => ({
+        available: [],
+        subscribed: [...prev.available, ...prev.subscribed],
+      }));
+    } else {
+      dividedInterests.subscribed.forEach((interest) =>
+        api.unsubscribeFromTopic(interest)
+      );
+      setDividedInterests((prev) => ({
+        available: [...prev.available, ...prev.subscribed],
+        subscribed: [],
+      }));
+    }
+  }, [allInterestsActive]);
 
   useEffect(() => {
     // Interests
@@ -288,10 +323,10 @@ export const Content = ({ api }) => {
         <s.InterestsBox>
           <InterestButton
             variant={
-              // isAllInterests ? variants.orangeFilled : variants.grayOutlined
-              variants.grayOutlined
+              allInterestsActive ? variants.orangeFilled : variants.grayOutlined
             }
             title={strings.all}
+            onClick={() => handleAllClick(true)}
           />
           <s.AddInterestBtn onClick={() => setModalOpened("interests")}>
             <s.Plus>
@@ -336,10 +371,12 @@ export const Content = ({ api }) => {
         <s.InterestsBox>
           <InterestButton
             variant={
-              // isAllNonInterests ? variants.grayFilled : variants.grayOutlined
-              variants.grayOutlined
+              allNonInterestsActive
+                ? variants.grayFilled
+                : variants.grayOutlined
             }
             title={strings.all}
+            onClick={() => handleAllClick(false)}
           />
           <s.AddInterestBtn onClick={() => setModalOpened("non-interests")}>
             <s.Plus>
@@ -371,7 +408,7 @@ export const Content = ({ api }) => {
           {filteredNonSearchers.map((currentSearch) => (
             <InterestButton
               key={currentSearch.id}
-              variant={variants.orangeFilled}
+              variant={variants.grayOutlined}
               title={currentSearch.search}
               onClick={() => handleSearchPress(currentSearch, false)}
             />

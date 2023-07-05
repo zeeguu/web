@@ -56,13 +56,14 @@ const NavList = styled.ul`
   display: flex;
   list-style: none;
   padding: 0;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   gap: 14px;
   margin: 23px auto;
 
   @media (min-width: 768px) {
     margin: 40px auto;
+    justify-content: center;
   }
 
   & > li > a {
