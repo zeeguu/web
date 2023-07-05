@@ -3,10 +3,12 @@ import strings from "../../../i18n/definitions";
 import * as scs from "../Settings.sc";
 import * as sc from "../../../components/Theme.sc";
 import * as s from "./Content.sc";
+import { compareArrays } from "../../../utils/basic/arrays";
 import {
   InterestButton,
   variants,
 } from "../../../components/interestButton/InterestButton";
+import Modal from "./OwnInterestModal/OwnInterestModal";
 
 export const interestsData = [
   {
@@ -140,7 +142,7 @@ export const Content = ({ api }) => {
   const [dividedInterests, setDividedInterests] = useState({
     available: [], // Unsubscribed topics
     subscribed: [], // Subscribed topics
-    searchers: [], // Subscribed topics that are created by user
+    searchers: [], // Subscribed searchers created by user
   });
   // For comparing with dicidedInterests after save button is clicked
   const initialDividedInterests = useRef({
@@ -201,6 +203,36 @@ export const Content = ({ api }) => {
     },
     [interests, nonInterests]
   );
+
+  const handleInterestsSave = () => {
+    const initialInterests = initialDividedInterests.current;
+
+    const subscribedDiffs = compareArrays(
+      initialInterests.subscribed,
+      dividedInterests.subscribed
+    );
+    const searchersDiffs = compareArrays(
+      initialInterests.searchers,
+      dividedInterests.searchers
+    );
+
+    // // TODO: figure out searchers API
+    // subscribedDiffs.deleteItems.forEach((item) => {
+    // 	api.unsubscribeFromTopic(item);
+    // });
+    // subscribedDiffs.addItems.forEach((item) => {
+    // 	api.subscribeToTopic(item);
+    // });
+    // // In API I see subscribeToSearch with searchTerm - not search.id
+    // searchersDiffs.deleteItems.forEach((item) => {
+    // 	api.unsubscribeFromSearch(item);
+    // });
+    // searchersDiffs.addItems.forEach(({}) => {
+    // 	api.subscribeToSearch(item);
+    // });
+
+    // initialDividedInterests.current = dividedInterests;
+  };
 
   useEffect(() => {
     api.getAvailableTopics((data) => {
@@ -320,7 +352,11 @@ export const Content = ({ api }) => {
           ))}
         </s.InterestsContainer>
       </div>
-      <scs.SettingButton onClick={() => {}}>{strings.save}</scs.SettingButton>
+      <scs.SettingButton onClick={handleInterestsSave}>
+        {strings.save}
+      </scs.SettingButton>
+      <s.Blocker />
+      <Modal />
     </div>
   );
 };

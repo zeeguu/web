@@ -59,4 +59,14 @@ const Plus = styled.div`
   }
 `;
 
-export { InterestsContainer, InterestsBox, AddInterestBtn, Plus };
+const Blocker = styled.div`
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  background: #d9d9d9cc;
+`;
+
+export { InterestsContainer, InterestsBox, AddInterestBtn, Plus, Blocker };
