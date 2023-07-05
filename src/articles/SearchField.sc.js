@@ -7,7 +7,11 @@ const SearchField = styled.div`
   align-items: center;
 
   .search-box {
-    width: 90%;
+    width: 100%;
+
+    @media (min-width: 768px) {
+      width: 90%;
+    }
   }
 
   .search-input {

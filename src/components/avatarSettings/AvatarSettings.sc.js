@@ -1,10 +1,12 @@
 import styled from "styled-components";
-import { blue, blueDark, iconsGray, zeeguuSecondOrange } from "../colors";
+import { blue, blueDark, iconsGray } from "../colors";
 
 const AvatarBox = styled.div`
   position: absolute;
   right: 1rem;
-  top: 1rem;
+  top: 3.8rem;
+  z-index: 9;
+  cursor: pointer;
 
   @media (min-width: 768px) {
     right: 2rem;

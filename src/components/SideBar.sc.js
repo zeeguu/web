@@ -1,13 +1,11 @@
 import styled, { css } from "styled-components";
-import { blueDark, iconsGray, zeeguuSecondOrange } from "./colors";
+import { blueDark, iconsGray } from "./colors";
 
 // The twistedness here is the fact that in the
 // mobile and the desktop version have inverted
 // initial state:
 //   Desktop = initially open, and
 //   Mobile = initiallly closed
-
-let arrowSize = "60px";
 
 let mainPageContentCommon = css`
   top: 0;
@@ -18,6 +16,7 @@ let mainPageContentCommon = css`
 const MainContentInitial = styled.div`
   overflow-y: hidden;
   width: 99%;
+  padding-top: 20px;
 
   @media (min-width: 768px) {
     width: calc(100% - 160px);
@@ -28,8 +27,8 @@ const MainContentInitial = styled.div`
 const MainContent = styled.div`
   margin-bottom: 1em;
   padding: 20px 10px;
-  ${mainPageContentCommon}
-  @media(min-width: 768 px) {
+  ${mainPageContentCommon};
+  @media (min-width: 768px) {
     padding: 24px 10px;
 
     width: 100%;
@@ -37,27 +36,14 @@ const MainContent = styled.div`
   }
 `;
 
-const sidebarCommon = css`
-  position: fixed;
-  height: 100%;
-  display: flex;
-`;
-
-const arrowCommon = css`
-  .arrowHolder {
-    font-weight: 100;
-    cursor: pointer;
-    font-size: ${arrowSize};
-  }
-`;
-
 const SideBarInitial = styled.div`
   width: 100%;
   flex-direction: row;
-  overflow-y: hidden;
+  overflow: hidden;
+  position: fixed;
+  height: 100%;
+  display: flex;
 
-  ${sidebarCommon}
-  ${arrowCommon}
   .navigationLink {
     display: flex;
     align-items: center;
@@ -89,8 +75,14 @@ const SideBarInitial = styled.div`
   .logo {
     display: flex;
     align-items: center;
-    width: 100%;
-    margin: 12px 0 0 12px;
+    width: 100px;
+    align-self: center;
+    margin: 16px 0 50px 12px;
+
+    @media (min-width: 768px) {
+      width: 100%;
+      margin: 16px 0 50px 12px;
+    }
 
     & a {
       font-style: normal;
@@ -130,41 +122,29 @@ const Sidebar = styled.div`
 `;
 
 const SidebarContainer = styled.div`
-  width: 160px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   height: 100%;
   background-color: ${(props) => props.light};
   position: absolute;
-  left: -160px;
+  left: -100%;
   z-index: 10;
-
-  .arrowHolder {
-    display: flex;
-    flex-direction: row-reverse;
-    color: ${(props) => props.light};
-    cursor: pointer;
-    user-select: none;
-
-    @media (min-width: 768px) {
-      pointer-events: none;
-      cursor: default;
-    }
-
-    .arrow {
-      transform: rotate(90deg) translate(-8px, -0.5em);
-      user-select: none;
-    }
-
-    .toggleArrow {
-      color: white;
-      transform: rotate(-90deg) translate(10px, 10px);
-    }
-  }
+  transition: all 450ms ease-in-out 0s;
 
   @media (min-width: 768px) {
     position: relative;
     left: 0 !important;
+    width: 160px;
+  }
+`;
+
+const SideBarMenuIconContainer = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 15px;
+  @media (min-width: 768px) {
+    display: none;
   }
 `;
 
@@ -175,4 +155,5 @@ export {
   Sidebar,
   SidebarContainer,
   MainContent,
+  SideBarMenuIconContainer,
 };

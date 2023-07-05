@@ -11,14 +11,16 @@ import { TimeLabel } from "../components/timeLabel/TimeLabel";
 
 const maxArticleTitleLength = 70;
 const maxArticleLength = 230;
-const wordCountPerMin = 80;
 
 export default function ArticleOverview({
   article,
   dontShowImage,
   hasExtension,
 }) {
-  let readingTime = Math.round(article.metrics.word_count / wordCountPerMin);
+  let readingTime = useMemo(
+    () => Math.round(article?.metrics?.word_count / 80),
+    [article?.metrics?.word_count]
+  );
 
   let topics = useMemo(
     () => article?.topics?.split(" ").filter((topic) => topic !== ""),

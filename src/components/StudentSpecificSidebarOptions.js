@@ -1,18 +1,16 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 import strings from "../i18n/definitions";
 import {
-  Home,
-  Words,
   Exercises,
-  TeacherSite,
-  Settings,
-  LogOut,
   History,
+  Home,
   Statistics,
+  TeacherSite,
+  Words,
 } from "./icons/sidebar";
 import React from "react";
 import { iconsGray } from "./colors";
-import * as s from "./SideBar.sc";
 
 const sidebarPaths = {
   articles: "/articles",
@@ -23,14 +21,18 @@ const sidebarPaths = {
   teacherClasses: "/teacher/classes",
 };
 
-export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
+export default function StudentSpecificSidebarOptions({
+  SidebarLink,
+  user,
+  onClick,
+}) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
 
   const path = useLocation().pathname;
 
   return (
     <>
-      <div>
+      <div onClick={onClick}>
         <SidebarLink
           text={strings.articles}
           to={sidebarPaths.articles}

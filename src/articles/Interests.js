@@ -1,7 +1,36 @@
 import * as s from "./Interests.sc";
 import * as b from "../components/allButtons.sc";
+import React, { useCallback, useState } from "react";
+import Filters from "../utils/filters/filters";
+import { interestsData } from "../pages/settings/content/Content";
 
-export default function InterestsAndSearch() {
+export default function InterestsAndSearch({ setArticles }) {
+  const [interests, setInterests] = useState(interestsData);
+
+  const handleInterestPress = useCallback(
+    (interestName) => {
+      const newInterests = interests.map((interest) => {
+        const newInterest = { name: interestName, value: interest.value };
+
+        if (interest.name === interestName) {
+          newInterest.value = !interest.value;
+          return newInterest;
+        }
+
+        return interest;
+      });
+
+      setInterests(newInterests);
+
+      setArticles(
+        Filters.getByInterests(
+          newInterests.filter((interest) => interest?.value)
+        )
+      );
+    },
+    [interests]
+  );
+
   return (
     <s.Interests>
       <img
@@ -26,76 +55,17 @@ export default function InterestsAndSearch() {
         }}
       />
       <s.ScrollContainer>
-        <b.OrangeRoundButton
-          className="filled-interest-btn"
-          //onClick={() => toggleInterests()}
-        >
-          Business
-        </b.OrangeRoundButton>
-
-        <b.OrangeRoundButton
-          className="unfilled-interest-btn"
-          //onClick={() => toggleFilters()}
-        >
-          Culture
-        </b.OrangeRoundButton>
-
-        <b.OrangeRoundButton
-          className="filled-interest-btn"
-          //onClick={() => toggleInterests()}
-        >
-          Business
-        </b.OrangeRoundButton>
-
-        <b.OrangeRoundButton
-          className="unfilled-interest-btn"
-          //onClick={() => toggleFilters()}
-        >
-          Culture
-        </b.OrangeRoundButton>
-
-        <b.OrangeRoundButton
-          className="filled-interest-btn"
-          //onClick={() => toggleInterests()}
-        >
-          Business
-        </b.OrangeRoundButton>
-
-        <b.OrangeRoundButton
-          className="unfilled-interest-btn"
-          //onClick={() => toggleFilters()}
-        >
-          Culture
-        </b.OrangeRoundButton>
-
-        <b.OrangeRoundButton
-          className="filled-interest-btn"
-          //onClick={() => toggleInterests()}
-        >
-          Business
-        </b.OrangeRoundButton>
-
-        <b.OrangeRoundButton
-          className="unfilled-interest-btn"
-          //onClick={() => toggleFilters()}
-        >
-          Culture
-        </b.OrangeRoundButton>
-
-        <b.OrangeRoundButton
-          className="filled-interest-btn"
-          //onClick={() => toggleInterests()}
-        >
-          Business
-        </b.OrangeRoundButton>
-
-        <b.OrangeRoundButton
-          id="part1"
-          className="unfilled-interest-btn"
-          //onClick={() => toggleFilters()}
-        >
-          Culture
-        </b.OrangeRoundButton>
+        {interests.map((item, id) => (
+          <b.OrangeRoundButton
+            key={id}
+            className={
+              item?.value ? "filled-interest-btn" : "unfilled-interest-btn"
+            }
+            onClick={() => handleInterestPress(item.name)}
+          >
+            {item?.name}
+          </b.OrangeRoundButton>
+        ))}
       </s.ScrollContainer>
     </s.Interests>
   );

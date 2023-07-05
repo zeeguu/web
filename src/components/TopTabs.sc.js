@@ -17,7 +17,11 @@ const TopTabs = styled.div`
     align-items: center;
     display: flex;
     justify-content: center;
-    margin-bottom: 2em;
+    margin-bottom: 0;
+
+    @media (min-width: 768px) {
+      margin-bottom: 2em;
+    }
   }
 
   .headmenuTab {
@@ -51,7 +55,7 @@ const TopTabs = styled.div`
   }
 
   .row__bar {
-    margin: 0px;
+    margin: 0;
     padding: 1.5em;
   }
 
@@ -69,11 +73,12 @@ const TopTabs = styled.div`
     }
 
     .row__bar {
-      padding: 0em;
+      padding: 0;
     }
+
     .bar {
       width: 1em;
-      height: 0px;
+      height: 0;
       border: 0.5px solid ${darkGrey};
     }
   }

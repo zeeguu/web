@@ -11,6 +11,7 @@ const FiltersWrapperContainer = styled.div`
   position: relative;
   overflow: hidden;
   transition: 1000ms;
+  padding-bottom: 5vh;
 `;
 
 const FiltersButtonBox = styled.div`

@@ -38,8 +38,8 @@ export const Dropdown = ({
 
         {isListOpen && (
           <s.DropdownList>
-            {items?.map((item) => (
-              <s.ListItem key={item.name} onClick={() => handleItemClick(item)}>
+            {items?.map((item, id) => (
+              <s.ListItem key={id} onClick={() => handleItemClick(item)}>
                 {item.icon && item.icon}
                 <s.ListText>{item.name}</s.ListText>
               </s.ListItem>

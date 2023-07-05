@@ -31,6 +31,8 @@ let alertGreen = "#4caf50"; //careful when changing this color. It is defined to
 let matchGreen = "#B3F78F";
 let blue = "#4A4964";
 let blueDark = "#43435B";
+let gray = "#CFCFD2";
+let lightGray = "#e8e8e8";
 //black - the css standard color is used throughout the repo.
 //white - the css standard color is used throughout the repo.
 
@@ -79,4 +81,6 @@ export {
   zeeguuDark,
   blueDark,
   blue,
+  gray,
+  lightGray,
 };

@@ -3,10 +3,15 @@ import { zeeguuSecondOrange, zeeguuThirdGray } from "../components/colors";
 
 const Interests = styled.div`
   position: relative;
-  margin-top: 32px;
+  margin-top: 15px;
+
+  @media (min-width: 768px) {
+    margin-top: 32px;
+  }
 
   .filled-interest-btn {
     background-color: ${zeeguuSecondOrange};
+    border: 1px solid ${zeeguuSecondOrange};
   }
 
   .unfilled-interest-btn {

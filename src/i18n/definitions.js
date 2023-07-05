@@ -4,6 +4,8 @@ Definitions that are rendered in multiple components are under "Shared". */
 let strings = new LocalizedStrings(
   {
     en: {
+      settingsSuccess: "Your account has been successfully updated.",
+      home: "Home",
       all: "All",
       yourOwnInterest: "Your own interest",
       //Shared
@@ -767,6 +769,7 @@ let strings = new LocalizedStrings(
     },
 
     da: {
+      settingsSuccess: "Your account has been successfully updated.",
       all: "All",
       yourOwnInterest: "Your own interest",
       //Shared

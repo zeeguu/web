@@ -24,6 +24,7 @@ const OrangeRoundButton = styled(RoundButton)`
   padding: 10px 43px;
   font-size: 13px;
   line-height: 16px;
+  white-space: nowrap;
 `;
 
 // from: https://stackoverflow.com/questions/10019797/pure-css-close-button

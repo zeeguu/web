@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { UserContext } from "../../UserContext";
-import * as s from "../../components/Theme.sc";
 import * as scs from "./Settings.sc";
 import strings from "../../i18n/definitions";
 import { Class } from "./class/Class";
@@ -54,7 +53,7 @@ export default function Settings({ api, setUser }) {
   return (
     <scs.SettingContainer>
       <scs.StyledSettings>
-        <s.H1>{strings.settings}</s.H1>
+        <scs.H1>{strings.settings}</scs.H1>
 
         <scs.NavList>
           {Object.values(settingsVariants).map((settingVariant) => (
