@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange, zeeguuLightYellow } from "./colors";
+import { zeeguuOrange } from "./colors";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -20,7 +20,10 @@ const RoundButton = styled.div`
 `;
 
 const OrangeRoundButton = styled(RoundButton)`
-  background-color: ${zeeguuOrange};
+  border-radius: 50px;
+  padding: 10px 43px;
+  font-size: 13px;
+  line-height: 16px;
 `;
 
 // from: https://stackoverflow.com/questions/10019797/pure-css-close-button

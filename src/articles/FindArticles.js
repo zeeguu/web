@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
-import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import Reminder from "./Reminder";
@@ -15,25 +14,22 @@ import {
   runningInFirefoxDesktop,
 } from "../utils/misc/browserDetection";
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
-import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { useLocation } from "react-router-dom";
-
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function NewArticles({ api }) {
-  const searchQuery = useQuery().get("search");
+  const searchQuery = useLocation().search;
 
-  const [articleList, setArticleList] = useState(null);
-  const [originalList, setOriginalList] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [articleList, setArticleList] = useState([]);
+  const [originalList, setOriginalList] = useState([]);
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
 
   useEffect(() => {
+    setTitle(strings.findArticles);
+
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
     console.log(
       "Localstorage displayed extension: " +
@@ -44,19 +40,22 @@ export default function NewArticles({ api }) {
       checkExtensionInstalled(setHasExtension);
     }
 
-    // load articles)
+    setIsLoading(true);
     if (searchQuery) {
       api.search(searchQuery, (articles) => {
+        setIsLoading(false);
+
         setArticleList(articles);
         setOriginalList([...articles]);
       });
     } else {
       api.getUserArticles((articles) => {
+        setIsLoading(false);
+
         setArticleList(articles);
         setOriginalList([...articles]);
       });
     }
-    setTitle(strings.findArticles);
   }, []);
 
   useEffect(() => {
@@ -64,10 +63,6 @@ export default function NewArticles({ api }) {
       setExtensionMessageOpen(true);
     }
   }, [hasExtension]);
-
-  if (articleList == null) {
-    return <LoadingAnimation />;
-  }
 
   //when the user changes interests...
   function articlesListShouldChange() {
@@ -78,8 +73,27 @@ export default function NewArticles({ api }) {
     });
   }
 
+  const searchArticlesBySearchField = async (searchText) => {
+    setIsLoading(true);
+    if (!searchText) {
+      return api.getUserArticles((articles) => {
+        setIsLoading(false);
+
+        setArticleList(articles);
+        setOriginalList([...articles]);
+      });
+    }
+
+    await api.search(searchText, (articles) => {
+      setIsLoading(false);
+
+      setArticleList(articles);
+      setOriginalList([...articles]);
+    });
+  };
+
   return (
-    <>
+    <s.MaterialSelection>
       <ExtensionMessage
         open={extensionMessageOpen}
         hasExtension={hasExtension}
@@ -88,39 +102,32 @@ export default function NewArticles({ api }) {
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
 
-      <s.MaterialSelection>
-        <Interests
-          api={api}
-          articlesListShouldChange={articlesListShouldChange}
-        />
+      <SearchField searchFunc={searchArticlesBySearchField} />
 
-        <SearchField query={searchQuery} />
-      </s.MaterialSelection>
+      <Interests />
 
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
-      />
-      <Reminder hasExtension={hasExtension}></Reminder>
-      {articleList.map((each) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          api={api}
-          hasExtension={hasExtension}
-        />
-      ))}
-
-      {searchQuery && articleList.length === 0 && (
-        <>No articles found that match your search</>
+      {isLoading ? (
+        <CircularProgress style={{ alignSelf: "center" }} />
+      ) : articleList?.length !== 0 ? (
+        <>
+          <SortingButtons
+            articleList={articleList}
+            originalList={originalList}
+            setArticleList={setArticleList}
+          />
+          <Reminder hasExtension={hasExtension}></Reminder>
+          {articleList?.map((each) => (
+            <ArticlePreview
+              key={each.id}
+              article={each}
+              api={api}
+              hasExtension={hasExtension}
+            />
+          ))}
+        </>
+      ) : (
+        <p>No articles found that match your search</p>
       )}
-
-      {!searchQuery && (
-        <ShowLinkRecommendationsIfNoArticles
-          articleList={articleList}
-        ></ShowLinkRecommendationsIfNoArticles>
-      )}
-    </>
+    </s.MaterialSelection>
   );
 }

@@ -230,6 +230,7 @@ let strings = new LocalizedStrings(
 
       //SearchField
       searchAllArticles: "Search all articles",
+      search: "Search...",
 
       //Search
       searching: "Searching...",
@@ -986,6 +987,7 @@ let strings = new LocalizedStrings(
 
       //SearchField
       searchAllArticles: "Søg i alle artikler",
+      search: "Search...",
 
       //Search
       searching: "Søger...",

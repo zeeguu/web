@@ -1,50 +1,68 @@
 import { useState } from "react";
-import strings from "../i18n/definitions";
 import * as s from "./SearchField.sc";
-import { ClearSearchButton } from "../components/allButtons.sc";
+import FormControl from "@mui/material/FormControl";
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from "@mui/material";
+import strings from "../i18n/definitions";
+import CloseIcon from "@mui/icons-material/Close";
 
-export default function SearchField({ query }) {
-  const [searchTerm, setSearchTerm] = useState(query);
+export default function SearchField({ searchFunc }) {
+  const [searchTerm, setSearchTerm] = useState("");
 
-  function keyDownInSearch(e) {
+  const keyDownInSearch = (e) => {
     if (e.key === "Enter") {
-      console.log(searchTerm);
-      window.location = `/articles?search=${searchTerm}`;
+      searchFunc(searchTerm);
     }
-  }
+  };
 
   return (
     <s.SearchField>
-      <input
-        style={{ float: "left", fontWeight: query ? "bold" : "normal" }}
-        className="searchTextfieldInput"
-        type="text"
-        id="search-expandable"
-        placeholder={strings.searchAllArticles}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onKeyDown={keyDownInSearch}
-      />
-
-      {query && (
-        <a onClick={(e) => (window.location = "/articles")}>
-          <ClearSearchButton />
-        </a>
-      )}
-
-      <a
-        style={{ cursor: "pointer" }}
-        onClick={(e) => (window.location = `/articles?search=${searchTerm}`)}
+      <FormControl
+        sx={{ m: 1, width: "25ch" }}
+        className="search-box"
+        variant="outlined"
+        size="small"
       >
-        <svg
-          focusable="false"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          style={{ width: "1.8em", fill: "orange" }}
-        >
-          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
-        </svg>
-      </a>
+        <InputLabel htmlFor="outlined-adornment-password">
+          {strings.search}
+        </InputLabel>
+        <OutlinedInput
+          className="search-input"
+          variant="outlined"
+          id="outlined-adornment-password"
+          type="text"
+          label={strings.search}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={keyDownInSearch}
+          endAdornment={
+            <InputAdornment position="end">
+              {searchTerm && (
+                <IconButton
+                  aria-label="search"
+                  size="small"
+                  onClick={() => setSearchTerm("")}
+                  edge="end"
+                >
+                  <CloseIcon />
+                </IconButton>
+              )}
+              <IconButton
+                aria-label="search"
+                onClick={() => searchFunc(searchTerm)}
+                edge="end"
+              >
+                <SearchIcon />
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+      </FormControl>
     </s.SearchField>
   );
 }
