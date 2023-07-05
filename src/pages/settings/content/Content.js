@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 import strings from "../../../i18n/definitions";
 import * as scs from "../Settings.sc";
 import * as sc from "../../../components/Theme.sc";
@@ -137,27 +137,41 @@ export const Content = ({ api }) => {
   const [nonInterests, setNonInterests] = useState(nonInterestsData);
 
   const [interests, setInterests] = useState([]);
-  const [availableInterests, setAvailableInterests] = useState([]);
-  const [subscribedInterests, setSubscribedInterests] = useState([]);
-  const [subscribedSearchers, setSubscribedSearchers] = useState([]);
+  const [dividedInterests, setDividedInterests] = useState({
+    available: [], // Unsubscribed topics
+    subscribed: [], // Subscribed topics
+    searchers: [], // Subscribed topics that are created by user
+  });
+  // For comparing with dicidedInterests after save button is clicked
+  const initialDividedInterests = useRef({
+    available: [],
+    subscribed: [],
+    searchers: [],
+  });
 
   const handleInterestPress = (currentInterest, isSubscribed) => {
     if (isSubscribed) {
       // unsubscribe
-      const filteredSubscribedInterests = subscribedInterests.filter(
+      const filteredSubscribedInterests = dividedInterests.subscribed.filter(
         (interest) => interest.id !== currentInterest.id
       );
 
-      setSubscribedInterests(filteredSubscribedInterests);
-      setAvailableInterests((prev) => [...prev, currentInterest]);
+      setDividedInterests((prev) => ({
+        ...prev,
+        available: [...prev.available, currentInterest],
+        subscribed: [...filteredSubscribedInterests],
+      }));
     } else {
       // subscribe
-      const filteredAvailableInterests = availableInterests.filter(
+      const filteredAvailableInterests = dividedInterests.available.filter(
         (interest) => interest.id !== currentInterest.id
       );
 
-      setSubscribedInterests((prev) => [...prev, currentInterest]);
-      setAvailableInterests(filteredAvailableInterests);
+      setDividedInterests((prev) => ({
+        ...prev,
+        available: [...filteredAvailableInterests],
+        subscribed: [...prev.subscribed, currentInterest],
+      }));
     }
   };
 
@@ -189,21 +203,41 @@ export const Content = ({ api }) => {
   );
 
   useEffect(() => {
-    api.getAvailableTopics((data) => setAvailableInterests(data));
-    api.getSubscribedTopics((data) => setSubscribedInterests(data));
-    api.getSubscribedSearchers((data) => setSubscribedSearchers(data));
+    api.getAvailableTopics((data) => {
+      setDividedInterests((prev) => ({ ...prev, available: [...data] }));
+      initialDividedInterests.current = {
+        ...initialDividedInterests.current,
+        available: [...data],
+      };
+    });
+    api.getSubscribedTopics((data) => {
+      setDividedInterests((prev) => ({ ...prev, subscribed: [...data] }));
+      initialDividedInterests.current = {
+        ...initialDividedInterests.current,
+        subscribed: [...data],
+      };
+    });
+    api.getSubscribedSearchers((data) => {
+      setDividedInterests((prev) => ({ ...prev, searchers: [...data] }));
+      initialDividedInterests.current = {
+        ...initialDividedInterests.current,
+        searchers: [...data],
+      };
+    });
   }, []);
 
   useEffect(() => {
+    const { available, subscribed, searchers } = dividedInterests;
+
     // Create all interests array (sorted by interest's title)
-    const sortedInterests = [
-      ...availableInterests,
-      ...subscribedInterests,
-      ...subscribedSearchers,
-    ].sort((a, b) => a.title.localeCompare(b.title));
+    const sortedInterests = [...available, ...subscribed, ...searchers].sort(
+      (a, b) => a.title.localeCompare(b.title)
+    );
 
     setInterests(sortedInterests);
-  }, [availableInterests, subscribedInterests, subscribedSearchers]);
+
+    console.log(dividedInterests);
+  }, [dividedInterests]);
 
   return (
     <div>
@@ -227,7 +261,11 @@ export const Content = ({ api }) => {
         </s.InterestsBox>
         <s.InterestsContainer>
           {interests.map((currentInterest) => {
-            const isSubscribed = subscribedInterests.find(
+            const isSearchers = dividedInterests.searchers.find(
+              (interest) => interest.id === currentInterest.id
+            );
+
+            const isSubscribed = dividedInterests.subscribed.find(
               (interest) => interest.id === currentInterest.id
             );
 
@@ -235,11 +273,17 @@ export const Content = ({ api }) => {
               <InterestButton
                 key={currentInterest.id}
                 variant={
-                  isSubscribed ? variants.orangeFilled : variants.grayOutlined
+                  isSubscribed || isSearchers
+                    ? variants.orangeFilled
+                    : variants.grayOutlined
                 }
                 title={currentInterest.title}
                 onClick={() =>
-                  handleInterestPress(currentInterest, isSubscribed)
+                  handleInterestPress(
+                    currentInterest,
+                    isSubscribed,
+                    isSearchers
+                  )
                 }
               />
             );
