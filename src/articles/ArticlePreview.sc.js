@@ -67,6 +67,7 @@ let Summary = styled.div`
   font-weight: 400;
   font-size: 14px;
   line-height: 150%;
+  grid-column: 1 / 3;
 `;
 
 let SourceImage = styled.span`
@@ -125,6 +126,14 @@ const TopicsBox = styled.div`
   justify-content: flex-end;
 `;
 
+const Date = styled.div`
+  font-size: 13px;
+  line-height: calc(16 / 13);
+  color: ${zeeguuSecondOrange};
+  padding: 5px;
+  text-align: right;
+`;
+
 export {
   Title,
   Difficulty,
@@ -138,4 +147,5 @@ export {
   TitleBox,
   LabelsBox,
   TopicsBox,
+  Date,
 };

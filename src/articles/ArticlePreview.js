@@ -57,6 +57,8 @@ export default function ArticleOverview({
       <div
         style={{
           marginBottom: "18px",
+          display: "grid",
+          gridTemplateColumns: "7fr 3fr",
         }}
       >
         <s.Title>
@@ -77,12 +79,15 @@ export default function ArticleOverview({
                 {articleTitle}
               </a>
               <s.LabelsBox>
-                <TimeLabel title={`${readingTime} min`} />
+                {readingTime ? (
+                  <TimeLabel title={`${readingTime} min`} />
+                ) : null}
                 <LevelLabel level={difficulty} />
               </s.LabelsBox>
             </s.TitleBox>
           )}
         </s.Title>
+        <s.Date>23.12.2022</s.Date>
         <s.Summary>{articleText}</s.Summary>
       </div>
 
