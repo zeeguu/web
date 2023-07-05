@@ -10,74 +10,52 @@ import {
 
 export const interestsData = [
   {
-    name: "Art",
-    value: false,
-    id: "intArt",
+    id: 18,
+    title: "Business",
   },
   {
-    name: "Business",
-    value: false,
-    id: "intBusiness",
+    id: 15,
+    title: "Culture",
   },
   {
-    name: "Culture",
-    value: false,
-    id: "intCulture",
+    id: 17,
+    title: "Food",
   },
   {
-    name: "Food",
-    value: false,
-    id: "intFood",
+    id: 11,
+    title: "Health",
   },
   {
-    name: "Health",
-    value: false,
-    id: "intHealth",
+    id: 23,
+    title: "Internet",
   },
   {
-    name: "Music",
-    value: false,
-    id: "intMusic",
+    id: 13,
+    title: "Politics",
   },
   {
-    name: "Politics",
-    value: false,
-    id: "intPolitics",
+    id: 19,
+    title: "Satire",
   },
   {
-    name: "Satire",
-    value: false,
-    id: "intSatire",
+    id: 14,
+    title: "Science",
   },
   {
-    name: "Social",
-    value: false,
-    id: "intSocial",
+    id: 21,
+    title: "Social Sciences",
   },
   {
-    name: "Science",
-    value: false,
-    id: "intScience",
+    id: 10,
+    title: "Sport",
   },
   {
-    name: "Social Sciences",
-    value: false,
-    id: "intSocialSciences",
+    id: 12,
+    title: "Technology",
   },
   {
-    name: "Sport",
-    value: false,
-    id: "intSport",
-  },
-  {
-    name: "Travel",
-    value: false,
-    id: "intTravel",
-  },
-  {
-    name: "Technology",
-    value: false,
-    id: "intTechnology",
+    id: 16,
+    title: "Travel",
   },
 ];
 export const nonInterestsData = [
@@ -154,35 +132,38 @@ export const nonInterestsData = [
 ];
 
 export const Content = ({ api }) => {
-  const [interests, setInterests] = useState(interestsData);
   const [isAllInterests, setIsAllInterests] = useState(false);
   const [isAllNonInterests, setIsAllNonInterests] = useState(false);
   const [nonInterests, setNonInterests] = useState(nonInterestsData);
 
-  const handleInterestPress = useCallback(
-    (type) => {
-      return (interestName) => {
-        const newInterests = (
-          type === "nonInterests" ? nonInterests : interests
-        ).map((interest) => {
-          const newInterest = {
-            ...interest,
-            value: interest.value,
-          };
+  const [interests, setInterests] = useState([]);
+  const [availableInterests, setAvailableInterests] = useState([]);
+  const [subscribedInterests, setSubscribedInterests] = useState([]);
+  const [subscribedSearchers, setSubscribedSearchers] = useState([]);
 
-          if (interest.name === interestName) {
-            newInterest.value = !interest.value;
-            return newInterest;
-          }
+  const handleInterestPress = (currentInterest, isSubscribed) => {
+    if (isSubscribed) {
+      // unsubscribe
+      const filteredSubscribedInterests = subscribedInterests.filter(
+        (interest) => interest.id !== currentInterest.id
+      );
 
-          return interest;
-        });
-        if (type === "nonInterests") setNonInterests(newInterests);
-        if (type === "interests") setInterests(newInterests);
-      };
-    },
-    [interests, nonInterests]
-  );
+      setSubscribedInterests(filteredSubscribedInterests);
+      setAvailableInterests((prev) => [...prev, currentInterest]);
+    } else {
+      // subscribe
+      const filteredAvailableInterests = availableInterests.filter(
+        (interest) => interest.id !== currentInterest.id
+      );
+
+      setSubscribedInterests((prev) => [...prev, currentInterest]);
+      setAvailableInterests(filteredAvailableInterests);
+    }
+  };
+
+  //TODO: post subscribeInterests and availableInterests and subscribeSearchers after clicking 'save' to the server
+
+  const handleNonInterestPress = () => {};
 
   const handleSelectAllInterests = useCallback(
     (type) => {
@@ -207,11 +188,22 @@ export const Content = ({ api }) => {
     [interests, nonInterests]
   );
 
-  // useEffect(() => {
-  //   api.getInterestingTopics((data) => {
-  //     console.log(data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    api.getAvailableTopics((data) => setAvailableInterests(data));
+    api.getSubscribedTopics((data) => setSubscribedInterests(data));
+    api.getSubscribedSearchers((data) => setSubscribedSearchers(data));
+  }, []);
+
+  useEffect(() => {
+    // Create all interests array (sorted by interest's title)
+    const sortedInterests = [
+      ...availableInterests,
+      ...subscribedInterests,
+      ...subscribedSearchers,
+    ].sort((a, b) => a.title.localeCompare(b.title));
+
+    setInterests(sortedInterests);
+  }, [availableInterests, subscribedInterests, subscribedSearchers]);
 
   return (
     <div>
@@ -223,7 +215,7 @@ export const Content = ({ api }) => {
               isAllInterests ? variants.orangeFilled : variants.grayOutlined
             }
             title={strings.all}
-            onClick={handleSelectAllInterests("interests")}
+            onClick={() => handleSelectAllInterests("interests")}
           />
           <s.AddInterestBtn>
             <s.Plus>
@@ -234,16 +226,24 @@ export const Content = ({ api }) => {
           </s.AddInterestBtn>
         </s.InterestsBox>
         <s.InterestsContainer>
-          {interests.map((item, id) => (
-            <InterestButton
-              key={id}
-              variant={
-                item.value ? variants.orangeFilled : variants.grayOutlined
-              }
-              title={item.name}
-              onClick={handleInterestPress("interests")}
-            />
-          ))}
+          {interests.map((currentInterest) => {
+            const isSubscribed = subscribedInterests.find(
+              (interest) => interest.id === currentInterest.id
+            );
+
+            return (
+              <InterestButton
+                key={currentInterest.id}
+                variant={
+                  isSubscribed ? variants.orangeFilled : variants.grayOutlined
+                }
+                title={currentInterest.title}
+                onClick={() =>
+                  handleInterestPress(currentInterest, isSubscribed)
+                }
+              />
+            );
+          })}
         </s.InterestsContainer>
       </div>
 
@@ -255,7 +255,7 @@ export const Content = ({ api }) => {
               isAllNonInterests ? variants.grayFilled : variants.grayOutlined
             }
             title={strings.all}
-            onClick={handleSelectAllInterests("nonInterests")}
+            onClick={() => handleSelectAllInterests("nonInterests")}
           />
           <s.AddInterestBtn>
             <s.Plus>
@@ -271,7 +271,7 @@ export const Content = ({ api }) => {
               key={id}
               variant={item.value ? variants.grayFilled : variants.grayOutlined}
               title={item.name}
-              onClick={handleInterestPress("nonInterests")}
+              onClick={() => handleNonInterestPress()}
             />
           ))}
         </s.InterestsContainer>
