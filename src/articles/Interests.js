@@ -4,6 +4,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import Filters from "../utils/filters/filters";
 import { interestsData } from "../pages/settings/content/Content";
 
+import ScrollContainer from "react-indiana-drag-scroll";
+
 const interestsWithAll = [
   {
     name: "All",
@@ -14,11 +16,6 @@ const interestsWithAll = [
 ];
 
 export default function InterestsAndSearch({ setArticles }) {
-  const anchorLeft = useRef();
-  const anchorRight = useRef();
-
-  const [isVisibleLeft, setIsVisibleLeft] = useState(false);
-  const [isVisibleRight, setIsVisibleRight] = useState(true);
   const [interests, setInterests] = useState(interestsWithAll);
 
   const handleInterestPress = useCallback(
@@ -53,49 +50,9 @@ export default function InterestsAndSearch({ setArticles }) {
     [interests]
   );
 
-  const leftCallbackFunction = useCallback((entries) => {
-    const [entry] = entries;
-
-    setIsVisibleLeft(!entry.isIntersecting);
-  }, []);
-
-  const rightCallbackFunction = useCallback((entries) => {
-    const [entry] = entries;
-
-    setIsVisibleRight(!entry.isIntersecting);
-  }, []);
-
-  useEffect(() => {
-    const observerLeft = new IntersectionObserver(leftCallbackFunction, {
-      root: null,
-      threshold: 1,
-    });
-    const observerRight = new IntersectionObserver(rightCallbackFunction, {
-      root: null,
-      threshold: 1,
-    });
-
-    if (anchorLeft.current) {
-      observerLeft.observe(anchorLeft.current);
-    }
-
-    if (anchorRight.current) {
-      observerRight.observe(anchorRight.current);
-    }
-
-    return () => {
-      if (anchorLeft.current) {
-        observerLeft.unobserve(anchorLeft.current);
-      }
-      if (anchorRight.current) {
-        observerRight.unobserve(anchorRight.current);
-      }
-    };
-  }, []);
-
   return (
     <s.Interests>
-      <img
+      {/* <img
         src="/static/icons/topic-arrow.svg"
         alt="topic-arrow"
         style={{
@@ -117,9 +74,9 @@ export default function InterestsAndSearch({ setArticles }) {
           top: "15px",
           display: isVisibleRight ? "block" : "none",
         }}
-      />
-      <s.ScrollContainer>
-        <span ref={anchorLeft} />
+      /> */}
+      <ScrollContainer style={{ display: "flex", flexWrap: "nowrap" }}>
+        {/* <span ref={anchorLeft} /> */}
         {interests.map((item, id) => (
           <b.OrangeRoundButton
             key={id}
@@ -131,8 +88,8 @@ export default function InterestsAndSearch({ setArticles }) {
             {item?.name}
           </b.OrangeRoundButton>
         ))}
-        <span ref={anchorRight} />
-      </s.ScrollContainer>
+        {/* <span ref={anchorRight} /> */}
+      </ScrollContainer>
     </s.Interests>
   );
 }

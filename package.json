@@ -34,6 +34,7 @@
     "react-datepicker": "^4.1.1",
     "react-dom": "^17.0.1",
     "react-icons": "^4.2.0",
+    "react-indiana-drag-scroll": "^2.2.0",
     "react-loader-spinner": "^4.0.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.0",
