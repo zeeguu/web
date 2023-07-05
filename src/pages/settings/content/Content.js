@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import strings from "../../../i18n/definitions";
 import * as scs from "../Settings.sc";
 import * as sc from "../../../components/Theme.sc";
@@ -153,7 +153,7 @@ export const nonInterestsData = [
   },
 ];
 
-export const Content = () => {
+export const Content = ({ api }) => {
   const [interests, setInterests] = useState(interestsData);
   const [isAllInterests, setIsAllInterests] = useState(false);
   const [isAllNonInterests, setIsAllNonInterests] = useState(false);
@@ -206,6 +206,12 @@ export const Content = () => {
     },
     [interests, nonInterests]
   );
+
+  // useEffect(() => {
+  //   api.getInterestingTopics((data) => {
+  //     console.log(data);
+  //   });
+  // }, []);
 
   return (
     <div>

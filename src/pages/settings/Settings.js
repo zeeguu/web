@@ -76,7 +76,9 @@ export default function Settings({ api, setUser }) {
 
         {currentSettings === settingsVariants.class.name && <Class />}
 
-        {currentSettings === settingsVariants.content.name && <Content />}
+        {currentSettings === settingsVariants.content.name && (
+          <Content api={api} />
+        )}
       </scs.StyledSettings>
     </scs.SettingContainer>
   );
