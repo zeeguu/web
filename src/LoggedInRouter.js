@@ -1,5 +1,6 @@
 import SideBar from "./components/SideBar";
 import { PrivateRoute } from "./PrivateRoute";
+import AvatarSettings from "./components/avatarSettings/AvatarSettings";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import WordsRouter from "./words/_WordsRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
@@ -10,7 +11,7 @@ import UserDashboard from "./userDashboard/UserDashboard";
 import React from "react";
 import ReadingHistory from "./words/WordHistory";
 
-export default function LoggedInRouter({ api, setUser }) {
+export default function LoggedInRouter({ api, setUser, user }) {
   return (
     <SideBar api={api}>
       <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
@@ -35,6 +36,8 @@ export default function LoggedInRouter({ api, setUser }) {
         api={api}
         component={UserDashboard}
       />
+
+      <AvatarSettings user={user} />
     </SideBar>
   );
 }

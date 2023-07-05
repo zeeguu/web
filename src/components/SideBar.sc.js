@@ -8,7 +8,7 @@ import styled, { css } from "styled-components";
 
 let arrowSize = "80px";
 
-let sideBarWidthDesktop = "12.5em";
+let sideBarWidthDesktop = "13.9em";
 
 let mainPageContentCommon = css`
   position: fixed;
@@ -42,7 +42,7 @@ const MainContentToggled = styled.div`
   ${mainPageContentCommon}
 
   /* Toggled (Open) on Mobile  */
-  left: 7em;
+  left: 10em;
   right: 0.1em;
 
   @media (min-width: 768px) {
@@ -56,7 +56,9 @@ const MainContentToggled = styled.div`
 const sidebarCommon = css`
   position: fixed;
   top: 0;
-  height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background-color: ${(props) => props.light};
 `;
 
@@ -128,6 +130,8 @@ const navigationVisibleCommon = css`
       color: white;
       text-decoration: none;
       padding-left: 10px;
+      display: flex;
+      align-items: center;
     }
   }
 `;
@@ -144,7 +148,7 @@ const SideBarInitial = styled.div`
 
   //   Default for Desktop = Open
   @media (min-width: 768px) {
-    width: 12.5em;
+    width: 14em;
 
     /* Logo */
     ${logoOpen}
@@ -164,7 +168,7 @@ const SideBarToggled = styled.div`
   ${sidebarCommon}
 
   // Mobile - Open
-  width: 7em;
+  width: 10em;
 
   ${logoOpen}
 
@@ -186,9 +190,27 @@ const SideBarToggled = styled.div`
   }
 `;
 
+const SettingsWithLogOut = styled.div`
+  justify-self: flex-end;
+`;
+
+const Sidebar = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  margin-bottom: 0;
+
+  @media (min-width: 768px) {
+    margin-bottom: 16px;
+  }
+`;
+
 export {
   SideBarInitial,
   SideBarToggled,
   MainContentInitial,
   MainContentToggled,
+  SettingsWithLogOut,
+  Sidebar,
 };
