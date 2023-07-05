@@ -22,15 +22,15 @@ const settingsVariants = {
     name: "personalData",
     route: "/personalData",
   },
-  class: {
-    title: strings.class,
-    name: "class",
-    route: "/class",
-  },
   content: {
     title: strings.content,
     name: "content",
     route: "/content",
+  },
+  class: {
+    title: strings.class,
+    name: "class",
+    route: "/class",
   },
 };
 

@@ -762,7 +762,7 @@ let strings = new LocalizedStrings(
 
       class: "Class",
       personalData: "Personal data",
-      content: "Content",
+      content: "Interests",
       className: "Class name",
       chooseTheClass: "Choose the class name",
       createInvite: "Create any  invite code you like",
@@ -1485,7 +1485,7 @@ let strings = new LocalizedStrings(
 
       class: "Class",
       personalData: "Personal data",
-      content: "Content",
+      content: "Interests",
       className: "Class name",
       chooseTheClass: "Choose the class name",
       createInvite: "Create any  invite code you like",
