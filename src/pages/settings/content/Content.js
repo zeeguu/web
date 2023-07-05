@@ -219,6 +219,13 @@ export const Content = () => {
             title={strings.all}
             onClick={handleSelectAllInterests("interests")}
           />
+          <s.AddInterestBtn>
+            <s.Plus>
+              <span></span>
+              <span></span>
+            </s.Plus>
+            Your own interest
+          </s.AddInterestBtn>
         </s.InterestsBox>
         <s.InterestsContainer>
           {interests.map((item, id) => (
@@ -244,6 +251,13 @@ export const Content = () => {
             title={strings.all}
             onClick={handleSelectAllInterests("nonInterests")}
           />
+          <s.AddInterestBtn>
+            <s.Plus>
+              <span></span>
+              <span></span>
+            </s.Plus>
+            Your own interest
+          </s.AddInterestBtn>
         </s.InterestsBox>
         <s.InterestsContainer>
           {nonInterests.map((item, id) => (
