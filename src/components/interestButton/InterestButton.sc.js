@@ -10,6 +10,9 @@ import { variants } from "./InterestButton";
 const InterestButton = styled(RoundButton)`
   border: 1px solid ${zeeguuThirdGray};
   cursor: ${(props) => (props.disabled ? "default" : "pointer")};
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: ${(props) => {
     switch (props.variant) {
       case variants.orangeFilled:
@@ -41,9 +44,9 @@ const InterestButton = styled(RoundButton)`
       case variants.grayOutlined:
         return `1px solid ${zeeguuThirdGray}`;
       case variants.grayFilled:
-        return "none";
+        return `1px solid ${zeeguuThirdGray}`;
       case variants.orangeFilled:
-        return "none";
+        return `1px solid ${zeeguuSecondOrange}`;
     }
   }};
 `;

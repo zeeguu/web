@@ -1,10 +1,9 @@
 import styled from "styled-components";
 
 const NarrowColumn = styled.div`
-  max-width: 768px;
+  max-width: 852px;
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;

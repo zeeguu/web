@@ -12,14 +12,14 @@ export const InterestButton = ({
   title,
   icon,
   variant,
-  onClick,
-  isDisabled = true,
+  onClick = () => {},
+  isDisabled,
 }) => {
   return (
     <s.InterestButton
       variant={variant}
       disabled={isDisabled}
-      onClick={() => onClick()}
+      onClick={() => onClick(title)}
     >
       {icon}
       {title}

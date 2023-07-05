@@ -1,47 +1,84 @@
-import React from 'react'
-import { Input } from '../../../components/input/Input'
-import strings from '../../../i18n/definitions'
-import { Dropdown } from '../../../components/dropdown/Dropdown'
-import { CEFR_LEVELS } from '../../../assorted/cefrLevels'
-import * as scs from '../Settings.sc'
+import React, { useState } from "react";
+import { Input } from "../../../components/input/Input";
+import strings from "../../../i18n/definitions";
+import { Dropdown } from "../../../components/dropdown/Dropdown";
+import * as scs from "../Settings.sc";
 
 const countriesData = [
   {
-    label: 'Chinese',
-    icon: <img src='/static/images/countries/china.png' width='25px' alt='china' />,
+    name: "Chinese",
+    icon: (
+      <img src="/static/images/countries/china.png" width="25px" alt="china" />
+    ),
   },
   {
-    label: 'Danish',
-    icon: <img src='/static/images/countries/denmark.png' width='25px' alt='denmark' />,
+    name: "Danish",
+    icon: (
+      <img
+        src="/static/images/countries/denmark.png"
+        width="25px"
+        alt="denmark"
+      />
+    ),
   },
   {
-    label: 'French',
-    icon: <img src='/static/images/countries/france.png' width='25px' alt='france' />,
+    name: "French",
+    icon: (
+      <img
+        src="/static/images/countries/france.png"
+        width="25px"
+        alt="france"
+      />
+    ),
   },
   {
-    label: 'German',
-    icon: <img src='/static/images/countries/germany.png' width='25px' alt='germany' />,
+    name: "German",
+    icon: (
+      <img
+        src="/static/images/countries/germany.png"
+        width="25px"
+        alt="germany"
+      />
+    ),
   },
   {
-    label: 'English',
-    icon: <img src='/static/images/countries/great_britain.png' width='25px' alt='great_britain' />,
+    name: "English",
+    icon: (
+      <img
+        src="/static/images/countries/great_britain.png"
+        width="25px"
+        alt="great_britain"
+      />
+    ),
   },
   {
-    label: 'Italian',
-    icon: <img src='/static/images/countries/italy.png' width='25px' alt='italy' />,
+    name: "Italian",
+    icon: (
+      <img src="/static/images/countries/italy.png" width="25px" alt="italy" />
+    ),
   },
   {
-    label: 'Dutch',
-    icon: <img src='/static/images/countries/netherlands.png' width='25px' alt='netherlands' />,
+    name: "Dutch",
+    icon: (
+      <img
+        src="/static/images/countries/netherlands.png"
+        width="25px"
+        alt="netherlands"
+      />
+    ),
   },
   {
-    label: 'Spanish',
-    icon: <img src='/static/images/countries/spain.png' width='25px' alt='spain' />,
+    name: "Spanish",
+    icon: (
+      <img src="/static/images/countries/spain.png" width="25px" alt="spain" />
+    ),
   },
-]
+];
 
-
-export const Class = ({userDetails, setUserDetails}) => {
+export const Class = () => {
+  const [currentLang, setCurrentLang] = useState(null);
+  const [className, setClassName] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
 
   return (
     <form>
@@ -49,33 +86,27 @@ export const Class = ({userDetails, setUserDetails}) => {
         isPlainText
         title={strings.className}
         placeholder={strings.chooseClass}
-        // value={userDetails.name}
-        // onChange={(e) =>
-        //   setUserDetails({ ...userDetails, name: e.target.value })
-        // }
+        value={className}
+        onChange={(value) => setClassName(value)}
       />
 
       <Input
         isPlainText
         title={strings.inviteCode}
         placeholder={strings.createInvite}
-        // value={userDetails.name}
-        // onChange={(e) =>
-        //   setUserDetails({ ...userDetails, name: e.target.value })
-        // }
+        value={inviteCode}
+        onChange={(value) => setInviteCode(value)}
       />
 
       <Dropdown
         title={strings.classroomLanguage}
         placeholder={strings.chooseClassroomLanguage}
-        value='value'
+        value={currentLang?.name}
         items={countriesData}
+        onChange={setCurrentLang}
       />
 
-      <scs.SettingButton onClick={() => {}}>
-        {strings.save}
-      </scs.SettingButton>
+      <scs.SettingButton onClick={() => {}}>{strings.save}</scs.SettingButton>
     </form>
-  )
-}
-
+  );
+};

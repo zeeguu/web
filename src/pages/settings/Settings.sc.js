@@ -7,6 +7,8 @@ import {
 
 export const StyledSettings = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
 
   .current-class-of-student {
     margin: 25px 0 -5px 0;

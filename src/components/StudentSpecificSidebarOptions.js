@@ -7,6 +7,8 @@ import {
   TeacherSite,
   Settings,
   LogOut,
+  History,
+  Statistics,
 } from "./icons/sidebar";
 import React from "react";
 import { iconsGray } from "./colors";
@@ -19,14 +21,13 @@ const sidebarPaths = {
   history: "/history",
   user_dashboard: "/user_dashboard",
   teacherClasses: "/teacher/classes",
-  accountSettings: "/account_settings",
-  home: "/",
 };
 
 export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
 
   const path = useLocation().pathname;
+
   return (
     <>
       <div>
@@ -35,8 +36,10 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
           to={sidebarPaths.articles}
           icon={
             <Home
-              color={path.endsWith(sidebarPaths.articles) || iconsGray}
+              color={path.endsWith(sidebarPaths.articles) ? "white" : iconsGray}
               style={{ marginRight: "10px" }}
+              width="15px"
+              height="15px"
             />
           }
         />
@@ -46,8 +49,10 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
           to={sidebarPaths.words}
           icon={
             <Words
-              color={path.endsWith(sidebarPaths.words) || iconsGray}
+              color={path.endsWith(sidebarPaths.words) ? "white" : iconsGray}
               style={{ marginRight: "10px" }}
+              width="15px"
+              height="15px"
             />
           }
         />
@@ -57,17 +62,44 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
           to={sidebarPaths.exercises}
           icon={
             <Exercises
-              color={path.endsWith(sidebarPaths.exercises) || iconsGray}
+              color={
+                path.endsWith(sidebarPaths.exercises) ? "white" : iconsGray
+              }
               style={{ marginRight: "10px" }}
+              width="15px"
+              height="15px"
             />
           }
         />
 
-        <SidebarLink text={strings.history} to={sidebarPaths.history} />
+        <SidebarLink
+          text={strings.history}
+          to={sidebarPaths.history}
+          icon={
+            <History
+              color={
+                path.endsWith(sidebarPaths.teacherClasses) ? "white" : iconsGray
+              }
+              style={{ marginRight: "10px" }}
+              width="15px"
+              height="15px"
+            />
+          }
+        />
 
         <SidebarLink
           text={strings.userDashboard}
           to={sidebarPaths.user_dashboard}
+          icon={
+            <Statistics
+              color={
+                path.endsWith(sidebarPaths.teacherClasses) ? "white" : iconsGray
+              }
+              style={{ marginRight: "10px" }}
+              width="15px"
+              height="15px"
+            />
+          }
         />
 
         {is_teacher && (
@@ -76,41 +108,19 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
             to={sidebarPaths.teacherClasses}
             icon={
               <TeacherSite
-                color={path.endsWith(sidebarPaths.teacherClasses) || iconsGray}
+                color={
+                  path.endsWith(sidebarPaths.teacherClasses)
+                    ? "white"
+                    : iconsGray
+                }
                 style={{ marginRight: "10px" }}
+                width="15px"
+                height="15px"
               />
             }
           />
         )}
       </div>
-
-      <s.SettingsWithLogOut>
-        <SidebarLink
-          text={strings.settings}
-          to={sidebarPaths.accountSettings}
-          icon={
-            <Settings
-              color={path.endsWith(sidebarPaths.accountSettings) || iconsGray}
-              style={{ marginRight: "10px" }}
-            />
-          }
-        />
-
-        <div className="navigationLink">
-          <Link
-            to={sidebarPaths.home}
-            onClick={() => {
-              user.logoutMethod();
-            }}
-          >
-            <LogOut
-              color={path.endsWith(sidebarPaths.home) || iconsGray}
-              style={{ marginRight: "10px" }}
-            />
-            <small>{strings.logout}</small>
-          </Link>
-        </div>
-      </s.SettingsWithLogOut>
     </>
   );
 }

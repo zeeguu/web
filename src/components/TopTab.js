@@ -1,30 +1,25 @@
 import { NavLink } from "react-router-dom";
+import { zeeguuSecondOrange } from "./colors";
 
-function TopTab({ id, text, link, isActive, addSeparator }) {
+function TopTab({ id, text, link, addSeparator }) {
   return (
-    <>
-      <div className="row__tab">
-        <NavLink
-          id={id}
-          className={"headmenuTab"}
-          to={link}
-          exact
-          activeStyle={{ fontWeight: 600 }}
-        >
-          {text}
-        </NavLink>
-      </div>
-      {addSeparator && SeparatorBar()}
-    </>
-  );
-}
-
-function SeparatorBar() {
-  return (
-    <div className="row__bar">
-      <div className="bar"></div>
+    <div className="row__tab">
+      <NavLink
+        id={id}
+        className="headmenuTab"
+        to={link}
+        exact
+        activeStyle={{
+          fontWeight: 500,
+          color: zeeguuSecondOrange,
+          borderBottom: `1px solid ${zeeguuSecondOrange}`,
+          paddingBottom: "5px",
+        }}
+      >
+        {text}
+      </NavLink>
     </div>
   );
 }
 
-export { TopTab, SeparatorBar };
+export { TopTab };
