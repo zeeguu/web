@@ -8,4 +8,23 @@ function random(x) {
   return x[Math.floor(Math.random() * x.length)];
 }
 
-export { removeArrayDuplicates, random };
+function compareArrays(initArr, newArr) {
+  const deleteItems = [];
+  const addItems = [];
+
+  for (let item of initArr) {
+    if (!newArr.includes(item)) {
+      deleteItems.push(item);
+    }
+  }
+
+  for (let item of newArr) {
+    if (!initArr.includes(item)) {
+      addItems.push(item);
+    }
+  }
+
+  return { deleteItems, addItems };
+}
+
+export { removeArrayDuplicates, random, compareArrays };
