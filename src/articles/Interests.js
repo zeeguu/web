@@ -8,9 +8,8 @@ import ScrollContainer from "react-indiana-drag-scroll";
 
 const interestsWithAll = [
   {
-    name: "All",
-    value: false,
-    id: "All",
+    title: "All",
+    id: 100,
   },
   ...interestsData,
 ];
@@ -77,15 +76,13 @@ export default function InterestsAndSearch({ setArticles }) {
       /> */}
       <ScrollContainer style={{ display: "flex", flexWrap: "nowrap" }}>
         {/* <span ref={anchorLeft} /> */}
-        {interests.map((item, id) => (
+        {interests.map(({ id, title }) => (
           <b.OrangeRoundButton
             key={id}
-            className={
-              item?.value ? "filled-interest-btn" : "unfilled-interest-btn"
-            }
-            onClick={() => handleInterestPress(item.name)}
+            className={!title ? "filled-interest-btn" : "unfilled-interest-btn"} //TODO: Figure out how to change bg here
+            onClick={() => handleInterestPress(title)}
           >
-            {item?.name}
+            {title}
           </b.OrangeRoundButton>
         ))}
         {/* <span ref={anchorRight} /> */}
