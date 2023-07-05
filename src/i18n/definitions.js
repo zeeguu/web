@@ -748,6 +748,14 @@ let strings = new LocalizedStrings(
       exercisesInTheLast: " exercises in the last ",
       wordsNotStudiedInZeeguu: "Words Not Studied in Zeeguu",
       systemLanguage: "System Language",
+
+      class: "Class",
+      personalData: "Personal data",
+      content: "Content",
+      className: "Class name",
+      chooseTheClass: "Choose the class name",
+      createInvite: "Create any  invite code you like",
+      chooseClassroomLanguage: "Choose classroom language",
     },
 
     da: {
@@ -1453,6 +1461,14 @@ let strings = new LocalizedStrings(
       exercisesInTheLast: " øvelser i en periode på ",
       wordsNotStudiedInZeeguu: "Ord ikke øvet i Zeeguu",
       systemLanguage: "Interface sprog",
+
+      class: "Class",
+      personalData: "Personal data",
+      content: "Content",
+      className: "Class name",
+      chooseTheClass: "Choose the class name",
+      createInvite: "Create any  invite code you like",
+      chooseClassroomLanguage: "Choose classroom language", // todo: change to DE
     },
   },
   {

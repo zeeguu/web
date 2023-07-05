@@ -32,3 +32,5 @@ yarn-debug.log*
 yarn-error.log*
 .react-bratus/data.json
 package-lock.json
+
+.idea
