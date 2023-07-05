@@ -138,6 +138,7 @@ export const Content = ({ api }) => {
   const [isAllNonInterests, setIsAllNonInterests] = useState(false);
   const [nonInterests, setNonInterests] = useState(nonInterestsData);
 
+  const [modalOpened, setModalOpened] = useState(false);
   const [interests, setInterests] = useState([]);
   const [dividedInterests, setDividedInterests] = useState({
     available: [], // Unsubscribed topics
@@ -283,7 +284,7 @@ export const Content = ({ api }) => {
             title={strings.all}
             onClick={() => handleSelectAllInterests("interests")}
           />
-          <s.AddInterestBtn>
+          <s.AddInterestBtn onClick={() => setModalOpened("interest")}>
             <s.Plus>
               <span></span>
               <span></span>
@@ -333,12 +334,12 @@ export const Content = ({ api }) => {
             title={strings.all}
             onClick={() => handleSelectAllInterests("nonInterests")}
           />
-          <s.AddInterestBtn>
+          <s.AddInterestBtn onClick={() => setModalOpened("non-interest")}>
             <s.Plus>
               <span></span>
               <span></span>
             </s.Plus>
-            Your own interest
+            Your own non-interest
           </s.AddInterestBtn>
         </s.InterestsBox>
         <s.InterestsContainer>
@@ -355,8 +356,10 @@ export const Content = ({ api }) => {
       <scs.SettingButton onClick={handleInterestsSave}>
         {strings.save}
       </scs.SettingButton>
-      <s.Blocker />
-      <Modal />
+      {modalOpened ? <s.Blocker /> : null}
+      {modalOpened ? (
+        <Modal modalOpened={modalOpened} setModalOpened={setModalOpened} />
+      ) : null}
     </div>
   );
 };

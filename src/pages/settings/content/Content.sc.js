@@ -29,6 +29,9 @@ const AddInterestBtn = styled.div`
   color: ${zeeguuSecondOrange};
   cursor: pointer;
   position: relative;
+  ${(props) =>
+    props.variants === "active" &&
+    `background: ${zeeguuSecondOrange}; color: #fff; & span { background: #fff !important; }`}
   &:hover {
     background: ${zeeguuSecondOrange};
     color: #fff;
