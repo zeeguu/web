@@ -145,17 +145,22 @@ export const Content = ({ api }) => {
   const [nonInterests, setNonInterests] = useState(nonInterestsData);
 
   const [modalOpened, setModalOpened] = useState(false);
-  const [interests, setInterests] = useState([]);
   const [searchers, setSearchers] = useState([]);
   const [dividedInterests, setDividedInterests] = useState({
     available: [], // Unsubscribed topics
     subscribed: [], // Subscribed topics
   });
-  // For comparing with dicidedInterests after save button is clicked
-  const initialDividedInterests = useRef({
-    available: [],
-    subscribed: [],
-  });
+
+  const interests = useMemo(() => {
+    const { available, subscribed } = dividedInterests;
+
+    // Create all interests array (sorted by interest's title)
+    const sortedInterests = [...available, ...subscribed].sort((a, b) =>
+      a.title.localeCompare(b.title)
+    );
+
+    return sortedInterests;
+  }, [dividedInterests]);
 
   const filteredSearchers = useMemo(() => {
     // Remove items from equal IDs from result searchers array
@@ -182,6 +187,8 @@ export const Content = ({ api }) => {
         available: [...prev.available, currentInterest],
         subscribed: [...filteredSubscribedInterests],
       }));
+
+      api.unsubscribeFromTopic(currentInterest);
     } else {
       // subscribe
       const filteredAvailableInterests = dividedInterests.available.filter(
@@ -193,6 +200,8 @@ export const Content = ({ api }) => {
         available: [...filteredAvailableInterests],
         subscribed: [...prev.subscribed, currentInterest],
       }));
+
+      api.subscribeToTopic(currentInterest);
     }
   };
 
@@ -205,8 +214,6 @@ export const Content = ({ api }) => {
 
     setSearchers(newSearchers);
   };
-
-  //TODO: post subscribeInterests and availableInterests and subscribeSearchers after clicking 'save' to the server
 
   const handleNonInterestPress = () => {};
 
@@ -225,7 +232,6 @@ export const Content = ({ api }) => {
           setIsAllNonInterests(!isAllNonInterests);
         }
         if (type === "interests") {
-          setInterests(newInterests);
           setIsAllInterests(!isAllInterests);
         }
       };
@@ -233,66 +239,17 @@ export const Content = ({ api }) => {
     [interests, nonInterests]
   );
 
-  const handleInterestsSave = () => {
-    const initialInterests = initialDividedInterests.current;
-
-    const subscribedDiffs = compareArrays(
-      initialInterests.subscribed,
-      dividedInterests.subscribed
-    );
-    const searchersDiffs = compareArrays(
-      initialInterests.searchers,
-      dividedInterests.searchers
-    );
-
-    // // TODO: figure out searchers API
-    // subscribedDiffs.deleteItems.forEach((item) => {
-    // 	api.unsubscribeFromTopic(item);
-    // });
-    // subscribedDiffs.addItems.forEach((item) => {
-    // 	api.subscribeToTopic(item);
-    // });
-    // // In API I see subscribeToSearch with searchTerm - not search.id
-    // searchersDiffs.deleteItems.forEach((item) => {
-    // 	api.unsubscribeFromSearch(item);
-    // });
-    // searchersDiffs.addItems.forEach(({}) => {
-    // 	api.subscribeToSearch(item);
-    // });
-
-    // initialDividedInterests.current = dividedInterests;
-  };
-
   useEffect(() => {
     api.getAvailableTopics((data) => {
       setDividedInterests((prev) => ({ ...prev, available: [...data] }));
-      initialDividedInterests.current = {
-        ...initialDividedInterests.current,
-        available: [...data],
-      };
     });
     api.getSubscribedTopics((data) => {
       setDividedInterests((prev) => ({ ...prev, subscribed: [...data] }));
-      initialDividedInterests.current = {
-        ...initialDividedInterests.current,
-        subscribed: [...data],
-      };
     });
     api.getSubscribedSearchers((data) => {
       setSearchers((prev) => [...prev, ...data]);
     });
   }, []);
-
-  useEffect(() => {
-    const { available, subscribed } = dividedInterests;
-
-    // Create all interests array (sorted by interest's title)
-    const sortedInterests = [...available, ...subscribed].sort((a, b) =>
-      a.title.localeCompare(b.title)
-    );
-
-    setInterests([...sortedInterests]);
-  }, [dividedInterests]);
 
   return (
     <div>
@@ -373,9 +330,9 @@ export const Content = ({ api }) => {
           ))}
         </s.InterestsContainer>
       </div>
-      <scs.SettingButton onClick={handleInterestsSave}>
+      {/* <scs.SettingButton onClick={handleInterestsSave}>
         {strings.save}
-      </scs.SettingButton>
+      </scs.SettingButton> */}
       {modalOpened ? <s.Blocker /> : null}
       {modalOpened ? (
         <Modal
