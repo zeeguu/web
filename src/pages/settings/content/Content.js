@@ -1,15 +1,7 @@
-import React, {
-  useCallback,
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import strings from "../../../i18n/definitions";
-import * as scs from "../Settings.sc";
 import * as sc from "../../../components/Theme.sc";
 import * as s from "./Content.sc";
-import { compareArrays } from "../../../utils/basic/arrays";
 import {
   InterestButton,
   variants,
@@ -140,9 +132,8 @@ export const nonInterestsData = [
 ];
 
 export const Content = ({ api }) => {
-  const [isAllInterests, setIsAllInterests] = useState(false);
-  const [isAllNonInterests, setIsAllNonInterests] = useState(false);
-  const [nonInterests, setNonInterests] = useState(nonInterestsData);
+  const [dividedNonInterests, setDividedNonInterests] = useState([]);
+  const [nonSearchers, setNonSearchers] = useState([]);
 
   const [modalOpened, setModalOpened] = useState(false);
   const [searchers, setSearchers] = useState([]);
@@ -154,6 +145,10 @@ export const Content = ({ api }) => {
   const interests = useMemo(() => {
     const { available, subscribed } = dividedInterests;
 
+    if (!available.length && !subscribed.length) {
+      return [];
+    }
+
     // Create all interests array (sorted by interest's title)
     const sortedInterests = [...available, ...subscribed].sort((a, b) =>
       a.title.localeCompare(b.title)
@@ -161,6 +156,19 @@ export const Content = ({ api }) => {
 
     return sortedInterests;
   }, [dividedInterests]);
+
+  const nonInterests = useMemo(() => {
+    if (!dividedNonInterests.length) {
+      return [];
+    }
+
+    // Create all interests array (sorted by non-interest's title)
+    const sortedNonInterests = dividedNonInterests.sort((a, b) =>
+      a.title.localeCompare(b.title)
+    );
+
+    return sortedNonInterests;
+  }, [dividedNonInterests]);
 
   const filteredSearchers = useMemo(() => {
     // Remove items from equal IDs from result searchers array
@@ -175,71 +183,85 @@ export const Content = ({ api }) => {
     return filtered;
   }, [searchers]);
 
-  const handleInterestPress = (currentInterest, isSubscribed) => {
+  const filteredNonSearchers = useMemo(() => {
+    // Remove items from equal IDs from result non-searchers array
+    const filtered = nonSearchers.filter(
+      (value, idx, self) =>
+        idx ===
+        self.findIndex(
+          (item) => item.id === value.id || item.search === value.search
+        )
+    );
+
+    return filtered;
+  }, [nonSearchers]);
+
+  const handleInterestPress = (currentInterest, isSubscribed, isInterests) => {
+    const interests = isInterests ? dividedInterests : dividedNonInterests;
+
     if (isSubscribed) {
       // unsubscribe
-      const filteredSubscribedInterests = dividedInterests.subscribed.filter(
+      const filteredSubscribedInterests = interests.subscribed.filter(
         (interest) => interest.id !== currentInterest.id
       );
 
-      setDividedInterests((prev) => ({
-        ...prev,
-        available: [...prev.available, currentInterest],
-        subscribed: [...filteredSubscribedInterests],
-      }));
+      if (isInterests) {
+        setDividedInterests((prev) => ({
+          ...prev,
+          available: [...prev.available, currentInterest],
+          subscribed: [...filteredSubscribedInterests],
+        }));
 
-      api.unsubscribeFromTopic(currentInterest);
+        api.unsubscribeFromTopic(currentInterest);
+      } else {
+        setDividedNonInterests(filteredSubscribedInterests);
+
+        api.unsubscribeFromFilter(currentInterest);
+      }
     } else {
       // subscribe
-      const filteredAvailableInterests = dividedInterests.available.filter(
+      const filteredAvailableInterests = interests.available.filter(
         (interest) => interest.id !== currentInterest.id
       );
 
-      setDividedInterests((prev) => ({
-        ...prev,
-        available: [...filteredAvailableInterests],
-        subscribed: [...prev.subscribed, currentInterest],
-      }));
+      if (isInterests) {
+        setDividedInterests((prev) => ({
+          ...prev,
+          available: [...filteredAvailableInterests],
+          subscribed: [...prev.subscribed, currentInterest],
+        }));
 
-      api.subscribeToTopic(currentInterest);
+        api.subscribeToTopic(currentInterest);
+      } else {
+        setDividedNonInterests(filteredAvailableInterests);
+
+        api.subscribeToFilter(currentInterest);
+      }
     }
   };
 
-  const handleSearchPress = (search) => {
-    api.unsubscribeFromSearch(search);
+  const handleSearchPress = (search, isInterests) => {
+    if (isInterests) {
+      api.unsubscribeFromSearch(search);
 
-    const newSearchers = searchers.filter(
-      (currentSearch) => currentSearch.id !== search.id
-    );
+      const newSearchers = searchers.filter(
+        (currentSearch) => currentSearch.id !== search.id
+      );
 
-    setSearchers(newSearchers);
+      setSearchers(newSearchers);
+    } else {
+      api.unsubscribeFromSearchFilter(search);
+
+      const newNonSearchers = nonSearchers.filter(
+        (currentSearch) => currentSearch.id !== search.id
+      );
+
+      setNonSearchers(newNonSearchers);
+    }
   };
 
-  const handleNonInterestPress = () => {};
-
-  const handleSelectAllInterests = useCallback(
-    (type) => {
-      return () => {
-        const newInterests = (
-          type === "nonInterests" ? nonInterests : interests
-        ).map((interest) => ({
-          ...interest,
-          value: type === "nonInterests" ? !isAllNonInterests : !isAllInterests,
-        }));
-
-        if (type === "nonInterests") {
-          setNonInterests(newInterests);
-          setIsAllNonInterests(!isAllNonInterests);
-        }
-        if (type === "interests") {
-          setIsAllInterests(!isAllInterests);
-        }
-      };
-    },
-    [interests, nonInterests]
-  );
-
   useEffect(() => {
+    // Interests
     api.getAvailableTopics((data) => {
       setDividedInterests((prev) => ({ ...prev, available: [...data] }));
     });
@@ -248,6 +270,14 @@ export const Content = ({ api }) => {
     });
     api.getSubscribedSearchers((data) => {
       setSearchers((prev) => [...prev, ...data]);
+    });
+
+    // Non Interests
+    api.getFilteredTopics((data) => {
+      setDividedNonInterests(data);
+    });
+    api.getSubscribedFilterSearches((data) => {
+      setNonSearchers(data);
     });
   }, []);
 
@@ -258,10 +288,10 @@ export const Content = ({ api }) => {
         <s.InterestsBox>
           <InterestButton
             variant={
-              isAllInterests ? variants.orangeFilled : variants.grayOutlined
+              // isAllInterests ? variants.orangeFilled : variants.grayOutlined
+              variants.grayOutlined
             }
             title={strings.all}
-            onClick={() => handleSelectAllInterests("interests")}
           />
           <s.AddInterestBtn onClick={() => setModalOpened("interests")}>
             <s.Plus>
@@ -285,7 +315,7 @@ export const Content = ({ api }) => {
                 }
                 title={currentInterest.title}
                 onClick={() =>
-                  handleInterestPress(currentInterest, isSubscribed)
+                  handleInterestPress(currentInterest, isSubscribed, true)
                 }
               />
             );
@@ -295,7 +325,7 @@ export const Content = ({ api }) => {
               key={currentSearch.id}
               variant={variants.orangeFilled}
               title={currentSearch.search}
-              onClick={() => handleSearchPress(currentSearch)}
+              onClick={() => handleSearchPress(currentSearch, true)}
             />
           ))}
         </s.InterestsContainer>
@@ -306,10 +336,10 @@ export const Content = ({ api }) => {
         <s.InterestsBox>
           <InterestButton
             variant={
-              isAllNonInterests ? variants.grayFilled : variants.grayOutlined
+              // isAllNonInterests ? variants.grayFilled : variants.grayOutlined
+              variants.grayOutlined
             }
             title={strings.all}
-            onClick={() => handleSelectAllInterests("nonInterests")}
           />
           <s.AddInterestBtn onClick={() => setModalOpened("non-interests")}>
             <s.Plus>
@@ -320,12 +350,30 @@ export const Content = ({ api }) => {
           </s.AddInterestBtn>
         </s.InterestsBox>
         <s.InterestsContainer>
-          {nonInterests.map((item, id) => (
+          {nonInterests.map((currentNonInterest) => {
+            const isSubscribed = dividedNonInterests.subscribed.find(
+              (interest) => interest.id === currentNonInterest.id
+            );
+
+            return (
+              <InterestButton
+                key={currentNonInterest.id}
+                variant={
+                  isSubscribed ? variants.orangeFilled : variants.grayOutlined
+                }
+                title={currentNonInterest.title}
+                onClick={() =>
+                  handleInterestPress(currentNonInterest, isSubscribed, false)
+                }
+              />
+            );
+          })}
+          {filteredNonSearchers.map((currentSearch) => (
             <InterestButton
-              key={id}
-              variant={item.value ? variants.grayFilled : variants.grayOutlined}
-              title={item.name}
-              onClick={() => handleNonInterestPress()}
+              key={currentSearch.id}
+              variant={variants.orangeFilled}
+              title={currentSearch.search}
+              onClick={() => handleSearchPress(currentSearch, false)}
             />
           ))}
         </s.InterestsContainer>
@@ -339,6 +387,7 @@ export const Content = ({ api }) => {
           modalOpened={modalOpened}
           setModalOpened={setModalOpened}
           setSearchers={setSearchers}
+          setNonSearchers={setNonSearchers}
           api={api}
         />
       ) : null}

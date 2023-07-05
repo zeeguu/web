@@ -9,6 +9,7 @@ const OwnInterestModal = ({
   modalOpened,
   setModalOpened,
   setSearchers,
+  setNonSearchers,
 }) => {
   const [activeRecs, setActiveRecs] = useState([]);
   const [customInterest, setCustomInterest] = useState("");
@@ -33,9 +34,21 @@ const OwnInterestModal = ({
 
       activeRecs.forEach((rec) => {
         api.subscribeToSearch(rec, (res) => {
-          api.subscribeToSearch(rec, (res) => {
-            setSearchers((prev) => [...prev, res]);
-          });
+          setSearchers((prev) => [...prev, res]);
+        });
+      });
+    }
+
+    if (modalOpened === "non-interests") {
+      if (customInterest) {
+        api.subscribeToSearchFilter(customInterest, (res) => {
+          setNonSearchers((prev) => [...prev, res]);
+        });
+      }
+
+      activeRecs.forEach((rec) => {
+        api.subscribeToSearchFilter(rec, (res) => {
+          setNonSearchers((prev) => [...prev, res]);
         });
       });
     }
