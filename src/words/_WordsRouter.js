@@ -17,6 +17,11 @@ export default function WordsRouter({ api }) {
         api={api}
         component={WordsForArticle}
       />
+      <PrivateRoute
+        path="/render/words/forArticle/:articleID"
+        api={api}
+        component={WordsForArticle}
+      />
 
       <s.NarrowColumn>
         <TopTabs
@@ -31,8 +36,14 @@ export default function WordsRouter({ api }) {
         {/* <PrivateRoute path="/words/starred" api={api} component={Starred} /> */}
 
         <PrivateRoute path="/words/learned" api={api} component={Learned} />
+        <PrivateRoute
+          path="/render/words/learned"
+          api={api}
+          component={Learned}
+        />
 
         <PrivateRoute exact path="/words" api={api} component={Top} />
+        <PrivateRoute exact path="/render/words" api={api} component={Top} />
       </s.NarrowColumn>
     </Switch>
   );

@@ -12,6 +12,11 @@ import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
+import { PrivateRoute } from "./PrivateRoute";
+import StandAloneReader from "./reader/StandAloneReader";
+import WordsRouter from "./words/_WordsRouter";
+import NoSidebarRouter from "./NoSidebarRouter.js";
+
 import {
   getUserSession,
   saveUserInfoIntoCookies,
@@ -36,7 +41,6 @@ function App() {
 
   useUILanguage();
 
-
   const [user, setUser] = useState(userDict);
   const [hasExtension, setHasExtension] = useState(false);
 
@@ -45,16 +49,13 @@ function App() {
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
-    
-    if (getUserSession()) {
 
+    if (getUserSession()) {
       console.log("getting user details...");
       api.getUserDetails((data) => {
         LocalStorage.setUserInfo(data);
       });
     }
-
-
 
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
@@ -64,7 +65,7 @@ function App() {
     }, 1000);
     checkExtensionInstalled(setHasExtension);
     return () => clearInterval(interval);
-    
+
     // eslint-disable-next-line
   }, []);
 
@@ -140,6 +141,11 @@ function App() {
             <Route
               path="/reset_pass"
               render={() => <ResetPassword api={api} />}
+            />
+
+            <Route
+              path="/render"
+              render={() => <NoSidebarRouter api={api} />}
             />
 
             <LoggedInRouter api={api} user={user} setUser={setUser} />
