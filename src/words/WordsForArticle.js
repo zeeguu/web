@@ -3,7 +3,11 @@ import { UMR_SOURCE } from "../reader/ArticleReader";
 import { useState, useEffect } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import WordsToReview from "./WordsToReview";
-import { NarrowColumn, CenteredContent, ToolTipsContainer} from "../components/ColumnWidth.sc";
+import {
+  NarrowColumn,
+  CenteredContent,
+  ToolTipsContainer,
+} from "../components/ColumnWidth.sc";
 import { NavigationLink } from "../reader/ArticleReader.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
@@ -68,7 +72,11 @@ export default function WordsForArticle({ api }) {
       />
 
       <CenteredContent>
-        <NavigationLink prev secondary to={`/read/article?id=${articleID}`}>
+        <NavigationLink
+          prev
+          secondary
+          to={`../../read/article?id=${articleID}`}
+        >
           {strings.backToArticle}
         </NavigationLink>
         <ToolTipsContainer>
@@ -76,7 +84,7 @@ export default function WordsForArticle({ api }) {
             primary
             next
             {...(exercisesEnabled || { disabled: true })}
-            to={`/exercises/forArticle/${articleID}`}
+            to={`../../exercises/forArticle/${articleID}`}
             onClick={logGoingToExercisesAfterReview}
           >
             {strings.toExercises}

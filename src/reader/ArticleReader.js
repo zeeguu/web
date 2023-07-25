@@ -1,25 +1,22 @@
 import { useEffect, useState, useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
+
 import { UserContext } from "../UserContext";
 import { RoutingContext } from "../contexts/RoutingContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
-import BookmarkButton from "./BookmarkButton";
+
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import {
-  PopupButtonWrapper,
-  StyledButton,
-} from "../teacher/styledComponents/TeacherButtons.sc";
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
 import ArticleSource from "./ArticleSource";
 import ReportBroken from "./ReportBroken";
-import SoundPlayer from "./SoundPlayer";
+
+import TopToolbar from "./TopToolbar";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -30,19 +27,6 @@ export const UMR_SOURCE = "UMR";
 // the query string for you.
 function useQuery() {
   return new URLSearchParams(useLocation().search);
-}
-
-function userIsTesterForAudio(user) {
-  let testers = [
-    "Michalis",
-    "Mir",
-    "Wim",
-    "Pauline",
-    "Arno",
-    "Geertje",
-    "Pieter",
-  ];
-  return testers.some((tester) => user.name.startsWith(tester));
 }
 
 export function onScroll(api, articleID, source) {
@@ -97,6 +81,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   }, []);
 
   function onCreate() {
+    console.log("CALLING OnCREATE");
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -124,32 +109,33 @@ export default function ArticleReader({ api, teacherArticleID }) {
     });
 
     window.addEventListener("focus", function () {
+      console.log("focus");
       onFocus(api, articleID, UMR_SOURCE);
     });
+
     window.addEventListener("blur", function () {
+      console.log("blur");
       onBlur(api, articleID, UMR_SOURCE);
     });
-    document
-      .getElementById("scrollHolder")
-      .addEventListener("scroll", function () {
-        onScroll(api, articleID, UMR_SOURCE);
-      });
+
+    window.addEventListener("scroll", function () {
+      onScroll(api, articleID, UMR_SOURCE);
+    });
   }
 
   function onDestruct() {
     window.removeEventListener("focus", function () {
       onFocus(api, articleID, UMR_SOURCE);
     });
+
     window.removeEventListener("blur", function () {
       onBlur(api, articleID, UMR_SOURCE);
     });
 
-    document.getElementById("scrollHolder") !== null &&
-      document
-        .getElementById("scrollHolder")
-        .removeEventListener("scroll", function () {
-          onScroll(api, articleID, UMR_SOURCE);
-        });
+    window.removeEventListener("scroll", function () {
+      onScroll(api, articleID, UMR_SOURCE);
+    });
+
     api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
   }
 
@@ -185,64 +171,17 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   return (
     <s.ArticleReader>
-      <PopupButtonWrapper>
-        <s.Toolbar>
-          {user.is_teacher && (
-            <>
-              {teacherArticleID && (
-                <Link to={`/teacher/texts/editText/${articleID}`}>
-                  <StyledButton secondary studentView>
-                    {strings.backToEditing}
-                  </StyledButton>
-                </Link>
-              )}
-
-              {!teacherArticleID && (
-                <StyledButton
-                  primary
-                  studentView
-                  onClick={handleSaveCopyToShare}
-                >
-                  <img
-                    width="40px"
-                    src="/static/images/share-button.svg"
-                    alt="share"
-                  />
-                </StyledButton>
-              )}
-            </>
-          )}
-
-          {userIsTesterForAudio(user) && (
-            <s.PlayerControl>
-              <SoundPlayer api={api} interactiveText={interactiveText} />
-            </s.PlayerControl>
-          )}
-
-          <s.RightHandSide>
-            <button
-              className={translating ? "selected" : ""}
-              onClick={(e) => toggle(translating, setTranslating)}
-            >
-              <img
-                src="https://zeeguu.org/static/images/translate.svg"
-                alt={strings.translateOnClick}
-              />
-              <div className="tooltiptext">{strings.translateOnClick}</div>
-            </button>
-            <button
-              className={pronouncing ? "selected" : ""}
-              onClick={(e) => toggle(pronouncing, setPronouncing)}
-            >
-              <img
-                src="https://zeeguu.org/static/images/sound.svg"
-                alt={strings.listenOnClick}
-              />
-              <div className="tooltiptext">{strings.listenOnClick}</div>
-            </button>
-          </s.RightHandSide>
-        </s.Toolbar>
-      </PopupButtonWrapper>
+      <TopToolbar
+        user={user}
+        teacherArticleID={teacherArticleID}
+        articleID={articleID}
+        api={api}
+        interactiveText={interactiveText}
+        translating={translating}
+        pronouncing={pronouncing}
+        setTranslating={setTranslating}
+        setPronouncing={setPronouncing}
+      />
 
       <s.Title>
         <TranslatableText
@@ -304,7 +243,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
         <br />
         <br />
         <s.CenteredContent>
-          <s.NavigationLink primary to={`/words/forArticle/${articleID}`}>
+          <s.NavigationLink primary to={`../words/forArticle/${articleID}`}>
             {strings.reviewVocabulary}
           </s.NavigationLink>
         </s.CenteredContent>

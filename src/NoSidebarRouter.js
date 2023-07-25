@@ -14,7 +14,11 @@ import StandAloneReader from "./reader/StandAloneReader";
 export default function NoSidebarRouter({ api, setUser }) {
   return (
     <>
-      <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
+      <PrivateRoute
+        path="/render/exercises"
+        api={api}
+        component={ExercisesRouter}
+      />
       <PrivateRoute path="/render/words" api={api} component={WordsRouter} />
       <PrivateRoute
         path="/render/history"
