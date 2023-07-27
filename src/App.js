@@ -70,6 +70,13 @@ function App() {
   }, []);
 
   function handleSuccessfulSignIn(userInfo, history) {
+    LocalStorage.setSession(api.session);
+    LocalStorage.setUserInfo(userInfo);
+
+    // Cookies are the mechanism via which we share a login
+    // between the extension and the website
+    saveUserInfoIntoCookies(userInfo, api.session);
+
     setUser({
       session: api.session,
       name: userInfo.name,
@@ -78,12 +85,8 @@ function App() {
       is_teacher: userInfo.is_teacher,
       is_student: userInfo.is_student,
     });
-    LocalStorage.setSession(api.session);
-    LocalStorage.setUserInfo(userInfo);
 
-    // Cookies are the mechanism via which we share a login
-    // between the extension and the website
-    saveUserInfoIntoCookies(userInfo, api.session);
+
 
     if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
       history.push("/install_extension");
