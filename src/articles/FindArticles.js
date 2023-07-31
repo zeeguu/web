@@ -109,7 +109,7 @@ export default function NewArticles({ api }) {
       <Interests setArticles={setArticleList} />
 
       {/* Article example */}
-      <ArticlePreview
+      {/* <ArticlePreview
         key={123}
         article={{
           title: "aaaaaa",
@@ -120,7 +120,7 @@ export default function NewArticles({ api }) {
         api={api}
         hasExtension={false}
         isTwoColumns={false}
-      />
+      /> */}
 
       <FiltersWrapper setArticles={setArticleList}>
         {isLoading ? (
