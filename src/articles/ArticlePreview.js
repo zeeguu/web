@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import {useState} from "react";
+import Modal from "@mui/material/Modal";
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import Feature from "../features/Feature";
@@ -10,17 +12,29 @@ export default function ArticleOverview({
   dontShowImage,
   hasExtension,
 }) {
+  const [isOpen, setIsOpen] = useState(false)
+
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
+
+  function handleClose(){
+    setIsOpen(false);
+  }
 
   function titleLink(article) {
     let open_in_zeeguu = (
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
     let open_externally = (
+      // related to the new modal
+      <>
+      <Modal open={isOpen} onClose={handleClose}> 
       <a target="_blank" rel="noreferrer" href={article.url}>
         {article.title}
       </a>
+      </Modal>
+      <button onClick={setIsOpen(true)}></button>
+      </>
     );
 
     if (article.video) {
