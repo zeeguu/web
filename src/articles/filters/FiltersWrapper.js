@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Filters } from "../../components/icons/Filters";
 import * as s from "./FiltersWrapper.sc";
 import strings from "../../i18n/definitions";
-import FiltersClass from "../../utils/filters/filters";
 import { useMediaQuery } from "@mui/material";
 
 export const filtersData = [
@@ -60,12 +59,17 @@ export const FiltersWrapper = ({ children, setArticles }) => {
   const blockRef = useRef();
   const filtersRef = useRef();
   const isLargerThan768 = useMediaQuery("(min-width: 768px)");
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentFilter, setCurrentFilter] = useState(
-    FiltersClass.getCurrentFilter() || null
-  );
   const [blockHeight, setBlockHeight] = useState(500);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [currentFiltersData, setCurrentFiltersData] = useState(filtersData);
+  const [filters, setFilters] = useState({
+    date: null,
+    type: null,
+    duration: null,
+    level: null,
+    sortBy: null,
+  });
 
   useEffect(() => {
     if (blockRef?.current?.clientHeight && isLargerThan768) {
@@ -76,56 +80,24 @@ export const FiltersWrapper = ({ children, setArticles }) => {
   }, [
     blockRef,
     blockRef?.current?.clientHeight,
-    currentFilter,
+    filters,
     setArticles,
     children,
     isLargerThan768,
   ]);
 
-  useEffect(() => {
-    if (!FiltersClass.getCurrentFilter()) setCurrentFilter(null);
-  }, [FiltersClass.getCurrentFilter()]);
+  const handleSetFilter = (id, value) => {
+    let newFilters = Object.assign({}, filters);
 
-  useEffect(() => {
-    if (currentFilter?.id) {
-      switch (currentFilter.id) {
-        case "date": {
-          setArticles(FiltersClass.filterByDate());
-          break;
-        }
-        case "type": {
-          setArticles(FiltersClass.filterByType());
-          break;
-        }
-        case "duration": {
-          setArticles(FiltersClass.filterByDuration());
-          break;
-        }
-        case "level": {
-          setArticles(FiltersClass.filterByLevel());
-          break;
-        }
-        case "sortBy": {
-          setArticles(FiltersClass.sortBy());
-          break;
-        }
-      }
+    if (filters[id] === value) {
+      // Remove filter value
+      newFilters[id] = null;
     } else {
-      setArticles(FiltersClass.getArticlesList());
+      // Add filter value
+      newFilters[id] = value;
     }
-    if (blockRef?.current?.clientHeight + 20 > 400) {
-      setBlockHeight(blockRef?.current?.clientHeight + 20);
-    }
-  }, [currentFilter]);
 
-  const handleSetCurrentFilter = (id, value) => {
-    if (value?.type === currentFilter?.value?.type) {
-      setCurrentFilter(null);
-      FiltersClass.setCurrentFilter(null);
-    } else {
-      setCurrentFilter({ id, value });
-      FiltersClass.setCurrentFilter({ id, value });
-    }
+    setFilters(newFilters);
   };
 
   return (
@@ -151,18 +123,14 @@ export const FiltersWrapper = ({ children, setArticles }) => {
             }}
           >
             <s.Filters ref={filtersRef}>
-              {filtersData.map(({ title, id, values }) => (
+              {currentFiltersData.map(({ title, id, values }) => (
                 <s.FilterColumn key={id}>
                   <s.Title>{title}</s.Title>
                   {values.map((value) => (
                     <s.Filter
                       key={value.type}
-                      className={
-                        currentFilter?.value?.type === value?.type
-                          ? "selected"
-                          : ""
-                      }
-                      onClick={() => handleSetCurrentFilter(id, value)}
+                      className={filters[id] === value.type ? "selected" : ""}
+                      onClick={() => handleSetFilter(id, value.type)}
                     >
                       {value.name}
                     </s.Filter>
