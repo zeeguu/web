@@ -21,6 +21,11 @@ export default function ArticleOverview({
     setIsOpen(false);
   }
 
+  function handleOpen() {
+    setIsOpen(true)
+  }
+
+
   function titleLink(article) {
     let open_in_zeeguu = (
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
@@ -28,12 +33,18 @@ export default function ArticleOverview({
     let open_externally = (
       // related to the new modal
       <>
-      <Modal open={isOpen} onClose={handleClose}> 
+      <Modal open={isOpen} onClose={handleClose}>
+        <>
+      <div>
+        Beware; there be monsters!
+      </div>
+
       <a target="_blank" rel="noreferrer" href={article.url}>
         {article.title}
       </a>
+        </>
       </Modal>
-      <button onClick={setIsOpen(true)}></button>
+      <button onClick={handleOpen}>{article.title}</button>
       </>
     );
 
