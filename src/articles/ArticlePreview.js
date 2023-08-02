@@ -1,9 +1,14 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import Modal from "@mui/material/Modal";
+import Modal from "@mui/material/Modal"; //temporarily added here, will be refactored
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
-import { MyBox, StyledCloseButton } from "../components/ExtensionMessage.sc"; //temporary added wrapper that belongs to the extension message
+import {
+  MyBox,
+  StyledCloseButton,
+  BodyContainer,
+} from "../components/RedirectionNotificationModal.sc"; //temporarily added here, will be refactored
+import { OrangeRoundButton } from "../components/allButtons.sc"; //temporarily added here, will be refactored
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
@@ -31,38 +36,49 @@ export default function ArticleOverview({
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
     let open_externally = (
-      //TODO: Refactor and add styling to the modal and article titles
+      //TODO: Refactor into separate components and add styling to the modal and article titles
       //Code related to the new redirection notification modal starts here
-      //Temporarily added wrapper "MyBox" that belongs to the extension message styled component
       <>
         <Modal open={isOpen} onClose={handleClose}>
           <>
             <MyBox>
               <div>
-                <h1>You’re now leaving to a third party site.</h1>
-                <ol>
-                  <li>
-                    After entering the article's site <br></br>Find the
-                    extension <br></br>in the top right corner <br></br> of your
-                    browser
-                  </li>
-                  <li>Open the extension</li>
-                  <li>
-                    <strong>Happy reading!</strong>
-                  </li>
-                </ol>
+                <h1>You’re now leaving to&nbsp;a&nbsp;third&nbsp;party&nbsp;site.</h1>
+
+                <BodyContainer>
+                  <ol>
+                    <li>Enter the article's site</li>
+                    <li>
+                      Find the extension in the top&nbsp;right&nbsp;corner of your browser
+                    </li>
+                    <li>Open the extension</li>
+                    <li>
+                      <strong>Happy reading!</strong>
+                    </li>
+                  </ol>
+
+                  {/* <ImageContainer> */}
+                  <img
+                    src={"../static/images/find_extension.png"}
+                    //TODO: Add new alt description
+                    alt="How to pin Chrome Extension to Chrome Toolbar gif"
+                  />
+                  {/* </ImageContainer> */}
+                </BodyContainer>
               </div>
 
               <a target="_blank" rel="noreferrer" href={article.url}>
-                <button>Go to the article's site</button>
+                <OrangeRoundButton>Enter the article's site</OrangeRoundButton>
                 {/* {article.title} */}
               </a>
+              {/* TODO: Improve styling of the close button button */}
               <StyledCloseButton role="button" onClick={handleClose}>
                 X
               </StyledCloseButton>
             </MyBox>
           </>
         </Modal>
+        {/* TODO: Bring the article title styling back */}
         <button onClick={handleOpen}>{article.title}</button>
       </>
       //Code related to the new redirection notification modal ends here
