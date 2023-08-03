@@ -43,13 +43,16 @@ export default function ArticleOverview({
           <>
             <MyBox>
               <div>
-                <h1>You’re now leaving to&nbsp;a&nbsp;third&nbsp;party&nbsp;site.</h1>
+                <h1>
+                  You’re now leaving to&nbsp;a&nbsp;third&nbsp;party&nbsp;site.
+                </h1>
 
                 <BodyContainer>
                   <ol>
                     <li>Enter the article's site</li>
                     <li>
-                      Find the extension in the top&nbsp;right&nbsp;corner of your browser
+                      Find the extension in the top&nbsp;right&nbsp;corner of
+                      your browser
                     </li>
                     <li>Open the extension</li>
                     <li>
@@ -61,7 +64,7 @@ export default function ArticleOverview({
                   <img
                     src={"../static/images/find_extension.png"}
                     //TODO: Add new alt description
-                    alt="How to pin Chrome Extension to Chrome Toolbar gif"
+                    alt="Zeeguu browser extension image"
                   />
                   {/* </ImageContainer> */}
                 </BodyContainer>
@@ -78,8 +81,9 @@ export default function ArticleOverview({
             </MyBox>
           </>
         </Modal>
-        {/* TODO: Bring the article title styling back */}
-        <button onClick={handleOpen}>{article.title}</button>
+        <s.InvisibleTitleButton onClick={handleOpen}>
+          {article.title}
+        </s.InvisibleTitleButton>
       </>
       //Code related to the new redirection notification modal ends here
     );
