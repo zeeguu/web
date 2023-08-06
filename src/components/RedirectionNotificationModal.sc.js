@@ -1,4 +1,6 @@
 import Box from "@mui/material/Box";
+import { zeeguuDarkOrange } from "./colors";
+import { OrangeRoundButton } from "./allButtons.sc";
 import styled from "styled-components";
 
 const MyBox = styled(Box)`
@@ -63,6 +65,17 @@ const BodyContainer = styled.div`
   }
 `;
 
+//redesigned button for a better focal point and improved
+//readability of the text inside it.
+//TODO: After implementing all the onboarding steps,
+//create style quide for all buttons and refactor / factor them out
+const GoToArticleButton = styled(OrangeRoundButton)`
+  padding: 0.8em 2em;
+  border-radius: 4em;
+  font-weight: 700;
+  border-bottom: solid 0.2em ${zeeguuDarkOrange};
+`;
+
 const StyledCloseButton = styled.div`
   cursor: pointer;
   padding: 1px;
@@ -73,4 +86,4 @@ const StyledCloseButton = styled.div`
   margin-top: -30px;
 `;
 
-export { MyBox, StyledCloseButton, BodyContainer };
+export { MyBox, StyledCloseButton, GoToArticleButton, BodyContainer };

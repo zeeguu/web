@@ -8,8 +8,8 @@ import {
   MyBox,
   StyledCloseButton,
   BodyContainer,
+  GoToArticleButton,
 } from "../components/RedirectionNotificationModal.sc"; //temporarily added here, will be refactored
-import { OrangeRoundButton } from "../components/allButtons.sc"; //temporarily added here, will be refactored
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
@@ -55,9 +55,9 @@ export default function ArticleOverview({
                 <BodyContainer>
                   <p>
                     <strong>Once there</strong>, find and{" "}
-                    <strong>click the Zeeguu Reader icon</strong> in the top
+                    <strong>click The Zeeguu Reader icon</strong> in the top
                     right corner of&nbsp;your browser's toolbar
-                    or&nbsp;on&nbsp;the&nbsp;list of your other extensions.{" "}
+                    or&nbsp;on&nbsp;the&nbsp;list of your installed extensions.{" "}
                     <strong>Then&nbsp;select&nbsp;Read</strong>.
                   </p>
                   <img
@@ -69,7 +69,9 @@ export default function ArticleOverview({
               </div>
 
               <a target="_blank" rel="noreferrer" href={article.url}>
-                <OrangeRoundButton>Enter the article's site</OrangeRoundButton>
+                <GoToArticleButton>
+                  Enter the article's website
+                </GoToArticleButton>
                 {/* {article.title} */}
               </a>
               {/* TODO: Improve styling of the close button button */}
