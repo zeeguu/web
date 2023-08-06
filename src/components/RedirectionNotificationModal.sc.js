@@ -9,7 +9,7 @@ const MyBox = styled(Box)`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 50%;
-  max-width: 800px;
+  max-width: 500px;
   background-color: white;
   border: 0 !important;
   border-radius: 0.65em;
@@ -24,62 +24,42 @@ const MyBox = styled(Box)`
   }
 
   @media (max-width: 576px) {
-    padding: 32px 24px;
+    padding: 48px 24px;
+    width: 80%;
   }
 
   h1 {
-    font-size: 1.3em;
+    line-height: 150%;
     text-align: center;
+    font-size: 1.3em;
+    margin: 0;
   }
 
   a {
     text-align: center;
   }
 
-  li {
-    font-size: 1em;
+  p {
     //TODO: write reasons for this line-height settings
     line-height: 150%;
-  }
-
-  p {
     text-align: left;
-    font-size: 1.1em;
+    font-size: 1em;
     margin: 0;
   }
 `;
 
 const BodyContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: 1em;
+  gap: 2em;
   margin: 2em 0;
-
-  @media (max-width: 1200px) {
-    flex-direction: column-reverse;
-    gap: 0.5rem;
-  }
-
-  ol {
-    width: 40%;
-    @media (max-width: 1200px) {
-      width: 100%;
-    }
-  }
-
-  li:not(:last-child) {
-    margin: 0 0 0.6em 0;
-  }
 
   img {
     height: 100%;
-    width: 60%;
+    width: 100%;
     object-fit: contain;
-    @media (max-width: 1200px) {
-      width: 100%;
-    }
   }
 `;
 
@@ -90,7 +70,7 @@ const StyledCloseButton = styled.div`
   position: absolute;
   float: right;
   right: 16px;
-  margin-top: -15px;
+  margin-top: -30px;
 `;
 
 export { MyBox, StyledCloseButton, BodyContainer };

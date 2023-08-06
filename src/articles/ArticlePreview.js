@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import CloseIcon from "@mui/icons-material/Close"; //temporarily added here, will be refactored
 import Modal from "@mui/material/Modal"; //temporarily added here, will be refactored
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
@@ -43,30 +44,27 @@ export default function ArticleOverview({
           <>
             <MyBox>
               <div>
+                {/* <h1>
+                  You are being redirected to the original article page.
+                </h1> */}
                 <h1>
-                  You’re now leaving to&nbsp;a&nbsp;third&nbsp;party&nbsp;site.
+                  You are ready to continue
+                  to&nbsp;the&nbsp;original&nbsp;article's website
                 </h1>
 
                 <BodyContainer>
-                  <ol>
-                    <li>Enter the article's site</li>
-                    <li>
-                      Find the extension in the top&nbsp;right&nbsp;corner of
-                      your browser
-                    </li>
-                    <li>Open the extension</li>
-                    <li>
-                      <strong>Happy reading!</strong>
-                    </li>
-                  </ol>
-
-                  {/* <ImageContainer> */}
+                  <p>
+                    <strong>Once there</strong>, find and{" "}
+                    <strong>click the Zeeguu Reader icon</strong> in the top
+                    right corner of&nbsp;your browser's toolbar
+                    or&nbsp;on&nbsp;the&nbsp;list of your other extensions.{" "}
+                    <strong>Then&nbsp;select&nbsp;Read</strong>.
+                  </p>
                   <img
                     src={"../static/images/find_extension.png"}
                     //TODO: Add new alt description
-                    alt="Zeeguu browser extension image"
+                    alt="Zeeguu browser extension"
                   />
-                  {/* </ImageContainer> */}
                 </BodyContainer>
               </div>
 
@@ -76,7 +74,7 @@ export default function ArticleOverview({
               </a>
               {/* TODO: Improve styling of the close button button */}
               <StyledCloseButton role="button" onClick={handleClose}>
-                X
+                <CloseIcon />
               </StyledCloseButton>
             </MyBox>
           </>
