@@ -43,30 +43,25 @@ export default function ArticleOverview({
         <Modal open={isOpen} onClose={handleClose}>
           <>
             <MyBox>
-              <div>
-                {/* <h1>
-                  You are being redirected to the original article page.
-                </h1> */}
-                <h1>
-                  You are ready to continue
-                  to&nbsp;the&nbsp;original&nbsp;article's website
-                </h1>
+              <h1>
+                You are ready to&nbsp;continue<br></br>
+                to the original article's website
+              </h1>
 
-                <BodyContainer>
-                  <p>
-                    <strong>Once there</strong>, find and{" "}
-                    <strong>click The Zeeguu Reader icon</strong> in the top
-                    right corner of&nbsp;your browser's toolbar
-                    or&nbsp;on&nbsp;the&nbsp;list of your installed extensions.{" "}
-                    <strong>Then&nbsp;select&nbsp;Read</strong>.
-                  </p>
-                  <img
-                    src={"../static/images/find_extension.png"}
-                    //TODO: Add new alt description
-                    alt="Zeeguu browser extension"
-                  />
-                </BodyContainer>
-              </div>
+              <BodyContainer>
+                <p>
+                  <strong>Once there</strong>, find and{" "}
+                  <strong>click The Zeeguu Reader icon</strong> in the top right
+                  corner of&nbsp;your browser's toolbar
+                  or&nbsp;on&nbsp;the&nbsp;list of your installed extensions.{" "}
+                  <strong>Then&nbsp;select&nbsp;Read</strong>.
+                </p>
+                <img
+                  src={"../static/images/find_extension.png"}
+                  //TODO: Add new alt description
+                  alt="Zeeguu browser extension"
+                />
+              </BodyContainer>
 
               <a target="_blank" rel="noreferrer" href={article.url}>
                 <GoToArticleButton>

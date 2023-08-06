@@ -1,35 +1,16 @@
-import Box from "@mui/material/Box";
+import { ModalWrapper } from "./ModalWrapper.sc"; //factored out MyBox
 import styled from "styled-components";
 
-const MyBox = styled(Box)`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40%;
-  max-width: 600px;
-  background-color: white;
-  border: 0 !important;
-  border-radius: 0.65em;
-  padding: 32px;
-  box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%),
-    0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
-  outline: none !important;
+//TODO: after deciding on the final modal styling - this file and the RedirectionNotificationModal.sc
+//could be merged together into one universal component
 
-  h1 {
-    font-size: 1.3em;
-    text-align: center;
-  }
-  a {
-    text-align: center;
-  }
-
+//TODO: Rename const MyBox
+const MyBox = styled(ModalWrapper)`
   .newAnnotation {
     color: orange;
     font-weight: 500;
   }
+
   .installLinks {
     text-align: center;
   }

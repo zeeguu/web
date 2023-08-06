@@ -1,24 +1,18 @@
-import Box from "@mui/material/Box";
+import { ModalWrapper } from "./ModalWrapper.sc"; //factored out MyBox
 import { zeeguuDarkOrange } from "./colors";
 import { OrangeRoundButton } from "./allButtons.sc";
 import styled from "styled-components";
 
-const MyBox = styled(Box)`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+//TODO: after deciding on the final modal styling - this file and the ExtensionMessage.sc
+//could be merged together into one universal component
+
+//TODO: Rename const MyBox
+const MyBox = styled(ModalWrapper)`
+  //some of these overwrites may be placed in the ModalWrapper.sc after
+  //deciding on the final modal look and behaviour
   width: 50%;
   max-width: 500px;
-  background-color: white;
-  border: 0 !important;
-  border-radius: 0.65em;
   padding: 48px;
-  box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%),
-    0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
-  outline: none !important;
 
   @media (max-width: 1200px) {
     max-width: 500px;
@@ -32,13 +26,10 @@ const MyBox = styled(Box)`
 
   h1 {
     line-height: 150%;
-    text-align: center;
-    font-size: 1.3em;
     margin: 0;
-  }
-
-  a {
-    text-align: center;
+    @media (max-width: 576px) {
+      text-align: left;
+    }
   }
 
   p {
@@ -47,6 +38,12 @@ const MyBox = styled(Box)`
     text-align: left;
     font-size: 1em;
     margin: 0;
+  }
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -57,12 +54,6 @@ const BodyContainer = styled.div`
   justify-content: space-between;
   gap: 2em;
   margin: 2em 0;
-
-  img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-  }
 `;
 
 //redesigned button for a better focal point and improved
