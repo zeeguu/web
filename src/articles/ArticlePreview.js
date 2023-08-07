@@ -57,7 +57,7 @@ export default function ArticleOverview({
                   <strong>Then&nbsp;select&nbsp;Read</strong>.
                 </p>
                 <img
-                  src={"../static/images/find_extension.png"}
+                  src={"../static/images/find-extension.png"}
                   //TODO: Add new alt description
                   alt="Zeeguu browser extension"
                 />
