@@ -64,7 +64,11 @@ export default function ArticleOverview({
               </BodyContainer>
 
               <a target="_blank" rel="noreferrer" href={article.url}>
-                <GoToArticleButton>
+                {/* Clicking the GoToArticleButton button sends the reader
+                to the article and closes the modal so that when the user
+                returns to the Zeeguu app home page, they can see the recommendation
+                list instead of the modal still being open */}
+                <GoToArticleButton role="button" onClick={handleClose}>
                   Enter the article's website
                 </GoToArticleButton>
                 {/* {article.title} */}
