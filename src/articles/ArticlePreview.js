@@ -9,6 +9,7 @@ import {
   StyledCloseButton,
   BodyContainer,
   GoToArticleButton,
+  Icon,
 } from "../components/RedirectionNotificationModal.sc"; //temporarily added here, will be refactored
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
@@ -37,7 +38,7 @@ export default function ArticleOverview({
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
     let open_externally = (
-      //TODO: Refactor into separate components and add styling to the modal and article titles
+      //TODO: Refactor and divide into separate components
       //Code related to the new redirection notification modal starts here
       <>
         <Modal open={isOpen} onClose={handleClose}>
@@ -51,10 +52,19 @@ export default function ArticleOverview({
               <BodyContainer>
                 <p>
                   <strong>Once there</strong>, find and{" "}
-                  <strong>click The Zeeguu Reader icon</strong> in the top right
-                  corner of&nbsp;your browser's toolbar
-                  or&nbsp;on&nbsp;the&nbsp;list of your installed extensions.{" "}
-                  <strong>Then&nbsp;select&nbsp;Read</strong>.
+                  <strong>
+                    click The Zeeguu Reader{" "}
+                    <Icon>
+                      <img src="../static/images/zeeguuLogo.svg"></img>
+                    </Icon>{" "}
+                    icon
+                  </strong>{" "}
+                  in the top right corner of&nbsp;your browser's toolbar
+                  or&nbsp;on&nbsp;the&nbsp;list of your installed extensions{" "}
+                  <Icon>
+                    <img src="../static/images/puzzle.svg"></img>
+                  </Icon>
+                  . <strong>Then&nbsp;select&nbsp;Read</strong>.
                 </p>
                 <img
                   src={"../static/images/find-extension.png"}

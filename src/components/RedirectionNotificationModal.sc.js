@@ -56,6 +56,13 @@ const BodyContainer = styled.div`
   margin: 2em 0;
 `;
 
+const Icon = styled.div`
+  height: 16px;
+  width: 16px;
+  margin: 0 0.2em;
+  display: inline-block;
+`;
+
 //redesigned button for a better focal point and improved
 //readability of the text inside it.
 //TODO: After implementing all the onboarding steps,
@@ -77,4 +84,4 @@ const StyledCloseButton = styled.div`
   margin-top: -30px;
 `;
 
-export { MyBox, StyledCloseButton, GoToArticleButton, BodyContainer };
+export { MyBox, StyledCloseButton, GoToArticleButton, BodyContainer, Icon };
