@@ -21,12 +21,12 @@ class Filters {
     return this.currentFilter;
   };
 
-  filterByDate = () => {
-    return this.articlesList.filter(({ published }) => {
+  filterByDate = (arr, type) => {
+    return arr.filter(({ published }) => {
       const currentDate = moment();
       const publishedDate = moment(published);
 
-      switch (this.currentFilter.value.type) {
+      switch (type) {
         case "hour":
           return currentDate.diff(publishedDate, "hours") <= 1;
         case "today":
@@ -41,17 +41,17 @@ class Filters {
     });
   };
 
-  filterByType = () => {
-    return this.articlesList.filter(({ video }) =>
-      this.currentFilter.value.type === "video" ? video !== 0 : video === 0
+  filterByType = (arr, type) => {
+    return arr.filter(({ video }) =>
+      type === "video" ? video !== 0 : video === 0
     );
   };
 
-  filterByDuration = () => {
-    return this.articlesList.filter(({ metrics: { word_count } }) => {
+  filterByDuration = (arr, type) => {
+    return arr.filter(({ metrics: { word_count } }) => {
       const readingTime = Math.round(word_count / 80);
 
-      switch (this.currentFilter.value.type) {
+      switch (type) {
         case "under 4 min":
           return readingTime < 4;
         case "4-20 min":
@@ -62,11 +62,11 @@ class Filters {
     });
   };
 
-  filterByLevel = () => {
-    return this.articlesList.filter(({ metrics: { difficulty } }) => {
+  filterByLevel = (arr, type) => {
+    return arr.filter(({ metrics: { difficulty } }) => {
       const difficultyLevel = Math.round(difficulty * 100) / 10;
 
-      switch (this.currentFilter.value.type) {
+      switch (type) {
         case "easy":
           return difficultyLevel >= 0 && difficultyLevel < 4;
         case "fair":
@@ -77,23 +77,23 @@ class Filters {
     });
   };
 
-  sortBy = () => {
-    switch (this.currentFilter.value.type) {
+  sortBy = (arr, type) => {
+    switch (type) {
       case "relevance":
-        return this.articlesList; //TODO: add sorting by relevance
+        return arr; //TODO: add sorting by relevance
       case "date":
-        return [...this.articlesList].sort((a, b) => {
+        return [...arr].sort((a, b) => {
           const aDate = moment(a.published).unix();
           const bDate = moment(b.published).unix();
 
           return aDate + bDate;
         });
       case "length":
-        return [...this.articlesList].sort(
+        return [...arr].sort(
           (a, b) => b.metrics.word_count - a.metrics.word_count
         );
       case "level":
-        return [...this.articlesList].sort(
+        return [...arr].sort(
           (a, b) => b.metrics.difficulty - a.metrics.difficulty
         );
     }

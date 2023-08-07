@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import FiltersObj from "../../utils/filters/filters";
 import { Filters } from "../../components/icons/Filters";
 import * as s from "./FiltersWrapper.sc";
 import strings from "../../i18n/definitions";
@@ -55,7 +56,19 @@ export const filtersData = [
   },
 ];
 
-export const FiltersWrapper = ({ children, setArticles }) => {
+const filterFunctions = {
+  date: FiltersObj.filterByDate,
+  type: FiltersObj.filterByType,
+  duration: FiltersObj.filterByDuration,
+  level: FiltersObj.filterByLevel,
+  sortBy: FiltersObj.sortBy,
+};
+
+export const FiltersWrapper = ({
+  children,
+  initialArticleList,
+  setArticles,
+}) => {
   const blockRef = useRef();
   const filtersRef = useRef();
   const isLargerThan768 = useMediaQuery("(min-width: 768px)");
@@ -99,6 +112,18 @@ export const FiltersWrapper = ({ children, setArticles }) => {
 
     setFilters(newFilters);
   };
+
+  useEffect(() => {
+    let dataToFilter = [...initialArticleList.current];
+
+    for (let key in filters) {
+      if (filters[key]) {
+        dataToFilter = filterFunctions[key](dataToFilter, filters[key]);
+      }
+    }
+
+    setArticles(dataToFilter);
+  }, [filters]);
 
   return (
     <s.FiltersWrapperContainer

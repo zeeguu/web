@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ArticlePreview from "./ArticlePreview";
 import Interests from "./Interests";
 import SearchField from "./SearchField";
@@ -32,6 +32,8 @@ export default function NewArticles({ api }) {
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
+  const initialArticleList = useRef([{}]);
+
   useEffect(() => {
     setTitle(strings.findArticles);
 
@@ -51,18 +53,16 @@ export default function NewArticles({ api }) {
       return api.search(query.get("search"), (articles) => {
         setIsLoading(false);
 
-        Filters.setArticlesList(articles);
-        Filters.setCurrentFilter(null);
         setArticleList(articles);
+        initialArticleList.current = articles;
       });
     }
 
     return api.getUserArticles((articles) => {
       setIsLoading(false);
 
-      Filters.setArticlesList(articles);
-      Filters.setCurrentFilter(null);
       setArticleList(articles);
+      initialArticleList.current = articles;
     });
   }, []);
 
@@ -76,18 +76,16 @@ export default function NewArticles({ api }) {
       return api.getUserArticles((articles) => {
         setIsLoading(false);
 
-        Filters.setArticlesList(articles);
-        Filters.setCurrentFilter(null);
         setArticleList(articles);
+        initialArticleList.current = articles;
       });
     }
 
     await api.search(searchText, (articles) => {
       setIsLoading(false);
 
-      Filters.setArticlesList(articles);
-      Filters.setCurrentFilter(null);
       setArticleList(articles);
+      initialArticleList.current = articles;
     });
   };
 
@@ -122,7 +120,10 @@ export default function NewArticles({ api }) {
         isTwoColumns={false}
       /> */}
 
-      <FiltersWrapper setArticles={setArticleList}>
+      <FiltersWrapper
+        initialArticleList={initialArticleList}
+        setArticles={setArticleList}
+      >
         {isLoading ? (
           <CircularProgress
             style={{
