@@ -12,9 +12,6 @@ import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
-import { PrivateRoute } from "./PrivateRoute";
-import StandAloneReader from "./reader/StandAloneReader";
-import WordsRouter from "./words/_WordsRouter";
 import NoSidebarRouter from "./NoSidebarRouter.js";
 
 import {
@@ -77,23 +74,25 @@ function App() {
     // between the extension and the website
     saveUserInfoIntoCookies(userInfo, api.session);
 
-    setUser({
+
+    let newUserValue ={
       session: api.session,
       name: userInfo.name,
       learned_language: userInfo.learned_language,
       native_language: userInfo.native_language,
       is_teacher: userInfo.is_teacher,
       is_student: userInfo.is_student,
-    });
+    };
+    console.log("setting new user value: ");
+    console.dir(newUserValue);
 
+    setUser(newUserValue);
 
 
     if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
       history.push("/install_extension");
     } else {
-      userInfo.is_teacher && userInfo.name !== "Mircea Lungu"
-        ? history.push("/teacher/classes")
-        : history.push("/articles");
+      history.push("/articles");
     }
   }
 
