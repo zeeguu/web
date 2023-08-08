@@ -1,6 +1,8 @@
 import * as s from "./SmallSaveArticleButton.sc.js";
 import {toast, ToastContainer} from "react-toastify";
 import {useState} from "react";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function SmallSaveArticleButton ({article, api}) {
     const [isSaved, setIsSaved] = useState(false);
@@ -16,7 +18,7 @@ export default function SmallSaveArticleButton ({article, api}) {
 
         {isSaved?
             <s.SavedLabel> Saved <img src="/static/images/zeeguuLogo.svg" width="11" alt={""}/> </s.SavedLabel> :
-            <s.SaveButton onClick={saveArticle}>Save</s.SaveButton>}
+            <div><s.SaveButton onClick={saveArticle}>Save</s.SaveButton></div>}
 
         <ToastContainer
             position="top-right"
