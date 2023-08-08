@@ -5,7 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function SmallSaveArticleButton ({article, api}) {
-    const [isSaved, setIsSaved] = useState(false);
+
+    const [isSaved, setIsSaved] = useState(article.has_personal_copy);
 
     function saveArticle() {
         api.makePersonalCopy(article.id, (data)=> {
