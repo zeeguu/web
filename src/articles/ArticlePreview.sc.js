@@ -67,7 +67,6 @@ let Topics = styled.span`
   margin-top: 1em;
 
   span {
-    margin-left: 1em;
     height: 1.2em;
     margin-left: 0.2em;
     border: solid ${zeeguuOrange};
@@ -77,15 +76,6 @@ let Topics = styled.span`
   }
 `;
 
-let SaveButton = styled.button`
-  font-size: small;
-`;
-
-let SavedLabel = styled.span`
-  font-size: small;
-  font-color: orange;
-  
-`;
 
 export {
   Title,
@@ -96,6 +86,4 @@ export {
   SourceImage,
   PublishingTime,
   Topics,
-  SaveButton,
-  SavedLabel
 };

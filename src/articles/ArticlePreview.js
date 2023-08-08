@@ -3,7 +3,8 @@ import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
-import {useState} from "react";
+import SmallSaveArticleButton from "./SmallSaveArticleButton";
+
 
 export default function ArticleOverview({
   article,
@@ -14,13 +15,7 @@ export default function ArticleOverview({
 }) {
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
-  const [isSaved, setIsSaved] = useState(article.has_personal_copy);
-  function saveArticle() {
 
-    api.makePersonalCopy(article.id, (data)=> {
-      setIsSaved(true)
-    })
-  }
   function titleLink(article) {
     let open_in_zeeguu = (
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
@@ -53,11 +48,7 @@ export default function ArticleOverview({
   return (
     <s.ArticlePreview>
       <s.Title>{titleLink(article)}
-        &nbsp; {isSaved ?
-              <>
-                <s.SavedLabel><img src="/static/images/zeeguuLogo.svg" width="20" /> Saved</s.SavedLabel>
-              </>:
-            <s.SaveButton onClick={saveArticle}>Save</s.SaveButton>}
+          <SmallSaveArticleButton api={api} article={article} />
       </s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
