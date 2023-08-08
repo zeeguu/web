@@ -397,9 +397,9 @@ export default function Exercises({
   const CurrentExercise = exerciseSession[currentIndex].type;
   return (
     <s.ExercisesColumn className="exercisesColumn">
-      <s.LittleMessageAbove>
-        {wordSourcePrefix} {wordSourceText}
-      </s.LittleMessageAbove>
+      {/*<s.LittleMessageAbove>*/}
+      {/*  {wordSourcePrefix} {wordSourceText}*/}
+      {/*</s.LittleMessageAbove>*/}
       <ProgressBar index={currentIndex} total={exerciseSession.length} />
       <s.ExForm>
         <CurrentExercise
