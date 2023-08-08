@@ -7,7 +7,9 @@ let SaveButton = styled.button`
 let SavedLabel = styled.div`
   font-size: small;
   font-weight: bold;
-  color: brown;`
+  color: brown;
+  margin: 0.6em;
+`
 
 
 export {
