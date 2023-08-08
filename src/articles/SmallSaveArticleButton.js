@@ -10,8 +10,10 @@ export default function SmallSaveArticleButton ({article, api}) {
 
     function saveArticle() {
         api.makePersonalCopy(article.id, (data)=> {
-            setIsSaved(true);
-            toast('Article added to your Saves!');
+            if (data === "OK") {
+                setIsSaved(true);
+                toast('Article added to your Saves!');
+            }
         })
     }
 
