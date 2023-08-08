@@ -22,7 +22,7 @@ export default function SmallSaveArticleButton ({article, api}) {
             <div><s.SaveButton onClick={saveArticle}>Save</s.SaveButton></div>}
 
         <ToastContainer
-            position="top-right"
+            position="bottom-right"
             autoClose={2000}
             hideProgressBar={true}
             newestOnTop={false}
