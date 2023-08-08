@@ -180,10 +180,10 @@ let strings = new LocalizedStrings(
       contributors: "Contributors",
 
       //ArticleRouter
-      findTab: "Recommended",
+      homeTab: "Home",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
-      saved: "Saved",
+      saved: "Saves",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
@@ -928,7 +928,7 @@ let strings = new LocalizedStrings(
       contributors: "Bidragsydere",
 
       //ArticleRouter
-      findTab: "Find",
+      homeTab: "Hjem",
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
       saved: "Gemt",

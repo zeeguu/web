@@ -77,6 +77,16 @@ let Topics = styled.span`
   }
 `;
 
+let SaveButton = styled.button`
+  font-size: small;
+`;
+
+let SavedLabel = styled.span`
+  font-size: small;
+  font-color: orange;
+  
+`;
+
 export {
   Title,
   Difficulty,
@@ -86,4 +96,6 @@ export {
   SourceImage,
   PublishingTime,
   Topics,
+  SaveButton,
+  SavedLabel
 };

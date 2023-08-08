@@ -66,7 +66,8 @@ Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback) {
 };
 
 Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {
-  this._post(`/make_personal_copy`, qs.stringify(articleId), callback);
+  let param = qs.stringify({article_id: articleId})
+  this._post(`/make_personal_copy`, param, callback);
 };
 
 Zeeguu_API.prototype.isArticleLanguageSupported = function (
