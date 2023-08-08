@@ -4,7 +4,7 @@ let SaveButton = styled.button`
   font-size: small;
 `;
 
-let SavedLabel = styled.span`
+let SavedLabel = styled.div`
   font-size: small;
   font-weight: bold;
   color: brown;`
