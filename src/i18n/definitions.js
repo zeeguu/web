@@ -189,7 +189,7 @@ let strings = new LocalizedStrings(
       yourWordsHeadline: "Your Words",
       history: "History",
       starred: "Starred",
-      translated: "Translated",
+     
       learned: "Learned",
 
       //WordsHistory
@@ -351,7 +351,7 @@ let strings = new LocalizedStrings(
       otherFeedback: "Other feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
-      undo: "UNDO",
+      
 
       //FeedbackOptions
       bookmarkTooEasy: "Too Easy",
@@ -1359,7 +1359,6 @@ let strings = new LocalizedStrings(
       level: "niveau",
       lengthOnText: "længde",
       time: "tid",
-      translated: "oversatte",
       wordsWithLowercase: "ord",
       readingTime: "læse",
 
