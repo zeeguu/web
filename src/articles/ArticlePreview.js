@@ -1,16 +1,8 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import CloseIcon from "@mui/icons-material/Close"; //temporarily added here, will be refactored
-import Modal from "@mui/material/Modal"; //temporarily added here, will be refactored
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
-import {
-  RedirectionNotificationModalWrapper,
-  CloseButton,
-  BodyContainer,
-  GoToArticleButton,
-  Icon,
-} from "../components/RedirectionNotificationModal.sc"; //temporarily added here, will be refactored
+import RedirectionNotificationModal from "../components/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
@@ -20,17 +12,17 @@ export default function ArticleOverview({
   dontShowImage,
   hasExtension,
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
   function handleClose() {
-    setIsOpen(false);
+    setIsRedirectionModaOpen(false);
   }
 
   function handleOpen() {
-    setIsOpen(true);
+    setIsRedirectionModaOpen(true);
   }
 
   function titleLink(article) {
@@ -38,63 +30,21 @@ export default function ArticleOverview({
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
     let open_externally = (
-      //TODO: Refactor and divide into separate components
-      //Code related to the new redirection notification modal starts here
+      //The RedirectionNotificationModal is displayed when the user clicks
+      //the article's title from the recommendation list.
+      //The modal informs the user that they are about to be redirected
+      //to the original article's website and guides them on what steps
+      //should be taken to start reading the said article with The Zeeguu Reader extension
       <>
-        <Modal open={isOpen} onClose={handleClose}>
-          <>
-            <RedirectionNotificationModalWrapper>
-              <h1>
-                You are ready to&nbsp;continue<br></br>
-                to the original article's website
-              </h1>
-
-              <BodyContainer>
-                <p>
-                  <strong>Once there</strong>, find and{" "}
-                  <strong>
-                    click The Zeeguu Reader{" "}
-                    <Icon>
-                      <img src="../static/images/zeeguuLogo.svg"></img>
-                    </Icon>{" "}
-                    icon
-                  </strong>{" "}
-                  in the top right corner of&nbsp;your browser's toolbar
-                  or&nbsp;on&nbsp;the&nbsp;list of your installed extensions{" "}
-                  <Icon>
-                    <img src="../static/images/puzzle.svg"></img>
-                  </Icon>
-                  . <strong>Then&nbsp;select&nbsp;Read</strong>.
-                </p>
-                <img
-                  src={"../static/images/find-extension.png"}
-                  //TODO: Add new alt description
-                  alt="Zeeguu browser extension"
-                />
-              </BodyContainer>
-
-              <a target="_blank" rel="noreferrer" href={article.url}>
-                {/* Clicking the GoToArticleButton button sends the reader
-                to the article and closes the modal so that when the user
-                returns to the Zeeguu app home page, they can see the recommendation
-                list instead of the modal still being open */}
-                <GoToArticleButton role="button" onClick={handleClose}>
-                  Enter the article's website
-                </GoToArticleButton>
-                {/* {article.title} */}
-              </a>
-              {/* TODO: Improve styling of the close button button */}
-              <CloseButton role="button" onClick={handleClose}>
-                <CloseIcon />
-              </CloseButton>
-            </RedirectionNotificationModalWrapper>
-          </>
-        </Modal>
+        <RedirectionNotificationModal
+          article={article}
+          open={isRedirectionModalOpen}
+          handleClose={handleClose}
+        />
         <s.InvisibleTitleButton onClick={handleOpen}>
           {article.title}
         </s.InvisibleTitleButton>
       </>
-      //Code related to the new redirection notification modal ends here
     );
 
     if (article.video) {
