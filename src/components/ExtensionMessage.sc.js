@@ -4,8 +4,7 @@ import styled from "styled-components";
 //TODO: after deciding on the final modal styling - this file and the RedirectionNotificationModal.sc
 //could be merged together into one universal component
 
-//TODO: Rename const MyBox
-const MyBox = styled(ModalWrapper)`
+const ExtensionMessageModalWrapper = styled(ModalWrapper)`
   .newAnnotation {
     color: orange;
     font-weight: 500;
@@ -26,4 +25,4 @@ const CloseButton = styled.div`
   margin-top: -15px;
 `;
 
-export { MyBox, CloseButton };
+export { ExtensionMessageModalWrapper, CloseButton };

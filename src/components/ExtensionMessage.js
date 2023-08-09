@@ -29,7 +29,7 @@ export default function ExtensionMessage({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <s.MyBox>
+        <s.ExtensionMessageModalWrapper>
           <s.CloseButton role="button" onClick={handleClose}>
             X
           </s.CloseButton>
@@ -55,7 +55,7 @@ export default function ExtensionMessage({
               {strings.extensionFirefoxInstall}
             </a>
           </p>
-        </s.MyBox>
+        </s.ExtensionMessageModalWrapper>
       </Modal>
     );
   } else return null;

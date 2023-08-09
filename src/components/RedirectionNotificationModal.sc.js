@@ -6,8 +6,7 @@ import styled from "styled-components";
 //TODO: after deciding on the final modal styling - this file and the ExtensionMessage.sc
 //could be merged together into one universal component
 
-//TODO: Rename const MyBox
-const MyBox = styled(ModalWrapper)`
+const RedirectionNotificationModalWrapper = styled(ModalWrapper)`
   //some of these overwrites may be placed in the ModalWrapper.sc after
   //deciding on the final modal look and behaviour
   width: 50%;
@@ -84,4 +83,10 @@ const CloseButton = styled.div`
   margin-top: -30px;
 `;
 
-export { MyBox, CloseButton, GoToArticleButton, BodyContainer, Icon };
+export {
+  RedirectionNotificationModalWrapper,
+  CloseButton,
+  GoToArticleButton,
+  BodyContainer,
+  Icon,
+};

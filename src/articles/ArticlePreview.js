@@ -5,7 +5,7 @@ import Modal from "@mui/material/Modal"; //temporarily added here, will be refac
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import {
-  MyBox,
+  RedirectionNotificationModalWrapper,
   CloseButton,
   BodyContainer,
   GoToArticleButton,
@@ -43,7 +43,7 @@ export default function ArticleOverview({
       <>
         <Modal open={isOpen} onClose={handleClose}>
           <>
-            <MyBox>
+            <RedirectionNotificationModalWrapper>
               <h1>
                 You are ready to&nbsp;continue<br></br>
                 to the original article's website
@@ -87,7 +87,7 @@ export default function ArticleOverview({
               <CloseButton role="button" onClick={handleClose}>
                 <CloseIcon />
               </CloseButton>
-            </MyBox>
+            </RedirectionNotificationModalWrapper>
           </>
         </Modal>
         <s.InvisibleTitleButton onClick={handleOpen}>
