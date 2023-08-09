@@ -56,7 +56,7 @@ export default function NewArticles({ api }) {
         setOriginalList([...articles]);
       });
     }
-    setTitle(strings.findArticles);
+    setTitle("Zeeguu");
   }, []);
 
   useEffect(() => {
