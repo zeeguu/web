@@ -74,7 +74,7 @@ const GoToArticleButton = styled(OrangeRoundButton)`
   border-bottom: solid 0.2em ${zeeguuDarkOrange};
 `;
 
-const StyledCloseButton = styled.div`
+const CloseButton = styled.div`
   cursor: pointer;
   padding: 1px;
   text-align: right;
@@ -84,4 +84,4 @@ const StyledCloseButton = styled.div`
   margin-top: -30px;
 `;
 
-export { MyBox, StyledCloseButton, GoToArticleButton, BodyContainer, Icon };
+export { MyBox, CloseButton, GoToArticleButton, BodyContainer, Icon };

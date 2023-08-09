@@ -6,7 +6,7 @@ import moment from "moment";
 import * as s from "./ArticlePreview.sc";
 import {
   MyBox,
-  StyledCloseButton,
+  CloseButton,
   BodyContainer,
   GoToArticleButton,
   Icon,
@@ -84,9 +84,9 @@ export default function ArticleOverview({
                 {/* {article.title} */}
               </a>
               {/* TODO: Improve styling of the close button button */}
-              <StyledCloseButton role="button" onClick={handleClose}>
+              <CloseButton role="button" onClick={handleClose}>
                 <CloseIcon />
-              </StyledCloseButton>
+              </CloseButton>
             </MyBox>
           </>
         </Modal>

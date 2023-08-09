@@ -16,7 +16,7 @@ const MyBox = styled(ModalWrapper)`
   }
 `;
 
-const StyledCloseButton = styled.div`
+const CloseButton = styled.div`
   cursor: pointer;
   padding: 1px;
   text-align: right;
@@ -26,4 +26,4 @@ const StyledCloseButton = styled.div`
   margin-top: -15px;
 `;
 
-export { MyBox, StyledCloseButton };
+export { MyBox, CloseButton };

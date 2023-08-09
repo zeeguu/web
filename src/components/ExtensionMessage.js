@@ -30,9 +30,9 @@ export default function ExtensionMessage({
         aria-describedby="modal-modal-description"
       >
         <s.MyBox>
-          <s.StyledCloseButton role="button" onClick={handleClose}>
+          <s.CloseButton role="button" onClick={handleClose}>
             X
-          </s.StyledCloseButton>
+          </s.CloseButton>
           <h1>
             <span className="newAnnotation">New!</span>&nbsp;
             {strings.extensionHeadline}
