@@ -22,7 +22,7 @@ const CloseButton = styled.div`
   position: absolute;
   float: right;
   right: 16px;
-  margin-top: -15px;
+  margin-top: -32px;
 `;
 
 export { ExtensionMessageModalWrapper, CloseButton };

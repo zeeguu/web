@@ -7,22 +7,6 @@ import styled from "styled-components";
 //could be merged together into one universal component
 
 const RedirectionNotificationModalWrapper = styled(ModalWrapper)`
-  //some of these overwrites may be placed in the ModalWrapper.sc after
-  //deciding on the final modal look and behaviour
-  width: 50%;
-  max-width: 500px;
-  padding: 48px;
-
-  @media (max-width: 1200px) {
-    max-width: 500px;
-    width: 80%;
-  }
-
-  @media (max-width: 576px) {
-    padding: 48px 24px;
-    width: 80%;
-  }
-
   h1 {
     line-height: 150%;
     margin: 0;
@@ -80,7 +64,7 @@ const CloseButton = styled.div`
   position: absolute;
   float: right;
   right: 16px;
-  margin-top: -30px;
+  margin-top: -32px;
 `;
 
 export {
