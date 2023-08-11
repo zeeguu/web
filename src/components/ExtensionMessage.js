@@ -1,5 +1,6 @@
 import Modal from "@mui/material/Modal";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import * as s from "./ExtensionMessage.sc";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
@@ -47,20 +48,20 @@ export default function ExtensionMessage({
             //TODO: Add new alt description
             alt="Zeeguu browser extension"
           />
-          {/* <p className="installLinks"> */}
           <s.Footer>
             <a
+              className="install-links"
               href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
               rel="noopener noreferrer"
             >
+              <FileDownloadOutlinedIcon fontSize="small" />
               {strings.extensionChromeInstall}
             </a>
-            <br /> <br />
-            <a href="" rel="noopener noreferrer">
+            <a className="install-links" href="" rel="noopener noreferrer">
+              <FileDownloadOutlinedIcon fontSize="small" />
               {strings.extensionFirefoxInstall}
             </a>
           </s.Footer>
-          {/* </p> */}
         </s.ExtensionMessageModalWrapper>
       </Modal>
     );

@@ -10,10 +10,6 @@ const ExtensionMessageModalWrapper = styled(ModalWrapper)`
     font-weight: 500;
   }
 
-  .installLinks {
-    text-align: center;
-  }
-
   p {
     //TODO: write reasons for this line-height settings
     line-height: 150%;
@@ -21,11 +17,24 @@ const ExtensionMessageModalWrapper = styled(ModalWrapper)`
     font-size: 1em;
     /* margin: 0; */
   }
+
+  .install-links {
+    display: flex;
+    gap: 0.25em;
+    align-items: flex-start;
+  }
+  .install-links:hover {
+    text-decoration: underline;
+  }
 `;
 
 const Footer = styled.div`
-text-align: center;
-`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  align-items: center;
+  margin: 1em 0;
+`;
 
 const CloseButton = styled.div`
   cursor: pointer;
