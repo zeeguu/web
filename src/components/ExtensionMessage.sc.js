@@ -13,7 +13,19 @@ const ExtensionMessageModalWrapper = styled(ModalWrapper)`
   .installLinks {
     text-align: center;
   }
+
+  p {
+    //TODO: write reasons for this line-height settings
+    line-height: 150%;
+    text-align: left;
+    font-size: 1em;
+    /* margin: 0; */
+  }
 `;
+
+const Footer = styled.div`
+text-align: center;
+`
 
 const CloseButton = styled.div`
   cursor: pointer;
@@ -25,4 +37,4 @@ const CloseButton = styled.div`
   margin-top: -32px;
 `;
 
-export { ExtensionMessageModalWrapper, CloseButton };
+export { ExtensionMessageModalWrapper, CloseButton, Footer };

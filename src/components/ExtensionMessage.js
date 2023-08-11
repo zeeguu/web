@@ -39,12 +39,16 @@ export default function ExtensionMessage({
             {strings.extensionHeadline}
           </h1>
           <p>
-            {strings.extensionAllow}
-            <br /> <br />
-            {strings.extensionToRead} <br /> <br />
-            {strings.extensionReadability} <br /> <br />
+            To read not saved articles recommended by Zeeguu or external
+            articles, you need to install The Zeeguu Reader browser extension.
           </p>
-          <p className="installLinks">
+          <img
+            src={"../static/images/find-extension.png"}
+            //TODO: Add new alt description
+            alt="Zeeguu browser extension"
+          />
+          {/* <p className="installLinks"> */}
+          <s.Footer>
             <a
               href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
               rel="noopener noreferrer"
@@ -55,7 +59,8 @@ export default function ExtensionMessage({
             <a href="" rel="noopener noreferrer">
               {strings.extensionFirefoxInstall}
             </a>
-          </p>
+          </s.Footer>
+          {/* </p> */}
         </s.ExtensionMessageModalWrapper>
       </Modal>
     );
