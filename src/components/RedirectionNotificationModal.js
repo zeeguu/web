@@ -1,5 +1,5 @@
 import Modal from "@mui/material/Modal";
-import CloseIcon from "@mui/icons-material/Close";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import * as s from "../components/RedirectionNotificationModal.sc";
 
 //First step towards separating the RedirectionNotificationModal component
@@ -61,7 +61,7 @@ export default function RedirectionNotificationModal({
           {/* {article.title} */}
         </a>
         <s.CloseButton role="button" onClick={handleClose}>
-          <CloseIcon />
+          <CloseRoundedIcon fontSize="medium" />
         </s.CloseButton>
       </s.RedirectionNotificationModalWrapper>
     </Modal>

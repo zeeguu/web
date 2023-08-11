@@ -1,4 +1,5 @@
 import Modal from "@mui/material/Modal";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import * as s from "./ExtensionMessage.sc";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
@@ -31,7 +32,7 @@ export default function ExtensionMessage({
       >
         <s.ExtensionMessageModalWrapper>
           <s.CloseButton role="button" onClick={handleClose}>
-            X
+            <CloseRoundedIcon fontSize="medium" />
           </s.CloseButton>
           <h1>
             <span className="newAnnotation">New!</span>&nbsp;
