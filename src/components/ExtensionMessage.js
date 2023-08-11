@@ -57,7 +57,11 @@ export default function ExtensionMessage({
               <FileDownloadOutlinedIcon fontSize="small" />
               {strings.extensionChromeInstall}
             </a>
-            <a className="install-links" href="" rel="noopener noreferrer">
+            <a
+              className="install-links"
+              href="https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/"
+              rel="noopener noreferrer"
+            >
               <FileDownloadOutlinedIcon fontSize="small" />
               {strings.extensionFirefoxInstall}
             </a>
