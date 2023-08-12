@@ -5,8 +5,8 @@ import styled from "styled-components";
 //could be merged together into one universal component
 
 const ExtensionMessageModalWrapper = styled(ModalWrapper)`
-  .newAnnotation {
-    color: orange;
+  .annotation {
+    color: orange; //hardcoded color but we need something in between ZeeguuOrange and ZeeguuDarkOrange
     font-weight: 500;
   }
 
@@ -15,16 +15,30 @@ const ExtensionMessageModalWrapper = styled(ModalWrapper)`
     line-height: 150%;
     text-align: left;
     font-size: 1em;
-    /* margin: 0; */
+    margin: 0;
   }
 
-  .install-links {
-    display: flex;
-    gap: 0.25em;
-    align-items: flex-start;
+  h1 {
+    margin: 0;
   }
-  .install-links:hover {
-    text-decoration: underline;
+`;
+
+const Header = styled.div`
+  margin: 1em 0;
+  h1 {
+    margin: 0;
+  }
+`;
+
+const Body = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  margin: 1em 0;
+  .fullDivWidthImage {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -34,6 +48,15 @@ const Footer = styled.div`
   gap: 1.5em;
   align-items: center;
   margin: 1em 0;
+  a:hover {
+    text-decoration: underline;
+  }
+`;
+
+const InstallLink = styled.div`
+  display: flex;
+  gap: 0.25em;
+  align-items: flex-start;
 `;
 
 const CloseButton = styled.div`
@@ -46,4 +69,11 @@ const CloseButton = styled.div`
   margin-top: -32px;
 `;
 
-export { ExtensionMessageModalWrapper, CloseButton, Footer };
+export {
+  ExtensionMessageModalWrapper,
+  CloseButton,
+  Header,
+  Body,
+  Footer,
+  InstallLink,
+};

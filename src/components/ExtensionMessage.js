@@ -35,35 +35,47 @@ export default function ExtensionMessage({
           <s.CloseButton role="button" onClick={handleClose}>
             <CloseRoundedIcon fontSize="medium" />
           </s.CloseButton>
-          <h1>
-            <span className="newAnnotation">New!</span>&nbsp;
-            {strings.extensionHeadline}
-          </h1>
-          <p>
-            To read not saved articles recommended by Zeeguu or external
-            articles, you need to install The Zeeguu Reader browser extension.
-          </p>
-          <img
-            src={"../static/images/find-extension.png"}
-            //TODO: Add new alt description
-            alt="Zeeguu browser extension"
-          />
+          <s.Header className="modalHeader">
+            <h1>
+              <span className="annotation">New!</span>&nbsp;
+              {strings.extensionHeadline}
+            </h1>
+          </s.Header>
+          <s.Body className="modalBody">
+            <p>
+              {/* Proposal of a shortened and updated paragraph, empporarily hardcoded */}
+              To read articles recommended by Zeeguu that are not saved or
+              external articles, you need to install The Zeeguu Reader browser
+              extension.
+            </p>
+            <img
+              className="fullDivWidthImage"
+              src={"../static/images/find-extension.png"}
+              //TODO: Add new alt description
+              alt="Zeeguu browser extension"
+            />
+          </s.Body>
           <s.Footer>
             <a
               className="install-links"
               href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
               rel="noopener noreferrer"
             >
-              <FileDownloadOutlinedIcon fontSize="small" />
-              {strings.extensionChromeInstall}
+              <s.InstallLink>
+                <FileDownloadOutlinedIcon fontSize="small" />
+                {strings.extensionChromeInstall}
+              </s.InstallLink>
             </a>
+
             <a
               className="install-links"
               href="https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/"
               rel="noopener noreferrer"
             >
-              <FileDownloadOutlinedIcon fontSize="small" />
-              {strings.extensionFirefoxInstall}
+              <s.InstallLink>
+                <FileDownloadOutlinedIcon fontSize="small" />
+                {strings.extensionFirefoxInstall}
+              </s.InstallLink>
             </a>
           </s.Footer>
         </s.ExtensionMessageModalWrapper>
