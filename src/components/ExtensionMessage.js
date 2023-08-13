@@ -43,10 +43,10 @@ export default function ExtensionMessage({
           </s.Header>
           <s.Body className="modalBody">
             <p>
-              {/* Proposal of a shortened and updated paragraph, empporarily hardcoded */}
-              To read articles recommended by Zeeguu that are not saved or
-              external articles, you need to install The Zeeguu Reader browser
-              extension.
+              {/* Proposal of a shortened and updated paragraph, temporarily hardcoded */}
+              To read articles recommended by Zeeguu that are not saved or to
+              read external articles, you need to install The Zeeguu Reader
+              browser extension.
             </p>
             <img
               className="fullDivWidthImage"

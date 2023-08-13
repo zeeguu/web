@@ -16,17 +16,20 @@ export default function RedirectionNotificationModal({
   return (
     <Modal open={open} onClose={handleClose}>
       <s.RedirectionNotificationModalWrapper>
-        <h1>
-          You are ready to&nbsp;continue<br></br>
-          to the original article's website
-        </h1>
-        <s.BodyContainer>
+        <s.Header>
+          <h1>
+            You are ready to&nbsp;continue<br></br>
+            to the original article's website
+          </h1>
+        </s.Header>
+        <s.Body>
           <p>
             <strong>Once there</strong>, find and{" "}
             <strong>
               click The Zeeguu Reader{" "}
               <s.Icon>
                 <img
+                  className="fullDivWidthImage"
                   alt="The Zeeguu Reader elephant icon"
                   src="../static/images/zeeguuLogo.svg"
                 ></img>
@@ -37,29 +40,31 @@ export default function RedirectionNotificationModal({
             or&nbsp;on&nbsp;the&nbsp;list of your installed extensions{" "}
             <s.Icon>
               <img
+                className="fullDivWidthImage"
                 alt="Browser extensions puzzle icon"
                 src="../static/images/puzzle.svg"
               ></img>
             </s.Icon>
-            . <strong>Then&nbsp;select&nbsp;Read</strong>.
+            . <strong>Then&nbsp;select&nbsp;Read&nbsp;Article</strong>.
           </p>
           <img
+            className="fullDivWidthImage"
             src={"../static/images/find-extension.png"}
             //TODO: Add new alt description
             alt="Zeeguu browser extension"
           />
-        </s.BodyContainer>
-
-        <a target="_blank" rel="noreferrer" href={article.url}>
-          {/* Clicking the GoToArticleButton button sends the reader
+        </s.Body>
+        <s.Footer>
+          <a target="_blank" rel="noreferrer" href={article.url}>
+            {/* Clicking the GoToArticleButton button sends the reader
                 to the article and closes the modal so that when the user
                 returns to the Zeeguu app home page, they can see the recommendation
                 list instead of the modal still being open */}
-          <s.GoToArticleButton role="button" onClick={handleClose}>
-            Enter the article's website
-          </s.GoToArticleButton>
-          {/* {article.title} */}
-        </a>
+            <s.GoToArticleButton role="button" onClick={handleClose}>
+              Enter the article's website
+            </s.GoToArticleButton>
+          </a>
+        </s.Footer>
         <s.CloseButton role="button" onClick={handleClose}>
           <CloseRoundedIcon fontSize="medium" />
         </s.CloseButton>

@@ -1,17 +1,16 @@
 import { ModalWrapper } from "./ModalWrapper.sc"; //factored out MyBox
 import styled from "styled-components";
 
-//TODO: after deciding on the final modal styling - this file and the RedirectionNotificationModal.sc
-//could be merged together into one universal component
+//TODO: Merge this and the RedirectionNotificationModal.sc into one component (ModalUniversal.sc for instance)
+//as they share a lot of simillar code.
 
 const ExtensionMessageModalWrapper = styled(ModalWrapper)`
   .annotation {
-    color: orange; //hardcoded color but we need something in between ZeeguuOrange and ZeeguuDarkOrange
+    color: orange;
     font-weight: 500;
   }
 
   p {
-    //TODO: write reasons for this line-height settings
     line-height: 150%;
     text-align: left;
     font-size: 1em;
@@ -20,19 +19,20 @@ const ExtensionMessageModalWrapper = styled(ModalWrapper)`
 
   h1 {
     margin: 0;
+    @media (max-width: 576px) {
+      text-align: left;
+    }
   }
 `;
 
 const Header = styled.div`
   margin: 1em 0;
-  h1 {
-    margin: 0;
-  }
 `;
 
 const Body = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1.5em;
   margin: 1em 0;
   .fullDivWidthImage {
@@ -48,6 +48,9 @@ const Footer = styled.div`
   gap: 1.5em;
   align-items: center;
   margin: 1em 0;
+  a {
+    font-weight: 600;
+  }
   a:hover {
     text-decoration: underline;
   }
@@ -66,7 +69,7 @@ const CloseButton = styled.div`
   position: absolute;
   float: right;
   right: 16px;
-  margin-top: -32px;
+  margin-top: -16px;
 `;
 
 export {
