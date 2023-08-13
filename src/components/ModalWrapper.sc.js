@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import styled from "styled-components";
 
-//This component is a first step toward factoring the modal wrapper out (formerly MyBox).
+//This component is responsible for modal sizing, background and scaling
 
 const ModalWrapper = styled(Box)`
   position: absolute;
@@ -28,18 +28,6 @@ const ModalWrapper = styled(Box)`
   @media (max-width: 576px) {
     padding: 32px 24px;
     width: 80%;
-  }
-
-  h1 {
-    font-size: 1.3em;
-    text-align: center;
-    @media (max-width: 576px) {
-      text-align: left;
-    }
-  }
-
-  a {
-    text-align: center;
   }
 `;
 

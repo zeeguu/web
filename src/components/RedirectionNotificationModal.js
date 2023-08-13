@@ -2,7 +2,6 @@ import Modal from "@mui/material/Modal";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import * as s from "../components/RedirectionNotificationModal.sc";
 
-//First step towards separating the RedirectionNotificationModal component
 //This modal is used in the ArticlePreview component
 
 //TODO: Further refactor, e.g after testing and making sure users
@@ -45,7 +44,7 @@ export default function RedirectionNotificationModal({
                 src="../static/images/puzzle.svg"
               ></img>
             </s.Icon>
-            . <strong>Then&nbsp;select&nbsp;Read&nbsp;Article</strong>.
+            . <strong>Then&nbsp;select Read Article</strong>.
           </p>
           <img
             className="fullDivWidthImage"

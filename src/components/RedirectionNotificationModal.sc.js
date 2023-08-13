@@ -1,55 +1,23 @@
-import { ModalWrapper } from "./ModalWrapper.sc"; //factored out MyBox
+import {
+  ModalWrapperGlobal,
+  CloseButtonGlobal,
+  ModalHeaderGlobal,
+  ModalBodyGlobal,
+  ModalFooterGlobal,
+} from "./ModalGlobalStyling.sc";
 import { zeeguuDarkOrange } from "./colors";
 import { OrangeRoundButton } from "./allButtons.sc";
 import styled from "styled-components";
 
-//TODO: Merge this and the ExtensionMessage.sc into one component (ExtensionModal.sc for instance)
-//as they share a lot of simillar code.
+const RedirectionNotificationModalWrapper = styled(ModalWrapperGlobal)``;
 
-const RedirectionNotificationModalWrapper = styled(ModalWrapper)`
-  h1 {
-    line-height: 150%;
-    margin: 0;
-    @media (max-width: 576px) {
-      text-align: left;
-    }
-  }
+const Header = styled(ModalHeaderGlobal)``;
 
-  p {
-    line-height: 150%;
-    text-align: left;
-    font-size: 1em;
-    margin: 0;
-  }
-`;
+const Body = styled(ModalBodyGlobal)``;
 
-const Header = styled.div`
-  margin: 1em 0;
-`;
+const Footer = styled(ModalFooterGlobal)``;
 
-const Body = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5em;
-  margin: 1em 0;
-  .fullDivWidthImage {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-  }
-`;
-
-const Footer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  align-items: center;
-  margin: 1em 0;
-  a:hover {
-    text-decoration: underline;
-  }
-`;
+const CloseButton = styled(CloseButtonGlobal)``;
 
 const Icon = styled.div`
   height: 1em;
@@ -65,18 +33,8 @@ const Icon = styled.div`
 const GoToArticleButton = styled(OrangeRoundButton)`
   padding: 0.7em 2em;
   border-radius: 4em;
-  font-weight: 700;
+  font-weight: 600;
   border-bottom: solid 0.2em ${zeeguuDarkOrange};
-`;
-
-const CloseButton = styled.div`
-  cursor: pointer;
-  padding: 1px;
-  text-align: right;
-  position: absolute;
-  float: right;
-  right: 16px;
-  margin-top: -16px;
 `;
 
 export {
