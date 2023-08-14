@@ -1,4 +1,6 @@
 import Modal from "@mui/material/Modal";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import * as s from "./ExtensionMessage.sc";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
@@ -29,33 +31,54 @@ export default function ExtensionMessage({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <s.MyBox>
-          <s.StyledCloseButton role="button" onClick={handleClose}>
-            X
-          </s.StyledCloseButton>
-          <h1>
-            <span className="newAnnotation">New!</span>&nbsp;
-            {strings.extensionHeadline}
-          </h1>
-          <p>
-            {strings.extensionAllow}
-            <br /> <br />
-            {strings.extensionToRead} <br /> <br />
-            {strings.extensionReadability} <br /> <br />
-          </p>
-          <p className="installLinks">
+        <s.ModalWrapper>
+          <s.CloseButton role="button" onClick={handleClose}>
+            <CloseRoundedIcon fontSize="medium" />
+          </s.CloseButton>
+          <s.Header className="modalHeader">
+            <h1>
+              <span className="annotation">New!</span>&nbsp;
+              {strings.extensionHeadline}
+            </h1>
+          </s.Header>
+          <s.Body className="modalBody">
+            <p>
+              {/* Proposal for a shortened and updated paragraph, temporarily hardcoded */}
+              To read articles recommended by Zeeguu that are not saved or to
+              read external articles, you need to install The Zeeguu Reader
+              browser extension.
+            </p>
+            <img
+              className="fullDivWidthImage"
+              src={"../static/images/find-extension.png"}
+              //TODO: Add new alt description
+              alt="Zeeguu browser extension"
+            />
+          </s.Body>
+          <s.Footer>
             <a
+              className="install-links"
               href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
               rel="noopener noreferrer"
             >
-              {strings.extensionChromeInstall}
+              <s.InstallLink>
+                <FileDownloadOutlinedIcon fontSize="small" />
+                {strings.extensionChromeInstall}
+              </s.InstallLink>
             </a>
-            <br /> <br />
-            <a href="" rel="noopener noreferrer">
-              {strings.extensionFirefoxInstall}
+
+            <a
+              className="install-links"
+              href="https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/"
+              rel="noopener noreferrer"
+            >
+              <s.InstallLink>
+                <FileDownloadOutlinedIcon fontSize="small" />
+                {strings.extensionFirefoxInstall}
+              </s.InstallLink>
             </a>
-          </p>
-        </s.MyBox>
+          </s.Footer>
+        </s.ModalWrapper>
       </Modal>
     );
   } else return null;
