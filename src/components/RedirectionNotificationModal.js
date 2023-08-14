@@ -14,7 +14,7 @@ export default function RedirectionNotificationModal({
 }) {
   return (
     <Modal open={open} onClose={handleClose}>
-      <s.RedirectionNotificationModalWrapper>
+      <s.ModalWrapper>
         <s.Header>
           <h1>
             You are ready to&nbsp;continue<br></br>
@@ -67,7 +67,7 @@ export default function RedirectionNotificationModal({
         <s.CloseButton role="button" onClick={handleClose}>
           <CloseRoundedIcon fontSize="medium" />
         </s.CloseButton>
-      </s.RedirectionNotificationModalWrapper>
+      </s.ModalWrapper>
     </Modal>
   );
 }

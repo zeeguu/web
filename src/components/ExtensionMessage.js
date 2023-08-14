@@ -31,7 +31,7 @@ export default function ExtensionMessage({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <s.ExtensionMessageModalWrapper>
+        <s.ModalWrapper>
           <s.CloseButton role="button" onClick={handleClose}>
             <CloseRoundedIcon fontSize="medium" />
           </s.CloseButton>
@@ -78,7 +78,7 @@ export default function ExtensionMessage({
               </s.InstallLink>
             </a>
           </s.Footer>
-        </s.ExtensionMessageModalWrapper>
+        </s.ModalWrapper>
       </Modal>
     );
   } else return null;

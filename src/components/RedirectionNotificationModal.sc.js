@@ -9,7 +9,7 @@ import { zeeguuDarkOrange } from "./colors";
 import { OrangeRoundButton } from "./allButtons.sc";
 import styled from "styled-components";
 
-const RedirectionNotificationModalWrapper = styled(ModalWrapperGlobal)``;
+const ModalWrapper = styled(ModalWrapperGlobal)``;
 
 const Header = styled(ModalHeaderGlobal)``;
 
@@ -38,7 +38,7 @@ const GoToArticleButton = styled(OrangeRoundButton)`
 `;
 
 export {
-  RedirectionNotificationModalWrapper,
+  ModalWrapper,
   CloseButton,
   GoToArticleButton,
   Icon,

@@ -7,7 +7,7 @@ import {
 } from "./ModalGlobalStyling.sc"; //file responsible for modal global styles settings
 import styled from "styled-components";
 
-const ExtensionMessageModalWrapper = styled(ModalWrapperGlobal)`
+const ModalWrapper = styled(ModalWrapperGlobal)`
   .annotation {
     color: orange;
     font-weight: 500;
@@ -29,7 +29,7 @@ const InstallLink = styled.div`
 `;
 
 export {
-  ExtensionMessageModalWrapper,
+  ModalWrapper,
   CloseButton,
   Header,
   Body,
