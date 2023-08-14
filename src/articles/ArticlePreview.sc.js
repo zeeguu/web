@@ -85,7 +85,6 @@ let Topics = styled.span`
   margin-top: 1em;
 
   span {
-    margin-left: 1em;
     height: 1.2em;
     margin-left: 0.2em;
     border: solid ${zeeguuOrange};
@@ -94,6 +93,7 @@ let Topics = styled.span`
     font-size: 0.8333333333333334em;
   }
 `;
+
 
 export {
   Title,

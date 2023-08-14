@@ -180,16 +180,16 @@ let strings = new LocalizedStrings(
       contributors: "Contributors",
 
       //ArticleRouter
-      findTab: "Recommended",
+      homeTab: "Home",
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
-      saved: "Saved",
+      saved: "Saves",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
       history: "History",
       starred: "Starred",
-      translated: "Translated",
+     
       learned: "Learned",
 
       //WordsHistory
@@ -351,7 +351,7 @@ let strings = new LocalizedStrings(
       otherFeedback: "Other feedback:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
-      undo: "UNDO",
+      
 
       //FeedbackOptions
       bookmarkTooEasy: "Too Easy",
@@ -928,7 +928,7 @@ let strings = new LocalizedStrings(
       contributors: "Bidragsydere",
 
       //ArticleRouter
-      findTab: "Find",
+      homeTab: "Hjem",
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
       saved: "Gemt",
@@ -1359,7 +1359,6 @@ let strings = new LocalizedStrings(
       level: "niveau",
       lengthOnText: "længde",
       time: "tid",
-      translated: "oversatte",
       wordsWithLowercase: "ord",
       readingTime: "læse",
 

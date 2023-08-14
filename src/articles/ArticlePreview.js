@@ -5,12 +5,15 @@ import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
+import SmallSaveArticleButton from "./SmallSaveArticleButton";
+
 
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
   dontShowImage,
   hasExtension,
+    api
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
 
@@ -68,7 +71,9 @@ export default function ArticleOverview({
 
   return (
     <s.ArticlePreview>
-      <s.Title>{titleLink(article)}</s.Title>
+      <s.Title>{titleLink(article)}
+          <SmallSaveArticleButton api={api} article={article} />
+      </s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
 
