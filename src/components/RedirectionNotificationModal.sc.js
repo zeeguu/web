@@ -9,7 +9,13 @@ import { zeeguuDarkOrange } from "./colors";
 import { OrangeRoundButton } from "./allButtons.sc";
 import styled from "styled-components";
 
-const ModalWrapper = styled(ModalWrapperGlobal)``;
+const ModalWrapper = styled(ModalWrapperGlobal)`
+  label {
+    font-size: 0.9em;
+    align-self: start;
+    margin-top: -1em;
+  }
+`;
 
 const Header = styled(ModalHeaderGlobal)``;
 
