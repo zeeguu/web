@@ -7,13 +7,12 @@ import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
 
-
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
   dontShowImage,
   hasExtension,
-    api
+  api,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
 
@@ -32,7 +31,7 @@ export default function ArticleOverview({
     let open_in_zeeguu = (
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
-    let open_externally = (
+    let open_externally_with_modal = (
       //The RedirectionNotificationModal is displayed when the user clicks
       //the article's title from the recommendation list.
       //The modal informs the user that they are about to be redirected
@@ -48,6 +47,13 @@ export default function ArticleOverview({
           {article.title}
         </s.InvisibleTitleButton>
       </>
+    );
+    //If the user selects the "do not show again" checkbox on the RedirectionNotificationModal,
+    //clicking the article's title will send them directly to the original article's site.
+    let open_externally_without_modal = (
+      <a target="_blank" rel="noreferrer" href={article.url}>
+        {article.title}
+      </a>
     );
 
     if (article.video) {
@@ -65,14 +71,15 @@ export default function ArticleOverview({
     if (article.has_personal_copy || article.has_uploader) {
       return open_in_zeeguu;
     } else {
-      return open_externally;
+      return open_externally_with_modal;
     }
   }
 
   return (
     <s.ArticlePreview>
-      <s.Title>{titleLink(article)}
-          <SmallSaveArticleButton api={api} article={article} />
+      <s.Title>
+        {titleLink(article)}
+        <SmallSaveArticleButton api={api} article={article} />
       </s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
