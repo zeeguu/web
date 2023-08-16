@@ -5,17 +5,11 @@ import {
   ModalBodyGlobal,
   ModalFooterGlobal,
 } from "./ModalGlobalStyling.sc";
-import { zeeguuDarkOrange } from "./colors";
+import { zeeguuDarkOrange, darkGrey } from "./colors";
 import { OrangeRoundButton } from "./allButtons.sc";
 import styled from "styled-components";
 
-const ModalWrapper = styled(ModalWrapperGlobal)`
-  label {
-    font-size: 0.9em;
-    align-self: start;
-    margin-top: -1em;
-  }
-`;
+const ModalWrapper = styled(ModalWrapperGlobal)``;
 
 const Header = styled(ModalHeaderGlobal)``;
 
@@ -30,6 +24,23 @@ const Icon = styled.div`
   width: 1em;
   margin: 0 0.2em;
   display: inline-block;
+`;
+
+const Checkbox = styled.div`
+  margin-top: -1em;
+  align-self: start;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 0.5em;
+  label {
+    font-size: 0.9em;
+    color: ${darkGrey}
+  }
+  input[type="checkbox"] {
+    width: 1.2em;
+    height: 1.2em;
+    border-radius: 0.25em;
+  }
 `;
 
 //redesigned button for a better focal point and improved
@@ -51,4 +62,5 @@ export {
   Header,
   Body,
   Footer,
+  Checkbox,
 };
