@@ -15,10 +15,10 @@ export default function ArticleOverview({
   api,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
-  const [checkboxChecked, setCheckboxChecked] = useState(false);
+  const [checkboxChecked, setCheckboxChecked] = useState(null);
 
-  function handleChecked() {
-    setCheckboxChecked(!checkboxChecked);
+  function handleChecked(event) {
+    setCheckboxChecked(event.target.checked);
   }
 
   console.log(checkboxChecked);
