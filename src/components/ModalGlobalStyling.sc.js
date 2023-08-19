@@ -65,6 +65,10 @@ const CloseButtonGlobal = styled.div`
   float: right;
   right: 16px;
   margin-top: -16px;
+  @media (max-width: 576px) {
+    right: 16px;
+    margin-top: -8px;
+  }
 `;
 
 export {
