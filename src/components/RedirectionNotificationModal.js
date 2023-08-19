@@ -54,15 +54,15 @@ export default function RedirectionNotificationModal({
           />
         </s.Body>
         <s.Footer>
-          <s.Checkbox>
-            <label for="checkbox"> Don't show this again</label>
+          <s.CheckboxWrapper>
             <input
               type="checkbox"
               id="checkbox"
               name="noshow"
               value="Do not show again"
             ></input>{" "}
-          </s.Checkbox>
+            <label for="checkbox">Don't show this message</label>
+          </s.CheckboxWrapper>
           <a target="_blank" rel="noreferrer" href={article.url}>
             {/* Clicking the GoToArticleButton button sends the reader
                 to the article and closes the modal so that when the user
