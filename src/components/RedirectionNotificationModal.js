@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import * as s from "../components/RedirectionNotificationModal.sc";
@@ -12,12 +11,8 @@ export default function RedirectionNotificationModal({
   article,
   open,
   handleClose, //handleClose function defined in the ArticlePreview.js, passed as a prop
+  handleChecked
 }) {
-  const [checkboxChecked, setCheckboxChecked] = useState(false);
-
-  function handleChecked() {
-    setCheckboxChecked(!checkboxChecked);
-  }
 
   return (
     <Modal open={open} onClose={handleClose}>
