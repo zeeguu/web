@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import * as s from "../components/RedirectionNotificationModal.sc";
@@ -12,6 +13,12 @@ export default function RedirectionNotificationModal({
   open,
   handleClose, //handleClose function defined in the ArticlePreview.js, passed as a prop
 }) {
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
+
+  function handleChecked() {
+    setCheckboxChecked(!checkboxChecked);
+  }
+
   return (
     <Modal open={open} onClose={handleClose}>
       <s.ModalWrapper>
@@ -56,12 +63,13 @@ export default function RedirectionNotificationModal({
         <s.Footer>
           <s.CheckboxWrapper>
             <input
+              onChange={handleChecked}
               type="checkbox"
               id="checkbox"
               name="noshow"
-              value="Do not show again"
+              value=""
             ></input>{" "}
-            <label for="checkbox">Don't show this message</label>
+            <label htmlFor="checkbox">Don't show this message</label>
           </s.CheckboxWrapper>
           <a target="_blank" rel="noreferrer" href={article.url}>
             {/* Clicking the GoToArticleButton button sends the reader
