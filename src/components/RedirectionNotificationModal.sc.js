@@ -5,7 +5,7 @@ import {
   ModalBodyGlobal,
   ModalFooterGlobal,
 } from "./ModalGlobalStyling.sc";
-import { zeeguuDarkOrange, darkGrey } from "./colors";
+import { zeeguuDarkOrange, zeeguuOrange } from "./colors";
 import { OrangeRoundButton } from "./allButtons.sc";
 import styled from "styled-components";
 
@@ -26,20 +26,20 @@ const Icon = styled.div`
   display: inline-block;
 `;
 
-const Checkbox = styled.div`
+const CheckboxWrapper = styled.div`
   margin-top: -1em;
   align-self: start;
-  display: flex;
-  flex-direction: row-reverse;
+  display: grid;
+  grid-template-columns: 1em auto;
+  align-items: start;
   gap: 0.5em;
   label {
     font-size: 0.9em;
-    color: ${darkGrey}
   }
   input[type="checkbox"] {
     width: 1.2em;
     height: 1.2em;
-    border-radius: 0.25em;
+    accent-color: ${zeeguuOrange};
   }
 `;
 
@@ -62,5 +62,5 @@ export {
   Header,
   Body,
   Footer,
-  Checkbox,
+  CheckboxWrapper,
 };
