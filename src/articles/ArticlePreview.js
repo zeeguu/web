@@ -15,13 +15,6 @@ export default function ArticleOverview({
   api,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
-  const [checkboxChecked, setCheckboxChecked] = useState(null);
-
-  function handleChecked(event) {
-    setCheckboxChecked(event.target.checked);
-  }
-
-  console.log(checkboxChecked);
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
@@ -49,7 +42,6 @@ export default function ArticleOverview({
           article={article}
           open={isRedirectionModalOpen}
           handleClose={handleClose}
-          handleChecked={handleChecked}
         />
         <s.InvisibleTitleButton onClick={handleOpen}>
           {article.title}
