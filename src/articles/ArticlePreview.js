@@ -48,7 +48,7 @@ export default function ArticleOverview({
         </s.InvisibleTitleButton>
       </>
     );
-    //If the user selects the "do not show again" checkbox on the RedirectionNotificationModal,
+    //Todo: If the user selects the "do not show again" checkbox on the RedirectionNotificationModal,
     //clicking the article's title will send them directly to the original article's site.
     let open_externally_without_modal = (
       <a target="_blank" rel="noreferrer" href={article.url}>
