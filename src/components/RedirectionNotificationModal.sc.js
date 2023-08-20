@@ -19,7 +19,7 @@ const Footer = styled(ModalFooterGlobal)``;
 
 const CloseButton = styled(CloseButtonGlobal)``;
 
-const Icon = styled.div`
+const Icon = styled.span`
   height: 1em;
   width: 1em;
   margin: 0 0.2em;
