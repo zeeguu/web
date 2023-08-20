@@ -15,13 +15,12 @@ export default function RedirectionNotificationModal({
 }) {
   const [checkboxChecked, setCheckboxChecked] = useState(false);
 
-  function handleChecked(event) {
-    if (event.target.checked === false) {
-      setCheckboxChecked(false);
-    } else setCheckboxChecked(true);
+  //toggle checkbox state
+  function handleChecked() {
+    setCheckboxChecked(!checkboxChecked);
   }
 
-  console.log(checkboxChecked);
+  console.log(`Checkbox is checked ${checkboxChecked}`);
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -67,8 +66,8 @@ export default function RedirectionNotificationModal({
         <s.Footer>
           <s.CheckboxWrapper>
             <input
-              defaultChecked={checkboxChecked === true ?? true | false} // it keeps previous selection visible
               onChange={handleChecked}
+              checked={checkboxChecked}
               type="checkbox"
               id="checkbox"
               name=""
