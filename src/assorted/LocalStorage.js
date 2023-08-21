@@ -54,8 +54,11 @@ const LocalStorage = {
     return localStorage[this.Keys.ShowRedirectionNotificationModal];
   },
 
-  setShowRedirectionNotificationModal: function (showRedirectionNotificationModal) {
-    localStorage[this.Keys.ShowRedirectionNotificationModal] = showRedirectionNotificationModal;
+  setShowRedirectionNotificationModal: function (
+    showRedirectionNotificationModal
+  ) {
+    localStorage[this.Keys.ShowRedirectionNotificationModal] =
+      showRedirectionNotificationModal;
   },
 
   // Setting info
