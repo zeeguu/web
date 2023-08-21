@@ -13,6 +13,8 @@ export default function ArticleOverview({
   dontShowImage,
   hasExtension,
   api,
+  checkboxChecked,
+  setCheckboxChecked,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
 
@@ -39,6 +41,8 @@ export default function ArticleOverview({
       //should be taken to start reading the said article with The Zeeguu Reader extension
       <>
         <RedirectionNotificationModal
+          checkboxChecked={checkboxChecked}
+          setCheckboxChecked={setCheckboxChecked}
           article={article}
           open={isRedirectionModalOpen}
           handleClose={handleClose}

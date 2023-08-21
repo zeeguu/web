@@ -32,6 +32,14 @@ export default function NewArticles({ api }) {
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
+  const checked = LocalStorage.getShowRedirectionNotificationModal() ? true : false;
+  const [checkboxChecked, setCheckboxChecked] = useState(
+    checked
+  );
+
+    useEffect(() => {
+    LocalStorage.setShowRedirectionNotificationModal(checkboxChecked);
+  }, [checkboxChecked]);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
@@ -105,6 +113,8 @@ export default function NewArticles({ api }) {
       <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each) => (
         <ArticlePreview
+          checkboxChecked={checkboxChecked}
+          setCheckboxChecked={setCheckboxChecked}
           key={each.id}
           article={each}
           api={api}
