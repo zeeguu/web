@@ -74,9 +74,16 @@ export default function ArticleOverview({
     // either by the user themselves or by a teacher maybe
     if (article.has_personal_copy || article.has_uploader) {
       return open_in_zeeguu;
-    } else {
+    } else if (checkboxChecked === false) {
       return open_externally_with_modal;
-    }
+      //TODO: Currently right after "do not show" checkbox is checked
+      //the condition checkboxChecked === false and "open_externally_with_modal" no longer holds and the
+      //modal disappears which results in not letting the user proceed to the article
+      //by clicking the modal's "Go to article button" which results in a confusing flow.
+      // To solve this I am considering to add an additional value
+      //to the Logal storage that would be changed when  "Go to article button" is clicked
+      // not right after the checkbox has been cheched
+    } else return open_externally_without_modal;
   }
 
   return (
