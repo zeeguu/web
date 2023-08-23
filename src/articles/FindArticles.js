@@ -32,14 +32,14 @@ export default function NewArticles({ api }) {
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
-  const checked = LocalStorage.getShowRedirectionNotificationModal() ? true : false;
+  const checked = LocalStorage.getDoNotShowRedirectionNotificationModal() ? true : false;
   const [checkboxChecked, setCheckboxChecked] = useState(
     checked
     // LocalStorage.getShowRedirectionNotificationModal()
   );
 
     useEffect(() => {
-    LocalStorage.setShowRedirectionNotificationModal(checkboxChecked);
+    LocalStorage.setDoNotShowRedirectionNotificationModal(checkboxChecked);
   }, [checkboxChecked]);
 
   useEffect(() => {
