@@ -48,6 +48,17 @@ export default function NewArticles({ api }) {
     LocalStorage.setDoNotShowRedirectionNotificationModal(checkboxChecked);
   }, [checkboxChecked]);
 
+  const openArticleWithoutModal =
+    LocalStorage.getOpenArticleExternallyWithoutModal() === "true"
+      ? true
+      : false;
+
+  const [useModal, setUseModal] = useState(openArticleWithoutModal);
+
+  useEffect(() => {
+    LocalStorage.setOpenArticleExternallyWithoutModal(useModal);
+  }, [useModal]);
+
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
     console.log(
@@ -120,6 +131,8 @@ export default function NewArticles({ api }) {
       <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each) => (
         <ArticlePreview
+          useModal={useModal}
+          setUseModal={setUseModal}
           checkboxChecked={checkboxChecked}
           setCheckboxChecked={setCheckboxChecked}
           key={each.id}

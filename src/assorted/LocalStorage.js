@@ -26,6 +26,7 @@ const LocalStorage = {
     clickedVideoLink: "clicked_video_link",
     DoNotShowRedirectionNotificationModal:
       "do_not_show_redirection_notification_modal",
+    OpenArticleExternallyWithoutModal: "open_article_externally_without_modal"
   },
 
   userInfo: function () {
@@ -49,6 +50,14 @@ const LocalStorage = {
 
   displayedExtensionPopup: function () {
     return localStorage[this.Keys.DisplayedExtensionPopup];
+  },
+
+  getOpenArticleExternallyWithoutModal: function (){
+    return localStorage[this.Keys.OpenArticleExternallyWithoutModal];
+  },
+
+  setOpenArticleExternallyWithoutModal: function(openArticleExternallyWithoutModal){
+    localStorage[this.Keys.OpenArticleExternallyWithoutModal] = openArticleExternallyWithoutModal;
   },
 
   getDoNotShowRedirectionNotificationModal: function () {
