@@ -51,11 +51,11 @@ const LocalStorage = {
     return localStorage[this.Keys.DisplayedExtensionPopup];
   },
 
-  getShowRedirectionNotificationModal: function () {
+  getDoNotShowRedirectionNotificationModal: function () {
     return localStorage[this.Keys.DoNotShowRedirectionNotificationModal];
   },
 
-  setShowRedirectionNotificationModal: function (
+  setDoNotShowRedirectionNotificationModal: function (
     doNotShowRedirectionNotificationModal
   ) {
     localStorage[this.Keys.DoNotShowRedirectionNotificationModal] =
