@@ -35,6 +35,7 @@ export default function NewArticles({ api }) {
   const checked = LocalStorage.getShowRedirectionNotificationModal() ? true : false;
   const [checkboxChecked, setCheckboxChecked] = useState(
     checked
+    // LocalStorage.getShowRedirectionNotificationModal()
   );
 
     useEffect(() => {
