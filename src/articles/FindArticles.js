@@ -32,13 +32,19 @@ export default function NewArticles({ api }) {
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
-  const checked = LocalStorage.getDoNotShowRedirectionNotificationModal() ? true : false;
-  const [checkboxChecked, setCheckboxChecked] = useState(
-    checked
-    // LocalStorage.getShowRedirectionNotificationModal()
-  );
 
-    useEffect(() => {
+  //This ternary operator needed to be tightened up due to JS unstable behaviour that resulted
+  //in bool values changing on its own on refresh without any other external trigger.
+  // A '=== "true"' clause has been added to the getDoNotShowRedirectionNotificationModal() getter
+  //to achieve predictable and desired bool values
+  const checked =
+    LocalStorage.getDoNotShowRedirectionNotificationModal() === "true"
+      ? true
+      : false;
+
+  const [checkboxChecked, setCheckboxChecked] = useState(checked);
+
+  useEffect(() => {
     LocalStorage.setDoNotShowRedirectionNotificationModal(checkboxChecked);
   }, [checkboxChecked]);
 
