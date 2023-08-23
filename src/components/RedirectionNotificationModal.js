@@ -15,10 +15,22 @@ export default function RedirectionNotificationModal({
   handleClose,
   setCheckboxChecked,
   checkboxChecked,
+  setUseModal,
 }) {
   //toggle checkbox state
   function handleChecked() {
     setCheckboxChecked(!checkboxChecked);
+  }
+
+  function handleUseModal(){
+    if (checkboxChecked === true){
+      setUseModal(true)
+    } else setUseModal(false)
+  }
+
+  function handleClosed(){
+    handleUseModal()
+    handleClose()
   }
   return (
     <Modal open={open} onClose={handleClose}>
@@ -78,7 +90,7 @@ export default function RedirectionNotificationModal({
                 to the article and closes the modal so that when the user
                 returns to the Zeeguu app home page, they can see the recommendation
                 list instead of the modal still being open */}
-            <s.GoToArticleButton role="button" onClick={handleClose}>
+            <s.GoToArticleButton role="button" onClick={handleClosed}>
               Enter the article's website
             </s.GoToArticleButton>
           </a>

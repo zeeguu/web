@@ -15,6 +15,8 @@ export default function ArticleOverview({
   api,
   checkboxChecked,
   setCheckboxChecked,
+  useModal,
+  setUseModal,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
 
@@ -43,6 +45,8 @@ export default function ArticleOverview({
         <RedirectionNotificationModal
           checkboxChecked={checkboxChecked}
           setCheckboxChecked={setCheckboxChecked}
+          useModal={useModal}
+          setUseModal={setUseModal}
           article={article}
           open={isRedirectionModalOpen}
           handleClose={handleClose}
@@ -74,7 +78,7 @@ export default function ArticleOverview({
     // either by the user themselves or by a teacher maybe
     if (article.has_personal_copy || article.has_uploader) {
       return open_in_zeeguu;
-    } else if (checkboxChecked === false) {
+    } else if (useModal === false) {
       return open_externally_with_modal;
       //TODO: Currently right after "do not show" checkbox is checked
       //the condition checkboxChecked === false and "open_externally_with_modal" no longer holds and the
