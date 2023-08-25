@@ -37,27 +37,35 @@ export default function NewArticles({ api }) {
   //in bool values changing on its own on refresh without any other external trigger.
   // A '=== "true"' clause has been added to the getDoNotShowRedirectionNotificationModal() getter
   //to achieve predictable and desired bool values
-  const checked =
+  const isDoNotShowRedirectionNotificationModaSelected =
     LocalStorage.getDoNotShowRedirectionNotificationModal() === "true"
       ? true
       : false;
 
-  const [checkboxChecked, setCheckboxChecked] = useState(checked);
-
-  useEffect(() => {
-    LocalStorage.setDoNotShowRedirectionNotificationModal(checkboxChecked);
-  }, [checkboxChecked]);
-
-  const openArticleWithoutModal =
+  const isArticleOpenedExternallyWithoutModal =
     LocalStorage.getOpenArticleExternallyWithoutModal() === "true"
       ? true
       : false;
 
-  const [useModal, setUseModal] = useState(openArticleWithoutModal);
+  const [
+    selectedDoNotShowRedirectionModal,
+    setSelectedDoNotShowRedirectionModal,
+  ] = useState(isDoNotShowRedirectionNotificationModaSelected);
+
+  const [openedExternallyWithoutModal, setOpenedExternallyWithoutModal] =
+    useState(isArticleOpenedExternallyWithoutModal);
 
   useEffect(() => {
-    LocalStorage.setOpenArticleExternallyWithoutModal(useModal);
-  }, [useModal]);
+    LocalStorage.setDoNotShowRedirectionNotificationModal(
+      selectedDoNotShowRedirectionModal
+    );
+  }, [selectedDoNotShowRedirectionModal]);
+
+  useEffect(() => {
+    LocalStorage.setOpenArticleExternallyWithoutModal(
+      openedExternallyWithoutModal
+    );
+  }, [openedExternallyWithoutModal]);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
@@ -131,10 +139,12 @@ export default function NewArticles({ api }) {
       <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each) => (
         <ArticlePreview
-          useModal={useModal}
-          setUseModal={setUseModal}
-          checkboxChecked={checkboxChecked}
-          setCheckboxChecked={setCheckboxChecked}
+          openedExternallyWithoutModal={openedExternallyWithoutModal}
+          setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
+          selectedDoNotShowRedirectionModal={selectedDoNotShowRedirectionModal}
+          setSelectedDoNotShowRedirectionModal={
+            setSelectedDoNotShowRedirectionModal
+          }
           key={each.id}
           article={each}
           api={api}

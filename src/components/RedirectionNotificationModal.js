@@ -13,24 +13,24 @@ export default function RedirectionNotificationModal({
   article,
   open,
   handleClose,
-  setCheckboxChecked,
-  checkboxChecked,
-  setUseModal,
+  setSelectedDoNotShowRedirectionModal,
+  selectedDoNotShowRedirectionModal,
+  setOpenedExternallyWithoutModal,
 }) {
   //toggle checkbox state
-  function handleChecked() {
-    setCheckboxChecked(!checkboxChecked);
+  function handleVisibilitySettings() {
+    setSelectedDoNotShowRedirectionModal(!selectedDoNotShowRedirectionModal);
   }
 
-  function handleUseModal(){
-    if (checkboxChecked === true){
-      setUseModal(true)
-    } else setUseModal(false)
+  function handleModalUse() {
+    selectedDoNotShowRedirectionModal === true
+      ? setOpenedExternallyWithoutModal(true)
+      : setOpenedExternallyWithoutModal(false);
   }
 
-  function handleClosed(){
-    handleUseModal()
-    handleClose()
+  function handleCloseAndSavePreferences() {
+    handleModalUse();
+    handleClose();
   }
   return (
     <Modal open={open} onClose={handleClose}>
@@ -76,8 +76,8 @@ export default function RedirectionNotificationModal({
         <s.Footer>
           <s.CheckboxWrapper>
             <input
-              onChange={handleChecked}
-              checked={checkboxChecked}
+              onChange={handleVisibilitySettings}
+              checked={selectedDoNotShowRedirectionModal}
               type="checkbox"
               id="checkbox"
               name=""
@@ -90,7 +90,10 @@ export default function RedirectionNotificationModal({
                 to the article and closes the modal so that when the user
                 returns to the Zeeguu app home page, they can see the recommendation
                 list instead of the modal still being open */}
-            <s.GoToArticleButton role="button" onClick={handleClosed}>
+            <s.GoToArticleButton
+              role="button"
+              onClick={handleCloseAndSavePreferences}
+            >
               Enter the article's website
             </s.GoToArticleButton>
           </a>

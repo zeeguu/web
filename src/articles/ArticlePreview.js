@@ -13,10 +13,10 @@ export default function ArticleOverview({
   dontShowImage,
   hasExtension,
   api,
-  checkboxChecked,
-  setCheckboxChecked,
-  useModal,
-  setUseModal,
+  selectedDoNotShowRedirectionModal,
+  setSelectedDoNotShowRedirectionModal,
+  openedExternallyWithoutModal,
+  setOpenedExternallyWithoutModal,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
 
@@ -43,10 +43,12 @@ export default function ArticleOverview({
       //should be taken to start reading the said article with The Zeeguu Reader extension
       <>
         <RedirectionNotificationModal
-          checkboxChecked={checkboxChecked}
-          setCheckboxChecked={setCheckboxChecked}
-          useModal={useModal}
-          setUseModal={setUseModal}
+          selectedDoNotShowRedirectionModal={selectedDoNotShowRedirectionModal}
+          setSelectedDoNotShowRedirectionModal={
+            setSelectedDoNotShowRedirectionModal
+          }
+          // openedExternallyWithoutModal={openedExternallyWithoutModal}
+          setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
           article={article}
           open={isRedirectionModalOpen}
           handleClose={handleClose}
@@ -78,15 +80,8 @@ export default function ArticleOverview({
     // either by the user themselves or by a teacher maybe
     if (article.has_personal_copy || article.has_uploader) {
       return open_in_zeeguu;
-    } else if (useModal === false) {
+    } else if (openedExternallyWithoutModal === false) {
       return open_externally_with_modal;
-      //TODO: Currently right after "do not show" checkbox is checked
-      //the condition checkboxChecked === false and "open_externally_with_modal" no longer holds and the
-      //modal disappears which results in not letting the user proceed to the article
-      //by clicking the modal's "Go to article button" which results in a confusing flow.
-      // To solve this I am considering to add an additional value
-      //to the Logal storage that would be changed when  "Go to article button" is clicked
-      // not right after the checkbox has been cheched
     } else return open_externally_without_modal;
   }
 
