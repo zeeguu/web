@@ -22,6 +22,7 @@ const CloseButton = styled(CloseButtonGlobal)``;
 const Icon = styled.span`
   height: 1em;
   width: 1em;
+  max-width:2em;
   margin: 0 0.2em;
   display: inline-block;
 `;
