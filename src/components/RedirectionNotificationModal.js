@@ -46,7 +46,7 @@ export default function RedirectionNotificationModal({
               <s.Icon>
                 <img
                   className="fullDivWidthImage"
-                  alt="The Zeeguu Reader elephant icon"
+                  alt=""
                   src="../static/images/zeeguuLogo.svg"
                 ></img>
               </s.Icon>{" "}
@@ -57,7 +57,7 @@ export default function RedirectionNotificationModal({
             <s.Icon>
               <img
                 className="fullDivWidthImage"
-                alt="Browser extensions puzzle icon"
+                alt=""
                 src="../static/images/puzzle.svg"
               ></img>
             </s.Icon>
@@ -66,7 +66,6 @@ export default function RedirectionNotificationModal({
           <img
             className="fullDivWidthImage"
             src={"../static/images/find-extension.png"}
-            //TODO: Add new alt description
             alt="Zeeguu browser extension"
           />
         </s.Body>
