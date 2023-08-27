@@ -27,16 +27,12 @@ function useQuery() {
 export default function NewArticles({ api }) {
   const searchQuery = useQuery().get("search");
 
-  const [articleList, setArticleList] = useState(null);
-  const [originalList, setOriginalList] = useState(null);
-  const [hasExtension, setHasExtension] = useState(true);
-  const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
-  const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
-
-  //This ternary operator needed to be tightened up due to JS unstable behaviour that resulted
-  //in bool values changing on its own on refresh without any other external trigger.
-  // A '=== "true"' clause has been added to the getDoNotShowRedirectionNotificationModal() getter
-  //to achieve predictable and desired bool values
+  //The ternary operators below fix the problem with the getDoNotShowRedirectionNotificationModal()
+  //and getOpenArticleExternallyWithoutModal() getters getters that were outputting undefined string
+  //values when they should be false. This occurs before the user selects their own preferences.
+  //Additionally, the conditional statement needed to be tightened up due to JS's unstable behavior, which resulted
+  //in bool values changing on its own on refresh without any other external trigger or preferences change.
+  // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const isDoNotShowRedirectionNotificationModaSelected =
     LocalStorage.getDoNotShowRedirectionNotificationModal() === "true"
       ? true
@@ -47,11 +43,18 @@ export default function NewArticles({ api }) {
       ? true
       : false;
 
+  const [articleList, setArticleList] = useState(null);
+  const [originalList, setOriginalList] = useState(null);
+  const [hasExtension, setHasExtension] = useState(true);
+  const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
+  const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
+  //States linked with the "Do not show" checkbox selection on the RedirectionNotificationModal
   const [
     selectedDoNotShowRedirectionModal,
     setSelectedDoNotShowRedirectionModal,
   ] = useState(isDoNotShowRedirectionNotificationModaSelected);
-
+  //States controlling whether external articles should be opened with or without
+  //the RedirectionNotificationModal
   const [openedExternallyWithoutModal, setOpenedExternallyWithoutModal] =
     useState(isArticleOpenedExternallyWithoutModal);
 
@@ -139,16 +142,16 @@ export default function NewArticles({ api }) {
       <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each) => (
         <ArticlePreview
+          key={each.id}
+          article={each}
+          api={api}
+          hasExtension={hasExtension}
           openedExternallyWithoutModal={openedExternallyWithoutModal}
           setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
           selectedDoNotShowRedirectionModal={selectedDoNotShowRedirectionModal}
           setSelectedDoNotShowRedirectionModal={
             setSelectedDoNotShowRedirectionModal
           }
-          key={each.id}
-          article={each}
-          api={api}
-          hasExtension={hasExtension}
         />
       ))}
 

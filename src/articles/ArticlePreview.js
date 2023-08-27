@@ -36,30 +36,27 @@ export default function ArticleOverview({
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
     let open_externally_with_modal = (
-      //The RedirectionNotificationModal is displayed when the user clicks
-      //the article's title from the recommendation list.
-      //The modal informs the user that they are about to be redirected
-      //to the original article's website and guides them on what steps
+      //The RedirectionNotificationModal modal informs the user that they are about
+      //to be redirected to the original article's website and guides them on what steps
       //should be taken to start reading the said article with The Zeeguu Reader extension
+      //The modal is displayed when the user clicks the article's title from the recommendation
+      //list and can be deactivated when they select "Do not show again" and proceed.
       <>
         <RedirectionNotificationModal
+          article={article}
+          open={isRedirectionModalOpen}
+          handleClose={handleClose}
           selectedDoNotShowRedirectionModal={selectedDoNotShowRedirectionModal}
           setSelectedDoNotShowRedirectionModal={
             setSelectedDoNotShowRedirectionModal
           }
-          // openedExternallyWithoutModal={openedExternallyWithoutModal}
           setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
-          article={article}
-          open={isRedirectionModalOpen}
-          handleClose={handleClose}
         />
         <s.InvisibleTitleButton onClick={handleOpen}>
           {article.title}
         </s.InvisibleTitleButton>
       </>
     );
-    //Todo: If the user selects the "do not show again" checkbox on the RedirectionNotificationModal,
-    //clicking the article's title will send them directly to the original article's site.
     let open_externally_without_modal = (
       <a target="_blank" rel="noreferrer" href={article.url}>
         {article.title}

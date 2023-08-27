@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
 import Modal from "@mui/material/Modal";
-import LocalStorage from "../assorted/LocalStorage";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import * as s from "../components/RedirectionNotificationModal.sc";
 
@@ -13,12 +11,11 @@ export default function RedirectionNotificationModal({
   article,
   open,
   handleClose,
-  setSelectedDoNotShowRedirectionModal,
-  selectedDoNotShowRedirectionModal,
-  setOpenedExternallyWithoutModal,
+  selectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
+  setSelectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
+  setOpenedExternallyWithoutModal, //related to the modal use based on the "Do not show" selection
 }) {
-  //toggle checkbox state
-  function handleVisibilitySettings() {
+  function handleVisibilityCheckboxSelection() {
     setSelectedDoNotShowRedirectionModal(!selectedDoNotShowRedirectionModal);
   }
 
@@ -76,7 +73,7 @@ export default function RedirectionNotificationModal({
         <s.Footer>
           <s.CheckboxWrapper>
             <input
-              onChange={handleVisibilitySettings}
+              onChange={handleVisibilityCheckboxSelection}
               checked={selectedDoNotShowRedirectionModal}
               type="checkbox"
               id="checkbox"
