@@ -15,7 +15,7 @@ export default function OwnArticles({ api }) {
   let originalList = articleList;
 
   if (articleList == null) {
-    api.getOwnTexts((articles) => {
+    api.getSavedUserArticles((articles) => {
       setArticleList(articles);
     });
 
