@@ -28,7 +28,7 @@ const Icon = styled.span`
 `;
 
 const CheckboxWrapper = styled.div`
-  margin-top: -1em;
+  margin-top: -0.5em;
   align-self: start;
   display: grid;
   grid-template-columns: 1em auto;
