@@ -28,11 +28,11 @@ const Icon = styled.span`
 `;
 
 const CheckboxWrapper = styled.div`
-  margin-top: -0.5em;
+  margin-top: -1em;
   align-self: start;
   display: grid;
   grid-template-columns: 1em auto;
-  align-items: start;
+  align-items: center;
   gap: 0.5em;
   label {
     font-size: 0.9em;
@@ -41,6 +41,10 @@ const CheckboxWrapper = styled.div`
     width: 1.2em;
     height: 1.2em;
     accent-color: ${zeeguuOrange};
+    @media (max-width: 576px) {
+      width: 1.5em;
+      height: 1.5em;
+    }
   }
 `;
 
