@@ -43,6 +43,7 @@ export default function ArticleOverview({
       //list and can be deactivated when they select "Do not show again" and proceed.
       <>
         <RedirectionNotificationModal
+          api={api}
           article={article}
           open={isRedirectionModalOpen}
           handleClose={handleClose}

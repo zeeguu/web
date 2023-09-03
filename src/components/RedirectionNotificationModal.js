@@ -1,4 +1,6 @@
 import Modal from "@mui/material/Modal";
+import { Link } from "react-router-dom/cjs/react-router-dom";
+import { useState } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import * as s from "../components/RedirectionNotificationModal.sc";
 import { isMobile } from "../utils/misc/browserDetection";
@@ -9,6 +11,7 @@ import { isMobile } from "../utils/misc/browserDetection";
 //understand text and wording, turn strings into variables and move to definitions.js
 
 export default function RedirectionNotificationModal({
+  api,
   article,
   open,
   handleClose,
@@ -16,6 +19,8 @@ export default function RedirectionNotificationModal({
   setSelectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
   setOpenedExternallyWithoutModal, //related to the modal use based on the "Do not show" selection
 }) {
+  const [isSaved, setIsSaved] = useState(article.has_personal_copy);
+
   function handleVisibilityCheckboxSelection() {
     setSelectedDoNotShowRedirectionModal(!selectedDoNotShowRedirectionModal);
   }
@@ -28,6 +33,19 @@ export default function RedirectionNotificationModal({
 
   function handleCloseAndSavePreferences() {
     handleModalUse();
+    handleClose();
+  }
+
+  async function handleSaveArticle() {
+    await api.makePersonalCopy(article.id, (data) => {
+      if (data === "OK") {
+        setIsSaved(true);
+      }
+    });
+  }
+
+  function handleCloseMobile() {
+    handleSaveArticle();
     handleClose();
   }
   return (
@@ -106,24 +124,28 @@ export default function RedirectionNotificationModal({
           // Displayed to the users who access Zeeguu from mobile browsers
           <>
             <s.Header>
-              <h1>
-                It seems like you are using&nbsp;a&nbsp;mobile device
-                right&nbsp;now
-              </h1>
+              <h1>It looks like you are using&nbsp;a&nbsp;mobile device</h1>
             </s.Header>
             <s.Body>
               <p>
-                To read articles on a&nbsp;mobile device, click the{" "}
-                <strong>Save</strong> button below the article's title.{" "}
-                <br></br>
-                <br></br>
-                Once the article is saved, you can access it by visiting the{" "}
-                <strong>Saves</strong> section.
+                If you want to read articles on your mobile device using Zeeguu,
+                just tap on the
+                <strong> Save </strong> button below the article's title or
+                click<strong> Save and enter the article</strong> to add it to
+                your Saves section.
               </p>
             </s.Body>
             <s.CloseButton role="button" onClick={handleClose}>
               <CloseRoundedIcon fontSize="medium" />
             </s.CloseButton>
+            <s.Footer>
+              {/* Saves the article and opens internally */}
+              <Link to={`/read/article?id=${article.id}`}>
+                <s.GoToArticleButton role="button" onClick={handleCloseMobile}>
+                  Save and enter the article
+                </s.GoToArticleButton>
+              </Link>
+            </s.Footer>
           </>
         )}
       </s.ModalWrapper>
