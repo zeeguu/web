@@ -49,7 +49,7 @@ export default function RedirectionNotificationModal({
   return (
     <Modal open={open} onClose={handleClose}>
       <s.ModalWrapper>
-        {isMobile() === false ? (
+        {isMobile() === true ? (
           // Displayed to the users who access Zeeguu from desktop browsers
           <>
             <s.Header>
@@ -131,7 +131,7 @@ export default function RedirectionNotificationModal({
                 just tap on the
                 <strong> Save </strong> button below the article's title or
                 click<strong> Save and enter the article</strong> to add it to
-                your Saves section.
+                your Saves.
               </p>
             </s.Body>
             <s.CloseButton role="button" onClick={handleClose}>
@@ -140,9 +140,9 @@ export default function RedirectionNotificationModal({
             <s.Footer>
               {/* Saves the article and opens internally */}
               <Link to={`/read/article?id=${article.id}`}>
-              <s.GoToArticleButton role="button" onClick={handleCloseMobile}>
-                Save and enter the article
-              </s.GoToArticleButton>
+                <s.GoToArticleButton role="button" onClick={handleCloseMobile}>
+                  Save and enter the article
+                </s.GoToArticleButton>
               </Link>
             </s.Footer>
           </>
