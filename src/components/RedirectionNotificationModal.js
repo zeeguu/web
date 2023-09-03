@@ -17,7 +17,7 @@ export default function RedirectionNotificationModal({
   selectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
   setSelectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
   setOpenedExternallyWithoutModal, //related to the modal use based on the "Do not show" selection
-  setIsSaved, // related to the article
+  setIsSaved, // related to the article's state
 }) {
   function handleVisibilityCheckboxSelection() {
     setSelectedDoNotShowRedirectionModal(!selectedDoNotShowRedirectionModal);
@@ -49,7 +49,7 @@ export default function RedirectionNotificationModal({
   return (
     <Modal open={open} onClose={handleClose}>
       <s.ModalWrapper>
-        {isMobile() === true ? (
+        {isMobile() === false ? (
           // Displayed to the users who access Zeeguu from desktop browsers
           <>
             <s.Header>
@@ -120,7 +120,6 @@ export default function RedirectionNotificationModal({
           </>
         ) : (
           // Displayed to the users who access Zeeguu from mobile browsers
-          //TODO: separate it and make it a SaveArticleModal
           <>
             <s.Header>
               <h1>It looks like you are using&nbsp;a&nbsp;mobile device</h1>
@@ -130,7 +129,7 @@ export default function RedirectionNotificationModal({
                 If you want to read articles on your mobile device using Zeeguu,
                 just tap on the
                 <strong> Save </strong> button below the article's title or
-                click<strong> Save and enter the article</strong> to add it to
+                click<strong> Save and view the article</strong> to add it to
                 your Saves.
               </p>
             </s.Body>
@@ -141,7 +140,7 @@ export default function RedirectionNotificationModal({
               {/* Saves the article and opens internally */}
               <Link to={`/read/article?id=${article.id}`}>
                 <s.GoToArticleButton role="button" onClick={handleCloseMobile}>
-                  Save and enter the article
+                  Save and view the article
                 </s.GoToArticleButton>
               </Link>
             </s.Footer>
