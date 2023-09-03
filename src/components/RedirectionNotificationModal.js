@@ -1,6 +1,5 @@
 import Modal from "@mui/material/Modal";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { useState } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import * as s from "../components/RedirectionNotificationModal.sc";
 import { isMobile } from "../utils/misc/browserDetection";
@@ -18,9 +17,8 @@ export default function RedirectionNotificationModal({
   selectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
   setSelectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
   setOpenedExternallyWithoutModal, //related to the modal use based on the "Do not show" selection
+  setIsSaved, // related to the article
 }) {
-  const [isSaved, setIsSaved] = useState(article.has_personal_copy);
-
   function handleVisibilityCheckboxSelection() {
     setSelectedDoNotShowRedirectionModal(!selectedDoNotShowRedirectionModal);
   }
@@ -122,6 +120,7 @@ export default function RedirectionNotificationModal({
           </>
         ) : (
           // Displayed to the users who access Zeeguu from mobile browsers
+          //TODO: separate it and make it a SaveArticleModal
           <>
             <s.Header>
               <h1>It looks like you are using&nbsp;a&nbsp;mobile device</h1>
@@ -141,9 +140,9 @@ export default function RedirectionNotificationModal({
             <s.Footer>
               {/* Saves the article and opens internally */}
               <Link to={`/read/article?id=${article.id}`}>
-                <s.GoToArticleButton role="button" onClick={handleCloseMobile}>
-                  Save and enter the article
-                </s.GoToArticleButton>
+              <s.GoToArticleButton role="button" onClick={handleCloseMobile}>
+                Save and enter the article
+              </s.GoToArticleButton>
               </Link>
             </s.Footer>
           </>

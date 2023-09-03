@@ -19,6 +19,7 @@ export default function ArticleOverview({
   setOpenedExternallyWithoutModal,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(article.has_personal_copy);
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
@@ -52,6 +53,8 @@ export default function ArticleOverview({
             setSelectedDoNotShowRedirectionModal
           }
           setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
+          isSaved={isSaved}
+          setIsSaved={setIsSaved}
         />
         <s.InvisibleTitleButton onClick={handleOpen}>
           {article.title}
@@ -87,7 +90,12 @@ export default function ArticleOverview({
     <s.ArticlePreview>
       <s.Title>
         {titleLink(article)}
-        <SmallSaveArticleButton api={api} article={article} />
+        <SmallSaveArticleButton
+          api={api}
+          article={article}
+          isSaved={isSaved}
+          setIsSaved={setIsSaved}
+        />
       </s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
