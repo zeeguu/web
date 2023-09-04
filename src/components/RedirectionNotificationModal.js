@@ -23,6 +23,7 @@ export default function RedirectionNotificationModal({
     setSelectedDoNotShowRedirectionModal(!selectedDoNotShowRedirectionModal);
   }
 
+  //saves modal visibility preferences to the Local Storage
   function handleModalUse() {
     selectedDoNotShowRedirectionModal === true
       ? setOpenedExternallyWithoutModal(true)
@@ -42,14 +43,15 @@ export default function RedirectionNotificationModal({
     });
   }
 
-  function handleCloseMobile() {
+  function handleSaveAndOpenArticle() {
     handleSaveArticle();
+    // handleModalUse(); //Temporarily disabled for this function as it worked only when <Link> had its target set to _blank
     handleClose();
   }
   return (
     <Modal open={open} onClose={handleClose}>
       <s.ModalWrapper>
-        {isMobile() === false ? (
+        {!isMobile() ? (
           // Displayed to the users who access Zeeguu from desktop browsers
           <>
             <s.Header>
@@ -103,9 +105,7 @@ export default function RedirectionNotificationModal({
               </s.CheckboxWrapper>
               <a target="_blank" rel="noreferrer" href={article.url}>
                 {/* Clicking the GoToArticleButton button sends the reader
-                to the article and closes the modal so that when the user
-                returns to the Zeeguu app home page, they can see the recommendation
-                list instead of the modal still being open */}
+                to the article, saves visibility preferences of the modal and closes it */}
                 <s.GoToArticleButton
                   role="button"
                   onClick={handleCloseAndSavePreferences}
@@ -137,9 +137,17 @@ export default function RedirectionNotificationModal({
               <CloseRoundedIcon fontSize="medium" />
             </s.CloseButton>
             <s.Footer>
-              {/* Saves the article and opens internally */}
+              {/* "Do not show this message" option temporarily not
+              implemented here as the function handleModalUse() within
+              handleSaveAndOpenArticle() seems to fully work with React Link
+              on mobile only when target="_blank". This issue didn't occur
+              on the desktop and for regular <a> links. Needs further investigation
+              if we want this functionality here  */}
               <Link to={`/read/article?id=${article.id}`}>
-                <s.GoToArticleButton role="button" onClick={handleCloseMobile}>
+                <s.GoToArticleButton
+                  role="button"
+                  onClick={handleSaveAndOpenArticle}
+                >
                   Save and view the article
                 </s.GoToArticleButton>
               </Link>
