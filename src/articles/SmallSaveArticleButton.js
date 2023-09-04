@@ -5,13 +5,13 @@ import "react-toastify/dist/ReactToastify.css";
 export default function SmallSaveArticleButton({
   article,
   api,
-  isSaved,
-  setIsSaved,
+  isArticleSaved,
+  setIsArticleSaved,
 }) {
   function saveArticle() {
     api.makePersonalCopy(article.id, (data) => {
       if (data === "OK") {
-        setIsSaved(true);
+        setIsArticleSaved(true);
         toast("Article added to your Saves!");
       }
     });
@@ -19,7 +19,7 @@ export default function SmallSaveArticleButton({
 
   return (
     <>
-      {isSaved ? (
+      {isArticleSaved ? (
         <s.SavedLabel>
           {" "}
           Saved <img

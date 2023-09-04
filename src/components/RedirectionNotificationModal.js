@@ -17,7 +17,7 @@ export default function RedirectionNotificationModal({
   selectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
   setSelectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
   setOpenedExternallyWithoutModal, //related to the modal use based on the "Do not show" selection
-  setIsSaved, // related to the article's state
+  setIsArticleSaved, // related to the article's state
 }) {
   function handleVisibilityCheckboxSelection() {
     setSelectedDoNotShowRedirectionModal(!selectedDoNotShowRedirectionModal);
@@ -35,17 +35,17 @@ export default function RedirectionNotificationModal({
     handleClose();
   }
 
-  async function handleSaveArticle() {
-    await api.makePersonalCopy(article.id, (data) => {
+  function handleSaveArticle() {
+    api.makePersonalCopy(article.id, (data) => {
       if (data === "OK") {
-        setIsSaved(true);
+        setIsArticleSaved(true);
       }
     });
   }
 
   function handleSaveAndOpenArticle() {
     handleSaveArticle();
-    // handleModalUse(); //Temporarily disabled for this function as it worked only when <Link> had its target set to _blank
+    // handleModalUse(); //Temporarily disabled for this function on mobile as it worked only when <Link> had its target set to _blank
     handleClose();
   }
   return (
@@ -120,6 +120,7 @@ export default function RedirectionNotificationModal({
           </>
         ) : (
           // Displayed to the users who access Zeeguu from mobile browsers
+          //Todo: Create modal content components for these separate views
           <>
             <s.Header>
               <h1>It looks like you are using&nbsp;a&nbsp;mobile device</h1>
