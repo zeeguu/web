@@ -19,7 +19,9 @@ export default function ArticleOverview({
   setOpenedExternallyWithoutModal,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
-  const [isSaved, setIsSaved] = useState(article.has_personal_copy);
+  const [isArticleSaved, setIsArticleSaved] = useState(
+    article.has_personal_copy
+  );
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
@@ -53,8 +55,7 @@ export default function ArticleOverview({
             setSelectedDoNotShowRedirectionModal
           }
           setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
-          isSaved={isSaved}
-          setIsSaved={setIsSaved}
+          setIsArticleSaved={setIsArticleSaved}
         />
         <s.InvisibleTitleButton onClick={handleOpen}>
           {article.title}
@@ -79,7 +80,11 @@ export default function ArticleOverview({
     // else, we only open in zeegu if it's a personal copy or the article
     // has an uploader, thus it's uploaded from our own platform
     // either by the user themselves or by a teacher maybe
-    if (article.has_personal_copy || article.has_uploader || isSaved === true) {
+    if (
+      article.has_personal_copy ||
+      article.has_uploader ||
+      isArticleSaved === true
+    ) {
       return open_in_zeeguu;
     } else if (openedExternallyWithoutModal === false) {
       return open_externally_with_modal;
@@ -93,8 +98,8 @@ export default function ArticleOverview({
         <SmallSaveArticleButton
           api={api}
           article={article}
-          isSaved={isSaved}
-          setIsSaved={setIsSaved}
+          isArticleSaved={isArticleSaved}
+          setIsArticleSaved={setIsArticleSaved}
         />
       </s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
