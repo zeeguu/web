@@ -6,6 +6,9 @@ function OrderWordsInput({
   incorrectAnswer,
   setIncorrectAnswer,
   isWordSoup,
+  onDragStartHandle,
+  onDragEnterHandle,
+  onDragLeaveHandle,
 }) {
 
   if (isWordSoup) {
@@ -24,8 +27,12 @@ function OrderWordsInput({
   else{
     return (
       <sOW.ItemRowCompactWrapConstruct className="ItemRowCompactWrapConstruct">
-      {buttonOptions.length > 0 && buttonOptions.map(word => <sOW.OrangeItemCompactConstruct
-         key={word.id} 
+      {buttonOptions.length > 0 && buttonOptions.map((word, i) => <sOW.OrangeItemCompactConstruct
+        onDragStart={(e) => onDragStartHandle(e, i)}
+        onDragEnter={(e) => onDragEnterHandle(e, i)}
+        onDragLeave={(e) => onDragLeaveHandle(e, i)}
+         key={word.id}
+         draggable 
          title={word.feedback}
          status={word.status}
          className={word.status} 
