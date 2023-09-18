@@ -1,6 +1,4 @@
 import Modal from "@mui/material/Modal";
-import { Link } from "react-router-dom/cjs/react-router-dom";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import * as s from "../components/RedirectionNotificationModal.sc";
 import { isMobile } from "../utils/misc/browserDetection";
 import RedirectionNotificationForDesktop from "./RedirectionNotificationForDesktop";
@@ -26,30 +24,14 @@ export default function RedirectionNotificationModal({
   }
 
   //saves modal visibility preferences to the Local Storage
+  //ideally shared by mobile and desktop variant
+  //temporarily not working for mobile
   function handleModalUse() {
     selectedDoNotShowRedirectionModal === true
       ? setOpenedExternallyWithoutModal(true)
       : setOpenedExternallyWithoutModal(false);
   }
 
-  function handleCloseAndSavePreferences() {
-    handleModalUse();
-    handleClose();
-  }
-
-  function handleSaveArticle() {
-    api.makePersonalCopy(article.id, (data) => {
-      if (data === "OK") {
-        setIsArticleSaved(true);
-      }
-    });
-  }
-
-  function handleSaveAndOpenArticle() {
-    handleSaveArticle();
-    // handleModalUse(); //Temporarily disabled for this function on mobile as it worked only when <Link> had its target set to _blank
-    handleClose();
-  }
   return (
     <Modal open={open} onClose={handleClose}>
       <s.ModalWrapper>
@@ -62,14 +44,15 @@ export default function RedirectionNotificationModal({
               selectedDoNotShowRedirectionModal
             }
             article={article}
-            handleCloseAndSavePreferences={handleCloseAndSavePreferences}
+            handleModalUse={handleModalUse}
             handleClose={handleClose}
           />
         ) : (
           <RedirectionNotificationForMobile
             handleClose={handleClose}
             article={article}
-            handleSaveAndOpenArticle={handleSaveAndOpenArticle}
+            api={api}
+            setIsArticleSaved={setIsArticleSaved}
           />
         )}
       </s.ModalWrapper>
