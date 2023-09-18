@@ -18,7 +18,7 @@ export default function RedirectionNotificationForMobile({
 
   function handleSaveAndOpenArticle() {
     handleSaveArticle();
-    // handleModalUse(); //Temporarily disabled for this function on mobile as it worked only when <Link> had its target set to _blank
+    // handleModalVisibilityPreferences(); //Temporarily disabled for this function on mobile as it worked only when <Link> had its target set to _blank
     handleClose();
   }
 
