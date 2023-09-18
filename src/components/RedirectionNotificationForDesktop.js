@@ -5,11 +5,11 @@ export default function RedirectionNotificationForDesktop({
   toggleRedirectionCheckboxSelection,
   selectedDoNotShowRedirectionModal_Checkbox,
   article,
-  handleModalUse,
+  handleModalVisibilityPreferences,
   handleClose,
 }) {
   function handleCloseAndSavePreferences() {
-    handleModalUse();
+    handleModalVisibilityPreferences();
     handleClose();
   }
 

@@ -13,8 +13,6 @@ export default function ArticleOverview({
   dontShowImage,
   hasExtension,
   api,
-  selectedDoNotShowRedirectionModal_Checkbox,
-  setSelectedDoNotShowRedirectionModal_Checkbox,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
 }) {
@@ -50,12 +48,6 @@ export default function ArticleOverview({
           article={article}
           open={isRedirectionModalOpen}
           handleClose={handleClose}
-          selectedDoNotShowRedirectionModal_Checkbox={
-            selectedDoNotShowRedirectionModal_Checkbox
-          }
-          setSelectedDoNotShowRedirectionModal_Checkbox={
-            setSelectedDoNotShowRedirectionModal_Checkbox
-          }
           setDoNotShowRedirectionModal_UserPreference={
             setDoNotShowRedirectionModal_UserPreference
           }

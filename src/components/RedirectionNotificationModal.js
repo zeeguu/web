@@ -1,4 +1,5 @@
 import Modal from "@mui/material/Modal";
+import { useState } from "react";
 import * as s from "../components/RedirectionNotificationModal.sc";
 import { isMobile } from "../utils/misc/browserDetection";
 import RedirectionNotificationForDesktop from "./RedirectionNotificationForDesktop";
@@ -14,11 +15,14 @@ export default function RedirectionNotificationModal({
   article,
   open,
   handleClose,
-  selectedDoNotShowRedirectionModal_Checkbox,
-  setSelectedDoNotShowRedirectionModal_Checkbox,
-  setDoNotShowRedirectionModal_UserPreference, // derived from selectedDoNotShowRedirectionModal_Checkbox
+  setDoNotShowRedirectionModal_UserPreference,
   setIsArticleSaved, // related to the article's state
 }) {
+  const [
+    selectedDoNotShowRedirectionModal_Checkbox,
+    setSelectedDoNotShowRedirectionModal_Checkbox,
+  ] = useState(false);
+
   function toggleRedirectionCheckboxSelection() {
     setSelectedDoNotShowRedirectionModal_Checkbox(
       !selectedDoNotShowRedirectionModal_Checkbox
@@ -27,8 +31,8 @@ export default function RedirectionNotificationModal({
 
   //saves modal visibility preferences to the Local Storage
   //ideally shared by mobile and desktop variant
-  //temporarily not working for mobile
-  function handleModalUse() {
+  //temporarily not working on mobile
+  function handleModalVisibilityPreferences() {
     selectedDoNotShowRedirectionModal_Checkbox === true
       ? setDoNotShowRedirectionModal_UserPreference(true)
       : setDoNotShowRedirectionModal_UserPreference(false);
@@ -46,7 +50,7 @@ export default function RedirectionNotificationModal({
               selectedDoNotShowRedirectionModal_Checkbox
             }
             article={article}
-            handleModalUse={handleModalUse}
+            handleModalVisibilityPreferences={handleModalVisibilityPreferences}
             handleClose={handleClose}
           />
         ) : (

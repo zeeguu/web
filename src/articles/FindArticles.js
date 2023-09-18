@@ -33,10 +33,6 @@ export default function NewArticles({ api }) {
   //Additionally, the conditional statement needed to be tightened up due to JS's unstable behavior, which resulted
   //in bool values changing on its own on refresh without any other external trigger or preferences change.
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
-  const isDoNotShowRedirectionNotificationModaSelected_Checkbox =
-    LocalStorage.getDoNotShowRedirectionNotificationModal_Checkbox() === "true"
-      ? true
-      : false;
 
   const isArticleOpenedExternallyWithoutModal =
     LocalStorage.getOpenArticleExternallyWithoutModal() === "true"
@@ -48,23 +44,10 @@ export default function NewArticles({ api }) {
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
-  //States linked with the "Do not show" checkbox selection on the RedirectionNotificationModal
-  const [
-    selectedDoNotShowRedirectionModal_Checkbox,
-    setSelectedDoNotShowRedirectionModal_Checkbox,
-  ] = useState(isDoNotShowRedirectionNotificationModaSelected_Checkbox);
-  //States controlling whether external articles should be opened with or without
-  //the RedirectionNotificationModal
   const [
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(isArticleOpenedExternallyWithoutModal);
-
-  useEffect(() => {
-    LocalStorage.setDoNotShowRedirectionNotificationModal_Checkbox(
-      selectedDoNotShowRedirectionModal_Checkbox
-    );
-  }, [selectedDoNotShowRedirectionModal_Checkbox]);
 
   useEffect(() => {
     LocalStorage.setOpenArticleExternallyWithoutModal(
@@ -153,12 +136,6 @@ export default function NewArticles({ api }) {
           }
           setDoNotShowRedirectionModal_UserPreference={
             setDoNotShowRedirectionModal_UserPreference
-          }
-          selectedDoNotShowRedirectionModal_Checkbox={
-            selectedDoNotShowRedirectionModal_Checkbox
-          }
-          setSelectedDoNotShowRedirectionModal_Checkbox={
-            setSelectedDoNotShowRedirectionModal_Checkbox
           }
         />
       ))}
