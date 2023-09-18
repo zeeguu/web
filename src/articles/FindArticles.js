@@ -51,7 +51,7 @@ export default function NewArticles({ api }) {
   //States linked with the "Do not show" checkbox selection on the RedirectionNotificationModal
   const [
     selectedDoNotShowRedirectionModal_Checkbox,
-    setSelectedDoNotShowRedirectionModal,
+    setSelectedDoNotShowRedirectionModal_Checkbox,
   ] = useState(isDoNotShowRedirectionNotificationModaSelected);
   //States controlling whether external articles should be opened with or without
   //the RedirectionNotificationModal
@@ -151,8 +151,8 @@ export default function NewArticles({ api }) {
           selectedDoNotShowRedirectionModal_Checkbox={
             selectedDoNotShowRedirectionModal_Checkbox
           }
-          setSelectedDoNotShowRedirectionModal={
-            setSelectedDoNotShowRedirectionModal
+          setSelectedDoNotShowRedirectionModal_Checkbox={
+            setSelectedDoNotShowRedirectionModal_Checkbox
           }
         />
       ))}

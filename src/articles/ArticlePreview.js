@@ -14,7 +14,7 @@ export default function ArticleOverview({
   hasExtension,
   api,
   selectedDoNotShowRedirectionModal_Checkbox,
-  setSelectedDoNotShowRedirectionModal,
+  setSelectedDoNotShowRedirectionModal_Checkbox,
   openedExternallyWithoutModal,
   setOpenedExternallyWithoutModal,
 }) {
@@ -53,8 +53,8 @@ export default function ArticleOverview({
           selectedDoNotShowRedirectionModal_Checkbox={
             selectedDoNotShowRedirectionModal_Checkbox
           }
-          setSelectedDoNotShowRedirectionModal={
-            setSelectedDoNotShowRedirectionModal
+          setSelectedDoNotShowRedirectionModal_Checkbox={
+            setSelectedDoNotShowRedirectionModal_Checkbox
           }
           setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
           setIsArticleSaved={setIsArticleSaved}
