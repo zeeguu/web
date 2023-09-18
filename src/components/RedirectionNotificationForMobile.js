@@ -5,7 +5,7 @@ import { Link } from "react-router-dom/cjs/react-router-dom";
 export default function RedirectionNotificationForMobile({
   api,
   article,
-  handleClose,
+  handleCloseRedirectionModal,
   setIsArticleSaved,
 }) {
   function handleSaveArticle() {
@@ -19,7 +19,7 @@ export default function RedirectionNotificationForMobile({
   function handleSaveAndOpenArticle() {
     handleSaveArticle();
     // handleModalVisibilityPreferences(); //Temporarily disabled for this function on mobile as it worked only when <Link> had its target set to _blank
-    handleClose();
+    handleCloseRedirectionModal();
   }
 
   return (
@@ -35,7 +35,7 @@ export default function RedirectionNotificationForMobile({
           <strong> Save and view the article</strong> to add it to your Saves.
         </p>
       </s.Body>
-      <s.CloseButton role="button" onClick={handleClose}>
+      <s.CloseButton role="button" onClick={handleCloseRedirectionModal}>
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
       <s.Footer>

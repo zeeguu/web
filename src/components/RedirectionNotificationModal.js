@@ -7,14 +7,11 @@ import RedirectionNotificationForMobile from "./RedirectionNotificationForMobile
 
 //This modal is used in the ArticlePreview component
 
-//TODO: Further refactor, e.g after testing and making sure users
-//understand text and wording, turn strings into variables and move to definitions.js
-
 export default function RedirectionNotificationModal({
   api,
   article,
   open,
-  handleClose,
+  handleCloseRedirectionModal,
   setDoNotShowRedirectionModal_UserPreference,
   setIsArticleSaved, // related to the article's state
 }) {
@@ -39,7 +36,7 @@ export default function RedirectionNotificationModal({
   }
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleCloseRedirectionModal}>
       <s.ModalWrapper>
         {!isMobile() ? (
           <RedirectionNotificationForDesktop
@@ -51,11 +48,11 @@ export default function RedirectionNotificationModal({
             }
             article={article}
             handleModalVisibilityPreferences={handleModalVisibilityPreferences}
-            handleClose={handleClose}
+            handleCloseRedirectionModal={handleCloseRedirectionModal}
           />
         ) : (
           <RedirectionNotificationForMobile
-            handleClose={handleClose}
+            handleCloseRedirectionModal={handleCloseRedirectionModal}
             article={article}
             api={api}
             setIsArticleSaved={setIsArticleSaved}
