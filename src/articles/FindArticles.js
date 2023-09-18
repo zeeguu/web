@@ -57,7 +57,7 @@ export default function NewArticles({ api }) {
   //the RedirectionNotificationModal
   const [
     doNotShowRedirectionModalUserPreference,
-    setOpenedExternallyWithoutModal,
+    setDoNotShowRedirectionModal_UserPreference,
   ] = useState(isArticleOpenedExternallyWithoutModal);
 
   useEffect(() => {
@@ -151,7 +151,9 @@ export default function NewArticles({ api }) {
           doNotShowRedirectionModalUserPreference={
             doNotShowRedirectionModalUserPreference
           }
-          setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
+          setDoNotShowRedirectionModal_UserPreference={
+            setDoNotShowRedirectionModal_UserPreference
+          }
           selectedDoNotShowRedirectionModal_Checkbox={
             selectedDoNotShowRedirectionModal_Checkbox
           }

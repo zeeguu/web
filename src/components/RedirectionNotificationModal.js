@@ -14,9 +14,9 @@ export default function RedirectionNotificationModal({
   article,
   open,
   handleClose,
-  selectedDoNotShowRedirectionModal_Checkbox, 
-  setSelectedDoNotShowRedirectionModal_Checkbox, 
-  setOpenedExternallyWithoutModal, //related to the modal use based on the "Do not show" selection
+  selectedDoNotShowRedirectionModal_Checkbox,
+  setSelectedDoNotShowRedirectionModal_Checkbox,
+  setDoNotShowRedirectionModal_UserPreference, // derived from selectedDoNotShowRedirectionModal_Checkbox
   setIsArticleSaved, // related to the article's state
 }) {
   function toggleRedirectionCheckboxSelection() {
@@ -30,8 +30,8 @@ export default function RedirectionNotificationModal({
   //temporarily not working for mobile
   function handleModalUse() {
     selectedDoNotShowRedirectionModal_Checkbox === true
-      ? setOpenedExternallyWithoutModal(true)
-      : setOpenedExternallyWithoutModal(false);
+      ? setDoNotShowRedirectionModal_UserPreference(true)
+      : setDoNotShowRedirectionModal_UserPreference(false);
   }
 
   return (

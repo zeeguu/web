@@ -16,7 +16,7 @@ export default function ArticleOverview({
   selectedDoNotShowRedirectionModal_Checkbox,
   setSelectedDoNotShowRedirectionModal_Checkbox,
   doNotShowRedirectionModalUserPreference,
-  setOpenedExternallyWithoutModal,
+  setDoNotShowRedirectionModal_UserPreference,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(
@@ -56,7 +56,9 @@ export default function ArticleOverview({
           setSelectedDoNotShowRedirectionModal_Checkbox={
             setSelectedDoNotShowRedirectionModal_Checkbox
           }
-          setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
+          setDoNotShowRedirectionModal_UserPreference={
+            setDoNotShowRedirectionModal_UserPreference
+          }
           setIsArticleSaved={setIsArticleSaved}
         />
         <s.InvisibleTitleButton onClick={handleOpen}>
