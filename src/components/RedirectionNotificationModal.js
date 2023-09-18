@@ -14,20 +14,22 @@ export default function RedirectionNotificationModal({
   article,
   open,
   handleClose,
-  selectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
+  selectedDoNotShowRedirectionModal_Checkbox, //related to the "Do not show" checkbox selection
   setSelectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
   setOpenedExternallyWithoutModal, //related to the modal use based on the "Do not show" selection
   setIsArticleSaved, // related to the article's state
 }) {
   function toggleRedirectionCheckboxSelection() {
-    setSelectedDoNotShowRedirectionModal(!selectedDoNotShowRedirectionModal);
+    setSelectedDoNotShowRedirectionModal(
+      !selectedDoNotShowRedirectionModal_Checkbox
+    );
   }
 
   //saves modal visibility preferences to the Local Storage
   //ideally shared by mobile and desktop variant
   //temporarily not working for mobile
   function handleModalUse() {
-    selectedDoNotShowRedirectionModal === true
+    selectedDoNotShowRedirectionModal_Checkbox === true
       ? setOpenedExternallyWithoutModal(true)
       : setOpenedExternallyWithoutModal(false);
   }
@@ -37,11 +39,11 @@ export default function RedirectionNotificationModal({
       <s.ModalWrapper>
         {!isMobile() ? (
           <RedirectionNotificationForDesktop
-          toggleRedirectionCheckboxSelection={
-            toggleRedirectionCheckboxSelection
+            toggleRedirectionCheckboxSelection={
+              toggleRedirectionCheckboxSelection
             }
-            selectedDoNotShowRedirectionModal={
-              selectedDoNotShowRedirectionModal
+            selectedDoNotShowRedirectionModal_Checkbox={
+              selectedDoNotShowRedirectionModal_Checkbox
             }
             article={article}
             handleModalUse={handleModalUse}

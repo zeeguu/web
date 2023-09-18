@@ -13,7 +13,7 @@ export default function ArticleOverview({
   dontShowImage,
   hasExtension,
   api,
-  selectedDoNotShowRedirectionModal,
+  selectedDoNotShowRedirectionModal_Checkbox,
   setSelectedDoNotShowRedirectionModal,
   openedExternallyWithoutModal,
   setOpenedExternallyWithoutModal,
@@ -50,7 +50,9 @@ export default function ArticleOverview({
           article={article}
           open={isRedirectionModalOpen}
           handleClose={handleClose}
-          selectedDoNotShowRedirectionModal={selectedDoNotShowRedirectionModal}
+          selectedDoNotShowRedirectionModal_Checkbox={
+            selectedDoNotShowRedirectionModal_Checkbox
+          }
           setSelectedDoNotShowRedirectionModal={
             setSelectedDoNotShowRedirectionModal
           }

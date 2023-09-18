@@ -50,7 +50,7 @@ export default function NewArticles({ api }) {
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   //States linked with the "Do not show" checkbox selection on the RedirectionNotificationModal
   const [
-    selectedDoNotShowRedirectionModal,
+    selectedDoNotShowRedirectionModal_Checkbox,
     setSelectedDoNotShowRedirectionModal,
   ] = useState(isDoNotShowRedirectionNotificationModaSelected);
   //States controlling whether external articles should be opened with or without
@@ -60,9 +60,9 @@ export default function NewArticles({ api }) {
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionNotificationModal(
-      selectedDoNotShowRedirectionModal
+      selectedDoNotShowRedirectionModal_Checkbox
     );
-  }, [selectedDoNotShowRedirectionModal]);
+  }, [selectedDoNotShowRedirectionModal_Checkbox]);
 
   useEffect(() => {
     LocalStorage.setOpenArticleExternallyWithoutModal(
@@ -148,7 +148,9 @@ export default function NewArticles({ api }) {
           hasExtension={hasExtension}
           openedExternallyWithoutModal={openedExternallyWithoutModal}
           setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
-          selectedDoNotShowRedirectionModal={selectedDoNotShowRedirectionModal}
+          selectedDoNotShowRedirectionModal_Checkbox={
+            selectedDoNotShowRedirectionModal_Checkbox
+          }
           setSelectedDoNotShowRedirectionModal={
             setSelectedDoNotShowRedirectionModal
           }
