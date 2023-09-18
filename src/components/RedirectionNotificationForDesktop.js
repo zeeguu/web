@@ -2,7 +2,7 @@ import * as s from "./RedirectionNotificationModal.sc";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export default function RedirectionNotificationForDesktop({
-  handleVisibilityCheckboxSelection,
+  toggleRedirectionCheckboxSelection,
   selectedDoNotShowRedirectionModal,
   article,
   handleModalUse,
@@ -55,7 +55,7 @@ export default function RedirectionNotificationForDesktop({
       <s.Footer>
         <s.CheckboxWrapper>
           <input
-            onChange={handleVisibilityCheckboxSelection}
+            onChange={toggleRedirectionCheckboxSelection}
             checked={selectedDoNotShowRedirectionModal}
             type="checkbox"
             id="checkbox"

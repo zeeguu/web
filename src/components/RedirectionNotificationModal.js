@@ -19,7 +19,7 @@ export default function RedirectionNotificationModal({
   setOpenedExternallyWithoutModal, //related to the modal use based on the "Do not show" selection
   setIsArticleSaved, // related to the article's state
 }) {
-  function handleVisibilityCheckboxSelection() {
+  function toggleRedirectionCheckboxSelection() {
     setSelectedDoNotShowRedirectionModal(!selectedDoNotShowRedirectionModal);
   }
 
@@ -37,8 +37,8 @@ export default function RedirectionNotificationModal({
       <s.ModalWrapper>
         {!isMobile() ? (
           <RedirectionNotificationForDesktop
-            handleVisibilityCheckboxSelection={
-              handleVisibilityCheckboxSelection
+          toggleRedirectionCheckboxSelection={
+            toggleRedirectionCheckboxSelection
             }
             selectedDoNotShowRedirectionModal={
               selectedDoNotShowRedirectionModal
