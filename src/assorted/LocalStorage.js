@@ -24,8 +24,8 @@ const LocalStorage = {
       "audio_experiment_displayed_questionnaire",
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
     clickedVideoLink: "clicked_video_link",
-    DoNotShowRedirectionNotificationModal:
-      "do_not_show_redirection_notification_modal_selected",
+    DoNotShowRedirectionNotificationModal_Checkbox:
+      "do_not_show_redirection_notification_modal_checkbox_selected",
     OpenArticleExternallyWithoutModal: "open_article_externally_without_modal",
   },
 
@@ -63,15 +63,17 @@ const LocalStorage = {
       openArticleExternallyWithoutModal;
   },
 
-  getDoNotShowRedirectionNotificationModal: function () {
-    return localStorage[this.Keys.DoNotShowRedirectionNotificationModal];
+  getDoNotShowRedirectionNotificationModal_Checkbox: function () {
+    return localStorage[
+      this.Keys.DoNotShowRedirectionNotificationModal_Checkbox
+    ];
   },
 
-  setDoNotShowRedirectionNotificationModal: function (
-    doNotShowRedirectionNotificationModal
+  setDoNotShowRedirectionNotificationModal_Checkbox: function (
+    doNotShowRedirectionNotificationModal_Checkbox
   ) {
-    localStorage[this.Keys.DoNotShowRedirectionNotificationModal] =
-      doNotShowRedirectionNotificationModal;
+    localStorage[this.Keys.DoNotShowRedirectionNotificationModal_Checkbox] =
+      doNotShowRedirectionNotificationModal_Checkbox;
   },
 
   // Setting info
