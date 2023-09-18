@@ -6,11 +6,11 @@ export default function RedirectionNotificationForDesktop({
   selectedDoNotShowRedirectionModal_Checkbox,
   article,
   handleModalVisibilityPreferences,
-  handleClose,
+  handleCloseRedirectionModal,
 }) {
   function handleCloseAndSavePreferences() {
     handleModalVisibilityPreferences();
-    handleClose();
+    handleCloseRedirectionModal();
   }
 
   return (
@@ -75,7 +75,7 @@ export default function RedirectionNotificationForDesktop({
           </s.GoToArticleButton>
         </a>
       </s.Footer>
-      <s.CloseButton role="button" onClick={handleClose}>
+      <s.CloseButton role="button" onClick={handleCloseRedirectionModal}>
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
     </>

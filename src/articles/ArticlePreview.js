@@ -24,7 +24,7 @@ export default function ArticleOverview({
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
-  function handleClose() {
+  function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
   }
 
@@ -47,7 +47,7 @@ export default function ArticleOverview({
           api={api}
           article={article}
           open={isRedirectionModalOpen}
-          handleClose={handleClose}
+          handleCloseRedirectionModal={handleCloseRedirectionModal}
           setDoNotShowRedirectionModal_UserPreference={
             setDoNotShowRedirectionModal_UserPreference
           }
