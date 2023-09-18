@@ -33,8 +33,8 @@ export default function NewArticles({ api }) {
   //Additionally, the conditional statement needed to be tightened up due to JS's unstable behavior, which resulted
   //in bool values changing on its own on refresh without any other external trigger or preferences change.
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
-  const isDoNotShowRedirectionNotificationModaSelected =
-    LocalStorage.getDoNotShowRedirectionNotificationModal() === "true"
+  const isDoNotShowRedirectionNotificationModaSelected_Checkbox =
+    LocalStorage.getDoNotShowRedirectionNotificationModal_Checkbox() === "true"
       ? true
       : false;
 
@@ -52,14 +52,14 @@ export default function NewArticles({ api }) {
   const [
     selectedDoNotShowRedirectionModal_Checkbox,
     setSelectedDoNotShowRedirectionModal_Checkbox,
-  ] = useState(isDoNotShowRedirectionNotificationModaSelected);
+  ] = useState(isDoNotShowRedirectionNotificationModaSelected_Checkbox);
   //States controlling whether external articles should be opened with or without
   //the RedirectionNotificationModal
   const [openedExternallyWithoutModal, setOpenedExternallyWithoutModal] =
     useState(isArticleOpenedExternallyWithoutModal);
 
   useEffect(() => {
-    LocalStorage.setDoNotShowRedirectionNotificationModal(
+    LocalStorage.setDoNotShowRedirectionNotificationModal_Checkbox(
       selectedDoNotShowRedirectionModal_Checkbox
     );
   }, [selectedDoNotShowRedirectionModal_Checkbox]);
