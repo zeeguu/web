@@ -24,7 +24,7 @@ const LocalStorage = {
       "audio_experiment_displayed_questionnaire",
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
     clickedVideoLink: "clicked_video_link",
-    OpenArticleExternallyWithoutModal: "open_article_externally_without_modal",
+    DoNotShowRedirectionModal: "do_not_show_redirection_modal",
   },
 
   userInfo: function () {
@@ -50,15 +50,13 @@ const LocalStorage = {
     return localStorage[this.Keys.DisplayedExtensionPopup];
   },
 
-  getOpenArticleExternallyWithoutModal: function () {
-    return localStorage[this.Keys.OpenArticleExternallyWithoutModal];
+  getDoNotShowRedirectionModal: function () {
+    return localStorage[this.Keys.DoNotShowRedirectionModal];
   },
 
-  setOpenArticleExternallyWithoutModal: function (
-    openArticleExternallyWithoutModal
-  ) {
-    localStorage[this.Keys.OpenArticleExternallyWithoutModal] =
-      openArticleExternallyWithoutModal;
+  setDoNotShowRedirectionModal: function (doNotShowRedirectionModal) {
+    localStorage[this.Keys.DoNotShowRedirectionModal] =
+      doNotShowRedirectionModal;
   },
 
   // Setting info
