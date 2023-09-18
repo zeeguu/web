@@ -15,7 +15,7 @@ export default function ArticleOverview({
   api,
   selectedDoNotShowRedirectionModal_Checkbox,
   setSelectedDoNotShowRedirectionModal_Checkbox,
-  doNotShowRedirectionModalUserPreference,
+  doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
@@ -90,7 +90,7 @@ export default function ArticleOverview({
       isArticleSaved === true
     ) {
       return open_in_zeeguu;
-    } else if (doNotShowRedirectionModalUserPreference === false) {
+    } else if (doNotShowRedirectionModal_UserPreference === false) {
       return open_externally_with_modal;
     } else return open_externally_without_modal;
   }

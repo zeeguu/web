@@ -56,7 +56,7 @@ export default function NewArticles({ api }) {
   //States controlling whether external articles should be opened with or without
   //the RedirectionNotificationModal
   const [
-    doNotShowRedirectionModalUserPreference,
+    doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(isArticleOpenedExternallyWithoutModal);
 
@@ -68,9 +68,9 @@ export default function NewArticles({ api }) {
 
   useEffect(() => {
     LocalStorage.setOpenArticleExternallyWithoutModal(
-      doNotShowRedirectionModalUserPreference
+      doNotShowRedirectionModal_UserPreference
     );
-  }, [doNotShowRedirectionModalUserPreference]);
+  }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
@@ -148,8 +148,8 @@ export default function NewArticles({ api }) {
           article={each}
           api={api}
           hasExtension={hasExtension}
-          doNotShowRedirectionModalUserPreference={
-            doNotShowRedirectionModalUserPreference
+          doNotShowRedirectionModal_UserPreference={
+            doNotShowRedirectionModal_UserPreference
           }
           setDoNotShowRedirectionModal_UserPreference={
             setDoNotShowRedirectionModal_UserPreference
