@@ -55,8 +55,10 @@ export default function NewArticles({ api }) {
   ] = useState(isDoNotShowRedirectionNotificationModaSelected_Checkbox);
   //States controlling whether external articles should be opened with or without
   //the RedirectionNotificationModal
-  const [openedExternallyWithoutModal, setOpenedExternallyWithoutModal] =
-    useState(isArticleOpenedExternallyWithoutModal);
+  const [
+    redirectionModalVisibilityUserPreference,
+    setOpenedExternallyWithoutModal,
+  ] = useState(isArticleOpenedExternallyWithoutModal);
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionNotificationModal_Checkbox(
@@ -66,9 +68,9 @@ export default function NewArticles({ api }) {
 
   useEffect(() => {
     LocalStorage.setOpenArticleExternallyWithoutModal(
-      openedExternallyWithoutModal
+      redirectionModalVisibilityUserPreference
     );
-  }, [openedExternallyWithoutModal]);
+  }, [redirectionModalVisibilityUserPreference]);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
@@ -146,7 +148,9 @@ export default function NewArticles({ api }) {
           article={each}
           api={api}
           hasExtension={hasExtension}
-          openedExternallyWithoutModal={openedExternallyWithoutModal}
+          redirectionModalVisibilityUserPreference={
+            redirectionModalVisibilityUserPreference
+          }
           setOpenedExternallyWithoutModal={setOpenedExternallyWithoutModal}
           selectedDoNotShowRedirectionModal_Checkbox={
             selectedDoNotShowRedirectionModal_Checkbox
