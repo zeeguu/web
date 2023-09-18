@@ -28,7 +28,7 @@ export default function ArticleOverview({
     setIsRedirectionModaOpen(false);
   }
 
-  function handleOpen() {
+  function handleOpenRedirectionModal() {
     setIsRedirectionModaOpen(true);
   }
 
@@ -53,7 +53,7 @@ export default function ArticleOverview({
           }
           setIsArticleSaved={setIsArticleSaved}
         />
-        <s.InvisibleTitleButton onClick={handleOpen}>
+        <s.InvisibleTitleButton onClick={handleOpenRedirectionModal}>
           {article.title}
         </s.InvisibleTitleButton>
       </>
