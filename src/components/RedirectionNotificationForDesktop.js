@@ -1,7 +1,18 @@
 import * as s from "./RedirectionNotificationModal.sc";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-export default function RedirectionNotificationForDesktop(props) {
+export default function RedirectionNotificationForDesktop({
+  handleVisibilityCheckboxSelection,
+  selectedDoNotShowRedirectionModal,
+  article,
+  handleModalUse,
+  handleClose,
+}) {
+  function handleCloseAndSavePreferences() {
+    handleModalUse();
+    handleClose();
+  }
+
   return (
     <>
       <s.Header>
@@ -44,8 +55,8 @@ export default function RedirectionNotificationForDesktop(props) {
       <s.Footer>
         <s.CheckboxWrapper>
           <input
-            onChange={props.handleVisibilityCheckboxSelection}
-            checked={props.selectedDoNotShowRedirectionModal}
+            onChange={handleVisibilityCheckboxSelection}
+            checked={selectedDoNotShowRedirectionModal}
             type="checkbox"
             id="checkbox"
             name=""
@@ -53,18 +64,18 @@ export default function RedirectionNotificationForDesktop(props) {
           ></input>{" "}
           <label htmlFor="checkbox">Don't show this message</label>
         </s.CheckboxWrapper>
-        <a target="_blank" rel="noreferrer" href={props.article.url}>
+        <a target="_blank" rel="noreferrer" href={article.url}>
           {/* Clicking the GoToArticleButton button sends the reader
                 to the article, saves visibility preferences of the modal and closes it */}
           <s.GoToArticleButton
             role="button"
-            onClick={props.handleCloseAndSavePreferences}
+            onClick={handleCloseAndSavePreferences}
           >
             Enter the article's website
           </s.GoToArticleButton>
         </a>
       </s.Footer>
-      <s.CloseButton role="button" onClick={props.handleClose}>
+      <s.CloseButton role="button" onClick={handleClose}>
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
     </>
