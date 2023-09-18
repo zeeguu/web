@@ -14,13 +14,13 @@ export default function RedirectionNotificationModal({
   article,
   open,
   handleClose,
-  selectedDoNotShowRedirectionModal_Checkbox, //related to the "Do not show" checkbox selection
-  setSelectedDoNotShowRedirectionModal, //related to the "Do not show" checkbox selection
+  selectedDoNotShowRedirectionModal_Checkbox, 
+  setSelectedDoNotShowRedirectionModal_Checkbox, 
   setOpenedExternallyWithoutModal, //related to the modal use based on the "Do not show" selection
   setIsArticleSaved, // related to the article's state
 }) {
   function toggleRedirectionCheckboxSelection() {
-    setSelectedDoNotShowRedirectionModal(
+    setSelectedDoNotShowRedirectionModal_Checkbox(
       !selectedDoNotShowRedirectionModal_Checkbox
     );
   }
