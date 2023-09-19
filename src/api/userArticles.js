@@ -12,6 +12,7 @@ Zeeguu_API.prototype.getUserArticles = function (callback) {
     const deduplicated = articles.filter(
       ({ id }, index) => !ids.includes(id, index + 1)
     );
+    console.log(deduplicated);
     callback(deduplicated);
   });
 };
