@@ -26,13 +26,13 @@ export default function NewArticles({ api }) {
   const query = useQuery();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [articleList, setArticleList] = useState([{}]);
+  const [articleList, setArticleList] = useState([]);
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
-  const initialArticleList = useRef([{}]);
+  const initialArticleList = useRef([]);
 
   useEffect(() => {
     setTitle(strings.findArticles);
@@ -104,21 +104,10 @@ export default function NewArticles({ api }) {
         searchFunc={searchArticlesBySearchField}
       />
 
-      <Interests setArticles={setArticleList} />
-
-      {/* Article example */}
-      {/* <ArticlePreview
-        key={123}
-        article={{
-          title: "aaaaaa",
-          summary:
-            "Nostrud velit tempor cupidatat excepteur eiusmod irure incididunt veniam nulla magna ipsum exercitation cupidatat. Aliqua amet quis deserunt voluptate voluptate quis velit commodo sint do. Cillum nostrud cupidatat exercitation voluptate sit velit aute. Ullamco et sit id consequat ex Lorem nisi consequat velit ut dolor reprehenderit culpa. Dolor ea exercitation sit nisi cupidatat adipisicing velit et aliquip ut est ut amet. Nisi proident cillum elit sunt eiusmod exercitation ut. Pariatur officia laborum officia aute duis excepteur aliquip.",
-          metrics: { difficulty: 4 },
-        }}
-        api={api}
-        hasExtension={false}
-        isTwoColumns={false}
-      /> */}
+      <Interests
+        initialArticleList={initialArticleList}
+        setArticles={setArticleList}
+      />
 
       <FiltersWrapper
         initialArticleList={initialArticleList}

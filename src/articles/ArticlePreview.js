@@ -18,7 +18,7 @@ export default function ArticleOverview({
   hasExtension,
   isTwoColumns,
 }) {
-  console.log(article);
+  // console.log(article);
 
   let readingTime = useMemo(
     () => Math.round(article?.metrics?.word_count / 80),
