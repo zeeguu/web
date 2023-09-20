@@ -18,6 +18,8 @@ export default function ArticleOverview({
   hasExtension,
   isTwoColumns,
 }) {
+  console.log(article);
+
   let readingTime = useMemo(
     () => Math.round(article?.metrics?.word_count / 80),
     [article?.metrics?.word_count]
@@ -25,7 +27,7 @@ export default function ArticleOverview({
 
   let topics = useMemo(
     () => article?.topics?.split(" ").filter((topic) => topic !== ""),
-    []
+    [article]
   );
 
   const articleTitle = useMemo(
@@ -102,13 +104,15 @@ export default function ArticleOverview({
         )}
 
         <s.TopicsBox>
-          {topics?.map((topic) => (
-            <InterestButton
-              key={topic}
-              variant={variants.grayOutlined}
-              title={topic}
-            ></InterestButton>
-          ))}
+          {topics.map((topic) => {
+            return (
+              <InterestButton
+                key={topic}
+                variant={variants.grayOutlined}
+                title={topic}
+              ></InterestButton>
+            );
+          })}
         </s.TopicsBox>
       </s.ArticleFooterBox>
     </s.ArticlePreview>

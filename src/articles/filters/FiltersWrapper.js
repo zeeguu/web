@@ -113,6 +113,8 @@ export const FiltersWrapper = ({
     setFilters(newFilters);
   };
 
+  // console.log(initialArticleList.current);
+
   useEffect(() => {
     let dataToFilter = [...initialArticleList.current];
 
