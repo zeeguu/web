@@ -4,6 +4,7 @@ import {
   ModalHeaderGlobal,
   ModalBodyGlobal,
   ModalFooterGlobal,
+  ModalStrongTextWrapperGlobal,
 } from "./ModalGlobalStyling.sc";
 import { zeeguuDarkOrange, zeeguuOrange } from "./colors";
 import { OrangeRoundButton } from "./allButtons.sc";
@@ -19,6 +20,8 @@ const Footer = styled(ModalFooterGlobal)``;
 
 const CloseButton = styled(CloseButtonGlobal)``;
 
+const ModalStrongTextWrapper = styled(ModalStrongTextWrapperGlobal)``;
+
 const Icon = styled.span`
   height: 1em;
   width: 1em;
@@ -28,7 +31,7 @@ const Icon = styled.span`
 `;
 
 const CheckboxWrapper = styled.div`
-  margin-top: -1em;
+  margin-top: -0.8em;
   align-self: start;
   display: grid;
   grid-template-columns: 1em auto;
@@ -42,8 +45,8 @@ const CheckboxWrapper = styled.div`
     height: 1.2em;
     accent-color: ${zeeguuOrange};
     @media (max-width: 576px) {
-      width: 1.5em;
-      height: 1.5em;
+      width: 1rem;
+      height: 1rem;
     }
   }
 `;
@@ -68,4 +71,5 @@ export {
   Body,
   Footer,
   CheckboxWrapper,
+  ModalStrongTextWrapper,
 };
