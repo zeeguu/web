@@ -30,8 +30,13 @@ export default function RedirectionNotificationForMobile({
         <p>
           If you want to read articles on your mobile device using Zeeguu, just
           tap on the
-          <strong> Save </strong> button below the article's title or click
-          <strong> Save and view the article</strong> to add it to your Saves.
+          <s.ModalStrongTextWrapper> Save </s.ModalStrongTextWrapper> button
+          below the article's title or click
+          <s.ModalStrongTextWrapper>
+            {" "}
+            Save and view the article
+          </s.ModalStrongTextWrapper>{" "}
+          to add it to your Saves.
         </p>
       </s.Body>
       <s.CloseButton role="button" onClick={handleCloseRedirectionModal}>

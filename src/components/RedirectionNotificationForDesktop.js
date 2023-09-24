@@ -46,8 +46,9 @@ export default function RedirectionNotificationForDesktop({
       </s.Header>
       <s.Body>
         <p>
-          <strong>Once there</strong>, find and{" "}
-          <strong>
+          <s.ModalStrongTextWrapper>Once there</s.ModalStrongTextWrapper>, find
+          and{" "}
+          <s.ModalStrongTextWrapper>
             click The Zeeguu Reader{" "}
             <s.Icon>
               <img
@@ -57,7 +58,7 @@ export default function RedirectionNotificationForDesktop({
               ></img>
             </s.Icon>{" "}
             icon
-          </strong>{" "}
+          </s.ModalStrongTextWrapper>{" "}
           in the top right corner of&nbsp;your browser's toolbar
           or&nbsp;on&nbsp;the&nbsp;list of your installed extensions{" "}
           <s.Icon>
@@ -67,7 +68,11 @@ export default function RedirectionNotificationForDesktop({
               src="../static/images/puzzle.svg"
             ></img>
           </s.Icon>
-          . <strong>Then&nbsp;select Read Article</strong>.
+          .{" "}
+          <s.ModalStrongTextWrapper>
+            Then&nbsp;select Read Article
+          </s.ModalStrongTextWrapper>
+          .
         </p>
         <img
           className="fullDivWidthImage"
