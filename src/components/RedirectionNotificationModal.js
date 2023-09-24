@@ -28,7 +28,7 @@ export default function RedirectionNotificationModal({
 
   //saves modal visibility preferences to the Local Storage
   //ideally shared by mobile and desktop variant
-  //temporarily not working on mobile
+  //temporarily not working on mobileg
   function handleModalVisibilityPreferences() {
     selectedDoNotShowRedirectionModal_Checkbox === true
       ? setDoNotShowRedirectionModal_UserPreference(true)
@@ -45,6 +45,9 @@ export default function RedirectionNotificationModal({
             }
             selectedDoNotShowRedirectionModal_Checkbox={
               selectedDoNotShowRedirectionModal_Checkbox
+            }
+            setSelectedDoNotShowRedirectionModal_Checkbox={
+              setSelectedDoNotShowRedirectionModal_Checkbox
             }
             article={article}
             handleModalVisibilityPreferences={handleModalVisibilityPreferences}
