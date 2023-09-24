@@ -35,7 +35,7 @@ const ModalHeaderGlobal = styled.div`
   }
 `;
 
-const ModalStrongTextWrapperGlobal = styled.div`
+const ModalStrongTextWrapperGlobal = styled.span`
   margin: 0;
   display: inline;
   font-weight: 700;
