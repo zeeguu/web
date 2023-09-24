@@ -4,6 +4,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 export default function RedirectionNotificationForDesktop({
   toggleRedirectionCheckboxSelection,
   selectedDoNotShowRedirectionModal_Checkbox,
+  setSelectedDoNotShowRedirectionModal_Checkbox,
   article,
   handleModalVisibilityPreferences,
   handleCloseRedirectionModal,
@@ -11,6 +12,13 @@ export default function RedirectionNotificationForDesktop({
   function handleCloseAndSavePreferences() {
     handleModalVisibilityPreferences();
     handleCloseRedirectionModal();
+  }
+
+  //reset checkbox state if the user closes modal without saving their preferences
+  //so that they don't reenter to to pre-checked checkbox
+  function handleCloseWithoutSavingVisibilityPreferences() {
+    handleCloseRedirectionModal();
+    setSelectedDoNotShowRedirectionModal_Checkbox(false);
   }
 
   return (
@@ -75,7 +83,10 @@ export default function RedirectionNotificationForDesktop({
           </s.GoToArticleButton>
         </a>
       </s.Footer>
-      <s.CloseButton role="button" onClick={handleCloseRedirectionModal}>
+      <s.CloseButton
+        role="button"
+        onClick={handleCloseWithoutSavingVisibilityPreferences}
+      >
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
     </>
