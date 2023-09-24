@@ -15,42 +15,15 @@ export default function RedirectionNotificationModal({
   setDoNotShowRedirectionModal_UserPreference,
   setIsArticleSaved, // related to the article's state
 }) {
-  const [
-    selectedDoNotShowRedirectionModal_Checkbox,
-    setSelectedDoNotShowRedirectionModal_Checkbox,
-  ] = useState(false);
-
-  function toggleRedirectionCheckboxSelection() {
-    setSelectedDoNotShowRedirectionModal_Checkbox(
-      !selectedDoNotShowRedirectionModal_Checkbox
-    );
-  }
-
-  //saves modal visibility preferences to the Local Storage
-  //ideally shared by mobile and desktop variant
-  //temporarily not working on mobileg
-  function handleModalVisibilityPreferences() {
-    selectedDoNotShowRedirectionModal_Checkbox === true
-      ? setDoNotShowRedirectionModal_UserPreference(true)
-      : setDoNotShowRedirectionModal_UserPreference(false);
-  }
-
   return (
     <Modal open={open} onClose={handleCloseRedirectionModal}>
       <s.ModalWrapper>
         {!isMobile() ? (
           <RedirectionNotificationForDesktop
-            toggleRedirectionCheckboxSelection={
-              toggleRedirectionCheckboxSelection
-            }
-            selectedDoNotShowRedirectionModal_Checkbox={
-              selectedDoNotShowRedirectionModal_Checkbox
-            }
-            setSelectedDoNotShowRedirectionModal_Checkbox={
-              setSelectedDoNotShowRedirectionModal_Checkbox
+            setDoNotShowRedirectionModal_UserPreference={
+              setDoNotShowRedirectionModal_UserPreference
             }
             article={article}
-            handleModalVisibilityPreferences={handleModalVisibilityPreferences}
             handleCloseRedirectionModal={handleCloseRedirectionModal}
           />
         ) : (

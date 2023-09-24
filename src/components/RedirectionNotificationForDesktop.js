@@ -1,24 +1,40 @@
+import { useState } from "react";
 import * as s from "./RedirectionNotificationModal.sc";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export default function RedirectionNotificationForDesktop({
-  toggleRedirectionCheckboxSelection,
-  selectedDoNotShowRedirectionModal_Checkbox,
-  setSelectedDoNotShowRedirectionModal_Checkbox,
   article,
   handleModalVisibilityPreferences,
   handleCloseRedirectionModal,
+  setDoNotShowRedirectionModal_UserPreference,
 }) {
-  function handleCloseAndSavePreferences() {
+  const [
+    selectedDoNotShowRedirectionModal_Checkbox,
+    setSelectedDoNotShowRedirectionModal_Checkbox,
+  ] = useState(false);
+
+  function toggleRedirectionCheckboxSelection() {
+    setSelectedDoNotShowRedirectionModal_Checkbox(
+      !selectedDoNotShowRedirectionModal_Checkbox
+    );
+  }
+
+  //saves modal visibility preferences to the Local Storage
+  function handleModalVisibilityPreferences() {
+    selectedDoNotShowRedirectionModal_Checkbox === true
+      ? setDoNotShowRedirectionModal_UserPreference(true)
+      : setDoNotShowRedirectionModal_UserPreference(false);
+  }
+
+  function handleCloseAndSaveVisibilityPreferences() {
     handleModalVisibilityPreferences();
     handleCloseRedirectionModal();
   }
 
-  //reset checkbox state if the user closes modal without saving their preferences
-  //so that they don't reenter to to pre-checked checkbox
+  //when user exits modal by clicking "X" without saving anything
   function handleCloseWithoutSavingVisibilityPreferences() {
     handleCloseRedirectionModal();
-    setSelectedDoNotShowRedirectionModal_Checkbox(false);
+    setSelectedDoNotShowRedirectionModal_Checkbox(false); //to avoid prechecked checkboxes
   }
 
   return (
@@ -77,7 +93,7 @@ export default function RedirectionNotificationForDesktop({
                 to the article, saves visibility preferences of the modal and closes it */}
           <s.GoToArticleButton
             role="button"
-            onClick={handleCloseAndSavePreferences}
+            onClick={handleCloseAndSaveVisibilityPreferences}
           >
             Enter the article's website
           </s.GoToArticleButton>
