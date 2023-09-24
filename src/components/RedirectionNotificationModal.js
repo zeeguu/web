@@ -1,5 +1,4 @@
 import Modal from "@mui/material/Modal";
-import { useState } from "react";
 import * as s from "../components/RedirectionNotificationModal.sc";
 import { isMobile } from "../utils/misc/browserDetection";
 import RedirectionNotificationForDesktop from "./RedirectionNotificationForDesktop";

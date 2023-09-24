@@ -4,7 +4,6 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export default function RedirectionNotificationForDesktop({
   article,
-  handleModalVisibilityPreferences,
   handleCloseRedirectionModal,
   setDoNotShowRedirectionModal_UserPreference,
 }) {
@@ -31,7 +30,7 @@ export default function RedirectionNotificationForDesktop({
     handleCloseRedirectionModal();
   }
 
-  //when user exits modal by clicking "X" without saving anything
+  //when user exits modal by clicking "X"
   function handleCloseWithoutSavingVisibilityPreferences() {
     handleCloseRedirectionModal();
     setSelectedDoNotShowRedirectionModal_Checkbox(false); //to avoid prechecked checkboxes
