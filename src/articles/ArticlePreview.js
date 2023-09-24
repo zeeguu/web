@@ -36,7 +36,8 @@ export default function ArticleOverview({
     let open_in_zeeguu = (
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
-    let open_externally_with_modal = (
+
+    let open_with_modal = (
       //The RedirectionNotificationModal modal informs the user that they are about
       //to be redirected to the original article's website and guides them on what steps
       //should be taken to start reading the said article with The Zeeguu Reader extension
@@ -58,33 +59,27 @@ export default function ArticleOverview({
         </s.InvisibleTitleButton>
       </>
     );
+
     let open_externally_without_modal = (
       <a target="_blank" rel="noreferrer" href={article.url}>
         {article.title}
       </a>
     );
 
-    if (article.video) {
-      return open_in_zeeguu;
-    }
-
-    if (!Feature.extension_experiment1() && !hasExtension) {
-      // if the feature is not enabled and if they don't have the extension we always open in zeeguu
-      return open_in_zeeguu;
-    }
-
-    // else, we only open in zeegu if it's a personal copy or the article
-    // has an uploader, thus it's uploaded from our own platform
-    // either by the user themselves or by a teacher maybe
-    if (
+    let should_open_in_zeeguu =
+      article.video ||
+      (!Feature.extension_experiment1() && !hasExtension) ||
       article.has_personal_copy ||
       article.has_uploader ||
-      isArticleSaved === true
-    ) {
-      return open_in_zeeguu;
-    } else if (doNotShowRedirectionModal_UserPreference === false) {
-      return open_externally_with_modal;
-    } else return open_externally_without_modal;
+      isArticleSaved === true;
+
+    let should_open_with_modal =
+      doNotShowRedirectionModal_UserPreference === false;
+
+    if (should_open_in_zeeguu) return open_in_zeeguu;
+    else if (should_open_with_modal)
+      return open_with_modal; //opens internally for mobile, externally for desktop
+    else return open_externally_without_modal;
   }
 
   return (
