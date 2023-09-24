@@ -18,7 +18,6 @@ export default function RedirectionNotificationForMobile({
 
   function handleSaveAndOpenArticle() {
     handleSaveArticle();
-    // handleModalVisibilityPreferences(); //Temporarily disabled for this function on mobile as it worked only when <Link> had its target set to _blank
     handleCloseRedirectionModal();
   }
 
@@ -39,12 +38,6 @@ export default function RedirectionNotificationForMobile({
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
       <s.Footer>
-        {/* "Do not show this message" option temporarily not
-              implemented here as the function handleModalUse() within
-              handleSaveAndOpenArticle() seems to fully work with React Link
-              on mobile only when target="_blank". This issue didn't occur
-              on the desktop and for regular <a> links. Needs further investigation
-              if we want this functionality here  */}
         <Link to={`/read/article?id=${article.id}`}>
           <s.GoToArticleButton role="button" onClick={handleSaveAndOpenArticle}>
             Save and view the article
