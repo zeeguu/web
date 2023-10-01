@@ -1,41 +1,13 @@
-import { useState } from "react";
 import * as s from "./RedirectionNotificationModal.sc";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export default function RedirectionNotificationForDesktop({
   article,
-  handleCloseRedirectionModal,
-  setDoNotShowRedirectionModal_UserPreference,
+  toggleRedirectionCheckboxSelection,
+  selectedDoNotShowRedirectionModal_Checkbox,
+  handleCloseAndSaveVisibilityPreferences,
+  handleCloseWithoutSavingVisibilityPreferences,
 }) {
-  const [
-    selectedDoNotShowRedirectionModal_Checkbox,
-    setSelectedDoNotShowRedirectionModal_Checkbox,
-  ] = useState(false);
-
-  function toggleRedirectionCheckboxSelection() {
-    setSelectedDoNotShowRedirectionModal_Checkbox(
-      !selectedDoNotShowRedirectionModal_Checkbox
-    );
-  }
-
-  //saves modal visibility preferences to the Local Storage
-  function handleModalVisibilityPreferences() {
-    selectedDoNotShowRedirectionModal_Checkbox === true
-      ? setDoNotShowRedirectionModal_UserPreference(true)
-      : setDoNotShowRedirectionModal_UserPreference(false);
-  }
-
-  function handleCloseAndSaveVisibilityPreferences() {
-    handleModalVisibilityPreferences();
-    handleCloseRedirectionModal();
-  }
-
-  //when user exits modal by clicking "X"
-  function handleCloseWithoutSavingVisibilityPreferences() {
-    handleCloseRedirectionModal();
-    setSelectedDoNotShowRedirectionModal_Checkbox(false); //to avoid prechecked checkboxes
-  }
-
   return (
     <>
       <s.Header>
