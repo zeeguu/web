@@ -1,6 +1,6 @@
 import * as s from "./RedirectionNotificationModal.sc";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 export default function RedirectionNotificationForMobile({
   api,
@@ -16,7 +16,7 @@ export default function RedirectionNotificationForMobile({
     });
   }
 
-  function handleSaveAndOpenArticle() {
+  function handleSaveArticleAndCloseModal() {
     handleSaveArticle();
     handleCloseRedirectionModal();
   }
@@ -34,7 +34,7 @@ export default function RedirectionNotificationForMobile({
           below the article's title or click
           <s.ModalStrongTextWrapper>
             {" "}
-            Save and view the article
+            Save to Zeeguu
           </s.ModalStrongTextWrapper>{" "}
           to add it to your Saves.
         </p>
@@ -43,11 +43,21 @@ export default function RedirectionNotificationForMobile({
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
       <s.Footer>
-        <Link to={`/read/article?id=${article.id}`}>
-          <s.GoToArticleButton role="button" onClick={handleSaveAndOpenArticle}>
-            Save and view the article
+        <a target="_self" rel="noreferrer" href={article.url}>
+          <s.GoToArticleButton
+            role="button"
+            onClick={handleCloseRedirectionModal}
+          >
+            Enter the article's website
           </s.GoToArticleButton>
-        </Link>
+        </a>
+        <s.SaveArticleButton
+          role="button"
+          onClick={handleSaveArticleAndCloseModal}
+        >
+          <BookmarkBorderIcon fontSize="small" />
+          Save to Zeeguu
+        </s.SaveArticleButton>
       </s.Footer>
     </>
   );
