@@ -5,8 +5,11 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 export default function RedirectionNotificationForMobile({
   api,
   article,
-  handleCloseRedirectionModal,
   setIsArticleSaved,
+  toggleRedirectionCheckboxSelection,
+  selectedDoNotShowRedirectionModal_Checkbox,
+  handleCloseAndSaveVisibilityPreferences,
+  handleCloseWithoutSavingVisibilityPreferences,
 }) {
   function handleSaveArticle() {
     api.makePersonalCopy(article.id, (data) => {
@@ -18,7 +21,11 @@ export default function RedirectionNotificationForMobile({
 
   function handleSaveArticleAndCloseModal() {
     handleSaveArticle();
-    handleCloseRedirectionModal();
+    handleCloseAndSaveVisibilityPreferences();
+  }
+
+  function handleGoToArticleAndCloseModal() {
+    handleCloseAndSaveVisibilityPreferences();
   }
 
   return (
@@ -39,14 +46,28 @@ export default function RedirectionNotificationForMobile({
           to add it to your Saves.
         </p>
       </s.Body>
-      <s.CloseButton role="button" onClick={handleCloseRedirectionModal}>
+      <s.CloseButton
+        role="button"
+        onClick={handleCloseWithoutSavingVisibilityPreferences}
+      >
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
       <s.Footer>
+        <s.CheckboxWrapper>
+          <input
+            onChange={toggleRedirectionCheckboxSelection}
+            checked={selectedDoNotShowRedirectionModal_Checkbox}
+            type="checkbox"
+            id="checkbox"
+            name=""
+            value=""
+          ></input>{" "}
+          <label htmlFor="checkbox">Don't show this message</label>
+        </s.CheckboxWrapper>
         <a target="_self" rel="noreferrer" href={article.url}>
           <s.GoToArticleButton
             role="button"
-            onClick={handleCloseRedirectionModal}
+            onClick={handleGoToArticleAndCloseModal}
           >
             Enter the article's website
           </s.GoToArticleButton>
