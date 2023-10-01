@@ -31,7 +31,7 @@ const ModalWrapperGlobal = styled(ModalWrapper)`
 const ModalHeaderGlobal = styled.div`
   margin: 1em 0;
   @media (max-width: 576px) {
-    margin: 0.7em 0;
+    margin: 0.8em 0;
   }
 `;
 
@@ -53,7 +53,7 @@ const ModalBodyGlobal = styled.div`
     object-fit: contain;
   }
   @media (max-width: 576px) {
-    margin: 0.7em 0;
+    margin: 0.8em 0;
   }
 `;
 
@@ -70,7 +70,7 @@ const ModalFooterGlobal = styled.div`
     text-decoration: underline;
   }
   @media (max-width: 576px) {
-    margin: 0.7em 0;
+    margin: 0.8em 0;
   }
 `;
 
@@ -94,5 +94,5 @@ export {
   ModalHeaderGlobal,
   ModalBodyGlobal,
   ModalFooterGlobal,
-  ModalStrongTextWrapperGlobal
+  ModalStrongTextWrapperGlobal,
 };
