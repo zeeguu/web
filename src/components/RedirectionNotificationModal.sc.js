@@ -37,6 +37,9 @@ const CheckboxWrapper = styled.div`
   grid-template-columns: 1em auto;
   align-items: center;
   gap: 0.5em;
+  @media (max-width: 576px) {
+    margin-top: 0em;
+  }
   label {
     font-size: 0.9em;
   }
