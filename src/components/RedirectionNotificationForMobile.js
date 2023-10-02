@@ -36,14 +36,13 @@ export default function RedirectionNotificationForMobile({
       <s.Body>
         <p>
           If you want to read articles on your mobile device using Zeeguu, just
-          tap on the
+          tap on&nbsp;the
           <s.ModalStrongTextWrapper> Save </s.ModalStrongTextWrapper> button
-          below the article's title or click
+          below the article's title or&nbsp;click
           <s.ModalStrongTextWrapper>
             {" "}
-            Save to Zeeguu
+            Add to Saves.
           </s.ModalStrongTextWrapper>{" "}
-          to add it to your Saves.
         </p>
       </s.Body>
       <s.CloseButton
@@ -64,21 +63,23 @@ export default function RedirectionNotificationForMobile({
           ></input>{" "}
           <label htmlFor="checkbox">Don't show this message</label>
         </s.CheckboxWrapper>
-        <a target="_self" rel="noreferrer" href={article.url}>
-          <s.GoToArticleButton
+        <s.ButtonContainer>
+          <a target="_self" rel="noreferrer" href={article.url}>
+            <s.GoToArticleButton
+              role="button"
+              onClick={handleGoToArticleAndCloseModal}
+            >
+              Enter the article's website
+            </s.GoToArticleButton>
+          </a>
+          <s.SaveArticleButton
             role="button"
-            onClick={handleGoToArticleAndCloseModal}
+            onClick={handleSaveArticleAndCloseModal}
           >
-            Enter the article's website
-          </s.GoToArticleButton>
-        </a>
-        <s.SaveArticleButton
-          role="button"
-          onClick={handleSaveArticleAndCloseModal}
-        >
-          <BookmarkBorderIcon fontSize="small" />
-          Save to Zeeguu
-        </s.SaveArticleButton>
+            <BookmarkBorderIcon fontSize="small" />
+            Add to Saves
+          </s.SaveArticleButton>
+        </s.ButtonContainer>
       </s.Footer>
     </>
   );
