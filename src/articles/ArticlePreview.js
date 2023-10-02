@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import moment from "moment";
+import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/RedirectionNotificationModal";
 import Feature from "../features/Feature";
@@ -61,7 +62,13 @@ export default function ArticleOverview({
     );
 
     let open_externally_without_modal = (
-      <a target="_blank" rel="noreferrer" href={article.url}>
+      //allow target _self on mobile to easily go back to Zeeguu
+      //using mobile browser navigation
+      <a
+        target={isMobile ? "_self" : "_blank"}
+        rel="noreferrer"
+        href={article.url}
+      >
         {article.title}
       </a>
     );
