@@ -85,6 +85,7 @@ const SaveArticleButton = styled.button`
 
   @media (max-width: 576px) {
     justify-content: center;
+    margin-left: -0.5em;
     flex: 0;
   }
 `;
