@@ -38,7 +38,7 @@ const CheckboxWrapper = styled.div`
   align-items: center;
   gap: 0.5em;
   @media (max-width: 576px) {
-    margin-top: 0em;
+    margin-top: -0.5em;
   }
   label {
     font-size: 0.9em;
@@ -59,6 +59,7 @@ const CheckboxWrapper = styled.div`
 //TODO: After implementing all the onboarding steps,
 //create style quide for all buttons and refactor / factor them out
 const GoToArticleButton = styled(OrangeRoundButton)`
+  flex: 1;
   padding: 0.7em 2em;
   border-radius: 4em;
   font-weight: 600;
@@ -66,18 +67,14 @@ const GoToArticleButton = styled(OrangeRoundButton)`
 `;
 
 const SaveArticleButton = styled.button`
-  width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.25rem;
-  color: ${zeeguuDarkOrange};
   color: orange;
-
   background-color: none;
   font: inherit;
-  /* color: inherit; */
   text-align: left;
   padding: 0;
   margin: 0;
@@ -85,6 +82,25 @@ const SaveArticleButton = styled.button`
   background: none;
   border: none;
   font-weight: 600;
+
+  @media (max-width: 576px) {
+    justify-content: center;
+    flex: 0;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 export {
@@ -92,6 +108,7 @@ export {
   CloseButton,
   GoToArticleButton,
   SaveArticleButton,
+  ButtonContainer,
   Icon,
   Header,
   Body,
