@@ -113,7 +113,7 @@ export default function MultipleChoiceAudio({
 
     function handleIncorrectAnswer() {
         notifyIncorrectAnswer(bookmarksToStudy[0]);
-        setFirstTypeTime();
+        setFirstTypeTime(new Date());
     }
 
     function handleAnswer(message) {
@@ -145,11 +145,6 @@ export default function MultipleChoiceAudio({
             duration,
             bookmarksToStudy[0].id
         );
-    }
-
-    function handleIncorrectAnswer() {
-        notifyIncorrectAnswer(bookmarksToStudy[0]);
-        setFirstTypeTime();
     }
 
     if (!articleInfo) {
