@@ -72,7 +72,43 @@ export default function Exercises({
     const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
     const [reload, setReload] = useState(false);
 
+    const [currentSessionDurationInSec, setCurrentSessionDurationInSec] = useState(1);
+    const [clockActive, setClockActive] = useState(true);
+    const [dbExerciseSessionId, setdbExerciseSessionId] = useState()
+
+
     useEffect(() => {
+
+        if (!finished) {
+            const interval = setInterval(() => {
+                let newvalue = clockActive ? currentSessionDurationInSec + 1 : currentSessionDurationInSec;
+                setCurrentSessionDurationInSec(newvalue);
+            }, 1000);
+
+
+            return () => {
+
+                clearInterval(interval);
+            };
+        }
+    }, [currentSessionDurationInSec, clockActive]);
+
+    window.addEventListener("focus", function () {
+        if (!finished) {
+            setClockActive(true);
+        }
+
+    });
+
+    window.addEventListener("blur", function () {
+        if (!finished) {
+            setClockActive(false);
+        }
+    });
+
+
+    useEffect(() => {
+
         if (exerciseSession.length === 0) {
             if (articleID) {
                 api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
@@ -94,6 +130,13 @@ export default function Exercises({
                 );
             }
         }
+
+        api.startExerciseSession((newlyCreatedSessionID) => {
+            console.log(newlyCreatedSessionID);
+            let id = JSON.parse(newlyCreatedSessionID).id;
+            setdbExerciseSessionId(id);
+        })
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -103,6 +146,7 @@ export default function Exercises({
             calculateExerciseBatches(bookmarks);
             setTitle(title);
         }
+
     }
 
     /**
@@ -241,6 +285,8 @@ export default function Exercises({
                     backButtonAction={backButtonAction}
                     keepExercisingAction={keepExercisingAction}
                     source={source}
+                    totalTime={currentSessionDurationInSec}
+                    setClockActive={setClockActive}
                 />
             </>
         );
@@ -348,6 +394,7 @@ export default function Exercises({
 
         if (newIndex === exerciseSession.length) {
             setFinished(true);
+            setClockActive(false);
             if (Feature.audio_exercises()) {
                 exerciseSessionWithAudioCompleted();
             } else if (Feature.no_audio_exercises()) {
@@ -357,11 +404,12 @@ export default function Exercises({
         }
         setCurrentBookmarksToStudy(exerciseSession[newIndex].bookmarks);
         setCurrentIndex(newIndex);
+        api.updateExerciseSession(dbExerciseSessionId, currentSessionDurationInSec);
     }
 
     let correctBookmarksCopy = [...correctBookmarks];
 
-    function correctAnswer(currentBookmark) {
+    function correctAnswerNotification(currentBookmark) {
         if (
             !incorrectBookmarks.includes(currentBookmark) ||
             !incorrectBookmarksCopy.includes(currentBookmark)
@@ -369,6 +417,7 @@ export default function Exercises({
             correctBookmarksCopy.push(currentBookmark);
             setCorrectBookmarks(correctBookmarksCopy);
         }
+        api.updateExerciseSession(dbExerciseSessionId, currentSessionDurationInSec);
     }
 
     let incorrectBookmarksCopy = [...incorrectBookmarks];
@@ -376,6 +425,7 @@ export default function Exercises({
     function incorrectAnswerNotification(currentBookmark) {
         incorrectBookmarksCopy.push(currentBookmark);
         setIncorrectBookmarks(incorrectBookmarksCopy);
+        api.updateExerciseSession(dbExerciseSessionId, currentSessionDurationInSec);
     }
 
     function uploadUserFeedback(userWrittenFeedback, id) {
@@ -397,34 +447,45 @@ export default function Exercises({
 
     const CurrentExercise = exerciseSession[currentIndex].type;
     return (
-        <s.ExercisesColumn className="exercisesColumn">
-            {/*<s.LittleMessageAbove>*/}
-            {/*  {wordSourcePrefix} {wordSourceText}*/}
-            {/*</s.LittleMessageAbove>*/}
-            <ProgressBar index={currentIndex} total={exerciseSession.length}/>
-            <s.ExForm>
-                <CurrentExercise
-                    key={currentIndex}
-                    bookmarksToStudy={currentBookmarksToStudy}
-                    correctAnswer={correctAnswer}
-                    notifyIncorrectAnswer={incorrectAnswerNotification}
-                    api={api}
-                    setExerciseType={setCurrentExerciseType}
-                    isCorrect={isCorrect}
-                    setIsCorrect={setIsCorrect}
-                    moveToNextExercise={moveToNextExercise}
-                    toggleShow={toggleShow}
-                    reload={reload}
-                    setReload={setReload}
+        <>
+            <s.ExercisesColumn className="exercisesColumn">
+                
+                {/*<s.LittleMessageAbove>*/}
+                {/*  {wordSourcePrefix} {wordSourceText}*/}
+                {/*</s.LittleMessageAbove>*/}
+                <ProgressBar index={currentIndex} total={exerciseSession.length}/>
+                <s.ExForm>
+                    <CurrentExercise
+                        key={currentIndex}
+                        bookmarksToStudy={currentBookmarksToStudy}
+                        correctAnswer={correctAnswerNotification}
+                        notifyIncorrectAnswer={incorrectAnswerNotification}
+                        api={api}
+                        setExerciseType={setCurrentExerciseType}
+                        isCorrect={isCorrect}
+                        setIsCorrect={setIsCorrect}
+                        moveToNextExercise={moveToNextExercise}
+                        toggleShow={toggleShow}
+                        reload={reload}
+                        setReload={setReload}
+                    />
+                </s.ExForm>
+                <FeedbackDisplay
+                    showFeedbackButtons={showFeedbackButtons}
+                    setShowFeedbackButtons={setShowFeedbackButtons}
+                    currentExerciseType={currentExerciseType}
+                    currentBookmarksToStudy={currentBookmarksToStudy}
+                    feedbackFunction={uploadUserFeedback}
                 />
-            </s.ExForm>
-            <FeedbackDisplay
-                showFeedbackButtons={showFeedbackButtons}
-                setShowFeedbackButtons={setShowFeedbackButtons}
-                currentExerciseType={currentExerciseType}
-                currentBookmarksToStudy={currentBookmarksToStudy}
-                feedbackFunction={uploadUserFeedback}
-            />
-        </s.ExercisesColumn>
+            </s.ExercisesColumn>
+
+            <div style={{position: "fixed", bottom: "5px"}}>
+                <small style={{color: "gray"}}>
+                    Seconds in this exercise session: {currentSessionDurationInSec} {clockActive ? "" : "(paused)"}
+                </small>
+            </div>
+
+        </>
+
     );
 }
