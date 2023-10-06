@@ -15,6 +15,7 @@ export default function Congratulations({
                                             backButtonAction,
                                             keepExercisingAction,
                                             source,
+                                            totalTime
                                         }) {
     const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
         removeArrayDuplicates(correctBookmarks)
@@ -23,6 +24,7 @@ export default function Congratulations({
         useState(removeArrayDuplicates(incorrectBookmarks));
 
     const [username, setUsername] = useState();
+
 
     function deleteBookmark(bookmark) {
         setCorrectBookmarksToDisplay(
@@ -37,7 +39,6 @@ export default function Congratulations({
         let userInfo = LocalStorage.userInfo()
         let name = userInfo.name
         setUsername(name);
-        api.reportExerciseSessionEnd();
     }, []);
 
     if (username === undefined) {
@@ -45,61 +46,70 @@ export default function Congratulations({
     }
 
     return (
-        <s.NarrowColumn className="narrowColumn">
-            <br/>
-            <CenteredColumn className="centeredColumn">
-                <h1>
-                    {strings.goodJob} {username}!
-                </h1>
-            </CenteredColumn>
-            {correctBookmarksToDisplay.length > 0 && (
-                <>
-                    <h3>😊 {strings.correct}</h3>
-                    <div>
-                        {correctBookmarksToDisplay.map((each) => (
-                            <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
-                                <Word
-                                    key={each.id}
-                                    bookmark={each}
-                                    notifyDelete={deleteBookmark}
-                                    api={api}
-                                    source={source}
-                                />
-                            </s.ContentOnRow>
-                        ))}
-                    </div>
-                </>
-            )}
+        <>
+            <s.NarrowColumn className="narrowColumn">
+                <br/>
+                <CenteredColumn className="centeredColumn">
+                    <h1>
+                        {strings.goodJob} {username}!
+                    </h1>
+                </CenteredColumn>
+                <div style={{fontSize: "small"}}>
+                    This exercise session took {totalTime} seconds
+                </div>
 
-            {incorrectBookmarksToDisplay.length > 0 && (
-                <>
-                    <h3>
-                        <br/>
-                        😳 {strings.payMoreAttentionTo}
-                    </h3>
-                    <p>
-                        {incorrectBookmarksToDisplay.map((each) => (
-                            <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
-                                <Word
-                                    key={each.id}
-                                    bookmark={each}
-                                    notifyDelete={deleteBookmark}
-                                    api={api}
-                                    source={source}
-                                />
-                            </s.ContentOnRow>
-                        ))}
-                    </p>
-                </>
-            )}
-            <CenteredColumn className="CenteredColumn">
-                <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
-                    {strings.keepExercising}
-                </s.OrangeButton>
-                <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
-                    {strings.backToReading}
-                </s.WhiteButton>
-            </CenteredColumn>
-        </s.NarrowColumn>
+                {correctBookmarksToDisplay.length > 0 && (
+                    <>
+                        <h3>😊 {strings.correct}</h3>
+                        <div>
+                            {correctBookmarksToDisplay.map((each) => (
+                                <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
+                                    <Word
+                                        key={each.id}
+                                        bookmark={each}
+                                        notifyDelete={deleteBookmark}
+                                        api={api}
+                                        source={source}
+                                    />
+                                </s.ContentOnRow>
+                            ))}
+                        </div>
+                    </>
+                )}
+
+                {incorrectBookmarksToDisplay.length > 0 && (
+                    <>
+                        <h3>
+                            <br/>
+                            😳 {strings.payMoreAttentionTo}
+                        </h3>
+                        <p>
+                            {incorrectBookmarksToDisplay.map((each) => (
+                                <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
+                                    <Word
+                                        key={each.id}
+                                        bookmark={each}
+                                        notifyDelete={deleteBookmark}
+                                        api={api}
+                                        source={source}
+                                    />
+                                </s.ContentOnRow>
+                            ))}
+                        </p>
+                    </>
+                )}
+                <CenteredColumn className="CenteredColumn">
+                    <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
+                        {strings.keepExercising}
+                    </s.OrangeButton>
+                    <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
+                        {strings.backToReading}
+                    </s.WhiteButton>
+                </CenteredColumn>
+
+
+            </s.NarrowColumn>
+
+        </>
     );
 }

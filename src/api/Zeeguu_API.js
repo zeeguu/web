@@ -1,4 +1,4 @@
-import { Zeeguu_API } from "./classDef";
+import {Zeeguu_API} from "./classDef";
 import "./feature_toggles";
 import "./accounts";
 import "./userDetails";
@@ -7,6 +7,7 @@ import "./userInterests";
 import "./userArticles";
 import "./translations";
 import "./exercises";
+import "./exercise_sessions"
 import "./userStats";
 import "./speech";
 import "./activityLogging";
