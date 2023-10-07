@@ -23,10 +23,11 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
     this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 
-Zeeguu_API.prototype.reportExerciseSessionEnd = function (finalDuration) {
+Zeeguu_API.prototype.reportExerciseSessionEnd = function (exerciseSessionId, totalTime) {
 
     let payload = {
-        final_duration: finalDuration * 1000 //the API expects ms
+        id: exerciseSessionId,
+        duration: totalTime
     };
 
     this._post(`report_exercise_session_end`, qs.stringify(payload));
