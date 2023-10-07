@@ -287,6 +287,7 @@ export default function Exercises({
                     source={source}
                     totalTime={currentSessionDurationInSec}
                     setClockActive={setClockActive}
+                    exerciseSessionId={dbExerciseSessionId}
                 />
             </>
         );
@@ -449,7 +450,7 @@ export default function Exercises({
     return (
         <>
             <s.ExercisesColumn className="exercisesColumn">
-                
+
                 {/*<s.LittleMessageAbove>*/}
                 {/*  {wordSourcePrefix} {wordSourceText}*/}
                 {/*</s.LittleMessageAbove>*/}
