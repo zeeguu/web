@@ -16,3 +16,13 @@ Zeeguu_API.prototype.updateExerciseSession = function (currentSessionId, current
 
     this._post(`update_exercise_session`, qs.stringify(payload));
 };
+
+Zeeguu_API.prototype.reportExerciseSessionEnd = function (exerciseSessionId, totalTime) {
+
+    let payload = {
+        id: exerciseSessionId,
+        duration: totalTime * 1000
+    };
+
+    this._post(`report_exercise_session_end`, qs.stringify(payload));
+};
