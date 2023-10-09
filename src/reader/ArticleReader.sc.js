@@ -125,6 +125,7 @@ let WhiteButton = styled(_BottomButton)`
   display: inline;
   align-items: center;
   justify-content: center;
+  border:none
 
   //Small
   ${(props) =>
@@ -227,22 +228,20 @@ let NavigationLink = styled(Link)`
 `;
 
 let FeedbackBox = styled.div`
-  border: 1px solid lightgray;
-  background-color: ${veryLightGrey};
-  border-radius: 1em;
+  border: 1px solid  ${zeeguuOrange};
+  background-color: white;
+  border-radius: 0.5em;
   padding: 1em;
-  padding-bottom: 1em;
   margin-top: 3em;
+  align-items: center;
+  justify-content: center;
 
   @media (min-width: 768px) {
     width: 30em;
   }
   margin-left: auto;
   margin-right: auto;
-  h2 {
-    text-align: center;
-  }
-  h4 {
+  h2, h5, p {
     text-align: center;
   }
   .selected {
