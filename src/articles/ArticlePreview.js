@@ -38,7 +38,7 @@ export default function ArticleOverview({
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
 
-    let open_with_modal = (
+    let open_externally_with_modal = (
       //The RedirectionNotificationModal modal informs the user that they are about
       //to be redirected to the original article's website and guides them on what steps
       //should be taken to start reading the said article with The Zeeguu Reader extension
@@ -85,7 +85,7 @@ export default function ArticleOverview({
 
     if (should_open_in_zeeguu) return open_in_zeeguu;
     else if (should_open_with_modal)
-      return open_with_modal; //opens internally for mobile, externally for desktop
+      return open_externally_with_modal; 
     else return open_externally_without_modal;
   }
 
