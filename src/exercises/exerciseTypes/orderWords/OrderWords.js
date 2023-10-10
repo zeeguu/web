@@ -844,6 +844,7 @@ export default function OrderWords({
           moveToNextExercise={moveToNextExercise}
           reload={reload}
           setReload={setReload}
+          isReadContext={true}
         />
       )}
       <SolutionFeedbackLinks

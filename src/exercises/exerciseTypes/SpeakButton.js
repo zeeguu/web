@@ -62,6 +62,7 @@ export default function SpeakButton({
   api,
   styling,
   handleClick,
+  isReadContext,
 }) {
   const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -69,7 +70,8 @@ export default function SpeakButton({
 
   async function handleSpeak() {
     setIsSpeaking(true);
-    await speech.speakOut(bookmarkToStudy.from);
+    if (isReadContext) { await speech.speakOut(bookmarkToStudy.context); }
+    else { await speech.speakOut(bookmarkToStudy.from); }
     setIsSpeaking(false);
   }
 

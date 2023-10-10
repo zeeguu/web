@@ -9,6 +9,7 @@ export default function NextNavigation({
   api,
   reload,
   setReload,
+  isReadContext,
 }) {
   const bookmarkToStudy = bookmarksToStudy[0];
 
@@ -22,6 +23,7 @@ export default function NextNavigation({
             bookmarkToStudy={bookmarkToStudy}
             api={api}
             style="next"
+            isReadContext={isReadContext}
           />
           <EditButton
             bookmark={bookmarksToStudy[0]}
