@@ -24,12 +24,12 @@ export default function OrderWords({
   setReload,
 }) {
 
+  // Constants for Exercise
   const exerciseLang = bookmarksToStudy[0].from_lang;
   const NO_WORD_SELECTED_ID = -100;
   const MAX_CONTEXT_LENGTH = 15;
   const ENABLE_SHORTER_CONTEXT_BUTTON = false;
   const IS_DEBUG = true;
-  const DRAG_COOLDOWN = 300; // ms in-between drag operations
 
   const [initialTime, setInitialTime] = useState(new Date());
   //const [buttonOptions, setButtonOptions] = useState(null);
@@ -361,9 +361,13 @@ export default function OrderWords({
         // Line below is used for development with no API key (translatedContext is Null)
         if (!translatedContext) { translatedContext = exerciseContext; }
         if (exerciseContext.length < originalContext.length){
-          let startPos = originalContext.search(exerciseContext);
+          let startPos = originalContext.indexOf(exerciseContext);
           let contextLen = originalContext.length;
-          setTextBeforeTranslatedText(originalContext.slice(0,startPos));
+          let textBeforeContext = originalContext.slice(0, startPos);
+          if (textBeforeContext[-1] !== " ") {
+            textBeforeContext = textBeforeContext + " "
+          }
+          setTextBeforeTranslatedText(textBeforeContext);
           setTextAfterTranslatedText(originalContext.slice(startPos+exerciseContext.length,contextLen));
         }        
         setTranslatedText(translatedContext);
@@ -454,10 +458,14 @@ export default function OrderWords({
       // Set the Color to Blue
       if (IS_DEBUG) console.log("Word Swap Id: " + wordSwapId);
       if (IS_DEBUG) console.log("Selected Choice: " + selectedChoice);
+      // Get the reference in the
+      let constructorWordSelected = _getWordById(selectedChoice, newUserSolutionWordArray)
+
       // Save the previous status.
       setWordSwapStatus(wordSelected.status);
 
       wordSelected.status = "toSwap";
+      constructorWordSelected.status = "toSwap";
 
       if (IS_DEBUG) console.log(updatedReferenceStatus);
       setWordSwapId(selectedChoice);
@@ -661,7 +669,7 @@ export default function OrderWords({
       // We need to ensure that we don't send the entire sentence,
       // or alignment might align very distant words.
       // We provide only the context up to + 1 what the user has constructed.
-      let resizedSolutionText = filterPunctuationSolArray.slice(0, newUserSolutionWordArray.length + 1).join(" ");
+      let resizedSolutionText = filterPunctuationSolArray.slice(0, newUserSolutionWordArray.length + 2).join(" ");
       api.annotateClues(
         newUserSolutionWordArray, 
         resizedSolutionText, 

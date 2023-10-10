@@ -287,6 +287,7 @@ const ExerciseOW = styled.div`
 
   .greyOut {
     background-color: #595959;
+    visibility: hidden;
   }
   
   .disable {
