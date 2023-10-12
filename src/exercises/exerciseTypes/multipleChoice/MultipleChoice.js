@@ -25,6 +25,7 @@ export default function MultipleChoice({
                                            toggleShow,
                                            reload,
                                            setReload,
+                                           exerciseSessionId
                                        }) {
     const [incorrectAnswer, setIncorrectAnswer] = useState("");
     const [initialTime] = useState(new Date());
@@ -88,7 +89,8 @@ export default function MultipleChoice({
             message,
             EXERCISE_TYPE,
             exerciseDuration(new Date()),
-            bookmarksToStudy[0].id
+            bookmarksToStudy[0].id,
+            exerciseSessionId
         );
     }
 

@@ -23,6 +23,7 @@ export default function SpellWhatYouHear({
   toggleShow,
   reload,
   setReload,
+  exerciseSessionId
 }) {
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
@@ -84,7 +85,8 @@ export default function SpellWhatYouHear({
       concatMessage,
       EXERCISE_TYPE,
       duration,
-      bookmarksToStudy[0].id
+      bookmarksToStudy[0].id,
+      exerciseSessionId
     );
   }
 
@@ -99,7 +101,8 @@ export default function SpellWhatYouHear({
       message,
       EXERCISE_TYPE,
       duration,
-      bookmarksToStudy[0].id
+      bookmarksToStudy[0].id,
+      exerciseSessionId
     );
   }
 

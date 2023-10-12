@@ -26,6 +26,7 @@ export default function MultipleChoiceAudio({
                                                 toggleShow,
                                                 reload,
                                                 setReload,
+                                                exerciseSessionId
                                             }) {
     const [incorrectAnswer, setIncorrectAnswer] = useState("");
     const [initialTime] = useState(new Date());
@@ -38,6 +39,10 @@ export default function MultipleChoiceAudio({
     const [selectedButtonId, setSelectedButtonId] = useState("");
     const bookmarkToStudy = bookmarksToStudy[0];
     const exercise = "exercise";
+
+    console.log("exercise session id: " + exerciseSessionId)
+
+
     useEffect(() => {
         setExerciseType(EXERCISE_TYPE);
         api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
@@ -123,7 +128,8 @@ export default function MultipleChoiceAudio({
             message,
             EXERCISE_TYPE,
             exerciseDuration(pressTime),
-            bookmarksToStudy[0].id
+            bookmarksToStudy[0].id,
+            exerciseSessionId
         );
     }
 
@@ -143,7 +149,8 @@ export default function MultipleChoiceAudio({
             message,
             EXERCISE_TYPE,
             duration,
-            bookmarksToStudy[0].id
+            bookmarksToStudy[0].id,
+            exerciseSessionId
         );
     }
 

@@ -22,6 +22,7 @@ export default function OrderWords({
   toggleShow,
   reload,
   setReload,
+  exerciseSessionId
 }) {
 
   const exerciseLang = bookmarksToStudy[0].from_lang;
@@ -473,7 +474,8 @@ export default function OrderWords({
       message,
       EXERCISE_TYPE,
       duration,
-      bookmarksToStudy[0].id
+      bookmarksToStudy[0].id,
+      exerciseSessionId
     );
 
     let jsonDataExerciseEnd = {

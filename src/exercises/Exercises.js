@@ -74,7 +74,7 @@ export default function Exercises({
 
     const [currentSessionDurationInSec, setCurrentSessionDurationInSec] = useState(1);
     const [clockActive, setClockActive] = useState(true);
-    const [dbExerciseSessionId, setdbExerciseSessionId] = useState()
+    const [dbExerciseSessionId, setDbExerciseSessionId] = useState()
 
 
     useEffect(() => {
@@ -134,7 +134,7 @@ export default function Exercises({
         api.startExerciseSession((newlyCreatedSessionID) => {
             console.log(newlyCreatedSessionID);
             let id = JSON.parse(newlyCreatedSessionID).id;
-            setdbExerciseSessionId(id);
+            setDbExerciseSessionId(id);
         })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -469,6 +469,7 @@ export default function Exercises({
                         toggleShow={toggleShow}
                         reload={reload}
                         setReload={setReload}
+                        exerciseSessionId={dbExerciseSessionId}
                     />
                 </s.ExForm>
                 <FeedbackDisplay

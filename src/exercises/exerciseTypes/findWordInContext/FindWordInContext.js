@@ -24,6 +24,7 @@ export default function FindWordInContext({
                                               toggleShow,
                                               reload,
                                               setReload,
+                                              exerciseSessionId
                                           }) {
     const [initialTime] = useState(new Date());
     const [firstTypeTime, setFirstTypeTime] = useState();
@@ -109,7 +110,8 @@ export default function FindWordInContext({
             concatMessage,
             EXERCISE_TYPE,
             duration,
-            bookmarksToStudy[0].id
+            bookmarksToStudy[0].id,
+            exerciseSessionId
         );
     }
 
@@ -122,7 +124,8 @@ export default function FindWordInContext({
             message,
             EXERCISE_TYPE,
             duration,
-            bookmarksToStudy[0].id
+            bookmarksToStudy[0].id,
+            exerciseSessionId
         );
     }
 
