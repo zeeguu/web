@@ -21,6 +21,7 @@ export default function Match({
                                   toggleShow,
                                   reload,
                                   setReload,
+                                  exerciseSessionId
                               }) {
     const initialBookmarkState = [
         {
@@ -112,7 +113,8 @@ export default function Match({
                     concatMessage,
                     EXERCISE_TYPE,
                     duration,
-                    currentBookmarksToStudy[i].bookmark.id
+                    currentBookmarksToStudy[i].bookmark.id,
+                    exerciseSessionId
                 );
             }
         }
@@ -126,7 +128,8 @@ export default function Match({
             message,
             EXERCISE_TYPE,
             exerciseDuration(pressTime),
-            id
+            id,
+            exerciseSessionId
         );
     }
 
