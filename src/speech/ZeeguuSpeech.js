@@ -4,7 +4,7 @@ function voiceForLanguageCode(code, voices) {
     var specificCode = code;
 
     let preferredLocales = {fr: "fr-FR", nl: "nl-NL", en: "en-US", es: "es-ES"};
-    let preferredLocaleVoices = {fr: ["Thomas", "Audrey", "Aurelie"]}
+    let preferredLocaleVoices = {fr: ["Google", "Thomas", "Audrey", "Aurelie"]}
     specificCode = preferredLocales[code] ?? code;
 
     let languageVoices = voices.filter((x) => x.lang.startsWith(specificCode));
@@ -14,13 +14,14 @@ function voiceForLanguageCode(code, voices) {
         let favoriteVoices = languageVoices.filter((x) => x.name.startsWith(preferredLocaleVoices[code][i]));
 
         if (favoriteVoices) {
-
-            return favoriteVoices [0];
+            let voice = favoriteVoices [0];
+            console.log(voice.name + voice.lang);
+            return voice;
         }
     }
 
-
     let voice = languageVoices[0];
+    console.log(voice.name + voice.lang);
     return voice;
 }
 
