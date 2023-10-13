@@ -1,27 +1,28 @@
 /*global chrome*/
+const PREFERRED_LOCALES = {fr: "fr-FR", nl: "nl-NL", en: "en-US", es: "es-ES"};
+const PREFERRED_VOICE_NAMES = {fr: ["Google", "Thomas", "Audrey", "Aurelie"]}
 
 function voiceForLanguageCode(code, voices) {
-    var specificCode = code;
 
-    let preferredLocales = {fr: "fr-FR", nl: "nl-NL", en: "en-US", es: "es-ES"};
-    let preferredLocaleVoicesMap = {fr: ["Google", "Thomas", "Audrey", "Aurelie"]}
-    specificCode = preferredLocales[code] ?? code;
+    let specificCode = PREFERRED_LOCALES[code] ?? code;
     console.log(specificCode);
 
     let languageVoices = voices.filter((x) => x.lang.startsWith(specificCode));
     console.log(languageVoices);
 
-    let preferredLocaleNames = preferredLocaleVoicesMap[code];
+    let preferredLocaleNames = PREFERRED_VOICE_NAMES[code];
     console.log(preferredLocaleNames);
 
 
     for (let i = 0; i < preferredLocaleNames.length; i++) {
-        let favoriteVoices = languageVoices.filter((x) => x.name.startsWith(preferredLocaleNames[i]));
+        let preferredName = preferredLocaleNames[i];
+        console.log("looking for... " + preferredName);
+        let favoriteVoices = languageVoices.filter((x) => x.name.startsWith(preferredName));
         console.log(favoriteVoices);
 
-        if (favoriteVoices) {
+        if (favoriteVoices.length > 0) {
             let voice = favoriteVoices [0];
-            console.log(voice.name + voice.lang);
+            console.log(voice.name + " " + voice.lang);
             return voice;
         }
     }
