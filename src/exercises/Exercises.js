@@ -82,7 +82,7 @@ export default function Exercises({
     const {getRemainingTime} = useIdleTimer({
         onIdle,
         onActive,
-        timeout: 60_000,
+        timeout: 30_000,
         throttle: 500
     })
 
