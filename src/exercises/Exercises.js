@@ -17,6 +17,9 @@ import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 
+import {useIdleTimer} from 'react-idle-timer'
+
+
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
 let EXERCISE_TYPES = [
     {
@@ -75,6 +78,21 @@ export default function Exercises({
     const [currentSessionDurationInSec, setCurrentSessionDurationInSec] = useState(1);
     const [clockActive, setClockActive] = useState(true);
     const [dbExerciseSessionId, setDbExerciseSessionId] = useState()
+
+    const {getRemainingTime} = useIdleTimer({
+        onIdle,
+        onActive,
+        timeout: 60_000,
+        throttle: 500
+    })
+
+    function onIdle() {
+        setClockActive(false);
+    }
+
+    function onActive() {
+        setClockActive(true)
+    }
 
 
     useEffect(() => {
