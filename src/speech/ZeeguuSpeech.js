@@ -10,7 +10,7 @@ function voiceForLanguageCode(code, voices) {
     let languageVoices = voices.filter((x) => x.lang.startsWith(specificCode));
     console.log(languageVoices);
 
-    let preferredLocaleNames = PREFERRED_VOICE_NAMES[code];
+    let preferredLocaleNames = PREFERRED_VOICE_NAMES.code || [];
     console.log(preferredLocaleNames);
 
 
