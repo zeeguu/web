@@ -45,7 +45,6 @@ let RightHandSide = styled.div`
 let Toolbar = styled.div`
   height: 110px;
   // background-color: ${veryLightGrey};
-  width: 100%;
 
   button {
     width: 55px;
