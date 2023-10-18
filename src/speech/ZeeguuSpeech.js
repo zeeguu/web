@@ -5,12 +5,13 @@ const PREFERRED_VOICE_NAMES = {fr: ["Google", "Thomas", "Audrey", "Aurelie"]}
 function voiceForLanguageCode(code, voices) {
 
     let specificCode = PREFERRED_LOCALES[code] ?? code;
+    console.log(Date())
     console.log(specificCode);
 
     let languageVoices = voices.filter((x) => x.lang.startsWith(specificCode));
     console.log(languageVoices);
 
-    let preferredLocaleNames = PREFERRED_VOICE_NAMES.code || [];
+    let preferredLocaleNames = PREFERRED_VOICE_NAMES[code] || [];
     console.log(preferredLocaleNames);
 
 
@@ -81,6 +82,7 @@ const ZeeguuSpeech = class {
         allVoicesObtained.then(
             (voices) => (this.voice = voiceForLanguageCode(this.language, voices))
         );
+
     }
 
     speakOut(word) {

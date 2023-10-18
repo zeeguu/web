@@ -1,8 +1,10 @@
-import { useState } from "react";
+import {useContext, useState} from "react";
 import strings from "../../i18n/definitions";
-import ZeeguuSpeech from "../../speech/ZeeguuSpeech";
+
 import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
+
+import {SpeechContext} from "../SpeechContext";
 
 const small_style = {
   // Icon properties
@@ -64,7 +66,8 @@ export default function SpeakButton({
   handleClick,
   isReadContext,
 }) {
-  const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
+  const speech = useContext(SpeechContext);
+  // const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
   let style = styles[styling] || small_next_style; // default is next style
 

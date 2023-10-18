@@ -16,8 +16,10 @@ import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
+import {SpeechContext} from "./SpeechContext";
 
 import {useIdleTimer} from 'react-idle-timer'
+import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
@@ -77,7 +79,9 @@ export default function Exercises({
 
     const [currentSessionDurationInSec, setCurrentSessionDurationInSec] = useState(1);
     const [clockActive, setClockActive] = useState(true);
-    const [dbExerciseSessionId, setDbExerciseSessionId] = useState()
+    const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
+    const [speechEngine] = useState(new ZeeguuSpeech(api, LocalStorage.userInfo().learned_language));
+
 
     const {getRemainingTime} = useIdleTimer({
         onIdle,
@@ -154,6 +158,7 @@ export default function Exercises({
             let id = JSON.parse(newlyCreatedSessionID).id;
             setDbExerciseSessionId(id);
         })
+
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -295,18 +300,21 @@ export default function Exercises({
         api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
         return (
             <>
-                <Congratulations
-                    articleID={articleID}
-                    correctBookmarks={correctBookmarks}
-                    incorrectBookmarks={incorrectBookmarks}
-                    api={api}
-                    backButtonAction={backButtonAction}
-                    keepExercisingAction={keepExercisingAction}
-                    source={source}
-                    totalTime={currentSessionDurationInSec}
-                    setClockActive={setClockActive}
-                    exerciseSessionId={dbExerciseSessionId}
-                />
+                <SpeechContext.Provider value={speechEngine}>
+                    <Congratulations
+                        articleID={articleID}
+                        correctBookmarks={correctBookmarks}
+                        incorrectBookmarks={incorrectBookmarks}
+                        api={api}
+                        backButtonAction={backButtonAction}
+                        keepExercisingAction={keepExercisingAction}
+                        source={source}
+                        totalTime={currentSessionDurationInSec}
+                        setClockActive={setClockActive}
+                        exerciseSessionId={dbExerciseSessionId}
+                    />
+                </SpeechContext.Provider>
+
             </>
         );
     }
@@ -467,44 +475,47 @@ export default function Exercises({
     const CurrentExercise = exerciseSession[currentIndex].type;
     return (
         <>
-            <s.ExercisesColumn className="exercisesColumn">
+            <SpeechContext.Provider value={speechEngine}>
 
-                {/*<s.LittleMessageAbove>*/}
-                {/*  {wordSourcePrefix} {wordSourceText}*/}
-                {/*</s.LittleMessageAbove>*/}
-                <ProgressBar index={currentIndex} total={exerciseSession.length}/>
-                <s.ExForm>
-                    <CurrentExercise
-                        key={currentIndex}
-                        bookmarksToStudy={currentBookmarksToStudy}
-                        correctAnswer={correctAnswerNotification}
-                        notifyIncorrectAnswer={incorrectAnswerNotification}
-                        api={api}
-                        setExerciseType={setCurrentExerciseType}
-                        isCorrect={isCorrect}
-                        setIsCorrect={setIsCorrect}
-                        moveToNextExercise={moveToNextExercise}
-                        toggleShow={toggleShow}
-                        reload={reload}
-                        setReload={setReload}
-                        exerciseSessionId={dbExerciseSessionId}
+                <s.ExercisesColumn className="exercisesColumn">
+
+                    {/*<s.LittleMessageAbove>*/}
+                    {/*  {wordSourcePrefix} {wordSourceText}*/}
+                    {/*</s.LittleMessageAbove>*/}
+                    <ProgressBar index={currentIndex} total={exerciseSession.length}/>
+                    <s.ExForm>
+                        <CurrentExercise
+                            key={currentIndex}
+                            bookmarksToStudy={currentBookmarksToStudy}
+                            correctAnswer={correctAnswerNotification}
+                            notifyIncorrectAnswer={incorrectAnswerNotification}
+                            api={api}
+                            setExerciseType={setCurrentExerciseType}
+                            isCorrect={isCorrect}
+                            setIsCorrect={setIsCorrect}
+                            moveToNextExercise={moveToNextExercise}
+                            toggleShow={toggleShow}
+                            reload={reload}
+                            setReload={setReload}
+                            exerciseSessionId={dbExerciseSessionId}
+                        />
+                    </s.ExForm>
+                    <FeedbackDisplay
+                        showFeedbackButtons={showFeedbackButtons}
+                        setShowFeedbackButtons={setShowFeedbackButtons}
+                        currentExerciseType={currentExerciseType}
+                        currentBookmarksToStudy={currentBookmarksToStudy}
+                        feedbackFunction={uploadUserFeedback}
                     />
-                </s.ExForm>
-                <FeedbackDisplay
-                    showFeedbackButtons={showFeedbackButtons}
-                    setShowFeedbackButtons={setShowFeedbackButtons}
-                    currentExerciseType={currentExerciseType}
-                    currentBookmarksToStudy={currentBookmarksToStudy}
-                    feedbackFunction={uploadUserFeedback}
-                />
-            </s.ExercisesColumn>
+                </s.ExercisesColumn>
 
-            <div style={{position: "fixed", bottom: "5px"}}>
-                <small style={{color: "gray"}}>
-                    Seconds in this exercise session: {currentSessionDurationInSec} {clockActive ? "" : "(paused)"}
-                </small>
-            </div>
+                <div style={{position: "fixed", bottom: "5px"}}>
+                    <small style={{color: "gray"}}>
+                        Seconds in this exercise session: {currentSessionDurationInSec} {clockActive ? "" : "(paused)"}
+                    </small>
+                </div>
 
+            </SpeechContext.Provider>
         </>
 
     );
