@@ -80,7 +80,7 @@ export default function Exercises({
     const [currentSessionDurationInSec, setCurrentSessionDurationInSec] = useState(1);
     const [clockActive, setClockActive] = useState(true);
     const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
-    const [speechEngine] = useState(new ZeeguuSpeech(api, LocalStorage.userInfo().learned_language));
+    const [speechEngine, setSpeechEngine] = useState();
 
 
     const {getRemainingTime} = useIdleTimer({
@@ -147,7 +147,6 @@ export default function Exercises({
                     DEFAULT_BOOKMARKS_TO_PRACTICE,
                     (bookmarks) => {
                         initializeExercises(bookmarks, strings.exercises);
-                        console.dir(bookmarks);
                     }
                 );
             }
@@ -164,6 +163,9 @@ export default function Exercises({
     }, []);
 
     function initializeExercises(bookmarks, title) {
+
+        setSpeechEngine(new ZeeguuSpeech(api, bookmarks[0].from_lang));
+
         setCountBookmarksToPractice(bookmarks.length);
         if (bookmarks.length > 0) {
             calculateExerciseBatches(bookmarks);
