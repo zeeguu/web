@@ -20,6 +20,8 @@ import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 import { cleanDOMAfter, getHTMLContent } from "../Cleaning/pageSpecificClean";
+import {SpeechContext} from "../../zeeguu-react/src/exercises/SpeechContext";
+import ZeeguuSpeech from "../../zeeguu-react/src/speech/ZeeguuSpeech";
 
 export function Modal({
   title,
@@ -52,6 +54,10 @@ export function Modal({
   logContextRef.current = logContext;
   const articleInfoRef = useRef({});
   articleInfoRef.current = articleInfo;
+
+  const [speechEngine, setSpeechEngine] = useState();
+
+
 
   useUILanguage();
 
@@ -142,7 +148,14 @@ export function Modal({
           }
         }, 0);
       }
+
+      let se = new ZeeguuSpeech(api, articleInfo.language);
+      setSpeechEngine(se);
+
     }
+
+
+
     cleanDOMAfter(url);
   }, [articleInfo]);
 
@@ -218,71 +231,74 @@ export function Modal({
 
   return (
     <div>
-      <GlobalStyle />
-      <StyledModal
-        isOpen={modalIsOpen}
-        className="Modal"
-        id="scrollHolder"
-        overlayClassName={"reader-overlay"}
-      >
-        <OverwriteZeeguu>
-          <StyledHeading>
-            <img
-              src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
-              alt={"Zeeguu logo"}
-              className="logoModal"
-            />
-            <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
-              X
-            </StyledCloseButton>
-            {readArticleOpen ? (
-              <ToolbarButtons
+      <SpeechContext.Provider value={speechEngine}>
+        <GlobalStyle />
+        <StyledModal
+          isOpen={modalIsOpen}
+          className="Modal"
+          id="scrollHolder"
+          overlayClassName={"reader-overlay"}
+        >
+          <OverwriteZeeguu>
+            <StyledHeading>
+              <img
+                src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+                alt={"Zeeguu logo"}
+                className="logoModal"
+              />
+              <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
+                X
+              </StyledCloseButton>
+              {readArticleOpen ? (
+                <ToolbarButtons
+                  translating={translating}
+                  pronouncing={pronouncing}
+                  setTranslating={setTranslating}
+                  setPronouncing={setPronouncing}
+                />
+              ) : null}
+            </StyledHeading>
+            {readArticleOpen === true && (
+              <ReadArticle
+                articleId={articleId()}
+                api={api}
+                author={author}
+                interactiveTextArray={interactiveTextArray}
+                interactiveTitle={interactiveTitle}
+                articleImage={articleImage}
+                openReview={openReview}
                 translating={translating}
                 pronouncing={pronouncing}
-                setTranslating={setTranslating}
-                setPronouncing={setPronouncing}
+                url={url}
+                setPersonalCopySaved={setPersonalCopySaved}
+                personalCopySaved={personalCopySaved}
               />
-            ) : null}
-          </StyledHeading>
-          {readArticleOpen === true && (
-            <ReadArticle
-              articleId={articleId()}
-              api={api}
-              author={author}
-              interactiveTextArray={interactiveTextArray}
-              interactiveTitle={interactiveTitle}
-              articleImage={articleImage}
-              openReview={openReview}
-              translating={translating}
-              pronouncing={pronouncing}
-              url={url}
-              setPersonalCopySaved={setPersonalCopySaved}
-              personalCopySaved={personalCopySaved}
-            />
-          )}
-          {reviewOpen === true && (
-            <WordsForArticleModal
-              className="wordsForArticle"
-              api={api}
-              articleID={articleId()}
-              openExercises={openExercises}
-              openArticle={openArticle}
-            />
-          )}
-          {exerciseOpen === true && (
-            <>
-              <Exercises
-                className="exercises"
+            )}
+            {reviewOpen === true && (
+              <WordsForArticleModal
+                className="wordsForArticle"
                 api={api}
                 articleID={articleId()}
-                source={EXTENSION_SOURCE}
-                backButtonAction={openArticle}
-                keepExercisingAction={reloadExercises}
+                openExercises={openExercises}
+                openArticle={openArticle}
               />
-            </>
-          )}
-        </OverwriteZeeguu>
-      </StyledModal>
+            )}
+            {exerciseOpen === true && (
+              <>
+                <Exercises
+                  className="exercises"
+                  api={api}
+                  articleID={articleId()}
+                  source={EXTENSION_SOURCE}
+                  backButtonAction={openArticle}
+                  keepExercisingAction={reloadExercises}
+                />
+              </>
+            )}
+          </OverwriteZeeguu>
+        </StyledModal>
+      </SpeechContext.Provider>
+
     </div>
   );
 }
