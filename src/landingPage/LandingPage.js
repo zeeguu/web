@@ -1,4 +1,3 @@
-import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
 import News from "./News";
 import * as s from "./LandingPage.sc.js";

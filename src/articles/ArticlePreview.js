@@ -1,27 +1,53 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import moment from "moment";
 import * as s from "./ArticlePreview.sc";
+import RedirectionNotificationModal from "../components/RedirectionNotificationModal";
 import Feature from "../features/Feature";
-import { runningInChromeDesktop } from "../utils/misc/browserDetection";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
+import SmallSaveArticleButton from "./SmallSaveArticleButton";
+
 
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
   dontShowImage,
   hasExtension,
+    api
 }) {
+  const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
+
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
+
+  function handleClose() {
+    setIsRedirectionModaOpen(false);
+  }
+
+  function handleOpen() {
+    setIsRedirectionModaOpen(true);
+  }
 
   function titleLink(article) {
     let open_in_zeeguu = (
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
     let open_externally = (
-      <a target="_blank" href={article.url}>
-        {article.title}
-      </a>
+      //The RedirectionNotificationModal is displayed when the user clicks
+      //the article's title from the recommendation list.
+      //The modal informs the user that they are about to be redirected
+      //to the original article's website and guides them on what steps
+      //should be taken to start reading the said article with The Zeeguu Reader extension
+      <>
+        <RedirectionNotificationModal
+          article={article}
+          open={isRedirectionModalOpen}
+          handleClose={handleClose}
+        />
+        <s.InvisibleTitleButton onClick={handleOpen}>
+          {article.title}
+        </s.InvisibleTitleButton>
+      </>
     );
 
     if (article.video) {
@@ -45,12 +71,15 @@ export default function ArticleOverview({
 
   return (
     <s.ArticlePreview>
-      <s.Title>{titleLink(article)}</s.Title>
+      <s.Title>{titleLink(article)}
+          <SmallSaveArticleButton api={api} article={article} />
+      </s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
 
       {article.video ? (
         <img
+          alt=""
           style={{ float: "left", marginRight: "1em" }}
           src={
             "https://img.youtube.com/vi/" +
