@@ -61,6 +61,7 @@ export default function FindWordInContext({
     }, [translatedWords]);
 
     function equalAfterRemovingSpecialCharacters(a,b) {
+        // from: https://stackoverflow.com/a/4328546
         let first = a.replace(/[^\w\s\']|_/g, "")
             .replace(/\s+/g, " ");
         let second = b.replace(/[^\w\s\']|_/g, "")
