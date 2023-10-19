@@ -22,7 +22,7 @@ import {useIdleTimer} from 'react-idle-timer'
 import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 
-const DEFAULT_BOOKMARKS_TO_PRACTICE = 10;
+const DEFAULT_BOOKMARKS_TO_PRACTICE = 11;
 let EXERCISE_TYPES = [
     {
         type: Match,
@@ -43,6 +43,10 @@ let EXERCISE_TYPES = [
     {
         type: MultipleChoiceAudio,
         requiredBookmarks: 3,
+    },
+    {
+        type: FindWordInContext,
+        requiredBookmarks: 1,
     },
 ];
 
@@ -81,6 +85,7 @@ export default function Exercises({
     const [clockActive, setClockActive] = useState(true);
     const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
     const [speechEngine, setSpeechEngine] = useState();
+
 
 
     const {getRemainingTime} = useIdleTimer({
@@ -164,10 +169,10 @@ export default function Exercises({
 
     function initializeExercises(bookmarks, title) {
 
-        setSpeechEngine(new ZeeguuSpeech(api, bookmarks[0].from_lang));
 
         setCountBookmarksToPractice(bookmarks.length);
         if (bookmarks.length > 0) {
+            setSpeechEngine(new ZeeguuSpeech(api, bookmarks[0].from_lang));
             calculateExerciseBatches(bookmarks);
             setTitle(title);
         }
