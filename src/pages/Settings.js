@@ -152,7 +152,7 @@ export default function Settings({ api, setUser }) {
       <scs.StyledSettings>
         <form className="formSettings">
           <sc.TopTabs>
-            <h1>*{strings.settings}</h1>
+            <h1>{strings.settings}</h1>*
           </sc.TopTabs>
 
           <h5>{errorMessage}</h5>
