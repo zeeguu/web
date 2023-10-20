@@ -25,7 +25,7 @@ export default function Settings({ api, setUser }) {
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [currentCohort, setCurrentCohort] = useState("");
   const [cefr, setCEFR] = useState("");
-
+  const [audioExercises, setAudioExercises] = useState(false);
   //TODO: Refactor using Zeeguu project logic
 
   const [uiLanguage, setUiLanguage] = useState();
@@ -66,6 +66,9 @@ export default function Settings({ api, setUser }) {
       setUserDetails(data);
       setCEFRlevel(data);
     });
+    api.getUserPreferences((preferences) => {
+      setAudioExercises(preferences["audio_exercises"] === "true");
+    })
     api.getSystemLanguages((systemLanguages) => {
       setLanguages(systemLanguages);
     });
@@ -109,8 +112,11 @@ export default function Settings({ api, setUser }) {
     modifyCEFRlevel(userDetails.learned_language, cefr);
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      updateUserInfo(userDetails);
-      history.goBack();
+      api.saveUserPreferences({"audio_exercises": audioExercises}, () => {
+        updateUserInfo(userDetails);
+        history.goBack();
+
+      })
     });
   }
 
@@ -131,6 +137,10 @@ export default function Settings({ api, setUser }) {
         console.log(error);
       }
     );
+  }
+
+  function handleAudioExercisesChange(e) {
+    setAudioExercises(state => !state);
   }
 
   if (!userDetails || !languages) {
@@ -166,6 +176,17 @@ export default function Settings({ api, setUser }) {
             }
           />
 
+          <label>{strings.nativeLanguage}</label>
+          <UiLanguageSelector
+              languages={languages.native_languages}
+              selected={language_for_id(
+                  userDetails.native_language,
+                  languages.native_languages
+              )}
+              onChange={nativeLanguageUpdated}
+          />
+
+          <br/><br/>
           <label>{strings.learnedLanguage}</label>
           <UiLanguageSelector
             languages={languages.learnable_languages}
@@ -182,7 +203,7 @@ export default function Settings({ api, setUser }) {
             }}
           />
 
-          <label>{strings.levelOfLearnedLanguage}</label>
+          {/*<label>{strings.levelOfLearnedLanguage}</label>*/}
           <Select
             elements={CEFR_LEVELS}
             label={(e) => e.label}
@@ -191,29 +212,30 @@ export default function Settings({ api, setUser }) {
             current={cefr}
           />
 
-          <label>{strings.nativeLanguage}</label>
-          <UiLanguageSelector
-            languages={languages.native_languages}
-            selected={language_for_id(
-              userDetails.native_language,
-              languages.native_languages
-            )}
-            onChange={nativeLanguageUpdated}
-          />
 
-          <label>{strings.systemLanguage}</label>
-          <UiLanguageSelector
-            languages={uiLanguages}
-            selected={uiLanguage.name}
-            onChange={(e) => {
-              let lang = uiLanguages.find(
-                (lang) =>
-                  lang.code ===
-                  e.target[e.target.selectedIndex].getAttribute("code")
-              );
-              onSysChange(lang);
-            }}
-          />
+
+          {/*<label>{strings.systemLanguage}</label>*/}
+          {/*<UiLanguageSelector*/}
+          {/*  languages={uiLanguages}*/}
+          {/*  selected={uiLanguage.name}*/}
+          {/*  onChange={(e) => {*/}
+          {/*    let lang = uiLanguages.find(*/}
+          {/*      (lang) =>*/}
+          {/*        lang.code ===*/}
+          {/*        e.target[e.target.selectedIndex].getAttribute("code")*/}
+          {/*    );*/}
+          {/*    onSysChange(lang);*/}
+          {/*  }}*/}
+          {/*/>*/}
+
+          <br/><br/>
+
+          <label>Exercise Types</label>
+          <div style={{display: "flex"}} className="form-group">
+            <input style={{width: "1.5em"}} type={"checkbox"} checked={audioExercises} onChange={handleAudioExercisesChange}/>
+            <label>Audio</label>
+          </div>
+
 
           <div>
             <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>

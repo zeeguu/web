@@ -11,27 +11,13 @@ Zeeguu_API.prototype.saveUserDetails = function (
   onSuccess
 ) {
   this.apiLog(this._appendSessionToUrl("user_settings"));
-  fetch(this._appendSessionToUrl("user_settings"), {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body:
-      `name=${user_details.name}&email=${user_details.email}` +
-      `&learned_language=${user_details.learned_language}` +
-      `&native_language=${user_details.native_language}`,
-  })
-    .then((response) => {
-      if (response.status !== 200) {
-        throw response;
-      }
-      return response; // OK in case of success
-    })
-    .then((data) => {
-      onSuccess(data);
-    })
-    .catch((error) => {
-      console.log(error);
-      setErrorMessage("Invalid credentials");
-    });
+
+  this._post(
+      `user_settings`,
+      qs.stringify(user_details),
+      onSuccess,
+      setErrorMessage
+  );
 };
 
 Zeeguu_API.prototype.modifyCEFRlevel = function (
@@ -49,5 +35,25 @@ Zeeguu_API.prototype.modifyCEFRlevel = function (
     qs.stringify(payload),
     onSuccess,
     onError
+  );
+};
+
+
+// Topics that can be subscribed to
+Zeeguu_API.prototype.getUserPreferences = function (callback) {
+  this._getJSON("user_preferences", callback);
+};
+
+
+Zeeguu_API.prototype.saveUserPreferences = function (
+    preferences,
+    onSuccess,
+    onError
+) {
+  this._post(
+      `save_user_preferences`,
+      qs.stringify(preferences),
+      onSuccess,
+      onError
   );
 };
