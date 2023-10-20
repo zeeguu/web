@@ -114,7 +114,12 @@ export default function Settings({ api, setUser }) {
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       api.saveUserPreferences({"audio_exercises": audioExercises}, () => {
         updateUserInfo(userDetails);
-        history.goBack();
+        if (history.length>1) {
+          history.goBack();
+        } else {
+          close();
+        }
+
 
       })
     });
