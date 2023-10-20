@@ -121,6 +121,7 @@ export default function Exercises({
             let exerciseSequenceType = getExerciseSequenceType();
 
             let exerciseSequence = calculateExerciseSequence(exerciseSequenceType, bookmarks);
+
             let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequence);
 
             // ML: Attempt to figure out why does the MultipleChoice exercise sometimes end up
