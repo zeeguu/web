@@ -117,7 +117,7 @@ export default function Settings({ api, setUser }) {
         if (history.length>1) {
           history.goBack();
         } else {
-          close();
+          window.close();
         }
 
 
