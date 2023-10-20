@@ -67,7 +67,7 @@ export default function Settings({ api, setUser }) {
       setCEFRlevel(data);
     });
     api.getUserPreferences((preferences) => {
-      setAudioExercises(preferences["audio_exercises"] === "true");
+        setAudioExercises(preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true");
     })
     api.getSystemLanguages((systemLanguages) => {
       setLanguages(systemLanguages);

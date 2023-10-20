@@ -184,7 +184,8 @@ export default function Exercises({
         if (exerciseSession.length === 0) {
 
                 api.getUserPreferences((preferences) => {
-                    audioEnabled = preferences["audio_exercises"]==="true";
+
+                    audioEnabled = preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true";
 
                     if (articleID) {
                         api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
