@@ -2,7 +2,7 @@ import {Zeeguu_API} from "./classDef";
 import qs from "qs";
 
 
-Zeeguu_API.prototype.startExerciseSession = function (callback) {
+Zeeguu_API.prototype.startLoggingExerciseSessionToDB = function (callback) {
 
     this._post(`start_new_exercise_session`, null, callback);
 };
