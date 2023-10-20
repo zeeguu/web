@@ -275,6 +275,7 @@ export default function Settings({ api, setUser }) {
           </div>
         )}
       </scs.StyledSettings>
+      <br/><br/><br/><br/><br/><br/>
     </s.FormContainer>
   );
 }
