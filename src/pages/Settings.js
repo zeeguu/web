@@ -25,7 +25,7 @@ export default function Settings({ api, setUser }) {
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [currentCohort, setCurrentCohort] = useState("");
   const [cefr, setCEFR] = useState("");
-  const [audioExercises, setAudioExercises] = useState(false);
+  const [audioExercises, setAudioExercises] = useState(true);
   //TODO: Refactor using Zeeguu project logic
 
   const [uiLanguage, setUiLanguage] = useState();
