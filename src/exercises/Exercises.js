@@ -21,6 +21,7 @@ import {SpeechContext} from "./SpeechContext";
 import {useIdleTimer} from 'react-idle-timer'
 import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
+let audioEnabled;
 
 const DEFAULT_BOOKMARKS_TO_PRACTICE = 11;
 let EXERCISE_TYPES = [
@@ -57,6 +58,36 @@ let EXERCISE_TYPES_TIAGO = [
     }
 ];
 
+let EXERCISE_TYPES_NO_AUDIO = [
+
+    {
+        type: MultipleChoice,
+        requiredBookmarks: 1,
+    },
+    {
+        type: Match,
+        requiredBookmarks: 3,
+    },
+    {
+        type: MultipleChoice,
+        requiredBookmarks: 1,
+    },
+    {
+        type: FindWordInContext,
+        requiredBookmarks: 1,
+    },
+    {
+        type: Match,
+        requiredBookmarks: 3,
+    },
+    {
+        type: FindWordInContext,
+        requiredBookmarks: 1,
+    },
+];
+
+
+
 
 export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
@@ -88,6 +119,7 @@ export default function Exercises({
 
 
 
+
     const {getRemainingTime} = useIdleTimer({
         onIdle,
         onActive,
@@ -101,6 +133,19 @@ export default function Exercises({
 
     function onActive() {
         setClockActive(true)
+    }
+
+
+    function getExerciseTypesList() {
+
+        let exerciseTypesList = EXERCISE_TYPES;
+        if (Feature.tiago_exercises()) {
+            exerciseTypesList = EXERCISE_TYPES_TIAGO;
+        }
+        if (!audioEnabled) {
+            exerciseTypesList = EXERCISE_TYPES_NO_AUDIO;
+        }
+        return exerciseTypesList;
     }
 
 
@@ -137,24 +182,30 @@ export default function Exercises({
     useEffect(() => {
 
         if (exerciseSession.length === 0) {
-            if (articleID) {
-                api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
-                    api.getArticleInfo(articleID, (data) => {
-                        setArticleInfo(data);
-                        initializeExercises(
-                            bookmarks,
-                            'Exercises for "' + data.title + '"'
+
+                api.getUserPreferences((preferences) => {
+                    audioEnabled = preferences["audio_exercises"]==="true";
+
+                    if (articleID) {
+                        api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
+                            api.getArticleInfo(articleID, (data) => {
+                                setArticleInfo(data);
+                                initializeExercises(
+                                    bookmarks,
+                                    'Exercises for "' + data.title + '"'
+                                );
+                            });
+                        });
+                    } else {
+                        api.getUserBookmarksToStudy(
+                            DEFAULT_BOOKMARKS_TO_PRACTICE,
+                            (bookmarks) => {
+                                initializeExercises(bookmarks, strings.exercises);
+                            }
                         );
-                    });
-                });
-            } else {
-                api.getUserBookmarksToStudy(
-                    DEFAULT_BOOKMARKS_TO_PRACTICE,
-                    (bookmarks) => {
-                        initializeExercises(bookmarks, strings.exercises);
                     }
-                );
-            }
+
+                })
         }
 
         api.startExerciseSession((newlyCreatedSessionID) => {
@@ -188,10 +239,8 @@ export default function Exercises({
      * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
      */
     function calculateExerciseBatches(bookmarks) {
-        let exerciseTypesList = EXERCISE_TYPES;
-        if (Feature.tiago_exercises()) {
-            exerciseTypesList = EXERCISE_TYPES_TIAGO;
-        }
+        let exerciseTypesList =getExerciseTypesList();
+
         let bookmarksPerBatch = exerciseTypesList.reduce(
             (a, b) => a + b.requiredBookmarks,
             0
@@ -208,10 +257,8 @@ export default function Exercises({
     }
 
     function defineExerciseSession(batches, rest, bookmark_count) {
-        let exerciseTypesList = EXERCISE_TYPES
-        if (Feature.tiago_exercises()) {
-            exerciseTypesList = EXERCISE_TYPES_TIAGO
-        }
+        let exerciseTypesList =getExerciseTypesList();
+
         let exerciseSession = [];
         if (bookmark_count < 9) {
             let count = bookmark_count;
