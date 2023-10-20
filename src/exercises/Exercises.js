@@ -332,21 +332,18 @@ export default function Exercises({
      */
     function assignBookmarksToExercises(bookmarkList, exerciseSession) {
         let k = 0;
-        for (let i = 0; i < exerciseSession.length; i++) {
-            if (exerciseSession[i].requiredBookmarks > 1) {
-                for (let j = i; j < i + exerciseSession[i].requiredBookmarks; j++) {
-                    exerciseSession[i].bookmarks.push(bookmarkList[k]);
-                    k++;
-                }
-            } else {
-                exerciseSession[i].bookmarks.push(bookmarkList[k]);
-                k++;
+
+        for (let session of exerciseSession) {
+            for (let i=0; i< session.requiredBookmarks; i++) {
+                session.bookmarks.push(bookmarkList[k + i]);
             }
+            k+= session.requiredBookmarks;
         }
 
         if (currentBookmarksToStudy === null) {
             setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
         }
+
         setExerciseSession(exerciseSession);
     }
 
