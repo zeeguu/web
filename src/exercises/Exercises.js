@@ -1,95 +1,26 @@
 import {useEffect, useState} from "react";
 
-import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
-import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
 import Congratulations from "./Congratulations";
 import ProgressBar from "./ProgressBar";
 import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import {setTitle} from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import Match from "./exerciseTypes/match/Match";
-import SpellWhatYouHear from "./exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
-import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleChoiceAudio";
-import OrderWords from "./exerciseTypes/orderWords/OrderWords"
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
-import LocalStorage from "../assorted/LocalStorage";
 import {SpeechContext} from "./SpeechContext";
 
 import {useIdleTimer} from 'react-idle-timer'
 import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
+import {calculateExerciseSequence, assignBookmarksToExercises} from "./assignBookmarksToExercises";
+
+import {DEFAULT_SEQUENCE, DEFAULT_SEQUENCE_NO_AUDIO, EXERCISE_TYPES_TIAGO,
+    NUMBER_OF_BOOKMARKS_TO_PRACTICE} from "./exerciseSequenceTypes";
+
 let audioEnabled;
 
-const DEFAULT_BOOKMARKS_TO_PRACTICE = 11;
-let EXERCISE_TYPES = [
-    {
-        type: Match,
-        requiredBookmarks: 3,
-    },
-    {
-        type: MultipleChoice,
-        requiredBookmarks: 1,
-    },
-    {
-        type: FindWordInContext,
-        requiredBookmarks: 1,
-    },
-    {
-        type: SpellWhatYouHear,
-        requiredBookmarks: 1,
-    },
-    {
-        type: MultipleChoiceAudio,
-        requiredBookmarks: 3,
-    },
-    {
-        type: FindWordInContext,
-        requiredBookmarks: 1,
-    },
-];
-
-let EXERCISE_TYPES_TIAGO = [
-    {
-        type: OrderWords,
-        requiredBookmarks: 1,
-    }
-];
-
-let EXERCISE_TYPES_NO_AUDIO = [
-
-    {
-        type: MultipleChoice,
-        requiredBookmarks: 1,
-    },
-    {
-        type: Match,
-        requiredBookmarks: 3,
-    },
-    {
-        type: MultipleChoice,
-        requiredBookmarks: 1,
-    },
-    {
-        type: FindWordInContext,
-        requiredBookmarks: 1,
-    },
-    {
-        type: Match,
-        requiredBookmarks: 3,
-    },
-    {
-        type: FindWordInContext,
-        requiredBookmarks: 1,
-    },
-];
-
-
-
-
-export const AUDIO_SOURCE = "Exercises";
 export default function Exercises({
                                       api,
                                       articleID,
@@ -98,7 +29,7 @@ export default function Exercises({
                                       source,
                                   }) {
     const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
-        DEFAULT_BOOKMARKS_TO_PRACTICE
+        NUMBER_OF_BOOKMARKS_TO_PRACTICE
     );
     const [currentIndex, setCurrentIndex] = useState(0);
     const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
@@ -118,8 +49,6 @@ export default function Exercises({
     const [speechEngine, setSpeechEngine] = useState();
 
 
-
-
     const {getRemainingTime} = useIdleTimer({
         onIdle,
         onActive,
@@ -136,14 +65,14 @@ export default function Exercises({
     }
 
 
-    function getExerciseTypesList() {
+    function getExerciseSequenceType() {
 
-        let exerciseTypesList = EXERCISE_TYPES;
+        let exerciseTypesList = DEFAULT_SEQUENCE;
         if (Feature.tiago_exercises()) {
             exerciseTypesList = EXERCISE_TYPES_TIAGO;
         }
         if (!audioEnabled) {
-            exerciseTypesList = EXERCISE_TYPES_NO_AUDIO;
+            exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
         }
         return exerciseTypesList;
     }
@@ -179,10 +108,39 @@ export default function Exercises({
     });
 
 
+
+    function initializeExercises(bookmarks, title) {
+        setCountBookmarksToPractice(bookmarks.length);
+
+        if (bookmarks.length > 0) {
+
+            // This can only be initialized here after we can get at least one bookmakr
+            // and thus, know the language to pronounce in
+            setSpeechEngine(new ZeeguuSpeech(api, bookmarks[0].from_lang));
+
+            let exerciseSequenceType = getExerciseSequenceType();
+
+            let exerciseSequence = calculateExerciseSequence(exerciseSequenceType, bookmarks);
+            let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequence);
+
+            // ML: Attempt to figure out why does the MultipleChoice exercise sometimes end up
+            // with no bookmarks... In case one exercise would have no bookmarks we would filter it
+            exerciseSession = exerciseSession.filter(x=>x.bookmarks.length === x.requiredBookmarks);
+
+            setExerciseSession(exerciseSession);
+
+            if (currentBookmarksToStudy === null) {
+                setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
+            }
+
+            setTitle(title);
+        }
+    }
+
+
     useEffect(() => {
 
         if (exerciseSession.length === 0) {
-
                 api.getUserPreferences((preferences) => {
 
                     audioEnabled = preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true";
@@ -199,7 +157,7 @@ export default function Exercises({
                         });
                     } else {
                         api.getUserBookmarksToStudy(
-                            DEFAULT_BOOKMARKS_TO_PRACTICE,
+                            NUMBER_OF_BOOKMARKS_TO_PRACTICE,
                             (bookmarks) => {
                                 initializeExercises(bookmarks, strings.exercises);
                             }
@@ -209,105 +167,14 @@ export default function Exercises({
                 })
         }
 
-        api.startExerciseSession((newlyCreatedSessionID) => {
-            console.log(newlyCreatedSessionID);
-            let id = JSON.parse(newlyCreatedSessionID).id;
+        api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
+            let id = JSON.parse(newlyCreatedDBSessionID).id;
             setDbExerciseSessionId(id);
         })
-
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    function initializeExercises(bookmarks, title) {
-
-
-        setCountBookmarksToPractice(bookmarks.length);
-        if (bookmarks.length > 0) {
-            setSpeechEngine(new ZeeguuSpeech(api, bookmarks[0].from_lang));
-            calculateExerciseBatches(bookmarks);
-            setTitle(title);
-        }
-
-    }
-
-    /**
-     * Calculates the exercise batches based on the amount of bookmarks received by the API and the amount of
-     * bookmarks required per exercise type. A batch contains all exercise types. If there are not enough
-     * bookmarks for a full batch, "remainingExercises" holds the amount of exercises requiring a single
-     * bookmark to be added to the exercise session.
-     *
-     * @param bookmarks - passed to function assignBookmarksToExercises(bookmarks, exerciseSequence)
-     */
-    function calculateExerciseBatches(bookmarks) {
-        let exerciseTypesList =getExerciseTypesList();
-
-        let bookmarksPerBatch = exerciseTypesList.reduce(
-            (a, b) => a + b.requiredBookmarks,
-            0
-        );
-        let batchCount = parseInt(bookmarks.length / bookmarksPerBatch);
-        let remainingExercises = bookmarks.length % bookmarksPerBatch;
-        let exerciseSequence = defineExerciseSession(
-            batchCount,
-            remainingExercises,
-            bookmarks.length
-        );
-        setExerciseSession(exerciseSequence);
-        assignBookmarksToExercises(bookmarks, exerciseSequence);
-    }
-
-    function defineExerciseSession(batches, rest, bookmark_count) {
-        let exerciseTypesList =getExerciseTypesList();
-
-        let exerciseSession = [];
-        if (bookmark_count < 9) {
-            let count = bookmark_count;
-            while (count > 0) {
-                for (let i = exerciseTypesList.length - 1; i >= 0; i--) {
-                    let currentTypeRequiredCount = exerciseTypesList[i].requiredBookmarks;
-                    if (count < currentTypeRequiredCount) continue;
-                    if (count === 0) break;
-                    let exercise = {
-                        type: exerciseTypesList[i].type,
-                        requiredBookmarks: currentTypeRequiredCount,
-                        bookmarks: [],
-                    };
-                    exerciseSession.push(exercise);
-                    count = count - currentTypeRequiredCount;
-                }
-            }
-        } else {
-            for (let i = 0; i < batches; i++) {
-                for (let j = exerciseTypesList.length - 1; j >= 0; j--) {
-                    let exercise = {
-                        type: exerciseTypesList[j].type,
-                        requiredBookmarks: exerciseTypesList[j].requiredBookmarks,
-                        bookmarks: [],
-                    };
-                    exerciseSession.push(exercise);
-                }
-            }
-            while (rest > 0) {
-                for (let k = exerciseTypesList.length - 1; k >= 0; k--) {
-                    if (rest >= exerciseTypesList[k].requiredBookmarks) {
-                        let exercise = {
-                            type: exerciseTypesList[k].type,
-                            requiredBookmarks: exerciseTypesList[k].requiredBookmarks,
-                            bookmarks: [],
-                        };
-                        exerciseSession.push(exercise);
-                        rest--;
-                    }
-                }
-            }
-        }
-        return exerciseSession;
-    }
-
-    function truncate(str, n) {
-        return str.length > n ? str.substr(0, n - 1) + "..." : str;
-    }
 
     let wordSourceText = articleInfo ? (
         <>
@@ -325,27 +192,7 @@ export default function Exercises({
         <>{strings.wordSourcePrefix}</>
     );
 
-    /**
-     * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
-     * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
-     * currentBookmarksToStudy to begin the exercise session.
-     */
-    function assignBookmarksToExercises(bookmarkList, exerciseSession) {
-        let k = 0;
 
-        for (let session of exerciseSession) {
-            for (let i=0; i< session.requiredBookmarks; i++) {
-                session.bookmarks.push(bookmarkList[k + i]);
-            }
-            k+= session.requiredBookmarks;
-        }
-
-        if (currentBookmarksToStudy === null) {
-            setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
-        }
-
-        setExerciseSession(exerciseSession);
-    }
 
     // Standard flow when user completes exercise session
     if (finished) {
@@ -385,87 +232,6 @@ export default function Exercises({
         );
     }
 
-    function exerciseSessionWithAudioCompleted() {
-        var completed;
-        if (Feature.audio_exercises()) {
-            if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
-                LocalStorage.incrementAudioExperimentNoOfSessions();
-                completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
-                if (completed) {
-                    api.logUserActivity(
-                        api.AUDIO_EXP,
-                        articleID,
-                        "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(),
-                        AUDIO_SOURCE
-                    );
-                    api.logUserActivity(
-                        api.AUDIO_EXP,
-                        articleID,
-                        "Audio experiment completed!",
-                        AUDIO_SOURCE
-                    );
-                } else {
-                    api.logUserActivity(
-                        api.AUDIO_EXP,
-                        articleID,
-                        "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(),
-                        AUDIO_SOURCE
-                    );
-                }
-            } else {
-                LocalStorage.setAudioExperimentNoOfSessions("1");
-                api.logUserActivity(
-                    api.AUDIO_EXP,
-                    articleID,
-                    "First session completed ",
-                    AUDIO_SOURCE
-                );
-                LocalStorage.setTargetNoOfAudioSessions("100");
-            }
-        }
-        return;
-    }
-
-    function exerciseSessionNoAudioCompleted() {
-        var completed;
-        if (LocalStorage.getTargetNoOfAudioSessions() > 0) {
-            LocalStorage.incrementAudioExperimentNoOfSessions();
-            completed = LocalStorage.checkAndUpdateAudioExperimentCompleted();
-            if (completed) {
-                api.logUserActivity(
-                    api.AUDIO_EXP,
-                    articleID,
-                    "Session without audio no: " +
-                    LocalStorage.getAudioExperimentNoOfSessions(),
-                    AUDIO_SOURCE
-                );
-                api.logUserActivity(
-                    api.AUDIO_EXP,
-                    articleID,
-                    "Experiment without audio completed!",
-                    AUDIO_SOURCE
-                );
-            } else {
-                api.logUserActivity(
-                    api.AUDIO_EXP,
-                    articleID,
-                    "Session no: " + LocalStorage.getAudioExperimentNoOfSessions(),
-                    AUDIO_SOURCE
-                );
-            }
-        } else {
-            LocalStorage.setAudioExperimentNoOfSessions("1");
-            api.logUserActivity(
-                api.AUDIO_EXP,
-                articleID,
-                "First session without audio completed ",
-                AUDIO_SOURCE
-            );
-            LocalStorage.setTargetNoOfAudioSessions("100");
-        }
-        return;
-    }
-
     function moveToNextExercise() {
         setIsCorrect(false);
         setShowFeedbackButtons(false);
@@ -474,11 +240,6 @@ export default function Exercises({
         if (newIndex === exerciseSession.length) {
             setFinished(true);
             setClockActive(false);
-            if (Feature.audio_exercises()) {
-                exerciseSessionWithAudioCompleted();
-            } else if (Feature.no_audio_exercises()) {
-                exerciseSessionNoAudioCompleted();
-            }
             return;
         }
         setCurrentBookmarksToStudy(exerciseSession[newIndex].bookmarks);
@@ -571,4 +332,9 @@ export default function Exercises({
         </>
 
     );
+}
+
+
+function truncate(str, n) {
+    return str.length > n ? str.substr(0, n - 1) + "..." : str;
 }
