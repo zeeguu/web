@@ -49,8 +49,8 @@
     "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build": "cross-env react-scripts build && npm run sentry:sourcemaps",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org it-university-of-copenhagen --project zeeguu-web ./build && sentry-cli sourcemaps upload --org it-university-of-copenhagen --project zeeguu-web ./build"
+    "build": "cross-env react-scripts build || npm run sentry:sourcemaps",
+    "sentry:sourcemaps": "./node_modules/.bin/sentry-cli sourcemaps inject --org it-university-of-copenhagen --project zeeguu-web ./build && sentry-cli sourcemaps upload --org it-university-of-copenhagen --project zeeguu-web ./build"
   },
   "eslintConfig": {
     "extends": [
