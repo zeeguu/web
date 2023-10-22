@@ -1,6 +1,8 @@
 import * as s from "./SmallSaveArticleButton.sc.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 export default function SmallSaveArticleButton({
   article,
@@ -22,15 +24,16 @@ export default function SmallSaveArticleButton({
       {isArticleSaved ? (
         <s.SavedLabel>
           {" "}
-          Saved <img
-            src="/static/images/zeeguuLogo.svg"
-            width="11"
-            alt={""}
-          />{" "}
+          <BookmarkIcon fontSize="small" />
+          {/* <img src="/static/images/zeeguuLogo.svg" width="11" alt={""} />  */}
+          Saved
         </s.SavedLabel>
       ) : (
         <div>
-          <s.SaveButton onClick={saveArticle}>Save</s.SaveButton>
+          <s.SaveButton onClick={saveArticle}>
+            <BookmarkBorderIcon fontSize="small" />
+            Add to Saves
+          </s.SaveButton>
         </div>
       )}
 
