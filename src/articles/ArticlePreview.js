@@ -84,22 +84,19 @@ export default function ArticleOverview({
       doNotShowRedirectionModal_UserPreference === false;
 
     if (should_open_in_zeeguu) return open_in_zeeguu;
-    else if (should_open_with_modal)
-      return open_externally_with_modal; 
+    else if (should_open_with_modal) return open_externally_with_modal;
     else return open_externally_without_modal;
   }
 
   return (
     <s.ArticlePreview>
-      <s.Title>
-        {titleLink(article)}
-        <SmallSaveArticleButton
-          api={api}
-          article={article}
-          isArticleSaved={isArticleSaved}
-          setIsArticleSaved={setIsArticleSaved}
-        />
-      </s.Title>
+      <SmallSaveArticleButton
+        api={api}
+        article={article}
+        isArticleSaved={isArticleSaved}
+        setIsArticleSaved={setIsArticleSaved}
+      />
+      <s.Title>{titleLink(article)}</s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
 
