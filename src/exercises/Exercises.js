@@ -37,7 +37,7 @@ export default function Exercises({
     const [correctBookmarks, setCorrectBookmarks] = useState([]);
     const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
     const [articleInfo, setArticleInfo] = useState(null);
-    const [exerciseSession, setExerciseSession] = useState([]);
+    const [fullExerciseProgression, setFullExerciseProgression] = useState([]);
     const [currentExerciseType, setCurrentExerciseType] = useState(null);
     const [isCorrect, setIsCorrect] = useState(false);
     const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
@@ -126,9 +126,10 @@ export default function Exercises({
 
             // ML: Attempt to figure out why does the MultipleChoice exercise sometimes end up
             // with no bookmarks... In case one exercise would have no bookmarks we would filter it
-            exerciseSession = exerciseSession.filter(x=>x.bookmarks.length === x.requiredBookmarks);
+            // ML: I still don't see how could we end up in this situation...
+            exerciseSession = exerciseSession.filter(x=>x.bookmarks.length === x.requiredBookmarks && x.bookmarks.length > 0);
 
-            setExerciseSession(exerciseSession);
+            setFullExerciseProgression(exerciseSession);
 
             if (currentBookmarksToStudy === null) {
                 setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
@@ -141,7 +142,7 @@ export default function Exercises({
 
     useEffect(() => {
 
-        if (exerciseSession.length === 0) {
+        if (fullExerciseProgression.length === 0) {
                 api.getUserPreferences((preferences) => {
 
                     audioEnabled = preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true";
@@ -238,12 +239,12 @@ export default function Exercises({
         setShowFeedbackButtons(false);
         const newIndex = currentIndex + 1;
 
-        if (newIndex === exerciseSession.length) {
+        if (newIndex === fullExerciseProgression.length) {
             setFinished(true);
             setClockActive(false);
             return;
         }
-        setCurrentBookmarksToStudy(exerciseSession[newIndex].bookmarks);
+        setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
         setCurrentIndex(newIndex);
         api.updateExerciseSession(dbExerciseSessionId, currentSessionDurationInSec);
     }
@@ -286,7 +287,7 @@ export default function Exercises({
         setShowFeedbackButtons(!showFeedbackButtons);
     }
 
-    const CurrentExercise = exerciseSession[currentIndex].type;
+    const CurrentExercise = fullExerciseProgression[currentIndex].type;
     return (
         <>
             <SpeechContext.Provider value={speechEngine}>
@@ -296,7 +297,7 @@ export default function Exercises({
                     {/*<s.LittleMessageAbove>*/}
                     {/*  {wordSourcePrefix} {wordSourceText}*/}
                     {/*</s.LittleMessageAbove>*/}
-                    <ProgressBar index={currentIndex} total={exerciseSession.length}/>
+                    <ProgressBar index={currentIndex} total={fullExerciseProgression.length}/>
                     <s.ExForm>
                         <CurrentExercise
                             key={currentIndex}
