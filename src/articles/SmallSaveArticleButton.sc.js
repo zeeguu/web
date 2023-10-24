@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { lightGrey } from "../components/colors";
+import { zeeguuOrange } from "../components/colors";
 
 let SaveButton = styled.button`
   font-size: small;
@@ -9,16 +11,17 @@ let SaveButton = styled.button`
   gap: 0.2rem;
   border: inherit;
   background-color: inherit;
-  /* margin: 1rem 0; */
   padding: 0.25rem 0;
   cursor: pointer;
+  &:hover {
+    color: ${zeeguuOrange};
+  }
 `;
 
 let SavedLabel = styled.div`
   font-size: small;
   font-weight: bold;
-  color: brown;
-  /* margin: 0.6em; */
+  color: ${lightGrey};
   display: flex;
   align-items: center;
   gap: 0.2rem;

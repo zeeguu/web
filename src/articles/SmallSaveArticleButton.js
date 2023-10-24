@@ -25,7 +25,6 @@ export default function SmallSaveArticleButton({
         <s.SavedLabel>
           {" "}
           <BookmarkIcon fontSize="small" />
-          {/* <img src="/static/images/zeeguuLogo.svg" width="11" alt={""} />  */}
           Saved
         </s.SavedLabel>
       ) : (
