@@ -35,9 +35,10 @@ export default function RedirectionNotificationForMobile({
       </s.Header>
       <s.Body>
         <p>
-          If you want to read article recommendations on your mobile device
-          using Zeeguu, you need to save them by clicking the&nbsp;
+          If you want to read articles with the help of Zeeguu on your mobile
+          device, you need to save them first by clicking the
           <s.ModalStrongTextWrapper>
+            {" "}
             Add&nbsp;to&nbsp;Saves
           </s.ModalStrongTextWrapper>{" "}
           button.
