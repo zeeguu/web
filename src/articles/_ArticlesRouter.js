@@ -14,7 +14,7 @@ import LocalStorage from "../assorted/LocalStorage";
 
 export default function ArticlesRouter({ api, hasExtension, isChrome }) {
   let tabsAndLinks = {
-    [strings.findTab]: "/articles",
+    [strings.homeTab]: "/articles",
     [strings.saved]: "/articles/ownTexts",
   };
 

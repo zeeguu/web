@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange, zeeguuLightYellow } from "./colors";
+import { zeeguuOrange } from "./colors";
 
 const RoundButton = styled.div`
   user-select: none;

@@ -22,6 +22,7 @@ export default function OrderWords({
   toggleShow,
   reload,
   setReload,
+  exerciseSessionId
 }) {
 
   // Constants for Exercise
@@ -572,7 +573,8 @@ export default function OrderWords({
       message,
       EXERCISE_TYPE,
       duration,
-      bookmarksToStudy[0].id
+      bookmarksToStudy[0].id,
+      exerciseSessionId
     );
 
     let jsonDataExerciseEnd = {

@@ -4,6 +4,7 @@ import {
   veryLightGrey,
   zeeguuOrange,
   zeeguuVarmYellow,
+  zeeguuDarkOrange,
 } from "../components/colors";
 
 const ArticlePreview = styled.div`
@@ -13,12 +14,29 @@ const ArticlePreview = styled.div`
   padding-left: 0.8em;
 `;
 
+//Invisible component that allows to open the redirection
+//notification modal when the article's title is clicked
+//used within the titleLink(article) function
+const InvisibleTitleButton = styled.button`
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  background: none;
+  border: none;
+`;
+//previously the color was defined as black and font-weight was 400 but dark orange was
+//displayed and font-weight 500 because the article's title inside the titleLink(article) function
+//was wrapped in a link tag and inherited its color and font weight settings.
+//Currently the article's title is no longer wrapped in a link, this is why styling update
 const Title = styled.div`
   font-size: 1.4em;
-  color: black;
+  color: ${zeeguuDarkOrange};
   max-width: 24em;
   padding-right: 0.3em;
-  font-weight: 400;
+  font-weight: 500;
 `;
 
 const Difficulty = styled.div`
@@ -67,7 +85,6 @@ let Topics = styled.span`
   margin-top: 1em;
 
   span {
-    margin-left: 1em;
     height: 1.2em;
     margin-left: 0.2em;
     border: solid ${zeeguuOrange};
@@ -77,11 +94,13 @@ let Topics = styled.span`
   }
 `;
 
+
 export {
   Title,
   Difficulty,
   WordCount,
   ArticlePreview,
+  InvisibleTitleButton,
   Summary,
   SourceImage,
   PublishingTime,

@@ -2,7 +2,9 @@
   "hiddenFiles": [
     "react/package-lock.json",
     "react/public",
-    "react/src/i18n"
+    "react/src/i18n",
+    "web/public",
+    "web/src/teacher"
   ],
   "unionedAuthors": [
     [

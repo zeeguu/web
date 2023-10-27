@@ -70,7 +70,12 @@ Zeeguu_API.prototype.logUserActivity = function (
     article_id: article_id,
   };
 
-  console.log(event);
+  const currentDate = new Date();
+  const hours = String(currentDate.getHours()).padStart(2, "0");
+  const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+  const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+
+  console.log(`${hours}:${minutes}:${seconds} -- ` + event);
 
   return this._post(
     `upload_user_activity_data`,

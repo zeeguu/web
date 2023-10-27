@@ -5,7 +5,7 @@ const ExercisesColumn = styled.div`
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 8em;
+  margin-top: 2em;
   display: flex;
   flex-direction: column;
 `;

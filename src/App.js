@@ -12,6 +12,8 @@ import ResetPassword from "./pages/ResetPassword";
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
+import NoSidebarRouter from "./NoSidebarRouter.js";
+
 import {
   getUserSession,
   saveUserInfoIntoCookies,
@@ -22,22 +24,19 @@ import InstallExtension from "./pages/InstallExtension";
 function App() {
   let userDict = {};
 
-  // we use the _api to initialize the api state variable
   console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
   console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
-  let _api = new Zeeguu_API(process.env.REACT_APP_API_URL);
+  let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
 
   if (getUserSession()) {
     userDict = {
       session: getUserSession(),
       ...LocalStorage.userInfo(),
     };
-    _api.session = getUserSession();
+    api.session = getUserSession();
   }
 
   useUILanguage();
-
-  const [api] = useState(_api);
 
   const [user, setUser] = useState(userDict);
   const [hasExtension, setHasExtension] = useState(false);
@@ -47,16 +46,13 @@ function App() {
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
-    
-    if (getUserSession()) {
 
+    if (getUserSession()) {
       console.log("getting user details...");
       api.getUserDetails((data) => {
         LocalStorage.setUserInfo(data);
       });
     }
-
-
 
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
@@ -66,17 +62,11 @@ function App() {
     }, 1000);
     checkExtensionInstalled(setHasExtension);
     return () => clearInterval(interval);
+
+    // eslint-disable-next-line
   }, []);
 
   function handleSuccessfulSignIn(userInfo, history) {
-    setUser({
-      session: api.session,
-      name: userInfo.name,
-      learned_language: userInfo.learned_language,
-      native_language: userInfo.native_language,
-      is_teacher: userInfo.is_teacher,
-      is_student: userInfo.is_student,
-    });
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
 
@@ -84,12 +74,25 @@ function App() {
     // between the extension and the website
     saveUserInfoIntoCookies(userInfo, api.session);
 
+
+    let newUserValue ={
+      session: api.session,
+      name: userInfo.name,
+      learned_language: userInfo.learned_language,
+      native_language: userInfo.native_language,
+      is_teacher: userInfo.is_teacher,
+      is_student: userInfo.is_student,
+    };
+    console.log("setting new user value: ");
+    console.dir(newUserValue);
+
+    setUser(newUserValue);
+
+
     if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
       history.push("/install_extension");
     } else {
-      userInfo.is_teacher && userInfo.name !== "Mircea Lungu"
-        ? history.push("/teacher/classes")
-        : history.push("/articles");
+      history.push("/articles");
     }
   }
 
@@ -140,6 +143,11 @@ function App() {
             <Route
               path="/reset_pass"
               render={() => <ResetPassword api={api} />}
+            />
+
+            <Route
+              path="/render"
+              render={() => <NoSidebarRouter api={api} />}
             />
 
             <LoggedInRouter api={api} user={user} setUser={setUser} />

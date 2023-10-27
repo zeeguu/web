@@ -29,6 +29,13 @@ export default function ExercisesRouter({ api }) {
         />
 
         <PrivateRoute
+          path="/render/exercises/forArticle/:articleID"
+          api={api}
+          component={ExercisesForArticle}
+          source={UMR_SOURCE}
+        />
+
+        <PrivateRoute
           path="/exercises"
           api={api}
           component={Exercises}
