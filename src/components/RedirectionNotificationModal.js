@@ -1,72 +1,88 @@
 import Modal from "@mui/material/Modal";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { useState } from "react";
 import * as s from "../components/RedirectionNotificationModal.sc";
+import { isMobile } from "../utils/misc/browserDetection";
+import RedirectionNotificationForDesktop from "./RedirectionNotificationForDesktop";
+import RedirectionNotificationForMobile from "./RedirectionNotificationForMobile";
 
 //This modal is used in the ArticlePreview component
 
-//TODO: Further refactor, e.g after testing and making sure users
-//understand text and wording, turn strings into variables and move to definitions.js
-
 export default function RedirectionNotificationModal({
+  api,
   article,
   open,
-  handleClose, //handleClose function defined in the ArticlePreview.js, passed as a prop
+  handleCloseRedirectionModal,
+  setDoNotShowRedirectionModal_UserPreference,
+  setIsArticleSaved, // related to the article's state
 }) {
+  const [
+    selectedDoNotShowRedirectionModal_Checkbox,
+    setSelectedDoNotShowRedirectionModal_Checkbox,
+  ] = useState(false);
+
+  function toggleRedirectionCheckboxSelection() {
+    setSelectedDoNotShowRedirectionModal_Checkbox(
+      !selectedDoNotShowRedirectionModal_Checkbox
+    );
+  }
+
+  function handleModalVisibilityPreferences() {
+    selectedDoNotShowRedirectionModal_Checkbox === true
+      ? setDoNotShowRedirectionModal_UserPreference(true)
+      : setDoNotShowRedirectionModal_UserPreference(false);
+  }
+
+  function handleCloseAndSaveVisibilityPreferences() {
+    handleModalVisibilityPreferences();
+    handleCloseRedirectionModal();
+  }
+
+  //when user exits modal by clicking "X"
+  function handleCloseWithoutSavingVisibilityPreferences() {
+    handleCloseRedirectionModal();
+    setSelectedDoNotShowRedirectionModal_Checkbox(false); //to avoid prechecked checkboxes
+  }
+
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleCloseRedirectionModal}>
       <s.ModalWrapper>
-        <s.Header>
-          <h1>
-            You are ready to&nbsp;continue<br></br>
-            to the original article's website
-          </h1>
-        </s.Header>
-        <s.Body>
-          <p>
-            <strong>Once there</strong>, find and{" "}
-            <strong>
-              click The Zeeguu Reader{" "}
-              <s.Icon>
-                <img
-                  className="fullDivWidthImage"
-                  alt="The Zeeguu Reader elephant icon"
-                  src="../static/images/zeeguuLogo.svg"
-                ></img>
-              </s.Icon>{" "}
-              icon
-            </strong>{" "}
-            in the top right corner of&nbsp;your browser's toolbar
-            or&nbsp;on&nbsp;the&nbsp;list of your installed extensions{" "}
-            <s.Icon>
-              <img
-                className="fullDivWidthImage"
-                alt="Browser extensions puzzle icon"
-                src="../static/images/puzzle.svg"
-              ></img>
-            </s.Icon>
-            . <strong>Then&nbsp;select Read Article</strong>.
-          </p>
-          <img
-            className="fullDivWidthImage"
-            src={"../static/images/find-extension.png"}
-            //TODO: Add new alt description
-            alt="Zeeguu browser extension"
+        {!isMobile() ? (
+          <RedirectionNotificationForDesktop
+            toggleRedirectionCheckboxSelection={
+              toggleRedirectionCheckboxSelection
+            }
+            selectedDoNotShowRedirectionModal_Checkbox={
+              selectedDoNotShowRedirectionModal_Checkbox
+            }
+            handleCloseAndSaveVisibilityPreferences={
+              handleCloseAndSaveVisibilityPreferences
+            }
+            handleCloseWithoutSavingVisibilityPreferences={
+              handleCloseWithoutSavingVisibilityPreferences
+            }
+            article={article}
           />
-        </s.Body>
-        <s.Footer>
-          <a target="_blank" rel="noreferrer" href={article.url}>
-            {/* Clicking the GoToArticleButton button sends the reader
-                to the article and closes the modal so that when the user
-                returns to the Zeeguu app home page, they can see the recommendation
-                list instead of the modal still being open */}
-            <s.GoToArticleButton role="button" onClick={handleClose}>
-              Enter the article's website
-            </s.GoToArticleButton>
-          </a>
-        </s.Footer>
-        <s.CloseButton role="button" onClick={handleClose}>
-          <CloseRoundedIcon fontSize="medium" />
-        </s.CloseButton>
+        ) : (
+          <RedirectionNotificationForMobile
+            toggleRedirectionCheckboxSelection={
+              toggleRedirectionCheckboxSelection
+            }
+            selectedDoNotShowRedirectionModal_Checkbox={
+              selectedDoNotShowRedirectionModal_Checkbox
+            }
+            handleModalVisibilityPreferences={handleModalVisibilityPreferences}
+            handleCloseAndSaveVisibilityPreferences={
+              handleCloseAndSaveVisibilityPreferences
+            }
+            handleCloseWithoutSavingVisibilityPreferences={
+              handleCloseWithoutSavingVisibilityPreferences
+            }
+            handleCloseRedirectionModal={handleCloseRedirectionModal}
+            article={article}
+            api={api}
+            setIsArticleSaved={setIsArticleSaved}
+          />
+        )}
       </s.ModalWrapper>
     </Modal>
   );

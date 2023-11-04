@@ -1,41 +1,53 @@
 import * as s from "./SmallSaveArticleButton.sc.js";
-import {toast, ToastContainer} from "react-toastify";
-import {useState} from "react";
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
+export default function SmallSaveArticleButton({
+  article,
+  api,
+  isArticleSaved,
+  setIsArticleSaved,
+}) {
+  function saveArticle() {
+    api.makePersonalCopy(article.id, (data) => {
+      if (data === "OK") {
+        setIsArticleSaved(true);
+        toast("Article added to your Saves!");
+      }
+    });
+  }
 
-export default function SmallSaveArticleButton ({article, api}) {
+  return (
+    <>
+      {isArticleSaved ? (
+        <s.SavedLabel>
+          {" "}
+          <BookmarkIcon fontSize="small" />
+          Saved
+        </s.SavedLabel>
+      ) : (
+        <div>
+          <s.SaveButton onClick={saveArticle}>
+            <BookmarkBorderIcon fontSize="small" />
+            Add to Saves
+          </s.SaveButton>
+        </div>
+      )}
 
-    const [isSaved, setIsSaved] = useState(article.has_personal_copy);
-
-    function saveArticle() {
-        api.makePersonalCopy(article.id, (data)=> {
-            if (data === "OK") {
-                setIsSaved(true);
-                toast('Article added to your Saves!');
-            }
-        })
-    }
-
-    return <>
-
-        {isSaved?
-            <s.SavedLabel> Saved <img src="/static/images/zeeguuLogo.svg" width="11" alt={""}/> </s.SavedLabel> :
-            <div><s.SaveButton onClick={saveArticle}>Save</s.SaveButton></div>}
-
-        <ToastContainer
-            position="bottom-right"
-            autoClose={2000}
-            hideProgressBar={true}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-        />
-        </>
-
-
+      <ToastContainer
+        position="bottom-right"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </>
+  );
 }
