@@ -38,7 +38,7 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
       <h5>How difficult was this article for you?</h5>
       <s.CenteredContent>
         {Object.keys(FEEDBACK_OPTIONS).map((option) => {
-          const emojiSize = { fontSize: 50 };
+          const emojiSize = { fontSize: '3rem' };
 
           const handleMouseEnter = () => {
             setIsHovered(option);

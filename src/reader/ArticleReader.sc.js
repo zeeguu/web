@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-
 import { BigSquareButton } from "../components/allButtons.sc";
 
 import {
@@ -7,6 +6,7 @@ import {
   zeeguuLightYellow,
   zeeguuOrange,
   zeeguuVarmYellow,
+  lighterBlue,
 } from "../components/colors";
 
 import {
@@ -228,7 +228,7 @@ let NavigationLink = styled(Link)`
 `;
 
 let FeedbackBox = styled.div`
-  border: 1px solid  ${zeeguuOrange};
+  border: 1px solid  ${lighterBlue};
   background-color: white;
   border-radius: 0.5em;
   padding: 1em;
