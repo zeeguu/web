@@ -7,15 +7,17 @@ function OrderWordsInput({
   setIncorrectAnswer,
   isWordSoup,
   onDragStartHandle,
-  onDragEnterHandle,
+  onDragOverHandle,
   onDragLeaveHandle,
 }) {
 
   if (isWordSoup) {
     return (
       <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
-      {buttonOptions.length > 0 && buttonOptions.map(word => <sOW.OrangeItemCompact
-         key={word.id} 
+      {buttonOptions.length > 0 && buttonOptions.map((word) => <sOW.OrangeItemCompact
+         onDragStart={(e) => onDragStartHandle(e, word.id)}
+         key={word.id}
+         draggable 
          status={word.inUse}
          className={word.inUse ? word.status + " greyOut" : word.status } 
          onClick={() => notifyChoiceSelection(word.id, word.inUse)}>
@@ -29,7 +31,7 @@ function OrderWordsInput({
       <sOW.ItemRowCompactWrapConstruct className="ItemRowCompactWrapConstruct">
       {buttonOptions.length > 0 && buttonOptions.map((word, i) => <sOW.OrangeItemCompactConstruct
         onDragStart={(e) => onDragStartHandle(e, i)}
-        onDragEnter={(e) => onDragEnterHandle(e, i)}
+        onDragOver={(e) => onDragOverHandle(e, i)}
         onDragLeave={(e) => onDragLeaveHandle(e, i)}
          key={word.id}
          draggable 

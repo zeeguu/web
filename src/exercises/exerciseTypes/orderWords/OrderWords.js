@@ -55,10 +55,37 @@ export default function OrderWords({
   const [isSentenceTooLong, setIsSentenceTooLong] = useState(false);
   const [textBeforeTranslatedText, setTextBeforeTranslatedText] = useState("");
   const [textAfterTranslatedText, setTextAfterTranslatedText] = useState("");
-  const dragItem = useRef();
-  const dragOverItem = useRef();
-  const dragOverStartStatus = useRef();
 
+  const solutionDragItem = useRef();
+  const solutionDragOverItem = useRef();
+  const solutionDragStartStatus = useRef();
+  const isDragPlacementLeft = useRef();
+  const wordSoupDrag = useRef();
+
+  function _getPosition(elem){
+    // Found: https://stackoverflow.com/questions/9040768/getting-coordinates-of-objects-in-js
+
+    var dims = {offsetLeft:0, offsetTop:0, width:elem.offsetWidth};
+
+    do {
+        dims.offsetLeft += elem.offsetLeft;
+        dims.offsetTop += elem.offsetTop;
+    }
+
+    while (elem = elem.offsetParent);
+
+    return dims;
+  }
+
+  function _getObjectSide(mouseCoord, object){
+    // Returns 0 if the mouse is to the right or 
+    // 1 if the mouse is to the left.
+    let mouseX = mouseCoord[0]
+    let mouseY = mouseCoord[1]
+    let objectBoundingBox = _getPosition(object)
+    let objectMidpoint = objectBoundingBox.offsetLeft + (objectBoundingBox.width / 2);
+    return mouseX < objectMidpoint ? 0 : 1;
+  }
 
   function _getCurrentExerciseTime() {
     let pressTime = new Date();
@@ -69,70 +96,139 @@ export default function OrderWords({
 
   const dragStart = (e, position) => {
     const copyListItems = [...userSolutionWordArray];
-    dragOverStartStatus.current = copyListItems.map(w => w.status);
-    dragItem.current = position;
+    solutionDragStartStatus.current = copyListItems.map(w => w.status);
+    wordSoupDrag.current = position;
+    setUserSolutionWordArray(copyListItems);
+  };
+
+  const solutionDragStart = (e, position) => {
+    const copyListItems = [...userSolutionWordArray];
+    solutionDragStartStatus.current = copyListItems.map(w => w.status);
+    solutionDragItem.current = position;
     copyListItems[position].status += " toDrag"
-    dragOverItem.current = position
+    solutionDragOverItem.current = position
     setUserSolutionWordArray(copyListItems);
   };
 
-  const dragEnter = (e, position) => {
+  const solutionDragOver = (e, position) => {
     // Insert a PlaceHolder token at the desired place it it isn't one
-    if (position == dragItem.current) { return }
-    const copyListItems = [...userSolutionWordArray];
-    if (position < dragItem.current) {
-      copyListItems[position].status += " toDragLeft"
-    }
-    else {
-      copyListItems[position].status += " toDragRight"
-    }
-
-    setUserSolutionWordArray(copyListItems);
-    dragOverItem.current = position
-    console.log(e.target.innerHTML);
-    console.log(dragOverItem.current);
-  };
-
-  const dragLeave = (e, position) => {
-    let actionTime = new Date();
-    if (position == dragItem.current) { return }
-    const copyListItems = [...userSolutionWordArray];
-    console.log(dragOverStartStatus.current);
-    copyListItems[position].status = dragOverStartStatus.current[position]
-    setUserSolutionWordArray(copyListItems);
-    console.log("Drag leave!")
-    console.log(e.target.innerHTML);
-  };
-
-  const drop = (e) => {
-    // If it is a placeholder token you drop it in remove it
-    let dropLocation = document.elementFromPoint(e.pageX, e.pageY)
-    if (!dropLocation.draggable) {
-      dragOverItem.current = dragItem.current;
-    }
+    if (position == solutionDragItem.current) { return }
     let copyListItems = [...userSolutionWordArray];
-    if (!dragOverItem) {
-      copyListItems[dragItem.current].status = dragOverStartStatus.current[dragItem.current]
-      dragItem.current = null;
+    let element = document.elementFromPoint(e.pageX, e.pageY);
+    let mouseSide = _getObjectSide([e.clientX, e.clientY], element)
+    if (mouseSide == 1) {
+      copyListItems[position].status = solutionDragStartStatus.current[position] + " toDragRight"
     }
     else {
-      const dragItemContent = copyListItems[dragItem.current];
-      const isDragOverPlaceholder = copyListItems[dragOverItem.current].isPlaceholder
-      const dragOverId = copyListItems[dragOverItem.current].id
-      copyListItems[dragItem.current].status = dragOverStartStatus.current[dragItem.current]
-      copyListItems[dragOverItem.current].status = dragOverStartStatus.current[dragOverItem.current]
-      copyListItems.splice(dragItem.current, 1);
-      copyListItems.splice(dragOverItem.current, 0, dragItemContent);
-      // if the dragOverItem is a placeholder token
-      // delete.
-      console.log(dragOverId)
-      if (isDragOverPlaceholder) {
-        copyListItems = copyListItems.filter((word) => word.id !== dragOverId);
-      }
-      dragItem.current = null;
-      dragOverItem.current = null;
+      copyListItems[position].status = solutionDragStartStatus.current[position] + " toDragLeft"
     }
     setUserSolutionWordArray(copyListItems);
+    solutionDragOverItem.current = position;
+    isDragPlacementLeft.current = mouseSide;
+  };
+
+  const solutionDragLeave = (e, position) => {
+    if (position == solutionDragItem.current) { return }
+    const copyListItems = [...userSolutionWordArray];
+    copyListItems[position].status = solutionDragStartStatus.current[position]
+    setUserSolutionWordArray(copyListItems);
+    isDragPlacementLeft.current = false;
+    solutionDragOverItem.current = null;
+  };
+
+  const wordSoupDrop = (e) => {
+    if (wordSoupDrag.current){
+      // Do nothing:
+      wordSoupDrag.current = null;
+    }
+    if (solutionDragItem.current != null){
+      let wordItem = userSolutionWordArray[solutionDragItem.current];
+      notifyChoiceSelection(wordItem.id);
+    }
+    _resetDragStatuses();
+  }
+  function _resetDragStatuses(){
+    wordSoupDrag.current = null;
+    solutionDragItem.current = null;
+    solutionDragOverItem.current = null;
+    solutionDragStartStatus.current = null;
+    isDragPlacementLeft.current = null;
+  }
+
+  const solutionDrop = (e) => {
+    let dropLocation = document.elementFromPoint(e.pageX, e.pageY)
+    // Create the array to be modified
+    let copyUserSolutionWordArray = [...userSolutionWordArray];
+
+    if (copyUserSolutionWordArray.length == 0 && wordSoupDrag.current != null){
+      // We are adding a word from the word soup
+      // call the method that handles adding words.
+      notifyChoiceSelection(wordSoupDrag.current, false);
+      _resetDragStatuses();
+      return;
+    }
+
+    if (!dropLocation.draggable) {
+      // We drop in a location where it's not possible to drop
+      if (solutionDragOverItem.current != null){
+        copyUserSolutionWordArray[solutionDragOverItem.current].status = solutionDragStartStatus.current[solutionDragOverItem.current]
+      }
+    }
+    if (wordSoupDrag != null || solutionDragItem != null){
+      // We are dragging and there are elements  
+      let isDragOverPlaceholder = false;
+      let dragOverId = null;
+      // If there is an element dragged over, then we are going to
+      // reset the status and place the item
+      if (solutionDragOverItem.current != null){
+        copyUserSolutionWordArray[solutionDragOverItem.current].status = solutionDragStartStatus.current[solutionDragOverItem.current]
+        isDragOverPlaceholder = copyUserSolutionWordArray[solutionDragOverItem.current].isPlaceholder
+        if (isDragOverPlaceholder){
+          dragOverId = copyUserSolutionWordArray[solutionDragOverItem.current].id;
+        }
+      }
+
+      if (solutionDragItem.current != null) {
+        // If it is an element from the solution area, we need to sawp.
+        let dragItemContent = copyUserSolutionWordArray[solutionDragItem.current];
+        // If it's null then place it in the same place.
+        if (solutionDragOverItem.current == null) solutionDragOverItem.current = solutionDragItem.current;
+        copyUserSolutionWordArray[solutionDragItem.current].status = solutionDragStartStatus.current[solutionDragItem.current]
+        copyUserSolutionWordArray.splice(solutionDragItem.current, 1);
+        let isPositionAffected = solutionDragOverItem.current > solutionDragItem.current ? 1 : 0;
+        if (isDragPlacementLeft.current === 1 ) copyUserSolutionWordArray.splice(solutionDragOverItem.current-isPositionAffected+1, 0, dragItemContent);
+        else copyUserSolutionWordArray.splice(solutionDragOverItem.current-isPositionAffected, 0, dragItemContent);
+      }
+
+      else if (wordSoupDrag.current != null){
+        // If it's an element from the word soup we add it to the solution
+        // based on the order item.
+        if (solutionDragOverItem.current != null)
+        {
+          console.log("Running Adding from Word Soup")
+          let copyWordsReferenceStatus = [... wordsReferenceStatus]
+          let elementToAdd = _getWordById(wordSoupDrag.current, copyWordsReferenceStatus)
+          elementToAdd.inUse = true;
+          if (isDragPlacementLeft.current === 1) copyUserSolutionWordArray.splice(solutionDragOverItem.current+1, 0, {...elementToAdd});
+          else copyUserSolutionWordArray.splice(solutionDragOverItem.current, 0, {...elementToAdd});
+          setWordsReferenceStatus(copyWordsReferenceStatus);
+        }
+        else{
+          // Or we add it to the end.
+          notifyChoiceSelection(wordSoupDrag.current, false);
+          _resetDragStatuses();
+          return;
+        }
+      }
+      if (isDragOverPlaceholder) {
+        // if it was a place holder we remove it from the solution box. 
+        copyUserSolutionWordArray = copyUserSolutionWordArray.filter((word) => word.id !== dragOverId);
+      }
+      // Update the solution array.
+      setUserSolutionWordArray(copyUserSolutionWordArray);
+    }
+    // Reset all drag statuses to null.
+    _resetDragStatuses();
   };
 
   console.log("Running ORDER WORDS EXERCISE")
@@ -435,7 +531,7 @@ export default function OrderWords({
     handleUndoResetStatus();
     // Avoid swapping Words when the exercise isCorrect.
     // this means we have finished the exercise.
-    if (isCorrect) { return }
+    if (isCorrect || selectedChoice < 0) { return }
     // Create objects to update.
     let updatedReferenceStatus = [...wordsReferenceStatus];
     let newUserSolutionWordArray = [...userSolutionWordArray];
@@ -451,70 +547,6 @@ export default function OrderWords({
       wordSelected = _getWordById(selectedChoice, newUserSolutionWordArray)
     }
 
-    // Handle Case where Word is in SolutionWordArray 
-    // & No word is selected.
-    if (inUse && (wordSwapId === NO_WORD_SELECTED_ID)) {
-      // Select the Word for Swapping. 
-      // Set the Color to Blue
-      if (IS_DEBUG) console.log("Word Swap Id: " + wordSwapId);
-      if (IS_DEBUG) console.log("Selected Choice: " + selectedChoice);
-      // Get the reference in the
-      let constructorWordSelected = _getWordById(selectedChoice, newUserSolutionWordArray)
-
-      // Save the previous status.
-      setWordSwapStatus(wordSelected.status);
-
-      wordSelected.status = "toSwap";
-      constructorWordSelected.status = "toSwap";
-
-      if (IS_DEBUG) console.log(updatedReferenceStatus);
-      setWordSwapId(selectedChoice);
-      setWordsReferenceStatus(updatedReferenceStatus);
-      setUserSolutionWordArray(newUserSolutionWordArray);
-      return;
-    }
-
-    // Handle the case where we swap a selected word.
-    if (wordSwapId !== NO_WORD_SELECTED_ID && selectedChoice !== wordSwapId) {
-      if (IS_DEBUG) console.log("Swapping words!");
-      if (IS_DEBUG) console.log("Word Swap Id: " + wordSwapId);
-      if (IS_DEBUG) console.log("Selected Choice: " + selectedChoice);
-      // Update the Word to have the previous status
-      let wordInSwapStatus = _getWordById(wordSwapId, newUserSolutionWordArray)
-      wordInSwapStatus = { ...wordInSwapStatus }
-      wordInSwapStatus.status = wordSwapStatus;
-      setWordSwapStatus("");
-
-      // If the word was not in use,
-      // we need to toggle the flag.
-      if (wordInSwapStatus.inUse !== wordSelected.inUse) {
-        wordInSwapStatus.inUse = !wordInSwapStatus.inUse;
-      }
-
-      // Handle case where both words are in the same array.
-      for (let i = 0; i < newUserSolutionWordArray.length; i++) {
-        if (newUserSolutionWordArray[i].id === wordSwapId) {
-          if (!wordSelected.inUse) { wordSelected.inUse = true }
-          newUserSolutionWordArray[i] = wordSelected;
-        }
-        else if (newUserSolutionWordArray[i].id === selectedChoice) {
-          newUserSolutionWordArray[i] = wordInSwapStatus;
-        }
-      }
-      if (IS_DEBUG) console.log(newUserSolutionWordArray);
-      // wordReferenceStatus index match the id in words.
-      updatedReferenceStatus[wordSwapId] = wordInSwapStatus;
-      if (wordSwapId < 0 && selectedChoice >= 0) {
-        // We are swapping a placeholder token for a word.
-        newUserSolutionWordArray = newUserSolutionWordArray.filter((word) => word.id !== wordSwapId);
-      }
-      // Update all the statuses.
-      setWordsReferenceStatus(updatedReferenceStatus);
-      setUserSolutionWordArray(newUserSolutionWordArray);
-      setWordSwapId(NO_WORD_SELECTED_ID);
-      return;
-    }
-
     // Add the Word to the userSolutionArea
     if (!wordSelected.inUse) {
       newUserSolutionWordArray.push({ ...wordSelected });
@@ -528,11 +560,6 @@ export default function OrderWords({
     // Toggle the inUse flag
     wordSelected.inUse = !wordSelected.inUse;
 
-    // If there was a selected word, we return it to the previous state.
-    if (wordSelected.status === "toSwap") {
-      wordSelected.status = wordSwapStatus;
-      setWordSwapStatus("");
-    }
     // Remove the last placeholder token if a user adds a token
     // Leave all other placeholders.
     if (newUserSolutionWordArray.length > 2) {
@@ -782,7 +809,7 @@ export default function OrderWords({
       {(userSolutionWordArray.length > 0 || !isCorrect) && (
         <div className={`orderWordsItem ${wordSwapId !== NO_WORD_SELECTED_ID ? 'select' : ''}`}
           onDragOver={(e) => e.preventDefault()}
-          onDrop={drop}>
+          onDrop={solutionDrop}>
           <OrderWordsInput
             buttonOptions={userSolutionWordArray}
             notifyChoiceSelection={notifyChoiceSelection}
@@ -791,9 +818,9 @@ export default function OrderWords({
             handleShowSolution={handleShowSolution}
             toggleShow={toggleShow}
             isWordSoup={false}
-            onDragStartHandle={dragStart}
-            onDragEnterHandle={dragEnter}
-            onDragLeaveHandle={dragLeave}
+            onDragStartHandle={solutionDragStart}
+            onDragOverHandle={solutionDragOver}
+            onDragLeaveHandle={solutionDragLeave}
           />
         </div>
       )}
@@ -804,17 +831,25 @@ export default function OrderWords({
           <p>{bookmarksToStudy[0].context}</p>
           <p>Word you bookmarked: <b>'{bookmarksToStudy[0].from}'</b></p>
         </div>}
+
       {wordsReferenceStatus.length === 0 && !isCorrect && <LoadingAnimation />}
+
       {!isCorrect && (
-        <OrderWordsInput
-          buttonOptions={wordsReferenceStatus}
-          notifyChoiceSelection={notifyChoiceSelection}
-          incorrectAnswer={isCorrect}
-          setIncorrectAnswer={setIsCorrect}
-          handleShowSolution={handleShowSolution}
-          toggleShow={toggleShow}
-          isWordSoup={true}
-        />
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={wordSoupDrop}
+        >
+          <OrderWordsInput
+            buttonOptions={wordsReferenceStatus}
+            notifyChoiceSelection={notifyChoiceSelection}
+            incorrectAnswer={isCorrect}
+            setIncorrectAnswer={setIsCorrect}
+            handleShowSolution={handleShowSolution}
+            toggleShow={toggleShow}
+            isWordSoup={true}
+            onDragStartHandle={dragStart}
+          />
+        </div>
       )}
 
       {!isCorrect && (
