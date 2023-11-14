@@ -46,8 +46,6 @@ export default function OrderWords({
   const [confuseWords, setConfuseWords] = useState();
   const [wordSelected, setWordSelected] = useState();
   const [posSelected, setPosSelected] = useState("");
-  const [wordSwapId, setWordSwapId] = useState(NO_WORD_SELECTED_ID);
-  const [wordSwapStatus, setWordSwapStatus] = useState("");
   const [solutionWords, setSolutionWords] = useState([]);
   const [isCluesRowVisible, setIsCluesRowVisible] = useState(false);
   const [isResetConfirmVisible, setIsResetConfirmVisible] = useState(false);
@@ -93,6 +91,9 @@ export default function OrderWords({
     console.log("^^^^ time elapsed");
     return pressTime - initialTime;
   }
+
+  // https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
+  // Touch events needs to be handled as well
 
   const dragStart = (e, position) => {
     const copyListItems = [...userSolutionWordArray];
@@ -374,11 +375,6 @@ export default function OrderWords({
     return finalClueText
   }
 
-  function _resetSwapWordStatus() {
-    setWordSwapStatus("");
-    setWordSwapId(NO_WORD_SELECTED_ID);
-  }
-
   function _get_exercise_start_variables() {
     let originalContext = bookmarksToStudy[0].context;
     let isCheckLongSentence = false;
@@ -538,15 +534,6 @@ export default function OrderWords({
 
     let wordSelected = _getWordById(selectedChoice, updatedReferenceStatus);
 
-    // It's a placeholder token. (negative Ids)
-    if (selectedChoice < 0) {
-      // Don't do anything if the user selects the same
-      // placeholder token
-      if (wordSwapId === selectedChoice) { return }
-      // The placeholder tokens are not in the MasterStatus.
-      wordSelected = _getWordById(selectedChoice, newUserSolutionWordArray)
-    }
-
     // Add the Word to the userSolutionArea
     if (!wordSelected.inUse) {
       newUserSolutionWordArray.push({ ...wordSelected });
@@ -572,7 +559,6 @@ export default function OrderWords({
       }
     }
 
-    setWordSwapId(NO_WORD_SELECTED_ID);
     setWordsReferenceStatus(updatedReferenceStatus);
     setUserSolutionWordArray(newUserSolutionWordArray);
   }
@@ -580,7 +566,6 @@ export default function OrderWords({
   function handleShowSolution() {
     // Ensure Rest and Swap are reset
     handleUndoResetStatus();
-    handleUndoSelection();
 
     let duration = _getCurrentExerciseTime();
     let message = messageToAPI + "S";
@@ -638,7 +623,6 @@ export default function OrderWords({
       console.log("Run update counter.");
       setResetCounter(resetCounter + 1);
     }
-    handleUndoSelection();
     let resetWords = [...wordsReferenceStatus];
     for (let i = 0; i < resetWords.length; i++) {
       resetWords[i].inUse = false;
@@ -654,28 +638,10 @@ export default function OrderWords({
     setIsResetConfirmVisible(false);
   }
 
-  function handleUndoSelection() {
-
-    let newUserSolutionWordArray = [...userSolutionWordArray];
-    let newWordsReferenceStatus = [...wordsReferenceStatus];
-
-    let selectedUserSolutionWord = _getWordById(wordSwapId, newUserSolutionWordArray);
-    let selectedReferenceWord = _getWordById(wordSwapId, newWordsReferenceStatus);
-
-    // Set to previous state
-    selectedUserSolutionWord.status = wordSwapStatus;
-    selectedReferenceWord.status = wordSwapStatus;
-
-    _resetSwapWordStatus();
-    setUserSolutionWordArray(newUserSolutionWordArray);
-    setWordsReferenceStatus(newWordsReferenceStatus);
-  }
-
   function handleCheck() {
     // Do nothing if empty
     if (userSolutionWordArray.length === 0) { return }
 
-    _resetSwapWordStatus();
     setHintCounter(hintCounter + 1);
 
     // Check if the solution is already the same
@@ -807,7 +773,7 @@ export default function OrderWords({
       )}
 
       {(userSolutionWordArray.length > 0 || !isCorrect) && (
-        <div className={`orderWordsItem ${wordSwapId !== NO_WORD_SELECTED_ID ? 'select' : ''}`}
+        <div className={`orderWordsItem`}
           onDragOver={(e) => e.preventDefault()}
           onDrop={solutionDrop}>
           <OrderWordsInput
@@ -864,13 +830,7 @@ export default function OrderWords({
           </button>
         </sOW.ItemRowCompactWrap>
       )}
-      {(wordSwapId !== NO_WORD_SELECTED_ID) && (!isResetConfirmVisible) && (
-        <div className="swapModeBar">
-          <button onClick={handleUndoSelection} className="owButton undo">{strings.undo}</button>
-          <p>{wordSwapId < NO_WORD_SELECTED_ID ? strings.swapInfoPlaceholderToken : strings.swapInfo}</p>
-        </div>
-      )
-      }
+
       {(isResetConfirmVisible) && (
         <div className="resetConfirmBar">
           <button onClick={handleUndoResetStatus} className="owButton undo">{strings.undo}</button>
