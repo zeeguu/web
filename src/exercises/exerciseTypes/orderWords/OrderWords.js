@@ -36,7 +36,6 @@ export default function OrderWords({
   const IS_DEBUG = true;
 
   const [initialTime, setInitialTime] = useState(new Date());
-  //const [buttonOptions, setButtonOptions] = useState(null);
   const [resetCounter, setResetCounter] = useState(0);
   const [hintCounter, setHintCounter] = useState(0);
   const [totalErrorCounter, setTotalErrorCounter] = useState(0);
@@ -58,14 +57,14 @@ export default function OrderWords({
   const [textAfterTranslatedText, setTextAfterTranslatedText] = useState("");
   const [movingObject, setMovingObject] = useState();
 
-  const solutionDragItem = useRef();
-  const solutionDragOverItem = useRef();
+  const solutionDragIndex = useRef();
+  const solutionDragOverIndex = useRef();
   const isDragPlacementLeft = useRef();
   const wordSoupDrag = useRef();
-  const moveOverObject = useRef();
+  const moveOverElement = useRef();
   const moveLastPosition = useRef();
   const moveElement = useRef();
-  const initialPosition = useRef();
+  const moveElementInitialPosition = useRef();
 
   function _getCurrentExerciseTime() {
     let pressTime = new Date();
@@ -81,7 +80,7 @@ export default function OrderWords({
 
   function _setMoveInitialPosition(x, y) {
     moveLastPosition.current = [x, y];
-    initialPosition.current = [x, y];
+    moveElementInitialPosition.current = [x, y];
   }
 
   function _setOnDragStartVariables(e, wordInfo) {
@@ -110,10 +109,21 @@ export default function OrderWords({
   }
 
   function _clearMoveOverObject(){
-    if (moveOverObject.current != null) {
-      moveOverObject.current.classList.remove('toDragLeft');
-      moveOverObject.current.classList.remove('toDragRight');
-      moveOverObject.current = null;
+    if (moveOverElement.current != null) {
+      moveOverElement.current.classList.remove('toDragLeft');
+      moveOverElement.current.classList.remove('toDragRight');
+      let parentElement = moveOverElement.current.parentElement;
+      if (parentElement){
+        let listElements = parentElement.children;
+        if (!listElements) listElements = [];
+        for (let i = 0; i < listElements.length; i++){
+          if (listElements[i] === moveOverElement.current){
+            solutionDragOverIndex.current = i;
+            break;
+          }
+        }
+      }
+      moveOverElement.current = null;
     }
   }
 
@@ -161,13 +171,13 @@ export default function OrderWords({
 
   function _resetDragStatuses() {
     wordSoupDrag.current = null;
-    solutionDragItem.current = null;
-    solutionDragOverItem.current = null;
+    solutionDragIndex.current = null;
+    solutionDragOverIndex.current = null;
     isDragPlacementLeft.current = null;
-    moveOverObject.current = null;
+    moveOverElement.current = null;
     moveLastPosition.current = null;
     moveElement.current = null;
-    initialPosition.current = null;
+    moveElementInitialPosition.current = null;
     setMovingObject();
   };
 
@@ -176,7 +186,7 @@ export default function OrderWords({
 
   const solutionDragStart = (e, arrayIndex) => {
     let wordInfo = { ...userSolutionWordArray[arrayIndex] };
-    solutionDragItem.current = arrayIndex;
+    solutionDragIndex.current = arrayIndex;
     moveElement.current = e.target;
     _setOnDragStartVariables(e, wordInfo)
   };
@@ -190,7 +200,7 @@ export default function OrderWords({
 
   const solutionDragOver = (e, arrayIndex) => {
     // Insert a PlaceHolder token at the desired place it it isn't one
-    if (arrayIndex == solutionDragItem.current) { return }
+    if (arrayIndex == solutionDragIndex.current) { return }
     let element = e.target;
     let mouseSide = _getObjectSide([e.clientX, e.clientY], element)
     if (mouseSide == 1) {
@@ -201,17 +211,17 @@ export default function OrderWords({
       e.target.classList.remove('toDragRight')
       e.target.classList.add('toDragLeft')
     }
-    solutionDragOverItem.current = arrayIndex;
-    moveOverObject.current = e.target;
+    solutionDragOverIndex.current = arrayIndex;
+    moveOverElement.current = e.target;
     isDragPlacementLeft.current = mouseSide;
   };
 
   const solutionDragLeave = (e, position) => {
-    if (position == solutionDragItem.current) { return }
+    if (position == solutionDragIndex.current) { return }
     e.target.classList.remove('toDragRight');
     e.target.classList.remove('toDragLeft');
     isDragPlacementLeft.current = false;
-    solutionDragOverItem.current = null;
+    solutionDragOverIndex.current = null;
   };
 
   const solutionOnTouchMove = (e) => {
@@ -222,58 +232,55 @@ export default function OrderWords({
     moveLastPosition.current = [x, y];
     let moveElement = document.getElementById(MOVE_ITEM_ID);
     // Move the Dragging Object
-    _performMoveItem(x, y, initialPosition, moveElement);
+    _performMoveItem(x, y, moveElementInitialPosition, moveElement);
     let elementList = document.elementsFromPoint(x, y);
     elementList = elementList.filter(e => e.tagName === 'BUTTON' &&
       (e.parentNode.classList.contains("ItemRowCompactWrapConstruct") || e.parentNode.id === SOLUTION_AREA_ID))
     let element = null;
     if (elementList.length > 1) element = elementList[1];
     else if (elementList.length === 1) element = elementList[0];
-    if (element == null && moveOverObject.current != null) {
+    if (element == null && moveOverElement.current != null) {
       // We are not hovering any object, we clear the object we were hovering.
       _clearMoveOverObject();
       return;
     }
-    if (moveOverObject.current == null) {
+    if (moveOverElement.current == null) {
       // We are hovering a new object
-      moveOverObject.current = element;
+      moveOverElement.current = element;
     }
-    else if (moveOverObject.current != element) {
+    else if (moveOverElement.current != element) {
       // We are over a new element.
       _clearMoveOverObject();
     }
     else {
       // We are hovering the same element - update the CSS based on the
       // side we are hovering.
-      let touchSide = _getObjectSide([x, y], moveOverObject.current)
+      let touchSide = _getObjectSide([x, y], moveOverElement.current)
       if (touchSide == 1) {
-        moveOverObject.current.classList.remove('toDragLeft');
-        moveOverObject.current.classList.add('toDragRight');
+        moveOverElement.current.classList.remove('toDragLeft');
+        moveOverElement.current.classList.add('toDragRight');
       }
       else {
-        moveOverObject.current.classList.remove('toDragRight');
-        moveOverObject.current.classList.add('toDragLeft');
+        moveOverElement.current.classList.remove('toDragRight');
+        moveOverElement.current.classList.add('toDragLeft');
       }
       isDragPlacementLeft.current = touchSide;
     }
   };
-
-
 
   const wordSoupDrop = (e) => {
     if (wordSoupDrag.current) {
       // Do nothing:
       wordSoupDrag.current = null;
     }
-    if (solutionDragItem.current != null) {
-      let wordItem = userSolutionWordArray[solutionDragItem.current];
+    if (solutionDragIndex.current != null) {
+      let wordItem = userSolutionWordArray[solutionDragIndex.current];
       notifyChoiceSelection(wordItem.id);
     }
     _resetDragStatuses();
   };
 
   const solutionOnTouchEnd = (e) => {
-    
     _clearMoveItem(moveElement.current);
     if (moveLastPosition.current == null) {
       _clearMoveOverObject();
@@ -308,7 +315,7 @@ export default function OrderWords({
     dropLocation = dropLocation.filter((e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID);
     // Create the array to be modified
     let copyUserSolutionWordArray = [...userSolutionWordArray];
-    if (copyUserSolutionWordArray.length == 0 && wordSoupDrag.current != null) {
+    if (copyUserSolutionWordArray.length === 0 && wordSoupDrag.current != null && dropLocation[0].id === SOLUTION_AREA_ID) {
       // We are adding a word from the word soup
       // call the method that handles adding words.
       notifyChoiceSelection(wordSoupDrag.current, false);
@@ -316,29 +323,29 @@ export default function OrderWords({
       return;
     }
 
-    if (wordSoupDrag != null || solutionDragItem != null) {
+    if (wordSoupDrag != null || solutionDragIndex != null) {
       // We are dragging and there are elements  
       let isDragOverPlaceholder = false;
       let dragOverId = null;
       // If there is an element dragged over, then we are going to
       // reset the status and place the item
-      if (solutionDragOverItem.current != null) {
-        isDragOverPlaceholder = copyUserSolutionWordArray[solutionDragOverItem.current].isPlaceholder
+      if (solutionDragOverIndex.current != null) {
+        isDragOverPlaceholder = copyUserSolutionWordArray[solutionDragOverIndex.current].isPlaceholder
         if (isDragOverPlaceholder) {
-          dragOverId = copyUserSolutionWordArray[solutionDragOverItem.current].id;
+          dragOverId = copyUserSolutionWordArray[solutionDragOverIndex.current].id;
         }
       }
 
-      if (solutionDragItem.current != null) {
-        let dragItemContent = copyUserSolutionWordArray[solutionDragItem.current];
+      if (solutionDragIndex.current != null) {
+        let dragItemContent = copyUserSolutionWordArray[solutionDragIndex.current];
         if (dropLocation[0].id === SOLUTION_AREA_ID) {
           // If it is an element from the solution area, we need to sawp.
           // If it's null then place it in the same place.
-          if (solutionDragOverItem.current == null) solutionDragOverItem.current = solutionDragItem.current;
-          copyUserSolutionWordArray.splice(solutionDragItem.current, 1);
-          let isPositionAffected = solutionDragOverItem.current > solutionDragItem.current ? 1 : 0;
-          if (isDragPlacementLeft.current === 1) copyUserSolutionWordArray.splice(solutionDragOverItem.current - isPositionAffected + 1, 0, dragItemContent);
-          else copyUserSolutionWordArray.splice(solutionDragOverItem.current - isPositionAffected, 0, dragItemContent);
+          if (solutionDragOverIndex.current == null) solutionDragOverIndex.current = solutionDragIndex.current;
+          copyUserSolutionWordArray.splice(solutionDragIndex.current, 1);
+          let isPositionAffected = solutionDragOverIndex.current > solutionDragIndex.current ? 1 : 0;
+          if (isDragPlacementLeft.current === 1) copyUserSolutionWordArray.splice(solutionDragOverIndex.current - isPositionAffected + 1, 0, dragItemContent);
+          else copyUserSolutionWordArray.splice(solutionDragOverIndex.current - isPositionAffected, 0, dragItemContent);
         }
         else {
           notifyChoiceSelection(dragItemContent.id, false);
@@ -350,12 +357,12 @@ export default function OrderWords({
       else if (wordSoupDrag.current != null) {
         // If it's an element from the word soup we add it to the solution
         // based on the order item.
-        if (solutionDragOverItem.current != null) {
+        if (solutionDragOverIndex.current != null) {
           let copyWordsReferenceStatus = [...wordsReferenceStatus]
           let elementToAdd = _getWordById(wordSoupDrag.current, copyWordsReferenceStatus)
           elementToAdd.inUse = true;
-          if (isDragPlacementLeft.current === 1) copyUserSolutionWordArray.splice(solutionDragOverItem.current + 1, 0, { ...elementToAdd });
-          else copyUserSolutionWordArray.splice(solutionDragOverItem.current, 0, { ...elementToAdd });
+          if (isDragPlacementLeft.current === 1) copyUserSolutionWordArray.splice(solutionDragOverIndex.current + 1, 0, { ...elementToAdd });
+          else copyUserSolutionWordArray.splice(solutionDragOverIndex.current, 0, { ...elementToAdd });
           setWordsReferenceStatus(copyWordsReferenceStatus);
         }
         else if (dropLocation[0].id === SOLUTION_AREA_ID) {
