@@ -51,6 +51,11 @@ const ExerciseOW = styled.div`
     flex-wrap: wrap;
   }
 
+  .disable-scrolling{
+    height: 100% !important;
+    overflow-x: hidden !important;
+  }
+
   .bottomInput button {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
@@ -265,8 +270,7 @@ const ExerciseOW = styled.div`
         cursor: -moz-grabbing;
         cursor: -webkit-grabbing;
     }
-
-
+  
   .toSwap {
     outline: 4px ${darkBlue} dashed;
     color: #000000bf;
@@ -283,6 +287,14 @@ const ExerciseOW = styled.div`
     outline: 2px ${darkBlue} solid;
     border-right: 5px ${darkBlue} solid;
     filter: brightness(0.90);
+  }
+
+  .renderDisable {
+    display: none;
+  }
+
+  .moveItem {
+    opacity: 0.7;
   }
 
   .greyOut {
@@ -302,6 +314,7 @@ const ExerciseOW = styled.div`
       transform: translateY(0px);
     }
   }
+
   .tipText{
     font-size:small
   }
@@ -345,6 +358,7 @@ let OrangeItemCompact = styled(StyledButton)`
   font-size: normal !important;
   color: white;
   height: 34px;
+  touch-action: none;
   background-color: ${zeeguuOrange};
   margin: 0.2em 0.2em;
   padding: 0.5em 0.5em;
@@ -392,6 +406,7 @@ let OrangeItemCompactConstruct = styled(StyledButton)`
   align-items: center;
   color: white;
   height: 30px;
+  touch-action: none;
   background-color: ${zeeguuOrange};
   margin: 0.05em;
   padding: 0.5em 0.5em;

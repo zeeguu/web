@@ -9,6 +9,8 @@ function OrderWordsInput({
   onDragStartHandle,
   onDragOverHandle,
   onDragLeaveHandle,
+  onTouchStartHandle,
+  onTouchMoveHandle,
 }) {
 
   if (isWordSoup) {
@@ -16,6 +18,8 @@ function OrderWordsInput({
       <sOW.ItemRowCompactWrap className="ItemRowCompactWrap">
       {buttonOptions.length > 0 && buttonOptions.map((word) => <sOW.OrangeItemCompact
          onDragStart={(e) => onDragStartHandle(e, word.id)}
+         onTouchStart={(e) => onTouchStartHandle(e, word.id)}
+         onTouchMove={(e) => onTouchMoveHandle(e)}
          key={word.id}
          draggable 
          status={word.inUse}
@@ -33,6 +37,8 @@ function OrderWordsInput({
         onDragStart={(e) => onDragStartHandle(e, i)}
         onDragOver={(e) => onDragOverHandle(e, i)}
         onDragLeave={(e) => onDragLeaveHandle(e, i)}
+        onTouchStart={(e) => onTouchStartHandle(e, i)}
+        onTouchMove={(e) => onTouchMoveHandle(e)}
          key={word.id}
          draggable 
          title={word.feedback}
