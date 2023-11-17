@@ -125,7 +125,9 @@ const ExerciseOW = styled.div`
     margin-right: 30px;
     margin-bottom: 1em;
     @media (max-width: 430px) {
-      font-size: 14px;
+      font-size: 12px;
+      margin-left:10px;
+      margin-right:10px;
     }
     
   }
@@ -278,15 +280,17 @@ const ExerciseOW = styled.div`
   }
 
   .toDragLeft {
+    box-shadow: -7px 0px 0px 2px ${darkBlue}, 0px 0px 0px 0px ${darkBlue};
     outline: 2px ${darkBlue} solid;
-    border-left: 5px ${darkBlue} solid;
     filter: brightness(0.90);
+    z-index:1;
   }
 
   .toDragRight {
+    box-shadow: 0px 0px 0px 0px ${darkBlue}, 7px 0px 0px 2px ${darkBlue};
     outline: 2px ${darkBlue} solid;
-    border-right: 5px ${darkBlue} solid;
     filter: brightness(0.90);
+    z-index:1;
   }
 
   .renderDisable {
@@ -395,6 +399,7 @@ let ItemRowCompactWrapConstruct = styled.div`
   margin-bottom: 0.1em;
   @media (max-width: 430px) {
     flex-flow: row wrap;
+    padding:0.1em;
   }
 `;
 
