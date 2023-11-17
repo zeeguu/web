@@ -31,7 +31,7 @@ export default function OrderWords({
   const MOVE_ITEM_ID = "moveItem";
   const MAX_CONTEXT_LENGTH = 15;
   const ENABLE_SHORTER_CONTEXT_BUTTON = false;
-  const SOLUTION_AREA_ID = "solutionAreaID";
+  const SOLUTION_AREA_ID = "solutionAreaId";
   const WORD_SOUP_ID = "wordSoupId";
   const IS_DEBUG = true;
 
@@ -65,6 +65,21 @@ export default function OrderWords({
   const moveLastPosition = useRef();
   const moveElement = useRef();
   const moveElementInitialPosition = useRef();
+  const scrollY = useRef();
+
+  const handleTouchScroll = () => {
+    var prevElement = document.getElementById("orderExercise");
+    var currentElement = prevElement;
+    while(currentElement != null){
+      prevElement = currentElement;
+      if (prevElement.scrollTop != 0){
+        break;
+      }
+      currentElement = currentElement.parentNode;
+    }
+    if (prevElement.scrollTop != null) scrollY.current = prevElement.scrollTop;
+    else scrollY.current = 0;
+  }
 
   function _getCurrentExerciseTime() {
     let pressTime = new Date();
@@ -84,6 +99,7 @@ export default function OrderWords({
   }
 
   function _setOnDragStartVariables(e, wordInfo) {
+    scrollY.current = 0;
     var x, y;
     if (e.type == "touchstart") {
       var touch = e.touches[0] || e.changedTouches[0];
@@ -130,7 +146,8 @@ export default function OrderWords({
   function _getPosition(elem) {
     // Found: https://stackoverflow.com/questions/9040768/getting-coordinates-of-objects-in-js
 
-    var dims = { offsetLeft: 0, offsetTop: 0, width: elem.offsetWidth, height: elem.offsetHeight };
+    var dims = { offsetLeft: 0, offsetTop: 0, 
+      width: elem.offsetWidth, height: elem.offsetHeight };
 
     do {
       dims.offsetLeft += elem.offsetLeft;
@@ -154,8 +171,8 @@ export default function OrderWords({
 
   function _performMoveItem(x, y, initialPosition, element) {
     if (element != null) {
-      let dx = x - initialPosition.current[0]
-      let dy = y - initialPosition.current[1]
+      var dx = x - initialPosition.current[0]
+      var dy = y - initialPosition.current[1]
       var width = element.offsetWidth;
       var height = element.offsetHeight;
       // Hide the original object.
@@ -163,7 +180,7 @@ export default function OrderWords({
       element.style.position = "absolute";
       element.classList.add("moveItem");
       element.style.left = initialPosition.current[0] + dx - (width / 2) + "px";
-      element.style.top = initialPosition.current[1] + dy - (height / 2) + "px";
+      element.style.top = initialPosition.current[1] + dy + scrollY.current - (height / 2) + "px";
       element.style.zIndex = "2";
       element.classList.remove("renderDisable");
     }
@@ -388,20 +405,22 @@ export default function OrderWords({
   function _removeEmptyTokens(tokenList) {
     // In some instance, there will be punctuation in the middle, which
     // results in trailing spaces. The loop below ensures those get removed.
-    return tokenList.filter((token) => token !== "")
+    return tokenList.filter((token) => token !== "");
   }
 
   function _getWordsInSentence(sentence) {
     let wordsForExercise = removePunctuation(sentence).split(" ")
-    return _removeEmptyTokens(wordsForExercise)
+    // A lot of  articles start with a dash. ( - ) 
+    if (wordsForExercise[0] === "-") wordsForExercise = wordsForExercise.splice(1)
+    return _removeEmptyTokens(wordsForExercise);
   }
 
   function _getWordsFromWordProps(wordPropList) {
-    let wordList = []
+    let wordList = [];
     for (let i = 0; i < wordPropList.length; i++) {
-      wordList.push(wordPropList[i]["word"])
+      wordList.push(wordPropList[i]["word"]);
     }
-    return wordList
+    return wordList;
   }
 
   function _initializeWordAttributes(wordList, sentenceWords) {
@@ -421,9 +440,9 @@ export default function OrderWords({
       - missBefore:bool, if the missing token is before 
       - status (Correct, Incorrect, Feedback)
     */
-    let arrayWordsProps = []
+    let arrayWordsProps = [];
     for (let i = 0; i < wordList.length; i++) {
-      let isInSetence = sentenceWords.includes(wordList[i]) ? true : false
+      let isInSetence = sentenceWords.includes(wordList[i]) ? true : false;
       arrayWordsProps.push({
         "id": i,
         "word": wordList[i],
@@ -433,9 +452,9 @@ export default function OrderWords({
         "missBefore": false,
         "isInSentence": isInSetence,
         "hasPlaceholders": false,
-      })
+      });
     }
-    return arrayWordsProps
+    return arrayWordsProps;
   }
 
   function _orderWordsLogUserActivity(eventType, jsonData) {
@@ -483,7 +502,7 @@ export default function OrderWords({
     for (let i = 0; i < array.length; i++) {
       array[i].status = status;
     }
-    return array
+    return array;
   }
 
   function _constructPlaceholderWordProp(idToUse, symbol) {
@@ -493,18 +512,18 @@ export default function OrderWords({
       "isPlaceholder": true,
       "inUse": true,
       "status": "placeholder incorrect",
-    }
-    return placeholderWProp
+    };
+    return placeholderWProp;
   }
 
   function _filterPlaceholders(constructedWordArray) {
     let filterArray = constructedWordArray.filter((wordElement) =>
       wordElement.id < wordsReferenceStatus.length && wordElement.id >= 0);
     for (let i = 0; i < filterArray.length; i++) {
-      let wordProp = filterArray[i]
-      wordProp["hasPlaceholders"] = false
+      let wordProp = filterArray[i];
+      wordProp["hasPlaceholders"] = false;
     }
-    return filterArray
+    return filterArray;
   }
 
   function _updateClueText(cluesTextList, errorCount) {
@@ -518,7 +537,7 @@ export default function OrderWords({
     else {
       finalClueText = cluesTextList.slice(0, 2).concat([strings.orderWordsOnlyTwoMessagesShown]);
     }
-    return finalClueText
+    return finalClueText;
   }
 
   function _get_exercise_start_variables() {
@@ -533,8 +552,8 @@ export default function OrderWords({
       "bookmarkWord": bookmarksToStudy[0].from,
       "isLongSentence": isCheckLongSentence,
       "exerciseStartTime": newExerciseStartTime
-    }
-    return exercise_start_data
+    };
+    return exercise_start_data;
   }
 
   // Exercise Functions / Setup / Handle Interactions
@@ -905,7 +924,7 @@ export default function OrderWords({
   }
 
   return (
-    <sOW.ExerciseOW className="orderWords">
+    <sOW.ExerciseOW className="orderWords" onTouchMove={handleTouchScroll} id="orderExercise">
       {translatedText === "" && !isCorrect && <LoadingAnimation />}
       <div className="headlineOrderWords">
         {strings.orderTheWordsToMakeTheHighlightedPhrase}
