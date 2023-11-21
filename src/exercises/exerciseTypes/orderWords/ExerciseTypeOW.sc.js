@@ -50,12 +50,7 @@ const ExerciseOW = styled.div`
     margin-top: 3em;
     flex-wrap: wrap;
   }
-
-  .disable-scrolling{
-    height: 100% !important;
-    overflow-x: hidden !important;
-  }
-
+  
   .bottomInput button {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
