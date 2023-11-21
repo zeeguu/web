@@ -10,8 +10,6 @@ import removePunctuation from "../../../assorted/removePunctuation";
 
 const EXERCISE_TYPE = "OrderWords_L2T_from_L1T";
 
-const RIGHT = 0;
-const LEFT = 1;
 export default function OrderWords({
   api,
   bookmarksToStudy,
@@ -103,7 +101,7 @@ export default function OrderWords({
   function _setOnDragStartVariables(e, wordInfo) {
     scrollY.current = 0;
     var x, y;
-    if (e.type === "touchstart") {
+    if (e.type == "touchstart") {
       var touch = e.touches[0] || e.changedTouches[0];
       x = touch.pageX;
       y = touch.pageY;
@@ -118,7 +116,7 @@ export default function OrderWords({
 
   function _clearMoveItem(element) {
     if (element != null) {
-      moveElement.current.classList.remove("elementHidden");
+      moveElement.current.classList.remove("greyOut");
       element.style.position = "";
       element.style.left = "";
       element.style.top = "";
@@ -168,7 +166,7 @@ export default function OrderWords({
     let y = point[1]
     let objectBoundingBox = _getPosition(object)
     let objectMidpoint = objectBoundingBox.offsetLeft + (objectBoundingBox.width / 2);
-    return x < objectMidpoint ? LEFT : RIGHT;
+    return x < objectMidpoint ? 0 : 1;
   }
 
   function _performMoveItem(x, y, initialPosition, element) {
@@ -178,7 +176,7 @@ export default function OrderWords({
       var width = element.offsetWidth;
       var height = element.offsetHeight;
       // Hide the original object.
-      moveElement.current.classList.add("elementHidden");
+      moveElement.current.classList.add("greyOut");
       element.style.position = "absolute";
       element.classList.add("moveItem");
       element.style.left = initialPosition.current[0] + dx - (width / 2) + "px";
@@ -200,25 +198,10 @@ export default function OrderWords({
     setMovingObject();
   };
 
-  function _setSideStyling(element, mouseSide){
-    if (mouseSide === RIGHT) {
-      element.classList.add('toDragRight');
-      element.classList.remove('toDragLeft');
-    }
-    else {
-      element.classList.remove('toDragRight');
-      element.classList.add('toDragLeft');
-    }
-  }
-
   // https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
   // Touch events needs to be handled as well
 
   const solutionDragStart = (e, arrayIndex) => {
-    // Do not perform any actions if the exercise
-    // is correct.
-    if (isCorrect) return;
-    
     let wordInfo = { ...userSolutionWordArray[arrayIndex] };
     solutionDragIndex.current = arrayIndex;
     moveElement.current = e.target;
@@ -226,10 +209,6 @@ export default function OrderWords({
   };
 
   const wordSoupOnDragStart = (e, wordId) => {
-    // Do not perform any actions if the exercise
-    // is correct.
-    if (isCorrect) return;
-
     let wordInfo = _getWordById(wordId, wordsReferenceStatus);
     moveElement.current = e.target;
     wordSoupDrag.current = wordId;
@@ -238,17 +217,24 @@ export default function OrderWords({
 
   const solutionDragOver = (e, arrayIndex) => {
     // Insert a PlaceHolder token at the desired place it it isn't one
-    if (arrayIndex === solutionDragIndex.current || isCorrect) { return }
+    if (arrayIndex == solutionDragIndex.current) { return }
     let element = e.target;
     let mouseSide = _getObjectSide([e.clientX, e.clientY], element)
-    _setSideStyling(element, mouseSide);
+    if (mouseSide == 1) {
+      e.target.classList.add('toDragRight')
+      e.target.classList.remove('toDragLeft')
+    }
+    else {
+      e.target.classList.remove('toDragRight')
+      e.target.classList.add('toDragLeft')
+    }
     solutionDragOverIndex.current = arrayIndex;
     moveOverElement.current = e.target;
     isDragPlacementLeft.current = mouseSide;
   };
 
   const solutionDragLeave = (e, position) => {
-    if (position === solutionDragIndex.current || isCorrect) { return }
+    if (position == solutionDragIndex.current) { return }
     e.target.classList.remove('toDragRight');
     e.target.classList.remove('toDragLeft');
     isDragPlacementLeft.current = false;
@@ -257,8 +243,6 @@ export default function OrderWords({
 
   const solutionOnTouchMove = (e) => {
     // Equivalent to SolutionDragOver
-    if (isCorrect) return;
-
     var touch = e.touches[0] || e.changedTouches[0];
     let x = touch.pageX;
     let y = touch.pageY;
@@ -289,13 +273,19 @@ export default function OrderWords({
       // We are hovering the same element - update the CSS based on the
       // side we are hovering.
       let touchSide = _getObjectSide([x, y], moveOverElement.current)
-      _setSideStyling(moveOverElement.current, touchSide);
+      if (touchSide == 1) {
+        moveOverElement.current.classList.remove('toDragLeft');
+        moveOverElement.current.classList.add('toDragRight');
+      }
+      else {
+        moveOverElement.current.classList.remove('toDragRight');
+        moveOverElement.current.classList.add('toDragLeft');
+      }
       isDragPlacementLeft.current = touchSide;
     }
   };
 
   const wordSoupDrop = (e) => {
-    if (isCorrect) return;
     if (wordSoupDrag.current) {
       // Do nothing:
       wordSoupDrag.current = null;
@@ -308,7 +298,6 @@ export default function OrderWords({
   };
 
   const solutionOnTouchEnd = (e) => {
-    if (isCorrect) return;
     _clearMoveItem(moveElement.current);
     if (moveLastPosition.current == null) {
       _clearMoveOverObject();
@@ -338,7 +327,6 @@ export default function OrderWords({
   };
 
   function performSolutionDrop(x, y) {
-    if (isCorrect) return;
     _clearMoveOverObject();
     let dropLocation = document.elementsFromPoint(x, y);
     dropLocation = dropLocation.filter((e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID);
@@ -368,12 +356,12 @@ export default function OrderWords({
       if (solutionDragIndex.current != null) {
         let dragItemContent = copyUserSolutionWordArray[solutionDragIndex.current];
         if (dropLocation[0].id === SOLUTION_AREA_ID) {
-          // If it is an element from the solution area, we need to swap.
+          // If it is an element from the solution area, we need to sawp.
           // If it's null then place it in the same place.
           if (solutionDragOverIndex.current == null) solutionDragOverIndex.current = solutionDragIndex.current;
           copyUserSolutionWordArray.splice(solutionDragIndex.current, 1);
           let isPositionAffected = solutionDragOverIndex.current > solutionDragIndex.current ? 1 : 0;
-          if (isDragPlacementLeft.current === RIGHT) copyUserSolutionWordArray.splice(solutionDragOverIndex.current - isPositionAffected + 1, 0, dragItemContent);
+          if (isDragPlacementLeft.current === 1) copyUserSolutionWordArray.splice(solutionDragOverIndex.current - isPositionAffected + 1, 0, dragItemContent);
           else copyUserSolutionWordArray.splice(solutionDragOverIndex.current - isPositionAffected, 0, dragItemContent);
         }
         else {
@@ -390,7 +378,7 @@ export default function OrderWords({
           let copyWordsReferenceStatus = [...wordsReferenceStatus]
           let elementToAdd = _getWordById(wordSoupDrag.current, copyWordsReferenceStatus)
           elementToAdd.inUse = true;
-          if (isDragPlacementLeft.current === RIGHT) copyUserSolutionWordArray.splice(solutionDragOverIndex.current + 1, 0, { ...elementToAdd });
+          if (isDragPlacementLeft.current === 1) copyUserSolutionWordArray.splice(solutionDragOverIndex.current + 1, 0, { ...elementToAdd });
           else copyUserSolutionWordArray.splice(solutionDragOverIndex.current, 0, { ...elementToAdd });
           setWordsReferenceStatus(copyWordsReferenceStatus);
         }
@@ -517,9 +505,9 @@ export default function OrderWords({
     return array;
   }
 
-  function _constructPlaceholderWordProp(id, symbol) {
+  function _constructPlaceholderWordProp(idToUse, symbol) {
     let placeholderWProp = {
-      "id": id,
+      "id": idToUse,
       "word": symbol,
       "isPlaceholder": true,
       "inUse": true,
@@ -958,8 +946,8 @@ export default function OrderWords({
           <OrderWordsInput
             buttonOptions={userSolutionWordArray}
             notifyChoiceSelection={notifyChoiceSelection}
-            isCorrect={isCorrect}
-            setIsCorrect={setIsCorrect}
+            incorrectAnswer={isCorrect}
+            setIncorrectAnswer={setIsCorrect}
             handleShowSolution={handleShowSolution}
             toggleShow={toggleShow}
             isWordSoup={false}

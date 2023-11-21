@@ -140,9 +140,7 @@ const ExerciseOW = styled.div`
 
   .correct {
     background-color: ${darkGreen};
-    :hover{ 
-      filter: brightness(1)
-    }
+    :hover{ }
   }
 
   .placeholder {
@@ -303,7 +301,7 @@ const ExerciseOW = styled.div`
     opacity: 0.7;
   }
 
-  .elementHidden {
+  .greyOut {
     background-color: #595959;
     visibility: hidden;
   }

@@ -3,8 +3,8 @@ import * as sOW from "./ExerciseTypeOW.sc.js"
 function OrderWordsInput({
   buttonOptions,
   notifyChoiceSelection,
-  isCorrect,
-  setIsCorrect,
+  incorrectAnswer,
+  setIncorrectAnswer,
   isWordSoup,
   onDragStartHandle,
   onDragOverHandle,
@@ -21,9 +21,9 @@ function OrderWordsInput({
          onTouchStart={(e) => onTouchStartHandle(e, word.id)}
          onTouchMove={(e) => onTouchMoveHandle(e)}
          key={word.id}
-         draggable={isCorrect ? false : true}
+         draggable 
          status={word.inUse}
-         className={word.inUse ? word.status + " elementHidden" : word.status } 
+         className={word.inUse ? word.status + " greyOut" : word.status } 
          onClick={() => notifyChoiceSelection(word.id, word.inUse)}>
          {word.word} 
         </sOW.OrangeItemCompact>)}
@@ -40,7 +40,7 @@ function OrderWordsInput({
         onTouchStart={(e) => onTouchStartHandle(e, i)}
         onTouchMove={(e) => onTouchMoveHandle(e)}
          key={word.id}
-         draggable={isCorrect ? false : true} 
+         draggable 
          title={word.feedback}
          status={word.status}
          className={word.status} 

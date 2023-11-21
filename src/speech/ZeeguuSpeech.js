@@ -14,22 +14,22 @@ function voiceForLanguageCode(code, voices) {
     console.log(preferredLocaleNames);
 
 
-    //for (let i = 0; i < preferredLocaleNames.length; i++) {
-    //    let preferredName = preferredLocaleNames[i];
-    //    console.log("looking for... " + preferredName);
-    //    let favoriteVoices = languageVoices.filter((x) => x.name.startsWith(preferredName));
-    //    console.log(favoriteVoices);
-//
-    //    if (favoriteVoices.length > 0) {
-    //        let voice = favoriteVoices [0];
-    //        console.log(voice.name + " " + voice.lang);
-    //        return voice;
-    //    }
-    //}
-//
-    //let voice = languageVoices[0];
-    //console.log(voice.name + voice.lang);
-    return null;
+    for (let i = 0; i < preferredLocaleNames.length; i++) {
+        let preferredName = preferredLocaleNames[i];
+        console.log("looking for... " + preferredName);
+        let favoriteVoices = languageVoices.filter((x) => x.name.startsWith(preferredName));
+        console.log(favoriteVoices);
+
+        if (favoriteVoices.length > 0) {
+            let voice = favoriteVoices [0];
+            console.log(voice.name + " " + voice.lang);
+            return voice;
+        }
+    }
+
+    let voice = languageVoices[0];
+    console.log(voice.name + voice.lang);
+    return voice;
 }
 
 const ZeeguuSpeech = class {
