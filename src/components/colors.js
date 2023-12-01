@@ -22,6 +22,8 @@ let zeeguuViolet = "#4a0d67";
 let darkGreen = "#006400"
 let alertGreen = "#4caf50"; //careful when changing this color. It is defined to match the color in the success-alert to undo feedback submits.
 let matchGreen = "#B3F78F";
+let translationHover= "#2f76ac";
+let lightOrange= "#ffe5b9";
 //black - the css standard color is used throughout the repo.
 //white - the css standard color is used throughout the repo.
 
@@ -60,5 +62,7 @@ export {
   darkGreen,
   alertGreen,
   matchGreen,
+  lightOrange,
+  translationHover,
   setColors,
 };
