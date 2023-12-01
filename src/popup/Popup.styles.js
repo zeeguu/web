@@ -1,49 +1,21 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import colors from "../JSInjection/colors";
-
-export const PrimaryButton = styled.button`
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  width: 11em;
-  height: 3em;
-  padding: 0.5em;
-  font-size: 1.2em;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 10px;
-  color: white !important;
-  background-color: ${colors.darkBlue} !important;
-  border-color: ${colors.buttonBorder} !important;
-  :hover {
-    background-color: ${colors.hoverBlue} !important;
-  }
-  margin-bottom: 1em !important;
-  margin-top: 1em !important;
-`;
 
 export const PopUp = styled.div`
   font-weight: 600;
   display: flex;
-  background-color: aqua;
+  background-color: ${colors.white} !important;
   flex-direction: column;
-  background-color: ${colors.white};
-  border-color: rgb(246, 246, 246);
-  border-style: solid;
-  border-width: 2px;
+  border: none;
   padding: 10px;
   width: 230px;
-  min-height: 180px;
-
-  button {
-    padding: 14px 20px;
-    margin: 8px 0;
-    width: 100%;
-    font-size: 1rem;
-    font-weight: 600;
-  }
+  height: auto;
+  min-height: 120px;
+  border-radius: 10px;
+  position: relative;
+  marign: 50px;
 `;
+
 
 export const BottomButton = styled.div`
   cursor: pointer;
@@ -61,7 +33,7 @@ export const BottomButton = styled.div`
 export const NotifyButton = styled.button`
   background: none !important;
   border: none !important;
-  padding: 0 !important;
+  padding: 10px !important;
   font-family: "Montserrat";
   cursor: pointer;
   color: ${colors.darkBlue};
@@ -86,15 +58,24 @@ export const HeadingContainer = styled.div`
   img {
     width: 15%;
   }
+  display: flex;
+  justify-content: center;
+  margin: 10px;
 `;
 
 export const BottomContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  padding-left: 40px;
+  padding-right: 40px;
 `;
 
 export const MiddleContainer = styled.div`
-  margin-bottom: 1.4em;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+
   h1 {
     margin-block-start: 0.5em !important;
     margin-block-end: 0.5em !important;
@@ -106,6 +87,6 @@ export const MiddleContainer = styled.div`
     margin-block-start: 0em !important;
     margin-block-end: 0em !important;
     font-weight: normal;
-    font-size: 1.2em !important;
+    font-size: 1em !important;
   }
 `;
