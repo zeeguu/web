@@ -9,6 +9,7 @@ let zeeguuTransparentMediumOrange = "#ffbe007a";
 let zeeguuOrange = "#ffbb54";
 let zeeguuDarkOrange = "#9c7130";
 let lightBlue = "#54cdff";
+let lighterBlue = "#CCDEFF";
 let darkBlue = "#4492b3";
 let veryLightGrey = "#efefef";
 let lightGrey = "#c1c1c1";
@@ -46,6 +47,7 @@ export {
   zeeguuOrange,
   zeeguuDarkOrange,
   lightBlue,
+  lighterBlue,
   darkBlue,
   veryLightGrey,
   lightGrey,
