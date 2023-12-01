@@ -37,7 +37,7 @@ export function Modal({
   const [exerciseOpen, setExerciseOpen] = useState(false);
 
   const [translating, setTranslating] = useState(true);
-  const [pronouncing, setPronouncing] = useState(false);
+  const [pronouncing, setPronouncing] = useState(true);
 
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveTextArray, setInteractiveTextArray] = useState();
