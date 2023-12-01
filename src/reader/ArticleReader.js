@@ -68,7 +68,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [translating, setTranslating] = useState(true);
-  const [pronouncing, setPronouncing] = useState(false);
+  const [pronouncing, setPronouncing] = useState(true);
   const user = useContext(UserContext);
   const history = useHistory();
 
