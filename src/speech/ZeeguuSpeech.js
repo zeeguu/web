@@ -29,7 +29,7 @@ function voiceForLanguageCode(code, voices) {
     }
 
     let voice = languageVoices[0];
-    console.log(voice.name + voice.lang);
+    if (voice) console.log(voice.name + voice.lang);
 
     return voice;
 }
