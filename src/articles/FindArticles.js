@@ -27,11 +27,30 @@ function useQuery() {
 export default function NewArticles({ api }) {
   const searchQuery = useQuery().get("search");
 
+  //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
+  //getter that was outputting undefined string values when they should be false.
+  //This occurs before the user selects their own preferences.
+  //Additionally, the conditional statement needed to be tightened up due to JS's unstable behavior, which resulted
+  //in bool values changing on its own on refresh without any other external trigger or preferences change.
+  // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
+  const doNotShowRedirectionModal_LocalStorage =
+    LocalStorage.getDoNotShowRedirectionModal() === "true" ? true : false;
+
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
   const [hasExtension, setHasExtension] = useState(true);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
+  const [
+    doNotShowRedirectionModal_UserPreference,
+    setDoNotShowRedirectionModal_UserPreference,
+  ] = useState(doNotShowRedirectionModal_LocalStorage);
+
+  useEffect(() => {
+    LocalStorage.setDoNotShowRedirectionModal(
+      doNotShowRedirectionModal_UserPreference
+    );
+  }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
@@ -109,6 +128,12 @@ export default function NewArticles({ api }) {
           article={each}
           api={api}
           hasExtension={hasExtension}
+          doNotShowRedirectionModal_UserPreference={
+            doNotShowRedirectionModal_UserPreference
+          }
+          setDoNotShowRedirectionModal_UserPreference={
+            setDoNotShowRedirectionModal_UserPreference
+          }
         />
       ))}
 

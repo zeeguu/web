@@ -62,12 +62,6 @@ export default function TopToolbar({
 
   return (
     <PopupButtonWrapper>
-      {/* <s.BookmarkButton>
-        <BookmarkButton
-          bookmarked={articleInfo.starred}
-          toggleBookmarkedState={toggleBookmarkedState}
-        />
-      </s.BookmarkButton> */}
 
       <s.Toolbar>
         {user.is_teacher && (
@@ -101,7 +95,7 @@ export default function TopToolbar({
         <s.RightHandSide>
           <button
             className={translating ? "selected" : ""}
-            onClick={(e) => toggle(translating, setTranslating)}
+            onClick={() => toggle(translating, setTranslating)}
           >
             <img
               src="https://zeeguu.org/static/images/translate.svg"
@@ -111,7 +105,7 @@ export default function TopToolbar({
           </button>
           <button
             className={pronouncing ? "selected" : ""}
-            onClick={(e) => toggle(pronouncing, setPronouncing)}
+            onClick={() => toggle(pronouncing, setPronouncing)}
           >
             <img
               src="https://zeeguu.org/static/images/sound.svg"
