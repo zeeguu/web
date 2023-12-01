@@ -2,11 +2,19 @@ import * as s from "./ArticleReader.sc";
 
 import { useState } from "react";
 import { random } from "../utils/basic/arrays";
+import SentimentVerySatisfiedOutlinedIcon from '@mui/icons-material/SentimentVerySatisfiedOutlined';
+import MoodBadOutlinedIcon from '@mui/icons-material/MoodBadOutlined';
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import MoodBadTwoToneIcon from '@mui/icons-material/MoodBadTwoTone';
+import SentimentNeutralTwoToneIcon from '@mui/icons-material/SentimentNeutralTwoTone';
+import SentimentVerySatisfiedTwoToneIcon from '@mui/icons-material/SentimentVerySatisfiedTwoTone';
+import SentimentNeutralOutlinedIcon from '@mui/icons-material/SentimentNeutralOutlined';
 
-let FEEDBACK_OPTIONS = { "Too Easy": 1, Ok: 3, "Too Hard": 5 };
+let FEEDBACK_OPTIONS = { "Easy": 1, "Ok": 3, "Difficult": 5 };
 
 export default function DifficultyFeedbackBox({ api, articleID }) {
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   function submitAnswer(answer) {
     api.submitArticleDifficultyFeedback(
@@ -20,27 +28,64 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
   if (answerSubmitted) {
     return (
       <s.FeedbackBox>
-        <p align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</p>
+        <h5 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h5>
       </s.FeedbackBox>
     );
   }
 
   return (
     <s.FeedbackBox>
-      <small>
-        To improve future recommendations please answer the following:
-      </small>
-      <h4>How difficult was this article for you?</h4>
-
+      <h5>How difficult was this article for you?</h5>
       <s.CenteredContent>
-        {Object.keys(FEEDBACK_OPTIONS).map((option) => (
-          <s.WhiteButton
-            key={option}
-            onClick={(e) => submitAnswer(FEEDBACK_OPTIONS[option])}
-          >
-            {option}
-          </s.WhiteButton>
-        ))}
+        {Object.keys(FEEDBACK_OPTIONS).map((option) => {
+          const emojiSize = { fontSize: '3rem' };
+
+          const handleMouseEnter = () => {
+            setIsHovered(option);
+          };
+
+          const handleMouseLeave = () => {
+            setIsHovered('');
+          };
+
+          const emojiComponent = () => {
+            switch (option) {
+              case 'Easy':
+                return isHovered === option ? (
+                  <SentimentVerySatisfiedTwoToneIcon sx={emojiSize} />
+                ) : (
+                  <SentimentVerySatisfiedOutlinedIcon sx={emojiSize} />
+                );
+              case 'Difficult':
+                return isHovered === option ? (
+                  <MoodBadTwoToneIcon sx={emojiSize} />
+                ) : (
+                  <MoodBadOutlinedIcon sx={emojiSize} />
+                );
+              case 'Ok':
+                return isHovered === option ? (
+                  <SentimentNeutralTwoToneIcon sx={emojiSize} />
+                ) : (
+                  <SentimentNeutralOutlinedIcon sx={emojiSize} />
+                );
+              default:
+                return <EmojiEmotionsIcon sx={emojiSize} />;
+            }
+          };
+
+          return (
+            <s.WhiteButton
+              key={option}
+              onClick={(e) => submitAnswer(FEEDBACK_OPTIONS[option])}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              {emojiComponent()}
+              <br />
+              {option}
+            </s.WhiteButton>
+          );
+        })}
       </s.CenteredContent>
     </s.FeedbackBox>
   );
