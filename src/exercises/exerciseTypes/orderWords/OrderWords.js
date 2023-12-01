@@ -8,10 +8,7 @@ import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import removePunctuation from "../../../assorted/removePunctuation";
 
-const EXERCISE_TYPE = "OrderWords_L2T_from_L1T";
 
-const RIGHT = 0;
-const LEFT = 1;
 export default function OrderWords({
   api,
   bookmarksToStudy,
@@ -24,10 +21,12 @@ export default function OrderWords({
   toggleShow,
   reload,
   setReload,
-  exerciseSessionId
+  exerciseSessionId,
+  exerciseType
 }) {
 
   // Constants for Exercise
+  const translateLang = bookmarksToStudy[0].to_lang;
   const exerciseLang = bookmarksToStudy[0].from_lang;
   const MOVE_ITEM_KEY = -100;
   const MOVE_ITEM_ID = "moveItem";
@@ -35,17 +34,22 @@ export default function OrderWords({
   const ENABLE_SHORTER_CONTEXT_BUTTON = false;
   const SOLUTION_AREA_ID = "solutionAreaId";
   const WORD_SOUP_ID = "wordSoupId";
-  const IS_DEBUG = true;
+  const IS_DEBUG = false;
+  const EXERCISE_TYPE = exerciseType;
+  const TYPE_L1_CONSTRUCTION = "OrderWords_L1T_from_L2T";
+  const TYPE_L2_CONSTRUCTION = "OrderWords_L2T_from_L1T";
+  const RIGHT = 0;
+  const LEFT = 1;
 
   const [initialTime, setInitialTime] = useState(new Date());
   const [resetCounter, setResetCounter] = useState(0);
   const [hintCounter, setHintCounter] = useState(0);
   const [totalErrorCounter, setTotalErrorCounter] = useState(0);
   const [wordsReferenceStatus, setWordsReferenceStatus] = useState([]);
-  const [messageToAPI] = useState("");
+  const [messageToAPI, setMessageToApi] = useState("");
   const [exerciseContext, setExerciseContext] = useState("");
   const [clueText, setClueText] = useState([]);
-  const [translatedText, setTranslatedText] = useState("");
+  const [exerciseText, setExerciseText] = useState("");
   const [userSolutionWordArray, setUserSolutionWordArray] = useState([]);
   const [confuseWords, setConfuseWords] = useState();
   const [wordSelected, setWordSelected] = useState();
@@ -55,8 +59,8 @@ export default function OrderWords({
   const [isResetConfirmVisible, setIsResetConfirmVisible] = useState(false);
   const [isHandlingLongSentences, setIsHandlingLongSentences] = useState(true);
   const [isSentenceTooLong, setIsSentenceTooLong] = useState(false);
-  const [textBeforeTranslatedText, setTextBeforeTranslatedText] = useState("");
-  const [textAfterTranslatedText, setTextAfterTranslatedText] = useState("");
+  const [textBeforeExerciseText, setTextBeforeExerciseText] = useState("");
+  const [textAfterExerciseText, setTextAfterExerciseText] = useState("");
   const [movingObject, setMovingObject] = useState();
 
   const solutionDragIndex = useRef();
@@ -373,7 +377,9 @@ export default function OrderWords({
           if (solutionDragOverIndex.current == null) solutionDragOverIndex.current = solutionDragIndex.current;
           copyUserSolutionWordArray.splice(solutionDragIndex.current, 1);
           let isPositionAffected = solutionDragOverIndex.current > solutionDragIndex.current ? 1 : 0;
-          if (isDragPlacementLeft.current === RIGHT) copyUserSolutionWordArray.splice(solutionDragOverIndex.current - isPositionAffected + 1, 0, dragItemContent);
+          if (isDragPlacementLeft.current === RIGHT){
+            copyUserSolutionWordArray.splice(solutionDragOverIndex.current - isPositionAffected + 1, 0, dragItemContent);
+          }
           else copyUserSolutionWordArray.splice(solutionDragOverIndex.current - isPositionAffected, 0, dragItemContent);
         }
         else {
@@ -474,6 +480,7 @@ export default function OrderWords({
       console.log("LOG EVENT, type: " + eventType);
       console.log(jsonData);
     }
+    jsonData["exercise_type"] = EXERCISE_TYPE;
     api.logUserActivity(
       eventType,
       "",
@@ -539,7 +546,7 @@ export default function OrderWords({
   }
 
   function _updateClueText(cluesTextList, errorCount) {
-    console.log(cluesTextList);
+    if (IS_DEBUG) console.log(cluesTextList);
     let finalClueText = [];
 
     if (errorCount > 0) { setIsCluesRowVisible(true); }
@@ -593,10 +600,10 @@ export default function OrderWords({
     isHandleLongSentences,
     isCurrentSentenceTooLong,
     exerciseStartTime) {
-    console.log("Status of isHandle: " + isHandleLongSentences)
-    console.log(isCurrentSentenceTooLong)
+    if (IS_DEBUG) console.log("Status of isHandle: " + isHandleLongSentences)
+    if (IS_DEBUG) console.log(isCurrentSentenceTooLong)
     if (isHandleLongSentences && isCurrentSentenceTooLong) {
-      console.log("Getting smaller context.");
+      if (IS_DEBUG) console.log("Getting smaller context.");
       api.getSmallerContext(originalContext, bookmarkWord,
         exerciseLang, MAX_CONTEXT_LENGTH, (apiCandidateSubSent) => {
           let shorterContext = JSON.parse(apiCandidateSubSent);
@@ -604,16 +611,16 @@ export default function OrderWords({
         });
     }
     else {
-      console.log("Using default context.");
+      if (IS_DEBUG) console.log("Using default context.");
       prepareExercise(originalContext, isCurrentSentenceTooLong, isHandleLongSentences, exerciseStartTime);
     }
   }
 
   function prepareExercise(exerciseContext, isSentenceTooLong, isHandlingLongSentences, startTime) {
-    console.log("CONTEXT: '" + exerciseContext + "'");
+    if (IS_DEBUG) console.log("CONTEXT: '" + exerciseContext + "'");
     exerciseContext = exerciseContext.trim();
-    console.log("CONTEXT AFTER TRIM: '" + exerciseContext + "'");
-    console.log("Getting Translation for ->" + exerciseContext);
+    if (IS_DEBUG) console.log("CONTEXT AFTER TRIM: '" + exerciseContext + "'");
+    if (IS_DEBUG) console.log("Getting Translation for ->" + exerciseContext);
 
     setExerciseContext(exerciseContext);
 
@@ -637,18 +644,26 @@ export default function OrderWords({
           if (textBeforeContext[-1] !== " ") {
             textBeforeContext = textBeforeContext + " "
           }
-          setTextBeforeTranslatedText(textBeforeContext);
-          setTextAfterTranslatedText(originalContext.slice(startPos + exerciseContext.length, contextLen));
+          setTextBeforeExerciseText(textBeforeContext);
+          setTextAfterExerciseText(originalContext.slice(startPos + exerciseContext.length, contextLen));
         }
-        setTranslatedText(translatedContext);
-        createConfusionWords(exerciseContext, translatedContext,
-          isSentenceTooLong, isHandlingLongSentences, startTime);
+        if (EXERCISE_TYPE === TYPE_L1_CONSTRUCTION){
+          setExerciseText(exerciseContext);
+          addConfusionWords(exerciseContext, translatedContext,
+            isSentenceTooLong, isHandlingLongSentences, startTime, true);
+        }
+        else if (EXERCISE_TYPE === TYPE_L2_CONSTRUCTION) {
+          setExerciseText(translatedContext);
+          addConfusionWords(exerciseContext, translatedContext,
+            isSentenceTooLong, isHandlingLongSentences, startTime, false);
+        }
+
 
       })
       .catch(() => {
         let translationError = "Error retrieving the translation.";
-        setTranslatedText(translationError);
-        console.log("could not retreive translation");
+        setExerciseText(translationError);
+        if (IS_DEBUG) console.log("could not retreive translation");
         setConfuseWords([]);
         setWordsReferenceStatus([""]);
         let jsonDataExerciseStart = {
@@ -660,29 +675,53 @@ export default function OrderWords({
       });
   }
 
-  function createConfusionWords(
-    exerciseContext,
-    translatedContext,
-    isSentenceTooLong,
-    isHandlingLongSentences,
-    startTime) {
-    const initialWords = _getWordsInSentence(exerciseContext);
+  function addConfusionWords(exerciseContext,
+                             translatedContext,
+                             isSentenceTooLong,
+                             isHandlingLongSentences,
+                             startTime,
+                             is_L1){
+    const initialWords = is_L1 ? _getWordsInSentence(translatedContext) : _getWordsInSentence(exerciseContext);
     setSolutionWords(_initializeWordAttributes([...initialWords], initialWords));
-    console.log("Info: Getting Confusion Words");
-    console.log(bookmarksToStudy[0].from_lang);
+    if (!is_L1){
     api.getConfusionWords(exerciseLang, exerciseContext, (cWords) => {
       let jsonCWords = JSON.parse(cWords)
       let apiConfuseWords = jsonCWords["confusion_words"]
       let exerciseWords = [...initialWords].concat(apiConfuseWords);
-      console.log(apiConfuseWords);
-      console.log("Exercise Words");
-      console.log(exerciseWords);
+      let pos_picked = jsonCWords["pos_picked"];
+      let word_used = jsonCWords["word_used"];
+      prepareWordItems(initialWords, translatedContext, apiConfuseWords, 
+        isSentenceTooLong, isHandlingLongSentences, 
+        startTime, exerciseWords, pos_picked, word_used);
+      })
+    }
+    else{
+      let exerciseWords = [...initialWords];
+      let apiConfuseWords = [];
+      let pos_picked = "";
+      let word_used = "";
+      prepareWordItems(initialWords, translatedContext, apiConfuseWords, 
+        isSentenceTooLong, isHandlingLongSentences, 
+        startTime, exerciseWords, pos_picked, word_used);
+    }
+  }
+
+  function prepareWordItems(
+    initialWords,
+    translatedContext,
+    apiConfuseWords,
+    isSentenceTooLong,
+    isHandlingLongSentences,
+    startTime,
+    exerciseWords,
+    pos_picked,
+    word_used) {
       exerciseWords = shuffle(exerciseWords);
       let propWords = _initializeWordAttributes(exerciseWords, initialWords);
       setWordsReferenceStatus(propWords);
       setConfuseWords(apiConfuseWords);
-      setPosSelected(jsonCWords["pos_picked"]);
-      setWordSelected(jsonCWords["word_used"]);
+      setPosSelected(pos_picked);
+      setWordSelected(word_used);
       let jsonDataExerciseStart = {
         "sentence_was_too_long": isSentenceTooLong,
         "sentence_context_was_reduced": isHandlingLongSentences,
@@ -690,14 +729,13 @@ export default function OrderWords({
         "exercise_context": exerciseContext,
         "bookmark_context": bookmarksToStudy[0].context,
         "confusionWords": apiConfuseWords,
-        "pos": jsonCWords["pos_picked"],
-        "word_for_confusion": jsonCWords["word_used"],
+        "pos": pos_picked,
+        "word_for_confusion": word_used,
         "total_words": exerciseWords.length,
         "bookmark": bookmarksToStudy[0].from,
         "exercise_start": startTime,
       }
-      _orderWordsLogUserActivity("WO_START", jsonDataExerciseStart);
-    });
+      _orderWordsLogUserActivity("WO_START", jsonDataExerciseStart);   
   }
 
   function notifyChoiceSelection(selectedChoice, inUse) {
@@ -774,7 +812,7 @@ export default function OrderWords({
       "total_errors": totalErrorCounter,
       "total_hints": hintCounter,
       "total_resets": resetCounter,
-      "translation": translatedText,
+      "exercise_text": exerciseText,
       "exercise_context": exerciseContext,
       "bookmark_context": bookmarksToStudy[0].context,
       "bookmark": bookmarksToStudy[0].from,
@@ -797,14 +835,14 @@ export default function OrderWords({
     // Remove all the words from the user
     // solution word array.
     if (isResetConfirmVisible) {
-      console.log("Run update counter.");
+      if (IS_DEBUG) console.log("Run update counter.");
       setResetCounter(resetCounter + 1);
     }
     let resetWords = [...wordsReferenceStatus];
     for (let i = 0; i < resetWords.length; i++) {
       resetWords[i].inUse = false;
     }
-    console.log(resetWords);
+    if (IS_DEBUG) console.log(resetWords);
     setUserSolutionWordArray([]);
     setIsCorrect(false);
     setWordsReferenceStatus(resetWords);
@@ -841,10 +879,11 @@ export default function OrderWords({
       // or alignment might align very distant words.
       // We provide only the context up to + 1 what the user has constructed.
       let resizedSolutionText = filterPunctuationSolArray.slice(0, newUserSolutionWordArray.length + 2).join(" ");
+      setMessageToApi(messageToAPI + "H")
       api.annotateClues(
         newUserSolutionWordArray,
         resizedSolutionText,
-        exerciseLang,
+        localStorage.native_language,
         (updatedUserSolutionWords) => {
           updateWordsFromAPI(updatedUserSolutionWords, resizedSolutionText, userSolutionSentence);
         }
@@ -863,7 +902,7 @@ export default function OrderWords({
     // Placeholders are negative in this exercise.
     let placeholderCounter = -1
 
-    console.log(updatedWordStatus);
+    if (IS_DEBUG) console.log(updatedWordStatus);
     for (let i = 0; i < updatedWordStatus.length; i++) {
       let wordWasPushed = false;
       let wordProp = updatedWordStatus[i];
@@ -892,8 +931,8 @@ export default function OrderWords({
       if (!wordProp.isCorrect) { errorCount++; }
       if (!wordWasPushed) { newUserSolutionWordArray.push({ ...wordProp }); }
     }
-    console.log("After adding the placeholders.")
-    console.log(newUserSolutionWordArray);
+    if (IS_DEBUG) console.log("After adding the placeholders.")
+    if (IS_DEBUG) console.log(newUserSolutionWordArray);
     let updatedErrorCounter = totalErrorCounter + errorCount
     let finalClueText = _updateClueText(cluesTextList, errorCount);
     setUserSolutionWordArray(newUserSolutionWordArray);
@@ -930,17 +969,18 @@ export default function OrderWords({
   }
 
   // Handle the Loading screen while getting the text.
-  if ((wordsReferenceStatus.length === 0 | translatedText === "") && !isCorrect) {
-    console.log("Running load animation.")
+  if ((wordsReferenceStatus.length === 0 | exerciseText === "") && !isCorrect) {
+    if (IS_DEBUG) console.log("Running load animation.")
     return <LoadingAnimation />;
   }
 
   return (
+    <>
     <sOW.ExerciseOW className="orderWords" onTouchMove={handleTouchScroll} id="orderExercise">
-      {translatedText === "" && !isCorrect && <LoadingAnimation />}
+      {exerciseText === "" && !isCorrect && <LoadingAnimation />}
       <div className="headlineOrderWords">
         {strings.orderTheWordsToMakeTheHighlightedPhrase}
-        <p className="translatedText">{textBeforeTranslatedText}<b>{translatedText}</b>{textAfterTranslatedText}</p>
+        <p className="translatedText">{textBeforeExerciseText}<b>{exerciseText}</b>{textAfterExerciseText}</p>
       </div>
       {isCluesRowVisible && (
         <sOW.ItemRowCompactWrap className="cluesRow">
@@ -1063,5 +1103,6 @@ export default function OrderWords({
       )
       }
     </sOW.ExerciseOW>
+    </>
   );
 }

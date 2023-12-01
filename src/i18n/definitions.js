@@ -301,6 +301,8 @@ let strings = new LocalizedStrings(
             pickTheWord: "pick the word",
             typeTheWord: "type the word",
             learnedOn: "Learned on:",
+            orderWordsL1: "order words L1",
+            orderWordsL2: "order words L2",
             studentFeedback: "Student feedback:",
             noType: "No type",
             orderWordsTipMessage:
