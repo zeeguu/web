@@ -4,12 +4,15 @@ const colors = {
     black: 'black',
 
     //button colors and signature blues
-    darkBlue: ' #2f77ad',
+    darkBlue: '#2f77ad',
+    lightBlue: '#63a1cf',
+    lighterBlue: '#CCDEFF',
     hoverBlue: '#4f97cf',
     buttonBorder: '#3079b0',
     lightGray: '#EAEBEB',
     darkGray: '#696969',
     gray: '#999999',
+    brown: '#A46A00',
 
     //modal
     boxGray: '#f2f3f4',
@@ -20,7 +23,7 @@ const colors = {
 
     //loading
     circleBorderGray: '#f4f4f6',
-    lightOrange: '#ffe5b9',
+    lightOrange: '#ffdead',
     zeeguuOrange: '#ffbb54',
 
     //scrollbar
@@ -28,4 +31,3 @@ const colors = {
     scrollTrackGray: '#e6e3dc'
 }
 export default colors;
-
