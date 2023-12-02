@@ -6,15 +6,18 @@ export default function ArticleSource({ url }) {
     <div style={{ marginLeft: '5px', marginRight: '5px' }}>
       {url && (
         <Chip
-        label="Source"
-        component="a"
-        href={url}
-        variant="outlined"
-        clickable
-        color="primary"
-        size="small"
-        icon={<LinkIcon />}
-      />)}
+          label="Source"
+          component="a"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          variant="outlined"
+          clickable
+          color="primary"
+          size="small"
+          icon={<LinkIcon />}
+        />
+      )}
     </div>
   );
 }
