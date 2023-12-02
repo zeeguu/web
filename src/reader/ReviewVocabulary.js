@@ -1,9 +1,9 @@
 import * as s from "./ArticleReader.sc";
-import strings from "../i18n/definitions";
 import useUILanguage from "../assorted/hooks/uiLanguageHook";
-//import { StyledPrimaryButton } from "./Buttons.styles";
+import { StyledPrimaryButton } from "../components/allButtons.sc.js"
+import { Link } from "react-router-dom";
 
-export default function ReviewVocabulary({strings, articleID}) {
+export default function ReviewVocabulary({articleID}) {
   useUILanguage(); 
   return (
     <>
@@ -11,9 +11,11 @@ export default function ReviewVocabulary({strings, articleID}) {
       <h2>Practice your Vocabulary</h2>
       <p>Get exercises based on the words you translated</p>
       <s.CenteredContent>
-      <s.NavigationLink primary to={`../words/forArticle/${articleID}`}>
-            {strings.reviewVocabulary}
-    </s.NavigationLink>
+      <StyledPrimaryButton primary>
+        <Link to={`../words/forArticle/${articleID}`}>
+            Exercises
+        </Link>
+      </StyledPrimaryButton>
       </s.CenteredContent>
     </s.FeedbackBox>
     </>

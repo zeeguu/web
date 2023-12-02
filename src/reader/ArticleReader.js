@@ -17,6 +17,7 @@ import ArticleSource from "./ArticleSource";
 import ReportBroken from "./ReportBroken";
 
 import TopToolbar from "./TopToolbar";
+import ReviewVocabulary from "./ReviewVocabulary";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -182,28 +183,16 @@ export default function ArticleReader({ api, teacherArticleID }) {
         setTranslating={setTranslating}
         setPronouncing={setPronouncing}
       />
-
-      <s.Title>
+      <h1>
         <TranslatableText
           interactiveText={interactiveTitle}
           translating={translating}
           pronouncing={pronouncing}
         />
-      </s.Title>
-      {/* <s.BookmarkButton>
-        <BookmarkButton
-          bookmarked={articleInfo.starred}
-          toggleBookmarkedState={toggleBookmarkedState}
-        />
-      </s.BookmarkButton> */}
-
-      <div style={{ marginTop: "1em" }}>
+      </h1>
+      <div style={{ marginTop: "1em", marginBottom: "1em", display: "flex", flexDirection: "row" }}>
         {/* <ArticleAuthors articleInfo={articleInfo} /> */}
         <ArticleSource url={articleInfo.url} />
-      </div>
-
-      <br />
-      <div style={{ float: "right" }}>
         <ReportBroken
           api={api}
           UMR_SOURCE={UMR_SOURCE}
@@ -211,9 +200,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
           articleID={articleID}
         />
       </div>
-
-      <br />
-      <br />
 
       {articleInfo.video ? (
         <iframe
@@ -237,17 +223,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
       </s.MainText>
 
       <DifficultyFeedbackBox api={api} articleID={articleID} />
-      <s.FeedbackBox>
-        <h2>{strings.reviewVocabulary}</h2>
-        <small>{strings.reviewVocabExplanation}</small>
-        <br />
-        <br />
-        <s.CenteredContent>
-          <s.NavigationLink primary to={`../words/forArticle/${articleID}`}>
-            {strings.reviewVocabulary}
-          </s.NavigationLink>
-        </s.CenteredContent>
-      </s.FeedbackBox>
+      <ReviewVocabulary
+          articleID={articleID}
+        />
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );

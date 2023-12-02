@@ -24,6 +24,8 @@ let alertGreen = "#4caf50"; //careful when changing this color. It is defined to
 let matchGreen = "#B3F78F";
 let translationHover= "#2f76ac";
 let lightOrange= "#ffe5b9";
+let brown = "#A46A00";
+let buttonBorder= "#3079b0";
 //black - the css standard color is used throughout the repo.
 //white - the css standard color is used throughout the repo.
 
@@ -64,5 +66,7 @@ export {
   matchGreen,
   lightOrange,
   translationHover,
+  brown,
+  buttonBorder,
   setColors,
 };
