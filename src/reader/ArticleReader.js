@@ -192,7 +192,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </h1>
-      <div style={{ marginTop: "1em", marginBottom: "1em", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div style={{ marginTop: "1em", marginBottom: "4em", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
         <ArticleAuthors articleInfo={articleInfo} />
         <div style={{ display: "flex", flexDirection: "row"}}>
         <ArticleSource url={articleInfo.url} />
