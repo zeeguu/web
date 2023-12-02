@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange, brown, lightOrange, buttonBorder } from "./colors";
+import { zeeguuOrange, white, brown, lightOrange, buttonBorder } from "./colors";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -65,7 +65,7 @@ const BigSquareButton = styled(RoundButton)`
 `;
 
 const StyledPrimaryButton = styled.button`
-  color: white;
+  color: ${white};
   background-color: ${zeeguuOrange};
   border-color:  ${buttonBorder} !important;
 

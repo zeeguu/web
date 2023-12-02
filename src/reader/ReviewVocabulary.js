@@ -12,8 +12,8 @@ export default function ReviewVocabulary({articleID}) {
       <p>Get exercises based on the words you translated</p>
       <s.CenteredContent>
       <StyledPrimaryButton primary>
-        <Link to={`../words/forArticle/${articleID}`}>
-            Exercises
+        <Link to={`../words/forArticle/${articleID}`} style={{ color: 'white', fontSize: "18px" }}>
+           <b>Exercises</b>
         </Link>
       </StyledPrimaryButton>
       </s.CenteredContent>
