@@ -69,12 +69,11 @@ let PlayerControl = styled.div`
 
 let RightHandSide = styled.div`
   float: right;
-  button {
-    background-color: ${zeeguuLightYellow};
-  }
 `;
 let Toolbar = styled.div`
-  height: 110px;
+    padding-top: 0.5rem;
+    height: 8em;
+    width: 100%;
   // background-color: ${veryLightGrey};
 
   button {

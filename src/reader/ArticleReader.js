@@ -8,7 +8,6 @@ import InteractiveText from "./InteractiveText";
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
-import strings from "../i18n/definitions";
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
@@ -18,6 +17,7 @@ import ReportBroken from "./ReportBroken";
 
 import TopToolbar from "./TopToolbar";
 import ReviewVocabulary from "./ReviewVocabulary";
+import ArticleAuthors from "./ArticleAuthors";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -182,6 +182,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
         pronouncing={pronouncing}
         setTranslating={setTranslating}
         setPronouncing={setPronouncing}
+        url={articleInfo.url}
+        UMR_SOURCE={UMR_SOURCE}
       />
       <h1>
         <TranslatableText
@@ -190,8 +192,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </h1>
-      <div style={{ marginTop: "1em", marginBottom: "1em", display: "flex", flexDirection: "row" }}>
-        {/* <ArticleAuthors articleInfo={articleInfo} /> */}
+      <div style={{ marginTop: "1em", marginBottom: "1em", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+        <ArticleAuthors articleInfo={articleInfo} />
+        <div style={{ display: "flex", flexDirection: "row"}}>
         <ArticleSource url={articleInfo.url} />
         <ReportBroken
           api={api}
@@ -199,6 +202,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
           history={history}
           articleID={articleID}
         />
+        </div>
       </div>
 
       {articleInfo.video ? (

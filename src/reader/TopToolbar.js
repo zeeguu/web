@@ -92,7 +92,6 @@ export default function TopToolbar({
             <SoundPlayer api={api} interactiveText={interactiveText} />
           </s.PlayerControl>
         )}
-
         <s.RightHandSide>
         <ToolbarButtons
                   translating={translating}
