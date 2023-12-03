@@ -55,6 +55,11 @@ export default function ReportBroken({ api, articleID, UMR_SOURCE, history }) {
       </div>
       <Dialog open={open} onClose={handleClose}>
       <DialogTitle><b>Report broken article</b></DialogTitle>   
+        <DialogContent sx= {{display: "flex", flexDisplay: "row", paddingTop: "0px", minWidth: "14em"}}>
+        {isFeedbackSent ? (
+        <Alert severity="success">Feedback sent</Alert>
+        ) : (
+        <>
       <IconButton
           aria-label="close"
           onClick={handleClose}
@@ -67,11 +72,6 @@ export default function ReportBroken({ api, articleID, UMR_SOURCE, history }) {
         >
           <CloseSharpIcon />
         </IconButton> 
-        <DialogContent sx= {{display: "flex", flexDisplay: "row", paddingTop: "0px", minWidth: "14em"}}>
-        {isFeedbackSent ? (
-        <Alert severity="success">Feedback sent</Alert>
-        ) : (
-        <>
         <TextField
                 id="outlined-multiline-flexible"
                 label="Report article"
