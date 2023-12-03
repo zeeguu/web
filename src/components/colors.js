@@ -10,7 +10,7 @@ let zeeguuOrange = "#ffbb54";
 let zeeguuDarkOrange = "#9c7130";
 let lightBlue = "#54cdff";
 let lighterBlue = "#CCDEFF";
-let darkBlue = "#4492b3";
+let darkBlue = "#2f77ad";
 let veryLightGrey = "#efefef";
 let lightGrey = "#c1c1c1";
 let darkGrey = "#808080";
@@ -27,6 +27,7 @@ let lightOrange= "#ffe5b9";
 let brown = "#A46A00";
 let white = "#FFFFFF";
 let buttonBorder= "#3079b0";
+let gray = "999999";
 //black - the css standard color is used throughout the repo.
 //white - the css standard color is used throughout the repo.
 
@@ -70,5 +71,6 @@ export {
   brown,
   buttonBorder,
   white,
+  gray,
   setColors,
 };
