@@ -1,14 +1,15 @@
 /*global chrome*/
 import { useState, useEffect, useRef } from "react";
-import {
-  StyledModal,
-  StyledHeading,
-  GlobalStyle,
-  OverwriteZeeguu,
-} from "./Modal.styles";
+
+import { StyledModal,StyledHeading, GlobalStyle, OverwriteZeeguu,} from "./Modal.styles";
+
 import { StyledCloseButton } from "./Buttons.styles";
+import FloatingMenu from './FloatingMenu';
 import ZeeguuLoader from "../ZeeguuLoader";
+import UserFeedback from "./UserFeedback";
+
 import { EXTENSION_SOURCE } from "../constants";
+
 import { onScroll } from "../../zeeguu-react/src/reader/ArticleReader";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
 import { getMainImage } from "../Cleaning/generelClean";
@@ -20,8 +21,16 @@ import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 import { cleanDOMAfter, getHTMLContent } from "../Cleaning/pageSpecificClean";
+
+import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+import SaveToZeeguu from "./SaveToZeeguu";
+import colors from "../colors";
+
 import {SpeechContext} from "../../zeeguu-react/src/exercises/SpeechContext";
 import ZeeguuSpeech from "../../zeeguu-react/src/speech/ZeeguuSpeech";
+
+import Button from '@mui/material/Button';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export function Modal({
   title,
@@ -37,7 +46,7 @@ export function Modal({
   const [exerciseOpen, setExerciseOpen] = useState(false);
 
   const [translating, setTranslating] = useState(true);
-  const [pronouncing, setPronouncing] = useState(false);
+  const [pronouncing, setPronouncing] = useState(true);
 
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveTextArray, setInteractiveTextArray] = useState();
@@ -55,9 +64,21 @@ export function Modal({
   const articleInfoRef = useRef({});
   articleInfoRef.current = articleInfo;
 
+  const openSettings = () => {
+    window.open('https://www.zeeguu.org/account_settings', '_blank');
+  };
+
+  const buttons = [
+    <UserFeedback api={api} articleId={articleId} url={url} />,
+    <Button  style={{ textTransform: 'none', justifyContent:'space-between', fontSize: '0.9rem', fontWeight: '200', backgroundColor:`${colors.lighterBlue}`, color: `${colors.black}`}} key="two" onClick={openSettings}>Settings <SettingsIcon sx={{ fontSize: '0.9rem' }}/></Button>,
+  ];
+
+  const [buttonGroupVisible, setButtonGroupVisible] = useState(false);
+
+  const toggleButtonGroup = () => {
+    setButtonGroupVisible(!buttonGroupVisible);
+  };
   const [speechEngine, setSpeechEngine] = useState();
-
-
 
   useUILanguage();
 
@@ -154,8 +175,6 @@ export function Modal({
 
     }
 
-
-
     cleanDOMAfter(url);
   }, [articleInfo]);
 
@@ -230,24 +249,35 @@ export function Modal({
   }
 
   return (
-    <div>
+    <>
+      <div>
       <SpeechContext.Provider value={speechEngine}>
-        <GlobalStyle />
-        <StyledModal
-          isOpen={modalIsOpen}
-          className="Modal"
-          id="scrollHolder"
-          overlayClassName={"reader-overlay"}
-        >
-          <OverwriteZeeguu>
-            <StyledHeading>
+      <GlobalStyle />
+      <StyledModal
+        isOpen={modalIsOpen}
+        className="Modal"
+        id="scrollHolder"
+        overlayClassName={"reader-overlay"}
+      >
+        <OverwriteZeeguu>
+          <StyledHeading>
+            <div style={{ "float": "left", "max-width": "50%",  "display":"inline-flex", "padding": "1.5em"}}>
+              <div>
               <img
-                src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
-                alt={"Zeeguu logo"}
-                className="logoModal"
-              />
+                    src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+                    alt={"Zeeguu logo"}
+                    className="logoModal"
+                />
+              </div> 
+              <SaveToZeeguu
+              api={api}
+              articleId={articleId()}
+              setPersonalCopySaved={setPersonalCopySaved}
+              personalCopySaved={personalCopySaved} />
+            </div>
+            <div style={{ "float": "right", "width": "50%",  "display":"inline"}}>
               <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
-                X
+                <CloseSharpIcon sx={{color: colors.gray}}/>
               </StyledCloseButton>
               {readArticleOpen ? (
                 <ToolbarButtons
@@ -257,48 +287,49 @@ export function Modal({
                   setPronouncing={setPronouncing}
                 />
               ) : null}
-            </StyledHeading>
-            {readArticleOpen === true && (
-              <ReadArticle
-                articleId={articleId()}
-                api={api}
-                author={author}
-                interactiveTextArray={interactiveTextArray}
-                interactiveTitle={interactiveTitle}
-                articleImage={articleImage}
-                openReview={openReview}
-                translating={translating}
-                pronouncing={pronouncing}
-                url={url}
-                setPersonalCopySaved={setPersonalCopySaved}
-                personalCopySaved={personalCopySaved}
-              />
-            )}
-            {reviewOpen === true && (
-              <WordsForArticleModal
-                className="wordsForArticle"
+            </div>
+          </StyledHeading>
+          {readArticleOpen === true && (
+            <ReadArticle
+              articleId={articleId()}
+              api={api}
+              author={author}
+              interactiveTextArray={interactiveTextArray}
+              interactiveTitle={interactiveTitle}
+              articleImage={articleImage}
+              openReview={openReview}
+              translating={translating}
+              pronouncing={pronouncing}
+              url={url}
+              setPersonalCopySaved={setPersonalCopySaved}
+              personalCopySaved={personalCopySaved}
+            />
+          )}
+          {reviewOpen === true && (
+            <WordsForArticleModal
+              className="wordsForArticle"
+              api={api}
+              articleID={articleId()}
+              openExercises={openExercises}
+              openArticle={openArticle}
+            />
+          )}
+          {exerciseOpen === true && (
+            <>
+              <Exercises
+                className="exercises"
                 api={api}
                 articleID={articleId()}
                 openExercises={openExercises}
                 openArticle={openArticle}
               />
-            )}
-            {exerciseOpen === true && (
-              <>
-                <Exercises
-                  className="exercises"
-                  api={api}
-                  articleID={articleId()}
-                  source={EXTENSION_SOURCE}
-                  backButtonAction={openArticle}
-                  keepExercisingAction={reloadExercises}
-                />
-              </>
-            )}
-          </OverwriteZeeguu>
-        </StyledModal>
-      </SpeechContext.Provider>
-
+            </>
+          )}
+        </OverwriteZeeguu>   
+      </StyledModal>  
+      </SpeechContext.Provider>      
     </div>
+    <FloatingMenu buttons={buttons} buttonGroupVisible={buttonGroupVisible} toggleButtonGroup={toggleButtonGroup} />
+    </>
   );
 }

@@ -12,11 +12,13 @@ export default function sendFeedbackEmail(api, feedback, url, articleId, feedbac
     context: "url is: " + url + " and articleId is: " + articleId,
   };
 
-  api.sendFeedback(feedbackForEmail, (result_dict) => {
+  api.sendFeedback(feedbackForEmail, (result_dict, error) => {
     if (result_dict === "OK") {
       console.log("Feedback sent successfully");
     } else {
-      console.log("Something went wrong");
+      console.error("Error sending feedback:", error);
+      console.log("Received result_dict:", result_dict);
+      console.log("Something went wrong.");
     }
   });
 }

@@ -1,13 +1,35 @@
 import styled, { css } from "styled-components";
 import colors from "../colors";
 
+export const StyledPrimaryButton = styled.button`
+  color: ${colors.white};
+  background-color: ${colors.zeeguuOrange};
+  border-color:  ${colors.buttonBorder} !important;
+
+  :hover{
+    background-color: ${colors.lightOrange};
+    color: ${colors.brown};
+  }
+
+  height: 45px;
+  display: inline-block;
+  padding: 5px 45px 5px 45px;
+  margin: 5px;
+  height: 50px;
+  border-style: none;
+  border-width: 2px;
+  border-radius: 40px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0px 4px ${colors.brown};
+`;
+
 export const StyledCloseButton = styled.div`
   cursor: pointer;
-  right: 0px;
-  padding: 20px;
+  padding: 0%;
   height: 55px;
-  margin: 10px;
-  padding: 1px;
+  margin: 0px 0px 20px 20px;
   float: right;
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
@@ -16,6 +38,17 @@ export const StyledCloseButton = styled.div`
   -moz-osx-font-smoothing: grayscale;
 `;
 
+export const StyledSmallButton = styled.button`
+  color: ${colors.zeeguuOrange} !important;
+  background-color: ${colors.white} !important;
+  border-color: none;
+  cursor: pointer;
+  border-radius: 50px;
+  border: none;
+  padding: 5px;
+  margin: 5px 5px 5px 5px;
+  width: auto;
+`;
 
 export const StyledSmallButtonBlue = styled.button`
   color: ${colors.white} !important;
@@ -27,19 +60,20 @@ export const StyledSmallButtonBlue = styled.button`
   cursor: pointer;
   border-radius: 10px;
   border: none;
-  padding: 7px;
-  margin: 5px 5px 5px 0px;
+  padding: 5px;
+  margin: 5px 5px 5px 5px;
+  font-size: 18px;
 `;
 
 export const StyledSmallDisabledButton = styled.button`
-  color: #696969!important;
-  background-color: ${colors.lightGray} !important;
-  border-color: ${colors.darkGray} !important;
+  color: #b7b7b7 !important;
+  background-color: ${colors.white} !important;
+  border-color: none;
   cursor: default;
   border-radius: 10px;
   border: none;
-  padding: 7px;
-  margin: 5px 5px 5px 0px;
+  padding: 5px;
+  margin: 5px 5px 5px 5px;
 `;
 
 export const StyledButtonBlue = styled.button`

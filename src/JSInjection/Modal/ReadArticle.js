@@ -6,12 +6,9 @@ import {
   PARAGRAPH_CONTENT,
   HEADER_CONTENT,
 } from "../constants";
-import { StyledSmallButtonBlue } from "./Buttons.styles";
 import ReviewVocabulary from "./ReviewVocabulary";
-import SaveToZeeguu from "./SaveToZeeguu";
-import UserFeedback from "./UserFeedback";
-
 import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/DifficultyFeedbackBox";
+import { colors } from "@mui/material";
 
 export function ReadArticle({
   articleId,
@@ -27,10 +24,6 @@ export function ReadArticle({
   setPersonalCopySaved,
   personalCopySaved,
 }) {
-  function reportProblem(e) {
-    document.getElementById("feedback-box").scrollIntoView();
-    document.getElementById("textarea-feedback").focus();
-  }
 
   if (articleImage) {
     if (articleImage.src === null) {
@@ -41,15 +34,6 @@ export function ReadArticle({
   return (
     <>
       <div className="article-container">
-        <StyledSmallButtonBlue onClick={reportProblem}>
-          Report problems
-        </StyledSmallButtonBlue>
-        <SaveToZeeguu
-          api={api}
-          articleId={articleId}
-          setPersonalCopySaved={setPersonalCopySaved}
-          personalCopySaved={personalCopySaved}
-        />
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}
@@ -58,7 +42,7 @@ export function ReadArticle({
           />
         </h1>
         <p className="author">{author}</p>
-        <hr />
+        <hr/>
         {articleImage === undefined ? null : (
           <img
             id="zeeguuImage"
@@ -103,14 +87,11 @@ export function ReadArticle({
         })}
 
         <DifficultyFeedbackBox api={api} articleID={articleId} />
-
         <ReviewVocabulary
           articleId={articleId}
           api={api}
           openReview={openReview}
         />
-
-        <UserFeedback api={api} articleId={articleId} url={url} />
       </div>
     </>
   );

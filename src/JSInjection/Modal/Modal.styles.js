@@ -6,11 +6,11 @@ export const GlobalStyle = createGlobalStyle`
    .reader-overlay{
         position: fixed;
         top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        left: auto;
+        right: auto;
+        bottom: auto;
         background-color: ${colors.overlay} !important;
-        z-index: 5000000;
+        z-index: 3;
       }
 
     .feedback-overlay{
@@ -35,7 +35,7 @@ export const StyledModal = styled(ReactModal)`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 2000;
+  z-index: 2;
   background-color: ${colors.white};
   padding: 0% 2% 2% 2%;
   margin-top: 0px;
@@ -70,6 +70,10 @@ export const StyledModal = styled(ReactModal)`
     font-size: 1.3rem !important;
   }
 
+  hr {
+    border-top: 1px solid #F6F6F6;
+  }
+
   p,
   li {
     font-size: 1rem !important;
@@ -92,15 +96,16 @@ export const StyledModal = styled(ReactModal)`
   }
 
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
 
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px ${colors.scrollTrackGray};
+    background: #f1f1f1; 
   }
 
   ::-webkit-scrollbar-thumb {
-    box-shadow: inset 0 0 6px ${colors.scrollThumbGray};
+    background: ${colors.lighterBlue}; 
+    border-radius: 10px;
   }
 
   #zeeguuImage {
@@ -115,15 +120,13 @@ export const StyledModal = styled(ReactModal)`
 
   .article-container {
     padding: 5px 50px 0px 50px;
-    margin-bottom: 3em;
+    margin-bottom: 10em;
   }
 
   .feedbackBox {
-    background-color: ${colors.boxGray};
-    line-height: 1.2em;
-    border: 0px solid ${colors.boxGrayBorder};
-    font-size: 1.2em;
-    max-width: 90%;
+    background-color: ${colors.lighterBlue};
+    border: none;
+    max-width: 80%;
   }
 
   .floatRight {
@@ -141,6 +144,7 @@ export const OverwriteZeeguu = styled.div`
   /** Zeeguu Reader **/
   z-tag:hover {
     color: ${colors.translationHover} !important;
+    background-color: ${colors.lightOrange};
   }
   .article-container z-tag {
     font-size: 1.2em !important;
@@ -282,9 +286,12 @@ export const OverwriteZeeguu = styled.div`
 `;
 
 export const StyledHeading = styled.div`
-  height: 100px;
+  height: auto;
+  min-height: 100px;
+  overflow: hidden;
   background-color: ${colors.white};
   padding-top: 20px;
+  padding-bottom: 8px;
   right: 0px;
   top: 0px;
   position: sticky;
