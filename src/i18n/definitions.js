@@ -336,7 +336,7 @@ let strings = new LocalizedStrings(
             chooseTheWordFittingContextHeadline:
                 "Choose the alternative that fits the context",
             orderTheWordsToMakeTheHighlightedPhrase:
-                "Order the words to make the highlighted phrase. You don't need to use all the words.",
+                "Order the words to make the highlighted phrase. Some words can be extra.",
             matchWordWithTranslation: "Match each word with its translation",
             audioExerciseHeadline:
                 "Write the word your hear. Click to have it repeated!",

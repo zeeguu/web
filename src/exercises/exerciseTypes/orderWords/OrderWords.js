@@ -880,10 +880,11 @@ export default function OrderWords({
       // We provide only the context up to + 1 what the user has constructed.
       let resizedSolutionText = filterPunctuationSolArray.slice(0, newUserSolutionWordArray.length + 2).join(" ");
       setMessageToApi(messageToAPI + "H")
+      let nlp_model_to_use = EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? translateLang : exerciseLang;
       api.annotateClues(
         newUserSolutionWordArray,
         resizedSolutionText,
-        localStorage.native_language,
+        nlp_model_to_use,
         (updatedUserSolutionWords) => {
           updateWordsFromAPI(updatedUserSolutionWords, resizedSolutionText, userSolutionSentence);
         }

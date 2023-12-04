@@ -37,6 +37,10 @@ let DEFAULT_SEQUENCE = [
 
 let EXERCISE_TYPES_TIAGO = [
     {
+        type: OrderWordsL2,
+        requiredBookmarks: 1,
+    },
+    {
         type: OrderWordsL1,
         requiredBookmarks: 1,
     }
