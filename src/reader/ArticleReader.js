@@ -8,7 +8,6 @@ import InteractiveText from "./InteractiveText";
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
-import strings from "../i18n/definitions";
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
@@ -17,6 +16,8 @@ import ArticleSource from "./ArticleSource";
 import ReportBroken from "./ReportBroken";
 
 import TopToolbar from "./TopToolbar";
+import ReviewVocabulary from "./ReviewVocabulary";
+import ArticleAuthors from "./ArticleAuthors";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -68,7 +69,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [translating, setTranslating] = useState(true);
-  const [pronouncing, setPronouncing] = useState(false);
+  const [pronouncing, setPronouncing] = useState(true);
   const user = useContext(UserContext);
   const history = useHistory();
 
@@ -181,39 +182,28 @@ export default function ArticleReader({ api, teacherArticleID }) {
         pronouncing={pronouncing}
         setTranslating={setTranslating}
         setPronouncing={setPronouncing}
+        url={articleInfo.url}
+        UMR_SOURCE={UMR_SOURCE}
       />
-
-      <s.Title>
+      <h1>
         <TranslatableText
           interactiveText={interactiveTitle}
           translating={translating}
           pronouncing={pronouncing}
         />
-      </s.Title>
-      {/* <s.BookmarkButton>
-        <BookmarkButton
-          bookmarked={articleInfo.starred}
-          toggleBookmarkedState={toggleBookmarkedState}
-        />
-      </s.BookmarkButton> */}
-
-      <div style={{ marginTop: "1em" }}>
-        {/* <ArticleAuthors articleInfo={articleInfo} /> */}
+      </h1>
+      <div style={{ marginTop: "1em", marginBottom: "4em", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+        <ArticleAuthors articleInfo={articleInfo} />
+        <div style={{ display: "flex", flexDirection: "row"}}>
         <ArticleSource url={articleInfo.url} />
-      </div>
-
-      <br />
-      <div style={{ float: "right" }}>
         <ReportBroken
           api={api}
           UMR_SOURCE={UMR_SOURCE}
           history={history}
           articleID={articleID}
         />
+        </div>
       </div>
-
-      <br />
-      <br />
 
       {articleInfo.video ? (
         <iframe
@@ -237,17 +227,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
       </s.MainText>
 
       <DifficultyFeedbackBox api={api} articleID={articleID} />
-      <s.FeedbackBox>
-        <h2>{strings.reviewVocabulary}</h2>
-        <small>{strings.reviewVocabExplanation}</small>
-        <br />
-        <br />
-        <s.CenteredContent>
-          <s.NavigationLink primary to={`../words/forArticle/${articleID}`}>
-            {strings.reviewVocabulary}
-          </s.NavigationLink>
-        </s.CenteredContent>
-      </s.FeedbackBox>
+      <ReviewVocabulary
+          articleID={articleID}
+        />
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );

@@ -21,6 +21,37 @@ let ArticleReader = styled.div`
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
+
+  .feedbackBox {
+    background-color: ${lighterBlue};
+    border: none;
+    max-width: 80%;
+  }
+
+  h1 {
+    font-size: 1.9em !important;
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: 1.4rem !important;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-size: 1.3rem !important;
+  }
+
+  hr {
+    border-top: 1px solid #F6F6F6;
+  }
 `;
 
 let PlayerControl = styled.div`
@@ -38,12 +69,11 @@ let PlayerControl = styled.div`
 
 let RightHandSide = styled.div`
   float: right;
-  button {
-    background-color: ${zeeguuLightYellow};
-  }
 `;
 let Toolbar = styled.div`
-  height: 110px;
+    padding-top: 0.5rem;
+    height: 8em;
+    width: 100%;
   // background-color: ${veryLightGrey};
 
   button {
@@ -226,6 +256,7 @@ let NavigationLink = styled(Link)`
     `}
 `;
 
+
 let FeedbackBox = styled.div`
   border: 1px solid  ${lighterBlue};
   background-color: white;
@@ -240,7 +271,8 @@ let FeedbackBox = styled.div`
   }
   margin-left: auto;
   margin-right: auto;
-  h2, h5, p {
+
+  h2, h3, h5,  p {
     text-align: center;
   }
   .selected {
