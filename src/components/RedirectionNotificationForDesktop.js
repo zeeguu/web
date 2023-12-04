@@ -42,7 +42,7 @@ export default function RedirectionNotificationForDesktop({
           </s.Icon>
           .{" "}
           <s.ModalStrongTextWrapper>
-            Then&nbsp;select Read Article
+            Then&nbsp;wait for the reader to open
           </s.ModalStrongTextWrapper>
           .
         </p>
