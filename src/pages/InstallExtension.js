@@ -31,7 +31,7 @@ export default function InstallExtension() {
               </a>
             </s.OrangeButton>
             <s.OrangeButton>
-              <a href="">Install for Firefox</a>
+              <a href="https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/?fbclid=IwAR3W6fjyjjtwMIgDYhHzB8jMuvRC8JwHXMSeO2X6s4Z1K4gTQ3logWsPn4M">Install for Firefox</a>
             </s.OrangeButton>
             <a href="/articles">Don't want the extension? Go to articles.</a>
           </s.LinkContainer>
