@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
-import preprocessing from "../utils/preprocessing/preprocessing";
+import {preprocessing} from "../utils/preprocessing/preprocessing";
 
 export function TranslatableText({
                                      isCorrect,
