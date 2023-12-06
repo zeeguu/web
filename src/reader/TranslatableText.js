@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
-import {preprocessing} from "../utils/preprocessing/preprocessing";
+import {removePunctuation} from "../utils/preprocessing/preprocessing";
 
 export function TranslatableText({
                                      isCorrect,
@@ -30,10 +30,10 @@ export function TranslatableText({
         let bookmarkWords = bookmarkToStudy.split(" ");
         let word = interactiveText.paragraphsAsLinkedWordLists[0].linkedWords.head;
         while (word) {
-            if (preprocessing(word.word) === bookmarkWords[0]) {
+            if (removePunctuation(word.word) === bookmarkWords[0]) {
                 let copyOfFoundInstances = [...foundInstances];
                 for (let index = 0; index < bookmarkWords.length; index++) {
-                    if (preprocessing(word.word) === bookmarkWords[index]) {
+                    if (removePunctuation(word.word) === bookmarkWords[index]) {
                         copyOfFoundInstances.push(word.id);
                         word = word.next;
                     } else {

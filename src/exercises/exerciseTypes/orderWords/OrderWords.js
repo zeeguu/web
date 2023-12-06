@@ -6,7 +6,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import {preprocessing, tokenize} from "../../../utils/preprocessing/preprocessing";
+import {removePunctuation, tokenize} from "../../../utils/preprocessing/preprocessing";
 
 
 export default function OrderWords({
@@ -424,7 +424,7 @@ export default function OrderWords({
     }
 
     function _getWordsInSentence(sentence) {
-        let wordsForExercise = preprocessing(tokenize(sentence))
+        let wordsForExercise = removePunctuation(tokenize(sentence))
         // A lot of  articles start with a dash. ( - )
         if (wordsForExercise[0] === "-") wordsForExercise = wordsForExercise.splice(1)
         return _removeEmptyTokens(wordsForExercise);

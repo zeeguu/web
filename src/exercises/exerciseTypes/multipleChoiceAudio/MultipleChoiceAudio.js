@@ -7,7 +7,7 @@ import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import {preprocessing} from "../../../utils/preprocessing/preprocessing";
+import {removePunctuation} from "../../../utils/preprocessing/preprocessing";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import EditButton from "../../../words/EditButton.js";
@@ -71,7 +71,7 @@ export default function MultipleChoiceAudio({
         console.log("checking result...");
         if (
             selectedChoice ===
-            preprocessing(bookmarksToStudy[0].from.toLowerCase())
+            removePunctuation(bookmarksToStudy[0].from.toLowerCase())
         ) {
             correctAnswer(bookmarksToStudy[0]);
             setIsCorrect(true);

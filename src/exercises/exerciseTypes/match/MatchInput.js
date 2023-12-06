@@ -1,7 +1,7 @@
 import {useState} from "react";
 import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
-import {preprocessing} from "../../../utils/preprocessing/preprocessing";
+import {removePunctuation} from "../../../utils/preprocessing/preprocessing";
 import EditButton from "../../../words/EditButton.js";
 import {zeeguuOrange, darkBlue, matchGreen, zeeguuViolet} from "../../../components/colors";
 
@@ -99,7 +99,7 @@ function MatchInput({
                                     onClick={(e) => handleClick("from", Number(e.target.id))}
                                     onAnimationEnd={() => setIncorrectAnswer("")}
                                 >
-                                    {preprocessing(option.from.toLowerCase())}
+                                    {removePunctuation(option.from.toLowerCase())}
                                 </s.AnimatedMatchButton>
                             ) : buttonsToDisable.includes(option.id) || isCorrect ? (
                                 <s.ButtonRow key={"L2_Row_" + option.id}>
@@ -115,7 +115,7 @@ function MatchInput({
                                         style={answerPairStyle(option.id)}
                                         key={"L2_" + option.id}
                                     >
-                                        {preprocessing(option.from.toLowerCase())}
+                                        {removePunctuation(option.from.toLowerCase())}
                                     </s.MatchingWords>
                                     <s.MatchSpeakButtonHolder>
                                         <SpeakButton
@@ -133,7 +133,7 @@ function MatchInput({
                                     id={option.id}
                                     onClick={(e) => handleClick("from", Number(e.target.id))}
                                 >
-                                    {preprocessing(option.from.toLowerCase())}
+                                    {removePunctuation(option.from.toLowerCase())}
                                 </s.MatchButton>
                             )
                         )
@@ -152,7 +152,7 @@ function MatchInput({
                                     onClick={(e) => handleClick("to", Number(e.target.id))}
                                     onAnimationEnd={() => setIncorrectAnswer("")}
                                 >
-                                    {preprocessing(option.to.toLowerCase())}
+                                    {removePunctuation(option.to.toLowerCase())}
                                 </s.AnimatedMatchButton>
                             ) : buttonsToDisable.includes(option.id) || isCorrect ? (
                                 <s.MatchingWords
@@ -160,7 +160,7 @@ function MatchInput({
                                     style={answerPairStyle(option.id)}
                                     key={"L1_" + option.id}
                                 >
-                                    {preprocessing(option.to.toLowerCase())}
+                                    {removePunctuation(option.to.toLowerCase())}
                                 </s.MatchingWords>
                             ) : (
                                 <s.MatchButton
@@ -169,7 +169,7 @@ function MatchInput({
                                     id={option.id}
                                     onClick={(e) => handleClick("to", Number(e.target.id))}
                                 >
-                                    {preprocessing(option.to.toLowerCase())}
+                                    {removePunctuation(option.to.toLowerCase())}
                                 </s.MatchButton>
                             )
                         )

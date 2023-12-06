@@ -9,7 +9,7 @@ import {TranslatableText} from "../../../reader/TranslatableText.js";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import {preprocessing} from "../../../utils/preprocessing/preprocessing";
+import {removePunctuation} from "../../../utils/preprocessing/preprocessing";
 
 const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
@@ -61,7 +61,7 @@ export default function MultipleChoice({
         console.log("checking result...");
         if (
             selectedChoice ===
-            preprocessing(bookmarksToStudy[0].from.toLowerCase())
+            removePunctuation(bookmarksToStudy[0].from.toLowerCase())
         ) {
             correctAnswer(bookmarksToStudy[0]);
             setIsCorrect(true);
@@ -101,9 +101,9 @@ export default function MultipleChoice({
             secondRandomInt = Math.floor(Math.random() * similarWords.length);
         } while (firstRandomInt === secondRandomInt);
         let listOfOptions = [
-            preprocessing(bookmarksToStudy[0].from.toLowerCase()),
-            preprocessing(similarWords[firstRandomInt].toLowerCase()),
-            preprocessing(similarWords[secondRandomInt].toLowerCase()),
+            removePunctuation(bookmarksToStudy[0].from.toLowerCase()),
+            removePunctuation(similarWords[firstRandomInt].toLowerCase()),
+            removePunctuation(similarWords[secondRandomInt].toLowerCase()),
         ];
         let shuffledListOfOptions = shuffle(listOfOptions);
         setButtonOptions(shuffledListOfOptions);
