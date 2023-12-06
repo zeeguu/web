@@ -6,7 +6,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import removePunctuation from "../../../assorted/removePunctuation";
+import {preprocessing, tokenize} from "../../../utils/preprocessing/preprocessing";
 
 
 export default function OrderWords({
@@ -63,8 +63,10 @@ export default function OrderWords({
     const [textAfterExerciseText, setTextAfterExerciseText] = useState("");
     const [movingObject, setMovingObject] = useState();
 
-    const solutionDragIndex = useRef();
-    const solutionDragOverIndex = useRef();
+    // for when we are dragging things from the solution area
+    const solutionDragIndex = useRef(); // the one we are dragging
+    const solutionDragOverIndex = useRef(); // the one we are dragging over
+
     const isDragPlacementLeft = useRef();
     const wordSoupDrag = useRef();
     const moveOverElement = useRef();
@@ -175,8 +177,9 @@ export default function OrderWords({
             });
     }
 
-
-    // Handling events related to drag and drop
+    /*
+    Tracking the current scroll on mobile
+     */
     const handleTouchScroll = () => {
         let prevElement = document.getElementById("orderExercise");
         let currentElement = prevElement;
@@ -191,8 +194,12 @@ export default function OrderWords({
         else scrollY.current = 0;
     }
 
-    // https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
-    // Touch events needs to be handled as well
+
+    // * * * * * * * * * * * * * * * * * * * * *
+    // Handling events related to drag and drop
+    // * * * * * * * * * * * * * * * * * * * * *
+
+    // Everything that has solution is events for the words in the solution area
     const solutionOnDragStart = (e, arrayIndex) => {
         // Do not perform any actions if the exercise
         // is correct.
@@ -204,40 +211,9 @@ export default function OrderWords({
         _setOnDragStartVariables(e, wordInfo)
     };
 
-    const wordSoupOnDragStart = (e, wordId) => {
-        // Do not perform any actions if the exercise
-        // is correct.
-        if (isCorrect) return;
-
-        let wordInfo = _getWordById(wordId, wordsReferenceStatus);
-        moveElement.current = e.target;
-        wordSoupDrag.current = wordId;
-        _setOnDragStartVariables(e, {...wordInfo});
-    };
-
-    const solutionDragOver = (e, arrayIndex) => {
-        // Add the styling to the object one is hovering, this will display
-        // where the token will be placed in relation to the hovered object.
-        if (arrayIndex === solutionDragIndex.current || isCorrect) {
-            return
-        }
-        let element = e.target;
-        let mouseSide = _getObjectSide([e.clientX, e.clientY], element)
-        _setSideStyling(element, mouseSide);
-        solutionDragOverIndex.current = arrayIndex;
-        moveOverElement.current = e.target;
-        isDragPlacementLeft.current = mouseSide;
-    };
-
-    const solutionDragLeave = (e, position) => {
-        if (position === solutionDragIndex.current || isCorrect) {
-            return
-        }
-        e.target.classList.remove('toDragRight');
-        e.target.classList.remove('toDragLeft');
-        isDragPlacementLeft.current = false;
-        solutionDragOverIndex.current = null;
-    };
+    const solutionOnTouchStart = (e, arrayIndex) => {
+        solutionOnDragStart(e, arrayIndex);
+    }
 
     const solutionOnTouchMove = (e) => {
         // Equivalent to SolutionDragOver
@@ -276,17 +252,28 @@ export default function OrderWords({
         }
     };
 
-    const wordSoupDrop = (e) => {
-        if (isCorrect) return;
-        if (wordSoupDrag.current) {
-            // Do nothing:
-            wordSoupDrag.current = null;
+    const solutionOnDragOver = (e, arrayIndex) => {
+        // Add the styling to the object one is hovering over, this will display
+        // where the token will be placed in relation to the hovered object.
+        if (arrayIndex === solutionDragIndex.current || isCorrect) {
+            return
         }
-        if (solutionDragIndex.current != null) {
-            let wordItem = userSolutionWordArray[solutionDragIndex.current];
-            notifyChoiceSelection(wordItem.id);
+        let element = e.target;
+        let mouseSide = _getObjectSide([e.clientX, e.clientY], element)
+        _setSideStyling(element, mouseSide);
+        solutionDragOverIndex.current = arrayIndex;
+        moveOverElement.current = e.target;
+        isDragPlacementLeft.current = mouseSide;
+    };
+
+    const solutionOnDragLeave = (e, position) => {
+        if (position === solutionDragIndex.current || isCorrect) {
+            return
         }
-        _resetDragStatuses();
+        e.target.classList.remove('toDragRight');
+        e.target.classList.remove('toDragLeft');
+        isDragPlacementLeft.current = false;
+        solutionDragOverIndex.current = null;
     };
 
     const solutionOnTouchEnd = (e) => {
@@ -400,6 +387,34 @@ export default function OrderWords({
         _resetDragStatuses();
     }
 
+    // There are fewer events that wordSoup elements handle because they don't react on being hovered over
+    const wordSoupOnDragStart = (e, wordId) => {
+        // Do not perform any actions if the exercise
+        // is correct.
+        if (isCorrect) return;
+
+        let wordInfo = _getWordById(wordId, wordsReferenceStatus);
+        moveElement.current = e.target;
+        wordSoupDrag.current = wordId;
+        _setOnDragStartVariables(e, {...wordInfo});
+    };
+    const wordSoupOnTouchStart = (e, wordId) => {
+        wordSoupOnDragStart(e, wordId);
+    }
+    const wordSoupOnDrop = (e) => {
+        if (isCorrect) return;
+        if (wordSoupDrag.current) {
+            // Do nothing:
+            wordSoupDrag.current = null;
+        }
+        if (solutionDragIndex.current != null) {
+            let wordItem = userSolutionWordArray[solutionDragIndex.current];
+            notifyChoiceSelection(wordItem.id);
+        }
+        _resetDragStatuses();
+    };
+
+
     if (IS_DEBUG) console.log("Running ORDER WORDS EXERCISE");
 
     function _removeEmptyTokens(tokenList) {
@@ -409,7 +424,7 @@ export default function OrderWords({
     }
 
     function _getWordsInSentence(sentence) {
-        let wordsForExercise = removePunctuation(sentence).split(" ")
+        let wordsForExercise = preprocessing(tokenize(sentence))
         // A lot of  articles start with a dash. ( - )
         if (wordsForExercise[0] === "-") wordsForExercise = wordsForExercise.splice(1)
         return _removeEmptyTokens(wordsForExercise);
@@ -897,9 +912,9 @@ export default function OrderWords({
                             toggleShow={toggleShow}
                             isWordSoup={false}
                             onDragStartHandle={solutionOnDragStart}
-                            onDragOverHandle={solutionDragOver}
-                            onDragLeaveHandle={solutionDragLeave}
-                            onTouchStartHandle={solutionOnDragStart}
+                            onDragOverHandle={solutionOnDragOver}
+                            onDragLeaveHandle={solutionOnDragLeave}
+                            onTouchStartHandle={solutionOnTouchStart}
                             onTouchMoveHandle={solutionOnTouchMove}
                         />
                     </div>
@@ -918,7 +933,7 @@ export default function OrderWords({
                     <div
                         id={WORD_SOUP_ID}
                         onDragOver={(e) => e.preventDefault()}
-                        onDrop={wordSoupDrop}
+                        onDrop={wordSoupOnDrop}
                         onTouchEnd={solutionOnTouchEnd}
                     >
                         <OrderWordsInput
@@ -930,7 +945,7 @@ export default function OrderWords({
                             toggleShow={toggleShow}
                             isWordSoup={true}
                             onDragStartHandle={wordSoupOnDragStart}
-                            onTouchStartHandle={wordSoupOnDragStart}
+                            onTouchStartHandle={wordSoupOnTouchStart}
                             onTouchMoveHandle={solutionOnTouchMove}
                         />
                     </div>

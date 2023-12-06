@@ -7,12 +7,11 @@ import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import removePunctuation from "../../../assorted/removePunctuation";
+import {preprocessing} from "../../../utils/preprocessing/preprocessing";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import EditButton from "../../../words/EditButton.js";
-import { useContext } from 'react';
-
+import {useContext} from 'react';
 
 
 const EXERCISE_TYPE = "Multiple_Choice_Audio";
@@ -44,8 +43,6 @@ export default function MultipleChoiceAudio({
     const exercise = "exercise";
 
 
-
-
     console.log("exercise session id: " + exerciseSessionId)
 
 
@@ -74,7 +71,7 @@ export default function MultipleChoiceAudio({
         console.log("checking result...");
         if (
             selectedChoice ===
-            removePunctuation(bookmarksToStudy[0].from.toLowerCase())
+            preprocessing(bookmarksToStudy[0].from.toLowerCase())
         ) {
             correctAnswer(bookmarksToStudy[0]);
             setIsCorrect(true);

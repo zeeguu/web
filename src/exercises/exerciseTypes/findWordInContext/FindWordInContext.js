@@ -9,6 +9,7 @@ import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
+import {tokenize} from "../../../utils/preprocessing/preprocessing";
 
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
@@ -60,7 +61,7 @@ export default function FindWordInContext({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [translatedWords]);
 
-    function equalAfterRemovingSpecialCharacters(a,b) {
+    function equalAfterRemovingSpecialCharacters(a, b) {
         // from: https://stackoverflow.com/a/4328546
         let first = a.replace(/[^\w\s\']|_/g, "")
             .replace(/\s+/g, " ");
@@ -68,6 +69,7 @@ export default function FindWordInContext({
             .replace(/\s+/g, " ");
         return first === second;
     }
+
     function checkTranslations(userTranslatedSequences) {
 
         if (userTranslatedSequences.length == 0) {
@@ -76,19 +78,19 @@ export default function FindWordInContext({
 
         let solutionDiscovered = false;
 
-        let solutionSplitIntoWords = bookmarksToStudy[0].from.split(" ");
+        let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
 
         solutionSplitIntoWords.forEach((wordInSolution) => {
 
             userTranslatedSequences.forEach((userTranslatedSequence) => {
                 let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
-                    wordsInUserTranslatedSequence.forEach((translatedWord) => {
+                wordsInUserTranslatedSequence.forEach((translatedWord) => {
 
 
-                        if (equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)) {
-                            solutionDiscovered = true;
-                        }
-                    });
+                    if (equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)) {
+                        solutionDiscovered = true;
+                    }
+                });
 
             });
         });
