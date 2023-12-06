@@ -5,7 +5,6 @@ import {
     darkGreen,
     zeeguuRed,
     darkBlue,
-    darkGrey,
 } from "../../../components/colors";
 
 const ExerciseOW = styled.div`
@@ -127,10 +126,8 @@ const ExerciseOW = styled.div`
     
   }
 
-
   .incorrect {
     background-color: ${zeeguuRed};
-    
   }
 
   .correct {
@@ -253,29 +250,7 @@ const ExerciseOW = styled.div`
     }
 
   }
-
-  .grab {
-        cursor: move;
-        cursor: grab;
-        cursor: -moz-grab;
-        cursor: -webkit-grab;
-        .thumbnails-list{
-            cursor: pointer;
-        }
-    }
-
-    .grab:active {
-        cursor: grabbing;
-        cursor: -moz-grabbing;
-        cursor: -webkit-grabbing;
-    }
   
-  .toSwap {
-    outline: 4px ${darkBlue} dashed;
-    color: #000000bf;
-    background-color: #6db9d92b !important;
-  }
-
   .toDragLeft {
     box-shadow: -7px 0px 0px 2px ${darkBlue}, 0px 0px 0px 0px ${darkBlue};
     outline: 2px ${darkBlue} solid;

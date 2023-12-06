@@ -74,8 +74,8 @@ export default function OrderWords({
   const scrollY = useRef();
 
   const handleTouchScroll = () => {
-    var prevElement = document.getElementById("orderExercise");
-    var currentElement = prevElement;
+    let prevElement = document.getElementById("orderExercise");
+    let currentElement = prevElement;
     while(currentElement != null){
       prevElement = currentElement;
       if (prevElement.scrollTop != 0){
@@ -87,28 +87,28 @@ export default function OrderWords({
     else scrollY.current = 0;
   }
 
-  function _getCurrentExerciseTime() {
-    let pressTime = new Date();
+  function _getCurrentDuration() {
+    let currTime = new Date();
     if (IS_DEBUG) {
-      console.log(pressTime - initialTime);
+      console.log(currTime - initialTime);
       console.log("^^^^ time elapsed");
     }
-    return pressTime - initialTime;
+    return currTime - initialTime;
   }
 
   // Touch / Mouse Drag n' Drop
   // Helper Functions
 
-  function _setMoveInitialPosition(x, y) {
-    moveLastPosition.current = [x, y];
-    moveElementInitialPosition.current = [x, y];
-  }
-
   function _setOnDragStartVariables(e, wordInfo) {
+    function _setMoveInitialPosition(x, y) {
+      moveLastPosition.current = [x, y];
+      moveElementInitialPosition.current = [x, y];
+    }
+
     scrollY.current = 0;
-    var x, y;
+    let x, y;
     if (e.type === "touchstart") {
-      var touch = e.touches[0] || e.changedTouches[0];
+      let touch = e.touches[0] || e.changedTouches[0];
       x = touch.pageX;
       y = touch.pageY;
     }
@@ -120,15 +120,6 @@ export default function OrderWords({
     setMovingObject(wordInfo);
   };
 
-  function _clearMoveItem(element) {
-    if (element != null) {
-      moveElement.current.classList.remove("elementHidden");
-      element.style.position = "";
-      element.style.left = "";
-      element.style.top = "";
-      element.style.zIndex = "";
-    }
-  }
 
   function _clearMoveOverObject(){
     if (moveOverElement.current != null) {
@@ -152,7 +143,7 @@ export default function OrderWords({
   function _getPosition(elem) {
     // Found: https://stackoverflow.com/questions/9040768/getting-coordinates-of-objects-in-js
 
-    var dims = { offsetLeft: 0, offsetTop: 0, 
+    let dims = { offsetLeft: 0, offsetTop: 0, 
       width: elem.offsetWidth, height: elem.offsetHeight };
 
     do {
@@ -177,10 +168,10 @@ export default function OrderWords({
 
   function _performMoveItem(x, y, initialPosition, element) {
     if (element != null) {
-      var dx = x - initialPosition.current[0]
-      var dy = y - initialPosition.current[1]
-      var width = element.offsetWidth;
-      var height = element.offsetHeight;
+      let dx = x - initialPosition.current[0]
+      let dy = y - initialPosition.current[1]
+      let width = element.offsetWidth;
+      let height = element.offsetHeight;
       // Hide the original object.
       moveElement.current.classList.add("elementHidden");
       element.style.position = "absolute";
@@ -241,7 +232,8 @@ export default function OrderWords({
   };
 
   const solutionDragOver = (e, arrayIndex) => {
-    // Insert a PlaceHolder token at the desired place it it isn't one
+    // Add the styling to the object one is hovering, this will display
+    // where the token will be placed in relation to the hovered object.
     if (arrayIndex === solutionDragIndex.current || isCorrect) { return }
     let element = e.target;
     let mouseSide = _getObjectSide([e.clientX, e.clientY], element)
@@ -263,7 +255,7 @@ export default function OrderWords({
     // Equivalent to SolutionDragOver
     if (isCorrect) return;
 
-    var touch = e.touches[0] || e.changedTouches[0];
+    let touch = e.touches[0] || e.changedTouches[0];
     let x = touch.pageX;
     let y = touch.pageY;
     moveLastPosition.current = [x, y];
@@ -312,6 +304,16 @@ export default function OrderWords({
   };
 
   const solutionOnTouchEnd = (e) => {
+    function _clearMoveItem(element) {
+      if (element != null) {
+        moveElement.current.classList.remove("elementHidden");
+        element.style.position = "";
+        element.style.left = "";
+        element.style.top = "";
+        element.style.zIndex = "";
+      }
+    }
+
     if (isCorrect) return;
     _clearMoveItem(moveElement.current);
     if (moveLastPosition.current == null) {
@@ -447,7 +449,7 @@ export default function OrderWords({
       To be set by the component:
       - id:int , position in the array
       - word:str, the token string
-      - status:str, the class for the object (correct, incorrect, toSwap)
+      - status:str, the class for the object (correct, incorrect)
       - inUse:bool, if the user has used this word
       - isInSetence:bool, if it's part of the original sentence
         - NOTE, this is done by the frontend as the API may add repeated
@@ -491,7 +493,7 @@ export default function OrderWords({
 
   function _logUserActivityCheck(constructedSentence,
     resizeSol, errorCount, finalClueText, errorTypesList, updatedErrorCounter) {
-    let currentDuration = _getCurrentExerciseTime();
+    let currentDuration = _getCurrentDuration();
     let jsonDataExerciseCheck = {
       "constructed_sent": constructedSentence,
       "solution_sent": resizeSol,
@@ -782,7 +784,7 @@ export default function OrderWords({
     // Ensure Rest and Swap are reset
     handleUndoResetStatus();
 
-    let duration = _getCurrentExerciseTime();
+    let duration = _getCurrentDuration();
     let message = messageToAPI + "S";
     // Construct the Sentence to show the solution.
     let solutionWord = [...solutionWords]
@@ -795,7 +797,7 @@ export default function OrderWords({
   }
 
   function handleAnswer(message) {
-    let duration = _getCurrentExerciseTime();
+    let duration = _getCurrentDuration();
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
