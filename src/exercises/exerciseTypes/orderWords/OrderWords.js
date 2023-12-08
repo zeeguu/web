@@ -424,7 +424,7 @@ export default function OrderWords({
     }
 
     function _getWordsInSentence(sentence) {
-        let wordsForExercise = removePunctuation(tokenize(sentence))
+        let wordsForExercise = tokenize(removePunctuation(sentence));
         // A lot of  articles start with a dash. ( - )
         if (wordsForExercise[0] === "-") wordsForExercise = wordsForExercise.splice(1)
         return _removeEmptyTokens(wordsForExercise);
