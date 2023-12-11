@@ -431,6 +431,8 @@ export default function OrderWords({
     }
 
     function _getWordsFromWordProps(wordPropList) {
+        // Retrieves the str from the property dictionary.
+        // See the intialization/description at _initializeWordProps
         let wordList = [];
         for (let i = 0; i < wordPropList.length; i++) {
             wordList.push(wordPropList[i]["word"]);
@@ -438,9 +440,9 @@ export default function OrderWords({
         return wordList;
     }
 
-    function _initializeWordAttributes(wordList, sentenceWords) {
+    function _initializeWordProps(wordList, sentenceWords) {
         /*
-        Create an word object with the following attributes:
+        Create an word object with the following properties:
           To be set by the component:
           - id:int , position in the array
           - word:str, the token string
@@ -581,7 +583,7 @@ export default function OrderWords({
                                startTime,
                                is_L1) {
         const initialWords = is_L1 ? _getWordsInSentence(translatedContext) : _getWordsInSentence(exerciseContext);
-        setSolutionWords(_initializeWordAttributes([...initialWords], initialWords));
+        setSolutionWords(_initializeWordProps([...initialWords], initialWords));
         if (!is_L1) {
             api.getConfusionWords(exerciseLang, exerciseContext, (cWords) => {
                 let jsonCWords = JSON.parse(cWords)
@@ -615,7 +617,7 @@ export default function OrderWords({
         pos_picked,
         word_used) {
         exerciseWords = shuffle(exerciseWords);
-        let propWords = _initializeWordAttributes(exerciseWords, initialWords);
+        let propWords = _initializeWordProps(exerciseWords, initialWords);
         setWordsReferenceStatus(propWords);
         setConfuseWords(apiConfuseWords);
         setPosSelected(pos_picked);
