@@ -1,30 +1,35 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import moment from "moment";
+import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
 
-
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
   dontShowImage,
   hasExtension,
-    api
+  api,
+  doNotShowRedirectionModal_UserPreference,
+  setDoNotShowRedirectionModal_UserPreference,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
+  const [isArticleSaved, setIsArticleSaved] = useState(
+    article.has_personal_copy
+  );
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
-  function handleClose() {
+  function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
   }
 
-  function handleOpen() {
+  function handleOpenRedirectionModal() {
     setIsRedirectionModaOpen(true);
   }
 
@@ -32,48 +37,66 @@ export default function ArticleOverview({
     let open_in_zeeguu = (
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
-    let open_externally = (
-      //The RedirectionNotificationModal is displayed when the user clicks
-      //the article's title from the recommendation list.
-      //The modal informs the user that they are about to be redirected
-      //to the original article's website and guides them on what steps
+
+    let open_externally_with_modal = (
+      //The RedirectionNotificationModal modal informs the user that they are about
+      //to be redirected to the original article's website and guides them on what steps
       //should be taken to start reading the said article with The Zeeguu Reader extension
+      //The modal is displayed when the user clicks the article's title from the recommendation
+      //list and can be deactivated when they select "Do not show again" and proceed.
       <>
         <RedirectionNotificationModal
+          api={api}
           article={article}
           open={isRedirectionModalOpen}
-          handleClose={handleClose}
+          handleCloseRedirectionModal={handleCloseRedirectionModal}
+          setDoNotShowRedirectionModal_UserPreference={
+            setDoNotShowRedirectionModal_UserPreference
+          }
+          setIsArticleSaved={setIsArticleSaved}
         />
-        <s.InvisibleTitleButton onClick={handleOpen}>
+        <s.InvisibleTitleButton onClick={handleOpenRedirectionModal}>
           {article.title}
         </s.InvisibleTitleButton>
       </>
     );
 
-    if (article.video) {
-      return open_in_zeeguu;
-    }
+    let open_externally_without_modal = (
+      //allow target _self on mobile to easily go back to Zeeguu
+      //using mobile browser navigation
+      <a
+        target={isMobile ? "_self" : "_blank"}
+        rel="noreferrer"
+        href={article.url}
+      >
+        {article.title}
+      </a>
+    );
 
-    if (!Feature.extension_experiment1() && !hasExtension) {
-      // if the feature is not enabled and if they don't have the extension we always open in zeeguu
-      return open_in_zeeguu;
-    }
+    let should_open_in_zeeguu =
+      article.video ||
+      (!Feature.extension_experiment1() && !hasExtension) ||
+      article.has_personal_copy ||
+      article.has_uploader ||
+      isArticleSaved === true;
 
-    // else, we only open in zeegu if it's a personal copy or the article
-    // has an uploader, thus it's uploaded from our own platform
-    // either by the user themselves or by a teacher maybe
-    if (article.has_personal_copy || article.has_uploader) {
-      return open_in_zeeguu;
-    } else {
-      return open_externally;
-    }
+    let should_open_with_modal =
+      doNotShowRedirectionModal_UserPreference === false;
+
+    if (should_open_in_zeeguu) return open_in_zeeguu;
+    else if (should_open_with_modal) return open_externally_with_modal;
+    else return open_externally_without_modal;
   }
 
   return (
     <s.ArticlePreview>
-      <s.Title>{titleLink(article)}
-          <SmallSaveArticleButton api={api} article={article} />
-      </s.Title>
+      <SmallSaveArticleButton
+        api={api}
+        article={article}
+        isArticleSaved={isArticleSaved}
+        setIsArticleSaved={setIsArticleSaved}
+      />
+      <s.Title>{titleLink(article)}</s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
 

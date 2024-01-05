@@ -1,34 +1,36 @@
 /*global chrome*/
 const PREFERRED_LOCALES = {fr: "fr-FR", nl: "nl-NL", en: "en-US", es: "es-ES"};
-const PREFERRED_VOICE_NAMES = {fr: ["Google", "Thomas", "Audrey", "Aurelie"]}
+const PREFERRED_VOICE_NAMES = {fr: [  "Google", "Thomas", "Audrey", "Aurelie"]}
 
 function voiceForLanguageCode(code, voices) {
 
     let specificCode = PREFERRED_LOCALES[code] ?? code;
-    console.log(specificCode);
+    // console.log(Date())
+    // console.log(specificCode);
 
     let languageVoices = voices.filter((x) => x.lang.startsWith(specificCode));
-    console.log(languageVoices);
+    // console.log(languageVoices);
 
-    let preferredLocaleNames = PREFERRED_VOICE_NAMES.code || [];
-    console.log(preferredLocaleNames);
+    let preferredLocaleNames = PREFERRED_VOICE_NAMES[code] || [];
+    // console.log(preferredLocaleNames);
 
 
     for (let i = 0; i < preferredLocaleNames.length; i++) {
         let preferredName = preferredLocaleNames[i];
-        console.log("looking for... " + preferredName);
+        // console.log("looking for... " + preferredName);
         let favoriteVoices = languageVoices.filter((x) => x.name.startsWith(preferredName));
-        console.log(favoriteVoices);
+        // console.log(favoriteVoices);
 
         if (favoriteVoices.length > 0) {
             let voice = favoriteVoices [0];
-            console.log(voice.name + " " + voice.lang);
+            console.log("Found: " + voice.name + " " + voice.lang);
             return voice;
         }
     }
 
     let voice = languageVoices[0];
-    console.log(voice.name + voice.lang);
+    if (voice) console.log(voice.name + voice.lang);
+
     return voice;
 }
 
@@ -81,6 +83,7 @@ const ZeeguuSpeech = class {
         allVoicesObtained.then(
             (voices) => (this.voice = voiceForLanguageCode(this.language, voices))
         );
+
     }
 
     speakOut(word) {

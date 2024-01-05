@@ -24,6 +24,7 @@ const LocalStorage = {
       "audio_experiment_displayed_questionnaire",
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
     clickedVideoLink: "clicked_video_link",
+    DoNotShowRedirectionModal: "do_not_show_redirection_modal",
   },
 
   userInfo: function () {
@@ -47,6 +48,15 @@ const LocalStorage = {
 
   displayedExtensionPopup: function () {
     return localStorage[this.Keys.DisplayedExtensionPopup];
+  },
+
+  getDoNotShowRedirectionModal: function () {
+    return localStorage[this.Keys.DoNotShowRedirectionModal];
+  },
+
+  setDoNotShowRedirectionModal: function (doNotShowRedirectionModal) {
+    localStorage[this.Keys.DoNotShowRedirectionModal] =
+      doNotShowRedirectionModal;
   },
 
   // Setting info

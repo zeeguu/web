@@ -11,6 +11,9 @@ import removePunctuation from "../../../assorted/removePunctuation";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import EditButton from "../../../words/EditButton.js";
+import { useContext } from 'react';
+
+
 
 const EXERCISE_TYPE = "Multiple_Choice_Audio";
 
@@ -39,6 +42,9 @@ export default function MultipleChoiceAudio({
     const [selectedButtonId, setSelectedButtonId] = useState("");
     const bookmarkToStudy = bookmarksToStudy[0];
     const exercise = "exercise";
+
+
+
 
     console.log("exercise session id: " + exerciseSessionId)
 

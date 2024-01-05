@@ -11,6 +11,7 @@ import { RoutingContext } from "../contexts/RoutingContext";
 import * as s from "./ArticleReader.sc";
 
 import SoundPlayer from "./SoundPlayer";
+import ToolbarButtons from "./ToolbarButtons";
 
 function userIsTesterForAudio(user) {
   let testers = [
@@ -63,12 +64,6 @@ export default function TopToolbar({
 
   return (
     <PopupButtonWrapper>
-      {/* <s.BookmarkButton>
-        <BookmarkButton
-          bookmarked={articleInfo.starred}
-          toggleBookmarkedState={toggleBookmarkedState}
-        />
-      </s.BookmarkButton> */}
 
       
       <s.Toolbar>
@@ -100,28 +95,13 @@ export default function TopToolbar({
             <SoundPlayer api={api} interactiveText={interactiveText} />
           </s.PlayerControl>
         )}
-
         <s.RightHandSide>
-          <button
-            className={translating ? "selected" : ""}
-            onClick={(e) => toggle(translating, setTranslating)}
-          >
-            <img
-              src="https://zeeguu.org/static/images/translate.svg"
-              alt={strings.translateOnClick}
-            />
-            <div className="tooltiptext">{strings.translateOnClick}</div>
-          </button>
-          <button
-            className={pronouncing ? "selected" : ""}
-            onClick={(e) => toggle(pronouncing, setPronouncing)}
-          >
-            <img
-              src="https://zeeguu.org/static/images/sound.svg"
-              alt={strings.listenOnClick}
-            />
-            <div className="tooltiptext">{strings.listenOnClick}</div>
-          </button>
+        <ToolbarButtons
+                  translating={translating}
+                  pronouncing={pronouncing}
+                  setTranslating={setTranslating}
+                  setPronouncing={setPronouncing}
+                />
         </s.RightHandSide>
         <progress value={articleProgress} style={{width: '100%'}}/>
       </s.Toolbar>
