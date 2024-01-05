@@ -39,6 +39,7 @@ export default function TopToolbar({
   pronouncing,
   setTranslating,
   setPronouncing,
+  articleProgress,
 }) {
   const history = useHistory();
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
@@ -69,7 +70,9 @@ export default function TopToolbar({
         />
       </s.BookmarkButton> */}
 
+      
       <s.Toolbar>
+        
         {user.is_teacher && (
           <>
             {teacherArticleID && (
@@ -120,6 +123,7 @@ export default function TopToolbar({
             <div className="tooltiptext">{strings.listenOnClick}</div>
           </button>
         </s.RightHandSide>
+        <progress value={articleProgress} style={{width: '100%'}}/>
       </s.Toolbar>
     </PopupButtonWrapper>
   );

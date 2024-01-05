@@ -42,6 +42,7 @@ let RightHandSide = styled.div`
     background-color: ${zeeguuLightYellow};
   }
 `;
+
 let Toolbar = styled.div`
   height: 110px;
   // background-color: ${veryLightGrey};
@@ -58,6 +59,34 @@ let Toolbar = styled.div`
     padding: 1px;
     user-select: none;
     cursor: pointer;
+  }
+
+  progress[value] {
+    --color: ${zeeguuOrange}; /* the progress color */
+    --background: lightgrey; /* the background color */
+  
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    width: 100%;
+    height: 0.7em;
+    margin: 5px 0px 5px 0px;
+    border-radius: 10em;
+    background: var(--background);
+  }
+
+  progress[value]::-webkit-progress-bar {
+    border-radius: 10em;
+    background: var(--background);
+  }
+  progress[value]::-webkit-progress-value {
+    border-radius: 10em;
+    background: var(--color);
+  }
+  progress[value]::-moz-progress-bar {
+    border-radius: 10em;
+    background: var(--color);
   }
 
   button:focus {

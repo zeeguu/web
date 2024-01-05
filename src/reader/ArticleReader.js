@@ -18,7 +18,7 @@ import ReportBroken from "./ReportBroken";
 
 import TopToolbar from "./TopToolbar";
 
-let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
+let FREQUENCY_KEEPALIVE = 3 * 1000; // 3 seconds 
 let previous_time = 0; // since sent a scroll update
 
 export const UMR_SOURCE = "UMR";
@@ -29,15 +29,15 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-export function onScroll(api, articleID, source) {
+export function onScroll(api, articleID, source, percent) {
   let _current_time = new Date();
   let current_time = _current_time.getTime();
   if (previous_time === 0) {
-    api.logReaderActivity(api.SCROLL, articleID, "", source);
+    api.logReaderActivity(api.SCROLL, articleID, percent, source);
     previous_time = current_time;
   } else {
     if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
-      api.logReaderActivity(api.SCROLL, articleID, "", source);
+      api.logReaderActivity(api.SCROLL, articleID, percent, source);
       previous_time = current_time;
     } else {
     }
@@ -68,9 +68,20 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [translating, setTranslating] = useState(true);
-  const [pronouncing, setPronouncing] = useState(false);
+  const [pronouncing, setPronouncing] = useState(true);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
   const user = useContext(UserContext);
   const history = useHistory();
+  
+  function updateScrollPosition() {
+    var scrollElement = document.getElementById("scrollHolder")
+    var scrollY = scrollElement.scrollTop + scrollElement.clientHeight;
+    var limit = scrollElement.scrollHeight;
+    var ratio = Math.round(scrollY/limit * 100) / 100
+    setScrollPosition(ratio);
+    return ratio;
+  };
 
   useEffect(() => {
     onCreate();
@@ -119,8 +130,10 @@ export default function ArticleReader({ api, teacherArticleID }) {
     });
 
     window.addEventListener("scroll", function () {
-      onScroll(api, articleID, UMR_SOURCE);
-    });
+      var scroll = updateScrollPosition();
+      console.log(scroll);
+      onScroll(api, articleID, UMR_SOURCE, scroll);
+    }, true);
   }
 
   function onDestruct() {
@@ -170,7 +183,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   return (
-    <s.ArticleReader>
+    <s.ArticleReader >
       <TopToolbar
         user={user}
         teacherArticleID={teacherArticleID}
@@ -181,6 +194,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
         pronouncing={pronouncing}
         setTranslating={setTranslating}
         setPronouncing={setPronouncing}
+        url={articleInfo.url}
+        UMR_SOURCE={UMR_SOURCE}
+        articleProgress={scrollPosition}
       />
 
       <s.Title>
@@ -227,7 +243,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
       ) : (
         ""
       )}
-
       <s.MainText>
         <TranslatableText
           interactiveText={interactiveText}
