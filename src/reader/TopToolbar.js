@@ -103,7 +103,7 @@ export default function TopToolbar({
                   setPronouncing={setPronouncing}
                 />
         </s.RightHandSide>
-        <progress value={articleProgress} style={{width: '100%'}}/>
+        <progress value={articleProgress}/>
       </s.Toolbar>
     </PopupButtonWrapper>
   );

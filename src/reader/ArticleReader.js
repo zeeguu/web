@@ -77,9 +77,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
   
   function updateScrollPosition() {
     var scrollElement = document.getElementById("scrollHolder")
-    var scrollY = scrollElement.scrollTop + scrollElement.clientHeight;
-    var limit = scrollElement.scrollHeight;
+    var scrollY = scrollElement.scrollTop ;
+    var limit = scrollElement.scrollHeight - scrollElement.clientHeight - 450; // 450 represents the feedback + exercise div
     var ratio = Math.round(scrollY/limit * 100) / 100
+    // Should we allow the ratio to go above 1?
+    // Above 1 is the area where the feedback + exercises are.
     setScrollPosition(ratio);
     return ratio;
   };

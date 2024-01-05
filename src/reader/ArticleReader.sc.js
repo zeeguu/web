@@ -99,8 +99,8 @@ let Toolbar = styled.div`
     appearance: none;
     border: none;
     width: 100%;
-    height: 0.7em;
-    margin: 5px 0px 5px 0px;
+    height: 0.5em;
+    margin: 10px 0px 1px 0px;
     border-radius: 10em;
     background: var(--background);
   }
