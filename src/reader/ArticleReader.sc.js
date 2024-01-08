@@ -7,6 +7,7 @@ import {
   zeeguuOrange,
   zeeguuVarmYellow,
   lighterBlue,
+  lightGrey,
 } from "../components/colors";
 
 import {
@@ -91,8 +92,12 @@ let Toolbar = styled.div`
   }
 
   progress[value] {
-    --color: ${zeeguuOrange}; /* the progress color */
-    --background: lightgrey; /* the background color */
+    --color: linear-gradient(
+      89.5deg,
+       ${zeeguuOrange},
+       ${zeeguuLightYellow} 100%
+     ); /* the progress color */
+    --background: ${lightGrey}; /* the background color */
   
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -103,6 +108,7 @@ let Toolbar = styled.div`
     margin: 10px 0px 1px 0px;
     border-radius: 10em;
     background: var(--background);
+    transition: all 0.5s;
   }
 
   progress[value]::-webkit-progress-bar {
