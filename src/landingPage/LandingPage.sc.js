@@ -133,7 +133,7 @@ const PrimaryButton = styled.button`
   margin-bottom: 2em;
   margin-top: 2em;
   overflow: hidden;
-
+  cursor: pointer;
   span {
     font-weight: 600;
     font-size: 1.5em;
@@ -149,13 +149,14 @@ const InverseButton = styled.button`
   margin-bottom: 3em;
   margin-top: 0em;
   overflow: hidden;
-
+  cursor: pointer;
   span {
     font-weight: 600;
     font-size: 1.5em;
     color: ${zeeguuOrange};
   }
 `;
+
 
 export {
   LoginHeader,
