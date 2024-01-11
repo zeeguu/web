@@ -7,13 +7,20 @@ import React, { useState } from "react";
 import { setTitle } from "../assorted/setTitle";
 import UiLanguageSettings from "../components/UiLanguageSettings";
 import { getUserSession } from "../utils/cookies/userInfo";
+import { useHistory } from 'react-router-dom'; 
 
 export default function LandingPage() {
   const [uiLanguage, setUiLanguage] = useState();
+  const history = useHistory();
 
   if (getUserSession()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
+  
+  const navigate = (path) => {
+    history.push(path);
+  };
+
   setTitle(strings.landingPage);
   return (
     <div>
@@ -33,11 +40,11 @@ export default function LandingPage() {
           <h1>Zeeguu</h1>
           <h4>{strings.projectDescription_UltraShort}</h4>
           <nav>
-            <s.PrimaryButton>
-              <a href="/login">{strings.login}</a>
+            <s.PrimaryButton onClick={() => navigate('/login')}>
+              <span>{strings.login}</span>
             </s.PrimaryButton>
-            <s.InverseButton>
-              <a href="./create_account">{strings.betaTester}</a>
+            <s.InverseButton onClick={() => navigate('/create_account')}>
+              <span>{strings.betaTester}</span>
             </s.InverseButton>
           </nav>
         </s.NarrowColumn>

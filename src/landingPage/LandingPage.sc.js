@@ -134,7 +134,7 @@ const PrimaryButton = styled.button`
   margin-top: 2em;
   overflow: hidden;
 
-  a {
+  span {
     font-weight: 600;
     font-size: 1.5em;
     color: white;
@@ -150,7 +150,7 @@ const InverseButton = styled.button`
   margin-top: 0em;
   overflow: hidden;
 
-  a {
+  span {
     font-weight: 600;
     font-size: 1.5em;
     color: ${zeeguuOrange};
