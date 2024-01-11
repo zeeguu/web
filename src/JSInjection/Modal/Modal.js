@@ -262,13 +262,13 @@ export function Modal({
         <OverwriteZeeguu>
           <StyledHeading>
             <div style={{ "float": "left", "max-width": "50%",  "display":"inline-flex", "padding": "1.5em"}}>
-              <div>
-              <img
-                    src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+            <div>
+                <a href="https://www.zeeguu.org">
+                    <img src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
                     alt={"Zeeguu logo"}
-                    className="logoModal"
-                />
-              </div> 
+                    className="logoModal"/>
+                </a>
+            </div>
               <SaveToZeeguu
               api={api}
               articleId={articleId()}
