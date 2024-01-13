@@ -285,7 +285,7 @@ let strings = new LocalizedStrings(
                 "Delete a translation if you don't want it to appear in exercises.",
             starTranslation: "Starred translations have priority in exercises.",
             ifGreyedTranslation:
-                "Translations are grayed out because Zeeguu thinks they are not suitable for the exercises. Star them if you disagree.",
+                "Grayed out translations may not be suitable for the exercises. Star them if you disagree.",
             theWordsYouTranslate:
                 "The words you translate in the article will appear here for review",
             backToArticle: "Back to Article",

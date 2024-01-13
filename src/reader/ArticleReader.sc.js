@@ -25,7 +25,6 @@ let ArticleReader = styled.div`
   .feedbackBox {
     background-color: ${lighterBlue};
     border: none;
-    max-width: 80%;
   }
 
   h1 {
@@ -36,7 +35,6 @@ let ArticleReader = styled.div`
 
   h2 {
     font-size: 1.5rem !important;
-    line-height: 1.5;
   }
 
   h3 {
@@ -137,7 +135,7 @@ let MainText = styled.div`
   padding: 0.2em;
 
   .textParagraph {
-    margin-bottom: 1em;
+    margin-bottom: .5em;
   }
 `;
 
@@ -209,23 +207,6 @@ let NavigationLink = styled(Link)`
     width: 16em;
   }
 
-  // Next
-  ${(props) =>
-    props.next &&
-    css`
-      :after {
-        content: ">>";
-      }
-    `}
-  // Previous
-  ${(props) =>
-    props.prev &&
-    css`
-      :before {
-        content: " <<";
-      }
-    `}
-
   // Primary
   ${(props) =>
     props.primary &&
@@ -261,8 +242,10 @@ let FeedbackBox = styled.div`
   border: 1px solid  ${lighterBlue};
   background-color: white;
   border-radius: 0.5em;
-  padding: 1em;
-  margin-top: 3em;
+  display: flex;
+  flex-direction: column;
+  padding: 2em 0em 2em 0em;
+  margin-top: 1em;
   align-items: center;
   justify-content: center;
 

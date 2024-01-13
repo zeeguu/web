@@ -225,11 +225,10 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </s.MainText>
-
-      <DifficultyFeedbackBox api={api} articleID={articleID} />
       <ReviewVocabulary
           articleID={articleID}
         />
+      <DifficultyFeedbackBox api={api} articleID={articleID} />
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );

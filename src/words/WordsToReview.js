@@ -13,20 +13,21 @@ export default function WordsToReview({
 }) {
   return (
     <>
+      <div>
       <h1>{strings.ReviewTranslations}</h1>
-      <small>
-        {strings.from}
+      <medium>
+        <b>{strings.from}</b>  
         {articleInfo.title}
-      </small>
-
-      <br />
-      <br />
+      </medium>
+      </div>
       <TopMessage className="topMessage" style={{ textAlign: "left" }}>
         {words.length > 0 ? (
           <>
-            <p>{strings.starTranslation}</p>
-            <p>{strings.deleteTranslation}</p>
-            <p>{strings.ifGreyedTranslation}</p>
+          <ul>
+            <li>{strings.starTranslation}</li>
+            <li>{strings.deleteTranslation}</li>
+            <li>{strings.ifGreyedTranslation}</li>
+          </ul>
           </>
         ) : (
           strings.theWordsYouTranslate
@@ -45,9 +46,6 @@ export default function WordsToReview({
           />
         </ContentOnRow>
       ))}
-      <br />
-      <br />
-      <br />
     </>
   );
 }

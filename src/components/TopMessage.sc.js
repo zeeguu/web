@@ -1,15 +1,18 @@
 import styled from "styled-components";
-import { zeeguuTransparentLightOrange } from "./colors";
+import { zeeguuVeryLightOrange } from "./colors";
 
 let TopMessage = styled.div`
+  display: flex;
+  flex-direction: column;
   text-align: center;
   margin: auto;
-  background-color: ${zeeguuTransparentLightOrange};
-  border-radius: 0.9em;
+  background-color: ${zeeguuVeryLightOrange};
+  border-radius: 0.1em;
   max-width: 80%;
-  margin-bottom: 1.5em;
-  padding: 0.4em 0.6em;
-  font-size: small;
+  margin-top: 4em;
+  margin-bottom: 4em;
+  padding: 1em 1em;
+  font-size: large;
   
   @media (min-width: 768px) {
     width: 36em;
