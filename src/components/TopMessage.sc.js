@@ -9,9 +9,8 @@ let TopMessage = styled.div`
   background-color: ${zeeguuVeryLightOrange};
   border-radius: 0.1em;
   max-width: 80%;
-  margin-top: 4em;
-  margin-bottom: 4em;
-  padding: 1em 1em;
+  margin: 2em;
+  padding: .5em .5em;
   font-size: large;
   
   @media (min-width: 768px) {

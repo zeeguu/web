@@ -28,23 +28,23 @@ let ArticleReader = styled.div`
   }
 
   h1 {
-    font-size: 1.9em !important;
+    font-size: 1.6em !important;
     font-weight: 800;
     line-height: 1.5;
   }
 
   h2 {
-    font-size: 1.5rem !important;
+    font-size: 1.4rem !important;
   }
 
   h3 {
-    font-size: 1.4rem !important;
+    font-size: 1.3rem !important;
   }
 
   h4,
   h5,
   h6 {
-    font-size: 1.3rem !important;
+    font-size: 1.2rem !important;
   }
 
   hr {
@@ -130,12 +130,12 @@ let BookmarkButton = styled.div`
 `;
 
 let MainText = styled.div`
-  font-size: 1.3em;
-  line-height: 2.3em;
+  font-size: 1.2em;
+  line-height: 2em;
   padding: 0.2em;
 
   .textParagraph {
-    margin-bottom: .5em;
+    margin-bottom: 1.2em;
   }
 `;
 

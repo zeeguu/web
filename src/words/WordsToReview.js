@@ -16,19 +16,16 @@ export default function WordsToReview({
       <div>
       <h1>{strings.ReviewTranslations}</h1>
       <medium>
-        <b>{strings.from}</b>  
-        {articleInfo.title}
+        <b>{strings.from}</b>{articleInfo.title}
       </medium>
       </div>
       <TopMessage className="topMessage" style={{ textAlign: "left" }}>
         {words.length > 0 ? (
-          <>
           <ul>
             <li>{strings.starTranslation}</li>
             <li>{strings.deleteTranslation}</li>
             <li>{strings.ifGreyedTranslation}</li>
           </ul>
-          </>
         ) : (
           strings.theWordsYouTranslate
         )}
