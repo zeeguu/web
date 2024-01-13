@@ -2,27 +2,26 @@ import styled, { css } from "styled-components";
 import colors from "../colors";
 
 export const StyledPrimaryButton = styled.button`
-  color: ${colors.white};
+  color: ${colors.black};
   background-color: ${colors.zeeguuOrange};
-  border-color:  ${colors.buttonBorder} !important;
 
   :hover{
     background-color: ${colors.lightOrange};
-    color: ${colors.brown};
   }
 
   height: 45px;
-  display: inline-block;
+  display: flex;
   padding: 5px 45px 5px 45px;
   margin: 5px;
   height: 50px;
   border-style: none;
   border-width: 2px;
-  border-radius: 40px;
+  border-radius: 10px;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0px 4px ${colors.brown};
+  align-items: center;
+  justify-content: center;
 `;
 
 export const StyledCloseButton = styled.div`
@@ -39,7 +38,7 @@ export const StyledCloseButton = styled.div`
 `;
 
 export const StyledSmallButton = styled.button`
-  color: ${colors.zeeguuOrange} !important;
+  color: ${colors.lightBlue} !important;
   background-color: ${colors.white} !important;
   border-color: none;
   cursor: pointer;

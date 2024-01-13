@@ -7,6 +7,7 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import FormHelperText from '@mui/material/FormHelperText';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import colors from "../colors";
 
 const t = createTheme({
   components: {
@@ -74,16 +75,16 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
 export default function ToolbarButtons({translating, setTranslating, pronouncing, setPronouncing}) {
   console.log(translating, pronouncing)
   return (
-    <s.Toolbar style={{"float": "right", "width": "auto", "height": "auto"}}>
+    <s.Toolbar style={{"float": "right", "width": "auto", "height": "auto",}}>
       <ThemeProvider theme={t}>
-      <FormGroup>
+      <FormGroup style={{color:`${colors.darkBlue}`}}>
           <FormHelperText>{<small>{"Click word(s) to:"}</small>}</FormHelperText>
           <FormControlLabel control={<Android12Switch defaultChecked />} className={translating ? "selected" : ""}
         onClick={(e) => toggle(translating, setTranslating)} 
-        label={<small >{"See translation"}</small>}/> 
+        label={<b><small>{"See translation"}</small></b>}/> 
           <FormControlLabel control={<Android12Switch defaultChecked />} className={pronouncing ? "selected" : ""}
         onClick={(e) => toggle(pronouncing, setPronouncing)}
-        label={<small>{"Hear pronunciation"}</small>} /> 
+        label={<b><small>{"Hear pronunciation"}</small></b>} /> 
       </FormGroup>
       </ThemeProvider> 
     </s.Toolbar>

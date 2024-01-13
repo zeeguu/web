@@ -85,13 +85,12 @@ export function ReadArticle({
             );
           }
         })}
-
-        <DifficultyFeedbackBox api={api} articleID={articleId} />
         <ReviewVocabulary
           articleId={articleId}
           api={api}
           openReview={openReview}
         />
+        <DifficultyFeedbackBox api={api} articleID={articleId} />
       </div>
     </>
   );
