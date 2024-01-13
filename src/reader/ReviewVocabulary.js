@@ -17,12 +17,18 @@ export default function ReviewVocabulary({articleID}) {
     <>
     <s.FeedbackBox className="feedbackBox">
       <s.CenteredContent>
-      <h2>Exercises</h2>
-      <div>
+        <div className="imgContainer">
+        <h2>Exercises</h2>
+        <div>
+        <img
+            src="/static/images/zeeguuWhiteLogo.svg"
+            alt="Zeeguu Logo - The Elephant"
+          />
+        </div>
+        </div>
         <StyledButton primary onClick={handleButtonClick}>
           <span>Review words</span>{<NavigateNextIcon/>}
         </StyledButton>
-      </div>
       </s.CenteredContent>
     </s.FeedbackBox>
     </>

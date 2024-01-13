@@ -13,6 +13,14 @@ const CenteredContent = styled.div`
   justify-content: space-between;
   max-width: 90%;
   align-items: center;
+
+  .imgContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1em;
+    align-items: center;
+  }
 `;
 
 const ToolTipsContainer = styled.div`

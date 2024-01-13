@@ -69,7 +69,7 @@ color: black;
 height: auto;
 display: flex;
 padding: 1em;
-margin: 2em;
+margin: 1em;
 border-style: none;
 border-width: 2px;
 border-radius: 10px;
