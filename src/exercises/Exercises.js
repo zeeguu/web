@@ -16,8 +16,10 @@ import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 import {calculateExerciseSequence, assignBookmarksToExercises} from "./assignBookmarksToExercises";
 
-import {DEFAULT_SEQUENCE, DEFAULT_SEQUENCE_NO_AUDIO, EXERCISE_TYPES_TIAGO,
-    NUMBER_OF_BOOKMARKS_TO_PRACTICE} from "./exerciseSequenceTypes";
+import {
+    DEFAULT_SEQUENCE, DEFAULT_SEQUENCE_NO_AUDIO, EXERCISE_TYPES_TIAGO,
+    NUMBER_OF_BOOKMARKS_TO_PRACTICE
+} from "./exerciseSequenceTypes";
 
 let audioEnabled;
 
@@ -108,7 +110,6 @@ export default function Exercises({
     });
 
 
-
     function initializeExercises(bookmarks, title) {
         setCountBookmarksToPractice(bookmarks.length);
 
@@ -120,9 +121,7 @@ export default function Exercises({
 
             let exerciseSequenceType = getExerciseSequenceType();
 
-            let exerciseSequence = calculateExerciseSequence(exerciseSequenceType, bookmarks.length);
-
-            let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequence);
+            let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
 
             setFullExerciseProgression(exerciseSession);
 
@@ -138,30 +137,30 @@ export default function Exercises({
     useEffect(() => {
 
         if (fullExerciseProgression.length === 0) {
-                api.getUserPreferences((preferences) => {
+            api.getUserPreferences((preferences) => {
 
-                    audioEnabled = preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true";
+                audioEnabled = preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true";
 
-                    if (articleID) {
-                        api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
-                            api.getArticleInfo(articleID, (data) => {
-                                setArticleInfo(data);
-                                initializeExercises(
-                                    bookmarks,
-                                    'Exercises for "' + data.title + '"'
-                                );
-                            });
+                if (articleID) {
+                    api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
+                        api.getArticleInfo(articleID, (data) => {
+                            setArticleInfo(data);
+                            initializeExercises(
+                                bookmarks,
+                                'Exercises for "' + data.title + '"'
+                            );
                         });
-                    } else {
-                        api.getUserBookmarksToStudy(
-                            NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-                            (bookmarks) => {
-                                initializeExercises(bookmarks, strings.exercises);
-                            }
-                        );
-                    }
+                    });
+                } else {
+                    api.getUserBookmarksToStudy(
+                        NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+                        (bookmarks) => {
+                            initializeExercises(bookmarks, strings.exercises);
+                        }
+                    );
+                }
 
-                })
+            })
         }
 
         api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
@@ -188,7 +187,6 @@ export default function Exercises({
     ) : (
         <>{strings.wordSourcePrefix}</>
     );
-
 
 
     // Standard flow when user completes exercise session
