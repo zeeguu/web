@@ -3,8 +3,7 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';import * as s from "./ArticleReader.sc";
+import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from "react";
 import Chip from '@mui/material/Chip';
 import ReportProblemRoundedIcon from '@mui/icons-material/ReportProblemRounded';
@@ -82,7 +81,6 @@ export default function ReportBroken({ api, articleID, UMR_SOURCE, history }) {
                 onChange={handleChange}
                 margin="normal"
                 size="small"
-                helperText={!feedback.trim() ? "Empty message" : ""}
               />
         
         <DialogActions>

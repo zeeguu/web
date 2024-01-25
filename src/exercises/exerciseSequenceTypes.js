@@ -6,7 +6,7 @@ import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleCho
 import OrderWordsL1 from "./exerciseTypes/orderWords/OrderWordsL1";
 import OrderWordsL2 from "./exerciseTypes/orderWords/OrderWordsL2";
 
-const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 11;
+const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 10;
 
 let DEFAULT_SEQUENCE = [
     {

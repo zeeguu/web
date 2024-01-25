@@ -120,14 +120,9 @@ export default function Exercises({
 
             let exerciseSequenceType = getExerciseSequenceType();
 
-            let exerciseSequence = calculateExerciseSequence(exerciseSequenceType, bookmarks);
+            let exerciseSequence = calculateExerciseSequence(exerciseSequenceType, bookmarks.length);
 
             let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequence);
-
-            // ML: Attempt to figure out why does the MultipleChoice exercise sometimes end up
-            // with no bookmarks... In case one exercise would have no bookmarks we would filter it
-            // ML: I still don't see how could we end up in this situation...
-            exerciseSession = exerciseSession.filter(x=>x.bookmarks.length === x.requiredBookmarks && x.bookmarks.length > 0);
 
             setFullExerciseProgression(exerciseSession);
 
