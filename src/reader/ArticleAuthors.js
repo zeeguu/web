@@ -4,15 +4,12 @@ function multipleAuthors(authors_str) {
 
 export default function ArticleAuthors({ articleInfo }) {
   return (
-    <div>
       <div>
-        {articleInfo.authors &&
+        {/* {articleInfo.authors &&
           "Author" +
             (multipleAuthors(articleInfo.authors) ? "s" : "") +
-            ": "}{" "}
-        <b>{articleInfo.authors}</b>
+            ": "}{" "} */}
+        {articleInfo.authors}
       </div>
-      <br />
-    </div>
   );
 }

@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, useContext} from "react";
 import * as s from "../Exercise.sc.js";
 import BottomInput from "../findWordInContext/BottomInput.js";
 import SpeakButton from "../SpeakButton";
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
-import ZeeguuSpeech from "../../../speech/ZeeguuSpeech.js";
+
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
+import {SpeechContext} from "../../SpeechContext";
 
 const EXERCISE_TYPE = "Spell_What_You_Hear";
 export default function SpellWhatYouHear({
@@ -29,7 +30,7 @@ export default function SpellWhatYouHear({
   const [firstTypeTime, setFirstTypeTime] = useState();
   const [messageToAPI, setMessageToAPI] = useState("");
   const bookmarkToStudy = bookmarksToStudy[0];
-  const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
+  const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [articleInfo, setArticleInfo] = useState();
 
