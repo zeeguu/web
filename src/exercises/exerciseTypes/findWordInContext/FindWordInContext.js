@@ -94,8 +94,20 @@ export default function FindWordInContext({
         });
 
         if (solutionDiscovered) {
-            let concatMessage = messageToAPI + "C";
-            handleShowSolution(undefined, concatMessage);
+            // Check how many translations were made
+            let translation_count = 0;
+            for(let i = 0; i < messageToAPI.length; i++){
+                if (messageToAPI[i] === "T") translation_count ++;
+            }
+            if (translation_count < 2){
+                let concatMessage = messageToAPI + "C";
+                handleCorrectAnswer(concatMessage);
+            }
+            else{
+                let concatMessage = messageToAPI + "S";
+                handleShowSolution(undefined, concatMessage);
+            }
+
         } else {
             setMessageToAPI(messageToAPI + "T")
         }
