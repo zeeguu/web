@@ -5,7 +5,7 @@ import SpellWhatYouHear from "./exerciseTypes/spellWhatYouHear/SpellWhatYouHear"
 import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleChoiceAudio";
 import OrderWords from "./exerciseTypes/orderWords/OrderWords";
 
-const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 11;
+const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 10;
 
 let DEFAULT_SEQUENCE = [
     {
