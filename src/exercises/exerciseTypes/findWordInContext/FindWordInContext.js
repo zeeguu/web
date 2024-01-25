@@ -60,7 +60,7 @@ export default function FindWordInContext({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [translatedWords]);
 
-    function equalAfterRemovingSpecialCharacters(a,b) {
+    function equalAfterRemovingSpecialCharacters(a, b) {
         // from: https://stackoverflow.com/a/4328546
         let first = a.replace(/[^\w\s\']|_/g, "")
             .replace(/\s+/g, " ");
@@ -68,9 +68,10 @@ export default function FindWordInContext({
             .replace(/\s+/g, " ");
         return first === second;
     }
+
     function checkTranslations(userTranslatedSequences) {
 
-        if (userTranslatedSequences.length == 0) {
+        if (userTranslatedSequences.length === 0) {
             return;
         }
 
@@ -82,29 +83,36 @@ export default function FindWordInContext({
 
             userTranslatedSequences.forEach((userTranslatedSequence) => {
                 let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
-                    wordsInUserTranslatedSequence.forEach((translatedWord) => {
+                wordsInUserTranslatedSequence.forEach((translatedWord) => {
 
 
-                        if (equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)) {
-                            solutionDiscovered = true;
-                        }
-                    });
+                    if (equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)) {
+                        solutionDiscovered = true;
+                    }
+                });
 
             });
         });
 
         if (solutionDiscovered) {
-            let concatMessage = messageToAPI + "C";
-            handleShowSolution(undefined, concatMessage);
+            // Check how many translations were made
+            let translationCount = 0;
+            for (let i = 0; i < messageToAPI.length; i++) {
+                if (messageToAPI[i] === "T") translationCount++;
+            }
+            if (translationCount < 2) {
+                let concatMessage = messageToAPI + "C";
+                handleCorrectAnswer(concatMessage);
+            } else {
+                let concatMessage = messageToAPI + "S";
+                handleShowSolution(undefined, concatMessage);
+            }
+
         } else {
             setMessageToAPI(messageToAPI + "T")
         }
     }
 
-    function notifyBookmarkTranslation() {
-        let concatMessage = messageToAPI + "T";
-        handleShowSolution(undefined, concatMessage);
-    }
 
     function inputKeyPress() {
         if (firstTypeTime === undefined) {
@@ -118,7 +126,8 @@ export default function FindWordInContext({
         }
         let pressTime = new Date();
         let duration = exerciseDuration(pressTime);
-        let concatMessage = "";
+        let concatMessage;
+        
         if (!message) {
             concatMessage = messageToAPI + "S";
         } else {
