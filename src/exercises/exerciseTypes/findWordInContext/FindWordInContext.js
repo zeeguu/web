@@ -9,6 +9,7 @@ import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
+import {tokenize} from "../../../utils/preprocessing/preprocessing";
 
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
@@ -77,7 +78,7 @@ export default function FindWordInContext({
 
         let solutionDiscovered = false;
 
-        let solutionSplitIntoWords = bookmarksToStudy[0].from.split(" ");
+        let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
 
         solutionSplitIntoWords.forEach((wordInSolution) => {
 
