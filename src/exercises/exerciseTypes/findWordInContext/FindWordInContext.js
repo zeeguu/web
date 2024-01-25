@@ -72,7 +72,7 @@ export default function FindWordInContext({
 
     function checkTranslations(userTranslatedSequences) {
 
-        if (userTranslatedSequences.length == 0) {
+        if (userTranslatedSequences.length === 0) {
             return;
         }
 
@@ -96,17 +96,24 @@ export default function FindWordInContext({
         });
 
         if (solutionDiscovered) {
-            let concatMessage = messageToAPI + "C";
-            handleShowSolution(undefined, concatMessage);
+            // Check how many translations were made
+            let translationCount = 0;
+            for (let i = 0; i < messageToAPI.length; i++) {
+                if (messageToAPI[i] === "T") translationCount++;
+            }
+            if (translationCount < 2) {
+                let concatMessage = messageToAPI + "C";
+                handleCorrectAnswer(concatMessage);
+            } else {
+                let concatMessage = messageToAPI + "S";
+                handleShowSolution(undefined, concatMessage);
+            }
+
         } else {
             setMessageToAPI(messageToAPI + "T")
         }
     }
 
-    function notifyBookmarkTranslation() {
-        let concatMessage = messageToAPI + "T";
-        handleShowSolution(undefined, concatMessage);
-    }
 
     function inputKeyPress() {
         if (firstTypeTime === undefined) {
@@ -120,7 +127,8 @@ export default function FindWordInContext({
         }
         let pressTime = new Date();
         let duration = exerciseDuration(pressTime);
-        let concatMessage = "";
+        let concatMessage;
+        
         if (!message) {
             concatMessage = messageToAPI + "S";
         } else {
