@@ -8,9 +8,11 @@ const ModalWrapperGlobal = styled(ModalWrapper)`
     font-size: 1.3em;
     line-height: 150%;
     text-align: center;
+    font-weight: 700;
     margin: 0;
     @media (max-width: 576px) {
       text-align: left;
+      font-size: 1.2em;
     }
   }
 
@@ -28,6 +30,15 @@ const ModalWrapperGlobal = styled(ModalWrapper)`
 
 const ModalHeaderGlobal = styled.div`
   margin: 1em 0;
+  @media (max-width: 576px) {
+    margin: 0.8em 0;
+  }
+`;
+
+const ModalStrongTextWrapperGlobal = styled.span`
+  margin: 0;
+  display: inline;
+  font-weight: 700;
 `;
 
 const ModalBodyGlobal = styled.div`
@@ -40,6 +51,9 @@ const ModalBodyGlobal = styled.div`
     height: 100%;
     width: 100%;
     object-fit: contain;
+  }
+  @media (max-width: 576px) {
+    margin: 0.8em 0;
   }
 `;
 
@@ -55,6 +69,9 @@ const ModalFooterGlobal = styled.div`
   a:hover {
     text-decoration: underline;
   }
+  @media (max-width: 576px) {
+    margin: 0.8em 0;
+  }
 `;
 
 const CloseButtonGlobal = styled.div`
@@ -65,6 +82,10 @@ const CloseButtonGlobal = styled.div`
   float: right;
   right: 16px;
   margin-top: -16px;
+  @media (max-width: 576px) {
+    right: 16px;
+    margin-top: -8px;
+  }
 `;
 
 export {
@@ -73,4 +94,5 @@ export {
   ModalHeaderGlobal,
   ModalBodyGlobal,
   ModalFooterGlobal,
+  ModalStrongTextWrapperGlobal,
 };

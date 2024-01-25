@@ -56,28 +56,49 @@ export default function FindWordInContext({
 
 
     useEffect(() => {
-        checkTranslations();
+        checkTranslations(translatedWords);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [translatedWords]);
 
-    function checkTranslations() {
-        let bookmarkWords = bookmarksToStudy[0].from.split(" ");
-        bookmarkWords.forEach((word) => {
-            translatedWords.forEach((translation) => {
-                let splitTranslation = translation.split(" ");
-                if (splitTranslation.length > 1) {
-                    splitTranslation.forEach((translatedWord) => {
-                        if (translatedWord === word) {
-                            notifyBookmarkTranslation();
+    function equalAfterRemovingSpecialCharacters(a,b) {
+        // from: https://stackoverflow.com/a/4328546
+        let first = a.replace(/[^\w\s\']|_/g, "")
+            .replace(/\s+/g, " ");
+        let second = b.replace(/[^\w\s\']|_/g, "")
+            .replace(/\s+/g, " ");
+        return first === second;
+    }
+    function checkTranslations(userTranslatedSequences) {
+
+        if (userTranslatedSequences.length == 0) {
+            return;
+        }
+
+        let solutionDiscovered = false;
+
+        let solutionSplitIntoWords = bookmarksToStudy[0].from.split(" ");
+
+        solutionSplitIntoWords.forEach((wordInSolution) => {
+
+            userTranslatedSequences.forEach((userTranslatedSequence) => {
+                let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
+                    wordsInUserTranslatedSequence.forEach((translatedWord) => {
+
+
+                        if (equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)) {
+                            solutionDiscovered = true;
                         }
                     });
-                } else {
-                    if (translation === word) {
-                        notifyBookmarkTranslation();
-                    }
-                }
+
             });
         });
+
+        if (solutionDiscovered) {
+            let concatMessage = messageToAPI + "C";
+            handleShowSolution(undefined, concatMessage);
+        } else {
+            setMessageToAPI(messageToAPI + "T")
+        }
     }
 
     function notifyBookmarkTranslation() {
@@ -130,6 +151,7 @@ export default function FindWordInContext({
     }
 
     function handleIncorrectAnswer() {
+        alert("incorrect answer")
         notifyIncorrectAnswer(bookmarksToStudy[0]);
         setFirstTypeTime();
     }

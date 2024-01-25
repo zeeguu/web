@@ -4,6 +4,8 @@ import {
   zeeguuLightYellow,
   zeeguuOrange,
   zeeguuVeryLightYellow,
+  translationHover,
+  lightOrange,
 } from "../components/colors";
 
 const TranslatableText = styled.div`
@@ -35,9 +37,8 @@ const TranslatableText = styled.div`
   /*  z-tag tag hover changes color, translated word hover no underline or color*/
 
   z-tag:hover {
-    color: ${zeeguuOrange};
-    border-bottom: 1px dashed ${zeeguuOrange};
-    border: none;
+    color: ${translationHover} !important;
+    background-color: ${lightOrange};
   }
 
   /* the translation - above the origin word
