@@ -37,6 +37,22 @@ let DEFAULT_SEQUENCE = [
 
 let EXERCISE_TYPES_TIAGO = [
     {
+        type: MultipleChoice,
+        requiredBookmarks: 1,
+    },
+    {
+        type: FindWordInContext,
+        requiredBookmarks: 1,
+    },
+    {
+        type: Match,
+        requiredBookmarks: 3,
+    },
+    {
+        type: FindWordInContext,
+        requiredBookmarks: 1,
+    },
+    {
         type: OrderWordsL2,
         requiredBookmarks: 1,
     },
