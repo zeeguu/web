@@ -11,6 +11,7 @@ import {removePunctuation} from "../../../utils/preprocessing/preprocessing";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import EditButton from "../../../words/EditButton.js";
+import DisableAudioSession from "../DisableAudioSession.js"
 import {useContext} from 'react';
 
 
@@ -60,12 +61,19 @@ export default function MultipleChoiceAudio({
             setArticleInfo(articleInfo);
         });
         consolidateChoice();
+        if (sessionStorage.audioEnabled === "false")
+            handleDisabledAudio()
     }, []);
 
     function exerciseDuration(endTime) {
         return Math.min(89999, endTime - initialTime)
     }
 
+    function disableAudio(e){
+        e.preventDefault();
+        sessionStorage.audioEnabled = false;
+        handleShowSolution(e, "DisableAudioSession");
+      }
 
     function notifyChoiceSelection(selectedChoice) {
         console.log("checking result...");
@@ -107,6 +115,16 @@ export default function MultipleChoiceAudio({
             setSelectedButtonId(id);
         }
         console.log(id + " false");
+    }
+
+    function handleDisabledAudio() {
+        let pressTime = new Date();
+        let duration = exerciseDuration(pressTime);
+        let message = messageToAPI + "D";
+
+        notifyIncorrectAnswer(bookmarksToStudy[0]);
+        handleAnswer(message, duration);
+        moveToNextExercise();
     }
 
     function handleShowSolution() {
@@ -277,6 +295,11 @@ export default function MultipleChoiceAudio({
                 toggleShow={toggleShow}
                 isCorrect={isCorrect}
             />
+            {sessionStorage.audioEnabled === "true" && 
+            <DisableAudioSession
+                disableAudio={disableAudio}
+            />}
+
         </s.Exercise>
     );
 }

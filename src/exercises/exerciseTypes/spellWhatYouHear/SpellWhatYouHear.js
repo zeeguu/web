@@ -10,6 +10,7 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import {SpeechContext} from "../../SpeechContext";
+import DisableAudioSession from "../DisableAudioSession.js"
 
 const EXERCISE_TYPE = "Spell_What_You_Hear";
 export default function SpellWhatYouHear({
@@ -55,7 +56,10 @@ export default function SpellWhatYouHear({
       );
       setArticleInfo(articleInfo);
     });
+    if (sessionStorage.audioEnabled === "false")
+      handleDisabledAudio()
   }, []);
+
 
   function inputKeyPress() {
     if (firstTypeTime === undefined) {
@@ -73,7 +77,7 @@ export default function SpellWhatYouHear({
     console.log(pressTime - initialTime);
     console.log("^^^^ time elapsed");
     let duration = pressTime - initialTime;
-    let concatMessage = "";
+    let concatMessage;
     if (!message) {
       concatMessage = messageToAPI + "S";
     } else {
@@ -91,26 +95,66 @@ export default function SpellWhatYouHear({
     );
   }
 
-  function handleCorrectAnswer(message) {
-    console.log(new Date() - initialTime);
-    console.log(firstTypeTime - initialTime);
-    let duration = firstTypeTime - initialTime;
+  function disableAudio(e){
+    e.preventDefault();
+    sessionStorage.audioEnabled = false;
+    handleShowSolution(e, "DisableAudioSession");
+  }
 
-    correctAnswer(bookmarksToStudy[0]);
+  function exerciseDuration(endTime) {
+    return Math.min(89999, endTime - initialTime)
+}
+
+  function handleDisabledAudio() {
+    let pressTime = new Date();
+    let duration = exerciseDuration(pressTime);
+    let message = messageToAPI + "D";
+
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    handleAnswer(message, duration);
+    moveToNextExercise();
+  }
+
+  function handleShowSolution() {
+    let pressTime = new Date();
+    let duration = exerciseDuration(pressTime);
+    let message = messageToAPI + "S";
+
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      duration,
-      bookmarksToStudy[0].id,
-      exerciseSessionId
-    );
+    handleAnswer(message, duration);
   }
 
   function handleIncorrectAnswer() {
     notifyIncorrectAnswer(bookmarksToStudy[0]);
-    setFirstTypeTime();
+    setFirstTypeTime(new Date());
   }
+
+  function handleAnswer(message) {
+    let pressTime = new Date();
+
+    api.uploadExerciseFinalizedData(
+        message,
+        EXERCISE_TYPE,
+        exerciseDuration(pressTime),
+        bookmarksToStudy[0].id,
+        exerciseSessionId
+    );
+  }
+
+  function handleCorrectAnswer(message) {
+    let duration = exerciseDuration(firstTypeTime);
+
+    correctAnswer(bookmarksToStudy[0]);
+    setIsCorrect(true);
+    api.uploadExerciseFinalizedData(
+        message,
+        EXERCISE_TYPE,
+        duration,
+        bookmarksToStudy[0].id,
+        exerciseSessionId
+    );
+}
 
   return (
     <s.Exercise>
@@ -171,6 +215,10 @@ export default function SpellWhatYouHear({
         toggleShow={toggleShow}
         isCorrect={isCorrect}
       />
+      {sessionStorage.audioEnabled === "true" && 
+            <DisableAudioSession
+              disableAudio={disableAudio}
+            />}
     </s.Exercise>
   );
 }

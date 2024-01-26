@@ -21,7 +21,8 @@ import {
     NUMBER_OF_BOOKMARKS_TO_PRACTICE
 } from "./exerciseSequenceTypes";
 
-let audioEnabled;
+if (!sessionStorage.audioEnabled)
+    sessionStorage.audioEnabled = "";
 
 export default function Exercises({
                                       api,
@@ -68,12 +69,10 @@ export default function Exercises({
 
 
     function getExerciseSequenceType() {
-
+        let isAudioEnabled = sessionStorage.audioEnabled;
         let exerciseTypesList = DEFAULT_SEQUENCE;
-        if (Feature.tiago_exercises()) {
-            exerciseTypesList = EXERCISE_TYPES_TIAGO;
-        }
-        if (!audioEnabled) {
+        if (!(isAudioEnabled === "true")) {
+            console.log("Will not use audio!")
             exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
         }
         return exerciseTypesList;
@@ -138,8 +137,8 @@ export default function Exercises({
 
         if (fullExerciseProgression.length === 0) {
             api.getUserPreferences((preferences) => {
-
-                audioEnabled = preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true";
+                if (sessionStorage.audioEnabled === "")
+                    sessionStorage.audioEnabled = preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true";
 
                 if (articleID) {
                     api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
