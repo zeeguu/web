@@ -18,6 +18,7 @@ import ReportBroken from "./ReportBroken";
 import TopToolbar from "./TopToolbar";
 import ReviewVocabulary from "./ReviewVocabulary";
 import ArticleAuthors from "./ArticleAuthors";
+import useActivityTimer from "../utils/useActivityTimer";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -72,6 +73,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [pronouncing, setPronouncing] = useState(true);
   const user = useContext(UserContext);
   const history = useHistory();
+  const [secondsInCurrentSession, clockActive] = useActivityTimer();
 
   useEffect(() => {
     onCreate();
@@ -172,6 +174,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   return (
     <s.ArticleReader>
+      <div style={{ position: "fixed", bottom: "5px" }}>
+        <small style={{ color: "gray" }}>
+          Seconds in this reading session: {secondsInCurrentSession}{" "}
+          {clockActive ? "" : "(paused)"}
+        </small>
+      </div>
+
       <TopToolbar
         user={user}
         teacherArticleID={teacherArticleID}
@@ -192,16 +201,24 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </h1>
-      <div style={{ marginTop: "1em", marginBottom: "4em", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div
+        style={{
+          marginTop: "1em",
+          marginBottom: "4em",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         <ArticleAuthors articleInfo={articleInfo} />
-        <div style={{ display: "flex", flexDirection: "row"}}>
-        <ArticleSource url={articleInfo.url} />
-        <ReportBroken
-          api={api}
-          UMR_SOURCE={UMR_SOURCE}
-          history={history}
-          articleID={articleID}
-        />
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <ArticleSource url={articleInfo.url} />
+          <ReportBroken
+            api={api}
+            UMR_SOURCE={UMR_SOURCE}
+            history={history}
+            articleID={articleID}
+          />
         </div>
       </div>
 
@@ -227,9 +244,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
       </s.MainText>
 
       <DifficultyFeedbackBox api={api} articleID={articleID} />
-      <ReviewVocabulary
-          articleID={articleID}
-        />
+      <ReviewVocabulary articleID={articleID} />
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );
