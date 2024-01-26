@@ -118,12 +118,12 @@ export default function MultipleChoiceAudio({
     }
 
     function handleDisabledAudio() {
-        let pressTime = new Date();
-        let duration = exerciseDuration(pressTime);
-        let message = messageToAPI + "D";
-
-        notifyIncorrectAnswer(bookmarksToStudy[0]);
-        handleAnswer(message, duration);
+        api.logUserActivity(
+            "AUDIO_DISABLE",
+            "",
+            bookmarksToStudy[0].id,
+            ""
+        );
         moveToNextExercise();
     }
 
