@@ -2,22 +2,22 @@ import { useEffect, useState } from "react";
 import { useIdleTimer } from "react-idle-timer";
 
 export default function useActivityTimer() {
-  const [secondsInCurrentSession, setSecondsInCurrentSession] = useState(1);
+  const [activeSessionDuration, setActiveSessionDuration] = useState(1);
 
   const [clockActive, setClockActive] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
       let newValue = clockActive
-        ? secondsInCurrentSession + 1
-        : secondsInCurrentSession;
-      setSecondsInCurrentSession(newValue);
+        ? activeSessionDuration + 1
+        : activeSessionDuration;
+      setActiveSessionDuration(newValue);
     }, 1000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [secondsInCurrentSession, clockActive]);
+  }, [activeSessionDuration, clockActive]);
 
   useIdleTimer({
     onIdle,
@@ -42,5 +42,6 @@ export default function useActivityTimer() {
     setClockActive(true);
   }
 
-  return [secondsInCurrentSession, clockActive];
+  // active session duration is measured in seconds
+  return [activeSessionDuration, clockActive, setClockActive];
 }

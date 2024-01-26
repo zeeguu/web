@@ -19,6 +19,7 @@ import TopToolbar from "./TopToolbar";
 import ReviewVocabulary from "./ReviewVocabulary";
 import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../utils/useActivityTimer";
+import ActivityTimer from "../components/ActivityTimer";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -73,7 +74,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [pronouncing, setPronouncing] = useState(true);
   const user = useContext(UserContext);
   const history = useHistory();
-  const [secondsInCurrentSession, clockActive] = useActivityTimer();
+  const [activeSessionDuration, clockActive] = useActivityTimer();
 
   useEffect(() => {
     onCreate();
@@ -174,12 +175,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   return (
     <s.ArticleReader>
-      <div style={{ position: "fixed", bottom: "5px" }}>
-        <small style={{ color: "gray" }}>
-          Seconds in this reading session: {secondsInCurrentSession}{" "}
-          {clockActive ? "" : "(paused)"}
-        </small>
-      </div>
+      <ActivityTimer
+        message="Seconds in this reading session"
+        activeSessionDuration={activeSessionDuration}
+        clockActive={clockActive}
+      />
 
       <TopToolbar
         user={user}
