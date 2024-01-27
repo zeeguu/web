@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useIdleTimer } from "react-idle-timer";
 
-export default function useActivityTimer() {
+export default function useActivityTimer(activityUploaderFunction) {
   const [activeSessionDuration, setActiveSessionDuration] = useState(1);
 
   const [clockActive, setClockActive] = useState(true);
@@ -13,6 +13,15 @@ export default function useActivityTimer() {
         : activeSessionDuration;
       setActiveSessionDuration(newValue);
     }, 1000);
+
+    // if we have an activity uploader function, we will upload the activity every 10 seconds if the clock is active
+    if (
+      activityUploaderFunction &&
+      clockActive &&
+      activeSessionDuration % 10 === 0
+    ) {
+      activityUploaderFunction();
+    }
 
     return () => {
       clearInterval(interval);
@@ -26,15 +35,31 @@ export default function useActivityTimer() {
     throttle: 500,
   });
 
-  window.addEventListener("focus", function () {
-    setClockActive(true);
-  });
+  useEffect(() => {
+    const handleFocus = () => {
+      setClockActive(true);
+    };
 
-  window.addEventListener("blur", function () {
-    setClockActive(false);
-  });
+    const handleBlur = () => {
+      if (activityUploaderFunction && clockActive) {
+        activityUploaderFunction();
+      }
+      setClockActive(false);
+    };
+
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("blur", handleBlur);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("blur", handleBlur);
+    };
+  }, []);
 
   function onIdle() {
+    if (clockActive && activityUploaderFunction) {
+      activityUploaderFunction();
+    }
     setClockActive(false);
   }
 

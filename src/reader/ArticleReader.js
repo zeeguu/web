@@ -20,6 +20,7 @@ import ReviewVocabulary from "./ReviewVocabulary";
 import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../utils/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
+import useShadowRef from "../hooks/useShadowRef";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -74,18 +75,41 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [pronouncing, setPronouncing] = useState(true);
   const user = useContext(UserContext);
   const history = useHistory();
-  const [activeSessionDuration, clockActive] = useActivityTimer();
+  const [activeSessionDuration, clockActive] = useActivityTimer(uploadActivity);
+  const [readingSessionId, setReadingSessionId] = useState();
+
+  const activeSessionDurationRef = useShadowRef(activeSessionDuration);
+  const readingSessionIdRef = useShadowRef(readingSessionId);
+
+  function uploadActivity() {
+    api.readingSessionUpdate(
+      readingSessionIdRef.current,
+      activeSessionDurationRef.current
+    );
+  }
 
   useEffect(() => {
     onCreate();
+
     return () => {
-      onDestruct();
+      componentWillUnmount();
     };
     // eslint-disable-next-line
   }, []);
 
+  const handleFocus = () => {
+    onFocus(api, articleID, UMR_SOURCE);
+  };
+
+  const handleBlur = () => {
+    onBlur(api, articleID, UMR_SOURCE);
+  };
+
+  const handleScroll = () => {
+    onScroll(api, articleID, UMR_SOURCE);
+  };
+
   function onCreate() {
-    console.log("CALLING OnCREATE");
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -108,39 +132,32 @@ export default function ArticleReader({ api, teacherArticleID }) {
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);
 
-      api.setArticleOpened(articleInfo.id);
-      api.logReaderActivity(api.OPEN_ARTICLE, articleID, "", UMR_SOURCE);
+      api.readingSessionCreate(articleID, (sessionID) => {
+        setReadingSessionId(sessionID);
+
+        api.setArticleOpened(articleInfo.id);
+
+        api.logReaderActivity(
+          api.OPEN_ARTICLE,
+          articleID,
+          sessionID,
+          UMR_SOURCE
+        );
+      });
     });
 
-    window.addEventListener("focus", function () {
-      console.log("focus");
-      onFocus(api, articleID, UMR_SOURCE);
-    });
-
-    window.addEventListener("blur", function () {
-      console.log("blur");
-      onBlur(api, articleID, UMR_SOURCE);
-    });
-
-    window.addEventListener("scroll", function () {
-      onScroll(api, articleID, UMR_SOURCE);
-    });
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("scroll", handleScroll);
   }
 
-  function onDestruct() {
-    window.removeEventListener("focus", function () {
-      onFocus(api, articleID, UMR_SOURCE);
-    });
-
-    window.removeEventListener("blur", function () {
-      onBlur(api, articleID, UMR_SOURCE);
-    });
-
-    window.removeEventListener("scroll", function () {
-      onScroll(api, articleID, UMR_SOURCE);
-    });
-
+  function componentWillUnmount() {
+    uploadActivity();
     api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
+
+    window.removeEventListener("focus", handleFocus);
+    window.removeEventListener("blur", handleBlur);
+    window.removeEventListener("scroll", handleScroll);
   }
 
   function toggleBookmarkedState() {
@@ -148,7 +165,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.STAR_ARTICLE, articleID, "", UMR_SOURCE);
+    api.logReaderActivity(
+      api.STAR_ARTICLE,
+      articleID,
+      readingSessionId,
+      UMR_SOURCE
+    );
   }
 
   if (!articleInfo) {
@@ -166,11 +188,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
         }
       );
     });
-  };
-
-  const handleSaveCopyToShare = () => {
-    setReturnPath("/teacher/texts/AddTextOptions");
-    saveArticleToOwnTexts();
   };
 
   return (
