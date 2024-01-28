@@ -42,7 +42,7 @@ The build is minified and the filenames include the hashes.\
 - we have to add localhost to externally connectable in manifest.json, otherwise chrome.runtime can't 
 send a message to the extension from checkExtensionCommunication.js>checkExtensionInstalled()
 (this is captured in manifest.chrome.dev.json - however, i don't like the duplication betweem the two files...)
-```js 
+``` 
     "externally_connectable": {
         "matches": ["*://*.zeeguu.org/*", "*://localhost/*"]
     },
@@ -50,7 +50,7 @@ send a message to the extension from checkExtensionCommunication.js>checkExtensi
 - also, for the communication with Chrome to work one needs to add the id of the extension 
 in the .dev.env file (REACT_APP_EXTENSION_ID=...)
 - for the communication with Firefox to work in development localhost has to be added to content_scripts; as done in manifest.firefox.dev.json 
-```js
+```
   "content_scripts": [
     {
       "matches": ["*://*.zeeguu.org/*", "*://localhost/*"],
