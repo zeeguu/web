@@ -11,13 +11,11 @@ import PopupContent from "./PopupContent";
 import { EXTENSION_SOURCE } from "../JSInjection/constants";
 import { checkLanguageSupport, setUserInLocalStorage } from "./functions";
 import { StyledPrimaryButton } from "../JSInjection/Modal/Buttons.styles";
-import { API_URL } from "../config";
+import { API_URL, WEB_URL } from "../config";
 
 //for isProbablyReadable options object
 const minLength = 120;
 const minScore = 20;
-
-const ZEEGUU_ORG = "https://www.zeeguu.org";
 
 export default function Popup({ loggedIn }) {
   let api = new Zeeguu_API(API_URL);
@@ -29,7 +27,7 @@ export default function Popup({ loggedIn }) {
 
   useEffect(() => {
     if (loggedIn) {
-      getUserInfo(ZEEGUU_ORG, setUser);
+      getUserInfo(WEB_URL, setUser);
     }
   }, [loggedIn]);
 
@@ -70,7 +68,7 @@ export default function Popup({ loggedIn }) {
   }, [tab, user]);
 
   const openLogin = () => {
-    window.open("https://www.zeeguu.org/login", "_blank");
+    window.open(WEB_URL + "/login", "_blank");
   };
 
   if (loggedIn === false) {
