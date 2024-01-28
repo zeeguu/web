@@ -1,16 +1,17 @@
 /*global chrome*/
 import { checkReadability } from "./checkReadability";
-import { getUserInfo} from "./cookies";
+import { getUserInfo } from "./cookies";
 import { useState, useEffect } from "react";
 import Zeeguu_API from "../../src/zeeguu-react/src/api/Zeeguu_API";
 import { getSourceAsDOM } from "./functions";
 import { isProbablyReaderable } from "@mozilla/readability";
 import logo from "../images/zeeguu128.png";
-import {  HeadingContainer, PopUp, BottomContainer} from "./Popup.styles";
+import { HeadingContainer, PopUp, BottomContainer } from "./Popup.styles";
 import PopupContent from "./PopupContent";
 import { EXTENSION_SOURCE } from "../JSInjection/constants";
 import { checkLanguageSupport, setUserInLocalStorage } from "./functions";
 import { StyledPrimaryButton } from "../JSInjection/Modal/Buttons.styles";
+import { API_URL } from "../config";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -19,7 +20,7 @@ const minScore = 20;
 const ZEEGUU_ORG = "https://www.zeeguu.org";
 
 export default function Popup({ loggedIn }) {
-  let api = new Zeeguu_API("https://api.zeeguu.org");
+  let api = new Zeeguu_API(API_URL);
 
   const [user, setUser] = useState();
   const [tab, setTab] = useState();
@@ -33,7 +34,7 @@ export default function Popup({ loggedIn }) {
   }, [loggedIn]);
 
   useEffect(() => {
-    setUserInLocalStorage(user, api)
+    setUserInLocalStorage(user, api);
   }, [user]);
 
   useEffect(() => {
@@ -62,14 +63,14 @@ export default function Popup({ loggedIn }) {
         setIsReadable(true);
         api.session = user.session;
         if (api.session !== undefined) {
-          checkLanguageSupport(api, tab, setLanguageSupported)
+          checkLanguageSupport(api, tab, setLanguageSupported);
         }
       }
     }
   }, [tab, user]);
 
   const openLogin = () => {
-    window.open('https://www.zeeguu.org/login', '_blank');
+    window.open("https://www.zeeguu.org/login", "_blank");
   };
 
   if (loggedIn === false) {
@@ -82,26 +83,29 @@ export default function Popup({ loggedIn }) {
           <StyledPrimaryButton
             onClick={openLogin}
             name="toLogin"
-            className="toLoginButton">Login            
+            className="toLoginButton"
+          >
+            Login
           </StyledPrimaryButton>
         </BottomContainer>
       </PopUp>
     );
   } else {
-    if (user === undefined || isReadable === undefined) {        
-      return null } else {
+    if (user === undefined || isReadable === undefined) {
+      return null;
+    } else {
       return (
         <PopUp>
-            <PopupContent
-              isReadable={isReadable}
-              languageSupported={languageSupported}
-              user={user}
-              tab={tab}
-              api={api}
-              sessionId={user.session}
-            ></PopupContent>
+          <PopupContent
+            isReadable={isReadable}
+            languageSupported={languageSupported}
+            user={user}
+            tab={tab}
+            api={api}
+            sessionId={user.session}
+          ></PopupContent>
         </PopUp>
       );
-    } 
+    }
   }
 }
