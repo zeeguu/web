@@ -16,8 +16,8 @@ chrome.runtime.onInstalled.addListener(function (object) {
   }
 });
 
-chrome.runtime.onMessage.addListener(function (request, sender) {
-  if (request.type == "SPEAK") {
+chrome.runtime.onMessage.addListener(function (request) {
+  if (request.type === "SPEAK") {
     try {
       if (request) {
         console.log(
