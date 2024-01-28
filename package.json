@@ -5,7 +5,11 @@
   "dependencies": {
     "@babel/runtime": "^7.17.2",
     "@emailjs/browser": "^3.4.0",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
     "@mozilla/readability": "^0.4.1",
+    "@mui/icons-material": "^5.0.1",
+    "@mui/material": "^5.0.1",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -30,11 +34,7 @@
     "styled-components": "^5.3.3",
     "use-click-outside": "^2.0.0",
     "web-vitals": "^2.1.4",
-    "webpack-cli": "^4.9.2",
-    "@mui/icons-material": "^5.0.1",
-    "@mui/material": "^5.0.1",
-    "@emotion/react": "^11.4.1",
-    "@emotion/styled": "^11.3.0"
+    "webpack-cli": "^4.9.2"
   },
   "scripts": {
     "importZeeguu": "cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react/ && npm install",
@@ -42,15 +42,17 @@
     "start": "react-scripts start",
     "prebuild": "rimraf build",
     "build": "cp ./public/manifest.chrome.json ./public/manifest.json && npm-run-all build:*",
-    "build:app": "INLINE_RUNTIME_CHUNK=false DISABLE_ESLINT_PLUGIN=true react-scripts build",
-    "build:bg": "webpack --mode production ./src/JSInjection/main.js --output-path ./build/",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "build:popup": "INLINE_RUNTIME_CHUNK=false DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "build:content": "webpack --mode production ./src/JSInjection/main.js --output-path ./build/",
+    "build:bg": "webpack --mode production ./src/background/background.js --output-path ./build/ --output-filename background.js",
+    "build:izo": "webpack --mode production ./src/injectOnZeeguuOrg/injectOnZeeguuOrg.js --output-path ./build/ --output-filename injectOnZeeguuOrg.js",
     "pub": "rm -rf build* && (cd src/zeeguu-react/ && git pull) && cp ./public/manifest.chrome.json ./public/manifest.json && npm-run-all build:* && zip -r build.zip build && open https://chrome.google.com/webstore/devconsole/7f6da896-c12c-4cb3-8ad7-b1641fc8efbc/ckncjmaednfephhbpeookmknhmjjodcd/edit/package",
     "buildFirefox": "cp ./public/manifest.firefox.json ./public/manifest.json && npm-run-all build:*",
     "pubFirefox": "rm -rf build* && (cd src/zeeguu-react/ && git pull) && npm run buildFirefox && (cd build && zip -r ../build.zip *) && open https://addons.mozilla.org/en-US/firefox/",
     "pub-ci": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && cp ./public/manifest.chrome.json ./public/manifest.json && npm-run-all build:* && zip -r build.zip build",
-    "pub-ci-firefox": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm run buildFirefox && zip -r build.zip build"
+    "pub-ci-firefox": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm run buildFirefox && zip -r build.zip build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

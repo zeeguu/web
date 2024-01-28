@@ -1,5 +1,7 @@
 /*global chrome*/
 
+import { WEB_URL } from "../config";
+
 chrome.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
     console.log("Received message from " + sender.url + ": ", request);
@@ -8,7 +10,7 @@ chrome.runtime.onMessageExternal.addListener(
 );
 
 chrome.runtime.onInstalled.addListener(function (object) {
-  let externalUrl = "https://www.zeeguu.org/extension_installed";
+  let externalUrl = WEB_URL + "/extension_installed";
   if (object.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     chrome.tabs.create({ url: externalUrl });
   }
@@ -18,7 +20,12 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
   if (request.type == "SPEAK") {
     try {
       if (request) {
-        console.log("chrome.tts.speak: " + request.options.text + " " + request.options.language);
+        console.log(
+          "chrome.tts.speak: " +
+            request.options.text +
+            " " +
+            request.options.language
+        );
       }
 
       chrome.tts.speak(request.options.text, {
