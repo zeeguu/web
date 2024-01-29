@@ -5,6 +5,7 @@ import SignIn from "./pages/SignIn";
 import { UserContext } from "./UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
+import SessionStorage from "./assorted/SessionStorage";
 import Zeeguu_API from "./api/Zeeguu_API";
 import LoggedInRouter from "./LoggedInRouter";
 import CreateAccount from "./pages/CreateAccount";
@@ -69,6 +70,12 @@ function App() {
   function handleSuccessfulSignIn(userInfo, history) {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
+    api.getUserPreferences((preferences) => {
+      SessionStorage.setAudioExercisesEnabled(
+        preferences["audio_exercises"] === undefined ||
+          preferences["audio_exercises"] === "true"
+      );
+    });
 
     // Cookies are the mechanism via which we share a login
     // between the extension and the website

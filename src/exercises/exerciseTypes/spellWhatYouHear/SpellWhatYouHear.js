@@ -1,15 +1,16 @@
 import {useState, useEffect, useContext} from "react";
 import * as s from "../Exercise.sc.js";
 import BottomInput from "../findWordInContext/BottomInput.js";
-import SpeakButton from "../SpeakButton";
-import strings from "../../../i18n/definitions";
-import NextNavigation from "../NextNavigation";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
+import SpeakButton from "../SpeakButton.js";
+import strings from "../../../i18n/definitions.js";
+import NextNavigation from "../NextNavigation.js";
+import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 
+import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
-import {SpeechContext} from "../../SpeechContext";
+import {SpeechContext} from "../../SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js"
 
 const EXERCISE_TYPE = "Spell_What_You_Hear";
@@ -56,7 +57,7 @@ export default function SpellWhatYouHear({
       );
       setArticleInfo(articleInfo);
     });
-    if (sessionStorage.audioEnabled === "false")
+    if (!SessionStorage.isAudioExercisesEnabled())
       handleDisabledAudio()
   }, []);
 
@@ -97,8 +98,8 @@ export default function SpellWhatYouHear({
 
   function disableAudio(e){
     e.preventDefault();
-    sessionStorage.audioEnabled = false;
-    handleShowSolution(e, "DisableAudioSession");
+    SessionStorage.setAudioExercisesEnabled(false);
+    handleDisabledAudio();
   }
 
   function exerciseDuration(endTime) {
@@ -215,7 +216,7 @@ export default function SpellWhatYouHear({
         toggleShow={toggleShow}
         isCorrect={isCorrect}
       />
-      {sessionStorage.audioEnabled === "true" && 
+      {SessionStorage.isAudioExercisesEnabled() && 
             <DisableAudioSession
               disableAudio={disableAudio}
             />}

@@ -10,7 +10,7 @@ import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
 import {SpeechContext} from "./SpeechContext";
-
+import SessionStorage from "../assorted/SessionStorage";
 import {useIdleTimer} from 'react-idle-timer'
 import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
@@ -20,9 +20,6 @@ import {
     DEFAULT_SEQUENCE, DEFAULT_SEQUENCE_NO_AUDIO, EXERCISE_TYPES_TIAGO,
     NUMBER_OF_BOOKMARKS_TO_PRACTICE
 } from "./exerciseSequenceTypes";
-
-if (!sessionStorage.audioEnabled)
-    sessionStorage.audioEnabled = "";
 
 export default function Exercises({
                                       api,
@@ -69,9 +66,8 @@ export default function Exercises({
 
 
     function getExerciseSequenceType() {
-        let isAudioEnabled = sessionStorage.audioEnabled;
         let exerciseTypesList = DEFAULT_SEQUENCE;
-        if (!(isAudioEnabled === "true")) {
+        if (!SessionStorage.isAudioExercisesEnabled()) {
             console.log("Will not use audio!")
             exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
         }
@@ -137,8 +133,9 @@ export default function Exercises({
 
         if (fullExerciseProgression.length === 0) {
             api.getUserPreferences((preferences) => {
-                if (sessionStorage.audioEnabled === "")
-                    sessionStorage.audioEnabled = preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true";
+                if (SessionStorage.getAudioExercisesEnabled() === undefined)
+                    // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
+                    SessionStorage.setAudioExercisesEnabled(preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true");
 
                 if (articleID) {
                     api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
