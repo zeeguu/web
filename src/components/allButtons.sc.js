@@ -23,6 +23,12 @@ const OrangeRoundButton = styled(RoundButton)`
   background-color: ${zeeguuOrange};
 `;
 
+const OrangeBackButton = styled(OrangeRoundButton)`
+  position: absolute;
+  bottom:1em;
+  left:0;
+`;
+
 // from: https://stackoverflow.com/questions/10019797/pure-css-close-button
 const ClearSearchButton = styled.div`
   display: block;
@@ -88,4 +94,4 @@ const StyledPrimaryButton = styled.button`
   box-shadow: 0px 4px ${brown};
 `;
 
-export { RoundButton, OrangeRoundButton, BigSquareButton, ClearSearchButton, StyledPrimaryButton};
+export { RoundButton, OrangeRoundButton, OrangeBackButton, BigSquareButton, ClearSearchButton, StyledPrimaryButton};

@@ -4,7 +4,7 @@ import {
 } from "../teacher/styledComponents/TeacherButtons.sc";
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
-
+import { BackButton } from "./BackButton";
 import { useHistory } from "react-router-dom";
 import { useContext } from "react";
 import { RoutingContext } from "../contexts/RoutingContext";
@@ -65,6 +65,7 @@ export default function TopToolbar({
     <PopupButtonWrapper>
 
       <s.Toolbar>
+
         {user.is_teacher && (
           <>
             {teacherArticleID && (
@@ -100,7 +101,10 @@ export default function TopToolbar({
                   setPronouncing={setPronouncing}
                 />
         </s.RightHandSide>
+        <BackButton>
+        </BackButton>
       </s.Toolbar>
+      
     </PopupButtonWrapper>
   );
 }
