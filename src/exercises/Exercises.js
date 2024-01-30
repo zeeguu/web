@@ -11,15 +11,18 @@ import OutOfWordsMessage from "./OutOfWordsMessage";
 import Feature from "../features/Feature";
 import {SpeechContext} from "./SpeechContext";
 
-import {useIdleTimer} from 'react-idle-timer'
 import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
-import {calculateExerciseSequence, assignBookmarksToExercises} from "./assignBookmarksToExercises";
+import {assignBookmarksToExercises} from "./assignBookmarksToExercises";
 
 import {
-    DEFAULT_SEQUENCE, DEFAULT_SEQUENCE_NO_AUDIO, EXERCISE_TYPES_TIAGO,
-    NUMBER_OF_BOOKMARKS_TO_PRACTICE
+    DEFAULT_SEQUENCE,
+    DEFAULT_SEQUENCE_NO_AUDIO,
+    EXERCISE_TYPES_TIAGO,
+    NUMBER_OF_BOOKMARKS_TO_PRACTICE,
 } from "./exerciseSequenceTypes";
+import useActivityTimer from "../hooks/useActivityTimer";
+import ActivityTimer from "../components/ActivityTimer";
 
 let audioEnabled;
 
@@ -45,30 +48,13 @@ export default function Exercises({
     const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
     const [reload, setReload] = useState(false);
 
-    const [currentSessionDurationInSec, setCurrentSessionDurationInSec] = useState(1);
-    const [clockActive, setClockActive] = useState(true);
     const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
     const [speechEngine, setSpeechEngine] = useState();
 
-
-    const {getRemainingTime} = useIdleTimer({
-        onIdle,
-        onActive,
-        timeout: 30_000,
-        throttle: 500
-    })
-
-    function onIdle() {
-        setClockActive(false);
-    }
-
-    function onActive() {
-        setClockActive(true)
-    }
-
+    const [activeSessionDuration, clockActive, setActivityOver] =
+        useActivityTimer();
 
     function getExerciseSequenceType() {
-
         let exerciseTypesList = DEFAULT_SEQUENCE;
         if (Feature.tiago_exercises()) {
             exerciseTypesList = EXERCISE_TYPES_TIAGO;
@@ -79,49 +65,20 @@ export default function Exercises({
         return exerciseTypesList;
     }
 
-
-    useEffect(() => {
-
-        if (!finished) {
-            const interval = setInterval(() => {
-                let newvalue = clockActive ? currentSessionDurationInSec + 1 : currentSessionDurationInSec;
-                setCurrentSessionDurationInSec(newvalue);
-            }, 1000);
-
-
-            return () => {
-
-                clearInterval(interval);
-            };
-        }
-    }, [currentSessionDurationInSec, clockActive]);
-
-    window.addEventListener("focus", function () {
-        if (!finished) {
-            setClockActive(true);
-        }
-
-    });
-
-    window.addEventListener("blur", function () {
-        if (!finished) {
-            setClockActive(false);
-        }
-    });
-
-
     function initializeExercises(bookmarks, title) {
         setCountBookmarksToPractice(bookmarks.length);
 
         if (bookmarks.length > 0) {
-
             // This can only be initialized here after we can get at least one bookmakr
             // and thus, know the language to pronounce in
             setSpeechEngine(new ZeeguuSpeech(api, bookmarks[0].from_lang));
 
             let exerciseSequenceType = getExerciseSequenceType();
 
-            let exerciseSession = assignBookmarksToExercises(bookmarks, exerciseSequenceType);
+            let exerciseSession = assignBookmarksToExercises(
+                bookmarks,
+                exerciseSequenceType
+            );
 
             setFullExerciseProgression(exerciseSession);
 
@@ -133,13 +90,12 @@ export default function Exercises({
         }
     }
 
-
     useEffect(() => {
-
         if (fullExerciseProgression.length === 0) {
             api.getUserPreferences((preferences) => {
-
-                audioEnabled = preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true";
+                audioEnabled =
+                    preferences["audio_exercises"] === undefined ||
+                    preferences["audio_exercises"] === "true";
 
                 if (articleID) {
                     api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
@@ -159,18 +115,16 @@ export default function Exercises({
                         }
                     );
                 }
-
-            })
+            });
         }
 
         api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
             let id = JSON.parse(newlyCreatedDBSessionID).id;
             setDbExerciseSessionId(id);
-        })
+        });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
 
     let wordSourceText = articleInfo ? (
         <>
@@ -188,7 +142,6 @@ export default function Exercises({
         <>{strings.wordSourcePrefix}</>
     );
 
-
     // Standard flow when user completes exercise session
     if (finished) {
         api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
@@ -203,12 +156,10 @@ export default function Exercises({
                         backButtonAction={backButtonAction}
                         keepExercisingAction={keepExercisingAction}
                         source={source}
-                        totalTime={currentSessionDurationInSec}
-                        setClockActive={setClockActive}
+                        totalTime={activeSessionDuration}
                         exerciseSessionId={dbExerciseSessionId}
                     />
                 </SpeechContext.Provider>
-
             </>
         );
     }
@@ -234,12 +185,12 @@ export default function Exercises({
 
         if (newIndex === fullExerciseProgression.length) {
             setFinished(true);
-            setClockActive(false);
+            setActivityOver(true);
             return;
         }
         setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
         setCurrentIndex(newIndex);
-        api.updateExerciseSession(dbExerciseSessionId, currentSessionDurationInSec);
+        api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
     }
 
     let correctBookmarksCopy = [...correctBookmarks];
@@ -252,7 +203,7 @@ export default function Exercises({
             correctBookmarksCopy.push(currentBookmark);
             setCorrectBookmarks(correctBookmarksCopy);
         }
-        api.updateExerciseSession(dbExerciseSessionId, currentSessionDurationInSec);
+        api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
     }
 
     let incorrectBookmarksCopy = [...incorrectBookmarks];
@@ -260,7 +211,7 @@ export default function Exercises({
     function incorrectAnswerNotification(currentBookmark) {
         incorrectBookmarksCopy.push(currentBookmark);
         setIncorrectBookmarks(incorrectBookmarksCopy);
-        api.updateExerciseSession(dbExerciseSessionId, currentSessionDurationInSec);
+        api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
     }
 
     function uploadUserFeedback(userWrittenFeedback, id) {
@@ -281,16 +232,18 @@ export default function Exercises({
     }
 
     const CurrentExercise = fullExerciseProgression[currentIndex].type;
+
     return (
         <>
             <SpeechContext.Provider value={speechEngine}>
-
                 <s.ExercisesColumn className="exercisesColumn">
-
                     {/*<s.LittleMessageAbove>*/}
                     {/*  {wordSourcePrefix} {wordSourceText}*/}
                     {/*</s.LittleMessageAbove>*/}
-                    <ProgressBar index={currentIndex} total={fullExerciseProgression.length}/>
+                    <ProgressBar
+                        index={currentIndex}
+                        total={fullExerciseProgression.length}
+                    />
                     <s.ExForm>
                         <CurrentExercise
                             key={currentIndex}
@@ -317,18 +270,15 @@ export default function Exercises({
                     />
                 </s.ExercisesColumn>
 
-                <div style={{position: "fixed", bottom: "5px"}}>
-                    <small style={{color: "gray"}}>
-                        Seconds in this exercise session: {currentSessionDurationInSec} {clockActive ? "" : "(paused)"}
-                    </small>
-                </div>
-
+                <ActivityTimer
+                    message="Seconds in this exercise session"
+                    activeSessionDuration={activeSessionDuration}
+                    clockActive={clockActive}
+                />
             </SpeechContext.Provider>
         </>
-
     );
 }
-
 
 function truncate(str, n) {
     return str.length > n ? str.substr(0, n - 1) + "..." : str;
