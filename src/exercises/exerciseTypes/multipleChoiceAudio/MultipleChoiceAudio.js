@@ -1,16 +1,18 @@
 import {useState, useEffect} from "react";
 import * as s from "../Exercise.sc.js";
 import SpeakButton from "../SpeakButton.js";
-import strings from "../../../i18n/definitions";
-import NextNavigation from "../NextNavigation";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
+import strings from "../../../i18n/definitions.js";
+import NextNavigation from "../NextNavigation.js";
+import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
-import shuffle from "../../../assorted/fisherYatesShuffle";
-import {removePunctuation} from "../../../utils/preprocessing/preprocessing";
+import shuffle from "../../../assorted/fisherYatesShuffle.js";
+import {removePunctuation} from "../../../utils/preprocessing/preprocessing.js";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import EditButton from "../../../words/EditButton.js";
+import DisableAudioSession from "../DisableAudioSession.js"
+import SessionStorage from "../../../assorted/SessionStorage.js";
 import {useContext} from 'react';
 
 
@@ -60,12 +62,19 @@ export default function MultipleChoiceAudio({
             setArticleInfo(articleInfo);
         });
         consolidateChoice();
+        if (!SessionStorage.isAudioExercisesEnabled())
+            handleDisabledAudio()
     }, []);
 
     function exerciseDuration(endTime) {
         return Math.min(89999, endTime - initialTime)
     }
 
+    function disableAudio(e){
+        e.preventDefault();
+        SessionStorage.disableAudioExercises();
+        handleDisabledAudio();
+      }
 
     function notifyChoiceSelection(selectedChoice) {
         console.log("checking result...");
@@ -107,6 +116,16 @@ export default function MultipleChoiceAudio({
             setSelectedButtonId(id);
         }
         console.log(id + " false");
+    }
+
+    function handleDisabledAudio() {
+        api.logUserActivity(
+            "AUDIO_DISABLE",
+            "",
+            bookmarksToStudy[0].id,
+            ""
+        );
+        moveToNextExercise();
     }
 
     function handleShowSolution() {
@@ -277,6 +296,11 @@ export default function MultipleChoiceAudio({
                 toggleShow={toggleShow}
                 isCorrect={isCorrect}
             />
+            {SessionStorage.isAudioExercisesEnabled() && 
+            <DisableAudioSession
+                disableAudio={disableAudio}
+            />}
+
         </s.Exercise>
     );
 }
