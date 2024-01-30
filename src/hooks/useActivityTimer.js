@@ -33,7 +33,7 @@ export default function useActivityTimer(activityUploaderFunction) {
     useIdleTimer({
         onIdle,
         onActive,
-        timeout: 30_00,
+        timeout: 30_000,
         throttle: 500,
     });
 
