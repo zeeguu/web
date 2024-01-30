@@ -97,7 +97,6 @@ export default function Exercises({
                     // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
                     SessionStorage.setAudioExercisesEnabled(preferences["audio_exercises"] === undefined || preferences["audio_exercises"] === "true");
 
-
                 if (articleID) {
                     api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
                         api.getArticleInfo(articleID, (data) => {
