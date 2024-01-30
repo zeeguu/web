@@ -29,7 +29,12 @@
      */
     setAudioExercisesEnabled: function(is_enabled){
         sessionStorage[this.Keys.AudioExercisesEnabled] = is_enabled;
-    }
+    },
+
+    disableAudioExercises: function(){
+        sessionStorage[this.Keys.AudioExercisesEnabled] = false;
+    },
+    
   };
   
   export default SessionStorage;

@@ -72,7 +72,7 @@ export default function MultipleChoiceAudio({
 
     function disableAudio(e){
         e.preventDefault();
-        SessionStorage.setAudioExercisesEnabled(false);
+        SessionStorage.disableAudioExercises();
         handleDisabledAudio();
       }
 
