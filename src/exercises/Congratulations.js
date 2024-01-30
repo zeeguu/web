@@ -85,7 +85,7 @@ export default function Congratulations({
                             <br/>
                             😳 {strings.payMoreAttentionTo}
                         </h3>
-                        <p>
+                        <div>
                             {incorrectBookmarksToDisplay.map((each) => (
                                 <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
                                     <Word
@@ -97,7 +97,7 @@ export default function Congratulations({
                                     />
                                 </s.ContentOnRow>
                             ))}
-                        </p>
+                        </div>
                     </>
                 )}
                 <CenteredColumn className="CenteredColumn">
