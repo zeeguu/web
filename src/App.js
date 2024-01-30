@@ -24,8 +24,7 @@ import InstallExtension from "./pages/InstallExtension";
 function App() {
   let userDict = {};
 
-  console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
-  console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
+
   let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
 
   if (getUserSession()) {
@@ -46,6 +45,8 @@ function App() {
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
+    console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
+    console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
 
     if (getUserSession()) {
       console.log("getting user details...");
