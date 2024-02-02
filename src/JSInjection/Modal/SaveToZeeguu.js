@@ -4,8 +4,9 @@ import {
 } from "./Buttons.styles";
 import { useState } from "react";
 import {EXTENSION_SOURCE} from "../constants";
-import BeenhereIcon from '@mui/icons-material/Beenhere';
-import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined';
+import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import Tooltip from '@mui/material/Tooltip';
 
 export default function SaveToZeeguu({ api, articleId, setPersonalCopySaved, personalCopySaved}) {
@@ -21,7 +22,7 @@ export default function SaveToZeeguu({ api, articleId, setPersonalCopySaved, per
       {personalCopySaved ? (
         <Tooltip title="Saved to your Zeeguu account" arrow>
           <StyledSmallDisabledButton>
-            <BeenhereIcon fontSize="large"/> <br/>
+            <BookmarkAddedIcon fontSize="large"/> <br/>
             Saved
           </StyledSmallDisabledButton>
         </Tooltip>
@@ -29,8 +30,8 @@ export default function SaveToZeeguu({ api, articleId, setPersonalCopySaved, per
         <StyledSmallButton onClick={handlePostCopy}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}>
-          {isHovered ? <BeenhereIcon fontSize="large"/> : <BeenhereOutlinedIcon fontSize="large"/>} <br/>
-          {isHovered ? "Save" : ""}
+          {isHovered ? <BookmarkAddIcon fontSize="large"/> : <BookmarkAddOutlinedIcon fontSize="large"/>} <br/>
+           <span>Save</span> 
         </StyledSmallButton>
       )}
     </>

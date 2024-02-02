@@ -126,6 +126,9 @@ export const StyledModal = styled(ReactModal)`
   .feedbackBox {
     background-color: ${colors.lighterBlue};
     border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     max-width: 80%;
   }
 
@@ -135,8 +138,7 @@ export const StyledModal = styled(ReactModal)`
   }
 
   .logoModal {
-    height: 50px;
-    margin: 10px;
+    height: 2.5em;
   }
 `;
 

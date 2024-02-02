@@ -4,7 +4,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
+import MenuIcon from '@mui/icons-material/Menu';
 import colors from "../colors";
 
 const FloatingMenu = ({ buttons, buttonGroupVisible, toggleButtonGroup }) => (
@@ -30,7 +30,7 @@ const FloatingMenu = ({ buttons, buttonGroupVisible, toggleButtonGroup }) => (
           position="fixed"
           onClick={toggleButtonGroup}
         >
-          {buttonGroupVisible ? <CloseSharpIcon /> : <AddIcon />}
+          {buttonGroupVisible ? <CloseSharpIcon /> : <MenuIcon />}
         </Fab>
       </div>
     </Box>

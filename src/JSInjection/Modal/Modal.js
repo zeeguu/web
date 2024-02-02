@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 
 import { StyledModal,StyledHeading, GlobalStyle, OverwriteZeeguu,} from "./Modal.styles";
 
-import { StyledCloseButton } from "./Buttons.styles";
+import { StyledCloseButton, StyledSmallButton } from "./Buttons.styles";
 import FloatingMenu from './FloatingMenu';
 import ZeeguuLoader from "../ZeeguuLoader";
 import UserFeedback from "./UserFeedback";
@@ -25,6 +25,8 @@ import { cleanDOMAfter, getHTMLContent } from "../Cleaning/pageSpecificClean";
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import SaveToZeeguu from "./SaveToZeeguu";
 import colors from "../colors";
+import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
+import FactCheckIcon from '@mui/icons-material/FactCheck';
 
 import {SpeechContext} from "../../zeeguu-react/src/exercises/SpeechContext";
 import ZeeguuSpeech from "../../zeeguu-react/src/speech/ZeeguuSpeech";
@@ -53,6 +55,7 @@ export function Modal({
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [nativeLang, setNativeLang] = useState();
   const [username, setUsername] = useState();
+  const [isHovered, setIsHovered] = useState(false);
 
   const [loadingPersonalCopy, setLoadingPersonalCopy] = useState(true);
   const [personalCopySaved, setPersonalCopySaved] = useState(false);
@@ -262,18 +265,26 @@ export function Modal({
         <OverwriteZeeguu>
           <StyledHeading>
             <div style={{ "float": "left", "max-width": "50%",  "display":"inline-flex", "padding": "1.5em"}}>
-              <div>
-              <img
-                    src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+            <StyledSmallButton>
+                <a href="https://www.zeeguu.org">
+                    <img src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
                     alt={"Zeeguu logo"}
-                    className="logoModal"
-                />
-              </div> 
+                    className="logoModal"/>
+                </a> <br/>
+                <span>Home</span> 
+            </StyledSmallButton>
               <SaveToZeeguu
               api={api}
               articleId={articleId()}
               setPersonalCopySaved={setPersonalCopySaved}
               personalCopySaved={personalCopySaved} />
+             <div>
+                <StyledSmallButton onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)} onClick={openReview}>
+                 {isHovered ? <FactCheckIcon fontSize="large"/> : <FactCheckOutlinedIcon fontSize="large"/>} <br/>
+                <span>Words</span> 
+                </StyledSmallButton>
+            </div>
             </div>
             <div style={{ "float": "right", "width": "50%",  "display":"inline"}}>
               <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
