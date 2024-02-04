@@ -97,7 +97,7 @@ function logGoingToExercisesAfterReview(e) {
           {<NavigateBeforeIcon/>}{strings.backToArticle}
         </StyledButton>
           {!exercisesEnabled ? (
-          <Tooltip title="You need to star words before going to exercises" arrow>
+          <Tooltip title="Translate or star words in the article before accessing exercises." arrow>
             <span>
             <StyledButton disabled>
               {strings.toExercises} {<NavigateNextIcon/>}
