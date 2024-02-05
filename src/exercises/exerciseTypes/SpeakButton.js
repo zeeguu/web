@@ -3,6 +3,9 @@ import strings from "../../i18n/definitions";
 
 import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
+import SessionStorage from "../../assorted/SessionStorage";
+
+import {SpeechContext} from "../SpeechContext";
 
 import {SpeechContext} from "../SpeechContext";
 
@@ -72,10 +75,20 @@ export default function SpeakButton({
   let style = styles[styling] || small_next_style; // default is next style
 
   async function handleSpeak() {
-    setIsSpeaking(true);
-    if (isReadContext) { await speech.speakOut(bookmarkToStudy.context); }
-    else { await speech.speakOut(bookmarkToStudy.from); }
+    // If audio is playing don't let other buttons be clicked.
+    if (SessionStorage.isAudioBeingPlayed()) return
+    try {
+      setIsSpeaking(true);
+      SessionStorage.setAudioBeingPlayed(true);
+      if (isReadContext) { await speech.speakOut(bookmarkToStudy.context); }
+      else { await speech.speakOut(bookmarkToStudy.from); }
+    }
+    catch(err){
+      console.log("There was an error executing the speech: " + err)
+    }
     setIsSpeaking(false);
+    SessionStorage.setAudioBeingPlayed(false);
+    console.log(isSpeaking);
   }
 
   return (

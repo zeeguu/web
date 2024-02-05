@@ -1,4 +1,6 @@
 /*global chrome*/
+import SessionStorage from "../assorted/SessionStorage";
+
 const PREFERRED_LOCALES = {fr: "fr-FR", nl: "nl-NL", en: "en-US", es: "es-ES"};
 const PREFERRED_VOICE_NAMES = {fr: [  "Google", "Thomas", "Audrey", "Aurelie"]}
 
@@ -86,7 +88,16 @@ const ZeeguuSpeech = class {
 
     }
 
-    speakOut(word) {
+    async speakOut(word, setIsSpeaking) {
+        function handleSetIsSpeakingButton (setIsSpeaking, isPlayingSound) {
+            if (setIsSpeaking !== undefined){
+                setIsSpeaking(isPlayingSound);
+                SessionStorage.setAudioBeingPlayed(isPlayingSound);
+            } 
+    
+        }
+
+        handleSetIsSpeakingButton(setIsSpeaking, true);
         if (this.runningFromExtension) {
             chrome.runtime.sendMessage({
                 type: "SPEAK",
@@ -97,14 +108,22 @@ const ZeeguuSpeech = class {
             });
         } else {
             if (this.language === "da") {
-                return this.playFromAPI(this.api, word, this.pronunciationPlayer);
+                await this.playFromAPI(this.api, word, this.pronunciationPlayer);
+                handleSetIsSpeakingButton(setIsSpeaking, false);
+
             } else {
                 var utterance = new SpeechSynthesisUtterance(word);
                 utterance.voice = this.voice;
-                speechSynthesis.cancel();
+                utterance.addEventListener("end", (event) => {
+                    console.log(
+                      `Utterance has finished being spoken after ${event.elapsedTime} seconds.`,
+                    );
+                    handleSetIsSpeakingButton(setIsSpeaking, false);
+                  });
                 speechSynthesis.speak(utterance);
             }
         }
+        
     }
 
     playFullArticle(articleInfo, api, player) {
