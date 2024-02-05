@@ -7,8 +7,6 @@ import SessionStorage from "../../assorted/SessionStorage";
 
 import {SpeechContext} from "../SpeechContext";
 
-import {SpeechContext} from "../SpeechContext";
-
 const small_style = {
   // Icon properties
   img_height: 15,
@@ -78,16 +76,12 @@ export default function SpeakButton({
     // If audio is playing don't let other buttons be clicked.
     if (SessionStorage.isAudioBeingPlayed()) return
     try {
-      setIsSpeaking(true);
-      SessionStorage.setAudioBeingPlayed(true);
-      if (isReadContext) { await speech.speakOut(bookmarkToStudy.context); }
-      else { await speech.speakOut(bookmarkToStudy.from); }
+      if (isReadContext) { await speech.speakOut(bookmarkToStudy.context, setIsSpeaking); }
+      else { await speech.speakOut(bookmarkToStudy.from, setIsSpeaking); }
     }
     catch(err){
       console.log("There was an error executing the speech: " + err)
     }
-    setIsSpeaking(false);
-    SessionStorage.setAudioBeingPlayed(false);
     console.log(isSpeaking);
   }
 
