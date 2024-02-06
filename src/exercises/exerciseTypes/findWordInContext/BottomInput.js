@@ -14,6 +14,8 @@ export default function BottomInput({
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
+  const [distanceToCorrect, setDistanceToCorrect] = useState(0);
+  const levenshtein = require('js-levenshtein');
 
   function handleHint() {
     setUsedHint(true);
@@ -54,6 +56,9 @@ export default function BottomInput({
       handleCorrectAnswer(concatMessage);
     } else {
       let concatMessage = messageToAPI + "W";
+      let levDistance = levenshtein(a, b);
+      console.log("You are this far: " + levDistance)
+      setDistanceToCorrect(levDistance);
       setMessageToAPI(concatMessage);
       setIsIncorrect(true);
       handleIncorrectAnswer();
@@ -67,22 +72,35 @@ export default function BottomInput({
         <s.LeftFeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
           {strings.hint}
         </s.LeftFeedbackButton>
+        <div>
+        {distanceToCorrect > 0 && (
+            <p>You need to change {distanceToCorrect} characters!</p>
+          )}
+          {distanceToCorrect >= 5 && (
+            <p>❌ Not quite the word!</p>
+          )}
+          {distanceToCorrect < 3 && distanceToCorrect > 0 && (
+            <p>⭐ You are almost there!</p>
+          )}
+          <InputField
+            type="text"
+            className={distanceToCorrect >= 3 && distanceToCorrect > 0 ? "wrong-border" : "almost-border"}
+            value={currentInput}
+            onChange={(e) => setCurrentInput(e.target.value)}
+            onKeyUp={(e) => {
+              if (currentInput !== "") {
+                notifyKeyPress();
+              }
+              if (e.key === "Enter") {
+                checkResult();
+              }
+            }}
+            onAnimationEnd={() => setIsIncorrect(false)}
+            autoFocus
+          />
 
-        <InputField
-          type="text"
-          value={currentInput}
-          onChange={(e) => setCurrentInput(e.target.value)}
-          onKeyUp={(e) => {
-            if (currentInput !== "") {
-              notifyKeyPress();
-            }
-            if (e.key === "Enter") {
-              checkResult();
-            }
-          }}
-          onAnimationEnd={() => setIsIncorrect(false)}
-          autoFocus
-        />
+        </div>
+
         <s.RightFeedbackButton onClick={checkResult}>
           {strings.check}
         </s.RightFeedbackButton>

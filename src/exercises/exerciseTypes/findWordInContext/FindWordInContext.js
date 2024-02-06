@@ -161,7 +161,7 @@ export default function FindWordInContext({
     }
 
     function handleIncorrectAnswer() {
-        alert("incorrect answer")
+        //alert("incorrect answer")
         notifyIncorrectAnswer(bookmarksToStudy[0]);
         setFirstTypeTime();
     }
