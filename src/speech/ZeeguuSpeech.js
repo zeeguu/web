@@ -24,7 +24,7 @@ function voiceForLanguageCode(code, voices) {
         // console.log(favoriteVoices);
 
         if (favoriteVoices.length > 0) {
-            let voice = favoriteVoices [0];
+            let voice = favoriteVoices[0];
             console.log("Found: " + voice.name + " " + voice.lang);
             return voice;
         }
