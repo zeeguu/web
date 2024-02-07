@@ -14,6 +14,7 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
 import NoSidebarRouter from "./NoSidebarRouter.js";
+import ZeeguuSpeech from "./speech/ZeeguuSpeech";
 
 import {
   getUserSession,
@@ -39,15 +40,27 @@ function App() {
 
   useUILanguage();
 
-  const [user, setUser] = useState(userDict);
+  const [userData, setUserData] = useState(userDict);
   const [hasExtension, setHasExtension] = useState(false);
+  const [zeeguuSpeech, setZeeguuSpeech] = useState(null);
+
+  function setUser(dict) {
+    setZeeguuSpeech(new ZeeguuSpeech(api, dict.learned_language));
+    setUserData(dict);
+  }
 
   useEffect(() => {
+    console.log("Running callback!")
+    setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
+  }, []);
+
+  useEffect(() => {
+    console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
+    console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
     // when creating the app component we also load the
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
-
     if (getUserSession()) {
       console.log("getting user details...");
       api.getUserDetails((data) => {
@@ -58,6 +71,7 @@ function App() {
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
       if (!getUserSession()) {
+        console.log("Unsetting user!")
         setUser({});
       }
     }, 1000);
@@ -80,8 +94,6 @@ function App() {
     // Cookies are the mechanism via which we share a login
     // between the extension and the website
     saveUserInfoIntoCookies(userInfo, api.session);
-
-
     let newUserValue ={
       session: api.session,
       name: userInfo.name,
@@ -90,11 +102,11 @@ function App() {
       is_teacher: userInfo.is_teacher,
       is_student: userInfo.is_student,
     };
+    
+    
     console.log("setting new user value: ");
     console.dir(newUserValue);
-
-    setUser(newUserValue);
-
+    setUser(newUserValue);  
 
     if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
       history.push("/install_extension");
@@ -115,7 +127,7 @@ function App() {
   return (
     <BrowserRouter>
       <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
-        <UserContext.Provider value={{ ...user, logoutMethod: logout }}>
+        <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
           <Switch>
             <Route path="/" exact component={LandingPage} />
 
@@ -157,7 +169,7 @@ function App() {
               render={() => <NoSidebarRouter api={api} />}
             />
 
-            <LoggedInRouter api={api} user={user} setUser={setUser} />
+            <LoggedInRouter api={api} speechEngine={zeeguuSpeech} setUser={setUser} />
           </Switch>
         </UserContext.Provider>
       </RoutingContext.Provider>

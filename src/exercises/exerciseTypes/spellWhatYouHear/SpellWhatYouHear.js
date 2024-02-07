@@ -52,7 +52,8 @@ export default function SpellWhatYouHear({
           bookmarksToStudy[0].context,
           articleInfo,
           api,
-          "TRANSLATE WORDS IN EXERCISE"
+          "TRANSLATE WORDS IN EXERCISE",
+          speech
         )
       );
       setArticleInfo(articleInfo);

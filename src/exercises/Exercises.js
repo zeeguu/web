@@ -8,13 +8,9 @@ import {setTitle} from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
-import Feature from "../features/Feature";
-import {SpeechContext} from "./SpeechContext";
-
 import SessionStorage from "../assorted/SessionStorage";
 import {useIdleTimer} from 'react-idle-timer'
 
-import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 import {assignBookmarksToExercises} from "./assignBookmarksToExercises";
 
@@ -50,7 +46,6 @@ export default function Exercises({
     const [reload, setReload] = useState(false);
 
     const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
-    const [speechEngine, setSpeechEngine] = useState();
 
     const [activeSessionDuration, clockActive, setActivityOver] =
         useActivityTimer();
@@ -70,7 +65,6 @@ export default function Exercises({
         if (bookmarks.length > 0) {
             // This can only be initialized here after we can get at least one bookmakr
             // and thus, know the language to pronounce in
-            setSpeechEngine(new ZeeguuSpeech(api, bookmarks[0].from_lang));
 
             let exerciseSequenceType = getExerciseSequenceType();
 
@@ -148,19 +142,17 @@ export default function Exercises({
         api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
         return (
             <>
-                <SpeechContext.Provider value={speechEngine}>
-                    <Congratulations
-                        articleID={articleID}
-                        correctBookmarks={correctBookmarks}
-                        incorrectBookmarks={incorrectBookmarks}
-                        api={api}
-                        backButtonAction={backButtonAction}
-                        keepExercisingAction={keepExercisingAction}
-                        source={source}
-                        totalTime={activeSessionDuration}
-                        exerciseSessionId={dbExerciseSessionId}
-                    />
-                </SpeechContext.Provider>
+                <Congratulations
+                    articleID={articleID}
+                    correctBookmarks={correctBookmarks}
+                    incorrectBookmarks={incorrectBookmarks}
+                    api={api}
+                    backButtonAction={backButtonAction}
+                    keepExercisingAction={keepExercisingAction}
+                    source={source}
+                    totalTime={activeSessionDuration}
+                    exerciseSessionId={dbExerciseSessionId}
+                />
             </>
         );
     }
@@ -236,7 +228,6 @@ export default function Exercises({
 
     return (
         <>
-            <SpeechContext.Provider value={speechEngine}>
                 <s.ExercisesColumn className="exercisesColumn">
                     {/*<s.LittleMessageAbove>*/}
                     {/*  {wordSourcePrefix} {wordSourceText}*/}
@@ -276,7 +267,6 @@ export default function Exercises({
                     activeSessionDuration={activeSessionDuration}
                     clockActive={clockActive}
                 />
-            </SpeechContext.Provider>
         </>
     );
 }
