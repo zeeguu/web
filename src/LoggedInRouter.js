@@ -9,15 +9,20 @@ import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import React, {useState} from "react";
 import ReadingHistory from "./words/WordHistory";
+import { SpeechContext } from "./exercises/SpeechContext";
 
 
-export default function LoggedInRouter({ api, setUser }) {
-
+export default function LoggedInRouter({ api, setUser, speechEngine }) {
   return (
     <>
+      <SpeechContext.Provider value={speechEngine}>
         <SideBar api={api}>
           <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
-          <PrivateRoute path="/exercises" api={api} component={ExercisesRouter} />
+          <PrivateRoute
+            path="/exercises"
+            api={api}
+            component={ExercisesRouter}
+          />
           <PrivateRoute path="/words" api={api} component={WordsRouter} />
 
           <PrivateRoute path="/history" api={api} component={ReadingHistory} />
@@ -43,7 +48,7 @@ export default function LoggedInRouter({ api, setUser }) {
             component={UserDashboard}
           />
         </SideBar>
-
+      </SpeechContext.Provider>
     </>
   );
 }

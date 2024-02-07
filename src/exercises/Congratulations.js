@@ -6,6 +6,10 @@ import {CenteredColumn} from "./Congratulations.sc";
 import {removeArrayDuplicates} from "../utils/basic/arrays";
 import {LoadingAnimation} from "../components/LoadingAnimation.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import { StyledButton } from "../components/allButtons.sc.js"
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import {CenteredContent} from "../components/ColumnWidth.sc";
 
 export default function Congratulations({
                                             articleID,
@@ -100,18 +104,15 @@ export default function Congratulations({
                         </div>
                     </>
                 )}
-                <CenteredColumn className="CenteredColumn">
-                    <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
-                        {strings.keepExercising}
-                    </s.OrangeButton>
-                    <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
-                        {strings.backToReading}
-                    </s.WhiteButton>
-                </CenteredColumn>
-
-
+                <CenteredContent>
+                    <StyledButton secondary className="whiteButton" onClick={backButtonAction}>
+                        {<NavigateBeforeIcon/>}{strings.backToReading}
+                    </StyledButton>
+                    <StyledButton primary onClick={keepExercisingAction}>
+                        {strings.keepExercising}{<NavigateNextIcon/>}
+                    </StyledButton>
+                </CenteredContent>
             </s.NarrowColumn>
-
         </>
     );
 }
