@@ -112,7 +112,7 @@ export default function BottomInput({
           <InputField
             type="text"
             className={
-              distanceToCorrect >= 3 && distanceToCorrect > 0
+              distanceToCorrect >= 5
                 ? "wrong-border"
                 : "almost-border"
             }
