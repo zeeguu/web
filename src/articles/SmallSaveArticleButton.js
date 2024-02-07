@@ -3,7 +3,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import { useState } from "react";
 
 export default function SmallSaveArticleButton({
   article,
@@ -11,8 +10,7 @@ export default function SmallSaveArticleButton({
   isArticleSaved,
   setIsArticleSaved,
 }) {
-  const [savedText, setSavedText] = useState("Saved");
-
+  
   function saveArticle() {
     api.makePersonalCopy(article.id, (data) => {
       if (data === "OK") {
@@ -21,35 +19,24 @@ export default function SmallSaveArticleButton({
       }
     });
   }
-
-  function onMouseOverSaved(e) {
-    setSavedText("Remove?");
-  }
-  function onMouseLeave(e) {
-    setSavedText("Saved");
+  function removeArticle() {
+    /*
+    api.removePersonalCopy(article.id, (data) => {
+      if (data === "OK") {
+        setIsArticleSaved(false);
+        //toast("Article removed from your Saves!");
+      }
+    });*/
+    console.log("Clicked to remove!");
   }
 
   return (
     <>
       {isArticleSaved ? (
-        <s.SavedArticleDiv>
-          <s.SavedLabel
-            onMouseEnter={(e) => onMouseOverSaved(e)}
-            onMouseLeave={(e) => onMouseLeave(e)}
-          >
-            {" "}
-            {savedText === "Saved" ? (
-              <BookmarkIcon fontSize="small" />
-            ) : (
-              <BookmarkBorderIcon fontSize="small" />
-            )}
-            {savedText}
+          <s.SavedLabel onClick={removeArticle}>
+            <BookmarkIcon fontSize="small" />
+              Remove
           </s.SavedLabel>
-          <s.SavedLabel onClick={saveArticle}>
-            <BookmarkBorderIcon fontSize="small" />
-            Remove
-          </s.SavedLabel>
-        </s.SavedArticleDiv>
       ) : (
         <div>
           <s.SaveButton onClick={saveArticle}>
