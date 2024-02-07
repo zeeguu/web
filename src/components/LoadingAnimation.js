@@ -9,8 +9,8 @@ export default function LoadingAnimation({ text }) {
 
   useEffect(() => {
     // Code from: https://stackoverflow.com/questions/53090432/react-hooks-right-way-to-clear-timeouts-and-intervals
-    // Only show the loading if more that 500ms have passed.
-    let loadingTimer = setTimeout(() => setShowLoadingScreen(true), 500);
+    // Only show the loading if more that 1000ms have passed.
+    let loadingTimer = setTimeout(() => setShowLoadingScreen(true), 1000);
     return () => {
       clearTimeout(loadingTimer);
     };
