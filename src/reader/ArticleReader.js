@@ -3,6 +3,7 @@ import {useLocation, useHistory} from "react-router-dom";
 
 import {UserContext} from "../UserContext";
 import {RoutingContext} from "../contexts/RoutingContext";
+import { SpeechContext } from "../exercises/SpeechContext";
 import {TranslatableText} from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
 
@@ -75,6 +76,7 @@ export default function ArticleReader({api, teacherArticleID}) {
     const [pronouncing, setPronouncing] = useState(true);
     const user = useContext(UserContext);
     const history = useHistory();
+    const speech = useContext(SpeechContext);
     const [activeSessionDuration, clockActive] = useActivityTimer(uploadActivity);
     const [readingSessionId, setReadingSessionId] = useState();
 
@@ -118,7 +120,8 @@ export default function ArticleReader({api, teacherArticleID}) {
                     articleInfo,
                     api,
                     api.TRANSLATE_TEXT,
-                    UMR_SOURCE
+                    UMR_SOURCE,
+                    speech
                 )
             );
             setInteractiveTitle(
@@ -127,7 +130,8 @@ export default function ArticleReader({api, teacherArticleID}) {
                     articleInfo,
                     api,
                     api.TRANSLATE_TEXT,
-                    UMR_SOURCE
+                    UMR_SOURCE,
+                    speech
                 )
             );
             setArticleInfo(articleInfo);
