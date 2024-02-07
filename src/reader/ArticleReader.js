@@ -222,7 +222,7 @@ export default function ArticleReader({api, teacherArticleID}) {
             <div
                 style={{
                     marginTop: "1em",
-                    marginBottom: "4em",
+                    marginBottom: "2em",
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "space-between",
@@ -260,9 +260,8 @@ export default function ArticleReader({api, teacherArticleID}) {
                     pronouncing={pronouncing}
                 />
             </s.MainText>
-
-            <DifficultyFeedbackBox api={api} articleID={articleID}/>
             <ReviewVocabulary articleID={articleID}/>
+            <DifficultyFeedbackBox api={api} articleID={articleID}/>
             <s.ExtraSpaceAtTheBottom/>
         </s.ArticleReader>
     );
