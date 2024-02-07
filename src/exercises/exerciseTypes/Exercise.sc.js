@@ -12,6 +12,10 @@ const Exercise = styled.div`
   transition: all 0.5s;
   padding-bottom: 1em;
 
+  .type-feedback p {
+    margin: 0.5em;
+  }
+
   .headline {
     font-size: ;
     color: gray;
