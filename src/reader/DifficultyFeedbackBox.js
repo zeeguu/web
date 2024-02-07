@@ -28,17 +28,18 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
   if (answerSubmitted) {
     return (
       <s.FeedbackBox>
-        <h5 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h5>
+        <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
       </s.FeedbackBox>
     );
   }
 
   return (
+    <>
     <s.FeedbackBox>
-      <h5>How difficult was this article for you?</h5>
+      <h4>How easy was this text?</h4>
       <s.CenteredContent>
         {Object.keys(FEEDBACK_OPTIONS).map((option) => {
-          const emojiSize = { fontSize: '3rem' };
+          const emojiSize = { fontSize: '2.5em' };
 
           const handleMouseEnter = () => {
             setIsHovered(option);
@@ -88,5 +89,6 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
         })}
       </s.CenteredContent>
     </s.FeedbackBox>
+    </>
   );
 }
