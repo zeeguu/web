@@ -18,6 +18,10 @@ let SaveButton = styled.button`
   }
 `;
 
+let SavedArticleDiv = styled.div`
+  display: flex;
+`;
+
 let SavedLabel = styled.div`
   font-size: small;
   font-weight: bold;
@@ -26,6 +30,12 @@ let SavedLabel = styled.div`
   align-items: center;
   gap: 0.2rem;
   padding: 0.25rem 0;
+  width: 200px;
+  cursor: pointer;
+  :hover {
+    color: ${zeeguuOrange};
+    
+  }
 `;
 
-export { SaveButton, SavedLabel };
+export { SaveButton, SavedLabel, SavedArticleDiv };
