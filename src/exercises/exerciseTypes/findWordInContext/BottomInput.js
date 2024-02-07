@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
 import strings from "../../../i18n/definitions";
 import * as s from "../Exercise.sc";
@@ -17,7 +17,8 @@ export default function BottomInput({
   const [distanceToCorrect, setDistanceToCorrect] = useState(0);
   const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
   const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
-  const levenshtein = require("js-levenshtein");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const levenshtein = require("fast-levenshtein");
 
   function handleHint() {
     setUsedHint(true);
@@ -44,6 +45,34 @@ export default function BottomInput({
     return x.replace(/[^a-zA-Z ]/g, "");
   }
 
+  // Update the feedback message
+  useEffect(() => {
+    if (distanceToCorrect < 5 && distanceToCorrect > 2) {
+      setFeedbackMessage("❌ Not quite the word!");
+      return;
+    }
+    if (distanceToCorrect === 2) {
+      setFeedbackMessage("⭐ You are almost there!");
+      return;
+    }
+    if (distanceToCorrect === 1) {
+      if (isSameLengthAsSolution) {
+        setFeedbackMessage("⭐ You need to change 1 letter!");
+        return;
+      }
+      if (isLongerThanSolution) {
+        setFeedbackMessage("⭐ You need to remove 1 letter!");
+        return;
+      }
+      if (!isLongerThanSolution && !isSameLengthAsSolution) {
+        setFeedbackMessage("⭐ You need to add 1 letter!");
+        return;
+      }
+    }
+    setFeedbackMessage("");
+    return;
+  }, [distanceToCorrect, isSameLengthAsSolution, isLongerThanSolution]);
+
   function checkResult() {
     if (currentInput === "") {
       return;
@@ -58,8 +87,7 @@ export default function BottomInput({
       handleCorrectAnswer(concatMessage);
     } else {
       let concatMessage = messageToAPI + "W";
-      let levDistance = levenshtein(a, b);
-      // Add logic in case of dist 1
+      let levDistance = levenshtein.get(a, b);
       setIsLongerThanSolution(a.length > b.length);
       setIsSameLengthAsSolution(a.length === b.length);
       console.log("You are this far: " + levDistance);
@@ -79,21 +107,7 @@ export default function BottomInput({
         </s.LeftFeedbackButton>
         <div>
           <div className="type-feedback">
-          {distanceToCorrect >= 5 && <p>❌ Not quite the word!</p>}
-          {distanceToCorrect === 2 && distanceToCorrect > 0 && (
-            <>
-              <p>⭐ You are almost there!</p>
-            </>
-          )}
-          {distanceToCorrect == 1 && isSameLengthAsSolution && (
-            <p>⭐ You need to change 1 letter!</p>
-          )}
-          {distanceToCorrect == 1 && isLongerThanSolution && (
-            <p>⭐ You need to remove 1 letter!</p>
-          )}
-          {distanceToCorrect == 1 &&
-            !isLongerThanSolution &&
-            !isSameLengthAsSolution && <p>⭐ You need to add 1 letter!</p>}
+            {feedbackMessage !== "" && <p>{feedbackMessage}</p>}
           </div>
           <InputField
             type="text"
@@ -116,7 +130,6 @@ export default function BottomInput({
             autoFocus
           />
         </div>
-
         <s.RightFeedbackButton onClick={checkResult}>
           {strings.check}
         </s.RightFeedbackButton>

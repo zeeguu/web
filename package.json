@@ -45,7 +45,7 @@
     "styled-components": "^5.2.1",
     "uuid": "^9.0.0",
     "web-vitals": "^2.1.0",
-    "js-levenshtein": "1.1.6"
+    "fast-levenshtein": "3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
