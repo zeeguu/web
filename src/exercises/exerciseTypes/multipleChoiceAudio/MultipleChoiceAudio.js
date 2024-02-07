@@ -1,18 +1,19 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import * as s from "../Exercise.sc.js";
 import SpeakButton from "../SpeakButton.js";
-import strings from "../../../i18n/definitions";
-import NextNavigation from "../NextNavigation";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
+import strings from "../../../i18n/definitions.js";
+import NextNavigation from "../NextNavigation.js";
+import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
-import shuffle from "../../../assorted/fisherYatesShuffle";
-import {removePunctuation} from "../../../utils/preprocessing/preprocessing";
+import shuffle from "../../../assorted/fisherYatesShuffle.js";
+import {removePunctuation} from "../../../utils/preprocessing/preprocessing.js";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import EditButton from "../../../words/EditButton.js";
-import {useContext} from 'react';
-
+import DisableAudioSession from "../DisableAudioSession.js"
+import SessionStorage from "../../../assorted/SessionStorage.js";
+import {SpeechContext} from "../../SpeechContext.js";
 
 const EXERCISE_TYPE = "Multiple_Choice_Audio";
 
@@ -40,6 +41,7 @@ export default function MultipleChoiceAudio({
     const [firstTypeTime, setFirstTypeTime] = useState();
     const [selectedButtonId, setSelectedButtonId] = useState("");
     const bookmarkToStudy = bookmarksToStudy[0];
+    const speech = useContext(SpeechContext);
     const exercise = "exercise";
 
 
@@ -54,18 +56,26 @@ export default function MultipleChoiceAudio({
                     bookmarksToStudy[0].context,
                     articleInfo,
                     api,
-                    "TRANSLATE WORDS IN EXERCISE"
+                    "TRANSLATE WORDS IN EXERCISE",
+                    speech
                 )
             );
             setArticleInfo(articleInfo);
         });
         consolidateChoice();
+        if (!SessionStorage.isAudioExercisesEnabled())
+            handleDisabledAudio()
     }, []);
 
     function exerciseDuration(endTime) {
         return Math.min(89999, endTime - initialTime)
     }
 
+    function disableAudio(e){
+        e.preventDefault();
+        SessionStorage.disableAudioExercises();
+        handleDisabledAudio();
+      }
 
     function notifyChoiceSelection(selectedChoice) {
         console.log("checking result...");
@@ -107,6 +117,16 @@ export default function MultipleChoiceAudio({
             setSelectedButtonId(id);
         }
         console.log(id + " false");
+    }
+
+    function handleDisabledAudio() {
+        api.logUserActivity(
+            "AUDIO_DISABLE",
+            "",
+            bookmarksToStudy[0].id,
+            ""
+        );
+        moveToNextExercise();
     }
 
     function handleShowSolution() {
@@ -277,6 +297,11 @@ export default function MultipleChoiceAudio({
                 toggleShow={toggleShow}
                 isCorrect={isCorrect}
             />
+            {SessionStorage.isAudioExercisesEnabled() && 
+            <DisableAudioSession
+                disableAudio={disableAudio}
+            />}
+
         </s.Exercise>
     );
 }

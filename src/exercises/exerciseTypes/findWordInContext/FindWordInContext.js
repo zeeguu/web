@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import * as s from "../Exercise.sc.js";
 
 import BottomInput from "./BottomInput";
@@ -10,7 +10,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
 import {tokenize} from "../../../utils/preprocessing/preprocessing";
-
+import {SpeechContext} from "../../SpeechContext.js";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -33,6 +33,7 @@ export default function FindWordInContext({
     const [articleInfo, setArticleInfo] = useState();
     const [interactiveText, setInteractiveText] = useState();
     const [translatedWords, setTranslatedWords] = useState([]);
+    const speech = useContext(SpeechContext);
 
     useEffect(() => {
         setExerciseType(EXERCISE_TYPE);
@@ -42,7 +43,8 @@ export default function FindWordInContext({
                     bookmarksToStudy[0].context,
                     articleInfo,
                     api,
-                    "TRANSLATE WORDS IN EXERCISE"
+                    "TRANSLATE WORDS IN EXERCISE",
+                    speech
                 )
             );
             setArticleInfo(articleInfo);
@@ -161,7 +163,7 @@ export default function FindWordInContext({
     }
 
     function handleIncorrectAnswer() {
-        alert("incorrect answer")
+        //alert("incorrect answer")
         notifyIncorrectAnswer(bookmarksToStudy[0]);
         setFirstTypeTime();
     }
