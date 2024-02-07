@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
 import strings from "../../../i18n/definitions";
 import * as s from "../Exercise.sc";
@@ -14,6 +14,11 @@ export default function BottomInput({
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
   const [usedHint, setUsedHint] = useState(false);
+  const [distanceToCorrect, setDistanceToCorrect] = useState(0);
+  const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
+  const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const levenshtein = require("fast-levenshtein");
 
   function handleHint() {
     setUsedHint(true);
@@ -40,6 +45,34 @@ export default function BottomInput({
     return x.replace(/[^a-zA-Z ]/g, "");
   }
 
+  // Update the feedback message
+  useEffect(() => {
+    if (distanceToCorrect < 5 && distanceToCorrect > 2) {
+      setFeedbackMessage("❌ Not quite the word!");
+      return;
+    }
+    if (distanceToCorrect === 2) {
+      setFeedbackMessage("⭐ You are almost there!");
+      return;
+    }
+    if (distanceToCorrect === 1) {
+      if (isSameLengthAsSolution) {
+        setFeedbackMessage("⭐ You need to change 1 letter!");
+        return;
+      }
+      if (isLongerThanSolution) {
+        setFeedbackMessage("⭐ You need to remove 1 letter!");
+        return;
+      }
+      if (!isLongerThanSolution && !isSameLengthAsSolution) {
+        setFeedbackMessage("⭐ You need to add 1 letter!");
+        return;
+      }
+    }
+    setFeedbackMessage("");
+    return;
+  }, [distanceToCorrect, isSameLengthAsSolution, isLongerThanSolution]);
+
   function checkResult() {
     if (currentInput === "") {
       return;
@@ -54,6 +87,11 @@ export default function BottomInput({
       handleCorrectAnswer(concatMessage);
     } else {
       let concatMessage = messageToAPI + "W";
+      let levDistance = levenshtein.get(a, b);
+      setIsLongerThanSolution(a.length > b.length);
+      setIsSameLengthAsSolution(a.length === b.length);
+      console.log("You are this far: " + levDistance);
+      setDistanceToCorrect(levDistance);
       setMessageToAPI(concatMessage);
       setIsIncorrect(true);
       handleIncorrectAnswer();
@@ -67,22 +105,31 @@ export default function BottomInput({
         <s.LeftFeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
           {strings.hint}
         </s.LeftFeedbackButton>
-
-        <InputField
-          type="text"
-          value={currentInput}
-          onChange={(e) => setCurrentInput(e.target.value)}
-          onKeyUp={(e) => {
-            if (currentInput !== "") {
-              notifyKeyPress();
+        <div>
+          <div className="type-feedback">
+            {feedbackMessage !== "" && <p>{feedbackMessage}</p>}
+          </div>
+          <InputField
+            type="text"
+            className={
+              distanceToCorrect >= 5
+                ? "wrong-border"
+                : "almost-border"
             }
-            if (e.key === "Enter") {
-              checkResult();
-            }
-          }}
-          onAnimationEnd={() => setIsIncorrect(false)}
-          autoFocus
-        />
+            value={currentInput}
+            onChange={(e) => setCurrentInput(e.target.value)}
+            onKeyUp={(e) => {
+              if (currentInput !== "") {
+                notifyKeyPress();
+              }
+              if (e.key === "Enter") {
+                checkResult();
+              }
+            }}
+            onAnimationEnd={() => setIsIncorrect(false)}
+            autoFocus
+          />
+        </div>
         <s.RightFeedbackButton onClick={checkResult}>
           {strings.check}
         </s.RightFeedbackButton>
