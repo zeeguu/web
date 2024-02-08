@@ -6,16 +6,18 @@ The latest version of the code is always online at [Zeeguu Reader Extension on G
 https://nodejs.org/en/download/
 
 
-## To Clone
+# To Start Developing
 
-When cloning clone with --recursive, because the repo uses zeeguu/web as a submodule.
+## Clone with --recursive
+
+Clone with --recursive, because the repo uses zeeguu/web as a submodule.
 We need this because we reuse as much code as possible from zeeguu-web.
 
 ```
 git clone https://github.com/zeeguu/browser-extension --recursive
 ```
 
-# To Build the Extension 
+## Install Dependencies in both extension and submodule
 
 Run the following two steps in order and chose the third based on the desired target platform: 
 
@@ -31,7 +33,7 @@ npm install
 cd ../..
 ```
 
-## Building for Chrome 
+## Build for Chrome 
 
 ### `npm run build`
 Builds the app for Chrome production to the `build` folder.\
@@ -40,7 +42,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Go to chrome://extensions/ and unpack the build folder
 
-## Building for Firefox
+## Build for Firefox
 In the project directory, you can run:
 
 ### `npm run buildFirefox`
