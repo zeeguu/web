@@ -5,6 +5,16 @@ The latest version of the code is always online at [Zeeguu Reader Extension on G
 ## Requires  npm: "^8.5.1",
 https://nodejs.org/en/download/
 
+
+## To Clone
+
+When cloning clone with --recursive, because the repo uses zeeguu/web as a submodule.
+We need this because we reuse as much code as possible from zeeguu-web.
+
+```
+git clone https://github.com/zeeguu/browser-extension --recursive
+```
+
 # To Build the Extension 
 
 Run the following two steps in order and chose the third based on the desired target platform: 
@@ -12,10 +22,14 @@ Run the following two steps in order and chose the third based on the desired ta
 ### `npm install` 
 This command installs a package and any packages that it depends on.
 
-### `npm run importZeeguu`
-This command clones the zeeguu-web repository inside /src. 
-We need this because we reuse as much code as possible from zeeguu-web.
-After cloning, 'npm install' is run inside of the src/zeeguu-react folder.
+### `npm install` also for the zeeguu-web
+Run
+
+```
+cd src/zeeguu-react
+npm install
+cd ../..
+```
 
 ## Building for Chrome 
 
