@@ -14,26 +14,45 @@ const ExerciseOW = styled.div`
   transition: all 0.5s;
   padding-bottom: 1em;
 
-  .headline {
+
+  .headlineOrderWords {
+    font-size: small;
+    font-weight: 600;
     color: gray;
-    margin-top: 1em;
-    font-weight: 500;
+    margin-top: 3em;
+    margin-bottom: 1em;
+  }
+
+  .next-nav-feedback {
+    margin-top:  1.5em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
+    img {
+      width: 60px;
+      mixBlendMode: multiply;
+      height: auto;
+    }
+    p {
+      margin-left: 1em;
+    }
   }
 
   .translatedText {
-    font-size: medium;
+    font-size: medium !important;
+    font-weight: 400;
     margin-left:8px;
     margin-right:8px;
-
+    margin-top: 1em !important;
   }
 
-  .headlineWithMoreSpace {
-    font-size: small;
+  .solutionText {
+    font-size: medium !important;
     color: gray;
-    margin-top: 3em;
-    margin-bottom: 2em;
-    
-    /* font-weight: 600; */
+    margin-right: 30px;
+    margin-left: 30px;
   }
 
   .reduceContext {
@@ -65,20 +84,7 @@ const ExerciseOW = styled.div`
     font-weight: 800;
   }
 
-  .headlineOrderWords {
-    font-size: small;
-    color: gray;
-    margin-top: 1.5em;
-    margin-bottom: 1em;
 
-
-    /* font-weight: 600; */
-    h2 {
-      font-size: medium;
-      margin-left:8px;
-      margin-right:8px;
-    }
-  }
 
   .cluesRow {
     text-align: center;
@@ -201,6 +207,11 @@ const ExerciseOW = styled.div`
 
   .owButton{
     
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
     cursor: pointer;
     font-weight: 600;
     text-align: center;
@@ -209,7 +220,7 @@ const ExerciseOW = styled.div`
     padding: 0.5em 0.5em;
     border-radius: 100px;
     box-shadow: 0px 2px #595959;
-
+    height:2em;
     :hover {filter: brightness(0.8);}
 
     :active {

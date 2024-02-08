@@ -150,7 +150,7 @@ export default function FindWordInContext({
 
     function handleCorrectAnswer(message) {
         let duration = exerciseDuration(firstTypeTime);
-
+        setMessageToAPI(message);
         correctAnswer(bookmarksToStudy[0]);
         setIsCorrect(true);
         api.uploadExerciseFinalizedData(
@@ -164,6 +164,7 @@ export default function FindWordInContext({
 
     function handleIncorrectAnswer() {
         //alert("incorrect answer")
+        setMessageToAPI(messageToAPI + "W");
         notifyIncorrectAnswer(bookmarksToStudy[0]);
         setFirstTypeTime();
     }
@@ -174,13 +175,10 @@ export default function FindWordInContext({
 
     return (
         <s.Exercise className="findWordInContext">
-            {bookmarksToStudy[0].to.includes(" ") ? (
-                <div className="headline">
-                    {strings.findTheExpressionInContextHeadline}
-                </div>
-            ) : (
-                <div className="headline">{strings.findTheWordInContextHeadline}</div>
-            )}
+
+            <div className="headlineWithMoreSpace">
+                {strings.findTheExpressionInContextHeadline}
+            </div>
             <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
             <div className="contextExample">
                 <TranslatableText
@@ -203,20 +201,19 @@ export default function FindWordInContext({
                     setMessageToAPI={setMessageToAPI}
                 />
             )}
-            {isCorrect && (
+
                 <NextNavigation
+                    message={messageToAPI}
                     api={api}
                     bookmarksToStudy={bookmarksToStudy}
                     moveToNextExercise={moveToNextExercise}
                     reload={reload}
                     setReload={setReload}
+                    handleShowSolution={handleShowSolution}
+                    toggleShow={toggleShow}
+                    isCorrect={isCorrect}
                 />
-            )}
-            <SolutionFeedbackLinks
-                handleShowSolution={handleShowSolution}
-                toggleShow={toggleShow}
-                isCorrect={isCorrect}
-            />
+
         </s.Exercise>
     );
 }

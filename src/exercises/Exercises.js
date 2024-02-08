@@ -51,7 +51,7 @@ export default function Exercises({
         useActivityTimer();
 
     function getExerciseSequenceType() {
-        let exerciseTypesList = DEFAULT_SEQUENCE;
+        let exerciseTypesList = EXERCISE_TYPES_TIAGO;
         if (!SessionStorage.isAudioExercisesEnabled()) {
             console.log("Will not use audio!")
             exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;

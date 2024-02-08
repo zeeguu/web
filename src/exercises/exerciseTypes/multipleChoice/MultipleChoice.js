@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext} from "react";
+import {useState, useEffect} from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
@@ -10,7 +10,6 @@ import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import {removePunctuation} from "../../../utils/preprocessing/preprocessing";
-import {SpeechContext} from "../../SpeechContext.js";
 
 const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
@@ -34,7 +33,6 @@ export default function MultipleChoice({
     const [messageToAPI, setMessageToAPI] = useState("");
     const [articleInfo, setArticleInfo] = useState();
     const [interactiveText, setInteractiveText] = useState();
-    const speech = useContext(SpeechContext);
 
     function exerciseDuration(endTime) {
         return Math.min(89999, endTime - initialTime)
@@ -51,8 +49,7 @@ export default function MultipleChoice({
                     bookmarksToStudy[0].context,
                     articleInfo,
                     api,
-                    "TRANSLATE WORDS IN EXERCISE",
-                    speech
+                    "TRANSLATE WORDS IN EXERCISE"
                 )
             );
             setArticleInfo(articleInfo);
@@ -80,14 +77,13 @@ export default function MultipleChoice({
 
     function handleShowSolution() {
         let message = messageToAPI + "S";
-
         notifyIncorrectAnswer(bookmarksToStudy[0]);
         setIsCorrect(true);
         handleAnswer(message, exerciseDuration(new Date()));
     }
 
     function handleAnswer(message) {
-
+        setMessageToAPI(message);
         api.uploadExerciseFinalizedData(
             message,
             EXERCISE_TYPE,
@@ -145,20 +141,17 @@ export default function MultipleChoice({
                     toggleShow={toggleShow}
                 />
             )}
-            {isCorrect && (
                 <NextNavigation
+                    message={messageToAPI}
                     api={api}
                     bookmarksToStudy={bookmarksToStudy}
                     moveToNextExercise={moveToNextExercise}
                     reload={reload}
                     setReload={setReload}
+                    handleShowSolution={handleShowSolution}
+                    toggleShow={toggleShow}
+                    isCorrect={isCorrect}
                 />
-            )}
-            <SolutionFeedbackLinks
-                handleShowSolution={handleShowSolution}
-                toggleShow={toggleShow}
-                isCorrect={isCorrect}
-            />
         </s.Exercise>
     );
 }
