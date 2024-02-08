@@ -1,7 +1,12 @@
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
 import { EXTENSION_SOURCE, HEADER_CONTENT, LIST_CONTENT } from "../constants";
 
-export function interactiveTextsWithTags(content, articleInfo, api) {
+export function interactiveTextsWithTags(
+  content,
+  articleInfo,
+  speechEngine,
+  api,
+) {
   const div = document.createElement("div");
   div.innerHTML = content;
   let arrOfInteractive = [];
@@ -21,12 +26,14 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
               .replaceAll("•", "")
               .replaceAll("-", "");
             const content = child.textContent;
+
             const it = new InteractiveText(
               content,
               articleInfo,
               api,
               api.TRANSLATE_TEXT,
-              EXTENSION_SOURCE
+              EXTENSION_SOURCE,
+              speechEngine,
             );
             const paragraphObject = { text: it };
             list.push(paragraphObject);
@@ -41,7 +48,8 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
           articleInfo,
           api,
           api.TRANSLATE_TEXT,
-          EXTENSION_SOURCE
+          EXTENSION_SOURCE,
+          speechEngine,
         );
         const paragraphObject = { text: it, tag: HTMLTag };
         arrOfInteractive.push(paragraphObject);
@@ -52,7 +60,8 @@ export function interactiveTextsWithTags(content, articleInfo, api) {
             articleInfo,
             api,
             api.TRANSLATE_TEXT,
-            EXTENSION_SOURCE
+            EXTENSION_SOURCE,
+            speechEngine,
           );
           const paragraphObject = { text: it, tag: HTMLTag };
           arrOfInteractive.push(paragraphObject);

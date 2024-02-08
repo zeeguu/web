@@ -1,10 +1,15 @@
 /*global chrome*/
 import { useState, useEffect, useRef } from "react";
 
-import { StyledModal,StyledHeading, GlobalStyle, OverwriteZeeguu,} from "./Modal.styles";
+import {
+  StyledModal,
+  StyledHeading,
+  GlobalStyle,
+  OverwriteZeeguu,
+} from "./Modal.styles";
 
 import { StyledCloseButton, StyledSmallButton } from "./Buttons.styles";
-import FloatingMenu from './FloatingMenu';
+import FloatingMenu from "./FloatingMenu";
 import ZeeguuLoader from "../ZeeguuLoader";
 import UserFeedback from "./UserFeedback";
 
@@ -22,17 +27,17 @@ import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 import { cleanDOMAfter, getHTMLContent } from "../Cleaning/pageSpecificClean";
 
-import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 import SaveToZeeguu from "./SaveToZeeguu";
 import colors from "../colors";
-import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
-import FactCheckIcon from '@mui/icons-material/FactCheck';
+import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
+import FactCheckIcon from "@mui/icons-material/FactCheck";
 
-import {SpeechContext} from "../../zeeguu-react/src/exercises/SpeechContext";
+import { SpeechContext } from "../../zeeguu-react/src/exercises/SpeechContext";
 import ZeeguuSpeech from "../../zeeguu-react/src/speech/ZeeguuSpeech";
 
-import Button from '@mui/material/Button';
-import SettingsIcon from '@mui/icons-material/Settings';
+import Button from "@mui/material/Button";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 export function Modal({
   title,
@@ -68,12 +73,25 @@ export function Modal({
   articleInfoRef.current = articleInfo;
 
   const openSettings = () => {
-    window.open('https://www.zeeguu.org/account_settings', '_blank');
+    window.open("https://www.zeeguu.org/account_settings", "_blank");
   };
 
   const buttons = [
     <UserFeedback api={api} articleId={articleId} url={url} />,
-    <Button  style={{ textTransform: 'none', justifyContent:'space-between', fontSize: '0.9rem', fontWeight: '200', backgroundColor:`${colors.lighterBlue}`, color: `${colors.black}`}} key="two" onClick={openSettings}>Settings <SettingsIcon sx={{ fontSize: '0.9rem' }}/></Button>,
+    <Button
+      style={{
+        textTransform: "none",
+        justifyContent: "space-between",
+        fontSize: "0.9rem",
+        fontWeight: "200",
+        backgroundColor: `${colors.lighterBlue}`,
+        color: `${colors.black}`,
+      }}
+      key="two"
+      onClick={openSettings}
+    >
+      Settings <SettingsIcon sx={{ fontSize: "0.9rem" }} />
+    </Button>,
   ];
 
   const [buttonGroupVisible, setButtonGroupVisible] = useState(false);
@@ -94,7 +112,7 @@ export function Modal({
       logContextRef.current + " FOCUSED",
       articleId(),
       "",
-      "EXTENSION"
+      "EXTENSION",
     );
   }
 
@@ -103,7 +121,7 @@ export function Modal({
       logContextRef.current + " LOST FOCUS",
       articleId(),
       "",
-      "EXTENSION"
+      "EXTENSION",
     );
   }
 
@@ -140,21 +158,31 @@ export function Modal({
 
   useEffect(() => {
     if (articleInfo !== undefined) {
-      let arrInteractive = interactiveTextsWithTags(content, articleInfo, api);
+      let engine = new ZeeguuSpeech(api, articleInfo.language);
+      setSpeechEngine(engine);
+
+      let arrInteractive = interactiveTextsWithTags(
+        content,
+        articleInfo,
+        engine,
+        api,
+      );
       setInteractiveTextArray(arrInteractive);
+
       let itTitle = new InteractiveText(
         title,
         articleInfo,
         api,
         api.TRANSLATE_TEXT,
-        EXTENSION_SOURCE
+        EXTENSION_SOURCE,
+        speechEngine,
       );
       setInteractiveTitle(itTitle);
       api.logReaderActivity(
         api.OPEN_ARTICLE,
         articleId(),
         "",
-        EXTENSION_SOURCE
+        EXTENSION_SOURCE,
       );
 
       api.getOwnTexts((articles) => {
@@ -172,10 +200,6 @@ export function Modal({
           }
         }, 0);
       }
-
-      let se = new ZeeguuSpeech(api, articleInfo.language);
-      setSpeechEngine(se);
-
     }
 
     cleanDOMAfter(url);
@@ -229,7 +253,7 @@ export function Modal({
       api.TO_EXERCISES_AFTER_REVIEW,
       articleId(),
       "",
-      EXTENSION_SOURCE
+      EXTENSION_SOURCE,
     );
   }
 
@@ -253,94 +277,123 @@ export function Modal({
 
   return (
     <>
-      <div>
       <SpeechContext.Provider value={speechEngine}>
-      <GlobalStyle />
-      <StyledModal
-        isOpen={modalIsOpen}
-        className="Modal"
-        id="scrollHolder"
-        overlayClassName={"reader-overlay"}
-      >
-        <OverwriteZeeguu>
-          <StyledHeading>
-            <div style={{ "float": "left", "max-width": "50%",  "display":"inline-flex", "padding": "1.5em"}}>
-            <StyledSmallButton>
-                <a href="https://www.zeeguu.org">
-                    <img src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
-                    alt={"Zeeguu logo"}
-                    className="logoModal"/>
-                </a> <br/>
-                <span>Home</span> 
-            </StyledSmallButton>
-              <SaveToZeeguu
-              api={api}
-              articleId={articleId()}
-              setPersonalCopySaved={setPersonalCopySaved}
-              personalCopySaved={personalCopySaved} />
-             <div>
-                <StyledSmallButton onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)} onClick={openReview}>
-                 {isHovered ? <FactCheckIcon fontSize="large"/> : <FactCheckOutlinedIcon fontSize="large"/>} <br/>
-                <span>Words</span> 
-                </StyledSmallButton>
-            </div>
-            </div>
-            <div style={{ "float": "right", "width": "50%",  "display":"inline"}}>
-              <StyledCloseButton role="button" onClick={handleClose} id="qtClose">
-                <CloseSharpIcon sx={{color: colors.gray}}/>
-              </StyledCloseButton>
-              {readArticleOpen ? (
-                <ToolbarButtons
+        <div>
+          <GlobalStyle />
+          <StyledModal
+            isOpen={modalIsOpen}
+            className="Modal"
+            id="scrollHolder"
+            overlayClassName={"reader-overlay"}
+          >
+            <OverwriteZeeguu>
+              <StyledHeading>
+                <div
+                  style={{
+                    float: "left",
+                    "max-width": "50%",
+                    display: "inline-flex",
+                    padding: "1.5em",
+                  }}
+                >
+                  <StyledSmallButton>
+                    <a href="https://www.zeeguu.org">
+                      <img
+                        src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+                        alt={"Zeeguu logo"}
+                        className="logoModal"
+                      />
+                    </a>{" "}
+                    <br />
+                    <span>Home</span>
+                  </StyledSmallButton>
+                  <SaveToZeeguu
+                    api={api}
+                    articleId={articleId()}
+                    setPersonalCopySaved={setPersonalCopySaved}
+                    personalCopySaved={personalCopySaved}
+                  />
+                  <div>
+                    <StyledSmallButton
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                      onClick={openReview}
+                    >
+                      {isHovered ? (
+                        <FactCheckIcon fontSize="large" />
+                      ) : (
+                        <FactCheckOutlinedIcon fontSize="large" />
+                      )}{" "}
+                      <br />
+                      <span>Words</span>
+                    </StyledSmallButton>
+                  </div>
+                </div>
+                <div
+                  style={{ float: "right", width: "50%", display: "inline" }}
+                >
+                  <StyledCloseButton
+                    role="button"
+                    onClick={handleClose}
+                    id="qtClose"
+                  >
+                    <CloseSharpIcon sx={{ color: colors.gray }} />
+                  </StyledCloseButton>
+                  {readArticleOpen ? (
+                    <ToolbarButtons
+                      translating={translating}
+                      pronouncing={pronouncing}
+                      setTranslating={setTranslating}
+                      setPronouncing={setPronouncing}
+                    />
+                  ) : null}
+                </div>
+              </StyledHeading>
+              {readArticleOpen === true && (
+                <ReadArticle
+                  articleId={articleId()}
+                  api={api}
+                  author={author}
+                  interactiveTextArray={interactiveTextArray}
+                  interactiveTitle={interactiveTitle}
+                  articleImage={articleImage}
+                  openReview={openReview}
                   translating={translating}
                   pronouncing={pronouncing}
-                  setTranslating={setTranslating}
-                  setPronouncing={setPronouncing}
+                  url={url}
+                  setPersonalCopySaved={setPersonalCopySaved}
+                  personalCopySaved={personalCopySaved}
                 />
-              ) : null}
-            </div>
-          </StyledHeading>
-          {readArticleOpen === true && (
-            <ReadArticle
-              articleId={articleId()}
-              api={api}
-              author={author}
-              interactiveTextArray={interactiveTextArray}
-              interactiveTitle={interactiveTitle}
-              articleImage={articleImage}
-              openReview={openReview}
-              translating={translating}
-              pronouncing={pronouncing}
-              url={url}
-              setPersonalCopySaved={setPersonalCopySaved}
-              personalCopySaved={personalCopySaved}
-            />
-          )}
-          {reviewOpen === true && (
-            <WordsForArticleModal
-              className="wordsForArticle"
-              api={api}
-              articleID={articleId()}
-              openExercises={openExercises}
-              openArticle={openArticle}
-            />
-          )}
-          {exerciseOpen === true && (
-            <>
-              <Exercises
-                className="exercises"
-                api={api}
-                articleID={articleId()}
-                openExercises={openExercises}
-                openArticle={openArticle}
-              />
-            </>
-          )}
-        </OverwriteZeeguu>   
-      </StyledModal>  
-      </SpeechContext.Provider>      
-    </div>
-    <FloatingMenu buttons={buttons} buttonGroupVisible={buttonGroupVisible} toggleButtonGroup={toggleButtonGroup} />
+              )}
+              {reviewOpen === true && (
+                <WordsForArticleModal
+                  className="wordsForArticle"
+                  api={api}
+                  articleID={articleId()}
+                  openExercises={openExercises}
+                  openArticle={openArticle}
+                />
+              )}
+              {exerciseOpen === true && (
+                <>
+                  <Exercises
+                    className="exercises"
+                    api={api}
+                    articleID={articleId()}
+                    openExercises={openExercises}
+                    openArticle={openArticle}
+                  />
+                </>
+              )}
+            </OverwriteZeeguu>
+          </StyledModal>
+        </div>
+      </SpeechContext.Provider>
+      <FloatingMenu
+        buttons={buttons}
+        buttonGroupVisible={buttonGroupVisible}
+        toggleButtonGroup={toggleButtonGroup}
+      />
     </>
   );
 }
