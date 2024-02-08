@@ -18,6 +18,8 @@
     "@reach/dialog": "^0.15.0",
     "@reach/listbox": "^0.15.0",
     "@reach/tooltip": "^0.15.0",
+    "@sentry/cli": "^2.21.2",
+    "@sentry/react": "^7.74.1",
     "axios": "^1.4.0",
     "cross-env": "^7.0.3",
     "cross-fetch": "^3.0.6",
@@ -42,13 +44,15 @@
     "remove-accents": "^0.4.2",
     "styled-components": "^5.2.1",
     "uuid": "^9.0.0",
-    "web-vitals": "^2.1.0"
+    "web-vitals": "^2.1.0",
+    "fast-levenshtein": "3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build"
+    "build": "cross-env react-scripts build || npm run sentry:sourcemaps",
+    "sentry:sourcemaps": "./node_modules/.bin/sentry-cli sourcemaps inject --org it-university-of-copenhagen --project zeeguu-web ./build && ./node_modules/.bin/sentry-cli sourcemaps upload --org it-university-of-copenhagen --project zeeguu-web ./build"
   },
   "eslintConfig": {
     "extends": [

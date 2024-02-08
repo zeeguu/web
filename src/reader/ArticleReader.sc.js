@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-
 import { BigSquareButton } from "../components/allButtons.sc";
 
 import {
@@ -7,6 +6,7 @@ import {
   zeeguuLightYellow,
   zeeguuOrange,
   zeeguuVarmYellow,
+  lighterBlue,
 } from "../components/colors";
 
 import {
@@ -21,6 +21,35 @@ let ArticleReader = styled.div`
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
+
+  .feedbackBox {
+    background-color: ${lighterBlue};
+    border: none;
+  }
+
+  h1 {
+    font-size: 1.6em !important;
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: 1.4rem !important;
+  }
+
+  h3 {
+    font-size: 1.3rem !important;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-size: 1.2rem !important;
+  }
+
+  hr {
+    border-top: 1px solid #F6F6F6;
+  }
 `;
 
 let PlayerControl = styled.div`
@@ -38,14 +67,12 @@ let PlayerControl = styled.div`
 
 let RightHandSide = styled.div`
   float: right;
-  button {
-    background-color: ${zeeguuLightYellow};
-  }
 `;
 let Toolbar = styled.div`
-  height: 110px;
+    padding-top: 0.5rem;
+    height: 8em;
+    width: 100%;
   // background-color: ${veryLightGrey};
-  width: 100%;
 
   button {
     width: 55px;
@@ -103,12 +130,12 @@ let BookmarkButton = styled.div`
 `;
 
 let MainText = styled.div`
-  font-size: 1.3em;
-  line-height: 2.3em;
+  font-size: 1.2em;
+  line-height: 2em;
   padding: 0.2em;
 
   .textParagraph {
-    margin-bottom: 1em;
+    margin-bottom: 1.2em;
   }
 `;
 
@@ -125,6 +152,7 @@ let WhiteButton = styled(_BottomButton)`
   display: inline;
   align-items: center;
   justify-content: center;
+  border:none
 
   //Small
   ${(props) =>
@@ -179,23 +207,6 @@ let NavigationLink = styled(Link)`
     width: 16em;
   }
 
-  // Next
-  ${(props) =>
-    props.next &&
-    css`
-      :after {
-        content: ">>";
-      }
-    `}
-  // Previous
-  ${(props) =>
-    props.prev &&
-    css`
-      :before {
-        content: " <<";
-      }
-    `}
-
   // Primary
   ${(props) =>
     props.primary &&
@@ -226,23 +237,25 @@ let NavigationLink = styled(Link)`
     `}
 `;
 
+
 let FeedbackBox = styled.div`
-  border: 1px solid lightgray;
-  background-color: ${veryLightGrey};
-  border-radius: 1em;
-  padding: 1em;
-  padding-bottom: 1em;
-  margin-top: 3em;
+  border: 1px solid  ${lighterBlue};
+  background-color: white;
+  border-radius: 0.5em;
+  display: flex;
+  flex-direction: column;
+  padding: 2em 0em 2em 0em;
+  margin-top: 1em;
+  align-items: center;
+  justify-content: center;
 
   @media (min-width: 768px) {
     width: 30em;
   }
   margin-left: auto;
   margin-right: auto;
-  h2 {
-    text-align: center;
-  }
-  h4 {
+
+  h2, h3, h5,  p {
     text-align: center;
   }
   .selected {

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { zeeguuOrange } from "./colors";
+import styled, { css } from "styled-components";
+import { zeeguuOrange, lightOrange, lightGrey } from "./colors";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -64,4 +64,49 @@ const BigSquareButton = styled(RoundButton)`
   font-size: 18px;
 `;
 
-export { RoundButton, OrangeRoundButton, BigSquareButton, ClearSearchButton };
+const StyledButton = styled.button`
+color: black;
+height: auto;
+display: flex;
+padding: 1em;
+margin: 1em;
+border-style: none;
+border-width: 2px;
+border-radius: 10px;
+font-size: 1em;
+font-weight: bold;
+cursor: pointer;
+align-items: center;
+justify-content: center;
+
+// Primary
+  ${(props) =>
+    props.primary &&
+    css`
+      background-color: ${zeeguuOrange};
+      :hover{
+        background-color: ${lightOrange};
+      }
+    `}
+
+  // Secondary
+  ${(props) =>
+    props.secondary &&
+    css`
+      background-color: white;
+      :hover{
+        text-decoration: underline;
+      }
+    `}
+
+    // Disabled
+    ${(props) =>
+    props.disabled &&
+    css`
+      background-color: ${lightGrey};
+      cursor: not-allowed;
+    `}
+`;
+
+
+export { RoundButton, OrangeRoundButton, BigSquareButton, ClearSearchButton, StyledButton};

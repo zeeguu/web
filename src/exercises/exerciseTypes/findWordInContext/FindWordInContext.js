@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import * as s from "../Exercise.sc.js";
 
 import BottomInput from "./BottomInput";
@@ -9,7 +9,8 @@ import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import {TranslatableText} from "../../../reader/TranslatableText.js";
-
+import {tokenize} from "../../../utils/preprocessing/preprocessing";
+import {SpeechContext} from "../../SpeechContext.js";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -32,6 +33,7 @@ export default function FindWordInContext({
     const [articleInfo, setArticleInfo] = useState();
     const [interactiveText, setInteractiveText] = useState();
     const [translatedWords, setTranslatedWords] = useState([]);
+    const speech = useContext(SpeechContext);
 
     useEffect(() => {
         setExerciseType(EXERCISE_TYPE);
@@ -41,7 +43,8 @@ export default function FindWordInContext({
                     bookmarksToStudy[0].context,
                     articleInfo,
                     api,
-                    "TRANSLATE WORDS IN EXERCISE"
+                    "TRANSLATE WORDS IN EXERCISE",
+                    speech
                 )
             );
             setArticleInfo(articleInfo);
@@ -56,34 +59,63 @@ export default function FindWordInContext({
 
 
     useEffect(() => {
-        checkTranslations();
+        checkTranslations(translatedWords);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [translatedWords]);
 
-    function checkTranslations() {
-        let bookmarkWords = bookmarksToStudy[0].from.split(" ");
-        bookmarkWords.forEach((word) => {
-            translatedWords.forEach((translation) => {
-                let splitTranslation = translation.split(" ");
-                if (splitTranslation.length > 1) {
-                    splitTranslation.forEach((translatedWord) => {
-                        if (translatedWord === word) {
-                            notifyBookmarkTranslation();
-                        }
-                    });
-                } else {
-                    if (translation === word) {
-                        notifyBookmarkTranslation();
-                    }
-                }
-            });
-        });
+    function equalAfterRemovingSpecialCharacters(a, b) {
+        // from: https://stackoverflow.com/a/4328546
+        let first = a.replace(/[^\w\s\']|_/g, "")
+            .replace(/\s+/g, " ");
+        let second = b.replace(/[^\w\s\']|_/g, "")
+            .replace(/\s+/g, " ");
+        return first === second;
     }
 
-    function notifyBookmarkTranslation() {
-        let concatMessage = messageToAPI + "T";
-        handleShowSolution(undefined, concatMessage);
+    function checkTranslations(userTranslatedSequences) {
+
+        if (userTranslatedSequences.length === 0) {
+            return;
+        }
+
+        let solutionDiscovered = false;
+
+        let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
+
+        solutionSplitIntoWords.forEach((wordInSolution) => {
+
+            userTranslatedSequences.forEach((userTranslatedSequence) => {
+                let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
+                wordsInUserTranslatedSequence.forEach((translatedWord) => {
+
+
+                    if (equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)) {
+                        solutionDiscovered = true;
+                    }
+                });
+
+            });
+        });
+
+        if (solutionDiscovered) {
+            // Check how many translations were made
+            let translationCount = 0;
+            for (let i = 0; i < messageToAPI.length; i++) {
+                if (messageToAPI[i] === "T") translationCount++;
+            }
+            if (translationCount < 2) {
+                let concatMessage = messageToAPI + "C";
+                handleCorrectAnswer(concatMessage);
+            } else {
+                let concatMessage = messageToAPI + "S";
+                handleShowSolution(undefined, concatMessage);
+            }
+
+        } else {
+            setMessageToAPI(messageToAPI + "T")
+        }
     }
+
 
     function inputKeyPress() {
         if (firstTypeTime === undefined) {
@@ -97,7 +129,8 @@ export default function FindWordInContext({
         }
         let pressTime = new Date();
         let duration = exerciseDuration(pressTime);
-        let concatMessage = "";
+        let concatMessage;
+        
         if (!message) {
             concatMessage = messageToAPI + "S";
         } else {
@@ -130,6 +163,7 @@ export default function FindWordInContext({
     }
 
     function handleIncorrectAnswer() {
+        //alert("incorrect answer")
         notifyIncorrectAnswer(bookmarksToStudy[0]);
         setFirstTypeTime();
     }

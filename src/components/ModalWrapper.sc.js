@@ -26,7 +26,7 @@ const ModalWrapper = styled(Box)`
   }
 
   @media (max-width: 576px) {
-    padding: 32px 24px;
+    padding: 24px 24px;
     width: 80%;
   }
 `;
