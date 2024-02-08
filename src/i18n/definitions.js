@@ -318,7 +318,11 @@ let strings = new LocalizedStrings(
             goToTextsToTranslateWords: "Read and translate words to get exercises.",
             goStarTranslations:
                 "Go back and star translations for Zeeguu to include them in your exercises.",
-
+            correctExercise1: "Well done!",
+            correctExercise2: "Correct!",
+            correctExercise3: "Good job!",
+            solutionExercise1: "Next time!",
+            solutionExercise2: "Here's the solution!",
             //LearnedWordsList
             studentHasNotLearnedWords: "The student has not learned any words yet.",
 
