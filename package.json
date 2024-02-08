@@ -37,8 +37,8 @@
     "webpack-cli": "^4.9.2"
   },
   "scripts": {
-    "importZeeguu": "cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react/ && npm install",
-    "installAllDependencies": "cd src && npm install && cd zeeguu-react/ && npm install",
+    "updateZeeguuReact": "git submodule update --remote --merge && (cd src/zeeguu-react/ && npm install)",
+    "installAllDependencies": "npm install && cd zeeguu-react/ && npm install",
     "start": "react-scripts start",
     "prebuild": "rimraf build",
     "build": "cp ./public/manifest.chrome.json ./public/manifest.json && npm-run-all build:*",
