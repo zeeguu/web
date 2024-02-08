@@ -1,9 +1,14 @@
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import * as s from "../components/RedirectionNotificationModal.sc";
-import { isMobile } from "../utils/misc/browserDetection";
+import {
+  isMobile,
+  runningInFirefoxDesktop,
+  runningInChromeDesktop,
+} from "../utils/misc/browserDetection";
 import RedirectionNotificationForDesktop from "./RedirectionNotificationForDesktop";
 import RedirectionNotificationForMobile from "./RedirectionNotificationForMobile";
+import RedirectionNotificationForSafari from "./RedirectionNotificationForSafari";
 
 //This modal is used in the ArticlePreview component
 
@@ -43,47 +48,76 @@ export default function RedirectionNotificationModal({
     setSelectedDoNotShowRedirectionModal_Checkbox(false); //to avoid prechecked checkboxes
   }
 
+  //render modal based on the browser
+  function renderNotificatioModal() {
+    if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
+      return (
+        <RedirectionNotificationForDesktop
+          toggleRedirectionCheckboxSelection={
+            toggleRedirectionCheckboxSelection
+          }
+          selectedDoNotShowRedirectionModal_Checkbox={
+            selectedDoNotShowRedirectionModal_Checkbox
+          }
+          handleCloseAndSaveVisibilityPreferences={
+            handleCloseAndSaveVisibilityPreferences
+          }
+          handleCloseWithoutSavingVisibilityPreferences={
+            handleCloseWithoutSavingVisibilityPreferences
+          }
+          article={article}
+        />
+      );
+    } else if (isMobile()) {
+      return (
+        <RedirectionNotificationForMobile
+          toggleRedirectionCheckboxSelection={
+            toggleRedirectionCheckboxSelection
+          }
+          selectedDoNotShowRedirectionModal_Checkbox={
+            selectedDoNotShowRedirectionModal_Checkbox
+          }
+          handleModalVisibilityPreferences={handleModalVisibilityPreferences}
+          handleCloseAndSaveVisibilityPreferences={
+            handleCloseAndSaveVisibilityPreferences
+          }
+          handleCloseWithoutSavingVisibilityPreferences={
+            handleCloseWithoutSavingVisibilityPreferences
+          }
+          handleCloseRedirectionModal={handleCloseRedirectionModal}
+          article={article}
+          api={api}
+          setIsArticleSaved={setIsArticleSaved}
+        />
+      );
+    } else {
+      return (
+        <RedirectionNotificationForSafari
+          toggleRedirectionCheckboxSelection={
+            toggleRedirectionCheckboxSelection
+          }
+          selectedDoNotShowRedirectionModal_Checkbox={
+            selectedDoNotShowRedirectionModal_Checkbox
+          }
+          handleModalVisibilityPreferences={handleModalVisibilityPreferences}
+          handleCloseAndSaveVisibilityPreferences={
+            handleCloseAndSaveVisibilityPreferences
+          }
+          handleCloseWithoutSavingVisibilityPreferences={
+            handleCloseWithoutSavingVisibilityPreferences
+          }
+          handleCloseRedirectionModal={handleCloseRedirectionModal}
+          article={article}
+          api={api}
+          setIsArticleSaved={setIsArticleSaved}
+        />
+      );
+    }
+  }
+
   return (
     <Modal open={open} onClose={handleCloseRedirectionModal}>
-      <s.ModalWrapper>
-        {!isMobile() ? (
-          <RedirectionNotificationForDesktop
-            toggleRedirectionCheckboxSelection={
-              toggleRedirectionCheckboxSelection
-            }
-            selectedDoNotShowRedirectionModal_Checkbox={
-              selectedDoNotShowRedirectionModal_Checkbox
-            }
-            handleCloseAndSaveVisibilityPreferences={
-              handleCloseAndSaveVisibilityPreferences
-            }
-            handleCloseWithoutSavingVisibilityPreferences={
-              handleCloseWithoutSavingVisibilityPreferences
-            }
-            article={article}
-          />
-        ) : (
-          <RedirectionNotificationForMobile
-            toggleRedirectionCheckboxSelection={
-              toggleRedirectionCheckboxSelection
-            }
-            selectedDoNotShowRedirectionModal_Checkbox={
-              selectedDoNotShowRedirectionModal_Checkbox
-            }
-            handleModalVisibilityPreferences={handleModalVisibilityPreferences}
-            handleCloseAndSaveVisibilityPreferences={
-              handleCloseAndSaveVisibilityPreferences
-            }
-            handleCloseWithoutSavingVisibilityPreferences={
-              handleCloseWithoutSavingVisibilityPreferences
-            }
-            handleCloseRedirectionModal={handleCloseRedirectionModal}
-            article={article}
-            api={api}
-            setIsArticleSaved={setIsArticleSaved}
-          />
-        )}
-      </s.ModalWrapper>
+      <s.ModalWrapper>{renderNotificatioModal()}</s.ModalWrapper>
     </Modal>
   );
 }
