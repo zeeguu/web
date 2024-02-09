@@ -22,6 +22,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
       await chrome.tts.speak(request.options.text, {
         lang: request.options.language,
       });
+      console.log(request.options.language);
     } catch (error) {
       // trying to make this work also for Firefox
       console.log(error);
