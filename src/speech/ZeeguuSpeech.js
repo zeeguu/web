@@ -107,6 +107,8 @@ const ZeeguuSpeech = class {
                     language: this.language,
                 },
             });
+            handleSetIsSpeakingButton(setIsSpeaking, false);
+
         } else {
             if (this.language === "da") {
                 await this.playFromAPI(this.api, word, this.pronunciationPlayer);
