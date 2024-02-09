@@ -285,8 +285,11 @@ const ExerciseOW = styled.div`
   }
 
   .elementHidden {
-    background-color: #595959;
-    visibility: hidden;
+    background-color: rgb(161 161 161);
+    color:rgb(161 161 161);
+    :hover {
+      filter: brightness(1);
+    }
   }
   
   .disable {

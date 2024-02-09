@@ -12,6 +12,7 @@ import {
 } from "../../../utils/preprocessing/preprocessing";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
+import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
 
 export default function OrderWords({
   api,
@@ -647,9 +648,9 @@ export default function OrderWords({
     if (errorCount <= 2) {
       finalClueText = cluesTextList.slice(0, 2);
     } else {
-      finalClueText = cluesTextList
-        .slice(0, 2)
-        .concat([strings.orderWordsOnlyTwoMessagesShown]);
+      finalClueText = cluesTextList.slice(0, 2);
+      if (!finalClueText.includes("Please look at the other errors."))
+        finalClueText.push(strings.orderWordsOnlyTwoMessagesShown);
     }
     return finalClueText;
   }
@@ -753,7 +754,7 @@ export default function OrderWords({
     _orderWordsLogUserActivity("WO_START", jsonDataExerciseStart);
   }
 
-  function notifyChoiceSelection(selectedChoice, inUse) {
+  function notifyChoiceSelection(selectedChoice) {
     handleUndoResetStatus();
     // Avoid swapping Words when the exercise isCorrect.
     // this means we have finished the exercise.
@@ -918,6 +919,7 @@ export default function OrderWords({
         newUserSolutionWordArray.push({ ...wordProp });
       }
     }
+    cluesTextList = removeArrayDuplicates(cluesTextList);
     if (IS_DEBUG) console.log("After adding the placeholders.");
     if (IS_DEBUG) console.log(newUserSolutionWordArray);
     let updatedErrorCounter = totalErrorCounter + errorCount;
@@ -1032,154 +1034,6 @@ export default function OrderWords({
     setIsResetConfirmVisible(false);
   }
 
-  function handleCheck() {
-    // Do nothing if empty
-    if (userSolutionWordArray.length === 0) {
-      return;
-    }
-
-    setHintCounter(hintCounter + 1);
-
-    // Check if the solution is already the same
-    let filterPunctuationSolArray = _getWordsFromWordProps(solutionWords);
-    let newUserSolutionWordArray = _filterPlaceholders([
-      ...userSolutionWordArray,
-    ]);
-
-    // Get the Constructed Sentence
-    let userSolutionSentence = _getWordsFromWordProps(
-      newUserSolutionWordArray
-    ).join(" ");
-
-    if (userSolutionSentence === filterPunctuationSolArray.join(" ")) {
-      setIsCluesRowVisible(false);
-      setIsCorrect(true);
-      _setAllInWordsStatus(newUserSolutionWordArray, "correct");
-      setUserSolutionWordArray(newUserSolutionWordArray);
-      let concatMessage = messageToAPI + "C";
-      handleAnswer(concatMessage);
-    } else {
-      // We need to ensure that we don't send the entire sentence,
-      // or alignment might align very distant words.
-      // We provide only the context up to + 1 what the user has constructed.
-      let resizedSolutionText = filterPunctuationSolArray
-        .slice(0, newUserSolutionWordArray.length + 2)
-        .join(" ");
-      setMessageToAPI(messageToAPI + "H");
-      let nlp_model_to_use =
-        EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? translateLang : exerciseLang;
-      api.annotateClues(
-        newUserSolutionWordArray,
-        resizedSolutionText,
-        nlp_model_to_use,
-        (updatedUserSolutionWords) => {
-          updateWordsFromAPI(
-            updatedUserSolutionWords,
-            resizedSolutionText,
-            userSolutionSentence
-          );
-        }
-      );
-    }
-  }
-
-  function updateWordsFromAPI(
-    updatedWordStatusFromAPI,
-    resizeSol,
-    constructedSentence
-  ) {
-    // Variable to update and store in the user Activity.
-    let updatedWordStatus = JSON.parse(updatedWordStatusFromAPI);
-    let cluesTextList = [];
-    let errorTypesList = [];
-    let newWordsReferenceStatus = [...wordsReferenceStatus];
-    let newUserSolutionWordArray = [];
-    let errorCount = 0;
-    // Placeholders are negative in this exercise.
-    let placeholderCounter = -1;
-
-    if (IS_DEBUG) console.log(updatedWordStatus);
-    for (let i = 0; i < updatedWordStatus.length; i++) {
-      let wordWasPushed = false;
-      let wordProp = updatedWordStatus[i];
-      // Sync up the status. The IDs reflect the order of the tokens
-      // in the wordReferenceStatus array.
-      newWordsReferenceStatus[wordProp.id] = wordProp;
-
-      if (wordProp.feedback !== "" && !wordProp.isCorrect) {
-        cluesTextList.push(wordProp.feedback);
-        errorTypesList.push(wordProp.error_type);
-        if (
-          wordProp.error_type.slice(0, 2) === "M:" &&
-          !wordProp["hasPlaceholders"]
-        ) {
-          if (wordProp["missBefore"]) {
-            newUserSolutionWordArray.push(
-              _constructPlaceholderWordProp(placeholderCounter--, "✎")
-            );
-          }
-          wordProp["hasPlaceholders"] = true;
-          newUserSolutionWordArray.push({ ...wordProp });
-          if (!wordProp["missBefore"]) {
-            newUserSolutionWordArray.push(
-              _constructPlaceholderWordProp(placeholderCounter--, "✎")
-            );
-          }
-          wordWasPushed = true;
-        } else {
-          wordProp["hasPlaceholders"] = false;
-        }
-      }
-      if (!wordProp.isCorrect) {
-        errorCount++;
-      }
-      if (!wordWasPushed) {
-        newUserSolutionWordArray.push({ ...wordProp });
-      }
-    }
-    if (IS_DEBUG) console.log("After adding the placeholders.");
-    if (IS_DEBUG) console.log(newUserSolutionWordArray);
-    let updatedErrorCounter = totalErrorCounter + errorCount;
-    let finalClueText = _updateClueText(cluesTextList, errorCount);
-    setUserSolutionWordArray(newUserSolutionWordArray);
-    setWordsReferenceStatus(newWordsReferenceStatus);
-    setTotalErrorCounter(updatedErrorCounter);
-    setClueText(finalClueText);
-    _logUserActivityCheck(
-      constructedSentence,
-      resizeSol,
-      errorCount,
-      finalClueText,
-      errorTypesList,
-      updatedErrorCounter
-    );
-  }
-
-  function handleReduceContext() {
-    let newIsHandleLongSentences = !isHandlingLongSentences;
-    let exerciseIntializeVariables = _get_exercise_start_variables();
-    // Handle the case of long sentences, this relies on activating the functionality.
-    prepareContext(
-      exerciseIntializeVariables["originalBookmarkContext"],
-      exerciseIntializeVariables["bookmarkWord"],
-      newIsHandleLongSentences,
-      exerciseIntializeVariables["isLongSentence"],
-      exerciseIntializeVariables["exerciseStartTime"]
-    );
-
-    // Ensure the exercise time is set to the same that was used
-    // to prepare the exercise, as well as the sentenceTooLong.
-    setInitialTime(exerciseIntializeVariables["exerciseStartTime"]);
-    setIsSentenceTooLong(exerciseIntializeVariables["isLongSentence"]);
-    setIsHandlingLongSentences(newIsHandleLongSentences);
-    let jsonDataReduceContext = {
-      bookmark: bookmarksToStudy[0].from,
-      exercise_start: initialTime,
-    };
-    _orderWordsLogUserActivity("WO_TOGGLE_CONTEXT", jsonDataReduceContext);
-    // Handle the case of long sentences, this relies on activating the functionality.
-  }
-
   // Handle the Loading screen while getting the text.
   if (
     (wordsReferenceStatus.length === 0) | (exerciseText === "") &&
@@ -1188,7 +1042,7 @@ export default function OrderWords({
     if (IS_DEBUG) console.log("Running load animation.");
     return <LoadingAnimation />;
   }
-  
+
   return (
     <>
       <sOW.ExerciseOW
@@ -1200,7 +1054,7 @@ export default function OrderWords({
           {strings.orderTheWordsToMakeTheHighlightedPhrase}
         </div>
         {isCorrect && EXERCISE_TYPE === TYPE_L1_CONSTRUCTION && (
-          <div className="contextExample" style={{marginBottom: "2em"}}>
+          <div className="contextExample" style={{ marginBottom: "2em" }}>
             <TranslatableText
               isCorrect={isCorrect}
               interactiveText={interactiveText}
@@ -1211,7 +1065,7 @@ export default function OrderWords({
           </div>
         )}
         {isCorrect && EXERCISE_TYPE === TYPE_L2_CONSTRUCTION && (
-          <div className="contextExample" style={{marginBottom: "2em"}}>
+          <div className="contextExample" style={{ marginBottom: "2em" }}>
             <TranslatableText
               isCorrect={isCorrect}
               interactiveText={interactiveText}
@@ -1329,20 +1183,20 @@ export default function OrderWords({
             </button>
           </div>
         )}
-          <NextNavigation
-            message={messageToAPI} 
-            api={api}
-            // Added an empty bookmark to avoid showing the
-            // Listen Button.
-            bookmarksToStudy={bookmarksToStudy}
-            moveToNextExercise={moveToNextExercise}
-            reload={reload}
-            setReload={setReload}
-            isReadContext={true}
-            handleShowSolution={handleShowSolution}
-            toggleShow={toggleShow}
-            isCorrect={isCorrect}
-          />
+        <NextNavigation
+          message={messageToAPI}
+          api={api}
+          // Added an empty bookmark to avoid showing the
+          // Listen Button.
+          bookmarksToStudy={bookmarksToStudy}
+          moveToNextExercise={moveToNextExercise}
+          reload={reload}
+          setReload={setReload}
+          isReadContext={true}
+          handleShowSolution={handleShowSolution}
+          toggleShow={toggleShow}
+          isCorrect={isCorrect}
+        />
         {!isCorrect && (
           <p className="tipText">{strings.orderWordsTipMessage}</p>
         )}
