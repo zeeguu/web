@@ -17,6 +17,12 @@ We need this because we reuse as much code as possible from zeeguu-web.
 git clone https://github.com/zeeguu/browser-extension --recursive
 ```
 
+**Windows Users:** If you are using Windows please note that Git attempts to use the SSH login to clone the repository. So make sure this is configured in your account and use the following command:
+
+```
+git clone git@github.com:zeeguu/browser-extension.git --recursive
+```
+
 ## Install Dependencies in both extension and submodule
 
 Run the following two steps in order and chose the third based on the desired target platform: 
@@ -26,14 +32,19 @@ Run the following two steps in order and chose the third based on the desired ta
 npm run installDeps
 ```
 
+**Windows Users:** In windows the command to use is: `npm run installDepsWindows`
+
 ## Build for Chrome 
 
 ### `npm run build`
 Builds the app for Chrome production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
+**Windows Users:** In windows the command to use is: `npm run buildWindows`
+
 The build is minified and the filenames include the hashes.\
 Go to chrome://extensions/ and unpack the build folder
+
 
 ## Build for Firefox
 In the project directory, you can run:

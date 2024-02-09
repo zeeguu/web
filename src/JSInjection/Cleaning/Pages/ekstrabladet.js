@@ -14,7 +14,7 @@ export function cleanEkstraBladetBefore(documentClone) {
 export function cleanEkstraBladet(readabilityContent, url) {
   const HTMLContent = getHTMLContent(url)
   const removedDate = removePrefix(readabilityContent);
-  let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
+  // let cleaned = addImageEkstraBladet(HTMLContent, removedDate);
 }
 
 function removePrefix(readabilityContent) {

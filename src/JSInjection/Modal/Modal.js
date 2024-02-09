@@ -175,7 +175,7 @@ export function Modal({
         api,
         api.TRANSLATE_TEXT,
         EXTENSION_SOURCE,
-        speechEngine,
+        engine,
       );
       setInteractiveTitle(itTitle);
       api.logReaderActivity(

@@ -1,3 +1,5 @@
+/*global chrome*/
+/*global browser*/
 import React, { useState, useEffect } from "react";
 import { setCurrentURL } from "./functions";
 import sendFeedbackEmail from "../JSInjection/Modal/sendFeedbackEmail";

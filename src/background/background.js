@@ -19,6 +19,8 @@ chrome.runtime.onInstalled.addListener(function (object) {
 chrome.runtime.onMessage.addListener(async function (request) {
   if (request.type === "SPEAK") {
     try {
+      // Chrome TTS gets the speak engine from the OS.
+      // This means the OS needs to have a voice installed.
       await chrome.tts.speak(request.options.text, {
         lang: request.options.language,
       });
