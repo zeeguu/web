@@ -112,7 +112,7 @@ export function Modal({
       logContextRef.current + " FOCUSED",
       articleId(),
       "",
-      "EXTENSION",
+      "EXTENSION"
     );
   }
 
@@ -121,7 +121,7 @@ export function Modal({
       logContextRef.current + " LOST FOCUS",
       articleId(),
       "",
-      "EXTENSION",
+      "EXTENSION"
     );
   }
 
@@ -165,7 +165,7 @@ export function Modal({
         content,
         articleInfo,
         engine,
-        api,
+        api
       );
       setInteractiveTextArray(arrInteractive);
 
@@ -175,14 +175,14 @@ export function Modal({
         api,
         api.TRANSLATE_TEXT,
         EXTENSION_SOURCE,
-        engine,
+        engine
       );
       setInteractiveTitle(itTitle);
       api.logReaderActivity(
         api.OPEN_ARTICLE,
         articleId(),
         "",
-        EXTENSION_SOURCE,
+        EXTENSION_SOURCE
       );
 
       api.getOwnTexts((articles) => {
@@ -253,11 +253,12 @@ export function Modal({
       api.TO_EXERCISES_AFTER_REVIEW,
       articleId(),
       "",
-      EXTENSION_SOURCE,
+      EXTENSION_SOURCE
     );
   }
 
   function reloadExercises() {
+    console.log("reloading exercises!");
     setExerciseOpen(false);
     setTimeout(() => {
       setExerciseOpen(true);
@@ -381,7 +382,8 @@ export function Modal({
                     api={api}
                     articleID={articleId()}
                     openExercises={openExercises}
-                    openArticle={openArticle}
+                    keepExercisingAction={reloadExercises}
+                    backButtonAction={openArticle}
                   />
                 </>
               )}
