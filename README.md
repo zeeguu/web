@@ -21,16 +21,9 @@ git clone https://github.com/zeeguu/browser-extension --recursive
 
 Run the following two steps in order and chose the third based on the desired target platform: 
 
-### `npm install` 
-This command installs a package and any packages that it depends on.
-
-### `npm install` also for the zeeguu-web
-Run
 
 ```
-cd src/zeeguu-react
-npm install
-cd ../..
+npm run installDeps
 ```
 
 ## Build for Chrome 
