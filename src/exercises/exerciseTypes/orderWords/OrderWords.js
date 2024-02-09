@@ -1188,7 +1188,7 @@ export default function OrderWords({
     if (IS_DEBUG) console.log("Running load animation.");
     return <LoadingAnimation />;
   }
-  console.log(exerciseContext);
+  
   return (
     <>
       <sOW.ExerciseOW
@@ -1200,25 +1200,25 @@ export default function OrderWords({
           {strings.orderTheWordsToMakeTheHighlightedPhrase}
         </div>
         {isCorrect && EXERCISE_TYPE === TYPE_L1_CONSTRUCTION && (
-          <div className="contextExample" style={{ paddingBottom: "1em" }}>
+          <div className="contextExample" style={{marginBottom: "2em"}}>
             <TranslatableText
               isCorrect={isCorrect}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
               bookmarkToStudy={removePunctuation(exerciseContext)}
-              overrideHighlightText={exerciseText}
             />
           </div>
         )}
         {isCorrect && EXERCISE_TYPE === TYPE_L2_CONSTRUCTION && (
-          <div className="contextExample">
+          <div className="contextExample" style={{marginBottom: "2em"}}>
             <TranslatableText
               isCorrect={isCorrect}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
               bookmarkToStudy={removePunctuation(exerciseContext)}
+              overrideBookmarkHighlightText={exerciseText}
             />
           </div>
         )}
@@ -1228,11 +1228,6 @@ export default function OrderWords({
             {textBeforeExerciseText}
             <b>{exerciseText}</b>
             {textAfterExerciseText}
-          </p>
-        )}
-        {isCorrect && EXERCISE_TYPE === TYPE_L2_CONSTRUCTION && (
-          <p className="solutionText">
-            <b>{exerciseText}</b>
           </p>
         )}
 

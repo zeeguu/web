@@ -211,7 +211,7 @@ const ExerciseOW = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    
+
     cursor: pointer;
     font-weight: 600;
     text-align: center;
@@ -305,13 +305,14 @@ const ExerciseOW = styled.div`
   .tipText{
     font-size:small
   }
-
+  
   .contextExample {
     margin-top: 1em;
     margin-left: 2em;
     margin-right: 2em;
     font-weight: 400;
     line-height: 1.4em;
+    paddingBottom: 1em;
   }
 
   /* Mobile version */
