@@ -6,7 +6,7 @@ chrome.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
     console.log("Received message from " + sender.url + ": ", request);
     sendResponse({ message: true });
-  }
+  },
 );
 
 chrome.runtime.onInstalled.addListener(function (object) {
@@ -16,19 +16,10 @@ chrome.runtime.onInstalled.addListener(function (object) {
   }
 });
 
-chrome.runtime.onMessage.addListener(function (request) {
+chrome.runtime.onMessage.addListener(async function (request) {
   if (request.type === "SPEAK") {
     try {
-      if (request) {
-        console.log(
-          "chrome.tts.speak: " +
-            request.options.text +
-            " " +
-            request.options.language
-        );
-      }
-
-      chrome.tts.speak(request.options.text, {
+      await chrome.tts.speak(request.options.text, {
         lang: request.options.language,
       });
     } catch (error) {
