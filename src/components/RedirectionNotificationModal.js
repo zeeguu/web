@@ -48,7 +48,7 @@ export default function RedirectionNotificationModal({
     setSelectedDoNotShowRedirectionModal_Checkbox(false); //to avoid prechecked checkboxes
   }
 
-  //render modal based on the browser
+  //render modal based on the browser and device type
   function renderNotificatioModal() {
     let redirectionNotificationForDesktop = (
       <RedirectionNotificationForDesktop
