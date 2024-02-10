@@ -31,17 +31,48 @@ export default function RedirectionNotificationForSafari({
   return (
     <>
       <s.Header>
-        <h1>It looks like you are using Safari</h1>
+        <h1>Your browser doesn't support the Zeeguu Reader extension.</h1>
       </s.Header>
       <s.Body>
         <p>
-          If you want to read articles with the help of Zeeguu on your mobile
-          device, you need to save them first by clicking the
+          To read articles with our extension, we recommend installing
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://www.google.com/chrome/?brand=WHAR&gad_source=1&gclid=EAIaIQobChMI3Z3blfOghAMVD6doCR33SgG1EAAYASAAEgJ6TvD_BwE&gclsrc=aw.ds"
+          >
+            <s.ModalStrongTextWrapper> Google Chrome </s.ModalStrongTextWrapper>
+          </a>
+          ,
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://www.mozilla.org/en-US/firefox/new/"
+          >
+            <s.ModalStrongTextWrapper>
+              {" "}
+              Mozilla Firefox
+            </s.ModalStrongTextWrapper>
+          </a>
+          , or{" "}
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://www.microsoft.com/en-us/edge/download?form=MA13FJ"
+          >
+            <s.ModalStrongTextWrapper>Microsoft Edge</s.ModalStrongTextWrapper>
+          </a>
+          .{" "}
+        </p>
+        <p>
+          To read this article with the help of{" "}
+          <s.ModalStrongTextWrapper>Zeeguu</s.ModalStrongTextWrapper> on your
+          current browser, click
           <s.ModalStrongTextWrapper>
             {" "}
             Add&nbsp;to&nbsp;Saves
           </s.ModalStrongTextWrapper>{" "}
-          button.
+          to save it first.
         </p>
       </s.Body>
       <s.CloseButton

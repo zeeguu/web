@@ -50,68 +50,68 @@ export default function RedirectionNotificationModal({
 
   //render modal based on the browser
   function renderNotificatioModal() {
+    let redirectionNotificationForDesktop = (
+      <RedirectionNotificationForDesktop
+        toggleRedirectionCheckboxSelection={toggleRedirectionCheckboxSelection}
+        selectedDoNotShowRedirectionModal_Checkbox={
+          selectedDoNotShowRedirectionModal_Checkbox
+        }
+        handleCloseAndSaveVisibilityPreferences={
+          handleCloseAndSaveVisibilityPreferences
+        }
+        handleCloseWithoutSavingVisibilityPreferences={
+          handleCloseWithoutSavingVisibilityPreferences
+        }
+        article={article}
+      />
+    );
+
+    let redirectionNotificationForMobile = (
+      <RedirectionNotificationForMobile
+        toggleRedirectionCheckboxSelection={toggleRedirectionCheckboxSelection}
+        selectedDoNotShowRedirectionModal_Checkbox={
+          selectedDoNotShowRedirectionModal_Checkbox
+        }
+        handleModalVisibilityPreferences={handleModalVisibilityPreferences}
+        handleCloseAndSaveVisibilityPreferences={
+          handleCloseAndSaveVisibilityPreferences
+        }
+        handleCloseWithoutSavingVisibilityPreferences={
+          handleCloseWithoutSavingVisibilityPreferences
+        }
+        handleCloseRedirectionModal={handleCloseRedirectionModal}
+        article={article}
+        api={api}
+        setIsArticleSaved={setIsArticleSaved}
+      />
+    );
+
+    let redirectionNotificationForSafari = (
+      <RedirectionNotificationForSafari
+        toggleRedirectionCheckboxSelection={toggleRedirectionCheckboxSelection}
+        selectedDoNotShowRedirectionModal_Checkbox={
+          selectedDoNotShowRedirectionModal_Checkbox
+        }
+        handleModalVisibilityPreferences={handleModalVisibilityPreferences}
+        handleCloseAndSaveVisibilityPreferences={
+          handleCloseAndSaveVisibilityPreferences
+        }
+        handleCloseWithoutSavingVisibilityPreferences={
+          handleCloseWithoutSavingVisibilityPreferences
+        }
+        handleCloseRedirectionModal={handleCloseRedirectionModal}
+        article={article}
+        api={api}
+        setIsArticleSaved={setIsArticleSaved}
+      />
+    );
+
     if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
-      return (
-        <RedirectionNotificationForDesktop
-          toggleRedirectionCheckboxSelection={
-            toggleRedirectionCheckboxSelection
-          }
-          selectedDoNotShowRedirectionModal_Checkbox={
-            selectedDoNotShowRedirectionModal_Checkbox
-          }
-          handleCloseAndSaveVisibilityPreferences={
-            handleCloseAndSaveVisibilityPreferences
-          }
-          handleCloseWithoutSavingVisibilityPreferences={
-            handleCloseWithoutSavingVisibilityPreferences
-          }
-          article={article}
-        />
-      );
+      return redirectionNotificationForDesktop;
     } else if (isMobile()) {
-      return (
-        <RedirectionNotificationForMobile
-          toggleRedirectionCheckboxSelection={
-            toggleRedirectionCheckboxSelection
-          }
-          selectedDoNotShowRedirectionModal_Checkbox={
-            selectedDoNotShowRedirectionModal_Checkbox
-          }
-          handleModalVisibilityPreferences={handleModalVisibilityPreferences}
-          handleCloseAndSaveVisibilityPreferences={
-            handleCloseAndSaveVisibilityPreferences
-          }
-          handleCloseWithoutSavingVisibilityPreferences={
-            handleCloseWithoutSavingVisibilityPreferences
-          }
-          handleCloseRedirectionModal={handleCloseRedirectionModal}
-          article={article}
-          api={api}
-          setIsArticleSaved={setIsArticleSaved}
-        />
-      );
+      return redirectionNotificationForMobile;
     } else {
-      return (
-        <RedirectionNotificationForSafari
-          toggleRedirectionCheckboxSelection={
-            toggleRedirectionCheckboxSelection
-          }
-          selectedDoNotShowRedirectionModal_Checkbox={
-            selectedDoNotShowRedirectionModal_Checkbox
-          }
-          handleModalVisibilityPreferences={handleModalVisibilityPreferences}
-          handleCloseAndSaveVisibilityPreferences={
-            handleCloseAndSaveVisibilityPreferences
-          }
-          handleCloseWithoutSavingVisibilityPreferences={
-            handleCloseWithoutSavingVisibilityPreferences
-          }
-          handleCloseRedirectionModal={handleCloseRedirectionModal}
-          article={article}
-          api={api}
-          setIsArticleSaved={setIsArticleSaved}
-        />
-      );
+      return redirectionNotificationForSafari;
     }
   }
 
