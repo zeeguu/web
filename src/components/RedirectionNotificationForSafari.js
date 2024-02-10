@@ -31,7 +31,15 @@ export default function RedirectionNotificationForSafari({
   return (
     <>
       <s.Header>
-        <h1>Your browser doesn't support The Zeeguu Reader extension</h1>
+        <h1>
+          Your browser doesn't support <br></br>
+          <s.IconHeader
+            className="fullDivWidthImage"
+            alt=""
+            src="../static/images/zeeguuLogo.svg"
+          ></s.IconHeader>{" "}
+          The Zeeguu Reader extension
+        </h1>
       </s.Header>
       <s.Body>
         <p>

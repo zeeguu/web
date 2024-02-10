@@ -30,6 +30,12 @@ const Icon = styled.span`
   display: inline-block;
 `;
 
+const IconHeader = styled.img`
+  margin: 0 0.1rem -0.1rem 0;
+  height: 1.2rem;
+  width: 1.2rem;
+`;
+
 const CheckboxWrapper = styled.div`
   margin-top: -0.8em;
   align-self: start;
@@ -117,6 +123,7 @@ export {
   SaveArticleButton,
   ExternalLink,
   ButtonContainer,
+  IconHeader,
   Icon,
   Header,
   Body,
