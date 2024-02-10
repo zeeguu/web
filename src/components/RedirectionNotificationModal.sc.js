@@ -66,6 +66,12 @@ const GoToArticleButton = styled(OrangeRoundButton)`
   border-bottom: solid 0.2em ${zeeguuDarkOrange};
 `;
 
+const ExternalLink = styled.a`
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const SaveArticleButton = styled.button`
   display: flex;
   flex-direction: row;
@@ -109,6 +115,7 @@ export {
   CloseButton,
   GoToArticleButton,
   SaveArticleButton,
+  ExternalLink,
   ButtonContainer,
   Icon,
   Header,

@@ -31,37 +31,34 @@ export default function RedirectionNotificationForSafari({
   return (
     <>
       <s.Header>
-        <h1>Your browser doesn't support the Zeeguu Reader extension.</h1>
+        <h1>Your browser doesn't support The Zeeguu Reader extension</h1>
       </s.Header>
       <s.Body>
         <p>
           To read articles with our extension, we recommend installing
-          <a
+          <s.ExternalLink
             target="_blank"
             rel="noreferrer"
             href="https://www.google.com/chrome/?brand=WHAR&gad_source=1&gclid=EAIaIQobChMI3Z3blfOghAMVD6doCR33SgG1EAAYASAAEgJ6TvD_BwE&gclsrc=aw.ds"
           >
-            <s.ModalStrongTextWrapper> Google Chrome </s.ModalStrongTextWrapper>
-          </a>
-          ,
-          <a
+            <s.ModalStrongTextWrapper> Google Chrome</s.ModalStrongTextWrapper>
+          </s.ExternalLink>
+          ,{" "}
+          <s.ExternalLink
             target="_blank"
             rel="noreferrer"
             href="https://www.mozilla.org/en-US/firefox/new/"
           >
-            <s.ModalStrongTextWrapper>
-              {" "}
-              Mozilla Firefox
-            </s.ModalStrongTextWrapper>
-          </a>
+            <s.ModalStrongTextWrapper>Mozilla Firefox</s.ModalStrongTextWrapper>
+          </s.ExternalLink>
           , or{" "}
-          <a
+          <s.ExternalLink
             target="_blank"
             rel="noreferrer"
             href="https://www.microsoft.com/en-us/edge/download?form=MA13FJ"
           >
             <s.ModalStrongTextWrapper>Microsoft Edge</s.ModalStrongTextWrapper>
-          </a>
+          </s.ExternalLink>
           .{" "}
         </p>
         <p>
@@ -94,7 +91,7 @@ export default function RedirectionNotificationForSafari({
           <label htmlFor="checkbox">Don't show this message</label>
         </s.CheckboxWrapper>
         <s.ButtonContainer>
-          <a target="_self" rel="noreferrer" href={article.url}>
+          <a target="_blank" rel="noreferrer" href={article.url}>
             <s.GoToArticleButton
               role="button"
               onClick={handleGoToArticleAndCloseModal}
