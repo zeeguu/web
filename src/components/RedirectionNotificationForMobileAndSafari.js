@@ -1,7 +1,11 @@
 import * as s from "./RedirectionNotificationModal.sc";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { isMobile } from "../utils/misc/browserDetection";
+import {
+  isMobile,
+  runningInFirefoxDesktop,
+  runningInChromeDesktop,
+} from "../utils/misc/browserDetection";
 
 export default function RedirectionNotificationForMobileAndSafari({
   api,
@@ -48,7 +52,7 @@ export default function RedirectionNotificationForMobileAndSafari({
 
     if (isMobile()) {
       return headerContentForMobile;
-    } else {
+    } else if (!runningInFirefoxDesktop() && !runningInChromeDesktop()) {
       return headerContentForSafari;
     }
   }
@@ -111,7 +115,9 @@ export default function RedirectionNotificationForMobileAndSafari({
 
     if (isMobile()) {
       return bodyContentForMobile;
-    } else return bodyContentForSafari;
+    } else if (!runningInFirefoxDesktop() && !runningInChromeDesktop()) {
+      return bodyContentForSafari;
+    }
   }
 
   return (
