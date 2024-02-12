@@ -1,8 +1,13 @@
 import * as s from "./RedirectionNotificationModal.sc";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import {
+  isMobile,
+  runningInFirefoxDesktop,
+  runningInChromeDesktop,
+} from "../utils/misc/browserDetection";
 
-export default function RedirectionNotificationForSafari({
+export default function RedirectionNotificationForUnsupportedBrowsers({
   api,
   article,
   setIsArticleSaved,
@@ -28,20 +33,46 @@ export default function RedirectionNotificationForSafari({
     handleCloseAndSaveVisibilityPreferences();
   }
 
-  return (
-    <>
-      <s.Header>
-        <h1>
-          Your browser doesn't support <br></br>
-          <s.IconHeader
-            className="fullDivWidthImage"
-            alt=""
-            src="../static/images/zeeguuLogo.svg"
-          ></s.IconHeader>{" "}
-          The Zeeguu Reader extension
-        </h1>
-      </s.Header>
-      <s.Body>
+  function renderHeaderForMobileOrUnsupportedDesktop() {
+    let headerContentForMobile = (
+      <h1>It looks like you are using&nbsp;a&nbsp;mobile device</h1>
+    );
+
+    let headerContentForUnsupportedDesktop = (
+      <h1>
+        Your browser doesn't support <br></br>
+        <s.IconHeader
+          className="fullDivWidthImage"
+          alt=""
+          src="../static/images/zeeguuLogo.svg"
+        ></s.IconHeader>{" "}
+        The Zeeguu Reader extension
+      </h1>
+    );
+
+    if (isMobile()) {
+      return headerContentForMobile;
+    } else if (!runningInFirefoxDesktop() && !runningInChromeDesktop()) {
+      return headerContentForUnsupportedDesktop;
+    }
+  }
+
+  function renderBodyForMobileOrUnsupportedDesktop() {
+    let bodyContentForMobile = (
+      <p>
+        If you want to read articles with the help of Zeeguu on your mobile
+        device, you need to save them first by clicking the
+        <s.ModalStrongTextWrapper>
+          {" "}
+          Add&nbsp;to&nbsp;Saves
+        </s.ModalStrongTextWrapper>{" "}
+        button.
+      </p>
+    );
+
+    let bodyContentForUnsupportedDesktop = (
+      <>
+        {" "}
         <p>
           To read articles with our extension, we recommend installing
           <s.ExternalLink
@@ -78,8 +109,21 @@ export default function RedirectionNotificationForSafari({
             Add&nbsp;to&nbsp;Saves
           </s.ModalStrongTextWrapper>{" "}
           to save it first.
-        </p>
-      </s.Body>
+        </p>{" "}
+      </>
+    );
+
+    if (isMobile()) {
+      return bodyContentForMobile;
+    } else if (!runningInFirefoxDesktop() && !runningInChromeDesktop()) {
+      return bodyContentForUnsupportedDesktop;
+    }
+  }
+
+  return (
+    <>
+      <s.Header>{renderHeaderForMobileOrUnsupportedDesktop()}</s.Header>
+      <s.Body>{renderBodyForMobileOrUnsupportedDesktop()}</s.Body>
       <s.CloseButton
         role="button"
         onClick={handleCloseWithoutSavingVisibilityPreferences}
@@ -99,7 +143,11 @@ export default function RedirectionNotificationForSafari({
           <label htmlFor="checkbox">Don't show this message</label>
         </s.CheckboxWrapper>
         <s.ButtonContainer>
-          <a target="_blank" rel="noreferrer" href={article.url}>
+          <a
+            target={isMobile() ? "_self" : "_blank"}
+            rel="noreferrer"
+            href={article.url}
+          >
             <s.GoToArticleButton
               role="button"
               onClick={handleGoToArticleAndCloseModal}

@@ -2,13 +2,11 @@ import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import * as s from "../components/RedirectionNotificationModal.sc";
 import {
-  isMobile,
   runningInFirefoxDesktop,
   runningInChromeDesktop,
 } from "../utils/misc/browserDetection";
-import RedirectionNotificationForDesktop from "./RedirectionNotificationForDesktop";
-import RedirectionNotificationForMobile from "./RedirectionNotificationForMobile";
-import RedirectionNotificationForSafari from "./RedirectionNotificationForSafari";
+import RedirectionNotificationForSupportedBrowsers from "./RedirectionNotificationForSupportedBrowsers";
+import RedirectionNotificationForUnsupportedBrowsers from "./RedirectionNotificationForUnsupportedBrowsers";
 
 //This modal is used in the ArticlePreview component
 
@@ -50,8 +48,8 @@ export default function RedirectionNotificationModal({
 
   //render modal based on the browser and device type
   function renderNotificatioModal() {
-    let redirectionNotificationForDesktop = (
-      <RedirectionNotificationForDesktop
+    let redirectionNotificationForSupportedBrowsers = (
+      <RedirectionNotificationForSupportedBrowsers
         toggleRedirectionCheckboxSelection={toggleRedirectionCheckboxSelection}
         selectedDoNotShowRedirectionModal_Checkbox={
           selectedDoNotShowRedirectionModal_Checkbox
@@ -66,28 +64,8 @@ export default function RedirectionNotificationModal({
       />
     );
 
-    let redirectionNotificationForMobile = (
-      <RedirectionNotificationForMobile
-        toggleRedirectionCheckboxSelection={toggleRedirectionCheckboxSelection}
-        selectedDoNotShowRedirectionModal_Checkbox={
-          selectedDoNotShowRedirectionModal_Checkbox
-        }
-        handleModalVisibilityPreferences={handleModalVisibilityPreferences}
-        handleCloseAndSaveVisibilityPreferences={
-          handleCloseAndSaveVisibilityPreferences
-        }
-        handleCloseWithoutSavingVisibilityPreferences={
-          handleCloseWithoutSavingVisibilityPreferences
-        }
-        handleCloseRedirectionModal={handleCloseRedirectionModal}
-        article={article}
-        api={api}
-        setIsArticleSaved={setIsArticleSaved}
-      />
-    );
-
-    let redirectionNotificationForSafari = (
-      <RedirectionNotificationForSafari
+    let redirectionNotificationForUnsupportedBrowsers = (
+      <RedirectionNotificationForUnsupportedBrowsers
         toggleRedirectionCheckboxSelection={toggleRedirectionCheckboxSelection}
         selectedDoNotShowRedirectionModal_Checkbox={
           selectedDoNotShowRedirectionModal_Checkbox
@@ -107,11 +85,9 @@ export default function RedirectionNotificationModal({
     );
 
     if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
-      return redirectionNotificationForDesktop;
-    } else if (isMobile()) {
-      return redirectionNotificationForMobile;
+      return redirectionNotificationForSupportedBrowsers;
     } else {
-      return redirectionNotificationForSafari;
+      return redirectionNotificationForUnsupportedBrowsers;
     }
   }
 

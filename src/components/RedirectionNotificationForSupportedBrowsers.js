@@ -1,7 +1,7 @@
 import * as s from "./RedirectionNotificationModal.sc";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-export default function RedirectionNotificationForDesktop({
+export default function RedirectionNotificationForSupportedBrowsers({
   article,
   toggleRedirectionCheckboxSelection,
   selectedDoNotShowRedirectionModal_Checkbox,
