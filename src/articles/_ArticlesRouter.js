@@ -1,5 +1,6 @@
 import FindArticles from "./FindArticles";
 import BookmarkedArticles from "./BookmarkedArticles";
+import { toast, ToastContainer } from "react-toastify";
 
 import { PrivateRoute } from "../PrivateRoute";
 import ClassroomArticles from "./ClassroomArticles";
@@ -58,6 +59,18 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
           api={api}
           component={ReadingHistory}
         />
+        <ToastContainer
+        position="bottom-right"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       </s.NarrowColumn>
     </>
   );
