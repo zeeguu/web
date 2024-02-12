@@ -14,7 +14,7 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
 import NoSidebarRouter from "./NoSidebarRouter.js";
-import ZeeguuSpeech from "./speech/ZeeguuSpeech";
+import ZeeguuSpeech from "./speech/APIBasedSpeech";
 
 import {
   getUserSession,
@@ -50,7 +50,7 @@ function App() {
   }
 
   useEffect(() => {
-    console.log("Running callback!")
+    console.log("Running callback!");
     setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
   }, []);
 
@@ -71,7 +71,7 @@ function App() {
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
       if (!getUserSession()) {
-        console.log("Unsetting user!")
+        console.log("Unsetting user!");
         setUser({});
       }
     }, 1000);
@@ -87,14 +87,14 @@ function App() {
     api.getUserPreferences((preferences) => {
       SessionStorage.setAudioExercisesEnabled(
         preferences["audio_exercises"] === undefined ||
-          preferences["audio_exercises"] === "true"
+          preferences["audio_exercises"] === "true",
       );
     });
 
     // Cookies are the mechanism via which we share a login
     // between the extension and the website
     saveUserInfoIntoCookies(userInfo, api.session);
-    let newUserValue ={
+    let newUserValue = {
       session: api.session,
       name: userInfo.name,
       learned_language: userInfo.learned_language,
@@ -102,11 +102,10 @@ function App() {
       is_teacher: userInfo.is_teacher,
       is_student: userInfo.is_student,
     };
-    
-    
+
     console.log("setting new user value: ");
     console.dir(newUserValue);
-    setUser(newUserValue);  
+    setUser(newUserValue);
 
     if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
       history.push("/install_extension");
@@ -169,7 +168,11 @@ function App() {
               render={() => <NoSidebarRouter api={api} />}
             />
 
-            <LoggedInRouter api={api} speechEngine={zeeguuSpeech} setUser={setUser} />
+            <LoggedInRouter
+              api={api}
+              speechEngine={zeeguuSpeech}
+              setUser={setUser}
+            />
           </Switch>
         </UserContext.Provider>
       </RoutingContext.Provider>

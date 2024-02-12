@@ -1,24 +1,15 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.prototype.getLinkToSpeechFile = function (
+Zeeguu_API.prototype.fetchLinkToSpeechMp3 = async function (
   textToPronounce,
   language_code,
-  callback,
 ) {
-  console.log("get link to danish speech...");
-
-  this._post(
+  let linkToMp3 = await this._post(
     `text_to_speech`,
     `language_id=${language_code}&text=${textToPronounce}`,
-    (linkToMp3) => {
-      let final_link = this.baseAPIurl + linkToMp3;
-      console.log("got link to danish speech: " + final_link);
-      callback(final_link);
-    },
-    (error) => {
-      console.log(error);
-    },
-  );
+  ).then((response) => response.text());
+
+  return this.baseAPIurl + linkToMp3;
 };
 
 Zeeguu_API.prototype.getLinkToFullArticleReadout = function (
