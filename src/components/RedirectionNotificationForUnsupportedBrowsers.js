@@ -7,7 +7,7 @@ import {
   runningInChromeDesktop,
 } from "../utils/misc/browserDetection";
 
-export default function RedirectionNotificationForMobileAndSafari({
+export default function RedirectionNotificationForUnsupportedBrowsers({
   api,
   article,
   setIsArticleSaved,
@@ -33,12 +33,12 @@ export default function RedirectionNotificationForMobileAndSafari({
     handleCloseAndSaveVisibilityPreferences();
   }
 
-  function renderHeaderForMobileOrSafari() {
+  function renderHeaderForMobileOrUnsupportedDesktop() {
     let headerContentForMobile = (
       <h1>It looks like you are using&nbsp;a&nbsp;mobile device</h1>
     );
 
-    let headerContentForSafari = (
+    let headerContentForUnsupportedDesktop = (
       <h1>
         Your browser doesn't support <br></br>
         <s.IconHeader
@@ -53,11 +53,11 @@ export default function RedirectionNotificationForMobileAndSafari({
     if (isMobile()) {
       return headerContentForMobile;
     } else if (!runningInFirefoxDesktop() && !runningInChromeDesktop()) {
-      return headerContentForSafari;
+      return headerContentForUnsupportedDesktop;
     }
   }
 
-  function renderBodyForMobileOrSafari() {
+  function renderBodyForMobileOrUnsupportedDesktop() {
     let bodyContentForMobile = (
       <p>
         If you want to read articles with the help of Zeeguu on your mobile
@@ -70,7 +70,7 @@ export default function RedirectionNotificationForMobileAndSafari({
       </p>
     );
 
-    let bodyContentForSafari = (
+    let bodyContentForUnsupportedDesktop = (
       <>
         {" "}
         <p>
@@ -116,14 +116,14 @@ export default function RedirectionNotificationForMobileAndSafari({
     if (isMobile()) {
       return bodyContentForMobile;
     } else if (!runningInFirefoxDesktop() && !runningInChromeDesktop()) {
-      return bodyContentForSafari;
+      return bodyContentForUnsupportedDesktop;
     }
   }
 
   return (
     <>
-      <s.Header>{renderHeaderForMobileOrSafari()}</s.Header>
-      <s.Body>{renderBodyForMobileOrSafari()}</s.Body>
+      <s.Header>{renderHeaderForMobileOrUnsupportedDesktop()}</s.Header>
+      <s.Body>{renderBodyForMobileOrUnsupportedDesktop()}</s.Body>
       <s.CloseButton
         role="button"
         onClick={handleCloseWithoutSavingVisibilityPreferences}
