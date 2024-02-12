@@ -1,14 +1,15 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.prototype.getLinkToDanishSpeech = function (
+Zeeguu_API.prototype.getLinkToSpeechFile = function (
   textToPronounce,
-  callback
+  language_code,
+  callback,
 ) {
   console.log("get link to danish speech...");
 
   this._post(
     `text_to_speech`,
-    `language_id=da&text=${textToPronounce}`,
+    `language_id=${language_code}&text=${textToPronounce}`,
     (linkToMp3) => {
       let final_link = this.baseAPIurl + linkToMp3;
       console.log("got link to danish speech: " + final_link);
@@ -16,14 +17,14 @@ Zeeguu_API.prototype.getLinkToDanishSpeech = function (
     },
     (error) => {
       console.log(error);
-    }
+    },
   );
 };
 
 Zeeguu_API.prototype.getLinkToFullArticleReadout = function (
   articleInfo,
   article_id,
-  callback
+  callback,
 ) {
   this._post(
     `mp3_of_full_article`,
@@ -35,6 +36,6 @@ Zeeguu_API.prototype.getLinkToFullArticleReadout = function (
     },
     (error) => {
       console.log(error);
-    }
+    },
   );
 };
