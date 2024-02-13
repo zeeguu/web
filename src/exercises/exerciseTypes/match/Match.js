@@ -69,7 +69,7 @@ export default function Match({
     console.log("checking result...");
     let bookmarksCopy = { ...currentBookmarksToStudy };
     let i;
-    let fullMessage = "";
+    let fullMessage = messageToNextNav;
     for (i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmark = bookmarksCopy[i];
       if (buttonsToDisable.length === 2) {
@@ -110,12 +110,12 @@ export default function Match({
   function handleShowSolution() {
     let pressTime = new Date();
     let duration = exerciseDuration(pressTime);
-
+    let finalMessage = ""
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
         notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
         let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
-        setMessageToNextNav(messageToNextNav + concatMessage);
+        finalMessage = finalMessage + concatMessage;
         api.uploadExerciseFinalizedData(
           concatMessage,
           EXERCISE_TYPE,
@@ -126,11 +126,12 @@ export default function Match({
       }
     }
     setIsCorrect(true);
+    setMessageToNextNav(finalMessage);
   }
 
   function handleAnswer(message, id) {
     let pressTime = new Date();
-    setMessageToNextNav(message);
+    setMessageToNextNav(messageToNextNav + message);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,

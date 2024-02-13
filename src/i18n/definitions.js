@@ -321,7 +321,7 @@ let strings = new LocalizedStrings(
             correctExercise1: "Well done!",
             correctExercise2: "Correct!",
             correctExercise3: "Good job!",
-            solutionExercise1: "Next time!",
+            solutionExercise1: "Check the solution!",
             solutionExercise2: "Here's the solution!",
             //LearnedWordsList
             studentHasNotLearnedWords: "The student has not learned any words yet.",

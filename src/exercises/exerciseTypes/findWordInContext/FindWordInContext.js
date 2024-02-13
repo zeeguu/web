@@ -135,7 +135,7 @@ export default function FindWordInContext({
     } else {
       concatMessage = message;
     }
-
+    setMessageToAPI(concatMessage);
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
@@ -206,7 +206,7 @@ export default function FindWordInContext({
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}
-        handleShowSolution={handleShowSolution}
+        handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
       />

@@ -4,7 +4,7 @@ import EditButton from "../../words/EditButton";
 import * as s from "./Exercise.sc";
 import SolutionFeedbackLinks from "./SolutionFeedbackLinks";
 import { random } from "../../utils/basic/arrays";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function NextNavigation({
   message,
@@ -18,20 +18,6 @@ export default function NextNavigation({
   isCorrect,
   handleShowSolution,
 }) {
-  const bookmarkToStudy = bookmarksToStudy[0];
-  const exercise = "exercise";
-  let incorrectAttemptsCount = 0;
-  for (let i = 0; i < message.length; i++) {
-    if (message[i] != "C") {
-      incorrectAttemptsCount++;
-    }
-  }
-
-  // Load the images in the cache.
-  const arraySrcs = [
-    "/static/icons/zeeguu-icon-correct.png",
-    "/static/icons/zeeguu-icon-solution.png",
-  ];
   const correctStrings = [
     strings.correctExercise1,
     strings.correctExercise2,
@@ -41,36 +27,58 @@ export default function NextNavigation({
     strings.solutionExercise1,
     strings.solutionExercise2,
   ];
+
+  const bookmarkToStudy = bookmarksToStudy[0];
+  const exercise = "exercise";
+  const [isConsideredCorrect, setIsConsideredCorrect] = useState(true);
   const correctMessage = useState(random(correctStrings));
   const solutionMessage = useState(random(solutionStrings));
+  const [imgToDisplay, setImgToDisplay] = useState(null);
+
+  function handleImgToDisplay(isCorrect, isSolution) {
+    if (isCorrect) {
+      setImgToDisplay(
+        <img
+          src={"/static/icons/zeeguu-icon-correct.png"}
+          alt="Correct Icon"
+        />,
+      );
+    } else {
+      if (isSolution)
+        setImgToDisplay(
+          <img
+            src={"/static/icons/zeeguu-icon-solution.png"}
+            alt="Solution Icon"
+          />,
+        );
+      else {
+        setImgToDisplay(
+          <img src={"/static/icons/zeeguu-icon-wrong.png"} alt="Wrong Icon" />,
+        );
+      }
+    }
+  }
+
+  useEffect(() => {
+    console.log("Message received: " + message);
+    // Mirror what we do in the API
+    let isCorrect = ["C", "TC", "TTC", "TTTC", "HC", "CCC"].includes(message);
+    let isSolution = message.includes("S");
+    setIsConsideredCorrect(isCorrect);
+    handleImgToDisplay(isCorrect, isSolution);
+
+
+  }, [isCorrect]);
 
   return (
     <>
-      {arraySrcs.map((e) => (
-        <img src={e} key={e} style={{ display: "none" }} />
-      ))}
       {isCorrect ? (
-        incorrectAttemptsCount < message.length ? (
-          <div className="next-nav-feedback">
-            <img
-              src={"/static/icons/zeeguu-icon-correct.png"}
-              alt="Correct Icon"
-            />
-            <p>
-              <b>{correctMessage}</b>
-            </p>
-          </div>
-        ) : (
-          <div className="next-nav-feedback">
-            <img
-              src={"/static/icons/zeeguu-icon-solution.png"}
-              alt="Solution Icon"
-            />
-            <p>
-              <b>{solutionMessage}</b>
-            </p>
-          </div>
-        )
+        <div className="next-nav-feedback">
+          {imgToDisplay}
+          <p>
+            <b>{isConsideredCorrect ? correctMessage : solutionMessage}</b>
+          </p>
+        </div>
       ) : (
         <> </>
       )}

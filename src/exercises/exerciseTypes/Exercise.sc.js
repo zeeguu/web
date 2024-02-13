@@ -22,7 +22,7 @@ const Exercise = styled.div`
 
     img {
       width: 60px;
-      mixBlendMode: multiply;
+      mix-blend-mode: multiply;
       height: auto;
     }
     p {
