@@ -143,7 +143,7 @@ export default function MultipleChoiceAudio({
       EXERCISE_TYPE,
       exerciseDuration(pressTime),
       bookmarksToStudy[0].id,
-      exerciseSessionId
+      exerciseSessionId,
     );
   }
 
@@ -164,7 +164,7 @@ export default function MultipleChoiceAudio({
       EXERCISE_TYPE,
       duration,
       bookmarksToStudy[0].id,
-      exerciseSessionId
+      exerciseSessionId,
     );
   }
 
