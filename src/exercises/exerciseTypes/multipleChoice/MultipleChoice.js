@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
@@ -10,6 +10,7 @@ import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
+import { SpeechContext } from "../../SpeechContext.js";
 
 const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
@@ -33,6 +34,7 @@ export default function MultipleChoice({
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
+  const speech = useContext(SpeechContext);
 
   function exerciseDuration(endTime) {
     return Math.min(89999, endTime - initialTime);
@@ -138,7 +140,6 @@ export default function MultipleChoice({
       <div className="headlineWithMoreSpace">
         {strings.chooseTheWordFittingContextHeadline}
       </div>
-
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}

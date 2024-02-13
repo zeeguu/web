@@ -116,6 +116,59 @@ export default function FindWordInContext({
     }
   }
 
+  function equalAfterRemovingSpecialCharacters(a, b) {
+    // from: https://stackoverflow.com/a/4328546
+    let first = a.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
+    let second = b.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
+    return first === second;
+  }
+
+  function checkTranslations(userTranslatedSequences) {
+    if (userTranslatedSequences.length === 0) {
+      return;
+    }
+
+    let solutionDiscovered = false;
+
+    let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
+
+    solutionSplitIntoWords.forEach((wordInSolution) => {
+      userTranslatedSequences.forEach((userTranslatedSequence) => {
+        let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
+        wordsInUserTranslatedSequence.forEach((translatedWord) => {
+          if (
+            equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)
+          ) {
+            solutionDiscovered = true;
+          }
+        });
+      });
+    });
+
+    if (solutionDiscovered) {
+      // Check how many translations were made
+      let translationCount = 0;
+      for (let i = 0; i < messageToAPI.length; i++) {
+        if (messageToAPI[i] === "T") translationCount++;
+      }
+      if (translationCount < 2) {
+        let concatMessage = messageToAPI + "C";
+        handleCorrectAnswer(concatMessage);
+      } else {
+        let concatMessage = messageToAPI + "S";
+        handleShowSolution(undefined, concatMessage);
+      }
+    } else {
+      setMessageToAPI(messageToAPI + "T");
+    }
+  }
+
+  function inputKeyPress() {
+    if (firstTypeTime === undefined) {
+      setFirstTypeTime(new Date());
+    }
+  }
+
   function handleShowSolution(e, message) {
     if (e) {
       e.preventDefault();
@@ -130,170 +183,20 @@ export default function FindWordInContext({
       concatMessage = message;
     }
 
-
-    useEffect(() => {
-        checkTranslations(translatedWords);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [translatedWords]);
-
-    function equalAfterRemovingSpecialCharacters(a, b) {
-        // from: https://stackoverflow.com/a/4328546
-        let first = a.replace(/[^\w\s\']|_/g, "")
-            .replace(/\s+/g, " ");
-        let second = b.replace(/[^\w\s\']|_/g, "")
-            .replace(/\s+/g, " ");
-        return first === second;
-    }
-
-    function checkTranslations(userTranslatedSequences) {
-
-        if (userTranslatedSequences.length === 0) {
-            return;
-        }
-
-        let solutionDiscovered = false;
-
-        let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
-
-        solutionSplitIntoWords.forEach((wordInSolution) => {
-
-            userTranslatedSequences.forEach((userTranslatedSequence) => {
-                let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
-                wordsInUserTranslatedSequence.forEach((translatedWord) => {
-
-
-                    if (equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)) {
-                        solutionDiscovered = true;
-                    }
-                });
-
-            });
-        });
-
-        if (solutionDiscovered) {
-            // Check how many translations were made
-            let translationCount = 0;
-            for (let i = 0; i < messageToAPI.length; i++) {
-                if (messageToAPI[i] === "T") translationCount++;
-            }
-            if (translationCount < 2) {
-                let concatMessage = messageToAPI + "C";
-                handleCorrectAnswer(concatMessage);
-            } else {
-                let concatMessage = messageToAPI + "S";
-                handleShowSolution(undefined, concatMessage);
-            }
-
-        } else {
-            setMessageToAPI(messageToAPI + "T")
-        }
-    }
-
-
-    function inputKeyPress() {
-        if (firstTypeTime === undefined) {
-            setFirstTypeTime(new Date());
-        }
-    }
-
-    function handleShowSolution(e, message) {
-        if (e) {
-            e.preventDefault();
-        }
-        let pressTime = new Date();
-        let duration = exerciseDuration(pressTime);
-        let concatMessage;
-        
-        if (!message) {
-            concatMessage = messageToAPI + "S";
-        } else {
-            concatMessage = message;
-        }
-
-        notifyIncorrectAnswer(bookmarksToStudy[0]);
-        setIsCorrect(true);
-        api.uploadExerciseFinalizedData(
-            concatMessage,
-            EXERCISE_TYPE,
-            duration,
-            bookmarksToStudy[0].id,
-            exerciseSessionId
-        );
-    }
-
-    function handleCorrectAnswer(message) {
-        let duration = exerciseDuration(firstTypeTime);
-        setMessageToAPI(message);
-        correctAnswer(bookmarksToStudy[0]);
-        setIsCorrect(true);
-        api.uploadExerciseFinalizedData(
-            message,
-            EXERCISE_TYPE,
-            duration,
-            bookmarksToStudy[0].id,
-            exerciseSessionId
-        );
-    }
-
-    function handleIncorrectAnswer() {
-        //alert("incorrect answer")
-        setMessageToAPI(messageToAPI + "W");
-        notifyIncorrectAnswer(bookmarksToStudy[0]);
-        setFirstTypeTime();
-    }
-
-    if (!articleInfo) {
-        return <LoadingAnimation/>;
-    }
-
-    return (
-        <s.Exercise className="findWordInContext">
-
-            <div className="headlineWithMoreSpace">
-                {strings.findTheExpressionInContextHeadline}
-            </div>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
-            <div className="contextExample">
-                <TranslatableText
-                    isCorrect={isCorrect}
-                    interactiveText={interactiveText}
-                    translating={true}
-                    pronouncing={false}
-                    translatedWords={translatedWords}
-                    setTranslatedWords={setTranslatedWords}
-                    bookmarkToStudy={bookmarksToStudy[0].from}
-                />
-            </div>
-            {!isCorrect && (
-                <BottomInput
-                    handleCorrectAnswer={handleCorrectAnswer}
-                    handleIncorrectAnswer={handleIncorrectAnswer}
-                    bookmarksToStudy={bookmarksToStudy}
-                    notifyKeyPress={inputKeyPress}
-                    messageToAPI={messageToAPI}
-                    setMessageToAPI={setMessageToAPI}
-                />
-            )}
-
-                <NextNavigation
-                    message={messageToAPI}
-                    api={api}
-                    bookmarksToStudy={bookmarksToStudy}
-                    moveToNextExercise={moveToNextExercise}
-                    reload={reload}
-                    setReload={setReload}
-                    handleShowSolution={handleShowSolution}
-                    toggleShow={toggleShow}
-                    isCorrect={isCorrect}
-                />
-
-        </s.Exercise>
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    setIsCorrect(true);
+    api.uploadExerciseFinalizedData(
+      concatMessage,
+      EXERCISE_TYPE,
+      duration,
+      bookmarksToStudy[0].id,
+      exerciseSessionId,
     );
   }
 
   function handleCorrectAnswer(message) {
     let duration = exerciseDuration(firstTypeTime);
-
+    setMessageToAPI(message);
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
@@ -307,6 +210,7 @@ export default function FindWordInContext({
 
   function handleIncorrectAnswer() {
     //alert("incorrect answer")
+    setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setFirstTypeTime();
   }
@@ -317,13 +221,8 @@ export default function FindWordInContext({
 
   return (
     <s.Exercise className="findWordInContext">
-      {bookmarksToStudy[0].to.includes(" ") ? (
-        <div className="headline">
-          {strings.findTheExpressionInContextHeadline}
-        </div>
-      ) : (
-        <div className="headline">{strings.findTheWordInContextHeadline}</div>
-      )}
+
+      <div className="headlineWithMoreSpace">{strings.findTheWordInContextHeadline}</div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
         <TranslatableText
@@ -346,16 +245,14 @@ export default function FindWordInContext({
           setMessageToAPI={setMessageToAPI}
         />
       )}
-      {isCorrect && (
-        <NextNavigation
-          api={api}
-          bookmarksToStudy={bookmarksToStudy}
-          moveToNextExercise={moveToNextExercise}
-          reload={reload}
-          setReload={setReload}
-        />
-      )}
-      <SolutionFeedbackLinks
+
+      <NextNavigation
+        message={messageToAPI}
+        api={api}
+        bookmarksToStudy={bookmarksToStudy}
+        moveToNextExercise={moveToNextExercise}
+        reload={reload}
+        setReload={setReload}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
