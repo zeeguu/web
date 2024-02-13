@@ -39,7 +39,7 @@ export default function Match({
   ];
 
   const [initialTime] = useState(new Date());
-  const [messageToAPI, setMessageToAPI] = useState("");
+  const [messageToNextNav, setMessageToNextNav] = useState("");
   const [firstPressTime, setFirstPressTime] = useState();
   const [currentBookmarksToStudy, setcurrentBookmarksToStudy] =
     useState(initialBookmarkState);
@@ -49,10 +49,10 @@ export default function Match({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
 
   useEffect(() => {
-    console.log("STARTING ");
     setExerciseType(EXERCISE_TYPE);
     setButtonsToDisable([]);
     setFromButtonOptions(null);
+    setToButtonOptions(null);
     setButtonOptions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -73,7 +73,6 @@ export default function Match({
     for (i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmark = bookmarksCopy[i];
       if (buttonsToDisable.length === 2) {
-        console.log("Updating message!");
         fullMessage = fullMessage + "C";
         setIsCorrect(true);
         break;
@@ -105,7 +104,7 @@ export default function Match({
         }
       }
     }
-    setMessageToAPI(fullMessage);
+    setMessageToNextNav(fullMessage);
   }
 
   function handleShowSolution() {
@@ -116,7 +115,7 @@ export default function Match({
       if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
         notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
         let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
-        setMessageToAPI(messageToAPI + concatMessage);
+        setMessageToNextNav(messageToNextNav + concatMessage);
         api.uploadExerciseFinalizedData(
           concatMessage,
           EXERCISE_TYPE,
@@ -131,7 +130,7 @@ export default function Match({
 
   function handleAnswer(message, id) {
     let pressTime = new Date();
-    setMessageToAPI(message);
+    setMessageToNextNav(message);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
@@ -173,7 +172,7 @@ export default function Match({
         setReload={setReload}
       />
       <NextNavigation
-        message={messageToAPI}
+        message={messageToNextNav}
         api={api}
         bookmarksToStudy={initialBookmarkState}
         moveToNextExercise={moveToNextExercise}
