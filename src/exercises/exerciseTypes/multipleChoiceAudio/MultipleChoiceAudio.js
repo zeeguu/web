@@ -54,8 +54,8 @@ export default function MultipleChoiceAudio({
           bookmarksToStudy[0].context,
           articleInfo,
           api,
-          "TRANSLATE WORDS IN EXERCISE"
-        )
+          "TRANSLATE WORDS IN EXERCISE",
+        ),
       );
       setArticleInfo(articleInfo);
     });
@@ -199,7 +199,7 @@ export default function MultipleChoiceAudio({
           bookmarkToStudy={bookmarksToStudy[0].from}
         />
       </div>
-      
+
       {!isCorrect && (
         <s.CenteredRow>
           {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
@@ -223,7 +223,7 @@ export default function MultipleChoiceAudio({
                   id={option.id}
                   styling={selectedButtonStyle(option)}
                 />
-              )
+              ),
             )
           ) : (
             <></>
@@ -250,7 +250,6 @@ export default function MultipleChoiceAudio({
         <>
           <br></br>
           <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
-
         </>
       )}
       <NextNavigation
