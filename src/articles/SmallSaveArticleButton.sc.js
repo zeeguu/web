@@ -18,7 +18,7 @@ let SaveButton = styled.button`
   }
 `;
 
-let SavedLabel = styled.div`
+let SavedButton = styled.div`
   font-size: small;
   font-weight: bold;
   color: ${lightGrey};
@@ -34,4 +34,4 @@ let SavedLabel = styled.div`
 
 `;
 
-export { SaveButton, SavedLabel };
+export { SaveButton, SavedButton };
