@@ -116,46 +116,6 @@ export default function FindWordInContext({
     }
   }
 
-  function checkTranslations(userTranslatedSequences) {
-    if (userTranslatedSequences.length === 0) {
-      return;
-    }
-
-    let solutionDiscovered = false;
-
-    let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
-
-    solutionSplitIntoWords.forEach((wordInSolution) => {
-      userTranslatedSequences.forEach((userTranslatedSequence) => {
-        let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
-        wordsInUserTranslatedSequence.forEach((translatedWord) => {
-          if (
-            equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)
-          ) {
-            solutionDiscovered = true;
-          }
-        });
-      });
-    });
-
-    if (solutionDiscovered) {
-      // Check how many translations were made
-      let translationCount = 0;
-      for (let i = 0; i < messageToAPI.length; i++) {
-        if (messageToAPI[i] === "T") translationCount++;
-      }
-      if (translationCount < 2) {
-        let concatMessage = messageToAPI + "C";
-        handleCorrectAnswer(concatMessage);
-      } else {
-        let concatMessage = messageToAPI + "S";
-        handleShowSolution(undefined, concatMessage);
-      }
-    } else {
-      setMessageToAPI(messageToAPI + "T");
-    }
-  }
-
   function inputKeyPress() {
     if (firstTypeTime === undefined) {
       setFirstTypeTime(new Date());
