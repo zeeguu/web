@@ -26,8 +26,6 @@ import InstallExtension from "./pages/InstallExtension";
 function App() {
   let userDict = {};
 
-  console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
-  console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
   let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
 
   if (getUserSession()) {
@@ -45,12 +43,14 @@ function App() {
   const [zeeguuSpeech, setZeeguuSpeech] = useState(null);
 
   function setUser(dict) {
-    setZeeguuSpeech(new ZeeguuSpeech(api, dict.learned_language));
     setUserData(dict);
+    // If the dictionary is not empty (the user data was set)
+    // Create the ZeeguuSpeech object
+    if (Object.keys(dict).length !== 0)
+      setZeeguuSpeech(new ZeeguuSpeech(api, dict.learned_language));
   }
 
   useEffect(() => {
-    console.log("Running callback!");
     setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
   }, []);
 
@@ -69,9 +69,9 @@ function App() {
     }
 
     //logs out user on zeeguu.org if they log out of the extension
+
     const interval = setInterval(() => {
       if (!getUserSession()) {
-        console.log("Unsetting user!");
         setUser({});
       }
     }, 1000);
