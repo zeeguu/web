@@ -10,29 +10,25 @@ const ZeeguuSpeech = class {
     this.pronunciationPlayer.autoplay = true;
   }
 
-  playFromAPI(word) {
-    return new Promise(function (resolve, reject) {
-      this.api.getLinkToSpeechFile(word, this.language, (linkToMp3) => {
-        this.pronunciationPlayer.src = linkToMp3;
-        // TODO: remove this next line after ensuring that it's not needed; we've already initialized
-        // the attribute in the constructor
-        this.pronunciationPlayer.onerror = reject;
-        this.pronunciationPlayer.onended = resolve;
-      });
-    });
-  }
-
   async speakOut(word, setIsSpeaking) {
-    function handleSetIsSpeakingButton(setIsSpeaking, isPlayingSound) {
+    function animateSpeechButton(setIsSpeaking, isPlayingSound) {
       if (setIsSpeaking !== undefined) {
         setIsSpeaking(isPlayingSound);
         SessionStorage.setAudioBeingPlayed(isPlayingSound);
       }
     }
+    animateSpeechButton(setIsSpeaking, true);
+    await this.api
+      .fetchLinkToSpeechMp3(word, this.language)
+      .then((linkToMp3) => {
+        this.pronunciationPlayer.src = linkToMp3;
+      })
+      .catch(() => {
+        // in case anything goes wrong here... we should still deactivate the animation
+        animateSpeechButton(setIsSpeaking, false);
+      });
 
-    handleSetIsSpeakingButton(setIsSpeaking, true);
-    await this.playFromAPI(word);
-    handleSetIsSpeakingButton(setIsSpeaking, false);
+    animateSpeechButton(setIsSpeaking, false);
   }
 
   playFullArticle(articleInfo, api, player) {

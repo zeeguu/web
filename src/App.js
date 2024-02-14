@@ -14,7 +14,7 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
 import NoSidebarRouter from "./NoSidebarRouter.js";
-import ZeeguuSpeech from "./speech/ZeeguuSpeech";
+import ZeeguuSpeech from "./speech/APIBasedSpeech";
 
 import {
   getUserSession,
@@ -51,7 +51,6 @@ function App() {
   }
 
   useEffect(() => {
-    // console.log("Running callback!");
     setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
   }, []);
 
@@ -73,8 +72,6 @@ function App() {
 
     const interval = setInterval(() => {
       if (!getUserSession()) {
-        // Avoid logging on production.
-        // console.log("Unsetting user!");
         setUser({});
       }
     }, 1000);
@@ -90,7 +87,7 @@ function App() {
     api.getUserPreferences((preferences) => {
       SessionStorage.setAudioExercisesEnabled(
         preferences["audio_exercises"] === undefined ||
-          preferences["audio_exercises"] === "true"
+          preferences["audio_exercises"] === "true",
       );
     });
 
