@@ -1,9 +1,8 @@
 import * as s from "./SmallSaveArticleButton.sc.js";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
-import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
-import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
+import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import { useState } from "react";
 
 export default function SmallSaveArticleButton({
@@ -12,7 +11,6 @@ export default function SmallSaveArticleButton({
   isArticleSaved,
   setIsArticleSaved,
 }) {
-  
   const [isHoveringSave, setIsHoveringSave] = useState(false);
 
   function saveArticle() {
@@ -25,8 +23,6 @@ export default function SmallSaveArticleButton({
   }
   function removeArticle() {
     api.removePersonalCopy(article.id, (data) => {
-      console.log("Deleted!");
-      console.log(data);
       if (data === "OK") {
         setIsArticleSaved(false);
         toast("Article removed from your Saves!");
@@ -37,24 +33,34 @@ export default function SmallSaveArticleButton({
   return (
     <>
       {isArticleSaved ? (
-          <s.SavedButton onClick={removeArticle}
+        <s.SavedButton
+          onClick={removeArticle}
           onMouseEnter={() => setIsHoveringSave(true)}
-          onMouseLeave={() => setIsHoveringSave(false)}>
-            {isHoveringSave ? <BookmarkAddOutlinedIcon fontSize="small"/> : <BookmarkAddIcon fontSize="small"/>}
-              Remove
-          </s.SavedButton>
+          onMouseLeave={() => setIsHoveringSave(false)}
+        >
+          {isHoveringSave ? (
+            <BookmarkAddOutlinedIcon fontSize="small" />
+          ) : (
+            <BookmarkAddIcon fontSize="small" />
+          )}
+          Remove
+        </s.SavedButton>
       ) : (
         <div>
-          <s.SaveButton onClick={saveArticle} 
-          onMouseEnter={() => setIsHoveringSave(true)}
-          onMouseLeave={() => setIsHoveringSave(false)}>
-            {isHoveringSave ? <BookmarkAddIcon fontSize="small"/> : <BookmarkAddOutlinedIcon fontSize="small"/>}
+          <s.SaveButton
+            onClick={saveArticle}
+            onMouseEnter={() => setIsHoveringSave(true)}
+            onMouseLeave={() => setIsHoveringSave(false)}
+          >
+            {isHoveringSave ? (
+              <BookmarkAddIcon fontSize="small" />
+            ) : (
+              <BookmarkAddOutlinedIcon fontSize="small" />
+            )}
             Add to Saves
           </s.SaveButton>
         </div>
       )}
-
-
     </>
   );
 }
