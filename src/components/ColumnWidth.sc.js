@@ -23,15 +23,15 @@ const CenteredContent = styled.div`
 `;
 
 const ToolTipsContainer = styled.div`
-display: flex;
-flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-.tooltiptext {
-  visibility: hidden;
-  color: #999999 !important;
-  text-align: center;
-  margin-top: -2.4em;
-  font-size:small;
+  .tooltiptext {
+    visibility: hidden;
+    color: #999999 !important;
+    text-align: center;
+    margin-top: -2.4em;
+    font-size: small;
   }
 
   :hover .tooltiptext {
@@ -39,13 +39,12 @@ flex-direction: column;
   }
 `;
 
-
 const ContentOnRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   margin: 1em;
-  button{
+  button {
     margin: 0.2em;
   }
 `;
