@@ -33,7 +33,7 @@ export default function SetupForUnsupportedBrowsers({
     handleCloseAndSaveVisibilityPreferences();
   }
 
-  function renderHeaderForMobileOrUnsupportedDesktop() {
+  function renderHeaderForUnsupportedBrowsers() {
     let headerContentForMobile = (
       <h1>It looks like you are using&nbsp;a&nbsp;mobile device</h1>
     );
@@ -57,7 +57,7 @@ export default function SetupForUnsupportedBrowsers({
     }
   }
 
-  function renderBodyForMobileOrUnsupportedDesktop() {
+  function renderBodyForUnsupportedBrowsers() {
     let bodyContentForMobile = (
       <p>
         If you want to read articles with the help of Zeeguu on your mobile
@@ -129,8 +129,8 @@ export default function SetupForUnsupportedBrowsers({
 
   return (
     <>
-      <s.Header>{renderHeaderForMobileOrUnsupportedDesktop()}</s.Header>
-      <s.Body>{renderBodyForMobileOrUnsupportedDesktop()}</s.Body>
+      <s.Header>{renderHeaderForUnsupportedBrowsers()}</s.Header>
+      <s.Body>{renderBodyForUnsupportedBrowsers()}</s.Body>
       <s.CloseButton role="button" onClick={handleClose}>
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
