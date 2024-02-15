@@ -1,10 +1,10 @@
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
-import * as s from "../components/RedirectionNotificationModal.sc";
+import * as s from "./RedirectionNotificationModal.sc";
 import {
   runningInFirefoxDesktop,
   runningInChromeDesktop,
-} from "../utils/misc/browserDetection";
+} from "../../utils/misc/browserDetection";
 import RedirectionNotificationForSupportedBrowsers from "./RedirectionNotificationForSupportedBrowsers";
 import RedirectionNotificationForUnsupportedBrowsers from "./RedirectionNotificationForUnsupportedBrowsers";
 

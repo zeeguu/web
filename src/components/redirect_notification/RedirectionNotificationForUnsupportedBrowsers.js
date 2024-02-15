@@ -5,7 +5,7 @@ import {
   isMobile,
   runningInFirefoxDesktop,
   runningInChromeDesktop,
-} from "../utils/misc/browserDetection";
+} from "../../utils/misc/browserDetection";
 
 export default function RedirectionNotificationForUnsupportedBrowsers({
   api,

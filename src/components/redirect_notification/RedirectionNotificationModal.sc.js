@@ -5,9 +5,9 @@ import {
   ModalBodyGlobal,
   ModalFooterGlobal,
   ModalStrongTextWrapperGlobal,
-} from "./ModalGlobalStyling.sc";
-import { zeeguuDarkOrange, zeeguuOrange } from "./colors";
-import { OrangeRoundButton } from "./allButtons.sc";
+} from "../ModalGlobalStyling.sc";
+import { zeeguuDarkOrange, zeeguuOrange } from "../colors";
+import { OrangeRoundButton } from "../allButtons.sc";
 import styled from "styled-components";
 
 const ModalWrapper = styled(ModalWrapperGlobal)``;
