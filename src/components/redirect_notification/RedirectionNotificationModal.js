@@ -5,8 +5,8 @@ import {
   runningInFirefoxDesktop,
   runningInChromeDesktop,
 } from "../../utils/misc/browserDetection";
-import RedirectionNotificationForSupportedBrowsers from "./RedirectionNotificationForSupportedBrowsers";
-import RedirectionNotificationForUnsupportedBrowsers from "./RedirectionNotificationForUnsupportedBrowsers";
+import SetupForSupportedBrowsers from "./SetupForSupportedBrowsers";
+import SetupForUnsupportedBrowsers from "./SetupForUnsupportedBrowsers";
 
 //This modal is used in the ArticlePreview component
 
@@ -44,8 +44,8 @@ export default function RedirectionNotificationModal({
 
   //render modal based on the browser and device type
   function renderNotificatioModal() {
-    let redirectionNotificationForSupportedBrowsers = (
-      <RedirectionNotificationForSupportedBrowsers
+    let supportedBrowsers = (
+      <SetupForSupportedBrowsers
         toggleRedirectCheckbox={toggleRedirectCheckbox}
         redirectCheckbox={redirectCheckbox}
         handleCloseAndSaveVisibilityPreferences={
@@ -56,8 +56,8 @@ export default function RedirectionNotificationModal({
       />
     );
 
-    let redirectionNotificationForUnsupportedBrowsers = (
-      <RedirectionNotificationForUnsupportedBrowsers
+    let unsupportedBrowsers = (
+      <SetupForUnsupportedBrowsers
         toggleRedirectCheckbox={toggleRedirectCheckbox}
         redirectCheckbox={redirectCheckbox}
         handleModalVisibilityPreferences={handleModalVisibilityPreferences}
@@ -73,9 +73,9 @@ export default function RedirectionNotificationModal({
     );
 
     if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
-      return redirectionNotificationForSupportedBrowsers;
+      return supportedBrowsers;
     } else {
-      return redirectionNotificationForUnsupportedBrowsers;
+      return unsupportedBrowsers;
     }
   }
 

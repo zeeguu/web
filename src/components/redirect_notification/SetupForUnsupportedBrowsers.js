@@ -7,7 +7,7 @@ import {
   runningInChromeDesktop,
 } from "../../utils/misc/browserDetection";
 
-export default function RedirectionNotificationForUnsupportedBrowsers({
+export default function SetupForUnsupportedBrowsers({
   api,
   article,
   setIsArticleSaved,
