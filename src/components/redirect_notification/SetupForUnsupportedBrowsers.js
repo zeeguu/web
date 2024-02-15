@@ -13,7 +13,7 @@ export default function SetupForUnsupportedBrowsers({
   setIsArticleSaved,
   toggleRedirectCheckbox,
   redirectCheckbox,
-  handleCloseAndSaveVisibilityPreferences,
+  handleSaveVisibilityPreferences,
   handleClose,
 }) {
   function handleSaveArticle() {
@@ -26,11 +26,11 @@ export default function SetupForUnsupportedBrowsers({
 
   function handleSaveArticleAndCloseModal() {
     handleSaveArticle();
-    handleCloseAndSaveVisibilityPreferences();
+    handleSaveVisibilityPreferences();
   }
 
   function handleGoToArticleAndCloseModal() {
-    handleCloseAndSaveVisibilityPreferences();
+    handleSaveVisibilityPreferences();
   }
 
   function renderHeaderForUnsupportedBrowsers() {

@@ -31,7 +31,8 @@ export default function RedirectionNotificationModal({
       : setDoNotShowRedirectionModal_UserPreference(false);
   }
 
-  function handleCloseAndSaveVisibilityPreferences() {
+   //when user enters article or saves it
+  function handleSaveVisibilityPreferences() {
     handleModalVisibilityPreferences();
     handleCloseRedirectionModal();
   }
@@ -48,8 +49,8 @@ export default function RedirectionNotificationModal({
       <SetupForSupportedBrowsers
         toggleRedirectCheckbox={toggleRedirectCheckbox}
         redirectCheckbox={redirectCheckbox}
-        handleCloseAndSaveVisibilityPreferences={
-          handleCloseAndSaveVisibilityPreferences
+        handleSaveVisibilityPreferences={
+          handleSaveVisibilityPreferences
         }
         handleClose={handleClose}
         article={article}
@@ -61,8 +62,8 @@ export default function RedirectionNotificationModal({
         toggleRedirectCheckbox={toggleRedirectCheckbox}
         redirectCheckbox={redirectCheckbox}
         handleModalVisibilityPreferences={handleModalVisibilityPreferences}
-        handleCloseAndSaveVisibilityPreferences={
-          handleCloseAndSaveVisibilityPreferences
+        handleSaveVisibilityPreferences={
+          handleSaveVisibilityPreferences
         }
         handleClose={handleClose}
         handleCloseRedirectionModal={handleCloseRedirectionModal}

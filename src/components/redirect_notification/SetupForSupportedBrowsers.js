@@ -5,7 +5,7 @@ export default function SetupForSupportedBrowsers({
   article,
   toggleRedirectCheckbox,
   redirectCheckbox,
-  handleCloseAndSaveVisibilityPreferences,
+  handleSaveVisibilityPreferences,
   handleClose,
 }) {
   return (
@@ -70,7 +70,7 @@ export default function SetupForSupportedBrowsers({
           <s.GoToArticleButton
             role="button"
             // function below saves visibility preferences of the modal and closes it
-            onClick={handleCloseAndSaveVisibilityPreferences}
+            onClick={handleSaveVisibilityPreferences}
           >
             Enter the article's website
           </s.GoToArticleButton>
