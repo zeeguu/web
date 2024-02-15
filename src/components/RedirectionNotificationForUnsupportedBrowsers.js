@@ -14,7 +14,7 @@ export default function RedirectionNotificationForUnsupportedBrowsers({
   toggleRedirectCheckbox,
   redirectCheckbox,
   handleCloseAndSaveVisibilityPreferences,
-  handleCloseWithoutSavingVisibilityPreferences,
+  handleClose,
 }) {
   function handleSaveArticle() {
     api.makePersonalCopy(article.id, (data) => {
@@ -131,10 +131,7 @@ export default function RedirectionNotificationForUnsupportedBrowsers({
     <>
       <s.Header>{renderHeaderForMobileOrUnsupportedDesktop()}</s.Header>
       <s.Body>{renderBodyForMobileOrUnsupportedDesktop()}</s.Body>
-      <s.CloseButton
-        role="button"
-        onClick={handleCloseWithoutSavingVisibilityPreferences}
-      >
+      <s.CloseButton role="button" onClick={handleClose}>
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
       <s.Footer>

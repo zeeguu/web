@@ -6,7 +6,7 @@ export default function RedirectionNotificationForSupportedBrowsers({
   toggleRedirectCheckbox,
   redirectCheckbox,
   handleCloseAndSaveVisibilityPreferences,
-  handleCloseWithoutSavingVisibilityPreferences,
+  handleClose,
 }) {
   return (
     <>
@@ -75,10 +75,7 @@ export default function RedirectionNotificationForSupportedBrowsers({
           </s.GoToArticleButton>
         </a>
       </s.Footer>
-      <s.CloseButton
-        role="button"
-        onClick={handleCloseWithoutSavingVisibilityPreferences}
-      >
+      <s.CloseButton role="button" onClick={handleClose}>
         <CloseRoundedIcon fontSize="medium" />
       </s.CloseButton>
     </>

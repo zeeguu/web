@@ -24,6 +24,7 @@ export default function RedirectionNotificationModal({
     setRedirectCheckbox(!redirectCheckbox);
   }
 
+  //this state is saved to local storage
   function handleModalVisibilityPreferences() {
     redirectCheckbox === true
       ? setDoNotShowRedirectionModal_UserPreference(true)
@@ -36,9 +37,9 @@ export default function RedirectionNotificationModal({
   }
 
   //when user exits modal by clicking "X"
-  function handleCloseWithoutSavingVisibilityPreferences() {
+  function handleClose() {
     handleCloseRedirectionModal();
-    setRedirectCheckbox(false); //to avoid prechecked checkboxes
+    setRedirectCheckbox(false); //clear redirectCheckbox state to avoid it prechecked when user re-enters the modal
   }
 
   //render modal based on the browser and device type
@@ -50,9 +51,7 @@ export default function RedirectionNotificationModal({
         handleCloseAndSaveVisibilityPreferences={
           handleCloseAndSaveVisibilityPreferences
         }
-        handleCloseWithoutSavingVisibilityPreferences={
-          handleCloseWithoutSavingVisibilityPreferences
-        }
+        handleClose={handleClose}
         article={article}
       />
     );
@@ -65,9 +64,7 @@ export default function RedirectionNotificationModal({
         handleCloseAndSaveVisibilityPreferences={
           handleCloseAndSaveVisibilityPreferences
         }
-        handleCloseWithoutSavingVisibilityPreferences={
-          handleCloseWithoutSavingVisibilityPreferences
-        }
+        handleClose={handleClose}
         handleCloseRedirectionModal={handleCloseRedirectionModal}
         article={article}
         api={api}
