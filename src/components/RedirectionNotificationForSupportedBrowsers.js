@@ -3,8 +3,8 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export default function RedirectionNotificationForSupportedBrowsers({
   article,
-  toggleRedirectionCheckboxSelection,
-  selectedDoNotShowRedirectionModal_Checkbox,
+  toggleRedirectCheckbox,
+  redirectCheckbox,
   handleCloseAndSaveVisibilityPreferences,
   handleCloseWithoutSavingVisibilityPreferences,
 }) {
@@ -55,8 +55,8 @@ export default function RedirectionNotificationForSupportedBrowsers({
       <s.Footer>
         <s.CheckboxWrapper>
           <input
-            onChange={toggleRedirectionCheckboxSelection}
-            checked={selectedDoNotShowRedirectionModal_Checkbox}
+            onChange={toggleRedirectCheckbox}
+            checked={redirectCheckbox}
             type="checkbox"
             id="checkbox"
             name=""

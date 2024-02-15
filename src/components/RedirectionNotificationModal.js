@@ -18,19 +18,14 @@ export default function RedirectionNotificationModal({
   setDoNotShowRedirectionModal_UserPreference,
   setIsArticleSaved, // related to the article's state
 }) {
-  const [
-    selectedDoNotShowRedirectionModal_Checkbox,
-    setSelectedDoNotShowRedirectionModal_Checkbox,
-  ] = useState(false);
+  const [redirectCheckbox, setRedirectCheckbox] = useState(false);
 
-  function toggleRedirectionCheckboxSelection() {
-    setSelectedDoNotShowRedirectionModal_Checkbox(
-      !selectedDoNotShowRedirectionModal_Checkbox
-    );
+  function toggleRedirectCheckbox() {
+    setRedirectCheckbox(!redirectCheckbox);
   }
 
   function handleModalVisibilityPreferences() {
-    selectedDoNotShowRedirectionModal_Checkbox === true
+    redirectCheckbox === true
       ? setDoNotShowRedirectionModal_UserPreference(true)
       : setDoNotShowRedirectionModal_UserPreference(false);
   }
@@ -43,17 +38,15 @@ export default function RedirectionNotificationModal({
   //when user exits modal by clicking "X"
   function handleCloseWithoutSavingVisibilityPreferences() {
     handleCloseRedirectionModal();
-    setSelectedDoNotShowRedirectionModal_Checkbox(false); //to avoid prechecked checkboxes
+    setRedirectCheckbox(false); //to avoid prechecked checkboxes
   }
 
   //render modal based on the browser and device type
   function renderNotificatioModal() {
     let redirectionNotificationForSupportedBrowsers = (
       <RedirectionNotificationForSupportedBrowsers
-        toggleRedirectionCheckboxSelection={toggleRedirectionCheckboxSelection}
-        selectedDoNotShowRedirectionModal_Checkbox={
-          selectedDoNotShowRedirectionModal_Checkbox
-        }
+        toggleRedirectCheckbox={toggleRedirectCheckbox}
+        redirectCheckbox={redirectCheckbox}
         handleCloseAndSaveVisibilityPreferences={
           handleCloseAndSaveVisibilityPreferences
         }
@@ -66,10 +59,8 @@ export default function RedirectionNotificationModal({
 
     let redirectionNotificationForUnsupportedBrowsers = (
       <RedirectionNotificationForUnsupportedBrowsers
-        toggleRedirectionCheckboxSelection={toggleRedirectionCheckboxSelection}
-        selectedDoNotShowRedirectionModal_Checkbox={
-          selectedDoNotShowRedirectionModal_Checkbox
-        }
+        toggleRedirectCheckbox={toggleRedirectCheckbox}
+        redirectCheckbox={redirectCheckbox}
         handleModalVisibilityPreferences={handleModalVisibilityPreferences}
         handleCloseAndSaveVisibilityPreferences={
           handleCloseAndSaveVisibilityPreferences

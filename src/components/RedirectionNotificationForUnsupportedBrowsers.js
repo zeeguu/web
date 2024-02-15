@@ -11,8 +11,8 @@ export default function RedirectionNotificationForUnsupportedBrowsers({
   api,
   article,
   setIsArticleSaved,
-  toggleRedirectionCheckboxSelection,
-  selectedDoNotShowRedirectionModal_Checkbox,
+  toggleRedirectCheckbox,
+  redirectCheckbox,
   handleCloseAndSaveVisibilityPreferences,
   handleCloseWithoutSavingVisibilityPreferences,
 }) {
@@ -80,7 +80,10 @@ export default function RedirectionNotificationForUnsupportedBrowsers({
             rel="noreferrer"
             href="https://www.google.com/chrome/?brand=WHAR&gad_source=1&gclid=EAIaIQobChMI3Z3blfOghAMVD6doCR33SgG1EAAYASAAEgJ6TvD_BwE&gclsrc=aw.ds"
           >
-            <s.ModalStrongTextWrapper> Google&nbsp;Chrome</s.ModalStrongTextWrapper>
+            <s.ModalStrongTextWrapper>
+              {" "}
+              Google&nbsp;Chrome
+            </s.ModalStrongTextWrapper>
           </s.ExternalLink>
           ,{" "}
           <s.ExternalLink
@@ -88,7 +91,9 @@ export default function RedirectionNotificationForUnsupportedBrowsers({
             rel="noreferrer"
             href="https://www.mozilla.org/en-US/firefox/new/"
           >
-            <s.ModalStrongTextWrapper>Mozilla&nbsp;Firefox</s.ModalStrongTextWrapper>
+            <s.ModalStrongTextWrapper>
+              Mozilla&nbsp;Firefox
+            </s.ModalStrongTextWrapper>
           </s.ExternalLink>
           , or{" "}
           <s.ExternalLink
@@ -96,7 +101,9 @@ export default function RedirectionNotificationForUnsupportedBrowsers({
             rel="noreferrer"
             href="https://www.microsoft.com/en-us/edge/download?form=MA13FJ"
           >
-            <s.ModalStrongTextWrapper>Microsoft&nbsp;Edge</s.ModalStrongTextWrapper>
+            <s.ModalStrongTextWrapper>
+              Microsoft&nbsp;Edge
+            </s.ModalStrongTextWrapper>
           </s.ExternalLink>
           .{" "}
         </p>
@@ -133,8 +140,8 @@ export default function RedirectionNotificationForUnsupportedBrowsers({
       <s.Footer>
         <s.CheckboxWrapper>
           <input
-            onChange={toggleRedirectionCheckboxSelection}
-            checked={selectedDoNotShowRedirectionModal_Checkbox}
+            onChange={toggleRedirectCheckbox}
+            checked={redirectCheckbox}
             type="checkbox"
             id="checkbox"
             name=""
