@@ -45,7 +45,7 @@ export default function RedirectionNotificationModal({
 
   //render modal based on the browser and device type
   function renderNotificatioModal() {
-    let supportedBrowsers = (
+    let setupForSupportedBrowsers = (
       <SetupForSupportedBrowsers
         toggleRedirectCheckbox={toggleRedirectCheckbox}
         redirectCheckbox={redirectCheckbox}
@@ -55,7 +55,7 @@ export default function RedirectionNotificationModal({
       />
     );
 
-    let unsupportedBrowsers = (
+    let setupForUnsupportedBrowsers = (
       <SetupForUnsupportedBrowsers
         toggleRedirectCheckbox={toggleRedirectCheckbox}
         redirectCheckbox={redirectCheckbox}
@@ -70,9 +70,9 @@ export default function RedirectionNotificationModal({
     );
 
     if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
-      return supportedBrowsers;
+      return setupForSupportedBrowsers;
     } else {
-      return unsupportedBrowsers;
+      return setupForUnsupportedBrowsers;
     }
   }
 
