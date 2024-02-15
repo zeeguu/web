@@ -64,11 +64,12 @@ export default function SetupForSupportedBrowsers({
           ></input>{" "}
           <label htmlFor="checkbox">Don't show this message</label>
         </s.CheckboxWrapper>
+        {/* Clicking the GoToArticleButton link-button sends the reader
+                to the url of the article */}
         <a target="_blank" rel="noreferrer" href={article.url}>
-          {/* Clicking the GoToArticleButton button sends the reader
-                to the article, saves visibility preferences of the modal and closes it */}
           <s.GoToArticleButton
             role="button"
+            // function below saves visibility preferences of the modal and closes it
             onClick={handleCloseAndSaveVisibilityPreferences}
           >
             Enter the article's website
