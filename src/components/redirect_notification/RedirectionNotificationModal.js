@@ -44,7 +44,7 @@ export default function RedirectionNotificationModal({
   }
 
   //render modal based on the browser and device type
-  function renderNotificatioModal() {
+  function renderNotificationModal() {
     let setupForSupportedBrowsers = (
       <SetupForSupportedBrowsers
         toggleRedirectCheckbox={toggleRedirectCheckbox}
@@ -78,7 +78,7 @@ export default function RedirectionNotificationModal({
 
   return (
     <Modal open={open} onClose={handleCloseRedirectionModal}>
-      <s.ModalWrapper>{renderNotificatioModal()}</s.ModalWrapper>
+      <s.ModalWrapper>{renderNotificationModal()}</s.ModalWrapper>
     </Modal>
   );
 }
