@@ -34,6 +34,11 @@ export default function NextNavigation({
   const correctMessage = useState(random(correctStrings));
   const solutionMessage = useState(random(solutionStrings));
   const [imgToDisplay, setImgToDisplay] = useState(null);
+  const imgSrc = [
+    "/static/icons/zeeguu-icon-correct.png",
+    "/static/icons/zeeguu-icon-solution.png",
+    "/static/icons/zeeguu-icon-wrong.png",
+  ];
 
   function handleImgToDisplay(isCorrect, isSolution) {
     if (isCorrect) {
@@ -66,12 +71,13 @@ export default function NextNavigation({
     let isSolution = message.includes("S");
     setIsConsideredCorrect(isCorrect);
     handleImgToDisplay(isCorrect, isSolution);
-
-
   }, [isCorrect]);
 
   return (
     <>
+      {imgSrc.map((e) => (
+        <img src={e} style={{ display: "none" }} />
+      ))}
       {isCorrect ? (
         <div className="next-nav-feedback">
           {imgToDisplay}
