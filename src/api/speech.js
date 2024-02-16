@@ -1,29 +1,21 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.prototype.getLinkToDanishSpeech = function (
+Zeeguu_API.prototype.fetchLinkToSpeechMp3 = async function (
   textToPronounce,
-  callback
+  language_code,
 ) {
-  console.log("get link to danish speech...");
-
-  this._post(
+  let linkToMp3 = await this._post(
     `text_to_speech`,
-    `language_id=da&text=${textToPronounce}`,
-    (linkToMp3) => {
-      let final_link = this.baseAPIurl + linkToMp3;
-      console.log("got link to danish speech: " + final_link);
-      callback(final_link);
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
+    `language_id=${language_code}&text=${textToPronounce}`,
+  ).then((response) => response.text());
+
+  return this.baseAPIurl + linkToMp3;
 };
 
 Zeeguu_API.prototype.getLinkToFullArticleReadout = function (
   articleInfo,
   article_id,
-  callback
+  callback,
 ) {
   this._post(
     `mp3_of_full_article`,
@@ -35,6 +27,6 @@ Zeeguu_API.prototype.getLinkToFullArticleReadout = function (
     },
     (error) => {
       console.log(error);
-    }
+    },
   );
 };

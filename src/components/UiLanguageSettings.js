@@ -24,8 +24,10 @@ export default function UiLanguageSettings({ uiLanguage, setUiLanguage }) {
   return (
     <div>
       {uiLanguage &&
-        uiLanguages.map((lang) => (
-          <s.Container htmlFor={lang.name}>
+        uiLanguages.map((lang, index) => (
+          <s.Container 
+            key={index}
+            htmlFor={lang.name}>
             <s.Icon
               src={
                 uiLanguage.name === lang.name
