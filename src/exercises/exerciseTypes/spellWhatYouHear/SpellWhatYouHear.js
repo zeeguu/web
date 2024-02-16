@@ -41,7 +41,6 @@ export default function SpellWhatYouHear({
     await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
   }
 
-  // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
@@ -60,7 +59,11 @@ export default function SpellWhatYouHear({
   }, []);
 
   useEffect(() => {
-    handleSpeak();
+    // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
+    // Changed timeout to be slightly shorter.
+    setTimeout(() => {
+      handleSpeak();
+    }, 300);
   }, [articleInfo]);
 
   function inputKeyPress() {
