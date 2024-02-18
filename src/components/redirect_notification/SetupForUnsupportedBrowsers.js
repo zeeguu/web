@@ -3,8 +3,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import {
   isMobile,
-  runningInFirefoxDesktop,
-  runningInChromeDesktop,
+  isSupportedBrowser,
 } from "../../utils/misc/browserDetection";
 
 export default function SetupForUnsupportedBrowsers({
@@ -52,7 +51,7 @@ export default function SetupForUnsupportedBrowsers({
 
     if (isMobile()) {
       return headerContentForMobile;
-    } else if (!runningInFirefoxDesktop() && !runningInChromeDesktop()) {
+    } else if (!isSupportedBrowser()) {
       return headerContentForUnsupportedDesktop;
     }
   }
@@ -122,7 +121,7 @@ export default function SetupForUnsupportedBrowsers({
 
     if (isMobile()) {
       return bodyContentForMobile;
-    } else if (!runningInFirefoxDesktop() && !runningInChromeDesktop()) {
+    } else if (!isSupportedBrowser()) {
       return bodyContentForUnsupportedDesktop;
     }
   }

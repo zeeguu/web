@@ -1,10 +1,7 @@
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import * as s from "./RedirectionNotificationModal.sc";
-import {
-  runningInFirefoxDesktop,
-  runningInChromeDesktop,
-} from "../../utils/misc/browserDetection";
+import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 import SetupForSupportedBrowsers from "./SetupForSupportedBrowsers";
 import SetupForUnsupportedBrowsers from "./SetupForUnsupportedBrowsers";
 
@@ -69,7 +66,7 @@ export default function RedirectionNotificationModal({
       />
     );
 
-    if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
+    if (isSupportedBrowser()) {
       return setupForSupportedBrowsers;
     } else {
       return setupForUnsupportedBrowsers;
