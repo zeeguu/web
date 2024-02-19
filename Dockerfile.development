@@ -1,0 +1,38 @@
+FROM node
+
+RUN apt-get update
+RUN apt-get upgrade -y
+
+# Install a Zip archive
+RUN apt-get -y install zip
+
+# Git
+# ---
+# required by github dependencies in requirements.txt
+RUN apt-get -y install git
+
+# npm
+# ---
+# required to build the react scrips and extension
+# https://github.com/nodejs/help/issues/1877
+# RUN apt-get -y install nodejs
+# RUN apt-get -y install npm --fix-missing
+
+# Zeeguu-extension
+# ----------
+# Declare that this will be mounted from a volume
+# We can use this to ensure that the all changes are
+# reflected in the Host / Container
+VOLUME /Zeeguu-extension
+
+# Make the extension folder
+RUN mkdir /Zeeguu-extension
+
+# Install requirements and setup
+WORKDIR /Zeeguu-extension
+COPY . /Zeeguu-extension
+
+RUN npm install
+# Install the Web dependencies (since the repository is cloned)
+# We don't need to create the link
+RUN (cd src/zeeguu-react/ && npm install)

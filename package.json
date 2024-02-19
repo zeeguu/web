@@ -24,6 +24,9 @@
     "pubFirefox": "(cd build && zip -r ../build.zip *) && open https://addons.mozilla.org/en-US/firefox/",
     "pub-ci": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && cp ./public/manifest.chrome.json ./build/manifest.json && npm-run-all build:* && zip -r build.zip build",
     "pub-ci-firefox": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm run buildFirefox && zip -r build.zip build",
+    "zip-build": "(cd build && zip -r ../build.zip *)",
+    "buildZipChrome": "npm run build && npm run zip-build",
+    "buildZipFirefox": "npm run buildFirefox && npm run zip-build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -45,7 +48,5 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-
-  }
+  "devDependencies": {}
 }
