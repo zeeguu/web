@@ -34,7 +34,7 @@ import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 
 import { SpeechContext } from "../../zeeguu-react/src/exercises/SpeechContext";
-import ZeeguuSpeech from "../../zeeguu-react/src/speech/ZeeguuSpeech";
+import ZeeguuSpeech from "../../zeeguu-react/src/speech/APIBasedSpeech";
 
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
