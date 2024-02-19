@@ -7,7 +7,7 @@ export function LanguageSelector(props) {
   const [languages, setLanguages] = useState([]);
   useEffect(() => {
     props.api.getSystemLanguages((languages) =>
-      setLanguages(languages.learnable_languages)
+      setLanguages(languages.learnable_languages),
     );
     //eslint-disable-next-line
   }, []);
@@ -15,6 +15,7 @@ export function LanguageSelector(props) {
   return (
     <Fragment>
       <s.LabeledInputFields>
+        // https://github.com/reach/reach-ui/issues/646
         <div className="input-container">
           <label htmlFor="language_code"></label>
           {props.children}
