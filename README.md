@@ -1,4 +1,4 @@
-# Getting Started with The Zeeguu Reader
+# Development Notes
 
 # 1. ⚠️ Clone `--recursive`
 
