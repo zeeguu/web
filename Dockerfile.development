@@ -3,34 +3,34 @@ FROM node
 RUN apt-get update
 RUN apt-get upgrade -y
 
-# Install the zip package
+# zip
+# Required to create compressed extension bundles
 RUN apt-get -y install zip
 
-# Git
-# ---
-# required by github dependencies in requirements.txt
+# git
+# Required by GitHub dependencies in requirements.txt
 RUN apt-get -y install git
 
-# npm
+# npm & Node
 # ---
 # required to build the react scrips and extension
 # https://github.com/nodejs/help/issues/1877
 # RUN apt-get -y install nodejs
 # RUN apt-get -y install npm --fix-missing
 
-# Zeeguu-extension
+# zeeguu-extension
 # ----------
 # Declare that this will be mounted from a volume
 # We can use this to ensure that the all changes are
 # reflected in the Host / Container
-VOLUME /Zeeguu-extension
+VOLUME /zeeguu-extension
 
 # Make the extension folder
-RUN mkdir /Zeeguu-extension
+RUN mkdir /zeeguu-extension
 
 # Install requirements and setup
-WORKDIR /Zeeguu-extension
-COPY . /Zeeguu-extension
+WORKDIR /zeeguu-extension
+COPY . /zeeguu-extension
 
 RUN npm install
 # Install the Web dependencies (since the repository is cloned)
