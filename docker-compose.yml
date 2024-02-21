@@ -6,16 +6,16 @@ services:
     stdin_open: true # docker run -i
     entrypoint: "bash"
     volumes:
-      - .:/Zeeguu-extension
+      - .:/zeeguu-extension
   
   build_chrome:
     image: zeeguu_extension
     entrypoint: "npm run buildZipChrome"
     volumes:
-      - .:/Zeeguu-extension
+      - .:/zeeguu-extension
   
   build_firefox:
     image: zeeguu_extension
     entrypoint: "npm run buildZipFirefox"
     volumes:
-      - .:/Zeeguu-extension
+      - .:/zeeguu-extension
