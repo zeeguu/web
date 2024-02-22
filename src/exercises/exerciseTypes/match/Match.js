@@ -110,7 +110,7 @@ export default function Match({
   function handleShowSolution() {
     let pressTime = new Date();
     let duration = exerciseDuration(pressTime);
-    let finalMessage = ""
+    let finalMessage = "";
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
         notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);

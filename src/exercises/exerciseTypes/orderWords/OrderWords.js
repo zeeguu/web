@@ -90,7 +90,7 @@ export default function OrderWords({
       exerciseIntializeVariables["bookmarkWord"],
       isHandlingLongSentences,
       exerciseIntializeVariables["isLongSentence"],
-      exerciseIntializeVariables["exerciseStartTime"]
+      exerciseIntializeVariables["exerciseStartTime"],
     );
 
     // Ensure the exercise time is set to the same that was used
@@ -104,7 +104,7 @@ export default function OrderWords({
     bookmarkWord,
     isHandleLongSentences,
     isCurrentSentenceTooLong,
-    exerciseStartTime
+    exerciseStartTime,
   ) {
     if (IS_DEBUG) console.log("Status of isHandle: " + isHandleLongSentences);
     if (IS_DEBUG) console.log(isCurrentSentenceTooLong);
@@ -121,9 +121,9 @@ export default function OrderWords({
             shorterContext,
             isCurrentSentenceTooLong,
             isHandleLongSentences,
-            exerciseStartTime
+            exerciseStartTime,
           );
-        }
+        },
       );
     } else {
       if (IS_DEBUG) console.log("Using default context.");
@@ -131,7 +131,7 @@ export default function OrderWords({
         originalContext,
         isCurrentSentenceTooLong,
         isHandleLongSentences,
-        exerciseStartTime
+        exerciseStartTime,
       );
     }
   }
@@ -140,7 +140,7 @@ export default function OrderWords({
     exerciseContext,
     isSentenceTooLong,
     isHandlingLongSentences,
-    startTime
+    startTime,
   ) {
     if (IS_DEBUG) console.log("CONTEXT: '" + exerciseContext + "'");
     exerciseContext = exerciseContext.trim();
@@ -157,8 +157,8 @@ export default function OrderWords({
           bookmarksToStudy[0].context,
           articleInfo,
           api,
-          "TRANSLATE WORDS IN EXERCISE"
-        )
+          "TRANSLATE WORDS IN EXERCISE",
+        ),
       );
     });
 
@@ -166,7 +166,7 @@ export default function OrderWords({
       .basicTranlsate(
         exerciseLang,
         localStorage.native_language,
-        exerciseContext
+        exerciseContext,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -184,7 +184,10 @@ export default function OrderWords({
           }
           setTextBeforeExerciseText(textBeforeContext);
           setTextAfterExerciseText(
-            originalContext.slice(startPos + exerciseContext.length, contextLen)
+            originalContext.slice(
+              startPos + exerciseContext.length,
+              contextLen,
+            ),
           );
         }
         if (EXERCISE_TYPE === TYPE_L1_CONSTRUCTION) {
@@ -195,7 +198,7 @@ export default function OrderWords({
             isSentenceTooLong,
             isHandlingLongSentences,
             startTime,
-            true
+            true,
           );
         } else if (EXERCISE_TYPE === TYPE_L2_CONSTRUCTION) {
           setExerciseText(translatedContext);
@@ -205,7 +208,7 @@ export default function OrderWords({
             isSentenceTooLong,
             isHandlingLongSentences,
             startTime,
-            false
+            false,
           );
         }
       })
@@ -277,7 +280,7 @@ export default function OrderWords({
       (e) =>
         e.tagName === "BUTTON" &&
         (e.parentNode.classList.contains("ItemRowCompactWrapConstruct") ||
-          e.parentNode.id === SOLUTION_AREA_ID)
+          e.parentNode.id === SOLUTION_AREA_ID),
     );
     let element = null;
     if (elementList.length > 1) element = elementList[1];
@@ -348,7 +351,7 @@ export default function OrderWords({
     let y = moveLastPosition.current[1];
     let dropLocation = document.elementsFromPoint(x, y);
     dropLocation = dropLocation.filter(
-      (e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID
+      (e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID,
     );
     if (dropLocation.length === 0) {
       // We didn't drop the element in any of the relevant areas.
@@ -372,7 +375,7 @@ export default function OrderWords({
     _clearMoveOverObject();
     let dropLocation = document.elementsFromPoint(x, y);
     dropLocation = dropLocation.filter(
-      (e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID
+      (e) => e.id === WORD_SOUP_ID || e.id === SOLUTION_AREA_ID,
     );
     // Create the array to be modified
     let copyUserSolutionWordArray = [...userSolutionWordArray];
@@ -419,13 +422,13 @@ export default function OrderWords({
             copyUserSolutionWordArray.splice(
               solutionDragOverIndex.current - isPositionAffected + 1,
               0,
-              dragItemContent
+              dragItemContent,
             );
           } else
             copyUserSolutionWordArray.splice(
               solutionDragOverIndex.current - isPositionAffected,
               0,
-              dragItemContent
+              dragItemContent,
             );
         } else {
           notifyChoiceSelection(dragItemContent.id, false);
@@ -439,14 +442,14 @@ export default function OrderWords({
           let copyWordsReferenceStatus = [...wordsReferenceStatus];
           let elementToAdd = _getWordById(
             wordSoupDrag.current,
-            copyWordsReferenceStatus
+            copyWordsReferenceStatus,
           );
           elementToAdd.inUse = true;
           if (isDragPlacementLeft.current === RIGHT)
             copyUserSolutionWordArray.splice(
               solutionDragOverIndex.current + 1,
               0,
-              { ...elementToAdd }
+              { ...elementToAdd },
             );
           else
             copyUserSolutionWordArray.splice(solutionDragOverIndex.current, 0, {
@@ -463,7 +466,7 @@ export default function OrderWords({
       if (isDragOverPlaceholder) {
         // if it was a place holder we remove it from the solution box.
         copyUserSolutionWordArray = copyUserSolutionWordArray.filter(
-          (word) => word.id !== dragOverId
+          (word) => word.id !== dragOverId,
         );
       }
     }
@@ -570,7 +573,7 @@ export default function OrderWords({
       eventType,
       "",
       bookmarksToStudy[0].id,
-      JSON.stringify(jsonData)
+      JSON.stringify(jsonData),
     );
   }
 
@@ -580,7 +583,7 @@ export default function OrderWords({
     errorCount,
     finalClueText,
     errorTypesList,
-    updatedErrorCounter
+    updatedErrorCounter,
   ) {
     let currentDuration = _getCurrentDuration();
     let jsonDataExerciseCheck = {
@@ -629,7 +632,7 @@ export default function OrderWords({
   function _filterPlaceholders(constructedWordArray) {
     let filterArray = constructedWordArray.filter(
       (wordElement) =>
-        wordElement.id < wordsReferenceStatus.length && wordElement.id >= 0
+        wordElement.id < wordsReferenceStatus.length && wordElement.id >= 0,
     );
     for (let i = 0; i < filterArray.length; i++) {
       let wordProp = filterArray[i];
@@ -677,7 +680,7 @@ export default function OrderWords({
     isSentenceTooLong,
     isHandlingLongSentences,
     startTime,
-    is_L1
+    is_L1,
   ) {
     const initialWords = is_L1
       ? _getWordsInSentence(translatedContext)
@@ -699,7 +702,7 @@ export default function OrderWords({
           startTime,
           exerciseWords,
           pos_picked,
-          word_used
+          word_used,
         );
       });
     } else {
@@ -716,7 +719,7 @@ export default function OrderWords({
         startTime,
         exerciseWords,
         pos_picked,
-        word_used
+        word_used,
       );
     }
   }
@@ -730,7 +733,7 @@ export default function OrderWords({
     startTime,
     exerciseWords,
     pos_picked,
-    word_used
+    word_used,
   ) {
     exerciseWords = shuffle(exerciseWords);
     let propWords = _initializeWordProps(exerciseWords, initialWords);
@@ -775,7 +778,7 @@ export default function OrderWords({
     } else {
       // In case the user selected the same word twice, we remove it.
       newUserSolutionWordArray = newUserSolutionWordArray.filter(
-        (wordElement) => wordElement.id !== wordSelected.id
+        (wordElement) => wordElement.id !== wordSelected.id,
       );
     }
     // Toggle the inUse flag
@@ -790,7 +793,7 @@ export default function OrderWords({
       if (previousIdToken < 0) {
         // Is a placeholder token
         newUserSolutionWordArray = newUserSolutionWordArray.filter(
-          (word) => word.id !== previousIdToken
+          (word) => word.id !== previousIdToken,
         );
       }
     }
@@ -830,7 +833,7 @@ export default function OrderWords({
 
     // Get the Constructed Sentence
     let userSolutionSentence = _getWordsFromWordProps(
-      newUserSolutionWordArray
+      newUserSolutionWordArray,
     ).join(" ");
 
     if (userSolutionSentence === filterPunctuationSolArray.join(" ")) {
@@ -858,9 +861,9 @@ export default function OrderWords({
           updateWordsFromAPI(
             updatedUserSolutionWords,
             resizedSolutionText,
-            userSolutionSentence
+            userSolutionSentence,
           );
-        }
+        },
       );
     }
   }
@@ -868,7 +871,7 @@ export default function OrderWords({
   function updateWordsFromAPI(
     updatedWordStatusFromAPI,
     resizeSol,
-    constructedSentence
+    constructedSentence,
   ) {
     // Variable to update and store in the user Activity.
     let updatedWordStatus = JSON.parse(updatedWordStatusFromAPI);
@@ -897,14 +900,14 @@ export default function OrderWords({
         ) {
           if (wordProp["missBefore"]) {
             newUserSolutionWordArray.push(
-              _constructPlaceholderWordProp(placeholderCounter--, "✎")
+              _constructPlaceholderWordProp(placeholderCounter--, "✎"),
             );
           }
           wordProp["hasPlaceholders"] = true;
           newUserSolutionWordArray.push({ ...wordProp });
           if (!wordProp["missBefore"]) {
             newUserSolutionWordArray.push(
-              _constructPlaceholderWordProp(placeholderCounter--, "✎")
+              _constructPlaceholderWordProp(placeholderCounter--, "✎"),
             );
           }
           wordWasPushed = true;
@@ -934,7 +937,7 @@ export default function OrderWords({
       errorCount,
       finalClueText,
       errorTypesList,
-      updatedErrorCounter
+      updatedErrorCounter,
     );
   }
 
@@ -947,7 +950,7 @@ export default function OrderWords({
       exerciseIntializeVariables["bookmarkWord"],
       newIsHandleLongSentences,
       exerciseIntializeVariables["isLongSentence"],
-      exerciseIntializeVariables["exerciseStartTime"]
+      exerciseIntializeVariables["exerciseStartTime"],
     );
 
     // Ensure the exercise time is set to the same that was used
@@ -980,7 +983,7 @@ export default function OrderWords({
       EXERCISE_TYPE,
       duration,
       bookmarksToStudy[0].id,
-      exerciseSessionId
+      exerciseSessionId,
     );
 
     let jsonDataExerciseEnd = {

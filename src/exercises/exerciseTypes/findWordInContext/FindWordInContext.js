@@ -174,8 +174,9 @@ export default function FindWordInContext({
 
   return (
     <s.Exercise className="findWordInContext">
-
-      <div className="headlineWithMoreSpace">{strings.findTheWordInContextHeadline}</div>
+      <div className="headlineWithMoreSpace">
+        {strings.findTheWordInContextHeadline}
+      </div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
         <TranslatableText

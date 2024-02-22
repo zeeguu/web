@@ -80,7 +80,7 @@ export default function BottomInput({
     console.log("checking result...");
     var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
     var b = removeQuotes(
-      removeAccents(eliminateTypos(bookmarksToStudy[0].from))
+      removeAccents(eliminateTypos(bookmarksToStudy[0].from)),
     );
     if (a === b) {
       let concatMessage = messageToAPI + "C";
@@ -112,9 +112,7 @@ export default function BottomInput({
           <InputField
             type="text"
             className={
-              distanceToCorrect >= 5
-                ? "wrong-border"
-                : "almost-border"
+              distanceToCorrect >= 5 ? "wrong-border" : "almost-border"
             }
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}

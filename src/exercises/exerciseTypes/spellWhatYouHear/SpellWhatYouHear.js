@@ -52,8 +52,8 @@ export default function SpellWhatYouHear({
           bookmarksToStudy[0].context,
           articleInfo,
           api,
-          "TRANSLATE WORDS IN EXERCISE"
-        )
+          "TRANSLATE WORDS IN EXERCISE",
+        ),
       );
       setArticleInfo(articleInfo);
     });
@@ -86,7 +86,7 @@ export default function SpellWhatYouHear({
       EXERCISE_TYPE,
       duration,
       bookmarksToStudy[0].id,
-      exerciseSessionId
+      exerciseSessionId,
     );
   }
 
@@ -129,7 +129,7 @@ export default function SpellWhatYouHear({
       EXERCISE_TYPE,
       exerciseDuration(pressTime),
       bookmarksToStudy[0].id,
-      exerciseSessionId
+      exerciseSessionId,
     );
   }
 
@@ -143,7 +143,7 @@ export default function SpellWhatYouHear({
       EXERCISE_TYPE,
       duration,
       bookmarksToStudy[0].id,
-      exerciseSessionId
+      exerciseSessionId,
     );
   }
 
@@ -153,7 +153,9 @@ export default function SpellWhatYouHear({
 
   return (
     <s.Exercise>
-      <div className="headlineWithMoreSpace">{strings.audioExerciseHeadline}</div>
+      <div className="headlineWithMoreSpace">
+        {strings.audioExerciseHeadline}
+      </div>
       {!isCorrect && (
         <>
           <div className="contextExample">

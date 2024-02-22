@@ -43,4 +43,4 @@ const LittleMessageAbove = styled.div`
   margin-bottom: 2em;
 `;
 
-export { ExercisesColumn, ExForm, LittleMessageAbove};
+export { ExercisesColumn, ExForm, LittleMessageAbove };
