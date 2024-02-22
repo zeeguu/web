@@ -19,8 +19,9 @@ export default function ArticleOverview({
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(
-    article.has_personal_copy
+    article.has_personal_copy,
   );
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
@@ -87,7 +88,8 @@ export default function ArticleOverview({
     else if (should_open_with_modal) return open_externally_with_modal;
     else return open_externally_without_modal;
   }
-
+  //  https://stackoverflow.com/questions/55556829/how-to-reorder-the-flex-items-when-resizing-the-screen
+  // USE CSS TO RE-ORDER
   return (
     <s.ArticlePreview>
       <SmallSaveArticleButton
@@ -96,10 +98,70 @@ export default function ArticleOverview({
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
-      <s.Title>{titleLink(article)}</s.Title>
-      <s.Difficulty>{difficulty}</s.Difficulty>
-      <s.WordCount>{article.metrics.word_count}</s.WordCount>
-
+      {windowWidth >= 768 ? (
+        <>
+          <s.Title>{titleLink(article)}</s.Title>
+          <div style={{ display: "flex", width: "100%" }}>
+            <img
+              alt=""
+              style={{
+                flex: "right",
+                margin: "0.5em",
+                maxWidth: "8em",
+                maxHeight: "6em",
+                borderRadius: "1em",
+              }}
+              src={
+                "https://asset.dr.dk/imagescaler/?protocol=https&server=www.dr.dk&file=%2Fimages%2Fother%2F2024%2F02%2F19%2Fscanpix-20231130-235836-6.jpg&scaleAfter=crop&quality=70&w=850&h=620"
+              }
+            />
+            <s.Summary>{article.summary}</s.Summary>
+            <s.WordCount>{article.metrics.word_count}</s.WordCount>
+            <s.Difficulty>{difficulty}</s.Difficulty>
+          </div>
+        </>
+      ) : (
+        <>
+          <div style={{ width: "100%" }}>
+            <s.Title>{titleLink(article)}</s.Title>
+            <s.Summary>{article.summary}</s.Summary>
+          </div>
+          <div style={{ display: "flex", width: "100%" }}>
+            <img
+              alt=""
+              style={{
+                flex: "right",
+                margin: "1em",
+                maxWidth: "8em",
+                maxHeight: "6em",
+                borderRadius: "1em",
+              }}
+              src={
+                "https://asset.dr.dk/imagescaler/?protocol=https&server=www.dr.dk&file=%2Fimages%2Fother%2F2024%2F02%2F19%2Fscanpix-20231130-235836-6.jpg&scaleAfter=crop&quality=70&w=850&h=620"
+              }
+            />
+            <s.WordCount>{article.metrics.word_count}</s.WordCount>
+            <s.Difficulty>{difficulty}</s.Difficulty>
+          </div>
+        </>
+      )}
+      <div>
+        {!dontShowImage && (
+          <s.SourceImage>
+            <img src={"/news-icons/" + article.icon_name} alt="" />
+          </s.SourceImage>
+        )}
+        {!dontShowPublishingTime && (
+          <s.PublishingTime>
+            ({moment.utc(article.published).fromNow()})
+          </s.PublishingTime>
+        )}
+        <s.Topics>
+          {topics.map((topic) => (
+            <span key={topic}>{topic}</span>
+          ))}
+        </s.Topics>
+      </div>
       {article.video ? (
         <img
           alt=""
@@ -113,23 +175,6 @@ export default function ArticleOverview({
       ) : (
         ""
       )}
-
-      <s.Summary>{article.summary}</s.Summary>
-      {!dontShowImage && (
-        <s.SourceImage>
-          <img src={"/news-icons/" + article.icon_name} alt="" />
-        </s.SourceImage>
-      )}
-      {!dontShowPublishingTime && (
-        <s.PublishingTime>
-          ({moment.utc(article.published).fromNow()})
-        </s.PublishingTime>
-      )}
-      <s.Topics>
-        {topics.map((topic) => (
-          <span key={topic}>{topic}</span>
-        ))}
-      </s.Topics>
     </s.ArticlePreview>
   );
 }

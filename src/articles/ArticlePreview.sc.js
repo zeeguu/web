@@ -34,7 +34,6 @@ const InvisibleTitleButton = styled.button`
 const Title = styled.div`
   font-size: 1.4em;
   color: ${zeeguuDarkOrange};
-  max-width: 24em;
   padding-right: 0.3em;
   font-weight: 500;
 `;
@@ -46,8 +45,9 @@ const Difficulty = styled.div`
   text-align: center;
   border-radius: 50%;
   background-color: ${veryLightGrey};
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  align-self: center;
   justify-content: center;
   margin-right: 1em;
   flex-shrink: 0;
@@ -56,12 +56,12 @@ const Difficulty = styled.div`
 
 const WordCount = styled(Difficulty)`
   background-color: ${veryLightGrey};
+  align-self: center;
 `;
 
 let Summary = styled.div`
   font-size: 0.83em;
   color: ${almostBlack};
-  max-width: 44em;
   line-height: 1.5em;
   margin-top: 0.36em;
 `;
@@ -93,7 +93,6 @@ let Topics = styled.span`
     font-size: 0.8333333333333334em;
   }
 `;
-
 
 export {
   Title,
