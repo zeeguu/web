@@ -41,6 +41,7 @@ function App() {
   const [userData, setUserData] = useState(userDict);
   const [hasExtension, setHasExtension] = useState(false);
   const [zeeguuSpeech, setZeeguuSpeech] = useState(null);
+  const [redirectLink, setRedirectLink] = useState(null);
 
   function setUser(dict) {
     setUserData(dict);
@@ -106,7 +107,10 @@ function App() {
     console.log("setting new user value: ");
     console.dir(newUserValue);
     setUser(newUserValue);
-
+    if (redirectLink !== null) {
+      window.location.href = redirectLink;
+      return;
+    }
     if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
       history.push("/install_extension");
     } else {
@@ -134,7 +138,11 @@ function App() {
             <Route
               path="/login"
               render={() => (
-                <SignIn api={api} signInAndRedirect={handleSuccessfulSignIn} />
+                <SignIn
+                  api={api}
+                  signInAndRedirect={handleSuccessfulSignIn}
+                  setRedirectLink={setRedirectLink}
+                />
               )}
             />
 

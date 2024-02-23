@@ -6,7 +6,7 @@ import strings from "../i18n/definitions";
 import * as s from "../components/FormPage.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
-export default function SignIn({ api, signInAndRedirect }) {
+export default function SignIn({ api, signInAndRedirect, setRedirectLink }) {
   // TODO: Fix this bug in a different way. Requires understanding why strings._language changes to "da" without it being asked to, whenever this component renders. Perhaps it imports an un-updated version of strings?
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
@@ -15,9 +15,10 @@ export default function SignIn({ api, signInAndRedirect }) {
   const [errorMessage, setErrorMessage] = useState("");
   let history = useHistory();
   let emailInputDOM = useRef();
-
   useEffect(() => {
     emailInputDOM.current.focus();
+    const queryParameters = new URLSearchParams(window.location.search);
+    setRedirectLink(queryParameters.get("link"));
   }, []);
 
   function handleSignIn(e) {
