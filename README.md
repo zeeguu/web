@@ -33,7 +33,7 @@ To build the docker image you run:
 
 With the image created you can now run the following commands to build the extension:
 
-`docker-compose up build_chrome` for the Chrome Extension and `docker-compose up build_firefox`
+`docker-compose up build_chrome` for the Chrome Extension and `docker-compose up build_firefox` for the Firefox Extension.
 
 ## Install Dependencies in both extension and submodule
 

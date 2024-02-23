@@ -46,6 +46,25 @@ export function removeAllChildNodes(parent) {
   }
 }
 
+export function hideCurrentDOM() {
+  const body = document.querySelector("body");
+  if (body) {
+    removeAllChildNodes(body);
+  }
+  const head = document.querySelector("head");
+  if (head) {
+    removeAllChildNodes(head);
+  }
+  const div = document.querySelector("div");
+  if (div) {
+    removeAllChildNodes(div);
+  }
+  const iframe = document.querySelector("iframe");
+  if (iframe) {
+    removeAllChildNodes(iframe);
+  }
+}
+
 export function deleteCurrentDOM() {
   const body = document.querySelector("body");
   if (body) {
@@ -81,18 +100,15 @@ export function deleteIntervals() {
 
 export function checkLanguageSupport(api, tab, setLanguageSupported) {
   Article(tab.url).then((article) => {
-    api.isArticleLanguageSupported(
-      article.textContent,
-      (result_dict) => {
-        console.log(result_dict);
-        if (result_dict === "NO") {
-          setLanguageSupported(false);
-        }
-        if (result_dict === "YES") {
-          setLanguageSupported(true);
-        }
+    api.isArticleLanguageSupported(article.textContent, (result_dict) => {
+      console.log(result_dict);
+      if (result_dict === "NO") {
+        setLanguageSupported(false);
       }
-    );
+      if (result_dict === "YES") {
+        setLanguageSupported(true);
+      }
+    });
   });
 }
 
