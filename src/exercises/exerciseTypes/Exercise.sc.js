@@ -110,7 +110,6 @@ let MatchButtonHolder = styled.div`
   align-items: flex-end;
   justify-content: space-evenly;
   flex: 1;
-  min-width: 0;
 `;
 
 let MatchButtonHolderRight = styled.div`
@@ -119,7 +118,6 @@ let MatchButtonHolderRight = styled.div`
   align-items: flex-start;
   justify-content: space-evenly;
   flex: 1;
-  min-width: 0;
 `;
 
 let MatchSpeakButtonHolder = styled.div`
