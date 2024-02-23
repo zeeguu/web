@@ -26,6 +26,7 @@ import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 import { cleanDOMAfter, getHTMLContent } from "../Cleaning/pageSpecificClean";
+import { BROWSER_API } from "../../utils/browserApi";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 import SaveToZeeguu from "./SaveToZeeguu";
@@ -300,7 +301,9 @@ export function Modal({
                   <StyledSmallButton>
                     <a href="https://www.zeeguu.org">
                       <img
-                        src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+                        src={BROWSER_API.runtime.getURL(
+                          "images/zeeguuLogo.svg"
+                        )}
                         alt={"Zeeguu logo"}
                         className="logoModal"
                       />

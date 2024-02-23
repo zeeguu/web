@@ -12,6 +12,7 @@ import { EXTENSION_SOURCE } from "../JSInjection/constants";
 import { checkLanguageSupport, setUserInLocalStorage } from "./functions";
 import { StyledPrimaryButton } from "../JSInjection/Modal/Buttons.styles";
 import { API_URL, WEB_URL } from "../config";
+import { BROWSER_API } from "../utils/browserApi";
 
 //for isProbablyReadable options object
 const minLength = 120;
@@ -36,7 +37,7 @@ export default function Popup({ loggedIn }) {
   }, [user]);
 
   useEffect(() => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    BROWSER_API.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       setTab(tabs[0]);
     });
   }, []);

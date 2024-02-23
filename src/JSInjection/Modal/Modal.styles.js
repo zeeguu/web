@@ -2,6 +2,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import ReactModal from "react-modal";
 import { zeeguuTransparentMediumOrange } from "../../zeeguu-react/src/components/colors";
 import colors from "../colors";
+
 export const GlobalStyle = createGlobalStyle`
    .reader-overlay{
         position: fixed;
@@ -22,11 +23,74 @@ export const GlobalStyle = createGlobalStyle`
       background-color: rgba(255,255,255,0.75) !important;
     }
 `;
+export const ZeeguuErrorStyle = styled.div`
+  font-family:
+    "Montserrat",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 2px !important;
+
+  p {
+    font-size: 1rem !important;
+    color: black;
+    text-align: center;
+  }
+
+  .background {
+    background-color: #ffbb54;
+    height: 100%;
+    width: 100%;
+  }
+
+  .card {
+    background-color: #f4f4f6;
+    margin-top: 3em;
+    margin-right: auto;
+    margin-left: auto;
+    width: fit-content;
+    padding: 3em;
+    max-width: 50em;
+    min-width: 20em;
+
+    border: black;
+    border-style: solid;
+    border-radius: 2em;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+  }
+`;
 
 export const StyledModal = styled(ReactModal)`
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+  font-family:
+    "Montserrat",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   max-width: 800px;
@@ -45,7 +109,7 @@ export const StyledModal = styled(ReactModal)`
   height: 100%;
   width: 75%;
   overflow-y: auto;
- overflow-x: hidden;
+  overflow-x: hidden;
   box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
   outline: none;
 
@@ -71,7 +135,7 @@ export const StyledModal = styled(ReactModal)`
   }
 
   hr {
-    border-top: 1px solid #F6F6F6;
+    border-top: 1px solid #f6f6f6;
   }
 
   p,
@@ -100,11 +164,11 @@ export const StyledModal = styled(ReactModal)`
   }
 
   ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: ${colors.lighterBlue}; 
+    background: ${colors.lighterBlue};
     border-radius: 10px;
   }
 
@@ -113,9 +177,9 @@ export const StyledModal = styled(ReactModal)`
     max-width: 600px;
     width: auto !important;
 
-  @media (max-width: 650px) {
-    max-width: 250px;
-  }
+    @media (max-width: 650px) {
+      max-width: 250px;
+    }
   }
 
   .article-container {
@@ -167,7 +231,7 @@ export const OverwriteZeeguu = styled.div`
   }
 
   z-tag.loading {
-  color: ${colors.translationHover} !important;
+    color: ${colors.translationHover} !important;
   }
 
   z-orig {
@@ -175,11 +239,11 @@ export const OverwriteZeeguu = styled.div`
     border-bottom: 2px dashed ${colors.translationHover} !important;
   }
 
-  .topMessage{
+  .topMessage {
     background-color: ${zeeguuTransparentMediumOrange};
   }
 
-  .centeredColumn{
+  .centeredColumn {
     margin-top: 0px !important;
   }
 

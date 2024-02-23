@@ -1,32 +1,29 @@
-/*global chrome*/
-/*global browser*/
-
+import { BROWSER_API } from "../utils/browserApi";
 import { WEB_URL, WEB_LOGIN_URL, API_URL } from "../config";
-import { runningInChromeDesktop } from "../zeeguu-react/src/utils/misc/browserDetection";
 import {
   setCurrentURL,
   setUserInLocalStorage,
   getCurrentTab,
 } from "../popup/functions";
-import { getIsLoggedIn, isLoggedIn, getUserInfoDict } from "../popup/cookies";
+import { getIsLoggedIn, getUserInfoDict } from "../popup/cookies";
 import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
 import { EXTENSION_SOURCE } from "../JSInjection/constants";
 
-chrome.runtime.onMessageExternal.addListener(
+BROWSER_API.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
     console.log("Received message from " + sender.url + ": ", request);
     sendResponse({ message: true });
   }
 );
 
-chrome.runtime.onInstalled.addListener(function (object) {
+BROWSER_API.runtime.onInstalled.addListener(function (object) {
   let externalUrl = WEB_URL + "/extension_installed";
-  if (object.reason === chrome.runtime.OnInstalledReason.INSTALL) {
-    chrome.tabs.create({ url: externalUrl });
+  if (object.reason === BROWSER_API.runtime.OnInstalledReason.INSTALL) {
+    BROWSER_API.tabs.create({ url: externalUrl });
   }
 });
 
-chrome.runtime.onMessage.addListener(async function (request) {
+BROWSER_API.runtime.onMessage.addListener(async function (request) {
   if (request.type === "SPEAK") {
     try {
       // Chrome TTS gets the speak engine from the OS.
@@ -56,11 +53,16 @@ const contextMenuReadArticle = {
 
 async function startReader() {
   let user_logged_in = await getIsLoggedIn(WEB_URL);
+  console.log("Getting tab;");
   let tab = await getCurrentTab();
+  console.log(tab);
+  console.log("Got tab and login!");
   if (!user_logged_in) {
     console.log("User not logged in!");
     // The user is not logged in, send them to Zeeguu.
-    chrome.tabs.create({ url: WEB_LOGIN_URL + "?link=" + tab.url });
+    BROWSER_API.tabs.create({
+      url: WEB_LOGIN_URL + "?redirectLink=" + tab.url,
+    });
   } else {
     try {
       let api = new Zeeguu_API(API_URL);
@@ -73,47 +75,25 @@ async function startReader() {
         tab.url,
         EXTENSION_SOURCE
       );
-      if (runningInChromeDesktop()) {
-        chrome.scripting
-          .executeScript({
-            target: { tabId: tab.id },
-            files: ["main.js"],
-            func: setCurrentURL(tab.url),
-          })
-          .then(() => console.log("injected the function!"));
-      } else {
-        browser.scripting.executeScript({
-          target: {
-            tabId: tab.id,
-          },
+      BROWSER_API.scripting
+        .executeScript({
+          target: { tabId: tab.id },
           files: ["main.js"],
           func: setCurrentURL(tab.url),
-        });
-      }
+        })
+        .then(() => console.log("injected the function!"));
     } catch (err) {
       console.error(`failed to execute script: ${err}`);
     }
   }
 }
 
-if (runningInChromeDesktop()) {
-  chrome.contextMenus.onClicked.addListener(async (clickData) => {
-    if (clickData.menuItemId === "read_in_zeeguu_reader") {
-      startReader();
-    }
-  });
+BROWSER_API.contextMenus.onClicked.addListener(async (clickData) => {
+  if (clickData.menuItemId === "read_in_zeeguu_reader") {
+    startReader();
+  }
+});
 
-  chrome.runtime.onInstalled.addListener(() => {
-    chrome.contextMenus.create(contextMenuReadArticle);
-  });
-} else {
-  browser.contextMenus.onClicked.addListener(async (clickData) => {
-    if (clickData.menuItemId === "read_in_zeeguu_reader") {
-      startReader();
-    }
-  });
-
-  browser.runtime.onInstalled.addListener(() => {
-    browser.contextMenus.create(contextMenuReadArticle);
-  });
-}
+BROWSER_API.runtime.onInstalled.addListener(() => {
+  BROWSER_API.contextMenus.create(contextMenuReadArticle);
+});

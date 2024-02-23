@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { StyledSmallButtonBlue } from "../JSInjection/Modal/Buttons.styles";
 import { MainContainer, BottomContainer } from "./Login.styles";
+import { BROWSER_API } from "../utils/browserApi";
 
 export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
   const [email, setEmail] = useState("");
@@ -10,13 +11,14 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
 
   function handleSignIn(e) {
     e.preventDefault();
-    api.signIn(email, password, setErrorMessage, (sessionId)=>{
-      chrome.storage.local.set({ loggedIn: true });
+    api.signIn(email, password, setErrorMessage, (sessionId) => {
+      BROWSER_API.storage.local.set({ loggedIn: true });
       api.getUserDetails((userInfo) => {
         handleSuccessfulSignIn(userInfo, sessionId);
-      })
-    })}
-  
+      });
+    });
+  }
+
   return (
     <form action="" method="post">
       <MainContainer>
@@ -44,8 +46,8 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-         {errorMessage && <div className="error">{errorMessage}</div>}
-         <StyledSmallButtonBlue
+        {errorMessage && <div className="error">{errorMessage}</div>}
+        <StyledSmallButtonBlue
           type="submit"
           onClick={handleSignIn}
           name="login"
@@ -53,12 +55,30 @@ export default function Login({ setLoggedIn, handleSuccessfulSignIn, api }) {
           className="loginButton"
         >
           Login
-        
         </StyledSmallButtonBlue>
-          <BottomContainer>
-          <p>Alternatively, you can <a class="links" target="_blank" rel="noreferrer" href="https://zeeguu.org/create_account">create an account</a> or <a class="links" target="_blank" href="https://zeeguu.org/reset_pass">reset your password</a>.</p>
-          </BottomContainer>
+        <BottomContainer>
+          <p>
+            Alternatively, you can{" "}
+            <a
+              class="links"
+              target="_blank"
+              rel="noreferrer"
+              href="https://zeeguu.org/create_account"
+            >
+              create an account
+            </a>{" "}
+            or{" "}
+            <a
+              class="links"
+              target="_blank"
+              href="https://zeeguu.org/reset_pass"
+            >
+              reset your password
+            </a>
+            .
+          </p>
+        </BottomContainer>
       </MainContainer>
     </form>
   );
-  }
+}
