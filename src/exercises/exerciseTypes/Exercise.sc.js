@@ -100,6 +100,8 @@ let MatchInputHolder = styled.div`
   flex-direction: row;
   justify-content: space-evenly;
   gap: 20px;
+  word-break: break-word;
+  hyphens: auto;
 `;
 
 let MatchButtonHolder = styled.div`
