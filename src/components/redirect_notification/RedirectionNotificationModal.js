@@ -9,6 +9,7 @@ import SetupForUnsupportedBrowsers from "./SetupForUnsupportedBrowsers";
 
 export default function RedirectionNotificationModal({
   api,
+  hasExtension,
   article,
   open,
   handleCloseRedirectionModal,
@@ -44,6 +45,7 @@ export default function RedirectionNotificationModal({
   function renderNotificationModal() {
     let setupForSupportedBrowsers = (
       <SetupForSupportedBrowsers
+        hasExtension={hasExtension}
         toggleRedirectCheckbox={toggleRedirectCheckbox}
         redirectCheckbox={redirectCheckbox}
         handleSaveVisibilityPreferences={handleSaveVisibilityPreferences}

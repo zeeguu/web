@@ -10,7 +10,11 @@ import { zeeguuDarkOrange, zeeguuOrange } from "../colors";
 import { OrangeRoundButton } from "../allButtons.sc";
 import styled from "styled-components";
 
-const ModalWrapper = styled(ModalWrapperGlobal)``;
+const ModalWrapper = styled(ModalWrapperGlobal)`
+  .link:hover {
+    text-decoration: none;
+  }
+`;
 
 const Header = styled(ModalHeaderGlobal)``;
 
@@ -65,7 +69,11 @@ const CheckboxWrapper = styled.div`
 //TODO: After implementing all the onboarding steps,
 //create style quide for all buttons and refactor / factor them out
 const GoToArticleButton = styled(OrangeRoundButton)`
-  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.25rem;
   padding: 0.7em 2em;
   border-radius: 4em;
   font-weight: 600;

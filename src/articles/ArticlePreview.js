@@ -47,6 +47,7 @@ export default function ArticleOverview({
       <>
         <RedirectionNotificationModal
           api={api}
+          hasExtension={hasExtension}
           article={article}
           open={isRedirectionModalOpen}
           handleCloseRedirectionModal={handleCloseRedirectionModal}
