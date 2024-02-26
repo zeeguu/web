@@ -132,7 +132,7 @@ function App() {
       <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
         <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
           <Switch>
-            <Route path="/" exact component={LandingPage} />
+            <Route path="/" exact component={LandingPage(setRedirectLink)} />
 
             {/* cf: https://ui.dev/react-router-v4-pass-props-to-components/ */}
             <Route

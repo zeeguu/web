@@ -18,7 +18,7 @@ export default function SignIn({ api, signInAndRedirect, setRedirectLink }) {
   useEffect(() => {
     emailInputDOM.current.focus();
     const queryParameters = new URLSearchParams(window.location.search);
-    setRedirectLink(queryParameters.get("link"));
+    setRedirectLink(queryParameters.get("redirectLink"));
   }, []);
 
   function handleSignIn(e) {
