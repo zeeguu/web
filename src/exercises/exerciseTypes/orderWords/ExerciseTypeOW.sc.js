@@ -49,7 +49,7 @@ const ExerciseOW = styled.div`
     margin-top: 3em;
     flex-wrap: wrap;
   }
-
+  
   .bottomInput button {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
@@ -84,11 +84,14 @@ const ExerciseOW = styled.div`
     text-align: center;
     display: inline-block;
     margin-top: -10px;
-    margin-bottom: -5px;
+    margin-bottom: 2px;
     border-style: solid;
-    border-width: 2px 0px 0px 0px;
+    border-width: 4px 0px 4px 0px;
     border-radius: 10px;
-    border-color: #e5e5e5;
+    border-color: #006400;
+    background-color: #0064001c;
+    margin-left: 10px;
+    margin-right: 10px;
     
     h4 {
       margin-top: 0px;
@@ -116,19 +119,22 @@ const ExerciseOW = styled.div`
     margin-right: 30px;
     margin-bottom: 1em;
     @media (max-width: 430px) {
-      font-size: 14px;
+      font-size: 12px;
+      margin-left:10px;
+      margin-right:10px;
     }
+    
   }
-
 
   .incorrect {
     background-color: ${zeeguuRed};
-    
   }
 
   .correct {
     background-color: ${darkGreen};
-    :hover{ }
+    :hover{ 
+      filter: brightness(1)
+    }
   }
 
   .placeholder {
@@ -244,15 +250,32 @@ const ExerciseOW = styled.div`
     }
 
   }
-
-  .toSwap {
-    outline: 4px ${darkBlue} dashed;
-    background-color: #6db9d92b !important;
-    color: #000000bf;
+  
+  .toDragLeft {
+    box-shadow: -7px 0px 0px 2px ${darkBlue}, 0px 0px 0px 0px ${darkBlue};
+    outline: 2px ${darkBlue} solid;
+    filter: brightness(0.90);
+    z-index:1;
   }
 
-  .greyOut {
+  .toDragRight {
+    box-shadow: 0px 0px 0px 0px ${darkBlue}, 7px 0px 0px 2px ${darkBlue};
+    outline: 2px ${darkBlue} solid;
+    filter: brightness(0.90);
+    z-index:1;
+  }
+
+  .renderDisable {
+    display: none;
+  }
+
+  .moveItem {
+    opacity: 0.7;
+  }
+
+  .elementHidden {
     background-color: #595959;
+    visibility: hidden;
   }
   
   .disable {
@@ -267,6 +290,7 @@ const ExerciseOW = styled.div`
       transform: translateY(0px);
     }
   }
+
   .tipText{
     font-size:small
   }
@@ -310,6 +334,7 @@ let OrangeItemCompact = styled(StyledButton)`
   font-size: normal !important;
   color: white;
   height: 34px;
+  touch-action: none;
   background-color: ${zeeguuOrange};
   margin: 0.2em 0.2em;
   padding: 0.5em 0.5em;
@@ -346,6 +371,7 @@ let ItemRowCompactWrapConstruct = styled.div`
   margin-bottom: 0.1em;
   @media (max-width: 430px) {
     flex-flow: row wrap;
+    padding:0.1em;
   }
 `;
 
@@ -357,14 +383,17 @@ let OrangeItemCompactConstruct = styled(StyledButton)`
   align-items: center;
   color: white;
   height: 30px;
+  touch-action: none;
   background-color: ${zeeguuOrange};
   margin: 0.05em;
   padding: 0.5em 0.5em;
-  & .correct :hover {
+  & .correct{
   }
-
   & .toSwap {
     color:black;
+  }
+  &:hover {
+    filter: brightness(0.9);
   }
   @media (max-width: 430px) {
     font-size: 10px;
