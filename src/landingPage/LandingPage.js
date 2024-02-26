@@ -9,7 +9,7 @@ import UiLanguageSettings from "../components/UiLanguageSettings";
 import { getUserSession } from "../utils/cookies/userInfo";
 import { useHistory } from "react-router-dom";
 
-export default function LandingPage(setRedirectLink) {
+export default function LandingPage({ setRedirectLink }) {
   const [uiLanguage, setUiLanguage] = useState();
   const history = useHistory();
 

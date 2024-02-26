@@ -109,9 +109,10 @@ function App() {
     setUser(newUserValue);
     if (redirectLink !== null) {
       window.location.href = redirectLink;
-      return;
-    }
-    if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
+    } else if (
+      window.location.href.indexOf("create_account") > -1 &&
+      !hasExtension
+    ) {
       history.push("/install_extension");
     } else {
       history.push("/articles");
@@ -132,7 +133,11 @@ function App() {
       <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
         <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
           <Switch>
-            <Route path="/" exact component={LandingPage(setRedirectLink)} />
+            <Route
+              path="/"
+              exact
+              render={() => <LandingPage setRedirectLink={setRedirectLink} />}
+            />
 
             {/* cf: https://ui.dev/react-router-v4-pass-props-to-components/ */}
             <Route
