@@ -8,7 +8,7 @@ import {
 } from "../ModalGlobalStyling.sc";
 import { zeeguuDarkOrange, zeeguuOrange } from "../colors";
 import { OrangeRoundButton } from "../allButtons.sc";
-import styled from "styled-components";
+import styled, { css }from "styled-components";
 
 const ModalWrapper = styled(ModalWrapperGlobal)`
   .link:hover {
@@ -111,11 +111,24 @@ const SaveArticleButton = styled.button`
 `;
 
 const ButtonContainer = styled.div`
+  text-align: center;
   width: 100%;
   display: flex;
   gap: 1.5rem;
   flex-direction: row-reverse;
   justify-content: space-between;
+
+  ${(props) =>
+    props.adaptButtonContainer() === "oneButton" &&
+    css`
+      justify-content: center;
+    `}
+
+  ${(props) =>
+    props.adaptButtonContainer() === "twoButtons" &&
+    css`
+      justify-content: space-between;
+    `}
 
   @media (max-width: 576px) {
     flex-direction: column;
