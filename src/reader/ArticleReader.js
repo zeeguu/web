@@ -3,7 +3,6 @@ import { useLocation, useHistory } from "react-router-dom";
 
 import { UserContext } from "../UserContext";
 import { RoutingContext } from "../contexts/RoutingContext";
-import { SpeechContext } from "../exercises/SpeechContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
 
@@ -23,7 +22,7 @@ import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 
-let FREQUENCY_KEEPALIVE = 3 * 1000; // 3 seconds
+let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
 
 export const UMR_SOURCE = "UMR";
@@ -76,9 +75,21 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [pronouncing, setPronouncing] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
 
-  const speech = useContext(SpeechContext);
   const user = useContext(UserContext);
   const history = useHistory();
+  const speech = useContext(SpeechContext);
+  const [activeSessionDuration, clockActive] = useActivityTimer(uploadActivity);
+  const [readingSessionId, setReadingSessionId] = useState();
+
+  const activeSessionDurationRef = useShadowRef(activeSessionDuration);
+  const readingSessionIdRef = useShadowRef(readingSessionId);
+
+  function uploadActivity() {
+    api.readingSessionUpdate(
+      readingSessionIdRef.current,
+      activeSessionDurationRef.current,
+    );
+  }
 
   function updateScrollPosition() {
     var scrollElement = document.getElementById("scrollHolder");
@@ -89,16 +100,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     // Above 1 is the area where the feedback + exercises are.
     setScrollPosition(ratio);
     return ratio;
-  }
-
-  const activeSessionDurationRef = useShadowRef(activeSessionDuration);
-  const readingSessionIdRef = useShadowRef(readingSessionId);
-
-  function uploadActivity() {
-    api.readingSessionUpdate(
-      readingSessionIdRef.current,
-      activeSessionDurationRef.current,
-    );
   }
 
   useEffect(() => {
@@ -119,7 +120,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   const handleScroll = () => {
-    onScroll(api, articleID, UMR_SOURCE);
+    let scrollPercentage = updateScrollPosition();
+    onScroll(api, articleID, UMR_SOURCE, scrollPercentage);
   };
 
   function onCreate() {
@@ -147,39 +149,32 @@ export default function ArticleReader({ api, teacherArticleID }) {
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);
 
-      api.setArticleOpened(articleInfo.id);
-      api.logReaderActivity(api.OPEN_ARTICLE, articleID, "", UMR_SOURCE);
+      api.readingSessionCreate(articleID, (sessionID) => {
+        setReadingSessionId(sessionID);
+
+        api.setArticleOpened(articleInfo.id);
+
+        api.logReaderActivity(
+          api.OPEN_ARTICLE,
+          articleID,
+          sessionID,
+          UMR_SOURCE,
+        );
+      });
     });
 
-    window.addEventListener("focus", function () {
-      console.log("focus");
-      onFocus(api, articleID, UMR_SOURCE);
-    });
-
-    window.addEventListener("blur", function () {
-      console.log("blur");
-      onBlur(api, articleID, UMR_SOURCE);
-    });
-
-    window.addEventListener("scroll", function () {
-      onScroll(api, articleID, UMR_SOURCE);
-    });
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("scroll", handleScroll);
   }
 
-  function onDestruct() {
-    window.removeEventListener("focus", function () {
-      onFocus(api, articleID, UMR_SOURCE);
-    });
-
-    window.removeEventListener("blur", function () {
-      onBlur(api, articleID, UMR_SOURCE);
-    });
-
-    window.removeEventListener("scroll", function () {
-      onScroll(api, articleID, UMR_SOURCE);
-    });
-
+  function componentWillUnmount() {
+    uploadActivity();
     api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
+
+    window.removeEventListener("focus", handleFocus);
+    window.removeEventListener("blur", handleBlur);
+    window.removeEventListener("scroll", handleScroll);
   }
 
   function toggleBookmarkedState() {
@@ -214,6 +209,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   return (
     <s.ArticleReader>
+      <ActivityTimer
+        message="Seconds in this reading session"
+        activeSessionDuration={activeSessionDuration}
+        clockActive={clockActive}
+      />
+
       <TopToolbar
         user={user}
         teacherArticleID={teacherArticleID}
@@ -226,6 +227,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
         setPronouncing={setPronouncing}
         url={articleInfo.url}
         UMR_SOURCE={UMR_SOURCE}
+        articleProgress={scrollPosition}
       />
       <h1>
         <TranslatableText
@@ -237,7 +239,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
       <div
         style={{
           marginTop: "1em",
-          marginBottom: "4em",
+          marginBottom: "2em",
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
@@ -275,9 +277,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </s.MainText>
-
-      <DifficultyFeedbackBox api={api} articleID={articleID} />
       <ReviewVocabulary articleID={articleID} />
+      <DifficultyFeedbackBox api={api} articleID={articleID} />
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );
