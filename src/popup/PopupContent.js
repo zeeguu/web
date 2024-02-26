@@ -2,14 +2,16 @@
 /*global browser*/
 import React, { useState, useEffect } from "react";
 import { setCurrentURL } from "./functions";
-import sendFeedbackEmail from "../JSInjection/Modal/sendFeedbackEmail";
 import { BROWSER_API } from "../utils/browserApi";
 import { HeadingContainer, MiddleContainer } from "./Popup.styles";
 import logo from "../images/zeeguu128.png";
 import PopupLoading from "./PopupLoading";
-import Link from "@mui/material/Link";
-import Alert from "@mui/material/Alert";
-import colors from "../JSInjection/colors";
+import ReportError from "../reportError/ReportError";
+import {
+  READABILITY_FEEDBACK,
+  LANGUAGE_FEEDBACK,
+  LANGUAGE_UNDEFINED,
+} from "../JSInjection/constants";
 
 export default function PopupContent({
   isReadable,
@@ -19,11 +21,6 @@ export default function PopupContent({
   api,
   sessionId,
 }) {
-  const LANGUAGE_FEEDBACK = "This language is not supported yet";
-  const LANGUAGE_UNDEFINED = "Language support information is unavailable";
-  const READABILITY_FEEDBACK = "This text is not readable";
-
-  const [feedbackSent, setFeedbackSent] = useState(false);
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
   const [finalStateExecuted, setFinalStateExecuted] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
@@ -66,62 +63,40 @@ export default function PopupContent({
     window.close();
   }
 
-  const sendFeedback = (feedback, feedbackType) => {
-    api.session = sessionId;
-    sendFeedbackEmail(api, feedback, tab.url, undefined, feedbackType);
-    setFeedbackSent(true);
-    setFeedbackSuccess(true);
-  };
-
-  const renderFeedbackSection = (feedback, feedbackType) => (
+  const renderFeedbackSection = (feedback) => (
     <>
       {" "}
-      {feedbackSuccess ? (
-        <>
-          <HeadingContainer>
-            <img src={logo} alt="Zeeguu logo" />
-          </HeadingContainer>
-          <MiddleContainer>
-            <Alert severity="success">Thanks for the feedback</Alert>
-          </MiddleContainer>
-        </>
-      ) : (
-        <>
-          {
-            <HeadingContainer>
-              <img src={logo} alt="Zeeguu logo" />
-            </HeadingContainer>
-          }
-          {
-            <MiddleContainer>
+      <>
+        <HeadingContainer>
+          <img src={logo} alt="Zeeguu logo" />
+        </HeadingContainer>
+        <MiddleContainer>
+          {!feedbackSuccess && (
+            <>
               {user && <h1>Oh no, {user.name}!</h1>}
               <p>{feedback}</p>
               <br />
-              {!feedbackSent && (
-                <Link
-                  style={{ textTransform: "none", color: `${colors.darkBlue}` }}
-                  component="button"
-                  underline="always"
-                  onClick={() => sendFeedback(feedback, feedbackType)}
-                >
-                  {"Report issue"}
-                </Link>
-              )}
-            </MiddleContainer>
-          }
-        </>
-      )}
+            </>
+          )}
+          <ReportError
+            api={api}
+            feedback={feedback}
+            feedbackSuccess={feedbackSuccess}
+            setFeedbackSuccess={setFeedbackSuccess}
+          />
+        </MiddleContainer>
+      </>
     </>
   );
 
   if (!isReadable) {
-    return renderFeedbackSection(READABILITY_FEEDBACK, "READABLE_");
+    return renderFeedbackSection(READABILITY_FEEDBACK);
   } else if (languageSupported === false && finalStateExecuted) {
-    return renderFeedbackSection(LANGUAGE_FEEDBACK, "LANGUAGE_");
+    return renderFeedbackSection(LANGUAGE_FEEDBACK);
   } else if (languageSupported && finalStateExecuted) {
     return <>{openModal()}</>;
   } else if (languageSupported === undefined && finalStateExecuted) {
-    return renderFeedbackSection(LANGUAGE_UNDEFINED, "LANGUAGE_");
+    return renderFeedbackSection(LANGUAGE_UNDEFINED);
   }
 
   return (

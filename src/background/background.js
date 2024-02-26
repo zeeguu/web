@@ -47,8 +47,8 @@ const contextMenuReadArticle = {
   id: "read_in_zeeguu_reader",
   title: "Read article with Zeeguu" /* what appears in the menu */,
   contexts: [
-    "page",
-  ] /* to make this appear only when user selects something on page */,
+    "all", // Show always when the user right-clicks.
+  ],
 };
 
 async function startReader() {

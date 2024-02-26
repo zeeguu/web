@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
 import { ZeeguuErrorStyle } from "./Modal/Modal.styles";
 import { BROWSER_API } from "../utils/browserApi";
+import { StyledPrimaryButton } from "./Modal/Buttons.styles";
+import ReportError from "../reportError/ReportError";
+import {
+  SESSISON_FEEDBACK,
+  LANGUAGE_FEEDBACK,
+  READABILITY_FEEDBACK,
+  OTHER_FEEDBACK,
+} from "./constants";
 
-export default function ZeeguuError(
+export default function ZeeguuError({
   isNotReadable,
   isNotLanguageSupported,
   isMissingSession,
-  url
-) {
-  const [timeout, setTimeout] = useState(5);
+  api,
+}) {
+  const [timeout, setTimeout] = useState(90);
   const [reason, setReason] = useState("");
+  const [feedbackSuccess, setFeedbackSuccess] = useState(false);
 
   useEffect(() => {
     document.body.style = "background-color: #ffbb54;";
@@ -17,13 +26,10 @@ export default function ZeeguuError(
       if (timeout > 0) setTimeout(timeout - 1);
     }, 1000);
 
-    if (isNotLanguageSupported) setReason("We do not support this Language.");
-    else if (isNotReadable) setReason("We cannot render this article.");
-    else if (isMissingSession === undefined)
-      setReason(
-        "Something went wrong with your login, please try to relog into Zeeguu."
-      );
-    else setReason("Something went wrong, please report it to us.");
+    if (isMissingSession === undefined) setReason(SESSISON_FEEDBACK);
+    else if (isNotLanguageSupported) setReason(LANGUAGE_FEEDBACK);
+    else if (isNotReadable) setReason(READABILITY_FEEDBACK);
+    else setReason(OTHER_FEEDBACK);
     return () => clearInterval(interval);
   });
 
@@ -33,6 +39,13 @@ export default function ZeeguuError(
     }
   }, [timeout]);
 
+  function toArticle() {
+    location.reload();
+  }
+
+  function toZeeguu() {
+    window.location.href = "https://www.zeeguu.org/";
+  }
   return (
     <ZeeguuErrorStyle>
       <div className="background">
@@ -44,7 +57,29 @@ export default function ZeeguuError(
               alt="Zeeguu logo"
             />
             <h1>{reason}</h1>
+            <ReportError
+              api={api}
+              feedback={reason}
+              feedbackSuccess={feedbackSuccess}
+              setFeedbackSuccess={setFeedbackSuccess}
+            />
             <h3>Return to Article in {timeout} seconds...</h3>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <StyledPrimaryButton
+              onClick={toArticle}
+              name="toArticle"
+              style={{ maxWidth: "12em", padding: "1em" }}
+            >
+              ⬅ Back to Article
+            </StyledPrimaryButton>
+            <StyledPrimaryButton
+              onClick={toZeeguu}
+              name="toZeeguu"
+              style={{ maxWidth: "10em", padding: "1em" }}
+            >
+              Go to Zeeguu
+            </StyledPrimaryButton>
           </div>
         </div>
       </div>
