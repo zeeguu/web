@@ -1,12 +1,11 @@
-import Modal from "@mui/material/Modal";
-import * as s from "./RedirectionNotificationModal.sc";
 import {
   isSupportedBrowser,
   isMobile,
 } from "../../utils/misc/browserDetection";
-import Header from "./Header";
-import Body from "./Body";
-import Footer from "./Footer";
+import MobileNotification from "./MobileNotification";
+import UnsupportedNotification from "./UnsupportedNotification";
+import SupportedNotification from "./SupportedNotification";
+import SupportedNotificationNotInstalled from "./SupportedNotification_Not_Installed";
 
 //This modal is used in the ArticlePreview component
 
@@ -19,35 +18,61 @@ export default function RedirectionNotificationModal({
   setDoNotShowRedirectionModal_UserPreference,
   setIsArticleSaved, // related to the article's state
 }) {
+  const MOBILE_NOTIFICATION = (
+    <MobileNotification
+      article={article}
+      api={api}
+      setIsArticleSaved={setIsArticleSaved}
+      handleCloseRedirectionModal={handleCloseRedirectionModal}
+      setDoNotShowRedirectionModal_UserPreference={
+        setDoNotShowRedirectionModal_UserPreference
+      }
+      open={open}
+    />
+  );
+
+  const SUPPORTED_NOTIFICATION = (
+    <SupportedNotification
+      article={article}
+      handleCloseRedirectionModal={handleCloseRedirectionModal}
+      setDoNotShowRedirectionModal_UserPreference={
+        setDoNotShowRedirectionModal_UserPreference
+      }
+      open={open}
+    />
+  );
+
+  const SUPPORTED_NOT_INSTALLED = (
+    <SupportedNotificationNotInstalled
+      handleCloseRedirectionModal={handleCloseRedirectionModal}
+      open={open}
+    />
+  );
+
+  const UNSUPPORTED_NOTIFICATION = (
+    <UnsupportedNotification
+      article={article}
+      api={api}
+      setIsArticleSaved={setIsArticleSaved}
+      handleCloseRedirectionModal={handleCloseRedirectionModal}
+      setDoNotShowRedirectionModal_UserPreference={
+        setDoNotShowRedirectionModal_UserPreference
+      }
+      open={open}
+    />
+  );
 
   function adaptNotificationType() {
     if (isSupportedBrowser() && hasExtension) {
-      return "SUPPORTED";
+      return SUPPORTED_NOTIFICATION;
     } else if (isSupportedBrowser() && !hasExtension) {
-      return "SUPPORTED_NOT_INSTALLED";
+      return SUPPORTED_NOT_INSTALLED;
     } else if (isMobile()) {
-      return "MOBILE";
+      return MOBILE_NOTIFICATION;
     } else if (!isSupportedBrowser() && !isMobile()) {
-      return "UNSUPPORTED_DESKTOP";
+      return UNSUPPORTED_NOTIFICATION;
     }
   }
 
-  return (
-    <Modal open={open} onClose={handleCloseRedirectionModal}>
-      <s.ModalWrapper>
-        <Header notificationType={adaptNotificationType()} />
-        <Body notificationType={adaptNotificationType()} />
-        <Footer
-          notificationType={adaptNotificationType()}
-          article={article}
-          api={api}
-          setIsArticleSaved={setIsArticleSaved}
-          handleCloseRedirectionModal={handleCloseRedirectionModal}
-          setDoNotShowRedirectionModal_UserPreference={
-            setDoNotShowRedirectionModal_UserPreference
-          }
-        />
-      </s.ModalWrapper>
-    </Modal>
-  );
+  return adaptNotificationType();
 }

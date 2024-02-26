@@ -119,13 +119,13 @@ const ButtonsContainer = styled.div`
   justify-content: space-between;
 
   ${(props) =>
-    props.adaptButtonsContainer() === "ONE_BUTTON" &&
+    props.ONE_BUTTON &&
     css`
       justify-content: center;
     `}
 
   ${(props) =>
-    props.adaptButtonsContainer() === "MORE_BUTTONS" &&
+    props.MORE_BUTTONS &&
     css`
       justify-content: space-between;
     `}
