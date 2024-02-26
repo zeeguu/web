@@ -102,7 +102,7 @@ export default function Footer({
           </s.CheckboxWrapper>
         )}
 
-        <s.ButtonContainer adaptButtonContainer={adaptButtonContainer}>
+        <s.ButtonsContainer adaptButtonContainer={adaptButtonContainer}>
           <a
             target={isMobile() ? "_self" : "_blank"}
             rel="noreferrer"
@@ -127,7 +127,7 @@ export default function Footer({
               Add to Saves
             </s.SaveArticleButton>
           )}
-        </s.ButtonContainer>
+        </s.ButtonsContainer>
       </s.Footer>
       <s.CloseButton role="button" onClick={handleCancel}>
         <CloseRoundedIcon fontSize="medium" />

@@ -110,7 +110,7 @@ const SaveArticleButton = styled.button`
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonsContainer = styled.div`
   text-align: center;
   width: 100%;
   display: flex;
@@ -143,7 +143,7 @@ export {
   GoToArticleButton,
   SaveArticleButton,
   ExternalLink,
-  ButtonContainer,
+  ButtonsContainer,
   IconHeader,
   Icon,
   Header,
