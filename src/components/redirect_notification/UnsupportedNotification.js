@@ -1,9 +1,9 @@
 import * as s from "./RedirectionNotificationModal.sc";
 import { useState } from "react";
-import Modal from "./Modal";
-import Header from "./Header";
-import Body from "./Body";
-import Footer from "./Footer";
+import Modal from "./shared/Modal";
+import Header from "./shared/Header";
+import Body from "./shared/Body";
+import Footer from "./shared/Footer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 export default function UnsupportedNotification({
