@@ -19,15 +19,16 @@ export default function RedirectionNotificationModal({
   setDoNotShowRedirectionModal_UserPreference,
   setIsArticleSaved, // related to the article's state
 }) {
+
   function adaptNotificationType() {
     if (isSupportedBrowser() && hasExtension) {
-      return "supported";
+      return "SUPPORTED";
     } else if (isSupportedBrowser() && !hasExtension) {
-      return "supportedNotInstalled";
+      return "SUPPORTED_NOT_INSTALLED";
     } else if (isMobile()) {
-      return "mobile";
+      return "MOBILE";
     } else if (!isSupportedBrowser() && !isMobile()) {
-      return "unsupportedDesktop";
+      return "UNSUPPORTED_DESKTOP";
     }
   }
 

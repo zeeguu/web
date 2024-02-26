@@ -56,7 +56,7 @@ export default function Footer({
     setRedirectCheckbox(false); //clear the redirectCheckbox state to avoid it being prechecked when the user re-enters the modal
   }
 
-  function renderExtensionLinks() {
+  function getInstallExtensionLinks() {
     if (runningInChromeDesktop()) {
       return "https://chrome.google.com/webstore/detail/the-zeeguu-reader/ckncjmaednfephhbpeookmknhmjjodcd";
     }
@@ -65,10 +65,14 @@ export default function Footer({
     }
   }
 
+  function adaptButtonsContainer() {
+    return isSupportedBrowser() ? "ONE_BUTTON" : "MORE_BUTTONS";
+  }
+
   function adaptGoToButton() {
-    if (notificationType === "supportedNotInstalled") {
+    if (notificationType === "SUPPORTED_NOT_INSTALLED") {
       return {
-        href: renderExtensionLinks(),
+        href: getInstallExtensionLinks(),
         text: "Install the Extension",
       };
     } else
@@ -78,16 +82,13 @@ export default function Footer({
       };
   }
 
-  function adaptButtonContainer() {
-    return isSupportedBrowser() ? "oneButton" : "twoButtons";
-  }
 
-  let primaryButton = adaptGoToButton();
+  let goToButton = adaptGoToButton();
 
   return (
     <>
       <s.Footer>
-        {notificationType !== "supportedNotInstalled" && (
+        {notificationType !== "SUPPORTED_NOT_INSTALLED" && (
           <s.CheckboxWrapper>
             <input
               onChange={toggleRedirectCheckbox}
@@ -102,20 +103,20 @@ export default function Footer({
           </s.CheckboxWrapper>
         )}
 
-        <s.ButtonsContainer adaptButtonContainer={adaptButtonContainer}>
+        <s.ButtonsContainer adaptButtonsContainer={adaptButtonsContainer}>
           <a
             target={isMobile() ? "_self" : "_blank"}
             rel="noreferrer"
-            href={primaryButton.href}
+            href={goToButton.href}
             className="link"
           >
-            <s.GoToArticleButton
+            <s.GoToButton
               role="button"
               // function below saves visibility preferences of the modal and closes it
               onClick={handleSaveVisibilityPreferences}
             >
-              {primaryButton.text}
-            </s.GoToArticleButton>
+              {goToButton.text}
+            </s.GoToButton>
           </a>
 
           {!isSupportedBrowser() && (

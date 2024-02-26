@@ -4,28 +4,27 @@ export default function Header({ notificationType }) {
   let zeeguuIcon = (
     <s.IconHeader
       className="fullDivWidthImage"
-      alt=""
       src="../static/images/zeeguuLogo.svg"
     ></s.IconHeader>
   );
 
   let headerContent = {
-    unsupportedDesktop: (
+    UNSUPPORTED_DESKTOP: (
       <>
         Your browser doesn't support <br></br> {zeeguuIcon} The Zeeguu Reader
         extension
       </>
     ),
 
-    mobile: <>It looks like you are using&nbsp;a&nbsp;mobile device</>,
+    MOBILE: <>It looks like you are using&nbsp;a&nbsp;mobile device</>,
 
-    supported: (
+    SUPPORTED: (
       <>
         You are ready to&nbsp;continue<br></br>to the original article's website
       </>
     ),
 
-    supportedNotInstalled: (
+    SUPPORTED_NOT_INSTALLED: (
       <>
         {zeeguuIcon} The Zeeguu Reader<br></br>browser extension is not
         installed

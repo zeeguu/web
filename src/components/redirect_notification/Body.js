@@ -4,7 +4,7 @@ export default function Body({ notificationType }) {
   function getSmallIcon(src) {
     return (
       <s.Icon>
-        <img className="fullDivWidthImage" alt="" src={src}></img>
+        <img className="fullDivWidthImage" src={src}></img>
       </s.Icon>
     );
   }
@@ -32,8 +32,8 @@ export default function Body({ notificationType }) {
     );
   }
 
-  let bodyContent = {
-    unsupportedDesktop: (
+  const bodyContent = {
+    UNSUPPORTED_DESKTOP: (
       <>
         <p>
           To read articles with our extension, we recommend installing{" "}
@@ -58,7 +58,7 @@ export default function Body({ notificationType }) {
       </>
     ),
 
-    mobile: (
+    MOBILE: (
       <p>
         If you want to read articles with the help of Zeeguu on your mobile
         device, you need to save them first by clicking the
@@ -66,7 +66,7 @@ export default function Body({ notificationType }) {
       </p>
     ),
 
-    supported: (
+    SUPPORTED: (
       <>
         <p>
           <s.Strong>Once there</s.Strong>, find and{" "}
@@ -89,7 +89,7 @@ export default function Body({ notificationType }) {
       </>
     ),
 
-    supportedNotInstalled: (
+    SUPPORTED_NOT_INSTALLED: (
       <>
         <p>
           For the best user experience we recommend you to read articles with{" "}

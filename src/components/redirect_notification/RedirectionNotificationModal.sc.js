@@ -68,7 +68,7 @@ const CheckboxWrapper = styled.div`
 //readability of the text inside it.
 //TODO: After implementing all the onboarding steps,
 //create style quide for all buttons and refactor / factor them out
-const GoToArticleButton = styled(OrangeRoundButton)`
+const GoToButton = styled(OrangeRoundButton)`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -119,13 +119,13 @@ const ButtonsContainer = styled.div`
   justify-content: space-between;
 
   ${(props) =>
-    props.adaptButtonContainer() === "oneButton" &&
+    props.adaptButtonsContainer() === "ONE_BUTTON" &&
     css`
       justify-content: center;
     `}
 
   ${(props) =>
-    props.adaptButtonContainer() === "twoButtons" &&
+    props.adaptButtonsContainer() === "MORE_BUTTONS" &&
     css`
       justify-content: space-between;
     `}
@@ -140,7 +140,7 @@ const ButtonsContainer = styled.div`
 export {
   ModalWrapper,
   CloseButton,
-  GoToArticleButton,
+  GoToButton,
   SaveArticleButton,
   ExternalLink,
   ButtonsContainer,
