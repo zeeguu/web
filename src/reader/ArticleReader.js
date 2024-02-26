@@ -21,6 +21,7 @@ import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
+import { SpeechContext } from "../exercises/SpeechContext";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -99,12 +100,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
     // Should we allow the ratio to go above 1?
     // Above 1 is the area where the feedback + exercises are.
     setScrollPosition(ratio);
+    console.log(ratio);
     return ratio;
   }
 
   useEffect(() => {
     onCreate();
-
     return () => {
       componentWillUnmount();
     };
@@ -165,7 +166,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
     window.addEventListener("focus", handleFocus);
     window.addEventListener("blur", handleBlur);
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, true);
   }
 
   function componentWillUnmount() {
