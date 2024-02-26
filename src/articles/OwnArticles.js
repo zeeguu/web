@@ -38,7 +38,7 @@ export default function OwnArticles({ api }) {
         setArticleList={setArticleList}
       />
       {articleList.map((each) => (
-        <ArticlePreview api={api} key={each.id} article={each} dontShowImage={true} />
+        <ArticlePreview key={each.id} article={each} dontShowImage={true} />
       ))}
     </>
   );

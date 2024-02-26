@@ -1,5 +1,5 @@
-import styled, { css } from "styled-components";
-import { zeeguuOrange, lightOrange, lightGrey } from "./colors";
+import styled from "styled-components";
+import { zeeguuOrange, white, brown, lightOrange, buttonBorder } from "./colors";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -64,49 +64,28 @@ const BigSquareButton = styled(RoundButton)`
   font-size: 18px;
 `;
 
-const StyledButton = styled.button`
-color: black;
-height: auto;
-display: flex;
-padding: 1em;
-margin: 1em;
-border-style: none;
-border-width: 2px;
-border-radius: 10px;
-font-size: 1em;
-font-weight: bold;
-cursor: pointer;
-align-items: center;
-justify-content: center;
+const StyledPrimaryButton = styled.button`
+  color: ${white};
+  background-color: ${zeeguuOrange};
+  border-color:  ${buttonBorder} !important;
 
-// Primary
-  ${(props) =>
-    props.primary &&
-    css`
-      background-color: ${zeeguuOrange};
-      :hover{
-        background-color: ${lightOrange};
-      }
-    `}
+  :hover{
+    background-color: ${lightOrange};
+    color: ${brown};
+  }
 
-  // Secondary
-  ${(props) =>
-    props.secondary &&
-    css`
-      background-color: white;
-      :hover{
-        text-decoration: underline;
-      }
-    `}
-
-    // Disabled
-    ${(props) =>
-    props.disabled &&
-    css`
-      background-color: ${lightGrey};
-      cursor: not-allowed;
-    `}
+  height: 45px;
+  display: inline-block;
+  padding: 5px 45px 5px 45px;
+  margin: 5px;
+  height: 50px;
+  border-style: none;
+  border-width: 2px;
+  border-radius: 40px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0px 4px ${brown};
 `;
 
-
-export { RoundButton, OrangeRoundButton, BigSquareButton, ClearSearchButton, StyledButton};
+export { RoundButton, OrangeRoundButton, BigSquareButton, ClearSearchButton, StyledPrimaryButton};

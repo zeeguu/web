@@ -1,4 +1,5 @@
 import LinkedWordList from "./LinkedWordListClass";
+import ZeeguuSpeech from "../speech/ZeeguuSpeech";
 
 export default class InteractiveText {
   constructor(
@@ -6,8 +7,7 @@ export default class InteractiveText {
     articleInfo,
     api,
     translationEvent = api.TRANSLATE_TEXT,
-    source = "",
-    zeeguuSpeech
+    source = ""
   ) {
     this.articleInfo = articleInfo;
     this.api = api;
@@ -18,7 +18,8 @@ export default class InteractiveText {
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (each) => new LinkedWordList(each)
     );
-    this.zeeguuSpeech = zeeguuSpeech;
+
+    this.zeeguuSpeech = new ZeeguuSpeech(api, this.articleInfo.language);
   }
 
   getParagraphs() {

@@ -85,12 +85,6 @@ Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {
   this._post(`/make_personal_copy`, param, callback);
 };
 
-
-Zeeguu_API.prototype.removePersonalCopy = function (articleId, callback) {
-  let param = qs.stringify({article_id: articleId})
-  this._post(`/remove_personal_copy`, param, callback);
-};
-
 Zeeguu_API.prototype.isArticleLanguageSupported = function (
   htmlContent,
   callback

@@ -14,7 +14,7 @@ let mainPageContentCommon = css`
   position: fixed;
   top: 0;
   overflow-y: scroll;
-  height: 100%;
+  height: 100vh;
   padding-bottom: 6px;
   padding-left: 6px;
   padding-right: 6px;

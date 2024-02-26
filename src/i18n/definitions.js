@@ -301,8 +301,6 @@ let strings = new LocalizedStrings(
             pickTheWord: "pick the word",
             typeTheWord: "type the word",
             learnedOn: "Learned on:",
-            orderWordsL1: "order words L1",
-            orderWordsL2: "order words L2",
             studentFeedback: "Student feedback:",
             noType: "No type",
             orderWordsTipMessage:
@@ -336,7 +334,7 @@ let strings = new LocalizedStrings(
             chooseTheWordFittingContextHeadline:
                 "Choose the alternative that fits the context",
             orderTheWordsToMakeTheHighlightedPhrase:
-                "Order the words to make the highlighted phrase. Some words can be extra.",
+                "Order the words to make the highlighted phrase. You don't need to use all the words.",
             matchWordWithTranslation: "Match each word with its translation",
             audioExerciseHeadline:
                 "Write the word your hear. Click to have it repeated!",
@@ -388,7 +386,6 @@ let strings = new LocalizedStrings(
             corfirmReset: "Are you sure? This will reset all words.",
             swapInfo: "Click a word to swap, or click again to remove.",
             swapInfoPlaceholderToken: "This is a placeholder, click a word to swap.",
-            disableAudio: "Can't use audio right now. (Disable audio exercises)",
 
             //ButtonFeedback
             speak: "Speak",

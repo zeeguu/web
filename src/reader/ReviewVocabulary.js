@@ -1,34 +1,21 @@
 import * as s from "./ArticleReader.sc";
 import useUILanguage from "../assorted/hooks/uiLanguageHook";
-import { StyledButton } from "../components/allButtons.sc.js"
-import { useHistory } from "react-router-dom";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { StyledPrimaryButton } from "../components/allButtons.sc.js"
+import { Link } from "react-router-dom";
 
 export default function ReviewVocabulary({articleID}) {
-  useUILanguage();
-  
-  const history = useHistory(); 
-
-    const handleButtonClick = () => {
-        history.push(`../words/forArticle/${articleID}`);
-    };
-
+  useUILanguage(); 
   return (
     <>
     <s.FeedbackBox className="feedbackBox">
+      <h2>Practice your Vocabulary</h2>
+      <p>Get exercises based on the words you translated</p>
       <s.CenteredContent>
-        <div className="imgContainer">
-        <h2>Exercises</h2>
-        <div>
-        <img
-            src="/static/images/zeeguuWhiteLogo.svg"
-            alt="Zeeguu Logo - The Elephant"
-          />
-        </div>
-        </div>
-        <StyledButton primary onClick={handleButtonClick}>
-          <span>Review words</span>{<NavigateNextIcon/>}
-        </StyledButton>
+      <StyledPrimaryButton primary>
+        <Link to={`../words/forArticle/${articleID}`} style={{ color: 'white', fontSize: "18px" }}>
+           <b>Exercises</b>
+        </Link>
+      </StyledPrimaryButton>
       </s.CenteredContent>
     </s.FeedbackBox>
     </>

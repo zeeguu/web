@@ -26,26 +26,28 @@ let ArticleReader = styled.div`
   .feedbackBox {
     background-color: ${lighterBlue};
     border: none;
+    max-width: 80%;
   }
 
   h1 {
-    font-size: 1.6em !important;
+    font-size: 1.9em !important;
     font-weight: 800;
     line-height: 1.5;
   }
 
   h2 {
-    font-size: 1.4rem !important;
+    font-size: 1.5rem !important;
+    line-height: 1.5;
   }
 
   h3 {
-    font-size: 1.3rem !important;
+    font-size: 1.4rem !important;
   }
 
   h4,
   h5,
   h6 {
-    font-size: 1.2rem !important;
+    font-size: 1.3rem !important;
   }
 
   hr {
@@ -165,12 +167,12 @@ let BookmarkButton = styled.div`
 `;
 
 let MainText = styled.div`
-  font-size: 1.2em;
-  line-height: 2em;
+  font-size: 1.3em;
+  line-height: 2.3em;
   padding: 0.2em;
 
   .textParagraph {
-    margin-bottom: 1.2em;
+    margin-bottom: 1em;
   }
 `;
 
@@ -242,6 +244,23 @@ let NavigationLink = styled(Link)`
     width: 16em;
   }
 
+  // Next
+  ${(props) =>
+    props.next &&
+    css`
+      :after {
+        content: ">>";
+      }
+    `}
+  // Previous
+  ${(props) =>
+    props.prev &&
+    css`
+      :before {
+        content: " <<";
+      }
+    `}
+
   // Primary
   ${(props) =>
     props.primary &&
@@ -277,10 +296,8 @@ let FeedbackBox = styled.div`
   border: 1px solid  ${lighterBlue};
   background-color: white;
   border-radius: 0.5em;
-  display: flex;
-  flex-direction: column;
-  padding: 2em 0em 2em 0em;
-  margin-top: 1em;
+  padding: 1em;
+  margin-top: 3em;
   align-items: center;
   justify-content: center;
 
