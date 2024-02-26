@@ -27,7 +27,7 @@ export default function Body({ notificationType }) {
   function renderExternalLink(href, text) {
     return (
       <s.ExternalLink target="_blank" rel="noreferrer" href={href}>
-        <s.ModalStrongTextWrapper>{text}</s.ModalStrongTextWrapper>
+        <s.Strong>{text}</s.Strong>
       </s.ExternalLink>
     );
   }
@@ -51,14 +51,9 @@ export default function Body({ notificationType }) {
         </p>
         <br></br>
         <p>
-          To read this article with the help of{" "}
-          <s.ModalStrongTextWrapper>Zeeguu</s.ModalStrongTextWrapper> on your
-          current browser, click
-          <s.ModalStrongTextWrapper>
-            {" "}
-            Add&nbsp;to&nbsp;Saves
-          </s.ModalStrongTextWrapper>{" "}
-          to save it first.
+          To read this article with the help of <s.Strong>Zeeguu</s.Strong> on
+          your current browser, click
+          <s.Strong> Add&nbsp;to&nbsp;Saves</s.Strong> to save it first.
         </p>{" "}
       </>
     ),
@@ -67,31 +62,23 @@ export default function Body({ notificationType }) {
       <p>
         If you want to read articles with the help of Zeeguu on your mobile
         device, you need to save them first by clicking the
-        <s.ModalStrongTextWrapper>
-          {" "}
-          Add&nbsp;to&nbsp;Saves
-        </s.ModalStrongTextWrapper>{" "}
-        button.
+        <s.Strong> Add&nbsp;to&nbsp;Saves</s.Strong> button.
       </p>
     ),
 
     supported: (
       <>
         <p>
-          <s.ModalStrongTextWrapper>Once there</s.ModalStrongTextWrapper>, find
-          and{" "}
-          <s.ModalStrongTextWrapper>
+          <s.Strong>Once there</s.Strong>, find and{" "}
+          <s.Strong>
             click The Zeeguu Reader{" "}
             {getSmallIcon("../static/images/zeeguuLogo.svg")}
             icon
-          </s.ModalStrongTextWrapper>{" "}
+          </s.Strong>{" "}
           in the top right corner of&nbsp;your browser's toolbar
           or&nbsp;on&nbsp;the&nbsp;list of your installed extensions{" "}
           {getSmallIcon("../static/images/puzzle.svg")}.{" "}
-          <s.ModalStrongTextWrapper>
-            Then&nbsp;wait for the reader to open
-          </s.ModalStrongTextWrapper>
-          .
+          <s.Strong>Then&nbsp;wait for the reader to open</s.Strong>.
         </p>
         <br></br>
         <img
@@ -106,10 +93,10 @@ export default function Body({ notificationType }) {
       <>
         <p>
           For the best user experience we recommend you to read articles with{" "}
-          <s.ModalStrongTextWrapper>The Zeeguu Reader</s.ModalStrongTextWrapper>{" "}
-          browser extension.</p>
-          <br></br>
-          <p>
+          <s.Strong>The Zeeguu Reader</s.Strong> browser extension.
+        </p>
+        <br></br>
+        <p>
           To read this article with the help of Zeeguu without the extension,
           simply click "Add to Saves" above the article’s title.
         </p>

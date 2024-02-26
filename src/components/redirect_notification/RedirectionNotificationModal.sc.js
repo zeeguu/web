@@ -24,7 +24,7 @@ const Footer = styled(ModalFooterGlobal)``;
 
 const CloseButton = styled(CloseButtonGlobal)``;
 
-const ModalStrongTextWrapper = styled(ModalStrongTextWrapperGlobal)``;
+const Strong = styled(ModalStrongTextWrapperGlobal)``;
 
 const Icon = styled.span`
   height: 1em;
@@ -150,5 +150,5 @@ export {
   Body,
   Footer,
   CheckboxWrapper,
-  ModalStrongTextWrapper,
+  Strong,
 };
