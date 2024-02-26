@@ -23,6 +23,18 @@ const ExerciseType = ({ source, date}) => {
           <p className="type-explanation">{strings.typeTheWord}</p>
         </s.StyledExerciseType>
       );
+      case "OrderWords_L1T_from_L2T":
+        return (
+          <s.StyledExerciseType>
+            <p className="type-explanation">{strings.orderWordsL1}</p>
+          </s.StyledExerciseType>
+        );
+        case "OrderWords_L2T_from_L1T":
+          return (
+            <s.StyledExerciseType>
+              <p className="type-explanation">{strings.orderWordsL2}</p>
+            </s.StyledExerciseType>
+          );
     //TODO the MULTIPLE_CHOICE case can be deleted when the logging in exercises has been changed.
     case "MULTIPLE_CHOICE":
       return (

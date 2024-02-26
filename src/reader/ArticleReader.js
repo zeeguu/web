@@ -3,6 +3,7 @@ import { useLocation, useHistory } from "react-router-dom";
 
 import { UserContext } from "../UserContext";
 import { RoutingContext } from "../contexts/RoutingContext";
+import { SpeechContext } from "../exercises/SpeechContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
 
@@ -18,6 +19,9 @@ import ReportBroken from "./ReportBroken";
 import TopToolbar from "./TopToolbar";
 import ReviewVocabulary from "./ReviewVocabulary";
 import ArticleAuthors from "./ArticleAuthors";
+import useActivityTimer from "../hooks/useActivityTimer";
+import ActivityTimer from "../components/ActivityTimer";
+import useShadowRef from "../hooks/useShadowRef";
 
 let FREQUENCY_KEEPALIVE = 3 * 1000; // 3 seconds
 let previous_time = 0; // since sent a scroll update
@@ -72,6 +76,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [pronouncing, setPronouncing] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
 
+  const speech = useContext(SpeechContext);
   const user = useContext(UserContext);
   const history = useHistory();
 
@@ -86,16 +91,38 @@ export default function ArticleReader({ api, teacherArticleID }) {
     return ratio;
   }
 
+  const activeSessionDurationRef = useShadowRef(activeSessionDuration);
+  const readingSessionIdRef = useShadowRef(readingSessionId);
+
+  function uploadActivity() {
+    api.readingSessionUpdate(
+      readingSessionIdRef.current,
+      activeSessionDurationRef.current,
+    );
+  }
+
   useEffect(() => {
     onCreate();
+
     return () => {
-      onDestruct();
+      componentWillUnmount();
     };
     // eslint-disable-next-line
   }, []);
 
+  const handleFocus = () => {
+    onFocus(api, articleID, UMR_SOURCE);
+  };
+
+  const handleBlur = () => {
+    onBlur(api, articleID, UMR_SOURCE);
+  };
+
+  const handleScroll = () => {
+    onScroll(api, articleID, UMR_SOURCE);
+  };
+
   function onCreate() {
-    console.log("CALLING OnCREATE");
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -103,8 +130,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
           articleInfo,
           api,
           api.TRANSLATE_TEXT,
-          UMR_SOURCE
-        )
+          UMR_SOURCE,
+          speech,
+        ),
       );
       setInteractiveTitle(
         new InteractiveText(
@@ -112,8 +140,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
           articleInfo,
           api,
           api.TRANSLATE_TEXT,
-          UMR_SOURCE
-        )
+          UMR_SOURCE,
+          speech,
+        ),
       );
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);
@@ -132,14 +161,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
       onBlur(api, articleID, UMR_SOURCE);
     });
 
-    window.addEventListener(
-      "scroll",
-      function () {
-        var scroll = updateScrollPosition();
-        onScroll(api, articleID, UMR_SOURCE, scroll);
-      },
-      true
-    );
+    window.addEventListener("scroll", function () {
+      onScroll(api, articleID, UMR_SOURCE);
+    });
   }
 
   function onDestruct() {
@@ -163,7 +187,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.STAR_ARTICLE, articleID, "", UMR_SOURCE);
+    api.logReaderActivity(
+      api.STAR_ARTICLE,
+      articleID,
+      readingSessionId,
+      UMR_SOURCE,
+    );
   }
 
   if (!articleInfo) {
@@ -178,14 +207,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
         article.language,
         (newID) => {
           history.push(`/teacher/texts/editText/${newID}`);
-        }
+        },
       );
     });
-  };
-
-  const handleSaveCopyToShare = () => {
-    setReturnPath("/teacher/texts/AddTextOptions");
-    saveArticleToOwnTexts();
   };
 
   return (
@@ -202,7 +226,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
         setPronouncing={setPronouncing}
         url={articleInfo.url}
         UMR_SOURCE={UMR_SOURCE}
-        articleProgress={scrollPosition}
       />
       <h1>
         <TranslatableText
@@ -244,6 +267,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
       ) : (
         ""
       )}
+
       <s.MainText>
         <TranslatableText
           interactiveText={interactiveText}
