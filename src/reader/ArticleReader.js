@@ -19,7 +19,7 @@ import TopToolbar from "./TopToolbar";
 import ReviewVocabulary from "./ReviewVocabulary";
 import ArticleAuthors from "./ArticleAuthors";
 
-let FREQUENCY_KEEPALIVE = 3 * 1000; // 3 seconds 
+let FREQUENCY_KEEPALIVE = 3 * 1000; // 3 seconds
 let previous_time = 0; // since sent a scroll update
 
 export const UMR_SOURCE = "UMR";
@@ -74,17 +74,17 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   const user = useContext(UserContext);
   const history = useHistory();
-  
+
   function updateScrollPosition() {
-    var scrollElement = document.getElementById("scrollHolder")
-    var scrollY = scrollElement.scrollTop ;
+    var scrollElement = document.getElementById("scrollHolder");
+    var scrollY = scrollElement.scrollTop;
     var limit = scrollElement.scrollHeight - scrollElement.clientHeight - 450; // 450 represents the feedback + exercise div
-    var ratio = Math.round(scrollY/limit * 100) / 100
+    var ratio = Math.round((scrollY / limit) * 100) / 100;
     // Should we allow the ratio to go above 1?
     // Above 1 is the area where the feedback + exercises are.
     setScrollPosition(ratio);
     return ratio;
-  };
+  }
 
   useEffect(() => {
     onCreate();
@@ -132,11 +132,14 @@ export default function ArticleReader({ api, teacherArticleID }) {
       onBlur(api, articleID, UMR_SOURCE);
     });
 
-    window.addEventListener("scroll", function () {
-      var scroll = updateScrollPosition();
-      console.log(scroll);
-      onScroll(api, articleID, UMR_SOURCE, scroll);
-    }, true);
+    window.addEventListener(
+      "scroll",
+      function () {
+        var scroll = updateScrollPosition();
+        onScroll(api, articleID, UMR_SOURCE, scroll);
+      },
+      true
+    );
   }
 
   function onDestruct() {
@@ -186,7 +189,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   return (
-    <s.ArticleReader >
+    <s.ArticleReader>
       <TopToolbar
         user={user}
         teacherArticleID={teacherArticleID}
@@ -208,16 +211,24 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </h1>
-      <div style={{ marginTop: "1em", marginBottom: "4em", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div
+        style={{
+          marginTop: "1em",
+          marginBottom: "4em",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         <ArticleAuthors articleInfo={articleInfo} />
-        <div style={{ display: "flex", flexDirection: "row"}}>
-        <ArticleSource url={articleInfo.url} />
-        <ReportBroken
-          api={api}
-          UMR_SOURCE={UMR_SOURCE}
-          history={history}
-          articleID={articleID}
-        />
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <ArticleSource url={articleInfo.url} />
+          <ReportBroken
+            api={api}
+            UMR_SOURCE={UMR_SOURCE}
+            history={history}
+            articleID={articleID}
+          />
         </div>
       </div>
 
@@ -242,9 +253,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
       </s.MainText>
 
       <DifficultyFeedbackBox api={api} articleID={articleID} />
-      <ReviewVocabulary
-          articleID={articleID}
-        />
+      <ReviewVocabulary articleID={articleID} />
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );
