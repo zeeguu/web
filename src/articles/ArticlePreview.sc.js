@@ -13,6 +13,34 @@ const ArticlePreview = styled.div`
   margin-top: 2em;
   padding-left: 0.8em;
 `;
+/*
+  The div is encompassed in a
+*/
+const ArticleContent = styled.div`
+  width: 100%;
+  display: flex;
+  color: inherit;
+  font-weight: inherit;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: space-around;
+  align-items: center;
+
+  img {
+    margin: 0.5em;
+    margin-left: 0;
+    max-width: 8em;
+    max-height: 8em;
+    border-radius: 1em;
+    align-self: center;
+
+    @media (max-width: 768px) {
+      max-width: 14em;
+      max-height: 10em;
+    }
+  }
+`;
 
 //Invisible component that allows to open the redirection
 //notification modal when the article's title is clicked
@@ -37,6 +65,7 @@ const Title = styled.div`
   padding-right: 0.3em;
   font-weight: 500;
   display: block;
+  width: 100%;
 `;
 
 const Difficulty = styled.div`
@@ -64,7 +93,9 @@ let Summary = styled.div`
   color: ${almostBlack};
   line-height: 1.5em;
   margin-top: 0.36em;
-  width: 60%;
+  margin-right: 1em;
+  width: 34em;
+  align-self: stretch;
   @media (max-width: 768px) {
     width: 100%;
   }
@@ -104,6 +135,7 @@ export {
   WordCount,
   ArticlePreview,
   InvisibleTitleButton,
+  ArticleContent,
   Summary,
   SourceImage,
   PublishingTime,

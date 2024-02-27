@@ -22,7 +22,7 @@ export default function ArticleOverview({
     article.has_personal_copy,
   );
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+  console.log(article);
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
@@ -98,87 +98,18 @@ export default function ArticleOverview({
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
-      <div>
-        <s.Title>{titleLink(article)}</s.Title>
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "space-evenly",
-          }}
-        >
-          <img
-            alt=""
-            style={{
-              flex: "right",
-              margin: "0.5em",
-              maxWidth: "8em",
-              maxHeight: "6em",
-              borderRadius: "1em",
-            }}
-            src={
-              "https://asset.dr.dk/imagescaler/?protocol=https&server=www.dr.dk&file=%2Fimages%2Fother%2F2024%2F02%2F19%2Fscanpix-20231130-235836-6.jpg&scaleAfter=crop&quality=70&w=850&h=620"
-            }
-          />
-          <s.Summary>{article.summary}</s.Summary>
-          <div>
-            <s.Difficulty>{difficulty}</s.Difficulty>
-            <s.WordCount style={{ marginRight: "1em" }}>
-              {article.metrics.word_count}
-            </s.WordCount>
-          </div>
-        </div>
-      </div>
 
-      {/*{windowWidth >= 768 ? (
-        <>
-          <s.Title>{titleLink(article)}</s.Title>
-          <div style={{ display: "flex", width: "100%" }}>
-            <img
-              alt=""
-              style={{
-                flex: "right",
-                margin: "0.5em",
-                maxWidth: "8em",
-                maxHeight: "6em",
-                borderRadius: "1em",
-              }}
-              src={
-                "https://asset.dr.dk/imagescaler/?protocol=https&server=www.dr.dk&file=%2Fimages%2Fother%2F2024%2F02%2F19%2Fscanpix-20231130-235836-6.jpg&scaleAfter=crop&quality=70&w=850&h=620"
-              }
-            />
-            <s.Summary>{article.summary}</s.Summary>
-            <s.WordCount>{article.metrics.word_count}</s.WordCount>
-            <s.Difficulty>{difficulty}</s.Difficulty>
-          </div>
-        </>
-      ) : (
-        <>
-          <div style={{ width: "100%" }}>
-            <s.Title>{titleLink(article)}</s.Title>
-            <s.Summary>{article.summary}</s.Summary>
-          </div>
-          <div style={{ display: "flex", width: "100%" }}>
-            <img
-              alt=""
-              style={{
-                flex: "right",
-                margin: "1em",
-                maxWidth: "8em",
-                maxHeight: "6em",
-                borderRadius: "1em",
-              }}
-              src={
-                "https://asset.dr.dk/imagescaler/?protocol=https&server=www.dr.dk&file=%2Fimages%2Fother%2F2024%2F02%2F19%2Fscanpix-20231130-235836-6.jpg&scaleAfter=crop&quality=70&w=850&h=620"
-              }
-            />
-            <s.WordCount>{article.metrics.word_count}</s.WordCount>
-            <s.Difficulty>{difficulty}</s.Difficulty>
-          </div>
-        </>
-      )} */}
+      <s.Title>{titleLink(article)}</s.Title>
+      <s.ArticleContent>
+        {article.img_url && <img alt="" src={article.img_url} />}
+        <s.Summary>{article.summary}</s.Summary>
+        <div>
+          <s.Difficulty>{difficulty}</s.Difficulty>
+          <s.WordCount style={{ marginRight: "1em" }}>
+            {article.metrics.word_count}
+          </s.WordCount>
+        </div>
+      </s.ArticleContent>
 
       <div>
         {!dontShowImage && (
