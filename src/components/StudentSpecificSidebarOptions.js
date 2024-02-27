@@ -6,36 +6,60 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
 
   return (
     <>
-      <SidebarLink text={strings.articles} to="/articles" />
+      <SidebarLink text="Articles" to="/articles" icon="book-open-line.svg" />
 
-      <SidebarLink text={strings.words} to="/words" />
+      {/*<SidebarLink text={strings.words} to="/words" />*/}
 
-      <SidebarLink text={strings.exercises} to="/exercises" />
+      <SidebarLink
+        text={strings.exercises}
+        to="/exercises"
+        icon="shapes-line.svg"
+      />
 
-      <br />
+      <SidebarLink
+        text={strings.history}
+        to="/history"
+        icon="history-line.svg"
+      />
 
-      <SidebarLink text={strings.history} to="/history" />
-
-      <SidebarLink text={strings.userDashboard} to="/user_dashboard" />
-
-      <br />
+      <SidebarLink
+        text={strings.userDashboard}
+        to="/user_dashboard"
+        icon="bar-chart-box-line.svg"
+      />
 
       {is_teacher && (
-        <SidebarLink text={strings.teacherSite} to="/teacher/classes" />
+        <SidebarLink
+          text="My Classes"
+          to="/teacher/classes"
+          icon="graduation-cap-line.svg"
+        />
       )}
 
-      <SidebarLink text={strings.settings} to="/account_settings" />
+      {is_teacher && (
+        <SidebarLink
+          text="My Uploads"
+          to="/teacher/texts"
+          icon="file-upload-line.svg"
+        />
+      )}
 
-      <div className="navigationLink">
-        <Link
-          to="/"
-          onClick={() => {
-            user.logoutMethod();
-          }}
-        >
-          <small>{strings.logout}</small>
-        </Link>
-      </div>
+      <SidebarLink
+        text={strings.settings}
+        to="/account_settings"
+        icon="settings-2-line.svg"
+      />
+
+      {/*<div className="navigationLink">*/}
+      {/*  <Link*/}
+      {/*    to="/"*/}
+      {/*    onClick={() => {*/}
+      {/*      user.logoutMethod();*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    <small>{strings.logout}</small>*/}
+      {/*  </Link>*/}
+      {/*</div>*/}
     </>
   );
 }

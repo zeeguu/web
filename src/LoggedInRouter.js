@@ -7,23 +7,30 @@ import TeacherRouter from "./teacher/_routing/_TeacherRouter";
 import Settings from "./pages/Settings";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import ReadingHistory from "./words/WordHistory";
 import { SpeechContext } from "./exercises/SpeechContext";
 import { ToastContainer } from "react-toastify";
-
+import SimpleSidebar from "./components/SimpleSidebar";
 
 export default function LoggedInRouter({ api, setUser, speechEngine }) {
   return (
     <>
       <SpeechContext.Provider value={speechEngine}>
-        <SideBar api={api}>
+        <SimpleSidebar api={api}>
           <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
+
           <PrivateRoute
             path="/exercises"
             api={api}
             component={ExercisesRouter}
           />
+          <PrivateRoute
+            path="/read/article"
+            api={api}
+            component={ArticleReader}
+          />
+
           <PrivateRoute path="/words" api={api} component={WordsRouter} />
 
           <PrivateRoute path="/history" api={api} component={ReadingHistory} />
@@ -38,16 +45,11 @@ export default function LoggedInRouter({ api, setUser, speechEngine }) {
           />
 
           <PrivateRoute
-            path="/read/article"
-            api={api}
-            component={ArticleReader}
-          />
-
-          <PrivateRoute
             path="/user_dashboard"
             api={api}
             component={UserDashboard}
           />
+
           <ToastContainer
             position="bottom-right"
             autoClose={2000}
@@ -60,7 +62,7 @@ export default function LoggedInRouter({ api, setUser, speechEngine }) {
             pauseOnHover
             theme="light"
           />
-        </SideBar>
+        </SimpleSidebar>
       </SpeechContext.Provider>
     </>
   );
