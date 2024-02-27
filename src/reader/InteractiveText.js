@@ -20,7 +20,6 @@ export default class InteractiveText {
       (each) => new LinkedWordList(each),
     );
     if (this.articleInfo.language !== zeeguuSpeech.language) {
-      console.log("Updated speech language.");
       this.zeeguuSpeech = new ZeeguuSpeech(api, this.articleInfo.language);
     } else {
       this.zeeguuSpeech = zeeguuSpeech;
