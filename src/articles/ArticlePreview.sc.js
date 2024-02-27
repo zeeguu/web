@@ -36,6 +36,7 @@ const Title = styled.div`
   color: ${zeeguuDarkOrange};
   padding-right: 0.3em;
   font-weight: 500;
+  display: block;
 `;
 
 const Difficulty = styled.div`
@@ -49,7 +50,6 @@ const Difficulty = styled.div`
   align-items: center;
   align-self: center;
   justify-content: center;
-  margin-right: 1em;
   flex-shrink: 0;
   float: right;
 `;
@@ -64,6 +64,10 @@ let Summary = styled.div`
   color: ${almostBlack};
   line-height: 1.5em;
   margin-top: 0.36em;
+  width: 60%;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 let SourceImage = styled.span`
