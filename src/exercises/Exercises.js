@@ -251,6 +251,7 @@ export default function Exercises({
             reload={reload}
             setReload={setReload}
             exerciseSessionId={dbExerciseSessionId}
+            activeSessionDuration={activeSessionDuration}
           />
         </s.ExForm>
         <FeedbackDisplay

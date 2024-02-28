@@ -10,6 +10,7 @@ import {
   removePunctuation,
   tokenize,
 } from "../../../utils/preprocessing/preprocessing";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 export default function OrderWords({
   api,
@@ -24,6 +25,7 @@ export default function OrderWords({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
   exerciseType,
 }) {
   // Constants for Exercise
@@ -37,8 +39,8 @@ export default function OrderWords({
   const WORD_SOUP_ID = "wordSoupId";
   const IS_DEBUG = false;
   const EXERCISE_TYPE = exerciseType;
-  const TYPE_L1_CONSTRUCTION = "OrderWords_L1T_from_L2T";
-  const TYPE_L2_CONSTRUCTION = "OrderWords_L2T_from_L1T";
+  const TYPE_L1_CONSTRUCTION = "OrderWords_L1"; // Construct in English (Translated)
+  const TYPE_L2_CONSTRUCTION = "OrderWords_L2"; // Construct in the learned language
   const RIGHT = 0;
   const LEFT = 1;
 
@@ -63,6 +65,9 @@ export default function OrderWords({
   const [textBeforeExerciseText, setTextBeforeExerciseText] = useState("");
   const [textAfterExerciseText, setTextAfterExerciseText] = useState("");
   const [movingObject, setMovingObject] = useState();
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
 
   // for when we are dragging things from the solution area
   const solutionDragIndex = useRef(); // the one we are dragging
@@ -571,7 +576,6 @@ export default function OrderWords({
     errorTypesList,
     updatedErrorCounter,
   ) {
-    let currentDuration = _getCurrentDuration();
     let jsonDataExerciseCheck = {
       constructed_sent: constructedSentence,
       solution_sent: resizeSol,
@@ -579,7 +583,7 @@ export default function OrderWords({
       feedback_given: finalClueText,
       error_types: errorTypesList,
       total_errors: updatedErrorCounter,
-      exercise_time: currentDuration,
+      exercise_time: getCurrentSubSessionDuration("ms"),
       exercise_start: initialTime,
     };
     _orderWordsLogUserActivity("WO_CHECK", jsonDataExerciseCheck);
@@ -792,8 +796,6 @@ export default function OrderWords({
   function handleShowSolution() {
     // Ensure Rest and Swap are reset
     handleUndoResetStatus();
-
-    let duration = _getCurrentDuration();
     let message = messageToAPI + "S";
     // Construct the Sentence to show the solution.
     let solutionWord = [...solutionWords];
@@ -802,15 +804,14 @@ export default function OrderWords({
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     setIsCluesRowVisible(false);
-    handleAnswer(message, duration);
+    handleAnswer(message);
   }
 
   function handleAnswer(message) {
-    let duration = _getCurrentDuration();
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      duration,
+      getCurrentSubSessionDuration("ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -819,7 +820,7 @@ export default function OrderWords({
       sentence_was_too_long: isSentenceTooLong,
       sentence_context_was_reduced: isHandlingLongSentences,
       outcome: message,
-      total_time: duration,
+      total_time: getCurrentSubSessionDuration("ms"),
       total_errors: totalErrorCounter,
       total_hints: hintCounter,
       total_resets: resetCounter,
@@ -1195,15 +1196,6 @@ export default function OrderWords({
       </sOW.ExerciseOW>
     </>
   );
-
-  function _getCurrentDuration() {
-    let currTime = new Date();
-    if (IS_DEBUG) {
-      console.log(currTime - initialTime);
-      console.log("^^^^ time elapsed");
-    }
-    return currTime - initialTime;
-  }
 
   // Touch / Mouse Drag n' Drop
   // Helper Functions
