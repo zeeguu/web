@@ -50,6 +50,7 @@ export default function SpellWhatYouHear({
           articleInfo,
           api,
           "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
           speech,
         ),
       );
