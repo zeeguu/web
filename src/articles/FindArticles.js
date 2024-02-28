@@ -114,7 +114,7 @@ export default function NewArticles() {
           articlesListShouldChange={articlesListShouldChange}
         />
 
-        <SearchField query={searchQuery} />
+        <SearchField api={api} query={searchQuery} />
       </s.MaterialSelection>
 
       <SortingButtons
