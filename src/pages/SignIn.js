@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 
-import { useHistory } from "react-router-dom";
 import strings from "../i18n/definitions";
 
 import * as s from "../components/FormPage.sc";
@@ -13,7 +12,7 @@ export default function SignIn({ api, signInAndRedirect, setRedirectLink }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  let history = useHistory();
+
   let emailInputDOM = useRef();
   useEffect(() => {
     emailInputDOM.current.focus();
@@ -25,7 +24,7 @@ export default function SignIn({ api, signInAndRedirect, setRedirectLink }) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
-        signInAndRedirect(userInfo, history);
+        signInAndRedirect(userInfo);
       });
     });
   }

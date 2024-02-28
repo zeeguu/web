@@ -1,27 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import LandingPage from "./landingPage/LandingPage";
-import SignIn from "./pages/SignIn";
-import { UserContext } from "./UserContext";
+import { BrowserRouter, Switch } from "react-router-dom";
+
+import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
-import SessionStorage from "./assorted/SessionStorage";
+import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
-import LoggedInRouter from "./LoggedInRouter";
-import CreateAccount from "./pages/CreateAccount";
-import ResetPassword from "./pages/ResetPassword";
+
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
 import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
-import ExtensionInstalled from "./pages/ExtensionInstalled";
-import NoSidebarRouter from "./NoSidebarRouter.js";
+
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
+import { SpeechContext } from "./contexts/SpeechContext";
 
 import {
   getUserSession,
-  saveUserInfoIntoCookies,
   removeUserInfoFromCookies,
 } from "./utils/cookies/userInfo";
-import InstallExtension from "./pages/InstallExtension";
+
+import ZeeguuRouter from "./MainAppRouter";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   let userDict = {};
@@ -40,20 +38,13 @@ function App() {
 
   const [userData, setUserData] = useState(userDict);
   const [hasExtension, setHasExtension] = useState(false);
-  const [zeeguuSpeech, setZeeguuSpeech] = useState(null);
-  const [redirectLink, setRedirectLink] = useState(null);
-
-  function setUser(dict) {
-    setUserData(dict);
-    // If the dictionary is not empty (the user data was set)
-    // Create the ZeeguuSpeech object
-    if (Object.keys(dict).length !== 0)
-      setZeeguuSpeech(new ZeeguuSpeech(api, dict.learned_language));
-  }
+  const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
 
   useEffect(() => {
-    setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
-  }, []);
+    if (Object.keys(userData).length !== 0) {
+      setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
+    }
+  }, [userData]);
 
   useEffect(() => {
     console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
@@ -73,7 +64,7 @@ function App() {
 
     const interval = setInterval(() => {
       if (!getUserSession()) {
-        setUser({});
+        setUserData({});
       }
     }, 1000);
     checkExtensionInstalled(setHasExtension);
@@ -82,114 +73,46 @@ function App() {
     // eslint-disable-next-line
   }, []);
 
-  function handleSuccessfulSignIn(userInfo, history) {
-    LocalStorage.setSession(api.session);
-    LocalStorage.setUserInfo(userInfo);
-    api.getUserPreferences((preferences) => {
-      SessionStorage.setAudioExercisesEnabled(
-        preferences["audio_exercises"] === undefined ||
-          preferences["audio_exercises"] === "true",
-      );
-    });
-
-    // Cookies are the mechanism via which we share a login
-    // between the extension and the website
-    saveUserInfoIntoCookies(userInfo, api.session);
-    let newUserValue = {
-      session: api.session,
-      name: userInfo.name,
-      learned_language: userInfo.learned_language,
-      native_language: userInfo.native_language,
-      is_teacher: userInfo.is_teacher,
-      is_student: userInfo.is_student,
-    };
-
-    console.log("setting new user value: ");
-    console.dir(newUserValue);
-    setUser(newUserValue);
-    if (redirectLink !== null) {
-      window.location.href = redirectLink;
-    } else if (
-      window.location.href.indexOf("create_account") > -1 &&
-      !hasExtension
-    ) {
-      history.push("/install_extension");
-    } else {
-      history.push("/articles");
-    }
-  }
-
   function logout() {
     LocalStorage.deleteUserInfo();
-    setUser({});
+    setUserData({});
 
     removeUserInfoFromCookies();
   }
+
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
 
   return (
-    <BrowserRouter>
-      <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
-        <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
-          <Switch>
-            <Route
-              path="/"
-              exact
-              render={() => <LandingPage setRedirectLink={setRedirectLink} />}
-            />
+    <SpeechContext.Provider value={zeeguuSpeech}>
+      <BrowserRouter>
+        <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
+          <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
+            <APIContext.Provider value={api}>
+              {/* Routing*/}
+              <ZeeguuRouter
+                api={api}
+                setUser={setUserData}
+                hasExtension={hasExtension}
+              />
 
-            {/* cf: https://ui.dev/react-router-v4-pass-props-to-components/ */}
-            <Route
-              path="/login"
-              render={() => (
-                <SignIn
-                  api={api}
-                  signInAndRedirect={handleSuccessfulSignIn}
-                  setRedirectLink={setRedirectLink}
-                />
-              )}
-            />
-
-            <Route
-              path="/create_account"
-              render={() => (
-                <CreateAccount
-                  api={api}
-                  signInAndRedirect={handleSuccessfulSignIn}
-                />
-              )}
-            />
-
-            <Route
-              path="/extension_installed"
-              render={() => <ExtensionInstalled api={api} />}
-            />
-
-            <Route
-              path="/install_extension"
-              render={() => <InstallExtension />}
-            />
-
-            <Route
-              path="/reset_pass"
-              render={() => <ResetPassword api={api} />}
-            />
-
-            <Route
-              path="/render"
-              render={() => <NoSidebarRouter api={api} />}
-            />
-
-            <LoggedInRouter
-              api={api}
-              speechEngine={zeeguuSpeech}
-              setUser={setUser}
-            />
-          </Switch>
-        </UserContext.Provider>
-      </RoutingContext.Provider>
-    </BrowserRouter>
+              <ToastContainer
+                position="bottom-right"
+                autoClose={2000}
+                hideProgressBar={true}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
+            </APIContext.Provider>
+          </UserContext.Provider>
+        </RoutingContext.Provider>
+      </BrowserRouter>
+    </SpeechContext.Provider>
   );
 }
 

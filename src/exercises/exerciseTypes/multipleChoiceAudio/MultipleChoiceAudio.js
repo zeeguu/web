@@ -13,7 +13,7 @@ import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import EditButton from "../../../words/EditButton.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
-import { SpeechContext } from "../../SpeechContext.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 
 const EXERCISE_TYPE = "Multiple_Choice_Audio";
 
