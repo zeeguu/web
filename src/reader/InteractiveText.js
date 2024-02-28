@@ -1,4 +1,5 @@
 import LinkedWordList from "./LinkedWordListClass";
+import ZeeguuSpeech from "../speech/APIBasedSpeech";
 
 export default class InteractiveText {
   constructor(
@@ -7,7 +8,7 @@ export default class InteractiveText {
     api,
     translationEvent = api.TRANSLATE_TEXT,
     source = "",
-    zeeguuSpeech
+    zeeguuSpeech,
   ) {
     this.articleInfo = articleInfo;
     this.api = api;
@@ -16,9 +17,13 @@ export default class InteractiveText {
     //
     this.paragraphs = content.split(/\n\n/);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
-      (each) => new LinkedWordList(each)
+      (each) => new LinkedWordList(each),
     );
-    this.zeeguuSpeech = zeeguuSpeech;
+    if (this.articleInfo.language !== zeeguuSpeech.language) {
+      this.zeeguuSpeech = new ZeeguuSpeech(api, this.articleInfo.language);
+    } else {
+      this.zeeguuSpeech = zeeguuSpeech;
+    }
   }
 
   getParagraphs() {
@@ -38,7 +43,7 @@ export default class InteractiveText {
         context,
         window.location,
         this.articleInfo.title,
-        this.articleInfo.id
+        this.articleInfo.id,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -55,7 +60,7 @@ export default class InteractiveText {
       this.translationEvent,
       this.articleInfo.id,
       word.word,
-      this.source
+      this.source,
     );
   }
 
@@ -64,7 +69,7 @@ export default class InteractiveText {
       word.bookmark_id,
       word.word,
       alternative,
-      this.getContext(word)
+      this.getContext(word),
     );
     word.translation = alternative;
     word.service_name = "Own alternative selection";
@@ -74,7 +79,7 @@ export default class InteractiveText {
       this.api.SEND_SUGGESTION,
       this.articleInfo.id,
       alternative_info,
-      this.source
+      this.source,
     );
 
     onSuccess();
@@ -92,7 +97,7 @@ export default class InteractiveText {
         -1,
         word.service_name,
         word.translation,
-        this.articleInfo.id
+        this.articleInfo.id,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -123,7 +128,7 @@ export default class InteractiveText {
       this.api.SPEAK_TEXT,
       this.articleInfo.id,
       word.word,
-      this.source
+      this.source,
     );
   }
 
