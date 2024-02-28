@@ -48,7 +48,7 @@ export default function NewArticles({ api }) {
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
-      doNotShowRedirectionModal_UserPreference
+      doNotShowRedirectionModal_UserPreference,
     );
   }, [doNotShowRedirectionModal_UserPreference]);
 
@@ -56,7 +56,7 @@ export default function NewArticles({ api }) {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
     console.log(
       "Localstorage displayed extension: " +
-        LocalStorage.displayedExtensionPopup()
+        LocalStorage.displayedExtensionPopup(),
     );
 
     if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
@@ -113,7 +113,7 @@ export default function NewArticles({ api }) {
           articlesListShouldChange={articlesListShouldChange}
         />
 
-        <SearchField query={searchQuery} />
+        <SearchField api={api} query={searchQuery} />
       </s.MaterialSelection>
 
       <SortingButtons

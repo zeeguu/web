@@ -5,6 +5,7 @@ import qs from "qs";
 Zeeguu_API.prototype.OPEN_ARTICLE = "OPEN ARTICLE";
 Zeeguu_API.prototype.ARTICLE_FOCUSED = "ARTICLE FOCUSED";
 Zeeguu_API.prototype.OPEN_EXTENSION_INSTALLED = "OPEN EXTENSION INSTALLED";
+Zeeguu_API.prototype.SEARCH_QUERY = "SEARCH QUERY";
 
 // Reader Interaction Actions
 Zeeguu_API.prototype.TRANSLATE_TEXT = "TRANSLATE TEXT";
