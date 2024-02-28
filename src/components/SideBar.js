@@ -1,14 +1,15 @@
 import { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 import { setColors } from "../components/colors";
 import * as s from "./SideBar.sc";
+import { APIContext } from "../contexts/APIContext";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
-  const api = props.api;
+  const api = useContext(APIContext);
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
 
