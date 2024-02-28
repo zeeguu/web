@@ -35,7 +35,7 @@ function voiceForLanguageCode(code, voices) {
   return voice;
 }
 
-const ZeeguuSpeech = class {
+const DeprecatedZeeguuSpeech = class {
   constructor(api, language) {
     console.log("Creating Speech Object!");
     this.api = api;
@@ -157,4 +157,4 @@ const ZeeguuSpeech = class {
   }
 };
 
-export default ZeeguuSpeech;
+export default DeprecatedZeeguuSpeech;
