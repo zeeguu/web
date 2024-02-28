@@ -18,7 +18,7 @@ import {
   removeUserInfoFromCookies,
 } from "./utils/cookies/userInfo";
 
-import ZeeguuRouter from "./MainAppRouter";
+import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
 
 function App() {
@@ -90,7 +90,7 @@ function App() {
           <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
             <APIContext.Provider value={api}>
               {/* Routing*/}
-              <ZeeguuRouter
+              <MainAppRouter
                 api={api}
                 setUser={setUserData}
                 hasExtension={hasExtension}
