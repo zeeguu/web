@@ -14,26 +14,25 @@ export default function OrderWordsL2L1({
   toggleShow,
   reload,
   setReload,
-  exerciseSessionId
+  exerciseSessionId,
 }) {
-
   return (
     <>
       <OrderWords
-          key={currentIndex}
-          bookmarksToStudy={bookmarksToStudy}
-          correctAnswer={correctAnswer}
-          notifyIncorrectAnswer={notifyIncorrectAnswer}
-          api={api}
-          setExerciseType={setExerciseType}
-          isCorrect={isCorrect}
-          setIsCorrect={setIsCorrect}
-          moveToNextExercise={moveToNextExercise}
-          toggleShow={toggleShow}
-          reload={reload}
-          setReload={setReload}
-          exerciseSessionId={exerciseSessionId}
-          exerciseType={EXERCISE_TYPE}
+        key={currentIndex}
+        bookmarksToStudy={bookmarksToStudy}
+        correctAnswer={correctAnswer}
+        notifyIncorrectAnswer={notifyIncorrectAnswer}
+        api={api}
+        setExerciseType={setExerciseType}
+        isCorrect={isCorrect}
+        setIsCorrect={setIsCorrect}
+        moveToNextExercise={moveToNextExercise}
+        toggleShow={toggleShow}
+        reload={reload}
+        setReload={setReload}
+        exerciseSessionId={exerciseSessionId}
+        exerciseType={EXERCISE_TYPE}
       />
     </>
   );

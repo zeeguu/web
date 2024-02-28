@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import StyledButton from "../Exercise.sc";
 import {
-    zeeguuOrange,
-    darkGreen,
-    zeeguuRed,
-    darkBlue,
+  zeeguuOrange,
+  darkGreen,
+  zeeguuRed,
+  darkBlue,
 } from "../../../components/colors";
 
 const ExerciseOW = styled.div`
@@ -343,11 +343,10 @@ let OrangeItemCompact = styled(StyledButton)`
     filter: brightness(0.8);
   }
   &:active {
-      filter: brightness(0.5);
-      box-shadow: 0 0.5px #666;
-      transform: translateY(1px);
-    }
-  
+    filter: brightness(0.5);
+    box-shadow: 0 0.5px #666;
+    transform: translateY(1px);
+  }
 `;
 
 let ItemRowCompactWrap = styled.div`
@@ -366,12 +365,12 @@ let ItemRowCompactWrapConstruct = styled.div`
   flex-wrap: wrap;
   padding: 0.3em;
   align-items: left;
-  min-height:64px;
+  min-height: 64px;
   //justify-content: ;
   margin-bottom: 0.1em;
   @media (max-width: 430px) {
     flex-flow: row wrap;
-    padding:0.1em;
+    padding: 0.1em;
   }
 `;
 
@@ -387,10 +386,10 @@ let OrangeItemCompactConstruct = styled(StyledButton)`
   background-color: ${zeeguuOrange};
   margin: 0.05em;
   padding: 0.5em 0.5em;
-  & .correct{
+  & .correct {
   }
   & .toSwap {
-    color:black;
+    color: black;
   }
   &:hover {
     filter: brightness(0.9);
@@ -401,10 +400,9 @@ let OrangeItemCompactConstruct = styled(StyledButton)`
 `;
 
 export {
-    ExerciseOW,
-    OrangeItemCompact,
-    OrangeItemCompactConstruct,
-    ItemRowCompactWrap,
-    ItemRowCompactWrapConstruct,
+  ExerciseOW,
+  OrangeItemCompact,
+  OrangeItemCompactConstruct,
+  ItemRowCompactWrap,
+  ItemRowCompactWrapConstruct,
 };
-

@@ -114,7 +114,7 @@ export default function Match({
           EXERCISE_TYPE,
           duration,
           currentBookmarksToStudy[i].bookmark.id,
-          exerciseSessionId
+          exerciseSessionId,
         );
       }
     }
@@ -129,7 +129,7 @@ export default function Match({
       EXERCISE_TYPE,
       exerciseDuration(pressTime),
       id,
-      exerciseSessionId
+      exerciseSessionId,
     );
   }
 

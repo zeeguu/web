@@ -17,7 +17,7 @@ const Exercise = styled.div`
   }
 
   .headline {
-    font-size: ;
+    font-size:;
     color: gray;
     margin-top: 1em;
     font-weight: 500;
@@ -251,7 +251,7 @@ let Input = styled.input`
     border-style: solid;
     border-color: ${zeeguuOrange} !important;
   }
-  
+
   &:focus {
     outline: none !important;
     height: 1.7em;

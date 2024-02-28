@@ -1,8 +1,11 @@
 import styled from "styled-components";
-import { lightGrey, zeeguuLightYellow, zeeguuOrange } from "../components/colors";
+import {
+  lightGrey,
+  zeeguuLightYellow,
+  zeeguuOrange,
+} from "../components/colors";
 
 const ProgressBar = styled.div`
-
   .progress-module {
     margin: 20px auto 40px;
     max-width: 800px;
@@ -23,7 +26,7 @@ const ProgressBar = styled.div`
     width: 0%;
     height: 100%;
     background: linear-gradient(
-     89.5deg,
+      89.5deg,
       ${zeeguuOrange},
       ${zeeguuLightYellow} 100%
     );
