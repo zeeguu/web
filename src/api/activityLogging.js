@@ -37,6 +37,7 @@ Zeeguu_API.prototype.KEEP_EXERCISING = "KEEP EXERCISING";
 
 // Extension Interaction
 Zeeguu_API.prototype.OPEN_POPUP = "OPEN POPUP";
+Zeeguu_API.prototype.OPEN_CONTEXT = "OPEN CONTEXT";
 Zeeguu_API.prototype.OPEN_MODAL = "OPEN MODAL";
 Zeeguu_API.prototype.CLOSE_MODAL = "CLOSE MODAL";
 
@@ -60,7 +61,7 @@ Zeeguu_API.prototype.logUserActivity = function (
   event,
   article_id = "",
   value = "",
-  extra_data = ""
+  extra_data = "",
 ) {
   let event_information = {
     time: new Date().toJSON(),
@@ -79,7 +80,7 @@ Zeeguu_API.prototype.logUserActivity = function (
 
   return this._post(
     `upload_user_activity_data`,
-    qs.stringify(event_information)
+    qs.stringify(event_information),
   );
 };
 
@@ -89,7 +90,7 @@ Zeeguu_API.prototype.logReaderActivity = function (
   event,
   article_id = "",
   value = "",
-  extra_data = ""
+  extra_data = "",
 ) {
   return this.logUserActivity(event, article_id, value, extra_data);
 };
