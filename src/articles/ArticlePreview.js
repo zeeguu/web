@@ -22,7 +22,6 @@ export default function ArticleOverview({
     article.has_personal_copy,
   );
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  console.log(article);
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
