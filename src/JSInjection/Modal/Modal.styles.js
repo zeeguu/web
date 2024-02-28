@@ -48,7 +48,6 @@ export const ZeeguuErrorStyle = styled.div`
   }
 
   .background {
-    background-color: #ffbb54;
     height: 100%;
     width: 100%;
   }

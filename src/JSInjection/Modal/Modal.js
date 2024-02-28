@@ -34,8 +34,8 @@ import colors from "../colors";
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 
-import { SpeechContext } from "../../zeeguu-react/src/exercises/SpeechContext";
-import ZeeguuSpeech from "../../zeeguu-react/src/speech/ZeeguuSpeech";
+import { SpeechContext } from "../../zeeguu-react/src/contexts/SpeechContext";
+import ZeeguuSpeech from "../../zeeguu-react/src/speech/APIBasedSpeech";
 
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -113,7 +113,7 @@ export function Modal({
       logContextRef.current + " FOCUSED",
       articleId(),
       "",
-      "EXTENSION"
+      "EXTENSION",
     );
   }
 
@@ -122,7 +122,7 @@ export function Modal({
       logContextRef.current + " LOST FOCUS",
       articleId(),
       "",
-      "EXTENSION"
+      "EXTENSION",
     );
   }
 
@@ -166,7 +166,7 @@ export function Modal({
         content,
         articleInfo,
         engine,
-        api
+        api,
       );
       setInteractiveTextArray(arrInteractive);
 
@@ -176,14 +176,14 @@ export function Modal({
         api,
         api.TRANSLATE_TEXT,
         EXTENSION_SOURCE,
-        engine
+        engine,
       );
       setInteractiveTitle(itTitle);
       api.logReaderActivity(
         api.OPEN_ARTICLE,
         articleId(),
         "",
-        EXTENSION_SOURCE
+        EXTENSION_SOURCE,
       );
 
       api.getOwnTexts((articles) => {
@@ -220,11 +220,11 @@ export function Modal({
         .removeEventListener("scroll", function () {
           onScroll(api, articleId(), EXTENSION_SOURCE);
         });
-    location.reload();
+    window.location.reload();
   }
 
   if (!modalIsOpen) {
-    location.reload();
+    window.location.reload();
   }
 
   function checkOwnTexts(articles) {
@@ -254,7 +254,7 @@ export function Modal({
       api.TO_EXERCISES_AFTER_REVIEW,
       articleId(),
       "",
-      EXTENSION_SOURCE
+      EXTENSION_SOURCE,
     );
   }
 
@@ -302,7 +302,7 @@ export function Modal({
                     <a href="https://www.zeeguu.org">
                       <img
                         src={BROWSER_API.runtime.getURL(
-                          "images/zeeguuLogo.svg"
+                          "images/zeeguuLogo.svg",
                         )}
                         alt={"Zeeguu logo"}
                         className="logoModal"

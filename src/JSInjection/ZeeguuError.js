@@ -16,12 +16,11 @@ export default function ZeeguuError({
   isMissingSession,
   api,
 }) {
-  const [timeout, setTimeout] = useState(90);
+  const [timeout, setTimeout] = useState(7);
   const [reason, setReason] = useState("");
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
 
   useEffect(() => {
-    document.body.style = "background-color: #ffbb54;";
     const interval = setInterval(() => {
       if (timeout > 0) setTimeout(timeout - 1);
     }, 1000);
@@ -35,12 +34,12 @@ export default function ZeeguuError({
 
   useEffect(() => {
     if (timeout <= 0) {
-      location.reload();
+      window.location.reload();
     }
   }, [timeout]);
 
   function toArticle() {
-    location.reload();
+    window.location.reload();
   }
 
   function toZeeguu() {
