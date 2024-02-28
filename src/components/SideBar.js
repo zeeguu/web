@@ -22,7 +22,6 @@ export default function SideBar(props) {
     } else {
       setIsOnStudentSide(!path.includes("teacher"));
     }
-    // eslint-disable-next-line
   }, [path]);
 
   const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
