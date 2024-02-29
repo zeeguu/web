@@ -24,7 +24,10 @@ export default function Match({
   exerciseSessionId,
   activeSessionDuration,
 }) {
-  const initialBookmarkState = [
+  // ML: TODO: this duplicates a bit the information in bookmarksToStudy
+  // It should be possible to implement with a simple array of messageToAPI that will
+  // always be in sync with bookmarksToStudy, i.e. messageToAPI[0] refers to the state of bookmarksToStudy[0], etc.
+  const initialExerciseAttemptsLog = [
     {
       bookmark: bookmarksToStudy[0],
       messageToAPI: "",
@@ -41,8 +44,9 @@ export default function Match({
 
   const [messageToNextNav, setMessageToNextNav] = useState("");
   const [firstPressTime, setFirstPressTime] = useState();
-  const [currentBookmarksToStudy, setcurrentBookmarksToStudy] =
-    useState(initialBookmarkState);
+  const [exerciseAttemptsLog, setexerciseAttemptsLog] = useState(
+    initialExerciseAttemptsLog,
+  );
   const [fromButtonOptions, setFromButtonOptions] = useState(null);
   const [toButtonOptions, setToButtonOptions] = useState(null);
   const [buttonsToDisable, setButtonsToDisable] = useState([]);
@@ -66,40 +70,40 @@ export default function Match({
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
     console.log("checking result...");
-    let bookmarksCopy = { ...currentBookmarksToStudy };
+    let exerciseAttemptsLogCopy = { ...exerciseAttemptsLog };
     let i;
     let fullMessage = messageToNextNav;
     for (i = 0; i < bookmarksToStudy.length; i++) {
-      let currentBookmark = bookmarksCopy[i];
+      let currentBookmarkLog = exerciseAttemptsLogCopy[i];
       if (buttonsToDisable.length === 2) {
         fullMessage = fullMessage + "C";
         setIsCorrect(true);
         break;
-      } else if (currentBookmark.bookmark.id === Number(firstChoice)) {
+      } else if (currentBookmarkLog.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
           setButtonsToDisable((arr) => [...arr, firstChoice]);
-          let concatMessage = currentBookmark.messageToAPI + "C";
+          let concatMessage = currentBookmarkLog.messageToAPI + "C";
           fullMessage = fullMessage + concatMessage;
-          bookmarksCopy[i].messageToAPI = concatMessage;
-          setcurrentBookmarksToStudy(bookmarksCopy);
-          correctAnswer(currentBookmark.bookmark);
-          handleAnswer(concatMessage, currentBookmark.bookmark.id);
+          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
+          correctAnswer(currentBookmarkLog.bookmark);
+          handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
         } else {
           setIncorrectAnswer(secondChoice);
-          notifyIncorrectAnswer(currentBookmark.bookmark);
-          let concatMessage = currentBookmark.messageToAPI + "W";
+          notifyIncorrectAnswer(currentBookmarkLog.bookmark);
+          let concatMessage = currentBookmarkLog.messageToAPI + "W";
           fullMessage = fullMessage + concatMessage;
-          bookmarksCopy[i].messageToAPI = concatMessage;
-          setcurrentBookmarksToStudy(bookmarksCopy);
+          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
-      } else if (currentBookmark.bookmark.id === Number(secondChoice)) {
+      } else if (currentBookmarkLog.bookmark.id === Number(secondChoice)) {
         if (firstChoice !== secondChoice) {
           setIncorrectAnswer(secondChoice);
-          notifyIncorrectAnswer(currentBookmark.bookmark);
-          let concatMessage = currentBookmark.messageToAPI + "W";
+          notifyIncorrectAnswer(currentBookmarkLog.bookmark);
+          let concatMessage = currentBookmarkLog.messageToAPI + "W";
           fullMessage = fullMessage + concatMessage;
-          bookmarksCopy[i].messageToAPI = concatMessage;
-          setcurrentBookmarksToStudy(bookmarksCopy);
+          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       }
     }
@@ -109,15 +113,15 @@ export default function Match({
   function handleShowSolution() {
     let finalMessage = "";
     for (let i = 0; i < bookmarksToStudy.length; i++) {
-      if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
-        notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
-        let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
+      if (!exerciseAttemptsLog[i].messageToAPI.includes("C")) {
+        notifyIncorrectAnswer(exerciseAttemptsLog[i].bookmark);
+        let concatMessage = exerciseAttemptsLog[i].messageToAPI + "S";
         finalMessage += concatMessage;
         api.uploadExerciseFinalizedData(
           concatMessage,
           EXERCISE_TYPE,
           getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-          currentBookmarksToStudy[i].bookmark.id,
+          exerciseAttemptsLog[i].bookmark.id,
           exerciseSessionId,
         );
       }
@@ -139,9 +143,9 @@ export default function Match({
   function setButtonOptions() {
     setFromButtonOptions(bookmarksToStudy);
     let optionsToShuffle = [
-      currentBookmarksToStudy[0].bookmark,
-      currentBookmarksToStudy[1].bookmark,
-      currentBookmarksToStudy[2].bookmark,
+      bookmarksToStudy[0],
+      bookmarksToStudy[1],
+      bookmarksToStudy[2],
     ];
     let shuffledOptions = shuffle(optionsToShuffle);
     setToButtonOptions(shuffledOptions);
@@ -170,7 +174,7 @@ export default function Match({
       <NextNavigation
         message={messageToNextNav}
         api={api}
-        bookmarksToStudy={initialBookmarkState}
+        bookmarksToStudy={initialExerciseAttemptsLog}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}
