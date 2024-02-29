@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import * as sOW from "./ExerciseTypeOW.sc.js";
 import OrderWordsInput from "./OrderWordsInput.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
@@ -11,6 +10,10 @@ import {
   tokenize,
 } from "../../../utils/preprocessing/preprocessing";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
+import { TranslatableText } from "../../../reader/TranslatableText.js";
+import InteractiveText from "../../../reader/InteractiveText.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 
 export default function OrderWords({
   api,
@@ -25,12 +28,12 @@ export default function OrderWords({
   reload,
   setReload,
   exerciseSessionId,
-  activeSessionDuration,
   exerciseType,
+  activeSessionDuration,
 }) {
   // Constants for Exercise
-  const translateLang = bookmarksToStudy[0].to_lang;
-  const exerciseLang = bookmarksToStudy[0].from_lang;
+  const L1_LANG = bookmarksToStudy[0].to_lang;
+  const L2_LANG = bookmarksToStudy[0].from_lang;
   const MOVE_ITEM_KEY = -100;
   const MOVE_ITEM_ID = "moveItem";
   const MAX_CONTEXT_LENGTH = 15;
@@ -39,8 +42,8 @@ export default function OrderWords({
   const WORD_SOUP_ID = "wordSoupId";
   const IS_DEBUG = false;
   const EXERCISE_TYPE = exerciseType;
-  const TYPE_L1_CONSTRUCTION = "OrderWords_L1"; // Construct in English (Translated)
-  const TYPE_L2_CONSTRUCTION = "OrderWords_L2"; // Construct in the learned language
+  const TYPE_L1_CONSTRUCTION = "OrderWords_L1";
+  const TYPE_L2_CONSTRUCTION = "OrderWords_L2";
   const RIGHT = 0;
   const LEFT = 1;
 
@@ -62,6 +65,7 @@ export default function OrderWords({
   const [isResetConfirmVisible, setIsResetConfirmVisible] = useState(false);
   const [isHandlingLongSentences, setIsHandlingLongSentences] = useState(true);
   const [isSentenceTooLong, setIsSentenceTooLong] = useState(false);
+  const [interactiveText, setInteractiveText] = useState();
   const [textBeforeExerciseText, setTextBeforeExerciseText] = useState("");
   const [textAfterExerciseText, setTextAfterExerciseText] = useState("");
   const [movingObject, setMovingObject] = useState();
@@ -80,12 +84,27 @@ export default function OrderWords({
   const moveElement = useRef();
   const moveElementInitialPosition = useRef();
   const scrollY = useRef();
+  const speech = useContext(SpeechContext);
 
   // Exercise Functions / Setup / Handle Interactions
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     let exerciseIntializeVariables = _get_exercise_start_variables();
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      if (IS_DEBUG) console.log("Setting article info.");
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
+    if (IS_DEBUG) console.log("Preparing Context");
     // Handle the case of long sentences, this relies on activating the functionality.
     prepareContext(
       exerciseIntializeVariables["originalBookmarkContext"],
@@ -115,7 +134,7 @@ export default function OrderWords({
       api.getSmallerContext(
         originalContext,
         bookmarkWord,
-        exerciseLang,
+        L2_LANG,
         MAX_CONTEXT_LENGTH,
         (apiCandidateSubSent) => {
           let shorterContext = JSON.parse(apiCandidateSubSent);
@@ -154,11 +173,7 @@ export default function OrderWords({
     let originalContext = bookmarksToStudy[0].context.trim();
 
     api
-      .basicTranlsate(
-        exerciseLang,
-        localStorage.native_language,
-        exerciseContext,
-      )
+      .basicTranlsate(L2_LANG, localStorage.native_language, exerciseContext)
       .then((response) => response.json())
       .then((data) => {
         let translatedContext = data["translation"];
@@ -583,7 +598,7 @@ export default function OrderWords({
       feedback_given: finalClueText,
       error_types: errorTypesList,
       total_errors: updatedErrorCounter,
-      exercise_time: getCurrentSubSessionDuration("ms"),
+      exercise_time: getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       exercise_start: initialTime,
     };
     _orderWordsLogUserActivity("WO_CHECK", jsonDataExerciseCheck);
@@ -631,19 +646,19 @@ export default function OrderWords({
     return filterArray;
   }
 
-  function _updateClueText(cluesTextList, errorCount) {
+  function _updateClueText(cluesTextList) {
     if (IS_DEBUG) console.log(cluesTextList);
     let finalClueText = [];
 
-    if (errorCount > 0) {
+    if (cluesTextList.length > 0) {
       setIsCluesRowVisible(true);
     }
-    if (errorCount <= 2) {
-      finalClueText = cluesTextList.slice(0, 2);
+    if (cluesTextList.length <= 2) {
+      finalClueText = cluesTextList;
     } else {
-      finalClueText = cluesTextList
-        .slice(0, 2)
-        .concat([strings.orderWordsOnlyTwoMessagesShown]);
+      finalClueText = cluesTextList.slice(0, 2);
+      if (!finalClueText.includes("Please look at the other errors."))
+        finalClueText.push(strings.orderWordsOnlyTwoMessagesShown);
     }
     return finalClueText;
   }
@@ -677,7 +692,7 @@ export default function OrderWords({
       : _getWordsInSentence(exerciseContext);
     setSolutionWords(_initializeWordProps([...initialWords], initialWords));
     if (!is_L1) {
-      api.getConfusionWords(exerciseLang, exerciseContext, (cWords) => {
+      api.getConfusionWords(L2_LANG, exerciseContext, (cWords) => {
         let jsonCWords = JSON.parse(cWords);
         let apiConfuseWords = jsonCWords["confusion_words"];
         let exerciseWords = [...initialWords].concat(apiConfuseWords);
@@ -796,6 +811,7 @@ export default function OrderWords({
   function handleShowSolution() {
     // Ensure Rest and Swap are reset
     handleUndoResetStatus();
+
     let message = messageToAPI + "S";
     // Construct the Sentence to show the solution.
     let solutionWord = [...solutionWords];
@@ -808,10 +824,11 @@ export default function OrderWords({
   }
 
   function handleAnswer(message) {
+    setMessageToApi(message);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      getCurrentSubSessionDuration("ms"),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -820,7 +837,7 @@ export default function OrderWords({
       sentence_was_too_long: isSentenceTooLong,
       sentence_context_was_reduced: isHandlingLongSentences,
       outcome: message,
-      total_time: getCurrentSubSessionDuration("ms"),
+      total_time: getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       total_errors: totalErrorCounter,
       total_hints: hintCounter,
       total_resets: resetCounter,
@@ -902,7 +919,7 @@ export default function OrderWords({
         .join(" ");
       setMessageToApi(messageToAPI + "H");
       let nlp_model_to_use =
-        EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? translateLang : exerciseLang;
+        EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? L1_LANG : L2_LANG;
       api.annotateClues(
         newUserSolutionWordArray,
         resizedSolutionText,
@@ -972,6 +989,7 @@ export default function OrderWords({
         newUserSolutionWordArray.push({ ...wordProp });
       }
     }
+    cluesTextList = removeArrayDuplicates(cluesTextList);
     if (IS_DEBUG) console.log("After adding the placeholders.");
     if (IS_DEBUG) console.log(newUserSolutionWordArray);
     let updatedErrorCounter = totalErrorCounter + errorCount;
@@ -1021,6 +1039,8 @@ export default function OrderWords({
     !isCorrect
   ) {
     if (IS_DEBUG) console.log("Running load animation.");
+    console.log(exerciseText);
+    console.log(wordsReferenceStatus);
     return <LoadingAnimation />;
   }
 
@@ -1031,15 +1051,41 @@ export default function OrderWords({
         onTouchMove={handleTouchScroll}
         id="orderExercise"
       >
-        {exerciseText === "" && !isCorrect && <LoadingAnimation />}
-        <div className="headlineOrderWords">
+        <div className="headline headlineOrderWords">
           {strings.orderTheWordsToMakeTheHighlightedPhrase}
-          <p className="translatedText">
+        </div>
+        {isCorrect && EXERCISE_TYPE === TYPE_L1_CONSTRUCTION && (
+          <div className="contextExample" style={{ marginBottom: "2em" }}>
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={removePunctuation(exerciseContext)}
+            />
+          </div>
+        )}
+        {isCorrect && EXERCISE_TYPE === TYPE_L2_CONSTRUCTION && (
+          <div className="contextExample" style={{ marginBottom: "2em" }}>
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={removePunctuation(exerciseContext)}
+              overrideBookmarkHighlightText={exerciseText}
+            />
+          </div>
+        )}
+
+        {!isCorrect && (
+          <p className="headlineOrderWords translatedText">
             {textBeforeExerciseText}
             <b>{exerciseText}</b>
             {textAfterExerciseText}
           </p>
-        </div>
+        )}
+
         {isCluesRowVisible && (
           <sOW.ItemRowCompactWrap className="cluesRow">
             <h4>Clues</h4>
@@ -1073,16 +1119,6 @@ export default function OrderWords({
           </div>
         )}
 
-        {isCorrect && (
-          <div className="OWBottomRow">
-            <h4>{strings.orderWordsCorrectMessage}</h4>
-            <p>{bookmarksToStudy[0].context}</p>
-            <p>
-              Word you bookmarked: <b>'{bookmarksToStudy[0].from}'</b>
-            </p>
-          </div>
-        )}
-
         {wordsReferenceStatus.length === 0 && !isCorrect && (
           <LoadingAnimation />
         )}
@@ -1107,17 +1143,6 @@ export default function OrderWords({
               onTouchMoveHandle={solutionOnTouchMove}
             />
           </div>
-        )}
-
-        {movingObject && (
-          <sOW.OrangeItemCompact
-            id={MOVE_ITEM_ID}
-            key={MOVE_ITEM_KEY}
-            status={movingObject.inUse}
-            className={movingObject.status + " renderDisable"}
-          >
-            {movingObject.word}
-          </sOW.OrangeItemCompact>
         )}
 
         {!isCorrect && (
@@ -1159,19 +1184,16 @@ export default function OrderWords({
             </button>
           </div>
         )}
-        {isCorrect && (
-          <NextNavigation
-            api={api}
-            // Added an empty bookmark to avoid showing the
-            // Listen Button.
-            bookmarksToStudy={bookmarksToStudy}
-            moveToNextExercise={moveToNextExercise}
-            reload={reload}
-            setReload={setReload}
-            isReadContext={true}
-          />
-        )}
-        <SolutionFeedbackLinks
+        <NextNavigation
+          message={messageToAPI}
+          api={api}
+          // Added an empty bookmark to avoid showing the
+          // Listen Button.
+          bookmarksToStudy={bookmarksToStudy}
+          moveToNextExercise={moveToNextExercise}
+          reload={reload}
+          setReload={setReload}
+          isReadContext={true}
           handleShowSolution={handleShowSolution}
           toggleShow={toggleShow}
           isCorrect={isCorrect}
@@ -1193,9 +1215,28 @@ export default function OrderWords({
             </button>
           </sOW.ItemRowCompactWrap>
         )}
+        {movingObject && (
+          <sOW.OrangeItemCompact
+            id={MOVE_ITEM_ID}
+            key={MOVE_ITEM_KEY}
+            status={movingObject.inUse}
+            className={movingObject.status + " renderDisable"}
+          >
+            {movingObject.word}
+          </sOW.OrangeItemCompact>
+        )}
       </sOW.ExerciseOW>
     </>
   );
+
+  function _getCurrentDuration() {
+    let currTime = new Date();
+    if (IS_DEBUG) {
+      console.log(currTime - initialTime);
+      console.log("^^^^ time elapsed");
+    }
+    return currTime - initialTime;
+  }
 
   // Touch / Mouse Drag n' Drop
   // Helper Functions

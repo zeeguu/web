@@ -5,7 +5,6 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
@@ -40,7 +39,7 @@ export default function Match({
     },
   ];
 
-  const [initialTime] = useState(new Date());
+  const [messageToNextNav, setMessageToNextNav] = useState("");
   const [firstPressTime, setFirstPressTime] = useState();
   const [currentBookmarksToStudy, setcurrentBookmarksToStudy] =
     useState(initialBookmarkState);
@@ -69,15 +68,18 @@ export default function Match({
     console.log("checking result...");
     let bookmarksCopy = { ...currentBookmarksToStudy };
     let i;
+    let fullMessage = messageToNextNav;
     for (i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmark = bookmarksCopy[i];
       if (buttonsToDisable.length === 2) {
+        fullMessage = fullMessage + "C";
         setIsCorrect(true);
         break;
       } else if (currentBookmark.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
           setButtonsToDisable((arr) => [...arr, firstChoice]);
           let concatMessage = currentBookmark.messageToAPI + "C";
+          fullMessage = fullMessage + concatMessage;
           bookmarksCopy[i].messageToAPI = concatMessage;
           setcurrentBookmarksToStudy(bookmarksCopy);
           correctAnswer(currentBookmark.bookmark);
@@ -86,6 +88,7 @@ export default function Match({
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmark.bookmark);
           let concatMessage = currentBookmark.messageToAPI + "W";
+          fullMessage = fullMessage + concatMessage;
           bookmarksCopy[i].messageToAPI = concatMessage;
           setcurrentBookmarksToStudy(bookmarksCopy);
         }
@@ -94,36 +97,40 @@ export default function Match({
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmark.bookmark);
           let concatMessage = currentBookmark.messageToAPI + "W";
+          fullMessage = fullMessage + concatMessage;
           bookmarksCopy[i].messageToAPI = concatMessage;
           setcurrentBookmarksToStudy(bookmarksCopy);
         }
       }
     }
+    setMessageToNextNav(fullMessage);
   }
 
   function handleShowSolution() {
+    let finalMessage = "";
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
         notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
         let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
-
+        finalMessage += concatMessage;
         api.uploadExerciseFinalizedData(
           concatMessage,
           EXERCISE_TYPE,
-          getCurrentSubSessionDuration("ms"),
+          getCurrentSubSessionDuration(activeSessionDuration, "ms"),
           currentBookmarksToStudy[i].bookmark.id,
           exerciseSessionId,
         );
       }
     }
     setIsCorrect(true);
+    setMessageToNextNav(finalMessage);
   }
 
   function handleAnswer(message, id) {
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      getCurrentSubSessionDuration("ms"),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       id,
       exerciseSessionId,
     );
@@ -138,6 +145,7 @@ export default function Match({
     ];
     let shuffledOptions = shuffle(optionsToShuffle);
     setToButtonOptions(shuffledOptions);
+    console.log(shuffledOptions);
   }
 
   return (
@@ -159,15 +167,13 @@ export default function Match({
         reload={reload}
         setReload={setReload}
       />
-
-      {isCorrect && (
-        <NextNavigation
-          api={api}
-          bookmarksToStudy={toButtonOptions}
-          moveToNextExercise={moveToNextExercise}
-        />
-      )}
-      <SolutionFeedbackLinks
+      <NextNavigation
+        message={messageToNextNav}
+        api={api}
+        bookmarksToStudy={initialBookmarkState}
+        moveToNextExercise={moveToNextExercise}
+        reload={reload}
+        setReload={setReload}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}

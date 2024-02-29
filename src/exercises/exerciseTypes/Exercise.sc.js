@@ -12,6 +12,24 @@ const Exercise = styled.div`
   transition: all 0.5s;
   padding-bottom: 1em;
 
+  .next-nav-feedback {
+    
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5em;
+
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+    }
+    p {
+      margin-left: 1em;
+    }
+  }
+
   .type-feedback p {
     margin: 0.5em;
   }
@@ -25,8 +43,9 @@ const Exercise = styled.div`
 
   .headlineWithMoreSpace {
     font-size: small;
+    font-weight: 600;
     color: gray;
-    margin-top: 3em;
+    margin-top: 2em;
     margin-bottom: 2em;
     /* font-weight: 600; */
   }
@@ -286,7 +305,7 @@ let BottomRow = styled.div`
   align-items: center;
   justify-content: space-around;
   margin-top: 3em;
-  margin-bottom: 3em;
+  margin-bottom: 1em;
 
   @media (max-width: 430px) {
     flex-flow: row wrap;
@@ -299,6 +318,18 @@ let BottomRowCompact = styled.div`
   align-items: center;
   justify-content: space-around;
   margin-bottom: 3em;
+
+  @media (max-width: 430px) {
+    flex-flow: row wrap;
+  }
+`;
+
+let BottomRowSmallTopMargin = styled.div`
+  display: flex;
+  padding: 0.5em;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 0.5em;
 
   @media (max-width: 430px) {
     flex-flow: row wrap;
@@ -360,6 +391,7 @@ export {
   AnimatedInput,
   BottomRow,
   BottomRowCompact,
+  BottomRowSmallTopMargin,
   StyledGreyButton,
   StyledDiv,
   MatchButton,

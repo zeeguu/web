@@ -30,8 +30,6 @@ export default function SpellWhatYouHear({
   exerciseSessionId,
   activeSessionDuration,
 }) {
-  const [initialTime] = useState(new Date());
-  const [firstTypeTime, setFirstTypeTime] = useState();
   const [messageToAPI, setMessageToAPI] = useState("");
   const bookmarkToStudy = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
@@ -72,16 +70,6 @@ export default function SpellWhatYouHear({
     }, 300);
   }, [articleInfo]);
 
-  function inputKeyPress() {
-    if (firstTypeTime === undefined) {
-      setFirstTypeTime(new Date());
-    }
-  }
-
-  if (!articleInfo) {
-    return <LoadingAnimation />;
-  }
-
   function handleShowSolution(e, message) {
     e.preventDefault();
     let concatMessage;
@@ -93,10 +81,11 @@ export default function SpellWhatYouHear({
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
+    setMessageToAPI(concatMessage);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
-      getCurrentSubSessionDuration("ms"),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -112,45 +101,33 @@ export default function SpellWhatYouHear({
     api.logUserActivity("AUDIO_DISABLE", "", bookmarksToStudy[0].id, "");
     moveToNextExercise();
   }
-
-  function handleShowSolution() {
-    let message = messageToAPI + "S";
-
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
-    setIsCorrect(true);
-    handleAnswer(message);
-  }
-
   function handleIncorrectAnswer() {
+    setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
-    setFirstTypeTime(new Date());
-  }
-
-  function handleAnswer(message) {
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration("ms"),
-      bookmarksToStudy[0].id,
-      exerciseSessionId,
-    );
   }
 
   function handleCorrectAnswer(message) {
+    setMessageToAPI(message);
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      getCurrentSubSessionDuration("ms"),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
   }
 
+  if (!articleInfo) {
+    return <LoadingAnimation />;
+  }
+
   return (
     <s.Exercise>
-      <div className="headline">{strings.audioExerciseHeadline}</div>
+      <div className="headlineWithMoreSpace">
+        {strings.audioExerciseHeadline}
+      </div>
       {!isCorrect && (
         <>
           <div className="contextExample">
@@ -175,7 +152,6 @@ export default function SpellWhatYouHear({
             handleCorrectAnswer={handleCorrectAnswer}
             handleIncorrectAnswer={handleIncorrectAnswer}
             bookmarksToStudy={bookmarksToStudy}
-            notifyKeyPress={inputKeyPress}
             messageToAPI={messageToAPI}
             setMessageToAPI={setMessageToAPI}
           />
@@ -194,16 +170,15 @@ export default function SpellWhatYouHear({
               bookmarkToStudy={bookmarksToStudy[0].from}
             />
           </div>
-          <NextNavigation
-            api={api}
-            bookmarksToStudy={bookmarksToStudy}
-            moveToNextExercise={moveToNextExercise}
-            reload={reload}
-            setReload={setReload}
-          />
         </>
       )}
-      <SolutionFeedbackLinks
+      <NextNavigation
+        api={api}
+        message={messageToAPI}
+        bookmarksToStudy={bookmarksToStudy}
+        moveToNextExercise={moveToNextExercise}
+        reload={reload}
+        setReload={setReload}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
