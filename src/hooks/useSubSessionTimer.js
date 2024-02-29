@@ -6,7 +6,10 @@ export default function useSubSessionTimer(activeSessionDuration) {
   // to MS.
   const [subSessionStart] = useState(activeSessionDuration);
 
-  function getCurrentSubSessionDuration(time_unit = "s") {
+  function getCurrentSubSessionDuration(
+    activeSessionDuration,
+    time_unit = "s",
+  ) {
     let timeDiff = activeSessionDuration - subSessionStart;
     switch (time_unit) {
       case "ms":
