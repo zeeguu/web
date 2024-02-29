@@ -69,7 +69,6 @@ export default function BottomInput({
       }
     }
     setFeedbackMessage("");
-    return;
   }, [distanceToCorrect, isSameLengthAsSolution, isLongerThanSolution]);
 
   function checkResult() {
@@ -77,8 +76,8 @@ export default function BottomInput({
       return;
     }
     console.log("checking result...");
-    var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
-    var b = removeQuotes(
+    let a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
+    let b = removeQuotes(
       removeAccents(eliminateTypos(bookmarksToStudy[0].from)),
     );
     if (a === b) {
