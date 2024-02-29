@@ -134,7 +134,7 @@ export default function FindWordInContext({
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
-      getCurrentSubSessionDuration("ms"),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -146,7 +146,7 @@ export default function FindWordInContext({
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      getCurrentSubSessionDuration("ms"),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );

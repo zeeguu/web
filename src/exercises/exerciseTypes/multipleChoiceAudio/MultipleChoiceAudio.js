@@ -139,7 +139,7 @@ export default function MultipleChoiceAudio({
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      getCurrentSubSessionDuration("ms"),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -158,7 +158,7 @@ export default function MultipleChoiceAudio({
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      getCurrentSubSessionDuration("ms"),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );

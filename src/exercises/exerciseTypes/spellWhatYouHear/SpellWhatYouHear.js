@@ -10,7 +10,7 @@ import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
-import { SpeechContext } from "../../SpeechContext.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
@@ -55,6 +55,7 @@ export default function SpellWhatYouHear({
           articleInfo,
           api,
           "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
           speech,
         ),
       );
