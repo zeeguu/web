@@ -6,6 +6,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
 import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
 
@@ -22,6 +23,7 @@ export default function Match({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
   const initialBookmarkState = [
     {
@@ -47,6 +49,9 @@ export default function Match({
   const [toButtonOptions, setToButtonOptions] = useState(null);
   const [buttonsToDisable, setButtonsToDisable] = useState([]);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -56,10 +61,6 @@ export default function Match({
     setButtonOptions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function exerciseDuration(endTime) {
-    return Math.min(89999, endTime - initialTime);
-  }
 
   function inputFirstClick() {
     if (firstPressTime === undefined) setFirstPressTime(new Date());
@@ -108,9 +109,6 @@ export default function Match({
   }
 
   function handleShowSolution() {
-    let pressTime = new Date();
-    let duration = exerciseDuration(pressTime);
-    let finalMessage = "";
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
         notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
@@ -119,7 +117,7 @@ export default function Match({
         api.uploadExerciseFinalizedData(
           concatMessage,
           EXERCISE_TYPE,
-          duration,
+          getCurrentSubSessionDuration(activeSessionDuration, "ms"),
           currentBookmarksToStudy[i].bookmark.id,
           exerciseSessionId,
         );
@@ -130,12 +128,10 @@ export default function Match({
   }
 
   function handleAnswer(message, id) {
-    let pressTime = new Date();
-    setMessageToNextNav(messageToNextNav + message);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      exerciseDuration(pressTime),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       id,
       exerciseSessionId,
     );

@@ -50,7 +50,7 @@ export default function Exercises({
     useActivityTimer();
 
   function getExerciseSequenceType() {
-    let exerciseTypesList = EXERCISE_TYPES_TIAGO;
+    let exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
       console.log("Will not use audio!");
       exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
@@ -251,6 +251,7 @@ export default function Exercises({
             reload={reload}
             setReload={setReload}
             exerciseSessionId={dbExerciseSessionId}
+            activeSessionDuration={activeSessionDuration}
           />
         </s.ExForm>
         <FeedbackDisplay

@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
+import SideBar from "./components/SideBar";
 
 // inspired from:
 // https://dev.to/mychal/protected-routes-with-react-function-components-dh
@@ -8,7 +9,7 @@ import { UserContext } from "./contexts/UserContext";
 //PrivateRoute ensure that is a user isn't logged in
 //- they cannot access the content of Zeeguu and will be redirected to the login-page
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+export const PrivateRouteWithSidebar = ({ component: Component, ...rest }) => {
   const user = useContext(UserContext);
 
   if (!user.session) {
@@ -22,8 +23,13 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     );
   }
   return (
-    <Route {...rest} render={(props) => <Component {...rest} {...props} />} />
+    <Route
+      {...rest}
+      render={(props) => (
+        <SideBar>
+          <Component {...rest} {...props} />
+        </SideBar>
+      )}
+    />
   );
 };
-
-export { PrivateRoute };

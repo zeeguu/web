@@ -11,6 +11,7 @@ import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../SpeechContext.js";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
@@ -27,6 +28,7 @@ export default function MultipleChoice({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
@@ -35,10 +37,9 @@ export default function MultipleChoice({
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
-
-  function exerciseDuration(endTime) {
-    return Math.min(89999, endTime - initialTime);
-  }
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -102,7 +103,7 @@ export default function MultipleChoice({
     let message = messageToAPI + "S";
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    handleAnswer(message, exerciseDuration(new Date()));
+    handleAnswer(message);
   }
 
   function handleAnswer(message) {
@@ -110,7 +111,7 @@ export default function MultipleChoice({
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      exerciseDuration(new Date()),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );

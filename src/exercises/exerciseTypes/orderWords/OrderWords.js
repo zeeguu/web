@@ -10,9 +10,6 @@ import {
   removePunctuation,
   tokenize,
 } from "../../../utils/preprocessing/preprocessing";
-import InteractiveText from "../../../reader/InteractiveText.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
-import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
 
 export default function OrderWords({
   api,
@@ -50,7 +47,7 @@ export default function OrderWords({
   const [hintCounter, setHintCounter] = useState(0);
   const [totalErrorCounter, setTotalErrorCounter] = useState(0);
   const [wordsReferenceStatus, setWordsReferenceStatus] = useState([]);
-  const [messageToAPI, setMessageToAPI] = useState("");
+  const [messageToAPI, setMessageToApi] = useState("");
   const [exerciseContext, setExerciseContext] = useState("");
   const [clueText, setClueText] = useState([]);
   const [exerciseText, setExerciseText] = useState("");
@@ -66,7 +63,7 @@ export default function OrderWords({
   const [textBeforeExerciseText, setTextBeforeExerciseText] = useState("");
   const [textAfterExerciseText, setTextAfterExerciseText] = useState("");
   const [movingObject, setMovingObject] = useState();
-  const [interactiveText, setInteractiveText] = useState();
+
   // for when we are dragging things from the solution area
   const solutionDragIndex = useRef(); // the one we are dragging
   const solutionDragOverIndex = useRef(); // the one we are dragging over
@@ -150,17 +147,6 @@ export default function OrderWords({
     setExerciseContext(exerciseContext);
 
     let originalContext = bookmarksToStudy[0].context.trim();
-
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-        ),
-      );
-    });
 
     api
       .basicTranlsate(
@@ -585,7 +571,6 @@ export default function OrderWords({
     errorTypesList,
     updatedErrorCounter,
   ) {
-    let currentDuration = _getCurrentDuration();
     let jsonDataExerciseCheck = {
       constructed_sent: constructedSentence,
       solution_sent: resizeSol,
@@ -593,7 +578,7 @@ export default function OrderWords({
       feedback_given: finalClueText,
       error_types: errorTypesList,
       total_errors: updatedErrorCounter,
-      exercise_time: currentDuration,
+      exercise_time: getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       exercise_start: initialTime,
     };
     _orderWordsLogUserActivity("WO_CHECK", jsonDataExerciseCheck);
@@ -651,7 +636,7 @@ export default function OrderWords({
     if (errorCount <= 2) {
       finalClueText = cluesTextList.slice(0, 2);
     } else {
-      finalClueText = cluesTextList.slice(0, 2);
+      finalClueText = cluesTextList;
       if (!finalClueText.includes("Please look at the other errors."))
         finalClueText.push(strings.orderWordsOnlyTwoMessagesShown);
     }
@@ -757,7 +742,7 @@ export default function OrderWords({
     _orderWordsLogUserActivity("WO_START", jsonDataExerciseStart);
   }
 
-  function notifyChoiceSelection(selectedChoice) {
+  function notifyChoiceSelection(selectedChoice, inUse) {
     handleUndoResetStatus();
     // Avoid swapping Words when the exercise isCorrect.
     // this means we have finished the exercise.
@@ -783,6 +768,7 @@ export default function OrderWords({
     }
     // Toggle the inUse flag
     wordSelected.inUse = !wordSelected.inUse;
+
     // Remove the last placeholder token if a user adds a token
     // Leave all other placeholders.
     if (newUserSolutionWordArray.length > 2) {
@@ -806,15 +792,76 @@ export default function OrderWords({
     // Ensure Rest and Swap are reset
     handleUndoResetStatus();
 
-    let duration = _getCurrentDuration();
     let message = messageToAPI + "S";
     // Construct the Sentence to show the solution.
     let solutionWord = [...solutionWords];
     _setAllInWordsStatus(solutionWord, "correct");
     setUserSolutionWordArray(solutionWord);
+    notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     setIsCluesRowVisible(false);
-    handleAnswer(message, duration);
+    handleAnswer(message);
+  }
+
+  function handleAnswer(message) {
+    let duration = _getCurrentDuration();
+    api.uploadExerciseFinalizedData(
+      message,
+      EXERCISE_TYPE,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
+      bookmarksToStudy[0].id,
+      exerciseSessionId,
+    );
+
+    let jsonDataExerciseEnd = {
+      sentence_was_too_long: isSentenceTooLong,
+      sentence_context_was_reduced: isHandlingLongSentences,
+      outcome: message,
+      total_time: getCurrentSubSessionDuration(activeSessionDuration, "ms"),
+      total_errors: totalErrorCounter,
+      total_hints: hintCounter,
+      total_resets: resetCounter,
+      exercise_text: exerciseText,
+      exercise_context: exerciseContext,
+      bookmark_context: bookmarksToStudy[0].context,
+      bookmark: bookmarksToStudy[0].from,
+      confusionWords: confuseWords,
+      pos: posSelected,
+      word_for_confusion: wordSelected,
+      exercise_start: initialTime,
+    };
+    _orderWordsLogUserActivity("WO_END", jsonDataExerciseEnd);
+  }
+
+  function handleResetClick() {
+    // Don't allow the user to click rest if no words
+    // are in the userSolutionArray
+    if (userSolutionWordArray.length === 0) {
+      return;
+    }
+    setIsResetConfirmVisible(true);
+  }
+
+  function handleResetConfirm() {
+    // Remove all the words from the user
+    // solution word array.
+    if (isResetConfirmVisible) {
+      if (IS_DEBUG) console.log("Run update counter.");
+      setResetCounter(resetCounter + 1);
+    }
+    let resetWords = [...wordsReferenceStatus];
+    for (let i = 0; i < resetWords.length; i++) {
+      resetWords[i].inUse = false;
+    }
+    if (IS_DEBUG) console.log(resetWords);
+    setUserSolutionWordArray([]);
+    setIsCorrect(false);
+    setWordsReferenceStatus(resetWords);
+    handleUndoResetStatus();
+  }
+
+  function handleUndoResetStatus() {
+    setIsResetConfirmVisible(false);
   }
 
   function handleCheck() {
@@ -850,7 +897,7 @@ export default function OrderWords({
       let resizedSolutionText = filterPunctuationSolArray
         .slice(0, newUserSolutionWordArray.length + 2)
         .join(" ");
-      setMessageToAPI(messageToAPI + "H");
+      setMessageToApi(messageToAPI + "H");
       let nlp_model_to_use =
         EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? translateLang : exerciseLang;
       api.annotateClues(
@@ -964,77 +1011,6 @@ export default function OrderWords({
     };
     _orderWordsLogUserActivity("WO_TOGGLE_CONTEXT", jsonDataReduceContext);
     // Handle the case of long sentences, this relies on activating the functionality.
-  }
-
-  // Handle the Loading screen while getting the text.
-  if (
-    (wordsReferenceStatus.length === 0) | (exerciseText === "") &&
-    !isCorrect
-  ) {
-    if (IS_DEBUG) console.log("Running load animation.");
-    return <LoadingAnimation />;
-  }
-
-  function handleAnswer(message) {
-    setMessageToAPI(message);
-    let duration = _getCurrentDuration();
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      duration,
-      bookmarksToStudy[0].id,
-      exerciseSessionId,
-    );
-
-    let jsonDataExerciseEnd = {
-      sentence_was_too_long: isSentenceTooLong,
-      sentence_context_was_reduced: isHandlingLongSentences,
-      outcome: message,
-      total_time: duration,
-      total_errors: totalErrorCounter,
-      total_hints: hintCounter,
-      total_resets: resetCounter,
-      exercise_text: exerciseText,
-      exercise_context: exerciseContext,
-      bookmark_context: bookmarksToStudy[0].context,
-      bookmark: bookmarksToStudy[0].from,
-      confusionWords: confuseWords,
-      pos: posSelected,
-      word_for_confusion: wordSelected,
-      exercise_start: initialTime,
-    };
-    _orderWordsLogUserActivity("WO_END", jsonDataExerciseEnd);
-  }
-
-  function handleResetClick() {
-    // Don't allow the user to click rest if no words
-    // are in the userSolutionArray
-    if (userSolutionWordArray.length === 0) {
-      return;
-    }
-    setIsResetConfirmVisible(true);
-  }
-
-  function handleResetConfirm() {
-    // Remove all the words from the user
-    // solution word array.
-    if (isResetConfirmVisible) {
-      if (IS_DEBUG) console.log("Run update counter.");
-      setResetCounter(resetCounter + 1);
-    }
-    let resetWords = [...wordsReferenceStatus];
-    for (let i = 0; i < resetWords.length; i++) {
-      resetWords[i].inUse = false;
-    }
-    if (IS_DEBUG) console.log(resetWords);
-    setUserSolutionWordArray([]);
-    setIsCorrect(false);
-    setWordsReferenceStatus(resetWords);
-    handleUndoResetStatus();
-  }
-
-  function handleUndoResetStatus() {
-    setIsResetConfirmVisible(false);
   }
 
   // Handle the Loading screen while getting the text.

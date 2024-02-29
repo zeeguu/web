@@ -1,6 +1,6 @@
 import OrderWords from "./OrderWords.js";
-
-const EXERCISE_TYPE = "OrderWords_L1T_from_L2T";
+// Order words in the Known Language
+const EXERCISE_TYPE = "OrderWords_L1";
 
 export default function OrderWordsL1({
   api,
@@ -15,6 +15,7 @@ export default function OrderWordsL1({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
   return (
     <>
@@ -31,6 +32,7 @@ export default function OrderWordsL1({
         reload={reload}
         setReload={setReload}
         exerciseSessionId={exerciseSessionId}
+        activeSessionDuration={activeSessionDuration}
         exerciseType={EXERCISE_TYPE}
       />
     </>

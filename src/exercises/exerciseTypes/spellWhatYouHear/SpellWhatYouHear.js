@@ -10,8 +10,9 @@ import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
-import { SpeechContext } from "../../SpeechContext.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Spell_What_You_Hear";
 export default function SpellWhatYouHear({
@@ -27,6 +28,7 @@ export default function SpellWhatYouHear({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
@@ -35,17 +37,17 @@ export default function SpellWhatYouHear({
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [articleInfo, setArticleInfo] = useState();
+  const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
 
   async function handleSpeak() {
-    await speech.speakOut(bookmarkToStudy.from);
+    await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
   }
 
-  // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    setTimeout(() => {
-      handleSpeak();
-    }, 500);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -53,12 +55,22 @@ export default function SpellWhatYouHear({
           articleInfo,
           api,
           "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
         ),
       );
       setArticleInfo(articleInfo);
     });
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
+
+  useEffect(() => {
+    // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
+    // Changed timeout to be slightly shorter.
+    setTimeout(() => {
+      handleSpeak();
+    }, 300);
+  }, [articleInfo]);
 
   function inputKeyPress() {
     if (firstTypeTime === undefined) {
@@ -68,10 +80,6 @@ export default function SpellWhatYouHear({
 
   function handleShowSolution(e, message) {
     e.preventDefault();
-    let pressTime = new Date();
-    console.log(pressTime - initialTime);
-    console.log("^^^^ time elapsed");
-    let duration = pressTime - initialTime;
     let concatMessage;
     if (!message) {
       concatMessage = messageToAPI + "S";
@@ -84,7 +92,7 @@ export default function SpellWhatYouHear({
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
-      duration,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -96,23 +104,17 @@ export default function SpellWhatYouHear({
     handleDisabledAudio();
   }
 
-  function exerciseDuration(endTime) {
-    return Math.min(89999, endTime - initialTime);
-  }
-
   function handleDisabledAudio() {
     api.logUserActivity("AUDIO_DISABLE", "", bookmarksToStudy[0].id, "");
     moveToNextExercise();
   }
 
   function handleShowSolution() {
-    let pressTime = new Date();
-    let duration = exerciseDuration(pressTime);
     let message = messageToAPI + "S";
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    handleAnswer(message, duration);
+    handleAnswer(message);
   }
 
   function handleIncorrectAnswer() {
@@ -122,26 +124,23 @@ export default function SpellWhatYouHear({
   }
 
   function handleAnswer(message) {
-    let pressTime = new Date();
-    setMessageToAPI(message);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      exerciseDuration(pressTime),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
   }
 
   function handleCorrectAnswer(message) {
-    let duration = exerciseDuration(firstTypeTime);
     setMessageToAPI(message);
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      duration,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -172,6 +171,7 @@ export default function SpellWhatYouHear({
               bookmarkToStudy={bookmarkToStudy}
               api={api}
               styling="large"
+              parentIsSpeakingControl={isButtonSpeaking}
             />
           </s.CenteredRowTall>
 

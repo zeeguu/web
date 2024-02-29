@@ -22,13 +22,15 @@ const ZeeguuSpeech = class {
       .fetchLinkToSpeechMp3(word, this.language)
       .then((linkToMp3) => {
         this.pronunciationPlayer.src = linkToMp3;
+        this.pronunciationPlayer.addEventListener("ended", (e) => {
+          // Only terminate the animation after playing the sound.
+          animateSpeechButton(setIsSpeaking, false);
+        });
       })
       .catch(() => {
         // in case anything goes wrong here... we should still deactivate the animation
         animateSpeechButton(setIsSpeaking, false);
       });
-
-    animateSpeechButton(setIsSpeaking, false);
   }
 
   playFullArticle(articleInfo, api, player) {

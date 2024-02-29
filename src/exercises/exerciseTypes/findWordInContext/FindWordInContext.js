@@ -11,6 +11,7 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { tokenize } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../SpeechContext.js";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -26,6 +27,7 @@ export default function FindWordInContext({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
   const [initialTime] = useState(new Date());
   const [firstTypeTime, setFirstTypeTime] = useState();
@@ -34,6 +36,9 @@ export default function FindWordInContext({
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -53,10 +58,6 @@ export default function FindWordInContext({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function exerciseDuration(endTime) {
-    return Math.min(89999, endTime - initialTime);
-  }
 
   useEffect(() => {
     checkTranslations(translatedWords);
@@ -126,8 +127,6 @@ export default function FindWordInContext({
     if (e) {
       e.preventDefault();
     }
-    let pressTime = new Date();
-    let duration = exerciseDuration(pressTime);
     let concatMessage;
 
     if (!message) {
@@ -138,24 +137,24 @@ export default function FindWordInContext({
     setMessageToAPI(concatMessage);
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
+    console.log(activeSessionDuration);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
-      duration,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
   }
 
   function handleCorrectAnswer(message) {
-    let duration = exerciseDuration(firstTypeTime);
     setMessageToAPI(message);
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      duration,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );

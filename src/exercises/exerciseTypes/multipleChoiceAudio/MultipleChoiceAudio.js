@@ -3,17 +3,16 @@ import * as s from "../Exercise.sc.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import NextNavigation from "../NextNavigation.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
-import EditButton from "../../../words/EditButton.js";
+
 import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
-import { useContext } from "react";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Multiple_Choice_Audio";
 
@@ -30,6 +29,7 @@ export default function MultipleChoiceAudio({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [initialTime] = useState(new Date());
@@ -40,9 +40,10 @@ export default function MultipleChoiceAudio({
   const [currentChoice, setCurrentChoice] = useState("");
   const [firstTypeTime, setFirstTypeTime] = useState();
   const [selectedButtonId, setSelectedButtonId] = useState("");
-
-  // bookmarkToStudy is expected to be a list.
-  const bookmarkToStudy = [bookmarksToStudy[0]];
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
+  const bookmarkToStudy = bookmarksToStudy[0];
 
   console.log("exercise session id: " + exerciseSessionId);
 
@@ -62,10 +63,6 @@ export default function MultipleChoiceAudio({
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
-
-  function exerciseDuration(endTime) {
-    return Math.min(89999, endTime - initialTime);
-  }
 
   function disableAudio(e) {
     e.preventDefault();
@@ -121,12 +118,10 @@ export default function MultipleChoiceAudio({
   }
 
   function handleShowSolution() {
-    let pressTime = new Date();
-    let duration = exerciseDuration(pressTime);
     let message = messageToAPI + "S";
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    handleAnswer(message, duration);
+    handleAnswer(message);
   }
 
   function handleIncorrectAnswer() {
@@ -136,12 +131,11 @@ export default function MultipleChoiceAudio({
   }
 
   function handleAnswer(message) {
-    let pressTime = new Date();
     setMessageToAPI(message);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      exerciseDuration(pressTime),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -155,14 +149,13 @@ export default function MultipleChoiceAudio({
   }
 
   function handleCorrectAnswer(message) {
-    let duration = exerciseDuration(firstTypeTime);
     setMessageToAPI(message);
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      duration,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
