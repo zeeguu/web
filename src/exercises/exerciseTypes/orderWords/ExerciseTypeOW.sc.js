@@ -285,6 +285,7 @@ const ExerciseOW = styled.div`
   }
 
   .elementHidden {
+    cursor: default;
     background-color: rgb(161 161 161);
     color:rgb(161 161 161);
     :hover {

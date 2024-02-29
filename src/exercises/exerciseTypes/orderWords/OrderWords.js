@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import * as sOW from "./ExerciseTypeOW.sc.js";
 import OrderWordsInput from "./OrderWordsInput.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
@@ -10,6 +9,11 @@ import {
   removePunctuation,
   tokenize,
 } from "../../../utils/preprocessing/preprocessing";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
+import { TranslatableText } from "../../../reader/TranslatableText.js";
+import InteractiveText from "../../../reader/InteractiveText.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 
 export default function OrderWords({
   api,
@@ -25,10 +29,11 @@ export default function OrderWords({
   setReload,
   exerciseSessionId,
   exerciseType,
+  activeSessionDuration,
 }) {
   // Constants for Exercise
-  const translateLang = bookmarksToStudy[0].to_lang;
-  const exerciseLang = bookmarksToStudy[0].from_lang;
+  const L1_LANG = bookmarksToStudy[0].to_lang;
+  const L2_LANG = bookmarksToStudy[0].from_lang;
   const MOVE_ITEM_KEY = -100;
   const MOVE_ITEM_ID = "moveItem";
   const MAX_CONTEXT_LENGTH = 15;
@@ -37,8 +42,8 @@ export default function OrderWords({
   const WORD_SOUP_ID = "wordSoupId";
   const IS_DEBUG = false;
   const EXERCISE_TYPE = exerciseType;
-  const TYPE_L1_CONSTRUCTION = "OrderWords_L1T_from_L2T";
-  const TYPE_L2_CONSTRUCTION = "OrderWords_L2T_from_L1T";
+  const TYPE_L1_CONSTRUCTION = "OrderWords_L1";
+  const TYPE_L2_CONSTRUCTION = "OrderWords_L2";
   const RIGHT = 0;
   const LEFT = 1;
 
@@ -60,9 +65,13 @@ export default function OrderWords({
   const [isResetConfirmVisible, setIsResetConfirmVisible] = useState(false);
   const [isHandlingLongSentences, setIsHandlingLongSentences] = useState(true);
   const [isSentenceTooLong, setIsSentenceTooLong] = useState(false);
+  const [interactiveText, setInteractiveText] = useState();
   const [textBeforeExerciseText, setTextBeforeExerciseText] = useState("");
   const [textAfterExerciseText, setTextAfterExerciseText] = useState("");
   const [movingObject, setMovingObject] = useState();
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
 
   // for when we are dragging things from the solution area
   const solutionDragIndex = useRef(); // the one we are dragging
@@ -75,12 +84,27 @@ export default function OrderWords({
   const moveElement = useRef();
   const moveElementInitialPosition = useRef();
   const scrollY = useRef();
+  const speech = useContext(SpeechContext);
 
   // Exercise Functions / Setup / Handle Interactions
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     let exerciseIntializeVariables = _get_exercise_start_variables();
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      if (IS_DEBUG) console.log("Setting article info.");
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
+    if (IS_DEBUG) console.log("Preparing Context");
     // Handle the case of long sentences, this relies on activating the functionality.
     prepareContext(
       exerciseIntializeVariables["originalBookmarkContext"],
@@ -110,7 +134,7 @@ export default function OrderWords({
       api.getSmallerContext(
         originalContext,
         bookmarkWord,
-        exerciseLang,
+        L2_LANG,
         MAX_CONTEXT_LENGTH,
         (apiCandidateSubSent) => {
           let shorterContext = JSON.parse(apiCandidateSubSent);
@@ -149,11 +173,7 @@ export default function OrderWords({
     let originalContext = bookmarksToStudy[0].context.trim();
 
     api
-      .basicTranlsate(
-        exerciseLang,
-        localStorage.native_language,
-        exerciseContext,
-      )
+      .basicTranlsate(L2_LANG, localStorage.native_language, exerciseContext)
       .then((response) => response.json())
       .then((data) => {
         let translatedContext = data["translation"];
@@ -626,17 +646,17 @@ export default function OrderWords({
     return filterArray;
   }
 
-  function _updateClueText(cluesTextList, errorCount) {
+  function _updateClueText(cluesTextList) {
     if (IS_DEBUG) console.log(cluesTextList);
     let finalClueText = [];
 
-    if (errorCount > 0) {
+    if (cluesTextList.length > 0) {
       setIsCluesRowVisible(true);
     }
-    if (errorCount <= 2) {
-      finalClueText = cluesTextList.slice(0, 2);
-    } else {
+    if (cluesTextList.length <= 2) {
       finalClueText = cluesTextList;
+    } else {
+      finalClueText = cluesTextList.slice(0, 2);
       if (!finalClueText.includes("Please look at the other errors."))
         finalClueText.push(strings.orderWordsOnlyTwoMessagesShown);
     }
@@ -672,7 +692,7 @@ export default function OrderWords({
       : _getWordsInSentence(exerciseContext);
     setSolutionWords(_initializeWordProps([...initialWords], initialWords));
     if (!is_L1) {
-      api.getConfusionWords(exerciseLang, exerciseContext, (cWords) => {
+      api.getConfusionWords(L2_LANG, exerciseContext, (cWords) => {
         let jsonCWords = JSON.parse(cWords);
         let apiConfuseWords = jsonCWords["confusion_words"];
         let exerciseWords = [...initialWords].concat(apiConfuseWords);
@@ -804,7 +824,7 @@ export default function OrderWords({
   }
 
   function handleAnswer(message) {
-    let duration = _getCurrentDuration();
+    setMessageToApi(message);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
@@ -899,7 +919,7 @@ export default function OrderWords({
         .join(" ");
       setMessageToApi(messageToAPI + "H");
       let nlp_model_to_use =
-        EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? translateLang : exerciseLang;
+        EXERCISE_TYPE === TYPE_L1_CONSTRUCTION ? L1_LANG : L2_LANG;
       api.annotateClues(
         newUserSolutionWordArray,
         resizedSolutionText,
@@ -1019,6 +1039,8 @@ export default function OrderWords({
     !isCorrect
   ) {
     if (IS_DEBUG) console.log("Running load animation.");
+    console.log(exerciseText);
+    console.log(wordsReferenceStatus);
     return <LoadingAnimation />;
   }
 

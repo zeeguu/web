@@ -7,7 +7,6 @@ export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
   bookmarksToStudy,
-  notifyKeyPress,
   messageToAPI,
   setMessageToAPI,
 }) {
@@ -117,9 +116,6 @@ export default function BottomInput({
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}
             onKeyUp={(e) => {
-              if (currentInput !== "") {
-                notifyKeyPress();
-              }
               if (e.key === "Enter") {
                 checkResult();
               }

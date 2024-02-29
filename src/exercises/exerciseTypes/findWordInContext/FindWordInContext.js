@@ -5,12 +5,11 @@ import BottomInput from "./BottomInput";
 
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { tokenize } from "../../../utils/preprocessing/preprocessing";
-import { SpeechContext } from "../../SpeechContext.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
@@ -29,8 +28,6 @@ export default function FindWordInContext({
   exerciseSessionId,
   activeSessionDuration,
 }) {
-  const [initialTime] = useState(new Date());
-  const [firstTypeTime, setFirstTypeTime] = useState();
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
@@ -111,18 +108,6 @@ export default function FindWordInContext({
     }
   }
 
-  function inputKeyPress() {
-    if (firstTypeTime === undefined) {
-      setFirstTypeTime(new Date());
-    }
-  }
-
-  function inputKeyPress() {
-    if (firstTypeTime === undefined) {
-      setFirstTypeTime(new Date());
-    }
-  }
-
   function handleShowSolution(e, message) {
     if (e) {
       e.preventDefault();
@@ -164,7 +149,6 @@ export default function FindWordInContext({
     //alert("incorrect answer")
     setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
-    setFirstTypeTime();
   }
 
   if (!articleInfo) {
@@ -193,7 +177,6 @@ export default function FindWordInContext({
           handleCorrectAnswer={handleCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
           bookmarksToStudy={bookmarksToStudy}
-          notifyKeyPress={inputKeyPress}
           messageToAPI={messageToAPI}
           setMessageToAPI={setMessageToAPI}
         />

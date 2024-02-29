@@ -27,7 +27,11 @@ function OrderWordsInput({
               className={
                 word.inUse ? word.status + " elementHidden" : word.status
               }
-              onClick={() => notifyChoiceSelection(word.id, word.inUse)}
+              onClick={
+                !word.inUse
+                  ? () => notifyChoiceSelection(word.id, word.inUse)
+                  : () => {}
+              }
             >
               {word.word}
             </sOW.OrangeItemCompact>

@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
@@ -10,7 +9,7 @@ import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
-import { SpeechContext } from "../../SpeechContext.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
@@ -31,7 +30,6 @@ export default function MultipleChoice({
   activeSessionDuration,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
-  const [initialTime] = useState(new Date());
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
@@ -79,25 +77,6 @@ export default function MultipleChoice({
       setMessageToAPI(concatMessage);
     }
   }
-
-  useEffect(() => {
-    setExerciseType(EXERCISE_TYPE);
-    api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
-      consolidateChoiceOptions(words);
-    });
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-        ),
-      );
-      setArticleInfo(articleInfo);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   function handleShowSolution() {
     let message = messageToAPI + "S";

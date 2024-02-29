@@ -84,19 +84,17 @@ export default function Congratulations({
               <br />
               😳 {strings.payMoreAttentionTo}
             </h3>
-            <p>
-              {incorrectBookmarksToDisplay.map((each) => (
-                <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
-                  <Word
-                    key={each.id}
-                    bookmark={each}
-                    notifyDelete={deleteBookmark}
-                    api={api}
-                    source={source}
-                  />
-                </s.ContentOnRow>
-              ))}
-            </p>
+            {incorrectBookmarksToDisplay.map((each) => (
+              <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
+                <Word
+                  key={each.id}
+                  bookmark={each}
+                  notifyDelete={deleteBookmark}
+                  api={api}
+                  source={source}
+                />
+              </s.ContentOnRow>
+            ))}
           </>
         )}
         <CenteredColumn className="CenteredColumn">

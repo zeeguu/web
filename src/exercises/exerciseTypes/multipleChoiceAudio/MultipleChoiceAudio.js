@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
@@ -13,6 +13,7 @@ import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 
 const EXERCISE_TYPE = "Multiple_Choice_Audio";
 
@@ -32,7 +33,6 @@ export default function MultipleChoiceAudio({
   activeSessionDuration,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
-  const [initialTime] = useState(new Date());
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
@@ -44,6 +44,7 @@ export default function MultipleChoiceAudio({
     activeSessionDuration,
   );
   const bookmarkToStudy = bookmarksToStudy[0];
+  const speech = useContext(SpeechContext);
 
   console.log("exercise session id: " + exerciseSessionId);
 
@@ -56,6 +57,8 @@ export default function MultipleChoiceAudio({
           articleInfo,
           api,
           "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
         ),
       );
       setArticleInfo(articleInfo);

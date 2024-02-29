@@ -5,7 +5,6 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
@@ -40,7 +39,6 @@ export default function Match({
     },
   ];
 
-  const [initialTime] = useState(new Date());
   const [messageToNextNav, setMessageToNextNav] = useState("");
   const [firstPressTime, setFirstPressTime] = useState();
   const [currentBookmarksToStudy, setcurrentBookmarksToStudy] =
@@ -109,11 +107,12 @@ export default function Match({
   }
 
   function handleShowSolution() {
+    let finalMessage = "";
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
         notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
         let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
-        finalMessage = finalMessage + concatMessage;
+        finalMessage += concatMessage;
         api.uploadExerciseFinalizedData(
           concatMessage,
           EXERCISE_TYPE,

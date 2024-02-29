@@ -30,63 +30,28 @@ export default function NextNavigation({
 
   const bookmarkToStudy = bookmarksToStudy[0];
   const exercise = "exercise";
-  const [isConsideredCorrect, setIsConsideredCorrect] = useState(true);
+  const [userIsCorrect, setUserIsCorrect] = useState();
   const correctMessage = useState(random(correctStrings));
-  const solutionMessage = useState(random(solutionStrings));
-  const [imgToDisplay, setImgToDisplay] = useState(null);
-  const imgSrc = [
-    "/static/icons/zeeguu-icon-correct.png",
-    "/static/icons/zeeguu-icon-solution.png",
-    "/static/icons/zeeguu-icon-wrong.png",
-  ];
-
-  function handleImgToDisplay(isCorrect, isSolution) {
-    if (isCorrect) {
-      setImgToDisplay(
-        <img
-          src={"/static/icons/zeeguu-icon-correct.png"}
-          alt="Correct Icon"
-        />,
-      );
-    } else {
-      if (isSolution)
-        setImgToDisplay(
-          <img
-            src={"/static/icons/zeeguu-icon-solution.png"}
-            alt="Solution Icon"
-          />,
-        );
-      else {
-        setImgToDisplay(
-          <img src={"/static/icons/zeeguu-icon-wrong.png"} alt="Wrong Icon" />,
-        );
-      }
-    }
-  }
 
   useEffect(() => {
     console.log("Message received: " + message);
     // Mirror what we do in the API
-    let isCorrect = ["C", "TC", "TTC", "TTTC", "HC", "CCC"].includes(message);
-    let isSolution = message.includes("S");
-    setIsConsideredCorrect(isCorrect);
-    handleImgToDisplay(isCorrect, isSolution);
+    // Maybe have a call we can make in the API? This is unused at the moment.
+    setUserIsCorrect(message.includes("C"));
   }, [isCorrect]);
 
   return (
     <>
-      {imgSrc.map((e) => (
-        <img src={e} style={{ display: "none" }} />
-      ))}
-      {isCorrect ? (
+      {isCorrect && userIsCorrect && (
         <div className="next-nav-feedback">
-          {imgToDisplay}
+          <img
+            src={"/static/icons/zeeguu-icon-correct.png"}
+            alt="Correct Icon"
+          />
           <p>
-            <b>{isConsideredCorrect ? correctMessage : solutionMessage}</b>
+            <b>{correctMessage}</b>
           </p>
         </div>
-      ) : (
-        <> </>
       )}
       {isCorrect && bookmarksToStudy.length === 1 && (
         <s.BottomRowSmallTopMargin className="bottomRow">
