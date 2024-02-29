@@ -9,14 +9,12 @@ import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
-import { useIdleTimer } from "react-idle-timer";
 
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
-  EXERCISE_TYPES_TIAGO,
   NUMBER_OF_BOOKMARKS_TO_PRACTICE,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
@@ -172,6 +170,7 @@ export default function Exercises({
   }
 
   function moveToNextExercise() {
+    //ML: TODO? Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
     setIsCorrect(false);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
@@ -273,5 +272,7 @@ export default function Exercises({
 }
 
 function truncate(str, n) {
+  // ML: TODO: substr seems to be deprecated; also, this should be moved to some string-utils function?
+  // or a new package should be imported?!
   return str.length > n ? str.substr(0, n - 1) + "..." : str;
 }
