@@ -34,11 +34,9 @@ export default function SideBar(props) {
     const fontWeight = active ? "700" : "500";
 
     return (
-      <div className="navigationLink">
-        <Link to={to} onClick={resetSidebarToDefault}>
-          <small style={{ fontWeight: fontWeight }}>{text}</small>
-        </Link>
-      </div>
+      <Link className="navigationLink" to={to} onClick={resetSidebarToDefault}>
+        <small style={{ fontWeight: fontWeight }}>{text}</small>
+      </Link>
     );
   }
 

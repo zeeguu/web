@@ -3,16 +3,16 @@ import * as s from "../Exercise.sc.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import NextNavigation from "../NextNavigation.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
-import EditButton from "../../../words/EditButton.js";
+
 import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 
 const EXERCISE_TYPE = "Multiple_Choice_Audio";
@@ -30,9 +30,9 @@ export default function MultipleChoiceAudio({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
-  const [initialTime] = useState(new Date());
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
@@ -40,9 +40,11 @@ export default function MultipleChoiceAudio({
   const [currentChoice, setCurrentChoice] = useState("");
   const [firstTypeTime, setFirstTypeTime] = useState();
   const [selectedButtonId, setSelectedButtonId] = useState("");
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
   const bookmarkToStudy = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
-  const exercise = "exercise";
 
   console.log("exercise session id: " + exerciseSessionId);
 
@@ -64,10 +66,6 @@ export default function MultipleChoiceAudio({
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
-
-  function exerciseDuration(endTime) {
-    return Math.min(89999, endTime - initialTime);
-  }
 
   function disableAudio(e) {
     e.preventDefault();
@@ -123,27 +121,24 @@ export default function MultipleChoiceAudio({
   }
 
   function handleShowSolution() {
-    let pressTime = new Date();
-    let duration = exerciseDuration(pressTime);
     let message = messageToAPI + "S";
-
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    handleAnswer(message, duration);
+    handleAnswer(message);
   }
 
   function handleIncorrectAnswer() {
+    setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setFirstTypeTime(new Date());
   }
 
   function handleAnswer(message) {
-    let pressTime = new Date();
-
+    setMessageToAPI(message);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      exerciseDuration(pressTime),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -157,14 +152,13 @@ export default function MultipleChoiceAudio({
   }
 
   function handleCorrectAnswer(message) {
-    let duration = exerciseDuration(firstTypeTime);
-
+    setMessageToAPI(message);
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      duration,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -188,49 +182,49 @@ export default function MultipleChoiceAudio({
 
   return (
     <s.Exercise>
+      <div className="headlineWithMoreSpace">
+        {strings.multipleChoiceAudioHeadline}
+      </div>
+
+      <div className="contextExample">
+        <TranslatableText
+          isCorrect={isCorrect}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          bookmarkToStudy={bookmarksToStudy[0].from}
+        />
+      </div>
+
       {!isCorrect && (
-        <>
-          <div className="headlineWithMoreSpace">
-            {strings.multipleChoiceAudioHeadline}
-          </div>
-          <div className="contextExample">
-            <TranslatableText
-              isCorrect={isCorrect}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              bookmarkToStudy={bookmarksToStudy[0].from}
-            />
-          </div>
-          <s.CenteredRow>
-            {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
-            {choiceOptions ? (
-              choiceOptions.map((option) =>
-                0 !== option ? (
-                  <SpeakButton
-                    handleClick={() => buttonSelectFalse(option)}
-                    onClick={(e) => handleClick(option)}
-                    bookmarkToStudy={bookmarksToStudy[option]}
-                    api={api}
-                    id={option.id}
-                    styling={selectedButtonStyle(option)}
-                  />
-                ) : (
-                  <SpeakButton
-                    handleClick={() => buttonSelectTrue(option)}
-                    onClick={(e) => handleClick(option)}
-                    bookmarkToStudy={bookmarksToStudy[option]}
-                    api={api}
-                    id={option.id}
-                    styling={selectedButtonStyle(option)}
-                  />
-                ),
-              )
-            ) : (
-              <></>
-            )}
-          </s.CenteredRow>
-        </>
+        <s.CenteredRow>
+          {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
+          {choiceOptions ? (
+            choiceOptions.map((option) =>
+              0 !== option ? (
+                <SpeakButton
+                  handleClick={() => buttonSelectFalse(option)}
+                  onClick={(e) => handleClick(option)}
+                  bookmarkToStudy={bookmarksToStudy[option]}
+                  api={api}
+                  id={option.id}
+                  styling={selectedButtonStyle(option)}
+                />
+              ) : (
+                <SpeakButton
+                  handleClick={() => buttonSelectTrue(option)}
+                  onClick={(e) => handleClick(option)}
+                  bookmarkToStudy={bookmarksToStudy[option]}
+                  api={api}
+                  id={option.id}
+                  styling={selectedButtonStyle(option)}
+                />
+              ),
+            )
+          ) : (
+            <></>
+          )}
+        </s.CenteredRow>
       )}
 
       {!isCorrect && (
@@ -252,40 +246,15 @@ export default function MultipleChoiceAudio({
         <>
           <br></br>
           <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
-          <div className="contextExample">
-            <TranslatableText
-              isCorrect={isCorrect}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              bookmarkToStudy={bookmarksToStudy[0].from}
-            />
-          </div>
-          <s.CenteredRow>
-            <SpeakButton
-              bookmarkToStudy={bookmarkToStudy}
-              api={api}
-              style="next"
-            />
-            <br></br>
-            <EditButton
-              bookmark={bookmarksToStudy[0]}
-              api={api}
-              styling={exercise}
-              reload={reload}
-              setReload={setReload}
-            />
-            <NextNavigation
-              api={api}
-              bookmarksToStudy={bookmarksToStudy}
-              moveToNextExercise={moveToNextExercise}
-              reload={reload}
-              setReload={setReload}
-            />
-          </s.CenteredRow>
         </>
       )}
-      <SolutionFeedbackLinks
+      <NextNavigation
+        message={messageToAPI}
+        api={api}
+        bookmarksToStudy={bookmarkToStudy}
+        moveToNextExercise={moveToNextExercise}
+        reload={reload}
+        setReload={setReload}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
