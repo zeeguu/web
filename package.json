@@ -54,6 +54,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "lapi": "REACT_APP_API_URL='http://localhost:9001' react-scripts start",
+    "rapi": "REACT_APP_API_URL='https://api.zeeguu.org' react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build": "cross-env react-scripts build || npm run sentry:sourcemaps",
