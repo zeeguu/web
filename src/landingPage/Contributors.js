@@ -21,10 +21,7 @@ export default function Contributors() {
 
       {member("Mircea Lungu", "Production, Maintenance")}
 
-      {member(
-        "Tiago",
-        "Full Stack Development and Machine Learning Researcher",
-      )}
+      {member("Tiago", "Development and ML Research")}
 
       {member("Darinka Maldonado", "Browser Extension Usability Improvements")}
 
