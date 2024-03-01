@@ -14,11 +14,31 @@ export default function Contributors() {
       </>
     );
   }
+
   return (
     <>
       <h1>{strings.contributors}</h1>
 
-      {member("Mircea Lungu", "Production & maintenance")}
+      {member("Mircea Lungu", "Production, Maintenance")}
+
+      {member(
+        "Tiago",
+        "Full Stack Development and Machine Learning Researcher",
+      )}
+
+      {member("Darinka Maldonado", "Browser Extension Usability Improvements")}
+
+      {member("Iga Anna Waclawska", "Onboarding Experience Improvement")}
+
+      {member("Beatrice Verzier", "Exercise Improvements")}
+
+      {member("Bjørn Hjorth Westh", "Danish Localization")}
+
+      {member("Gustav Norgaard Petersen", "Audio Exercises")}
+
+      {member("Jonas Krohn", "Audio Exercises")}
+
+      {member("Maria Timis", "User Dashboard")}
 
       {member("Emma Lerche Teglbrænder", "Browser Extension")}
 
