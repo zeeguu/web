@@ -5,6 +5,7 @@ import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import IconHeader from "./modal_shared/Icon";
 
 export default function UnsupportedNotification({
   article,
@@ -52,14 +53,6 @@ export default function UnsupportedNotification({
     setRedirectCheckbox(false); //clear the redirectCheckbox state to avoid it being prechecked when the user re-enters the modal
   }
 
-  let zeeguuIcon = (
-    <s.IconHeader
-      className="fullDivWidthImage"
-      src="../static/images/zeeguuLogo.svg"
-      alt=""
-    ></s.IconHeader>
-  );
-
   let BrowserLinks = {
     Chrome: {
       link: "https://www.google.com/chrome/?brand=WHAR&gad_source=1&gclid=EAIaIQobChMI3Z3blfOghAMVD6doCR33SgG1EAAYASAAEgJ6TvD_BwE&gclsrc=aw.ds",
@@ -86,8 +79,9 @@ export default function UnsupportedNotification({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        Your browser doesn't support <br></br> {zeeguuIcon} The Zeeguu Reader
-        extension
+        Your browser doesn't support <br></br>
+        <IconHeader src={"../static/images/zeeguuLogo.svg"} />
+        The Zeeguu Reader extension
       </Header>
       <Body>
         <p>
@@ -138,7 +132,6 @@ export default function UnsupportedNotification({
               Enter the article's website
             </s.GoToButton>
           </a>
-
           <s.SaveArticleButton
             role="button"
             onClick={handleSaveArticleFromTheModal}

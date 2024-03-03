@@ -7,6 +7,7 @@ import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
+import IconHeader from "./modal_shared/Icon";
 
 export default function SupportedNotificationNotInstalled({
   handleCloseRedirectionModal,
@@ -25,19 +26,11 @@ export default function SupportedNotificationNotInstalled({
     }
   }
 
-  let zeeguuIcon = (
-    <s.IconHeader
-      className="fullDivWidthImage"
-      src="../static/images/zeeguuLogo.svg"
-      alt=""
-    ></s.IconHeader>
-  );
-
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        {zeeguuIcon} The Zeeguu Reader<br></br>browser extension is not
-        installed
+        <IconHeader src={"../static/images/zeeguuLogo.svg"} />
+        The Zeeguu Reader<br></br>browser extension is not installed
       </Header>
       <Body>
         <p>

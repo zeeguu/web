@@ -30,12 +30,12 @@ const Icon = styled.span`
   height: 1em;
   width: 1em;
   max-width: 2em;
-  margin: 0 0.2em;
+  margin: 0;
   display: inline-block;
 `;
 
 const IconHeader = styled.img`
-  margin: 0 0.1rem -0.1rem 0;
+  margin: 0 0.4rem -0.1rem 0;
   height: 1.2rem;
   width: 1.2rem;
 `;

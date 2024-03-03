@@ -1,5 +1,6 @@
 import * as s from "./RedirectionNotificationModal.sc";
 import { useState } from "react";
+import { IconBody } from "./modal_shared/Icon";
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
@@ -34,14 +35,6 @@ export default function SupportedNotification({
     setRedirectCheckbox(false); //clear the redirectCheckbox state
   }
 
-  function getSmallIcon(src) {
-    return (
-      <s.Icon>
-        <img className="fullDivWidthImage" alt="" src={src}></img>
-      </s.Icon>
-    );
-  }
-
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
@@ -51,14 +44,13 @@ export default function SupportedNotification({
         <p>
           <s.Strong>Once there</s.Strong>, find and{" "}
           <s.Strong>
-            click The Zeeguu Reader{" "}
-            {getSmallIcon("../static/images/zeeguuLogo.svg")}
-            icon
+            click <IconBody src={"../static/images/zeeguuLogo.svg"} /> The
+            Zeeguu Reader icon
           </s.Strong>{" "}
           in the top right corner of&nbsp;your browser's toolbar
-          or&nbsp;on&nbsp;the&nbsp;list of your installed extensions{" "}
-          {getSmallIcon("../static/images/puzzle.svg")}.{" "}
-          <s.Strong>Then&nbsp;wait for the reader to open</s.Strong>.
+          or&nbsp;on&nbsp;the&nbsp;list of your installed{" "}
+          <IconBody src={"../static/images/puzzle.svg"} /> extensions.
+          <s.Strong> Then&nbsp;wait for the reader to open</s.Strong>.
         </p>
         <img
           className="fullDivWidthImage"
