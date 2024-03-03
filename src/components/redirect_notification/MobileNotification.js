@@ -4,6 +4,7 @@ import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
+import Checkbox from "./modal_shared/Checkbox";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 export default function MobileNotification({
@@ -62,18 +63,11 @@ export default function MobileNotification({
         </p>
       </Body>
       <Footer>
-        <s.CheckboxWrapper>
-          <input
-            onChange={toggleRedirectCheckbox}
-            checked={redirectCheckbox}
-            notificationType="checkbox"
-            id="checkbox"
-            name=""
-            value=""
-            type="checkbox"
-          ></input>
-          <label htmlFor="checkbox">Don't show this message</label>
-        </s.CheckboxWrapper>
+        <Checkbox
+          label={"Don't show this message"}
+          checked={redirectCheckbox}
+          onChange={toggleRedirectCheckbox}
+        />
         <s.ButtonsContainer MORE_BUTTONS>
           <a
             target={"_self"}

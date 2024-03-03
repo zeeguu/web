@@ -6,6 +6,7 @@ import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import IconHeader from "./modal_shared/Icon";
+import Checkbox from "./modal_shared/Checkbox";
 
 export default function UnsupportedNotification({
   article,
@@ -105,18 +106,11 @@ export default function UnsupportedNotification({
         </p>
       </Body>
       <Footer>
-        <s.CheckboxWrapper>
-          <input
-            onChange={toggleRedirectCheckbox}
-            checked={redirectCheckbox}
-            notificationType="checkbox"
-            id="checkbox"
-            name=""
-            value=""
-            type="checkbox"
-          ></input>
-          <label htmlFor="checkbox">Don't show this message</label>
-        </s.CheckboxWrapper>
+        <Checkbox
+          label={"Don't show this message"}
+          checked={redirectCheckbox}
+          onChange={toggleRedirectCheckbox}
+        />
         <s.ButtonsContainer MORE_BUTTONS>
           <a
             target={"_blank"}

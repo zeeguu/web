@@ -5,6 +5,7 @@ import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
+import Checkbox from "./modal_shared/Checkbox";
 
 export default function SupportedNotification({
   article,
@@ -59,18 +60,11 @@ export default function SupportedNotification({
         />
       </Body>
       <Footer>
-        <s.CheckboxWrapper>
-          <input
-            onChange={toggleRedirectCheckbox}
-            checked={redirectCheckbox}
-            notificationType="checkbox"
-            id="checkbox"
-            name=""
-            value=""
-            type="checkbox"
-          ></input>
-          <label htmlFor="checkbox">Don't show this message</label>
-        </s.CheckboxWrapper>
+        <Checkbox
+          label={"Don't show this message"}
+          checked={redirectCheckbox}
+          onChange={toggleRedirectCheckbox}
+        />
         <s.ButtonsContainer ONE_BUTTON>
           <a
             target={"_blank"}
