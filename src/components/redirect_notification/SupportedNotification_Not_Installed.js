@@ -3,6 +3,7 @@ import {
   runningInChromeDesktop,
   runningInFirefoxDesktop,
 } from "../../utils/misc/browserDetection";
+import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
@@ -50,7 +51,10 @@ export default function SupportedNotificationNotInstalled({
             href={getInstallExtensionLinks()}
             className="link"
           >
-            <s.GoToButton>Install the Extension</s.GoToButton>
+            <s.GoToButton>
+              <DownloadRoundedIcon fontSize="small" />
+              Install the Extension
+            </s.GoToButton>
           </a>
         </s.ButtonsContainer>
       </Footer>
