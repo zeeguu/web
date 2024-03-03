@@ -5,7 +5,7 @@ import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import IconHeader from "./modal_shared/Icon";
+import Icon from "./modal_shared/Icon";
 import Checkbox from "./modal_shared/Checkbox";
 
 export default function UnsupportedNotification({
@@ -81,7 +81,7 @@ export default function UnsupportedNotification({
     <Modal open={open} onClose={handleCancel}>
       <Header>
         Your browser doesn't support <br></br>
-        <IconHeader src={"../static/images/zeeguuLogo.svg"} />
+        <Icon src={"../static/images/zeeguuLogo.svg"} />
         The Zeeguu Reader extension
       </Header>
       <Body>
@@ -111,7 +111,7 @@ export default function UnsupportedNotification({
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <s.ButtonsContainer MORE_BUTTONS>
+        <s.ButtonsContainer moreButtons>
           <a
             target={"_blank"}
             rel="noreferrer"

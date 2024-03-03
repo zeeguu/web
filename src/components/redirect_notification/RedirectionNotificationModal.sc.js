@@ -8,7 +8,7 @@ import {
 } from "../ModalGlobalStyling.sc";
 import { zeeguuDarkOrange, zeeguuOrange } from "../colors";
 import { OrangeRoundButton } from "../allButtons.sc";
-import styled, { css }from "styled-components";
+import styled, { css } from "styled-components";
 
 const ModalWrapper = styled(ModalWrapperGlobal)`
   .link:hover {
@@ -26,18 +26,18 @@ const CloseButton = styled(CloseButtonGlobal)``;
 
 const Strong = styled(ModalStrongTextWrapperGlobal)``;
 
-const Icon = styled.span`
-  height: 1em;
-  width: 1em;
-  max-width: 2em;
-  margin: 0;
-  display: inline-block;
-`;
-
-const IconHeader = styled.img`
+const Icon = styled.img`
   margin: 0 0.4rem -0.1rem 0;
   height: 1.2rem;
   width: 1.2rem;
+
+  ${(props) =>
+    props.type === "small" &&
+    css`
+      margin: 0 0.4rem;
+      height: 1rem;
+      width: 1rem;
+    `}
 `;
 
 const CheckboxWrapper = styled.div`
@@ -119,13 +119,13 @@ const ButtonsContainer = styled.div`
   justify-content: space-between;
 
   ${(props) =>
-    props.ONE_BUTTON &&
+    props.oneButton &&
     css`
       justify-content: center;
     `}
 
   ${(props) =>
-    props.MORE_BUTTONS &&
+    props.moreButtons &&
     css`
       justify-content: space-between;
     `}
@@ -144,7 +144,6 @@ export {
   SaveArticleButton,
   ExternalLink,
   ButtonsContainer,
-  IconHeader,
   Icon,
   Header,
   Body,

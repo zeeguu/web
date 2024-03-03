@@ -3,12 +3,12 @@ import {
   runningInChromeDesktop,
   runningInFirefoxDesktop,
 } from "../../utils/misc/browserDetection";
-import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
-import IconHeader from "./modal_shared/Icon";
+import Icon from "./modal_shared/Icon";
 
 export default function SupportedNotificationNotInstalled({
   handleCloseRedirectionModal,
@@ -30,7 +30,7 @@ export default function SupportedNotificationNotInstalled({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        <IconHeader src={"../static/images/zeeguuLogo.svg"} />
+        <Icon src={"../static/images/zeeguuLogo.svg"} />
         The Zeeguu Reader<br></br>browser extension is not installed
       </Header>
       <Body>
@@ -44,7 +44,7 @@ export default function SupportedNotificationNotInstalled({
         </p>
       </Body>
       <Footer>
-        <s.ButtonsContainer ONE_BUTTON>
+        <s.ButtonsContainer oneButton>
           <a
             target={"_blank"}
             rel="noreferrer"

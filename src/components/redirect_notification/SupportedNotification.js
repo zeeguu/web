@@ -1,11 +1,11 @@
 import * as s from "./RedirectionNotificationModal.sc";
 import { useState } from "react";
-import { IconBody } from "./modal_shared/Icon";
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import Checkbox from "./modal_shared/Checkbox";
+import Icon from "./modal_shared/Icon";
 
 export default function SupportedNotification({
   article,
@@ -45,12 +45,14 @@ export default function SupportedNotification({
         <p>
           <s.Strong>Once there</s.Strong>, find and{" "}
           <s.Strong>
-            click <IconBody src={"../static/images/zeeguuLogo.svg"} /> The
-            Zeeguu Reader icon
+          click 
+          <Icon size={"small"} src={"../static/images/zeeguuLogo.svg"} />
+            The Zeeguu Reader icon
           </s.Strong>{" "}
           in the top right corner of&nbsp;your browser's toolbar
-          or&nbsp;on&nbsp;the&nbsp;list of your installed{" "}
-          <IconBody src={"../static/images/puzzle.svg"} /> extensions.
+          or&nbsp;on&nbsp;the&nbsp;list of your installed
+          <Icon size={"small"} src={"../static/images/puzzle.svg"} />
+          extensions.
           <s.Strong> Then&nbsp;wait for the reader to open</s.Strong>.
         </p>
         <img
@@ -65,7 +67,7 @@ export default function SupportedNotification({
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <s.ButtonsContainer ONE_BUTTON>
+        <s.ButtonsContainer oneButton>
           <a
             target={"_blank"}
             rel="noreferrer"

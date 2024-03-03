@@ -68,7 +68,7 @@ export default function MobileNotification({
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <s.ButtonsContainer MORE_BUTTONS>
+        <s.ButtonsContainer moreButtons>
           <a
             target={"_self"}
             rel="noreferrer"
