@@ -10,7 +10,7 @@ import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import Icon from "./modal_shared/Icon";
 
-export default function SupportedNotificationNotInstalled({
+export default function SupportedNotification_NotInstalled({
   handleCloseRedirectionModal,
   open,
 }) {

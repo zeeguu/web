@@ -43,6 +43,7 @@ export default function UnsupportedNotification({
     handleCloseRedirectionModal();
   }
 
+  // function below saves visibility preferences of the modal and closes it
   function handleSaveArticleFromTheModal() {
     handleSaveArticle();
     handleModalVisibilityPreferences();
@@ -120,7 +121,6 @@ export default function UnsupportedNotification({
           >
             <s.GoToButton
               role="button"
-              // function below saves visibility preferences of the modal and closes it
               onClick={handleSaveVisibilityPreferences}
             >
               Enter the article's website

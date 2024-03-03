@@ -45,8 +45,8 @@ export default function SupportedNotification({
         <p>
           <s.Strong>Once there</s.Strong>, find and{" "}
           <s.Strong>
-          click 
-          <Icon size={"small"} src={"../static/images/zeeguuLogo.svg"} />
+            click
+            <Icon size={"small"} src={"../static/images/zeeguuLogo.svg"} />
             The Zeeguu Reader icon
           </s.Strong>{" "}
           in the top right corner of&nbsp;your browser's toolbar
@@ -56,7 +56,7 @@ export default function SupportedNotification({
           <s.Strong> Then&nbsp;wait for the reader to open</s.Strong>.
         </p>
         <img
-          className="fullDivWidthImage"
+          className="full-width-img"
           src={"../static/images/find-extension.png"}
           alt="Zeeguu browser extension"
         />
