@@ -3,10 +3,10 @@ import {
   runningInChromeDesktop,
   runningInFirefoxDesktop,
 } from "../../utils/misc/browserDetection";
-import Modal from "./shared/Modal";
-import Header from "./shared/Header";
-import Body from "./shared/Body";
-import Footer from "./shared/Footer";
+import Modal from "./modal_shared/Modal";
+import Header from "./modal_shared/Header";
+import Body from "./modal_shared/Body";
+import Footer from "./modal_shared/Footer";
 
 export default function SupportedNotificationNotInstalled({
   handleCloseRedirectionModal,
