@@ -26,6 +26,7 @@ export default function SupportedNotification({
       : setDoNotShowRedirectionModal_UserPreference(false);
   }
 
+  //runs when user enters article
   function handleSaveVisibilityPreferences() {
     handleModalVisibilityPreferences();
     handleCloseRedirectionModal();

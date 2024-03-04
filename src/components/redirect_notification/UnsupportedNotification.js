@@ -22,7 +22,7 @@ export default function UnsupportedNotification({
     setRedirectCheckbox(!redirectCheckbox);
   }
 
-  function handleSaveArticle() {
+  function saveArticle() {
     api.makePersonalCopy(article.id, (data) => {
       if (data === "OK") {
         setIsArticleSaved(true);
@@ -37,17 +37,16 @@ export default function UnsupportedNotification({
       : setDoNotShowRedirectionModal_UserPreference(false);
   }
 
-  //when user enters article or saves it
+  //runs when user enters article or saves it
   function handleSaveVisibilityPreferences() {
     handleModalVisibilityPreferences();
     handleCloseRedirectionModal();
   }
 
-  // function below saves visibility preferences of the modal and closes it
+  // function below saves article, visibility preferences of the modal and closes it
   function handleSaveArticleFromTheModal() {
-    handleSaveArticle();
-    handleModalVisibilityPreferences();
-    handleCloseRedirectionModal();
+    saveArticle();
+    handleSaveVisibilityPreferences();
   }
 
   function handleCancel() {

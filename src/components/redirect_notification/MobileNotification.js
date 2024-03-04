@@ -21,7 +21,7 @@ export default function MobileNotification({
     setRedirectCheckbox(!redirectCheckbox);
   }
 
-  function handleSaveArticle() {
+  function saveArticle() {
     api.makePersonalCopy(article.id, (data) => {
       if (data === "OK") {
         setIsArticleSaved(true);
@@ -36,15 +36,16 @@ export default function MobileNotification({
       : setDoNotShowRedirectionModal_UserPreference(false);
   }
 
+  //runs when user enters article or saves it
   function handleSaveVisibilityPreferences() {
     handleModalVisibilityPreferences();
     handleCloseRedirectionModal();
   }
 
+  // function below saves article, visibility preferences of the modal and closes it
   function handleSaveArticleFromTheModal() {
-    handleSaveArticle();
-    handleModalVisibilityPreferences();
-    handleCloseRedirectionModal();
+    saveArticle();
+    handleSaveVisibilityPreferences();
   }
 
   function handleCancel() {
