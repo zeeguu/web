@@ -22,6 +22,7 @@ let zeeguuViolet = "#4a0d67";
 let darkGreen = "#006400"
 let alertGreen = "#4caf50"; //careful when changing this color. It is defined to match the color in the success-alert to undo feedback submits.
 let matchGreen = "#B3F78F";
+let shamrockGreen = "#399E5A";
 let translationHover= "#2f76ac";
 let lightOrange= "#ffe5b9";
 let brown = "#A46A00";
@@ -66,6 +67,7 @@ export {
   darkGreen,
   alertGreen,
   matchGreen,
+  shamrockGreen,
   lightOrange,
   translationHover,
   brown,

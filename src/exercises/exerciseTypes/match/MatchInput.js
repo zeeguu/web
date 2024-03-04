@@ -3,7 +3,7 @@ import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
 import {removePunctuation} from "../../../utils/preprocessing/preprocessing";
 import EditButton from "../../../words/EditButton.js";
-import {zeeguuOrange, darkBlue, matchGreen, zeeguuViolet} from "../../../components/colors";
+import {zeeguuOrange, darkBlue, matchGreen, zeeguuViolet, shamrockGreen} from "../../../components/colors";
 
 function MatchInput({
                         fromButtonOptions,
@@ -21,7 +21,7 @@ function MatchInput({
     const answerColors = [
         {
             fontWeight: "700",
-            color: `${matchGreen}`
+            color: `${shamrockGreen}`,
         },
         {
             fontWeight: "700",
@@ -102,14 +102,7 @@ function MatchInput({
                                     {removePunctuation(option.from.toLowerCase())}
                                 </s.AnimatedMatchButton>
                             ) : buttonsToDisable.includes(option.id) || isCorrect ? (
-                                <s.ButtonRow key={"L2_Row_" + option.id}>
-                                    <EditButton
-                                        bookmark={option}
-                                        api={api}
-                                        styling={match}
-                                        reload={reload}
-                                        setReload={setReload}
-                                    />
+                                <s.ButtonColumn key={"L2_Row_" + option.id}>
                                     <s.MatchingWords
                                         className="matchingWords"
                                         style={answerPairStyle(option.id)}
@@ -117,15 +110,24 @@ function MatchInput({
                                     >
                                         {removePunctuation(option.from.toLowerCase())}
                                     </s.MatchingWords>
-                                    <s.MatchSpeakButtonHolder>
-                                        <SpeakButton
-                                            bookmarkToStudy={option}
-                                            api={api}
-                                            styling={small}
-                                            key={"L2_Speak_" + option.id}
+                                    <s.ButtonRow>
+                                        <EditButton
+                                        bookmark={option}
+                                        api={api}
+                                        styling={match}
+                                        reload={reload}
+                                        setReload={setReload}
                                         />
-                                    </s.MatchSpeakButtonHolder>
-                                </s.ButtonRow>
+                                        <s.MatchSpeakButtonHolder>
+                                            <SpeakButton
+                                                bookmarkToStudy={option}
+                                                api={api}
+                                                styling={small}
+                                                key={"L2_Speak_" + option.id}
+                                            />
+                                        </s.MatchSpeakButtonHolder>
+                                    </s.ButtonRow>
+                                </s.ButtonColumn>
                             ) : (
                                 <s.MatchButton
                                     style={selectedButtonStyle("from", option.id)}

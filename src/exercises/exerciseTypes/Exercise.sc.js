@@ -100,24 +100,20 @@ let MatchInputHolder = styled.div`
   flex-direction: row;
   justify-content: space-evenly;
   gap: 20px;
-  word-break: break-word;
-  hyphens: auto;
 `;
 
 let MatchButtonHolder = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  justify-content: space-evenly;
   flex: 1;
 `;
 
 let MatchButtonHolderRight = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
   flex: 1;
+  place-items: start;
 `;
 
 let MatchSpeakButtonHolder = styled.div`
@@ -144,13 +140,14 @@ let MatchButton = styled(StyledButton)`
 `;
 
 let MatchingWords = styled.p`
-  margin-top: 2.125em;
-  margin-bottom: 2.125em;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-  padding-left: 0.5em;
-  font-size: 1.125em;
-  margin-right: 1em;
+  // margin-top: 2.125em;
+  // margin-bottom: 2.125em;
+  // padding-top: 0.5em;
+  // padding-bottom: 0.5em;
+  // padding-left: 0.5em;
+  // font-size: 1.125em;
+  // margin-right: 1em;
+  margin-bottom: -0.5em;
 `;
 
 let OrangeButton = styled(StyledButton)`
@@ -328,11 +325,18 @@ let StyledDiv = styled.div`
   color: gray;
 `;
 
+let ButtonColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
 let ButtonRow = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
   align-items: center;
+  gap: 0.5em;
 `;
 
 let CenteredRow = styled.div`
@@ -374,6 +378,7 @@ export {
   MatchButtonHolderRight,
   MatchInputHolder,
   MatchSpeakButtonHolder,
+  ButtonColumn,
   ButtonRow,
   CenteredRow,
   CenteredRowTall,
