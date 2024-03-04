@@ -14,7 +14,7 @@ import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
 
 import {
-  getUserSession,
+  getSessionFromCookies,
   removeUserInfoFromCookies,
 } from "./utils/cookies/userInfo";
 
@@ -22,16 +22,16 @@ import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
 
 function App() {
-  let userDict = {};
-
   let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
 
-  if (getUserSession()) {
+  let userDict = {};
+
+  if (getSessionFromCookies()) {
     userDict = {
-      session: getUserSession(),
+      session: getSessionFromCookies(),
       ...LocalStorage.userInfo(),
     };
-    api.session = getUserSession();
+    api.session = getSessionFromCookies();
   }
 
   useUILanguage();
@@ -53,7 +53,7 @@ function App() {
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
-    if (getUserSession()) {
+    if (getSessionFromCookies()) {
       console.log("getting user details...");
       api.getUserDetails((data) => {
         LocalStorage.setUserInfo(data);
@@ -63,7 +63,7 @@ function App() {
     //logs out user on zeeguu.org if they log out of the extension
 
     const interval = setInterval(() => {
-      if (!getUserSession()) {
+      if (!getSessionFromCookies()) {
         setUserData({});
       }
     }, 1000);

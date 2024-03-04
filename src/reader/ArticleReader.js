@@ -177,7 +177,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     );
   }
 
-  if (!articleInfo) {
+  if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
   }
 
