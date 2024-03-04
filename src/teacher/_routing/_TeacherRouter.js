@@ -19,7 +19,6 @@ export default function TeacherRouter({ api }) {
         component={TeacherTextsRouter}
       />
       <PrivateRoute path="/teacher/tutorials" api={api} component={Tutorials} />
-      <PrivateRoute path="/articles" api={api} component={ArticlesRouter} />
     </Switch>
   );
 }

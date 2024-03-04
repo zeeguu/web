@@ -7,6 +7,8 @@ import { longFormattedDate } from "../../sharedComponents/FormattedDate";
 
 const ReadingSessionCard = ({ readingSession, isFirst, openedArticle }) => {
   const [translationCount, setTranslationCount] = useState(0);
+  console.log("READING SESSION CARD HAS THE FOLLOWING READING SESSION: ");
+  console.dir(readingSession);
 
   useEffect(() => {
     setTranslationCount(0);
@@ -14,7 +16,8 @@ const ReadingSessionCard = ({ readingSession, isFirst, openedArticle }) => {
     readingSession.translations.forEach((translation) => {
       if (
         previousTranslation === {} ||
-        (previousTranslation !== {} && translation.id !== previousTranslation.id)
+        (previousTranslation !== {} &&
+          translation.id !== previousTranslation.id)
       ) {
         setTranslationCount((prev) => prev + 1);
         previousTranslation = translation;
@@ -34,7 +37,8 @@ const ReadingSessionCard = ({ readingSession, isFirst, openedArticle }) => {
               {readingSession.title.length > 100 ? "..." : ""}
             </h2>
             <p className="date">
-              {strings.readingDate} {longFormattedDate(readingSession.start_time)}
+              {strings.readingDate}{" "}
+              {longFormattedDate(readingSession.start_time)}
             </p>
           </div>
         </div>

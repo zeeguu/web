@@ -12,6 +12,10 @@ export default function StudentReadingInsights({ api }) {
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
+  console.log("STUDENT ID AND COHOR TID");
+  console.log(studentID);
+  console.log(cohortID);
+
   const [studentName, setStudentName] = useState(null);
   const [cohortLang, setCohortLang] = useState("");
   const [readingSessions, setReadingSessions] = useState([]);

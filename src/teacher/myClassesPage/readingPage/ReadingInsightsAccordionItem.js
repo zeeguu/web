@@ -1,5 +1,9 @@
 import React from "react";
-import { AccordionItem, AccordionButton, AccordionPanel } from "@reach/accordion";
+import {
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+} from "@reach/accordion";
 import * as s from "../../styledComponents/ReadingInsightAccordion.sc";
 import StudentTranslations from "./StudentTranslations";
 import ReadingSessionCard from "./ReadingSessionCard";
@@ -17,6 +21,9 @@ const ReadingInsightAccordionItem = ({
       setOpenedArticle(sessionID);
     }
   };
+
+  console.log("inside ReadingInsightAccordionItem");
+  console.log(readingSession);
 
   return (
     <s.ReadingInsightAccordion isFirst={isFirst}>

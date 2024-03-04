@@ -62,9 +62,8 @@ export default function StudentsActivityOverview({ api }) {
   return (
     <Fragment>
       <s.WidestColumn>
-        <sc.TopTabs>
-          <h1> {cohort.name}</h1>
-        </sc.TopTabs>
+        <h1> {cohort.name}</h1>
+
         <div>
           <TopButtonWrapper>
             <StyledButton primary onClick={() => setShowAddStudentsInfo(true)}>
