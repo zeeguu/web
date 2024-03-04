@@ -118,6 +118,9 @@ let MatchInputHolder = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  gap: 20px;
+  word-break: break-word;
+  hyphens: auto;
 `;
 
 let MatchButtonHolder = styled.div`
@@ -125,6 +128,7 @@ let MatchButtonHolder = styled.div`
   flex-direction: column;
   align-items: flex-end;
   justify-content: space-evenly;
+  flex: 1;
 `;
 
 let MatchButtonHolderRight = styled.div`
@@ -132,6 +136,7 @@ let MatchButtonHolderRight = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-evenly;
+  flex: 1;
 `;
 
 let MatchSpeakButtonHolder = styled.div`
