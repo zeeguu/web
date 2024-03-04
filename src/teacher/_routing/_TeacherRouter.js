@@ -7,7 +7,7 @@ import TeacherTextsRouter from "./_TeacherTextsRouter";
 
 export default function TeacherRouter({ api }) {
   return (
-    <Switch>
+    <>
       <PrivateRoute
         path="/teacher/classes"
         api={api}
@@ -19,6 +19,6 @@ export default function TeacherRouter({ api }) {
         component={TeacherTextsRouter}
       />
       <PrivateRoute path="/teacher/tutorials" api={api} component={Tutorials} />
-    </Switch>
+    </>
   );
 }
