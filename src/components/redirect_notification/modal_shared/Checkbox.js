@@ -7,7 +7,6 @@ export default function Checkbox({ label, checked, onChange }) {
         <input
           onChange={onChange}
           checked={checked}
-          notificationType="checkbox"
           id="checkbox"
           name=""
           value=""
