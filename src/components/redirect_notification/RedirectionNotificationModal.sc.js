@@ -5,12 +5,16 @@ import {
   ModalBodyGlobal,
   ModalFooterGlobal,
   ModalStrongTextWrapperGlobal,
-} from "./ModalGlobalStyling.sc";
-import { zeeguuDarkOrange, zeeguuOrange } from "./colors";
-import { OrangeRoundButton } from "./allButtons.sc";
-import styled from "styled-components";
+} from "../ModalGlobalStyling.sc";
+import { zeeguuDarkOrange, zeeguuOrange } from "../colors";
+import { OrangeRoundButton } from "../allButtons.sc";
+import styled, { css } from "styled-components";
 
-const ModalWrapper = styled(ModalWrapperGlobal)``;
+const ModalWrapper = styled(ModalWrapperGlobal)`
+  .link:hover {
+    text-decoration: none;
+  }
+`;
 
 const Header = styled(ModalHeaderGlobal)``;
 
@@ -20,14 +24,20 @@ const Footer = styled(ModalFooterGlobal)``;
 
 const CloseButton = styled(CloseButtonGlobal)``;
 
-const ModalStrongTextWrapper = styled(ModalStrongTextWrapperGlobal)``;
+const Strong = styled(ModalStrongTextWrapperGlobal)``;
 
-const Icon = styled.span`
-  height: 1em;
-  width: 1em;
-  max-width: 2em;
-  margin: 0 0.2em;
-  display: inline-block;
+const Icon = styled.img`
+  margin: 0 0.4rem -0.1rem 0;
+  height: 1.2rem;
+  width: 1.2rem;
+
+  ${(props) =>
+    props.type === "small" &&
+    css`
+      margin: 0 0.4rem;
+      height: 1rem;
+      width: 1rem;
+    `}
 `;
 
 const CheckboxWrapper = styled.div`
@@ -58,12 +68,22 @@ const CheckboxWrapper = styled.div`
 //readability of the text inside it.
 //TODO: After implementing all the onboarding steps,
 //create style quide for all buttons and refactor / factor them out
-const GoToArticleButton = styled(OrangeRoundButton)`
-  flex: 1;
+const GoToButton = styled(OrangeRoundButton)`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.25rem;
   padding: 0.7em 2em;
   border-radius: 4em;
   font-weight: 600;
   border-bottom: solid 0.2em ${zeeguuDarkOrange};
+`;
+
+const ExternalLink = styled.a`
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const SaveArticleButton = styled.button`
@@ -90,12 +110,25 @@ const SaveArticleButton = styled.button`
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonsContainer = styled.div`
+  text-align: center;
   width: 100%;
   display: flex;
   gap: 1.5rem;
   flex-direction: row-reverse;
   justify-content: space-between;
+
+  ${(props) =>
+    props.oneButton &&
+    css`
+      justify-content: center;
+    `}
+
+  ${(props) =>
+    props.moreButtons &&
+    css`
+      justify-content: space-between;
+    `}
 
   @media (max-width: 576px) {
     flex-direction: column;
@@ -107,13 +140,14 @@ const ButtonContainer = styled.div`
 export {
   ModalWrapper,
   CloseButton,
-  GoToArticleButton,
+  GoToButton,
   SaveArticleButton,
-  ButtonContainer,
+  ExternalLink,
+  ButtonsContainer,
   Icon,
   Header,
   Body,
   Footer,
   CheckboxWrapper,
-  ModalStrongTextWrapper,
+  Strong,
 };
