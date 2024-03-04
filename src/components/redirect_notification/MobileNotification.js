@@ -5,6 +5,7 @@ import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import Checkbox from "./modal_shared/Checkbox";
+import GoToButton from "./modal_shared/GoToButton";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 export default function MobileNotification({
@@ -70,19 +71,13 @@ export default function MobileNotification({
           onChange={toggleRedirectCheckbox}
         />
         <s.ButtonsContainer moreButtons>
-          <a
-            target={"_self"}
-            rel="noreferrer"
+          <GoToButton
             href={article.url}
-            className="link"
+            target={"_self"}
+            onClick={handleSaveVisibilityPreferences}
           >
-            <s.GoToButton
-              role="button"
-              onClick={handleSaveVisibilityPreferences}
-            >
-              Enter the article's website
-            </s.GoToButton>
-          </a>
+            Enter the article's website
+          </GoToButton>
           <s.SaveArticleButton
             role="button"
             onClick={handleSaveArticleFromTheModal}

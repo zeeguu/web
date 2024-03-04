@@ -5,6 +5,7 @@ import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import Checkbox from "./modal_shared/Checkbox";
+import GoToButton from "./modal_shared/GoToButton";
 import Icon from "./modal_shared/Icon";
 
 export default function SupportedNotification({
@@ -69,19 +70,13 @@ export default function SupportedNotification({
           onChange={toggleRedirectCheckbox}
         />
         <s.ButtonsContainer oneButton>
-          <a
+          <GoToButton
             target={"_blank"}
-            rel="noreferrer"
             href={article.url}
-            className="link"
+            onClick={handleSaveVisibilityPreferences}
           >
-            <s.GoToButton
-              role="button"
-              onClick={handleSaveVisibilityPreferences}
-            >
-              Enter the article's website
-            </s.GoToButton>
-          </a>
+            Enter the article's website
+          </GoToButton>
         </s.ButtonsContainer>
       </Footer>
     </Modal>

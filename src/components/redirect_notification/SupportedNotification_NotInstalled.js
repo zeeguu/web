@@ -8,6 +8,7 @@ import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
+import GoToButton from "./modal_shared/GoToButton";
 import Icon from "./modal_shared/Icon";
 
 export default function SupportedNotification_NotInstalled({
@@ -45,17 +46,10 @@ export default function SupportedNotification_NotInstalled({
       </Body>
       <Footer>
         <s.ButtonsContainer oneButton>
-          <a
-            target={"_blank"}
-            rel="noreferrer"
-            href={getInstallExtensionLinks()}
-            className="link"
-          >
-            <s.GoToButton>
-              <DownloadRoundedIcon fontSize="small" />
-              Install the Extension
-            </s.GoToButton>
-          </a>
+          <GoToButton target={"_blank"} href={getInstallExtensionLinks()}>
+            <DownloadRoundedIcon fontSize="small" />
+            Install the Extension
+          </GoToButton>
         </s.ButtonsContainer>
       </Footer>
     </Modal>
