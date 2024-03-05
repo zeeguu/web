@@ -10,6 +10,7 @@ import {
 
 const TranslatableText = styled.div`
   z-tag {
+    padding-right: 0.3em;
     cursor: pointer;
     /* margin-right: 1em; */
     display: inline-block;
@@ -131,7 +132,9 @@ green downwards pointing triangle; we used to mark also single alternatives
   .handContributed:after {
     display: hidden;
     opacity: 0.1;
-    transition: visibility 0s 2s, opacity 2s linear;
+    transition:
+      visibility 0s 2s,
+      opacity 2s linear;
   }
 
   .handSelected:after {
