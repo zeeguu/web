@@ -4,9 +4,11 @@ import { BROWSER_API } from "../utils/browserApi";
 import { StyledPrimaryButton } from "./Modal/Buttons.styles";
 import ReportError from "../reportError/ReportError";
 import {
+  NO_INTERNET_CONNECTION,
   SESSISON_FEEDBACK,
   LANGUAGE_FEEDBACK,
   READABILITY_FEEDBACK,
+  API_DOWN_FEEDBACK,
   OTHER_FEEDBACK,
 } from "./constants";
 
@@ -14,6 +16,8 @@ export default function ZeeguuError({
   isNotReadable,
   isNotLanguageSupported,
   isMissingSession,
+  isZeeguuAPIDown,
+  isInternetDown,
   api,
 }) {
   const [timeout, setTimeout] = useState(7);
@@ -21,11 +25,14 @@ export default function ZeeguuError({
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
 
   useEffect(() => {
+    console.log("Inside Zeeguu error rendering.");
     const interval = setInterval(() => {
       if (timeout > 0) setTimeout(timeout - 1);
     }, 1000);
-
-    if (isMissingSession === undefined) setReason(SESSISON_FEEDBACK);
+    console.log(isInternetDown);
+    if (isInternetDown) setReason(NO_INTERNET_CONNECTION);
+    else if (isMissingSession === undefined) setReason(SESSISON_FEEDBACK);
+    else if (isZeeguuAPIDown) setReason(API_DOWN_FEEDBACK);
     else if (isNotLanguageSupported) setReason(LANGUAGE_FEEDBACK);
     else if (isNotReadable) setReason(READABILITY_FEEDBACK);
     else setReason(OTHER_FEEDBACK);
@@ -50,11 +57,13 @@ export default function ZeeguuError({
       <div className="background">
         <div className="card">
           <div className="content">
-            <img
-              className="logo"
-              src={BROWSER_API.runtime.getURL("images/zeeguuLogo.svg")}
-              alt="Zeeguu logo"
-            />
+            {!isInternetDown && (
+              <img
+                className="logo"
+                src={BROWSER_API.runtime.getURL("images/zeeguuLogo.svg")}
+                alt="Zeeguu logo"
+              />
+            )}
             <h1>{reason}</h1>
             <ReportError
               api={api}

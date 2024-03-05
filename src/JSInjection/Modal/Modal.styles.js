@@ -111,6 +111,7 @@ export const StyledModal = styled(ReactModal)`
   overflow-x: hidden;
   box-shadow: 0px 12px 48px rgba(29, 5, 64, 0.32);
   outline: none;
+  margin-bottom: 2em;
 
   h1 {
     font-size: 1.9em !important;
@@ -363,4 +364,40 @@ export const StyledHeading = styled.div`
   width: 100%;
   border-bottom: 2px solid rgb(246, 246, 246);
   z-index: 1;
+
+  progress[value] {
+    --color: linear-gradient(
+      89.5deg,
+      ${colors.zeeguuOrange},
+      ${colors.zeeguuLightYellow} 100%
+    ); /* the progress color */
+    --background: ${colors.lightGray}; /* the background color */
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    width: 100%;
+    height: 0.5em;
+    margin: 10px 0px 1px 0px;
+    border-radius: 10em;
+    background: var(--background);
+    transition: all 0.1s linear 0s;
+  }
+
+  progress[value]::-webkit-progress-bar {
+    transition: all 0.1s linear 0s;
+    border-radius: 10em;
+    background: var(--background);
+  }
+  progress[value]::-webkit-progress-value {
+    transition: all 0.1s linear 0s;
+    border-radius: 10em;
+    background: var(--color);
+  }
+  progress[value]::-moz-progress-bar {
+    transition: all 0.1s linear 0s;
+    border-radius: 10em;
+    background: var(--color);
+  }
 `;

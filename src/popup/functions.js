@@ -91,6 +91,11 @@ export function deleteTimeouts() {
   }
 }
 
+export function deleteEvents() {
+  console.log(document.body.outerHTML);
+  document.body.outerHTML = document.body.outerHTML;
+}
+
 export function deleteIntervals() {
   var id = window.setInterval(function () {}, 0);
   while (id--) {

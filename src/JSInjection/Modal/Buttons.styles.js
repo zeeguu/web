@@ -5,8 +5,13 @@ export const StyledPrimaryButton = styled.button`
   color: ${colors.black};
   background-color: ${colors.zeeguuOrange};
 
-  :hover{
+  :hover {
     background-color: ${colors.lightOrange};
+  }
+
+  .default {
+    background-color: ${colors.darkBlue};
+    color: ${colors.white};
   }
 
   height: 45px;
@@ -30,9 +35,19 @@ export const StyledCloseButton = styled.div`
   height: 55px;
   margin: 0px 0px 20px 20px;
   float: right;
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+  font-family:
+    "Montserrat",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 `;
@@ -53,7 +68,7 @@ export const StyledSmallButtonBlue = styled.button`
   color: ${colors.white} !important;
   background-color: ${colors.darkBlue} !important;
   border-color: ${colors.buttonBorder} !important;
-  :hover{
+  :hover {
     background-color: ${colors.hoverBlue}!important;
   }
   cursor: pointer;
@@ -78,9 +93,9 @@ export const StyledSmallDisabledButton = styled.button`
 export const StyledButtonBlue = styled.button`
   color: ${colors.white} !important;
   background-color: ${colors.darkBlue} !important;
-  border-color:  ${colors.buttonBorder} !important;
+  border-color: ${colors.buttonBorder} !important;
 
-  :hover{
+  :hover {
     background-color: ${colors.hoverBlue} !important;
   }
 
@@ -95,7 +110,6 @@ export const StyledButtonBlue = styled.button`
   font-size: 18px;
   cursor: pointer;
 `;
-
 
 export let NavigationButton = styled.button`
   display: flex;
@@ -128,11 +142,11 @@ export let NavigationButton = styled.button`
   ${(props) =>
     props.primary &&
     css`
-     color: ${colors.white} !important;
-     background-color: ${colors.darkBlue} !important;
-     border-color: ${colors.buttonBorder} !important;
-     :hover{
-         background-color: ${colors.hoverBlue}!important;
+      color: ${colors.white} !important;
+      background-color: ${colors.darkBlue} !important;
+      border-color: ${colors.buttonBorder} !important;
+      :hover {
+        background-color: ${colors.hoverBlue}!important;
       }
       border-style: solid;
       border-width: 2px;
@@ -142,15 +156,15 @@ export let NavigationButton = styled.button`
   ${(props) =>
     props.secondary &&
     css`
-      color:${colors.white} !important;
+      color: ${colors.white} !important;
       background-color: ${colors.darkBlue} !important;
       border-color: ${colors.buttonBorder}!important;
-      :hover{
+      :hover {
         background-color: ${colors.hoverBlue} !important;
       }
-      border-style: solid!important;
-      border-width: 2px!important;
-      border-radius: 10px!important;
+      border-style: solid !important;
+      border-width: 2px !important;
+      border-radius: 10px !important;
     `}
     // Disabled
     ${(props) =>

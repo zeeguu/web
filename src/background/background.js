@@ -75,6 +75,9 @@ async function startReader() {
         tab.url,
         EXTENSION_SOURCE
       );
+    } catch (err) {
+      console.error(`failed to execute script: ${err}`);
+    } finally {
       BROWSER_API.scripting
         .executeScript({
           target: { tabId: tab.id },
@@ -82,8 +85,6 @@ async function startReader() {
           func: setCurrentURL(tab.url),
         })
         .then(() => console.log("injected the function!"));
-    } catch (err) {
-      console.error(`failed to execute script: ${err}`);
     }
   }
 }
