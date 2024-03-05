@@ -16,6 +16,12 @@ function runningInFirefoxDesktop() {
   }
 }
 
+function isSupportedBrowser() {
+  if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
+    return true;
+  } else return false;
+}
+
 // cf: https://stackoverflow.com/questions/3514784/what-is-the-best-way-to-detect-a-mobile-device
 function isMobile() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobi|Android/i.test(
@@ -23,4 +29,9 @@ function isMobile() {
   );
 }
 
-export { isMobile, runningInChromeDesktop, runningInFirefoxDesktop };
+export {
+  isMobile,
+  runningInChromeDesktop,
+  runningInFirefoxDesktop,
+  isSupportedBrowser,
+};

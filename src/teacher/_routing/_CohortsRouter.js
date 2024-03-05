@@ -8,6 +8,7 @@ export default function CohortsRouter({ api }) {
   return (
     <Switch>
       <PrivateRoute path="/teacher/classes" exact api={api} component={Home} />
+
       <PrivateRoute
         path="/teacher/classes/viewClass/:cohortID"
         api={api}

@@ -23,6 +23,7 @@ let SpeakButton = styled(OrangeButton)`
   height: fit-content;
   width: fit-content;
   outline: none;
+  padding: 5px;
 
   &:disabled {
     cursor: default;

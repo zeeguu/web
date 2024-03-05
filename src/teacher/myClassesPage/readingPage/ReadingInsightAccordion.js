@@ -3,33 +3,22 @@ import { Accordion } from "@reach/accordion";
 import { v4 as uuid } from "uuid";
 import ReadingInsightAccordionItem from "./ReadingInsightsAccordionItem";
 
-const ReadingInsightAccordion = ({ readArticles }) => {
-  const [firstArticle, setFirstArticle] = useState(null);
-  const [restOfArticles, setRestOfArticles] = useState(null);
+const ReadingInsightAccordion = ({ readingSessions }) => {
+  // const [readingSession, setFirstReadingSession] = useState(null);
+  // const [restOfReadingSessions, setRestOfReadingSessions] = useState(null);
   const [openedArticle, setOpenedArticle] = useState(null);
 
-  useEffect(() => {
-    setFirstArticle(readArticles[0]);
-    setRestOfArticles(readArticles.slice(1, readArticles.length));
-    //eslint-disable-next-line
-  }, []);
+  console.log("inside ReadingInsightAccordion");
+  console.log(readingSessions);
 
   return (
     <Accordion collapsible>
-      {firstArticle !== null && (
-        <ReadingInsightAccordionItem
-          isFirst={true}
-          article={firstArticle}
-          openedArticle={openedArticle}
-          setOpenedArticle={setOpenedArticle}
-        />
-      )}
-      {restOfArticles !== null &&
-        restOfArticles.map((article) => (
+      {readingSessions !== null &&
+        readingSessions.map((readingSession) => (
           <ReadingInsightAccordionItem
-            key={uuid() + article.session_id}
+            key={uuid() + readingSession.session_id}
             isFirst={false}
-            article={article}
+            readingSession={readingSession}
             openedArticle={openedArticle}
             setOpenedArticle={setOpenedArticle}
           />

@@ -8,7 +8,7 @@ const TopTabs = styled.div`
     line-height: 1em;
     letter-spacing: 0.05em; // wider spacing; makes title stand out more
     text-align: center;
-    margin-top: 1em;
+    margin-top: 2em;
   }
 
   .all__tabs {
@@ -59,6 +59,7 @@ const TopTabs = styled.div`
     .row__bar {
       padding: 0em;
     }
+
     .bar {
       width: 1em;
       height: 0px;

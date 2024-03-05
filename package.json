@@ -2,7 +2,7 @@
   "name": "simple-zeeguu",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "https://www.zeeguu.org/",
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
@@ -22,7 +22,7 @@
     "@sentry/react": "^7.74.1",
     "axios": "^1.4.0",
     "cross-env": "^7.0.3",
-    "cross-fetch": "^3.0.6",
+    "cross-fetch": "^4.0.0",
     "date-fns": "^2.19.0",
     "email-validator": "^2.0.4",
     "js-cookie": "^3.0.1",
@@ -51,10 +51,11 @@
     "webpack-cli": "^4.9.2",
     "react-modal": "^3.14.4",
     "dompurify": "^2.3.5"
-
   },
   "scripts": {
     "start": "react-scripts start",
+    "lapi": "REACT_APP_API_URL='http://localhost:9001' react-scripts start",
+    "rapi": "REACT_APP_API_URL='https://api.zeeguu.org' react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build": "cross-env react-scripts build || npm run sentry:sourcemaps",

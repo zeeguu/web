@@ -1,8 +1,9 @@
 import { useEffect, useState, useContext } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import { RoutingContext } from "../contexts/RoutingContext";
+import { SpeechContext } from "../contexts/SpeechContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
 
@@ -191,7 +192,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     );
   }
 
-  if (!articleInfo) {
+  if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
   }
 

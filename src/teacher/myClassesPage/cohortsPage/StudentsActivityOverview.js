@@ -10,9 +10,9 @@ import {
   TopButtonWrapper,
 } from "../../styledComponents/TeacherButtons.sc";
 import * as s from "../../../components/ColumnWidth.sc";
-import * as sc from "../../../components/TopTabs.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import StudentsActivityOverviewContent from "./StudentsActivityOverviewContent";
+import { PageTitle } from "../../../components/PageTitle";
 
 export default function StudentsActivityOverview({ api }) {
   const cohortID = useParams().cohortID;
@@ -61,10 +61,8 @@ export default function StudentsActivityOverview({ api }) {
 
   return (
     <Fragment>
+      <PageTitle>Class: {cohort.name}</PageTitle>
       <s.WidestColumn>
-        <sc.TopTabs>
-          <h1> {cohort.name}</h1>
-        </sc.TopTabs>
         <div>
           <TopButtonWrapper>
             <StyledButton primary onClick={() => setShowAddStudentsInfo(true)}>

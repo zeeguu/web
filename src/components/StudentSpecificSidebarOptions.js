@@ -26,16 +26,15 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
 
       <SidebarLink text={strings.settings} to="/account_settings" />
 
-      <div className="navigationLink">
-        <Link
-          to="/"
-          onClick={() => {
-            user.logoutMethod();
-          }}
-        >
-          <small>{strings.logout}</small>
-        </Link>
-      </div>
+      <Link
+        className="navigationLink"
+        to="/"
+        onClick={() => {
+          user.logoutMethod();
+        }}
+      >
+        <small>{strings.logout}</small>
+      </Link>
     </>
   );
 }

@@ -47,7 +47,7 @@ const ModalBodyGlobal = styled.div`
   align-items: center;
   gap: 1.5em;
   margin: 1em 0;
-  .fullDivWidthImage {
+  .full-width-img {
     height: 100%;
     width: 100%;
     object-fit: contain;
