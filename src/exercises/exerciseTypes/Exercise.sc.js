@@ -99,7 +99,7 @@ let MatchInputHolder = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  gap: 20px;
+  gap: 3em;
 `;
 
 let MatchButtonHolder = styled.div`
@@ -117,15 +117,13 @@ let MatchButtonHolderRight = styled.div`
 `;
 
 let MatchSpeakButtonHolder = styled.div`
-  width: fit-content;
+  width: 60%;
   margin-left: -1.5em;
   border-radius: 0.75em;
 `;
 
 let MatchButton = styled(StyledButton)`
   width: fit-content;
-  margin-top: 2em;
-  margin-bottom: 2em;
   background: #ffd04799;
   color: black;
   border: 0.125em solid ${zeeguuTransparentLightOrange};
@@ -140,14 +138,6 @@ let MatchButton = styled(StyledButton)`
 `;
 
 let MatchingWords = styled.p`
-  // margin-top: 2.125em;
-  // margin-bottom: 2.125em;
-  // padding-top: 0.5em;
-  // padding-bottom: 0.5em;
-  // padding-left: 0.5em;
-  // font-size: 1.125em;
-  // margin-right: 1em;
-  margin-bottom: -0.5em;
 `;
 
 let OrangeButton = styled(StyledButton)`
@@ -328,15 +318,16 @@ let StyledDiv = styled.div`
 let ButtonColumn = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
+  align-items: flex-end;
 `;
 
 let ButtonRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.5em;
+  margin-top: -0.5em;
 `;
 
 let CenteredRow = styled.div`

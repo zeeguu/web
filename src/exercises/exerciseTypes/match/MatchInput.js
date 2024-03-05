@@ -90,57 +90,56 @@ function MatchInput({
             <s.MatchInputHolder className="matchInputHolder">
                 <s.MatchButtonHolder>
                     {fromButtonOptions ? (
-                        fromButtonOptions.map((option) =>
-                            Number(incorrectAnswer) === option.id &&
-                            firstSelectionColumn !== "from" ? (
-                                <s.AnimatedMatchButton
-                                    key={"L2_" + option.id}
-                                    id={option.id}
-                                    onClick={(e) => handleClick("from", Number(e.target.id))}
-                                    onAnimationEnd={() => setIncorrectAnswer("")}
-                                >
-                                    {removePunctuation(option.from.toLowerCase())}
-                                </s.AnimatedMatchButton>
-                            ) : buttonsToDisable.includes(option.id) || isCorrect ? (
-                                <s.ButtonColumn key={"L2_Row_" + option.id}>
-                                    <s.MatchingWords
-                                        className="matchingWords"
-                                        style={answerPairStyle(option.id)}
-                                        key={"L2_" + option.id}
-                                    >
-                                        {removePunctuation(option.from.toLowerCase())}
-                                    </s.MatchingWords>
-                                    <s.ButtonRow>
-                                        <EditButton
-                                        bookmark={option}
-                                        api={api}
-                                        styling={match}
-                                        reload={reload}
-                                        setReload={setReload}
-                                        />
-                                        <s.MatchSpeakButtonHolder>
-                                            <SpeakButton
-                                                bookmarkToStudy={option}
-                                                api={api}
-                                                styling={small}
-                                                key={"L2_Speak_" + option.id}
-                                            />
-                                        </s.MatchSpeakButtonHolder>
-                                    </s.ButtonRow>
-                                </s.ButtonColumn>
-                            ) : (
-                                <s.MatchButton
-                                    style={selectedButtonStyle("from", option.id)}
-                                    key={"L2_" + option.id}
-                                    id={option.id}
-                                    onClick={(e) => handleClick("from", Number(e.target.id))}
-                                >
-                                    {removePunctuation(option.from.toLowerCase())}
-                                </s.MatchButton>
-                            )
-                        )
+                    fromButtonOptions.map((option) => (
+                        <s.ButtonColumn key={"L2_Row_" + option.id}>
+                        {Number(incorrectAnswer) === option.id && firstSelectionColumn !== "from" ? (
+                            <s.AnimatedMatchButton
+                                key={"L2_" + option.id}
+                                id={option.id}
+                                onClick={(e) => handleClick("from", Number(e.target.id))}
+                                onAnimationEnd={() => setIncorrectAnswer("")}
+                            >
+                                {removePunctuation(option.from.toLowerCase())}
+                            </s.AnimatedMatchButton>
+                        ) : buttonsToDisable.includes(option.id) || isCorrect ?(
+                            <s.MatchingWords
+                                className="matchingWords"
+                                style={answerPairStyle(option.id)}
+                                key={"L2_" + option.id}
+                            >
+                                {removePunctuation(option.from.toLowerCase())}
+                            </s.MatchingWords>
+                        ) : (
+                            <s.MatchButton
+                                style={selectedButtonStyle("from", option.id)}
+                                key={"L2_" + option.id}
+                                id={option.id}
+                                onClick={(e) => handleClick("from", Number(e.target.id))}
+                            >
+                                {removePunctuation(option.from.toLowerCase())}
+                            </s.MatchButton>
+                        )}
+                        <s.ButtonRow style={{ visibility: (buttonsToDisable.includes(option.id) || isCorrect) ? 'visible' : 'hidden' }}>
+                            <EditButton
+                                bookmark={option}
+                                api={api}
+                                styling={match}
+                                reload={reload}
+                                setReload={setReload}
+                            />
+                            <s.MatchSpeakButtonHolder>
+                            <SpeakButton
+                                bookmarkToStudy={option}
+                                api={api}
+                                styling={small}
+                                key={"L2_Speak_" + option.id}
+                            />
+                            </s.MatchSpeakButtonHolder>
+                        </s.ButtonRow>
+                        </s.ButtonColumn>
+                    ))
                     ) : (
-                        <></>
+                    <></>
                     )}
                 </s.MatchButtonHolder>
                 <s.MatchButtonHolderRight>
