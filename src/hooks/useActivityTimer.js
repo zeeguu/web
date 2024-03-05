@@ -9,10 +9,7 @@ export default function useActivityTimer(activityUploaderFunction) {
   const [activityOver, setActivityOver] = useState(false);
 
   useEffect(() => {
-    console.log("STARTING UP ACTIVITY INTERVAL");
-    console.log(clockActive, activityOver, activeSessionDuration);
     const interval = setInterval(() => {
-      console.log("RUNNING INTERVAL");
       let newValue =
         clockActive & !activityOver
           ? activeSessionDuration + 1
@@ -24,14 +21,12 @@ export default function useActivityTimer(activityUploaderFunction) {
     if (
       activityUploaderFunction &&
       clockActive &&
-      activeSessionDuration % 10 === 0 &&
-      activeSessionDuration !== 0
+      activeSessionDuration % 10 === 0
     ) {
       activityUploaderFunction();
     }
 
     return () => {
-      console.log("CLEARING INTERVAL");
       clearInterval(interval);
     };
   }, [activeSessionDuration, clockActive]);
@@ -44,16 +39,13 @@ export default function useActivityTimer(activityUploaderFunction) {
   });
 
   useEffect(() => {
-    console.log("STARTING UP ACTIVITY TIMER");
     const handleFocus = () => {
-      console.log("Running is Focus!");
       if (!activityOver) {
         setClockActive(true);
       }
     };
 
     const handleBlur = () => {
-      console.log("Running is Blurred!");
       if (activityUploaderFunction && clockActive) {
         activityUploaderFunction();
       }
