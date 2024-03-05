@@ -163,9 +163,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     window.addEventListener("blur", handleBlur);
     // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#usecapture
     window.addEventListener("scroll", handleScroll, true);
-    window.onbeforeunload = () => {
-      componentWillUnmount();
-    };
+    window.addEventListener("beforeunload", componentWillUnmount);
   }
 
   function componentWillUnmount() {
@@ -181,6 +179,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     window.removeEventListener("focus", handleFocus);
     window.removeEventListener("blur", handleBlur);
     window.removeEventListener("scroll", handleScroll, true);
+    window.removeEventListener("beforeunload", componentWillUnmount);
   }
 
   function toggleBookmarkedState() {
@@ -195,7 +194,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
       UMR_SOURCE,
     );
   }
-  console.log(readerReady);
 
   if (
     !articleInfo ||

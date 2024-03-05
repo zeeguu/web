@@ -106,21 +106,21 @@ let Toolbar = styled.div`
     margin: 10px 0px 1px 0px;
     border-radius: 10em;
     background: var(--background);
-    transition: all 0.5s;
+    transition: all 0.1s linear 0s;
   }
 
   progress[value]::-webkit-progress-bar {
-    transition: all 0.5s;
+    transition: all 0.1s linear 0s;
     border-radius: 10em;
     background: var(--background);
   }
   progress[value]::-webkit-progress-value {
-    transition: all 0.5s;
+    transition: all 0.1s linear 0s;
     border-radius: 10em;
     background: var(--color);
   }
   progress[value]::-moz-progress-bar {
-    transition: all 0.5s;
+    transition: all 0.1s linear 0s;
     border-radius: 10em;
     background: var(--color);
   }
