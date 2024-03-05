@@ -36,7 +36,7 @@ export function TranslatableText({
         </div>
       )),
     );
-  }, [paragraphs]);
+  }, [paragraphs, translationCount]);
 
   useEffect(() => {
     if (setIsRendered) setIsRendered(true);

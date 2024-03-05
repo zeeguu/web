@@ -170,12 +170,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   function componentWillUnmount() {
     uploadActivity();
+    /*
     api.logReaderActivity(
       api.SCROLL,
       articleID,
       scrollEvents.current.length,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
-    );
+    );*/
     api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
     window.removeEventListener("focus", handleFocus);
     window.removeEventListener("blur", handleBlur);
