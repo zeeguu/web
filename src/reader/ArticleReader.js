@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 
 import { UserContext } from "../contexts/UserContext";
@@ -22,10 +22,6 @@ import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
-import { SpeechContext } from "../exercises/SpeechContext";
-
-let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
-let previous_time = 0; // since sent a scroll update
 
 export const UMR_SOURCE = "UMR";
 
@@ -33,21 +29,6 @@ export const UMR_SOURCE = "UMR";
 // the query string for you.
 function useQuery() {
   return new URLSearchParams(useLocation().search);
-}
-
-export function onScroll(api, articleID, source, percent) {
-  let _current_time = new Date();
-  let current_time = _current_time.getTime();
-  if (previous_time === 0) {
-    api.logReaderActivity(api.SCROLL, articleID, percent, source);
-    previous_time = current_time;
-  } else {
-    if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
-      api.logReaderActivity(api.SCROLL, articleID, percent, source);
-      previous_time = current_time;
-    } else {
-    }
-  }
 }
 
 export function onFocus(api, articleID, source) {
@@ -75,7 +56,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(true);
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const [scrollPosition, setScrollPosition] = useState();
+  const [readerReady, setReaderReady] = useState();
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -83,8 +65,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [activeSessionDuration, clockActive] = useActivityTimer(uploadActivity);
   const [readingSessionId, setReadingSessionId] = useState();
 
+  const scrollEvents = useRef();
+
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const readingSessionIdRef = useShadowRef(readingSessionId);
+  const lastSampleScroll = useRef();
+  const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
 
   function uploadActivity() {
     api.readingSessionUpdate(
@@ -101,7 +87,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     // Should we allow the ratio to go above 1?
     // Above 1 is the area where the feedback + exercises are.
     setScrollPosition(ratio);
-    console.log(ratio);
     return ratio;
   }
 
@@ -122,11 +107,22 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   const handleScroll = () => {
-    let scrollPercentage = updateScrollPosition();
-    onScroll(api, articleID, UMR_SOURCE, scrollPercentage);
+    let percentage = Math.floor(updateScrollPosition() * 100);
+    let currentSessionDuration = activeSessionDurationRef.current;
+    if (
+      currentSessionDuration - lastSampleScroll.current >=
+      SCROLL_SAMPLE_FREQUENCY
+    ) {
+      scrollEvents.current.push([currentSessionDuration, percentage]);
+      lastSampleScroll.current = currentSessionDuration;
+    }
   };
 
   function onCreate() {
+    scrollEvents.current = [];
+    lastSampleScroll.current = 0;
+    setScrollPosition(0);
+
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -153,9 +149,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
       api.readingSessionCreate(articleID, (sessionID) => {
         setReadingSessionId(sessionID);
-
         api.setArticleOpened(articleInfo.id);
-
         api.logReaderActivity(
           api.OPEN_ARTICLE,
           articleID,
@@ -167,16 +161,25 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
     window.addEventListener("focus", handleFocus);
     window.addEventListener("blur", handleBlur);
+    // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#usecapture
     window.addEventListener("scroll", handleScroll, true);
+    window.onbeforeunload = () => {
+      componentWillUnmount();
+    };
   }
 
   function componentWillUnmount() {
     uploadActivity();
+    api.logReaderActivity(
+      api.SCROLL,
+      articleID,
+      scrollEvents.current.length,
+      JSON.stringify(scrollEvents.current).slice(0, 4096),
+    );
     api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
-
     window.removeEventListener("focus", handleFocus);
     window.removeEventListener("blur", handleBlur);
-    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("scroll", handleScroll, true);
   }
 
   function toggleBookmarkedState() {
@@ -191,8 +194,14 @@ export default function ArticleReader({ api, teacherArticleID }) {
       UMR_SOURCE,
     );
   }
+  console.log(readerReady);
 
-  if (!articleInfo || !interactiveText) {
+  if (
+    !articleInfo ||
+    !interactiveText ||
+    !interactiveTitle ||
+    !readingSessionId
+  ) {
     return <LoadingAnimation />;
   }
 
@@ -236,6 +245,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
           interactiveText={interactiveTitle}
           translating={translating}
           pronouncing={pronouncing}
+          setIsRendered={setReaderReady}
         />
       </h1>
       <div
@@ -279,8 +289,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </s.MainText>
-      <ReviewVocabulary articleID={articleID} />
-      <DifficultyFeedbackBox api={api} articleID={articleID} />
+
+      {readerReady && (
+        <>
+          <ReviewVocabulary articleID={articleID} />
+          <DifficultyFeedbackBox api={api} articleID={articleID} />
+        </>
+      )}
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );
