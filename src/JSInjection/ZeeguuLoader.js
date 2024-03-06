@@ -1,4 +1,5 @@
 import { StyledLoader } from "./ZeeguuLoader.styles";
+import { BROWSER_API } from "../utils/browserApi";
 
 export default function ZeeguuLoader() {
   return (
@@ -7,7 +8,7 @@ export default function ZeeguuLoader() {
         <div className="loader"></div>
         <img
           className="logo"
-          src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+          src={BROWSER_API.runtime.getURL("images/zeeguuLogo.svg")}
           alt="Zeeguu logo"
         />
       </div>

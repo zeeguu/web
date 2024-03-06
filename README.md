@@ -22,7 +22,7 @@ docker build -f Dockerfile.development -t zeeguu_extension .
 
 With the image created you can now run the following commands to build the extension:
 
-`docker-compose up build_chrome` for the Chrome Extension and `docker-compose up build_firefox`
+`docker-compose up build_chrome` for the Chrome Extension and `docker-compose up build_firefox` for the Firefox Extension.
 
 
 # 2. Building on Windows or MacOs/Linux

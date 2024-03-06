@@ -15,9 +15,11 @@
     "activeTab",
     "tabs",
     "cookies",
+    "scripting",
     "https://www.zeeguu.org/",
     "https://api.zeeguu.org/",
-    "<all_urls>"
+    "<all_urls>",
+    "contextMenus"
   ],
 
   "browser_action": {

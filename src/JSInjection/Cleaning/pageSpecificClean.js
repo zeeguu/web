@@ -1,22 +1,45 @@
 import { btRegex, cleanBT } from "./Pages/bt";
 import { wikiRegex, cleanWiki } from "./Pages/wiki";
-import {ekstrabladetRegex, cleanEkstraBladet, cleanEkstraBladetBefore } from "./Pages/ekstrabladet";
-import {lemondeRegex, cleanLemondeBefore, cleanLemonde } from "./Pages/lemonde";
-import { drRegex, cleanDRBefore } from "./Pages/dr";
-import { cleanLexpress, lexpressRegex, cleanLexpressBefore } from "./Pages/lexpress";
-import { marianneRegex, cleanMarianne, cleanMarianneBefore } from "./Pages/marianne";
+import {
+  ekstrabladetRegex,
+  cleanEkstraBladet,
+  cleanEkstraBladetBefore,
+} from "./Pages/ekstrabladet";
+import {
+  lemondeRegex,
+  cleanLemondeBefore,
+  cleanLemonde,
+} from "./Pages/lemonde";
+import { drRegex, cleanDRBefore, saveElements, addElements } from "./Pages/dr";
+import {
+  cleanLexpress,
+  lexpressRegex,
+  cleanLexpressBefore,
+} from "./Pages/lexpress";
+import {
+  marianneRegex,
+  cleanMarianne,
+  cleanMarianneBefore,
+} from "./Pages/marianne";
 import { cleanIngenioeren, ingenioerRegex } from "./Pages/ingenioeren";
 import { nuRegex, cleanNuBefore } from "./Pages/nu";
 import { leqiupeRegex, cleanLequipeBefore } from "./Pages/lequipe";
-import { berlingskeRegex, cleanBerlingske, cleanBerlingskeBefore } from "./Pages/berlingske";
+import {
+  berlingskeRegex,
+  cleanBerlingske,
+  cleanBerlingskeBefore,
+} from "./Pages/berlingske";
 import { spiegelRegex, cleanSpiegelBefore } from "./Pages/spiegel";
 import { bbcRegex, cleanBBC } from "./Pages/bbc";
 import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
 import { cleanFaktBefore, faktRegex, removeFaktIFrames } from "./Pages/fakt";
-import { deleteIntervals, deleteTimeouts } from "../../popup/functions";
-import { politikenRegex, cleanPolitiken, cleanPolitikenBefore } from "./Pages/politiken";
+import {
+  politikenRegex,
+  cleanPolitiken,
+  cleanPolitikenBefore,
+} from "./Pages/politiken";
 import { scientiasRegex, cleanScientias } from "./Pages/scientias";
 import { egyszervoltRegex, cleanEgyszervolt } from "./Pages/egyszervolt";
 import { corriereRegex, removeCorriereScripts } from "./Pages/corriere";
@@ -33,13 +56,13 @@ export function individualClean(content, url, cleaningArray) {
     const regx = cleaningArray[i].regex;
     const cleaningFunction = cleaningArray[i].function;
     if (url.match(regx)) {
-      return cleaningFunction(content, url)
+      return cleaningFunction(content, url);
     }
   }
-  return content
+  return content;
 }
 
-//Arrays with url regex and associated cleaning function, that has to be applied to 
+//Arrays with url regex and associated cleaning function, that has to be applied to
 //the page
 
 export const cleanBeforeArray = [
@@ -55,7 +78,7 @@ export const cleanBeforeArray = [
   { regex: rzeczRegex, function: cleanRzeczBefore },
   { regex: lexpressRegex, function: cleanLexpressBefore },
   { regex: marianneRegex, function: cleanMarianneBefore },
-  { regex: politikenRegex, function: cleanPolitikenBefore }
+  { regex: politikenRegex, function: cleanPolitikenBefore },
 ];
 
 export const cleanAfterArray = [
@@ -72,13 +95,14 @@ export const cleanAfterArray = [
   { regex: rzeczRegex, function: cleanRzecz },
   { regex: politikenRegex, function: cleanPolitiken },
   { regex: scientiasRegex, function: cleanScientias },
-  { regex: egyszervoltRegex, function: cleanEgyszervolt }
-]
-
+  { regex: egyszervoltRegex, function: cleanEgyszervolt },
+];
 
 export function cleanDOMAfter(url) {
-  deleteIntervals();
-  deleteTimeouts();
+  if (url.match(drRegex)) {
+    const elements = saveElements();
+    addElements(elements);
+  }
 
   if (url.match(faktRegex)) {
     setTimeout(function () {

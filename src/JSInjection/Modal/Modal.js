@@ -15,7 +15,6 @@ import UserFeedback from "./UserFeedback";
 
 import { EXTENSION_SOURCE } from "../constants";
 
-import { onScroll } from "../../zeeguu-react/src/reader/ArticleReader";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
 import { getMainImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactiveTextsWithTags";
@@ -25,7 +24,8 @@ import WordsForArticleModal from "./WordsForArticleModal";
 import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
-import { cleanDOMAfter, getHTMLContent } from "../Cleaning/pageSpecificClean";
+import { getHTMLContent } from "../Cleaning/pageSpecificClean";
+import { BROWSER_API } from "../../utils/browserApi";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 import SaveToZeeguu from "./SaveToZeeguu";
@@ -33,9 +33,13 @@ import colors from "../colors";
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 
-import { SpeechContext } from "../../zeeguu-react/src/exercises/SpeechContext";
+import { SpeechContext } from "../../zeeguu-react/src/contexts/SpeechContext";
 import ZeeguuSpeech from "../../zeeguu-react/src/speech/APIBasedSpeech";
+import useActivityTimer from "../../zeeguu-react/src/hooks/useActivityTimer";
+import useShadowRef from "../../zeeguu-react/src/hooks/useShadowRef";
+import ratio from "../../zeeguu-react/src/utils/basic/ratio";
 
+import ActivityTimer from "../../zeeguu-react/src/components/ActivityTimer";
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
 
@@ -72,6 +76,25 @@ export function Modal({
   const articleInfoRef = useRef({});
   articleInfoRef.current = articleInfo;
 
+  const [activeSessionDuration, clockActive] = useActivityTimer(uploadActivity);
+  const [readingSessionId, setReadingSessionId] = useState();
+
+  const activeSessionDurationRef = useShadowRef(activeSessionDuration);
+  const readingSessionIdRef = useShadowRef(readingSessionId);
+
+  function uploadActivity() {
+    if (readingSessionIdRef.current)
+      api.readingSessionUpdate(
+        readingSessionIdRef.current,
+        activeSessionDurationRef.current
+      );
+  }
+
+  const [scrollPosition, setScrollPosition] = useState();
+  const scrollEvents = useRef();
+  const lastSampleScroll = useRef();
+  const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
+
   const openSettings = () => {
     window.open("https://www.zeeguu.org/account_settings", "_blank");
   };
@@ -107,12 +130,43 @@ export function Modal({
     return articleInfoRef.current.id;
   }
 
+  function getScrollRatio() {
+    let scrollElement = document.getElementById("scrollHolder");
+    let scrollY = scrollElement.scrollTop;
+    let bottomRowHeight = document.getElementById("bottomRow");
+    if (!bottomRowHeight) {
+      bottomRowHeight = 450; // 450 Is a default in case we can't acess the property
+    } else {
+      bottomRowHeight = bottomRowHeight.offsetHeight;
+    }
+    let endArticle =
+      scrollElement.scrollHeight - scrollElement.clientHeight - bottomRowHeight;
+    let ratioValue = ratio(scrollY, endArticle);
+    // Should we allow the ratio to go above 1?
+    // Above 1 is the area where the feedback + exercises are.
+    return ratioValue;
+  }
+
+  const handleScroll = () => {
+    let ratio = getScrollRatio();
+    setScrollPosition(ratio);
+    let percentage = Math.floor(ratio * 100);
+    let currentSessionDuration = activeSessionDurationRef.current;
+    if (
+      currentSessionDuration - lastSampleScroll.current >=
+      SCROLL_SAMPLE_FREQUENCY
+    ) {
+      scrollEvents.current.push([currentSessionDuration, percentage]);
+      lastSampleScroll.current = currentSessionDuration;
+    }
+  };
+
   function logFocus() {
     api.logReaderActivity(
       logContextRef.current + " FOCUSED",
       articleId(),
       "",
-      "EXTENSION"
+      EXTENSION_SOURCE
     );
   }
 
@@ -121,11 +175,14 @@ export function Modal({
       logContextRef.current + " LOST FOCUS",
       articleId(),
       "",
-      "EXTENSION"
+      EXTENSION_SOURCE
     );
   }
 
   useEffect(() => {
+    scrollEvents.current = [];
+    lastSampleScroll.current = 0;
+    setScrollPosition(0);
     if (content !== undefined) {
       let info = {
         url: url,
@@ -149,10 +206,13 @@ export function Modal({
 
     window.addEventListener("focus", logFocus);
     window.addEventListener("blur", logBlur);
-
+    window.addEventListener("scroll", handleScroll, true);
+    window.addEventListener("beforeunload", handleClose, true);
     return () => {
       window.removeEventListener("focus", logFocus);
       window.removeEventListener("blur", logBlur);
+      window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("beforeunload", handleClose, true);
     };
   }, []);
 
@@ -160,7 +220,6 @@ export function Modal({
     if (articleInfo !== undefined) {
       let engine = new ZeeguuSpeech(api, articleInfo.language);
       setSpeechEngine(engine);
-
       let arrInteractive = interactiveTextsWithTags(
         content,
         articleInfo,
@@ -178,31 +237,21 @@ export function Modal({
         engine
       );
       setInteractiveTitle(itTitle);
-      api.logReaderActivity(
-        api.OPEN_ARTICLE,
-        articleId(),
-        "",
-        EXTENSION_SOURCE
-      );
-
       api.getOwnTexts((articles) => {
         checkOwnTexts(articles);
         setLoadingPersonalCopy(false);
       });
-
-      let getModalClass = document.getElementsByClassName("Modal");
-      if (getModalClass !== undefined && getModalClass !== null) {
-        setTimeout(() => {
-          if (getModalClass.item(0) !== undefined) {
-            getModalClass.item(0).addEventListener("scroll", function () {
-              onScroll(api, articleId(), EXTENSION_SOURCE);
-            });
-          }
-        }, 0);
-      }
+      api.readingSessionCreate(articleInfo.id, (sessionID) => {
+        setReadingSessionId(sessionID);
+        api.setArticleOpened(articleInfo.id);
+        api.logReaderActivity(
+          api.OPEN_ARTICLE,
+          articleInfo.id,
+          sessionID,
+          EXTENSION_SOURCE
+        );
+      });
     }
-
-    cleanDOMAfter(url);
   }, [articleInfo]);
 
   localStorage.setItem("native_language", nativeLang);
@@ -210,20 +259,28 @@ export function Modal({
 
   function handleClose() {
     setModalIsOpen(false);
-    api.logReaderActivity("ARTICLE CLOSED", articleId(), "", EXTENSION_SOURCE);
+    uploadActivity();
+    api.logReaderActivity(
+      api.SCROLL,
+      articleId(),
+      scrollEvents.current.length,
+      JSON.stringify(scrollEvents.current).slice(0, 4096),
+      EXTENSION_SOURCE
+    );
+    api.logReaderActivity(
+      api.ARTICLE_CLOSED,
+      articleId(),
+      "",
+      EXTENSION_SOURCE
+    );
     window.removeEventListener("focus", logFocus);
     window.removeEventListener("blur", logBlur);
-    document.getElementById("scrollHolder") !== null &&
-      document
-        .getElementById("scrollHolder")
-        .removeEventListener("scroll", function () {
-          onScroll(api, articleId(), EXTENSION_SOURCE);
-        });
-    location.reload();
+    window.removeEventListener("scroll", handleScroll, true);
+    window.location.reload();
   }
 
   if (!modalIsOpen) {
-    location.reload();
+    window.location.reload();
   }
 
   function checkOwnTexts(articles) {
@@ -281,12 +338,20 @@ export function Modal({
       <SpeechContext.Provider value={speechEngine}>
         <div>
           <GlobalStyle />
+
           <StyledModal
             isOpen={modalIsOpen}
             className="Modal"
             id="scrollHolder"
             overlayClassName={"reader-overlay"}
           >
+            {readArticleOpen && (
+              <ActivityTimer
+                message="Seconds in this reading session"
+                activeSessionDuration={activeSessionDuration}
+                clockActive={clockActive}
+              />
+            )}
             <OverwriteZeeguu>
               <StyledHeading>
                 <div
@@ -300,7 +365,9 @@ export function Modal({
                   <StyledSmallButton>
                     <a href="https://www.zeeguu.org">
                       <img
-                        src={chrome.runtime.getURL("images/zeeguuLogo.svg")}
+                        src={BROWSER_API.runtime.getURL(
+                          "images/zeeguuLogo.svg"
+                        )}
                         alt={"Zeeguu logo"}
                         className="logoModal"
                       />
@@ -349,6 +416,7 @@ export function Modal({
                     />
                   ) : null}
                 </div>
+                {readArticleOpen && <progress value={scrollPosition} />}
               </StyledHeading>
               {readArticleOpen === true && (
                 <ReadArticle
@@ -366,6 +434,7 @@ export function Modal({
                   personalCopySaved={personalCopySaved}
                 />
               )}
+
               {reviewOpen === true && (
                 <WordsForArticleModal
                   className="wordsForArticle"

@@ -10,9 +10,9 @@
     "installDepsWindows": "cd .\\src\\zeeguu-react && npm install && cd ..\\..\\. && mklink /d .\\node_modules .\\src\\zeeguu-react\\node_modules",
     "installDeps": "(cd src/zeeguu-react/ && npm install) && ln -s src/zeeguu-react/node_modules .",
     "start": "react-scripts start",
-    "prebuild": "rimraf build",
+    "prebuild": "rm -rf build",
     "build": "npm-run-all buildUnix:* && npm-run-all build:* && cp ./public/manifest.chrome.json ./build/manifest.json",
-    "buildWindows": "copy .\\public\\manifest.chrome.json .\\build\\manifest.json && npm-run-all buildWindows:* && npm-run-all build:*",
+    "buildWindows": "npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.chrome.json .\\build\\manifest.json /Y",
     "buildUnix:popup": "INLINE_RUNTIME_CHUNK=false DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "buildWindows:popup": "SET INLINE_RUNTIME_CHUNK=false && SET DISABLE_ESLINT_PLUGIN=true && react-scripts build",
     "build:content": "webpack --mode production ./src/JSInjection/main.js --output-path ./build/",
@@ -20,7 +20,7 @@
     "build:izo": "webpack --mode production ./src/injectOnZeeguuOrg/injectOnZeeguuOrg.js --output-path ./build/ --output-filename injectOnZeeguuOrg.js",
     "pub": "zip -r build.zip build && open https://chrome.google.com/webstore/devconsole/7f6da896-c12c-4cb3-8ad7-b1641fc8efbc/ckncjmaednfephhbpeookmknhmjjodcd/edit/package",
     "buildFirefox": "npm-run-all buildUnix:* && npm-run-all build:* && cp ./public/manifest.firefox.json ./build/manifest.json",
-    "buildFirefoxWindows": "npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.firefox.json .\\build\\manifest.json",
+    "buildFirefoxWindows": "npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.firefox.json .\\build\\manifest.json /Y",
     "pubFirefox": "(cd build && zip -r ../build.zip *) && open https://addons.mozilla.org/en-US/firefox/",
     "pub-ci": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && cp ./public/manifest.chrome.json ./build/manifest.json && npm-run-all build:* && zip -r build.zip build",
     "pub-ci-firefox": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm run buildFirefox && zip -r build.zip build",
@@ -48,5 +48,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3"
+  }
 }

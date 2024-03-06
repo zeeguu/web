@@ -24,7 +24,6 @@ export function ReadArticle({
   setPersonalCopySaved,
   personalCopySaved,
 }) {
-
   if (articleImage) {
     if (articleImage.src === null) {
       articleImage = undefined;
@@ -42,13 +41,19 @@ export function ReadArticle({
           />
         </h1>
         <p className="author">{author}</p>
-        <hr/>
-        {articleImage === undefined ? null : (
-          <img
-            id="zeeguuImage"
-            alt={articleImage.alt}
-            src={articleImage.src}
-          ></img>
+        <hr />
+        {articleImage && (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <img
+              alt={articleImage.alt}
+              src={articleImage.src}
+              style={{
+                width: "100%",
+                borderRadius: "1em",
+                marginBottom: "1em",
+              }}
+            />
+          </div>
         )}
         {interactiveTextArray.map((paragraph) => {
           const CustomTag = `${paragraph.tag}`;
@@ -85,12 +90,14 @@ export function ReadArticle({
             );
           }
         })}
-        <ReviewVocabulary
-          articleId={articleId}
-          api={api}
-          openReview={openReview}
-        />
-        <DifficultyFeedbackBox api={api} articleID={articleId} />
+        <div id={"bottomRow"}>
+          <ReviewVocabulary
+            articleId={articleId}
+            api={api}
+            openReview={openReview}
+          />
+          <DifficultyFeedbackBox api={api} articleID={articleId} />
+        </div>
       </div>
     </>
   );

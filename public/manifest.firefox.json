@@ -1,7 +1,7 @@
 {
   "name": "The Zeeguu Reader",
   "description": "The extension helps you read articles in the language that you want to practice and offers one-click translation and pronunciation.",
-  "version": "2.2.1",
+  "version": "2.2.3",
 
   "browser_specific_settings": {
     "gecko": {
@@ -15,9 +15,11 @@
     "activeTab",
     "tabs",
     "cookies",
+    "scripting",
     "https://www.zeeguu.org/",
     "https://api.zeeguu.org/",
-    "<all_urls>"
+    "<all_urls>",
+    "contextMenus"
   ],
 
   "browser_action": {
@@ -35,7 +37,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.zeeguu.org/*"],
+      "matches": ["*://*.zeeguu.org/*", "*://localhost/*"],
       "js": ["injectOnZeeguuOrg.js"]
     }
   ],
@@ -49,6 +51,7 @@
     "images/translate.svg",
     "images/sound.svg",
     "images/zeeguuLogo.svg",
+    "https://zeeguu.org/static/icons/zeeguu-icon-correct.png",
     "https://zeeguu.org/static/images/trash.svg",
     "https://zeeguu.org//static/images/yellow_star",
     "https://zeeguu.org/static/images/file_rename_orange_36dp.svg",
