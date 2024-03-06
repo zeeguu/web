@@ -200,12 +200,12 @@ export function Modal({
     window.addEventListener("focus", logFocus);
     window.addEventListener("blur", logBlur);
     window.addEventListener("scroll", handleScroll, true);
-    window.addEventListener("beforeunload", handleClose);
+    window.addEventListener("beforeunload", handleClose, true);
     return () => {
       window.removeEventListener("focus", logFocus);
       window.removeEventListener("blur", logBlur);
       window.removeEventListener("scroll", handleScroll, true);
-      window.removeEventListener("beforeunload", handleClose);
+      window.removeEventListener("beforeunload", handleClose, true);
     };
   }, []);
 
