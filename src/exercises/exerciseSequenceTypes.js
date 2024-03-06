@@ -5,6 +5,7 @@ import SpellWhatYouHear from "./exerciseTypes/spellWhatYouHear/SpellWhatYouHear"
 import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleChoiceAudio";
 import OrderWordsL1 from "./exerciseTypes/orderWords/OrderWordsL1";
 import OrderWordsL2 from "./exerciseTypes/orderWords/OrderWordsL2";
+import FindWordInContextCloze from "./exerciseTypes/findWordInContextCloze/FindWordInContextCloze";
 
 const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 10;
 
@@ -89,9 +90,18 @@ let DEFAULT_SEQUENCE_NO_AUDIO = [
   },
 ];
 
+let RECALL_SEQUENCE = [
+  {
+    type: FindWordInContextCloze,
+    requiredBookmarks: 10,
+  }
+];
+
+
 export {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
   EXERCISE_TYPES_TIAGO,
   NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+  RECALL_SEQUENCE,
 };

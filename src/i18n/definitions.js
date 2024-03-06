@@ -345,6 +345,8 @@ let strings = new LocalizedStrings(
       audioExerciseHeadline:
         "Write the word your hear. Click to have it repeated!",
       multipleChoiceAudioHeadline: "Select the word which fits the context",
+      findWordInContextClozeHeadline:
+        "Translate the word to fit the context",
 
       //FeedbackButtons
       giveFeedback: "Give feedback",
