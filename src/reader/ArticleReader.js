@@ -11,6 +11,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
+import LikeFeedBackBox from "./LikeFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
 import ArticleSource from "./ArticleSource";
@@ -264,6 +265,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
         />
       </s.MainText>
       <ReviewVocabulary articleID={articleID} />
+      <LikeFeedBackBox api={api} articleID={articleID} articleInfo={articleInfo} setArticleInfo={setArticleInfo} />
       <DifficultyFeedbackBox api={api} articleID={articleID} />
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
