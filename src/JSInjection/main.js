@@ -1,4 +1,3 @@
-/*global chrome*/
 import { Modal } from "./Modal/Modal";
 import ReactDOM from "react-dom";
 import { useState, useEffect } from "react";
@@ -53,7 +52,7 @@ export function Main({ documentFromTab, url }) {
               isProbablyReadable = isProbablyReaderable(
                 documentFromTab,
                 minLength,
-                minScore
+                minScore,
               );
               ownIsProbablyReadable = checkReadability(url);
               if (!isProbablyReadable || !ownIsProbablyReadable) {
@@ -71,7 +70,7 @@ export function Main({ documentFromTab, url }) {
                     if (result_dict === "YES") {
                       setLanguageSupported(true);
                     }
-                  }
+                  },
                 );
               }
             } catch {
@@ -81,20 +80,20 @@ export function Main({ documentFromTab, url }) {
           () => {
             setFoundError(true);
             setIsAPIDown(true);
-          }
+          },
         );
       },
       () => {
         setFoundError(true);
         setIsAPIDown(true);
-      }
+      },
     );
   }, [url]);
 
   useEffect(() => {
     if (languageSupported !== undefined && isReadable !== undefined)
       setFoundError(
-        sessionId === undefined || !languageSupported || !isReadable
+        sessionId === undefined || !languageSupported || !isReadable,
       );
   }, [languageSupported, isReadable]);
 
