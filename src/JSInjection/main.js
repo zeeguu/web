@@ -41,13 +41,14 @@ export function Main({ documentFromTab, url }) {
   useEffect(() => {
     getSessionId().then(
       (sessionId) => {
+        api.session = sessionId;
         setSessionId(sessionId);
         Article(url).then(
           (article) => {
             setArticle(article);
             let isProbablyReadable = false;
             let ownIsProbablyReadable = false;
-            api.session = sessionId;
+
             try {
               isProbablyReadable = isProbablyReaderable(
                 documentFromTab,
@@ -110,8 +111,6 @@ export function Main({ documentFromTab, url }) {
       />
     );
   }
-
-  api.session = sessionId;
 
   if (article === undefined || foundError === undefined) {
     return <ZeeguuLoader />;
