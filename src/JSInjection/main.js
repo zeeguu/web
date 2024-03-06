@@ -35,13 +35,9 @@ export function Main({ documentFromTab, url }) {
   const [languageSupported, setLanguageSupported] = useState();
   const [isAPIDown, setIsAPIDown] = useState();
   const [foundError, setFoundError] = useState();
-  const [isInternetDown, setIsInternetDown] = useState();
   const minLength = 120;
   const minScore = 20;
-
-  useEffect(() => {
-    setIsInternetDown(documentFromTab === undefined);
-  }, [url]);
+  const isInternetDown = documentFromTab === undefined;
 
   useEffect(() => {
     getSessionId().then(
@@ -93,7 +89,7 @@ export function Main({ documentFromTab, url }) {
         setIsAPIDown(true);
       }
     );
-  }, [isInternetDown, url]);
+  }, [url]);
 
   useEffect(() => {
     if (languageSupported !== undefined && isReadable !== undefined)
