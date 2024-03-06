@@ -35,7 +35,6 @@ import { cleanExpressBefore, expressRegex } from "./Pages/express";
 import { cleanWyborcza, wyborczaRegex } from "./Pages/wyborcza";
 import { cleanRzecz, cleanRzeczBefore, rzeczRegex } from "./Pages/rzecz";
 import { cleanFaktBefore, faktRegex, removeFaktIFrames } from "./Pages/fakt";
-import { deleteIntervals, deleteTimeouts } from "../../popup/functions";
 import {
   politikenRegex,
   cleanPolitiken,
@@ -100,9 +99,6 @@ export const cleanAfterArray = [
 ];
 
 export function cleanDOMAfter(url) {
-  deleteIntervals();
-  deleteTimeouts();
-
   if (url.match(drRegex)) {
     const elements = saveElements();
     addElements(elements);

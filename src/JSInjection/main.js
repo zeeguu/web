@@ -7,6 +7,8 @@ import {
   getSourceAsDOM,
   getSessionId,
   deleteEvents,
+  deleteIntervals,
+  deleteTimeouts,
 } from "../popup/functions";
 import { Article } from "./Modal/Article";
 import { generalClean } from "./Cleaning/generelClean";
@@ -150,6 +152,8 @@ try {
   console.error(`failed to execute script: ${err}`);
 } finally {
   cleanDOMAfter(url);
+  deleteIntervals();
+  deleteTimeouts();
   deleteEvents();
   deleteCurrentDOM();
   document.body.appendChild(div);
