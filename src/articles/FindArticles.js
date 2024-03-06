@@ -47,6 +47,8 @@ export default function NewArticles() {
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
 
+  const [clickedArticle, setClickedArticle] = useState(null);
+
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
       doNotShowRedirectionModal_UserPreference,
@@ -135,6 +137,7 @@ export default function NewArticles() {
           setDoNotShowRedirectionModal_UserPreference={
             setDoNotShowRedirectionModal_UserPreference
           }
+          onClickTitleLink={titleLink}
         />
       ))}
 
