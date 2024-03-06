@@ -15,7 +15,6 @@ import UserFeedback from "./UserFeedback";
 
 import { EXTENSION_SOURCE } from "../constants";
 
-import { onScroll } from "../../zeeguu-react/src/reader/ArticleReader";
 import InteractiveText from "../../zeeguu-react/src/reader/InteractiveText";
 import { getMainImage } from "../Cleaning/generelClean";
 import { interactiveTextsWithTags } from "./interactiveTextsWithTags";
@@ -25,7 +24,7 @@ import WordsForArticleModal from "./WordsForArticleModal";
 import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
-import { cleanDOMAfter, getHTMLContent } from "../Cleaning/pageSpecificClean";
+import { getHTMLContent } from "../Cleaning/pageSpecificClean";
 import { BROWSER_API } from "../../utils/browserApi";
 
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
@@ -38,6 +37,7 @@ import { SpeechContext } from "../../zeeguu-react/src/contexts/SpeechContext";
 import ZeeguuSpeech from "../../zeeguu-react/src/speech/APIBasedSpeech";
 import useActivityTimer from "../../zeeguu-react/src/hooks/useActivityTimer";
 import useShadowRef from "../../zeeguu-react/src/hooks/useShadowRef";
+import ratio from "../../zeeguu-react/src/utils/basic/ratio";
 
 import ActivityTimer from "../../zeeguu-react/src/components/ActivityTimer";
 import Button from "@mui/material/Button";
@@ -130,19 +130,27 @@ export function Modal({
     return articleInfoRef.current.id;
   }
 
-  function updateScrollPosition() {
-    var scrollElement = document.getElementById("scrollHolder");
-    var scrollY = scrollElement.scrollTop;
-    var limit = scrollElement.scrollHeight - scrollElement.clientHeight - 450; // 450 represents the feedback + exercise div
-    var ratio = Math.round((scrollY / limit) * 100) / 100;
+  function getScrollRatio() {
+    let scrollElement = document.getElementById("scrollHolder");
+    let scrollY = scrollElement.scrollTop;
+    let bottomRowHeight = document.getElementById("bottomRow");
+    if (!bottomRowHeight) {
+      bottomRowHeight = 450; // 450 Is a default in case we can't acess the property
+    } else {
+      bottomRowHeight = bottomRowHeight.offsetHeight;
+    }
+    let endArticle =
+      scrollElement.scrollHeight - scrollElement.clientHeight - bottomRowHeight;
+    let ratioValue = ratio(scrollY, endArticle);
     // Should we allow the ratio to go above 1?
     // Above 1 is the area where the feedback + exercises are.
-    setScrollPosition(ratio);
-    return ratio;
+    return ratioValue;
   }
 
   const handleScroll = () => {
-    let percentage = Math.floor(updateScrollPosition() * 100);
+    let ratio = getScrollRatio();
+    setScrollPosition(ratio);
+    let percentage = Math.floor(ratio * 100);
     let currentSessionDuration = activeSessionDurationRef.current;
     if (
       currentSessionDuration - lastSampleScroll.current >=
@@ -426,6 +434,7 @@ export function Modal({
                   personalCopySaved={personalCopySaved}
                 />
               )}
+
               {reviewOpen === true && (
                 <WordsForArticleModal
                   className="wordsForArticle"

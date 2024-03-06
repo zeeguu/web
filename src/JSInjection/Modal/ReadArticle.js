@@ -90,12 +90,14 @@ export function ReadArticle({
             );
           }
         })}
-        <ReviewVocabulary
-          articleId={articleId}
-          api={api}
-          openReview={openReview}
-        />
-        <DifficultyFeedbackBox api={api} articleID={articleId} />
+        <div id={"bottomRow"}>
+          <ReviewVocabulary
+            articleId={articleId}
+            api={api}
+            openReview={openReview}
+          />
+          <DifficultyFeedbackBox api={api} articleID={articleId} />
+        </div>
       </div>
     </>
   );
