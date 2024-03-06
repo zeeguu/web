@@ -82,6 +82,10 @@ Zeeguu_API.prototype.logUserActivity = function (
   return this._post(
     `upload_user_activity_data`,
     qs.stringify(event_information),
+    () => {},
+    (error) => {
+      console.log(error);
+    },
   );
 };
 
