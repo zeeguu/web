@@ -5,7 +5,7 @@ import {
   setUserInLocalStorage,
   getCurrentTab,
 } from "../popup/functions";
-import { getIsLoggedIn, getUserInfoDict } from "../popup/cookies";
+import { getIsLoggedIn, getUserInfoDictFromCookies } from "../popup/cookies";
 import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
 import { EXTENSION_SOURCE } from "../JSInjection/constants";
 
@@ -13,7 +13,7 @@ BROWSER_API.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
     console.log("Received message from " + sender.url + ": ", request);
     sendResponse({ message: true });
-  }
+  },
 );
 
 BROWSER_API.runtime.onInstalled.addListener(function (object) {
@@ -62,13 +62,13 @@ async function startReader() {
   } else {
     try {
       let api = new Zeeguu_API(API_URL);
-      let userData = await getUserInfoDict(WEB_URL);
+      let userData = await getUserInfoDictFromCookies(WEB_URL);
       setUserInLocalStorage(userData, api);
       await api.logReaderActivity(
         api.OPEN_CONTEXT,
         "",
         tab.url,
-        EXTENSION_SOURCE
+        EXTENSION_SOURCE,
       );
     } catch (err) {
       console.error(`failed to execute script: ${err}`);
