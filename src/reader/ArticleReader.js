@@ -22,6 +22,7 @@ import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
+import ratio from "../utils/basic/ratio";
 
 export const UMR_SOURCE = "UMR";
 
@@ -69,7 +70,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const readingSessionIdRef = useShadowRef(readingSessionId);
-  const lastSampleScroll = useRef();
+  const lastSampleTimer = useRef();
   const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
 
   function uploadActivity() {
@@ -79,15 +80,21 @@ export default function ArticleReader({ api, teacherArticleID }) {
     );
   }
 
-  function updateScrollPosition() {
-    var scrollElement = document.getElementById("scrollHolder");
-    var scrollY = scrollElement.scrollTop;
-    var limit = scrollElement.scrollHeight - scrollElement.clientHeight - 450; // 450 represents the feedback + exercise div
-    var ratio = Math.round((scrollY / limit) * 100) / 100;
+  function getScrollRatio() {
+    let scrollElement = document.getElementById("scrollHolder");
+    let scrollY = scrollElement.scrollTop;
+    let bottomRowHeight = document.getElementById("bottomRow");
+    if (!bottomRowHeight) {
+      bottomRowHeight = 450; // 450 Is a default in case we can't acess the property
+    } else {
+      bottomRowHeight = bottomRowHeight.offsetHeight;
+    }
+    let endArticle =
+      scrollElement.scrollHeight - scrollElement.clientHeight - bottomRowHeight;
+    let ratioValue = ratio(scrollY, endArticle);
     // Should we allow the ratio to go above 1?
     // Above 1 is the area where the feedback + exercises are.
-    setScrollPosition(ratio);
-    return ratio;
+    return ratioValue;
   }
 
   useEffect(() => {
@@ -107,20 +114,22 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   const handleScroll = () => {
-    let percentage = Math.floor(updateScrollPosition() * 100);
-    let currentSessionDuration = activeSessionDurationRef.current;
+    let ratio = getScrollRatio();
+    setScrollPosition(ratio);
+    let percentage = Math.floor(ratio * 100);
+    let currentReadingTimer = activeSessionDurationRef.current;
     if (
-      currentSessionDuration - lastSampleScroll.current >=
+      currentReadingTimer - lastSampleTimer.current >=
       SCROLL_SAMPLE_FREQUENCY
     ) {
-      scrollEvents.current.push([currentSessionDuration, percentage]);
-      lastSampleScroll.current = currentSessionDuration;
+      scrollEvents.current.push([currentReadingTimer, percentage]);
+      lastSampleTimer.current = currentReadingTimer;
     }
   };
 
   function onCreate() {
     scrollEvents.current = [];
-    lastSampleScroll.current = 0;
+    lastSampleTimer.current = 0;
     setScrollPosition(0);
 
     api.getArticleInfo(articleID, (articleInfo) => {
@@ -195,12 +204,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     );
   }
 
-  if (
-    !articleInfo ||
-    !interactiveText ||
-    !interactiveTitle ||
-    !readingSessionId
-  ) {
+  if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
   }
 
@@ -290,10 +294,10 @@ export default function ArticleReader({ api, teacherArticleID }) {
       </s.MainText>
 
       {readerReady && (
-        <>
+        <div id={"bottomRow"}>
           <ReviewVocabulary articleID={articleID} />
           <DifficultyFeedbackBox api={api} articleID={articleID} />
-        </>
+        </div>
       )}
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
