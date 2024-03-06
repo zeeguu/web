@@ -24,7 +24,6 @@ import { API_URL } from "../config";
 import ZeeguuError from "./ZeeguuError";
 import { isProbablyReaderable } from "@mozilla/readability";
 import { checkReadability } from "../popup/checkReadability";
-import { checkLanguageSupportFromUrl } from "../popup/functions";
 
 export function Main({ documentFromTab, url }) {
   let api = new Zeeguu_API(API_URL);
@@ -57,58 +56,65 @@ export function Main({ documentFromTab, url }) {
     getSessionId().then(
       (sessionId) => {
         setSessionId(sessionId);
-        Article(url).then(
-          (article) => {
-            setArticle(article);
-            let isProbablyReadable = false;
-            let ownIsProbablyReadable = false;
-            api.session = sessionId;
-            try {
-              isProbablyReadable = isProbablyReaderable(
-                documentFromTab,
-                minLength,
-                minScore,
-              );
-              ownIsProbablyReadable = checkReadability(url);
-              if (!isProbablyReadable || !ownIsProbablyReadable) {
-                setIsReadable(false);
-                // if it is not readable, we default the language support to true;
-                setLanguageSupported(true);
-              } else {
-                setIsReadable(true);
-                if (api.session !== undefined) {
-                  checkLanguageSupportFromUrl(api, url, setLanguageSupported);
-                } else {
-                  // If we don't have a session assume set the value to false.
-                  setLanguageSupported(false);
-                }
-              }
-            } catch {
-              setFoundError(true);
-            }
-          },
-          () => {
-            setFoundError(true);
-            setIsAPIDown(true);
-          },
-        );
       },
       () => {
         setFoundError(true);
         setIsAPIDown(true);
-      },
+      }
     );
   }, [url]);
 
   useEffect(() => {
+    Article(url).then(
+      (article) => {
+        setArticle(article);
+        let isProbablyReadable = false;
+        let ownIsProbablyReadable = false;
+        api.session = sessionId;
+        try {
+          isProbablyReadable = isProbablyReaderable(
+            documentFromTab,
+            minLength,
+            minScore
+          );
+          ownIsProbablyReadable = checkReadability(url);
+          if (!isProbablyReadable || !ownIsProbablyReadable) {
+            setIsReadable(false);
+            // if it is not readable, we default the language support to true;
+            setLanguageSupported(true);
+          } else {
+            setIsReadable(true);
+            api.isArticleLanguageSupported(
+              article.textContent,
+              (result_dict) => {
+                if (result_dict === "NO") {
+                  setLanguageSupported(false);
+                }
+                if (result_dict === "YES") {
+                  setLanguageSupported(true);
+                }
+              }
+            );
+          }
+        } catch {
+          setFoundError(true);
+        }
+      },
+      () => {
+        setFoundError(true);
+        setIsAPIDown(true);
+      }
+    );
+  }, [sessionId]);
+
+  useEffect(() => {
     if (languageSupported !== undefined && isReadable !== undefined)
       setFoundError(
-        sessionId === undefined || !languageSupported || !isReadable,
+        sessionId === undefined || !languageSupported || !isReadable
       );
   }, [languageSupported, isReadable]);
 
   api.session = sessionId;
-
   if (article === undefined || foundError === undefined) {
     return <ZeeguuLoader />;
   }
