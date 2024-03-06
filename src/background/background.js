@@ -13,7 +13,7 @@ BROWSER_API.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
     console.log("Received message from " + sender.url + ": ", request);
     sendResponse({ message: true });
-  }
+  },
 );
 
 BROWSER_API.runtime.onInstalled.addListener(function (object) {
@@ -45,7 +45,7 @@ BROWSER_API.runtime.onMessage.addListener(async function (request) {
 // Handle the Context Menu
 const contextMenuReadArticle = {
   id: "read_in_zeeguu_reader",
-  title: "Read article with Zeeguu" /* what appears in the menu */,
+  title: "Read with Zeeguu" /* what appears in the menu */,
   contexts: [
     "all", // Show always when the user right-clicks.
   ],
@@ -68,7 +68,7 @@ async function startReader() {
         api.OPEN_CONTEXT,
         "",
         tab.url,
-        EXTENSION_SOURCE
+        EXTENSION_SOURCE,
       );
     } catch (err) {
       console.error(`failed to execute script: ${err}`);
