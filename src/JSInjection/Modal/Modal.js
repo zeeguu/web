@@ -173,6 +173,8 @@ export function Modal({
   }
 
   useEffect(() => {
+    scrollEvents.current = [];
+    lastSampleScroll.current = 0;
     setScrollPosition(0);
     if (content !== undefined) {
       let info = {
@@ -252,13 +254,13 @@ export function Modal({
   function handleClose() {
     setModalIsOpen(false);
     uploadActivity();
-    /*
     api.logReaderActivity(
       api.SCROLL,
-      articleID,
+      articleId(),
       scrollEvents.current.length,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
-    );*/
+      EXTENSION_SOURCE
+    );
     api.logReaderActivity(
       api.ARTICLE_CLOSED,
       articleId(),

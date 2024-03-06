@@ -53,12 +53,8 @@ const contextMenuReadArticle = {
 
 async function startReader() {
   let user_logged_in = await getIsLoggedIn(WEB_URL);
-  console.log("Getting tab;");
   let tab = await getCurrentTab();
-  console.log(tab);
-  console.log("Got tab and login!");
   if (!user_logged_in) {
-    console.log("User not logged in!");
     // The user is not logged in, send them to Zeeguu.
     BROWSER_API.tabs.create({
       url: WEB_LOGIN_URL + "?redirectLink=" + tab.url,
@@ -68,7 +64,6 @@ async function startReader() {
       let api = new Zeeguu_API(API_URL);
       let userData = await getUserInfoDict(WEB_URL);
       setUserInLocalStorage(userData, api);
-      console.log(api);
       await api.logReaderActivity(
         api.OPEN_CONTEXT,
         "",

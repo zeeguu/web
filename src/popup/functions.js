@@ -92,7 +92,7 @@ export function deleteTimeouts() {
 }
 
 export function deleteEvents() {
-  console.log(document.body.outerHTML);
+  // https://stackoverflow.com/a/39026635
   document.body.outerHTML = document.body.outerHTML;
 }
 
