@@ -158,7 +158,7 @@ export function Modal({
       logContextRef.current + " FOCUSED",
       articleId(),
       "",
-      "EXTENSION"
+      EXTENSION_SOURCE
     );
   }
 
@@ -167,7 +167,7 @@ export function Modal({
       logContextRef.current + " LOST FOCUS",
       articleId(),
       "",
-      "EXTENSION"
+      EXTENSION_SOURCE
     );
   }
 
