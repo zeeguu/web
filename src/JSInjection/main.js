@@ -25,8 +25,6 @@ import { isProbablyReaderable } from "@mozilla/readability";
 import { checkReadability } from "../popup/checkReadability";
 
 export function Main({ documentFromTab, url }) {
-  let api = new Zeeguu_API(API_URL);
-
   const [article, setArticle] = useState();
   const [sessionId, setSessionId] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(true);
@@ -37,6 +35,9 @@ export function Main({ documentFromTab, url }) {
   const minLength = 120;
   const minScore = 20;
   const isInternetDown = documentFromTab === undefined;
+
+  let api = new Zeeguu_API(API_URL);
+  api.session = sessionId;
 
   useEffect(() => {
     getSessionId().then(
