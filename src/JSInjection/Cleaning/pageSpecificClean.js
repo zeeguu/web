@@ -100,18 +100,15 @@ export const cleanAfterArray = [
 ];
 
 export function cleanDOMAfter(url) {
-  console.log(url);
   deleteIntervals();
   deleteTimeouts();
 
   if (url.match(faktRegex)) {
-    console.log("Running FAKT");
     setTimeout(function () {
       removeFaktIFrames();
     }, 10000);
   }
   if (url.match(corriereRegex)) {
-    console.log("CLEAR corriereRegex");
     setTimeout(function () {
       removeCorriereScripts();
     }, 10000);
