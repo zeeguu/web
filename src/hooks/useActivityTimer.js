@@ -2,34 +2,28 @@ import { useEffect, useState } from "react";
 import { useIdleTimer } from "react-idle-timer";
 
 export default function useActivityTimer(activityUploaderFunction) {
-  const [activeSessionDuration, setActiveSessionDuration] = useState(0);
+  const [activityTimer, setActivityTimer] = useState(0);
 
-  const [clockActive, setClockActive] = useState(true);
+  const [isTimerActive, setIsTimerActive] = useState(true);
 
-  const [activityOver, setActivityOver] = useState(false);
+  const [isActivityOver, setIsActivityOver] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
       let newValue =
-        clockActive & !activityOver
-          ? activeSessionDuration + 1
-          : activeSessionDuration;
-      setActiveSessionDuration(newValue);
+        isTimerActive & !isActivityOver ? activityTimer + 1 : activityTimer;
+      setActivityTimer(newValue);
     }, 1000);
 
     // if we have an activity uploader function, we will upload the activity every 10 seconds if the clock is active
-    if (
-      activityUploaderFunction &&
-      clockActive &&
-      activeSessionDuration % 10 === 0
-    ) {
+    if (activityUploaderFunction && isTimerActive && activityTimer % 10 === 0) {
       activityUploaderFunction();
     }
 
     return () => {
       clearInterval(interval);
     };
-  }, [activeSessionDuration, clockActive]);
+  }, [activityTimer, isTimerActive]);
 
   useIdleTimer({
     onIdle,
@@ -40,16 +34,16 @@ export default function useActivityTimer(activityUploaderFunction) {
 
   useEffect(() => {
     const handleFocus = () => {
-      if (!activityOver) {
-        setClockActive(true);
+      if (!isActivityOver) {
+        setIsTimerActive(true);
       }
     };
 
     const handleBlur = () => {
-      if (activityUploaderFunction && clockActive) {
+      if (activityUploaderFunction && isTimerActive) {
         activityUploaderFunction();
       }
-      setClockActive(false);
+      setIsTimerActive(false);
     };
 
     window.addEventListener("focus", handleFocus);
@@ -62,16 +56,16 @@ export default function useActivityTimer(activityUploaderFunction) {
   }, []);
 
   function onIdle() {
-    if (clockActive && activityUploaderFunction) {
+    if (isTimerActive && activityUploaderFunction) {
       activityUploaderFunction();
     }
-    setClockActive(false);
+    setIsTimerActive(false);
   }
 
   function onActive() {
-    setClockActive(true);
+    setIsTimerActive(true);
   }
 
   // active session duration is measured in seconds
-  return [activeSessionDuration, clockActive, setActivityOver];
+  return [activityTimer, isTimerActive, setIsActivityOver];
 }

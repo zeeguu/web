@@ -63,12 +63,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const user = useContext(UserContext);
   const history = useHistory();
   const speech = useContext(SpeechContext);
-  const [activeSessionDuration, clockActive] = useActivityTimer(uploadActivity);
+  const [activityTimer, isTimerActive] = useActivityTimer(uploadActivity);
   const [readingSessionId, setReadingSessionId] = useState();
 
   const scrollEvents = useRef();
 
-  const activeSessionDurationRef = useShadowRef(activeSessionDuration);
+  const activityTimerRef = useShadowRef(activityTimer);
   const readingSessionIdRef = useShadowRef(readingSessionId);
   const lastSampleTimer = useRef();
   const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
@@ -76,7 +76,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   function uploadActivity() {
     api.readingSessionUpdate(
       readingSessionIdRef.current,
-      activeSessionDurationRef.current,
+      activityTimerRef.current,
     );
   }
 
@@ -117,7 +117,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     let ratio = getScrollRatio();
     setScrollPosition(ratio);
     let percentage = Math.floor(ratio * 100);
-    let currentReadingTimer = activeSessionDurationRef.current;
+    let currentReadingTimer = activityTimerRef.current;
     if (
       currentReadingTimer - lastSampleTimer.current >=
       SCROLL_SAMPLE_FREQUENCY
@@ -224,8 +224,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
     <s.ArticleReader>
       <ActivityTimer
         message="Seconds in this reading session"
-        activeSessionDuration={activeSessionDuration}
-        clockActive={clockActive}
+        activeSessionDuration={activityTimer}
+        clockActive={isTimerActive}
       />
 
       <TopToolbar
