@@ -29,7 +29,7 @@ export default function ZeeguuError({
     const interval = setInterval(() => {
       if (timeout > 0) setTimeout(timeout - 1);
     }, 1000);
-    console.log(isInternetDown);
+
     if (isInternetDown) setReason(NO_INTERNET_CONNECTION);
     else if (isMissingSession === undefined) setReason(SESSISON_FEEDBACK);
     else if (isZeeguuAPIDown) setReason(API_DOWN_FEEDBACK);
