@@ -46,25 +46,6 @@ export function removeAllChildNodes(parent) {
   }
 }
 
-export function hideCurrentDOM() {
-  const body = document.querySelector("body");
-  if (body) {
-    removeAllChildNodes(body);
-  }
-  const head = document.querySelector("head");
-  if (head) {
-    removeAllChildNodes(head);
-  }
-  const div = document.querySelector("div");
-  if (div) {
-    removeAllChildNodes(div);
-  }
-  const iframe = document.querySelector("iframe");
-  if (iframe) {
-    removeAllChildNodes(iframe);
-  }
-}
-
 export function deleteCurrentDOM() {
   const body = document.querySelector("body");
   if (body) {
