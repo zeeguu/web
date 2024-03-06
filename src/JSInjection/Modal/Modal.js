@@ -233,7 +233,6 @@ export function Modal({
         checkOwnTexts(articles);
         setLoadingPersonalCopy(false);
       });
-      console.log(articleInfo.id);
       api.readingSessionCreate(articleInfo.id, (sessionID) => {
         setReadingSessionId(sessionID);
         api.setArticleOpened(articleInfo.id);
