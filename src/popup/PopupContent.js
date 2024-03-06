@@ -94,7 +94,8 @@ export default function PopupContent({
   } else if (languageSupported === false && finalStateExecuted) {
     return renderFeedbackSection(LANGUAGE_FEEDBACK);
   } else if (languageSupported && finalStateExecuted) {
-    return <>{openModal()}</>;
+    openModal();
+    return <></>;
   } else if (languageSupported === undefined && finalStateExecuted) {
     return renderFeedbackSection(LANGUAGE_UNDEFINED);
   }
