@@ -10,7 +10,7 @@ import {
   cleanLemondeBefore,
   cleanLemonde,
 } from "./Pages/lemonde";
-import { drRegex, cleanDRBefore } from "./Pages/dr";
+import { drRegex, cleanDRBefore, saveElements, addElements } from "./Pages/dr";
 import {
   cleanLexpress,
   lexpressRegex,
@@ -102,6 +102,11 @@ export const cleanAfterArray = [
 export function cleanDOMAfter(url) {
   deleteIntervals();
   deleteTimeouts();
+
+  if (url.match(drRegex)) {
+    const elements = saveElements();
+    addElements(elements);
+  }
 
   if (url.match(faktRegex)) {
     setTimeout(function () {

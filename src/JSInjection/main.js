@@ -18,7 +18,6 @@ import {
 import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
 import DOMPurify from "dompurify";
 import ZeeguuLoader from "./ZeeguuLoader";
-import { addElements, drRegex, saveElements } from "./Cleaning/Pages/dr";
 import { API_URL } from "../config";
 import ZeeguuError from "./ZeeguuError";
 import { isProbablyReaderable } from "@mozilla/readability";
@@ -66,7 +65,7 @@ export function Main({ documentFromTab, url }) {
               isProbablyReadable = isProbablyReaderable(
                 documentFromTab,
                 minLength,
-                minScore
+                minScore,
               );
               ownIsProbablyReadable = checkReadability(url);
               if (!isProbablyReadable || !ownIsProbablyReadable) {
@@ -89,20 +88,20 @@ export function Main({ documentFromTab, url }) {
           () => {
             setFoundError(true);
             setIsAPIDown(true);
-          }
+          },
         );
       },
       () => {
         setFoundError(true);
         setIsAPIDown(true);
-      }
+      },
     );
   }, [url]);
 
   useEffect(() => {
     if (languageSupported !== undefined && isReadable !== undefined)
       setFoundError(
-        sessionId === undefined || !languageSupported || !isReadable
+        sessionId === undefined || !languageSupported || !isReadable,
       );
   }, [languageSupported, isReadable]);
 
@@ -147,10 +146,6 @@ const url = window.location.href;
 let documentFromTab;
 try {
   documentFromTab = getSourceAsDOM(url);
-  if (window.location.href.match(drRegex)) {
-    const elements = saveElements();
-    addElements(elements);
-  }
 } catch (err) {
   console.error(`failed to execute script: ${err}`);
 } finally {
