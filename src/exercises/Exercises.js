@@ -13,8 +13,9 @@ import SessionStorage from "../assorted/SessionStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
 import {
-  DEFAULT_SEQUENCE,
-  DEFAULT_SEQUENCE_NO_AUDIO,
+  // DEFAULT_SEQUENCE,
+  // DEFAULT_SEQUENCE_NO_AUDIO,
+  RECALL_SEQUENCE,
   NUMBER_OF_BOOKMARKS_TO_PRACTICE,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
@@ -48,10 +49,10 @@ export default function Exercises({
     useActivityTimer();
 
   function getExerciseSequenceType() {
-    let exerciseTypesList = DEFAULT_SEQUENCE;
+    let exerciseTypesList = RECALL_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
       console.log("Will not use audio!");
-      exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
+      exerciseTypesList = RECALL_SEQUENCE;
     }
     return exerciseTypesList;
   }
