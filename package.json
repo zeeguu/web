@@ -21,7 +21,7 @@
     "pub": "zip -r build.zip build && open https://chrome.google.com/webstore/devconsole/7f6da896-c12c-4cb3-8ad7-b1641fc8efbc/ckncjmaednfephhbpeookmknhmjjodcd/edit/package",
     "buildFirefox": "npm-run-all buildUnix:* && npm-run-all build:* && cp ./public/manifest.firefox.json ./build/manifest.json",
     "buildFirefoxWindows": "npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.firefox.json .\\build\\manifest.json /Y",
-    "pubFirefox": "(cd build && zip -r ../build.zip *) && open https://addons.mozilla.org/en-US/firefox/",
+    "pubFirefox": "(cd build && zip -r ../build.zip *) && open https://addons.mozilla.org/en-US/developers/addons",
     "pub-ci": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && cp ./public/manifest.chrome.json ./build/manifest.json && npm-run-all build:* && zip -r build.zip build",
     "pub-ci-firefox": "(cd src && git clone -b development https://github.com/zeeguu-ecosystem/zeeguu-react.git && cd zeeguu-react && npm ci) && npm run buildFirefox && zip -r build.zip build",
     "zip-build": "(cd build && zip -r ../build.zip *)",
