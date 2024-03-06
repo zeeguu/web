@@ -20,7 +20,7 @@ export default function LikeFeedbackBox({
     <s.FeedbackBox>
       {/*<h4>{strings.helpUsMsg}</h4>*/}
 
-      <h4>{strings.wouldYouLikeMoreMsg}</h4>
+      <h4>{strings.didYouEnjoyMsg}</h4>
 
       <s.CenteredContent>
         <s.WhiteButton
