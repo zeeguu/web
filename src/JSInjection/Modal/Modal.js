@@ -138,7 +138,6 @@ export function Modal({
     // Should we allow the ratio to go above 1?
     // Above 1 is the area where the feedback + exercises are.
     setScrollPosition(ratio);
-    console.log("Updating scroll to: ", ratio);
     return ratio;
   }
 
