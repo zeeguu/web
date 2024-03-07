@@ -1,27 +1,22 @@
 import { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 import { setColors } from "../components/colors";
 import * as s from "./SideBar.sc";
+import { APIContext } from "../contexts/APIContext";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
-  const api = props.api;
+  const api = useContext(APIContext);
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
 
   //deducting whether we are on student or teacher side for colouring
   const path = useLocation().pathname;
   useEffect(() => {
-    //in Settings the side is determined by whether the user is a student or a teacher
-    if (path.includes("account")) {
-      setIsOnStudentSide(!user.is_teacher);
-    } else {
-      setIsOnStudentSide(!path.includes("teacher"));
-    }
-    // eslint-disable-next-line
+    setIsOnStudentSide(!path.includes("teacher"));
   }, [path]);
 
   const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
@@ -34,11 +29,9 @@ export default function SideBar(props) {
     const fontWeight = active ? "700" : "500";
 
     return (
-      <div className="navigationLink">
-        <Link to={to} onClick={resetSidebarToDefault}>
-          <small style={{ fontWeight: fontWeight }}>{text}</small>
-        </Link>
-      </div>
+      <Link className="navigationLink" to={to} onClick={resetSidebarToDefault}>
+        <small style={{ fontWeight: fontWeight }}>{text}</small>
+      </Link>
     );
   }
 

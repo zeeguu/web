@@ -3,7 +3,7 @@ import { useState } from "react";
 import moment from "moment";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
-import RedirectionNotificationModal from "../components/RedirectionNotificationModal";
+import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
@@ -47,6 +47,7 @@ export default function ArticleOverview({
       <>
         <RedirectionNotificationModal
           api={api}
+          hasExtension={hasExtension}
           article={article}
           open={isRedirectionModalOpen}
           handleCloseRedirectionModal={handleCloseRedirectionModal}

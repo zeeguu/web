@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
@@ -17,15 +17,16 @@ import {
 import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { useLocation } from "react-router-dom";
-
+import { APIContext } from "../contexts/APIContext";
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-export default function NewArticles({ api }) {
+export default function NewArticles() {
   const searchQuery = useQuery().get("search");
+  let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
   //getter that was outputting undefined string values when they should be false.
@@ -48,7 +49,7 @@ export default function NewArticles({ api }) {
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
-      doNotShowRedirectionModal_UserPreference
+      doNotShowRedirectionModal_UserPreference,
     );
   }, [doNotShowRedirectionModal_UserPreference]);
 
@@ -56,7 +57,7 @@ export default function NewArticles({ api }) {
     setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
     console.log(
       "Localstorage displayed extension: " +
-        LocalStorage.displayedExtensionPopup()
+        LocalStorage.displayedExtensionPopup(),
     );
 
     if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
@@ -113,7 +114,7 @@ export default function NewArticles({ api }) {
           articlesListShouldChange={articlesListShouldChange}
         />
 
-        <SearchField query={searchQuery} />
+        <SearchField api={api} query={searchQuery} />
       </s.MaterialSelection>
 
       <SortingButtons

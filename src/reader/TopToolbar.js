@@ -40,6 +40,7 @@ export default function TopToolbar({
   pronouncing,
   setTranslating,
   setPronouncing,
+  articleProgress,
 }) {
   const history = useHistory();
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
@@ -51,7 +52,7 @@ export default function TopToolbar({
         article.language,
         (newID) => {
           history.push(`/teacher/texts/editText/${newID}`);
-        }
+        },
       );
     });
   };
@@ -63,7 +64,6 @@ export default function TopToolbar({
 
   return (
     <PopupButtonWrapper>
-
       <s.Toolbar>
         {user.is_teacher && (
           <>
@@ -93,13 +93,14 @@ export default function TopToolbar({
           </s.PlayerControl>
         )}
         <s.RightHandSide>
-        <ToolbarButtons
-                  translating={translating}
-                  pronouncing={pronouncing}
-                  setTranslating={setTranslating}
-                  setPronouncing={setPronouncing}
-                />
+          <ToolbarButtons
+            translating={translating}
+            pronouncing={pronouncing}
+            setTranslating={setTranslating}
+            setPronouncing={setPronouncing}
+          />
         </s.RightHandSide>
+        <progress value={articleProgress} />
       </s.Toolbar>
     </PopupButtonWrapper>
   );

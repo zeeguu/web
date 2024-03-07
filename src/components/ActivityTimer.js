@@ -9,6 +9,7 @@ export default function ActivityTimer({
     position: "fixed",
     backgroundColor: backgroundColor,
     padding: "0.5em",
+    zIndex: 100,
   };
   if (placement === "top") {
     style.top = "5px";

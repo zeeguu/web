@@ -123,6 +123,7 @@ const navigationVisibleCommon = css`
     color: white;
     margin-bottom: 0.4em;
     background-color: ${(props) => props.dark};
+    padding-left: 0.5em;
 
     a {
       color: white;
@@ -178,6 +179,7 @@ const SideBarToggled = styled.div`
     padding-top: 0.4em;
     padding-bottom: 0.4em;
     font-size: large;
+    padding-left: 0.5em;
   }
 
   @media (min-width: 768px) {

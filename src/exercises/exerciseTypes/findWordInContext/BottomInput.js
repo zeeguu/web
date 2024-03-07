@@ -7,7 +7,6 @@ export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
   bookmarksToStudy,
-  notifyKeyPress,
   messageToAPI,
   setMessageToAPI,
 }) {
@@ -70,7 +69,6 @@ export default function BottomInput({
       }
     }
     setFeedbackMessage("");
-    return;
   }, [distanceToCorrect, isSameLengthAsSolution, isLongerThanSolution]);
 
   function checkResult() {
@@ -78,9 +76,9 @@ export default function BottomInput({
       return;
     }
     console.log("checking result...");
-    var a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
-    var b = removeQuotes(
-      removeAccents(eliminateTypos(bookmarksToStudy[0].from))
+    let a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
+    let b = removeQuotes(
+      removeAccents(eliminateTypos(bookmarksToStudy[0].from)),
     );
     if (a === b) {
       let concatMessage = messageToAPI + "C";
@@ -112,16 +110,11 @@ export default function BottomInput({
           <InputField
             type="text"
             className={
-              distanceToCorrect >= 5
-                ? "wrong-border"
-                : "almost-border"
+              distanceToCorrect >= 5 ? "wrong-border" : "almost-border"
             }
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}
             onKeyUp={(e) => {
-              if (currentInput !== "") {
-                notifyKeyPress();
-              }
               if (e.key === "Enter") {
                 checkResult();
               }

@@ -5,7 +5,7 @@ import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
 import SessionStorage from "../../assorted/SessionStorage";
 
-import { SpeechContext } from "../SpeechContext";
+import { SpeechContext } from "../../contexts/SpeechContext";
 
 const small_style = {
   // Icon properties
