@@ -7,6 +7,7 @@ import {
   HEADER_CONTENT,
 } from "../constants";
 import ReviewVocabulary from "./ReviewVocabulary";
+import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/LikeFeedbackBox";
 import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/DifficultyFeedbackBox";
 import { colors } from "@mui/material";
 
@@ -23,12 +24,16 @@ export function ReadArticle({
   url,
   setPersonalCopySaved,
   personalCopySaved,
+  articleInfo,
+  setArticleInfo,
 }) {
   if (articleImage) {
     if (articleImage.src === null) {
       articleImage = undefined;
     }
   }
+
+  const [articleInfo, setArticleInfo] = useState();
 
   return (
     <>
@@ -95,6 +100,12 @@ export function ReadArticle({
             articleId={articleId}
             api={api}
             openReview={openReview}
+          />
+          <LikeFeedbackBox
+            api={api}
+            articleID={articleId}
+            articleInfo={articleInfo}
+            setArticleInfo={setArticleInfo}
           />
           <DifficultyFeedbackBox api={api} articleID={articleId} />
         </div>

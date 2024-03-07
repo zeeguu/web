@@ -432,6 +432,8 @@ export function Modal({
                   url={url}
                   setPersonalCopySaved={setPersonalCopySaved}
                   personalCopySaved={personalCopySaved}
+                  articleInfo={articleInfo}
+                  setArticleInfo={setArticleInfo}
                 />
               )}
 
