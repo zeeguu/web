@@ -23,6 +23,10 @@ import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import ratio from "../utils/basic/ratio";
+import { display, width } from "@mui/system";
+
+let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
+let previous_time = 0; // since sent a scroll update
 
 export const UMR_SOURCE = "UMR";
 
@@ -270,6 +274,20 @@ export default function ArticleReader({ api, teacherArticleID }) {
           />
         </div>
       </div>
+      <hr></hr>
+      {articleInfo.img_url && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <img
+            alt=""
+            src={articleInfo.img_url}
+            style={{
+              width: "100%",
+              borderRadius: "1em",
+              marginBottom: "1em",
+            }}
+          />
+        </div>
+      )}
 
       {articleInfo.video ? (
         <iframe
