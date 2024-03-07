@@ -33,8 +33,6 @@ export function ReadArticle({
     }
   }
 
-  const [articleInfo, setArticleInfo] = useState();
-
   return (
     <>
       <div className="article-container">
