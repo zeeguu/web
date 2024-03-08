@@ -74,10 +74,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
 
   function uploadActivity() {
-    api.readingSessionUpdate(
-      readingSessionIdRef.current,
-      activityTimerRef.current,
-    );
+    // It can happen that the timer already ticks before we have a reading session from the server.
+    if (readingSessionIdRef.current) {
+      api.readingSessionUpdate(
+        readingSessionIdRef.current,
+        activityTimerRef.current,
+      );
+    }
   }
 
   function getScrollRatio() {
