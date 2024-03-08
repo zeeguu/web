@@ -7,7 +7,7 @@ import {
   HEADER_CONTENT,
 } from "../constants";
 import ReviewVocabulary from "./ReviewVocabulary";
-import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/LikeFeedbackBox";
+import LikeFeedbackBox from "../../zeeguu-react/src/reader/LikeFeedbackBox";
 import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/DifficultyFeedbackBox";
 import { colors } from "@mui/material";
 
