@@ -6,6 +6,8 @@ import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleCho
 import OrderWordsL1 from "./exerciseTypes/orderWords/OrderWordsL1";
 import OrderWordsL2 from "./exerciseTypes/orderWords/OrderWordsL2";
 import FindWordInContextCloze from "./exerciseTypes/findWordInContextCloze/FindWordInContextCloze";
+import TranslateL2toL1 from "./exerciseTypes/translateL2toL1/TranslateL2toL1";
+import TranslateWhatYouHear from "./exerciseTypes/translateWhatYouHear/TranslateWhatYouHear";
 
 const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 10;
 
@@ -93,7 +95,15 @@ let DEFAULT_SEQUENCE_NO_AUDIO = [
 let RECALL_SEQUENCE = [
   {
     type: FindWordInContextCloze,
-    requiredBookmarks: 10,
+    requiredBookmarks: 2,
+  },
+  {
+    type: TranslateL2toL1,
+    requiredBookmarks: 4,
+  },
+  {
+    type: TranslateWhatYouHear,
+    requiredBookmarks: 4,
   }
 ];
 
