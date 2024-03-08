@@ -9,6 +9,7 @@ export default function BottomInput({
   bookmarksToStudy,
   messageToAPI,
   setMessageToAPI,
+  isL1Answer,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
@@ -78,7 +79,7 @@ export default function BottomInput({
     console.log("checking result...");
     let a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
     let b = removeQuotes(
-      removeAccents(eliminateTypos(bookmarksToStudy[0].from)),
+      removeAccents(eliminateTypos(isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from)),
     );
     if (a === b) {
       let concatMessage = messageToAPI + "C";

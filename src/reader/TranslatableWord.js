@@ -9,6 +9,8 @@ export default function TranslatableWord({
   pronouncing,
   translatedWords,
   setTranslatedWords,
+  isBookmarkWord,
+  isUnderlineWord,
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
@@ -64,10 +66,16 @@ export default function TranslatableWord({
     wordUpdated();
   }
 
-  if (!word.translation) {
+  //isBookmarkWord so user cannot translate words that are being tested
+  if (!word.translation || isBookmarkWord) {
     return (
       <>
-        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
+        <z-tag
+          onClick={(e) => clickOnWord(e, word)}
+          style={isUnderlineWord ? { textDecoration: "underline" } : {}}
+        >
+          {word.word + " "}
+        </z-tag>
       </>
     );
   }

@@ -347,6 +347,10 @@ let strings = new LocalizedStrings(
       multipleChoiceAudioHeadline: "Select the word which fits the context",
       findWordInContextClozeHeadline:
         "Translate the word to fit the context",
+      translateL2toL1Headline: 
+        "Translate the underlined word",
+      translateWhatYouHearHeadline: 
+        "Translate the word you hear. Click to have it repeated!",
 
       //FeedbackButtons
       giveFeedback: "Give feedback",

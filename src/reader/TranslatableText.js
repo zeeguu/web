@@ -13,6 +13,7 @@ export function TranslatableText({
   bookmarkToStudy,
   overrideBookmarkHighlightText,
   setIsRendered,
+  underlineWord,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -70,10 +71,16 @@ export function TranslatableText({
       }
     }
   }
+
   function colorWord(word) {
     return `<span class='highlightedWord'>${word} </span>`;
   }
+
   function renderWordJSX(word) {
+    // If the word is a bookmarked word, it won't be translated when clicked
+    const isBookmarkWord = foundInstances.includes(word.id);
+    const isUnderlineWord = word.word === underlineWord;
+
     if (isCorrect) {
       if (word.id === firstWordID && overrideBookmarkHighlightText) {
         // In case we want to override the highlighted bookmark
@@ -110,6 +117,8 @@ export function TranslatableText({
             pronouncing={pronouncing}
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
+            isBookmarkWord={isBookmarkWord}
+            isUnderlineWord={isUnderlineWord}
           />
         );
       }
@@ -125,6 +134,8 @@ export function TranslatableText({
             pronouncing={pronouncing}
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
+            isBookmarkWord={isBookmarkWord}
+            isUnderlineWord={isUnderlineWord}
           />
         );
       }
@@ -146,6 +157,8 @@ export function TranslatableText({
           pronouncing={pronouncing}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
+          isBookmarkWord={isBookmarkWord}
+          isUnderlineWord={isUnderlineWord}
         />
       );
     }
