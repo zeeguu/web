@@ -75,6 +75,17 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.\
 
+# 3. Testing the Extension Build
+
+After building the extension, you can test it by going into the extensions in your browser (i.e. chrome://extensions/) and clicking `Load unpacked`. 
+
+![image](https://github.com/zeeguu/browser-extension/assets/17390076/6d7c4b0e-ddbf-406b-9ca0-04b46dc56225)
+
+This will open a File explorer where you should select the `build` folder. This loads the new extension which will connect to the Zeeguu API and can be used for testing.
+
+![image](https://github.com/zeeguu/browser-extension/assets/17390076/a7ea3553-1f89-4ac7-b892-92c595e1dc08)
+
+
 # Notes
 
 ## Requires npm: "^8.5.1",
