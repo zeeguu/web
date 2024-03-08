@@ -16,11 +16,18 @@ export default function ArticleOverview({
   api,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
+  onArticleClick,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(
-    article.has_personal_copy
+    article.has_personal_copy,
   );
+
+  const handleArticleClick = () => {
+    if (onArticleClick) {
+      onArticleClick(article.id);
+    }
+  };
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
@@ -96,7 +103,7 @@ export default function ArticleOverview({
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
-      <s.Title>{titleLink(article)}</s.Title>
+      <s.Title onClick={handleArticleClick}>{titleLink(article)}</s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
 
