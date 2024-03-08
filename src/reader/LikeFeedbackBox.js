@@ -18,7 +18,11 @@ export default function LikeFeedbackBox({
 
   return (
     <s.FeedbackBox>
-      {/*<h4>{strings.helpUsMsg}</h4>*/}
+      <small style={{
+          marginLeft: "2em",
+          marginRight: "2em",
+          textAlign: "center"
+        }}>{strings.helpUsMsg}</small>
 
       <h4>{strings.didYouEnjoyMsg}</h4>
 

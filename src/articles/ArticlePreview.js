@@ -16,16 +16,17 @@ export default function ArticleOverview({
   api,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
-  onClickTitleLink,
+  onArticleClick,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(
-    article.has_personal_copy
+    article.has_personal_copy,
   );
 
-  const handleTitleClick = () => {
-    // Call the provided onClickTitleLink function with the article information
-    onClickTitleLink(article);
+  const handleArticleClick = () => {
+    if (onArticleClick) {
+      onArticleClick(article.id);
+    }
   };
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
@@ -40,8 +41,6 @@ export default function ArticleOverview({
   }
 
   function titleLink(article) {
-    handleTitleClick(article);
-
     let open_in_zeeguu = (
       <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
     );
@@ -104,7 +103,7 @@ export default function ArticleOverview({
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
-      <s.Title>{titleLink(article)}</s.Title>
+      <s.Title onClick={handleArticleClick}>{titleLink(article)}</s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
 
