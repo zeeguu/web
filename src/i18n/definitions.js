@@ -347,7 +347,7 @@ let strings = new LocalizedStrings(
       findWordInContextClozeHeadline:
         "Translate the word to fit the context",
       translateL2toL1Headline: 
-        "Translate the underlined word",
+        "Translate the highlighted word",
       translateWhatYouHearHeadline: 
         "Translate the word you hear. Click to have it repeated!",
 

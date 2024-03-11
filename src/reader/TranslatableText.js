@@ -13,6 +13,7 @@ export function TranslatableText({
   bookmarkToStudy,
   overrideBookmarkHighlightText,
   underlineWord,
+  exerciseType,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -122,12 +123,12 @@ export function TranslatableText({
           />
         );
       }
-      if (foundInstances[0] === word.id) {
+      if (foundInstances[0] === word.id && exerciseType !== "Translate_What_You_Hear") {
         // If we want, we can render it according to words size.
         // "_".repeat(word.word.length) + " ";
         return  "_______ "
       }
-      if (foundInstances.includes(word.id)) {
+      if (foundInstances.includes(word.id) && exerciseType !== "Translate_What_You_Hear") {
         return "";
       }
       return (

@@ -155,6 +155,15 @@ export default function TranslateWhatYouHear({
       )}
       {!isCorrect && usedHint && (
         <>
+          <s.CenteredRowTall>
+            <SpeakButton
+              bookmarkToStudy={bookmarkToStudy}
+              api={api}
+              styling="large"
+              parentIsSpeakingControl={isButtonSpeaking}
+            />
+          </s.CenteredRowTall>
+
           <div className="contextExample">
             <TranslatableText
               isCorrect={isCorrect}
@@ -162,8 +171,20 @@ export default function TranslateWhatYouHear({
               translating={true}
               pronouncing={false}
               bookmarkToStudy={bookmarksToStudy[0].from}
+              exerciseType={EXERCISE_TYPE}
             />
           </div>
+
+          <BottomInput
+            handleCorrectAnswer={handleCorrectAnswer}
+            handleIncorrectAnswer={handleIncorrectAnswer}
+            bookmarksToStudy={bookmarksToStudy}
+            messageToAPI={messageToAPI}
+            setMessageToAPI={setMessageToAPI}
+            isL1Answer={true}
+            exerciseType={EXERCISE_TYPE}
+            onHintUsed={() => setUsedHint(true)}
+          />
         </>
       )}
       {isCorrect && (
