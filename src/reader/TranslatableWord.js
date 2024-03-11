@@ -65,7 +65,7 @@ export default function TranslatableWord({
   if (!word.translation || isBookmarkWord) {
     return (
       <>
-        <z-tag onClick={(e) => clickOnWord(e, word)} style={isUnderlineWord ? {textDecoration: "underline"} : {}}>{word.word}</z-tag>
+        <z-tag onClick={(e) => clickOnWord(e, word)} style={isUnderlineWord ? {fontWeight: "bold"} : {}}>{word.word}</z-tag>
         <span> </span>
       </>
     );
