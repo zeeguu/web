@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
 import strings from "../../../i18n/definitions";
 import * as s from "../Exercise.sc";
+import { set } from "express/lib/application";
 
 export default function BottomInput({
   handleCorrectAnswer,
@@ -10,6 +11,8 @@ export default function BottomInput({
   messageToAPI,
   setMessageToAPI,
   isL1Answer,
+  onHintUsed,
+  exerciseType,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
@@ -22,18 +25,27 @@ export default function BottomInput({
 
   function handleHint() {
     setUsedHint(true);
-    let hint;
-    if (
-      currentInput ===
-      bookmarksToStudy[0].from.substring(0, currentInput.length)
-    ) {
-      hint = bookmarksToStudy[0].from.substring(0, currentInput.length + 1);
+
+    if (exerciseType === "Translate_What_You_Hear") {
+      console.log("Hint used");
+      onHintUsed();
+      let concatMessage = messageToAPI + "H";
+      setMessageToAPI(concatMessage);
     } else {
-      hint = bookmarksToStudy[0].from.substring(0, 1);
+      let hint;
+      let targetWord = isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from;
+      if (
+        currentInput ===
+        targetWord.substring(0, currentInput.length)
+      ) {
+        hint = targetWord.substring(0, currentInput.length + 1);
+      } else {
+        hint = targetWord.substring(0, 1);
+      }
+      setCurrentInput(hint);
+      let concatMessage = messageToAPI + "H";
+      setMessageToAPI(concatMessage);
     }
-    setCurrentInput(hint);
-    let concatMessage = messageToAPI + "H";
-    setMessageToAPI(concatMessage);
   }
 
   function eliminateTypos(x) {

@@ -8,6 +8,7 @@ import OrderWordsL2 from "./exerciseTypes/orderWords/OrderWordsL2";
 import FindWordInContextCloze from "./exerciseTypes/findWordInContextCloze/FindWordInContextCloze";
 import TranslateL2toL1 from "./exerciseTypes/translateL2toL1/TranslateL2toL1";
 import TranslateWhatYouHear from "./exerciseTypes/translateWhatYouHear/TranslateWhatYouHear";
+import MultipleChoiceL2toL1 from "./exerciseTypes/multipleChoiceL2toL1/MultipleChoiceL2toL1";
 
 const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 10;
 
@@ -95,18 +96,41 @@ let DEFAULT_SEQUENCE_NO_AUDIO = [
 let RECALL_SEQUENCE = [
   {
     type: FindWordInContextCloze,
-    requiredBookmarks: 2,
+    requiredBookmarks: 3,
   },
   {
     type: TranslateL2toL1,
-    requiredBookmarks: 4,
+    requiredBookmarks: 3,
   },
   {
     type: TranslateWhatYouHear,
-    requiredBookmarks: 4,
+    requiredBookmarks: 2,
+  },
+  {
+    type: SpellWhatYouHear,
+    requiredBookmarks: 2,
   }
 ];
 
+
+let RECOGNICTION_SEQUENCE = [
+  {
+    type: Match,
+    requiredBookmarks: 0,
+  },
+  {
+    type: MultipleChoice,
+    requiredBookmarks: 0,
+  },
+  {
+    type: MultipleChoiceAudio,
+    requiredBookmarks: 0,
+  },
+  {
+    type: MultipleChoiceL2toL1,
+    requiredBookmarks: 10,
+  }
+];
 
 export {
   DEFAULT_SEQUENCE,
@@ -114,4 +138,5 @@ export {
   EXERCISE_TYPES_TIAGO,
   NUMBER_OF_BOOKMARKS_TO_PRACTICE,
   RECALL_SEQUENCE,
+  RECOGNICTION_SEQUENCE,
 };

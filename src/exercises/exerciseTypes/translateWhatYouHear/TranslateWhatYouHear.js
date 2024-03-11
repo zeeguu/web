@@ -39,6 +39,7 @@ export default function TranslateWhatYouHear({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [usedHint, setUsedHint] = useState(false);
 
   async function handleSpeak() {
     await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
@@ -101,6 +102,7 @@ export default function TranslateWhatYouHear({
     api.logUserActivity("AUDIO_DISABLE", "", bookmarksToStudy[0].id, "");
     moveToNextExercise();
   }
+
   function handleIncorrectAnswer() {
     setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
@@ -128,17 +130,8 @@ export default function TranslateWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.translateWhatYouHearHeadline}
       </div>
-      {!isCorrect && (
+      {!isCorrect && !usedHint && (
         <>
-          <div className="contextExample">
-            <TranslatableText
-              isCorrect={isCorrect}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              bookmarkToStudy={bookmarksToStudy[0].from}
-            />
-          </div>
           <s.CenteredRowTall>
             <SpeakButton
               bookmarkToStudy={bookmarkToStudy}
@@ -155,7 +148,22 @@ export default function TranslateWhatYouHear({
             messageToAPI={messageToAPI}
             setMessageToAPI={setMessageToAPI}
             isL1Answer={true}
+            exerciseType={EXERCISE_TYPE}
+            onHintUsed={() => setUsedHint(true)}
           />
+        </>
+      )}
+      {!isCorrect && usedHint && (
+        <>
+          <div className="contextExample">
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={bookmarksToStudy[0].from}
+            />
+          </div>
         </>
       )}
       {isCorrect && (
