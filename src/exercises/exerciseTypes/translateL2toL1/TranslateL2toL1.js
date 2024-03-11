@@ -100,11 +100,7 @@ export default function TranslateL2toL1({
       <div className="headlineWithMoreSpace">
         {strings.translateL2toL1Headline}
       </div>
-      
-      {!isCorrect && (
-        <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].from}</h1>
-            <div className="contextExample">
+      <div className="contextExample">
                 <TranslatableText
                     isCorrect={isCorrect}
                     interactiveText={interactiveText}
@@ -116,6 +112,9 @@ export default function TranslateL2toL1({
                     underlineWord={bookmarksToStudy[0].from}
                 />
             </div>
+      
+      {!isCorrect && (
+        <>
             <BottomInput
                 handleCorrectAnswer={handleCorrectAnswer}
                 handleIncorrectAnswer={handleIncorrectAnswer}
@@ -128,17 +127,7 @@ export default function TranslateL2toL1({
       )}
       {isCorrect && (
         <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
-            <div className="contextExample">
-                <TranslatableText
-                    isCorrect={isCorrect}
-                    interactiveText={interactiveText}
-                    translating={true}
-                    pronouncing={false}
-                    bookmarkToStudy={bookmarksToStudy[0].from}
-                    underlineWord={bookmarksToStudy[0].from}
-                />
-            </div>        
+            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>   
         </>
         )}
 

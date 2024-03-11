@@ -72,7 +72,7 @@ export default function TranslatableWord({
       <>
         <z-tag
           onClick={(e) => clickOnWord(e, word)}
-          style={isUnderlineWord ? { textDecoration: "underline" } : {}}
+          style={isUnderlineWord ? { fontWeight: "bold" } : {}}
         >
           {word.word + " "}
         </z-tag>

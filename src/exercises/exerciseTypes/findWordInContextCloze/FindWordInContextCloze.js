@@ -123,7 +123,7 @@ export default function FindWordInContextCloze({
       )}
       {isCorrect && (
         <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].from}</h1>
+            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
             <div className="contextExample">
                 <TranslatableText
                     isCorrect={isCorrect}
