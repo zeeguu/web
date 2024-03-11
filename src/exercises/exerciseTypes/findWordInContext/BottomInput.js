@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
 import strings from "../../../i18n/definitions";
 import * as s from "../Exercise.sc";
-import { set } from "express/lib/application";
 
 export default function BottomInput({
   handleCorrectAnswer,
@@ -27,7 +26,6 @@ export default function BottomInput({
     setUsedHint(true);
 
     if (exerciseType === "Translate_What_You_Hear") {
-      console.log("Hint used");
       onHintUsed();
       let concatMessage = messageToAPI + "H";
       setMessageToAPI(concatMessage);
