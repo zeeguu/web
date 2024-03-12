@@ -12,11 +12,13 @@ export function TranslatableText({
   setTranslatedWords,
   bookmarkToStudy,
   overrideBookmarkHighlightText,
+  setIsRendered,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
   const [paragraphs, setParagraphs] = useState([]);
   const [firstWordID, setFirstWordID] = useState(0);
+  const [renderedText, setRenderedText] = useState();
 
   useEffect(() => {
     if (bookmarkToStudy) {
@@ -25,6 +27,20 @@ export function TranslatableText({
     setParagraphs(interactiveText.getParagraphs());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setRenderedText(
+      paragraphs.map((par, index) => (
+        <div key={index} className="textParagraph">
+          {par.getWords().map((word) => renderWordJSX(word))}
+        </div>
+      )),
+    );
+  }, [paragraphs, translationCount, isCorrect]);
+
+  useEffect(() => {
+    if (setIsRendered) setIsRendered(true);
+  }, [renderedText]);
 
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
@@ -98,7 +114,6 @@ export function TranslatableText({
         );
       }
     } else {
-
       if (!bookmarkToStudy || translatedWords) {
         return (
           <TranslatableWord
@@ -116,7 +131,7 @@ export function TranslatableText({
       if (foundInstances[0] === word.id) {
         // If we want, we can render it according to words size.
         // "_".repeat(word.word.length) + " ";
-        return  "_______ "
+        return "_______ ";
       }
       if (foundInstances.includes(word.id)) {
         return "";
@@ -135,13 +150,6 @@ export function TranslatableText({
       );
     }
   }
-  return (
-    <s.TranslatableText>
-      {paragraphs.map((par, index) => (
-        <div key={index} className="textParagraph">
-          {par.getWords().map((word) => renderWordJSX(word))}
-        </div>
-      ))}
-    </s.TranslatableText>
-  );
+
+  return <s.TranslatableText>{renderedText}</s.TranslatableText>;
 }

@@ -4,7 +4,7 @@ import CohortList from "./CohortList";
 import strings from "../../../i18n/definitions";
 import { setTitle } from "../../../assorted/setTitle";
 import * as s from "../../../components/ColumnWidth.sc";
-import * as sc from "../../../components/TopTabs.sc";
+import { PageTitle } from "../../../components/PageTitle";
 
 function Home({ api }) {
   const [cohorts, setCohorts] = useState();
@@ -16,13 +16,11 @@ function Home({ api }) {
   }, [forceUpdate]);
 
   return (
-    <Fragment>
+    <>
+      <PageTitle>{strings.myClasses}</PageTitle>
       <s.NarrowColumn>
         {cohorts ? (
           <div>
-            <sc.TopTabs>
-              <h1>{strings.myClasses}</h1>
-            </sc.TopTabs>
             <CohortList
               api={api}
               setForceUpdate={setForceUpdate}
@@ -33,7 +31,7 @@ function Home({ api }) {
           <LoadingAnimation />
         )}
       </s.NarrowColumn>
-    </Fragment>
+    </>
   );
 }
 

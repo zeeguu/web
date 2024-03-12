@@ -10,7 +10,6 @@ import CreateAccount from "./pages/CreateAccount";
 import LocalStorage from "./assorted/LocalStorage";
 import SessionStorage from "./assorted/SessionStorage";
 import { saveUserInfoIntoCookies } from "./utils/cookies/userInfo";
-import { PrivateRoute } from "./PrivateRoute";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
@@ -121,16 +120,16 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       />
 
       <PrivateRouteWithSidebar
-        path="/teacher"
-        api={api}
-        component={TeacherRouter}
-      />
-
-      <PrivateRouteWithSidebar
         path="/account_settings"
         api={api}
         setUser={setUser}
         component={Settings}
+      />
+
+      <PrivateRouteWithSidebar
+        path="/teacher"
+        api={api}
+        component={TeacherRouter}
       />
 
       <PrivateRouteWithSidebar

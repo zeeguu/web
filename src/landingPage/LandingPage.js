@@ -6,14 +6,14 @@ import { Redirect } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { setTitle } from "../assorted/setTitle";
 import UiLanguageSettings from "../components/UiLanguageSettings";
-import { getUserSession } from "../utils/cookies/userInfo";
+import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import { useHistory } from "react-router-dom";
 
 export default function LandingPage() {
   const [uiLanguage, setUiLanguage] = useState();
   const history = useHistory();
 
-  if (getUserSession()) {
+  if (getSessionFromCookies()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
 

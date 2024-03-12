@@ -16,12 +16,7 @@ export default function SideBar(props) {
   //deducting whether we are on student or teacher side for colouring
   const path = useLocation().pathname;
   useEffect(() => {
-    //in Settings the side is determined by whether the user is a student or a teacher
-    if (path.includes("account")) {
-      setIsOnStudentSide(!user.is_teacher);
-    } else {
-      setIsOnStudentSide(!path.includes("teacher"));
-    }
+    setIsOnStudentSide(!path.includes("teacher"));
   }, [path]);
 
   const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
