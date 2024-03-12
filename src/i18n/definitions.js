@@ -350,6 +350,10 @@ let strings = new LocalizedStrings(
         "Translate the highlighted word",
       translateWhatYouHearHeadline: 
         "Translate the word you hear. Click to have it repeated!",
+      multipleChoiceL2toL1Headline:
+        "Select the correct translation of the highlighted word",
+      clickWordInContextHeadline:
+        "Find the word in the context and click on it",
 
       //FeedbackButtons
       giveFeedback: "Give feedback",

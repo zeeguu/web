@@ -1,17 +1,19 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 
-import strings from "../../../i18n/definitions.js";
-import NextNavigation from "../NextNavigation.js";
+import BottomInput from "../findWordInContext/BottomInput.js";
+
+import strings from "../../../i18n/definitions";
+import NextNavigation from "../NextNavigation";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
+import { tokenize } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
-import BottomInput from "../findWordInContext/BottomInput.js";
 
-const EXERCISE_TYPE = "Translate_L2_to_L1";
-export default function TranslateL2toL1({
+const EXERCISE_TYPE = "Click_L1W_in_L2T";
+export default function ClickWordInContext({
   api,
   bookmarksToStudy,
   correctAnswer,
@@ -50,20 +52,77 @@ export default function TranslateL2toL1({
       );
       setArticleInfo(articleInfo);
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    checkTranslations(translatedWords);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [translatedWords]);
+
+  function equalAfterRemovingSpecialCharacters(a, b) {
+    // from: https://stackoverflow.com/a/4328546
+    let first = a.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
+    let second = b.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
+    return first === second;
+  }
+
+  function checkTranslations(userTranslatedSequences) {
+    if (userTranslatedSequences.length === 0) {
+      return;
+    }
+
+    let solutionDiscovered = false;
+
+    let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
+
+    solutionSplitIntoWords.forEach((wordInSolution) => {
+      userTranslatedSequences.forEach((userTranslatedSequence) => {
+        let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
+        wordsInUserTranslatedSequence.forEach((translatedWord) => {
+          if (
+            equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)
+          ) {
+            solutionDiscovered = true;
+          }
+        });
+      });
+    });
+
+    if (solutionDiscovered) {
+      // Check how many translations were made
+      let translationCount = 0;
+      for (let i = 0; i < messageToAPI.length; i++) {
+        if (messageToAPI[i] === "T") translationCount++;
+      }
+      if (translationCount < 2) {
+        let concatMessage = messageToAPI + "C";
+        handleCorrectAnswer(concatMessage);
+      } else {
+        let concatMessage = messageToAPI + "S";
+        handleShowSolution(undefined, concatMessage);
+      }
+    } else {
+      setMessageToAPI(messageToAPI + "T");
+    }
+  }
+
   function handleShowSolution(e, message) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     let concatMessage;
+
     if (!message) {
       concatMessage = messageToAPI + "S";
     } else {
       concatMessage = message;
     }
-
+    setMessageToAPI(concatMessage);
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    setMessageToAPI(concatMessage);                        
+    console.log(activeSessionDuration);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
@@ -96,41 +155,22 @@ export default function TranslateL2toL1({
   }
 
   return (
-    <s.Exercise className="translateL2toL1">
+    <s.Exercise className="findWordInContext">
       <div className="headlineWithMoreSpace">
-        {strings.translateL2toL1Headline}
+        {strings.clickWordInContextHeadline}
       </div>
+      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
-                <TranslatableText
-                    isCorrect={isCorrect}
-                    interactiveText={interactiveText}
-                    translating={true}
-                    pronouncing={false}
-                    translatedWords={translatedWords}
-                    setTranslatedWords={setTranslatedWords}
-                    bookmarkToStudy={bookmarksToStudy[0].from}
-                    highlightWord={bookmarksToStudy[0].from}
-                />
-            </div>
-      
-      {!isCorrect && (
-        <>
-            <BottomInput
-                handleCorrectAnswer={handleCorrectAnswer}
-                handleIncorrectAnswer={handleIncorrectAnswer}
-                bookmarksToStudy={bookmarksToStudy}
-                messageToAPI={messageToAPI}
-                setMessageToAPI={setMessageToAPI}
-                isL1Answer={true}
-            />
-        </>
-      )}
-      {isCorrect && (
-        <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>   
-        </>
-        )}
-
+        <TranslatableText
+          isCorrect={isCorrect}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          translatedWords={translatedWords}
+          setTranslatedWords={setTranslatedWords}
+          bookmarkToStudy={bookmarksToStudy[0].from}
+        />
+      </div>
       <NextNavigation
         message={messageToAPI}
         api={api}
