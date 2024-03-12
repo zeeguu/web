@@ -23,6 +23,8 @@ import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
+import strings from "../i18n/definitions";
+
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -265,8 +267,25 @@ export default function ArticleReader({ api, teacherArticleID }) {
         />
       </s.MainText>
       <ReviewVocabulary articleID={articleID} />
-      <LikeFeedBackBox api={api} articleID={articleID} articleInfo={articleInfo} setArticleInfo={setArticleInfo} />
-      <DifficultyFeedbackBox api={api} articleID={articleID} />
+      <s.FeedbackBox>
+        <h4
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
+          {strings.answeringMsg}
+        </h4>
+        <LikeFeedBackBox
+          api={api}
+          articleID={articleID}
+          articleInfo={articleInfo}
+          setArticleInfo={setArticleInfo}
+          source={UMR_SOURCE}
+        />
+        <DifficultyFeedbackBox api={api} articleID={articleID} />
+      </s.FeedbackBox>
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );

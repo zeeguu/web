@@ -48,9 +48,8 @@ export default function NewArticles() {
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index + 1)
-      .map((article) => ({ id: article.id }));
-    const articleSeenListString = JSON.stringify(articleSeenList, null, 2);
-
+      .map((article) => article.id );
+    const articleSeenListString = JSON.stringify(articleSeenList, null, 0);
     api.logUserActivity(
       api.CLICKED_ARTICLE,
       articleId,

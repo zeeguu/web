@@ -264,6 +264,29 @@ let FeedbackBox = styled.div`
   }
 `;
 
+let InvisibleBox = styled.div`
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em 0em 0em 0em;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    width: 30em;
+  }
+  margin-left: auto;
+  margin-right: auto;
+
+  h2, h3, h5,  p {
+    text-align: center;
+  }
+  .selected {
+    background-color: ${zeeguuVarmYellow} !important;
+    color: white !important;
+  }
+`;
+
 let ExtraSpaceAtTheBottom = styled.div`
   margin-bottom: 8em;
 `;
@@ -284,4 +307,5 @@ export {
   NavigationLink,
   RightHandSide,
   PlayerControl,
+  InvisibleBox,
 };

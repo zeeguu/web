@@ -7,23 +7,19 @@ export default function LikeFeedbackBox({
   articleID,
   articleInfo,
   setArticleInfo,
+  source,
 }) {
   function setLikedState(state) {
     let newArticleInfo = { ...articleInfo, liked: state };
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, UMR_SOURCE);
+    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, source);
   }
 
   return (
-    <s.FeedbackBox>
-      <small style={{
-          marginLeft: "2em",
-          marginRight: "2em",
-          textAlign: "center"
-        }}>{strings.helpUsMsg}</small>
-
+    <s.InvisibleBox>
+     
       <h4>{strings.didYouEnjoyMsg}</h4>
 
       <s.CenteredContent>
@@ -40,6 +36,6 @@ export default function LikeFeedbackBox({
           {strings.no}
         </s.WhiteButton>
       </s.CenteredContent>
-    </s.FeedbackBox>
+    </s.InvisibleBox>
   );
 }

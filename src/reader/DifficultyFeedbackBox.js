@@ -35,7 +35,7 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
 
   return (
     <>
-    <s.FeedbackBox>
+    <s.InvisibleBox>
       <h4>How easy was this text?</h4>
       <s.CenteredContent>
         {Object.keys(FEEDBACK_OPTIONS).map((option) => {
@@ -88,7 +88,7 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
           );
         })}
       </s.CenteredContent>
-    </s.FeedbackBox>
+    </s.InvisibleBox>
     </>
   );
 }
