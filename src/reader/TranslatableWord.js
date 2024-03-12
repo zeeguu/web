@@ -10,7 +10,7 @@ export default function TranslatableWord({
   translatedWords,
   setTranslatedWords,
   isBookmarkWord,
-  isUnderlineWord,
+  isHighlightedWord,
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
@@ -72,7 +72,7 @@ export default function TranslatableWord({
       <>
         <z-tag
           onClick={(e) => clickOnWord(e, word)}
-          style={isUnderlineWord ? { fontWeight: "bold" } : {}}
+          style={isHighlightedWord ? { fontWeight: "bold" } : {}}
         >
           {word.word + " "}
         </z-tag>

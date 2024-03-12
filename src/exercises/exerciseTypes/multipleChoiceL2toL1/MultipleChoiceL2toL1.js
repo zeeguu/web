@@ -57,14 +57,13 @@ export default function MultipleChoiceL2toL1({
       );
       setArticleInfo(articleInfo);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
     if (
       selectedChoice ===
-      removePunctuation(bookmarksToStudy[0].from.toLowerCase())
+      removePunctuation(bookmarksToStudy[0].to.toLowerCase())
     ) {
       correctAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
@@ -103,7 +102,7 @@ export default function MultipleChoiceL2toL1({
       secondRandomInt = Math.floor(Math.random() * similarWords.length);
     } while (firstRandomInt === secondRandomInt);
     let listOfOptions = [
-      removePunctuation(bookmarksToStudy[0].from.toLowerCase()),
+      removePunctuation(bookmarksToStudy[0].to.toLowerCase()),
       removePunctuation(similarWords[firstRandomInt].toLowerCase()),
       removePunctuation(similarWords[secondRandomInt].toLowerCase()),
     ];
@@ -127,6 +126,8 @@ export default function MultipleChoiceL2toL1({
           translating={true}
           pronouncing={false}
           bookmarkToStudy={bookmarksToStudy[0].from}
+          exerciseType={EXERCISE_TYPE}
+          highlightWord={bookmarksToStudy[0].from}
         />
       </div>
 

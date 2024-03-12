@@ -13,7 +13,7 @@ export function TranslatableText({
   bookmarkToStudy,
   overrideBookmarkHighlightText,
   setIsRendered,
-  underlineWord,
+  highlightWord,
   exerciseType,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
@@ -80,7 +80,7 @@ export function TranslatableText({
   function renderWordJSX(word) {
     // If the word is a bookmarked word, it won't be translated when clicked
     const isBookmarkWord = foundInstances.includes(word.id);
-    const isUnderlineWord = word.word === underlineWord;
+    const isHighlightedWord = word.word === highlightWord;
 
     if (isCorrect) {
       if (word.id === firstWordID && overrideBookmarkHighlightText) {
@@ -119,7 +119,7 @@ export function TranslatableText({
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
             isBookmarkWord={isBookmarkWord}
-            isUnderlineWord={isUnderlineWord}
+            isHighlightedWord={isHighlightedWord}
           />
         );
       }
@@ -136,16 +136,24 @@ export function TranslatableText({
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
             isBookmarkWord={isBookmarkWord}
-            isUnderlineWord={isUnderlineWord}
+            isHighlightedWord={isHighlightedWord}
           />
         );
       }
-      if (foundInstances[0] === word.id && exerciseType !== "Translate_What_You_Hear") {
+      if (
+        foundInstances[0] === word.id &&
+        exerciseType !== "Translate_What_You_Hear" &&
+        exerciseType !== "Select_L1W_fitting_L2T"
+      ) {
         // If we want, we can render it according to words size.
         // "_".repeat(word.word.length) + " ";
         return "_______ ";
       }
-      if (foundInstances.includes(word.id) && exerciseType !== "Translate_What_You_Hear") {
+      if (
+        foundInstances.includes(word.id) &&
+        exerciseType !== "Translate_What_You_Hear" &&
+        exerciseType !== "Select_L1W_fitting_L2T"
+      ) {
         return "";
       }
       return (
@@ -159,7 +167,7 @@ export function TranslatableText({
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
           isBookmarkWord={isBookmarkWord}
-          isUnderlineWord={isUnderlineWord}
+          isHighlightedWord={isHighlightedWord}
         />
       );
     }
