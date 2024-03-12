@@ -26,7 +26,6 @@ import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import ratio from "../utils/basic/ratio";
 
-
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
 
@@ -300,23 +299,21 @@ export default function ArticleReader({ api, teacherArticleID }) {
           pronouncing={pronouncing}
         />
       </s.MainText>
-      <ReviewVocabulary articleID={articleID} />
-      <s.FeedbackBox>
-        <h4> {strings.answeringMsg} </h4>
-        <LikeFeedBackBox
-          api={api}
-          articleID={articleID}
-          articleInfo={articleInfo}
-          setArticleInfo={setArticleInfo}
-          source={UMR_SOURCE}
-        />
-        <DifficultyFeedbackBox api={api} articleID={articleID} />
-      </s.FeedbackBox>
 
       {readerReady && (
         <div id={"bottomRow"}>
           <ReviewVocabulary articleID={articleID} />
-          <DifficultyFeedbackBox api={api} articleID={articleID} />
+          <s.FeedbackBox>
+            <h4> {strings.answeringMsg} </h4>
+            <LikeFeedBackBox
+              api={api}
+              articleID={articleID}
+              articleInfo={articleInfo}
+              setArticleInfo={setArticleInfo}
+              source={UMR_SOURCE}
+            />
+            <DifficultyFeedbackBox api={api} articleID={articleID} />
+          </s.FeedbackBox>
         </div>
       )}
       <s.ExtraSpaceAtTheBottom />
