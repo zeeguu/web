@@ -242,12 +242,11 @@ let FeedbackBox = styled.div`
   border: 1px solid  ${lighterBlue};
   background-color: white;
   border-radius: 0.5em;
-  display: flex;
-  flex-direction: column;
   padding: 2em 0em 2em 0em;
   margin-top: 1em;
   align-items: center;
   justify-content: center;
+  text-align: center;
 
   @media (min-width: 768px) {
     width: 30em;

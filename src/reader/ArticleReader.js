@@ -268,15 +268,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
       </s.MainText>
       <ReviewVocabulary articleID={articleID} />
       <s.FeedbackBox>
-        <h4
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            textAlign: "center",
-          }}
-        >
-          {strings.answeringMsg}
-        </h4>
+        <h4> {strings.answeringMsg} </h4>
         <LikeFeedBackBox
           api={api}
           articleID={articleID}

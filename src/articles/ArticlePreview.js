@@ -42,7 +42,7 @@ export default function ArticleOverview({
 
   function titleLink(article) {
     let open_in_zeeguu = (
-      <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
+      <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>{article.title}</Link>
     );
 
     let open_externally_with_modal = (
@@ -62,7 +62,7 @@ export default function ArticleOverview({
           }
           setIsArticleSaved={setIsArticleSaved}
         />
-        <s.InvisibleTitleButton onClick={handleOpenRedirectionModal}>
+        <s.InvisibleTitleButton onClick={() => {handleArticleClick(); handleOpenRedirectionModal()}}>
           {article.title}
         </s.InvisibleTitleButton>
       </>
@@ -75,6 +75,7 @@ export default function ArticleOverview({
         target={isMobile ? "_self" : "_blank"}
         rel="noreferrer"
         href={article.url}
+        onClick={handleArticleClick}
       >
         {article.title}
       </a>
@@ -103,7 +104,7 @@ export default function ArticleOverview({
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
-      <s.Title onClick={handleArticleClick}>{titleLink(article)}</s.Title>
+      <s.Title>{titleLink(article)}</s.Title>
       <s.Difficulty>{difficulty}</s.Difficulty>
       <s.WordCount>{article.metrics.word_count}</s.WordCount>
 

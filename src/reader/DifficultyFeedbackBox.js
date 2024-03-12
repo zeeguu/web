@@ -27,9 +27,9 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
 
   if (answerSubmitted) {
     return (
-      <s.FeedbackBox>
+      <s.InvisibleBox>
         <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
-      </s.FeedbackBox>
+      </s.InvisibleBox>
     );
   }
 
