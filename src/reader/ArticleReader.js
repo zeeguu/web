@@ -303,7 +303,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
       {readerReady && (
         <div id={"bottomRow"}>
           <ReviewVocabulary articleID={articleID} />
-          <s.FeedbackBox>
+          <s.CombinedBox>
             <h4> {strings.answeringMsg} </h4>
             <LikeFeedBackBox
               api={api}
@@ -313,7 +313,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
               source={UMR_SOURCE}
             />
             <DifficultyFeedbackBox api={api} articleID={articleID} />
-          </s.FeedbackBox>
+          </s.CombinedBox>
         </div>
       )}
       <s.ExtraSpaceAtTheBottom />
