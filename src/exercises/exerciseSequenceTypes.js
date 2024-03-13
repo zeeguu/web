@@ -10,6 +10,7 @@ import TranslateL2toL1 from "./exerciseTypes/translateL2toL1/TranslateL2toL1";
 import TranslateWhatYouHear from "./exerciseTypes/translateWhatYouHear/TranslateWhatYouHear";
 import MultipleChoiceL2toL1 from "./exerciseTypes/multipleChoiceL2toL1/MultipleChoiceL2toL1";
 import ClickWordInContext from "./exerciseTypes/clickWordInContext/ClickWordInContext";
+import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
 
 const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 10;
 
@@ -121,6 +122,10 @@ let ACTIVE_SEQUENCE = [
   },
   {
     type: ClickWordInContext,
+    requiredBookmarks: 1,
+  },
+  {
+    type: MultipleChoiceContext,
     requiredBookmarks: 1,
   }
 ];

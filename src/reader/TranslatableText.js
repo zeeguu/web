@@ -15,6 +15,7 @@ export function TranslatableText({
   setIsRendered,
   highlightWord,
   exerciseType,
+  wordOptions,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -150,12 +151,13 @@ export function TranslatableText({
         return "_______ ";
       }
       if (
-        foundInstances.includes(word.id) &&
+        isBookmarkWord &&
         exerciseType !== "Translate_What_You_Hear" &&
         exerciseType !== "Select_L1W_fitting_L2T"
       ) {
         return "";
       }
+
       return (
         <TranslatableWord
           interactiveText={interactiveText}
