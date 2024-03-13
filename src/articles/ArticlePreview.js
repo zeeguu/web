@@ -16,11 +16,18 @@ export default function ArticleOverview({
   api,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
+  onArticleClick,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(
-    article.has_personal_copy
+    article.has_personal_copy,
   );
+
+  const handleArticleClick = () => {
+    if (onArticleClick) {
+      onArticleClick(article.id);
+    }
+  };
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
@@ -35,7 +42,7 @@ export default function ArticleOverview({
 
   function titleLink(article) {
     let open_in_zeeguu = (
-      <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
+      <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>{article.title}</Link>
     );
 
     let open_externally_with_modal = (
@@ -56,7 +63,7 @@ export default function ArticleOverview({
           }
           setIsArticleSaved={setIsArticleSaved}
         />
-        <s.InvisibleTitleButton onClick={handleOpenRedirectionModal}>
+        <s.InvisibleTitleButton onClick={() => {handleArticleClick(); handleOpenRedirectionModal()}}>
           {article.title}
         </s.InvisibleTitleButton>
       </>
@@ -69,6 +76,7 @@ export default function ArticleOverview({
         target={isMobile ? "_self" : "_blank"}
         rel="noreferrer"
         href={article.url}
+        onClick={handleArticleClick}
       >
         {article.title}
       </a>

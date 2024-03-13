@@ -11,6 +11,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
+import LikeFeedBackBox from "./LikeFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
 import ArticleSource from "./ArticleSource";
@@ -22,7 +23,11 @@ import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
+import strings from "../i18n/definitions";
 import ratio from "../utils/basic/ratio";
+
+let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
+let previous_time = 0; // since sent a scroll update
 
 export const UMR_SOURCE = "UMR";
 
@@ -298,7 +303,17 @@ export default function ArticleReader({ api, teacherArticleID }) {
       {readerReady && (
         <div id={"bottomRow"}>
           <ReviewVocabulary articleID={articleID} />
-          <DifficultyFeedbackBox api={api} articleID={articleID} />
+          <s.CombinedBox>
+            <h4> {strings.answeringMsg} </h4>
+            <LikeFeedBackBox
+              api={api}
+              articleID={articleID}
+              articleInfo={articleInfo}
+              setArticleInfo={setArticleInfo}
+              source={UMR_SOURCE}
+            />
+            <DifficultyFeedbackBox api={api} articleID={articleID} />
+          </s.CombinedBox>
         </div>
       )}
       <s.ExtraSpaceAtTheBottom />

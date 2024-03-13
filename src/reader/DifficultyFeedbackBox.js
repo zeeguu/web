@@ -27,15 +27,15 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
 
   if (answerSubmitted) {
     return (
-      <s.FeedbackBox>
+      <s.InvisibleBox>
         <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
-      </s.FeedbackBox>
+      </s.InvisibleBox>
     );
   }
 
   return (
     <>
-    <s.FeedbackBox>
+    <s.InvisibleBox>
       <h4>How easy was this text?</h4>
       <s.CenteredContent>
         {Object.keys(FEEDBACK_OPTIONS).map((option) => {
@@ -88,7 +88,7 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
           );
         })}
       </s.CenteredContent>
-    </s.FeedbackBox>
+    </s.InvisibleBox>
     </>
   );
 }
