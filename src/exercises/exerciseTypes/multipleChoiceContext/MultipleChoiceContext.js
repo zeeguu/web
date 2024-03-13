@@ -1,8 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 
-import BottomInput from "../findWordInContext/BottomInput.js";
-
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -11,9 +9,11 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { tokenize } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import shuffle from "../../../assorted/fisherYatesShuffle";
+import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 
-const EXERCISE_TYPE = "Click_L1W_in_L2T";
-export default function ClickWordInContext({
+const EXERCISE_TYPE = "Select_L2T_fitting_L1W";
+export default function MultipleChoiceContext({
   api,
   bookmarksToStudy,
   correctAnswer,
@@ -29,13 +29,15 @@ export default function ClickWordInContext({
   activeSessionDuration,
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
-  const [interactiveText, setInteractiveText] = useState();
+  const [articleInfo, setArticleInfo] = useState(null);
+  const [interactiveText, setInteractiveText] = useState(null);
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [contextOptions, setContextOptions] = useState(null);
+  const [distractorWords, setDistractorWords] = useState([]);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -51,60 +53,10 @@ export default function ClickWordInContext({
         ),
       );
       setArticleInfo(articleInfo);
+      generateContextOptions(bookmarksToStudy[0].context);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    checkTranslations(translatedWords);
-  }, [translatedWords]);
-
-  function equalAfterRemovingSpecialCharacters(a, b) {
-    // from: https://stackoverflow.com/a/4328546
-    let first = a.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ").toLowerCase();
-    let second = b.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ").toLowerCase();
-    return first === second;
-  }
-
-  function checkTranslations(userTranslatedSequences) {
-    if (userTranslatedSequences.length === 0) {
-      return;
-    }
-
-    let solutionDiscovered = false;
-
-    let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
-
-    solutionSplitIntoWords.forEach((wordInSolution) => {
-      userTranslatedSequences.forEach((userTranslatedSequence) => {
-        let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
-        wordsInUserTranslatedSequence.forEach((translatedWord) => {
-          if (
-            equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)
-          ) {
-            solutionDiscovered = true;
-          }
-        });
-      });
-    });
-
-    if (solutionDiscovered) {
-      // Check how many translations were made
-      let translationCount = 0;
-      for (let i = 0; i < messageToAPI.length; i++) {
-        if (messageToAPI[i] === "T") translationCount++;
-      }
-      if (translationCount < 2) {
-        let concatMessage = messageToAPI + "C";
-        handleCorrectAnswer(concatMessage);
-      } else {
-        let concatMessage = messageToAPI + "S";
-        handleShowSolution(undefined, concatMessage);
-      }
-    } else {
-      setMessageToAPI(messageToAPI + "T");
-      handleIncorrectAnswer();
-    }
-  }
 
   function handleShowSolution(e, message) {
     if (e) {
@@ -148,16 +100,59 @@ export default function ClickWordInContext({
     notifyIncorrectAnswer(bookmarksToStudy[0]);
   }
 
-  if (!articleInfo) {
+  function generateContextOptions(context) {
+    const sentences = articleInfo.content.split(/[.!?]/).filter(sentence => sentence.trim() !== '');
+    const selectedSentences = [];
+    const selectedIndices = []; //to make sure no sentence is selected twice
+    const distractorWords = [];
+
+    // Remove the sentence containing the bookmark
+    for (let i = 0; i < sentences.length; i++) {
+        const sentence = sentences[i].trim();
+        if (sentence.includes(bookmarksToStudy[0].from)) {
+            sentences.splice(i, 1);
+            break;
+        }
+    }
+
+    // Select two more random sentences
+    while (selectedSentences.length < 2 && sentences.length > 0) {
+        const randomIndex = Math.floor(Math.random() * sentences.length);
+        if(!selectedIndices.includes(randomIndex)){
+            const selectedSentence = sentences[randomIndex].trim();
+            selectedSentences.push(selectedSentence);
+            selectedIndices.push(randomIndex);
+        }
+    }
+
+    // Pick a random word from each selected sentence
+    selectedSentences.forEach(sentence => {
+        const words = sentence.split(/\s+|,/).filter(word => word.trim() !== ''); // Exclude empty strings and commas
+        if (words.length > 0) {
+            const randomWordIndex = Math.floor(Math.random() * words.length);
+            distractorWords.push(words[randomWordIndex]);
+            if (distractorWords.indexOf(words[randomWordIndex]) === -1) {
+                distractorWords.push(words[randomWordIndex]);
+            }
+        }
+    });
+
+    // Shuffle the options to randomize their order
+    const shuffledOptions = shuffle([context, ...selectedSentences])
+    setContextOptions(shuffledOptions);
+    setDistractorWords(distractorWords);
+  }
+
+  if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
   }
 
   return (
     <s.Exercise className="findWordInContext">
       <div className="headlineWithMoreSpace">
-        {strings.clickWordInContextHeadline}
+        {strings.multipleChoiceContextHeadline}
       </div>
-      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].from}</h1>
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
@@ -167,6 +162,8 @@ export default function ClickWordInContext({
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
           bookmarkToStudy={bookmarksToStudy[0].from}
+          exerciseType={EXERCISE_TYPE}
+          wordOptions={contextOptions}
         />
       </div>
       <NextNavigation
