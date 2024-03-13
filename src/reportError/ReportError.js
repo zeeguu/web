@@ -13,6 +13,7 @@ export default function ReportError({
   feedback,
   feedbackSuccess,
   setFeedbackSuccess,
+  url,
 }) {
   const [feedbackSent, setFeedbackSent] = useState(false);
 
@@ -21,13 +22,7 @@ export default function ReportError({
     if (feedback === LANGUAGE_FEEDBACK || feedback === LANGUAGE_UNDEFINED)
       feedbackType = "LANGUAGE_";
     else if (feedback === READABILITY_FEEDBACK) feedbackType = "READABLE_";
-    sendFeedbackEmail(
-      api,
-      feedback,
-      window.location.href,
-      undefined,
-      feedbackType
-    );
+    sendFeedbackEmail(api, feedback, url, undefined, feedbackType);
     setFeedbackSent(true);
     setFeedbackSuccess(true);
   };
