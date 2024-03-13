@@ -70,6 +70,7 @@ export default function ZeeguuError({
               feedback={reason}
               feedbackSuccess={feedbackSuccess}
               setFeedbackSuccess={setFeedbackSuccess}
+              url={window.location.href}
             />
             <h3>Return to Article in {timeout} seconds...</h3>
           </div>

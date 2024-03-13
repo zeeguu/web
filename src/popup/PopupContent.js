@@ -83,6 +83,7 @@ export default function PopupContent({
             feedback={feedback}
             feedbackSuccess={feedbackSuccess}
             setFeedbackSuccess={setFeedbackSuccess}
+            url={tab.url}
           />
         </MiddleContainer>
       </>
