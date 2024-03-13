@@ -31,14 +31,21 @@ export default function NextNavigation({
   const bookmarkToStudy = bookmarksToStudy[0];
   const exercise = "exercise";
   const [userIsCorrect, setUserIsCorrect] = useState();
-  const correctMessage = useState(random(correctStrings));
+  const [correctMessage, setCorrectMessage] = useState("");
 
   useEffect(() => {
     console.log("Message received: " + message);
     // Mirror what we do in the API
     // Maybe have a call we can make in the API? This is unused at the moment.
-    setUserIsCorrect(message.includes("C"));
-  }, [isCorrect]);
+    const userIsCorrect = (message.includes("C"));
+    setUserIsCorrect(userIsCorrect);
+  }, [message]);
+
+  useEffect(() => {
+    if (userIsCorrect) {
+      setCorrectMessage(random(correctStrings));
+    }
+  }, [userIsCorrect]);
 
   return (
     <>

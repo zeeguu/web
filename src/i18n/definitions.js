@@ -354,7 +354,9 @@ let strings = new LocalizedStrings(
         "Select the correct translation of the highlighted word",
       clickWordInContextHeadline:
         "Find the word in the context and click on it",
-
+      multipleChoiceContextHeadline:
+        "Choose the context that fits the word",
+        
       //FeedbackButtons
       giveFeedback: "Give feedback",
       giveFeedbackAlert: "Please type your feedback before submitting.",

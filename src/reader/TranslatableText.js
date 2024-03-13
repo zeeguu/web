@@ -14,6 +14,7 @@ export function TranslatableText({
   overrideBookmarkHighlightText,
   highlightWord,
   exerciseType,
+  wordOptions,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -128,7 +129,7 @@ export function TranslatableText({
         // "_".repeat(word.word.length) + " ";
         return  "_______ "
       }
-      if (foundInstances.includes(word.id) && exerciseType !== "Translate_What_You_Hear" && exerciseType !== "Select_L1W_fitting_L2T") {
+      if (isBookmarkWord && exerciseType !== "Translate_What_You_Hear" && exerciseType !== "Select_L1W_fitting_L2T") {
         return "";
       }
       return (
@@ -149,11 +150,19 @@ export function TranslatableText({
   }
   return (
     <s.TranslatableText>
-      {paragraphs.map((par, index) => (
+      {wordOptions && wordOptions.length > 0 ?(
+        wordOptions.map((word, index) => (
+          <div key={index} className="textParagraph">
+            {renderWordJSX({ id: index, word: word})}
+          </div>
+        ))
+      ) : (
+      paragraphs.map((par, index) => (
         <div key={index} className="textParagraph">
           {par.getWords().map((word) => renderWordJSX(word))}
         </div>
-      ))}
+        ))
+      )}
     </s.TranslatableText>
   );
 }
