@@ -118,7 +118,7 @@ let PASSIVE_SEQUENCE = [
 let ACTIVE_SEQUENCE = [
   {
     type: MultipleChoiceL2toL1,
-    requiredBookmarks: 1,
+    requiredBookmarks: 3,
   },
   {
     type: ClickWordInContext,
@@ -126,7 +126,7 @@ let ACTIVE_SEQUENCE = [
   },
   {
     type: MultipleChoiceContext,
-    requiredBookmarks: 1,
+    requiredBookmarks: 3,
   }
 ];
 

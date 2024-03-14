@@ -41,29 +41,37 @@ export default function MultipleChoiceL2toL1({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
-      consolidateChoiceOptions(words);
-    });
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (article) => {
+      setArticleInfo(article)
       setInteractiveText(
         new InteractiveText(
           bookmarksToStudy[0].context,
-          articleInfo,
+          article,
           api,
           "TRANSLATE WORDS IN EXERCISE",
           EXERCISE_TYPE,
           speech,
         ),
       );
-      setArticleInfo(articleInfo);
+      selectionOptions(); 
     });
   }, []);
+
+  useEffect(() => {
+    if (articleInfo && interactiveText) {
+      setButtonOptions(shuffle([
+        bookmarksToStudy[0].to,
+        bookmarksToStudy[1].to,
+        bookmarksToStudy[2].to
+      ]));
+    }
+  }, [articleInfo, interactiveText, bookmarksToStudy]);
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
     if (
       selectedChoice ===
-      removePunctuation(bookmarksToStudy[0].to.toLowerCase())
+      removePunctuation(bookmarksToStudy[0].to)
     ) {
       correctAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
@@ -95,22 +103,18 @@ export default function MultipleChoiceL2toL1({
     );
   }
 
-  function consolidateChoiceOptions(similarWords) {
-    let firstRandomInt = Math.floor(Math.random() * similarWords.length);
-    let secondRandomInt;
-    do {
-      secondRandomInt = Math.floor(Math.random() * similarWords.length);
-    } while (firstRandomInt === secondRandomInt);
-    let listOfOptions = [
-      removePunctuation(bookmarksToStudy[0].to.toLowerCase()),
-      removePunctuation(similarWords[firstRandomInt].toLowerCase()),
-      removePunctuation(similarWords[secondRandomInt].toLowerCase()),
+  function selectionOptions() {
+    let optionsToShuffle = [
+      bookmarksToStudy[0],
+      bookmarksToStudy[1],
+      bookmarksToStudy[2],
     ];
-    let shuffledListOfOptions = shuffle(listOfOptions);
-    setButtonOptions(shuffledListOfOptions);
+    let shuffledOptions = shuffle(optionsToShuffle);
+    setButtonOptions(shuffledOptions);
+    console.log(shuffledOptions);
   }
-
-  if (!articleInfo) {
+ 
+  if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
   }
 
