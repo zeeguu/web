@@ -6,7 +6,9 @@ import {
   PARAGRAPH_CONTENT,
   HEADER_CONTENT,
 } from "../constants";
+import { StyledBox } from "./Modal.styles";
 import ReviewVocabulary from "./ReviewVocabulary";
+import LikeFeedbackBox from "../../zeeguu-react/src/reader/LikeFeedbackBox";
 import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/DifficultyFeedbackBox";
 import { colors } from "@mui/material";
 
@@ -23,6 +25,8 @@ export function ReadArticle({
   url,
   setPersonalCopySaved,
   personalCopySaved,
+  articleInfo,
+  setArticleInfo,
 }) {
   if (articleImage) {
     if (articleImage.src === null) {
@@ -96,7 +100,24 @@ export function ReadArticle({
             api={api}
             openReview={openReview}
           />
-          <DifficultyFeedbackBox api={api} articleID={articleId} />
+          <StyledBox>
+            <h4
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                textAlign: "center",
+              }}>
+              {"Help us make Zeeguu even smarter by answering these questions."}
+            </h4>
+            <LikeFeedbackBox
+              api={api}
+              articleID={articleId}
+              articleInfo={articleInfo}
+              setArticleInfo={setArticleInfo}
+              source={EXTENSION_SOURCE}
+            />
+            <DifficultyFeedbackBox api={api} articleID={articleId} />
+          </StyledBox>
         </div>
       </div>
     </>
