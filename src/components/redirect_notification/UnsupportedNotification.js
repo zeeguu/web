@@ -90,12 +90,12 @@ export default function UnsupportedNotification({
           To read articles with our extension, we recommend installing{" "}
           {renderExternalLink(
             BrowserLinks.Chrome.link,
-            BrowserLinks.Chrome.name
+            BrowserLinks.Chrome.name,
           )}
           ,{" "}
           {renderExternalLink(
             BrowserLinks.Firefox.link,
-            BrowserLinks.Firefox.name
+            BrowserLinks.Firefox.name,
           )}
           , or{" "}
           {renderExternalLink(BrowserLinks.Edge.link, BrowserLinks.Edge.name)}.
@@ -108,7 +108,7 @@ export default function UnsupportedNotification({
       </Body>
       <Footer>
         <Checkbox
-          label={"Don't show this message"}
+          label={"Don't show this message again"}
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
