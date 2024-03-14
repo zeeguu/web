@@ -141,6 +141,12 @@ export function TranslatableText({
           />
         );
       }
+      // If execise you want && foundInstance in word it
+      if (isBookmarkWord && highlightWord) {
+        return (
+          <z-tag style={{ fontWeight: "bold" }}>{highlightWord + " "}</z-tag>
+        );
+      }
       if (
         foundInstances[0] === word.id &&
         exerciseType !== "Translate_What_You_Hear" &&
@@ -169,7 +175,6 @@ export function TranslatableText({
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
           isBookmarkWord={isBookmarkWord}
-          isHighlightedWord={isHighlightedWord}
         />
       );
     }

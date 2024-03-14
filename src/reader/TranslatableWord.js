@@ -10,7 +10,6 @@ export default function TranslatableWord({
   translatedWords,
   setTranslatedWords,
   isBookmarkWord,
-  isHighlightedWord,
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
@@ -70,12 +69,7 @@ export default function TranslatableWord({
   if (!word.translation || isBookmarkWord) {
     return (
       <>
-        <z-tag
-          onClick={(e) => clickOnWord(e, word)}
-          style={isHighlightedWord ? { fontWeight: "bold" } : {}}
-        >
-          {word.word + " "}
-        </z-tag>
+        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
       </>
     );
   }
