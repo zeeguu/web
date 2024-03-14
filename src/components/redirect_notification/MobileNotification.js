@@ -66,7 +66,7 @@ export default function MobileNotification({
       </Body>
       <Footer>
         <Checkbox
-          label={"Don't show this message"}
+          label={"Don't show this message again"}
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
