@@ -25,10 +25,6 @@ import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import ratio from "../utils/basic/ratio";
-import { display, width } from "@mui/system";
-
-let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
-let previous_time = 0; // since sent a scroll update
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
