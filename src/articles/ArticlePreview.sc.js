@@ -35,9 +35,15 @@ const ArticleContent = styled.div`
     border-radius: 1em;
     align-self: center;
 
-    @media (max-width: 768px) {
+    @media (max-width: 990px) {
       max-width: 14em;
       max-height: 10em;
+    }
+  }
+  .stats {
+    margin-left: auto;
+    @media (max-width: 990px) {
+      margin-left: 0px;
     }
   }
 `;
@@ -96,7 +102,7 @@ let Summary = styled.div`
   margin-right: 1em;
   width: 34em;
   align-self: stretch;
-  @media (max-width: 768px) {
+  @media (max-width: 990px) {
     width: 100%;
   }
 `;
