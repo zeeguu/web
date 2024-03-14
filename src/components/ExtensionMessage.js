@@ -49,7 +49,7 @@ export default function ExtensionMessage({
               browser extension.
             </p>
             <img
-              className="fullDivWidthImage"
+              className="full-width-img"
               src={"../static/images/find-extension.png"}
               //TODO: Add new alt description
               alt="Zeeguu browser extension"

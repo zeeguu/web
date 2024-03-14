@@ -11,6 +11,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
+import LikeFeedBackBox from "./LikeFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
 import ArticleSource from "./ArticleSource";
@@ -22,8 +23,12 @@ import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
+import strings from "../i18n/definitions";
 import ratio from "../utils/basic/ratio";
 import { display, width } from "@mui/system";
+
+let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
+let previous_time = 0; // since sent a scroll update
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -78,10 +83,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
 
   function uploadActivity() {
-    api.readingSessionUpdate(
-      readingSessionIdRef.current,
-      activityTimerRef.current,
-    );
+    // It can happen that the timer already ticks before we have a reading session from the server.
+    if (readingSessionIdRef.current) {
+      api.readingSessionUpdate(
+        readingSessionIdRef.current,
+        activityTimerRef.current,
+      );
+    }
   }
 
   function getScrollRatio() {
@@ -313,7 +321,17 @@ export default function ArticleReader({ api, teacherArticleID }) {
       {readerReady && (
         <div id={"bottomRow"}>
           <ReviewVocabulary articleID={articleID} />
-          <DifficultyFeedbackBox api={api} articleID={articleID} />
+          <s.CombinedBox>
+            <h4> {strings.answeringMsg} </h4>
+            <LikeFeedBackBox
+              api={api}
+              articleID={articleID}
+              articleInfo={articleInfo}
+              setArticleInfo={setArticleInfo}
+              source={UMR_SOURCE}
+            />
+            <DifficultyFeedbackBox api={api} articleID={articleID} />
+          </s.CombinedBox>
         </div>
       )}
       <s.ExtraSpaceAtTheBottom />
