@@ -67,7 +67,7 @@ export default function ClassroomArticles({ api }) {
         <ArticlePreview
           key={each.id}
           article={each}
-          dontShowSourceImage={true}
+          dontShowSourceIcon={true}
         />
       ))}
     </>

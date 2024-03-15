@@ -41,7 +41,7 @@ export default function OwnArticles({ api }) {
         <ArticlePreview
           key={each.id}
           article={each}
-          dontShowSourceImage={true}
+          dontShowSourceIcon={true}
         />
       ))}
     </>

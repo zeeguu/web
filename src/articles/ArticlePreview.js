@@ -11,7 +11,7 @@ import SmallSaveArticleButton from "./SmallSaveArticleButton";
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
-  dontShowImage,
+  dontShowSourceIcon,
   hasExtension,
   api,
   doNotShowRedirectionModal_UserPreference,
@@ -22,7 +22,6 @@ export default function ArticleOverview({
   const [isArticleSaved, setIsArticleSaved] = useState(
     article.has_personal_copy,
   );
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const handleArticleClick = () => {
     if (onArticleClick) {
@@ -127,9 +126,9 @@ export default function ArticleOverview({
       </s.ArticleContent>
 
       <div>
-        {!dontShowImage && (
+        {!dontShowSourceIcon && (
           <s.SourceImage>
-            <img src={"/news-icons/" + article.icon_name} alt="" />
+            <img src={"/news-icons/" + article.feed_image_name} alt="" />
           </s.SourceImage>
         )}
         {!dontShowPublishingTime && (

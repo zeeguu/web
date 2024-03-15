@@ -42,7 +42,7 @@ export default function OwnArticles({ api }) {
           api={api}
           key={each.id}
           article={each}
-          dontShowSourceImage={true}
+          dontShowSourceIcon={true}
         />
       ))}
     </>
