@@ -278,6 +278,20 @@ export default function ArticleReader({ api, teacherArticleID }) {
           />
         </div>
       </div>
+      <hr></hr>
+      {articleInfo.img_url && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <img
+            alt=""
+            src={articleInfo.img_url}
+            style={{
+              width: "100%",
+              borderRadius: "1em",
+              marginBottom: "1em",
+            }}
+          />
+        </div>
+      )}
 
       {articleInfo.video ? (
         <iframe
