@@ -27,6 +27,7 @@ import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import ratio from "../utils/basic/ratio";
+import { Padding } from "@mui/icons-material";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -308,7 +309,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
         <div id={"bottomRow"}>
           <ReviewVocabulary articleID={articleID} />
           <s.CombinedBox>
-            <h4> {strings.answeringMsg} </h4>
+            <p style={{padding: "0em 2em 0em 2em"}}> {strings.answeringMsg} </p>
             <LikeFeedBackBox
               api={api}
               articleID={articleID}
