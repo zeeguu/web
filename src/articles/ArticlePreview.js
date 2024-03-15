@@ -128,7 +128,7 @@ export default function ArticleOverview({
       <div>
         {!dontShowSourceIcon && (
           <s.SourceImage>
-            <img src={"/news-icons/" + article.feed_image_name} alt="" />
+            <img src={"/news-icons/" + article.feed_icon_name} alt="" />
           </s.SourceImage>
         )}
         {!dontShowPublishingTime && (
