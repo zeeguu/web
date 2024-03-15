@@ -117,7 +117,7 @@ export default function ArticleOverview({
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
         <s.Summary>{article.summary}</s.Summary>
-        <div class="stats">
+        <div className="stats">
           <s.Difficulty>{difficulty}</s.Difficulty>
           <s.WordCount style={{ marginRight: "1em" }}>
             {article.metrics.word_count}
