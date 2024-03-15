@@ -104,8 +104,7 @@ export default function ArticleOverview({
     else if (should_open_with_modal) return open_externally_with_modal;
     else return open_externally_without_modal;
   }
-  //  https://stackoverflow.com/questions/55556829/how-to-reorder-the-flex-items-when-resizing-the-screen
-  // USE CSS TO RE-ORDER
+
   return (
     <s.ArticlePreview>
       <SmallSaveArticleButton
