@@ -1,7 +1,6 @@
 import * as s from "./ArticleReader.sc";
 
 import { useState } from "react";
-import { random } from "../utils/basic/arrays";
 import SentimentVerySatisfiedOutlinedIcon from '@mui/icons-material/SentimentVerySatisfiedOutlined';
 import MoodBadOutlinedIcon from '@mui/icons-material/MoodBadOutlined';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
@@ -31,6 +30,12 @@ export default function DifficultyFeedbackBox({ api, articleID, articleInfo, set
   };
   const difficultyFeedback = diffToOption(articleInfo.relative_difficulty);
 
+  const shouldBeMarked = (option) => {
+    const optionIsHovered = isHovered === option;
+    const optionIsSelected = difficultyFeedback === option;
+    return optionIsHovered || optionIsSelected;
+  }
+
   return (
     <>
     <s.InvisibleBox>
@@ -40,7 +45,7 @@ export default function DifficultyFeedbackBox({ api, articleID, articleInfo, set
           const emojiSize = { fontSize: '2.5em' };
 
           const handleMouseEnter = () => {
-            //setIsHovered(option);
+            setIsHovered(option);
           };
 
           const handleMouseLeave = () => {
@@ -50,19 +55,19 @@ export default function DifficultyFeedbackBox({ api, articleID, articleInfo, set
           const emojiComponent = () => {
             switch (option) {
               case 'Easy':
-                return isHovered === option || difficultyFeedback === option ? (
+                return shouldBeMarked(option) ? (
                   <SentimentVerySatisfiedTwoToneIcon sx={emojiSize} />
                 ) : (
                   <SentimentVerySatisfiedOutlinedIcon sx={emojiSize} />
                 );
               case 'Difficult':
-                return isHovered === option || difficultyFeedback === option ? (
+                return shouldBeMarked(option) ? (
                   <MoodBadTwoToneIcon sx={emojiSize} />
                 ) : (
                   <MoodBadOutlinedIcon sx={emojiSize} />
                 );
               case 'Ok':
-                return isHovered === option || difficultyFeedback === option ? (
+                return shouldBeMarked(option) ? (
                   <SentimentNeutralTwoToneIcon sx={emojiSize} />
                 ) : (
                   <SentimentNeutralOutlinedIcon sx={emojiSize} />

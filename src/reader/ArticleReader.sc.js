@@ -323,6 +323,10 @@ let InvisibleBox = styled.div`
     background-color: ${zeeguuVarmYellow} !important;
     color: white !important;
   }
+  .hovered {
+    background-color: ${zeeguuLightYellow} !important;
+    color: white !important;
+  }
 `;
 
 let ExtraSpaceAtTheBottom = styled.div`
