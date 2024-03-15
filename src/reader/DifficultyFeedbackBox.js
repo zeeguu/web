@@ -12,26 +12,24 @@ import SentimentNeutralOutlinedIcon from '@mui/icons-material/SentimentNeutralOu
 
 let FEEDBACK_OPTIONS = { "Easy": 1, "Ok": 3, "Difficult": 5 };
 
-export default function DifficultyFeedbackBox({ api, articleID }) {
-  const [answerSubmitted, setAnswerSubmitted] = useState(false);
+export default function DifficultyFeedbackBox({ api, articleID, articleInfo, setArticleInfo, setAnswerSubmitted }) {
   const [isHovered, setIsHovered] = useState(false);
 
   function submitAnswer(answer) {
+    let newArticleInfo = { ...articleInfo, relative_difficulty: answer};
     api.submitArticleDifficultyFeedback(
       { article_id: articleID, difficulty: answer },
       () => {
         setAnswerSubmitted(true);
+        setArticleInfo(newArticleInfo);
       }
     );
   }
 
-  if (answerSubmitted) {
-    return (
-      <s.InvisibleBox>
-        <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
-      </s.InvisibleBox>
-    );
-  }
+  const diffToOption = (diff) => {
+    return diff === 1 ? "Easy" : diff === 3 ? "Ok" : diff === 5 ? "Difficult" : undefined;
+  };
+  const difficultyFeedback = diffToOption(articleInfo.relative_difficulty);
 
   return (
     <>
@@ -42,7 +40,7 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
           const emojiSize = { fontSize: '2.5em' };
 
           const handleMouseEnter = () => {
-            setIsHovered(option);
+            //setIsHovered(option);
           };
 
           const handleMouseLeave = () => {
@@ -52,19 +50,19 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
           const emojiComponent = () => {
             switch (option) {
               case 'Easy':
-                return isHovered === option ? (
+                return isHovered === option || difficultyFeedback === option ? (
                   <SentimentVerySatisfiedTwoToneIcon sx={emojiSize} />
                 ) : (
                   <SentimentVerySatisfiedOutlinedIcon sx={emojiSize} />
                 );
               case 'Difficult':
-                return isHovered === option ? (
+                return isHovered === option || difficultyFeedback === option ? (
                   <MoodBadTwoToneIcon sx={emojiSize} />
                 ) : (
                   <MoodBadOutlinedIcon sx={emojiSize} />
                 );
               case 'Ok':
-                return isHovered === option ? (
+                return isHovered === option || difficultyFeedback === option ? (
                   <SentimentNeutralTwoToneIcon sx={emojiSize} />
                 ) : (
                   <SentimentNeutralOutlinedIcon sx={emojiSize} />

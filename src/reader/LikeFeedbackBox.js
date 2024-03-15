@@ -8,10 +8,12 @@ export default function LikeFeedbackBox({
   articleInfo,
   setArticleInfo,
   source,
+  setAnswerSubmitted,
 }) {
   function setLikedState(state) {
     let newArticleInfo = { ...articleInfo, liked: state };
     api.setArticleInfo(newArticleInfo, () => {
+      setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
     api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, source);

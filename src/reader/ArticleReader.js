@@ -6,6 +6,8 @@ import { RoutingContext } from "../contexts/RoutingContext";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
+import { random } from "../utils/basic/arrays";
+
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -64,6 +66,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [pronouncing, setPronouncing] = useState(true);
   const [scrollPosition, setScrollPosition] = useState();
   const [readerReady, setReaderReady] = useState();
+  const [answerSubmitted, setAnswerSubmitted] = useState(false);
+
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -311,8 +315,20 @@ export default function ArticleReader({ api, teacherArticleID }) {
               articleInfo={articleInfo}
               setArticleInfo={setArticleInfo}
               source={UMR_SOURCE}
+              setAnswerSubmitted={setAnswerSubmitted}
             />
-            <DifficultyFeedbackBox api={api} articleID={articleID} />
+            <DifficultyFeedbackBox 
+              api={api} 
+              articleID={articleID} 
+              articleInfo={articleInfo}
+              setArticleInfo={setArticleInfo}
+              setAnswerSubmitted={setAnswerSubmitted} 
+            />
+            {answerSubmitted && (
+                <s.InvisibleBox>
+                <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
+              </s.InvisibleBox>
+            )} 
           </s.CombinedBox>
         </div>
       )}
