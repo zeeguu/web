@@ -209,8 +209,8 @@ let strings = new LocalizedStrings(
         "Help us make Zeeguu even smarter by always letting us know whether you liked reading an article or not.",
       didYouEnjoyMsg: "Did you enjoy the article?",
       answeringMsg: "Zeeguu can make better personalized recommendations based on your feedback.",
-      yes: "yes",
-      no: "no",
+      yes: "Yes",
+      no: "No",
       reviewVocabulary: "Review Vocabulary",
       reviewVocabExplanation:
         "Review your translations now to ensure better learning and ensure that you tell Zeeguu which of the words you want prioritize in your study.",

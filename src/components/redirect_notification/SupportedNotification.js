@@ -6,7 +6,6 @@ import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import Checkbox from "./modal_shared/Checkbox";
 import GoToButton from "./modal_shared/GoToButton";
-import Icon from "./modal_shared/Icon";
 
 export default function SupportedNotification({
   article,
@@ -45,27 +44,18 @@ export default function SupportedNotification({
       </Header>
       <Body>
         <p>
-          <s.Strong>Once there</s.Strong>, find and{" "}
-          <s.Strong>
-            click
-            <Icon size={"small"} src={"../static/images/zeeguuLogo.svg"} />
-            The Zeeguu Reader icon
-          </s.Strong>{" "}
-          in the top right corner of&nbsp;your browser's toolbar
-          or&nbsp;on&nbsp;the&nbsp;list of your installed
-          <Icon size={"small"} src={"../static/images/puzzle.svg"} />
-          extensions.
-          <s.Strong> Then&nbsp;wait for the reader to open</s.Strong>.
+          Once there, <s.Strong>right-click</s.Strong> anywhere on the page and
+          select the "Read with Zeeguu" option.
         </p>
         <img
           className="full-width-img"
-          src={"../static/images/find-extension.png"}
+          src={"../static/images/use-extension.png"}
           alt="Zeeguu browser extension"
         />
       </Body>
       <Footer>
         <Checkbox
-          label={"Don't show this message"}
+          label={"Don't show this message again"}
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
