@@ -14,7 +14,10 @@ const ArticlePreview = styled.div`
   padding-left: 0.8em;
 `;
 /*
-  The div is encompassed in a
+  The div contains the article preview contents
+  and defines the size of the images relative to the 
+  user's screen size. Note this does not include the source/
+  publishing time or topics.
 */
 const ArticleContent = styled.div`
   width: 100%;
