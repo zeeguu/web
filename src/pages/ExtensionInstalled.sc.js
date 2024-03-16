@@ -16,9 +16,9 @@ const ExtensionInstalledWrapper = styled.div`
     margin-block-start: 0em;
     margin-block-end: 0em;
     font-size: 1.3em;
-    font-weight: 400;
+    /* font-weight: 400; */
   }
-  h4{
+  h4 {
     font-size: 1.5em;
     margin-block-start: 0.3em;
     margin-block-end: 0.3em;
@@ -35,10 +35,21 @@ let LinkContainer = styled.div`
   justify-content: space-evenly;
 `;
 
-let ExtensionContainer = styled(FormContainer)`
+let ExtensionContainer = styled.div`
+  box-sizing: border-box;
   width: 40em;
   max-width: 80%;
-  padding: 1.3em;
+  border-radius: 1em;
+
+  width: 750px;
+  padding: 3rem;
+
+  /* Desktop width  */
+  /* @media (min-width: 768px) {
+    width: 22em;
+  } */
+
+  background-color: white;
 `;
 
 const OrangeButton = styled.button`
@@ -57,18 +68,22 @@ const OrangeButton = styled.button`
 `;
 
 let PageBackground = styled.div`
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100dvw;
   min-height: 100vh;
   margin-top: -1em;
   padding-top: 1em;
   padding-bottom: 1em;
-  background: ${zeeguuVeryLightOrange};
+  background: ${zeeguuOrange};
 `;
 
 let VideoLink = styled.p`
   margin: 0em;
   padding-bottom: 1em;
-`
+`;
 
 export {
   ExtensionInstalledWrapper,
@@ -76,5 +91,5 @@ export {
   LinkContainer,
   OrangeButton,
   PageBackground,
-  VideoLink
+  VideoLink,
 };

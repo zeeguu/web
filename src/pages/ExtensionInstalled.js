@@ -12,44 +12,45 @@ export default function ExtensionInstalled({ api }) {
 
   return (
     <s.PageBackground>
-      <z.LogoOnTop />
       <s.ExtensionContainer>
         <s.ExtensionInstalledWrapper>
-          <h1>{strings.congratulations}</h1>
-          <h4>{strings.pinExtension}</h4>
-          <s.VideoLink>
-            Learn how it works by watching
-            <a
-              href="https://vimeo.com/715531198"
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => LocalStorage.setClickedVideo()}
-            >
-              {" "}
-              this video
-            </a>
-          </s.VideoLink>
           <img
-            src={"https://zeeguu.org/static/images/zeeguuExtension.gif"}
-            alt="How to pin Chrome Extension to Chrome Toolbar gif"
+            src="../static/images/zeeguuLogo.svg"
+            alt=""
+            style={{ width: "36px" }}
           />
-          <s.LinkContainer>
-            {getSessionFromCookies() ? (
-              <s.OrangeButton>
-                <a href="/articles">{strings.goToArticles}</a>
-              </s.OrangeButton>
-            ) : (
-              <>
+          <header>
+            <h1>
+              Right-click anywhere on any article’s page<br></br> to access The
+              Zeeguu Reader extension
+            </h1>
+          </header>
+          <body>
+            <img
+              style={{ width: "80%" }}
+              src={"../static/images/use-extension.png"}
+              alt="How to pin Chrome Extension to Chrome Toolbar gif"
+            />
+          </body>
+          <footer>
+            <s.LinkContainer>
+              {getSessionFromCookies() ? (
                 <s.OrangeButton>
-                  <a href="/login">{strings.login}</a>
+                  <a href="/articles">Go to Zeeguu App</a>
                 </s.OrangeButton>
+              ) : (
+                <>
+                  <s.OrangeButton>
+                    <a href="/login">{strings.login}</a>
+                  </s.OrangeButton>
 
-                <s.OrangeButton>
-                  <a href="/create_account">{strings.createAccount}</a>
-                </s.OrangeButton>
-              </>
-            )}
-          </s.LinkContainer>
+                  <s.OrangeButton>
+                    <a href="/create_account">{strings.createAccount}</a>
+                  </s.OrangeButton>
+                </>
+              )}
+            </s.LinkContainer>
+          </footer>
         </s.ExtensionInstalledWrapper>
       </s.ExtensionContainer>
     </s.PageBackground>
