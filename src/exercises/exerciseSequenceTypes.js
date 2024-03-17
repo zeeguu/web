@@ -97,8 +97,12 @@ let DEFAULT_SEQUENCE_NO_AUDIO = [
 
 let PASSIVE_SEQUENCE = [
   {
-    type: FindWordInContextCloze,
-    requiredBookmarks: 1,
+    type: Match,
+    requiredBookmarks: 3,
+  },
+  {
+    type: MultipleChoiceL2toL1,
+    requiredBookmarks: 3,
   },
   {
     type: TranslateL2toL1,
@@ -109,15 +113,42 @@ let PASSIVE_SEQUENCE = [
     requiredBookmarks: 1,
   },
   {
-    type: SpellWhatYouHear,
+    type: MultipleChoiceContext,
+    requiredBookmarks: 3,
+  }
+];
+
+let PASSIVE_SEQUENCE_NO_AUDIO = [
+  {
+    type: Match,
+    requiredBookmarks: 3,
+  },
+  {
+    type: MultipleChoiceL2toL1,
+    requiredBookmarks: 3,
+  },
+  {
+    type: TranslateL2toL1,
     requiredBookmarks: 1,
+  },
+  {
+    type: MultipleChoiceContext,
+    requiredBookmarks: 3,
   }
 ];
 
 
 let ACTIVE_SEQUENCE = [
+  // {
+  //   type: MultipleChoice,
+  //   requiredBookmarks: 3,
+  // },
   {
-    type: MultipleChoiceL2toL1,
+    type: MultipleChoiceContext,
+    requiredBookmarks: 3,
+  },
+  {
+    type: MultipleChoiceContext,
     requiredBookmarks: 3,
   },
   {
@@ -125,9 +156,52 @@ let ACTIVE_SEQUENCE = [
     requiredBookmarks: 1,
   },
   {
-    type: MultipleChoiceContext,
+    type: ClickWordInContext,
+    requiredBookmarks: 1,
+  },
+  // {
+  //   type: SpellWhatYouHear,
+  //   requiredBookmarks: 1,
+  // },
+  {
+    type: FindWordInContextCloze,
+    requiredBookmarks: 1,
+  },
+  // {
+  //   type: MultipleChoiceAudio,
+  //   requiredBookmarks: 3,
+  // },
+  {
+    type: ClickWordInContext,
+    requiredBookmarks: 1,
+  },
+];
+
+let ACTIVE_SEQUENCE_NO_AUDIO = [
+  {
+    type: MultipleChoice,
     requiredBookmarks: 3,
-  }
+  },
+  {
+    type: FindWordInContextCloze,
+    requiredBookmarks: 1,
+  },
+  {
+    type: ClickWordInContext,
+    requiredBookmarks: 1,
+  },
+  {
+    type: MultipleChoice,
+    requiredBookmarks: 3,
+  },
+  {
+    type: FindWordInContextCloze,
+    requiredBookmarks: 1,
+  },
+  {
+    type: ClickWordInContext,
+    requiredBookmarks: 1,
+  },
 ];
 
 export {
@@ -137,4 +211,6 @@ export {
   NUMBER_OF_BOOKMARKS_TO_PRACTICE,
   PASSIVE_SEQUENCE,
   ACTIVE_SEQUENCE,
+  PASSIVE_SEQUENCE_NO_AUDIO,
+  ACTIVE_SEQUENCE_NO_AUDIO,
 };
