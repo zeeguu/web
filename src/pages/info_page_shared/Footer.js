@@ -2,8 +2,8 @@ import * as s from "./InfoPage.sc";
 
 export default function Footer({ children, isLoggedIn }) {
   return (
-    <footer className="footer">
+    <s.Footer>
       <s.LinkContainer>{children}</s.LinkContainer>
-    </footer>
+    </s.Footer>
   );
 }

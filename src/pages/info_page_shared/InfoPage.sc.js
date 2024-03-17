@@ -1,68 +1,66 @@
-import styled from "styled-components";
-import { FormContainer } from "../../components/FormPage.sc";
-import {
-  zeeguuOrange,
-  zeeguuVeryLightYellow,
-  zeeguuVeryLightOrange,
-  zeeguuTransparentLightOrange,
-} from "../../components/colors";
+import styled, { css } from "styled-components";
+import { zeeguuOrange } from "../../components/colors";
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* max-height: 30dvh;
-  overflow-y: scroll; */
-  /* 
-  img {
-    width: 100%;
-  } */
-
-  /* h1 {
-    margin-block-start: 0em;
-    margin-block-end: 0em;
-    font-size: 1.3em;
-    font-weight: 700;
-    font-weight: 400;
-  } */
-
-  h1 {
-    font-size: 1.3em;
-    line-height: 150%;
-    text-align: center;
-    font-weight: 700;
-    margin: 0;
-    @media (max-width: 576px) {
-      text-align: left;
-      font-size: 1.2em;
-    }
-  }
 
   p {
     font-size: 0.9em;
     margin-block-end: 0em;
   }
+`;
 
-  .header,
-  .body,
-  .footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1rem 0;
-    gap: 1.5rem;
-  }
+const BaseSectionStyle = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+  gap: 1.5rem;
+`;
 
-  .body-image {
-    width: 80%;
+const Header = styled.header`
+  ${BaseSectionStyle}
+`;
+
+const Logo = styled.img`
+  width: 2.25rem;
+`;
+
+const Heading = styled.h1`
+  width: 80%;
+  font-size: 1.3em;
+  line-height: 150%;
+  text-align: center;
+  font-weight: 700;
+  margin: 0;
+  @media (max-width: 768px) {
+    font-size: 1.2em;
+    width: 90%;
   }
 
   @media (max-width: 576px) {
-    .body-image {
-      width: 100%;
-    }
+    text-align: left;
+    width: 100%;
   }
+`;
+
+const Main = styled.main`
+  ${BaseSectionStyle}
+`;
+
+const ImageMain = styled.img`
+  width: 80%;
+
+  @media (max-width: 800px) {
+    width: 100%;
+  }
+`;
+
+const Footer = styled.footer`
+  ${BaseSectionStyle}
 `;
 
 let LinkContainer = styled.div`
@@ -137,6 +135,12 @@ let VideoLink = styled.p`
 
 export {
   ContentWrapper,
+  Header,
+  Logo,
+  Heading,
+  Main,
+  ImageMain,
+  Footer,
   PageContainer,
   LinkContainer,
   OrangeButton,

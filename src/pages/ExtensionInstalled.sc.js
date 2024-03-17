@@ -64,15 +64,15 @@ const ExtensionInstalledWrapper = styled.div`
     margin: 1.2rem 0;
   } */
 
-  .body-image {
+  /* .body-image {
     width: 80%;
-  }
+  } */
 
-  @media (max-width: 576px) {
+  /* @media (max-width: 576px) {
     .body-image {
       width: 100%;
     }
-  }
+  } */
 
   /* .footer {
     margin: 1.2rem 0;

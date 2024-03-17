@@ -1,14 +1,11 @@
 import * as s from "./InfoPage.sc";
+import Logo from "./Logo";
 
 export default function Header({ children }) {
   return (
-    <header className="header">
-      <img
-        src="../static/images/zeeguuLogo.svg"
-        alt=""
-        style={{ width: "36px" }} //fix inline style
-      />
-      <h1>{children}</h1>
-    </header>
+    <s.Header>
+      <Logo />
+      <s.Heading>{children}</s.Heading>
+    </s.Header>
   );
 }
