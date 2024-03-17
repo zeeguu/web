@@ -1,8 +1,11 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
+  lightBlue,
+  gray,
+  buttonBorder,
 } from "../../components/colors";
 
 const Exercise = styled.div`
@@ -380,6 +383,23 @@ let EditSpeakButtonHolder = styled.div`
   justify-content: flex-start;
 `;
 
+let MultipleChoiceContext = styled.div`
+  /* border: 0.05em solid ${buttonBorder};
+  border-radius: 0.5em; */
+  margin: 0.5em;
+  padding: 1em;
+  cursor: pointer;
+
+  ${({ isCorrect, clicked }) => !isCorrect && clicked && css`
+    animation: ${css`${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97)`} both;
+  `}
+
+  &.correct {
+    border: 0.25em solid ${zeeguuOrange};
+    border-radius: 0.5em;
+  }
+`;
+
 export {
   Exercise,
   FeedbackButton,
@@ -406,6 +426,7 @@ export {
   RightFeedbackButton,
   EditSpeakButtonHolder,
   OrangeButtonMessage,
+  MultipleChoiceContext,
 };
 
 export default StyledButton;

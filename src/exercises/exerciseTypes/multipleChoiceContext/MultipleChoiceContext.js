@@ -1,18 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
-
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
-import { TranslatableText } from "../../../reader/TranslatableText.js";
-import { tokenize } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 
-const EXERCISE_TYPE = "Select_L2T_fitting_L1W";
+const EXERCISE_TYPE = "Select_L2T_fitting_L2W";
 export default function MultipleChoiceContext({
   api,
   bookmarksToStudy,
@@ -31,12 +27,14 @@ export default function MultipleChoiceContext({
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState(null);
   const [interactiveText, setInteractiveText] = useState(null);
-  const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
   const [contextOptions, setContextOptions] = useState([]);
+  const [incorrectAnswer, setIncorrectAnswer] = useState("");
+  const [clickedIndex, setClickedIndex] = useState(null);
+  const [foundBookmarks, setFoundBookmarks] = useState([]);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -52,9 +50,7 @@ export default function MultipleChoiceContext({
         ),
       );
     setArticleInfo(articleInfo);
-    // generateContextOptions(bookmarksToStudy[0].context);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -64,27 +60,40 @@ export default function MultipleChoiceContext({
         bookmarksToStudy[1].context,
         bookmarksToStudy[2].context,
       ]));
-      console.log(contextOptions);
     }
+    setFoundBookmarks(findBookmarksInContext(bookmarksToStudy[0].context, bookmarksToStudy));
+    console.log(foundBookmarks);
   }, [articleInfo, interactiveText, bookmarksToStudy]);
 
-  function handleShowSolution(e, message) {
-    if (e) {
-      e.preventDefault();
-    }
-    let concatMessage;
-
-    if (!message) {
-      concatMessage = messageToAPI + "S";
-    } else {
-      concatMessage = message;
-    }
-    setMessageToAPI(concatMessage);
+  function handleShowSolution() {
+    let message = messageToAPI + "S";
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    console.log(activeSessionDuration);
+    handleAnswer(message);
+  }
+
+ function notifyChoiceSelection(selectedChoice, index) {
+    if (
+        selectedChoice === bookmarksToStudy[0].context
+    ) {
+        setClickedIndex(index);
+        correctAnswer(bookmarksToStudy[0].context);
+        setIsCorrect(true);
+        let concatMessage = messageToAPI + "C";
+        handleAnswer(concatMessage);
+    } else {
+        setClickedIndex(null);
+        setIncorrectAnswer(selectedChoice);
+        notifyIncorrectAnswer(bookmarksToStudy[0].context);
+        let concatMessage = messageToAPI + "W";
+        setMessageToAPI(concatMessage);
+    }
+  }
+
+  function handleAnswer(message) {
+    setMessageToAPI(message);
     api.uploadExerciseFinalizedData(
-      concatMessage,
+      message,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
@@ -92,35 +101,25 @@ export default function MultipleChoiceContext({
     );
   }
 
-  function handleAnswer(selectedChoice) {
-    if (selectedChoice === bookmarksToStudy[0].context) {
-        handleCorrectAnswer();
-    } else {
-        handleIncorrectAnswer();
-    }
-  }
-
-  function handleCorrectAnswer(message) {
-        setMessageToAPI(message);
-        correctAnswer(bookmarksToStudy[0]);
-        setIsCorrect(true);
-        api.uploadExerciseFinalizedData(
-            message,
-            EXERCISE_TYPE,
-            getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-            bookmarksToStudy[0].id,
-            exerciseSessionId,
-        );
-  }
-
-  function handleIncorrectAnswer(message) {
-    setMessageToAPI(messageToAPI + "W");
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
-  }
-
-
   if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
+  }
+
+  function findBookmarksInContext(context, bookmarks) {
+    const lowerCaseContext = context.toLowerCase();
+    const foundBookmarks = [];
+
+    bookmarks.forEach(bookmark => {
+      const lowerCaseFrom = bookmark.from.toLowerCase();
+      const index = lowerCaseContext.indexOf(lowerCaseFrom);
+      if (index !== -1) {
+        foundBookmarks.push({
+          from: bookmark.from,
+          index: index
+        });
+      }
+    });
+    return foundBookmarks;
   }
 
   return (
@@ -129,24 +128,19 @@ export default function MultipleChoiceContext({
         {strings.multipleChoiceContextHeadline}
       </div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].from}</h1>
-      <div className="contextExample">
-        {/* <TranslatableText
-          isCorrect={isCorrect}
-          interactiveText={interactiveText}
-          translating={true}
-          pronouncing={false}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
-          bookmarkToStudy={bookmarksToStudy[0].from}
-          exerciseType={EXERCISE_TYPE}
-          wordOptions={contextOptions}
-        /> */}
         {contextOptions.map((option, index) => (
-            <div key={index} onClick={() => handleAnswer(option)} className="contextOption">
-                {option}
-            </div>
+            <s.MultipleChoiceContext 
+                key={index} 
+                clicked={index === clickedIndex}
+                isCorrect={isCorrect}
+                className={(isCorrect && index === clickedIndex) ? "correct" : ""}
+                onClick={() => notifyChoiceSelection(option, index)}>
+                <div>
+                    {option.replace(new RegExp(foundBookmarks.map(bookmark => bookmark.from).join('|'), 'g'), '_____')}
+                </div>
+            </s.MultipleChoiceContext>
         ))}
-      </div>
+
       <NextNavigation
         message={messageToAPI}
         api={api}
