@@ -1,4 +1,4 @@
-import * as s from "./ExtensionInstalled.sc";
+import * as s from "./info_page_shared/InfoPage.sc";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import strings from "../i18n/definitions";
 import { useEffect } from "react";
