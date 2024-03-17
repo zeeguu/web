@@ -65,10 +65,9 @@ export default function MultipleChoiceL2toL1({
         bookmarksToStudy[2].to
       ]));
     }
-  }, [articleInfo, interactiveText, bookmarksToStudy]);
+  }, [articleInfo, interactiveText]);
 
   function notifyChoiceSelection(selectedChoice) {
-    console.log("checking result...");
     if (
       selectedChoice ===
       removePunctuation(bookmarksToStudy[0].to)
@@ -111,7 +110,6 @@ export default function MultipleChoiceL2toL1({
     ];
     let shuffledOptions = shuffle(optionsToShuffle);
     setButtonOptions(shuffledOptions);
-    console.log(shuffledOptions);
   }
  
   if (!articleInfo || !interactiveText) {
