@@ -14,25 +14,25 @@ export default function ExtensionInstalled({ api }) {
     <s.PageBackground>
       <s.ExtensionContainer>
         <s.ExtensionInstalledWrapper>
-          <img
-            src="../static/images/zeeguuLogo.svg"
-            alt=""
-            style={{ width: "36px" }}
-          />
-          <header>
+          <header className="header">
+            <img
+              src="../static/images/zeeguuLogo.svg"
+              alt=""
+              style={{ width: "36px" }}
+            />
             <h1>
-              Right-click anywhere on any article’s page<br></br> to access The
-              Zeeguu Reader extension
+              Right-click anywhere on any article’s
+              page to&nbsp;access&nbsp;The&nbsp;Zeeguu Reader
             </h1>
           </header>
-          <body>
+          <body className="body">
             <img
-              style={{ width: "80%" }}
+              className="body-image"
               src={"../static/images/use-extension.png"}
               alt="How to pin Chrome Extension to Chrome Toolbar gif"
             />
           </body>
-          <footer>
+          <footer className="footer">
             <s.LinkContainer>
               {getSessionFromCookies() ? (
                 <s.OrangeButton>
