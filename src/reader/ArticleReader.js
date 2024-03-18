@@ -323,7 +323,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
               articleID={articleID} 
               articleInfo={articleInfo}
               setArticleInfo={setArticleInfo}
-              setAnswerSubmitted={setAnswerSubmitted} 
+              setAnswerSubmitted={setAnswerSubmitted}
+              source={UMR_SOURCE}
             />
             {answerSubmitted && (
                 <s.InvisibleBox>

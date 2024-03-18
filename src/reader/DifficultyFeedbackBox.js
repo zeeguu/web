@@ -11,18 +11,19 @@ import SentimentNeutralOutlinedIcon from '@mui/icons-material/SentimentNeutralOu
 
 let FEEDBACK_OPTIONS = { "Easy": 1, "Ok": 3, "Difficult": 5 };
 
-export default function DifficultyFeedbackBox({ api, articleID, articleInfo, setArticleInfo, setAnswerSubmitted }) {
+export default function DifficultyFeedbackBox({ api, articleInfo, setArticleInfo, setAnswerSubmitted, source }) {
   const [isHovered, setIsHovered] = useState(false);
 
-  function submitAnswer(answer) {
+  function updateArticleDifficultyFeedback(answer) {
     let newArticleInfo = { ...articleInfo, relative_difficulty: answer};
     api.submitArticleDifficultyFeedback(
-      { article_id: articleID, difficulty: answer },
+      { article_id: articleInfo.id, difficulty: answer },
       () => {
         setAnswerSubmitted(true);
         setArticleInfo(newArticleInfo);
       }
     );
+    api.logReaderActivity(api.DIFFICULTY_FEEDBACK, articleInfo.id, answer, source);
   }
 
   const diffToOption = (diff) => {
@@ -80,7 +81,7 @@ export default function DifficultyFeedbackBox({ api, articleID, articleInfo, set
           return (
             <s.WhiteButton
               key={option}
-              onClick={(e) => submitAnswer(FEEDBACK_OPTIONS[option])}
+              onClick={(e) => updateArticleDifficultyFeedback(FEEDBACK_OPTIONS[option])}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >

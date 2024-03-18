@@ -5,7 +5,6 @@ import { useState } from "react";
 
 export default function LikeFeedbackBox({
   api,
-  articleID,
   articleInfo,
   setArticleInfo,
   source,
@@ -19,7 +18,7 @@ export default function LikeFeedbackBox({
       setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, source);
+    api.logReaderActivity(api.LIKE_ARTICLE, articleInfo.id, state, source);
   }
 
   const handleMouseEnter = (option) => {
