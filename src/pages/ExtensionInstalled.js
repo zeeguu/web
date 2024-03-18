@@ -1,12 +1,12 @@
-import * as s from "./info_page_shared/InfoPage.sc";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
-import strings from "../i18n/definitions";
 import { useEffect } from "react";
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
+import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import ImageMain from "./info_page_shared/ImageMain";
 import Footer from "./info_page_shared/Footer";
+import Button from "./info_page_shared/Button";
 
 export default function ExtensionInstalled({ api }) {
   useEffect(() => {
@@ -16,26 +16,21 @@ export default function ExtensionInstalled({ api }) {
   return (
     <InfoPage>
       <Header>
-        Right-click anywhere on any article’s page to&nbsp;access
-        The&nbsp;Zeeguu&nbsp;Reader&nbsp;extension
+        <Heading>
+          Right-click anywhere on any article’s page to&nbsp;access
+          The&nbsp;Zeeguu&nbsp;Reader extension
+        </Heading>
       </Header>
       <Main>
         <ImageMain src={"../static/images/use-extension.png"} />
       </Main>
       <Footer>
         {getSessionFromCookies() ? (
-          <s.OrangeButton>
-            <a href="/articles">Go to Zeeguu App</a>
-          </s.OrangeButton>
+          <Button href={"/articles"}>Go to Zeeguu App</Button>
         ) : (
           <>
-            <s.OrangeButton>
-              <a href="/login">{strings.login}</a>
-            </s.OrangeButton>
-
-            <s.OrangeButton>
-              <a href="/create_account">{strings.createAccount}</a>
-            </s.OrangeButton>
+            <Button href={"/create_account"}>Create Account</Button>
+            <Button href={"/login"}>Log In</Button>
           </>
         )}
       </Footer>

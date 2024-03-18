@@ -5,7 +5,7 @@ export default function Header({ children }) {
   return (
     <s.Header>
       <Logo />
-      <s.Heading>{children}</s.Heading>
+      {children}
     </s.Header>
   );
 }

@@ -1,11 +1,48 @@
 import styled, { css } from "styled-components";
-import { zeeguuOrange } from "../../components/colors";
+import { zeeguuOrange, zeeguuDarkOrange } from "../../components/colors";
+import { OrangeRoundButton } from "../../components/allButtons.sc";
 
-const ContentWrapper = styled.div`
+const PageBackground = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100vw;
+  min-height: 100vh;
+  background: ${zeeguuOrange};
+`;
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  max-width: 80%;
+  border-radius: 1em;
+
+  width: 47rem;
+  padding: 2rem;
+  margin: 1rem;
+
+  background-color: white;
+
+  @media (max-width: 1200px) {
+    margin: 0.5rem;
+    max-width: 47rem;
+    width: 80%;
+  }
+
+  @media (max-width: 576px) {
+    padding: 24px 24px;
+    margin: 0.5rem;
+    max-width: 500px;
+    width: 90%;
+  }
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 
   p {
     font-size: 0.9em;
@@ -37,13 +74,12 @@ const Heading = styled.h1`
   font-weight: 700;
   margin: 0;
   @media (max-width: 768px) {
-    font-size: 1.2em;
-    width: 90%;
+    width: 100%;
+    text-align: left;
   }
 
   @media (max-width: 576px) {
-    text-align: left;
-    width: 100%;
+    font-size: 1.2em;
   }
 `;
 
@@ -54,7 +90,7 @@ const Main = styled.main`
 const ImageMain = styled.img`
   width: 80%;
 
-  @media (max-width: 800px) {
+  @media (max-width: 768px) {
     width: 100%;
   }
 `;
@@ -63,74 +99,39 @@ const Footer = styled.footer`
   ${BaseSectionStyle}
 `;
 
-let LinkContainer = styled.div`
-  /* margin: 0.8em; */
+const ButtonContainer = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: space-evenly;
-`;
-
-let PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
-  box-sizing: border-box;
-  width: 40em;
-  max-width: 80%;
-  border-radius: 1em;
+  gap: 1rem;
 
-  width: 750px;
-  padding: 2rem;
-  margin: 1rem;
-
-  background-color: white;
-
-  @media (max-width: 1200px) {
-    /* max-width: 800px; */
-    margin: 0.5rem;
-    max-width: 750px;
-    width: 80%;
-  }
-
-  @media (max-width: 576px) {
-    padding: 24px 24px;
-    margin: 0.5rem;
-    max-width: 500px;
-    width: 90%;
+  @media (max-width: 768px) {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
   }
 `;
 
-const OrangeButton = styled.button`
-  min-height: 4em;
-  width: 20em;
-  /* margin: 0em 1em 0em 1em; */
-  background: ${zeeguuOrange};
-  border: 0.3em solid ${zeeguuOrange};
-  border-radius: 7em;
-
-  a {
-    font-weight: 600;
-    font-size: 1.5em;
-    color: white;
-  }
-`;
-
-let PageBackground = styled.div`
+const Button = styled(OrangeRoundButton)`
+  margin: 0;
+  width: 16.5rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100dvw;
-  min-height: 100vh;
-  /* margin-top: -1em; */
+  gap: 0.25rem;
+  font-size: 1.2rem;
+  padding: 1em 2em;
+  border-radius: 4em;
+  font-weight: 600;
+  border-bottom: solid 0.2em ${zeeguuDarkOrange};
 
-  /* padding-top: 0.5rem;
-  padding-bottom: 0.5rem; */
-  background: ${zeeguuOrange};
-`;
-
-let VideoLink = styled.p`
-  margin: 0em;
-  padding-bottom: 1em;
+  @media (max-width: 768px) {
+    width: auto;
+    padding: 0.75em 2rem;
+  }
 `;
 
 export {
@@ -142,8 +143,7 @@ export {
   ImageMain,
   Footer,
   PageContainer,
-  LinkContainer,
-  OrangeButton,
+  Button,
+  ButtonContainer,
   PageBackground,
-  VideoLink,
 };
