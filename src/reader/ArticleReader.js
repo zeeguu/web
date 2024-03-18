@@ -312,15 +312,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
             <p style={{padding: "0em 2em 0em 2em"}}> {strings.answeringMsg} </p>
             <LikeFeedBackBox
               api={api}
-              articleID={articleID}
               articleInfo={articleInfo}
               setArticleInfo={setArticleInfo}
-              source={UMR_SOURCE}
               setAnswerSubmitted={setAnswerSubmitted}
+              source={UMR_SOURCE}
             />
             <DifficultyFeedbackBox 
-              api={api} 
-              articleID={articleID} 
+              api={api}
               articleInfo={articleInfo}
               setArticleInfo={setArticleInfo}
               setAnswerSubmitted={setAnswerSubmitted}

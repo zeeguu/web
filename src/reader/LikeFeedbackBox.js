@@ -7,8 +7,8 @@ export default function LikeFeedbackBox({
   api,
   articleInfo,
   setArticleInfo,
-  source,
   setAnswerSubmitted,
+  source,
 }) {
   const [isHovered, setIsHovered] = useState('');
 
