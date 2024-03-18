@@ -53,7 +53,6 @@ export default function MultipleChoiceL2toL1({
           speech,
         ),
       );
-      selectionOptions(); 
     });
   }, []);
 
@@ -101,16 +100,6 @@ export default function MultipleChoiceL2toL1({
       exerciseSessionId,
     );
   }
-
-  function selectionOptions() {
-    let optionsToShuffle = [
-      bookmarksToStudy[0],
-      bookmarksToStudy[1],
-      bookmarksToStudy[2],
-    ];
-    let shuffledOptions = shuffle(optionsToShuffle);
-    setButtonOptions(shuffledOptions);
-  }
  
   if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
@@ -129,7 +118,7 @@ export default function MultipleChoiceL2toL1({
           pronouncing={false}
           bookmarkToStudy={bookmarksToStudy[0].from}
           exerciseType={EXERCISE_TYPE}
-          highlightWord={bookmarksToStudy[0].from}
+          boldWord={bookmarksToStudy[0].from}
         />
       </div>
 

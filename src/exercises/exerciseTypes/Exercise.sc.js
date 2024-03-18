@@ -385,15 +385,13 @@ let EditSpeakButtonHolder = styled.div`
 `;
 
 let MultipleChoiceContext = styled.div`
-  /* border: 0.05em solid ${buttonBorder};
-  border-radius: 0.5em; */
   margin: 0.5em;
   padding: 1em;
   cursor: pointer;
 
-  ${({ isCorrect, clicked }) => !isCorrect && clicked && css`
-    animation: ${css`${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97)`} both;
-  `}
+  &.wrong{
+    animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
 
   &.correct {
     border: 0.25em solid ${zeeguuOrange};

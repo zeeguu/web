@@ -82,7 +82,7 @@ export default function TranslateL2toL1({
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
-      exerciseSessionId,
+      exerciseSessionId
     );
   }
 
@@ -109,7 +109,7 @@ export default function TranslateL2toL1({
                     translatedWords={translatedWords}
                     setTranslatedWords={setTranslatedWords}
                     bookmarkToStudy={bookmarksToStudy[0].from}
-                    highlightWord={bookmarksToStudy[0].from}
+                    boldWord={bookmarksToStudy[0].from}
                 />
             </div>
       

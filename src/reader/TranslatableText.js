@@ -12,7 +12,7 @@ export function TranslatableText({
   setTranslatedWords,
   bookmarkToStudy,
   overrideBookmarkHighlightText,
-  highlightWord,
+  boldWord,
   exerciseType,
   wordOptions,
 }) {
@@ -63,7 +63,12 @@ export function TranslatableText({
   function renderWordJSX(word) {
     // If the word is a bookmarked word, it won't be translated when clicked
     const isBookmarkWord = foundInstances.includes(word.id);
-    const isHighlightedWord = word.word === highlightWord;
+    const boldWords = boldWord ? boldWord.split(" ") : [];
+    const isBoldWord = boldWords.includes(removePunctuation(word.word));
+    
+    if (isBoldWord) {
+      return <span style={{fontWeight: "bold"}}>{word.word}&nbsp;</span>
+    }
 
     if (isCorrect) {
       if (word.id === firstWordID && overrideBookmarkHighlightText) {
@@ -102,7 +107,6 @@ export function TranslatableText({
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
             isBookmarkWord={isBookmarkWord}
-            isHighlightedWord={isHighlightedWord}
           />
         );
       }
@@ -120,14 +124,10 @@ export function TranslatableText({
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
             isBookmarkWord={isBookmarkWord}
-            isHighlightedWord={isHighlightedWord}
           />
         );
       }
-      // If execise you want && foundInstance in word it
-      if (isBookmarkWord && highlightWord) {
-        return <z-tag style={{fontWeight: "bold"}}>{highlightWord}&nbsp;</z-tag>
-      }
+      
       if (foundInstances[0] === word.id && exerciseType !== "Translate_What_You_Hear" && exerciseType !== "Select_L1W_fitting_L2T") {
         // If we want, we can render it according to words size.
         // "_".repeat(word.word.length) + " ";

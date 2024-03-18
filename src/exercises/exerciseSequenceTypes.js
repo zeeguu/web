@@ -139,16 +139,8 @@ let PASSIVE_SEQUENCE_NO_AUDIO = [
 
 
 let ACTIVE_SEQUENCE = [
-  // {
-  //   type: MultipleChoice,
-  //   requiredBookmarks: 3,
-  // },
   {
-    type: MultipleChoiceContext,
-    requiredBookmarks: 3,
-  },
-  {
-    type: MultipleChoiceContext,
+    type: MultipleChoice,
     requiredBookmarks: 3,
   },
   {
@@ -156,21 +148,17 @@ let ACTIVE_SEQUENCE = [
     requiredBookmarks: 1,
   },
   {
-    type: ClickWordInContext,
+    type: SpellWhatYouHear,
     requiredBookmarks: 1,
   },
-  // {
-  //   type: SpellWhatYouHear,
-  //   requiredBookmarks: 1,
-  // },
   {
     type: FindWordInContextCloze,
     requiredBookmarks: 1,
   },
-  // {
-  //   type: MultipleChoiceAudio,
-  //   requiredBookmarks: 3,
-  // },
+  {
+    type: MultipleChoiceAudio,
+    requiredBookmarks: 3,
+  },
   {
     type: ClickWordInContext,
     requiredBookmarks: 1,
