@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
 import strings from "../../../i18n/definitions";
 import * as s from "../Exercise.sc";
+import CountryFlags from "../CountryFlags";
 
 export default function BottomInput({
   handleCorrectAnswer,
@@ -21,6 +22,8 @@ export default function BottomInput({
   const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
+
+  let flag = isL1Answer ? bookmarksToStudy[0].to_lang : bookmarksToStudy[0].from_lang;
 
   function handleHint() {
     setUsedHint(true);
@@ -118,6 +121,7 @@ export default function BottomInput({
           <div className="type-feedback">
             {feedbackMessage !== "" && <p>{feedbackMessage}</p>}
           </div>
+          <CountryFlags languageCode={flag}/>
           <InputField
             type="text"
             className={
