@@ -11,20 +11,11 @@ import SentimentNeutralOutlinedIcon from '@mui/icons-material/SentimentNeutralOu
 
 let FEEDBACK_OPTIONS = { "Easy": 1, "Ok": 3, "Difficult": 5 };
 
-export default function DifficultyFeedbackBox({ api, articleInfo, setArticleInfo, setAnswerSubmitted, source }) {
+export default function DifficultyFeedbackBox({
+  articleInfo,
+  updateArticleDifficultyFeedback,
+}) {
   const [isHovered, setIsHovered] = useState(false);
-
-  function updateArticleDifficultyFeedback(answer) {
-    let newArticleInfo = { ...articleInfo, relative_difficulty: answer};
-    api.submitArticleDifficultyFeedback(
-      { article_id: articleInfo.id, difficulty: answer },
-      () => {
-        setAnswerSubmitted(true);
-        setArticleInfo(newArticleInfo);
-      }
-    );
-    api.logReaderActivity(api.DIFFICULTY_FEEDBACK, articleInfo.id, answer, source);
-  }
 
   const difficultyToOption = (difficulty) => {
     if (difficulty === 1) return "Easy";
@@ -33,7 +24,7 @@ export default function DifficultyFeedbackBox({ api, articleInfo, setArticleInfo
   };
   const difficultyFeedback = difficultyToOption(articleInfo.relative_difficulty);
 
-  const shouldBeMarked = (option) => {
+  const hasInteraction = (option) => {
     const optionIsHovered = isHovered === option;
     const optionIsSelected = difficultyFeedback === option;
     return optionIsHovered || optionIsSelected;
@@ -58,19 +49,19 @@ export default function DifficultyFeedbackBox({ api, articleInfo, setArticleInfo
           const emojiComponent = () => {
             switch (option) {
               case 'Easy':
-                return shouldBeMarked(option) ? (
+                return hasInteraction(option) ? (
                   <SentimentVerySatisfiedTwoToneIcon sx={emojiSize} />
                 ) : (
                   <SentimentVerySatisfiedOutlinedIcon sx={emojiSize} />
                 );
               case 'Difficult':
-                return shouldBeMarked(option) ? (
+                return hasInteraction(option) ? (
                   <MoodBadTwoToneIcon sx={emojiSize} />
                 ) : (
                   <MoodBadOutlinedIcon sx={emojiSize} />
                 );
               case 'Ok':
-                return shouldBeMarked(option) ? (
+                return hasInteraction(option) ? (
                   <SentimentNeutralTwoToneIcon sx={emojiSize} />
                 ) : (
                   <SentimentNeutralOutlinedIcon sx={emojiSize} />

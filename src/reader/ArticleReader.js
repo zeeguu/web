@@ -233,6 +233,28 @@ export default function ArticleReader({ api, teacherArticleID }) {
     });
   };
 
+  const setLikedState = (state) => {
+    console.log("Setting liked state to: ", state);
+    let newArticleInfo = { ...articleInfo, liked: state };
+    api.setArticleInfo(newArticleInfo, () => {
+      setAnswerSubmitted(true);
+      setArticleInfo(newArticleInfo);
+    });
+    api.logReaderActivity(api.LIKE_ARTICLE, articleInfo.id, state, UMR_SOURCE);
+  };
+
+  const updateArticleDifficultyFeedback = (answer) => {
+    let newArticleInfo = { ...articleInfo, relative_difficulty: answer};
+    api.submitArticleDifficultyFeedback(
+      { article_id: articleInfo.id, difficulty: answer },
+      () => {
+        setAnswerSubmitted(true);
+        setArticleInfo(newArticleInfo);
+      }
+    );
+    api.logReaderActivity(api.DIFFICULTY_FEEDBACK, articleInfo.id, answer, UMR_SOURCE);
+  };
+
   return (
     <s.ArticleReader>
       <ActivityTimer
@@ -311,18 +333,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
           <s.CombinedBox>
             <p style={{padding: "0em 2em 0em 2em"}}> {strings.answeringMsg} </p>
             <LikeFeedBackBox
-              api={api}
               articleInfo={articleInfo}
-              setArticleInfo={setArticleInfo}
-              setAnswerSubmitted={setAnswerSubmitted}
-              source={UMR_SOURCE}
+              setLikedState={setLikedState}
             />
             <DifficultyFeedbackBox 
-              api={api}
               articleInfo={articleInfo}
-              setArticleInfo={setArticleInfo}
-              setAnswerSubmitted={setAnswerSubmitted}
-              source={UMR_SOURCE}
+              updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
             />
             {answerSubmitted && (
                 <s.InvisibleBox>
