@@ -15,7 +15,8 @@ import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import {
   // DEFAULT_SEQUENCE,
   // DEFAULT_SEQUENCE_NO_AUDIO,
-  ACTIVE_SEQUENCE,
+  PASSIVE_SEQUENCE,
+  PASSIVE_SEQUENCE_NO_AUDIO,
   NUMBER_OF_BOOKMARKS_TO_PRACTICE,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
@@ -49,10 +50,10 @@ export default function Exercises({
     useActivityTimer();
 
   function getExerciseSequenceType() {
-    let exerciseTypesList = ACTIVE_SEQUENCE;
+    let exerciseTypesList = PASSIVE_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
       console.log("Will not use audio!");
-      exerciseTypesList = ACTIVE_SEQUENCE;
+      exerciseTypesList = PASSIVE_SEQUENCE_NO_AUDIO;
     }
     return exerciseTypesList;
   }
