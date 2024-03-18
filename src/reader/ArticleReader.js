@@ -6,6 +6,8 @@ import { RoutingContext } from "../contexts/RoutingContext";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
+import { random } from "../utils/basic/arrays";
+
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -25,6 +27,7 @@ import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import ratio from "../utils/basic/ratio";
+import { Padding } from "@mui/icons-material";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -64,6 +67,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [pronouncing, setPronouncing] = useState(true);
   const [scrollPosition, setScrollPosition] = useState();
   const [readerReady, setReaderReady] = useState();
+  const [answerSubmitted, setAnswerSubmitted] = useState(false);
+
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -228,6 +233,28 @@ export default function ArticleReader({ api, teacherArticleID }) {
     });
   };
 
+  const setLikedState = (state) => {
+    console.log("Setting liked state to: ", state);
+    let newArticleInfo = { ...articleInfo, liked: state };
+    api.setArticleInfo(newArticleInfo, () => {
+      setAnswerSubmitted(true);
+      setArticleInfo(newArticleInfo);
+    });
+    api.logReaderActivity(api.LIKE_ARTICLE, articleInfo.id, state, UMR_SOURCE);
+  };
+
+  const updateArticleDifficultyFeedback = (answer) => {
+    let newArticleInfo = { ...articleInfo, relative_difficulty: answer};
+    api.submitArticleDifficultyFeedback(
+      { article_id: articleInfo.id, difficulty: answer },
+      () => {
+        setAnswerSubmitted(true);
+        setArticleInfo(newArticleInfo);
+      }
+    );
+    api.logReaderActivity(api.DIFFICULTY_FEEDBACK, articleInfo.id, answer, UMR_SOURCE);
+  };
+
   return (
     <s.ArticleReader>
       <ActivityTimer
@@ -318,15 +345,20 @@ export default function ArticleReader({ api, teacherArticleID }) {
         <div id={"bottomRow"}>
           <ReviewVocabulary articleID={articleID} />
           <s.CombinedBox>
-            <h4> {strings.answeringMsg} </h4>
+            <p style={{padding: "0em 2em 0em 2em"}}> {strings.answeringMsg} </p>
             <LikeFeedBackBox
-              api={api}
-              articleID={articleID}
               articleInfo={articleInfo}
-              setArticleInfo={setArticleInfo}
-              source={UMR_SOURCE}
+              setLikedState={setLikedState}
             />
-            <DifficultyFeedbackBox api={api} articleID={articleID} />
+            <DifficultyFeedbackBox 
+              articleInfo={articleInfo}
+              updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
+            />
+            {answerSubmitted && (
+                <s.InvisibleBox>
+                <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
+              </s.InvisibleBox>
+            )} 
           </s.CombinedBox>
         </div>
       )}
