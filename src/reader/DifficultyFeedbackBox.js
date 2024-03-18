@@ -26,10 +26,12 @@ export default function DifficultyFeedbackBox({ api, articleInfo, setArticleInfo
     api.logReaderActivity(api.DIFFICULTY_FEEDBACK, articleInfo.id, answer, source);
   }
 
-  const diffToOption = (diff) => {
-    return diff === 1 ? "Easy" : diff === 3 ? "Ok" : diff === 5 ? "Difficult" : undefined;
+  const difficultyToOption = (difficulty) => {
+    if (difficulty === 1) return "Easy";
+    else if (difficulty === 3) return "Ok";
+    else if (difficulty === 5) return "Difficult";
   };
-  const difficultyFeedback = diffToOption(articleInfo.relative_difficulty);
+  const difficultyFeedback = difficultyToOption(articleInfo.relative_difficulty);
 
   const shouldBeMarked = (option) => {
     const optionIsHovered = isHovered === option;
