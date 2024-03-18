@@ -348,11 +348,11 @@ let strings = new LocalizedStrings(
       findWordInContextClozeHeadline:
         "Translate the word to fit the context",
       translateL2toL1Headline: 
-        "Translate the highlighted word",
+        "Translate the bold word",
       translateWhatYouHearHeadline: 
         "Translate the word you hear. Click to have it repeated!",
       multipleChoiceL2toL1Headline:
-        "Select the correct translation of the highlighted word",
+        "Select the correct translation of the bold word",
       clickWordInContextHeadline:
         "Find the word in the context and click on it",
       multipleChoiceContextHeadline:

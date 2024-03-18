@@ -25,19 +25,28 @@ export default function MultipleChoiceContext({
   activeSessionDuration,
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
+  const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
   const [articleInfo, setArticleInfo] = useState(null);
   const [interactiveText, setInteractiveText] = useState(null);
   const speech = useContext(SpeechContext);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const [contextOptions, setContextOptions] = useState([]);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [clickedIndex, setClickedIndex] = useState(null);
-  const [foundBookmarks, setFoundBookmarks] = useState([]);
+  const [clickedOption, setClickedOption] = useState(null);
+  const [showSolution, setShowSolution] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
+    let initExerciseBookmarks = [...bookmarksToStudy];
+    for (let i = 0; i < initExerciseBookmarks.length; i++) {
+      if (i === 0)
+        initExerciseBookmarks[i].isExercise = true
+      else
+        initExerciseBookmarks[i].isExercise = false
+    }
+    setExerciseBookmarks(initExerciseBookmarks);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -55,14 +64,10 @@ export default function MultipleChoiceContext({
 
   useEffect(() => {
     if (articleInfo && interactiveText) {
-      setContextOptions(shuffle([
-        bookmarksToStudy[0].context,
-        bookmarksToStudy[1].context,
-        bookmarksToStudy[2].context,
-      ]));
+      setExerciseBookmarks(shuffle(
+        [...exerciseBookmarks]
+      ));
     }
-    setFoundBookmarks(findBookmarksInContext(bookmarksToStudy[0].context, bookmarksToStudy));
-    console.log(foundBookmarks);
   }, [articleInfo, interactiveText, bookmarksToStudy]);
 
   function handleShowSolution() {
@@ -70,12 +75,16 @@ export default function MultipleChoiceContext({
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     handleAnswer(message);
+    setShowSolution(true);
   }
 
  function notifyChoiceSelection(selectedChoice, index) {
+    if(isCorrect) return;
+    setClickedOption(index);
     if (
         selectedChoice === bookmarksToStudy[0].context
     ) {
+        setShowSolution(true);
         setClickedIndex(index);
         correctAnswer(bookmarksToStudy[0].context);
         setIsCorrect(true);
@@ -87,6 +96,9 @@ export default function MultipleChoiceContext({
         notifyIncorrectAnswer(bookmarksToStudy[0].context);
         let concatMessage = messageToAPI + "W";
         setMessageToAPI(concatMessage);
+            setTimeout(() => {
+              setClickedOption(null);
+            }, 500)
     }
   }
 
@@ -101,25 +113,12 @@ export default function MultipleChoiceContext({
     );
   }
 
-  if (!articleInfo || !interactiveText) {
-    return <LoadingAnimation />;
+  function getHighlightedWord(word){
+    return `<span class="highlightedWord">${word}</span>`;
   }
 
-  function findBookmarksInContext(context, bookmarks) {
-    const lowerCaseContext = context.toLowerCase();
-    const foundBookmarks = [];
-
-    bookmarks.forEach(bookmark => {
-      const lowerCaseFrom = bookmark.from.toLowerCase();
-      const index = lowerCaseContext.indexOf(lowerCaseFrom);
-      if (index !== -1) {
-        foundBookmarks.push({
-          from: bookmark.from,
-          index: index
-        });
-      }
-    });
-    return foundBookmarks;
+  if (!articleInfo || !interactiveText) {
+    return <LoadingAnimation />;
   }
 
   return (
@@ -128,16 +127,17 @@ export default function MultipleChoiceContext({
         {strings.multipleChoiceContextHeadline}
       </div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].from}</h1>
-        {contextOptions.map((option, index) => (
+        {exerciseBookmarks.map((option, index) => (
             <s.MultipleChoiceContext 
                 key={index} 
                 clicked={index === clickedIndex}
                 isCorrect={isCorrect}
-                className={(isCorrect && index === clickedIndex) ? "correct" : ""}
-                onClick={() => notifyChoiceSelection(option, index)}>
-                <div>
-                    {option.replace(new RegExp(foundBookmarks.map(bookmark => bookmark.from).join('|'), 'g'), '_____')}
-                </div>
+                className={clickedOption !== null ? (index === clickedOption) ? (option.isExercise) ? "correct" : "wrong" : "" : ""}
+                onClick={(e) => notifyChoiceSelection(option.context, index, e)}>
+                <div dangerouslySetInnerHTML={{ __html: showSolution
+                        ? option.context.replace(option.from, getHighlightedWord(option.from))
+                        : option.context.replace(option.from, '_____')
+                      }}/>
             </s.MultipleChoiceContext>
         ))}
 
