@@ -5,6 +5,7 @@ import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import MainImage from "./info_page_shared/MainImage";
+import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 
@@ -25,14 +26,16 @@ export default function ExtensionInstalled({ api }) {
         <MainImage src={"../static/images/use-extension.png"} />
       </Main>
       <Footer>
-        {getSessionFromCookies() ? (
-          <Button href={"/articles"}>Go to Zeeguu App</Button>
-        ) : (
-          <>
-            <Button href={"/create_account"}>Create Account</Button>
-            <Button href={"/login"}>Log In</Button>
-          </>
-        )}
+        <ButtonContainer>
+          {getSessionFromCookies() ? (
+            <Button href={"/articles"}>Go to Zeeguu App</Button>
+          ) : (
+            <>
+              <Button href={"/create_account"}>Create Account</Button>
+              <Button href={"/login"}>Log In</Button>
+            </>
+          )}
+        </ButtonContainer>
       </Footer>
     </InfoPage>
   );
