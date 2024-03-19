@@ -4,7 +4,7 @@ import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
-import ImageMain from "./info_page_shared/ImageMain";
+import MainImage from "./info_page_shared/MainImage";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 
@@ -22,7 +22,7 @@ export default function ExtensionInstalled({ api }) {
         </Heading>
       </Header>
       <Main>
-        <ImageMain src={"../static/images/use-extension.png"} />
+        <MainImage src={"../static/images/use-extension.png"} />
       </Main>
       <Footer>
         {getSessionFromCookies() ? (

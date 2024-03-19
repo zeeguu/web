@@ -87,7 +87,7 @@ const Main = styled.main`
   ${BaseSectionStyle}
 `;
 
-const ImageMain = styled.img`
+const MainImage = styled.img`
   width: 80%;
 
   @media (max-width: 768px) {
@@ -140,7 +140,7 @@ export {
   Logo,
   Heading,
   Main,
-  ImageMain,
+  MainImage,
   Footer,
   PageContainer,
   Button,
