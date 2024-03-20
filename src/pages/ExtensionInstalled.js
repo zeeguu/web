@@ -1,9 +1,13 @@
-import * as s from "./ExtensionInstalled.sc";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
-import * as z from "../components/FormPage.sc";
-import strings from "../i18n/definitions";
 import { useEffect } from "react";
-import LocalStorage from "../assorted/LocalStorage";
+import InfoPage from "./info_page_shared/InfoPage";
+import Header from "./info_page_shared/Header";
+import Heading from "./info_page_shared/Heading";
+import Main from "./info_page_shared/Main";
+import MainImage from "./info_page_shared/MainImage";
+import ButtonContainer from "./info_page_shared/ButtonContainer";
+import Footer from "./info_page_shared/Footer";
+import Button from "./info_page_shared/Button";
 
 export default function ExtensionInstalled({ api }) {
   useEffect(() => {
@@ -11,47 +15,28 @@ export default function ExtensionInstalled({ api }) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <s.PageBackground>
-      <z.LogoOnTop />
-      <s.ExtensionContainer>
-        <s.ExtensionInstalledWrapper>
-          <h1>{strings.congratulations}</h1>
-          <h4>{strings.pinExtension}</h4>
-          <s.VideoLink>
-            Learn how it works by watching
-            <a
-              href="https://vimeo.com/715531198"
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => LocalStorage.setClickedVideo()}
-            >
-              {" "}
-              this video
-            </a>
-          </s.VideoLink>
-          <img
-            src={"https://zeeguu.org/static/images/zeeguuExtension.gif"}
-            alt="How to pin Chrome Extension to Chrome Toolbar gif"
-          />
-          <s.LinkContainer>
-            {getSessionFromCookies() ? (
-              <s.OrangeButton>
-                <a href="/articles">{strings.goToArticles}</a>
-              </s.OrangeButton>
-            ) : (
-              <>
-                <s.OrangeButton>
-                  <a href="/login">{strings.login}</a>
-                </s.OrangeButton>
-
-                <s.OrangeButton>
-                  <a href="/create_account">{strings.createAccount}</a>
-                </s.OrangeButton>
-              </>
-            )}
-          </s.LinkContainer>
-        </s.ExtensionInstalledWrapper>
-      </s.ExtensionContainer>
-    </s.PageBackground>
+    <InfoPage>
+      <Header>
+        <Heading>
+          Right-click anywhere on any article’s page to&nbsp;access
+          The&nbsp;Zeeguu&nbsp;Reader extension
+        </Heading>
+      </Header>
+      <Main>
+        <MainImage src={"../static/images/use-extension.png"} />
+      </Main>
+      <Footer>
+        <ButtonContainer>
+          {getSessionFromCookies() ? (
+            <Button href={"/articles"}>Go to Zeeguu App</Button>
+          ) : (
+            <>
+              <Button href={"/create_account"}>Create Account</Button>
+              <Button href={"/login"}>Log In</Button>
+            </>
+          )}
+        </ButtonContainer>
+      </Footer>
+    </InfoPage>
   );
 }
