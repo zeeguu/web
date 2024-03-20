@@ -41,32 +41,29 @@ export default function MultipleChoiceContext({
     setExerciseType(EXERCISE_TYPE);
     let initExerciseBookmarks = [...bookmarksToStudy];
     for (let i = 0; i < initExerciseBookmarks.length; i++) {
-      if (i === 0)
-        initExerciseBookmarks[i].isExercise = true
-      else
-        initExerciseBookmarks[i].isExercise = false
+      if (i === 0) initExerciseBookmarks[i].isExercise = true;
+      else initExerciseBookmarks[i].isExercise = false;
     }
     setExerciseBookmarks(initExerciseBookmarks);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
           bookmarksToStudy[0].context,
-          articleInfo,
+          articleInfo.language,
+          articleInfo.articleId,
           api,
           "TRANSLATE WORDS IN EXERCISE",
           EXERCISE_TYPE,
           speech,
         ),
       );
-    setArticleInfo(articleInfo);
+      setArticleInfo(articleInfo);
     });
   }, []);
 
   useEffect(() => {
     if (articleInfo && interactiveText) {
-      setExerciseBookmarks(shuffle(
-        [...exerciseBookmarks]
-      ));
+      setExerciseBookmarks(shuffle([...exerciseBookmarks]));
     }
   }, [articleInfo, interactiveText, bookmarksToStudy]);
 
@@ -78,27 +75,25 @@ export default function MultipleChoiceContext({
     setShowSolution(true);
   }
 
- function notifyChoiceSelection(selectedChoice, index) {
-    if(isCorrect) return;
+  function notifyChoiceSelection(selectedChoice, index) {
+    if (isCorrect) return;
     setClickedOption(index);
-    if (
-        selectedChoice === bookmarksToStudy[0].context
-    ) {
-        setShowSolution(true);
-        setClickedIndex(index);
-        correctAnswer(bookmarksToStudy[0].context);
-        setIsCorrect(true);
-        let concatMessage = messageToAPI + "C";
-        handleAnswer(concatMessage);
+    if (selectedChoice === bookmarksToStudy[0].context) {
+      setShowSolution(true);
+      setClickedIndex(index);
+      correctAnswer(bookmarksToStudy[0].context);
+      setIsCorrect(true);
+      let concatMessage = messageToAPI + "C";
+      handleAnswer(concatMessage);
     } else {
-        setClickedIndex(null);
-        setIncorrectAnswer(selectedChoice);
-        notifyIncorrectAnswer(bookmarksToStudy[0].context);
-        let concatMessage = messageToAPI + "W";
-        setMessageToAPI(concatMessage);
-            setTimeout(() => {
-              setClickedOption(null);
-            }, 500)
+      setClickedIndex(null);
+      setIncorrectAnswer(selectedChoice);
+      notifyIncorrectAnswer(bookmarksToStudy[0].context);
+      let concatMessage = messageToAPI + "W";
+      setMessageToAPI(concatMessage);
+      setTimeout(() => {
+        setClickedOption(null);
+      }, 500);
     }
   }
 
@@ -113,7 +108,7 @@ export default function MultipleChoiceContext({
     );
   }
 
-  function getHighlightedWord(word){
+  function getHighlightedWord(word) {
     return `<span class="highlightedWord">${word}</span>`;
   }
 
@@ -127,19 +122,34 @@ export default function MultipleChoiceContext({
         {strings.multipleChoiceContextHeadline}
       </div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].from}</h1>
-        {exerciseBookmarks.map((option, index) => (
-            <s.MultipleChoiceContext 
-                key={index} 
-                clicked={index === clickedIndex}
-                isCorrect={isCorrect}
-                className={clickedOption !== null ? (index === clickedOption) ? (option.isExercise) ? "correct" : "wrong" : "" : ""}
-                onClick={(e) => notifyChoiceSelection(option.context, index, e)}>
-                <div dangerouslySetInnerHTML={{ __html: showSolution
-                        ? option.context.replace(option.from, getHighlightedWord(option.from))
-                        : option.context.replace(option.from, '_____')
-                      }}/>
-            </s.MultipleChoiceContext>
-        ))}
+      {exerciseBookmarks.map((option, index) => (
+        <s.MultipleChoiceContext
+          key={index}
+          clicked={index === clickedIndex}
+          isCorrect={isCorrect}
+          className={
+            clickedOption !== null
+              ? index === clickedOption
+                ? option.isExercise
+                  ? "correct"
+                  : "wrong"
+                : ""
+              : ""
+          }
+          onClick={(e) => notifyChoiceSelection(option.context, index, e)}
+        >
+          <div
+            dangerouslySetInnerHTML={{
+              __html: showSolution
+                ? option.context.replace(
+                    option.from,
+                    getHighlightedWord(option.from),
+                  )
+                : option.context.replace(option.from, "_____"),
+            }}
+          />
+        </s.MultipleChoiceContext>
+      ))}
 
       <NextNavigation
         message={messageToAPI}

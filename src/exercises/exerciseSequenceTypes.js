@@ -108,6 +108,10 @@ let DEFAULT_SEQUENCE_NO_AUDIO = [
 
 let PASSIVE_SEQUENCE = [
   {
+    type: ClickWordInContext,
+    requiredBookmarks: 1,
+  },
+  {
     type: Match,
     requiredBookmarks: 3,
   },
@@ -127,10 +131,6 @@ let PASSIVE_SEQUENCE = [
     type: MultipleChoiceContext,
     requiredBookmarks: 3,
   },
-  {
-    type: ClickWordInContext,
-    requiredBookmarks: 1,
-  }
 ];
 
 let PASSIVE_SEQUENCE_NO_AUDIO = [
@@ -157,9 +157,8 @@ let PASSIVE_SEQUENCE_NO_AUDIO = [
   {
     type: MultipleChoiceContext,
     requiredBookmarks: 3,
-  }
+  },
 ];
-
 
 let ACTIVE_SEQUENCE = [
   {
@@ -185,7 +184,7 @@ let ACTIVE_SEQUENCE = [
   {
     type: FindWordInContextCloze,
     requiredBookmarks: 1,
-  }
+  },
 ];
 
 let ACTIVE_SEQUENCE_NO_AUDIO = [
@@ -212,7 +211,7 @@ let ACTIVE_SEQUENCE_NO_AUDIO = [
   {
     type: MultipleChoice,
     requiredBookmarks: 3,
-  }
+  },
 ];
 
 export {
@@ -222,5 +221,5 @@ export {
   PASSIVE_SEQUENCE,
   ACTIVE_SEQUENCE,
   PASSIVE_SEQUENCE_NO_AUDIO,
-  ACTIVE_SEQUENCE_NO_AUDIO
+  ACTIVE_SEQUENCE_NO_AUDIO,
 };

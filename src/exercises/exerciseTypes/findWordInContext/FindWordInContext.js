@@ -43,7 +43,8 @@ export default function FindWordInContext({
       setInteractiveText(
         new InteractiveText(
           bookmarksToStudy[0].context,
-          articleInfo,
+          articleInfo.language,
+          articleInfo.articleId,
           api,
           "TRANSLATE WORDS IN EXERCISE",
           EXERCISE_TYPE,

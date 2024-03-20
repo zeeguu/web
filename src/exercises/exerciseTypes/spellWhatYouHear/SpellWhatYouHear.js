@@ -50,7 +50,8 @@ export default function SpellWhatYouHear({
       setInteractiveText(
         new InteractiveText(
           bookmarksToStudy[0].context,
-          articleInfo,
+          articleInfo.language,
+          articleInfo.articleId,
           api,
           "TRANSLATE WORDS IN EXERCISE",
           EXERCISE_TYPE,
@@ -101,6 +102,7 @@ export default function SpellWhatYouHear({
     api.logUserActivity("AUDIO_DISABLE", "", bookmarksToStudy[0].id, "");
     moveToNextExercise();
   }
+
   function handleIncorrectAnswer() {
     setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
