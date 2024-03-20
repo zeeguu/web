@@ -1,3 +1,6 @@
+# v2.2.6
+- minor bug fix
+
 # v2.2.5
 - improvements to the user feedback box at the bottom of every article
 
