@@ -1,3 +1,7 @@
+# v2.2.5
+- improvements to the user feedback box at the bottom of every article
+
+
 # v2.2.3
 - Added `Read with Zeeguu` context menu option
 - Added visual progress bar to the top of the article being read  
