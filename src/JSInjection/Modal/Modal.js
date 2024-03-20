@@ -42,6 +42,7 @@ import ratio from "../../zeeguu-react/src/utils/basic/ratio";
 import ActivityTimer from "../../zeeguu-react/src/components/ActivityTimer";
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
+import ZeeguuError from "../ZeeguuError";
 
 export function Modal({
   title,
@@ -55,6 +56,7 @@ export function Modal({
   const [readArticleOpen, setReadArticleOpen] = useState(true);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [exerciseOpen, setExerciseOpen] = useState(false);
+  const [isTimedOut, setIsTimedOut] = useState();
 
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(true);
@@ -180,6 +182,9 @@ export function Modal({
   }
 
   useEffect(() => {
+    const timedOutTimer = setTimeout(() => {
+      setIsTimedOut(true);
+    }, 10000);
     scrollEvents.current = [];
     lastSampleScroll.current = 0;
     setScrollPosition(0);
@@ -198,6 +203,40 @@ export function Modal({
         console.log("ARTICLE INFO in the Modal JS constructore...: ");
         console.dir(artinfo);
         setArticleInfo(artinfo);
+        let engine = new ZeeguuSpeech(api, artinfo.language);
+        setSpeechEngine(engine);
+        let arrInteractive = interactiveTextsWithTags(
+          content,
+          artinfo,
+          engine,
+          api
+        );
+        setInteractiveTextArray(arrInteractive);
+
+        let itTitle = new InteractiveText(
+          title,
+          artinfo,
+          api,
+          api.TRANSLATE_TEXT,
+          EXTENSION_SOURCE,
+          engine
+        );
+        setInteractiveTitle(itTitle);
+        api.getOwnTexts((articles) => {
+          checkOwnTexts(articles);
+          setLoadingPersonalCopy(false);
+        });
+        api.readingSessionCreate(artinfo.id, (sessionID) => {
+          setReadingSessionId(sessionID);
+          api.setArticleOpened(artinfo.id);
+          api.logReaderActivity(
+            api.OPEN_ARTICLE,
+            artinfo.id,
+            sessionID,
+            EXTENSION_SOURCE
+          );
+          clearTimeout(timedOutTimer);
+        });
       });
     }
     getNativeLanguage().then((result) => setNativeLang(result));
@@ -215,44 +254,6 @@ export function Modal({
       window.removeEventListener("beforeunload", handleClose, true);
     };
   }, []);
-
-  useEffect(() => {
-    if (articleInfo !== undefined) {
-      let engine = new ZeeguuSpeech(api, articleInfo.language);
-      setSpeechEngine(engine);
-      let arrInteractive = interactiveTextsWithTags(
-        content,
-        articleInfo,
-        engine,
-        api
-      );
-      setInteractiveTextArray(arrInteractive);
-
-      let itTitle = new InteractiveText(
-        title,
-        articleInfo,
-        api,
-        api.TRANSLATE_TEXT,
-        EXTENSION_SOURCE,
-        engine
-      );
-      setInteractiveTitle(itTitle);
-      api.getOwnTexts((articles) => {
-        checkOwnTexts(articles);
-        setLoadingPersonalCopy(false);
-      });
-      api.readingSessionCreate(articleInfo.id, (sessionID) => {
-        setReadingSessionId(sessionID);
-        api.setArticleOpened(articleInfo.id);
-        api.logReaderActivity(
-          api.OPEN_ARTICLE,
-          articleInfo.id,
-          sessionID,
-          EXTENSION_SOURCE
-        );
-      });
-    }
-  }, [articleInfo]);
 
   localStorage.setItem("native_language", nativeLang);
   localStorage.setItem("name", username);
@@ -329,10 +330,15 @@ export function Modal({
     setLogContext("ARTICLE");
   }
 
-  if (interactiveTextArray === undefined || loadingPersonalCopy) {
+  if (
+    (interactiveTextArray === undefined || loadingPersonalCopy) &&
+    isTimedOut === undefined
+  ) {
     return <ZeeguuLoader />;
   }
-
+  if (isTimedOut) {
+    return <ZeeguuError />;
+  }
   return (
     <>
       <SpeechContext.Provider value={speechEngine}>
