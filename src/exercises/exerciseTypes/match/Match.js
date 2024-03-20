@@ -27,6 +27,8 @@ export default function Match({
   // ML: TODO: this duplicates a bit the information in bookmarksToStudy
   // It should be possible to implement with a simple array of messageToAPI that will
   // always be in sync with bookmarksToStudy, i.e. messageToAPI[0] refers to the state of bookmarksToStudy[0], etc.
+  console.dir(bookmarksToStudy);
+
   const initialExerciseAttemptsLog = [
     {
       bookmark: bookmarksToStudy[0],

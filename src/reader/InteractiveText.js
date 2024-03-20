@@ -4,13 +4,15 @@ import ZeeguuSpeech from "../speech/APIBasedSpeech";
 export default class InteractiveText {
   constructor(
     content,
-    articleInfo,
+    language,
+    articleId,
     api,
     translationEvent = api.TRANSLATE_TEXT,
     source = "",
     zeeguuSpeech,
   ) {
-    this.articleInfo = articleInfo;
+    this.language = language;
+    this.articleId = articleId;
     this.api = api;
     this.translationEvent = translationEvent;
     this.source = source;
@@ -19,8 +21,8 @@ export default class InteractiveText {
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (each) => new LinkedWordList(each),
     );
-    if (this.articleInfo.language !== zeeguuSpeech.language) {
-      this.zeeguuSpeech = new ZeeguuSpeech(api, this.articleInfo.language);
+    if (this.language !== zeeguuSpeech.language) {
+      this.zeeguuSpeech = new ZeeguuSpeech(api, this.language);
     } else {
       this.zeeguuSpeech = zeeguuSpeech;
     }
@@ -37,13 +39,11 @@ export default class InteractiveText {
 
     this.api
       .getOneTranslation(
-        this.articleInfo.language,
+        this.language,
         localStorage.native_language,
         word.word,
         context,
-        window.location,
-        this.articleInfo.title,
-        this.articleInfo.id,
+        this.articleId,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -58,7 +58,7 @@ export default class InteractiveText {
 
     this.api.logReaderActivity(
       this.translationEvent,
-      this.articleInfo.id,
+      this.articleId,
       word.word,
       this.source,
     );
@@ -77,7 +77,7 @@ export default class InteractiveText {
     let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`;
     this.api.logReaderActivity(
       this.api.SEND_SUGGESTION,
-      this.articleInfo.id,
+      this.articleId,
       alternative_info,
       this.source,
     );
@@ -89,26 +89,20 @@ export default class InteractiveText {
     let context = this.getContext(word);
     this.api
       .getMultipleTranslations(
-        this.articleInfo.language,
+        this.language,
         localStorage.native_language,
         word.word,
         context,
-        this.articleInfo.url,
         -1,
         word.service_name,
         word.translation,
-        this.articleInfo.id,
+        this.articleId,
       )
       .then((response) => response.json())
       .then((data) => {
         word.alternatives = data.translations;
         onSuccess();
       });
-  }
-
-  playAll() {
-    console.log("playing all");
-    this.zeeguuSpeech.playAll(this.articleInfo);
   }
 
   pause() {
@@ -126,7 +120,7 @@ export default class InteractiveText {
 
     this.api.logReaderActivity(
       this.api.SPEAK_TEXT,
-      this.articleInfo.id,
+      this.articleId,
       word.word,
       this.source,
     );
@@ -167,6 +161,7 @@ export default class InteractiveText {
       if (endOfSentenceIn(word)) return word.word;
       return word.word + " " + getRightContext(word.next, count - 1);
     }
+
     let context =
       getLeftContext(word.prev, 32) +
       " " +

@@ -40,7 +40,8 @@ export default function FindWordInContextCloze({
       setInteractiveText(
         new InteractiveText(
           bookmarksToStudy[0].context,
-          articleInfo,
+          articleInfo.language,
+          articleInfo.articleId,
           api,
           "TRANSLATE WORDS IN EXERCISE",
           EXERCISE_TYPE,
@@ -62,7 +63,7 @@ export default function FindWordInContextCloze({
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    setMessageToAPI(concatMessage);                        
+    setMessageToAPI(concatMessage);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
@@ -99,42 +100,42 @@ export default function FindWordInContextCloze({
       <div className="headlineWithMoreSpace">
         {strings.findWordInContextClozeHeadline}
       </div>
-      
+
       {!isCorrect && (
         <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
-            <div className="contextExample">
-                <TranslatableText
-                    isCorrect={isCorrect}
-                    interactiveText={interactiveText}
-                    translating={true}
-                    pronouncing={false}
-                    bookmarkToStudy={bookmarksToStudy[0].from}
-                />
-            </div>
-            <BottomInput
-                handleCorrectAnswer={handleCorrectAnswer}
-                handleIncorrectAnswer={handleIncorrectAnswer}
-                bookmarksToStudy={bookmarksToStudy}
-                messageToAPI={messageToAPI}
-                setMessageToAPI={setMessageToAPI}
+          <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+          <div className="contextExample">
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={bookmarksToStudy[0].from}
             />
+          </div>
+          <BottomInput
+            handleCorrectAnswer={handleCorrectAnswer}
+            handleIncorrectAnswer={handleIncorrectAnswer}
+            bookmarksToStudy={bookmarksToStudy}
+            messageToAPI={messageToAPI}
+            setMessageToAPI={setMessageToAPI}
+          />
         </>
       )}
       {isCorrect && (
         <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
-            <div className="contextExample">
-                <TranslatableText
-                    isCorrect={isCorrect}
-                    interactiveText={interactiveText}
-                    translating={true}
-                    pronouncing={false}
-                    bookmarkToStudy={bookmarksToStudy[0].from}
-                />
-            </div>        
+          <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+          <div className="contextExample">
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={bookmarksToStudy[0].from}
+            />
+          </div>
         </>
-        )}
+      )}
 
       <NextNavigation
         message={messageToAPI}

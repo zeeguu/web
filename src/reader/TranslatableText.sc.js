@@ -16,12 +16,14 @@ const TranslatableText = styled.div`
     margin: 0;
     line-height: 29px;
     /* background-color: greenyellow; */
+    padding-right: 0.3em;
   }
 
   z-tag.loading {
     animation: blink 1.5s linear infinite;
     color: ${zeeguuOrange};
   }
+
   @keyframes blink {
     0% {
       opacity: 0.2;
@@ -73,6 +75,7 @@ const TranslatableText = styled.div`
     solid if the user selects an alternative, confirms this one, or
     uploads a new translation
 */
+
   z-tag z-orig {
     border-bottom: 1px dashed ${zeeguuOrange};
     width: 100%;
@@ -98,6 +101,7 @@ green downwards pointing triangle; we used to mark also single alternatives
     margin: 0;
     padding: 0;
   }
+
   z-tran:hover > .arrow {
     visibility: visible;
   }
@@ -121,6 +125,7 @@ green downwards pointing triangle; we used to mark also single alternatives
   these classes currently show a mini
   animation
  */
+
   .handSelected,
   .handContributed {
     width: 1.5em;
@@ -131,7 +136,9 @@ green downwards pointing triangle; we used to mark also single alternatives
   .handContributed:after {
     display: hidden;
     opacity: 0.1;
-    transition: visibility 0s 2s, opacity 2s linear;
+    transition:
+      visibility 0s 2s,
+      opacity 2s linear;
   }
 
   .handSelected:after {
@@ -173,7 +180,7 @@ that made the UI too heavy ... */
     height: 100%;
     text-transform: lowercase;
     white-space: normal;
-    border-bottom: 1px solid ${zeeguuLightYellow}!important;
+    border-bottom: 1px solid ${zeeguuLightYellow} !important;
     color: ${almostBlack};
     line-height: 1em;
     padding: 0.3em;

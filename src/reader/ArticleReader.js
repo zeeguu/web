@@ -116,7 +116,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
       setInteractiveText(
         new InteractiveText(
           articleInfo.content,
-          articleInfo,
+          articleInfo.language,
+          articleInfo.articleId,
           api,
           api.TRANSLATE_TEXT,
           UMR_SOURCE,
@@ -126,7 +127,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
       setInteractiveTitle(
         new InteractiveText(
           articleInfo.title,
-          articleInfo,
+          articleInfo.language,
+          articleInfo.articleId,
           api,
           api.TRANSLATE_TEXT,
           UMR_SOURCE,

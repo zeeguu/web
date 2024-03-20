@@ -41,7 +41,8 @@ export default function TranslateL2toL1({
       setInteractiveText(
         new InteractiveText(
           bookmarksToStudy[0].context,
-          articleInfo,
+          articleInfo.language,
+          articleInfo.articleId,
           api,
           "TRANSLATE WORDS IN EXERCISE",
           EXERCISE_TYPE,
@@ -63,7 +64,7 @@ export default function TranslateL2toL1({
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    setMessageToAPI(concatMessage);                        
+    setMessageToAPI(concatMessage);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
@@ -82,7 +83,7 @@ export default function TranslateL2toL1({
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
-      exerciseSessionId
+      exerciseSessionId,
     );
   }
 
@@ -101,35 +102,35 @@ export default function TranslateL2toL1({
         {strings.translateL2toL1Headline}
       </div>
       <div className="contextExample">
-                <TranslatableText
-                    isCorrect={isCorrect}
-                    interactiveText={interactiveText}
-                    translating={true}
-                    pronouncing={false}
-                    translatedWords={translatedWords}
-                    setTranslatedWords={setTranslatedWords}
-                    bookmarkToStudy={bookmarksToStudy[0].from}
-                    boldWord={bookmarksToStudy[0].from}
-                />
-            </div>
-      
+        <TranslatableText
+          isCorrect={isCorrect}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          translatedWords={translatedWords}
+          setTranslatedWords={setTranslatedWords}
+          bookmarkToStudy={bookmarksToStudy[0].from}
+          boldWord={bookmarksToStudy[0].from}
+        />
+      </div>
+
       {!isCorrect && (
         <>
-            <BottomInput
-                handleCorrectAnswer={handleCorrectAnswer}
-                handleIncorrectAnswer={handleIncorrectAnswer}
-                bookmarksToStudy={bookmarksToStudy}
-                messageToAPI={messageToAPI}
-                setMessageToAPI={setMessageToAPI}
-                isL1Answer={true}
-            />
+          <BottomInput
+            handleCorrectAnswer={handleCorrectAnswer}
+            handleIncorrectAnswer={handleIncorrectAnswer}
+            bookmarksToStudy={bookmarksToStudy}
+            messageToAPI={messageToAPI}
+            setMessageToAPI={setMessageToAPI}
+            isL1Answer={true}
+          />
         </>
       )}
       {isCorrect && (
         <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>   
+          <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
         </>
-        )}
+      )}
 
       <NextNavigation
         message={messageToAPI}

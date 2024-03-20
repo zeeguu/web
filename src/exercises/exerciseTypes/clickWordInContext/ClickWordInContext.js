@@ -29,7 +29,7 @@ export default function ClickWordInContext({
   activeSessionDuration,
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
+
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
@@ -39,19 +39,17 @@ export default function ClickWordInContext({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-      setArticleInfo(articleInfo);
-    });
+    setInteractiveText(
+      new InteractiveText(
+        bookmarksToStudy[0].context,
+        bookmarksToStudy[0].from_lang,
+        bookmarksToStudy[0].article_id,
+        api,
+        "TRANSLATE WORDS IN EXERCISE",
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
   }, []);
 
   useEffect(() => {
@@ -60,8 +58,14 @@ export default function ClickWordInContext({
 
   function equalAfterRemovingSpecialCharacters(a, b) {
     // from: https://stackoverflow.com/a/4328546
-    let first = a.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ").toLowerCase();
-    let second = b.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ").toLowerCase();
+    let first = a
+      .replace(/[^\w\s\']|_/g, "")
+      .replace(/\s+/g, " ")
+      .toLowerCase();
+    let second = b
+      .replace(/[^\w\s\']|_/g, "")
+      .replace(/\s+/g, " ")
+      .toLowerCase();
     return first === second;
   }
 
@@ -148,7 +152,7 @@ export default function ClickWordInContext({
     notifyIncorrectAnswer(bookmarksToStudy[0]);
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
