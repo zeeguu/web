@@ -66,7 +66,7 @@ export default function Exercises({
     setCountBookmarksToPractice(bookmarks.length);
 
     if (bookmarks.length > 0) {
-      // This can only be initialized here after we can get at least one bookmakr
+      // This can only be initialized here after we can get at least one bookmark
       // and thus, know the language to pronounce in
 
       let exerciseSequenceType = getExerciseSequenceType();
