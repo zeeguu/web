@@ -428,3 +428,45 @@ export const StyledBox = styled.div`
   }
 `;
 
+export const InvisibleBox = styled.div`
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em 0em 0em 0em;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    width: 30em;
+  }
+  margin-left: auto;
+  margin-right: auto;
+
+  h2,
+  h3,
+  h5,
+  p {
+    text-align: center;
+  }
+  .selected {
+    background-color: ${colors.zeeguuVarmYellow} !important;
+    color: white !important;
+  }
+`;
+
+export const CenteredContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  max-width: 90%;
+  align-items: center;
+
+  .imgContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1em;
+    align-items: center;
+  }
+`;
+

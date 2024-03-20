@@ -25,6 +25,7 @@ const colors = {
   circleBorderGray: "#f4f4f6",
   lightOrange: "#ffdead",
   zeeguuLightYellow: "#ffe59e",
+  zeeguuVarmYellow: "#ffd047",
   zeeguuOrange: "#ffbb54",
 
   //scrollbar

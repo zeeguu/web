@@ -6,10 +6,12 @@ import {
   PARAGRAPH_CONTENT,
   HEADER_CONTENT,
 } from "../constants";
-import { StyledBox } from "./Modal.styles";
+import { InvisibleBox, StyledBox } from "./Modal.styles";
 import ReviewVocabulary from "./ReviewVocabulary";
 import LikeFeedbackBox from "../../zeeguu-react/src/reader/LikeFeedbackBox";
 import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/DifficultyFeedbackBox";
+import { random } from "../../zeeguu-react/src/utils/basic/arrays";
+
 import { colors } from "@mui/material";
 
 export function ReadArticle({
@@ -26,13 +28,18 @@ export function ReadArticle({
   setPersonalCopySaved,
   personalCopySaved,
   articleInfo,
-  setArticleInfo,
+  setLikedState,
+  updateArticleDifficultyFeedback,
+  answerSubmitted,
 }) {
   if (articleImage) {
     if (articleImage.src === null) {
       articleImage = undefined;
     }
   }
+
+  
+ 
 
   return (
     <>
@@ -111,17 +118,21 @@ export function ReadArticle({
                 color: "#333333",
               }}
             >
-              Help us make better personalized recommendations by answering the
-              following questions
+              Zeeguu can make better personalized recommendations based on your feedback.
             </div>
             <LikeFeedbackBox
-              api={api}
-              articleID={articleId}
               articleInfo={articleInfo}
-              setArticleInfo={setArticleInfo}
-              source={EXTENSION_SOURCE}
+              setLikedState={setLikedState}
             />
-            <DifficultyFeedbackBox api={api} articleID={articleId} />
+            <DifficultyFeedbackBox 
+              articleInfo={articleInfo}
+              updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
+            />
+            {answerSubmitted && (
+                <InvisibleBox>
+                <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
+              </InvisibleBox>
+            )} 
           </StyledBox>
         </div>
       </div>
