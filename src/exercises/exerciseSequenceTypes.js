@@ -12,7 +12,18 @@ import MultipleChoiceL2toL1 from "./exerciseTypes/multipleChoiceL2toL1/MultipleC
 import ClickWordInContext from "./exerciseTypes/clickWordInContext/ClickWordInContext";
 import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
 
-const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 10;
+export function getNumberOfBookmarksToPractice(sequenceType) {
+  if (
+    sequenceType === 'ACTIVE_SEQUENCE' ||
+    sequenceType === 'ACTIVE_SEQUENCE_NO_AUDIO' ||
+    sequenceType === 'PASSIVE_SEQUENCE' ||
+    sequenceType === 'PASSIVE_SEQUENCE_NO_AUDIO'
+  ) {
+    return 12;
+  } else {
+    return 10;
+  }
+}
 
 let DEFAULT_SEQUENCE = [
   {
@@ -115,10 +126,18 @@ let PASSIVE_SEQUENCE = [
   {
     type: MultipleChoiceContext,
     requiredBookmarks: 3,
+  },
+  {
+    type: ClickWordInContext,
+    requiredBookmarks: 1,
   }
 ];
 
 let PASSIVE_SEQUENCE_NO_AUDIO = [
+  {
+    type: ClickWordInContext,
+    requiredBookmarks: 1,
+  },
   {
     type: Match,
     requiredBookmarks: 3,
@@ -129,6 +148,10 @@ let PASSIVE_SEQUENCE_NO_AUDIO = [
   },
   {
     type: TranslateL2toL1,
+    requiredBookmarks: 1,
+  },
+  {
+    type: ClickWordInContext,
     requiredBookmarks: 1,
   },
   {
@@ -144,10 +167,6 @@ let ACTIVE_SEQUENCE = [
     requiredBookmarks: 3,
   },
   {
-    type: ClickWordInContext,
-    requiredBookmarks: 1,
-  },
-  {
     type: SpellWhatYouHear,
     requiredBookmarks: 1,
   },
@@ -156,17 +175,25 @@ let ACTIVE_SEQUENCE = [
     requiredBookmarks: 1,
   },
   {
+    type: MultipleChoice,
+    requiredBookmarks: 3,
+  },
+  {
     type: MultipleChoiceAudio,
     requiredBookmarks: 3,
   },
   {
-    type: ClickWordInContext,
+    type: FindWordInContextCloze,
     requiredBookmarks: 1,
-  },
+  }
 ];
 
 let ACTIVE_SEQUENCE_NO_AUDIO = [
   {
+    type: FindWordInContextCloze,
+    requiredBookmarks: 1,
+  },
+  {
     type: MultipleChoice,
     requiredBookmarks: 3,
   },
@@ -175,10 +202,6 @@ let ACTIVE_SEQUENCE_NO_AUDIO = [
     requiredBookmarks: 1,
   },
   {
-    type: ClickWordInContext,
-    requiredBookmarks: 1,
-  },
-  {
     type: MultipleChoice,
     requiredBookmarks: 3,
   },
@@ -187,18 +210,17 @@ let ACTIVE_SEQUENCE_NO_AUDIO = [
     requiredBookmarks: 1,
   },
   {
-    type: ClickWordInContext,
-    requiredBookmarks: 1,
-  },
+    type: MultipleChoice,
+    requiredBookmarks: 3,
+  }
 ];
 
 export {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
   EXERCISE_TYPES_TIAGO,
-  NUMBER_OF_BOOKMARKS_TO_PRACTICE,
   PASSIVE_SEQUENCE,
   ACTIVE_SEQUENCE,
   PASSIVE_SEQUENCE_NO_AUDIO,
-  ACTIVE_SEQUENCE_NO_AUDIO,
+  ACTIVE_SEQUENCE_NO_AUDIO
 };

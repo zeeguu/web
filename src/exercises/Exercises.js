@@ -13,9 +13,9 @@ import SessionStorage from "../assorted/SessionStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
 import {
-  DEFAULT_SEQUENCE,
-  DEFAULT_SEQUENCE_NO_AUDIO,
-  NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+  PASSIVE_SEQUENCE,
+  PASSIVE_SEQUENCE_NO_AUDIO,
+  getNumberOfBookmarksToPractice,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
@@ -27,8 +27,10 @@ export default function Exercises({
   keepExercisingAction,
   source,
 }) {
+  const [exerciseSequenceType, setExerciseSequenceType] = useState(getExerciseSequenceType());
+  const [numberOfBookmarksToPractice, setNumberOfBookmarksToPractice] = useState(getNumberOfBookmarksToPractice(exerciseSequenceType));
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
-    NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+    numberOfBookmarksToPractice,
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
@@ -47,11 +49,15 @@ export default function Exercises({
   const [activeSessionDuration, clockActive, setActivityOver] =
     useActivityTimer();
 
+  useEffect(() => {
+    setNumberOfBookmarksToPractice(getNumberOfBookmarksToPractice(exerciseSequenceType));
+  }, [exerciseSequenceType]);
+
   function getExerciseSequenceType() {
-    let exerciseTypesList = DEFAULT_SEQUENCE;
+    let exerciseTypesList = PASSIVE_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
       console.log("Will not use audio!");
-      exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
+      exerciseTypesList = PASSIVE_SEQUENCE_NO_AUDIO;
     }
     return exerciseTypesList;
   }
@@ -102,7 +108,7 @@ export default function Exercises({
           });
         } else {
           api.getUserBookmarksToStudy(
-            NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+            numberOfBookmarksToPractice,
             (bookmarks) => {
               initializeExercises(bookmarks, strings.exercises);
             },
