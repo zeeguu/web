@@ -14,10 +14,10 @@ import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/Multipl
 
 export function getNumberOfBookmarksToPractice(sequenceType) {
   if (
-    sequenceType === 'ACTIVE_SEQUENCE' ||
-    sequenceType === 'ACTIVE_SEQUENCE_NO_AUDIO' ||
-    sequenceType === 'PASSIVE_SEQUENCE' ||
-    sequenceType === 'PASSIVE_SEQUENCE_NO_AUDIO'
+    sequenceType === ACTIVE_SEQUENCE ||
+    sequenceType === ACTIVE_SEQUENCE_NO_AUDIO ||
+    sequenceType === PASSIVE_SEQUENCE ||
+    sequenceType === PASSIVE_SEQUENCE_NO_AUDIO
   ) {
     return 12;
   } else {
