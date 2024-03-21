@@ -1,4 +1,4 @@
-import * as s from "../RedirectionNotificationModal.sc";
+import * as s from "./Modal.sc";
 
 export default function Header({ children }) {
   return (

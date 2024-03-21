@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 //Global modal content style settings
 
+//moved
 const ModalWrapperGlobal = styled(ModalWrapper)`
   h1 {
     font-size: 1.3em;
@@ -28,6 +29,7 @@ const ModalWrapperGlobal = styled(ModalWrapper)`
   }
 `;
 
+//copied
 const ModalHeaderGlobal = styled.div`
   margin: 1em 0;
   @media (max-width: 576px) {
@@ -35,12 +37,14 @@ const ModalHeaderGlobal = styled.div`
   }
 `;
 
+//copied
 const ModalStrongTextWrapperGlobal = styled.span`
   margin: 0;
   display: inline;
   font-weight: 700;
 `;
 
+//copied
 const ModalBodyGlobal = styled.div`
   display: flex;
   flex-direction: column;
@@ -57,6 +61,7 @@ const ModalBodyGlobal = styled.div`
   }
 `;
 
+//copied
 const ModalFooterGlobal = styled.div`
   display: flex;
   flex-direction: column;
@@ -74,6 +79,7 @@ const ModalFooterGlobal = styled.div`
   }
 `;
 
+//copied
 const CloseButtonGlobal = styled.div`
   cursor: pointer;
   padding: 1px;

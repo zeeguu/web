@@ -1,4 +1,4 @@
-import * as s from "./RedirectionNotificationModal.sc";
+import * as s from "./modal_shared/Modal.sc";
 import { useState } from "react";
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";

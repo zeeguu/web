@@ -1,4 +1,4 @@
-import * as s from "./RedirectionNotificationModal.sc";
+import * as s from "./modal_shared/Modal.sc";
 import { getExtensionInstallationLinks } from "../../utils/misc/extensionCommunication";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Modal from "./modal_shared/Modal";
