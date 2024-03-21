@@ -1,4 +1,5 @@
 import * as s from "./RedirectionNotificationModal.sc";
+import { getExtensionInstallationLinks } from "../../utils/misc/extensionCommunication";
 import {
   runningInChromeDesktop,
   runningInFirefoxDesktop,
@@ -19,14 +20,14 @@ export default function SupportedNotification_NotInstalled({
     handleCloseRedirectionModal();
   }
 
-  function getInstallExtensionLinks() {
-    if (runningInChromeDesktop()) {
-      return "https://chrome.google.com/webstore/detail/the-zeeguu-reader/ckncjmaednfephhbpeookmknhmjjodcd";
-    }
-    if (runningInFirefoxDesktop()) {
-      return "https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/";
-    }
-  }
+  // function getInstallExtensionLinks() {
+  //   if (runningInChromeDesktop()) {
+  //     return "https://chrome.google.com/webstore/detail/the-zeeguu-reader/ckncjmaednfephhbpeookmknhmjjodcd";
+  //   }
+  //   if (runningInFirefoxDesktop()) {
+  //     return "https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/";
+  //   }
+  // }
 
   return (
     <Modal open={open} onClose={handleCancel}>
@@ -46,7 +47,7 @@ export default function SupportedNotification_NotInstalled({
       </Body>
       <Footer>
         <s.ButtonsContainer oneButton>
-          <GoToButton target={"_blank"} href={getInstallExtensionLinks()}>
+          <GoToButton target={"_blank"} href={getExtensionInstallationLinks()}>
             <DownloadRoundedIcon fontSize="small" />
             Install the Extension
           </GoToButton>
