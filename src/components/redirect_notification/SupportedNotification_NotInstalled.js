@@ -3,6 +3,7 @@ import { getExtensionInstallationLinks } from "../../utils/misc/extensionCommuni
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
+import Heading from "./modal_shared/Heading";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import GoToButton from "./modal_shared/GoToButton";
@@ -19,8 +20,10 @@ export default function SupportedNotification_NotInstalled({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        <Icon src={"../static/images/zeeguuLogo.svg"} />
-        The Zeeguu Reader<br></br>browser extension is not installed
+        <Heading>
+          <Icon src={"../static/images/zeeguuLogo.svg"} />
+          The Zeeguu Reader<br></br>browser extension is not installed
+        </Heading>
       </Header>
       <Body>
         <p>

@@ -4,18 +4,6 @@ import { OrangeRoundButton } from "../../allButtons.sc";
 import styled, { css } from "styled-components";
 
 const ModalWrapper = styled(Wrapper)`
-  h1 {
-    font-size: 1.3em;
-    line-height: 150%;
-    text-align: center;
-    font-weight: 700;
-    margin: 0;
-    @media (max-width: 576px) {
-      text-align: left;
-      font-size: 1.2em;
-    }
-  }
-
   p {
     line-height: 150%;
     text-align: left;
@@ -34,6 +22,18 @@ const ModalWrapper = styled(Wrapper)`
   .annotation {
     color: orange;
     font-weight: 500;
+  }
+`;
+
+const Heading = styled.h1`
+  font-size: 1.3em;
+  line-height: 150%;
+  text-align: center;
+  font-weight: 700;
+  margin: 0;
+  @media (max-width: 576px) {
+    text-align: left;
+    font-size: 1.2em;
   }
 `;
 
@@ -217,6 +217,7 @@ export {
   ButtonsContainer,
   Icon,
   Header,
+  Heading,
   Body,
   Footer,
   CheckboxWrapper,

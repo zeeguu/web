@@ -2,6 +2,7 @@ import * as s from "./modal_shared/Modal.sc";
 import { useState } from "react";
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
+import Heading from "./modal_shared/Heading";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
@@ -81,9 +82,11 @@ export default function UnsupportedNotification({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        Your browser doesn't support <br></br>
-        <Icon src={"../static/images/zeeguuLogo.svg"} />
-        The Zeeguu Reader extension
+        <Heading>
+          Your browser doesn't support <br></br>
+          <Icon src={"../static/images/zeeguuLogo.svg"} />
+          The Zeeguu Reader extension
+        </Heading>
       </Header>
       <Body>
         <p>

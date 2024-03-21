@@ -2,6 +2,7 @@ import * as s from "./modal_shared/Modal.sc";
 import { useState } from "react";
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
+import Heading from "./modal_shared/Heading";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import Checkbox from "./modal_shared/Checkbox";
@@ -56,7 +57,9 @@ export default function MobileNotification({
 
   return (
     <Modal open={open} onClose={handleCancel}>
-      <Header>It looks like you are using&nbsp;a&nbsp;mobile device</Header>
+      <Header>
+        <Heading>It looks like you are using&nbsp;a&nbsp;mobile device</Heading>
+      </Header>
       <Body>
         <p>
           If you want to read articles with the help of Zeeguu on your mobile

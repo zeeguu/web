@@ -2,6 +2,7 @@ import * as s from "./modal_shared/Modal.sc";
 import { useState } from "react";
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
+import Heading from "./modal_shared/Heading";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
 import Checkbox from "./modal_shared/Checkbox";
@@ -40,7 +41,10 @@ export default function SupportedNotification({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        You are ready to&nbsp;continue<br></br>to the original article's website
+        <Heading>
+          You are ready to&nbsp;continue<br></br>to the original article's
+          website
+        </Heading>
       </Header>
       <Body>
         <p>
