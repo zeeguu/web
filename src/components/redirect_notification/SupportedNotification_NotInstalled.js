@@ -1,9 +1,5 @@
 import * as s from "./RedirectionNotificationModal.sc";
 import { getExtensionInstallationLinks } from "../../utils/misc/extensionCommunication";
-import {
-  runningInChromeDesktop,
-  runningInFirefoxDesktop,
-} from "../../utils/misc/browserDetection";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
@@ -19,15 +15,6 @@ export default function SupportedNotification_NotInstalled({
   function handleCancel() {
     handleCloseRedirectionModal();
   }
-
-  // function getInstallExtensionLinks() {
-  //   if (runningInChromeDesktop()) {
-  //     return "https://chrome.google.com/webstore/detail/the-zeeguu-reader/ckncjmaednfephhbpeookmknhmjjodcd";
-  //   }
-  //   if (runningInFirefoxDesktop()) {
-  //     return "https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/";
-  //   }
-  // }
 
   return (
     <Modal open={open} onClose={handleCancel}>

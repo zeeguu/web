@@ -1,4 +1,5 @@
 import Modal from "@mui/material/Modal";
+import { getExtensionInstallationLinks } from "../utils/misc/extensionCommunication";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import * as s from "./ExtensionMessage.sc";
@@ -58,23 +59,12 @@ export default function ExtensionMessage({
           <s.Footer>
             <a
               className="install-links"
-              href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
+              href={getExtensionInstallationLinks()}
               rel="noopener noreferrer"
             >
               <s.InstallLink>
                 <FileDownloadOutlinedIcon fontSize="small" />
-                {strings.extensionChromeInstall}
-              </s.InstallLink>
-            </a>
-
-            <a
-              className="install-links"
-              href="https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/"
-              rel="noopener noreferrer"
-            >
-              <s.InstallLink>
-                <FileDownloadOutlinedIcon fontSize="small" />
-                {strings.extensionFirefoxInstall}
+                Install the Extension
               </s.InstallLink>
             </a>
           </s.Footer>
