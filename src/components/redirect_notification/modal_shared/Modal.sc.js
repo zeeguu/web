@@ -1,4 +1,4 @@
-import { ModalWrapper as Wrapper } from "../../ModalWrapper.sc"; //responsible for modal wrapper background, size and scaling
+import { ModalWrapper as Wrapper } from "./ModalWrapper.sc"; //responsible for modal wrapper background, size and scaling
 import { zeeguuDarkOrange, zeeguuOrange } from "../../colors";
 import { OrangeRoundButton } from "../../allButtons.sc";
 import styled, { css } from "styled-components";
