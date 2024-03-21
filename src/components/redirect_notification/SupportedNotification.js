@@ -5,6 +5,7 @@ import Header from "./modal_shared/Header";
 import Heading from "./modal_shared/Heading";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
+import ButtonContainer from "./modal_shared/ButtonContainer";
 import Checkbox from "./modal_shared/Checkbox";
 import GoToButton from "./modal_shared/GoToButton";
 
@@ -63,7 +64,7 @@ export default function SupportedNotification({
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <s.ButtonsContainer oneButton>
+        <ButtonContainer buttonCountNum={1}>
           <GoToButton
             target={"_blank"}
             href={article.url}
@@ -71,7 +72,7 @@ export default function SupportedNotification({
           >
             Enter the article's website
           </GoToButton>
-        </s.ButtonsContainer>
+        </ButtonContainer>
       </Footer>
     </Modal>
   );

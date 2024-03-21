@@ -1,7 +1,9 @@
 import Modal from "./redirect_notification/modal_shared/Modal";
 import Header from "./redirect_notification/modal_shared/Header";
+import Heading from "./redirect_notification/modal_shared/Heading";
 import Body from "./redirect_notification/modal_shared/Body";
 import Footer from "../pages/info_page_shared/Footer";
+import ButtonContainer from "./redirect_notification/modal_shared/ButtonContainer";
 import GoToButton from "./redirect_notification/modal_shared/GoToButton";
 import { getExtensionInstallationLinks } from "../utils/misc/extensionCommunication";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
@@ -35,8 +37,10 @@ export default function ExtensionMessage({
         // aria-describedby="modal-modal-description"
       >
         <Header>
-          <span className="annotation">New!</span>&nbsp;
-          {strings.extensionHeadline}
+          <Heading>
+            <span className="annotation">New!</span>&nbsp;
+            {strings.extensionHeadline}
+          </Heading>
         </Header>
         <Body>
           <p>
@@ -53,10 +57,12 @@ export default function ExtensionMessage({
           />
         </Body>
         <Footer>
-          <GoToButton href={getExtensionInstallationLinks()}>
-            <FileDownloadOutlinedIcon fontSize="small" />
-            Install the Extension
-          </GoToButton>
+          <ButtonContainer buttonCountNum={1}>
+            <GoToButton href={getExtensionInstallationLinks()}>
+              <FileDownloadOutlinedIcon fontSize="small" />
+              Install the Extension
+            </GoToButton>
+          </ButtonContainer>
         </Footer>
       </Modal>
     );

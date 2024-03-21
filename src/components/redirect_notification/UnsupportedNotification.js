@@ -5,6 +5,7 @@ import Header from "./modal_shared/Header";
 import Heading from "./modal_shared/Heading";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
+import ButtonContainer from "./modal_shared/ButtonContainer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import GoToButton from "./modal_shared/GoToButton";
 import Icon from "./modal_shared/Icon";
@@ -115,7 +116,7 @@ export default function UnsupportedNotification({
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <s.ButtonsContainer moreButtons>
+        <ButtonContainer buttonCountNum={2}>
           <GoToButton
             target={"_blank"}
             href={article.url}
@@ -130,7 +131,7 @@ export default function UnsupportedNotification({
             <BookmarkBorderIcon fontSize="small" />
             Add to Saves
           </s.SaveArticleButton>
-        </s.ButtonsContainer>
+        </ButtonContainer>
       </Footer>
     </Modal>
   );

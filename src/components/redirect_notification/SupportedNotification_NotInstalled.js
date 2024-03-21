@@ -6,6 +6,7 @@ import Header from "./modal_shared/Header";
 import Heading from "./modal_shared/Heading";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
+import ButtonContainer from "./modal_shared/ButtonContainer";
 import GoToButton from "./modal_shared/GoToButton";
 import Icon from "./modal_shared/Icon";
 
@@ -36,12 +37,12 @@ export default function SupportedNotification_NotInstalled({
         </p>
       </Body>
       <Footer>
-        <s.ButtonsContainer oneButton>
+        <ButtonContainer buttonCountNum={1}>
           <GoToButton target={"_blank"} href={getExtensionInstallationLinks()}>
             <DownloadRoundedIcon fontSize="small" />
             Install the Extension
           </GoToButton>
-        </s.ButtonsContainer>
+        </ButtonContainer>
       </Footer>
     </Modal>
   );

@@ -5,6 +5,7 @@ import Header from "./modal_shared/Header";
 import Heading from "./modal_shared/Heading";
 import Body from "./modal_shared/Body";
 import Footer from "./modal_shared/Footer";
+import ButtonContainer from "./modal_shared/ButtonContainer";
 import Checkbox from "./modal_shared/Checkbox";
 import GoToButton from "./modal_shared/GoToButton";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
@@ -73,7 +74,7 @@ export default function MobileNotification({
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <s.ButtonsContainer moreButtons>
+        <ButtonContainer buttonCountNum={2}>
           <GoToButton
             href={article.url}
             target={"_self"}
@@ -88,7 +89,7 @@ export default function MobileNotification({
             <BookmarkBorderIcon fontSize="small" />
             Add to Saves
           </s.SaveArticleButton>
-        </s.ButtonsContainer>
+        </ButtonContainer>
       </Footer>
     </Modal>
   );

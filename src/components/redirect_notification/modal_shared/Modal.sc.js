@@ -92,13 +92,13 @@ const ButtonsContainer = styled.div`
   justify-content: space-between;
 
   ${(props) =>
-    props.oneButton &&
+    props.buttonCountNum === 1 &&
     css`
       justify-content: center;
     `}
 
   ${(props) =>
-    props.moreButtons &&
+    props.buttonCountNum > 1 &&
     css`
       justify-content: space-between;
     `}
