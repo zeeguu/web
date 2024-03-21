@@ -1,8 +1,10 @@
-import Modal from "@mui/material/Modal";
+import Modal from "./redirect_notification/modal_shared/Modal";
+import Header from "./redirect_notification/modal_shared/Header";
+import Body from "./redirect_notification/modal_shared/Body";
+import Footer from "../pages/info_page_shared/Footer";
+import GoToButton from "./redirect_notification/modal_shared/GoToButton";
 import { getExtensionInstallationLinks } from "../utils/misc/extensionCommunication";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import * as s from "./ExtensionMessage.sc";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
@@ -29,46 +31,33 @@ export default function ExtensionMessage({
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        // aria-labelledby="modal-modal-title"
+        // aria-describedby="modal-modal-description"
       >
-        <s.ModalWrapper>
-          <s.CloseButton role="button" onClick={handleClose}>
-            <CloseRoundedIcon fontSize="medium" />
-          </s.CloseButton>
-          <s.Header className="modalHeader">
-            <h1>
-              <span className="annotation">New!</span>&nbsp;
-              {strings.extensionHeadline}
-            </h1>
-          </s.Header>
-          <s.Body className="modalBody">
-            <p>
-              {/* Proposal for a shortened and updated paragraph, temporarily hardcoded */}
-              To read articles recommended by Zeeguu that are not saved or to
-              read external articles, you need to install The Zeeguu Reader
-              browser extension.
-            </p>
-            <img
-              className="full-width-img"
-              src={"../static/images/find-extension.png"}
-              //TODO: Add new alt description
-              alt="Zeeguu browser extension"
-            />
-          </s.Body>
-          <s.Footer>
-            <a
-              className="install-links"
-              href={getExtensionInstallationLinks()}
-              rel="noopener noreferrer"
-            >
-              <s.InstallLink>
-                <FileDownloadOutlinedIcon fontSize="small" />
-                Install the Extension
-              </s.InstallLink>
-            </a>
-          </s.Footer>
-        </s.ModalWrapper>
+        <Header>
+          <span className="annotation">New!</span>&nbsp;
+          {strings.extensionHeadline}
+        </Header>
+        <Body>
+          <p>
+            {/* Proposal for a shortened and updated paragraph, temporarily hardcoded */}
+            To read articles recommended by Zeeguu that are not saved or to read
+            external articles, you need to install The Zeeguu Reader browser
+            extension.
+          </p>
+          <img
+            className="full-width-img"
+            src={"../static/images/find-extension.png"}
+            //TODO: Add new alt description
+            alt="Zeeguu browser extension"
+          />
+        </Body>
+        <Footer>
+          <GoToButton href={getExtensionInstallationLinks()}>
+            <FileDownloadOutlinedIcon fontSize="small" />
+            Install the Extension
+          </GoToButton>
+        </Footer>
       </Modal>
     );
   } else return null;
