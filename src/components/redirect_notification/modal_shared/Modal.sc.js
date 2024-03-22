@@ -85,14 +85,15 @@ const Body = styled.main`
   align-items: center;
   gap: 1.5em;
   margin: 1em 0;
-  .full-width-img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-  }
   @media (max-width: 576px) {
     margin: 0.8em 0;
   }
+`;
+
+const MainImage = styled.img`
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 `;
 
 const Footer = styled.footer`
@@ -248,6 +249,7 @@ export {
   Header,
   Heading,
   Body,
+  MainImage,
   Footer,
   CheckboxWrapper,
   Strong,

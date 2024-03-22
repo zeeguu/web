@@ -2,6 +2,7 @@ import Modal from "./redirect_notification/modal_shared/Modal";
 import Header from "./redirect_notification/modal_shared/Header";
 import Heading from "./redirect_notification/modal_shared/Heading";
 import Body from "./redirect_notification/modal_shared/Body";
+import MainImage from "./redirect_notification/modal_shared/MainImage";
 import Footer from "../pages/info_page_shared/Footer";
 import ButtonContainer from "./redirect_notification/modal_shared/ButtonContainer";
 import GoToButton from "./redirect_notification/modal_shared/GoToButton";
@@ -49,11 +50,9 @@ export default function ExtensionMessage({
             external articles, you need to install The Zeeguu Reader browser
             extension.
           </p>
-          <img
-            className="full-width-img"
+          <MainImage
             src={"../static/images/find-extension.png"}
-            //TODO: Add new alt description
-            alt="Zeeguu browser extension"
+            alt={"Zeeguu browser extension"}
           />
         </Body>
         <Footer>

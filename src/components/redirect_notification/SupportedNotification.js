@@ -4,6 +4,7 @@ import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Heading from "./modal_shared/Heading";
 import Body from "./modal_shared/Body";
+import MainImage from "./modal_shared/MainImage";
 import Footer from "./modal_shared/Footer";
 import ButtonContainer from "./modal_shared/ButtonContainer";
 import Checkbox from "./modal_shared/Checkbox";
@@ -52,10 +53,9 @@ export default function SupportedNotification({
           Once there, <s.Strong>right-click</s.Strong> anywhere on the page and
           select the "Read with Zeeguu" option.
         </p>
-        <img
-          className="full-width-img"
+        <MainImage
           src={"../static/images/use-extension.png"}
-          alt="Zeeguu browser extension"
+          alt={"Zeeguu browser extension"}
         />
       </Body>
       <Footer>
