@@ -3,7 +3,7 @@ import { useState } from "react";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";
 import Heading from "../modal_shared/Heading";
-import Body from "../modal_shared/Body";
+import Main from "../modal_shared/Main";
 import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import Checkbox from "../modal_shared/Checkbox";
@@ -61,13 +61,13 @@ export default function MobileNotification({
       <Header>
         <Heading>It looks like you are using&nbsp;a&nbsp;mobile device</Heading>
       </Header>
-      <Body>
+      <Main>
         <p>
           If you want to read articles with the help of Zeeguu on your mobile
           device, you need to save them first by clicking the
           <s.Strong> Add&nbsp;to&nbsp;Saves</s.Strong> button.
         </p>
-      </Body>
+      </Main>
       <Footer>
         <Checkbox
           label={"Don't show this message again"}

@@ -79,7 +79,7 @@ const Header = styled.header`
   }
 `;
 
-const Body = styled.main`
+const Main = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -248,7 +248,7 @@ export {
   Icon,
   Header,
   Heading,
-  Body,
+  Main,
   MainImage,
   Footer,
   CheckboxWrapper,

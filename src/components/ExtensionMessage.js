@@ -1,7 +1,7 @@
 import Modal from "./modal_shared/Modal";
 import Header from "./modal_shared/Header";
 import Heading from "./modal_shared/Heading";
-import Body from "./modal_shared/Body";
+import Main from "./modal_shared/Main";
 import MainImage from "./modal_shared/MainImage";
 import Footer from "../pages/info_page_shared/Footer";
 import ButtonContainer from "./modal_shared/ButtonContainer";
@@ -34,8 +34,8 @@ export default function ExtensionMessage({
       <Modal
         open={open}
         onClose={handleClose}
-        // aria-labelledby="modal-modal-title"
-        // aria-describedby="modal-modal-description"
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
         <Header>
           <Heading>
@@ -43,7 +43,7 @@ export default function ExtensionMessage({
             {strings.extensionHeadline}
           </Heading>
         </Header>
-        <Body>
+        <Main>
           <p>
             {/* Proposal for a shortened and updated paragraph, temporarily hardcoded */}
             To read articles recommended by Zeeguu that are not saved or to read
@@ -54,7 +54,7 @@ export default function ExtensionMessage({
             src={"../static/images/find-extension.png"}
             alt={"Zeeguu browser extension"}
           />
-        </Body>
+        </Main>
         <Footer>
           <ButtonContainer buttonCountNum={1}>
             <GoToButton href={getExtensionInstallationLinks()}>

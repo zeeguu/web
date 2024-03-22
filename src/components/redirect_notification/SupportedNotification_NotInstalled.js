@@ -4,7 +4,7 @@ import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";
 import Heading from "../modal_shared/Heading";
-import Body from "../modal_shared/Body";
+import Main from "../modal_shared/Main";
 import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import GoToButton from "../modal_shared/GoToButton";
@@ -26,7 +26,7 @@ export default function SupportedNotification_NotInstalled({
           The Zeeguu Reader<br></br>browser extension is not installed
         </Heading>
       </Header>
-      <Body>
+      <Main>
         <p>
           For the best user experience we recommend you to read articles with{" "}
           <s.Strong>The Zeeguu Reader</s.Strong> browser extension.
@@ -35,7 +35,7 @@ export default function SupportedNotification_NotInstalled({
           To read this article with the help of Zeeguu without the extension,
           simply click "Add to Saves" above the article's title.
         </p>
-      </Body>
+      </Main>
       <Footer>
         <ButtonContainer buttonCountNum={1}>
           <GoToButton target={"_blank"} href={getExtensionInstallationLinks()}>

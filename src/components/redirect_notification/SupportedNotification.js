@@ -3,7 +3,7 @@ import { useState } from "react";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";
 import Heading from "../modal_shared/Heading";
-import Body from "../modal_shared/Body";
+import Main from "../modal_shared/Main";
 import MainImage from "../modal_shared/MainImage";
 import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
@@ -48,7 +48,7 @@ export default function SupportedNotification({
           website
         </Heading>
       </Header>
-      <Body>
+      <Main>
         <p>
           Once there, <s.Strong>right-click</s.Strong> anywhere on the page and
           select the "Read with Zeeguu" option.
@@ -57,7 +57,7 @@ export default function SupportedNotification({
           src={"../static/images/use-extension.png"}
           alt={"Zeeguu browser extension"}
         />
-      </Body>
+      </Main>
       <Footer>
         <Checkbox
           label={"Don't show this message again"}

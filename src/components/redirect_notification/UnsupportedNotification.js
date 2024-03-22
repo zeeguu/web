@@ -3,7 +3,7 @@ import { useState } from "react";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";
 import Heading from "../modal_shared/Heading";
-import Body from "../modal_shared/Body";
+import Main from "../modal_shared/Main";
 import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
@@ -89,7 +89,7 @@ export default function UnsupportedNotification({
           The Zeeguu Reader extension
         </Heading>
       </Header>
-      <Body>
+      <Main>
         <p>
           To read articles with our extension, we recommend installing{" "}
           {renderExternalLink(
@@ -109,7 +109,7 @@ export default function UnsupportedNotification({
           your current browser, click
           <s.Strong> Add&nbsp;to&nbsp;Saves</s.Strong> to save it first.
         </p>
-      </Body>
+      </Main>
       <Footer>
         <Checkbox
           label={"Don't show this message again"}
