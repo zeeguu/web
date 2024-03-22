@@ -1,14 +1,14 @@
-import * as s from "./modal_shared/Modal.sc";
+import * as s from "../modal_shared/Modal.sc";
 import { getExtensionInstallationLinks } from "../../utils/misc/extensionCommunication";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-import Modal from "./modal_shared/Modal";
-import Header from "./modal_shared/Header";
-import Heading from "./modal_shared/Heading";
-import Body from "./modal_shared/Body";
-import Footer from "./modal_shared/Footer";
-import ButtonContainer from "./modal_shared/ButtonContainer";
-import GoToButton from "./modal_shared/GoToButton";
-import Icon from "./modal_shared/Icon";
+import Modal from "../modal_shared/Modal";
+import Header from "../modal_shared/Header";
+import Heading from "../modal_shared/Heading";
+import Body from "../modal_shared/Body";
+import Footer from "../modal_shared/Footer";
+import ButtonContainer from "../modal_shared/ButtonContainer";
+import GoToButton from "../modal_shared/GoToButton";
+import Icon from "../modal_shared/Icon";
 
 export default function SupportedNotification_NotInstalled({
   handleCloseRedirectionModal,

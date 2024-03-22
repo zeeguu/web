@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
-import { zeeguuDarkOrange, zeeguuOrange } from "../../colors";
-import { OrangeRoundButton } from "../../allButtons.sc";
+import { zeeguuDarkOrange, zeeguuOrange } from "../colors";
+import { OrangeRoundButton } from "../allButtons.sc";
 import styled, { css } from "styled-components";
 
 //responsible for modal wrapper background, size and scaling

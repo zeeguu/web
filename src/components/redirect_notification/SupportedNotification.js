@@ -1,14 +1,14 @@
-import * as s from "./modal_shared/Modal.sc";
+import * as s from "../modal_shared/Modal.sc";
 import { useState } from "react";
-import Modal from "./modal_shared/Modal";
-import Header from "./modal_shared/Header";
-import Heading from "./modal_shared/Heading";
-import Body from "./modal_shared/Body";
-import MainImage from "./modal_shared/MainImage";
-import Footer from "./modal_shared/Footer";
-import ButtonContainer from "./modal_shared/ButtonContainer";
-import Checkbox from "./modal_shared/Checkbox";
-import GoToButton from "./modal_shared/GoToButton";
+import Modal from "../modal_shared/Modal";
+import Header from "../modal_shared/Header";
+import Heading from "../modal_shared/Heading";
+import Body from "../modal_shared/Body";
+import MainImage from "../modal_shared/MainImage";
+import Footer from "../modal_shared/Footer";
+import ButtonContainer from "../modal_shared/ButtonContainer";
+import Checkbox from "../modal_shared/Checkbox";
+import GoToButton from "../modal_shared/GoToButton";
 
 export default function SupportedNotification({
   article,
