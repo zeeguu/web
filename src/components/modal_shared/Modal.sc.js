@@ -66,17 +66,17 @@ const Heading = styled.h1`
   }
 `;
 
-const Strong = styled.span`
-  margin: 0;
-  display: inline;
-  font-weight: 700;
-`;
-
 const Header = styled.header`
   margin: 1em 0;
   @media (max-width: 576px) {
     margin: 0.8em 0;
   }
+`;
+
+const Strong = styled.span`
+  margin: 0;
+  display: inline;
+  font-weight: 700;
 `;
 
 const Main = styled.main`
@@ -96,6 +96,20 @@ const MainImage = styled.img`
   object-fit: contain;
 `;
 
+const Icon = styled.img`
+  margin: 0 0.4rem -0.1rem 0;
+  height: 1.2rem;
+  width: 1.2rem;
+
+  ${(props) =>
+    props.type === "small" &&
+    css`
+      margin: 0 0.4rem;
+      height: 1rem;
+      width: 1rem;
+    `}
+`;
+
 const Footer = styled.footer`
   display: flex;
   flex-direction: column;
@@ -110,6 +124,30 @@ const Footer = styled.footer`
   }
   @media (max-width: 576px) {
     margin: 0.8em 0;
+  }
+`;
+
+const CheckboxWrapper = styled.div`
+  margin-top: -0.8em;
+  align-self: start;
+  display: grid;
+  grid-template-columns: 1em auto;
+  align-items: center;
+  gap: 0.5em;
+  @media (max-width: 576px) {
+    margin-top: -0.5em;
+  }
+  label {
+    font-size: 0.9em;
+  }
+  input[type="checkbox"] {
+    width: 1.2em;
+    height: 1.2em;
+    accent-color: ${zeeguuOrange};
+    @media (max-width: 576px) {
+      width: 1rem;
+      height: 1rem;
+    }
   }
 `;
 
@@ -140,58 +178,6 @@ const ButtonsContainer = styled.div`
   }
 `;
 
-const CloseButton = styled.div`
-  cursor: pointer;
-  padding: 1px;
-  text-align: right;
-  position: absolute;
-  float: right;
-  right: 16px;
-  margin-top: -16px;
-  @media (max-width: 576px) {
-    right: 16px;
-    margin-top: -8px;
-  }
-`;
-
-const Icon = styled.img`
-  margin: 0 0.4rem -0.1rem 0;
-  height: 1.2rem;
-  width: 1.2rem;
-
-  ${(props) =>
-    props.type === "small" &&
-    css`
-      margin: 0 0.4rem;
-      height: 1rem;
-      width: 1rem;
-    `}
-`;
-
-const CheckboxWrapper = styled.div`
-  margin-top: -0.8em;
-  align-self: start;
-  display: grid;
-  grid-template-columns: 1em auto;
-  align-items: center;
-  gap: 0.5em;
-  @media (max-width: 576px) {
-    margin-top: -0.5em;
-  }
-  label {
-    font-size: 0.9em;
-  }
-  input[type="checkbox"] {
-    width: 1.2em;
-    height: 1.2em;
-    accent-color: ${zeeguuOrange};
-    @media (max-width: 576px) {
-      width: 1rem;
-      height: 1rem;
-    }
-  }
-`;
-
 //redesigned button for a better focal point and improved
 //readability of the text inside it.
 //TODO: After implementing all the onboarding steps,
@@ -208,13 +194,7 @@ const GoToButton = styled(OrangeRoundButton)`
   border-bottom: solid 0.2em ${zeeguuDarkOrange};
 `;
 
-const ExternalLink = styled.a`
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const SaveArticleButton = styled.button`
+const AddToSavesButton = styled.button`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -238,11 +218,31 @@ const SaveArticleButton = styled.button`
   }
 `;
 
+const CloseButton = styled.div`
+  cursor: pointer;
+  padding: 1px;
+  text-align: right;
+  position: absolute;
+  float: right;
+  right: 16px;
+  margin-top: -16px;
+  @media (max-width: 576px) {
+    right: 16px;
+    margin-top: -8px;
+  }
+`;
+
+const ExternalLink = styled.a`
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 export {
   ModalWrapper,
   CloseButton,
   GoToButton,
-  SaveArticleButton,
+  AddToSavesButton,
   ExternalLink,
   ButtonsContainer,
   Icon,

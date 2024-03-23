@@ -8,6 +8,7 @@ import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import GoToButton from "../modal_shared/GoToButton";
+import AddToSavesButton from "../modal_shared/AddToSavesButton";
 import Icon from "../modal_shared/Icon";
 import Checkbox from "../modal_shared/Checkbox";
 
@@ -124,13 +125,10 @@ export default function UnsupportedNotification({
           >
             Enter the article's website
           </GoToButton>
-          <s.SaveArticleButton
-            role="button"
-            onClick={handleSaveArticleFromTheModal}
-          >
+          <AddToSavesButton onClick={handleSaveArticleFromTheModal}>
             <BookmarkBorderIcon fontSize="small" />
             Add to Saves
-          </s.SaveArticleButton>
+          </AddToSavesButton>
         </ButtonContainer>
       </Footer>
     </Modal>

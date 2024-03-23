@@ -45,7 +45,6 @@ export default function ExtensionMessage({
         </Header>
         <Main>
           <p>
-            {/* Proposal for a shortened and updated paragraph, temporarily hardcoded */}
             To read articles recommended by Zeeguu that are not saved or to read
             external articles, you need to install The Zeeguu Reader browser
             extension.
@@ -57,7 +56,10 @@ export default function ExtensionMessage({
         </Main>
         <Footer>
           <ButtonContainer buttonCountNum={1}>
-            <GoToButton href={getExtensionInstallationLinks()}>
+            <GoToButton
+              target={"_blank"}
+              href={getExtensionInstallationLinks()}
+            >
               <FileDownloadOutlinedIcon fontSize="small" />
               Install the Extension
             </GoToButton>

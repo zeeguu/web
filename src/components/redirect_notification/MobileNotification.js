@@ -8,6 +8,7 @@ import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import Checkbox from "../modal_shared/Checkbox";
 import GoToButton from "../modal_shared/GoToButton";
+import AddToSavesButton from "../modal_shared/AddToSavesButton";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 export default function MobileNotification({
@@ -82,13 +83,10 @@ export default function MobileNotification({
           >
             Enter the article's website
           </GoToButton>
-          <s.SaveArticleButton
-            role="button"
-            onClick={handleSaveArticleFromTheModal}
-          >
+          <AddToSavesButton onClick={handleSaveArticleFromTheModal}>
             <BookmarkBorderIcon fontSize="small" />
             Add to Saves
-          </s.SaveArticleButton>
+          </AddToSavesButton>
         </ButtonContainer>
       </Footer>
     </Modal>
