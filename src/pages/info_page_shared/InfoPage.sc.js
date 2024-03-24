@@ -46,7 +46,8 @@ const ContentWrapper = styled.div`
 
   p {
     font-size: 0.9em;
-    margin-block-end: 0em;
+    /* margin-block-end: 0em; */
+    margin: 0;
   }
 `;
 
@@ -85,6 +86,17 @@ const Heading = styled.h1`
 
 const Main = styled.main`
   ${BaseSectionStyle}
+  line-height: 150%;
+
+  p {
+    width: 80%;
+  }
+
+  @media (max-width: 768px) {
+    p {
+      width: 100%;
+    }
+  }
 `;
 
 const MainImage = styled.img`
