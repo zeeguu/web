@@ -17,8 +17,8 @@ export default function InstallExtension() {
       </Header>
       <Main>
         <p>
-          Time to install the Zeeguu browser extension, which enables you to
-          read and translate articles and solve exercises
+          Time to install The Zeeguu Reader browser extension, which enables you
+          to&nbsp;read and translate articles and solve exercises
         </p>
         <MainImage src={"../static/images/find-extension.png"} />
       </Main>
