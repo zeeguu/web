@@ -1,4 +1,4 @@
-# Running
+# Running the system
 
 Copy `.env.development.default` to `.env.development`.
 Configure the right `REACT_APP_API_URL` in the .env.development and `.env.production`. 
