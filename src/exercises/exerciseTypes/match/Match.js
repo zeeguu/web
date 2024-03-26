@@ -2,12 +2,16 @@ import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import shuffle from "../../../assorted/fisherYatesShuffle";
+import exerciseTypes from "../../ExerciseTypeConstants.js";
 
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
-const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
+// The user has to match three L1 words to their correct L2 translations.
+// This tests the user's passive knowledge.
+
+const EXERCISE_TYPE = exerciseTypes.match;
 
 export default function Match({
   api,

@@ -8,9 +8,13 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
-import BottomInput from "../findWordInContext/BottomInput.js";
+import BottomInput from "../BottomInput.js";
+import exerciseTypes from "../../ExerciseTypeConstants.js";
 
-const EXERCISE_TYPE = "Cloze_L1_to_L2";
+// The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
+// This tests the user's active knowledge.
+
+const EXERCISE_TYPE = exerciseTypes.FindWordInContextCloze;
 export default function FindWordInContextCloze({
   api,
   bookmarksToStudy,
@@ -99,10 +103,8 @@ export default function FindWordInContextCloze({
       <div className="headlineWithMoreSpace">
         {strings.findWordInContextClozeHeadline}
       </div>
-      
-      {!isCorrect && (
-        <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+
+      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
             <div className="contextExample">
                 <TranslatableText
                     isCorrect={isCorrect}
@@ -112,6 +114,9 @@ export default function FindWordInContextCloze({
                     bookmarkToStudy={bookmarksToStudy[0].from}
                 />
             </div>
+      
+      {!isCorrect && (
+        <>
             <BottomInput
                 handleCorrectAnswer={handleCorrectAnswer}
                 handleIncorrectAnswer={handleIncorrectAnswer}
@@ -121,20 +126,6 @@ export default function FindWordInContextCloze({
             />
         </>
       )}
-      {isCorrect && (
-        <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
-            <div className="contextExample">
-                <TranslatableText
-                    isCorrect={isCorrect}
-                    interactiveText={interactiveText}
-                    translating={true}
-                    pronouncing={false}
-                    bookmarkToStudy={bookmarksToStudy[0].from}
-                />
-            </div>        
-        </>
-        )}
 
       <NextNavigation
         message={messageToAPI}

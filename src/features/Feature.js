@@ -20,6 +20,14 @@ const Feature = {
   no_audio_exercises: function () {
     return this.is_enabled("no_audio_exercises");
   },
+
+  passive_sequence: function () {
+    return this.is_enabled("passive_sequence");
+  },
+
+  active_sequence: function () {
+    return this.is_enabled("active_sequence");
+  },
 };
 
 export default Feature;

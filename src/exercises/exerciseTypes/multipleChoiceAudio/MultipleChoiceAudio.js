@@ -9,13 +9,16 @@ import shuffle from "../../../assorted/fisherYatesShuffle.js";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
-
+import exerciseTypes from "../../ExerciseTypeConstants.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 
-const EXERCISE_TYPE = "Multiple_Choice_Audio";
+// The user has to select the correct spoken L2 translation of a given L1 word out of three.
+// This tests the user's active knowledge.
+
+const EXERCISE_TYPE = exerciseTypes.multipleChoiceAudio;
 
 export default function MultipleChoiceAudio({
   api,
@@ -34,7 +37,6 @@ export default function MultipleChoiceAudio({
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [currentChoice, setCurrentChoice] = useState("");
@@ -50,19 +52,17 @@ export default function MultipleChoiceAudio({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-      setArticleInfo(articleInfo);
-    });
+    setInteractiveText(
+      new InteractiveText(
+        bookmarksToStudy[0].context,
+        bookmarksToStudy[0].from_lang,
+        bookmarksToStudy[0].article_id,
+        api,
+        "TRANSLATE WORDS IN EXERCISE",
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
@@ -164,7 +164,7 @@ export default function MultipleChoiceAudio({
     );
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 

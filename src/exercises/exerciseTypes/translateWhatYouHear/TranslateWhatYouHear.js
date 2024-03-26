@@ -1,11 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
-import BottomInput from "../findWordInContext/BottomInput.js";
+import BottomInput from "../BottomInput.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import NextNavigation from "../NextNavigation.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
-
+import exerciseTypes from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
@@ -14,7 +13,10 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
-const EXERCISE_TYPE = "Translate_What_You_Hear";
+// The user has to translate the word they hear into their L1. A L2 context with the word is shown when clicking the Hint button.
+// This tests the user's passive knowledge.
+
+const EXERCISE_TYPE = exerciseTypes.translateWhatYouHear;
 export default function TranslateWhatYouHear({
   api,
   bookmarksToStudy,
@@ -34,7 +36,6 @@ export default function TranslateWhatYouHear({
   const bookmarkToStudy = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
-  const [articleInfo, setArticleInfo] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
@@ -47,27 +48,29 @@ export default function TranslateWhatYouHear({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-      setArticleInfo(articleInfo);
-    });
+    setInteractiveText(
+      new InteractiveText(
+        bookmarksToStudy[0].context,
+        bookmarksToStudy[0].from_lang,
+        bookmarksToStudy[0].article_id,
+        api,
+        "TRANSLATE WORDS IN EXERCISE",
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       handleSpeak();
     }, 300);
-  }, [articleInfo]);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [interactiveText]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -119,7 +122,7 @@ export default function TranslateWhatYouHear({
     );
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 

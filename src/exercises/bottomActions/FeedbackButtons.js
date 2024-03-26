@@ -2,6 +2,7 @@ import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect, createRef } from "react";
 import strings from "../../i18n/definitions";
 import Tooltip from "@material-ui/core/Tooltip";
+import exerciseTypes from "../ExerciseTypeConstants.js";
 
 export default function FeedbackButtons({
   show,
@@ -14,7 +15,7 @@ export default function FeedbackButtons({
   setOpenSnackbar,
   setUserFeedback,
 }) {
-  const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
+  const MATCH_EXERCISE_TYPE = exerciseTypes.match;
   const THUMBS_DOWN_VALUE = "dislike_bookmark";
 
   const buttons = [
