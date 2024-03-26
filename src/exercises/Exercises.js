@@ -13,6 +13,10 @@ import SessionStorage from "../assorted/SessionStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
 import {
+  DEFAULT_SEQUENCE,
+  DEFAULT_SEQUENCE_NO_AUDIO,
+  ACTIVE_SEQUENCE,
+  ACTIVE_SEQUENCE_NO_AUDIO,
   PASSIVE_SEQUENCE,
   PASSIVE_SEQUENCE_NO_AUDIO,
   getNumberOfBookmarksToPractice,
@@ -54,11 +58,11 @@ export default function Exercises({
   }, [exerciseSequenceType]);
 
   function getExerciseSequenceType() {
-    let exerciseTypesList = PASSIVE_SEQUENCE;
-    if (!SessionStorage.isAudioExercisesEnabled()) {
-      console.log("Will not use audio!");
-      exerciseTypesList = PASSIVE_SEQUENCE_NO_AUDIO;
-    }
+    let exerciseTypesList = DEFAULT_SEQUENCE;
+      if (!SessionStorage.isAudioExercisesEnabled()) {
+        console.log("Will not use audio!");
+        exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
+      }
     return exerciseTypesList;
   }
 

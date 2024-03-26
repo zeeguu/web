@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/preprocessing/preprocessing";
+import exerciseTypes from "../exercises/ExerciseTypeConstants";
 
 export function TranslatableText({
   isCorrect,
@@ -143,20 +144,16 @@ export function TranslatableText({
         );
       }
 
-      if (
-        foundInstances[0] === word.id &&
-        exerciseType !== "Translate_What_You_Hear" &&
-        exerciseType !== "Select_L1W_fitting_L2T"
-      ) {
+      const translationExercise =
+        exerciseType === exerciseTypes.translateWhatYouHear &&
+        exerciseType === exerciseTypes.multipleChoice;
+
+      if (foundInstances[0] === word.id && !translationExercise) {
         // If we want, we can render it according to words size.
         // "_".repeat(word.word.length) + " ";
         return "_______ ";
       }
-      if (
-        isBookmarkWord &&
-        exerciseType !== "Translate_What_You_Hear" &&
-        exerciseType !== "Select_L1W_fitting_L2T"
-      ) {
+      if (isBookmarkWord && !translationExercise) {
         return "";
       }
       return (

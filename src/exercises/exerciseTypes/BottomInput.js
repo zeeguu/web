@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
-import strings from "../../../i18n/definitions";
-import * as s from "../Exercise.sc";
-import CountryFlags from "../CountryFlags";
+import strings from "../../i18n/definitions";
+import * as s from "./Exercise.sc";
+import CountryFlags from "./CountryFlags";
+import exerciseTypes from "../ExerciseTypeConstants";
 
 export default function BottomInput({
   handleCorrectAnswer,
@@ -28,7 +29,7 @@ export default function BottomInput({
   function handleHint() {
     setUsedHint(true);
 
-    if (exerciseType === "Translate_What_You_Hear") {
+    if (exerciseType === exerciseType.translateWhatYouHear) {
       onHintUsed();
       let concatMessage = messageToAPI + "H";
       setMessageToAPI(concatMessage);

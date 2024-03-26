@@ -1,19 +1,25 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
-
-import BottomInput from "../findWordInContext/BottomInput.js";
-
-import strings from "../../../i18n/definitions";
-import NextNavigation from "../NextNavigation";
+import BottomInput from "../BottomInput.js";
+import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
-import { tokenize } from "../../../utils/preprocessing/preprocessing";
+import { tokenize } from "../../../utils/preprocessing/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
-const EXERCISE_TYPE = "Click_L1W_in_L2T";
-export default function ClickWordInContext({
+//shared code for ClickWordInContext and FindWordInContext exercises
+//The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
+
+export default function WordInContextExercise({
+  exerciseType,
+  exerciseHeadline,
+  showBottomInput,
+  checkTranslations,
+  handleShowSolution,
+  handleCorrectAnswer,
+  handleIncorrectAnswer,
   api,
   bookmarksToStudy,
   correctAnswer,
@@ -38,7 +44,7 @@ export default function ClickWordInContext({
   );
 
   useEffect(() => {
-    setExerciseType(EXERCISE_TYPE);
+    setExerciseType(exerciseType);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -46,22 +52,25 @@ export default function ClickWordInContext({
           articleInfo,
           api,
           "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
+          exerciseType,
           speech,
         ),
       );
       setArticleInfo(articleInfo);
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     checkTranslations(translatedWords);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [translatedWords]);
 
   function equalAfterRemovingSpecialCharacters(a, b) {
     // from: https://stackoverflow.com/a/4328546
-    let first = a.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ").toLowerCase();
-    let second = b.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ").toLowerCase();
+    let first = a.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
+    let second = b.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
     return first === second;
   }
 
@@ -102,7 +111,6 @@ export default function ClickWordInContext({
       }
     } else {
       setMessageToAPI(messageToAPI + "T");
-      handleIncorrectAnswer();
     }
   }
 
@@ -123,7 +131,7 @@ export default function ClickWordInContext({
     console.log(activeSessionDuration);
     api.uploadExerciseFinalizedData(
       concatMessage,
-      EXERCISE_TYPE,
+      exerciseType,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
@@ -136,7 +144,7 @@ export default function ClickWordInContext({
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
-      EXERCISE_TYPE,
+      exerciseType,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
@@ -144,6 +152,7 @@ export default function ClickWordInContext({
   }
 
   function handleIncorrectAnswer() {
+    //alert("incorrect answer")
     setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
   }
@@ -153,9 +162,9 @@ export default function ClickWordInContext({
   }
 
   return (
-    <s.Exercise className="findWordInContext">
+    <s.Exercise className={exerciseType}>
       <div className="headlineWithMoreSpace">
-        {strings.clickWordInContextHeadline}
+        {exerciseHeadline}
       </div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
@@ -169,6 +178,16 @@ export default function ClickWordInContext({
           bookmarkToStudy={bookmarksToStudy[0].from}
         />
       </div>
+      {showBottomInput && !isCorrect &&(
+        <BottomInput
+          handleCorrectAnswer={handleCorrectAnswer}
+          handleIncorrectAnswer={handleIncorrectAnswer}
+          bookmarksToStudy={bookmarksToStudy}
+          messageToAPI={messageToAPI}
+          setMessageToAPI={setMessageToAPI}
+        />
+      )}
+
       <NextNavigation
         message={messageToAPI}
         api={api}

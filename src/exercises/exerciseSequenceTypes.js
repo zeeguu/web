@@ -1,6 +1,6 @@
 import Match from "./exerciseTypes/match/Match";
 import MultipleChoice from "./exerciseTypes/multipleChoice/MultipleChoice";
-import FindWordInContext from "./exerciseTypes/findWordInContext/FindWordInContext";
+import FindWordInContext from "./exerciseTypes/wordInContextExercises/FindWordInContext";
 import SpellWhatYouHear from "./exerciseTypes/spellWhatYouHear/SpellWhatYouHear";
 import MultipleChoiceAudio from "./exerciseTypes/multipleChoiceAudio/MultipleChoiceAudio";
 import OrderWordsL1 from "./exerciseTypes/orderWords/OrderWordsL1";
@@ -9,7 +9,7 @@ import FindWordInContextCloze from "./exerciseTypes/findWordInContextCloze/FindW
 import TranslateL2toL1 from "./exerciseTypes/translateL2toL1/TranslateL2toL1";
 import TranslateWhatYouHear from "./exerciseTypes/translateWhatYouHear/TranslateWhatYouHear";
 import MultipleChoiceL2toL1 from "./exerciseTypes/multipleChoiceL2toL1/MultipleChoiceL2toL1";
-import ClickWordInContext from "./exerciseTypes/clickWordInContext/ClickWordInContext";
+import ClickWordInContext from "./exerciseTypes/wordInContextExercises/ClickWordInContext";
 import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
 
 export function getNumberOfBookmarksToPractice(sequenceType) {

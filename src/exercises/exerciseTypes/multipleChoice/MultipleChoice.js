@@ -4,6 +4,7 @@ import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
+import exerciseTypes from "../../ExerciseTypeConstants.js";
 
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
@@ -12,7 +13,10 @@ import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
-const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
+// The user has to select the correct L2 translation of a given L1 word out of three.
+// This tests the user's active knowledge.
+
+const EXERCISE_TYPE = exerciseTypes.multipleChoice;
 
 export default function MultipleChoice({
   api,
@@ -32,7 +36,6 @@ export default function MultipleChoice({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
@@ -44,19 +47,17 @@ export default function MultipleChoice({
     api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
       consolidateChoiceOptions(words);
     });
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-      setArticleInfo(articleInfo);
-    });
+    setInteractiveText(
+      new InteractiveText(
+        bookmarksToStudy[0].context,
+        bookmarksToStudy[0].from_lang,
+        bookmarksToStudy[0].article_id,
+        api,
+        "TRANSLATE WORDS IN EXERCISE",
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -111,7 +112,7 @@ export default function MultipleChoice({
     setButtonOptions(shuffledListOfOptions);
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 

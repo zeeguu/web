@@ -7,8 +7,10 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
+import exerciseTypes from "../../ExerciseTypeConstants.js";
 
-const EXERCISE_TYPE = "Select_L2T_fitting_L2W";
+const EXERCISE_TYPE = exerciseTypes.multipleChoiceContext;
+
 export default function MultipleChoiceContext({
   api,
   bookmarksToStudy,
@@ -26,7 +28,6 @@ export default function MultipleChoiceContext({
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
   const [exerciseBookmarks, setExerciseBookmarks] = useState(null);
-  const [articleInfo, setArticleInfo] = useState(null);
   const [interactiveText, setInteractiveText] = useState(null);
   const speech = useContext(SpeechContext);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
@@ -46,29 +47,20 @@ export default function MultipleChoiceContext({
       else
         initExerciseBookmarks[i].isExercise = false
     }
-    setExerciseBookmarks(initExerciseBookmarks);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    setArticleInfo(articleInfo);
-    });
-  }, []);
+    setExerciseBookmarks(shuffle(initExerciseBookmarks));
 
-  useEffect(() => {
-    if (articleInfo && interactiveText) {
-      setExerciseBookmarks(shuffle(
-        [...exerciseBookmarks]
-      ));
-    }
-  }, [articleInfo, interactiveText, bookmarksToStudy]);
+    setInteractiveText(
+      new InteractiveText(
+        bookmarksToStudy[0].context,
+        bookmarksToStudy[0].from_lang,
+        bookmarksToStudy[0].article_id,
+        api,
+        "TRANSLATE WORDS IN EXERCISE",
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
+  }, []);
 
   function handleShowSolution() {
     let message = messageToAPI + "S";
@@ -78,22 +70,22 @@ export default function MultipleChoiceContext({
     setShowSolution(true);
   }
 
- function notifyChoiceSelection(selectedChoice, index) {
+ function notifyChoiceSelection(selectedChoiceId, selectedChoiceContext, index, e) {
     if(isCorrect) return;
     setClickedOption(index);
     if (
-        selectedChoice === bookmarksToStudy[0].context
+        selectedChoiceId === bookmarksToStudy[0].id
     ) {
         setShowSolution(true);
         setClickedIndex(index);
-        correctAnswer(bookmarksToStudy[0].context);
+        correctAnswer(bookmarksToStudy[0]);
         setIsCorrect(true);
         let concatMessage = messageToAPI + "C";
         handleAnswer(concatMessage);
     } else {
         setClickedIndex(null);
-        setIncorrectAnswer(selectedChoice);
-        notifyIncorrectAnswer(bookmarksToStudy[0].context);
+        setIncorrectAnswer(selectedChoiceId);
+        notifyIncorrectAnswer(bookmarksToStudy[0]);
         let concatMessage = messageToAPI + "W";
         setMessageToAPI(concatMessage);
             setTimeout(() => {
@@ -117,7 +109,7 @@ export default function MultipleChoiceContext({
     return `<span class="highlightedWord">${word}</span>`;
   }
 
-  if (!articleInfo || !interactiveText) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
@@ -133,9 +125,9 @@ export default function MultipleChoiceContext({
                 clicked={index === clickedIndex}
                 isCorrect={isCorrect}
                 className={clickedOption !== null ? (index === clickedOption) ? (option.isExercise) ? "correct" : "wrong" : "" : ""}
-                onClick={(e) => notifyChoiceSelection(option.context, index, e)}>
+                onClick={(e) => notifyChoiceSelection(option.id, option.context, index, e)}>
                 <div dangerouslySetInnerHTML={{ __html: showSolution
-                        ? option.context.replace(option.from, getHighlightedWord(option.from))
+                        ? (option.isExercise ? option.context.replace(option.from, getHighlightedWord(option.from)) : option.context.replace(option.from, `<b>${option.from}</b>`))
                         : option.context.replace(option.from, '_____')
                       }}/>
             </s.MultipleChoiceContext>
