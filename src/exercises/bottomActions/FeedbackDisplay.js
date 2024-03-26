@@ -4,6 +4,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FeedbackButtons from "./FeedbackButtons.js";
 import strings from "../../i18n/definitions.js";
+import exerciseTypes from "../ExerciseTypeConstants.js";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -16,7 +17,7 @@ export default function FeedbackDisplay({
   currentBookmarksToStudy,
   feedbackFunction,
 }) {
-  const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
+  const MATCH_EXERCISE_TYPE = exerciseTypes.match;
 
   const [selectedId, setSelectedId] = useState(null);
   const [feedback, setFeedback] = useState("");

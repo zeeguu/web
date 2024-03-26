@@ -4,7 +4,7 @@ import MultipleChoicesInput from "../multipleChoice/MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
-
+import exerciseTypes from "../../ExerciseTypeConstants.js";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
@@ -12,7 +12,10 @@ import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
-const EXERCISE_TYPE = "Select_L1W_fitting_L2T";
+// The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
+// This tests the user's passive knowledge.
+
+const EXERCISE_TYPE = exerciseTypes.multipleChoiceL2toL1;
 
 export default function MultipleChoiceL2toL1({
   api,
@@ -32,7 +35,6 @@ export default function MultipleChoiceL2toL1({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
@@ -41,30 +43,28 @@ export default function MultipleChoiceL2toL1({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (article) => {
-      setArticleInfo(article)
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          article,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
+    setInteractiveText(
+      new InteractiveText(
+        bookmarksToStudy[0].context,
+        bookmarksToStudy[0].from_lang,
+        bookmarksToStudy[0].article_id,
+        api,
+        "TRANSLATE WORDS IN EXERCISE",
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
   }, []);
 
   useEffect(() => {
-    if (articleInfo && interactiveText) {
+    if (interactiveText) {
       setButtonOptions(shuffle([
         bookmarksToStudy[0].to,
         bookmarksToStudy[1].to,
         bookmarksToStudy[2].to
       ]));
     }
-  }, [articleInfo, interactiveText]);
+  }, [interactiveText]);
 
   function notifyChoiceSelection(selectedChoice) {
     if (
@@ -101,7 +101,7 @@ export default function MultipleChoiceL2toL1({
     );
   }
  
-  if (!articleInfo || !interactiveText) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 

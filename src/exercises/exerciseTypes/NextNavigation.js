@@ -35,9 +35,6 @@ export default function NextNavigation({
   const [correctMessage, setCorrectMessage] = useState("");
 
   useEffect(() => {
-    console.log("Message received: " + message);
-    // Mirror what we do in the API
-    // Maybe have a call we can make in the API? This is unused at the moment.
     const userIsCorrect = (message.includes("C"));
     setUserIsCorrect(userIsCorrect);
   }, [message]);

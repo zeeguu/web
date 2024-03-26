@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
-
+import exerciseTypes from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -8,9 +8,13 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
-import BottomInput from "../findWordInContext/BottomInput.js";
+import BottomInput from "../BottomInput.js";
 
-const EXERCISE_TYPE = "Translate_L2_to_L1";
+// The user has to translate the L2 word in bold to their L1.
+// This tests the user's active knowledge.
+
+const EXERCISE_TYPE = exerciseTypes.translateL2toL1;
+
 export default function TranslateL2toL1({
   api,
   bookmarksToStudy,
@@ -27,7 +31,6 @@ export default function TranslateL2toL1({
   activeSessionDuration,
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
@@ -37,19 +40,17 @@ export default function TranslateL2toL1({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-      setArticleInfo(articleInfo);
-    });
+    setInteractiveText(
+      new InteractiveText(
+        bookmarksToStudy[0].context,
+        bookmarksToStudy[0].from_lang,
+        bookmarksToStudy[0].article_id,
+        api,
+        "TRANSLATE WORDS IN EXERCISE",
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
   }, []);
 
   function handleShowSolution(e, message) {
@@ -91,7 +92,7 @@ export default function TranslateL2toL1({
     notifyIncorrectAnswer(bookmarksToStudy[0]);
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
