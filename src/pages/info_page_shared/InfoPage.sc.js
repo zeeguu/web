@@ -1,6 +1,5 @@
-import styled, { css } from "styled-components";
-import { zeeguuOrange, zeeguuDarkOrange } from "../../components/colors";
-import { OrangeRoundButton } from "../../components/allButtons.sc";
+import styled from "styled-components";
+import { zeeguuOrange } from "../../components/colors";
 
 const PageBackground = styled.div`
   display: flex;
@@ -46,116 +45,8 @@ const ContentWrapper = styled.div`
 
   p {
     font-size: 0.9em;
-    /* margin-block-end: 0em; */
     margin: 0;
   }
 `;
 
-const BaseSectionStyle = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 1rem 0;
-  gap: 1.5rem;
-`;
-
-const Header = styled.header`
-  ${BaseSectionStyle}
-`;
-
-const Logo = styled.img`
-  width: 2.25rem;
-`;
-
-const Heading = styled.h1`
-  width: 80%;
-  font-size: 1.3em;
-  line-height: 150%;
-  text-align: center;
-  font-weight: 700;
-  margin: 0;
-  @media (max-width: 768px) {
-    width: 100%;
-    text-align: left;
-  }
-
-  @media (max-width: 576px) {
-    font-size: 1.2em;
-  }
-`;
-
-const Main = styled.main`
-  ${BaseSectionStyle}
-  line-height: 150%;
-
-  p {
-    width: 80%;
-  }
-
-  @media (max-width: 768px) {
-    p {
-      width: 100%;
-    }
-  }
-`;
-
-const MainImage = styled.img`
-  width: 80%;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-`;
-
-const Footer = styled.footer`
-  ${BaseSectionStyle}
-`;
-
-const ButtonContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 1rem;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-`;
-
-const Button = styled(OrangeRoundButton)`
-  margin: 0;
-  width: 16.5rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 1.2rem;
-  padding: 1em 2em;
-  border-radius: 4em;
-  font-weight: 600;
-  border-bottom: solid 0.2em ${zeeguuDarkOrange};
-
-  @media (max-width: 768px) {
-    width: auto;
-    padding: 0.75em 2rem;
-  }
-`;
-
-export {
-  ContentWrapper,
-  Header,
-  Logo,
-  Heading,
-  Main,
-  MainImage,
-  Footer,
-  PageContainer,
-  Button,
-  ButtonContainer,
-  PageBackground,
-};
+export { ContentWrapper, PageContainer, PageBackground };

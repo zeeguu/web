@@ -1,4 +1,4 @@
-import * as s from "./InfoPage.sc";
+import * as s from "./Button.sc";
 
 export default function Button({ children, href, type }) {
   return (
