@@ -1,5 +1,5 @@
 import * as s from "../modal_shared/Modal.sc";
-import { getExtensionInstallationLinks } from "../../utils/misc/extensionCommunication";
+import { getExtensionInstallationLinks } from "../../utils/misc/extensionInstallationLinks";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";

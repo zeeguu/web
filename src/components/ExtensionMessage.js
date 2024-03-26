@@ -6,7 +6,7 @@ import MainImage from "./modal_shared/MainImage";
 import Footer from "../pages/info_page_shared/Footer";
 import ButtonContainer from "./modal_shared/ButtonContainer";
 import GoToButton from "./modal_shared/GoToButton";
-import { getExtensionInstallationLinks } from "../utils/misc/extensionCommunication";
+import { getExtensionInstallationLinks } from "../utils/misc/extensionInstallationLinks";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";

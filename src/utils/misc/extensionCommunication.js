@@ -42,12 +42,4 @@ function checkExtensionInstalled(setHasExtension) {
   }
 }
 
-function getExtensionInstallationLinks() {
-  if (runningInChromeDesktop()) {
-    return "https://chrome.google.com/webstore/detail/the-zeeguu-reader/ckncjmaednfephhbpeookmknhmjjodcd";
-  }
-  if (runningInFirefoxDesktop()) {
-    return "https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/";
-  }
-}
-export { checkExtensionInstalled, getExtensionInstallationLinks };
+export { checkExtensionInstalled };

@@ -5,7 +5,7 @@ import Main from "./info_page_shared/Main";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
-import { getExtensionInstallationLinks } from "../utils/misc/extensionCommunication";
+import { getExtensionInstallationLinks } from "../utils/misc/extensionInstallationLinks";
 import MainImage from "./info_page_shared/MainImage";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
