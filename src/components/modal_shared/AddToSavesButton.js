@@ -1,4 +1,4 @@
-import * as s from "./Modal.sc";
+import * as s from "./AddToSavesButton.sc";
 
 export default function AddToSavesButton({ children, onClick }) {
   return (

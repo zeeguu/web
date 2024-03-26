@@ -1,4 +1,4 @@
-import * as s from "./Modal.sc";
+import * as s from "./GoToButton.sc";
 
 export default function GoToButton({ href, target, onClick, children }) {
   return (

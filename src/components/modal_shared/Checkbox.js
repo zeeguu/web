@@ -1,4 +1,4 @@
-import * as s from "./Modal.sc";
+import * as s from "./Checkbox.sc";
 
 export default function Checkbox({ label, checked, onChange }) {
   return (
