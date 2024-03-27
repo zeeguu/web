@@ -11,16 +11,6 @@ const BaseSectionStyle = css`
 const Main = styled.main`
   ${BaseSectionStyle}
   line-height: 150%;
-
-  p {
-    width: 80%;
-  }
-
-  @media (max-width: 768px) {
-    p {
-      width: 100%;
-    }
-  }
 `;
 
 export { Main };

@@ -23,11 +23,14 @@ export default function InstallExtension() {
         <MainImage src={"../static/images/find-extension.png"} />
       </Main>
       <Footer>
-        <ButtonContainer>
+        <ButtonContainer contentAlignment={"vertical"}>
           <Button href={getExtensionInstallationLinks()}>
             <FileDownloadOutlinedIcon fontSize="small" />
-            Install Extension
+            Install the Extension
           </Button>
+          <a className="link" href="/articles">
+            Skip installation
+          </a>
         </ButtonContainer>
       </Footer>
     </InfoPage>
