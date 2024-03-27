@@ -8,6 +8,7 @@ import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
 
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
+import { checkExtensionInstalled } from "./utils/extension/extensionCommunication";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
