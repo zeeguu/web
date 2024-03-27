@@ -12,7 +12,7 @@ import {
   runningInChromeDesktop,
   runningInFirefoxDesktop,
 } from "../utils/misc/browserDetection";
-import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
+import { checkExtensionInstalled } from "../utils/extension/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
@@ -48,7 +48,7 @@ export default function NewArticles() {
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index)
-      .map((article) => article.id );
+      .map((article) => article.id);
     const articleSeenListString = JSON.stringify(articleSeenList, null, 0);
     api.logUserActivity(
       api.CLICKED_ARTICLE,
