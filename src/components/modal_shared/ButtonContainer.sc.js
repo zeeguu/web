@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-const ButtonsContainer = styled.div`
+const ButtonContainer = styled.div`
   text-align: center;
   width: 100%;
   display: flex;
@@ -27,4 +27,4 @@ const ButtonsContainer = styled.div`
   }
 `;
 
-export { ButtonsContainer };
+export { ButtonContainer };
