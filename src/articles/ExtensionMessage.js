@@ -2,7 +2,7 @@ import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header";
 import Heading from "../components/modal_shared/Heading";
 import Main from "../components/modal_shared/Main";
-import MainImage from "../components/modal_shared/MainImage";
+import MainImage from "../components/MainImage";
 import Footer from "../pages/info_page_shared/Footer";
 import ButtonContainer from "../components/modal_shared/ButtonContainer";
 import GoToButton from "../components/modal_shared/GoToButton";
