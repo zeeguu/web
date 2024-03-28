@@ -1,4 +1,4 @@
-import * as s from "../RedirectionNotificationModal.sc";
+import * as s from "./Modal.sc";
 import ModalMui from "@mui/material/Modal";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 

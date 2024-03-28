@@ -1,5 +1,9 @@
-import * as s from "./InfoPage.sc";
+import * as s from "./ButtonContainer.sc";
 
-export default function ButtonContainer({ children }) {
-  return <s.ButtonContainer oneButton>{children}</s.ButtonContainer>;
+export default function ButtonContainer({ children, contentAlignment }) {
+  return (
+    <s.ButtonContainer contentAlignment={contentAlignment}>
+      {children}
+    </s.ButtonContainer>
+  );
 }

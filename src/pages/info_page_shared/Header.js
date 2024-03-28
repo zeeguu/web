@@ -1,4 +1,4 @@
-import * as s from "./InfoPage.sc";
+import * as s from "./Header.sc";
 import Logo from "./Logo";
 
 export default function Header({ children }) {

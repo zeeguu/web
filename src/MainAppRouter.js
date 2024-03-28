@@ -19,6 +19,7 @@ import Settings from "./pages/Settings";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
+import { isSupportedBrowser } from "./utils/misc/browserDetection";
 
 export default function MainAppRouter({ api, setUser, hasExtension }) {
   const [redirectLink, setRedirectLink] = useState(null);
@@ -54,7 +55,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       window.location.href = redirectLink;
     } else if (
       window.location.href.indexOf("create_account") > -1 &&
-      !hasExtension
+      !hasExtension && isSupportedBrowser()
     ) {
       history.push("/install_extension");
     } else {
