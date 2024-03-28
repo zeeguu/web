@@ -53,10 +53,7 @@ export default function SupportedNotification({
           Once there, <s.Strong>right-click</s.Strong> anywhere on the page and
           select the "Read with Zeeguu" option.
         </p>
-        <MainImage
-          src={"../static/images/use-extension.png"}
-          alt={"Zeeguu browser extension"}
-        />
+        <MainImage src={"use-extension.png"} alt={"Zeeguu browser extension"} />
       </Main>
       <Footer>
         <Checkbox

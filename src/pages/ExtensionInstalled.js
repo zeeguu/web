@@ -23,7 +23,7 @@ export default function ExtensionInstalled({ api }) {
         </Heading>
       </Header>
       <Main>
-        <MainImage src={"../static/images/use-extension.png"} />
+        <MainImage src={"use-extension.png"} />
       </Main>
       <Footer>
         <ButtonContainer>

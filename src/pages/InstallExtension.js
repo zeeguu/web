@@ -20,7 +20,7 @@ export default function InstallExtension() {
           Time to install The Zeeguu Reader browser extension, which enables you
           to&nbsp;read and translate articles and solve exercises
         </p>
-        <MainImage src={"../static/images/find-extension.png"} />
+        <MainImage src={"find-extension.png"} />
       </Main>
       <Footer>
         <ButtonContainer contentAlignment={"vertical"}>

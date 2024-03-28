@@ -50,7 +50,7 @@ export default function ExtensionMessage({
             extension.
           </p>
           <MainImage
-            src={"../static/images/find-extension.png"}
+            src={"find-extension.png"}
             alt={"Zeeguu browser extension"}
           />
         </Main>
