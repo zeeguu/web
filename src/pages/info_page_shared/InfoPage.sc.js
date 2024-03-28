@@ -20,13 +20,13 @@ const PageContainer = styled.div`
   border-radius: 1em;
 
   width: 47rem;
-  padding: 2rem 7rem;
+  padding: 2rem 6rem;
   margin: 1rem;
 
   background-color: white;
 
   @media (max-width: 1200px) {
-    padding: 2rem 5rem;
+    padding: 2rem 4.25rem;
     margin: 0.5rem;
     max-width: 47rem;
     width: 80%;
@@ -52,8 +52,4 @@ const ContentWrapper = styled.div`
   }
 `;
 
-export {
-  ContentWrapper,
-  PageContainer,
-  PageBackground,
-};
+export { ContentWrapper, PageContainer, PageBackground };
