@@ -2,6 +2,7 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
 import InstallExtension from "./pages/InstallExtension";
+import HobbySelection from "./pages/HobbySelection";
 import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
 import React, { useState } from "react";
@@ -55,7 +56,8 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       window.location.href = redirectLink;
     } else if (
       window.location.href.indexOf("create_account") > -1 &&
-      !hasExtension && isSupportedBrowser()
+      !hasExtension &&
+      isSupportedBrowser()
     ) {
       history.push("/install_extension");
     } else {
@@ -91,6 +93,8 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         path="/extension_installed"
         render={() => <ExtensionInstalled api={api} />}
       />
+
+      <Route path="/select_interests" render={() => <HobbySelection />} />
 
       <Route path="/install_extension" render={() => <InstallExtension />} />
 
