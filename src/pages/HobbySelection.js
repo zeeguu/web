@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -13,12 +12,12 @@ import HobbyContainer from "./info_page_shared/HobbyContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 export default function HobbySelection({ api, hasExtension }) {
-  const [availableTopics, setInterestingTopics] = useState(null);
+  const [availableTopics, setAvailableTopics] = useState(null);
   const [subscribedTopics, setSubscribedTopics] = useState(null);
 
   useEffect(() => {
     api.getAvailableTopics((data) => {
-      setInterestingTopics(data);
+      setAvailableTopics(data);
     });
 
     api.getSubscribedTopics((data) => {
@@ -41,9 +40,7 @@ export default function HobbySelection({ api, hasExtension }) {
 
   function subscribeToTopic(topic) {
     setSubscribedTopics([...subscribedTopics, topic]);
-    setInterestingTopics(
-      availableTopics.filter((each) => each.id !== topic.id),
-    );
+    setAvailableTopics(availableTopics.filter((each) => each.id !== topic.id));
     api.subscribeToTopic(topic);
   }
 
@@ -51,17 +48,14 @@ export default function HobbySelection({ api, hasExtension }) {
     setSubscribedTopics(
       subscribedTopics.filter((each) => each.id !== topic.id),
     );
-    setInterestingTopics([...availableTopics, topic]);
+    setAvailableTopics([...availableTopics, topic]);
     api.unsubscribeFromTopic(topic);
   }
 
-  function getLinkToNextStep() {
-    let extensionCanBeInstalled = "install_extension";
-    let hasExtensionOrNotSupported = "/articles";
-
+  function navigateToNextPage() {
     if (isSupportedBrowser() && hasExtension === false) {
-      return extensionCanBeInstalled;
-    } else return hasExtensionOrNotSupported;
+      return "install_extension";
+    } else return "/articles";
   }
 
   return (
@@ -73,8 +67,11 @@ export default function HobbySelection({ api, hasExtension }) {
         <HobbyContainer>
           {allTopics?.map((topic) => (
             <HobbyTag
+              key={topic.id}
               className={
-                subscribedTopics.map((e) => e.id).includes(topic.id)
+                subscribedTopics
+                  .map((subscribedTopic) => subscribedTopic.id)
+                  .includes(topic.id)
                   ? "active"
                   : ""
               }
@@ -88,7 +85,7 @@ export default function HobbySelection({ api, hasExtension }) {
       <Footer>
         <p>You can always change it later</p>
         <ButtonContainer>
-          <Button href={getLinkToNextStep()}>
+          <Button href={navigateToNextPage()}>
             Next <ArrowForwardRoundedIcon />
           </Button>
         </ButtonContainer>
