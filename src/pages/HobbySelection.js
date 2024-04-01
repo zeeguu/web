@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
+// import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -12,16 +12,9 @@ import HobbyTag from "./info_page_shared/HobbyTag";
 import HobbyContainer from "./info_page_shared/HobbyContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
-export default function HobbySelection({ api }) {
-  const [hasExtension, setHasExtension] = useState(false);
+export default function HobbySelection({ api, hasExtension }) {
   const [availableTopics, setInterestingTopics] = useState(null);
   const [subscribedTopics, setSubscribedTopics] = useState(null);
-
-  useEffect(() => {
-    if (isSupportedBrowser()) {
-      checkExtensionInstalled(setHasExtension);
-    }
-  }, []);
 
   useEffect(() => {
     api.getAvailableTopics((data) => {

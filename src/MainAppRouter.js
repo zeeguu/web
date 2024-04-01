@@ -94,7 +94,10 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         render={() => <ExtensionInstalled api={api} />}
       />
 
-      <Route path="/select_interests" render={() => <HobbySelection api={api} />} />
+      <Route
+        path="/select_interests"
+        render={() => <HobbySelection hasExtension={hasExtension} api={api} />}
+      />
 
       <Route path="/install_extension" render={() => <InstallExtension />} />
 
