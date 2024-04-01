@@ -59,7 +59,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       !hasExtension &&
       isSupportedBrowser()
     ) {
-      history.push("/install_extension");
+      history.push("/select_interests");
     } else {
       console.log("history");
       console.log(history);
@@ -94,7 +94,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         render={() => <ExtensionInstalled api={api} />}
       />
 
-      <Route path="/select_interests" render={() => <HobbySelection />} />
+      <Route path="/select_interests" render={() => <HobbySelection api={api} />} />
 
       <Route path="/install_extension" render={() => <InstallExtension />} />
 
