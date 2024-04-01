@@ -17,6 +17,7 @@ export default function HobbySelection({ api }) {
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
   const [availableTopics, setInterestingTopics] = useState(null);
+  const [subscribedTopics, setSubscribedTopics] = useState(null);
 
   useEffect(() => {
     if (isSupportedBrowser()) {
@@ -28,7 +29,16 @@ export default function HobbySelection({ api }) {
     api.getAvailableTopics((data) => {
       setInterestingTopics(data);
     });
+
+    api.getSubscribedTopics((data) => {
+      setSubscribedTopics(data);
+    });
   }, [api]);
+
+  if (!availableTopics || !subscribedTopics) return "";
+
+  let allTopics = [...availableTopics, ...subscribedTopics];
+  allTopics.sort((a, b) => a.title.localeCompare(b.title));
 
   function getLinkToNextStep() {
     let extensionCanBeInstalled = "install_extension";
@@ -55,7 +65,7 @@ export default function HobbySelection({ api }) {
       </Header>
       <Main>
         <HobbyContainer>
-          {availableTopics?.map((topic) => (
+          {allTopics?.map((topic) => (
             <HobbyTag>{topic.title}</HobbyTag>
           ))}
         </HobbyContainer>
