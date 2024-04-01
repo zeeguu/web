@@ -1,7 +1,7 @@
 import * as s from "./HobbyTag.sc";
 import { useState } from "react";
 
-export default function HobbyTag({ children, className, onClick }) {
+export default function HobbyTag({ children, className, onClick, topic, subscribedTopics }) {
   const [tag, setTag] = useState(false);
 
   function toggleTag() {
@@ -9,7 +9,7 @@ export default function HobbyTag({ children, className, onClick }) {
   }
 
   return (
-    <s.HobbyTag className={tag && "active"} onClick={toggleTag}>
+    <s.HobbyTag className={className} onClick={onClick}>
       {children}
     </s.HobbyTag>
   );

@@ -14,8 +14,6 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 export default function HobbySelection({ api }) {
   const [hasExtension, setHasExtension] = useState(false);
-  const [articleList, setArticleList] = useState(null);
-  const [originalList, setOriginalList] = useState(null);
   const [availableTopics, setInterestingTopics] = useState(null);
   const [subscribedTopics, setSubscribedTopics] = useState(null);
 
@@ -40,6 +38,30 @@ export default function HobbySelection({ api }) {
   let allTopics = [...availableTopics, ...subscribedTopics];
   allTopics.sort((a, b) => a.title.localeCompare(b.title));
 
+  function togggleSelection(topic) {
+    if (subscribedTopics.includes(topic)) {
+      unsubscribeFromTopic(topic);
+    } else {
+      subscribeToTopic(topic);
+    }
+  }
+
+  function subscribeToTopic(topic) {
+    setSubscribedTopics([...subscribedTopics, topic]);
+    setInterestingTopics(
+      availableTopics.filter((each) => each.id !== topic.id),
+    );
+    api.subscribeToTopic(topic);
+  }
+
+  function unsubscribeFromTopic(topic) {
+    setSubscribedTopics(
+      subscribedTopics.filter((each) => each.id !== topic.id),
+    );
+    setInterestingTopics([...availableTopics, topic]);
+    api.unsubscribeFromTopic(topic);
+  }
+
   function getLinkToNextStep() {
     let extensionCanBeInstalled = "install_extension";
     let hasExtensionOrNotSupported = "/articles";
@@ -47,15 +69,6 @@ export default function HobbySelection({ api }) {
     if (isSupportedBrowser() && hasExtension === false) {
       return extensionCanBeInstalled;
     } else return hasExtensionOrNotSupported;
-  }
-
-  //when the user changes interests...
-  function articlesListShouldChange() {
-    setArticleList(null);
-    api.getUserArticles((articles) => {
-      setArticleList(articles);
-      setOriginalList([...articles]);
-    });
   }
 
   return (
@@ -66,7 +79,16 @@ export default function HobbySelection({ api }) {
       <Main>
         <HobbyContainer>
           {allTopics?.map((topic) => (
-            <HobbyTag>{topic.title}</HobbyTag>
+            <HobbyTag
+              className={
+                subscribedTopics.map((e) => e.id).includes(topic.id)
+                  ? "active"
+                  : ""
+              }
+              onClick={() => togggleSelection(topic)}
+            >
+              {topic.title}
+            </HobbyTag>
           ))}
         </HobbyContainer>
       </Main>
