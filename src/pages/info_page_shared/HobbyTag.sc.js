@@ -18,7 +18,7 @@ const HobbyTag = styled.button`
     border: 1px solid orange;
   }
 
-  &:active {
+  &.active {
     border: 1px solid orange;
     background-color: orange;
     color: white;
