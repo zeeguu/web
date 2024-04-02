@@ -72,7 +72,7 @@ export default function HobbySelection({ api, hasExtension }) {
                 subscribedTopics
                   .map((subscribedTopic) => subscribedTopic.id)
                   .includes(topic.id)
-                  ? "active"
+                  ? "selected"
                   : ""
               }
               onClick={() => togggleSelection(topic)}

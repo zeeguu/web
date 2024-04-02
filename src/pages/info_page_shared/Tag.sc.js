@@ -18,7 +18,7 @@ const Tag = styled.button`
   background: none;
   cursor: pointer;
 
-  &.active {
+  &.selected {
     border: 1px solid ${zeeguuOrange};
     background-color: ${zeeguuOrange};
     color: white;
