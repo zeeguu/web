@@ -54,7 +54,7 @@ export default function HobbySelection({ api, hasExtension }) {
 
   function navigateToNextPage() {
     if (isSupportedBrowser() && hasExtension === false) {
-      return "install_extension";
+      return "/install_extension";
     } else return "/articles";
   }
 
