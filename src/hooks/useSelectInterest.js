@@ -15,6 +15,8 @@ export default function useSelectInterest(api) {
     });
   }, [api]);
 
+
+
   useEffect(() => {
     if (availableTopics && subscribedTopics) {
       let newAllTopics = [...availableTopics, ...subscribedTopics];
@@ -23,7 +25,9 @@ export default function useSelectInterest(api) {
     }
   }, [availableTopics, subscribedTopics]);
 
+
   if (!availableTopics || !subscribedTopics) return "";
+  if (!allTopics) return "";
 
   function subscribeToTopic(topic) {
     setSubscribedTopics([...subscribedTopics, topic]);
