@@ -5,7 +5,6 @@ const HobbyContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  /* justify-content: center; */
   justify-content: flex-start;
 
   @media (max-width: 768px) {

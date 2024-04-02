@@ -4,6 +4,8 @@ import { almostBlack } from "../../components/colors";
 import { zeeguuOrange } from "../../components/colors";
 
 const HobbyTag = styled.button`
+  flex: 1;
+  max-width: 8rem;
   display: flex;
   flex-direction: row;
   justify-content: center;
