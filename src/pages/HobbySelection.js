@@ -7,7 +7,7 @@ import Main from "./info_page_shared/Main";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
-import HobbyTag from "./info_page_shared/HobbyTag";
+import Tag from "./info_page_shared/Tag";
 import HobbyContainer from "./info_page_shared/HobbyContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
@@ -66,7 +66,7 @@ export default function HobbySelection({ api, hasExtension }) {
       <Main>
         <HobbyContainer>
           {allTopics?.map((topic) => (
-            <HobbyTag
+            <Tag
               key={topic.id}
               className={
                 subscribedTopics
@@ -78,7 +78,7 @@ export default function HobbySelection({ api, hasExtension }) {
               onClick={() => togggleSelection(topic)}
             >
               {topic.title}
-            </HobbyTag>
+            </Tag>
           ))}
         </HobbyContainer>
       </Main>

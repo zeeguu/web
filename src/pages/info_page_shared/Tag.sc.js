@@ -3,9 +3,7 @@ import { lightGrey } from "../../components/colors";
 import { almostBlack } from "../../components/colors";
 import { zeeguuOrange } from "../../components/colors";
 
-const HobbyTag = styled.button`
-  /* flex: 1; */
-  /* max-width: 8rem; */
+const Tag = styled.button`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -33,4 +31,4 @@ const HobbyTag = styled.button`
   }
 `;
 
-export { HobbyTag };
+export { Tag };
