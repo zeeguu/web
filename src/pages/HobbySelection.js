@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
+import useSelectInterest from "../hooks/useSelectInterest";
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
@@ -12,45 +12,8 @@ import TagContainer from "./info_page_shared/TagContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 export default function HobbySelection({ api, hasExtension }) {
-  const [availableTopics, setAvailableTopics] = useState(null);
-  const [subscribedTopics, setSubscribedTopics] = useState(null);
-
-  useEffect(() => {
-    api.getAvailableTopics((data) => {
-      setAvailableTopics(data);
-    });
-
-    api.getSubscribedTopics((data) => {
-      setSubscribedTopics(data);
-    });
-  }, [api]);
-
-  if (!availableTopics || !subscribedTopics) return "";
-
-  let allTopics = [...availableTopics, ...subscribedTopics];
-  allTopics.sort((a, b) => a.title.localeCompare(b.title));
-
-  function togggleSelection(topic) {
-    if (subscribedTopics.includes(topic)) {
-      unsubscribeFromTopic(topic);
-    } else {
-      subscribeToTopic(topic);
-    }
-  }
-
-  function subscribeToTopic(topic) {
-    setSubscribedTopics([...subscribedTopics, topic]);
-    setAvailableTopics(availableTopics.filter((each) => each.id !== topic.id));
-    api.subscribeToTopic(topic);
-  }
-
-  function unsubscribeFromTopic(topic) {
-    setSubscribedTopics(
-      subscribedTopics.filter((each) => each.id !== topic.id),
-    );
-    setAvailableTopics([...availableTopics, topic]);
-    api.unsubscribeFromTopic(topic);
-  }
+  const { allTopics, subscribedTopics, toggleTopicSubscription } =
+    useSelectInterest(api);
 
   function navigateToNextPage() {
     if (isSupportedBrowser() && hasExtension === false) {
@@ -75,7 +38,7 @@ export default function HobbySelection({ api, hasExtension }) {
                   ? "selected"
                   : ""
               }
-              onClick={() => togggleSelection(topic)}
+              onClick={() => toggleTopicSubscription(topic)}
             >
               {topic.title}
             </Tag>
