@@ -26,7 +26,7 @@ const HobbyTag = styled.button`
     color: white;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 576px) {
     font-size: 0.9rem;
     margin: 0.4rem;
     padding: 0.75rem 1rem;
