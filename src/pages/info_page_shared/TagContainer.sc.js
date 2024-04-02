@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const HobbyContainer = styled.div`
+const TagContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -12,4 +12,4 @@ const HobbyContainer = styled.div`
   }
 `;
 
-export { HobbyContainer };
+export { TagContainer };

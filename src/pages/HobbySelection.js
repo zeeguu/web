@@ -8,7 +8,7 @@ import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 import Tag from "./info_page_shared/Tag";
-import HobbyContainer from "./info_page_shared/HobbyContainer";
+import TagContainer from "./info_page_shared/TagContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 export default function HobbySelection({ api, hasExtension }) {
@@ -64,7 +64,7 @@ export default function HobbySelection({ api, hasExtension }) {
         <Heading>What topics are you interested in?</Heading>
       </Header>
       <Main>
-        <HobbyContainer>
+        <TagContainer>
           {allTopics?.map((topic) => (
             <Tag
               key={topic.id}
@@ -80,7 +80,7 @@ export default function HobbySelection({ api, hasExtension }) {
               {topic.title}
             </Tag>
           ))}
-        </HobbyContainer>
+        </TagContainer>
       </Main>
       <Footer>
         <p>You can always change it later</p>
