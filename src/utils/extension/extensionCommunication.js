@@ -1,15 +1,19 @@
 function checkExtensionInstalled(setHasExtension) {
-  console.log("Message sent!");
   window.addEventListener("message", function (event) {
     if (
       event.source == window &&
-      event.data.message === "Greetings from the Zeeguu Extension"
+      event.data.message === "CONFIRM_FLAG" &&
+      event.data.source === "EXT"
     ) {
-      console.log("Message RECEIVED!");
       setHasExtension(true);
     }
   });
-  console.log("Message NOT received!");
-  setHasExtension(false);
+  window.postMessage(
+    {
+      source: "APP",
+      message: "REQUEST_FLAG",
+    },
+    "*",
+  );
 }
 export { checkExtensionInstalled };

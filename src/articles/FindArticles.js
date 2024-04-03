@@ -37,7 +37,7 @@ export default function NewArticles() {
 
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
-  const [hasExtension, setHasExtension] = useState(true);
+  const [hasExtension, setHasExtension] = useState(false);
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   const [
@@ -72,6 +72,7 @@ export default function NewArticles() {
     );
 
     if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
+      console.log("I AM CHECKING IF RUNNING!");
       checkExtensionInstalled(setHasExtension);
     }
 
