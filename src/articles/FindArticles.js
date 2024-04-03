@@ -71,11 +71,6 @@ export default function NewArticles() {
         LocalStorage.displayedExtensionPopup(),
     );
 
-    if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
-      console.log("I AM CHECKING IF RUNNING!");
-      checkExtensionInstalled(setHasExtension);
-    }
-
     // load articles)
     if (searchQuery) {
       api.search(searchQuery, (articles) => {
@@ -89,6 +84,12 @@ export default function NewArticles() {
       });
     }
     document.title = "Zeeguu";
+
+    if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
+      setTimeout(() => {
+        checkExtensionInstalled(setHasExtension);
+      }, 100);
+    }
   }, []);
 
   useEffect(() => {
