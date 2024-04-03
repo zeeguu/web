@@ -51,7 +51,10 @@ export class Word extends Item {
   }
 
   isEndOfSentence() {
-    return ".;".includes(this.word[this.word.length - 1]);
+    return (
+      ".;".includes(this.word[this.word.length - 1]) &&
+      this.next.word[0] === this.next.word[0].toUpperCase()
+    );
   }
 
   fuseWithNeighborsIfNeeded(api) {
@@ -84,9 +87,24 @@ export default class LinkedWordList {
 
 // Private functions
 function splitTextIntoWords(text) {
-  let splitWords = text
-    .trim()
-    .split(/[\s]+/)
-    .map((word) => new Word(word));
-  return splitWords;
+  let splitWords = text.trim().split(/[\s]+/);
+  let handledWords = [];
+  let paternsToReplace = /- | - |\.| -|—/;
+  let isLinkPattern = /\b\.[a-ø]+/;
+  for (let i = 0; i < splitWords.length; i++) {
+    let possiblePair = splitWords[i];
+    let pattern = possiblePair.match(paternsToReplace);
+    if (isLinkPattern.test(possiblePair)) {
+      // Test if it's a link, in this case don't split the words
+      // example.link.com / google.com
+      handledWords.push(possiblePair);
+    } else if (pattern) {
+      let words = possiblePair.split(paternsToReplace);
+      handledWords.push(words[0] + pattern);
+      if (words[1] != "") handledWords.push(words[1]);
+    } else handledWords.push(possiblePair);
+  }
+  handledWords = handledWords.map((word) => new Word(word));
+  console.log(handledWords.map((word) => word.word));
+  return handledWords;
 }
