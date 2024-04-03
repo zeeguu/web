@@ -2,16 +2,16 @@ function checkExtensionInstalled(setHasExtension) {
   window.addEventListener("message", function (event) {
     if (
       event.source == window &&
-      event.data.message === "CONFIRM_EXTENSION" &&
-      event.data.source === "EXT"
+      event.data.message === "EXTENSION_CONFIRMATION_RESPONSE" &&
+      event.data.source === "ZEEGUU_INJECTED_CODE"
     ) {
       setHasExtension(true);
     }
   });
   window.postMessage(
     {
-      source: "APP",
-      message: "REQUEST_EXTENSION",
+      source: "ZEEGUU_PAGE",
+      message: "CONFIRM_EXTENSION_REQUEST",
     },
     "*",
   );
