@@ -13,6 +13,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 // The user has to write the word they hear. A context with the word omitted is shown.
 // This tests the user's active knowledge.
@@ -129,6 +130,13 @@ export default function SpellWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.audioExerciseHeadline}
       </div>
+      <div className="learningCycleIndicator">
+        <LearningCycleIndicator
+          learningCycle={bookmarksToStudy[0].learning_cycle}
+          coolingInterval={bookmarksToStudy[0].cooling_interval}
+        />
+      </div>
+      
       {!isCorrect && (
         <>
           <div className="contextExample">

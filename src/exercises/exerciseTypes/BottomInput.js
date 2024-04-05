@@ -29,7 +29,7 @@ export default function BottomInput({
   function handleHint() {
     setUsedHint(true);
 
-    if (exerciseType === exerciseType.translateWhatYouHear) {
+    if (exerciseType === exerciseTypes.translateWhatYouHear) {
       onHintUsed();
       let concatMessage = messageToAPI + "H";
       setMessageToAPI(concatMessage);

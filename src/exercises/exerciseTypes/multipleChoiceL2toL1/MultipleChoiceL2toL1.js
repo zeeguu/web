@@ -11,6 +11,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
@@ -109,6 +110,12 @@ export default function MultipleChoiceL2toL1({
     <s.Exercise className="multipleChoice">
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceL2toL1Headline}
+      </div>
+      <div className="learningCycleIndicator">
+        <LearningCycleIndicator
+          learningCycle={bookmarksToStudy[0].learning_cycle}
+          coolingInterval={bookmarksToStudy[0].cooling_interval}
+        />
       </div>
       <div className="contextExample">
         <TranslatableText

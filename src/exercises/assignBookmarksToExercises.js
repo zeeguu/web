@@ -29,7 +29,6 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
       );
       // Randomly select an exercise from the filtered list
       let selectedExercise = filteredExercises[Math.floor(Math.random() * filteredExercises.length)];
-      console.log(filteredExercises);
       // Check if there are enough bookmarks for the selected exercise
       if (i + selectedExercise.requiredBookmarks <= bookmarks.length) {
         // Assign the required number of bookmarks to the selected exercise
