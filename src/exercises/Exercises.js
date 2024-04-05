@@ -9,16 +9,19 @@ import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
+import Feature from "../features/Feature";
 
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
-  ACTIVE_SEQUENCE,
-  ACTIVE_SEQUENCE_NO_AUDIO,
-  PASSIVE_SEQUENCE,
-  PASSIVE_SEQUENCE_NO_AUDIO,
+  LEARNING_CYCLE_SEQUENCE,
+  LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
+  // ACTIVE_SEQUENCE,
+  // ACTIVE_SEQUENCE_NO_AUDIO,
+  // PASSIVE_SEQUENCE,
+  // PASSIVE_SEQUENCE_NO_AUDIO,
   getNumberOfBookmarksToPractice,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
@@ -57,14 +60,34 @@ export default function Exercises({
     setNumberOfBookmarksToPractice(getNumberOfBookmarksToPractice(exerciseSequenceType));
   }, [exerciseSequenceType]);
 
-  function getExerciseSequenceType() {
-    let exerciseTypesList = DEFAULT_SEQUENCE;
+  //feature flag for learningCycle sequence
+//   function getExerciseSequenceType() {
+//     let exerciseTypesList;
+//     if (Feature.learning_cycle_sequence()) {
+//       exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
+//       if (!SessionStorage.isAudioExercisesEnabled()) {
+//         console.log("Will not use audio!");
+//         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
+//       }
+//     } else {
+//       exerciseTypesList = DEFAULT_SEQUENCE;
+//       if (!SessionStorage.isAudioExercisesEnabled()) {
+//         console.log("Will not use audio!");
+//         exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
+//       }
+//     }
+//     return exerciseTypesList;
+// }
+
+function getExerciseSequenceType() {
+    
+    let exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
       if (!SessionStorage.isAudioExercisesEnabled()) {
         console.log("Will not use audio!");
-        exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
+        exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
       }
     return exerciseTypesList;
-  }
+}
 
   function initializeExercises(bookmarks, title) {
     setCountBookmarksToPractice(bookmarks.length);
