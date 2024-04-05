@@ -1,7 +1,6 @@
 import * as s from "./ArticleReader.sc";
 
 import { useState } from "react";
-import { random } from "../utils/basic/arrays";
 import SentimentVerySatisfiedOutlinedIcon from '@mui/icons-material/SentimentVerySatisfiedOutlined';
 import MoodBadOutlinedIcon from '@mui/icons-material/MoodBadOutlined';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
@@ -12,30 +11,28 @@ import SentimentNeutralOutlinedIcon from '@mui/icons-material/SentimentNeutralOu
 
 let FEEDBACK_OPTIONS = { "Easy": 1, "Ok": 3, "Difficult": 5 };
 
-export default function DifficultyFeedbackBox({ api, articleID }) {
-  const [answerSubmitted, setAnswerSubmitted] = useState(false);
+export default function DifficultyFeedbackBox({
+  articleInfo,
+  updateArticleDifficultyFeedback,
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
-  function submitAnswer(answer) {
-    api.submitArticleDifficultyFeedback(
-      { article_id: articleID, difficulty: answer },
-      () => {
-        setAnswerSubmitted(true);
-      }
-    );
-  }
+  const difficultyToOption = (difficulty) => {
+    if (difficulty === 1) return "Easy";
+    else if (difficulty === 3) return "Ok";
+    else if (difficulty === 5) return "Difficult";
+  };
+  const difficultyFeedback = difficultyToOption(articleInfo.relative_difficulty);
 
-  if (answerSubmitted) {
-    return (
-      <s.FeedbackBox>
-        <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
-      </s.FeedbackBox>
-    );
+  const hasInteraction = (option) => {
+    const optionIsHovered = isHovered === option;
+    const optionIsSelected = difficultyFeedback === option;
+    return optionIsHovered || optionIsSelected;
   }
 
   return (
     <>
-    <s.FeedbackBox>
+    <s.InvisibleBox>
       <h4>How easy was this text?</h4>
       <s.CenteredContent>
         {Object.keys(FEEDBACK_OPTIONS).map((option) => {
@@ -52,19 +49,19 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
           const emojiComponent = () => {
             switch (option) {
               case 'Easy':
-                return isHovered === option ? (
+                return hasInteraction(option) ? (
                   <SentimentVerySatisfiedTwoToneIcon sx={emojiSize} />
                 ) : (
                   <SentimentVerySatisfiedOutlinedIcon sx={emojiSize} />
                 );
               case 'Difficult':
-                return isHovered === option ? (
+                return hasInteraction(option) ? (
                   <MoodBadTwoToneIcon sx={emojiSize} />
                 ) : (
                   <MoodBadOutlinedIcon sx={emojiSize} />
                 );
               case 'Ok':
-                return isHovered === option ? (
+                return hasInteraction(option) ? (
                   <SentimentNeutralTwoToneIcon sx={emojiSize} />
                 ) : (
                   <SentimentNeutralOutlinedIcon sx={emojiSize} />
@@ -77,7 +74,7 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
           return (
             <s.WhiteButton
               key={option}
-              onClick={(e) => submitAnswer(FEEDBACK_OPTIONS[option])}
+              onClick={(e) => updateArticleDifficultyFeedback(FEEDBACK_OPTIONS[option])}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
@@ -88,7 +85,7 @@ export default function DifficultyFeedbackBox({ api, articleID }) {
           );
         })}
       </s.CenteredContent>
-    </s.FeedbackBox>
+    </s.InvisibleBox>
     </>
   );
 }

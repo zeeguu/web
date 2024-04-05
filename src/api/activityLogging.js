@@ -2,6 +2,7 @@ import { Zeeguu_API } from "./classDef";
 import qs from "qs";
 
 // Reader Opening Actions
+Zeeguu_API.prototype.CLICKED_ARTICLE = "CLICKED ARTICLE";
 Zeeguu_API.prototype.OPEN_ARTICLE = "OPEN ARTICLE";
 Zeeguu_API.prototype.ARTICLE_FOCUSED = "ARTICLE FOCUSED";
 Zeeguu_API.prototype.OPEN_EXTENSION_INSTALLED = "OPEN EXTENSION INSTALLED";
@@ -19,6 +20,7 @@ Zeeguu_API.prototype.STAR_ARTICLE = "STAR ARTICLE";
 Zeeguu_API.prototype.LIKE_ARTICLE = "LIKE ARTICLE";
 Zeeguu_API.prototype.USER_FEEDBACK = "USER FEEDBACK";
 Zeeguu_API.prototype.EXTENSION_FEEDBACK = "EXTENSION FEEDBACK";
+Zeeguu_API.prototype.DIFFICULTY_FEEDBACK = "DIFFICULTY FEEDBACK";
 Zeeguu_API.prototype.PERSONAL_COPY = "PERSONAL COPY";
 Zeeguu_API.prototype.WORDS_REVIEW = "WORDS_REVIEW";
 

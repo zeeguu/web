@@ -64,8 +64,7 @@ export default function TranslatableWord({
   if (!word.translation || isBookmarkWord) {
     return (
       <>
-        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word}</z-tag>
-        <span> </span>
+        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
       </>
     );
   }

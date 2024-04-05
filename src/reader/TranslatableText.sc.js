@@ -10,8 +10,10 @@ import {
 
 const TranslatableText = styled.div`
   z-tag {
+    white-space: break-spaces;
     cursor: pointer;
-    /* margin-right: 1em; */
+    /* margin-right: 1em; 
+    padding-right: 0.3em;*/
     display: inline-block;
     margin: 0;
     line-height: 29px;

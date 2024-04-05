@@ -5,8 +5,6 @@ import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import { setTitle } from "../assorted/setTitle";
-import strings from "../i18n/definitions";
 import Reminder from "./Reminder";
 import ExtensionMessage from "../components/ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
@@ -46,6 +44,19 @@ export default function NewArticles() {
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
+
+  const handleArticleClick = (articleId, index) => {
+    const articleSeenList = articleList
+      .slice(0, index)
+      .map((article) => article.id );
+    const articleSeenListString = JSON.stringify(articleSeenList, null, 0);
+    api.logUserActivity(
+      api.CLICKED_ARTICLE,
+      articleId,
+      "",
+      articleSeenListString,
+    );
+  };
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
@@ -123,7 +134,7 @@ export default function NewArticles() {
         setArticleList={setArticleList}
       />
       <Reminder hasExtension={hasExtension}></Reminder>
-      {articleList.map((each) => (
+      {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
           article={each}
@@ -135,6 +146,7 @@ export default function NewArticles() {
           setDoNotShowRedirectionModal_UserPreference={
             setDoNotShowRedirectionModal_UserPreference
           }
+          onArticleClick={() => handleArticleClick(each.id, index)}
         />
       ))}
 

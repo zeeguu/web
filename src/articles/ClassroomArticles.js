@@ -16,7 +16,7 @@ export default function ClassroomArticles({ api }) {
 
   useEffect(() => {
     api.getStudent((student) =>
-      setStudentJoinedCohort(student.cohort_id !== null)
+      setStudentJoinedCohort(student.cohort_id !== null),
     ); // eslint-disable-next-line
   }, []);
 
@@ -64,7 +64,11 @@ export default function ClassroomArticles({ api }) {
         setArticleList={setArticleList}
       />
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} dontShowImage={true} />
+        <ArticlePreview
+          key={each.id}
+          article={each}
+          dontShowSourceIcon={true}
+        />
       ))}
     </>
   );
