@@ -10,11 +10,13 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import exerciseTypes from "../../ExerciseTypeConstants.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.
 
-const EXERCISE_TYPE = exerciseTypes.FindWordInContextCloze;
+const EXERCISE_TYPE = exerciseTypes.findWordInContextCloze;
+
 export default function FindWordInContextCloze({
   api,
   bookmarksToStudy,
@@ -40,6 +42,7 @@ export default function FindWordInContextCloze({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
+    console.log(bookmarksToStudy[0].cooling_interval);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -103,7 +106,12 @@ export default function FindWordInContextCloze({
       <div className="headlineWithMoreSpace">
         {strings.findWordInContextClozeHeadline}
       </div>
-
+      <div className="learningCycleIndicator">
+        <LearningCycleIndicator
+          learningCycle={bookmarksToStudy[0].learning_cycle}
+          coolingInterval={bookmarksToStudy[0].cooling_interval}
+        />
+      </div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
             <div className="contextExample">
                 <TranslatableText

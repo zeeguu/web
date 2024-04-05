@@ -9,6 +9,7 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -100,6 +101,12 @@ export default function TranslateL2toL1({
     <s.Exercise className="translateL2toL1">
       <div className="headlineWithMoreSpace">
         {strings.translateL2toL1Headline}
+      </div>
+      <div className="learningCycleIndicator">
+        <LearningCycleIndicator
+          learningCycle={bookmarksToStudy[0].learning_cycle}
+          coolingInterval={bookmarksToStudy[0].cooling_interval}
+        />
       </div>
       <div className="contextExample">
                 <TranslatableText

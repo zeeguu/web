@@ -3,6 +3,7 @@ import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import exerciseTypes from "../../ExerciseTypeConstants.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
@@ -160,6 +161,12 @@ export default function Match({
     <s.Exercise>
       <div className="headlineWithMoreSpace">
         {strings.matchWordWithTranslation}{" "}
+      </div>
+      <div className="learningCycleIndicator">
+        <LearningCycleIndicator
+          learningCycle={bookmarksToStudy[0].learning_cycle}
+          coolingInterval={bookmarksToStudy[0].cooling_interval}
+        />
       </div>
 
       <MatchInput

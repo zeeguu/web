@@ -83,6 +83,35 @@ const Exercise = styled.div`
     line-height: 1.4em;
   }
 
+  .learningCycleIndicator {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2em;
+  }
+
+  .learningCycleIcon {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+  
+  .cooling-bars {
+    display: flex;
+  }
+
+  .cooling-bar {
+    width: 2.5em;
+    height: 0.5em;
+    background-color: #ccc;
+    margin-right: 0.5em;
+    border-radius: 10px;
+  }
+
+  .cooling-bar.green {
+    background-color: green;
+  }
+
   /* Mobile version */
   @media screen and (max-width: 768px) {
     .contextExample {

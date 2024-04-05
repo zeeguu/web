@@ -5,6 +5,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import exerciseTypes from "../../ExerciseTypeConstants.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
@@ -41,9 +42,10 @@ export default function MultipleChoice({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-
+  
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
+    console.log(bookmarksToStudy[0].cooling_interval);
     api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
       consolidateChoiceOptions(words);
     });
@@ -120,6 +122,12 @@ export default function MultipleChoice({
     <s.Exercise className="multipleChoice">
       <div className="headlineWithMoreSpace">
         {strings.chooseTheWordFittingContextHeadline}
+      </div>
+      <div className="learningCycleIndicator">
+        <LearningCycleIndicator
+          learningCycle={bookmarksToStudy[0].learning_cycle}
+          coolingInterval={bookmarksToStudy[0].cooling_interval}
+        />
       </div>
       <div className="contextExample">
         <TranslatableText
