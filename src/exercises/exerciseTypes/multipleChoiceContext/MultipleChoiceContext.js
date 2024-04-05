@@ -8,6 +8,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import exerciseTypes from "../../ExerciseTypeConstants.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 const EXERCISE_TYPE = exerciseTypes.multipleChoiceContext;
 
@@ -117,6 +118,12 @@ export default function MultipleChoiceContext({
     <s.Exercise className="findWordInContext">
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceContextHeadline}
+      </div>
+      <div className="learningCycleIndicator">
+        <LearningCycleIndicator
+          learningCycle={bookmarksToStudy[0].learning_cycle}
+          coolingInterval={bookmarksToStudy[0].cooling_interval}
+        />
       </div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].from}</h1>
         {exerciseBookmarks.map((option, index) => (

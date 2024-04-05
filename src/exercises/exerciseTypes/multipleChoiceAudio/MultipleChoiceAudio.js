@@ -14,6 +14,7 @@ import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 // The user has to select the correct spoken L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
@@ -184,6 +185,12 @@ export default function MultipleChoiceAudio({
     <s.Exercise>
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceAudioHeadline}
+      </div>
+      <div className="learningCycleIndicator">
+        <LearningCycleIndicator
+          learningCycle={bookmarksToStudy[0].learning_cycle}
+          coolingInterval={bookmarksToStudy[0].cooling_interval}
+        />
       </div>
 
       <div className="contextExample">
