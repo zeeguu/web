@@ -1,11 +1,14 @@
-import * as s from "./RedirectionNotificationModal.sc";
+import * as s from "../modal_shared/Modal.sc";
 import { useState } from "react";
-import Modal from "./modal_shared/Modal";
-import Header from "./modal_shared/Header";
-import Body from "./modal_shared/Body";
-import Footer from "./modal_shared/Footer";
-import Checkbox from "./modal_shared/Checkbox";
-import GoToButton from "./modal_shared/GoToButton";
+import Modal from "../modal_shared/Modal";
+import Header from "../modal_shared/Header";
+import Heading from "../modal_shared/Heading";
+import Main from "../modal_shared/Main";
+import MainImage from "../MainImage";
+import Footer from "../modal_shared/Footer";
+import ButtonContainer from "../modal_shared/ButtonContainer";
+import Checkbox from "../modal_shared/Checkbox";
+import GoToButton from "../modal_shared/GoToButton";
 
 export default function SupportedNotification({
   article,
@@ -40,26 +43,25 @@ export default function SupportedNotification({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        You are ready to&nbsp;continue<br></br>to the original article's website
+        <Heading>
+          You are ready to&nbsp;continue<br></br>to the original article's
+          website
+        </Heading>
       </Header>
-      <Body>
+      <Main>
         <p>
           Once there, <s.Strong>right-click</s.Strong> anywhere on the page and
           select the "Read with Zeeguu" option.
         </p>
-        <img
-          className="full-width-img"
-          src={"../static/images/use-extension.png"}
-          alt="Zeeguu browser extension"
-        />
-      </Body>
+        <MainImage src={"use-extension.png"} alt={"Zeeguu browser extension"} />
+      </Main>
       <Footer>
         <Checkbox
           label={"Don't show this message again"}
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <s.ButtonsContainer oneButton>
+        <ButtonContainer buttonCountNum={1}>
           <GoToButton
             target={"_blank"}
             href={article.url}
@@ -67,7 +69,7 @@ export default function SupportedNotification({
           >
             Enter the article's website
           </GoToButton>
-        </s.ButtonsContainer>
+        </ButtonContainer>
       </Footer>
     </Modal>
   );

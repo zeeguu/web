@@ -1,11 +1,14 @@
-import * as s from "./RedirectionNotificationModal.sc";
+import * as s from "../modal_shared/Modal.sc";
 import { useState } from "react";
-import Modal from "./modal_shared/Modal";
-import Header from "./modal_shared/Header";
-import Body from "./modal_shared/Body";
-import Footer from "./modal_shared/Footer";
-import Checkbox from "./modal_shared/Checkbox";
-import GoToButton from "./modal_shared/GoToButton";
+import Modal from "../modal_shared/Modal";
+import Header from "../modal_shared/Header";
+import Heading from "../modal_shared/Heading";
+import Main from "../modal_shared/Main";
+import Footer from "../modal_shared/Footer";
+import ButtonContainer from "../modal_shared/ButtonContainer";
+import Checkbox from "../modal_shared/Checkbox";
+import GoToButton from "../modal_shared/GoToButton";
+import AddToSavesButton from "../modal_shared/AddToSavesButton";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 export default function MobileNotification({
@@ -56,21 +59,23 @@ export default function MobileNotification({
 
   return (
     <Modal open={open} onClose={handleCancel}>
-      <Header>It looks like you are using&nbsp;a&nbsp;mobile device</Header>
-      <Body>
+      <Header>
+        <Heading>It looks like you are using&nbsp;a&nbsp;mobile device</Heading>
+      </Header>
+      <Main>
         <p>
           If you want to read articles with the help of Zeeguu on your mobile
           device, you need to save them first by clicking the
           <s.Strong> Add&nbsp;to&nbsp;Saves</s.Strong> button.
         </p>
-      </Body>
+      </Main>
       <Footer>
         <Checkbox
           label={"Don't show this message again"}
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <s.ButtonsContainer moreButtons>
+        <ButtonContainer buttonCountNum={2}>
           <GoToButton
             href={article.url}
             target={"_self"}
@@ -78,14 +83,11 @@ export default function MobileNotification({
           >
             Enter the article's website
           </GoToButton>
-          <s.SaveArticleButton
-            role="button"
-            onClick={handleSaveArticleFromTheModal}
-          >
+          <AddToSavesButton onClick={handleSaveArticleFromTheModal}>
             <BookmarkBorderIcon fontSize="small" />
             Add to Saves
-          </s.SaveArticleButton>
-        </s.ButtonsContainer>
+          </AddToSavesButton>
+        </ButtonContainer>
       </Footer>
     </Modal>
   );
