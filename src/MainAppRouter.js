@@ -54,11 +54,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
 
     if (redirectLink !== null) {
       window.location.href = redirectLink;
-    } else if (
-      window.location.href.indexOf("create_account") > -1 &&
-      !hasExtension &&
-      isSupportedBrowser()
-    ) {
+    } else if (window.location.href.indexOf("create_account") > -1) {
       history.push("/select_interests");
     } else {
       console.log("history");
