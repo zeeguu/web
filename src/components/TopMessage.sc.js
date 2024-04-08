@@ -3,7 +3,7 @@ import { zeeguuVeryLightOrange } from "./colors";
 
 let TopMessage = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   text-align: center;
   margin: auto;
   background-color: ${zeeguuVeryLightOrange};
