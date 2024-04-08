@@ -264,6 +264,14 @@ let strings = new LocalizedStrings(
       titleRankedWords: "Most Important Words",
       rankedMsg:
         "The most important words that you translated. Ordered by frequency of occurrence in your learned language. To see all your past translations, go to History.",
+      
+      //Receptive
+      titleReceptiveWords: "Receptive Knowledge",
+      receptiveMsg: "These words will appear in exercises testing your receptive knowledge. Receptive means you understand the word when you see or hear it, but can't necessarily use it yet.",
+
+      //Productive
+      titleProductiveWords: "Productive Knowledge",
+      productiveMsg: "These words will appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech",
 
       //WordsOnDate
       open: "Open",
