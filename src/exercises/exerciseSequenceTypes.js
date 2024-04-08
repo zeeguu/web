@@ -197,67 +197,10 @@ let LEARNING_CYCLE_SEQUENCE_NO_AUDIO = [
   },
 ];
 
-
-// let ACTIVE_SEQUENCE = [
-//   {
-//     type: MultipleChoice,
-//     requiredBookmarks: 3,
-//   },
-//   {
-//     type: SpellWhatYouHear,
-//     requiredBookmarks: 1,
-//   },
-//   {
-//     type: FindWordInContextCloze,
-//     requiredBookmarks: 1,
-//   },
-//   {
-//     type: MultipleChoice,
-//     requiredBookmarks: 3,
-//   },
-//   {
-//     type: MultipleChoiceAudio,
-//     requiredBookmarks: 3,
-//   },
-//   {
-//     type: FindWordInContextCloze,
-//     requiredBookmarks: 1,
-//   }
-// ];
-
-// let ACTIVE_SEQUENCE_NO_AUDIO = [
-//   {
-//     type: FindWordInContextCloze,
-//     requiredBookmarks: 1,
-//   },
-//   {
-//     type: MultipleChoice,
-//     requiredBookmarks: 3,
-//   },
-//   {
-//     type: FindWordInContextCloze,
-//     requiredBookmarks: 1,
-//   },
-//   {
-//     type: MultipleChoice,
-//     requiredBookmarks: 3,
-//   },
-//   {
-//     type: FindWordInContextCloze,
-//     requiredBookmarks: 1,
-//   },
-//   {
-//     type: MultipleChoice,
-//     requiredBookmarks: 3,
-//   }
-// ];
-
 export {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
   EXERCISE_TYPES_TIAGO,
   LEARNING_CYCLE_SEQUENCE,
-  // ACTIVE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
-  // ACTIVE_SEQUENCE_NO_AUDIO
 };
