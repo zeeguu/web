@@ -24,7 +24,7 @@ export default function SelectInterests({ api, hasExtension }) {
   return (
     <InfoPage>
       <Header>
-        <Heading>What topics are you interested in?</Heading>
+        <Heading>What would you like to read about?</Heading>
       </Header>
       <Main>
         <TagContainer>
