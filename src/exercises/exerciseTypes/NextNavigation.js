@@ -33,6 +33,13 @@ export default function NextNavigation({
   const exercise = "exercise";
   const [userIsCorrect, setUserIsCorrect] = useState();
   const [correctMessage, setCorrectMessage] = useState("");
+  const [learningCycle, setLearningCycle] = useState(
+    bookmarkToStudy.learning_cycle,
+  );
+
+  useEffect(() => {
+    setLearningCycle(bookmarksToStudy[0].learning_cycle);
+  }, [bookmarkToStudy.learning_cycle]);
 
   useEffect(() => {
     const userIsCorrect = message.includes("C");
@@ -49,17 +56,7 @@ export default function NextNavigation({
     <>
       {isCorrect &&
         userIsCorrect &&
-        (bookmarksToStudy[0].cooling_interval < 5760 ? (
-          <div className="next-nav-feedback">
-            <img
-              src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
-              alt="Correct Icon"
-            />
-            <p>
-              <b>{correctMessage}</b>
-            </p>
-          </div>
-        ) : (
+        (learningCycle === 1 && bookmarkToStudy.learning_cycle === 2 ? (
           <div className="next-nav-learning-cycle">
             <img
               src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
@@ -69,6 +66,16 @@ export default function NextNavigation({
               <b>
                 {correctMessage}&nbsp;{strings.nextLearningCycle}
               </b>
+            </p>
+          </div>
+        ) : (
+          <div className="next-nav-feedback">
+            <img
+              src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
+              alt="Correct Icon"
+            />
+            <p>
+              <b>{correctMessage}</b>
             </p>
           </div>
         ))}
