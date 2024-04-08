@@ -110,6 +110,8 @@ export default function FindWordInContextCloze({
         <LearningCycleIndicator
           learningCycle={bookmarksToStudy[0].learning_cycle}
           coolingInterval={bookmarksToStudy[0].cooling_interval}
+          isCorrect={isCorrect}
+          message={messageToAPI}
         />
       </div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>

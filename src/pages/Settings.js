@@ -25,6 +25,7 @@ export default function Settings({ api, setUser }) {
   const [currentCohort, setCurrentCohort] = useState("");
   const [cefr, setCEFR] = useState("");
   const [audioExercises, setAudioExercises] = useState(true);
+  const [productiveExercises, setProductiveExercises] = useState(true);
   //TODO: Refactor using Zeeguu project logic
 
   const [uiLanguage, setUiLanguage] = useState();
@@ -148,6 +149,10 @@ export default function Settings({ api, setUser }) {
     setAudioExercises((state) => !state);
   }
 
+  function handleProductiveExercisesChange(e) {
+    setProductiveExercises((state) => !state);
+  }
+
   if (!userDetails || !languages) {
     return <LoadingAnimation />;
   }
@@ -247,6 +252,15 @@ export default function Settings({ api, setUser }) {
                 onChange={handleAudioExercisesChange}
               />
               <label>Include Audio Exercises</label>
+            </div>
+            <div style={{ display: "flex" }} className="form-group">
+              <input
+                style={{ width: "1.5em" }}
+                type={"checkbox"}
+                checked={productiveExercises}
+                onChange={handleProductiveExercisesChange}
+              />
+              <label>Enable productive exercises for receptively learned words</label>
             </div>
 
             <div>

@@ -12,6 +12,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 // The user has to translate the word they hear into their L1. A L2 context with the word is shown when clicking the Hint button.
 // This tests the user's passive knowledge.
@@ -130,6 +131,14 @@ export default function TranslateWhatYouHear({
     <s.Exercise>
       <div className="headlineWithMoreSpace">
         {strings.translateWhatYouHearHeadline}
+      </div>
+      <div className="learningCycleIndicator">
+        <LearningCycleIndicator
+          learningCycle={bookmarksToStudy[0].learning_cycle}
+          coolingInterval={bookmarksToStudy[0].cooling_interval}
+          isCorrect={isCorrect}
+          message={messageToAPI}
+        />
       </div>
       {!isCorrect && !usedHint && (
         <>

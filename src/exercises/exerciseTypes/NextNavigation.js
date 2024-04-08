@@ -35,7 +35,7 @@ export default function NextNavigation({
   const [correctMessage, setCorrectMessage] = useState("");
 
   useEffect(() => {
-    const userIsCorrect = (message.includes("C"));
+    const userIsCorrect = message.includes("C");
     setUserIsCorrect(userIsCorrect);
   }, [message]);
 
@@ -47,17 +47,31 @@ export default function NextNavigation({
 
   return (
     <>
-      {isCorrect && userIsCorrect && (
-        <div className="next-nav-feedback">
-          <img
-            src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
-            alt="Correct Icon"
-          />
-          <p>
-            <b>{correctMessage}</b>
-          </p>
-        </div>
-      )}
+      {isCorrect &&
+        userIsCorrect &&
+        (bookmarksToStudy[0].cooling_interval < 5760 ? (
+          <div className="next-nav-feedback">
+            <img
+              src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
+              alt="Correct Icon"
+            />
+            <p>
+              <b>{correctMessage}</b>
+            </p>
+          </div>
+        ) : (
+          <div className="next-nav-learning-cycle">
+            <img
+              src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
+              alt="Correct Icon"
+            />
+            <p>
+              <b>
+                {correctMessage}&nbsp;{strings.nextLearningCycle}
+              </b>
+            </p>
+          </div>
+        ))}
       {isCorrect && bookmarksToStudy.length === 1 && (
         <s.BottomRowSmallTopMargin className="bottomRow">
           <s.EditSpeakButtonHolder>
