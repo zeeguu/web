@@ -134,9 +134,11 @@ export default function SpellWhatYouHear({
         <LearningCycleIndicator
           learningCycle={bookmarksToStudy[0].learning_cycle}
           coolingInterval={bookmarksToStudy[0].cooling_interval}
+          isCorrect={isCorrect}
+          message={messageToAPI}
         />
       </div>
-      
+
       {!isCorrect && (
         <>
           <div className="contextExample">

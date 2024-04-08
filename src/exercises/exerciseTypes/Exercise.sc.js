@@ -33,6 +33,30 @@ const Exercise = styled.div`
     }
   }
 
+  .next-nav-learning-cycle{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border: 0.125em solid #99E47F;
+    border-radius: 0.5em;
+    background-color: #F1F7F2;
+    width: 70%;
+
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+      margin: 0.5em;
+    }
+    p {
+      margin-left: 1em;
+    }
+  }
+
   .type-feedback p {
     margin: 0.5em;
   }
@@ -93,7 +117,6 @@ const Exercise = styled.div`
   }
 
   .learningCycleIcon {
-    margin-left: 1em;
     margin-right: 1em;
   }
   
@@ -111,6 +134,14 @@ const Exercise = styled.div`
 
   .cooling-bar.green {
     background-color: green;
+  }
+
+  .cooling-bar.yellow {
+    background-color: #ffd047;
+  }
+
+  .cooling-bar.grey {
+    background-color: grey;
   }
 
   /* Mobile version */

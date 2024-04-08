@@ -47,15 +47,27 @@ export default function NextNavigation({
   return (
     <>
       {isCorrect && userIsCorrect && (
-        <div className="next-nav-feedback">
-          <img
-            src={"/static/icons/zeeguu-icon-correct.png"}
-            alt="Correct Icon"
-          />
-          <p>
-            <b>{correctMessage}</b>
-          </p>
-        </div>
+        (bookmarksToStudy[0].cooling_interval < 5760 ? (
+          <div className="next-nav-feedback">
+            <img
+              src={"/static/icons/zeeguu-icon-correct.png"}
+              alt="Correct Icon"
+            />
+            <p>
+              <b>{correctMessage}</b>
+            </p>
+          </div>
+        ) : (
+          <div className="next-nav-learning-cycle">
+            <img
+              src={"/static/icons/zeeguu-icon-correct.png"}
+              alt="Correct Icon"
+            />
+            <p>
+              <b>{correctMessage}&nbsp;{strings.nextLearningCycle}</b>
+            </p>
+          </div>
+        ))
       )}
       {isCorrect && bookmarksToStudy.length === 1 && (
         <s.BottomRowSmallTopMargin className="bottomRow">

@@ -16,7 +16,6 @@ export default function FeedbackButtons({
   setUserFeedback,
 }) {
   const MATCH_EXERCISE_TYPE = exerciseTypes.match;
-  const THUMBS_DOWN_VALUE = "dislike_bookmark";
 
   const buttons = [
     {
@@ -30,14 +29,6 @@ export default function FeedbackButtons({
       tooltip: strings.bookmarkTooHardTooltip,
     },
   ];
-
-  if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
-    buttons.splice(2, 0, {
-      name: strings.badContext,
-      value: "not_a_good_context",
-      tooltip: strings.badContextTooltip,
-    });
-  }
 
   const [showInput, setShowInput] = useState(false);
   const [className, setClassName] = useState("");
@@ -61,10 +52,6 @@ export default function FeedbackButtons({
           if (button.value === value) {
             setFeedback(
               `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`,
-            );
-          } else if (value === THUMBS_DOWN_VALUE) {
-            setFeedback(
-              `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`,
             );
           }
         });
@@ -139,35 +126,6 @@ export default function FeedbackButtons({
       )}
       {show && (
         <s.FeedbackButtonsHolder>
-          <Tooltip
-            ref={wrapper}
-            key={"tooltip_dislike"}
-            title={
-              <p style={{ fontSize: "small" }}>
-                <span>
-                  {strings.imNotsure}
-                  <br />
-                  <br />
-                  <strong>{strings.nb}</strong> {strings.youCanImprove}
-                  <u>
-                    <strong>{strings.doNot}</strong>
-                  </u>
-                  {strings.clickOnThisFeedbackButton}
-                </span>
-              </p>
-            }
-          >
-            <s.FeedbackButton
-              key="dislike"
-              onClick={() => buttonClick(THUMBS_DOWN_VALUE)}
-            >
-              <img
-                src="https://zeeguu.org/static/images/thumb_down_black_18dp.svg"
-                alt={strings.dislike}
-                width={18}
-              />
-            </s.FeedbackButton>
-          </Tooltip>
           {buttons.map((each) =>
             each.value === "other" ? (
               <Tooltip
