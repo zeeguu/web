@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import useSelectInterest from "../hooks/useSelectInterest";
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
@@ -10,34 +9,22 @@ export default function TagsOfInterests({
   api,
   articlesListShouldChange,
 }) {
-  const { allTopics, subscribedTopics, toggleTopicSubscription } =
-    useSelectInterest(api);
+  const {
+    allTopics,
 
-  const [subscribedSearches, setSubscribedSearches] = useState(null);
-  const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
-    useState(false);
+    subscribedTopics,
+    toggleTopicSubscription,
 
-  useEffect(() => {
-    api.getSubscribedSearchers((data) => {
-      setSubscribedSearches(data);
-    });
-  }, [api]);
+    subscribedSearches,
+    subscribeToSearch,
+    removeSearch,
 
-  if (!subscribedSearches) return "";
-
-  function removeSearch(search) {
-    console.log("unsubscribing from search" + search);
-    setSubscribedSearches(
-      subscribedSearches.filter((each) => each.id !== search.id),
-    );
-    api.unsubscribeFromSearch(search);
-  }
+    showingSpecialInterestModal,
+    setshowingSpecialInterestModal,
+  } = useSelectInterest(api);
 
   const onConfirm = (response) => {
-    api.subscribeToSearch(response, (data) => {
-      setSubscribedSearches([...subscribedSearches, data]);
-    });
-
+    subscribeToSearch(response);
     setshowingSpecialInterestModal(false);
   };
 
@@ -94,7 +81,7 @@ export default function TagsOfInterests({
           </div>
         ))}
 
-        {subscribedSearches.map((search) => (
+        {subscribedSearches?.map((search) => (
           <div key={search.id} searchremovabeid={search.id}>
             <button
               onClick={(e) => removeSearch(search)}

@@ -4,6 +4,9 @@ export default function useSelectInterest(api) {
   const [availableTopics, setAvailableTopics] = useState(null);
   const [subscribedTopics, setSubscribedTopics] = useState(null);
   const [allTopics, setAllTopics] = useState(null);
+  const [subscribedSearches, setSubscribedSearches] = useState(null);
+  const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
+    useState(false);
 
   useEffect(() => {
     api.getAvailableTopics((data) => {
@@ -13,9 +16,12 @@ export default function useSelectInterest(api) {
     api.getSubscribedTopics((data) => {
       setSubscribedTopics(data);
     });
+
+    //custom interest filters
+    api.getSubscribedSearchers((data) => {
+      setSubscribedSearches(data);
+    });
   }, [api]);
-
-
 
   useEffect(() => {
     if (availableTopics && subscribedTopics) {
@@ -25,9 +31,13 @@ export default function useSelectInterest(api) {
     }
   }, [availableTopics, subscribedTopics]);
 
-
-  if (!availableTopics || !subscribedTopics) return "";
-  if (!allTopics) return "";
+  if (
+    !availableTopics ||
+    !subscribedTopics ||
+    !subscribedSearches ||
+    !allTopics
+  )
+    return "";
 
   function subscribeToTopic(topic) {
     setSubscribedTopics([...subscribedTopics, topic]);
@@ -50,10 +60,35 @@ export default function useSelectInterest(api) {
       subscribeToTopic(topic);
     }
   }
+
+  //subscrobe to custom interest filter
+  function subscribeToSearch(response) {
+    api.subscribeToSearch(response, (data) => {
+      setSubscribedSearches([...subscribedSearches, data]);
+    });
+  }
+
+  //remove custom interest filter
+  function removeSearch(search) {
+    console.log("unsubscribing from search" + search);
+    setSubscribedSearches(
+      subscribedSearches.filter((each) => each.id !== search.id),
+    );
+    api.unsubscribeFromSearch(search);
+  }
   return {
-    toggleTopicSubscription,
-    subscribedTopics,
-    availableTopics,
     allTopics,
+
+    availableTopics,
+    subscribedTopics,
+    toggleTopicSubscription,
+
+    subscribedSearches,
+    setSubscribedSearches,
+    subscribeToSearch,
+    removeSearch,
+
+    showingSpecialInterestModal,
+    setshowingSpecialInterestModal,
   };
 }
