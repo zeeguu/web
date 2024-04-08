@@ -1,7 +1,25 @@
 import React from "react";
+import { useState, useEffect } from "react";
 
-export default function LearningCycleIndicator({ learningCycle, coolingInterval }) {
+export default function LearningCycleIndicator({ 
+  learningCycle, 
+  coolingInterval, 
+  isCorrect,
+  message 
+}) {
   
+  const [userIsCorrect, setUserIsCorrect] = useState(false);
+  const [userIsWrong, setUserIsWrong] = useState(false);
+
+  useEffect(() => {
+    const userIsCorrect = ["C", "TC", "TTC", "TTTC", "HC"].includes(message);
+    setUserIsCorrect(userIsCorrect);
+    const userIsWrong = message.includes("W")|| message.includes("S");
+    setUserIsWrong(userIsWrong);
+    console.log(message)
+  }, [message]);
+
+
   const learningCycleEnum = Object.freeze({
     0: "not set",
     1: "receptive",
@@ -19,36 +37,36 @@ export default function LearningCycleIndicator({ learningCycle, coolingInterval 
     }
   }
 
-  const getGreenBars = () => {
-    if (coolingInterval >= 11520) return 4;
-    if (coolingInterval >= 5760) return 3;
-    if (coolingInterval >= 2880) return 2;
-    if (coolingInterval >= 1440) return 1;
-    return 0;
-  }
-  
   const getBarColor = (index) => {
-    if (index < coolingInterval) return 'green';
-    if (index === coolingInterval) return 'yellow';
+    if (index < coolingInterval / 1440) return 'green';
+    if (index === coolingInterval / 1440) {
+      if (userIsCorrect) return 'green';
+      if (userIsWrong) return 'grey';
+      return 'yellow';
+    }
     return 'grey';
   }
 
   return (
     <>
-      <div className="learningCycleIcon">
-        <img 
-          src={getLearningCycleIcon()} 
-          alt={`${learningCycleEnum[learningCycle]}-icon`} 
-          style={{height: '2.5em', width: '2.5em'}}/>
-      </div>
-      <div className="cooling-bars">
-        {[...Array(4)].map((_, index) => (
-          <div
-            key={index}
-            className={`cooling-bar ${getBarColor(index)}`}
-          ></div>
-        ))}
-      </div>
+      {learningCycleEnum[learningCycle] !== "not set" && (
+        <>
+          <div className="learningCycleIcon">
+            <img 
+              src={getLearningCycleIcon()} 
+              alt={`${learningCycleEnum[learningCycle]}-icon`} 
+              style={{height: '2.5em', width: '2.5em'}}/>
+          </div>
+          <div className="cooling-bars">
+            {[...Array(4)].map((_, index) => (
+              <div
+                key={index}
+                className={`cooling-bar ${getBarColor(index)}`}
+              ></div>
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 }

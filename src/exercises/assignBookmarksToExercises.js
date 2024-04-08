@@ -1,5 +1,3 @@
-import { filter } from "lodash";
-
 /**
  * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
  * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
@@ -22,25 +20,35 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
   const hasLearningCycle = exerciseTypesList.some(exercise => 'learningCycle' in exercise);
 
   if (hasLearningCycle) {
+    let exerciseType_i = 0; // Initialize index for exercise types
     for (let i = 0; i < bookmarks.length; i++) {
       // Filter the exercises based on the learning_cycle attribute of the bookmark
       let filteredExercises = exerciseTypesList.filter(exercise => 
         learningCycleEnum[bookmarks[i].learning_cycle] === exercise.learningCycle
       );
-      // Randomly select an exercise from the filtered list
-      let selectedExercise = filteredExercises[Math.floor(Math.random() * filteredExercises.length)];
-      // Check if there are enough bookmarks for the selected exercise
-      if (i + selectedExercise.requiredBookmarks <= bookmarks.length) {
-        // Assign the required number of bookmarks to the selected exercise
-        let exercise = {
-          type: selectedExercise.type,
-          bookmarks: bookmarks.slice(i, i + selectedExercise.requiredBookmarks),
-        };
-        exerciseSequence.push(exercise);
+      
+      // Check if there are any filtered exercises
+      if (filteredExercises.length > 0) {
+        // Randomly select an exercise from the filtered list
+        let selectedExercise = filteredExercises[Math.floor(Math.random() * filteredExercises.length)];
+        
+        // Check if there are enough bookmarks for the selected exercise
+        if (i + selectedExercise.requiredBookmarks <= bookmarks.length) {
+          // Assign the required number of bookmarks to the selected exercise
+          let exercise = {
+            type: selectedExercise.type,
+            bookmarks: bookmarks.slice(i, i + selectedExercise.requiredBookmarks),
+          };
+          exerciseSequence.push(exercise);
 
-        // Skip the assigned bookmarks
-        i += selectedExercise.requiredBookmarks - 1;
+          // Skip the assigned bookmarks
+          i += selectedExercise.requiredBookmarks - 1;
+        }
       }
+      
+      // Move to the next exercise type, cycling back to the first one if necessary
+      exerciseType_i++;
+      if (exerciseType_i === exerciseTypesList.length) exerciseType_i = 0;
     }
     return exerciseSequence;
 

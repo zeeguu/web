@@ -325,6 +325,7 @@ let strings = new LocalizedStrings(
       solutionExercise2: "See the solution above!",
       //LearnedWordsList
       studentHasNotLearnedWords: "The student has not learned any words yet.",
+      nextLearningCycle: "This word has now moved to your productive knowledge.",
 
       //NonStudiedWordsList
       NoLoookedupWordsYet: "The student hasn't looked up any words yet.",
@@ -359,14 +360,14 @@ let strings = new LocalizedStrings(
         "Choose the context that fits the word",
         
       //FeedbackButtons
-      giveFeedback: "Give feedback",
+      giveFeedback: "Don't show this word again",
       giveFeedbackAlert: "Please type your feedback before submitting.",
       selectWords: "Select the word(s):",
       selectWordsAlert:
         "Please select the word(s) for which you are providing feedback.",
       clickWords:
         "Click on the word(s) for which you are improving the translation:",
-      otherFeedback: "Other feedback:",
+      otherFeedback: "Other reasons:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
 
