@@ -11,7 +11,7 @@ import Tag from "./info_page_shared/Tag";
 import TagContainer from "./info_page_shared/TagContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
-export default function HobbySelection({ api, hasExtension }) {
+export default function SelectInterests({ api, hasExtension }) {
   const { allTopics, subscribedTopics, toggleTopicSubscription } =
     useSelectInterest(api);
 

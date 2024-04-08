@@ -2,7 +2,7 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
 import InstallExtension from "./pages/InstallExtension";
-import HobbySelection from "./pages/HobbySelection";
+import SelectInterests from "./pages/SelectInterests";
 import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
 import React, { useState } from "react";
@@ -96,7 +96,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
 
       <Route
         path="/select_interests"
-        render={() => <HobbySelection hasExtension={hasExtension} api={api} />}
+        render={() => <SelectInterests hasExtension={hasExtension} api={api} />}
       />
 
       <Route path="/install_extension" render={() => <InstallExtension />} />
