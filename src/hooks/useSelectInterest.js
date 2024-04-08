@@ -61,7 +61,7 @@ export default function useSelectInterest(api) {
     }
   }
 
-  //subscrobe to custom interest filter
+  //subscribe to custom interest filter
   function subscribeToSearch(response) {
     api.subscribeToSearch(response, (data) => {
       setSubscribedSearches([...subscribedSearches, data]);
