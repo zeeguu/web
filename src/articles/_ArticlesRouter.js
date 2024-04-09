@@ -8,14 +8,17 @@ import strings from "../i18n/definitions";
 
 import OwnArticles from "./OwnArticles";
 import ReadingHistory from "../words/WordHistory";
+import RecommendedArticles from "./RecommendedArticles";
 
 import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import { Recommend } from "@mui/icons-material";
 
 export default function ArticlesRouter({ api, hasExtension, isChrome }) {
   let tabsAndLinks = {
     [strings.homeTab]: "/articles",
     [strings.saved]: "/articles/ownTexts",
+    [strings.forYou]: "/articles/forYou",
   };
 
   if (LocalStorage.isStudent()) {
@@ -51,6 +54,12 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
           path="/articles/ownTexts"
           api={api}
           component={OwnArticles}
+        />
+
+        <PrivateRoute
+          path="/articles/forYou"
+          api={api}
+          component={RecommendedArticles}
         />
 
         <PrivateRoute

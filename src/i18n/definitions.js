@@ -184,6 +184,7 @@ let strings = new LocalizedStrings(
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
       saved: "Saves",
+      forYou: "For You🆕",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
@@ -240,6 +241,8 @@ let strings = new LocalizedStrings(
       noArticlesInClassroom: "There are no articles in your classroom.",
 
       noOwnArticles: "There are no own articles.",
+
+      noRecommendedArticles: "There are no recommended articles.",
 
       //BookmarkedArticles
       noBookmarksYet: "You haven't bookmarked any articles yet.",
