@@ -34,8 +34,11 @@ export default function Exercises({
   keepExercisingAction,
   source,
 }) {
-  const [exerciseSequenceType, setExerciseSequenceType] = useState(getExerciseSequenceType());
-  const [numberOfBookmarksToPractice, setNumberOfBookmarksToPractice] = useState(getNumberOfBookmarksToPractice(exerciseSequenceType));
+  const [exerciseSequenceType, setExerciseSequenceType] = useState(
+    getExerciseSequenceType(),
+  );
+  const [numberOfBookmarksToPractice, setNumberOfBookmarksToPractice] =
+    useState(getNumberOfBookmarksToPractice(exerciseSequenceType));
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     numberOfBookmarksToPractice,
   );
@@ -57,37 +60,41 @@ export default function Exercises({
     useActivityTimer();
 
   useEffect(() => {
-    setNumberOfBookmarksToPractice(getNumberOfBookmarksToPractice(exerciseSequenceType));
+    setNumberOfBookmarksToPractice(
+      getNumberOfBookmarksToPractice(exerciseSequenceType),
+    );
   }, [exerciseSequenceType]);
 
   //feature flag for learningCycle sequence
-//   function getExerciseSequenceType() {
-//     let exerciseTypesList;
-//     if (Feature.learning_cycle_sequence()) {
-//       exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
-//       if (!SessionStorage.isAudioExercisesEnabled()) {
-//         console.log("Will not use audio!");
-//         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
-//       }
-//     } else {
-//       exerciseTypesList = DEFAULT_SEQUENCE;
-//       if (!SessionStorage.isAudioExercisesEnabled()) {
-//         console.log("Will not use audio!");
-//         exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
-//       }
-//     }
-//     return exerciseTypesList;
-// }
+  //   function getExerciseSequenceType() {
+  //     let exerciseTypesList;
+  //     if (Feature.learning_cycle_sequence()) {
+  //       exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
+  //       if (!SessionStorage.isAudioExercisesEnabled()) {
+  //         console.log("Will not use audio!");
+  //         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
+  //       }
+  //     } else {
+  //       exerciseTypesList = DEFAULT_SEQUENCE;
+  //       if (!SessionStorage.isAudioExercisesEnabled()) {
+  //         console.log("Will not use audio!");
+  //         exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
+  //       }
+  //     }
+  //     return exerciseTypesList;
+  // }
 
-function getExerciseSequenceType() {
-    
-    let exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
-      if (!SessionStorage.isAudioExercisesEnabled()) {
-        console.log("Will not use audio!");
+  function getExerciseSequenceType() {
+    let exerciseTypesList;
+    if (Feature.merle_exercises()) exerciseTypesList = DEFAULT_SEQUENCE;
+    else exerciseTypesList = DEFAULT_SEQUENCE;
+    if (!SessionStorage.isAudioExercisesEnabled()) {
+      console.log("Will not use audio!");
+      if (Feature.merle_exercises())
         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
-      }
+    }
     return exerciseTypesList;
-}
+  }
 
   function initializeExercises(bookmarks, title) {
     setCountBookmarksToPractice(bookmarks.length);
@@ -102,7 +109,7 @@ function getExerciseSequenceType() {
         bookmarks,
         exerciseSequenceType,
       );
-
+      console.log(exerciseSession);
       setFullExerciseProgression(exerciseSession);
 
       if (currentBookmarksToStudy === null) {
