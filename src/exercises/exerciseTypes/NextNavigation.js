@@ -35,7 +35,7 @@ export default function NextNavigation({
   const [learningCycle, setLearningCycle] = useState(bookmarkToStudy.learning_cycle);
 
   useEffect(() => {
-    setLearningCycle(bookmarksToStudy[0].learning_cycle);
+    setLearningCycle(bookmarkToStudy.learning_cycle);
   }, [bookmarkToStudy.learning_cycle]);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function NextNavigation({
   return (
     <>
       {isCorrect && userIsCorrect && (
-        (learningCycle === 1 && bookmarkToStudy.learning_cycle === 2) ? (
+        (learningCycle === 1 && bookmarkToStudy.is_last_in_cycle) ? (
           <div className="next-nav-learning-cycle">
             <img
               src={"/static/icons/zeeguu-icon-correct.png"}

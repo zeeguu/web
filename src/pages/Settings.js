@@ -71,6 +71,10 @@ export default function Settings({ api, setUser }) {
         preferences["audio_exercises"] === undefined ||
           preferences["audio_exercises"] === "true",
       );
+      setProductiveExercises(
+        preferences["productive_exercises"] === undefined ||
+          preferences["productive_exercises"] === "true",
+      );
     });
     api.getSystemLanguages((systemLanguages) => {
       setLanguages(systemLanguages);
@@ -115,7 +119,10 @@ export default function Settings({ api, setUser }) {
     modifyCEFRlevel(userDetails.learned_language, cefr);
 
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      api.saveUserPreferences({ audio_exercises: audioExercises }, () => {
+      api.saveUserPreferences({ 
+        audio_exercises: audioExercises,
+        productive_exercises: productiveExercises 
+      }, () => {
         updateUserInfo(userDetails);
         if (history.length > 1) {
           history.goBack();
@@ -150,8 +157,13 @@ export default function Settings({ api, setUser }) {
   }
 
   function handleProductiveExercisesChange(e) {
+    // Toggle the state locally
     setProductiveExercises((state) => !state);
-  }
+
+    // Update local storage
+    const newProductiveValue = !productiveExercises;
+    localStorage.setItem('productiveExercises', JSON.stringify(newProductiveValue));
+  } 
 
   if (!userDetails || !languages) {
     return <LoadingAnimation />;
@@ -253,16 +265,17 @@ export default function Settings({ api, setUser }) {
               />
               <label>Include Audio Exercises</label>
             </div>
-            <div style={{ display: "flex" }} className="form-group">
-              <input
-                style={{ width: "1.5em" }}
-                type={"checkbox"}
-                checked={productiveExercises}
-                onChange={handleProductiveExercisesChange}
-              />
-              <label>Enable productive exercises for receptively learned words</label>
-            </div>
-
+            {JSON.parse(localStorage.getItem('features')).includes('merle_exercises') &&
+              <div style={{ display: "flex" }} className="form-group">
+                <input
+                  style={{ width: "1.5em" }}
+                  type={"checkbox"}
+                  checked={productiveExercises}
+                  onChange={handleProductiveExercisesChange}
+                />
+                <label>Enable productive exercises</label>
+              </div>
+            }
             <div>
               <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
             </div>

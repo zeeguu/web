@@ -169,9 +169,7 @@ export default function WordInContextExercise({
       </div>
       <div className="learningCycleIndicator">
         <LearningCycleIndicator
-          learningCycle={bookmarksToStudy[0].learning_cycle}
-          coolingInterval={bookmarksToStudy[0].cooling_interval}
-          isCorrect={isCorrect}
+          bookmark={bookmarksToStudy[0]}
           message={messageToAPI}
         />
       </div>

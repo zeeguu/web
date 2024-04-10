@@ -266,15 +266,27 @@ let strings = new LocalizedStrings(
         "The most important words that you translated. Ordered by frequency of occurrence in your learned language. To see all your past translations, go to History.",
       
       //Receptive
-      titleReceptiveWords: "Receptive Knowledge",
+      titleReceptiveWords: "Receptive Words",
       receptiveMsg: "These words will appear in exercises testing your receptive knowledge. Receptive means you understand the word when you see or hear it, but can't necessarily use it yet.",
 
       //Productive
-      titleProductiveWords: "Productive Knowledge",
-      productiveMsg: "These words will appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech",
-
+      titleProductiveWords: "Productive Words",
+      productiveMsg: "These words will appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech.",
+      productiveDisableMsg: "You have disabled productive exercises, so no new words will be added here.",
+      
       //WordsOnDate
       open: "Open",
+
+      //LearningCycle
+      nextLearningCycle: "This word has now moved to your productive knowledge.",
+      receptiveTooltip: "This word is part of your receptive vocabulary knowledge. Receptive means the capability to comprehend a word when you hear or see it.",
+      productiveTooltip: "This word is part of your productive vocabulary knowledge. Productive means the knowledge to use a word in writing or speech.",
+
+      //LearningCycleModal
+      learningCycleCongrats: "Congratulations, you've learned a new word!",
+      learningCycleExplanation: "Every time you answer an exercise correctly, a word moves on to the next stage. A word is considered receptive knowledge once it successfully progresses through five stages of spaced repetition, meaning you can recognize it in context. This word will now move on to the productive exercises going through the same five stages, where you'll put it to use, strengthening your ability to recall and apply it.",
+      optOutProductiveKnowledge: "No, thanks. Knowing words receptively is enough. (You can change this at any time in your settings.)",
+      dontShowMsg: "Don't show this message again.",
 
       //WordEditAccordion
       done: "Done",
@@ -333,7 +345,6 @@ let strings = new LocalizedStrings(
       solutionExercise2: "See the solution above!",
       //LearnedWordsList
       studentHasNotLearnedWords: "The student has not learned any words yet.",
-      nextLearningCycle: "This word has now moved to your productive knowledge.",
 
       //NonStudiedWordsList
       NoLoookedupWordsYet: "The student hasn't looked up any words yet.",
