@@ -95,7 +95,8 @@ export default function BottomInput({
     let b = removeQuotes(
       removeAccents(eliminateTypos(isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from)),
     );
-    if (a === b) {
+    //this allows for a typo in the native language. the distance is set to 2, so flipped letters counts as correct
+    if (a === b || (isL1Answer && distanceToCorrect === 2)) {
       let concatMessage = messageToAPI + "C";
       handleCorrectAnswer(concatMessage);
     } else {

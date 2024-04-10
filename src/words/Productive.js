@@ -9,15 +9,24 @@ import { UMR_SOURCE } from "../reader/ArticleReader";
 
 export default function Productive ({ api }) {
   const [words, setWords] = useState(null);
+  const [storedProductiveExercises, setStoredProductiveExercises] = useState(false);
 
   useEffect(() => {
     api.topBookmarks(300, (topWords) => {
       const productiveWords = topWords.filter((word) => word.learning_cycle === 2);
       setWords(productiveWords);
-      console.log(productiveWords);
     });
     setTitle(strings.titleProductiveWords);
   }, [api]);
+
+  useEffect(() => {
+    const storedProductiveExercises = localStorage.getItem('productiveExercises');
+    if (storedProductiveExercises) {
+        setStoredProductiveExercises(JSON.parse(storedProductiveExercises));
+    }
+    console.log(storedProductiveExercises);
+}, []);
+
 
   if (!words) {
     return <LoadingAnimation />;
@@ -33,6 +42,11 @@ export default function Productive ({ api }) {
             />
             {strings.productiveMsg}
         </s.TopMessage>
+        {storedProductiveExercises === false && (
+          <s.TopMessage>
+            {strings.productiveDisableMsg}
+          </s.TopMessage>
+        )}
       {words.map((each) => (
         <Word key={each.id} bookmark={each} api={api} source={UMR_SOURCE}/>
       ))}

@@ -38,7 +38,7 @@ export default function NextNavigation({
   );
 
   useEffect(() => {
-    setLearningCycle(bookmarksToStudy[0].learning_cycle);
+    setLearningCycle(bookmarkToStudy.learning_cycle);
   }, [bookmarkToStudy.learning_cycle]);
 
   useEffect(() => {
@@ -55,9 +55,14 @@ export default function NextNavigation({
   // TODO: Below we should have one CorrectMessage component that takes the conditional above as a prop and renders two variations
   return (
     <>
+<<<<<<< HEAD
       {isCorrect &&
         userIsCorrect &&
         (learningCycle === 1 && bookmarkToStudy.learning_cycle === 2 ? (
+=======
+      {isCorrect && userIsCorrect && (
+        (learningCycle === 1 && bookmarkToStudy.is_last_in_cycle) ? (
+>>>>>>> 02f3a947 (LearningCycleIndicator now only needs the bookmark prop, feature flag, new setting and word lists)
           <div className="next-nav-learning-cycle">
             <img
               src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}

@@ -14,7 +14,6 @@ export default function Receptive ({ api }) {
     api.topBookmarks(300, (topWords) => {
       const receptiveWords = topWords.filter((word) => word.learning_cycle === 1);
       setWords(receptiveWords);
-      console.log(receptiveWords);
     });
     setTitle(strings.titleReceptiveWords);
   }, [api]);
