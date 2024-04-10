@@ -12,6 +12,23 @@ import Receptive from "./Receptive";
 import Productive from "./Productive";
 
 export default function WordsRouter({api}) {
+
+    const features = JSON.parse(localStorage.getItem('features'));
+
+    let tabsAndLinks = {
+    "Top Words": "/words",
+    [strings.learned]: "/words/learned",
+    // [strings.starred]: "/words/starred",
+    };
+
+    if (features.includes('merle_exercises')) {
+    tabsAndLinks = {
+        ...tabsAndLinks,
+        [strings.titleReceptiveWords]: "/words/receptive",
+        [strings.titleProductiveWords]: "/words/productive",
+    };
+    }
+
     return (
         <Switch>
             <PrivateRoute
@@ -28,13 +45,7 @@ export default function WordsRouter({api}) {
             <s.NarrowColumn>
                 <TopTabs
                     title={strings.yourWordsHeadline}
-                    tabsAndLinks={{
-                        "Top Words": "/words",
-                        [strings.titleReceptiveWords]: "/words/receptive",
-                        [strings.titleProductiveWords]: "/words/productive",
-                        [strings.learned]: "/words/learned",
-                        // [strings.starred]: "/words/starred",
-                    }}
+                    tabsAndLinks={tabsAndLinks}
                 />
 
                 {/* <PrivateRoute path="/words/starred" api={api} component={Starred} /> */}

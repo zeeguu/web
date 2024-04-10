@@ -18,10 +18,6 @@ import {
   DEFAULT_SEQUENCE_NO_AUDIO,
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
-  // ACTIVE_SEQUENCE,
-  // ACTIVE_SEQUENCE_NO_AUDIO,
-  // PASSIVE_SEQUENCE,
-  // PASSIVE_SEQUENCE_NO_AUDIO,
   getNumberOfBookmarksToPractice,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
@@ -65,33 +61,15 @@ export default function Exercises({
     );
   }, [exerciseSequenceType]);
 
-  //feature flag for learningCycle sequence
-  //   function getExerciseSequenceType() {
-  //     let exerciseTypesList;
-  //     if (Feature.learning_cycle_sequence()) {
-  //       exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
-  //       if (!SessionStorage.isAudioExercisesEnabled()) {
-  //         console.log("Will not use audio!");
-  //         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
-  //       }
-  //     } else {
-  //       exerciseTypesList = DEFAULT_SEQUENCE;
-  //       if (!SessionStorage.isAudioExercisesEnabled()) {
-  //         console.log("Will not use audio!");
-  //         exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
-  //       }
-  //     }
-  //     return exerciseTypesList;
-  // }
-
   function getExerciseSequenceType() {
     let exerciseTypesList;
-    if (Feature.merle_exercises()) exerciseTypesList = DEFAULT_SEQUENCE;
+    if (Feature.merle_exercises()) exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
       console.log("Will not use audio!");
       if (Feature.merle_exercises())
         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
+      else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
     }
     return exerciseTypesList;
   }
@@ -101,8 +79,8 @@ export default function Exercises({
 
     if (bookmarks.length > 0) {
       // This can only be initialized here after we can get at least one bookmark
-      // and thus, know the language to pronounce in
-
+      // and thus, know the language to pronounce in 
+      console.log(bookmarks);
       let exerciseSequenceType = getExerciseSequenceType();
 
       let exerciseSession = assignBookmarksToExercises(

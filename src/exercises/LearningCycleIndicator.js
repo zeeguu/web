@@ -1,18 +1,20 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import Tooltip from "@material-ui/core/Tooltip";
+import strings from "../i18n/definitions";
 
 export default function LearningCycleIndicator({ 
-  learningCycle, 
-  coolingInterval, 
-  isCorrect,
+  bookmark,
   message 
 }) {
-  
   const [userIsCorrect, setUserIsCorrect] = useState(false);
   const [userIsWrong, setUserIsWrong] = useState(false);
 
+  let learningCycle = bookmark.learning_cycle;
+  let coolingInterval = bookmark.cooling_interval;
+
   useEffect(() => {
-    const userIsCorrect = ["C", "TC", "TTC", "TTTC", "HC"].includes(message);
+    const userIsCorrect = ["C", "TC", "TTC", "TTTC", "HC", "CC", "CCC"].includes(message);
     setUserIsCorrect(userIsCorrect);
     const userIsWrong = message.includes("W")|| message.includes("S");
     setUserIsWrong(userIsWrong);
@@ -26,6 +28,14 @@ export default function LearningCycleIndicator({
     2: "productive",
   });
 
+  const coolingIntervalToBarCount = {
+    0: 0,
+    1440: 1,
+    2880: 2,
+    5760: 3,
+    11520: 4,
+  };
+
   const getLearningCycleIcon = () => {
     switch(learningCycleEnum[learningCycle]) {
       case "receptive":
@@ -37,9 +47,21 @@ export default function LearningCycleIndicator({
     }
   }
 
+  const getTooltipContent = () => {
+    switch(learningCycleEnum[learningCycle]) {
+      case "receptive":
+        return strings.receptiveTooltip;
+      case "productive":
+        return strings.productiveTooltip;
+      default:
+        return '';
+    }
+  }
+
   const getBarColor = (index) => {
-    if (index < coolingInterval / 1440) return 'green';
-    if (index === coolingInterval / 1440) {
+    let barCount = coolingIntervalToBarCount[coolingInterval];
+    if (index < barCount) return 'green';
+    if (index === barCount) {
       if (userIsCorrect) return 'green';
       if (userIsWrong) return 'grey';
       return 'yellow';
@@ -51,12 +73,14 @@ export default function LearningCycleIndicator({
     <>
       {learningCycleEnum[learningCycle] !== "not set" && (
         <>
-          <div className="learningCycleIcon">
-            <img 
-              src={getLearningCycleIcon()} 
-              alt={`${learningCycleEnum[learningCycle]}-icon`} 
-              style={{height: '2.5em', width: '2.5em'}}/>
-          </div>
+          <Tooltip title={getTooltipContent()}>
+            <div className="learningCycleIcon">
+              <img 
+                src={getLearningCycleIcon()} 
+                alt={`${learningCycleEnum[learningCycle]}-icon`} 
+                style={{height: '2.5em', width: '2.5em'}}/>
+            </div>
+          </Tooltip>
           <div className="cooling-bars">
             {[...Array(4)].map((_, index) => (
               <div
