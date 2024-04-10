@@ -1,9 +1,9 @@
-import * as s from "./InfoPage.sc";
+import * as s from "./Button.sc";
 
-export default function Button({ children, href, type }) {
+export default function Button({ children, href }) {
   return (
-    <a href={href}>
+    <s.ButtonLink href={href}>
       <s.Button>{children}</s.Button>
-    </a>
+    </s.ButtonLink>
   );
 }

@@ -67,7 +67,7 @@ export default function TranslatableWord({
   if (!word.translation) {
     return (
       <>
-        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word}</z-tag>
+        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
       </>
     );
   }
