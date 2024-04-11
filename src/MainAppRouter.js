@@ -20,7 +20,7 @@ import Settings from "./pages/Settings";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
-import { isSupportedBrowser } from "./utils/misc/browserDetection";
+import { PrivateRoute } from "./PrivateRoute";
 
 export default function MainAppRouter({ api, setUser, hasExtension }) {
   const [redirectLink, setRedirectLink] = useState(null);
@@ -90,16 +90,18 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         render={() => <ExtensionInstalled api={api} />}
       />
 
-      <Route
-        path="/select_interests"
-        render={() => <SelectInterests hasExtension={hasExtension} api={api} />}
-      />
-
       <Route path="/install_extension" render={() => <InstallExtension />} />
 
       <Route path="/reset_pass" render={() => <ResetPassword api={api} />} />
 
       <Route path="/render" render={() => <NoSidebarRouter api={api} />} />
+
+      <PrivateRoute
+        path="/select_interests"
+        api={api}
+        hasExtension={hasExtension}
+        component={SelectInterests}
+      />
 
       <PrivateRouteWithSidebar
         path="/articles"
