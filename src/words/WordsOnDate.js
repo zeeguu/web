@@ -34,7 +34,9 @@ export function WordsOnDate({ day, api }) {
           </s.ArticleTitle>
 
           {bookmarks_by_article.get(article_id).map((bookmark) => (
-            <Word key={bookmark.id} bookmark={bookmark} api={api} />
+            <s.ContentOnRow className="contentOnRow">
+              <Word key={bookmark.id} bookmark={bookmark} api={api} />
+            </s.ContentOnRow>
           ))}
         </s.Article>
       ))}

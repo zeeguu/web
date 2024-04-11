@@ -3,16 +3,16 @@ import strings from "../i18n/definitions";
 import * as s from "./SearchField.sc";
 import { ClearSearchButton } from "../components/allButtons.sc";
 
-export default function SearchField({ query }) {
+export default function SearchField({ api, query }) {
   const [searchTerm, setSearchTerm] = useState(query);
 
   function keyDownInSearch(e) {
     if (e.key === "Enter") {
       console.log(searchTerm);
+      api.logUserActivity(api.SEARCH_QUERY, "", searchTerm, "");
       window.location = `/articles?search=${searchTerm}`;
     }
   }
-
   return (
     <s.SearchField>
       <input
@@ -21,7 +21,7 @@ export default function SearchField({ query }) {
         type="text"
         id="search-expandable"
         placeholder={strings.searchAllArticles}
-        value={searchTerm}
+        value={searchTerm === null ? "" : searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={keyDownInSearch}
       />

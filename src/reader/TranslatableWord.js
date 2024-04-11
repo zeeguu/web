@@ -13,11 +13,11 @@ export default function TranslatableWord({
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
   function clickOnWord(e, word) {
-    e.target.className = "loading"  
+    e.target.className = "loading";
     if (translating) {
       interactiveText.translate(word, () => {
         wordUpdated();
-        e.target.className = null; 
+        e.target.className = null;
       });
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
@@ -42,10 +42,15 @@ export default function TranslatableWord({
   }
 
   function selectAlternative(alternative, preferredSource) {
-    interactiveText.selectAlternative(word, alternative, preferredSource, () => {
-      wordUpdated();
-      setShowingAlternatives(false);
-    });
+    interactiveText.selectAlternative(
+      word,
+      alternative,
+      preferredSource,
+      () => {
+        wordUpdated();
+        setShowingAlternatives(false);
+      },
+    );
   }
 
   function clickedOutsideAlterMenu() {
@@ -62,8 +67,7 @@ export default function TranslatableWord({
   if (!word.translation) {
     return (
       <>
-        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word}</z-tag>
-        <span> </span>
+        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
       </>
     );
   }
@@ -89,7 +93,6 @@ export default function TranslatableWord({
           )}
         </z-orig>
       </z-tag>
-      <span>{"  " /* What is this for? */} </span>
     </>
   );
 }

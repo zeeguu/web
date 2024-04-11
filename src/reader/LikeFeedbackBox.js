@@ -1,41 +1,44 @@
-import { UMR_SOURCE } from "./ArticleReader";
 import * as s from "./ArticleReader.sc";
 import strings from "../i18n/definitions";
+import { useState } from "react";
 
 export default function LikeFeedbackBox({
-  api,
-  articleID,
   articleInfo,
-  setArticleInfo,
+  setLikedState,
 }) {
-  function setLikedState(state) {
-    let newArticleInfo = { ...articleInfo, liked: state };
-    api.setArticleInfo(newArticleInfo, () => {
-      setArticleInfo(newArticleInfo);
-    });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, UMR_SOURCE);
-  }
+  const [isHovered, setIsHovered] = useState('');
 
+  const handleMouseEnter = (option) => {
+    setIsHovered(option);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered('');
+  };
+  
   return (
-    <s.FeedbackBox>
-      <small>{strings.helpUsMsg}</small>
-
+    <s.InvisibleBox>
+     
       <h4>{strings.didYouEnjoyMsg}</h4>
 
       <s.CenteredContent>
         <s.WhiteButton
           onClick={(e) => setLikedState(true)}
-          className={articleInfo.liked === true && "selected"}
+          className={articleInfo.liked === true ? "selected" : isHovered === "yes" ? "hovered" : ""}
+          onMouseEnter={() => handleMouseEnter("yes")}
+          onMouseLeave={() => handleMouseLeave()}
         >
           {strings.yes}
         </s.WhiteButton>
         <s.WhiteButton
           onClick={(e) => setLikedState(false)}
-          className={articleInfo.liked === false && "selected"}
+          className={articleInfo.liked === false ? "selected" : isHovered === "no" ? "hovered" : ""}
+          onMouseEnter={() => handleMouseEnter("no")}
+          onMouseLeave={() => handleMouseLeave()}
         >
           {strings.no}
         </s.WhiteButton>
       </s.CenteredContent>
-    </s.FeedbackBox>
+    </s.InvisibleBox>
   );
 }

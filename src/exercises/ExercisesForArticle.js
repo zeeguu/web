@@ -20,7 +20,6 @@ export default function ExercisesForArticle({ api }) {
     api.logReaderActivity(api.KEEP_EXERCISING, articleID, "", UMR_SOURCE);
   };
 
-
   return (
     <Exercises
       api={api}

@@ -59,11 +59,11 @@ export default function FeedbackButtons({
         buttons.forEach((button) => {
           if (button.value === value) {
             setFeedback(
-              `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`
+              `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`,
             );
           } else if (value === THUMBS_DOWN_VALUE) {
             setFeedback(
-              `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`
+              `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`,
             );
           }
         });
@@ -101,7 +101,7 @@ export default function FeedbackButtons({
         .replaceAll(" ", "_");
       setUserFeedback(newFeedback);
       setFeedback(
-        `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`
+        `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`,
       );
       setInput("");
       setShowInput(false);
@@ -195,7 +195,7 @@ export default function FeedbackButtons({
                   {each.name}
                 </s.FeedbackButton>
               </Tooltip>
-            )
+            ),
           )}
         </s.FeedbackButtonsHolder>
       )}

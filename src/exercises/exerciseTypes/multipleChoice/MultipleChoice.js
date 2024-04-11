@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import MultipleChoicesInput from "./MultipleChoicesInput.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
@@ -10,7 +9,8 @@ import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
-import { SpeechContext } from "../../SpeechContext.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
 
@@ -27,18 +27,17 @@ export default function MultipleChoice({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
-  const [initialTime] = useState(new Date());
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
-
-  function exerciseDuration(endTime) {
-    return Math.min(89999, endTime - initialTime);
-  }
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -81,17 +80,17 @@ export default function MultipleChoice({
 
   function handleShowSolution() {
     let message = messageToAPI + "S";
-
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    handleAnswer(message, exerciseDuration(new Date()));
+    handleAnswer(message);
   }
 
   function handleAnswer(message) {
+    setMessageToAPI(message);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      exerciseDuration(new Date()),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -121,7 +120,6 @@ export default function MultipleChoice({
       <div className="headlineWithMoreSpace">
         {strings.chooseTheWordFittingContextHeadline}
       </div>
-
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
@@ -145,16 +143,13 @@ export default function MultipleChoice({
           toggleShow={toggleShow}
         />
       )}
-      {isCorrect && (
-        <NextNavigation
-          api={api}
-          bookmarksToStudy={bookmarksToStudy}
-          moveToNextExercise={moveToNextExercise}
-          reload={reload}
-          setReload={setReload}
-        />
-      )}
-      <SolutionFeedbackLinks
+      <NextNavigation
+        message={messageToAPI}
+        api={api}
+        bookmarksToStudy={bookmarksToStudy}
+        moveToNextExercise={moveToNextExercise}
+        reload={reload}
+        setReload={setReload}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}

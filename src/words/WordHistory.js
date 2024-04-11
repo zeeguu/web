@@ -25,7 +25,6 @@ export default function ReadingHistory({ api }) {
       <br />
       <br />
       <s.TopMessage>{strings.starAWordMsg}</s.TopMessage>
-
       {wordsByDay.map((day) => (
         <WordsOnDate key={day.date} day={day} api={api} />
       ))}

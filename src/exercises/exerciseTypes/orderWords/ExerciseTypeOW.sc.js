@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import StyledButton from "../Exercise.sc";
 import {
-    zeeguuOrange,
-    darkGreen,
-    zeeguuRed,
-    darkBlue,
+  zeeguuOrange,
+  darkGreen,
+  zeeguuRed,
+  darkBlue,
 } from "../../../components/colors";
 
 const ExerciseOW = styled.div`
@@ -14,26 +14,45 @@ const ExerciseOW = styled.div`
   transition: all 0.5s;
   padding-bottom: 1em;
 
-  .headline {
+
+  .headlineOrderWords {
+    font-size: small;
+    font-weight: 600;
     color: gray;
-    margin-top: 1em;
-    font-weight: 500;
+    margin-top: 3em;
+    margin-bottom: 1em;
+  }
+
+  .next-nav-feedback {
+    margin-top:  1.5em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+    }
+    p {
+      margin-left: 1em;
+    }
   }
 
   .translatedText {
-    font-size: medium;
+    font-size: medium !important;
+    font-weight: 400;
     margin-left:8px;
     margin-right:8px;
-
+    margin-top: 1em !important;
   }
 
-  .headlineWithMoreSpace {
-    font-size: small;
+  .solutionText {
+    font-size: medium !important;
     color: gray;
-    margin-top: 3em;
-    margin-bottom: 2em;
-    
-    /* font-weight: 600; */
+    margin-right: 30px;
+    margin-left: 30px;
   }
 
   .reduceContext {
@@ -65,20 +84,7 @@ const ExerciseOW = styled.div`
     font-weight: 800;
   }
 
-  .headlineOrderWords {
-    font-size: small;
-    color: gray;
-    margin-top: 1.5em;
-    margin-bottom: 1em;
 
-
-    /* font-weight: 600; */
-    h2 {
-      font-size: medium;
-      margin-left:8px;
-      margin-right:8px;
-    }
-  }
 
   .cluesRow {
     text-align: center;
@@ -201,6 +207,11 @@ const ExerciseOW = styled.div`
 
   .owButton{
     
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
     cursor: pointer;
     font-weight: 600;
     text-align: center;
@@ -209,7 +220,7 @@ const ExerciseOW = styled.div`
     padding: 0.5em 0.5em;
     border-radius: 100px;
     box-shadow: 0px 2px #595959;
-
+    height:2em;
     :hover {filter: brightness(0.8);}
 
     :active {
@@ -274,8 +285,12 @@ const ExerciseOW = styled.div`
   }
 
   .elementHidden {
-    background-color: #595959;
-    visibility: hidden;
+    cursor: default;
+    background-color: rgb(161 161 161);
+    color:rgb(161 161 161);
+    :hover {
+      filter: brightness(1);
+    }
   }
   
   .disable {
@@ -294,13 +309,14 @@ const ExerciseOW = styled.div`
   .tipText{
     font-size:small
   }
-
+  
   .contextExample {
     margin-top: 1em;
     margin-left: 2em;
     margin-right: 2em;
     font-weight: 400;
     line-height: 1.4em;
+    paddingBottom: 1em;
   }
 
   /* Mobile version */
@@ -343,11 +359,10 @@ let OrangeItemCompact = styled(StyledButton)`
     filter: brightness(0.8);
   }
   &:active {
-      filter: brightness(0.5);
-      box-shadow: 0 0.5px #666;
-      transform: translateY(1px);
-    }
-  
+    filter: brightness(0.5);
+    box-shadow: 0 0.5px #666;
+    transform: translateY(1px);
+  }
 `;
 
 let ItemRowCompactWrap = styled.div`
@@ -366,12 +381,12 @@ let ItemRowCompactWrapConstruct = styled.div`
   flex-wrap: wrap;
   padding: 0.3em;
   align-items: left;
-  min-height:64px;
+  min-height: 64px;
   //justify-content: ;
   margin-bottom: 0.1em;
   @media (max-width: 430px) {
     flex-flow: row wrap;
-    padding:0.1em;
+    padding: 0.1em;
   }
 `;
 
@@ -387,10 +402,10 @@ let OrangeItemCompactConstruct = styled(StyledButton)`
   background-color: ${zeeguuOrange};
   margin: 0.05em;
   padding: 0.5em 0.5em;
-  & .correct{
+  & .correct {
   }
   & .toSwap {
-    color:black;
+    color: black;
   }
   &:hover {
     filter: brightness(0.9);
@@ -401,10 +416,9 @@ let OrangeItemCompactConstruct = styled(StyledButton)`
 `;
 
 export {
-    ExerciseOW,
-    OrangeItemCompact,
-    OrangeItemCompactConstruct,
-    ItemRowCompactWrap,
-    ItemRowCompactWrapConstruct,
+  ExerciseOW,
+  OrangeItemCompact,
+  OrangeItemCompactConstruct,
+  ItemRowCompactWrap,
+  ItemRowCompactWrapConstruct,
 };
-

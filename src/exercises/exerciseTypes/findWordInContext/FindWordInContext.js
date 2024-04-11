@@ -5,12 +5,12 @@ import BottomInput from "./BottomInput";
 
 import strings from "../../../i18n/definitions";
 import NextNavigation from "../NextNavigation";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { tokenize } from "../../../utils/preprocessing/preprocessing";
-import { SpeechContext } from "../../SpeechContext.js";
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
 export default function FindWordInContext({
@@ -26,14 +26,16 @@ export default function FindWordInContext({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
-  const [initialTime] = useState(new Date());
-  const [firstTypeTime, setFirstTypeTime] = useState();
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -53,10 +55,6 @@ export default function FindWordInContext({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function exerciseDuration(endTime) {
-    return Math.min(89999, endTime - initialTime);
-  }
 
   useEffect(() => {
     checkTranslations(translatedWords);
@@ -110,18 +108,10 @@ export default function FindWordInContext({
     }
   }
 
-  function inputKeyPress() {
-    if (firstTypeTime === undefined) {
-      setFirstTypeTime(new Date());
-    }
-  }
-
   function handleShowSolution(e, message) {
     if (e) {
       e.preventDefault();
     }
-    let pressTime = new Date();
-    let duration = exerciseDuration(pressTime);
     let concatMessage;
 
     if (!message) {
@@ -129,27 +119,27 @@ export default function FindWordInContext({
     } else {
       concatMessage = message;
     }
-
+    setMessageToAPI(concatMessage);
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
+    console.log(activeSessionDuration);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
-      duration,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
   }
 
   function handleCorrectAnswer(message) {
-    let duration = exerciseDuration(firstTypeTime);
-
+    setMessageToAPI(message);
     correctAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      duration,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
       exerciseSessionId,
     );
@@ -157,8 +147,8 @@ export default function FindWordInContext({
 
   function handleIncorrectAnswer() {
     //alert("incorrect answer")
+    setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
-    setFirstTypeTime();
   }
 
   if (!articleInfo) {
@@ -167,13 +157,9 @@ export default function FindWordInContext({
 
   return (
     <s.Exercise className="findWordInContext">
-      {bookmarksToStudy[0].to.includes(" ") ? (
-        <div className="headline">
-          {strings.findTheExpressionInContextHeadline}
-        </div>
-      ) : (
-        <div className="headline">{strings.findTheWordInContextHeadline}</div>
-      )}
+      <div className="headlineWithMoreSpace">
+        {strings.findTheWordInContextHeadline}
+      </div>
       <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
       <div className="contextExample">
         <TranslatableText
@@ -191,22 +177,19 @@ export default function FindWordInContext({
           handleCorrectAnswer={handleCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
           bookmarksToStudy={bookmarksToStudy}
-          notifyKeyPress={inputKeyPress}
           messageToAPI={messageToAPI}
           setMessageToAPI={setMessageToAPI}
         />
       )}
-      {isCorrect && (
-        <NextNavigation
-          api={api}
-          bookmarksToStudy={bookmarksToStudy}
-          moveToNextExercise={moveToNextExercise}
-          reload={reload}
-          setReload={setReload}
-        />
-      )}
-      <SolutionFeedbackLinks
-        handleShowSolution={handleShowSolution}
+
+      <NextNavigation
+        message={messageToAPI}
+        api={api}
+        bookmarksToStudy={bookmarksToStudy}
+        moveToNextExercise={moveToNextExercise}
+        reload={reload}
+        setReload={setReload}
+        handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
       />

@@ -3,25 +3,25 @@ import News from "./News";
 import * as s from "./LandingPage.sc.js";
 import Contributors from "./Contributors";
 import { Redirect } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { setTitle } from "../assorted/setTitle";
 import UiLanguageSettings from "../components/UiLanguageSettings";
-import { getUserSession } from "../utils/cookies/userInfo";
-import { useHistory } from 'react-router-dom'; 
+import { getSessionFromCookies } from "../utils/cookies/userInfo";
+import { useHistory } from "react-router-dom";
 
 export default function LandingPage() {
   const [uiLanguage, setUiLanguage] = useState();
   const history = useHistory();
 
-  if (getUserSession()) {
+  if (getSessionFromCookies()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
-  
+
   const navigate = (path) => {
     history.push(path);
   };
 
-  setTitle(strings.landingPage);
+  setTitle("All You Can Read");
   return (
     <div>
       <s.LoginHeader>
@@ -40,10 +40,10 @@ export default function LandingPage() {
           <h1>Zeeguu</h1>
           <h4>{strings.projectDescription_UltraShort}</h4>
           <nav>
-            <s.PrimaryButton onClick={() => navigate('/login')}>
+            <s.PrimaryButton onClick={() => navigate("/login")}>
               <span>{strings.login}</span>
             </s.PrimaryButton>
-            <s.InverseButton onClick={() => navigate('/create_account')}>
+            <s.InverseButton onClick={() => navigate("/create_account")}>
               <span>{strings.betaTester}</span>
             </s.InverseButton>
           </nav>

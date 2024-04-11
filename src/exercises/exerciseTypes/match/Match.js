@@ -5,7 +5,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
 const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
 
@@ -22,8 +22,12 @@ export default function Match({
   reload,
   setReload,
   exerciseSessionId,
+  activeSessionDuration,
 }) {
-  const initialBookmarkState = [
+  // ML: TODO: this duplicates a bit the information in bookmarksToStudy
+  // It should be possible to implement with a simple array of messageToAPI that will
+  // always be in sync with bookmarksToStudy, i.e. messageToAPI[0] refers to the state of bookmarksToStudy[0], etc.
+  const initialExerciseAttemptsLog = [
     {
       bookmark: bookmarksToStudy[0],
       messageToAPI: "",
@@ -38,14 +42,18 @@ export default function Match({
     },
   ];
 
-  const [initialTime] = useState(new Date());
+  const [messageToNextNav, setMessageToNextNav] = useState("");
   const [firstPressTime, setFirstPressTime] = useState();
-  const [currentBookmarksToStudy, setcurrentBookmarksToStudy] =
-    useState(initialBookmarkState);
+  const [exerciseAttemptsLog, setexerciseAttemptsLog] = useState(
+    initialExerciseAttemptsLog,
+  );
   const [fromButtonOptions, setFromButtonOptions] = useState(null);
   const [toButtonOptions, setToButtonOptions] = useState(null);
   const [buttonsToDisable, setButtonsToDisable] = useState([]);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -56,92 +64,92 @@ export default function Match({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function exerciseDuration(endTime) {
-    return Math.min(89999, endTime - initialTime);
-  }
-
   function inputFirstClick() {
     if (firstPressTime === undefined) setFirstPressTime(new Date());
   }
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
     console.log("checking result...");
-    let bookmarksCopy = { ...currentBookmarksToStudy };
+    let exerciseAttemptsLogCopy = { ...exerciseAttemptsLog };
     let i;
+    let fullMessage = messageToNextNav;
     for (i = 0; i < bookmarksToStudy.length; i++) {
-      let currentBookmark = bookmarksCopy[i];
+      let currentBookmarkLog = exerciseAttemptsLogCopy[i];
       if (buttonsToDisable.length === 2) {
+        fullMessage = fullMessage + "C";
         setIsCorrect(true);
         break;
-      } else if (currentBookmark.bookmark.id === Number(firstChoice)) {
+      } else if (currentBookmarkLog.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
           setButtonsToDisable((arr) => [...arr, firstChoice]);
-          let concatMessage = currentBookmark.messageToAPI + "C";
-          bookmarksCopy[i].messageToAPI = concatMessage;
-          setcurrentBookmarksToStudy(bookmarksCopy);
-          correctAnswer(currentBookmark.bookmark);
-          handleAnswer(concatMessage, currentBookmark.bookmark.id);
+          let concatMessage = currentBookmarkLog.messageToAPI + "C";
+          fullMessage = fullMessage + concatMessage;
+          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
+          correctAnswer(currentBookmarkLog.bookmark);
+          handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
         } else {
           setIncorrectAnswer(secondChoice);
-          notifyIncorrectAnswer(currentBookmark.bookmark);
-          let concatMessage = currentBookmark.messageToAPI + "W";
-          bookmarksCopy[i].messageToAPI = concatMessage;
-          setcurrentBookmarksToStudy(bookmarksCopy);
+          notifyIncorrectAnswer(currentBookmarkLog.bookmark);
+          let concatMessage = currentBookmarkLog.messageToAPI + "W";
+          fullMessage = fullMessage + concatMessage;
+          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
-      } else if (currentBookmark.bookmark.id === Number(secondChoice)) {
+      } else if (currentBookmarkLog.bookmark.id === Number(secondChoice)) {
         if (firstChoice !== secondChoice) {
           setIncorrectAnswer(secondChoice);
-          notifyIncorrectAnswer(currentBookmark.bookmark);
-          let concatMessage = currentBookmark.messageToAPI + "W";
-          bookmarksCopy[i].messageToAPI = concatMessage;
-          setcurrentBookmarksToStudy(bookmarksCopy);
+          notifyIncorrectAnswer(currentBookmarkLog.bookmark);
+          let concatMessage = currentBookmarkLog.messageToAPI + "W";
+          fullMessage = fullMessage + concatMessage;
+          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       }
     }
+    setMessageToNextNav(fullMessage);
   }
 
   function handleShowSolution() {
-    let pressTime = new Date();
-    let duration = exerciseDuration(pressTime);
-
+    let finalMessage = "";
     for (let i = 0; i < bookmarksToStudy.length; i++) {
-      if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
-        notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
-        let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
-
+      if (!exerciseAttemptsLog[i].messageToAPI.includes("C")) {
+        notifyIncorrectAnswer(exerciseAttemptsLog[i].bookmark);
+        let concatMessage = exerciseAttemptsLog[i].messageToAPI + "S";
+        finalMessage += concatMessage;
         api.uploadExerciseFinalizedData(
           concatMessage,
           EXERCISE_TYPE,
-          duration,
-          currentBookmarksToStudy[i].bookmark.id,
-          exerciseSessionId
+          getCurrentSubSessionDuration(activeSessionDuration, "ms"),
+          exerciseAttemptsLog[i].bookmark.id,
+          exerciseSessionId,
         );
       }
     }
     setIsCorrect(true);
+    setMessageToNextNav(finalMessage);
   }
 
   function handleAnswer(message, id) {
-    let pressTime = new Date();
-
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
-      exerciseDuration(pressTime),
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       id,
-      exerciseSessionId
+      exerciseSessionId,
     );
   }
 
   function setButtonOptions() {
     setFromButtonOptions(bookmarksToStudy);
     let optionsToShuffle = [
-      currentBookmarksToStudy[0].bookmark,
-      currentBookmarksToStudy[1].bookmark,
-      currentBookmarksToStudy[2].bookmark,
+      bookmarksToStudy[0],
+      bookmarksToStudy[1],
+      bookmarksToStudy[2],
     ];
     let shuffledOptions = shuffle(optionsToShuffle);
     setToButtonOptions(shuffledOptions);
+    console.log(shuffledOptions);
   }
 
   return (
@@ -163,15 +171,13 @@ export default function Match({
         reload={reload}
         setReload={setReload}
       />
-
-      {isCorrect && (
-        <NextNavigation
-          api={api}
-          bookmarksToStudy={toButtonOptions}
-          moveToNextExercise={moveToNextExercise}
-        />
-      )}
-      <SolutionFeedbackLinks
+      <NextNavigation
+        message={messageToNextNav}
+        api={api}
+        bookmarksToStudy={initialExerciseAttemptsLog}
+        moveToNextExercise={moveToNextExercise}
+        reload={reload}
+        setReload={setReload}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
