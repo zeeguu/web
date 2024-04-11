@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 export default function useSelectInterest(api) {
-  const [availableTopics, setAvailableTopics] = useState(null);
-  const [subscribedTopics, setSubscribedTopics] = useState(null);
-  const [allTopics, setAllTopics] = useState(null);
-  const [subscribedSearches, setSubscribedSearches] = useState(null);
+  const [availableTopics, setAvailableTopics] = useState([]);
+  const [subscribedTopics, setSubscribedTopics] = useState([]);
+  const [allTopics, setAllTopics] = useState([]);
+  const [subscribedSearches, setSubscribedSearches] = useState([]);
   const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
     useState(false);
 

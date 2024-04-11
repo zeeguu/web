@@ -28,7 +28,7 @@ export default function SelectInterests({ api, hasExtension }) {
       </Header>
       <Main>
         <TagContainer>
-          {allTopics?.map((topic) => (
+          {allTopics.map((topic) => (
             <Tag
               key={topic.id}
               className={
