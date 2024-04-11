@@ -24,7 +24,6 @@ export default function Learned({ api }) {
         curDate = curWord.learned_datetime;
       }
     }
-    console.log(groupListByDate);
     return groupListByDate;
   }
 
