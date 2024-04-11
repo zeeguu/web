@@ -57,7 +57,7 @@ let EditIconNoPadding = styled.div`
 `;
 
 let WordPair = styled.div`
-  word-break: break-all;
+  word-break: auto-phrase;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -75,7 +75,7 @@ let WordPair = styled.div`
 `;
 
 let WordPairSpellWhatYouHear = styled.div`
-  word-break: break-all;
+  word-break: auto-phrase;
   display: flex;
   flex-direction: column;
   justify-content: center;
