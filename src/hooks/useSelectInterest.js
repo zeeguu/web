@@ -24,11 +24,9 @@ export default function useSelectInterest(api) {
   }, [api]);
 
   useEffect(() => {
-    if (availableTopics && subscribedTopics) {
-      let newAllTopics = [...availableTopics, ...subscribedTopics];
-      newAllTopics.sort((a, b) => a.title.localeCompare(b.title));
-      setAllTopics(newAllTopics);
-    }
+    let newAllTopics = [...availableTopics, ...subscribedTopics];
+    newAllTopics.sort((a, b) => a.title.localeCompare(b.title));
+    setAllTopics(newAllTopics);
   }, [availableTopics, subscribedTopics]);
 
   function subscribeToTopic(topic) {
@@ -68,6 +66,7 @@ export default function useSelectInterest(api) {
     );
     api.unsubscribeFromSearch(search);
   }
+
   return {
     allTopics,
 
