@@ -31,14 +31,6 @@ export default function useSelectInterest(api) {
     }
   }, [availableTopics, subscribedTopics]);
 
-  if (
-    !availableTopics ||
-    !subscribedTopics ||
-    !subscribedSearches ||
-    !allTopics
-  )
-    return "";
-
   function subscribeToTopic(topic) {
     setSubscribedTopics([...subscribedTopics, topic]);
     setAvailableTopics(availableTopics.filter((each) => each.id !== topic.id));
