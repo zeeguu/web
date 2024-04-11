@@ -13,7 +13,6 @@ export default function SearchField({ api, query }) {
       window.location = `/articles?search=${searchTerm}`;
     }
   }
-
   return (
     <s.SearchField>
       <input
@@ -22,7 +21,7 @@ export default function SearchField({ api, query }) {
         type="text"
         id="search-expandable"
         placeholder={strings.searchAllArticles}
-        value={searchTerm}
+        value={searchTerm === null ? "" : searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={keyDownInSearch}
       />
