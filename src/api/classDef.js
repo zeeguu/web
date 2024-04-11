@@ -58,11 +58,11 @@ const Zeeguu_API = class {
 
     if (callback) {
       fetch(url, params)
-        .then((response) => getJson ? response.json(): response.text())
+        .then((response) => (getJson ? response.json() : response.text()))
         .then((data) => callback(data))
         .catch((e) => onError(e));
     } else {
-      fetch(url, params);
+      return fetch(url, params);
     }
   }
 
@@ -84,14 +84,12 @@ const Zeeguu_API = class {
 
     return res;
   }
-  
+
   async apiGet(endpoint) {
-  const params = { session: this.session }
-  const res = await axios.get(this.baseAPIurl + endpoint, { params })
-  return res
-}
+    const params = { session: this.session };
+    const res = await axios.get(this.baseAPIurl + endpoint, { params });
+    return res;
+  }
 };
-
-
 
 export { Zeeguu_API };

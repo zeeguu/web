@@ -13,6 +13,43 @@ const ArticlePreview = styled.div`
   margin-top: 2em;
   padding-left: 0.8em;
 `;
+/*
+  The div contains the article preview contents
+  and defines the size of the images relative to the 
+  user's screen size. Note this does not include the source/
+  publishing time or topics.
+*/
+const ArticleContent = styled.div`
+  width: 100%;
+  display: flex;
+  color: inherit;
+  font-weight: inherit;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: space-around;
+  align-items: center;
+
+  img {
+    margin: 0.5em;
+    margin-left: 0;
+    max-width: 8em;
+    max-height: 8em;
+    border-radius: 1em;
+    align-self: center;
+
+    @media (max-width: 990px) {
+      max-width: 14em;
+      max-height: 10em;
+    }
+  }
+  .stats {
+    margin-left: auto;
+    @media (max-width: 990px) {
+      margin-left: 0px;
+    }
+  }
+`;
 
 //Invisible component that allows to open the redirection
 //notification modal when the article's title is clicked
@@ -34,9 +71,10 @@ const InvisibleTitleButton = styled.button`
 const Title = styled.div`
   font-size: 1.4em;
   color: ${zeeguuDarkOrange};
-  max-width: 24em;
   padding-right: 0.3em;
   font-weight: 500;
+  display: block;
+  width: 100%;
 `;
 
 const Difficulty = styled.div`
@@ -46,24 +84,30 @@ const Difficulty = styled.div`
   text-align: center;
   border-radius: 50%;
   background-color: ${veryLightGrey};
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  align-self: center;
   justify-content: center;
-  margin-right: 1em;
   flex-shrink: 0;
   float: right;
 `;
 
 const WordCount = styled(Difficulty)`
   background-color: ${veryLightGrey};
+  align-self: center;
 `;
 
 let Summary = styled.div`
   font-size: 0.83em;
   color: ${almostBlack};
-  max-width: 44em;
   line-height: 1.5em;
   margin-top: 0.36em;
+  margin-right: 1em;
+  width: 34em;
+  align-self: stretch;
+  @media (max-width: 990px) {
+    width: 100%;
+  }
 `;
 
 let SourceImage = styled.span`
@@ -94,13 +138,13 @@ let Topics = styled.span`
   }
 `;
 
-
 export {
   Title,
   Difficulty,
   WordCount,
   ArticlePreview,
   InvisibleTitleButton,
+  ArticleContent,
   Summary,
   SourceImage,
   PublishingTime,

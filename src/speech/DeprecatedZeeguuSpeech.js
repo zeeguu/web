@@ -35,7 +35,7 @@ function voiceForLanguageCode(code, voices) {
   return voice;
 }
 
-const ZeeguuSpeech = class {
+const DeprecatedZeeguuSpeech = class {
   constructor(api, language) {
     console.log("Creating Speech Object!");
     this.api = api;
@@ -100,7 +100,7 @@ const ZeeguuSpeech = class {
 
     // For Danish, we always use the Google Speech API generated sound
     if (this.language === "da") {
-      await this.playFromAPI(this.api, word, this.pronunciationPlayer);
+      await this._playFromAPI(this.api, word, this.pronunciationPlayer);
       handleSetIsSpeakingButton(setIsSpeaking, false);
     } else {
       // For other languages
@@ -145,7 +145,7 @@ const ZeeguuSpeech = class {
     });
   }
 
-  playFromAPI(api, word, player) {
+  _playFromAPI(api, word, player) {
     return new Promise(function (resolve, reject) {
       api.getLinkToDanishSpeech(word, (linkToMp3) => {
         player.src = linkToMp3;
@@ -157,4 +157,4 @@ const ZeeguuSpeech = class {
   }
 };
 
-export default ZeeguuSpeech;
+export default DeprecatedZeeguuSpeech;

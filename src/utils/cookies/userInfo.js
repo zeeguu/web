@@ -18,7 +18,7 @@ function removeUserInfoFromCookies() {
   Cookies.remove("name");
 }
 
-function getUserSession() {
+function getSessionFromCookies() {
   return Cookies.get("sessionID");
 }
 
@@ -29,6 +29,6 @@ function setUserSession(val) {
 export {
   saveUserInfoIntoCookies,
   removeUserInfoFromCookies,
-  getUserSession,
+  getSessionFromCookies,
   setUserSession,
 };

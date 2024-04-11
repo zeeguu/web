@@ -1,11 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import strings from "../../i18n/definitions";
 
 import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
 import SessionStorage from "../../assorted/SessionStorage";
 
-import { SpeechContext } from "../SpeechContext";
+import { SpeechContext } from "../../contexts/SpeechContext";
 
 const small_style = {
   // Icon properties
@@ -66,11 +66,16 @@ export default function SpeakButton({
   styling,
   handleClick,
   isReadContext,
+  parentIsSpeakingControl,
 }) {
   const speech = useContext(SpeechContext);
   // const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
   let style = styles[styling] || small_next_style; // default is next style
+
+  useEffect(() => {
+    setIsSpeaking(parentIsSpeakingControl);
+  }, [parentIsSpeakingControl]);
 
   async function handleSpeak() {
     // If audio is playing don't let other buttons be clicked.

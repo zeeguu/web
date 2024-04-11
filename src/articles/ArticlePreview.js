@@ -3,7 +3,7 @@ import { useState } from "react";
 import moment from "moment";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
-import RedirectionNotificationModal from "../components/RedirectionNotificationModal";
+import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
@@ -11,16 +11,23 @@ import SmallSaveArticleButton from "./SmallSaveArticleButton";
 export default function ArticleOverview({
   article,
   dontShowPublishingTime,
-  dontShowImage,
+  dontShowSourceIcon,
   hasExtension,
   api,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
+  onArticleClick,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(
-    article.has_personal_copy
+    article.has_personal_copy,
   );
+
+  const handleArticleClick = () => {
+    if (onArticleClick) {
+      onArticleClick(article.id);
+    }
+  };
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
@@ -35,7 +42,9 @@ export default function ArticleOverview({
 
   function titleLink(article) {
     let open_in_zeeguu = (
-      <Link to={`/read/article?id=${article.id}`}>{article.title}</Link>
+      <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
+        {article.title}
+      </Link>
     );
 
     let open_externally_with_modal = (
@@ -47,6 +56,7 @@ export default function ArticleOverview({
       <>
         <RedirectionNotificationModal
           api={api}
+          hasExtension={hasExtension}
           article={article}
           open={isRedirectionModalOpen}
           handleCloseRedirectionModal={handleCloseRedirectionModal}
@@ -55,7 +65,12 @@ export default function ArticleOverview({
           }
           setIsArticleSaved={setIsArticleSaved}
         />
-        <s.InvisibleTitleButton onClick={handleOpenRedirectionModal}>
+        <s.InvisibleTitleButton
+          onClick={() => {
+            handleArticleClick();
+            handleOpenRedirectionModal();
+          }}
+        >
           {article.title}
         </s.InvisibleTitleButton>
       </>
@@ -68,6 +83,7 @@ export default function ArticleOverview({
         target={isMobile ? "_self" : "_blank"}
         rel="noreferrer"
         href={article.url}
+        onClick={handleArticleClick}
       >
         {article.title}
       </a>
@@ -96,10 +112,36 @@ export default function ArticleOverview({
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
-      <s.Title>{titleLink(article)}</s.Title>
-      <s.Difficulty>{difficulty}</s.Difficulty>
-      <s.WordCount>{article.metrics.word_count}</s.WordCount>
 
+      <s.Title>{titleLink(article)}</s.Title>
+      <s.ArticleContent>
+        {article.img_url && <img alt="" src={article.img_url} />}
+        <s.Summary>{article.summary}</s.Summary>
+        <div className="stats">
+          <s.Difficulty>{difficulty}</s.Difficulty>
+          <s.WordCount style={{ marginRight: "1em" }}>
+            {article.metrics.word_count}
+          </s.WordCount>
+        </div>
+      </s.ArticleContent>
+
+      <div>
+        {!dontShowSourceIcon && (
+          <s.SourceImage>
+            <img src={"/news-icons/" + article.feed_icon_name} alt="" />
+          </s.SourceImage>
+        )}
+        {!dontShowPublishingTime && (
+          <s.PublishingTime>
+            ({moment.utc(article.published).fromNow()})
+          </s.PublishingTime>
+        )}
+        <s.Topics>
+          {topics.map((topic) => (
+            <span key={topic}>{topic}</span>
+          ))}
+        </s.Topics>
+      </div>
       {article.video ? (
         <img
           alt=""
@@ -113,23 +155,6 @@ export default function ArticleOverview({
       ) : (
         ""
       )}
-
-      <s.Summary>{article.summary}</s.Summary>
-      {!dontShowImage && (
-        <s.SourceImage>
-          <img src={"/news-icons/" + article.icon_name} alt="" />
-        </s.SourceImage>
-      )}
-      {!dontShowPublishingTime && (
-        <s.PublishingTime>
-          ({moment.utc(article.published).fromNow()})
-        </s.PublishingTime>
-      )}
-      <s.Topics>
-        {topics.map((topic) => (
-          <span key={topic}>{topic}</span>
-        ))}
-      </s.Topics>
     </s.ArticlePreview>
   );
 }

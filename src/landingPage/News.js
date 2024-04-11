@@ -14,9 +14,22 @@ export default function News() {
       </>
     );
   }
+
   return (
     <>
       <h1>{strings.news}</h1>
+      <h3>2023</h3>
+
+      {item(
+        strings.oct,
+        "Tiago joins as the first researcher to work full-time on Zeeguu",
+      )}
+
+      {item(
+        strings.oct,
+        "Mircea is awarded a Villum Experiment grant to improve the infrastructure and conduct a longitudinal study with  1000 users for six months",
+      )}
+
       <h2>2022</h2>
 
       {item(strings.oct, strings.moreThan1000Frenchies)}
@@ -31,7 +44,7 @@ export default function News() {
           <a href="https://easeai.github.io/" target="blank">
             EASEAI 2021 (<b>Education, Software Engineering, and AI 2021</b>)
           </a>
-        </>
+        </>,
       )}
       {item(strings.jul, <>{strings.betaTesters200K}</>)}
       {item(
@@ -45,7 +58,7 @@ export default function News() {
             {strings.pernilleObtainsFundingLinkTitle}
           </a>
           {strings.pernilleObtainsFundingSuffix}
-        </>
+        </>,
       )}
       <h2>2020</h2>
       {item(
@@ -59,7 +72,7 @@ export default function News() {
             Aiki - Turning Online Procrastination into Microlearning
           </a>
           )
-        </>
+        </>,
       )}
       {item(strings.sep, <>👨‍🎓 {strings.rotterdamStarts}</>)}
       {item(strings.aug, <> {strings.euroCall2020}</>)}
@@ -82,7 +95,7 @@ export default function News() {
           )
           <br />
           <br />
-        </>
+        </>,
       )}
       {item(strings.sep, <>👩‍🎓 {strings.groningenStarts}</>)}
       <h2>2017</h2>

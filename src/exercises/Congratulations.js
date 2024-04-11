@@ -6,10 +6,6 @@ import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import LocalStorage from "../assorted/LocalStorage";
-import { StyledButton } from "../components/allButtons.sc.js";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { CenteredContent } from "../components/ColumnWidth.sc";
 
 export default function Congratulations({
   articleID,
@@ -84,36 +80,34 @@ export default function Congratulations({
 
         {incorrectBookmarksToDisplay.length > 0 && (
           <>
-            <h3>😳 {strings.payMoreAttentionTo}</h3>
-            <p>
-              {incorrectBookmarksToDisplay.map((each) => (
-                <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
-                  <Word
-                    key={each.id}
-                    bookmark={each}
-                    notifyDelete={deleteBookmark}
-                    api={api}
-                    source={source}
-                  />
-                </s.ContentOnRow>
-              ))}
-            </p>
+            <h3>
+              <br />
+              😳 {strings.payMoreAttentionTo}
+            </h3>
+            {incorrectBookmarksToDisplay.map((each) => (
+              <s.ContentOnRow className="contentOnRow" key={"row_" + each.id}>
+                <Word
+                  key={each.id}
+                  bookmark={each}
+                  notifyDelete={deleteBookmark}
+                  api={api}
+                  source={source}
+                />
+              </s.ContentOnRow>
+            ))}
           </>
         )}
-        <CenteredContent>
-          <StyledButton
-            secondary
-            className="whiteButton"
-            onClick={backButtonAction}
+        <CenteredColumn className="CenteredColumn">
+          <s.OrangeButton
+            className="orangeButton"
+            onClick={keepExercisingAction}
           >
-            {<NavigateBeforeIcon />}
-            {strings.backToReading}
-          </StyledButton>
-          <StyledButton primary onClick={keepExercisingAction}>
             {strings.keepExercising}
-            {<NavigateNextIcon />}
-          </StyledButton>
-        </CenteredContent>
+          </s.OrangeButton>
+          <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
+            {strings.backToReading}
+          </s.WhiteButton>
+        </CenteredColumn>
       </s.NarrowColumn>
     </>
   );
