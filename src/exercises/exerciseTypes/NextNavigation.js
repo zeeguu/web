@@ -5,7 +5,7 @@ import * as s from "./Exercise.sc";
 import SolutionFeedbackLinks from "./SolutionFeedbackLinks";
 import { random } from "../../utils/basic/arrays";
 import { useEffect, useState } from "react";
-import { PROD_ZEEGUU_URL } from "../../i18n/appConstants.js";
+import { WEB_ZEEGUU_URL } from "../../i18n/appConstants.js";
 
 export default function NextNavigation({
   message,
@@ -46,11 +46,7 @@ export default function NextNavigation({
       {isCorrect && userIsCorrect && (
         <div className="next-nav-feedback">
           <img
-            src={
-              "https://" +
-              PROD_ZEEGUU_URL +
-              "/static/icons/zeeguu-icon-correct.png"
-            }
+            src={WEB_ZEEGUU_URL + "/static/icons/zeeguu-icon-correct.png"}
             alt="Correct Icon"
           />
           <p>
