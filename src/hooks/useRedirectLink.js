@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import redirect from "../utils/routing/routing";
 
-export default function useRouting() {
+export default function useRedirectLink() {
   const [existingRedirectLink, setExistingRedirectLink] = useState(null);
 
   //check for existing redirect links

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import useRouting from "../hooks/useRouting";
+import useRedirectLink from "../hooks/useRedirectLink";
 import Select from "../components/Select";
 
 import validator from "../assorted/validator";
@@ -25,7 +25,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  let { handleRedirect } = useRouting();
+  let { handleRedirect } = useRedirectLink();
 
   let inviteCodeInputDOM = useRef();
 

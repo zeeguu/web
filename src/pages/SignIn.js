@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import useRouting from "../hooks/useRouting";
+import useRedirectLink from "../hooks/useRedirectLink";
 
 import strings from "../i18n/definitions";
 
@@ -14,7 +14,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  let { handleRedirect } = useRouting();
+  let { handleRedirect } = useRedirectLink();
 
   let emailInputDOM = useRef();
 
