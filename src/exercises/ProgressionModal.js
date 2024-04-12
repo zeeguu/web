@@ -1,39 +1,44 @@
-import { useState } from "react";
-import Modal from "./modal_shared/Modal";
-import Header from "./modal_shared/Header";
-import Body from "./modal_shared/Body";
-import Footer from "./modal_shared/Footer";
-import Checkbox from "./modal_shared/Checkbox";
+import { useState, useEffect } from "react";
+import Modal from "../components/redirect_notification/modal_shared/Modal";
+import Header from "../components/redirect_notification/modal_shared/Header";
+import Body from "../components/redirect_notification/modal_shared/Body";
+import Footer from "../components/redirect_notification/modal_shared/Footer";
+import Checkbox from "../components/redirect_notification/modal_shared/Checkbox";
 import strings from "../i18n/definitions";
-import * as s from "../RedirectionNotificationModal.sc";
+import * as s from "../components/redirect_notification/RedirectionNotificationModal.sc";
 
-export default function ProgressionModal({open, onClose}) {
-  const [redirectCheckbox, setRedirectCheckbox] = useState(false);
+export default function ProgressionModal({open, onClose, api}) {
 
-  function toggleRedirectCheckbox() {
-    setRedirectCheckbox(!redirectCheckbox);
-  }
+  const [disableProductiveExercises, setDisableProductiveExercises] = useState(false);
+  const [dontShowMsg, setDontShowMsg] = useState(false);
 
-  //this state is saved to local storage
-  function handleModalVisibilityPreferences() {
-    preferenceCheckbox === true
-      ? setDoNotShowRedirectionModal_UserPreference(true)
-      : setDoNotShowRedirectionModal_UserPreference(false);
-  }
+  useEffect(() => {
+    api.getUserPreferences((preferences) => {
+      setDisableProductiveExercises(
+        preferences["productive_exercises"] === undefined ||
+          preferences["productive_exercises"] === "false",
+      );
+    });
+  }, [api]);
 
-  //runs when user enters article or saves it
-  function handleSaveVisibilityPreferences() {
-    handleModalVisibilityPreferences();
-    handleCloseRedirectionModal();
-  }
+  const toggleProductiveExercises = () => {
+    setDisableProductiveExercises(!disableProductiveExercises);
+  };
 
-  function handleCancel() {
-    handleCloseRedirectionModal();
-    setRedirectCheckbox(false); //clear the redirectCheckbox state
-  }
+  const toggleDontShowMsg = () => {
+    setDontShowMsg(!dontShowMsg);
+  };
+
+  const handleClose = () => {
+    api.saveUserPreferences({ productive_exercises: (!disableProductiveExercises).toString()});
+    if (dontShowMsg){
+        localStorage.setItem("hideProgressionModal", "true");
+    }
+    onClose();
+  };
 
   return (
-    <Modal open={open} onClose={handleCancel}>
+    <Modal open={open} onClose={handleClose}>
       <Header>{strings.learningCycleCongrats}</Header>
       <Body>
         <p>{strings.learningCycleExplanation}</p>
@@ -41,19 +46,21 @@ export default function ProgressionModal({open, onClose}) {
       <Footer>
         <Checkbox
             label={strings.optOutProductiveKnowledge}
-            checked={preferenceCheckbox}
-            onChange={toggleRedirectCheckbox}
+            checked={disableProductiveExercises}
+            onChange={toggleProductiveExercises}
         />
         <Checkbox
             label={strings.dontShowMsg}
-            checked={preferenceCheckbox}
-            onChange={toggleRedirectCheckbox}
+            checked={dontShowMsg}
+            onChange={toggleDontShowMsg}
         />
-        <s.CloseButton
-            onClick={onClose}
-          >
-            Back to the Exercises
-        </s.CloseButton>
+        <s.ButtonsContainer>
+            <s.GoToButton
+                onClick={handleClose}
+            >
+                Back to the Exercises
+            </s.GoToButton>
+        </s.ButtonsContainer>
       </Footer>
     </Modal>
   );

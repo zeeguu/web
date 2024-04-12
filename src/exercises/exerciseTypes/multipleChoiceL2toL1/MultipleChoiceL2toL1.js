@@ -60,9 +60,9 @@ export default function MultipleChoiceL2toL1({
   useEffect(() => {
     if (interactiveText) {
       setButtonOptions(shuffle([
-        bookmarksToStudy[0].to,
-        bookmarksToStudy[1].to,
-        bookmarksToStudy[2].to
+        removePunctuation(bookmarksToStudy[0].to),
+        removePunctuation(bookmarksToStudy[1].to),
+        removePunctuation(bookmarksToStudy[2].to),
       ]));
     }
   }, [interactiveText]);

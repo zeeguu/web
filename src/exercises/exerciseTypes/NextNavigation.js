@@ -5,6 +5,8 @@ import * as s from "./Exercise.sc";
 import SolutionFeedbackLinks from "./SolutionFeedbackLinks";
 import { random } from "../../utils/basic/arrays";
 import { useEffect, useState } from "react";
+import ProgressionModal from "../ProgressionModal";
+import CelebrationModal from "../CelebrationModal";
 
 export default function NextNavigation({
   message,
@@ -32,7 +34,18 @@ export default function NextNavigation({
   const exercise = "exercise";
   const [userIsCorrect, setUserIsCorrect] = useState();
   const [correctMessage, setCorrectMessage] = useState("");
-  const [learningCycle, setLearningCycle] = useState(bookmarkToStudy.learning_cycle);
+  const [learningCycle, setLearningCycle] = useState(bookmarksToStudy[0].learning_cycle);
+  const [showProgressionModal, setShowProgressionModal] = useState(false);
+  const [showCelebrationModal, setShowCelebrationModal] = useState(false);
+  const isUserAndAnswerCorrect = isCorrect && userIsCorrect;
+  const productiveExercisesDisabled = localStorage.getItem("productiveExercises") === "false";
+  const isLastInCycle = bookmarkToStudy.is_last_in_cycle;
+  const isLearningCycleOne = learningCycle === 1;
+  const isLearningCycleTwo = learningCycle === 2;
+  const shouldShowModal = !localStorage.getItem("hideProgressionModal");
+
+  const shouldShowProgressionModal = isUserAndAnswerCorrect && isLearningCycleOne && isLastInCycle && shouldShowModal;
+  const shouldShowCelebrationModal = isUserAndAnswerCorrect && isLastInCycle && (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
 
   useEffect(() => {
     setLearningCycle(bookmarkToStudy.learning_cycle);
@@ -49,10 +62,29 @@ export default function NextNavigation({
     }
   }, [userIsCorrect]);
 
+  useEffect(() => {
+    if (shouldShowProgressionModal) {
+      setShowProgressionModal(true);
+    }
+
+    if (shouldShowCelebrationModal) {
+      setShowCelebrationModal(true);
+    }
+  }, [shouldShowProgressionModal, shouldShowCelebrationModal]);
+
   return (
     <>
-      {isCorrect && userIsCorrect && (
-        (learningCycle === 1 && bookmarkToStudy.is_last_in_cycle) ? (
+      <ProgressionModal 
+        open={showProgressionModal} 
+        onClose={() => setShowProgressionModal(false)} 
+        api={api}
+      />
+      <CelebrationModal
+        open={showCelebrationModal}
+        onClose={() => setShowCelebrationModal(false)}
+      />
+      {isUserAndAnswerCorrect && (
+        (isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled) ? (
           <div className="next-nav-learning-cycle">
             <img
               src={"/static/icons/zeeguu-icon-correct.png"}

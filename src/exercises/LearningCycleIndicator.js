@@ -82,7 +82,7 @@ export default function LearningCycleIndicator({
             </div>
           </Tooltip>
           <div className="cooling-bars">
-            {[...Array(4)].map((_, index) => (
+            {[...Array(5)].map((_, index) => (
               <div
                 key={index}
                 className={`cooling-bar ${getBarColor(index)}`}

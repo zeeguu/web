@@ -59,6 +59,7 @@ export default function Match({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [selectedBookmark, setSelectedBookmark] = useState(bookmarksToStudy[0]);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -164,7 +165,7 @@ export default function Match({
       </div>
       <div className="learningCycleIndicator">
         <LearningCycleIndicator
-          bookmark={bookmarksToStudy[0]}
+          bookmark={selectedBookmark}
           message={messageToNextNav}
         />
       </div>
@@ -181,6 +182,7 @@ export default function Match({
         setIncorrectAnswer={setIncorrectAnswer}
         reload={reload}
         setReload={setReload}
+        onBookmarkSelected={setSelectedBookmark}
       />
       <NextNavigation
         message={messageToNextNav}

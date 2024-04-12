@@ -24,10 +24,6 @@ const Feature = {
   no_audio_exercises: function () {
     return this.is_enabled("no_audio_exercises");
   },
-
-  learning_cycle_sequence: function () {
-    return this.is_enabled("learning_cycle_sequence");
-  },
 };
 
 export default Feature;
