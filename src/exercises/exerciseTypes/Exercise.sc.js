@@ -13,7 +13,6 @@ const Exercise = styled.div`
   padding-bottom: 1em;
 
   .next-nav-feedback {
-    
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -35,7 +34,6 @@ const Exercise = styled.div`
   }
 
   .headline {
-    font-size:;
     color: gray;
     margin-top: 1em;
     font-weight: 500;
