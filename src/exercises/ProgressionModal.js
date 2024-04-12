@@ -31,6 +31,9 @@ export default function ProgressionModal({open, onClose, api}) {
 
   const handleClose = () => {
     api.saveUserPreferences({ productive_exercises: (!disableProductiveExercises).toString()});
+
+    localStorage.setItem("productiveExercisesEnabled", disableProductiveExercises);
+
     if (dontShowMsg){
         localStorage.setItem("hideProgressionModal", "true");
     }

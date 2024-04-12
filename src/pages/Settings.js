@@ -162,7 +162,7 @@ export default function Settings({ api, setUser }) {
 
     // Update local storage
     const newProductiveValue = !productiveExercises;
-    localStorage.setItem('productiveExercises', JSON.stringify(newProductiveValue));
+    localStorage.setItem('productiveExercisesEnabled', JSON.stringify(newProductiveValue));
   } 
 
   if (!userDetails || !languages) {
