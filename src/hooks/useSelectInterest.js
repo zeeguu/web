@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 export default function useSelectInterest(api) {
-  const [availableTopics, setAvailableTopics] = useState(null);
-  const [subscribedTopics, setSubscribedTopics] = useState(null);
-  const [allTopics, setAllTopics] = useState(null);
-  const [subscribedSearches, setSubscribedSearches] = useState(null);
+  const [availableTopics, setAvailableTopics] = useState([]);
+  const [subscribedTopics, setSubscribedTopics] = useState([]);
+  const [allTopics, setAllTopics] = useState([]);
+  const [subscribedSearches, setSubscribedSearches] = useState([]);
   const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
     useState(false);
 
@@ -24,20 +24,10 @@ export default function useSelectInterest(api) {
   }, [api]);
 
   useEffect(() => {
-    if (availableTopics && subscribedTopics) {
-      let newAllTopics = [...availableTopics, ...subscribedTopics];
-      newAllTopics.sort((a, b) => a.title.localeCompare(b.title));
-      setAllTopics(newAllTopics);
-    }
+    let newAllTopics = [...availableTopics, ...subscribedTopics];
+    newAllTopics.sort((a, b) => a.title.localeCompare(b.title));
+    setAllTopics(newAllTopics);
   }, [availableTopics, subscribedTopics]);
-
-  if (
-    !availableTopics ||
-    !subscribedTopics ||
-    !subscribedSearches ||
-    !allTopics
-  )
-    return "";
 
   function subscribeToTopic(topic) {
     setSubscribedTopics([...subscribedTopics, topic]);
@@ -76,6 +66,7 @@ export default function useSelectInterest(api) {
     );
     api.unsubscribeFromSearch(search);
   }
+
   return {
     allTopics,
 
