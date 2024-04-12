@@ -53,6 +53,7 @@ const Exercise = styled.div`
     }
     p {
       margin-left: 1em;
+      margin-right: 1em;
     }
   }
 
