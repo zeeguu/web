@@ -45,7 +45,6 @@ export default function MultipleChoice({
   
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    console.log(bookmarksToStudy[0].cooling_interval);
     api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
       consolidateChoiceOptions(words);
     });

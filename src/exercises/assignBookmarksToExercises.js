@@ -1,3 +1,5 @@
+import { random } from "../utils/basic/arrays";
+
 /**
  * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
  * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
@@ -20,17 +22,21 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
   const hasLearningCycle = exerciseTypesList.some(exercise => 'learningCycle' in exercise);
 
   if (hasLearningCycle) {
-    let exerciseType_i = 0; // Initialize index for exercise types
+    let exerciseType_i = 0;
     for (let i = 0; i < bookmarks.length; i++) {
       // Filter the exercises based on the learning_cycle attribute of the bookmark
       let filteredExercises = exerciseTypesList.filter(exercise => 
         learningCycleEnum[bookmarks[i].learning_cycle] === exercise.learningCycle
       );
+
+      if(localStorage.getItem("productiveExercises") === "false") {
+        filteredExercises = filteredExercises.filter(exercise => exercise.learningCycle === "receptive");
+      }
       
       // Check if there are any filtered exercises
       if (filteredExercises.length > 0) {
         // Randomly select an exercise from the filtered list
-        let selectedExercise = filteredExercises[Math.floor(Math.random() * filteredExercises.length)];
+        let selectedExercise = random(filteredExercises);
         
         // Check if there are enough bookmarks for the selected exercise
         if (i + selectedExercise.requiredBookmarks <= bookmarks.length) {

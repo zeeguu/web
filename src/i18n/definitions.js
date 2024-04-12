@@ -272,7 +272,7 @@ let strings = new LocalizedStrings(
       //Productive
       titleProductiveWords: "Productive Words",
       productiveMsg: "These words will appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech.",
-      productiveDisableMsg: "You have disabled productive exercises, so no new words will be added here.",
+      productiveDisableMsg: "You have disabled productive exercises. Words are now considered learned once they have completed the receptive learning cycle.",
       
       //WordsOnDate
       open: "Open",
@@ -287,6 +287,10 @@ let strings = new LocalizedStrings(
       learningCycleExplanation: "Every time you answer an exercise correctly, a word moves on to the next stage. A word is considered receptive knowledge once it successfully progresses through five stages of spaced repetition, meaning you can recognize it in context. This word will now move on to the productive exercises going through the same five stages, where you'll put it to use, strengthening your ability to recall and apply it.",
       optOutProductiveKnowledge: "No, thanks. Knowing words receptively is enough. (You can change this at any time in your settings.)",
       dontShowMsg: "Don't show this message again.",
+
+      //CelebrationModal
+      celebrationTitle: "Congratulations, you've learned a new word!",
+      celebrationMsg: "You've successfully completed all stages for this word, so it won't be tested in the exercises anymore. Keep up the good work!",
 
       //WordEditAccordion
       done: "Done",
