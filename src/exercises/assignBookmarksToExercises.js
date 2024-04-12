@@ -28,19 +28,12 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
       let filteredExercises = exerciseTypesList.filter(exercise => 
         learningCycleEnum[bookmarks[i].learning_cycle] === exercise.learningCycle
       );
-
-      if(localStorage.getItem("productiveExercises") === "false") {
-        filteredExercises = filteredExercises.filter(exercise => exercise.learningCycle === "receptive");
-      }
       
-      // Check if there are any filtered exercises
       if (filteredExercises.length > 0) {
-        // Randomly select an exercise from the filtered list
         let selectedExercise = random(filteredExercises);
         
         // Check if there are enough bookmarks for the selected exercise
         if (i + selectedExercise.requiredBookmarks <= bookmarks.length) {
-          // Assign the required number of bookmarks to the selected exercise
           let exercise = {
             type: selectedExercise.type,
             bookmarks: bookmarks.slice(i, i + selectedExercise.requiredBookmarks),

@@ -38,13 +38,13 @@ export default function NextNavigation({
   const [showProgressionModal, setShowProgressionModal] = useState(false);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const isUserAndAnswerCorrect = isCorrect && userIsCorrect;
-  const productiveExercisesDisabled = localStorage.getItem("productiveExercises") === "false";
+  const productiveExercisesDisabled = localStorage.getItem("productiveExercisesEnabled") === "false";
   const isLastInCycle = bookmarkToStudy.is_last_in_cycle;
   const isLearningCycleOne = learningCycle === 1;
   const isLearningCycleTwo = learningCycle === 2;
   const shouldShowModal = !localStorage.getItem("hideProgressionModal");
 
-  const shouldShowProgressionModal = isUserAndAnswerCorrect && isLearningCycleOne && isLastInCycle && shouldShowModal;
+  const shouldShowProgressionModal = isUserAndAnswerCorrect && isLearningCycleOne && isLastInCycle && shouldShowModal && !productiveExercisesDisabled;
   const shouldShowCelebrationModal = isUserAndAnswerCorrect && isLastInCycle && (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
 
   useEffect(() => {
