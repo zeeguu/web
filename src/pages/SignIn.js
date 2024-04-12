@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
+import useRouting from "../hooks/useRouting";
 
 import strings from "../i18n/definitions";
-
-import redirect from "../utils/routing/routing";
 
 import * as s from "../components/FormPage.sc";
 import LocalStorage from "../assorted/LocalStorage";
@@ -14,24 +13,14 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [existingRedirectLink, setExistingRedirectLink] = useState(null);
+
+  let { handleRedirect } = useRouting();
 
   let emailInputDOM = useRef();
 
   useEffect(() => {
     emailInputDOM.current.focus();
   }, []);
-
-  useEffect(() => {
-    const queryParameters = new URLSearchParams(window.location.search);
-    setExistingRedirectLink(queryParameters.get("redirectLink"));
-  }, []);
-
-  function handleRedirect(linkToRedirect) {
-    existingRedirectLink
-      ? redirect(existingRedirectLink)
-      : redirect(linkToRedirect);
-  }
 
   function handleSignIn(e) {
     e.preventDefault();
