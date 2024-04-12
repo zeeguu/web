@@ -42,7 +42,7 @@ export default function NextNavigation({
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const isUserAndAnswerCorrect = isCorrect && userIsCorrect;
   const productiveExercisesDisabled =
-    localStorage.getItem("productiveExercises") === "false";
+    localStorage.getItem("productiveExercisesEnabled") === "false";
   const isLastInCycle = bookmarkToStudy.is_last_in_cycle;
   const isLearningCycleOne = learningCycle === 1;
   const isLearningCycleTwo = learningCycle === 2;
@@ -52,7 +52,8 @@ export default function NextNavigation({
     isUserAndAnswerCorrect &&
     isLearningCycleOne &&
     isLastInCycle &&
-    shouldShowModal;
+    shouldShowModal &&
+    !productiveExercisesDisabled;
   const shouldShowCelebrationModal =
     isUserAndAnswerCorrect &&
     isLastInCycle &&

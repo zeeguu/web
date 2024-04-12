@@ -9,7 +9,7 @@ import { UMR_SOURCE } from "../reader/ArticleReader";
 
 export default function Productive ({ api }) {
   const [words, setWords] = useState(null);
-  const [storedProductiveExercises, setStoredProductiveExercises] = useState(false);
+  const [productiveExercisesEnabled, setProductiveExercisesEnabled] = useState(false);
 
   useEffect(() => {
     api.topBookmarks(300, (topWords) => {
@@ -20,11 +20,11 @@ export default function Productive ({ api }) {
   }, [api]);
 
   useEffect(() => {
-    const storedProductiveExercises = localStorage.getItem('productiveExercises');
-    if (storedProductiveExercises) {
-        setStoredProductiveExercises(JSON.parse(storedProductiveExercises));
+    const productiveExercisesEnabled = localStorage.getItem('productiveExercisesEnabled');
+    if (productiveExercisesEnabled) {
+        setProductiveExercisesEnabled(JSON.parse(productiveExercisesEnabled));
     }
-    console.log(storedProductiveExercises);
+    console.log(productiveExercisesEnabled);
 }, []);
 
 
@@ -42,7 +42,7 @@ export default function Productive ({ api }) {
             />
             {strings.productiveMsg}
         </s.TopMessage>
-        {storedProductiveExercises === false && (
+        {productiveExercisesEnabled === false && (
           <s.TopMessage>
             {strings.productiveDisableMsg}
           </s.TopMessage>
