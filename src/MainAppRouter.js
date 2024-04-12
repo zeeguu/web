@@ -71,7 +71,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         render={() => (
           <SignIn
             api={api}
-            signInAndRedirect={handleSuccessfulSignIn}
+            handleSuccessfulSignIn={handleSuccessfulSignIn}
             setRedirectLink={setRedirectLink}
           />
         )}
@@ -79,7 +79,10 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       <Route
         path="/create_account"
         render={() => (
-          <CreateAccount api={api} signInAndRedirect={handleSuccessfulSignIn} />
+          <CreateAccount
+            api={api}
+            handleSuccessfulSignIn={handleSuccessfulSignIn}
+          />
         )}
       />
 
