@@ -2,33 +2,43 @@ import { useState, useRef, useEffect } from "react";
 
 import strings from "../i18n/definitions";
 
+import redirect from "../utils/routing/routing";
+
 import * as s from "../components/FormPage.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
-export default function SignIn({
-  api,
-  handleSuccessfulSignIn,
-  setRedirectLink,
-}) {
+export default function SignIn({ api, handleSuccessfulSignIn }) {
   // TODO: Fix this bug in a different way. Requires understanding why strings._language changes to "da" without it being asked to, whenever this component renders. Perhaps it imports an un-updated version of strings?
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [existingRedirectLink, setExistingRedirectLink] = useState(null);
 
   let emailInputDOM = useRef();
+
   useEffect(() => {
     emailInputDOM.current.focus();
-    const queryParameters = new URLSearchParams(window.location.search);
-    setRedirectLink(queryParameters.get("redirectLink"));
   }, []);
+
+  useEffect(() => {
+    const queryParameters = new URLSearchParams(window.location.search);
+    setExistingRedirectLink(queryParameters.get("redirectLink"));
+  }, []);
+
+  function handleRedirect(linkToRedirect) {
+    existingRedirectLink
+      ? redirect(existingRedirectLink)
+      : redirect(linkToRedirect);
+  }
 
   function handleSignIn(e) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
         handleSuccessfulSignIn(userInfo);
+        handleRedirect("/articles");
       });
     });
   }

@@ -1,11 +1,10 @@
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
 import InstallExtension from "./pages/InstallExtension";
 import SelectInterests from "./pages/SelectInterests";
 import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
-import React, { useState } from "react";
 import SignIn from "./pages/SignIn";
 import CreateAccount from "./pages/CreateAccount";
 import LocalStorage from "./assorted/LocalStorage";
@@ -23,9 +22,6 @@ import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
 
 export default function MainAppRouter({ api, setUser, hasExtension }) {
-  const [redirectLink, setRedirectLink] = useState(null);
-  const history = useHistory();
-
   function handleSuccessfulSignIn(userInfo) {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
@@ -51,17 +47,6 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
     console.log("setting new user value: ");
     console.dir(newUserValue);
     setUser(newUserValue);
-
-    if (redirectLink !== null) {
-      window.location.href = redirectLink;
-    } else if (window.location.href.indexOf("create_account") > -1) {
-      history.push("/select_interests");
-    } else {
-      console.log("history");
-      console.log(history);
-      console.log("pushing the /articles...");
-      history.push("/articles");
-    }
   }
 
   return (
@@ -69,11 +54,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       <Route
         path="/login"
         render={() => (
-          <SignIn
-            api={api}
-            handleSuccessfulSignIn={handleSuccessfulSignIn}
-            setRedirectLink={setRedirectLink}
-          />
+          <SignIn api={api} handleSuccessfulSignIn={handleSuccessfulSignIn} />
         )}
       />
       <Route

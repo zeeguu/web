@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Select from "../components/Select";
 
-import { useHistory } from "react-router-dom";
-
 import validator from "../assorted/validator";
 import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
@@ -13,7 +11,10 @@ import * as s from "../components/FormPage.sc";
 import PrivacyNotice from "./PrivacyNotice";
 import * as EmailValidator from "email-validator";
 
+import redirect from "../utils/routing/routing";
+
 export default function CreateAccount({ api, handleSuccessfulSignIn }) {
+  const [existingRedirectLink, setExistingRedirectLink] = useState(null);
   const [inviteCode, setInviteCode] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,8 +27,12 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  let history = useHistory();
   let inviteCodeInputDOM = useRef();
+
+  useEffect(() => {
+    const queryParameters = new URLSearchParams(window.location.search);
+    setExistingRedirectLink(queryParameters.get("redirectLink"));
+  }, []);
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
@@ -52,6 +57,12 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
     [password.length < 4, strings.passwordMustBeMsg],
   ];
 
+  function handleRedirect(linkToRedirect) {
+    existingRedirectLink
+      ? redirect(existingRedirectLink)
+      : redirect(linkToRedirect);
+  }
+
   function handleCreate(e) {
     e.preventDefault();
 
@@ -73,7 +84,8 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       userInfo,
       (session) => {
         api.getUserDetails((userInfo) => {
-          handleSuccessfulSignIn(userInfo, history);
+          handleSuccessfulSignIn(userInfo);
+          handleRedirect("/articles");
         });
       },
       (error) => {
