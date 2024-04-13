@@ -12,7 +12,7 @@ import TagContainer from "./info_page_shared/TagContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 export default function SelectInterests({ api, hasExtension }) {
-  const { allTopics, subscribedTopics, toggleTopicSubscription } =
+  const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
 
   function navigateToNextPage() {
@@ -31,13 +31,7 @@ export default function SelectInterests({ api, hasExtension }) {
           {allTopics.map((topic) => (
             <Tag
               key={topic.id}
-              className={
-                subscribedTopics
-                  .map((subscribedTopic) => subscribedTopic.id)
-                  .includes(topic.id)
-                  ? "selected"
-                  : ""
-              }
+              className={isSubscribed(topic)}
               onClick={() => toggleTopicSubscription(topic)}
             >
               {topic.title}

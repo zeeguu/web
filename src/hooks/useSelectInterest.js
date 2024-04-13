@@ -67,12 +67,21 @@ export default function useSelectInterest(api) {
     api.unsubscribeFromSearch(search);
   }
 
+  function isSubscribed(topic) {
+    return subscribedTopics
+      .map((subscribedTopic) => subscribedTopic.id)
+      .includes(topic.id)
+      ? "selected"
+      : "";
+  }
+
   return {
     allTopics,
 
     availableTopics,
     subscribedTopics,
     toggleTopicSubscription,
+    isSubscribed,
 
     subscribedSearches,
     setSubscribedSearches,
