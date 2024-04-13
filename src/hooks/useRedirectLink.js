@@ -12,10 +12,10 @@ export default function useRedirectLink() {
     setExistingRedirectLink(queryParameters.get("redirectLink"));
   }, []);
 
-  function handleRedirect(linkToRedirect) {
+  function handleRedirectLinkOrGoTo(linkToRedirect) {
     existingRedirectLink
       ? redirect(existingRedirectLink)
       : redirect(linkToRedirect);
   }
-  return { handleRedirect };
+  return { handleRedirectLinkOrGoTo };
 }

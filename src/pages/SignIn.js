@@ -14,7 +14,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  let { handleRedirect } = useRedirectLink();
+  let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   let emailInputDOM = useRef();
 
@@ -29,7 +29,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
         handleSuccessfulSignIn(userInfo);
         /* If a redirect link exists, uses it to redirect the user, 
         otherwise, uses the location from the function argument. */
-        handleRedirect("/articles");
+        handleRedirectLinkOrGoTo("/articles");
       });
     });
   }
