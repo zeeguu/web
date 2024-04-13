@@ -38,11 +38,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
     // eslint-disable-next-line
   }, []);
 
-  /* always sends the user to a next onboarding step */
-  function handleRedirect(linkToRedirect) {
-    redirect(linkToRedirect);
-  }
-
   if (!systemLanguages) {
     return <LoadingAnimation />;
   }
@@ -78,7 +73,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       (session) => {
         api.getUserDetails((userInfo) => {
           handleSuccessfulSignIn(userInfo);
-          handleRedirect("/select_interests");
+          redirect("/select_interests");
         });
       },
       (error) => {
