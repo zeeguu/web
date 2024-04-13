@@ -27,7 +27,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
         handleSuccessfulSignIn(userInfo);
-        /* If a redirect link is exists, uses it to redirect the user, 
+        /* If a redirect link exists, uses it to redirect the user, 
         otherwise, uses the location from the function argument. */
         handleRedirect("/articles");
       });
