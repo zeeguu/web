@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import useRedirectLink from "../hooks/useRedirectLink";
 import Select from "../components/Select";
+
+import redirect from "../utils/routing/routing";
 
 import validator from "../assorted/validator";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -25,8 +26,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  let { handleRedirect } = useRedirectLink();
-
   let inviteCodeInputDOM = useRef();
 
   useEffect(() => {
@@ -38,6 +37,11 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
     });
     // eslint-disable-next-line
   }, []);
+
+  /* always sends the user to a next onboarding step */
+  function handleRedirect(linkToRedirect) {
+    redirect(linkToRedirect);
+  }
 
   if (!systemLanguages) {
     return <LoadingAnimation />;
