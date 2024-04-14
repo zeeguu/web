@@ -12,8 +12,8 @@ export default function TagsOfInterests({
   const {
     allTopics,
 
-    subscribedTopics,
     toggleTopicSubscription,
+    isSubscribed,
 
     subscribedSearches,
     subscribeToSearch,
@@ -69,12 +69,7 @@ export default function TagsOfInterests({
             <button
               onClick={(e) => toggleTopicSubscription(topic)}
               type="button"
-              className={
-                "interests " +
-                (subscribedTopics.map((e) => e.id).includes(topic.id)
-                  ? ""
-                  : "unsubscribed")
-              }
+              className={"interests " + isSubscribed(topic)}
             >
               <span className="addableTitle">{topic.title}</span>
             </button>

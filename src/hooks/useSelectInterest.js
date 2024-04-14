@@ -71,8 +71,8 @@ export default function useSelectInterest(api) {
     return subscribedTopics
       .map((subscribedTopic) => subscribedTopic.id)
       .includes(topic.id)
-      ? "selected"
-      : "";
+      ? ""
+      : "unsubscribed";
   }
 
   return {

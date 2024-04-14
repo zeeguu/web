@@ -11,17 +11,17 @@ const Tag = styled.button`
   line-height: 150%;
   font-weight: 600;
   margin: 0.5rem;
-  border: 1px solid ${lightGrey};
-  color: ${almostBlack};
+  border: 1px solid ${zeeguuOrange};
+  color: white;
   border-radius: 2rem;
   padding: 0.75rem 1.5rem;
-  background: none;
+  background-color: ${zeeguuOrange};
   cursor: pointer;
 
-  &.selected {
-    border: 1px solid ${zeeguuOrange};
-    background-color: ${zeeguuOrange};
-    color: white;
+  &.unsubscribed {
+    border: 1px solid ${lightGrey};
+    background: none;
+    color: ${almostBlack};
   }
 
   @media (max-width: 576px) {
