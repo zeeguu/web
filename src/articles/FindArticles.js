@@ -37,7 +37,7 @@ export default function NewArticles() {
 
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
-  const [hasExtension, setHasExtension] = useState(false);
+  const [hasExtension, setHasExtension] = useState();
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   const [
@@ -85,9 +85,12 @@ export default function NewArticles() {
     }
     document.title = "Zeeguu";
 
+    const timeOutRequestId = setTimeout(() => {
+      if (hasExtension === undefined) setHasExtension(false);
+    }, 500);
     if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
       setTimeout(() => {
-        checkExtensionInstalled(setHasExtension);
+        checkExtensionInstalled(setHasExtension, timeOutRequestId);
       }, 100);
     }
   }, []);
