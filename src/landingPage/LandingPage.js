@@ -21,7 +21,7 @@ export default function LandingPage() {
     history.push(path);
   };
 
-  setTitle(strings.landingPage);
+  setTitle("All You Can Read");
   return (
     <div>
       <s.LoginHeader>
