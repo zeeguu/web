@@ -4,7 +4,7 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
-import { WEB_ZEEGUU_URL } from "../i18n/appConstants.js";
+import { APP_DOMAIN } from "../i18n/appConstants.js";
 
 export default function EditButton({
   bookmark,
@@ -50,21 +50,21 @@ export default function EditButton({
       {styling === "exercise" ? (
         <s.EditButton onClick={handleOpen}>
           <img
-            src={WEB_ZEEGUU_URL + "/static/images/file_rename_orange_36dp.svg"}
+            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
             alt="edit"
           />
         </s.EditButton>
       ) : styling === "match" ? (
         <sc.EditIconNoPadding onClick={handleOpen}>
           <img
-            src={WEB_ZEEGUU_URL + "/static/images/file_rename_orange_36dp.svg"}
+            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
             alt="edit"
           />
         </sc.EditIconNoPadding>
       ) : (
         <sc.EditIcon onClick={handleOpen}>
           <img
-            src={WEB_ZEEGUU_URL + "/static/images/file_rename_orange_36dp.svg"}
+            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
             alt="edit"
           />
         </sc.EditIcon>

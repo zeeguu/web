@@ -2,7 +2,7 @@ import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect, createRef } from "react";
 import strings from "../../i18n/definitions";
 import Tooltip from "@material-ui/core/Tooltip";
-import { WEB_ZEEGUU_URL } from "../../i18n/appConstants.js";
+import { APP_DOMAIN } from "../../i18n/appConstants.js";
 
 export default function FeedbackButtons({
   show,
@@ -162,9 +162,7 @@ export default function FeedbackButtons({
               onClick={() => buttonClick(THUMBS_DOWN_VALUE)}
             >
               <img
-                src={
-                  WEB_ZEEGUU_URL + "/static/images/thumb_down_black_18dp.svg"
-                }
+                src={APP_DOMAIN + "/static/images/thumb_down_black_18dp.svg"}
                 alt={strings.dislike}
                 width={18}
               />

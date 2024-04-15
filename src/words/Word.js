@@ -5,7 +5,7 @@ import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
-import { WEB_ZEEGUU_URL } from "../i18n/appConstants";
+import { APP_DOMAIN } from "../i18n/appConstants";
 
 export default function Word({
   bookmark,
@@ -82,10 +82,7 @@ export default function Word({
       <s.Word key={bookmark.id}>
         <CenteredRow>
           <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
-            <img
-              src={WEB_ZEEGUU_URL + "/static/images/trash.svg"}
-              alt="trash"
-            />
+            <img src={APP_DOMAIN + "/static/images/trash.svg"} alt="trash" />
           </s.TrashIcon>
           <EditButton
             bookmark={bookmark}
@@ -98,7 +95,7 @@ export default function Word({
             <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
               <img
                 src={
-                  WEB_ZEEGUU_URL +
+                  APP_DOMAIN +
                   "/static/images/yellow_star" +
                   (bookmark.starred ? ".svg" : "_empty.svg")
                 }
