@@ -1,11 +1,14 @@
-function checkExtensionInstalled(setHasExtension) {
+function checkExtensionInstalled(setHasExtension, timeOutRequestId) {
   window.addEventListener("message", function (event) {
     if (
       event.source == window &&
       event.data.message === "EXTENSION_CONFIRMATION_RESPONSE" &&
-      event.data.source === "ZEEGUU_INJECTED_CODE"
+      event.data.source === "ZEEGUU_READER_INJECTED_CODE"
     ) {
       setHasExtension(true);
+      if (timeOutRequestId) {
+        clearTimeout(timeOutRequestId);
+      }
     }
   });
   window.postMessage(
