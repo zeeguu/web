@@ -4,6 +4,7 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
+import { APP_DOMAIN } from "../i18n/appConstants.js";
 
 export default function EditButton({
   bookmark,
@@ -35,7 +36,7 @@ export default function EditButton({
       "Sending to the API. New context: ",
       newContext,
       " instead of: ",
-      bookmark.context
+      bookmark.context,
     );
     api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
     bookmark.from = newWord;
@@ -48,15 +49,24 @@ export default function EditButton({
     <div>
       {styling === "exercise" ? (
         <s.EditButton onClick={handleOpen}>
-          <img src="https://zeeguu.org/static/images/file_rename_orange_36dp.svg" alt="edit" />
+          <img
+            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
+            alt="edit"
+          />
         </s.EditButton>
       ) : styling === "match" ? (
         <sc.EditIconNoPadding onClick={handleOpen}>
-          <img src="https://zeeguu.org/static/images/file_rename_orange_36dp.svg" alt="edit" />
+          <img
+            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
+            alt="edit"
+          />
         </sc.EditIconNoPadding>
       ) : (
         <sc.EditIcon onClick={handleOpen}>
-          <img src="https://zeeguu.org/static/images/file_rename_orange_36dp.svg" alt="edit" />
+          <img
+            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
+            alt="edit"
+          />
         </sc.EditIcon>
       )}
       <Modal

@@ -9,15 +9,16 @@ export default function WordsToReview({
   deleteBookmark,
   api,
   notifyWordChanged,
-  source
+  source,
 }) {
   return (
     <>
       <div>
-      <h1>{strings.ReviewTranslations}</h1>
-      <medium>
-        <b>{strings.from}</b>{articleInfo.title}
-      </medium>
+        <h1>{strings.ReviewTranslations}</h1>
+        <medium>
+          <b>{strings.from}</b>
+          {articleInfo.title}
+        </medium>
       </div>
       <TopMessage className="topMessage" style={{ textAlign: "left" }}>
         {words.length > 0 ? (
