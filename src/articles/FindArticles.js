@@ -8,14 +8,10 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import Reminder from "./Reminder";
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
-import {
-  runningInChromeDesktop,
-  runningInFirefoxDesktop,
-} from "../utils/misc/browserDetection";
-import { checkExtensionInstalled } from "../utils/extension/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
+import useExtensionCommunication from "../hooks/useExtensionCommunication";
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
@@ -37,7 +33,7 @@ export default function NewArticles() {
 
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
-  const [hasExtension, setHasExtension] = useState();
+  const [isExtensionAvailable] = useExtensionCommunication();
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   const [
@@ -84,17 +80,13 @@ export default function NewArticles() {
       });
     }
     document.title = "Zeeguu";
-
-    if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
-      checkExtensionInstalled(setHasExtension);
-    }
   }, []);
 
   useEffect(() => {
-    if (!hasExtension) {
+    if (!isExtensionAvailable) {
       setExtensionMessageOpen(true);
     }
-  }, [hasExtension]);
+  }, [isExtensionAvailable]);
 
   if (articleList == null) {
     return <LoadingAnimation />;
@@ -113,7 +105,7 @@ export default function NewArticles() {
     <>
       <ExtensionMessage
         open={extensionMessageOpen}
-        hasExtension={hasExtension}
+        hasExtension={isExtensionAvailable}
         displayedExtensionPopup={displayedExtensionPopup}
         setExtensionMessageOpen={setExtensionMessageOpen}
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
@@ -133,13 +125,13 @@ export default function NewArticles() {
         originalList={originalList}
         setArticleList={setArticleList}
       />
-      <Reminder hasExtension={hasExtension}></Reminder>
+      <Reminder hasExtension={isExtensionAvailable}></Reminder>
       {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
           article={each}
           api={api}
-          hasExtension={hasExtension}
+          hasExtension={isExtensionAvailable}
           doNotShowRedirectionModal_UserPreference={
             doNotShowRedirectionModal_UserPreference
           }

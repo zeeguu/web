@@ -19,7 +19,7 @@ function checkExtensionInstalled(setHasExtension) {
     if (
       event.source == window &&
       event.data.message === "EXTENSION_CONFIRMATION_RESPONSE" &&
-      event.data.source === "ZEEGUU_READER_INJECTED_CODE"
+      event.data.source === "EXTENSION_INJECTED_CODE"
     ) {
       setHasExtension(true);
       clearTimeout(timeOutRequestId);

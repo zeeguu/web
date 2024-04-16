@@ -8,7 +8,6 @@ import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
 
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
-import { checkExtensionInstalled } from "./utils/extension/extensionCommunication";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
@@ -20,6 +19,7 @@ import {
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
+import useExtensionCommunication from "./hooks/useExtensionCommunication";
 
 function App() {
   let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
@@ -37,7 +37,7 @@ function App() {
   useUILanguage();
 
   const [userData, setUserData] = useState(userDict);
-  const [hasExtension, setHasExtension] = useState(false);
+  const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
 
   useEffect(() => {
@@ -67,7 +67,6 @@ function App() {
         setUserData({});
       }
     }, 1000);
-    checkExtensionInstalled(setHasExtension);
     return () => clearInterval(interval);
 
     // eslint-disable-next-line
@@ -93,7 +92,7 @@ function App() {
               <MainAppRouter
                 api={api}
                 setUser={setUserData}
-                hasExtension={hasExtension}
+                hasExtension={isExtensionAvailable}
               />
 
               <ToastContainer
