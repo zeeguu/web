@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import useRedirectLink from "../hooks/useRedirectLink";
 
+import InfoPage from "./info_page_shared/InfoPage";
+import Header from "./info_page_shared/Header";
+import Heading from "./info_page_shared/Heading";
+import Main from "./info_page_shared/Main";
+import Footer from "./info_page_shared/Footer";
+import Button from "./info_page_shared/Button";
+
 import strings from "../i18n/definitions";
 
 import * as s from "../components/FormPage.sc";
@@ -35,68 +42,63 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   }
 
   return (
-    <s.PageBackground>
-      <s.LogoOnTop />
+    <InfoPage>
+      <Header>
+        <Heading>Log in</Heading>
+      </Header>
+      <Main>
+        <s.NarrowFormContainer>
+          <form action="" method="post">
+            {errorMessage && <div className="error">{errorMessage}</div>}
 
-      <s.NarrowFormContainer>
-        <form action="" method="post">
-          <s.FormTitle>{strings.login}</s.FormTitle>
+            <div className="inputField">
+              <label>{strings.email}</label>
+              <input
+                type="email"
+                className="field"
+                id="email"
+                name="email"
+                placeholder={strings.email}
+                background-color="#FFFFFF"
+                ref={emailInputDOM}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-          {errorMessage && <div className="error">{errorMessage}</div>}
+            <div className="inputField">
+              <label>{strings.password}</label>
+              <input
+                type="password"
+                className="field"
+                id="password"
+                name="password"
+                placeholder={strings.password}
+                background-color="#FFFFFF"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
 
-          <div className="inputField">
-            <label>{strings.email}</label>
-            <input
-              type="email"
-              className="field"
-              id="email"
-              name="email"
-              placeholder={strings.email}
-              background-color="#FFFFFF"
-              ref={emailInputDOM}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <div className="inputField">
-            <label>{strings.password}</label>
-            <input
-              type="password"
-              className="field"
-              id="password"
-              name="password"
-              placeholder={strings.password}
-              background-color="#FFFFFF"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-
-          <div className="inputField">
-            <s.FormButton
-              onClick={handleSignIn}
-              name="login"
-              value="Login"
-              className="loginButton"
-            >
-              {strings.login}
-            </s.FormButton>
-          </div>
-
-          <p>
-            {strings.alternativelyYouCan}{" "}
-            <a className="links" href="create_account">
-              {strings.createAnAccount}
-            </a>{" "}
-            {strings.or}{" "}
-            <a className="links" href="/reset_pass">
-              {strings.resetYourPassword}
-            </a>
-            .
-          </p>
-        </form>
-      </s.NarrowFormContainer>
-    </s.PageBackground>
+            <div className="inputField">
+              <Button onClick={handleSignIn}>Log in</Button>
+            </div>
+          </form>
+        </s.NarrowFormContainer>
+      </Main>
+      <Footer>
+        <p>
+          {strings.alternativelyYouCan}{" "}
+          <a className="links" href="create_account">
+            {strings.createAnAccount}
+          </a>{" "}
+          {strings.or}{" "}
+          <a className="links" href="/reset_pass">
+            {strings.resetYourPassword}
+          </a>
+          .
+        </p>
+      </Footer>
+    </InfoPage>
   );
 }
