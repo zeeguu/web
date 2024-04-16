@@ -6,6 +6,7 @@ import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
+import InputField from "./info_page_shared/InputField";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 
@@ -26,9 +27,9 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
 
   let emailInputDOM = useRef();
 
-  useEffect(() => {
-    emailInputDOM.current.focus();
-  }, []);
+  // useEffect(() => {
+  //   emailInputDOM.current.focus();
+  // }, []);
 
   function handleSignIn(e) {
     e.preventDefault();
@@ -48,44 +49,33 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
         <Heading>Log in</Heading>
       </Header>
       <Main>
-        <s.NarrowFormContainer>
-          <Form action={""} method={"post"}>
-            {errorMessage && <div className="error">{errorMessage}</div>}
+        <Form action={""} method={"post"}>
+          {errorMessage && <div className="error">{errorMessage}</div>}
 
-            <div className="inputField">
-              <label>{strings.email}</label>
-              <input
-                type="email"
-                className="field"
-                id="email"
-                name="email"
-                placeholder={strings.email}
-                background-color="#FFFFFF"
-                ref={emailInputDOM}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+          <InputField
+            type={"email"}
+            label={strings.email}
+            id={"email"}
+            name={"email"}
+            placeholder={strings.email}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-            <div className="inputField">
-              <label>{strings.password}</label>
-              <input
-                type="password"
-                className="field"
-                id="password"
-                name="password"
-                placeholder={strings.password}
-                background-color="#FFFFFF"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+          <InputField
+            type={"password"}
+            label={strings.password}
+            id={"password"}
+            name={"password"}
+            placeholder={strings.password}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-            <div className="inputField">
-              <Button onClick={handleSignIn}>Log in</Button>
-            </div>
-          </Form>
-        </s.NarrowFormContainer>
+          <div className="inputField">
+            <Button onClick={handleSignIn}>Log in</Button>
+          </div>
+        </Form>
       </Main>
       <Footer>
         <p>
