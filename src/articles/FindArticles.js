@@ -85,13 +85,8 @@ export default function NewArticles() {
     }
     document.title = "Zeeguu";
 
-    const timeOutRequestId = setTimeout(() => {
-      if (hasExtension === undefined) setHasExtension(false);
-    }, 500);
     if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
-      setTimeout(() => {
-        checkExtensionInstalled(setHasExtension, timeOutRequestId);
-      }, 100);
+      checkExtensionInstalled(setHasExtension);
     }
   }, []);
 
