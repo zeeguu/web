@@ -9,10 +9,9 @@ const NotificationIcon = styled.div`
   cursor: default;
   div {
     display: flex;
-    background: rgb(215, 38, 61);
     background: radial-gradient(
       circle,
-      rgba(215, 38, 61, 1) 95%,
+      rgb(255 67 92) 95%,
       rgba(42, 8, 12, 0.5) 100%
     );
     border-radius: 1000px;
