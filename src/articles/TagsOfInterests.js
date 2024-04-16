@@ -69,7 +69,7 @@ export default function TagsOfInterests({
             <button
               onClick={(e) => toggleTopicSubscription(topic)}
               type="button"
-              className={"interests " + isSubscribed(topic)}
+              className={`interests ${!isSubscribed(topic) && "unsubscribed"}`}
             >
               <span className="addableTitle">{topic.title}</span>
             </button>
