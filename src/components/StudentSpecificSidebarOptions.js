@@ -1,8 +1,26 @@
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
+import { NUMBER_OF_BOOKMARKS_TO_PRACTICE } from "../exercises/exerciseSequenceTypes";
+import { useState, useEffect } from "react";
 
-export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
+export default function StudentSpecificSidebarOptions({
+  SidebarLink,
+  user,
+  api,
+}) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
+  const [exerciseToDoCount, setExerciseToDoCount] = useState();
+
+  useEffect(() => {
+    api.getUserBookmarksToStudy(
+      NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+      (bookmarks) => {
+        setExerciseToDoCount(bookmarks.length);
+      },
+    );
+  });
+
+  console.log("Bookmarks found: " + exerciseToDoCount);
 
   return (
     <>
@@ -10,7 +28,12 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
 
       <SidebarLink text={strings.words} to="/words" />
 
-      <SidebarLink text={strings.exercises} to="/exercises" />
+      <SidebarLink
+        text={strings.exercises}
+        to="/exercises"
+        hasNotification={exerciseToDoCount > 0 ? true : false}
+        //notificationText={exerciseToDoCount > 9 ? "9+" : exerciseToDoCount}
+      />
 
       <br />
 

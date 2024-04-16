@@ -6,6 +6,7 @@ import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 import { setColors } from "../components/colors";
 import * as s from "./SideBar.sc";
 import { APIContext } from "../contexts/APIContext";
+import NotificationIcon from "./NotificationIcon";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -23,7 +24,7 @@ export default function SideBar(props) {
 
   const { light_color, dark_color } = setColors(isOnStudentSide);
 
-  function SidebarLink({ text, to }) {
+  function SidebarLink({ text, to, hasNotification, notificationText }) {
     // if path starts with to, then we are on that page
     const active = path.startsWith(to);
     const fontWeight = active ? "700" : "500";
@@ -31,6 +32,9 @@ export default function SideBar(props) {
     return (
       <Link className="navigationLink" to={to} onClick={resetSidebarToDefault}>
         <small style={{ fontWeight: fontWeight }}>{text}</small>
+        {hasNotification && (
+          <NotificationIcon text={notificationText}></NotificationIcon>
+        )}
       </Link>
     );
   }
