@@ -32,7 +32,7 @@ export default function StudentSpecificSidebarOptions({
         text={strings.exercises}
         to="/exercises"
         hasNotification={exerciseToDoCount > 0 ? true : false}
-        //notificationText={exerciseToDoCount > 9 ? "9+" : exerciseToDoCount}
+        notificationText={exerciseToDoCount > 9 ? "9+" : exerciseToDoCount}
       />
 
       <br />

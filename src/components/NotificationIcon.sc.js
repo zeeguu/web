@@ -12,13 +12,13 @@ const NotificationIcon = styled.div`
     background: rgb(215, 38, 61);
     background: radial-gradient(
       circle,
-      rgba(215, 38, 61, 1) 60%,
-      rgba(42, 8, 12, 1) 100%
+      rgba(215, 38, 61, 1) 95%,
+      rgba(42, 8, 12, 0.5) 100%
     );
     border-radius: 1000px;
     z-index: 99;
-    padding: 0.1em 0.3em;
-    min-width: 0.6em;
+    padding: 0.1em 0.5em;
+    min-width: 0.1em;
     min-height: 0.9em;
     max-height: 1.2em;
     justify-content: center;
