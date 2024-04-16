@@ -7,6 +7,7 @@ import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
+import Form from "./info_page_shared/Form";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 
@@ -96,14 +97,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       </Header>
       <Main>
         <s.FormContainer>
-          <form action="">
-            <s.FormLink>
-              <p>
-                <a className="links" href="/login">
-                  {strings.alreadyHaveAccount}
-                </a>
-              </p>
-            </s.FormLink>
+          <Form action={""}>
             <p>
               {strings.thankYouMsgPrefix}
               <b> zeeguu.team@gmail.com</b>
@@ -189,10 +183,16 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
             <div className="inputField">
               <Button onClick={handleCreate}>{strings.createAccount}</Button>
             </div>
-          </form>
+          </Form>
         </s.FormContainer>
       </Main>
-      <Footer></Footer>
+      <Footer>
+        <p>
+          <a className="links" href="/login">
+            {strings.alreadyHaveAccount}
+          </a>
+        </p>
+      </Footer>
     </InfoPage>
   );
 }

@@ -5,6 +5,7 @@ import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
+import Form from "./info_page_shared/Form";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 
@@ -48,7 +49,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
       </Header>
       <Main>
         <s.NarrowFormContainer>
-          <form action="" method="post">
+          <Form action={""} method={"post"}>
             {errorMessage && <div className="error">{errorMessage}</div>}
 
             <div className="inputField">
@@ -83,7 +84,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
             <div className="inputField">
               <Button onClick={handleSignIn}>Log in</Button>
             </div>
-          </form>
+          </Form>
         </s.NarrowFormContainer>
       </Main>
       <Footer>
