@@ -6,7 +6,7 @@ import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 import { getExtensionInstallationLinks } from "../utils/misc/extensionInstallationLinks";
-import MainImage from "../components/MainImage";
+import FullWidthImage from "../components/FullWidthImage";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 export default function InstallExtension() {
@@ -20,7 +20,7 @@ export default function InstallExtension() {
           Time to install The Zeeguu Reader browser extension, which enables you
           to&nbsp;read and translate articles and solve exercises
         </p>
-        <MainImage src={"find-extension.png"} />
+        <FullWidthImage src={"find-extension.png"} />
       </Main>
       <Footer>
         <ButtonContainer contentAlignment={"vertical"}>
