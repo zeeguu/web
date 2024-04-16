@@ -3,6 +3,13 @@ import Select from "../components/Select";
 
 import redirect from "../utils/routing/routing";
 
+import InfoPage from "./info_page_shared/InfoPage";
+import Header from "./info_page_shared/Header";
+import Heading from "./info_page_shared/Heading";
+import Main from "./info_page_shared/Main";
+import Footer from "./info_page_shared/Footer";
+import Button from "./info_page_shared/Button";
+
 import validator from "../assorted/validator";
 import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
@@ -83,107 +90,109 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   }
 
   return (
-    <s.PageBackground>
-      <s.LogoOnTop />
-      <s.FormContainer>
-        <form action="">
-          <s.FormTitle>{strings.createAccount}</s.FormTitle>
-          <s.FormLink>
+    <InfoPage>
+      <Header>
+        <Heading>{strings.createAccount}</Heading>
+      </Header>
+      <Main>
+        <s.FormContainer>
+          <form action="">
+            <s.FormLink>
+              <p>
+                <a className="links" href="/login">
+                  {strings.alreadyHaveAccount}
+                </a>
+              </p>
+            </s.FormLink>
             <p>
-              <a className="links" href="/login">
-                {strings.alreadyHaveAccount}
-              </a>
+              {strings.thankYouMsgPrefix}
+              <b> zeeguu.team@gmail.com</b>
+              {strings.thankYouMsgSuffix}
             </p>
-          </s.FormLink>
-          <p>
-            {strings.thankYouMsgPrefix}
-            <b> zeeguu.team@gmail.com</b>
-            {strings.thankYouMsgSuffix}
-          </p>
 
-          <div className="inputField">
-            <label>{strings.inviteCode}</label>
-            <input
-              ref={inviteCodeInputDOM}
-              value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value)}
-              placeholder={strings.code}
-            />
-          </div>
+            <div className="inputField">
+              <label>{strings.inviteCode}</label>
+              <input
+                ref={inviteCodeInputDOM}
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value)}
+                placeholder={strings.code}
+              />
+            </div>
 
-          <div className="inputField">
-            <label>{strings.name}</label>
-            <input
-              placeholder={strings.name}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
+            <div className="inputField">
+              <label>{strings.name}</label>
+              <input
+                placeholder={strings.name}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
 
-          <div className="inputField">
-            <label>{strings.email}</label>
-            <input
-              placeholder={strings.email}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+            <div className="inputField">
+              <label>{strings.email}</label>
+              <input
+                placeholder={strings.email}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-          <div className="inputField">
-            <label>{strings.password}</label>
-            <input
-              type="password"
-              placeholder={strings.password}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+            <div className="inputField">
+              <label>{strings.password}</label>
+              <input
+                type="password"
+                placeholder={strings.password}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
 
-          <div className="inputField">
-            <label>{strings.learnedLanguage}</label>
+            <div className="inputField">
+              <label>{strings.learnedLanguage}</label>
 
-            <Select
-              elements={systemLanguages.learnable_languages}
-              label={(e) => e.name}
-              val={(e) => e.code}
-              updateFunction={setLearned_language}
-            />
-          </div>
+              <Select
+                elements={systemLanguages.learnable_languages}
+                label={(e) => e.name}
+                val={(e) => e.code}
+                updateFunction={setLearned_language}
+              />
+            </div>
 
-          <div className="inputField">
-            <label>{strings.levelOfLearnedLanguage}</label>
+            <div className="inputField">
+              <label>{strings.levelOfLearnedLanguage}</label>
 
-            <Select
-              elements={CEFR_LEVELS}
-              label={(e) => e.label}
-              val={(e) => e.value}
-              updateFunction={setLearned_cefr_level}
-            />
-          </div>
+              <Select
+                elements={CEFR_LEVELS}
+                label={(e) => e.label}
+                val={(e) => e.value}
+                updateFunction={setLearned_cefr_level}
+              />
+            </div>
 
-          <div className="inputField">
-            <label>{strings.baseLanguage}</label>
+            <div className="inputField">
+              <label>{strings.baseLanguage}</label>
 
-            <Select
-              elements={systemLanguages.native_languages}
-              label={(e) => e.name}
-              val={(e) => e.code}
-              updateFunction={setNative_language}
-              current={"en"}
-            />
-          </div>
+              <Select
+                elements={systemLanguages.native_languages}
+                label={(e) => e.name}
+                val={(e) => e.code}
+                updateFunction={setNative_language}
+                current={"en"}
+              />
+            </div>
 
-          <PrivacyNotice />
+            <PrivacyNotice />
 
-          {errorMessage && <div className="error">{errorMessage}</div>}
+            {errorMessage && <div className="error">{errorMessage}</div>}
 
-          <div className="inputField">
-            <s.FormButton onClick={handleCreate}>
-              {strings.createAccount}
-            </s.FormButton>
-          </div>
-        </form>
-      </s.FormContainer>
-    </s.PageBackground>
+            <div className="inputField">
+              <Button onClick={handleCreate}>{strings.createAccount}</Button>
+            </div>
+          </form>
+        </s.FormContainer>
+      </Main>
+      <Footer></Footer>
+    </InfoPage>
   );
 }
