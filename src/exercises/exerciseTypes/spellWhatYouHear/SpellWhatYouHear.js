@@ -14,6 +14,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
 
 // The user has to write the word they hear. A context with the word omitted is shown.
 // This tests the user's active knowledge.
@@ -169,7 +170,7 @@ export default function SpellWhatYouHear({
       {isCorrect && (
         <>
           <br></br>
-          <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+          <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>
           <div className="contextExample">
             <TranslatableText
               isCorrect={isCorrect}

@@ -252,7 +252,7 @@ export default function MultipleChoiceAudio({
       {isCorrect && (
         <>
           <br></br>
-          <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+          <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>
         </>
       )}
       <NextNavigation

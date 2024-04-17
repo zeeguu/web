@@ -25,6 +25,7 @@ const LocalStorage = {
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
     clickedVideoLink: "clicked_video_link",
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
+    productiveExercisesEnabled: "productiveExercisesEnabled",
   },
 
   userInfo: function () {
@@ -33,6 +34,7 @@ const LocalStorage = {
       learned_language: localStorage[this.Keys.LearnedLanguage],
       native_language: localStorage[this.Keys.NativeLanguage],
       is_teacher: "true" === localStorage[this.Keys.IsTeacher],
+      productiveExercisesEnabled: localStorage[this.Keys.productiveExercisesEnabled],
     };
   },
 
@@ -62,6 +64,10 @@ const LocalStorage = {
   // Setting info
   locallySetName: function (newName) {
     localStorage[this.Keys.Name] = newName;
+  },
+
+  setProductiveExercisesEnabled: function (productiveExercisesEnabled) {
+    localStorage[this.Keys.productiveExercisesEnabled] = productiveExercisesEnabled;
   },
 
   setSession: function (session) {

@@ -66,7 +66,7 @@ export default function Exercises({
     if (Feature.merle_exercises()) exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
-      console.log("Will not use audio!");
+      
       if (Feature.merle_exercises())
         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
       else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;

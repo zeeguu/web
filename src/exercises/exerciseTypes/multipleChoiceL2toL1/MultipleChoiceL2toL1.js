@@ -129,7 +129,7 @@ export default function MultipleChoiceL2toL1({
         />
       </div>
 
-      {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
+      {isCorrect && <h1>{removePunctuation(bookmarksToStudy[0].to)}</h1>}
 
       {!buttonOptions && <LoadingAnimation />}
       {!isCorrect && (

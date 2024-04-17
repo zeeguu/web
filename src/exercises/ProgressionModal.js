@@ -9,7 +9,7 @@ import * as s from "../components/redirect_notification/RedirectionNotificationM
 
 export default function ProgressionModal({open, onClose, api}) {
 
-  const [disableProductiveExercises, setDisableProductiveExercises] = useState(false);
+  const [disableProductiveExercises, setDisableProductiveExercises] = useState();
   const [dontShowMsg, setDontShowMsg] = useState(false);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function ProgressionModal({open, onClose, api}) {
   const handleClose = () => {
     api.saveUserPreferences({ productive_exercises: (!disableProductiveExercises).toString()});
 
-    localStorage.setItem("productiveExercisesEnabled", disableProductiveExercises);
+    localStorage.setItem("productiveExercisesEnabled", JSON.stringify(!disableProductiveExercises));
 
     if (dontShowMsg){
         localStorage.setItem("hideProgressionModal", "true");
