@@ -35,9 +35,8 @@ export default function NextNavigation({
   const exercise = "exercise";
   const [userIsCorrect, setUserIsCorrect] = useState();
   const [correctMessage, setCorrectMessage] = useState("");
-  const [learningCycle, setLearningCycle] = useState(
-    bookmarksToStudy[0].learning_cycle,
-  );
+
+  const [learningCycle, setLearningCycle] = useState(null);
   const [showProgressionModal, setShowProgressionModal] = useState(false);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const isUserAndAnswerCorrect = isCorrect && userIsCorrect;
@@ -58,6 +57,12 @@ export default function NextNavigation({
     isUserAndAnswerCorrect &&
     isLastInCycle &&
     (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
+
+  useEffect(() => {
+    if (bookmarkToStudy && "learning_cycle" in bookmarkToStudy) {
+      setLearningCycle(bookmarkToStudy.learning_cycle);
+    }
+  }, [bookmarkToStudy]);
 
   useEffect(() => {
     setLearningCycle(bookmarkToStudy.learning_cycle);

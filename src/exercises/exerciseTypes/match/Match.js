@@ -187,7 +187,7 @@ export default function Match({
       <NextNavigation
         message={messageToNextNav}
         api={api}
-        bookmarksToStudy={initialExerciseAttemptsLog}
+        bookmarksToStudy={bookmarksToStudy}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

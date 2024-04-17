@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
-import {
-  removePunctuation,
-  removePunctuationFollowedBySpace,
-} from "../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../utils/preprocessing/preprocessing";
 import exerciseTypes from "../exercises/ExerciseTypeConstants";
 
 export function TranslatableText({
@@ -86,9 +83,7 @@ export function TranslatableText({
     // If the word is a bookmarked word, it won't be translated when clicked
     const isBookmarkWord = foundInstances.includes(word.id);
     const boldWords = boldWord ? boldWord.split(" ") : [];
-    const isBoldWord = boldWords.includes(
-      removePunctuationFollowedBySpace(word.word),
-    );
+    const isBoldWord = boldWords.includes(removePunctuation(word.word));
 
     if (isBoldWord) {
       return <span style={{ fontWeight: "bold" }}>{word.word + " "}</span>;

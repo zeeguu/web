@@ -9,6 +9,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import exerciseTypes from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 
 const EXERCISE_TYPE = exerciseTypes.multipleChoiceContext;
 
@@ -125,7 +126,7 @@ export default function MultipleChoiceContext({
           message={messageToAPI}
         />
       </div>
-      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].from}</h1>
+      <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].from)}</h1>
         {exerciseBookmarks.map((option, index) => (
             <s.MultipleChoiceContext 
                 key={index} 

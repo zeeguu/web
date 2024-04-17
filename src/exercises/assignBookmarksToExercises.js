@@ -22,14 +22,14 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
   const hasLearningCycle = exerciseTypesList.some(exercise => 'learningCycle' in exercise);
 
   if (hasLearningCycle) {
-    let exerciseType_i = 0;
     for (let i = 0; i < bookmarks.length; i++) {
       // Filter the exercises based on the learning_cycle attribute of the bookmark
       let filteredExercises = exerciseTypesList.filter(exercise => 
         learningCycleEnum[bookmarks[i].learning_cycle] === exercise.learningCycle
       );
       
-      if (filteredExercises.length > 0) {
+      let suitableExerciseFound = false;
+      while (filteredExercises.length > 0 && !suitableExerciseFound) {
         let selectedExercise = random(filteredExercises);
         
         // Check if there are enough bookmarks for the selected exercise
@@ -42,6 +42,9 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
 
           // Skip the assigned bookmarks
           i += selectedExercise.requiredBookmarks - 1;
+          suitableExerciseFound = true;
+        } else {
+          filteredExercises = filteredExercises.filter(exercise => exercise !== selectedExercise);
         }
       }
       

@@ -9,6 +9,7 @@ import { tokenize } from "../../../utils/preprocessing/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
 //The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
@@ -174,7 +175,7 @@ export default function WordInContextExercise({
         />
       </div>
 
-      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+      <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
@@ -186,7 +187,7 @@ export default function WordInContextExercise({
           bookmarkToStudy={bookmarksToStudy[0].from}
         />
       </div>
-      {showBottomInput && !isCorrect &&(
+      {showBottomInput && !isCorrect && (
         <BottomInput
           handleCorrectAnswer={handleCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
