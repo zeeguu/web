@@ -126,9 +126,7 @@ const Exercise = styled.div`
   }
 
   .cooling-bar {
-    width: 2.5em;
     height: 0.5em;
-    background-color: #ccc;
     margin-right: 0.5em;
     border-radius: 10px;
   }

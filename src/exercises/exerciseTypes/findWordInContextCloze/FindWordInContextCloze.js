@@ -11,6 +11,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import exerciseTypes from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.
@@ -42,7 +43,6 @@ export default function FindWordInContextCloze({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    console.log(bookmarksToStudy[0].cooling_interval);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -112,7 +112,7 @@ export default function FindWordInContextCloze({
           message={messageToAPI}
         />
       </div>
-      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+      <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>
             <div className="contextExample">
                 <TranslatableText
                     isCorrect={isCorrect}

@@ -21,9 +21,11 @@ export default function ProgressionModal({open, onClose}) {
   return (
     <>
     {showConfetti && (
-      <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%"}}>
+      <div>
         <Confetti 
-            recycle={true}/>
+          width={window.innerWidth}
+          height={window.innerHeight}
+          recycle={true}/>
       </div>
     )}
     <Modal open={open} onClose={onClose}>

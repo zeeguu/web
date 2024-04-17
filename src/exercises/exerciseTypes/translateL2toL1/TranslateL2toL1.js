@@ -10,6 +10,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -135,7 +136,7 @@ export default function TranslateL2toL1({
       )}
       {isCorrect && (
         <>
-            <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>   
+            <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>   
         </>
         )}
 

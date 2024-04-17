@@ -14,8 +14,6 @@ import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/Multipl
 
 export function getNumberOfBookmarksToPractice(sequenceType) {
   if (
-    // sequenceType === ACTIVE_SEQUENCE ||
-    // sequenceType === ACTIVE_SEQUENCE_NO_AUDIO ||
     sequenceType === LEARNING_CYCLE_SEQUENCE ||
     sequenceType === LEARNING_CYCLE_SEQUENCE_NO_AUDIO
   ) {

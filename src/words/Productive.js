@@ -9,7 +9,7 @@ import { UMR_SOURCE } from "../reader/ArticleReader";
 
 export default function Productive ({ api }) {
   const [words, setWords] = useState(null);
-  const [productiveExercisesEnabled, setProductiveExercisesEnabled] = useState(false);
+  const [productiveExercisesEnabled, setProductiveExercisesEnabled] = useState();
 
   useEffect(() => {
     api.topBookmarks(300, (topWords) => {
@@ -24,7 +24,6 @@ export default function Productive ({ api }) {
     if (productiveExercisesEnabled) {
         setProductiveExercisesEnabled(JSON.parse(productiveExercisesEnabled));
     }
-    console.log(productiveExercisesEnabled);
 }, []);
 
 

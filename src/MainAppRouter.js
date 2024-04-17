@@ -32,6 +32,10 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         preferences["audio_exercises"] === undefined ||
           preferences["audio_exercises"] === "true",
       );
+      LocalStorage.setProductiveExercisesEnabled(
+        preferences["productive_exercises"] === undefined ||
+          preferences["productive_exercises"] === "true",
+      );
     });
 
     // Cookies are the mechanism via which we share a login

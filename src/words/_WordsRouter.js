@@ -16,16 +16,16 @@ export default function WordsRouter({api}) {
     const features = JSON.parse(localStorage.getItem('features'));
 
     let tabsAndLinks = {
-    "Top Words": "/words",
-    [strings.learned]: "/words/learned",
-    // [strings.starred]: "/words/starred",
+        [strings.learned]: "/words/learned",
+        "Top Words": "/words",
+        // [strings.starred]: "/words/starred",
     };
 
     if (features.includes('merle_exercises')) {
     tabsAndLinks = {
-        ...tabsAndLinks,
         [strings.titleReceptiveWords]: "/words/receptive",
         [strings.titleProductiveWords]: "/words/productive",
+        ...tabsAndLinks,
     };
     }
 

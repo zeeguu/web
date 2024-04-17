@@ -14,7 +14,8 @@ export default function LearningCycleIndicator({
   let coolingInterval = bookmark.cooling_interval;
 
   useEffect(() => {
-    const userIsCorrect = ["C", "TC", "TTC", "TTTC", "HC", "CC", "CCC"].includes(message);
+    //mimics correctness from api
+    const userIsCorrect = ["C", "TC", "TTC", "TTTC", "HC", "CC", "CCC"].includes(message); 
     setUserIsCorrect(userIsCorrect);
     const userIsWrong = message.includes("W")|| message.includes("S");
     setUserIsWrong(userIsWrong);
@@ -27,14 +28,6 @@ export default function LearningCycleIndicator({
     1: "receptive",
     2: "productive",
   });
-
-  const coolingIntervalToBarCount = {
-    0: 0,
-    1440: 1,
-    2880: 2,
-    5760: 3,
-    11520: 4,
-  };
 
   const getLearningCycleIcon = () => {
     switch(learningCycleEnum[learningCycle]) {
@@ -58,15 +51,22 @@ export default function LearningCycleIndicator({
     }
   }
 
-  const getBarColor = (index) => {
-    let barCount = coolingIntervalToBarCount[coolingInterval];
-    if (index < barCount) return 'green';
-    if (index === barCount) {
-      if (userIsCorrect) return 'green';
-      if (userIsWrong) return 'grey';
-      return 'yellow';
+  const getBarProperties = (index) => {
+    let barCount = Math.round(Math.log2(( coolingInterval * 2) + 1));
+    let color = 'grey';
+    let widthMultiplier = Math.pow(1.8, index);
+
+    if (index < barCount) {
+      color = 'green';
+    } else if (index === barCount) {
+      color = 'yellow';
+      if (userIsCorrect) {
+        color = 'green';
+      } else if (userIsWrong) {
+        color = 'grey';
+      }
     }
-    return 'grey';
+    return {color, widthMultiplier};
   }
 
   return (
@@ -82,12 +82,16 @@ export default function LearningCycleIndicator({
             </div>
           </Tooltip>
           <div className="cooling-bars">
-            {[...Array(5)].map((_, index) => (
-              <div
-                key={index}
-                className={`cooling-bar ${getBarColor(index)}`}
-              ></div>
-            ))}
+            {[...Array(5)].map((_, index) => {
+              const {color, widthMultiplier} = getBarProperties(index);
+              return (
+                <div
+                  key={index}
+                  className={`cooling-bar ${color}`}
+                  style={{width: `${0.5 * widthMultiplier}em`}}
+                ></div>
+              );
+              })}
           </div>
         </>
       )}
