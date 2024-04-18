@@ -95,7 +95,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   return (
     <InfoPage>
       <Header>
-        <Heading>{strings.createAccount}</Heading>
+        <Heading>Create Beta Account</Heading>
       </Header>
       <Main>
         <Form action={""}>
@@ -112,7 +112,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
 
           <InputField
             type={"text"}
-            label={strings.inviteCode}
+            label={"Invite code"}
             id={"invite-code"}
             name={"invite-code"}
             placeholder={strings.code}
@@ -122,63 +122,63 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
 
           <InputField
             type={"text"}
-            label={strings.name}
+            label={"Full name"}
             id={"name"}
             name={"name"}
-            placeholder={strings.name}
+            placeholder={"First and last name"}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
 
           <InputField
             type={"email"}
-            label={strings.email}
+            label={"Email"}
             id={"email"}
             name={"email"}
-            placeholder={strings.email}
+            placeholder={"example@email.com"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
           <InputField
             type={"password"}
-            label={strings.password}
+            label={"Password"}
             id={"password"}
             name={"password"}
-            placeholder={strings.password}
+            placeholder={"At least 4 characters"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
           <SelectOptions
-            placeholder={"select a language"}
+            placeholder={"Select language"}
             label={(e) => e.name}
             val={(e) => e.code}
             id={"practiced-languages"}
-            selectLabel={strings.learnedLanguage}
+            selectLabel={"I want to learn"}
             options={systemLanguages.learnable_languages}
             onChange={setLearned_language}
           />
 
           <SelectOptions
-            placeholder={"select your level"}
+            placeholder={"Select level"}
             label={(e) => e.label}
             val={(e) => e.value}
             id={"level-of-practiced-languages"}
-            selectLabel={strings.levelOfLearnedLanguage}
+            selectLabel={"My current level"}
             options={CEFR_LEVELS}
             onChange={setLearned_cefr_level}
           />
 
           <SelectOptions
-            placeholder={"select a language"}
+            placeholder={"Select language"}
             label={(e) => e.name}
             val={(e) => e.code}
             id={"translation-languages"}
-            selectLabel={strings.baseLanguage}
+            selectLabel={"I want translations in"}
             options={systemLanguages.native_languages}
             onChange={setNative_language}
-            current={"en"}
+            // current={"en"}
           />
 
           {/* <div className="inputField">

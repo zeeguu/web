@@ -54,20 +54,20 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
 
           <InputField
             type={"email"}
-            label={strings.email}
+            label={"Email"}
             id={"email"}
             name={"email"}
-            placeholder={strings.email}
+            placeholder={"example@email.com"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
           <InputField
-            type={"password"}
+            type={"Password"}
             label={strings.password}
             id={"password"}
             name={"password"}
-            placeholder={strings.password}
+            placeholder={"Password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
