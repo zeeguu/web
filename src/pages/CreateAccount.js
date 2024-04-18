@@ -101,7 +101,12 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
         <Form action={""}>
           <p>
             {strings.thankYouMsgPrefix}
-            <b> zeeguu.team@gmail.com</b>
+            <a
+              href="mailto:zeeguu.team@gmail.com?subject=Invitation Code Request&body=Dear Zeeguu Team,
+              %0D%0A%0D%0AI would like to request the Invitation Code to register for Zeeguu.%0D%0A%0D%0AThank you!"
+            >
+              <b> zeeguu.team@gmail.com</b>
+            </a>
             {strings.thankYouMsgSuffix}
           </p>
 
