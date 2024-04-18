@@ -23,10 +23,6 @@ import { PrivateRoute } from "./PrivateRoute";
 import { isSupportedBrowser } from "./utils/misc/browserDetection";
 
 export default function MainAppRouter({ api, user, setUser, hasExtension }) {
-  const [redirectLink, setRedirectLink] = useState(null);
-  const history = useHistory();
-
-export default function MainAppRouter({ api, user, setUser, hasExtension }) {
   function handleSuccessfulSignIn(userInfo) {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
