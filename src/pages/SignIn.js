@@ -62,6 +62,12 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
             onChange={(e) => setEmail(e.target.value)}
           />
 
+          <p>
+            <a className="links" href="/reset_pass">
+              {strings.resetYourPassword}
+            </a>
+          </p>
+
           <InputField
             type={"Password"}
             label={strings.password}
@@ -79,15 +85,10 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
       </Main>
       <Footer>
         <p>
-          {strings.alternativelyYouCan}{" "}
+          Don't have an account?{" "}
           <a className="links" href="create_account">
-            {strings.createAnAccount}
+            <b>Register</b>
           </a>{" "}
-          {strings.or}{" "}
-          <a className="links" href="/reset_pass">
-            {strings.resetYourPassword}
-          </a>
-          .
         </p>
       </Footer>
     </InfoPage>

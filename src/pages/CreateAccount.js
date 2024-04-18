@@ -226,8 +226,9 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       </Main>
       <Footer>
         <p>
+          Already have an account?{" "}
           <a className="links" href="/login">
-            {strings.alreadyHaveAccount}
+            <b>Log in</b>
           </a>
         </p>
       </Footer>
