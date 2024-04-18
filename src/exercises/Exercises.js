@@ -168,10 +168,6 @@ export default function Exercises({
       setDbExerciseSessionId(id);
     });
 
-    startExercising();
-    return () => {
-      setActivityOver(true);
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

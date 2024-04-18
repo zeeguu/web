@@ -12,9 +12,10 @@ export default function StudentSpecificSidebarOptions({
   const [hasExercisesToDo, setHasExercisesToDo] = useState();
 
   useEffect(() => {
-    api.getUserBookmarksToStudy(2, (bookmarks) => {
-      setHasExercisesToDo(bookmarks.length);
-    });
+    if (!user["totalExercises"])
+      api.getUserBookmarksToStudy(2, (bookmarks) => {
+        setHasExercisesToDo(bookmarks.length);
+      });
   });
 
   return (
