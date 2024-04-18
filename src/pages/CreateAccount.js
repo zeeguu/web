@@ -9,6 +9,7 @@ import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
 import InputField from "./info_page_shared/InputField";
+import SelectOptions from "./info_page_shared/SelectOptions";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 
@@ -144,7 +145,38 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <div className="inputField">
+          <SelectOptions
+            placeholder={"select a language"}
+            label={(e) => e.name}
+            val={(e) => e.code}
+            id={"practiced-languages"}
+            selectLabel={strings.learnedLanguage}
+            options={systemLanguages.learnable_languages}
+            onChange={setLearned_language}
+          />
+
+          <SelectOptions
+            placeholder={"select your level"}
+            label={(e) => e.label}
+            val={(e) => e.value}
+            id={"level-of-practiced-languages"}
+            selectLabel={strings.levelOfLearnedLanguage}
+            options={CEFR_LEVELS}
+            onChange={setLearned_cefr_level}
+          />
+
+          <SelectOptions
+            placeholder={"select a language"}
+            label={(e) => e.name}
+            val={(e) => e.code}
+            id={"translation-languages"}
+            selectLabel={strings.baseLanguage}
+            options={systemLanguages.native_languages}
+            onChange={setNative_language}
+            current={"en"}
+          />
+
+          {/* <div className="inputField">
             <label>{strings.learnedLanguage}</label>
 
             <Select
@@ -176,7 +208,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               updateFunction={setNative_language}
               current={"en"}
             />
-          </div>
+          </div> */}
 
           <PrivacyNotice />
 

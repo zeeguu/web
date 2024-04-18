@@ -1,19 +1,26 @@
 import styled from "styled-components";
-import { lightGrey, zeeguuOrange } from "../../components/colors";
+import {
+  lightGrey,
+  zeeguuOrange,
+  darkGrey,
+  gray,
+} from "../../components/colors";
 
-const InputFieldWrapper = styled.div`
+const SelectOptionsdWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 
-  input:focus {
+  select:focus {
     outline: transparent;
     border: 1.5px solid ${zeeguuOrange};
   }
 `;
-const Input = styled.input`
+const Select = styled.select`
+  color: ${gray};
+  font-family: inherit;
   font-size: 0.9rem;
-  height: 2.5rem;
+  height: 2.7rem;
   padding: 0 1rem;
   margin: 0;
   border: 1.5px solid ${lightGrey};
@@ -26,4 +33,4 @@ const Label = styled.label`
   font-weight: 600;
 `;
 
-export { Input, Label, InputFieldWrapper };
+export { Select, Label, SelectOptionsdWrapper };
