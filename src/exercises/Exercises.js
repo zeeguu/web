@@ -125,12 +125,6 @@ export default function Exercises({
       setDbExerciseSessionId(id);
     });
 
-    return () => {
-      let userWithoutExercises = { ...user };
-      delete userWithoutExercises["totalExercises"];
-      setUser(userWithoutExercises);
-    };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

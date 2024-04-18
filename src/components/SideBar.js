@@ -33,7 +33,9 @@ export default function SideBar(props) {
       <Link className="navigationLink" to={to} onClick={resetSidebarToDefault}>
         <small style={{ fontWeight: fontWeight }}>{text}</small>
         {hasNotification && (
-          <NotificationIcon text={notificationText}></NotificationIcon>
+          <NotificationIcon
+            text={active ? notificationText : ""}
+          ></NotificationIcon>
         )}
       </Link>
     );
