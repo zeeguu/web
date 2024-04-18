@@ -21,7 +21,7 @@ import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { isSupportedBrowser } from "./utils/misc/browserDetection";
 
-export default function MainAppRouter({ api, setUser, hasExtension }) {
+export default function MainAppRouter({ api, user, setUser, hasExtension }) {
   const [redirectLink, setRedirectLink] = useState(null);
   const history = useHistory();
 
@@ -55,7 +55,8 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       window.location.href = redirectLink;
     } else if (
       window.location.href.indexOf("create_account") > -1 &&
-      !hasExtension && isSupportedBrowser()
+      !hasExtension &&
+      isSupportedBrowser()
     ) {
       history.push("/install_extension");
     } else {
@@ -106,6 +107,8 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       <PrivateRouteWithSidebar
         path="/exercises"
         api={api}
+        user={user}
+        setUser={setUser}
         component={ExercisesRouter}
       />
       <PrivateRouteWithSidebar

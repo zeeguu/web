@@ -5,7 +5,7 @@ import ExercisesForArticle from "./ExercisesForArticle";
 import * as s from "../components/ColumnWidth.sc";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 
-export default function ExercisesRouter({ api }) {
+export default function ExercisesRouter({ api, user, setUser }) {
   const history = useHistory();
 
   const backToReadingAction = () => {
@@ -39,6 +39,8 @@ export default function ExercisesRouter({ api }) {
           path="/exercises"
           api={api}
           component={Exercises}
+          setUser={setUser}
+          user={user}
           backButtonAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
           source={UMR_SOURCE}
