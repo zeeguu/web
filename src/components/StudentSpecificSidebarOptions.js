@@ -9,18 +9,13 @@ export default function StudentSpecificSidebarOptions({
   api,
 }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
-  const [exerciseToDoCount, setExerciseToDoCount] = useState();
+  const [hasExercisesToDo, setHasExercisesToDo] = useState();
 
   useEffect(() => {
-    api.getUserBookmarksToStudy(
-      NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-      (bookmarks) => {
-        setExerciseToDoCount(bookmarks.length);
-      },
-    );
+    api.getUserBookmarksToStudy(2, (bookmarks) => {
+      setHasExercisesToDo(bookmarks.length);
+    });
   });
-
-  console.log("Bookmarks found: " + exerciseToDoCount);
 
   return (
     <>
@@ -31,8 +26,14 @@ export default function StudentSpecificSidebarOptions({
       <SidebarLink
         text={strings.exercises}
         to="/exercises"
-        hasNotification={exerciseToDoCount > 0 ? true : false}
-        notificationText={exerciseToDoCount > 9 ? "9+" : exerciseToDoCount}
+        hasNotification={hasExercisesToDo > 0 ? true : false}
+        notificationText={
+          user["totalExercises"]
+            ? user["totalExercises"] > 99
+              ? "99+"
+              : user["totalExercises"]
+            : ""
+        }
       />
 
       <br />

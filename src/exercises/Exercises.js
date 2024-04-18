@@ -25,6 +25,8 @@ import ActivityTimer from "../components/ActivityTimer";
 
 export default function Exercises({
   api,
+  user,
+  setUser,
   articleID,
   backButtonAction,
   keepExercisingAction,
@@ -104,12 +106,19 @@ export default function Exercises({
             });
           });
         } else {
-          api.getUserBookmarksToStudy(
-            NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-            (bookmarks) => {
-              initializeExercises(bookmarks, strings.exercises);
-            },
-          );
+          // We get 120 to get the maximum total. There could
+          // be situations where a user has more than 120 scheduled
+          // and the number would decrease only to go up again.
+          // We only show 99+, so technically that wouldn't change
+          // until the user gets below this threshold, not sure
+          // what is best to do here.
+          api.getUserBookmarksToStudy(120, (bookmarks) => {
+            initializeExercises(
+              bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
+              strings.exercises,
+            );
+            setUser({ ...user, totalExercises: bookmarks.length });
+          });
         }
       });
     }
@@ -118,6 +127,12 @@ export default function Exercises({
       let id = JSON.parse(newlyCreatedDBSessionID).id;
       setDbExerciseSessionId(id);
     });
+
+    return () => {
+      let userWithoutExercises = { ...user };
+      delete userWithoutExercises["totalExercises"];
+      setUser(userWithoutExercises);
+    };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -195,6 +210,9 @@ export default function Exercises({
       !incorrectBookmarks.includes(currentBookmark) ||
       !incorrectBookmarksCopy.includes(currentBookmark)
     ) {
+      let userUpdateExercises = { ...user };
+      userUpdateExercises["totalExercises"]--;
+      setUser(userUpdateExercises);
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
     }

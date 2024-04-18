@@ -21,7 +21,10 @@ import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
 
-export default function MainAppRouter({ api, setUser, hasExtension }) {
+export default function MainAppRouter({ api, user, setUser, hasExtension }) {
+  const [redirectLink, setRedirectLink] = useState(null);
+  const history = useHistory();
+
   function handleSuccessfulSignIn(userInfo) {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
@@ -97,6 +100,8 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       <PrivateRouteWithSidebar
         path="/exercises"
         api={api}
+        user={user}
+        setUser={setUser}
         component={ExercisesRouter}
       />
       <PrivateRouteWithSidebar

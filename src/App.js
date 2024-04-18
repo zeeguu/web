@@ -96,6 +96,7 @@ function App() {
               {/* Routing*/}
               <MainAppRouter
                 api={api}
+                user={userData}
                 setUser={setUserData}
                 hasExtension={isExtensionAvailable}
               />
