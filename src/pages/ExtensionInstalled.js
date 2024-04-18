@@ -4,7 +4,7 @@ import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
-import MainImage from "../components/MainImage";
+import FullWidthImage from "../components/FullWidthImage";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
@@ -23,7 +23,7 @@ export default function ExtensionInstalled({ api }) {
         </Heading>
       </Header>
       <Main>
-        <MainImage src={"use-extension.png"} />
+        <FullWidthImage src={"use-extension.png"} />
       </Main>
       <Footer>
         <ButtonContainer>

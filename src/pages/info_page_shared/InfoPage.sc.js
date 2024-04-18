@@ -7,7 +7,7 @@ const PageBackground = styled.div`
   justify-content: center;
   align-items: center;
   width: 100vw;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: ${zeeguuOrange};
 `;
 
@@ -38,7 +38,7 @@ const PageContainer = styled.div`
 
   @media (max-width: 576px) {
     padding: 1.5rem;
-    width: 90%;
+    width: 95%;
   }
 `;
 
