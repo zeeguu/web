@@ -21,7 +21,7 @@ import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
 
-export default function MainAppRouter({ api, setUser, hasExtension }) {
+export default function MainAppRouter({ api, user, setUser, hasExtension }) {
   function handleSuccessfulSignIn(userInfo) {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
