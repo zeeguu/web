@@ -20,6 +20,11 @@ import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
+import { isSupportedBrowser } from "./utils/misc/browserDetection";
+
+export default function MainAppRouter({ api, user, setUser, hasExtension }) {
+  const [redirectLink, setRedirectLink] = useState(null);
+  const history = useHistory();
 
 export default function MainAppRouter({ api, user, setUser, hasExtension }) {
   function handleSuccessfulSignIn(userInfo) {
@@ -49,6 +54,21 @@ export default function MainAppRouter({ api, user, setUser, hasExtension }) {
     console.log("setting new user value: ");
     console.dir(newUserValue);
     setUser(newUserValue);
+
+    if (redirectLink !== null) {
+      window.location.href = redirectLink;
+    } else if (
+      window.location.href.indexOf("create_account") > -1 &&
+      !hasExtension &&
+      isSupportedBrowser()
+    ) {
+      history.push("/install_extension");
+    } else {
+      console.log("history");
+      console.log(history);
+      console.log("pushing the /articles...");
+      history.push("/articles");
+    }
   }
 
   return (
