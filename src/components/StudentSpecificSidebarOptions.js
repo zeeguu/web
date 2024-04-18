@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
-import { NUMBER_OF_BOOKMARKS_TO_PRACTICE } from "../exercises/exerciseSequenceTypes";
 import { useState, useEffect } from "react";
 
 export default function StudentSpecificSidebarOptions({
@@ -12,9 +11,10 @@ export default function StudentSpecificSidebarOptions({
   const [hasExercisesToDo, setHasExercisesToDo] = useState();
 
   useEffect(() => {
-    api.getUserBookmarksToStudy(2, (bookmarks) => {
-      setHasExercisesToDo(bookmarks.length);
-    });
+    if (!user["totalExercises"])
+      api.getUserBookmarksToStudy(2, (bookmarks) => {
+        setHasExercisesToDo(bookmarks.length);
+      });
   });
 
   return (
