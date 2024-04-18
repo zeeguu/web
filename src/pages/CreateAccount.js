@@ -93,23 +93,23 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   }
 
   return (
-    <InfoPage>
+    <InfoPage type={"narrow"}>
       <Header>
         <Heading>Create Beta Account</Heading>
       </Header>
       <Main>
-        <Form action={""}>
-          <p>
-            {strings.thankYouMsgPrefix}
-            <a
-              href="mailto:zeeguu.team@gmail.com?subject=Invitation Code Request&body=Dear Zeeguu Team,
+        <p>
+          {strings.thankYouMsgPrefix}
+          <a
+            href="mailto:zeeguu.team@gmail.com?subject=Invitation Code Request&body=Dear Zeeguu Team,
               %0D%0A%0D%0AI would like to request the Invitation Code to register for Zeeguu.%0D%0A%0D%0AThank you!"
-            >
-              <b> zeeguu.team@gmail.com</b>
-            </a>
-            {strings.thankYouMsgSuffix}
-          </p>
+          >
+            <b> zeeguu.team@gmail.com</b>
+          </a>
+          {strings.thankYouMsgSuffix}
+        </p>
 
+        <Form action={""}>
           <InputField
             type={"text"}
             label={"Invite code"}
@@ -215,7 +215,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
             />
           </div> */}
 
-          <PrivacyNotice />
+          {/* <PrivacyNotice /> */}
 
           {errorMessage && <div className="error">{errorMessage}</div>}
 

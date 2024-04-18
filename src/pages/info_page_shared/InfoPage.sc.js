@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { zeeguuOrange } from "../../components/colors";
 
 const PageBackground = styled.div`
@@ -40,6 +40,15 @@ const PageContainer = styled.div`
     padding: 1.5rem;
     width: 95%;
   }
+
+  ${(props) =>
+    props.type === "narrow" &&
+    css`
+      width: 38rem;
+      @media (max-width: 1200px) {
+        max-width: 38rem;
+      }
+    `}
 `;
 
 const ContentWrapper = styled.div`
