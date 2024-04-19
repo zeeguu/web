@@ -1,5 +1,4 @@
-import { useState, useRef, useEffect } from "react";
-import Select from "../components/Select";
+import { useState, useEffect } from "react";
 
 import redirect from "../utils/routing/routing";
 
@@ -8,9 +7,7 @@ import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
-import InputField from "./info_page_shared/InputField";
 import SelectOptions from "./info_page_shared/SelectOptions";
-import Footer from "./info_page_shared/Footer";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
@@ -20,10 +17,6 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
 
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
-
-import * as s from "../components/FormPage.sc";
-import PrivacyNotice from "./PrivacyNotice";
-import * as EmailValidator from "email-validator";
 
 export default function LanguagePreferences({ api, setUser }) {
   const [learned_language, setLearned_language] = useState("");
@@ -85,42 +78,6 @@ export default function LanguagePreferences({ api, setUser }) {
             // current={"en"}
           />
 
-          {/* <div className="inputField">
-            <label>{strings.learnedLanguage}</label>
-
-            <Select
-              elements={systemLanguages.learnable_languages}
-              label={(e) => e.name}
-              val={(e) => e.code}
-              updateFunction={setLearned_language}
-            />
-          </div>
-
-          <div className="inputField">
-            <label>{strings.levelOfLearnedLanguage}</label>
-
-            <Select
-              elements={CEFR_LEVELS}
-              label={(e) => e.label}
-              val={(e) => e.value}
-              updateFunction={setLearned_cefr_level}
-            />
-          </div>
-
-          <div className="inputField">
-            <label>{strings.baseLanguage}</label>
-
-            <Select
-              elements={systemLanguages.native_languages}
-              label={(e) => e.name}
-              val={(e) => e.code}
-              updateFunction={setNative_language}
-              current={"en"}
-            />
-          </div> */}
-
-          {/* <PrivacyNotice /> */}
-
           {errorMessage && <div className="error">{errorMessage}</div>}
           <p>You can always change it later</p>
           <ButtonContainer>
@@ -130,7 +87,6 @@ export default function LanguagePreferences({ api, setUser }) {
           </ButtonContainer>
         </Form>
       </Main>
-      <Footer></Footer>
     </InfoPage>
   );
 }
