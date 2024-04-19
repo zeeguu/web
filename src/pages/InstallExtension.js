@@ -7,6 +7,7 @@ import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 import { getExtensionInstallationLinks } from "../utils/misc/extensionInstallationLinks";
 import FullWidthImage from "../components/FullWidthImage";
+
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 export default function InstallExtension() {

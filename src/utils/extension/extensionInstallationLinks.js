@@ -3,7 +3,7 @@
 import {
   runningInChromeDesktop,
   runningInFirefoxDesktop,
-} from "./browserDetection";
+} from "../misc/browserDetection";
 
 function getExtensionInstallationLinks() {
   if (runningInChromeDesktop()) {
