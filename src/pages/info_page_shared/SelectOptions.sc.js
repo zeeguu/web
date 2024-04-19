@@ -7,6 +7,7 @@ import {
 } from "../../components/colors";
 
 const SelectOptionsdWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;

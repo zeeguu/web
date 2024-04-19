@@ -7,6 +7,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
 import SignIn from "./pages/SignIn";
 import CreateAccount from "./pages/CreateAccount";
+import LanguagePreferences from "./pages/LanguagePreferences";
 import LocalStorage from "./assorted/LocalStorage";
 import SessionStorage from "./assorted/SessionStorage";
 import { saveUserInfoIntoCookies } from "./utils/cookies/userInfo";
@@ -79,6 +80,13 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       <Route path="/reset_pass" render={() => <ResetPassword api={api} />} />
 
       <Route path="/render" render={() => <NoSidebarRouter api={api} />} />
+
+      <PrivateRoute
+        path="/language_preferences"
+        api={api}
+        setUser={setUser}
+        component={LanguagePreferences}
+      />
 
       <PrivateRoute
         path="/select_interests"

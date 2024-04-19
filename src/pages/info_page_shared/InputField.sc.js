@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { lightGrey, zeeguuOrange } from "../../components/colors";
 
 const InputFieldWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;

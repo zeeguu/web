@@ -8,6 +8,7 @@ import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
 import InputField from "./info_page_shared/InputField";
 import Footer from "./info_page_shared/Footer";
+import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
 
 import strings from "../i18n/definitions";
@@ -77,10 +78,9 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-
-          <div className="inputField">
+          <ButtonContainer>
             <Button onClick={handleSignIn}>Log in</Button>
-          </div>
+          </ButtonContainer>
         </Form>
       </Main>
       <Footer>
