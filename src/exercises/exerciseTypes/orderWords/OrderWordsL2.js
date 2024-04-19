@@ -6,7 +6,7 @@ const EXERCISE_TYPE = "OrderWords_L2";
 export default function OrderWordsL2({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -22,7 +22,7 @@ export default function OrderWordsL2({
     <>
       <OrderWords
         bookmarksToStudy={bookmarksToStudy}
-        correctAnswer={correctAnswer}
+        notifyCorrectAnswer={notifyCorrectAnswer}
         notifyIncorrectAnswer={notifyIncorrectAnswer}
         api={api}
         setExerciseType={setExerciseType}

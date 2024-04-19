@@ -12,7 +12,7 @@ const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
 export default function Match({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -86,7 +86,7 @@ export default function Match({
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
-          correctAnswer(currentBookmarkLog.bookmark);
+          notifyCorrectAnswer(currentBookmarkLog.bookmark);
           handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
         } else {
           setIncorrectAnswer(secondChoice);
