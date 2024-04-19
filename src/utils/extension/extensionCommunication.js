@@ -2,29 +2,12 @@ const TIMEOUT_UNTIL_MESSAGE_RESPONSE = 1000;
 const INTERVAL_UNTIL_SENDING_MESSAGE = 100;
 
 function checkExtensionInstalled(setHasExtension) {
-  /*
-    The Injection will inject a listener that send a message that responds
-    to the postMessage in this method. To allow the extension to also be set
-    to false, a timeOut is given that will just set the extension to false if
-    it's not cleared before the timeout set.
-
-    The code injection from the extension has a small delay. To ensure the 
-    message is only sent once the code is injected, use the constant
-    INTERVAL_UNTIL_SENDING_MESSAGE. 100ms has seem to been enough.
-   */
-  const timeOutRequestId = setTimeout(() => {
-    setHasExtension(false);
-  }, TIMEOUT_UNTIL_MESSAGE_RESPONSE);
-  window.addEventListener("message", function (event) {
-    if (
-      event.source == window &&
-      event.data.message === "EXTENSION_CONFIRMATION_RESPONSE" &&
-      event.data.source === "EXTENSION_INJECTED_CODE"
-    ) {
-      setHasExtension(true);
-      clearTimeout(timeOutRequestId);
-    }
-  });
+  // The extension will inject a listener that responds to the postMessage
+  // in this method.
+  //
+  // The code injected from the extension is sometimes injected after a small delay.
+  // To ensure the test message is not sent before the probe is injected,
+  // we ask for confirmation only after a short timeout
   setTimeout(() => {
     window.postMessage(
       {
@@ -34,5 +17,26 @@ function checkExtensionInstalled(setHasExtension) {
       "*",
     );
   }, INTERVAL_UNTIL_SENDING_MESSAGE);
+
+  // To give time to the extension to inject the code, this code waits for
+  // TIMEOUT_UNTIL_MESSAGE_RESPONSE (1s). If the response does
+  // not come in the interval we assume there is no extension installed
+
+  const extensionResponseTimeout = setTimeout(() => {
+    setHasExtension(false);
+  }, TIMEOUT_UNTIL_MESSAGE_RESPONSE);
+
+  window.addEventListener("message", function (event) {
+    if (
+      event.source == window &&
+      event.data.message === "EXTENSION_CONFIRMATION_RESPONSE" &&
+      event.data.source === "EXTENSION_INJECTED_CODE"
+    ) {
+      // Here we know that the extension is installed
+      setHasExtension(true);
+      clearTimeout(extensionResponseTimeout);
+    }
+  });
 }
+
 export { checkExtensionInstalled };
