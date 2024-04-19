@@ -18,7 +18,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 export default function OrderWords({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
