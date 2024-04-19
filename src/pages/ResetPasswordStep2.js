@@ -1,7 +1,11 @@
-import * as s from "../components/FormPage.sc";
 import { useState } from "react";
 import validator from "../assorted/validator";
-import strings from "../i18n/definitions"
+import strings from "../i18n/definitions";
+
+import Form from "./info_page_shared/Form";
+import InputField from "./info_page_shared/InputField";
+import ButtonContainer from "./info_page_shared/ButtonContainer";
+import Button from "./info_page_shared/Button";
 
 export default function ResetPasswordStep2({ api, email }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,7 +36,7 @@ export default function ResetPasswordStep2({ api, email }) {
       (e) => {
         console.log(e);
         setFailure(true);
-      }
+      },
     );
   }
 
@@ -41,7 +45,8 @@ export default function ResetPasswordStep2({ api, email }) {
       <>
         <h1>{strings.somethingWentWrong}</h1>
         <p>
-          {strings.youCanTryTo}<a href="/reset_pass">{strings.resetYourPassword}</a> {strings.again}
+          {strings.youCanTryTo}
+          <a href="/reset_pass">{strings.resetYourPassword}</a> {strings.again}
         </p>
 
         <p>
@@ -57,45 +62,42 @@ export default function ResetPasswordStep2({ api, email }) {
         <p>{strings.passwordChangedSuccessfullyMsg}</p>
         <br />
         <p>
-          {strings.youCanGoTo}<a href="signin">{strings.login}</a> {strings.now}
+          {strings.youCanGoTo}
+          <a href="signin">{strings.login}</a> {strings.now}
         </p>
       </>
     );
   }
 
   return (
-    <form action="" method="post">
-      <s.FormTitle>{strings.resetPassword}</s.FormTitle>
-
+    <Form action={""} method={"post"}>
       <p>
         {strings.plsCheck} <b>{email}</b> {strings.forCode}
       </p>
 
       {errorMessage && <div className="error">{errorMessage}</div>}
 
-      <div className="inputField">
-        <label>{strings.code}</label>
-        <input
-          placeholder={strings.codeReceived}
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        />
-      </div>
+      <InputField
+        id={"received-code"}
+        label={"Received code"}
+        name={"received-code"}
+        placeholder={"Enter the code"}
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
+      />
 
-      <div className="inputField">
-        <label>{strings.newPassword}</label>
-        <input
-          placeholder={strings.newPassword}
-          value={newPass}
-          onChange={(e) => setNewPass(e.target.value)}
-        />
-      </div>
+      <InputField
+        id={"new-password"}
+        label={"New password"}
+        name={"new-password"}
+        placeholder={"Must be at least 4 characters long"}
+        value={newPass}
+        onChange={(e) => setNewPass(e.target.value)}
+      />
 
-      <div className="inputField">
-        <s.FormButton onClick={handleResetPassword} className="loginButton">
-          {strings.setNewPassword}
-        </s.FormButton>
-      </div>
-    </form>
+      <ButtonContainer>
+        <Button onClick={handleResetPassword}>Set New Password</Button>
+      </ButtonContainer>
+    </Form>
   );
 }
