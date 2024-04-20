@@ -30,9 +30,7 @@ export default function Exercises({
   keepExercisingAction,
   source,
 }) {
-  const [exerciseSequenceType, setExerciseSequenceType] = useState(
-    getExerciseSequenceType(),
-  );
+  const exerciseSequenceType = getExerciseSequenceType();
   const [numberOfBookmarksToPractice, setNumberOfBookmarksToPractice] =
     useState(getNumberOfBookmarksToPractice(exerciseSequenceType));
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
@@ -55,18 +53,11 @@ export default function Exercises({
   const [activeSessionDuration, clockActive, setActivityOver] =
     useActivityTimer();
 
-  useEffect(() => {
-    setNumberOfBookmarksToPractice(
-      getNumberOfBookmarksToPractice(exerciseSequenceType),
-    );
-  }, [exerciseSequenceType]);
-
   function getExerciseSequenceType() {
     let exerciseTypesList;
     if (Feature.merle_exercises()) exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
-      
       if (Feature.merle_exercises())
         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
       else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
@@ -79,7 +70,7 @@ export default function Exercises({
 
     if (bookmarks.length > 0) {
       // This can only be initialized here after we can get at least one bookmark
-      // and thus, know the language to pronounce in 
+      // and thus, know the language to pronounce in
       console.log(bookmarks);
       let exerciseSequenceType = getExerciseSequenceType();
 
