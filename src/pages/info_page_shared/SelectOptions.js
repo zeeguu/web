@@ -16,20 +16,24 @@ export default function SelectOptions({
       <s.Label htmlFor={id} name={name}>
         {selectLabel}
       </s.Label>
-      <s.Select id={id} onChange={(e) => onChange(e.target.value)}>
-        <option style={{ display: "none" }} />
-        <option value="" disabled selected>{placeholder}</option>
-
-        {options?.map((option) => (
-          <option
-            key={val(option)}
-            value={val(option)}
-            selected={current === val(option)}
-          >
-            {label(option)}
+      <s.SelectStyling>
+        <s.Select id={id} onChange={(e) => onChange(e.target.value)}>
+          <option style={{ display: "none" }} />
+          <option value="" disabled selected>
+            {placeholder}
           </option>
-        ))}
-      </s.Select>
+
+          {options?.map((option) => (
+            <option
+              key={val(option)}
+              value={val(option)}
+              selected={current === val(option)}
+            >
+              {label(option)}
+            </option>
+          ))}
+        </s.Select>
+      </s.SelectStyling>
     </s.SelectOptionsdWrapper>
   );
 }

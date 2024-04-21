@@ -7,6 +7,7 @@ import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
+import FormSection from "./info_page_shared/FormSection";
 import SelectOptions from "./info_page_shared/SelectOptions";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
@@ -47,36 +48,38 @@ export default function LanguagePreferences({ api, setUser }) {
       </Header>
       <Main>
         <Form action={""}>
-          <SelectOptions
-            placeholder={"Select language"}
-            label={(e) => e.name}
-            val={(e) => e.code}
-            id={"practiced-languages"}
-            selectLabel={"I want to learn"}
-            options={systemLanguages.learnable_languages}
-            onChange={setLearned_language}
-          />
+          <FormSection>
+            <SelectOptions
+              placeholder={"Select language"}
+              label={(e) => e.name}
+              val={(e) => e.code}
+              id={"practiced-languages"}
+              selectLabel={"I want to learn"}
+              options={systemLanguages.learnable_languages}
+              onChange={setLearned_language}
+            />
 
-          <SelectOptions
-            placeholder={"Select level"}
-            label={(e) => e.label}
-            val={(e) => e.value}
-            id={"level-of-practiced-languages"}
-            selectLabel={"My current level"}
-            options={CEFR_LEVELS}
-            onChange={setLearned_cefr_level}
-          />
+            <SelectOptions
+              placeholder={"Select level"}
+              label={(e) => e.label}
+              val={(e) => e.value}
+              id={"level-of-practiced-languages"}
+              selectLabel={"My current level"}
+              options={CEFR_LEVELS}
+              onChange={setLearned_cefr_level}
+            />
 
-          <SelectOptions
-            placeholder={"Select language"}
-            label={(e) => e.name}
-            val={(e) => e.code}
-            id={"translation-languages"}
-            selectLabel={"I want translations in"}
-            options={systemLanguages.native_languages}
-            onChange={setNative_language}
-            // current={"en"}
-          />
+            <SelectOptions
+              placeholder={"Select language"}
+              label={(e) => e.name}
+              val={(e) => e.code}
+              id={"translation-languages"}
+              selectLabel={"I want translations in"}
+              options={systemLanguages.native_languages}
+              onChange={setNative_language}
+              // current={"en"}
+            />
+          </FormSection>
 
           {errorMessage && <div className="error">{errorMessage}</div>}
           <p>You can always change it later</p>
