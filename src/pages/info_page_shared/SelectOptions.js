@@ -12,11 +12,11 @@ export default function SelectOptions({
   selectLabel,
 }) {
   return (
-    <s.SelectOptionsdWrapper>
+    <s.SelectWrapper>
       <s.Label htmlFor={id} name={name}>
         {selectLabel}
       </s.Label>
-      <s.SelectStyling>
+      <s.SelectStyledContainer>
         <s.Select id={id} onChange={(e) => onChange(e.target.value)}>
           <option style={{ display: "none" }} />
           <option value="" disabled selected>
@@ -33,7 +33,7 @@ export default function SelectOptions({
             </option>
           ))}
         </s.Select>
-      </s.SelectStyling>
-    </s.SelectOptionsdWrapper>
+      </s.SelectStyledContainer>
+    </s.SelectWrapper>
   );
 }
