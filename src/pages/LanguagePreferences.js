@@ -1,4 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+
+import { UserContext } from "../contexts/UserContext";
+import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 
 import redirect from "../utils/routing/routing";
 
@@ -19,7 +22,9 @@ import strings from "../i18n/definitions";
 
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
-export default function LanguagePreferences({ api, setUser }) {
+export default function LanguagePreferences({ api }) {
+  const user = useContext(UserContext);
+
   const [learned_language, setLearned_language] = useState("");
   const [native_language, setNative_language] = useState("en");
   const [learned_cefr_level, setLearned_cefr_level] = useState("");
@@ -41,6 +46,38 @@ export default function LanguagePreferences({ api, setUser }) {
   if (!systemLanguages) {
     return <LoadingAnimation />;
   }
+
+  let userInfo = {
+    ...user,
+    learned_language: learned_language,
+    learned_cefr_level: learned_cefr_level,
+    native_language: native_language,
+  };
+
+  const modifyCEFRlevel = (languageID, cefrLevel) => {
+    api.modifyCEFRlevel(
+      languageID,
+      cefrLevel,
+      (res) => {
+        console.log("Update '" + languageID + "' CEFR level to: " + cefrLevel);
+        console.log("API returns update status: " + res);
+      },
+      () => {
+        console.log("Connection to server failed...");
+      },
+    );
+  };
+
+  function updateUser() {
+    modifyCEFRlevel(learned_language, learned_cefr_level);
+    api.saveUserDetails(userInfo, setErrorMessage);
+    saveUserInfoIntoCookies(userInfo);
+
+
+    console.log(`user: ${Object.entries(user)}`);
+    redirect("/select_interests");
+  }
+
   return (
     <InfoPage type={"narrow"}>
       <Header>
@@ -77,14 +114,14 @@ export default function LanguagePreferences({ api, setUser }) {
               selectLabel={"I want translations in"}
               options={systemLanguages.native_languages}
               onChange={setNative_language}
-              // current={"en"}
+              current={"en"}
             />
           </FormSection>
 
           {errorMessage && <div className="error">{errorMessage}</div>}
           <p>You can always change it later</p>
           <ButtonContainer>
-            <Button>
+            <Button onClick={updateUser}>
               Next <ArrowForwardRoundedIcon />
             </Button>
           </ButtonContainer>

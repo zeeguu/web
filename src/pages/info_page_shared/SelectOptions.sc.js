@@ -37,7 +37,7 @@ const Select = styled.select`
   height: 2.69rem;
   appearance: none;
   border: 1.5px solid ${lightGrey};
-  border-radius: 0.25em;
+  border-radius: 0.3rem;
   background-color: transparent;
   padding: 0 2.25rem 0 1rem;
   margin: 0;

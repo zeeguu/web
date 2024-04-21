@@ -30,9 +30,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [learned_language, setLearned_language] = useState("");
-  const [native_language, setNative_language] = useState("en");
-  const [learned_cefr_level, setLearned_cefr_level] = useState("");
 
   const [systemLanguages, setSystemLanguages] = useState();
 
@@ -73,9 +70,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
     let userInfo = {
       name: name,
       email: email,
-      // learned_language: "",
-      // native_language: "",
-      // learned_cefr_level: "",
     };
 
     api.addBasicUser(
@@ -85,7 +79,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       (session) => {
         api.getUserDetails((user) => {
           handleSuccessfulSignIn(user);
-          redirect("/select_interests");
+          redirect("/language_preferences");
         });
       },
       (error) => {
@@ -153,38 +147,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               onChange={(e) => setPassword(e.target.value)}
             />
           </FormSection>
-          {/* <FormSection>
-            <SelectOptions
-              placeholder={"Select language"}
-              label={(e) => e.name}
-              val={(e) => e.code}
-              id={"practiced-languages"}
-              selectLabel={"I want to learn"}
-              options={systemLanguages.learnable_languages}
-              onChange={setLearned_language}
-            />
-
-            <SelectOptions
-              placeholder={"Select level"}
-              label={(e) => e.label}
-              val={(e) => e.value}
-              id={"level-of-practiced-languages"}
-              selectLabel={"My current level"}
-              options={CEFR_LEVELS}
-              onChange={setLearned_cefr_level}
-            />
-
-            <SelectOptions
-              placeholder={"Select language"}
-              label={(e) => e.name}
-              val={(e) => e.code}
-              id={"translation-languages"}
-              selectLabel={"I want translations in"}
-              options={systemLanguages.native_languages}
-              onChange={setNative_language}
-              current={"en"}
-            />
-          </FormSection> */}
 
           {/* <div className="inputField">
             <label>{strings.learnedLanguage}</label>
