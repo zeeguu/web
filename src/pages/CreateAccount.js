@@ -8,6 +8,7 @@ import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
+import FormSection from "./info_page_shared/FormSection";
 import InputField from "./info_page_shared/InputField";
 import SelectOptions from "./info_page_shared/SelectOptions";
 import Footer from "./info_page_shared/Footer";
@@ -56,9 +57,9 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   let validatorRules = [
     [name === "", strings.nameIsRequired],
     [!EmailValidator.validate(email), strings.plsProvideValidEmail],
-    [learned_language === "", strings.learnedLanguageIsRequired],
-    [learned_cefr_level === "", strings.languagelevelIsRequired],
-    [native_language === "", strings.plsSelectBaseLanguage],
+    // [learned_language === "", strings.learnedLanguageIsRequired],
+    // [learned_cefr_level === "", strings.languagelevelIsRequired],
+    // [native_language === "", strings.plsSelectBaseLanguage],
     [password.length < 4, strings.passwordMustBeMsg],
   ];
 
@@ -72,18 +73,18 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
     let userInfo = {
       name: name,
       email: email,
-      learned_language: learned_language,
-      native_language: native_language,
-      learned_cefr_level: learned_cefr_level,
+      // learned_language: "",
+      // native_language: "",
+      // learned_cefr_level: "",
     };
 
-    api.addUser(
+    api.addBasicUser(
       inviteCode,
       password,
       userInfo,
       (session) => {
-        api.getUserDetails((userInfo) => {
-          handleSuccessfulSignIn(userInfo);
+        api.getUserDetails((user) => {
+          handleSuccessfulSignIn(user);
           redirect("/select_interests");
         });
       },
@@ -110,77 +111,80 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
           {strings.thankYouMsgSuffix}
         </p>
 
-        <Form action={""}>
-          <InputField
-            type={"text"}
-            label={"Invite code"}
-            id={"invite-code"}
-            name={"invite-code"}
-            placeholder={strings.code}
-            value={inviteCode}
-            onChange={(e) => setInviteCode(e.target.value)}
-          />
+        <Form action={""} method={"POST"}>
+          <FormSection>
+            <InputField
+              type={"text"}
+              label={"Invite code"}
+              id={"invite-code"}
+              name={"invite-code"}
+              placeholder={strings.code}
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value)}
+            />
 
-          <InputField
-            type={"text"}
-            label={"Full name"}
-            id={"name"}
-            name={"name"}
-            placeholder={"First and last name"}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+            <InputField
+              type={"text"}
+              label={"Full name"}
+              id={"name"}
+              name={"name"}
+              placeholder={"First and last name"}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
 
-          <InputField
-            type={"email"}
-            label={"Email"}
-            id={"email"}
-            name={"email"}
-            placeholder={"example@email.com"}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+            <InputField
+              type={"email"}
+              label={"Email"}
+              id={"email"}
+              name={"email"}
+              placeholder={"example@email.com"}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-          <InputField
-            type={"password"}
-            label={"Password"}
-            id={"password"}
-            name={"password"}
-            placeholder={"At least 4 characters"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+            <InputField
+              type={"password"}
+              label={"Password"}
+              id={"password"}
+              name={"password"}
+              placeholder={"At least 4 characters"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </FormSection>
+          {/* <FormSection>
+            <SelectOptions
+              placeholder={"Select language"}
+              label={(e) => e.name}
+              val={(e) => e.code}
+              id={"practiced-languages"}
+              selectLabel={"I want to learn"}
+              options={systemLanguages.learnable_languages}
+              onChange={setLearned_language}
+            />
 
-          <SelectOptions
-            placeholder={"Select language"}
-            label={(e) => e.name}
-            val={(e) => e.code}
-            id={"practiced-languages"}
-            selectLabel={"I want to learn"}
-            options={systemLanguages.learnable_languages}
-            onChange={setLearned_language}
-          />
+            <SelectOptions
+              placeholder={"Select level"}
+              label={(e) => e.label}
+              val={(e) => e.value}
+              id={"level-of-practiced-languages"}
+              selectLabel={"My current level"}
+              options={CEFR_LEVELS}
+              onChange={setLearned_cefr_level}
+            />
 
-          <SelectOptions
-            placeholder={"Select level"}
-            label={(e) => e.label}
-            val={(e) => e.value}
-            id={"level-of-practiced-languages"}
-            selectLabel={"My current level"}
-            options={CEFR_LEVELS}
-            onChange={setLearned_cefr_level}
-          />
-
-          <SelectOptions
-            placeholder={"Select language"}
-            label={(e) => e.name}
-            val={(e) => e.code}
-            id={"translation-languages"}
-            selectLabel={"I want translations in"}
-            options={systemLanguages.native_languages}
-            onChange={setNative_language}
-            // current={"en"}
-          />
+            <SelectOptions
+              placeholder={"Select language"}
+              label={(e) => e.name}
+              val={(e) => e.code}
+              id={"translation-languages"}
+              selectLabel={"I want translations in"}
+              options={systemLanguages.native_languages}
+              onChange={setNative_language}
+              current={"en"}
+            />
+          </FormSection> */}
 
           {/* <div className="inputField">
             <label>{strings.learnedLanguage}</label>

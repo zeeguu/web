@@ -6,6 +6,7 @@ import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
+import FormSection from "./info_page_shared/FormSection";
 import InputField from "./info_page_shared/InputField";
 import Footer from "./info_page_shared/Footer";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
@@ -52,32 +53,33 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
       <Main>
         <Form action={""} method={"post"}>
           {errorMessage && <div className="error">{errorMessage}</div>}
+          <FormSection>
+            <InputField
+              type={"email"}
+              label={"Email"}
+              id={"email"}
+              name={"email"}
+              placeholder={"example@email.com"}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-          <InputField
-            type={"email"}
-            label={"Email"}
-            id={"email"}
-            name={"email"}
-            placeholder={"example@email.com"}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+            <p>
+              <a className="links" href="/reset_pass">
+                {strings.resetYourPassword}
+              </a>
+            </p>
 
-          <p>
-            <a className="links" href="/reset_pass">
-              {strings.resetYourPassword}
-            </a>
-          </p>
-
-          <InputField
-            type={"Password"}
-            label={strings.password}
-            id={"password"}
-            name={"password"}
-            placeholder={"Password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+            <InputField
+              type={"Password"}
+              label={strings.password}
+              id={"password"}
+              name={"password"}
+              placeholder={"Password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </FormSection>
           <ButtonContainer>
             <Button onClick={handleSignIn}>Log in</Button>
           </ButtonContainer>
