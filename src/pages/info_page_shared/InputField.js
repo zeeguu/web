@@ -9,6 +9,9 @@ export default function InputField({
   placeholder,
   onChange,
   value,
+  helperText,
+  helperLink,
+  helperLinkHref,
 }) {
   return (
     <s.InputFieldWrapper>
@@ -22,6 +25,10 @@ export default function InputField({
         placeholder={placeholder}
         onChange={onChange}
       />
+      {helperText && <s.HelperText>{helperText}</s.HelperText>}
+      {helperLink && (
+        <s.HelperLink href={helperLinkHref}>{helperLink}</s.HelperLink>
+      )}
     </s.InputFieldWrapper>
   );
 }

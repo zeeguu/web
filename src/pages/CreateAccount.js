@@ -21,7 +21,6 @@ import strings from "../i18n/definitions";
 
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
-import * as s from "../components/FormPage.sc";
 import PrivacyNotice from "./PrivacyNotice";
 import * as EmailValidator from "email-validator";
 
@@ -110,6 +109,9 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               placeholder={strings.code}
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
+              helperLink={"Request invite code"}
+              helperLinkHref={`mailto:zeeguu.team@gmail.com?subject=Invitation Code Request&body=Dear Zeeguu Team,
+              %0D%0A%0D%0AI would like to request the Invitation Code to register for Zeeguu.%0D%0A%0D%0AThank you!`}
             />
 
             <InputField
@@ -137,9 +139,10 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               label={"Password"}
               id={"password"}
               name={"password"}
-              placeholder={"At least 4 characters"}
+              placeholder={"Insert your password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              helperText={"Must contain at least 4 characters"}
             />
           </FormSection>
 

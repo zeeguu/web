@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import { lightGrey, zeeguuOrange } from "../../components/colors";
+import {
+  lightGrey,
+  veryDarkGrey,
+  darkGrey,
+  zeeguuOrange,
+} from "../../components/colors";
 
 const InputFieldWrapper = styled.div`
   width: 100%;
@@ -27,4 +32,15 @@ const Label = styled.label`
   font-weight: 600;
 `;
 
-export { Input, Label, InputFieldWrapper };
+const HelperText = styled.div`
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: ${veryDarkGrey};
+`;
+
+const HelperLink = styled.a`
+  font-size: 0.8rem;
+  font-weight: 600;
+`;
+
+export { Input, Label, HelperText, HelperLink, InputFieldWrapper };

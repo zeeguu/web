@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import useRedirectLink from "../hooks/useRedirectLink";
 
 import InfoPage from "./info_page_shared/InfoPage";
@@ -13,8 +13,6 @@ import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
 
 import strings from "../i18n/definitions";
-
-import * as s from "../components/FormPage.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
 export default function SignIn({ api, handleSuccessfulSignIn }) {
@@ -64,12 +62,6 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <p>
-              <a className="links" href="/reset_pass">
-                {strings.resetYourPassword}
-              </a>
-            </p>
-
             <InputField
               type={"Password"}
               label={strings.password}
@@ -78,6 +70,8 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
               placeholder={"Password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              helperLink={"Forgot password?"}
+              helperLinkHref={"/reset_pass"}
             />
           </FormSection>
           <ButtonContainer>
