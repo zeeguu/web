@@ -16,7 +16,6 @@ const Exercise = styled.div`
   padding-bottom: 1em;
 
   .next-nav-feedback {
-    
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -331,7 +330,7 @@ let Input = styled.input`
     border-style: solid;
     border-color: ${zeeguuOrange} !important;
   }
-  
+
   &:focus {
     outline: none !important;
     height: 1.7em;

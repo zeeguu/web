@@ -5,6 +5,7 @@ import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
+import { APP_DOMAIN } from "../i18n/appConstants";
 
 export default function Word({
   bookmark,
@@ -15,7 +16,7 @@ export default function Word({
   children,
   api,
   hideStar,
-  source
+  source,
 }) {
   const [starred, setStarred] = useState(bookmark.starred);
   const [deleted, setDeleted] = useState(false);
@@ -29,7 +30,12 @@ export default function Word({
       if (notifyUnstar) {
         notifyUnstar(bookmark);
       }
-      api.logReaderActivity(api.UNSTAR_WORD, bookmark.article_id, bookmark.from, source);
+      api.logReaderActivity(
+        api.UNSTAR_WORD,
+        bookmark.article_id,
+        bookmark.from,
+        source,
+      );
     } else {
       api.starBookmark(bookmark.id);
       setStarred(true);
@@ -37,7 +43,12 @@ export default function Word({
       if (notifyStar) {
         notifyStar(bookmark);
       }
-      api.logReaderActivity(api.STAR_WORD, bookmark.article_id, bookmark.from, source);
+      api.logReaderActivity(
+        api.STAR_WORD,
+        bookmark.article_id,
+        bookmark.from,
+        source,
+      );
     }
   }
 
@@ -47,7 +58,12 @@ export default function Word({
     if (notifyDelete) {
       notifyDelete(bookmark);
     }
-    api.logReaderActivity(api.DELETE_WORD, bookmark.article_id, bookmark.from, source);
+    api.logReaderActivity(
+      api.DELETE_WORD,
+      bookmark.article_id,
+      bookmark.from,
+      source,
+    );
   }
 
   if (deleted) {
@@ -63,40 +79,40 @@ export default function Word({
 
   return (
     <>
-    
       <s.Word key={bookmark.id}>
-        <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
-          <img src="https://zeeguu.org/static/images/trash.svg" alt="trash" />
-        </s.TrashIcon>
-        <EditButton
-          bookmark={bookmark}
-          api={api}
-          reload={reload}
-          setReload={setReload}
-        />
-
-        {!hideStar && (
-          <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
-            <img
-              src={
-                "https://zeeguu.org/static/images/yellow_star" +
-                (bookmark.starred ? ".svg" : "_empty.svg")
-              }
-              alt="star"
-            />
-          </s.StarIcon>
-        )}
         <CenteredRow>
-        <s.WordPair>
-          <div className="from" style={grayed_out_if_not_scheduled_for_study}>
-            {bookmark.from}
-          </div>
-          <div className="to" style={grayed_out_if_not_scheduled_for_study}>
-            {bookmark.to}
-          </div>
-        </s.WordPair>
-        <SpeakButton bookmarkToStudy={bookmark} api={api} styling={square} />
-      </CenteredRow>
+          <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
+            <img src={APP_DOMAIN + "/static/images/trash.svg"} alt="trash" />
+          </s.TrashIcon>
+          <EditButton
+            bookmark={bookmark}
+            api={api}
+            reload={reload}
+            setReload={setReload}
+          />
+
+          {!hideStar && (
+            <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
+              <img
+                src={
+                  APP_DOMAIN +
+                  "/static/images/yellow_star" +
+                  (bookmark.starred ? ".svg" : "_empty.svg")
+                }
+                alt="star"
+              />
+            </s.StarIcon>
+          )}
+          <SpeakButton bookmarkToStudy={bookmark} api={api} styling={square} />
+          <s.WordPair>
+            <div className="from" style={grayed_out_if_not_scheduled_for_study}>
+              {bookmark.from}
+            </div>
+            <div className="to" style={grayed_out_if_not_scheduled_for_study}>
+              {bookmark.to}
+            </div>
+          </s.WordPair>
+        </CenteredRow>
       </s.Word>
       {children}
 

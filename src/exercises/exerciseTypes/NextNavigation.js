@@ -7,6 +7,7 @@ import { random } from "../../utils/basic/arrays";
 import { useEffect, useState } from "react";
 import ProgressionModal from "../ProgressionModal";
 import CelebrationModal from "../CelebrationModal";
+import { APP_DOMAIN } from "../../i18n/appConstants.js";
 
 export default function NextNavigation({
   message,
@@ -38,17 +39,26 @@ export default function NextNavigation({
   const [showProgressionModal, setShowProgressionModal] = useState(false);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const isUserAndAnswerCorrect = isCorrect && userIsCorrect;
-  const productiveExercisesDisabled = localStorage.getItem("productiveExercisesEnabled") === "false";
+  const productiveExercisesDisabled =
+    localStorage.getItem("productiveExercisesEnabled") === "false";
   const isLastInCycle = bookmarkToStudy.is_last_in_cycle;
   const isLearningCycleOne = learningCycle === 1;
   const isLearningCycleTwo = learningCycle === 2;
   const shouldShowModal = !localStorage.getItem("hideProgressionModal");
 
-  const shouldShowProgressionModal = isUserAndAnswerCorrect && isLearningCycleOne && isLastInCycle && shouldShowModal && !productiveExercisesDisabled;
-  const shouldShowCelebrationModal = isUserAndAnswerCorrect && isLastInCycle && (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
-  
+  const shouldShowProgressionModal =
+    isUserAndAnswerCorrect &&
+    isLearningCycleOne &&
+    isLastInCycle &&
+    shouldShowModal &&
+    !productiveExercisesDisabled;
+  const shouldShowCelebrationModal =
+    isUserAndAnswerCorrect &&
+    isLastInCycle &&
+    (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
+
   useEffect(() => {
-    if (bookmarkToStudy && 'learning_cycle' in bookmarkToStudy) {
+    if (bookmarkToStudy && "learning_cycle" in bookmarkToStudy) {
       setLearningCycle(bookmarkToStudy.learning_cycle);
     }
   }, [bookmarkToStudy]);
@@ -58,7 +68,7 @@ export default function NextNavigation({
   }, [bookmarkToStudy.learning_cycle]);
 
   useEffect(() => {
-    const userIsCorrect = (message.includes("C"));
+    const userIsCorrect = message.includes("C");
     setUserIsCorrect(userIsCorrect);
   }, [message]);
 
@@ -80,38 +90,39 @@ export default function NextNavigation({
 
   return (
     <>
-      <ProgressionModal 
-        open={showProgressionModal} 
-        onClose={() => setShowProgressionModal(false)} 
+      <ProgressionModal
+        open={showProgressionModal}
+        onClose={() => setShowProgressionModal(false)}
         api={api}
       />
       <CelebrationModal
         open={showCelebrationModal}
         onClose={() => setShowCelebrationModal(false)}
       />
-      {isUserAndAnswerCorrect && (
-        (isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled) ? (
+      {isUserAndAnswerCorrect &&
+        (isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled ? (
           <div className="next-nav-learning-cycle">
             <img
-              src={"/static/icons/zeeguu-icon-correct.png"}
+              src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
               alt="Correct Icon"
             />
             <p>
-              <b>{correctMessage}&nbsp;{strings.nextLearningCycle}</b>
+              <b>
+                {correctMessage}&nbsp;{strings.nextLearningCycle}
+              </b>
             </p>
           </div>
         ) : (
           <div className="next-nav-feedback">
             <img
-              src={"/static/icons/zeeguu-icon-correct.png"}
+              src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
               alt="Correct Icon"
             />
             <p>
               <b>{correctMessage}</b>
             </p>
           </div>
-        ))
-      }
+        ))}
       {isCorrect && bookmarksToStudy.length === 1 && (
         <s.BottomRowSmallTopMargin className="bottomRow">
           <s.EditSpeakButtonHolder>

@@ -1,13 +1,16 @@
-import * as s from "./RedirectionNotificationModal.sc";
+import * as s from "../modal_shared/Modal.sc";
 import { useState } from "react";
-import Modal from "./modal_shared/Modal";
-import Header from "./modal_shared/Header";
-import Body from "./modal_shared/Body";
-import Footer from "./modal_shared/Footer";
+import Modal from "../modal_shared/Modal";
+import Header from "../modal_shared/Header";
+import Heading from "../modal_shared/Heading";
+import Main from "../modal_shared/Main";
+import Footer from "../modal_shared/Footer";
+import ButtonContainer from "../modal_shared/ButtonContainer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import GoToButton from "./modal_shared/GoToButton";
-import Icon from "./modal_shared/Icon";
-import Checkbox from "./modal_shared/Checkbox";
+import GoToButton from "../modal_shared/GoToButton";
+import AddToSavesButton from "../modal_shared/AddToSavesButton";
+import Icon from "../modal_shared/Icon";
+import Checkbox from "../modal_shared/Checkbox";
 
 export default function UnsupportedNotification({
   article,
@@ -81,11 +84,13 @@ export default function UnsupportedNotification({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        Your browser doesn't support <br></br>
-        <Icon src={"../static/images/zeeguuLogo.svg"} />
-        The Zeeguu Reader extension
+        <Heading>
+          Your browser doesn't support <br></br>
+          <Icon src={"../static/images/zeeguuLogo.svg"} />
+          The Zeeguu Reader extension
+        </Heading>
       </Header>
-      <Body>
+      <Main>
         <p>
           To read articles with our extension, we recommend installing{" "}
           {renderExternalLink(
@@ -105,14 +110,14 @@ export default function UnsupportedNotification({
           your current browser, click
           <s.Strong> Add&nbsp;to&nbsp;Saves</s.Strong> to save it first.
         </p>
-      </Body>
+      </Main>
       <Footer>
         <Checkbox
           label={"Don't show this message again"}
           checked={redirectCheckbox}
           onChange={toggleRedirectCheckbox}
         />
-        <s.ButtonsContainer moreButtons>
+        <ButtonContainer buttonCountNum={2}>
           <GoToButton
             target={"_blank"}
             href={article.url}
@@ -120,14 +125,11 @@ export default function UnsupportedNotification({
           >
             Enter the article's website
           </GoToButton>
-          <s.SaveArticleButton
-            role="button"
-            onClick={handleSaveArticleFromTheModal}
-          >
+          <AddToSavesButton onClick={handleSaveArticleFromTheModal}>
             <BookmarkBorderIcon fontSize="small" />
             Add to Saves
-          </s.SaveArticleButton>
-        </s.ButtonsContainer>
+          </AddToSavesButton>
+        </ButtonContainer>
       </Footer>
     </Modal>
   );

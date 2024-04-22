@@ -4,6 +4,7 @@ import strings from "../../i18n/definitions";
 import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
 import SessionStorage from "../../assorted/SessionStorage";
+import { APP_DOMAIN } from "../../i18n/appConstants.js";
 
 import { SpeechContext } from "../../contexts/SpeechContext";
 
@@ -122,7 +123,7 @@ export default function SpeakButton({
 
           {!isSpeaking && (
             <img
-              src="https://zeeguu.org/static/images/volume_up.svg"
+              src={APP_DOMAIN + "/static/images/volume_up.svg"}
               alt={strings.speak}
               width={style.img_width}
               height={style.img_height}
@@ -161,7 +162,7 @@ export default function SpeakButton({
 
           {!isSpeaking && (
             <img
-              src="https://zeeguu.org/static/images/volume_up.svg"
+              src={APP_DOMAIN + "/static/images/volume_up.svg"}
               alt={strings.speak}
               width={style.img_width}
               height={style.img_height}
