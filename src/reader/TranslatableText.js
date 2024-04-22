@@ -13,7 +13,7 @@ export function TranslatableText({
   setTranslatedWords,
   bookmarkToStudy,
   overrideBookmarkHighlightText,
-  boldWord,
+  boldExpression,
   exerciseType,
   wordOptions,
 }) {
@@ -64,10 +64,12 @@ export function TranslatableText({
   function renderWordJSX(word) {
     // If the word is a bookmarked word, it won't be translated when clicked
     const isBookmarkWord = foundInstances.includes(word.id);
-    const boldWords = boldWord ? boldWord.split(" ") : [];
-    const isBoldWord = boldWords.includes(removePunctuation(word.word));
     
-    if (isBoldWord) {
+    // If boldExpression is defined, the bookmark is written in bold, otherwise boldWords will be set to an empty array to avoid runtime error
+    const boldWords = boldExpression ? boldExpression.split(" ").map((word) => removePunctuation(word)) : [];
+    const isWordBold = boldWords.includes(removePunctuation(word.word));
+    
+    if (isWordBold) {
       return <span style={{fontWeight: "bold"}}>{word.word}&nbsp;</span>
     }
 

@@ -13,6 +13,7 @@ import Select from "../components/Select";
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 import { PageTitle } from "../components/PageTitle";
+import Feature from "../features/Feature";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -265,7 +266,7 @@ export default function Settings({ api, setUser }) {
               />
               <label>Include Audio Exercises</label>
             </div>
-            {JSON.parse(localStorage.getItem('features')).includes('merle_exercises') &&
+            {Feature.merle_exercises() &&
               <div style={{ display: "flex" }} className="form-group">
                 <input
                   style={{ width: "1.5em" }}

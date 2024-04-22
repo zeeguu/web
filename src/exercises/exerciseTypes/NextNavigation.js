@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import ProgressionModal from "../ProgressionModal";
 import CelebrationModal from "../CelebrationModal";
 import { APP_DOMAIN } from "../../i18n/appConstants.js";
+import Feature from "../../features/Feature";
 
 export default function NextNavigation({
   message,
@@ -45,6 +46,7 @@ export default function NextNavigation({
   const isLearningCycleOne = learningCycle === 1;
   const isLearningCycleTwo = learningCycle === 2;
   const shouldShowModal = !localStorage.getItem("hideProgressionModal");
+  const learningCycleFeature = Feature.merle_exercises();
 
   const shouldShowProgressionModal =
     isUserAndAnswerCorrect &&
@@ -52,6 +54,7 @@ export default function NextNavigation({
     isLastInCycle &&
     shouldShowModal &&
     !productiveExercisesDisabled;
+
   const shouldShowCelebrationModal =
     isUserAndAnswerCorrect &&
     isLastInCycle &&
@@ -90,17 +93,21 @@ export default function NextNavigation({
 
   return (
     <>
-      <ProgressionModal
-        open={showProgressionModal}
-        onClose={() => setShowProgressionModal(false)}
-        api={api}
-      />
-      <CelebrationModal
-        open={showCelebrationModal}
-        onClose={() => setShowCelebrationModal(false)}
-      />
+      {learningCycleFeature && (
+        <>
+          <ProgressionModal
+            open={showProgressionModal}
+            onClose={() => setShowProgressionModal(false)}
+            api={api}
+          />
+          <CelebrationModal
+            open={showCelebrationModal}
+            onClose={() => setShowCelebrationModal(false)}
+          />
+        </>
+      )}
       {isUserAndAnswerCorrect &&
-        (isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled ? (
+        (isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled && learningCycleFeature ? (
           <div className="next-nav-learning-cycle">
             <img
               src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}

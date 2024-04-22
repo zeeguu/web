@@ -24,7 +24,7 @@ export default function BottomInput({
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
 
-  let flag = isL1Answer ? bookmarksToStudy[0].to_lang : bookmarksToStudy[0].from_lang;
+  let countryFlag = isL1Answer ? bookmarksToStudy[0].to_lang : bookmarksToStudy[0].from_lang;
 
   function handleHint() {
     setUsedHint(true);
@@ -123,7 +123,7 @@ export default function BottomInput({
           <div className="type-feedback">
             {feedbackMessage !== "" && <p>{feedbackMessage}</p>}
           </div>
-          <CountryFlags languageCode={flag}/>
+          <CountryFlags languageCode={countryFlag}/>
           <InputField
             type="text"
             className={
