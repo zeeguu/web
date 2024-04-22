@@ -2,7 +2,6 @@ import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect, createRef } from "react";
 import strings from "../../i18n/definitions";
 import Tooltip from "@material-ui/core/Tooltip";
-import { APP_DOMAIN } from "../../i18n/appConstants.js";
 import exerciseTypes from "../ExerciseTypeConstants.js";
 
 export default function FeedbackButtons({
