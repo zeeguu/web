@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Select from "../components/Select";
 
 import redirect from "../utils/routing/routing";
@@ -35,8 +35,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  let inviteCodeInputDOM = useRef();
-
   useEffect(() => {
     api.getSystemLanguages((languages) => {
       languages.learnable_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -54,9 +52,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   let validatorRules = [
     [name === "", strings.nameIsRequired],
     [!EmailValidator.validate(email), strings.plsProvideValidEmail],
-    // [learned_language === "", strings.learnedLanguageIsRequired],
-    // [learned_cefr_level === "", strings.languagelevelIsRequired],
-    // [native_language === "", strings.plsSelectBaseLanguage],
     [password.length < 4, strings.passwordMustBeMsg],
   ];
 
@@ -186,11 +181,9 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
 
           {errorMessage && <div className="error">{errorMessage}</div>}
 
-          {/* <div className="inputField"> */}
           <ButtonContainer>
             <Button onClick={handleCreate}>{strings.createAccount}</Button>
           </ButtonContainer>
-          {/* </div> */}
         </Form>
       </Main>
       <Footer>

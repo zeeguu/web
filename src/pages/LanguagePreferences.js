@@ -22,7 +22,7 @@ import strings from "../i18n/definitions";
 
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
-export default function LanguagePreferences({ api }) {
+export default function LanguagePreferences({ api, setUser }) {
   const user = useContext(UserContext);
 
   const [learned_language, setLearned_language] = useState("");
@@ -47,6 +47,18 @@ export default function LanguagePreferences({ api }) {
     return <LoadingAnimation />;
   }
 
+  let validatorRules = [
+    [learned_language === "", "Please select language you want to practice"],
+    [
+      learned_cefr_level === "",
+      "Please select your current level in language you want to practice",
+    ],
+    [
+      native_language === "",
+      "Please select language you want to translations in",
+    ],
+  ];
+
   let userInfo = {
     ...user,
     learned_language: learned_language,
@@ -68,14 +80,19 @@ export default function LanguagePreferences({ api }) {
     );
   };
 
-  function updateUser() {
-    modifyCEFRlevel(learned_language, learned_cefr_level);
-    api.saveUserDetails(userInfo, setErrorMessage);
-    saveUserInfoIntoCookies(userInfo);
+  function updateUser(e) {
+    e.preventDefault();
 
+    if (!validator(validatorRules, setErrorMessage)) {
+      return;
+    }
 
-    console.log(`user: ${Object.entries(user)}`);
-    redirect("/select_interests");
+    api.saveUserDetails(userInfo, setErrorMessage, () => {
+      modifyCEFRlevel(learned_language, learned_cefr_level);
+      setUser(userInfo);
+      saveUserInfoIntoCookies(userInfo);
+      redirect("/select_interests");
+    });
   }
 
   return (
