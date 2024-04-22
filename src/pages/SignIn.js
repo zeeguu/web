@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import useRedirectLink from "../hooks/useRedirectLink";
 
 import InfoPage from "./info_page_shared/InfoPage";
@@ -24,12 +24,6 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
-
-  let emailInputDOM = useRef();
-
-  // useEffect(() => {
-  //   emailInputDOM.current.focus();
-  // }, []);
 
   function handleSignIn(e) {
     e.preventDefault();

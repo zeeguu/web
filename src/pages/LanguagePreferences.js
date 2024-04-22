@@ -14,7 +14,6 @@ import FormSection from "./info_page_shared/FormSection";
 import SelectOptions from "./info_page_shared/SelectOptions";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
-import Footer from "./info_page_shared/Footer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import validator from "../assorted/validator";
@@ -39,7 +38,6 @@ export default function LanguagePreferences({ api, setUser }) {
       languages.learnable_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
       languages.native_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
       setSystemLanguages(languages);
-      // inviteCodeInputDOM.current.focus();
     });
     // eslint-disable-next-line
   }, []);
