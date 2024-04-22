@@ -4,6 +4,7 @@ import {
   veryDarkGrey,
   darkGrey,
   zeeguuOrange,
+  zeeguuRed,
 } from "../../components/colors";
 
 const InputFieldWrapper = styled.div`
@@ -15,6 +16,9 @@ const InputFieldWrapper = styled.div`
   input:focus {
     outline: transparent;
     border: 1.5px solid ${zeeguuOrange};
+    &.error {
+      border: 1.5px solid ${zeeguuRed};
+    }
   }
 `;
 const Input = styled.input`
@@ -24,6 +28,9 @@ const Input = styled.input`
   margin: 0;
   border: 1.5px solid ${lightGrey};
   border-radius: 0.3rem;
+  &.error {
+    border: 1.5px solid ${zeeguuRed};
+  }
 `;
 const Label = styled.label`
   padding: 0;
@@ -33,12 +40,16 @@ const Label = styled.label`
 `;
 
 const HelperText = styled.div`
+  margin: 0.1rem 0 0 0;
+  line-height: 1.2;
+  display: flex;
+  gap: 0.2rem;
+  align-items: flex-start;
   font-size: 0.8rem;
   font-weight: 500;
   color: ${veryDarkGrey};
-
-  .has-error{
-    
+  &.error {
+    color: ${zeeguuRed};
   }
 
   a {
