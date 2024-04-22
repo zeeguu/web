@@ -64,8 +64,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
               placeholder={"Password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              helperLink={"Forgot password?"}
-              helperLinkHref={"/reset_pass"}
+              helperText={<a href="/reset_pass">Forgot password?</a>}
             />
           </FormSection>
           <ButtonContainer>

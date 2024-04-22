@@ -24,8 +24,10 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [errorMessage, setErrorMessage] = useState("");
+
+  const mailtoCodeRequest = `mailto:zeeguu.team@gmail.com?subject=Invitation Code Request&body=Dear Zeeguu Team,
+  %0D%0A%0D%0AI would like to request the Invitation Code to register for Zeeguu.%0D%0A%0D%0AThank you!`;
 
   let validatorRules = [
     [name === "", strings.nameIsRequired],
@@ -69,10 +71,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       <Main>
         <p>
           {strings.thankYouMsgPrefix}
-          <a
-            href="mailto:zeeguu.team@gmail.com?subject=Invitation Code Request&body=Dear Zeeguu Team,
-              %0D%0A%0D%0AI would like to request the Invitation Code to register for Zeeguu.%0D%0A%0D%0AThank you!"
-          >
+          <a href={mailtoCodeRequest}>
             <b> zeeguu.team@gmail.com</b>
           </a>
           {strings.thankYouMsgSuffix}
@@ -88,9 +87,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               placeholder={strings.code}
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
-              helperLink={"Request invite code"}
-              helperLinkHref={`mailto:zeeguu.team@gmail.com?subject=Invitation Code Request&body=Dear Zeeguu Team,
-              %0D%0A%0D%0AI would like to request the Invitation Code to register for Zeeguu.%0D%0A%0D%0AThank you!`}
+              helperText={<a href={mailtoCodeRequest}>Request invite code</a>}
             />
 
             <InputField

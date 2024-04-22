@@ -1,7 +1,6 @@
 import * as s from "./InputField.sc";
 
 export default function InputField({
-  ref,
   type,
   label,
   name,
@@ -10,14 +9,12 @@ export default function InputField({
   onChange,
   value,
   helperText,
-  helperLink,
-  helperLinkHref,
+  error,
 }) {
   return (
     <s.InputFieldWrapper>
       <s.Label htmlFor={id}>{label}</s.Label>
       <s.Input
-        ref={ref}
         type={type}
         value={value}
         name={name}
@@ -26,9 +23,7 @@ export default function InputField({
         onChange={onChange}
       />
       {helperText && <s.HelperText>{helperText}</s.HelperText>}
-      {helperLink && (
-        <s.HelperLink href={helperLinkHref}>{helperLink}</s.HelperLink>
-      )}
+      {error && <s.HelperText>{helperText}</s.HelperText>}
     </s.InputFieldWrapper>
   );
 }

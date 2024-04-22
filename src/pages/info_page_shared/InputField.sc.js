@@ -36,11 +36,14 @@ const HelperText = styled.div`
   font-size: 0.8rem;
   font-weight: 500;
   color: ${veryDarkGrey};
+
+  .has-error{
+    
+  }
+
+  a {
+    font-weight: 600;
+  }
 `;
 
-const HelperLink = styled.a`
-  font-size: 0.8rem;
-  font-weight: 600;
-`;
-
-export { Input, Label, HelperText, HelperLink, InputFieldWrapper };
+export { Input, Label, HelperText, InputFieldWrapper };
