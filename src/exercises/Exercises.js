@@ -66,7 +66,6 @@ export default function Exercises({
     if (Feature.merle_exercises()) exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
-      
       if (Feature.merle_exercises())
         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
       else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
@@ -90,9 +89,7 @@ export default function Exercises({
       console.log(exerciseSession);
       setFullExerciseProgression(exerciseSession);
 
-      if (currentBookmarksToStudy === null) {
-        setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
-      }
+      setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
 
       setTitle(title);
     }

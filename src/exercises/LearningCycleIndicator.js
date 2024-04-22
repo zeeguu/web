@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Tooltip from "@material-ui/core/Tooltip";
 import strings from "../i18n/definitions";
+import Feature from "../features/Feature";
 
 export default function LearningCycleIndicator({ 
   bookmark,
@@ -19,7 +20,6 @@ export default function LearningCycleIndicator({
     setUserIsCorrect(userIsCorrect);
     const userIsWrong = message.includes("W")|| message.includes("S");
     setUserIsWrong(userIsWrong);
-    console.log(message)
   }, [message]);
 
 
@@ -52,6 +52,7 @@ export default function LearningCycleIndicator({
   }
 
   const getBarProperties = (index) => {
+    // maps the cooling interval values (0, 1, 2, 4, 8) to a linear sequence (0, 1, 2, 3, 4)
     let barCount = Math.round(Math.log2(( coolingInterval * 2) + 1));
     let color = 'grey';
     let widthMultiplier = Math.pow(1.8, index);
@@ -71,7 +72,7 @@ export default function LearningCycleIndicator({
 
   return (
     <>
-      {learningCycleEnum[learningCycle] !== "not set" && (
+      {Feature.merle_exercises() && (
         <>
           <Tooltip title={getTooltipContent()}>
             <div className="learningCycleIcon">

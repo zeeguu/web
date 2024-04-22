@@ -118,7 +118,7 @@ export default function TranslateL2toL1({
                     translatedWords={translatedWords}
                     setTranslatedWords={setTranslatedWords}
                     bookmarkToStudy={bookmarksToStudy[0].from}
-                    boldWord={bookmarksToStudy[0].from}
+                    boldExpression={bookmarksToStudy[0].from}
                 />
             </div>
       
