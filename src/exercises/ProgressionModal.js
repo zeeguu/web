@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import Modal from "../components/redirect_notification/modal_shared/Modal";
-import Header from "../components/redirect_notification/modal_shared/Header";
-import Body from "../components/redirect_notification/modal_shared/Body";
-import Footer from "../components/redirect_notification/modal_shared/Footer";
-import Checkbox from "../components/redirect_notification/modal_shared/Checkbox";
+import Modal from "../components/modal_shared/Modal";
+import Header from "../components/modal_shared/Header";
+import Main from "../components/modal_shared/Main";
+import Footer from "../components/modal_shared/Footer";
+import Checkbox from "../components/modal_shared/Checkbox";
 import strings from "../i18n/definitions";
-import * as s from "../components/redirect_notification/RedirectionNotificationModal.sc";
+import GoToButton from "../components/modal_shared/GoToButton";
+import ButtonContainer from "../components/modal_shared/ButtonContainer";
 
 export default function ProgressionModal({open, onClose, api}) {
 
@@ -43,9 +44,9 @@ export default function ProgressionModal({open, onClose, api}) {
   return (
     <Modal open={open} onClose={handleClose}>
       <Header>{strings.learningCycleCongrats}</Header>
-      <Body>
+      <Main>
         <p>{strings.learningCycleExplanation}</p>
-      </Body>
+      </Main>
       <Footer>
         <Checkbox
             label={strings.optOutProductiveKnowledge}
@@ -57,13 +58,13 @@ export default function ProgressionModal({open, onClose, api}) {
             checked={dontShowMsg}
             onChange={toggleDontShowMsg}
         />
-        <s.ButtonsContainer>
-            <s.GoToButton
+        <ButtonContainer>
+            <GoToButton
                 onClick={handleClose}
             >
                 Back to the Exercises
-            </s.GoToButton>
-        </s.ButtonsContainer>
+            </GoToButton>
+        </ButtonContainer>
       </Footer>
     </Modal>
   );
