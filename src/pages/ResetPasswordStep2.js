@@ -3,6 +3,7 @@ import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
 import Form from "./info_page_shared/Form";
+import FormSection from "./info_page_shared/FormSection";
 import InputField from "./info_page_shared/InputField";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
@@ -71,29 +72,31 @@ export default function ResetPasswordStep2({ api, email }) {
 
   return (
     <Form action={""} method={"post"}>
-      <p>
-        {strings.plsCheck} <b>{email}</b> {strings.forCode}
-      </p>
+      <FormSection>
+        <p>
+          {strings.plsCheck} <b>{email}</b> {strings.forCode}
+        </p>
 
-      {errorMessage && <div className="error">{errorMessage}</div>}
+        {errorMessage && <div className="error">{errorMessage}</div>}
 
-      <InputField
-        id={"received-code"}
-        label={"Received code"}
-        name={"received-code"}
-        placeholder={"Enter the code"}
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-      />
+        <InputField
+          id={"received-code"}
+          label={"Received code"}
+          name={"received-code"}
+          placeholder={"Enter the code"}
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+        />
 
-      <InputField
-        id={"new-password"}
-        label={"New password"}
-        name={"new-password"}
-        placeholder={"Must be at least 4 characters long"}
-        value={newPass}
-        onChange={(e) => setNewPass(e.target.value)}
-      />
+        <InputField
+          id={"new-password"}
+          label={"New password"}
+          name={"new-password"}
+          placeholder={"Must be at least 4 characters long"}
+          value={newPass}
+          onChange={(e) => setNewPass(e.target.value)}
+        />
+      </FormSection>
 
       <ButtonContainer>
         <Button onClick={handleResetPassword}>Set New Password</Button>

@@ -5,6 +5,7 @@ const FormSection = styled.section`
   flex-direction: column;
   width: 100%;
   gap: 1rem;
+  margin: 0 0 0.5rem 0;
 `;
 
 export { FormSection };
