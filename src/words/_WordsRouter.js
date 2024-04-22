@@ -10,10 +10,9 @@ import {Switch} from "react-router-dom";
 import WordsForArticle from "./WordsForArticle";
 import Receptive from "./Receptive";
 import Productive from "./Productive";
+import Feature from "../features/Feature";
 
 export default function WordsRouter({api}) {
-
-    const features = JSON.parse(localStorage.getItem('features'));
 
     let tabsAndLinks = {
         [strings.learned]: "/words/learned",
@@ -21,7 +20,7 @@ export default function WordsRouter({api}) {
         // [strings.starred]: "/words/starred",
     };
 
-    if (features.includes('merle_exercises')) {
+    if (Feature.merle_exercises) {
     tabsAndLinks = {
         [strings.titleReceptiveWords]: "/words/receptive",
         [strings.titleProductiveWords]: "/words/productive",

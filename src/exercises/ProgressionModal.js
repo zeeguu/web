@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header";
+import Heading from "../components/modal_shared/Heading";
 import Main from "../components/modal_shared/Main";
 import Footer from "../components/modal_shared/Footer";
 import Checkbox from "../components/modal_shared/Checkbox";
@@ -43,7 +44,11 @@ export default function ProgressionModal({open, onClose, api}) {
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <Header>{strings.learningCycleCongrats}</Header>
+      <Header>
+        <Heading>
+          {strings.learningCycleCongrats}
+        </Heading>
+      </Header>
       <Main>
         <p>{strings.learningCycleExplanation}</p>
       </Main>

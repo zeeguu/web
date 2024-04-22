@@ -125,7 +125,7 @@ export default function MultipleChoiceL2toL1({
           pronouncing={false}
           bookmarkToStudy={bookmarksToStudy[0].from}
           exerciseType={EXERCISE_TYPE}
-          boldWord={bookmarksToStudy[0].from}
+          boldExpression={bookmarksToStudy[0].from}
         />
       </div>
 

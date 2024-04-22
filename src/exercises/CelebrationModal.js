@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Confetti from "react-confetti";
 import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header";
+import Heading from "../components/modal_shared/Heading";
 import Main from "../components/modal_shared/Main";
 import Footer from "../components/modal_shared/Footer";
 import strings from "../i18n/definitions";
@@ -30,7 +31,11 @@ export default function ProgressionModal({open, onClose}) {
       </div>
     )}
     <Modal open={open} onClose={onClose}>
-      <Header>{strings.celebrationTitle}</Header>
+      <Header>
+        <Heading>
+          {strings.celebrationTitle}
+        </Heading>
+      </Header>
       <Main>
         <p>{strings.celebrationMsg}</p>
       </Main>
