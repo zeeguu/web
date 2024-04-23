@@ -26,8 +26,12 @@ export default function Settings({ api, setUser }) {
   const [currentCohort, setCurrentCohort] = useState("");
   const [cefr, setCEFR] = useState("");
   const [audioExercises, setAudioExercises] = useState(true);
+
+  let preferenceNotSet =
+    LocalStorage.getProductiveExercisesEnabled() === undefined;
+
   const [productiveExercises, setProductiveExercises] = useState(
-    LocalStorage.getProductiveExercisesEnabled(),
+    preferenceNotSet || LocalStorage.getProductiveExercisesEnabled(),
   );
   //TODO: Refactor using Zeeguu project logic
 
