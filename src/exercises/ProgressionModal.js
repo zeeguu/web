@@ -11,8 +11,11 @@ import ButtonContainer from "../components/modal_shared/ButtonContainer";
 import LocalStorage from "../assorted/LocalStorage";
 
 export default function ProgressionModal({ open, onClose, api }) {
+  let preferenceNotSet =
+    LocalStorage.getProductiveExercisesEnabled() === undefined;
+
   const [productiveExercisesChecked, setProductiveExercisesChecked] = useState(
-    LocalStorage.getProductiveExercisesEnabled(),
+    preferenceNotSet || LocalStorage.getProductiveExercisesEnabled(),
   );
   const [dontShowMsg, setDontShowMsg] = useState(false);
 

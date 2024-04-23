@@ -73,13 +73,13 @@ const LocalStorage = {
   },
 
   getProductiveExercisesEnabled: function () {
-    if (localStorage.getItem(this.Keys.productiveExercisesEnabled) === null) {
-      // if unspecified, we assume true
-      return true;
+    try {
+      return (
+        localStorage.getItem(this.Keys.productiveExercisesEnabled) === "true"
+      );
+    } catch (e) {
+      return undefined;
     }
-    return (
-      localStorage.getItem(this.Keys.productiveExercisesEnabled) === "true"
-    );
   },
 
   setSession: function (session) {
