@@ -12,6 +12,7 @@ import InputField from "./info_page_shared/InputField";
 import Footer from "./info_page_shared/Footer";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
+import Checkbox from "../components/modal_shared/Checkbox";
 
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
@@ -121,14 +122,20 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               helperText={"Must contain at least 4 characters"}
             />
           </FormSection>
+          <FormSection>
+            <Checkbox
+              label={
+                <>
+                  By checking this box you agree to our{" "}
+                  <a href="">Privacy Notice</a>
+                </>
+              }
+            />
 
-          {/* <PrivacyNotice /> */}
+            {/* <PrivacyNotice /> */}
 
-          {errorMessage && <div className="error">{errorMessage}</div>}
-          <span>
-            <span>By checking this box you agree to</span>{" "}
-            <a>Zeeguu's Privacy notice</a>
-          </span>
+            {errorMessage && <div className="error">{errorMessage}</div>}
+          </FormSection>
           <ButtonContainer>
             <Button onClick={handleCreate}>{strings.createAccount}</Button>
           </ButtonContainer>
