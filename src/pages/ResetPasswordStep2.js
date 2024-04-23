@@ -2,6 +2,8 @@ import { useState } from "react";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+
 import Form from "./info_page_shared/Form";
 import FormSection from "./info_page_shared/FormSection";
 import InputField from "./info_page_shared/InputField";
@@ -77,7 +79,7 @@ export default function ResetPasswordStep2({ api, email }) {
           {strings.plsCheck} <b>{email}</b> {strings.forCode}
         </p>
 
-        {errorMessage && <div className="error">{errorMessage}</div>}
+        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
 
         <InputField
           id={"received-code"}

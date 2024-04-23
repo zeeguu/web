@@ -3,6 +3,8 @@ import * as EmailValidator from "email-validator";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+
 import Form from "./info_page_shared/Form";
 import FormSection from "./info_page_shared/FormSection";
 import InputField from "./info_page_shared/InputField";
@@ -42,7 +44,7 @@ export default function ResetPasswordStep1({
     <Form action={""} method={"post"}>
       <FormSection>
         <p>{strings.weNeedTheEmailMsg}</p>
-        {errorMessage && <div className="error">{errorMessage}</div>}
+        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
 
         <InputField
           id={"email"}

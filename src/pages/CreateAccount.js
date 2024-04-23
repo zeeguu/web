@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import redirect from "../utils/routing/routing";
 
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
@@ -79,6 +81,9 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
         </p>
 
         <Form action={""} method={"POST"}>
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
           <FormSection>
             <InputField
               type={"text"}
@@ -133,8 +138,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
             />
 
             {/* <PrivacyNotice /> */}
-
-            {errorMessage && <div className="error">{errorMessage}</div>}
           </FormSection>
           <ButtonContainer>
             <Button onClick={handleCreate}>{strings.createAccount}</Button>

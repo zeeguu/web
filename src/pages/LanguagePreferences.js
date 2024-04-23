@@ -5,6 +5,8 @@ import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 
 import redirect from "../utils/routing/routing";
 
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
@@ -97,10 +99,13 @@ export default function LanguagePreferences({ api, setUser }) {
   return (
     <InfoPage type={"narrow"}>
       <Header>
-        <Heading>What language would you like to learn?</Heading>
+        <Heading>What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?</Heading>
       </Header>
       <Main>
         <Form action={""}>
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
           <FormSection>
             <SelectOptions
               placeholder={"Select language"}
@@ -133,8 +138,6 @@ export default function LanguagePreferences({ api, setUser }) {
               current={"en"}
             />
           </FormSection>
-
-          {errorMessage && <div className="error">{errorMessage}</div>}
           <p>You can always change it later</p>
           <ButtonContainer>
             <Button onClick={updateUser}>

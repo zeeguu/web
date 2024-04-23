@@ -1,6 +1,8 @@
 import { useState } from "react";
 import useRedirectLink from "../hooks/useRedirectLink";
 
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
@@ -44,7 +46,9 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
       </Header>
       <Main>
         <Form action={""} method={"post"}>
-          {errorMessage && <div className="error">{errorMessage}</div>}
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
           <FormSection>
             <InputField
               type={"email"}
