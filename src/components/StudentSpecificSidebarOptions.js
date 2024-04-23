@@ -12,10 +12,13 @@ export default function StudentSpecificSidebarOptions({
   const [hasExercisesToDo, setHasExercisesToDo] = useState();
 
   useEffect(() => {
-    if (!user["totalExercises"])
-      api.getUserBookmarksToStudy(2, (bookmarks) => {
-        setHasExercisesToDo(bookmarks.length);
+    if (user["totalExercises"] === undefined) {
+      api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+        setHasExercisesToDo(hasBookmarks);
       });
+    } else {
+      setHasExercisesToDo(user["totalExercises"] > 0);
+    }
   });
 
   return (
@@ -27,11 +30,11 @@ export default function StudentSpecificSidebarOptions({
       <SidebarLink
         text={strings.exercises}
         to="/exercises"
-        hasNotification={hasExercisesToDo > 0 ? true : false}
+        hasNotification={hasExercisesToDo ? true : false}
         notificationText={
-          user["totalExercises"]
-            ? user["totalExercises"] > 99
-              ? "99+"
+          user["totalExercises"] > 0
+            ? user["totalExercises"] > MAX_EXERCISE_TO_DO_NOTIFICATION
+              ? MAX_EXERCISE_TO_DO_NOTIFICATION + "+"
               : user["totalExercises"]
             : ""
         }
