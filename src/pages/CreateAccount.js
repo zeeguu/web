@@ -79,11 +79,8 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
           </a>
           {strings.thankYouMsgSuffix}
         </p>
-
         <Form action={""} method={"POST"}>
-          {errorMessage && (
-            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
-          )}
+        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
           <FormSection>
             <InputField
               type={"text"}
