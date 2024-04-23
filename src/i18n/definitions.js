@@ -208,7 +208,8 @@ let strings = new LocalizedStrings(
       helpUsMsg:
         "Help us make Zeeguu even smarter by always letting us know whether you liked reading an article or not.",
       didYouEnjoyMsg: "Did you enjoy the article?",
-      answeringMsg: "Zeeguu can make better personalized recommendations based on your feedback.",
+      answeringMsg:
+        "Zeeguu can make better personalized recommendations based on your feedback.",
       yes: "Yes",
       no: "No",
       reviewVocabulary: "Review Vocabulary",
@@ -264,33 +265,42 @@ let strings = new LocalizedStrings(
       titleRankedWords: "Most Important Words",
       rankedMsg:
         "The most important words that you translated. Ordered by frequency of occurrence in your learned language. To see all your past translations, go to History.",
-      
+
       //Receptive
       titleReceptiveWords: "Receptive Words",
-      receptiveMsg: "These words will appear in exercises testing your receptive knowledge. Receptive means you understand the word when you see or hear it, but can't necessarily use it yet.",
+      receptiveMsg:
+        "These words will appear in exercises testing your receptive knowledge. Receptive means you understand the word when you see or hear it, but can't necessarily use it yet.",
 
       //Productive
       titleProductiveWords: "Productive Words",
-      productiveMsg: "These words will appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech.",
-      productiveDisableMsg: "You have disabled productive exercises. Words are now considered learned once they have completed the receptive learning cycle.",
-      
+      productiveMsg:
+        "These words will appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech.",
+      productiveDisableMsg:
+        "You have disabled productive exercises. Words are now considered learned once they have completed the receptive learning cycle.",
+
       //WordsOnDate
       open: "Open",
 
       //LearningCycle
-      nextLearningCycle: "This word has now moved to your productive knowledge.",
-      receptiveTooltip: "This word is part of your receptive vocabulary knowledge. Receptive means the capability to comprehend a word when you hear or see it.",
-      productiveTooltip: "This word is part of your productive vocabulary knowledge. Productive means the knowledge to use a word in writing or speech.",
+      nextLearningCycle:
+        "This word has now moved to your productive knowledge.",
+      receptiveTooltip:
+        "This word is part of your receptive vocabulary knowledge. Receptive means the capability to comprehend a word when you hear or see it.",
+      productiveTooltip:
+        "This word is part of your productive vocabulary knowledge. Productive means the knowledge to use a word in writing or speech.",
 
       //LearningCycleModal
       learningCycleCongrats: "Congratulations, you've learned a new word!",
-      learningCycleExplanation: "Every time you answer an exercise correctly, a word moves on to the next stage. A word is considered receptive knowledge once it successfully progresses through five stages of spaced repetition, meaning you can recognize it in context. This word will now move on to the productive exercises going through the same five stages, where you'll put it to use, strengthening your ability to recall and apply it.",
-      optOutProductiveKnowledge: "No, thanks. Knowing words receptively is enough. (You can change this at any time in your settings.)",
+      learningCycleExplanation:
+        "Every time you answer an exercise correctly, a word moves on to the next stage. A word is considered receptive knowledge once it successfully progresses through five stages of spaced repetition, meaning you can recognize it in context. This word will now move on to the productive exercises going through the same five stages, where you'll put it to use, strengthening your ability to recall and apply it.",
+      optOutProductiveKnowledge:
+        "Yes, I want to learn the words also productively. (You can change this at any time in your settings)",
       dontShowMsg: "Don't show this message again.",
 
       //CelebrationModal
       celebrationTitle: "Congratulations, you've learned a new word!",
-      celebrationMsg: "You've successfully completed all stages for this word, so it won't be tested in the exercises anymore. Keep up the good work!",
+      celebrationMsg:
+        "You've successfully completed all stages for this word, so it won't be tested in the exercises anymore. Keep up the good work!",
 
       //WordEditAccordion
       done: "Done",
@@ -369,19 +379,16 @@ let strings = new LocalizedStrings(
       audioExerciseHeadline:
         "Write the word your hear. Click to have it repeated!",
       multipleChoiceAudioHeadline: "Select the word which fits the context",
-      findWordInContextClozeHeadline:
-        "Translate the word to fit the context",
-      translateL2toL1Headline: 
-        "Translate the bold word",
-      translateWhatYouHearHeadline: 
+      findWordInContextClozeHeadline: "Translate the word to fit the context",
+      translateL2toL1Headline: "Translate the bold word",
+      translateWhatYouHearHeadline:
         "Translate the word you hear. Click to have it repeated!",
       multipleChoiceL2toL1Headline:
         "Select the correct translation of the bold word",
       clickWordInContextHeadline:
         "Find the word in the context and click on it",
-      multipleChoiceContextHeadline:
-        "Choose the context that fits the word",
-        
+      multipleChoiceContextHeadline: "Choose the context that fits the word",
+
       //FeedbackButtons
       giveFeedback: "Don't show this word again",
       giveFeedbackAlert: "Please type your feedback before submitting.",

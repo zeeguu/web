@@ -57,6 +57,10 @@ function App() {
       console.log("getting user details...");
       api.getUserDetails((data) => {
         LocalStorage.setUserInfo(data);
+        console.log(data);
+      });
+      api.getUserPreferences((preferences) => {
+        LocalStorage.setUserPreferences(preferences);
       });
     }
 
@@ -74,6 +78,7 @@ function App() {
 
   function logout() {
     LocalStorage.deleteUserInfo();
+    LocalStorage.deleteUserPreferences();
     setUserData({});
 
     removeUserInfoFromCookies();

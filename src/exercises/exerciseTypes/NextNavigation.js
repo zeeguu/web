@@ -49,11 +49,12 @@ export default function NextNavigation({
   const learningCycleFeature = Feature.merle_exercises();
 
   const shouldShowProgressionModal =
-    isUserAndAnswerCorrect &&
-    isLearningCycleOne &&
-    isLastInCycle &&
-    shouldShowModal &&
-    !productiveExercisesDisabled;
+    (isUserAndAnswerCorrect &&
+      isLearningCycleOne &&
+      isLastInCycle &&
+      shouldShowModal &&
+      !productiveExercisesDisabled) ||
+    true;
 
   const shouldShowCelebrationModal =
     isUserAndAnswerCorrect &&
@@ -107,7 +108,10 @@ export default function NextNavigation({
         </>
       )}
       {isUserAndAnswerCorrect &&
-        (isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled && learningCycleFeature ? (
+        (isLearningCycleOne &&
+        isLastInCycle &&
+        !productiveExercisesDisabled &&
+        learningCycleFeature ? (
           <div className="next-nav-learning-cycle">
             <img
               src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}

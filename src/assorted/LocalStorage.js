@@ -34,7 +34,8 @@ const LocalStorage = {
       learned_language: localStorage[this.Keys.LearnedLanguage],
       native_language: localStorage[this.Keys.NativeLanguage],
       is_teacher: "true" === localStorage[this.Keys.IsTeacher],
-      productiveExercisesEnabled: localStorage[this.Keys.productiveExercisesEnabled],
+      productiveExercisesEnabled:
+        localStorage[this.Keys.productiveExercisesEnabled],
     };
   },
 
@@ -67,7 +68,18 @@ const LocalStorage = {
   },
 
   setProductiveExercisesEnabled: function (productiveExercisesEnabled) {
-    localStorage[this.Keys.productiveExercisesEnabled] = productiveExercisesEnabled;
+    localStorage[this.Keys.productiveExercisesEnabled] =
+      productiveExercisesEnabled;
+  },
+
+  getProductiveExercisesEnabled: function () {
+    if (localStorage.getItem(this.Keys.productiveExercisesEnabled) === null) {
+      // if unspecified, we assume true
+      return true;
+    }
+    return (
+      localStorage.getItem(this.Keys.productiveExercisesEnabled) === "true"
+    );
   },
 
   setSession: function (session) {
@@ -121,6 +133,24 @@ const LocalStorage = {
     }
   },
 
+  setUserPreferences: function (preferences) {
+    console.log("setting user preferences");
+    console.log(preferences);
+
+    if (preferences["productive_exercises"] !== undefined) {
+      localStorage[this.Keys.productiveExercisesEnabled] =
+        preferences["productive_exercises"];
+    }
+  },
+
+  deleteUserPreferences: function () {
+    try {
+      localStorage.removeItem(this.Keys.productiveExercisesEnabled);
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   setSelectedTimePeriod: function (time) {
     localStorage[this.Keys.SelectedTimePeriod] = time;
   },
@@ -148,10 +178,10 @@ const LocalStorage = {
 
   checkAndUpdateAudioExperimentCompleted: function () {
     let noOfSessions = Number(
-      localStorage[this.Keys.AudioExperimentNoOfSessions]
+      localStorage[this.Keys.AudioExperimentNoOfSessions],
     );
     let targetNoOfAudioSessions = Number(
-      localStorage[this.Keys.TargetNoOfAudioSessions]
+      localStorage[this.Keys.TargetNoOfAudioSessions],
     );
     if (noOfSessions >= targetNoOfAudioSessions) {
       this.setAudioExperimentCompleted(true);
@@ -168,7 +198,7 @@ const LocalStorage = {
   },
 
   setDisplayedAudioExperimentQuestionnaire: function (
-    displayedAudioExperimentQuestionnaire
+    displayedAudioExperimentQuestionnaire,
   ) {
     localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire] =
       displayedAudioExperimentQuestionnaire;
@@ -177,7 +207,7 @@ const LocalStorage = {
   getTargetNoOfAudioSessions: function () {
     try {
       let noofsessions = Number(
-        localStorage[this.Keys.TargetNoOfAudioSessions]
+        localStorage[this.Keys.TargetNoOfAudioSessions],
       );
       return noofsessions;
     } catch (e) {
@@ -191,7 +221,7 @@ const LocalStorage = {
 
   getAudioExperimentNoOfSessions: function () {
     let noofsessions = Number(
-      localStorage[this.Keys.AudioExperimentNoOfSessions]
+      localStorage[this.Keys.AudioExperimentNoOfSessions],
     );
     return noofsessions;
   },
@@ -203,7 +233,7 @@ const LocalStorage = {
 
   incrementAudioExperimentNoOfSessions: function () {
     var audioExperimentNoOfSessions = Number(
-      localStorage[this.Keys.AudioExperimentNoOfSessions]
+      localStorage[this.Keys.AudioExperimentNoOfSessions],
     );
     var temp = audioExperimentNoOfSessions + 1;
     localStorage[this.Keys.AudioExperimentNoOfSessions] = temp;

@@ -25,14 +25,12 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
   function handleSuccessfulSignIn(userInfo) {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
+
+    // TODO: Should this be moved to Settings.loadUsrePreferences?
     api.getUserPreferences((preferences) => {
       SessionStorage.setAudioExercisesEnabled(
         preferences["audio_exercises"] === undefined ||
           preferences["audio_exercises"] === "true",
-      );
-      LocalStorage.setProductiveExercisesEnabled(
-        preferences["productive_exercises"] === undefined ||
-          preferences["productive_exercises"] === "true",
       );
     });
 

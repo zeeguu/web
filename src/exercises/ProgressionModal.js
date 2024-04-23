@@ -8,23 +8,16 @@ import Checkbox from "../components/modal_shared/Checkbox";
 import strings from "../i18n/definitions";
 import GoToButton from "../components/modal_shared/GoToButton";
 import ButtonContainer from "../components/modal_shared/ButtonContainer";
+import LocalStorage from "../assorted/LocalStorage";
 
-export default function ProgressionModal({open, onClose, api}) {
-
-  const [disableProductiveExercises, setDisableProductiveExercises] = useState();
+export default function ProgressionModal({ open, onClose, api }) {
+  const [productiveExercisesChecked, setProductiveExercisesChecked] = useState(
+    LocalStorage.getProductiveExercisesEnabled(),
+  );
   const [dontShowMsg, setDontShowMsg] = useState(false);
 
-  useEffect(() => {
-    api.getUserPreferences((preferences) => {
-      setDisableProductiveExercises(
-        preferences["productive_exercises"] === undefined ||
-          preferences["productive_exercises"] === "false",
-      );
-    });
-  }, [api]);
-
   const toggleProductiveExercises = () => {
-    setDisableProductiveExercises(!disableProductiveExercises);
+    setProductiveExercisesChecked(!productiveExercisesChecked);
   };
 
   const toggleDontShowMsg = () => {
@@ -32,12 +25,17 @@ export default function ProgressionModal({open, onClose, api}) {
   };
 
   const handleClose = () => {
-    api.saveUserPreferences({ productive_exercises: (!disableProductiveExercises).toString()});
+    api.saveUserPreferences({
+      productive_exercises: productiveExercisesChecked.toString(),
+    });
 
-    localStorage.setItem("productiveExercisesEnabled", JSON.stringify(!disableProductiveExercises));
+    localStorage.setItem(
+      "productiveExercisesEnabled",
+      JSON.stringify(productiveExercisesChecked),
+    );
 
-    if (dontShowMsg){
-        localStorage.setItem("hideProgressionModal", "true");
+    if (dontShowMsg) {
+      localStorage.setItem("hideProgressionModal", "true");
     }
     onClose();
   };
@@ -45,30 +43,20 @@ export default function ProgressionModal({open, onClose, api}) {
   return (
     <Modal open={open} onClose={handleClose}>
       <Header>
-        <Heading>
-          {strings.learningCycleCongrats}
-        </Heading>
+        <Heading>{strings.learningCycleCongrats}</Heading>
       </Header>
       <Main>
         <p>{strings.learningCycleExplanation}</p>
       </Main>
       <Footer>
         <Checkbox
-            label={strings.optOutProductiveKnowledge}
-            checked={disableProductiveExercises}
-            onChange={toggleProductiveExercises}
+          label={strings.optOutProductiveKnowledge}
+          checked={productiveExercisesChecked}
+          onChange={toggleProductiveExercises}
         />
-        <Checkbox
-            label={strings.dontShowMsg}
-            checked={dontShowMsg}
-            onChange={toggleDontShowMsg}
-        />
+
         <ButtonContainer>
-            <GoToButton
-                onClick={handleClose}
-            >
-                Back to the Exercises
-            </GoToButton>
+          <GoToButton onClick={handleClose}>Back to the Exercises</GoToButton>
         </ButtonContainer>
       </Footer>
     </Modal>
