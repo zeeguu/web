@@ -1,11 +1,16 @@
 import styled from "styled-components";
-import { zeeguuRed } from "./colors";
 // Source: https://loading.io/css/
 const NotificationIcon = styled.div`
+  &.top {
+    top: -0.5em;
+    left: 0.05em;
+  }
+  &.bottom {
+    top: 0.15em;
+    left: 0.05em;
+  }
   display: inline-block;
   position: relative;
-  top: -0.5em;
-  left: 0.05em;
   cursor: default;
   div {
     display: flex;
