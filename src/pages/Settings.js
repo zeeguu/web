@@ -26,7 +26,9 @@ export default function Settings({ api, setUser }) {
   const [currentCohort, setCurrentCohort] = useState("");
   const [cefr, setCEFR] = useState("");
   const [audioExercises, setAudioExercises] = useState(true);
-  const [productiveExercises, setProductiveExercises] = useState(true);
+  const [productiveExercises, setProductiveExercises] = useState(
+    LocalStorage.getProductiveExercisesEnabled(),
+  );
   //TODO: Refactor using Zeeguu project logic
 
   const [uiLanguage, setUiLanguage] = useState();
@@ -72,10 +74,6 @@ export default function Settings({ api, setUser }) {
         preferences["audio_exercises"] === undefined ||
           preferences["audio_exercises"] === "true",
       );
-      setProductiveExercises(
-        preferences["productive_exercises"] === undefined ||
-          preferences["productive_exercises"] === "true",
-      );
     });
     api.getSystemLanguages((systemLanguages) => {
       setLanguages(systemLanguages);
@@ -119,18 +117,23 @@ export default function Settings({ api, setUser }) {
 
     modifyCEFRlevel(userDetails.learned_language, cefr);
 
+    console.log("saving: productiveExercises: " + productiveExercises);
+
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      api.saveUserPreferences({ 
-        audio_exercises: audioExercises,
-        productive_exercises: productiveExercises 
-      }, () => {
-        updateUserInfo(userDetails);
-        if (history.length > 1) {
-          history.goBack();
-        } else {
-          window.close();
-        }
-      });
+      api.saveUserPreferences(
+        {
+          audio_exercises: audioExercises,
+          productive_exercises: productiveExercises,
+        },
+        () => {
+          updateUserInfo(userDetails);
+          if (history.length > 1) {
+            history.goBack();
+          } else {
+            window.close();
+          }
+        },
+      );
     });
   }
 
@@ -163,8 +166,11 @@ export default function Settings({ api, setUser }) {
 
     // Update local storage
     const newProductiveValue = !productiveExercises;
-    localStorage.setItem('productiveExercisesEnabled', JSON.stringify(newProductiveValue));
-  } 
+    localStorage.setItem(
+      "productiveExercisesEnabled",
+      JSON.stringify(newProductiveValue),
+    );
+  }
 
   if (!userDetails || !languages) {
     return <LoadingAnimation />;
@@ -266,7 +272,7 @@ export default function Settings({ api, setUser }) {
               />
               <label>Include Audio Exercises</label>
             </div>
-            {Feature.merle_exercises() &&
+            {Feature.merle_exercises() && (
               <div style={{ display: "flex" }} className="form-group">
                 <input
                   style={{ width: "1.5em" }}
@@ -276,7 +282,7 @@ export default function Settings({ api, setUser }) {
                 />
                 <label>Enable productive exercises</label>
               </div>
-            }
+            )}
             <div>
               <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
             </div>
