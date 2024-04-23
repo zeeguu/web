@@ -9,6 +9,10 @@ import strings from "../i18n/definitions";
 import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
+import {
+  MAX_EXERCISE_IN_LEARNING_BOOKMARKS,
+  MAX_EXERCISE_TO_DO_NOTIFICATION,
+} from "./ExerciseConstants";
 
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
@@ -26,23 +30,23 @@ export default function Exercises({
   setUser,
   articleID,
   backButtonAction,
-  keepExercisingAction,
   source,
 }) {
-  const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
-    NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-  );
+  const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
+  const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState();
   const [finished, setFinished] = useState(false);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
   const [articleInfo, setArticleInfo] = useState(null);
-  const [fullExerciseProgression, setFullExerciseProgression] = useState([]);
+  const [fullExerciseProgression, setFullExerciseProgression] = useState();
+  const [totalBookmarksInPipeline, setTotalBookmarksInPipeline] = useState();
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
+  const [showOutOfWordsMessage, setShowOutOfWordsMessage] = useState();
+  const [currentScheduledBookmarks, setCurrentScheduledBookmarks] = useState();
 
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
 
@@ -74,57 +78,94 @@ export default function Exercises({
 
       setFullExerciseProgression(exerciseSession);
 
-      if (currentBookmarksToStudy === null) {
-        setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
-      }
+      setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
 
       setTitle(title);
     }
   }
+  function resetExerciseState() {
+    setCurrentScheduledBookmarks(0);
+    setShowOutOfWordsMessage(false);
+    setCountBookmarksToPractice();
+    setFullExerciseProgression();
+    setCurrentBookmarksToStudy();
+    setCorrectBookmarks([]);
+    setIncorrectBookmarks([]);
+    setFinished(false);
+    setCurrentIndex(0);
+    setActivityOver(false);
+  }
 
-  useEffect(() => {
-    if (fullExerciseProgression.length === 0) {
-      api.getUserPreferences((preferences) => {
-        if (SessionStorage.getAudioExercisesEnabled() === undefined)
-          // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
-          SessionStorage.setAudioExercisesEnabled(
-            preferences["audio_exercises"] === undefined ||
-              preferences["audio_exercises"] === "true",
-          );
-
-        if (articleID) {
-          api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
-            api.getArticleInfo(articleID, (data) => {
-              setArticleInfo(data);
-              initializeExercises(
-                bookmarks,
-                'Exercises for "' + data.title + '"',
+  function startExercising(is_new_scheduled_words) {
+    resetExerciseState();
+    if (is_new_scheduled_words) {
+      api.getNewBookmarksToStudy(
+        NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+        (new_bookmarks) => {
+          initializeExercises(new_bookmarks, strings.exercises);
+        },
+      );
+    } else {
+      api.hasBookmarksInPipelineToReview((hasBookmarksToPractice) => {
+        if (hasBookmarksToPractice) exercise_in_progress_bookmarks();
+        else {
+          api.getTotalBookmarksInPipeline((totalInLearning) => {
+            setTotalBookmarksInPipeline(totalInLearning);
+            if (totalInLearning < MAX_EXERCISE_IN_LEARNING_BOOKMARKS) {
+              api.getNewBookmarksToStudy(
+                NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+                (new_bookmarks) => {
+                  initializeExercises(new_bookmarks, strings.exercises);
+                },
               );
-            });
-          });
-        } else {
-          // We get 120 to get the maximum total. There could
-          // be situations where a user has more than 120 scheduled
-          // and the number would decrease only to go up again.
-          // We only show 99+, so technically that wouldn't change
-          // until the user gets below this threshold, not sure
-          // what is best to do here.
-          api.getUserBookmarksToStudy(120, (bookmarks) => {
-            initializeExercises(
-              bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
-              strings.exercises,
-            );
-            setUser({ ...user, totalExercises: bookmarks.length });
+            } else setShowOutOfWordsMessage(true);
           });
         }
       });
     }
+  }
 
+  function exercise_in_progress_bookmarks() {
+    if (articleID) {
+      api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
+        api.getArticleInfo(articleID, (data) => {
+          setArticleInfo(data);
+          initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
+        });
+      });
+    } else {
+      api.getUserBookmarksToStudy(
+        MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+        (bookmarks) => {
+          setCurrentScheduledBookmarks(bookmarks.length);
+          setUser({ ...user, totalExercises: bookmarks.length });
+          initializeExercises(
+            bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
+            strings.exercises,
+          );
+        },
+      );
+    }
+  }
+
+  useEffect(() => {
+    api.getUserPreferences((preferences) => {
+      if (SessionStorage.getAudioExercisesEnabled() === undefined)
+        // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
+        SessionStorage.setAudioExercisesEnabled(
+          preferences["audio_exercises"] === undefined ||
+            preferences["audio_exercises"] === "true",
+        );
+    });
     api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
       let id = JSON.parse(newlyCreatedDBSessionID).id;
       setDbExerciseSessionId(id);
     });
 
+    startExercising();
+    return () => {
+      setActivityOver(true);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -155,7 +196,9 @@ export default function Exercises({
           incorrectBookmarks={incorrectBookmarks}
           api={api}
           backButtonAction={backButtonAction}
-          keepExercisingAction={keepExercisingAction}
+          keepExercisingAction={() => {
+            startExercising(false);
+          }}
           source={source}
           totalTime={activeSessionDuration}
           exerciseSessionId={dbExerciseSessionId}
@@ -164,55 +207,75 @@ export default function Exercises({
     );
   }
 
-  if (!currentBookmarksToStudy && countBookmarksToPractice !== 0) {
-    return <LoadingAnimation />;
-  }
-
-  if (countBookmarksToPractice === 0) {
+  if (showOutOfWordsMessage) {
     return (
       <OutOfWordsMessage
-        message={strings.goToTextsToTranslateWords}
-        buttonText="Go to reading"
-        buttonAction={backButtonAction}
+        api={api}
+        totalInLearning={totalBookmarksInPipeline}
+        goBackAction={backButtonAction}
+        keepExercisingAction={() => {
+          startExercising(true);
+        }}
+        api={api}
       />
     );
+  }
+  if (
+    !countBookmarksToPractice ||
+    !currentBookmarksToStudy ||
+    !fullExerciseProgression
+  ) {
+    return <LoadingAnimation />;
   }
 
   function moveToNextExercise() {
     //ML: TODO? Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
     setIsCorrect(false);
     setShowFeedbackButtons(false);
+    let updatedUserInfo = { ...user };
+    updatedUserInfo["totalExercises"] =
+      currentScheduledBookmarks < 0 ? 0 : currentScheduledBookmarks;
+    setUser(updatedUserInfo);
     const newIndex = currentIndex + 1;
-
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
-      setActivityOver(true);
       return;
     }
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
     setCurrentIndex(newIndex);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
-
   let correctBookmarksCopy = [...correctBookmarks];
-
   function correctAnswerNotification(currentBookmark) {
-    if (
-      !incorrectBookmarks.includes(currentBookmark) ||
-      !incorrectBookmarksCopy.includes(currentBookmark)
-    ) {
-      let userUpdateExercises = { ...user };
-      userUpdateExercises["totalExercises"]--;
-      setUser(userUpdateExercises);
+    if (!incorrectBookmarks.includes(currentBookmark)) {
+      let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
+      if (
+        currentBookmark["cooling_interval"] !== null &&
+        !correctBookmarksIds.includes(currentBookmark.id)
+      ) {
+        // Only decrement if it's already part of the schedule
+        setCurrentScheduledBookmarks(currentScheduledBookmarks - 1);
+      }
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
     }
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
-
   let incorrectBookmarksCopy = [...incorrectBookmarks];
-
   function incorrectAnswerNotification(currentBookmark) {
+    let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
+    if (
+      currentBookmark["cooling_interval"] === null &&
+      !incorrectBookmarksIds.includes(currentBookmark.id)
+    ) {
+      setCurrentScheduledBookmarks(currentScheduledBookmarks + 1);
+    }
+    if (
+      currentBookmark["cooling_interval"] > 1 &&
+      !incorrectBookmarksIds.includes(currentBookmark.id)
+    ) {
+      setCurrentScheduledBookmarks(currentScheduledBookmarks - 1);
+    }
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
@@ -251,7 +314,7 @@ export default function Exercises({
           <CurrentExercise
             key={currentIndex}
             bookmarksToStudy={currentBookmarksToStudy}
-            correctAnswer={correctAnswerNotification}
+            notifyCorrectAnswer={correctAnswerNotification}
             notifyIncorrectAnswer={incorrectAnswerNotification}
             api={api}
             setExerciseType={setCurrentExerciseType}
