@@ -35,9 +35,7 @@ export default function Exercises({
   backButtonAction,
   source,
 }) {
-  const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
-    NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-  );
+  const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState();
   const [finished, setFinished] = useState(false);
@@ -168,6 +166,10 @@ export default function Exercises({
       setDbExerciseSessionId(id);
     });
 
+    startExercising();
+    return () => {
+      setActivityOver(true);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -263,7 +265,6 @@ export default function Exercises({
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
   let incorrectBookmarksCopy = [...incorrectBookmarks];
-
   function incorrectAnswerNotification(currentBookmark) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
     if (
