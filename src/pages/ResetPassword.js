@@ -39,9 +39,9 @@ export default function ResetPassword({ api }) {
       <Footer>
         <p>
           Remember password?{" "}
-          <a className="links" href="login">
+          <a className="bold-link" href="login">
             <b>Log in</b>
-          </a>{" "}
+          </a>
         </p>
       </Footer>
     </InfoPage>

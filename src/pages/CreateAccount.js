@@ -19,7 +19,6 @@ import Checkbox from "../components/modal_shared/Checkbox";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
-import PrivacyNotice from "./PrivacyNotice";
 import * as EmailValidator from "email-validator";
 
 export default function CreateAccount({ api, handleSuccessfulSignIn }) {
@@ -73,14 +72,18 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       </Header>
       <Main>
         <p>
-          {strings.thankYouMsgPrefix}
+          To receive an <span className="bold">invitation code</span> or to share your feedback, reach out to
+          us at
+          {/* {strings.thankYouMsgPrefix} */}
           <a href={mailtoCodeRequest}>
             <b> zeeguu.team@gmail.com</b>
           </a>
-          {strings.thankYouMsgSuffix}
+          {/* {strings.thankYouMsgSuffix} */}
         </p>
         <Form action={""} method={"POST"}>
-        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
           <FormSection>
             <InputField
               type={"text"}
@@ -90,7 +93,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               placeholder={strings.code}
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
-              helperText={<a href={mailtoCodeRequest}>Request invite code</a>}
             />
 
             <InputField
@@ -129,12 +131,15 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               label={
                 <>
                   By checking this box you agree to our{" "}
-                  <a href="">Privacy Notice</a>
+                  <a
+                    className="bold-link"
+                    href="https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md"
+                  >
+                    Privacy Notice
+                  </a>
                 </>
               }
             />
-
-            {/* <PrivacyNotice /> */}
           </FormSection>
           <ButtonContainer>
             <Button onClick={handleCreate}>{strings.createAccount}</Button>
@@ -144,8 +149,8 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       <Footer>
         <p>
           Already have an account?{" "}
-          <a className="links" href="/login">
-            <b>Log in</b>
+          <a className="bold-link" href="/login">
+            Log in
           </a>
         </p>
       </Footer>

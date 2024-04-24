@@ -54,6 +54,7 @@ const HelperText = styled.div`
 
   a {
     font-weight: 600;
+    text-decoration: underline;
   }
 `;
 

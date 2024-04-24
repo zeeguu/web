@@ -79,9 +79,9 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
       <Footer>
         <p>
           Don't have an account?{" "}
-          <a className="links" href="create_account">
+          <a className="bold-link" href="create_account">
             <b>Register</b>
-          </a>{" "}
+          </a>
         </p>
       </Footer>
     </InfoPage>

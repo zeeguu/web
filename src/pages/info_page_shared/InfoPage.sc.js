@@ -9,6 +9,15 @@ const PageBackground = styled.div`
   width: 100vw;
   min-height: 100dvh;
   background: ${zeeguuOrange};
+
+  .bold {
+    font-weight: 600;
+  }
+
+  .bold-link {
+    font-weight: 600;
+    text-decoration: underline;
+  }
 `;
 
 const PageContainer = styled.div`
