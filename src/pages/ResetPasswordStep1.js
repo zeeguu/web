@@ -43,7 +43,7 @@ export default function ResetPasswordStep1({
   return (
     <Form action={""} method={"post"}>
       <FormSection>
-        <p>{strings.weNeedTheEmailMsg}</p>
+        <p>Enter the email address you used to log in to Zeeguu</p>
         {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
 
         <InputField
