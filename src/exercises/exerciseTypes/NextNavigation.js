@@ -5,7 +5,6 @@ import * as s from "./Exercise.sc";
 import SolutionFeedbackLinks from "./SolutionFeedbackLinks";
 import { random } from "../../utils/basic/arrays";
 import { useEffect, useState } from "react";
-import ProgressionModal from "../ProgressionModal";
 import CelebrationModal from "../CelebrationModal";
 import { APP_DOMAIN } from "../../i18n/appConstants.js";
 import Feature from "../../features/Feature";
@@ -35,9 +34,9 @@ export default function NextNavigation({
   const bookmarkToStudy = bookmarksToStudy[0];
   const exercise = "exercise";
   const [userIsCorrect, setUserIsCorrect] = useState();
+  const [nextCoolingInterval, setNextCoolingInterval] = useState();
   const [correctMessage, setCorrectMessage] = useState("");
   const [learningCycle, setLearningCycle] = useState(null);
-  const [showProgressionModal, setShowProgressionModal] = useState(false);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const isUserAndAnswerCorrect = isCorrect && userIsCorrect;
   const productiveExercisesDisabled =
@@ -45,15 +44,7 @@ export default function NextNavigation({
   const isLastInCycle = bookmarkToStudy.is_last_in_cycle;
   const isLearningCycleOne = learningCycle === 1;
   const isLearningCycleTwo = learningCycle === 2;
-  const shouldShowModal = !localStorage.getItem("hideProgressionModal");
   const learningCycleFeature = Feature.merle_exercises();
-
-  const shouldShowProgressionModal =
-    isUserAndAnswerCorrect &&
-    isLearningCycleOne &&
-    isLastInCycle &&
-    shouldShowModal &&
-    !productiveExercisesDisabled;
 
   const shouldShowCelebrationModal =
     isUserAndAnswerCorrect &&
@@ -71,6 +62,12 @@ export default function NextNavigation({
   }, [bookmarkToStudy.learning_cycle]);
 
   useEffect(() => {
+    // mimics correctness from api
+    const nextCoolingInterval = ["C", "TC", "TTC", "TTTC", "HC", "CC", "CCC"].includes(message);
+    setNextCoolingInterval(nextCoolingInterval);
+  }, [message]);
+
+  useEffect(() => {
     const userIsCorrect = message.includes("C");
     setUserIsCorrect(userIsCorrect);
   }, [message]);
@@ -82,32 +79,23 @@ export default function NextNavigation({
   }, [userIsCorrect]);
 
   useEffect(() => {
-    if (shouldShowProgressionModal) {
-      setShowProgressionModal(true);
-    }
-
     if (shouldShowCelebrationModal) {
       setShowCelebrationModal(true);
     }
-  }, [shouldShowProgressionModal, shouldShowCelebrationModal]);
+  }, [shouldShowCelebrationModal]);
 
   return (
     <>
       {learningCycleFeature && (
         <>
-          <ProgressionModal
-            open={showProgressionModal}
-            onClose={() => setShowProgressionModal(false)}
-            api={api}
-          />
           <CelebrationModal
             open={showCelebrationModal}
             onClose={() => setShowCelebrationModal(false)}
           />
         </>
       )}
-      {isUserAndAnswerCorrect &&
-        (isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled && learningCycleFeature ? (
+      {userIsCorrect &&
+        (nextCoolingInterval && isLearningCycleOne && isLastInCycle && !productiveExercisesDisabled && learningCycleFeature ? (
           <div className="next-nav-learning-cycle">
             <img
               src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
