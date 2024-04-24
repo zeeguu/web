@@ -79,8 +79,8 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
       <Footer>
         <p>
           Don't have an account?{" "}
-          <a className="bold-link" href="create_account">
-            <b>Register</b>
+          <a className="bold underlined-link" href="create_account">
+            Register
           </a>
         </p>
       </Footer>

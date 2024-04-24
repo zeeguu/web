@@ -14,8 +14,7 @@ const PageBackground = styled.div`
     font-weight: 600;
   }
 
-  .bold-link {
-    font-weight: 600;
+  .underlined-link {
     text-decoration: underline;
   }
 `;

@@ -72,11 +72,11 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       </Header>
       <Main>
         <p>
-          To receive an <span className="bold">invitation code</span> or to share your feedback, reach out to
-          us at
+          To receive an <span className="bold">invitation code</span> or to
+          share your feedback, reach out to us at{" "}
           {/* {strings.thankYouMsgPrefix} */}
-          <a href={mailtoCodeRequest}>
-            <b> zeeguu.team@gmail.com</b>
+          <a className="bold underlined-link" href={mailtoCodeRequest}>
+            zeeguu.team@gmail.com
           </a>
           {/* {strings.thankYouMsgSuffix} */}
         </p>
@@ -132,7 +132,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
                 <>
                   By checking this box you agree to our{" "}
                   <a
-                    className="bold-link"
+                    className="bold underlined-link"
                     href="https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md"
                   >
                     Privacy Notice
@@ -149,7 +149,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       <Footer>
         <p>
           Already have an account?{" "}
-          <a className="bold-link" href="/login">
+          <a className="bold underlined-link" href="/login">
             Log in
           </a>
         </p>
