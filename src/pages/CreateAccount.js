@@ -74,9 +74,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
         <p>
           To receive an <span className="bold">invitation code</span> or to
           share your feedback, reach out to us at{" "}
-          {/* {strings.thankYouMsgPrefix} */}
           <span className="bold">zeeguu.team@gmail.com</span>
-          {/* {strings.thankYouMsgSuffix} */}
         </p>
         <Form action={""} method={"POST"}>
           {errorMessage && (
