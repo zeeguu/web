@@ -9,7 +9,7 @@ import strings from "../i18n/definitions";
 import GoToButton from "../components/modal_shared/GoToButton";
 import ButtonContainer from "../components/modal_shared/ButtonContainer";
 
-export default function ProgressionModal({open, onClose}) {
+export default function CelebrationModal({open, onClose}) {
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function ProgressionModal({open, onClose}) {
             <GoToButton
                 onClick={onClose}
             >
-                Back to the Exercises
+                Continue with the exercises
             </GoToButton>
         </ButtonContainer>
       </Footer>
