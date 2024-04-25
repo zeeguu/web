@@ -4,8 +4,6 @@ import strings from "../../i18n/definitions";
 import Tooltip from "@material-ui/core/Tooltip";
 import exerciseTypes from "../ExerciseTypeConstants.js";
 
-import exerciseTypes from "../ExerciseTypeConstants.js";
-
 export default function FeedbackButtons({
   show,
   setShow,

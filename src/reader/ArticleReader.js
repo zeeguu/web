@@ -8,7 +8,6 @@ import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
 import { random } from "../utils/basic/arrays";
 
-
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import * as s from "./ArticleReader.sc";
@@ -26,6 +25,7 @@ import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
+import ratio from "../utils/basic/ratio";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -66,7 +66,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [scrollPosition, setScrollPosition] = useState();
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
-
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -242,15 +241,20 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   const updateArticleDifficultyFeedback = (answer) => {
-    let newArticleInfo = { ...articleInfo, relative_difficulty: answer};
+    let newArticleInfo = { ...articleInfo, relative_difficulty: answer };
     api.submitArticleDifficultyFeedback(
       { article_id: articleInfo.id, difficulty: answer },
       () => {
         setAnswerSubmitted(true);
         setArticleInfo(newArticleInfo);
-      }
+      },
     );
-    api.logReaderActivity(api.DIFFICULTY_FEEDBACK, articleInfo.id, answer, UMR_SOURCE);
+    api.logReaderActivity(
+      api.DIFFICULTY_FEEDBACK,
+      articleInfo.id,
+      answer,
+      UMR_SOURCE,
+    );
   };
 
   return (
@@ -343,20 +347,25 @@ export default function ArticleReader({ api, teacherArticleID }) {
         <div id={"bottomRow"}>
           <ReviewVocabulary articleID={articleID} />
           <s.CombinedBox>
-            <p style={{padding: "0em 2em 0em 2em"}}> {strings.answeringMsg} </p>
+            <p style={{ padding: "0em 2em 0em 2em" }}>
+              {" "}
+              {strings.answeringMsg}{" "}
+            </p>
             <LikeFeedBackBox
               articleInfo={articleInfo}
               setLikedState={setLikedState}
             />
-            <DifficultyFeedbackBox 
+            <DifficultyFeedbackBox
               articleInfo={articleInfo}
               updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
             />
             {answerSubmitted && (
-                <s.InvisibleBox>
-                <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
+              <s.InvisibleBox>
+                <h3 align="center">
+                  Thank You {random(["🤗", "🙏", "😊", "🎉"])}
+                </h3>
               </s.InvisibleBox>
-            )} 
+            )}
           </s.CombinedBox>
         </div>
       )}

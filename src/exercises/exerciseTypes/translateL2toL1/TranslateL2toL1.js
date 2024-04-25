@@ -42,17 +42,18 @@ export default function TranslateL2toL1({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    setInteractiveText(
-      new InteractiveText(
-        bookmarksToStudy[0].context,
-        bookmarksToStudy[0].from_lang,
-        bookmarksToStudy[0].article_id,
-        api,
-        "TRANSLATE WORDS IN EXERCISE",
-        EXERCISE_TYPE,
-        speech,
-      ),
-    );
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
   }, []);
 
   function handleShowSolution(e, message) {
@@ -66,7 +67,7 @@ export default function TranslateL2toL1({
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    setMessageToAPI(concatMessage);                        
+    setMessageToAPI(concatMessage);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
@@ -85,7 +86,7 @@ export default function TranslateL2toL1({
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
       bookmarksToStudy[0].id,
-      exerciseSessionId
+      exerciseSessionId,
     );
   }
 
@@ -110,35 +111,37 @@ export default function TranslateL2toL1({
         />
       </div>
       <div className="contextExample">
-                <TranslatableText
-                    isCorrect={isCorrect}
-                    interactiveText={interactiveText}
-                    translating={true}
-                    pronouncing={false}
-                    translatedWords={translatedWords}
-                    setTranslatedWords={setTranslatedWords}
-                    bookmarkToStudy={bookmarksToStudy[0].from}
-                    boldExpression={bookmarksToStudy[0].from}
-                />
-            </div>
-      
+        <TranslatableText
+          isCorrect={isCorrect}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          translatedWords={translatedWords}
+          setTranslatedWords={setTranslatedWords}
+          bookmarkToStudy={bookmarksToStudy[0].from}
+          boldExpression={bookmarksToStudy[0].from}
+        />
+      </div>
+
       {!isCorrect && (
         <>
-            <BottomInput
-                handleCorrectAnswer={handleCorrectAnswer}
-                handleIncorrectAnswer={handleIncorrectAnswer}
-                bookmarksToStudy={bookmarksToStudy}
-                messageToAPI={messageToAPI}
-                setMessageToAPI={setMessageToAPI}
-                isL1Answer={true}
-            />
+          <BottomInput
+            handleCorrectAnswer={handleCorrectAnswer}
+            handleIncorrectAnswer={handleIncorrectAnswer}
+            bookmarksToStudy={bookmarksToStudy}
+            messageToAPI={messageToAPI}
+            setMessageToAPI={setMessageToAPI}
+            isL1Answer={true}
+          />
         </>
       )}
       {isCorrect && (
         <>
-            <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>   
+          <h1 className="wordInContextHeadline">
+            {removePunctuation(bookmarksToStudy[0].to)}
+          </h1>
         </>
-        )}
+      )}
 
       <NextNavigation
         message={messageToAPI}

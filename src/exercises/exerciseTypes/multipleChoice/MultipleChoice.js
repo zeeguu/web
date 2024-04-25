@@ -42,23 +42,25 @@ export default function MultipleChoice({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  
+
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
       consolidateChoiceOptions(words);
     });
-    setInteractiveText(
-      new InteractiveText(
-        bookmarksToStudy[0].context,
-        bookmarksToStudy[0].from_lang,
-        bookmarksToStudy[0].article_id,
-        api,
-        "TRANSLATE WORDS IN EXERCISE",
-        EXERCISE_TYPE,
-        speech,
-      ),
-    );
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

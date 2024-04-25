@@ -44,24 +44,23 @@ export default function MultipleChoiceContext({
     setExerciseType(EXERCISE_TYPE);
     let initExerciseBookmarks = [...bookmarksToStudy];
     for (let i = 0; i < initExerciseBookmarks.length; i++) {
-      if (i === 0)
-        initExerciseBookmarks[i].isExercise = true
-      else
-        initExerciseBookmarks[i].isExercise = false
+      if (i === 0) initExerciseBookmarks[i].isExercise = true;
+      else initExerciseBookmarks[i].isExercise = false;
     }
     setExerciseBookmarks(shuffle(initExerciseBookmarks));
 
-    setInteractiveText(
-      new InteractiveText(
-        bookmarksToStudy[0].context,
-        bookmarksToStudy[0].from_lang,
-        bookmarksToStudy[0].article_id,
-        api,
-        "TRANSLATE WORDS IN EXERCISE",
-        EXERCISE_TYPE,
-        speech,
-      ),
-    );
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
   }, []);
 
   function handleShowSolution() {
@@ -72,27 +71,30 @@ export default function MultipleChoiceContext({
     setShowSolution(true);
   }
 
- function notifyChoiceSelection(selectedChoiceId, selectedChoiceContext, index, e) {
-    if(isCorrect) return;
+  function notifyChoiceSelection(
+    selectedChoiceId,
+    selectedChoiceContext,
+    index,
+    e,
+  ) {
+    if (isCorrect) return;
     setClickedOption(index);
-    if (
-        selectedChoiceId === bookmarksToStudy[0].id
-    ) {
-        setShowSolution(true);
-        setClickedIndex(index);
-        correctAnswer(bookmarksToStudy[0]);
-        setIsCorrect(true);
-        let concatMessage = messageToAPI + "C";
-        handleAnswer(concatMessage);
+    if (selectedChoiceId === bookmarksToStudy[0].id) {
+      setShowSolution(true);
+      setClickedIndex(index);
+      correctAnswer(bookmarksToStudy[0]);
+      setIsCorrect(true);
+      let concatMessage = messageToAPI + "C";
+      handleAnswer(concatMessage);
     } else {
-        setClickedIndex(null);
-        setIncorrectAnswer(selectedChoiceId);
-        notifyIncorrectAnswer(bookmarksToStudy[0]);
-        let concatMessage = messageToAPI + "W";
-        setMessageToAPI(concatMessage);
-            setTimeout(() => {
-              setClickedOption(null);
-            }, 500)
+      setClickedIndex(null);
+      setIncorrectAnswer(selectedChoiceId);
+      notifyIncorrectAnswer(bookmarksToStudy[0]);
+      let concatMessage = messageToAPI + "W";
+      setMessageToAPI(concatMessage);
+      setTimeout(() => {
+        setClickedOption(null);
+      }, 500);
     }
   }
 
@@ -107,7 +109,7 @@ export default function MultipleChoiceContext({
     );
   }
 
-  function getHighlightedWord(word){
+  function getHighlightedWord(word) {
     return `<span class="highlightedWord">${word}</span>`;
   }
 
@@ -126,20 +128,41 @@ export default function MultipleChoiceContext({
           message={messageToAPI}
         />
       </div>
-      <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].from)}</h1>
-        {exerciseBookmarks.map((option, index) => (
-            <s.MultipleChoiceContext 
-                key={index} 
-                clicked={index === clickedIndex}
-                isCorrect={isCorrect}
-                className={clickedOption !== null ? (index === clickedOption) ? (option.isExercise) ? "correct" : "wrong" : "" : ""}
-                onClick={(e) => notifyChoiceSelection(option.id, option.context, index, e)}>
-                <div dangerouslySetInnerHTML={{ __html: showSolution
-                        ? (option.isExercise ? option.context.replace(option.from, getHighlightedWord(option.from)) : option.context.replace(option.from, `<b>${option.from}</b>`))
-                        : option.context.replace(option.from, '_____')
-                      }}/>
-            </s.MultipleChoiceContext>
-        ))}
+      <h1 className="wordInContextHeadline">
+        {removePunctuation(bookmarksToStudy[0].from)}
+      </h1>
+      {exerciseBookmarks.map((option, index) => (
+        <s.MultipleChoiceContext
+          key={index}
+          clicked={index === clickedIndex}
+          isCorrect={isCorrect}
+          className={
+            clickedOption !== null
+              ? index === clickedOption
+                ? option.isExercise
+                  ? "correct"
+                  : "wrong"
+                : ""
+              : ""
+          }
+          onClick={(e) =>
+            notifyChoiceSelection(option.id, option.context, index, e)
+          }
+        >
+          <div
+            dangerouslySetInnerHTML={{
+              __html: showSolution
+                ? option.isExercise
+                  ? option.context.replace(
+                      option.from,
+                      getHighlightedWord(option.from),
+                    )
+                  : option.context.replace(option.from, `<b>${option.from}</b>`)
+                : option.context.replace(option.from, "_____"),
+            }}
+          />
+        </s.MultipleChoiceContext>
+      ))}
 
       <NextNavigation
         message={messageToAPI}

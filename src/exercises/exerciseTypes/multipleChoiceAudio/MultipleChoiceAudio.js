@@ -53,17 +53,19 @@ export default function MultipleChoiceAudio({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    setInteractiveText(
-      new InteractiveText(
-        bookmarksToStudy[0].context,
-        bookmarksToStudy[0].from_lang,
-        bookmarksToStudy[0].article_id,
-        api,
-        "TRANSLATE WORDS IN EXERCISE",
-        EXERCISE_TYPE,
-        speech,
-      ),
-    );
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
+
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
@@ -252,7 +254,9 @@ export default function MultipleChoiceAudio({
       {isCorrect && (
         <>
           <br></br>
-          <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>
+          <h1 className="wordInContextHeadline">
+            {removePunctuation(bookmarksToStudy[0].to)}
+          </h1>
         </>
       )}
       <NextNavigation

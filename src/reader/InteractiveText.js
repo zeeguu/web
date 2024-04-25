@@ -35,6 +35,9 @@ export default class InteractiveText {
 
     word = word.fuseWithNeighborsIfNeeded(this.api);
 
+    console.log(this.api);
+    console.dir(this.api);
+
     this.api
       .getOneTranslation(
         this.articleInfo.language,
@@ -167,6 +170,7 @@ export default class InteractiveText {
       if (endOfSentenceIn(word)) return word.word;
       return word.word + " " + getRightContext(word.next, count - 1);
     }
+
     let context =
       getLeftContext(word.prev, 32) +
       " " +

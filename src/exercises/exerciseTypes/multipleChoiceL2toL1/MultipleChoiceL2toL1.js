@@ -44,34 +44,34 @@ export default function MultipleChoiceL2toL1({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    setInteractiveText(
-      new InteractiveText(
-        bookmarksToStudy[0].context,
-        bookmarksToStudy[0].from_lang,
-        bookmarksToStudy[0].article_id,
-        api,
-        "TRANSLATE WORDS IN EXERCISE",
-        EXERCISE_TYPE,
-        speech,
-      ),
-    );
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
   }, []);
 
   useEffect(() => {
     if (interactiveText) {
-      setButtonOptions(shuffle([
-        removePunctuation(bookmarksToStudy[0].to),
-        removePunctuation(bookmarksToStudy[1].to),
-        removePunctuation(bookmarksToStudy[2].to),
-      ]));
+      setButtonOptions(
+        shuffle([
+          removePunctuation(bookmarksToStudy[0].to),
+          removePunctuation(bookmarksToStudy[1].to),
+          removePunctuation(bookmarksToStudy[2].to),
+        ]),
+      );
     }
   }, [interactiveText]);
 
   function notifyChoiceSelection(selectedChoice) {
-    if (
-      selectedChoice ===
-      removePunctuation(bookmarksToStudy[0].to)
-    ) {
+    if (selectedChoice === removePunctuation(bookmarksToStudy[0].to)) {
       correctAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
@@ -101,7 +101,7 @@ export default function MultipleChoiceL2toL1({
       exerciseSessionId,
     );
   }
- 
+
   if (!interactiveText) {
     return <LoadingAnimation />;
   }

@@ -51,17 +51,18 @@ export default function SpellWhatYouHear({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    setInteractiveText(
-      new InteractiveText(
-        bookmarksToStudy[0].context,
-        bookmarksToStudy[0].from_lang,
-        bookmarksToStudy[0].article_id,
-        api,
-        "TRANSLATE WORDS IN EXERCISE",
-        EXERCISE_TYPE,
-        speech,
-      ),
-    );
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
 
@@ -104,6 +105,7 @@ export default function SpellWhatYouHear({
     api.logUserActivity("AUDIO_DISABLE", "", bookmarksToStudy[0].id, "");
     moveToNextExercise();
   }
+
   function handleIncorrectAnswer() {
     setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
@@ -170,7 +172,9 @@ export default function SpellWhatYouHear({
       {isCorrect && (
         <>
           <br></br>
-          <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>
+          <h1 className="wordInContextHeadline">
+            {removePunctuation(bookmarksToStudy[0].to)}
+          </h1>
           <div className="contextExample">
             <TranslatableText
               isCorrect={isCorrect}
