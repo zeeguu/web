@@ -17,7 +17,7 @@ export default function SelectOptions({
         {selectLabel}
       </s.Label>
       <s.SelectStyledContainer>
-        <s.Select id={id} onChange={(e) => onChange(e.target.value)}>
+        <s.Select id={id} onChange={onChange}>
           <option style={{ display: "none" }} />
           <option value="" disabled selected>
             {placeholder}

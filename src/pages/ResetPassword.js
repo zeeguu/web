@@ -6,13 +6,13 @@ import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Footer from "./info_page_shared/Footer";
 
-import useAuthenticationInputField from "../hooks/useAuthenticationInputField";
+import useFormField from "../hooks/useFormField";
 
 import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
 
 export default function ResetPassword({ api }) {
-  const [email, handleEmailChange] = useAuthenticationInputField("");
+  const [email, handleEmailChange] = useFormField("");
   const [codeSent, setCodeSent] = useState(false);
 
   function validEmail() {

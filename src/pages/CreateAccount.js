@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import redirect from "../utils/routing/routing";
-import useAuthenticationInputField from "../hooks/useAuthenticationInputField";
+import useFormField from "../hooks/useFormField";
 
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -22,10 +22,10 @@ import strings from "../i18n/definitions";
 import * as EmailValidator from "email-validator";
 
 export default function CreateAccount({ api, handleSuccessfulSignIn }) {
-  const [inviteCode, handleInviteCodeChange] = useAuthenticationInputField("");
-  const [name, handleNameChange] = useAuthenticationInputField("");
-  const [email, handleEmailChange] = useAuthenticationInputField("");
-  const [password, handlePasswordChange] = useAuthenticationInputField("");
+  const [inviteCode, handleInviteCodeChange] = useFormField("");
+  const [name, handleNameChange] = useFormField("");
+  const [email, handleEmailChange] = useFormField("");
+  const [password, handlePasswordChange] = useFormField("");
 
   const [errorMessage, setErrorMessage] = useState("");
 

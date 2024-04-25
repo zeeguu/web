@@ -112,7 +112,7 @@ export default function LanguagePreferences({ api, setUser }) {
               id={"practiced-languages"}
               selectLabel={"I want to learn"}
               options={systemLanguages.learnable_languages}
-              onChange={setLearned_language}
+              onChange={(e) => setLearned_language(e.target.value)}
             />
 
             <SelectOptions
@@ -122,7 +122,7 @@ export default function LanguagePreferences({ api, setUser }) {
               id={"level-of-practiced-languages"}
               selectLabel={"My current level"}
               options={CEFR_LEVELS}
-              onChange={setLearned_cefr_level}
+              onChange={(e) => setLearned_cefr_level(e.target.value)}
             />
 
             <SelectOptions
@@ -132,7 +132,7 @@ export default function LanguagePreferences({ api, setUser }) {
               id={"translation-languages"}
               selectLabel={"I want translations in"}
               options={systemLanguages.native_languages}
-              onChange={setNative_language}
+              onChange={(e) => setNative_language(e.target.vaue)}
               current={"en"}
             />
           </FormSection>

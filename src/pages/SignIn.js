@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useRedirectLink from "../hooks/useRedirectLink";
 
-import useAuthenticationInputField from "../hooks/useAuthenticationInputField";
+import useFormField from "../hooks/useFormField";
 
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -22,8 +22,8 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   // TODO: Fix this bug in a different way. Requires understanding why strings._language changes to "da" without it being asked to, whenever this component renders. Perhaps it imports an un-updated version of strings?
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
-  const [email, handleEmailChange] = useAuthenticationInputField("");
-  const [password, handlePasswordChange] = useAuthenticationInputField("");
+  const [email, handleEmailChange] = useFormField("");
+  const [password, handlePasswordChange] = useFormField("");
   
   const [errorMessage, setErrorMessage] = useState("");
 

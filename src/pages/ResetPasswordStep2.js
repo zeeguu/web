@@ -2,7 +2,7 @@ import { useState } from "react";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
-import useAuthenticationInputField from "../hooks/useAuthenticationInputField";
+import useFormField from "../hooks/useFormField";
 
 import Form from "./info_page_shared/Form";
 import FormSection from "./info_page_shared/FormSection";
@@ -13,8 +13,8 @@ import Button from "./info_page_shared/Button";
 
 export default function ResetPasswordStep2({ api, email }) {
   const [errorMessage, setErrorMessage] = useState("");
-  const [code, handleCodeChange] = useAuthenticationInputField("");
-  const [newPass, handleNewPassChange] = useAuthenticationInputField("");
+  const [code, handleCodeChange] = useFormField("");
+  const [newPass, handleNewPassChange] = useFormField("");
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
 

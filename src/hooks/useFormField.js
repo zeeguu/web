@@ -6,12 +6,16 @@ It could be extended with:
     - error message states 
 */
 
-export default function useAuthenticationInputField(initialState) {
+export default function useFormField(initialState) {
   const [currentState, setState] = useState(initialState);
 
   function handleInputChange(e) {
     setState(e.target.value);
   }
 
-  return [currentState, handleInputChange];
+  function resetInputState() {
+    setState("");
+  }
+
+  return [currentState, handleInputChange, resetInputState];
 }
