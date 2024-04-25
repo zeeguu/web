@@ -71,12 +71,12 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
               helperText={<a href="/reset_pass">Forgot password?</a>}
             />
           </FormSection>
-          <ButtonContainer>
-            <Button onClick={handleSignIn}>Log in</Button>
-          </ButtonContainer>
         </Form>
       </Main>
       <Footer>
+        <ButtonContainer>
+          <Button onClick={handleSignIn}>Log in</Button>
+        </ButtonContainer>
         <p>
           Don't have an account?{" "}
           <a className="bold underlined-link" href="create_account">
