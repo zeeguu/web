@@ -133,7 +133,7 @@ export default function NewArticles() {
         originalList={originalList}
         setArticleList={setArticleList}
       />
-
+      <Reminder hasExtension={isExtensionAvailable}></Reminder>
       {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
