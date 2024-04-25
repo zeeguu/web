@@ -12,6 +12,7 @@ const ButtonLink = styled.a`
 `;
 
 const Button = styled.button`
+  cursor: pointer;
   width: 100%;
   color: white;
   border: none;
@@ -27,6 +28,11 @@ const Button = styled.button`
   background-color: ${zeeguuOrange};
   font-weight: 600;
   border-bottom: solid 0.2em ${zeeguuDarkOrange};
+
+  &:active {
+    border: none;
+    margin: 0.2em 0 0 0;
+  }
 
   @media (max-width: 768px) {
     width: 100%;

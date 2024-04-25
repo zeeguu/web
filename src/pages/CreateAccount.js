@@ -2,13 +2,12 @@ import { useState } from "react";
 
 import redirect from "../utils/routing/routing";
 
-import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
-
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
 import FormSection from "./info_page_shared/FormSection";
 import InputField from "./info_page_shared/InputField";
 import Footer from "./info_page_shared/Footer";
@@ -27,9 +26,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const mailtoCodeRequest = `mailto:zeeguu.team@gmail.com?subject=Invitation Code Request&body=Dear Zeeguu Team,
-  %0D%0A%0D%0AI would like to request the Invitation Code to register for Zeeguu.%0D%0A%0D%0AThank you!`;
 
   let validatorRules = [
     [name === "", strings.nameIsRequired],
