@@ -7,25 +7,29 @@ import Word from "./Word";
 import * as s from "../components/TopMessage.sc";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 
-export default function Productive ({ api }) {
+export default function Productive({ api }) {
   const [words, setWords] = useState(null);
-  const [productiveExercisesEnabled, setProductiveExercisesEnabled] = useState();
+  const [productiveExercisesEnabled, setProductiveExercisesEnabled] =
+    useState();
 
   useEffect(() => {
     api.topBookmarks(300, (topWords) => {
-      const productiveWords = topWords.filter((word) => word.learning_cycle === 2);
+      const productiveWords = topWords.filter(
+        (word) => word.learning_cycle === 2,
+      );
       setWords(productiveWords);
     });
     setTitle(strings.titleProductiveWords);
   }, [api]);
 
   useEffect(() => {
-    const productiveExercisesEnabled = localStorage.getItem('productiveExercisesEnabled');
+    const productiveExercisesEnabled = localStorage.getItem(
+      "productiveExercisesEnabled",
+    );
     if (productiveExercisesEnabled) {
-        setProductiveExercisesEnabled(JSON.parse(productiveExercisesEnabled));
+      setProductiveExercisesEnabled(JSON.parse(productiveExercisesEnabled));
     }
-}, []);
-
+  }, []);
 
   if (!words) {
     return <LoadingAnimation />;
@@ -33,21 +37,19 @@ export default function Productive ({ api }) {
 
   return (
     <>
-        <s.TopMessage>
-            <img 
-              src="/static/icons/productive-icon.png" 
-              alt="Productive Icon" 
-              style={{height: '2.5em', width: '2.5em', margin: '0.5em'}}
-            />
-            {strings.productiveMsg}
-        </s.TopMessage>
-        {productiveExercisesEnabled === false && (
-          <s.TopMessage>
-            {strings.productiveDisableMsg}
-          </s.TopMessage>
-        )}
+      <s.TopMessage>
+        <img
+          src="/static/icons/productive-icon.png"
+          alt="Productive Icon"
+          style={{ height: "2.5em", width: "2.5em", margin: "0.5em" }}
+        />
+        {strings.productiveMsg}
+      </s.TopMessage>
+      {productiveExercisesEnabled === false && (
+        <s.TopMessage>{strings.productiveDisableMsg}</s.TopMessage>
+      )}
       {words.map((each) => (
-        <Word key={each.id} bookmark={each} api={api} source={UMR_SOURCE}/>
+        <Word key={each.id} bookmark={each} api={api} source={UMR_SOURCE} />
       ))}
     </>
   );
