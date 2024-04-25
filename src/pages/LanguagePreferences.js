@@ -5,13 +5,12 @@ import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 
 import redirect from "../utils/routing/routing";
 
-import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
-
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
 import FormSection from "./info_page_shared/FormSection";
 import SelectOptions from "./info_page_shared/SelectOptions";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
@@ -20,17 +19,14 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import validator from "../assorted/validator";
 import LoadingAnimation from "../components/LoadingAnimation";
-import strings from "../i18n/definitions";
 
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
 export default function LanguagePreferences({ api, setUser }) {
   const user = useContext(UserContext);
-
   const [learned_language, setLearned_language] = useState("");
   const [native_language, setNative_language] = useState("en");
   const [learned_cefr_level, setLearned_cefr_level] = useState("");
-
   const [systemLanguages, setSystemLanguages] = useState();
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -99,7 +95,9 @@ export default function LanguagePreferences({ api, setUser }) {
   return (
     <InfoPage type={"narrow"}>
       <Header>
-        <Heading>What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?</Heading>
+        <Heading>
+          What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?
+        </Heading>
       </Header>
       <Main>
         <Form action={""}>
