@@ -5,7 +5,7 @@ import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import Reminder from "./Reminder";
+
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
 import {
@@ -133,7 +133,7 @@ export default function NewArticles() {
         originalList={originalList}
         setArticleList={setArticleList}
       />
-      <Reminder hasExtension={isExtensionAvailable}></Reminder>
+
       {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
