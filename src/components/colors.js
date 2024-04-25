@@ -17,16 +17,18 @@ let darkGrey = "#808080";
 let veryDarkGrey = "#575757";
 let almostBlack = "#444444";
 let zeeguuRed = "#d7263d";
+let zeeguuRedTransparent = "hsl(352, 70%, 50%, 11%)";
+let zeeguuDarkRed = "hsl(352, 70%, 43%)";
 let errorRed = "red";
 let zeeguuViolet = "#4a0d67";
-let darkGreen = "#006400"
+let darkGreen = "#006400";
 let alertGreen = "#4caf50"; //careful when changing this color. It is defined to match the color in the success-alert to undo feedback submits.
 let matchGreen = "#B3F78F";
-let translationHover= "#2f76ac";
-let lightOrange= "#ffe5b9";
+let translationHover = "#2f76ac";
+let lightOrange = "#ffe5b9";
 let brown = "#A46A00";
 let white = "#FFFFFF";
-let buttonBorder= "#3079b0";
+let buttonBorder = "#3079b0";
 let gray = "999999";
 //black - the css standard color is used throughout the repo.
 //white - the css standard color is used throughout the repo.
@@ -61,6 +63,8 @@ export {
   veryDarkGrey,
   almostBlack,
   zeeguuRed,
+  zeeguuRedTransparent,
+  zeeguuDarkRed,
   errorRed,
   zeeguuViolet,
   darkGreen,
