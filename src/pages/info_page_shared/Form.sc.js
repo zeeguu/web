@@ -7,7 +7,7 @@ const Form = styled.form`
   align-items: center;
   gap: 1.5rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 38rem;
 `;
 
 export { Form };
