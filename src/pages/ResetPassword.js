@@ -6,11 +6,13 @@ import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Footer from "./info_page_shared/Footer";
 
+import useAuthenticationInputField from "../hooks/useAuthenticationInputField";
+
 import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
 
 export default function ResetPassword({ api }) {
-  const [email, setEmail] = useState("");
+  const [email, handleEmailChange] = useAuthenticationInputField("");
   const [codeSent, setCodeSent] = useState(false);
 
   function validEmail() {
@@ -27,13 +29,13 @@ export default function ResetPassword({ api }) {
           <ResetPasswordStep1
             api={api}
             email={email}
-            setEmail={setEmail}
+            setEmail={handleEmailChange}
             notifyOfValidEmail={validEmail}
           />
         )}
 
         {codeSent && (
-          <ResetPasswordStep2 api={api} email={email} setEmail={setEmail} />
+          <ResetPasswordStep2 api={api} email={email} setEmail={handleEmailChange} />
         )}
       </Main>
       <Footer>

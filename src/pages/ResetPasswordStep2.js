@@ -2,18 +2,19 @@ import { useState } from "react";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
-import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+import useAuthenticationInputField from "../hooks/useAuthenticationInputField";
 
 import Form from "./info_page_shared/Form";
 import FormSection from "./info_page_shared/FormSection";
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
 import InputField from "./info_page_shared/InputField";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
 
 export default function ResetPasswordStep2({ api, email }) {
   const [errorMessage, setErrorMessage] = useState("");
-  const [code, setCode] = useState("");
-  const [newPass, setNewPass] = useState("");
+  const [code, handleCodeChange] = useAuthenticationInputField("");
+  const [newPass, handleNewPassChange] = useAuthenticationInputField("");
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);
 
@@ -78,7 +79,6 @@ export default function ResetPasswordStep2({ api, email }) {
         <p>
           {strings.plsCheck} <b>{email}</b> {strings.forCode}
         </p>
-
         {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
 
         <InputField
@@ -87,7 +87,7 @@ export default function ResetPasswordStep2({ api, email }) {
           name={"received-code"}
           placeholder={"Enter the code"}
           value={code}
-          onChange={(e) => setCode(e.target.value)}
+          onChange={handleCodeChange}
         />
 
         <InputField
@@ -96,7 +96,7 @@ export default function ResetPasswordStep2({ api, email }) {
           name={"new-password"}
           placeholder={"Must be at least 4 characters long"}
           value={newPass}
-          onChange={(e) => setNewPass(e.target.value)}
+          onChange={handleNewPassChange}
         />
       </FormSection>
 

@@ -3,10 +3,9 @@ import * as EmailValidator from "email-validator";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
-import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
-
 import Form from "./info_page_shared/Form";
 import FormSection from "./info_page_shared/FormSection";
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
 import InputField from "./info_page_shared/InputField";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
@@ -14,7 +13,7 @@ import Button from "./info_page_shared/Button";
 export default function ResetPasswordStep1({
   api,
   email,
-  setEmail,
+  handleEmailChange,
   notifyOfValidEmail,
 }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -56,10 +55,9 @@ export default function ResetPasswordStep1({
           name={"email"}
           placeholder={"example@email.com"}
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
         />
       </FormSection>
-
       <ButtonContainer>
         <Button onClick={handleResetPassword}>Reset Password</Button>
       </ButtonContainer>

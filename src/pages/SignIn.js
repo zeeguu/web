@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useRedirectLink from "../hooks/useRedirectLink";
 
-import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+import useAuthenticationInputField from "../hooks/useAuthenticationInputField";
 
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -9,6 +9,7 @@ import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
 import FormSection from "./info_page_shared/FormSection";
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
 import InputField from "./info_page_shared/InputField";
 import Footer from "./info_page_shared/Footer";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
@@ -21,8 +22,9 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   // TODO: Fix this bug in a different way. Requires understanding why strings._language changes to "da" without it being asked to, whenever this component renders. Perhaps it imports an un-updated version of strings?
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, handleEmailChange] = useAuthenticationInputField("");
+  const [password, handlePasswordChange] = useAuthenticationInputField("");
+  
   const [errorMessage, setErrorMessage] = useState("");
 
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
@@ -57,7 +59,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
               name={"email"}
               placeholder={"example@email.com"}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
             />
 
             <InputField
@@ -67,7 +69,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
               name={"password"}
               placeholder={"Password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               helperText={<a href="/reset_pass">Forgot password?</a>}
             />
           </FormSection>

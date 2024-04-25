@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import redirect from "../utils/routing/routing";
+import useAuthenticationInputField from "../hooks/useAuthenticationInputField";
 
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -21,10 +22,11 @@ import strings from "../i18n/definitions";
 import * as EmailValidator from "email-validator";
 
 export default function CreateAccount({ api, handleSuccessfulSignIn }) {
-  const [inviteCode, setInviteCode] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [inviteCode, handleInviteCodeChange] = useAuthenticationInputField("");
+  const [name, handleNameChange] = useAuthenticationInputField("");
+  const [email, handleEmailChange] = useAuthenticationInputField("");
+  const [password, handlePasswordChange] = useAuthenticationInputField("");
+
   const [errorMessage, setErrorMessage] = useState("");
 
   let validatorRules = [
@@ -84,7 +86,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               name={"invite-code"}
               placeholder={strings.code}
               value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value)}
+              onChange={handleInviteCodeChange}
             />
 
             <InputField
@@ -94,7 +96,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               name={"name"}
               placeholder={"First and last name"}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={handleNameChange}
             />
 
             <InputField
@@ -104,7 +106,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               name={"email"}
               placeholder={"example@email.com"}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
             />
 
             <InputField
@@ -114,7 +116,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               name={"password"}
               placeholder={"Insert your password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               helperText={"Must contain at least 4 characters"}
             />
           </FormSection>
