@@ -4,6 +4,7 @@ import { UserContext } from "../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 
 import redirect from "../utils/routing/routing";
+import useFormField from "../hooks/useFormField";
 
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -24,11 +25,11 @@ import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
 export default function LanguagePreferences({ api, setUser }) {
   const user = useContext(UserContext);
-  const [learned_language, setLearned_language] = useState("");
-  const [native_language, setNative_language] = useState("en");
-  const [learned_cefr_level, setLearned_cefr_level] = useState("");
+  const [learned_language, handleLearned_language_change] = useFormField("");
+  const [native_language, handleNative_language_change] = useFormField("en");
+  const [learned_cefr_level, handleLearned_cefr_level_change] =
+    useFormField("");
   const [systemLanguages, setSystemLanguages] = useState();
-
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -112,7 +113,7 @@ export default function LanguagePreferences({ api, setUser }) {
               id={"practiced-languages"}
               selectLabel={"I want to learn"}
               options={systemLanguages.learnable_languages}
-              onChange={(e) => setLearned_language(e.target.value)}
+              onChange={handleLearned_language_change}
             />
 
             <SelectOptions
@@ -122,7 +123,7 @@ export default function LanguagePreferences({ api, setUser }) {
               id={"level-of-practiced-languages"}
               selectLabel={"My current level"}
               options={CEFR_LEVELS}
-              onChange={(e) => setLearned_cefr_level(e.target.value)}
+              onChange={handleLearned_cefr_level_change}
             />
 
             <SelectOptions
@@ -132,7 +133,7 @@ export default function LanguagePreferences({ api, setUser }) {
               id={"translation-languages"}
               selectLabel={"I want translations in"}
               options={systemLanguages.native_languages}
-              onChange={(e) => setNative_language(e.target.vaue)}
+              onChange={handleNative_language_change}
               current={"en"}
             />
           </FormSection>
