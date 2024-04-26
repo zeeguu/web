@@ -70,8 +70,8 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       </Header>
       <Main>
         <p>
-          To receive an <span className="bold">invitation code</span> or to
-          share your feedback, reach out to us at{" "}
+          To receive an <span className="bold">invite code</span> or to share
+          your feedback, reach out to us at{" "}
           <span className="bold">zeeguu.team@gmail.com</span>
         </p>
         <Form action={""} method={"POST"}>
@@ -84,7 +84,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               label={"Invite code"}
               id={"invite-code"}
               name={"invite-code"}
-              placeholder={strings.code}
+              placeholder={"Enter your invite code"}
               value={inviteCode}
               onChange={handleInviteCodeChange}
             />
@@ -114,7 +114,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               label={"Password"}
               id={"password"}
               name={"password"}
-              placeholder={"Insert your password"}
+              placeholder={"Enter password"}
               value={password}
               onChange={handlePasswordChange}
               helperText={"Must contain at least 4 characters"}

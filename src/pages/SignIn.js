@@ -24,7 +24,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
 
   const [email, handleEmailChange] = useFormField("");
   const [password, handlePasswordChange] = useFormField("");
-  
+
   const [errorMessage, setErrorMessage] = useState("");
 
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
@@ -67,7 +67,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
               label={strings.password}
               id={"password"}
               name={"password"}
-              placeholder={"Password"}
+              placeholder={"Enter your password"}
               value={password}
               onChange={handlePasswordChange}
               helperText={<a href="/reset_pass">Forgot password?</a>}
