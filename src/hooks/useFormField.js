@@ -1,6 +1,6 @@
 import { useState } from "react";
-/* 
-input field behaviour used for account creation and logging in.
+/*
+A custom hook controlling form field logic.
 It could be extended with:
     - validation support (a function with validation rules could be passed as an argument)
     - error message states 
