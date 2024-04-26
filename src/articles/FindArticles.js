@@ -8,14 +8,10 @@ import LoadingAnimation from "../components/LoadingAnimation";
 
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
-import {
-  runningInChromeDesktop,
-  runningInFirefoxDesktop,
-} from "../utils/misc/browserDetection";
-import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
+import useExtensionCommunication from "../hooks/useExtensionCommunication";
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
@@ -37,7 +33,7 @@ export default function NewArticles() {
 
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
-  const [hasExtension, setHasExtension] = useState(true);
+  const [isExtensionAvailable] = useExtensionCommunication();
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   const [
@@ -71,10 +67,6 @@ export default function NewArticles() {
         LocalStorage.displayedExtensionPopup(),
     );
 
-    if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
-      checkExtensionInstalled(setHasExtension);
-    }
-
     // load articles)
     if (searchQuery) {
       api.search(searchQuery, (articles) => {
@@ -91,10 +83,10 @@ export default function NewArticles() {
   }, []);
 
   useEffect(() => {
-    if (!hasExtension) {
+    if (!isExtensionAvailable) {
       setExtensionMessageOpen(true);
     }
-  }, [hasExtension]);
+  }, [isExtensionAvailable]);
 
   if (articleList == null) {
     return <LoadingAnimation />;
@@ -113,7 +105,7 @@ export default function NewArticles() {
     <>
       <ExtensionMessage
         open={extensionMessageOpen}
-        hasExtension={hasExtension}
+        hasExtension={isExtensionAvailable}
         displayedExtensionPopup={displayedExtensionPopup}
         setExtensionMessageOpen={setExtensionMessageOpen}
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
@@ -139,7 +131,7 @@ export default function NewArticles() {
           key={each.id}
           article={each}
           api={api}
-          hasExtension={hasExtension}
+          hasExtension={isExtensionAvailable}
           doNotShowRedirectionModal_UserPreference={
             doNotShowRedirectionModal_UserPreference
           }
