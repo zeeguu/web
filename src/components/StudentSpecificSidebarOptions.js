@@ -1,26 +1,20 @@
 import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
-import { useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../exercises/ExerciseConstants";
+import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 
-export default function StudentSpecificSidebarOptions({
-  SidebarLink,
-  user,
-  api,
-}) {
+export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
-  const [hasExercisesToDo, setHasExercisesToDo] = useState();
+  const exerciseNotification = useContext(ExerciseCountContext);
+  const [hasNotification, setHasNotification] = useState();
+  const [totalExercisesInPipeline, setTotalExercisesInPipeline] = useState();
 
   useEffect(() => {
-    if (user["totalExercises"] === undefined) {
-      api.hasBookmarksInPipelineToReview((hasBookmarks) => {
-        setHasExercisesToDo(hasBookmarks);
-      });
-    } else {
-      setHasExercisesToDo(user["totalExercises"] > 0);
-    }
+    exerciseNotification.setHasExercisesHook = setHasNotification;
+    exerciseNotification.setExerciseCounterHook = setTotalExercisesInPipeline;
+    exerciseNotification.updateReactState();
   });
-
   return (
     <>
       <SidebarLink text={strings.articles} to="/articles" />
@@ -30,12 +24,12 @@ export default function StudentSpecificSidebarOptions({
       <SidebarLink
         text={strings.exercises}
         to="/exercises"
-        hasNotification={hasExercisesToDo ? true : false}
+        hasNotification={hasNotification ? hasNotification : false}
         notificationText={
-          user["totalExercises"] > 0
-            ? user["totalExercises"] > MAX_EXERCISE_TO_DO_NOTIFICATION
+          totalExercisesInPipeline
+            ? totalExercisesInPipeline > MAX_EXERCISE_TO_DO_NOTIFICATION
               ? MAX_EXERCISE_TO_DO_NOTIFICATION + "+"
-              : user["totalExercises"]
+              : totalExercisesInPipeline
             : ""
         }
       />

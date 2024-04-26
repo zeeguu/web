@@ -66,6 +66,11 @@ export default function useActivityTimer(activityUploaderFunction) {
     setIsTimerActive(true);
   }
 
+  function resetTimer() {
+    setActivityTimer(0);
+    setIsTimerActive(true);
+  }
+
   // active session duration is measured in seconds
-  return [activityTimer, isTimerActive, setIsActivityOver];
+  return [activityTimer, isTimerActive, setIsActivityOver, resetTimer];
 }

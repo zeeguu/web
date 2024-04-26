@@ -12,6 +12,7 @@ import SessionStorage from "./assorted/SessionStorage";
 import { saveUserInfoIntoCookies } from "./utils/cookies/userInfo";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
+import ExerciseNotifications from "./exercises/ExerciseNotification";
 import WordsRouter from "./words/_WordsRouter";
 import ReadingHistory from "./words/WordHistory";
 import TeacherRouter from "./teacher/_routing/_TeacherRouter";
@@ -21,8 +22,18 @@ import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
 import { isSupportedBrowser } from "./utils/misc/browserDetection";
+import { ExerciseCountContext } from "./exercises/ExerciseCountContext";
+import { useEffect, useState } from "react";
 
 export default function MainAppRouter({ api, user, setUser, hasExtension }) {
+  const [exerciseNotifications] = useState(new ExerciseNotifications());
+  useEffect(() => {
+    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+      exerciseNotifications.setHasExercises(hasBookmarks);
+      exerciseNotifications.updateReactState();
+    });
+  }, []);
+
   function handleSuccessfulSignIn(userInfo) {
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
@@ -68,91 +79,93 @@ export default function MainAppRouter({ api, user, setUser, hasExtension }) {
   }
 
   return (
-    <Switch>
-      <Route
-        path="/login"
-        render={() => (
-          <SignIn api={api} handleSuccessfulSignIn={handleSuccessfulSignIn} />
-        )}
-      />
-      <Route
-        path="/create_account"
-        render={() => (
-          <CreateAccount
-            api={api}
-            handleSuccessfulSignIn={handleSuccessfulSignIn}
-          />
-        )}
-      />
+    <ExerciseCountContext.Provider value={exerciseNotifications}>
+      <Switch>
+        <Route
+          path="/login"
+          render={() => (
+            <SignIn api={api} handleSuccessfulSignIn={handleSuccessfulSignIn} />
+          )}
+        />
+        <Route
+          path="/create_account"
+          render={() => (
+            <CreateAccount
+              api={api}
+              handleSuccessfulSignIn={handleSuccessfulSignIn}
+            />
+          )}
+        />
 
-      <Route path="/" exact render={() => <LandingPage />} />
+        <Route path="/" exact render={() => <LandingPage />} />
 
-      <Route
-        path="/extension_installed"
-        render={() => <ExtensionInstalled api={api} />}
-      />
+        <Route
+          path="/extension_installed"
+          render={() => <ExtensionInstalled api={api} />}
+        />
 
-      <Route path="/install_extension" render={() => <InstallExtension />} />
+        <Route path="/install_extension" render={() => <InstallExtension />} />
 
-      <Route path="/reset_pass" render={() => <ResetPassword api={api} />} />
+        <Route path="/reset_pass" render={() => <ResetPassword api={api} />} />
 
-      <Route path="/render" render={() => <NoSidebarRouter api={api} />} />
+        <Route path="/render" render={() => <NoSidebarRouter api={api} />} />
 
-      <PrivateRoute
-        path="/select_interests"
-        api={api}
-        hasExtension={hasExtension}
-        component={SelectInterests}
-      />
+        <PrivateRoute
+          path="/select_interests"
+          api={api}
+          hasExtension={hasExtension}
+          component={SelectInterests}
+        />
 
-      <PrivateRouteWithSidebar
-        path="/articles"
-        api={api}
-        component={ArticlesRouter}
-      />
-      <PrivateRouteWithSidebar
-        path="/exercises"
-        api={api}
-        user={user}
-        setUser={setUser}
-        component={ExercisesRouter}
-      />
-      <PrivateRouteWithSidebar
-        path="/words"
-        api={api}
-        component={WordsRouter}
-      />
+        <PrivateRouteWithSidebar
+          path="/articles"
+          api={api}
+          component={ArticlesRouter}
+        />
+        <PrivateRouteWithSidebar
+          path="/exercises"
+          api={api}
+          user={user}
+          setUser={setUser}
+          component={ExercisesRouter}
+        />
+        <PrivateRouteWithSidebar
+          path="/words"
+          api={api}
+          component={WordsRouter}
+        />
 
-      <PrivateRouteWithSidebar
-        path="/history"
-        api={api}
-        component={ReadingHistory}
-      />
+        <PrivateRouteWithSidebar
+          path="/history"
+          api={api}
+          component={ReadingHistory}
+        />
 
-      <PrivateRouteWithSidebar
-        path="/account_settings"
-        api={api}
-        setUser={setUser}
-        component={Settings}
-      />
+        <PrivateRouteWithSidebar
+          path="/account_settings"
+          api={api}
+          setUser={setUser}
+          component={Settings}
+        />
 
-      <PrivateRouteWithSidebar
-        path="/teacher"
-        api={api}
-        component={TeacherRouter}
-      />
+        <PrivateRouteWithSidebar
+          path="/teacher"
+          api={api}
+          component={TeacherRouter}
+        />
 
-      <PrivateRouteWithSidebar
-        path="/read/article"
-        api={api}
-        component={ArticleReader}
-      />
+        <PrivateRouteWithSidebar
+          path="/read/article"
+          api={api}
+          component={ArticleReader}
+        />
 
-      <PrivateRouteWithSidebar
-        path="/user_dashboard"
-        api={api}
-        component={UserDashboard}
-      />
-    </Switch>
+        <PrivateRouteWithSidebar
+          path="/user_dashboard"
+          api={api}
+          component={UserDashboard}
+        />
+      </Switch>
+    </ExerciseCountContext.Provider>
   );
 }

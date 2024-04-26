@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import Congratulations from "./Congratulations";
 import ProgressBar from "./ProgressBar";
@@ -26,6 +26,7 @@ import {
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
+import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 
 export default function Exercises({
   api,
@@ -55,6 +56,7 @@ export default function Exercises({
 
   const [activeSessionDuration, clockActive, setActivityOver] =
     useActivityTimer();
+  const exerciseNotification = useContext(ExerciseCountContext);
 
   function getExerciseSequenceType() {
     let exerciseTypesList;
@@ -142,7 +144,8 @@ export default function Exercises({
         MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
         (bookmarks) => {
           setCurrentScheduledBookmarks(bookmarks.length);
-          setUser({ ...user, totalExercises: bookmarks.length });
+          exerciseNotification.setExerciseCounter(bookmarks.length);
+          exerciseNotification.updateReactState();
           initializeExercises(
             bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
             strings.exercises,
@@ -219,7 +222,6 @@ export default function Exercises({
         keepExercisingAction={() => {
           startExercising(true);
         }}
-        api={api}
       />
     );
   }
@@ -238,8 +240,8 @@ export default function Exercises({
     let updatedUserInfo = { ...user };
     updatedUserInfo["totalExercises"] =
       currentScheduledBookmarks < 0 ? 0 : currentScheduledBookmarks;
-    setUser(updatedUserInfo);
     const newIndex = currentIndex + 1;
+    exerciseNotification.updateReactState();
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
       return;
@@ -257,7 +259,7 @@ export default function Exercises({
         !correctBookmarksIds.includes(currentBookmark.id)
       ) {
         // Only decrement if it's already part of the schedule
-        setCurrentScheduledBookmarks(currentScheduledBookmarks - 1);
+        exerciseNotification.decrementExerciseCounter();
       }
       correctBookmarksCopy.push(currentBookmark);
       setCorrectBookmarks(correctBookmarksCopy);
@@ -271,13 +273,13 @@ export default function Exercises({
       currentBookmark["cooling_interval"] === null &&
       !incorrectBookmarksIds.includes(currentBookmark.id)
     ) {
-      setCurrentScheduledBookmarks(currentScheduledBookmarks + 1);
+      exerciseNotification.incrementExerciseCounter();
     }
     if (
       currentBookmark["cooling_interval"] > 1 &&
       !incorrectBookmarksIds.includes(currentBookmark.id)
     ) {
-      setCurrentScheduledBookmarks(currentScheduledBookmarks - 1);
+      exerciseNotification.decrementExerciseCounter();
     }
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);

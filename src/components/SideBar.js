@@ -67,11 +67,7 @@ export default function SideBar(props) {
       </div>
 
       {isOnStudentSide && (
-        <StudentSpecificSidebarOptions
-          SidebarLink={SidebarLink}
-          user={user}
-          api={api}
-        />
+        <StudentSpecificSidebarOptions SidebarLink={SidebarLink} user={user} />
       )}
 
       {!isOnStudentSide && (
