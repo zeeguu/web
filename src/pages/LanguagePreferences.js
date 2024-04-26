@@ -107,34 +107,36 @@ export default function LanguagePreferences({ api, setUser }) {
           )}
           <FormSection>
             <SelectOptions
+              value={learned_language}
+              label={"I want to learn"}
               placeholder={"Select language"}
-              label={(e) => e.name}
-              val={(e) => e.code}
+              optionLabel={(e) => e.name}
+              optionValue={(e) => e.code}
               id={"practiced-languages"}
-              selectLabel={"I want to learn"}
               options={systemLanguages.learnable_languages}
-              onChange={handleLearned_language_change}
+              onChangeHandler={handleLearned_language_change}
             />
 
             <SelectOptions
+              value={learned_cefr_level}
+              label={"My current level"}
               placeholder={"Select level"}
-              label={(e) => e.label}
-              val={(e) => e.value}
+              optionLabel={(e) => e.label}
+              optionValue={(e) => e.value}
               id={"level-of-practiced-languages"}
-              selectLabel={"My current level"}
               options={CEFR_LEVELS}
-              onChange={handleLearned_cefr_level_change}
+              onChangeHandler={handleLearned_cefr_level_change}
             />
 
             <SelectOptions
+              value={native_language}
+              label={"I want translations in"}
               placeholder={"Select language"}
-              label={(e) => e.name}
-              val={(e) => e.code}
+              optionLabel={(e) => e.name}
+              optionValue={(e) => e.code}
               id={"translation-languages"}
-              selectLabel={"I want translations in"}
               options={systemLanguages.native_languages}
-              onChange={handleNative_language_change}
-              current={"en"}
+              onChangeHandler={handleNative_language_change}
             />
           </FormSection>
           <p>You can always change it later</p>

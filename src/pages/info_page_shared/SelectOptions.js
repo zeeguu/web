@@ -1,35 +1,30 @@
 import * as s from "./SelectOptions.sc";
 
 export default function SelectOptions({
+  value,
+  label,
   placeholder,
   options,
-  label,
-  val,
-  onChange,
-  current,
+  optionLabel,
+  optionValue,
+  onChangeHandler,
   id,
   name,
-  selectLabel,
 }) {
   return (
     <s.SelectWrapper>
       <s.Label htmlFor={id} name={name}>
-        {selectLabel}
+        {label}
       </s.Label>
       <s.SelectStyledContainer>
-        <s.Select id={id} onChange={onChange}>
-          <option style={{ display: "none" }} />
-          <option value="" disabled selected>
+        <s.Select id={id} onChange={onChangeHandler} value={value}>
+          <option value={""} disabled>
             {placeholder}
           </option>
 
           {options?.map((option) => (
-            <option
-              key={val(option)}
-              value={val(option)}
-              selected={current === val(option)}
-            >
-              {label(option)}
+            <option key={optionValue(option)} value={optionValue(option)}>
+              {optionLabel(option)}
             </option>
           ))}
         </s.Select>
