@@ -1,8 +1,7 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   lightGrey,
   veryDarkGrey,
-  darkGrey,
   zeeguuOrange,
   zeeguuRed,
 } from "../../components/colors";
@@ -39,7 +38,7 @@ const Label = styled.label`
   font-weight: 600;
 `;
 
-const HelperText = styled.div`
+const BaseHelperTextStyle = css`
   margin: 0.1rem 0 0 0;
   line-height: 1.2;
   display: flex;
@@ -48,9 +47,6 @@ const HelperText = styled.div`
   font-size: 0.8rem;
   font-weight: 500;
   color: ${veryDarkGrey};
-  &.error {
-    color: ${zeeguuRed};
-  }
 
   a {
     font-weight: 600;
@@ -58,4 +54,13 @@ const HelperText = styled.div`
   }
 `;
 
-export { Input, Label, HelperText, InputFieldWrapper };
+const HelperText = styled.div`
+  ${BaseHelperTextStyle}
+`;
+
+const ErrorMessage = styled.div`
+  ${BaseHelperTextStyle}
+  color: ${zeeguuRed};
+`;
+
+export { Input, Label, HelperText, ErrorMessage, InputFieldWrapper };

@@ -10,6 +10,7 @@ export default function InputField({
   value,
   helperText,
   isError,
+  errorMessage,
 }) {
   return (
     <s.InputFieldWrapper>
@@ -23,10 +24,9 @@ export default function InputField({
         placeholder={placeholder}
         onChange={onChange}
       />
-      {helperText && (
-        <s.HelperText className={`${isError && "error"}`}>
-          {helperText}
-        </s.HelperText>
+      {helperText && <s.HelperText>{helperText}</s.HelperText>}
+      {isError && errorMessage && (
+        <s.ErrorMessage>{errorMessage}</s.ErrorMessage>
       )}
     </s.InputFieldWrapper>
   );
