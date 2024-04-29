@@ -1,4 +1,4 @@
-const exerciseTypes = {
+export const exerciseTypes = {
   findWordInContextCloze: "Cloze_L1_to_L2",
   match: "Match_three_L1W_to_three_L2W",
   multipleChoiceContext: "Select_L2T_fitting_L2W",
@@ -19,4 +19,8 @@ const exerciseTypes = {
   },
 };
 
-export default exerciseTypes;
+export const learningCycleEnum = Object.freeze({
+  0: "not set",
+  1: "receptive",
+  2: "productive",
+});

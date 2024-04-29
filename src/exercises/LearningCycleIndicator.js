@@ -5,6 +5,7 @@ import strings from "../i18n/definitions";
 import Feature from "../features/Feature";
 import { logScaleToLinear } from "../utils/basic/logScaleToLinear";
 import { ExerciseValidation } from "./ExerciseValidation";
+import { learningCycleEnum } from "./ExerciseTypeConstants";
 
 export default function LearningCycleIndicator({ bookmark, message }) {
   const [userIsCorrect, setUserIsCorrect] = useState(false);
@@ -18,12 +19,6 @@ export default function LearningCycleIndicator({ bookmark, message }) {
     setUserIsCorrect(userIsCorrect);
     setUserIsWrong(userIsWrong);
   }, [message]);
-
-  const learningCycleEnum = Object.freeze({
-    0: "not set",
-    1: "receptive",
-    2: "productive",
-  });
 
   const getLearningCycleIcon = () => {
     switch (learningCycleEnum[learningCycle]) {

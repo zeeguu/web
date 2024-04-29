@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
-import exerciseTypes from "../ExerciseTypeConstants";
+import { exerciseTypes } from "../ExerciseTypeConstants";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;

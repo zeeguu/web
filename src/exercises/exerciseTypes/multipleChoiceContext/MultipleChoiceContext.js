@@ -7,7 +7,7 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import exerciseTypes from "../../ExerciseTypeConstants.js";
+import { exerciseTypes } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 

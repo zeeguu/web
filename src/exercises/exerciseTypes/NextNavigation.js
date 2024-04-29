@@ -7,7 +7,7 @@ import { random } from "../../utils/basic/arrays";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import SessionStorage from "../../assorted/SessionStorage.js";
-import exerciseTypes from "../ExerciseTypeConstants";
+import { exerciseTypes } from "../ExerciseTypeConstants";
 
 import CelebrationModal from "../CelebrationModal";
 import { APP_DOMAIN } from "../../i18n/appConstants.js";

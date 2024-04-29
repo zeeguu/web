@@ -3,6 +3,7 @@ import {
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
 } from "./exerciseSequenceTypes";
+import { learningCycleEnum } from "./ExerciseTypeConstants";
 
 /**
  * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
@@ -22,12 +23,6 @@ function getExerciseListByType(exerciseList) {
 }
 
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
-  const learningCycleEnum = Object.freeze({
-    0: "not set",
-    1: "receptive",
-    2: "productive",
-  });
-
   let exerciseSequence = [];
   let exercisesByType = getExerciseListByType(exerciseTypesList);
   for (let i = 0; i < bookmarks.length; i++) {

@@ -4,7 +4,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FeedbackButtons from "./FeedbackButtons.js";
 import strings from "../../i18n/definitions.js";
-import exerciseTypes from "../ExerciseTypeConstants.js";
+import { exerciseTypes } from "../ExerciseTypeConstants.js";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;

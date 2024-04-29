@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import exerciseTypes from "../../ExerciseTypeConstants.js";
+import { exerciseTypes } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 import NextNavigation from "../NextNavigation";

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
-import exerciseTypes from "../../ExerciseTypeConstants.js";
+import { exerciseTypes } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
