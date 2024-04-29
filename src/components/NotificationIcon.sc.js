@@ -4,10 +4,12 @@ const NotificationIcon = styled.div`
   &.top {
     top: -0.5em;
     left: 0.05em;
+    margin-right: -0.6em;
   }
   &.bottom {
     top: 0.15em;
     left: 0.05em;
+    margin-right: -0.6em;
   }
   display: inline-block;
   position: relative;
