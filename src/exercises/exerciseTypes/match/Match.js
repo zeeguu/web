@@ -163,12 +163,10 @@ export default function Match({
       <div className="headlineWithMoreSpace">
         {strings.matchWordWithTranslation}{" "}
       </div>
-      <div className="learningCycleIndicator">
-        <LearningCycleIndicator
-          bookmark={selectedBookmark}
-          message={messageToNextNav}
-        />
-      </div>
+      <LearningCycleIndicator
+        bookmark={selectedBookmark}
+        message={messageToNextNav}
+      />
 
       <MatchInput
         fromButtonOptions={fromButtonOptions}
@@ -194,6 +192,7 @@ export default function Match({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        exerciseType={EXERCISE_TYPE}
       />
     </s.Exercise>
   );

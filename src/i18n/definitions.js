@@ -270,7 +270,8 @@ let strings = new LocalizedStrings(
       titleReceptiveWords: "Receptive Words",
       receptiveMsg:
         "These words will appear in exercises testing your receptive knowledge. Receptive means you understand the word when you see or hear it, but can't necessarily use it yet.",
-
+      noReceptiveWords:
+        "You have no receptive words at the moment. Keep reading and translating to add some.",
       //Productive
       titleProductiveWords: "Productive Words",
 
@@ -278,6 +279,7 @@ let strings = new LocalizedStrings(
         "You already know these words receptively, so they will only appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech.",
       productiveDisableMsg:
         "You have disabled productive exercises. Words are now considered learned once they have completed the receptive learning cycle.",
+      noProductiveWords: "You have no productive words at the moment.",
 
       //WordsOnDate
       open: "Open",
@@ -285,6 +287,7 @@ let strings = new LocalizedStrings(
       //LearningCycle
       nextLearningCycle:
         "This word has now moved to your productive knowledge.",
+      wordLearned: "You've learned a new word!",
       receptiveTooltip:
         "This word is part of your receptive vocabulary knowledge. Receptive means the capability to comprehend a word when you hear or see it.",
       productiveTooltip:

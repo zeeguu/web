@@ -18,7 +18,7 @@ import {
   DEFAULT_SEQUENCE_NO_AUDIO,
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
-  getNumberOfBookmarksToPractice,
+  NUMBER_OF_BOOKMARKS_TO_PRACTICE,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
@@ -31,10 +31,8 @@ export default function Exercises({
   source,
 }) {
   const exerciseSequenceType = getExerciseSequenceType();
-  const numberOfBookmarksToPractice =
-    getNumberOfBookmarksToPractice(exerciseSequenceType);
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
-    numberOfBookmarksToPractice,
+    NUMBER_OF_BOOKMARKS_TO_PRACTICE,
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState(null);
@@ -71,14 +69,12 @@ export default function Exercises({
     if (bookmarks.length > 0) {
       // This can only be initialized here after we can get at least one bookmark
       // and thus, know the language to pronounce in
-      console.log(bookmarks);
       let exerciseSequenceType = getExerciseSequenceType();
 
       let exerciseSession = assignBookmarksToExercises(
         bookmarks,
         exerciseSequenceType,
       );
-      console.log(exerciseSession);
       setFullExerciseProgression(exerciseSession);
 
       setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
@@ -109,7 +105,7 @@ export default function Exercises({
           });
         } else {
           api.getUserBookmarksToStudy(
-            numberOfBookmarksToPractice,
+            NUMBER_OF_BOOKMARKS_TO_PRACTICE,
             (bookmarks) => {
               initializeExercises(bookmarks, strings.exercises);
             },

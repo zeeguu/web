@@ -69,7 +69,7 @@ export default function FindWordInContextCloze({
 
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    setMessageToAPI(concatMessage);                        
+    setMessageToAPI(concatMessage);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
@@ -106,32 +106,32 @@ export default function FindWordInContextCloze({
       <div className="headlineWithMoreSpace">
         {strings.findWordInContextClozeHeadline}
       </div>
-      <div className="learningCycleIndicator">
-        <LearningCycleIndicator
-          bookmark={bookmarksToStudy[0]}
-          message={messageToAPI}
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
+      <h1 className="wordInContextHeadline">
+        {removePunctuation(bookmarksToStudy[0].to)}
+      </h1>
+      <div className="contextExample">
+        <TranslatableText
+          isCorrect={isCorrect}
+          interactiveText={interactiveText}
+          translating={true}
+          pronouncing={false}
+          bookmarkToStudy={bookmarksToStudy[0].from}
         />
       </div>
-      <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>
-            <div className="contextExample">
-                <TranslatableText
-                    isCorrect={isCorrect}
-                    interactiveText={interactiveText}
-                    translating={true}
-                    pronouncing={false}
-                    bookmarkToStudy={bookmarksToStudy[0].from}
-                />
-            </div>
-      
+
       {!isCorrect && (
         <>
-            <BottomInput
-                handleCorrectAnswer={handleCorrectAnswer}
-                handleIncorrectAnswer={handleIncorrectAnswer}
-                bookmarksToStudy={bookmarksToStudy}
-                messageToAPI={messageToAPI}
-                setMessageToAPI={setMessageToAPI}
-            />
+          <BottomInput
+            handleCorrectAnswer={handleCorrectAnswer}
+            handleIncorrectAnswer={handleIncorrectAnswer}
+            bookmarksToStudy={bookmarksToStudy}
+            messageToAPI={messageToAPI}
+            setMessageToAPI={setMessageToAPI}
+          />
         </>
       )}
 

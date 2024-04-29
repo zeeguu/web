@@ -13,8 +13,8 @@ export default function Productive({ api }) {
     useState();
 
   useEffect(() => {
-    api.topBookmarks(300, (topWords) => {
-      const productiveWords = topWords.filter(
+    api.getUserBookmarksToStudy(300, (bookmarks) => {
+      const productiveWords = bookmarks.filter(
         (word) => word.learning_cycle === 2,
       );
       setWords(productiveWords);
@@ -48,9 +48,13 @@ export default function Productive({ api }) {
       {productiveExercisesEnabled === false && (
         <s.TopMessage>{strings.productiveDisableMsg}</s.TopMessage>
       )}
-      {words.map((each) => (
-        <Word key={each.id} bookmark={each} api={api} source={UMR_SOURCE} />
-      ))}
+      {words.length === 0 && productiveExercisesEnabled === true ? (
+        <s.TopMessage>{strings.noProductiveWords}</s.TopMessage>
+      ) : (
+        words.map((each) => (
+          <Word key={each.id} bookmark={each} api={api} source={UMR_SOURCE} />
+        ))
+      )}
     </>
   );
 }

@@ -122,12 +122,10 @@ export default function MultipleChoiceContext({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceContextHeadline}
       </div>
-      <div className="learningCycleIndicator">
-        <LearningCycleIndicator
-          bookmark={bookmarksToStudy[0]}
-          message={messageToAPI}
-        />
-      </div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
       <h1 className="wordInContextHeadline">
         {removePunctuation(bookmarksToStudy[0].from)}
       </h1>

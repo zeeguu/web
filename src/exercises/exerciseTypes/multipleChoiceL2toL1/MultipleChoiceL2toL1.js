@@ -111,12 +111,10 @@ export default function MultipleChoiceL2toL1({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceL2toL1Headline}
       </div>
-      <div className="learningCycleIndicator">
-        <LearningCycleIndicator
-          bookmark={bookmarksToStudy[0]}
-          message={messageToAPI}
-        />
-      </div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}

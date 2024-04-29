@@ -1,11 +1,16 @@
 // doesn't remove punctuation when it is part of a word, e.g. "l'Italie" or "it's"
 function removePunctuation(string) {
-    let regex = /(\s|^)[¡!"”“„#$%&'(–)*+,…./—:;«<=>»¿?@[\]^_`{|}~]+|[¡!"”“„#$%&'(–)*+,…./—:;«<=>»¿?@[\]^_`{|}~]+(\s|$)/g;
-    return string.replace(regex, "");
+  let removeLeadingPunctuation =
+    /(\s|^)[¡!"”“„#$%&'(–)*+,…./—:;«<=>»¿?@[\]^_`{|}~]+/g;
+  let removeTrailingPunctuation =
+    /[¡!"”“„#$%&'(–)*+,…./—:;«<=>»¿?@[\]^_`{|}~]+(\s|$)/g;
+  return string
+    .replace(removeLeadingPunctuation, "")
+    .replace(removeTrailingPunctuation, "");
 }
 
 function tokenize(sentence) {
-    return sentence.split(" ")
+  return sentence.split(" ");
 }
 
-export {tokenize, removePunctuation}
+export { tokenize, removePunctuation };

@@ -32,7 +32,7 @@ const Exercise = styled.div`
     }
   }
 
-  .next-nav-learning-cycle{
+  .next-nav-learning-cycle {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -40,9 +40,9 @@ const Exercise = styled.div`
     margin-top: 1.5em;
     margin-left: auto;
     margin-right: auto;
-    border: 0.125em solid #99E47F;
+    border: 0.125em solid #99e47f;
     border-radius: 0.5em;
-    background-color: #F1F7F2;
+    background-color: #f1f7f2;
     width: 70%;
 
     img {
@@ -119,7 +119,7 @@ const Exercise = styled.div`
   .learningCycleIcon {
     margin-right: 1em;
   }
-  
+
   .cooling-bars {
     display: flex;
   }
@@ -316,7 +316,6 @@ let AnimatedMatchButton = styled(MatchButton)`
 
 let Input = styled.input`
   height: 1.5em;
-  width: 60%;
   text-align: center;
   transition: all 0.3s;
   border-radius: 0.5em;
@@ -447,7 +446,7 @@ let MultipleChoiceContext = styled.div`
   padding: 1em;
   cursor: pointer;
 
-  &.wrong{
+  &.wrong {
     animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   }
 

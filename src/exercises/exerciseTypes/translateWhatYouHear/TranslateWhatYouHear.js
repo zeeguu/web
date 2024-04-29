@@ -133,12 +133,10 @@ export default function TranslateWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.translateWhatYouHearHeadline}
       </div>
-      <div className="learningCycleIndicator">
-        <LearningCycleIndicator
-          bookmark={bookmarksToStudy[0]}
-          message={messageToAPI}
-        />
-      </div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
       {!isCorrect && !usedHint && (
         <>
           <s.CenteredRowTall>

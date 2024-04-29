@@ -165,17 +165,15 @@ export default function WordInContextExercise({
 
   return (
     <s.Exercise className={exerciseType}>
-      <div className="headlineWithMoreSpace">
-        {exerciseHeadline}
-      </div>
-      <div className="learningCycleIndicator">
-        <LearningCycleIndicator
-          bookmark={bookmarksToStudy[0]}
-          message={messageToAPI}
-        />
-      </div>
+      <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
 
-      <h1 className="wordInContextHeadline">{removePunctuation(bookmarksToStudy[0].to)}</h1>
+      <h1 className="wordInContextHeadline">
+        {removePunctuation(bookmarksToStudy[0].to)}
+      </h1>
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}

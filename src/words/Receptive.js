@@ -29,14 +29,18 @@ export default function Receptive({ api }) {
       <s.TopMessage>
         <img
           src="/static/icons/receptive-icon.png"
-          alt="Productive Icon"
+          alt="Receptive Icon"
           style={{ height: "2.5em", width: "2.5em", margin: "0.5em" }}
         />
         {strings.receptiveMsg}
       </s.TopMessage>
-      {words.map((each) => (
-        <Word key={each.id} bookmark={each} api={api} source={UMR_SOURCE} />
-      ))}
+      {words.length === 0 ? (
+        <s.TopMessage>{strings.noReceptiveWords}</s.TopMessage>
+      ) : (
+        words.map((each) => (
+          <Word key={each.id} bookmark={each} api={api} source={UMR_SOURCE} />
+        ))
+      )}
     </>
   );
 }

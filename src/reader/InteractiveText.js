@@ -35,7 +35,6 @@ export default class InteractiveText {
 
     word = word.fuseWithNeighborsIfNeeded(this.api);
 
-    console.log(this.api);
     console.dir(this.api);
 
     this.api

@@ -134,9 +134,6 @@ const LocalStorage = {
   },
 
   setUserPreferences: function (preferences) {
-    console.log("setting user preferences");
-    console.log(preferences);
-
     if (preferences["productive_exercises"] !== undefined) {
       localStorage[this.Keys.productiveExercisesEnabled] =
         preferences["productive_exercises"];

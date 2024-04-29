@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
-import CountryFlags from "./CountryFlags";
 import exerciseTypes from "../ExerciseTypeConstants";
+
+function getFlagImageUrl(languageCode) {
+  return `/static/flags/${languageCode}.png`;
+}
 
 export default function BottomInput({
   handleCorrectAnswer,
@@ -24,7 +27,9 @@ export default function BottomInput({
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
 
-  let countryFlag = isL1Answer ? bookmarksToStudy[0].to_lang : bookmarksToStudy[0].from_lang;
+  let countryFlag = isL1Answer
+    ? bookmarksToStudy[0].to_lang
+    : bookmarksToStudy[0].from_lang;
 
   function handleHint() {
     setUsedHint(true);
@@ -35,11 +40,10 @@ export default function BottomInput({
       setMessageToAPI(concatMessage);
     } else {
       let hint;
-      let targetWord = isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from;
-      if (
-        currentInput ===
-        targetWord.substring(0, currentInput.length)
-      ) {
+      let targetWord = isL1Answer
+        ? bookmarksToStudy[0].to
+        : bookmarksToStudy[0].from;
+      if (currentInput === targetWord.substring(0, currentInput.length)) {
         hint = targetWord.substring(0, currentInput.length + 1);
       } else {
         hint = targetWord.substring(0, 1);
@@ -93,7 +97,11 @@ export default function BottomInput({
     console.log("checking result...");
     let a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
     let b = removeQuotes(
-      removeAccents(eliminateTypos(isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from)),
+      removeAccents(
+        eliminateTypos(
+          isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from,
+        ),
+      ),
     );
     //this allows for a typo in the native language
     if (a === b || (isL1Answer && distanceToCorrect === 1)) {
@@ -123,7 +131,6 @@ export default function BottomInput({
           <div className="type-feedback">
             {feedbackMessage !== "" && <p>{feedbackMessage}</p>}
           </div>
-          <CountryFlags languageCode={countryFlag}/>
           <InputField
             type="text"
             className={
@@ -138,8 +145,17 @@ export default function BottomInput({
             }}
             onAnimationEnd={() => setIsIncorrect(false)}
             autoFocus
+            style={{
+              paddingLeft: "1.5em",
+              backgroundImage: `url(${getFlagImageUrl(countryFlag)})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "1em 1em",
+              backgroundPosition: "left center",
+              backgroundPositionX: "0.4em",
+            }}
           />
         </div>
+
         <s.RightFeedbackButton onClick={checkResult}>
           {strings.check}
         </s.RightFeedbackButton>

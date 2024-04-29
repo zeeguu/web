@@ -133,12 +133,10 @@ export default function SpellWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.audioExerciseHeadline}
       </div>
-      <div className="learningCycleIndicator">
-        <LearningCycleIndicator
-          bookmark={bookmarksToStudy[0]}
-          message={messageToAPI}
-        />
-      </div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
 
       {!isCorrect && (
         <>

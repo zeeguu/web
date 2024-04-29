@@ -150,10 +150,8 @@ export function TranslatableText({
         );
       }
 
-      // TODO: Consider moving this into exerciseTypes.isTranslation()
       const translationExercise =
-        exerciseType === exerciseTypes.translateWhatYouHear &&
-        exerciseType === exerciseTypes.multipleChoice;
+        exerciseTypes.isTranslationExercise(exerciseType);
 
       if (foundInstances[0] === word.id && !translationExercise) {
         // If we want, we can render it according to words size.

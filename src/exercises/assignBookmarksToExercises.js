@@ -16,9 +16,7 @@ function getExerciseListByType(exerciseList) {
     if (!exerciseByType[exercise.learningCycle]) {
       exerciseByType[exercise.learningCycle] = [];
     }
-    exerciseByType[
-      exercise.learningCycle
-    ].push(exercise);
+    exerciseByType[exercise.learningCycle].push(exercise);
   }
   return exerciseByType;
 }
@@ -34,7 +32,8 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
   let exercisesByType = getExerciseListByType(exerciseTypesList);
   for (let i = 0; i < bookmarks.length; i++) {
     // Filter the exercises based on the learning_cycle attribute of the bookmark
-    let filteredExercises = exercisesByType[learningCycleEnum[bookmarks[i].learning_cycle]];
+    let filteredExercises =
+      exercisesByType[learningCycleEnum[bookmarks[i].learning_cycle]];
 
     let suitableExerciseFound = false;
     while (!suitableExerciseFound) {
@@ -44,10 +43,7 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
       if (i + selectedExercise.requiredBookmarks <= bookmarks.length) {
         let exercise = {
           type: selectedExercise.type,
-          bookmarks: bookmarks.slice(
-            i,
-            i + selectedExercise.requiredBookmarks,
-          ),
+          bookmarks: bookmarks.slice(i, i + selectedExercise.requiredBookmarks),
         };
         exerciseSequence.push(exercise);
 
@@ -94,7 +90,9 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
   console.log("about to test:");
   console.log(bookmarks);
 
-  const learningCycleSequence = exerciseTypesList === LEARNING_CYCLE_SEQUENCE || exerciseTypesList === LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
+  const learningCycleSequence =
+    exerciseTypesList === LEARNING_CYCLE_SEQUENCE ||
+    exerciseTypesList === LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
 
   if (learningCycleSequence) {
     return assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList);

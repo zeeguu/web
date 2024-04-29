@@ -188,12 +188,10 @@ export default function MultipleChoiceAudio({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceAudioHeadline}
       </div>
-      <div className="learningCycleIndicator">
-        <LearningCycleIndicator
-          bookmark={bookmarksToStudy[0]}
-          message={messageToAPI}
-        />
-      </div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
 
       <div className="contextExample">
         <TranslatableText

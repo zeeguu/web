@@ -5,11 +5,15 @@ import * as s from "./Exercise.sc";
 import SolutionFeedbackLinks from "./SolutionFeedbackLinks";
 import { random } from "../../utils/basic/arrays";
 import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
+import SessionStorage from "../../assorted/SessionStorage.js";
+import exerciseTypes from "../ExerciseTypeConstants";
 
 import CelebrationModal from "../CelebrationModal";
 import { APP_DOMAIN } from "../../i18n/appConstants.js";
 
 import Feature from "../../features/Feature";
+import { ExerciseValidation } from "../ExerciseValidation.js";
 
 export default function NextNavigation({
   message,
@@ -22,6 +26,7 @@ export default function NextNavigation({
   toggleShow,
   isCorrect,
   handleShowSolution,
+  exerciseType,
 }) {
   const correctStrings = [
     strings.correctExercise1,
@@ -35,24 +40,34 @@ export default function NextNavigation({
 
   const bookmarkToStudy = bookmarksToStudy[0];
   const exercise = "exercise";
-  const [userIsCorrect, setUserIsCorrect] = useState();
-  const [nextCoolingInterval, setNextCoolingInterval] = useState();
+  const [userIsCorrect, setUserIsCorrect] = useState(false);
+  const [rightAnswer, setRightAnswer] = useState();
   const [correctMessage, setCorrectMessage] = useState("");
-
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
-  const isUserAndAnswerCorrect = isCorrect && userIsCorrect;
+  const isUserAndAnswerCorrect = isCorrect && rightAnswer;
   const productiveExercisesDisabled =
     localStorage.getItem("productiveExercisesEnabled") === "false";
   const isLastInCycle = bookmarkToStudy.is_last_in_cycle;
   const isLearningCycleOne = learningCycle === 1;
   const isLearningCycleTwo = learningCycle === 2;
   const learningCycleFeature = Feature.merle_exercises();
+  const isMatchExercise = exerciseType === exerciseTypes.match;
+  const isCorrectMatch = ["CCC"].includes(message);
 
-  const shouldShowCelebrationModal =
+  const bookmarkLearned =
     isUserAndAnswerCorrect &&
     isLastInCycle &&
+    (!isMatchExercise || (isMatchExercise && isCorrectMatch)) &&
     (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
+
+  const bookmarkProgression =
+    userIsCorrect &&
+    isLearningCycleOne &&
+    isLastInCycle &&
+    (!isMatchExercise || (isMatchExercise && isCorrectMatch)) &&
+    !productiveExercisesDisabled &&
+    learningCycleFeature;
 
   useEffect(() => {
     if (bookmarkToStudy && "learning_cycle" in bookmarkToStudy) {
@@ -65,35 +80,27 @@ export default function NextNavigation({
   }, [bookmarkToStudy.learning_cycle]);
 
   useEffect(() => {
-    // mimics correctness from api
-    const nextCoolingInterval = [
-      "C",
-      "TC",
-      "TTC",
-      "TTTC",
-      "HC",
-      "CC",
-      "CCC",
-    ].includes(message);
-    setNextCoolingInterval(nextCoolingInterval);
-  }, [message]);
-
-  useEffect(() => {
-    const userIsCorrect = message.includes("C");
+    const { userIsCorrect } = ExerciseValidation(message);
     setUserIsCorrect(userIsCorrect);
   }, [message]);
 
   useEffect(() => {
-    if (userIsCorrect) {
-      setCorrectMessage(random(correctStrings));
-    }
-  }, [userIsCorrect]);
+    const rightAnswer = message.includes("C");
+    setRightAnswer(rightAnswer);
+  }, [message]);
 
   useEffect(() => {
-    if (shouldShowCelebrationModal) {
-      setShowCelebrationModal(true);
+    if (rightAnswer) {
+      setCorrectMessage(random(correctStrings));
     }
-  }, [shouldShowCelebrationModal]);
+  }, [rightAnswer]);
+
+  useEffect(() => {
+    if (bookmarkLearned && !SessionStorage.isCelebrationModalShown()) {
+      setShowCelebrationModal(true);
+      SessionStorage.setCelebrationModalShown(true);
+    }
+  }, [bookmarkLearned]);
 
   return (
     <>
@@ -105,12 +112,9 @@ export default function NextNavigation({
           />
         </>
       )}
-      {userIsCorrect &&
-        (nextCoolingInterval &&
-        isLearningCycleOne &&
-        isLastInCycle &&
-        !productiveExercisesDisabled &&
-        learningCycleFeature ? (
+      {rightAnswer &&
+        (!isMatchExercise || isCorrectMatch) &&
+        (bookmarkProgression ? (
           <div className="next-nav-learning-cycle">
             <img
               src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
@@ -120,6 +124,23 @@ export default function NextNavigation({
               <b>{correctMessage + " " + strings.nextLearningCycle}</b>
             </p>
           </div>
+        ) : bookmarkLearned ? (
+          <>
+            <Confetti
+              width={window.innerWidth}
+              height={window.innerHeight}
+              recycle={false}
+            />
+            <div className="next-nav-learning-cycle">
+              <img
+                src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
+                alt="Correct Icon"
+              />
+              <p>
+                <b>{correctMessage + " " + strings.wordLearned}</b>
+              </p>
+            </div>
+          </>
         ) : (
           <div className="next-nav-feedback">
             <img
