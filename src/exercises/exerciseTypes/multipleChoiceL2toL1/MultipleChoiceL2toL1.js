@@ -21,7 +21,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceL2toL1;
 export default function MultipleChoiceL2toL1({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -72,7 +72,7 @@ export default function MultipleChoiceL2toL1({
 
   function notifyChoiceSelection(selectedChoice) {
     if (selectedChoice === removePunctuation(bookmarksToStudy[0].to)) {
-      correctAnswer(bookmarksToStudy[0]);
+      notifyCorrectAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);

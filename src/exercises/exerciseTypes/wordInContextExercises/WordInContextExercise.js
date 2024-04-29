@@ -170,7 +170,6 @@ export default function WordInContextExercise({
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />
-
       <h1 className="wordInContextHeadline">
         {removePunctuation(bookmarksToStudy[0].to)}
       </h1>
@@ -194,7 +193,6 @@ export default function WordInContextExercise({
           setMessageToAPI={setMessageToAPI}
         />
       )}
-
       <NextNavigation
         message={messageToAPI}
         api={api}
