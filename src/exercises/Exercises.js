@@ -35,7 +35,6 @@ export default function Exercises({
   backButtonAction,
   source,
 }) {
-  const exerciseSequenceType = getExerciseSequenceType();
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState(
     NUMBER_OF_BOOKMARKS_TO_PRACTICE,
   );
@@ -120,7 +119,7 @@ export default function Exercises({
             setTotalBookmarksInPipeline(totalInLearning);
             if (totalInLearning < MAX_EXERCISE_IN_LEARNING_BOOKMARKS) {
               api.getNewBookmarksToStudy(
-                numberOfBookmarksToPractice,
+                NUMBER_OF_BOOKMARKS_TO_PRACTICE,
                 (new_bookmarks) => {
                   initializeExercises(new_bookmarks, strings.exercises);
                 },
