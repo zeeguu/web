@@ -6,6 +6,7 @@ import Feature from "../features/Feature";
 import { logScaleToLinear } from "../utils/basic/logScaleToLinear";
 import { ExerciseValidation } from "./ExerciseValidation";
 import { learningCycleEnum } from "./ExerciseTypeConstants";
+import NotificationIcon from "../components/NotificationIcon";
 
 export default function LearningCycleIndicator({ bookmark, message }) {
   const [userIsCorrect, setUserIsCorrect] = useState(false);
@@ -13,7 +14,6 @@ export default function LearningCycleIndicator({ bookmark, message }) {
 
   let learningCycle = bookmark.learning_cycle;
   let coolingInterval = bookmark.cooling_interval;
-
   useEffect(() => {
     const { userIsCorrect, userIsWrong } = ExerciseValidation(message);
     setUserIsCorrect(userIsCorrect);
@@ -59,7 +59,6 @@ export default function LearningCycleIndicator({ bookmark, message }) {
     }
     return { color, widthMultiplier };
   };
-
   return (
     <>
       {Feature.merle_exercises() && (
@@ -71,8 +70,15 @@ export default function LearningCycleIndicator({ bookmark, message }) {
                 alt={`${learningCycleEnum[learningCycle]}-icon`}
                 style={{ height: "2.5em", width: "2.5em" }}
               />
+              {coolingInterval === null && (
+                <NotificationIcon
+                  style={{ marginRight: "-2.2em", top: "-2em", left: "-0.8em" }}
+                  text={"New!"}
+                ></NotificationIcon>
+              )}
             </div>
           </Tooltip>
+
           <div className="cooling-bars">
             {[...Array(5)].map((_, index) => {
               const { color, widthMultiplier } = getBarProperties(index);
