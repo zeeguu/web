@@ -60,6 +60,7 @@ export default function Match({
     activeSessionDuration,
   );
   const [selectedBookmark, setSelectedBookmark] = useState(bookmarksToStudy[0]);
+  const [selectedBookmarkMessage, setSelectedBookmarkMessage] = useState("");
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -74,13 +75,21 @@ export default function Match({
     if (firstPressTime === undefined) setFirstPressTime(new Date());
   }
 
+  useEffect(() => {
+    for (let i = 0; i < bookmarksToStudy.length; i++) {
+      let currentBookmarkLog = exerciseAttemptsLog[i];
+      if (selectedBookmark == currentBookmarkLog.bookmark)
+        setSelectedBookmarkMessage(currentBookmarkLog.messageToAPI);
+    }
+  }, [selectedBookmark]);
+
   function notifyChoiceSelection(firstChoice, secondChoice) {
     console.log("checking result...");
     let exerciseAttemptsLogCopy = { ...exerciseAttemptsLog };
-    let i;
     let fullMessage = messageToNextNav;
-    for (i = 0; i < bookmarksToStudy.length; i++) {
+    for (let i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmarkLog = exerciseAttemptsLogCopy[i];
+      let concatMessage = "";
       if (buttonsToDisable.length === 2) {
         fullMessage = fullMessage + "C";
         setIsCorrect(true);
@@ -88,7 +97,7 @@ export default function Match({
       } else if (currentBookmarkLog.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
           setButtonsToDisable((arr) => [...arr, firstChoice]);
-          let concatMessage = currentBookmarkLog.messageToAPI + "C";
+          concatMessage = currentBookmarkLog.messageToAPI + "C";
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
@@ -97,7 +106,7 @@ export default function Match({
         } else {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
-          let concatMessage = currentBookmarkLog.messageToAPI + "W";
+          concatMessage = currentBookmarkLog.messageToAPI + "W";
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
@@ -106,12 +115,14 @@ export default function Match({
         if (firstChoice !== secondChoice) {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
-          let concatMessage = currentBookmarkLog.messageToAPI + "W";
+          concatMessage = currentBookmarkLog.messageToAPI + "W";
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       }
+      if (selectedBookmark == currentBookmarkLog.bookmark)
+        setSelectedBookmarkMessage(concatMessage);
     }
     setMessageToNextNav(fullMessage);
   }
@@ -165,7 +176,7 @@ export default function Match({
       </div>
       <LearningCycleIndicator
         bookmark={selectedBookmark}
-        message={messageToNextNav}
+        message={selectedBookmarkMessage}
       />
 
       <MatchInput
