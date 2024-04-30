@@ -12,7 +12,6 @@ export default function FeedbackButtons({
   selectedId,
   setSelectedId,
   notifyUser,
-  setUserFeedback,
 }) {
   const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
   const THUMBS_DOWN_VALUE = "dislike_bookmark";
@@ -56,7 +55,6 @@ export default function FeedbackButtons({
       alert(strings.selectWordsAlert);
     } else {
       if (value !== "other") {
-        setUserFeedback(value);
         buttons.forEach((button) => {
           if (button.value === value) {
             feedbackString = `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`;
@@ -64,7 +62,7 @@ export default function FeedbackButtons({
             feedbackString = `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`;
           }
         });
-        notifyUser(feedbackString);
+        notifyUser(feedbackString, value);
         setShow(false);
         if (currentExerciseType === MATCH_EXERCISE_TYPE) {
           setSelectedId(null);
@@ -97,7 +95,6 @@ export default function FeedbackButtons({
         .replace(re1, "")
         .replace(re2, "")
         .replaceAll(" ", "_");
-      setUserFeedback(newFeedback);
       let feedbackString = `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`;
       setInput("");
       setShowInput(false);
@@ -105,7 +102,7 @@ export default function FeedbackButtons({
       if (currentExerciseType === MATCH_EXERCISE_TYPE) {
         setSelectedId(null);
       }
-      notifyUser(feedbackString);
+      notifyUser(feedbackString, newFeedback);
       setShow(false);
       event.preventDefault();
     }

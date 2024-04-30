@@ -13,8 +13,6 @@ export default function FeedbackDisplay({
   const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
 
   const [selectedId, setSelectedId] = useState(null);
-  const [userFeedback, setUserFeedback] = useState();
-
   useEffect(() => {
     if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
       setSelectedId(currentBookmarksToStudy[0].id);
@@ -28,7 +26,7 @@ export default function FeedbackDisplay({
     };
   }, [currentExerciseType]);
 
-  function notifyUser(feedbackMessage) {
+  function notifyUser(feedbackMessage, apiFeedbackMessage) {
     toast.success(feedbackMessage, {
       position: "bottom-right",
       autoClose: 2000,
@@ -39,7 +37,7 @@ export default function FeedbackDisplay({
       progress: undefined,
       theme: "colored",
     });
-    feedbackFunction(userFeedback, selectedId);
+    feedbackFunction(apiFeedbackMessage, selectedId);
   }
   return (
     <s.FeedbackHolder>
@@ -51,7 +49,6 @@ export default function FeedbackDisplay({
         selectedId={selectedId}
         setSelectedId={setSelectedId}
         notifyUser={notifyUser}
-        setUserFeedback={setUserFeedback}
       />
     </s.FeedbackHolder>
   );
