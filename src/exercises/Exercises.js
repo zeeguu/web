@@ -205,18 +205,23 @@ export default function Exercises({
     setIncorrectBookmarks(incorrectBookmarksCopy);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
-
-  function uploadUserFeedback(userWrittenFeedback, id) {
+  function uploadUserFeedback(userWrittenFeedback, word_id) {
     console.log(
       "Sending to the API. Feedback: ",
       userWrittenFeedback,
       " Exercise type: ",
       currentExerciseType,
       " and word: ",
-      id,
+      word_id,
     );
     setIsCorrect(true);
-    api.uploadExerciseFeedback(userWrittenFeedback, currentExerciseType, 0, id);
+    api.uploadExerciseFeedback(
+      userWrittenFeedback,
+      currentExerciseType,
+      0,
+      word_id,
+      dbExerciseSessionId,
+    );
   }
 
   function toggleShow() {
