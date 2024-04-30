@@ -12,7 +12,6 @@ export default function FeedbackButtons({
   selectedId,
   setSelectedId,
   notifyUser,
-  setUserFeedback,
 }) {
   const buttons = [
     {
@@ -45,7 +44,6 @@ export default function FeedbackButtons({
       alert(strings.selectWordsAlert);
     } else {
       if (value !== "other") {
-        setUserFeedback(value);
         buttons.forEach((button) => {
           if (button.value === value) {
             feedbackString = `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`;
@@ -53,7 +51,7 @@ export default function FeedbackButtons({
             feedbackString = `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`;
           }
         });
-        notifyUser(feedbackString);
+        notifyUser(feedbackString, value);
         setShow(false);
         if (currentExerciseType === EXERCISE_TYPES.match) {
           setSelectedId(null);
@@ -86,7 +84,6 @@ export default function FeedbackButtons({
         .replace(re1, "")
         .replace(re2, "")
         .replaceAll(" ", "_");
-      setUserFeedback(newFeedback);
       let feedbackString = `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`;
       setInput("");
       setShowInput(false);
@@ -94,7 +91,7 @@ export default function FeedbackButtons({
       if (currentExerciseType === EXERCISE_TYPES.match) {
         setSelectedId(null);
       }
-      notifyUser(feedbackString);
+      notifyUser(feedbackString, newFeedback);
       setShow(false);
       event.preventDefault();
     }
