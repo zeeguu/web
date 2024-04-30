@@ -40,6 +40,7 @@ export default function Congratulations({
     let name = userInfo.name;
     setUsername(name);
     api.reportExerciseSessionEnd(exerciseSessionId, totalTime);
+    api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
   }, []);
 
   if (username === undefined) {

@@ -193,7 +193,6 @@ export default function Exercises({
 
   // Standard flow when user completes exercise session
   if (finished) {
-    api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
     return (
       <>
         <Congratulations
