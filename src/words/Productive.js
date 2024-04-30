@@ -13,7 +13,7 @@ export default function Productive({ api }) {
     useState();
 
   useEffect(() => {
-    api.getUserBookmarksToStudy(300, (bookmarks) => {
+    api.getUserBookmarksInPipeline((bookmarks) => {
       const productiveWords = bookmarks.filter(
         (word) => word.learning_cycle === 2,
       );

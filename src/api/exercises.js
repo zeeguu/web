@@ -5,6 +5,10 @@ Zeeguu_API.prototype.getUserBookmarksToStudy = function (count, callback) {
   this._getJSON(`bookmarks_to_study/${count}`, callback);
 };
 
+Zeeguu_API.prototype.getUserBookmarksInPipeline = function (callback) {
+  this._getJSON(`bookmarks_in_pipeline`, callback);
+};
+
 Zeeguu_API.prototype.getNewBookmarksToStudy = function (count, callback) {
   this._getJSON(`new_bookmarks_to_study/${count}`, callback);
 };
