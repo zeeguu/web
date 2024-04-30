@@ -26,8 +26,7 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
   exercise_source,
   exercise_solving_speed,
   bookmark_id,
-  session_id,
-  other_feedback,
+  exerciseSessionId,
 ) {
   let payload = {
     outcome: "other_feedback",
@@ -35,7 +34,7 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
     solving_speed: exercise_solving_speed,
     bookmark_id: bookmark_id,
     other_feedback: user_feedback,
-    session_id: session_id,
+    session_id: exerciseSessionId,
   };
   console.log(payload);
   this._post(`report_exercise_outcome`, qs.stringify(payload));

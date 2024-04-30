@@ -286,15 +286,14 @@ export default function Exercises({
     setIncorrectBookmarks(incorrectBookmarksCopy);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
-
-  function uploadUserFeedback(userWrittenFeedback, id) {
+  function uploadUserFeedback(userWrittenFeedback, word_id) {
     console.log(
       "Sending to the API. Feedback: ",
       userWrittenFeedback,
       " Exercise type: ",
       currentExerciseType,
       " and word: ",
-      id,
+      word_id,
     );
     setIsCorrect(true);
     setCurrentScheduledBookmarks(currentScheduledBookmarks - 1);
@@ -302,8 +301,8 @@ export default function Exercises({
       userWrittenFeedback,
       currentExerciseType,
       0,
-      id,
-      api.session,
+      word_id,
+      dbExerciseSessionId,
     );
   }
 

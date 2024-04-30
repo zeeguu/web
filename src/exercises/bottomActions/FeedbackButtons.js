@@ -11,8 +11,7 @@ export default function FeedbackButtons({
   currentBookmarksToStudy,
   selectedId,
   setSelectedId,
-  setFeedback,
-  setOpenSnackbar,
+  notifyUser,
   setUserFeedback,
 }) {
   const buttons = [
@@ -41,6 +40,7 @@ export default function FeedbackButtons({
   }, [currentExerciseType]);
 
   function buttonClick(value) {
+    let feedbackString = "";
     if (!selectedId) {
       alert(strings.selectWordsAlert);
     } else {
@@ -48,12 +48,12 @@ export default function FeedbackButtons({
         setUserFeedback(value);
         buttons.forEach((button) => {
           if (button.value === value) {
-            setFeedback(
-              `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`,
-            );
+            feedbackString = `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`;
+          } else if (value === THUMBS_DOWN_VALUE) {
+            feedbackString = `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`;
           }
         });
-        setOpenSnackbar(true);
+        notifyUser(feedbackString);
         setShow(false);
         if (currentExerciseType === EXERCISE_TYPES.match) {
           setSelectedId(null);
@@ -75,6 +75,7 @@ export default function FeedbackButtons({
   function handleSubmit(event) {
     if (input === "") {
       alert(strings.giveFeedbackAlert);
+
       event.preventDefault();
     } else {
       let re1 = /[.,'´`?!:;]/g;
@@ -86,16 +87,14 @@ export default function FeedbackButtons({
         .replace(re2, "")
         .replaceAll(" ", "_");
       setUserFeedback(newFeedback);
-      setFeedback(
-        `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`,
-      );
+      let feedbackString = `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`;
       setInput("");
       setShowInput(false);
       setClassName("");
       if (currentExerciseType === EXERCISE_TYPES.match) {
         setSelectedId(null);
       }
-      setOpenSnackbar(true);
+      notifyUser(feedbackString);
       setShow(false);
       event.preventDefault();
     }
