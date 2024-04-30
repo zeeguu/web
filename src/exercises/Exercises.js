@@ -267,6 +267,7 @@ export default function Exercises({
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
   let incorrectBookmarksCopy = [...incorrectBookmarks];
+
   function incorrectAnswerNotification(currentBookmark) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
     if (
@@ -296,7 +297,14 @@ export default function Exercises({
       id,
     );
     setIsCorrect(true);
-    api.uploadExerciseFeedback(userWrittenFeedback, currentExerciseType, 0, id);
+    setCurrentScheduledBookmarks(currentScheduledBookmarks - 1);
+    api.uploadExerciseFeedback(
+      userWrittenFeedback,
+      currentExerciseType,
+      0,
+      id,
+      api.session,
+    );
   }
 
   function toggleShow() {

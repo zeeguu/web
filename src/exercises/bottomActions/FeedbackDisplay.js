@@ -42,10 +42,8 @@ export default function FeedbackDisplay({
     if (reason === "clickaway") {
       return;
     }
-
     feedbackFunction(userFeedback, selectedId);
     setUserFeedback(null);
-
     setOpenSnackbar(false);
   };
 
@@ -68,7 +66,7 @@ export default function FeedbackDisplay({
           horizontal: "right",
         }}
         open={openSnackbar}
-        autoHideDuration={4500}
+        autoHideDuration={1500}
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity="success">
