@@ -6,6 +6,7 @@ import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import { timeToHumanReadable } from "../utils/misc/readableTime";
 
 export default function Congratulations({
   articleID,
@@ -25,6 +26,7 @@ export default function Congratulations({
     useState(removeArrayDuplicates(incorrectBookmarks));
 
   const [username, setUsername] = useState();
+  const [humanReadableTime, setHumanReadableTime] = useState();
 
   function deleteBookmark(bookmark) {
     setCorrectBookmarksToDisplay(
@@ -57,7 +59,7 @@ export default function Congratulations({
           </h1>
         </CenteredColumn>
         <div style={{ fontSize: "small" }}>
-          This exercise session took {totalTime} seconds
+          This exercise session took {timeToHumanReadable(totalTime)}
         </div>
 
         {correctBookmarksToDisplay.length > 0 && (
