@@ -4,7 +4,7 @@ import BottomInput from "../BottomInput.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import NextNavigation from "../NextNavigation.js";
-import { exerciseTypes } from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
@@ -18,7 +18,7 @@ import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js
 // The user has to write the word they hear. A context with the word omitted is shown.
 // This tests the user's active knowledge.
 
-const EXERCISE_TYPE = exerciseTypes.spellWhatYouHear;
+const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
 
 export default function SpellWhatYouHear({
   api,

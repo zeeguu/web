@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import { exerciseTypes } from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 import NextNavigation from "../NextNavigation";
@@ -12,7 +12,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 // The user has to match three L1 words to their correct L2 translations.
 // This tests the user's passive knowledge.
 
-const EXERCISE_TYPE = exerciseTypes.match;
+const EXERCISE_TYPE = EXERCISE_TYPES.match;
 
 export default function Match({
   api,

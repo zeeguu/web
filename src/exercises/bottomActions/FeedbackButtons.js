@@ -2,7 +2,7 @@ import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect, createRef } from "react";
 import strings from "../../i18n/definitions";
 import Tooltip from "@material-ui/core/Tooltip";
-import { exerciseTypes } from "../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants.js";
 
 export default function FeedbackButtons({
   show,
@@ -15,8 +15,6 @@ export default function FeedbackButtons({
   setOpenSnackbar,
   setUserFeedback,
 }) {
-  const MATCH_EXERCISE_TYPE = exerciseTypes.match;
-
   const buttons = [
     {
       name: strings.bookmarkTooEasy,
@@ -57,7 +55,7 @@ export default function FeedbackButtons({
         });
         setOpenSnackbar(true);
         setShow(false);
-        if (currentExerciseType === MATCH_EXERCISE_TYPE) {
+        if (currentExerciseType === EXERCISE_TYPES.match) {
           setSelectedId(null);
         }
       } else {
@@ -94,7 +92,7 @@ export default function FeedbackButtons({
       setInput("");
       setShowInput(false);
       setClassName("");
-      if (currentExerciseType === MATCH_EXERCISE_TYPE) {
+      if (currentExerciseType === EXERCISE_TYPES.match) {
         setSelectedId(null);
       }
       setOpenSnackbar(true);
@@ -105,7 +103,7 @@ export default function FeedbackButtons({
 
   return (
     <>
-      {show && currentExerciseType === MATCH_EXERCISE_TYPE && (
+      {show && currentExerciseType === EXERCISE_TYPES.match && (
         <>
           <s.FeedbackInstruction>{strings.selectWords}</s.FeedbackInstruction>
           <s.FeedbackSelector>

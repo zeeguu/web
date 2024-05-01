@@ -38,12 +38,14 @@ export default function Productive({ api }) {
   return (
     <>
       <s.TopMessage>
-        <img
-          src="/static/icons/productive-icon.png"
-          alt="Productive Icon"
-          style={{ height: "2.5em", width: "2.5em", margin: "0.5em" }}
-        />
-        {strings.productiveMsg}
+        <div className="top-message-icon">
+          <img
+            src="/static/icons/productive-icon.png"
+            alt="Productive Icon"
+            style={{ height: "2.5em", width: "2.5em", margin: "0.5em" }}
+          />
+          {strings.productiveMsg}
+        </div>
       </s.TopMessage>
       {productiveExercisesEnabled === false && (
         <s.TopMessage>{strings.productiveDisableMsg}</s.TopMessage>

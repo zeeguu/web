@@ -7,7 +7,7 @@ import { random } from "../../utils/basic/arrays";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import SessionStorage from "../../assorted/SessionStorage.js";
-import { exerciseTypes } from "../ExerciseTypeConstants";
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 
 import CelebrationModal from "../CelebrationModal";
 import { APP_DOMAIN } from "../../i18n/appConstants.js";
@@ -51,9 +51,9 @@ export default function NextNavigation({
   const isLearningCycleOne = learningCycle === 1;
   const isLearningCycleTwo = learningCycle === 2;
   const learningCycleFeature = Feature.merle_exercises();
-  const isMatchExercise = exerciseType === exerciseTypes.match;
+  const isMatchExercise = exerciseType === EXERCISE_TYPES.match;
   const isMultiExerciseType =
-    exerciseTypes.isMultiBookmarkExercise(exerciseType);
+    EXERCISE_TYPES.isMultiBookmarkExercise(exerciseType);
   const isCorrectMatch = ["CCC"].includes(message);
 
   const bookmarkLearned =

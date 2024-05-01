@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
-import { exerciseTypes } from "../ExerciseTypeConstants";
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -34,7 +34,7 @@ export default function BottomInput({
   function handleHint() {
     setUsedHint(true);
 
-    if (exerciseType === exerciseTypes.translateWhatYouHear) {
+    if (exerciseType === EXERCISE_TYPES.translateWhatYouHear) {
       onHintUsed();
       let concatMessage = messageToAPI + "H";
       setMessageToAPI(concatMessage);

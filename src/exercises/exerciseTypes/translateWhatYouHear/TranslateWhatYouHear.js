@@ -4,7 +4,7 @@ import BottomInput from "../BottomInput.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import NextNavigation from "../NextNavigation.js";
-import { exerciseTypes } from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
@@ -17,7 +17,7 @@ import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 // The user has to translate the word they hear into their L1. A L2 context with the word is shown when clicking the Hint button.
 // This tests the user's passive knowledge.
 
-const EXERCISE_TYPE = exerciseTypes.translateWhatYouHear;
+const EXERCISE_TYPE = EXERCISE_TYPES.translateWhatYouHear;
 export default function TranslateWhatYouHear({
   api,
   bookmarksToStudy,

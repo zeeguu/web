@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/preprocessing/preprocessing";
-import { exerciseTypes } from "../exercises/ExerciseTypeConstants";
+import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 
 export function TranslatableText({
   isCorrect,
@@ -16,7 +16,6 @@ export function TranslatableText({
   setIsRendered,
   boldExpression,
   exerciseType,
-  wordOptions,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -81,7 +80,7 @@ export function TranslatableText({
 
   function renderWordJSX(word) {
     // If the word is a bookmarked word, it won't be translated when clicked
-    const isBookmarkWord = foundInstances.includes(word.id);
+    const disableTranslation = foundInstances.includes(word.id);
 
     // If boldExpression is defined, the bookmark is written in bold, otherwise boldWords will be set to an empty array to avoid runtime error
     const boldWords = boldExpression
@@ -129,7 +128,7 @@ export function TranslatableText({
             pronouncing={pronouncing}
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
-            isBookmarkWord={isBookmarkWord}
+            disableTranslation={disableTranslation}
           />
         );
       }
@@ -145,13 +144,13 @@ export function TranslatableText({
             pronouncing={pronouncing}
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
-            isBookmarkWord={isBookmarkWord}
+            disableTranslation={disableTranslation}
           />
         );
       }
 
       const translationExercise =
-        exerciseTypes.isTranslationExercise(exerciseType);
+        EXERCISE_TYPES.isTranslationExercise(exerciseType);
 
       if (foundInstances[0] === word.id && !translationExercise) {
         // If we want, we can render it according to words size.
@@ -159,7 +158,7 @@ export function TranslatableText({
         return "_______ ";
       }
 
-      if (isBookmarkWord && !translationExercise) {
+      if (disableTranslation && !translationExercise) {
         return "";
       }
 
@@ -173,7 +172,7 @@ export function TranslatableText({
           pronouncing={pronouncing}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
-          isBookmarkWord={isBookmarkWord}
+          disableTranslation={disableTranslation}
         />
       );
     }

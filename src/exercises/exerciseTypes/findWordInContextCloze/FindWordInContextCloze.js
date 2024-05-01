@@ -9,14 +9,14 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
-import { exerciseTypes } from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.
 
-const EXERCISE_TYPE = exerciseTypes.findWordInContextCloze;
+const EXERCISE_TYPE = EXERCISE_TYPES.findWordInContextCloze;
 
 export default function FindWordInContextCloze({
   api,

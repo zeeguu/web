@@ -4,7 +4,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import FeedbackButtons from "./FeedbackButtons.js";
 import strings from "../../i18n/definitions.js";
-import { exerciseTypes } from "../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants.js";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -17,15 +17,13 @@ export default function FeedbackDisplay({
   currentBookmarksToStudy,
   feedbackFunction,
 }) {
-  const MATCH_EXERCISE_TYPE = exerciseTypes.match;
-
   const [selectedId, setSelectedId] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [userFeedback, setUserFeedback] = useState();
 
   useEffect(() => {
-    if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
+    if (currentExerciseType !== EXERCISE_TYPES.match) {
       setSelectedId(currentBookmarksToStudy[0].id);
     } else {
       setSelectedId(null);

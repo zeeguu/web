@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
-import { exerciseTypes } from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import strings from "../../../i18n/definitions.js";
 import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
@@ -15,7 +15,7 @@ import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
 
-const EXERCISE_TYPE = exerciseTypes.translateL2toL1;
+const EXERCISE_TYPE = EXERCISE_TYPES.translateL2toL1;
 
 export default function TranslateL2toL1({
   api,

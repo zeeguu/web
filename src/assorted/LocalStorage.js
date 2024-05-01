@@ -25,7 +25,7 @@ const LocalStorage = {
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
     clickedVideoLink: "clicked_video_link",
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
-    productiveExercisesEnabled: "productiveExercisesEnabled",
+    ProductiveExercisesEnabled: "productiveExercisesEnabled",
   },
 
   userInfo: function () {
@@ -35,7 +35,7 @@ const LocalStorage = {
       native_language: localStorage[this.Keys.NativeLanguage],
       is_teacher: "true" === localStorage[this.Keys.IsTeacher],
       productiveExercisesEnabled:
-        localStorage[this.Keys.productiveExercisesEnabled],
+        localStorage[this.Keys.ProductiveExercisesEnabled],
     };
   },
 
@@ -68,14 +68,14 @@ const LocalStorage = {
   },
 
   setProductiveExercisesEnabled: function (productiveExercisesEnabled) {
-    localStorage[this.Keys.productiveExercisesEnabled] =
+    localStorage[this.Keys.ProductiveExercisesEnabled] =
       productiveExercisesEnabled;
   },
 
   getProductiveExercisesEnabled: function () {
     try {
       return (
-        localStorage.getItem(this.Keys.productiveExercisesEnabled) === "true"
+        localStorage.getItem(this.Keys.ProductiveExercisesEnabled) === "true"
       );
     } catch (e) {
       return undefined;
@@ -135,14 +135,14 @@ const LocalStorage = {
 
   setUserPreferences: function (preferences) {
     if (preferences["productive_exercises"] !== undefined) {
-      localStorage[this.Keys.productiveExercisesEnabled] =
+      localStorage[this.Keys.ProductiveExercisesEnabled] =
         preferences["productive_exercises"];
     }
   },
 
   deleteUserPreferences: function () {
     try {
-      localStorage.removeItem(this.Keys.productiveExercisesEnabled);
+      localStorage.removeItem(this.Keys.ProductiveExercisesEnabled);
     } catch (e) {
       console.log(e);
     }

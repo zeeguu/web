@@ -1,4 +1,4 @@
-export const exerciseTypes = {
+export const EXERCISE_TYPES = {
   findWordInContextCloze: "Cloze_L1_to_L2",
   match: "Match_three_L1W_to_three_L2W",
   multipleChoiceContext: "Select_L2T_fitting_L2W",

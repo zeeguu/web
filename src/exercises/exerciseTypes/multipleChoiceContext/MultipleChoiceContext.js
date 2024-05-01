@@ -7,11 +7,11 @@ import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import { exerciseTypes } from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 
-const EXERCISE_TYPE = exerciseTypes.multipleChoiceContext;
+const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 
 export default function MultipleChoiceContext({
   api,

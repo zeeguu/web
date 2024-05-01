@@ -9,7 +9,7 @@ export default function TranslatableWord({
   pronouncing,
   translatedWords,
   setTranslatedWords,
-  isBookmarkWord,
+  disableTranslation,
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
@@ -65,8 +65,8 @@ export default function TranslatableWord({
     wordUpdated();
   }
 
-  //isBookmarkWord so user cannot translate words that are being tested
-  if (!word.translation || isBookmarkWord) {
+  //disableTranslation so user cannot translate words that are being tested
+  if (!word.translation || disableTranslation) {
     return (
       <>
         <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>

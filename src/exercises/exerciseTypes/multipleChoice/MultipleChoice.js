@@ -4,7 +4,7 @@ import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
-import { exerciseTypes } from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 import NextNavigation from "../NextNavigation";
@@ -17,7 +17,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 // The user has to select the correct L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
 
-const EXERCISE_TYPE = exerciseTypes.multipleChoice;
+const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoice;
 
 export default function MultipleChoice({
   api,

@@ -27,12 +27,18 @@ export default function Receptive({ api }) {
   return (
     <>
       <s.TopMessage>
-        <img
-          src="/static/icons/receptive-icon.png"
-          alt="Receptive Icon"
-          style={{ height: "2.5em", width: "2.5em", margin: "0.5em" }}
-        />
-        {strings.receptiveMsg}
+        <div className="top-message-icon">
+          <img
+            src="/static/icons/receptive-icon.png"
+            alt="Receptive Icon"
+            style={{
+              height: "2.5em",
+              width: "2.5em",
+              margin: "0.5em",
+            }}
+          />
+          {strings.receptiveMsg}
+        </div>
       </s.TopMessage>
       {words.length === 0 ? (
         <s.TopMessage>{strings.noReceptiveWords}</s.TopMessage>

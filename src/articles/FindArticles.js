@@ -8,7 +8,6 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import Reminder from "./Reminder";
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
-import { checkExtensionInstalled } from "../utils/extension/extensionCommunication";
 
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { useLocation } from "react-router-dom";

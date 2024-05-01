@@ -9,7 +9,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle.js";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
-import { exerciseTypes } from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
@@ -19,7 +19,7 @@ import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 // The user has to select the correct spoken L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
 
-const EXERCISE_TYPE = exerciseTypes.multipleChoiceAudio;
+const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceAudio;
 
 export default function MultipleChoiceAudio({
   api,

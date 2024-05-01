@@ -4,7 +4,7 @@ import MultipleChoicesInput from "../multipleChoice/MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
-import { exerciseTypes } from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
@@ -16,7 +16,7 @@ import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
 
-const EXERCISE_TYPE = exerciseTypes.multipleChoiceL2toL1;
+const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceL2toL1;
 
 export default function MultipleChoiceL2toL1({
   api,
