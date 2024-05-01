@@ -109,7 +109,6 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         <PrivateRouteWithSidebar
           path="/exercises"
           api={api}
-          setUser={setUser}
           component={ExercisesRouter}
         />
         <PrivateRouteWithSidebar

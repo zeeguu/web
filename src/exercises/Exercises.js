@@ -30,8 +30,6 @@ import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 
 export default function Exercises({
   api,
-  user,
-  setUser,
   articleID,
   backButtonAction,
   source,
