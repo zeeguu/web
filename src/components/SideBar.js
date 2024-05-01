@@ -24,7 +24,13 @@ export default function SideBar(props) {
 
   const { light_color, dark_color } = setColors(isOnStudentSide);
 
-  function SidebarLink({ text, to, hasNotification, notificationText }) {
+  function SidebarLink({
+    text,
+    to,
+    hasNotification,
+    notificationTextActive,
+    notificationTextInactive,
+  }) {
     // if path starts with to, then we are on that page
     const active = path.startsWith(to);
     const fontWeight = active ? "700" : "500";
@@ -34,7 +40,7 @@ export default function SideBar(props) {
         <small style={{ fontWeight: fontWeight }}>{text}</small>
         {hasNotification && (
           <NotificationIcon
-            text={active ? notificationText : ""}
+            text={active ? notificationTextActive : notificationTextInactive}
           ></NotificationIcon>
         )}
       </Link>

@@ -7,11 +7,11 @@ import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
   const exerciseNotification = useContext(ExerciseCountContext);
-  const [hasNotification, setHasNotification] = useState();
+  const [hasExerciseNotification, setHasExerciseNotification] = useState(false);
   const [totalExercisesInPipeline, setTotalExercisesInPipeline] = useState();
 
   useEffect(() => {
-    exerciseNotification.setHasExercisesHook = setHasNotification;
+    exerciseNotification.setHasExercisesHook = setHasExerciseNotification;
     exerciseNotification.setExerciseCounterHook = setTotalExercisesInPipeline;
     exerciseNotification.updateReactState();
   });
@@ -24,14 +24,15 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
       <SidebarLink
         text={strings.exercises}
         to="/exercises"
-        hasNotification={hasNotification ? hasNotification : false}
-        notificationText={
+        hasNotification={hasExerciseNotification}
+        notificationTextActive={
           totalExercisesInPipeline
             ? totalExercisesInPipeline > MAX_EXERCISE_TO_DO_NOTIFICATION
               ? MAX_EXERCISE_TO_DO_NOTIFICATION + "+"
               : totalExercisesInPipeline
             : ""
         }
+        notificationTextInactive={""}
       />
 
       <br />
