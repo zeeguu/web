@@ -191,6 +191,7 @@ let strings = new LocalizedStrings(
       starred: "Starred",
 
       learned: "Learned",
+      topWords: "Top Words",
 
       //WordsHistory
       titleTranslationHistory: "Translation History",

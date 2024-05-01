@@ -13,14 +13,15 @@ import Feature from "../features/Feature";
 export default function WordsRouter({ api }) {
   let tabsAndLinks = {
     [strings.learned]: "/words/learned",
-    "Top Words": "/words",
+    [strings.topWords]: "/words",
   };
 
   if (Feature.merle_exercises) {
     tabsAndLinks = {
-      [strings.titleReceptiveWords]: "/words/receptive",
+      [strings.titleReceptiveWords]: "/words",
       [strings.titleProductiveWords]: "/words/productive",
-      ...tabsAndLinks,
+      [strings.learned]: "/words/learned",
+      [strings.topWords]: "/words/top",
     };
   }
 
@@ -44,13 +45,19 @@ export default function WordsRouter({ api }) {
         />
 
         <PrivateRoute path="/words/learned" api={api} component={Learned} />
+
         <PrivateRoute
           path="/render/words/learned"
           api={api}
           component={Learned}
         />
 
-        <PrivateRoute exact path="/words" api={api} component={Top} />
+        {Feature.merle_exercises ? (
+          <PrivateRoute exact path="/words" api={api} component={Receptive} />
+        ) : (
+          <PrivateRoute exact path="/words" api={api} component={Top} />
+        )}
+
         <PrivateRoute exact path="/render/words" api={api} component={Top} />
         <PrivateRoute
           exact
