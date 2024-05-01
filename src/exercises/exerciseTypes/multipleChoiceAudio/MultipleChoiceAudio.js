@@ -49,8 +49,6 @@ export default function MultipleChoiceAudio({
   const bookmarkToStudy = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
 
-  console.log("exercise session id: " + exerciseSessionId);
-
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
     api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
@@ -260,7 +258,7 @@ export default function MultipleChoiceAudio({
       <NextNavigation
         message={messageToAPI}
         api={api}
-        bookmarksToStudy={bookmarkToStudy}
+        bookmarksToStudy={bookmarksToStudy}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}
