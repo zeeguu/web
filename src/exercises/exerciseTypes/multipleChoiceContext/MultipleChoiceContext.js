@@ -165,7 +165,7 @@ export default function MultipleChoiceContext({
       <NextNavigation
         message={messageToAPI}
         api={api}
-        bookmarksToStudy={bookmarksToStudy}
+        exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

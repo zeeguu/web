@@ -186,7 +186,7 @@ export default function SpellWhatYouHear({
       <NextNavigation
         api={api}
         message={messageToAPI}
-        bookmarksToStudy={bookmarksToStudy}
+        exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

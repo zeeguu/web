@@ -146,7 +146,7 @@ export default function TranslateL2toL1({
       <NextNavigation
         message={messageToAPI}
         api={api}
-        bookmarksToStudy={bookmarksToStudy}
+        exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

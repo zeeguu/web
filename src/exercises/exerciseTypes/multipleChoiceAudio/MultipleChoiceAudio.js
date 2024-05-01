@@ -258,7 +258,7 @@ export default function MultipleChoiceAudio({
       <NextNavigation
         message={messageToAPI}
         api={api}
-        bookmarksToStudy={bookmarksToStudy}
+        exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

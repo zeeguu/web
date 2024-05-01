@@ -17,6 +17,14 @@ export const exerciseTypes = {
       exerciseType === this.multipleChoice
     );
   },
+
+  isMultiBookmarkExercise: function (exerciseType) {
+    return [
+      this.multipleChoice,
+      this.multipleChoiceContext,
+      this.match,
+    ].includes(exerciseType);
+  },
 };
 
 export const learningCycleEnum = Object.freeze({

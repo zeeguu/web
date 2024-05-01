@@ -17,7 +17,7 @@ import { ExerciseValidation } from "../ExerciseValidation.js";
 
 export default function NextNavigation({
   message,
-  bookmarksToStudy,
+  exerciseBookmark,
   moveToNextExercise,
   api,
   reload,
@@ -38,7 +38,6 @@ export default function NextNavigation({
     strings.solutionExercise2,
   ];
 
-  const bookmarkToStudy = bookmarksToStudy[0];
   const exercise = "exercise";
   const [userIsCorrect, setUserIsCorrect] = useState(false);
   const [rightAnswer, setRightAnswer] = useState();
@@ -48,11 +47,13 @@ export default function NextNavigation({
   const isUserAndAnswerCorrect = isCorrect && rightAnswer;
   const productiveExercisesDisabled =
     localStorage.getItem("productiveExercisesEnabled") === "false";
-  const isLastInCycle = bookmarkToStudy.is_last_in_cycle;
+  const isLastInCycle = exerciseBookmark.is_last_in_cycle;
   const isLearningCycleOne = learningCycle === 1;
   const isLearningCycleTwo = learningCycle === 2;
   const learningCycleFeature = Feature.merle_exercises();
   const isMatchExercise = exerciseType === exerciseTypes.match;
+  const isMultiExerciseType =
+    exerciseTypes.isMultiBookmarkExercise(exerciseType);
   const isCorrectMatch = ["CCC"].includes(message);
 
   const bookmarkLearned =
@@ -70,14 +71,14 @@ export default function NextNavigation({
     learningCycleFeature;
 
   useEffect(() => {
-    if (bookmarkToStudy && "learning_cycle" in bookmarkToStudy) {
-      setLearningCycle(bookmarkToStudy.learning_cycle);
+    if (exerciseBookmark && "learning_cycle" in exerciseBookmark) {
+      setLearningCycle(exerciseBookmark.learning_cycle);
     }
-  }, [bookmarkToStudy]);
+  }, [exerciseBookmark]);
 
   useEffect(() => {
-    setLearningCycle(bookmarkToStudy.learning_cycle);
-  }, [bookmarkToStudy.learning_cycle]);
+    setLearningCycle(exerciseBookmark.learning_cycle);
+  }, [exerciseBookmark.learning_cycle]);
 
   useEffect(() => {
     const { userIsCorrect } = ExerciseValidation(message);
@@ -152,17 +153,17 @@ export default function NextNavigation({
             </p>
           </div>
         ))}
-      {isCorrect && bookmarksToStudy.length === 1 && (
+      {isCorrect && isMultiExerciseType && (
         <s.BottomRowSmallTopMargin className="bottomRow">
           <s.EditSpeakButtonHolder>
             <SpeakButton
-              bookmarkToStudy={bookmarkToStudy}
+              bookmarkToStudy={exerciseBookmark}
               api={api}
               style="next"
               isReadContext={isReadContext}
             />
             <EditButton
-              bookmark={bookmarksToStudy[0]}
+              bookmark={exerciseBookmark}
               api={api}
               styling={exercise}
               reload={reload}
@@ -174,7 +175,7 @@ export default function NextNavigation({
           </s.FeedbackButton>
         </s.BottomRowSmallTopMargin>
       )}
-      {isCorrect && bookmarksToStudy.length !== 1 && (
+      {isCorrect && isMultiExerciseType && (
         <s.BottomRowSmallTopMargin className="bottomRow">
           <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
             {strings.next}
