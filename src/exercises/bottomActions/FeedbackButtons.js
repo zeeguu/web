@@ -20,9 +20,9 @@ export default function FeedbackButtons({
       tooltip: strings.bookmarkTooEasyTooltip,
     },
     {
-      name: strings.bookmarkTooHard,
-      value: "too_hard",
-      tooltip: strings.bookmarkTooHardTooltip,
+      name: strings.badContext,
+      value: "bad_context",
+      tooltip: strings.badContextTooltip,
     },
   ];
 
@@ -47,8 +47,6 @@ export default function FeedbackButtons({
         buttons.forEach((button) => {
           if (button.value === value) {
             feedbackString = `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`;
-          } else if (value === THUMBS_DOWN_VALUE) {
-            feedbackString = `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`;
           }
         });
         notifyUser(feedbackString, value);
