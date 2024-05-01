@@ -235,9 +235,6 @@ export default function Exercises({
     //ML: TODO? Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
     setIsCorrect(false);
     setShowFeedbackButtons(false);
-    let updatedUserInfo = { ...user };
-    updatedUserInfo["totalExercises"] =
-      currentScheduledBookmarks < 0 ? 0 : currentScheduledBookmarks;
     const newIndex = currentIndex + 1;
     exerciseNotification.updateReactState();
     if (newIndex === fullExerciseProgression.length) {
