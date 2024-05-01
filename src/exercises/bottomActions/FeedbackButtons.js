@@ -11,7 +11,7 @@ export default function FeedbackButtons({
   currentBookmarksToStudy,
   selectedId,
   setSelectedId,
-  notifyUser,
+  callFeedbackFunctionAndNotify,
 }) {
   const buttons = [
     {
@@ -49,7 +49,7 @@ export default function FeedbackButtons({
             feedbackString = `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`;
           }
         });
-        notifyUser(feedbackString, value);
+        callFeedbackFunctionAndNotify(feedbackString, value);
         setShow(false);
         if (currentExerciseType === EXERCISE_TYPES.match) {
           setSelectedId(null);
@@ -71,7 +71,6 @@ export default function FeedbackButtons({
   function handleSubmit(event) {
     if (input === "") {
       alert(strings.giveFeedbackAlert);
-
       event.preventDefault();
     } else {
       let re1 = /[.,'´`?!:;]/g;
@@ -89,7 +88,7 @@ export default function FeedbackButtons({
       if (currentExerciseType === EXERCISE_TYPES.match) {
         setSelectedId(null);
       }
-      notifyUser(feedbackString, newFeedback);
+      callFeedbackFunctionAndNotify(feedbackString, newFeedback);
       setShow(false);
       event.preventDefault();
     }

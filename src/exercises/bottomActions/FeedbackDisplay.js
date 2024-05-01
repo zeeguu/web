@@ -25,7 +25,7 @@ export default function FeedbackDisplay({
     };
   }, [currentExerciseType]);
 
-  function notifyUser(feedbackMessage, apiFeedbackMessage) {
+  function callFeedbackFunctionAndNotify(feedbackMessage, apiFeedbackMessage) {
     toast.success(feedbackMessage, {
       position: "bottom-right",
       autoClose: 2000,
@@ -47,7 +47,7 @@ export default function FeedbackDisplay({
         currentBookmarksToStudy={currentBookmarksToStudy}
         selectedId={selectedId}
         setSelectedId={setSelectedId}
-        notifyUser={notifyUser}
+        callFeedbackFunctionAndNotify={callFeedbackFunctionAndNotify}
       />
     </s.FeedbackHolder>
   );
