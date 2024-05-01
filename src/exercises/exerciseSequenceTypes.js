@@ -101,7 +101,6 @@ let LEARNING_CYCLE_SEQUENCE = [
     requiredBookmarks: 3,
     learningCycle: "receptive",
   },
-  { type: Match, requiredBookmarks: 3, learningCycle: "productive" },
   {
     type: MultipleChoiceL2toL1,
     requiredBookmarks: 3,
@@ -147,7 +146,6 @@ let LEARNING_CYCLE_SEQUENCE_NO_AUDIO = [
     requiredBookmarks: 3,
     learningCycle: "receptive",
   },
-  { type: Match, requiredBookmarks: 3, learningCycle: "productive" },
   {
     type: Match,
     requiredBookmarks: 3,
