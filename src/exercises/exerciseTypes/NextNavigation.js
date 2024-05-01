@@ -153,7 +153,7 @@ export default function NextNavigation({
             </p>
           </div>
         ))}
-      {isCorrect && isMultiExerciseType && (
+      {isCorrect && !isMultiExerciseType && (
         <s.BottomRowSmallTopMargin className="bottomRow">
           <s.EditSpeakButtonHolder>
             <SpeakButton
