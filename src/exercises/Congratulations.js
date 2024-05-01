@@ -17,7 +17,6 @@ export default function Congratulations({
   keepExercisingAction,
   source,
   totalTime,
-  exerciseSessionId,
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks),
@@ -41,8 +40,7 @@ export default function Congratulations({
     let userInfo = LocalStorage.userInfo();
     let name = userInfo.name;
     setUsername(name);
-    api.reportExerciseSessionEnd(exerciseSessionId, totalTime);
-    api.logReaderActivity(api.COMPLETED_EXERCISES, articleID, "", source);
+    api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
   }, []);
 
   if (username === undefined) {

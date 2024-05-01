@@ -28,6 +28,9 @@ import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 
+const BOOKMARKS_DUE_REVIEW = false;
+const NEW_BOOKMARKS_TO_STUDY = true;
+
 export default function Exercises({
   api,
   articleID,
@@ -138,6 +141,10 @@ export default function Exercises({
         });
       });
     } else {
+      // We retrieve the maximum (99) + the ones for the session
+      // This is because we update the count in memory
+      // and if we have more than 99 + session we would not correctly
+      // display the number to the user.
       api.getUserBookmarksToStudy(
         MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
         (bookmarks) => {
@@ -169,26 +176,11 @@ export default function Exercises({
 
     startExercising();
     return () => {
+      api.reportExerciseSessionEnd(dbExerciseSessionId, totalTime);
       setActivityOver(true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  let wordSourceText = articleInfo ? (
-    <>
-      <a href="#" className="wordSourceText" onClick={backButtonAction}>
-        {truncate(articleInfo.title, 40)}
-      </a>
-    </>
-  ) : (
-    <>{strings.wordSourceDefaultText}</>
-  );
-
-  let wordSourcePrefix = articleInfo ? (
-    <>{strings.goBackArticlePrefix}</>
-  ) : (
-    <>{strings.wordSourcePrefix}</>
-  );
 
   // Standard flow when user completes exercise session
   if (finished) {
@@ -201,11 +193,10 @@ export default function Exercises({
           api={api}
           backButtonAction={backButtonAction}
           keepExercisingAction={() => {
-            startExercising(false);
+            startExercising(BOOKMARKS_DUE_REVIEW);
           }}
           source={source}
           totalTime={activeSessionDuration}
-          exerciseSessionId={dbExerciseSessionId}
         />
       </>
     );
@@ -218,7 +209,7 @@ export default function Exercises({
         totalInLearning={totalBookmarksInPipeline}
         goBackAction={backButtonAction}
         keepExercisingAction={() => {
-          startExercising(true);
+          startExercising(NEW_BOOKMARKS_TO_STUDY);
         }}
       />
     );
@@ -264,17 +255,16 @@ export default function Exercises({
   let incorrectBookmarksCopy = [...incorrectBookmarks];
   function incorrectAnswerNotification(currentBookmark) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
-    if (
-      currentBookmark["cooling_interval"] === null &&
-      !incorrectBookmarksIds.includes(currentBookmark.id)
-    ) {
-      exerciseNotification.incrementExerciseCounter();
-    }
-    if (
-      currentBookmark["cooling_interval"] > 1 &&
-      !incorrectBookmarksIds.includes(currentBookmark.id)
-    ) {
-      exerciseNotification.decrementExerciseCounter();
+    if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
+      if (currentBookmark["cooling_interval"] > 1) {
+        // 8->4, 4->2, 2->1
+        // We decrease because you dont have to do it
+        // today.
+        exerciseNotification.decrementExerciseCounter();
+      } else {
+        // Case 1 and 0 (1 -> 0, 0 stays in zero)
+        exerciseNotification.incrementExerciseCounter();
+      }
     }
     incorrectBookmarksCopy.push(currentBookmark);
     setIncorrectBookmarks(incorrectBookmarksCopy);
@@ -290,7 +280,7 @@ export default function Exercises({
       word_id,
     );
     setIsCorrect(true);
-    setCurrentScheduledBookmarks(currentScheduledBookmarks - 1);
+    exerciseNotification.decrementExerciseCounter();
     api.uploadExerciseFeedback(
       userWrittenFeedback,
       currentExerciseType,
