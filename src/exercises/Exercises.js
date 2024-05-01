@@ -27,6 +27,7 @@ import {
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
+import useShadowRef from "../hooks/useShadowRef";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -43,7 +44,6 @@ export default function Exercises({
   const [finished, setFinished] = useState(false);
   const [correctBookmarks, setCorrectBookmarks] = useState([]);
   const [incorrectBookmarks, setIncorrectBookmarks] = useState([]);
-  const [articleInfo, setArticleInfo] = useState(null);
   const [fullExerciseProgression, setFullExerciseProgression] = useState();
   const [totalBookmarksInPipeline, setTotalBookmarksInPipeline] = useState();
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
@@ -51,12 +51,13 @@ export default function Exercises({
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
   const [showOutOfWordsMessage, setShowOutOfWordsMessage] = useState();
-  const [currentScheduledBookmarks, setCurrentScheduledBookmarks] = useState();
 
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
+  const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
 
   const [activeSessionDuration, clockActive, setActivityOver] =
     useActivityTimer();
+  const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
 
   function getExerciseSequenceType() {
@@ -91,7 +92,6 @@ export default function Exercises({
     }
   }
   function resetExerciseState() {
-    setCurrentScheduledBookmarks(0);
     setShowOutOfWordsMessage(false);
     setCountBookmarksToPractice();
     setFullExerciseProgression();
@@ -136,7 +136,6 @@ export default function Exercises({
     if (articleID) {
       api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
         api.getArticleInfo(articleID, (data) => {
-          setArticleInfo(data);
           initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
         });
       });
@@ -148,7 +147,6 @@ export default function Exercises({
       api.getUserBookmarksToStudy(
         MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
         (bookmarks) => {
-          setCurrentScheduledBookmarks(bookmarks.length);
           exerciseNotification.setExerciseCounter(bookmarks.length);
           exerciseNotification.updateReactState();
           initializeExercises(
@@ -176,7 +174,10 @@ export default function Exercises({
 
     startExercising();
     return () => {
-      api.reportExerciseSessionEnd(dbExerciseSessionId, totalTime);
+      api.reportExerciseSessionEnd(
+        dbExerciseSessionIdRef.current,
+        activeSessionDurationRef.current,
+      );
       setActivityOver(true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

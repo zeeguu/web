@@ -14,7 +14,7 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
     exerciseNotification.setHasExercisesHook = setHasExerciseNotification;
     exerciseNotification.setExerciseCounterHook = setTotalExercisesInPipeline;
     exerciseNotification.updateReactState();
-  });
+  }, []);
   return (
     <>
       <SidebarLink text={strings.articles} to="/articles" />

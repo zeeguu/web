@@ -13,11 +13,13 @@ export default function OutOfWordsMessage({
 }) {
   const [isAbleToAddBookmarksToPipe, setIsAbleToAddBookmarksToPipe] =
     useState();
+
   useEffect(() => {
     api.getNewBookmarksToStudy(1, (new_bookmarks) => {
       setIsAbleToAddBookmarksToPipe(new_bookmarks.length > 0);
     });
-  });
+  }, []);
+
   if (isAbleToAddBookmarksToPipe === undefined)
     return <LoadingAnimation></LoadingAnimation>;
   return (
