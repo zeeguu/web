@@ -40,11 +40,10 @@ export default function NextNavigation({
 
   const exercise = "exercise";
   const [userIsCorrect, setUserIsCorrect] = useState(false);
-  const [rightAnswer, setRightAnswer] = useState();
   const [correctMessage, setCorrectMessage] = useState("");
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
-  const isUserAndAnswerCorrect = isCorrect && rightAnswer;
+
   const productiveExercisesDisabled =
     localStorage.getItem("productiveExercisesEnabled") === "false";
   const isLastInCycle = exerciseBookmark.is_last_in_cycle;
@@ -55,6 +54,8 @@ export default function NextNavigation({
   const isMultiExerciseType =
     EXERCISE_TYPES.isMultiBookmarkExercise(exerciseType);
   const isCorrectMatch = ["CCC"].includes(message);
+  const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
+  const isRightAnswer = message.includes("C"); // User has gotten to the right answer, but not api correct
 
   const bookmarkLearned =
     isUserAndAnswerCorrect &&
@@ -86,15 +87,10 @@ export default function NextNavigation({
   }, [message]);
 
   useEffect(() => {
-    const rightAnswer = message.includes("C");
-    setRightAnswer(rightAnswer);
-  }, [message]);
-
-  useEffect(() => {
-    if (rightAnswer) {
+    if (isCorrect) {
       setCorrectMessage(random(correctStrings));
     }
-  }, [rightAnswer]);
+  }, [isCorrect]);
 
   useEffect(() => {
     if (bookmarkLearned && !SessionStorage.isCelebrationModalShown()) {
@@ -113,7 +109,7 @@ export default function NextNavigation({
           />
         </>
       )}
-      {rightAnswer &&
+      {isRightAnswer &&
         (!isMatchExercise || isCorrectMatch) &&
         (bookmarkProgression ? (
           <div className="next-nav-learning-cycle">
