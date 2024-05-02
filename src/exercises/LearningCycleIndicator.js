@@ -6,6 +6,7 @@ import Feature from "../features/Feature";
 import { logScaleToLinear } from "../utils/basic/logScaleToLinear";
 import { ExerciseValidation } from "./ExerciseValidation";
 import { learningCycleEnum } from "./ExerciseTypeConstants";
+import { APP_DOMAIN } from "../i18n/appConstants.js";
 import NotificationIcon from "../components/NotificationIcon";
 
 export default function LearningCycleIndicator({ bookmark, message }) {
@@ -66,7 +67,7 @@ export default function LearningCycleIndicator({ bookmark, message }) {
           <Tooltip title={getTooltipContent()}>
             <div className="learningCycleIcon">
               <img
-                src={getLearningCycleIcon()}
+                src={APP_DOMAIN + getLearningCycleIcon()}
                 alt={`${learningCycleEnum[learningCycle]}-icon`}
                 style={{ height: "2.5em", width: "2.5em" }}
               />
