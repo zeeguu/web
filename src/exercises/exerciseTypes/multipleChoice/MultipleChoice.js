@@ -4,6 +4,8 @@ import MultipleChoicesInput from "./MultipleChoicesInput.js";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
@@ -12,12 +14,15 @@ import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
-const EXERCISE_TYPE = "Select_L2W_fitting_L2T";
+// The user has to select the correct L2 translation of a given L1 word out of three.
+// This tests the user's active knowledge.
+
+const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoice;
 
 export default function MultipleChoice({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -32,7 +37,6 @@ export default function MultipleChoice({
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
@@ -55,8 +59,8 @@ export default function MultipleChoice({
           speech,
         ),
       );
-      setArticleInfo(articleInfo);
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -66,7 +70,7 @@ export default function MultipleChoice({
       selectedChoice ===
       removePunctuation(bookmarksToStudy[0].from.toLowerCase())
     ) {
-      correctAnswer(bookmarksToStudy[0]);
+      notifyCorrectAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
@@ -111,7 +115,7 @@ export default function MultipleChoice({
     setButtonOptions(shuffledListOfOptions);
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
@@ -120,6 +124,10 @@ export default function MultipleChoice({
       <div className="headlineWithMoreSpace">
         {strings.chooseTheWordFittingContextHeadline}
       </div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
@@ -130,7 +138,7 @@ export default function MultipleChoice({
         />
       </div>
 
-      {isCorrect && <h1>{bookmarksToStudy[0].to}</h1>}
+      {isCorrect && <h1>{removePunctuation(bookmarksToStudy[0].to)}</h1>}
 
       {!buttonOptions && <LoadingAnimation />}
       {!isCorrect && (
@@ -146,7 +154,7 @@ export default function MultipleChoice({
       <NextNavigation
         message={messageToAPI}
         api={api}
-        bookmarksToStudy={bookmarksToStudy}
+        exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

@@ -8,6 +8,7 @@ import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
 
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
+import { checkExtensionInstalled } from "./utils/extension/extensionCommunication";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
@@ -58,6 +59,9 @@ function App() {
       api.getUserDetails((data) => {
         LocalStorage.setUserInfo(data);
       });
+      api.getUserPreferences((preferences) => {
+        LocalStorage.setUserPreferences(preferences);
+      });
     }
 
     //logs out user on zeeguu.org if they log out of the extension
@@ -74,6 +78,7 @@ function App() {
 
   function logout() {
     LocalStorage.deleteUserInfo();
+    LocalStorage.deleteUserPreferences();
     setUserData({});
 
     removeUserInfoFromCookies();

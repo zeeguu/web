@@ -70,7 +70,6 @@ export default function SpeakButton({
   parentIsSpeakingControl,
 }) {
   const speech = useContext(SpeechContext);
-  // const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
   let style = styles[styling] || small_next_style; // default is next style
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/preprocessing/preprocessing";
+import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 
 export function TranslatableText({
   isCorrect,
@@ -13,6 +14,8 @@ export function TranslatableText({
   bookmarkToStudy,
   overrideBookmarkHighlightText,
   setIsRendered,
+  boldExpression,
+  exerciseType,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -70,10 +73,25 @@ export function TranslatableText({
       }
     }
   }
+
   function colorWord(word) {
     return `<span class='highlightedWord'>${word} </span>`;
   }
+
   function renderWordJSX(word) {
+    // If the word is a bookmarked word, it won't be translated when clicked
+    const disableTranslation = foundInstances.includes(word.id);
+
+    // If boldExpression is defined, the bookmark is written in bold, otherwise boldWords will be set to an empty array to avoid runtime error
+    const boldWords = boldExpression
+      ? boldExpression.split(" ").map((word) => removePunctuation(word))
+      : [];
+    const isWordBold = boldWords.includes(removePunctuation(word.word));
+
+    if (isWordBold) {
+      return <span style={{ fontWeight: "bold" }}>{word.word + " "}</span>;
+    }
+
     if (isCorrect) {
       if (word.id === firstWordID && overrideBookmarkHighlightText) {
         // In case we want to override the highlighted bookmark
@@ -110,6 +128,7 @@ export function TranslatableText({
             pronouncing={pronouncing}
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
+            disableTranslation={disableTranslation}
           />
         );
       }
@@ -125,17 +144,24 @@ export function TranslatableText({
             pronouncing={pronouncing}
             translatedWords={translatedWords}
             setTranslatedWords={setTranslatedWords}
+            disableTranslation={disableTranslation}
           />
         );
       }
-      if (foundInstances[0] === word.id) {
+
+      const translationExercise =
+        EXERCISE_TYPES.isTranslationExercise(exerciseType);
+
+      if (foundInstances[0] === word.id && !translationExercise) {
         // If we want, we can render it according to words size.
         // "_".repeat(word.word.length) + " ";
         return "_______ ";
       }
-      if (foundInstances.includes(word.id)) {
+
+      if (disableTranslation && !translationExercise) {
         return "";
       }
+
       return (
         <TranslatableWord
           interactiveText={interactiveText}
@@ -146,6 +172,7 @@ export function TranslatableText({
           pronouncing={pronouncing}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
+          disableTranslation={disableTranslation}
         />
       );
     }

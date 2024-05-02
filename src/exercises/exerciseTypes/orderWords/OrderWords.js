@@ -18,7 +18,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 export default function OrderWords({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -234,8 +234,8 @@ export default function OrderWords({
   }
 
   /*
-    Tracking the current scroll on mobile
-     */
+        Tracking the current scroll on mobile
+         */
   const handleTouchScroll = () => {
     let prevElement = document.getElementById("orderExercise");
     let currentElement = prevElement;
@@ -537,21 +537,21 @@ export default function OrderWords({
 
   function _initializeWordProps(wordList, sentenceWords) {
     /*
-        Create an word object with the following properties:
-          To be set by the component:
-          - id:int , position in the array
-          - word:str, the token string
-          - status:str, the class for the object (correct, incorrect)
-          - inUse:bool, if the user has used this word
-          - isInSetence:bool, if it's part of the original sentence
-            - NOTE, this is done by the frontend as the API may add repeated
-            words, and we do not want to mark them not being part of the sentence.
-          - hasPlaceholders:bool, if it has a placeholder token
-          To be set by API:
-          - feedback:str, clue associated with the error
-          - missBefore:bool, if the missing token is before
-          - status (Correct, Incorrect, Feedback)
-        */
+                Create an word object with the following properties:
+                  To be set by the component:
+                  - id:int , position in the array
+                  - word:str, the token string
+                  - status:str, the class for the object (correct, incorrect)
+                  - inUse:bool, if the user has used this word
+                  - isInSetence:bool, if it's part of the original sentence
+                    - NOTE, this is done by the frontend as the API may add repeated
+                    words, and we do not want to mark them not being part of the sentence.
+                  - hasPlaceholders:bool, if it has a placeholder token
+                  To be set by API:
+                  - feedback:str, clue associated with the error
+                  - missBefore:bool, if the missing token is before
+                  - status (Correct, Incorrect, Feedback)
+                */
     let arrayWordsProps = [];
     for (let i = 0; i < wordList.length; i++) {
       let isInSetence = sentenceWords.includes(wordList[i]) ? true : false;
@@ -1189,7 +1189,7 @@ export default function OrderWords({
           api={api}
           // Added an empty bookmark to avoid showing the
           // Listen Button.
-          bookmarksToStudy={bookmarksToStudy}
+          exerciseBookmark={bookmarksToStudy[0]}
           moveToNextExercise={moveToNextExercise}
           reload={reload}
           setReload={setReload}
@@ -1281,8 +1281,8 @@ export default function OrderWords({
   }
 
   /*
-    Returns RIGHT if the mouse is to the right or LEFT if the mouse is to the left.
-     */
+        Returns RIGHT if the mouse is to the right or LEFT if the mouse is to the left.
+         */
   function _getObjectSide(point, object) {
     function _getPosition(elem) {
       // Found: https://stackoverflow.com/questions/9040768/getting-coordinates-of-objects-in-js
