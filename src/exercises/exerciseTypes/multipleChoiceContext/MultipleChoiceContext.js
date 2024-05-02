@@ -16,7 +16,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 export default function MultipleChoiceContext({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -82,7 +82,7 @@ export default function MultipleChoiceContext({
     if (selectedChoiceId === bookmarksToStudy[0].id) {
       setShowSolution(true);
       setClickedIndex(index);
-      correctAnswer(bookmarksToStudy[0]);
+      notifyCorrectAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);

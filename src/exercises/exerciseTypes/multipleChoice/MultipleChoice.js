@@ -22,7 +22,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoice;
 export default function MultipleChoice({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -70,7 +70,7 @@ export default function MultipleChoice({
       selectedChoice ===
       removePunctuation(bookmarksToStudy[0].from.toLowerCase())
     ) {
-      correctAnswer(bookmarksToStudy[0]);
+      notifyCorrectAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);

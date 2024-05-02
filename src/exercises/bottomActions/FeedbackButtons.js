@@ -11,9 +11,7 @@ export default function FeedbackButtons({
   currentBookmarksToStudy,
   selectedId,
   setSelectedId,
-  setFeedback,
-  setOpenSnackbar,
-  setUserFeedback,
+  callFeedbackFunctionAndNotify,
 }) {
   const buttons = [
     {
@@ -22,9 +20,9 @@ export default function FeedbackButtons({
       tooltip: strings.bookmarkTooEasyTooltip,
     },
     {
-      name: strings.bookmarkTooHard,
-      value: "too_hard",
-      tooltip: strings.bookmarkTooHardTooltip,
+      name: strings.badContext,
+      value: "bad_context",
+      tooltip: strings.badContextTooltip,
     },
   ];
 
@@ -41,19 +39,17 @@ export default function FeedbackButtons({
   }, [currentExerciseType]);
 
   function buttonClick(value) {
+    let feedbackString = "";
     if (!selectedId) {
       alert(strings.selectWordsAlert);
     } else {
       if (value !== "other") {
-        setUserFeedback(value);
         buttons.forEach((button) => {
           if (button.value === value) {
-            setFeedback(
-              `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`,
-            );
+            feedbackString = `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`;
           }
         });
-        setOpenSnackbar(true);
+        callFeedbackFunctionAndNotify(feedbackString, value);
         setShow(false);
         if (currentExerciseType === EXERCISE_TYPES.match) {
           setSelectedId(null);
@@ -85,17 +81,14 @@ export default function FeedbackButtons({
         .replace(re1, "")
         .replace(re2, "")
         .replaceAll(" ", "_");
-      setUserFeedback(newFeedback);
-      setFeedback(
-        `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`,
-      );
+      let feedbackString = `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`;
       setInput("");
       setShowInput(false);
       setClassName("");
       if (currentExerciseType === EXERCISE_TYPES.match) {
         setSelectedId(null);
       }
-      setOpenSnackbar(true);
+      callFeedbackFunctionAndNotify(feedbackString, newFeedback);
       setShow(false);
       event.preventDefault();
     }

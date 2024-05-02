@@ -24,7 +24,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceAudio;
 export default function MultipleChoiceAudio({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -80,7 +80,7 @@ export default function MultipleChoiceAudio({
       selectedChoice ===
       removePunctuation(bookmarksToStudy[0].from.toLowerCase())
     ) {
-      correctAnswer(bookmarksToStudy[0]);
+      notifyCorrectAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
@@ -154,7 +154,7 @@ export default function MultipleChoiceAudio({
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    correctAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,

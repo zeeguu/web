@@ -20,7 +20,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.translateL2toL1;
 export default function TranslateL2toL1({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -79,7 +79,7 @@ export default function TranslateL2toL1({
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    correctAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
@@ -104,12 +104,10 @@ export default function TranslateL2toL1({
       <div className="headlineWithMoreSpace">
         {strings.translateL2toL1Headline}
       </div>
-      <div className="learningCycleIndicator">
-        <LearningCycleIndicator
-          bookmark={bookmarksToStudy[0]}
-          message={messageToAPI}
-        />
-      </div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}

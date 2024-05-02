@@ -24,7 +24,7 @@ export default function WordInContextExercise({
   handleIncorrectAnswer,
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -142,7 +142,7 @@ export default function WordInContextExercise({
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    correctAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
@@ -170,7 +170,6 @@ export default function WordInContextExercise({
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />
-
       <h1 className="wordInContextHeadline">
         {removePunctuation(bookmarksToStudy[0].to)}
       </h1>
@@ -194,7 +193,6 @@ export default function WordInContextExercise({
           setMessageToAPI={setMessageToAPI}
         />
       )}
-
       <NextNavigation
         message={messageToAPI}
         api={api}

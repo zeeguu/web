@@ -126,16 +126,8 @@ let LEARNING_CYCLE_SEQUENCE = [
     requiredBookmarks: 1,
     learningCycle: "receptive",
   },
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 3,
-    learningCycle: "productive",
-  },
-  {
-    type: SpellWhatYouHear,
-    requiredBookmarks: 1,
-    learningCycle: "productive",
-  },
+  { type: MultipleChoice, requiredBookmarks: 3, learningCycle: "productive" },
+  { type: SpellWhatYouHear, requiredBookmarks: 1, learningCycle: "productive" },
   {
     type: FindWordInContextCloze,
     requiredBookmarks: 1,
@@ -149,6 +141,11 @@ let LEARNING_CYCLE_SEQUENCE = [
 ];
 
 let LEARNING_CYCLE_SEQUENCE_NO_AUDIO = [
+  {
+    type: Match,
+    requiredBookmarks: 3,
+    learningCycle: "receptive",
+  },
   {
     type: Match,
     requiredBookmarks: 3,

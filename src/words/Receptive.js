@@ -11,7 +11,7 @@ export default function Receptive({ api }) {
   const [words, setWords] = useState(null);
 
   useEffect(() => {
-    api.getUserBookmarksToStudy(300, (bookmarks) => {
+    api.getUserBookmarksInPipeline((bookmarks) => {
       const receptiveWords = bookmarks.filter(
         (word) => word.learning_cycle === 1,
       );

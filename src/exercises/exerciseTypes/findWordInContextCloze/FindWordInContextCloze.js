@@ -21,7 +21,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.findWordInContextCloze;
 export default function FindWordInContextCloze({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -81,7 +81,7 @@ export default function FindWordInContextCloze({
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    correctAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,

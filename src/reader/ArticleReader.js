@@ -260,7 +260,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   return (
     <s.ArticleReader>
       <ActivityTimer
-        message="Seconds in this reading session"
+        message="Total time in this reading session"
         activeSessionDuration={activityTimer}
         clockActive={isTimerActive}
       />

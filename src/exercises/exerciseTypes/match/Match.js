@@ -17,7 +17,7 @@ const EXERCISE_TYPE = EXERCISE_TYPES.match;
 export default function Match({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -101,7 +101,7 @@ export default function Match({
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
-          correctAnswer(currentBookmarkLog.bookmark);
+          notifyCorrectAnswer(currentBookmarkLog.bookmark);
           handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
         } else {
           setIncorrectAnswer(secondChoice);
