@@ -27,9 +27,13 @@ export default function OutOfWordsMessage({
       <div className="contextExample">
         <h2>{strings.noTranslatedWords}</h2>
         <p>
-          The reason might be that you either have not enough translations, or
-          you might have already practiced enough your current words and the
-          spaced repetition algorithm.
+          The reason might be that you either don't have enough translations or
+          you have already practiced the words you are currently learning. We
+          will let you know when it's time to practice them again.
+        </p>
+        <p>
+          The best thing is to do some more reading, translate more words, and
+          then come back here to practice the new words.
         </p>
         <p>
           You are currently learning: <b>{totalInLearning}</b> words.

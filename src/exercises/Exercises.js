@@ -73,6 +73,13 @@ export default function Exercises({
   }
 
   function initializeExercises(bookmarks, title) {
+    if (bookmarks.length === 0) {
+      // If a user gets here with no bookmarks, means
+      // that we tried to schedule new bookmarks but none
+      // were found.
+      setShowOutOfWordsMessage(true);
+      return;
+    }
     setCountBookmarksToPractice(bookmarks.length);
 
     if (bookmarks.length > 0) {
@@ -122,10 +129,7 @@ export default function Exercises({
               api.getNewBookmarksToStudy(
                 NUMBER_OF_BOOKMARKS_TO_PRACTICE,
                 (new_bookmarks) => {
-                  if (new_bookmarks.length === 0) {
-                    // User doesn't have any new bookmarks to study
-                    setShowOutOfWordsMessage(true);
-                  } else initializeExercises(new_bookmarks, strings.exercises);
+                  initializeExercises(new_bookmarks, strings.exercises);
                 },
               );
             } else setShowOutOfWordsMessage(true);
