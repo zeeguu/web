@@ -122,7 +122,10 @@ export default function Exercises({
               api.getNewBookmarksToStudy(
                 NUMBER_OF_BOOKMARKS_TO_PRACTICE,
                 (new_bookmarks) => {
-                  initializeExercises(new_bookmarks, strings.exercises);
+                  if (new_bookmarks.length === 0) {
+                    // User doesn't have any new bookmarks to study
+                    setShowOutOfWordsMessage(true);
+                  } else initializeExercises(new_bookmarks, strings.exercises);
                 },
               );
             } else setShowOutOfWordsMessage(true);
@@ -335,7 +338,7 @@ export default function Exercises({
       </s.ExercisesColumn>
 
       <ActivityTimer
-        message="Seconds in this exercise session"
+        message="Total time in this exercise session"
         activeSessionDuration={activeSessionDuration}
         clockActive={clockActive}
       />
