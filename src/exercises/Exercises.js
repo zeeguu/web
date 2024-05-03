@@ -90,6 +90,8 @@ export default function Exercises({
         );
       }
       setActivityOver(true);
+      exerciseNotification.unsetExerciseCounter();
+      exerciseNotification.updateReactState();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

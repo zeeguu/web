@@ -13,6 +13,7 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
+import { API_ENDPOINT } from "./appConstants";
 
 import {
   getSessionFromCookies,
@@ -24,7 +25,7 @@ import { ToastContainer } from "react-toastify";
 import useExtensionCommunication from "./hooks/useExtensionCommunication";
 
 function App() {
-  let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
+  let api = new Zeeguu_API(API_ENDPOINT);
 
   let userDict = {};
 

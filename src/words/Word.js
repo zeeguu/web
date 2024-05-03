@@ -5,7 +5,7 @@ import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
-import { APP_DOMAIN } from "../i18n/appConstants";
+import { APP_DOMAIN } from "../appConstants";
 
 export default function Word({
   bookmark,
