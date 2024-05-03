@@ -26,19 +26,6 @@ const SessionStorage = {
     return sessionStorage[this.Keys.AudioExercisesEnabled] === "true";
   },
   /**
-   * @return {boolean}
-   */
-  isAudioBeingPlayed: function () {
-    return sessionStorage[this.Keys.AudioBeingPlayed] === "true";
-  },
-  /**
-   * @param {boolean} is_playing
-   */
-  setAudioBeingPlayed: function (is_playing) {
-    sessionStorage[this.Keys.AudioBeingPlayed] = is_playing;
-  },
-
-  /**
    * @param {boolean} is_enabled
    */
   setAudioExercisesEnabled: function (is_enabled) {
