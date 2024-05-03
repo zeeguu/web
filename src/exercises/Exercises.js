@@ -39,6 +39,7 @@ export default function Exercises({
   source,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
+  const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState();
   const [finished, setFinished] = useState(false);
@@ -50,15 +51,48 @@ export default function Exercises({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
+  const [articleTitle, setArticleTitle] = useState();
+  const [articleURL, setArticleURL] = useState();
   const [showOutOfWordsMessage, setShowOutOfWordsMessage] = useState();
 
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
+  const currentIndexRef = useShadowRef(currentIndex);
+  const hasKeptExercisingRef = useShadowRef(hasKeptExercising);
 
   const [activeSessionDuration, clockActive, setActivityOver] =
     useActivityTimer();
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
+
+  useEffect(() => {
+    api.getUserPreferences((preferences) => {
+      if (SessionStorage.getAudioExercisesEnabled() === undefined)
+        // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
+        SessionStorage.setAudioExercisesEnabled(
+          preferences["audio_exercises"] === undefined ||
+            preferences["audio_exercises"] === "true",
+        );
+    });
+    api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
+      let id = JSON.parse(newlyCreatedDBSessionID).id;
+      setDbExerciseSessionId(id);
+    });
+
+    startExercising();
+    return () => {
+      if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
+        // Do not report if there was no exercises
+        // performed
+        api.reportExerciseSessionEnd(
+          dbExerciseSessionIdRef.current,
+          activeSessionDurationRef.current,
+        );
+      }
+      setActivityOver(true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function getExerciseSequenceType() {
     let exerciseTypesList;
@@ -73,6 +107,7 @@ export default function Exercises({
   }
 
   function initializeExercises(bookmarks, title) {
+    exerciseNotification.updateReactState();
     if (bookmarks.length === 0) {
       // If a user gets here with no bookmarks, means
       // that we tried to schedule new bookmarks but none
@@ -113,82 +148,69 @@ export default function Exercises({
   function startExercising(is_new_scheduled_words) {
     resetExerciseState();
     if (is_new_scheduled_words) {
-      api.getNewBookmarksToStudy(
-        NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-        (new_bookmarks) => {
-          initializeExercises(new_bookmarks, strings.exercises);
-        },
-      );
+      exercise_new_bookmarks();
     } else {
-      api.hasBookmarksInPipelineToReview((hasBookmarksToPractice) => {
-        if (hasBookmarksToPractice) exercise_in_progress_bookmarks();
-        else {
-          api.getTotalBookmarksInPipeline((totalInLearning) => {
-            setTotalBookmarksInPipeline(totalInLearning);
-            if (totalInLearning < MAX_EXERCISE_IN_LEARNING_BOOKMARKS) {
-              api.getNewBookmarksToStudy(
-                NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-                (new_bookmarks) => {
-                  initializeExercises(new_bookmarks, strings.exercises);
-                },
-              );
-            } else setShowOutOfWordsMessage(true);
-          });
-        }
-      });
+      if (articleID) {
+        exercise_article_bookmarks();
+      } else {
+        api.hasBookmarksInPipelineToReview((hasBookmarksToPractice) => {
+          if (hasBookmarksToPractice) exercise_in_progress_bookmarks();
+          else {
+            add_new_bookmarks_or_show_out_of_words();
+          }
+        });
+      }
     }
+  }
+  function exercise_new_bookmarks() {
+    api.getNewBookmarksToStudy(
+      NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+      (new_bookmarks) => {
+        initializeExercises(new_bookmarks, strings.exercises);
+      },
+    );
+  }
+
+  function add_new_bookmarks_or_show_out_of_words() {
+    api.getTotalBookmarksInPipeline((totalInLearning) => {
+      setTotalBookmarksInPipeline(totalInLearning);
+      if (totalInLearning < MAX_EXERCISE_IN_LEARNING_BOOKMARKS) {
+        api.getNewBookmarksToStudy(
+          NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+          (new_bookmarks) => {
+            initializeExercises(new_bookmarks, strings.exercises);
+          },
+        );
+      } else setShowOutOfWordsMessage(true);
+    });
+  }
+  function exercise_article_bookmarks() {
+    api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
+      api.getArticleInfo(articleID, (data) => {
+        exerciseNotification.unsetExerciseCounter();
+        initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
+        setArticleTitle(data.title);
+        setArticleURL(data.url);
+      });
+    });
   }
 
   function exercise_in_progress_bookmarks() {
-    if (articleID) {
-      api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
-        api.getArticleInfo(articleID, (data) => {
-          initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
-        });
-      });
-    } else {
-      // We retrieve the maximum (99) + the ones for the session
-      // This is because we update the count in memory
-      // and if we have more than 99 + session we would not correctly
-      // display the number to the user.
-      api.getUserBookmarksToStudy(
-        MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-        (bookmarks) => {
-          exerciseNotification.setExerciseCounter(bookmarks.length);
-          exerciseNotification.updateReactState();
-          initializeExercises(
-            bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
-            strings.exercises,
-          );
-        },
-      );
-    }
-  }
-
-  useEffect(() => {
-    api.getUserPreferences((preferences) => {
-      if (SessionStorage.getAudioExercisesEnabled() === undefined)
-        // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
-        SessionStorage.setAudioExercisesEnabled(
-          preferences["audio_exercises"] === undefined ||
-            preferences["audio_exercises"] === "true",
+    // We retrieve the maximum (99) + the ones for the session
+    // This is because we update the count in memory
+    // and if we have more than 99 + session we would not correctly
+    // display the number to the user.
+    api.getUserBookmarksToStudy(
+      MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+      (bookmarks) => {
+        exerciseNotification.setExerciseCounter(bookmarks.length);
+        initializeExercises(
+          bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
+          strings.exercises,
         );
-    });
-    api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
-      let id = JSON.parse(newlyCreatedDBSessionID).id;
-      setDbExerciseSessionId(id);
-    });
-
-    startExercising();
-    return () => {
-      api.reportExerciseSessionEnd(
-        dbExerciseSessionIdRef.current,
-        activeSessionDurationRef.current,
-      );
-      setActivityOver(true);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      },
+    );
+  }
 
   // Standard flow when user completes exercise session
   if (finished) {
@@ -202,15 +224,23 @@ export default function Exercises({
           backButtonAction={backButtonAction}
           keepExercisingAction={() => {
             startExercising(BOOKMARKS_DUE_REVIEW);
+            setHasKeptExercising(true);
           }}
           source={source}
           totalTime={activeSessionDuration}
+          articleURL={articleURL}
+          articleTitle={articleTitle}
         />
       </>
     );
   }
 
   if (showOutOfWordsMessage) {
+    if (!totalBookmarksInPipeline) {
+      api.getTotalBookmarksInPipeline((totalBookmarks) => {
+        setTotalBookmarksInPipeline(totalBookmarks);
+      });
+    }
     return (
       <OutOfWordsMessage
         api={api}
@@ -218,6 +248,7 @@ export default function Exercises({
         goBackAction={backButtonAction}
         keepExercisingAction={() => {
           startExercising(NEW_BOOKMARKS_TO_STUDY);
+          setHasKeptExercising(true);
         }}
       />
     );
@@ -269,8 +300,9 @@ export default function Exercises({
         // We decrease because you dont have to do it
         // today.
         exerciseNotification.decrementExerciseCounter();
-      } else {
-        // Case 1 and 0 (1 -> 0, 0 stays in zero)
+      }
+      if (currentBookmark["cooling_interval"] === null) {
+        // Bookmark is new, if the user got it wrong it is now scheduled.
         exerciseNotification.incrementExerciseCounter();
       }
     }
@@ -303,13 +335,9 @@ export default function Exercises({
   }
 
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
-
   return (
     <>
       <s.ExercisesColumn className="exercisesColumn">
-        {/*<s.LittleMessageAbove>*/}
-        {/*  {wordSourcePrefix} {wordSourceText}*/}
-        {/*</s.LittleMessageAbove>*/}
         <ProgressBar
           index={currentIndex}
           total={fullExerciseProgression.length}
@@ -339,8 +367,13 @@ export default function Exercises({
           currentBookmarksToStudy={currentBookmarksToStudy}
           feedbackFunction={uploadUserFeedback}
         />
+        {articleID && (
+          <p>
+            You are practicing words from:{" "}
+            <a href={articleURL}>{articleTitle}</a>
+          </p>
+        )}
       </s.ExercisesColumn>
-
       <ActivityTimer
         message="Total time in this exercise session"
         activeSessionDuration={activeSessionDuration}

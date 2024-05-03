@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch } from "react-router-dom";
 
+import ExerciseNotifications from "./exercises/ExerciseNotification";
+import { ExerciseCountContext } from "./exercises/ExerciseCountContext";
 import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
@@ -8,7 +10,6 @@ import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
 
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
-import { checkExtensionInstalled } from "./utils/extension/extensionCommunication";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
@@ -40,6 +41,7 @@ function App() {
   const [userData, setUserData] = useState(userDict);
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
+  const [exerciseNotification] = useState(new ExerciseNotifications());
 
   useEffect(() => {
     if (Object.keys(userData).length !== 0) {
@@ -63,6 +65,10 @@ function App() {
         LocalStorage.setUserPreferences(preferences);
       });
     }
+    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+      exerciseNotification.setHasExercises(hasBookmarks);
+      exerciseNotification.updateReactState();
+    });
 
     //logs out user on zeeguu.org if they log out of the extension
 
@@ -92,27 +98,29 @@ function App() {
       <BrowserRouter>
         <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
           <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
-            <APIContext.Provider value={api}>
-              {/* Routing*/}
-              <MainAppRouter
-                api={api}
-                setUser={setUserData}
-                hasExtension={isExtensionAvailable}
-              />
+            <ExerciseCountContext.Provider value={exerciseNotification}>
+              <APIContext.Provider value={api}>
+                {/* Routing*/}
+                <MainAppRouter
+                  api={api}
+                  setUser={setUserData}
+                  hasExtension={isExtensionAvailable}
+                />
 
-              <ToastContainer
-                position="bottom-right"
-                autoClose={2000}
-                hideProgressBar={true}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
-            </APIContext.Provider>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
+              </APIContext.Provider>
+            </ExerciseCountContext.Provider>
           </UserContext.Provider>
         </RoutingContext.Provider>
       </BrowserRouter>

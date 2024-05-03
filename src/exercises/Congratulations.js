@@ -10,6 +10,8 @@ import { timeToHumanReadable } from "../utils/misc/readableTime";
 
 export default function Congratulations({
   articleID,
+  articleTitle,
+  articleURL,
   correctBookmarks,
   incorrectBookmarks,
   api,
@@ -25,7 +27,6 @@ export default function Congratulations({
     useState(removeArrayDuplicates(incorrectBookmarks));
 
   const [username, setUsername] = useState();
-  const [humanReadableTime, setHumanReadableTime] = useState();
 
   function deleteBookmark(bookmark) {
     setCorrectBookmarksToDisplay(
@@ -59,7 +60,11 @@ export default function Congratulations({
         <div style={{ fontSize: "small" }}>
           This exercise session took {timeToHumanReadable(totalTime)}
         </div>
-
+        {articleID && (
+          <p>
+            You practiced words from: <a href={articleURL}>{articleTitle}</a>
+          </p>
+        )}
         {correctBookmarksToDisplay.length > 0 && (
           <>
             <h3>😊 {strings.correct}</h3>

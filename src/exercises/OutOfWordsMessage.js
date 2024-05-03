@@ -36,7 +36,8 @@ export default function OutOfWordsMessage({
           new words.
         </p>
         <p>
-          You are currently learning <b>{totalInLearning}</b> words.
+          You are currently learning <b>{totalInLearning}</b>{" "}
+          {totalInLearning > 1 ? "words" : "word"}.
         </p>
         <p>
           We recommend that you are at most learning{" "}
