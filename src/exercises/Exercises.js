@@ -39,6 +39,7 @@ export default function Exercises({
   source,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
+  const [hasKeptExercising, setHasKeptExercising] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentBookmarksToStudy, setCurrentBookmarksToStudy] = useState();
   const [finished, setFinished] = useState(false);
@@ -56,11 +57,42 @@ export default function Exercises({
 
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
+  const currentIndexRef = useShadowRef(currentIndex);
+  const hasKeptExercisingRef = useShadowRef(hasKeptExercising);
 
   const [activeSessionDuration, clockActive, setActivityOver] =
     useActivityTimer();
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
+
+  useEffect(() => {
+    api.getUserPreferences((preferences) => {
+      if (SessionStorage.getAudioExercisesEnabled() === undefined)
+        // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
+        SessionStorage.setAudioExercisesEnabled(
+          preferences["audio_exercises"] === undefined ||
+            preferences["audio_exercises"] === "true",
+        );
+    });
+    api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
+      let id = JSON.parse(newlyCreatedDBSessionID).id;
+      setDbExerciseSessionId(id);
+    });
+
+    startExercising();
+    return () => {
+      if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
+        // Do not report if there was no exercises
+        // performed
+        api.reportExerciseSessionEnd(
+          dbExerciseSessionIdRef.current,
+          activeSessionDurationRef.current,
+        );
+      }
+      setActivityOver(true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function getExerciseSequenceType() {
     let exerciseTypesList;
@@ -180,33 +212,6 @@ export default function Exercises({
     );
   }
 
-  useEffect(() => {
-    api.getUserPreferences((preferences) => {
-      if (SessionStorage.getAudioExercisesEnabled() === undefined)
-        // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)
-        SessionStorage.setAudioExercisesEnabled(
-          preferences["audio_exercises"] === undefined ||
-            preferences["audio_exercises"] === "true",
-        );
-    });
-    api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
-      let id = JSON.parse(newlyCreatedDBSessionID).id;
-      setDbExerciseSessionId(id);
-    });
-
-    startExercising();
-    return () => {
-      api.reportExerciseSessionEnd(
-        dbExerciseSessionIdRef.current,
-        activeSessionDurationRef.current,
-      );
-      setActivityOver(true);
-      exerciseNotification.unsetExerciseCounter();
-      exerciseNotification.updateReactState();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Standard flow when user completes exercise session
   if (finished) {
     return (
@@ -219,6 +224,7 @@ export default function Exercises({
           backButtonAction={backButtonAction}
           keepExercisingAction={() => {
             startExercising(BOOKMARKS_DUE_REVIEW);
+            setHasKeptExercising(true);
           }}
           source={source}
           totalTime={activeSessionDuration}
@@ -242,6 +248,7 @@ export default function Exercises({
         goBackAction={backButtonAction}
         keepExercisingAction={() => {
           startExercising(NEW_BOOKMARKS_TO_STUDY);
+          setHasKeptExercising(true);
         }}
       />
     );
