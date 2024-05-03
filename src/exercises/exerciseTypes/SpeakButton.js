@@ -4,7 +4,7 @@ import strings from "../../i18n/definitions";
 import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
 import SessionStorage from "../../assorted/SessionStorage";
-import { APP_DOMAIN } from "../../i18n/appConstants.js";
+import { APP_DOMAIN } from "../../appConstants.js";
 
 import { SpeechContext } from "../../contexts/SpeechContext";
 

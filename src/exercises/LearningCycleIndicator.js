@@ -6,7 +6,7 @@ import Feature from "../features/Feature";
 import { logScaleToLinear } from "../utils/basic/logScaleToLinear";
 import { ExerciseValidation } from "./ExerciseValidation";
 import { learningCycleEnum } from "./ExerciseTypeConstants";
-import { APP_DOMAIN } from "../i18n/appConstants.js";
+import { APP_DOMAIN } from "../appConstants.js";
 import NotificationIcon from "../components/NotificationIcon";
 
 export default function LearningCycleIndicator({ bookmark, message }) {

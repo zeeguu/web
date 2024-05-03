@@ -10,7 +10,7 @@ import SessionStorage from "../../assorted/SessionStorage.js";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 
 import CelebrationModal from "../CelebrationModal";
-import { APP_DOMAIN } from "../../i18n/appConstants.js";
+import { APP_DOMAIN } from "../../appConstants.js";
 
 import Feature from "../../features/Feature";
 import { ExerciseValidation } from "../ExerciseValidation.js";
