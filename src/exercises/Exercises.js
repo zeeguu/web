@@ -50,6 +50,8 @@ export default function Exercises({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
+  const [articleTitle, setArticleTitle] = useState();
+  const [articleURL, setArticleURL] = useState();
   const [showOutOfWordsMessage, setShowOutOfWordsMessage] = useState();
 
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
@@ -155,6 +157,8 @@ export default function Exercises({
       api.getArticleInfo(articleID, (data) => {
         exerciseNotification.unsetExerciseCounter();
         initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
+        setArticleTitle(data.title);
+        setArticleURL(data.url);
       });
     });
   }
@@ -218,6 +222,8 @@ export default function Exercises({
           }}
           source={source}
           totalTime={activeSessionDuration}
+          articleURL={articleURL}
+          articleTitle={articleTitle}
         />
       </>
     );
@@ -322,13 +328,9 @@ export default function Exercises({
   }
 
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
-
   return (
     <>
       <s.ExercisesColumn className="exercisesColumn">
-        {/*<s.LittleMessageAbove>*/}
-        {/*  {wordSourcePrefix} {wordSourceText}*/}
-        {/*</s.LittleMessageAbove>*/}
         <ProgressBar
           index={currentIndex}
           total={fullExerciseProgression.length}
@@ -358,8 +360,13 @@ export default function Exercises({
           currentBookmarksToStudy={currentBookmarksToStudy}
           feedbackFunction={uploadUserFeedback}
         />
+        {articleID && (
+          <p>
+            You are practicing words from:{" "}
+            <a href={articleURL}>{articleTitle}</a>
+          </p>
+        )}
       </s.ExercisesColumn>
-
       <ActivityTimer
         message="Total time in this exercise session"
         activeSessionDuration={activeSessionDuration}
