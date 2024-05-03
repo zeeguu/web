@@ -14,6 +14,7 @@ import { CEFR_LEVELS } from "../assorted/cefrLevels";
 import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 import { PageTitle } from "../components/PageTitle";
 import Feature from "../features/Feature";
+import SessionStorage from "../assorted/SessionStorage";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -122,7 +123,7 @@ export default function Settings({ api, setUser }) {
     modifyCEFRlevel(userDetails.learned_language, cefr);
 
     console.log("saving: productiveExercises: " + productiveExercises);
-
+    SessionStorage.setAudioExercisesEnabled(audioExercises);
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       api.saveUserPreferences(
         {

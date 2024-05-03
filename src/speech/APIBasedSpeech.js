@@ -1,5 +1,4 @@
 /*global chrome*/
-import SessionStorage from "../assorted/SessionStorage";
 
 const ZeeguuSpeech = class {
   constructor(api, languageCode) {
@@ -8,15 +7,15 @@ const ZeeguuSpeech = class {
 
     this.pronunciationPlayer = new Audio();
     this.pronunciationPlayer.autoplay = true;
+    this.isCurrentlySpeaking = false;
   }
 
   async speakOut(word, setIsSpeaking) {
+    if (this.isCurrentlySpeaking) return;
     function animateSpeechButton(setIsSpeaking, isPlayingSound) {
-      if (setIsSpeaking !== undefined) {
-        setIsSpeaking(isPlayingSound);
-        SessionStorage.setAudioBeingPlayed(isPlayingSound);
-      }
+      if (typeof setIsSpeaking !== "undefined") setIsSpeaking(isPlayingSound);
     }
+    this.isCurrentlySpeaking = true;
     animateSpeechButton(setIsSpeaking, true);
     await this.api
       .fetchLinkToSpeechMp3(word, this.language)
@@ -25,11 +24,25 @@ const ZeeguuSpeech = class {
         this.pronunciationPlayer.addEventListener("ended", (e) => {
           // Only terminate the animation after playing the sound.
           animateSpeechButton(setIsSpeaking, false);
+          this.isCurrentlySpeaking = false;
         });
+
+        var promise = this.pronunciationPlayer.play();
+        if (promise !== undefined) {
+          promise
+            .then((_) => {
+              // Autoplay started!
+            })
+            .catch((error) => {
+              animateSpeechButton(setIsSpeaking, false);
+              this.isCurrentlySpeaking = false;
+            });
+        }
       })
       .catch(() => {
         // in case anything goes wrong here... we should still deactivate the animation
         animateSpeechButton(setIsSpeaking, false);
+        this.isCurrentlySpeaking = false;
       });
   }
 

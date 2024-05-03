@@ -65,13 +65,9 @@ export default function TranslateWhatYouHear({
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (SessionStorage.isAudioExercisesEnabled()) {
       handleSpeak();
-    }, 300);
-
-    return () => {
-      clearTimeout(timer);
-    };
+    }
   }, [interactiveText]);
 
   function handleShowSolution(e, message) {
