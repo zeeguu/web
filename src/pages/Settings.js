@@ -76,8 +76,9 @@ export default function Settings({ api, setUser }) {
     });
     api.getUserPreferences((preferences) => {
       setAudioExercises(
-        preferences["audio_exercises"] === undefined ||
-          preferences["audio_exercises"] === "true",
+        (preferences["audio_exercises"] === undefined ||
+          preferences["audio_exercises"] === "true") &&
+          SessionStorage.isAudioExercisesEnabled(),
       );
     });
     api.getSystemLanguages((systemLanguages) => {
@@ -275,7 +276,12 @@ export default function Settings({ api, setUser }) {
                 checked={audioExercises}
                 onChange={handleAudioExercisesChange}
               />
-              <label>Include Audio Exercises</label>
+              <label>
+                Include Audio Exercises{" "}
+                {SessionStorage.isAudioExercisesEnabled()
+                  ? ""
+                  : "(Temporaly Disabled)"}
+              </label>
             </div>
             {Feature.merle_exercises() && (
               <div style={{ display: "flex" }} className="form-group">
