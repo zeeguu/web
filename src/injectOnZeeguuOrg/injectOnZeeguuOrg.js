@@ -1,27 +1,19 @@
-// for some reason this gets injected too early and the page is not ready yet
-// in order to handle this, we repeat the injection a few times
-// Note that this is only used for Firefox; for Chrome we send a message from the web site to the extension
-
-const NUMBER_OF_RETRIES = 10;
-const DELAY_BETWEEN_RETRIES = 100;
-
-function notifyZeeguuOrgOfExtensionPresence() {
-  window.postMessage(
-    {
-      direction: "from-content-script",
-      message: "Greetings from the Zeeguu Extension",
-    },
-    "*"
-  );
-}
-
-function repeat_with_delay(i, fun) {
-  setTimeout(function () {
-    fun();
-    if (i > 0) {
-      repeat_with_delay(i - 1, fun);
-    }
-  }, DELAY_BETWEEN_RETRIES);
-}
-
-repeat_with_delay(NUMBER_OF_RETRIES, notifyZeeguuOrgOfExtensionPresence); //  start the loop
+// In chrome this code doesn't seem to execute if there is not a delay in the code.
+// in zeeguu.org/article (FindArticle.js) a small timeout was added of 100 ms
+// to allow the Chrome browser to correctly interact with these messages.
+console.log("Injecting the code!");
+window.addEventListener("message", function (event) {
+  if (
+    event.source == window &&
+    event.data.message === "CONFIRM_EXTENSION_REQUEST" &&
+    event.data.source === "ZEEGUU_PAGE"
+  ) {
+    window.postMessage(
+      {
+        message: "EXTENSION_CONFIRMATION_RESPONSE",
+        source: "EXTENSION_INJECTED_CODE",
+      },
+      "*"
+    );
+  }
+});
