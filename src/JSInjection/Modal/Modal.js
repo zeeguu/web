@@ -21,7 +21,6 @@ import { interactiveTextsWithTags } from "./interactiveTextsWithTags";
 import { getNativeLanguage, getUsername } from "../../popup/functions";
 import { ReadArticle } from "./ReadArticle";
 import WordsForArticleModal from "./WordsForArticleModal";
-import Exercises from "../../zeeguu-react/src/exercises/Exercises";
 import ToolbarButtons from "./ToolbarButtons";
 import useUILanguage from "../../zeeguu-react/src/assorted/hooks/uiLanguageHook";
 import { getHTMLContent } from "../Cleaning/pageSpecificClean";
@@ -43,6 +42,7 @@ import ActivityTimer from "../../zeeguu-react/src/components/ActivityTimer";
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ZeeguuError from "../ZeeguuError";
+import { WEB_URL } from "../../config.js";
 
 export function Modal({
   title,
@@ -75,6 +75,7 @@ export function Modal({
 
   const [logContext, setLogContext] = useState("ARTICLE");
   const logContextRef = useRef({});
+
   logContextRef.current = logContext;
   const articleInfoRef = useRef({});
   articleInfoRef.current = articleInfo;
@@ -298,30 +299,13 @@ export function Modal({
 
   function openReview() {
     setLogContext("WORDS REVIEW");
-
     setReviewOpen(true);
     setReadArticleOpen(false);
     setExerciseOpen(false);
   }
 
   function openExercises() {
-    setExerciseOpen(true);
-    setReviewOpen(false);
-    setLogContext("EXERCISES");
-    api.logReaderActivity(
-      api.TO_EXERCISES_AFTER_REVIEW,
-      articleId(),
-      "",
-      EXTENSION_SOURCE
-    );
-  }
-
-  function reloadExercises() {
-    console.log("reloading exercises!");
-    setExerciseOpen(false);
-    setTimeout(() => {
-      setExerciseOpen(true);
-    }, 0);
+    window.open(`${WEB_URL}/exercises/forArticle/${articleId()}`);
   }
 
   function openArticle() {
@@ -337,11 +321,16 @@ export function Modal({
       setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleInfo.id, state, EXTENSION_SOURCE);
+    api.logReaderActivity(
+      api.LIKE_ARTICLE,
+      articleInfo.id,
+      state,
+      EXTENSION_SOURCE
+    );
   };
 
   const updateArticleDifficultyFeedback = (answer) => {
-    let newArticleInfo = { ...articleInfo, relative_difficulty: answer};
+    let newArticleInfo = { ...articleInfo, relative_difficulty: answer };
     api.submitArticleDifficultyFeedback(
       { article_id: articleInfo.id, difficulty: answer },
       () => {
@@ -349,7 +338,12 @@ export function Modal({
         setArticleInfo(newArticleInfo);
       }
     );
-    api.logReaderActivity(api.DIFFICULTY_FEEDBACK, articleInfo.id, answer, EXTENSION_SOURCE);
+    api.logReaderActivity(
+      api.DIFFICULTY_FEEDBACK,
+      articleInfo.id,
+      answer,
+      EXTENSION_SOURCE
+    );
   };
 
   if (
@@ -462,7 +456,9 @@ export function Modal({
                   personalCopySaved={personalCopySaved}
                   articleInfo={articleInfo}
                   setLikedState={setLikedState}
-                  updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
+                  updateArticleDifficultyFeedback={
+                    updateArticleDifficultyFeedback
+                  }
                   answerSubmitted={answerSubmitted}
                 />
               )}
@@ -476,22 +472,11 @@ export function Modal({
                   openArticle={openArticle}
                 />
               )}
-              {exerciseOpen === true && (
-                <>
-                  <Exercises
-                    className="exercises"
-                    api={api}
-                    articleID={articleId()}
-                    openExercises={openExercises}
-                    keepExercisingAction={reloadExercises}
-                    backButtonAction={openArticle}
-                  />
-                </>
-              )}
             </OverwriteZeeguu>
           </StyledModal>
         </div>
       </SpeechContext.Provider>
+
       <FloatingMenu
         buttons={buttons}
         buttonGroupVisible={buttonGroupVisible}

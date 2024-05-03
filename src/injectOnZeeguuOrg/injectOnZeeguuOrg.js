@@ -1,7 +1,6 @@
 // In chrome this code doesn't seem to execute if there is not a delay in the code.
 // in zeeguu.org/article (FindArticle.js) a small timeout was added of 100 ms
 // to allow the Chrome browser to correctly interact with these messages.
-console.log("Injecting the code!");
 window.addEventListener("message", function (event) {
   if (
     event.source == window &&
