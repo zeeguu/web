@@ -6,6 +6,7 @@ import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 import { setColors } from "../components/colors";
 import * as s from "./SideBar.sc";
 import { APIContext } from "../contexts/APIContext";
+import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import NotificationIcon from "./NotificationIcon";
 
 export default function SideBar(props) {
@@ -13,11 +14,16 @@ export default function SideBar(props) {
   const api = useContext(APIContext);
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
+  const exerciseNotification = useContext(ExerciseCountContext);
 
   //deducting whether we are on student or teacher side for colouring
   const path = useLocation().pathname;
   useEffect(() => {
     setIsOnStudentSide(!path.includes("teacher"));
+    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+      exerciseNotification.setHasExercises(hasBookmarks);
+      exerciseNotification.updateReactState();
+    });
   }, [path]);
 
   const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
