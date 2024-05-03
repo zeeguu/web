@@ -73,6 +73,7 @@ export default function Exercises({
   }
 
   function initializeExercises(bookmarks, title) {
+    exerciseNotification.updateReactState();
     if (bookmarks.length === 0) {
       // If a user gets here with no bookmarks, means
       // that we tried to schedule new bookmarks but none
@@ -143,6 +144,7 @@ export default function Exercises({
     if (articleID) {
       api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
         api.getArticleInfo(articleID, (data) => {
+          exerciseNotification.unsetExerciseCounter();
           initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
         });
       });
@@ -155,7 +157,6 @@ export default function Exercises({
         MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
         (bookmarks) => {
           exerciseNotification.setExerciseCounter(bookmarks.length);
-          exerciseNotification.updateReactState();
           initializeExercises(
             bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
             strings.exercises,
@@ -186,6 +187,8 @@ export default function Exercises({
         activeSessionDurationRef.current,
       );
       setActivityOver(true);
+      exerciseNotification.unsetExerciseCounter();
+      exerciseNotification.updateReactState();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -211,6 +214,11 @@ export default function Exercises({
   }
 
   if (showOutOfWordsMessage) {
+    if (!totalBookmarksInPipeline) {
+      api.getTotalBookmarksInPipeline((totalBookmarks) => {
+        setTotalBookmarksInPipeline(totalBookmarks);
+      });
+    }
     return (
       <OutOfWordsMessage
         api={api}
@@ -269,8 +277,9 @@ export default function Exercises({
         // We decrease because you dont have to do it
         // today.
         exerciseNotification.decrementExerciseCounter();
-      } else {
-        // Case 1 and 0 (1 -> 0, 0 stays in zero)
+      }
+      if (currentBookmark["cooling_interval"] === null) {
+        // Bookmark is new, if the user got it wrong it is now scheduled.
         exerciseNotification.incrementExerciseCounter();
       }
     }

@@ -25,7 +25,6 @@ export default function Congratulations({
     useState(removeArrayDuplicates(incorrectBookmarks));
 
   const [username, setUsername] = useState();
-  const [humanReadableTime, setHumanReadableTime] = useState();
 
   function deleteBookmark(bookmark) {
     setCorrectBookmarksToDisplay(

@@ -21,6 +21,10 @@ const ExerciseNotifications = class {
     this.exerciseCounter = exerciseCount;
   }
 
+  unsetExerciseCounter(exerciseCount) {
+    this.exerciseCounter = null;
+  }
+
   incrementExerciseCounter() {
     this.exerciseCounter++;
     if (!this.hasExercises) this.hasExercises = true;
