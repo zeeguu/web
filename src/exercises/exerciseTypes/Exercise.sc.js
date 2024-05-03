@@ -365,6 +365,7 @@ let BottomRow = styled.div`
   justify-content: space-around;
   margin-top: 3em;
   margin-bottom: 1em;
+  flex-wrap: wrap;
 
   @media (max-width: 430px) {
     flex-flow: row wrap;
