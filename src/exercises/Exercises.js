@@ -114,56 +114,66 @@ export default function Exercises({
   function startExercising(is_new_scheduled_words) {
     resetExerciseState();
     if (is_new_scheduled_words) {
-      api.getNewBookmarksToStudy(
-        NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-        (new_bookmarks) => {
-          initializeExercises(new_bookmarks, strings.exercises);
-        },
-      );
+      exercise_new_bookmarks();
     } else {
-      api.hasBookmarksInPipelineToReview((hasBookmarksToPractice) => {
-        if (hasBookmarksToPractice) exercise_in_progress_bookmarks();
-        else {
-          api.getTotalBookmarksInPipeline((totalInLearning) => {
-            setTotalBookmarksInPipeline(totalInLearning);
-            if (totalInLearning < MAX_EXERCISE_IN_LEARNING_BOOKMARKS) {
-              api.getNewBookmarksToStudy(
-                NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-                (new_bookmarks) => {
-                  initializeExercises(new_bookmarks, strings.exercises);
-                },
-              );
-            } else setShowOutOfWordsMessage(true);
-          });
-        }
-      });
+      if (articleID) {
+        exercise_article_bookmarks();
+      } else {
+        api.hasBookmarksInPipelineToReview((hasBookmarksToPractice) => {
+          if (hasBookmarksToPractice) exercise_in_progress_bookmarks();
+          else {
+            add_new_bookmarks_or_show_out_of_words();
+          }
+        });
+      }
     }
+  }
+  function exercise_new_bookmarks() {
+    api.getNewBookmarksToStudy(
+      NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+      (new_bookmarks) => {
+        initializeExercises(new_bookmarks, strings.exercises);
+      },
+    );
+  }
+
+  function add_new_bookmarks_or_show_out_of_words() {
+    api.getTotalBookmarksInPipeline((totalInLearning) => {
+      setTotalBookmarksInPipeline(totalInLearning);
+      if (totalInLearning < MAX_EXERCISE_IN_LEARNING_BOOKMARKS) {
+        api.getNewBookmarksToStudy(
+          NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+          (new_bookmarks) => {
+            initializeExercises(new_bookmarks, strings.exercises);
+          },
+        );
+      } else setShowOutOfWordsMessage(true);
+    });
+  }
+  function exercise_article_bookmarks() {
+    api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
+      api.getArticleInfo(articleID, (data) => {
+        exerciseNotification.unsetExerciseCounter();
+        initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
+      });
+    });
   }
 
   function exercise_in_progress_bookmarks() {
-    if (articleID) {
-      api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
-        api.getArticleInfo(articleID, (data) => {
-          exerciseNotification.unsetExerciseCounter();
-          initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
-        });
-      });
-    } else {
-      // We retrieve the maximum (99) + the ones for the session
-      // This is because we update the count in memory
-      // and if we have more than 99 + session we would not correctly
-      // display the number to the user.
-      api.getUserBookmarksToStudy(
-        MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
-        (bookmarks) => {
-          exerciseNotification.setExerciseCounter(bookmarks.length);
-          initializeExercises(
-            bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
-            strings.exercises,
-          );
-        },
-      );
-    }
+    // We retrieve the maximum (99) + the ones for the session
+    // This is because we update the count in memory
+    // and if we have more than 99 + session we would not correctly
+    // display the number to the user.
+    api.getUserBookmarksToStudy(
+      MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+      (bookmarks) => {
+        exerciseNotification.setExerciseCounter(bookmarks.length);
+        initializeExercises(
+          bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
+          strings.exercises,
+        );
+      },
+    );
   }
 
   useEffect(() => {
