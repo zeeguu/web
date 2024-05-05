@@ -66,7 +66,7 @@ let strings = new LocalizedStrings(
         "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
       inviteCode: "Invite Code",
-      inviteCodePlaceholder: "Enter your invite code",
+      inviteCodePlaceholder: "Enter your Invite Code",
       levelOfLearnedLanguage: "My current level",
       levelOfLearnedLanguagePlaceholder: "Select level",
       baseLanguage: "I want translations in",
@@ -123,7 +123,7 @@ let strings = new LocalizedStrings(
       codeReceived: "Received Code",
       codeReceivedPlaceholder: "Enter the code",
       newPassword: "New Password",
-      newPasswordPlaceholder: "Enter new Password",
+      newPasswordPlaceholder: "Enter New Password",
       setNewPassword: "Set New Password",
       rememberPassword: "Remember Password?",
 
