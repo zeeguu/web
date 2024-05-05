@@ -26,7 +26,8 @@ let strings = new LocalizedStrings(
       name: "Name",
       fullName: "Full Name",
       fullNamePlaceholder: "First and Last Name",
-      learnedLanguage: "Learned Language",
+      learnedLanguage: "I want to learn",
+      learnedLanguagePlaceholder: "Select language",
       plsProvideValidEmail: "Please provide a valid email.",
       password: "Password",
       passwordPlaceholder: "Enter Password",
@@ -66,8 +67,10 @@ let strings = new LocalizedStrings(
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
       inviteCode: "Invite Code",
       inviteCodePlaceholder: "Enter your invite code",
-      levelOfLearnedLanguage: "Level in Learned Language",
-      baseLanguage: "Base languange (English recommended)",
+      levelOfLearnedLanguage: "My current level",
+      levelOfLearnedLanguagePlaceholder: "Select level",
+      baseLanguage: "I want translations in",
+      baseLanguagePlaceholder: "Select Language",
 
       //LanguagePreferences
       learnedLanguageIsRequired: "Learned language is required.",
@@ -455,7 +458,6 @@ let strings = new LocalizedStrings(
 
       //ButtonFeedback
       speak: "Speak",
-      next: "Next",
 
       //ExerciseNavigation
       backToReading: "Back to Reading",

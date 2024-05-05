@@ -109,8 +109,8 @@ export default function LanguagePreferences({ api, setUser }) {
           <FormSection>
             <SelectOptions
               value={learned_language}
-              label={"I want to learn"}
-              placeholder={"Select language"}
+              label={strings.learnedLanguage}
+              placeholder={strings.learnedLanguagePlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"practiced-languages"}
@@ -120,8 +120,8 @@ export default function LanguagePreferences({ api, setUser }) {
 
             <SelectOptions
               value={learned_cefr_level}
-              label={"My current level"}
-              placeholder={"Select level"}
+              label={strings.levelOfLearnedLanguage}
+              placeholder={strings.levelOfLearnedLanguagePlaceholder}
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               id={"level-of-practiced-languages"}
@@ -131,8 +131,8 @@ export default function LanguagePreferences({ api, setUser }) {
 
             <SelectOptions
               value={native_language}
-              label={"I want translations in"}
-              placeholder={"Select language"}
+              label={strings.baseLanguage}
+              placeholder={strings.baseLanguagePlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"translation-languages"}
