@@ -66,7 +66,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   return (
     <InfoPage type={"narrow"}>
       <Header>
-        <Heading>Create Beta Account</Heading>
+        <Heading>Create Beta&nbsp;Account</Heading>
       </Header>
       <Main>
         <p>

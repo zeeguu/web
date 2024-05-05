@@ -25,7 +25,7 @@ export default function SelectInterests({ api, hasExtension }) {
   return (
     <InfoPage>
       <Header>
-        <Heading>What would you like to read about?</Heading>
+        <Heading>What would you like to read&nbsp;about?</Heading>
       </Header>
       <Main>
         <TagContainer>
@@ -44,7 +44,8 @@ export default function SelectInterests({ api, hasExtension }) {
         <p>{strings.youCanChangeLater}</p>
         <ButtonContainer>
           <Button href={navigateToNextPage()}>
-            {strings.next}<ArrowForwardRoundedIcon />
+            {strings.next}
+            <ArrowForwardRoundedIcon />
           </Button>
         </ButtonContainer>
       </Footer>

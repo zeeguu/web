@@ -43,8 +43,8 @@ export default function ResetPasswordStep1({
     <Form action={""} method={"post"}>
       <FormSection>
         <p>
-          Please enter the email address you used to create your account on
-          Zeeguu
+          Please enter the email address you used to create your account
+          on&nbsp;Zeeguu
         </p>
         {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
 
