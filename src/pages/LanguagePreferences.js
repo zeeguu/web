@@ -66,17 +66,7 @@ export default function LanguagePreferences({ api, setUser }) {
   };
 
   const modifyCEFRlevel = (languageID, cefrLevel) => {
-    api.modifyCEFRlevel(
-      languageID,
-      cefrLevel,
-      (res) => {
-        console.log("Update '" + languageID + "' CEFR level to: " + cefrLevel);
-        console.log("API returns update status: " + res);
-      },
-      () => {
-        console.log("Connection to server failed...");
-      },
-    );
+    api.modifyCEFRlevel(languageID, cefrLevel);
   };
 
   function updateUser(e) {
