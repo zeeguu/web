@@ -44,7 +44,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   return (
     <InfoPage type={"narrow"}>
       <Header>
-        <Heading>{strings.login}</Heading>
+        <Heading>Log in</Heading>
       </Header>
       <Main>
         <Form action={""} method={"post"}>

@@ -21,7 +21,7 @@ export default function ExtensionInstalled({ api }) {
       <Header>
         <Heading>
           Right-click anywhere on any article’s page to&nbsp;access
-          The&nbsp;Zeeguu&nbsp;Reader&nbsp;extension
+          The Zeeguu Reader&nbsp;extension
         </Heading>
       </Header>
       <Main>
