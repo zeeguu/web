@@ -1,11 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
-import BottomInput from "../findWordInContext/BottomInput.js";
+import BottomInput from "../BottomInput.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
 import NextNavigation from "../NextNavigation.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks.js";
-
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
@@ -13,12 +12,18 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
 
-const EXERCISE_TYPE = "Spell_What_You_Hear";
+// The user has to write the word they hear. A context with the word omitted is shown.
+// This tests the user's active knowledge.
+
+const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
+
 export default function SpellWhatYouHear({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -34,7 +39,6 @@ export default function SpellWhatYouHear({
   const bookmarkToStudy = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
-  const [articleInfo, setArticleInfo] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
@@ -57,7 +61,6 @@ export default function SpellWhatYouHear({
           speech,
         ),
       );
-      setArticleInfo(articleInfo);
     });
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
@@ -68,7 +71,7 @@ export default function SpellWhatYouHear({
     setTimeout(() => {
       handleSpeak();
     }, 300);
-  }, [articleInfo]);
+  }, [interactiveText]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -101,6 +104,7 @@ export default function SpellWhatYouHear({
     api.logUserActivity("AUDIO_DISABLE", "", bookmarksToStudy[0].id, "");
     moveToNextExercise();
   }
+
   function handleIncorrectAnswer() {
     setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
@@ -108,7 +112,7 @@ export default function SpellWhatYouHear({
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    correctAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
@@ -119,7 +123,7 @@ export default function SpellWhatYouHear({
     );
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
@@ -128,6 +132,11 @@ export default function SpellWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.audioExerciseHeadline}
       </div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
+
       {!isCorrect && (
         <>
           <div className="contextExample">
@@ -160,7 +169,9 @@ export default function SpellWhatYouHear({
       {isCorrect && (
         <>
           <br></br>
-          <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+          <h1 className="wordInContextHeadline">
+            {removePunctuation(bookmarksToStudy[0].to)}
+          </h1>
           <div className="contextExample">
             <TranslatableText
               isCorrect={isCorrect}
@@ -175,7 +186,7 @@ export default function SpellWhatYouHear({
       <NextNavigation
         api={api}
         message={messageToAPI}
-        bookmarksToStudy={bookmarksToStudy}
+        exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

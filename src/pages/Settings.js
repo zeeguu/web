@@ -13,6 +13,8 @@ import Select from "../components/Select";
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 import { PageTitle } from "../components/PageTitle";
+import Feature from "../features/Feature";
+import SessionStorage from "../assorted/SessionStorage";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -25,6 +27,13 @@ export default function Settings({ api, setUser }) {
   const [currentCohort, setCurrentCohort] = useState("");
   const [cefr, setCEFR] = useState("");
   const [audioExercises, setAudioExercises] = useState(true);
+
+  let preferenceNotSet =
+    LocalStorage.getProductiveExercisesEnabled() === undefined;
+
+  const [productiveExercises, setProductiveExercises] = useState(
+    preferenceNotSet || LocalStorage.getProductiveExercisesEnabled(),
+  );
   //TODO: Refactor using Zeeguu project logic
 
   const [uiLanguage, setUiLanguage] = useState();
@@ -67,8 +76,9 @@ export default function Settings({ api, setUser }) {
     });
     api.getUserPreferences((preferences) => {
       setAudioExercises(
-        preferences["audio_exercises"] === undefined ||
-          preferences["audio_exercises"] === "true",
+        (preferences["audio_exercises"] === undefined ||
+          preferences["audio_exercises"] === "true") &&
+          SessionStorage.isAudioExercisesEnabled(),
       );
     });
     api.getSystemLanguages((systemLanguages) => {
@@ -113,15 +123,23 @@ export default function Settings({ api, setUser }) {
 
     modifyCEFRlevel(userDetails.learned_language, cefr);
 
+    console.log("saving: productiveExercises: " + productiveExercises);
+    SessionStorage.setAudioExercisesEnabled(audioExercises);
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      api.saveUserPreferences({ audio_exercises: audioExercises }, () => {
-        updateUserInfo(userDetails);
-        if (history.length > 1) {
-          history.goBack();
-        } else {
-          window.close();
-        }
-      });
+      api.saveUserPreferences(
+        {
+          audio_exercises: audioExercises,
+          productive_exercises: productiveExercises,
+        },
+        () => {
+          updateUserInfo(userDetails);
+          if (history.length > 1) {
+            history.goBack();
+          } else {
+            window.close();
+          }
+        },
+      );
     });
   }
 
@@ -146,6 +164,18 @@ export default function Settings({ api, setUser }) {
 
   function handleAudioExercisesChange(e) {
     setAudioExercises((state) => !state);
+  }
+
+  function handleProductiveExercisesChange(e) {
+    // Toggle the state locally
+    setProductiveExercises((state) => !state);
+
+    // Update local storage
+    const newProductiveValue = !productiveExercises;
+    localStorage.setItem(
+      "productiveExercisesEnabled",
+      JSON.stringify(newProductiveValue),
+    );
   }
 
   if (!userDetails || !languages) {
@@ -246,9 +276,24 @@ export default function Settings({ api, setUser }) {
                 checked={audioExercises}
                 onChange={handleAudioExercisesChange}
               />
-              <label>Include Audio Exercises</label>
+              <label>
+                Include Audio Exercises{" "}
+                {SessionStorage.isAudioExercisesEnabled()
+                  ? ""
+                  : "(Temporaly Disabled)"}
+              </label>
             </div>
-
+            {Feature.merle_exercises() && (
+              <div style={{ display: "flex" }} className="form-group">
+                <input
+                  style={{ width: "1.5em" }}
+                  type={"checkbox"}
+                  checked={productiveExercises}
+                  onChange={handleProductiveExercisesChange}
+                />
+                <label>Enable productive exercises</label>
+              </div>
+            )}
             <div>
               <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
             </div>

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import removeAccents from "remove-accents";
-import strings from "../../../i18n/definitions";
-import * as s from "../Exercise.sc";
+import strings from "../../i18n/definitions";
+import * as s from "./Exercise.sc";
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
+
+function getFlagImageUrl(languageCode) {
+  return `/static/flags/${languageCode}.png`;
+}
 
 export default function BottomInput({
   handleCorrectAnswer,
@@ -9,6 +14,9 @@ export default function BottomInput({
   bookmarksToStudy,
   messageToAPI,
   setMessageToAPI,
+  isL1Answer,
+  onHintUsed,
+  exerciseType,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
@@ -19,20 +27,31 @@ export default function BottomInput({
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
 
+  let countryFlag = isL1Answer
+    ? bookmarksToStudy[0].to_lang
+    : bookmarksToStudy[0].from_lang;
+
   function handleHint() {
     setUsedHint(true);
-    let hint;
-    if (
-      currentInput ===
-      bookmarksToStudy[0].from.substring(0, currentInput.length)
-    ) {
-      hint = bookmarksToStudy[0].from.substring(0, currentInput.length + 1);
+
+    if (exerciseType === EXERCISE_TYPES.translateWhatYouHear) {
+      onHintUsed();
+      let concatMessage = messageToAPI + "H";
+      setMessageToAPI(concatMessage);
     } else {
-      hint = bookmarksToStudy[0].from.substring(0, 1);
+      let hint;
+      let targetWord = isL1Answer
+        ? bookmarksToStudy[0].to
+        : bookmarksToStudy[0].from;
+      if (currentInput === targetWord.substring(0, currentInput.length)) {
+        hint = targetWord.substring(0, currentInput.length + 1);
+      } else {
+        hint = targetWord.substring(0, 1);
+      }
+      setCurrentInput(hint);
+      let concatMessage = messageToAPI + "H";
+      setMessageToAPI(concatMessage);
     }
-    setCurrentInput(hint);
-    let concatMessage = messageToAPI + "H";
-    setMessageToAPI(concatMessage);
   }
 
   function eliminateTypos(x) {
@@ -78,9 +97,14 @@ export default function BottomInput({
     console.log("checking result...");
     let a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
     let b = removeQuotes(
-      removeAccents(eliminateTypos(bookmarksToStudy[0].from)),
+      removeAccents(
+        eliminateTypos(
+          isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from,
+        ),
+      ),
     );
-    if (a === b) {
+    //this allows for a typo in the native language
+    if (a === b || (isL1Answer && distanceToCorrect === 1)) {
       let concatMessage = messageToAPI + "C";
       handleCorrectAnswer(concatMessage);
     } else {
@@ -121,8 +145,17 @@ export default function BottomInput({
             }}
             onAnimationEnd={() => setIsIncorrect(false)}
             autoFocus
+            style={{
+              paddingLeft: "1.5em",
+              backgroundImage: `url(${getFlagImageUrl(countryFlag)})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "1em 1em",
+              backgroundPosition: "left center",
+              backgroundPositionX: "0.4em",
+            }}
           />
         </div>
+
         <s.RightFeedbackButton onClick={checkResult}>
           {strings.check}
         </s.RightFeedbackButton>

@@ -4,7 +4,7 @@ import strings from "../../i18n/definitions";
 import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
 import SessionStorage from "../../assorted/SessionStorage";
-import { APP_DOMAIN } from "../../i18n/appConstants.js";
+import { APP_DOMAIN } from "../../appConstants.js";
 
 import { SpeechContext } from "../../contexts/SpeechContext";
 
@@ -70,7 +70,6 @@ export default function SpeakButton({
   parentIsSpeakingControl,
 }) {
   const speech = useContext(SpeechContext);
-  // const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
   let style = styles[styling] || small_next_style; // default is next style
 
@@ -80,7 +79,7 @@ export default function SpeakButton({
 
   async function handleSpeak() {
     // If audio is playing don't let other buttons be clicked.
-    if (SessionStorage.isAudioBeingPlayed()) return;
+    if (speech.isCurrentlySpeaking) return;
     try {
       if (isReadContext) {
         await speech.speakOut(bookmarkToStudy.context, setIsSpeaking);
@@ -89,7 +88,6 @@ export default function SpeakButton({
       }
     } catch (err) {
       console.log("There was an error executing the speech: " + err);
-      SessionStorage.setAudioBeingPlayed(false);
     }
   }
 

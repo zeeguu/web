@@ -6,24 +6,37 @@ import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
 import { setColors } from "../components/colors";
 import * as s from "./SideBar.sc";
 import { APIContext } from "../contexts/APIContext";
+import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
+import NotificationIcon from "./NotificationIcon";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
   const api = useContext(APIContext);
   const [initialSidebarState, setInitialSidebarState] = useState(true);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
+  const exerciseNotification = useContext(ExerciseCountContext);
 
   //deducting whether we are on student or teacher side for colouring
   const path = useLocation().pathname;
   useEffect(() => {
     setIsOnStudentSide(!path.includes("teacher"));
+    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+      exerciseNotification.setHasExercises(hasBookmarks);
+      exerciseNotification.updateReactState();
+    });
   }, [path]);
 
   const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
 
   const { light_color, dark_color } = setColors(isOnStudentSide);
 
-  function SidebarLink({ text, to }) {
+  function SidebarLink({
+    text,
+    to,
+    hasNotification,
+    notificationTextActive,
+    notificationTextInactive,
+  }) {
     // if path starts with to, then we are on that page
     const active = path.startsWith(to);
     const fontWeight = active ? "700" : "500";
@@ -31,6 +44,11 @@ export default function SideBar(props) {
     return (
       <Link className="navigationLink" to={to} onClick={resetSidebarToDefault}>
         <small style={{ fontWeight: fontWeight }}>{text}</small>
+        {hasNotification && (
+          <NotificationIcon
+            text={active ? notificationTextActive : notificationTextInactive}
+          ></NotificationIcon>
+        )}
       </Link>
     );
   }
@@ -61,11 +79,7 @@ export default function SideBar(props) {
       </div>
 
       {isOnStudentSide && (
-        <StudentSpecificSidebarOptions
-          SidebarLink={SidebarLink}
-          user={user}
-          api={api}
-        />
+        <StudentSpecificSidebarOptions SidebarLink={SidebarLink} user={user} />
       )}
 
       {!isOnStudentSide && (

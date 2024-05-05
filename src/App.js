@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch } from "react-router-dom";
 
+import ExerciseNotifications from "./exercises/ExerciseNotification";
+import { ExerciseCountContext } from "./exercises/ExerciseCountContext";
 import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
@@ -11,6 +13,7 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
+import { API_ENDPOINT } from "./appConstants";
 
 import {
   getSessionFromCookies,
@@ -22,7 +25,7 @@ import { ToastContainer } from "react-toastify";
 import useExtensionCommunication from "./hooks/useExtensionCommunication";
 
 function App() {
-  let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
+  let api = new Zeeguu_API(API_ENDPOINT);
 
   let userDict = {};
 
@@ -39,6 +42,7 @@ function App() {
   const [userData, setUserData] = useState(userDict);
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
+  const [exerciseNotification] = useState(new ExerciseNotifications());
 
   useEffect(() => {
     if (Object.keys(userData).length !== 0) {
@@ -58,7 +62,14 @@ function App() {
       api.getUserDetails((data) => {
         LocalStorage.setUserInfo(data);
       });
+      api.getUserPreferences((preferences) => {
+        LocalStorage.setUserPreferences(preferences);
+      });
     }
+    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+      exerciseNotification.setHasExercises(hasBookmarks);
+      exerciseNotification.updateReactState();
+    });
 
     //logs out user on zeeguu.org if they log out of the extension
 
@@ -74,6 +85,7 @@ function App() {
 
   function logout() {
     LocalStorage.deleteUserInfo();
+    LocalStorage.deleteUserPreferences();
     setUserData({});
 
     removeUserInfoFromCookies();
@@ -87,27 +99,29 @@ function App() {
       <BrowserRouter>
         <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
           <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
-            <APIContext.Provider value={api}>
-              {/* Routing*/}
-              <MainAppRouter
-                api={api}
-                setUser={setUserData}
-                hasExtension={isExtensionAvailable}
-              />
+            <ExerciseCountContext.Provider value={exerciseNotification}>
+              <APIContext.Provider value={api}>
+                {/* Routing*/}
+                <MainAppRouter
+                  api={api}
+                  setUser={setUserData}
+                  hasExtension={isExtensionAvailable}
+                />
 
-              <ToastContainer
-                position="bottom-right"
-                autoClose={2000}
-                hideProgressBar={true}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
-            </APIContext.Provider>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
+              </APIContext.Provider>
+            </ExerciseCountContext.Provider>
           </UserContext.Provider>
         </RoutingContext.Provider>
       </BrowserRouter>
