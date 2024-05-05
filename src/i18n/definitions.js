@@ -17,14 +17,24 @@ let strings = new LocalizedStrings(
       myClasses: "My Classes",
       myTexts: "My Texts",
       tutorials: "Help",
-      login: "Sign in",
+      login: "Log in",
+      createAccount: "Create Account",
+      createBetaAccount: "Create Beta Account",
       email: "Email",
+      emailPlaceholder: "example@email.com",
+      zeeguuTeamEmail: "zeeguu.team@gmail.com",
       name: "Name",
+      fullName: "Full Name",
+      fullNamePlaceholder: "First and Last Name",
       learnedLanguage: "Learned Language",
       plsProvideValidEmail: "Please provide a valid email.",
+      password: "Password",
+      passwordPlaceholder: "Enter Password",
+      passwordHelperText: "Must contain at least 4 characters",
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
-      alreadyHaveAccount: "Already have an account? Login instead",
+      forgotPassword: "Forgot Password?",
+      alreadyHaveAccount: "Already have an account?",
       code: "Code",
       interest: "interest",
       addTexts: "Add Texts",
@@ -36,6 +46,8 @@ let strings = new LocalizedStrings(
       tooEasy: "too easy",
       shareWithColleague: "Share with colleague",
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
+      next: "Next",
+      youCanChangeLater: "You can always change it layter",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -48,17 +60,19 @@ let strings = new LocalizedStrings(
 
       //CreateAccount
       nameIsRequired: "Name is required.",
-      learnedLanguageIsRequired: "Learned language is required.",
-      languangeLevelIsRequired: "Language level is required.",
-      plsSelectBaseLanguage: "Please select a base language.",
       passwordMustBeMsg: "Password should be at least 4 characters long.",
-      createAccount: "Create Account",
       thankYouMsgPrefix:
         "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
-      inviteCode: "Invite code",
+      inviteCode: "Invite Code",
+      inviteCodePlaceholder: "Enter your invite code",
       levelOfLearnedLanguage: "Level in Learned Language",
       baseLanguage: "Base languange (English recommended)",
+
+      //LanguagePreferences
+      learnedLanguageIsRequired: "Learned language is required.",
+      languangeLevelIsRequired: "Language level is required.",
+      plsSelectBaseLanguage: "Please select a base language.",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
@@ -83,8 +97,7 @@ let strings = new LocalizedStrings(
         "        We might make the anonymized interaction data available for other researchers too. In research, data can be even more important than algorithms.",
 
       //Signin
-      password: "Password",
-      alternativelyYouCan: "Alternatively, you can",
+      dontHaveAnAccount: "Don't have an account?",
       createAnAccount: "create an account",
       or: "or",
 
@@ -104,9 +117,16 @@ let strings = new LocalizedStrings(
       now: " now.",
       plsCheck: "Please check ",
       forCode: " for the one-time code we sent you.",
-      codeReceived: "Code received via email",
+      codeReceived: "Received Code",
+      codeReceivedPlaceholder: "Enter the code",
       newPassword: "New Password",
+      newPasswordPlaceholder: "Enter new Password",
       setNewPassword: "Set New Password",
+      rememberPassword: "Remember Password?",
+
+      //InstallExtension
+      skipInstallation: "Skip installation",
+      installTheExtension: "Install the Extension",
 
       //LandingPage
       landingPage: "Landing Page",
@@ -208,7 +228,8 @@ let strings = new LocalizedStrings(
       helpUsMsg:
         "Help us make Zeeguu even smarter by always letting us know whether you liked reading an article or not.",
       didYouEnjoyMsg: "Did you enjoy the article?",
-      answeringMsg: "Zeeguu can make better personalized recommendations based on your feedback.",
+      answeringMsg:
+        "Zeeguu can make better personalized recommendations based on your feedback.",
       yes: "Yes",
       no: "No",
       reviewVocabulary: "Review Vocabulary",
@@ -564,7 +585,7 @@ let strings = new LocalizedStrings(
         "Generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
 
       //Extension installed
-      goToArticles: "Go to article recommendations",
+      goToZeeguuApp: "Go to Zeeguu",
       pinExtension: "Pin it to the toolbar to make it easy to access",
       congratulations: "Extension is installed!",
 

@@ -19,6 +19,7 @@ import Button from "./info_page_shared/Button";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import validator from "../assorted/validator";
+import strings from "../i18n/definitions";
 import LoadingAnimation from "../components/LoadingAnimation";
 
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
@@ -139,10 +140,10 @@ export default function LanguagePreferences({ api, setUser }) {
               onChangeHandler={handleNative_language_change}
             />
           </FormSection>
-          <p>You can always change it later</p>
+          <p>{strings.youCanChangeLater}</p>
           <ButtonContainer>
             <Button onClick={updateUser}>
-              Next <ArrowForwardRoundedIcon />
+              {strings.next} <ArrowForwardRoundedIcon />
             </Button>
           </ButtonContainer>
         </Form>

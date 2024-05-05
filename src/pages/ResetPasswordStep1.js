@@ -50,16 +50,16 @@ export default function ResetPasswordStep1({
 
         <InputField
           id={"email"}
-          label={"Email"}
+          label={strings.email}
           type={"email"}
           name={"email"}
-          placeholder={"example@email.com"}
+          placeholder={strings.emailPlaceholder}
           value={email}
           onChange={handleEmailChange}
         />
       </FormSection>
       <ButtonContainer>
-        <Button onClick={handleResetPassword}>Reset Password</Button>
+        <Button onClick={handleResetPassword}>{strings.resetPassword}</Button>
       </ButtonContainer>
     </Form>
   );

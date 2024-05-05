@@ -11,6 +11,8 @@ import useFormField from "../hooks/useFormField";
 import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
 
+import strings from "../i18n/definitions";
+
 export default function ResetPassword({ api }) {
   const [email, handleEmailChange] = useFormField("");
   const [codeSent, setCodeSent] = useState(false);
@@ -35,14 +37,18 @@ export default function ResetPassword({ api }) {
         )}
 
         {codeSent && (
-          <ResetPasswordStep2 api={api} email={email} setEmail={handleEmailChange} />
+          <ResetPasswordStep2
+            api={api}
+            email={email}
+            setEmail={handleEmailChange}
+          />
         )}
       </Main>
       <Footer>
         <p>
-          Remember password?{" "}
+          {strings.rememberPassword + " "}
           <a className="bold underlined-link" href="login">
-            Log in
+            {strings.login}
           </a>
         </p>
       </Footer>

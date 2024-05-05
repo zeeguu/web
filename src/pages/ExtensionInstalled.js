@@ -9,6 +9,8 @@ import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 
+import strings from "../i18n/definitions";
+
 export default function ExtensionInstalled({ api }) {
   useEffect(() => {
     api.logUserActivity(api.OPEN_EXTENSION_INSTALLED);
@@ -28,11 +30,11 @@ export default function ExtensionInstalled({ api }) {
       <Footer>
         <ButtonContainer>
           {getSessionFromCookies() ? (
-            <Button href={"/articles"}>Go to Zeeguu App</Button>
+            <Button href={"/articles"}>{strings.goToZeeguuApp}</Button>
           ) : (
             <>
-              <Button href={"/create_account"}>Create Account</Button>
-              <Button href={"/login"}>Log In</Button>
+              <Button href={"/create_account"}>{strings.createAccount}</Button>
+              <Button href={"/login"}>{strings.login}</Button>
             </>
           )}
         </ButtonContainer>

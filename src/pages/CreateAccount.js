@@ -72,7 +72,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
         <p>
           To receive an <span className="bold">invite code</span> or to share
           your feedback, reach out to us at{" "}
-          <span className="bold">zeeguu.team@gmail.com</span>
+          <span className="bold">{strings.zeeguuTeamEmail}</span>
         </p>
         <Form action={""} method={"POST"}>
           {errorMessage && (
@@ -81,43 +81,43 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
           <FormSection>
             <InputField
               type={"text"}
-              label={"Invite code"}
+              label={strings.inviteCode}
               id={"invite-code"}
               name={"invite-code"}
-              placeholder={"Enter your invite code"}
+              placeholder={strings.inviteCodePlaceholder}
               value={inviteCode}
               onChange={handleInviteCodeChange}
             />
 
             <InputField
               type={"text"}
-              label={"Full name"}
+              label={strings.fullName}
               id={"name"}
               name={"name"}
-              placeholder={"First and last name"}
+              placeholder={strings.fullNamePlaceholder}
               value={name}
               onChange={handleNameChange}
             />
 
             <InputField
               type={"email"}
-              label={"Email"}
+              label={strings.email}
               id={"email"}
               name={"email"}
-              placeholder={"example@email.com"}
+              placeholder={strings.emailPlaceholder}
               value={email}
               onChange={handleEmailChange}
             />
 
             <InputField
               type={"password"}
-              label={"Password"}
+              label={strings.password}
               id={"password"}
               name={"password"}
-              placeholder={"Enter password"}
+              placeholder={strings.passwordPlaceholder}
               value={password}
               onChange={handlePasswordChange}
-              helperText={"Must contain at least 4 characters"}
+              helperText={strings.passwordHelperText}
             />
           </FormSection>
           <FormSection>
@@ -142,9 +142,9 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       </Main>
       <Footer>
         <p>
-          Already have an account?{" "}
+          {strings.alreadyHaveAccount + " "}
           <a className="bold underlined-link" href="/login">
-            Log in
+            {strings.login}
           </a>
         </p>
       </Footer>

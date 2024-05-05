@@ -54,7 +54,7 @@ export default function ResetPasswordStep2({ api, email }) {
         </p>
 
         <p>
-          {strings.orContactUsAt} <b>zeeguu.team@gmail.com</b>
+          {strings.orContactUsAt} <b>{strings.zeeguuTeamEmail}</b>
         </p>
       </>
     );
@@ -83,25 +83,26 @@ export default function ResetPasswordStep2({ api, email }) {
 
         <InputField
           id={"received-code"}
-          label={"Received code"}
+          label={strings.codeReceived}
           name={"received-code"}
-          placeholder={"Enter the code"}
+          placeholder={strings.codeReceivedPlaceholder}
           value={code}
           onChange={handleCodeChange}
         />
 
         <InputField
           id={"new-password"}
-          label={"New password"}
+          label={strings.newPassword}
           name={"new-password"}
-          placeholder={"Must be at least 4 characters long"}
+          placeholder={strings.newPasswordPlaceholder}
           value={newPass}
           onChange={handleNewPassChange}
+          helperText={strings.passwordHelperText}
         />
       </FormSection>
 
       <ButtonContainer>
-        <Button onClick={handleResetPassword}>Set New Password</Button>
+        <Button onClick={handleResetPassword}>{strings.setNewPassword}</Button>
       </ButtonContainer>
     </Form>
   );

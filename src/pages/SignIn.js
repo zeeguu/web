@@ -44,7 +44,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   return (
     <InfoPage type={"narrow"}>
       <Header>
-        <Heading>Log in</Heading>
+        <Heading>{strings.login}</Heading>
       </Header>
       <Main>
         <Form action={""} method={"post"}>
@@ -54,10 +54,10 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
           <FormSection>
             <InputField
               type={"email"}
-              label={"Email"}
+              label={strings.email}
               id={"email"}
               name={"email"}
-              placeholder={"example@email.com"}
+              placeholder={strings.emailPlaceholder}
               value={email}
               onChange={handleEmailChange}
             />
@@ -67,22 +67,22 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
               label={strings.password}
               id={"password"}
               name={"password"}
-              placeholder={"Enter your password"}
+              placeholder={strings.passwordPlaceholder}
               value={password}
               onChange={handlePasswordChange}
-              helperText={<a href="/reset_pass">Forgot password?</a>}
+              helperText={<a href="/reset_pass">{strings.forgotPassword}</a>}
             />
           </FormSection>
         </Form>
       </Main>
       <Footer>
         <ButtonContainer>
-          <Button onClick={handleSignIn}>Log in</Button>
+          <Button onClick={handleSignIn}>{strings.login}</Button>
         </ButtonContainer>
         <p>
-          Don't have an account?{" "}
+          {strings.dontHaveAnAccount + " "}
           <a className="bold underlined-link" href="create_account">
-            Register
+            {strings.createAccount}
           </a>
         </p>
       </Footer>
