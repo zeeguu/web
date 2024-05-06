@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import redirect from "../utils/routing/routing";
+import { isMobile } from "../utils/misc/browserDetection";
 import useFormField from "../hooks/useFormField";
 
 import InfoPage from "./info_page_shared/InfoPage";
@@ -128,8 +129,9 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
                   <a
                     className="bold underlined-link"
                     href="https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md"
+                    target={isMobile() ? "_self" : "_blank"}
                   >
-                    Privacy Notice
+                    {strings.privacyNotice}
                   </a>
                 </>
               }
