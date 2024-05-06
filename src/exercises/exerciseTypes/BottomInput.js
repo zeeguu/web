@@ -24,8 +24,13 @@ export default function BottomInput({
   const [distanceToCorrect, setDistanceToCorrect] = useState(0);
   const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
   const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
+  const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
+
+  const learningWord = removeQuotes(
+    removeAccents(eliminateTypos(bookmarksToStudy[0].from)),
+  );
 
   let countryFlag = isL1Answer
     ? bookmarksToStudy[0].to_lang
@@ -65,6 +70,10 @@ export default function BottomInput({
 
   // Update the feedback message
   useEffect(() => {
+    if (isInputWrongLanguage) {
+      setFeedbackMessage("Correct, but wrong language! 😉");
+      return;
+    }
     if (distanceToCorrect < 5 && distanceToCorrect > 2) {
       setFeedbackMessage("❌ Not quite the word!");
       return;
@@ -88,7 +97,12 @@ export default function BottomInput({
       }
     }
     setFeedbackMessage("");
-  }, [distanceToCorrect, isSameLengthAsSolution, isLongerThanSolution]);
+  }, [
+    distanceToCorrect,
+    isSameLengthAsSolution,
+    isLongerThanSolution,
+    isInputWrongLanguage,
+  ]);
 
   function checkResult() {
     if (currentInput === "") {
@@ -103,21 +117,36 @@ export default function BottomInput({
         ),
       ),
     );
-    //this allows for a typo in the native language
-    if (a === b || (isL1Answer && distanceToCorrect === 1)) {
-      let concatMessage = messageToAPI + "C";
+    let levDistance = levenshtein.get(a, b);
+    let concatMessage = messageToAPI;
+    setIsInputWrongLanguage(false);
+    setIsLongerThanSolution(a.length > b.length);
+    setIsSameLengthAsSolution(a.length === b.length);
+    setDistanceToCorrect(levDistance);
+
+    let userUsedWrongLang = isL1Answer && a === learningWord;
+    let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
+    if (a === b || userHasTypoInNativeLanguage) {
+      //this allows for a typo in the native language
+      concatMessage += "C";
       handleCorrectAnswer(concatMessage);
+      return;
+    } else if (userUsedWrongLang) {
+      // If the user writes in the wrong language
+      // we give them an Hint, mainly for audio exercises.
+      concatMessage += "H";
+      setIsInputWrongLanguage(true);
+      setDistanceToCorrect();
+    } else if (levDistance === 1) {
+      // The user almost got it correct
+      // we associate it with a H
+      concatMessage += "H";
     } else {
-      let concatMessage = messageToAPI + "W";
-      let levDistance = levenshtein.get(a, b);
-      setIsLongerThanSolution(a.length > b.length);
-      setIsSameLengthAsSolution(a.length === b.length);
-      console.log("You are this far: " + levDistance);
-      setDistanceToCorrect(levDistance);
-      setMessageToAPI(concatMessage);
-      setIsIncorrect(true);
+      concatMessage += "W";
       handleIncorrectAnswer();
     }
+    setMessageToAPI(concatMessage);
+    setIsIncorrect(true);
   }
 
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
