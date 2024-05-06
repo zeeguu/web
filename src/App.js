@@ -31,7 +31,6 @@ function App() {
   const [exerciseNotification] = useState(new ExerciseNotifications());
 
   if (getSessionFromCookies()) {
-    console.log("Getting Session from Cookies!");
     userDict = {
       session: getSessionFromCookies(),
       ...LocalStorage.userInfo(),
