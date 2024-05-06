@@ -13,7 +13,7 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
-import { API_ENDPOINT } from "./appConstants";
+import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 
 import {
   getSessionFromCookies,
@@ -28,13 +28,19 @@ function App() {
   let api = new Zeeguu_API(API_ENDPOINT);
 
   let userDict = {};
+  const [exerciseNotification] = useState(new ExerciseNotifications());
 
   if (getSessionFromCookies()) {
+    console.log("Getting Session from Cookies!");
     userDict = {
       session: getSessionFromCookies(),
       ...LocalStorage.userInfo(),
     };
     api.session = getSessionFromCookies();
+    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+      exerciseNotification.setHasExercises(hasBookmarks);
+      exerciseNotification.updateReactState();
+    });
   }
 
   useUILanguage();
@@ -42,7 +48,6 @@ function App() {
   const [userData, setUserData] = useState(userDict);
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
-  const [exerciseNotification] = useState(new ExerciseNotifications());
 
   useEffect(() => {
     if (Object.keys(userData).length !== 0) {
@@ -51,7 +56,8 @@ function App() {
   }, [userData]);
 
   useEffect(() => {
-    console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
+    console.log("Got the API URL:" + API_ENDPOINT);
+    console.log("Got the Domain URL:" + APP_DOMAIN);
     console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
     // when creating the app component we also load the
     // user details from the server; this also ensures that
@@ -66,10 +72,6 @@ function App() {
         LocalStorage.setUserPreferences(preferences);
       });
     }
-    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
-      exerciseNotification.setHasExercises(hasBookmarks);
-      exerciseNotification.updateReactState();
-    });
 
     //logs out user on zeeguu.org if they log out of the extension
 
