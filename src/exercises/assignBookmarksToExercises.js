@@ -36,16 +36,26 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
 
       // Check if there are enough bookmarks for the selected exercise
       if (i + selectedExercise.requiredBookmarks <= bookmarks.length) {
-        let exercise = {
-          type: selectedExercise.type,
-          bookmarks: bookmarks.slice(i, i + selectedExercise.requiredBookmarks),
-        };
-        exerciseSequence.push(exercise);
+        let potentialBookmarks = bookmarks.slice(
+          i,
+          i + selectedExercise.requiredBookmarks,
+        );
+        let contexts = potentialBookmarks.map((bookmark) => bookmark.context);
+        if (new Set(contexts).size === contexts.length) {
+          let exercise = {
+            type: selectedExercise.type,
+            bookmarks: potentialBookmarks,
+          };
+          exerciseSequence.push(exercise);
 
-        // Skip the assigned bookmarks
-        i += selectedExercise.requiredBookmarks - 1;
-        suitableExerciseFound = true;
-      } else {
+          // Skip the assigned bookmarks
+          i += selectedExercise.requiredBookmarks - 1;
+          suitableExerciseFound = true;
+        } else {
+          suitableExerciseFound = false;
+        }
+      }
+      if (!suitableExerciseFound) {
         filteredExercises = filteredExercises.filter(
           (exercise) => exercise !== selectedExercise,
         );
