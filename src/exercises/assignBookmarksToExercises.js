@@ -41,7 +41,8 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
           i + selectedExercise.requiredBookmarks,
         );
         let contexts = potentialBookmarks.map((bookmark) => bookmark.context);
-        if (new Set(contexts).size === contexts.length) {
+        let distinctContexts = new Set(contexts).size;
+        if (distinctContexts === contexts.length) {
           let exercise = {
             type: selectedExercise.type,
             bookmarks: potentialBookmarks,
