@@ -30,6 +30,10 @@ export default function BottomInput({
 
   const normalizedLearningWord = normalizeWord(bookmarksToStudy[0].from);
 
+  const targetWord = isL1Answer
+    ? bookmarksToStudy[0].to
+    : bookmarksToStudy[0].from;
+
   const answerLanguageCode = isL1Answer
     ? bookmarksToStudy[0].to_lang
     : bookmarksToStudy[0].from_lang;
@@ -42,9 +46,6 @@ export default function BottomInput({
       setMessageToAPI(messageToAPI + "H");
     } else {
       let hint;
-      let targetWord = isL1Answer
-        ? bookmarksToStudy[0].to
-        : bookmarksToStudy[0].from;
       if (currentInput === targetWord.substring(0, currentInput.length)) {
         hint = targetWord.substring(0, currentInput.length + 1);
       } else {
@@ -97,9 +98,7 @@ export default function BottomInput({
     }
 
     let normalizedInput = normalizeWord(currentInput);
-    let normalizedAnswer = normalizeWord(
-      isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from,
-    );
+    let normalizedAnswer = normalizeWord(targetWord);
 
     let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
     setDistanceToCorrect(levDistance);
