@@ -1,53 +1,38 @@
-import { useState, useRef, useEffect } from "react";
-import Select from "../components/Select";
+import { useState } from "react";
 
 import redirect from "../utils/routing/routing";
+import { isMobile } from "../utils/misc/browserDetection";
+import useFormField from "../hooks/useFormField";
+
+import InfoPage from "./info_page_shared/InfoPage";
+import Header from "./info_page_shared/Header";
+import Heading from "./info_page_shared/Heading";
+import Main from "./info_page_shared/Main";
+import Form from "./info_page_shared/Form";
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+import FormSection from "./info_page_shared/FormSection";
+import InputField from "./info_page_shared/InputField";
+import Footer from "./info_page_shared/Footer";
+import ButtonContainer from "./info_page_shared/ButtonContainer";
+import Button from "./info_page_shared/Button";
+import Checkbox from "../components/modal_shared/Checkbox";
 
 import validator from "../assorted/validator";
-import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
 
-import { CEFR_LEVELS } from "../assorted/cefrLevels";
-
-import * as s from "../components/FormPage.sc";
-import PrivacyNotice from "./PrivacyNotice";
 import * as EmailValidator from "email-validator";
 
 export default function CreateAccount({ api, handleSuccessfulSignIn }) {
-  const [inviteCode, setInviteCode] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [learned_language, setLearned_language] = useState("");
-  const [native_language, setNative_language] = useState("en");
-  const [learned_cefr_level, setLearned_cefr_level] = useState("");
-
-  const [systemLanguages, setSystemLanguages] = useState();
+  const [inviteCode, handleInviteCodeChange] = useFormField("");
+  const [name, handleNameChange] = useFormField("");
+  const [email, handleEmailChange] = useFormField("");
+  const [password, handlePasswordChange] = useFormField("");
 
   const [errorMessage, setErrorMessage] = useState("");
-
-  let inviteCodeInputDOM = useRef();
-
-  useEffect(() => {
-    api.getSystemLanguages((languages) => {
-      languages.learnable_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
-      languages.native_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
-      setSystemLanguages(languages);
-      inviteCodeInputDOM.current.focus();
-    });
-    // eslint-disable-next-line
-  }, []);
-
-  if (!systemLanguages) {
-    return <LoadingAnimation />;
-  }
 
   let validatorRules = [
     [name === "", strings.nameIsRequired],
     [!EmailValidator.validate(email), strings.plsProvideValidEmail],
-    [learned_language === "", strings.learnedLanguageIsRequired],
-    [learned_cefr_level === "", strings.languagelevelIsRequired],
-    [native_language === "", strings.plsSelectBaseLanguage],
     [password.length < 4, strings.passwordMustBeMsg],
   ];
 
@@ -61,19 +46,16 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
     let userInfo = {
       name: name,
       email: email,
-      learned_language: learned_language,
-      native_language: native_language,
-      learned_cefr_level: learned_cefr_level,
     };
 
-    api.addUser(
+    api.addBasicUser(
       inviteCode,
       password,
       userInfo,
       (session) => {
-        api.getUserDetails((userInfo) => {
-          handleSuccessfulSignIn(userInfo);
-          redirect("/select_interests");
+        api.getUserDetails((user) => {
+          handleSuccessfulSignIn(user);
+          redirect("/language_preferences");
         });
       },
       (error) => {
@@ -83,107 +65,91 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
   }
 
   return (
-    <s.PageBackground>
-      <s.LogoOnTop />
-      <s.FormContainer>
-        <form action="">
-          <s.FormTitle>{strings.createAccount}</s.FormTitle>
-          <s.FormLink>
-            <p>
-              <a className="links" href="/login">
-                {strings.alreadyHaveAccount}
-              </a>
-            </p>
-          </s.FormLink>
-          <p>
-            {strings.thankYouMsgPrefix}
-            <b> zeeguu.team@gmail.com</b>
-            {strings.thankYouMsgSuffix}
-          </p>
-
-          <div className="inputField">
-            <label>{strings.inviteCode}</label>
-            <input
-              ref={inviteCodeInputDOM}
+    <InfoPage type={"narrow"}>
+      <Header>
+        <Heading>Create Beta&nbsp;Account</Heading>
+      </Header>
+      <Main>
+        <p>
+          To receive an <span className="bold">invite code</span> or to share
+          your feedback, reach out to us at{" "}
+          <span className="bold">{strings.zeeguuTeamEmail}</span>
+        </p>
+        <Form action={""} method={"POST"}>
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
+          <FormSection>
+            <InputField
+              type={"text"}
+              label={strings.inviteCode}
+              id={"invite-code"}
+              name={"invite-code"}
+              placeholder={strings.inviteCodePlaceholder}
               value={inviteCode}
-              onChange={(e) => setInviteCode(e.target.value)}
-              placeholder={strings.code}
+              onChange={handleInviteCodeChange}
             />
-          </div>
 
-          <div className="inputField">
-            <label>{strings.name}</label>
-            <input
-              placeholder={strings.name}
+            <InputField
+              type={"text"}
+              label={strings.fullName}
+              id={"name"}
+              name={"name"}
+              placeholder={strings.fullNamePlaceholder}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={handleNameChange}
             />
-          </div>
 
-          <div className="inputField">
-            <label>{strings.email}</label>
-            <input
-              placeholder={strings.email}
+            <InputField
+              type={"email"}
+              label={strings.email}
+              id={"email"}
+              name={"email"}
+              placeholder={strings.emailPlaceholder}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
             />
-          </div>
 
-          <div className="inputField">
-            <label>{strings.password}</label>
-            <input
-              type="password"
-              placeholder={strings.password}
+            <InputField
+              type={"password"}
+              label={strings.password}
+              id={"password"}
+              name={"password"}
+              placeholder={strings.passwordPlaceholder}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
+              helperText={strings.passwordHelperText}
             />
-          </div>
-
-          <div className="inputField">
-            <label>{strings.learnedLanguage}</label>
-
-            <Select
-              elements={systemLanguages.learnable_languages}
-              label={(e) => e.name}
-              val={(e) => e.code}
-              updateFunction={setLearned_language}
+          </FormSection>
+          <FormSection>
+            <Checkbox
+              label={
+                <>
+                  By checking this box you agree to our{" "}
+                  <a
+                    className="bold underlined-link"
+                    href="https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md"
+                    target={isMobile() ? "_self" : "_blank"}
+                  >
+                    {strings.privacyNotice}
+                  </a>
+                </>
+              }
             />
-          </div>
-
-          <div className="inputField">
-            <label>{strings.levelOfLearnedLanguage}</label>
-
-            <Select
-              elements={CEFR_LEVELS}
-              label={(e) => e.label}
-              val={(e) => e.value}
-              updateFunction={setLearned_cefr_level}
-            />
-          </div>
-
-          <div className="inputField">
-            <label>{strings.baseLanguage}</label>
-
-            <Select
-              elements={systemLanguages.native_languages}
-              label={(e) => e.name}
-              val={(e) => e.code}
-              updateFunction={setNative_language}
-              current={"en"}
-            />
-          </div>
-
-          <PrivacyNotice />
-
-          {errorMessage && <div className="error">{errorMessage}</div>}
-
-          <div className="inputField">
-            <s.FormButton onClick={handleCreate}>
-              {strings.createAccount}
-            </s.FormButton>
-          </div>
-        </form>
-      </s.FormContainer>
-    </s.PageBackground>
+          </FormSection>
+          <ButtonContainer>
+            <Button onClick={handleCreate}>{strings.createAccount}</Button>
+          </ButtonContainer>
+        </Form>
+      </Main>
+      <Footer>
+        <p>
+          {strings.alreadyHaveAccount + " "}
+          <a className="bold underlined-link" href="/login">
+            {strings.login}
+          </a>
+        </p>
+      </Footer>
+    </InfoPage>
   );
 }

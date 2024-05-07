@@ -10,6 +10,8 @@ import { getExtensionInstallationLinks } from "../utils/extension/extensionInsta
 
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
+import strings from "../i18n/definitions";
+
 export default function InstallExtension() {
   return (
     <InfoPage>
@@ -19,7 +21,7 @@ export default function InstallExtension() {
       <Main>
         <p>
           Time to install The Zeeguu Reader browser extension, which enables you
-          to&nbsp;read and translate articles and solve exercises
+          to&nbsp;read and translate articles and solve&nbsp;exercises
         </p>
         <FullWidthImage src={"find-extension.png"} />
       </Main>
@@ -27,10 +29,10 @@ export default function InstallExtension() {
         <ButtonContainer contentAlignment={"vertical"}>
           <Button href={getExtensionInstallationLinks()}>
             <FileDownloadOutlinedIcon fontSize="small" />
-            Install the Extension
+            {strings.installTheExtension}
           </Button>
           <a className="link" href="/articles">
-            Skip installation
+            {strings.skipInstallation}
           </a>
         </ButtonContainer>
       </Footer>
