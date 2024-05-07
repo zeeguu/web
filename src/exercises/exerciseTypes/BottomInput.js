@@ -30,7 +30,7 @@ export default function BottomInput({
 
   const normalizedLearningWord = normalizeWord(bookmarksToStudy[0].from);
 
-  let expectedAnswerLanguageCode = isL1Answer
+  const answerLanguageCode = isL1Answer
     ? bookmarksToStudy[0].to_lang
     : bookmarksToStudy[0].from_lang;
 
@@ -94,8 +94,6 @@ export default function BottomInput({
   ]);
 
   function checkResult() {
-    let concatMessage = messageToAPI;
-
     if (currentInput === "") {
       return;
     }
@@ -119,26 +117,26 @@ export default function BottomInput({
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
     if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
       //this allows for a typo in the native language
-      concatMessage += "C";
-      handleCorrectAnswer(concatMessage);
+      handleCorrectAnswer(messageToAPI + "C");
       return;
     }
 
+    let updatedMessageToAPI;
     if (userUsedWrongLang) {
       // If the user writes in the wrong language
       // we give them a Hint, mainly for audio exercises.
-      concatMessage += "H";
+      updatedMessageToAPI = messageToAPI + "H";
       setIsInputWrongLanguage(true);
       setDistanceToCorrect();
     } else if (levDistance === 1) {
       // The user almost got it correct
       // we associate it with a H
-      concatMessage += "H";
+      updatedMessageToAPI = messageToAPI + "H";
     } else {
-      concatMessage += "W";
+      updatedMessageToAPI = messageToAPI + "W";
       handleIncorrectAnswer();
     }
-    setMessageToAPI(concatMessage);
+    setMessageToAPI(updatedMessageToAPI);
     setIsIncorrect(true);
   }
 
@@ -169,7 +167,7 @@ export default function BottomInput({
             autoFocus
             style={{
               paddingLeft: "1.5em",
-              backgroundImage: `url(${getFlagImageUrl(expectedAnswerLanguageCode)})`,
+              backgroundImage: `url(${getFlagImageUrl(answerLanguageCode)})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "1em 1em",
               backgroundPosition: "left center",
