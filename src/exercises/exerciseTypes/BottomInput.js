@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import removeAccents from "remove-accents";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
+import { normalizeWord } from "../inputNormalization";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -28,9 +28,7 @@ export default function BottomInput({
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
 
-  const learningWord = removeQuotes(
-    removeAccents(eliminateTypos(bookmarksToStudy[0].from)),
-  );
+  const learningWord = normalizeWord(bookmarksToStudy[0].from);
 
   let countryFlag = isL1Answer
     ? bookmarksToStudy[0].to_lang
@@ -57,15 +55,6 @@ export default function BottomInput({
       let concatMessage = messageToAPI + "H";
       setMessageToAPI(concatMessage);
     }
-  }
-
-  function eliminateTypos(x) {
-    return x.trim().toUpperCase();
-    // .replace(/[^a-zA-Z ]/g, '')
-  }
-
-  function removeQuotes(x) {
-    return x.replace(/[^a-zA-Z ]/g, "");
   }
 
   // Update the feedback message
@@ -109,31 +98,27 @@ export default function BottomInput({
       return;
     }
     console.log("checking result...");
-    let a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
-    let b = removeQuotes(
-      removeAccents(
-        eliminateTypos(
-          isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from,
-        ),
-      ),
+    let cleanedUpInput = normalizeWord(currentInput);
+    let b = normalizeWord(
+      isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from,
     );
-    let levDistance = levenshtein.get(a, b);
+    let levDistance = levenshtein.get(cleanedUpInput, b);
     let concatMessage = messageToAPI;
     setIsInputWrongLanguage(false);
-    setIsLongerThanSolution(a.length > b.length);
-    setIsSameLengthAsSolution(a.length === b.length);
+    setIsLongerThanSolution(cleanedUpInput.length > b.length);
+    setIsSameLengthAsSolution(cleanedUpInput.length === b.length);
     setDistanceToCorrect(levDistance);
 
-    let userUsedWrongLang = isL1Answer && a === learningWord;
+    let userUsedWrongLang = isL1Answer && cleanedUpInput === learningWord;
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
-    if (a === b || userHasTypoInNativeLanguage) {
+    if (cleanedUpInput === b || userHasTypoInNativeLanguage) {
       //this allows for a typo in the native language
       concatMessage += "C";
       handleCorrectAnswer(concatMessage);
       return;
     } else if (userUsedWrongLang) {
       // If the user writes in the wrong language
-      // we give them an Hint, mainly for audio exercises.
+      // we give them a Hint, mainly for audio exercises.
       concatMessage += "H";
       setIsInputWrongLanguage(true);
       setDistanceToCorrect();
