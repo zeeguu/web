@@ -109,7 +109,7 @@ export default function BottomInput({
     }
 
     setDistanceToCorrect(levDistance);
-    setIsInputWrongLanguage(false);
+
     setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
     setIsSameLengthAsSolution(
       normalizedInput.length === normalizedAnswer.length,
@@ -118,12 +118,12 @@ export default function BottomInput({
     let updatedMessageToAPI;
     let userUsedWrongLang =
       isL1Answer && normalizedInput === normalizedLearningWord;
+    setIsInputWrongLanguage(userUsedWrongLang);
 
     if (userUsedWrongLang) {
       // If the user writes in the wrong language
       // we give them a Hint, mainly for audio exercises.
       updatedMessageToAPI = messageToAPI + "H";
-      setIsInputWrongLanguage(true);
       setDistanceToCorrect();
     } else if (levDistance === 1) {
       // The user almost got it correct
