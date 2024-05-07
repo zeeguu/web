@@ -39,8 +39,7 @@ export default function BottomInput({
 
     if (exerciseType === EXERCISE_TYPES.translateWhatYouHear) {
       onHintUsed();
-      let concatMessage = messageToAPI + "H";
-      setMessageToAPI(concatMessage);
+      setMessageToAPI(messageToAPI + "H");
     } else {
       let hint;
       let targetWord = isL1Answer
@@ -52,8 +51,7 @@ export default function BottomInput({
         hint = targetWord.substring(0, 1);
       }
       setCurrentInput(hint);
-      let concatMessage = messageToAPI + "H";
-      setMessageToAPI(concatMessage);
+      setMessageToAPI(messageToAPI + "H");
     }
   }
 
