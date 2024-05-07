@@ -122,7 +122,9 @@ export default function BottomInput({
       concatMessage += "C";
       handleCorrectAnswer(concatMessage);
       return;
-    } else if (userUsedWrongLang) {
+    }
+
+    if (userUsedWrongLang) {
       // If the user writes in the wrong language
       // we give them a Hint, mainly for audio exercises.
       concatMessage += "H";
