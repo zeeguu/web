@@ -1,184 +1,185 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
-import {EXERCISE_TYPES} from "../ExerciseTypeConstants";
-import {normalizeWord} from "../inputNormalization";
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
+import { normalizeWord } from "../inputNormalization";
 
 function getFlagImageUrl(languageCode) {
-    return `/static/flags/${languageCode}.png`;
+  return `/static/flags/${languageCode}.png`;
 }
 
 export default function BottomInput({
-                                        handleCorrectAnswer,
-                                        handleIncorrectAnswer,
-                                        bookmarksToStudy,
-                                        messageToAPI,
-                                        setMessageToAPI,
-                                        isL1Answer,
-                                        onHintUsed,
-                                        exerciseType,
-                                    }) {
-    const [currentInput, setCurrentInput] = useState("");
-    const [isIncorrect, setIsIncorrect] = useState(false);
-    const [usedHint, setUsedHint] = useState(false);
-    const [distanceToCorrect, setDistanceToCorrect] = useState(0);
-    const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
-    const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
-    const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
-    const [feedbackMessage, setFeedbackMessage] = useState("");
-    const levenshtein = require("fast-levenshtein");
+  handleCorrectAnswer,
+  handleIncorrectAnswer,
+  bookmarksToStudy,
+  messageToAPI,
+  setMessageToAPI,
+  isL1Answer,
+  onHintUsed,
+  exerciseType,
+}) {
+  const [currentInput, setCurrentInput] = useState("");
+  const [isIncorrect, setIsIncorrect] = useState(false);
+  const [usedHint, setUsedHint] = useState(false);
+  const [distanceToCorrect, setDistanceToCorrect] = useState(0);
+  const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
+  const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
+  const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const levenshtein = require("fast-levenshtein");
 
-    const learningWord = normalizeWord(bookmarksToStudy[0].from);
+  const normalizedLearningWord = normalizeWord(bookmarksToStudy[0].from);
 
-    let countryFlag = isL1Answer
-        ? bookmarksToStudy[0].to_lang
-        : bookmarksToStudy[0].from_lang;
+  let expectedAnswerLanguageCode = isL1Answer
+    ? bookmarksToStudy[0].to_lang
+    : bookmarksToStudy[0].from_lang;
 
-    function handleHint() {
-        setUsedHint(true);
+  function handleHint() {
+    setUsedHint(true);
 
-        if (exerciseType === EXERCISE_TYPES.translateWhatYouHear) {
-            onHintUsed();
-            let concatMessage = messageToAPI + "H";
-            setMessageToAPI(concatMessage);
-        } else {
-            let hint;
-            let targetWord = isL1Answer
-                ? bookmarksToStudy[0].to
-                : bookmarksToStudy[0].from;
-            if (currentInput === targetWord.substring(0, currentInput.length)) {
-                hint = targetWord.substring(0, currentInput.length + 1);
-            } else {
-                hint = targetWord.substring(0, 1);
-            }
-            setCurrentInput(hint);
-            let concatMessage = messageToAPI + "H";
-            setMessageToAPI(concatMessage);
-        }
+    if (exerciseType === EXERCISE_TYPES.translateWhatYouHear) {
+      onHintUsed();
+      let concatMessage = messageToAPI + "H";
+      setMessageToAPI(concatMessage);
+    } else {
+      let hint;
+      let targetWord = isL1Answer
+        ? bookmarksToStudy[0].to
+        : bookmarksToStudy[0].from;
+      if (currentInput === targetWord.substring(0, currentInput.length)) {
+        hint = targetWord.substring(0, currentInput.length + 1);
+      } else {
+        hint = targetWord.substring(0, 1);
+      }
+      setCurrentInput(hint);
+      let concatMessage = messageToAPI + "H";
+      setMessageToAPI(concatMessage);
+    }
+  }
+
+  // Update the feedback message
+  useEffect(() => {
+    if (isInputWrongLanguage) {
+      setFeedbackMessage("Correct, but wrong language! 😉");
+      return;
+    }
+    if (distanceToCorrect < 5 && distanceToCorrect > 2) {
+      setFeedbackMessage("❌ Not quite the word!");
+      return;
+    }
+    if (distanceToCorrect === 2) {
+      setFeedbackMessage("⭐ You are almost there!");
+      return;
+    }
+    if (distanceToCorrect === 1) {
+      if (isSameLengthAsSolution) {
+        setFeedbackMessage("⭐ You need to change 1 letter!");
+        return;
+      }
+      if (isLongerThanSolution) {
+        setFeedbackMessage("⭐ You need to remove 1 letter!");
+        return;
+      }
+      if (!isLongerThanSolution && !isSameLengthAsSolution) {
+        setFeedbackMessage("⭐ You need to add 1 letter!");
+        return;
+      }
+    }
+    setFeedbackMessage("");
+  }, [
+    distanceToCorrect,
+    isSameLengthAsSolution,
+    isLongerThanSolution,
+    isInputWrongLanguage,
+  ]);
+
+  function checkResult() {
+    let concatMessage = messageToAPI;
+
+    if (currentInput === "") {
+      return;
     }
 
-    // Update the feedback message
-    useEffect(() => {
-        if (isInputWrongLanguage) {
-            setFeedbackMessage("Correct, but wrong language! 😉");
-            return;
-        }
-        if (distanceToCorrect < 5 && distanceToCorrect > 2) {
-            setFeedbackMessage("❌ Not quite the word!");
-            return;
-        }
-        if (distanceToCorrect === 2) {
-            setFeedbackMessage("⭐ You are almost there!");
-            return;
-        }
-        if (distanceToCorrect === 1) {
-            if (isSameLengthAsSolution) {
-                setFeedbackMessage("⭐ You need to change 1 letter!");
-                return;
-            }
-            if (isLongerThanSolution) {
-                setFeedbackMessage("⭐ You need to remove 1 letter!");
-                return;
-            }
-            if (!isLongerThanSolution && !isSameLengthAsSolution) {
-                setFeedbackMessage("⭐ You need to add 1 letter!");
-                return;
-            }
-        }
-        setFeedbackMessage("");
-    }, [
-        distanceToCorrect,
-        isSameLengthAsSolution,
-        isLongerThanSolution,
-        isInputWrongLanguage,
-    ]);
-
-    function checkResult() {
-        let concatMessage = messageToAPI;
-
-        if (currentInput === "") {
-            return;
-        }
-
-        let normalizedInput = normalizeWord(currentInput);
-        let normalizedAnswer = normalizeWord(
-            isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from,
-        );
-
-        let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
-        setDistanceToCorrect(levDistance);
-
-        setIsInputWrongLanguage(false);
-        setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
-        setIsSameLengthAsSolution(
-            normalizedInput.length === normalizedAnswer.length,
-        );
-
-        let userUsedWrongLang = isL1Answer && normalizedInput === learningWord;
-        let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
-        if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
-            //this allows for a typo in the native language
-            concatMessage += "C";
-            handleCorrectAnswer(concatMessage);
-            return;
-        } else if (userUsedWrongLang) {
-            // If the user writes in the wrong language
-            // we give them a Hint, mainly for audio exercises.
-            concatMessage += "H";
-            setIsInputWrongLanguage(true);
-            setDistanceToCorrect();
-        } else if (levDistance === 1) {
-            // The user almost got it correct
-            // we associate it with a H
-            concatMessage += "H";
-        } else {
-            concatMessage += "W";
-            handleIncorrectAnswer();
-        }
-        setMessageToAPI(concatMessage);
-        setIsIncorrect(true);
-    }
-
-    const InputField = isIncorrect ? s.AnimatedInput : s.Input;
-    return (
-        <>
-            <s.BottomRow className="bottomRow">
-                <s.LeftFeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
-                    {strings.hint}
-                </s.LeftFeedbackButton>
-                <div>
-                    <div className="type-feedback">
-                        {feedbackMessage !== "" && <p>{feedbackMessage}</p>}
-                    </div>
-                    <InputField
-                        type="text"
-                        className={
-                            distanceToCorrect >= 5 ? "wrong-border" : "almost-border"
-                        }
-                        value={currentInput}
-                        onChange={(e) => setCurrentInput(e.target.value)}
-                        onKeyUp={(e) => {
-                            if (e.key === "Enter") {
-                                checkResult();
-                            }
-                        }}
-                        onAnimationEnd={() => setIsIncorrect(false)}
-                        autoFocus
-                        style={{
-                            paddingLeft: "1.5em",
-                            backgroundImage: `url(${getFlagImageUrl(countryFlag)})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundSize: "1em 1em",
-                            backgroundPosition: "left center",
-                            backgroundPositionX: "0.4em",
-                        }}
-                    />
-                </div>
-
-                <s.RightFeedbackButton onClick={checkResult}>
-                    {strings.check}
-                </s.RightFeedbackButton>
-            </s.BottomRow>
-        </>
+    let normalizedInput = normalizeWord(currentInput);
+    let normalizedAnswer = normalizeWord(
+      isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from,
     );
+
+    let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
+    setDistanceToCorrect(levDistance);
+
+    setIsInputWrongLanguage(false);
+    setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
+    setIsSameLengthAsSolution(
+      normalizedInput.length === normalizedAnswer.length,
+    );
+
+    let userUsedWrongLang =
+      isL1Answer && normalizedInput === normalizedLearningWord;
+    let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
+    if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
+      //this allows for a typo in the native language
+      concatMessage += "C";
+      handleCorrectAnswer(concatMessage);
+      return;
+    } else if (userUsedWrongLang) {
+      // If the user writes in the wrong language
+      // we give them a Hint, mainly for audio exercises.
+      concatMessage += "H";
+      setIsInputWrongLanguage(true);
+      setDistanceToCorrect();
+    } else if (levDistance === 1) {
+      // The user almost got it correct
+      // we associate it with a H
+      concatMessage += "H";
+    } else {
+      concatMessage += "W";
+      handleIncorrectAnswer();
+    }
+    setMessageToAPI(concatMessage);
+    setIsIncorrect(true);
+  }
+
+  const InputField = isIncorrect ? s.AnimatedInput : s.Input;
+  return (
+    <>
+      <s.BottomRow className="bottomRow">
+        <s.LeftFeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
+          {strings.hint}
+        </s.LeftFeedbackButton>
+        <div>
+          <div className="type-feedback">
+            {feedbackMessage !== "" && <p>{feedbackMessage}</p>}
+          </div>
+          <InputField
+            type="text"
+            className={
+              distanceToCorrect >= 5 ? "wrong-border" : "almost-border"
+            }
+            value={currentInput}
+            onChange={(e) => setCurrentInput(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                checkResult();
+              }
+            }}
+            onAnimationEnd={() => setIsIncorrect(false)}
+            autoFocus
+            style={{
+              paddingLeft: "1.5em",
+              backgroundImage: `url(${getFlagImageUrl(expectedAnswerLanguageCode)})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "1em 1em",
+              backgroundPosition: "left center",
+              backgroundPositionX: "0.4em",
+            }}
+          />
+        </div>
+
+        <s.RightFeedbackButton onClick={checkResult}>
+          {strings.check}
+        </s.RightFeedbackButton>
+      </s.BottomRow>
+    </>
+  );
 }
