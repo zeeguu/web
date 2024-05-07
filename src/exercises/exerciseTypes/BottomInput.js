@@ -144,7 +144,7 @@ export default function BottomInput({
   return (
     <>
       <s.BottomRow className="bottomRow">
-        <s.LeftFeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
+        <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
           {strings.hint}
         </s.LeftFeedbackButton>
         <div>
