@@ -23,42 +23,56 @@ function getExerciseListByType(exerciseList) {
 }
 
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
+  function _removeExerciseFromList(exercise, list) {
+    list.filter((exercise) => exercise !== exercise);
+  }
+
+  function _distinctContexts(potentialBookmarks) {
+    let potentialBookmarkContexts = potentialBookmarks.map(
+      (bookmark) => bookmark.context,
+    );
+    let distinctContextsCount = new Set(potentialBookmarkContexts).size;
+    return distinctContextsCount === potentialBookmarkContexts.length;
+  }
+
   let exerciseSequence = [];
+
   let exercisesByType = getExerciseListByType(exerciseTypesList);
+
   for (let i = 0; i < bookmarks.length; i++) {
     // Filter the exercises based on the learning_cycle attribute of the bookmark
-    let filteredExercises =
+    let possibleExercisesTypes =
       exercisesByType[learningCycleEnum[bookmarks[i].learning_cycle]];
 
     let suitableExerciseFound = false;
     while (!suitableExerciseFound) {
-      let selectedExercise = random(filteredExercises);
+      let selectedExerciseType = random(possibleExercisesTypes);
 
       // Check if there are enough bookmarks for the selected exercise
-      if (i + selectedExercise.requiredBookmarks <= bookmarks.length) {
+      if (i + selectedExerciseType.requiredBookmarks <= bookmarks.length) {
         let potentialBookmarks = bookmarks.slice(
           i,
-          i + selectedExercise.requiredBookmarks,
+          i + selectedExerciseType.requiredBookmarks,
         );
-        let contexts = potentialBookmarks.map((bookmark) => bookmark.context);
-        let distinctContexts = new Set(contexts).size;
-        if (distinctContexts === contexts.length) {
+
+        if (_distinctContexts(potentialBookmarks)) {
           let exercise = {
-            type: selectedExercise.type,
+            type: selectedExerciseType.type,
             bookmarks: potentialBookmarks,
           };
           exerciseSequence.push(exercise);
 
           // Skip the assigned bookmarks
-          i += selectedExercise.requiredBookmarks - 1;
+          i += selectedExerciseType.requiredBookmarks - 1;
           suitableExerciseFound = true;
         } else {
           suitableExerciseFound = false;
         }
       }
       if (!suitableExerciseFound) {
-        filteredExercises = filteredExercises.filter(
-          (exercise) => exercise !== selectedExercise,
+        possibleExercisesTypes = _removeExerciseFromList(
+          selectedExerciseType,
+          possibleExercisesTypes,
         );
       }
     }
