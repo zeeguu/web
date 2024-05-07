@@ -98,20 +98,22 @@ export default function BottomInput({
       return;
     }
     console.log("checking result...");
-    let cleanedUpInput = normalizeWord(currentInput);
-    let b = normalizeWord(
+    let normalizedInput = normalizeWord(currentInput);
+    let normalizedAnswer = normalizeWord(
       isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from,
     );
-    let levDistance = levenshtein.get(cleanedUpInput, b);
+    let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
     let concatMessage = messageToAPI;
     setIsInputWrongLanguage(false);
-    setIsLongerThanSolution(cleanedUpInput.length > b.length);
-    setIsSameLengthAsSolution(cleanedUpInput.length === b.length);
+    setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
+    setIsSameLengthAsSolution(
+      normalizedInput.length === normalizedAnswer.length,
+    );
     setDistanceToCorrect(levDistance);
 
-    let userUsedWrongLang = isL1Answer && cleanedUpInput === learningWord;
+    let userUsedWrongLang = isL1Answer && normalizedInput === learningWord;
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
-    if (cleanedUpInput === b || userHasTypoInNativeLanguage) {
+    if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
       //this allows for a typo in the native language
       concatMessage += "C";
       handleCorrectAnswer(concatMessage);
