@@ -99,18 +99,8 @@ export default function BottomInput({
 
     let normalizedInput = normalizeWord(currentInput);
     let normalizedAnswer = normalizeWord(targetWord);
-
     let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
-    setDistanceToCorrect(levDistance);
 
-    setIsInputWrongLanguage(false);
-    setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
-    setIsSameLengthAsSolution(
-      normalizedInput.length === normalizedAnswer.length,
-    );
-
-    let userUsedWrongLang =
-      isL1Answer && normalizedInput === normalizedLearningWord;
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
     if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
       //this allows for a typo in the native language
@@ -118,7 +108,17 @@ export default function BottomInput({
       return;
     }
 
+    setDistanceToCorrect(levDistance);
+    setIsInputWrongLanguage(false);
+    setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
+    setIsSameLengthAsSolution(
+      normalizedInput.length === normalizedAnswer.length,
+    );
+
     let updatedMessageToAPI;
+    let userUsedWrongLang =
+      isL1Answer && normalizedInput === normalizedLearningWord;
+
     if (userUsedWrongLang) {
       // If the user writes in the wrong language
       // we give them a Hint, mainly for audio exercises.
