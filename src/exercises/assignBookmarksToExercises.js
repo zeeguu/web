@@ -10,16 +10,16 @@ import { learningCycleEnum } from "./ExerciseTypeConstants";
  * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
  * currentBookmarksToStudy to begin the exercise session.
  */
-function getExerciseListByType(exerciseList) {
-  let exerciseByType = {};
+function getExerciseListByLearningCycle(exerciseList) {
+  let exerciseByLearningCycle = {};
   for (let i = 0; i < exerciseList.length; i++) {
     let exercise = exerciseList[i];
-    if (!exerciseByType[exercise.learningCycle]) {
-      exerciseByType[exercise.learningCycle] = [];
+    if (!exerciseByLearningCycle[exercise.learningCycle]) {
+      exerciseByLearningCycle[exercise.learningCycle] = [];
     }
-    exerciseByType[exercise.learningCycle].push(exercise);
+    exerciseByLearningCycle[exercise.learningCycle].push(exercise);
   }
-  return exerciseByType;
+  return exerciseByLearningCycle;
 }
 
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
@@ -37,16 +37,17 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
 
   let exerciseSequence = [];
 
-  let exercisesByType = getExerciseListByType(exerciseTypesList);
+  let exercisesByLearningCycle =
+    getExerciseListByLearningCycle(exerciseTypesList);
 
   for (let i = 0; i < bookmarks.length; i++) {
     // Filter the exercises based on the learning_cycle attribute of the bookmark
-    let possibleExercisesTypes =
-      exercisesByType[learningCycleEnum[bookmarks[i].learning_cycle]];
+    let exerciseListForCycle =
+      exercisesByLearningCycle[learningCycleEnum[bookmarks[i].learning_cycle]];
 
     let suitableExerciseFound = false;
     while (!suitableExerciseFound) {
-      let selectedExerciseType = random(possibleExercisesTypes);
+      let selectedExerciseType = random(exerciseListForCycle);
 
       // Check if there are enough bookmarks for the selected exercise
       if (i + selectedExerciseType.requiredBookmarks <= bookmarks.length) {
@@ -70,9 +71,9 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
         }
       }
       if (!suitableExerciseFound) {
-        possibleExercisesTypes = _removeExerciseFromList(
+        exerciseListForCycle = _removeExerciseFromList(
           selectedExerciseType,
-          possibleExercisesTypes,
+          exerciseListForCycle,
         );
       }
     }
