@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
-import { normalizeWord } from "../inputNormalization";
+import { normalizeAnswer } from "../inputNormalization";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -28,7 +28,7 @@ export default function BottomInput({
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
 
-  const normalizedLearningWord = normalizeWord(bookmarksToStudy[0].from);
+  const normalizedLearningWord = normalizeAnswer(bookmarksToStudy[0].from);
 
   const targetWord = isL1Answer
     ? bookmarksToStudy[0].to
@@ -97,8 +97,8 @@ export default function BottomInput({
       return;
     }
 
-    let normalizedInput = normalizeWord(currentInput);
-    let normalizedAnswer = normalizeWord(targetWord);
+    let normalizedInput = normalizeAnswer(currentInput);
+    let normalizedAnswer = normalizeAnswer(targetWord);
     let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
 
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;

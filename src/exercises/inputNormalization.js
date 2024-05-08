@@ -8,8 +8,8 @@ function normalizeCase(x) {
   return x.trim().toUpperCase();
 }
 
-function normalizeWord(x) {
+function normalizeAnswer(x) {
   return removeQuotes(removeAccents(normalizeCase(x)));
 }
 
-export { normalizeWord };
+export { normalizeAnswer };
