@@ -20,6 +20,7 @@ import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
+import AcountDeletion from "./pages/AccountDeletion";
 
 export default function MainAppRouter({ api, setUser, hasExtension }) {
   function handleSuccessfulSignIn(userInfo) {
@@ -81,6 +82,12 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       <Route path="/reset_pass" render={() => <ResetPassword api={api} />} />
 
       <Route path="/render" render={() => <NoSidebarRouter api={api} />} />
+
+      <PrivateRoute
+        path="/account_deletion"
+        api={api}
+        component={AcountDeletion}
+      />
 
       <PrivateRoute
         path="/select_interests"

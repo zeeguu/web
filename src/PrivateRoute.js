@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { APP_DOMAIN } from "./appConstants";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
 
@@ -10,16 +11,28 @@ import { UserContext } from "./contexts/UserContext";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const user = useContext(UserContext);
-
+  const isAccountDelition = window.location.href.includes(
+    APP_DOMAIN + "account_deletion",
+  );
   if (!user.session) {
-    return (
-      <Redirect
-        to={{
-          pathname: "/login",
-          search: "?redirectLink=" + window.location.href,
-        }}
-      />
-    );
+    if (isAccountDelition) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/",
+          }}
+        />
+      );
+    } else {
+      return (
+        <Redirect
+          to={{
+            pathname: "/login",
+            search: "?redirectLink=" + window.location.href,
+          }}
+        />
+      );
+    }
   }
   return (
     <Route {...rest} render={(props) => <Component {...rest} {...props} />} />

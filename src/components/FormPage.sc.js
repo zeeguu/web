@@ -74,20 +74,40 @@ let FormLink = styled.div`
   margin-top: -1.4em;
 `;
 
-let FormButton = styled.button`
-  background-color: orange;
-  padding: 0.5em 1em;
-  border-radius: 4px;
-
-  margin-bottom: 1em;
-  margin-top: 1em;
-
-  font-size: large;
-  font-weight: 500;
-  color: white;
-  border: 1px solid yellow;
-
+let DeleteAccountButton = styled.button`
+  border: 0px;
+  background: white;
+  margin-bottom: 3em;
+  margin-top: 0em;
+  overflow: hidden;
   cursor: pointer;
+  span {
+    font-weight: 600;
+    font-size: 1.2em;
+    text-decoration: none;
+    font-weight: 500;
+    color: ${color.zeeguuRed};
+    &:hover {
+      filter: brightness(120%);
+    }
+  }
+`;
+
+let FormButton = styled.button`
+  height: 3em;
+  padding: 0em 2em;
+  background: ${color.zeeguuOrange};
+  border: 0.3em solid ${color.zeeguuOrange};
+  border-radius: 7em;
+  margin-bottom: 2em;
+  margin-top: 1em;
+  overflow: hidden;
+  cursor: pointer;
+  span {
+    font-weight: 600;
+    font-size: 1.5em;
+    color: white;
+  }
   @media (min-width: 768px) {
     font-size: small;
   }
@@ -101,5 +121,6 @@ export {
   LogoOnTop,
   FormTitle,
   FormButton,
+  DeleteAccountButton,
   FormLink,
 };
