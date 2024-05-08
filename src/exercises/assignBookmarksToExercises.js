@@ -24,7 +24,7 @@ function getExerciseListByLearningCycle(exerciseList) {
 
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
   function _removeExerciseFromList(exercise, list) {
-    list.filter((ex) => ex !== exercise);
+    return list.filter((ex) => ex !== exercise);
   }
 
   function _distinctContexts(potentialBookmarks) {
