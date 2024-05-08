@@ -7,6 +7,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
 import SignIn from "./pages/SignIn";
 import CreateAccount from "./pages/CreateAccount";
+import LanguagePreferences from "./pages/LanguagePreferences";
 import LocalStorage from "./assorted/LocalStorage";
 import SessionStorage from "./assorted/SessionStorage";
 import { saveUserInfoIntoCookies } from "./utils/cookies/userInfo";
@@ -69,18 +70,13 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
           />
         )}
       />
-
       <Route path="/" exact render={() => <LandingPage />} />
-
       <Route
         path="/extension_installed"
         render={() => <ExtensionInstalled api={api} />}
       />
-
       <Route path="/install_extension" render={() => <InstallExtension />} />
-
       <Route path="/reset_pass" render={() => <ResetPassword api={api} />} />
-
       <Route path="/render" render={() => <NoSidebarRouter api={api} />} />
 
       <PrivateRoute
@@ -90,12 +86,17 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       />
 
       <PrivateRoute
+        path="/language_preferences"
+        api={api}
+        setUser={setUser}
+        component={LanguagePreferences}
+      />
+      <PrivateRoute
         path="/select_interests"
         api={api}
         hasExtension={hasExtension}
         component={SelectInterests}
       />
-
       <PrivateRouteWithSidebar
         path="/articles"
         api={api}
@@ -111,32 +112,27 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         api={api}
         component={WordsRouter}
       />
-
       <PrivateRouteWithSidebar
         path="/history"
         api={api}
         component={ReadingHistory}
       />
-
       <PrivateRouteWithSidebar
         path="/account_settings"
         api={api}
         setUser={setUser}
         component={Settings}
       />
-
       <PrivateRouteWithSidebar
         path="/teacher"
         api={api}
         component={TeacherRouter}
       />
-
       <PrivateRouteWithSidebar
         path="/read/article"
         api={api}
         component={ArticleReader}
       />
-
       <PrivateRouteWithSidebar
         path="/user_dashboard"
         api={api}

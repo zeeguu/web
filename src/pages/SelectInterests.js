@@ -10,6 +10,7 @@ import Button from "./info_page_shared/Button";
 import Tag from "./info_page_shared/Tag";
 import TagContainer from "./info_page_shared/TagContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import strings from "../i18n/definitions";
 
 export default function SelectInterests({ api, hasExtension }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
@@ -24,7 +25,7 @@ export default function SelectInterests({ api, hasExtension }) {
   return (
     <InfoPage>
       <Header>
-        <Heading>What would you like to read about?</Heading>
+        <Heading>What would you like to read&nbsp;about?</Heading>
       </Header>
       <Main>
         <TagContainer>
@@ -40,10 +41,11 @@ export default function SelectInterests({ api, hasExtension }) {
         </TagContainer>
       </Main>
       <Footer>
-        <p>You can always change it later</p>
+        <p>{strings.youCanChangeLater}</p>
         <ButtonContainer>
           <Button href={navigateToNextPage()}>
-            Next <ArrowForwardRoundedIcon />
+            {strings.next}
+            <ArrowForwardRoundedIcon />
           </Button>
         </ButtonContainer>
       </Footer>

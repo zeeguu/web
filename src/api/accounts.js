@@ -65,6 +65,40 @@ Zeeguu_API.prototype.deleteUser = function (sessionID, onSuccess, onError) {
     });
 };
 
+Zeeguu_API.prototype.addBasicUser = function (
+  invite_code,
+  password,
+  userInfo,
+  onSuccess,
+  onError,
+) {
+  let url = this.baseAPIurl + `/add_basic_user/${userInfo.email}`;
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body:
+      `password=${password}&invite_code=${invite_code}` +
+      `&username=${userInfo.name}`,
+  })
+    .then((response) => {
+      if (response.ok) {
+        response.text().then((session) => {
+          this.session = session;
+          onSuccess(session);
+        });
+      } else if (response.status === 400) {
+        response.json().then((json) => {
+          onError(json.message);
+        });
+      } else {
+        onError("Something went wrong. Try again or contact us.");
+      }
+    })
+    .catch((error) => {
+      onError(error.message);
+    });
+};
+
 Zeeguu_API.prototype.signIn = function (email, password, onError, onSuccess) {
   let url = this.baseAPIurl + `/session/${email}`;
   this.apiLog(`/session/${email}`);
