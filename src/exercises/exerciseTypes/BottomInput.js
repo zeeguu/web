@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import removeAccents from "remove-accents";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
+import { normalizeAnswer } from "../inputNormalization";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -24,10 +24,17 @@ export default function BottomInput({
   const [distanceToCorrect, setDistanceToCorrect] = useState(0);
   const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
   const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
+  const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
 
-  let countryFlag = isL1Answer
+  const normalizedLearningWord = normalizeAnswer(bookmarksToStudy[0].from);
+
+  const targetWord = isL1Answer
+    ? bookmarksToStudy[0].to
+    : bookmarksToStudy[0].from;
+
+  const answerLanguageCode = isL1Answer
     ? bookmarksToStudy[0].to_lang
     : bookmarksToStudy[0].from_lang;
 
@@ -36,35 +43,25 @@ export default function BottomInput({
 
     if (exerciseType === EXERCISE_TYPES.translateWhatYouHear) {
       onHintUsed();
-      let concatMessage = messageToAPI + "H";
-      setMessageToAPI(concatMessage);
+      setMessageToAPI(messageToAPI + "H");
     } else {
       let hint;
-      let targetWord = isL1Answer
-        ? bookmarksToStudy[0].to
-        : bookmarksToStudy[0].from;
       if (currentInput === targetWord.substring(0, currentInput.length)) {
         hint = targetWord.substring(0, currentInput.length + 1);
       } else {
         hint = targetWord.substring(0, 1);
       }
       setCurrentInput(hint);
-      let concatMessage = messageToAPI + "H";
-      setMessageToAPI(concatMessage);
+      setMessageToAPI(messageToAPI + "H");
     }
-  }
-
-  function eliminateTypos(x) {
-    return x.trim().toUpperCase();
-    // .replace(/[^a-zA-Z ]/g, '')
-  }
-
-  function removeQuotes(x) {
-    return x.replace(/[^a-zA-Z ]/g, "");
   }
 
   // Update the feedback message
   useEffect(() => {
+    if (isInputWrongLanguage) {
+      setFeedbackMessage("Correct, but wrong language! 😉");
+      return;
+    }
     if (distanceToCorrect < 5 && distanceToCorrect > 2) {
       setFeedbackMessage("❌ Not quite the word!");
       return;
@@ -88,43 +85,63 @@ export default function BottomInput({
       }
     }
     setFeedbackMessage("");
-  }, [distanceToCorrect, isSameLengthAsSolution, isLongerThanSolution]);
+  }, [
+    distanceToCorrect,
+    isSameLengthAsSolution,
+    isLongerThanSolution,
+    isInputWrongLanguage,
+  ]);
 
   function checkResult() {
     if (currentInput === "") {
       return;
     }
-    console.log("checking result...");
-    let a = removeQuotes(removeAccents(eliminateTypos(currentInput)));
-    let b = removeQuotes(
-      removeAccents(
-        eliminateTypos(
-          isL1Answer ? bookmarksToStudy[0].to : bookmarksToStudy[0].from,
-        ),
-      ),
+
+    let normalizedInput = normalizeAnswer(currentInput);
+    let normalizedAnswer = normalizeAnswer(targetWord);
+    let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
+
+    let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
+    if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
+      //this allows for a typo in the native language
+      handleCorrectAnswer(messageToAPI + "C");
+      return;
+    }
+
+    setDistanceToCorrect(levDistance);
+
+    setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
+    setIsSameLengthAsSolution(
+      normalizedInput.length === normalizedAnswer.length,
     );
-    //this allows for a typo in the native language
-    if (a === b || (isL1Answer && distanceToCorrect === 1)) {
-      let concatMessage = messageToAPI + "C";
-      handleCorrectAnswer(concatMessage);
+
+    let updatedMessageToAPI;
+    let userUsedWrongLang =
+      isL1Answer && normalizedInput === normalizedLearningWord;
+    setIsInputWrongLanguage(userUsedWrongLang);
+
+    if (userUsedWrongLang) {
+      // If the user writes in the wrong language
+      // we give them a Hint, mainly for audio exercises.
+      updatedMessageToAPI = messageToAPI + "H";
+      setDistanceToCorrect();
+    } else if (levDistance === 1) {
+      // The user almost got it correct
+      // we associate it with a H
+      updatedMessageToAPI = messageToAPI + "H";
     } else {
-      let concatMessage = messageToAPI + "W";
-      let levDistance = levenshtein.get(a, b);
-      setIsLongerThanSolution(a.length > b.length);
-      setIsSameLengthAsSolution(a.length === b.length);
-      console.log("You are this far: " + levDistance);
-      setDistanceToCorrect(levDistance);
-      setMessageToAPI(concatMessage);
-      setIsIncorrect(true);
+      updatedMessageToAPI = messageToAPI + "W";
       handleIncorrectAnswer();
     }
+    setMessageToAPI(updatedMessageToAPI);
+    setIsIncorrect(true);
   }
 
   const InputField = isIncorrect ? s.AnimatedInput : s.Input;
   return (
     <>
       <s.BottomRow className="bottomRow">
-        <s.LeftFeedbackButton onClick={(e) => handleHint()} disabled={usedHint}>
+        <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
           {strings.hint}
         </s.LeftFeedbackButton>
         <div>
@@ -147,7 +164,7 @@ export default function BottomInput({
             autoFocus
             style={{
               paddingLeft: "1.5em",
-              backgroundImage: `url(${getFlagImageUrl(countryFlag)})`,
+              backgroundImage: `url(${getFlagImageUrl(answerLanguageCode)})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "1em 1em",
               backgroundPosition: "left center",
