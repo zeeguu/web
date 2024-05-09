@@ -18,7 +18,7 @@ Zeeguu_API.prototype.getUserArticles = function (callback) {
 };
 
 Zeeguu_API.prototype.getRecommendedArticles = function (callback){
-  this._getJSON("user_articles/cfmodel", (articles) => {
+  this._getJSON("user_articles/foryou", (articles) => {
   /*   console.log("Recommended articles: ");
   }); */
   const ids = articles.map((o) => o.id);
