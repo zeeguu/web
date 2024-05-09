@@ -32,7 +32,7 @@ export default function SelectInterests({ api, hasExtension }) {
           {allTopics.map((topic) => (
             <Tag
               key={topic.id}
-              className={!isSubscribed(topic) && "unsubscribed"}
+              className={isSubscribed(topic) && "selected"}
               onClick={() => toggleTopicSubscription(topic)}
             >
               {topic.title}
