@@ -58,8 +58,8 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
           <InputField
             value={excludedWords}
             onChange={handleExcludedWordsChange}
-            helperText={"Add one unwanted word / phrase at a time"}
-            placeholder={"e.g. robbery"}
+            helperText={strings.addUnwantedWordHelperText}
+            placeholder={strings.unwantedWordPlaceholder}
           >
             <Button className="small-square" onClick={handleAddNewSearchFilter}>
               <AddRoundedIcon />

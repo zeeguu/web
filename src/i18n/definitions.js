@@ -79,6 +79,10 @@ let strings = new LocalizedStrings(
       languangeLevelIsRequired: "Language level is required.",
       plsSelectBaseLanguage: "Please select a base language.",
 
+      //ExcludeWords
+      addUnwantedWordHelperText:"Add one unwanted word / phrase at a time",
+      unwantedWordPlaceholder:"e.g. robbery",
+
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
       zeeguuIsAReaserchProject:
