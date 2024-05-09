@@ -28,13 +28,19 @@ export default function ExtensionInstalled({ api }) {
         <FullWidthImage src={"use-extension.png"} />
       </Main>
       <Footer>
-        <ButtonContainer>
+        <ButtonContainer className={"padding-large"}>
           {getSessionFromCookies() ? (
-            <Button href={"/articles"}>{strings.goToZeeguuApp}</Button>
+            <Button className={"full-width-btn"} href={"/articles"}>
+              {strings.goToZeeguuApp}
+            </Button>
           ) : (
             <>
-              <Button href={"/create_account"}>{strings.createAccount}</Button>
-              <Button href={"/login"}>{strings.login}</Button>
+              <Button className={"full-width-btn"} href={"/create_account"}>
+                {strings.createAccount}
+              </Button>
+              <Button className={"full-width-btn"} href={"/login"}>
+                {strings.login}
+              </Button>
             </>
           )}
         </ButtonContainer>

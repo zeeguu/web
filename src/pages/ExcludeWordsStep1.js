@@ -27,11 +27,17 @@ export default function ExcludeWordsStep1({ hasExtension }) {
       </Header>
       <Main>
         <p>{strings.youCanChangeLater}</p>
-        <ButtonContainer>
-          <Button onClick={() => redirect("/exclude_words_step2")}>
+        <ButtonContainer className={"row-of-buttons"}>
+          <Button
+            className={"full-width-btn"}
+            onClick={() => redirect("/exclude_words_step2")}
+          >
             {strings.yesPlease}
           </Button>
-          <Button onClick={() => redirect(getLinkToNextPage())}>
+          <Button
+            className={"full-width-btn"}
+            onClick={() => redirect(getLinkToNextPage())}
+          >
             {strings.noThankYou}
           </Button>
         </ButtonContainer>

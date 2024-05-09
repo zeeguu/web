@@ -37,8 +37,11 @@ export default function SelectInterests({ api, hasExtension }) {
       </Main>
       <Footer>
         <p>{strings.youCanChangeLater}</p>
-        <ButtonContainer>
-          <Button onClick={() => redirect("/exclude_words_step1")}>
+        <ButtonContainer className={"padding-large"}>
+          <Button
+            className={"full-width-btn"}
+            onClick={() => redirect("/exclude_words_step1")}
+          >
             {strings.next}
             <ArrowForwardRoundedIcon />
           </Button>

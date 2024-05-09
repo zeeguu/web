@@ -58,8 +58,10 @@ export default function ResetPasswordStep1({
           onChange={handleEmailChange}
         />
       </FormSection>
-      <ButtonContainer>
-        <Button onClick={handleResetPassword}>{strings.resetPassword}</Button>
+      <ButtonContainer className={"padding-medium"}>
+        <Button className={"full-width-btn"} onClick={handleResetPassword}>
+          {strings.resetPassword}
+        </Button>
       </ButtonContainer>
     </Form>
   );

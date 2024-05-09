@@ -137,12 +137,14 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               }
             />
           </FormSection>
-          <ButtonContainer>
-            <Button onClick={handleCreate}>{strings.createAccount}</Button>
-          </ButtonContainer>
         </Form>
       </Main>
       <Footer>
+        <ButtonContainer className={"padding-medium"}>
+          <Button className={"full-width-btn"} onClick={handleCreate}>
+            {strings.createAccount}
+          </Button>
+        </ButtonContainer>
         <p>
           {strings.alreadyHaveAccount + " "}
           <a className="bold underlined-link" href="/login">

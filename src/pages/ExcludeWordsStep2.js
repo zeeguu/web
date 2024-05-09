@@ -83,8 +83,11 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
       </Main>
       <Footer>
         <p>{strings.youCanChangeLater}</p>
-        <ButtonContainer>
-          <Button onClick={() => redirect(getLinkToNextPage())}>
+        <ButtonContainer className={"padding-large"}>
+          <Button
+            className={"full-width-btn"}
+            onClick={() => redirect(getLinkToNextPage())}
+          >
             {strings.next} <ArrowForwardRoundedIcon />
           </Button>
         </ButtonContainer>

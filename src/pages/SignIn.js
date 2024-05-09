@@ -75,10 +75,12 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
           </FormSection>
         </Form>
       </Main>
+      <ButtonContainer className={"padding-medium"}>
+        <Button className={"full-width-btn"} onClick={handleSignIn}>
+          {strings.login}
+        </Button>
+      </ButtonContainer>
       <Footer>
-        <ButtonContainer>
-          <Button onClick={handleSignIn}>{strings.login}</Button>
-        </ButtonContainer>
         <p>
           {strings.dontHaveAnAccount + " "}
           <a className="bold underlined-link" href="create_account">

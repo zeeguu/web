@@ -48,7 +48,7 @@ let strings = new LocalizedStrings(
       shareWithColleague: "Share with colleague",
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
       next: "Next",
-      youCanChangeLater: "You can always change it layter",
+      youCanChangeLater: "You can always change it later",
       yesPlease: "Yes, please",
       noThankYou: "No, thank you",
 
