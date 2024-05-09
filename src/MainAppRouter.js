@@ -3,6 +3,8 @@ import LandingPage from "./landingPage/LandingPage";
 import ExtensionInstalled from "./pages/ExtensionInstalled";
 import InstallExtension from "./pages/InstallExtension";
 import SelectInterests from "./pages/SelectInterests";
+import ExcludeWordsStep1 from "./pages/ExcludeWordsStep1";
+import ExcludeWordsStep2 from "./pages/ExcludeWordsStep2";
 import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
 import SignIn from "./pages/SignIn";
@@ -95,6 +97,20 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         api={api}
         hasExtension={hasExtension}
         component={SelectInterests}
+      />
+
+      <PrivateRoute
+        path="/exclude_words_step1"
+        api={api}
+        hasExtension={hasExtension}
+        component={ExcludeWordsStep1}
+      />
+
+      <PrivateRoute
+        path="/exclude_words_step2"
+        api={api}
+        hasExtension={hasExtension}
+        component={ExcludeWordsStep2}
       />
 
       <PrivateRouteWithSidebar
