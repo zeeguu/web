@@ -1,4 +1,3 @@
-import { isSupportedBrowser } from "../utils/misc/browserDetection";
 import useSelectInterest from "../hooks/useSelectInterest";
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -12,15 +11,11 @@ import TagContainer from "./info_page_shared/TagContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import strings from "../i18n/definitions";
 
+import redirect from "../utils/routing/routing";
+
 export default function SelectInterests({ api, hasExtension }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
-
-  function navigateToNextPage() {
-    if (isSupportedBrowser() && hasExtension === false) {
-      return "/install_extension";
-    } else return "/articles";
-  }
 
   return (
     <InfoPage>
@@ -43,7 +38,7 @@ export default function SelectInterests({ api, hasExtension }) {
       <Footer>
         <p>{strings.youCanChangeLater}</p>
         <ButtonContainer>
-          <Button href={navigateToNextPage()}>
+          <Button onClick={() => redirect("/exclude_words_step1")}>
             {strings.next}
             <ArrowForwardRoundedIcon />
           </Button>

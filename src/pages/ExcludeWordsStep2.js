@@ -20,13 +20,13 @@ import Tag from "./info_page_shared/Tag";
 import TagContainer from "./info_page_shared/TagContainer";
 
 import redirect from "../utils/routing/routing";
+import strings from "../i18n/definitions";
 
 export default function ExcludeWordsStep2({ api, hasExtension }) {
   const {
     subscribedSearchFilters,
     subscribeToSearchFilter,
     removeSearchFilter,
-    availableFilters,
   } = useExcludeInterest(api);
 
   const [excludedWords, handleExcludedWordsChange, resetExcludedWords] =
@@ -67,7 +67,6 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
             </Button>
           </InputField>
         </Form>
-        {/* Todo: Create empty state of this */}
         <TagContainer>
           {subscribedSearchFilters.map((search) => (
             <div key={search.id} searchremovabeid={search.id}>
@@ -83,10 +82,10 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
         </TagContainer>
       </Main>
       <Footer>
-        <p>You can always change it later</p>
+        <p>{strings.youCanChangeLater}</p>
         <ButtonContainer>
           <Button onClick={() => redirect(getLinkToNextPage())}>
-            Continue <ArrowForwardRoundedIcon />
+            {strings.next} <ArrowForwardRoundedIcon />
           </Button>
         </ButtonContainer>
       </Footer>

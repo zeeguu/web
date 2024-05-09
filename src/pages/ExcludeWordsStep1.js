@@ -8,6 +8,7 @@ import Button from "./info_page_shared/Button";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 
 import redirect from "../utils/routing/routing";
+import strings from "../i18n/definitions";
 
 export default function ExcludeWordsStep1({ hasExtension }) {
   function getLinkToNextPage() {
@@ -25,13 +26,13 @@ export default function ExcludeWordsStep1({ hasExtension }) {
         </Heading>
       </Header>
       <Main>
-        <p>You can always change it later</p>
+        <p>{strings.youCanChangeLater}</p>
         <ButtonContainer>
           <Button onClick={() => redirect("/exclude_words_step2")}>
-            Yes, please
+            {strings.yesPlease}
           </Button>
           <Button onClick={() => redirect(getLinkToNextPage())}>
-            No, thank you
+            {strings.noThankYou}
           </Button>
         </ButtonContainer>
       </Main>

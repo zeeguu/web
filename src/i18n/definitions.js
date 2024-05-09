@@ -49,6 +49,8 @@ let strings = new LocalizedStrings(
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
       next: "Next",
       youCanChangeLater: "You can always change it layter",
+      yesPlease: "Yes, please",
+      noThankYou: "No, thank you",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
