@@ -50,7 +50,7 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
     <InfoPage>
       <Header>
         <Heading>
-          Here you can select or add<br></br> unwanted words or&nbsp;phrases
+          Here you can add<br></br> unwanted words or&nbsp;phrases
         </Heading>
       </Header>
       <Main>
@@ -58,9 +58,8 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
           <InputField
             value={excludedWords}
             onChange={handleExcludedWordsChange}
-            helperText={"Please enter one word / phrase at a time"}
+            helperText={"Add one unwanted word / phrase at a time"}
             placeholder={"e.g. robbery"}
-            label={"Add your unwanted words / phrases"}
           >
             <Button className="small-square" onClick={handleAddNewSearchFilter}>
               <AddRoundedIcon />
