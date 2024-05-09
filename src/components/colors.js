@@ -11,6 +11,12 @@ let zeeguuDarkOrange = "#9c7130";
 let lightBlue = "#54cdff";
 let lighterBlue = "#CCDEFF";
 let darkBlue = "#2f77ad";
+let blue100 = "hsl(216, 100%, 97%)";
+let blue200 = "hsl(216, 100%, 89%)";
+let blue300 = "hsl(216, 100%, 81%)";
+let blue400 = "hsl(216, 100%, 74%)";
+let blue500 = "hsl(216, 100%, 66%)";
+let blue800 = "hsl(216, 100%, 40%)";
 let veryLightGrey = "#efefef";
 let lightGrey = "#c1c1c1";
 let darkGrey = "#808080";
@@ -57,6 +63,12 @@ export {
   lightBlue,
   lighterBlue,
   darkBlue,
+  blue100,
+  blue200,
+  blue300,
+  blue400,
+  blue500,
+  blue800,
   veryLightGrey,
   lightGrey,
   darkGrey,
