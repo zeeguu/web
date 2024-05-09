@@ -29,10 +29,11 @@ export default function LandingPage() {
     <div>
       <s.LoginHeader>
         <s.HeaderTitle>Zeeguu</s.HeaderTitle>
-        <UiLanguageSettings
+        {/* temporarily disable UI language settings */}
+        {/* <UiLanguageSettings
           uiLanguage={uiLanguage}
           setUiLanguage={setUiLanguage}
-        />
+        /> */}
       </s.LoginHeader>
 
       <s.PageContent>
