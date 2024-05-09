@@ -1,4 +1,3 @@
-import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import * as s from "./TagsOfInterests.sc";
 import strings from "../i18n/definitions";
@@ -11,7 +10,6 @@ export default function TagsOfFilters({
 }) {
   const {
     availableFilters,
-    subscribedFilters,
     toggleFilterSubscription,
     isSubscribedSearchFilter,
 
@@ -69,12 +67,7 @@ export default function TagsOfFilters({
             <button
               onClick={(e) => toggleFilterSubscription(filter)}
               type="button"
-              className={
-                "interests " +
-                (subscribedFilters.map((e) => e.id).includes(filter.id)
-                  ? ""
-                  : "unsubscribed")
-              }
+              className={`interests ${!isSubscribedSearchFilter(filter) && "unsubscribed"}`}
             >
               <span className="addableTitle">{filter.title}</span>
             </button>
