@@ -6,6 +6,8 @@ const ButtonLink = styled.a`
   max-width: 65%;
   display: flex;
   justify-content: center;
+  display: flex;
+  justify-content: center;
   @media (max-width: 768px) {
     max-width: none;
   }
@@ -26,6 +28,7 @@ const Button = styled.button`
   padding: 1em 2rem;
   border-radius: 4em;
   background-color: ${zeeguuOrange};
+  background-color: ${zeeguuOrange};
   font-weight: 600;
   border-bottom: solid 0.2em ${zeeguuDarkOrange};
 
@@ -34,7 +37,14 @@ const Button = styled.button`
     margin: 0.2em 0 0 0;
   }
 
+  &.small-square {
+    border-radius: 0.3rem;
+    padding: 1rem;
+    border: none;
+  }
+
   @media (max-width: 768px) {
+    width: 100%;
     width: 100%;
     padding: 0.75em 2rem;
   }
