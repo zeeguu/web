@@ -17,14 +17,25 @@ let strings = new LocalizedStrings(
       myClasses: "My Classes",
       myTexts: "My Texts",
       tutorials: "Help",
-      login: "Sign in",
+      login: "Log in",
+      createAccount: "Create Account",
+      createBetaAccount: "Create Beta Account",
       email: "Email",
+      emailPlaceholder: "example@email.com",
+      zeeguuTeamEmail: "zeeguu.team@gmail.com",
       name: "Name",
-      learnedLanguage: "Learned Language",
+      fullName: "Full Name",
+      fullNamePlaceholder: "First And Last Name",
+      learnedLanguage: "I want to learn",
+      learnedLanguagePlaceholder: "Select language",
       plsProvideValidEmail: "Please provide a valid email.",
+      password: "Password",
+      passwordPlaceholder: "Enter Password",
+      passwordHelperText: "Must contain at least 4 characters",
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
-      alreadyHaveAccount: "Already have an account? Login instead",
+      forgotPassword: "Forgot Password?",
+      alreadyHaveAccount: "Already have an account?",
       code: "Code",
       interest: "interest",
       addTexts: "Add Texts",
@@ -36,6 +47,8 @@ let strings = new LocalizedStrings(
       tooEasy: "too easy",
       shareWithColleague: "Share with colleague",
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
+      next: "Next",
+      youCanChangeLater: "You can always change it layter",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -48,17 +61,21 @@ let strings = new LocalizedStrings(
 
       //CreateAccount
       nameIsRequired: "Name is required.",
-      learnedLanguageIsRequired: "Learned language is required.",
-      languangeLevelIsRequired: "Language level is required.",
-      plsSelectBaseLanguage: "Please select a base language.",
       passwordMustBeMsg: "Password should be at least 4 characters long.",
-      createAccount: "Create Account",
       thankYouMsgPrefix:
         "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
-      inviteCode: "Invite code",
-      levelOfLearnedLanguage: "Level in Learned Language",
-      baseLanguage: "Base languange (English recommended)",
+      inviteCode: "Invite Code",
+      inviteCodePlaceholder: "Enter Your Invite Code",
+      levelOfLearnedLanguage: "My current level",
+      levelOfLearnedLanguagePlaceholder: "Select level",
+      baseLanguage: "I want translations in",
+      baseLanguagePlaceholder: "Select Language",
+
+      //LanguagePreferences
+      learnedLanguageIsRequired: "Learned language is required.",
+      languangeLevelIsRequired: "Language level is required.",
+      plsSelectBaseLanguage: "Please select a base language.",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
@@ -83,8 +100,7 @@ let strings = new LocalizedStrings(
         "        We might make the anonymized interaction data available for other researchers too. In research, data can be even more important than algorithms.",
 
       //Signin
-      password: "Password",
-      alternativelyYouCan: "Alternatively, you can",
+      dontHaveAnAccount: "Don't have an account?",
       createAnAccount: "create an account",
       or: "or",
 
@@ -104,9 +120,16 @@ let strings = new LocalizedStrings(
       now: " now.",
       plsCheck: "Please check ",
       forCode: " for the one-time code we sent you.",
-      codeReceived: "Code received via email",
+      codeReceived: "Received Code",
+      codeReceivedPlaceholder: "Enter The Code",
       newPassword: "New Password",
+      newPasswordPlaceholder: "Enter New Password",
       setNewPassword: "Set New Password",
+      rememberPassword: "Remember Password?",
+
+      //InstallExtension
+      skipInstallation: "Skip installation",
+      installTheExtension: "Install the Extension",
 
       //LandingPage
       landingPage: "Landing Page",
@@ -192,6 +215,7 @@ let strings = new LocalizedStrings(
       starred: "Starred",
 
       learned: "Learned",
+      topWords: "Top Words",
 
       //WordsHistory
       titleTranslationHistory: "Translation History",
@@ -209,7 +233,8 @@ let strings = new LocalizedStrings(
       helpUsMsg:
         "Help us make Zeeguu even smarter by always letting us know whether you liked reading an article or not.",
       didYouEnjoyMsg: "Did you enjoy the article?",
-      answeringMsg: "Zeeguu can make better personalized recommendations based on your feedback.",
+      answeringMsg:
+        "Zeeguu can make better personalized recommendations based on your feedback.",
       yes: "Yes",
       no: "No",
       reviewVocabulary: "Review Vocabulary",
@@ -268,8 +293,37 @@ let strings = new LocalizedStrings(
       rankedMsg:
         "The most important words that you translated. Ordered by frequency of occurrence in your learned language. To see all your past translations, go to History.",
 
+      //Receptive
+      titleReceptiveWords: "Receptive Words",
+      receptiveMsg:
+        "These words will appear in exercises testing your receptive knowledge. Receptive means you understand the word when you see or hear it, but can't necessarily use it yet.",
+      noReceptiveWords:
+        "You have no receptive words at the moment. Keep reading and translating to add some.",
+      //Productive
+      titleProductiveWords: "Productive Words",
+
+      productiveMsg:
+        "You already know these words receptively, so they will only appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech.",
+      productiveDisableMsg:
+        "You have disabled productive exercises. Words are now considered learned once they have completed the receptive learning cycle.",
+      noProductiveWords: "You have no productive words at the moment.",
+
       //WordsOnDate
       open: "Open",
+
+      //LearningCycle
+      nextLearningCycle:
+        "This word has now moved to your productive knowledge.",
+      wordLearned: "You've learned a new word!",
+      receptiveTooltip:
+        "This word is part of your receptive vocabulary knowledge. Receptive means the capability to comprehend a word when you hear or see it.",
+      productiveTooltip:
+        "This word is part of your productive vocabulary knowledge. Productive means the knowledge to use a word in writing or speech.",
+
+      //CelebrationModal
+      celebrationTitle: "Congratulations, you've learned a new word!",
+      celebrationMsg:
+        "You've successfully completed all stages for this word, so it won't be tested in the exercises anymore. Keep up the good work!",
 
       //WordEditAccordion
       done: "Done",
@@ -307,6 +361,15 @@ let strings = new LocalizedStrings(
       learnedOn: "Learned on:",
       orderWordsL1: "order words L1",
       orderWordsL2: "order words L2",
+      multipleChoiceContext: "multiple choice context",
+      multipleChoiceAudio: "multiple choice audio",
+      multipleChoiceL1: "multiple choice L1",
+      writeWhatYouHear: "write what you hear",
+      translateL2toL1: "translate L2 to L1",
+      translateWhatYouHear: "translate what you hear",
+      clickInContext: "click in context",
+      cloze: "gap-fill",
+
       studentFeedback: "Student feedback:",
       noType: "No type",
       orderWordsTipMessage: "You can click 'Hint ✔' at any time to get clues",
@@ -348,16 +411,25 @@ let strings = new LocalizedStrings(
       audioExerciseHeadline:
         "Write the word your hear. Click to have it repeated!",
       multipleChoiceAudioHeadline: "Select the word which fits the context",
+      findWordInContextClozeHeadline: "Translate the word to fit the context",
+      translateL2toL1Headline: "Translate the bold word",
+      translateWhatYouHearHeadline:
+        "Translate the word you hear. Click to have it repeated!",
+      multipleChoiceL2toL1Headline:
+        "Select the correct translation of the bold word",
+      clickWordInContextHeadline:
+        "Find the word in the context and click on it",
+      multipleChoiceContextHeadline: "Choose the context that fits the word",
 
       //FeedbackButtons
-      giveFeedback: "Give feedback",
+      giveFeedback: "Don't show this word again",
       giveFeedbackAlert: "Please type your feedback before submitting.",
       selectWords: "Select the word(s):",
       selectWordsAlert:
         "Please select the word(s) for which you are providing feedback.",
       clickWords:
         "Click on the word(s) for which you are improving the translation:",
-      otherFeedback: "Other feedback:",
+      otherFeedback: "Other reasons:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
 
@@ -398,7 +470,6 @@ let strings = new LocalizedStrings(
 
       //ButtonFeedback
       speak: "Speak",
-      next: "Next",
 
       //ExerciseNavigation
       backToReading: "Back to Reading",
@@ -567,7 +638,7 @@ let strings = new LocalizedStrings(
         "Generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand.",
 
       //Extension installed
-      goToArticles: "Go to article recommendations",
+      goToZeeguuApp: "Go to Zeeguu",
       pinExtension: "Pin it to the toolbar to make it easy to access",
       congratulations: "Extension is installed!",
 

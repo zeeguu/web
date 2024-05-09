@@ -1,13 +1,19 @@
-import * as s from "../components/FormPage.sc";
 import { useState } from "react";
 import * as EmailValidator from "email-validator";
 import validator from "../assorted/validator";
-import strings from "../i18n/definitions"
+import strings from "../i18n/definitions";
+
+import Form from "./info_page_shared/Form";
+import FormSection from "./info_page_shared/FormSection";
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+import InputField from "./info_page_shared/InputField";
+import ButtonContainer from "./info_page_shared/ButtonContainer";
+import Button from "./info_page_shared/Button";
 
 export default function ResetPasswordStep1({
   api,
   email,
-  setEmail,
+  handleEmailChange,
   notifyOfValidEmail,
 }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -30,37 +36,31 @@ export default function ResetPasswordStep1({
       },
       () => {
         setErrorMessage("inexistent email");
-      }
+      },
     );
   }
   return (
-    <form action="" method="post">
-      <s.FormTitle>{strings.resetPassword}</s.FormTitle>
+    <Form action={""} method={"post"}>
+      <FormSection>
+        <p>
+          Please enter the email address you used to create your account
+          on&nbsp;Zeeguu
+        </p>
+        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
 
-      <p>{strings.weNeedTheEmailMsg}</p>
-      {errorMessage && <div className="error">{errorMessage}</div>}
-
-      <div className="inputField">
-        <label>{strings.email}</label>
-        <input
-          type="email"
-          name="email"
-          placeholder={strings.email}
+        <InputField
+          id={"email"}
+          label={strings.email}
+          type={"email"}
+          name={"email"}
+          placeholder={strings.emailPlaceholder}
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
         />
-      </div>
-
-      <div className="inputField">
-        <s.FormButton
-          onClick={handleResetPassword}
-          name="login"
-          value="Login"
-          className="loginButton"
-        >
-          {strings.resetPassword}
-        </s.FormButton>
-      </div>
-    </form>
+      </FormSection>
+      <ButtonContainer>
+        <Button onClick={handleResetPassword}>{strings.resetPassword}</Button>
+      </ButtonContainer>
+    </Form>
   );
 }

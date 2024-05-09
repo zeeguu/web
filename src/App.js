@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch } from "react-router-dom";
 
+import ExerciseNotifications from "./exercises/ExerciseNotification";
+import { ExerciseCountContext } from "./exercises/ExerciseCountContext";
 import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
@@ -8,10 +10,10 @@ import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
 
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
-import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
+import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 
 import {
   getSessionFromCookies,
@@ -20,11 +22,13 @@ import {
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
+import useExtensionCommunication from "./hooks/useExtensionCommunication";
 
 function App() {
-  let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
+  let api = new Zeeguu_API(API_ENDPOINT);
 
   let userDict = {};
+  const [exerciseNotification] = useState(new ExerciseNotifications());
 
   if (getSessionFromCookies()) {
     userDict = {
@@ -32,12 +36,16 @@ function App() {
       ...LocalStorage.userInfo(),
     };
     api.session = getSessionFromCookies();
+    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+      exerciseNotification.setHasExercises(hasBookmarks);
+      exerciseNotification.updateReactState();
+    });
   }
 
   useUILanguage();
 
   const [userData, setUserData] = useState(userDict);
-  const [hasExtension, setHasExtension] = useState(false);
+  const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
 
   useEffect(() => {
@@ -47,7 +55,8 @@ function App() {
   }, [userData]);
 
   useEffect(() => {
-    console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
+    console.log("Got the API URL:" + API_ENDPOINT);
+    console.log("Got the Domain URL:" + APP_DOMAIN);
     console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
     // when creating the app component we also load the
     // user details from the server; this also ensures that
@@ -58,6 +67,9 @@ function App() {
       api.getUserDetails((data) => {
         LocalStorage.setUserInfo(data);
       });
+      api.getUserPreferences((preferences) => {
+        LocalStorage.setUserPreferences(preferences);
+      });
     }
 
     //logs out user on zeeguu.org if they log out of the extension
@@ -67,7 +79,6 @@ function App() {
         setUserData({});
       }
     }, 1000);
-    checkExtensionInstalled(setHasExtension);
     return () => clearInterval(interval);
 
     // eslint-disable-next-line
@@ -75,6 +86,7 @@ function App() {
 
   function logout() {
     LocalStorage.deleteUserInfo();
+    LocalStorage.deleteUserPreferences();
     setUserData({});
 
     removeUserInfoFromCookies();
@@ -88,27 +100,29 @@ function App() {
       <BrowserRouter>
         <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
           <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
-            <APIContext.Provider value={api}>
-              {/* Routing*/}
-              <MainAppRouter
-                api={api}
-                setUser={setUserData}
-                hasExtension={hasExtension}
-              />
+            <ExerciseCountContext.Provider value={exerciseNotification}>
+              <APIContext.Provider value={api}>
+                {/* Routing*/}
+                <MainAppRouter
+                  api={api}
+                  setUser={setUserData}
+                  hasExtension={isExtensionAvailable}
+                />
 
-              <ToastContainer
-                position="bottom-right"
-                autoClose={2000}
-                hideProgressBar={true}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
-            </APIContext.Provider>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
+              </APIContext.Provider>
+            </ExerciseCountContext.Provider>
           </UserContext.Provider>
         </RoutingContext.Provider>
       </BrowserRouter>

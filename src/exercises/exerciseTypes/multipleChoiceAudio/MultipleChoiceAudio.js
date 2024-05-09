@@ -9,18 +9,22 @@ import shuffle from "../../../assorted/fisherYatesShuffle.js";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
-
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
-const EXERCISE_TYPE = "Multiple_Choice_Audio";
+// The user has to select the correct spoken L2 translation of a given L1 word out of three.
+// This tests the user's active knowledge.
+
+const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceAudio;
 
 export default function MultipleChoiceAudio({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -34,7 +38,6 @@ export default function MultipleChoiceAudio({
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [currentChoice, setCurrentChoice] = useState("");
@@ -45,8 +48,6 @@ export default function MultipleChoiceAudio({
   );
   const bookmarkToStudy = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
-
-  console.log("exercise session id: " + exerciseSessionId);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -61,8 +62,8 @@ export default function MultipleChoiceAudio({
           speech,
         ),
       );
-      setArticleInfo(articleInfo);
     });
+
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
@@ -79,7 +80,7 @@ export default function MultipleChoiceAudio({
       selectedChoice ===
       removePunctuation(bookmarksToStudy[0].from.toLowerCase())
     ) {
-      correctAnswer(bookmarksToStudy[0]);
+      notifyCorrectAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
@@ -153,7 +154,7 @@ export default function MultipleChoiceAudio({
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    correctAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
@@ -164,7 +165,7 @@ export default function MultipleChoiceAudio({
     );
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
@@ -185,6 +186,10 @@ export default function MultipleChoiceAudio({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceAudioHeadline}
       </div>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
 
       <div className="contextExample">
         <TranslatableText
@@ -245,13 +250,15 @@ export default function MultipleChoiceAudio({
       {isCorrect && (
         <>
           <br></br>
-          <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+          <h1 className="wordInContextHeadline">
+            {removePunctuation(bookmarksToStudy[0].to)}
+          </h1>
         </>
       )}
       <NextNavigation
         message={messageToAPI}
         api={api}
-        bookmarksToStudy={bookmarkToStudy}
+        exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

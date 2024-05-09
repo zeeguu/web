@@ -2,17 +2,22 @@ import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import shuffle from "../../../assorted/fisherYatesShuffle";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 
-const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
+// The user has to match three L1 words to their correct L2 translations.
+// This tests the user's passive knowledge.
+
+const EXERCISE_TYPE = EXERCISE_TYPES.match;
 
 export default function Match({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -54,6 +59,8 @@ export default function Match({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [selectedBookmark, setSelectedBookmark] = useState(bookmarksToStudy[0]);
+  const [selectedBookmarkMessage, setSelectedBookmarkMessage] = useState("");
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -68,13 +75,21 @@ export default function Match({
     if (firstPressTime === undefined) setFirstPressTime(new Date());
   }
 
+  useEffect(() => {
+    for (let i = 0; i < bookmarksToStudy.length; i++) {
+      let currentBookmarkLog = exerciseAttemptsLog[i];
+      if (selectedBookmark == currentBookmarkLog.bookmark)
+        setSelectedBookmarkMessage(currentBookmarkLog.messageToAPI);
+    }
+  }, [selectedBookmark]);
+
   function notifyChoiceSelection(firstChoice, secondChoice) {
     console.log("checking result...");
     let exerciseAttemptsLogCopy = { ...exerciseAttemptsLog };
-    let i;
     let fullMessage = messageToNextNav;
-    for (i = 0; i < bookmarksToStudy.length; i++) {
+    for (let i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmarkLog = exerciseAttemptsLogCopy[i];
+      let concatMessage = "";
       if (buttonsToDisable.length === 2) {
         fullMessage = fullMessage + "C";
         setIsCorrect(true);
@@ -82,16 +97,16 @@ export default function Match({
       } else if (currentBookmarkLog.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
           setButtonsToDisable((arr) => [...arr, firstChoice]);
-          let concatMessage = currentBookmarkLog.messageToAPI + "C";
+          concatMessage = currentBookmarkLog.messageToAPI + "C";
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
-          correctAnswer(currentBookmarkLog.bookmark);
+          notifyCorrectAnswer(currentBookmarkLog.bookmark);
           handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
         } else {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
-          let concatMessage = currentBookmarkLog.messageToAPI + "W";
+          concatMessage = currentBookmarkLog.messageToAPI + "W";
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
@@ -100,12 +115,14 @@ export default function Match({
         if (firstChoice !== secondChoice) {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
-          let concatMessage = currentBookmarkLog.messageToAPI + "W";
+          concatMessage = currentBookmarkLog.messageToAPI + "W";
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       }
+      if (selectedBookmark == currentBookmarkLog.bookmark)
+        setSelectedBookmarkMessage(concatMessage);
     }
     setMessageToNextNav(fullMessage);
   }
@@ -157,6 +174,10 @@ export default function Match({
       <div className="headlineWithMoreSpace">
         {strings.matchWordWithTranslation}{" "}
       </div>
+      <LearningCycleIndicator
+        bookmark={selectedBookmark}
+        message={selectedBookmarkMessage}
+      />
 
       <MatchInput
         fromButtonOptions={fromButtonOptions}
@@ -170,17 +191,19 @@ export default function Match({
         setIncorrectAnswer={setIncorrectAnswer}
         reload={reload}
         setReload={setReload}
+        onBookmarkSelected={setSelectedBookmark}
       />
       <NextNavigation
         message={messageToNextNav}
         api={api}
-        bookmarksToStudy={initialExerciseAttemptsLog}
+        exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        exerciseType={EXERCISE_TYPE}
       />
     </s.Exercise>
   );

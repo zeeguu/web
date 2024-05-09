@@ -2,6 +2,7 @@ import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect, createRef } from "react";
 import strings from "../../i18n/definitions";
 import Tooltip from "@material-ui/core/Tooltip";
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants.js";
 
 export default function FeedbackButtons({
   show,
@@ -10,13 +11,8 @@ export default function FeedbackButtons({
   currentBookmarksToStudy,
   selectedId,
   setSelectedId,
-  setFeedback,
-  setOpenSnackbar,
-  setUserFeedback,
+  callFeedbackFunctionAndNotify,
 }) {
-  const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
-  const THUMBS_DOWN_VALUE = "dislike_bookmark";
-
   const buttons = [
     {
       name: strings.bookmarkTooEasy,
@@ -24,19 +20,11 @@ export default function FeedbackButtons({
       tooltip: strings.bookmarkTooEasyTooltip,
     },
     {
-      name: strings.bookmarkTooHard,
-      value: "too_hard",
-      tooltip: strings.bookmarkTooHardTooltip,
+      name: strings.badContext,
+      value: "bad_context",
+      tooltip: strings.badContextTooltip,
     },
   ];
-
-  if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
-    buttons.splice(2, 0, {
-      name: strings.badContext,
-      value: "not_a_good_context",
-      tooltip: strings.badContextTooltip,
-    });
-  }
 
   const [showInput, setShowInput] = useState(false);
   const [className, setClassName] = useState("");
@@ -51,25 +39,19 @@ export default function FeedbackButtons({
   }, [currentExerciseType]);
 
   function buttonClick(value) {
+    let feedbackString = "";
     if (!selectedId) {
       alert(strings.selectWordsAlert);
     } else {
       if (value !== "other") {
-        setUserFeedback(value);
         buttons.forEach((button) => {
           if (button.value === value) {
-            setFeedback(
-              `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`,
-            );
-          } else if (value === THUMBS_DOWN_VALUE) {
-            setFeedback(
-              `${strings.sentFeedback1} "${strings.dislike}" ${strings.sentFeedback2}`,
-            );
+            feedbackString = `${strings.sentFeedback1} "${button.name}" ${strings.sentFeedback2}`;
           }
         });
-        setOpenSnackbar(true);
+        callFeedbackFunctionAndNotify(feedbackString, value);
         setShow(false);
-        if (currentExerciseType === MATCH_EXERCISE_TYPE) {
+        if (currentExerciseType === EXERCISE_TYPES.match) {
           setSelectedId(null);
         }
       } else {
@@ -99,17 +81,14 @@ export default function FeedbackButtons({
         .replace(re1, "")
         .replace(re2, "")
         .replaceAll(" ", "_");
-      setUserFeedback(newFeedback);
-      setFeedback(
-        `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`,
-      );
+      let feedbackString = `${strings.sentFeedback1} "${input}" ${strings.sentFeedback2}`;
       setInput("");
       setShowInput(false);
       setClassName("");
-      if (currentExerciseType === MATCH_EXERCISE_TYPE) {
+      if (currentExerciseType === EXERCISE_TYPES.match) {
         setSelectedId(null);
       }
-      setOpenSnackbar(true);
+      callFeedbackFunctionAndNotify(feedbackString, newFeedback);
       setShow(false);
       event.preventDefault();
     }
@@ -117,7 +96,7 @@ export default function FeedbackButtons({
 
   return (
     <>
-      {show && currentExerciseType === MATCH_EXERCISE_TYPE && (
+      {show && currentExerciseType === EXERCISE_TYPES.match && (
         <>
           <s.FeedbackInstruction>{strings.selectWords}</s.FeedbackInstruction>
           <s.FeedbackSelector>
@@ -138,35 +117,6 @@ export default function FeedbackButtons({
       )}
       {show && (
         <s.FeedbackButtonsHolder>
-          <Tooltip
-            ref={wrapper}
-            key={"tooltip_dislike"}
-            title={
-              <p style={{ fontSize: "small" }}>
-                <span>
-                  {strings.imNotsure}
-                  <br />
-                  <br />
-                  <strong>{strings.nb}</strong> {strings.youCanImprove}
-                  <u>
-                    <strong>{strings.doNot}</strong>
-                  </u>
-                  {strings.clickOnThisFeedbackButton}
-                </span>
-              </p>
-            }
-          >
-            <s.FeedbackButton
-              key="dislike"
-              onClick={() => buttonClick(THUMBS_DOWN_VALUE)}
-            >
-              <img
-                src="https://zeeguu.org/static/images/thumb_down_black_18dp.svg"
-                alt={strings.dislike}
-                width={18}
-              />
-            </s.FeedbackButton>
-          </Tooltip>
           {buttons.map((each) =>
             each.value === "other" ? (
               <Tooltip

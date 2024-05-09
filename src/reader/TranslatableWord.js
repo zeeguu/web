@@ -9,6 +9,7 @@ export default function TranslatableWord({
   pronouncing,
   translatedWords,
   setTranslatedWords,
+  disableTranslation,
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
@@ -64,7 +65,8 @@ export default function TranslatableWord({
     wordUpdated();
   }
 
-  if (!word.translation) {
+  //disableTranslation so user cannot translate words that are being tested
+  if (!word.translation || disableTranslation) {
     return (
       <>
         <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>

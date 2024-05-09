@@ -22,6 +22,7 @@ function MatchInput({
   setIncorrectAnswer,
   reload,
   setReload,
+  onBookmarkSelected,
 }) {
   const answerColors = [
     {
@@ -48,6 +49,7 @@ function MatchInput({
   const [firstSelectionColumn, setFirstSelectionColumn] = useState("");
 
   function handleClick(column, id) {
+    let selectedBookmark = column === "from" ? fromButtonOptions.find(option => option.id === id) : toButtonOptions.find(option => option.id === id);
     if (firstSelection !== 0) {
       if (
         (column === "from" && firstSelectionColumn === "from") ||
@@ -72,6 +74,7 @@ function MatchInput({
         setFirstSelectionColumn("to");
       }
     }
+    onBookmarkSelected(selectedBookmark);
   }
 
   const answerPairStyle = (id) => {

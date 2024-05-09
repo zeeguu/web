@@ -6,9 +6,12 @@ import { CenteredColumn } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import { timeToHumanReadable } from "../utils/misc/readableTime";
 
 export default function Congratulations({
   articleID,
+  articleTitle,
+  articleURL,
   correctBookmarks,
   incorrectBookmarks,
   api,
@@ -16,7 +19,6 @@ export default function Congratulations({
   keepExercisingAction,
   source,
   totalTime,
-  exerciseSessionId,
 }) {
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks),
@@ -39,7 +41,7 @@ export default function Congratulations({
     let userInfo = LocalStorage.userInfo();
     let name = userInfo.name;
     setUsername(name);
-    api.reportExerciseSessionEnd(exerciseSessionId, totalTime);
+    api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
   }, []);
 
   if (username === undefined) {
@@ -56,9 +58,13 @@ export default function Congratulations({
           </h1>
         </CenteredColumn>
         <div style={{ fontSize: "small" }}>
-          This exercise session took {totalTime} seconds
+          This exercise session took {timeToHumanReadable(totalTime)}
         </div>
-
+        {articleID && (
+          <p>
+            You practiced words from: <a href={articleURL}>{articleTitle}</a>
+          </p>
+        )}
         {correctBookmarksToDisplay.length > 0 && (
           <>
             <h3>😊 {strings.correct}</h3>

@@ -9,7 +9,7 @@ Zeeguu_API.prototype.addUser = function (
   password,
   userInfo,
   onSuccess,
-  onError
+  onError,
 ) {
   let url = this.baseAPIurl + `/add_user/${userInfo.email}`;
   return fetch(url, {
@@ -21,6 +21,40 @@ Zeeguu_API.prototype.addUser = function (
       `&learned_language=${userInfo.learned_language}` +
       `&native_language=${userInfo.native_language}` +
       `&learned_cefr_level=${userInfo.learned_cefr_level}`,
+  })
+    .then((response) => {
+      if (response.ok) {
+        response.text().then((session) => {
+          this.session = session;
+          onSuccess(session);
+        });
+      } else if (response.status === 400) {
+        response.json().then((json) => {
+          onError(json.message);
+        });
+      } else {
+        onError("Something went wrong. Try again or contact us.");
+      }
+    })
+    .catch((error) => {
+      onError(error.message);
+    });
+};
+
+Zeeguu_API.prototype.addBasicUser = function (
+  invite_code,
+  password,
+  userInfo,
+  onSuccess,
+  onError,
+) {
+  let url = this.baseAPIurl + `/add_basic_user/${userInfo.email}`;
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body:
+      `password=${password}&invite_code=${invite_code}` +
+      `&username=${userInfo.name}`,
   })
     .then((response) => {
       if (response.ok) {
@@ -64,7 +98,7 @@ Zeeguu_API.prototype.signIn = function (email, password, onError, onSuccess) {
     .catch((error) => {
       if (!error.response) {
         onError(
-          "There seems to be a problem with the server. Please try again later."
+          "There seems to be a problem with the server. Please try again later.",
         );
       }
     });
@@ -79,12 +113,12 @@ Zeeguu_API.prototype.resetPassword = function (
   code,
   newPass,
   callback,
-  onError
+  onError,
 ) {
   this._post(
     `reset_password/${email}`,
     `code=${code}&password=${newPass}`,
     callback,
-    onError
+    onError,
   );
 };
