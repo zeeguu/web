@@ -13,7 +13,7 @@ import strings from "../i18n/definitions";
 
 import redirect from "../utils/routing/routing";
 
-export default function SelectInterests({ api, hasExtension }) {
+export default function SelectInterests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
 
