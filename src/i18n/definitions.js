@@ -148,7 +148,7 @@ let strings = new LocalizedStrings(
         "Our system continuously searches the net for texts based on your personalized interests. We believe that personally relevant texts will motivate you to study more.",
       personalizedRecommandationsEllaboration2:
         'Moreover, we aim to help you to find texts that are at the right difficulty level since you learn best when materials are challenging but not too difficult (this is what is called "studying in the zone of proximal development").',
-      easyTranslations: "Easy Translation & Pronounciation",
+      easyTranslations: "Easy Translation & Pronunciation",
       easyTranslationsEllaboration1:
         "If a text is challenging it will also include words that you don't understand or don't know how to pronounce.",
       easyTranslationsEllaboration2:
@@ -498,7 +498,7 @@ let strings = new LocalizedStrings(
       elementary: "Elementary",
       intermediate: "Intermediate",
       upperIntermediate: "Upper Intermediate",
-      advanced: "Avanced",
+      advanced: "Advanced",
       proficiency: "Proficiency",
 
       //_ActivityInsightsRouter
@@ -553,7 +553,7 @@ let strings = new LocalizedStrings(
       badExample: "bad example",
       dontShowAgain: "don't show again",
       starExplanation:
-        "The asterix next to the word indicates that the student has exercised the word at least once.",
+        "The asterisk next to the word indicates that the student has exercised the word at least once.",
 
       //CohortForm
       editClass: "Edit Class",
@@ -581,7 +581,7 @@ let strings = new LocalizedStrings(
       addTeacherWarningPartOne:
         "This adds the class to your colleague's list of classes.",
       addTeacherWarningPartTwo:
-        "If you later delete this class, you also irriversibly delete the class from your colleague's list of classes.",
+        "If you later delete this class, you also irreversibly delete the class from your colleague's list of classes.",
       youHaveToAddEmail: "You have to add the email of a teacher.",
       errorMsg:
         "Something went wrong. It can be that the email is not matching anyone in the system or a server error. Feel free to contact us if the error persists.",
@@ -782,7 +782,7 @@ let strings = new LocalizedStrings(
 
       //StudentTranslations
       translatedWordsInSentence:
-        "Translated words in the context of their sencences",
+        "Translated words in the context of their sentences",
       translatedWordInText: "The student translated no words in this text.",
 
       //TeacherTextPreview
