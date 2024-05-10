@@ -16,7 +16,10 @@ let blue200 = "hsl(216, 100%, 89%)";
 let blue300 = "hsl(216, 100%, 81%)";
 let blue400 = "hsl(216, 100%, 74%)";
 let blue500 = "hsl(216, 100%, 66%)";
+let blue600 = "hsl(216, 100%, 57%)";
+let blue700 = "hsl(216, 100%, 48%)";
 let blue800 = "hsl(216, 100%, 40%)";
+let blue900 = "hsl(216, 100%, 31%)";
 let veryLightGrey = "#efefef";
 let lightGrey = "#c1c1c1";
 let darkGrey = "#808080";
@@ -68,7 +71,10 @@ export {
   blue300,
   blue400,
   blue500,
+  blue600,
+  blue700,
   blue800,
+  blue900,
   veryLightGrey,
   lightGrey,
   darkGrey,
