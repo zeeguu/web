@@ -5,7 +5,7 @@ import strings from "../i18n/definitions";
 import Feature from "../features/Feature";
 import { logScaleToLinear } from "../utils/basic/logScaleToLinear";
 import { ExerciseValidation } from "./ExerciseValidation";
-import { learningCycleEnum } from "./ExerciseTypeConstants";
+import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
 import { APP_DOMAIN } from "../appConstants.js";
 import NotificationIcon from "../components/NotificationIcon";
 
@@ -22,7 +22,7 @@ export default function LearningCycleIndicator({ bookmark, message }) {
   }, [message]);
 
   const getLearningCycleIcon = () => {
-    switch (learningCycleEnum[learningCycle]) {
+    switch (LEARNING_CYCLE_NAME[learningCycle]) {
       case "receptive":
         return "/static/icons/receptive-icon.png";
       case "productive":
@@ -33,7 +33,7 @@ export default function LearningCycleIndicator({ bookmark, message }) {
   };
 
   const getTooltipContent = () => {
-    switch (learningCycleEnum[learningCycle]) {
+    switch (LEARNING_CYCLE_NAME[learningCycle]) {
       case "receptive":
         return strings.receptiveTooltip;
       case "productive":
@@ -68,7 +68,7 @@ export default function LearningCycleIndicator({ bookmark, message }) {
             <div className="learningCycleIcon">
               <img
                 src={APP_DOMAIN + getLearningCycleIcon()}
-                alt={`${learningCycleEnum[learningCycle]}-icon`}
+                alt={`${LEARNING_CYCLE_NAME[learningCycle]}-icon`}
                 style={{ height: "2.5em", width: "2.5em" }}
               />
               {coolingInterval === null && (

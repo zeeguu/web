@@ -3,51 +3,77 @@ import {
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
 } from "./exerciseSequenceTypes";
-import { learningCycleEnum } from "./ExerciseTypeConstants";
+import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
 
 /**
  * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
  * with the required amount of bookmarks assigned to each exercise and the first set of bookmarks set as
  * currentBookmarksToStudy to begin the exercise session.
  */
-function getExerciseListByType(exerciseList) {
-  let exerciseByType = {};
+function getExerciseListByLearningCycle(exerciseList) {
+  let exerciseByLearningCycle = {};
   for (let i = 0; i < exerciseList.length; i++) {
     let exercise = exerciseList[i];
-    if (!exerciseByType[exercise.learningCycle]) {
-      exerciseByType[exercise.learningCycle] = [];
+    if (!exerciseByLearningCycle[exercise.learningCycle]) {
+      exerciseByLearningCycle[exercise.learningCycle] = [];
     }
-    exerciseByType[exercise.learningCycle].push(exercise);
+    exerciseByLearningCycle[exercise.learningCycle].push(exercise);
   }
-  return exerciseByType;
+  return exerciseByLearningCycle;
 }
 
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
+  function _removeExerciseFromList(exercise, list) {
+    return list.filter((ex) => ex !== exercise);
+  }
+
+  function _distinctContexts(potentialBookmarks) {
+    let potentialBookmarkContexts = potentialBookmarks.map(
+      (bookmark) => bookmark.context,
+    );
+    let distinctContextsCount = new Set(potentialBookmarkContexts).size;
+    return distinctContextsCount === potentialBookmarkContexts.length;
+  }
+
   let exerciseSequence = [];
-  let exercisesByType = getExerciseListByType(exerciseTypesList);
+
+  let exercisesByLearningCycle =
+    getExerciseListByLearningCycle(exerciseTypesList);
+
   for (let i = 0; i < bookmarks.length; i++) {
     // Filter the exercises based on the learning_cycle attribute of the bookmark
-    let filteredExercises =
-      exercisesByType[learningCycleEnum[bookmarks[i].learning_cycle]];
+    let learningCycle = LEARNING_CYCLE_NAME[bookmarks[i].learning_cycle];
+    let exerciseListForCycle = exercisesByLearningCycle[learningCycle];
 
     let suitableExerciseFound = false;
     while (!suitableExerciseFound) {
-      let selectedExercise = random(filteredExercises);
+      let selectedExerciseType = random(exerciseListForCycle);
 
       // Check if there are enough bookmarks for the selected exercise
-      if (i + selectedExercise.requiredBookmarks <= bookmarks.length) {
-        let exercise = {
-          type: selectedExercise.type,
-          bookmarks: bookmarks.slice(i, i + selectedExercise.requiredBookmarks),
-        };
-        exerciseSequence.push(exercise);
+      if (i + selectedExerciseType.requiredBookmarks <= bookmarks.length) {
+        let potentialBookmarks = bookmarks.slice(
+          i,
+          i + selectedExerciseType.requiredBookmarks,
+        );
 
-        // Skip the assigned bookmarks
-        i += selectedExercise.requiredBookmarks - 1;
-        suitableExerciseFound = true;
-      } else {
-        filteredExercises = filteredExercises.filter(
-          (exercise) => exercise !== selectedExercise,
+        if (_distinctContexts(potentialBookmarks)) {
+          let exercise = {
+            type: selectedExerciseType.type,
+            bookmarks: potentialBookmarks,
+          };
+          exerciseSequence.push(exercise);
+
+          // Skip the assigned bookmarks
+          i += selectedExerciseType.requiredBookmarks - 1;
+          suitableExerciseFound = true;
+        } else {
+          suitableExerciseFound = false;
+        }
+      }
+      if (!suitableExerciseFound) {
+        exerciseListForCycle = _removeExerciseFromList(
+          selectedExerciseType,
+          exerciseListForCycle,
         );
       }
     }

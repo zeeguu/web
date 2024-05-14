@@ -27,7 +27,7 @@ export const EXERCISE_TYPES = {
   },
 };
 
-export const learningCycleEnum = Object.freeze({
+export const LEARNING_CYCLE_NAME = Object.freeze({
   0: "not set",
   1: "receptive",
   2: "productive",
