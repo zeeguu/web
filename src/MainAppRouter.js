@@ -21,7 +21,7 @@ import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
-import AcountDeletion from "./pages/AccountDeletion";
+import AccountDeletion from "./pages/AccountDeletion";
 
 export default function MainAppRouter({ api, setUser, hasExtension }) {
   function handleSuccessfulSignIn(userInfo) {
@@ -82,7 +82,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       <PrivateRoute
         path="/account_deletion"
         api={api}
-        component={AcountDeletion}
+        component={AccountDeletion}
       />
 
       <PrivateRoute
