@@ -14,14 +14,13 @@ export default function AcountDeletion({ api }) {
   const user = useContext(UserContext);
   const [headingMsg, setHeadingMsg] = useState("We are deleting your account");
   const [errorOcurred, setErrorOcurred] = useState();
-  const [errorMessage, setErrorMessage] = useState();
   const [isAccountDeleted, setIsAccountDeleted] = useState();
   useEffect(() => {
     console.log(user);
     if (SessionStorage.hasUserConfirmationForAccountDeletion()) {
       setErrorOcurred(false);
       setIsAccountDeleted(false);
-      SessionStorage.hasUserConfirmationForAccountDeletion(false);
+      SessionStorage.setUserConfirmationForAccountDeletion(false);
       api.deleteUser(
         user.session,
         () => {
@@ -34,7 +33,6 @@ export default function AcountDeletion({ api }) {
         (error) => {
           setIsAccountDeleted(false);
           setErrorOcurred(true);
-          setErrorMessage(error);
           setHeadingMsg("❌ An error has occurred when deleting your account.");
         },
       );
@@ -66,17 +64,15 @@ export default function AcountDeletion({ api }) {
         {isAccountDeleted && !errorOcurred && (
           <>
             <p>Thank you for taking the time to try out Zeeguu!</p>
-            <p>Feel free to close this tab!</p>
+            <p>You can close this tab.</p>
           </>
         )}
         {!isAccountDeleted && errorOcurred && (
           <>
             <p>
-              Please contact us at{" "}
-              <a href="mailto:zeeguu@gmail.com">zeeguu@gmail.com</a> with the
-              following message: '{errorMessage}'
+              The Zeeguu team has been notificed. We will investigate it as soon
+              as possible and contact you.
             </p>
-            <p>Thank you, and we will get back to you as soon as possible.</p>
           </>
         )}
       </Main>
