@@ -86,7 +86,7 @@ let DeleteAccountButton = styled.button`
     font-size: 1.2em;
     text-decoration: none;
     font-weight: 500;
-    color: ${color.zeeguuRed};
+    color: rgb(164, 106, 0);
     &:hover {
       filter: brightness(120%);
     }
