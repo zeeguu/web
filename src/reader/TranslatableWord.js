@@ -14,6 +14,10 @@ export default function TranslatableWord({
   const [showingAlternatives, setShowingAlternatives] = useState(false);
 
   function clickOnWord(e, word) {
+    if (word.translation) {
+      interactiveText.pronounce(word);
+      return;
+    }
     e.target.className = "loading";
     if (translating) {
       interactiveText.translate(word, () => {
@@ -84,13 +88,14 @@ export default function TranslatableWord({
           <span className="arrow">▼</span>
         </z-tran>
         <z-orig>
-          <span onClick={(e) => hideTranslation(e, word)}>{word.word} </span>
+          <span onClick={(e) => clickOnWord(e, word)}>{word.word} </span>
           {showingAlternatives && (
             <AlterMenu
               word={word}
               setShowingAlternatives={setShowingAlternatives}
               selectAlternative={selectAlternative}
               clickedOutsideAlterMenu={clickedOutsideAlterMenu}
+              hideTranslation={hideTranslation}
             />
           )}
         </z-orig>
