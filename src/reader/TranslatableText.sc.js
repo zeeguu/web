@@ -47,6 +47,8 @@ const TranslatableText = styled.div`
    */
 
   z-tag z-tran {
+    margin-top: 0.2em;
+    margin-bottom: -0.1em;
     padding: 2px;
     border-radius: 0.3em 0.3em 0.3em 0.3em;
     background-clip: padding-box;
