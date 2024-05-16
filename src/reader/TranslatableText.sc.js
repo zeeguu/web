@@ -49,13 +49,15 @@ const TranslatableText = styled.div`
   z-tag z-tran {
     margin-top: 0.2em;
     margin-bottom: -0.1em;
+    margin-left: -0.3em;
     padding: 2px;
+    padding-left: 0.3em;
     border-radius: 0.3em 0.3em 0.3em 0.3em;
     background-clip: padding-box;
     background-color: ${zeeguuLightYellow};
     font-size: medium;
     line-height: 1em;
-    max-width: 24em;
+    max-width: 100%;
     font-weight: 600;
     color: ${almostBlack};
     text-transform: lowercase;

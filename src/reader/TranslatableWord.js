@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
 
 export default function TranslatableWord({
@@ -12,14 +13,15 @@ export default function TranslatableWord({
   disableTranslation,
 }) {
   const [showingAlternatives, setShowingAlternatives] = useState(false);
+  const [refToZTran, hasClickedOutside] = useClickOutside();
 
   function clickOnWord(e, word) {
     if (word.translation) {
       interactiveText.pronounce(word);
       return;
     }
-    e.target.className = "loading";
     if (translating) {
+      e.target.className = "loading";
       interactiveText.translate(word, () => {
         wordUpdated();
         e.target.className = null;
@@ -83,6 +85,7 @@ export default function TranslatableWord({
         <z-tran
           chosen={word.translation}
           translation0={word.translation}
+          ref={refToZTran}
           onClick={(e) => toggleAlternatives(e, word)}
         >
           <span className="arrow">▼</span>
@@ -95,6 +98,7 @@ export default function TranslatableWord({
               setShowingAlternatives={setShowingAlternatives}
               selectAlternative={selectAlternative}
               clickedOutsideAlterMenu={clickedOutsideAlterMenu}
+              clickedOutsideTranslation={hasClickedOutside}
               hideTranslation={hideTranslation}
             />
           )}
