@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useExcludeInterest(api) {
+export default function useUnwantedContentPreferences(api) {
   const [availableFilters, setAvailableFilters] = useState([]);
   const [subscribedFilters, setSubscribedFilters] = useState([]);
   const [subscribedSearchFilters, setSubscribedSearchFilters] = useState([]);

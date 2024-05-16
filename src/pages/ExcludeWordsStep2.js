@@ -1,6 +1,6 @@
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
 
-import useExcludeInterest from "../hooks/useUnwantedContentPreferences";
+import useUnwantedContentPreferences from "../hooks/useUnwantedContentPreferences";
 import useFormField from "../hooks/useFormField";
 
 import InfoPage from "./info_page_shared/InfoPage";
@@ -27,7 +27,7 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
     subscribedSearchFilters,
     subscribeToSearchFilter,
     removeSearchFilter,
-  } = useExcludeInterest(api);
+  } = useUnwantedContentPreferences(api);
 
   const [excludedWords, handleExcludedWordsChange, resetExcludedWords] =
     useFormField("");

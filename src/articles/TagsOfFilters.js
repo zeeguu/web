@@ -1,7 +1,7 @@
 import SweetAlert from "react-bootstrap-sweetalert";
 import * as s from "./TagsOfInterests.sc";
 import strings from "../i18n/definitions";
-import useExcludeInterest from "../hooks/useUnwantedContentPreferences";
+import useUnwantedContentPreferences from "../hooks/useUnwantedContentPreferences";
 
 export default function TagsOfFilters({
   visible,
@@ -19,7 +19,7 @@ export default function TagsOfFilters({
 
     showModal,
     setShowModal,
-  } = useExcludeInterest(api);
+  } = useUnwantedContentPreferences(api);
 
   const onConfirm = (response) => {
     subscribeToSearchFilter(response);
