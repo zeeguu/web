@@ -22,16 +22,16 @@ Zeeguu_API.prototype.topBookmarks = function (count, callback) {
 
 Zeeguu_API.prototype.bookmarksForArticle = function (articleId, callback) {
   this._getJSON(`bookmarks_for_article/${articleId}`, (result) =>
-    callback(result.bookmarks)
+    callback(result.bookmarks),
   );
 };
 
 Zeeguu_API.prototype.bookmarksToStudyForArticle = function (
   articleId,
-  callback
+  callback,
 ) {
   this._getJSON(`bookmarks_to_study_for_article/${articleId}`, (result) =>
-    callback(result.bookmarks)
+    callback(result.bookmarks),
   );
 };
 
@@ -47,4 +47,12 @@ Zeeguu_API.prototype.starBookmark = function (bookmark_id) {
 
 Zeeguu_API.prototype.deleteBookmark = function (bookmark_id, callback) {
   this._post(`delete_bookmark/${bookmark_id}`, "", callback);
+};
+
+Zeeguu_API.prototype.setIsFitForStudy = function (bookmark_id) {
+  this._post(`is_fit_for_study/${bookmark_id}`);
+};
+
+Zeeguu_API.prototype.setNotFitForStudy = function (bookmark_id) {
+  this._post(`not_fit_for_study/${bookmark_id}`);
 };

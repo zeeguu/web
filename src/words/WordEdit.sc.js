@@ -41,7 +41,7 @@ let Paragraph = scStyled.p`
 let DoneButtonHolder = scStyled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;`;
+  justify-content: space-between;`;
 
 let EditButton = scStyled(FeedbackButton)`
   background-color: rgba(255,255,255,0);

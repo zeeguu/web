@@ -5,11 +5,8 @@ import Infobox from "../components/Infobox";
 import { useState } from "react";
 import { useEffect } from "react";
 import { tokenize } from "../utils/preprocessing/preprocessing";
-import { t, Android12Switch } from "../components/MUIToggleThemes";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { ThemeProvider } from "@mui/material/styles";
 import Modal from "../components/modal_shared/Modal";
+import { EditWordsToExerciseButton } from "./WordsToReview.sc";
 
 export default function WordsToReview({
   words,
@@ -85,23 +82,12 @@ export default function WordsToReview({
               <p>
                 If you want to{" "}
                 <b>
-                  manually add or remove words, use the toggle "Manage Words for
-                  Exercises"
+                  manually add or remove words, use the button "Manage Words"
                 </b>{" "}
                 below.
               </p>
             </div>
           </Infobox>
-          <ThemeProvider theme={t}>
-            <FormGroup>
-              <FormControlLabel
-                control={<Android12Switch />}
-                className={inEditMode ? "selected" : ""}
-                onClick={(e) => setInEditMode(!inEditMode)}
-                label={<small>{"Manage Words for Exercises"}</small>}
-              />
-            </FormGroup>
-          </ThemeProvider>
         </>
       )}
       <h3>You will see these words in your exercises 📖 :</h3>
@@ -115,56 +101,94 @@ export default function WordsToReview({
             hideStar={true}
             notifyWordChange={notifyWordChanged}
             source={source}
-            isReview={inEditMode}
           />
         </ContentOnRow>
       ))}
-      {inEditMode && wordsExcludedForExercises.length > 0 && (
+      {inEditMode && (
         <>
-          <h3>You won't see these words in your exercises:</h3>
-          {wordsExcludedForExercises.map((each) => (
-            <ContentOnRow className="contentOnRow">
+          <Modal
+            open={inEditMode}
+            onClose={() => {
+              setInEditMode(!inEditMode);
+            }}
+          >
+            <h3>You will see these words in your exercises 📖 :</h3>
+            {wordsForExercises.map((each) => (
               <Word
                 key={each.id}
                 bookmark={each}
                 notifyDelete={deleteBookmark}
                 api={api}
+                hideStar={true}
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}
               />
-            </ContentOnRow>
-          ))}
+            ))}
+            {inEditMode && wordsExcludedForExercises.length > 0 && (
+              <>
+                <h3>You won't see these words in your exercises:</h3>
+                {wordsExcludedForExercises.map((each) => (
+                  <Word
+                    key={each.id}
+                    bookmark={each}
+                    notifyDelete={deleteBookmark}
+                    api={api}
+                    notifyWordChange={notifyWordChanged}
+                    source={source}
+                    isReview={inEditMode}
+                  />
+                ))}
+              </>
+            )}
+            {inEditMode && wordsExpressions.length > 0 && (
+              <>
+                <h3>These words can't appear in exercises:</h3>
+                <Infobox>
+                  <div>
+                    <p>
+                      <b>
+                        Translations composed of 3 or more words are not used in
+                        the exercises.{" "}
+                      </b>
+                      <p>You can still review them in Words or History tab.</p>
+                    </p>
+                  </div>
+                </Infobox>
+                {wordsExpressions.map((each) => (
+                  <Word
+                    key={each.id}
+                    bookmark={each}
+                    notifyDelete={deleteBookmark}
+                    api={api}
+                    notifyWordChange={notifyWordChanged}
+                    source={source}
+                    isReview={inEditMode}
+                  />
+                ))}
+              </>
+            )}
+          </Modal>
         </>
       )}
-      {inEditMode && wordsExpressions.length > 0 && (
-        <>
-          <h3>These words can't appear in exercises:</h3>
-          <Infobox>
-            <div>
-              <p>
-                <b>
-                  Translations composed of 3 or more words are not used in the
-                  exercises.{" "}
-                </b>
-                <p>You can still review them in Words or History tab.</p>
-              </p>
-            </div>
-          </Infobox>
-          {wordsExpressions.map((each) => (
-            <ContentOnRow className="contentOnRow">
-              <Word
-                key={each.id}
-                bookmark={each}
-                notifyDelete={deleteBookmark}
-                api={api}
-                notifyWordChange={notifyWordChanged}
-                source={source}
-                isReview={inEditMode}
-              />
-            </ContentOnRow>
-          ))}
-        </>
+      {totalWordsTranslated > 10 && (
+        <div
+          style={{
+            display: "flex",
+            maxWidth: "90%",
+            flexDirection: "column",
+            alignItems: "flex-end",
+          }}
+        >
+          {" "}
+          <EditWordsToExerciseButton
+            onClick={() => {
+              setInEditMode(!inEditMode);
+            }}
+          >
+            <span>Manage Words</span>
+          </EditWordsToExerciseButton>
+        </div>
       )}
     </>
   );

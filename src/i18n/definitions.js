@@ -323,6 +323,7 @@ let strings = new LocalizedStrings(
         "You've successfully completed all stages for this word, so it won't be tested in the exercises anymore. Keep up the good work!",
 
       //WordEditAccordion
+      deleteWord: "Delete Word",
       done: "Done",
       rememberToSubmit:
         'Remember to click "Submit" in each accordion to save changes.',

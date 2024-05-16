@@ -12,6 +12,7 @@ export default function EditButton({
   styling,
   reload,
   setReload,
+  deleteAction,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -80,6 +81,7 @@ export default function EditButton({
             bookmark={bookmark}
             handleClose={handleClose}
             updateBookmark={updateBookmark}
+            deleteAction={deleteAction}
           />
         </Box>
       </Modal>

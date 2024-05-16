@@ -6,17 +6,16 @@ import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 import { APP_DOMAIN } from "../appConstants";
+import { Visibility } from "@material-ui/icons";
 
 export default function Word({
   bookmark,
-  notifyUnstar,
-  notifyDelete,
-  notifyStar,
-  notifyEdit,
+  notifyWordChange,
   children,
   api,
   hideStar,
   source,
+  isReview,
 }) {
   const [starred, setStarred] = useState(bookmark.starred);
   const [deleted, setDeleted] = useState(false);
@@ -27,9 +26,7 @@ export default function Word({
       api.unstarBookmark(bookmark.id);
       bookmark.starred = false;
       setStarred(false);
-      if (notifyUnstar) {
-        notifyUnstar(bookmark);
-      }
+      notifyWordChange(bookmark);
       api.logReaderActivity(
         api.UNSTAR_WORD,
         bookmark.article_id,
@@ -40,9 +37,7 @@ export default function Word({
       api.starBookmark(bookmark.id);
       setStarred(true);
       bookmark.starred = true;
-      if (notifyStar) {
-        notifyStar(bookmark);
-      }
+      notifyWordChange(bookmark);
       api.logReaderActivity(
         api.STAR_WORD,
         bookmark.article_id,
@@ -52,12 +47,27 @@ export default function Word({
     }
   }
 
+  function setIsFitForStudy(bookmark) {
+    console.log(bookmark);
+    api.setIsFitForStudy(bookmark.id);
+    bookmark.fit_for_study = true;
+    notifyWordChange(bookmark);
+    console.log("SET THE BOOKMARK status to true");
+    console.log(bookmark);
+  }
+
+  function setNotFitForStudy(bookmark) {
+    console.log(bookmark);
+    api.setNotFitForStudy(bookmark.id);
+    bookmark.fit_for_study = false;
+    notifyWordChange(bookmark);
+    console.log("SET THE BOOKMARK status to false");
+    console.log(bookmark);
+  }
   function deleteBookmark(bookmark) {
     api.deleteBookmark(bookmark.id);
     setDeleted(true);
-    if (notifyDelete) {
-      notifyDelete(bookmark);
-    }
+    notifyWordChange(bookmark);
     api.logReaderActivity(
       api.DELETE_WORD,
       bookmark.article_id,
@@ -81,17 +91,40 @@ export default function Word({
     <>
       <s.Word key={bookmark.id}>
         <CenteredRow>
-          <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
-            <img src={APP_DOMAIN + "/static/images/trash.svg"} alt="trash" />
-          </s.TrashIcon>
-          <EditButton
-            bookmark={bookmark}
-            api={api}
-            reload={reload}
-            setReload={setReload}
-          />
+          {isReview && bookmark.fit_for_study && (
+            <s.AddMinusButton onClick={(e) => setNotFitForStudy(bookmark)}>
+              <img
+                src={APP_DOMAIN + "/static/icons/remove-icon-color.png"}
+                alt="remove"
+              />
+            </s.AddMinusButton>
+          )}
+          {isReview &&
+            !bookmark.fit_for_study &&
+            bookmark.from.split(" ").length < 3 && (
+              <s.AddMinusButton onClick={(e) => setIsFitForStudy(bookmark)}>
+                <img
+                  src={APP_DOMAIN + "/static/icons/add-icon-color.png"}
+                  alt="add"
+                />
+              </s.AddMinusButton>
+            )}
+          {/*!isReview && (
+            <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
+              <img src={APP_DOMAIN + "/static/images/trash.svg"} alt="trash" />
+            </s.TrashIcon>
+          )*/}
+          {!isReview && (
+            <EditButton
+              bookmark={bookmark}
+              api={api}
+              reload={reload}
+              setReload={setReload}
+              deleteAction={deleteBookmark}
+            />
+          )}
 
-          {!hideStar && (
+          {!hideStar && !isReview && (
             <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
               <img
                 src={
@@ -100,10 +133,21 @@ export default function Word({
                   (bookmark.starred ? ".svg" : "_empty.svg")
                 }
                 alt="star"
+                style={
+                  bookmark.from.split(" ").length < 3
+                    ? {}
+                    : { visibility: "hidden" }
+                }
               />
             </s.StarIcon>
           )}
-          <SpeakButton bookmarkToStudy={bookmark} api={api} styling={square} />
+          {!isReview && (
+            <SpeakButton
+              bookmarkToStudy={bookmark}
+              api={api}
+              styling={square}
+            />
+          )}
           <s.WordPair>
             <div className="from" style={grayed_out_if_not_scheduled_for_study}>
               {bookmark.from}

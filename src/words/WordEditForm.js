@@ -1,12 +1,14 @@
 import * as s from "./WordEdit.sc";
 import * as st from "../exercises/bottomActions/FeedbackButtons.sc";
 import strings from "../i18n/definitions";
+import { zeeguuRed, zeeguuDarkRed } from "../components/colors";
 import { useState } from "react";
 
 export default function WordEditForm({
   bookmark,
   handleClose,
   updateBookmark,
+  deleteAction,
 }) {
   const [translation, setTranslation] = useState(bookmark.to);
   const [expression, setExpression] = useState(bookmark.from);
@@ -105,6 +107,20 @@ export default function WordEditForm({
         bookmark.from === expression &&
         bookmark.context === context ? (
           <s.DoneButtonHolder>
+            <st.FeedbackCancel
+              onClick={(e) => deleteAction(bookmark)}
+              value={strings.deleteWord}
+              style={{
+                marginLeft: "1em",
+                marginTop: "1em",
+                maxWidth: "100px",
+                textAlign: "center",
+                backgroundColor: zeeguuRed,
+                borderColor: zeeguuDarkRed,
+                color: "white",
+                fontWeight: 550,
+              }}
+            />
             <st.FeedbackCancel
               type="submit"
               value={strings.done}

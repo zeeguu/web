@@ -93,7 +93,16 @@ let WordPairSpellWhatYouHear = styled.div`
     font-size: 150%;
   }
 `;
-
+let AddMinusButton = styled.div`
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 1em;
+  img {
+    height: 24px;
+  }
+`;
 let TrashIcon = styled.div`
   cursor: pointer;
   display: flex;
@@ -113,6 +122,7 @@ let Spacer = styled.div`
 
 export {
   Word,
+  AddMinusButton,
   TrashIcon,
   StarIcon,
   WordPair,

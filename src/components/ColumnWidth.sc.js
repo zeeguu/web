@@ -48,6 +48,15 @@ const ContentOnRow = styled.div`
     margin: 0.2em;
   }
 `;
+const ContentOnRowModal = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0.5em;
+  button {
+    margin: 0.2em;
+  }
+`;
 
 const WideColumn = styled.div`
   max-width: 950px;
@@ -64,6 +73,7 @@ export {
   NarrowColumn,
   CenteredContent,
   ContentOnRow,
+  ContentOnRowModal,
   WideColumn,
   WidestColumn,
   ToolTipsContainer,

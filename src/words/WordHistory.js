@@ -7,6 +7,7 @@ import * as sc from "../components/ColumnWidth.sc";
 
 import * as s from "../components/TopMessage.sc";
 import { setTitle } from "../assorted/setTitle";
+import Infobox from "../components/Infobox";
 
 export default function ReadingHistory({ api }) {
   const [wordsByDay, setWordsByDay] = useState(null);
@@ -24,7 +25,7 @@ export default function ReadingHistory({ api }) {
     <sc.NarrowColumn>
       <br />
       <br />
-      <s.TopMessage>{strings.starAWordMsg}</s.TopMessage>
+      <Infobox>{strings.starAWordMsg}</Infobox>
       {wordsByDay.map((day) => (
         <WordsOnDate key={day.date} day={day} api={api} />
       ))}
