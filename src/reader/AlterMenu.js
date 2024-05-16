@@ -4,6 +4,7 @@ import { zeeguuDarkOrange } from "../components/colors";
 
 export default function AlterMenu({
   word,
+  isClickOutsideWordSpan,
   clickedOutsideAlterMenu,
   selectAlternative,
 }) {
@@ -11,7 +12,7 @@ export default function AlterMenu({
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    if (hasClickedOutside) {
+    if (hasClickedOutside && isClickOutsideWordSpan) {
       clickedOutsideAlterMenu();
     }
   }, [hasClickedOutside, clickedOutsideAlterMenu]);
