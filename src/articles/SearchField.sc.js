@@ -24,15 +24,16 @@ const SearchField = styled.div`
     font-weight: 300;
     font-size: 0.875em;
     height: 1.5em;
+    &:focus {
+      border: 0.17em solid ${almostBlack};
+      font-weight: 500 !important;
+    }
   }
-
   .searchTextfieldInput {
     color: ${almostBlack};
     font-weight: 400;
     font-size: small;
     background: ${zeeguuVeryLightYellow};
-    background: green;
-    border-bottom: 1px solid ${zeeguuLightYellow} !important;
   }
 `;
 
