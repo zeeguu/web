@@ -1,7 +1,7 @@
 import SweetAlert from "react-bootstrap-sweetalert";
 import * as s from "./TagsOfInterests.sc";
 import strings from "../i18n/definitions";
-import useExcludeInterest from "../hooks/useExcludeInterest";
+import useExcludeInterest from "../hooks/useUnwantedContentPreferences";
 
 export default function TagsOfFilters({
   visible,

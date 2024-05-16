@@ -1,6 +1,6 @@
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
 
-import useExcludeInterest from "../hooks/useExcludeInterest";
+import useExcludeInterest from "../hooks/useUnwantedContentPreferences";
 import useFormField from "../hooks/useFormField";
 
 import InfoPage from "./info_page_shared/InfoPage";
