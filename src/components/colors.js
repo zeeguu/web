@@ -11,6 +11,19 @@ let zeeguuDarkOrange = "#9c7130";
 let lightBlue = "#54cdff";
 let lighterBlue = "#CCDEFF";
 let darkBlue = "#2f77ad";
+
+/* 
+  A NEW APPROACH TO DEFINING AND NAMING COLORS:
+
+  All the latest shades of blue below were defined and named using this guide:
+  https://www.refactoringui.com/previews/building-your-color-palette 
+
+  The numerical values in the name of each shade describe its brightness level on a scale:
+  - blue100 is the brightest
+  - blue900 is the darkest
+
+  All other colors in the application will be revised using the same pattern on an ongoing basis.
+*/
 let blue100 = "hsl(216, 100%, 97%)";
 let blue200 = "hsl(216, 100%, 89%)";
 let blue300 = "hsl(216, 100%, 81%)";
@@ -20,6 +33,7 @@ let blue600 = "hsl(216, 100%, 57%)";
 let blue700 = "hsl(216, 100%, 48%)";
 let blue800 = "hsl(216, 100%, 40%)";
 let blue900 = "hsl(216, 100%, 31%)";
+
 let veryLightGrey = "#efefef";
 let lightGrey = "#c1c1c1";
 let darkGrey = "#808080";
