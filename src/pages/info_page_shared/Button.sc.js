@@ -29,7 +29,6 @@ const Button = styled.button`
     width: 100%;
 
     @media (max-width: 768px) {
-      /* max-width: none; */
       width: 100%;
       padding: 1rem 0.5rem;
       text-overflow: ellipsis;
@@ -37,7 +36,7 @@ const Button = styled.button`
     }
   }
 
-  &.small-square {
+  &.small-square-btn {
     border-radius: 0.3rem;
     padding: 1rem;
     border: none;

@@ -61,7 +61,10 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
             helperText={strings.addUnwantedWordHelperText}
             placeholder={strings.unwantedWordPlaceholder}
           >
-            <Button className="small-square" onClick={handleAddNewSearchFilter}>
+            <Button
+              className="small-square-btn"
+              onClick={handleAddNewSearchFilter}
+            >
               <AddRoundedIcon />
             </Button>
           </InputField>
@@ -70,7 +73,7 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
           {subscribedSearchFilters.map((search) => (
             <div key={search.id} searchremovabeid={search.id}>
               <Tag
-                className={"outlined-blue square"}
+                className={"outlined-blue"}
                 onClick={() => removeSearchFilter(search)}
               >
                 {search.search}
