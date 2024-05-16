@@ -8,12 +8,13 @@ export default function AlterMenu({
   clickedOutsideAlterMenu,
   selectAlternative,
   hideTranslation,
+  clickedOutsideTranslation,
 }) {
   const [refToAlterMenu, hasClickedOutside] = useClickOutside();
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    if (hasClickedOutside) {
+    if (hasClickedOutside && clickedOutsideTranslation) {
       clickedOutsideAlterMenu();
     }
   }, [hasClickedOutside, clickedOutsideAlterMenu]);
@@ -60,7 +61,7 @@ export default function AlterMenu({
       ))}
 
       <input
-        className=".ownTranslationInput matchWidth"
+        className="ownTranslationInput matchWidth"
         type="text"
         id="#userAlternative"
         value={inputValue}
