@@ -12,6 +12,7 @@ const ArticlePreview = styled.div`
   border-left: solid ${zeeguuOrange};
   margin-top: 2em;
   padding-left: 0.8em;
+  padding-bottom: 1em;
 `;
 /*
   The div contains the article preview contents
@@ -19,6 +20,17 @@ const ArticlePreview = styled.div`
   user's screen size. Note this does not include the source/
   publishing time or topics.
 */
+
+const SourceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 50%;
+  margin: 0.3em 0px;
+  @media (max-width: 990px) {
+    width: 100%;
+  }
+`;
+
 const ArticleContent = styled.div`
   width: 100%;
   display: flex;
@@ -33,20 +45,14 @@ const ArticleContent = styled.div`
   img {
     margin: 0.5em;
     margin-left: 0;
-    max-width: 8em;
-    max-height: 8em;
+    max-width: 10em;
+    max-height: 10em;
     border-radius: 1em;
     align-self: center;
 
     @media (max-width: 990px) {
       max-width: 14em;
       max-height: 10em;
-    }
-  }
-  .stats {
-    margin-left: auto;
-    @media (max-width: 990px) {
-      margin-left: 0px;
     }
   }
 `;
@@ -78,33 +84,28 @@ const Title = styled.div`
 `;
 
 const Difficulty = styled.div`
-  padding: 0 0.55em;
-  width: 2.8em;
-  height: 3.8em;
-  text-align: center;
-  border-radius: 50%;
-  background-color: ${veryLightGrey};
-  display: flex;
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-  flex-shrink: 0;
-  float: right;
+  display: inline-block;
+
+  span {
+    height: 1.2em;
+    margin-right: 1em;
+    border: solid ${zeeguuOrange};
+    border-radius: 1.0416666666666667em;
+    padding: 0.20833333333333334em 1.3541666666666667em;
+    font-size: 0.8333333333333334em;
+  }
 `;
 
-const WordCount = styled(Difficulty)`
-  background-color: ${veryLightGrey};
-  align-self: center;
-`;
+const WordCount = styled(Difficulty)``;
 
 let Summary = styled.div`
   font-size: 0.83em;
   color: ${almostBlack};
   line-height: 1.5em;
   margin-top: 0.36em;
-  margin-right: 1em;
-  width: 34em;
-  align-self: stretch;
+  width: 40em;
+  margin: auto;
+  margin-left: 1em;
   @media (max-width: 990px) {
     width: 100%;
   }
@@ -114,20 +115,34 @@ let SourceImage = styled.span`
   img {
     background-color: ${zeeguuVarmYellow};
     height: 1.5em;
+    width: 1.5em;
   }
-  margin-right: 2em;
+  margin-right: 0.2em;
 `;
 
 let PublishingTime = styled.span`
-  margin-right: 2em;
-  padding-bottom: 1em;
+  font-size: small;
+`;
+
+let FeedName = styled.span`
+  font-size: small;
+  font-style: oblique;
+  margin-right: 0.5em;
+`;
+
+let BottomContainer = styled.div`
+  display: flex;
+  margin-top: 0.5em;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+let StatContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 let Topics = styled.span`
-  display: inline-block;
-
-  margin-top: 1em;
-
   span {
     height: 1.2em;
     margin-left: 0.2em;
@@ -145,6 +160,10 @@ export {
   ArticlePreview,
   InvisibleTitleButton,
   ArticleContent,
+  SourceContainer,
+  StatContainer,
+  BottomContainer,
+  FeedName,
   Summary,
   SourceImage,
   PublishingTime,

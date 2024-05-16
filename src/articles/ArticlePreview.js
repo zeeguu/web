@@ -6,6 +6,8 @@ import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
+import { zeeguuSalmonOrange, zeeguuDarkRed } from "../components/colors";
+import { estimateReadingTime } from "../utils/misc/readableTime";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
 
 export default function ArticleOverview({
@@ -28,6 +30,21 @@ export default function ArticleOverview({
       onArticleClick(article.id);
     }
   };
+
+  function linearToCEFRLevel(difficulty) {
+    if (difficulty < 1.7) return "A1";
+    else if (difficulty < 3.4) return "A2";
+    else if (difficulty < 5.1) return "B1";
+    else if (difficulty < 6.8) return "B2";
+    else if (difficulty < 8.5) return "C1";
+    else return "C2";
+  }
+
+  function linearToColour(difficulty) {
+    if (difficulty < 3.4) return "green";
+    else if (difficulty < 6.8) return zeeguuSalmonOrange;
+    else return zeeguuDarkRed;
+  }
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
@@ -112,36 +129,45 @@ export default function ArticleOverview({
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
-
-      <s.Title>{titleLink(article)}</s.Title>
-      <s.ArticleContent>
-        {article.img_url && <img alt="" src={article.img_url} />}
-        <s.Summary>{article.summary}</s.Summary>
-        <div className="stats">
-          <s.Difficulty>{difficulty}</s.Difficulty>
-          <s.WordCount style={{ marginRight: "1em" }}>
-            {article.metrics.word_count}
-          </s.WordCount>
-        </div>
-      </s.ArticleContent>
-
-      <div>
+      <s.SourceContainer>
         {!dontShowSourceIcon && (
-          <s.SourceImage>
-            <img src={"/news-icons/" + article.feed_icon_name} alt="" />
-          </s.SourceImage>
+          <>
+            <s.SourceImage>
+              <img src={"/news-icons/" + article.feed_icon_name} alt="" />
+            </s.SourceImage>
+            <s.FeedName>{article.feed_name}</s.FeedName>
+          </>
         )}
         {!dontShowPublishingTime && (
           <s.PublishingTime>
             ({moment.utc(article.published).fromNow()})
           </s.PublishingTime>
         )}
+      </s.SourceContainer>
+
+      <s.Title>{titleLink(article)}</s.Title>
+      <s.ArticleContent>
+        {article.img_url && <img alt="" src={article.img_url} />}
+        <s.Summary>{article.summary}</s.Summary>
+      </s.ArticleContent>
+
+      <s.BottomContainer>
         <s.Topics>
           {topics.map((topic) => (
             <span key={topic}>{topic}</span>
           ))}
         </s.Topics>
-      </div>
+        <s.StatContainer>
+          <s.Difficulty>
+            <span style={{ borderColor: linearToColour(difficulty) }}>
+              {linearToCEFRLevel(difficulty)}
+            </span>
+          </s.Difficulty>
+          <s.WordCount style={{ marginRight: "1em" }}>
+            {estimateReadingTime(article.metrics.word_count)}
+          </s.WordCount>
+        </s.StatContainer>
+      </s.BottomContainer>
       {article.video ? (
         <img
           alt=""
