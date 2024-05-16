@@ -9,7 +9,7 @@ export default function TagsOfFilters({
   articlesListShouldChange,
 }) {
   const {
-    availableFilters,
+    toipcsAvailableForFiltering,
     toggleFilterSubscription,
     isSubscribedSearchFilter,
 
@@ -62,14 +62,14 @@ export default function TagsOfFilters({
           </button>
         </div>
 
-        {availableFilters.map((filter) => (
-          <div key={filter.id} addableid={filter.id}>
+        {toipcsAvailableForFiltering.map((topic) => (
+          <div key={topic.id} addableid={topic.id}>
             <button
-              onClick={(e) => toggleFilterSubscription(filter)}
+              onClick={(e) => toggleFilterSubscription(topic)}
               type="button"
-              className={`interests ${!isSubscribedSearchFilter(filter) && "unsubscribed"}`}
+              className={`interests ${!isSubscribedSearchFilter(topic) && "unsubscribed"}`}
             >
-              <span className="addableTitle">{filter.title}</span>
+              <span className="addableTitle">{topic.title}</span>
             </button>
           </div>
         ))}

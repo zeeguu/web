@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 
 export default function useUnwantedContentPreferences(api) {
-  const [availableFilters, setAvailableFilters] = useState([]);
+  const [toipcsAvailableForFiltering, setToipcsAvailableForFiltering] =
+    useState([]);
   const [subscribedFilters, setSubscribedFilters] = useState([]);
   const [subscribedSearchFilters, setSubscribedSearchFilters] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     api.availableFilters((topics) => {
-      setAvailableFilters(topics);
+      setToipcsAvailableForFiltering(topics);
     });
 
     api.getFilteredTopics((filters) => {
@@ -64,7 +65,7 @@ export default function useUnwantedContentPreferences(api) {
   }
 
   return {
-    availableFilters,
+    toipcsAvailableForFiltering,
     subscribedFilters,
     toggleFilterSubscription,
     isSubscribedSearchFilter,
