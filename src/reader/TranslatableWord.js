@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
 
 export default function TranslatableWord({
@@ -11,11 +12,16 @@ export default function TranslatableWord({
   setTranslatedWords,
   disableTranslation,
 }) {
-  const [showingAlternatives, setShowingAlternatives] = useState(false);
+  const [showingAlterMenu, setShowingAlterMenu] = useState(false);
+  const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
 
   function clickOnWord(e, word) {
-    e.target.className = "loading";
+    if (word.translation) {
+      interactiveText.pronounce(word);
+      return;
+    }
     if (translating) {
+      e.target.className = "loading";
       interactiveText.translate(word, () => {
         wordUpdated();
         e.target.className = null;
@@ -31,14 +37,14 @@ export default function TranslatableWord({
     }
   }
 
-  function toggleAlternatives(e, word) {
-    if (showingAlternatives) {
-      setShowingAlternatives(false);
+  function toggleAlterMenu(e, word) {
+    if (showingAlterMenu) {
+      setShowingAlterMenu(false);
       return;
     }
     interactiveText.alternativeTranslations(word, () => {
       wordUpdated(word);
-      setShowingAlternatives(!showingAlternatives);
+      setShowingAlterMenu(!showingAlterMenu);
     });
   }
 
@@ -49,13 +55,13 @@ export default function TranslatableWord({
       preferredSource,
       () => {
         wordUpdated();
-        setShowingAlternatives(false);
+        setShowingAlterMenu(false);
       },
     );
   }
 
-  function clickedOutsideAlterMenu() {
-    setShowingAlternatives(false);
+  function hideAlterMenu() {
+    setShowingAlterMenu(false);
   }
 
   function hideTranslation(e, word) {
@@ -79,18 +85,22 @@ export default function TranslatableWord({
         <z-tran
           chosen={word.translation}
           translation0={word.translation}
-          onClick={(e) => toggleAlternatives(e, word)}
+          ref={refToTranslation}
+          onClick={(e) => toggleAlterMenu(e, word)}
         >
           <span className="arrow">▼</span>
         </z-tran>
+
         <z-orig>
-          <span onClick={(e) => hideTranslation(e, word)}>{word.word} </span>
-          {showingAlternatives && (
+          <span onClick={(e) => clickOnWord(e, word)}>{word.word} </span>
+          {showingAlterMenu && (
             <AlterMenu
               word={word}
-              setShowingAlternatives={setShowingAlternatives}
+              setShowingAlternatives={setShowingAlterMenu}
               selectAlternative={selectAlternative}
-              clickedOutsideAlterMenu={clickedOutsideAlterMenu}
+              hideAlterMenu={hideAlterMenu}
+              clickedOutsideTranslation={clickedOutsideTranslation}
+              hideTranslation={hideTranslation}
             />
           )}
         </z-orig>
