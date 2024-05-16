@@ -12,8 +12,8 @@ export default function TranslatableWord({
   setTranslatedWords,
   disableTranslation,
 }) {
-  const [showingAlternatives, setShowingAlternatives] = useState(false);
-  const [refToZTran, hasClickedOutside] = useClickOutside();
+  const [showingAlterMenu, setShowingAlterMenu] = useState(false);
+  const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
 
   function clickOnWord(e, word) {
     if (word.translation) {
@@ -37,14 +37,14 @@ export default function TranslatableWord({
     }
   }
 
-  function toggleAlternatives(e, word) {
-    if (showingAlternatives) {
-      setShowingAlternatives(false);
+  function toggleAlterMenu(e, word) {
+    if (showingAlterMenu) {
+      setShowingAlterMenu(false);
       return;
     }
     interactiveText.alternativeTranslations(word, () => {
       wordUpdated(word);
-      setShowingAlternatives(!showingAlternatives);
+      setShowingAlterMenu(!showingAlterMenu);
     });
   }
 
@@ -55,13 +55,13 @@ export default function TranslatableWord({
       preferredSource,
       () => {
         wordUpdated();
-        setShowingAlternatives(false);
+        setShowingAlterMenu(false);
       },
     );
   }
 
-  function clickedOutsideAlterMenu() {
-    setShowingAlternatives(false);
+  function hideAlterMenu() {
+    setShowingAlterMenu(false);
   }
 
   function hideTranslation(e, word) {
@@ -85,20 +85,21 @@ export default function TranslatableWord({
         <z-tran
           chosen={word.translation}
           translation0={word.translation}
-          ref={refToZTran}
-          onClick={(e) => toggleAlternatives(e, word)}
+          ref={refToTranslation}
+          onClick={(e) => toggleAlterMenu(e, word)}
         >
           <span className="arrow">▼</span>
         </z-tran>
+
         <z-orig>
           <span onClick={(e) => clickOnWord(e, word)}>{word.word} </span>
-          {showingAlternatives && (
+          {showingAlterMenu && (
             <AlterMenu
               word={word}
-              setShowingAlternatives={setShowingAlternatives}
+              setShowingAlternatives={setShowingAlterMenu}
               selectAlternative={selectAlternative}
-              clickedOutsideAlterMenu={clickedOutsideAlterMenu}
-              clickedOutsideTranslation={hasClickedOutside}
+              hideAlterMenu={hideAlterMenu}
+              clickedOutsideTranslation={clickedOutsideTranslation}
               hideTranslation={hideTranslation}
             />
           )}

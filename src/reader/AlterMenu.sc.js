@@ -43,6 +43,7 @@ const AlterMenuSC = styled.div`
     border-radius: 1em;
     font-weight: 400;
     font-size: small;
+
     &:focus {
       border: 0.17em solid ${almostBlack};
       font-weight: 500;
@@ -50,7 +51,9 @@ const AlterMenuSC = styled.div`
   }
 
   .alterMenuLink {
-    text-decoration: underline;
+    //text-decoration: underline;
+    margin-top: 0.2em;
+    border-top: 1px solid ${zeeguuLightYellow} !important;
     color: orange;
   }
 `;

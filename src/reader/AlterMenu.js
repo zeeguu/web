@@ -5,19 +5,19 @@ import { AlterMenuSC } from "./AlterMenu.sc";
 
 export default function AlterMenu({
   word,
-  clickedOutsideAlterMenu,
+  hideAlterMenu,
   selectAlternative,
   hideTranslation,
   clickedOutsideTranslation,
 }) {
-  const [refToAlterMenu, hasClickedOutside] = useClickOutside();
+  const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    if (hasClickedOutside && clickedOutsideTranslation) {
-      clickedOutsideAlterMenu();
+    if (clickedOutsideAlterMenu && clickedOutsideTranslation) {
+      hideAlterMenu();
     }
-  }, [hasClickedOutside, clickedOutsideAlterMenu]);
+  }, [clickedOutsideAlterMenu]);
 
   function handleKeyDown(e) {
     if (e.code === "Enter") {
@@ -67,11 +67,11 @@ export default function AlterMenu({
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e)}
-        placeholder="add translation..."
+        placeholder="add own translation..."
       />
 
       <div className="alterMenuLink" onClick={(e) => hideTranslation(e, word)}>
-        Remove
+        Hide Translation
       </div>
     </AlterMenuSC>
   );
