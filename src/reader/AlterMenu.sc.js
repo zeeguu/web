@@ -2,7 +2,9 @@ import styled from "styled-components";
 
 import {
   almostBlack,
+  zeeguuDarkOrange,
   zeeguuLightYellow,
+  zeeguuOrange,
   zeeguuVeryLightYellow,
 } from "../components/colors";
 
@@ -12,7 +14,8 @@ const AlterMenuSC = styled.div`
   position: absolute;
   max-width: 30em;
   background-color: ${zeeguuVeryLightYellow};
-  border-radius: 0.3em;
+  border: 0.15em solid ${zeeguuDarkOrange};
+  border-radius: 0.5em;
   margin-top: 0.5em;
   padding: 0.3em;
 
@@ -29,7 +32,6 @@ const AlterMenuSC = styled.div`
   .ownTranslationInput {
     all: unset;
     border: 0.17em solid ${zeeguuLightYellow};
-    border-radius: 0.9375em;
     padding: 0.125em;
     padding-left: 0.5em;
     padding-right: 5px;
