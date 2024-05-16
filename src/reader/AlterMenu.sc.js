@@ -27,12 +27,24 @@ const AlterMenuSC = styled.div`
   }
 
   .ownTranslationInput {
+    all: unset;
+    border: 0.17em solid ${zeeguuLightYellow};
+    border-radius: 0.9375em;
+    padding: 0.125em;
+    padding-left: 0.5em;
+    padding-right: 5px;
+    height: 2em;
+    width: 100%;
+    box-sizing: border-box;
+    background: white;
     color: ${almostBlack};
+    border-radius: 1em;
     font-weight: 400;
     font-size: small;
-    background: ${zeeguuVeryLightYellow};
-    background: green;
-    border-bottom: 1px solid ${zeeguuLightYellow} !important;
+    &:focus {
+      border: 0.17em solid ${almostBlack};
+      font-weight: 500;
+    }
   }
 
   .alterMenuLink {
