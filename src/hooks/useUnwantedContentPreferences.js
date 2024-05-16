@@ -8,7 +8,7 @@ export default function useUnwantedContentPreferences(api) {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    api.availableFilters((topics) => {
+    api.topicsAvailableForFiltering((topics) => {
       setToipcsAvailableForFiltering(topics);
     });
 

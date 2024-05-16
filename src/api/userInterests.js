@@ -73,7 +73,7 @@ Zeeguu_API.prototype.unsubscribeFromFilter = function (filter) {
   return this._post("unfilter_topic", `topic_id=${filter.id}`);
 };
 
-Zeeguu_API.prototype.availableFilters = function (callback) {
+Zeeguu_API.prototype.topicsAvailableForFiltering = function (callback) {
   this.getAvailableTopics((interesting) => {
     this.getSubscribedTopics((subscribed) => {
       this.getFilteredTopics((filtered) => {
