@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useContext} from "react";
 
 import redirect from "../utils/routing/routing";
 import { isMobile } from "../utils/misc/browserDetection";
 import useFormField from "../hooks/useFormField";
+
+import { UserContext } from "../contexts/UserContext";
+import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -22,7 +25,11 @@ import strings from "../i18n/definitions";
 
 import * as EmailValidator from "email-validator";
 
-export default function CreateAccount({ api, handleSuccessfulSignIn }) {
+export default function CreateAccount({ api, handleSuccessfulSignIn, setUser }) {
+
+  const user = useContext(UserContext);
+
+
   const [inviteCode, handleInviteCodeChange] = useFormField("");
   const [name, handleNameChange] = useFormField("");
   const [email, handleEmailChange] = useFormField("");
@@ -43,9 +50,18 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       return;
     }
 
+    // let userInfo = {
+    //   name: name,
+    //   email: email,
+    // };
+
     let userInfo = {
+      ...user,
       name: name,
       email: email,
+      // learned_language: learned_language,
+      // learned_cefr_level: learned_cefr_level,
+      // native_language: native_language,
     };
 
     api.addBasicUser(

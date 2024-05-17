@@ -68,6 +68,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
           <CreateAccount
             api={api}
             handleSuccessfulSignIn={handleSuccessfulSignIn}
+            setUser={setUser}
           />
         )}
       />

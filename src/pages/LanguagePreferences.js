@@ -25,7 +25,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
 export default function LanguagePreferences({ api, setUser }) {
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
   const [learned_language, handleLearned_language_change] = useFormField("");
   const [native_language, handleNative_language_change] = useFormField("en");
   const [learned_cefr_level, handleLearned_cefr_level_change] =
@@ -58,18 +58,18 @@ export default function LanguagePreferences({ api, setUser }) {
     ],
   ];
 
-  let userInfo = {
-    ...user,
-    learned_language: learned_language,
-    learned_cefr_level: learned_cefr_level,
-    native_language: native_language,
-  };
+  // let userInfo = {
+  //   ...user,
+  //   learned_language: learned_language,
+  //   learned_cefr_level: learned_cefr_level,
+  //   native_language: native_language,
+  // };
 
-  const modifyCEFRlevel = (languageID, cefrLevel) => {
-    api.modifyCEFRlevel(languageID, cefrLevel);
-  };
+  // const modifyCEFRlevel = (languageID, cefrLevel) => {
+  //   api.modifyCEFRlevel(languageID, cefrLevel);
+  // };
 
-  function updateUser(e) {
+  function updateLanguages(e) {
     e.preventDefault();
 
     if (!validator(validatorRules, setErrorMessage)) {
@@ -133,7 +133,7 @@ export default function LanguagePreferences({ api, setUser }) {
           </FormSection>
           <p>{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
-            <Button className={"full-width-btn"} onClick={updateUser}>
+            <Button className={"full-width-btn"} onClick={updateLanguages}>
               {strings.next} <ArrowForwardRoundedIcon />
             </Button>
           </ButtonContainer>
