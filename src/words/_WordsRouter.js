@@ -77,6 +77,7 @@ export default function WordsRouter({ api }) {
           api={api}
           component={Productive}
         />
+        <PrivateRoute exact path="/words/top" api={api} component={Top} />
         <PrivateRoute
           exact
           path="/render/words/productive"
