@@ -20,6 +20,7 @@ let strings = new LocalizedStrings(
       login: "Log in",
       createAccount: "Create Account",
       createBetaAccount: "Create Beta Account",
+      getStarted: "Get Started",
       email: "Email",
       emailPlaceholder: "example@email.com",
       zeeguuTeamEmail: "zeeguu.team@gmail.com",
@@ -80,8 +81,8 @@ let strings = new LocalizedStrings(
       plsSelectBaseLanguage: "Please select a base language.",
 
       //ExcludeWords
-      addUnwantedWordHelperText:"Add one unwanted word / phrase at a time",
-      unwantedWordPlaceholder:"e.g. robbery",
+      addUnwantedWordHelperText: "Add one unwanted word / phrase at a time",
+      unwantedWordPlaceholder: "e.g. robbery",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
