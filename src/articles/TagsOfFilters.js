@@ -9,20 +9,20 @@ export default function TagsOfFilters({
   articlesListShouldChange,
 }) {
   const {
-    toipcsAvailableForFiltering,
-    toggleFilterSubscription,
-    isSubscribedSearchFilter,
+    topicsAvailableForExclusion,
+    toggleTopicExclusion,
+    isExcludedTopic,
 
-    subscribedSearchFilters,
-    subscribeToSearchFilter,
-    removeSearchFilter,
+    unwantedKeywords,
+    addUnwantedKeyword,
+    removeUnwantedKeyword,
 
     showModal,
     setShowModal,
   } = useUnwantedContentPreferences(api);
 
   const onConfirm = (response) => {
-    subscribeToSearchFilter(response);
+    addUnwantedKeyword(response);
     setShowModal(false);
   };
 
@@ -62,26 +62,26 @@ export default function TagsOfFilters({
           </button>
         </div>
 
-        {toipcsAvailableForFiltering.map((topic) => (
+        {topicsAvailableForExclusion.map((topic) => (
           <div key={topic.id} addableid={topic.id}>
             <button
-              onClick={(e) => toggleFilterSubscription(topic)}
+              onClick={(e) => toggleTopicExclusion(topic)}
               type="button"
-              className={`interests ${!isSubscribedSearchFilter(topic) && "unsubscribed"}`}
+              className={`interests ${!isExcludedTopic(topic) && "unsubscribed"}`}
             >
               <span className="addableTitle">{topic.title}</span>
             </button>
           </div>
         ))}
 
-        {subscribedSearchFilters.map((search) => (
-          <div key={search.id} searchremovabeid={search.id}>
+        {unwantedKeywords.map((keyword) => (
+          <div key={keyword.id} searchremovabeid={keyword.id}>
             <button
-              onClick={(e) => removeSearchFilter(search)}
+              onClick={(e) => removeUnwantedKeyword(keyword)}
               type="button"
               className={"interests"}
             >
-              <span className="addableTitle">{search.search}</span>
+              <span className="addableTitle">{keyword.search}</span>
             </button>
           </div>
         ))}
