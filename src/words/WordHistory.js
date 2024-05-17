@@ -12,7 +12,6 @@ export default function ReadingHistory({ api }) {
   const [wordsByDay, setWordsByDay] = useState(null);
 
   function deleteBookmark(bookmark) {
-    console.log("Updating wordsBy Day!");
     let newBookmarksByDay = [...wordsByDay];
     for (let i = 0; i < wordsByDay.length; i++) {
       let bookmarks_for_day = wordsByDay[i].bookmarks;
@@ -25,7 +24,6 @@ export default function ReadingHistory({ api }) {
   if (!wordsByDay) {
     api.getBookmarksByDay((bookmarks_by_day) => {
       setWordsByDay(bookmarks_by_day);
-      console.log(bookmarks_by_day);
     });
 
     setTitle(strings.titleTranslationHistory);
