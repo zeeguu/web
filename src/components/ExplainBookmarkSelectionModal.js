@@ -3,6 +3,8 @@ import Header from "../components/modal_shared/Header";
 import Heading from "../components/modal_shared/Heading";
 import Main from "../components/modal_shared/Main";
 import { APP_DOMAIN } from "../appConstants";
+import { MAX_BOOKMARKS_PER_ARTILE } from "../exercises/ExerciseConstants";
+
 export default function ExplainBookmarkSelectionModal({
   open,
   setShowExplainBookmarkSelectionModal,
@@ -32,12 +34,17 @@ export default function ExplainBookmarkSelectionModal({
       </Header>
       <Main>
         <p>
-          When you translate more than 10 bookmarks Zeeguu prioritizes bookmarks
-          based on how common they are in the language you are learning.
+          When you translate more than <b>{MAX_BOOKMARKS_PER_ARTILE}</b>{" "}
+          bookmarks Zeeguu prioritizes bookmarks based on how common they are in
+          the language you are learning.
         </p>
         <p>
           We do this to ensure that you focus on words that you are more likely
           to encounter in new texts.
+        </p>
+        <p>
+          Zeeguu remembers any words you add manually, and these will always
+          make part of the words you see in exercises
         </p>
       </Main>
     </Modal>
