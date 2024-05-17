@@ -1,7 +1,6 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 
-import { UserContext } from "../contexts/UserContext";
-import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
+import LocalStorage from "../assorted/LocalStorage";
 
 import redirect from "../utils/routing/routing";
 import useFormField from "../hooks/useFormField";
@@ -24,8 +23,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
-export default function LanguagePreferences({ api, setUser }) {
-  // const user = useContext(UserContext);
+export default function LanguagePreferences({ api }) {
   const [learned_language, handleLearned_language_change] = useFormField("");
   const [native_language, handleNative_language_change] = useFormField("en");
   const [learned_cefr_level, handleLearned_cefr_level_change] =
@@ -41,6 +39,18 @@ export default function LanguagePreferences({ api, setUser }) {
     });
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    LocalStorage.setLearnedLanguage(learned_language);
+  }, [learned_language]);
+
+  useEffect(() => {
+    LocalStorage.setLearnedCefrLevel(learned_cefr_level);
+  }, [learned_cefr_level]);
+
+  useEffect(() => {
+    LocalStorage.setNativeLanguage(native_language);
+  }, [native_language]);
 
   if (!systemLanguages) {
     return <LoadingAnimation />;
@@ -58,30 +68,11 @@ export default function LanguagePreferences({ api, setUser }) {
     ],
   ];
 
-  // let userInfo = {
-  //   ...user,
-  //   learned_language: learned_language,
-  //   learned_cefr_level: learned_cefr_level,
-  //   native_language: native_language,
-  // };
-
-  // const modifyCEFRlevel = (languageID, cefrLevel) => {
-  //   api.modifyCEFRlevel(languageID, cefrLevel);
-  // };
-
-  function updateLanguages(e) {
+  function validateAndRedirect(e) {
     e.preventDefault();
-
     if (!validator(validatorRules, setErrorMessage)) {
       return;
     }
-
-    // api.saveUserDetails(userInfo, setErrorMessage, () => {
-    //   modifyCEFRlevel(learned_language, learned_cefr_level);
-    //   setUser(userInfo);
-    //   saveUserInfoIntoCookies(userInfo);
-    //   redirect("/select_interests");
-    // });
     redirect("/create_account");
   }
 
@@ -93,6 +84,12 @@ export default function LanguagePreferences({ api, setUser }) {
         </Heading>
       </Header>
       <Main>
+        <p>
+          After this step, you will need an{" "}
+          <span className="bold">invite code</span> to continue registration. If
+          you don't have one yet, reach out to us at{" "}
+          <span className="bold">{strings.zeeguuTeamEmail}</span>.
+        </p>
         <Form action={""}>
           {errorMessage && (
             <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
@@ -133,7 +130,7 @@ export default function LanguagePreferences({ api, setUser }) {
           </FormSection>
           <p>{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
-            <Button className={"full-width-btn"} onClick={updateLanguages}>
+            <Button className={"full-width-btn"} onClick={validateAndRedirect}>
               {strings.next} <ArrowForwardRoundedIcon />
             </Button>
           </ButtonContainer>
