@@ -26,6 +26,7 @@ import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import ratio from "../utils/basic/ratio";
+import prioritizeBookmarksToStudy from "../exercises/PrioritizeBookmarksToStudy";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -66,6 +67,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [scrollPosition, setScrollPosition] = useState();
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
+  const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -77,7 +79,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   const activityTimerRef = useShadowRef(activityTimer);
   const readingSessionIdRef = useShadowRef(readingSessionId);
-  const articleInfoRef = useShadowRef(articleInfo);
+  const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
+
   const lastSampleTimer = useRef();
   const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
 
@@ -199,38 +202,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
     window.removeEventListener("blur", handleBlur);
     window.removeEventListener("scroll", handleScroll, true);
     window.removeEventListener("beforeunload", componentWillUnmount);
-    if (true || !articleInfoRef.current.opened) {
-      prioritizeBookmarksToStudy();
+    if (!clickedOnReviewVocabRef.current) {
+      // If the user clicks away from the article, prioritize
+      // words based on their rank.
+      prioritizeBookmarksToStudy(api, articleID);
     }
-  }
-  function prioritizeBookmarksToStudy() {
-    api.bookmarksForArticle(articleID, (bookmarks) => {
-      let seenBookmarks = new Set([]);
-      console.log(seenBookmarks);
-      let sortedBookmarks = [...bookmarks].sort(
-        (bookmark_a, bookmark_b) =>
-          bookmark_b.origin_importance - bookmark_a.origin_importance,
-      );
-      let top10Ids = sortedBookmarks
-        .slice(0, 11)
-        .map((bookmark) => bookmark.id);
-      for (let i = 0; i < bookmarks.length; i++) {
-        let bookmark = bookmarks[i];
-        console.log(seenBookmarks);
-        if (
-          top10Ids.includes(bookmark.id) &&
-          bookmark.from.split(" ").length < 3 &&
-          !seenBookmarks.has(bookmark.from.toLowerCase())
-        ) {
-          api.setIsFitForStudy(bookmark.id);
-          seenBookmarks.add(bookmark.from.toLowerCase());
-          bookmark.fit_for_study = true;
-        } else {
-          api.setNotFitForStudy(bookmark.id);
-          bookmark.fit_for_study = false;
-        }
-      }
-    });
   }
 
   function toggleBookmarkedState() {
@@ -377,7 +353,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
       {readerReady && (
         <div id={"bottomRow"}>
-          <ReviewVocabulary articleID={articleID} />
+          <ReviewVocabulary
+            articleID={articleID}
+            clickedOnReviewVocab={clickedOnReviewVocab}
+            setClickedOnReviewVocab={setClickedOnReviewVocab}
+          />
           <s.CombinedBox>
             <p style={{ padding: "0em 2em 0em 2em" }}>
               {" "}

@@ -9,6 +9,7 @@ import strings from "../i18n/definitions";
 import { StyledButton } from "../components/allButtons.sc.js";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import prioritizeBookmarksToStudy from "../exercises/PrioritizeBookmarksToStudy.js";
 import Tooltip from "@mui/material/Tooltip";
 
 function fit_for_study(words) {
@@ -23,19 +24,19 @@ export default function WordsForArticle({ api }) {
   const [exercisesEnabled, setExercisesEnabled] = useState(false);
 
   useEffect(() => {
-    api.bookmarksForArticle(articleID, (bookmarks) => {
-      setWords(bookmarks);
-      setExercisesEnabled(fit_for_study(bookmarks));
-    });
+    prioritizeBookmarksToStudy(api, articleID, setWords);
     api.getArticleInfo(articleID, (data) => {
       setArticleInfo(data);
       setTitle('Words in "' + data.title + '"');
     });
 
     api.logReaderActivity(api.WORDS_REVIEW, articleID, "", UMR_SOURCE);
-
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (words) setExercisesEnabled(fit_for_study(words));
+  }, [words]);
 
   if (words === null || articleInfo === null) {
     return <LoadingAnimation />;
