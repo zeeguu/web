@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {
   alertGreen,
+  zeeguuDarkRed,
   zeeguuOrange,
   zeeguuTransparentLightOrange,
   zeeguuVarmYellow,
@@ -89,8 +90,10 @@ const FeedbackSubmit = styled.input`
   color: black;
   margin: 0.3em;
   font-size: 0.875em;
-  background-color: ${zeeguuTransparentLightOrange};
-  border: 0.1em solid ${zeeguuVarmYellow};
+  background-color: ${zeeguuOrange};
+  border: 0.2em solid ${zeeguuOrange};
+  font-weight: 550;
+  padding: 0.5em 0.8em;
   border-radius: 0.65em;
   padding: 0.5em;
   user-select: none;
@@ -98,8 +101,20 @@ const FeedbackSubmit = styled.input`
 `;
 
 const FeedbackCancel = styled(FeedbackSubmit)`
-  background-color: ${zeeguuTransparentLightOrange};
-  border: 0.1em solid ${zeeguuOrange};
+  background-color: white;
+  borderColor: ${zeeguuOrange};,
+  font-weight: 450;
+`;
+
+const FeedbackDelete = styled(FeedbackSubmit)`
+  margin-left: 1em;
+  margin-top: 1em;
+  max-width: 100px;
+  text-align: center;
+  background-color: white;
+  border: 0.1em solid ${zeeguuDarkRed};
+  color: ${zeeguuDarkRed};
+  font-weight: 450;
 `;
 
 const UndoButton = styled.button`
@@ -119,6 +134,7 @@ export {
   FeedbackSelector,
   FeedbackInstruction,
   FeedbackForm,
+  FeedbackDelete,
   FeedbackInput,
   FeedbackSubmit,
   FeedbackCancel,
