@@ -59,6 +59,21 @@ let CustomTextField = styled(TextField)`
   margin-bottom: 1em;
 `;
 
+let CustomCheckBoxDiv = scStyled.div`
+  margin-top: 1em;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0px 0.5em;
+
+  input {
+    width: 1.3em;
+    height: 1.3em;
+  }
+`;
+
 export {
   style,
   Headline,
@@ -67,4 +82,5 @@ export {
   Paragraph,
   EditButton,
   CustomTextField,
+  CustomCheckBoxDiv,
 };
