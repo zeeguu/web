@@ -75,7 +75,7 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
 
       <Route
         path="/language_preferences"
-        render={() => <LanguagePreferences api={api} setUser={setUser} />}
+        render={() => <LanguagePreferences api={api} />}
       />
 
       <Route path="/" exact render={() => <LandingPage />} />
