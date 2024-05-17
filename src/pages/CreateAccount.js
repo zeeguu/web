@@ -108,10 +108,10 @@ export default function CreateAccount({
               value={inviteCode}
               onChange={handleInviteCodeChange}
               helperText={
-                <>
+                <div>
                   No invite code? Request it at:{" "}
                   <span className="bold">{strings.zeeguuTeamEmail}</span>
-                </>
+                </div>
               }
             />
 
