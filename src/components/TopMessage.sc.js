@@ -7,7 +7,7 @@ let TopMessage = styled.div`
   text-align: center;
   margin: auto;
   background-color: ${zeeguuVeryLightOrange};
-  border-radius: 0.1em;
+  border-radius: 1em;
   max-width: 80%;
   margin: 2em;
   padding: 0.5em 0.5em;
