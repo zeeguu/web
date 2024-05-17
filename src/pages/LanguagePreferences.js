@@ -76,12 +76,13 @@ export default function LanguagePreferences({ api, setUser }) {
       return;
     }
 
-    api.saveUserDetails(userInfo, setErrorMessage, () => {
-      modifyCEFRlevel(learned_language, learned_cefr_level);
-      setUser(userInfo);
-      saveUserInfoIntoCookies(userInfo);
-      redirect("/select_interests");
-    });
+    // api.saveUserDetails(userInfo, setErrorMessage, () => {
+    //   modifyCEFRlevel(learned_language, learned_cefr_level);
+    //   setUser(userInfo);
+    //   saveUserInfoIntoCookies(userInfo);
+    //   redirect("/select_interests");
+    // });
+    redirect("/create_account");
   }
 
   return (

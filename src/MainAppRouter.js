@@ -72,6 +72,11 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
         )}
       />
 
+      <Route
+        path="/language_preferences"
+        render={() => <LanguagePreferences api={api} setUser={setUser} />}
+      />
+
       <Route path="/" exact render={() => <LandingPage />} />
 
       <Route
@@ -84,13 +89,6 @@ export default function MainAppRouter({ api, setUser, hasExtension }) {
       <Route path="/reset_pass" render={() => <ResetPassword api={api} />} />
 
       <Route path="/render" render={() => <NoSidebarRouter api={api} />} />
-
-      <PrivateRoute
-        path="/language_preferences"
-        api={api}
-        setUser={setUser}
-        component={LanguagePreferences}
-      />
 
       <PrivateRoute
         path="/select_interests"

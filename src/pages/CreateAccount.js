@@ -55,7 +55,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
       (session) => {
         api.getUserDetails((user) => {
           handleSuccessfulSignIn(user);
-          redirect("/language_preferences");
+          redirect("/select_interests");
         });
       },
       (error) => {
