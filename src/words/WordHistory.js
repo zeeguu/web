@@ -36,7 +36,7 @@ export default function ReadingHistory({ api }) {
     <sc.NarrowColumn>
       <br />
       <br />
-      <s.TopMessage>{strings.starAWordMsg}</s.TopMessage>
+      <h1>Word Translation History</h1>
       {wordsByDay.map((day) => (
         <WordsOnDate
           key={day.date}
