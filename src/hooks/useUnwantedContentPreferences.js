@@ -1,82 +1,73 @@
 import { useEffect, useState } from "react";
 
 export default function useUnwantedContentPreferences(api) {
-  const [toipcsAvailableForFiltering, setToipcsAvailableForFiltering] =
+  const [topicsAvailableForExclusion, setTopicsAvailableForExclusion] =
     useState([]);
-  const [subscribedFilters, setSubscribedFilters] = useState([]);
-  const [subscribedSearchFilters, setSubscribedSearchFilters] = useState([]);
+  const [excludedTopics, setExcludedTopics] = useState([]);
+  const [unwantedKeywords, setUnwantedKeywords] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    api.topicsAvailableForFiltering((topics) => {
-      setToipcsAvailableForFiltering(topics);
+    api.topicsAvailableForExclusion((topics) => {
+      setTopicsAvailableForExclusion(topics);
     });
 
-    api.getFilteredTopics((filters) => {
-      setSubscribedFilters(filters);
+    api.getExcludedTopics((filters) => {
+      setExcludedTopics(filters);
     });
 
-    api.getSubscribedFilterSearches((filters) => {
-      setSubscribedSearchFilters(filters);
+    api.getUnwantedKeywords((keywords) => {
+      setUnwantedKeywords(keywords);
     });
   }, [api]);
 
-  function subscribeToFilter(filter) {
-    setSubscribedFilters([...subscribedFilters, filter]);
-    api.subscribeToFilter(filter);
+  function excludeTopic(topic) {
+    setExcludedTopics([...excludedTopics, topic]);
+    api.excludeTopic(topic);
   }
 
-  function unsubscribeFromFilter(filter) {
-    setSubscribedFilters(
-      subscribedFilters.filter((each) => each.id !== filter.id),
-    );
-    api.unsubscribeFromFilter(filter);
+  function unexcludeTopic(topic) {
+    setExcludedTopics(excludedTopics.filter((each) => each.id !== topic.id));
+    api.unexcludeTopic(topic);
   }
 
-  function toggleFilterSubscription(filter) {
-    if (subscribedFilters.map((e) => e.id).includes(filter.id)) {
-      unsubscribeFromFilter(filter);
+  function toggleTopicExclusion(topic) {
+    if (excludedTopics.map((e) => e.id).includes(topic.id)) {
+      unexcludeTopic(topic);
     } else {
-      subscribeToFilter(filter);
+      excludeTopic(topic);
     }
   }
 
-  //subscribe to custom interest filter
-  function subscribeToSearchFilter(response) {
-    api.subscribeToSearchFilter(response, (data) => {
-      setSubscribedSearchFilters([...subscribedSearchFilters, data]);
+  function addUnwantedKeyword(keyword) {
+    api.addUnwantedKeyword(keyword, (data) => {
+      setUnwantedKeywords([...unwantedKeywords, data]);
     });
   }
 
-  //remove custom interest filter
-  function removeSearchFilter(search) {
-    api.unsubscribeFromSearchFilter(search);
-    setSubscribedSearchFilters(
-      subscribedSearchFilters.filter((each) => each.id !== search.id),
+  function removeUnwantedKeyword(keyword) {
+    api.removeUnwantedKeyword(keyword);
+    setUnwantedKeywords(
+      unwantedKeywords.filter((each) => each.id !== keyword.id),
     );
   }
 
-  function isSubscribedSearchFilter(filter) {
-    return subscribedFilters
-      .map((subscribedFilter) => subscribedFilter.id)
-      .includes(filter.id)
-      ? true
-      : false;
+  function isExcludedTopic(topic) {
+    return excludedTopics.map((each) => each.id).includes(topic.id);
   }
 
   return {
-    toipcsAvailableForFiltering,
-    subscribedFilters,
-    toggleFilterSubscription,
-    isSubscribedSearchFilter,
+    topicsAvailableForExclusion,
+    excludedTopics,
+    toggleTopicExclusion,
+    isExcludedTopic,
+    excludeTopic,
+    unexcludeTopic,
 
-    subscribeToFilter,
-    unsubscribeFromFilter,
-
-    subscribedSearchFilters,
-    setSubscribedSearchFilters,
-    subscribeToSearchFilter,
-    removeSearchFilter,
+    unwantedKeywords,
+    setUnwantedKeywords,
+    addUnwantedKeyword,
+    removeUnwantedKeyword,
 
     showModal,
     setShowModal,

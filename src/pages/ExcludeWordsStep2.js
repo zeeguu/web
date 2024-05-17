@@ -23,13 +23,10 @@ import redirect from "../utils/routing/routing";
 import strings from "../i18n/definitions";
 
 export default function ExcludeWordsStep2({ api, hasExtension }) {
-  const {
-    subscribedSearchFilters,
-    subscribeToSearchFilter,
-    removeSearchFilter,
-  } = useUnwantedContentPreferences(api);
+  const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
+    useUnwantedContentPreferences(api);
 
-  const [excludedWords, handleExcludedWordsChange, resetExcludedWords] =
+  const [excludedWord, handleExcludedWordsChange, resetExcludedWords] =
     useFormField("");
 
   function getLinkToNextPage() {
@@ -40,8 +37,8 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
 
   function handleAddNewSearchFilter(e) {
     e.preventDefault();
-    if (excludedWords) {
-      subscribeToSearchFilter(excludedWords);
+    if (excludedWord) {
+      addUnwantedKeyword(excludedWord);
       resetExcludedWords();
     }
   }
@@ -56,7 +53,7 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
       <Main>
         <Form>
           <InputField
-            value={excludedWords}
+            value={excludedWord}
             onChange={handleExcludedWordsChange}
             helperText={strings.addUnwantedWordHelperText}
             placeholder={strings.unwantedWordPlaceholder}
@@ -70,13 +67,13 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
           </InputField>
         </Form>
         <TagContainer>
-          {subscribedSearchFilters.map((search) => (
-            <div key={search.id} searchremovabeid={search.id}>
+          {unwantedKeywords.map((keyword) => (
+            <div key={keyword.id} searchremovabeid={keyword.id}>
               <Tag
                 className={"outlined-blue"}
-                onClick={() => removeSearchFilter(search)}
+                onClick={() => removeUnwantedKeyword(keyword)}
               >
-                {search.search}
+                {keyword.search}
                 <HighlightOffRoundedIcon fontSize="small" />
               </Tag>
             </div>
