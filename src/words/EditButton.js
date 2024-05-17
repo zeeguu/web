@@ -13,6 +13,7 @@ export default function EditButton({
   reload,
   setReload,
   deleteAction,
+  notifyWordChange,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -24,7 +25,13 @@ export default function EditButton({
     setOpen(false);
   }
 
-  function updateBookmark(bookmark, newWord, newTranslation, newContext) {
+  function updateBookmark(
+    bookmark,
+    newWord,
+    newTranslation,
+    newContext,
+    newFitForStudy,
+  ) {
     console.log(
       "Sending to the API. New word: ",
       newWord,
@@ -40,10 +47,14 @@ export default function EditButton({
       bookmark.context,
     );
     api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
+    if (newFitForStudy) api.setIsFitForStudy(bookmark.id);
+    else api.setNotFitForStudy(bookmark.id);
     bookmark.from = newWord;
     bookmark.to = newTranslation;
     bookmark.context = newContext;
+    bookmark.fit_for_study = newFitForStudy;
     if (setReload) setReload(!reload);
+    if (notifyWordChange) notifyWordChange(bookmark.id);
   }
 
   return (

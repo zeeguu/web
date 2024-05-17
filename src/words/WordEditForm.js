@@ -1,7 +1,6 @@
 import * as s from "./WordEdit.sc";
 import * as st from "../exercises/bottomActions/FeedbackButtons.sc";
 import strings from "../i18n/definitions";
-import { zeeguuRed, zeeguuDarkRed } from "../components/colors";
 import { useState } from "react";
 
 export default function WordEditForm({
@@ -13,14 +12,18 @@ export default function WordEditForm({
   const [translation, setTranslation] = useState(bookmark.to);
   const [expression, setExpression] = useState(bookmark.from);
   const [context, setContext] = useState(bookmark.context);
+  const [fitForStudy, setFitForStudy] = useState(bookmark.fit_for_study);
 
   function prepClose() {
     setTranslation(bookmark.to);
     setExpression(bookmark.from);
     setContext(bookmark.context);
+    setFitForStudy(bookmark.fit_for_study);
     handleClose();
   }
-
+  function handleFitForStudyCheck() {
+    setFitForStudy((state) => !state);
+  }
   function typingTranslation(event) {
     setTranslation(event.target.value);
   }
@@ -50,11 +53,12 @@ export default function WordEditForm({
     } else if (
       bookmark.to === translation &&
       bookmark.from === expression &&
-      bookmark.context === context
+      bookmark.context === context &&
+      bookmark.fitForStudy === fitForStudy
     ) {
       prepClose();
     } else {
-      updateBookmark(bookmark, expression, translation, context);
+      updateBookmark(bookmark, expression, translation, context, fitForStudy);
       prepClose();
     }
   }
@@ -103,25 +107,28 @@ export default function WordEditForm({
           value={context}
           onChange={typingContext}
         />
+        {bookmark.from.split(" ").length < 3 && (
+          <s.CustomCheckBoxDiv>
+            <input
+              style={{ width: "1.5em" }}
+              type={"checkbox"}
+              checked={fitForStudy}
+              onChange={handleFitForStudyCheck}
+            />
+            <label>Include Word in Exercises</label>
+          </s.CustomCheckBoxDiv>
+        )}
+
         {bookmark.to === translation &&
         bookmark.from === expression &&
-        bookmark.context === context ? (
+        bookmark.context === context &&
+        bookmark.fit_for_study === fitForStudy ? (
           <s.DoneButtonHolder>
-            <st.FeedbackCancel
+            <st.FeedbackDelete
               onClick={(e) => deleteAction(bookmark)}
               value={strings.deleteWord}
-              style={{
-                marginLeft: "1em",
-                marginTop: "1em",
-                maxWidth: "100px",
-                textAlign: "center",
-                backgroundColor: zeeguuRed,
-                borderColor: zeeguuDarkRed,
-                color: "white",
-                fontWeight: 550,
-              }}
             />
-            <st.FeedbackCancel
+            <st.FeedbackSubmit
               type="submit"
               value={strings.done}
               style={{ marginLeft: "1em", marginTop: "1em" }}
