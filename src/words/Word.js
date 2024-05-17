@@ -21,35 +21,42 @@ export default function Word({
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
 
+  function starBookmark(bookmark) {
+    api.starBookmark(bookmark.id);
+    setStarred(true);
+    bookmark.starred = true;
+    if (notifyWordChange) notifyWordChange(bookmark);
+    api.logReaderActivity(
+      api.STAR_WORD,
+      bookmark.article_id,
+      bookmark.from,
+      source,
+    );
+  }
+  function unstarBookmark(bookmark) {
+    api.unstarBookmark(bookmark.id);
+    bookmark.starred = false;
+    setStarred(false);
+    if (notifyWordChange) notifyWordChange(bookmark);
+    api.logReaderActivity(
+      api.UNSTAR_WORD,
+      bookmark.article_id,
+      bookmark.from,
+      source,
+    );
+  }
   function toggleStarred(bookmark) {
     if (starred) {
-      api.unstarBookmark(bookmark.id);
-      bookmark.starred = false;
-      setStarred(false);
-      if (notifyWordChange) notifyWordChange(bookmark);
-      api.logReaderActivity(
-        api.UNSTAR_WORD,
-        bookmark.article_id,
-        bookmark.from,
-        source,
-      );
+      unstarBookmark(bookmark);
     } else {
-      api.starBookmark(bookmark.id);
-      setStarred(true);
-      bookmark.starred = true;
-      if (notifyWordChange) notifyWordChange(bookmark);
-      api.logReaderActivity(
-        api.STAR_WORD,
-        bookmark.article_id,
-        bookmark.from,
-        source,
-      );
+      starBookmark(bookmark);
     }
   }
 
   function setIsFitForStudy(bookmark) {
     console.log(bookmark);
     api.setIsFitForStudy(bookmark.id);
+    starBookmark(bookmark);
     bookmark.fit_for_study = true;
     if (notifyWordChange) notifyWordChange(bookmark);
   }
@@ -57,6 +64,7 @@ export default function Word({
   function setNotFitForStudy(bookmark) {
     console.log(bookmark);
     api.setNotFitForStudy(bookmark.id);
+    unstarBookmark(bookmark);
     bookmark.fit_for_study = false;
     if (notifyWordChange) notifyWordChange(bookmark);
   }
@@ -115,6 +123,7 @@ export default function Word({
               api={api}
               reload={reload}
               setReload={setReload}
+              notifyWordChange={notifyWordChange}
               deleteAction={deleteBookmark}
             />
           )}
@@ -154,8 +163,6 @@ export default function Word({
         </CenteredRow>
       </s.Word>
       {children}
-
-      <s.Spacer />
     </>
   );
 }

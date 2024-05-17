@@ -16,6 +16,7 @@ export default function EditButton({
   notifyWordChange,
 }) {
   const [open, setOpen] = useState(false);
+  const SOURCE_FOR_API_STAR_ACTION = "WORD_EDIT_FORM";
 
   function handleOpen() {
     setOpen(true);
@@ -47,8 +48,27 @@ export default function EditButton({
       bookmark.context,
     );
     api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
-    if (newFitForStudy) api.setIsFitForStudy(bookmark.id);
-    else api.setNotFitForStudy(bookmark.id);
+    if (newFitForStudy) {
+      api.setIsFitForStudy(bookmark.id);
+      api.starBookmark(bookmark.id);
+      bookmark.starred = true;
+      api.logReaderActivity(
+        api.STAR_WORD,
+        bookmark.article_id,
+        bookmark.from,
+        SOURCE_FOR_API_STAR_ACTION,
+      );
+    } else {
+      api.setNotFitForStudy(bookmark.id);
+      api.unstarBookmark(bookmark.id);
+      bookmark.starred = false;
+      api.logReaderActivity(
+        api.UNSTAR_WORD,
+        bookmark.article_id,
+        bookmark.from,
+        SOURCE_FOR_API_STAR_ACTION,
+      );
+    }
     bookmark.from = newWord;
     bookmark.to = newTranslation;
     bookmark.context = newContext;
