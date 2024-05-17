@@ -8,14 +8,20 @@ import * as s from "../components/TopMessage.sc";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 
 export default function Top({ api }) {
-  const [words, setWords] = useState(null);
+  const [words, setWords] = useState();
 
   useEffect(() => {
+    console.log("Getting top bookmarks");
     api.topBookmarks(300, (topWords) => {
       setWords(topWords);
     });
     setTitle(strings.titleRankedWords);
   }, [api]);
+
+  function deleteBookmark(bookmark) {
+    let newWords = [...words].filter((e) => e.id !== bookmark.id);
+    setWords(newWords);
+  }
 
   if (!words) {
     return <LoadingAnimation />;
@@ -24,9 +30,14 @@ export default function Top({ api }) {
   return (
     <>
       <s.TopMessage>{strings.rankedMsg}</s.TopMessage>
-
       {words.map((each) => (
-        <Word key={each.id} bookmark={each} api={api} source={UMR_SOURCE}/>
+        <Word
+          key={each.id}
+          bookmark={each}
+          api={api}
+          source={UMR_SOURCE}
+          notifyDelete={deleteBookmark}
+        />
       ))}
     </>
   );

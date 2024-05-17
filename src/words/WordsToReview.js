@@ -9,7 +9,7 @@ import { t, Android12Switch } from "../components/MUIToggleThemes";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { ThemeProvider } from "@mui/material/styles";
-import Modal from "../components/modal_shared/Modal";
+import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
 
 export default function WordsToReview({
   words,
@@ -19,6 +19,7 @@ export default function WordsToReview({
   notifyWordChanged,
   source,
 }) {
+  console.log(words.length);
   const totalWordsTranslated = words.length;
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
@@ -26,8 +27,11 @@ export default function WordsToReview({
     [],
   );
   const [wordsExpressions, setWordsExpressions] = useState([]);
+  const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
+    useState(false);
 
   useEffect(() => {
+    console.log("Re-sorting words!");
     let newWordsForExercises = [];
     let newWordsExcludedExercises = [];
     let newWordExpressions = [];
@@ -62,7 +66,11 @@ export default function WordsToReview({
     );
   return (
     <>
-      <div style={{ marginTop: "5em" }}>
+      <ExplainBookmarkSelectionModal
+        open={showExplainWordSelectionModal}
+        setShowExplainBookmarkSelectionModal={setShowExplainWordSelectionModal}
+      ></ExplainBookmarkSelectionModal>
+      <div style={{ marginTop: "5%" }}>
         <h1>{strings.ReviewTranslations}</h1>
         <medium>
           <b>{strings.from}</b>
@@ -74,37 +82,46 @@ export default function WordsToReview({
           <Infobox>
             <div>
               <p>
-                You have translated <b>{totalWordsTranslated}</b> words in this
-                text.
-              </p>
-              <p>
-                Zeeguu selects the <b>top 10</b> words to add to your exercises
-                based on{" "}
-                <b>how common they are in the language you are learning.</b>
-              </p>
-              <p>
-                If you want to{" "}
+                We have selected{" "}
                 <b>
-                  manually add or remove words, use the toggle "Manage Words for
-                  Exercises"
-                </b>{" "}
-                below.
+                  10 out of {totalWordsTranslated} translated words for you to
+                  practice.{" "}
+                </b>
+                <a
+                  onClick={() => {
+                    console.log("Setting! " + showExplainWordSelectionModal);
+                    setShowExplainWordSelectionModal(
+                      !showExplainWordSelectionModal,
+                    );
+                  }}
+                >
+                  Tell me why these words are selected
+                </a>
+                .
               </p>
+              <p>
+                <b>To manually add or remove words, use the toggle below.</b>
+              </p>
+              <ThemeProvider theme={t} style={{ marginBottom: "-1em" }}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={<Android12Switch />}
+                    className={inEditMode ? "selected" : ""}
+                    onClick={(e) => setInEditMode(!inEditMode)}
+                    label={
+                      <medium style={{ fontWeight: "500" }}>
+                        {"Manage Words for Exercises"}
+                      </medium>
+                    }
+                  />
+                </FormGroup>
+              </ThemeProvider>
             </div>
           </Infobox>
-          <ThemeProvider theme={t}>
-            <FormGroup>
-              <FormControlLabel
-                control={<Android12Switch />}
-                className={inEditMode ? "selected" : ""}
-                onClick={(e) => setInEditMode(!inEditMode)}
-                label={<small>{"Manage Words for Exercises"}</small>}
-              />
-            </FormGroup>
-          </ThemeProvider>
         </>
       )}
-      <h3>You will see these words in your exercises 📖 :</h3>
+      <h3>You will see these words in your exercises:</h3>
+
       {wordsForExercises.map((each) => (
         <ContentOnRow className="contentOnRow">
           <Word
@@ -121,7 +138,9 @@ export default function WordsToReview({
       ))}
       {inEditMode && wordsExcludedForExercises.length > 0 && (
         <>
-          <h3>You won't see these words in your exercises:</h3>
+          <h3>
+            You <u>won't see</u> these words in your exercises:
+          </h3>
           {wordsExcludedForExercises.map((each) => (
             <ContentOnRow className="contentOnRow">
               <Word

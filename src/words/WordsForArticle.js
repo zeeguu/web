@@ -2,12 +2,8 @@ import { useParams, useHistory } from "react-router-dom";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 import { useState, useEffect } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
-import WordsToReview from "./WordsToReviewModal";
-import {
-  NarrowColumn,
-  CenteredContent,
-  ToolTipsContainer,
-} from "../components/ColumnWidth.sc";
+import WordsToReview from "./WordsToReview";
+import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { StyledButton } from "../components/allButtons.sc.js";
@@ -28,28 +24,6 @@ export default function WordsForArticle({ api }) {
 
   useEffect(() => {
     api.bookmarksForArticle(articleID, (bookmarks) => {
-      if (bookmarks.length > 10) {
-        let sortedBookmarks = [...bookmarks].sort(
-          (bookmark_a, bookmark_b) =>
-            bookmark_b.origin_importance - bookmark_a.origin_importance,
-        );
-        let top10Ids = sortedBookmarks
-          .slice(0, 11)
-          .map((bookmark) => bookmark.id);
-        for (let i = 0; i < bookmarks.length; i++) {
-          let bookmark = bookmarks[i];
-          if (
-            top10Ids.includes(bookmark.id) &&
-            bookmark.from.split(" ").length < 3
-          ) {
-            api.setIsFitForStudy(bookmark.id);
-            bookmark.fit_for_study = true;
-          } else {
-            api.setNotFitForStudy(bookmark.id);
-            bookmark.fit_for_study = false;
-          }
-        }
-      }
       setWords(bookmarks);
       setExercisesEnabled(fit_for_study(bookmarks));
     });
@@ -68,7 +42,7 @@ export default function WordsForArticle({ api }) {
   }
 
   function deleteBookmark(bookmark) {
-    let newWords = words.filter((e) => e.id !== bookmark.id);
+    let newWords = [...words].filter((e) => e.id !== bookmark.id);
     setWords(newWords);
     setExercisesEnabled(fit_for_study(newWords));
   }

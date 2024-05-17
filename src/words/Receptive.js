@@ -20,6 +20,11 @@ export default function Receptive({ api }) {
     setTitle(strings.titleReceptiveWords);
   }, [api]);
 
+  function deleteBookmark(bookmark) {
+    let newWords = [...words].filter((e) => e.id !== bookmark.id);
+    setWords(newWords);
+  }
+
   if (!words) {
     return <LoadingAnimation />;
   }
@@ -44,7 +49,13 @@ export default function Receptive({ api }) {
         <s.TopMessage>{strings.noReceptiveWords}</s.TopMessage>
       ) : (
         words.map((each) => (
-          <Word key={each.id} bookmark={each} api={api} source={UMR_SOURCE} />
+          <Word
+            key={each.id}
+            bookmark={each}
+            api={api}
+            source={UMR_SOURCE}
+            notifyDelete={deleteBookmark}
+          />
         ))
       )}
     </>

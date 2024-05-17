@@ -6,14 +6,14 @@ import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 import { APP_DOMAIN } from "../appConstants";
-import { Visibility } from "@material-ui/icons";
 
 export default function Word({
   bookmark,
+  notifyDelete,
   notifyWordChange,
   children,
   api,
-  hideStar,
+  hideStar = true,
   source,
   isReview,
 }) {
@@ -26,7 +26,7 @@ export default function Word({
       api.unstarBookmark(bookmark.id);
       bookmark.starred = false;
       setStarred(false);
-      notifyWordChange(bookmark);
+      if (notifyWordChange) notifyWordChange(bookmark);
       api.logReaderActivity(
         api.UNSTAR_WORD,
         bookmark.article_id,
@@ -37,7 +37,7 @@ export default function Word({
       api.starBookmark(bookmark.id);
       setStarred(true);
       bookmark.starred = true;
-      notifyWordChange(bookmark);
+      if (notifyWordChange) notifyWordChange(bookmark);
       api.logReaderActivity(
         api.STAR_WORD,
         bookmark.article_id,
@@ -51,23 +51,19 @@ export default function Word({
     console.log(bookmark);
     api.setIsFitForStudy(bookmark.id);
     bookmark.fit_for_study = true;
-    notifyWordChange(bookmark);
-    console.log("SET THE BOOKMARK status to true");
-    console.log(bookmark);
+    if (notifyWordChange) notifyWordChange(bookmark);
   }
 
   function setNotFitForStudy(bookmark) {
     console.log(bookmark);
     api.setNotFitForStudy(bookmark.id);
     bookmark.fit_for_study = false;
-    notifyWordChange(bookmark);
-    console.log("SET THE BOOKMARK status to false");
-    console.log(bookmark);
+    if (notifyWordChange) notifyWordChange(bookmark);
   }
   function deleteBookmark(bookmark) {
     api.deleteBookmark(bookmark.id);
     setDeleted(true);
-    notifyWordChange(bookmark);
+    if (notifyDelete) notifyDelete(bookmark);
     api.logReaderActivity(
       api.DELETE_WORD,
       bookmark.article_id,
@@ -86,7 +82,6 @@ export default function Word({
   }
 
   const square = "square";
-
   return (
     <>
       <s.Word key={bookmark.id}>
