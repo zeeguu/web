@@ -51,6 +51,7 @@ let strings = new LocalizedStrings(
       youCanChangeLater: "You can always change it later",
       yesPlease: "Yes, please",
       noThankYou: "No, thank you",
+      getStarted: "Get Started",
 
       //LoadingAnimation
       loadingMsg: "Loading...",

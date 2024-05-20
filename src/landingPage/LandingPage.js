@@ -44,8 +44,8 @@ export default function LandingPage() {
           <h1>Zeeguu</h1>
           <h4>{strings.projectDescription_UltraShort}</h4>
           <nav>
-            <s.PrimaryButton onClick={() => redirect("/create_account")}>
-              <span>{strings.createBetaAccount}</span>
+            <s.PrimaryButton onClick={() => redirect("/language_preferences")}>
+              <span>{strings.getStarted}</span>
             </s.PrimaryButton>
             <s.InverseButton onClick={() => redirect("/login")}>
               <span>{strings.login}</span>
