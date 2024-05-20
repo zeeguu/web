@@ -8,6 +8,9 @@ import { setTitle } from "../assorted/setTitle";
 import UiLanguageSettings from "../components/UiLanguageSettings";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import { useHistory } from "react-router-dom";
+import Button from "../pages/info_page_shared/Button.js";
+
+import redirect from "../utils/routing/routing.js";
 
 export default function LandingPage() {
   const [uiLanguage, setUiLanguage] = useState();
@@ -26,10 +29,11 @@ export default function LandingPage() {
     <div>
       <s.LoginHeader>
         <s.HeaderTitle>Zeeguu</s.HeaderTitle>
-        <UiLanguageSettings
+        {/* temporarily disable UI language settings */}
+        {/* <UiLanguageSettings
           uiLanguage={uiLanguage}
           setUiLanguage={setUiLanguage}
-        />
+        /> */}
       </s.LoginHeader>
 
       <s.PageContent>
@@ -40,11 +44,11 @@ export default function LandingPage() {
           <h1>Zeeguu</h1>
           <h4>{strings.projectDescription_UltraShort}</h4>
           <nav>
-            <s.PrimaryButton onClick={() => navigate("/login")}>
-              <span>{strings.login}</span>
+            <s.PrimaryButton onClick={() => redirect("/create_account")}>
+              <span>{strings.createBetaAccount}</span>
             </s.PrimaryButton>
-            <s.InverseButton onClick={() => navigate("/create_account")}>
-              <span>{strings.betaTester}</span>
+            <s.InverseButton onClick={() => redirect("/login")}>
+              <span>{strings.login}</span>
             </s.InverseButton>
           </nav>
         </s.NarrowColumn>

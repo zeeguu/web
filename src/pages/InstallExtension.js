@@ -26,8 +26,11 @@ export default function InstallExtension() {
         <FullWidthImage src={"find-extension.png"} />
       </Main>
       <Footer>
-        <ButtonContainer contentAlignment={"vertical"}>
-          <Button href={getExtensionInstallationLinks()}>
+        <ButtonContainer className={"padding-large"}>
+          <Button
+            className={"full-width-btn"}
+            href={getExtensionInstallationLinks()}
+          >
             <FileDownloadOutlinedIcon fontSize="small" />
             {strings.installTheExtension}
           </Button>

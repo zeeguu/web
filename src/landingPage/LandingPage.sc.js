@@ -18,7 +18,6 @@ const HeaderTitle = styled.div`
   font-size: 1.5em;
   font-weight: 600;
   margin-left: 1em;
-  margin-bottom: 0.5em;
 `;
 
 const PageContent = styled.div`

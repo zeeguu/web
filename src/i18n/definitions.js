@@ -49,6 +49,8 @@ let strings = new LocalizedStrings(
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
       next: "Next",
       youCanChangeLater: "You can always change it later",
+      yesPlease: "Yes, please",
+      noThankYou: "No, thank you",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -76,6 +78,10 @@ let strings = new LocalizedStrings(
       learnedLanguageIsRequired: "Learned language is required.",
       languangeLevelIsRequired: "Language level is required.",
       plsSelectBaseLanguage: "Please select a base language.",
+
+      //ExcludeWords
+      addUnwantedWordHelperText:"Add one unwanted word / phrase at a time",
+      unwantedWordPlaceholder:"e.g. robbery",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",

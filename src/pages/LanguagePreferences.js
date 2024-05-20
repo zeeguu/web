@@ -131,8 +131,8 @@ export default function LanguagePreferences({ api, setUser }) {
             />
           </FormSection>
           <p>{strings.youCanChangeLater}</p>
-          <ButtonContainer>
-            <Button onClick={updateUser}>
+          <ButtonContainer className={"padding-medium"}>
+            <Button className={"full-width-btn"} onClick={updateUser}>
               {strings.next} <ArrowForwardRoundedIcon />
             </Button>
           </ButtonContainer>
