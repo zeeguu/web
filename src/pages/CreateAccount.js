@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import redirect from "../utils/routing/routing";
 import { isMobile } from "../utils/misc/browserDetection";
 import useFormField from "../hooks/useFormField";
+
+import { UserContext } from "../contexts/UserContext";
+import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -21,8 +24,23 @@ import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
 import * as EmailValidator from "email-validator";
+import LocalStorage from "../assorted/LocalStorage";
 
-export default function CreateAccount({ api, handleSuccessfulSignIn }) {
+export default function CreateAccount({
+  api,
+  handleSuccessfulSignIn,
+  setUser,
+}) {
+  const user = useContext(UserContext);
+
+  const learnedLanguage = LocalStorage.getLearnedLanguage() || "de";
+  const nativeLanguage = LocalStorage.getNativeLanguage() || "en";
+  const learnedCefrLevel = LocalStorage.getLearnedCefrLevel() || "1";
+
+  const [learned_language] = useState(learnedLanguage);
+  const [native_language] = useState(nativeLanguage);
+  const [learned_cefr_level] = useState(learnedCefrLevel);
+
   const [inviteCode, handleInviteCodeChange] = useFormField("");
   const [name, handleNameChange] = useFormField("");
   const [email, handleEmailChange] = useFormField("");
@@ -44,18 +62,24 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
     }
 
     let userInfo = {
+      ...user,
       name: name,
       email: email,
+      learned_language: learned_language,
+      learned_cefr_level: learned_cefr_level,
+      native_language: native_language,
     };
 
-    api.addBasicUser(
+    api.addUser(
       inviteCode,
       password,
       userInfo,
       (session) => {
         api.getUserDetails((user) => {
           handleSuccessfulSignIn(user);
-          redirect("/language_preferences");
+          setUser(userInfo);
+          saveUserInfoIntoCookies(userInfo);
+          redirect("/select_interests");
         });
       },
       (error) => {
@@ -70,11 +94,6 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
         <Heading>Create Beta&nbsp;Account</Heading>
       </Header>
       <Main>
-        <p>
-          To receive an <span className="bold">invite code</span> or to share
-          your feedback, reach out to us at{" "}
-          <span className="bold">{strings.zeeguuTeamEmail}</span>
-        </p>
         <Form action={""} method={"POST"}>
           {errorMessage && (
             <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
@@ -88,6 +107,12 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               placeholder={strings.inviteCodePlaceholder}
               value={inviteCode}
               onChange={handleInviteCodeChange}
+              helperText={
+                <div>
+                  No invite code? Request it at:{" "}
+                  <span className="bold">{strings.zeeguuTeamEmail}</span>
+                </div>
+              }
             />
 
             <InputField
@@ -130,6 +155,7 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
                     className="bold underlined-link"
                     href="https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md"
                     target={isMobile() ? "_self" : "_blank"}
+                    rel="noreferrer"
                   >
                     {strings.privacyNotice}
                   </a>
