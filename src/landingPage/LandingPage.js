@@ -6,7 +6,6 @@ import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import Button from "../pages/info_page_shared/Button.js";
-
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import redirect from "../utils/routing/routing.js";
@@ -30,10 +29,10 @@ export default function LandingPage() {
           </s.LogoWithText>
           <s.NavbarButtonContainer>
             <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/login")}>
-              Log in
+              {strings.login}
             </s.WhiteOutlinedNavbarBtn>
             <s.WhiteFilledNavbarBtn onClick={() => redirect("/create_account")}>
-              Register
+              {strings.register}
             </s.WhiteFilledNavbarBtn>
           </s.NavbarButtonContainer>
 
@@ -52,14 +51,14 @@ export default function LandingPage() {
             {strings.projectDescription_UltraShort}
           </p>
           <Button onClick={() => redirect("/create_account")}>
-            Get Started
+            {strings.getStarted}
             <ArrowForwardRoundedIcon />
           </Button>
         </s.HeroColumn>
 
         <s.PaleAdaptableColumn>
           <h1>{strings.howDoesItWork}</h1>
-          <h2>Personalized Reading</h2>
+          <h2>{strings.personalizedReading}</h2>
           <s.DescriptionText>
             <p>{strings.personalizedRecommandationsEllaboration1}</p>
 
@@ -75,7 +74,7 @@ export default function LandingPage() {
             <p>{strings.easyTranslationsEllaboration3}</p>
           </s.DescriptionText>
 
-          <h2>Personalized Exercises</h2>
+          <h2>{strings.personalizedExercises}</h2>
           <s.DescriptionText>
             <p>{strings.personalizedPractiseEllaboration1}</p>
 

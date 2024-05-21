@@ -18,6 +18,8 @@ let strings = new LocalizedStrings(
       myTexts: "My Texts",
       tutorials: "Help",
       login: "Log in",
+      register: "Register",
+      getStarted: "Get Started",
       createAccount: "Create Account",
       createBetaAccount: "Create Beta Account",
       email: "Email",
@@ -80,8 +82,8 @@ let strings = new LocalizedStrings(
       plsSelectBaseLanguage: "Please select a base language.",
 
       //ExcludeWords
-      addUnwantedWordHelperText:"Add one unwanted word / phrase at a time",
-      unwantedWordPlaceholder:"e.g. robbery",
+      addUnwantedWordHelperText: "Add one unwanted word / phrase at a time",
+      unwantedWordPlaceholder: "e.g. robbery",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
@@ -142,7 +144,7 @@ let strings = new LocalizedStrings(
       projectDescription_UltraShort: `Zeeguu is a research project that personalizes the way you learn foreign languages. It lets you read texts based on your interests, translate unfamiliar words, and practice vocabulary. On any device.`,
       betaTester: "Become a Betatester!",
       howDoesItWork: "How Does It Work?",
-      personalizedRecommandations: "Personalized Recommendations",
+      personalizedReading: "Personalized Reading",
       personalizedRecommandationsEllaboration1:
         "Our system continuously searches the net for texts based on your personalized interests. We believe that personally relevant texts will motivate you to study more.",
       personalizedRecommandationsEllaboration2:
@@ -154,7 +156,7 @@ let strings = new LocalizedStrings(
         "By using machine translation our system helps you obtain translations in any text with a simple click (or tap on touch-enabled devices).",
       easyTranslationsEllaboration3:
         "The system also provides word pronunciation support. For some languages, e.g. Danish, this is actually very important.",
-      personalizedPractise: "Personalized Practice",
+      personalizedExercises: "Personalized Exercises",
       personalizedPractiseEllaboration1:
         "Zeeguu generates personalized vocabulary exercises by using the original context in which you encountered words that you didn't understand. We do this because contextual learning works better.",
       personalizedMultipleExerciseTypes:
