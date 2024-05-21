@@ -4,10 +4,6 @@ Zeeguu_API.prototype.getUserDetails = function (callback) {
   this._getJSON("get_user_details", callback);
 };
 
-Zeeguu_API.prototype.isValidSession = function (onSuccess, onError) {
-  this._getPlainText("validate", onSuccess, onError);
-};
-
 Zeeguu_API.prototype.addUser = function (
   invite_code,
   password,
@@ -92,9 +88,8 @@ Zeeguu_API.prototype.signIn = function (email, password, onError, onSuccess) {
       // https://stackoverflow.com/a/45366905/1200070
       response.json().then((data) => {
         if (response.status === 200) {
-          console.log("GOT SESSOIN: " + data);
-          this.session = data.session;
-          onSuccess(data.session);
+          this.session = data;
+          onSuccess(data);
           return;
         }
         onError(data.message);

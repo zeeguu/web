@@ -8,7 +8,7 @@ const Zeeguu_API = class {
   }
 
   apiLog(what) {
-    console.log("➡️ " + what);
+    // console.log("➡️ " + what);
   }
 
   getSystemLanguages(callback) {
@@ -22,21 +22,12 @@ const Zeeguu_API = class {
     return `${this.baseAPIurl}/${endpointName}?session=${this.session}`;
   }
 
-  _getPlainText(endpoint, callback, onError) {
+  _getPlainText(endpoint, callback) {
     this.apiLog("GET" + endpoint);
     fetch(this._appendSessionToUrl(endpoint, this.session))
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.text();
-      })
+      .then((response) => response.text())
       .then((data) => {
         callback(data);
-      })
-      .catch((e) => {
-        console.log("Exception in _getPlainText");
-        onError(e);
       });
   }
 
@@ -47,9 +38,6 @@ const Zeeguu_API = class {
       .then((data) => {
         //do whatever it is you need to do with the fetched data...
         callback(data);
-      })
-      .catch((e) => {
-        console.log(e);
       });
   }
 

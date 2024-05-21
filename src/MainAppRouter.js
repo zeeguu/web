@@ -10,6 +10,9 @@ import NoSidebarRouter from "./NoSidebarRouter";
 import SignIn from "./pages/SignIn";
 import CreateAccount from "./pages/CreateAccount";
 import LanguagePreferences from "./pages/LanguagePreferences";
+import LocalStorage from "./assorted/LocalStorage";
+import SessionStorage from "./assorted/SessionStorage";
+import { saveUserInfoIntoCookies } from "./utils/cookies/userInfo";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
@@ -21,12 +24,36 @@ import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
 
-export default function MainAppRouter({
-  api,
-  setUser,
-  hasExtension,
-  handleSuccessfulSignIn,
-}) {
+export default function MainAppRouter({ api, setUser, hasExtension }) {
+  function handleSuccessfulSignIn(userInfo) {
+    LocalStorage.setSession(api.session);
+    LocalStorage.setUserInfo(userInfo);
+
+    // TODO: Should this be moved to Settings.loadUsrePreferences?
+    api.getUserPreferences((preferences) => {
+      SessionStorage.setAudioExercisesEnabled(
+        preferences["audio_exercises"] === undefined ||
+          preferences["audio_exercises"] === "true",
+      );
+    });
+
+    // Cookies are the mechanism via which we share a login
+    // between the extension and the website
+    saveUserInfoIntoCookies(userInfo, api.session);
+    let newUserValue = {
+      session: api.session,
+      name: userInfo.name,
+      learned_language: userInfo.learned_language,
+      native_language: userInfo.native_language,
+      is_teacher: userInfo.is_teacher,
+      is_student: userInfo.is_student,
+    };
+
+    console.log("setting new user value: ");
+    console.dir(newUserValue);
+    setUser(newUserValue);
+  }
+
   return (
     <Switch>
       <Route
