@@ -57,7 +57,7 @@ export default function CreateAccount({
     [name === "", strings.nameIsRequired],
     [!EmailValidator.validate(email), strings.plsProvideValidEmail],
     [password.length < 4, strings.passwordMustBeMsg],
-    [!checkPrivacyNote, strings.plsAcceptPrivacyNotice],
+    [!checkPrivacyNote, strings.plsAcceptPrivacyPolicy],
   ];
 
   useState(() => {
