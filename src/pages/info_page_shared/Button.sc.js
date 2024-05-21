@@ -17,7 +17,7 @@ const Button = styled.button`
   background-color: ${zeeguuOrange};
   font-weight: 600;
   box-shadow: 0px 0.2em ${zeeguuDarkOrange};
-  transition: all ease-in 0.1s;
+  transition: all ease-in 0.08s;
   overflow: hidden;
   white-space: nowrap;
   margin-bottom: 0.2em;
@@ -25,7 +25,7 @@ const Button = styled.button`
   &:active {
     box-shadow: none;
     transform: translateY(0.2em);
-    transition: all ease-in 0.1s;
+    transition: all ease-in 0.08s;
   }
 
   //span the full width of a parent

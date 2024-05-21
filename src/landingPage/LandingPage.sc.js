@@ -185,12 +185,12 @@ const WhiteFilledNavbarBtn = styled.button`
   background-color: white;
   color: ${zeeguuOrange};
   box-shadow: 0px 0.1em white;
-  transition: all ease-in 0.1s !important;
+  transition: all ease-in 0.08s;
 
   &:active {
     box-shadow: none;
-    transform: translateY(0.2em) !important;
-    transition: all ease-in 0.1s;
+    transform: translateY(0.2em);
+    transition: all ease-in 0.08s;
   }
 `;
 
