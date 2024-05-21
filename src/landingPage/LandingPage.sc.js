@@ -15,16 +15,16 @@ const _navbarShared = css`
   display: flex;
   align-items: center;
   margin: 0;
+  height: 4em;
 `;
 
-const Navbar = styled.div`
+const NavbarBg = styled.div`
   ${_navbarShared};
   justify-content: center;
-  height: 4em;
   background: ${zeeguuOrange};
 `;
 
-const NavbarContent = styled.div`
+const Navbar = styled.nav`
   ${_navbarShared};
   max-width: 90rem;
   justify-content: space-between;
@@ -33,7 +33,7 @@ const NavbarContent = styled.div`
   padding: 0 1rem;
 `;
 
-const Logotype = styled.div`
+const LogoWithText = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -47,6 +47,34 @@ const Logotype = styled.div`
     gap: 0.5rem;
     font-size: 1.25rem;
     font-weight: 600;
+  }
+`;
+
+const swing = keyframes`
+  20% {
+  transform: rotate(15deg);
+}
+40% {
+  transform: rotate(-10deg);
+}
+60% {
+  transform: rotate(5deg);
+}
+80% {
+  transform: rotate(-5deg);
+}
+100% {
+  transform: rotate(0deg);
+}
+`;
+
+const ZeeguuLogo = styled.img`
+  text-align: center;
+  width: 1.9rem;
+  animation: ${swing} 2s ease 3;
+
+  @media (max-width: 576px) {
+    width: 1.5rem;
   }
 `;
 
@@ -73,7 +101,7 @@ const _mainHeader = css`
   color: ${zeeguuOrange};
 `;
 
-const NarrowColumn = styled.div`
+const HeroColumn = styled.div`
   height: auto;
   max-width: 800px;
   padding: 6rem 1rem;
@@ -184,80 +212,17 @@ const CenterText = styled.div`
   text-align: center;
 `;
 
-const swing = keyframes`
-  20% {
-  transform: rotate(15deg);
-}
-40% {
-  transform: rotate(-10deg);
-}
-60% {
-  transform: rotate(5deg);
-}
-80% {
-  transform: rotate(-5deg);
-}
-100% {
-  transform: rotate(0deg);
-}
-`;
-
-const BigLogo = styled.img`
-  text-align: center;
-  width: 1.9rem;
-  animation: ${swing} 2s ease 3;
-
-  @media (max-width: 576px) {
-    width: 1.5rem;
-  }
-`;
-
-const PrimaryButton = styled.button`
-  height: 4em;
-  width: 25em;
-  background: ${zeeguuOrange};
-  border: 0.3em solid ${zeeguuOrange};
-  border-radius: 7em;
-  margin-bottom: 2em;
-  margin-top: 2em;
-  overflow: hidden;
-  cursor: pointer;
-  span {
-    font-weight: 600;
-    font-size: 1.5em;
-    color: white;
-  }
-`;
-const InverseButton = styled.button`
-  height: 4em;
-  width: 25em;
-  background: white;
-  border: 0.3em solid ${zeeguuOrange};
-  border-radius: 7em;
-  margin-bottom: 3em;
-  margin-top: 0em;
-  overflow: hidden;
-  cursor: pointer;
-  span {
-    font-weight: 600;
-    font-size: 1.5em;
-    color: ${zeeguuOrange};
-  }
-`;
-
 export {
   PageWrapper,
+  NavbarBg,
   Navbar,
-  NavbarContent,
   WhiteFilledNavbarBtn,
   WhiteOutlinedNavbarBtn,
   NavbarButtonContainer,
-  Logotype,
+  LogoWithText,
   PageContent,
-  NarrowColumn,
-  BigLogo,
-  PrimaryButton,
-  InverseButton,
+  HeroColumn,
+  ZeeguuLogo,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,

@@ -19,15 +19,15 @@ export default function LandingPage() {
   setTitle("All You Can Read");
   return (
     <s.PageWrapper>
-      <s.Navbar>
-        <s.NavbarContent>
-          <s.Logotype>
-            <s.BigLogo
+      <s.NavbarBg>
+        <s.Navbar>
+          <s.LogoWithText>
+            <s.ZeeguuLogo
               src="/static/images/zeeguuWhiteLogo.svg"
               alt="elephant logo"
             />
             Zeeguu
-          </s.Logotype>
+          </s.LogoWithText>
           <s.NavbarButtonContainer>
             <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/login")}>
               Log in
@@ -42,11 +42,11 @@ export default function LandingPage() {
           uiLanguage={uiLanguage}
           setUiLanguage={setUiLanguage}
         /> */}
-        </s.NavbarContent>
-      </s.Navbar>
+        </s.Navbar>
+      </s.NavbarBg>
 
       <s.PageContent>
-        <s.NarrowColumn>
+        <s.HeroColumn>
           <h1>Learn foreign languages with&nbsp;Zeeguu</h1>
           <p className="hero-paragraph">
             Zeeguu is a research project that personalizes the way you learn
@@ -57,7 +57,7 @@ export default function LandingPage() {
             Get Started
             <ArrowForwardRoundedIcon />
           </Button>
-        </s.NarrowColumn>
+        </s.HeroColumn>
 
         <s.PaleAdaptableColumn>
           <h1>{strings.howDoesItWork}</h1>
