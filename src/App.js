@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Switch } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
 import ExerciseNotifications from "./exercises/ExerciseNotification";
 import { ExerciseCountContext } from "./exercises/ExerciseCountContext";
@@ -18,41 +18,27 @@ import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 import {
   getSessionFromCookies,
   removeUserInfoFromCookies,
+  saveUserInfoIntoCookies,
 } from "./utils/cookies/userInfo";
 
 import MainAppRouter from "./MainAppRouter";
 import { ToastContainer } from "react-toastify";
 import useExtensionCommunication from "./hooks/useExtensionCommunication";
+import { setUser } from "@sentry/react";
+import SessionStorage from "./assorted/SessionStorage";
+import useRedirectLink from "./hooks/useRedirectLink";
 
 function App() {
-  let api = new Zeeguu_API(API_ENDPOINT);
+  const [api, setApi] = useState(new Zeeguu_API(API_ENDPOINT));
 
-  let userDict = {};
   const [exerciseNotification] = useState(new ExerciseNotifications());
-
-  if (getSessionFromCookies()) {
-    userDict = {
-      session: getSessionFromCookies(),
-      ...LocalStorage.userInfo(),
-    };
-    api.session = getSessionFromCookies();
-    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
-      exerciseNotification.setHasExercises(hasBookmarks);
-      exerciseNotification.updateReactState();
-    });
-  }
 
   useUILanguage();
 
-  const [userData, setUserData] = useState(userDict);
+  const [userData, setUserData] = useState();
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
-
-  useEffect(() => {
-    if (Object.keys(userData).length !== 0) {
-      setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
-    }
-  }, [userData]);
+  let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   useEffect(() => {
     console.log("Got the API URL:" + API_ENDPOINT);
@@ -62,15 +48,38 @@ function App() {
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
-    if (getSessionFromCookies()) {
-      console.log("getting user details...");
-      api.getUserDetails((data) => {
-        LocalStorage.setUserInfo(data);
-      });
-      api.getUserPreferences((preferences) => {
-        LocalStorage.setUserPreferences(preferences);
-      });
-    }
+
+    api.session = getSessionFromCookies();
+    console.log("Session: " + api.session);
+
+    api.isValidSession(
+      () => {
+        console.log("valid sesison... getting user details...");
+        api.getUserDetails((data) => {
+          LocalStorage.setUserInfo(data);
+          api.getUserPreferences((preferences) => {
+            LocalStorage.setUserPreferences(preferences);
+
+            let userDict = {
+              session: getSessionFromCookies(),
+              ...LocalStorage.userInfo(),
+            };
+            console.log("Session: " + api.session);
+
+            api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+              exerciseNotification.setHasExercises(hasBookmarks);
+              exerciseNotification.updateReactState();
+            });
+            setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
+            setUserData(userDict);
+          });
+        });
+      },
+      () => {
+        console.log("no valid session");
+        logout();
+      },
+    );
 
     //logs out user on zeeguu.org if they log out of the extension
 
@@ -92,8 +101,48 @@ function App() {
     removeUserInfoFromCookies();
   }
 
+  function handleSuccessfulSignIn(userInfo, sessionId) {
+    console.log("HANDLE SUCCESSFUL SIGN IN");
+    api.session = sessionId;
+    console.log("Session: " + api.session);
+    LocalStorage.setSession(api.session);
+    LocalStorage.setUserInfo(userInfo);
+
+    // TODO: Should this be moved to Settings.loadUsrePreferences?
+    api.getUserPreferences((preferences) => {
+      SessionStorage.setAudioExercisesEnabled(
+        preferences["audio_exercises"] === undefined ||
+          preferences["audio_exercises"] === "true",
+      );
+    });
+
+    // Cookies are the mechanism via which we share a login
+    // between the extension and the website
+    saveUserInfoIntoCookies(userInfo, api.session);
+    let newUserValue = {
+      session: api.session,
+      name: userInfo.name,
+      learned_language: userInfo.learned_language,
+      native_language: userInfo.native_language,
+      is_teacher: userInfo.is_teacher,
+      is_student: userInfo.is_student,
+    };
+
+    console.log("setting new user value: ");
+    console.dir(newUserValue);
+    setUser(newUserValue);
+
+    /* If a redirect link exists, uses it to redirect the user,
+        otherwise, uses the location from the function argument. */
+    handleRedirectLinkOrGoTo("/articles");
+  }
+
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
+
+  if (userData === undefined) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <SpeechContext.Provider value={zeeguuSpeech}>
@@ -107,6 +156,7 @@ function App() {
                   api={api}
                   setUser={setUserData}
                   hasExtension={isExtensionAvailable}
+                  handleSuccessfulSignIn={handleSuccessfulSignIn}
                 />
 
                 <ToastContainer
