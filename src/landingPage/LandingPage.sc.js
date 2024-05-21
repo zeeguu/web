@@ -1,23 +1,59 @@
 import styled, { keyframes, css } from "styled-components";
-import {zeeguuOrange, zeeguuTransparentLightYellow} from "../components/colors";
+import {
+  zeeguuOrange,
+  zeeguuTransparentLightYellow,
+  veryDarkGrey,
+} from "../components/colors";
 
-const LoginHeader = styled.div`
+const PageWrapper = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  height: 4em;
-  background: ${zeeguuOrange};
-  color: white;
-  font-size: 18px;
-  margin: 0;
-  margin-bottom: 1em;
-  align-items: center;
 `;
 
-const HeaderTitle = styled.div`
-  font-size: 1.5em;
+const _navbarShared = css`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: 0;
+`;
+
+const Navbar = styled.div`
+  ${_navbarShared};
+  justify-content: center;
+  height: 4em;
+  background: ${zeeguuOrange};
+`;
+
+const NavbarContent = styled.div`
+  ${_navbarShared};
+  max-width: 90rem;
+  justify-content: space-between;
+  color: white;
+  font-size: 18px;
+  padding: 0 1rem;
+`;
+
+const Logotype = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.25em;
   font-weight: 600;
-  margin-left: 1em;
+  margin: 0;
+  padding: 0;
+
+  @media (max-width: 576px) {
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+`;
+
+const NavbarButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 `;
 
 const PageContent = styled.div`
@@ -38,21 +74,37 @@ const _mainHeader = css`
 `;
 
 const NarrowColumn = styled.div`
-  padding-top: 5em;
-  padding-bottom: 3em;
   height: auto;
-  width: 22em;
+  max-width: 800px;
+  padding: 6rem 1rem;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+
+  @media (max-width: 576px) {
+    padding: 3rem 1rem;
+  }
 
   h1 {
     ${_mainHeader}
+    color: ${veryDarkGrey};
+    font-size: 3.5rem;
+    margin: 0;
+
+    @media (max-width: 768px) {
+      font-size: 2.5rem;
+    }
   }
 
-  h6 {
-    padding: 0.5em 1em;
-    font-weight: 300;
+  p.hero-paragraph {
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 150%;
+    color: ${veryDarkGrey};
   }
 `;
 
@@ -73,6 +125,10 @@ const AdaptableColumn = styled.div`
     margin-bottom: -0.5em;
   }
 
+  p {
+    line-height: 140%;
+  }
+
   @media (min-width: 768px) {
     max-width: 32em;
   }
@@ -81,6 +137,38 @@ const AdaptableColumn = styled.div`
 const PaleAdaptableColumn = styled(AdaptableColumn)`
   background-color: ${zeeguuTransparentLightYellow};
   padding-top: 0.1em;
+`;
+
+const WhiteFilledNavbarBtn = styled.button`
+  cursor: pointer;
+  border: solid 2px white;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  gap: 0.25rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4em;
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow-y: hidden;
+  background-color: white;
+  color: ${zeeguuOrange};
+  box-shadow: 0px 0.1em white;
+  transition: all ease-in 0.1s !important;
+
+  &:active {
+    box-shadow: none;
+    transform: translateY(0.2em) !important;
+    transition: all ease-in 0.1s;
+  }
+`;
+
+const WhiteOutlinedNavbarBtn = styled(WhiteFilledNavbarBtn)`
+  background: none;
+  color: white;
 `;
 
 const DescriptionText = styled.div`
@@ -114,12 +202,13 @@ const swing = keyframes`
 }
 `;
 
-const BigLogo = styled.div`
+const BigLogo = styled.img`
   text-align: center;
+  width: 1.9rem;
+  animation: ${swing} 2s ease 3;
 
-  img {
-    width: 10em;
-    animation: ${swing} 2s ease 3;
+  @media (max-width: 576px) {
+    width: 1.5rem;
   }
 `;
 
@@ -156,10 +245,14 @@ const InverseButton = styled.button`
   }
 `;
 
-
 export {
-  LoginHeader,
-  HeaderTitle,
+  PageWrapper,
+  Navbar,
+  NavbarContent,
+  WhiteFilledNavbarBtn,
+  WhiteOutlinedNavbarBtn,
+  NavbarButtonContainer,
+  Logotype,
   PageContent,
   NarrowColumn,
   BigLogo,
