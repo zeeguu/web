@@ -134,6 +134,12 @@ export default function LanguagePreferences({ api }) {
               {strings.next} <ArrowForwardRoundedIcon />
             </Button>
           </ButtonContainer>
+          <p>
+            {strings.alreadyHaveAccount + " "}
+            <a className="bold underlined-link" href="/login">
+              {strings.login}
+            </a>
+          </p>
         </Form>
       </Main>
     </InfoPage>
