@@ -49,9 +49,7 @@ export default function LandingPage() {
         <s.HeroColumn>
           <h1>Learn foreign languages with&nbsp;Zeeguu</h1>
           <p className="hero-paragraph">
-            Zeeguu is a research project that personalizes the way you learn
-            foreign languages. It lets you read texts based on your interests,
-            translate unfamiliar words, and practice vocabulary. On any device.
+            {strings.projectDescription_UltraShort}
           </p>
           <Button onClick={() => redirect("/create_account")}>
             Get Started
