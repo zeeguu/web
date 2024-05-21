@@ -46,13 +46,20 @@ export default function CreateAccount({
   const [email, handleEmailChange] = useFormField("");
   const [password, handlePasswordChange] = useFormField("");
 
+  const [isPrivacyNoticeAccepted, setIsPrivacyNoticeAccepted] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState("");
 
   let validatorRules = [
     [name === "", strings.nameIsRequired],
     [!EmailValidator.validate(email), strings.plsProvideValidEmail],
     [password.length < 4, strings.passwordMustBeMsg],
+    [isPrivacyNoticeAccepted === false, strings.plsAcceptPrivacyNotice],
   ];
+
+  function togglePrivacyNoticeConsent() {
+    setIsPrivacyNoticeAccepted((prev) => !prev);
+  }
 
   function handleCreate(e) {
     e.preventDefault();
@@ -148,6 +155,8 @@ export default function CreateAccount({
           </FormSection>
           <FormSection>
             <Checkbox
+              checked={isPrivacyNoticeAccepted}
+              onChange={togglePrivacyNoticeConsent}
               label={
                 <>
                   By checking this box you agree to our{" "}

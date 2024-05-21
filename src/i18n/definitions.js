@@ -29,6 +29,7 @@ let strings = new LocalizedStrings(
       learnedLanguage: "I want to learn",
       learnedLanguagePlaceholder: "Select language",
       plsProvideValidEmail: "Please provide a valid email.",
+      plsAcceptPrivacyNotice: "Please accept Privacy Notice",
       password: "Password",
       passwordPlaceholder: "Enter Password",
       passwordHelperText: "Must contain at least 4 characters",
@@ -81,8 +82,8 @@ let strings = new LocalizedStrings(
       plsSelectBaseLanguage: "Please select a base language.",
 
       //ExcludeWords
-      addUnwantedWordHelperText:"Add one unwanted word / phrase at a time",
-      unwantedWordPlaceholder:"e.g. robbery",
+      addUnwantedWordHelperText: "Add one unwanted word / phrase at a time",
+      unwantedWordPlaceholder: "e.g. robbery",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
