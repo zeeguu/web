@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 
 import redirect from "../utils/routing/routing";
-import { isMobile } from "../utils/misc/browserDetection";
+import * as sC from "../components/modal_shared/Checkbox.sc";
 import useFormField from "../hooks/useFormField";
 
 import { UserContext } from "../contexts/UserContext";
@@ -19,7 +19,7 @@ import Footer from "./info_page_shared/Footer";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
 import Checkbox from "../components/modal_shared/Checkbox";
-
+import Modal from "../components/modal_shared/Modal";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
@@ -45,21 +45,34 @@ export default function CreateAccount({
   const [name, handleNameChange] = useFormField("");
   const [email, handleEmailChange] = useFormField("");
   const [password, handlePasswordChange] = useFormField("");
+  const [checkPrivacyNote, handleCheckPrivacyNote] = useFormField(false);
 
   const [isPrivacyNoticeAccepted, setIsPrivacyNoticeAccepted] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPrivacyNotice, setShowPrivacyNotice] = useState(false);
+  const [privacyNoticeText, setPrivacyNoticeText] = useState([]);
 
   let validatorRules = [
     [name === "", strings.nameIsRequired],
     [!EmailValidator.validate(email), strings.plsProvideValidEmail],
     [password.length < 4, strings.passwordMustBeMsg],
-    [isPrivacyNoticeAccepted === false, strings.plsAcceptPrivacyNotice],
+    [!checkPrivacyNote, strings.plsAcceptPrivacyPolicy],
   ];
 
-  function togglePrivacyNoticeConsent() {
-    setIsPrivacyNoticeAccepted((prev) => !prev);
-  }
+  useState(() => {
+    fetch(
+      "https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md",
+    ).then((response) => {
+      response.text().then((privacyText) => {
+        let text = privacyText
+          .split("==============")[1]
+          .split("\n\n")
+          .filter((text) => text !== "");
+        setPrivacyNoticeText(text);
+      });
+    });
+  }, []);
 
   function handleCreate(e) {
     e.preventDefault();
@@ -97,6 +110,22 @@ export default function CreateAccount({
 
   return (
     <InfoPage type={"narrow"}>
+      <Modal
+        open={showPrivacyNotice}
+        onClose={() => {
+          setShowPrivacyNotice(false);
+        }}
+      >
+        <>
+          <h1>Privacy Notice</h1>
+          {privacyNoticeText.map((par) => (
+            <>
+              <p>{par}</p>
+              <br></br>
+            </>
+          ))}
+        </>
+      </Modal>
       <Header>
         <Heading>Create Beta&nbsp;Account</Heading>
       </Header>
@@ -154,23 +183,26 @@ export default function CreateAccount({
             />
           </FormSection>
           <FormSection>
-            <Checkbox
-              checked={isPrivacyNoticeAccepted}
-              onChange={togglePrivacyNoticeConsent}
-              label={
-                <>
-                  By checking this box you agree to our{" "}
-                  <a
-                    className="bold underlined-link"
-                    href="https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md"
-                    target={isMobile() ? "_self" : "_blank"}
-                    rel="noreferrer"
-                  >
-                    {strings.privacyNotice}
-                  </a>
-                </>
-              }
-            />
+            <sC.CheckboxWrapper>
+              <input
+                onChange={handleCheckPrivacyNote}
+                checked={checkPrivacyNote}
+                id="checkbox"
+                name=""
+                value=""
+                type="checkbox"
+              ></input>
+              <label>
+                By checking this box you agree to our &nbsp;
+                <a
+                  onClick={() => {
+                    setShowPrivacyNotice(true);
+                  }}
+                >
+                  {strings.privacyNotice}
+                </a>
+              </label>
+            </sC.CheckboxWrapper>
           </FormSection>
         </Form>
       </Main>
