@@ -127,7 +127,9 @@ export default function MultipleChoiceContext({
         message={messageToAPI}
       />
       <h1 className="wordInContextHeadline">
-        {removePunctuation(bookmarksToStudy[0].from)}
+        {!isCorrect
+          ? removePunctuation(bookmarksToStudy[0].from)
+          : removePunctuation(bookmarksToStudy[0].to)}
       </h1>
       {exerciseBookmarks.map((option, index) => (
         <s.MultipleChoiceContext
