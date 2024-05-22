@@ -31,7 +31,9 @@ export default function LandingPage() {
             <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/login")}>
               {strings.login}
             </s.WhiteOutlinedNavbarBtn>
-            <s.WhiteFilledNavbarBtn onClick={() => redirect("/create_account")}>
+            <s.WhiteFilledNavbarBtn
+              onClick={() => redirect("/language_preferences")}
+            >
               {strings.register}
             </s.WhiteFilledNavbarBtn>
           </s.NavbarButtonContainer>
@@ -45,13 +47,12 @@ export default function LandingPage() {
       </s.NavbarBg>
 
       <s.PageContent>
-
         <s.HeroColumn>
           <h1>Learn foreign languages with&nbsp;Zeeguu</h1>
           <p className="hero-paragraph">
             {strings.projectDescription_UltraShort}
           </p>
-          <Button onClick={() => redirect("/create_account")}>
+          <Button onClick={() => redirect("/language_preferences")}>
             {strings.getStarted}
             <ArrowForwardRoundedIcon />
           </Button>
