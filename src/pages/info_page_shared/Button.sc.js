@@ -16,11 +16,16 @@ const Button = styled.button`
   border-radius: 4em;
   background-color: ${zeeguuOrange};
   font-weight: 600;
-  border-bottom: solid 0.2em ${zeeguuDarkOrange};
+  box-shadow: 0px 0.2em ${zeeguuDarkOrange};
+  transition: all ease-in 0.08s;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 0.2em;
 
   &:active {
-    border: none;
-    margin: 0.2em 0 0 0;
+    box-shadow: none;
+    transform: translateY(0.2em);
+    transition: all ease-in 0.08s;
   }
 
   //span the full width of a parent
