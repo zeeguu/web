@@ -78,8 +78,8 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
       <Footer>
         <p>
           {strings.dontHaveAnAccount + " "}
-          <a className="bold underlined-link" href="create_account">
-            {strings.createAccount}
+          <a className="bold underlined-link" href="/language_preferences">
+            {strings.getStarted}
           </a>
         </p>
       </Footer>
