@@ -27,16 +27,11 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  let { handleRedirectLinkOrGoTo } = useRedirectLink();
-
   function handleSignIn(e) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
-        handleSuccessfulSignIn(userInfo);
-        /* If a redirect link exists, uses it to redirect the user, 
-        otherwise, uses the location from the function argument. */
-        handleRedirectLinkOrGoTo("/articles");
+        handleSuccessfulSignIn(userInfo, sessionId);
       });
     });
   }
