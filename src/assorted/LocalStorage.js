@@ -11,6 +11,7 @@ const LocalStorage = {
     Name: "name",
     LearnedLanguage: "learned_language",
     NativeLanguage: "native_language",
+    LearnedCefrLevel: "learned_cefr_level",
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
@@ -41,6 +42,30 @@ const LocalStorage = {
 
   isStudent: function () {
     return localStorage[this.Keys.IsStudent] !== "false";
+  },
+
+  getLearnedLanguage: function () {
+    return localStorage[this.Keys.LearnedLanguage];
+  },
+
+  setLearnedLanguage: function (learnedLanguage) {
+    localStorage[this.Keys.LearnedLanguage] = learnedLanguage;
+  },
+
+  getLearnedCefrLevel: function () {
+    return localStorage[this.Keys.LearnedCefrLevel];
+  },
+
+  setLearnedCefrLevel: function (learnedCefrLevel) {
+    localStorage[this.Keys.LearnedCefrLevel] = learnedCefrLevel;
+  },
+
+  getNativeLanguage: function () {
+    return localStorage[this.Keys.NativeLanguage];
+  },
+
+  setNativeLanguage: function (nativeLanguage) {
+    localStorage[this.Keys.NativeLanguage] = nativeLanguage;
   },
 
   selectedTimePeriod: function () {

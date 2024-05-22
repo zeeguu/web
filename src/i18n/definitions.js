@@ -31,6 +31,7 @@ let strings = new LocalizedStrings(
       learnedLanguage: "I want to learn",
       learnedLanguagePlaceholder: "Select language",
       plsProvideValidEmail: "Please provide a valid email.",
+      plsAcceptPrivacyNotice: "Please accept Privacy Notice",
       password: "Password",
       passwordPlaceholder: "Enter Password",
       passwordHelperText: "Must contain at least 4 characters",
@@ -53,6 +54,7 @@ let strings = new LocalizedStrings(
       youCanChangeLater: "You can always change it later",
       yesPlease: "Yes, please",
       noThankYou: "No, thank you",
+      getStarted: "Get Started",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -66,6 +68,7 @@ let strings = new LocalizedStrings(
       //CreateAccount
       nameIsRequired: "Name is required.",
       passwordMustBeMsg: "Password should be at least 4 characters long.",
+      plsAcceptPrivacyPolicy: "You need to agree to our privacy notice.",
       thankYouMsgPrefix:
         "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",

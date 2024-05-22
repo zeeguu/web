@@ -45,6 +45,7 @@ export default function LandingPage() {
       </s.NavbarBg>
 
       <s.PageContent>
+
         <s.HeroColumn>
           <h1>Learn foreign languages with&nbsp;Zeeguu</h1>
           <p className="hero-paragraph">
