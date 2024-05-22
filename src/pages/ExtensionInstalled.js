@@ -10,6 +10,7 @@ import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
 
 import strings from "../i18n/definitions";
+import redirect from "../utils/routing/routing";
 
 export default function ExtensionInstalled({ api }) {
   useEffect(() => {
@@ -30,15 +31,24 @@ export default function ExtensionInstalled({ api }) {
       <Footer>
         <ButtonContainer className={"padding-large"}>
           {getSessionFromCookies() ? (
-            <Button className={"full-width-btn"} href={"/articles"}>
+            <Button
+              className={"full-width-btn"}
+              onClick={() => redirect("/articles")}
+            >
               {strings.goToZeeguuApp}
             </Button>
           ) : (
             <>
-              <Button className={"full-width-btn"} href={"/create_account"}>
+              <Button
+                className={"full-width-btn"}
+                onClick={() => redirect("/language_preferences")}
+              >
                 {strings.createAccount}
               </Button>
-              <Button className={"full-width-btn"} href={"/login"}>
+              <Button
+                className={"full-width-btn"}
+                onClick={() => redirect("/login")}
+              >
                 {strings.login}
               </Button>
             </>
