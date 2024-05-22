@@ -41,7 +41,7 @@ export default function ExtensionInstalled({ api }) {
             <>
               <Button
                 className={"full-width-btn"}
-                onClick={() => redirect("/select_interests")}
+                onClick={() => redirect("/language_preferences")}
               >
                 {strings.createAccount}
               </Button>
