@@ -96,7 +96,7 @@ export default function CreateAccount({
       userInfo,
       (session) => {
         api.getUserDetails((user) => {
-          handleSuccessfulSignIn(user);
+          handleSuccessfulSignIn(user, session);
           setUser(userInfo);
           saveUserInfoIntoCookies(userInfo);
           redirect("/select_interests");
