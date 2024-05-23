@@ -26,7 +26,7 @@ export default function OwnArticles({ api }) {
   }
 
   if (articleList.length === 0) {
-    return <s.TopMessage>{strings.noRecommendedArticles}</s.TopMessage>;
+    return <LoadingAnimation />;
   }
 
   return (

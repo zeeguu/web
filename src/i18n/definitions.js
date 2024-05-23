@@ -267,8 +267,6 @@ let strings = new LocalizedStrings(
 
       noOwnArticles: "There are no own articles.",
 
-      noRecommendedArticles: "Like articles to get recommendations",
-
       //BookmarkedArticles
       noBookmarksYet: "You haven't bookmarked any articles yet.",
 
