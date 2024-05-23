@@ -6,7 +6,7 @@ import {
   zeeguuRed,
 } from "../../components/colors";
 
-const InputFieldWrapper = styled.div`
+const FieldLabelContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -20,7 +20,19 @@ const InputFieldWrapper = styled.div`
     }
   }
 `;
+
+const InputWrapper = styled.div`
+  height: 2.5rem;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+`;
 const Input = styled.input`
+  box-sizing: border-box;
+  width: 100%;
   font-size: 0.9rem;
   height: 2.5rem;
   padding: 0 1rem;
@@ -29,6 +41,14 @@ const Input = styled.input`
   border-radius: 0.3rem;
   &.error {
     border: 1.5px solid ${zeeguuRed};
+  }
+
+  input:focus {
+    outline: transparent;
+    border: 1.5px solid ${zeeguuOrange};
+    &.error {
+      border: 1.5px solid ${zeeguuRed};
+    }
   }
 `;
 const Label = styled.label`
@@ -63,4 +83,11 @@ const ErrorMessage = styled.div`
   color: ${zeeguuRed};
 `;
 
-export { Input, Label, HelperText, ErrorMessage, InputFieldWrapper };
+export {
+  Input,
+  Label,
+  HelperText,
+  ErrorMessage,
+  FieldLabelContainer,
+  InputWrapper,
+};

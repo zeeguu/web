@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "../components/colors";
+import {
+  zeeguuOrange,
+  almostBlack,
+  zeeguuLightYellow,
+  zeeguuVeryLightYellow,
+} from "../components/colors";
 
 const SearchField = styled.div`
   margin-bottom: 1em;
@@ -19,6 +24,16 @@ const SearchField = styled.div`
     font-weight: 300;
     font-size: 0.875em;
     height: 1.5em;
+    &:focus {
+      border: 0.17em solid ${almostBlack};
+      font-weight: 500 !important;
+    }
+  }
+  .searchTextfieldInput {
+    color: ${almostBlack};
+    font-weight: 400;
+    font-size: small;
+    background: ${zeeguuVeryLightYellow};
   }
 `;
 

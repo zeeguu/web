@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import { zeeguuDarkOrange } from "../components/colors";
+import { AlterMenuSC } from "./AlterMenu.sc";
 
 export default function AlterMenu({
   word,
-  isClickOutsideWordSpan,
-  clickedOutsideAlterMenu,
+  hideAlterMenu,
   selectAlternative,
+  hideTranslation,
+  clickedOutsideTranslation,
 }) {
-  const [refToAlterMenu, hasClickedOutside] = useClickOutside();
+  const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    if (hasClickedOutside && isClickOutsideWordSpan) {
-      clickedOutsideAlterMenu();
+    if (clickedOutsideAlterMenu && clickedOutsideTranslation) {
+      hideAlterMenu();
     }
-  }, [hasClickedOutside, clickedOutsideAlterMenu]);
+  }, [clickedOutsideAlterMenu]);
 
   function handleKeyDown(e) {
     if (e.code === "Enter") {
@@ -42,29 +44,35 @@ export default function AlterMenu({
   }
 
   return (
-    <div ref={refToAlterMenu} className="altermenu">
+    <AlterMenuSC ref={refToAlterMenu}>
       {word.alternatives.map((each) => (
         <div
           key={each.translation}
-          onClick={(e) => selectAlternative(each.translation, shortenSource(each))}
+          onClick={(e) =>
+            selectAlternative(each.translation, shortenSource(each))
+          }
           className="additionalTrans"
         >
           {each.translation}
-          <div style={{ fontSize: 9, color: zeeguuDarkOrange}}>
+          <div style={{ fontSize: 9, color: zeeguuDarkOrange }}>
             {shortenSource(each)}
           </div>
         </div>
       ))}
 
       <input
-        className="searchTextfieldInput matchWidth"
+        className="ownTranslationInput matchWidth"
         type="text"
         id="#userAlternative"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e)}
-        placeholder="Own translation..."
+        placeholder="add own translation..."
       />
-    </div>
+
+      <div className="alterMenuLink" onClick={(e) => hideTranslation(e, word)}>
+        Hide Translation
+      </div>
+    </AlterMenuSC>
   );
 }

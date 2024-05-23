@@ -17,6 +17,8 @@ import {
 
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
+import { isMobile } from "../utils/misc/browserDetection";
+
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
@@ -376,11 +378,13 @@ export default function Exercises({
           </p>
         )}
       </s.ExercisesColumn>
-      <ActivityTimer
-        message="Total time in this exercise session"
-        activeSessionDuration={activeSessionDuration}
-        clockActive={clockActive}
-      />
+      {!isMobile() && (
+        <ActivityTimer
+          message="Total time in this exercise session"
+          activeSessionDuration={activeSessionDuration}
+          clockActive={clockActive}
+        />
+      )}
     </>
   );
 }

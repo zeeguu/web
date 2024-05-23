@@ -3,9 +3,7 @@ import {
   almostBlack,
   zeeguuLightYellow,
   zeeguuOrange,
-  zeeguuVeryLightYellow,
-  translationHover,
-  lightOrange,
+  zeeguuTransparentLightOrange,
 } from "../components/colors";
 
 const TranslatableText = styled.div`
@@ -24,6 +22,7 @@ const TranslatableText = styled.div`
     animation: blink 1.5s linear infinite;
     color: ${zeeguuOrange};
   }
+
   @keyframes blink {
     0% {
       opacity: 0.2;
@@ -39,8 +38,7 @@ const TranslatableText = styled.div`
   /*  z-tag tag hover changes color, translated word hover no underline or color*/
 
   z-tag:hover {
-    color: ${translationHover} !important;
-    background-color: ${lightOrange};
+    background-color: ${zeeguuTransparentLightOrange};
   }
 
   /* the translation - above the origin word
@@ -51,8 +49,9 @@ const TranslatableText = styled.div`
   z-tag z-tran {
     margin-top: 0.2em;
     margin-bottom: -0.1em;
-    margin-left: 0.1em;
+    margin-left: -0.3em;
     padding: 2px;
+    padding-left: 0.3em;
     border-radius: 0.3em 0.3em 0.3em 0.3em;
     background-clip: padding-box;
     background-color: ${zeeguuLightYellow};
@@ -62,44 +61,27 @@ const TranslatableText = styled.div`
     font-weight: 600;
     color: ${almostBlack};
     text-transform: lowercase;
-    text-align: center;
+    text-align: left;
+    display: flex;
   }
 
   z-tag z-tran:hover {
     color: black;
   }
 
-  /*
-    the original word decoration; a simple dashed underline highlights
-    the fact that we are not sure of the translation; underline becomes
-    solid if the user selects an alternative, confirms this one, or
-    uploads a new translation
-*/
   z-tag z-orig {
     border-bottom: 1px dashed ${zeeguuOrange};
     width: 100%;
     color: ${zeeguuOrange};
-  }
-
-  /* when there are multiple translations, we mark this with a little
-green downwards pointing triangle; we used to mark also single alternatives
- but for now there's no marking for them */
-
-  z-tag z-tran moreAlternatives {
-    font-size: 0.5em;
-    float: right;
-    width: 1em;
-    padding-left: 0.5em;
-  }
-
-  z-tag z-tran moreAlternatives {
+    font-weight: 600;
   }
 
   z-tran > .arrow {
-    visibility: hidden;
-    margin: 0;
     padding: 0;
+    margin-left: auto;
+    color: rgba(0, 0, 0, 0.2);
   }
+
   z-tran:hover > .arrow {
     visibility: visible;
   }
@@ -108,21 +90,6 @@ green downwards pointing triangle; we used to mark also single alternatives
     content: attr(chosen);
   }
 
-  z-tag z-tran moreAlternatives:after {
-    content: "▼";
-    color: ${almostBlack};
-  }
-
-  /* once the user has
- - selected an alternative we change
-  the class to handSelected
- - contributed their own alternative
-  by typing (handContributing) we change
-  the class to handContributed
-
-  these classes currently show a mini
-  animation
- */
   .handSelected,
   .handContributed {
     width: 1.5em;
@@ -131,7 +98,7 @@ green downwards pointing triangle; we used to mark also single alternatives
 
   .handSelected:after,
   .handContributed:after {
-    display: hidden;
+    display: none;
     opacity: 0.1;
     transition:
       visibility 0s 2s,
@@ -163,46 +130,6 @@ that made the UI too heavy ... */
 
   .selectedAlternativeOrig,
   .contributedAlternativeOrig {
-  }
-
-  .altermenu {
-    position: absolute;
-    max-width: 30em;
-    background-color: ${zeeguuVeryLightYellow};
-    border-radius: 0.3em;
-    margin-top: 0.5em;
-  }
-
-  .altermenu .additionalTrans {
-    height: 100%;
-    text-transform: lowercase;
-    white-space: normal;
-    border-bottom: 1px solid ${zeeguuLightYellow}!important;
-    color: ${almostBlack};
-    line-height: 1em;
-    padding: 0.3em;
-    border: none;
-    cursor: pointer;
-    font-size: medium;
-  }
-
-  .altermenu * {
-    font-family: Montserrat;
-    font-weight: 400;
-    font-size: 0.9em;
-  }
-
-  .alterMenuContainer {
-    display: none;
-  }
-
-  .searchTextfieldInput {
-    color: ${almostBlack};
-    font-weight: 400;
-    border: none;
-    padding: 0.3em;
-    font-size: x-small;
-    background: ${zeeguuVeryLightYellow};
   }
 `;
 

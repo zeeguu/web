@@ -1,40 +1,58 @@
 import styled, { css } from "styled-components";
 
 const VerticalAlignment = css`
-  width: 100%;
   flex-direction: column;
-  gap: 1rem;
+  align-items: stretch;
+  justify-content: center;
+  .link {
+    text-align: center;
+  }
+
   @media (max-width: 768px) {
-    align-items: stretch;
-    .link {
-      text-align: center;
-      flex: 1;
+    padding: 0;
+  }
+
+  //inner padding that controlls width of full-width buttons
+  &.padding-medium {
+    padding: 0 3.25rem 0 3.25rem;
+    @media (max-width: 768px) {
+      padding: 0;
+    }
+  }
+
+  &.padding-large {
+    padding: 0 7.75rem 0 7.75rem;
+    @media (max-width: 768px) {
+      padding: 0;
     }
   }
 `;
 
-//default content alignment is horizontal for big screens
-//and vertical for small screens
-const ButtonContainer = styled.div`
-  width: 100%;
-  display: flex;
+const HorizontalAlignment = css`
   flex-direction: row;
-  justify-content: center;
   align-items: center;
+  padding: 0;
+  @media (max-width: 768px) {
+    ${VerticalAlignment}
+  }
+`;
+
+//default content alignment is vertical
+const ButtonContainer = styled.div`
+  overflow: hidden;
   gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  white-space: nowrap;
+  ${VerticalAlignment}
+
+  &.row-of-buttons {
+    ${HorizontalAlignment}
+  }
 
   .link {
     margin: 0.5rem 0;
-  }
-  //enforces vertical alignment of its content for all screen sizes
-  ${(props) =>
-    props.contentAlignment === "vertical" &&
-    css`
-      ${VerticalAlignment}
-    `}
-
-  @media (max-width: 768px) {
-    ${VerticalAlignment}
   }
 `;
 

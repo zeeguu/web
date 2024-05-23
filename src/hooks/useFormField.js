@@ -10,7 +10,13 @@ export default function useFormField(initialState) {
   const [currentState, setState] = useState(initialState);
 
   function handleInputChange(e) {
-    setState(e.target.value);
+    switch (e.target.type) {
+      case "checkbox":
+        setState(e.target.checked);
+        break;
+      default:
+        setState(e.target.value);
+    }
   }
 
   function resetInputState() {
