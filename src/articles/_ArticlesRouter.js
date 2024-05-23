@@ -1,5 +1,7 @@
 import FindArticles from "./FindArticles";
 import BookmarkedArticles from "./BookmarkedArticles";
+import { useEffect, useState } from "react";
+
 
 import { PrivateRoute } from "../PrivateRoute";
 import ClassroomArticles from "./ClassroomArticles";
@@ -13,17 +15,35 @@ import RecommendedArticles from "./RecommendedArticles";
 import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
 import { Recommend } from "@mui/icons-material";
+import { set } from "date-fns";
 
 export default function ArticlesRouter({ api, hasExtension, isChrome }) {
-  let tabsAndLinks = {
+ 
+  const [tabsAndLinks, setTabsAndLinks] = useState({
     [strings.homeTab]: "/articles",
     [strings.saved]: "/articles/ownTexts",
-    [strings.forYou]: "/articles/forYou",
-  };
+  });
 
-  if (LocalStorage.isStudent()) {
-    tabsAndLinks[strings.classroomTab] = "/articles/classroom";
-  }
+  useEffect(() => {
+    if (LocalStorage.isStudent()) {
+      setTabsAndLinks(prevTabsAndLinks => ({
+        ...prevTabsAndLinks,
+        [strings.classroomTab]: "/articles/classroom",
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
+    api.getBookmarkedArticles((articles) => {
+      const likedArticles = articles.filter(article => article.liked);
+      if (likedArticles.length >= 5) {
+        setTabsAndLinks(prevTabsAndLinks => ({
+          ...prevTabsAndLinks,
+          [strings.forYou]: "/articles/forYou",
+        }));
+      }
+    });
+  }, []);
 
   return (
     <>
