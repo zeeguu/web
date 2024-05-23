@@ -9,6 +9,7 @@ import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import { zeeguuSalmonOrange, zeeguuDarkRed } from "../components/colors";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
+import { APP_DOMAIN } from "../appConstants";
 
 export default function ArticleOverview({
   article,
@@ -159,13 +160,17 @@ export default function ArticleOverview({
         </s.Topics>
         <s.StatContainer>
           <s.Difficulty>
-            <span style={{ borderColor: linearToColour(difficulty) }}>
+            <span style={{ backgroundColor: linearToColour(difficulty) }}>
               {linearToCEFRLevel(difficulty)}
             </span>
           </s.Difficulty>
-          <s.WordCount style={{ marginRight: "1em" }}>
+          <s.ReadingTimeContainer>
+            <img
+              src={APP_DOMAIN + "/static/icons/read-time-icon.png"}
+              alt="read time icon"
+            ></img>
             {estimateReadingTime(article.metrics.word_count)}
-          </s.WordCount>
+          </s.ReadingTimeContainer>
         </s.StatContainer>
       </s.BottomContainer>
       {article.video ? (

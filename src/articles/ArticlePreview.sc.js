@@ -49,6 +49,7 @@ const ArticleContent = styled.div`
     max-height: 10em;
     border-radius: 1em;
     align-self: center;
+    object-fit: cover;
 
     @media (max-width: 990px) {
       max-width: 14em;
@@ -85,18 +86,33 @@ const Title = styled.div`
 
 const Difficulty = styled.div`
   display: inline-block;
-
+  margin-right: 2em;
   span {
     height: 1.2em;
-    margin-right: 1em;
-    border: solid ${zeeguuOrange};
     border-radius: 1.0416666666666667em;
-    padding: 0.20833333333333334em 1.3541666666666667em;
-    font-size: 0.8333333333333334em;
+    padding: 0.20833333333333334em 1.1em;
+    font-weight: 550;
+    color: white;
+    text-shadow:
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000;
   }
 `;
 
 const WordCount = styled(Difficulty)``;
+
+const ReadingTimeContainer = styled(Difficulty)`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.5em;
+  img {
+    width: 1.5em;
+    height: 1.5em;
+  }
+`;
 
 let Summary = styled.div`
   font-size: 0.83em;
@@ -135,6 +151,11 @@ let BottomContainer = styled.div`
   margin-top: 0.5em;
   align-items: center;
   justify-content: space-between;
+  @media (max-width: 900px) {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1em;
+  }
 `;
 
 let StatContainer = styled.div`
@@ -161,6 +182,7 @@ export {
   InvisibleTitleButton,
   ArticleContent,
   SourceContainer,
+  ReadingTimeContainer,
   StatContainer,
   BottomContainer,
   FeedName,
