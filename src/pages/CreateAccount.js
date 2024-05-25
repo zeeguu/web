@@ -18,7 +18,6 @@ import InputField from "./info_page_shared/InputField";
 import Footer from "./info_page_shared/Footer";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
-import Checkbox from "../components/modal_shared/Checkbox";
 import Modal from "../components/modal_shared/Modal";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
@@ -33,21 +32,19 @@ export default function CreateAccount({
 }) {
   const user = useContext(UserContext);
 
-  const learnedLanguage = LocalStorage.getLearnedLanguage() || "de";
-  const nativeLanguage = LocalStorage.getNativeLanguage() || "en";
-  const learnedCefrLevel = LocalStorage.getLearnedCefrLevel() || "1";
+  const learnedLanguage_Initial = LocalStorage.getLearnedLanguage_Initial();
+  const nativeLanguage_Initial = LocalStorage.getNativeLanguage_Initial();
+  const learnedCefrLevel_Initial = LocalStorage.getLearnedCefrLevel_Initial();
 
-  const [learned_language] = useState(learnedLanguage);
-  const [native_language] = useState(nativeLanguage);
-  const [learned_cefr_level] = useState(learnedCefrLevel);
+  const [learned_language_initial] = useState(learnedLanguage_Initial);
+  const [native_language_initial] = useState(nativeLanguage_Initial);
+  const [learned_cefr_level_initial] = useState(learnedCefrLevel_Initial);
 
   const [inviteCode, handleInviteCodeChange] = useFormField("");
   const [name, handleNameChange] = useFormField("");
   const [email, handleEmailChange] = useFormField("");
   const [password, handlePasswordChange] = useFormField("");
   const [checkPrivacyNote, handleCheckPrivacyNote] = useFormField(false);
-
-  const [isPrivacyNoticeAccepted, setIsPrivacyNoticeAccepted] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(false);
@@ -74,6 +71,13 @@ export default function CreateAccount({
     });
   }, []);
 
+  //Temp data needed only for account creation
+  function clearInitialLanguageSettings() {
+    LocalStorage.removeLearnedLanguage_Initial();
+    LocalStorage.removeCefrLevel_Initial();
+    LocalStorage.removeNativeLanguage_Initial();
+  }
+
   function handleCreate(e) {
     e.preventDefault();
 
@@ -85,9 +89,9 @@ export default function CreateAccount({
       ...user,
       name: name,
       email: email,
-      learned_language: learned_language,
-      learned_cefr_level: learned_cefr_level,
-      native_language: native_language,
+      learned_language: learned_language_initial,
+      learned_cefr_level: learned_cefr_level_initial,
+      native_language: native_language_initial,
     };
 
     api.addUser(
@@ -99,6 +103,7 @@ export default function CreateAccount({
           handleSuccessfulSignIn(user, session);
           setUser(userInfo);
           saveUserInfoIntoCookies(userInfo);
+          clearInitialLanguageSettings()
           redirect("/select_interests");
         });
       },

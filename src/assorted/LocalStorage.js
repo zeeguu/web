@@ -9,7 +9,7 @@ const LocalStorage = {
   Keys: {
     Session: "sessionID",
     Name: "name",
-    
+
     // language related keys used in the logged-in user session
     LearnedLanguage: "learned_language",
     NativeLanguage: "native_language",
@@ -76,13 +76,16 @@ const LocalStorage = {
     localStorage[this.Keys.NativeLanguage] = nativeLanguage;
   },
 
-
   getLearnedLanguage_Initial: function () {
     return localStorage[this.Keys.LearnedLanguage_Initial];
   },
 
   setLearnedLanguage_Initial: function (learnedLanguage_Initial) {
     localStorage[this.Keys.LearnedLanguage_Initial] = learnedLanguage_Initial;
+  },
+
+  removeLearnedLanguage_Initial: function () {
+    localStorage.removeItem(this.Keys.LearnedLanguage_Initial);
   },
 
   getLearnedCefrLevel_Initial: function () {
@@ -93,6 +96,10 @@ const LocalStorage = {
     localStorage[this.Keys.LearnedCefrLevel_Initial] = learnedCefrLevel_Initial;
   },
 
+  removeCefrLevel_Initial: function () {
+    localStorage.removeItem(this.Keys.LearnedCefrLevel_Initial);
+  },
+
   getNativeLanguage_Initial: function () {
     return localStorage[this.Keys.NativeLanguage_Initial];
   },
@@ -101,6 +108,9 @@ const LocalStorage = {
     localStorage[this.Keys.NativeLanguage_Initial] = nativeLanguage_Initial;
   },
 
+  removeNativeLanguage_Initial: function () {
+    localStorage.removeItem(this.Keys.NativeLanguage_Initial);
+  },
 
   selectedTimePeriod: function () {
     return localStorage[this.Keys.SelectedTimePeriod]

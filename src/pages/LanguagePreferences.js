@@ -24,9 +24,11 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
 export default function LanguagePreferences({ api }) {
-  const [learned_language, handleLearned_language_change] = useFormField("");
-  const [native_language, handleNative_language_change] = useFormField("en");
-  const [learned_cefr_level, handleLearned_cefr_level_change] =
+  const [learned_language_initial, handleLearned_language_initial_change] =
+    useFormField("");
+  const [native_language_initial, handleNative_language_initial_change] =
+    useFormField("en");
+  const [learned_cefr_level_initial, handleLearned_cefr_level_initial_change] =
     useFormField("");
   const [systemLanguages, setSystemLanguages] = useState();
   const [errorMessage, setErrorMessage] = useState("");
@@ -40,30 +42,35 @@ export default function LanguagePreferences({ api }) {
     // eslint-disable-next-line
   }, []);
 
+  //The useEffect hooks below take care of updating initial language preferences
+  //in real time
   useEffect(() => {
-    LocalStorage.setLearnedLanguage(learned_language);
-  }, [learned_language]);
+    LocalStorage.setLearnedLanguage_Initial(learned_language_initial);
+  }, [learned_language_initial]);
 
   useEffect(() => {
-    LocalStorage.setLearnedCefrLevel(learned_cefr_level);
-  }, [learned_cefr_level]);
+    LocalStorage.setLearnedCefrLevel_Initial(learned_cefr_level_initial);
+  }, [learned_cefr_level_initial]);
 
   useEffect(() => {
-    LocalStorage.setNativeLanguage(native_language);
-  }, [native_language]);
+    LocalStorage.setNativeLanguage_Initial(native_language_initial);
+  }, [native_language_initial]);
 
   if (!systemLanguages) {
     return <LoadingAnimation />;
   }
 
   let validatorRules = [
-    [learned_language === "", "Please select language you want to practice"],
     [
-      learned_cefr_level === "",
+      learned_language_initial === "",
+      "Please select language you want to practice",
+    ],
+    [
+      learned_cefr_level_initial === "",
       "Please select your current level in language you want to practice",
     ],
     [
-      native_language === "",
+      native_language_initial === "",
       "Please select language you want to translations in",
     ],
   ];
@@ -96,36 +103,36 @@ export default function LanguagePreferences({ api }) {
           )}
           <FormSection>
             <SelectOptions
-              value={learned_language}
+              value={learned_language_initial}
               label={strings.learnedLanguage}
               placeholder={strings.learnedLanguagePlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"practiced-languages"}
               options={systemLanguages.learnable_languages}
-              onChangeHandler={handleLearned_language_change}
+              onChangeHandler={handleLearned_language_initial_change}
             />
 
             <SelectOptions
-              value={learned_cefr_level}
+              value={learned_cefr_level_initial}
               label={strings.levelOfLearnedLanguage}
               placeholder={strings.levelOfLearnedLanguagePlaceholder}
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               id={"level-of-practiced-languages"}
               options={CEFR_LEVELS}
-              onChangeHandler={handleLearned_cefr_level_change}
+              onChangeHandler={handleLearned_cefr_level_initial_change}
             />
 
             <SelectOptions
-              value={native_language}
+              value={native_language_initial}
               label={strings.baseLanguage}
               placeholder={strings.baseLanguagePlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"translation-languages"}
               options={systemLanguages.native_languages}
-              onChangeHandler={handleNative_language_change}
+              onChangeHandler={handleNative_language_initial_change}
             />
           </FormSection>
           <p>{strings.youCanChangeLater}</p>
