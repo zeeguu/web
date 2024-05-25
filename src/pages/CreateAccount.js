@@ -71,8 +71,8 @@ export default function CreateAccount({
     });
   }, []);
 
-  //Temp data needed only for account creation
-  function clearInitialLanguageSettings() {
+  //Temp local storage entries needed only for account creation
+  function clearInitialLanguageEntries() {
     LocalStorage.removeLearnedLanguage_Initial();
     LocalStorage.removeCefrLevel_Initial();
     LocalStorage.removeNativeLanguage_Initial();
@@ -103,7 +103,7 @@ export default function CreateAccount({
           handleSuccessfulSignIn(user, session);
           setUser(userInfo);
           saveUserInfoIntoCookies(userInfo);
-          clearInitialLanguageSettings()
+          clearInitialLanguageEntries()
           redirect("/select_interests");
         });
       },

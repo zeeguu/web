@@ -24,11 +24,11 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
 export default function LanguagePreferences({ api }) {
-  const [learned_language_initial, handleLearned_language_initial_change] =
+  const [learned_language_initial, handleLearned_language_initial] =
     useFormField("");
-  const [native_language_initial, handleNative_language_initial_change] =
+  const [native_language_initial, handleNative_language_initial] =
     useFormField("en");
-  const [learned_cefr_level_initial, handleLearned_cefr_level_initial_change] =
+  const [learned_cefr_level_initial, handleLearned_cefr_level_initial] =
     useFormField("");
   const [systemLanguages, setSystemLanguages] = useState();
   const [errorMessage, setErrorMessage] = useState("");
@@ -110,7 +110,7 @@ export default function LanguagePreferences({ api }) {
               optionValue={(e) => e.code}
               id={"practiced-languages"}
               options={systemLanguages.learnable_languages}
-              onChangeHandler={handleLearned_language_initial_change}
+              onChangeHandler={handleLearned_language_initial}
             />
 
             <SelectOptions
@@ -121,7 +121,7 @@ export default function LanguagePreferences({ api }) {
               optionValue={(e) => e.value}
               id={"level-of-practiced-languages"}
               options={CEFR_LEVELS}
-              onChangeHandler={handleLearned_cefr_level_initial_change}
+              onChangeHandler={handleLearned_cefr_level_initial}
             />
 
             <SelectOptions
@@ -132,7 +132,7 @@ export default function LanguagePreferences({ api }) {
               optionValue={(e) => e.code}
               id={"translation-languages"}
               options={systemLanguages.native_languages}
-              onChangeHandler={handleNative_language_initial_change}
+              onChangeHandler={handleNative_language_initial}
             />
           </FormSection>
           <p>{strings.youCanChangeLater}</p>
