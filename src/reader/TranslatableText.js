@@ -39,7 +39,7 @@ export function TranslatableText({
         </div>
       )),
     );
-  }, [paragraphs, translationCount, isCorrect]);
+  }, [paragraphs, translationCount, translating, pronouncing, isCorrect]);
 
   useEffect(() => {
     if (setIsRendered) setIsRendered(true);

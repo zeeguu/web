@@ -9,8 +9,17 @@ const LocalStorage = {
   Keys: {
     Session: "sessionID",
     Name: "name",
+
+    // language related keys used in the logged-in user session
     LearnedLanguage: "learned_language",
     NativeLanguage: "native_language",
+    LearnedCefrLevel: "learned_cefr_level",
+
+    // language related keys used for initial language set-up during account creation
+    LearnedLanguage_Initial: "learned_language_initial",
+    NativeLanguage_Initial: "native_language_initial",
+    LearnedCefrLevel_Initial: "learned_cefr_level_initial",
+
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
@@ -41,6 +50,66 @@ const LocalStorage = {
 
   isStudent: function () {
     return localStorage[this.Keys.IsStudent] !== "false";
+  },
+
+  getLearnedLanguage: function () {
+    return localStorage[this.Keys.LearnedLanguage];
+  },
+
+  setLearnedLanguage: function (learnedLanguage) {
+    localStorage[this.Keys.LearnedLanguage] = learnedLanguage;
+  },
+
+  getLearnedCefrLevel: function () {
+    return localStorage[this.Keys.LearnedCefrLevel];
+  },
+
+  setLearnedCefrLevel: function (learnedCefrLevel) {
+    localStorage[this.Keys.LearnedCefrLevel] = learnedCefrLevel;
+  },
+
+  getNativeLanguage: function () {
+    return localStorage[this.Keys.NativeLanguage];
+  },
+
+  setNativeLanguage: function (nativeLanguage) {
+    localStorage[this.Keys.NativeLanguage] = nativeLanguage;
+  },
+
+  getLearnedLanguage_Initial: function () {
+    return localStorage[this.Keys.LearnedLanguage_Initial];
+  },
+
+  setLearnedLanguage_Initial: function (learnedLanguage_Initial) {
+    localStorage[this.Keys.LearnedLanguage_Initial] = learnedLanguage_Initial;
+  },
+
+  removeLearnedLanguage_Initial: function () {
+    localStorage.removeItem(this.Keys.LearnedLanguage_Initial);
+  },
+
+  getLearnedCefrLevel_Initial: function () {
+    return localStorage[this.Keys.LearnedCefrLevel_Initial];
+  },
+
+  setLearnedCefrLevel_Initial: function (learnedCefrLevel_Initial) {
+    localStorage[this.Keys.LearnedCefrLevel_Initial] = learnedCefrLevel_Initial;
+  },
+
+  removeCefrLevel_Initial: function () {
+    localStorage.removeItem(this.Keys.LearnedCefrLevel_Initial);
+  },
+
+  getNativeLanguage_Initial: function () {
+    return localStorage[this.Keys.NativeLanguage_Initial];
+  },
+
+  setNativeLanguage_Initial: function (nativeLanguage_Initial) {
+    localStorage[this.Keys.NativeLanguage_Initial] = nativeLanguage_Initial;
+  },
+
+  removeNativeLanguage_Initial: function () {
+    localStorage.removeItem(this.Keys.NativeLanguage_Initial);
   },
 
   selectedTimePeriod: function () {

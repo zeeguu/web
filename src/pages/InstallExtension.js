@@ -11,6 +11,7 @@ import { getExtensionInstallationLinks } from "../utils/extension/extensionInsta
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 import strings from "../i18n/definitions";
+import redirect from "../utils/routing/routing";
 
 export default function InstallExtension() {
   return (
@@ -26,8 +27,11 @@ export default function InstallExtension() {
         <FullWidthImage src={"find-extension.png"} />
       </Main>
       <Footer>
-        <ButtonContainer contentAlignment={"vertical"}>
-          <Button href={getExtensionInstallationLinks()}>
+        <ButtonContainer className={"padding-large"}>
+          <Button
+            className={"full-width-btn"}
+            onClick={() => redirect(getExtensionInstallationLinks())}
+          >
             <FileDownloadOutlinedIcon fontSize="small" />
             {strings.installTheExtension}
           </Button>

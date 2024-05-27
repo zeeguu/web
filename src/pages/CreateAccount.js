@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import redirect from "../utils/routing/routing";
-import { isMobile } from "../utils/misc/browserDetection";
+import * as sC from "../components/modal_shared/Checkbox.sc";
 import useFormField from "../hooks/useFormField";
+
+import { UserContext } from "../contexts/UserContext";
+import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 
 import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
@@ -15,26 +18,65 @@ import InputField from "./info_page_shared/InputField";
 import Footer from "./info_page_shared/Footer";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
-import Checkbox from "../components/modal_shared/Checkbox";
-
+import Modal from "../components/modal_shared/Modal";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
 import * as EmailValidator from "email-validator";
+import LocalStorage from "../assorted/LocalStorage";
 
-export default function CreateAccount({ api, handleSuccessfulSignIn }) {
+export default function CreateAccount({
+  api,
+  handleSuccessfulSignIn,
+  setUser,
+}) {
+  const user = useContext(UserContext);
+
+  const learnedLanguage_Initial = LocalStorage.getLearnedLanguage_Initial();
+  const nativeLanguage_Initial = LocalStorage.getNativeLanguage_Initial();
+  const learnedCefrLevel_Initial = LocalStorage.getLearnedCefrLevel_Initial();
+
+  const [learned_language_initial] = useState(learnedLanguage_Initial);
+  const [native_language_initial] = useState(nativeLanguage_Initial);
+  const [learned_cefr_level_initial] = useState(learnedCefrLevel_Initial);
+
   const [inviteCode, handleInviteCodeChange] = useFormField("");
   const [name, handleNameChange] = useFormField("");
   const [email, handleEmailChange] = useFormField("");
   const [password, handlePasswordChange] = useFormField("");
+  const [checkPrivacyNote, handleCheckPrivacyNote] = useFormField(false);
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPrivacyNotice, setShowPrivacyNotice] = useState(false);
+  const [privacyNoticeText, setPrivacyNoticeText] = useState([]);
 
   let validatorRules = [
     [name === "", strings.nameIsRequired],
     [!EmailValidator.validate(email), strings.plsProvideValidEmail],
     [password.length < 4, strings.passwordMustBeMsg],
+    [!checkPrivacyNote, strings.plsAcceptPrivacyPolicy],
   ];
+
+  useState(() => {
+    fetch(
+      "https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md",
+    ).then((response) => {
+      response.text().then((privacyText) => {
+        let text = privacyText
+          .split("==============")[1]
+          .split("\n\n")
+          .filter((text) => text !== "");
+        setPrivacyNoticeText(text);
+      });
+    });
+  }, []);
+
+  //Temp local storage entries needed only for account creation
+  function clearInitialLanguageEntries() {
+    LocalStorage.removeLearnedLanguage_Initial();
+    LocalStorage.removeCefrLevel_Initial();
+    LocalStorage.removeNativeLanguage_Initial();
+  }
 
   function handleCreate(e) {
     e.preventDefault();
@@ -44,18 +86,25 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
     }
 
     let userInfo = {
+      ...user,
       name: name,
       email: email,
+      learned_language: learned_language_initial,
+      learned_cefr_level: learned_cefr_level_initial,
+      native_language: native_language_initial,
     };
 
-    api.addBasicUser(
+    api.addUser(
       inviteCode,
       password,
       userInfo,
       (session) => {
         api.getUserDetails((user) => {
-          handleSuccessfulSignIn(user);
-          redirect("/language_preferences");
+          handleSuccessfulSignIn(user, session);
+          setUser(userInfo);
+          saveUserInfoIntoCookies(userInfo);
+          clearInitialLanguageEntries()
+          redirect("/select_interests");
         });
       },
       (error) => {
@@ -66,15 +115,26 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
 
   return (
     <InfoPage type={"narrow"}>
+      <Modal
+        open={showPrivacyNotice}
+        onClose={() => {
+          setShowPrivacyNotice(false);
+        }}
+      >
+        <>
+          <h1>Privacy Notice</h1>
+          {privacyNoticeText.map((par) => (
+            <>
+              <p>{par}</p>
+              <br></br>
+            </>
+          ))}
+        </>
+      </Modal>
       <Header>
         <Heading>Create Beta&nbsp;Account</Heading>
       </Header>
       <Main>
-        <p>
-          To receive an <span className="bold">invite code</span> or to share
-          your feedback, reach out to us at{" "}
-          <span className="bold">{strings.zeeguuTeamEmail}</span>
-        </p>
         <Form action={""} method={"POST"}>
           {errorMessage && (
             <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
@@ -88,6 +148,12 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
               placeholder={strings.inviteCodePlaceholder}
               value={inviteCode}
               onChange={handleInviteCodeChange}
+              helperText={
+                <div>
+                  No invite code? Request it at:{" "}
+                  <span className="bold">{strings.zeeguuTeamEmail}</span>
+                </div>
+              }
             />
 
             <InputField
@@ -122,27 +188,35 @@ export default function CreateAccount({ api, handleSuccessfulSignIn }) {
             />
           </FormSection>
           <FormSection>
-            <Checkbox
-              label={
-                <>
-                  By checking this box you agree to our{" "}
-                  <a
-                    className="bold underlined-link"
-                    href="https://raw.githubusercontent.com/zeeguu/browser-extension/main/PRIVACY.md"
-                    target={isMobile() ? "_self" : "_blank"}
-                  >
-                    {strings.privacyNotice}
-                  </a>
-                </>
-              }
-            />
+            <sC.CheckboxWrapper>
+              <input
+                onChange={handleCheckPrivacyNote}
+                checked={checkPrivacyNote}
+                id="checkbox"
+                name=""
+                value=""
+                type="checkbox"
+              ></input>
+              <label>
+                By checking this box you agree to our &nbsp;
+                <a
+                  onClick={() => {
+                    setShowPrivacyNotice(true);
+                  }}
+                >
+                  {strings.privacyNotice}
+                </a>
+              </label>
+            </sC.CheckboxWrapper>
           </FormSection>
-          <ButtonContainer>
-            <Button onClick={handleCreate}>{strings.createAccount}</Button>
-          </ButtonContainer>
         </Form>
       </Main>
       <Footer>
+        <ButtonContainer className={"padding-medium"}>
+          <Button className={"full-width-btn"} onClick={handleCreate}>
+            {strings.createAccount}
+          </Button>
+        </ButtonContainer>
         <p>
           {strings.alreadyHaveAccount + " "}
           <a className="bold underlined-link" href="/login">

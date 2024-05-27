@@ -1,7 +1,6 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 
-import { UserContext } from "../contexts/UserContext";
-import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
+import LocalStorage from "../assorted/LocalStorage";
 
 import redirect from "../utils/routing/routing";
 import useFormField from "../hooks/useFormField";
@@ -24,11 +23,12 @@ import LoadingAnimation from "../components/LoadingAnimation";
 
 import { CEFR_LEVELS } from "../assorted/cefrLevels";
 
-export default function LanguagePreferences({ api, setUser }) {
-  const user = useContext(UserContext);
-  const [learned_language, handleLearned_language_change] = useFormField("");
-  const [native_language, handleNative_language_change] = useFormField("en");
-  const [learned_cefr_level, handleLearned_cefr_level_change] =
+export default function LanguagePreferences({ api }) {
+  const [learned_language_initial, handleLearned_language_initial] =
+    useFormField("");
+  const [native_language_initial, handleNative_language_initial] =
+    useFormField("en");
+  const [learned_cefr_level_initial, handleLearned_cefr_level_initial] =
     useFormField("");
   const [systemLanguages, setSystemLanguages] = useState();
   const [errorMessage, setErrorMessage] = useState("");
@@ -42,46 +42,45 @@ export default function LanguagePreferences({ api, setUser }) {
     // eslint-disable-next-line
   }, []);
 
+  //The useEffect hooks below take care of updating initial language preferences
+  //in real time
+  useEffect(() => {
+    LocalStorage.setLearnedLanguage_Initial(learned_language_initial);
+  }, [learned_language_initial]);
+
+  useEffect(() => {
+    LocalStorage.setLearnedCefrLevel_Initial(learned_cefr_level_initial);
+  }, [learned_cefr_level_initial]);
+
+  useEffect(() => {
+    LocalStorage.setNativeLanguage_Initial(native_language_initial);
+  }, [native_language_initial]);
+
   if (!systemLanguages) {
     return <LoadingAnimation />;
   }
 
   let validatorRules = [
-    [learned_language === "", "Please select language you want to practice"],
     [
-      learned_cefr_level === "",
+      learned_language_initial === "",
+      "Please select language you want to practice",
+    ],
+    [
+      learned_cefr_level_initial === "",
       "Please select your current level in language you want to practice",
     ],
     [
-      native_language === "",
+      native_language_initial === "",
       "Please select language you want to translations in",
     ],
   ];
 
-  let userInfo = {
-    ...user,
-    learned_language: learned_language,
-    learned_cefr_level: learned_cefr_level,
-    native_language: native_language,
-  };
-
-  const modifyCEFRlevel = (languageID, cefrLevel) => {
-    api.modifyCEFRlevel(languageID, cefrLevel);
-  };
-
-  function updateUser(e) {
+  function validateAndRedirect(e) {
     e.preventDefault();
-
     if (!validator(validatorRules, setErrorMessage)) {
       return;
     }
-
-    api.saveUserDetails(userInfo, setErrorMessage, () => {
-      modifyCEFRlevel(learned_language, learned_cefr_level);
-      setUser(userInfo);
-      saveUserInfoIntoCookies(userInfo);
-      redirect("/select_interests");
-    });
+    redirect("/create_account");
   }
 
   return (
@@ -92,50 +91,62 @@ export default function LanguagePreferences({ api, setUser }) {
         </Heading>
       </Header>
       <Main>
+        <p>
+          After this step, you will need an{" "}
+          <span className="bold">invite code</span> to continue registration. If
+          you don't have one yet, reach out to us at{" "}
+          <span className="bold">{strings.zeeguuTeamEmail}</span>.
+        </p>
         <Form action={""}>
           {errorMessage && (
             <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
           )}
           <FormSection>
             <SelectOptions
-              value={learned_language}
+              value={learned_language_initial}
               label={strings.learnedLanguage}
               placeholder={strings.learnedLanguagePlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"practiced-languages"}
               options={systemLanguages.learnable_languages}
-              onChangeHandler={handleLearned_language_change}
+              onChangeHandler={handleLearned_language_initial}
             />
 
             <SelectOptions
-              value={learned_cefr_level}
+              value={learned_cefr_level_initial}
               label={strings.levelOfLearnedLanguage}
               placeholder={strings.levelOfLearnedLanguagePlaceholder}
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               id={"level-of-practiced-languages"}
               options={CEFR_LEVELS}
-              onChangeHandler={handleLearned_cefr_level_change}
+              onChangeHandler={handleLearned_cefr_level_initial}
             />
 
             <SelectOptions
-              value={native_language}
+              value={native_language_initial}
               label={strings.baseLanguage}
               placeholder={strings.baseLanguagePlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"translation-languages"}
               options={systemLanguages.native_languages}
-              onChangeHandler={handleNative_language_change}
+              onChangeHandler={handleNative_language_initial}
             />
           </FormSection>
           <p>{strings.youCanChangeLater}</p>
-          <ButtonContainer>
-            <Button onClick={updateUser}>
+          <ButtonContainer className={"padding-medium"}>
+            <Button className={"full-width-btn"} onClick={validateAndRedirect}>
               {strings.next} <ArrowForwardRoundedIcon />
             </Button>
           </ButtonContainer>
+          <p>
+            {strings.alreadyHaveAccount + " "}
+            <a className="bold underlined-link" href="/login">
+              {strings.login}
+            </a>
+          </p>
         </Form>
       </Main>
     </InfoPage>
