@@ -11,23 +11,27 @@ export default function InputField({
   helperText,
   isError,
   errorMessage,
+  children,
 }) {
   return (
-    <s.InputFieldWrapper>
+    <s.FieldLabelContainer>
       <s.Label htmlFor={id}>{label}</s.Label>
-      <s.Input
-        className={`${isError && "error"}`}
-        type={type}
-        value={value}
-        name={name}
-        id={id}
-        placeholder={placeholder}
-        onChange={onChange}
-      />
+      <s.InputWrapper>
+        <s.Input
+          className={`${isError && "error"}`}
+          type={type}
+          value={value}
+          name={name}
+          id={id}
+          placeholder={placeholder}
+          onChange={onChange}
+        />
+        {children}
+      </s.InputWrapper>
       {helperText && <s.HelperText>{helperText}</s.HelperText>}
       {isError && errorMessage && (
         <s.ErrorMessage>{errorMessage}</s.ErrorMessage>
       )}
-    </s.InputFieldWrapper>
+    </s.FieldLabelContainer>
   );
 }
