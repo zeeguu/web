@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
-import { useClickOutside } from "react-click-outside-hook";
 
 export default function TranslatableWord({
   interactiveText,
@@ -85,7 +84,6 @@ export default function TranslatableWord({
     <>
       <z-tag>
         <z-tran
-          ref={refToZtran}
           chosen={word.translation}
           translation0={word.translation}
           ref={refToTranslation}
