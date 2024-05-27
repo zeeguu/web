@@ -103,7 +103,7 @@ const _mainHeader = css`
 
 const HeroColumn = styled.div`
   height: auto;
-  max-width: 800px;
+  max-width: 52rem;
   padding: 6rem 1rem;
   margin-left: auto;
   margin-right: auto;
