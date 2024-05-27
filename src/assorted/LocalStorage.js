@@ -81,7 +81,8 @@ const LocalStorage = {
   },
 
   setLearnedLanguage_OnRegister: function (learnedLanguage_OnRegister) {
-    localStorage[this.Keys.LearnedLanguage_OnRegister] = learnedLanguage_OnRegister;
+    localStorage[this.Keys.LearnedLanguage_OnRegister] =
+      learnedLanguage_OnRegister;
   },
 
   removeLearnedLanguage_OnRegister: function () {
@@ -93,7 +94,8 @@ const LocalStorage = {
   },
 
   setLearnedCefrLevel_OnRegister: function (learnedCefrLevel_OnRegister) {
-    localStorage[this.Keys.LearnedCefrLevel_OnRegister] = learnedCefrLevel_OnRegister;
+    localStorage[this.Keys.LearnedCefrLevel_OnRegister] =
+      learnedCefrLevel_OnRegister;
   },
 
   removeCefrLevel_OnRegister: function () {
@@ -105,7 +107,8 @@ const LocalStorage = {
   },
 
   setNativeLanguage_OnRegister: function (nativeLanguage_OnRegister) {
-    localStorage[this.Keys.NativeLanguage_OnRegister] = nativeLanguage_OnRegister;
+    localStorage[this.Keys.NativeLanguage_OnRegister] =
+      nativeLanguage_OnRegister;
   },
 
   removeNativeLanguage_OnRegister: function () {
