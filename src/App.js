@@ -27,6 +27,7 @@ import useExtensionCommunication from "./hooks/useExtensionCommunication";
 import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
+import LoadingAnimation from "./components/LoadingAnimation";
 
 function App() {
   const [api, setApi] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -141,7 +142,7 @@ function App() {
   const [returnPath, setReturnPath] = useState("");
 
   if (userData === undefined) {
-    return <div>Loading...</div>;
+    return <LoadingAnimation />;
   }
 
   return (
