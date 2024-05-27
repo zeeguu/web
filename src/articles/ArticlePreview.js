@@ -6,7 +6,7 @@ import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
-import { zeeguuSalmonOrange, zeeguuDarkRed } from "../components/colors";
+import { blue300, blue600, blue900 } from "../components/colors";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
 import { APP_DOMAIN } from "../appConstants";
@@ -32,23 +32,15 @@ export default function ArticleOverview({
     }
   };
 
-  function linearToCEFRLevel(difficulty) {
-    if (difficulty < 1.7) return "A1";
-    else if (difficulty < 3.4) return "A2";
-    else if (difficulty < 5.1) return "B1";
-    else if (difficulty < 6.8) return "B2";
-    else if (difficulty < 8.5) return "C1";
-    else return "C2";
-  }
-
-  function linearToColour(difficulty) {
-    if (difficulty < 3.4) return "green";
-    else if (difficulty < 6.8) return zeeguuSalmonOrange;
-    else return zeeguuDarkRed;
+  function linearToColour(cefr_level) {
+    if (cefr_level === "A1" || cefr_level === "A2") return blue300;
+    else if (cefr_level === "B1" || cefr_level === "B2") return blue600;
+    else return blue900;
   }
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
+  let cefr_level = article.metrics.cefr_level;
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -160,8 +152,8 @@ export default function ArticleOverview({
         </s.Topics>
         <s.StatContainer>
           <s.Difficulty>
-            <span style={{ backgroundColor: linearToColour(difficulty) }}>
-              {linearToCEFRLevel(difficulty)}
+            <span style={{ backgroundColor: linearToColour(cefr_level) }}>
+              {cefr_level}
             </span>
           </s.Difficulty>
           <s.ReadingTimeContainer>

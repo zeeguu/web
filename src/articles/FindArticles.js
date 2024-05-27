@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import useShadowRef from "../hooks/useShadowRef";
 import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
@@ -13,6 +14,7 @@ import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoAr
 import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
+import ratio from "../utils/basic/ratio";
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
@@ -31,8 +33,8 @@ export default function NewArticles() {
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage =
     LocalStorage.getDoNotShowRedirectionModal() === "true" ? true : false;
-
-  const [articleList, setArticleList] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [isExtensionAvailable] = useExtensionCommunication();
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
@@ -41,7 +43,12 @@ export default function NewArticles() {
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
+  const [isLoadingNewArticle, setIsLoadingNewArticles] = useState(false);
 
+  const articleListRef = useShadowRef(articleList);
+  const currentPageRef = useShadowRef(currentPage);
+  const isLoadingNewArticleRef = useShadowRef(isLoadingNewArticle);
+  console.log(articleList);
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index)
@@ -54,6 +61,54 @@ export default function NewArticles() {
       articleSeenListString,
     );
   };
+
+  function getScrollRatio() {
+    let scrollElement = document.getElementById("scrollHolder");
+    let scrollY = scrollElement.scrollTop;
+    let bottomRowHeight = document.getElementById("bottomRow");
+    if (!bottomRowHeight) {
+      bottomRowHeight = 450; // 450 Is a default in case we can't acess the property
+    } else {
+      bottomRowHeight = bottomRowHeight.offsetHeight;
+    }
+    let endArticle =
+      scrollElement.scrollHeight - scrollElement.clientHeight - bottomRowHeight;
+    let ratioValue = ratio(scrollY, endArticle);
+    // Should we allow the ratio to go above 1?
+    // Above 1 is the area where the feedback + exercises are.
+    return ratioValue;
+  }
+
+  function handleScroll() {
+    console.log("scrolling");
+    let ratio = getScrollRatio();
+    console.log(articleListRef.current);
+    console.log(ratio);
+    if (ratio >= 0.95 && !isLoadingNewArticleRef.current) {
+      setIsLoadingNewArticles(true);
+      let newCurrentPage = currentPageRef.current + 1;
+      let newArticles = [...articleListRef.current];
+      if (searchQuery) {
+        console.log("Fetching more Search Articles!");
+        api.searchMore(searchQuery, newCurrentPage, (articles) => {
+          newArticles = newArticles.concat(articles);
+          setArticleList(newArticles);
+          setOriginalList([...newArticles]);
+          setCurrentPage(newCurrentPage);
+          setIsLoadingNewArticles(false);
+        });
+      } else {
+        console.log("Getting more Articles!");
+        api.getMoreUserArticles(20, newCurrentPage, (articles) => {
+          newArticles = newArticles.concat(articles);
+          setArticleList(newArticles);
+          setOriginalList([...newArticles]);
+          setCurrentPage(newCurrentPage);
+          setIsLoadingNewArticles(false);
+        });
+      }
+    }
+  }
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
@@ -76,11 +131,16 @@ export default function NewArticles() {
       });
     } else {
       api.getUserArticles((articles) => {
+        console.log("Setting articles!");
         setArticleList(articles);
         setOriginalList([...articles]);
       });
     }
+    window.addEventListener("scroll", handleScroll, true);
     document.title = "Zeeguu";
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
   }, []);
 
   useEffect(() => {
@@ -95,6 +155,7 @@ export default function NewArticles() {
 
   //when the user changes interests...
   function articlesListShouldChange() {
+    console.log("Unsetting Article List");
     setArticleList(null);
     api.getUserArticles((articles) => {
       setArticleList(articles);
@@ -126,22 +187,23 @@ export default function NewArticles() {
         originalList={originalList}
         setArticleList={setArticleList}
       />
-
-      {articleList.map((each, index) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          api={api}
-          hasExtension={isExtensionAvailable}
-          doNotShowRedirectionModal_UserPreference={
-            doNotShowRedirectionModal_UserPreference
-          }
-          setDoNotShowRedirectionModal_UserPreference={
-            setDoNotShowRedirectionModal_UserPreference
-          }
-          onArticleClick={() => handleArticleClick(each.id, index)}
-        />
-      ))}
+      <div onScroll={handleScroll}>
+        {articleList.map((each, index) => (
+          <ArticlePreview
+            key={each.id}
+            article={each}
+            api={api}
+            hasExtension={isExtensionAvailable}
+            doNotShowRedirectionModal_UserPreference={
+              doNotShowRedirectionModal_UserPreference
+            }
+            setDoNotShowRedirectionModal_UserPreference={
+              setDoNotShowRedirectionModal_UserPreference
+            }
+            onArticleClick={() => handleArticleClick(each.id, index)}
+          />
+        ))}
+      </div>
 
       {searchQuery && articleList.length === 0 && (
         <>No articles found that match your search</>
@@ -152,6 +214,7 @@ export default function NewArticles() {
           articleList={articleList}
         ></ShowLinkRecommendationsIfNoArticles>
       )}
+      {isLoadingNewArticle && <LoadingAnimation delay={0}></LoadingAnimation>}
     </>
   );
 }
