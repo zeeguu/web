@@ -38,9 +38,11 @@ export default function CreateAccount({
   const learnedCefrLevel_OnRegister =
     LocalStorage.getLearnedCefrLevel_OnRegister();
 
-  const [learned_language_OnRegister] = useState(learnedLanguage_OnRegister);
-  const [native_language_OnRegister] = useState(nativeLanguage_OnRegister);
-  const [learned_cefr_level_OnRegister] = useState(learnedCefrLevel_OnRegister);
+  const [learned_language_on_register] = useState(learnedLanguage_OnRegister);
+  const [native_language_on_register] = useState(nativeLanguage_OnRegister);
+  const [learned_cefr_level_on_register] = useState(
+    learnedCefrLevel_OnRegister,
+  );
 
   const [inviteCode, handleInviteCodeChange] = useFormField("");
   const [name, handleNameChange] = useFormField("");
@@ -73,7 +75,7 @@ export default function CreateAccount({
     });
   }, []);
 
-  //Temp local storage entries needed only for account creation
+  //Clear temp local storage entries needed only for account creation
   function clearOnRegisterLanguageEntries() {
     LocalStorage.removeLearnedLanguage_OnRegister();
     LocalStorage.removeCefrLevel_OnRegister();
@@ -91,9 +93,9 @@ export default function CreateAccount({
       ...user,
       name: name,
       email: email,
-      learned_language: learned_language_OnRegister,
-      learned_cefr_level: learned_cefr_level_OnRegister,
-      native_language: native_language_OnRegister,
+      learned_language: learned_language_on_register,
+      learned_cefr_level: learned_cefr_level_on_register,
+      native_language: native_language_on_register,
     };
 
     api.addUser(
