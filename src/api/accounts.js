@@ -45,28 +45,8 @@ Zeeguu_API.prototype.addUser = function (
     });
 };
 
-Zeeguu_API.prototype.deleteUser = function (sessionID, onSuccess, onError) {
-  let url = this.baseAPIurl + `/delete_user/${sessionID}`;
-  return fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-  })
-    .then((response) => {
-      if (response.ok) {
-        response.text().then(() => {
-          onSuccess(true);
-        });
-      } else if (response.status === 400) {
-        response.json().then((json) => {
-          onError(json.message);
-        });
-      } else {
-        onError("Something went wrong.");
-      }
-    })
-    .catch((error) => {
-      onError(error.message);
-    });
+Zeeguu_API.prototype.deleteUser = function (onSuccess, onError) {
+  this._post("delete_user", "", onSuccess, onError);
 };
 
 Zeeguu_API.prototype.addBasicUser = function (

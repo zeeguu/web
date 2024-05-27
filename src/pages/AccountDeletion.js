@@ -22,7 +22,6 @@ export default function AcountDeletion({ api }) {
       setIsAccountDeleted(false);
       SessionStorage.setUserConfirmationForAccountDeletion(false);
       api.deleteUser(
-        user.session,
         () => {
           setIsAccountDeleted(true);
           setHeadingMsg("✅ Your account has been successfully deleted!");
