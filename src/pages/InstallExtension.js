@@ -36,7 +36,7 @@ export default function InstallExtension() {
             {strings.installTheExtension}
           </Button>
           <a className="link" href="/articles">
-            {strings.skipInstallation}
+            {strings.iWillInstallLater}
           </a>
         </ButtonContainer>
       </Footer>
