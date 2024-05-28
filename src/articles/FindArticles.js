@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import useShadowRef from "../hooks/useShadowRef";
 import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
@@ -13,6 +14,7 @@ import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoAr
 import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
+import { getScrollPixelsToEnd } from "../utils/misc/getScrollLocation";
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
@@ -32,7 +34,7 @@ export default function NewArticles() {
   const doNotShowRedirectionModal_LocalStorage =
     LocalStorage.getDoNotShowRedirectionModal() === "true" ? true : false;
 
-  const [articleList, setArticleList] = useState(null);
+  const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [isExtensionAvailable] = useExtensionCommunication();
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
@@ -41,7 +43,13 @@ export default function NewArticles() {
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
+  const [isLoadingNewArticle, setIsLoadingNewArticles] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
 
+  const articleListRef = useShadowRef(articleList);
+  const currentPageRef = useShadowRef(currentPage);
+  const isLoadingNewArticleRef = useShadowRef(isLoadingNewArticle);
+  console.log(articleList);
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index)
@@ -54,6 +62,33 @@ export default function NewArticles() {
       articleSeenListString,
     );
   };
+
+  function handleScroll() {
+    let pixelToEndScrolling = getScrollPixelsToEnd();
+    console.log(isLoadingNewArticle);
+    if (pixelToEndScrolling <= 50 && !isLoadingNewArticleRef.current) {
+      setIsLoadingNewArticles(true);
+      let newCurrentPage = currentPageRef.current + 1;
+      let newArticles = [...articleListRef.current];
+      if (searchQuery) {
+        api.searchMore(searchQuery, newCurrentPage, (articles) => {
+          newArticles = newArticles.concat(articles);
+          setArticleList(newArticles);
+          setOriginalList([...newArticles]);
+          setCurrentPage(newCurrentPage);
+          setIsLoadingNewArticles(false);
+        });
+      } else {
+        api.getMoreUserArticles(20, newCurrentPage, (articles) => {
+          newArticles = newArticles.concat(articles);
+          setArticleList(newArticles);
+          setOriginalList([...newArticles]);
+          setCurrentPage(newCurrentPage);
+          setIsLoadingNewArticles(false);
+        });
+      }
+    }
+  }
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
@@ -80,7 +115,11 @@ export default function NewArticles() {
         setOriginalList([...articles]);
       });
     }
+    window.addEventListener("scroll", handleScroll, true);
     document.title = "Zeeguu";
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
   }, []);
 
   useEffect(() => {
@@ -126,7 +165,6 @@ export default function NewArticles() {
         originalList={originalList}
         setArticleList={setArticleList}
       />
-
       {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
@@ -152,6 +190,12 @@ export default function NewArticles() {
           articleList={articleList}
         ></ShowLinkRecommendationsIfNoArticles>
       )}
+
+      {isLoadingNewArticle && <LoadingAnimation delay={0}></LoadingAnimation>}
+      {
+        // Adds some spacing when the loading is being displayed.
+      }
+      <br />
     </>
   );
 }

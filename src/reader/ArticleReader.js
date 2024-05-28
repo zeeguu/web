@@ -25,7 +25,7 @@ import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
-import ratio from "../utils/basic/ratio";
+import { getScrollRatio } from "../utils/misc/getScrollLocation";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -90,23 +90,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     }
   }
 
-  function getScrollRatio() {
-    let scrollElement = document.getElementById("scrollHolder");
-    let scrollY = scrollElement.scrollTop;
-    let bottomRowHeight = document.getElementById("bottomRow");
-    if (!bottomRowHeight) {
-      bottomRowHeight = 450; // 450 Is a default in case we can't acess the property
-    } else {
-      bottomRowHeight = bottomRowHeight.offsetHeight;
-    }
-    let endArticle =
-      scrollElement.scrollHeight - scrollElement.clientHeight - bottomRowHeight;
-    let ratioValue = ratio(scrollY, endArticle);
-    // Should we allow the ratio to go above 1?
-    // Above 1 is the area where the feedback + exercises are.
-    return ratioValue;
-  }
-
   useEffect(() => {
     onCreate();
     return () => {
@@ -124,7 +107,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   const handleScroll = () => {
-    let ratio = getScrollRatio();
+    let bottomRowHeight = document.getElementById("bottomRow");
+    if (!bottomRowHeight) {
+      bottomRowHeight = 450; // 450 Is a default in case we can't acess the property
+    } else {
+      bottomRowHeight = bottomRowHeight.offsetHeight;
+    }
+    let ratio = getScrollRatio(bottomRowHeight);
     setScrollPosition(ratio);
     let percentage = Math.floor(ratio * 100);
     let currentReadingTimer = activityTimerRef.current;
