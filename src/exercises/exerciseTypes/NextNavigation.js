@@ -112,15 +112,22 @@ export default function NextNavigation({
       {isRightAnswer &&
         (!isMatchExercise || isCorrectMatch) &&
         (bookmarkProgression ? (
-          <div className="next-nav-learning-cycle">
-            <img
-              src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
-              alt="Correct Icon"
+          <>
+            <Confetti
+              width={window.innerWidth}
+              height={window.innerHeight}
+              recycle={false}
             />
-            <p>
-              <b>{correctMessage + " " + strings.nextLearningCycle}</b>
-            </p>
-          </div>
+            <div className="next-nav-learning-cycle">
+              <img
+                src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
+                alt="Correct Icon"
+              />
+              <p>
+                <b>{correctMessage + " " + strings.nextLearningCycle}</b>
+              </p>
+            </div>
+          </>
         ) : bookmarkLearned ? (
           <>
             <Confetti
