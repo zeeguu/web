@@ -107,12 +107,18 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   const handleScroll = () => {
-    let bottomRowHeight = document.getElementById("bottomRow");
-    if (!bottomRowHeight) {
-      bottomRowHeight = 450; // 450 Is a default in case we can't acess the property
-    } else {
-      bottomRowHeight = bottomRowHeight.offsetHeight;
+    let bottomRowElement = document.getElementById("bottomRow");
+
+    // We use this to avoid counting the feedback elements
+    // as part of the article lenght when updating the
+    // scroll bar.
+    // 450 Is a default in case we can't acess the property
+    let bottomRowHeight = 450;
+    if (bottomRowElement) {
+      bottomRowHeight = bottomRowElement.offsetHeight;
     }
+    // getScrollRatio supports passing a pixel offset which is
+    // removed from the total length of the page.
     let ratio = getScrollRatio(bottomRowHeight);
     setScrollPosition(ratio);
     let percentage = Math.floor(ratio * 100);
