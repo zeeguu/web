@@ -1,11 +1,11 @@
-import * as s from "./ArticleReader.sc";
-import useUILanguage from "../assorted/hooks/uiLanguageHook";
+import * as s from "./ArticleReader.sc.js";
+import useUILanguage from "../assorted/hooks/uiLanguageHook.js";
 import { StyledButton } from "../components/allButtons.sc.js";
 import { useHistory } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useEffect } from "react";
 
-export default function ReviewVocabulary({
+export default function ReviewVocabularyInfoBox({
   articleID,
   clickedOnReviewVocab,
   setClickedOnReviewVocab,
@@ -24,7 +24,7 @@ export default function ReviewVocabulary({
 
   return (
     <>
-      <s.FeedbackBox className="feedbackBox">
+      <s.InteractiveBox className="review-words">
         <s.CenteredContent>
           <div className="imgContainer">
             <h2>Exercises</h2>
@@ -40,7 +40,7 @@ export default function ReviewVocabulary({
             {<NavigateNextIcon />}
           </StyledButton>
         </s.CenteredContent>
-      </s.FeedbackBox>
+      </s.InteractiveBox>
     </>
   );
 }

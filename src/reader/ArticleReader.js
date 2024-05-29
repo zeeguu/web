@@ -19,7 +19,7 @@ import ArticleSource from "./ArticleSource";
 import ReportBroken from "./ReportBroken";
 
 import TopToolbar from "./TopToolbar";
-import ReviewVocabulary from "./ReviewVocabulary";
+import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
@@ -353,7 +353,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
       {readerReady && (
         <div id={"bottomRow"}>
-          <ReviewVocabulary
+          <ReviewVocabularyInfoBox
             articleID={articleID}
             clickedOnReviewVocab={clickedOnReviewVocab}
             setClickedOnReviewVocab={setClickedOnReviewVocab}
