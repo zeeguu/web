@@ -64,8 +64,11 @@ export default function NewArticles() {
   };
 
   function handleScroll() {
-    let pixelsFromPageEnd = getPixelsFromScrollBarToEnd();
-    if (pixelsFromPageEnd <= 50 && !isWaitingForNewArticlesRef.current) {
+    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
+    if (
+      scrollBarPixelDistToPageEnd <= 50 &&
+      !isWaitingForNewArticlesRef.current
+    ) {
       setIsWaitingForNewArticles(true);
       let newCurrentPage = currentPageRef.current + 1;
       let newArticles = [...articleListRef.current];
