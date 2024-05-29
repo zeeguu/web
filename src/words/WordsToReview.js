@@ -10,7 +10,7 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { ThemeProvider } from "@mui/material/styles";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
-import { MAX_BOOKMARKS_PER_ARTILE } from "../exercises/ExerciseConstants";
+import { MAX_BOOKMARKS_PER_ARTICLE } from "../exercises/ExerciseConstants";
 
 export default function WordsToReview({
   words,
@@ -77,7 +77,7 @@ export default function WordsToReview({
           {articleInfo.title}
         </medium>
       </div>
-      {totalWordsTranslated > MAX_BOOKMARKS_PER_ARTILE && (
+      {totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE && (
         <>
           <Infobox>
             <div>

@@ -1,4 +1,4 @@
-import { MAX_BOOKMARKS_PER_ARTILE } from "./ExerciseConstants.js";
+import { MAX_BOOKMARKS_PER_ARTICLE } from "./ExerciseConstants.js";
 
 export default function prioritizeBookmarksToStudy(
   api,
@@ -18,7 +18,7 @@ export default function prioritizeBookmarksToStudy(
       if (
         bookmark.from.split(" ").length < 3 &&
         !seenBookmarks.has(bookmark.from.toLowerCase()) &&
-        addedBookmarks < MAX_BOOKMARKS_PER_ARTILE
+        addedBookmarks < MAX_BOOKMARKS_PER_ARTICLE
       ) {
         if (!bookmark.fit_for_study) api.setIsFitForStudy(bookmark.id);
         seenBookmarks.add(bookmark.from.toLowerCase());
