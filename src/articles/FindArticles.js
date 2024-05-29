@@ -14,7 +14,7 @@ import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoAr
 import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
-import { getScrollPixelsToEnd } from "../utils/misc/getScrollLocation";
+import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
@@ -43,12 +43,12 @@ export default function NewArticles() {
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
-  const [isLoadingNewArticle, setIsLoadingNewArticles] = useState(false);
+  const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
   const articleListRef = useShadowRef(articleList);
   const currentPageRef = useShadowRef(currentPage);
-  const isLoadingNewArticleRef = useShadowRef(isLoadingNewArticle);
+  const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
   console.log(articleList);
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
@@ -64,28 +64,32 @@ export default function NewArticles() {
   };
 
   function handleScroll() {
-    let pixelToEndScrolling = getScrollPixelsToEnd();
-    if (pixelToEndScrolling <= 50 && !isLoadingNewArticleRef.current) {
-      setIsLoadingNewArticles(true);
+    let pixelsFromPageEnd = getPixelsFromScrollBarToEnd();
+    if (pixelsFromPageEnd <= 50 && !isWaitingForNewArticlesRef.current) {
+      setIsWaitingForNewArticles(true);
       let newCurrentPage = currentPageRef.current + 1;
       let newArticles = [...articleListRef.current];
-      if (searchQuery) {
-        api.searchMore(searchQuery, newCurrentPage, (articles) => {
-          newArticles = newArticles.concat(articles);
-          setArticleList(newArticles);
-          setOriginalList([...newArticles]);
-          setCurrentPage(newCurrentPage);
-          setIsLoadingNewArticles(false);
-        });
-      } else {
-        api.getMoreUserArticles(20, newCurrentPage, (articles) => {
-          newArticles = newArticles.concat(articles);
-          setArticleList(newArticles);
-          setOriginalList([...newArticles]);
-          setCurrentPage(newCurrentPage);
-          setIsLoadingNewArticles(false);
-        });
-      }
+      insertNewArticlesIntoArticleList(newCurrentPage, newArticles);
+    }
+  }
+
+  function insertNewArticlesIntoArticleList(newCurrentPage, newArticles) {
+    if (searchQuery) {
+      api.searchMore(searchQuery, newCurrentPage, (articles) => {
+        newArticles = newArticles.concat(articles);
+        setArticleList(newArticles);
+        setOriginalList([...newArticles]);
+        setCurrentPage(newCurrentPage);
+        setIsWaitingForNewArticles(false);
+      });
+    } else {
+      api.getMoreUserArticles(20, newCurrentPage, (articles) => {
+        newArticles = newArticles.concat(articles);
+        setArticleList(newArticles);
+        setOriginalList([...newArticles]);
+        setCurrentPage(newCurrentPage);
+        setIsWaitingForNewArticles(false);
+      });
     }
   }
 
@@ -189,12 +193,9 @@ export default function NewArticles() {
           articleList={articleList}
         ></ShowLinkRecommendationsIfNoArticles>
       )}
-
-      {isLoadingNewArticle && <LoadingAnimation delay={0}></LoadingAnimation>}
-      {
-        // Adds some spacing when the loading is being displayed.
-      }
-      <br />
+      {isWaitingForNewArticles && (
+        <LoadingAnimation delay={0}></LoadingAnimation>
+      )}
     </>
   );
 }

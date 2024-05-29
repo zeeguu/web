@@ -1,28 +1,31 @@
 import ratio from "../basic/ratio";
 
-function getScrollRatio(endPageAdjustment = 0) {
-  // End page Adjustment means if you have some elements that you want to ignore
-  // when calculating the End of the page.
-  // This should be a value in Pixels. For example, this is used in the Reader
-  // to exclude the elemnts of user feedback in the ratio calculation.
+/*
+  shortenPageHeightPixels, expects a positive int value in Pixels to remove
+  from the total height of the page.
+  For example, this is used in the reader to ignore the InfoBoxes at the end
+  which are not part of the article. One can pass in the height of the divs,
+  removing it from the calculation of the ScrollHeight.
+*/
+function getScrollRatio(shortenPageHeightPixels = 0) {
   let scrollElement = document.getElementById("scrollHolder");
   let scrollY = scrollElement.scrollTop;
   let endPage =
-    scrollElement.scrollHeight - scrollElement.clientHeight - endPageAdjustment;
+    scrollElement.scrollHeight -
+    scrollElement.clientHeight -
+    shortenPageHeightPixels;
   let ratioValue = ratio(scrollY, endPage);
   return ratioValue;
 }
 
-function getScrollPixelsToEnd(endPageAdjustment = 0) {
-  // End page Adjustment means if you have some elements that you want to ignore
-  // when calculating the End of the page.
-  // This should be a value in Pixels. For example, this is used in the Reader
-  // to exclude the elemnts of user feedback in the ratio calculation.
+function getPixelsFromScrollBarToEnd(shortenPageHeightPixels = 0) {
   let scrollElement = document.getElementById("scrollHolder");
   let scrollY = scrollElement.scrollTop;
   let endPage =
-    scrollElement.scrollHeight - scrollElement.clientHeight - endPageAdjustment;
+    scrollElement.scrollHeight -
+    scrollElement.clientHeight -
+    shortenPageHeightPixels;
   return endPage - scrollY;
 }
 
-export { getScrollRatio, getScrollPixelsToEnd };
+export { getScrollRatio, getPixelsFromScrollBarToEnd };
