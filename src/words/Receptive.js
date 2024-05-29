@@ -20,7 +20,7 @@ export default function Receptive({ api }) {
     setTitle(strings.titleReceptiveWords);
   }, [api]);
 
-  function deleteBookmark(bookmark) {
+  function onNotifyDelete(bookmark) {
     let newWords = [...words].filter((e) => e.id !== bookmark.id);
     setWords(newWords);
   }
@@ -54,7 +54,7 @@ export default function Receptive({ api }) {
             bookmark={each}
             api={api}
             source={UMR_SOURCE}
-            notifyDelete={deleteBookmark}
+            notifyDelete={onNotifyDelete}
           />
         ))
       )}

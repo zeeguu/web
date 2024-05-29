@@ -4,14 +4,12 @@ import { WordsOnDate } from "./WordsOnDate";
 import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
 import * as sc from "../components/ColumnWidth.sc";
-
-import * as s from "../components/TopMessage.sc";
 import { setTitle } from "../assorted/setTitle";
 
 export default function ReadingHistory({ api }) {
   const [wordsByDay, setWordsByDay] = useState(null);
 
-  function deleteBookmark(bookmark) {
+  function onNotifyDelete(bookmark) {
     let newBookmarksByDay = [...wordsByDay];
     for (let i = 0; i < wordsByDay.length; i++) {
       let bookmarks_for_day = wordsByDay[i].bookmarks;
@@ -40,7 +38,7 @@ export default function ReadingHistory({ api }) {
           key={day.date}
           day={day}
           api={api}
-          notifyDelete={deleteBookmark}
+          notifyDelete={onNotifyDelete}
         />
       ))}
     </sc.NarrowColumn>
