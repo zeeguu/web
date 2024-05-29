@@ -65,7 +65,6 @@ export default function NewArticles() {
 
   function handleScroll() {
     let pixelToEndScrolling = getScrollPixelsToEnd();
-    console.log(isLoadingNewArticle);
     if (pixelToEndScrolling <= 50 && !isLoadingNewArticleRef.current) {
       setIsLoadingNewArticles(true);
       let newCurrentPage = currentPageRef.current + 1;
