@@ -43,8 +43,8 @@ export default function ExplainBookmarkSelectionModal({
           to encounter in new texts.
         </p>
         <p>
-          Zeeguu remembers any words you add manually, and these will always
-          make part of the words you see in exercises
+          Zeeguu remembers any words you add or remove manually, and you will
+          see them in the exercises according to your preferences.
         </p>
       </Main>
     </Modal>
