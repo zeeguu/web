@@ -64,7 +64,7 @@ export default function NewArticles() {
   };
 
   function handleScroll() {
-    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
+    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd({});
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
       !isWaitingForNewArticlesRef.current
@@ -77,6 +77,7 @@ export default function NewArticles() {
   }
 
   function insertNewArticlesIntoArticleList(newCurrentPage, newArticles) {
+    document.title = "Getting more articles...";
     if (searchQuery) {
       api.searchMore(searchQuery, newCurrentPage, (articles) => {
         newArticles = newArticles.concat(articles);
@@ -84,6 +85,7 @@ export default function NewArticles() {
         setOriginalList([...newArticles]);
         setCurrentPage(newCurrentPage);
         setIsWaitingForNewArticles(false);
+        document.title = "Recommend Articles: Zeeguu";
       });
     } else {
       api.getMoreUserArticles(20, newCurrentPage, (articles) => {
@@ -92,6 +94,7 @@ export default function NewArticles() {
         setOriginalList([...newArticles]);
         setCurrentPage(newCurrentPage);
         setIsWaitingForNewArticles(false);
+        document.title = "Recommend Articles: Zeeguu";
       });
     }
   }
@@ -122,7 +125,7 @@ export default function NewArticles() {
       });
     }
     window.addEventListener("scroll", handleScroll, true);
-    document.title = "Zeeguu";
+    document.title = "Recommend Articles: Zeeguu";
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
     };
