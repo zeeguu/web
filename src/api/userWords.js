@@ -71,6 +71,19 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
   articleID,
   setUpdatedBookmarks,
 ) {
+  function setFitToStudyIfNotAlready(bookmark, seenBookmarks) {
+    seenBookmarks.add(bookmark.from.toLowerCase());
+    if (!bookmark.fit_for_study) {
+      bookmark.fit_for_study = true;
+      this.setIsFitForStudy(bookmark.id);
+    }
+  }
+  function setNotFitToStudyIfNotAlready(bookmark) {
+    if (bookmark.fit_for_study) {
+      bookmark.fit_for_study = false;
+      this.setNotFitForStudy(bookmark.id);
+    }
+  }
   this.bookmarksForArticle(articleID, (bookmarks) => {
     let seenBookmarks = new Set([]);
     let sortedBookmarks = [...bookmarks].sort(
@@ -90,12 +103,9 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
       let isBookmarkLearned = bookmark.learned_datetime !== "";
 
       if (isUserAddedBookmark && !isBookmarkLearned) {
-        bookmark.fit_for_study = true;
-        this.setIsFitForStudy(bookmark.id);
-        seenBookmarks.add(bookmark.from.toLowerCase());
+        setFitToStudyIfNotAlready(bookmark, seenBookmarks);
       } else if (isUserExcludedBookmark) {
-        bookmark.fit_for_study = false;
-        this.setNotFitForStudy(bookmark.id);
+        setNotFitToStudyIfNotAlready(bookmark);
       } else {
         if (
           !isBookmarkTooLong &&
@@ -103,19 +113,11 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
           !isBookmarkLearned &&
           totalAddedBookmarks < MAX_BOOKMARKS_PER_ARTICLE
         ) {
-          if (!bookmark.fit_for_study) {
-            this.setIsFitForStudy(bookmark.id);
-            bookmark.fit_for_study = true;
-          }
-          seenBookmarks.add(bookmark.from.toLowerCase());
+          setFitToStudyIfNotAlready(bookmark, seenBookmarks);
           totalAddedBookmarks += 1;
         } else {
-          if (
-            bookmark.fit_for_study &&
-            (!bookmark.starred || isUserExcludedBookmark)
-          ) {
-            this.setNotFitForStudy(bookmark.id);
-            bookmark.fit_for_study = false;
+          if (!bookmark.starred || isUserExcludedBookmark) {
+            setNotFitToStudyIfNotAlready(bookmark);
           }
         }
       }
