@@ -35,7 +35,7 @@ export default function Learned({ api }) {
     setTitle(strings.titleLearnedWords);
   }, [api]);
 
-  function deleteBookmark(bookmark) {
+  function onNotifyDelete(bookmark) {
     let newWords = [...words].filter((e) => e.id !== bookmark.id);
     setWords(newWords);
   }
@@ -63,7 +63,7 @@ export default function Learned({ api }) {
                 return (
                   <Word
                     key={each.id}
-                    notifyDelete={deleteBookmark}
+                    notifyDelete={onNotifyDelete}
                     bookmark={each}
                     api={api}
                     hideStar={true}

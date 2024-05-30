@@ -108,6 +108,9 @@ export default function Word({
     grayed_out_if_not_scheduled_for_study = {};
   }
   const square = "square";
+  const isWordLengthFitForStudy =
+    bookmark.from.split(" ").length < MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES;
+
   return (
     <>
       <s.Word key={bookmark.id}>
@@ -122,19 +125,14 @@ export default function Word({
               />
             </s.AddMinusButton>
           )}
-          {isReview &&
-            !bookmark.fit_for_study &&
-            bookmark.from.split(" ").length <
-              MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
-              <s.AddMinusButton
-                onClick={(e) => setIsUserWordPreferred(bookmark)}
-              >
-                <img
-                  src={APP_DOMAIN + "/static/icons/add-icon-color.png"}
-                  alt="add"
-                />
-              </s.AddMinusButton>
-            )}
+          {isReview && !bookmark.fit_for_study && isWordLengthFitForStudy && (
+            <s.AddMinusButton onClick={(e) => setIsUserWordPreferred(bookmark)}>
+              <img
+                src={APP_DOMAIN + "/static/icons/add-icon-color.png"}
+                alt="add"
+              />
+            </s.AddMinusButton>
+          )}
           {/*!isReview && (
             <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
               <img src={APP_DOMAIN + "/static/images/trash.svg"} alt="trash" />
@@ -167,12 +165,7 @@ export default function Word({
                   (bookmark.starred ? ".svg" : "_empty.svg")
                 }
                 alt="star"
-                style={
-                  bookmark.from.split(" ").length <
-                  MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES
-                    ? {}
-                    : { visibility: "hidden" }
-                }
+                style={isWordLengthFitForStudy ? {} : { visibility: "hidden" }}
               />
             </s.StarIcon>
           )}

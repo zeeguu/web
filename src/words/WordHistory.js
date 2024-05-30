@@ -5,6 +5,7 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
 import * as sc from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
+import { PageTitle } from "../components/PageTitle";
 
 export default function ReadingHistory({ api }) {
   const [wordsByDay, setWordsByDay] = useState(null);
@@ -32,7 +33,7 @@ export default function ReadingHistory({ api }) {
     <sc.NarrowColumn>
       <br />
       <br />
-      <h1>Word Translation History</h1>
+      <PageTitle>{strings.wordHistoryTitle}</PageTitle>
       {wordsByDay.map((day) => (
         <WordsOnDate
           key={day.date}

@@ -13,6 +13,7 @@ let strings = new LocalizedStrings(
       text: "Text",
       save: "Save",
       settings: "Settings",
+      wordHistoryTitle: "Word Translation History",
       exercises: "Exercises",
       myClasses: "My Classes",
       myTexts: "My Texts",

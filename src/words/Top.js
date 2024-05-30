@@ -11,14 +11,13 @@ export default function Top({ api }) {
   const [words, setWords] = useState();
 
   useEffect(() => {
-    console.log("Getting top bookmarks");
     api.topBookmarks(300, (topWords) => {
       setWords(topWords);
     });
     setTitle(strings.titleRankedWords);
   }, [api]);
 
-  function deleteBookmark(bookmark) {
+  function onNotifyDelete(bookmark) {
     let newWords = [...words].filter((e) => e.id !== bookmark.id);
     setWords(newWords);
   }
@@ -36,7 +35,7 @@ export default function Top({ api }) {
           bookmark={each}
           api={api}
           source={UMR_SOURCE}
-          notifyDelete={deleteBookmark}
+          notifyDelete={onNotifyDelete}
         />
       ))}
     </>
