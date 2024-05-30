@@ -119,7 +119,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
     }
     // getScrollRatio supports passing a pixel offset which is
     // removed from the total length of the page.
-    let ratio = getScrollRatio(bottomRowHeight);
+    const pixelOffset = { shortenPageHeightPixels: bottomRowHeight };
+    let ratio = getScrollRatio(pixelOffset);
     setScrollPosition(ratio);
     let percentage = Math.floor(ratio * 100);
     let currentReadingTimer = activityTimerRef.current;

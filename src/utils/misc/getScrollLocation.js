@@ -6,8 +6,10 @@ import ratio from "../basic/ratio";
   For example, this is used in the reader to ignore the InfoBoxes at the end
   which are not part of the article. One can pass in the height of the divs,
   removing it from the calculation of the ScrollHeight.
+
+  Implemented using "named-parameters": https://byby.dev/js-named-parameters
 */
-function getScrollRatio(shortenPageHeightPixels = 0) {
+function getScrollRatio({ shortenPageHeightPixels = 0 }) {
   let scrollElement = document.getElementById("scrollHolder");
   let scrollY = scrollElement.scrollTop;
   let endPage =
@@ -18,7 +20,7 @@ function getScrollRatio(shortenPageHeightPixels = 0) {
   return ratioValue;
 }
 
-function getPixelsFromScrollBarToEnd(shortenPageHeightPixels = 0) {
+function getPixelsFromScrollBarToEnd({ shortenPageHeightPixels = 0 }) {
   let scrollElement = document.getElementById("scrollHolder");
   let scrollY = scrollElement.scrollTop;
   let endPage =
