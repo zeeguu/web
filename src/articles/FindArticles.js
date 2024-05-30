@@ -70,33 +70,40 @@ export default function NewArticles() {
       !isWaitingForNewArticlesRef.current
     ) {
       setIsWaitingForNewArticles(true);
+      document.title = "Getting more articles...";
       let newCurrentPage = currentPageRef.current + 1;
       let newArticles = [...articleListRef.current];
-      insertNewArticlesIntoArticleList(newCurrentPage, newArticles);
+      if (searchQuery) {
+        api.searchMore(searchQuery, newCurrentPage, (articles) => {
+          insertNewArticlesIntoArticleList(
+            articles,
+            newCurrentPage,
+            newArticles,
+          );
+        });
+      } else {
+        api.getMoreUserArticles(20, newCurrentPage, (articles) => {
+          insertNewArticlesIntoArticleList(
+            articles,
+            newCurrentPage,
+            newArticles,
+          );
+        });
+      }
     }
   }
 
-  function insertNewArticlesIntoArticleList(newCurrentPage, newArticles) {
-    document.title = "Getting more articles...";
-    if (searchQuery) {
-      api.searchMore(searchQuery, newCurrentPage, (articles) => {
-        newArticles = newArticles.concat(articles);
-        setArticleList(newArticles);
-        setOriginalList([...newArticles]);
-        setCurrentPage(newCurrentPage);
-        setIsWaitingForNewArticles(false);
-        document.title = "Recommend Articles: Zeeguu";
-      });
-    } else {
-      api.getMoreUserArticles(20, newCurrentPage, (articles) => {
-        newArticles = newArticles.concat(articles);
-        setArticleList(newArticles);
-        setOriginalList([...newArticles]);
-        setCurrentPage(newCurrentPage);
-        setIsWaitingForNewArticles(false);
-        document.title = "Recommend Articles: Zeeguu";
-      });
-    }
+  function insertNewArticlesIntoArticleList(
+    fetchedArticles,
+    newCurrentPage,
+    newArticles,
+  ) {
+    newArticles = newArticles.concat(fetchedArticles);
+    setArticleList(newArticles);
+    setOriginalList([...newArticles]);
+    setCurrentPage(newCurrentPage);
+    setIsWaitingForNewArticles(false);
+    document.title = "Recommend Articles: Zeeguu";
   }
 
   useEffect(() => {
