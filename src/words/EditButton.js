@@ -49,21 +49,19 @@ export default function EditButton({
     );
     api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
     if (newFitForStudy) {
-      api.setIsFitForStudy(bookmark.id);
-      api.starBookmark(bookmark.id);
+      api.userSetForExercises(bookmark.id);
       bookmark.starred = true;
       api.logReaderActivity(
-        api.STAR_WORD,
+        api.USER_SET_WORD_PREFERRED,
         bookmark.article_id,
         bookmark.from,
         SOURCE_FOR_API_STAR_ACTION,
       );
     } else {
-      api.setNotFitForStudy(bookmark.id);
-      api.unstarBookmark(bookmark.id);
+      api.userSetNotForExercises(bookmark.id);
       bookmark.starred = false;
       api.logReaderActivity(
-        api.UNSTAR_WORD,
+        api.USER_SET_NOT_WORD_PREFERED,
         bookmark.article_id,
         bookmark.from,
         SOURCE_FOR_API_STAR_ACTION,

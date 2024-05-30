@@ -6,6 +6,7 @@ import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 import { APP_DOMAIN } from "../appConstants";
+import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 
 export default function Word({
   bookmark,
@@ -53,20 +54,33 @@ export default function Word({
     }
   }
 
-  function setIsFitForStudy(bookmark) {
-    console.log(bookmark);
-    api.setIsFitForStudy(bookmark.id);
-    starBookmark(bookmark);
+  function setIsUserWordPreferred(bookmark) {
+    // Keep the star to mirror the previous behaviour?
+    api.userSetForExercises(bookmark.id);
+    bookmark.starred = true;
     bookmark.fit_for_study = true;
+    bookmark.user_preference = USER_WORD_PREFERENCE.USE_IN_EXERCISES;
     if (notifyWordChange) notifyWordChange(bookmark);
+    api.logReaderActivity(
+      api.USER_SET_WORD_PREFERRED,
+      bookmark.article_id,
+      bookmark.from,
+      source,
+    );
   }
 
-  function setNotFitForStudy(bookmark) {
-    console.log(bookmark);
-    api.setNotFitForStudy(bookmark.id);
-    unstarBookmark(bookmark);
+  function setNotIsUserWordPreferred(bookmark) {
+    api.userSetNotForExercises(bookmark.id);
+    bookmark.starred = false;
     bookmark.fit_for_study = false;
+    bookmark.user_preference = USER_WORD_PREFERENCE.DONT_USE_IN_EXERCISES;
     if (notifyWordChange) notifyWordChange(bookmark);
+    api.logReaderActivity(
+      api.USER_SET_NOT_WORD_PREFERED,
+      bookmark.article_id,
+      bookmark.from,
+      source,
+    );
   }
   function deleteBookmark(bookmark) {
     api.deleteBookmark(bookmark.id);
@@ -85,17 +99,22 @@ export default function Word({
   }
 
   let grayed_out_if_not_scheduled_for_study = { color: darkGrey };
-  if (bookmark.fit_for_study || bookmark.starred) {
+  if (
+    bookmark.fit_for_study ||
+    bookmark.starred ||
+    bookmark.user_preference === USER_WORD_PREFERENCE.USE_IN_EXERCISES
+  ) {
     grayed_out_if_not_scheduled_for_study = {};
   }
-
   const square = "square";
   return (
     <>
       <s.Word key={bookmark.id}>
         <CenteredRow>
           {isReview && bookmark.fit_for_study && (
-            <s.AddMinusButton onClick={(e) => setNotFitForStudy(bookmark)}>
+            <s.AddMinusButton
+              onClick={(e) => setNotIsUserWordPreferred(bookmark)}
+            >
               <img
                 src={APP_DOMAIN + "/static/icons/remove-icon-color.png"}
                 alt="remove"
@@ -105,7 +124,9 @@ export default function Word({
           {isReview &&
             !bookmark.fit_for_study &&
             bookmark.from.split(" ").length < 3 && (
-              <s.AddMinusButton onClick={(e) => setIsFitForStudy(bookmark)}>
+              <s.AddMinusButton
+                onClick={(e) => setIsUserWordPreferred(bookmark)}
+              >
                 <img
                   src={APP_DOMAIN + "/static/icons/add-icon-color.png"}
                   alt="add"
@@ -117,6 +138,13 @@ export default function Word({
               <img src={APP_DOMAIN + "/static/images/trash.svg"} alt="trash" />
             </s.TrashIcon>
           )*/}
+          {/*
+            Debug user preferences. 
+            {bookmark.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE && (
+              <span>❗</span>
+            )}
+          */}
+
           {!isReview && (
             <EditButton
               bookmark={bookmark}
