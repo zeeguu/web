@@ -1,0 +1,5 @@
+export const USER_WORD_PREFERENCE = Object.freeze({
+  DONT_USE_IN_EXERCISES: -1,
+  NO_PREFERENCE: 0,
+  USE_IN_EXERCISES: 1,
+});
