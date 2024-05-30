@@ -10,7 +10,22 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "40%",
+  width: "50%",
+  bgcolor: "background.paper",
+  border: "0 !important",
+  borderRadius: "0.65em",
+  boxShadow: 24,
+  p: 4,
+};
+
+const stylePhone = {
+  position: "absolute",
+  display: "flex",
+  flexDirection: "column",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "75%",
   bgcolor: "background.paper",
   border: "0 !important",
   borderRadius: "0.65em",
@@ -76,6 +91,7 @@ let CustomCheckBoxDiv = scStyled.div`
 
 export {
   style,
+  stylePhone,
   Headline,
   DoneButtonHolder,
   Small,

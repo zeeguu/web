@@ -74,7 +74,7 @@ export default function EditButton({
     if (setReload) setReload(!reload);
     if (notifyWordChange) notifyWordChange(bookmark.id);
   }
-
+  const isPhoneScreen = window.innerWidth < 800;
   return (
     <div>
       {styling === "exercise" ? (
@@ -105,7 +105,7 @@ export default function EditButton({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={s.style}>
+        <Box sx={isPhoneScreen ? s.stylePhone : s.style}>
           <WordEditForm
             bookmark={bookmark}
             handleClose={handleClose}

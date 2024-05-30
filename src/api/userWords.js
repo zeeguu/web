@@ -71,17 +71,17 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
   articleID,
   setUpdatedBookmarks,
 ) {
-  function setFitToStudyIfNotAlready(bookmark, seenBookmarks) {
+  function setFitToStudyIfNotAlready(api, bookmark, seenBookmarks) {
     seenBookmarks.add(bookmark.from.toLowerCase());
     if (!bookmark.fit_for_study) {
       bookmark.fit_for_study = true;
-      this.setIsFitForStudy(bookmark.id);
+      api.setIsFitForStudy(bookmark.id);
     }
   }
-  function setNotFitToStudyIfNotAlready(bookmark) {
+  function setNotFitToStudyIfNotAlready(api, bookmark) {
     if (bookmark.fit_for_study) {
       bookmark.fit_for_study = false;
-      this.setNotFitForStudy(bookmark.id);
+      api.setNotFitForStudy(bookmark.id);
     }
   }
   this.bookmarksForArticle(articleID, (bookmarks) => {
@@ -101,11 +101,11 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
       let isUserAddedBookmark =
         bookmark.user_preference === USER_WORD_PREFERENCE.USE_IN_EXERCISES;
       let isBookmarkLearned = bookmark.learned_datetime !== "";
-
+      console.log(seenBookmarks);
       if (isUserAddedBookmark && !isBookmarkLearned) {
-        setFitToStudyIfNotAlready(bookmark, seenBookmarks);
+        setFitToStudyIfNotAlready(this, bookmark, seenBookmarks);
       } else if (isUserExcludedBookmark) {
-        setNotFitToStudyIfNotAlready(bookmark);
+        setNotFitToStudyIfNotAlready(this, bookmark);
       } else {
         if (
           !isBookmarkTooLong &&
@@ -113,11 +113,15 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
           !isBookmarkLearned &&
           totalAddedBookmarks < MAX_BOOKMARKS_PER_ARTICLE
         ) {
-          setFitToStudyIfNotAlready(bookmark, seenBookmarks);
+          setFitToStudyIfNotAlready(this, bookmark, seenBookmarks);
           totalAddedBookmarks += 1;
         } else {
-          if (!bookmark.starred || isUserExcludedBookmark) {
-            setNotFitToStudyIfNotAlready(bookmark);
+          if (
+            !bookmark.starred ||
+            isUserExcludedBookmark ||
+            isRepeatedBookmark
+          ) {
+            setNotFitToStudyIfNotAlready(this, bookmark);
           }
         }
       }
