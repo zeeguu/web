@@ -2,6 +2,7 @@ import * as s from "./WordEdit.sc";
 import * as st from "../exercises/bottomActions/FeedbackButtons.sc";
 import strings from "../i18n/definitions";
 import { useState } from "react";
+import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 
 export default function WordEditForm({
   bookmark,
@@ -107,7 +108,8 @@ export default function WordEditForm({
           value={context}
           onChange={typingContext}
         />
-        {bookmark.from.split(" ").length < 3 && (
+        {bookmark.from.split(" ").length <
+          MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
           <s.CustomCheckBoxDiv>
             <input
               style={{ width: "1.5em" }}

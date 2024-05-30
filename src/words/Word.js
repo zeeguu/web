@@ -7,6 +7,7 @@ import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 import { APP_DOMAIN } from "../appConstants";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
+import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 
 export default function Word({
   bookmark,
@@ -123,7 +124,8 @@ export default function Word({
           )}
           {isReview &&
             !bookmark.fit_for_study &&
-            bookmark.from.split(" ").length < 3 && (
+            bookmark.from.split(" ").length <
+              MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES && (
               <s.AddMinusButton
                 onClick={(e) => setIsUserWordPreferred(bookmark)}
               >
@@ -166,7 +168,8 @@ export default function Word({
                 }
                 alt="star"
                 style={
-                  bookmark.from.split(" ").length < 3
+                  bookmark.from.split(" ").length <
+                  MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES
                     ? {}
                     : { visibility: "hidden" }
                 }
