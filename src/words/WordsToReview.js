@@ -11,6 +11,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { ThemeProvider } from "@mui/material/styles";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
 import { MAX_BOOKMARKS_PER_ARTICLE } from "../exercises/ExerciseConstants";
+import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
+import InfoBoxZeeguuWordSelection from "./InfoBoxZeeguuWordSelection";
+import InfoBoxUserEditedWords from "./InfoBoxUserEditedWords";
 
 export default function WordsToReview({
   words,
@@ -27,16 +30,47 @@ export default function WordsToReview({
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
     [],
   );
+  const [totalWordsSelectedByZeeguu, setTotalWordsSelectedByZeeguu] =
+    useState();
+  const [totalWordsEditedByUser, setTotalWordsEditedByUser] = useState();
   const [wordsExpressions, setWordsExpressions] = useState([]);
   const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
     useState(false);
+
+  const ToggleEditModeComponent = (
+    <ThemeProvider theme={t} style={{ marginBottom: "-1em" }}>
+      <FormGroup>
+        <FormControlLabel
+          control={<Android12Switch />}
+          className={inEditMode ? "selected" : ""}
+          onClick={(e) => setInEditMode(!inEditMode)}
+          label={
+            <medium style={{ fontWeight: "500" }}>
+              {"Manage Words for Exercises"}
+            </medium>
+          }
+        />
+      </FormGroup>
+    </ThemeProvider>
+  );
 
   useEffect(() => {
     let newWordsForExercises = [];
     let newWordsExcludedExercises = [];
     let newWordExpressions = [];
+    // Keep track how many words Zeeguu selected
+    let newTotalWordsSelectedByZeeguu = 0;
+    let newTotalWordsEditedByUser = 0;
+
     for (let i = 0; i < words.length; i++) {
       let word = words[i];
+      if (
+        word.fit_for_study &&
+        word.user_preference !== USER_WORD_PREFERENCE.USE_IN_EXERCISES
+      )
+        newTotalWordsSelectedByZeeguu += 1;
+      if (word.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE)
+        newTotalWordsEditedByUser += 1;
       if (tokenize(word.from).length >= 3) newWordExpressions.push(word);
       else if (!word.fit_for_study) newWordsExcludedExercises.push(word);
       else newWordsForExercises.push(word);
@@ -44,6 +78,8 @@ export default function WordsToReview({
     setWordsForExercises(newWordsForExercises);
     setWordsExcludedForExercises(newWordsExcludedExercises);
     setWordsExpressions(newWordExpressions);
+    setTotalWordsSelectedByZeeguu(newTotalWordsSelectedByZeeguu);
+    setTotalWordsEditedByUser(newTotalWordsEditedByUser);
   }, [words]);
 
   if (words.length === 0)
@@ -64,6 +100,7 @@ export default function WordsToReview({
         </Infobox>
       </>
     );
+  console.log(totalWordsEditedByUser);
   return (
     <>
       <ExplainBookmarkSelectionModal
@@ -77,51 +114,25 @@ export default function WordsToReview({
           {articleInfo.title}
         </medium>
       </div>
-      {totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE && (
-        <>
-          <Infobox>
-            <div>
-              <p>
-                We have selected{" "}
-                <b>
-                  {wordsForExercises.length} out of {totalWordsTranslated}{" "}
-                  translated words for you to practice.{" "}
-                </b>
-                <a
-                  onClick={() => {
-                    console.log("Setting! " + showExplainWordSelectionModal);
-                    setShowExplainWordSelectionModal(
-                      !showExplainWordSelectionModal,
-                    );
-                  }}
-                >
-                  Tell me why these words are selected
-                </a>
-                .
-              </p>
-              <p>
-                <b>To manually add or remove words, use the toggle below.</b>
-              </p>
-              <ThemeProvider theme={t} style={{ marginBottom: "-1em" }}>
-                <FormGroup>
-                  <FormControlLabel
-                    control={<Android12Switch />}
-                    className={inEditMode ? "selected" : ""}
-                    onClick={(e) => setInEditMode(!inEditMode)}
-                    label={
-                      <medium style={{ fontWeight: "500" }}>
-                        {"Manage Words for Exercises"}
-                      </medium>
-                    }
-                  />
-                </FormGroup>
-              </ThemeProvider>
-            </div>
-          </Infobox>
-        </>
-      )}
+      {totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE &&
+        totalWordsEditedByUser === 0 && (
+          <InfoBoxZeeguuWordSelection
+            totalWordsSelectedByZeeguu={totalWordsSelectedByZeeguu}
+            totalWordsTranslated={totalWordsTranslated}
+            showExplainWordSelectionModal={showExplainWordSelectionModal}
+            setShowExplainWordSelectionModal={setShowExplainWordSelectionModal}
+            ToggleEditModeComponent={ToggleEditModeComponent}
+          />
+        )}
+      {totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE &&
+        totalWordsEditedByUser > 0 && (
+          <InfoBoxUserEditedWords
+            totalWordsForExercises={wordsForExercises.length}
+            totalWordsTranslated={totalWordsTranslated}
+            ToggleEditModeComponent={ToggleEditModeComponent}
+          />
+        )}
       <h3>You will see these words in your exercises:</h3>
-
       {wordsForExercises.map((each) => (
         <ContentOnRow className="contentOnRow">
           <Word

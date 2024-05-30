@@ -9,7 +9,6 @@ import strings from "../i18n/definitions";
 import { StyledButton } from "../components/allButtons.sc.js";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import prioritizeBookmarksToStudy from "../exercises/PrioritizeBookmarksToStudy.js";
 import Tooltip from "@mui/material/Tooltip";
 
 function fit_for_study(words) {
@@ -24,7 +23,7 @@ export default function WordsForArticle({ api }) {
   const [exercisesEnabled, setExercisesEnabled] = useState(false);
 
   useEffect(() => {
-    prioritizeBookmarksToStudy(api, articleID, setWords);
+    api.prioritizeBookmarksToStudy(articleID, setWords);
     api.getArticleInfo(articleID, (data) => {
       setArticleInfo(data);
       setTitle('Words in "' + data.title + '"');

@@ -26,7 +26,6 @@ import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import ratio from "../utils/basic/ratio";
-import prioritizeBookmarksToStudy from "../exercises/PrioritizeBookmarksToStudy";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -205,7 +204,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     if (!clickedOnReviewVocabRef.current) {
       // If the user clicks away from the article, prioritize
       // words based on their rank.
-      prioritizeBookmarksToStudy(api, articleID);
+      api.prioritizeBookmarksToStudy(articleID);
     }
   }
 
