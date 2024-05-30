@@ -60,14 +60,10 @@ Zeeguu_API.prototype.setNotFitForStudy = function (bookmark_id) {
 };
 
 Zeeguu_API.prototype.userSetForExercises = function (bookmark_id) {
-  // Keep using the star together with the user preference?
-  this.starBookmark(bookmark_id);
   this._post(`is_user_preference/${bookmark_id}`);
 };
 
 Zeeguu_API.prototype.userSetNotForExercises = function (bookmark_id) {
-  // Keep using the star together with the user preference?
-  this.unstarBookmark(bookmark_id);
   this._post(`not_user_preference/${bookmark_id}`);
 };
 
