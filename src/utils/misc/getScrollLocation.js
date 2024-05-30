@@ -8,7 +8,9 @@ import ratio from "../basic/ratio";
   removing it from the calculation of the ScrollHeight.
 
   Implemented using "named-parameters": https://byby.dev/js-named-parameters
+  To call method without defining parameter use: getScrollRatio({})
 */
+
 function getScrollRatio({ shortenPageHeightPixels = 0 }) {
   let scrollElement = document.getElementById("scrollHolder");
   let scrollY = scrollElement.scrollTop;
