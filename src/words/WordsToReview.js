@@ -2,18 +2,13 @@ import Word from "./Word";
 import { ContentOnRow } from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import Infobox from "../components/Infobox";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { tokenize } from "../utils/preprocessing/preprocessing";
-import { t, Android12Switch } from "../components/MUIToggleThemes";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { ThemeProvider } from "@mui/material/styles";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
 import { MAX_BOOKMARKS_PER_ARTICLE } from "../exercises/ExerciseConstants";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
-import InfoBoxZeeguuWordSelection from "./InfoBoxZeeguuWordSelection";
-import InfoBoxUserEditedWords from "./InfoBoxUserEditedWords";
+import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
+import ToggleEditReviewWords from "./ToggleEditReviewWords";
 
 export default function WordsToReview({
   words,
@@ -23,7 +18,6 @@ export default function WordsToReview({
   notifyWordChanged,
   source,
 }) {
-  console.log(words.length);
   const totalWordsTranslated = words.length;
   const [inEditMode, setInEditMode] = useState(false);
   const [wordsForExercises, setWordsForExercises] = useState([]);
@@ -36,23 +30,6 @@ export default function WordsToReview({
   const [wordsExpressions, setWordsExpressions] = useState([]);
   const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
     useState(false);
-
-  const ToggleEditModeComponent = (
-    <ThemeProvider theme={t} style={{ marginBottom: "-1em" }}>
-      <FormGroup>
-        <FormControlLabel
-          control={<Android12Switch />}
-          className={inEditMode ? "selected" : ""}
-          onClick={(e) => setInEditMode(!inEditMode)}
-          label={
-            <medium style={{ fontWeight: "500" }}>
-              {"Manage Words for Exercises"}
-            </medium>
-          }
-        />
-      </FormGroup>
-    </ThemeProvider>
-  );
 
   useEffect(() => {
     let newWordsForExercises = [];
@@ -88,10 +65,10 @@ export default function WordsToReview({
         {" "}
         <div style={{ marginTop: "5em" }}>
           <h1>{strings.ReviewTranslations}</h1>
-          <medium>
+          <p>
             <b>{strings.from}</b>
             {articleInfo.title}
-          </medium>
+          </p>
         </div>
         <Infobox>
           <div>
@@ -100,7 +77,17 @@ export default function WordsToReview({
         </Infobox>
       </>
     );
-  console.log(totalWordsEditedByUser);
+
+  const isNoWordsSelected = wordsForExercises.length === 0;
+  const isZeeguuSelectWords =
+    totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE &&
+    totalWordsEditedByUser === 0 &&
+    wordsForExercises.length > 0;
+  const isUserEditedWords =
+    totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE &&
+    totalWordsEditedByUser > 0 &&
+    wordsForExercises.length > 0;
+
   return (
     <>
       <ExplainBookmarkSelectionModal
@@ -109,45 +96,51 @@ export default function WordsToReview({
       ></ExplainBookmarkSelectionModal>
       <div style={{ marginTop: "5%" }}>
         <h1>{strings.ReviewTranslations}</h1>
-        <medium>
+        <p>
           <b>{strings.from}</b>
           {articleInfo.title}
-        </medium>
+        </p>
       </div>
-      {totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE &&
-        totalWordsEditedByUser === 0 && (
-          <InfoBoxZeeguuWordSelection
-            totalWordsSelectedByZeeguu={totalWordsSelectedByZeeguu}
-            totalWordsTranslated={totalWordsTranslated}
-            showExplainWordSelectionModal={showExplainWordSelectionModal}
-            setShowExplainWordSelectionModal={setShowExplainWordSelectionModal}
-            ToggleEditModeComponent={ToggleEditModeComponent}
-          />
-        )}
-      {totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE &&
-        totalWordsEditedByUser > 0 && (
-          <InfoBoxUserEditedWords
-            totalWordsForExercises={wordsForExercises.length}
-            totalWordsTranslated={totalWordsTranslated}
-            ToggleEditModeComponent={ToggleEditModeComponent}
-          />
-        )}
-      <h3>You will see these words in your exercises:</h3>
-      {wordsForExercises.map((each) => (
-        <ContentOnRow className="contentOnRow">
-          <Word
-            key={each.id}
-            bookmark={each}
-            notifyDelete={deleteBookmark}
-            api={api}
-            hideStar={true}
-            notifyWordChange={notifyWordChanged}
-            source={source}
-            isReview={inEditMode}
-          />
-        </ContentOnRow>
-      ))}
-      {inEditMode && wordsExcludedForExercises.length > 0 && (
+      {(isNoWordsSelected || isZeeguuSelectWords || isUserEditedWords) && (
+        <InfoBoxWordsToReview
+          isZeeguuSelectWords={isZeeguuSelectWords}
+          isUserEditedWords={isUserEditedWords}
+          isNoWordsSelected={isNoWordsSelected}
+          totalWordsForExercises={wordsForExercises.length}
+          totalWordsSelectedByZeeguu={totalWordsSelectedByZeeguu}
+          totalWordsTranslated={totalWordsTranslated}
+          showExplainWordSelectionModal={showExplainWordSelectionModal}
+          setShowExplainWordSelectionModal={setShowExplainWordSelectionModal}
+          toggleEditWordsComponent={
+            <ToggleEditReviewWords
+              setInEditMode={setInEditMode}
+              inEditMode={inEditMode}
+            />
+          }
+        />
+      )}
+      {wordsForExercises.length > 0 && (
+        <>
+          <h3>You will see these words in your exercises:</h3>
+          {wordsForExercises.map((each) => (
+            <ContentOnRow className="contentOnRow">
+              <Word
+                key={each.id}
+                bookmark={each}
+                notifyDelete={deleteBookmark}
+                api={api}
+                hideStar={true}
+                notifyWordChange={notifyWordChanged}
+                source={source}
+                isReview={inEditMode}
+              />
+            </ContentOnRow>
+          ))}
+        </>
+      )}
+
+      {((wordsExcludedForExercises.length > 0 && totalWordsTranslated < 10) ||
+        (inEditMode && wordsExcludedForExercises.length > 0)) && (
         <>
           <h3>
             You <u>won't see</u> these words in your exercises:
@@ -167,7 +160,8 @@ export default function WordsToReview({
           ))}
         </>
       )}
-      {inEditMode && wordsExpressions.length > 0 && (
+      {((wordsExpressions.length > 0 && totalWordsTranslated < 10) ||
+        (inEditMode && wordsExpressions.length > 0)) && (
         <>
           <h3>These words can't appear in exercises:</h3>
           <Infobox>
@@ -177,8 +171,8 @@ export default function WordsToReview({
                   Translations composed of 3 or more words are not used in the
                   exercises.{" "}
                 </b>
-                <p>You can still review them in Words or History tab.</p>
               </p>
+              <p>You can still review them in Words or History tab.</p>
             </div>
           </Infobox>
           {wordsExpressions.map((each) => (
