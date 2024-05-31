@@ -48,7 +48,7 @@ export default function LandingPage() {
 
       <s.PageContent>
         <s.HeroColumn>
-          <h1>Learn foreign languages with&nbsp;Zeeguu</h1>
+          <h1>Learn foreign languages while reading what you&nbsp;like</h1>
           <p className="hero-paragraph">
             {strings.projectDescription_UltraShort}
           </p>
