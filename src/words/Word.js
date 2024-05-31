@@ -58,7 +58,6 @@ export default function Word({
   function setIsUserWordPreferred(bookmark) {
     // Keep the star to mirror the previous behaviour?
     api.userSetForExercises(bookmark.id);
-    bookmark.starred = true;
     bookmark.fit_for_study = true;
     bookmark.user_preference = USER_WORD_PREFERENCE.USE_IN_EXERCISES;
     if (notifyWordChange) notifyWordChange(bookmark);
@@ -72,7 +71,6 @@ export default function Word({
 
   function setNotIsUserWordPreferred(bookmark) {
     api.userSetNotForExercises(bookmark.id);
-    bookmark.starred = false;
     bookmark.fit_for_study = false;
     bookmark.user_preference = USER_WORD_PREFERENCE.DONT_USE_IN_EXERCISES;
     if (notifyWordChange) notifyWordChange(bookmark);

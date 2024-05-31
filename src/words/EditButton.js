@@ -50,7 +50,6 @@ export default function EditButton({
     api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
     if (newFitForStudy) {
       api.userSetForExercises(bookmark.id);
-      bookmark.starred = true;
       api.logReaderActivity(
         api.USER_SET_WORD_PREFERRED,
         bookmark.article_id,
@@ -59,7 +58,6 @@ export default function EditButton({
       );
     } else {
       api.userSetNotForExercises(bookmark.id);
-      bookmark.starred = false;
       api.logReaderActivity(
         api.USER_SET_NOT_WORD_PREFERED,
         bookmark.article_id,
