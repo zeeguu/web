@@ -85,19 +85,16 @@ const Title = styled.div`
 `;
 
 const Difficulty = styled.div`
-  display: inline-block;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: row;
+  gap: 0.5em;
   margin-right: 2em;
+  img {
+    height: 1.5em;
+  }
   span {
-    height: 1.2em;
-    border-radius: 1.0416666666666667em;
-    padding: 0.20833333333333334em 1.1em;
-    font-weight: 550;
-    color: white;
-    text-shadow:
-      -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000;
+    font-weight: 450;
   }
 `;
 
@@ -105,12 +102,14 @@ const WordCount = styled(Difficulty)``;
 
 const ReadingTimeContainer = styled(Difficulty)`
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   flex-direction: row;
   gap: 0.5em;
   img {
-    width: 1.5em;
     height: 1.5em;
+  }
+  span {
+    font-weight: 450;
   }
 `;
 

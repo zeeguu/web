@@ -152,16 +152,20 @@ export default function ArticleOverview({
         </s.Topics>
         <s.StatContainer>
           <s.Difficulty>
-            <span style={{ backgroundColor: linearToColour(cefr_level) }}>
-              {cefr_level}
-            </span>
+            <img
+              src={
+                APP_DOMAIN + "/static/icons/" + cefr_level + "-level-icon.png"
+              }
+              alt="difficulty icon"
+            ></img>
+            <span>{cefr_level}</span>
           </s.Difficulty>
           <s.ReadingTimeContainer>
             <img
               src={APP_DOMAIN + "/static/icons/read-time-icon.png"}
               alt="read time icon"
             ></img>
-            {estimateReadingTime(article.metrics.word_count)}
+            <span>{estimateReadingTime(article.metrics.word_count)}</span>
           </s.ReadingTimeContainer>
         </s.StatContainer>
       </s.BottomContainer>
