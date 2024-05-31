@@ -79,7 +79,6 @@ export default function TranslatableWord({
       </>
     );
   }
-
   return (
     <>
       <z-tag>

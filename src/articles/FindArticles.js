@@ -126,7 +126,6 @@ export default function NewArticles() {
       });
     } else {
       api.getUserArticles((articles) => {
-        console.log("Setting articles!");
         setArticleList(articles);
         setOriginalList([...articles]);
       });
@@ -150,7 +149,6 @@ export default function NewArticles() {
 
   //when the user changes interests...
   function articlesListShouldChange() {
-    console.log("Unsetting Article List");
     setArticleList(null);
     api.getUserArticles((articles) => {
       setArticleList(articles);

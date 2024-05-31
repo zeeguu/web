@@ -32,14 +32,7 @@ export default function ArticleOverview({
     }
   };
 
-  function linearToColour(cefr_level) {
-    if (cefr_level === "A1" || cefr_level === "A2") return blue300;
-    else if (cefr_level === "B1" || cefr_level === "B2") return blue600;
-    else return blue900;
-  }
-
   let topics = article.topics.split(" ").filter((each) => each !== "");
-  let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
   let cefr_level = article.metrics.cefr_level;
 
   function handleCloseRedirectionModal() {
@@ -165,7 +158,7 @@ export default function ArticleOverview({
               src={APP_DOMAIN + "/static/icons/read-time-icon.png"}
               alt="read time icon"
             ></img>
-            <span>{estimateReadingTime(article.metrics.word_count)}</span>
+            <span>~ {estimateReadingTime(article.metrics.word_count)}</span>
           </s.ReadingTimeContainer>
         </s.StatContainer>
       </s.BottomContainer>

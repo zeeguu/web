@@ -14,8 +14,8 @@ function timeToHumanReadable(timeInSeconds, precision = "seconds") {
 }
 
 function estimateReadingTime(wordCount) {
-  // 238 words per minute
-  // Let'say a language lerner takes 160 WPM
-  return "~ " + timeToHumanReadable(Math.ceil(wordCount / 160) * 60, "minutes");
+  // 238 words per minute is average for a normal reader in English.
+  // Let'say a language lerner takes 160 WPM + Wait + Translation Words
+  return timeToHumanReadable(Math.ceil(wordCount / 160) * 60, "minutes");
 }
 export { timeToHumanReadable, estimateReadingTime };
