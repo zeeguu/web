@@ -140,7 +140,7 @@ let strings = new LocalizedStrings(
       rememberPassword: "Remember Password?",
 
       //InstallExtension
-      skipInstallation: "Skip installation",
+      iWillInstallLater: "I will install it later",
       installTheExtension: "Install the Extension",
 
       //LandingPage

@@ -21,8 +21,8 @@ export default function ExcludeWordsStep1({ hasExtension }) {
     <InfoPage>
       <Header>
         <Heading>
-          Would you like to filter out articles and exercises containing
-          particular words or&nbsp;phrases?
+          Would you like to exclude articles and exercises containing particular
+          words or&nbsp;phrases?
         </Heading>
       </Header>
       <Main>
