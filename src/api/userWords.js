@@ -101,7 +101,7 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
       let isUserAddedBookmark =
         bookmark.user_preference === USER_WORD_PREFERENCE.USE_IN_EXERCISES;
       let isBookmarkLearned = bookmark.learned_datetime !== "";
-      console.log(seenBookmarks);
+
       if (isUserAddedBookmark && !isBookmarkLearned) {
         setFitToStudyIfNotAlready(this, bookmark, seenBookmarks);
       } else if (isUserExcludedBookmark) {
