@@ -64,7 +64,7 @@ export default function NewArticles() {
   };
 
   function handleScroll() {
-    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd({});
+    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
       !isWaitingForNewArticlesRef.current

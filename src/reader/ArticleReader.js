@@ -110,17 +110,15 @@ export default function ArticleReader({ api, teacherArticleID }) {
     let bottomRowElement = document.getElementById("bottomRow");
 
     // We use this to avoid counting the feedback elements
-    // as part of the article lenght when updating the
+    // as part of the article length when updating the
     // scroll bar.
-    // 450 Is a default in case we can't acess the property
+    // 450 Is a default in case we can't access the property
     let bottomRowHeight = 450;
     if (bottomRowElement) {
       bottomRowHeight = bottomRowElement.offsetHeight;
     }
-    // getScrollRatio supports passing a pixel offset which is
-    // removed from the total length of the page.
-    const pixelOffset = { shortenPageHeightPixels: bottomRowHeight };
-    let ratio = getScrollRatio(pixelOffset);
+
+    let ratio = getScrollRatio(bottomRowHeight);
     setScrollPosition(ratio);
     let percentage = Math.floor(ratio * 100);
     let currentReadingTimer = activityTimerRef.current;
