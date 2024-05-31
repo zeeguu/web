@@ -121,7 +121,7 @@ export default function ArticleOverview({
             <s.SourceImage>
               <img src={"/news-icons/" + article.feed_icon_name} alt="" />
             </s.SourceImage>
-            <s.FeedName>{article.feed_name}</s.FeedName>
+            {article.feed_name && <s.FeedName>{article.feed_name}</s.FeedName>}
           </>
         )}
         {!dontShowPublishingTime && (
@@ -134,7 +134,7 @@ export default function ArticleOverview({
       <s.Title>{titleLink(article)}</s.Title>
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
-        <s.Summary>{article.summary}</s.Summary>
+        <s.Summary>{article.summary}...</s.Summary>
       </s.ArticleContent>
 
       <s.BottomContainer>
