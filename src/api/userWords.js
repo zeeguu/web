@@ -60,11 +60,11 @@ Zeeguu_API.prototype.setNotFitForStudy = function (bookmark_id) {
 };
 
 Zeeguu_API.prototype.userSetForExercises = function (bookmark_id) {
-  this._post(`is_user_preference/${bookmark_id}`);
+  this._post(`use_in_exercises/${bookmark_id}`);
 };
 
 Zeeguu_API.prototype.userSetNotForExercises = function (bookmark_id) {
-  this._post(`not_user_preference/${bookmark_id}`);
+  this._post(`dont_use_in_exercises/${bookmark_id}`);
 };
 
 Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
@@ -78,12 +78,14 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
       api.setIsFitForStudy(bookmark.id);
     }
   }
+
   function setNotFitToStudyIfNotAlready(api, bookmark) {
     if (bookmark.fit_for_study) {
       bookmark.fit_for_study = false;
       api.setNotFitForStudy(bookmark.id);
     }
   }
+
   this.bookmarksForArticle(articleID, (bookmarks) => {
     let seenBookmarks = new Set([]);
     let sortedBookmarks = [...bookmarks].sort(
