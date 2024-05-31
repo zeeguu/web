@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
@@ -11,22 +11,24 @@ import * as s from "../components/TopMessage.sc";
 
 export default function OwnArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
+  const [originalList, setOriginalList] = useState(null);
 
-  let originalList = articleList;
 
-  if (articleList == null) {
-    api.getRecommendedArticles((articles) => {
-        setArticleList(articles);
-    });
-  
-
+  useEffect(() => {
     setTitle("Recommended Articles");
 
+    api.getSavedUserArticles((articles) => {
+      setArticleList(articles);
+      setOriginalList(articles);
+    });
+  }, []);
+
+  if (articleList == null) {
     return <LoadingAnimation />;
   }
 
   if (articleList.length === 0) {
-    return <LoadingAnimation />;
+    return <s.TopMessage>{strings.noRecommendedArticles}</s.TopMessage>;
   }
 
   return (
