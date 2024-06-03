@@ -5,6 +5,7 @@ import {
   zeeguuOrange,
   zeeguuVarmYellow,
   zeeguuDarkOrange,
+  darkBlue,
 } from "../components/colors";
 
 const ArticlePreview = styled.div`
@@ -110,10 +111,26 @@ let Summary = styled.div`
   }
 `;
 
-let SourceImage = styled.span`
+let SourceImage = styled.div`
+  display: inline-flex;
+  align-items: center;
+  a {
+    position: relative;
+  }
+  a span {
+    position: absolute;
+    display: none;
+    z-index: 99;
+    text-align: center;
+    margin-top: 0.5em;
+    font-size: small;
+  }
+  a:hover span {
+    display: block;
+  }
   img {
-    background-color: ${zeeguuVarmYellow};
     height: 1.5em;
+    margin-right: 0.5em;
   }
   margin-right: 2em;
 `;
@@ -137,6 +154,26 @@ let Topics = styled.span`
     font-size: 0.8333333333333334em;
   }
 `;
+let KeywordTopics = styled.span`
+  display: inline-block;
+  cursor: help;
+
+  margin-top: 1em;
+    .inferred {
+      border: dashed ${darkBlue};
+    }
+    .gold {
+      border: solid ${darkBlue};
+    }
+  span {
+    height: 1.2em;
+    margin-left: 0.2em;
+    border-radius: 1.0416666666666667em;
+    padding: 0.20833333333333334em 1.3541666666666667em;
+    font-size: 0.8333333333333334em;
+    .
+  }
+`;
 
 export {
   Title,
@@ -149,4 +186,5 @@ export {
   SourceImage,
   PublishingTime,
   Topics,
+  KeywordTopics,
 };

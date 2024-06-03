@@ -3,6 +3,7 @@ import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import * as s from "./TagsOfInterests.sc";
 import strings from "../i18n/definitions";
+import Feature from "../features/Feature";
 
 export default function TagsOfFilters({
   visible,
@@ -15,13 +16,23 @@ export default function TagsOfFilters({
   const [showingModal, setShowingModal] = useState(false);
 
   useEffect(() => {
-    api.availableFilters((topics) => {
-      setAvailableFilters(topics);
-    });
+    if (Feature.new_topics()) {
+      api.availableNewFilters((topics) => {
+        setAvailableFilters(topics);
+      });
 
-    api.getFilteredTopics((filters) => {
-      setSubscribedFilters(filters);
-    });
+      api.getFilteredNewTopics((filters) => {
+        setSubscribedFilters(filters);
+      });
+    } else {
+      api.availableFilters((topics) => {
+        setAvailableFilters(topics);
+      });
+
+      api.getFilteredTopics((filters) => {
+        setSubscribedFilters(filters);
+      });
+    }
 
     api.getSubscribedFilterSearches((filters) => {
       setSubscribedSearchFilters(filters);
@@ -33,20 +44,22 @@ export default function TagsOfFilters({
 
   function subscribeToFilter(filter) {
     setSubscribedFilters([...subscribedFilters, filter]);
-    api.subscribeToFilter(filter);
+    if (Feature.new_topics()) api.subscribeToNewFilter(filter);
+    else api.subscribeToFilter(filter);
   }
 
   function unsubscribeFromFilter(filter) {
     setSubscribedFilters(
-      subscribedFilters.filter((each) => each.id !== filter.id)
+      subscribedFilters.filter((each) => each.id !== filter.id),
     );
-    api.unsubscribeFromFilter(filter);
+    if (Feature.new_topics()) api.unsubscribeFromNewFilter(filter);
+    else api.unsubscribeFromFilter(filter);
   }
 
   function removeSearchFilter(search) {
     api.unsubscribeFromSearchFilter(search);
     setSubscribedSearchFilters(
-      subscribedSearchFilters.filter((each) => each.id !== search.id)
+      subscribedSearchFilters.filter((each) => each.id !== search.id),
     );
   }
 
@@ -59,9 +72,14 @@ export default function TagsOfFilters({
   }
 
   const onConfirm = (response) => {
-    api.subscribeToSearchFilter(response, (data) => {
-      setSubscribedSearchFilters([...subscribedSearchFilters, data]);
-    });
+    if (Feature.new_topics())
+      api.subscribeToNewSearchFilter(response, (data) => {
+        setSubscribedSearchFilters([...subscribedSearchFilters, data]);
+      });
+    else
+      api.subscribeToSearchFilter(response, (data) => {
+        setSubscribedSearchFilters([...subscribedSearchFilters, data]);
+      });
 
     setShowingModal(false);
   };

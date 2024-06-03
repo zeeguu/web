@@ -12,14 +12,14 @@ export default function InterestsAndSearch({ api, articlesListShouldChange }) {
 
   function toggleInterests() {
     if (showingFilters) {
-      return;
+      setShowingFilters(!showingFilters);
     }
     setShowingInterests(!showingInterests);
   }
 
   function toggleFilters() {
     if (showingInterests) {
-      return;
+      setShowingInterests(!showingInterests);
     }
     setShowingFilters(!showingFilters);
   }
@@ -32,7 +32,7 @@ export default function InterestsAndSearch({ api, articlesListShouldChange }) {
   return (
     <s.Interests>
       <b.OrangeRoundButton onClick={(e) => toggleInterests()}>
-      {strings.interests}
+        {strings.interests}
       </b.OrangeRoundButton>
 
       <b.OrangeRoundButton onClick={(e) => toggleFilters()}>

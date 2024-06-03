@@ -7,6 +7,8 @@ import RedirectionNotificationModal from "../components/redirect_notification/Re
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
+import * as sweetM from "./TagsOfInterests.sc";
+import Modal from "../components/modal_shared/Modal";
 
 export default function ArticleOverview({
   article,
@@ -18,6 +20,8 @@ export default function ArticleOverview({
   setDoNotShowRedirectionModal_UserPreference,
   onArticleClick,
 }) {
+  const [infoTopicClick, setInfoTopicClick] = useState("");
+  const [showInfoTopics, setShowInfoTopics] = useState(false);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(
     article.has_personal_copy,
@@ -30,6 +34,7 @@ export default function ArticleOverview({
   };
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
+  let new_topics = article.new_topics_list;
   let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
   function handleCloseRedirectionModal() {
@@ -106,6 +111,38 @@ export default function ArticleOverview({
 
   return (
     <s.ArticlePreview>
+      {showInfoTopics && Feature.new_topics() && (
+        <sweetM.TagsOfInterests>
+          <Modal
+            children={
+              <>
+                <h1>NEW! Article topics are shown differently!</h1>
+                <div style={{ textAlign: "left", lineHeight: "2em" }}>
+                  <s.KeywordTopics>
+                    <span className="inferred" style={{ marginRight: "0.5em" }}>
+                      {infoTopicClick}
+                    </span>{" "}
+                    A dashed-line means that similar articles have been labeled
+                    with '{infoTopicClick}'.
+                  </s.KeywordTopics>
+                  <s.KeywordTopics>
+                    <span className="gold" style={{ marginRight: "0.5em" }}>
+                      {infoTopicClick}
+                    </span>{" "}
+                    The source associated with the article usually publishes '
+                    {infoTopicClick}'.
+                  </s.KeywordTopics>
+                </div>
+              </>
+            }
+            open={showInfoTopics}
+            onClose={() => {
+              setShowInfoTopics(!showInfoTopics);
+            }}
+          ></Modal>
+        </sweetM.TagsOfInterests>
+      )}
+
       <SmallSaveArticleButton
         api={api}
         article={article}
@@ -127,9 +164,17 @@ export default function ArticleOverview({
 
       <div>
         {!dontShowSourceIcon && (
-          <s.SourceImage>
-            <img src={"/news-icons/" + article.feed_icon_name} alt="" />
-          </s.SourceImage>
+          <>
+            <s.SourceImage>
+              <a href={article.feed_domain}>
+                <img
+                  src={"/news-icons/" + article.feed_icon_name}
+                  alt="Source Icon"
+                />
+                {article.feed_icon_name && <span>{article.feed_domain}</span>}
+              </a>
+            </s.SourceImage>
+          </>
         )}
         {!dontShowPublishingTime && (
           <s.PublishingTime>
@@ -141,6 +186,22 @@ export default function ArticleOverview({
             <span key={topic}>{topic}</span>
           ))}
         </s.Topics>
+        {Feature.new_topics() && (
+          <s.KeywordTopics>
+            {new_topics.map((tuple) => (
+              <span
+                onClick={() => {
+                  setShowInfoTopics(!showInfoTopics);
+                  setInfoTopicClick(tuple[0]);
+                }}
+                key={tuple[0]}
+                className={tuple[1] === 3 ? "inferred" : "gold"}
+              >
+                {tuple[0]}
+              </span>
+            ))}
+          </s.KeywordTopics>
+        )}
       </div>
       {article.video ? (
         <img

@@ -3,6 +3,7 @@ import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import strings from "../i18n/definitions";
 import * as s from "./TagsOfInterests.sc";
+import Feature from "../features/Feature";
 
 export default function TagsOfInterests({
   visible,
@@ -16,13 +17,24 @@ export default function TagsOfInterests({
     useState(false);
 
   useEffect(() => {
-    api.getAvailableTopics((data) => {
-      setInterestingTopics(data);
-    });
+    if (Feature.new_topics()) {
+      api.getAvailableNewTopics((data) => {
+        setInterestingTopics(data);
+      });
 
-    api.getSubscribedTopics((data) => {
-      setSubscribedTopics(data);
-    });
+      api.getSubscribedNewTopics((data) => {
+        setSubscribedTopics(data);
+      });
+    } else {
+      console.log("No feature!");
+      api.getAvailableTopics((data) => {
+        setInterestingTopics(data);
+      });
+
+      api.getSubscribedTopics((data) => {
+        setSubscribedTopics(data);
+      });
+    }
 
     api.getSubscribedSearchers((data) => {
       setSubscribedSearches(data);
@@ -37,32 +49,49 @@ export default function TagsOfInterests({
   function subscribeToTopicOfInterest(topic) {
     setSubscribedTopics([...subscribedTopics, topic]);
     setInterestingTopics(
-      availableTopics.filter((each) => each.id !== topic.id)
+      availableTopics.filter((each) => each.id !== topic.id),
     );
     api.subscribeToTopic(topic);
   }
 
+  function subscribeToNewTopicOfInterest(topic) {
+    setSubscribedTopics([...subscribedTopics, topic]);
+    setInterestingTopics(
+      availableTopics.filter((each) => each.id !== topic.id),
+    );
+    api.subscribeToNewTopic(topic);
+  }
   function unsubscribeFromTopicOfInterest(topic) {
     setSubscribedTopics(
-      subscribedTopics.filter((each) => each.id !== topic.id)
+      subscribedTopics.filter((each) => each.id !== topic.id),
     );
     setInterestingTopics([...availableTopics, topic]);
     api.unsubscribeFromTopic(topic);
   }
 
+  function unsubscribeFromNewTopicOfInterest(topic) {
+    setSubscribedTopics(
+      subscribedTopics.filter((each) => each.id !== topic.id),
+    );
+    setInterestingTopics([...availableTopics, topic]);
+    api.unsubscribeFromNewTopic(topic);
+  }
+
   function removeSearch(search) {
     console.log("unsubscribing from search" + search);
     setSubscribedSearches(
-      subscribedSearches.filter((each) => each.id !== search.id)
+      subscribedSearches.filter((each) => each.id !== search.id),
     );
     api.unsubscribeFromSearch(search);
   }
 
   function toggleInterest(topic) {
     if (subscribedTopics.includes(topic)) {
-      unsubscribeFromTopicOfInterest(topic);
+      if (Feature.new_topics()) unsubscribeFromNewTopicOfInterest(topic);
+      else unsubscribeFromTopicOfInterest(topic);
     } else {
-      subscribeToTopicOfInterest(topic);
+      if (Feature.new_topics()) subscribeToNewTopicOfInterest(topic);
+      else subscribeToTopicOfInterest(topic);
     }
   }
 

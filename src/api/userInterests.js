@@ -13,9 +13,19 @@ Zeeguu_API.prototype.getAvailableTopics = function (callback) {
   this._getJSON("available_topics", callback);
 };
 
+// New Topics that can be subscribed to
+Zeeguu_API.prototype.getAvailableNewTopics = function (callback) {
+  this._getJSON("available_new_topics", callback);
+};
+
 // Topics already subscribed to
 Zeeguu_API.prototype.getSubscribedTopics = function (callback) {
   this._getJSON("subscribed_topics", callback);
+};
+
+// New Topics already subscribed to
+Zeeguu_API.prototype.getSubscribedNewTopics = function (callback) {
+  this._getJSON("subscribed_new_topics", callback);
 };
 
 Zeeguu_API.prototype.getSubscribedSearchers = function (callback) {
@@ -35,6 +45,18 @@ Zeeguu_API.prototype.unsubscribeFromTopic = function (topic) {
 };
 
 /* 
+  Subscribes to predefined new topic (e.g. sports, politics, etc.)
+  */
+Zeeguu_API.prototype.subscribeToNewTopic = function (new_topic) {
+  return this._post(`subscribe_new_topic`, `new_topic_id=${new_topic.id}`);
+};
+
+/* Opposite of subscribe */
+Zeeguu_API.prototype.unsubscribeFromNewTopic = function (new_topic) {
+  return this._post(`unsubscribe_new_topic`, `new_topic_id=${new_topic.id}`);
+};
+
+/* 
   Subscribes to a search term (e.g. "Trump", "Corona", etc.)
   */
 Zeeguu_API.prototype.subscribeToSearch = function (searchTerm, callback) {
@@ -51,12 +73,20 @@ Zeeguu_API.prototype.getFilteredTopics = function (callback) {
   this._getJSON("filtered_topics", callback);
 };
 
+Zeeguu_API.prototype.getFilteredNewTopics = function (callback) {
+  this._getJSON("filtered_new_topics", callback);
+};
+
 Zeeguu_API.prototype.getSubscribedFilterSearches = function (callback) {
   this._getJSON("filtered_searches", callback);
 };
 
 Zeeguu_API.prototype.subscribeToFilter = function (filter) {
   return this._post(`filter_topic`, `filter_id=${filter.id}`);
+};
+
+Zeeguu_API.prototype.subscribeToNewFilter = function (filter) {
+  return this._post(`filter_new_topic`, `filter_id=${filter.id}`);
 };
 
 Zeeguu_API.prototype.subscribeToSearchFilter = function (filter, callback) {
@@ -73,10 +103,29 @@ Zeeguu_API.prototype.unsubscribeFromFilter = function (filter) {
   return this._post("unfilter_topic", `topic_id=${filter.id}`);
 };
 
+Zeeguu_API.prototype.unsubscribeFromNewFilter = function (filter) {
+  // here it's topic_id / above it's filter_id;
+  // stupid bug in the API...
+  return this._post("unfilter_new_topic", `new_topic_id=${filter.id}`);
+};
+
 Zeeguu_API.prototype.availableFilters = function (callback) {
   this.getAvailableTopics((interesting) => {
     this.getSubscribedTopics((subscribed) => {
       this.getFilteredTopics((filtered) => {
+        var available = interesting.filter((e) => !subscribed.includes(e));
+        var allAvailable = [...available, ...filtered];
+        allAvailable.sort((a, b) => a.title.localeCompare(b.title));
+        callback(allAvailable);
+      });
+    });
+  });
+};
+
+Zeeguu_API.prototype.availableNewFilters = function (callback) {
+  this.getAvailableNewTopics((interesting) => {
+    this.getSubscribedNewTopics((subscribed) => {
+      this.getFilteredNewTopics((filtered) => {
         var available = interesting.filter((e) => !subscribed.includes(e));
         var allAvailable = [...available, ...filtered];
         allAvailable.sort((a, b) => a.title.localeCompare(b.title));
