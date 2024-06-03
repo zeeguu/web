@@ -7,6 +7,7 @@ const SessionStorage = {
   Keys: {
     AudioExercisesEnabled: "audio_exercises_enabled",
     AudioBeingPlayed: "audio_is_being_played",
+    CelebrationModalShown: "celebration_modal_shown",
   },
 
   /**
@@ -25,19 +26,6 @@ const SessionStorage = {
     return sessionStorage[this.Keys.AudioExercisesEnabled] === "true";
   },
   /**
-   * @return {boolean}
-   */
-  isAudioBeingPlayed: function () {
-    return sessionStorage[this.Keys.AudioBeingPlayed] === "true";
-  },
-  /**
-   * @param {boolean} is_playing
-   */
-  setAudioBeingPlayed: function (is_playing) {
-    sessionStorage[this.Keys.AudioBeingPlayed] = is_playing;
-  },
-
-  /**
    * @param {boolean} is_enabled
    */
   setAudioExercisesEnabled: function (is_enabled) {
@@ -46,6 +34,20 @@ const SessionStorage = {
 
   disableAudioExercises: function () {
     sessionStorage[this.Keys.AudioExercisesEnabled] = false;
+  },
+
+  /**
+   * @return {boolean}
+   */
+  isCelebrationModalShown: function () {
+    return sessionStorage[this.Keys.CelebrationModalShown] === "true";
+  },
+
+  /**
+   * @param {boolean} is_shown
+   */
+  setCelebrationModalShown: function (is_shown) {
+    sessionStorage[this.Keys.CelebrationModalShown] = is_shown;
   },
 };
 

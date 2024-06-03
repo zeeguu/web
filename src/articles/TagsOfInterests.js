@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import useSelectInterest from "../hooks/useSelectInterest";
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import strings from "../i18n/definitions";
@@ -10,96 +10,23 @@ export default function TagsOfInterests({
   api,
   articlesListShouldChange,
 }) {
-  const [availableTopics, setInterestingTopics] = useState(null);
-  const [subscribedTopics, setSubscribedTopics] = useState(null);
-  const [subscribedSearches, setSubscribedSearches] = useState(null);
-  const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
-    useState(false);
+  // Update NEW TOPICS
+  const {
+    allTopics,
 
-  useEffect(() => {
-    if (Feature.new_topics()) {
-      api.getAvailableNewTopics((data) => {
-        setInterestingTopics(data);
-      });
+    toggleTopicSubscription,
+    isSubscribed,
 
-      api.getSubscribedNewTopics((data) => {
-        setSubscribedTopics(data);
-      });
-    } else {
-      console.log("No feature!");
-      api.getAvailableTopics((data) => {
-        setInterestingTopics(data);
-      });
+    subscribedSearches,
+    subscribeToSearch,
+    removeSearch,
 
-      api.getSubscribedTopics((data) => {
-        setSubscribedTopics(data);
-      });
-    }
-
-    api.getSubscribedSearchers((data) => {
-      setSubscribedSearches(data);
-    });
-  }, [api]);
-
-  if (!availableTopics || !subscribedTopics || !subscribedSearches) return "";
-
-  let allTopics = [...availableTopics, ...subscribedTopics];
-  allTopics.sort((a, b) => a.title.localeCompare(b.title));
-
-  function subscribeToTopicOfInterest(topic) {
-    setSubscribedTopics([...subscribedTopics, topic]);
-    setInterestingTopics(
-      availableTopics.filter((each) => each.id !== topic.id),
-    );
-    api.subscribeToTopic(topic);
-  }
-
-  function subscribeToNewTopicOfInterest(topic) {
-    setSubscribedTopics([...subscribedTopics, topic]);
-    setInterestingTopics(
-      availableTopics.filter((each) => each.id !== topic.id),
-    );
-    api.subscribeToNewTopic(topic);
-  }
-  function unsubscribeFromTopicOfInterest(topic) {
-    setSubscribedTopics(
-      subscribedTopics.filter((each) => each.id !== topic.id),
-    );
-    setInterestingTopics([...availableTopics, topic]);
-    api.unsubscribeFromTopic(topic);
-  }
-
-  function unsubscribeFromNewTopicOfInterest(topic) {
-    setSubscribedTopics(
-      subscribedTopics.filter((each) => each.id !== topic.id),
-    );
-    setInterestingTopics([...availableTopics, topic]);
-    api.unsubscribeFromNewTopic(topic);
-  }
-
-  function removeSearch(search) {
-    console.log("unsubscribing from search" + search);
-    setSubscribedSearches(
-      subscribedSearches.filter((each) => each.id !== search.id),
-    );
-    api.unsubscribeFromSearch(search);
-  }
-
-  function toggleInterest(topic) {
-    if (subscribedTopics.includes(topic)) {
-      if (Feature.new_topics()) unsubscribeFromNewTopicOfInterest(topic);
-      else unsubscribeFromTopicOfInterest(topic);
-    } else {
-      if (Feature.new_topics()) subscribeToNewTopicOfInterest(topic);
-      else subscribeToTopicOfInterest(topic);
-    }
-  }
+    showingSpecialInterestModal,
+    setshowingSpecialInterestModal,
+  } = useSelectInterest(api);
 
   const onConfirm = (response) => {
-    api.subscribeToSearch(response, (data) => {
-      setSubscribedSearches([...subscribedSearches, data]);
-    });
-
+    subscribeToSearch(response);
     setshowingSpecialInterestModal(false);
   };
 
@@ -139,24 +66,19 @@ export default function TagsOfInterests({
           </button>
         </div>
 
-        {allTopics.map((topic) => (
+        {allTopics?.map((topic) => (
           <div key={topic.id} addableid={topic.id}>
             <button
-              onClick={(e) => toggleInterest(topic)}
+              onClick={(e) => toggleTopicSubscription(topic)}
               type="button"
-              className={
-                "interests " +
-                (subscribedTopics.map((e) => e.id).includes(topic.id)
-                  ? ""
-                  : "unsubscribed")
-              }
+              className={`interests ${!isSubscribed(topic) && "unsubscribed"}`}
             >
               <span className="addableTitle">{topic.title}</span>
             </button>
           </div>
         ))}
 
-        {subscribedSearches.map((search) => (
+        {subscribedSearches?.map((search) => (
           <div key={search.id} searchremovabeid={search.id}>
             <button
               onClick={(e) => removeSearch(search)}

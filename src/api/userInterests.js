@@ -69,7 +69,7 @@ Zeeguu_API.prototype.unsubscribeFromSearch = function (search) {
 
 // NON-INTERESTS
 // These are topics and searches that the user has explicitly filtered out because they don't want to see them
-Zeeguu_API.prototype.getFilteredTopics = function (callback) {
+Zeeguu_API.prototype.getExcludedTopics = function (callback) {
   this._getJSON("filtered_topics", callback);
 };
 
@@ -77,11 +77,11 @@ Zeeguu_API.prototype.getFilteredNewTopics = function (callback) {
   this._getJSON("filtered_new_topics", callback);
 };
 
-Zeeguu_API.prototype.getSubscribedFilterSearches = function (callback) {
+Zeeguu_API.prototype.getUnwantedKeywords = function (callback) {
   this._getJSON("filtered_searches", callback);
 };
 
-Zeeguu_API.prototype.subscribeToFilter = function (filter) {
+Zeeguu_API.prototype.excludeTopic = function (filter) {
   return this._post(`filter_topic`, `filter_id=${filter.id}`);
 };
 
@@ -89,15 +89,15 @@ Zeeguu_API.prototype.subscribeToNewFilter = function (filter) {
   return this._post(`filter_new_topic`, `filter_id=${filter.id}`);
 };
 
-Zeeguu_API.prototype.subscribeToSearchFilter = function (filter, callback) {
+Zeeguu_API.prototype.addUnwantedKeyword = function (filter, callback) {
   return this._getJSON(`filter_search/${filter}`, callback);
 };
 
-Zeeguu_API.prototype.unsubscribeFromSearchFilter = function (filter) {
+Zeeguu_API.prototype.removeUnwantedKeyword = function (filter) {
   return this._post(`unfilter_search`, `search_id=${filter.id}`);
 };
 
-Zeeguu_API.prototype.unsubscribeFromFilter = function (filter) {
+Zeeguu_API.prototype.unexcludeTopic = function (filter) {
   // here it's topic_id / above it's filter_id;
   // stupid bug in the API...
   return this._post("unfilter_topic", `topic_id=${filter.id}`);
@@ -109,10 +109,10 @@ Zeeguu_API.prototype.unsubscribeFromNewFilter = function (filter) {
   return this._post("unfilter_new_topic", `new_topic_id=${filter.id}`);
 };
 
-Zeeguu_API.prototype.availableFilters = function (callback) {
+Zeeguu_API.prototype.topicsAvailableForExclusion = function (callback) {
   this.getAvailableTopics((interesting) => {
     this.getSubscribedTopics((subscribed) => {
-      this.getFilteredTopics((filtered) => {
+      this.getExcludedTopics((filtered) => {
         var available = interesting.filter((e) => !subscribed.includes(e));
         var allAvailable = [...available, ...filtered];
         allAvailable.sort((a, b) => a.title.localeCompare(b.title));

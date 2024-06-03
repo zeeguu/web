@@ -1,13 +1,8 @@
 import * as s from "./FeedbackButtons.sc.js";
 import { useState, useEffect } from "react";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
 import FeedbackButtons from "./FeedbackButtons.js";
-import strings from "../../i18n/definitions.js";
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { EXERCISE_TYPES } from "../ExerciseTypeConstants.js";
+import { toast } from "react-toastify";
 
 export default function FeedbackDisplay({
   showFeedbackButtons,
@@ -16,40 +11,33 @@ export default function FeedbackDisplay({
   currentBookmarksToStudy,
   feedbackFunction,
 }) {
-  const MATCH_EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
-
   const [selectedId, setSelectedId] = useState(null);
-  const [feedback, setFeedback] = useState("");
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [userFeedback, setUserFeedback] = useState();
-
   useEffect(() => {
-    if (currentExerciseType !== MATCH_EXERCISE_TYPE) {
+    if (currentExerciseType !== EXERCISE_TYPES.match) {
       setSelectedId(currentBookmarksToStudy[0].id);
     } else {
       setSelectedId(null);
     }
     console.log(selectedId);
-    setOpenSnackbar(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      toast.dismiss();
+    };
   }, [currentExerciseType]);
 
-  function stopSendingModification() {
-    setUserFeedback(null);
-    setOpenSnackbar(false);
+  function callFeedbackFunctionAndNotify(feedbackMessage, apiFeedbackMessage) {
+    toast.success(feedbackMessage, {
+      position: "bottom-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+    feedbackFunction(apiFeedbackMessage, selectedId);
   }
-
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    feedbackFunction(userFeedback, selectedId);
-    setUserFeedback(null);
-
-    setOpenSnackbar(false);
-  };
-
   return (
     <s.FeedbackHolder>
       <FeedbackButtons
@@ -59,26 +47,8 @@ export default function FeedbackDisplay({
         currentBookmarksToStudy={currentBookmarksToStudy}
         selectedId={selectedId}
         setSelectedId={setSelectedId}
-        setFeedback={setFeedback}
-        setOpenSnackbar={setOpenSnackbar}
-        setUserFeedback={setUserFeedback}
+        callFeedbackFunctionAndNotify={callFeedbackFunctionAndNotify}
       />
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        open={openSnackbar}
-        autoHideDuration={4500}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose} severity="success">
-          {feedback}
-          <s.UndoButton type="button" onClick={stopSendingModification}>
-            {strings.undo}
-          </s.UndoButton>
-        </Alert>
-      </Snackbar>
     </s.FeedbackHolder>
   );
 }

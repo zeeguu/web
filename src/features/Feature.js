@@ -13,6 +13,10 @@ const Feature = {
     return this.is_enabled("new_topics");
   },
 
+  merle_exercises: function () {
+    return this.is_enabled("merle_exercises");
+  },
+
   extension_experiment1: function () {
     return this.is_enabled("extension_experiment_1");
   },

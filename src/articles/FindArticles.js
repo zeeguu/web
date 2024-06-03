@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
+import useShadowRef from "../hooks/useShadowRef";
 import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import Reminder from "./Reminder";
+
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
-import {
-  runningInChromeDesktop,
-  runningInFirefoxDesktop,
-} from "../utils/misc/browserDetection";
-import { checkExtensionInstalled } from "../utils/misc/extensionCommunication";
+
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
+import useExtensionCommunication from "../hooks/useExtensionCommunication";
+import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
@@ -35,16 +34,22 @@ export default function NewArticles() {
   const doNotShowRedirectionModal_LocalStorage =
     LocalStorage.getDoNotShowRedirectionModal() === "true" ? true : false;
 
-  const [articleList, setArticleList] = useState(null);
+  const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
-  const [hasExtension, setHasExtension] = useState(true);
+  const [isExtensionAvailable] = useExtensionCommunication();
   const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
   const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   const [
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
+  const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
 
+  const articleListRef = useShadowRef(articleList);
+  const currentPageRef = useShadowRef(currentPage);
+  const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
+  console.log(articleList);
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index)
@@ -57,6 +62,49 @@ export default function NewArticles() {
       articleSeenListString,
     );
   };
+
+  function handleScroll() {
+    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
+    if (
+      scrollBarPixelDistToPageEnd <= 50 &&
+      !isWaitingForNewArticlesRef.current
+    ) {
+      setIsWaitingForNewArticles(true);
+      document.title = "Getting more articles...";
+      let newCurrentPage = currentPageRef.current + 1;
+      let newArticles = [...articleListRef.current];
+      if (searchQuery) {
+        api.searchMore(searchQuery, newCurrentPage, (articles) => {
+          insertNewArticlesIntoArticleList(
+            articles,
+            newCurrentPage,
+            newArticles,
+          );
+        });
+      } else {
+        api.getMoreUserArticles(20, newCurrentPage, (articles) => {
+          insertNewArticlesIntoArticleList(
+            articles,
+            newCurrentPage,
+            newArticles,
+          );
+        });
+      }
+    }
+  }
+
+  function insertNewArticlesIntoArticleList(
+    fetchedArticles,
+    newCurrentPage,
+    newArticles,
+  ) {
+    newArticles = newArticles.concat(fetchedArticles);
+    setArticleList(newArticles);
+    setOriginalList([...newArticles]);
+    setCurrentPage(newCurrentPage);
+    setIsWaitingForNewArticles(false);
+    document.title = "Recommend Articles: Zeeguu";
+  }
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
@@ -71,10 +119,6 @@ export default function NewArticles() {
         LocalStorage.displayedExtensionPopup(),
     );
 
-    if (runningInChromeDesktop() || runningInFirefoxDesktop()) {
-      checkExtensionInstalled(setHasExtension);
-    }
-
     // load articles)
     if (searchQuery) {
       api.search(searchQuery, (articles) => {
@@ -87,14 +131,18 @@ export default function NewArticles() {
         setOriginalList([...articles]);
       });
     }
-    document.title = "Zeeguu";
+    window.addEventListener("scroll", handleScroll, true);
+    document.title = "Recommend Articles: Zeeguu";
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
   }, []);
 
   useEffect(() => {
-    if (!hasExtension) {
+    if (!isExtensionAvailable) {
       setExtensionMessageOpen(true);
     }
-  }, [hasExtension]);
+  }, [isExtensionAvailable]);
 
   if (articleList == null) {
     return <LoadingAnimation />;
@@ -113,7 +161,7 @@ export default function NewArticles() {
     <>
       <ExtensionMessage
         open={extensionMessageOpen}
-        hasExtension={hasExtension}
+        hasExtension={isExtensionAvailable}
         displayedExtensionPopup={displayedExtensionPopup}
         setExtensionMessageOpen={setExtensionMessageOpen}
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
@@ -133,13 +181,12 @@ export default function NewArticles() {
         originalList={originalList}
         setArticleList={setArticleList}
       />
-      <Reminder hasExtension={hasExtension}></Reminder>
       {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
           article={each}
           api={api}
-          hasExtension={hasExtension}
+          hasExtension={isExtensionAvailable}
           doNotShowRedirectionModal_UserPreference={
             doNotShowRedirectionModal_UserPreference
           }
@@ -158,6 +205,9 @@ export default function NewArticles() {
         <ShowLinkRecommendationsIfNoArticles
           articleList={articleList}
         ></ShowLinkRecommendationsIfNoArticles>
+      )}
+      {isWaitingForNewArticles && (
+        <LoadingAnimation delay={0}></LoadingAnimation>
       )}
     </>
   );

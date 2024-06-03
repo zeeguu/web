@@ -4,10 +4,13 @@ import InfoPage from "./info_page_shared/InfoPage";
 import Header from "./info_page_shared/Header";
 import Heading from "./info_page_shared/Heading";
 import Main from "./info_page_shared/Main";
-import MainImage from "../components/MainImage";
+import FullWidthImage from "../components/FullWidthImage";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
+
+import strings from "../i18n/definitions";
+import redirect from "../utils/routing/routing";
 
 export default function ExtensionInstalled({ api }) {
   useEffect(() => {
@@ -18,21 +21,36 @@ export default function ExtensionInstalled({ api }) {
     <InfoPage>
       <Header>
         <Heading>
-          Right-click anywhere on any article’s page to&nbsp;access
-          The&nbsp;Zeeguu&nbsp;Reader extension
+          Right-click anywhere on any article’s page to&nbsp;access The Zeeguu
+          Reader&nbsp;extension
         </Heading>
       </Header>
       <Main>
-        <MainImage src={"use-extension.png"} />
+        <FullWidthImage src={"use-extension.png"} />
       </Main>
       <Footer>
-        <ButtonContainer>
+        <ButtonContainer className={"padding-large"}>
           {getSessionFromCookies() ? (
-            <Button href={"/articles"}>Go to Zeeguu App</Button>
+            <Button
+              className={"full-width-btn"}
+              onClick={() => redirect("/articles")}
+            >
+              {strings.goToZeeguuApp}
+            </Button>
           ) : (
             <>
-              <Button href={"/create_account"}>Create Account</Button>
-              <Button href={"/login"}>Log In</Button>
+              <Button
+                className={"full-width-btn"}
+                onClick={() => redirect("/language_preferences")}
+              >
+                {strings.createAccount}
+              </Button>
+              <Button
+                className={"full-width-btn"}
+                onClick={() => redirect("/login")}
+              >
+                {strings.login}
+              </Button>
             </>
           )}
         </ButtonContainer>

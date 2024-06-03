@@ -1,22 +1,27 @@
 import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 
-import BottomInput from "./BottomInput";
-
-import strings from "../../../i18n/definitions";
-import NextNavigation from "../NextNavigation";
+import strings from "../../../i18n/definitions.js";
+import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
-import { tokenize } from "../../../utils/preprocessing/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import BottomInput from "../BottomInput.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
 
-const EXERCISE_TYPE = "Recognize_L1W_in_L2T";
-export default function FindWordInContext({
+// The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
+// This tests the user's active knowledge.
+
+const EXERCISE_TYPE = EXERCISE_TYPES.findWordInContextCloze;
+
+export default function FindWordInContextCloze({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -31,7 +36,6 @@ export default function FindWordInContext({
   const [messageToAPI, setMessageToAPI] = useState("");
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
-  const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
@@ -52,77 +56,20 @@ export default function FindWordInContext({
       );
       setArticleInfo(articleInfo);
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    checkTranslations(translatedWords);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [translatedWords]);
-
-  function equalAfterRemovingSpecialCharacters(a, b) {
-    // from: https://stackoverflow.com/a/4328546
-    let first = a.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
-    let second = b.replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
-    return first === second;
-  }
-
-  function checkTranslations(userTranslatedSequences) {
-    if (userTranslatedSequences.length === 0) {
-      return;
-    }
-
-    let solutionDiscovered = false;
-
-    let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
-
-    solutionSplitIntoWords.forEach((wordInSolution) => {
-      userTranslatedSequences.forEach((userTranslatedSequence) => {
-        let wordsInUserTranslatedSequence = userTranslatedSequence.split(" ");
-        wordsInUserTranslatedSequence.forEach((translatedWord) => {
-          if (
-            equalAfterRemovingSpecialCharacters(translatedWord, wordInSolution)
-          ) {
-            solutionDiscovered = true;
-          }
-        });
-      });
-    });
-
-    if (solutionDiscovered) {
-      // Check how many translations were made
-      let translationCount = 0;
-      for (let i = 0; i < messageToAPI.length; i++) {
-        if (messageToAPI[i] === "T") translationCount++;
-      }
-      if (translationCount < 2) {
-        let concatMessage = messageToAPI + "C";
-        handleCorrectAnswer(concatMessage);
-      } else {
-        let concatMessage = messageToAPI + "S";
-        handleShowSolution(undefined, concatMessage);
-      }
-    } else {
-      setMessageToAPI(messageToAPI + "T");
-    }
-  }
-
   function handleShowSolution(e, message) {
-    if (e) {
-      e.preventDefault();
-    }
+    e.preventDefault();
     let concatMessage;
-
     if (!message) {
       concatMessage = messageToAPI + "S";
     } else {
       concatMessage = message;
     }
-    setMessageToAPI(concatMessage);
+
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
-    console.log(activeSessionDuration);
+    setMessageToAPI(concatMessage);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
@@ -134,7 +81,7 @@ export default function FindWordInContext({
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    correctAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
@@ -146,7 +93,6 @@ export default function FindWordInContext({
   }
 
   function handleIncorrectAnswer() {
-    //alert("incorrect answer")
     setMessageToAPI(messageToAPI + "W");
     notifyIncorrectAnswer(bookmarksToStudy[0]);
   }
@@ -156,36 +102,43 @@ export default function FindWordInContext({
   }
 
   return (
-    <s.Exercise className="findWordInContext">
+    <s.Exercise className="findWordInContextCloze">
       <div className="headlineWithMoreSpace">
-        {strings.findTheWordInContextHeadline}
+        {strings.findWordInContextClozeHeadline}
       </div>
-      <h1 className="wordInContextHeadline">{bookmarksToStudy[0].to}</h1>
+      <LearningCycleIndicator
+        bookmark={bookmarksToStudy[0]}
+        message={messageToAPI}
+      />
+      <h1 className="wordInContextHeadline">
+        {removePunctuation(bookmarksToStudy[0].to)}
+      </h1>
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
-          translatedWords={translatedWords}
-          setTranslatedWords={setTranslatedWords}
           bookmarkToStudy={bookmarksToStudy[0].from}
         />
       </div>
+
       {!isCorrect && (
-        <BottomInput
-          handleCorrectAnswer={handleCorrectAnswer}
-          handleIncorrectAnswer={handleIncorrectAnswer}
-          bookmarksToStudy={bookmarksToStudy}
-          messageToAPI={messageToAPI}
-          setMessageToAPI={setMessageToAPI}
-        />
+        <>
+          <BottomInput
+            handleCorrectAnswer={handleCorrectAnswer}
+            handleIncorrectAnswer={handleIncorrectAnswer}
+            bookmarksToStudy={bookmarksToStudy}
+            messageToAPI={messageToAPI}
+            setMessageToAPI={setMessageToAPI}
+          />
+        </>
       )}
 
       <NextNavigation
         message={messageToAPI}
         api={api}
-        bookmarksToStudy={bookmarksToStudy}
+        exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

@@ -1,8 +1,11 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
+  lightBlue,
+  gray,
+  buttonBorder,
 } from "../../components/colors";
 
 const Exercise = styled.div`
@@ -26,6 +29,31 @@ const Exercise = styled.div`
     }
     p {
       margin-left: 1em;
+    }
+  }
+
+  .next-nav-learning-cycle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border: 0.125em solid #99e47f;
+    border-radius: 0.5em;
+    background-color: #f1f7f2;
+    width: 70%;
+
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+      margin: 0.5em;
+    }
+    p {
+      margin-left: 1em;
+      margin-right: 1em;
     }
   }
 
@@ -78,6 +106,40 @@ const Exercise = styled.div`
     margin-right: 2em;
     font-weight: 400;
     line-height: 1.4em;
+  }
+
+  .learningCycleIndicator {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2em;
+  }
+
+  .learningCycleIcon {
+    margin-right: 1em;
+  }
+
+  .cooling-bars {
+    display: flex;
+  }
+
+  .cooling-bar {
+    height: 0.5em;
+    margin-right: 0.5em;
+    border-radius: 10px;
+  }
+
+  .cooling-bar.green {
+    background-color: green;
+  }
+
+  .cooling-bar.yellow {
+    background-color: #ffd047;
+  }
+
+  .cooling-bar.grey {
+    background-color: grey;
   }
 
   /* Mobile version */
@@ -254,7 +316,6 @@ let AnimatedMatchButton = styled(MatchButton)`
 
 let Input = styled.input`
   height: 1.5em;
-  width: 60%;
   text-align: center;
   transition: all 0.3s;
   border-radius: 0.5em;
@@ -304,6 +365,7 @@ let BottomRow = styled.div`
   justify-content: space-around;
   margin-top: 3em;
   margin-bottom: 1em;
+  flex-wrap: wrap;
 
   @media (max-width: 430px) {
     flex-flow: row wrap;
@@ -380,6 +442,21 @@ let EditSpeakButtonHolder = styled.div`
   justify-content: flex-start;
 `;
 
+let MultipleChoiceContext = styled.div`
+  margin: 0.5em;
+  padding: 1em;
+  cursor: pointer;
+
+  &.wrong {
+    animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  &.correct {
+    border: 0.25em solid ${zeeguuOrange};
+    border-radius: 0.5em;
+  }
+`;
+
 export {
   Exercise,
   FeedbackButton,
@@ -406,6 +483,7 @@ export {
   RightFeedbackButton,
   EditSpeakButtonHolder,
   OrangeButtonMessage,
+  MultipleChoiceContext,
 };
 
 export default StyledButton;

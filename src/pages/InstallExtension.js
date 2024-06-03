@@ -5,9 +5,13 @@ import Main from "./info_page_shared/Main";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Footer from "./info_page_shared/Footer";
 import Button from "./info_page_shared/Button";
-import { getExtensionInstallationLinks } from "../utils/misc/extensionInstallationLinks";
-import MainImage from "../components/MainImage";
+import FullWidthImage from "../components/FullWidthImage";
+import { getExtensionInstallationLinks } from "../utils/extension/extensionInstallationLinks";
+
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+
+import strings from "../i18n/definitions";
+import redirect from "../utils/routing/routing";
 
 export default function InstallExtension() {
   return (
@@ -18,18 +22,21 @@ export default function InstallExtension() {
       <Main>
         <p>
           Time to install The Zeeguu Reader browser extension, which enables you
-          to&nbsp;read and translate articles and solve exercises
+          to&nbsp;read and translate articles and solve&nbsp;exercises
         </p>
-        <MainImage src={"find-extension.png"} />
+        <FullWidthImage src={"find-extension.png"} />
       </Main>
       <Footer>
-        <ButtonContainer contentAlignment={"vertical"}>
-          <Button href={getExtensionInstallationLinks()}>
+        <ButtonContainer className={"padding-large"}>
+          <Button
+            className={"full-width-btn"}
+            onClick={() => redirect(getExtensionInstallationLinks())}
+          >
             <FileDownloadOutlinedIcon fontSize="small" />
-            Install the Extension
+            {strings.installTheExtension}
           </Button>
           <a className="link" href="/articles">
-            Skip installation
+            {strings.iWillInstallLater}
           </a>
         </ButtonContainer>
       </Footer>

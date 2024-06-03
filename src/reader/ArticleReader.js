@@ -8,7 +8,6 @@ import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
 import { random } from "../utils/basic/arrays";
 
-
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import * as s from "./ArticleReader.sc";
@@ -26,8 +25,7 @@ import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
-import ratio from "../utils/basic/ratio";
-import { Padding } from "@mui/icons-material";
+import { getScrollRatio } from "../utils/misc/getScrollLocation";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -69,7 +67,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
 
-
   const user = useContext(UserContext);
   const history = useHistory();
   const speech = useContext(SpeechContext);
@@ -93,23 +90,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     }
   }
 
-  function getScrollRatio() {
-    let scrollElement = document.getElementById("scrollHolder");
-    let scrollY = scrollElement.scrollTop;
-    let bottomRowHeight = document.getElementById("bottomRow");
-    if (!bottomRowHeight) {
-      bottomRowHeight = 450; // 450 Is a default in case we can't acess the property
-    } else {
-      bottomRowHeight = bottomRowHeight.offsetHeight;
-    }
-    let endArticle =
-      scrollElement.scrollHeight - scrollElement.clientHeight - bottomRowHeight;
-    let ratioValue = ratio(scrollY, endArticle);
-    // Should we allow the ratio to go above 1?
-    // Above 1 is the area where the feedback + exercises are.
-    return ratioValue;
-  }
-
   useEffect(() => {
     onCreate();
     return () => {
@@ -127,7 +107,18 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   const handleScroll = () => {
-    let ratio = getScrollRatio();
+    let bottomRowElement = document.getElementById("bottomRow");
+
+    // We use this to avoid counting the feedback elements
+    // as part of the article length when updating the
+    // scroll bar.
+    // 450 Is a default in case we can't access the property
+    let bottomRowHeight = 450;
+    if (bottomRowElement) {
+      bottomRowHeight = bottomRowElement.offsetHeight;
+    }
+
+    let ratio = getScrollRatio(bottomRowHeight);
     setScrollPosition(ratio);
     let percentage = Math.floor(ratio * 100);
     let currentReadingTimer = activityTimerRef.current;
@@ -244,21 +235,26 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   const updateArticleDifficultyFeedback = (answer) => {
-    let newArticleInfo = { ...articleInfo, relative_difficulty: answer};
+    let newArticleInfo = { ...articleInfo, relative_difficulty: answer };
     api.submitArticleDifficultyFeedback(
       { article_id: articleInfo.id, difficulty: answer },
       () => {
         setAnswerSubmitted(true);
         setArticleInfo(newArticleInfo);
-      }
+      },
     );
-    api.logReaderActivity(api.DIFFICULTY_FEEDBACK, articleInfo.id, answer, UMR_SOURCE);
+    api.logReaderActivity(
+      api.DIFFICULTY_FEEDBACK,
+      articleInfo.id,
+      answer,
+      UMR_SOURCE,
+    );
   };
 
   return (
     <s.ArticleReader>
       <ActivityTimer
-        message="Seconds in this reading session"
+        message="Total time in this reading session"
         activeSessionDuration={activityTimer}
         clockActive={isTimerActive}
       />
@@ -345,20 +341,25 @@ export default function ArticleReader({ api, teacherArticleID }) {
         <div id={"bottomRow"}>
           <ReviewVocabulary articleID={articleID} />
           <s.CombinedBox>
-            <p style={{padding: "0em 2em 0em 2em"}}> {strings.answeringMsg} </p>
+            <p style={{ padding: "0em 2em 0em 2em" }}>
+              {" "}
+              {strings.answeringMsg}{" "}
+            </p>
             <LikeFeedBackBox
               articleInfo={articleInfo}
               setLikedState={setLikedState}
             />
-            <DifficultyFeedbackBox 
+            <DifficultyFeedbackBox
               articleInfo={articleInfo}
               updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
             />
             {answerSubmitted && (
-                <s.InvisibleBox>
-                <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
+              <s.InvisibleBox>
+                <h3 align="center">
+                  Thank You {random(["🤗", "🙏", "😊", "🎉"])}
+                </h3>
               </s.InvisibleBox>
-            )} 
+            )}
           </s.CombinedBox>
         </div>
       )}

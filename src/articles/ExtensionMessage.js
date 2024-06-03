@@ -2,11 +2,13 @@ import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header";
 import Heading from "../components/modal_shared/Heading";
 import Main from "../components/modal_shared/Main";
-import MainImage from "../components/MainImage";
+import FullWidthImage from "../components/FullWidthImage";
 import Footer from "../pages/info_page_shared/Footer";
 import ButtonContainer from "../components/modal_shared/ButtonContainer";
 import GoToButton from "../components/modal_shared/GoToButton";
-import { getExtensionInstallationLinks } from "../utils/misc/extensionInstallationLinks";
+import { getExtensionInstallationLinks } from "../utils/extension/extensionInstallationLinks";
+import { isSupportedBrowser } from "../utils/misc/browserDetection";
+import { isMobile } from "../utils/misc/browserDetection";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
@@ -26,8 +28,10 @@ export default function ExtensionMessage({
   }
 
   if (
+    isSupportedBrowser() &&
     !hasExtension &&
     Feature.extension_experiment1() &&
+    !isMobile() &&
     !displayedExtensionPopup
   ) {
     return (
@@ -49,7 +53,7 @@ export default function ExtensionMessage({
             external articles, you need to install The Zeeguu Reader browser
             extension.
           </p>
-          <MainImage
+          <FullWidthImage
             src={"find-extension.png"}
             alt={"Zeeguu browser extension"}
           />

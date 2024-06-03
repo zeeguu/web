@@ -11,22 +11,47 @@ let zeeguuDarkOrange = "#9c7130";
 let lightBlue = "#54cdff";
 let lighterBlue = "#CCDEFF";
 let darkBlue = "#2f77ad";
+
+/* 
+  A NEW APPROACH TO DEFINING AND NAMING COLORS:
+
+  All the latest shades of blue below were defined and named using this guide:
+  https://www.refactoringui.com/previews/building-your-color-palette 
+
+  The numerical values in the name of each shade describe its brightness level on a scale:
+  - blue100 is the brightest
+  - blue900 is the darkest
+
+  All other colors in the application will be revised using the same pattern on an ongoing basis.
+*/
+let blue100 = "hsl(216, 100%, 97%)";
+let blue200 = "hsl(216, 100%, 89%)";
+let blue300 = "hsl(216, 100%, 81%)";
+let blue400 = "hsl(216, 100%, 74%)";
+let blue500 = "hsl(216, 100%, 66%)";
+let blue600 = "hsl(216, 100%, 57%)";
+let blue700 = "hsl(216, 100%, 48%)";
+let blue800 = "hsl(216, 100%, 40%)";
+let blue900 = "hsl(216, 100%, 31%)";
+
 let veryLightGrey = "#efefef";
 let lightGrey = "#c1c1c1";
 let darkGrey = "#808080";
 let veryDarkGrey = "#575757";
 let almostBlack = "#444444";
 let zeeguuRed = "#d7263d";
+let zeeguuRedTransparent = "hsl(352, 70%, 50%, 11%)";
+let zeeguuDarkRed = "hsl(352, 70%, 43%)";
 let errorRed = "red";
 let zeeguuViolet = "#4a0d67";
-let darkGreen = "#006400"
+let darkGreen = "#006400";
 let alertGreen = "#4caf50"; //careful when changing this color. It is defined to match the color in the success-alert to undo feedback submits.
 let matchGreen = "#B3F78F";
-let translationHover= "#2f76ac";
-let lightOrange= "#ffe5b9";
+let translationHover = "#2f76ac";
+let lightOrange = "#ffe5b9";
 let brown = "#A46A00";
 let white = "#FFFFFF";
-let buttonBorder= "#3079b0";
+let buttonBorder = "#3079b0";
 let gray = "999999";
 //black - the css standard color is used throughout the repo.
 //white - the css standard color is used throughout the repo.
@@ -55,12 +80,23 @@ export {
   lightBlue,
   lighterBlue,
   darkBlue,
+  blue100,
+  blue200,
+  blue300,
+  blue400,
+  blue500,
+  blue600,
+  blue700,
+  blue800,
+  blue900,
   veryLightGrey,
   lightGrey,
   darkGrey,
   veryDarkGrey,
   almostBlack,
   zeeguuRed,
+  zeeguuRedTransparent,
+  zeeguuDarkRed,
   errorRed,
   zeeguuViolet,
   darkGreen,
