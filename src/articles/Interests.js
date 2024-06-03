@@ -31,11 +31,17 @@ export default function InterestsAndSearch({ api, articlesListShouldChange }) {
 
   return (
     <s.Interests>
-      <b.OrangeRoundButton onClick={(e) => toggleInterests()}>
+      <b.OrangeRoundButton
+        onClick={(e) => toggleInterests()}
+        style={{ filter: showingInterests ? "brightness(110%)" : "" }}
+      >
         {strings.interests}
       </b.OrangeRoundButton>
 
-      <b.OrangeRoundButton onClick={(e) => toggleFilters()}>
+      <b.OrangeRoundButton
+        onClick={(e) => toggleFilters()}
+        style={{ filter: showingFilters ? "brightness(110%)" : "" }}
+      >
         {strings.nonInterests}
       </b.OrangeRoundButton>
 

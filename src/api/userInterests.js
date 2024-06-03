@@ -38,17 +38,16 @@ Zeeguu_API.prototype.getSubscribedSearchers = function (callback) {
 Zeeguu_API.prototype.subscribeToTopic = function (topic) {
   return this._post(`subscribe_topic`, `topic_id=${topic.id}`);
 };
-
-/* Opposite of subscribe */
-Zeeguu_API.prototype.unsubscribeFromTopic = function (topic) {
-  return this._post(`unsubscribe_topic`, `topic_id=${topic.id}`);
-};
-
 /* 
   Subscribes to predefined new topic (e.g. sports, politics, etc.)
   */
 Zeeguu_API.prototype.subscribeToNewTopic = function (new_topic) {
   return this._post(`subscribe_new_topic`, `new_topic_id=${new_topic.id}`);
+};
+
+/* Opposite of subscribe */
+Zeeguu_API.prototype.unsubscribeFromTopic = function (topic) {
+  return this._post(`unsubscribe_topic`, `topic_id=${topic.id}`);
 };
 
 /* Opposite of subscribe */
@@ -73,7 +72,7 @@ Zeeguu_API.prototype.getExcludedTopics = function (callback) {
   this._getJSON("filtered_topics", callback);
 };
 
-Zeeguu_API.prototype.getFilteredNewTopics = function (callback) {
+Zeeguu_API.prototype.getExcludedNewTopics = function (callback) {
   this._getJSON("filtered_new_topics", callback);
 };
 
@@ -85,7 +84,7 @@ Zeeguu_API.prototype.excludeTopic = function (filter) {
   return this._post(`filter_topic`, `filter_id=${filter.id}`);
 };
 
-Zeeguu_API.prototype.subscribeToNewFilter = function (filter) {
+Zeeguu_API.prototype.excludeNewTopic = function (filter) {
   return this._post(`filter_new_topic`, `filter_id=${filter.id}`);
 };
 
@@ -103,7 +102,7 @@ Zeeguu_API.prototype.unexcludeTopic = function (filter) {
   return this._post("unfilter_topic", `topic_id=${filter.id}`);
 };
 
-Zeeguu_API.prototype.unsubscribeFromNewFilter = function (filter) {
+Zeeguu_API.prototype.unexcludeNewTopic = function (filter) {
   // here it's topic_id / above it's filter_id;
   // stupid bug in the API...
   return this._post("unfilter_new_topic", `new_topic_id=${filter.id}`);
@@ -122,10 +121,10 @@ Zeeguu_API.prototype.topicsAvailableForExclusion = function (callback) {
   });
 };
 
-Zeeguu_API.prototype.availableNewFilters = function (callback) {
+Zeeguu_API.prototype.newTopicsAvailableForExclusion = function (callback) {
   this.getAvailableNewTopics((interesting) => {
     this.getSubscribedNewTopics((subscribed) => {
-      this.getFilteredNewTopics((filtered) => {
+      this.getExcludedNewTopics((filtered) => {
         var available = interesting.filter((e) => !subscribed.includes(e));
         var allAvailable = [...available, ...filtered];
         allAvailable.sort((a, b) => a.title.localeCompare(b.title));

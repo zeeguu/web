@@ -8,7 +8,6 @@ export default function TagsOfFilters({
   api,
   articlesListShouldChange,
 }) {
-  // UPDATE NEW TOPICS
   const {
     topicsAvailableForExclusion,
     toggleTopicExclusion,

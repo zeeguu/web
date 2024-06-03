@@ -3,7 +3,6 @@ import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import strings from "../i18n/definitions";
 import * as s from "./TagsOfInterests.sc";
-import Feature from "../features/Feature";
 
 export default function TagsOfInterests({
   visible,
@@ -49,7 +48,9 @@ export default function TagsOfInterests({
 
       <div
         className="tagsOfInterests"
-        style={{ display: visible ? "block" : "none" }}
+        style={{
+          display: visible ? "block" : "none",
+        }}
       >
         <div className="interestsSettings">
           <button
