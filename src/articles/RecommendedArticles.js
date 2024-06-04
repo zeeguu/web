@@ -17,7 +17,7 @@ export default function OwnArticles({ api }) {
   useEffect(() => {
     setTitle("Recommended Articles");
 
-    api.getSavedUserArticles((articles) => {
+    api.getRecommendedArticles((articles) => {
       setArticleList(articles);
       setOriginalList(articles);
     });
