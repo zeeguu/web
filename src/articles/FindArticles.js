@@ -69,7 +69,8 @@ export default function NewArticles() {
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
       !isWaitingForNewArticlesRef.current &&
-      !noMoreArticlesToShowRef.current
+      !noMoreArticlesToShowRef.current &&
+      articleListRef.current !== undefined
     ) {
       setIsWaitingForNewArticles(true);
       document.title = "Getting more articles...";
@@ -131,11 +132,13 @@ export default function NewArticles() {
       api.search(searchQuery, (articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
+        if (articles.length < 20) setNoMoreArticlesToShow(true);
       });
     } else {
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
+        if (articles.length < 20) setNoMoreArticlesToShow(true);
       });
     }
     window.addEventListener("scroll", handleScroll, true);
@@ -216,7 +219,7 @@ export default function NewArticles() {
       {isWaitingForNewArticles && (
         <LoadingAnimation delay={0}></LoadingAnimation>
       )}
-      {noMoreArticlesToShow && (
+      {noMoreArticlesToShow && articleList.length > 0 && (
         <div
           style={{
             display: "flex",
