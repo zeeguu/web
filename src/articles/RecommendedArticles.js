@@ -9,7 +9,7 @@ import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
 
-export default function OwnArticles({ api }) {
+export default function RecommendedArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
 
