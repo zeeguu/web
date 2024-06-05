@@ -5,7 +5,7 @@ import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
-import { APP_DOMAIN } from "../appConstants";
+import getStaticPath from "../utils/misc/staticPath";
 
 export default function Word({
   bookmark,
@@ -82,7 +82,7 @@ export default function Word({
       <s.Word key={bookmark.id}>
         <CenteredRow>
           <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
-            <img src={APP_DOMAIN + "/static/images/trash.svg"} alt="trash" />
+            <img src={getStaticPath("images", "trash.svg")} alt="trash" />
           </s.TrashIcon>
           <EditButton
             bookmark={bookmark}
@@ -94,11 +94,10 @@ export default function Word({
           {!hideStar && (
             <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
               <img
-                src={
-                  APP_DOMAIN +
-                  "/static/images/yellow_star" +
-                  (bookmark.starred ? ".svg" : "_empty.svg")
-                }
+                src={getStaticPath(
+                  "images",
+                  "yellow_star" + (bookmark.starred ? ".svg" : "_empty.svg"),
+                )}
                 alt="star"
               />
             </s.StarIcon>
