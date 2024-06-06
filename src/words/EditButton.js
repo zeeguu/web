@@ -4,7 +4,7 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
-import { APP_DOMAIN } from "../appConstants.js";
+import getStaticPath from "../utils/misc/staticPath.js";
 
 export default function EditButton({
   bookmark,
@@ -78,21 +78,21 @@ export default function EditButton({
       {styling === "exercise" ? (
         <s.EditButton onClick={handleOpen}>
           <img
-            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
+            src={getStaticPath("images", "file_rename_orange_36dp.svg")}
             alt="edit"
           />
         </s.EditButton>
       ) : styling === "match" ? (
         <sc.EditIconNoPadding onClick={handleOpen}>
           <img
-            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
+            src={getStaticPath("images", "file_rename_orange_36dp.svg")}
             alt="edit"
           />
         </sc.EditIconNoPadding>
       ) : (
         <sc.EditIcon onClick={handleOpen}>
           <img
-            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
+            src={getStaticPath("images", "file_rename_orange_36dp.svg")}
             alt="edit"
           />
         </sc.EditIcon>

@@ -10,7 +10,7 @@ import SessionStorage from "../../assorted/SessionStorage.js";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 
 import CelebrationModal from "../CelebrationModal";
-import { APP_DOMAIN } from "../../appConstants.js";
+import getStaticPath from "../../utils/misc/staticPath.js";
 
 import Feature from "../../features/Feature";
 import { ExerciseValidation } from "../ExerciseValidation.js";
@@ -120,7 +120,7 @@ export default function NextNavigation({
             />
             <div className="next-nav-learning-cycle">
               <img
-                src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
+                src={getStaticPath("icons", "zeeguu-icon-correct.png")}
                 alt="Correct Icon"
               />
               <p>
@@ -137,7 +137,7 @@ export default function NextNavigation({
             />
             <div className="next-nav-learning-cycle">
               <img
-                src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
+                src={getStaticPath("icons", "zeeguu-icon-correct.png")}
                 alt="Correct Icon"
               />
               <p>
@@ -148,7 +148,7 @@ export default function NextNavigation({
         ) : (
           <div className="next-nav-feedback">
             <img
-              src={APP_DOMAIN + "/static/icons/zeeguu-icon-correct.png"}
+              src={getStaticPath("icons", "zeeguu-icon-correct.png")}
               alt="Correct Icon"
             />
             <p>

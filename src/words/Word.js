@@ -5,9 +5,9 @@ import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
-import { APP_DOMAIN } from "../appConstants";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
+import getStaticPath from "../utils/misc/staticPath";
 
 export default function Word({
   bookmark,
@@ -118,7 +118,7 @@ export default function Word({
               onClick={(e) => setNotIsUserWordPreferred(bookmark)}
             >
               <img
-                src={APP_DOMAIN + "/static/icons/remove-icon-color.png"}
+                src={getStaticPath("icons", "remove-icon-color.png")}
                 alt="remove"
               />
             </s.AddMinusButton>
@@ -126,7 +126,7 @@ export default function Word({
           {isReview && !bookmark.fit_for_study && isWordLengthFitForStudy && (
             <s.AddMinusButton onClick={(e) => setIsUserWordPreferred(bookmark)}>
               <img
-                src={APP_DOMAIN + "/static/icons/add-icon-color.png"}
+                src={getStaticPath("icons", "add-icon-color.png")}
                 alt="add"
               />
             </s.AddMinusButton>
@@ -157,11 +157,10 @@ export default function Word({
           {!hideStar && !isReview && (
             <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
               <img
-                src={
-                  APP_DOMAIN +
-                  "/static/images/yellow_star" +
-                  (bookmark.starred ? ".svg" : "_empty.svg")
-                }
+                src={getStaticPath(
+                  "images",
+                  "yellow_star" + (bookmark.starred ? ".svg" : "_empty.svg"),
+                )}
                 alt="star"
                 style={isWordLengthFitForStudy ? {} : { visibility: "hidden" }}
               />
