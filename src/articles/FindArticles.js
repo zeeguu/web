@@ -63,6 +63,9 @@ export default function NewArticles() {
     );
   };
 
+  const [isAddedAsKeyword, setKeywords] = useState(false);
+  const associatedKeywords = ['Mental health', 'Fitness', 'Nutrition', 'Health Care']
+
   function handleScroll() {
     let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
     if (
@@ -157,6 +160,15 @@ export default function NewArticles() {
     });
   }
 
+  function handleUpdateKeywordList(){
+    if(isAddedAsKeyword === true){
+      setKeywords(false);
+    }
+    else{
+      setKeywords(true);
+    }
+  }
+
   return (
     <>
       <ExtensionMessage
@@ -181,6 +193,29 @@ export default function NewArticles() {
         originalList={originalList}
         setArticleList={setArticleList}
       />
+      {searchQuery && articleList.length > 0 &&(
+        <s.RowHeadlineSearch>
+        <s.HeadlineSearch>
+          <h1>{searchQuery}</h1>
+          {isAddedAsKeyword &&  
+          <p onClick={handleUpdateKeywordList}>
+            + add keyword
+          </p>
+        }
+        {!isAddedAsKeyword &&
+          <p onClick={handleUpdateKeywordList}>
+            + remove keyword
+          </p>
+        }
+        </s.HeadlineSearch>
+        <s.KeywordsLight>
+            {associatedKeywords.map((associatedKeywords) => (
+              <span key={associatedKeywords}>{associatedKeywords}</span>
+            ))}
+          </s.KeywordsLight>
+        </s.RowHeadlineSearch>
+      )}
+
       {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
