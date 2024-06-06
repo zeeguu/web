@@ -92,6 +92,7 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
     );
     if (hasUserEditedWords) {
       // User has edited bookmarks, do not make any preferences.
+      if (setUpdatedBookmarks) setUpdatedBookmarks(bookmarks);
       return;
     }
 
