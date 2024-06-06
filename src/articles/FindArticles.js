@@ -64,6 +64,10 @@ export default function NewArticles() {
   };
 
   function handleScroll() {
+    // If the user navigates backwards while at the end
+    // of the page it would trigger the scroll without
+    // having the first articles, causing an error.
+    if (!articleListRef.current) return;
     let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
