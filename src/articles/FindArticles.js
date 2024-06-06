@@ -14,7 +14,10 @@ import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoAr
 import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
-import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
+import {
+  getPixelsFromScrollBarToEnd,
+  isScrollable,
+} from "../utils/misc/getScrollLocation";
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
@@ -66,11 +69,11 @@ export default function NewArticles() {
   };
   function handleScroll() {
     let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
+
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
       !isWaitingForNewArticlesRef.current &&
-      !noMoreArticlesToShowRef.current &&
-      articleListRef.current !== undefined
+      !noMoreArticlesToShowRef.current
     ) {
       setIsWaitingForNewArticles(true);
       document.title = "Getting more articles...";
@@ -133,15 +136,17 @@ export default function NewArticles() {
         setArticleList(articles);
         setOriginalList([...articles]);
         if (articles.length < 20) setNoMoreArticlesToShow(true);
+        else window.addEventListener("scroll", handleScroll, true);
       });
     } else {
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
         if (articles.length < 20) setNoMoreArticlesToShow(true);
+        else window.addEventListener("scroll", handleScroll, true);
       });
     }
-    window.addEventListener("scroll", handleScroll, true);
+
     document.title = "Recommend Articles: Zeeguu";
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
