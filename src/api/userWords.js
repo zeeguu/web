@@ -87,12 +87,23 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
   }
 
   this.bookmarksForArticle(articleID, (bookmarks) => {
+    let hasUserEditedWords = bookmarks.some(
+      (each) => each.user_preference !== 0,
+    );
+    if (hasUserEditedWords) {
+      // User has edited bookmarks, do not make any preferences.
+      if (setUpdatedBookmarks) setUpdatedBookmarks(bookmarks);
+      return;
+    }
+
+    // When the user has not any preferences, prioritize bookmarks.
     let seenBookmarks = new Set([]);
     let sortedBookmarks = [...bookmarks].sort(
       (bookmark_a, bookmark_b) =>
         bookmark_b.origin_importance - bookmark_a.origin_importance,
     );
     let totalAddedBookmarks = 0;
+
     for (let i = 0; i < sortedBookmarks.length; i++) {
       let bookmark = sortedBookmarks[i];
 
