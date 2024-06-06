@@ -5,7 +5,7 @@ import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 import EditButton from "./EditButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
-import getStaticPath from "../utils/misc/staticPath";
+import { getStaticPath } from "../utils/misc/staticPath";
 
 export default function Word({
   bookmark,

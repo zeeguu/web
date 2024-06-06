@@ -9,7 +9,7 @@ import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
 import { estimateReadingTime } from "../utils/misc/readableTime";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
-import { APP_DOMAIN } from "../appConstants";
+import { getStaticPath, getNewsIconPath } from "../utils/misc/staticPath";
 
 export default function ArticleOverview({
   article,
@@ -119,7 +119,7 @@ export default function ArticleOverview({
         {!dontShowSourceIcon && (
           <>
             <s.SourceImage>
-              <img src={"/news-icons/" + article.feed_icon_name} alt="" />
+              <img src={getNewsIconPath(article.feed_icon_name)} alt="" />
             </s.SourceImage>
             {article.feed_name && <s.FeedName>{article.feed_name}</s.FeedName>}
           </>
@@ -146,16 +146,14 @@ export default function ArticleOverview({
         <s.StatContainer>
           <s.Difficulty>
             <img
-              src={
-                APP_DOMAIN + "/static/icons/" + cefr_level + "-level-icon.png"
-              }
+              src={getStaticPath("icons", cefr_level + "-level-icon.png")}
               alt="difficulty icon"
             ></img>
             <span>{cefr_level}</span>
           </s.Difficulty>
           <s.ReadingTimeContainer>
             <img
-              src={APP_DOMAIN + "/static/icons/read-time-icon.png"}
+              src={getStaticPath("icons", "read-time-icon.png")}
               alt="read time icon"
             ></img>
             <span>~ {estimateReadingTime(article.metrics.word_count)}</span>

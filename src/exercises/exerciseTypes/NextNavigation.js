@@ -10,7 +10,7 @@ import SessionStorage from "../../assorted/SessionStorage.js";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 
 import CelebrationModal from "../CelebrationModal";
-import getStaticPath from "../../utils/misc/staticPath.js";
+import { getStaticPath } from "../../utils/misc/staticPath.js";
 
 import Feature from "../../features/Feature";
 import { ExerciseValidation } from "../ExerciseValidation.js";
