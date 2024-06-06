@@ -1,4 +1,4 @@
-let APP_DOMAIN = "https://www.zeeguu.org";
+let APP_DOMAIN = window.location.hostname;
 let API_ENDPOINT = "https://api.zeeguu.org";
 
 try {
