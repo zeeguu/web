@@ -36,9 +36,11 @@ const RowHeadlineSearch = styled.div`
   flex-wrap: wrap;
 `;
 
-let KeywordsLight = styled.span`
+let Keywords = styled.span`
   display: flex;
   margin-top: 1em;
+
+  
 
   span {
     height: 1.2em;
@@ -47,20 +49,9 @@ let KeywordsLight = styled.span`
     border-radius: 1.0416666666666667em;
     padding: 0.20833333333333334em 1.3541666666666667em;
     font-size: 0.8333333333333334em;
+    @media (max-width: 500px) {
+    display: 'none';
   }
-`;
-
-let KeywordsDark = styled.span`
-  display: flex;
-  margin-top: 1em;
-
-  span { 
-    height: 1.2em;
-    margin-left: 0.5em;
-    color: solid ${zeeguuOrange};
-    border-radius: 1.0416666666666667em;
-    padding: 0.20833333333333334em 1.3541666666666667em;
-    font-size: 0.8333333333333334em;
   }
 `;
 
@@ -68,4 +59,4 @@ export {
   MaterialSelection,
   HeadlineSearch,
   RowHeadlineSearch,
-  KeywordsLight };
+  Keywords };
