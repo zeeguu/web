@@ -16,7 +16,7 @@ export default function EditButton({
   notifyWordChange,
 }) {
   const [open, setOpen] = useState(false);
-
+  const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
   function handleOpen() {
     setOpen(true);
   }
@@ -53,7 +53,7 @@ export default function EditButton({
         api.USER_SET_WORD_PREFERRED,
         bookmark.article_id,
         bookmark.from,
-        SOURCE_FOR_API_STAR_ACTION,
+        SOURCE_FOR_API_USER_PREFERENCE,
       );
     } else {
       api.userSetNotForExercises(bookmark.id);
@@ -61,7 +61,7 @@ export default function EditButton({
         api.USER_SET_NOT_WORD_PREFERED,
         bookmark.article_id,
         bookmark.from,
-        SOURCE_FOR_API_STAR_ACTION,
+        SOURCE_FOR_API_USER_PREFERENCE,
       );
     }
     bookmark.from = newWord;
