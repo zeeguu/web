@@ -49,6 +49,7 @@ export default function Word({
       source,
     );
   }
+
   function deleteBookmark(bookmark) {
     api.deleteBookmark(bookmark.id);
     setDeleted(true);
@@ -65,13 +66,9 @@ export default function Word({
     return <></>;
   }
 
-  let grayed_out_if_not_scheduled_for_study = { color: darkGrey };
-  if (
-    bookmark.fit_for_study ||
-    bookmark.starred ||
-    bookmark.user_preference === USER_WORD_PREFERENCE.USE_IN_EXERCISES
-  ) {
-    grayed_out_if_not_scheduled_for_study = {};
+  let style_grayed_out = { color: darkGrey };
+  if (bookmark.fit_for_study) {
+    style_grayed_out = {};
   }
   const square = "square";
   const isWordLengthFitForStudy =
@@ -132,10 +129,10 @@ export default function Word({
             />
           )}
           <s.WordPair>
-            <div className="from" style={grayed_out_if_not_scheduled_for_study}>
+            <div className="from" style={style_grayed_out}>
               {bookmark.from}
             </div>
-            <div className="to" style={grayed_out_if_not_scheduled_for_study}>
+            <div className="to" style={style_grayed_out}>
               {bookmark.to}
             </div>
           </s.WordPair>
