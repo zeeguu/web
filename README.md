@@ -49,20 +49,23 @@ E.g. If you end up definig a general `random` function, or a `isUppercaseString(
 inside a component defintion, you're better moving them out of there. Two reasons:
 
 1. it's likely that you'll need to use them in other places than that component
-2. keeping things at the same abstraction level: the code in a component should worry about the main business of that component; not about defining generic functions.
+2. keeping things at the same abstraction level: the code in a component should worry about the main business of that
+   component; not about defining generic functions.
 
 ### 7. Use onNotify / Notify pattern when handling Parent/Child updates in React
 
-E.g. If a child can update an element which requires a re-render from the parent, the pattern should be:
+E.g. If a child can update an element which requires a re-render from the parent,
+the pattern should be:
 
-```
-export default function Parent({ }) {
-    ...
-    onNotifyChange () {
+```js
+export default function Parent({}) {
+...
+    onNotifyChange()
+    {
         // Handle the change from the child component
     }
 
-    ...
+...
 
     <Child
         notifyChange={onNotifyChange}
