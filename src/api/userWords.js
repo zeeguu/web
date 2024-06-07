@@ -1,5 +1,5 @@
 import { Zeeguu_API } from "./classDef";
-import { MAX_BOOKMARKS_PER_ARTICLE } from "../exercises/ExerciseConstants";
+import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
 import { USER_WORD_PREFERENCE } from "../words/userBookmarkPreferences.js";
 
 Zeeguu_API.prototype.getBookmarksByDay = function (callback) {
@@ -124,7 +124,7 @@ Zeeguu_API.prototype.prioritizeBookmarksToStudy = function (
           !isBookmarkTooLong &&
           !isRepeatedBookmark &&
           !isBookmarkLearned &&
-          totalAddedBookmarks < MAX_BOOKMARKS_PER_ARTICLE
+          totalAddedBookmarks < MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE
         ) {
           setFitToStudyIfNotAlready(this, bookmark, seenBookmarks);
           totalAddedBookmarks += 1;

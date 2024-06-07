@@ -23,38 +23,6 @@ export default function Word({
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
 
-  function starBookmark(bookmark) {
-    api.starBookmark(bookmark.id);
-    setStarred(true);
-    bookmark.starred = true;
-    if (notifyWordChange) notifyWordChange(bookmark);
-    api.logReaderActivity(
-      api.STAR_WORD,
-      bookmark.article_id,
-      bookmark.from,
-      source,
-    );
-  }
-  function unstarBookmark(bookmark) {
-    api.unstarBookmark(bookmark.id);
-    bookmark.starred = false;
-    setStarred(false);
-    if (notifyWordChange) notifyWordChange(bookmark);
-    api.logReaderActivity(
-      api.UNSTAR_WORD,
-      bookmark.article_id,
-      bookmark.from,
-      source,
-    );
-  }
-  function toggleStarred(bookmark) {
-    if (starred) {
-      unstarBookmark(bookmark);
-    } else {
-      starBookmark(bookmark);
-    }
-  }
-
   function setIsUserWordPreferred(bookmark) {
     // Keep the star to mirror the previous behaviour?
     api.userSetForExercises(bookmark.id);
@@ -114,22 +82,24 @@ export default function Word({
       <s.Word key={bookmark.id}>
         <CenteredRow>
           {isReview && bookmark.fit_for_study && (
-            <s.AddMinusButton
+            <s.AddRemoveStudyPreferenceButton
               onClick={(e) => setNotIsUserWordPreferred(bookmark)}
             >
               <img
                 src={getStaticPath("icons", "remove-icon-color.png")}
                 alt="remove"
               />
-            </s.AddMinusButton>
+            </s.AddRemoveStudyPreferenceButton>
           )}
           {isReview && !bookmark.fit_for_study && isWordLengthFitForStudy && (
-            <s.AddMinusButton onClick={(e) => setIsUserWordPreferred(bookmark)}>
+            <s.AddRemoveStudyPreferenceButton
+              onClick={(e) => setIsUserWordPreferred(bookmark)}
+            >
               <img
                 src={getStaticPath("icons", "add-icon-color.png")}
                 alt="add"
               />
-            </s.AddMinusButton>
+            </s.AddRemoveStudyPreferenceButton>
           )}
           {/*!isReview && (
             <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
@@ -154,18 +124,6 @@ export default function Word({
             />
           )}
 
-          {!hideStar && !isReview && (
-            <s.StarIcon onClick={(e) => toggleStarred(bookmark)}>
-              <img
-                src={getStaticPath(
-                  "images",
-                  "yellow_star" + (bookmark.starred ? ".svg" : "_empty.svg"),
-                )}
-                alt="star"
-                style={isWordLengthFitForStudy ? {} : { visibility: "hidden" }}
-              />
-            </s.StarIcon>
-          )}
           {!isReview && (
             <SpeakButton
               bookmarkToStudy={bookmark}

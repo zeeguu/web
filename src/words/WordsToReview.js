@@ -5,7 +5,7 @@ import Infobox from "../components/Infobox";
 import { useState, useEffect } from "react";
 import { tokenize } from "../utils/preprocessing/preprocessing";
 import ExplainBookmarkSelectionModal from "../components/ExplainBookmarkSelectionModal";
-import { MAX_BOOKMARKS_PER_ARTICLE } from "../exercises/ExerciseConstants";
+import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import InfoBoxWordsToReview from "./InfoBoxWordsToReview";
 import ToggleEditReviewWords from "./ToggleEditReviewWords";
@@ -78,13 +78,13 @@ export default function WordsToReview({
       </>
     );
 
-  const isNoWordsSelected = wordsForExercises.length === 0;
-  const isZeeguuSelectWords =
-    totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE &&
+  const hasNoWordsSelected = wordsForExercises.length === 0;
+  const hasZeeguuSelectWords =
+    totalWordsTranslated > MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE &&
     totalWordsEditedByUser === 0 &&
     wordsForExercises.length > 0;
-  const isUserEditedWords =
-    totalWordsTranslated > MAX_BOOKMARKS_PER_ARTICLE &&
+  const hasUserEditedWords =
+    totalWordsTranslated > MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE &&
     totalWordsEditedByUser > 0 &&
     wordsForExercises.length > 0;
 
@@ -101,11 +101,11 @@ export default function WordsToReview({
           {articleInfo.title}
         </p>
       </div>
-      {(isNoWordsSelected || isZeeguuSelectWords || isUserEditedWords) && (
+      {(hasNoWordsSelected || hasZeeguuSelectWords || hasUserEditedWords) && (
         <InfoBoxWordsToReview
-          isZeeguuSelectWords={isZeeguuSelectWords}
-          isUserEditedWords={isUserEditedWords}
-          isNoWordsSelected={isNoWordsSelected}
+          isZeeguuSelectWords={hasZeeguuSelectWords}
+          isUserEditedWords={hasUserEditedWords}
+          isNoWordsSelected={hasNoWordsSelected}
           totalWordsForExercises={wordsForExercises.length}
           totalWordsSelectedByZeeguu={totalWordsSelectedByZeeguu}
           totalWordsTranslated={totalWordsTranslated}

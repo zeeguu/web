@@ -19,18 +19,10 @@ const style = {
 };
 
 const stylePhone = {
-  position: "absolute",
-  display: "flex",
-  flexDirection: "column",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  ...style,
   width: "75%",
-  bgcolor: "background.paper",
-  border: "0 !important",
-  borderRadius: "0.65em",
-  boxShadow: 24,
-  p: 4,
+  maxHeight: "80%",
+  overflow: "scroll",
 };
 
 let Headline = scStyled.h3`

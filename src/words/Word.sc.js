@@ -93,7 +93,7 @@ let WordPairSpellWhatYouHear = styled.div`
     font-size: 150%;
   }
 `;
-let AddMinusButton = styled.div`
+let AddRemoveStudyPreferenceButton = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -122,7 +122,7 @@ let Spacer = styled.div`
 
 export {
   Word,
-  AddMinusButton,
+  AddRemoveStudyPreferenceButton,
   TrashIcon,
   StarIcon,
   WordPair,

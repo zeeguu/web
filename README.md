@@ -1,42 +1,41 @@
 # Running
 
 Copy `.env.development.default` to `.env.development`.
-Configure the right `REACT_APP_API_URL` in the .env.development and `.env.production`. 
+Configure the right `REACT_APP_API_URL` in the .env.development and `.env.production`.
 
     npm install
     npm run start
-   
+
 ## Setting up the Development Environment
 
 Make sure to install the following plugins for VSCode:
+
 - vscode-styled-components
 - Prettier - Code formatter (after installation, enable "Format On Save" in your IDE)
-
-
-
 
 ## Coding Conventions and Goals
 
 #### 1. Strive to write programs "for people to read, and only incidentally for machines to execute" (Abelson && Sussman)
 
-#### 2. Naming conventions: 
+#### 2. Naming conventions:
 
-   * camelCase for Folder names; 
-   * PascalCase for Javascript file names 
-    
+- camelCase for Folder names;
+- PascalCase for Javascript file names
+
 #### 3. Separate styled components from React components in JSX
-When importing styled components: import a full file as `s` 
+
+When importing styled components: import a full file as `s`
 then refer to the components as `s.Component` as in the following
 example. This makes it clear what's a styled component and what's
 a normal component
 
-
 ```
     import * as s from "./Exercises.sc";
-    ... 
+    ...
     <s.ExercisesColumn>
-    ... 
+    ...
 ```
+
 #### 4. Separate styling from the code (e.g. `Exercises.js` and `Exercises.js.sc`)
 
 #### 5. Avoid hardcoded string contstans
@@ -48,10 +47,28 @@ If you define a constant, you can benefit from auto-completion from your IDE.
 
 E.g. If you end up definig a general `random` function, or a `isUppercaseString(obj)` function, etc.
 inside a component defintion, you're better moving them out of there. Two reasons:
+
 1. it's likely that you'll need to use them in other places than that component
-2. keeping things at the same abstraction level: the code in a component should worry about the main business of that component; not about defining generic functions. 
+2. keeping things at the same abstraction level: the code in a component should worry about the main business of that component; not about defining generic functions.
 
+### 7. Use onNotify / Notify pattern when handling Parent/Child updates in React
 
+E.g. If a child can update an element which requires a re-render from the parent, the pattern should be:
+
+```
+export default function Parent({ }) {
+    ...
+    onNotifyChange () {
+        // Handle the change from the child component
+    }
+
+    ...
+
+    <Child
+        notifyChange={onNotifyChange}
+    />
+}
+```
 
 ## Notes
 
