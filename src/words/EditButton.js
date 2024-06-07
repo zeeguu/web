@@ -16,7 +16,6 @@ export default function EditButton({
   notifyWordChange,
 }) {
   const [open, setOpen] = useState(false);
-  const SOURCE_FOR_API_STAR_ACTION = "WORD_EDIT_FORM";
 
   function handleOpen() {
     setOpen(true);
