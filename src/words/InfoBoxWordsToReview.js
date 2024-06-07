@@ -1,11 +1,11 @@
 import Infobox from "../components/Infobox";
 
 export default function InfoBoxWordsToReview({
-  isZeeguuSelectWords,
-  isUserEditedWords,
-  isNoWordsSelected,
-  totalWordsForExercises,
-  totalWordsSelectedByZeeguu,
+  hasZeeguuSelectWords,
+  hasUserEditedWords,
+  hasNoWordsSelected,
+  wordsForExercises_Counter,
+  wordsSelectedByZeeguu_Counter,
   totalWordsTranslated,
   showExplainWordSelectionModal,
   setShowExplainWordSelectionModal,
@@ -16,8 +16,8 @@ export default function InfoBoxWordsToReview({
       <p>
         We have selected{" "}
         <b>
-          {totalWordsSelectedByZeeguu} out of {totalWordsTranslated} translated
-          words for you to practice.{" "}
+          {wordsSelectedByZeeguu_Counter} out of {totalWordsTranslated}{" "}
+          translated words for you to practice.{" "}
         </b>
         <a
           onClick={() => {
@@ -41,7 +41,7 @@ export default function InfoBoxWordsToReview({
       </p>
       <p>
         <b>
-          {totalWordsForExercises} out of {totalWordsTranslated}{" "}
+          {wordsForExercises_Counter} out of {totalWordsTranslated}{" "}
         </b>
         translated words will be used in exercises.{" "}
       </p>
@@ -69,9 +69,9 @@ export default function InfoBoxWordsToReview({
   return (
     <Infobox>
       <div>
-        {isZeeguuSelectWords && ZeeguuSelectedWords}
-        {isUserEditedWords && UserEditedWords}
-        {isNoWordsSelected && NoWordsSelected}
+        {hasZeeguuSelectWords && ZeeguuSelectedWords}
+        {hasUserEditedWords && UserEditedWords}
+        {hasNoWordsSelected && NoWordsSelected}
         {toggleEditWordsComponent}
       </div>
     </Infobox>

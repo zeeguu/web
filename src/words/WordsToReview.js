@@ -24,9 +24,11 @@ export default function WordsToReview({
   const [wordsExcludedForExercises, setWordsExcludedForExercises] = useState(
     [],
   );
-  const [totalWordsSelectedByZeeguu, setTotalWordsSelectedByZeeguu] =
+
+  // how many of the words were set by zeeguu
+  const [wordsSelectedByZeeguu_Counter, setWordsSelectedByZeeguu_Counter] =
     useState();
-  const [totalWordsEditedByUser, setTotalWordsEditedByUser] = useState();
+  const [wordsEditedByUser_Counter, setWordsEditedByUser_Counter] = useState();
   const [wordsExpressions, setWordsExpressions] = useState([]);
   const [showExplainWordSelectionModal, setShowExplainWordSelectionModal] =
     useState(false);
@@ -35,19 +37,22 @@ export default function WordsToReview({
     let newWordsForExercises = [];
     let newWordsExcludedExercises = [];
     let newWordExpressions = [];
+
     // Keep track how many words Zeeguu selected
-    let newTotalWordsSelectedByZeeguu = 0;
-    let newTotalWordsEditedByUser = 0;
+    let _wordsSelectedByZeeguu_Counter = 0;
+    let _wordsEditedByUser_Counter = 0;
 
     for (let i = 0; i < words.length; i++) {
       let word = words[i];
       if (
         word.fit_for_study &&
-        word.user_preference !== USER_WORD_PREFERENCE.USE_IN_EXERCISES
+        word.user_preference === USER_WORD_PREFERENCE.NO_PREFERENCE
       )
-        newTotalWordsSelectedByZeeguu += 1;
+        _wordsSelectedByZeeguu_Counter += 1;
+
       if (word.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE)
-        newTotalWordsEditedByUser += 1;
+        _wordsEditedByUser_Counter += 1;
+
       if (tokenize(word.from).length >= 3) newWordExpressions.push(word);
       else if (!word.fit_for_study) newWordsExcludedExercises.push(word);
       else newWordsForExercises.push(word);
@@ -55,8 +60,8 @@ export default function WordsToReview({
     setWordsForExercises(newWordsForExercises);
     setWordsExcludedForExercises(newWordsExcludedExercises);
     setWordsExpressions(newWordExpressions);
-    setTotalWordsSelectedByZeeguu(newTotalWordsSelectedByZeeguu);
-    setTotalWordsEditedByUser(newTotalWordsEditedByUser);
+    setWordsSelectedByZeeguu_Counter(_wordsSelectedByZeeguu_Counter);
+    setWordsEditedByUser_Counter(_wordsEditedByUser_Counter);
   }, [words]);
 
   if (words.length === 0)
@@ -81,11 +86,11 @@ export default function WordsToReview({
   const hasNoWordsSelected = wordsForExercises.length === 0;
   const hasZeeguuSelectWords =
     totalWordsTranslated > MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE &&
-    totalWordsEditedByUser === 0 &&
+    wordsEditedByUser_Counter === 0 &&
     wordsForExercises.length > 0;
   const hasUserEditedWords =
     totalWordsTranslated > MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE &&
-    totalWordsEditedByUser > 0 &&
+    wordsEditedByUser_Counter > 0 &&
     wordsForExercises.length > 0;
 
   return (
@@ -103,11 +108,11 @@ export default function WordsToReview({
       </div>
       {(hasNoWordsSelected || hasZeeguuSelectWords || hasUserEditedWords) && (
         <InfoBoxWordsToReview
-          isZeeguuSelectWords={hasZeeguuSelectWords}
-          isUserEditedWords={hasUserEditedWords}
-          isNoWordsSelected={hasNoWordsSelected}
-          totalWordsForExercises={wordsForExercises.length}
-          totalWordsSelectedByZeeguu={totalWordsSelectedByZeeguu}
+          hasZeeguuSelectWords={hasZeeguuSelectWords}
+          hasUserEditedWords={hasUserEditedWords}
+          hasNoWordsSelected={hasNoWordsSelected}
+          wordsForExercises_Counter={wordsForExercises.length}
+          wordsSelectedByZeeguu_Counter={wordsSelectedByZeeguu_Counter}
           totalWordsTranslated={totalWordsTranslated}
           showExplainWordSelectionModal={showExplainWordSelectionModal}
           setShowExplainWordSelectionModal={setShowExplainWordSelectionModal}
