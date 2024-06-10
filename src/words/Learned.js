@@ -35,6 +35,11 @@ export default function Learned({ api }) {
     setTitle(strings.titleLearnedWords);
   }, [api]);
 
+  function onNotifyDelete(bookmark) {
+    let newWords = [...words].filter((e) => e.id !== bookmark.id);
+    setWords(newWords);
+  }
+
   if (!words) {
     return <LoadingAnimation />;
   }
@@ -58,6 +63,7 @@ export default function Learned({ api }) {
                 return (
                   <Word
                     key={each.id}
+                    notifyDelete={onNotifyDelete}
                     bookmark={each}
                     api={api}
                     hideStar={true}
