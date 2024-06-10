@@ -189,7 +189,10 @@ export default function SpellWhatYouHear({
         isCorrect={isCorrect}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
-        <DisableAudioSession handleDisabledAudio={handleDisabledAudio} />
+        <DisableAudioSession
+          handleDisabledAudio={handleDisabledAudio}
+          setIsCorrect={setIsCorrect}
+        />
       )}
     </s.Exercise>
   );

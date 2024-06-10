@@ -211,7 +211,10 @@ export default function TranslateWhatYouHear({
         isCorrect={isCorrect}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
-        <DisableAudioSession handleDisabledAudio={handleDisabledAudio} />
+        <DisableAudioSession
+          handleDisabledAudio={handleDisabledAudio}
+          setIsCorrect={setIsCorrect}
+        />
       )}
     </s.Exercise>
   );
