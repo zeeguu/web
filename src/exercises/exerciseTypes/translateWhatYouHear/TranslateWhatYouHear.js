@@ -91,12 +91,6 @@ export default function TranslateWhatYouHear({
     );
   }
 
-  function disableAudio(e) {
-    e.preventDefault();
-    SessionStorage.disableAudioExercises();
-    handleDisabledAudio();
-  }
-
   function handleDisabledAudio() {
     api.logUserActivity("AUDIO_DISABLE", "", bookmarksToStudy[0].id, "");
     moveToNextExercise();
@@ -217,7 +211,7 @@ export default function TranslateWhatYouHear({
         isCorrect={isCorrect}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
-        <DisableAudioSession disableAudio={disableAudio} />
+        <DisableAudioSession handleDisabledAudio={handleDisabledAudio} />
       )}
     </s.Exercise>
   );
