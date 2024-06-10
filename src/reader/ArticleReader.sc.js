@@ -23,11 +23,6 @@ let ArticleReader = styled.div`
   margin-left: auto;
   margin-right: auto;
 
-  .feedbackBox {
-    background-color: ${lighterBlue};
-    border: none;
-  }
-
   h1 {
     font-size: 1.6em !important;
     font-weight: 800;
@@ -272,7 +267,7 @@ let NavigationLink = styled(Link)`
     `}
 `;
 
-let FeedbackBox = styled.div`
+let InteractiveBox = styled.div`
   border: 1px solid ${lighterBlue};
   background-color: white;
   border-radius: 0.5em;
@@ -284,13 +279,21 @@ let FeedbackBox = styled.div`
   justify-content: center;
   text-align: center;
 
+  &.review-words {
+    background-color: ${lighterBlue};
+    border: none;
+  }
+
   @media (min-width: 768px) {
     width: 30em;
   }
   margin-left: auto;
   margin-right: auto;
 
-  h2, h3, h5,  p {
+  h2,
+  h3,
+  h5,
+  p {
     text-align: center;
   }
   .selected {
@@ -349,7 +352,10 @@ let CombinedBox = styled.div`
   margin-left: auto;
   margin-right: auto;
 
-  h2, h3, h5,  p {
+  h2,
+  h3,
+  h5,
+  p {
     text-align: center;
   }
   .selected {
@@ -366,7 +372,7 @@ export {
   MainText,
   WhiteButton,
   OrangeButton,
-  FeedbackBox,
+  InteractiveBox,
   CenteredContent,
   ExtraSpaceAtTheBottom,
   NarrowColumn,
