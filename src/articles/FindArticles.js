@@ -6,6 +6,7 @@ import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
+import Search from "../components/Search";
 
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
@@ -62,9 +63,6 @@ export default function NewArticles() {
       articleSeenListString,
     );
   };
-
-  const [isAddedAsKeyword, setKeywords] = useState(false);
-  const associatedKeywords = ['Mental health', 'Fitness', 'Nutrition', 'Health Care']
 
   function handleScroll() {
     let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
@@ -160,15 +158,6 @@ export default function NewArticles() {
     });
   }
 
-  function handleUpdateKeywordList(){
-    if(isAddedAsKeyword === true){
-      setKeywords(false);
-    }
-    else{
-      setKeywords(true);
-    }
-  }
-
   return (
     <>
       <ExtensionMessage
@@ -195,26 +184,9 @@ export default function NewArticles() {
       />
 
       {searchQuery && articleList.length > 0 &&(
-        <s.RowHeadlineSearch>
-          <s.HeadlineSearch>
-            <h1>{searchQuery}</h1>
-            {isAddedAsKeyword &&  
-            <p onClick={handleUpdateKeywordList}>
-              + add keyword
-            </p>
-            }
-            {!isAddedAsKeyword &&
-              <p onClick={handleUpdateKeywordList}>
-                + remove keyword
-              </p>
-            }
-          </s.HeadlineSearch>
-          <s.Keywords>
-            {associatedKeywords.map((associatedKeywords) => (
-              <span key={associatedKeywords}>{associatedKeywords}</span>
-            ))}
-          </s.Keywords>
-        </s.RowHeadlineSearch>
+        <Search
+          query={searchQuery}
+        />
       )}
 
       {articleList.map((each, index) => (
