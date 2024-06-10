@@ -31,4 +31,15 @@ function getPixelsFromScrollBarToEnd(shortenPageHeightPixels = 0) {
   return endPage - scrollY;
 }
 
-export { getScrollRatio, getPixelsFromScrollBarToEnd };
+/**
+ * Returns true when the user is able to scroll the "scrollHolder" element.
+ * Should be used before using getPixelsFromScrollBarToEnd or getScrollRatio.
+ * @returns {boolean}
+ */
+function isScrollable() {
+  let scrollElement = document.getElementById("scrollHolder");
+  if (scrollElement === null) return false;
+  return scrollElement.scrollHeight > scrollElement.clientHeight;
+}
+
+export { getScrollRatio, getPixelsFromScrollBarToEnd, isScrollable };
