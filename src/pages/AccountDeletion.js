@@ -10,6 +10,8 @@ import redirect from "../utils/routing/routing";
 import SessionStorage from "../assorted/SessionStorage";
 import { APP_DOMAIN } from "../appConstants";
 
+const TIME_BEFORE_REDIRECT = 5000;
+
 export default function AccountDeletion({ api }) {
   const user = useContext(UserContext);
   const [headingMsg, setHeadingMsg] = useState("We are deleting your account");
@@ -27,7 +29,7 @@ export default function AccountDeletion({ api }) {
           setHeadingMsg("✅ Your account has been successfully deleted!");
           setTimeout(() => {
             user.logoutMethod();
-          }, [5000]);
+          }, [TIME_BEFORE_REDIRECT]);
         },
         () => {
           setIsAccountDeleted(false);
