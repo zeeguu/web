@@ -1,4 +1,5 @@
 import * as s from "./TopTabs.sc";
+import strings from "../i18n/definitions";
 
 import { TopTab } from "./TopTab";
 
@@ -22,7 +23,12 @@ export default function TopTabs({ title, tabsAndLinks }) {
               addSeparator={true}
             />
           ))}
-          <TopTab text={lastTab[0]} link={lastTab[1]} />
+          <TopTab
+            text={lastTab[0]}
+            link={lastTab[1]}
+            hasNotification={lastTab[0] === strings.forYou}
+            notificationText={"New!"}
+          />
         </div>
       </s.TopTabs>
     </div>
