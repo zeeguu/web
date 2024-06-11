@@ -19,7 +19,7 @@ import ArticleSource from "./ArticleSource";
 import ReportBroken from "./ReportBroken";
 
 import TopToolbar from "./TopToolbar";
-import ReviewVocabulary from "./ReviewVocabulary";
+import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
@@ -66,6 +66,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [scrollPosition, setScrollPosition] = useState();
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
+  const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -77,6 +78,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   const activityTimerRef = useShadowRef(activityTimer);
   const readingSessionIdRef = useShadowRef(readingSessionId);
+  const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
+
   const lastSampleTimer = useRef();
   const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
 
@@ -192,6 +195,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
     window.removeEventListener("blur", handleBlur);
     window.removeEventListener("scroll", handleScroll, true);
     window.removeEventListener("beforeunload", componentWillUnmount);
+    if (!clickedOnReviewVocabRef.current) {
+      // If the user clicks away from the article, prioritize
+      // words based on their rank.
+      api.prioritizeBookmarksToStudy(articleID);
+    }
   }
 
   function toggleBookmarkedState() {
@@ -225,7 +233,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   const setLikedState = (state) => {
-    console.log("Setting liked state to: ", state);
     let newArticleInfo = { ...articleInfo, liked: state };
     api.setArticleInfo(newArticleInfo, () => {
       setAnswerSubmitted(true);
@@ -339,7 +346,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
       {readerReady && (
         <div id={"bottomRow"}>
-          <ReviewVocabulary articleID={articleID} />
+          <ReviewVocabularyInfoBox
+            articleID={articleID}
+            clickedOnReviewVocab={clickedOnReviewVocab}
+            setClickedOnReviewVocab={setClickedOnReviewVocab}
+          />
           <s.CombinedBox>
             <p style={{ padding: "0em 2em 0em 2em" }}>
               {" "}
