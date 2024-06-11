@@ -38,6 +38,8 @@ export default function AccountDeletion({ api }) {
     } else {
       redirect(APP_DOMAIN);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // In case the user went to the path by mistake
   if (errorOccurred === undefined && isAccountDeleted === undefined)
