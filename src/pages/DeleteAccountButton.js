@@ -10,9 +10,8 @@ import * as s from "../components/FormPage.sc";
 import redirect from "../utils/routing/routing";
 import { APP_DOMAIN } from "../appConstants.js";
 import SessionStorage from "../assorted/SessionStorage.js";
-import { zeeguuRed } from "../components/colors.js";
 
-export default function DeleteAccountButton({}) {
+export default function DeleteAccountButton() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   function handleClick() {
@@ -46,7 +45,7 @@ export default function DeleteAccountButton({}) {
           </p>
           <p style={{ textAlign: "center" }}>
             If you need to contact us, please reach us at
-            <a href="mailto:zeeguu@gmail.com"> zeeguu@gmail.com</a>
+            <a href="mailto:zeeguu.team@gmail.com"> zeeguu.team@gmail.com</a>
           </p>
           <p>
             <b>This action cannot be reverted.</b>
