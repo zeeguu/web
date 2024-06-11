@@ -16,6 +16,7 @@ import WordsRouter from "./words/_WordsRouter";
 import ReadingHistory from "./words/WordHistory";
 import TeacherRouter from "./teacher/_routing/_TeacherRouter";
 import Settings from "./pages/Settings";
+import FeedbackPage from "./pages/FeedbackPage";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
@@ -96,6 +97,7 @@ export default function MainAppRouter({
         api={api}
         component={ExercisesRouter}
       />
+
       <PrivateRouteWithSidebar
         path="/words"
         api={api}
@@ -106,6 +108,12 @@ export default function MainAppRouter({
         path="/history"
         api={api}
         component={ReadingHistory}
+      />
+
+      <PrivateRouteWithSidebar
+        path="/give_feedback"
+        api={api}
+        component={FeedbackPage}
       />
 
       <PrivateRouteWithSidebar

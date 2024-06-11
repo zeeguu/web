@@ -33,11 +33,11 @@ Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback) {
   );
 };
 
-Zeeguu_API.prototype.getRecommendedArticles = function (callback){
+Zeeguu_API.prototype.getRecommendedArticles = function (callback) {
   this._getJSON("user_articles/foryou", (articles) => {
-  const ids = articles.map((o) => o.id);
+    const ids = articles.map((o) => o.id);
     const deduplicated = articles.filter(
-        ({ id }, index) => !ids.includes(id, index + 1)
+      ({ id }, index) => !ids.includes(id, index + 1),
     );
     callback(deduplicated);
   });
@@ -136,8 +136,16 @@ Zeeguu_API.prototype.isArticleLanguageSupported = function (
   this._post(`/is_article_language_supported`, qs.stringify(article), callback);
 };
 
-Zeeguu_API.prototype.sendFeedback = function (feedback, callback) {
-  this._post(`/send_feedback`, qs.stringify(feedback), callback);
+Zeeguu_API.prototype.sendFeedback = function (
+  feedback,
+  feedbackType,
+  callback,
+) {
+  let payload = {
+    message: feedback,
+    feedback_type: feedbackType,
+  };
+  this._post(`/send_feedback`, qs.stringify(payload), callback);
 };
 
 Zeeguu_API.prototype.submitArticleDifficultyFeedback = function (

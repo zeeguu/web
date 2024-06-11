@@ -49,6 +49,8 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
 
       <SidebarLink text={strings.settings} to="/account_settings" />
 
+      <SidebarLink text={strings.feedbackTab} to="/give_feedback" />
+
       <Link
         className="navigationLink"
         to="/"

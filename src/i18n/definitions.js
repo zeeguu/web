@@ -12,6 +12,7 @@ let strings = new LocalizedStrings(
       articles: "Home",
       text: "Text",
       save: "Save",
+      feedbackTab: "Feedback",
       settings: "Settings",
       wordHistoryTitle: "Word Translation History",
       exercises: "Exercises",
