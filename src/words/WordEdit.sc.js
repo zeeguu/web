@@ -10,12 +10,19 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "40%",
+  width: "50%",
   bgcolor: "background.paper",
   border: "0 !important",
   borderRadius: "0.65em",
   boxShadow: 24,
   p: 4,
+};
+
+const stylePhone = {
+  ...style,
+  width: "75%",
+  maxHeight: "80%",
+  overflow: "scroll",
 };
 
 let Headline = scStyled.h3`
@@ -41,7 +48,7 @@ let Paragraph = scStyled.p`
 let DoneButtonHolder = scStyled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;`;
+  justify-content: space-between;`;
 
 let EditButton = scStyled(FeedbackButton)`
   background-color: rgba(255,255,255,0);
@@ -59,12 +66,29 @@ let CustomTextField = styled(TextField)`
   margin-bottom: 1em;
 `;
 
+let CustomCheckBoxDiv = scStyled.div`
+  margin-top: 1em;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0px 0.5em;
+
+  input {
+    width: 1.3em;
+    height: 1.3em;
+  }
+`;
+
 export {
   style,
+  stylePhone,
   Headline,
   DoneButtonHolder,
   Small,
   Paragraph,
   EditButton,
   CustomTextField,
+  CustomCheckBoxDiv,
 };

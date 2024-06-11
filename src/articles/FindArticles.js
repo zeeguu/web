@@ -14,7 +14,10 @@ import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoAr
 import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
-import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
+import {
+  getPixelsFromScrollBarToEnd,
+  isScrollable,
+} from "../utils/misc/getScrollLocation";
 // A custom hook that builds on useLocation to parse
 // the query string for you.
 function useQuery() {
@@ -46,8 +49,10 @@ export default function NewArticles() {
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
+  const [noMoreArticlesToShow, setNoMoreArticlesToShow] = useState(false);
   const articleListRef = useShadowRef(articleList);
   const currentPageRef = useShadowRef(currentPage);
+  const noMoreArticlesToShowRef = useShadowRef(noMoreArticlesToShow);
   const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
   console.log(articleList);
   const handleArticleClick = (articleId, index) => {
@@ -62,17 +67,20 @@ export default function NewArticles() {
       articleSeenListString,
     );
   };
-
   function handleScroll() {
     let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
+
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
-      !isWaitingForNewArticlesRef.current
+      !isWaitingForNewArticlesRef.current &&
+      !noMoreArticlesToShowRef.current
     ) {
       setIsWaitingForNewArticles(true);
       document.title = "Getting more articles...";
+
       let newCurrentPage = currentPageRef.current + 1;
       let newArticles = [...articleListRef.current];
+
       if (searchQuery) {
         api.searchMore(searchQuery, newCurrentPage, (articles) => {
           insertNewArticlesIntoArticleList(
@@ -98,6 +106,9 @@ export default function NewArticles() {
     newCurrentPage,
     newArticles,
   ) {
+    if (fetchedArticles.length === 0) {
+      setNoMoreArticlesToShow(true);
+    }
     newArticles = newArticles.concat(fetchedArticles);
     setArticleList(newArticles);
     setOriginalList([...newArticles]);
@@ -124,14 +135,18 @@ export default function NewArticles() {
       api.search(searchQuery, (articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
+        if (articles.length < 20) setNoMoreArticlesToShow(true);
+        else window.addEventListener("scroll", handleScroll, true);
       });
     } else {
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
+        if (articles.length < 20) setNoMoreArticlesToShow(true);
+        else window.addEventListener("scroll", handleScroll, true);
       });
     }
-    window.addEventListener("scroll", handleScroll, true);
+
     document.title = "Recommend Articles: Zeeguu";
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
@@ -208,6 +223,18 @@ export default function NewArticles() {
       )}
       {isWaitingForNewArticles && (
         <LoadingAnimation delay={0}></LoadingAnimation>
+      )}
+      {noMoreArticlesToShow && articleList.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            margin: "2em 0px",
+          }}
+        >
+          There are no more results.
+        </div>
       )}
     </>
   );
