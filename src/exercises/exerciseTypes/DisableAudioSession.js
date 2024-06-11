@@ -4,52 +4,47 @@ import SessionStorage from "../../assorted/SessionStorage";
 import { MINUTES_TO_RE_ENABLE_AUDIO_AFTER_DISABLE } from "../ExerciseConstants";
 import { toast } from "react-toastify";
 
-function getTimeStamp() {
-  var currentdate = new Date();
-  var datetime =
-    "Last Sync: " +
-    currentdate.getDay() +
-    "/" +
-    currentdate.getMonth() +
-    "/" +
-    currentdate.getFullYear() +
-    " @ " +
-    currentdate.getHours() +
-    ":" +
-    currentdate.getMinutes() +
-    ":" +
-    currentdate.getSeconds();
-  console.log(datetime);
-}
+const TOAST_CLOSE_TIMEOUT = 2000;
+
 export default function DisableAudioSession({
   handleDisabledAudio,
   setIsCorrect,
 }) {
   function disableAudio(e) {
-    getTimeStamp();
     e.preventDefault();
     SessionStorage.disableAudioExercises();
     setIsCorrect(true);
 
+    // Call the function on a timeout
+    // To allow the Toast notification to remain and
+    // time for the user to read. Toast animation
+    // takes about 1 second + autoClose.
     const skipOnTimeout = setTimeout(() => {
       handleDisabledAudio();
-    }, [3000]);
+    }, [TOAST_CLOSE_TIMEOUT + 1000]);
 
     toast.info(
       `You won't see audio exercises for the next ${MINUTES_TO_RE_ENABLE_AUDIO_AFTER_DISABLE} minutes!`,
       {
         position: "bottom-right",
-        autoClose: 2000,
+        autoClose: TOAST_CLOSE_TIMEOUT,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         theme: "light",
         onClick: () => {
+          // If the user clicks, the notification
+          // immediately handleTheDisableAudio
+          // This is also triggered on clicking the close X
           clearTimeout(skipOnTimeout);
           handleDisabledAudio();
         },
         onClose: () => {
+          // When the toast is removed, then we clear the timeout
+          // to avoid skipping the exercise twice.
+          // Happens when the user doesn't click on Toast or
+          // clicks the Next button.
           clearTimeout(skipOnTimeout);
         },
       },
@@ -57,10 +52,6 @@ export default function DisableAudioSession({
     setTimeout(
       () => {
         SessionStorage.setAudioExercisesEnabled(true);
-        console.log(
-          "########################## Re-enabled AUDIO exercises ##########################",
-        );
-        getTimeStamp();
       },
       MINUTES_TO_RE_ENABLE_AUDIO_AFTER_DISABLE * 60 * 1000,
     );
