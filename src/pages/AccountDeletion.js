@@ -10,15 +10,15 @@ import redirect from "../utils/routing/routing";
 import SessionStorage from "../assorted/SessionStorage";
 import { APP_DOMAIN } from "../appConstants";
 
-export default function AcountDeletion({ api }) {
+export default function AccountDeletion({ api }) {
   const user = useContext(UserContext);
   const [headingMsg, setHeadingMsg] = useState("We are deleting your account");
-  const [errorOcurred, setErrorOcurred] = useState();
+  const [errorOccurred, setErrorOccurred] = useState();
   const [isAccountDeleted, setIsAccountDeleted] = useState();
   useEffect(() => {
     console.log(user);
     if (SessionStorage.hasUserConfirmationForAccountDeletion()) {
-      setErrorOcurred(false);
+      setErrorOccurred(false);
       setIsAccountDeleted(false);
       SessionStorage.setUserConfirmationForAccountDeletion(false);
       api.deleteUser(
@@ -29,9 +29,9 @@ export default function AcountDeletion({ api }) {
             user.logoutMethod();
           }, [5000]);
         },
-        (error) => {
+        () => {
           setIsAccountDeleted(false);
-          setErrorOcurred(true);
+          setErrorOccurred(true);
           setHeadingMsg("❌ An error has occurred when deleting your account.");
         },
       );
@@ -40,7 +40,7 @@ export default function AcountDeletion({ api }) {
     }
   }, []);
   // In case the user went to the path by mistake
-  if (errorOcurred === undefined && isAccountDeleted === undefined)
+  if (errorOccurred === undefined && isAccountDeleted === undefined)
     return <LoadingAnimation></LoadingAnimation>;
   return (
     <InfoPage>
@@ -48,7 +48,7 @@ export default function AcountDeletion({ api }) {
         <Heading>{headingMsg}</Heading>
       </Header>
       <Main>
-        {!errorOcurred && !isAccountDeleted && (
+        {!errorOccurred && !isAccountDeleted && (
           <>
             <p>
               You may leave this page. In case something goes wrong, the Zeeguu
@@ -60,16 +60,16 @@ export default function AcountDeletion({ api }) {
             </Footer>
           </>
         )}
-        {isAccountDeleted && !errorOcurred && (
+        {isAccountDeleted && !errorOccurred && (
           <>
             <p>Thank you for taking the time to try out Zeeguu!</p>
             <p>You can close this tab.</p>
           </>
         )}
-        {!isAccountDeleted && errorOcurred && (
+        {!isAccountDeleted && errorOccurred && (
           <>
             <p>
-              The Zeeguu team has been notificed. We will investigate it as soon
+              The Zeeguu team has been notified. We will investigate it as soon
               as possible and contact you.
             </p>
           </>
