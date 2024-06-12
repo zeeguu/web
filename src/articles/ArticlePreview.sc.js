@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import {
   almostBlack,
-  veryLightGrey,
   zeeguuOrange,
-  zeeguuVarmYellow,
   zeeguuDarkOrange,
 } from "../components/colors";
 
@@ -20,16 +18,6 @@ const ArticlePreview = styled.div`
   user's screen size. Note this does not include the source/
   publishing time or topics.
 */
-
-const SourceContainer = styled.div`
-  display: flex;
-  align-items: center;
-  width: 50%;
-  margin: 0.3em 0px;
-  @media (max-width: 990px) {
-    width: 100%;
-  }
-`;
 
 const ArticleContent = styled.div`
   width: 100%;
@@ -84,35 +72,6 @@ const Title = styled.div`
   width: 100%;
 `;
 
-const Difficulty = styled.div`
-  display: flex;
-  align-items: flex-end;
-  flex-direction: row;
-  gap: 0.5em;
-  margin-right: 2em;
-  img {
-    height: 1.5em;
-  }
-  span {
-    font-weight: 450;
-  }
-`;
-
-const WordCount = styled(Difficulty)``;
-
-const ReadingTimeContainer = styled(Difficulty)`
-  display: flex;
-  align-items: flex-end;
-  flex-direction: row;
-  gap: 0.5em;
-  img {
-    height: 1.5em;
-  }
-  span {
-    font-weight: 450;
-  }
-`;
-
 let Summary = styled.div`
   font-size: 0.83em;
   color: ${almostBlack};
@@ -126,25 +85,6 @@ let Summary = styled.div`
   }
 `;
 
-let SourceImage = styled.span`
-  img {
-    background-color: ${zeeguuVarmYellow};
-    height: 1.5em;
-    width: 1.5em;
-  }
-  margin-right: 0.2em;
-`;
-
-let PublishingTime = styled.span`
-  font-size: small;
-`;
-
-let FeedName = styled.span`
-  font-size: small;
-  font-style: oblique;
-  margin-right: 0.5em;
-`;
-
 let BottomContainer = styled.div`
   display: flex;
   margin-top: 0.5em;
@@ -155,11 +95,6 @@ let BottomContainer = styled.div`
     flex-direction: column;
     gap: 1em;
   }
-`;
-
-let StatContainer = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 let Topics = styled.span`
@@ -175,18 +110,10 @@ let Topics = styled.span`
 
 export {
   Title,
-  Difficulty,
-  WordCount,
   ArticlePreview,
   InvisibleTitleButton,
   ArticleContent,
-  SourceContainer,
-  ReadingTimeContainer,
-  StatContainer,
   BottomContainer,
-  FeedName,
   Summary,
-  SourceImage,
-  PublishingTime,
   Topics,
 };

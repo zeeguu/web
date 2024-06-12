@@ -1,15 +1,13 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import moment from "moment";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
-
-import { estimateReadingTime } from "../utils/misc/readableTime";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
-import { getStaticPath, getNewsIconPath } from "../utils/misc/staticPath";
+import ArticleSourceInfo from "../components/ArticleSourceInfo";
+import ArticleStatInfo from "../components/ArticleStatInfo";
 
 export default function ArticleOverview({
   article,
@@ -115,23 +113,13 @@ export default function ArticleOverview({
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
-      <s.SourceContainer>
-        {!dontShowSourceIcon && (
-          <>
-            <s.SourceImage>
-              <img src={getNewsIconPath(article.feed_icon_name)} alt="" />
-            </s.SourceImage>
-            {article.feed_name && <s.FeedName>{article.feed_name}</s.FeedName>}
-          </>
-        )}
-        {!dontShowPublishingTime && (
-          <s.PublishingTime>
-            ({moment.utc(article.published).fromNow()})
-          </s.PublishingTime>
-        )}
-      </s.SourceContainer>
 
       <s.Title>{titleLink(article)}</s.Title>
+      <ArticleSourceInfo
+        articleInfo={article}
+        dontShowPublishingTime={dontShowPublishingTime}
+        dontShowSourceIcon={dontShowSourceIcon}
+      ></ArticleSourceInfo>
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
         <s.Summary>{article.summary}...</s.Summary>
@@ -143,22 +131,10 @@ export default function ArticleOverview({
             <span key={topic}>{topic}</span>
           ))}
         </s.Topics>
-        <s.StatContainer>
-          <s.Difficulty>
-            <img
-              src={getStaticPath("icons", cefr_level + "-level-icon.png")}
-              alt="difficulty icon"
-            ></img>
-            <span>{cefr_level}</span>
-          </s.Difficulty>
-          <s.ReadingTimeContainer>
-            <img
-              src={getStaticPath("icons", "read-time-icon.png")}
-              alt="read time icon"
-            ></img>
-            <span>~ {estimateReadingTime(article.metrics.word_count)}</span>
-          </s.ReadingTimeContainer>
-        </s.StatContainer>
+        <ArticleStatInfo
+          cefr_level={cefr_level}
+          articleInfo={article}
+        ></ArticleStatInfo>
       </s.BottomContainer>
       {article.video ? (
         <img
