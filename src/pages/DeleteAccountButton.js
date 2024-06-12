@@ -21,7 +21,7 @@ export default function DeleteAccountButton() {
     if (!SessionStorage.hasUserConfirmationForAccountDeletion()) {
       setShowConfirmationModal(false);
       SessionStorage.setUserConfirmationForAccountDeletion(true);
-      redirect(APP_DOMAIN + "account_deletion");
+      redirect("/account_deletion");
     } else {
       setShowConfirmationModal(false);
     }
