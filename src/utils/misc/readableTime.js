@@ -1,4 +1,5 @@
 function timeToHumanReadable(timeInSeconds, precision = "seconds") {
+  // Currently supports two precision: "seconds" and "minutes"
   if (timeInSeconds < 60) {
     if (precision === "seconds")
       return timeInSeconds + (timeInSeconds > 1 ? " seconds" : " second");
