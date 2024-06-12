@@ -4,7 +4,8 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
-import { getStaticPath } from "../utils/misc/staticPath.js";
+import getStaticPath from "../utils/misc/staticPath.js";
+import { toast } from "react-toastify";
 
 export default function EditButton({
   bookmark,
@@ -70,6 +71,7 @@ export default function EditButton({
     bookmark.fit_for_study = newFitForStudy;
     if (setReload) setReload(!reload);
     if (notifyWordChange) notifyWordChange(bookmark.id);
+    toast.success("Thank you for the contribution!");
   }
   const isPhoneScreen = window.innerWidth < 800;
   return (
