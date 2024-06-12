@@ -15,10 +15,9 @@ const TIME_BEFORE_REDIRECT = 5000;
 export default function AccountDeletion({ api }) {
   const user = useContext(UserContext);
   const [headingMsg, setHeadingMsg] = useState("We are deleting your account");
-  const [errorOccurred, setErrorOccurred] = useState();
-  const [isAccountDeleted, setIsAccountDeleted] = useState();
+  const [errorOccurred, setErrorOccurred] = useState(false);
+  const [isAccountDeleted, setIsAccountDeleted] = useState(false);
   useEffect(() => {
-    console.log(user);
     if (SessionStorage.hasUserConfirmationForAccountDeletion()) {
       setErrorOccurred(false);
       setIsAccountDeleted(false);
@@ -29,7 +28,7 @@ export default function AccountDeletion({ api }) {
           setHeadingMsg("✅ Your account has been successfully deleted!");
           setTimeout(() => {
             user.logoutMethod();
-          }, [TIME_BEFORE_REDIRECT]);
+          }, TIME_BEFORE_REDIRECT);
         },
         () => {
           setIsAccountDeleted(false);
@@ -38,14 +37,13 @@ export default function AccountDeletion({ api }) {
         },
       );
     } else {
+      // In case the user went to the path by mistake
       redirect(APP_DOMAIN);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // In case the user went to the path by mistake
-  if (errorOccurred === undefined && isAccountDeleted === undefined)
-    return <LoadingAnimation></LoadingAnimation>;
+
   return (
     <InfoPage>
       <Header>
