@@ -10,9 +10,35 @@ Zeeguu_API.prototype.getUserArticles = function (callback) {
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
     const ids = articles.map((o) => o.id);
     const deduplicated = articles.filter(
-      ({ id }, index) => !ids.includes(id, index + 1)
+      ({ id }, index) => !ids.includes(id, index + 1),
     );
     console.log(deduplicated);
+    callback(deduplicated);
+  });
+};
+Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback) {
+  this._getJSON(
+    "user_articles/recommended/" + count + "/" + page,
+    (articles) => {
+      // sometimes we get duplicates from the server
+      // deduplicate them here
+      // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
+      const ids = articles.map((o) => o.id);
+      const deduplicated = articles.filter(
+        ({ id }, index) => !ids.includes(id, index + 1),
+      );
+      console.log(deduplicated);
+      callback(deduplicated);
+    },
+  );
+};
+
+Zeeguu_API.prototype.getRecommendedArticles = function (callback){
+  this._getJSON("user_articles/foryou", (articles) => {
+  const ids = articles.map((o) => o.id);
+    const deduplicated = articles.filter(
+        ({ id }, index) => !ids.includes(id, index + 1)
+    );
     callback(deduplicated);
   });
 };
@@ -24,12 +50,11 @@ Zeeguu_API.prototype.getSavedUserArticles = function (callback) {
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
     const ids = articles.map((o) => o.id);
     const deduplicated = articles.filter(
-        ({ id }, index) => !ids.includes(id, index + 1)
+      ({ id }, index) => !ids.includes(id, index + 1),
     );
     callback(deduplicated);
   });
 };
-
 
 Zeeguu_API.prototype.search = function (term, callback) {
   return this._getJSON(`search/${term}`, (articles) => {
@@ -38,7 +63,20 @@ Zeeguu_API.prototype.search = function (term, callback) {
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
     const ids = articles.map((o) => o.id);
     const deduplicated = articles.filter(
-      ({ id }, index) => !ids.includes(id, index + 1)
+      ({ id }, index) => !ids.includes(id, index + 1),
+    );
+    callback(deduplicated);
+  });
+};
+
+Zeeguu_API.prototype.searchMore = function (term, page, callback) {
+  return this._getJSON(`search/${term}/${page}`, (articles) => {
+    // sometimes we get duplicates from the server
+    // deduplicate them here
+    // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
+    const ids = articles.map((o) => o.id);
+    const deduplicated = articles.filter(
+      ({ id }, index) => !ids.includes(id, index + 1),
     );
     callback(deduplicated);
   });
@@ -62,7 +100,7 @@ Zeeguu_API.prototype.setArticleInfo = function (articleInfo, callback) {
     `article_id=${articleInfo.id}` +
       `&starred=${articleInfo.starred}` +
       `&liked=${articleInfo.liked}`,
-    callback
+    callback,
   );
 };
 
@@ -81,19 +119,18 @@ Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback) {
 };
 
 Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {
-  let param = qs.stringify({article_id: articleId})
+  let param = qs.stringify({ article_id: articleId });
   this._post(`/make_personal_copy`, param, callback);
 };
 
-
 Zeeguu_API.prototype.removePersonalCopy = function (articleId, callback) {
-  let param = qs.stringify({article_id: articleId})
+  let param = qs.stringify({ article_id: articleId });
   this._post(`/remove_personal_copy`, param, callback);
 };
 
 Zeeguu_API.prototype.isArticleLanguageSupported = function (
   htmlContent,
-  callback
+  callback,
 ) {
   let article = { htmlContent: htmlContent };
   this._post(`/is_article_language_supported`, qs.stringify(article), callback);
@@ -105,7 +142,7 @@ Zeeguu_API.prototype.sendFeedback = function (feedback, callback) {
 
 Zeeguu_API.prototype.submitArticleDifficultyFeedback = function (
   feedback,
-  callback
+  callback,
 ) {
   this._post(`/article_difficulty_feedback`, qs.stringify(feedback), callback);
 };

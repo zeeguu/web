@@ -9,14 +9,15 @@ import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
 
-export default function OwnArticles({ api }) {
+export default function RecommendedArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
 
-  useEffect(() => {
-    setTitle("Saved Articles");
 
-    api.getSavedUserArticles((articles) => {
+  useEffect(() => {
+    setTitle("Recommended Articles");
+
+    api.getRecommendedArticles((articles) => {
       setArticleList(articles);
       setOriginalList(articles);
     });
@@ -27,7 +28,7 @@ export default function OwnArticles({ api }) {
   }
 
   if (articleList.length === 0) {
-    return <s.TopMessage>{strings.noOwnArticles}</s.TopMessage>;
+    return <s.TopMessage>{strings.noRecommendedArticles}</s.TopMessage>;
   }
 
   return (

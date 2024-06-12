@@ -32,13 +32,17 @@ export default function CreateAccount({
 }) {
   const user = useContext(UserContext);
 
-  const learnedLanguage_Initial = LocalStorage.getLearnedLanguage_Initial();
-  const nativeLanguage_Initial = LocalStorage.getNativeLanguage_Initial();
-  const learnedCefrLevel_Initial = LocalStorage.getLearnedCefrLevel_Initial();
+  const learnedLanguage_OnRegister =
+    LocalStorage.getLearnedLanguage_OnRegister();
+  const nativeLanguage_OnRegister = LocalStorage.getNativeLanguage_OnRegister();
+  const learnedCefrLevel_OnRegister =
+    LocalStorage.getLearnedCefrLevel_OnRegister();
 
-  const [learned_language_initial] = useState(learnedLanguage_Initial);
-  const [native_language_initial] = useState(nativeLanguage_Initial);
-  const [learned_cefr_level_initial] = useState(learnedCefrLevel_Initial);
+  const [learned_language_on_register] = useState(learnedLanguage_OnRegister);
+  const [native_language_on_register] = useState(nativeLanguage_OnRegister);
+  const [learned_cefr_level_on_register] = useState(
+    learnedCefrLevel_OnRegister,
+  );
 
   const [inviteCode, handleInviteCodeChange] = useFormField("");
   const [name, handleNameChange] = useFormField("");
@@ -71,11 +75,11 @@ export default function CreateAccount({
     });
   }, []);
 
-  //Temp local storage entries needed only for account creation
-  function clearInitialLanguageEntries() {
-    LocalStorage.removeLearnedLanguage_Initial();
-    LocalStorage.removeCefrLevel_Initial();
-    LocalStorage.removeNativeLanguage_Initial();
+  //Clear temp local storage entries needed only for account creation
+  function clearOnRegisterLanguageEntries() {
+    LocalStorage.removeLearnedLanguage_OnRegister();
+    LocalStorage.removeCefrLevel_OnRegister();
+    LocalStorage.removeNativeLanguage_OnRegister();
   }
 
   function handleCreate(e) {
@@ -89,9 +93,9 @@ export default function CreateAccount({
       ...user,
       name: name,
       email: email,
-      learned_language: learned_language_initial,
-      learned_cefr_level: learned_cefr_level_initial,
-      native_language: native_language_initial,
+      learned_language: learned_language_on_register,
+      learned_cefr_level: learned_cefr_level_on_register,
+      native_language: native_language_on_register,
     };
 
     api.addUser(
@@ -103,7 +107,7 @@ export default function CreateAccount({
           handleSuccessfulSignIn(user, session);
           setUser(userInfo);
           saveUserInfoIntoCookies(userInfo);
-          clearInitialLanguageEntries()
+          clearOnRegisterLanguageEntries();
           redirect("/select_interests");
         });
       },

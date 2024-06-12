@@ -1,4 +1,4 @@
-import SweetAlert from "react-bootstrap-sweetalert";
+import SweetAlert from "react18-bootstrap-sweetalert";
 import * as s from "./TagsOfInterests.sc";
 import strings from "../i18n/definitions";
 import useUnwantedContentPreferences from "../hooks/useUnwantedContentPreferences";
