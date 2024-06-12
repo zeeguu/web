@@ -4,7 +4,7 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
-import getStaticPath from "../utils/misc/staticPath.js";
+import { getStaticPath } from "../utils/misc/staticPath.js";
 import { toast } from "react-toastify";
 
 export default function EditButton({
