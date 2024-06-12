@@ -6,6 +6,7 @@ import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
+import Search from "../components/Search";
 
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
@@ -181,6 +182,13 @@ export default function NewArticles() {
         originalList={originalList}
         setArticleList={setArticleList}
       />
+
+      {searchQuery && articleList.length > 0 &&(
+        <Search
+          query={searchQuery}
+        />
+      )}
+
       {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
