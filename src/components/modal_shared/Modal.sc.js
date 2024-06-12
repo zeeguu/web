@@ -11,6 +11,7 @@ const ModalWrapper = styled(Box)`
   transform: translate(-50%, -50%);
   width: 50%;
   max-width: 500px;
+  max-height: 90%;
   background-color: white;
   border: 0 !important;
   border-radius: 0.65em;
@@ -20,6 +21,7 @@ const ModalWrapper = styled(Box)`
     0px 24px 38px 3px rgb(0 0 0 / 14%),
     0px 9px 46px 8px rgb(0 0 0 / 12%);
   outline: none !important;
+  overflow: auto;
 
   p {
     line-height: 150%;

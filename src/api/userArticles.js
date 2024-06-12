@@ -33,6 +33,16 @@ Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback) {
   );
 };
 
+Zeeguu_API.prototype.getRecommendedArticles = function (callback){
+  this._getJSON("user_articles/foryou", (articles) => {
+  const ids = articles.map((o) => o.id);
+    const deduplicated = articles.filter(
+        ({ id }, index) => !ids.includes(id, index + 1)
+    );
+    callback(deduplicated);
+  });
+};
+
 Zeeguu_API.prototype.getSavedUserArticles = function (callback) {
   this._getJSON("user_articles/saved", (articles) => {
     // sometimes we get duplicates from the server

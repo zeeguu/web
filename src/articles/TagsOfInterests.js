@@ -1,6 +1,6 @@
 import useSelectInterest from "../hooks/useSelectInterest";
 import React from "react";
-import SweetAlert from "react-bootstrap-sweetalert";
+import SweetAlert from "react18-bootstrap-sweetalert";
 import strings from "../i18n/definitions";
 import * as s from "./TagsOfInterests.sc";
 

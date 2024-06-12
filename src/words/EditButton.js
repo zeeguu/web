@@ -4,7 +4,8 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
-import { APP_DOMAIN } from "../appConstants.js";
+import getStaticPath from "../utils/misc/staticPath.js";
+import { toast } from "react-toastify";
 
 export default function EditButton({
   bookmark,
@@ -12,9 +13,11 @@ export default function EditButton({
   styling,
   reload,
   setReload,
+  deleteAction,
+  notifyWordChange,
 }) {
   const [open, setOpen] = useState(false);
-
+  const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
   function handleOpen() {
     setOpen(true);
   }
@@ -23,7 +26,13 @@ export default function EditButton({
     setOpen(false);
   }
 
-  function updateBookmark(bookmark, newWord, newTranslation, newContext) {
+  function updateBookmark(
+    bookmark,
+    newWord,
+    newTranslation,
+    newContext,
+    newFitForStudy,
+  ) {
     console.log(
       "Sending to the API. New word: ",
       newWord,
@@ -39,32 +48,52 @@ export default function EditButton({
       bookmark.context,
     );
     api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
+    if (newFitForStudy) {
+      api.userSetForExercises(bookmark.id);
+      api.logReaderActivity(
+        api.USER_SET_WORD_PREFERRED,
+        bookmark.article_id,
+        bookmark.from,
+        SOURCE_FOR_API_USER_PREFERENCE,
+      );
+    } else {
+      api.userSetNotForExercises(bookmark.id);
+      api.logReaderActivity(
+        api.USER_SET_NOT_WORD_PREFERED,
+        bookmark.article_id,
+        bookmark.from,
+        SOURCE_FOR_API_USER_PREFERENCE,
+      );
+    }
     bookmark.from = newWord;
     bookmark.to = newTranslation;
     bookmark.context = newContext;
+    bookmark.fit_for_study = newFitForStudy;
     if (setReload) setReload(!reload);
+    if (notifyWordChange) notifyWordChange(bookmark.id);
+    toast.success("Thank you for the contribution!");
   }
-
+  const isPhoneScreen = window.innerWidth < 800;
   return (
     <div>
       {styling === "exercise" ? (
         <s.EditButton onClick={handleOpen}>
           <img
-            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
+            src={getStaticPath("images", "file_rename_orange_36dp.svg")}
             alt="edit"
           />
         </s.EditButton>
       ) : styling === "match" ? (
         <sc.EditIconNoPadding onClick={handleOpen}>
           <img
-            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
+            src={getStaticPath("images", "file_rename_orange_36dp.svg")}
             alt="edit"
           />
         </sc.EditIconNoPadding>
       ) : (
         <sc.EditIcon onClick={handleOpen}>
           <img
-            src={APP_DOMAIN + "/static/images/file_rename_orange_36dp.svg"}
+            src={getStaticPath("images", "file_rename_orange_36dp.svg")}
             alt="edit"
           />
         </sc.EditIcon>
@@ -75,11 +104,12 @@ export default function EditButton({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={s.style}>
+        <Box sx={isPhoneScreen ? s.stylePhone : s.style}>
           <WordEditForm
             bookmark={bookmark}
             handleClose={handleClose}
             updateBookmark={updateBookmark}
+            deleteAction={deleteAction}
           />
         </Box>
       </Modal>

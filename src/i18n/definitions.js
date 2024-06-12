@@ -13,6 +13,7 @@ let strings = new LocalizedStrings(
       text: "Text",
       save: "Save",
       settings: "Settings",
+      wordHistoryTitle: "Word Translation History",
       exercises: "Exercises",
       myClasses: "My Classes",
       myTexts: "My Texts",
@@ -217,6 +218,7 @@ let strings = new LocalizedStrings(
       classroomTab: "Classroom",
       bookmarkedTab: "Bookmarked",
       saved: "Saves",
+      forYou: "For You",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
@@ -276,6 +278,9 @@ let strings = new LocalizedStrings(
 
       noOwnArticles: "There are no own articles.",
 
+      //RecommendedArticles
+      noRecommendedArticles: "Like articles to get recommendations.",
+
       //BookmarkedArticles
       noBookmarksYet: "You haven't bookmarked any articles yet.",
 
@@ -333,6 +338,7 @@ let strings = new LocalizedStrings(
         "You've successfully completed all stages for this word, so it won't be tested in the exercises anymore. Keep up the good work!",
 
       //WordEditAccordion
+      deleteWord: "Delete Word",
       done: "Done",
       rememberToSubmit:
         'Remember to click "Submit" in each accordion to save changes.',
