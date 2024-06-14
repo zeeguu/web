@@ -36,7 +36,6 @@ export default function NewArticles() {
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage =
     LocalStorage.getDoNotShowRedirectionModal() === "true" ? true : false;
-
   const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [isExtensionAvailable] = useExtensionCommunication();

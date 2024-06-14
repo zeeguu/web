@@ -4,7 +4,7 @@ import strings from "../../i18n/definitions";
 import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
 
-import getStaticPath from "../../utils/misc/staticPath.js";
+import { getStaticPath } from "../../utils/misc/staticPath.js";
 
 import { SpeechContext } from "../../contexts/SpeechContext";
 

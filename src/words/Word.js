@@ -7,7 +7,7 @@ import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
-import getStaticPath from "../utils/misc/staticPath";
+import { getStaticPath } from "../utils/misc/staticPath";
 
 export default function Word({
   bookmark,

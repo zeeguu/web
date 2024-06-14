@@ -4,4 +4,8 @@ function getStaticPath(folder, file) {
   return APP_DOMAIN + `/static/${folder}/${file}`;
 }
 
-export default getStaticPath;
+function getNewsIconPath(iconName) {
+  return APP_DOMAIN + `/news-icons/${iconName}`;
+}
+
+export { getStaticPath, getNewsIconPath };
