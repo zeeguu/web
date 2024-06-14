@@ -12,20 +12,31 @@ import { APP_DOMAIN } from "../appConstants";
 
 const TIME_BEFORE_REDIRECT = 5000;
 
+const DeletionStatus = Object.freeze({
+  UNDEFINED: 0,
+  WAITING_API_RESPONSE: 1,
+  ERRORED: 2,
+  OK: 3,
+});
+
 export default function AccountDeletion({ api }) {
   const user = useContext(UserContext);
   const [headingMsg, setHeadingMsg] = useState("We are deleting your account");
   const [errorOccurred, setErrorOccurred] = useState(false);
   const [isAccountDeleted, setIsAccountDeleted] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState(DeletionStatus.UNDEFINED);
+
   useEffect(() => {
     if (SessionStorage.hasUserConfirmationForAccountDeletion()) {
       setErrorOccurred(false);
       setIsAccountDeleted(false);
       SessionStorage.setUserConfirmationForAccountDeletion(false);
+      setCurrentStatus(DeletionStatus.WAITING_API_RESPONSE);
       api.deleteUser(
         () => {
           setIsAccountDeleted(true);
           setHeadingMsg("✅ Your account has been successfully deleted!");
+          setCurrentStatus(DeletionStatus.OK);
           setTimeout(() => {
             user.logoutMethod();
           }, TIME_BEFORE_REDIRECT);
@@ -33,6 +44,7 @@ export default function AccountDeletion({ api }) {
         () => {
           setIsAccountDeleted(false);
           setErrorOccurred(true);
+          setCurrentStatus(DeletionStatus.ERRORED);
           setHeadingMsg("❌ An error has occurred when deleting your account.");
         },
       );
@@ -43,6 +55,7 @@ export default function AccountDeletion({ api }) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  if (currentStatus === DeletionStatus.UNDEFINED) return <LoadingAnimation />;
 
   return (
     <InfoPage>
@@ -50,7 +63,7 @@ export default function AccountDeletion({ api }) {
         <Heading>{headingMsg}</Heading>
       </Header>
       <Main>
-        {!errorOccurred && !isAccountDeleted && (
+        {currentStatus === DeletionStatus.WAITING_API_RESPONSE && (
           <>
             <p>
               You may leave this page. In case something goes wrong, the Zeeguu
@@ -62,13 +75,13 @@ export default function AccountDeletion({ api }) {
             </Footer>
           </>
         )}
-        {isAccountDeleted && !errorOccurred && (
+        {currentStatus === DeletionStatus.OK && (
           <>
             <p>Thank you for taking the time to try out Zeeguu!</p>
             <p>You can close this tab.</p>
           </>
         )}
-        {!isAccountDeleted && errorOccurred && (
+        {currentStatus === DeletionStatus.ERRORED && (
           <>
             <p>
               The Zeeguu team has been notified. We will investigate it as soon
