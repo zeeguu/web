@@ -98,7 +98,7 @@ export default function WordInContextExercise({
       });
     });
 
-    if (solutionDiscovered) {
+    if (solutionDiscovered && !isCorrect) {
       // Check how many translations were made
       let translationCount = 0;
       for (let i = 0; i < messageToAPI.length; i++) {
