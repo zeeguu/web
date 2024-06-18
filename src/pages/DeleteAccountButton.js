@@ -8,7 +8,6 @@ import Footer from "./info_page_shared/Footer";
 import ButtonContainer from "../components/modal_shared/ButtonContainer";
 import * as s from "../components/FormPage.sc";
 import redirect from "../utils/routing/routing";
-import { APP_DOMAIN } from "../appConstants.js";
 import SessionStorage from "../assorted/SessionStorage.js";
 
 export default function DeleteAccountButton() {

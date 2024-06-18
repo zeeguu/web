@@ -22,19 +22,14 @@ const DeletionStatus = Object.freeze({
 export default function AccountDeletion({ api }) {
   const user = useContext(UserContext);
   const [headingMsg, setHeadingMsg] = useState("We are deleting your account");
-  const [errorOccurred, setErrorOccurred] = useState(false);
-  const [isAccountDeleted, setIsAccountDeleted] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(DeletionStatus.UNDEFINED);
 
   useEffect(() => {
     if (SessionStorage.hasUserConfirmationForAccountDeletion()) {
-      setErrorOccurred(false);
-      setIsAccountDeleted(false);
       SessionStorage.setUserConfirmationForAccountDeletion(false);
       setCurrentStatus(DeletionStatus.WAITING_API_RESPONSE);
       api.deleteUser(
         () => {
-          setIsAccountDeleted(true);
           setHeadingMsg("✅ Your account has been successfully deleted!");
           setCurrentStatus(DeletionStatus.OK);
           setTimeout(() => {
@@ -42,8 +37,6 @@ export default function AccountDeletion({ api }) {
           }, TIME_BEFORE_REDIRECT);
         },
         () => {
-          setIsAccountDeleted(false);
-          setErrorOccurred(true);
           setCurrentStatus(DeletionStatus.ERRORED);
           setHeadingMsg("❌ An error has occurred when deleting your account.");
         },
