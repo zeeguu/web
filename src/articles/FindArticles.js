@@ -185,6 +185,7 @@ export default function NewArticles() {
 
       {searchQuery && articleList.length > 0 &&(
         <Search
+          api={api}
           query={searchQuery}
         />
       )}

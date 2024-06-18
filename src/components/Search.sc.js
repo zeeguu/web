@@ -12,7 +12,9 @@ const HeadlineSearch = styled.div`
     font-size: 34px;
     font-weight: bold;
   }
-  p{
+  button{
+    box-shadow: none;
+    all: unset;
     margin: 0;
     color: ${zeeguuOrange};
     font-size: 14px;
