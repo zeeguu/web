@@ -11,7 +11,7 @@ export default function Search( {api, query} ) {
         subscribeToSearch
     } = useSelectInterest(api);
 
-    const associatedKeywords = ['Mental health', 'Fitness', 'Nutrition', 'Health Care']
+    const associatedKeywords = ['Mental health', 'Fitness', 'Nutrition', 'Health Care'];
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
     const [isPopupVisible, setPopupVisible] = useState(false);
     const [textButton, setTextButton] = useState('button');
@@ -43,16 +43,8 @@ export default function Search( {api, query} ) {
         else{
             subscribeToSearch(query);
         }
-        for (let index = 0; index < subscribedSearches.length; index++) {
-            console.log(subscribedSearches[index]);
-            
         }**/
-        //console.log('The searchterm' + query);
     }
-
-    console.log('The subscribed searches');
-    for (let index = 0; index < subscribedSearches.length; index++) {
-        console.log(subscribedSearches[index]);}
 
     return(
         <s.RowHeadlineSearch>

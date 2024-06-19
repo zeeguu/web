@@ -11,6 +11,7 @@ import strings from "../i18n/definitions";
 import OwnArticles from "./OwnArticles";
 import ReadingHistory from "../words/WordHistory";
 import RecommendedArticles from "./RecommendedArticles";
+import MySearches from "./MySearches";
 
 import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
@@ -22,6 +23,7 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
   const [tabsAndLinks, setTabsAndLinks] = useState({
     [strings.homeTab]: "/articles",
     [strings.saved]: "/articles/ownTexts",
+    [strings.searches]: "/articles/mySearches"
   });
 
   useEffect(() => {
@@ -86,6 +88,12 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
           path="/articles/history"
           api={api}
           component={ReadingHistory}
+        />
+
+        <PrivateRoute
+          path="/articles/mySearches"
+          api={api}
+          component={MySearches}
         />
       </s.NarrowColumn>
     </>

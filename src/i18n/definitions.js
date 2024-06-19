@@ -218,6 +218,7 @@ let strings = new LocalizedStrings(
       bookmarkedTab: "Bookmarked",
       saved: "Saves",
       forYou: "For You🆕",
+      searches: "My Searches",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
@@ -271,6 +272,7 @@ let strings = new LocalizedStrings(
       //Search
       searching: "Searching...",
       youSearchedFor: "You searched for: ",
+      NoSavedSearches: "You haven't saved any searches.",
 
       //ClassroomArticles
       noArticlesInClassroom: "There are no articles in your classroom.",
@@ -1023,6 +1025,7 @@ let strings = new LocalizedStrings(
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
       saved: "Gemt",
+      searches: "Mine Søgninger",
 
       //WordsRouter
       yourWordsHeadline: "Dine ord",
