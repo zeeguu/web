@@ -46,6 +46,10 @@ export default function Settings({ api, setUser }) {
     // eslint-disable-next-line
   }, []);
 
+  function onSysChange(lang) {
+    setUiLanguage(lang);
+  }
+
   function setCEFRlevel(data) {
     const levelKey = data.learned_language + "_cefr_level";
     const levelNumber = data[levelKey];
