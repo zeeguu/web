@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
+import React, {useState, useEffect} from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
 
@@ -6,11 +6,14 @@ import * as s from "../components/TopMessage.sc";
 import * as d from "./MySearches.sc";
 import ArticlePreview  from "./ArticlePreview";
 import { setTitle } from "../assorted/setTitle";
+import useSelectInterest from "../hooks/useSelectInterest";
 
 export default function MySearches ( {api} ){
+    const {
+        subscribedSearches
+    } = useSelectInterest(api);
     const [articlesBySearchTerm, setArticlesBySearchTerm] = useState([]);
     const [loading, setLoading] = useState(true);
-    const savedSearches = useMemo(() => ['Misinformation', 'soldat'], []);
     
     useEffect(() => {
         setTitle("Saved Searches");
@@ -24,15 +27,15 @@ export default function MySearches ( {api} ){
             });
           };
       
-          Promise.all(savedSearches.map(fetchArticlesForSearchTerm))
+          Promise.all(subscribedSearches.map((search) => fetchArticlesForSearchTerm(search.search)))
             .then((results) => {
-              setArticlesBySearchTerm(results);
-              setLoading(false); // Set loading to false after all articles are fetched
+                setArticlesBySearchTerm(results);
+                setLoading(false); // Set loading to false after all articles are fetched
             });
-      }, [api, savedSearches]);
+      }, [api, subscribedSearches]);
 
-    console.log('The right list: ');
-    console.log(articlesBySearchTerm);
+      console.log(subscribedSearches);
+
 
     if(loading){
         return <LoadingAnimation/>
