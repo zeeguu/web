@@ -14,7 +14,9 @@ export default function Search( {api, query} ) {
     const associatedKeywords = ['Mental health', 'Fitness', 'Nutrition', 'Health Care'];
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
     const [isPopupVisible, setPopupVisible] = useState(false);
-    const [textButton, setTextButton] = useState('button');
+    const [textButton, setTextButton] = useState('');
+    const [isSubscribed, setIsSubscribed] = useState();
+
 
     useEffect(() => {
         const handleResize = () => {setIsMobile(window.innerWidth <= 600);};
@@ -23,34 +25,44 @@ export default function Search( {api, query} ) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const togglePopupKeyWords = () => {
-        setPopupVisible(!isPopupVisible);
-    };
-/*
     useEffect(() => {
-        if(subscribedSearches.includes()){
+        setIsSubscribed(subscribedSearches.some(search => search.search === query));
+        if(isSubscribed){
             setTextButton('- remove search');
         }
         else{
             setTextButton('+ add search');
         }
-    }, []);**/
+    }, [subscribedSearches, query, isSubscribed]);
+    
 
-    function handleUpdateSearchList(query){
-        /*if(subscribedSearches.includes(query)){
-            removeSearch(query);
-        }
-        else{
+    const togglePopupKeyWords = () => {
+        setPopupVisible(!isPopupVisible);
+    };
+
+    const toggleSearchSubscription = (query) => {
+        if(subscribedSearches.length === 0){
             subscribeToSearch(query);
+            setIsSubscribed(true);
         }
-        }**/
-    }
+        subscribedSearches.forEach((search) =>{
+            if(search.search === query){
+                removeSearch(search);
+                setIsSubscribed(false);
+            }
+            else{
+                subscribeToSearch(query);
+                setIsSubscribed(true);
+            }
+        });
+    };
+    console.log(subscribedSearches);
 
     return(
         <s.RowHeadlineSearch>
             <s.HeadlineSearch>
             <h1>{query}</h1> 
-            <button onClick={handleUpdateSearchList(query)}>
+            <button onClick={(e) => toggleSearchSubscription(query)}>
                 {textButton}
             </button>
 

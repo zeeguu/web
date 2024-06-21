@@ -67,6 +67,7 @@ export default function useSelectInterest(api) {
     api.unsubscribeFromSearch(search);
   }
 
+
   function isSubscribed(topic) {
     return subscribedTopics
       .map((subscribedTopic) => subscribedTopic.id)
