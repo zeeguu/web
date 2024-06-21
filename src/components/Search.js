@@ -15,8 +15,7 @@ export default function Search( {api, query} ) {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
     const [isPopupVisible, setPopupVisible] = useState(false);
     const [textButton, setTextButton] = useState('');
-    const [isSubscribed, setIsSubscribed] = useState();
-
+    const [isSubscribedToSearch, setIsSubscribedToSearch] = useState();
 
     useEffect(() => {
         const handleResize = () => {setIsMobile(window.innerWidth <= 600);};
@@ -26,14 +25,14 @@ export default function Search( {api, query} ) {
     }, []);
 
     useEffect(() => {
-        setIsSubscribed(subscribedSearches.some(search => search.search === query));
-        if(isSubscribed){
+        setIsSubscribedToSearch(subscribedSearches.some(search => search.search === query));
+        if(isSubscribedToSearch){
             setTextButton('- remove search');
         }
         else{
             setTextButton('+ add search');
         }
-    }, [subscribedSearches, query, isSubscribed]);
+    }, [subscribedSearches, query, isSubscribedToSearch]);
     
 
     const togglePopupKeyWords = () => {
@@ -43,20 +42,21 @@ export default function Search( {api, query} ) {
     const toggleSearchSubscription = (query) => {
         if(subscribedSearches.length === 0){
             subscribeToSearch(query);
-            setIsSubscribed(true);
+            setIsSubscribedToSearch(false);
         }
         subscribedSearches.forEach((search) =>{
             if(search.search === query){
                 removeSearch(search);
-                setIsSubscribed(false);
+                setIsSubscribedToSearch(false);
             }
             else{
                 subscribeToSearch(query);
-                setIsSubscribed(true);
+                setIsSubscribedToSearch(true);
             }
         });
     };
     console.log(subscribedSearches);
+    console.log(isSubscribedToSearch);
 
     return(
         <s.RowHeadlineSearch>
