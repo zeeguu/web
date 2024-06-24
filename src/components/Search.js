@@ -25,14 +25,10 @@ export default function Search( {api, query} ) {
     }, []);
 
     useEffect(() => {
-        setIsSubscribedToSearch(subscribedSearches.some(search => search.search === query));
-        if(isSubscribedToSearch){
-            setTextButton('- remove search');
-        }
-        else{
-            setTextButton('+ add search');
-        }
-    }, [subscribedSearches, query, isSubscribedToSearch]);
+        const isSubscribed = subscribedSearches.some(search => search.search === query);
+        setIsSubscribedToSearch(isSubscribed);
+        setTextButton(isSubscribed ? '- remove search' : '+ add search');
+    }, [subscribedSearches, query]);
     
 
     const togglePopupKeyWords = () => {
@@ -40,23 +36,21 @@ export default function Search( {api, query} ) {
     };
 
     const toggleSearchSubscription = (query) => {
-        if(subscribedSearches.length === 0){
-            subscribeToSearch(query);
-            setIsSubscribedToSearch(false);
-        }
-        subscribedSearches.forEach((search) =>{
-            if(search.search === query){
-                removeSearch(search);
+        if (isSubscribedToSearch) {
+            const searchToRemove = subscribedSearches.find(search => search.search === query);
+            if (searchToRemove) {
+                removeSearch(searchToRemove);
+                console.log('search removed');
                 setIsSubscribedToSearch(false);
             }
-            else{
-                subscribeToSearch(query);
-                setIsSubscribedToSearch(true);
-            }
-        });
+        } else {
+            subscribeToSearch(query);
+            console.log('search added');
+            setIsSubscribedToSearch(true);
+        }
     };
-    console.log(subscribedSearches);
-    console.log(isSubscribedToSearch);
+    console.log('subscribed searches: ', subscribedSearches);
+    console.log('is the searchterm subcribed: ', isSubscribedToSearch);
 
     return(
         <s.RowHeadlineSearch>

@@ -1,13 +1,32 @@
 import styled from "styled-components";
 import {
-  almostBlack
+  almostBlack,
+  zeeguuOrange
 } from "../components/colors";
 
 const HeadlineSavedSearches = styled.div`
-    color: ${almostBlack};
-    margin: 0;
-    font-size: 34px;
-    font-weight: bold;
+  color: ${almostBlack};
+  margin: 0;
+  font-size: 34px;
+  font-weight: bold;
 `;
 
-export {HeadlineSavedSearches};
+const buttonMoreArticles = styled.button`
+  box-shadow: none;
+  all: unset;
+  margin: 0;
+  color: ${zeeguuOrange};
+  font-size: 14px;
+  font-weight: bold;
+`;
+
+const Line = styled.hr`
+  color: ${almostBlack};
+  height: 5;
+  margin-bottom: 40px;
+`;
+
+export {
+  HeadlineSavedSearches,
+  buttonMoreArticles, 
+  Line};

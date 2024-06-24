@@ -21,12 +21,12 @@ export default function MySearches ( {api} ){
         const fetchArticlesForSearchTerm = (searchTerm) => {
             return new Promise((resolve) => {
               api.search(searchTerm, (articles) => {
-                const limitedArticles = articles.slice(0, 5);
+                const limitedArticles = articles.slice(0, 3);
                 resolve({ searchTerm, articles: limitedArticles });
               });
             });
           };
-      
+          setLoading(true);
           Promise.all(subscribedSearches.map((search) => fetchArticlesForSearchTerm(search.search)))
             .then((results) => {
                 setArticlesBySearchTerm(results);
@@ -34,14 +34,17 @@ export default function MySearches ( {api} ){
             });
       }, [api, subscribedSearches]);
 
-      console.log(subscribedSearches);
+    console.log('Subscribed Searches:', subscribedSearches);
+    console.log('Loading:', loading);
+    console.log('Articles By Search Term:', articlesBySearchTerm);
+    console.log('...');
 
 
     if(loading){
         return <LoadingAnimation/>
     }
 
-    if(articlesBySearchTerm.length === 0){
+    if(!loading && articlesBySearchTerm.length === 0){
         return <s.TopMessage>{strings.NoSavedSearches}</s.TopMessage>
     }
 
@@ -57,6 +60,11 @@ export default function MySearches ( {api} ){
                         api={api}
                         article={each}/>
                     ))}
+                    <d.buttonMoreArticles
+                    onClick={(e) => (window.location = `/articles?search=${searchTerm}`)}>
+                        See more articles
+                    </d.buttonMoreArticles>
+                    <d.Line/>
                 </div>
             ))}
 
