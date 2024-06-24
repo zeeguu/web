@@ -158,6 +158,8 @@ export default function NewArticles() {
     });
   }
 
+  console.log('Search:', searchQuery);
+
   return (
     <>
       <ExtensionMessage
@@ -168,20 +170,21 @@ export default function NewArticles() {
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
 
-      <s.MaterialSelection>
+      {searchQuery === null && (
         <Interests
           api={api}
           articlesListShouldChange={articlesListShouldChange}
         />
-
+      )}
+      
+      <s.SortAndSearch>
         <SearchField api={api} query={searchQuery} />
-      </s.MaterialSelection>
-
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
-      />
+        <SortingButtons
+          articleList={articleList}
+          originalList={originalList}
+          setArticleList={setArticleList}
+        />
+      </s.SortAndSearch>
 
       {searchQuery && articleList.length > 0 &&(
         <Search

@@ -21,7 +21,7 @@ export default function MySearches ( {api} ){
         const fetchArticlesForSearchTerm = (searchTerm) => {
             return new Promise((resolve) => {
               api.search(searchTerm, (articles) => {
-                const limitedArticles = articles.slice(0, 3);
+                const limitedArticles = articles.slice(0, 2);
                 resolve({ searchTerm, articles: limitedArticles });
               });
             });
