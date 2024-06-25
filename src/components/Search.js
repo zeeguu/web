@@ -3,6 +3,7 @@ import * as s from './Search.sc';
 import * as b from './allButtons.sc';
 import { SearchKeyWords } from "./SearchKeyWords";
 import useSelectInterest from "../hooks/useSelectInterest";
+import { toast } from "react-toastify";
 
 export default function Search( {api, query} ) {
     const {
@@ -42,11 +43,13 @@ export default function Search( {api, query} ) {
                 removeSearch(searchToRemove);
                 console.log('search removed');
                 setIsSubscribedToSearch(false);
+                toast("Search removed from My Searches!");
             }
         } else {
             subscribeToSearch(query);
             console.log('search added');
             setIsSubscribedToSearch(true);
+            toast("Search added to My Searches!");
         }
     };
     console.log('subscribed searches: ', subscribedSearches);
