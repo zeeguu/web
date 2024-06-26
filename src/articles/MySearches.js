@@ -12,8 +12,11 @@ export default function MySearches ( {api} ){
     const {
         subscribedSearches
     } = useSelectInterest(api);
-    const [articlesBySearchTerm, setArticlesBySearchTerm] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [articlesBySearchTerm, setArticlesBySearchTerm] = useState(null);
+
+    console.log('Subscribed Searches:', subscribedSearches);
+    console.log('Articles By Search Term:', articlesBySearchTerm);
+    console.log('...');
     
     useEffect(() => {
         setTitle("Saved Searches");
@@ -26,25 +29,18 @@ export default function MySearches ( {api} ){
               });
             });
           };
-          setLoading(true);
+
           Promise.all(subscribedSearches.map((search) => fetchArticlesForSearchTerm(search.search)))
             .then((results) => {
                 setArticlesBySearchTerm(results);
-                setLoading(false); // Set loading to false after all articles are fetched
             });
       }, [api, subscribedSearches]);
 
-    console.log('Subscribed Searches:', subscribedSearches);
-    console.log('Loading:', loading);
-    console.log('Articles By Search Term:', articlesBySearchTerm);
-    console.log('...');
-
-
-    if(loading){
+    if(articlesBySearchTerm === null){
         return <LoadingAnimation/>
     }
 
-    if(!loading && articlesBySearchTerm.length === 0){
+    if(subscribedSearches.length === 0){
         return <s.TopMessage>{strings.NoSavedSearches}</s.TopMessage>
     }
 
@@ -53,7 +49,6 @@ export default function MySearches ( {api} ){
             {articlesBySearchTerm.map(({ searchTerm, articles }) => (
                 <div key={searchTerm}>
                     <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>
-                
                         {articles.map(each => (
                         <ArticlePreview
                         key={each.id}
@@ -64,10 +59,8 @@ export default function MySearches ( {api} ){
                     onClick={(e) => (window.location = `/articles?search=${searchTerm}`)}>
                         See more articles
                     </d.buttonMoreArticles>
-                    <d.Line/>
                 </div>
             ))}
-
         </div>
     )
 }
