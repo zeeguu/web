@@ -6,7 +6,6 @@ import {
 
 const HeadlineSavedSearches = styled.div`
   color: ${almostBlack};
-  margin: 0;
   font-size: 34px;
   font-weight: bold;
 `;
@@ -18,15 +17,9 @@ const buttonMoreArticles = styled.button`
   color: ${zeeguuOrange};
   font-size: 14px;
   font-weight: bold;
-`;
-
-const Line = styled.hr`
-  color: ${almostBlack};
-  height: 5;
   margin-bottom: 40px;
 `;
 
 export {
   HeadlineSavedSearches,
-  buttonMoreArticles, 
-  Line};
+  buttonMoreArticles};

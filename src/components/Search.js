@@ -12,14 +12,17 @@ export default function Search( {api, query} ) {
         subscribeToSearch
     } = useSelectInterest(api);
 
-    const associatedKeywords = ['Mental health', 'Fitness', 'Nutrition', 'Health Care'];
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+    // Empty array for the associated keywords
+    const associatedKeywords = [];
+
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 500);
     const [isPopupVisible, setPopupVisible] = useState(false);
     const [textButton, setTextButton] = useState('');
     const [isSubscribedToSearch, setIsSubscribedToSearch] = useState();
 
+    // useEffect for handling the change in ui when screen is less than 500.
     useEffect(() => {
-        const handleResize = () => {setIsMobile(window.innerWidth <= 600);};
+        const handleResize = () => {setIsMobile(window.innerWidth <= 500);};
 
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
@@ -63,6 +66,8 @@ export default function Search( {api, query} ) {
                 {textButton}
             </button>
 
+            {/* The set up for the associated keywords. A button when view on mobile,
+            and horizontal list when larger than 500 px. */}
             </s.HeadlineSearch>
             <div className={isMobile ? 'mobile' : 'desktop'}>
                 {isMobile ? (
