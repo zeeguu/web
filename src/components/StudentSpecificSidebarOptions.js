@@ -1,4 +1,5 @@
 import strings from "../i18n/definitions";
+import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../exercises/ExerciseConstants";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
@@ -57,15 +58,17 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
             </a>
           </Tooltip>
           <Tooltip title="Logout">
-            <a href="/">
+            <Link
+              to="/"
+              onClick={() => {
+                user.logoutMethod();
+              }}
+            >
               <img
                 className="navigationIcon"
                 src="static/icons/logout_v2.png"
-                onClick={() => {
-                  user.logoutMethod();
-                }}
               ></img>
-            </a>
+            </Link>
           </Tooltip>
         </div>
       </div>
