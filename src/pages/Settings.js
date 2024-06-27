@@ -54,21 +54,11 @@ export default function Settings({ api, setUser }) {
     const levelKey = data.learned_language + "_cefr_level";
     const levelNumber = data[levelKey];
     setCEFR("" + levelNumber);
+    setUserDetails({
+      ...data,
+      cefr_level: levelNumber,
+    });
   }
-
-  const modifyCEFRlevel = (languageID, cefrLevel) => {
-    api.modifyCEFRlevel(
-      languageID,
-      cefrLevel,
-      (res) => {
-        console.log("Update '" + languageID + "' CEFR level to: " + cefrLevel);
-        console.log("API returns update status: " + res);
-      },
-      () => {
-        console.log("Connection to server failed...");
-      },
-    );
-  };
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -108,11 +98,28 @@ export default function Settings({ api, setUser }) {
     saveUserInfoIntoCookies(info);
   }
 
-  function nativeLanguageUpdated(e) {
-    let code = e.target[e.target.selectedIndex].getAttribute("code");
+  function getLanguageCodeFromSelector(e) {
+    return e.target[e.target.selectedIndex].getAttribute("code");
+  }
+
+  function updateNativeLanguage(lang_code) {
     setUserDetails({
       ...userDetails,
-      native_language: code,
+      native_language: lang_code,
+    });
+  }
+
+  function updateCEFRLevel(level) {
+    setUserDetails({
+      ...userDetails,
+      cefr_level: level,
+    });
+  }
+
+  function updateLearnedLanguage(lang_code) {
+    setUserDetails({
+      ...userDetails,
+      learned_language: lang_code,
     });
   }
 
@@ -122,25 +129,21 @@ export default function Settings({ api, setUser }) {
     strings.setLanguage(uiLanguage.code);
     LocalStorage.setUiLanguage(uiLanguage);
 
-    modifyCEFRlevel(userDetails.learned_language, cefr);
+    // modifyCEFRlevel(userDetails.learned_language, cefr);
 
-    console.log("saving: productiveExercises: " + productiveExercises);
     SessionStorage.setAudioExercisesEnabled(audioExercises);
+    api.saveUserPreferences({
+      audio_exercises: audioExercises,
+      productive_exercises: productiveExercises,
+    });
+
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      api.saveUserPreferences(
-        {
-          audio_exercises: audioExercises,
-          productive_exercises: productiveExercises,
-        },
-        () => {
-          updateUserInfo(userDetails);
-          if (history.length > 1) {
-            history.goBack();
-          } else {
-            window.close();
-          }
-        },
-      );
+      updateUserInfo(userDetails);
+      if (history.length > 1) {
+        history.goBack();
+      } else {
+        window.close();
+      }
     });
   }
 
@@ -222,12 +225,7 @@ export default function Settings({ api, setUser }) {
                 languages.learnable_languages,
               )}
               onChange={(e) => {
-                let code =
-                  e.target[e.target.selectedIndex].getAttribute("code");
-                setUserDetails({
-                  ...userDetails,
-                  learned_language: code,
-                });
+                updateLearnedLanguage(getLanguageCodeFromSelector(e));
               }}
             />
 
@@ -235,7 +233,9 @@ export default function Settings({ api, setUser }) {
               elements={CEFR_LEVELS}
               label={(e) => e.label}
               val={(e) => e.value}
-              updateFunction={setCEFR}
+              updateFunction={(e) => {
+                updateCEFRLevel(e);
+              }}
               current={cefr}
             />
 
@@ -249,7 +249,9 @@ export default function Settings({ api, setUser }) {
                 userDetails.native_language,
                 languages.native_languages,
               )}
-              onChange={nativeLanguageUpdated}
+              onChange={(e) => {
+                updateNativeLanguage(getLanguageCodeFromSelector(e));
+              }}
             />
 
             <label>Exercise Type Preferences</label>
@@ -337,6 +339,7 @@ export default function Settings({ api, setUser }) {
 
 function language_for_id(id, language_list) {
   for (let i = 0; i < language_list.length; i++) {
+    console.log(language_list[i].code, id);
     if (language_list[i].code === id) {
       return language_list[i].name;
     }
