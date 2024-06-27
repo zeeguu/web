@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 import { useContext, useEffect, useState } from "react";
 import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../exercises/ExerciseConstants";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
+import { Tooltip } from "@mui/material";
 
 export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
@@ -46,15 +46,28 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
       {is_teacher && (
         <SidebarLink text={strings.teacherSite} to="/teacher/classes" />
       )}
-
-      <div>
-        <a>
-          <img src="static/icons/options.png" style={{ height: "50px" }}></img>
-        </a>
-
-        <a>
-          <img src="static/icons/logout.png" style={{ height: "50px" }}></img>
-        </a>
+      <div className="SettingsLogoutContainer">
+        <div className="SettingsLogoutHolder">
+          <Tooltip title="Settings">
+            <a href="/account_settings">
+              <img
+                className="navigationIcon"
+                src="static/icons/options_v2.png"
+              ></img>
+            </a>
+          </Tooltip>
+          <Tooltip title="Logout">
+            <a href="/">
+              <img
+                className="navigationIcon"
+                src="static/icons/logout_v2.png"
+                onClick={() => {
+                  user.logoutMethod();
+                }}
+              ></img>
+            </a>
+          </Tooltip>
+        </div>
       </div>
     </>
   );
