@@ -47,17 +47,15 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
         <SidebarLink text={strings.teacherSite} to="/teacher/classes" />
       )}
 
-      <SidebarLink text={strings.settings} to="/account_settings" />
+      <div>
+        <a>
+          <img src="static/icons/options.png" style={{ height: "50px" }}></img>
+        </a>
 
-      <Link
-        className="navigationLink"
-        to="/"
-        onClick={() => {
-          user.logoutMethod();
-        }}
-      >
-        <small>{strings.logout}</small>
-      </Link>
+        <a>
+          <img src="static/icons/logout.png" style={{ height: "50px" }}></img>
+        </a>
+      </div>
     </>
   );
 }

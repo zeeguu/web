@@ -126,6 +126,11 @@ export default function Settings({ api, setUser }) {
 
     console.log("saving: productiveExercises: " + productiveExercises);
     SessionStorage.setAudioExercisesEnabled(audioExercises);
+    api.saveUserPreferences({
+      audio_exercises: audioExercises,
+      productive_exercises: productiveExercises,
+    });
+    console.log(userDetails);
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       api.saveUserPreferences(
         {
