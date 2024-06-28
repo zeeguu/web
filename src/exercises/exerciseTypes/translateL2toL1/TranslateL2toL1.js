@@ -39,6 +39,13 @@ export default function TranslateL2toL1({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [hintUsed, setHintUsed] = useState(false);
+
+  function handleHint(counter) {
+    if (counter > 0 && !hintUsed) {
+      setHintUsed(true);
+    }
+  }
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -130,6 +137,9 @@ export default function TranslateL2toL1({
             messageToAPI={messageToAPI}
             setMessageToAPI={setMessageToAPI}
             isL1Answer={true}
+            usedHint={hintUsed}
+            giveInputHint={hintUsed}
+            onHintUsed={handleHint}
           />
         </>
       )}

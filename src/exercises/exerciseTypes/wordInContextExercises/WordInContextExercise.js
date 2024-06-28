@@ -44,6 +44,13 @@ export default function WordInContextExercise({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [hintUsed, setHintUsed] = useState(false);
+
+  function handleHint(counter) {
+    if (counter > 0 && !hintUsed) {
+      setHintUsed(true);
+    }
+  }
 
   useEffect(() => {
     setExerciseType(exerciseType);
@@ -191,6 +198,9 @@ export default function WordInContextExercise({
           bookmarksToStudy={bookmarksToStudy}
           messageToAPI={messageToAPI}
           setMessageToAPI={setMessageToAPI}
+          usedHint={hintUsed}
+          giveInputHint={hintUsed}
+          onHintUsed={handleHint}
         />
       )}
       <NextNavigation

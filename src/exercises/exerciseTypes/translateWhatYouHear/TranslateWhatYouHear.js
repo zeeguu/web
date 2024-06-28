@@ -42,7 +42,7 @@ export default function TranslateWhatYouHear({
     activeSessionDuration,
   );
   const [showHintText, setShowHintText] = useState(false);
-
+  const [hintUsed, setHintUsed] = useState(false);
   async function handleSpeak() {
     await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
   }
@@ -69,6 +69,15 @@ export default function TranslateWhatYouHear({
       handleSpeak();
     }
   }, [interactiveText]);
+
+  function handleHint(counter) {
+    if (counter == 1 && !hintUsed) {
+      setShowHintText(true);
+    }
+    if (counter == 2 && !hintUsed) {
+      setHintUsed(true);
+    }
+  }
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -163,7 +172,9 @@ export default function TranslateWhatYouHear({
             setMessageToAPI={setMessageToAPI}
             isL1Answer={true}
             exerciseType={EXERCISE_TYPE}
-            onHintUsed={() => setShowHintText(true)}
+            usedHint={hintUsed}
+            giveInputHint={hintUsed}
+            onHintUsed={handleHint}
           />
         </>
       )}

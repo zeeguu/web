@@ -37,6 +37,7 @@ export default function FindWordInContextCloze({
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
+  const [hintUsed, setHintUsed] = useState(false);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
@@ -57,6 +58,12 @@ export default function FindWordInContextCloze({
       setArticleInfo(articleInfo);
     });
   }, []);
+
+  function handleHint(counter) {
+    if (counter > 0 && !hintUsed) {
+      setHintUsed(true);
+    }
+  }
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -131,6 +138,9 @@ export default function FindWordInContextCloze({
             bookmarksToStudy={bookmarksToStudy}
             messageToAPI={messageToAPI}
             setMessageToAPI={setMessageToAPI}
+            usedHint={hintUsed}
+            giveInputHint={hintUsed}
+            onHintUsed={handleHint}
           />
         </>
       )}

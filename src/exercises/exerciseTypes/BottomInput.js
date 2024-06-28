@@ -16,17 +16,18 @@ export default function BottomInput({
   setMessageToAPI,
   isL1Answer,
   onHintUsed,
+  usedHint,
+  giveInputHint,
   exerciseType,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
-  const [usedHint, setUsedHint] = useState(false);
   const [distanceToCorrect, setDistanceToCorrect] = useState(0);
   const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
   const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
   const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
-  const [firstHint, setFirstHint] = useState(true);
+  const [hintCounter, setHintCounter] = useState(0);
   const levenshtein = require("fast-levenshtein");
 
   const normalizedLearningWord = normalizeAnswer(bookmarksToStudy[0].from);
@@ -39,21 +40,25 @@ export default function BottomInput({
     ? bookmarksToStudy[0].to_lang
     : bookmarksToStudy[0].from_lang;
 
-  function handleHint() {
-    if (exerciseType === EXERCISE_TYPES.translateWhatYouHear && firstHint) {
-      setFirstHint(false);
-      onHintUsed();
+  function provideInputHint() {
+    let hint;
+    if (currentInput === targetWord.substring(0, currentInput.length)) {
+      hint = targetWord.substring(0, currentInput.length + 1);
     } else {
-      setUsedHint(true);
-      let hint;
-      if (currentInput === targetWord.substring(0, currentInput.length)) {
-        hint = targetWord.substring(0, currentInput.length + 1);
-      } else {
-        hint = targetWord.substring(0, 1);
-      }
-      setCurrentInput(hint);
-      setMessageToAPI(messageToAPI + "H");
+      hint = targetWord.substring(0, 1);
     }
+    setCurrentInput(hint);
+    setMessageToAPI(messageToAPI + "H");
+  }
+
+  useEffect(() => {
+    if (giveInputHint) provideInputHint();
+  }, [giveInputHint]);
+
+  function handleHint() {
+    let _hintCounter = hintCounter + 1;
+    onHintUsed(hintCounter + 1);
+    setHintCounter(_hintCounter);
   }
 
   // Update the feedback message

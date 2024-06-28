@@ -40,12 +40,19 @@ export default function SpellWhatYouHear({
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
+  const [hintUsed, setHintUsed] = useState(false);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
 
   async function handleSpeak() {
     await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
+  }
+
+  function handleHint(counter) {
+    if (counter > 0 && !hintUsed) {
+      setHintUsed(true);
+    }
   }
 
   useEffect(() => {
@@ -163,6 +170,9 @@ export default function SpellWhatYouHear({
             bookmarksToStudy={bookmarksToStudy}
             messageToAPI={messageToAPI}
             setMessageToAPI={setMessageToAPI}
+            usedHint={hintUsed}
+            giveInputHint={hintUsed}
+            onHintUsed={handleHint}
           />
         </>
       )}
