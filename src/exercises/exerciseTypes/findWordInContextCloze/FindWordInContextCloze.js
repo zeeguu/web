@@ -138,7 +138,7 @@ export default function FindWordInContextCloze({
             bookmarksToStudy={bookmarksToStudy}
             messageToAPI={messageToAPI}
             setMessageToAPI={setMessageToAPI}
-            usedHint={hintUsed}
+            disableHintButton={hintUsed}
             giveInputHint={hintUsed}
             onHintUsed={handleHint}
           />

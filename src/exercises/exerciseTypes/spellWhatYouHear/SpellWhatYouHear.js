@@ -170,7 +170,7 @@ export default function SpellWhatYouHear({
             bookmarksToStudy={bookmarksToStudy}
             messageToAPI={messageToAPI}
             setMessageToAPI={setMessageToAPI}
-            usedHint={hintUsed}
+            disableHintButton={hintUsed}
             giveInputHint={hintUsed}
             onHintUsed={handleHint}
           />

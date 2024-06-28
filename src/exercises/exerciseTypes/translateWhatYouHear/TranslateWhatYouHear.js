@@ -41,8 +41,12 @@ export default function TranslateWhatYouHear({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const [showHintText, setShowHintText] = useState(false);
-  const [hintUsed, setHintUsed] = useState(false);
+
+  // this is more readable than the other for me.
+  // the first time I saw this I thought it was referring to the text on the hint button or something like that
+  const [showContext, setShowContext] = useState(false);
+  const [preventFurtherHints, setPreventFurtherHints] = useState(false);
+
   async function handleSpeak() {
     await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
   }
@@ -71,11 +75,13 @@ export default function TranslateWhatYouHear({
   }, [interactiveText]);
 
   function handleHint(counter) {
-    if (counter == 1 && !hintUsed) {
-      setShowHintText(true);
+    // ML: hintUsed was not precise enough here; because the first time one
+    // uses the hint, the hint is ... used. This, or something similar might be more clear?
+    if (counter == 1 && !preventFurtherHints) {
+      setShowContext(true);
     }
-    if (counter == 2 && !hintUsed) {
-      setHintUsed(true);
+    if (counter == 2 && !preventFurtherHints) {
+      setPreventFurtherHints(true);
     }
   }
 
@@ -152,7 +158,8 @@ export default function TranslateWhatYouHear({
               parentIsSpeakingControl={isButtonSpeaking}
             />
           </s.CenteredRowTall>
-          {showHintText && (
+
+          {showContext && (
             <div className="contextExample">
               <TranslatableText
                 isCorrect={isCorrect}
@@ -171,10 +178,9 @@ export default function TranslateWhatYouHear({
             messageToAPI={messageToAPI}
             setMessageToAPI={setMessageToAPI}
             isL1Answer={true}
-            exerciseType={EXERCISE_TYPE}
-            usedHint={hintUsed}
-            giveInputHint={hintUsed}
             onHintUsed={handleHint}
+            disableHintButton={preventFurtherHints}
+            giveInputHint={preventFurtherHints}
           />
         </>
       )}

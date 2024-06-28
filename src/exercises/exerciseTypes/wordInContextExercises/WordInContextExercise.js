@@ -198,7 +198,7 @@ export default function WordInContextExercise({
           bookmarksToStudy={bookmarksToStudy}
           messageToAPI={messageToAPI}
           setMessageToAPI={setMessageToAPI}
-          usedHint={hintUsed}
+          disableHintButton={hintUsed}
           giveInputHint={hintUsed}
           onHintUsed={handleHint}
         />

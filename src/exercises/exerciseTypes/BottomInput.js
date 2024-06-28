@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
-import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import { normalizeAnswer } from "../inputNormalization";
 
 function getFlagImageUrl(languageCode) {
@@ -16,9 +15,10 @@ export default function BottomInput({
   setMessageToAPI,
   isL1Answer,
   onHintUsed,
-  usedHint,
+  disableHintButton,
+  //   This one below is hard for me to understand
+  //   Is it a naming thing? Maybe add a comment?
   giveInputHint,
-  exerciseType,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
@@ -57,7 +57,7 @@ export default function BottomInput({
 
   function handleHint() {
     let _hintCounter = hintCounter + 1;
-    onHintUsed(hintCounter + 1);
+    onHintUsed(_hintCounter);
     setHintCounter(_hintCounter);
   }
 
@@ -146,7 +146,10 @@ export default function BottomInput({
   return (
     <>
       <s.BottomRow className="bottomRow">
-        <s.LeftFeedbackButton onClick={() => handleHint()} disabled={usedHint}>
+        <s.LeftFeedbackButton
+          onClick={() => handleHint()}
+          disabled={disableHintButton}
+        >
           {strings.hint}
         </s.LeftFeedbackButton>
         <div>
