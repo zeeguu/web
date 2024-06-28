@@ -135,17 +135,15 @@ export default function NewArticles() {
         setArticleList(articles);
         setOriginalList([...articles]);
         if (articles.length < 20) setNoMoreArticlesToShow(true);
-        else window.addEventListener("scroll", handleScroll, true);
       });
     } else {
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
         if (articles.length < 20) setNoMoreArticlesToShow(true);
-        else window.addEventListener("scroll", handleScroll, true);
       });
     }
-
+    window.addEventListener("scroll", handleScroll, true);
     document.title = "Recommend Articles: Zeeguu";
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
