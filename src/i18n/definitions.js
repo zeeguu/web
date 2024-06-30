@@ -273,6 +273,7 @@ let strings = new LocalizedStrings(
       searching: "Searching...",
       youSearchedFor: "You searched for: ",
       NoSavedSearches: "You haven't saved any searches.",
+      NoSearchMatch: "No articles found that match your search.",
 
       //ClassroomArticles
       noArticlesInClassroom: "There are no articles in your classroom.",
