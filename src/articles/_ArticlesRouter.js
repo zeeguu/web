@@ -12,6 +12,7 @@ import OwnArticles from "./OwnArticles";
 import ReadingHistory from "../words/WordHistory";
 import RecommendedArticles from "./RecommendedArticles";
 import MySearches from "./MySearches";
+import Search from "./Search";
 
 import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
@@ -94,6 +95,12 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
           path="/articles/mySearches"
           api={api}
           component={MySearches}
+        />
+
+        <PrivateRoute
+          path="/articles/search"
+          api={api}
+          component={Search}
         />
       </s.NarrowColumn>
     </>

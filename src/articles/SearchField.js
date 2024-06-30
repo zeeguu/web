@@ -5,25 +5,32 @@ import { ClearSearchButton } from "../components/allButtons.sc";
 
 export default function SearchField({ api, query }) {
   const [searchTerm, setSearchTerm] = useState(query);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => setIsFocused(true);
+  const handleBlur = () => setIsFocused(false);
 
   function keyDownInSearch(e) {
     if (e.key === "Enter") {
       console.log(searchTerm);
       api.logUserActivity(api.SEARCH_QUERY, "", searchTerm, "");
-      window.location = `/articles?search=${searchTerm}`;
+      window.location = `/articles/search?search=${searchTerm}`;
     }
   }
   return (
     <s.SearchField>
-      <input
+      <s.SearchInput
         style={{ float: "left", fontWeight: query ? "bold" : "normal" }}
         className="searchTextfieldInput"
         type="text"
-        id="search-expandable"
         placeholder={strings.searchAllArticles}
         value={searchTerm === null ? "" : searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={keyDownInSearch}
+        isFocused={isFocused}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        hasValue={!!searchTerm}
       />
 
       {query && (
@@ -34,7 +41,7 @@ export default function SearchField({ api, query }) {
 
       <a
         style={{ cursor: "pointer" }}
-        onClick={(e) => (window.location = `/articles?search=${searchTerm}`)}
+        onClick={(e) => (window.location = `/articles/search?search=${searchTerm}`)}
       >
         <svg
           focusable="false"

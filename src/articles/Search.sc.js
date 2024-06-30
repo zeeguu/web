@@ -48,17 +48,24 @@ let Keywords = styled.span`
 `;
 
 const PopUpKeyWords = styled.div`
-    background: ${zeeguuTransparentLightOrange};
-    position: absolute;
+  background: ${zeeguuTransparentLightOrange};
+  position: absolute;
     
-    span{
-        display: flex;
-        flex-direction: column;
-    }
+  span{
+    display: flex;
+    flex-direction: column;
+  }
+`;
+
+const SearchAndSort = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 export { 
-    HeadlineSearch,
-    RowHeadlineSearch,
-    Keywords,
-    PopUpKeyWords };
+  HeadlineSearch,
+  RowHeadlineSearch,
+  Keywords,
+  PopUpKeyWords,
+  SearchAndSort };

@@ -12,7 +12,7 @@ const MaterialSelection = styled.div`
 const SortAndSearch = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
 `;
 
 export { 
