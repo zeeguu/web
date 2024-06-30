@@ -7,17 +7,18 @@ import * as d from "./MySearches.sc";
 import ArticlePreview  from "./ArticlePreview";
 import { setTitle } from "../assorted/setTitle";
 import useSelectInterest from "../hooks/useSelectInterest";
+import { AddRemoveSearch } from "./Search.js";
 
 export default function MySearches ( {api} ){
     const {
         subscribedSearches
     } = useSelectInterest(api);
     const [articlesBySearchTerm, setArticlesBySearchTerm] = useState(null);
-
+    
     console.log('Subscribed Searches:', subscribedSearches);
     console.log('Articles By Search Term:', articlesBySearchTerm);
     console.log('...');
-    
+
     useEffect(() => {
         setTitle("Saved Searches");
 
@@ -49,7 +50,11 @@ export default function MySearches ( {api} ){
             {articlesBySearchTerm.map(({ searchTerm, articles }) => (
                 <div key={searchTerm}>
                     <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>
-                        {articles.map(each => (
+                    <AddRemoveSearch 
+                    api={api}
+                    query={searchTerm}/>
+
+                    {articles.map(each => (
                         <ArticlePreview
                         key={each.id}
                         api={api}

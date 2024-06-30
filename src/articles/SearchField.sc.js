@@ -18,7 +18,7 @@ const SearchField = styled.div`
 
 const SearchInput = styled.input`
   all: unset;
-  border: 0.17em solid ${zeeguuOrange};
+  border: 0.15em solid ${zeeguuOrange};
   border-radius: 0.9375em;
   padding: 0.125em;
   padding-left: 0.5em;
@@ -29,7 +29,7 @@ const SearchInput = styled.input`
   height: 1.5em;
   width: ${props => (props.isFocused || props.hasValue ? '480px' : '150px')};
   &:focus {
-    border: 0.17em solid ${almostBlack};
+    border: 0.15em solid ${almostBlack};
     font-weight: 500 !important;
   }
 `;
