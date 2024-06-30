@@ -13,36 +13,23 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import * as t from "../components/TopMessage.sc";
 import strings from "../i18n/definitions";
 
-export default function Search( {api} ) {
-    const {
-        subscribedSearches,
-        removeSearch,
-        subscribeToSearch
-    } = useSelectInterest(api);
-
+function Search( {api} ) {
     const query = useQuery().get("search");
-    const [articleList, setArticleList] = useState();
+    const [articleList, setArticleList] = useState(null);
     const [originalList, setOriginalList] = useState(null);
+
     // Empty array for the associated keywords
     const associatedKeywords = [];
+    // Setup for ui change from horizontal showing of keywords to button
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 500);
     const [isPopupVisible, setPopupVisible] = useState(false);
-    const [textButton, setTextButton] = useState('');
-    const [isSubscribedToSearch, setIsSubscribedToSearch] = useState();
-
-    // useEffect for handling the change in ui when screen is less than 500.
+    // useEffect for change from horizontal showing of keywords to button
     useEffect(() => {
         const handleResize = () => {setIsMobile(window.innerWidth <= 500);};
 
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-
-    useEffect(() => {
-        const isSubscribed = subscribedSearches.some(search => search.search === query);
-        setIsSubscribedToSearch(isSubscribed);
-        setTextButton(isSubscribed ? '- remove search' : '+ add search');
-    }, [subscribedSearches, query]);
     
     useEffect(() => {
         setTitle("Search Articles");
@@ -58,25 +45,6 @@ export default function Search( {api} ) {
     const togglePopupKeyWords = () => {
         setPopupVisible(!isPopupVisible);
     };
-
-    const toggleSearchSubscription = (query) => {
-        if (isSubscribedToSearch) {
-            const searchToRemove = subscribedSearches.find(search => search.search === query);
-            if (searchToRemove) {
-                removeSearch(searchToRemove);
-                console.log('search removed');
-                setIsSubscribedToSearch(false);
-                toast("Search removed from My Searches!");
-            }
-        } else {
-            subscribeToSearch(query);
-            console.log('search added');
-            setIsSubscribedToSearch(true);
-            toast("Search added to My Searches!");
-        }
-    };
-    console.log('subscribed searches: ', subscribedSearches);
-    console.log('is the searchterm subcribed: ', isSubscribedToSearch);
 
     if (articleList == null) {
         return <LoadingAnimation />;
@@ -99,9 +67,9 @@ export default function Search( {api} ) {
             <s.RowHeadlineSearch>
                 <s.HeadlineSearch>
                 <h1>{query}</h1> 
-                <button onClick={(e) => toggleSearchSubscription(query)}>
-                    {textButton}
-                </button>
+                <AddRemoveSearch
+                api={api}
+                query={query}/>
 
                 {/* The set up for the associated keywords. A button when view on mobile,
                 and horizontal list when larger than 500 px. */}
@@ -139,8 +107,50 @@ export default function Search( {api} ) {
           dontShowSourceIcon={true}
         />
       ))}
-
       </div>
     )
 }
 
+function AddRemoveSearch( {api, query} ){
+    const {
+        subscribedSearches,
+        removeSearch,
+        subscribeToSearch
+    } = useSelectInterest(api);
+
+    const [textButton, setTextButton] = useState('');
+    const [isSubscribedToSearch, setIsSubscribedToSearch] = useState();
+
+    useEffect(() => {
+        const isSubscribed = subscribedSearches.some(search => search.search === query);
+        setIsSubscribedToSearch(isSubscribed);
+        setTextButton(isSubscribed ? '- remove search' : '+ add search');
+    }, [subscribedSearches, query]);
+
+    const toggleSearchSubscription = (query) => {
+        if (isSubscribedToSearch) {
+            const searchToRemove = subscribedSearches.find(search => search.search === query);
+            if (searchToRemove) {
+                removeSearch(searchToRemove);
+                console.log('search removed');
+                setIsSubscribedToSearch(false);
+                toast("Search removed from My Searches!");
+            }
+        } else {
+            subscribeToSearch(query);
+            console.log('search added');
+            setIsSubscribedToSearch(true);
+            toast("Search added to My Searches!");
+        }
+    };
+    //console.log('subscribed searches: ', subscribedSearches);
+    //console.log('is the searchterm subcribed: ', isSubscribedToSearch);
+
+    return(
+        <s.AddRemoveButton onClick={(e) => toggleSearchSubscription(query)}>
+            {textButton}
+        </s.AddRemoveButton>
+    )
+}
+
+export { AddRemoveSearch, Search };

@@ -22,6 +22,15 @@ const HeadlineSearch = styled.div`
   }
 `;
 
+const AddRemoveButton = styled.button`
+  box-shadow: none;
+  all: unset;
+  margin: 0;
+  color: ${zeeguuOrange};
+  font-size: 14px;
+  font-weight: bold;
+`;
+
 const RowHeadlineSearch = styled.div`
   display: flex;
   flex-direction: row;
@@ -68,4 +77,5 @@ export {
   RowHeadlineSearch,
   Keywords,
   PopUpKeyWords,
-  SearchAndSort };
+  SearchAndSort,
+  AddRemoveButton };
