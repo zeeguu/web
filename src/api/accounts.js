@@ -45,6 +45,10 @@ Zeeguu_API.prototype.addUser = function (
     });
 };
 
+Zeeguu_API.prototype.deleteUser = function (onSuccess, onError) {
+  this._post("delete_user", "", onSuccess, onError);
+};
+
 Zeeguu_API.prototype.addBasicUser = function (
   invite_code,
   password,

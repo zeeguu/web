@@ -94,12 +94,6 @@ export default function SpellWhatYouHear({
     );
   }
 
-  function disableAudio(e) {
-    e.preventDefault();
-    SessionStorage.disableAudioExercises();
-    handleDisabledAudio();
-  }
-
   function handleDisabledAudio() {
     api.logUserActivity("AUDIO_DISABLE", "", bookmarksToStudy[0].id, "");
     moveToNextExercise();
@@ -195,7 +189,10 @@ export default function SpellWhatYouHear({
         isCorrect={isCorrect}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
-        <DisableAudioSession disableAudio={disableAudio} />
+        <DisableAudioSession
+          handleDisabledAudio={handleDisabledAudio}
+          setIsCorrect={setIsCorrect}
+        />
       )}
     </s.Exercise>
   );

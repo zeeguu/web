@@ -21,6 +21,7 @@ import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
+import AccountDeletion from "./pages/AccountDeletion";
 
 export default function MainAppRouter({
   api,
@@ -54,17 +55,19 @@ export default function MainAppRouter({
       />
 
       <Route path="/" exact render={() => <LandingPage />} />
-
       <Route
         path="/extension_installed"
         render={() => <ExtensionInstalled api={api} />}
       />
-
       <Route path="/install_extension" render={() => <InstallExtension />} />
-
       <Route path="/reset_pass" render={() => <ResetPassword api={api} />} />
-
       <Route path="/render" render={() => <NoSidebarRouter api={api} />} />
+
+      <PrivateRoute
+        path="/account_deletion"
+        api={api}
+        component={AccountDeletion}
+      />
 
       <PrivateRoute
         path="/select_interests"
@@ -103,13 +106,11 @@ export default function MainAppRouter({
         api={api}
         component={WordsRouter}
       />
-
       <PrivateRouteWithSidebar
         path="/history"
         api={api}
         component={ReadingHistory}
       />
-
       <PrivateRouteWithSidebar
         path="/give_feedback"
         api={api}
@@ -122,19 +123,16 @@ export default function MainAppRouter({
         setUser={setUser}
         component={Settings}
       />
-
       <PrivateRouteWithSidebar
         path="/teacher"
         api={api}
         component={TeacherRouter}
       />
-
       <PrivateRouteWithSidebar
         path="/read/article"
         api={api}
         component={ArticleReader}
       />
-
       <PrivateRouteWithSidebar
         path="/user_dashboard"
         api={api}

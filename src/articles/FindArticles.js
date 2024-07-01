@@ -36,7 +36,6 @@ export default function NewArticles() {
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage =
     LocalStorage.getDoNotShowRedirectionModal() === "true" ? true : false;
-
   const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [isExtensionAvailable] = useExtensionCommunication();
@@ -136,17 +135,15 @@ export default function NewArticles() {
         setArticleList(articles);
         setOriginalList([...articles]);
         if (articles.length < 20) setNoMoreArticlesToShow(true);
-        else window.addEventListener("scroll", handleScroll, true);
       });
     } else {
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
         if (articles.length < 20) setNoMoreArticlesToShow(true);
-        else window.addEventListener("scroll", handleScroll, true);
       });
     }
-
+    window.addEventListener("scroll", handleScroll, true);
     document.title = "Recommend Articles: Zeeguu";
     return () => {
       window.removeEventListener("scroll", handleScroll, true);

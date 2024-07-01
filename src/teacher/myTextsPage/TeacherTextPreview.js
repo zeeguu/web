@@ -5,6 +5,9 @@ import strings from "../../i18n/definitions";
 import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 import * as st from "../styledComponents/TeacherTextPreview.sc";
 import * as s from "../../articles/ArticlePreview.sc";
+import * as sS from "../../components/ArticleSourceInfo.sc";
+import * as sStat from "../../components/ArticleStatInfo.sc";
+import ArticleStatInfo from "../../components/ArticleStatInfo";
 
 export default function TeacherTextPreview({ article }) {
   //Setting up the routing context to be able to route correctly on Cancel
@@ -13,7 +16,7 @@ export default function TeacherTextPreview({ article }) {
   const difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
   const shortenedTitle = article.title.substring(0, 128);
-
+  let cefr_level = article.metrics.cefr_level;
   const cohortList = article.cohorts;
 
   return (
@@ -27,27 +30,24 @@ export default function TeacherTextPreview({ article }) {
             >
               <s.Title>{shortenedTitle}</s.Title>
             </Link>
-            <div>
-              <s.PublishingTime>
-                {cohortList.length === 0 ? (
-                  <p className="not-added">{strings.shareTextWithClasses}</p>
-                ) : (
-                  strings.addedTo
-                )}
-              </s.PublishingTime>
-              <s.Topics>
+            <div className="added-container">
+              <br />
+              {cohortList.length === 0 ? (
+                <p className="not-added">{strings.shareTextWithClasses}</p>
+              ) : (
+                strings.addedTo
+              )}
+              <div className="classes-container">
                 {cohortList.map((cohort) => (
-                  <span className="added-to" key={cohort}>
-                    {cohort}
-                  </span>
+                  <s.Topics key={cohort}>
+                    <span className="added-to">{cohort}</span>
+                  </s.Topics>
                 ))}
-              </s.Topics>
+              </div>
             </div>
           </div>
           <div className="action-container">
-            <s.WordCount>{article.metrics.word_count}</s.WordCount>
-            <s.Difficulty>{difficulty}</s.Difficulty>
-
+            <ArticleStatInfo cefr_level={cefr_level} articleInfo={article} />
             <Link
               to={`/teacher/texts/editText/${article.id}`}
               onClick={() => setReturnPath("/teacher/texts")}

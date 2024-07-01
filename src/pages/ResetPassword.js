@@ -31,18 +31,12 @@ export default function ResetPassword({ api }) {
           <ResetPasswordStep1
             api={api}
             email={email}
-            setEmail={handleEmailChange}
+            handleEmailChange={handleEmailChange}
             notifyOfValidEmail={validEmail}
           />
         )}
 
-        {codeSent && (
-          <ResetPasswordStep2
-            api={api}
-            email={email}
-            setEmail={handleEmailChange}
-          />
-        )}
+        {codeSent && <ResetPasswordStep2 api={api} email={email} />}
       </Main>
       <Footer>
         <p>

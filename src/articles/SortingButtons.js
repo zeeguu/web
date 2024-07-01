@@ -21,7 +21,7 @@ export default function SortingButtons({
     currentSort,
     setCurrentSort,
     setOtherSort,
-    sortingFunction
+    sortingFunction,
   ) {
     if (currentSort === "ascending") {
       sortArticleList(sortingFunction);
@@ -42,21 +42,6 @@ export default function SortingButtons({
       <div className="sort-by"> {strings.sortBy}&nbsp; </div>
       <s.SortButton
         isOnTeacherSite={isOnTeacherSite}
-        className={wordCountSortState}
-        onClick={(e) =>
-          changeDifficultySorting(
-            e,
-            wordCountSortState,
-            setwordCountSortState,
-            setCurrentSort,
-            (a, b) => b.metrics.word_count - a.metrics.word_count
-          )
-        }
-      >
-        {strings.lengthWithCapital}
-      </s.SortButton>
-      <s.SortButton
-        isOnTeacherSite={isOnTeacherSite}
         className={difficultySortState}
         onClick={(e) =>
           changeDifficultySorting(
@@ -64,11 +49,26 @@ export default function SortingButtons({
             difficultySortState,
             setCurrentSort,
             setwordCountSortState,
-            (a, b) => b.metrics.difficulty - a.metrics.difficulty
+            (a, b) => b.metrics.difficulty - a.metrics.difficulty,
           )
         }
       >
         {strings.levelWithCapital}
+      </s.SortButton>
+      <s.SortButton
+        isOnTeacherSite={isOnTeacherSite}
+        className={wordCountSortState}
+        onClick={(e) =>
+          changeDifficultySorting(
+            e,
+            wordCountSortState,
+            setwordCountSortState,
+            setCurrentSort,
+            (a, b) => b.metrics.word_count - a.metrics.word_count,
+          )
+        }
+      >
+        {strings.lengthWithCapital}
       </s.SortButton>
     </s.SortingButtons>
   );
