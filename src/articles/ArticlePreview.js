@@ -9,7 +9,7 @@ import SmallSaveArticleButton from "./SmallSaveArticleButton";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 
-export default function ArticleOverview({
+export default function ArticlePreview({
   article,
   dontShowPublishingTime,
   dontShowSourceIcon,
