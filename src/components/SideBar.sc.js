@@ -131,6 +131,28 @@ const navigationVisibleCommon = css`
       padding-left: 10px;
     }
   }
+
+  .SettingsLogoutContainer {
+    position: absolute;
+    bottom: 1em;
+    width: 100%;
+  }
+
+  .SettingsLogoutHolder {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .navigationIcon {
+    height: 32px;
+
+    :hover {
+      filter: brightness(0.95);
+    }
+    @media (max-width: 768px) {
+      height: 22px;
+    }
+  }
 `;
 
 const SideBarInitial = styled.div`
