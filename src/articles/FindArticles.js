@@ -72,8 +72,7 @@ export default function NewArticles() {
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
       !isWaitingForNewArticlesRef.current &&
-      !noMoreArticlesToShowRef.current &&
-      !articleListRef.current
+      !noMoreArticlesToShowRef.current
     ) {
       setIsWaitingForNewArticles(true);
       document.title = "Getting more articles...";
