@@ -184,6 +184,14 @@ export default function MultipleChoiceAudio({
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />
+      {isCorrect && (
+        <>
+          <br></br>
+          <h1 className="wordInContextHeadline">
+            {removePunctuation(bookmarksToStudy[0].to)}
+          </h1>
+        </>
+      )}
 
       <div className="contextExample">
         <TranslatableText
@@ -241,14 +249,7 @@ export default function MultipleChoiceAudio({
           notifyKeyPress={inputKeyPress}
         />
       )}
-      {isCorrect && (
-        <>
-          <br></br>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(bookmarksToStudy[0].to)}
-          </h1>
-        </>
-      )}
+
       <NextNavigation
         message={messageToAPI}
         api={api}
