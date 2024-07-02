@@ -33,11 +33,21 @@ Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback) {
   );
 };
 
-Zeeguu_API.prototype.getRecommendedArticles = function (callback){
-  this._getJSON("user_articles/foryou", (articles) => {
-  const ids = articles.map((o) => o.id);
+Zeeguu_API.prototype.getSimilarArticles = function (articleId, callback) {
+  this._getJSON(`get_similar_articles?article_id=${articleId}`, (articles) => {
+    const ids = articles.map((o) => o.id);
     const deduplicated = articles.filter(
-        ({ id }, index) => !ids.includes(id, index + 1)
+      ({ id }, index) => !ids.includes(id, index + 1),
+    );
+    callback(deduplicated);
+  });
+};
+
+Zeeguu_API.prototype.getRecommendedArticles = function (callback) {
+  this._getJSON("user_articles/foryou", (articles) => {
+    const ids = articles.map((o) => o.id);
+    const deduplicated = articles.filter(
+      ({ id }, index) => !ids.includes(id, index + 1),
     );
     callback(deduplicated);
   });

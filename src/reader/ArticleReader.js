@@ -26,6 +26,7 @@ import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
+import SimilarArticles from "./SimilarArticles";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -99,7 +100,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
       componentWillUnmount();
     };
     // eslint-disable-next-line
-  }, []);
+  }, [articleID]);
 
   const handleFocus = () => {
     onFocus(api, articleID, UMR_SOURCE);
@@ -138,6 +139,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
     scrollEvents.current = [];
     lastSampleTimer.current = 0;
     setScrollPosition(0);
+    console.log(articleID);
+    let scroll = document.getElementById("scrollHolder");
+    scroll.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
 
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
@@ -372,8 +379,10 @@ export default function ArticleReader({ api, teacherArticleID }) {
               </s.InvisibleBox>
             )}
           </s.CombinedBox>
+          <SimilarArticles article={articleInfo} api={api}></SimilarArticles>
         </div>
       )}
+
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );
