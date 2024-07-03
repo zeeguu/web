@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as s from "./Search.sc";
 import * as b from "../components/allButtons.sc";
+import * as d from "./FindArticles.sc";
 import { SearchKeyWords } from "../components/SearchKeyWords";
 import useSelectInterest from "../hooks/useSelectInterest";
 import { toast } from "react-toastify";
@@ -146,14 +147,17 @@ function Search({ api }) {
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
 
-      <s.SearchAndSort>
+      <d.Search>
         <SearchField api={api} query={searchQuery} />
+      </d.Search>
+
+      <d.Sort>
         <SortingButtons
           articleList={articleList}
           originalList={originalList}
           setArticleList={setArticleList}
         />
-      </s.SearchAndSort>
+      </d.Sort>
 
       <s.RowHeadlineSearch>
         <s.HeadlineSearch>
