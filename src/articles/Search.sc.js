@@ -1,18 +1,18 @@
 import styled from "styled-components";
 import {
-  almostBlack, 
-  zeeguuOrange, 
-  zeeguuTransparentLightOrange
+  almostBlack,
+  zeeguuOrange,
+  zeeguuTransparentLightOrange,
 } from "../components/colors";
 
 const HeadlineSearch = styled.div`
-  h1{
+  h1 {
     color: ${almostBlack};
     margin: 0;
     font-size: 34px;
     font-weight: bold;
   }
-  button{
+  button {
     box-shadow: none;
     all: unset;
     margin: 0;
@@ -51,16 +51,16 @@ let Keywords = styled.span`
     padding: 0.20833333333333334em 1.3541666666666667em;
     font-size: 0.8333333333333334em;
     @media (max-width: 500px) {
-    display: 'none';
-  }
+      display: "none";
+    }
   }
 `;
 
 const PopUpKeyWords = styled.div`
   background: ${zeeguuTransparentLightOrange};
   position: absolute;
-    
-  span{
+
+  span {
     display: flex;
     flex-direction: column;
   }
@@ -72,10 +72,11 @@ const SearchAndSort = styled.div`
   justify-content: space-between;
 `;
 
-export { 
+export {
   HeadlineSearch,
   RowHeadlineSearch,
   Keywords,
   PopUpKeyWords,
   SearchAndSort,
-  AddRemoveButton };
+  AddRemoveButton,
+};

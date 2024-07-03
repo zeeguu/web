@@ -1,71 +1,83 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import strings from "../i18n/definitions";
 
 import * as s from "../components/TopMessage.sc";
 import * as d from "./MySearches.sc";
-import ArticlePreview  from "./ArticlePreview";
+import ArticlePreview from "./ArticlePreview";
 import { setTitle } from "../assorted/setTitle";
 import useSelectInterest from "../hooks/useSelectInterest";
 import { AddRemoveSearch } from "./Search.js";
 
-export default function MySearches ( {api} ){
-    const {
-        subscribedSearches
-    } = useSelectInterest(api);
-    const [articlesBySearchTerm, setArticlesBySearchTerm] = useState(null);
-    
-    console.log('Subscribed Searches:', subscribedSearches);
-    console.log('Articles By Search Term:', articlesBySearchTerm);
-    console.log('...');
+export default function MySearches({ api }) {
+  const { subscribedSearches } = useSelectInterest(api);
+  const [articlesBySearchTerm, setArticlesBySearchTerm] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        setTitle("Saved Searches");
-
-        const fetchArticlesForSearchTerm = (searchTerm) => {
-            return new Promise((resolve) => {
-              api.search(searchTerm, (articles) => {
-                const limitedArticles = articles.slice(0, 2);
-                resolve({ searchTerm, articles: limitedArticles });
-              });
-            });
-          };
-
-          Promise.all(subscribedSearches.map((search) => fetchArticlesForSearchTerm(search.search)))
-            .then((results) => {
-                setArticlesBySearchTerm(results);
-            });
-      }, [api, subscribedSearches]);
-
-    if(articlesBySearchTerm === null){
-        return <LoadingAnimation/>
+  useEffect(() => {
+    if (subscribedSearches) {
+      setTitle("Saved Searches");
+      fetchData();
     }
 
-    if(subscribedSearches.length === 0){
-        return <s.TopMessage>{strings.NoSavedSearches}</s.TopMessage>
-    }
+    return () => {
+      console.log("closing");
+      setIsLoading(true);
+    };
+  }, [subscribedSearches]);
 
-    return (
-        <div>
-            {articlesBySearchTerm.map(({ searchTerm, articles }) => (
-                <div key={searchTerm}>
-                    <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>
-                    <AddRemoveSearch 
-                    api={api}
-                    query={searchTerm}/>
+  async function processItem(searchTerm) {
+    return new Promise((resolve) => {
+      api.search(searchTerm, (articles) => {
+        const limitedArticles = articles.slice(0, 2);
+        resolve({ searchTerm, articles: limitedArticles });
+      });
+    });
+  }
 
-                    {articles.map(each => (
-                        <ArticlePreview
-                        key={each.id}
-                        api={api}
-                        article={each}/>
-                    ))}
-                    <d.buttonMoreArticles
-                    onClick={(e) => (window.location = `/articles?search=${searchTerm}`)}>
-                        See more articles
-                    </d.buttonMoreArticles>
-                </div>
-            ))}
+  async function processArray(subscribedSearches) {
+    const promises = subscribedSearches.map((searchTerm) =>
+      processItem(searchTerm.search),
+    );
+    return Promise.all(promises);
+  }
+
+  async function fetchData() {
+    processArray(subscribedSearches).then((results) => {
+      console.log("after await!");
+      console.log(articlesBySearchTerm);
+      setArticlesBySearchTerm(results);
+      setIsLoading(false);
+    });
+  }
+
+  if (isLoading) {
+    return <LoadingAnimation />;
+  }
+
+  if (subscribedSearches && subscribedSearches.length === 0) {
+    return <s.TopMessage>{strings.NoSavedSearches}</s.TopMessage>;
+  }
+
+  return (
+    <>
+      {articlesBySearchTerm.map(({ searchTerm, articles }) => (
+        <div key={searchTerm}>
+          <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>
+          <AddRemoveSearch api={api} query={searchTerm} />
+
+          {articles.map((each) => (
+            <ArticlePreview key={each.id} api={api} article={each} />
+          ))}
+          <d.buttonMoreArticles
+            onClick={(e) =>
+              (window.location = `/articles?search=${searchTerm}`)
+            }
+          >
+            See more articles
+          </d.buttonMoreArticles>
         </div>
-    )
+      ))}
+    </>
+  );
 }

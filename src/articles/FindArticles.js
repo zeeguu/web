@@ -113,19 +113,12 @@ export default function NewArticles() {
       "Localstorage displayed extension: " +
         LocalStorage.displayedExtensionPopup(),
     );
+    api.getUserArticles((articles) => {
+      setArticleList(articles);
+      setOriginalList([...articles]);
+      // load articles)
+    });
 
-    // load articles)
-    if (searchQuery) {
-      api.search(searchQuery, (articles) => {
-        setArticleList(articles);
-        setOriginalList([...articles]);
-      });
-    } else {
-      api.getUserArticles((articles) => {
-        setArticleList(articles);
-        setOriginalList([...articles]);
-      });
-    }
     window.addEventListener("scroll", handleScroll, true);
     document.title = "Recommend Articles: Zeeguu";
     return () => {
@@ -166,7 +159,7 @@ export default function NewArticles() {
         api={api}
         articlesListShouldChange={articlesListShouldChange}
       />
-      
+
       <s.SortAndSearch>
         <SearchField api={api} query={searchQuery} />
         <SortingButtons
