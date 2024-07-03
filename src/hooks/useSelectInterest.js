@@ -4,7 +4,7 @@ export default function useSelectInterest(api) {
   const [availableTopics, setAvailableTopics] = useState([]);
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
-  const [subscribedSearches, setSubscribedSearches] = useState([]);
+  const [subscribedSearches, setSubscribedSearches] = useState();
   const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
     useState(false);
 
@@ -66,7 +66,6 @@ export default function useSelectInterest(api) {
     );
     api.unsubscribeFromSearch(search);
   }
-
 
   function isSubscribed(topic) {
     return subscribedTopics

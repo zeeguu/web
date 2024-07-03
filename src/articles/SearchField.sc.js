@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import {
-  zeeguuOrange,
-  almostBlack
-} from "../components/colors";
+import { zeeguuOrange, almostBlack } from "../components/colors";
 
 const SearchField = styled.div`
   margin-bottom: 1em;
@@ -27,14 +24,11 @@ const SearchInput = styled.input`
   font-weight: 300;
   font-size: 0.875em;
   height: 1.5em;
-  width: ${props => (props.isFocused || props.hasValue ? '480px' : '150px')};
+  width: ${(props) => (props.isFocused || props.hasValue ? "480px" : "150px")};
   &:focus {
     border: 0.15em solid ${almostBlack};
     font-weight: 500 !important;
   }
 `;
 
-export { 
-  SearchField,
-  SearchInput
- };
+export { SearchField, SearchInput };
