@@ -159,15 +159,17 @@ export default function NewArticles() {
         api={api}
         articlesListShouldChange={articlesListShouldChange}
       />
-
-      <s.SortAndSearch>
+      <s.Search>
         <SearchField api={api} query={searchQuery} />
+      </s.Search>
+
+      <s.Sort>
         <SortingButtons
           articleList={articleList}
           originalList={originalList}
           setArticleList={setArticleList}
         />
-      </s.SortAndSearch>
+      </s.Sort>
 
       {articleList.map((each, index) => (
         <ArticlePreview
