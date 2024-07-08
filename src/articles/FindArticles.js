@@ -6,23 +6,18 @@ import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
+import useQuery from "../hooks/useQuery";
 
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
 
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
-import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
 import {
   getPixelsFromScrollBarToEnd,
   isScrollable,
 } from "../utils/misc/getScrollLocation";
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 
 export default function NewArticles() {
   const searchQuery = useQuery().get("search");
@@ -134,13 +129,11 @@ export default function NewArticles() {
       api.search(searchQuery, (articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
-        if (articles.length < 20) setNoMoreArticlesToShow(true);
       });
     } else {
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
-        if (articles.length < 20) setNoMoreArticlesToShow(true);
       });
     }
     window.addEventListener("scroll", handleScroll, true);
@@ -179,20 +172,22 @@ export default function NewArticles() {
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
 
-      <s.MaterialSelection>
-        <Interests
-          api={api}
-          articlesListShouldChange={articlesListShouldChange}
-        />
-
-        <SearchField api={api} query={searchQuery} />
-      </s.MaterialSelection>
-
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
+      <Interests
+        api={api}
+        articlesListShouldChange={articlesListShouldChange}
       />
+      <s.Search>
+        <SearchField api={api} query={searchQuery} />
+      </s.Search>
+
+      <s.Sort>
+        <SortingButtons
+          articleList={articleList}
+          originalList={originalList}
+          setArticleList={setArticleList}
+        />
+      </s.Sort>
+
       {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
@@ -208,10 +203,6 @@ export default function NewArticles() {
           onArticleClick={() => handleArticleClick(each.id, index)}
         />
       ))}
-
-      {searchQuery && articleList.length === 0 && (
-        <>No articles found that match your search</>
-      )}
 
       {!searchQuery && (
         <ShowLinkRecommendationsIfNoArticles
