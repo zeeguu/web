@@ -50,12 +50,10 @@ function Search({ api }) {
   useEffect(() => {
     setTitle("Search Articles");
 
-    if (searchQuery) {
-      api.search(searchQuery, (articles) => {
-        setArticleList(articles);
-        setOriginalList([...articles]);
-      });
-    }
+    api.search(searchQuery, (articles) => {
+      setArticleList(articles);
+      setOriginalList([...articles]);
+    });
   }, []);
 
   function handleScroll() {

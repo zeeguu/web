@@ -8,6 +8,7 @@ import ArticlePreview from "./ArticlePreview";
 import { setTitle } from "../assorted/setTitle";
 import useSelectInterest from "../hooks/useSelectInterest";
 import { AddRemoveSearch } from "./Search.js";
+import redirect from "../utils/routing/routing.js";
 
 export default function MySearches({ api }) {
   const { subscribedSearches } = useSelectInterest(api);
@@ -21,7 +22,6 @@ export default function MySearches({ api }) {
     }
 
     return () => {
-      console.log("closing");
       setIsLoading(true);
     };
   }, [subscribedSearches]);
@@ -44,8 +44,6 @@ export default function MySearches({ api }) {
 
   async function fetchData() {
     processArray(subscribedSearches).then((results) => {
-      console.log("after await!");
-      console.log(articlesBySearchTerm);
       setArticlesBySearchTerm(results);
       setIsLoading(false);
     });
@@ -70,9 +68,7 @@ export default function MySearches({ api }) {
             <ArticlePreview key={each.id} api={api} article={each} />
           ))}
           <d.buttonMoreArticles
-            onClick={(e) =>
-              (window.location = `/articles?search=${searchTerm}`)
-            }
+            onClick={(e) => redirect(`/articles/search?search=${searchTerm}`)}
           >
             See more articles
           </d.buttonMoreArticles>

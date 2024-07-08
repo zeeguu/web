@@ -12,14 +12,6 @@ const HeadlineSearch = styled.div`
     font-size: 34px;
     font-weight: bold;
   }
-  button {
-    box-shadow: none;
-    all: unset;
-    margin: 0;
-    color: ${zeeguuOrange};
-    font-size: 14px;
-    font-weight: bold;
-  }
 `;
 
 const AddRemoveButton = styled.button`
@@ -29,6 +21,7 @@ const AddRemoveButton = styled.button`
   color: ${zeeguuOrange};
   font-size: 14px;
   font-weight: bold;
+  cursor: pointer;
 `;
 
 const RowHeadlineSearch = styled.div`

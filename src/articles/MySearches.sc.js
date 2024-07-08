@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import {
-  almostBlack,
-  zeeguuOrange
-} from "../components/colors";
+import { almostBlack, zeeguuOrange } from "../components/colors";
 
 const HeadlineSavedSearches = styled.div`
   color: ${almostBlack};
@@ -18,8 +15,7 @@ const buttonMoreArticles = styled.button`
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 40px;
+  cursor: pointer;
 `;
 
-export {
-  HeadlineSavedSearches,
-  buttonMoreArticles};
+export { HeadlineSavedSearches, buttonMoreArticles };
