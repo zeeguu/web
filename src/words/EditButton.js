@@ -13,13 +13,28 @@ export default function EditButton({
   styling,
   reload,
   setReload,
-  deleteAction,
+  setDeleted,
   notifyWordChange,
+  notifyDelete,
 }) {
   const [open, setOpen] = useState(false);
   const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
+  const SOURCE_FOR_API_BOOKMARK_DELETE = "WORD_EDIT_DELETE_BOOKMARK";
   function handleOpen() {
     setOpen(true);
+  }
+
+  function deleteBookmark(bookmark) {
+    api.deleteBookmark(bookmark.id);
+    if (setDeleted) setDeleted(true);
+    if (notifyDelete) notifyDelete(bookmark);
+    api.logReaderActivity(
+      api.DELETE_WORD,
+      bookmark.article_id,
+      bookmark.from,
+      SOURCE_FOR_API_BOOKMARK_DELETE,
+    );
+    handleClose();
   }
 
   function handleClose() {
@@ -109,7 +124,7 @@ export default function EditButton({
             bookmark={bookmark}
             handleClose={handleClose}
             updateBookmark={updateBookmark}
-            deleteAction={deleteAction}
+            deleteAction={deleteBookmark}
           />
         </Box>
       </Modal>

@@ -43,6 +43,7 @@ export default function NextNavigation({
   const [correctMessage, setCorrectMessage] = useState("");
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const productiveExercisesDisabled =
     localStorage.getItem("productiveExercisesEnabled") === "false";
@@ -91,6 +92,12 @@ export default function NextNavigation({
       setCorrectMessage(random(correctStrings));
     }
   }, [isCorrect]);
+
+  useEffect(() => {
+    if (isDeleted) {
+      moveToNextExercise();
+    }
+  });
 
   useEffect(() => {
     if (bookmarkLearned && !SessionStorage.isCelebrationModalShown()) {
