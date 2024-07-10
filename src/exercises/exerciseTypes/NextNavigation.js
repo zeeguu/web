@@ -178,6 +178,7 @@ export default function NextNavigation({
               styling={exercise}
               reload={reload}
               setReload={setReload}
+              setDeleted={setIsDeleted}
             />
           </s.EditSpeakButtonHolder>
           <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
