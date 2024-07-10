@@ -72,15 +72,6 @@ export default function WordEditForm({
         <s.Headline>{strings.editWord}</s.Headline>
       )}
       <form onSubmit={handleSubmit}>
-        <s.CustomTextField
-          id="outlined-basic"
-          label={strings.translation}
-          variant="outlined"
-          fullWidth
-          autoFocus={true}
-          value={translation}
-          onChange={typingTranslation}
-        />
         {bookmark.from.includes(" ") ? (
           <s.CustomTextField
             id="outlined-basic"
@@ -88,6 +79,7 @@ export default function WordEditForm({
             variant="outlined"
             fullWidth
             value={expression}
+            autoFocus={true}
             onChange={typingExpression}
           />
         ) : (
@@ -97,9 +89,18 @@ export default function WordEditForm({
             variant="outlined"
             fullWidth
             value={expression}
+            autoFocus={true}
             onChange={typingExpression}
           />
         )}
+        <s.CustomTextField
+          id="outlined-basic"
+          label={strings.translation}
+          variant="outlined"
+          fullWidth
+          value={translation}
+          onChange={typingTranslation}
+        />
         <s.CustomTextField
           id="outlined-basic"
           label={strings.context}
