@@ -19,8 +19,8 @@ import {
   isScrollable,
 } from "../utils/misc/getScrollLocation";
 
-export default function NewArticles() {
-  const searchQuery = useQuery().get("search");
+export default function NewArticles({ contentSearch, searchQuery }) {
+  //const searchQuery = useQuery().get("search");
   let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
@@ -172,10 +172,12 @@ export default function NewArticles() {
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
 
-      <Interests
-        api={api}
-        articlesListShouldChange={articlesListShouldChange}
-      />
+      {!searchQuery && (
+        <Interests
+          api={api}
+          articlesListShouldChange={articlesListShouldChange}
+        />
+      )}
       <s.Search>
         <SearchField api={api} query={searchQuery} />
       </s.Search>
@@ -187,6 +189,9 @@ export default function NewArticles() {
           setArticleList={setArticleList}
         />
       </s.Sort>
+
+      {/* This is where the content of the Search component will be rendered */}
+      {contentSearch}
 
       {articleList.map((each, index) => (
         <ArticlePreview

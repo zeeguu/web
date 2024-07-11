@@ -7,8 +7,8 @@ import * as d from "./MySearches.sc";
 import ArticlePreview from "./ArticlePreview";
 import { setTitle } from "../assorted/setTitle";
 import useSelectInterest from "../hooks/useSelectInterest";
-import { AddRemoveSearch } from "./Search.js";
 import redirect from "../utils/routing/routing.js";
+import SubscribeSearchButton from "./SubscribeSearchButton.js";
 
 export default function MySearches({ api }) {
   const { subscribedSearches } = useSelectInterest(api);
@@ -62,13 +62,13 @@ export default function MySearches({ api }) {
       {articlesBySearchTerm.map(({ searchTerm, articles }) => (
         <div key={searchTerm}>
           <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>
-          <AddRemoveSearch api={api} query={searchTerm} />
+          <SubscribeSearchButton api={api} query={searchTerm} />
 
           {articles.map((each) => (
             <ArticlePreview key={each.id} api={api} article={each} />
           ))}
           <d.buttonMoreArticles
-            onClick={(e) => redirect(`/articles/search?search=${searchTerm}`)}
+            onClick={(e) => redirect(`/search?search=${searchTerm}`)}
           >
             See more articles
           </d.buttonMoreArticles>

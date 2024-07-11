@@ -2,7 +2,6 @@ import FindArticles from "./FindArticles";
 import BookmarkedArticles from "./BookmarkedArticles";
 import { useEffect, useState } from "react";
 
-
 import { PrivateRoute } from "../PrivateRoute";
 import ClassroomArticles from "./ClassroomArticles";
 import TopTabs from "../components/TopTabs";
@@ -12,24 +11,21 @@ import OwnArticles from "./OwnArticles";
 import ReadingHistory from "../words/WordHistory";
 import RecommendedArticles from "./RecommendedArticles";
 import MySearches from "./MySearches";
-import {Search} from "./Search";
+import Search from "./Search";
 
 import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
-import { Recommend } from "@mui/icons-material";
-import { set } from "date-fns";
 
 export default function ArticlesRouter({ api, hasExtension, isChrome }) {
- 
   const [tabsAndLinks, setTabsAndLinks] = useState({
     [strings.homeTab]: "/articles",
     [strings.saved]: "/articles/ownTexts",
-    [strings.searches]: "/articles/mySearches"
+    [strings.searches]: "/articles/mySearches",
   });
 
   useEffect(() => {
     if (LocalStorage.isStudent()) {
-      setTabsAndLinks(prevTabsAndLinks => ({
+      setTabsAndLinks((prevTabsAndLinks) => ({
         ...prevTabsAndLinks,
         [strings.classroomTab]: "/articles/classroom",
       }));
@@ -38,9 +34,9 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
 
   useEffect(() => {
     api.getBookmarkedArticles((articles) => {
-      const likedArticles = articles.filter(article => article.liked);
+      const likedArticles = articles.filter((article) => article.liked);
       if (likedArticles.length >= 5) {
-        setTabsAndLinks(prevTabsAndLinks => ({
+        setTabsAndLinks((prevTabsAndLinks) => ({
           ...prevTabsAndLinks,
           [strings.forYou]: "/articles/forYou",
         }));
@@ -97,12 +93,13 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
           component={MySearches}
         />
 
-        <PrivateRoute
-          path="/articles/search"
-          api={api}
-          component={Search}
-        />
+        <PrivateRoute path="/search" api={api} component={Search} />
       </s.NarrowColumn>
     </>
   );
 }
+
+// Having components passed to the Search
+// look for a search, boolean
+// passing a different prop, to make search
+// render either search or no search

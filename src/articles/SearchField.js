@@ -16,20 +16,20 @@ export default function SearchField({ api, query }) {
   function keyDownInSearch(e) {
     if (e.key === "Enter") {
       if (inputRef.current.value === "") {
-        toast("Your search is empty!");
+        toast.error("Your search is empty!");
       } else {
         console.log(searchTerm);
         api.logUserActivity(api.SEARCH_QUERY, "", searchTerm, "");
-        redirect(`/articles/search?search=${searchTerm}`);
+        redirect(`/search?search=${searchTerm}`);
       }
     }
   }
 
   function handleSearch() {
     if (inputRef.current.value === "") {
-      toast("Your search is empty!");
+      toast.error("Your search is empty!");
     } else {
-      redirect(`/articles/search?search=${searchTerm}`);
+      redirect(`/search?search=${searchTerm}`);
     }
   }
 
