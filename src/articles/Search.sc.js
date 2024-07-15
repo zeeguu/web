@@ -5,13 +5,16 @@ import {
   zeeguuTransparentLightOrange,
 } from "../components/colors";
 
-const HeadlineSearch = styled.div`
-  h1 {
-    color: ${almostBlack};
-    margin: 0;
-    font-size: 34px;
-    font-weight: bold;
-  }
+const HeadlineSearch = styled.h1`
+  color: ${almostBlack};
+  margin: 0;
+  font-size: 34px;
+  font-weight: bold;
+  margin-right: 1.4em;
+`;
+
+const containerH1Subscribe = styled.div`
+  display: flex;
 `;
 
 const RowHeadlineSearch = styled.div`
@@ -49,16 +52,10 @@ const PopUpKeyWords = styled.div`
   }
 `;
 
-const SearchAndSort = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
 export {
   HeadlineSearch,
   RowHeadlineSearch,
   Keywords,
   PopUpKeyWords,
-  SearchAndSort,
+  containerH1Subscribe,
 };
