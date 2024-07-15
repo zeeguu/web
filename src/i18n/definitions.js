@@ -491,7 +491,7 @@ let strings = new LocalizedStrings(
 
       //CongratulationsPage
       goodJob: "Good Job, ",
-      correct: "Seems like you know these words:",
+      correct: "You got the following words correct:",
       payMoreAttentionTo: "Pay more attention to these words:",
 
       //Settings
