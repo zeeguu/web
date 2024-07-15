@@ -2,7 +2,7 @@ import * as s from "./Word.sc";
 
 import { useState } from "react";
 import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
-import EditButton from "./EditButton";
+import EditBookmarkButton from "./EditBookmarkButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
@@ -93,14 +93,16 @@ export default function Word({
           */}
 
           {!isReview && (
-            <EditButton
+            <EditBookmarkButton
               bookmark={bookmark}
               api={api}
               reload={reload}
               setReload={setReload}
               notifyWordChange={notifyWordChange}
-              notifyDelete={notifyDelete}
-              setDeleted={setDeleted}
+              notifyDelete={() => {
+                setDeleted(true);
+                notifyDelete(bookmark);
+              }}
             />
           )}
 

@@ -7,13 +7,12 @@ import WordEditForm from "./WordEditForm";
 import { getStaticPath } from "../utils/misc/staticPath.js";
 import { toast } from "react-toastify";
 
-export default function EditButton({
+export default function EditBookmarkButton({
   bookmark,
   api,
   styling,
   reload,
   setReload,
-  setDeleted,
   notifyWordChange,
   notifyDelete,
 }) {
@@ -24,17 +23,30 @@ export default function EditButton({
     setOpen(true);
   }
 
-  function deleteBookmark(bookmark) {
-    api.deleteBookmark(bookmark.id);
-    if (setDeleted) setDeleted(true);
-    if (notifyDelete) notifyDelete(bookmark);
-    api.logReaderActivity(
-      api.DELETE_WORD,
-      bookmark.article_id,
-      bookmark.from,
-      SOURCE_FOR_API_BOOKMARK_DELETE,
+  function deleteBookmark() {
+    api.deleteBookmark(
+      bookmark.id,
+      (response) => {
+        if (response === "OK") {
+          // delete was successful; log and close
+          if (notifyDelete) notifyDelete(bookmark);
+          api.logReaderActivity(
+            api.DELETE_WORD,
+            bookmark.article_id,
+            bookmark.from,
+            SOURCE_FOR_API_BOOKMARK_DELETE,
+          );
+          handleClose();
+        }
+      },
+      (error) => {
+        // onError
+        console.log(error);
+        alert(
+          "something went wrong and we could not delete the bookmark; try again later.",
+        );
+      },
     );
-    handleClose();
   }
 
   function handleClose() {
