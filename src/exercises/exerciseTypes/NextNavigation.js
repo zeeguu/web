@@ -97,7 +97,7 @@ export default function NextNavigation({
     if (isDeleted) {
       moveToNextExercise();
     }
-  });
+  }, [isDeleted]);
 
   useEffect(() => {
     if (bookmarkLearned && !SessionStorage.isCelebrationModalShown()) {
