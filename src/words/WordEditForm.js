@@ -15,7 +15,7 @@ export default function WordEditForm({
   const [context, setContext] = useState(bookmark.context);
   const [fitForStudy, setFitForStudy] = useState(bookmark.fit_for_study);
 
-  const isEdited =
+  const isNotEdited =
     bookmark.to === translation &&
     bookmark.from === expression &&
     bookmark.context === context &&
@@ -57,7 +57,7 @@ export default function WordEditForm({
         setContext(bookmark.context);
         event.preventDefault();
       }
-    } else if (isEdited) {
+    } else if (isNotEdited) {
       prepClose();
     } else {
       updateBookmark(bookmark, expression, translation, context, fitForStudy);
@@ -122,10 +122,10 @@ export default function WordEditForm({
           </s.CustomCheckBoxDiv>
         )}
 
-        {isEdited ? (
+        {isNotEdited ? (
           <s.DoneButtonHolder>
             <st.FeedbackDelete
-              onClick={(e) => deleteAction(bookmark)}
+              onClick={() => deleteAction(bookmark)}
               value={strings.deleteWord}
             />
             <st.FeedbackSubmit
