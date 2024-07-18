@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 export default function SubscribeToNewArticlesSearch() {
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [userDetails, setUserDetails] = useState(null);
 
   const handleEmailSubscription = () => {
     if (!isSubscribed) {
