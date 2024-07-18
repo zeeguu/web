@@ -8,4 +8,17 @@ const MaterialSelection = styled.div`
     flex-direction: row;
   }
 `;
-export { MaterialSelection };
+
+const Sort = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const Search = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+`;
+
+export { MaterialSelection, Sort, Search };
