@@ -2,7 +2,7 @@ import { useState } from "react";
 import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
 import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
-import EditButton from "../../../words/EditButton.js";
+import EditBookmarkButton from "../../../words/EditBookmarkButton.js";
 import {
   zeeguuOrange,
   darkBlue,
@@ -49,7 +49,10 @@ function MatchInput({
   const [firstSelectionColumn, setFirstSelectionColumn] = useState("");
 
   function handleClick(column, id) {
-    let selectedBookmark = column === "from" ? fromButtonOptions.find(option => option.id === id) : toButtonOptions.find(option => option.id === id);
+    let selectedBookmark =
+      column === "from"
+        ? fromButtonOptions.find((option) => option.id === id)
+        : toButtonOptions.find((option) => option.id === id);
     if (firstSelection !== 0) {
       if (
         (column === "from" && firstSelectionColumn === "from") ||
@@ -111,7 +114,7 @@ function MatchInput({
                 </s.AnimatedMatchButton>
               ) : buttonsToDisable.includes(option.id) || isCorrect ? (
                 <s.ButtonRow key={"L2_Row_" + option.id}>
-                  <EditButton
+                  <EditBookmarkButton
                     bookmark={option}
                     api={api}
                     styling={match}

@@ -1,6 +1,6 @@
 import strings from "../../i18n/definitions";
 import SpeakButton from "./SpeakButton";
-import EditButton from "../../words/EditButton";
+import EditBookmarkButton from "../../words/EditBookmarkButton";
 import * as s from "./Exercise.sc";
 import SolutionFeedbackLinks from "./SolutionFeedbackLinks";
 import { random } from "../../utils/basic/arrays";
@@ -43,6 +43,7 @@ export default function NextNavigation({
   const [correctMessage, setCorrectMessage] = useState("");
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const productiveExercisesDisabled =
     localStorage.getItem("productiveExercisesEnabled") === "false";
@@ -91,6 +92,12 @@ export default function NextNavigation({
       setCorrectMessage(random(correctStrings));
     }
   }, [isCorrect]);
+
+  useEffect(() => {
+    if (isDeleted) {
+      moveToNextExercise();
+    }
+  }, [isDeleted]);
 
   useEffect(() => {
     if (bookmarkLearned && !SessionStorage.isCelebrationModalShown()) {
@@ -165,12 +172,13 @@ export default function NextNavigation({
               style="next"
               isReadContext={isReadContext}
             />
-            <EditButton
+            <EditBookmarkButton
               bookmark={exerciseBookmark}
               api={api}
               styling={exercise}
               reload={reload}
               setReload={setReload}
+              notifyDelete={() => setIsDeleted(true)}
             />
           </s.EditSpeakButtonHolder>
           <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>

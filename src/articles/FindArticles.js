@@ -24,7 +24,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-export default function NewArticles() {
+export default function FindArticles() {
   const searchQuery = useQuery().get("search");
   let api = useContext(APIContext);
 
