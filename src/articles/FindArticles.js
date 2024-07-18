@@ -6,7 +6,6 @@ import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
-import useQuery from "../hooks/useQuery";
 
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
@@ -19,8 +18,7 @@ import {
   isScrollable,
 } from "../utils/misc/getScrollLocation";
 
-export default function NewArticles({ contentSearch, searchQuery }) {
-  //const searchQuery = useQuery().get("search");
+export default function FindArticles({ contentSearch, searchQuery }) {
   let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
