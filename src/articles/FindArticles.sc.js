@@ -9,16 +9,16 @@ const MaterialSelection = styled.div`
   }
 `;
 
-const Sort = styled.div`
+const SortHolder = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
 `;
 
-const Search = styled.div`
+const SearchHolder = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
 `;
 
-export { MaterialSelection, Sort, Search };
+export { MaterialSelection, SortHolder, SearchHolder };

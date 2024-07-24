@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import * as s from "./Search.sc";
 import * as b from "../components/allButtons.sc";
-import SearchKeyWords from "../components/SearchKeyWords";
 import useQuery from "../hooks/useQuery";
 import SubscribeSearchButton from "./SubscribeSearchButton";
 import FindArticles from "./FindArticles";
-import SubscribeToNewArticlesSearch from "./SubscribeToNewArticlesSearch";
+import AssociatedKeywords from "../components/AssociatedKeywords";
 
 export default function Search({ api }) {
   const searchQuery = useQuery().get("search");
@@ -35,10 +34,9 @@ export default function Search({ api }) {
       contentSearch={
         <>
           <s.RowHeadlineSearch>
-            <s.containerH1Subscribe>
+            <s.ContainerH1Subscribe>
               <s.HeadlineSearch>{searchQuery}</s.HeadlineSearch>
-              <SubscribeToNewArticlesSearch />
-            </s.containerH1Subscribe>
+            </s.ContainerH1Subscribe>
 
             {/* The set up for the associated keywords. A button when view on mobile,
                 and horizontal list when larger than 500 px. */}
@@ -49,11 +47,13 @@ export default function Search({ api }) {
                     Keywords
                   </b.OrangeRoundButton>
 
-                  <s.PopUpKeyWords
+                  <s.PopUpKeywords
                     style={{ display: isPopupVisible ? "block" : "none" }}
                   >
-                    <SearchKeyWords associatedKeywords={associatedKeywords} />
-                  </s.PopUpKeyWords>
+                    <AssociatedKeywords
+                      associatedKeywords={associatedKeywords}
+                    />
+                  </s.PopUpKeywords>
                 </div>
               ) : (
                 <s.Keywords>

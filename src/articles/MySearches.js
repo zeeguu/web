@@ -26,24 +26,24 @@ export default function MySearches({ api }) {
     };
   }, [subscribedSearches]);
 
-  async function processItem(searchTerm) {
+  async function topArticlesForSearchTerm(searchTerm) {
     return new Promise((resolve) => {
       api.search(searchTerm, (articles) => {
-        const limitedArticles = articles.slice(0, 2);
-        resolve({ searchTerm, articles: limitedArticles });
+        const firstTwoArticles = articles.slice(0, 2);
+        resolve({ searchTerm, articles: firstTwoArticles });
       });
     });
   }
 
-  async function processArray(subscribedSearches) {
+  async function subscribedSearchesWithTopArticles(subscribedSearches) {
     const promises = subscribedSearches.map((searchTerm) =>
-      processItem(searchTerm.search),
+      topArticlesForSearchTerm(searchTerm.search),
     );
     return Promise.all(promises);
   }
 
   async function fetchData() {
-    processArray(subscribedSearches).then((results) => {
+    subscribedSearchesWithTopArticles(subscribedSearches).then((results) => {
       setArticlesBySearchTerm(results);
       setIsLoading(false);
     });

@@ -127,11 +127,13 @@ export default function FindArticles({ contentSearch, searchQuery }) {
       api.search(searchQuery, (articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
+        if (articles.length < 20) setNoMoreArticlesToShow(true);
       });
     } else {
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
+        if (articles.length < 20) setNoMoreArticlesToShow(true);
       });
     }
     window.addEventListener("scroll", handleScroll, true);
@@ -176,17 +178,17 @@ export default function FindArticles({ contentSearch, searchQuery }) {
           articlesListShouldChange={articlesListShouldChange}
         />
       )}
-      <s.Search>
+      <s.SearchHolder>
         <SearchField api={api} query={searchQuery} />
-      </s.Search>
+      </s.SearchHolder>
 
-      <s.Sort>
+      <s.SortHolder>
         <SortingButtons
           articleList={articleList}
           originalList={originalList}
           setArticleList={setArticleList}
         />
-      </s.Sort>
+      </s.SortHolder>
 
       {/* This is where the content of the Search component will be rendered */}
       {contentSearch}

@@ -13,7 +13,7 @@ const HeadlineSearch = styled.h1`
   margin-right: 1.4em;
 `;
 
-const containerH1Subscribe = styled.div`
+const ContainerH1Subscribe = styled.div`
   display: flex;
 `;
 
@@ -42,7 +42,7 @@ let Keywords = styled.span`
   }
 `;
 
-const PopUpKeyWords = styled.div`
+const PopUpKeywords = styled.div`
   background: ${zeeguuTransparentLightOrange};
   position: absolute;
 
@@ -56,6 +56,6 @@ export {
   HeadlineSearch,
   RowHeadlineSearch,
   Keywords,
-  PopUpKeyWords,
-  containerH1Subscribe,
+  PopUpKeywords,
+  ContainerH1Subscribe,
 };

@@ -16,9 +16,8 @@ export default function SearchField({ api, query }) {
   function keyDownInSearch(e) {
     if (e.key === "Enter") {
       if (inputRef.current.value === "") {
-        toast.error("Your search is empty!");
+        toast.error("Can not search for empty string!");
       } else {
-        console.log(searchTerm);
         api.logUserActivity(api.SEARCH_QUERY, "", searchTerm, "");
         redirect(`/search?search=${searchTerm}`);
       }
@@ -27,7 +26,7 @@ export default function SearchField({ api, query }) {
 
   function handleSearch() {
     if (inputRef.current.value === "") {
-      toast.error("Your search is empty!");
+      toast.error("Can not search for empty string!");
     } else {
       redirect(`/search?search=${searchTerm}`);
     }
