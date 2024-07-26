@@ -9,6 +9,7 @@ const AddRemoveButton = styled.button`
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
+  padding-right: 40px;
 `;
 
 export { AddRemoveButton };

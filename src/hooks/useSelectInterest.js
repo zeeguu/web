@@ -75,6 +75,26 @@ export default function useSelectInterest(api) {
       : false;
   }
 
+  function subscribeToEmail(search) {
+    api.subscribeToEmailSearch(search, (data) => {
+      setSubscribedSearches((prevSearches) =>
+        prevSearches.map((entry) =>
+          entry.search === search ? { ...entry, receive_email: true } : entry,
+        ),
+      );
+    });
+  }
+
+  function unsubscribeFromEmail(search) {
+    api.unsubscribeFromEmailSearch(search, (data) => {
+      setSubscribedSearches((prevSearches) =>
+        prevSearches.map((entry) =>
+          entry.search === search ? { ...entry, receive_email: false } : entry,
+        ),
+      );
+    });
+  }
+
   return {
     allTopics,
 
@@ -87,6 +107,8 @@ export default function useSelectInterest(api) {
     setSubscribedSearches,
     subscribeToSearch,
     removeSearch,
+    subscribeToEmail,
+    unsubscribeFromEmail,
 
     showingSpecialInterestModal,
     setshowingSpecialInterestModal,
