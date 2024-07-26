@@ -9,7 +9,6 @@ export default function SubscribeToEmailNotifications({ api, searchTerm }) {
   const [textButton, setTextButton] = useState("");
   const [isSubscribedToEmail, setIsSubscribedToEmail] = useState();
 
-  console.log("this ", subscribedSearches);
   useEffect(() => {
     if (subscribedSearches) {
       const subscribedSearch = subscribedSearches.find(
