@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import * as s from "./SubscribeSearchButton.sc";
 import useSelectInterest from "../hooks/useSelectInterest";
 import { toast } from "react-toastify";
-import SubscribeToEmailNotifications from "./SubscribeToEmailNotifications";
+import SubscribeToEmailNotificationsButton from "./SubscribeToEmailNotificationsButton";
 
 export default function SubscribeSearchButton({ api, query }) {
   const { subscribedSearches, removeSearch, subscribeToSearch } =
     useSelectInterest(api);
-
-  const [textButton, setTextButton] = useState("");
-  const [isSubscribedToSearch, setIsSubscribedToSearch] = useState(false);
+  const [buttonText, setButtonText] = useState("");
+  const [isSubscribedToSearch, setIsSubscribedToSearch] = useState();
 
   useEffect(() => {
     if (subscribedSearches) {
@@ -17,11 +16,11 @@ export default function SubscribeSearchButton({ api, query }) {
         (search) => search.search === query,
       );
       setIsSubscribedToSearch(isSubscribed);
-      setTextButton(isSubscribed ? "- remove search" : "+ add search");
+      setButtonText(isSubscribed ? "- remove search" : "+ add search");
     }
   }, [subscribedSearches, query]);
 
-  const toggleSearchSubscription = (query) => {
+  const toggleSearchSubscription = () => {
     if (isSubscribedToSearch) {
       const searchToRemove = subscribedSearches.find(
         (search) => search.search === query,
@@ -40,12 +39,15 @@ export default function SubscribeSearchButton({ api, query }) {
 
   return (
     <>
-      <s.AddRemoveButton onClick={(e) => toggleSearchSubscription(query)}>
-        {textButton}
+      <s.AddRemoveButton onClick={toggleSearchSubscription}>
+        {buttonText}
       </s.AddRemoveButton>
 
       {isSubscribedToSearch && (
-        <SubscribeToEmailNotifications api={api} searchTerm={query} />
+        <SubscribeToEmailNotificationsButton
+          api={api}
+          subscribedSearch={query}
+        />
       )}
     </>
   );

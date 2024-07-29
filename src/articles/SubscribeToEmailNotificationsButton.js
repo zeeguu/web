@@ -3,38 +3,41 @@ import * as s from "./SubscribeSearchButton.sc";
 import useSelectInterest from "../hooks/useSelectInterest";
 import { toast } from "react-toastify";
 
-export default function SubscribeToEmailNotifications({ api, searchTerm }) {
+export default function SubscribeToEmailNotificationsButton({
+  api,
+  subscribedSearch,
+}) {
   const { subscribedSearches, subscribeToEmail, unsubscribeFromEmail } =
     useSelectInterest(api);
-  const [textButton, setTextButton] = useState("");
+  const [buttonText, setButtonText] = useState("");
   const [isSubscribedToEmail, setIsSubscribedToEmail] = useState();
 
   useEffect(() => {
     if (subscribedSearches) {
-      const subscribedSearch = subscribedSearches.find(
-        (search) => search.search === searchTerm,
+      const subscribedSearchElement = subscribedSearches.find(
+        (search) => search.search === subscribedSearch,
       );
-      if (subscribedSearch) {
-        setIsSubscribedToEmail(subscribedSearch.receive_email);
+      if (subscribedSearchElement) {
+        setIsSubscribedToEmail(subscribedSearchElement.receive_email);
       }
     }
-  }, [subscribedSearches, searchTerm]);
+  }, [subscribedSearches, subscribedSearch]);
 
   useEffect(() => {
-    setTextButton(
+    setButtonText(
       isSubscribedToEmail
         ? " remove email notifications!"
         : " want email notifications?",
     );
   }, [isSubscribedToEmail]);
 
-  const toggleEmailSubscription = (searchTerm) => {
+  const toggleEmailSubscription = () => {
     if (isSubscribedToEmail) {
-      unsubscribeFromEmail(searchTerm);
+      unsubscribeFromEmail(subscribedSearch);
       setIsSubscribedToEmail(false);
       toast("You will no longer receive update emails!");
     } else {
-      subscribeToEmail(searchTerm);
+      subscribeToEmail(subscribedSearch);
       setIsSubscribedToEmail(true);
       toast("You will now receive emails whenever there are new articles!");
     }
@@ -42,10 +45,10 @@ export default function SubscribeToEmailNotifications({ api, searchTerm }) {
 
   return (
     <s.AddRemoveButton
-      onClick={(e) => toggleEmailSubscription(searchTerm)}
+      onClick={toggleEmailSubscription}
       style={{ fontWeight: "normal" }}
     >
-      {textButton}
+      {buttonText}
     </s.AddRemoveButton>
   );
 }
