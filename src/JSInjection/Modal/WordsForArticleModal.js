@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import LoadingAnimation from "../../zeeguu-react/src/components/LoadingAnimation";
-import { NarrowColumn, CenteredContent} from "../../zeeguu-react/src/components/ColumnWidth.sc";
+import {
+  NarrowColumn,
+  CenteredContent,
+} from "../../zeeguu-react/src/components/ColumnWidth.sc";
 import { setTitle } from "../../zeeguu-react/src/assorted/setTitle";
 import strings from "../../zeeguu-react/src/i18n/definitions";
 import { EXTENSION_SOURCE } from "../constants";
@@ -57,27 +60,24 @@ export default function WordsForArticleModal({
         api={api}
         notifyWordChanged={notifyWordChanged}
       />
+      <br />
+      <br />
       <CenteredContent>
         <NavigationButton prev secondary onClick={openArticle}>
           {strings.backToArticle}
         </NavigationButton>
-        <ToolTipsContainer>
-          <NavigationButton
-            primary
-            next
-            {...(exercisesEnabled || { disabled: true })}
-            onClick={openExercises}
-          >
-            {strings.toExercises}
-          </NavigationButton>
-          {!exercisesEnabled ? (
-            <span className="tooltiptext">
-              You need to star words <br />
-              before going to exercises
-            </span>
-          ) : null}{" "}
-        </ToolTipsContainer>
+
+        <NavigationButton
+          primary
+          next
+          {...(exercisesEnabled || { disabled: true })}
+          onClick={openExercises}
+        >
+          {strings.toExercises}
+        </NavigationButton>
       </CenteredContent>
+      <br />
+      <br />
     </NarrowColumn>
   );
 }
