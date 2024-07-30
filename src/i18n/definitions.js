@@ -344,9 +344,9 @@ let strings = new LocalizedStrings(
         'Remember to click "Submit" in each accordion to save changes.',
       translation: "Translation",
       word: "Word",
-      editWord: "Edit this word",
+      editWord: "Edit Word",
       expression: "Expression",
-      editExpression: "Edit this expression",
+      editExpression: "Edit Expression",
       context: "Context",
 
       //WordsForArticle
