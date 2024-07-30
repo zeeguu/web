@@ -18,7 +18,7 @@ import {
   isScrollable,
 } from "../utils/misc/getScrollLocation";
 
-export default function FindArticles({ contentSearch, searchQuery }) {
+export default function FindArticles({ content, searchQuery }) {
   let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
@@ -191,7 +191,7 @@ export default function FindArticles({ contentSearch, searchQuery }) {
       </s.SortHolder>
 
       {/* This is where the content of the Search component will be rendered */}
-      {contentSearch}
+      {content}
 
       {articleList.map((each, index) => (
         <ArticlePreview

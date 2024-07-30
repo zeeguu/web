@@ -10,7 +10,7 @@ export default function Search({ api }) {
   return (
     <FindArticles
       searchQuery={searchQuery}
-      contentSearch={
+      content={
         <>
           <s.RowHeadlineSearch>
             <s.ContainerH1Subscribe>

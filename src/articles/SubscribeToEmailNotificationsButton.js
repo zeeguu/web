@@ -34,10 +34,22 @@ export default function SubscribeToEmailNotificationsButton({
   const toggleEmailSubscription = () => {
     if (isSubscribedToEmail) {
       unsubscribeFromEmail(subscribedSearch);
+      api.logUserActivity(
+        api.UNSUBSCRIBE_FROM_EMAIL_NOTIFICATIONS,
+        "",
+        subscribedSearch,
+        "",
+      );
       setIsSubscribedToEmail(false);
       toast("You will no longer receive update emails!");
     } else {
       subscribeToEmail(subscribedSearch);
+      api.logUserActivity(
+        api.SUBSCRIBE_TO_EMAIL_NOTIFICATIONS,
+        "",
+        subscribedSearch,
+        "",
+      );
       setIsSubscribedToEmail(true);
       toast("You will now receive emails whenever there are new articles!");
     }
