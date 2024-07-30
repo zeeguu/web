@@ -1,41 +1,61 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import strings from "../i18n/definitions";
 import * as s from "./SearchField.sc";
 import { ClearSearchButton } from "../components/allButtons.sc";
+import redirect from "../utils/routing/routing";
 
 export default function SearchField({ api, query }) {
   const [searchTerm, setSearchTerm] = useState(query);
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef();
+
+  const handleFocus = () => setIsFocused(true);
+  const handleBlur = () => setIsFocused(false);
 
   function keyDownInSearch(e) {
     if (e.key === "Enter") {
-      console.log(searchTerm);
-      api.logUserActivity(api.SEARCH_QUERY, "", searchTerm, "");
-      window.location = `/articles?search=${searchTerm}`;
+      if (inputRef.current.value === "") {
+        return;
+      } else {
+        api.logUserActivity(api.SEARCH_QUERY, "", searchTerm, "");
+        redirect(`/search?search=${searchTerm}`);
+      }
     }
   }
+
+  function handleSearch() {
+    if (inputRef.current.value === "") {
+      return;
+    } else {
+      api.logUserActivity(api.SEARCH_QUERY, "", searchTerm, "");
+      redirect(`/search?search=${searchTerm}`);
+    }
+  }
+
   return (
     <s.SearchField>
-      <input
+      <s.SearchInput
         style={{ float: "left", fontWeight: query ? "bold" : "normal" }}
         className="searchTextfieldInput"
         type="text"
-        id="search-expandable"
         placeholder={strings.searchAllArticles}
-        value={searchTerm === null ? "" : searchTerm}
+        value={searchTerm == null ? "" : searchTerm}
+        ref={inputRef}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={keyDownInSearch}
+        isFocused={isFocused}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        hasValue={!!searchTerm}
       />
 
       {query && (
-        <a onClick={(e) => (window.location = "/articles")}>
+        <a onClick={(e) => redirect("/articles")}>
           <ClearSearchButton />
         </a>
       )}
 
-      <a
-        style={{ cursor: "pointer" }}
-        onClick={(e) => (window.location = `/articles?search=${searchTerm}`)}
-      >
+      <a style={{ cursor: "pointer" }} onClick={(e) => handleSearch()}>
         <svg
           focusable="false"
           xmlns="http://www.w3.org/2000/svg"
