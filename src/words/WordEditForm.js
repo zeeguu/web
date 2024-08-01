@@ -3,6 +3,7 @@ import * as st from "../exercises/bottomActions/FeedbackButtons.sc";
 import strings from "../i18n/definitions";
 import { useState } from "react";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
+import isBookmarkExpression from "../utils/misc/isBookmarkExpression";
 
 export default function WordEditForm({
   bookmark,
@@ -66,13 +67,13 @@ export default function WordEditForm({
   }
   return (
     <>
-      {bookmark.from.includes(" ") ? (
+      {isBookmarkExpression(bookmark) ? (
         <s.Headline>{strings.editExpression}</s.Headline>
       ) : (
         <s.Headline>{strings.editWord}</s.Headline>
       )}
       <form onSubmit={handleSubmit}>
-        {bookmark.from.includes(" ") ? (
+        {isBookmarkExpression(bookmark) ? (
           <s.CustomTextField
             id="outlined-basic"
             label={strings.expression}
