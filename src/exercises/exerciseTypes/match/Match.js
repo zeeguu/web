@@ -8,6 +8,7 @@ import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import { toast } from "react-toastify";
 
 // The user has to match three L1 words to their correct L2 translations.
 // This tests the user's passive knowledge.
@@ -82,6 +83,10 @@ export default function Match({
         setSelectedBookmarkMessage(currentBookmarkLog.messageToAPI);
     }
   }, [selectedBookmark]);
+
+  function notifyBookmarkDeletion(bookmark) {
+    toast.success("The word " + bookmark.to + " is deleted!");
+  }
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
     console.log("checking result...");
@@ -192,6 +197,7 @@ export default function Match({
         reload={reload}
         setReload={setReload}
         onBookmarkSelected={setSelectedBookmark}
+        notifyBookmarkDeletion={notifyBookmarkDeletion}
       />
       <NextNavigation
         message={messageToNextNav}

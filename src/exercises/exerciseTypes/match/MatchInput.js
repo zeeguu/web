@@ -23,6 +23,7 @@ function MatchInput({
   reload,
   setReload,
   onBookmarkSelected,
+  notifyBookmarkDeletion,
 }) {
   const answerColors = [
     {
@@ -120,6 +121,7 @@ function MatchInput({
                     styling={match}
                     reload={reload}
                     setReload={setReload}
+                    notifyDelete={() => notifyBookmarkDeletion(option)}
                   />
                   <s.MatchingWords
                     className="matchingWords"
