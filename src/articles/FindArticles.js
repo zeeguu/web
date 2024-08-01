@@ -11,21 +11,14 @@ import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
 
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
-import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
 import {
   getPixelsFromScrollBarToEnd,
   isScrollable,
 } from "../utils/misc/getScrollLocation";
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 
-export default function FindArticles() {
-  const searchQuery = useQuery().get("search");
+export default function FindArticles({ content, searchQuery }) {
   let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
@@ -179,20 +172,27 @@ export default function FindArticles() {
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
 
-      <s.MaterialSelection>
+      {!searchQuery && (
         <Interests
           api={api}
           articlesListShouldChange={articlesListShouldChange}
         />
-
+      )}
+      <s.SearchHolder>
         <SearchField api={api} query={searchQuery} />
-      </s.MaterialSelection>
+      </s.SearchHolder>
 
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
-      />
+      <s.SortHolder>
+        <SortingButtons
+          articleList={articleList}
+          originalList={originalList}
+          setArticleList={setArticleList}
+        />
+      </s.SortHolder>
+
+      {/* This is where the content of the Search component will be rendered */}
+      {content}
+
       {articleList.map((each, index) => (
         <ArticlePreview
           key={each.id}
@@ -208,10 +208,6 @@ export default function FindArticles() {
           onArticleClick={() => handleArticleClick(each.id, index)}
         />
       ))}
-
-      {searchQuery && articleList.length === 0 && (
-        <>No articles found that match your search</>
-      )}
 
       {!searchQuery && (
         <ShowLinkRecommendationsIfNoArticles
