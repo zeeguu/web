@@ -9,6 +9,7 @@ import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { toast } from "react-toastify";
+import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
 
 // The user has to match three L1 words to their correct L2 translations.
 // This tests the user's passive knowledge.
@@ -85,7 +86,10 @@ export default function Match({
   }, [selectedBookmark]);
 
   function notifyBookmarkDeletion(bookmark) {
-    toast.success("The word " + bookmark.to + " is deleted!");
+    let word_expression = "";
+    if (isBookmarkExpression(bookmark)) word_expression = "expression";
+    else word_expression = "word";
+    toast.success(`The ${word_expression} '${bookmark.from}' is deleted!`);
   }
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
