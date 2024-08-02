@@ -54,7 +54,9 @@ export default function FeedbackPage({ api }) {
           placeholder="Feedback message, e.g. 'Can't get translations.'"
         ></textarea>
         <br></br>
-        <s.FormButton onClick={onSubmit}>Send</s.FormButton>
+        <s.FormButton onClick={onSubmit}>
+          <span>Send</span>
+        </s.FormButton>
       </s.FormContainer>
     </>
   );
