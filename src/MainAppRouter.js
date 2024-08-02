@@ -138,6 +138,11 @@ export default function MainAppRouter({
         api={api}
         component={UserDashboard}
       />
+      <PrivateRouteWithSidebar
+        path="/search"
+        api={api}
+        component={ArticlesRouter}
+      />
     </Switch>
   );
 }

@@ -81,7 +81,7 @@ export default function TagsOfInterests({
             <button
               onClick={(e) => removeSearch(search)}
               type="button"
-              className={"interests"}
+              className={"searches"}
             >
               <span className="addableTitle">{search.search}</span>
             </button>

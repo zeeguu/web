@@ -7,19 +7,46 @@ import WordEditForm from "./WordEditForm";
 import { getStaticPath } from "../utils/misc/staticPath.js";
 import { toast } from "react-toastify";
 
-export default function EditButton({
+export default function EditBookmarkButton({
   bookmark,
   api,
   styling,
   reload,
   setReload,
-  deleteAction,
   notifyWordChange,
+  notifyDelete,
 }) {
   const [open, setOpen] = useState(false);
   const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
+  const SOURCE_FOR_API_BOOKMARK_DELETE = "WORD_EDIT_DELETE_BOOKMARK";
   function handleOpen() {
     setOpen(true);
+  }
+
+  function deleteBookmark() {
+    api.deleteBookmark(
+      bookmark.id,
+      (response) => {
+        if (response === "OK") {
+          // delete was successful; log and close
+          if (notifyDelete) notifyDelete(bookmark);
+          api.logReaderActivity(
+            api.DELETE_WORD,
+            bookmark.article_id,
+            bookmark.from,
+            SOURCE_FOR_API_BOOKMARK_DELETE,
+          );
+          handleClose();
+        }
+      },
+      (error) => {
+        // onError
+        console.log(error);
+        alert(
+          "something went wrong and we could not delete the bookmark; try again later.",
+        );
+      },
+    );
   }
 
   function handleClose() {
@@ -109,7 +136,7 @@ export default function EditButton({
             bookmark={bookmark}
             handleClose={handleClose}
             updateBookmark={updateBookmark}
-            deleteAction={deleteAction}
+            deleteAction={deleteBookmark}
           />
         </Box>
       </Modal>

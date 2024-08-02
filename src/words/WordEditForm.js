@@ -3,6 +3,7 @@ import * as st from "../exercises/bottomActions/FeedbackButtons.sc";
 import strings from "../i18n/definitions";
 import { useState } from "react";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
+import isBookmarkExpression from "../utils/misc/isBookmarkExpression";
 
 export default function WordEditForm({
   bookmark,
@@ -14,6 +15,12 @@ export default function WordEditForm({
   const [expression, setExpression] = useState(bookmark.from);
   const [context, setContext] = useState(bookmark.context);
   const [fitForStudy, setFitForStudy] = useState(bookmark.fit_for_study);
+
+  const isNotEdited =
+    bookmark.to === translation &&
+    bookmark.from === expression &&
+    bookmark.context === context &&
+    bookmark.fit_for_study === fitForStudy;
 
   function prepClose() {
     setTranslation(bookmark.to);
@@ -51,12 +58,7 @@ export default function WordEditForm({
         setContext(bookmark.context);
         event.preventDefault();
       }
-    } else if (
-      bookmark.to === translation &&
-      bookmark.from === expression &&
-      bookmark.context === context &&
-      bookmark.fitForStudy === fitForStudy
-    ) {
+    } else if (isNotEdited) {
       prepClose();
     } else {
       updateBookmark(bookmark, expression, translation, context, fitForStudy);
@@ -65,28 +67,20 @@ export default function WordEditForm({
   }
   return (
     <>
-      {bookmark.from.includes(" ") ? (
+      {isBookmarkExpression(bookmark) ? (
         <s.Headline>{strings.editExpression}</s.Headline>
       ) : (
         <s.Headline>{strings.editWord}</s.Headline>
       )}
       <form onSubmit={handleSubmit}>
-        <s.CustomTextField
-          id="outlined-basic"
-          label={strings.translation}
-          variant="outlined"
-          fullWidth
-          autoFocus={true}
-          value={translation}
-          onChange={typingTranslation}
-        />
-        {bookmark.from.includes(" ") ? (
+        {isBookmarkExpression(bookmark) ? (
           <s.CustomTextField
             id="outlined-basic"
             label={strings.expression}
             variant="outlined"
             fullWidth
             value={expression}
+            autoFocus={true}
             onChange={typingExpression}
           />
         ) : (
@@ -96,9 +90,18 @@ export default function WordEditForm({
             variant="outlined"
             fullWidth
             value={expression}
+            autoFocus={true}
             onChange={typingExpression}
           />
         )}
+        <s.CustomTextField
+          id="outlined-basic"
+          label={strings.translation}
+          variant="outlined"
+          fullWidth
+          value={translation}
+          onChange={typingTranslation}
+        />
         <s.CustomTextField
           id="outlined-basic"
           label={strings.context}
@@ -121,13 +124,10 @@ export default function WordEditForm({
           </s.CustomCheckBoxDiv>
         )}
 
-        {bookmark.to === translation &&
-        bookmark.from === expression &&
-        bookmark.context === context &&
-        bookmark.fit_for_study === fitForStudy ? (
+        {isNotEdited ? (
           <s.DoneButtonHolder>
             <st.FeedbackDelete
-              onClick={(e) => deleteAction(bookmark)}
+              onClick={() => deleteAction(bookmark)}
               value={strings.deleteWord}
             />
             <st.FeedbackSubmit

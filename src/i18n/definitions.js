@@ -220,6 +220,7 @@ let strings = new LocalizedStrings(
       bookmarkedTab: "Bookmarked",
       saved: "Saves",
       forYou: "For You",
+      searches: "My Searches",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
@@ -273,6 +274,8 @@ let strings = new LocalizedStrings(
       //Search
       searching: "Searching...",
       youSearchedFor: "You searched for: ",
+      NoSavedSearches: "You haven't saved any searches.",
+      NoSearchMatch: "No articles found that match your search.",
 
       //ClassroomArticles
       noArticlesInClassroom: "There are no articles in your classroom.",
@@ -345,9 +348,9 @@ let strings = new LocalizedStrings(
         'Remember to click "Submit" in each accordion to save changes.',
       translation: "Translation",
       word: "Word",
-      editWord: "Edit this word",
+      editWord: "Edit Word",
       expression: "Expression",
-      editExpression: "Edit this expression",
+      editExpression: "Edit Expression",
       context: "Context",
 
       //WordsForArticle
@@ -492,7 +495,7 @@ let strings = new LocalizedStrings(
 
       //CongratulationsPage
       goodJob: "Good Job, ",
-      correct: "Seems like you know these words:",
+      correct: "You got the following words correct:",
       payMoreAttentionTo: "Pay more attention to these words:",
 
       //Settings
@@ -1026,6 +1029,7 @@ let strings = new LocalizedStrings(
       classroomTab: "Klasse",
       bookmarkedTab: "Bogmærker",
       saved: "Gemt",
+      searches: "Mine Søgninger",
 
       //WordsRouter
       yourWordsHeadline: "Dine ord",

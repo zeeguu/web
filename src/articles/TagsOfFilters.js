@@ -79,7 +79,7 @@ export default function TagsOfFilters({
             <button
               onClick={(e) => removeUnwantedKeyword(keyword)}
               type="button"
-              className={"interests"}
+              className={"searches"}
             >
               <span className="addableTitle">{keyword.search}</span>
             </button>
