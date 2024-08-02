@@ -180,7 +180,7 @@ const LocalStorage = {
     if (autoPronounceBookmarkExercise === undefined) {
       return undefined;
     } else {
-      return autoPronounceBookmarkExercise;
+      return Number(autoPronounceBookmarkExercise);
     }
   },
 
