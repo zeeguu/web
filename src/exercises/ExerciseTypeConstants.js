@@ -32,3 +32,15 @@ export const LEARNING_CYCLE_NAME = Object.freeze({
   1: "receptive",
   2: "productive",
 });
+
+export const PRONOUNCIATION_SETTING = Object.freeze({
+  off: 0,
+  sessionOnly: 1,
+  always: 2,
+});
+
+export const PRONOUNCIATION_SETTING_NAME = Object.freeze({
+  0: "Off",
+  1: "Session Only",
+  2: "Always",
+});

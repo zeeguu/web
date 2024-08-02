@@ -35,6 +35,7 @@ const LocalStorage = {
     clickedVideoLink: "clicked_video_link",
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
     ProductiveExercisesEnabled: "productiveExercisesEnabled",
+    AutoPronounceBookmarkExercise: "auto_pronounce_bookmark_exercise",
   },
 
   userInfo: function () {
@@ -173,6 +174,16 @@ const LocalStorage = {
     }
   },
 
+  getAutoPronounceBookmarkExercise: function () {
+    const autoPronounceBookmarkExercise =
+      localStorage[this.Keys.AutoPronounceBookmarkExercise];
+    if (autoPronounceBookmarkExercise === undefined) {
+      return undefined;
+    } else {
+      return autoPronounceBookmarkExercise;
+    }
+  },
+
   hasFeature: function (featureName) {
     try {
       return JSON.parse(localStorage[this.Keys.Features]).includes(featureName);
@@ -271,6 +282,11 @@ const LocalStorage = {
   ) {
     localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire] =
       displayedAudioExperimentQuestionnaire;
+  },
+
+  setAutoPronounceBookmarkExercise: function (AutoPronounceBookmarkExercise) {
+    localStorage[this.Keys.AutoPronounceBookmarkExercise] =
+      AutoPronounceBookmarkExercise;
   },
 
   getTargetNoOfAudioSessions: function () {
