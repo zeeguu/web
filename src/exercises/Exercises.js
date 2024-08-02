@@ -96,15 +96,12 @@ export default function Exercises({
       setActivityOver(true);
       exerciseNotification.unsetExerciseCounter();
       exerciseNotification.updateReactState();
-      let currentAutoPronounce =
-        LocalStorage.getAutoPronounceBookmarkExercise();
+      let currentAutoPronounce = LocalStorage.getAutoPronounceInExercises();
       if (
         currentAutoPronounce &&
         currentAutoPronounce === PRONOUNCIATION_SETTING.sessionOnly
       )
-        LocalStorage.setAutoPronounceBookmarkExercise(
-          PRONOUNCIATION_SETTING.off,
-        );
+        LocalStorage.setAutoPronounceInExercises(PRONOUNCIATION_SETTING.off);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -148,6 +145,7 @@ export default function Exercises({
       setTitle(title);
     }
   }
+
   function resetExerciseState() {
     setShowOutOfWordsMessage(false);
     setCountBookmarksToPractice();
@@ -177,6 +175,7 @@ export default function Exercises({
       }
     }
   }
+
   function exercise_new_bookmarks() {
     api.getNewBookmarksToStudy(
       NUMBER_OF_BOOKMARKS_TO_PRACTICE,
@@ -199,6 +198,7 @@ export default function Exercises({
       } else setShowOutOfWordsMessage(true);
     });
   }
+
   function exercise_article_bookmarks() {
     api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
       api.getArticleInfo(articleID, (data) => {
@@ -290,7 +290,9 @@ export default function Exercises({
     setCurrentIndex(newIndex);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
+
   let correctBookmarksCopy = [...correctBookmarks];
+
   function correctAnswerNotification(currentBookmark) {
     if (!incorrectBookmarks.includes(currentBookmark)) {
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
@@ -306,7 +308,9 @@ export default function Exercises({
     }
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
+
   let incorrectBookmarksCopy = [...incorrectBookmarks];
+
   function incorrectAnswerNotification(currentBookmark) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
     if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
@@ -325,6 +329,7 @@ export default function Exercises({
     setIncorrectBookmarks(incorrectBookmarksCopy);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
+
   function uploadUserFeedback(userWrittenFeedback, word_id) {
     console.log(
       "Sending to the API. Feedback: ",

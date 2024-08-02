@@ -16,8 +16,9 @@ export default function useBookmarkAutoPronounce() {
     setCurrentPronouncingState(value);
     setCurrentPronouncingString(PRONOUNCIATION_SETTING_NAME[value]);
   }
+
   useEffect(() => {
-    let currentState = LocalStorage.getAutoPronounceBookmarkExercise();
+    let currentState = LocalStorage.getAutoPronounceInExercises();
     if (currentState === undefined) currentState = PRONOUNCIATION_SETTING.off;
     __updateState(currentState);
   });
@@ -28,7 +29,7 @@ export default function useBookmarkAutoPronounce() {
       optionSelected = currentPronouncingState + 1;
     } else optionSelected = PRONOUNCIATION_SETTING.off;
     __updateState(optionSelected);
-    LocalStorage.setAutoPronounceBookmarkExercise(optionSelected);
+    LocalStorage.setAutoPronounceInExercises(optionSelected);
   }
 
   return [

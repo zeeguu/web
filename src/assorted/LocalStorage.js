@@ -35,7 +35,7 @@ const LocalStorage = {
     clickedVideoLink: "clicked_video_link",
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
     ProductiveExercisesEnabled: "productiveExercisesEnabled",
-    AutoPronounceBookmarkExercise: "auto_pronounce_bookmark_exercise",
+    AutoPronounceInExercises: "auto_pronounce_bookmark_exercise",
   },
 
   userInfo: function () {
@@ -174,13 +174,13 @@ const LocalStorage = {
     }
   },
 
-  getAutoPronounceBookmarkExercise: function () {
-    const autoPronounceBookmarkExercise =
-      localStorage[this.Keys.AutoPronounceBookmarkExercise];
-    if (autoPronounceBookmarkExercise === undefined) {
+  getAutoPronounceInExercises: function () {
+    const autoPronounceInExercises =
+      localStorage[this.Keys.AutoPronounceInExercises];
+    if (autoPronounceInExercises === undefined) {
       return undefined;
     } else {
-      return Number(autoPronounceBookmarkExercise);
+      return Number(autoPronounceInExercises);
     }
   },
 
@@ -284,9 +284,8 @@ const LocalStorage = {
       displayedAudioExperimentQuestionnaire;
   },
 
-  setAutoPronounceBookmarkExercise: function (AutoPronounceBookmarkExercise) {
-    localStorage[this.Keys.AutoPronounceBookmarkExercise] =
-      AutoPronounceBookmarkExercise;
+  setAutoPronounceInExercises: function (val) {
+    localStorage[this.Keys.AutoPronounceInExercises] = val;
   },
 
   getTargetNoOfAudioSessions: function () {
