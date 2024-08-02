@@ -30,6 +30,8 @@ import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
+import LocalStorage from "../assorted/LocalStorage";
+import { PRONOUNCIATION_SETTING } from "./ExerciseTypeConstants";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -94,6 +96,15 @@ export default function Exercises({
       setActivityOver(true);
       exerciseNotification.unsetExerciseCounter();
       exerciseNotification.updateReactState();
+      let currentAutoPronounce =
+        LocalStorage.getAutoPronounceBookmarkExercise();
+      if (
+        currentAutoPronounce &&
+        currentAutoPronounce === PRONOUNCIATION_SETTING.sessionOnly
+      )
+        LocalStorage.setAutoPronounceBookmarkExercise(
+          PRONOUNCIATION_SETTING.off,
+        );
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
