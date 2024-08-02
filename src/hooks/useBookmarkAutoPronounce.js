@@ -17,9 +17,9 @@ export default function useBookmarkAutoPronounce() {
     setCurrentPronouncingString(PRONOUNCIATION_SETTING_NAME[value]);
   }
   useEffect(() => {
-    let currentState = Number(LocalStorage.getAutoPronounceBookmarkExercise());
+    let currentState = LocalStorage.getAutoPronounceBookmarkExercise();
     if (currentState === undefined) currentState = PRONOUNCIATION_SETTING.off;
-    __updateState(currentState);
+    __updateState(Number(currentState));
   });
 
   function cyclePronounciationState() {
