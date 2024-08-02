@@ -41,6 +41,6 @@ export const PRONOUNCIATION_SETTING = Object.freeze({
 
 export const PRONOUNCIATION_SETTING_NAME = Object.freeze({
   0: "Off",
-  1: "Session Only",
+  1: "Session",
   2: "Always",
 });
