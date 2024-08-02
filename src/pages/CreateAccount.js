@@ -127,11 +127,11 @@ export default function CreateAccount({
       >
         <>
           <h1>Privacy Notice</h1>
-          {privacyNoticeText.map((par) => (
-            <>
+          {privacyNoticeText.map((par, i) => (
+            <div key={i}>
               <p>{par}</p>
-              <br></br>
-            </>
+              <br />
+            </div>
           ))}
         </>
       </Modal>
