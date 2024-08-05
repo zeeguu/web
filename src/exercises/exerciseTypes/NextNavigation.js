@@ -84,7 +84,8 @@ export default function NextNavigation({
     if (
       isCorrect &&
       autoPronounceState &&
-      autoPronounceState !== PRONOUNCIATION_SETTING.off
+      autoPronounceState !== PRONOUNCIATION_SETTING.off &&
+      !isMatchExercise
     )
       handleSpeak();
   }, [isCorrect]);
@@ -204,17 +205,6 @@ export default function NextNavigation({
               {strings.next}
             </s.FeedbackButton>
           </s.BottomRowSmallTopMargin>
-          <s.StyledGreyButton
-            onClick={toggleAutoPronounceValue}
-            style={{
-              position: "relative",
-              bottom: "3em",
-              left: "2em",
-              textAlign: "start",
-            }}
-          >
-            {"Auto-Pronounce: " + autoPronounceString}
-          </s.StyledGreyButton>
         </>
       )}
       {isCorrect && isMultiExerciseType && (
@@ -224,7 +214,19 @@ export default function NextNavigation({
           </s.FeedbackButton>
         </s.BottomRowSmallTopMargin>
       )}
-
+      {isCorrect && (
+        <s.StyledGreyButton
+          onClick={toggleAutoPronounceValue}
+          style={{
+            position: "relative",
+            bottom: "3em",
+            left: "2em",
+            textAlign: "start",
+          }}
+        >
+          {"Auto-Pronounce: " + autoPronounceString}
+        </s.StyledGreyButton>
+      )}
       <SolutionFeedbackLinks
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}

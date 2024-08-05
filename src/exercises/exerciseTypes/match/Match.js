@@ -1,15 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
+import {
+  EXERCISE_TYPES,
+  PRONOUNCIATION_SETTING,
+} from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
-
+import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { toast } from "react-toastify";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
+import LocalStorage from "../../../assorted/LocalStorage.js";
 
 // The user has to match three L1 words to their correct L2 translations.
 // This tests the user's passive knowledge.
@@ -61,6 +65,8 @@ export default function Match({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isPronouncing, setIsPronouncing] = useState(false);
+  const [lastCorrectBookmarkId, setLastCorrectBookmarkId] = useState(null);
   const [selectedBookmark, setSelectedBookmark] = useState(bookmarksToStudy[0]);
   const [selectedBookmarkMessage, setSelectedBookmarkMessage] = useState("");
 
@@ -75,6 +81,14 @@ export default function Match({
 
   function inputFirstClick() {
     if (firstPressTime === undefined) setFirstPressTime(new Date());
+  }
+  const speech = useContext(SpeechContext);
+  async function handleSpeak(bookmark) {
+    if (
+      LocalStorage.getAutoPronounceInExercises() !== PRONOUNCIATION_SETTING.off
+    ) {
+      await speech.speakOut(bookmark.from, setIsPronouncing);
+    }
   }
 
   useEffect(() => {
@@ -99,19 +113,22 @@ export default function Match({
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmarkLog = exerciseAttemptsLogCopy[i];
       let concatMessage = "";
-      if (buttonsToDisable.length === 2) {
-        fullMessage = fullMessage + "C";
-        setIsCorrect(true);
-        break;
-      } else if (currentBookmarkLog.bookmark.id === Number(firstChoice)) {
+      if (currentBookmarkLog.bookmark.id === Number(firstChoice)) {
         if (firstChoice === secondChoice) {
           setButtonsToDisable((arr) => [...arr, firstChoice]);
           concatMessage = currentBookmarkLog.messageToAPI + "C";
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          handleSpeak(exerciseAttemptsLogCopy[i].bookmark);
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
-          notifyCorrectAnswer(currentBookmarkLog.bookmark);
-          handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
+          setLastCorrectBookmarkId(currentBookmarkLog.bookmark.id);
+          if (buttonsToDisable.length === 2) {
+            setIsCorrect(true);
+            break;
+          } else {
+            notifyCorrectAnswer(currentBookmarkLog.bookmark);
+            handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
+          }
         } else {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
@@ -202,6 +219,8 @@ export default function Match({
         setReload={setReload}
         onBookmarkSelected={setSelectedBookmark}
         notifyBookmarkDeletion={notifyBookmarkDeletion}
+        isPronouncing={isPronouncing}
+        lastCorrectBookmarkId={lastCorrectBookmarkId}
       />
       <NextNavigation
         message={messageToNextNav}
