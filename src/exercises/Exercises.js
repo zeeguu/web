@@ -96,12 +96,6 @@ export default function Exercises({
       setActivityOver(true);
       exerciseNotification.unsetExerciseCounter();
       exerciseNotification.updateReactState();
-      let currentAutoPronounce = LocalStorage.getAutoPronounceInExercises();
-      if (
-        currentAutoPronounce &&
-        currentAutoPronounce === PRONOUNCIATION_SETTING.sessionOnly
-      )
-        LocalStorage.setAutoPronounceInExercises(PRONOUNCIATION_SETTING.off);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
