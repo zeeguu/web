@@ -13,4 +13,10 @@ function tokenize(sentence) {
   return sentence.split(" ");
 }
 
-export { tokenize, removePunctuation };
+function isWordInSentence(word, sentence) {
+  let tokens = tokenize(removePunctuation(sentence));
+  console.log(tokens);
+  return tokens.includes(word);
+}
+
+export { tokenize, removePunctuation, isWordInSentence };
