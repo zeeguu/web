@@ -65,7 +65,6 @@ export default function WordEditForm({
       handleClose();
     } else {
       updateBookmark(bookmark, expression, translation, context, fitForStudy);
-      prepClose();
     }
   }
   return (
