@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
@@ -11,16 +11,18 @@ import * as s from "../components/TopMessage.sc";
 
 export default function OwnArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
+  const [originalList, setOriginalList] = useState(null);
 
-  let originalList = articleList;
+  useEffect(() => {
+    setTitle("Saved Articles");
 
-  if (articleList == null) {
     api.getSavedUserArticles((articles) => {
       setArticleList(articles);
+      setOriginalList(articles);
     });
+  }, []);
 
-    setTitle("Own Articles");
-
+  if (articleList == null) {
     return <LoadingAnimation />;
   }
 
@@ -38,7 +40,12 @@ export default function OwnArticles({ api }) {
         setArticleList={setArticleList}
       />
       {articleList.map((each) => (
-        <ArticlePreview key={each.id} article={each} dontShowImage={true} />
+        <ArticlePreview
+          api={api}
+          key={each.id}
+          article={each}
+          dontShowSourceIcon={true}
+        />
       ))}
     </>
   );

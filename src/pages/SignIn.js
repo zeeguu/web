@@ -1,97 +1,88 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import useRedirectLink from "../hooks/useRedirectLink";
 
-import { useHistory } from "react-router-dom";
+import useFormField from "../hooks/useFormField";
+
+import InfoPage from "./info_page_shared/InfoPage";
+import Header from "./info_page_shared/Header";
+import Heading from "./info_page_shared/Heading";
+import Main from "./info_page_shared/Main";
+import Form from "./info_page_shared/Form";
+import FormSection from "./info_page_shared/FormSection";
+import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+import InputField from "./info_page_shared/InputField";
+import Footer from "./info_page_shared/Footer";
+import ButtonContainer from "./info_page_shared/ButtonContainer";
+import Button from "./info_page_shared/Button";
+
 import strings from "../i18n/definitions";
-
-import * as s from "../components/FormPage.sc";
 import LocalStorage from "../assorted/LocalStorage";
 
-export default function SignIn({ api, signInAndRedirect }) {
+export default function SignIn({ api, handleSuccessfulSignIn }) {
   // TODO: Fix this bug in a different way. Requires understanding why strings._language changes to "da" without it being asked to, whenever this component renders. Perhaps it imports an un-updated version of strings?
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  let history = useHistory();
-  let emailInputDOM = useRef();
+  const [email, handleEmailChange] = useFormField("");
+  const [password, handlePasswordChange] = useFormField("");
 
-  useEffect(() => {
-    emailInputDOM.current.focus();
-  }, []);
+  const [errorMessage, setErrorMessage] = useState("");
 
   function handleSignIn(e) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
-        signInAndRedirect(userInfo, history);
+        handleSuccessfulSignIn(userInfo, sessionId);
       });
     });
   }
 
   return (
-    <s.PageBackground>
-      <s.LogoOnTop />
-
-      <s.NarrowFormContainer>
-        <form action="" method="post">
-          <s.FormTitle>{strings.login}</s.FormTitle>
-
-          {errorMessage && <div className="error">{errorMessage}</div>}
-
-          <div className="inputField">
-            <label>{strings.email}</label>
-            <input
-              type="email"
-              className="field"
-              id="email"
-              name="email"
-              placeholder={strings.email}
-              background-color="#FFFFFF"
-              ref={emailInputDOM}
+    <InfoPage type={"narrow"}>
+      <Header>
+        <Heading>Log in</Heading>
+      </Header>
+      <Main>
+        <Form action={""} method={"post"}>
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
+          <FormSection>
+            <InputField
+              type={"email"}
+              label={strings.email}
+              id={"email"}
+              name={"email"}
+              placeholder={strings.emailPlaceholder}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
             />
-          </div>
 
-          <div className="inputField">
-            <label>{strings.password}</label>
-            <input
-              type="password"
-              className="field"
-              id="password"
-              name="password"
-              placeholder={strings.password}
-              background-color="#FFFFFF"
+            <InputField
+              type={"Password"}
+              label={strings.password}
+              id={"password"}
+              name={"password"}
+              placeholder={strings.passwordPlaceholder}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
+              helperText={<a href="/reset_pass">{strings.forgotPassword}</a>}
             />
-          </div>
-
-          <div className="inputField">
-            <s.FormButton
-              onClick={handleSignIn}
-              name="login"
-              value="Login"
-              className="loginButton"
-            >
-              {strings.login}
-            </s.FormButton>
-          </div>
-
-          <p>
-            {strings.alternativelyYouCan}{" "}
-            <a className="links" href="create_account">
-              {strings.createAnAccount}
-            </a>{" "}
-            {strings.or}{" "}
-            <a className="links" href="/reset_pass">
-              {strings.resetYourPassword}
-            </a>
-            .
-          </p>
-        </form>
-      </s.NarrowFormContainer>
-    </s.PageBackground>
+          </FormSection>
+        </Form>
+      </Main>
+      <ButtonContainer className={"padding-medium"}>
+        <Button className={"full-width-btn"} onClick={handleSignIn}>
+          {strings.login}
+        </Button>
+      </ButtonContainer>
+      <Footer>
+        <p>
+          {strings.dontHaveAnAccount + " "}
+          <a className="bold underlined-link" href="/language_preferences">
+            {strings.getStarted}
+          </a>
+        </p>
+      </Footer>
+    </InfoPage>
   );
 }

@@ -1,8 +1,11 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
+  lightBlue,
+  gray,
+  buttonBorder,
 } from "../../components/colors";
 
 const Exercise = styled.div`
@@ -12,8 +15,53 @@ const Exercise = styled.div`
   transition: all 0.5s;
   padding-bottom: 1em;
 
+  .next-nav-feedback {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5em;
+
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+    }
+    p {
+      margin-left: 1em;
+    }
+  }
+
+  .next-nav-learning-cycle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border: 0.125em solid #99e47f;
+    border-radius: 0.5em;
+    background-color: #f1f7f2;
+    width: 70%;
+
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+      margin: 0.5em;
+    }
+    p {
+      margin-left: 1em;
+      margin-right: 1em;
+    }
+  }
+
+  .type-feedback p {
+    margin: 0.5em;
+  }
+
   .headline {
-    font-size: ;
     color: gray;
     margin-top: 1em;
     font-weight: 500;
@@ -21,8 +69,9 @@ const Exercise = styled.div`
 
   .headlineWithMoreSpace {
     font-size: small;
+    font-weight: 600;
     color: gray;
-    margin-top: 3em;
+    margin-top: 2em;
     margin-bottom: 2em;
     /* font-weight: 600; */
   }
@@ -57,6 +106,40 @@ const Exercise = styled.div`
     margin-right: 2em;
     font-weight: 400;
     line-height: 1.4em;
+  }
+
+  .learningCycleIndicator {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2em;
+  }
+
+  .learningCycleIcon {
+    margin-right: 1em;
+  }
+
+  .cooling-bars {
+    display: flex;
+  }
+
+  .cooling-bar {
+    height: 0.5em;
+    margin-right: 0.5em;
+    border-radius: 10px;
+  }
+
+  .cooling-bar.green {
+    background-color: green;
+  }
+
+  .cooling-bar.yellow {
+    background-color: #ffd047;
+  }
+
+  .cooling-bar.grey {
+    background-color: grey;
   }
 
   /* Mobile version */
@@ -234,6 +317,24 @@ let AnimatedMatchButton = styled(MatchButton)`
 let Input = styled.input`
   height: 1.5em;
   text-align: center;
+  transition: all 0.3s;
+  border-radius: 0.5em;
+
+  &.wrong-border {
+    border-style: solid;
+    border-color: red !important;
+  }
+
+  &.almost-border {
+    border-style: solid;
+    border-color: ${zeeguuOrange} !important;
+  }
+
+  &:focus {
+    outline: none !important;
+    height: 1.7em;
+    width: 80%;
+  }
 
   @media (max-width: 430px) {
     order: 3;
@@ -263,7 +364,8 @@ let BottomRow = styled.div`
   align-items: center;
   justify-content: space-around;
   margin-top: 3em;
-  margin-bottom: 3em;
+  margin-bottom: 1em;
+  flex-wrap: wrap;
 
   @media (max-width: 430px) {
     flex-flow: row wrap;
@@ -276,6 +378,18 @@ let BottomRowCompact = styled.div`
   align-items: center;
   justify-content: space-around;
   margin-bottom: 3em;
+
+  @media (max-width: 430px) {
+    flex-flow: row wrap;
+  }
+`;
+
+let BottomRowSmallTopMargin = styled.div`
+  display: flex;
+  padding: 0.5em;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 0.5em;
 
   @media (max-width: 430px) {
     flex-flow: row wrap;
@@ -328,6 +442,21 @@ let EditSpeakButtonHolder = styled.div`
   justify-content: flex-start;
 `;
 
+let MultipleChoiceContext = styled.div`
+  margin: 0.5em;
+  padding: 1em;
+  cursor: pointer;
+
+  &.wrong {
+    animation: ${shake} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  &.correct {
+    border: 0.25em solid ${zeeguuOrange};
+    border-radius: 0.5em;
+  }
+`;
+
 export {
   Exercise,
   FeedbackButton,
@@ -337,6 +466,7 @@ export {
   AnimatedInput,
   BottomRow,
   BottomRowCompact,
+  BottomRowSmallTopMargin,
   StyledGreyButton,
   StyledDiv,
   MatchButton,
@@ -353,6 +483,7 @@ export {
   RightFeedbackButton,
   EditSpeakButtonHolder,
   OrangeButtonMessage,
+  MultipleChoiceContext,
 };
 
 export default StyledButton;

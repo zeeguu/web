@@ -5,8 +5,12 @@ const Feature = {
     return LocalStorage.hasFeature(featureName);
   },
 
-  tiago_exercises : function () {
+  tiago_exercises: function () {
     return this.is_enabled("tiago_exercises");
+  },
+
+  merle_exercises: function () {
+    return this.is_enabled("merle_exercises");
   },
 
   extension_experiment1: function () {

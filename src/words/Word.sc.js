@@ -5,20 +5,23 @@ let Word = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  margin-left: 0.5em;
+  @media (max-width: 400px) {
+    margin-left: 0.1em;
+    font-size: 0.8em;
+  }
 `;
 
 let StarIcon = styled.div`
   cursor: pointer;
   color: ${zeeguuVarmYellow};
 
-  margin-right: 0.3em;
-  margin-left: 0.5em;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  padding-top: 10px;
+  margin-left: 0.3em;
+  margin-right: 0.3em;
+  padding-right: 0.5em;
 
   img {
     height: 26px;
@@ -27,12 +30,12 @@ let StarIcon = styled.div`
 
 let EditIcon = styled.div`
   cursor: pointer;
-  margin-right: 0.3em;
-  margin-left: 0.7em;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 10px;
+
+  margin-left: 0.3em;
+  margin-right: 0.3em;
 
   img {
     height: 26px;
@@ -55,7 +58,7 @@ let EditIconNoPadding = styled.div`
 `;
 
 let WordPair = styled.div`
-  word-break: break-all;
+  word-break: auto-phrase;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -73,7 +76,7 @@ let WordPair = styled.div`
 `;
 
 let WordPairSpellWhatYouHear = styled.div`
-  word-break: break-all;
+  word-break: auto-phrase;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -90,14 +93,23 @@ let WordPairSpellWhatYouHear = styled.div`
     font-size: 150%;
   }
 `;
-
+let AddRemoveStudyPreferenceButton = styled.div`
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 1em;
+  img {
+    height: 24px;
+  }
+`;
 let TrashIcon = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-left: 0.5em;
-  padding-top: 10px;
+
+  margin-right: 0.3em;
 
   img {
     height: 30px;
@@ -110,6 +122,7 @@ let Spacer = styled.div`
 
 export {
   Word,
+  AddRemoveStudyPreferenceButton,
   TrashIcon,
   StarIcon,
   WordPair,

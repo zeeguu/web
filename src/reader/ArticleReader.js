@@ -1,23 +1,31 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import { RoutingContext } from "../contexts/RoutingContext";
+import { SpeechContext } from "../contexts/SpeechContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
+import { random } from "../utils/basic/arrays";
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import * as s from "./ArticleReader.sc";
 import DifficultyFeedbackBox from "./DifficultyFeedbackBox";
+import LikeFeedBackBox from "./LikeFeedbackBox";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 
 import ArticleSource from "./ArticleSource";
 import ReportBroken from "./ReportBroken";
 
 import TopToolbar from "./TopToolbar";
-import ReviewVocabulary from "./ReviewVocabulary";
+import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
+import useActivityTimer from "../hooks/useActivityTimer";
+import ActivityTimer from "../components/ActivityTimer";
+import useShadowRef from "../hooks/useShadowRef";
+import strings from "../i18n/definitions";
+import { getScrollRatio } from "../utils/misc/getScrollLocation";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -28,21 +36,6 @@ export const UMR_SOURCE = "UMR";
 // the query string for you.
 function useQuery() {
   return new URLSearchParams(useLocation().search);
-}
-
-export function onScroll(api, articleID, source) {
-  let _current_time = new Date();
-  let current_time = _current_time.getTime();
-  if (previous_time === 0) {
-    api.logReaderActivity(api.SCROLL, articleID, "", source);
-    previous_time = current_time;
-  } else {
-    if (current_time - previous_time > FREQUENCY_KEEPALIVE) {
-      api.logReaderActivity(api.SCROLL, articleID, "", source);
-      previous_time = current_time;
-    } else {
-    }
-  }
 }
 
 export function onFocus(api, articleID, source) {
@@ -70,19 +63,82 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [translating, setTranslating] = useState(true);
   const [pronouncing, setPronouncing] = useState(true);
+  const [scrollPosition, setScrollPosition] = useState();
+  const [readerReady, setReaderReady] = useState();
+  const [answerSubmitted, setAnswerSubmitted] = useState(false);
+  const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
+
   const user = useContext(UserContext);
   const history = useHistory();
+  const speech = useContext(SpeechContext);
+  const [activityTimer, isTimerActive] = useActivityTimer(uploadActivity);
+  const [readingSessionId, setReadingSessionId] = useState();
+
+  const scrollEvents = useRef();
+
+  const activityTimerRef = useShadowRef(activityTimer);
+  const readingSessionIdRef = useShadowRef(readingSessionId);
+  const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
+
+  const lastSampleTimer = useRef();
+  const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
+
+  function uploadActivity() {
+    // It can happen that the timer already ticks before we have a reading session from the server.
+    if (readingSessionIdRef.current) {
+      api.readingSessionUpdate(
+        readingSessionIdRef.current,
+        activityTimerRef.current,
+      );
+    }
+  }
 
   useEffect(() => {
     onCreate();
     return () => {
-      onDestruct();
+      componentWillUnmount();
     };
     // eslint-disable-next-line
   }, []);
 
+  const handleFocus = () => {
+    onFocus(api, articleID, UMR_SOURCE);
+  };
+
+  const handleBlur = () => {
+    onBlur(api, articleID, UMR_SOURCE);
+  };
+
+  const handleScroll = () => {
+    let bottomRowElement = document.getElementById("bottomRow");
+
+    // We use this to avoid counting the feedback elements
+    // as part of the article length when updating the
+    // scroll bar.
+    // 450 Is a default in case we can't access the property
+    let bottomRowHeight = 450;
+    if (bottomRowElement) {
+      bottomRowHeight = bottomRowElement.offsetHeight;
+    }
+
+    let ratio = getScrollRatio(bottomRowHeight);
+    setScrollPosition(ratio);
+    let percentage = Math.floor(ratio * 100);
+    let currentReadingTimer = activityTimerRef.current;
+    if (
+      currentReadingTimer - lastSampleTimer.current >=
+      SCROLL_SAMPLE_FREQUENCY
+    ) {
+      scrollEvents.current.push([currentReadingTimer, percentage]);
+      lastSampleTimer.current = currentReadingTimer;
+    }
+  };
+
   function onCreate() {
-    console.log("CALLING OnCREATE");
+    scrollEvents.current = [];
+    lastSampleTimer.current = 0;
+    setScrollPosition(0);
+
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
@@ -90,8 +146,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
           articleInfo,
           api,
           api.TRANSLATE_TEXT,
-          UMR_SOURCE
-        )
+          UMR_SOURCE,
+          speech,
+        ),
       );
       setInteractiveTitle(
         new InteractiveText(
@@ -99,45 +156,50 @@ export default function ArticleReader({ api, teacherArticleID }) {
           articleInfo,
           api,
           api.TRANSLATE_TEXT,
-          UMR_SOURCE
-        )
+          UMR_SOURCE,
+          speech,
+        ),
       );
       setArticleInfo(articleInfo);
       setTitle(articleInfo.title);
 
-      api.setArticleOpened(articleInfo.id);
-      api.logReaderActivity(api.OPEN_ARTICLE, articleID, "", UMR_SOURCE);
+      api.readingSessionCreate(articleID, (sessionID) => {
+        setReadingSessionId(sessionID);
+        api.setArticleOpened(articleInfo.id);
+        api.logReaderActivity(
+          api.OPEN_ARTICLE,
+          articleID,
+          sessionID,
+          UMR_SOURCE,
+        );
+      });
     });
 
-    window.addEventListener("focus", function () {
-      console.log("focus");
-      onFocus(api, articleID, UMR_SOURCE);
-    });
-
-    window.addEventListener("blur", function () {
-      console.log("blur");
-      onBlur(api, articleID, UMR_SOURCE);
-    });
-
-    window.addEventListener("scroll", function () {
-      onScroll(api, articleID, UMR_SOURCE);
-    });
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("blur", handleBlur);
+    // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#usecapture
+    window.addEventListener("scroll", handleScroll, true);
+    window.addEventListener("beforeunload", componentWillUnmount);
   }
 
-  function onDestruct() {
-    window.removeEventListener("focus", function () {
-      onFocus(api, articleID, UMR_SOURCE);
-    });
-
-    window.removeEventListener("blur", function () {
-      onBlur(api, articleID, UMR_SOURCE);
-    });
-
-    window.removeEventListener("scroll", function () {
-      onScroll(api, articleID, UMR_SOURCE);
-    });
-
+  function componentWillUnmount() {
+    uploadActivity();
+    api.logReaderActivity(
+      api.SCROLL,
+      articleID,
+      scrollEvents.current.length,
+      JSON.stringify(scrollEvents.current).slice(0, 4096),
+    );
     api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
+    window.removeEventListener("focus", handleFocus);
+    window.removeEventListener("blur", handleBlur);
+    window.removeEventListener("scroll", handleScroll, true);
+    window.removeEventListener("beforeunload", componentWillUnmount);
+    if (!clickedOnReviewVocabRef.current) {
+      // If the user clicks away from the article, prioritize
+      // words based on their rank.
+      api.prioritizeBookmarksToStudy(articleID);
+    }
   }
 
   function toggleBookmarkedState() {
@@ -145,10 +207,15 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.setArticleInfo(newArticleInfo, () => {
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.STAR_ARTICLE, articleID, "", UMR_SOURCE);
+    api.logReaderActivity(
+      api.STAR_ARTICLE,
+      articleID,
+      readingSessionId,
+      UMR_SOURCE,
+    );
   }
 
-  if (!articleInfo) {
+  if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
   }
 
@@ -160,18 +227,45 @@ export default function ArticleReader({ api, teacherArticleID }) {
         article.language,
         (newID) => {
           history.push(`/teacher/texts/editText/${newID}`);
-        }
+        },
       );
     });
   };
 
-  const handleSaveCopyToShare = () => {
-    setReturnPath("/teacher/texts/AddTextOptions");
-    saveArticleToOwnTexts();
+  const setLikedState = (state) => {
+    let newArticleInfo = { ...articleInfo, liked: state };
+    api.setArticleInfo(newArticleInfo, () => {
+      setAnswerSubmitted(true);
+      setArticleInfo(newArticleInfo);
+    });
+    api.logReaderActivity(api.LIKE_ARTICLE, articleInfo.id, state, UMR_SOURCE);
+  };
+
+  const updateArticleDifficultyFeedback = (answer) => {
+    let newArticleInfo = { ...articleInfo, relative_difficulty: answer };
+    api.submitArticleDifficultyFeedback(
+      { article_id: articleInfo.id, difficulty: answer },
+      () => {
+        setAnswerSubmitted(true);
+        setArticleInfo(newArticleInfo);
+      },
+    );
+    api.logReaderActivity(
+      api.DIFFICULTY_FEEDBACK,
+      articleInfo.id,
+      answer,
+      UMR_SOURCE,
+    );
   };
 
   return (
     <s.ArticleReader>
+      <ActivityTimer
+        message="Total time in this reading session"
+        activeSessionDuration={activityTimer}
+        clockActive={isTimerActive}
+      />
+
       <TopToolbar
         user={user}
         teacherArticleID={teacherArticleID}
@@ -184,26 +278,50 @@ export default function ArticleReader({ api, teacherArticleID }) {
         setPronouncing={setPronouncing}
         url={articleInfo.url}
         UMR_SOURCE={UMR_SOURCE}
+        articleProgress={scrollPosition}
       />
       <h1>
         <TranslatableText
           interactiveText={interactiveTitle}
           translating={translating}
           pronouncing={pronouncing}
+          setIsRendered={setReaderReady}
         />
       </h1>
-      <div style={{ marginTop: "1em", marginBottom: "4em", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div
+        style={{
+          marginTop: "1em",
+          marginBottom: "2em",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         <ArticleAuthors articleInfo={articleInfo} />
-        <div style={{ display: "flex", flexDirection: "row"}}>
-        <ArticleSource url={articleInfo.url} />
-        <ReportBroken
-          api={api}
-          UMR_SOURCE={UMR_SOURCE}
-          history={history}
-          articleID={articleID}
-        />
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <ArticleSource url={articleInfo.url} />
+          <ReportBroken
+            api={api}
+            UMR_SOURCE={UMR_SOURCE}
+            history={history}
+            articleID={articleID}
+          />
         </div>
       </div>
+      <hr></hr>
+      {articleInfo.img_url && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <img
+            alt=""
+            src={articleInfo.img_url}
+            style={{
+              width: "100%",
+              borderRadius: "1em",
+              marginBottom: "1em",
+            }}
+          />
+        </div>
+      )}
 
       {articleInfo.video ? (
         <iframe
@@ -226,10 +344,36 @@ export default function ArticleReader({ api, teacherArticleID }) {
         />
       </s.MainText>
 
-      <DifficultyFeedbackBox api={api} articleID={articleID} />
-      <ReviewVocabulary
-          articleID={articleID}
-        />
+      {readerReady && (
+        <div id={"bottomRow"}>
+          <ReviewVocabularyInfoBox
+            articleID={articleID}
+            clickedOnReviewVocab={clickedOnReviewVocab}
+            setClickedOnReviewVocab={setClickedOnReviewVocab}
+          />
+          <s.CombinedBox>
+            <p style={{ padding: "0em 2em 0em 2em" }}>
+              {" "}
+              {strings.answeringMsg}{" "}
+            </p>
+            <LikeFeedBackBox
+              articleInfo={articleInfo}
+              setLikedState={setLikedState}
+            />
+            <DifficultyFeedbackBox
+              articleInfo={articleInfo}
+              updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
+            />
+            {answerSubmitted && (
+              <s.InvisibleBox>
+                <h3 align="center">
+                  Thank You {random(["🤗", "🙏", "😊", "🎉"])}
+                </h3>
+              </s.InvisibleBox>
+            )}
+          </s.CombinedBox>
+        </div>
+      )}
       <s.ExtraSpaceAtTheBottom />
     </s.ArticleReader>
   );

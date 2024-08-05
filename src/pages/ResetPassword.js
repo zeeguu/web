@@ -1,13 +1,20 @@
 import { useState } from "react";
 
-import * as s from "../components/FormPage.sc";
+import InfoPage from "./info_page_shared/InfoPage";
+import Header from "./info_page_shared/Header";
+import Heading from "./info_page_shared/Heading";
+import Main from "./info_page_shared/Main";
+import Footer from "./info_page_shared/Footer";
+
+import useFormField from "../hooks/useFormField";
 
 import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
 
-export default function ResetPassword({ api, notifySuccessfulSignIn }) {
-  const [email, setEmail] = useState("");
+import strings from "../i18n/definitions";
 
+export default function ResetPassword({ api }) {
+  const [email, handleEmailChange] = useFormField("");
   const [codeSent, setCodeSent] = useState(false);
 
   function validEmail() {
@@ -15,23 +22,30 @@ export default function ResetPassword({ api, notifySuccessfulSignIn }) {
   }
 
   return (
-    <s.PageBackground>
-      <s.LogoOnTop />
-
-      <s.NarrowFormContainer>
+    <InfoPage type={"narrow"}>
+      <Header>
+        <Heading>Reset Password</Heading>
+      </Header>
+      <Main>
         {!codeSent && (
           <ResetPasswordStep1
             api={api}
             email={email}
-            setEmail={setEmail}
+            handleEmailChange={handleEmailChange}
             notifyOfValidEmail={validEmail}
           />
         )}
 
-        {codeSent && (
-          <ResetPasswordStep2 api={api} email={email} setEmail={setEmail} />
-        )}
-      </s.NarrowFormContainer>
-    </s.PageBackground>
+        {codeSent && <ResetPasswordStep2 api={api} email={email} />}
+      </Main>
+      <Footer>
+        <p>
+          {strings.rememberPassword + " "}
+          <a className="bold underlined-link" href="login">
+            {strings.login}
+          </a>
+        </p>
+      </Footer>
+    </InfoPage>
   );
 }

@@ -9,8 +9,17 @@ const LocalStorage = {
   Keys: {
     Session: "sessionID",
     Name: "name",
+
+    // language related keys used in the logged-in user session
     LearnedLanguage: "learned_language",
     NativeLanguage: "native_language",
+    LearnedCefrLevel: "learned_cefr_level",
+
+    // language related keys used for initial language set-up during account creation
+    LearnedLanguage_OnRegister: "learned_language_on_register",
+    NativeLanguage_OnRegister: "native_language_on_register",
+    LearnedCefrLevel_OnRegister: "learned_cefr_on_register",
+
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
@@ -25,6 +34,7 @@ const LocalStorage = {
     TargetNoOfAudioSessions: "audio_target_no_of_sessions",
     clickedVideoLink: "clicked_video_link",
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
+    ProductiveExercisesEnabled: "productiveExercisesEnabled",
   },
 
   userInfo: function () {
@@ -33,11 +43,76 @@ const LocalStorage = {
       learned_language: localStorage[this.Keys.LearnedLanguage],
       native_language: localStorage[this.Keys.NativeLanguage],
       is_teacher: "true" === localStorage[this.Keys.IsTeacher],
+      productiveExercisesEnabled:
+        localStorage[this.Keys.ProductiveExercisesEnabled],
     };
   },
 
   isStudent: function () {
     return localStorage[this.Keys.IsStudent] !== "false";
+  },
+
+  getLearnedLanguage: function () {
+    return localStorage[this.Keys.LearnedLanguage];
+  },
+
+  setLearnedLanguage: function (learnedLanguage) {
+    localStorage[this.Keys.LearnedLanguage] = learnedLanguage;
+  },
+
+  getLearnedCefrLevel: function () {
+    return localStorage[this.Keys.LearnedCefrLevel];
+  },
+
+  setLearnedCefrLevel: function (learnedCefrLevel) {
+    localStorage[this.Keys.LearnedCefrLevel] = learnedCefrLevel;
+  },
+
+  getNativeLanguage: function () {
+    return localStorage[this.Keys.NativeLanguage];
+  },
+
+  setNativeLanguage: function (nativeLanguage) {
+    localStorage[this.Keys.NativeLanguage] = nativeLanguage;
+  },
+
+  getLearnedLanguage_OnRegister: function () {
+    return localStorage[this.Keys.LearnedLanguage_OnRegister];
+  },
+
+  setLearnedLanguage_OnRegister: function (learnedLanguage_OnRegister) {
+    localStorage[this.Keys.LearnedLanguage_OnRegister] =
+      learnedLanguage_OnRegister;
+  },
+
+  removeLearnedLanguage_OnRegister: function () {
+    localStorage.removeItem(this.Keys.LearnedLanguage_OnRegister);
+  },
+
+  getLearnedCefrLevel_OnRegister: function () {
+    return localStorage[this.Keys.LearnedCefrLevel_OnRegister];
+  },
+
+  setLearnedCefrLevel_OnRegister: function (learnedCefrLevel_OnRegister) {
+    localStorage[this.Keys.LearnedCefrLevel_OnRegister] =
+      learnedCefrLevel_OnRegister;
+  },
+
+  removeCefrLevel_OnRegister: function () {
+    localStorage.removeItem(this.Keys.LearnedCefrLevel_OnRegister);
+  },
+
+  getNativeLanguage_OnRegister: function () {
+    return localStorage[this.Keys.NativeLanguage_OnRegister];
+  },
+
+  setNativeLanguage_OnRegister: function (nativeLanguage_OnRegister) {
+    localStorage[this.Keys.NativeLanguage_OnRegister] =
+      nativeLanguage_OnRegister;
+  },
+
+  removeNativeLanguage_OnRegister: function () {
+    localStorage.removeItem(this.Keys.NativeLanguage_OnRegister);
   },
 
   selectedTimePeriod: function () {
@@ -62,6 +137,21 @@ const LocalStorage = {
   // Setting info
   locallySetName: function (newName) {
     localStorage[this.Keys.Name] = newName;
+  },
+
+  setProductiveExercisesEnabled: function (productiveExercisesEnabled) {
+    localStorage[this.Keys.ProductiveExercisesEnabled] =
+      productiveExercisesEnabled;
+  },
+
+  getProductiveExercisesEnabled: function () {
+    try {
+      return (
+        localStorage.getItem(this.Keys.ProductiveExercisesEnabled) === "true"
+      );
+    } catch (e) {
+      return undefined;
+    }
   },
 
   setSession: function (session) {
@@ -115,6 +205,21 @@ const LocalStorage = {
     }
   },
 
+  setUserPreferences: function (preferences) {
+    if (preferences["productive_exercises"] !== undefined) {
+      localStorage[this.Keys.ProductiveExercisesEnabled] =
+        preferences["productive_exercises"];
+    }
+  },
+
+  deleteUserPreferences: function () {
+    try {
+      localStorage.removeItem(this.Keys.ProductiveExercisesEnabled);
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   setSelectedTimePeriod: function (time) {
     localStorage[this.Keys.SelectedTimePeriod] = time;
   },
@@ -142,10 +247,10 @@ const LocalStorage = {
 
   checkAndUpdateAudioExperimentCompleted: function () {
     let noOfSessions = Number(
-      localStorage[this.Keys.AudioExperimentNoOfSessions]
+      localStorage[this.Keys.AudioExperimentNoOfSessions],
     );
     let targetNoOfAudioSessions = Number(
-      localStorage[this.Keys.TargetNoOfAudioSessions]
+      localStorage[this.Keys.TargetNoOfAudioSessions],
     );
     if (noOfSessions >= targetNoOfAudioSessions) {
       this.setAudioExperimentCompleted(true);
@@ -162,7 +267,7 @@ const LocalStorage = {
   },
 
   setDisplayedAudioExperimentQuestionnaire: function (
-    displayedAudioExperimentQuestionnaire
+    displayedAudioExperimentQuestionnaire,
   ) {
     localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire] =
       displayedAudioExperimentQuestionnaire;
@@ -171,7 +276,7 @@ const LocalStorage = {
   getTargetNoOfAudioSessions: function () {
     try {
       let noofsessions = Number(
-        localStorage[this.Keys.TargetNoOfAudioSessions]
+        localStorage[this.Keys.TargetNoOfAudioSessions],
       );
       return noofsessions;
     } catch (e) {
@@ -185,7 +290,7 @@ const LocalStorage = {
 
   getAudioExperimentNoOfSessions: function () {
     let noofsessions = Number(
-      localStorage[this.Keys.AudioExperimentNoOfSessions]
+      localStorage[this.Keys.AudioExperimentNoOfSessions],
     );
     return noofsessions;
   },
@@ -197,7 +302,7 @@ const LocalStorage = {
 
   incrementAudioExperimentNoOfSessions: function () {
     var audioExperimentNoOfSessions = Number(
-      localStorage[this.Keys.AudioExperimentNoOfSessions]
+      localStorage[this.Keys.AudioExperimentNoOfSessions],
     );
     var temp = audioExperimentNoOfSessions + 1;
     localStorage[this.Keys.AudioExperimentNoOfSessions] = temp;

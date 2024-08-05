@@ -14,7 +14,7 @@ let mainPageContentCommon = css`
   position: fixed;
   top: 0;
   overflow-y: scroll;
-  height: 100vh;
+  height: 100%;
   padding-bottom: 6px;
   padding-left: 6px;
   padding-right: 6px;
@@ -123,11 +123,34 @@ const navigationVisibleCommon = css`
     color: white;
     margin-bottom: 0.4em;
     background-color: ${(props) => props.dark};
+    padding-left: 0.5em;
 
     a {
       color: white;
       text-decoration: none;
       padding-left: 10px;
+    }
+  }
+
+  .SettingsLogoutContainer {
+    position: absolute;
+    bottom: 1em;
+    width: 100%;
+  }
+
+  .SettingsLogoutHolder {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .navigationIcon {
+    height: 32px;
+
+    :hover {
+      filter: brightness(0.95);
+    }
+    @media (max-width: 768px) {
+      height: 22px;
     }
   }
 `;
@@ -178,6 +201,7 @@ const SideBarToggled = styled.div`
     padding-top: 0.4em;
     padding-bottom: 0.4em;
     font-size: large;
+    padding-left: 0.5em;
   }
 
   @media (min-width: 768px) {

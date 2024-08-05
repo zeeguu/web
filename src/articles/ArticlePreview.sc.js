@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import {
   almostBlack,
-  veryLightGrey,
   zeeguuOrange,
-  zeeguuVarmYellow,
   zeeguuDarkOrange,
 } from "../components/colors";
 
@@ -12,6 +10,40 @@ const ArticlePreview = styled.div`
   border-left: solid ${zeeguuOrange};
   margin-top: 2em;
   padding-left: 0.8em;
+  padding-bottom: 1em;
+`;
+/*
+  The div contains the article preview contents
+  and defines the size of the images relative to the 
+  user's screen size. Note this does not include the source/
+  publishing time or topics.
+*/
+
+const ArticleContent = styled.div`
+  width: 100%;
+  display: flex;
+  color: inherit;
+  font-weight: inherit;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: space-around;
+  align-items: center;
+
+  img {
+    margin: 0.5em;
+    margin-left: 0;
+    max-width: 10em;
+    max-height: 10em;
+    border-radius: 1em;
+    align-self: center;
+    object-fit: cover;
+
+    @media (max-width: 990px) {
+      max-width: 14em;
+      max-height: 10em;
+    }
+  }
 `;
 
 //Invisible component that allows to open the redirection
@@ -34,56 +66,38 @@ const InvisibleTitleButton = styled.button`
 const Title = styled.div`
   font-size: 1.4em;
   color: ${zeeguuDarkOrange};
-  max-width: 24em;
   padding-right: 0.3em;
   font-weight: 500;
-`;
-
-const Difficulty = styled.div`
-  padding: 0 0.55em;
-  width: 2.8em;
-  height: 3.8em;
-  text-align: center;
-  border-radius: 50%;
-  background-color: ${veryLightGrey};
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 1em;
-  flex-shrink: 0;
-  float: right;
-`;
-
-const WordCount = styled(Difficulty)`
-  background-color: ${veryLightGrey};
+  display: block;
+  width: 100%;
 `;
 
 let Summary = styled.div`
   font-size: 0.83em;
   color: ${almostBlack};
-  max-width: 44em;
   line-height: 1.5em;
   margin-top: 0.36em;
-`;
-
-let SourceImage = styled.span`
-  img {
-    background-color: ${zeeguuVarmYellow};
-    height: 1.5em;
+  width: 40em;
+  margin: auto;
+  margin-left: 1em;
+  @media (max-width: 990px) {
+    width: 100%;
   }
-  margin-right: 2em;
 `;
 
-let PublishingTime = styled.span`
-  margin-right: 2em;
-  padding-bottom: 1em;
+let BottomContainer = styled.div`
+  display: flex;
+  margin-top: 0.5em;
+  align-items: center;
+  justify-content: space-between;
+  @media (max-width: 900px) {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1em;
+  }
 `;
 
 let Topics = styled.span`
-  display: inline-block;
-
-  margin-top: 1em;
-
   span {
     height: 1.2em;
     margin-left: 0.2em;
@@ -94,15 +108,12 @@ let Topics = styled.span`
   }
 `;
 
-
 export {
   Title,
-  Difficulty,
-  WordCount,
   ArticlePreview,
   InvisibleTitleButton,
+  ArticleContent,
+  BottomContainer,
   Summary,
-  SourceImage,
-  PublishingTime,
   Topics,
 };

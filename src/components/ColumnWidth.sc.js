@@ -4,25 +4,34 @@ const NarrowColumn = styled.div`
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: 200px;
 `;
 
 const CenteredContent = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
+  max-width: 90%;
+  align-items: center;
+
+  .imgContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1em;
+    align-items: center;
+  }
 `;
 
 const ToolTipsContainer = styled.div`
-display: flex;
-flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-.tooltiptext {
-  visibility: hidden;
-  color: #999999 !important;
-  text-align: center;
-  margin-top: -2.4em;
-  font-size:small;
+  .tooltiptext {
+    visibility: hidden;
+    color: #999999 !important;
+    text-align: center;
+    margin-top: -2.4em;
+    font-size: small;
   }
 
   :hover .tooltiptext {
@@ -30,13 +39,12 @@ flex-direction: column;
   }
 `;
 
-
 const ContentOnRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 3em;
-  button{
+  margin: 1em;
+  button {
     margin: 0.2em;
   }
 `;
@@ -45,14 +53,12 @@ const WideColumn = styled.div`
   max-width: 950px;
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: 200px;
 `;
 
 const WidestColumn = styled.div`
   max-width: 1150px;
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: 200px;
 `;
 export {
   NarrowColumn,

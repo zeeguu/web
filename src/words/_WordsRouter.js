@@ -1,50 +1,90 @@
-import {PrivateRoute} from "../PrivateRoute";
-import ReadingHistory from "./WordHistory";
-import Starred from "./Starred";
+import { PrivateRoute } from "../PrivateRoute";
 import Learned from "./Learned";
 import Top from "./Top";
 import * as s from "../components/ColumnWidth.sc";
 import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
-import {Switch} from "react-router-dom";
+import { Switch } from "react-router-dom";
 import WordsForArticle from "./WordsForArticle";
+import Receptive from "./Receptive";
+import Productive from "./Productive";
+import Feature from "../features/Feature";
 
-export default function WordsRouter({api}) {
-    return (
-        <Switch>
-            <PrivateRoute
-                path="/words/forArticle/:articleID"
-                api={api}
-                component={WordsForArticle}
-            />
-            <PrivateRoute
-                path="/render/words/forArticle/:articleID"
-                api={api}
-                component={WordsForArticle}
-            />
+export default function WordsRouter({ api }) {
+  let tabsAndLinks = {
+    [strings.learned]: "/words/learned",
+    [strings.topWords]: "/words",
+  };
 
-            <s.NarrowColumn>
-                <TopTabs
-                    title={strings.yourWordsHeadline}
-                    tabsAndLinks={{
-                        "Top Words": "/words",
-                        [strings.learned]: "/words/learned",
-                        // [strings.starred]: "/words/starred",
-                    }}
-                />
+  if (Feature.merle_exercises) {
+    tabsAndLinks = {
+      [strings.titleReceptiveWords]: "/words",
+      [strings.titleProductiveWords]: "/words/productive",
+      [strings.learned]: "/words/learned",
+      [strings.topWords]: "/words/top",
+    };
+  }
 
-                {/* <PrivateRoute path="/words/starred" api={api} component={Starred} /> */}
+  return (
+    <Switch>
+      <PrivateRoute
+        path="/words/forArticle/:articleID"
+        api={api}
+        component={WordsForArticle}
+      />
+      <PrivateRoute
+        path="/render/words/forArticle/:articleID"
+        api={api}
+        component={WordsForArticle}
+      />
 
-                <PrivateRoute path="/words/learned" api={api} component={Learned}/>
-                <PrivateRoute
-                    path="/render/words/learned"
-                    api={api}
-                    component={Learned}
-                />
+      <s.NarrowColumn>
+        <TopTabs
+          title={strings.yourWordsHeadline}
+          tabsAndLinks={tabsAndLinks}
+        />
 
-                <PrivateRoute exact path="/words" api={api} component={Top}/>
-                <PrivateRoute exact path="/render/words" api={api} component={Top}/>
-            </s.NarrowColumn>
-        </Switch>
-    );
+        <PrivateRoute path="/words/learned" api={api} component={Learned} />
+
+        <PrivateRoute
+          path="/render/words/learned"
+          api={api}
+          component={Learned}
+        />
+
+        {Feature.merle_exercises ? (
+          <PrivateRoute exact path="/words" api={api} component={Receptive} />
+        ) : (
+          <PrivateRoute exact path="/words" api={api} component={Top} />
+        )}
+
+        <PrivateRoute exact path="/render/words" api={api} component={Top} />
+        <PrivateRoute
+          exact
+          path="/words/receptive"
+          api={api}
+          component={Receptive}
+        />
+        <PrivateRoute
+          exact
+          path="/render/words/receptive"
+          api={api}
+          component={Receptive}
+        />
+        <PrivateRoute
+          exact
+          path="/words/productive"
+          api={api}
+          component={Productive}
+        />
+        <PrivateRoute exact path="/words/top" api={api} component={Top} />
+        <PrivateRoute
+          exact
+          path="/render/words/productive"
+          api={api}
+          component={Productive}
+        />
+      </s.NarrowColumn>
+    </Switch>
+  );
 }

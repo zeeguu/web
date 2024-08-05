@@ -1,42 +1,45 @@
-import { LogoOnTop } from "../components/FormPage.sc";
+import InfoPage from "./info_page_shared/InfoPage";
+import Header from "./info_page_shared/Header";
+import Heading from "./info_page_shared/Heading";
+import Main from "./info_page_shared/Main";
+import ButtonContainer from "./info_page_shared/ButtonContainer";
+import Footer from "./info_page_shared/Footer";
+import Button from "./info_page_shared/Button";
+import FullWidthImage from "../components/FullWidthImage";
+import { getExtensionInstallationLinks } from "../utils/extension/extensionInstallationLinks";
+
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+
 import strings from "../i18n/definitions";
-import { PageBackground, ExtensionContainer } from "./ExtensionInstalled.sc";
-import * as s from "./InstallExtension.sc";
+import redirect from "../utils/routing/routing";
 
 export default function InstallExtension() {
   return (
-    <PageBackground>
-      <LogoOnTop />
-      <ExtensionContainer>
-        <s.InstallExtensionWrapper>
-          <h1>{strings.userCreated}</h1>
-          <h4>{strings.installExtension}</h4>
-          <p>{strings.extensionDescription}</p>
-          <p>{strings.extensionFunctionality}</p>
-          <ul>
-            <li>
-              <p>{strings.extensionAdvantage1}</p>
-            </li>
-            <li>
-              <p>{strings.extensionAdvantage2}</p>
-            </li>
-            <li>
-              <p>{strings.extensionAdvantage3}</p>
-            </li>
-          </ul>
-          <s.LinkContainer>
-            <s.OrangeButton>
-              <a href="https://chrome.google.com/webstore/detail/the-zeeguu-reader/ckncjmaednfephhbpeookmknhmjjodcd">
-                Install for Chrome or Edge
-              </a>
-            </s.OrangeButton>
-            <s.OrangeButton>
-              <a href="https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/">Install for Firefox</a>
-            </s.OrangeButton>
-            <a href="/articles">Don't want the extension? Go to articles.</a>
-          </s.LinkContainer>
-        </s.InstallExtensionWrapper>
-      </ExtensionContainer>
-    </PageBackground>
+    <InfoPage>
+      <Header>
+        <Heading>You're almost there</Heading>
+      </Header>
+      <Main>
+        <p>
+          Time to install The Zeeguu Reader browser extension, which enables you
+          to&nbsp;read and translate articles and solve&nbsp;exercises
+        </p>
+        <FullWidthImage src={"find-extension.png"} />
+      </Main>
+      <Footer>
+        <ButtonContainer className={"padding-large"}>
+          <Button
+            className={"full-width-btn"}
+            onClick={() => redirect(getExtensionInstallationLinks())}
+          >
+            <FileDownloadOutlinedIcon fontSize="small" />
+            {strings.installTheExtension}
+          </Button>
+          <a className="link" href="/articles">
+            {strings.iWillInstallLater}
+          </a>
+        </ButtonContainer>
+      </Footer>
+    </InfoPage>
   );
 }

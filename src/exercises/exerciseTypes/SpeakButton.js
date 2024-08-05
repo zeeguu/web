@@ -1,10 +1,12 @@
-import {useContext, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import strings from "../../i18n/definitions";
 
 import Loader from "react-loader-spinner";
 import * as s from "./SpeakButton.sc";
 
-import {SpeechContext} from "../SpeechContext";
+import { getStaticPath } from "../../utils/misc/staticPath.js";
+
+import { SpeechContext } from "../../contexts/SpeechContext";
 
 const small_style = {
   // Icon properties
@@ -65,17 +67,28 @@ export default function SpeakButton({
   styling,
   handleClick,
   isReadContext,
+  parentIsSpeakingControl,
 }) {
   const speech = useContext(SpeechContext);
-  // const [speech] = useState(new ZeeguuSpeech(api, bookmarkToStudy.from_lang));
   const [isSpeaking, setIsSpeaking] = useState(false);
   let style = styles[styling] || small_next_style; // default is next style
 
+  useEffect(() => {
+    setIsSpeaking(parentIsSpeakingControl);
+  }, [parentIsSpeakingControl]);
+
   async function handleSpeak() {
-    setIsSpeaking(true);
-    if (isReadContext) { await speech.speakOut(bookmarkToStudy.context); }
-    else { await speech.speakOut(bookmarkToStudy.from); }
-    setIsSpeaking(false);
+    // If audio is playing don't let other buttons be clicked.
+    if (speech.isCurrentlySpeaking) return;
+    try {
+      if (isReadContext) {
+        await speech.speakOut(bookmarkToStudy.context, setIsSpeaking);
+      } else {
+        await speech.speakOut(bookmarkToStudy.from, setIsSpeaking);
+      }
+    } catch (err) {
+      console.log("There was an error executing the speech: " + err);
+    }
   }
 
   return (
@@ -108,7 +121,7 @@ export default function SpeakButton({
 
           {!isSpeaking && (
             <img
-              src="https://zeeguu.org/static/images/volume_up.svg"
+              src={getStaticPath("images", "volume_up.svg")}
               alt={strings.speak}
               width={style.img_width}
               height={style.img_height}
@@ -147,7 +160,7 @@ export default function SpeakButton({
 
           {!isSpeaking && (
             <img
-              src="https://zeeguu.org/static/images/volume_up.svg"
+              src={getStaticPath("images", "volume_up.svg")}
               alt={strings.speak}
               width={style.img_width}
               height={style.img_height}

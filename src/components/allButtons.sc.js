@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { zeeguuOrange, white, brown, lightOrange, buttonBorder } from "./colors";
+import styled, { css } from "styled-components";
+import { zeeguuOrange, lightOrange, lightGrey } from "./colors";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -25,8 +25,8 @@ const OrangeRoundButton = styled(RoundButton)`
 
 const OrangeBackButton = styled(OrangeRoundButton)`
   position: absolute;
-  bottom:1em;
-  left:0;
+  bottom: 1em;
+  left: 0;
 `;
 
 // from: https://stackoverflow.com/questions/10019797/pure-css-close-button
@@ -43,7 +43,8 @@ const ClearSearchButton = styled.div`
   border-style: solid;
   border-color: white;
   border-radius: 100%;
-  background: -webkit-linear-gradient(
+  background:
+    -webkit-linear-gradient(
       -45deg,
       transparent 0%,
       transparent 46%,
@@ -70,28 +71,55 @@ const BigSquareButton = styled(RoundButton)`
   font-size: 18px;
 `;
 
-const StyledPrimaryButton = styled.button`
-  color: ${white};
-  background-color: ${zeeguuOrange};
-  border-color:  ${buttonBorder} !important;
-
-  :hover{
-    background-color: ${lightOrange};
-    color: ${brown};
-  }
-
-  height: 45px;
-  display: inline-block;
-  padding: 5px 45px 5px 45px;
-  margin: 5px;
-  height: 50px;
+const StyledButton = styled.button`
+  color: black;
+  height: auto;
+  display: flex;
+  padding: 1em;
+  margin: 1em;
   border-style: none;
   border-width: 2px;
-  border-radius: 40px;
-  font-size: 18px;
+  border-radius: 10px;
+  font-size: 1em;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0px 4px ${brown};
+  align-items: center;
+  justify-content: center;
+
+  // Primary
+  ${(props) =>
+    props.primary &&
+    css`
+      background-color: ${zeeguuOrange};
+      :hover {
+        background-color: ${lightOrange};
+      }
+    `}
+
+  // Secondary
+  ${(props) =>
+    props.secondary &&
+    css`
+      background-color: white;
+      :hover {
+        text-decoration: underline;
+      }
+    `}
+
+    // Disabled
+    ${(props) =>
+    props.disabled &&
+    css`
+      background-color: ${lightGrey};
+      cursor: not-allowed;
+    `}
 `;
 
-export { RoundButton, OrangeRoundButton, OrangeBackButton, BigSquareButton, ClearSearchButton, StyledPrimaryButton};
+export {
+  RoundButton,
+  OrangeRoundButton,
+  OrangeBackButton,
+  BigSquareButton,
+  ClearSearchButton,
+  StyledButton,
+};

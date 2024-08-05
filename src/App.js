@@ -1,81 +1,127 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import LandingPage from "./landingPage/LandingPage";
-import SignIn from "./pages/SignIn";
-import { UserContext } from "./UserContext";
+import { BrowserRouter } from "react-router-dom";
+
+import ExerciseNotifications from "./exercises/ExerciseNotification";
+import { ExerciseCountContext } from "./exercises/ExerciseCountContext";
+import { UserContext } from "./contexts/UserContext";
 import { RoutingContext } from "./contexts/RoutingContext";
 import LocalStorage from "./assorted/LocalStorage";
+import { APIContext } from "./contexts/APIContext";
 import Zeeguu_API from "./api/Zeeguu_API";
-import LoggedInRouter from "./LoggedInRouter";
-import CreateAccount from "./pages/CreateAccount";
-import ResetPassword from "./pages/ResetPassword";
+
 import useUILanguage from "./assorted/hooks/uiLanguageHook";
-import { checkExtensionInstalled } from "./utils/misc/extensionCommunication";
-import ExtensionInstalled from "./pages/ExtensionInstalled";
-import NoSidebarRouter from "./NoSidebarRouter.js";
+
+import ZeeguuSpeech from "./speech/APIBasedSpeech";
+import { SpeechContext } from "./contexts/SpeechContext";
+import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 
 import {
-  getUserSession,
-  saveUserInfoIntoCookies,
+  getSessionFromCookies,
   removeUserInfoFromCookies,
+  saveUserInfoIntoCookies,
 } from "./utils/cookies/userInfo";
-import InstallExtension from "./pages/InstallExtension";
+
+import MainAppRouter from "./MainAppRouter";
+import { ToastContainer } from "react-toastify";
+import useExtensionCommunication from "./hooks/useExtensionCommunication";
+import { setUser } from "@sentry/react";
+import SessionStorage from "./assorted/SessionStorage";
+import useRedirectLink from "./hooks/useRedirectLink";
+import LoadingAnimation from "./components/LoadingAnimation";
 
 function App() {
-  let userDict = {};
+  const [api, setApi] = useState(new Zeeguu_API(API_ENDPOINT));
 
-  console.log("Got the API URL:" + process.env.REACT_APP_API_URL);
-  console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
-  let api = new Zeeguu_API(process.env.REACT_APP_API_URL);
-
-  if (getUserSession()) {
-    userDict = {
-      session: getUserSession(),
-      ...LocalStorage.userInfo(),
-    };
-    api.session = getUserSession();
-  }
+  const [exerciseNotification] = useState(new ExerciseNotifications());
 
   useUILanguage();
 
-  const [user, setUser] = useState(userDict);
-  const [hasExtension, setHasExtension] = useState(false);
+  const [userData, setUserData] = useState();
+  const [isExtensionAvailable] = useExtensionCommunication();
+  const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
+  let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   useEffect(() => {
+    console.log("Got the API URL:" + API_ENDPOINT);
+    console.log("Got the Domain URL:" + APP_DOMAIN);
+    console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
     // when creating the app component we also load the
     // user details from the server; this also ensures that
     // we get the latest feature flags for this user and save
     // them in the LocalStorage
 
-    if (getUserSession()) {
-      console.log("getting user details...");
-      api.getUserDetails((data) => {
-        LocalStorage.setUserInfo(data);
-      });
-    }
+    api.session = getSessionFromCookies();
+    console.log("Session: " + api.session);
+
+    // Only validate if there is a session in cookies.
+    if (api.session !== undefined)
+      api.isValidSession(
+        () => {
+          console.log("valid sesison... getting user details...");
+          api.getUserDetails((data) => {
+            LocalStorage.setUserInfo(data);
+            api.getUserPreferences((preferences) => {
+              LocalStorage.setUserPreferences(preferences);
+
+              let userDict = {
+                session: getSessionFromCookies(),
+                ...LocalStorage.userInfo(),
+              };
+              console.log("Session: " + api.session);
+
+              api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+                exerciseNotification.setHasExercises(hasBookmarks);
+                exerciseNotification.updateReactState();
+              });
+              setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
+              setUserData(userDict);
+            });
+          });
+        },
+        () => {
+          console.log("no valid session");
+          logout();
+        },
+      );
 
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
-      if (!getUserSession()) {
-        setUser({});
+      if (!getSessionFromCookies()) {
+        setUserData({});
       }
     }, 1000);
-    checkExtensionInstalled(setHasExtension);
     return () => clearInterval(interval);
 
     // eslint-disable-next-line
   }, []);
 
-  function handleSuccessfulSignIn(userInfo, history) {
+  function logout() {
+    LocalStorage.deleteUserInfo();
+    LocalStorage.deleteUserPreferences();
+    setUserData({});
+
+    removeUserInfoFromCookies();
+  }
+
+  function handleSuccessfulSignIn(userInfo, sessionId) {
+    console.log("HANDLE SUCCESSFUL SIGN IN");
+    api.session = sessionId;
+    console.log("Session: " + api.session);
     LocalStorage.setSession(api.session);
     LocalStorage.setUserInfo(userInfo);
+
+    // TODO: Should this be moved to Settings.loadUsrePreferences?
+    api.getUserPreferences((preferences) => {
+      SessionStorage.setAudioExercisesEnabled(
+        preferences["audio_exercises"] === undefined ||
+          preferences["audio_exercises"] === "true",
+      );
+    });
 
     // Cookies are the mechanism via which we share a login
     // between the extension and the website
     saveUserInfoIntoCookies(userInfo, api.session);
-
-
-    let newUserValue ={
+    let newUserValue = {
       session: api.session,
       name: userInfo.name,
       learned_language: userInfo.learned_language,
@@ -83,78 +129,56 @@ function App() {
       is_teacher: userInfo.is_teacher,
       is_student: userInfo.is_student,
     };
+
     console.log("setting new user value: ");
     console.dir(newUserValue);
-
     setUser(newUserValue);
 
-
-    if (window.location.href.indexOf("create_account") > -1 && !hasExtension) {
-      history.push("/install_extension");
-    } else {
-      history.push("/articles");
-    }
+    /* If a redirect link exists, uses it to redirect the user,
+        otherwise, uses the location from the function argument. */
+    handleRedirectLinkOrGoTo("/articles");
   }
 
-  function logout() {
-    LocalStorage.deleteUserInfo();
-    setUser({});
-
-    removeUserInfoFromCookies();
-  }
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
 
+  if (userData === undefined) {
+    return <LoadingAnimation />;
+  }
+
   return (
-    <BrowserRouter>
-      <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
-        <UserContext.Provider value={{ ...user, logoutMethod: logout }}>
-          <Switch>
-            <Route path="/" exact component={LandingPage} />
-
-            {/* cf: https://ui.dev/react-router-v4-pass-props-to-components/ */}
-            <Route
-              path="/login"
-              render={() => (
-                <SignIn api={api} signInAndRedirect={handleSuccessfulSignIn} />
-              )}
-            />
-
-            <Route
-              path="/create_account"
-              render={() => (
-                <CreateAccount
+    <SpeechContext.Provider value={zeeguuSpeech}>
+      <BrowserRouter>
+        <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
+          <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
+            <ExerciseCountContext.Provider value={exerciseNotification}>
+              <APIContext.Provider value={api}>
+                {/* Routing*/}
+                <MainAppRouter
                   api={api}
-                  signInAndRedirect={handleSuccessfulSignIn}
+                  setUser={setUserData}
+                  hasExtension={isExtensionAvailable}
+                  handleSuccessfulSignIn={handleSuccessfulSignIn}
                 />
-              )}
-            />
 
-            <Route
-              path="/extension_installed"
-              render={() => <ExtensionInstalled api={api} />}
-            />
-
-            <Route
-              path="/install_extension"
-              render={() => <InstallExtension />}
-            />
-
-            <Route
-              path="/reset_pass"
-              render={() => <ResetPassword api={api} />}
-            />
-
-            <Route
-              path="/render"
-              render={() => <NoSidebarRouter api={api} />}
-            />
-
-            <LoggedInRouter api={api} user={user} setUser={setUser} />
-          </Switch>
-        </UserContext.Provider>
-      </RoutingContext.Provider>
-    </BrowserRouter>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
+              </APIContext.Provider>
+            </ExerciseCountContext.Provider>
+          </UserContext.Provider>
+        </RoutingContext.Provider>
+      </BrowserRouter>
+    </SpeechContext.Provider>
   );
 }
 

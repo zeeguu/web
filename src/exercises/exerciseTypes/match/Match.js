@@ -1,181 +1,220 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import shuffle from "../../../assorted/fisherYatesShuffle";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
+import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
-import SolutionFeedbackLinks from "../SolutionFeedbackLinks";
+import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
+import { toast } from "react-toastify";
+import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
 
-const EXERCISE_TYPE = "Match_three_L1W_to_three_L2W";
+// The user has to match three L1 words to their correct L2 translations.
+// This tests the user's passive knowledge.
+
+const EXERCISE_TYPE = EXERCISE_TYPES.match;
 
 export default function Match({
-                                  api,
-                                  bookmarksToStudy,
-                                  correctAnswer,
-                                  notifyIncorrectAnswer,
-                                  setExerciseType,
-                                  isCorrect,
-                                  setIsCorrect,
-                                  moveToNextExercise,
-                                  toggleShow,
-                                  reload,
-                                  setReload,
-                                  exerciseSessionId
-                              }) {
-    const initialBookmarkState = [
-        {
-            bookmark: bookmarksToStudy[0],
-            messageToAPI: "",
-        },
-        {
-            bookmark: bookmarksToStudy[1],
-            messageToAPI: "",
-        },
-        {
-            bookmark: bookmarksToStudy[2],
-            messageToAPI: "",
-        },
-    ];
+  api,
+  bookmarksToStudy,
+  notifyCorrectAnswer,
+  notifyIncorrectAnswer,
+  setExerciseType,
+  isCorrect,
+  setIsCorrect,
+  moveToNextExercise,
+  toggleShow,
+  reload,
+  setReload,
+  exerciseSessionId,
+  activeSessionDuration,
+}) {
+  // ML: TODO: this duplicates a bit the information in bookmarksToStudy
+  // It should be possible to implement with a simple array of messageToAPI that will
+  // always be in sync with bookmarksToStudy, i.e. messageToAPI[0] refers to the state of bookmarksToStudy[0], etc.
+  const initialExerciseAttemptsLog = [
+    {
+      bookmark: bookmarksToStudy[0],
+      messageToAPI: "",
+    },
+    {
+      bookmark: bookmarksToStudy[1],
+      messageToAPI: "",
+    },
+    {
+      bookmark: bookmarksToStudy[2],
+      messageToAPI: "",
+    },
+  ];
 
-    const [initialTime] = useState(new Date());
-    const [firstPressTime, setFirstPressTime] = useState();
-    const [currentBookmarksToStudy, setcurrentBookmarksToStudy] =
-        useState(initialBookmarkState);
-    const [fromButtonOptions, setFromButtonOptions] = useState(null);
-    const [toButtonOptions, setToButtonOptions] = useState(null);
-    const [buttonsToDisable, setButtonsToDisable] = useState([]);
-    const [incorrectAnswer, setIncorrectAnswer] = useState("");
+  const [messageToNextNav, setMessageToNextNav] = useState("");
+  const [firstPressTime, setFirstPressTime] = useState();
+  const [exerciseAttemptsLog, setexerciseAttemptsLog] = useState(
+    initialExerciseAttemptsLog,
+  );
+  const [fromButtonOptions, setFromButtonOptions] = useState(null);
+  const [toButtonOptions, setToButtonOptions] = useState(null);
+  const [buttonsToDisable, setButtonsToDisable] = useState([]);
+  const [incorrectAnswer, setIncorrectAnswer] = useState("");
+  const [getCurrentSubSessionDuration] = useSubSessionTimer(
+    activeSessionDuration,
+  );
+  const [selectedBookmark, setSelectedBookmark] = useState(bookmarksToStudy[0]);
+  const [selectedBookmarkMessage, setSelectedBookmarkMessage] = useState("");
 
-    useEffect(() => {
-        setExerciseType(EXERCISE_TYPE);
-        setButtonsToDisable([]);
-        setFromButtonOptions(null);
-        setToButtonOptions(null);
-        setButtonOptions();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+  useEffect(() => {
+    setExerciseType(EXERCISE_TYPE);
+    setButtonsToDisable([]);
+    setFromButtonOptions(null);
+    setToButtonOptions(null);
+    setButtonOptions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    function exerciseDuration(endTime) {
-        return Math.min(89999, endTime - initialTime)
+  function inputFirstClick() {
+    if (firstPressTime === undefined) setFirstPressTime(new Date());
+  }
+
+  useEffect(() => {
+    for (let i = 0; i < bookmarksToStudy.length; i++) {
+      let currentBookmarkLog = exerciseAttemptsLog[i];
+      if (selectedBookmark == currentBookmarkLog.bookmark)
+        setSelectedBookmarkMessage(currentBookmarkLog.messageToAPI);
     }
+  }, [selectedBookmark]);
 
-    function inputFirstClick() {
-        if (firstPressTime === undefined) setFirstPressTime(new Date());
-    }
+  function notifyBookmarkDeletion(bookmark) {
+    let word_expression = "";
+    if (isBookmarkExpression(bookmark)) word_expression = "expression";
+    else word_expression = "word";
+    toast.success(`The ${word_expression} '${bookmark.from}' is deleted!`);
+  }
 
-    function notifyChoiceSelection(firstChoice, secondChoice) {
-        console.log("checking result...");
-        let bookmarksCopy = {...currentBookmarksToStudy};
-        let i;
-        for (i = 0; i < bookmarksToStudy.length; i++) {
-            let currentBookmark = bookmarksCopy[i];
-            if (buttonsToDisable.length === 2) {
-                setIsCorrect(true);
-                break;
-            } else if (currentBookmark.bookmark.id === Number(firstChoice)) {
-                if (firstChoice === secondChoice) {
-                    setButtonsToDisable((arr) => [...arr, firstChoice]);
-                    let concatMessage = currentBookmark.messageToAPI + "C";
-                    bookmarksCopy[i].messageToAPI = concatMessage;
-                    setcurrentBookmarksToStudy(bookmarksCopy);
-                    correctAnswer(currentBookmark.bookmark);
-                    handleAnswer(concatMessage, currentBookmark.bookmark.id);
-                } else {
-                    setIncorrectAnswer(secondChoice);
-                    notifyIncorrectAnswer(currentBookmark.bookmark);
-                    let concatMessage = currentBookmark.messageToAPI + "W";
-                    bookmarksCopy[i].messageToAPI = concatMessage;
-                    setcurrentBookmarksToStudy(bookmarksCopy);
-                }
-            } else if (currentBookmark.bookmark.id === Number(secondChoice)) {
-                if (firstChoice !== secondChoice) {
-                    setIncorrectAnswer(secondChoice);
-                    notifyIncorrectAnswer(currentBookmark.bookmark);
-                    let concatMessage = currentBookmark.messageToAPI + "W";
-                    bookmarksCopy[i].messageToAPI = concatMessage;
-                    setcurrentBookmarksToStudy(bookmarksCopy);
-                }
-            }
-        }
-    }
-
-    function handleShowSolution() {
-        let pressTime = new Date();
-        let duration = exerciseDuration(pressTime);
-
-        for (let i = 0; i < bookmarksToStudy.length; i++) {
-            if (!currentBookmarksToStudy[i].messageToAPI.includes("C")) {
-                notifyIncorrectAnswer(currentBookmarksToStudy[i].bookmark);
-                let concatMessage = currentBookmarksToStudy[i].messageToAPI + "S";
-
-                api.uploadExerciseFinalizedData(
-                    concatMessage,
-                    EXERCISE_TYPE,
-                    duration,
-                    currentBookmarksToStudy[i].bookmark.id,
-                    exerciseSessionId
-                );
-            }
-        }
+  function notifyChoiceSelection(firstChoice, secondChoice) {
+    console.log("checking result...");
+    let exerciseAttemptsLogCopy = { ...exerciseAttemptsLog };
+    let fullMessage = messageToNextNav;
+    for (let i = 0; i < bookmarksToStudy.length; i++) {
+      let currentBookmarkLog = exerciseAttemptsLogCopy[i];
+      let concatMessage = "";
+      if (buttonsToDisable.length === 2) {
+        fullMessage = fullMessage + "C";
         setIsCorrect(true);
+        break;
+      } else if (currentBookmarkLog.bookmark.id === Number(firstChoice)) {
+        if (firstChoice === secondChoice) {
+          setButtonsToDisable((arr) => [...arr, firstChoice]);
+          concatMessage = currentBookmarkLog.messageToAPI + "C";
+          fullMessage = fullMessage + concatMessage;
+          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
+          notifyCorrectAnswer(currentBookmarkLog.bookmark);
+          handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
+        } else {
+          setIncorrectAnswer(secondChoice);
+          notifyIncorrectAnswer(currentBookmarkLog.bookmark);
+          concatMessage = currentBookmarkLog.messageToAPI + "W";
+          fullMessage = fullMessage + concatMessage;
+          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
+        }
+      } else if (currentBookmarkLog.bookmark.id === Number(secondChoice)) {
+        if (firstChoice !== secondChoice) {
+          setIncorrectAnswer(secondChoice);
+          notifyIncorrectAnswer(currentBookmarkLog.bookmark);
+          concatMessage = currentBookmarkLog.messageToAPI + "W";
+          fullMessage = fullMessage + concatMessage;
+          exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
+        }
+      }
+      if (selectedBookmark == currentBookmarkLog.bookmark)
+        setSelectedBookmarkMessage(concatMessage);
     }
+    setMessageToNextNav(fullMessage);
+  }
 
-    function handleAnswer(message, id) {
-        let pressTime = new Date();
-
+  function handleShowSolution() {
+    let finalMessage = "";
+    for (let i = 0; i < bookmarksToStudy.length; i++) {
+      if (!exerciseAttemptsLog[i].messageToAPI.includes("C")) {
+        notifyIncorrectAnswer(exerciseAttemptsLog[i].bookmark);
+        let concatMessage = exerciseAttemptsLog[i].messageToAPI + "S";
+        finalMessage += concatMessage;
         api.uploadExerciseFinalizedData(
-            message,
-            EXERCISE_TYPE,
-            exerciseDuration(pressTime),
-            id,
-            exerciseSessionId
+          concatMessage,
+          EXERCISE_TYPE,
+          getCurrentSubSessionDuration(activeSessionDuration, "ms"),
+          exerciseAttemptsLog[i].bookmark.id,
+          exerciseSessionId,
         );
+      }
     }
+    setIsCorrect(true);
+    setMessageToNextNav(finalMessage);
+  }
 
-    function setButtonOptions() {
-        setFromButtonOptions(bookmarksToStudy);
-        let optionsToShuffle = [
-            currentBookmarksToStudy[0].bookmark,
-            currentBookmarksToStudy[1].bookmark,
-            currentBookmarksToStudy[2].bookmark,
-        ];
-        let shuffledOptions = shuffle(optionsToShuffle);
-        setToButtonOptions(shuffledOptions);
-    }
-
-    return (
-        <s.Exercise>
-            <div className="headlineWithMoreSpace">
-                {strings.matchWordWithTranslation}{" "}
-            </div>
-
-            <MatchInput
-                fromButtonOptions={fromButtonOptions}
-                toButtonOptions={toButtonOptions}
-                notifyChoiceSelection={notifyChoiceSelection}
-                inputFirstClick={inputFirstClick}
-                buttonsToDisable={buttonsToDisable}
-                isCorrect={isCorrect}
-                api={api}
-                incorrectAnswer={incorrectAnswer}
-                setIncorrectAnswer={setIncorrectAnswer}
-                reload={reload}
-                setReload={setReload}
-            />
-
-            {isCorrect && (
-                <NextNavigation
-                    api={api}
-                    bookmarksToStudy={toButtonOptions}
-                    moveToNextExercise={moveToNextExercise}
-                />
-            )}
-            <SolutionFeedbackLinks
-                handleShowSolution={handleShowSolution}
-                toggleShow={toggleShow}
-                isCorrect={isCorrect}
-            />
-        </s.Exercise>
+  function handleAnswer(message, id) {
+    api.uploadExerciseFinalizedData(
+      message,
+      EXERCISE_TYPE,
+      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
+      id,
+      exerciseSessionId,
     );
+  }
+
+  function setButtonOptions() {
+    setFromButtonOptions(bookmarksToStudy);
+    let optionsToShuffle = [
+      bookmarksToStudy[0],
+      bookmarksToStudy[1],
+      bookmarksToStudy[2],
+    ];
+    let shuffledOptions = shuffle(optionsToShuffle);
+    setToButtonOptions(shuffledOptions);
+    console.log(shuffledOptions);
+  }
+
+  return (
+    <s.Exercise>
+      <div className="headlineWithMoreSpace">
+        {strings.matchWordWithTranslation}{" "}
+      </div>
+      <LearningCycleIndicator
+        bookmark={selectedBookmark}
+        message={selectedBookmarkMessage}
+      />
+
+      <MatchInput
+        fromButtonOptions={fromButtonOptions}
+        toButtonOptions={toButtonOptions}
+        notifyChoiceSelection={notifyChoiceSelection}
+        inputFirstClick={inputFirstClick}
+        buttonsToDisable={buttonsToDisable}
+        isCorrect={isCorrect}
+        api={api}
+        incorrectAnswer={incorrectAnswer}
+        setIncorrectAnswer={setIncorrectAnswer}
+        reload={reload}
+        setReload={setReload}
+        onBookmarkSelected={setSelectedBookmark}
+        notifyBookmarkDeletion={notifyBookmarkDeletion}
+      />
+      <NextNavigation
+        message={messageToNextNav}
+        api={api}
+        exerciseBookmark={bookmarksToStudy[0]}
+        moveToNextExercise={moveToNextExercise}
+        reload={reload}
+        setReload={setReload}
+        handleShowSolution={handleShowSolution}
+        toggleShow={toggleShow}
+        isCorrect={isCorrect}
+        exerciseType={EXERCISE_TYPE}
+      />
+    </s.Exercise>
+  );
 }

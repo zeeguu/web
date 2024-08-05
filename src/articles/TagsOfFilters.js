@@ -1,78 +1,38 @@
-import { useEffect, useState } from "react";
-import React from "react";
-import SweetAlert from "react-bootstrap-sweetalert";
+import SweetAlert from "react18-bootstrap-sweetalert";
 import * as s from "./TagsOfInterests.sc";
 import strings from "../i18n/definitions";
+import useUnwantedContentPreferences from "../hooks/useUnwantedContentPreferences";
 
 export default function TagsOfFilters({
   visible,
   api,
   articlesListShouldChange,
 }) {
-  const [availableFilters, setAvailableFilters] = useState(null);
-  const [subscribedFilters, setSubscribedFilters] = useState(null);
-  const [subscribedSearchFilters, setSubscribedSearchFilters] = useState(null);
-  const [showingModal, setShowingModal] = useState(false);
+  const {
+    topicsAvailableForExclusion,
+    toggleTopicExclusion,
+    isExcludedTopic,
 
-  useEffect(() => {
-    api.availableFilters((topics) => {
-      setAvailableFilters(topics);
-    });
+    unwantedKeywords,
+    addUnwantedKeyword,
+    removeUnwantedKeyword,
 
-    api.getFilteredTopics((filters) => {
-      setSubscribedFilters(filters);
-    });
-
-    api.getSubscribedFilterSearches((filters) => {
-      setSubscribedSearchFilters(filters);
-    });
-  }, [api]);
-
-  if (!availableFilters | !subscribedFilters | !subscribedSearchFilters)
-    return "";
-
-  function subscribeToFilter(filter) {
-    setSubscribedFilters([...subscribedFilters, filter]);
-    api.subscribeToFilter(filter);
-  }
-
-  function unsubscribeFromFilter(filter) {
-    setSubscribedFilters(
-      subscribedFilters.filter((each) => each.id !== filter.id)
-    );
-    api.unsubscribeFromFilter(filter);
-  }
-
-  function removeSearchFilter(search) {
-    api.unsubscribeFromSearchFilter(search);
-    setSubscribedSearchFilters(
-      subscribedSearchFilters.filter((each) => each.id !== search.id)
-    );
-  }
-
-  function toggleFilter(filter) {
-    if (subscribedFilters.map((e) => e.id).includes(filter.id)) {
-      unsubscribeFromFilter(filter);
-    } else {
-      subscribeToFilter(filter);
-    }
-  }
+    showModal,
+    setShowModal,
+  } = useUnwantedContentPreferences(api);
 
   const onConfirm = (response) => {
-    api.subscribeToSearchFilter(response, (data) => {
-      setSubscribedSearchFilters([...subscribedSearchFilters, data]);
-    });
-
-    setShowingModal(false);
+    addUnwantedKeyword(response);
+    setShowModal(false);
   };
 
   const onCancel = () => {
-    setShowingModal(false);
+    setShowModal(false);
   };
 
   return (
     <s.TagsOfInterests>
-      {showingModal && (
+      {showModal && (
         <SweetAlert
           input
           showCancel
@@ -90,7 +50,7 @@ export default function TagsOfFilters({
         <div className="interestsSettings">
           <button
             className="addInterestButton"
-            onClick={(e) => setShowingModal(true)}
+            onClick={(e) => setShowModal(true)}
           >
             ＋
           </button>
@@ -102,31 +62,26 @@ export default function TagsOfFilters({
           </button>
         </div>
 
-        {availableFilters.map((f) => (
-          <div key={f.id} addableid={f.id}>
+        {topicsAvailableForExclusion.map((topic) => (
+          <div key={topic.id} addableid={topic.id}>
             <button
-              onClick={(e) => toggleFilter(f)}
+              onClick={(e) => toggleTopicExclusion(topic)}
               type="button"
-              className={
-                "interests " +
-                (subscribedFilters.map((e) => e.id).includes(f.id)
-                  ? ""
-                  : "unsubscribed")
-              }
+              className={`interests ${!isExcludedTopic(topic) && "unsubscribed"}`}
             >
-              <span className="addableTitle">{f.title}</span>
+              <span className="addableTitle">{topic.title}</span>
             </button>
           </div>
         ))}
 
-        {subscribedSearchFilters.map((search) => (
-          <div key={search.id} searchremovabeid={search.id}>
+        {unwantedKeywords.map((keyword) => (
+          <div key={keyword.id} searchremovabeid={keyword.id}>
             <button
-              onClick={(e) => removeSearchFilter(search)}
+              onClick={(e) => removeUnwantedKeyword(keyword)}
               type="button"
-              className={"interests"}
+              className={"searches"}
             >
-              <span className="addableTitle">{search.search}</span>
+              <span className="addableTitle">{keyword.search}</span>
             </button>
           </div>
         ))}

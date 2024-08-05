@@ -1,16 +1,15 @@
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 import { useState, useEffect } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import WordsToReview from "./WordsToReview";
-import {
-  NarrowColumn,
-  CenteredContent,
-  ToolTipsContainer,
-} from "../components/ColumnWidth.sc";
-import { NavigationLink } from "../reader/ArticleReader.sc";
+import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import { StyledButton } from "../components/allButtons.sc.js";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import Tooltip from "@mui/material/Tooltip";
 
 function fit_for_study(words) {
   return words.filter((b) => b.fit_for_study || b.starred).length > 0;
@@ -18,45 +17,71 @@ function fit_for_study(words) {
 
 export default function WordsForArticle({ api }) {
   let { articleID } = useParams();
+  const history = useHistory();
   const [words, setWords] = useState(null);
   const [articleInfo, setArticleInfo] = useState(null);
   const [exercisesEnabled, setExercisesEnabled] = useState(false);
 
   useEffect(() => {
-    api.bookmarksForArticle(articleID, (bookmarks) => {
-      setWords(bookmarks);
-      setExercisesEnabled(fit_for_study(bookmarks));
-    });
+    api.prioritizeBookmarksToStudy(articleID, setWords);
     api.getArticleInfo(articleID, (data) => {
       setArticleInfo(data);
       setTitle('Words in "' + data.title + '"');
     });
 
     api.logReaderActivity(api.WORDS_REVIEW, articleID, "", UMR_SOURCE);
-
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (words) setExercisesEnabled(fit_for_study(words));
+  }, [words]);
 
   if (words === null || articleInfo === null) {
     return <LoadingAnimation />;
   }
 
   function deleteBookmark(bookmark) {
-    let newWords = words.filter((e) => e.id !== bookmark.id);
+    let newWords = [...words].filter((e) => e.id !== bookmark.id);
     setWords(newWords);
     setExercisesEnabled(fit_for_study(newWords));
   }
 
-  function notifyWordChanged() {
-    setExercisesEnabled(fit_for_study(words));
+  function notifyWordChanged(bookmark) {
+    let newWords = words.map((word) =>
+      word.id === bookmark.id ? bookmark : word,
+    );
+    setWords(newWords);
+    setExercisesEnabled(fit_for_study(newWords));
   }
 
+  const backToArticle = () => {
+    history.push(`../../read/article?id=${articleID}`);
+  };
+
+  const toExercises = async (e) => {
+    e.preventDefault();
+    console.log("toExercises called");
+    try {
+      console.log("Logging activity...");
+      await logGoingToExercisesAfterReview(e);
+      console.log(
+        "Activity logged, navigating to:",
+        `../words/forArticle/${articleID}`,
+      );
+      history.push(`../../exercises/forArticle/${articleID}`);
+    } catch (error) {
+      console.error("Error during logging and navigation:", error);
+    }
+  };
+
   function logGoingToExercisesAfterReview(e) {
-    api.logReaderActivity(
+    console.log("logGoingToExercisesAfterReview called");
+    return api.logReaderActivity(
       api.TO_EXERCISES_AFTER_REVIEW,
       articleID,
       "",
-      UMR_SOURCE
+      UMR_SOURCE,
     );
   }
 
@@ -70,32 +95,27 @@ export default function WordsForArticle({ api }) {
         notifyWordChanged={notifyWordChanged}
         source={UMR_SOURCE}
       />
-
       <CenteredContent>
-        <NavigationLink
-          prev
-          secondary
-          to={`../../read/article?id=${articleID}`}
-        >
+        <StyledButton secondary onClick={backToArticle}>
+          {<NavigateBeforeIcon />}
           {strings.backToArticle}
-        </NavigationLink>
-        <ToolTipsContainer>
-          <NavigationLink
-            primary
-            next
-            {...(exercisesEnabled || { disabled: true })}
-            to={`../../exercises/forArticle/${articleID}`}
-            onClick={logGoingToExercisesAfterReview}
+        </StyledButton>
+        {!exercisesEnabled ? (
+          <Tooltip
+            title="Translate or star words in the article before accessing exercises."
+            arrow
           >
-            {strings.toExercises}
-          </NavigationLink>
-          {!exercisesEnabled ? (
-            <span className="tooltiptext">
-              You need to star words <br />
-              before going to exercises
+            <span>
+              <StyledButton disabled>
+                {strings.toExercises} {<NavigateNextIcon />}
+              </StyledButton>
             </span>
-          ) : null}{" "}
-        </ToolTipsContainer>
+          </Tooltip>
+        ) : (
+          <StyledButton primary onClick={toExercises}>
+            {strings.toExercises} <NavigateNextIcon />
+          </StyledButton>
+        )}
       </CenteredContent>
     </NarrowColumn>
   );

@@ -3,7 +3,7 @@ import strings from "../i18n/definitions";
 import Word from "./Word";
 import * as s from "./WordsOnDate.sc";
 
-export function WordsOnDate({ day, api }) {
+export function WordsOnDate({ day, api, notifyDelete }) {
   function groupBy(list, keyGetter) {
     const map = new Map();
     list.forEach((item) => {
@@ -19,7 +19,6 @@ export function WordsOnDate({ day, api }) {
   }
 
   let bookmarks_by_article = groupBy(day.bookmarks, (x) => x.article_id);
-
   let articleIDs = Array.from(bookmarks_by_article.keys());
 
   return (
@@ -34,7 +33,14 @@ export function WordsOnDate({ day, api }) {
           </s.ArticleTitle>
 
           {bookmarks_by_article.get(article_id).map((bookmark) => (
-            <Word key={bookmark.id} bookmark={bookmark} api={api} />
+            <s.ContentOnRow className="contentOnRow">
+              <Word
+                key={bookmark.id}
+                bookmark={bookmark}
+                api={api}
+                notifyDelete={notifyDelete}
+              />
+            </s.ContentOnRow>
           ))}
         </s.Article>
       ))}

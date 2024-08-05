@@ -7,6 +7,7 @@ import {
   zeeguuOrange,
   zeeguuVarmYellow,
   lighterBlue,
+  lightGrey,
 } from "../components/colors";
 
 import {
@@ -22,35 +23,28 @@ let ArticleReader = styled.div`
   margin-left: auto;
   margin-right: auto;
 
-  .feedbackBox {
-    background-color: ${lighterBlue};
-    border: none;
-    max-width: 80%;
-  }
-
   h1 {
-    font-size: 1.9em !important;
+    font-size: 1.6em !important;
     font-weight: 800;
     line-height: 1.5;
   }
 
   h2 {
-    font-size: 1.5rem !important;
-    line-height: 1.5;
+    font-size: 1.4rem !important;
   }
 
   h3 {
-    font-size: 1.4rem !important;
+    font-size: 1.3rem !important;
   }
 
   h4,
   h5,
   h6 {
-    font-size: 1.3rem !important;
+    font-size: 1.2rem !important;
   }
 
   hr {
-    border-top: 1px solid #F6F6F6;
+    border-top: 1px solid #f6f6f6;
   }
 `;
 
@@ -70,10 +64,11 @@ let PlayerControl = styled.div`
 let RightHandSide = styled.div`
   float: right;
 `;
+
 let Toolbar = styled.div`
-    padding-top: 0.5rem;
-    height: 8em;
-    width: 100%;
+  padding-top: 0.5rem;
+  height: 8em;
+  width: 100%;
   // background-color: ${veryLightGrey};
 
   button {
@@ -87,6 +82,42 @@ let Toolbar = styled.div`
     padding: 1px;
     user-select: none;
     cursor: pointer;
+  }
+
+  progress[value] {
+    --color: linear-gradient(
+      89.5deg,
+      ${zeeguuOrange},
+      ${zeeguuLightYellow} 100%
+    ); /* the progress color */
+    --background: ${lightGrey}; /* the background color */
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    width: 100%;
+    height: 0.5em;
+    margin: 10px 0px 1px 0px;
+    border-radius: 10em;
+    background: var(--background);
+    transition: all 0.1s linear 0s;
+  }
+
+  progress[value]::-webkit-progress-bar {
+    transition: all 0.1s linear 0s;
+    border-radius: 10em;
+    background: var(--background);
+  }
+  progress[value]::-webkit-progress-value {
+    transition: all 0.1s linear 0s;
+    border-radius: 10em;
+    background: var(--color);
+  }
+  progress[value]::-moz-progress-bar {
+    transition: all 0.1s linear 0s;
+    border-radius: 10em;
+    background: var(--color);
   }
 
   button:focus {
@@ -132,12 +163,12 @@ let BookmarkButton = styled.div`
 `;
 
 let MainText = styled.div`
-  font-size: 1.3em;
-  line-height: 2.3em;
+  font-size: 1.2em;
+  line-height: 2em;
   padding: 0.2em;
 
   .textParagraph {
-    margin-bottom: 1em;
+    margin-bottom: 1.2em;
   }
 `;
 
@@ -154,24 +185,21 @@ let WhiteButton = styled(_BottomButton)`
   display: inline;
   align-items: center;
   justify-content: center;
-  border:none
-
-  //Small
-  ${(props) =>
-    props.small &&
-    css`
-      font-size: 10px;
-    `}
-
-  // Gray
-  ${(props) =>
-    props.small &&
-    css`
-      color: hsla(21, 15%, 60%, 1) !important;
-      border-color: hsla(21, 15%, 60%, 1);
-      border-width: 1px;
-      background-color: hsla(21, 15%, 99%, 1);
-    `}
+  border: none //Small
+    ${(props) =>
+      props.small &&
+      css`
+        font-size: 10px;
+      `}
+    // Gray
+    ${(props) =>
+      props.small &&
+      css`
+        color: hsla(21, 15%, 60%, 1) !important;
+        border-color: hsla(21, 15%, 60%, 1);
+        border-width: 1px;
+        background-color: hsla(21, 15%, 99%, 1);
+      `};
 `;
 
 let OrangeButton = styled(_BottomButton)`
@@ -209,23 +237,6 @@ let NavigationLink = styled(Link)`
     width: 16em;
   }
 
-  // Next
-  ${(props) =>
-    props.next &&
-    css`
-      :after {
-        content: ">>";
-      }
-    `}
-  // Previous
-  ${(props) =>
-    props.prev &&
-    css`
-      :before {
-        content: " <<";
-      }
-    `}
-
   // Primary
   ${(props) =>
     props.primary &&
@@ -256,13 +267,46 @@ let NavigationLink = styled(Link)`
     `}
 `;
 
-
-let FeedbackBox = styled.div`
-  border: 1px solid  ${lighterBlue};
+let InteractiveBox = styled.div`
+  border: 1px solid ${lighterBlue};
   background-color: white;
   border-radius: 0.5em;
-  padding: 1em;
-  margin-top: 3em;
+  display: flex;
+  flex-direction: column;
+  padding: 2em 0em 2em 0em;
+  margin-top: 1em;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  &.review-words {
+    background-color: ${lighterBlue};
+    border: none;
+  }
+
+  @media (min-width: 768px) {
+    width: 30em;
+  }
+  margin-left: auto;
+  margin-right: auto;
+
+  h2,
+  h3,
+  h5,
+  p {
+    text-align: center;
+  }
+  .selected {
+    background-color: ${zeeguuVarmYellow} !important;
+    color: white !important;
+  }
+`;
+
+let InvisibleBox = styled.div`
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em 0em 0em 0em;
   align-items: center;
   justify-content: center;
 
@@ -272,17 +316,52 @@ let FeedbackBox = styled.div`
   margin-left: auto;
   margin-right: auto;
 
-  h2, h3, h5,  p {
+  h2,
+  h3,
+  h5,
+  p {
     text-align: center;
   }
   .selected {
     background-color: ${zeeguuVarmYellow} !important;
     color: white !important;
   }
+  .hovered {
+    background-color: ${zeeguuLightYellow} !important;
+    color: white !important;
+  }
 `;
 
 let ExtraSpaceAtTheBottom = styled.div`
   margin-bottom: 8em;
+`;
+
+let CombinedBox = styled.div`
+  border: 1px solid ${lighterBlue};
+  background-color: white;
+  border-radius: 0.5em;
+  padding: 2em 0em 2em 0em;
+  margin-top: 1em;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    width: 30em;
+  }
+  margin-left: auto;
+  margin-right: auto;
+
+  h2,
+  h3,
+  h5,
+  p {
+    text-align: center;
+  }
+  .selected {
+    background-color: ${zeeguuVarmYellow} !important;
+    color: white !important;
+  }
 `;
 
 export {
@@ -293,7 +372,7 @@ export {
   MainText,
   WhiteButton,
   OrangeButton,
-  FeedbackBox,
+  InteractiveBox,
   CenteredContent,
   ExtraSpaceAtTheBottom,
   NarrowColumn,
@@ -301,4 +380,6 @@ export {
   NavigationLink,
   RightHandSide,
   PlayerControl,
+  InvisibleBox,
+  CombinedBox,
 };

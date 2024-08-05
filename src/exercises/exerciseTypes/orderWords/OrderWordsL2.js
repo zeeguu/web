@@ -1,11 +1,12 @@
 import OrderWords from "./OrderWords.js";
 
-const EXERCISE_TYPE = "OrderWords_L2T_from_L1T";
+// Order words in the Learned Language
+const EXERCISE_TYPE = "OrderWords_L2";
 
 export default function OrderWordsL2({
   api,
   bookmarksToStudy,
-  correctAnswer,
+  notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
@@ -14,25 +15,26 @@ export default function OrderWordsL2({
   toggleShow,
   reload,
   setReload,
-  exerciseSessionId
+  exerciseSessionId,
+  activeSessionDuration,
 }) {
-
   return (
     <>
       <OrderWords
-          bookmarksToStudy={bookmarksToStudy}
-          correctAnswer={correctAnswer}
-          notifyIncorrectAnswer={notifyIncorrectAnswer}
-          api={api}
-          setExerciseType={setExerciseType}
-          isCorrect={isCorrect}
-          setIsCorrect={setIsCorrect}
-          moveToNextExercise={moveToNextExercise}
-          toggleShow={toggleShow}
-          reload={reload}
-          setReload={setReload}
-          exerciseSessionId={exerciseSessionId}
-          exerciseType={EXERCISE_TYPE}
+        bookmarksToStudy={bookmarksToStudy}
+        notifyCorrectAnswer={notifyCorrectAnswer}
+        notifyIncorrectAnswer={notifyIncorrectAnswer}
+        api={api}
+        setExerciseType={setExerciseType}
+        isCorrect={isCorrect}
+        setIsCorrect={setIsCorrect}
+        moveToNextExercise={moveToNextExercise}
+        toggleShow={toggleShow}
+        reload={reload}
+        setReload={setReload}
+        exerciseSessionId={exerciseSessionId}
+        activeSessionDuration={activeSessionDuration}
+        exerciseType={EXERCISE_TYPE}
       />
     </>
   );
