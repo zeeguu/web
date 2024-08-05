@@ -26,8 +26,8 @@ export default function SubscribeToEmailNotificationsButton({
   useEffect(() => {
     setButtonText(
       isSubscribedToEmail
-        ? " remove email notifications!"
-        : " want email notifications?",
+        ? " unsubscribe from email notifications"
+        : " subscribe to email notifications",
     );
   }, [isSubscribedToEmail]);
 

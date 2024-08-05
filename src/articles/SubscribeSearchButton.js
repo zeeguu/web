@@ -16,7 +16,9 @@ export default function SubscribeSearchButton({ api, query }) {
         (search) => search.search === query,
       );
       setIsSubscribedToSearch(isSubscribed);
-      setButtonText(isSubscribed ? "- remove search" : "+ add search");
+      setButtonText(
+        isSubscribed ? "- Remove from Searches" : "+ Add to Searches",
+      );
     }
   }, [subscribedSearches, query]);
 
@@ -29,13 +31,13 @@ export default function SubscribeSearchButton({ api, query }) {
         removeSearch(searchToRemove);
         api.logUserActivity(api.UNSUBSCRIBE_FROM_SEARCH, "", query, "");
         setIsSubscribedToSearch(false);
-        toast("Search removed from My Searches!");
+        toast("Search removed from Searches!");
       }
     } else {
       subscribeToSearch(query);
       api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", query, "");
       setIsSubscribedToSearch(true);
-      toast("Search added to My Searches!");
+      toast("Search added to Searches!");
     }
   };
 

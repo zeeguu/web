@@ -219,7 +219,7 @@ let strings = new LocalizedStrings(
       bookmarkedTab: "Bookmarked",
       saved: "Saves",
       forYou: "For You",
-      searches: "My Searches",
+      searches: "Searches",
 
       //WordsRouter
       yourWordsHeadline: "Your Words",
