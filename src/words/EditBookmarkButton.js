@@ -6,6 +6,7 @@ import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
 import { getStaticPath } from "../utils/misc/staticPath.js";
 import { toast } from "react-toastify";
+import { isWordInSentence } from "../utils/preprocessing/preprocessing.js";
 
 export default function EditBookmarkButton({
   bookmark,
@@ -17,6 +18,7 @@ export default function EditBookmarkButton({
   notifyDelete,
 }) {
   const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
   const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
   const SOURCE_FOR_API_BOOKMARK_DELETE = "WORD_EDIT_DELETE_BOOKMARK";
   function handleOpen() {
@@ -51,6 +53,7 @@ export default function EditBookmarkButton({
 
   function handleClose() {
     setOpen(false);
+    setErrorMessage();
   }
 
   function updateBookmark(
@@ -74,6 +77,19 @@ export default function EditBookmarkButton({
       " instead of: ",
       bookmark.context,
     );
+    if (!isWordInSentence(newWord, newContext)) {
+      setErrorMessage(
+        `'${newWord}' is not present in the context. Make sure the context contains the word.`,
+      );
+      toast.error("The Word is not present in the context.");
+      return;
+    }
+
+    bookmark.from = newWord;
+    bookmark.to = newTranslation;
+    bookmark.context = newContext;
+    bookmark.fit_for_study = newFitForStudy;
+
     api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
     if (newFitForStudy) {
       api.userSetForExercises(bookmark.id);
@@ -92,13 +108,10 @@ export default function EditBookmarkButton({
         SOURCE_FOR_API_USER_PREFERENCE,
       );
     }
-    bookmark.from = newWord;
-    bookmark.to = newTranslation;
-    bookmark.context = newContext;
-    bookmark.fit_for_study = newFitForStudy;
     if (setReload) setReload(!reload);
     if (notifyWordChange) notifyWordChange(bookmark.id);
     toast.success("Thank you for the contribution!");
+    handleClose();
   }
   const isPhoneScreen = window.innerWidth < 800;
   return (
@@ -134,6 +147,7 @@ export default function EditBookmarkButton({
         <Box sx={isPhoneScreen ? s.stylePhone : s.style}>
           <WordEditForm
             bookmark={bookmark}
+            errorMessage={errorMessage}
             handleClose={handleClose}
             updateBookmark={updateBookmark}
             deleteAction={deleteBookmark}
