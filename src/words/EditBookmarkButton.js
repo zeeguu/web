@@ -81,7 +81,8 @@ export default function EditBookmarkButton({
       setErrorMessage(
         `'${newWord}' is not present in the context. Make sure the context contains the word.`,
       );
-      toast.error("The Word is not present in the context.");
+      // Uncomment to also send a toast
+      // toast.error("The Word is not present in the context.");
       return;
     }
 
