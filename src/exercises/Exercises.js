@@ -92,7 +92,6 @@ export default function Exercises({
         );
       }
       setActivityOver(true);
-      exerciseNotification.unsetExerciseCounter();
       exerciseNotification.updateReactState();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -188,10 +187,10 @@ export default function Exercises({
       } else setShowOutOfWordsMessage(true);
     });
   }
+
   function exercise_article_bookmarks() {
     api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
       api.getArticleInfo(articleID, (data) => {
-        exerciseNotification.unsetExerciseCounter();
         initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
         setArticleTitle(data.title);
         setArticleURL(data.url);

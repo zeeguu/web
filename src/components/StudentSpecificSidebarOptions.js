@@ -4,18 +4,25 @@ import { useContext, useEffect, useState } from "react";
 import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../exercises/ExerciseConstants";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import { Tooltip } from "@mui/material";
+import LocalStorage from "../assorted/LocalStorage";
 
 export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
   const is_teacher = user.is_teacher === "true" || user.is_teacher === true;
   const exerciseNotification = useContext(ExerciseCountContext);
   const [hasExerciseNotification, setHasExerciseNotification] = useState(false);
   const [totalExercisesInPipeline, setTotalExercisesInPipeline] = useState();
+  const exerciseCountText = totalExercisesInPipeline
+    ? totalExercisesInPipeline > MAX_EXERCISE_TO_DO_NOTIFICATION
+      ? MAX_EXERCISE_TO_DO_NOTIFICATION + "+"
+      : totalExercisesInPipeline
+    : "";
 
   useEffect(() => {
     exerciseNotification.setHasExercisesHook = setHasExerciseNotification;
     exerciseNotification.setExerciseCounterHook = setTotalExercisesInPipeline;
     exerciseNotification.updateReactState();
   }, []);
+
   return (
     <>
       <SidebarLink text={strings.articles} to="/articles" />
@@ -26,14 +33,12 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
         text={strings.exercises}
         to="/exercises"
         hasNotification={hasExerciseNotification}
-        notificationTextActive={
-          totalExercisesInPipeline
-            ? totalExercisesInPipeline > MAX_EXERCISE_TO_DO_NOTIFICATION
-              ? MAX_EXERCISE_TO_DO_NOTIFICATION + "+"
-              : totalExercisesInPipeline
+        notificationTextActive={exerciseCountText}
+        notificationTextInactive={
+          LocalStorage.getAlwaysShowTotalExercisesNotification()
+            ? exerciseCountText
             : ""
         }
-        notificationTextInactive={""}
       />
 
       <br />

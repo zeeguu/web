@@ -71,6 +71,14 @@ function App() {
 
               api.hasBookmarksInPipelineToReview((hasBookmarks) => {
                 exerciseNotification.setHasExercises(hasBookmarks);
+                if (
+                  hasBookmarks &&
+                  LocalStorage.getAlwaysShowTotalExercisesNotification()
+                )
+                  api.getUserBookmarksToStudy(101, (bookmarks) => {
+                    exerciseNotification.setExerciseCounter(bookmarks.length);
+                    exerciseNotification.updateReactState();
+                  });
                 exerciseNotification.updateReactState();
               });
               setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));

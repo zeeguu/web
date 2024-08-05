@@ -35,6 +35,8 @@ const LocalStorage = {
     clickedVideoLink: "clicked_video_link",
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
     ProductiveExercisesEnabled: "productiveExercisesEnabled",
+    AlwaysShowTotalExercisesNotification:
+      "always_show_total_exercises_notification",
   },
 
   userInfo: function () {
@@ -50,6 +52,12 @@ const LocalStorage = {
 
   isStudent: function () {
     return localStorage[this.Keys.IsStudent] !== "false";
+  },
+
+  getAlwaysShowTotalExercisesNotification: function () {
+    return (
+      localStorage[this.Keys.AlwaysShowTotalExercisesNotification] === "true"
+    );
   },
 
   getLearnedLanguage: function () {
@@ -271,6 +279,13 @@ const LocalStorage = {
   ) {
     localStorage[this.Keys.DisplayedAudioExperimentQuestionnaire] =
       displayedAudioExperimentQuestionnaire;
+  },
+
+  setAlwaysShowTotalExercisesNotification: function (
+    showTotalExercisesNotification,
+  ) {
+    localStorage[this.Keys.AlwaysShowTotalExercisesNotification] =
+      showTotalExercisesNotification;
   },
 
   getTargetNoOfAudioSessions: function () {

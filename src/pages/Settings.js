@@ -28,6 +28,10 @@ export default function Settings({ api, setUser }) {
   const [currentCohort, setCurrentCohort] = useState("");
   const [cefr, setCEFR] = useState("");
   const [audioExercises, setAudioExercises] = useState(true);
+  const [
+    alwaysShowExerciseCountNotification,
+    setAlwaysShowExerciseCountNotification,
+  ] = useState(LocalStorage.getAlwaysShowTotalExercisesNotification() === true);
 
   let preferenceNotSet =
     LocalStorage.getProductiveExercisesEnabled() === undefined;
@@ -170,6 +174,15 @@ export default function Settings({ api, setUser }) {
     setAudioExercises((state) => !state);
   }
 
+  function handleAlwaysShowExerciseCountChange(e) {
+    setAlwaysShowExerciseCountNotification(
+      !alwaysShowExerciseCountNotification,
+    );
+    LocalStorage.setAlwaysShowTotalExercisesNotification(
+      !alwaysShowExerciseCountNotification,
+    );
+  }
+
   function handleProductiveExercisesChange(e) {
     // Toggle the state locally
     setProductiveExercises((state) => !state);
@@ -240,7 +253,6 @@ export default function Settings({ api, setUser }) {
             />
 
             <br />
-            <br />
 
             <label>{strings.nativeLanguage}</label>
             <UiLanguageSelector
@@ -253,8 +265,11 @@ export default function Settings({ api, setUser }) {
                 updateNativeLanguage(getLanguageCodeFromSelector(e));
               }}
             />
+            <br />
+            <br />
 
             <label>Exercise Type Preferences</label>
+            <hr></hr>
             <div style={{ display: "flex" }} className="form-group">
               <input
                 style={{ width: "1.5em" }}
@@ -280,6 +295,19 @@ export default function Settings({ api, setUser }) {
                 <label>Enable Productive Exercises</label>
               </div>
             )}
+            <br />
+            <label>Other Preferences</label>
+            <hr></hr>
+            <div style={{ display: "flex" }} className="form-group">
+              <input
+                style={{ width: "1.5em" }}
+                type={"checkbox"}
+                checked={alwaysShowExerciseCountNotification}
+                onChange={handleAlwaysShowExerciseCountChange}
+              />
+              <label>Always display number of exercises in notification</label>
+            </div>
+
             <div>
               <s.FormButton onClick={handleSave}>
                 <span>{strings.save}</span>
