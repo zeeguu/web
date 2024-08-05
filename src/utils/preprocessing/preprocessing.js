@@ -15,7 +15,6 @@ function tokenize(sentence) {
 
 function isWordInSentence(word, sentence) {
   let tokens = tokenize(removePunctuation(sentence));
-  console.log(tokens);
   return tokens.includes(word);
 }
 
