@@ -14,7 +14,7 @@ export default function TranslatableWord({
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
   const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
-  const [isClickToPronounce, setIsClickToPronounce] = useState(false);
+  const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
 
   function clickOnWord(e, word) {
     if (word.translation) {
@@ -33,8 +33,8 @@ export default function TranslatableWord({
         setTranslatedWords(copyOfWords);
       }
     }
-    if (pronouncing || isClickToPronounce) {
-      setIsClickToPronounce(true);
+    if (pronouncing || isClickedToPronounce) {
+      setIsClickedToPronounce(true);
       interactiveText.pronounce(word);
     }
   }
@@ -67,14 +67,13 @@ export default function TranslatableWord({
   }
 
   function hideTranslation(e, word) {
-    console.log(word);
     word.translation = undefined;
     word.splitIntoComponents();
     wordUpdated();
   }
 
   //disableTranslation so user cannot translate words that are being tested
-  if ((!word.translation && !isClickToPronounce) || disableTranslation) {
+  if ((!word.translation && !isClickedToPronounce) || disableTranslation) {
     return (
       <>
         <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
