@@ -26,6 +26,12 @@ import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
+import {
+  getTranslateWordsFromCookies,
+  getPronounceWordsFromCookies,
+  setTranslateWordsIntoCookies,
+  setPronounceWordsIntoCookies,
+} from "../utils/cookies/userInfo";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -61,8 +67,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
-  const [translating, setTranslating] = useState(true);
-  const [pronouncing, setPronouncing] = useState(true);
+  const [translating, setTranslating] = useState(
+    getTranslateWordsFromCookies(),
+  );
+  const [pronouncing, setPronouncing] = useState(
+    getPronounceWordsFromCookies(),
+  );
   const [scrollPosition, setScrollPosition] = useState();
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
@@ -92,6 +102,14 @@ export default function ArticleReader({ api, teacherArticleID }) {
       );
     }
   }
+
+  useEffect(() => {
+    setTranslateWordsIntoCookies(translating);
+  }, [translating]);
+
+  useEffect(() => {
+    setPronounceWordsIntoCookies(pronouncing);
+  }, [pronouncing]);
 
   useEffect(() => {
     onCreate();
