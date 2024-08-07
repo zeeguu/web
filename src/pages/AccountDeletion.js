@@ -8,7 +8,7 @@ import Footer from "./info_page_shared/Footer";
 import LoadingAnimation from "../components/LoadingAnimation";
 import redirect from "../utils/routing/routing";
 import SessionStorage from "../assorted/SessionStorage";
-import { APP_DOMAIN } from "../appConstants";
+import { APP_URL } from "../appConstants";
 
 const TIME_BEFORE_REDIRECT = 5000;
 
@@ -43,7 +43,7 @@ export default function AccountDeletion({ api }) {
       );
     } else {
       // In case the user went to the path by mistake
-      redirect(APP_DOMAIN);
+      redirect(APP_URL);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

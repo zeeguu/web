@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { APP_DOMAIN, APP_URL } from "../../appConstants";
 
 const FAR_INTO_THE_FUTURE = 365 * 5;
 function saveUserInfoIntoCookies(userInfo, sessionID = null) {
@@ -39,11 +40,17 @@ function getTranslateWordsFromCookies() {
 }
 
 function setPronounceWordsIntoCookies(val) {
-  Cookies.set("pronounceWords", val, { expires: FAR_INTO_THE_FUTURE });
+  Cookies.set("pronounceWords", val, {
+    expires: FAR_INTO_THE_FUTURE,
+    domain: APP_DOMAIN,
+  });
 }
 
 function setTranslateWordsIntoCookies(val) {
-  Cookies.set("translateWords", val, { expires: FAR_INTO_THE_FUTURE });
+  Cookies.set("translateWords", val, {
+    expires: FAR_INTO_THE_FUTURE,
+    domain: APP_DOMAIN,
+  });
 }
 
 function setUserSession(val) {

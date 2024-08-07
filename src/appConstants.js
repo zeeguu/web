@@ -1,4 +1,5 @@
-let APP_DOMAIN = window.location.origin;
+let APP_URL = window.location.origin;
+let APP_DOMAIN = window.location.hostname;
 let API_ENDPOINT = "https://api.zeeguu.org";
 
 /* 
@@ -12,9 +13,11 @@ let API_ENDPOINT = "https://api.zeeguu.org";
   domains, to evaluate if it's the extension being run somewhere
   else.
 */
-const isExpectedDomain = /netlify.app|zeeguu.org|localhost/g;
+const isExpectedUrl = /netlify.app|zeeguu.org|localhost/g;
+const isExpectedDomain = /netlify|zeeguu|localhost/g;
 
-if (!isExpectedDomain.test(APP_DOMAIN)) APP_DOMAIN = "https://www.zeeguu.org";
+if (!isExpectedUrl.test(APP_URL)) APP_URL = "https://www.zeeguu.org";
+if (!isExpectedDomain.test(APP_DOMAIN)) APP_DOMAIN = "zeeguu";
 
 try {
   if (typeof process.env !== "undefined") {
@@ -22,11 +25,11 @@ try {
       API_ENDPOINT = process.env.REACT_APP_API_URL;
     }
     if (process.env.REACT_APP_WEB_URL) {
-      APP_DOMAIN = process.env.REACT_APP_WEB_URL;
+      APP_URL = process.env.REACT_APP_WEB_URL;
     }
   }
 } catch {
   console.log("Didn't set variables");
 }
 
-export { APP_DOMAIN, API_ENDPOINT };
+export { APP_URL, API_ENDPOINT, APP_DOMAIN };

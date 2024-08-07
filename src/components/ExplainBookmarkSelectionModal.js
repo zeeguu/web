@@ -2,7 +2,7 @@ import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header";
 import Heading from "../components/modal_shared/Heading";
 import Main from "../components/modal_shared/Main";
-import { APP_DOMAIN } from "../appConstants";
+import { APP_URL } from "../appConstants";
 import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
 
 export default function ExplainBookmarkSelectionModal({
@@ -25,7 +25,7 @@ export default function ExplainBookmarkSelectionModal({
           {" "}
           <img
             style={{ height: "2em" }}
-            src={APP_DOMAIN + "/static/icons/" + "info-icon.png"}
+            src={APP_URL + "/static/icons/" + "info-icon.png"}
             alt=""
           />
         </p>
