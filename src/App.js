@@ -13,7 +13,7 @@ import useUILanguage from "./assorted/hooks/uiLanguageHook";
 
 import ZeeguuSpeech from "./speech/APIBasedSpeech";
 import { SpeechContext } from "./contexts/SpeechContext";
-import { API_ENDPOINT, APP_URL } from "./appConstants";
+import { API_ENDPOINT, APP_DOMAIN } from "./appConstants";
 
 import {
   getSessionFromCookies,
@@ -43,7 +43,7 @@ function App() {
 
   useEffect(() => {
     console.log("Got the API URL:" + API_ENDPOINT);
-    console.log("Got the Domain URL:" + APP_URL);
+    console.log("Got the Domain URL:" + APP_DOMAIN);
     console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
     // when creating the app component we also load the
     // user details from the server; this also ensures that
