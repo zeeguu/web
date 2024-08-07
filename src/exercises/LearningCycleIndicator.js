@@ -64,21 +64,30 @@ export default function LearningCycleIndicator({ bookmark, message }) {
     <>
       {Feature.merle_exercises() && (
         <div className="learningCycleIndicator">
-          <Tooltip title={getTooltipContent()}>
-            <div className="learningCycleIcon">
+          <div className="learningCycleIcon">
+            <Tooltip title={getTooltipContent()}>
               <img
                 src={APP_DOMAIN + getLearningCycleIcon()}
                 alt={`${LEARNING_CYCLE_NAME[learningCycle]}-icon`}
                 style={{ height: "2.5em", width: "2.5em" }}
               />
-              {coolingInterval === null && (
-                <NotificationIcon
-                  style={{ marginRight: "-2.2em", top: "-2em", left: "-0.8em" }}
-                  text={"New!"}
-                ></NotificationIcon>
-              )}
-            </div>
-          </Tooltip>
+            </Tooltip>
+            {coolingInterval === null && (
+              <NotificationIcon
+                style={{
+                  marginRight: "-2.2em",
+                  top: "-2em",
+                  left: "-0.8em",
+                }}
+                text={"New!"}
+                tooltipText={
+                  bookmark.from.split(" ").length > 1
+                    ? strings.newExpressionExercisesTooltip
+                    : strings.newWordExercisesTooltip
+                }
+              ></NotificationIcon>
+            )}
+          </div>
 
           <div className="cooling-bars">
             {[...Array(5)].map((_, index) => {
