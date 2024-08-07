@@ -202,8 +202,8 @@ let MatchSpeakButtonHolder = styled.div`
 
 let MatchButton = styled(StyledButton)`
   width: fit-content;
-  margin-top: 2em;
-  margin-bottom: 2em;
+  margin-top: 1.5em;
+  margin-bottom: 1em;
   background: #ffd04799;
   color: black;
   border: 0.125em solid ${zeeguuTransparentLightOrange};
@@ -218,8 +218,8 @@ let MatchButton = styled(StyledButton)`
 `;
 
 let MatchingWords = styled.p`
-  margin-top: 2.125em;
-  margin-bottom: 2.125em;
+  margin-top: 1.6em;
+  margin-bottom: 1.1em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   padding-left: 0.5em;
