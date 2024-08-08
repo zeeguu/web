@@ -28,33 +28,11 @@ function getSessionFromCookies() {
   return Cookies.get("sessionID");
 }
 
-function getPronounceWordsFromCookies() {
-  let val = Cookies.get("pronounceWords");
-  return val === undefined ? true : val === "true";
-}
-
-function getTranslateWordsFromCookies() {
-  let val = Cookies.get("translateWords");
-  return val === undefined ? true : val === "true";
-}
-
-function setPronounceWordsIntoCookies(val) {
-  Cookies.set("pronounceWords", val, { expires: FAR_INTO_THE_FUTURE });
-}
-
-function setTranslateWordsIntoCookies(val) {
-  Cookies.set("translateWords", val, { expires: FAR_INTO_THE_FUTURE });
-}
-
 function setUserSession(val) {
   return Cookies.set("sessionID", val);
 }
 
 export {
-  getPronounceWordsFromCookies,
-  getTranslateWordsFromCookies,
-  setPronounceWordsIntoCookies,
-  setTranslateWordsIntoCookies,
   saveUserInfoIntoCookies,
   removeUserInfoFromCookies,
   getSessionFromCookies,
