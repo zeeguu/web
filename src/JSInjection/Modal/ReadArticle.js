@@ -1,18 +1,11 @@
 /*global chrome*/
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText";
-import {
-  EXTENSION_SOURCE,
-  LIST_CONTENT,
-  PARAGRAPH_CONTENT,
-  HEADER_CONTENT,
-} from "../constants";
+import { LIST_CONTENT, PARAGRAPH_CONTENT, HEADER_CONTENT } from "../constants";
 import { InvisibleBox, StyledBox } from "./Modal.styles";
-import ReviewVocabulary from "./ReviewVocabulary";
+import ReviewVocabularyInfoBox from "../../zeeguu-react/src/reader/ReviewVocabularyInfoBox";
 import LikeFeedbackBox from "../../zeeguu-react/src/reader/LikeFeedbackBox";
 import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/DifficultyFeedbackBox";
 import { random } from "../../zeeguu-react/src/utils/basic/arrays";
-
-import { colors } from "@mui/material";
 
 export function ReadArticle({
   articleId,
@@ -37,9 +30,6 @@ export function ReadArticle({
       articleImage = undefined;
     }
   }
-
-  
- 
 
   return (
     <>
@@ -102,7 +92,7 @@ export function ReadArticle({
           }
         })}
         <div id={"bottomRow"}>
-          <ReviewVocabulary
+          <ReviewVocabularyInfoBox
             articleId={articleId}
             api={api}
             openReview={openReview}
@@ -118,21 +108,24 @@ export function ReadArticle({
                 color: "#333333",
               }}
             >
-              Zeeguu can make better personalized recommendations based on your feedback.
+              Zeeguu can make better personalized recommendations based on your
+              feedback.
             </div>
             <LikeFeedbackBox
               articleInfo={articleInfo}
               setLikedState={setLikedState}
             />
-            <DifficultyFeedbackBox 
+            <DifficultyFeedbackBox
               articleInfo={articleInfo}
               updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
             />
             {answerSubmitted && (
-                <InvisibleBox>
-                <h3 align="center">Thank You {random(["🤗", "🙏", "😊", "🎉"])}</h3>
+              <InvisibleBox>
+                <h3 align="center">
+                  Thank You {random(["🤗", "🙏", "😊", "🎉"])}
+                </h3>
               </InvisibleBox>
-            )} 
+            )}
           </StyledBox>
         </div>
       </div>

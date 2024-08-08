@@ -85,7 +85,8 @@ export default function ToolbarButtons({
             {<small>{"Click word(s) to:"}</small>}
           </FormHelperText>
           <FormControlLabel
-            control={<Android12Switch defaultChecked />}
+            control={<Android12Switch />}
+            checked={translating}
             className={translating ? "selected" : ""}
             onClick={(e) => toggle(translating, setTranslating)}
             label={
@@ -95,7 +96,8 @@ export default function ToolbarButtons({
             }
           />
           <FormControlLabel
-            control={<Android12Switch defaultChecked />}
+            control={<Android12Switch />}
+            checked={pronouncing}
             className={pronouncing ? "selected" : ""}
             onClick={(e) => toggle(pronouncing, setPronouncing)}
             label={
