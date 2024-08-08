@@ -8,6 +8,7 @@ import { ExerciseValidation } from "./ExerciseValidation";
 import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
 import { APP_DOMAIN } from "../appConstants.js";
 import NotificationIcon from "../components/NotificationIcon";
+import isBookmarkExpression from "../utils/misc/isBookmarkExpression.js";
 
 export default function LearningCycleIndicator({ bookmark, message }) {
   const [userIsCorrect, setUserIsCorrect] = useState(false);
@@ -81,7 +82,7 @@ export default function LearningCycleIndicator({ bookmark, message }) {
                 }}
                 text={"New!"}
                 tooltipText={
-                  bookmark.from.split(" ").length > 1
+                  isBookmarkExpression(bookmark)
                     ? strings.newExpressionExercisesTooltip
                     : strings.newWordExercisesTooltip
                 }
