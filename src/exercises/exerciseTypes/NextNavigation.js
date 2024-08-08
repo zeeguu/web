@@ -24,6 +24,7 @@ import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
 export default function NextNavigation({
   message,
   exerciseBookmark,
+  exerciseAttemptsLog, // Used for exercises like Match which test multiple bookmarks
   moveToNextExercise,
   api,
   reload,
@@ -50,6 +51,8 @@ export default function NextNavigation({
     useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
+  const [matchExerciseProgressionMessage, setMatchExercisesProgressionMessage] =
+    useState();
   const productiveExercisesDisabled =
     LocalStorage.getProductiveExercisesEnabled() === "false";
   const isLastInCycle = exerciseBookmark.is_last_in_cycle;
@@ -66,14 +69,14 @@ export default function NextNavigation({
   const bookmarkLearned =
     isUserAndAnswerCorrect &&
     isLastInCycle &&
-    (!isMatchExercise || (isMatchExercise && isCorrectMatch)) &&
+    isCorrectMatch &&
     (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
 
   const bookmarkProgression =
     userIsCorrect &&
     isLearningCycleOne &&
     isLastInCycle &&
-    (!isMatchExercise || (isMatchExercise && isCorrectMatch)) &&
+    isCorrectMatch &&
     !productiveExercisesDisabled &&
     learningCycleFeature;
 
@@ -88,6 +91,15 @@ export default function NextNavigation({
       !isMatchExercise
     )
       handleSpeak();
+    let wordsProgressed = [];
+    for (let i = 0; i < exerciseAttemptsLog.length; i++) {
+      let apiMessage = exerciseAttemptsLog[i].messageToAPI;
+      let b = exerciseAttemptsLog[i].bookmark;
+      if (b.is_last_in_cycle && apiMessage === "C") {
+        wordsProgressed.push(b.from);
+      }
+    }
+    console.log(wordsProgressed);
   }, [isCorrect]);
 
   useEffect(() => {

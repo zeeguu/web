@@ -228,6 +228,7 @@ export default function Match({
         message={messageToNextNav}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
+        exerciseAttemptsLog={exerciseAttemptsLog}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}
