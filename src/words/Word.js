@@ -2,12 +2,12 @@ import * as s from "./Word.sc";
 
 import { useState } from "react";
 import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
-import EditButton from "./EditButton";
+import EditBookmarkButton from "./EditBookmarkButton";
 import { darkGrey } from "../components/colors";
 import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
-import getStaticPath from "../utils/misc/staticPath";
+import { getStaticPath } from "../utils/misc/staticPath";
 
 export default function Word({
   bookmark,
@@ -19,7 +19,6 @@ export default function Word({
   source,
   isReview,
 }) {
-  const [starred, setStarred] = useState(bookmark.starred);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
 
@@ -44,18 +43,6 @@ export default function Word({
     if (notifyWordChange) notifyWordChange(bookmark);
     api.logReaderActivity(
       api.USER_SET_NOT_WORD_PREFERED,
-      bookmark.article_id,
-      bookmark.from,
-      source,
-    );
-  }
-
-  function deleteBookmark(bookmark) {
-    api.deleteBookmark(bookmark.id);
-    setDeleted(true);
-    if (notifyDelete) notifyDelete(bookmark);
-    api.logReaderActivity(
-      api.DELETE_WORD,
       bookmark.article_id,
       bookmark.from,
       source,
@@ -98,11 +85,6 @@ export default function Word({
               />
             </s.AddRemoveStudyPreferenceButton>
           )}
-          {/*!isReview && (
-            <s.TrashIcon onClick={(e) => deleteBookmark(bookmark)}>
-              <img src={APP_DOMAIN + "/static/images/trash.svg"} alt="trash" />
-            </s.TrashIcon>
-          )*/}
           {/*
             Debug user preferences. 
             {bookmark.user_preference !== USER_WORD_PREFERENCE.NO_PREFERENCE && (
@@ -111,13 +93,16 @@ export default function Word({
           */}
 
           {!isReview && (
-            <EditButton
+            <EditBookmarkButton
               bookmark={bookmark}
               api={api}
               reload={reload}
               setReload={setReload}
               notifyWordChange={notifyWordChange}
-              deleteAction={deleteBookmark}
+              notifyDelete={() => {
+                setDeleted(true);
+                notifyDelete(bookmark);
+              }}
             />
           )}
 

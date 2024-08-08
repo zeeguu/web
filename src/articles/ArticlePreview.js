@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import moment from "moment";
 import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
@@ -9,8 +8,10 @@ import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
 import * as sweetM from "./TagsOfInterests.sc";
 import Modal from "../components/modal_shared/Modal";
+import ArticleSourceInfo from "../components/ArticleSourceInfo";
+import ArticleStatInfo from "../components/ArticleStatInfo";
 
-export default function ArticleOverview({
+export default function ArticlePreview({
   article,
   dontShowPublishingTime,
   dontShowSourceIcon,
@@ -35,7 +36,7 @@ export default function ArticleOverview({
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
   let new_topics = article.new_topics_list;
-  let difficulty = Math.round(article.metrics.difficulty * 100) / 10;
+  let cefr_level = article.metrics.cefr_level;
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -151,36 +152,17 @@ export default function ArticleOverview({
       />
 
       <s.Title>{titleLink(article)}</s.Title>
+      <ArticleSourceInfo
+        articleInfo={article}
+        dontShowPublishingTime={dontShowPublishingTime}
+        dontShowSourceIcon={dontShowSourceIcon}
+      ></ArticleSourceInfo>
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
-        <s.Summary>{article.summary}</s.Summary>
-        <div className="stats">
-          <s.Difficulty>{difficulty}</s.Difficulty>
-          <s.WordCount style={{ marginRight: "1em" }}>
-            {article.metrics.word_count}
-          </s.WordCount>
-        </div>
+        <s.Summary>{article.summary}...</s.Summary>
       </s.ArticleContent>
 
-      <div>
-        {!dontShowSourceIcon && (
-          <>
-            <s.SourceImage>
-              <a href={article.feed_domain}>
-                <img
-                  src={"/news-icons/" + article.feed_icon_name}
-                  alt="Source Icon"
-                />
-                {article.feed_icon_name && <span>{article.feed_domain}</span>}
-              </a>
-            </s.SourceImage>
-          </>
-        )}
-        {!dontShowPublishingTime && (
-          <s.PublishingTime>
-            ({moment.utc(article.published).fromNow()})
-          </s.PublishingTime>
-        )}
+      <s.BottomContainer>
         <s.Topics>
           {topics.map((topic) => (
             <span key={topic}>{topic}</span>
@@ -202,7 +184,11 @@ export default function ArticleOverview({
             ))}
           </s.KeywordTopics>
         )}
-      </div>
+        <ArticleStatInfo
+          cefr_level={cefr_level}
+          articleInfo={article}
+        ></ArticleStatInfo>
+      </s.BottomContainer>
       {article.video ? (
         <img
           alt=""

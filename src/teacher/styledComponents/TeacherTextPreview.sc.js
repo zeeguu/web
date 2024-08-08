@@ -9,6 +9,17 @@ export const StyledTeacherTextPreview = styled.div`
     margin-left: 1em;
   }
 
+  .added-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+  .classes-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.7em 0em;
+  }
   .edit-btn {
     margin-top: 2vh;
   }
@@ -33,7 +44,6 @@ export const StyledTeacherTextPreview = styled.div`
 
   .added-to {
     color: ${darkBlue};
-    border: solid 3px ${darkBlue};
-   
+    border-color: ${darkBlue} !important;
   }
 `;

@@ -15,6 +15,7 @@ import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 import { PageTitle } from "../components/PageTitle";
 import Feature from "../features/Feature";
 import SessionStorage from "../assorted/SessionStorage";
+import DeleteAccountButton from "./DeleteAccountButton";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -53,21 +54,11 @@ export default function Settings({ api, setUser }) {
     const levelKey = data.learned_language + "_cefr_level";
     const levelNumber = data[levelKey];
     setCEFR("" + levelNumber);
+    setUserDetails({
+      ...data,
+      cefr_level: levelNumber,
+    });
   }
-
-  const modifyCEFRlevel = (languageID, cefrLevel) => {
-    api.modifyCEFRlevel(
-      languageID,
-      cefrLevel,
-      (res) => {
-        console.log("Update '" + languageID + "' CEFR level to: " + cefrLevel);
-        console.log("API returns update status: " + res);
-      },
-      () => {
-        console.log("Connection to server failed...");
-      },
-    );
-  };
 
   useEffect(() => {
     api.getUserDetails((data) => {
@@ -107,11 +98,28 @@ export default function Settings({ api, setUser }) {
     saveUserInfoIntoCookies(info);
   }
 
-  function nativeLanguageUpdated(e) {
-    let code = e.target[e.target.selectedIndex].getAttribute("code");
+  function getLanguageCodeFromSelector(e) {
+    return e.target[e.target.selectedIndex].getAttribute("code");
+  }
+
+  function updateNativeLanguage(lang_code) {
     setUserDetails({
       ...userDetails,
-      native_language: code,
+      native_language: lang_code,
+    });
+  }
+
+  function updateCEFRLevel(level) {
+    setUserDetails({
+      ...userDetails,
+      cefr_level: level,
+    });
+  }
+
+  function updateLearnedLanguage(lang_code) {
+    setUserDetails({
+      ...userDetails,
+      learned_language: lang_code,
     });
   }
 
@@ -121,25 +129,21 @@ export default function Settings({ api, setUser }) {
     strings.setLanguage(uiLanguage.code);
     LocalStorage.setUiLanguage(uiLanguage);
 
-    modifyCEFRlevel(userDetails.learned_language, cefr);
+    // modifyCEFRlevel(userDetails.learned_language, cefr);
 
-    console.log("saving: productiveExercises: " + productiveExercises);
     SessionStorage.setAudioExercisesEnabled(audioExercises);
+    api.saveUserPreferences({
+      audio_exercises: audioExercises,
+      productive_exercises: productiveExercises,
+    });
+
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      api.saveUserPreferences(
-        {
-          audio_exercises: audioExercises,
-          productive_exercises: productiveExercises,
-        },
-        () => {
-          updateUserInfo(userDetails);
-          if (history.length > 1) {
-            history.goBack();
-          } else {
-            window.close();
-          }
-        },
-      );
+      updateUserInfo(userDetails);
+      if (history.length > 1) {
+        history.goBack();
+      } else {
+        window.close();
+      }
     });
   }
 
@@ -190,7 +194,8 @@ export default function Settings({ api, setUser }) {
         <scs.StyledSettings>
           <form className="formSettings">
             <h5>{errorMessage}</h5>
-
+            <b>Account Settings</b>
+            <hr></hr>
             <label>{strings.name}</label>
             <input
               name="name"
@@ -220,21 +225,17 @@ export default function Settings({ api, setUser }) {
                 languages.learnable_languages,
               )}
               onChange={(e) => {
-                let code =
-                  e.target[e.target.selectedIndex].getAttribute("code");
-                setUserDetails({
-                  ...userDetails,
-                  learned_language: code,
-                });
+                updateLearnedLanguage(getLanguageCodeFromSelector(e));
               }}
             />
 
-            {/*<label>{strings.levelOfLearnedLanguage}</label>*/}
             <Select
               elements={CEFR_LEVELS}
               label={(e) => e.label}
               val={(e) => e.value}
-              updateFunction={setCEFR}
+              updateFunction={(e) => {
+                updateCEFRLevel(e);
+              }}
               current={cefr}
             />
 
@@ -248,25 +249,10 @@ export default function Settings({ api, setUser }) {
                 userDetails.native_language,
                 languages.native_languages,
               )}
-              onChange={nativeLanguageUpdated}
+              onChange={(e) => {
+                updateNativeLanguage(getLanguageCodeFromSelector(e));
+              }}
             />
-
-            {/*<label>{strings.systemLanguage}</label>*/}
-            {/*<UiLanguageSelector*/}
-            {/*  languages={uiLanguages}*/}
-            {/*  selected={uiLanguage.name}*/}
-            {/*  onChange={(e) => {*/}
-            {/*    let lang = uiLanguages.find(*/}
-            {/*      (lang) =>*/}
-            {/*        lang.code ===*/}
-            {/*        e.target[e.target.selectedIndex].getAttribute("code")*/}
-            {/*    );*/}
-            {/*    onSysChange(lang);*/}
-            {/*  }}*/}
-            {/*/>*/}
-
-            <br />
-            <br />
 
             <label>Exercise Type Preferences</label>
             <div style={{ display: "flex" }} className="form-group">
@@ -291,53 +277,61 @@ export default function Settings({ api, setUser }) {
                   checked={productiveExercises}
                   onChange={handleProductiveExercisesChange}
                 />
-                <label>Enable productive exercises</label>
+                <label>Enable Productive Exercises</label>
               </div>
             )}
             <div>
-              <s.FormButton onClick={handleSave}>{strings.save}</s.FormButton>
-            </div>
-          </form>
-
-          {!user.is_teacher && (
-            <div>
-              <p className="current-class-of-student">
-                <b>
-                  {studentIsInCohort
-                    ? strings.yourCurrentClassIs + currentCohort
-                    : strings.youHaveNotJoinedAClass}
-                </b>
-              </p>
-              <label className="change-class-string">
-                {studentIsInCohort ? strings.changeClass : strings.joinClass}
-              </label>
-              <input
-                type="text"
-                placeholder={
-                  studentIsInCohort
-                    ? strings.insertNewInviteCode
-                    : strings.insertInviteCode
-                }
-                value={inviteCode}
-                onChange={(event) => handleInviteCodeChange(event)}
-              />
-
-              {showJoinCohortError && (
-                <Error message={strings.checkIfInviteCodeIsValid} />
-              )}
-
-              <s.FormButton onClick={saveStudentToClass}>
-                {studentIsInCohort ? strings.changeClass : strings.joinClass}
+              <s.FormButton onClick={handleSave}>
+                <span>{strings.save}</span>
               </s.FormButton>
             </div>
-          )}
+            {!user.is_teacher && (
+              <>
+                <b>Class Management</b>
+                <hr></hr>
+                <p className="current-class-of-student">
+                  <b>
+                    {studentIsInCohort
+                      ? strings.yourCurrentClassIs + currentCohort
+                      : strings.youHaveNotJoinedAClass}
+                  </b>
+                </p>
+                <label className="change-class-string">
+                  {studentIsInCohort ? strings.changeClass : strings.joinClass}
+                </label>
+                <input
+                  type="text"
+                  placeholder={
+                    studentIsInCohort
+                      ? strings.insertNewInviteCode
+                      : strings.insertInviteCode
+                  }
+                  value={inviteCode}
+                  onChange={(event) => handleInviteCodeChange(event)}
+                />
+
+                {showJoinCohortError && (
+                  <Error message={strings.checkIfInviteCodeIsValid} />
+                )}
+
+                <s.FormButton onClick={saveStudentToClass}>
+                  <span>
+                    {studentIsInCohort
+                      ? strings.changeClass
+                      : strings.joinClass}
+                  </span>
+                </s.FormButton>
+              </>
+            )}
+          </form>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <b>Account Management</b>
+          <hr></hr>
+          <DeleteAccountButton />
         </scs.StyledSettings>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
       </s.FormContainer>
     </>
   );
@@ -345,6 +339,7 @@ export default function Settings({ api, setUser }) {
 
 function language_for_id(id, language_list) {
   for (let i = 0; i < language_list.length; i++) {
+    console.log(language_list[i].code, id);
     if (language_list[i].code === id) {
       return language_list[i].name;
     }

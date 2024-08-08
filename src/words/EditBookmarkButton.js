@@ -4,26 +4,56 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
-import getStaticPath from "../utils/misc/staticPath.js";
+import { getStaticPath } from "../utils/misc/staticPath.js";
 import { toast } from "react-toastify";
+import { isWordInSentence } from "../utils/preprocessing/preprocessing.js";
 
-export default function EditButton({
+export default function EditBookmarkButton({
   bookmark,
   api,
   styling,
   reload,
   setReload,
-  deleteAction,
   notifyWordChange,
+  notifyDelete,
 }) {
   const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
   const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
+  const SOURCE_FOR_API_BOOKMARK_DELETE = "WORD_EDIT_DELETE_BOOKMARK";
   function handleOpen() {
     setOpen(true);
   }
 
+  function deleteBookmark() {
+    api.deleteBookmark(
+      bookmark.id,
+      (response) => {
+        if (response === "OK") {
+          // delete was successful; log and close
+          if (notifyDelete) notifyDelete(bookmark);
+          api.logReaderActivity(
+            api.DELETE_WORD,
+            bookmark.article_id,
+            bookmark.from,
+            SOURCE_FOR_API_BOOKMARK_DELETE,
+          );
+          handleClose();
+        }
+      },
+      (error) => {
+        // onError
+        console.log(error);
+        alert(
+          "something went wrong and we could not delete the bookmark; try again later.",
+        );
+      },
+    );
+  }
+
   function handleClose() {
     setOpen(false);
+    setErrorMessage();
   }
 
   function updateBookmark(
@@ -47,6 +77,20 @@ export default function EditButton({
       " instead of: ",
       bookmark.context,
     );
+    if (!isWordInSentence(newWord, newContext)) {
+      setErrorMessage(
+        `'${newWord}' is not present in the context. Make sure the context contains the word.`,
+      );
+      // Uncomment to also send a toast
+      // toast.error("The Word is not present in the context.");
+      return;
+    }
+
+    bookmark.from = newWord;
+    bookmark.to = newTranslation;
+    bookmark.context = newContext;
+    bookmark.fit_for_study = newFitForStudy;
+
     api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
     if (newFitForStudy) {
       api.userSetForExercises(bookmark.id);
@@ -65,13 +109,10 @@ export default function EditButton({
         SOURCE_FOR_API_USER_PREFERENCE,
       );
     }
-    bookmark.from = newWord;
-    bookmark.to = newTranslation;
-    bookmark.context = newContext;
-    bookmark.fit_for_study = newFitForStudy;
     if (setReload) setReload(!reload);
     if (notifyWordChange) notifyWordChange(bookmark.id);
     toast.success("Thank you for the contribution!");
+    handleClose();
   }
   const isPhoneScreen = window.innerWidth < 800;
   return (
@@ -107,9 +148,10 @@ export default function EditButton({
         <Box sx={isPhoneScreen ? s.stylePhone : s.style}>
           <WordEditForm
             bookmark={bookmark}
+            errorMessage={errorMessage}
             handleClose={handleClose}
             updateBookmark={updateBookmark}
-            deleteAction={deleteAction}
+            deleteAction={deleteBookmark}
           />
         </Box>
       </Modal>

@@ -1,5 +1,10 @@
 import { css } from "styled-components";
-import { almostBlack, errorRed, zeeguuOrange, zeeguuTransparentLightOrange } from "./colors";
+import {
+  almostBlack,
+  errorRed,
+  zeeguuOrange,
+  zeeguuTransparentLightOrange,
+} from "./colors";
 
 let formStyling = css`
   input,
@@ -10,8 +15,8 @@ let formStyling = css`
     margin-bottom: 1em;
     font-size: large;
     padding: 0.5em 0.5em;
-    width: 90%;
-
+    width: 100%;
+    box-sizing: border-box;
     @media (min-width: 768px) {
       width: 80%;
       padding: 0.5em 0.5em;

@@ -68,12 +68,6 @@ export default function MultipleChoiceAudio({
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, []);
 
-  function disableAudio(e) {
-    e.preventDefault();
-    SessionStorage.disableAudioExercises();
-    handleDisabledAudio();
-  }
-
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
     if (
@@ -267,7 +261,10 @@ export default function MultipleChoiceAudio({
         isCorrect={isCorrect}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
-        <DisableAudioSession disableAudio={disableAudio} />
+        <DisableAudioSession
+          handleDisabledAudio={handleDisabledAudio}
+          setIsCorrect={setIsCorrect}
+        />
       )}
     </s.Exercise>
   );

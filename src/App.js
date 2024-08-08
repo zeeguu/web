@@ -53,37 +53,38 @@ function App() {
     api.session = getSessionFromCookies();
     console.log("Session: " + api.session);
 
-    api.isValidSession(
-      () => {
-        console.log("valid sesison... getting user details...");
-        api.getUserDetails((data) => {
-          LocalStorage.setUserInfo(data);
-          api.getUserPreferences((preferences) => {
-            LocalStorage.setUserPreferences(preferences);
+    // Only validate if there is a session in cookies.
+    if (api.session !== undefined)
+      api.isValidSession(
+        () => {
+          console.log("valid sesison... getting user details...");
+          api.getUserDetails((data) => {
+            LocalStorage.setUserInfo(data);
+            api.getUserPreferences((preferences) => {
+              LocalStorage.setUserPreferences(preferences);
 
-            let userDict = {
-              session: getSessionFromCookies(),
-              ...LocalStorage.userInfo(),
-            };
-            console.log("Session: " + api.session);
+              let userDict = {
+                session: getSessionFromCookies(),
+                ...LocalStorage.userInfo(),
+              };
+              console.log("Session: " + api.session);
 
-            api.hasBookmarksInPipelineToReview((hasBookmarks) => {
-              exerciseNotification.setHasExercises(hasBookmarks);
-              exerciseNotification.updateReactState();
+              api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+                exerciseNotification.setHasExercises(hasBookmarks);
+                exerciseNotification.updateReactState();
+              });
+              setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
+              setUserData(userDict);
             });
-            setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
-            setUserData(userDict);
           });
-        });
-      },
-      () => {
-        console.log("no valid session");
-        logout();
-      },
-    );
+        },
+        () => {
+          console.log("no valid session");
+          logout();
+        },
+      );
 
     //logs out user on zeeguu.org if they log out of the extension
-
     const interval = setInterval(() => {
       if (!getSessionFromCookies()) {
         setUserData({});

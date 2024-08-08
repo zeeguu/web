@@ -6,8 +6,9 @@
 const SessionStorage = {
   Keys: {
     AudioExercisesEnabled: "audio_exercises_enabled",
-    AudioBeingPlayed: "audio_is_being_played",
     CelebrationModalShown: "celebration_modal_shown",
+    UserConfirmationForAccountDeletion:
+      "user_confirmation_for_account_deletion",
   },
 
   /**
@@ -25,6 +26,23 @@ const SessionStorage = {
     // string equality.
     return sessionStorage[this.Keys.AudioExercisesEnabled] === "true";
   },
+  /**
+   * @return {boolean}
+   */
+  hasUserConfirmationForAccountDeletion: function () {
+    // Session storage stores the values as strings, so we have to check based on
+    // string equality.
+    return (
+      sessionStorage[this.Keys.UserConfirmationForAccountDeletion] === "true"
+    );
+  },
+  /**
+   * @param {boolean} is_confirmed
+   */
+  setUserConfirmationForAccountDeletion: function (is_confirmed) {
+    sessionStorage[this.Keys.UserConfirmationForAccountDeletion] = is_confirmed;
+  },
+
   /**
    * @param {boolean} is_enabled
    */
