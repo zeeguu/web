@@ -64,7 +64,7 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
           exerciseSequence.push(exercise);
 
           // Skip the assigned bookmarks
-          i += selectedExerciseType.requiredBookmarks - 1;
+          i += selectedExerciseType.testedBookmarks - 1;
           suitableExerciseFound = true;
         } else {
           suitableExerciseFound = false;
@@ -108,9 +108,6 @@ function assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList) {
 }
 
 function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
-  console.log("about to test:");
-  console.log(bookmarks);
-
   const learningCycleSequence =
     exerciseTypesList === LEARNING_CYCLE_SEQUENCE ||
     exerciseTypesList === LEARNING_CYCLE_SEQUENCE_NO_AUDIO;

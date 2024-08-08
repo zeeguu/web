@@ -209,7 +209,12 @@ export default function Exercises({
       (bookmarks) => {
         exerciseNotification.setExerciseCounter(bookmarks.length);
         initializeExercises(
-          bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
+          bookmarks.slice(
+            0,
+            bookmarks.length > 15
+              ? NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1
+              : 15 + 1,
+          ),
           strings.exercises,
         );
       },
