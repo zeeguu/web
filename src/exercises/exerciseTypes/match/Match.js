@@ -67,7 +67,7 @@ export default function Match({
   );
   const [isPronouncing, setIsPronouncing] = useState(false);
   const [lastCorrectBookmarkId, setLastCorrectBookmarkId] = useState(null);
-  const [selectedBookmark, setSelectedBookmark] = useState(bookmarksToStudy[0]);
+  const [selectedBookmark, setSelectedBookmark] = useState();
   const [selectedBookmarkMessage, setSelectedBookmarkMessage] = useState("");
 
   useEffect(() => {
@@ -200,10 +200,12 @@ export default function Match({
       <div className="headlineWithMoreSpace">
         {strings.matchWordWithTranslation}{" "}
       </div>
-      <LearningCycleIndicator
-        bookmark={selectedBookmark}
-        message={selectedBookmarkMessage}
-      />
+      {selectedBookmark && (
+        <LearningCycleIndicator
+          bookmark={selectedBookmark}
+          message={selectedBookmarkMessage}
+        />
+      )}
 
       <MatchInput
         fromButtonOptions={fromButtonOptions}

@@ -8,6 +8,7 @@ import { ExerciseValidation } from "./ExerciseValidation";
 import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
 import { APP_DOMAIN } from "../appConstants.js";
 import NotificationIcon from "../components/NotificationIcon";
+import isBookmarkExpression from "../utils/misc/isBookmarkExpression.js";
 
 export default function LearningCycleIndicator({ bookmark, message }) {
   const [userIsCorrect, setUserIsCorrect] = useState(false);
@@ -64,21 +65,30 @@ export default function LearningCycleIndicator({ bookmark, message }) {
     <>
       {Feature.merle_exercises() && (
         <div className="learningCycleIndicator">
-          <Tooltip title={getTooltipContent()}>
-            <div className="learningCycleIcon">
+          <div className="learningCycleIcon">
+            <Tooltip title={getTooltipContent()}>
               <img
                 src={APP_DOMAIN + getLearningCycleIcon()}
                 alt={`${LEARNING_CYCLE_NAME[learningCycle]}-icon`}
                 style={{ height: "2.5em", width: "2.5em" }}
               />
-              {coolingInterval === null && (
-                <NotificationIcon
-                  style={{ marginRight: "-2.2em", top: "-2em", left: "-0.8em" }}
-                  text={"New!"}
-                ></NotificationIcon>
-              )}
-            </div>
-          </Tooltip>
+            </Tooltip>
+            {coolingInterval === null && (
+              <NotificationIcon
+                style={{
+                  marginRight: "-2.2em",
+                  top: "-2em",
+                  left: "-0.8em",
+                }}
+                text={"New!"}
+                tooltipText={
+                  isBookmarkExpression(bookmark)
+                    ? strings.newExpressionExercisesTooltip
+                    : strings.newWordExercisesTooltip
+                }
+              ></NotificationIcon>
+            )}
+          </div>
 
           <div className="cooling-bars">
             {[...Array(5)].map((_, index) => {

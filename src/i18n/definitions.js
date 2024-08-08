@@ -405,6 +405,9 @@ let strings = new LocalizedStrings(
       correctExercise3: "Good job!",
       solutionExercise1: "Check the solution!",
       solutionExercise2: "See the solution above!",
+      newWordExercisesTooltip: "This is the first time you practice this word!",
+      newExpressionExercisesTooltip:
+        "This is the first time you practice this expression!",
       //LearnedWordsList
       studentHasNotLearnedWords: "The student has not learned any words yet.",
 
