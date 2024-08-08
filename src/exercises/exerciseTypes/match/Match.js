@@ -108,7 +108,7 @@ export default function Match({
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
     console.log("checking result...");
-    let exerciseAttemptsLogCopy = { ...exerciseAttemptsLog };
+    let exerciseAttemptsLogCopy = [...exerciseAttemptsLog];
     let fullMessage = messageToNextNav;
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmarkLog = exerciseAttemptsLogCopy[i];

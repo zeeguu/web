@@ -91,16 +91,20 @@ export default function NextNavigation({
       !isMatchExercise
     )
       handleSpeak();
-    let wordsProgressed = [];
-    for (let i = 0; i < exerciseAttemptsLog.length; i++) {
-      let apiMessage = exerciseAttemptsLog[i].messageToAPI;
-      let b = exerciseAttemptsLog[i].bookmark;
-      if (b.is_last_in_cycle && apiMessage === "C") {
-        wordsProgressed.push(b.from);
+    if (exerciseAttemptsLog) {
+      let wordsProgressed = [];
+      for (let i = 0; i < exerciseAttemptsLog.length; i++) {
+        let apiMessage = exerciseAttemptsLog[i].messageToAPI;
+        let b = exerciseAttemptsLog[i].bookmark;
+        if (b.is_last_in_cycle && apiMessage === "C") {
+          wordsProgressed.push(b.from);
+        }
       }
+      setMatchExercisesProgressionMessage(
+        "'" + wordsProgressed.join("', '") + "'",
+      );
     }
-    console.log(wordsProgressed);
-  }, [isCorrect]);
+  }, [isCorrect, exerciseAttemptsLog]);
 
   useEffect(() => {
     if (exerciseBookmark && "learning_cycle" in exerciseBookmark) {
@@ -146,8 +150,32 @@ export default function NextNavigation({
           />
         </>
       )}
+      {isCorrectMatch && isMatchExercise && (
+        <>
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={false}
+          />
+          <div
+            className="next-nav-learning-cycle"
+            style={{ textAlign: "left" }}
+          >
+            <img
+              src={getStaticPath("icons", "zeeguu-icon-correct.png")}
+              alt="Correct Icon"
+            />
+            <p>
+              <b>{`${matchExerciseProgressionMessage}`}</b>
+              <br></br>
+              <br></br>
+              <b>These words have now moved to your productive knowledge.</b>
+            </p>
+          </div>
+        </>
+      )}
       {isRightAnswer &&
-        (!isMatchExercise || isCorrectMatch) &&
+        !isMatchExercise &&
         (bookmarkProgression ? (
           <>
             <Confetti
