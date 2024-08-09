@@ -496,6 +496,8 @@ let strings = new LocalizedStrings(
       goodJob: "Good Job, ",
       correct: "You got the following words correct:",
       payMoreAttentionTo: "Pay more attention to these words:",
+      wordsYoullRepeat: "Words you will repeat:",
+      wordsYouProgress: "Words you have progressed:",
 
       //Settings
       nativeLanguage: "Native Language",

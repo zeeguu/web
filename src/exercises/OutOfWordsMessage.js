@@ -6,20 +6,11 @@ import { MAX_EXERCISE_IN_LEARNING_BOOKMARKS } from "./ExerciseConstants";
 import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function OutOfWordsMessage({
-  api,
+  isAbleToAddBookmarksToPipe,
   totalInLearning,
   goBackAction,
   keepExercisingAction,
 }) {
-  const [isAbleToAddBookmarksToPipe, setIsAbleToAddBookmarksToPipe] =
-    useState();
-
-  useEffect(() => {
-    api.getNewBookmarksToStudy(1, (new_bookmarks) => {
-      setIsAbleToAddBookmarksToPipe(new_bookmarks.length > 0);
-    });
-  }, []);
-
   if (isAbleToAddBookmarksToPipe === undefined)
     return <LoadingAnimation></LoadingAnimation>;
   return (

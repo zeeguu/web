@@ -66,6 +66,8 @@ export default function Exercises({
     useActivityTimer();
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
+  const [isAbleToAddBookmarksToPipe, setIsAbleToAddBookmarksToPipe] =
+    useState();
 
   useEffect(() => {
     api.getUserPreferences((preferences) => {
@@ -151,6 +153,9 @@ export default function Exercises({
 
   function startExercising(is_new_scheduled_words) {
     resetExerciseState();
+    api.getNewBookmarksToStudy(1, (new_bookmarks) => {
+      setIsAbleToAddBookmarksToPipe(new_bookmarks.length > 0);
+    });
     if (is_new_scheduled_words) {
       exercise_new_bookmarks();
     } else {
@@ -208,15 +213,7 @@ export default function Exercises({
       MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
       (bookmarks) => {
         exerciseNotification.setExerciseCounter(bookmarks.length);
-        initializeExercises(
-          bookmarks.slice(
-            0,
-            bookmarks.length > 15
-              ? NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1
-              : 15 + 1,
-          ),
-          strings.exercises,
-        );
+        initializeExercises(bookmarks, strings.exercises);
       },
     );
   }
@@ -227,6 +224,10 @@ export default function Exercises({
       <>
         <Congratulations
           articleID={articleID}
+          isAbleToAddBookmarksToPipe={isAbleToAddBookmarksToPipe}
+          hasExceededTotalBookmarks={
+            totalBookmarksInPipeline > MAX_EXERCISE_IN_LEARNING_BOOKMARKS
+          }
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
           api={api}
@@ -255,6 +256,7 @@ export default function Exercises({
         api={api}
         totalInLearning={totalBookmarksInPipeline}
         goBackAction={backButtonAction}
+        isAbleToAddBookmarksToPipe={isAbleToAddBookmarksToPipe}
         keepExercisingAction={() => {
           startExercising(NEW_BOOKMARKS_TO_STUDY);
           setHasKeptExercising(true);
