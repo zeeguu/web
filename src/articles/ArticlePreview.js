@@ -163,27 +163,30 @@ export default function ArticlePreview({
       </s.ArticleContent>
 
       <s.BottomContainer>
-        <s.Topics>
-          {topics.map((topic) => (
-            <span key={topic}>{topic}</span>
-          ))}
-        </s.Topics>
-        {Feature.new_topics() && (
-          <s.KeywordTopics>
-            {new_topics.map((tuple) => (
-              <span
-                onClick={() => {
-                  setShowInfoTopics(!showInfoTopics);
-                  setInfoTopicClick(tuple[0]);
-                }}
-                key={tuple[0]}
-                className={tuple[1] === 3 ? "inferred" : "gold"}
-              >
-                {tuple[0]}
-              </span>
+        <div>
+          {Feature.new_topics() && (
+            <s.KeywordTopics>
+              {new_topics.map((tuple) => (
+                <span
+                  onClick={() => {
+                    setShowInfoTopics(!showInfoTopics);
+                    setInfoTopicClick(tuple[0]);
+                  }}
+                  key={tuple[0]}
+                  className={tuple[1] === 3 ? "inferred" : "gold"}
+                >
+                  {tuple[0]}
+                </span>
+              ))}
+            </s.KeywordTopics>
+          )}
+          <s.Topics>
+            {topics.map((topic) => (
+              <span key={topic}>{topic}</span>
             ))}
-          </s.KeywordTopics>
-        )}
+          </s.Topics>
+        </div>
+
         <ArticleStatInfo
           cefr_level={cefr_level}
           articleInfo={article}
