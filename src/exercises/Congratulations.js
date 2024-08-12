@@ -9,10 +9,13 @@ import LocalStorage from "../assorted/LocalStorage";
 import { timeToHumanReadable } from "../utils/misc/readableTime";
 import { ExerciseCountContext } from "./ExerciseCountContext";
 import CollapsablePanel from "../components/CollapsablePanel";
+import { MAX_EXERCISE_IN_LEARNING_BOOKMARKS } from "./ExerciseConstants";
 
 export default function Congratulations({
   articleID,
   isAbleToAddBookmarksToPipe,
+  hasExceededTotalBookmarks,
+  totalBookmarksInPipeline,
   articleTitle,
   articleURL,
   correctBookmarks,
@@ -40,7 +43,9 @@ export default function Congratulations({
       incorrectBookmarksToDisplay.filter((e) => e.id !== bookmark.id),
     );
   }
-
+  function isPlural(numberOfElements) {
+    return numberOfElements > 1;
+  }
   useEffect(() => {
     let userInfo = LocalStorage.userInfo();
     let name = userInfo.name;
@@ -54,9 +59,16 @@ export default function Congratulations({
   if (username === undefined) {
     return <LoadingAnimation />;
   }
-  const isPlural = totalBookmarksReviewed > 1;
+  const hasScheduledExercises = exerciseNotification.exerciseCounter > 0;
   const isThereMoreExercises =
-    exerciseNotification.exerciseCounter > 0 || isAbleToAddBookmarksToPipe;
+    hasScheduledExercises || isAbleToAddBookmarksToPipe;
+  console.log("Exercise counter at: " + exerciseNotification.exerciseCounter);
+  console.log([
+    isAbleToAddBookmarksToPipe,
+    !articleID,
+    !hasExceededTotalBookmarks,
+    exerciseNotification.exerciseCounter <= 0,
+  ]);
   return (
     <>
       <s.NarrowColumn className="narrowColumn">
@@ -69,13 +81,32 @@ export default function Congratulations({
         <div style={{ marginLeft: "0.5em" }}>
           <p>
             You have just reviewed <b>{totalBookmarksReviewed}</b>{" "}
-            {isPlural ? "words" : "word"}!{" "}
+            {isPlural(totalBookmarksReviewed) ? "words" : "word"}.
+            {hasScheduledExercises && (
+              <b>
+                {" "}
+                You still have {exerciseNotification.exerciseCounter}{" "}
+                {isPlural(exerciseNotification.exerciseCounter)
+                  ? "words"
+                  : "word"}{" "}
+                left to revise today.
+              </b>
+            )}
           </p>
+
+          {hasExceededTotalBookmarks && !hasScheduledExercises && (
+            <p>
+              You have already {totalBookmarksInPipeline} words you are learning
+              at the moment. We recommend that you at most learn{" "}
+              {MAX_EXERCISE_IN_LEARNING_BOOKMARKS} words at any given point.
+            </p>
+          )}
           {isAbleToAddBookmarksToPipe &&
             !articleID &&
-            exerciseNotification.exerciseCounter === 0 && (
+            !hasExceededTotalBookmarks &&
+            exerciseNotification.exerciseCounter <= 0 && (
               <p>
-                You can start studying new words, do you want to continue
+                You can start <b>studying new words</b>, do you want to continue
                 exercising?
               </p>
             )}
@@ -86,23 +117,31 @@ export default function Congratulations({
             </p>
           )}
         </div>
-        {isThereMoreExercises ? (
-          <CenteredColumn
-            className="CenteredColumn"
-            style={{ marginTop: "2em" }}
-          >
+        <CenteredColumn className="CenteredColumn" style={{ marginTop: "2em" }}>
+          {isThereMoreExercises && !hasExceededTotalBookmarks ? (
             <s.OrangeButton
               className="orangeButton"
               onClick={keepExercisingAction}
             >
               {strings.keepExercising}
             </s.OrangeButton>
-          </CenteredColumn>
-        ) : (
-          <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
-            {strings.backToReading}
-          </s.WhiteButton>
-        )}
+          ) : (
+            <>
+              <s.OrangeButton
+                className="orangeButton"
+                onClick={backButtonAction}
+              >
+                {strings.backToReading}
+              </s.OrangeButton>
+              <s.WhiteButton
+                className="whiteButton"
+                onClick={keepExercisingAction}
+              >
+                {strings.keepExercising}
+              </s.WhiteButton>
+            </>
+          )}
+        </CenteredColumn>
         <div style={{ marginTop: "1em", fontSize: "small" }}>
           You have been exercising for {timeToHumanReadable(totalTime)}
         </div>

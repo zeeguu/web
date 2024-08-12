@@ -13,6 +13,7 @@ import Feature from "../features/Feature";
 import {
   MAX_EXERCISE_IN_LEARNING_BOOKMARKS,
   MAX_EXERCISE_TO_DO_NOTIFICATION,
+  MAX_COOLDOWN_INTERVAL,
 } from "./ExerciseConstants";
 
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
@@ -30,6 +31,7 @@ import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
+import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -151,11 +153,14 @@ export default function Exercises({
     setActivityOver(false);
   }
 
-  function startExercising(is_new_scheduled_words) {
-    resetExerciseState();
+  function updateIsAbleToAddNewBookmarksToStudy() {
     api.getNewBookmarksToStudy(1, (new_bookmarks) => {
       setIsAbleToAddBookmarksToPipe(new_bookmarks.length > 0);
     });
+  }
+  function startExercising(is_new_scheduled_words) {
+    resetExerciseState();
+    updateIsAbleToAddNewBookmarksToStudy();
     if (is_new_scheduled_words) {
       exercise_new_bookmarks();
     } else {
@@ -217,9 +222,14 @@ export default function Exercises({
       },
     );
   }
-
+  if (!totalBookmarksInPipeline) {
+    api.getTotalBookmarksInPipeline((totalBookmarks) => {
+      setTotalBookmarksInPipeline(totalBookmarks);
+    });
+  }
   // Standard flow when user completes exercise session
   if (finished) {
+    updateIsAbleToAddNewBookmarksToStudy();
     return (
       <>
         <Congratulations
@@ -228,6 +238,7 @@ export default function Exercises({
           hasExceededTotalBookmarks={
             totalBookmarksInPipeline > MAX_EXERCISE_IN_LEARNING_BOOKMARKS
           }
+          totalBookmarksInPipeline={totalBookmarksInPipeline}
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
           api={api}
@@ -246,11 +257,6 @@ export default function Exercises({
   }
 
   if (showOutOfWordsMessage) {
-    if (!totalBookmarksInPipeline) {
-      api.getTotalBookmarksInPipeline((totalBookmarks) => {
-        setTotalBookmarksInPipeline(totalBookmarks);
-      });
-    }
     return (
       <OutOfWordsMessage
         api={api}
@@ -290,9 +296,13 @@ export default function Exercises({
   function correctAnswerNotification(currentBookmark) {
     if (!incorrectBookmarks.includes(currentBookmark)) {
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
+      let didItProgressToProductive =
+        currentBookmark["cooling_interval"] === MAX_COOLDOWN_INTERVAL &&
+        currentBookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"];
       if (
         currentBookmark["cooling_interval"] !== null &&
-        !correctBookmarksIds.includes(currentBookmark.id)
+        !correctBookmarksIds.includes(currentBookmark.id) &&
+        !didItProgressToProductive
       ) {
         // Only decrement if it's already part of the schedule
         exerciseNotification.decrementExerciseCounter();
@@ -344,7 +354,7 @@ export default function Exercises({
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
-
+  console.log(currentBookmarksToStudy);
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
     <>

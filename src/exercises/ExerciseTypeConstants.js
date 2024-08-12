@@ -32,3 +32,9 @@ export const LEARNING_CYCLE_NAME = Object.freeze({
   1: "receptive",
   2: "productive",
 });
+
+export const LEARNING_CYCLE = Object.freeze({
+  ["NOT_SET"]: 0,
+  ["RECEPTIVE"]: 1,
+  ["PRODUCTIVE"]: 2,
+});
