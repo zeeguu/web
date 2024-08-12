@@ -96,7 +96,8 @@ export default function NextNavigation({
       for (let i = 0; i < exerciseAttemptsLog.length; i++) {
         let apiMessage = exerciseAttemptsLog[i].messageToAPI;
         let b = exerciseAttemptsLog[i].bookmark;
-        if (b.is_last_in_cycle && apiMessage === "C") {
+        let isLastBookmark = exerciseAttemptsLog[i].isLast;
+        if (b.is_last_in_cycle && apiMessage === "C" && !isLastBookmark) {
           wordsProgressed.push(b.from);
         }
       }
@@ -166,10 +167,10 @@ export default function NextNavigation({
               alt="Correct Icon"
             />
             <p>
-              <b>{`${matchExerciseProgressionMessage}`}</b>
-              <br></br>
-              <br></br>
-              <b>These words have now moved to your productive knowledge.</b>
+              <b>
+                {`${matchExerciseProgressionMessage}`} have now moved to your
+                productive knowledge.
+              </b>
             </p>
           </div>
         </>

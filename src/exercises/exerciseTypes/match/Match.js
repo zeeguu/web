@@ -42,14 +42,17 @@ export default function Match({
     {
       bookmark: bookmarksToStudy[0],
       messageToAPI: "",
+      isLast: false,
     },
     {
       bookmark: bookmarksToStudy[1],
       messageToAPI: "",
+      isLast: false,
     },
     {
       bookmark: bookmarksToStudy[2],
       messageToAPI: "",
+      isLast: false,
     },
   ];
 
@@ -120,15 +123,17 @@ export default function Match({
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           handleSpeak(exerciseAttemptsLogCopy[i].bookmark);
-          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
+
           setLastCorrectBookmarkId(currentBookmarkLog.bookmark.id);
           if (buttonsToDisable.length === 2) {
             setIsCorrect(true);
+            exerciseAttemptsLogCopy[i].isLast = true;
             break;
           } else {
             notifyCorrectAnswer(currentBookmarkLog.bookmark);
             handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
           }
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         } else {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
