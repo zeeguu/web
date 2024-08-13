@@ -39,6 +39,9 @@ export default function MultipleChoiceContext({
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
   const [showSolution, setShowSolution] = useState(false);
+  const [wordInContextHeadline, setWordInContextHeadline] = useState(
+    removePunctuation(bookmarksToStudy[0].from),
+  );
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -84,6 +87,7 @@ export default function MultipleChoiceContext({
       setClickedIndex(index);
       notifyCorrectAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
+      setWordInContextHeadline(removePunctuation(bookmarksToStudy[0].to));
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
     } else {
@@ -126,9 +130,7 @@ export default function MultipleChoiceContext({
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />
-      <h1 className="wordInContextHeadline">
-        {removePunctuation(bookmarksToStudy[0].from)}
-      </h1>
+      <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
       {exerciseBookmarks.map((option, index) => (
         <s.MultipleChoiceContext
           key={index}
