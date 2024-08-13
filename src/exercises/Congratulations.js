@@ -23,6 +23,7 @@ export default function Congratulations({
   api,
   backButtonAction,
   keepExercisingAction,
+  startExercisingNewWords,
   source,
   totalTime,
 }) {
@@ -62,13 +63,57 @@ export default function Congratulations({
   const hasScheduledExercises = exerciseNotification.exerciseCounter > 0;
   const isThereMoreExercises =
     hasScheduledExercises || isAbleToAddBookmarksToPipe;
-  console.log("Exercise counter at: " + exerciseNotification.exerciseCounter);
-  console.log([
-    isAbleToAddBookmarksToPipe,
-    !articleID,
-    !hasExceededTotalBookmarks,
-    exerciseNotification.exerciseCounter <= 0,
-  ]);
+  const canStartLearningNewWords =
+    isAbleToAddBookmarksToPipe &&
+    !articleID &&
+    !hasExceededTotalBookmarks &&
+    exerciseNotification.exerciseCounter <= 0;
+  const isOverTotalBookmarkLimit =
+    hasExceededTotalBookmarks && !hasScheduledExercises;
+
+  function progressionButtonRender() {
+    if (hasScheduledExercises)
+      return (
+        <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
+          {strings.keepExercising}
+        </s.OrangeButton>
+      );
+    else if (canStartLearningNewWords && isOverTotalBookmarkLimit)
+      return (
+        <>
+          <s.OrangeButton className="orangeButton" onClick={backButtonAction}>
+            {strings.backToReading}
+          </s.OrangeButton>
+          <s.WhiteButton
+            className="whiteButton"
+            onClick={startExercisingNewWords}
+          >
+            {strings.startLearningNewWords}
+          </s.WhiteButton>
+        </>
+      );
+    else if (canStartLearningNewWords && !isOverTotalBookmarkLimit)
+      return (
+        <>
+          <s.OrangeButton
+            className="orangeButton"
+            onClick={startExercisingNewWords}
+          >
+            {strings.startLearningNewWords}
+          </s.OrangeButton>
+          <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
+            {strings.backToReading}
+          </s.WhiteButton>
+        </>
+      );
+    else
+      return (
+        <s.OrangeButton className="orangeButton" onClick={backButtonAction}>
+          {strings.backToReading}
+        </s.OrangeButton>
+      );
+  }
+
   return (
     <>
       <s.NarrowColumn className="narrowColumn">
@@ -94,22 +139,19 @@ export default function Congratulations({
             )}
           </p>
 
-          {hasExceededTotalBookmarks && !hasScheduledExercises && (
+          {isOverTotalBookmarkLimit && (
             <p>
               You have already {totalBookmarksInPipeline} words you are learning
               at the moment. We recommend that you at most learn{" "}
               {MAX_EXERCISE_IN_LEARNING_BOOKMARKS} words at any given point.
             </p>
           )}
-          {isAbleToAddBookmarksToPipe &&
-            !articleID &&
-            !hasExceededTotalBookmarks &&
-            exerciseNotification.exerciseCounter <= 0 && (
-              <p>
-                You can start <b>studying new words</b>, do you want to continue
-                exercising?
-              </p>
-            )}
+          {canStartLearningNewWords && (
+            <p>
+              You can start <b>studying new words</b>, do you want to continue
+              exercising?
+            </p>
+          )}
           {!isThereMoreExercises && (
             <p>
               There are no more words for you to practice. You can read more
@@ -118,29 +160,7 @@ export default function Congratulations({
           )}
         </div>
         <CenteredColumn className="CenteredColumn" style={{ marginTop: "2em" }}>
-          {isThereMoreExercises && !hasExceededTotalBookmarks ? (
-            <s.OrangeButton
-              className="orangeButton"
-              onClick={keepExercisingAction}
-            >
-              {strings.keepExercising}
-            </s.OrangeButton>
-          ) : (
-            <>
-              <s.OrangeButton
-                className="orangeButton"
-                onClick={backButtonAction}
-              >
-                {strings.backToReading}
-              </s.OrangeButton>
-              <s.WhiteButton
-                className="whiteButton"
-                onClick={keepExercisingAction}
-              >
-                {strings.keepExercising}
-              </s.WhiteButton>
-            </>
-          )}
+          {progressionButtonRender()}
         </CenteredColumn>
         <div style={{ marginTop: "1em", fontSize: "small" }}>
           You have been exercising for {timeToHumanReadable(totalTime)}

@@ -247,6 +247,10 @@ export default function Exercises({
             startExercising(BOOKMARKS_DUE_REVIEW);
             setHasKeptExercising(true);
           }}
+          startExercisingNewWords={() => {
+            startExercising(NEW_BOOKMARKS_TO_STUDY);
+            setHasKeptExercising(true);
+          }}
           source={source}
           totalTime={activeSessionDuration}
           articleURL={articleURL}
