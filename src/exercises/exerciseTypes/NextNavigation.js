@@ -54,6 +54,7 @@ export default function NextNavigation({
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [matchExerciseProgressionMessage, setMatchExercisesProgressionMessage] =
     useState();
+  const [matchWordsProgressCount, setMatchWordsProgressCount] = useState(0);
   const [isMatchBookmarkProgression, setIsMatchBookmarkProgression] =
     useState(false);
   const productiveExercisesDisabled =
@@ -111,6 +112,7 @@ export default function NextNavigation({
       setMatchExercisesProgressionMessage(
         "'" + wordsProgressed.join("', '") + "'",
       );
+      setMatchWordsProgressCount(wordsProgressed.length);
     }
   }, [isCorrect, exerciseAttemptsLog]);
 
@@ -159,7 +161,7 @@ export default function NextNavigation({
           />
         </>
       )}
-      {isCorrectMatch && isMatchExercise && isMatchBookmarkProgression && (
+      {isCorrect && isMatchExercise && isMatchBookmarkProgression && (
         <>
           <Confetti
             width={window.innerWidth}
@@ -176,7 +178,8 @@ export default function NextNavigation({
             />
             <p>
               <b>
-                {`${matchExerciseProgressionMessage}`} have now moved to your
+                {`${matchExerciseProgressionMessage}`}{" "}
+                {matchWordsProgressCount > 1 ? "have" : "has"} now moved to your
                 productive knowledge.
               </b>
             </p>
