@@ -32,6 +32,8 @@ import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
 import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
+import LocalStorage from "../assorted/LocalStorage";
+import { PRONOUNCIATION_SETTING } from "./ExerciseTypeConstants";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -141,6 +143,7 @@ export default function Exercises({
       setTitle(title);
     }
   }
+
   function resetExerciseState() {
     setShowOutOfWordsMessage(false);
     setCountBookmarksToPractice();
@@ -176,6 +179,7 @@ export default function Exercises({
       }
     }
   }
+
   function exercise_new_bookmarks() {
     api.getNewBookmarksToStudy(
       NUMBER_OF_BOOKMARKS_TO_PRACTICE,
@@ -198,6 +202,7 @@ export default function Exercises({
       } else setShowOutOfWordsMessage(true);
     });
   }
+
   function exercise_article_bookmarks() {
     api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
       api.getArticleInfo(articleID, (data) => {
@@ -296,7 +301,9 @@ export default function Exercises({
     setCurrentIndex(newIndex);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
+
   let correctBookmarksCopy = [...correctBookmarks];
+
   function correctAnswerNotification(currentBookmark) {
     if (!incorrectBookmarks.includes(currentBookmark)) {
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
@@ -316,7 +323,9 @@ export default function Exercises({
     }
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
+
   let incorrectBookmarksCopy = [...incorrectBookmarks];
+
   function incorrectAnswerNotification(currentBookmark) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
     if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
@@ -335,6 +344,7 @@ export default function Exercises({
     setIncorrectBookmarks(incorrectBookmarksCopy);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
+
   function uploadUserFeedback(userWrittenFeedback, word_id) {
     console.log(
       "Sending to the API. Feedback: ",

@@ -21,13 +21,15 @@ export default function ToolbarButtons({
             {<small>{"Click word(s) to:"}</small>}
           </FormHelperText>
           <FormControlLabel
-            control={<Android12Switch defaultChecked />}
+            checked={translating}
+            control={<Android12Switch />}
             className={translating ? "selected" : ""}
             onClick={(e) => toggle(translating, setTranslating)}
             label={<small>{"See translation"}</small>}
           />
           <FormControlLabel
-            control={<Android12Switch defaultChecked />}
+            checked={pronouncing}
+            control={<Android12Switch />}
             className={pronouncing ? "selected" : ""}
             onClick={(e) => toggle(pronouncing, setPronouncing)}
             label={<small>{"Hear pronunciation"}</small>}

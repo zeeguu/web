@@ -26,6 +26,7 @@ import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
+import useUserPreferences from "../hooks/useUserPreferences";
 
 let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
 let previous_time = 0; // since sent a scroll update
@@ -61,8 +62,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
-  const [translating, setTranslating] = useState(true);
-  const [pronouncing, setPronouncing] = useState(true);
+  const {
+    translateInReader,
+    pronounceInReader,
+    updateTranslateInReader,
+    updatePronounceInReader,
+  } = useUserPreferences(api);
   const [scrollPosition, setScrollPosition] = useState();
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
@@ -272,10 +277,10 @@ export default function ArticleReader({ api, teacherArticleID }) {
         articleID={articleID}
         api={api}
         interactiveText={interactiveText}
-        translating={translating}
-        pronouncing={pronouncing}
-        setTranslating={setTranslating}
-        setPronouncing={setPronouncing}
+        translating={translateInReader}
+        pronouncing={pronounceInReader}
+        setTranslating={updateTranslateInReader}
+        setPronouncing={updatePronounceInReader}
         url={articleInfo.url}
         UMR_SOURCE={UMR_SOURCE}
         articleProgress={scrollPosition}
@@ -283,8 +288,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
       <h1>
         <TranslatableText
           interactiveText={interactiveTitle}
-          translating={translating}
-          pronouncing={pronouncing}
+          translating={translateInReader}
+          pronouncing={pronounceInReader}
           setIsRendered={setReaderReady}
         />
       </h1>
@@ -339,8 +344,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
       <s.MainText>
         <TranslatableText
           interactiveText={interactiveText}
-          translating={translating}
-          pronouncing={pronouncing}
+          translating={translateInReader}
+          pronouncing={pronounceInReader}
         />
       </s.MainText>
 

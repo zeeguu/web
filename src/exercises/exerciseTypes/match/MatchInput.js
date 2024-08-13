@@ -24,6 +24,8 @@ function MatchInput({
   setReload,
   onBookmarkSelected,
   notifyBookmarkDeletion,
+  isPronouncing,
+  lastCorrectBookmarkId,
 }) {
   const answerColors = [
     {
@@ -136,6 +138,9 @@ function MatchInput({
                       api={api}
                       styling={small}
                       key={"L2_Speak_" + option.id}
+                      parentIsSpeakingControl={
+                        option.id === lastCorrectBookmarkId && isPronouncing
+                      }
                     />
                   </s.MatchSpeakButtonHolder>
                 </s.ButtonRow>
