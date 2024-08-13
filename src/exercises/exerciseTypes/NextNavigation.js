@@ -24,6 +24,7 @@ import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
 export default function NextNavigation({
   message,
   exerciseBookmark,
+  exerciseAttemptsLog, // Used for exercises like Match which test multiple bookmarks
   moveToNextExercise,
   api,
   reload,
@@ -50,6 +51,8 @@ export default function NextNavigation({
     useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
+  const [matchExerciseProgressionMessage, setMatchExercisesProgressionMessage] =
+    useState();
   const productiveExercisesDisabled =
     LocalStorage.getProductiveExercisesEnabled() === "false";
   const isLastInCycle = exerciseBookmark.is_last_in_cycle;
@@ -66,14 +69,14 @@ export default function NextNavigation({
   const bookmarkLearned =
     isUserAndAnswerCorrect &&
     isLastInCycle &&
-    (!isMatchExercise || (isMatchExercise && isCorrectMatch)) &&
+    isCorrectMatch &&
     (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
 
   const bookmarkProgression =
     userIsCorrect &&
     isLearningCycleOne &&
     isLastInCycle &&
-    (!isMatchExercise || (isMatchExercise && isCorrectMatch)) &&
+    isCorrectMatch &&
     !productiveExercisesDisabled &&
     learningCycleFeature;
 
@@ -88,7 +91,21 @@ export default function NextNavigation({
       !isMatchExercise
     )
       handleSpeak();
-  }, [isCorrect]);
+    if (exerciseAttemptsLog) {
+      let wordsProgressed = [];
+      for (let i = 0; i < exerciseAttemptsLog.length; i++) {
+        let apiMessage = exerciseAttemptsLog[i].messageToAPI;
+        let b = exerciseAttemptsLog[i].bookmark;
+        let isLastBookmark = exerciseAttemptsLog[i].isLast;
+        if (b.is_last_in_cycle && apiMessage === "C" && !isLastBookmark) {
+          wordsProgressed.push(b.from);
+        }
+      }
+      setMatchExercisesProgressionMessage(
+        "'" + wordsProgressed.join("', '") + "'",
+      );
+    }
+  }, [isCorrect, exerciseAttemptsLog]);
 
   useEffect(() => {
     if (exerciseBookmark && "learning_cycle" in exerciseBookmark) {
@@ -134,8 +151,32 @@ export default function NextNavigation({
           />
         </>
       )}
+      {isCorrectMatch && isMatchExercise && (
+        <>
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={false}
+          />
+          <div
+            className="next-nav-learning-cycle"
+            style={{ textAlign: "left" }}
+          >
+            <img
+              src={getStaticPath("icons", "zeeguu-icon-correct.png")}
+              alt="Correct Icon"
+            />
+            <p>
+              <b>
+                {`${matchExerciseProgressionMessage}`} have now moved to your
+                productive knowledge.
+              </b>
+            </p>
+          </div>
+        </>
+      )}
       {isRightAnswer &&
-        (!isMatchExercise || isCorrectMatch) &&
+        !isMatchExercise &&
         (bookmarkProgression ? (
           <>
             <Confetti
