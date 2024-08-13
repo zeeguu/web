@@ -223,18 +223,17 @@ export default function NextNavigation({
           )}
         </>
       )}
-      {isExerciseCorrect &&
-        !(bookmarkLearned || bookmarkProgression || bookmarkLearned) && (
-          <div className="next-nav-feedback">
-            <img
-              src={getStaticPath("icons", "zeeguu-icon-correct.png")}
-              alt="Correct Icon"
-            />
-            <p>
-              <b>{correctMessage}</b>
-            </p>
-          </div>
-        )}
+      {isExerciseCorrect && !(bookmarkLearned || bookmarkProgression) && (
+        <div className="next-nav-feedback">
+          <img
+            src={getStaticPath("icons", "zeeguu-icon-correct.png")}
+            alt="Correct Icon"
+          />
+          <p>
+            <b>{correctMessage}</b>
+          </p>
+        </div>
+      )}
       {isCorrect && !isMultiExerciseType && (
         <>
           <s.BottomRowSmallTopMargin className="bottomRow">
