@@ -500,8 +500,8 @@ let strings = new LocalizedStrings(
       goodJob: "Good Job, ",
       correct: "You got the following words correct:",
       payMoreAttentionTo: "Pay more attention to these words:",
-      wordsYoullRepeat: "Words you will repeat:",
-      wordsYouProgress: "Words you have progressed:",
+      wordsIncorrect: "Words you got incorrect: ",
+      wordsCorrect: "Words you got correct:",
 
       //Settings
       nativeLanguage: "Native Language",

@@ -241,7 +241,7 @@ export default function Exercises({
           articleID={articleID}
           isAbleToAddBookmarksToPipe={isAbleToAddBookmarksToPipe}
           hasExceededTotalBookmarks={
-            totalBookmarksInPipeline > MAX_EXERCISE_IN_LEARNING_BOOKMARKS
+            totalBookmarksInPipeline >= MAX_EXERCISE_IN_LEARNING_BOOKMARKS
           }
           totalBookmarksInPipeline={totalBookmarksInPipeline}
           correctBookmarks={correctBookmarks}

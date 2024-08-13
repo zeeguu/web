@@ -66,7 +66,6 @@ export default function Congratulations({
   const canStartLearningNewWords =
     isAbleToAddBookmarksToPipe &&
     !articleID &&
-    !hasExceededTotalBookmarks &&
     exerciseNotification.exerciseCounter <= 0;
   const isOverTotalBookmarkLimit =
     hasExceededTotalBookmarks && !hasScheduledExercises;
@@ -85,7 +84,7 @@ export default function Congratulations({
             {strings.backToReading}
           </s.OrangeButton>
           <s.WhiteButton
-            className="whiteButton"
+            className="whiteButton slightlyLarger"
             onClick={startExercisingNewWords}
           >
             {strings.startLearningNewWords}
@@ -96,13 +95,27 @@ export default function Congratulations({
       return (
         <>
           <s.OrangeButton
-            className="orangeButton"
+            className="orangeButton slightlyLarger"
             onClick={startExercisingNewWords}
           >
             {strings.startLearningNewWords}
           </s.OrangeButton>
           <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
             {strings.backToReading}
+          </s.WhiteButton>
+        </>
+      );
+    else if (canStartLearningNewWords && isOverTotalBookmarkLimit)
+      return (
+        <>
+          <s.OrangeButton className="whiteButton" onClick={backButtonAction}>
+            {strings.backToReading}
+          </s.OrangeButton>
+          <s.WhiteButton
+            className="whiteButton slightlyLarger"
+            onClick={startExercisingNewWords}
+          >
+            {strings.startLearningNewWords}
           </s.WhiteButton>
         </>
       );
@@ -138,15 +151,15 @@ export default function Congratulations({
               </b>
             )}
           </p>
-
           {isOverTotalBookmarkLimit && (
             <p>
-              You have already {totalBookmarksInPipeline} words you are learning
-              at the moment. We recommend that you at most learn{" "}
-              {MAX_EXERCISE_IN_LEARNING_BOOKMARKS} words at any given point.
+              You have already <b>{totalBookmarksInPipeline} words</b> you are
+              learning at the moment. We recommend that you at{" "}
+              <b>most learn {MAX_EXERCISE_IN_LEARNING_BOOKMARKS} words</b> at
+              any given point.
             </p>
           )}
-          {canStartLearningNewWords && (
+          {canStartLearningNewWords && !isOverTotalBookmarkLimit && (
             <p>
               You can start <b>studying new words</b>, do you want to continue
               exercising?
@@ -185,7 +198,7 @@ export default function Congratulations({
                 />
               </s.ContentOnRow>
             ))}
-            topMessage={strings.wordsYoullRepeat}
+            topMessage={strings.wordsIncorrect}
             defaultOpen={true}
           ></CollapsablePanel>
         )}
@@ -203,7 +216,7 @@ export default function Congratulations({
                 />
               </s.ContentOnRow>
             ))}
-            topMessage={strings.wordsYouProgress}
+            topMessage={strings.wordsCorrect}
             defaultOpen={true}
           ></CollapsablePanel>
         )}

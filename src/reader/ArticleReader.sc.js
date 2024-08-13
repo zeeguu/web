@@ -176,6 +176,9 @@ let _BottomButton = styled(BigSquareButton)`
   width: 8em;
   height: auto;
   display: inline-block;
+  &.slightlyLarger {
+    width: 10em;
+  }
 `;
 
 let WhiteButton = styled(_BottomButton)`
