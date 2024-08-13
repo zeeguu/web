@@ -57,6 +57,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
   teacherArticleID
     ? (articleID = teacherArticleID)
     : (articleID = query.get("id"));
+  let percentageRead = query.get("lastRead");
+  percentageRead =
+    percentageRead === "undefined" ? null : Number(percentageRead) / 100;
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
@@ -138,6 +141,38 @@ export default function ArticleReader({ api, teacherArticleID }) {
       lastSampleTimer.current = currentReadingTimer;
     }
   };
+
+  useEffect(() => {
+    if (interactiveText !== undefined) {
+      setTimeout(() => {
+        let scrollElement = document.getElementById("scrollHolder");
+        let textElement = document.getElementById("text");
+        let bottomRow = document.getElementById("bottomRow");
+        if (percentageRead) {
+          console.log(scrollElement.scrollHeight * percentageRead);
+          scrollElement.scrollTo({
+            top:
+              (scrollElement.scrollHeight -
+                scrollElement.clientHeight -
+                bottomRow.clientHeight) *
+              percentageRead,
+            behavior: "smooth",
+          });
+        }
+
+        api.logReaderActivity(
+          api.VIEWPORT_READER_SETTINGS,
+          articleID,
+          JSON.stringify({
+            scrollHeight: scrollElement.scrollHeight,
+            clientHeight: scrollElement.clientHeight,
+            textHeight: textElement.clientHeight,
+            bottomRowHeight: bottomRow.clientHeight,
+          }),
+        );
+      }, 500);
+    }
+  }, [interactiveText]);
 
   function onCreate() {
     scrollEvents.current = [];
@@ -285,69 +320,71 @@ export default function ArticleReader({ api, teacherArticleID }) {
         UMR_SOURCE={UMR_SOURCE}
         articleProgress={scrollPosition}
       />
-      <h1>
-        <TranslatableText
-          interactiveText={interactiveTitle}
-          translating={translateInReader}
-          pronouncing={pronounceInReader}
-          setIsRendered={setReaderReady}
-        />
-      </h1>
-      <div
-        style={{
-          marginTop: "1em",
-          marginBottom: "2em",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <ArticleAuthors articleInfo={articleInfo} />
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <ArticleSource url={articleInfo.url} />
-          <ReportBroken
-            api={api}
-            UMR_SOURCE={UMR_SOURCE}
-            history={history}
-            articleID={articleID}
+      <div id="text">
+        <h1>
+          <TranslatableText
+            interactiveText={interactiveTitle}
+            translating={translateInReader}
+            pronouncing={pronounceInReader}
+            setIsRendered={setReaderReady}
           />
+        </h1>
+        <div
+          style={{
+            marginTop: "1em",
+            marginBottom: "2em",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <ArticleAuthors articleInfo={articleInfo} />
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <ArticleSource url={articleInfo.url} />
+            <ReportBroken
+              api={api}
+              UMR_SOURCE={UMR_SOURCE}
+              history={history}
+              articleID={articleID}
+            />
+          </div>
         </div>
+        <hr></hr>
+        {articleInfo.img_url && (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <img
+              alt=""
+              src={articleInfo.img_url}
+              style={{
+                width: "100%",
+                borderRadius: "1em",
+                marginBottom: "1em",
+              }}
+            />
+          </div>
+        )}
+
+        {articleInfo.video ? (
+          <iframe
+            width="620"
+            height="415"
+            src={
+              "https://www.youtube.com/embed/" +
+              extractVideoIDFromURL(articleInfo.url)
+            }
+          ></iframe>
+        ) : (
+          ""
+        )}
+
+        <s.MainText>
+          <TranslatableText
+            interactiveText={interactiveText}
+            translating={translateInReader}
+            pronouncing={pronounceInReader}
+          />
+        </s.MainText>
       </div>
-      <hr></hr>
-      {articleInfo.img_url && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <img
-            alt=""
-            src={articleInfo.img_url}
-            style={{
-              width: "100%",
-              borderRadius: "1em",
-              marginBottom: "1em",
-            }}
-          />
-        </div>
-      )}
-
-      {articleInfo.video ? (
-        <iframe
-          width="620"
-          height="415"
-          src={
-            "https://www.youtube.com/embed/" +
-            extractVideoIDFromURL(articleInfo.url)
-          }
-        ></iframe>
-      ) : (
-        ""
-      )}
-
-      <s.MainText>
-        <TranslatableText
-          interactiveText={interactiveText}
-          translating={translateInReader}
-          pronouncing={pronounceInReader}
-        />
-      </s.MainText>
 
       {readerReady && (
         <div id={"bottomRow"}>

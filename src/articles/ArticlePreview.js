@@ -18,6 +18,7 @@ export default function ArticlePreview({
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
   onArticleClick,
+  isUnfinishedArticle,
 }) {
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(
@@ -43,7 +44,10 @@ export default function ArticlePreview({
 
   function titleLink(article) {
     let open_in_zeeguu = (
-      <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
+      <Link
+        to={`/read/article?id=${article.id}&lastRead=${article.last_reading_percentage}`}
+        onClick={handleArticleClick}
+      >
         {article.title}
       </Link>
     );
@@ -107,47 +111,64 @@ export default function ArticlePreview({
 
   return (
     <s.ArticlePreview>
-      <SmallSaveArticleButton
-        api={api}
-        article={article}
-        isArticleSaved={isArticleSaved}
-        setIsArticleSaved={setIsArticleSaved}
-      />
-
-      <s.Title>{titleLink(article)}</s.Title>
-      <ArticleSourceInfo
-        articleInfo={article}
-        dontShowPublishingTime={dontShowPublishingTime}
-        dontShowSourceIcon={dontShowSourceIcon}
-      ></ArticleSourceInfo>
-      <s.ArticleContent>
-        {article.img_url && <img alt="" src={article.img_url} />}
-        <s.Summary>{article.summary}...</s.Summary>
-      </s.ArticleContent>
-
-      <s.BottomContainer>
-        <s.Topics>
-          {topics.map((topic) => (
-            <span key={topic}>{topic}</span>
-          ))}
-        </s.Topics>
-        <ArticleStatInfo
-          cefr_level={cefr_level}
-          articleInfo={article}
-        ></ArticleStatInfo>
-      </s.BottomContainer>
-      {article.video ? (
-        <img
-          alt=""
-          style={{ float: "left", marginRight: "1em" }}
-          src={
-            "https://img.youtube.com/vi/" +
-            extractVideoIDFromURL(article.url) +
-            "/default.jpg"
-          }
+      {!isUnfinishedArticle && (
+        <SmallSaveArticleButton
+          api={api}
+          article={article}
+          isArticleSaved={isArticleSaved}
+          setIsArticleSaved={setIsArticleSaved}
         />
-      ) : (
-        ""
+      )}
+
+      {isUnfinishedArticle && (
+        <div>
+          <s.UnfinishedArticleContainer>
+            <s.Title>{titleLink(article)}</s.Title>
+            {article.img_url && <img alt="" src={article.img_url} />}
+          </s.UnfinishedArticleContainer>
+          <div style={{ fontWeight: "550" }}>
+            ({article.time_until_last_read}, {article.last_reading_percentage}%
+            read)
+          </div>
+        </div>
+      )}
+      {!isUnfinishedArticle && (
+        <>
+          <s.Title>{titleLink(article)}</s.Title>
+          <ArticleSourceInfo
+            articleInfo={article}
+            dontShowPublishingTime={dontShowPublishingTime}
+            dontShowSourceIcon={dontShowSourceIcon}
+          ></ArticleSourceInfo>
+          <s.ArticleContent>
+            {article.img_url && <img alt="" src={article.img_url} />}
+            <s.Summary>{article.summary}...</s.Summary>
+          </s.ArticleContent>
+          <s.BottomContainer>
+            <s.Topics>
+              {topics.map((topic) => (
+                <span key={topic}>{topic}</span>
+              ))}
+            </s.Topics>
+            <ArticleStatInfo
+              cefr_level={cefr_level}
+              articleInfo={article}
+            ></ArticleStatInfo>
+          </s.BottomContainer>
+          {article.video ? (
+            <img
+              alt=""
+              style={{ float: "left", marginRight: "1em" }}
+              src={
+                "https://img.youtube.com/vi/" +
+                extractVideoIDFromURL(article.url) +
+                "/default.jpg"
+              }
+            />
+          ) : (
+            ""
+          )}
+        </>
       )}
     </s.ArticlePreview>
   );

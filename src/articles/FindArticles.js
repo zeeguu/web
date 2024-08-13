@@ -17,6 +17,7 @@ import {
   getPixelsFromScrollBarToEnd,
   isScrollable,
 } from "../utils/misc/getScrollLocation";
+import UnfinishedArticlesList from "./UnfinishedArticleList";
 
 export default function FindArticles({ content, searchQuery }) {
   let api = useContext(APIContext);
@@ -171,7 +172,7 @@ export default function FindArticles({ content, searchQuery }) {
         setExtensionMessageOpen={setExtensionMessageOpen}
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
-
+      <UnfinishedArticlesList></UnfinishedArticlesList>
       {!searchQuery && (
         <Interests
           api={api}
