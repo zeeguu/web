@@ -12,17 +12,21 @@ import MultipleChoiceL2toL1 from "./exerciseTypes/multipleChoiceL2toL1/MultipleC
 import ClickWordInContext from "./exerciseTypes/wordInContextExercises/ClickWordInContext";
 import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
 
+// It is important that there are exercises requiring only one bookmark for each cateogry (i.e. receptive/productive learning cycle and recall/recognition cognitive focus)
+
 const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 12;
 const EX_Match = {
   type: Match,
   requiredBookmarks: 3,
   learningCycle: "receptive",
+  cognitiveFocus: "recognition",
   testedBookmarks: 2,
 };
 const EX_MultipleChoice = {
   type: MultipleChoice,
-  requiredBookmarks: 3,
+  requiredBookmarks: 1,
   learningCycle: "productive",
+  cognitiveFocus: "recognition",
   testedBookmarks: 1,
 };
 const EX_FindWordInContext = {
@@ -34,48 +38,56 @@ const EX_SpellWhatYouHear = {
   type: SpellWhatYouHear,
   requiredBookmarks: 1,
   learningCycle: "productive",
+  cognitiveFocus: "recall",
   testedBookmarks: 1,
 };
 const EX_MultipleChoiceL2toL1 = {
   type: MultipleChoiceL2toL1,
   requiredBookmarks: 3,
   learningCycle: "receptive",
+  cognitiveFocus: "recognition",
   testedBookmarks: 1,
 };
 const EX_TranslateL2toL1 = {
   type: TranslateL2toL1,
   requiredBookmarks: 1,
   learningCycle: "receptive",
+  cognitiveFocus: "recall",
   testedBookmarks: 1,
 };
 const EX_TranslateWhatYouHear = {
   type: TranslateWhatYouHear,
   requiredBookmarks: 1,
   learningCycle: "receptive",
+  cognitiveFocus: "recall",
   testedBookmarks: 1,
 };
 const EX_MultipleChoiceContext = {
   type: MultipleChoiceContext,
   requiredBookmarks: 3,
   learningCycle: "receptive",
+  cognitiveFocus: "recognition",
   testedBookmarks: 1,
 };
 const EX_ClickWordInContext = {
   type: ClickWordInContext,
   requiredBookmarks: 1,
   learningCycle: "receptive",
+  cognitiveFocus: "recognition",
   testedBookmarks: 1,
 };
 const EX_FindWordInContextCloze = {
   type: FindWordInContextCloze,
   requiredBookmarks: 1,
   learningCycle: "productive",
+  cognitiveFocus: "recall",
   testedBookmarks: 1,
 };
 const EX_MultipleChoiceAudio = {
   type: MultipleChoiceAudio,
   requiredBookmarks: 3,
   learningCycle: "productive",
+  cognitiveFocus: "recognition",
   testedBookmarks: 1,
 };
 const EX_OrderWordsL2 = { type: OrderWordsL2, requiredBookmarks: 1 };

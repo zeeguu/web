@@ -22,6 +22,7 @@ function getExerciseListByLearningCycle(exerciseList) {
   return exerciseByLearningCycle;
 }
 
+// It is important that there are exercises requiring only one bookmark for each cateogry (i.e. receptive/productive learning cycle and recall/recognition cognitive focus)
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
   function _removeExerciseFromList(exercise, list) {
     return list.filter((ex) => ex !== exercise);
@@ -41,13 +42,26 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
     getExerciseListByLearningCycle(exerciseTypesList);
 
   for (let i = 0; i < bookmarks.length; i++) {
+    let cognitiveFocus =
+      bookmarks[i].consecutive_correct_answers >= 2 &&
+      bookmarks[i].cooling_interval >= 2
+        ? "recall"
+        : "recognition";
+
     // Filter the exercises based on the learning_cycle attribute of the bookmark
     let learningCycle = LEARNING_CYCLE_NAME[bookmarks[i].learning_cycle];
     let exerciseListForCycle = exercisesByLearningCycle[learningCycle];
 
+    let suitableExercises = exerciseListForCycle.filter(
+      (exercise) => exercise.cognitiveFocus === cognitiveFocus,
+    );
+
+    console.log(suitableExercises);
+    console.log(bookmarks[i]);
+
     let suitableExerciseFound = false;
     while (!suitableExerciseFound) {
-      let selectedExerciseType = random(exerciseListForCycle);
+      let selectedExerciseType = random(suitableExercises);
 
       // Check if there are enough bookmarks for the selected exercise
       if (i + selectedExerciseType.requiredBookmarks <= bookmarks.length) {
