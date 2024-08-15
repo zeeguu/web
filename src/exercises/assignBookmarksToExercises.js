@@ -47,7 +47,6 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
       bookmarks[i].cooling_interval >= 2
         ? "recall"
         : "recognition";
-
     // Filter the exercises based on the learning_cycle attribute of the bookmark
     let learningCycle = LEARNING_CYCLE_NAME[bookmarks[i].learning_cycle];
     let exerciseListForCycle = exercisesByLearningCycle[learningCycle];
@@ -56,13 +55,9 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
       (exercise) => exercise.cognitiveFocus === cognitiveFocus,
     );
 
-    console.log(suitableExercises);
-    console.log(bookmarks[i]);
-
     let suitableExerciseFound = false;
     while (!suitableExerciseFound) {
       let selectedExerciseType = random(suitableExercises);
-
       // Check if there are enough bookmarks for the selected exercise
       if (i + selectedExerciseType.requiredBookmarks <= bookmarks.length) {
         let potentialBookmarks = bookmarks.slice(
@@ -85,10 +80,14 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
         }
       }
       if (!suitableExerciseFound) {
-        exerciseListForCycle = _removeExerciseFromList(
+        suitableExercises = _removeExerciseFromList(
           selectedExerciseType,
-          exerciseListForCycle,
+          suitableExercises,
         );
+        // Fallback to default sequence if no suitable exercises are found
+        if (suitableExercises.length === 0) {
+          return assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList);
+        }
       }
     }
   }
