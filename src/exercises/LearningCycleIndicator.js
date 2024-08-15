@@ -27,6 +27,9 @@ export default function LearningCycleIndicator({
   }, [message]);
 
   const getLearningCycleIcon = () => {
+    if (isHidden) {
+      return "/static/icons/active-icon-grey.png";
+    }
     switch (LEARNING_CYCLE_NAME[learningCycle]) {
       case "receptive":
         return "/static/icons/receptive-icon.png";
@@ -49,6 +52,10 @@ export default function LearningCycleIndicator({
   };
 
   const getBarProperties = (index) => {
+    if (isHidden) {
+      return { color: "grey", widthMultiplier: Math.pow(1.8, index) };
+    }
+
     let barCount = logScaleToLinear(coolingInterval);
     let color = "grey";
     let widthMultiplier = Math.pow(1.8, index);
@@ -68,10 +75,7 @@ export default function LearningCycleIndicator({
   return (
     <>
       {Feature.merle_exercises() && (
-        <div
-          className="learningCycleIndicator"
-          style={{ visibility: isHidden ? "hidden" : "visible" }}
-        >
+        <div className="learningCycleIndicator">
           <div className="learningCycleIcon">
             <Tooltip title={getTooltipContent()}>
               <img
