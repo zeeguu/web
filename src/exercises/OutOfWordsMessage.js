@@ -13,7 +13,7 @@ export default function OutOfWordsMessage({
 }) {
   const [isAbleToAddBookmarksToPipe, setIsAbleToAddBookmarksToPipe] =
     useState();
-
+  const pluralize = require("pluralize");
   useEffect(() => {
     api.getNewBookmarksToStudy(1, (new_bookmarks) => {
       setIsAbleToAddBookmarksToPipe(new_bookmarks.length > 0);
@@ -37,7 +37,7 @@ export default function OutOfWordsMessage({
         </p>
         <p>
           You are currently learning <b>{totalInLearning}</b>{" "}
-          {totalInLearning > 1 ? "words" : "word"}.
+          {pluralize("word", totalInLearning)}.
         </p>
         <p>
           We recommend that you are at most learning{" "}

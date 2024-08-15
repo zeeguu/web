@@ -42,6 +42,7 @@ export default function NextNavigation({
     strings.correctExercise3,
   ];
 
+  const pluralize = require("pluralize");
   const exercise = "exercise";
   const [userIsCorrect, setUserIsCorrect] = useState(false);
   const [correctMessage, setCorrectMessage] = useState("");
@@ -179,7 +180,7 @@ export default function NextNavigation({
             <p>
               <b>
                 {`${matchExerciseProgressionMessage}`}{" "}
-                {matchWordsProgressCount > 1 ? "have" : "has"} now moved to your
+                {pluralize("has", matchWordsProgressCount)} now moved to your
                 productive knowledge.
               </b>
             </p>
