@@ -11,7 +11,7 @@ const SettingsSection = styled.section`
   }
 `;
 
-const ListOfSettingItems = styled.ul`
+const ListOfSettingsItems = styled.ul`
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -34,4 +34,4 @@ const ListOfSettingItems = styled.ul`
   }
 `;
 
-export { ListOfSettingItems, SettingsSection };
+export { ListOfSettingsItems, SettingsSection };

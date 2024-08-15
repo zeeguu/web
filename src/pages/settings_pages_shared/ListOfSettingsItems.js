@@ -1,10 +1,10 @@
-import * as s from "./ListOfSettingItems.sc";
+import * as s from "./ListOfSettingsItems.sc";
 
-export default function ListOfSettingItems({ children, header }) {
+export default function ListOfSettingsItems({ children, header }) {
   return (
     <s.SettingsSection>
       <h2>{header}</h2>
-      <s.ListOfSettingItems>{children}</s.ListOfSettingItems>
+      <s.ListOfSettingsItems>{children}</s.ListOfSettingsItems>
     </s.SettingsSection>
   );
 }
