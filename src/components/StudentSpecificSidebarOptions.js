@@ -50,7 +50,7 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
       <div className="SettingsLogoutContainer">
         <div className="SettingsLogoutHolder">
           <Tooltip title="Settings">
-            <a href="/account_settings">
+            <a href="/account_settings/options">
               <img
                 className="navigationIcon"
                 src="static/icons/options_v2.png"

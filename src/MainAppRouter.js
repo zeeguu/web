@@ -21,6 +21,7 @@ import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
 import AccountDeletion from "./pages/AccountDeletion";
+import SettingsRouter from "./pages/settings_pages/_SettingsRouter";
 
 export default function MainAppRouter({
   api,
@@ -113,7 +114,7 @@ export default function MainAppRouter({
         path="/account_settings"
         api={api}
         setUser={setUser}
-        component={Settings}
+        component={SettingsRouter}
       />
       <PrivateRouteWithSidebar
         path="/teacher"
