@@ -1,15 +1,16 @@
 function timeToHumanReadable(timeInSeconds, precision = "seconds") {
   // Currently supports two precision: "seconds" and "minutes"
+  const pluralize = require("pluralize");
   if (timeInSeconds < 60) {
     if (precision === "seconds")
-      return timeInSeconds + (timeInSeconds > 1 ? " seconds" : " second");
+      return timeInSeconds + " " + pluralize("second", timeInSeconds);
     else return "< 1 minute";
   } else {
     let minutes = Math.floor(timeInSeconds / 60);
     let seconds = timeInSeconds % 60;
-    let string = minutes + (minutes > 1 ? " minutes" : " minute");
+    let string = minutes + pluralize("minute", minutes);
     if (seconds > 0 && precision === "seconds")
-      string += " " + seconds + (seconds > 1 ? " seconds" : " second");
+      string += " " + pluralize("second", seconds);
     return string;
   }
 }
