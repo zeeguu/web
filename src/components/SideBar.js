@@ -96,7 +96,11 @@ export default function SideBar(props) {
         <div className="SettingsLogoutHolder">
           <Tooltip title="Settings">
             <a href="/account_settings/options">
-              <img className="navigationIcon" sx={{ color: "white" }} />
+              <SettingsIcon
+                fontSize="large"
+                className="navigationIcon"
+                sx={{ color: "white" }}
+              />
             </a>
           </Tooltip>
           <Tooltip title="Logout">
