@@ -10,6 +10,7 @@ import SessionStorage from "../../assorted/SessionStorage.js";
 import { SpeechContext } from "../../contexts/SpeechContext.js";
 import {
   EXERCISE_TYPES,
+  LEARNING_CYCLE,
   PRONOUNCIATION_SETTING,
 } from "../ExerciseTypeConstants";
 
@@ -24,6 +25,7 @@ import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
 export default function NextNavigation({
   message,
   exerciseBookmark,
+  exerciseAttemptsLog, // Used for exercises like Match which test multiple bookmarks
   moveToNextExercise,
   api,
   reload,
@@ -50,6 +52,11 @@ export default function NextNavigation({
     useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
+  const [matchExerciseProgressionMessage, setMatchExercisesProgressionMessage] =
+    useState();
+  const [matchWordsProgressCount, setMatchWordsProgressCount] = useState(0);
+  const [isMatchBookmarkProgression, setIsMatchBookmarkProgression] =
+    useState(false);
   const productiveExercisesDisabled =
     LocalStorage.getProductiveExercisesEnabled() === "false";
   const isLastInCycle = exerciseBookmark.is_last_in_cycle;
@@ -66,14 +73,12 @@ export default function NextNavigation({
   const bookmarkLearned =
     isUserAndAnswerCorrect &&
     isLastInCycle &&
-    (!isMatchExercise || (isMatchExercise && isCorrectMatch)) &&
     (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
 
   const bookmarkProgression =
     userIsCorrect &&
     isLearningCycleOne &&
     isLastInCycle &&
-    (!isMatchExercise || (isMatchExercise && isCorrectMatch)) &&
     !productiveExercisesDisabled &&
     learningCycleFeature;
 
@@ -88,7 +93,28 @@ export default function NextNavigation({
       !isMatchExercise
     )
       handleSpeak();
-  }, [isCorrect]);
+    if (exerciseAttemptsLog) {
+      let wordsProgressed = [];
+      for (let i = 0; i < exerciseAttemptsLog.length; i++) {
+        let apiMessage = exerciseAttemptsLog[i].messageToAPI;
+        let b = exerciseAttemptsLog[i].bookmark;
+        let isLastBookmark = exerciseAttemptsLog[i].isLast;
+        if (
+          b.is_last_in_cycle &&
+          apiMessage === "C" &&
+          !isLastBookmark &&
+          b.learning_cycle == LEARNING_CYCLE["RECEPTIVE"]
+        ) {
+          wordsProgressed.push(b.from);
+          setIsMatchBookmarkProgression(true);
+        }
+      }
+      setMatchExercisesProgressionMessage(
+        "'" + wordsProgressed.join("', '") + "'",
+      );
+      setMatchWordsProgressCount(wordsProgressed.length);
+    }
+  }, [isCorrect, exerciseAttemptsLog]);
 
   useEffect(() => {
     if (exerciseBookmark && "learning_cycle" in exerciseBookmark) {
@@ -123,7 +149,8 @@ export default function NextNavigation({
       SessionStorage.setCelebrationModalShown(true);
     }
   }, [bookmarkLearned]);
-
+  const isExerciseCorrect =
+    (isRightAnswer && !isMatchExercise) || isCorrectMatch;
   return (
     <>
       {learningCycleFeature && (
@@ -134,53 +161,82 @@ export default function NextNavigation({
           />
         </>
       )}
-      {isRightAnswer &&
-        (!isMatchExercise || isCorrectMatch) &&
-        (bookmarkProgression ? (
-          <>
-            <Confetti
-              width={window.innerWidth}
-              height={window.innerHeight}
-              recycle={false}
-            />
-            <div className="next-nav-learning-cycle">
-              <img
-                src={getStaticPath("icons", "zeeguu-icon-correct.png")}
-                alt="Correct Icon"
-              />
-              <p>
-                <b>{correctMessage + " " + strings.nextLearningCycle}</b>
-              </p>
-            </div>
-          </>
-        ) : bookmarkLearned ? (
-          <>
-            <Confetti
-              width={window.innerWidth}
-              height={window.innerHeight}
-              recycle={false}
-            />
-            <div className="next-nav-learning-cycle">
-              <img
-                src={getStaticPath("icons", "zeeguu-icon-correct.png")}
-                alt="Correct Icon"
-              />
-              <p>
-                <b>{correctMessage + " " + strings.wordLearned}</b>
-              </p>
-            </div>
-          </>
-        ) : (
-          <div className="next-nav-feedback">
+      {isCorrect && isMatchExercise && isMatchBookmarkProgression && (
+        <>
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={false}
+          />
+          <div
+            className="next-nav-learning-cycle"
+            style={{ textAlign: "left" }}
+          >
             <img
               src={getStaticPath("icons", "zeeguu-icon-correct.png")}
               alt="Correct Icon"
             />
             <p>
-              <b>{correctMessage}</b>
+              <b>
+                {`${matchExerciseProgressionMessage}`}{" "}
+                {matchWordsProgressCount > 1 ? "have" : "has"} now moved to your
+                productive knowledge.
+              </b>
             </p>
           </div>
-        ))}
+        </>
+      )}
+      {!isMatchExercise && (
+        <>
+          {isRightAnswer && bookmarkProgression && (
+            <>
+              <Confetti
+                width={window.innerWidth}
+                height={window.innerHeight}
+                recycle={false}
+              />
+              <div className="next-nav-learning-cycle">
+                <img
+                  src={getStaticPath("icons", "zeeguu-icon-correct.png")}
+                  alt="Correct Icon"
+                />
+                <p>
+                  <b>{correctMessage + " " + strings.nextLearningCycle}</b>
+                </p>
+              </div>
+            </>
+          )}
+          {isRightAnswer && bookmarkLearned && (
+            <>
+              <Confetti
+                width={window.innerWidth}
+                height={window.innerHeight}
+                recycle={false}
+              />
+              <div className="next-nav-learning-cycle">
+                <img
+                  src={getStaticPath("icons", "zeeguu-icon-correct.png")}
+                  alt="Correct Icon"
+                />
+                <p>
+                  <b>{correctMessage + " " + strings.wordLearned}</b>
+                </p>
+              </div>
+            </>
+          )}
+        </>
+      )}
+      {isExerciseCorrect && !(bookmarkLearned || bookmarkProgression) && (
+        <div className="next-nav-feedback">
+          <img
+            src={getStaticPath("icons", "zeeguu-icon-correct.png")}
+            alt="Correct Icon"
+          />
+          <p>
+            <b>{correctMessage}</b>
+          </p>
+        </div>
+      )}
       {isCorrect && !isMultiExerciseType && (
         <>
           <s.BottomRowSmallTopMargin className="bottomRow">

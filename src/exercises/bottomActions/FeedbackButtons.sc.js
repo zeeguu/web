@@ -109,7 +109,7 @@ const FeedbackCancel = styled(FeedbackSubmit)`
 const FeedbackDelete = styled(FeedbackSubmit)`
   margin-left: 1em;
   margin-top: 1em;
-  max-width: 100px;
+  max-width: 200px;
   text-align: center;
   background-color: white;
   border: 0.1em solid ${zeeguuDarkRed};

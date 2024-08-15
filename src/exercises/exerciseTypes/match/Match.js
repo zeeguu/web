@@ -42,14 +42,17 @@ export default function Match({
     {
       bookmark: bookmarksToStudy[0],
       messageToAPI: "",
+      isLast: false,
     },
     {
       bookmark: bookmarksToStudy[1],
       messageToAPI: "",
+      isLast: false,
     },
     {
       bookmark: bookmarksToStudy[2],
       messageToAPI: "",
+      isLast: false,
     },
   ];
 
@@ -108,7 +111,7 @@ export default function Match({
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
     console.log("checking result...");
-    let exerciseAttemptsLogCopy = { ...exerciseAttemptsLog };
+    let exerciseAttemptsLogCopy = [...exerciseAttemptsLog];
     let fullMessage = messageToNextNav;
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmarkLog = exerciseAttemptsLogCopy[i];
@@ -120,15 +123,17 @@ export default function Match({
           fullMessage = fullMessage + concatMessage;
           exerciseAttemptsLogCopy[i].messageToAPI = concatMessage;
           handleSpeak(exerciseAttemptsLogCopy[i].bookmark);
-          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
+
           setLastCorrectBookmarkId(currentBookmarkLog.bookmark.id);
           if (buttonsToDisable.length === 2) {
             setIsCorrect(true);
+            exerciseAttemptsLogCopy[i].isLast = true;
             break;
           } else {
             notifyCorrectAnswer(currentBookmarkLog.bookmark);
             handleAnswer(concatMessage, currentBookmarkLog.bookmark.id);
           }
+          setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         } else {
           setIncorrectAnswer(secondChoice);
           notifyIncorrectAnswer(currentBookmarkLog.bookmark);
@@ -228,6 +233,7 @@ export default function Match({
         message={messageToNextNav}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
+        exerciseAttemptsLog={exerciseAttemptsLog}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}
