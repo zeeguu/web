@@ -17,6 +17,9 @@ import Feature from "../features/Feature";
 import SessionStorage from "../assorted/SessionStorage";
 import DeleteAccountButton from "./DeleteAccountButton";
 
+import SettingsItem from "./settings_pages_shared/SettingsItem";
+import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
+
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -189,6 +192,36 @@ export default function Settings({ api, setUser }) {
   return (
     <>
       <PageTitle>{strings.settings}</PageTitle>
+
+      <ListOfSettingsItems header={"My Account"}>
+        <SettingsItem path={"/"}>Profile Details</SettingsItem>
+        <SettingsItem path={"/"}> Languages</SettingsItem>
+
+        {!user.is_teacher && (
+          <SettingsItem path={"/"}> My Current Class</SettingsItem>
+        )}
+      </ListOfSettingsItems>
+
+      <ListOfSettingsItems header={"Exercise Preferences"}>
+        <SettingsItem path={"/"}> Audio Exercises</SettingsItem>
+      </ListOfSettingsItems>
+
+      <ListOfSettingsItems header={"Reading Preferences"}>
+        <SettingsItem path={"/account_settings/interests"}>
+          {" "}
+          Interests
+        </SettingsItem>
+        <SettingsItem path={"/account_settings/non_interests"}>
+          {" "}
+          Non-Interests
+        </SettingsItem>
+      </ListOfSettingsItems>
+
+      <ListOfSettingsItems header={"Account Management"}>
+        <SettingsItem path={"/account_settings/delete_account"}>
+          Delete Account
+        </SettingsItem>
+      </ListOfSettingsItems>
 
       <s.FormContainer>
         <scs.StyledSettings>
