@@ -8,7 +8,7 @@ function timeToHumanReadable(timeInSeconds, precision = "seconds") {
   } else {
     let minutes = Math.floor(timeInSeconds / 60);
     let seconds = timeInSeconds % 60;
-    let string = minutes + pluralize("minute", minutes);
+    let string = minutes + " " + pluralize("minute", minutes);
     if (seconds > 0 && precision === "seconds")
       string += " " + pluralize("second", seconds);
     return string;
