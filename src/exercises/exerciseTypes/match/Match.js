@@ -205,12 +205,12 @@ export default function Match({
       <div className="headlineWithMoreSpace">
         {strings.matchWordWithTranslation}{" "}
       </div>
-      {selectedBookmark && (
-        <LearningCycleIndicator
-          bookmark={selectedBookmark}
-          message={selectedBookmarkMessage}
-        />
-      )}
+
+      <LearningCycleIndicator
+        bookmark={selectedBookmark ? selectedBookmark : bookmarksToStudy[0]}
+        message={selectedBookmarkMessage}
+        isHidden={selectedBookmark === undefined}
+      />
 
       <MatchInput
         fromButtonOptions={fromButtonOptions}

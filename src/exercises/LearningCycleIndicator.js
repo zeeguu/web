@@ -10,7 +10,11 @@ import { APP_DOMAIN } from "../appConstants.js";
 import NotificationIcon from "../components/NotificationIcon";
 import isBookmarkExpression from "../utils/misc/isBookmarkExpression.js";
 
-export default function LearningCycleIndicator({ bookmark, message }) {
+export default function LearningCycleIndicator({
+  bookmark,
+  message,
+  isHidden,
+}) {
   const [userIsCorrect, setUserIsCorrect] = useState(false);
   const [userIsWrong, setUserIsWrong] = useState(false);
 
@@ -64,7 +68,10 @@ export default function LearningCycleIndicator({ bookmark, message }) {
   return (
     <>
       {Feature.merle_exercises() && (
-        <div className="learningCycleIndicator">
+        <div
+          className="learningCycleIndicator"
+          style={{ visibility: isHidden ? "hidden" : "visible" }}
+        >
           <div className="learningCycleIcon">
             <Tooltip title={getTooltipContent()}>
               <img
