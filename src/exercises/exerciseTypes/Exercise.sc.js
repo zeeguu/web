@@ -139,7 +139,7 @@ const Exercise = styled.div`
   }
 
   .cooling-bar.grey {
-    background-color: grey;
+    background-color: lightGrey;
   }
 
   /* Mobile version */

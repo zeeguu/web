@@ -28,7 +28,7 @@ export default function LearningCycleIndicator({
 
   const getLearningCycleIcon = () => {
     if (isHidden) {
-      return "/static/icons/active-icon-grey.png";
+      return "/static/icons/active-icon-lightGrey.png";
     }
     switch (LEARNING_CYCLE_NAME[learningCycle]) {
       case "receptive":
