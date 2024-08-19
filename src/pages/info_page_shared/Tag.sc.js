@@ -41,7 +41,7 @@ const Tag = styled.button`
   }
 
   &.selected {
-    border: 1px solid ${zeeguuOrange};
+    border: 1.5px solid ${zeeguuOrange};
     background-color: ${zeeguuOrange};
     color: white;
   }
