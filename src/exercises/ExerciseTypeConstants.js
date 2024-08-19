@@ -33,6 +33,12 @@ export const LEARNING_CYCLE_NAME = Object.freeze({
   2: "productive",
 });
 
+export const LEARNING_CYCLE = Object.freeze({
+  ["NOT_SET"]: 0,
+  ["RECEPTIVE"]: 1,
+  ["PRODUCTIVE"]: 2,
+});
+
 export const PRONOUNCIATION_SETTING = Object.freeze({
   off: 0,
   on: 1,

@@ -13,174 +13,124 @@ import ClickWordInContext from "./exerciseTypes/wordInContextExercises/ClickWord
 import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
 
 const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 12;
+const EX_Match = {
+  type: Match,
+  requiredBookmarks: 3,
+  learningCycle: "receptive",
+  testedBookmarks: 2,
+};
+const EX_MultipleChoice = {
+  type: MultipleChoice,
+  requiredBookmarks: 3,
+  learningCycle: "productive",
+  testedBookmarks: 1,
+};
+const EX_FindWordInContext = {
+  type: FindWordInContext,
+  requiredBookmarks: 1,
+  testedBookmarks: 1,
+};
+const EX_SpellWhatYouHear = {
+  type: SpellWhatYouHear,
+  requiredBookmarks: 1,
+  learningCycle: "productive",
+  testedBookmarks: 1,
+};
+const EX_MultipleChoiceL2toL1 = {
+  type: MultipleChoiceL2toL1,
+  requiredBookmarks: 3,
+  learningCycle: "receptive",
+  testedBookmarks: 1,
+};
+const EX_TranslateL2toL1 = {
+  type: TranslateL2toL1,
+  requiredBookmarks: 1,
+  learningCycle: "receptive",
+  testedBookmarks: 1,
+};
+const EX_TranslateWhatYouHear = {
+  type: TranslateWhatYouHear,
+  requiredBookmarks: 1,
+  learningCycle: "receptive",
+  testedBookmarks: 1,
+};
+const EX_MultipleChoiceContext = {
+  type: MultipleChoiceContext,
+  requiredBookmarks: 3,
+  learningCycle: "receptive",
+  testedBookmarks: 1,
+};
+const EX_ClickWordInContext = {
+  type: ClickWordInContext,
+  requiredBookmarks: 1,
+  learningCycle: "receptive",
+  testedBookmarks: 1,
+};
+const EX_FindWordInContextCloze = {
+  type: FindWordInContextCloze,
+  requiredBookmarks: 1,
+  learningCycle: "productive",
+  testedBookmarks: 1,
+};
+const EX_MultipleChoiceAudio = {
+  type: MultipleChoiceAudio,
+  requiredBookmarks: 3,
+  learningCycle: "productive",
+  testedBookmarks: 1,
+};
+const EX_OrderWordsL2 = { type: OrderWordsL2, requiredBookmarks: 1 };
+const EX_OrderWordsL1 = { type: OrderWordsL1, requiredBookmarks: 1 };
 
 let DEFAULT_SEQUENCE = [
-  {
-    type: Match,
-    requiredBookmarks: 3,
-  },
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 1,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
-  {
-    type: SpellWhatYouHear,
-    requiredBookmarks: 1,
-  },
-  {
-    type: MultipleChoiceAudio,
-    requiredBookmarks: 3,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
+  EX_Match,
+  EX_MultipleChoice,
+  EX_FindWordInContext,
+  EX_SpellWhatYouHear,
+  EX_FindWordInContext,
 ];
 
 let EXERCISE_TYPES_TIAGO = [
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 1,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
-  {
-    type: Match,
-    requiredBookmarks: 3,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
-  {
-    type: OrderWordsL2,
-    requiredBookmarks: 1,
-  },
-  {
-    type: OrderWordsL1,
-    requiredBookmarks: 1,
-  },
+  EX_MultipleChoice,
+  EX_FindWordInContext,
+  EX_Match,
+  EX_FindWordInContext,
+  EX_Match,
+  EX_FindWordInContext,
+  EX_OrderWordsL2,
+  EX_OrderWordsL1,
 ];
 
 let DEFAULT_SEQUENCE_NO_AUDIO = [
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 1,
-  },
-  {
-    type: Match,
-    requiredBookmarks: 3,
-  },
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 1,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
-  {
-    type: Match,
-    requiredBookmarks: 3,
-  },
-  {
-    type: FindWordInContext,
-    requiredBookmarks: 1,
-  },
+  EX_MultipleChoice,
+  EX_Match,
+  EX_MultipleChoice,
+  EX_FindWordInContext,
+  EX_Match,
+  EX_FindWordInContext,
 ];
 
 let LEARNING_CYCLE_SEQUENCE = [
-  {
-    type: Match,
-    requiredBookmarks: 3,
-    learningCycle: "receptive",
-  },
-  {
-    type: MultipleChoiceL2toL1,
-    requiredBookmarks: 3,
-    learningCycle: "receptive",
-  },
-  {
-    type: TranslateL2toL1,
-    requiredBookmarks: 1,
-    learningCycle: "receptive",
-  },
-  {
-    type: TranslateWhatYouHear,
-    requiredBookmarks: 1,
-    learningCycle: "receptive",
-  },
-  {
-    type: MultipleChoiceContext,
-    requiredBookmarks: 3,
-    learningCycle: "receptive",
-  },
-  {
-    type: ClickWordInContext,
-    requiredBookmarks: 1,
-    learningCycle: "receptive",
-  },
-  { type: MultipleChoice, requiredBookmarks: 3, learningCycle: "productive" },
-  { type: SpellWhatYouHear, requiredBookmarks: 1, learningCycle: "productive" },
-  {
-    type: FindWordInContextCloze,
-    requiredBookmarks: 1,
-    learningCycle: "productive",
-  },
-  {
-    type: MultipleChoiceAudio,
-    requiredBookmarks: 3,
-    learningCycle: "productive",
-  },
+  EX_Match,
+  EX_MultipleChoiceL2toL1,
+  EX_TranslateL2toL1,
+  EX_TranslateWhatYouHear,
+  EX_MultipleChoiceContext,
+  EX_ClickWordInContext,
+  EX_MultipleChoice,
+  EX_SpellWhatYouHear,
+  EX_FindWordInContextCloze,
+  EX_MultipleChoiceAudio,
 ];
 
 let LEARNING_CYCLE_SEQUENCE_NO_AUDIO = [
-  {
-    type: Match,
-    requiredBookmarks: 3,
-    learningCycle: "receptive",
-  },
-  {
-    type: Match,
-    requiredBookmarks: 3,
-    learningCycle: "receptive",
-  },
-  {
-    type: MultipleChoiceL2toL1,
-    requiredBookmarks: 3,
-    learningCycle: "receptive",
-  },
-  {
-    type: TranslateL2toL1,
-    requiredBookmarks: 1,
-    learningCycle: "receptive",
-  },
-  {
-    type: ClickWordInContext,
-    requiredBookmarks: 1,
-    learningCycle: "receptive",
-  },
-  {
-    type: MultipleChoiceContext,
-    requiredBookmarks: 3,
-    learningCycle: "receptive",
-  },
-  {
-    type: FindWordInContextCloze,
-    requiredBookmarks: 1,
-    learningCycle: "productive",
-  },
-  {
-    type: MultipleChoice,
-    requiredBookmarks: 3,
-    learningCycle: "productive",
-  },
+  EX_Match,
+  EX_Match,
+  EX_MultipleChoiceL2toL1,
+  EX_TranslateL2toL1,
+  EX_ClickWordInContext,
+  EX_MultipleChoiceContext,
+  EX_FindWordInContextCloze,
+  EX_MultipleChoice,
 ];
 
 export {

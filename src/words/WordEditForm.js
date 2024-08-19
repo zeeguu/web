@@ -130,6 +130,7 @@ export default function WordEditForm({
         {isNotEdited ? (
           <s.DoneButtonHolder>
             <st.FeedbackDelete
+              type="button"
               onClick={() => deleteAction(bookmark)}
               value={strings.deleteWord}
             />

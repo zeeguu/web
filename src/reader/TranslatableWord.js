@@ -44,9 +44,9 @@ export default function TranslatableWord({
       setShowingAlterMenu(false);
       return;
     }
+    setShowingAlterMenu(true);
     interactiveText.alternativeTranslations(word, () => {
       wordUpdated(word);
-      setShowingAlterMenu(!showingAlterMenu);
     });
   }
 
