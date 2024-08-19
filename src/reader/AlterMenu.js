@@ -48,7 +48,7 @@ export default function AlterMenu({
       {word.alternatives === undefined ? (
         <LoadingAnimation
           specificStyle={{ height: "1em", margin: "1em 3em" }}
-          delay={100}
+          delay={200}
         ></LoadingAnimation>
       ) : (
         word.alternatives.map((each) => (
