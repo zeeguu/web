@@ -47,7 +47,7 @@ export default function AlterMenu({
     <AlterMenuSC ref={refToAlterMenu}>
       {word.alternatives === undefined ? (
         <LoadingAnimation
-          specificStyle={{ height: "1em", margin: "1em" }}
+          specificStyle={{ height: "1em", margin: "1em 3em" }}
           delay={100}
         ></LoadingAnimation>
       ) : (
