@@ -134,12 +134,35 @@ const Exercise = styled.div`
     background-color: green;
   }
 
-  .cooling-bar.yellow {
-    background-color: #ffd047;
+  .cooling-bar.greenCorrect {
+    background-color: green;
+    animation: glowGreen 1s ease-in-out 1;
+  }
+
+  @keyframes glowGreen {
+    0% {
+      box-shadow: 0 0 3px 0 rgba(0, 255, 0, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 10px 5px rgba(0, 255, 0, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 3px 0 rgba(0, 255, 0, 0.5);
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 
   .cooling-bar.grey {
-    background-color: grey;
+    background-color: lightGrey;
   }
 
   /* Mobile version */
