@@ -1,3 +1,8 @@
+# v2.4.0
+- pronounciation/translation preferences are now shared between extension and web reader
+- bug fixes and improvements in exercises
+
+
 # v2.2.6
 - minor bug fix
 
