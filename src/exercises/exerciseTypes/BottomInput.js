@@ -25,6 +25,7 @@ export default function BottomInput({
   const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
   const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
   const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
+  const [isOneWordCorrect, setIsOneWordCorrect] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [firstHint, setFirstHint] = useState(true);
   const levenshtein = require("fast-levenshtein");
@@ -60,6 +61,10 @@ export default function BottomInput({
   useEffect(() => {
     if (isInputWrongLanguage) {
       setFeedbackMessage("Correct, but wrong language! 😉");
+      return;
+    }
+    if (isOneWordCorrect) {
+      setFeedbackMessage("⭐ One of the words is correct!");
       return;
     }
     if (distanceToCorrect < 5 && distanceToCorrect > 2) {
@@ -108,8 +113,15 @@ export default function BottomInput({
       return;
     }
 
-    setDistanceToCorrect(levDistance);
+    let isOneWordCorrect = false;
+    let wordsInAnswer = normalizedAnswer.split(" ");
+    normalizedInput.split("   ").forEach((word) => {
+      console.log(wordsInAnswer, word);
+      if (wordsInAnswer.includes(word)) isOneWordCorrect = true;
+    });
 
+    setIsOneWordCorrect(isOneWordCorrect);
+    setDistanceToCorrect(levDistance);
     setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
     setIsSameLengthAsSolution(
       normalizedInput.length === normalizedAnswer.length,
@@ -125,6 +137,8 @@ export default function BottomInput({
       // we give them a Hint, mainly for audio exercises.
       updatedMessageToAPI = messageToAPI + "H";
       setDistanceToCorrect();
+    } else if (isOneWordCorrect) {
+      updatedMessageToAPI = messageToAPI + "H";
     } else if (levDistance === 1) {
       // The user almost got it correct
       // we associate it with a H
@@ -151,7 +165,9 @@ export default function BottomInput({
           <InputField
             type="text"
             className={
-              distanceToCorrect >= 5 ? "wrong-border" : "almost-border"
+              distanceToCorrect >= 5 && !isOneWordCorrect
+                ? "wrong-border"
+                : "almost-border"
             }
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}
