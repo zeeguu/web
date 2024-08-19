@@ -35,10 +35,10 @@ export default function AlterMenu({
     }
 
     if (word.source === "Google - without context") {
-      return "Google translate";
+      return "Goog";
     }
     if (word.source === "Google - with context") {
-      return "contextual Google translate";
+      return "Goog + ctx";
     }
 
     return word.source;
@@ -48,7 +48,7 @@ export default function AlterMenu({
       {word.alternatives === undefined ? (
         <LoadingAnimation
           specificStyle={{ height: "1em", margin: "1em 3em" }}
-          delay={200}
+          delay={100}
         ></LoadingAnimation>
       ) : (
         word.alternatives.map((each) => (
@@ -60,7 +60,14 @@ export default function AlterMenu({
             className="additionalTrans"
           >
             {each.translation}
-            <div style={{ fontSize: 9, color: zeeguuDarkOrange }}>
+            <div
+              style={{
+                marginTop: "-4px",
+
+                fontSize: 8,
+                color: "rgb(240,204,160)",
+              }}
+            >
               {shortenSource(each)}
             </div>
           </div>
