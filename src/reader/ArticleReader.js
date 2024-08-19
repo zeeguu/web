@@ -28,9 +28,6 @@ import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
 import useUserPreferences from "../hooks/useUserPreferences";
 
-let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
-let previous_time = 0; // since sent a scroll update
-
 export const UMR_SOURCE = "UMR";
 
 // A custom hook that builds on useLocation to parse
@@ -75,6 +72,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
+  const [viewPortSettings, setViewPortSettings] = useState("");
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -87,6 +85,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const activityTimerRef = useShadowRef(activityTimer);
   const readingSessionIdRef = useShadowRef(readingSessionId);
   const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
+  const viewPortSettingsRef = useShadowRef(viewPortSettings);
 
   const lastSampleTimer = useRef();
   const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
@@ -144,12 +143,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   useEffect(() => {
     if (interactiveText !== undefined) {
+      let scrollElement = document.getElementById("scrollHolder");
+      let textElement = document.getElementById("text");
+      let bottomRow = document.getElementById("bottomRow");
       setTimeout(() => {
-        let scrollElement = document.getElementById("scrollHolder");
-        let textElement = document.getElementById("text");
-        let bottomRow = document.getElementById("bottomRow");
         if (percentageRead) {
-          console.log(scrollElement.scrollHeight * percentageRead);
           scrollElement.scrollTo({
             top:
               (scrollElement.scrollHeight -
@@ -159,10 +157,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
             behavior: "smooth",
           });
         }
-
-        api.logReaderActivity(
-          api.VIEWPORT_READER_SETTINGS,
-          articleID,
+        setViewPortSettings(
           JSON.stringify({
             scrollHeight: scrollElement.scrollHeight,
             clientHeight: scrollElement.clientHeight,
@@ -227,7 +222,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.logReaderActivity(
       api.SCROLL,
       articleID,
-      scrollEvents.current.length,
+      viewPortSettingsRef.current,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
     );
     api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
@@ -366,6 +361,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
         {articleInfo.video ? (
           <iframe
+            title="video-frame"
             width="620"
             height="415"
             src={

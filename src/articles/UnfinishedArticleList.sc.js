@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { blue100, zeeguuVeryLightOrange } from "../components/colors";
+import { blue100 } from "../components/colors";
 
 const UnfinishedArticlesBox = styled.div`
   display: flex;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import ArticlePreview from "./ArticlePreview";
-import LoadingAnimation from "../components/LoadingAnimation";
 
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
