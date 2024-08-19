@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import { zeeguuDarkOrange } from "../components/colors";
 import { AlterMenuSC } from "./AlterMenu.sc";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export default function AlterMenu({
   word,
@@ -42,33 +43,40 @@ export default function AlterMenu({
 
     return word.source;
   }
-
   return (
     <AlterMenuSC ref={refToAlterMenu}>
-      {word.alternatives.map((each) => (
-        <div
-          key={each.translation}
-          onClick={(e) =>
-            selectAlternative(each.translation, shortenSource(each))
-          }
-          className="additionalTrans"
-        >
-          {each.translation}
-          <div style={{ fontSize: 9, color: zeeguuDarkOrange }}>
-            {shortenSource(each)}
+      {word.alternatives === undefined ? (
+        <LoadingAnimation
+          specificStyle={{ height: "1em", margin: "1em 3em" }}
+          delay={200}
+        ></LoadingAnimation>
+      ) : (
+        word.alternatives.map((each) => (
+          <div
+            key={each.translation}
+            onClick={(e) =>
+              selectAlternative(each.translation, shortenSource(each))
+            }
+            className="additionalTrans"
+          >
+            {each.translation}
+            <div style={{ fontSize: 9, color: zeeguuDarkOrange }}>
+              {shortenSource(each)}
+            </div>
           </div>
-        </div>
-      ))}
-
-      <input
-        className="ownTranslationInput matchWidth"
-        type="text"
-        id="#userAlternative"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={(e) => handleKeyDown(e)}
-        placeholder="add own translation..."
-      />
+        ))
+      )}
+      {word.alternatives !== undefined && (
+        <input
+          className="ownTranslationInput matchWidth"
+          type="text"
+          id="#userAlternative"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => handleKeyDown(e)}
+          placeholder="add own translation..."
+        />
+      )}
 
       <div className="alterMenuLink" onClick={(e) => hideTranslation(e, word)}>
         Hide Translation
