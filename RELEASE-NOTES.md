@@ -1,5 +1,9 @@
+
 # v2.4.2
 - bug fix: The extension is now showing the elephant logo and the Review Words button is working now
+
+# v2.4.1
+- alternative translation menu appears instanly with a progress indicator appearing if translations don't appear within 200ms
 
 # v2.4.0
 - pronounciation/translation preferences are now shared between extension and web reader
