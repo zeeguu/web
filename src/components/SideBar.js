@@ -8,6 +8,7 @@ import * as s from "./SideBar.sc";
 import { APIContext } from "../contexts/APIContext";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import NotificationIcon from "./NotificationIcon";
+import { Tooltip } from "@mui/material";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -89,6 +90,31 @@ export default function SideBar(props) {
           setIsOnStudentSide={setIsOnStudentSide}
         />
       )}
+      <div className="SettingsLogoutContainer">
+        <div className="SettingsLogoutHolder">
+          <Tooltip title="Settings">
+            <a href="/account_settings/options">
+              <img
+                className="navigationIcon"
+                src="static/icons/options_v2.png"
+              ></img>
+            </a>
+          </Tooltip>
+          <Tooltip title="Logout">
+            <Link
+              to="/"
+              onClick={() => {
+                user.logoutMethod();
+              }}
+            >
+              <img
+                className="navigationIcon"
+                src="static/icons/logout_v2.png"
+              ></img>
+            </Link>
+          </Tooltip>
+        </div>
+      </div>
     </>
   );
 
