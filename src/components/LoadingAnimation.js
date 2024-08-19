@@ -3,7 +3,11 @@ import strings from "../i18n/definitions";
 import React from "react";
 import { useState, useEffect } from "react";
 
-export default function LoadingAnimation({ text, delay = 1000 }) {
+export default function LoadingAnimation({
+  text,
+  specificStyle,
+  delay = 1000,
+}) {
   let _text = text ? text : strings.loadingMsg;
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
 
@@ -19,7 +23,7 @@ export default function LoadingAnimation({ text, delay = 1000 }) {
   return (
     <>
       {showLoadingScreen ? (
-        <s.LoadingAnimation>
+        <s.LoadingAnimation style={specificStyle}>
           <div className="lds-ellipsis">
             <div></div>
             <div></div>
