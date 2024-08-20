@@ -7,11 +7,10 @@ import LocalStorage from "../../assorted/LocalStorage";
 import Feature from "../../features/Feature";
 import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
+import Form from "../info_page_shared/Form";
+import FormSection from "../info_page_shared/FormSection";
 
 import strings from "../../i18n/definitions";
-
-import * as s from "../../components/FormPage.sc";
-import * as scs from "../Settings.sc";
 
 export default function AudioExercises({ api }) {
   const user = useContext(UserContext);
@@ -67,42 +66,40 @@ export default function AudioExercises({ api }) {
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
       Audio Exercises
-      <s.FormContainer>
-        <scs.StyledSettings>
+      <Form>
+        <FormSection>
           <h5>{errorMessage}</h5>
-          <form className="formSettings">
-            <label>Exercise Type Preferences</label>
+          <label>Exercise Type Preferences</label>
+          <div style={{ display: "flex" }} className="form-group">
+            <input
+              style={{ width: "1.5em" }}
+              type={"checkbox"}
+              checked={audioExercises}
+              onChange={handleAudioExercisesChange}
+            />
+            <label>
+              Include Audio Exercises{" "}
+              {SessionStorage.isAudioExercisesEnabled()
+                ? ""
+                : "(Temporaly Disabled)"}
+            </label>
+          </div>
+          {Feature.merle_exercises() && (
             <div style={{ display: "flex" }} className="form-group">
               <input
                 style={{ width: "1.5em" }}
                 type={"checkbox"}
-                checked={audioExercises}
-                onChange={handleAudioExercisesChange}
+                checked={productiveExercises}
+                onChange={handleProductiveExercisesChange}
               />
-              <label>
-                Include Audio Exercises{" "}
-                {SessionStorage.isAudioExercisesEnabled()
-                  ? ""
-                  : "(Temporaly Disabled)"}
-              </label>
+              <label>Enable Productive Exercises</label>
             </div>
-            {Feature.merle_exercises() && (
-              <div style={{ display: "flex" }} className="form-group">
-                <input
-                  style={{ width: "1.5em" }}
-                  type={"checkbox"}
-                  checked={productiveExercises}
-                  onChange={handleProductiveExercisesChange}
-                />
-                <label>Enable Productive Exercises</label>
-              </div>
-            )}
-            <ButtonContainer>
-              <Button onClick={handleSave}>{strings.save}</Button>
-            </ButtonContainer>
-          </form>
-        </scs.StyledSettings>
-      </s.FormContainer>
+          )}
+        </FormSection>
+        <ButtonContainer>
+          <Button onClick={handleSave}>{strings.save}</Button>
+        </ButtonContainer>
+      </Form>
     </div>
   );
 }

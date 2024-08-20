@@ -10,10 +10,10 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 import UiLanguageSelector from "../../components/UiLanguageSelector";
 import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
+import Form from "../info_page_shared/Form";
+import FormSection from "../info_page_shared/FormSection";
 
 import Select from "../../components/Select";
-import * as s from "../../components/FormPage.sc";
-import * as scs from "../Settings.sc";
 
 export default function Languages({ api, setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -103,52 +103,49 @@ export default function Languages({ api, setUser }) {
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
       Languages
-      <s.FormContainer>
-        <scs.StyledSettings>
-          <form className="formSettings">
-            <h5>{errorMessage}</h5>
-            <label>{strings.learnedLanguage}</label>
-            <UiLanguageSelector
-              languages={languages.learnable_languages}
-              selected={language_for_id(
-                userDetails.learned_language,
-                languages.learnable_languages,
-              )}
-              onChange={(e) => {
-                updateLearnedLanguage(getLanguageCodeFromSelector(e));
-              }}
-            />
+      <Form>
+        <FormSection>
+          <h5>{errorMessage}</h5>
+          <label>{strings.learnedLanguage}</label>
+          <UiLanguageSelector
+            languages={languages.learnable_languages}
+            selected={language_for_id(
+              userDetails.learned_language,
+              languages.learnable_languages,
+            )}
+            onChange={(e) => {
+              updateLearnedLanguage(getLanguageCodeFromSelector(e));
+            }}
+          />
 
-            <Select
-              elements={CEFR_LEVELS}
-              label={(e) => e.label}
-              val={(e) => e.value}
-              updateFunction={(e) => {
-                updateCEFRLevel(e);
-              }}
-              current={cefr}
-            />
+          <Select
+            elements={CEFR_LEVELS}
+            label={(e) => e.label}
+            val={(e) => e.value}
+            updateFunction={(e) => {
+              updateCEFRLevel(e);
+            }}
+            current={cefr}
+          />
+        </FormSection>
 
-            <br />
-            <br />
-
-            <label>{strings.nativeLanguage}</label>
-            <UiLanguageSelector
-              languages={languages.native_languages}
-              selected={language_for_id(
-                userDetails.native_language,
-                languages.native_languages,
-              )}
-              onChange={(e) => {
-                updateNativeLanguage(getLanguageCodeFromSelector(e));
-              }}
-            />
-            <ButtonContainer>
-              <Button onClick={handleSave}>{strings.save}</Button>
-            </ButtonContainer>
-          </form>
-        </scs.StyledSettings>
-      </s.FormContainer>
+        <FormSection>
+          <label>{strings.nativeLanguage}</label>
+          <UiLanguageSelector
+            languages={languages.native_languages}
+            selected={language_for_id(
+              userDetails.native_language,
+              languages.native_languages,
+            )}
+            onChange={(e) => {
+              updateNativeLanguage(getLanguageCodeFromSelector(e));
+            }}
+          />
+        </FormSection>
+        <ButtonContainer>
+          <Button onClick={handleSave}>{strings.save}</Button>
+        </ButtonContainer>
+      </Form>
     </div>
   );
 }
