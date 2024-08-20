@@ -3,7 +3,7 @@ import {
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
 } from "./exerciseSequenceTypes";
-import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
+import { LEARNING_CYCLE_NAME, MEMORY_TASK } from "./ExerciseTypeConstants";
 
 /**
  * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
@@ -22,7 +22,13 @@ function getExerciseListByLearningCycle(exerciseList) {
   return exerciseByLearningCycle;
 }
 
-// It is important that there are exercises requiring only one bookmark for each cateogry (i.e. receptive/productive learning cycle and recall/recognition cognitive focus)
+function getMemoryTask(bookmark) {
+  return bookmark.consecutive_correct_answers >= 2 &&
+    bookmark.cooling_interval >= 2
+    ? MEMORY_TASK.RECALL
+    : MEMORY_TASK.RECOGNITION;
+}
+
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
   function _removeExerciseFromList(exercise, list) {
     return list.filter((ex) => ex !== exercise);
@@ -42,17 +48,13 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
     getExerciseListByLearningCycle(exerciseTypesList);
 
   for (let i = 0; i < bookmarks.length; i++) {
-    let cognitiveFocus =
-      bookmarks[i].consecutive_correct_answers >= 2 &&
-      bookmarks[i].cooling_interval >= 2
-        ? "recall"
-        : "recognition";
+    let memoryTask = getMemoryTask(bookmarks[i]);
     // Filter the exercises based on the learning_cycle attribute of the bookmark
     let learningCycle = LEARNING_CYCLE_NAME[bookmarks[i].learning_cycle];
     let exerciseListForCycle = exercisesByLearningCycle[learningCycle];
 
     let suitableExercises = exerciseListForCycle.filter(
-      (exercise) => exercise.cognitiveFocus === cognitiveFocus,
+      (exercise) => exercise.memoryTask === memoryTask,
     );
 
     let suitableExerciseFound = false;

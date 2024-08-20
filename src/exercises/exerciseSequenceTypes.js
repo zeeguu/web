@@ -12,21 +12,19 @@ import MultipleChoiceL2toL1 from "./exerciseTypes/multipleChoiceL2toL1/MultipleC
 import ClickWordInContext from "./exerciseTypes/wordInContextExercises/ClickWordInContext";
 import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
 
-// It is important that there are exercises requiring only one bookmark for each cateogry (i.e. receptive/productive learning cycle and recall/recognition cognitive focus)
-
 const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 12;
 const EX_Match = {
   type: Match,
   requiredBookmarks: 3,
   learningCycle: "receptive",
-  cognitiveFocus: "recognition",
+  memoryTask: "recognition",
   testedBookmarks: 2,
 };
 const EX_MultipleChoice = {
   type: MultipleChoice,
   requiredBookmarks: 1,
   learningCycle: "productive",
-  cognitiveFocus: "recognition",
+  memoryTask: "recognition",
   testedBookmarks: 1,
 };
 const EX_FindWordInContext = {
@@ -38,56 +36,56 @@ const EX_SpellWhatYouHear = {
   type: SpellWhatYouHear,
   requiredBookmarks: 1,
   learningCycle: "productive",
-  cognitiveFocus: "recall",
+  memoryTask: "recall",
   testedBookmarks: 1,
 };
 const EX_MultipleChoiceL2toL1 = {
   type: MultipleChoiceL2toL1,
   requiredBookmarks: 3,
   learningCycle: "receptive",
-  cognitiveFocus: "recognition",
+  memoryTask: "recognition",
   testedBookmarks: 1,
 };
 const EX_TranslateL2toL1 = {
   type: TranslateL2toL1,
   requiredBookmarks: 1,
   learningCycle: "receptive",
-  cognitiveFocus: "recall",
+  memoryTask: "recall",
   testedBookmarks: 1,
 };
 const EX_TranslateWhatYouHear = {
   type: TranslateWhatYouHear,
   requiredBookmarks: 1,
   learningCycle: "receptive",
-  cognitiveFocus: "recall",
+  memoryTask: "recall",
   testedBookmarks: 1,
 };
 const EX_MultipleChoiceContext = {
   type: MultipleChoiceContext,
   requiredBookmarks: 3,
   learningCycle: "receptive",
-  cognitiveFocus: "recognition",
+  memoryTask: "recognition",
   testedBookmarks: 1,
 };
 const EX_ClickWordInContext = {
   type: ClickWordInContext,
   requiredBookmarks: 1,
   learningCycle: "receptive",
-  cognitiveFocus: "recognition",
+  memoryTask: "recognition",
   testedBookmarks: 1,
 };
 const EX_FindWordInContextCloze = {
   type: FindWordInContextCloze,
   requiredBookmarks: 1,
   learningCycle: "productive",
-  cognitiveFocus: "recall",
+  memoryTask: "recall",
   testedBookmarks: 1,
 };
 const EX_MultipleChoiceAudio = {
   type: MultipleChoiceAudio,
   requiredBookmarks: 3,
   learningCycle: "productive",
-  cognitiveFocus: "recognition",
+  memoryTask: "recognition",
   testedBookmarks: 1,
 };
 const EX_OrderWordsL2 = { type: OrderWordsL2, requiredBookmarks: 1 };
@@ -153,3 +151,55 @@ export {
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
   NUMBER_OF_BOOKMARKS_TO_PRACTICE,
 };
+
+// Function to validate that every combination of learningCycle and memoryTask has at least one exercise with requiredBookmarks = 1
+function validateExercises(exerciseList) {
+  const requiredTestedBookmarks = 1;
+
+  function generateKey(learningCycle, memoryTask) {
+    return `${learningCycle}_${memoryTask}`;
+  }
+
+  const exerciseMap = {};
+
+  exerciseList.forEach((exercise) => {
+    if (exercise.requiredBookmarks === requiredTestedBookmarks) {
+      const key = generateKey(
+        exercise.learningCycle || "",
+        exercise.memoryTask || "",
+      );
+      exerciseMap[key] = true;
+    }
+  });
+
+  const requiredCombinations = [
+    "receptive_recognition",
+    "receptive_recall",
+    "productive_recognition",
+    "productive_recall",
+  ];
+
+  requiredCombinations.forEach((combination) => {
+    if (!exerciseMap[combination]) {
+      throw new Error(
+        `Missing required exercise for combination: ${combination}`,
+      );
+    }
+  });
+}
+
+try {
+  validateExercises(LEARNING_CYCLE_SEQUENCE);
+  console.log("LEARNING_CYCLE_SEQUENCE: All exercise requirements are met.");
+} catch (error) {
+  console.error(`LEARNING_CYCLE_SEQUENCE: ${error.message}`);
+}
+
+try {
+  validateExercises(LEARNING_CYCLE_SEQUENCE_NO_AUDIO);
+  console.log(
+    "LEARNING_CYCLE_SEQUENCE_NO_AUDIO: All exercise requirements are met.",
+  );
+} catch (error) {
+  console.error(`LEARNING_CYCLE_SEQUENCE_NO_AUDIO: ${error.message}`);
+}
