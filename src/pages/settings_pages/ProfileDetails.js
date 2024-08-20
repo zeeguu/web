@@ -7,6 +7,7 @@ import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
 import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
+import InputField from "../info_page_shared/InputField";
 
 import LoadingAnimation from "../../components/LoadingAnimation";
 
@@ -75,19 +76,23 @@ export default function ProfileDetails({ api, setUser }) {
             <h5>{errorMessage}</h5>
             <b>Profile Details</b>
             <hr></hr>
-            <label>{strings.name}</label>
-            <input
-              name="name"
+            <InputField
+              type={"text"}
+              label={strings.name}
+              id={"name"}
+              name={"name"}
+              placeholder={strings.name}
               value={userDetails.name}
               onChange={(e) =>
                 setUserDetails({ ...userDetails, name: e.target.value })
               }
             />
-            <br />
-
-            <label>{strings.email}</label>
-            <input
-              type="email"
+            <InputField
+              type={"email"}
+              label={strings.email}
+              id={"email"}
+              name={"email"}
+              placeholder={strings.email}
               value={userDetails.email}
               onChange={(e) =>
                 setUserDetails({ ...userDetails, email: e.target.value })

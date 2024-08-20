@@ -5,6 +5,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { Error } from "../../teacher/sharedComponents/Error";
 import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
+import InputField from "../info_page_shared/InputField";
 
 import strings from "../../i18n/definitions";
 import * as s from "../../components/FormPage.sc";
@@ -69,11 +70,13 @@ export default function CurrentClass({ api }) {
                     : strings.youHaveNotJoinedAClass}
                 </b>
               </p>
-              <label className="change-class-string">
-                {studentIsInCohort ? strings.changeClass : strings.joinClass}
-              </label>
-              <input
-                type="text"
+              <InputField
+                type={"text"}
+                label={
+                  studentIsInCohort ? strings.changeClass : strings.joinClass
+                }
+                id={"cohort"}
+                name={"cohort"}
                 placeholder={
                   studentIsInCohort
                     ? strings.insertNewInviteCode
@@ -82,7 +85,6 @@ export default function CurrentClass({ api }) {
                 value={inviteCode}
                 onChange={(event) => handleInviteCodeChange(event)}
               />
-
               {showJoinCohortError && (
                 <Error message={strings.checkIfInviteCodeIsValid} />
               )}
