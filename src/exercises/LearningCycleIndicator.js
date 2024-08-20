@@ -87,10 +87,7 @@ export default function LearningCycleIndicator({
   return (
     <>
       {Feature.merle_exercises() && (
-        <div
-          className="learningCycleIndicator"
-          style={{ visibility: isHidden ? "hidden" : "visible" }}
-        >
+        <div className="learningCycleIndicator">
           <div className="learningCycleIcon">
             <Tooltip title={getTooltipContent()}>
               <img
