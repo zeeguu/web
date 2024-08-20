@@ -5,14 +5,13 @@ import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
+import Form from "../info_page_shared/Form";
+import FormSection from "../info_page_shared/FormSection";
 import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
 
 import LoadingAnimation from "../../components/LoadingAnimation";
-
-import * as s from "../../components/FormPage.sc";
-import * as scs from "../Settings.sc";
 
 export default function ProfileDetails({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -69,41 +68,37 @@ export default function ProfileDetails({ api, setUser }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
-      Profile Details
-      <s.FormContainer>
-        <scs.StyledSettings>
-          <form className="formSettings">
-            <h5>{errorMessage}</h5>
-            <b>Profile Details</b>
-            <hr></hr>
-            <InputField
-              type={"text"}
-              label={strings.name}
-              id={"name"}
-              name={"name"}
-              placeholder={strings.name}
-              value={userDetails.name}
-              onChange={(e) =>
-                setUserDetails({ ...userDetails, name: e.target.value })
-              }
-            />
-            <InputField
-              type={"email"}
-              label={strings.email}
-              id={"email"}
-              name={"email"}
-              placeholder={strings.email}
-              value={userDetails.email}
-              onChange={(e) =>
-                setUserDetails({ ...userDetails, email: e.target.value })
-              }
-            />
-            <ButtonContainer>
-              <Button onClick={handleSave}>{strings.save}</Button>
-            </ButtonContainer>
-          </form>
-        </scs.StyledSettings>
-      </s.FormContainer>
+      <b>Profile Details</b>
+      <Form>
+        <h5>{errorMessage}</h5>
+        <FormSection>
+          <InputField
+            type={"text"}
+            label={strings.name}
+            id={"name"}
+            name={"name"}
+            placeholder={strings.name}
+            value={userDetails.name}
+            onChange={(e) =>
+              setUserDetails({ ...userDetails, name: e.target.value })
+            }
+          />
+          <InputField
+            type={"email"}
+            label={strings.email}
+            id={"email"}
+            name={"email"}
+            placeholder={strings.email}
+            value={userDetails.email}
+            onChange={(e) =>
+              setUserDetails({ ...userDetails, email: e.target.value })
+            }
+          />
+        </FormSection>
+        <ButtonContainer>
+          <Button onClick={handleSave}>{strings.save}</Button>
+        </ButtonContainer>
+      </Form>
     </div>
   );
 }

@@ -6,10 +6,10 @@ import { Error } from "../../teacher/sharedComponents/Error";
 import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
+import Form from "../info_page_shared/Form";
+import FormSection from "../info_page_shared/FormSection";
 
 import strings from "../../i18n/definitions";
-import * as s from "../../components/FormPage.sc";
-import * as scs from "../Settings.sc";
 
 export default function CurrentClass({ api }) {
   // const history = useHistory();
@@ -57,46 +57,38 @@ export default function CurrentClass({ api }) {
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
       Current Class
-      <s.FormContainer>
-        <scs.StyledSettings>
-          <form className="formSettings">
-            <>
-              <b>Class Management</b>
-              <hr></hr>
-              <p className="current-class-of-student">
-                <b>
-                  {studentIsInCohort
-                    ? strings.yourCurrentClassIs + currentCohort
-                    : strings.youHaveNotJoinedAClass}
-                </b>
-              </p>
-              <InputField
-                type={"text"}
-                label={
-                  studentIsInCohort ? strings.changeClass : strings.joinClass
-                }
-                id={"cohort"}
-                name={"cohort"}
-                placeholder={
-                  studentIsInCohort
-                    ? strings.insertNewInviteCode
-                    : strings.insertInviteCode
-                }
-                value={inviteCode}
-                onChange={(event) => handleInviteCodeChange(event)}
-              />
-              {showJoinCohortError && (
-                <Error message={strings.checkIfInviteCodeIsValid} />
-              )}
-              <ButtonContainer>
-                <Button onClick={saveStudentToClass}>
-                  {studentIsInCohort ? strings.changeClass : strings.joinClass}
-                </Button>
-              </ButtonContainer>
-            </>
-          </form>
-        </scs.StyledSettings>
-      </s.FormContainer>
+      <p className="">
+        <b>
+          {studentIsInCohort
+            ? strings.yourCurrentClassIs + currentCohort
+            : strings.youHaveNotJoinedAClass}
+        </b>
+      </p>
+      <Form>
+        <FormSection>
+          <InputField
+            type={"text"}
+            label={studentIsInCohort ? strings.changeClass : strings.joinClass}
+            id={"cohort"}
+            name={"cohort"}
+            placeholder={
+              studentIsInCohort
+                ? strings.insertNewInviteCode
+                : strings.insertInviteCode
+            }
+            value={inviteCode}
+            onChange={(event) => handleInviteCodeChange(event)}
+          />
+          {showJoinCohortError && (
+            <Error message={strings.checkIfInviteCodeIsValid} />
+          )}
+        </FormSection>
+        <ButtonContainer>
+          <Button onClick={saveStudentToClass}>
+            {studentIsInCohort ? strings.changeClass : strings.joinClass}
+          </Button>
+        </ButtonContainer>
+      </Form>
     </div>
   );
 }
