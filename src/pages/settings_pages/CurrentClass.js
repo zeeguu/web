@@ -3,6 +3,8 @@ import { NavLink, useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { Error } from "../../teacher/sharedComponents/Error";
+import Button from "../info_page_shared/Button";
+import ButtonContainer from "../info_page_shared/ButtonContainer";
 
 import strings from "../../i18n/definitions";
 import * as s from "../../components/FormPage.sc";
@@ -84,12 +86,11 @@ export default function CurrentClass({ api }) {
               {showJoinCohortError && (
                 <Error message={strings.checkIfInviteCodeIsValid} />
               )}
-
-              <s.FormButton onClick={saveStudentToClass}>
-                <span>
+              <ButtonContainer>
+                <Button onClick={saveStudentToClass}>
                   {studentIsInCohort ? strings.changeClass : strings.joinClass}
-                </span>
-              </s.FormButton>
+                </Button>
+              </ButtonContainer>
             </>
           </form>
         </scs.StyledSettings>

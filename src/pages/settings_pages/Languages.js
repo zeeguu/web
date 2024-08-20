@@ -8,6 +8,8 @@ import strings from "../../i18n/definitions";
 import LocalStorage from "../../assorted/LocalStorage";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import UiLanguageSelector from "../../components/UiLanguageSelector";
+import Button from "../info_page_shared/Button";
+import ButtonContainer from "../info_page_shared/ButtonContainer";
 
 import Select from "../../components/Select";
 import * as s from "../../components/FormPage.sc";
@@ -141,11 +143,9 @@ export default function Languages({ api, setUser }) {
                 updateNativeLanguage(getLanguageCodeFromSelector(e));
               }}
             />
-            <div>
-              <s.FormButton onClick={handleSave}>
-                <span>{strings.save}</span>
-              </s.FormButton>
-            </div>
+            <ButtonContainer>
+              <Button onClick={handleSave}>{strings.save}</Button>
+            </ButtonContainer>
           </form>
         </scs.StyledSettings>
       </s.FormContainer>
