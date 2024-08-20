@@ -136,6 +136,9 @@ const navigationVisibleCommon = css`
     position: absolute;
     bottom: 1em;
     width: 100%;
+    @media (max-width: 768px) {
+      bottom: 5em;
+    }
   }
 
   .SettingsLogoutHolder {
