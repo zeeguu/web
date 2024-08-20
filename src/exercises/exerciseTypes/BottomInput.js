@@ -64,7 +64,7 @@ export default function BottomInput({
       return;
     }
     if (isOneWordCorrect) {
-      setFeedbackMessage("⭐ One of the words is correct!");
+      setFeedbackMessage("⭐ You are still missing a word!");
       return;
     }
     if (distanceToCorrect < 5 && distanceToCorrect > 2) {
