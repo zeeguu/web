@@ -115,10 +115,11 @@ export default function BottomInput({
 
     let isOneWordCorrect = false;
     let wordsInAnswer = normalizedAnswer.split(" ");
-    normalizedInput.split("   ").forEach((word) => {
-      console.log(wordsInAnswer, word);
-      if (wordsInAnswer.includes(word)) isOneWordCorrect = true;
-    });
+    let wordsInInput = normalizedInput.split(" ");
+    if (wordsInInput.length == 1)
+      wordsInAnswer.forEach((word) => {
+        if (normalizedInput === word) isOneWordCorrect = true;
+      });
 
     setIsOneWordCorrect(isOneWordCorrect);
     setDistanceToCorrect(levDistance);
