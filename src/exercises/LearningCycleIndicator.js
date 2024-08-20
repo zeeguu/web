@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Tooltip from "@material-ui/core/Tooltip";
 import strings from "../i18n/definitions";
 import Feature from "../features/Feature";
-import { logScaleToLinear } from "../utils/basic/logScaleToLinear";
 import { ExerciseValidation } from "./ExerciseValidation";
 import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
 import { APP_DOMAIN } from "../appConstants.js";
@@ -27,6 +26,9 @@ export default function LearningCycleIndicator({
   }, [message]);
 
   const getLearningCycleIcon = () => {
+    if (isHidden) {
+      return "/static/icons/active-icon-lightGrey.png";
+    }
     switch (LEARNING_CYCLE_NAME[learningCycle]) {
       case "receptive":
         return "/static/icons/receptive-icon.png";
@@ -49,29 +51,43 @@ export default function LearningCycleIndicator({
   };
 
   const getBarProperties = (index) => {
-    let barCount = logScaleToLinear(coolingInterval);
     let color = "grey";
     let widthMultiplier = Math.pow(1.8, index);
 
+    if (isHidden) {
+      return { color, widthMultiplier };
+    }
+
+    const initialBarCountMapping = {
+      0: 0,
+      1: 1,
+      2: 2,
+      4: 3,
+      8: 4,
+    };
+
+    let barCount = initialBarCountMapping[coolingInterval];
+
+    if (userIsWrong) {
+      if (barCount > 0) {
+        barCount -= 1;
+      } else {
+        barCount = 0;
+      }
+    }
+
     if (index < barCount) {
       color = "green";
-    } else if (index === barCount) {
-      color = "yellow";
-      if (userIsCorrect) {
-        color = "green";
-      } else if (userIsWrong) {
-        color = "grey";
-      }
+    } else if (index === barCount && userIsCorrect) {
+      color = "greenCorrect";
     }
     return { color, widthMultiplier };
   };
+
   return (
     <>
       {Feature.merle_exercises() && (
-        <div
-          className="learningCycleIndicator"
-          style={{ visibility: isHidden ? "hidden" : "visible" }}
-        >
+        <div className="learningCycleIndicator">
           <div className="learningCycleIcon">
             <Tooltip title={getTooltipContent()}>
               <img
