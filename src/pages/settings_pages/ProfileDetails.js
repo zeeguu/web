@@ -5,6 +5,8 @@ import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
+import Button from "../info_page_shared/Button";
+import ButtonContainer from "../info_page_shared/ButtonContainer";
 
 import LoadingAnimation from "../../components/LoadingAnimation";
 
@@ -91,11 +93,9 @@ export default function ProfileDetails({ api, setUser }) {
                 setUserDetails({ ...userDetails, email: e.target.value })
               }
             />
-            <div>
-              <s.FormButton onClick={handleSave}>
-                <span>{strings.save}</span>
-              </s.FormButton>
-            </div>
+            <ButtonContainer>
+              <Button onClick={handleSave}>{strings.save}</Button>
+            </ButtonContainer>
           </form>
         </scs.StyledSettings>
       </s.FormContainer>

@@ -5,6 +5,8 @@ import { UserContext } from "../../contexts/UserContext";
 import SessionStorage from "../../assorted/SessionStorage";
 import LocalStorage from "../../assorted/LocalStorage";
 import Feature from "../../features/Feature";
+import Button from "../info_page_shared/Button";
+import ButtonContainer from "../info_page_shared/ButtonContainer";
 
 import strings from "../../i18n/definitions";
 
@@ -95,11 +97,9 @@ export default function AudioExercises({ api }) {
                 <label>Enable Productive Exercises</label>
               </div>
             )}
-            <div>
-              <s.FormButton onClick={handleSave}>
-                <span>{strings.save}</span>
-              </s.FormButton>
-            </div>
+            <ButtonContainer>
+              <Button onClick={handleSave}>{strings.save}</Button>
+            </ButtonContainer>
           </form>
         </scs.StyledSettings>
       </s.FormContainer>
