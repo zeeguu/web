@@ -15,17 +15,17 @@ function tokenize(sentence) {
   return sentence.split(" ");
 }
 
-function isExpression(word) {
-  return word.includes(" ");
+function isExpression(text) {
+  return text.includes(" ");
 }
 
-function isWordInSentence(word, sentence) {
-  if (isExpression(word)) {
-    return sentence.includes(word);
+function isTextInSentence(text, sentence) {
+  if (isExpression(text)) {
+    return sentence.includes(text);
   }
   let tokens = tokenize(sentence);
   tokens = tokens.map((each) => removePunctuation(each));
-  return tokens.includes(removePunctuation(word));
+  return tokens.includes(removePunctuation(text));
 }
 
-export { tokenize, removePunctuation, isWordInSentence, isExpression };
+export { tokenize, removePunctuation, isTextInSentence, isExpression };
