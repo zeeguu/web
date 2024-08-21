@@ -18,8 +18,8 @@ function isWordIncluded(word, expression) {
   let wordsInAnswer = expression.split(" ");
   let wordsInInput = word.split(" ");
   if (wordsInInput.length === 1)
-    wordsInAnswer.forEach((word) => {
-      if (word === word) isWordIncluded = true;
+    wordsInAnswer.forEach((each) => {
+      if (each === word) isWordIncluded = true;
     });
   return isWordIncluded;
 }
