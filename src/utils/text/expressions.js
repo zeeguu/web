@@ -16,14 +16,11 @@ function isTextInSentence(text, sentence) {
 function isWordIncluded(word, expression) {
   let isWordIncluded = false;
   let wordsInAnswer = expression.split(" ");
-  let wordsInInput = word.split(" ");
-  if (wordsInInput.length === 1)
+  if (!isExpression(word))
     wordsInAnswer.forEach((each) => {
       if (each === word) isWordIncluded = true;
     });
   return isWordIncluded;
 }
 
-export { isWordIncluded };
-export { isTextInSentence };
-export { isExpression };
+export { isWordIncluded, isTextInSentence, isExpression };
