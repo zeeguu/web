@@ -23,10 +23,12 @@ function getExerciseListByLearningCycle(exerciseList) {
 }
 
 function getMemoryTask(bookmark) {
-  return bookmark.consecutive_correct_answers >= 2 &&
-    bookmark.cooling_interval >= 2
-    ? MEMORY_TASK.RECALL
-    : MEMORY_TASK.RECOGNITION;
+  let memoryTask =
+    bookmark.consecutive_correct_answers >= 2 && bookmark.cooling_interval >= 2
+      ? MEMORY_TASK.RECALL
+      : MEMORY_TASK.RECOGNITION;
+
+  return memoryTask;
 }
 
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {

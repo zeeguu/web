@@ -153,7 +153,7 @@ export {
 };
 
 // Function to validate that every combination of learningCycle and memoryTask has at least one exercise with requiredBookmarks = 1
-function validateExercises(exerciseList) {
+function validateExerciseSequence(exerciseList) {
   const requiredTestedBookmarks = 1;
 
   function generateKey(learningCycle, memoryTask) {
@@ -188,18 +188,6 @@ function validateExercises(exerciseList) {
   });
 }
 
-try {
-  validateExercises(LEARNING_CYCLE_SEQUENCE);
-  console.log("LEARNING_CYCLE_SEQUENCE: All exercise requirements are met.");
-} catch (error) {
-  console.error(`LEARNING_CYCLE_SEQUENCE: ${error.message}`);
-}
+validateExerciseSequence(LEARNING_CYCLE_SEQUENCE);
 
-try {
-  validateExercises(LEARNING_CYCLE_SEQUENCE_NO_AUDIO);
-  console.log(
-    "LEARNING_CYCLE_SEQUENCE_NO_AUDIO: All exercise requirements are met.",
-  );
-} catch (error) {
-  console.error(`LEARNING_CYCLE_SEQUENCE_NO_AUDIO: ${error.message}`);
-}
+validateExerciseSequence(LEARNING_CYCLE_SEQUENCE_NO_AUDIO);
