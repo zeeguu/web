@@ -13,13 +13,13 @@ function isTextInSentence(text, sentence) {
   return tokens.includes(removePunctuation(text));
 }
 
-function isWordIncluded(input, expression) {
+function isWordIncluded(word, expression) {
   let isWordIncluded = false;
   let wordsInAnswer = expression.split(" ");
-  let wordsInInput = input.split(" ");
+  let wordsInInput = word.split(" ");
   if (wordsInInput.length === 1)
     wordsInAnswer.forEach((word) => {
-      if (input === word) isWordIncluded = true;
+      if (word === word) isWordIncluded = true;
     });
   return isWordIncluded;
 }
