@@ -43,11 +43,11 @@ export default function ArticlePreview({
   }
 
   function titleLink(article) {
+    let linkToRedirect = `/read/article?id=${article.id}`;
+    if (article.pixel_to_scroll_to)
+      linkToRedirect += `&pixelTo=${article.pixel_to_scroll_to}`;
     let open_in_zeeguu = (
-      <Link
-        to={`/read/article?id=${article.id}&lastRead=${article.last_reading_percentage}`}
-        onClick={handleArticleClick}
-      >
+      <Link to={linkToRedirect} onClick={handleArticleClick}>
         {article.title}
       </Link>
     );
@@ -127,8 +127,8 @@ export default function ArticlePreview({
             {article.img_url && <img alt="" src={article.img_url} />}
           </s.UnfinishedArticleContainer>
           <div style={{ fontWeight: "550" }}>
-            ({article.time_until_last_read}, {article.last_reading_percentage}%
-            read)
+            ({article.time_until_last_read},{" "}
+            {article.last_reading_percentage * 100}% read)
           </div>
         </div>
       )}

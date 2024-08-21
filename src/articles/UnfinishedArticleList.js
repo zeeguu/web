@@ -57,7 +57,9 @@ export default function UnfinishedArticlesList({}) {
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
       <s.UnfinishedArticlesBox>
-        <h1>Unfinished Articles</h1>
+        <h1 style={{ margin: "0.5em", marginBottom: "-0.7em" }}>
+          Continue where you left off
+        </h1>
         {unreadArticleList.map((each, index) => (
           <ArticlePreview
             key={each.id}

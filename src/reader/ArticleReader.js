@@ -54,9 +54,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
   teacherArticleID
     ? (articleID = teacherArticleID)
     : (articleID = query.get("id"));
-  let percentageRead = query.get("lastRead");
-  percentageRead =
-    percentageRead === "undefined" ? null : Number(percentageRead) / 100;
+  let pixelTo = query.get("pixelTo");
+  pixelTo = pixelTo === "undefined" ? null : Number(pixelTo);
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
@@ -143,28 +142,28 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   useEffect(() => {
     if (interactiveText !== undefined) {
-      let scrollElement = document.getElementById("scrollHolder");
-      let textElement = document.getElementById("text");
-      let bottomRow = document.getElementById("bottomRow");
       setTimeout(() => {
-        if (percentageRead) {
-          scrollElement.scrollTo({
-            top:
-              (scrollElement.scrollHeight -
-                scrollElement.clientHeight -
-                bottomRow.clientHeight) *
-              percentageRead,
-            behavior: "smooth",
-          });
+        try {
+          let scrollElement = document.getElementById("scrollHolder");
+          let textElement = document.getElementById("text");
+          let bottomRow = document.getElementById("bottomRow");
+          if (pixelTo) {
+            scrollElement.scrollTo({
+              top: (0, pixelTo),
+              behavior: "smooth",
+            });
+          }
+          setViewPortSettings(
+            JSON.stringify({
+              scrollHeight: scrollElement.scrollHeight,
+              clientHeight: scrollElement.clientHeight,
+              textHeight: textElement.clientHeight,
+              bottomRowHeight: bottomRow.clientHeight,
+            }),
+          );
+        } catch {
+          console.log("Failed to send scroll history.");
         }
-        setViewPortSettings(
-          JSON.stringify({
-            scrollHeight: scrollElement.scrollHeight,
-            clientHeight: scrollElement.clientHeight,
-            textHeight: textElement.clientHeight,
-            bottomRowHeight: bottomRow.clientHeight,
-          }),
-        );
       }, 500);
     }
   }, [interactiveText]);
