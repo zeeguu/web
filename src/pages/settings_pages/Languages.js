@@ -1,5 +1,5 @@
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
@@ -23,6 +23,7 @@ export default function Languages({ api, setUser }) {
   const [cefr, setCEFR] = useState("");
 
   const user = useContext(UserContext);
+  const history = useHistory();
 
   function setCEFRlevel(data) {
     const levelKey = data.learned_language + "_cefr_level";
@@ -86,11 +87,7 @@ export default function Languages({ api, setUser }) {
     e.preventDefault();
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
-      // if (history.length > 1) {
-      //   history.goBack();
-      // } else {
-      //   window.close();
-      // }
+      history.goBack();
     });
   }
 

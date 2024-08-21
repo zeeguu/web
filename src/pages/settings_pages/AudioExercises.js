@@ -1,5 +1,5 @@
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import SessionStorage from "../../assorted/SessionStorage";
@@ -15,6 +15,7 @@ import { PageTitle } from "../../components/PageTitle";
 
 export default function AudioExercises({ api }) {
   const user = useContext(UserContext);
+  const history = useHistory();
 
   const [errorMessage, setErrorMessage] = useState("");
   const [audioExercises, setAudioExercises] = useState(true);
@@ -59,6 +60,7 @@ export default function AudioExercises({ api }) {
       audio_exercises: audioExercises,
       productive_exercises: productiveExercises,
     });
+    history.goBack();
   }
 
   return (
