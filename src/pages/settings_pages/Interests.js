@@ -4,6 +4,8 @@ import Tag from "../info_page_shared/Tag";
 import TagContainer from "../info_page_shared/TagContainer";
 import useSelectInterest from "../../hooks/useSelectInterest";
 
+import { PageTitle } from "../../components/PageTitle";
+
 export default function Interests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
@@ -12,7 +14,7 @@ export default function Interests({ api }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
-      Interests
+      <PageTitle>{"Interests"}</PageTitle>
       <TagContainer>
         {allTopics.map((topic) => (
           <Tag

@@ -4,6 +4,8 @@ import Tag from "../info_page_shared/Tag";
 import TagContainer from "../info_page_shared/TagContainer";
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 
+import { PageTitle } from "../../components/PageTitle";
+
 export default function NonInterests({ api }) {
   const { topicsAvailableForExclusion, toggleTopicExclusion, isExcludedTopic } =
     useUnwantedContentPreferences(api);
@@ -12,7 +14,7 @@ export default function NonInterests({ api }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
-      Non Interests
+      <PageTitle>{"Non Interests"}</PageTitle>
       <TagContainer>
         {topicsAvailableForExclusion.map((topic) => (
           <Tag

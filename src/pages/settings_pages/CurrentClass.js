@@ -10,6 +10,7 @@ import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 
 import strings from "../../i18n/definitions";
+import { PageTitle } from "../../components/PageTitle";
 
 export default function CurrentClass({ api }) {
   // const history = useHistory();
@@ -55,8 +56,9 @@ export default function CurrentClass({ api }) {
     <div>
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
-      </NavLink>{" "}
-      Current Class
+      </NavLink>
+      <PageTitle>{"My Current Class"}</PageTitle>
+
       <p className="">
         <b>
           {studentIsInCohort

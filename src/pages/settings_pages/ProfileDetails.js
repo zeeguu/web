@@ -11,6 +11,8 @@ import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
 
+import { PageTitle } from "../../components/PageTitle";
+
 import LoadingAnimation from "../../components/LoadingAnimation";
 
 export default function ProfileDetails({ api, setUser }) {
@@ -68,7 +70,7 @@ export default function ProfileDetails({ api, setUser }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
-      <b>Profile Details</b>
+      <PageTitle>{"Profile Details"}</PageTitle>
       <Form>
         <h5>{errorMessage}</h5>
         <FormSection>

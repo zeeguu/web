@@ -14,6 +14,7 @@ import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 
 import Select from "../../components/Select";
+import { PageTitle } from "../../components/PageTitle";
 
 export default function Languages({ api, setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -102,7 +103,7 @@ export default function Languages({ api, setUser }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
-      Languages
+      <PageTitle>{"Languages"}</PageTitle>
       <Form>
         <FormSection>
           <h5>{errorMessage}</h5>
