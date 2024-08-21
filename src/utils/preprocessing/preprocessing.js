@@ -30,7 +30,7 @@ function oneOfMultipleWordsIsCorrect(normalizedAnswer, normalizedInput) {
   let isOneWordCorrect = false;
   let wordsInAnswer = normalizedAnswer.split(" ");
   let wordsInInput = normalizedInput.split(" ");
-  if (wordsInInput.length == 1)
+  if (wordsInInput.length === 1)
     wordsInAnswer.forEach((word) => {
       if (normalizedInput === word) isOneWordCorrect = true;
     });
