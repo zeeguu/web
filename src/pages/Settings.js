@@ -28,37 +28,37 @@ export default function Settings() {
 
       <ListOfSettingsItems header={"My Account"}>
         <SettingsItem path={"/account_settings/profile_details"}>
-          Profile Details
+          {strings.profileDetails}
         </SettingsItem>
         <SettingsItem path={"/account_settings/languages"}>
-          Languages
+          {strings.languages}
         </SettingsItem>
 
         {!user.is_teacher && (
           <SettingsItem path={"/account_settings/current_class"}>
-            My Current Class
+            {strings.myCurrentClass}
           </SettingsItem>
         )}
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Exercise Preferences"}>
         <SettingsItem path={"/account_settings/audio_exercises"}>
-          Audio Exercises
+          {strings.audioExercises}
         </SettingsItem>
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Reading Preferences"}>
         <SettingsItem path={"/account_settings/interests"}>
-          Interests
+          {strings.interests}
         </SettingsItem>
         <SettingsItem path={"/account_settings/non_interests"}>
-          Non-Interests
+          {strings.nonInterests}
         </SettingsItem>
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Account Management"}>
         <SettingsItem path={"/account_settings/delete_account"}>
-          Delete Account
+          {strings.deleteAccount}
         </SettingsItem>
       </ListOfSettingsItems>
     </s.StyledWrapper>

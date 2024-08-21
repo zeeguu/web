@@ -70,7 +70,7 @@ export default function ProfileDetails({ api, setUser }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
-      <PageTitle>{"Profile Details"}</PageTitle>
+      <PageTitle>{strings.profileDetails}</PageTitle>
       <Form>
         <h5>{errorMessage}</h5>
         <FormSection>

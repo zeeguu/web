@@ -66,7 +66,7 @@ export default function AudioExercises({ api }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>
-      <PageTitle>{"Audio Exercises"}</PageTitle>
+      <PageTitle>{strings.audioExercises}</PageTitle>
       <Form>
         <FormSection>
           <h5>{errorMessage}</h5>

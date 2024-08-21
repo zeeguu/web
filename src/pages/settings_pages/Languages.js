@@ -103,7 +103,7 @@ export default function Languages({ api, setUser }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
-      <PageTitle>{"Languages"}</PageTitle>
+      <PageTitle>{strings.languages}</PageTitle>
       <Form>
         <FormSection>
           <h5>{errorMessage}</h5>
