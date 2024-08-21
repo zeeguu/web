@@ -507,7 +507,6 @@ let strings = new LocalizedStrings(
       myCurrentClass: "My Current Class",
       audioExercises: "Audio Exercises",
       interests: "Interests",
-      nonInterests: "Non Interests",
       deleteAccount: "Delete Account",
 
       nativeLanguage: "Native Language",
