@@ -6,7 +6,7 @@ import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
+import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";

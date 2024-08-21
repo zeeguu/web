@@ -26,13 +26,13 @@ function isTextInSentence(text, sentence) {
   return tokens.includes(removePunctuation(text));
 }
 
-function oneOfMultipleWordsIsCorrect(normalizedAnswer, normalizedInput) {
+function singleWordMatch(input, expression) {
   let isOneWordCorrect = false;
-  let wordsInAnswer = normalizedAnswer.split(" ");
-  let wordsInInput = normalizedInput.split(" ");
+  let wordsInAnswer = expression.split(" ");
+  let wordsInInput = input.split(" ");
   if (wordsInInput.length === 1)
     wordsInAnswer.forEach((word) => {
-      if (normalizedInput === word) isOneWordCorrect = true;
+      if (input === word) isOneWordCorrect = true;
     });
   return isOneWordCorrect;
 }
@@ -42,5 +42,5 @@ export {
   removePunctuation,
   isTextInSentence,
   isExpression,
-  oneOfMultipleWordsIsCorrect,
+  singleWordMatch,
 };

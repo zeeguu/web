@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
-import { removePunctuation } from "../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../utils/text/preprocessing";
 import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 
 export function TranslatableText({

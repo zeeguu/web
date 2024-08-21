@@ -11,7 +11,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../../../utils/text/preprocessing";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.

@@ -9,7 +9,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../../../utils/text/preprocessing";
 
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 

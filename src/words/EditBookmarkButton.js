@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
 import { getStaticPath } from "../utils/misc/staticPath.js";
 import { toast } from "react-toastify";
-import { isTextInSentence } from "../utils/preprocessing/preprocessing.js";
+import { isTextInSentence } from "../utils/text/preprocessing.js";
 
 export default function EditBookmarkButton({
   bookmark,
