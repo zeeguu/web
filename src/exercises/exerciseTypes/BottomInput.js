@@ -3,7 +3,8 @@ import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import { normalizeAnswer } from "../inputNormalization";
-import { wordIncluded } from "../../utils/text/preprocessing";
+
+import { isWordIncluded } from "../../utils/text/expressions";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -114,7 +115,7 @@ export default function BottomInput({
       return;
     }
 
-    setIsOneWordCorrect(wordIncluded(normalizedInput, normalizedAnswer));
+    setIsOneWordCorrect(isWordIncluded(normalizedInput, normalizedAnswer));
     setDistanceToCorrect(levDistance);
     setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
     setIsSameLengthAsSolution(
