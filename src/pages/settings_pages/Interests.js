@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import Tag from "../info_page_shared/Tag";
 import TagContainer from "../info_page_shared/TagContainer";
 import useSelectInterest from "../../hooks/useSelectInterest";
+import InfoPage from "../info_page_shared/InfoPage";
 
 import { PageTitle } from "../../components/PageTitle";
 import strings from "../../i18n/definitions";
@@ -11,7 +12,7 @@ export default function Interests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
   return (
-    <div>
+    <InfoPage pageLocation={"settings"}>
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
@@ -28,6 +29,6 @@ export default function Interests({ api }) {
           </Tag>
         ))}
       </TagContainer>
-    </div>
+    </InfoPage>
   );
 }

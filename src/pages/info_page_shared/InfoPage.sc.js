@@ -17,6 +17,14 @@ const PageBackground = styled.div`
   .underlined-link {
     text-decoration: underline;
   }
+
+  ${(props) =>
+    props.pageLocation === "settings" &&
+    css`
+      width: auto;
+      min-height: auto;
+      background: none;
+    `}
 `;
 
 const PageContainer = styled.div`
