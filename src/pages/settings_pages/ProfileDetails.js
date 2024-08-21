@@ -10,6 +10,7 @@ import FormSection from "../info_page_shared/FormSection";
 import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
+import InfoPage from "../info_page_shared/InfoPage";
 
 import { PageTitle } from "../../components/PageTitle";
 
@@ -63,13 +64,13 @@ export default function ProfileDetails({ api, setUser }) {
   }
 
   return (
-    <div>
+    <InfoPage pageLocation={"settings"}>
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
       <PageTitle>{strings.profileDetails}</PageTitle>
       <Form>
-        <h5>{errorMessage}</h5>
+        {/* <h5>{errorMessage}</h5> */}
         <FormSection>
           <InputField
             type={"text"}
@@ -98,6 +99,6 @@ export default function ProfileDetails({ api, setUser }) {
           <Button onClick={handleSave}>{strings.save}</Button>
         </ButtonContainer>
       </Form>
-    </div>
+    </InfoPage>
   );
 }

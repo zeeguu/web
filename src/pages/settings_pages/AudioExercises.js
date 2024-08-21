@@ -9,6 +9,7 @@ import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
+import InfoPage from "../info_page_shared/InfoPage";
 
 import strings from "../../i18n/definitions";
 import { PageTitle } from "../../components/PageTitle";
@@ -64,14 +65,14 @@ export default function AudioExercises({ api }) {
   }
 
   return (
-    <div>
+    <InfoPage pageLocation={"settings"}>
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>
       <PageTitle>{strings.audioExercises}</PageTitle>
       <Form>
         <FormSection>
-          <h5>{errorMessage}</h5>
+          {/* <h5>{errorMessage}</h5> */}
           <label>Exercise Type Preferences</label>
           <div style={{ display: "flex" }} className="form-group">
             <input
@@ -103,6 +104,6 @@ export default function AudioExercises({ api }) {
           <Button onClick={handleSave}>{strings.save}</Button>
         </ButtonContainer>
       </Form>
-    </div>
+    </InfoPage>
   );
 }

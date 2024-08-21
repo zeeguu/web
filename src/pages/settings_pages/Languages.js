@@ -12,6 +12,7 @@ import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
+import InfoPage from "../info_page_shared/InfoPage";
 
 import Select from "../../components/Select";
 import { PageTitle } from "../../components/PageTitle";
@@ -96,14 +97,14 @@ export default function Languages({ api, setUser }) {
   }
 
   return (
-    <div>
+    <InfoPage pageLocation={"settings"}>
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
       <PageTitle>{strings.languages}</PageTitle>
       <Form>
         <FormSection>
-          <h5>{errorMessage}</h5>
+          {/* <h5>{errorMessage}</h5> */}
           <label>{strings.learnedLanguage}</label>
           <UiLanguageSelector
             languages={languages.learnable_languages}
@@ -144,7 +145,7 @@ export default function Languages({ api, setUser }) {
           <Button onClick={handleSave}>{strings.save}</Button>
         </ButtonContainer>
       </Form>
-    </div>
+    </InfoPage>
   );
 }
 

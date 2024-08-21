@@ -8,6 +8,7 @@ import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
 import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
+import InfoPage from "../info_page_shared/InfoPage";
 
 import strings from "../../i18n/definitions";
 import { PageTitle } from "../../components/PageTitle";
@@ -50,7 +51,7 @@ export default function CurrentClass({ api }) {
     );
   }
   return (
-    <div>
+    <InfoPage pageLocation={"settings"}>
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>
@@ -88,6 +89,6 @@ export default function CurrentClass({ api }) {
           </Button>
         </ButtonContainer>
       </Form>
-    </div>
+    </InfoPage>
   );
 }
