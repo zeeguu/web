@@ -3,6 +3,7 @@ import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import { normalizeAnswer } from "../inputNormalization";
+import { oneOfMultipleWordsIsCorrect } from "../../utils/preprocessing/preprocessing";
 
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
@@ -113,15 +114,9 @@ export default function BottomInput({
       return;
     }
 
-    let isOneWordCorrect = false;
-    let wordsInAnswer = normalizedAnswer.split(" ");
-    let wordsInInput = normalizedInput.split(" ");
-    if (wordsInInput.length == 1)
-      wordsInAnswer.forEach((word) => {
-        if (normalizedInput === word) isOneWordCorrect = true;
-      });
-
-    setIsOneWordCorrect(isOneWordCorrect);
+    setIsOneWordCorrect(
+      oneOfMultipleWordsIsCorrect(normalizedAnswer, normalizedInput),
+    );
     setDistanceToCorrect(levDistance);
     setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
     setIsSameLengthAsSolution(

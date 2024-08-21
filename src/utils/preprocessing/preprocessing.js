@@ -1,5 +1,3 @@
-import isBookmarkExpression from "../misc/isBookmarkExpression";
-
 // doesn't remove punctuation when it is part of a word, e.g. "l'Italie" or "it's"
 function removePunctuation(string) {
   let removeLeadingPunctuation =
@@ -28,4 +26,21 @@ function isTextInSentence(text, sentence) {
   return tokens.includes(removePunctuation(text));
 }
 
-export { tokenize, removePunctuation, isTextInSentence, isExpression };
+function oneOfMultipleWordsIsCorrect(normalizedAnswer, normalizedInput) {
+  let isOneWordCorrect = false;
+  let wordsInAnswer = normalizedAnswer.split(" ");
+  let wordsInInput = normalizedInput.split(" ");
+  if (wordsInInput.length == 1)
+    wordsInAnswer.forEach((word) => {
+      if (normalizedInput === word) isOneWordCorrect = true;
+    });
+  return isOneWordCorrect;
+}
+
+export {
+  tokenize,
+  removePunctuation,
+  isTextInSentence,
+  isExpression,
+  oneOfMultipleWordsIsCorrect,
+};
