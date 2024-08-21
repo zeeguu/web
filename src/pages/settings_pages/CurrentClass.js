@@ -13,7 +13,7 @@ import strings from "../../i18n/definitions";
 import { PageTitle } from "../../components/PageTitle";
 
 export default function CurrentClass({ api }) {
-  // const history = useHistory();
+  const history = useHistory();
 
   const user = useContext(UserContext);
 
@@ -42,10 +42,7 @@ export default function CurrentClass({ api }) {
     api.joinCohort(
       inviteCode,
       (status) => {
-        status === "OK"
-          ? // ? history.push("/articles/classroom")
-            console.log("Successfully joined to classroom")
-          : setShowJoinCohortError(true);
+        status === "OK" ? history.goBack() : setShowJoinCohortError(true);
       },
       (error) => {
         console.log(error);
