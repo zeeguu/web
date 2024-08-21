@@ -62,11 +62,15 @@ export default function FindArticles({ content, searchQuery }) {
   };
   function handleScroll() {
     let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
+    let articlesHaveBeenFetched =
+      currentPageRef.current !== undefined &&
+      articleListRef.current !== undefined;
 
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
       !isWaitingForNewArticlesRef.current &&
-      !noMoreArticlesToShowRef.current
+      !noMoreArticlesToShowRef.current &&
+      articlesHaveBeenFetched
     ) {
       setIsWaitingForNewArticles(true);
       document.title = "Getting more articles...";

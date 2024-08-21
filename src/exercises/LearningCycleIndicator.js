@@ -66,7 +66,9 @@ export default function LearningCycleIndicator({
       8: 4,
     };
 
-    let barCount = initialBarCountMapping[coolingInterval];
+    let barCount = coolingInterval
+      ? initialBarCountMapping[coolingInterval]
+      : 0;
 
     if (userIsWrong) {
       if (barCount > 0) {
@@ -96,7 +98,7 @@ export default function LearningCycleIndicator({
                 style={{ height: "2.5em", width: "2.5em" }}
               />
             </Tooltip>
-            {coolingInterval === null && (
+            {coolingInterval === null && !isHidden && (
               <NotificationIcon
                 style={{
                   marginRight: "-2.2em",
