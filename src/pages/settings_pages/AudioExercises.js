@@ -1,5 +1,4 @@
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import SessionStorage from "../../assorted/SessionStorage";
@@ -10,6 +9,8 @@ import ButtonContainer from "../info_page_shared/ButtonContainer";
 import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 import InfoPage from "../info_page_shared/InfoPage";
+
+import BackArrow from "../settings_pages_shared/BackArrow";
 
 import strings from "../../i18n/definitions";
 import { PageTitle } from "../../components/PageTitle";
@@ -66,9 +67,7 @@ export default function AudioExercises({ api }) {
 
   return (
     <InfoPage pageLocation={"settings"}>
-      <NavLink to="/account_settings/options">
-        <ArrowBackRoundedIcon />
-      </NavLink>
+      <BackArrow />
       <PageTitle>{strings.audioExercises}</PageTitle>
       <Form>
         <FormSection>
