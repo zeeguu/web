@@ -39,17 +39,14 @@ export default function Settings() {
             {strings.myCurrentClass}
           </SettingsItem>
         )}
+        <SettingsItem path={"/account_settings/interests"}>
+          {strings.interests}
+        </SettingsItem>
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Exercise Preferences"}>
         <SettingsItem path={"/account_settings/audio_exercises"}>
           {strings.audioExercises}
-        </SettingsItem>
-      </ListOfSettingsItems>
-
-      <ListOfSettingsItems header={"Reading Preferences"}>
-        <SettingsItem path={"/account_settings/interests"}>
-          {strings.interests}
         </SettingsItem>
       </ListOfSettingsItems>
 
