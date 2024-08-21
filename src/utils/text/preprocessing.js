@@ -26,15 +26,15 @@ function isTextInSentence(text, sentence) {
   return tokens.includes(removePunctuation(text));
 }
 
-function singleWordMatch(input, expression) {
-  let isOneWordCorrect = false;
+function wordIncluded(input, expression) {
+  let isWordIncluded = false;
   let wordsInAnswer = expression.split(" ");
   let wordsInInput = input.split(" ");
   if (wordsInInput.length === 1)
     wordsInAnswer.forEach((word) => {
-      if (input === word) isOneWordCorrect = true;
+      if (input === word) isWordIncluded = true;
     });
-  return isOneWordCorrect;
+  return isWordIncluded;
 }
 
 export {
@@ -42,5 +42,5 @@ export {
   removePunctuation,
   isTextInSentence,
   isExpression,
-  singleWordMatch,
+  wordIncluded,
 };
