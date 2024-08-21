@@ -5,7 +5,6 @@ import Settings from "../Settings";
 import ProfileDetails from "./ProfileDetails";
 import Languages from "./Languages";
 import Interests from "./Interests";
-import NonInterests from "./NonInterests";
 import AudioExercises from "./AudioExercises";
 import CurrentClass from "./CurrentClass";
 import DeleteAccount from "./DeleteAccount";
@@ -53,13 +52,6 @@ export default function SettingsRouter({ api, setUser }) {
         api={api}
         setUser={setUser}
         component={Interests}
-      />
-
-      <PrivateRoute
-        path="/account_settings/non_interests"
-        api={api}
-        setUser={setUser}
-        component={NonInterests}
       />
 
       <PrivateRoute

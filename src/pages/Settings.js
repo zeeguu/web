@@ -51,9 +51,6 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/interests"}>
           {strings.interests}
         </SettingsItem>
-        <SettingsItem path={"/account_settings/non_interests"}>
-          {strings.nonInterests}
-        </SettingsItem>
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Account Management"}>
