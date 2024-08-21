@@ -11,6 +11,7 @@ import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
 import InfoPage from "../info_page_shared/InfoPage";
+import BackArrow from "../settings_pages_shared/BackArrow";
 
 import { PageTitle } from "../../components/PageTitle";
 
@@ -65,9 +66,7 @@ export default function ProfileDetails({ api, setUser }) {
 
   return (
     <InfoPage pageLocation={"settings"}>
-      <NavLink to="/account_settings/options">
-        <ArrowBackRoundedIcon />
-      </NavLink>{" "}
+      <BackArrow />
       <PageTitle>{strings.profileDetails}</PageTitle>
       <Form>
         {/* <h5>{errorMessage}</h5> */}
