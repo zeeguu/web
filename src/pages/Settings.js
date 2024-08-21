@@ -8,6 +8,8 @@ import { PageTitle } from "../components/PageTitle";
 import SettingsItem from "./settings_pages_shared/SettingsItem";
 import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
 
+import * as s from "./Settings.sc";
+
 export default function Settings() {
   const user = useContext(UserContext);
 
@@ -21,7 +23,7 @@ export default function Settings() {
   }, []);
 
   return (
-    <>
+    <s.StyledWrapper>
       <PageTitle>{strings.settings}</PageTitle>
 
       <ListOfSettingsItems header={"My Account"}>
@@ -59,6 +61,6 @@ export default function Settings() {
           Delete Account
         </SettingsItem>
       </ListOfSettingsItems>
-    </>
+    </s.StyledWrapper>
   );
 }
