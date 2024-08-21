@@ -57,7 +57,7 @@ export default function CurrentClass({ api }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>
-      <PageTitle>{"My Current Class"}</PageTitle>
+      <PageTitle>{strings.myCurrentClass}</PageTitle>
 
       <p className="">
         <b>

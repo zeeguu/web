@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import DeleteAccountButton from "../DeleteAccountButton";
 
 import { PageTitle } from "../../components/PageTitle";
+import strings from "../../i18n/definitions";
 
 export default function DeleteAccount() {
   return (
@@ -10,7 +11,7 @@ export default function DeleteAccount() {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>
-      <PageTitle>{"Delete Account"}</PageTitle>
+      <PageTitle>{strings.deleteAccount}</PageTitle>
       <DeleteAccountButton />
     </div>
   );

@@ -5,6 +5,7 @@ import TagContainer from "../info_page_shared/TagContainer";
 import useSelectInterest from "../../hooks/useSelectInterest";
 
 import { PageTitle } from "../../components/PageTitle";
+import strings from "../../i18n/definitions";
 
 export default function Interests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
@@ -14,7 +15,7 @@ export default function Interests({ api }) {
       <NavLink to="/account_settings/options">
         <ArrowBackRoundedIcon />
       </NavLink>{" "}
-      <PageTitle>{"Interests"}</PageTitle>
+      <PageTitle>{strings.interests}</PageTitle>
       <TagContainer>
         {allTopics.map((topic) => (
           <Tag

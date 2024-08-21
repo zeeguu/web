@@ -501,6 +501,15 @@ let strings = new LocalizedStrings(
       payMoreAttentionTo: "Pay more attention to these words:",
 
       //Settings
+      //Settings main page nav options
+      profileDetails: "Profile Details",
+      languages: "Languages",
+      myCurrentClass: "My Current Class",
+      audioExercises: "Audio Exercises",
+      interests: "Interests",
+      nonInterests: "Non Interests",
+      deleteAccount: "Delete Account",
+
       nativeLanguage: "Native Language",
       yourCurrentClassIs: "Your current class is: ",
       changeClass: "Change Class",
