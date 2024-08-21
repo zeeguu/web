@@ -115,7 +115,8 @@ export default function BottomInput({
       return;
     }
 
-    setIsOneWordCorrect(isWordIncluded(normalizedInput, normalizedAnswer));
+    let oneWordCorrect = isWordIncluded(normalizedInput, normalizedAnswer);
+    setIsOneWordCorrect(oneWordCorrect);
     setDistanceToCorrect(levDistance);
     setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
     setIsSameLengthAsSolution(
@@ -132,7 +133,7 @@ export default function BottomInput({
       // we give them a Hint, mainly for audio exercises.
       updatedMessageToAPI = messageToAPI + "H";
       setDistanceToCorrect();
-    } else if (isOneWordCorrect) {
+    } else if (oneWordCorrect) {
       updatedMessageToAPI = messageToAPI + "H";
     } else if (levDistance === 1) {
       // The user almost got it correct
