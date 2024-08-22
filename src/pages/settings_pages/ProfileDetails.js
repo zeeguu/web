@@ -10,6 +10,7 @@ import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
 import InfoPage from "../info_page_shared/InfoPage";
+import Main from "../info_page_shared/Main";
 import BackArrow from "../settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
@@ -68,36 +69,40 @@ export default function ProfileDetails({ api, setUser }) {
     <InfoPage pageLocation={"settings"}>
       <BackArrow />
       <PageTitle>{strings.profileDetails}</PageTitle>
-      <Form>
-        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
-        <FormSection>
-          <InputField
-            type={"text"}
-            label={strings.name}
-            id={"name"}
-            name={"name"}
-            placeholder={strings.name}
-            value={userDetails.name}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, name: e.target.value })
-            }
-          />
-          <InputField
-            type={"email"}
-            label={strings.email}
-            id={"email"}
-            name={"email"}
-            placeholder={strings.email}
-            value={userDetails.email}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, email: e.target.value })
-            }
-          />
-        </FormSection>
-        <ButtonContainer>
-          <Button onClick={handleSave}>{strings.save}</Button>
-        </ButtonContainer>
-      </Form>
+      <Main>
+        <Form>
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
+          <FormSection>
+            <InputField
+              type={"text"}
+              label={strings.name}
+              id={"name"}
+              name={"name"}
+              placeholder={strings.name}
+              value={userDetails.name}
+              onChange={(e) =>
+                setUserDetails({ ...userDetails, name: e.target.value })
+              }
+            />
+            <InputField
+              type={"email"}
+              label={strings.email}
+              id={"email"}
+              name={"email"}
+              placeholder={strings.email}
+              value={userDetails.email}
+              onChange={(e) =>
+                setUserDetails({ ...userDetails, email: e.target.value })
+              }
+            />
+          </FormSection>
+          <ButtonContainer>
+            <Button onClick={handleSave}>{strings.save}</Button>
+          </ButtonContainer>
+        </Form>
+      </Main>
     </InfoPage>
   );
 }

@@ -7,6 +7,7 @@ import InputField from "../info_page_shared/InputField";
 import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 import InfoPage from "../info_page_shared/InfoPage";
+import Main from "../info_page_shared/Main";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
 import BackArrow from "../settings_pages_shared/BackArrow";
@@ -63,33 +64,37 @@ export default function CurrentClass({ api }) {
             : strings.youHaveNotJoinedAClass}
         </b>
       </p>
-      <Form>
-        <FormSection>
-          <InputField
-            type={"text"}
-            label={studentIsInCohort ? strings.changeClass : strings.joinClass}
-            id={"cohort"}
-            name={"cohort"}
-            placeholder={
-              studentIsInCohort
-                ? strings.insertNewInviteCode
-                : strings.insertInviteCode
-            }
-            value={inviteCode}
-            onChange={(event) => handleInviteCodeChange(event)}
-          />
-          {showJoinCohortError && (
-            <FullWidthErrorMsg>
-              {strings.checkIfInviteCodeIsValid}
-            </FullWidthErrorMsg>
-          )}
-        </FormSection>
-        <ButtonContainer>
-          <Button onClick={saveStudentToClass}>
-            {studentIsInCohort ? strings.changeClass : strings.joinClass}
-          </Button>
-        </ButtonContainer>
-      </Form>
+      <Main>
+        <Form>
+          <FormSection>
+            <InputField
+              type={"text"}
+              label={
+                studentIsInCohort ? strings.changeClass : strings.joinClass
+              }
+              id={"cohort"}
+              name={"cohort"}
+              placeholder={
+                studentIsInCohort
+                  ? strings.insertNewInviteCode
+                  : strings.insertInviteCode
+              }
+              value={inviteCode}
+              onChange={(event) => handleInviteCodeChange(event)}
+            />
+            {showJoinCohortError && (
+              <FullWidthErrorMsg>
+                {strings.checkIfInviteCodeIsValid}
+              </FullWidthErrorMsg>
+            )}
+          </FormSection>
+          <ButtonContainer>
+            <Button onClick={saveStudentToClass}>
+              {studentIsInCohort ? strings.changeClass : strings.joinClass}
+            </Button>
+          </ButtonContainer>
+        </Form>
+      </Main>
     </InfoPage>
   );
 }
