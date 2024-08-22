@@ -151,6 +151,10 @@ export default function NextNavigation({
   }, [bookmarkLearned]);
   const isExerciseCorrect =
     (isRightAnswer && !isMatchExercise) || isCorrectMatch;
+
+  const showCoffetti =
+    isCorrect &&
+    (isMatchBookmarkProgression || bookmarkProgression || bookmarkLearned);
   return (
     <>
       {learningCycleFeature && (
@@ -161,13 +165,16 @@ export default function NextNavigation({
           />
         </>
       )}
+      {showCoffetti && (
+        <Confetti
+          width={window.innerWidth}
+          height={window.innerHeight}
+          recycle={false}
+          style={{ position: "fixed" }}
+        />
+      )}
       {isCorrect && isMatchExercise && isMatchBookmarkProgression && (
         <>
-          <Confetti
-            width={window.innerWidth}
-            height={window.innerHeight}
-            recycle={false}
-          />
           <div
             className="next-nav-learning-cycle"
             style={{ textAlign: "left" }}
@@ -190,11 +197,6 @@ export default function NextNavigation({
         <>
           {isRightAnswer && bookmarkProgression && (
             <>
-              <Confetti
-                width={window.innerWidth}
-                height={window.innerHeight}
-                recycle={false}
-              />
               <div className="next-nav-learning-cycle">
                 <img
                   src={getStaticPath("icons", "zeeguu-icon-correct.png")}
@@ -208,11 +210,6 @@ export default function NextNavigation({
           )}
           {isRightAnswer && bookmarkLearned && (
             <>
-              <Confetti
-                width={window.innerWidth}
-                height={window.innerHeight}
-                recycle={false}
-              />
               <div className="next-nav-learning-cycle">
                 <img
                   src={getStaticPath("icons", "zeeguu-icon-correct.png")}
