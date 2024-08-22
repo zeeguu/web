@@ -54,7 +54,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
   teacherArticleID
     ? (articleID = teacherArticleID)
     : (articleID = query.get("id"));
-  let pixelTo = query.get("pixelTo");
   let last_reading_percentage = query.get("percentage");
   last_reading_percentage =
     last_reading_percentage === "undefined"
@@ -158,10 +157,10 @@ export default function ArticleReader({ api, teacherArticleID }) {
               scrollElement.scrollHeight -
               scrollElement.clientHeight -
               bottomRow.clientHeight;
-            let destinationPixels =
+            let destinationPixel =
               last_reading_percentage * currentScrollHeight;
             scrollElement.scrollTo({
-              top: (0, destinationPixels),
+              top: (0, destinationPixel),
               behavior: "smooth",
             });
           }
