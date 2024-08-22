@@ -3,6 +3,7 @@ import TagContainer from "../info_page_shared/TagContainer";
 import useSelectInterest from "../../hooks/useSelectInterest";
 import InfoPage from "../info_page_shared/InfoPage";
 import Main from "../info_page_shared/Main";
+import Header from "../info_page_shared/Header";
 
 import BackArrow from "../settings_pages_shared/BackArrow";
 
@@ -15,7 +16,9 @@ export default function Interests({ api }) {
   return (
     <InfoPage pageLocation={"settings"}>
       <BackArrow />
-      <PageTitle>{strings.interests}</PageTitle>
+      <Header withoutLogo>
+        <PageTitle>{strings.interests}</PageTitle>
+      </Header>
       <Main>
         <TagContainer>
           {allTopics.map((topic) => (

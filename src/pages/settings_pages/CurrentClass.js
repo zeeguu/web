@@ -7,6 +7,7 @@ import InputField from "../info_page_shared/InputField";
 import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 import InfoPage from "../info_page_shared/InfoPage";
+import Header from "../info_page_shared/Header";
 import Main from "../info_page_shared/Main";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
@@ -55,16 +56,17 @@ export default function CurrentClass({ api }) {
   return (
     <InfoPage pageLocation={"settings"}>
       <BackArrow />
-      <PageTitle>{strings.myCurrentClass}</PageTitle>
-
-      <p className="">
-        <b>
-          {studentIsInCohort
-            ? strings.yourCurrentClassIs + currentCohort
-            : strings.youHaveNotJoinedAClass}
-        </b>
-      </p>
+      <Header withoutLogo>
+        <PageTitle>{strings.myCurrentClass}</PageTitle>
+      </Header>
       <Main>
+        <p>
+          <b>
+            {studentIsInCohort
+              ? strings.yourCurrentClassIs + currentCohort
+              : strings.youHaveNotJoinedAClass}
+          </b>
+        </p>
         <Form>
           <FormSection>
             <InputField
