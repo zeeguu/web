@@ -12,6 +12,7 @@ import ButtonContainer from "../info_page_shared/ButtonContainer";
 import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 import InfoPage from "../info_page_shared/InfoPage";
+import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
 import BackArrow from "../settings_pages_shared/BackArrow";
 
@@ -103,7 +104,9 @@ export default function Languages({ api, setUser }) {
       <PageTitle>{strings.languages}</PageTitle>
       <Form>
         <FormSection>
-          {/* <h5>{errorMessage}</h5> */}
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
           <label>{strings.learnedLanguage}</label>
           <UiLanguageSelector
             languages={languages.learnable_languages}

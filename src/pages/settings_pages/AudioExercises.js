@@ -19,7 +19,6 @@ export default function AudioExercises({ api }) {
   const user = useContext(UserContext);
   const history = useHistory();
 
-  const [errorMessage, setErrorMessage] = useState("");
   const [audioExercises, setAudioExercises] = useState(true);
   let preferenceNotSet =
     LocalStorage.getProductiveExercisesEnabled() === undefined;
@@ -71,7 +70,6 @@ export default function AudioExercises({ api }) {
       <PageTitle>{strings.audioExercises}</PageTitle>
       <Form>
         <FormSection>
-          {/* <h5>{errorMessage}</h5> */}
           <label>Exercise Type Preferences</label>
           <div style={{ display: "flex" }} className="form-group">
             <input

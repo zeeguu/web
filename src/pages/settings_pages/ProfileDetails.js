@@ -1,5 +1,4 @@
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
@@ -12,6 +11,7 @@ import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
 import InfoPage from "../info_page_shared/InfoPage";
 import BackArrow from "../settings_pages_shared/BackArrow";
+import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
 import { PageTitle } from "../../components/PageTitle";
 
@@ -69,7 +69,7 @@ export default function ProfileDetails({ api, setUser }) {
       <BackArrow />
       <PageTitle>{strings.profileDetails}</PageTitle>
       <Form>
-        {/* <h5>{errorMessage}</h5> */}
+        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
         <FormSection>
           <InputField
             type={"text"}
