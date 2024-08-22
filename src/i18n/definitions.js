@@ -338,7 +338,7 @@ let strings = new LocalizedStrings(
       //CelebrationModal
       celebrationTitle: "Congratulations, you've learned a new word!",
       celebrationMsg:
-        "You've successfully completed all stages for this word, so it won't be tested in the exercises anymore. Keep up the good work!",
+        "You now know this word both receptively and productively, so it won't be tested in the exercises anymore. Keep up the good work!",
 
       //WordEditAccordion
       deleteWord: "Delete Word",
