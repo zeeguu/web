@@ -119,9 +119,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     onBlur(api, articleID, UMR_SOURCE);
   };
 
-  const handleScroll = () => {
-    let bottomRowElement = document.getElementById("bottomRow");
-
+  function addPositionToScrollEventTracker(bottomRowElement) {
     // We use this to avoid counting the feedback elements
     // as part of the article length when updating the
     // scroll bar.
@@ -130,7 +128,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     if (bottomRowElement) {
       bottomRowHeight = bottomRowElement.offsetHeight;
     }
-
     let ratio = getScrollRatio(bottomRowHeight);
     setScrollPosition(ratio);
     let percentage = Math.floor(ratio * 100);
@@ -142,6 +139,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
       scrollEvents.current.push([currentReadingTimer, percentage]);
       lastSampleTimer.current = currentReadingTimer;
     }
+  }
+
+  const handleScroll = () => {
+    let bottomRowElement = document.getElementById("bottomRow");
+    addPositionToScrollEventTracker(bottomRowElement);
   };
 
   useEffect(() => {
