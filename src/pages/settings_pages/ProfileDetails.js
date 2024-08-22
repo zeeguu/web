@@ -11,6 +11,7 @@ import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
 import InfoPage from "../info_page_shared/InfoPage";
 import Header from "../info_page_shared/Header";
+import Heading from "../info_page_shared/Heading";
 import Main from "../info_page_shared/Main";
 import BackArrow from "../settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
@@ -70,7 +71,8 @@ export default function ProfileDetails({ api, setUser }) {
     <InfoPage pageLocation={"settings"}>
       <BackArrow />
       <Header withoutLogo>
-        <PageTitle>{strings.profileDetails}</PageTitle>
+        <Heading>{strings.profileDetails}</Heading>
+        {/* <PageTitle></PageTitle> */}
       </Header>
       <Main>
         <Form>

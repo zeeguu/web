@@ -2,6 +2,7 @@ import DeleteAccountButton from "../DeleteAccountButton";
 import InfoPage from "../info_page_shared/InfoPage";
 import Main from "../info_page_shared/Main";
 import Header from "../info_page_shared/Header";
+import Heading from "../info_page_shared/Heading";
 
 import BackArrow from "../settings_pages_shared/BackArrow";
 
@@ -13,7 +14,8 @@ export default function DeleteAccount() {
     <InfoPage pageLocation={"settings"}>
       <BackArrow />
       <Header withoutLogo>
-        <PageTitle>{strings.deleteAccount}</PageTitle>
+        <Heading>{strings.deleteAccount}</Heading>
+        {/* <PageTitle>{strings.deleteAccount}</PageTitle> */}
       </Header>
       <Main>
         <DeleteAccountButton />
