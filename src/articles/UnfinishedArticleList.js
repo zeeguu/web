@@ -33,9 +33,9 @@ export default function UnfinishedArticlesList({}) {
       "Localstorage displayed extension: " +
         LocalStorage.displayedExtensionPopup(),
     );
-    api.getUserUnfinishedReadingSessions((articles) =>
-      setUnreadArticleList(articles),
-    );
+    api.getUserUnfinishedReadingSessions((articles) => {
+      setUnreadArticleList(articles);
+    });
   }, []);
   useEffect(() => {
     if (!isExtensionAvailable) {

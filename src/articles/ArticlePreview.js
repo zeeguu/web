@@ -44,8 +44,8 @@ export default function ArticlePreview({
 
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
-    if (article.pixel_to_scroll_to)
-      linkToRedirect += `&pixelTo=${article.pixel_to_scroll_to}`;
+    if (article.last_reading_percentage)
+      linkToRedirect += `&percentage=${parseFloat(article.last_reading_percentage).toFixed(2)}`;
     let open_in_zeeguu = (
       <Link to={linkToRedirect} onClick={handleArticleClick}>
         {article.title}
@@ -128,7 +128,7 @@ export default function ArticlePreview({
           </s.UnfinishedArticleContainer>
           <div style={{ fontWeight: "550" }}>
             ({article.time_until_last_read},{" "}
-            {article.last_reading_percentage * 100}% read)
+            {Math.round(article.last_reading_percentage * 100)}% read)
           </div>
         </div>
       )}

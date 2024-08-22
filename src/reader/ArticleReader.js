@@ -55,7 +55,11 @@ export default function ArticleReader({ api, teacherArticleID }) {
     ? (articleID = teacherArticleID)
     : (articleID = query.get("id"));
   let pixelTo = query.get("pixelTo");
-  pixelTo = pixelTo === "undefined" ? null : Number(pixelTo);
+  let last_reading_percentage = query.get("percentage");
+  last_reading_percentage =
+    last_reading_percentage === "undefined"
+      ? null
+      : Number(last_reading_percentage);
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
@@ -147,9 +151,15 @@ export default function ArticleReader({ api, teacherArticleID }) {
           let scrollElement = document.getElementById("scrollHolder");
           let textElement = document.getElementById("text");
           let bottomRow = document.getElementById("bottomRow");
-          if (pixelTo) {
+          if (last_reading_percentage) {
+            let currentScrollHeight =
+              scrollElement.scrollHeight -
+              scrollElement.clientHeight -
+              bottomRow.clientHeight;
+            let destinationPixels =
+              last_reading_percentage * currentScrollHeight;
             scrollElement.scrollTo({
-              top: (0, pixelTo),
+              top: (0, destinationPixels),
               behavior: "smooth",
             });
           }
