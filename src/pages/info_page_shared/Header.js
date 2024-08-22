@@ -1,10 +1,10 @@
 import * as s from "./Header.sc";
 import Logo from "./Logo";
 
-export default function Header({ children }) {
+export default function Header({ children, withoutLogo }) {
   return (
     <s.Header>
-      <Logo />
+      {!withoutLogo && <Logo />}
       {children}
     </s.Header>
   );

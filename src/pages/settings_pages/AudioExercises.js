@@ -10,6 +10,7 @@ import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 import InfoPage from "../info_page_shared/InfoPage";
 import Main from "../info_page_shared/Main";
+import Header from "../info_page_shared/Header";
 
 import BackArrow from "../settings_pages_shared/BackArrow";
 
@@ -68,7 +69,9 @@ export default function AudioExercises({ api }) {
   return (
     <InfoPage pageLocation={"settings"}>
       <BackArrow />
-      <PageTitle>{strings.audioExercises}</PageTitle>
+      <Header withoutLogo>
+        <PageTitle>{strings.audioExercises}</PageTitle>
+      </Header>
       <Main>
         <Form>
           <FormSection>
