@@ -8,6 +8,7 @@ import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 import InfoPage from "../info_page_shared/InfoPage";
 import Header from "../info_page_shared/Header";
+import Heading from "../info_page_shared/Heading";
 import Main from "../info_page_shared/Main";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
@@ -57,7 +58,8 @@ export default function CurrentClass({ api }) {
     <InfoPage pageLocation={"settings"}>
       <BackArrow />
       <Header withoutLogo>
-        <PageTitle>{strings.myCurrentClass}</PageTitle>
+        <Heading>{strings.myCurrentClass}</Heading>
+        {/* <PageTitle>{strings.myCurrentClass}</PageTitle> */}
       </Header>
       <Main>
         <p>

@@ -13,6 +13,7 @@ import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 import InfoPage from "../info_page_shared/InfoPage";
 import Header from "../info_page_shared/Header";
+import Heading from "../info_page_shared/Heading";
 import Main from "../info_page_shared/Main";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
@@ -104,7 +105,8 @@ export default function Languages({ api, setUser }) {
     <InfoPage pageLocation={"settings"}>
       <BackArrow />
       <Header withoutLogo>
-        <PageTitle>{strings.languages}</PageTitle>
+        <Heading>{strings.languages}</Heading>
+        {/* <PageTitle>{strings.languages}</PageTitle> */}
       </Header>
       <Main>
         <Form>
