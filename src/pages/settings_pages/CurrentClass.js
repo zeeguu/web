@@ -1,13 +1,13 @@
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import { Error } from "../../teacher/sharedComponents/Error";
 import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import InputField from "../info_page_shared/InputField";
 import Form from "../info_page_shared/Form";
 import FormSection from "../info_page_shared/FormSection";
 import InfoPage from "../info_page_shared/InfoPage";
+import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
 import BackArrow from "../settings_pages_shared/BackArrow";
 
@@ -79,7 +79,9 @@ export default function CurrentClass({ api }) {
             onChange={(event) => handleInviteCodeChange(event)}
           />
           {showJoinCohortError && (
-            <Error message={strings.checkIfInviteCodeIsValid} />
+            <FullWidthErrorMsg>
+              {strings.checkIfInviteCodeIsValid}
+            </FullWidthErrorMsg>
           )}
         </FormSection>
         <ButtonContainer>
