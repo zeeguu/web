@@ -9,7 +9,7 @@ import strings from "../i18n/definitions";
 import GoToButton from "../components/modal_shared/GoToButton";
 import ButtonContainer from "../components/modal_shared/ButtonContainer";
 
-export default function CelebrationModal({open, onClose}) {
+export default function CelebrationModal({ open, onClose }) {
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
@@ -22,33 +22,31 @@ export default function CelebrationModal({open, onClose}) {
 
   return (
     <>
-    {showConfetti && (
-      <div>
-        <Confetti 
-          width={window.innerWidth}
-          height={window.innerHeight}
-          recycle={true}/>
-      </div>
-    )}
-    <Modal open={open} onClose={onClose}>
-      <Header>
-        <Heading>
-          {strings.celebrationTitle}
-        </Heading>
-      </Header>
-      <Main>
-        <p>{strings.celebrationMsg}</p>
-      </Main>
+      {showConfetti && (
+        <div>
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={true}
+            style={{ position: "fixed" }}
+          />
+        </div>
+      )}
+      <Modal open={open} onClose={onClose}>
+        <Header>
+          <Heading>{strings.celebrationTitle}</Heading>
+        </Header>
+        <Main>
+          <p>{strings.celebrationMsg}</p>
+        </Main>
         <Footer>
-        <ButtonContainer>
-            <GoToButton
-                onClick={onClose}
-            >
-                Continue with the exercises
+          <ButtonContainer>
+            <GoToButton onClick={onClose}>
+              Continue with the exercises
             </GoToButton>
-        </ButtonContainer>
-      </Footer>
-    </Modal>
+          </ButtonContainer>
+        </Footer>
+      </Modal>
     </>
   );
 }
