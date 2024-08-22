@@ -72,7 +72,9 @@ export default function UnfinishedArticlesList({}) {
             setDoNotShowRedirectionModal_UserPreference={
               setDoNotShowRedirectionModal_UserPreference
             }
-            onArticleClick={() => {}}
+            onArticleClick={() => {
+              api.logUserActivity(api.CLICKED_RESUME_ARTICLE, each.id, "", "");
+            }}
             isUnfinishedArticle={true}
           />
         ))}
