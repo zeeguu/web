@@ -21,11 +21,6 @@ const RoundButton = styled.div`
 
 const OrangeRoundButton = styled(RoundButton)`
   background-color: ${zeeguuOrange};
-  .deselected {
-    background-color: white;
-    color: ${zeeguuOrange};
-    -webkit-text-fill-color: ${zeeguuOrange};
-  }
   .
 `;
 
