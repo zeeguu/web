@@ -148,5 +148,5 @@ Zeeguu_API.prototype.submitArticleDifficultyFeedback = function (
 };
 
 Zeeguu_API.prototype.getUserUnfinishedReadingSessions = function (callback) {
-  this._getJSON(`/get_user_unfinished_reading_sessions`, callback);
+  this._getJSON(`/get_unfinished_user_reading_sessions`, callback);
 };
