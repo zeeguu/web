@@ -4,27 +4,37 @@
 //     { value: 'fr', label: 'French' },
 //     { value: 'da', label: 'Danish' }
 //   ]
-
+import * as s from "../pages/info_page_shared/SelectOptions.sc";
 export default function Select({
   elements,
   label,
+  optionLabel,
   val,
   updateFunction,
   current,
+  name,
+  id,
 }) {
   return (
-    <select onChange={(e) => updateFunction(e.target.value)}>
-      <option style={{ display: "none" }} />
+    <s.SelectWrapper>
+      <s.Label htmlFor={id} name={name}>
+        {label}
+      </s.Label>
+      <s.SelectStyledContainer>
+        <s.Select onChange={(e) => updateFunction(e.target.value)}>
+          <option style={{ display: "none" }} />
 
-      {elements.map((each) => (
-        <option
-          key={val(each)}
-          value={val(each)}
-          selected={current === val(each)}
-        >
-          {label(each)}
-        </option>
-      ))}
-    </select>
+          {elements.map((each) => (
+            <option
+              key={val(each)}
+              value={val(each)}
+              selected={current === val(each)}
+            >
+              {optionLabel(each)}
+            </option>
+          ))}
+        </s.Select>
+      </s.SelectStyledContainer>
+    </s.SelectWrapper>
   );
 }
