@@ -10,6 +10,9 @@ import * as sweetM from "./TagsOfInterests.sc";
 import Modal from "../components/modal_shared/Modal";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import ArticleStatInfo from "../components/ArticleStatInfo";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import { toast } from "react-toastify";
+import { darkBlue } from "../components/colors";
 
 export default function ArticlePreview({
   article,
@@ -27,6 +30,7 @@ export default function ArticlePreview({
   const [isArticleSaved, setIsArticleSaved] = useState(
     article.has_personal_copy,
   );
+  const [showInferredTopic, setShowInferredTopic] = useState(true);
 
   const handleArticleClick = () => {
     if (onArticleClick) {
@@ -117,7 +121,8 @@ export default function ArticlePreview({
           <Modal
             children={
               <>
-                <h1>NEW! Article topics are shown differently!</h1>
+                <h1>Article topics are shown differently! </h1>
+
                 <div style={{ textAlign: "left", lineHeight: "2em" }}>
                   <s.KeywordTopics>
                     <span className="inferred" style={{ marginRight: "0.5em" }}>
@@ -164,7 +169,7 @@ export default function ArticlePreview({
 
       <s.BottomContainer>
         <div>
-          {Feature.new_topics() && (
+          {Feature.new_topics() && showInferredTopic && (
             <s.KeywordTopics>
               {new_topics.map((tuple) => (
                 <span
@@ -176,6 +181,19 @@ export default function ArticlePreview({
                   className={tuple[1] === 3 ? "inferred" : "gold"}
                 >
                   {tuple[0]}
+                  {tuple[1] === 3 && (
+                    <HighlightOffRoundedIcon
+                      className="cancelButton"
+                      sx={{ color: darkBlue }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log("Clicked cross!");
+                        setShowInferredTopic(false);
+                        toast("Thank you for letting us know!");
+                        api.removeMLSuggestion(article.id, tuple[0]);
+                      }}
+                    />
+                  )}
                 </span>
               ))}
             </s.KeywordTopics>

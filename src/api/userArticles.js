@@ -3,6 +3,7 @@ import qs from "qs";
 
 // articles
 // articles
+
 Zeeguu_API.prototype.getUserArticles = function (callback) {
   this._getJSON("user_articles/recommended", (articles) => {
     // sometimes we get duplicates from the server
@@ -33,11 +34,11 @@ Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback) {
   );
 };
 
-Zeeguu_API.prototype.getRecommendedArticles = function (callback){
+Zeeguu_API.prototype.getRecommendedArticles = function (callback) {
   this._getJSON("user_articles/foryou", (articles) => {
-  const ids = articles.map((o) => o.id);
+    const ids = articles.map((o) => o.id);
     const deduplicated = articles.filter(
-        ({ id }, index) => !ids.includes(id, index + 1)
+      ({ id }, index) => !ids.includes(id, index + 1),
     );
     callback(deduplicated);
   });
@@ -116,6 +117,15 @@ Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback) {
     authors: articleInfo.authors,
   };
   this._post(`/find_or_create_article`, qs.stringify(article), callback);
+};
+
+Zeeguu_API.prototype.removeMLSuggestion = function (
+  articleId,
+  topic,
+  callback,
+) {
+  let param = qs.stringify({ article_id: articleId, new_topic: topic });
+  this._post(`/remove_ml_suggestion`, param, callback);
 };
 
 Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {

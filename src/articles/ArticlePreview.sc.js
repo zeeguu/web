@@ -103,29 +103,46 @@ let Topics = styled.span`
     height: 1.2em;
     margin-left: 0.2em;
     border: solid ${zeeguuOrange};
-    border-radius: 1.0416666666666667em;
-    padding: 0.20833333333333334em 1.3541666666666667em;
-    font-size: 0.8333333333333334em;
+    border-radius: 2em;
+    font-size: 0.85em;
+    font-weight: 500;
+    padding: 0.5em 1.35em;
+    margin-bottom: 0.5em;
+    text-align: center;
+    vertical-align: middle;
   }
 `;
-let KeywordTopics = styled.span`
+let KeywordTopics = styled.div`
   display: inline-block;
   cursor: help;
 
   margin-top: 1em;
-    .inferred {
-      border: dashed ${darkBlue};
-    }
-    .gold {
-      border: solid ${darkBlue};
-    }
+  .inferred {
+    border: dashed ${darkBlue};
+  }
+  .gold {
+    border: solid ${darkBlue};
+  }
+
   span {
     height: 1.2em;
     margin-left: 0.2em;
-    border-radius: 1.0416666666666667em;
-    padding: 0.20833333333333334em 1.3541666666666667em;
-    font-size: 0.8333333333333334em;
-    .
+    margin-bottom: 0.5em;
+    border-radius: 2em;
+    padding: 0.4em 1.35em;
+    font-size: 0.85em;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .cancelButton {
+    cursor: pointer;
+    padding-left: 0.3em;
+    margin-bottom: -0.3em;
+    margin-right: -0.3em;
+  }
+  @media (max-width: 900px) {
+    margin-bottom: 1.2em;
   }
 `;
 
