@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { lightGrey, zeeguuOrange, darkGrey } from "../../components/colors";
+import { lightGrey, zeeguuOrange, darkGrey } from "./colors";
 
 const SelectWrapper = styled.div`
   box-sizing: border-box;
