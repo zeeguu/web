@@ -20,7 +20,6 @@ import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 import BackArrow from "../settings_pages_shared/BackArrow";
 
 import Select from "../../components/Select";
-import { PageTitle } from "../../components/PageTitle";
 
 export default function Languages({ api, setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -106,7 +105,6 @@ export default function Languages({ api, setUser }) {
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.languages}</Heading>
-        {/* <PageTitle>{strings.languages}</PageTitle> */}
       </Header>
       <Main>
         <Form>

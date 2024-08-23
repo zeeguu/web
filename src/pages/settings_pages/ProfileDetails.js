@@ -16,8 +16,6 @@ import Main from "../info_page_shared/Main";
 import BackArrow from "../settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
-import { PageTitle } from "../../components/PageTitle";
-
 import LoadingAnimation from "../../components/LoadingAnimation";
 
 export default function ProfileDetails({ api, setUser }) {
@@ -72,7 +70,6 @@ export default function ProfileDetails({ api, setUser }) {
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.profileDetails}</Heading>
-        {/* <PageTitle></PageTitle> */}
       </Header>
       <Main>
         <Form>

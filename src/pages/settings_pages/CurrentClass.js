@@ -15,7 +15,6 @@ import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 import BackArrow from "../settings_pages_shared/BackArrow";
 
 import strings from "../../i18n/definitions";
-import { PageTitle } from "../../components/PageTitle";
 
 export default function CurrentClass({ api }) {
   const history = useHistory();
@@ -59,7 +58,6 @@ export default function CurrentClass({ api }) {
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.myCurrentClass}</Heading>
-        {/* <PageTitle>{strings.myCurrentClass}</PageTitle> */}
       </Header>
       <Main>
         <p>

@@ -6,7 +6,6 @@ import Heading from "../info_page_shared/Heading";
 
 import BackArrow from "../settings_pages_shared/BackArrow";
 
-import { PageTitle } from "../../components/PageTitle";
 import strings from "../../i18n/definitions";
 
 export default function DeleteAccount() {
@@ -15,7 +14,6 @@ export default function DeleteAccount() {
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.deleteAccount}</Heading>
-        {/* <PageTitle>{strings.deleteAccount}</PageTitle> */}
       </Header>
       <Main>
         <DeleteAccountButton />

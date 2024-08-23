@@ -16,7 +16,6 @@ import Heading from "../info_page_shared/Heading";
 import BackArrow from "../settings_pages_shared/BackArrow";
 
 import strings from "../../i18n/definitions";
-import { PageTitle } from "../../components/PageTitle";
 
 export default function AudioExercises({ api }) {
   const user = useContext(UserContext);
@@ -72,7 +71,6 @@ export default function AudioExercises({ api }) {
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.audioExercises}</Heading>
-        {/* <PageTitle>{strings.audioExercises}</PageTitle> */}
       </Header>
       <Main>
         <Form>
