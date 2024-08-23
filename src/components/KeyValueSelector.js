@@ -4,9 +4,12 @@
 //     { value: 'fr', label: 'French' },
 //     { value: 'da', label: 'Danish' }
 //   ]
-import * as s from "./SelectOptions.sc";
 
-export default function Select({
+//onChange in KeyValueSelector takes and evokes custom updateFunction
+
+import * as s from "./SelectorStyling.sc";
+
+export default function KeyValueSelector({
   elements,
   label,
   optionLabel,

@@ -1,7 +1,7 @@
 import strings from "../i18n/definitions";
-import * as s from "./SelectOptions.sc";
+import * as s from "./SelectorStyling.sc";
 
-export default function UiLanguageSelector({
+export default function LanguageSelector({
   languages,
   selected,
   onChange,
