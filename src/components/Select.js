@@ -21,15 +21,14 @@ export default function Select({
         {label}
       </s.Label>
       <s.SelectStyledContainer>
-        <s.Select onChange={(e) => updateFunction(e.target.value)}>
+        <s.Select
+          value={current}
+          onChange={(e) => updateFunction(e.target.value)}
+        >
           <option style={{ display: "none" }} />
 
           {elements.map((each) => (
-            <option
-              key={val(each)}
-              value={val(each)}
-              selected={current === val(each)}
-            >
+            <option key={val(each)} value={val(each)}>
               {optionLabel(each)}
             </option>
           ))}
