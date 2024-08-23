@@ -33,7 +33,7 @@ export default function UnfinishedArticlesList({}) {
       "Localstorage displayed extension: " +
         LocalStorage.displayedExtensionPopup(),
     );
-    api.getUserUnfinishedReadingSessions((articles) => {
+    api.getUnfinishedUserReadingSessions((articles) => {
       setUnreadArticleList(articles);
     });
   }, []);

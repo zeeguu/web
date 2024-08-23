@@ -147,6 +147,6 @@ Zeeguu_API.prototype.submitArticleDifficultyFeedback = function (
   this._post(`/article_difficulty_feedback`, qs.stringify(feedback), callback);
 };
 
-Zeeguu_API.prototype.getUserUnfinishedReadingSessions = function (callback) {
+Zeeguu_API.prototype.getUnfinishedUserReadingSessions = function (callback) {
   this._getJSON(`/get_unfinished_user_reading_sessions`, callback);
 };
