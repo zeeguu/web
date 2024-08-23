@@ -8,6 +8,8 @@ import * as s from "./SideBar.sc";
 import { APIContext } from "../contexts/APIContext";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import NotificationIcon from "./NotificationIcon";
+import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { Tooltip } from "@mui/material";
 
 export default function SideBar(props) {
@@ -94,10 +96,11 @@ export default function SideBar(props) {
         <div className="SettingsLogoutHolder">
           <Tooltip title="Settings">
             <a href="/account_settings">
-              <img
+              <SettingsIcon
+                fontSize="large"
                 className="navigationIcon"
-                src="static/icons/options_v2.png"
-              ></img>
+                sx={{ color: "white" }}
+              />
             </a>
           </Tooltip>
           <Tooltip title="Logout">
@@ -107,10 +110,11 @@ export default function SideBar(props) {
                 user.logoutMethod();
               }}
             >
-              <img
+              <LogoutIcon
+                fontSize="large"
                 className="navigationIcon"
-                src="static/icons/logout_v2.png"
-              ></img>
+                sx={{ color: "white" }}
+              />
             </Link>
           </Tooltip>
         </div>
