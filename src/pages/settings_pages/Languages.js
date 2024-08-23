@@ -114,8 +114,8 @@ export default function Languages({ api, setUser }) {
             {errorMessage && (
               <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
             )}
-            <label>{strings.learnedLanguage}</label>
             <UiLanguageSelector
+              label={strings.learnedLanguage}
               languages={languages.learnable_languages}
               selected={language_for_id(
                 userDetails.learned_language,
@@ -128,7 +128,7 @@ export default function Languages({ api, setUser }) {
 
             <Select
               elements={CEFR_LEVELS}
-              label={(e) => e.label}
+              optionLabel={(e) => e.label}
               val={(e) => e.value}
               updateFunction={(e) => {
                 updateCEFRLevel(e);
@@ -138,8 +138,8 @@ export default function Languages({ api, setUser }) {
           </FormSection>
 
           <FormSection>
-            <label>{strings.nativeLanguage}</label>
             <UiLanguageSelector
+              label={strings.baseLanguage}
               languages={languages.native_languages}
               selected={language_for_id(
                 userDetails.native_language,
