@@ -4,15 +4,9 @@ import { isMobile } from "../utils/misc/browserDetection";
 import * as s from "./ArticlePreview.sc";
 import RedirectionNotificationModal from "../components/redirect_notification/RedirectionNotificationModal";
 import Feature from "../features/Feature";
-import { extractVideoIDFromURL } from "../utils/misc/youtube";
-import SmallSaveArticleButton from "./SmallSaveArticleButton";
-import ArticleSourceInfo from "../components/ArticleSourceInfo";
-import ArticleStatInfo from "../components/ArticleStatInfo";
 
-export default function ArticlePreview({
+export default function UnfinishedArticlePreview({
   article,
-  dontShowPublishingTime,
-  dontShowSourceIcon,
   hasExtension,
   api,
   doNotShowRedirectionModal_UserPreference,
@@ -29,9 +23,6 @@ export default function ArticlePreview({
       onArticleClick(article.id);
     }
   };
-
-  let topics = article.topics.split(" ").filter((each) => each !== "");
-  let cefr_level = article.metrics.cefr_level;
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -110,49 +101,16 @@ export default function ArticlePreview({
 
   return (
     <s.ArticlePreview>
-      <SmallSaveArticleButton
-        api={api}
-        article={article}
-        isArticleSaved={isArticleSaved}
-        setIsArticleSaved={setIsArticleSaved}
-      />
-
-      <>
+      <s.UnfinishedArticleContainer>
         <s.Title>{titleLink(article)}</s.Title>
-        <ArticleSourceInfo
-          articleInfo={article}
-          dontShowPublishingTime={dontShowPublishingTime}
-          dontShowSourceIcon={dontShowSourceIcon}
-        ></ArticleSourceInfo>
-        <s.ArticleContent>
-          {article.img_url && <img alt="" src={article.img_url} />}
-          <s.Summary>{article.summary}...</s.Summary>
-        </s.ArticleContent>
-        <s.BottomContainer>
-          <s.Topics>
-            {topics.map((topic) => (
-              <span key={topic}>{topic}</span>
-            ))}
-          </s.Topics>
-          <ArticleStatInfo
-            cefr_level={cefr_level}
-            articleInfo={article}
-          ></ArticleStatInfo>
-        </s.BottomContainer>
-        {article.video ? (
-          <img
-            alt=""
-            style={{ float: "left", marginRight: "1em" }}
-            src={
-              "https://img.youtube.com/vi/" +
-              extractVideoIDFromURL(article.url) +
-              "/default.jpg"
-            }
-          />
-        ) : (
-          ""
-        )}
-      </>
+        {article.img_url && <img alt="" src={article.img_url} />}
+      </s.UnfinishedArticleContainer>
+      <div>
+        <s.UnfinishedArticleStats>
+          ({article.time_until_last_read},{" "}
+          {Math.round(article.last_reading_percentage * 100)}% read)
+        </s.UnfinishedArticleStats>
+      </div>
     </s.ArticlePreview>
   );
 }

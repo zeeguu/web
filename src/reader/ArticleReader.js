@@ -173,9 +173,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
             }),
           );
         } catch {
-          console.log("Failed to send scroll history.");
+          console.log("Failed to get elements to scroll.");
         }
-      }, 500);
+      }, 250);
     }
   }, [interactiveText]);
 
@@ -334,17 +334,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
             setIsRendered={setReaderReady}
           />
         </h1>
-        <div
-          style={{
-            marginTop: "1em",
-            marginBottom: "2em",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
+        <s.AuthorLinksContainer>
           <ArticleAuthors articleInfo={articleInfo} />
-          <div style={{ display: "flex", flexDirection: "row" }}>
+          <s.TopReaderButtonsContainer>
             <ArticleSource url={articleInfo.url} />
             <ReportBroken
               api={api}
@@ -352,21 +344,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
               history={history}
               articleID={articleID}
             />
-          </div>
-        </div>
+          </s.TopReaderButtonsContainer>
+        </s.AuthorLinksContainer>
         <hr></hr>
         {articleInfo.img_url && (
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <img
-              alt=""
-              src={articleInfo.img_url}
-              style={{
-                width: "100%",
-                borderRadius: "1em",
-                marginBottom: "1em",
-              }}
-            />
-          </div>
+          <s.ArticleImgContainer>
+            <s.ArticleImg alt="article image" src={articleInfo.img_url} />
+          </s.ArticleImgContainer>
         )}
 
         {articleInfo.video ? (

@@ -95,6 +95,10 @@ const UnfinishedArticleContainer = styled.div`
   }
 `;
 
+const UnfinishedArticleStats = styled.span`
+  font-weight: 550;
+`;
+
 let Summary = styled.div`
   font-size: 0.83em;
   color: ${almostBlack};
@@ -135,6 +139,7 @@ export {
   Title,
   ArticlePreview,
   UnfinishedArticleContainer,
+  UnfinishedArticleStats,
   InvisibleTitleButton,
   ArticleContent,
   BottomContainer,

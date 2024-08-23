@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import ArticlePreview from "./ArticlePreview";
 
 import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
 import * as s from "./UnfinishedArticleList.sc";
+import UnfinishedArticlePreview from "./UnfinishedArticlePreview";
 
 export default function UnfinishedArticlesList({}) {
   let api = useContext(APIContext);
@@ -57,15 +57,15 @@ export default function UnfinishedArticlesList({}) {
         setDisplayedExtensionPopup={setDisplayedExtensionPopup}
       ></ExtensionMessage>
       <s.UnfinishedArticlesBox>
-        <h1 style={{ margin: "0.5em", marginBottom: "-0.7em" }}>
+        <s.UnfishedArticleBoxTitle>
           Continue where you left off
-        </h1>
+        </s.UnfishedArticleBoxTitle>
         {unreadArticleList.map((each, index) => (
-          <ArticlePreview
+          <UnfinishedArticlePreview
             key={each.id}
             article={each}
-            api={api}
             hasExtension={isExtensionAvailable}
+            api={api}
             doNotShowRedirectionModal_UserPreference={
               doNotShowRedirectionModal_UserPreference
             }
@@ -75,7 +75,6 @@ export default function UnfinishedArticlesList({}) {
             onArticleClick={() => {
               api.logUserActivity(api.CLICKED_RESUME_ARTICLE, each.id, "", "");
             }}
-            isUnfinishedArticle={true}
           />
         ))}
       </s.UnfinishedArticlesBox>
