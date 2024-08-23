@@ -131,7 +131,7 @@ export default function Languages({ api, setUser }) {
               updateFunction={(e) => {
                 updateCEFRLevel(e);
               }}
-              current={cefr}
+              current={userDetails.cefr_level}
             />
           </FormSection>
 
