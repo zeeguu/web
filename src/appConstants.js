@@ -16,6 +16,12 @@ const isExpectedDomain = /netlify.app|zeeguu.org|localhost/g;
 
 if (!isExpectedDomain.test(APP_DOMAIN)) APP_DOMAIN = "https://www.zeeguu.org";
 
+const TopicOriginType = Object.freeze({
+  URL_PARSED: 1,
+  HARDSET: 2,
+  INFERRED: 3,
+});
+
 try {
   if (typeof process.env !== "undefined") {
     if (process.env.REACT_APP_API_URL) {
@@ -29,4 +35,4 @@ try {
   console.log("Didn't set variables");
 }
 
-export { APP_DOMAIN, API_ENDPOINT };
+export { APP_DOMAIN, API_ENDPOINT, TopicOriginType };

@@ -13,6 +13,7 @@ import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import { toast } from "react-toastify";
 import { darkBlue } from "../components/colors";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
+import { TopicOriginType } from "../appConstants";
 
 export default function ArticlePreview({
   article,
@@ -149,13 +150,16 @@ export default function ArticlePreview({
           {Feature.new_topics() && showInferredTopic && (
             <s.KeywordTopics>
               {new_topics.map((tuple) => (
+                // Tuple (Topic Title, TopicOriginType)
                 <span
                   onClick={() => {
                     setShowInfoTopics(!showInfoTopics);
                     setInfoTopicClick(tuple[0]);
                   }}
                   key={tuple[0]}
-                  className={tuple[1] === 3 ? "inferred" : "gold"}
+                  className={
+                    tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"
+                  }
                 >
                   {tuple[0]}
                   {tuple[1] === 3 && (
@@ -164,7 +168,6 @@ export default function ArticlePreview({
                       sx={{ color: darkBlue }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        console.log("Clicked cross!");
                         setShowInferredTopic(false);
                         toast("Thank you for letting us know!");
                         api.removeMLSuggestion(article.id, tuple[0]);
