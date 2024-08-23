@@ -8,7 +8,6 @@ import Heading from "../info_page_shared/Heading";
 
 import BackArrow from "../settings_pages_shared/BackArrow";
 
-import { PageTitle } from "../../components/PageTitle";
 import strings from "../../i18n/definitions";
 
 export default function Interests({ api }) {
@@ -19,7 +18,6 @@ export default function Interests({ api }) {
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.interests}</Heading>
-        {/* <PageTitle>{strings.interests}</PageTitle> */}
       </Header>
       <Main>
         <TagContainer>
