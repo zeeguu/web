@@ -1,5 +1,5 @@
 import strings from "../i18n/definitions";
-import * as s from "../pages/info_page_shared/SelectOptions.sc";
+import * as s from "./SelectOptions.sc";
 
 export default function UiLanguageSelector({
   languages,

@@ -12,7 +12,7 @@ import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
 import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
 import FormSection from "./info_page_shared/FormSection";
-import SelectOptions from "./info_page_shared/SelectOptions";
+import SelectOptions from "../components/SelectOptions";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";

@@ -15,7 +15,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
-import InputField from "./info_page_shared/InputField";
+import InputField from "../components/InputField";
 import Tag from "./info_page_shared/Tag";
 import TagContainer from "./info_page_shared/TagContainer";
 
