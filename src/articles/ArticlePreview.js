@@ -7,12 +7,12 @@ import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
 import * as sweetM from "./TagsOfInterests.sc";
-import Modal from "../components/modal_shared/Modal";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import { toast } from "react-toastify";
 import { darkBlue } from "../components/colors";
+import ExplainTopicsModal from "../pages/ExplainTopicsModal";
 
 export default function ArticlePreview({
   article,
@@ -118,34 +118,11 @@ export default function ArticlePreview({
     <s.ArticlePreview>
       {showInfoTopics && Feature.new_topics() && (
         <sweetM.TagsOfInterests>
-          <Modal
-            children={
-              <>
-                <h1>Article topics are shown differently! </h1>
-
-                <div style={{ textAlign: "left", lineHeight: "2em" }}>
-                  <s.KeywordTopics>
-                    <span className="inferred" style={{ marginRight: "0.5em" }}>
-                      {infoTopicClick}
-                    </span>{" "}
-                    A dashed-line means that similar articles have been labeled
-                    with '{infoTopicClick}'.
-                  </s.KeywordTopics>
-                  <s.KeywordTopics>
-                    <span className="gold" style={{ marginRight: "0.5em" }}>
-                      {infoTopicClick}
-                    </span>{" "}
-                    The source associated with the article usually publishes '
-                    {infoTopicClick}'.
-                  </s.KeywordTopics>
-                </div>
-              </>
-            }
-            open={showInfoTopics}
-            onClose={() => {
-              setShowInfoTopics(!showInfoTopics);
-            }}
-          ></Modal>
+          <ExplainTopicsModal
+            infoTopicClick={infoTopicClick}
+            showInfoTopics={showInfoTopics}
+            setShowInfoTopics={setShowInfoTopics}
+          />
         </sweetM.TagsOfInterests>
       )}
 
