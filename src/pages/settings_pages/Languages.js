@@ -6,7 +6,7 @@ import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 import strings from "../../i18n/definitions";
 import LocalStorage from "../../assorted/LocalStorage";
 import LoadingAnimation from "../../components/LoadingAnimation";
-import UiLanguageSelector from "../../components/UiLanguageSelector";
+import LanguageSelector from "../../components/LanguageSelector";
 import Button from "../info_page_shared/Button";
 import ButtonContainer from "../info_page_shared/ButtonContainer";
 import Form from "../info_page_shared/Form";
@@ -19,7 +19,7 @@ import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
 import BackArrow from "../settings_pages_shared/BackArrow";
 
-import Select from "../../components/Select";
+import KeyValueSelector from "../../components/KeyValueSelector";
 
 export default function Languages({ api, setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -112,7 +112,7 @@ export default function Languages({ api, setUser }) {
             {errorMessage && (
               <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
             )}
-            <UiLanguageSelector
+            <LanguageSelector
               label={strings.learnedLanguage}
               languages={languages.learnable_languages}
               selected={language_for_id(
@@ -124,7 +124,7 @@ export default function Languages({ api, setUser }) {
               }}
             />
 
-            <Select
+            <KeyValueSelector
               elements={CEFR_LEVELS}
               optionLabel={(e) => e.label}
               val={(e) => e.value}
@@ -136,7 +136,7 @@ export default function Languages({ api, setUser }) {
           </FormSection>
 
           <FormSection>
-            <UiLanguageSelector
+            <LanguageSelector
               label={strings.baseLanguage}
               languages={languages.native_languages}
               selected={language_for_id(

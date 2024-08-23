@@ -1,6 +1,15 @@
-import * as s from "./SelectOptions.sc";
+// Elements must be a list of {value:, label:} dictionaries
+// e.g. const learnedLanguages = [
+//     { value: 'en', label: 'English' },
+//     { value: 'fr', label: 'French' },
+//     { value: 'da', label: 'Danish' }
+//   ]
 
-export default function SelectOptions({
+//onChange in KeyValueSelector_Basic takes and evokes standard react event handler
+
+import * as s from "./SelectorStyling.sc";
+
+export default function KeyValueSelector_Basic({
   value,
   label,
   placeholder,
