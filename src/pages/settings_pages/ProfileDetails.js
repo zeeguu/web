@@ -13,7 +13,7 @@ import InfoPage from "../info_page_shared/InfoPage";
 import Header from "../info_page_shared/Header";
 import Heading from "../info_page_shared/Heading";
 import Main from "../info_page_shared/Main";
-import BackArrow from "../settings_pages_shared/BackArrow";
+import BackArrow from "./settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
 import LoadingAnimation from "../../components/LoadingAnimation";

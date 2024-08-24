@@ -4,7 +4,7 @@ import Main from "../info_page_shared/Main";
 import Header from "../info_page_shared/Header";
 import Heading from "../info_page_shared/Heading";
 
-import BackArrow from "../settings_pages_shared/BackArrow";
+import BackArrow from "./settings_pages_shared/BackArrow";
 
 import strings from "../../i18n/definitions";
 
