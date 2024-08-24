@@ -17,7 +17,7 @@ import Heading from "../info_page_shared/Heading";
 import Main from "../info_page_shared/Main";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 
-import BackArrow from "../settings_pages_shared/BackArrow";
+import BackArrow from "./settings_pages_shared/BackArrow";
 
 import KeyValueSelector from "../../components/KeyValueSelector";
 

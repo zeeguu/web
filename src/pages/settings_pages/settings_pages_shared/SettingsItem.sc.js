@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { lightGrey } from "../../components/colors";
+import { lightGrey } from "../../../components/colors";
 
 const SettingsItem = styled.li`
   .settings-link {

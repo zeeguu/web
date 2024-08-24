@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { darkGrey, veryDarkGrey } from "../../components/colors";
+import { darkGrey, veryDarkGrey } from "../../../components/colors";
 
 const BackArrow = styled.button`
   width: fit-content;
