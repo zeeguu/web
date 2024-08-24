@@ -501,11 +501,16 @@ let strings = new LocalizedStrings(
       payMoreAttentionTo: "Pay more attention to these words:",
 
       //Settings
+      //Settings categories
+      myAccount: "My account",
+      exercises: "Exercises",
+      accountManagement: "Account Management",
+
       //Settings main page nav options
       profileDetails: "Profile Details",
       languages: "Languages",
       myCurrentClass: "My Current Class",
-      audioExercises: "Audio Exercises",
+      exerciseTypePreferences: "Exercise Type Preferences",
       interests: "Interests",
       deleteAccount: "Delete Account",
 
