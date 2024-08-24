@@ -26,7 +26,7 @@ export default function Settings() {
     <s.StyledWrapper>
       <PageTitle>{strings.settings}</PageTitle>
 
-      <ListOfSettingsItems header={"My Account"}>
+      <ListOfSettingsItems header={strings.myAccount}>
         <SettingsItem path={"/account_settings/profile_details"}>
           {strings.profileDetails}
         </SettingsItem>
@@ -44,13 +44,13 @@ export default function Settings() {
         </SettingsItem>
       </ListOfSettingsItems>
 
-      <ListOfSettingsItems header={"Exercise Preferences"}>
+      <ListOfSettingsItems header={strings.exercises}>
         <SettingsItem path={"/account_settings/audio_exercises"}>
-          {strings.audioExercises}
+          {strings.exerciseTypePreferences}
         </SettingsItem>
       </ListOfSettingsItems>
 
-      <ListOfSettingsItems header={"Account Management"}>
+      <ListOfSettingsItems header={strings.accountManagement}>
         <SettingsItem path={"/account_settings/delete_account"}>
           {strings.deleteAccount}
         </SettingsItem>
