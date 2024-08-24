@@ -25,6 +25,7 @@ export default function ExtensionMessage({
     setExtensionMessageOpen(false);
     setDisplayedExtensionPopup(true);
     LocalStorage.setDisplayedExtensionPopup(true);
+    window.location.reload();
   }
 
   if (

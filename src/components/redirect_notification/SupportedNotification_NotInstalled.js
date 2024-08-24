@@ -14,12 +14,13 @@ export default function SupportedNotification_NotInstalled({
   handleCloseRedirectionModal,
   open,
 }) {
-  function handleCancel() {
+  function handleClose() {
     handleCloseRedirectionModal();
+    window.location.reload();
   }
 
   return (
-    <Modal open={open} onClose={handleCancel}>
+    <Modal open={open} onClose={handleClose}>
       <Header>
         <Heading>
           <Icon src={"../static/images/zeeguuLogo.svg"} />
