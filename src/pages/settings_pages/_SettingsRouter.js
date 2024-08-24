@@ -1,7 +1,7 @@
 import { PrivateRoute } from "../../PrivateRoute";
 import { Switch } from "react-router-dom";
 
-import Settings from "../Settings";
+import Settings from "./Settings";
 import ProfileDetails from "./ProfileDetails";
 import Languages from "./Languages";
 import Interests from "./Interests";

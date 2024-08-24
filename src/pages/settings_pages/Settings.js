@@ -1,12 +1,12 @@
 import { useEffect, useState, useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
-import { setTitle } from "../assorted/setTitle";
-import LocalStorage from "../assorted/LocalStorage";
-import strings from "../i18n/definitions";
-import { PageTitle } from "../components/PageTitle";
+import { UserContext } from "../../contexts/UserContext";
+import { setTitle } from "../../assorted/setTitle";
+import LocalStorage from "../../assorted/LocalStorage";
+import strings from "../../i18n/definitions";
+import { PageTitle } from "../../components/PageTitle";
 
-import SettingsItem from "./settings_pages/settings_pages_shared/SettingsItem";
-import ListOfSettingsItems from "./settings_pages/settings_pages_shared/ListOfSettingsItems";
+import SettingsItem from "./settings_pages_shared/SettingsItem";
+import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
 
 import * as s from "./Settings.sc";
 
