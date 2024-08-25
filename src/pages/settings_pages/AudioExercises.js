@@ -100,10 +100,8 @@ export default function AudioExercises({ api }) {
               />
             </FormSection>
           )}
-          <ButtonContainer className={"padding-large"}>
-            <Button className={"full-width-btn"} onClick={handleSave}>
-              {strings.save}
-            </Button>
+          <ButtonContainer className={"row-of-buttons"}>
+            <Button onClick={handleSave}>{strings.save}</Button>
           </ButtonContainer>
         </Form>
       </Main>

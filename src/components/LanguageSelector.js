@@ -18,7 +18,8 @@ export default function LanguageSelector({
       </s.Label>
       <s.SelectStyledContainer>
         <s.Select
-          name="learned_language"
+          id={id}
+          name="language-selector"
           value={strings[selected.toLowerCase()]}
           onChange={(e) => onChange(e)}
         >

@@ -12,7 +12,7 @@ const Button = styled.button`
   align-items: center;
   gap: 0.25rem;
   font-size: 1.2rem;
-  padding: 1rem 2.75rem;
+  padding: 1rem 2.8rem;
   border-radius: 4em;
   background-color: ${zeeguuOrange};
   font-weight: 600;

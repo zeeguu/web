@@ -14,6 +14,8 @@ const BackArrow = styled.button`
   font-family: inherit;
   font-size: inherit;
   font-weight: 600;
+  margin: 1rem 0;
+  padding: 0;
   &:hover {
     color: ${veryDarkGrey};
   }
