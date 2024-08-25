@@ -26,6 +26,7 @@ export default function KeyValueSelector({
       </s.Label>
       <s.SelectStyledContainer>
         <s.Select
+          id={id}
           value={current}
           onChange={(e) => updateFunction(e.target.value)}
         >

@@ -113,6 +113,7 @@ export default function Languages({ api, setUser }) {
               <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
             )}
             <LanguageSelector
+              id={"practiced-language-selector"}
               label={strings.learnedLanguage}
               languages={languages.learnable_languages}
               selected={language_for_id(
@@ -125,6 +126,7 @@ export default function Languages({ api, setUser }) {
             />
 
             <KeyValueSelector
+              id={"cefr-levels-selector"}
               elements={CEFR_LEVELS}
               optionLabel={(e) => e.label}
               val={(e) => e.value}
@@ -137,6 +139,7 @@ export default function Languages({ api, setUser }) {
 
           <FormSection>
             <LanguageSelector
+              id={"translation-language-selector"}
               label={strings.baseLanguage}
               languages={languages.native_languages}
               selected={language_for_id(
@@ -148,10 +151,8 @@ export default function Languages({ api, setUser }) {
               }}
             />
           </FormSection>
-          <ButtonContainer className={"padding-large"}>
-            <Button className={"full-width-btn"} onClick={handleSave}>
-              {strings.save}
-            </Button>
+          <ButtonContainer className={"row-of-buttons"}>
+            <Button onClick={handleSave}>{strings.save}</Button>
           </ButtonContainer>
         </Form>
       </Main>

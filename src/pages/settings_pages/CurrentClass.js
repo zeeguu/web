@@ -93,8 +93,8 @@ export default function CurrentClass({ api }) {
               </FullWidthErrorMsg>
             )}
           </FormSection>
-          <ButtonContainer className={"padding-large"}>
-            <Button className={"full-width-btn"} onClick={saveStudentToClass}>
+          <ButtonContainer className={"row-of-buttons"}>
+            <Button onClick={saveStudentToClass}>
               {studentIsInCohort ? strings.changeClass : strings.joinClass}
             </Button>
           </ButtonContainer>

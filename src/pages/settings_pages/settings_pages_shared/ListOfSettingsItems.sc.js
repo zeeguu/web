@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const SettingsSection = styled.section`
-  max-width: 600px;
+  max-width: 37rem;
   width: 100%;
 
   h2 {
