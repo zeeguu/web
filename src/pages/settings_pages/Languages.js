@@ -148,8 +148,10 @@ export default function Languages({ api, setUser }) {
               }}
             />
           </FormSection>
-          <ButtonContainer>
-            <Button onClick={handleSave}>{strings.save}</Button>
+          <ButtonContainer className={"padding-large"}>
+            <Button className={"full-width-btn"} onClick={handleSave}>
+              {strings.save}
+            </Button>
           </ButtonContainer>
         </Form>
       </Main>
