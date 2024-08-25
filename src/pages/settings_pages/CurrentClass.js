@@ -61,11 +61,14 @@ export default function CurrentClass({ api }) {
       </Header>
       <Main>
         <p>
-          <b>
-            {studentIsInCohort
-              ? strings.yourCurrentClassIs + currentCohort
-              : strings.youHaveNotJoinedAClass}
-          </b>
+          {studentIsInCohort ? (
+            <>
+              {strings.yourCurrentClassIs}
+              <b>{currentCohort}</b>
+            </>
+          ) : (
+            <b>{strings.youHaveNotJoinedAClass}</b>
+          )}
         </p>
         <Form>
           <FormSection>

@@ -14,6 +14,7 @@ import Header from "../info_page_shared/Header";
 import Heading from "../info_page_shared/Heading";
 
 import BackArrow from "./settings_pages_shared/BackArrow";
+import Checkbox from "../../components/modal_shared/Checkbox";
 
 import strings from "../../i18n/definitions";
 
@@ -70,38 +71,35 @@ export default function AudioExercises({ api }) {
     <InfoPage pageLocation={"settings"}>
       <BackArrow />
       <Header withoutLogo>
-        <Heading>{strings.audioExercises}</Heading>
+        <Heading>{strings.exerciseTypePreferences}</Heading>
       </Header>
       <Main>
         <Form>
           <FormSection>
-            <label>Exercise Type Preferences</label>
-            <div style={{ display: "flex" }} className="form-group">
-              <input
-                style={{ width: "1.5em" }}
-                type={"checkbox"}
-                checked={audioExercises}
-                onChange={handleAudioExercisesChange}
-              />
-              <label>
-                Include Audio Exercises{" "}
-                {SessionStorage.isAudioExercisesEnabled()
-                  ? ""
-                  : "(Temporaly Disabled)"}
-              </label>
-            </div>
-            {Feature.merle_exercises() && (
-              <div style={{ display: "flex" }} className="form-group">
-                <input
-                  style={{ width: "1.5em" }}
-                  type={"checkbox"}
-                  checked={productiveExercises}
-                  onChange={handleProductiveExercisesChange}
-                />
-                <label>Enable Productive Exercises</label>
-              </div>
-            )}
+            <Checkbox
+              id="audio-exercises-checkbox"
+              label={
+                <>
+                  Include Audio Exercises{" "}
+                  {SessionStorage.isAudioExercisesEnabled()
+                    ? ""
+                    : "(Temporaly Disabled)"}
+                </>
+              }
+              checked={audioExercises}
+              onChange={handleAudioExercisesChange}
+            />
           </FormSection>
+          {Feature.merle_exercises() && (
+            <FormSection>
+              <Checkbox
+                id="productive-exercises-checkbox"
+                label={<>Enable Productive Exercises</>}
+                checked={productiveExercises}
+                onChange={handleProductiveExercisesChange}
+              />
+            </FormSection>
+          )}
           <ButtonContainer>
             <Button onClick={handleSave}>{strings.save}</Button>
           </ButtonContainer>
