@@ -46,8 +46,8 @@ function timeToHumanReadable(timeInSeconds, precision = "seconds") {
       return timeInSeconds + (timeInSeconds > 1 ? " seconds" : " second");
     else return "< 1 minute";
   } else {
-    let minutes = secondsToHours(timeInSeconds);
     let seconds = timeInSeconds % 60;
+    let minutes = secondsToMinutes(timeInSeconds);
     let string = minutes + (minutes > 1 ? " minutes" : " minute");
     if (seconds > 0 && precision === "seconds")
       string += " " + seconds + (seconds > 1 ? " seconds" : " second");
