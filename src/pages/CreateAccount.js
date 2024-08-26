@@ -118,7 +118,7 @@ export default function CreateAccount({
   }
 
   return (
-    <InfoPage type={"narrow"}>
+    <InfoPage pageWidth={"narrow"}>
       <Modal
         open={showPrivacyNotice}
         onClose={() => {

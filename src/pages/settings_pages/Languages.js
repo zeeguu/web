@@ -98,7 +98,7 @@ export default function Languages({ api, setUser }) {
   }
 
   return (
-    <InfoPage pageLocation={"settings"}>
+    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.languages}</Heading>

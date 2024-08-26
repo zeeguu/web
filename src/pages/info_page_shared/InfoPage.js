@@ -1,9 +1,9 @@
 import * as s from "./InfoPage.sc";
 
-export default function InfoPage({ children, type, pageLocation }) {
+export default function InfoPage({ children, pageWidth, layoutVariant }) {
   return (
-    <s.PageBackground pageLocation={pageLocation}>
-      <s.PageContainer type={type}>
+    <s.PageBackground layoutVariant={layoutVariant}>
+      <s.PageContainer layoutVariant={layoutVariant} pageWidth={pageWidth}>
         <s.ContentWrapper>{children}</s.ContentWrapper>
       </s.PageContainer>
     </s.PageBackground>

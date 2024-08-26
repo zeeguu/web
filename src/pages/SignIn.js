@@ -37,7 +37,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   }
 
   return (
-    <InfoPage type={"narrow"}>
+    <InfoPage pageWidth={"narrow"}>
       <Header>
         <Heading>Log in</Heading>
       </Header>

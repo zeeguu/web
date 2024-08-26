@@ -22,7 +22,7 @@ export default function ResetPassword({ api }) {
   }
 
   return (
-    <InfoPage type={"narrow"}>
+    <InfoPage pageWidth={"narrow"}>
       <Header>
         <Heading>Reset Password</Heading>
       </Header>

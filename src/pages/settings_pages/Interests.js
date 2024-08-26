@@ -12,7 +12,7 @@ export default function Interests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
   return (
-    <InfoPage pageLocation={"settings"}>
+    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.interests}</Heading>

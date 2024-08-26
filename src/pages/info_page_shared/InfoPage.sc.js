@@ -19,7 +19,7 @@ const PageBackground = styled.div`
   }
 
   ${(props) =>
-    props.pageLocation === "settings" &&
+    props.layoutVariant === "minimalistic-top-aligned" &&
     css`
       width: auto;
       min-height: auto;
@@ -58,11 +58,22 @@ const PageContainer = styled.div`
   }
 
   ${(props) =>
-    props.type === "narrow" &&
+    props.pageWidth === "narrow" &&
     css`
       width: 38rem;
       @media (max-width: 1200px) {
         max-width: 38rem;
+      }
+    `}
+
+  ${(props) =>
+    props.layoutVariant === "minimalistic-top-aligned" &&
+    css`
+      @media (max-width: 1200px) {
+        margin: 1rem;
+      }
+      @media (max-width: 576px) {
+        width: 100%;
       }
     `}
 `;
