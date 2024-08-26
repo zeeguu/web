@@ -11,9 +11,7 @@ import Header from "../info_page_shared/Header";
 import Heading from "../info_page_shared/Heading";
 import Main from "../info_page_shared/Main";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
-
 import BackArrow from "./settings_pages_shared/BackArrow";
-
 import strings from "../../i18n/definitions";
 
 export default function CurrentClass({ api }) {
@@ -93,7 +91,7 @@ export default function CurrentClass({ api }) {
               </FullWidthErrorMsg>
             )}
           </FormSection>
-          <ButtonContainer className={"row-of-buttons"}>
+          <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button onClick={saveStudentToClass}>
               {studentIsInCohort ? strings.changeClass : strings.joinClass}
             </Button>

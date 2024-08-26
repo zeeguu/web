@@ -12,10 +12,8 @@ import InfoPage from "../info_page_shared/InfoPage";
 import Main from "../info_page_shared/Main";
 import Header from "../info_page_shared/Header";
 import Heading from "../info_page_shared/Heading";
-
 import BackArrow from "./settings_pages_shared/BackArrow";
 import Checkbox from "../../components/modal_shared/Checkbox";
-
 import strings from "../../i18n/definitions";
 
 export default function AudioExercises({ api }) {
@@ -100,7 +98,7 @@ export default function AudioExercises({ api }) {
               />
             </FormSection>
           )}
-          <ButtonContainer className={"row-of-buttons"}>
+          <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button onClick={handleSave}>{strings.save}</Button>
           </ButtonContainer>
         </Form>

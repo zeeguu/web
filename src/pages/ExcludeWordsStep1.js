@@ -27,7 +27,7 @@ export default function ExcludeWordsStep1({ hasExtension }) {
       </Header>
       <Main>
         <p>{strings.youCanChangeLater}</p>
-        <ButtonContainer className={"row-of-buttons"}>
+        <ButtonContainer className={"adaptive-alignment-horizontal"}>
           <Button
             className={"full-width-btn"}
             onClick={() => redirect("/exclude_words_step2")}
