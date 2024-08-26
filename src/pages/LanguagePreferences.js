@@ -84,7 +84,7 @@ export default function LanguagePreferences({ api }) {
   }
 
   return (
-    <InfoPage type={"narrow"}>
+    <InfoPage pageWidth={"narrow"}>
       <Header>
         <Heading>
           What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?

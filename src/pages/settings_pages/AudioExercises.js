@@ -66,7 +66,7 @@ export default function AudioExercises({ api }) {
   }
 
   return (
-    <InfoPage pageLocation={"settings"}>
+    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.exerciseTypePreferences}</Heading>

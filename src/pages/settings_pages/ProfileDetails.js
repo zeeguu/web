@@ -66,7 +66,7 @@ export default function ProfileDetails({ api, setUser }) {
   }
 
   return (
-    <InfoPage pageLocation={"settings"}>
+    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.profileDetails}</Heading>

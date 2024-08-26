@@ -52,7 +52,7 @@ export default function CurrentClass({ api }) {
     );
   }
   return (
-    <InfoPage pageLocation={"settings"}>
+    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.myCurrentClass}</Heading>
