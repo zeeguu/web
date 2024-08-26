@@ -17,7 +17,7 @@ const UnfinishedArticlesBox = styled.div`
   }
 `;
 
-const UnfishedArticleBoxTitle = styled.h1`
+const UnfishedArticleBoxTitle = styled.h3`
   margin: 0.5em;
   margin-bottom: -0.7em;
 `;
