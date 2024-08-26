@@ -43,8 +43,6 @@ export default function ArticlePreview({
 
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
-    if (article.last_reading_percentage)
-      linkToRedirect += `&percentage=${parseFloat(article.last_reading_percentage).toFixed(2)}`;
     let open_in_zeeguu = (
       <Link to={linkToRedirect} onClick={handleArticleClick}>
         {article.title}
