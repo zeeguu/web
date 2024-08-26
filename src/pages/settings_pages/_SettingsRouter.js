@@ -36,28 +36,23 @@ export default function SettingsRouter({ api, setUser }) {
       <PrivateRoute
         path="/account_settings/audio_exercises"
         api={api}
-        setUser={setUser}
         component={AudioExercises}
       />
 
       <PrivateRoute
         path="/account_settings/current_class"
         api={api}
-        setUser={setUser}
         component={CurrentClass}
       />
 
       <PrivateRoute
         path="/account_settings/interests"
         api={api}
-        setUser={setUser}
         component={Interests}
       />
 
       <PrivateRoute
         path="/account_settings/delete_account"
-        api={api}
-        setUser={setUser}
         component={DeleteAccount}
       />
     </Switch>
