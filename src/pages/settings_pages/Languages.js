@@ -16,9 +16,7 @@ import Header from "../info_page_shared/Header";
 import Heading from "../info_page_shared/Heading";
 import Main from "../info_page_shared/Main";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
-
 import BackArrow from "./settings_pages_shared/BackArrow";
-
 import KeyValueSelector from "../../components/KeyValueSelector";
 
 export default function Languages({ api, setUser }) {
@@ -55,7 +53,6 @@ export default function Languages({ api, setUser }) {
     LocalStorage.setUserInfo(info);
     setUser({
       ...user,
-      name: info.name,
       learned_language: info.learned_language,
       native_language: info.native_language,
     });
@@ -151,7 +148,7 @@ export default function Languages({ api, setUser }) {
               }}
             />
           </FormSection>
-          <ButtonContainer className={"row-of-buttons"}>
+          <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button onClick={handleSave}>{strings.save}</Button>
           </ButtonContainer>
         </Form>

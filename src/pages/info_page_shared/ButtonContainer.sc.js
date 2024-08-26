@@ -47,7 +47,7 @@ const ButtonContainer = styled.div`
   white-space: nowrap;
   ${VerticalAlignment}
 
-  &.row-of-buttons {
+  &.adaptive-alignment-horizontal {
     ${HorizontalAlignment}
   }
 

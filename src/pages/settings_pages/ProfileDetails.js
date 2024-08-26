@@ -100,7 +100,7 @@ export default function ProfileDetails({ api, setUser }) {
               }
             />
           </FormSection>
-          <ButtonContainer className={"row-of-buttons"}>
+          <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button onClick={handleSave}>{strings.save}</Button>
           </ButtonContainer>
         </Form>
