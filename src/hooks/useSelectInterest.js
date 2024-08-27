@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function useSelectInterest(api) {
   const [availableTopics, setAvailableTopics] = useState([]);
@@ -52,15 +53,20 @@ export default function useSelectInterest(api) {
   }
 
   //subscribe to custom interest filter
-  function subscribeToSearch(response) {
-    api.subscribeToSearch(response, (data) => {
-      setSubscribedSearches([...subscribedSearches, data]);
-    });
+  function subscribeToSearch(keyword) {
+    let isAlreadyAdded = subscribedSearches
+      .map((each) => each.search)
+      .includes(keyword);
+    if (isAlreadyAdded)
+      toast.error(`'${keyword}' is already in your Interests.`);
+    else
+      api.subscribeToSearch(keyword, (data) => {
+        setSubscribedSearches([...subscribedSearches, data]);
+      });
   }
 
   //remove custom interest filter
   function removeSearch(search) {
-    console.log("unsubscribing from search" + search);
     setSubscribedSearches(
       subscribedSearches.filter((each) => each.id !== search.id),
     );

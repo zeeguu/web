@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function useUnwantedContentPreferences(api) {
   const [topicsAvailableForExclusion, setTopicsAvailableForExclusion] =
@@ -40,9 +41,16 @@ export default function useUnwantedContentPreferences(api) {
   }
 
   function addUnwantedKeyword(keyword) {
-    api.addUnwantedKeyword(keyword, (data) => {
-      setUnwantedKeywords([...unwantedKeywords, data]);
-    });
+    let isAlreadyAdded = unwantedKeywords
+      .map((each) => each.search)
+      .includes(keyword);
+    if (isAlreadyAdded)
+      toast.error(`'${keyword}' is already in Non-Interests.`);
+    else {
+      api.addUnwantedKeyword(keyword, (data) => {
+        setUnwantedKeywords([...unwantedKeywords, data]);
+      });
+    }
   }
 
   function removeUnwantedKeyword(keyword) {

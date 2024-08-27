@@ -31,13 +31,13 @@ export default function SubscribeSearchButton({ api, query }) {
         removeSearch(searchToRemove);
         api.logUserActivity(api.UNSUBSCRIBE_FROM_SEARCH, "", query, "");
         setIsSubscribedToSearch(false);
-        toast("Search removed from Searches!");
+        toast(`'${query}' removed from Searches!`);
       }
     } else {
       subscribeToSearch(query);
       api.logUserActivity(api.SUBSCRIBE_TO_SEARCH, "", query, "");
       setIsSubscribedToSearch(true);
-      toast("Search added to Searches!");
+      toast(`'${query}' added to Searches!`);
     }
   };
 
