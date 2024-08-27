@@ -30,7 +30,7 @@ export default function Settings() {
           {strings.profileDetails}
         </SettingsItem>
         <SettingsItem path={"/account_settings/languages"}>
-          {strings.languages}
+          {strings.languageSettings}
         </SettingsItem>
 
         {!user.is_teacher && (

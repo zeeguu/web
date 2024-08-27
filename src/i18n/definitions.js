@@ -508,7 +508,7 @@ let strings = new LocalizedStrings(
 
       //Settings main page nav options
       profileDetails: "Profile Details",
-      languages: "Languages",
+      languageSettings: "Language Settings",
       myCurrentClass: "My Current Class",
       exerciseTypePreferences: "Exercise Type Preferences",
       interests: "Interests",
