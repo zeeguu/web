@@ -36,6 +36,15 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
     return list.filter((ex) => ex !== exercise);
   }
 
+  function filterBookmarksInDifferentCycle(
+    bookmarkList,
+    bookmarkLearningCycle,
+  ) {
+    return [...bookmarkList].filter(
+      (each) => each.learning_cycle === bookmarkLearningCycle,
+    );
+  }
+
   function _distinctContexts(potentialBookmarks) {
     let potentialBookmarkContexts = potentialBookmarks.map(
       (bookmark) => bookmark.context,
@@ -49,10 +58,16 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
   let exercisesByLearningCycle =
     getExerciseListByLearningCycle(exerciseTypesList);
 
-  for (let i = 0; i < bookmarks.length; i++) {
-    let memoryTask = getMemoryTask(bookmarks[i]);
+  // Create a copy of bookmarks to assign them to exercises
+  // This list should be empty at the end.
+  let bookmarksToAssign = [...bookmarks];
+
+  while (bookmarksToAssign.length > 0) {
+    // Pop the first element of the bookmark list
+    let currentBookmark = bookmarksToAssign.shift();
+    let memoryTask = getMemoryTask(currentBookmark);
     // Filter the exercises based on the learning_cycle attribute of the bookmark
-    let learningCycle = LEARNING_CYCLE_NAME[bookmarks[i].learning_cycle];
+    let learningCycle = LEARNING_CYCLE_NAME[currentBookmark.learning_cycle];
     let exerciseListForCycle = exercisesByLearningCycle[learningCycle];
 
     let suitableExercises = exerciseListForCycle.filter(
@@ -62,26 +77,58 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
     let suitableExerciseFound = false;
     while (!suitableExerciseFound) {
       let selectedExerciseType = random(suitableExercises);
-      // Check if there are enough bookmarks for the selected exercise
-      if (i + selectedExerciseType.requiredBookmarks <= bookmarks.length) {
-        let potentialBookmarks = bookmarks.slice(
-          i,
-          i + selectedExerciseType.requiredBookmarks,
+      // If the exercise requires multiple bookmarks
+      if (selectedExerciseType.requiredBookmarks > 1) {
+        // Get bookmarks in the same cycle
+        let potentialBookmarks = filterBookmarksInDifferentCycle(
+          bookmarksToAssign,
+          currentBookmark.learning_cycle,
         );
-
-        if (_distinctContexts(potentialBookmarks)) {
+        // Re-add the current bookmark (we assume that is the first element, followed by the rest)
+        potentialBookmarks.unshift(currentBookmark);
+        // We take the elements corresponding to the required bookmarks by the exercise
+        let currentBWithPotentialBookmarks = potentialBookmarks.slice(
+          0,
+          selectedExerciseType.requiredBookmarks,
+        );
+        // This can only be true if we found enough bookmarks after filtering
+        let hasEnoughBookmarks =
+          currentBWithPotentialBookmarks.length ===
+          selectedExerciseType.requiredBookmarks;
+        if (
+          hasEnoughBookmarks &&
+          _distinctContexts(currentBWithPotentialBookmarks)
+        ) {
+          // If the bookmarks are distinct and there is enough of them we can add
+          // exercise.
+          // NOTE: We could make distinctExercises filter from the potentialBookmarks
+          // this would a bit smarter than just taking the first n required bookmarks.
           let exercise = {
             type: selectedExerciseType.type,
-            bookmarks: potentialBookmarks,
+            bookmarks: currentBWithPotentialBookmarks,
           };
           exerciseSequence.push(exercise);
-
-          // Skip the assigned bookmarks
-          i += selectedExerciseType.requiredBookmarks - 1;
           suitableExerciseFound = true;
-        } else {
-          suitableExerciseFound = false;
+          // We have found an exercise! We still need to remove from the list
+          // all the bookmarks we have used.
+          for (let i = 0; i < currentBWithPotentialBookmarks.length; i++) {
+            let bookmarkIndex = bookmarksToAssign.indexOf(
+              currentBWithPotentialBookmarks[i],
+            );
+            // If the bookmark we used is in the bookmarsToAssign list,
+            // we remove it from the list. indexOf return -1 if the element isn't present.
+            if (bookmarkIndex !== -1)
+              bookmarksToAssign.splice(bookmarkIndex, 1);
+          }
         }
+      } else {
+        // If the exercise only requires one bookmark, we can add it immediately.
+        let exercise = {
+          type: selectedExerciseType.type,
+          bookmarks: [currentBookmark],
+        };
+        exerciseSequence.push(exercise);
+        suitableExerciseFound = true;
       }
       if (!suitableExerciseFound) {
         suitableExercises = _removeExerciseFromList(
