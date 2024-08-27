@@ -101,7 +101,7 @@ export default function Languages({ api, setUser }) {
     <InfoPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
-        <Heading>{strings.languages}</Heading>
+        <Heading>{strings.languageSettings}</Heading>
       </Header>
       <Main>
         <Form>
