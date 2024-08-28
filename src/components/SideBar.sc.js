@@ -136,6 +136,9 @@ const navigationVisibleCommon = css`
     position: absolute;
     bottom: 1em;
     width: 100%;
+    @media (max-width: 768px) {
+      bottom: 5em;
+    }
   }
 
   .SettingsLogoutHolder {
@@ -144,13 +147,8 @@ const navigationVisibleCommon = css`
   }
 
   .navigationIcon {
-    height: 32px;
-
     :hover {
       filter: brightness(0.95);
-    }
-    @media (max-width: 768px) {
-      height: 22px;
     }
   }
 `;

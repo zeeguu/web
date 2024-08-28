@@ -6,7 +6,8 @@ import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
 import { getStaticPath } from "../utils/misc/staticPath.js";
 import { toast } from "react-toastify";
-import { isWordInSentence } from "../utils/preprocessing/preprocessing.js";
+
+import { isTextInSentence } from "../utils/text/expressions";
 
 export default function EditBookmarkButton({
   bookmark,
@@ -77,7 +78,7 @@ export default function EditBookmarkButton({
       " instead of: ",
       bookmark.context,
     );
-    if (!isWordInSentence(newWord, newContext)) {
+    if (!isTextInSentence(newWord, newContext)) {
       setErrorMessage(
         `'${newWord}' is not present in the context. Make sure the context contains the word.`,
       );

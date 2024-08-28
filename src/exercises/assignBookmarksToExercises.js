@@ -3,7 +3,7 @@ import {
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
 } from "./exerciseSequenceTypes";
-import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
+import { LEARNING_CYCLE_NAME, MEMORY_TASK } from "./ExerciseTypeConstants";
 
 /**
  * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
@@ -20,6 +20,15 @@ function getExerciseListByLearningCycle(exerciseList) {
     exerciseByLearningCycle[exercise.learningCycle].push(exercise);
   }
   return exerciseByLearningCycle;
+}
+
+function getMemoryTask(bookmark) {
+  let memoryTask =
+    bookmark.consecutive_correct_answers >= 2 && bookmark.cooling_interval >= 2
+      ? MEMORY_TASK.RECALL
+      : MEMORY_TASK.RECOGNITION;
+
+  return memoryTask;
 }
 
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
@@ -41,14 +50,18 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
     getExerciseListByLearningCycle(exerciseTypesList);
 
   for (let i = 0; i < bookmarks.length; i++) {
+    let memoryTask = getMemoryTask(bookmarks[i]);
     // Filter the exercises based on the learning_cycle attribute of the bookmark
     let learningCycle = LEARNING_CYCLE_NAME[bookmarks[i].learning_cycle];
     let exerciseListForCycle = exercisesByLearningCycle[learningCycle];
 
+    let suitableExercises = exerciseListForCycle.filter(
+      (exercise) => exercise.memoryTask === memoryTask,
+    );
+
     let suitableExerciseFound = false;
     while (!suitableExerciseFound) {
-      let selectedExerciseType = random(exerciseListForCycle);
-
+      let selectedExerciseType = random(suitableExercises);
       // Check if there are enough bookmarks for the selected exercise
       if (i + selectedExerciseType.requiredBookmarks <= bookmarks.length) {
         let potentialBookmarks = bookmarks.slice(
@@ -71,10 +84,14 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
         }
       }
       if (!suitableExerciseFound) {
-        exerciseListForCycle = _removeExerciseFromList(
+        suitableExercises = _removeExerciseFromList(
           selectedExerciseType,
-          exerciseListForCycle,
+          suitableExercises,
         );
+        // Fallback to default sequence if no suitable exercises are found
+        if (suitableExercises.length === 0) {
+          return assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList);
+        }
       }
     }
   }

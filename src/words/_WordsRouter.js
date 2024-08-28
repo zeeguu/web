@@ -21,7 +21,6 @@ export default function WordsRouter({ api }) {
       [strings.titleReceptiveWords]: "/words",
       [strings.titleProductiveWords]: "/words/productive",
       [strings.learned]: "/words/learned",
-      [strings.topWords]: "/words/top",
     };
   }
 

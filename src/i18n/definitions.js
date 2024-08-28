@@ -309,13 +309,13 @@ let strings = new LocalizedStrings(
         "The most important words that you translated. Ordered by frequency of occurrence in your learned language. To see all your past translations, go to History.",
 
       //Receptive
-      titleReceptiveWords: "Receptive Words",
+      titleReceptiveWords: "Receptive",
       receptiveMsg:
         "These words will appear in exercises testing your receptive knowledge. Receptive means you understand the word when you see or hear it, but can't necessarily use it yet.",
       noReceptiveWords:
         "You have no receptive words at the moment. Keep reading and translating to add some.",
       //Productive
-      titleProductiveWords: "Productive Words",
+      titleProductiveWords: "Productive",
 
       productiveMsg:
         "You already know these words receptively, so they will only appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech.",
@@ -338,7 +338,7 @@ let strings = new LocalizedStrings(
       //CelebrationModal
       celebrationTitle: "Congratulations, you've learned a new word!",
       celebrationMsg:
-        "You've successfully completed all stages for this word, so it won't be tested in the exercises anymore. Keep up the good work!",
+        "You now know this word both receptively and productively, so it won't be tested in the exercises anymore. Keep up the good work!",
 
       //WordEditAccordion
       deleteWord: "Delete Word",
