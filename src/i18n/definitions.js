@@ -328,7 +328,7 @@ let strings = new LocalizedStrings(
 
       //LearningCycle
       nextLearningCycle:
-        "This word has now moved to your productive knowledge.",
+        "This word has now moved to your productive exercises.",
       wordLearned: "You've learned a new word!",
       receptiveTooltip:
         "This word is part of your receptive vocabulary knowledge. Receptive means the capability to comprehend a word when you hear or see it.",
