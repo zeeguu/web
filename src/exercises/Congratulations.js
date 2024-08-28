@@ -81,7 +81,7 @@ export default function Congratulations({
       return (
         <>
           <s.OrangeButton className="orangeButton" onClick={backButtonAction}>
-            {strings.backToReading}
+            {strings.goToReading}
           </s.OrangeButton>
           <s.WhiteButton
             className="whiteButton slightlyLarger"
@@ -101,7 +101,7 @@ export default function Congratulations({
             {strings.startLearningNewWords}
           </s.OrangeButton>
           <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
-            {strings.backToReading}
+            {strings.goToReading}
           </s.WhiteButton>
         </>
       );
@@ -109,7 +109,7 @@ export default function Congratulations({
       return (
         <>
           <s.OrangeButton className="whiteButton" onClick={backButtonAction}>
-            {strings.backToReading}
+            {strings.goToReading}
           </s.OrangeButton>
           <s.WhiteButton
             className="whiteButton slightlyLarger"
@@ -122,7 +122,7 @@ export default function Congratulations({
     else
       return (
         <s.OrangeButton className="orangeButton" onClick={backButtonAction}>
-          {strings.backToReading}
+          {strings.goToReading}
         </s.OrangeButton>
       );
   }

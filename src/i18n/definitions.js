@@ -492,6 +492,7 @@ let strings = new LocalizedStrings(
 
       //ExerciseNavigation
       backToReading: "Back to Reading",
+      goToReading: "Go To Reading",
       backToWords: "Back to Words",
       keepExercising: "Keep Exercising",
       startLearningNewWords: "Start Learning New Words",
