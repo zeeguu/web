@@ -26,6 +26,7 @@ import {
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
   NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+  MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
@@ -223,7 +224,14 @@ export default function Exercises({
       MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
       (bookmarks) => {
         exerciseNotification.setExerciseCounter(bookmarks.length);
-        initializeExercises(bookmarks, strings.exercises);
+        let exerciseSession =
+          bookmarks.lengh <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            : NUMBER_OF_BOOKMARKS_TO_PRACTICE;
+        initializeExercises(
+          bookmarks.slice(0, exerciseSession),
+          strings.exercises,
+        );
       },
     );
   }
