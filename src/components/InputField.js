@@ -1,4 +1,4 @@
-import * as s from "../pages/info_page_shared/InputField.sc";
+import * as s from "./InputField.sc";
 
 export default function InputField({
   type,

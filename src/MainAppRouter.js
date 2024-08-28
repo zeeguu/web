@@ -15,7 +15,6 @@ import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
 import ReadingHistory from "./words/WordHistory";
 import TeacherRouter from "./teacher/_routing/_TeacherRouter";
-// import Settings from "./pages/Settings";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";

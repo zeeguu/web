@@ -1,10 +1,5 @@
 import styled, { css } from "styled-components";
-import {
-  lightGrey,
-  veryDarkGrey,
-  zeeguuOrange,
-  zeeguuRed,
-} from "../../components/colors";
+import { lightGrey, veryDarkGrey, zeeguuOrange, zeeguuRed } from "./colors";
 
 const FieldLabelContainer = styled.div`
   width: 100%;
