@@ -227,7 +227,7 @@ export default function Exercises({
             ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             : NUMBER_OF_BOOKMARKS_TO_PRACTICE;
         initializeExercises(
-          bookmarks.slice(0, exerciseSession),
+          bookmarks.slice(0, exerciseSession + 1),
           strings.exercises,
         );
       },
