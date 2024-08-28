@@ -34,8 +34,4 @@ const Difficulty = styled.div`
   }
 `;
 
-const WordCount = styled(Difficulty)``;
-
-const ReadingTimeContainer = styled(Difficulty)``;
-
 export { ColapsableContainer, ColapsableContents };
