@@ -33,8 +33,6 @@ import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
 import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
-import LocalStorage from "../assorted/LocalStorage";
-import { PRONOUNCIATION_SETTING } from "./ExerciseTypeConstants";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
