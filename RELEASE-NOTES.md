@@ -1,4 +1,4 @@
-# v2.4.1
+# v2.4.2
 - bug fix: The extension is now showing the elephant logo and the Review Words button is working now
 
 # v2.4.0
