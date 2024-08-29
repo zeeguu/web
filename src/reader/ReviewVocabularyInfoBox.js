@@ -10,6 +10,7 @@ export default function ReviewVocabularyInfoBox({
   articleID,
   clickedOnReviewVocab,
   setClickedOnReviewVocab,
+  // openReview is required in the extension
   openReview,
 }) {
   useUILanguage();
