@@ -12,7 +12,7 @@ import Main from "./info_page_shared/Main";
 import Form from "./info_page_shared/Form";
 import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
 import FormSection from "./info_page_shared/FormSection";
-import KeyValueSelector_Basic from "../components/KeyValueSelector_Basic";
+import Selector from "../components/Selector";
 import ButtonContainer from "./info_page_shared/ButtonContainer";
 import Button from "./info_page_shared/Button";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
@@ -102,8 +102,8 @@ export default function LanguagePreferences({ api }) {
             <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
           )}
           <FormSection>
-            <KeyValueSelector_Basic
-              value={learned_language_on_register}
+            <Selector
+              initialValue={learned_language_on_register}
               label={strings.learnedLanguage}
               placeholder={strings.learnedLanguagePlaceholder}
               optionLabel={(e) => e.name}
@@ -113,8 +113,8 @@ export default function LanguagePreferences({ api }) {
               onChangeHandler={handleLearned_language_on_register}
             />
 
-            <KeyValueSelector_Basic
-              value={learned_cefr_level_on_register}
+            <Selector
+              initialValue={learned_cefr_level_on_register}
               label={strings.levelOfLearnedLanguage}
               placeholder={strings.levelOfLearnedLanguagePlaceholder}
               optionLabel={(e) => e.label}
@@ -124,8 +124,8 @@ export default function LanguagePreferences({ api }) {
               onChangeHandler={handleLearned_cefr_level_on_register}
             />
 
-            <KeyValueSelector_Basic
-              value={native_language_on_register}
+            <Selector
+              initialValue={native_language_on_register}
               label={strings.baseLanguage}
               placeholder={strings.baseLanguagePlaceholder}
               optionLabel={(e) => e.name}

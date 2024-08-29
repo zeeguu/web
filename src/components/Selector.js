@@ -5,17 +5,17 @@
 //     { value: 'da', label: 'Danish' }
 //   ]
 
-//onChange in KeyValueSelector_Basic takes and evokes standard react event handler
+//onChange in Selector takes and evokes standard react event handler
 
 import * as s from "./SelectorStyling.sc";
 
-export default function KeyValueSelector_Basic({
-  value,
-  label,
-  placeholder,
+export default function Selector({
   options,
+  label,
   optionLabel,
   optionValue,
+  initialValue,
+  placeholder,
   onChangeHandler,
   id,
   name,
@@ -26,7 +26,7 @@ export default function KeyValueSelector_Basic({
         {label}
       </s.Label>
       <s.SelectStyledContainer>
-        <s.Select id={id} onChange={onChangeHandler} value={value}>
+        <s.Select id={id} onChange={onChangeHandler} value={initialValue}>
           <option value={""} disabled>
             {placeholder}
           </option>

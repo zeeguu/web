@@ -17,7 +17,7 @@ import Heading from "../info_page_shared/Heading";
 import Main from "../info_page_shared/Main";
 import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
 import BackArrow from "./settings_pages_shared/BackArrow";
-import KeyValueSelector from "../../components/KeyValueSelector";
+import Selector from "../../components/Selector";
 
 export default function Languages({ api, setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -122,15 +122,15 @@ export default function Languages({ api, setUser }) {
               }}
             />
 
-            <KeyValueSelector
+            <Selector
               id={"cefr-levels-selector"}
-              elements={CEFR_LEVELS}
+              options={CEFR_LEVELS}
               optionLabel={(e) => e.label}
-              val={(e) => e.value}
+              optionValue={(e) => e.value}
               updateFunction={(e) => {
-                updateCEFRLevel(e);
+                updateCEFRLevel(e.target.value);
               }}
-              current={userDetails.cefr_level}
+              initialValue={userDetails.cefr_level}
             />
           </FormSection>
 
