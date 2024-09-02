@@ -3,6 +3,7 @@ import {
   almostBlack,
   zeeguuOrange,
   zeeguuDarkOrange,
+  zeeguuViolet,
 } from "../components/colors";
 
 const ArticlePreview = styled.div`
@@ -11,6 +12,10 @@ const ArticlePreview = styled.div`
   margin-top: 2em;
   padding-left: 0.8em;
   padding-bottom: 1em;
+
+  &.open {
+    border-left: 0px;
+  }
 `;
 /*
   The div contains the article preview contents
@@ -70,6 +75,9 @@ const Title = styled.div`
   font-weight: 500;
   display: block;
   width: 100%;
+  &.open a {
+    color: ${zeeguuViolet};
+  }
 `;
 
 let Summary = styled.div`

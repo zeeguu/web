@@ -106,7 +106,7 @@ export default function ArticlePreview({
   }
 
   return (
-    <s.ArticlePreview>
+    <s.ArticlePreview className={article.opened ? "open" : ""}>
       <SmallSaveArticleButton
         api={api}
         article={article}
@@ -114,7 +114,9 @@ export default function ArticlePreview({
         setIsArticleSaved={setIsArticleSaved}
       />
 
-      <s.Title>{titleLink(article)}</s.Title>
+      <s.Title className={article.opened ? "open" : ""}>
+        {titleLink(article)}
+      </s.Title>
       <ArticleSourceInfo
         articleInfo={article}
         dontShowPublishingTime={dontShowPublishingTime}
