@@ -50,7 +50,7 @@ export default function StudentsActivityOverview({ api }) {
   }, [selectedTimePeriod]);
 
   const removeStudentFromCohort = (studentID) => {
-    api.removeStudentFromCohort(studentID, (res) => {
+    api.removeStudentFromCohort(studentID, cohortID, (res) => {
       updateShownStudents();
     });
   };

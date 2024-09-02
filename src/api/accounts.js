@@ -131,3 +131,7 @@ Zeeguu_API.prototype.resetPassword = function (
     onError,
   );
 };
+
+Zeeguu_API.prototype.leaveCohort = function (cohortID, callback) {
+  this._getPlainText(`leave_cohort/${cohortID}`, callback);
+};

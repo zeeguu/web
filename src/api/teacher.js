@@ -48,7 +48,7 @@ Zeeguu_API.prototype.addColleagueToCohort = function (
   cohortID,
   colleagueEmail,
   onSuccess,
-  onError
+  onError,
 ) {
   let payload = {
     cohort_id: cohortID,
@@ -58,7 +58,7 @@ Zeeguu_API.prototype.addColleagueToCohort = function (
     `/add_colleague_to_cohort`,
     queryString.stringify(payload),
     onSuccess,
-    onError
+    onError,
   );
 };
 
@@ -101,7 +101,7 @@ Zeeguu_API.prototype.addArticleToCohort = function (
   articleID,
   cohortID,
   onSuccess,
-  onError
+  onError,
 ) {
   let payload = {
     article_id: articleID,
@@ -111,7 +111,7 @@ Zeeguu_API.prototype.addArticleToCohort = function (
     `add_article_to_cohort`,
     queryString.stringify(payload),
     onSuccess,
-    onError
+    onError,
   );
 };
 /*
@@ -129,7 +129,7 @@ Zeeguu_API.prototype.deleteArticleFromCohort = function (
   articleID,
   cohortID,
   onSuccess,
-  onError
+  onError,
 ) {
   let payload = {
     article_id: articleID,
@@ -139,7 +139,7 @@ Zeeguu_API.prototype.deleteArticleFromCohort = function (
     `delete_article_from_cohort`,
     queryString.stringify(payload),
     onSuccess,
-    onError
+    onError,
   );
 };
 
@@ -164,6 +164,13 @@ Zeeguu_API.prototype.parseArticleFromUrl = function (url, callback, onError) {
   this._post(`parse_url`, `url=${url}`, callback, onError, true);
 };
 
-Zeeguu_API.prototype.removeStudentFromCohort = function (studentID, callback) {
-  this._getPlainText(`remove_user_from_cohort/${studentID}`, callback);
+Zeeguu_API.prototype.removeStudentFromCohort = function (
+  studentID,
+  cohortID,
+  callback,
+) {
+  this._getPlainText(
+    `remove_user_from_cohort/${studentID}/${cohortID}`,
+    callback,
+  );
 };

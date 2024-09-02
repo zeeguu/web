@@ -16,6 +16,7 @@ import { PageTitle } from "../components/PageTitle";
 import Feature from "../features/Feature";
 import SessionStorage from "../assorted/SessionStorage";
 import DeleteAccountButton from "./DeleteAccountButton";
+import { WhiteButton } from "../reader/ArticleReader.sc";
 
 export default function Settings({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -25,7 +26,7 @@ export default function Settings({ api, setUser }) {
   const [languages, setLanguages] = useState();
   const [inviteCode, setInviteCode] = useState("");
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
-  const [currentCohort, setCurrentCohort] = useState("");
+  const [studentCohorts, setStudentCohorts] = useState();
   const [cefr, setCEFR] = useState("");
   const [audioExercises, setAudioExercises] = useState(true);
 
@@ -76,15 +77,13 @@ export default function Settings({ api, setUser }) {
       setLanguages(systemLanguages);
     });
     api.getStudent((student) => {
-      if (student.cohort_id !== null) {
-        api.getCohortName(student.cohort_id, (cohort) =>
-          setCurrentCohort(cohort.name),
-        );
+      if (student.cohorts.length > 0) {
+        setStudentCohorts(student.cohorts);
       }
     });
   }, [user.session, api]);
 
-  const studentIsInCohort = currentCohort !== "";
+  const studentIsInCohort = studentCohorts && studentCohorts.length > 0;
 
   function updateUserInfo(info) {
     LocalStorage.setUserInfo(info);
@@ -148,11 +147,19 @@ export default function Settings({ api, setUser }) {
   }
 
   function handleInviteCodeChange(event) {
-    setShowJoinCohortError(false);
     setInviteCode(event.target.value);
+    api.getStudent((student) => {
+      setStudentCohorts(student.cohorts);
+      if (student.cohorts.length === 0) {
+        let newUserInfo = { ...userDetails };
+        newUserInfo["is_student"] = false;
+        setUserDetails(newUserInfo);
+      }
+    });
   }
 
-  function saveStudentToClass() {
+  function saveStudentToClass(e) {
+    e.preventDefault();
     api.joinCohort(
       inviteCode,
       (status) => {
@@ -162,6 +169,7 @@ export default function Settings({ api, setUser }) {
       },
       (error) => {
         console.log(error);
+        setShowJoinCohortError(true);
       },
     );
   }
@@ -185,7 +193,6 @@ export default function Settings({ api, setUser }) {
   if (!userDetails || !languages) {
     return <LoadingAnimation />;
   }
-
   return (
     <>
       <PageTitle>{strings.settings}</PageTitle>
@@ -289,16 +296,31 @@ export default function Settings({ api, setUser }) {
               <>
                 <b>Class Management</b>
                 <hr></hr>
-                <p className="current-class-of-student">
-                  <b>
-                    {studentIsInCohort
-                      ? strings.yourCurrentClassIs + currentCohort
-                      : strings.youHaveNotJoinedAClass}
-                  </b>
-                </p>
-                <label className="change-class-string">
-                  {studentIsInCohort ? strings.changeClass : strings.joinClass}
-                </label>
+                {studentIsInCohort ? (
+                  <h5>You are part of the following classes:</h5>
+                ) : (
+                  <p>You are not in any class</p>
+                )}
+                <scs.classContainer>
+                  {studentIsInCohort &&
+                    studentCohorts.map((each) => (
+                      <WhiteButton
+                        className="whiteButton"
+                        key={each.id}
+                        small={true}
+                        onClick={(e) => {
+                          api.leaveCohort(each.id, (response) => {
+                            handleInviteCodeChange(e);
+                          });
+                        }}
+                      >
+                        {each.name}
+                      </WhiteButton>
+                    ))}
+                </scs.classContainer>
+                {studentIsInCohort && <p>Click to leave the class</p>}
+
+                <label className="change-class-string">Join a new class</label>
                 <input
                   type="text"
                   placeholder={
@@ -314,12 +336,8 @@ export default function Settings({ api, setUser }) {
                   <Error message={strings.checkIfInviteCodeIsValid} />
                 )}
 
-                <s.FormButton onClick={saveStudentToClass}>
-                  <span>
-                    {studentIsInCohort
-                      ? strings.changeClass
-                      : strings.joinClass}
-                  </span>
+                <s.FormButton onClick={(e) => saveStudentToClass(e)}>
+                  <span>{strings.joinClass}</span>
                 </s.FormButton>
               </>
             )}
