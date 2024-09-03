@@ -156,6 +156,16 @@ export default function NextNavigation({
     isCorrect &&
     (isMatchBookmarkProgression || bookmarkProgression || bookmarkLearned);
 
+  function celebrationMessageMatch() {
+    if (LocalStorage.getProductiveExercisesEnabled()) {
+      let verb = matchWordsProgressCount > 1 ? "have" : "has";
+      return `${verb} now moved to your productive knowledge.`;
+    } else {
+      let verb = matchWordsProgressCount > 1 ? "are" : "is";
+      return `${verb} now learned!`;
+    }
+  }
+
   return (
     <>
       {learningCycleFeature && (
@@ -187,17 +197,7 @@ export default function NextNavigation({
             <p>
               <b>
                 {`${matchExerciseProgressionMessage}`}{" "}
-                {LocalStorage.getProductiveExercisesEnabled()
-                  ? matchWordsProgressCount > 1
-                    ? "have"
-                    : "has"
-                  : matchWordsProgressCount > 1
-                    ? "are"
-                    : "is"}{" "}
-                {LocalStorage.getProductiveExercisesEnabled() &&
-                  "now moved to your productive knowledge."}
-                {!LocalStorage.getProductiveExercisesEnabled() &&
-                  "now learned!"}
+                {celebrationMessageMatch()}
               </b>
             </p>
           </div>
