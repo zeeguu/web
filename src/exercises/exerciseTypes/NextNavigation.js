@@ -155,6 +155,7 @@ export default function NextNavigation({
   const showCoffetti =
     isCorrect &&
     (isMatchBookmarkProgression || bookmarkProgression || bookmarkLearned);
+
   return (
     <>
       {learningCycleFeature && (
@@ -186,8 +187,17 @@ export default function NextNavigation({
             <p>
               <b>
                 {`${matchExerciseProgressionMessage}`}{" "}
-                {matchWordsProgressCount > 1 ? "have" : "has"} now moved to your
-                productive knowledge.
+                {LocalStorage.getProductiveExercisesEnabled()
+                  ? matchWordsProgressCount > 1
+                    ? "have"
+                    : "has"
+                  : matchWordsProgressCount > 1
+                    ? "are"
+                    : "is"}{" "}
+                {LocalStorage.getProductiveExercisesEnabled() &&
+                  "now moved to your productive knowledge."}
+                {!LocalStorage.getProductiveExercisesEnabled() &&
+                  "now learned!"}
               </b>
             </p>
           </div>
