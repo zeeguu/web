@@ -1,6 +1,10 @@
 import * as s from "./InfoPage.sc";
 
-export default function InfoPage({ children, pageWidth, layoutVariant }) {
+export default function PreferencesPage({
+  children,
+  pageWidth,
+  layoutVariant,
+}) {
   return (
     <s.PageBackground layoutVariant={layoutVariant}>
       <s.PageContainer layoutVariant={layoutVariant} pageWidth={pageWidth}>

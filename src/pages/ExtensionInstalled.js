@@ -1,6 +1,6 @@
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import { useEffect } from "react";
-import InfoPage from "./_pages_shared/InfoPage";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading";
 import Main from "./_pages_shared/Main";
@@ -18,7 +18,7 @@ export default function ExtensionInstalled({ api }) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <InfoPage>
+    <PreferencesPage>
       <Header>
         <Heading>
           Right-click anywhere on any article’s page to&nbsp;access The Zeeguu
@@ -55,6 +55,6 @@ export default function ExtensionInstalled({ api }) {
           )}
         </ButtonContainer>
       </Footer>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

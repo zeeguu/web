@@ -1,6 +1,6 @@
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
 
-import InfoPage from "./_pages_shared/InfoPage";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading";
 import Main from "./_pages_shared/Main";
@@ -18,7 +18,7 @@ export default function ExcludeWordsStep1({ hasExtension }) {
   }
 
   return (
-    <InfoPage>
+    <PreferencesPage>
       <Header>
         <Heading>
           Would you like to exclude articles and exercises containing particular
@@ -42,6 +42,6 @@ export default function ExcludeWordsStep1({ hasExtension }) {
           </Button>
         </ButtonContainer>
       </Main>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

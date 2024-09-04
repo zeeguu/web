@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import InfoPage from "./_pages_shared/InfoPage";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading";
 import Main from "./_pages_shared/Main";
@@ -22,7 +22,7 @@ export default function ResetPassword({ api }) {
   }
 
   return (
-    <InfoPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"}>
       <Header>
         <Heading>Reset Password</Heading>
       </Header>
@@ -46,6 +46,6 @@ export default function ResetPassword({ api }) {
           </a>
         </p>
       </Footer>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

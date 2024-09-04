@@ -3,7 +3,7 @@ import { isSupportedBrowser } from "../utils/misc/browserDetection";
 import useUnwantedContentPreferences from "../hooks/useUnwantedContentPreferences";
 import useFormField from "../hooks/useFormField";
 
-import InfoPage from "./_pages_shared/InfoPage";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading";
 import Main from "./_pages_shared/Main";
@@ -44,7 +44,7 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
   }
 
   return (
-    <InfoPage>
+    <PreferencesPage>
       <Header>
         <Heading>
           Here you can add<br></br> unwanted words or&nbsp;phrases
@@ -68,7 +68,7 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
         </Form>
         <TagContainer>
           {unwantedKeywords.map((keyword) => (
-            <div key={keyword.id} searchremovabeid={keyword.id}>
+            <div key={keyword.id} id={keyword.id}>
               <Tag
                 className={"outlined-blue"}
                 onClick={() => removeUnwantedKeyword(keyword)}
@@ -91,6 +91,6 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
           </Button>
         </ButtonContainer>
       </Footer>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

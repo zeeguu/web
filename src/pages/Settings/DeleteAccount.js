@@ -1,5 +1,5 @@
 import DeleteAccountButton from "../DeleteAccount/DeleteAccountButton";
-import InfoPage from "../_pages_shared/InfoPage";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Main from "../_pages_shared/Main";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
@@ -8,7 +8,7 @@ import strings from "../../i18n/definitions";
 
 export default function DeleteAccount() {
   return (
-    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.deleteAccount}</Heading>
@@ -16,6 +16,6 @@ export default function DeleteAccount() {
       <Main>
         <DeleteAccountButton />
       </Main>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

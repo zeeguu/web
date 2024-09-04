@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import InfoPage from "../_pages_shared/InfoPage";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
@@ -51,7 +51,7 @@ export default function DeleteAccount({ api }) {
   if (currentStatus === DeletionStatus.UNDEFINED) return <LoadingAnimation />;
 
   return (
-    <InfoPage>
+    <PreferencesPage>
       <Header>
         <Heading>{headingMsg}</Heading>
       </Header>
@@ -83,6 +83,6 @@ export default function DeleteAccount({ api }) {
           </>
         )}
       </Main>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

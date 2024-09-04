@@ -11,7 +11,7 @@ import Button from "../_pages_shared/Button";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import Form from "../_pages_shared/Form";
 import FormSection from "../_pages_shared/FormSection";
-import InfoPage from "../_pages_shared/InfoPage";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
@@ -99,7 +99,7 @@ export default function Languages({ api, setUser }) {
   console.log(userDetails);
 
   return (
-    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.languageSettings}</Heading>
@@ -148,6 +148,6 @@ export default function Languages({ api, setUser }) {
           </ButtonContainer>
         </Form>
       </Main>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

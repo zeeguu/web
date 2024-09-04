@@ -1,4 +1,4 @@
-import InfoPage from "./_pages_shared/InfoPage";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading";
 import Main from "./_pages_shared/Main";
@@ -15,7 +15,7 @@ import redirect from "../utils/routing/routing";
 
 export default function InstallExtension() {
   return (
-    <InfoPage>
+    <PreferencesPage>
       <Header>
         <Heading>You're almost there</Heading>
       </Header>
@@ -40,6 +40,6 @@ export default function InstallExtension() {
           </a>
         </ButtonContainer>
       </Footer>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

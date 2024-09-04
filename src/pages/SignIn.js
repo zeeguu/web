@@ -1,9 +1,8 @@
 import { useState } from "react";
-import useRedirectLink from "../hooks/useRedirectLink";
 
 import useFormField from "../hooks/useFormField";
 
-import InfoPage from "./_pages_shared/InfoPage";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading";
 import Main from "./_pages_shared/Main";
@@ -37,7 +36,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   }
 
   return (
-    <InfoPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"}>
       <Header>
         <Heading>Log in</Heading>
       </Header>
@@ -83,6 +82,6 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
           </a>
         </p>
       </Footer>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

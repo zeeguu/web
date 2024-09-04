@@ -1,5 +1,5 @@
 import useSelectInterest from "../hooks/useSelectInterest";
-import InfoPage from "./_pages_shared/InfoPage";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading";
 import Main from "./_pages_shared/Main";
@@ -18,7 +18,7 @@ export default function SelectInterests({ api }) {
     useSelectInterest(api);
 
   return (
-    <InfoPage>
+    <PreferencesPage>
       <Header>
         <Heading>What would you like to read&nbsp;about?</Heading>
       </Header>
@@ -47,6 +47,6 @@ export default function SelectInterests({ api }) {
           </Button>
         </ButtonContainer>
       </Footer>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

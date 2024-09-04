@@ -9,7 +9,7 @@ import FormSection from "../_pages_shared/FormSection";
 import Button from "../_pages_shared/Button";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import InputField from "../../components/InputField";
-import InfoPage from "../_pages_shared/InfoPage";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
@@ -66,7 +66,7 @@ export default function ProfileDetails({ api, setUser }) {
   }
 
   return (
-    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.profileDetails}</Heading>
@@ -105,6 +105,6 @@ export default function ProfileDetails({ api, setUser }) {
           </ButtonContainer>
         </Form>
       </Main>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

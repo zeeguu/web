@@ -6,7 +6,7 @@ import ButtonContainer from "../_pages_shared/ButtonContainer";
 import InputField from "../../components/InputField";
 import Form from "../_pages_shared/Form";
 import FormSection from "../_pages_shared/FormSection";
-import InfoPage from "../_pages_shared/InfoPage";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
@@ -53,7 +53,7 @@ export default function CurrentClass({ api }) {
   }
 
   return (
-    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.myCurrentClass}</Heading>
@@ -99,6 +99,6 @@ export default function CurrentClass({ api }) {
           </ButtonContainer>
         </Form>
       </Main>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

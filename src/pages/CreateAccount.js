@@ -7,7 +7,7 @@ import useFormField from "../hooks/useFormField";
 import { UserContext } from "../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
 
-import InfoPage from "./_pages_shared/InfoPage";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading";
 import Main from "./_pages_shared/Main";
@@ -118,7 +118,7 @@ export default function CreateAccount({
   }
 
   return (
-    <InfoPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"}>
       <Modal
         open={showPrivacyNotice}
         onClose={() => {
@@ -228,6 +228,6 @@ export default function CreateAccount({
           </a>
         </p>
       </Footer>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

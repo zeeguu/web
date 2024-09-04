@@ -5,7 +5,7 @@ import LocalStorage from "../assorted/LocalStorage";
 import redirect from "../utils/routing/routing";
 import useFormField from "../hooks/useFormField";
 
-import InfoPage from "./_pages_shared/InfoPage";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
 import Heading from "./_pages_shared/Heading";
 import Main from "./_pages_shared/Main";
@@ -84,7 +84,7 @@ export default function LanguagePreferences({ api }) {
   }
 
   return (
-    <InfoPage pageWidth={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"}>
       <Header>
         <Heading>
           What language would&nbsp;you&nbsp;like&nbsp;to&nbsp;learn?
@@ -149,6 +149,6 @@ export default function LanguagePreferences({ api }) {
           </p>
         </Form>
       </Main>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

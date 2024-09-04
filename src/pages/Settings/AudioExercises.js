@@ -8,7 +8,7 @@ import Button from "../_pages_shared/Button";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import Form from "../_pages_shared/Form";
 import FormSection from "../_pages_shared/FormSection";
-import InfoPage from "../_pages_shared/InfoPage";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Main from "../_pages_shared/Main";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
@@ -66,7 +66,7 @@ export default function AudioExercises({ api }) {
   }
 
   return (
-    <InfoPage layoutVariant={"minimalistic-top-aligned"}>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
         <Heading>{strings.exerciseTypePreferences}</Heading>
@@ -103,6 +103,6 @@ export default function AudioExercises({ api }) {
           </ButtonContainer>
         </Form>
       </Main>
-    </InfoPage>
+    </PreferencesPage>
   );
 }
