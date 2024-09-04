@@ -1,5 +1,5 @@
 import strings from "../i18n/definitions";
-import * as s from "./SelectorStyling.sc";
+import * as s from "./Selector.sc";
 
 export default function LanguageSelector({
   languages,

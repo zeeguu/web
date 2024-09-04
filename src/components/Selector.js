@@ -7,7 +7,7 @@
 
 //onChange in Selector takes and evokes standard react event handler
 
-import * as s from "./SelectorStyling.sc";
+import * as s from "./Selector.sc";
 
 export default function Selector({
   options,
