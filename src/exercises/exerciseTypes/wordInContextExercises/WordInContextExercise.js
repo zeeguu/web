@@ -44,6 +44,7 @@ export default function WordInContextExercise({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(exerciseType);
@@ -62,7 +63,7 @@ export default function WordInContextExercise({
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isBookmarkChanged]);
 
   useEffect(() => {
     checkTranslations(translatedWords);
@@ -203,6 +204,7 @@ export default function WordInContextExercise({
         handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

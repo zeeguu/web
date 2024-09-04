@@ -40,6 +40,7 @@ export default function FindWordInContextCloze({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -56,7 +57,7 @@ export default function FindWordInContextCloze({
       );
       setArticleInfo(articleInfo);
     });
-  }, []);
+  }, [isBookmarkChanged]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -145,6 +146,7 @@ export default function FindWordInContextCloze({
         handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

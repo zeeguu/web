@@ -42,6 +42,7 @@ export default function TranslateWhatYouHear({
     activeSessionDuration,
   );
   const [showHintText, setShowHintText] = useState(false);
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   async function handleSpeak() {
     await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
@@ -62,7 +63,7 @@ export default function TranslateWhatYouHear({
       );
     });
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, []);
+  }, [isBookmarkChanged]);
 
   useEffect(() => {
     if (SessionStorage.isAudioExercisesEnabled()) {
@@ -187,6 +188,7 @@ export default function TranslateWhatYouHear({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
         <DisableAudioSession

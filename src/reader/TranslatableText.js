@@ -29,7 +29,7 @@ export function TranslatableText({
     }
     setParagraphs(interactiveText.getParagraphs());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [interactiveText]);
 
   useEffect(() => {
     setRenderedText(

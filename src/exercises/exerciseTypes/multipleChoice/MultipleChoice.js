@@ -42,6 +42,7 @@ export default function MultipleChoice({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -62,7 +63,7 @@ export default function MultipleChoice({
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isBookmarkChanged]);
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
@@ -161,6 +162,7 @@ export default function MultipleChoice({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

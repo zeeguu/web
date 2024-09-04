@@ -39,6 +39,7 @@ export default function TranslateL2toL1({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -54,7 +55,7 @@ export default function TranslateL2toL1({
         ),
       );
     });
-  }, []);
+  }, [isBookmarkChanged]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -151,6 +152,7 @@ export default function TranslateL2toL1({
         handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

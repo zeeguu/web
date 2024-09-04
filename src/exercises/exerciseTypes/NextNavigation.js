@@ -35,6 +35,7 @@ export default function NextNavigation({
   isCorrect,
   handleShowSolution,
   exerciseType,
+  isBookmarkChanged,
 }) {
   const correctStrings = [
     strings.correctExercise1,
@@ -252,6 +253,7 @@ export default function NextNavigation({
                 reload={reload}
                 setReload={setReload}
                 notifyDelete={() => setIsDeleted(true)}
+                notifyWordChange={() => isBookmarkChanged()}
               />
             </s.EditSpeakButtonHolder>
             <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>

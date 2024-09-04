@@ -41,6 +41,7 @@ export default function MultipleChoiceL2toL1({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -56,7 +57,7 @@ export default function MultipleChoiceL2toL1({
         ),
       );
     });
-  }, []);
+  }, [isBookmarkChanged]);
 
   useEffect(() => {
     if (interactiveText) {
@@ -150,6 +151,7 @@ export default function MultipleChoiceL2toL1({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );
