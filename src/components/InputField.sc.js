@@ -10,6 +10,7 @@ const FieldLabelContainer = styled.div`
   input:focus {
     outline: transparent;
     border: 1.5px solid ${zeeguuOrange};
+
     &.error {
       border: 1.5px solid ${zeeguuRed};
     }
@@ -19,7 +20,6 @@ const FieldLabelContainer = styled.div`
 const InputWrapper = styled.div`
   height: 2.5rem;
   gap: 0.5rem;
-  align-items: center;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -34,6 +34,7 @@ const Input = styled.input`
   margin: 0;
   border: 1.5px solid ${lightGrey};
   border-radius: 0.3rem;
+
   &.error {
     border: 1.5px solid ${zeeguuRed};
   }
@@ -41,6 +42,7 @@ const Input = styled.input`
   input:focus {
     outline: transparent;
     border: 1.5px solid ${zeeguuOrange};
+
     &.error {
       border: 1.5px solid ${zeeguuRed};
     }
@@ -74,7 +76,7 @@ const HelperText = styled.div`
 `;
 
 const ErrorMessage = styled.div`
-  ${BaseHelperTextStyle}
+  ${BaseHelperTextStyle};
   color: ${zeeguuRed};
 `;
 
