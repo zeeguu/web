@@ -48,8 +48,12 @@ export default function NextNavigation({
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
-  const [autoPronounceState, autoPronounceString, toggleAutoPronounceValue] =
-    useBookmarkAutoPronounce();
+  const [
+    IsPronounceBookmark,
+    currentPronouncingState,
+    autoPronounceString,
+    toggleAutoPronounceValue,
+  ] = useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [matchExerciseProgressionMessage, setMatchExercisesProgressionMessage] =
@@ -86,13 +90,7 @@ export default function NextNavigation({
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
   }
   useEffect(() => {
-    if (
-      isCorrect &&
-      autoPronounceState &&
-      autoPronounceState !== PRONOUNCIATION_SETTING.off &&
-      !isMatchExercise
-    )
-      handleSpeak();
+    if (isCorrect && IsPronounceBookmark && !isMatchExercise) handleSpeak();
     if (exerciseAttemptsLog) {
       let wordsProgressed = [];
       for (let i = 0; i < exerciseAttemptsLog.length; i++) {

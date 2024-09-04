@@ -14,6 +14,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { toast } from "react-toastify";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
 import LocalStorage from "../../../assorted/LocalStorage.js";
+import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
 
 // The user has to match three L1 words to their correct L2 translations.
 // This tests the user's passive knowledge.
@@ -68,6 +69,7 @@ export default function Match({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [IsPronounceBookmark] = useBookmarkAutoPronounce();
   const [isPronouncing, setIsPronouncing] = useState(false);
   const [lastCorrectBookmarkId, setLastCorrectBookmarkId] = useState(null);
   const [selectedBookmark, setSelectedBookmark] = useState();
@@ -87,9 +89,7 @@ export default function Match({
   }
   const speech = useContext(SpeechContext);
   async function handleSpeak(bookmark) {
-    if (
-      LocalStorage.getAutoPronounceInExercises() !== PRONOUNCIATION_SETTING.off
-    ) {
+    if (IsPronounceBookmark) {
       await speech.speakOut(bookmark.from, setIsPronouncing);
     }
   }
