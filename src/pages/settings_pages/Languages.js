@@ -23,6 +23,7 @@ export default function Languages({ api, setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [userDetails, setUserDetails] = useState(null);
   const [languages, setLanguages] = useState();
+  // TODO: not used; see if you can remove
   const [cefr, setCEFR] = useState("");
 
   const user = useContext(UserContext);
@@ -79,6 +80,8 @@ export default function Languages({ api, setUser }) {
   }
 
   function updateLearnedLanguage(lang_code) {
+    console.log("language code in updateLearnedLanguage");
+    console.log(lang_code);
     setUserDetails({
       ...userDetails,
       learned_language: lang_code,
@@ -97,6 +100,8 @@ export default function Languages({ api, setUser }) {
     return <LoadingAnimation />;
   }
 
+  console.log(userDetails);
+
   return (
     <InfoPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
@@ -113,12 +118,9 @@ export default function Languages({ api, setUser }) {
               id={"practiced-language-selector"}
               label={strings.learnedLanguage}
               languages={languages.learnable_languages}
-              selected={language_for_id(
-                userDetails.learned_language,
-                languages.learnable_languages,
-              )}
-              onChange={(e) => {
-                updateLearnedLanguage(getLanguageCodeFromSelector(e));
+              selected={userDetails.learned_language}
+              onChange={(languageCode) => {
+                updateLearnedLanguage(languageCode);
               }}
             />
 
@@ -127,10 +129,10 @@ export default function Languages({ api, setUser }) {
               options={CEFR_LEVELS}
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
-              updateFunction={(e) => {
+              onChange={(e) => {
                 updateCEFRLevel(e.target.value);
               }}
-              initialValue={userDetails.cefr_level}
+              selectedValue={userDetails.cefr_level}
             />
           </FormSection>
 
@@ -139,12 +141,9 @@ export default function Languages({ api, setUser }) {
               id={"translation-language-selector"}
               label={strings.baseLanguage}
               languages={languages.native_languages}
-              selected={language_for_id(
-                userDetails.native_language,
-                languages.native_languages,
-              )}
-              onChange={(e) => {
-                updateNativeLanguage(getLanguageCodeFromSelector(e));
+              selected={userDetails.native_language}
+              onChange={(languageCode) => {
+                updateNativeLanguage(languageCode);
               }}
             />
           </FormSection>
@@ -155,13 +154,4 @@ export default function Languages({ api, setUser }) {
       </Main>
     </InfoPage>
   );
-}
-
-function language_for_id(id, language_list) {
-  for (let i = 0; i < language_list.length; i++) {
-    console.log(language_list[i].code, id);
-    if (language_list[i].code === id) {
-      return language_list[i].name;
-    }
-  }
 }

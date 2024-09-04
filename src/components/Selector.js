@@ -10,23 +10,22 @@
 import * as s from "./Selector.sc";
 
 export default function Selector({
-  options,
-  label,
-  optionLabel,
-  optionValue,
-  initialValue,
-  placeholder,
+  options, // objects that should include the value and the label
+  optionLabel, // function for getting the label from an option object
+  optionValue, // function for getting the value from an option object
+  selectedValue, // current value - state in the parent component
   onChange,
+  label, // label above the field
+  placeholder,
   id,
-  name,
 }) {
   return (
     <s.SelectWrapper>
-      <s.Label htmlFor={id} name={name}>
+      <s.Label htmlFor={id} name={label}>
         {label}
       </s.Label>
       <s.SelectStyledContainer>
-        <s.Select id={id} onChange={onChange} value={initialValue}>
+        <s.Select id={id} value={selectedValue} onChange={onChange}>
           <option value={""} disabled>
             {placeholder}
           </option>

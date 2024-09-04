@@ -103,7 +103,7 @@ export default function LanguagePreferences({ api }) {
           )}
           <FormSection>
             <Selector
-              initialValue={learned_language_on_register}
+              selectedValue={learned_language_on_register}
               label={strings.learnedLanguage}
               placeholder={strings.learnedLanguagePlaceholder}
               optionLabel={(e) => e.name}
@@ -114,7 +114,7 @@ export default function LanguagePreferences({ api }) {
             />
 
             <Selector
-              initialValue={learned_cefr_level_on_register}
+              selectedValue={learned_cefr_level_on_register}
               label={strings.levelOfLearnedLanguage}
               placeholder={strings.levelOfLearnedLanguagePlaceholder}
               optionLabel={(e) => e.label}
@@ -125,7 +125,7 @@ export default function LanguagePreferences({ api }) {
             />
 
             <Selector
-              initialValue={native_language_on_register}
+              selectedValue={native_language_on_register}
               label={strings.baseLanguage}
               placeholder={strings.baseLanguagePlaceholder}
               optionLabel={(e) => e.name}
