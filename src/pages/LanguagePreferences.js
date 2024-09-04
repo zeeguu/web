@@ -110,7 +110,7 @@ export default function LanguagePreferences({ api }) {
               optionValue={(e) => e.code}
               id={"practiced-languages"}
               options={systemLanguages.learnable_languages}
-              onChangeHandler={handleLearned_language_on_register}
+              onChange={handleLearned_language_on_register}
             />
 
             <Selector
@@ -121,7 +121,7 @@ export default function LanguagePreferences({ api }) {
               optionValue={(e) => e.value}
               id={"level-of-practiced-languages"}
               options={CEFR_LEVELS}
-              onChangeHandler={handleLearned_cefr_level_on_register}
+              onChange={handleLearned_cefr_level_on_register}
             />
 
             <Selector
@@ -132,7 +132,7 @@ export default function LanguagePreferences({ api }) {
               optionValue={(e) => e.code}
               id={"translation-languages"}
               options={systemLanguages.native_languages}
-              onChangeHandler={handleNative_language_on_register}
+              onChange={handleNative_language_on_register}
             />
           </FormSection>
           <p>{strings.youCanChangeLater}</p>

@@ -16,7 +16,7 @@ export default function Selector({
   optionValue,
   initialValue,
   placeholder,
-  onChangeHandler,
+  onChange,
   id,
   name,
 }) {
@@ -26,7 +26,7 @@ export default function Selector({
         {label}
       </s.Label>
       <s.SelectStyledContainer>
-        <s.Select id={id} onChange={onChangeHandler} value={initialValue}>
+        <s.Select id={id} onChange={onChange} value={initialValue}>
           <option value={""} disabled>
             {placeholder}
           </option>
