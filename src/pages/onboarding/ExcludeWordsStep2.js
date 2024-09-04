@@ -1,26 +1,26 @@
-import { isSupportedBrowser } from "../utils/misc/browserDetection";
+import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 
-import useUnwantedContentPreferences from "../hooks/useUnwantedContentPreferences";
-import useFormField from "../hooks/useFormField";
+import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
+import useFormField from "../../hooks/useFormField";
 
-import PreferencesPage from "./_pages_shared/PreferencesPage";
-import Header from "./_pages_shared/Header";
-import Heading from "./_pages_shared/Heading";
-import Main from "./_pages_shared/Main";
-import Form from "./_pages_shared/Form";
-import Button from "./_pages_shared/Button";
-import Footer from "./_pages_shared/Footer";
-import ButtonContainer from "./_pages_shared/ButtonContainer";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
+import Header from "../_pages_shared/Header";
+import Heading from "../_pages_shared/Heading";
+import Main from "../_pages_shared/Main";
+import Form from "../_pages_shared/Form";
+import Button from "../_pages_shared/Button";
+import Footer from "../_pages_shared/Footer";
+import ButtonContainer from "../_pages_shared/ButtonContainer";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
-import InputField from "../components/InputField";
-import Tag from "./_pages_shared/Tag";
-import TagContainer from "./_pages_shared/TagContainer";
+import InputField from "../../components/InputField";
+import Tag from "../_pages_shared/Tag";
+import TagContainer from "../_pages_shared/TagContainer";
 
-import redirect from "../utils/routing/routing";
-import strings from "../i18n/definitions";
+import redirect from "../../utils/routing/routing";
+import strings from "../../i18n/definitions";
 
 export default function ExcludeWordsStep2({ api, hasExtension }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =

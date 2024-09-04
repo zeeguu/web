@@ -1,4 +1,4 @@
-import strings from "../i18n/definitions";
+import strings from "../../i18n/definitions";
 
 export default function PrivacyNotice() {
   return (

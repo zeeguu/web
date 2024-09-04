@@ -1,27 +1,27 @@
 import { useState, useEffect } from "react";
 
-import LocalStorage from "../assorted/LocalStorage";
+import LocalStorage from "../../assorted/LocalStorage";
 
-import redirect from "../utils/routing/routing";
-import useFormField from "../hooks/useFormField";
+import redirect from "../../utils/routing/routing";
+import useFormField from "../../hooks/useFormField";
 
-import PreferencesPage from "./_pages_shared/PreferencesPage";
-import Header from "./_pages_shared/Header";
-import Heading from "./_pages_shared/Heading";
-import Main from "./_pages_shared/Main";
-import Form from "./_pages_shared/Form";
-import FullWidthErrorMsg from "./_pages_shared/FullWidthErrorMsg";
-import FormSection from "./_pages_shared/FormSection";
-import Selector from "../components/Selector";
-import ButtonContainer from "./_pages_shared/ButtonContainer";
-import Button from "./_pages_shared/Button";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
+import Header from "../_pages_shared/Header";
+import Heading from "../_pages_shared/Heading";
+import Main from "../_pages_shared/Main";
+import Form from "../_pages_shared/Form";
+import FullWidthErrorMsg from "../_pages_shared/FullWidthErrorMsg";
+import FormSection from "../_pages_shared/FormSection";
+import Selector from "../../components/Selector";
+import ButtonContainer from "../_pages_shared/ButtonContainer";
+import Button from "../_pages_shared/Button";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
-import validator from "../assorted/validator";
-import strings from "../i18n/definitions";
-import LoadingAnimation from "../components/LoadingAnimation";
+import validator from "../../assorted/validator";
+import strings from "../../i18n/definitions";
+import LoadingAnimation from "../../components/LoadingAnimation";
 
-import { CEFR_LEVELS } from "../assorted/cefrLevels";
+import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 
 export default function LanguagePreferences({ api }) {
   const [learned_language_on_register, handleLearned_language_on_register] =

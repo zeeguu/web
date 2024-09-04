@@ -1,29 +1,29 @@
 import { useState, useContext } from "react";
 
-import redirect from "../utils/routing/routing";
-import * as sC from "../components/modal_shared/Checkbox.sc";
-import useFormField from "../hooks/useFormField";
+import redirect from "../../utils/routing/routing";
+import * as sC from "../../components/modal_shared/Checkbox.sc";
+import useFormField from "../../hooks/useFormField";
 
-import { UserContext } from "../contexts/UserContext";
-import { saveUserInfoIntoCookies } from "../utils/cookies/userInfo";
+import { UserContext } from "../../contexts/UserContext";
+import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 
-import PreferencesPage from "./_pages_shared/PreferencesPage";
-import Header from "./_pages_shared/Header";
-import Heading from "./_pages_shared/Heading";
-import Main from "./_pages_shared/Main";
-import Form from "./_pages_shared/Form";
-import FullWidthErrorMsg from "./_pages_shared/FullWidthErrorMsg";
-import FormSection from "./_pages_shared/FormSection";
-import InputField from "../components/InputField";
-import Footer from "./_pages_shared/Footer";
-import ButtonContainer from "./_pages_shared/ButtonContainer";
-import Button from "./_pages_shared/Button";
-import Modal from "../components/modal_shared/Modal";
-import validator from "../assorted/validator";
-import strings from "../i18n/definitions";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
+import Header from "../_pages_shared/Header";
+import Heading from "../_pages_shared/Heading";
+import Main from "../_pages_shared/Main";
+import Form from "../_pages_shared/Form";
+import FullWidthErrorMsg from "../_pages_shared/FullWidthErrorMsg";
+import FormSection from "../_pages_shared/FormSection";
+import InputField from "../../components/InputField";
+import Footer from "../_pages_shared/Footer";
+import ButtonContainer from "../_pages_shared/ButtonContainer";
+import Button from "../_pages_shared/Button";
+import Modal from "../../components/modal_shared/Modal";
+import validator from "../../assorted/validator";
+import strings from "../../i18n/definitions";
 
 import * as EmailValidator from "email-validator";
-import LocalStorage from "../assorted/LocalStorage";
+import LocalStorage from "../../assorted/LocalStorage";
 
 export default function CreateAccount({
   api,

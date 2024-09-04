@@ -1,16 +1,16 @@
-import { getSessionFromCookies } from "../utils/cookies/userInfo";
+import { getSessionFromCookies } from "../../utils/cookies/userInfo";
 import { useEffect } from "react";
-import PreferencesPage from "./_pages_shared/PreferencesPage";
-import Header from "./_pages_shared/Header";
-import Heading from "./_pages_shared/Heading";
-import Main from "./_pages_shared/Main";
-import FullWidthImage from "../components/FullWidthImage";
-import ButtonContainer from "./_pages_shared/ButtonContainer";
-import Footer from "./_pages_shared/Footer";
-import Button from "./_pages_shared/Button";
+import PreferencesPage from "../_pages_shared/PreferencesPage";
+import Header from "../_pages_shared/Header";
+import Heading from "../_pages_shared/Heading";
+import Main from "../_pages_shared/Main";
+import FullWidthImage from "../../components/FullWidthImage";
+import ButtonContainer from "../_pages_shared/ButtonContainer";
+import Footer from "../_pages_shared/Footer";
+import Button from "../_pages_shared/Button";
 
-import strings from "../i18n/definitions";
-import redirect from "../utils/routing/routing";
+import strings from "../../i18n/definitions";
+import redirect from "../../utils/routing/routing";
 
 export default function ExtensionInstalled({ api }) {
   useEffect(() => {
