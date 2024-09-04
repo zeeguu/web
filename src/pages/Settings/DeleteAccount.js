@@ -1,8 +1,8 @@
-import DeleteAccountButton from "../DeleteAccountButton";
-import InfoPage from "../info_page_shared/InfoPage";
-import Main from "../info_page_shared/Main";
-import Header from "../info_page_shared/Header";
-import Heading from "../info_page_shared/Heading";
+import DeleteAccountButton from "../DeleteAccount/DeleteAccountButton";
+import InfoPage from "../_pages_shared/InfoPage";
+import Main from "../_pages_shared/Main";
+import Header from "../_pages_shared/Header";
+import Heading from "../_pages_shared/Heading";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 

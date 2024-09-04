@@ -1,14 +1,14 @@
 import { useState } from "react";
-import WarningButton from "../components/modal_shared/WarningButton";
-import Modal from "../components/modal_shared/Modal";
-import Header from "../components/modal_shared/Header";
-import Heading from "../components/modal_shared/Heading";
-import Main from "../components/modal_shared/Main";
-import Footer from "./info_page_shared/Footer";
-import ButtonContainer from "../components/modal_shared/ButtonContainer";
-import * as s from "../components/FormPage.sc";
-import redirect from "../utils/routing/routing";
-import SessionStorage from "../assorted/SessionStorage.js";
+import WarningButton from "../../components/modal_shared/WarningButton";
+import Modal from "../../components/modal_shared/Modal";
+import Header from "../../components/modal_shared/Header";
+import Heading from "../../components/modal_shared/Heading";
+import Main from "../../components/modal_shared/Main";
+import Footer from "../_pages_shared/Footer";
+import ButtonContainer from "../../components/modal_shared/ButtonContainer";
+import * as s from "../../components/FormPage.sc";
+import redirect from "../../utils/routing/routing";
+import SessionStorage from "../../assorted/SessionStorage.js";
 
 export default function DeleteAccountButton() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -16,6 +16,7 @@ export default function DeleteAccountButton() {
   function handleClick() {
     setShowConfirmationModal(!showConfirmationModal);
   }
+
   function handleUserConfirmation() {
     if (!SessionStorage.hasUserConfirmationForAccountDeletion()) {
       setShowConfirmationModal(false);
@@ -25,6 +26,7 @@ export default function DeleteAccountButton() {
       setShowConfirmationModal(false);
     }
   }
+
   return (
     <>
       <Modal

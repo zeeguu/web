@@ -22,10 +22,12 @@ const SettingsItem = styled.li`
   width: 100%;
   cursor: pointer;
   /* margin-left: auto;
-  margin-right: auto; */
+      margin-right: auto; */
+
   &:hover {
     background-color: #f6f6f6;
   }
+
   &:active {
     background-color: #ededed;
   }

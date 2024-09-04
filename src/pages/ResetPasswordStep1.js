@@ -3,12 +3,12 @@ import * as EmailValidator from "email-validator";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
-import Form from "./info_page_shared/Form";
-import FormSection from "./info_page_shared/FormSection";
-import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
+import Form from "./_pages_shared/Form";
+import FormSection from "./_pages_shared/FormSection";
+import FullWidthErrorMsg from "./_pages_shared/FullWidthErrorMsg";
 import InputField from "../components/InputField";
-import ButtonContainer from "./info_page_shared/ButtonContainer";
-import Button from "./info_page_shared/Button";
+import ButtonContainer from "./_pages_shared/ButtonContainer";
+import Button from "./_pages_shared/Button";
 
 export default function ResetPasswordStep1({
   api,
@@ -39,6 +39,7 @@ export default function ResetPasswordStep1({
       },
     );
   }
+
   return (
     <Form action={""} method={"post"}>
       <FormSection>

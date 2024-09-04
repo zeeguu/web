@@ -1,10 +1,10 @@
-import Tag from "../info_page_shared/Tag";
-import TagContainer from "../info_page_shared/TagContainer";
+import Tag from "../_pages_shared/Tag";
+import TagContainer from "../_pages_shared/TagContainer";
 import useSelectInterest from "../../hooks/useSelectInterest";
-import InfoPage from "../info_page_shared/InfoPage";
-import Main from "../info_page_shared/Main";
-import Header from "../info_page_shared/Header";
-import Heading from "../info_page_shared/Heading";
+import InfoPage from "../_pages_shared/InfoPage";
+import Main from "../_pages_shared/Main";
+import Header from "../_pages_shared/Header";
+import Heading from "../_pages_shared/Heading";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 

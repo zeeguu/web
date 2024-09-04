@@ -4,17 +4,17 @@ import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
-import Form from "../info_page_shared/Form";
-import FormSection from "../info_page_shared/FormSection";
-import Button from "../info_page_shared/Button";
-import ButtonContainer from "../info_page_shared/ButtonContainer";
+import Form from "../_pages_shared/Form";
+import FormSection from "../_pages_shared/FormSection";
+import Button from "../_pages_shared/Button";
+import ButtonContainer from "../_pages_shared/ButtonContainer";
 import InputField from "../../components/InputField";
-import InfoPage from "../info_page_shared/InfoPage";
-import Header from "../info_page_shared/Header";
-import Heading from "../info_page_shared/Heading";
-import Main from "../info_page_shared/Main";
+import InfoPage from "../_pages_shared/InfoPage";
+import Header from "../_pages_shared/Header";
+import Heading from "../_pages_shared/Heading";
+import Main from "../_pages_shared/Main";
 import BackArrow from "./settings_pages_shared/BackArrow";
-import FullWidthErrorMsg from "../info_page_shared/FullWidthErrorMsg";
+import FullWidthErrorMsg from "../_pages_shared/FullWidthErrorMsg";
 
 import LoadingAnimation from "../../components/LoadingAnimation";
 

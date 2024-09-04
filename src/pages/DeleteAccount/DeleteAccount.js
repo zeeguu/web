@@ -1,14 +1,14 @@
 import { useEffect, useState, useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
-import InfoPage from "./info_page_shared/InfoPage";
-import Header from "./info_page_shared/Header";
-import Heading from "./info_page_shared/Heading";
-import Main from "./info_page_shared/Main";
-import Footer from "./info_page_shared/Footer";
-import LoadingAnimation from "../components/LoadingAnimation";
-import redirect from "../utils/routing/routing";
-import SessionStorage from "../assorted/SessionStorage";
-import { APP_DOMAIN } from "../appConstants";
+import { UserContext } from "../../contexts/UserContext";
+import InfoPage from "../_pages_shared/InfoPage";
+import Header from "../_pages_shared/Header";
+import Heading from "../_pages_shared/Heading";
+import Main from "../_pages_shared/Main";
+import Footer from "../_pages_shared/Footer";
+import LoadingAnimation from "../../components/LoadingAnimation";
+import redirect from "../../utils/routing/routing";
+import SessionStorage from "../../assorted/SessionStorage";
+import { APP_DOMAIN } from "../../appConstants";
 
 const TIME_BEFORE_REDIRECT = 5000;
 
@@ -19,7 +19,7 @@ const DeletionStatus = Object.freeze({
   OK: 3,
 });
 
-export default function AccountDeletion({ api }) {
+export default function DeleteAccount({ api }) {
   const user = useContext(UserContext);
   const [headingMsg, setHeadingMsg] = useState("We are deleting your account");
   const [currentStatus, setCurrentStatus] = useState(DeletionStatus.UNDEFINED);

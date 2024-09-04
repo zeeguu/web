@@ -1,11 +1,11 @@
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
 
-import InfoPage from "./info_page_shared/InfoPage";
-import Header from "./info_page_shared/Header";
-import Heading from "./info_page_shared/Heading";
-import Main from "./info_page_shared/Main";
-import Button from "./info_page_shared/Button";
-import ButtonContainer from "./info_page_shared/ButtonContainer";
+import InfoPage from "./_pages_shared/InfoPage";
+import Header from "./_pages_shared/Header";
+import Heading from "./_pages_shared/Heading";
+import Main from "./_pages_shared/Main";
+import Button from "./_pages_shared/Button";
+import ButtonContainer from "./_pages_shared/ButtonContainer";
 
 import redirect from "../utils/routing/routing";
 import strings from "../i18n/definitions";

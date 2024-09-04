@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import InfoPage from "./info_page_shared/InfoPage";
-import Header from "./info_page_shared/Header";
-import Heading from "./info_page_shared/Heading";
-import Main from "./info_page_shared/Main";
-import Footer from "./info_page_shared/Footer";
+import InfoPage from "./_pages_shared/InfoPage";
+import Header from "./_pages_shared/Header";
+import Heading from "./_pages_shared/Heading";
+import Main from "./_pages_shared/Main";
+import Footer from "./_pages_shared/Footer";
 
 import useFormField from "../hooks/useFormField";
 
