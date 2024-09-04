@@ -61,10 +61,6 @@ export default function Languages({ api, setUser }) {
     saveUserInfoIntoCookies(info);
   }
 
-  function getLanguageCodeFromSelector(e) {
-    return e.target[e.target.selectedIndex].getAttribute("code");
-  }
-
   function updateNativeLanguage(lang_code) {
     setUserDetails({
       ...userDetails,
