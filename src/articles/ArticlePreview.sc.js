@@ -72,6 +72,33 @@ const Title = styled.div`
   width: 100%;
 `;
 
+const UnfinishedArticleContainer = styled.div`
+  margin-top: 0.5em;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  gap: 0.5em;
+
+  img {
+    margin: 0.5em;
+    margin-left: 0;
+    max-width: 8em;
+    max-height: 8em;
+    border-radius: 1em;
+    align-self: center;
+    object-fit: cover;
+    @media (max-width: 990px) {
+      display: none;
+    }
+  }
+`;
+
+const UnfinishedArticleStats = styled.span`
+  font-weight: 550;
+`;
+
 let Summary = styled.div`
   font-size: 0.83em;
   color: ${almostBlack};
@@ -111,6 +138,8 @@ let Topics = styled.span`
 export {
   Title,
   ArticlePreview,
+  UnfinishedArticleContainer,
+  UnfinishedArticleStats,
   InvisibleTitleButton,
   ArticleContent,
   BottomContainer,
