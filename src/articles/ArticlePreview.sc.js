@@ -61,7 +61,7 @@ const InvisibleTitleButton = styled.button`
 `;
 //previously the color was defined as black and font-weight was 400 but dark orange was
 //displayed and font-weight 500 because the article's title inside the titleLink(article) function
-//was wrapped in a link tag and inherited its color and font weight settings.
+//was wrapped in a link tag and inherited its color and font weight ettings.
 //Currently the article's title is no longer wrapped in a link, this is why styling update
 const Title = styled.div`
   font-size: 1.4em;

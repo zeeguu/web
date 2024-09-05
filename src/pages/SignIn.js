@@ -1,19 +1,18 @@
 import { useState } from "react";
-import useRedirectLink from "../hooks/useRedirectLink";
 
 import useFormField from "../hooks/useFormField";
 
-import InfoPage from "./info_page_shared/InfoPage";
-import Header from "./info_page_shared/Header";
-import Heading from "./info_page_shared/Heading";
-import Main from "./info_page_shared/Main";
-import Form from "./info_page_shared/Form";
-import FormSection from "./info_page_shared/FormSection";
-import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
-import InputField from "./info_page_shared/InputField";
-import Footer from "./info_page_shared/Footer";
-import ButtonContainer from "./info_page_shared/ButtonContainer";
-import Button from "./info_page_shared/Button";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
+import Header from "./_pages_shared/Header";
+import Heading from "./_pages_shared/Heading";
+import Main from "./_pages_shared/Main";
+import Form from "./_pages_shared/Form";
+import FormSection from "./_pages_shared/FormSection";
+import FullWidthErrorMsg from "./_pages_shared/FullWidthErrorMsg";
+import InputField from "../components/InputField";
+import Footer from "./_pages_shared/Footer";
+import ButtonContainer from "./_pages_shared/ButtonContainer";
+import Button from "./_pages_shared/Button";
 
 import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
@@ -37,7 +36,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
   }
 
   return (
-    <InfoPage type={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"}>
       <Header>
         <Heading>Log in</Heading>
       </Header>
@@ -83,6 +82,6 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
           </a>
         </p>
       </Footer>
-    </InfoPage>
+    </PreferencesPage>
   );
 }
