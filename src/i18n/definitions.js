@@ -517,6 +517,7 @@ let strings = new LocalizedStrings(
       nativeLanguage: "Native Language",
       yourCurrentClassIs: "Your current class is: ",
       changeClass: "Change Class",
+      addClass: "Add Class",
       insertNewInviteCode: "Insert new invite code",
       insertInviteCode: "Insert invite code",
       checkIfInviteCodeIsValid:

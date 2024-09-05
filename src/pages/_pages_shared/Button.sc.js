@@ -46,6 +46,18 @@ const Button = styled.button`
     padding: 1rem;
     border: none;
   }
+
+  &.small-border-btn {
+    font-size: 1rem;
+    padding: 0.4rem 1.4rem;
+  }
+
+  &.white-btn {
+    color: ${zeeguuOrange};
+    background-color: white;
+    border: solid ${zeeguuOrange} 0.2em;
+    box-shadow: 0px 0.2em ${zeeguuDarkOrange};
+  }
 `;
 
 export { Button };
