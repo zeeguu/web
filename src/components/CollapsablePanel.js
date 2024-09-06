@@ -13,11 +13,11 @@ export default function CollapsablePanel({
   const ARROW_DOWN = <span className="arrow">&#8595;</span>;
   return (
     <>
-      <s.ColapsableContainer onClick={() => setIsOpen(!isOpen)}>
+      <s.CollapsableContainer onClick={() => setIsOpen(!isOpen)}>
         <b>{topMessage}</b>
         {isOpen ? ARROW_UP : ARROW_DOWN}
-      </s.ColapsableContainer>
-      {isOpen && <s.ColapsableContents>{children}</s.ColapsableContents>}
+      </s.CollapsableContainer>
+      {isOpen && <s.CollapsableContainer>{children}</s.CollapsableContainer>}
     </>
   );
 }

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-let ColapsableContainer = styled.div`
+let CollapsableContainer = styled.div`
   display: flex;
   border-bottom: solid 1px;
   border-color: #757575;
@@ -18,20 +18,4 @@ let ColapsableContainer = styled.div`
   }
 `;
 
-let ColapsableContents = styled.div``;
-
-const Difficulty = styled.div`
-  display: flex;
-  align-items: flex-end;
-  flex-direction: row;
-  gap: 0.5em;
-  margin-right: 2em;
-  img {
-    height: 1.5em;
-  }
-  span {
-    font-weight: 450;
-  }
-`;
-
-export { ColapsableContainer, ColapsableContents };
+export { CollapsableContainer };
