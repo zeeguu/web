@@ -25,7 +25,7 @@ import {
   DEFAULT_SEQUENCE_NO_AUDIO,
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
-  NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+  DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
@@ -181,7 +181,7 @@ export default function Exercises({
 
   function exercise_new_bookmarks() {
     api.getNewBookmarksToStudy(
-      NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+      DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
       (new_bookmarks) => {
         initializeExercises(new_bookmarks, strings.exercises);
       },
@@ -193,7 +193,7 @@ export default function Exercises({
       setTotalBookmarksInPipeline(totalInLearning);
       if (totalInLearning < MAX_EXERCISE_IN_LEARNING_BOOKMARKS) {
         api.getNewBookmarksToStudy(
-          NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+          DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
           (new_bookmarks) => {
             initializeExercises(new_bookmarks, strings.exercises);
           },
@@ -219,13 +219,13 @@ export default function Exercises({
     // and if we have more than 99 + session we would not correctly
     // display the number to the user.
     api.getUserBookmarksToStudy(
-      MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+      MAX_EXERCISE_TO_DO_NOTIFICATION + DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
       (bookmarks) => {
         exerciseNotification.setExerciseCounter(bookmarks.length);
         let exerciseSession =
           bookmarks.lengh <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-            : NUMBER_OF_BOOKMARKS_TO_PRACTICE;
+            : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
         initializeExercises(
           bookmarks.slice(0, exerciseSession + 1),
           strings.exercises,
