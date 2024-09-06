@@ -8,7 +8,7 @@ import {
 export default function useBookmarkAutoPronounce() {
   const [currentPronouncingState, setCurrentPronouncingState] = useState();
   const [currentPronouncingString, setCurrentPronouncingString] = useState();
-  const [IsPronounceBookmark, setIsPronounceBookmark] = useState();
+  const [isPronounceBookmark, setIsPronounceBookmark] = useState();
   const MAX_AVAILABLE_SETTING = Math.max(
     ...Object.values(PRONOUNCIATION_SETTING),
   );
@@ -35,7 +35,7 @@ export default function useBookmarkAutoPronounce() {
   }
 
   return [
-    IsPronounceBookmark,
+    isPronounceBookmark,
     currentPronouncingState,
     currentPronouncingString,
     cyclePronounciationState,
