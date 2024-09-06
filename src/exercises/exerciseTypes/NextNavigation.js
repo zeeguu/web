@@ -44,7 +44,7 @@ export default function NextNavigation({
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
-  const [autoPronounceBookmark, autoPronounceString, toggleAutoPronounceValue] =
+  const [autoPronounceBookmark, autoPronounceString, toggleAutoPronounceState] =
     useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
@@ -260,7 +260,7 @@ export default function NextNavigation({
       )}
       {isCorrect && (
         <s.StyledGreyButton
-          onClick={toggleAutoPronounceValue}
+          onClick={toggleAutoPronounceState}
           style={{
             position: "relative",
             bottom: "3em",

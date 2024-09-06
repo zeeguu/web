@@ -36,7 +36,7 @@ export default function useBookmarkAutoPronounce() {
     __updateState(currentState);
   });
 
-  function cyclePronounciationState() {
+  function toggleAutoPronounceState() {
     let optionSelected;
     if (currentPronouncingState < MAX_AVAILABLE_SETTING) {
       optionSelected = currentPronouncingState + 1;
@@ -48,6 +48,6 @@ export default function useBookmarkAutoPronounce() {
   return [
     autoPronounceBookmark,
     currentPronouncingString,
-    cyclePronounciationState,
+    toggleAutoPronounceState,
   ];
 }
