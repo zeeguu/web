@@ -2,10 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import {
-  EXERCISE_TYPES,
-  PRONOUNCIATION_SETTING,
-} from "../../ExerciseTypeConstants.js";
+import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import NextNavigation from "../NextNavigation";
@@ -13,7 +10,6 @@ import MatchInput from "./MatchInput.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { toast } from "react-toastify";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
-import LocalStorage from "../../../assorted/LocalStorage.js";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
 
 // The user has to match three L1 words to their correct L2 translations.
@@ -69,7 +65,7 @@ export default function Match({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const [IsPronounceBookmark] = useBookmarkAutoPronounce();
+  const [isPronounceBookmark] = useBookmarkAutoPronounce();
   const [isPronouncing, setIsPronouncing] = useState(false);
   const [lastCorrectBookmarkId, setLastCorrectBookmarkId] = useState(null);
   const [selectedBookmark, setSelectedBookmark] = useState();
@@ -87,9 +83,11 @@ export default function Match({
   function inputFirstClick() {
     if (firstPressTime === undefined) setFirstPressTime(new Date());
   }
+
   const speech = useContext(SpeechContext);
+
   async function handleSpeak(bookmark) {
-    if (IsPronounceBookmark) {
+    if (isPronounceBookmark) {
       await speech.speakOut(bookmark.from, setIsPronouncing);
     }
   }
