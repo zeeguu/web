@@ -374,7 +374,6 @@ export default function Exercises({
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
-  console.log(currentBookmarksToStudy);
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
     <>

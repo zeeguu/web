@@ -1,3 +1,5 @@
+import Pluralize from "../text/pluralize";
+
 function timeToHumanReadable(timeInSeconds, precision = "seconds") {
   // Currently supports two precision: "seconds" and "minutes"
   if (timeInSeconds < 60) {
@@ -7,9 +9,9 @@ function timeToHumanReadable(timeInSeconds, precision = "seconds") {
   } else {
     let minutes = Math.floor(timeInSeconds / 60);
     let seconds = timeInSeconds % 60;
-    let string = minutes + (minutes > 1 ? " minutes" : " minute");
+    let string = minutes + Pluralize.minute(minutes);
     if (seconds > 0 && precision === "seconds")
-      string += " " + seconds + (seconds > 1 ? " seconds" : " second");
+      string += " " + seconds + Pluralize.second(seconds);
     return string;
   }
 }
