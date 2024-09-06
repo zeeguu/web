@@ -38,7 +38,7 @@ export default function SupportedNotification_NotInstalled({
       </Main>
       <Footer>
         <ButtonContainer buttonCountNum={1}>
-          <GoToButton target={"_blank"} href={getExtensionInstallationLinks()}>
+          <GoToButton target={"_self"} href={getExtensionInstallationLinks()}>
             <DownloadRoundedIcon fontSize="small" />
             Install the Extension
           </GoToButton>

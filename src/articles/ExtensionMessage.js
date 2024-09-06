@@ -60,10 +60,7 @@ export default function ExtensionMessage({
         </Main>
         <Footer>
           <ButtonContainer buttonCountNum={1}>
-            <GoToButton
-              target={"_blank"}
-              href={getExtensionInstallationLinks()}
-            >
+            <GoToButton target={"_self"} href={getExtensionInstallationLinks()}>
               <FileDownloadOutlinedIcon fontSize="small" />
               Install the Extension
             </GoToButton>
