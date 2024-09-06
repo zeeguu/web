@@ -10,6 +10,7 @@ import { timeToHumanReadable } from "../utils/misc/readableTime";
 import { ExerciseCountContext } from "./ExerciseCountContext";
 import CollapsablePanel from "../components/CollapsablePanel";
 import { MAX_EXERCISE_IN_LEARNING_BOOKMARKS } from "./ExerciseConstants";
+import Pluralize from "../utils/text/pluralize";
 
 export default function Congratulations({
   articleID,
@@ -44,9 +45,7 @@ export default function Congratulations({
       incorrectBookmarksToDisplay.filter((e) => e.id !== bookmark.id),
     );
   }
-  function isPlural(numberOfElements) {
-    return numberOfElements > 1;
-  }
+
   useEffect(() => {
     let userInfo = LocalStorage.userInfo();
     let name = userInfo.name;
@@ -139,15 +138,13 @@ export default function Congratulations({
         <div style={{ marginLeft: "0.5em" }}>
           <p>
             You have just reviewed <b>{totalBookmarksReviewed}</b>{" "}
-            {isPlural(totalBookmarksReviewed) ? "words" : "word"}.
+            {Pluralize.word(totalBookmarksReviewed)}.
             {hasScheduledExercises && (
               <b>
                 {" "}
                 You still have {exerciseNotification.exerciseCounter}{" "}
-                {isPlural(exerciseNotification.exerciseCounter)
-                  ? "words"
-                  : "word"}{" "}
-                left to revise today.
+                {Pluralize.word(exerciseNotification.exerciseCounter)} left to
+                revise today.
               </b>
             )}
           </p>
