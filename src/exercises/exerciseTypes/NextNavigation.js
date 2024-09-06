@@ -44,12 +44,8 @@ export default function NextNavigation({
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
-  const [
-    isPronounceBookmark,
-    currentPronouncingState,
-    autoPronounceString,
-    toggleAutoPronounceValue,
-  ] = useBookmarkAutoPronounce();
+  const [autoPronounceBookmark, autoPronounceString, toggleAutoPronounceValue] =
+    useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
   const [matchExerciseProgressionMessage, setMatchExercisesProgressionMessage] =
@@ -87,7 +83,7 @@ export default function NextNavigation({
   }
 
   useEffect(() => {
-    if (isCorrect && isPronounceBookmark && !isMatchExercise) handleSpeak();
+    if (isCorrect && autoPronounceBookmark && !isMatchExercise) handleSpeak();
     if (exerciseAttemptsLog) {
       let wordsProgressed = [];
       for (let i = 0; i < exerciseAttemptsLog.length; i++) {

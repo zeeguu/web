@@ -6,9 +6,20 @@ import {
 } from "../exercises/ExerciseTypeConstants";
 
 export default function useBookmarkAutoPronounce() {
+  /*
+    Handles the Auto-Pronounce feature for the exercises.
+
+    This setting is stored in the LocalStorage and can be toggled On/Off.
+
+    If enabled, then the bookmark being practiced is pronounced when the exercise
+    is completed, or, in the case of match, when it's correctly linked. 
+
+    This hooks manages the state of the setting based on whether it's on/off, and
+    updates it when the user toggles it in the exercises.
+  */
   const [currentPronouncingState, setCurrentPronouncingState] = useState();
   const [currentPronouncingString, setCurrentPronouncingString] = useState();
-  const [isPronounceBookmark, setIsPronounceBookmark] = useState();
+  const [autoPronounceBookmark, setAutoPronounceBookmark] = useState();
   const MAX_AVAILABLE_SETTING = Math.max(
     ...Object.values(PRONOUNCIATION_SETTING),
   );
@@ -16,7 +27,7 @@ export default function useBookmarkAutoPronounce() {
   function __updateState(value) {
     setCurrentPronouncingState(value);
     setCurrentPronouncingString(PRONOUNCIATION_SETTING_NAME[value]);
-    setIsPronounceBookmark(value !== PRONOUNCIATION_SETTING.off);
+    setAutoPronounceBookmark(value !== PRONOUNCIATION_SETTING.off);
   }
 
   useEffect(() => {
@@ -35,8 +46,7 @@ export default function useBookmarkAutoPronounce() {
   }
 
   return [
-    isPronounceBookmark,
-    currentPronouncingState,
+    autoPronounceBookmark,
     currentPronouncingString,
     cyclePronounciationState,
   ];

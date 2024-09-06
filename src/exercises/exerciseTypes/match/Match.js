@@ -65,7 +65,7 @@ export default function Match({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const [isPronounceBookmark] = useBookmarkAutoPronounce();
+  const [autoPronounceBookmark] = useBookmarkAutoPronounce();
   const [isPronouncing, setIsPronouncing] = useState(false);
   const [lastCorrectBookmarkId, setLastCorrectBookmarkId] = useState(null);
   const [selectedBookmark, setSelectedBookmark] = useState();
@@ -87,7 +87,7 @@ export default function Match({
   const speech = useContext(SpeechContext);
 
   async function handleSpeak(bookmark) {
-    if (isPronounceBookmark) {
+    if (autoPronounceBookmark) {
       await speech.speakOut(bookmark.from, setIsPronouncing);
     }
   }
