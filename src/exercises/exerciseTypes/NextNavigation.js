@@ -8,11 +8,7 @@ import { useEffect, useState, useContext } from "react";
 import Confetti from "react-confetti";
 import SessionStorage from "../../assorted/SessionStorage.js";
 import { SpeechContext } from "../../contexts/SpeechContext.js";
-import {
-  EXERCISE_TYPES,
-  LEARNING_CYCLE,
-  PRONOUNCIATION_SETTING,
-} from "../ExerciseTypeConstants";
+import { EXERCISE_TYPES, LEARNING_CYCLE } from "../ExerciseTypeConstants";
 
 import CelebrationModal from "../CelebrationModal";
 import { getStaticPath } from "../../utils/misc/staticPath.js";
@@ -49,7 +45,7 @@ export default function NextNavigation({
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [
-    IsPronounceBookmark,
+    isPronounceBookmark,
     currentPronouncingState,
     autoPronounceString,
     toggleAutoPronounceValue,
@@ -89,8 +85,9 @@ export default function NextNavigation({
   async function handleSpeak() {
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
   }
+
   useEffect(() => {
-    if (isCorrect && IsPronounceBookmark && !isMatchExercise) handleSpeak();
+    if (isCorrect && isPronounceBookmark && !isMatchExercise) handleSpeak();
     if (exerciseAttemptsLog) {
       let wordsProgressed = [];
       for (let i = 0; i < exerciseAttemptsLog.length; i++) {
