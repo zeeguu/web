@@ -3,16 +3,16 @@ class Pluralize {
     return count === 1 ? singular : plural;
   }
   static word(count) {
-    this._pickRightForm(count, "word", "words");
+    return this._pickRightForm(count, "word", "words");
   }
   static second(count) {
-    this._pickRightForm(count, "second", "seconds");
+    return this._pickRightForm(count, "second", "seconds");
   }
   static minute(count) {
-    this._pickRightForm(count, "minute", "minutes");
+    return this._pickRightForm(count, "minute", "minutes");
   }
   static is(count) {
-    this._pickRightForm(count, "is", "are");
+    return this._pickRightForm(count, "is", "are");
   }
 }
 
