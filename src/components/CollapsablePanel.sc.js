@@ -6,8 +6,7 @@ let CollapsableContainer = styled.div`
   border-color: #757575;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 1em;
-  padding-bottom: 0.5em;
+  padding: 0px 1em 0.5em;
 
   .arrow {
     font-size: xx-large;

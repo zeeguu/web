@@ -17,7 +17,7 @@ export default function CollapsablePanel({
         <b>{topMessage}</b>
         {isOpen ? ARROW_UP : ARROW_DOWN}
       </s.CollapsableContainer>
-      {isOpen && <s.CollapsableContainer>{children}</s.CollapsableContainer>}
+      {isOpen && <>{children}</>}
     </>
   );
 }
