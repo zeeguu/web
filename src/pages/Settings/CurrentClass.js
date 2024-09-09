@@ -74,6 +74,7 @@ export default function CurrentClass({ api }) {
         console.log(error);
       },
     );
+    setInviteCode("");
   }
   if (isLoading) return <LoadingAnimation></LoadingAnimation>;
   const studentIsInCohort = studentCohorts && studentCohorts.length > 0;
