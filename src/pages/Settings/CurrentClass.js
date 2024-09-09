@@ -15,6 +15,7 @@ import FullWidthErrorMsg from "../_pages_shared/FullWidthErrorMsg";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
+import ClassroomItem from "./settings_pages_shared/ClassroomItem";
 
 export default function CurrentClass({ api }) {
   const history = useHistory();
@@ -83,30 +84,25 @@ export default function CurrentClass({ api }) {
         <Heading>{strings.myClassrooms}</Heading>
       </Header>
       <Main>
-        {studentIsInCohort ? (
-          <b>You are part of the following classes:</b>
-        ) : (
-          <b>You are not in any class</b>
-        )}
+        <ClassContainer>
+          {studentIsInCohort ? (
+            studentCohorts.map((classroom, idx) => (
+              <ClassroomItem
+                hasButton={true}
+                key={classroom.id}
+                onIconClick={(e) => {
+                  leaveClass(e, classroom);
+                }}
+              >{`${idx + 1}. ${classroom.name}`}</ClassroomItem>
+            ))
+          ) : (
+            <ClassroomItem>
+              {"Currently, you are not enrolled in any class"}
+            </ClassroomItem>
+          )}
+        </ClassContainer>
         <Form>
           <FormSection>
-            <ClassContainer>
-              {studentIsInCohort &&
-                studentCohorts.map((each) => (
-                  <Button
-                    className="white-btn small-border-btn"
-                    key={each.id}
-                    small={true}
-                    type="button"
-                    onClick={(e) => {
-                      leaveClass(e, each);
-                    }}
-                  >
-                    {each.name}
-                  </Button>
-                ))}
-            </ClassContainer>
-            {studentIsInCohort && <p>Click to leave the class</p>}
             <InputField
               type={"text"}
               label={

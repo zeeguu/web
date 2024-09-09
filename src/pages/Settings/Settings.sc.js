@@ -4,15 +4,16 @@ const StyledWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   gap: 1rem;
 `;
 
-const ClassContainer = styled.div`
+const ClassContainer = styled.ul`
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.5rem;
+  align-items: center;
+  padding: 0;
+  margin: 0;
 `;
 
 export { StyledWrapper, ClassContainer };
