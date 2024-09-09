@@ -16,6 +16,7 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import ClassroomItem from "./settings_pages_shared/ClassroomItem";
+import MyClassroomsModal from "./MyClassroomsModal";
 
 export default function CurrentClass({ api }) {
   const history = useHistory();
@@ -27,6 +28,7 @@ export default function CurrentClass({ api }) {
   const [inviteCode, setInviteCode] = useState("");
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [studentCohorts, setStudentCohorts] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   function updateValues() {
     setIsLoading(true);
@@ -88,13 +90,24 @@ export default function CurrentClass({ api }) {
         <ClassContainer>
           {studentIsInCohort ? (
             studentCohorts.map((classroom, idx) => (
-              <ClassroomItem
-                hasButton={true}
-                key={classroom.id}
-                onIconClick={(e) => {
-                  leaveClass(e, classroom);
-                }}
-              >{`${idx + 1}. ${classroom.name}`}</ClassroomItem>
+              <>
+                <ClassroomItem
+                  hasButton={true}
+                  key={classroom.id}
+                  // onIconClick={(e) => {
+                  //   leaveClass(e, classroom);
+                  // }}
+                  onIconClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                >{`${idx + 1}. ${classroom.name}`}</ClassroomItem>
+                <MyClassroomsModal
+                  leaveClass={leaveClass}
+                  classroom={classroom}
+                  open={isModalOpen}
+                  onClose={() => setIsModalOpen(false)}
+                />
+              </>
             ))
           ) : (
             <ClassroomItem>
