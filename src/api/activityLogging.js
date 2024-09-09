@@ -4,9 +4,11 @@ import qs from "qs";
 // Reader Opening Actions
 Zeeguu_API.prototype.CLICKED_ARTICLE = "CLICKED ARTICLE";
 Zeeguu_API.prototype.OPEN_ARTICLE = "OPEN ARTICLE";
+Zeeguu_API.prototype.CLICKED_RESUME_ARTICLE = "CLICKED RESUME ARTICLE";
 Zeeguu_API.prototype.ARTICLE_FOCUSED = "ARTICLE FOCUSED";
 Zeeguu_API.prototype.OPEN_EXTENSION_INSTALLED = "OPEN EXTENSION INSTALLED";
 Zeeguu_API.prototype.SEARCH_QUERY = "SEARCH QUERY";
+Zeeguu_API.prototype.VIEWPORT_READER_SETTINGS = "VIEWPORT_READER_SETTINGS ";
 
 // Reader Interaction Actions
 Zeeguu_API.prototype.TRANSLATE_TEXT = "TRANSLATE TEXT";

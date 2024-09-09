@@ -42,8 +42,9 @@ export default function ArticlePreview({
   }
 
   function titleLink(article) {
+    let linkToRedirect = `/read/article?id=${article.id}`;
     let open_in_zeeguu = (
-      <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
+      <Link to={linkToRedirect} onClick={handleArticleClick}>
         {article.title}
       </Link>
     );
@@ -114,41 +115,42 @@ export default function ArticlePreview({
         setIsArticleSaved={setIsArticleSaved}
       />
 
-      <s.Title>{titleLink(article)}</s.Title>
-      <ArticleSourceInfo
-        articleInfo={article}
-        dontShowPublishingTime={dontShowPublishingTime}
-        dontShowSourceIcon={dontShowSourceIcon}
-      ></ArticleSourceInfo>
-      <s.ArticleContent>
-        {article.img_url && <img alt="" src={article.img_url} />}
-        <s.Summary>{article.summary}...</s.Summary>
-      </s.ArticleContent>
-
-      <s.BottomContainer>
-        <s.Topics>
-          {topics.map((topic) => (
-            <span key={topic}>{topic}</span>
-          ))}
-        </s.Topics>
-        <ArticleStatInfo
-          cefr_level={cefr_level}
+      <>
+        <s.Title>{titleLink(article)}</s.Title>
+        <ArticleSourceInfo
           articleInfo={article}
-        ></ArticleStatInfo>
-      </s.BottomContainer>
-      {article.video ? (
-        <img
-          alt=""
-          style={{ float: "left", marginRight: "1em" }}
-          src={
-            "https://img.youtube.com/vi/" +
-            extractVideoIDFromURL(article.url) +
-            "/default.jpg"
-          }
-        />
-      ) : (
-        ""
-      )}
+          dontShowPublishingTime={dontShowPublishingTime}
+          dontShowSourceIcon={dontShowSourceIcon}
+        ></ArticleSourceInfo>
+        <s.ArticleContent>
+          {article.img_url && <img alt="" src={article.img_url} />}
+          <s.Summary>{article.summary}...</s.Summary>
+        </s.ArticleContent>
+        <s.BottomContainer>
+          <s.Topics>
+            {topics.map((topic) => (
+              <span key={topic}>{topic}</span>
+            ))}
+          </s.Topics>
+          <ArticleStatInfo
+            cefr_level={cefr_level}
+            articleInfo={article}
+          ></ArticleStatInfo>
+        </s.BottomContainer>
+        {article.video ? (
+          <img
+            alt=""
+            style={{ float: "left", marginRight: "1em" }}
+            src={
+              "https://img.youtube.com/vi/" +
+              extractVideoIDFromURL(article.url) +
+              "/default.jpg"
+            }
+          />
+        ) : (
+          ""
+        )}
+      </>
     </s.ArticlePreview>
   );
 }
