@@ -502,14 +502,14 @@ let strings = new LocalizedStrings(
 
       //Settings
       //Settings categories
-      myAccount: "My account",
+      myAccount: "My Account",
       exercises: "Exercises",
       accountManagement: "Account Management",
 
       //Settings main page nav options
       profileDetails: "Profile Details",
       languageSettings: "Language Settings",
-      myCurrentClass: "My Current Class",
+      myClassrooms: "My Classrooms",
       exerciseTypePreferences: "Exercise Type Preferences",
       interests: "Interests",
       deleteAccount: "Delete Account",

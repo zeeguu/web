@@ -80,7 +80,7 @@ export default function CurrentClass({ api }) {
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
-        <Heading>{strings.myCurrentClass}</Heading>
+        <Heading>{strings.myClassrooms}</Heading>
       </Header>
       <Main>
         {studentIsInCohort ? (
