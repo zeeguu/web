@@ -16,6 +16,28 @@ const ClassroomItem = styled.li`
   font-weight: 600;
   margin: 0;
   flex: 1;
+  overflow-x: break-word;
+
+  opacity: 0;
+  animation: fadeIn 0.15s ease-in forwards 0.15s;
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
+const ClassName = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow-x: hidden;
+  font-size: 1rem;
+
+  @media (max-width: 576px) {
+    font-size: 0.87rem;
+  }
 `;
 
 const ClassroomButton = styled.button`
@@ -32,4 +54,4 @@ const ClassroomButton = styled.button`
   }
 `;
 
-export { ClassroomItem, ClassroomButton };
+export { ClassroomItem, ClassroomButton, ClassName };

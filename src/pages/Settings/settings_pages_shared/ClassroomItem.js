@@ -4,10 +4,10 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 export default function ClassroomItem({ children, hasButton, onIconClick }) {
   return (
     <s.ClassroomItem>
-      {children}
+      <s.ClassName>{children}</s.ClassName>
       {hasButton && (
         <s.ClassroomButton type="button" onClick={onIconClick}>
-          <CloseRoundedIcon />
+          <CloseRoundedIcon fontSize="small" sx={{ color: "#808080" }} />
         </s.ClassroomButton>
       )}
     </s.ClassroomItem>
