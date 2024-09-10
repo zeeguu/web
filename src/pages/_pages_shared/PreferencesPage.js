@@ -1,4 +1,4 @@
-import * as s from "./InfoPage.sc";
+import * as s from "./PreferencesPage.sc";
 
 export default function PreferencesPage({
   children,
