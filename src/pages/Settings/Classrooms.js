@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import Button from "../_pages_shared/Button";
@@ -73,7 +74,7 @@ export default function Classrooms({ api }) {
   function saveStudentToClass(e) {
     e.preventDefault(e);
     api.joinCohort(
-      inviteCode,
+      inviteCode.trim(),
       (status) => {
         if (status == "OK") {
           updateValues();
@@ -102,10 +103,9 @@ export default function Classrooms({ api }) {
         <FullWidthListContainer>
           {studentIsInCohort ? (
             studentCohorts.map((classroom, idx) => (
-              <>
+              <React.Fragment key={classroom.id}>
                 <FullWidthListItem
                   hasButton={true}
-                  key={classroom.id}
                   onButtonClick={handleOpenLeaveClassroomModal}
                 >{`${idx + 1}. ${classroom.name}`}</FullWidthListItem>
                 <LeaveClassroomModal
@@ -116,7 +116,7 @@ export default function Classrooms({ api }) {
                     handleCloseLeaveClassroomModal
                   }
                 />
-              </>
+              </React.Fragment>
             ))
           ) : (
             <FullWidthListItem>
