@@ -1,21 +1,21 @@
 import React from "react";
 import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import Button from "../_pages_shared/Button";
-import ButtonContainer from "../_pages_shared/ButtonContainer";
-import InputField from "../../components/InputField";
-import Form from "../_pages_shared/Form";
-import FormSection from "../_pages_shared/FormSection";
-import PreferencesPage from "../_pages_shared/PreferencesPage";
-import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading";
-import Main from "../_pages_shared/Main";
-import { FullWidthListContainer } from "../../components/FullWidthListContainer.sc";
-import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
-import BackArrow from "./settings_pages_shared/BackArrow";
-import strings from "../../i18n/definitions";
-import LoadingAnimation from "../../components/LoadingAnimation";
-import FullWidthListItem from "../../components/FullWidthListItem";
+import { UserContext } from "../../../contexts/UserContext";
+import Button from "../../_pages_shared/Button";
+import ButtonContainer from "../../_pages_shared/ButtonContainer";
+import InputField from "../../../components/InputField";
+import Form from "../../_pages_shared/Form";
+import FormSection from "../../_pages_shared/FormSection";
+import PreferencesPage from "../../_pages_shared/PreferencesPage";
+import Header from "../../_pages_shared/Header";
+import Heading from "../../_pages_shared/Heading";
+import Main from "../../_pages_shared/Main";
+import { FullWidthListContainer } from "../../../components/FullWidthListContainer.sc";
+import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg";
+import BackArrow from "../settings_pages_shared/BackArrow";
+import strings from "../../../i18n/definitions";
+import LoadingAnimation from "../../../components/LoadingAnimation";
+import FullWidthListItem from "../../../components/FullWidthListItem";
 import LeaveClassroomModal from "./LeaveClassroomModal";
 
 export default function Classrooms({ api }) {

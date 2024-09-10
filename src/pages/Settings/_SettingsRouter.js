@@ -6,7 +6,7 @@ import ProfileDetails from "./ProfileDetails";
 import Languages from "./Languages";
 import Interests from "./Interests";
 import AudioExercises from "./AudioExercises";
-import Classrooms from "./Classrooms";
+import Classrooms from "./Classrooms/Classrooms";
 import DeleteAccount from "./DeleteAccount";
 
 export default function SettingsRouter({ api, setUser }) {

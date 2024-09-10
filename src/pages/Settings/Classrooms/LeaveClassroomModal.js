@@ -1,10 +1,10 @@
 import React from "react";
-import Modal from "../../components/modal_shared/Modal";
-import Header from "../../components/modal_shared/Header";
-import Heading from "../../components/modal_shared/Heading";
-import Footer from "../../components/modal_shared/Footer";
-import ButtonContainer from "../../components/modal_shared/ButtonContainer";
-import GoToButton from "../../components/modal_shared/GoToButton";
+import Modal from "../../../components/modal_shared/Modal";
+import Header from "../../../components/modal_shared/Header";
+import Heading from "../../../components/modal_shared/Heading";
+import Footer from "../../../components/modal_shared/Footer";
+import ButtonContainer from "../../../components/modal_shared/ButtonContainer";
+import GoToButton from "../../../components/modal_shared/GoToButton";
 
 import * as s from "./LeaveClassroomModal.sc";
 
