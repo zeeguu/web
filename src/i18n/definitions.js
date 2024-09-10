@@ -45,7 +45,7 @@ let strings = new LocalizedStrings(
       addTexts: "Add Texts",
       delete: "Delete",
       cancel: "Cancel",
-      joinClass: "Join Class",
+      joinClass: "Join Classroom",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
       tooEasy: "too easy",
@@ -618,7 +618,7 @@ let strings = new LocalizedStrings(
       addColleague: "Add Colleague",
 
       //CohortList
-      addClass: "Add Class",
+      addClass: "Add Classroom",
 
       //DeleteCohortWarning
       dangerzone: "Danger Zone!",
