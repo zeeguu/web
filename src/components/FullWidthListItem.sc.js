@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { veryDarkGrey } from "../../../components/colors";
+import { veryDarkGrey } from "./colors";
 
 const FullWidthListItem = styled.li`
   width: 100%;

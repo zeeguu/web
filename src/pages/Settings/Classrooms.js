@@ -10,12 +10,12 @@ import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
-import { FullWidthListContainer } from "./settings_pages_shared/FullWidthListContainer.sc";
+import { FullWidthListContainer } from "../../components/FullWidthListContainer.sc";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
-import FullWidthListItem from "./settings_pages_shared/FullWidthListItem";
+import FullWidthListItem from "../../components/FullWidthListItem";
 import LeaveClassroomModal from "./LeaveClassroomModal";
 
 export default function Classrooms({ api }) {
