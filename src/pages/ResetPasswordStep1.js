@@ -5,7 +5,7 @@ import strings from "../i18n/definitions";
 
 import Form from "./_pages_shared/Form";
 import FormSection from "./_pages_shared/FormSection";
-import FullWidthErrorMsg from "./_pages_shared/FullWidthErrorMsg";
+import FullWidthErrorMsg from "../components/FullWidthErrorMsg";
 import InputField from "../components/InputField";
 import ButtonContainer from "./_pages_shared/ButtonContainer";
 import Button from "./_pages_shared/Button";

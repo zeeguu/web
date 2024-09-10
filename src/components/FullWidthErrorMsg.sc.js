@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuRedTransparent, zeeguuDarkRed } from "../../components/colors";
+import { zeeguuRedTransparent, zeeguuDarkRed } from "./colors";
 
 const FullWidthErrorMsg = styled.div`
   box-sizing: border-box;
