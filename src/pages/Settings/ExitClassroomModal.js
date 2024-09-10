@@ -2,12 +2,11 @@ import React from "react";
 import Modal from "../../components/modal_shared/Modal";
 import Header from "../../components/modal_shared/Header";
 import Heading from "../../components/modal_shared/Heading";
-import Main from "../../components/modal_shared/Main";
 import Footer from "../../components/modal_shared/Footer";
 import ButtonContainer from "../../components/modal_shared/ButtonContainer";
 import GoToButton from "../../components/modal_shared/GoToButton";
 
-export default function MyClassroomsModal({
+export default function ExitClassroomModal({
   open,
   onClose,
   classroom,

@@ -16,7 +16,7 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import ClassroomItem from "./settings_pages_shared/ClassroomItem";
-import MyClassroomsModal from "./MyClassroomsModal";
+import ExitClassroomModal from "./ExitClassroomModal";
 
 export default function Classrooms({ api }) {
   const history = useHistory();
@@ -94,14 +94,11 @@ export default function Classrooms({ api }) {
                 <ClassroomItem
                   hasButton={true}
                   key={classroom.id}
-                  // onIconClick={(e) => {
-                  //   leaveClass(e, classroom);
-                  // }}
                   onIconClick={() => {
                     setIsModalOpen(true);
                   }}
                 >{`${idx + 1}. ${classroom.name}`}</ClassroomItem>
-                <MyClassroomsModal
+                <ExitClassroomModal
                   leaveClass={leaveClass}
                   classroom={classroom}
                   open={isModalOpen}
