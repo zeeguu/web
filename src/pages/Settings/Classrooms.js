@@ -1,4 +1,3 @@
-import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import Button from "../_pages_shared/Button";
@@ -16,19 +15,17 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import ClassroomItem from "./settings_pages_shared/ClassroomItem";
-import ExitClassroomModal from "./ExitClassroomModal";
+import LeaveClassroomModal from "./LeaveClassroomModal";
 
 export default function Classrooms({ api }) {
-  const history = useHistory();
-
   const user = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [shouldReload, setShouldReload] = useState(true);
   const [inviteCode, setInviteCode] = useState("");
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [studentCohorts, setStudentCohorts] = useState();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLeaveClassroomModalOpen, setIsLeaveClassroomModalOpen] =
+    useState(false);
 
   function updateValues() {
     setIsLoading(true);
@@ -40,6 +37,14 @@ export default function Classrooms({ api }) {
   useEffect(() => {
     updateValues();
   }, [user.session, api]);
+
+  function handleOpenLeaveClassroomModal() {
+    setIsLeaveClassroomModalOpen(true);
+  }
+
+  function handleCloseLeaveClassroomModal() {
+    setIsLeaveClassroomModalOpen(false);
+  }
 
   function handleInviteCodeChange(event) {
     setInviteCode(event.target.value);
@@ -65,10 +70,13 @@ export default function Classrooms({ api }) {
     api.joinCohort(
       inviteCode,
       (status) => {
-        if (status !== "OK") {
+        if (status == "OK") {
+          updateValues();
+          setInviteCode("");
+          setShowJoinCohortError(false); //clear error message after successful next attempt
+        } else {
           setShowJoinCohortError(true);
         }
-        updateValues();
       },
       (error) => {
         setShowJoinCohortError(true);
@@ -76,7 +84,6 @@ export default function Classrooms({ api }) {
         console.log(error);
       },
     );
-    setInviteCode("");
   }
   if (isLoading) return <LoadingAnimation></LoadingAnimation>;
   const studentIsInCohort = studentCohorts && studentCohorts.length > 0;
@@ -94,15 +101,15 @@ export default function Classrooms({ api }) {
                 <ClassroomItem
                   hasButton={true}
                   key={classroom.id}
-                  onIconClick={() => {
-                    setIsModalOpen(true);
-                  }}
+                  onIconClick={handleOpenLeaveClassroomModal}
                 >{`${idx + 1}. ${classroom.name}`}</ClassroomItem>
-                <ExitClassroomModal
+                <LeaveClassroomModal
                   leaveClass={leaveClass}
                   classroom={classroom}
-                  open={isModalOpen}
-                  onClose={() => setIsModalOpen(false)}
+                  isLeaveClassroomModalOpen={isLeaveClassroomModalOpen}
+                  handleCloseLeaveClassroomModal={
+                    handleCloseLeaveClassroomModal
+                  }
                 />
               </>
             ))

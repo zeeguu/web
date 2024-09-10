@@ -6,14 +6,21 @@ import Footer from "../../components/modal_shared/Footer";
 import ButtonContainer from "../../components/modal_shared/ButtonContainer";
 import GoToButton from "../../components/modal_shared/GoToButton";
 
-export default function ExitClassroomModal({
-  open,
-  onClose,
+export default function LeaveClassroomModal({
+  isLeaveClassroomModalOpen,
+  handleCloseLeaveClassroomModal,
   classroom,
   leaveClass,
 }) {
+  function handleLeaveClassroom(e) {
+    leaveClass(e, classroom);
+    handleCloseLeaveClassroomModal();
+  }
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal
+      open={isLeaveClassroomModalOpen}
+      onClose={handleCloseLeaveClassroomModal}
+    >
       <Header>
         <Heading>
           You are about to leave the following classroom: {classroom.name}
@@ -21,12 +28,7 @@ export default function ExitClassroomModal({
       </Header>
       <Footer>
         <ButtonContainer buttonCountNum={1}>
-          <GoToButton
-            onClick={(e) => {
-              leaveClass(e, classroom);
-              onClose();
-            }}
-          >
+          <GoToButton onClick={handleLeaveClassroom}>
             Leave the classroom
           </GoToButton>
         </ButtonContainer>
