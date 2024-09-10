@@ -5,7 +5,7 @@ import styled from "styled-components";
 //redesigned button for a better focal point and improved
 //readability of the text inside it.
 //TODO: After implementing all the onboarding steps,
-//create style quide for all buttons and refactor / factor them out
+//create style guide for all buttons and refactor / factor them out
 const GoToButton = styled(OrangeRoundButton)`
   display: flex;
   flex-direction: row;
@@ -15,7 +15,17 @@ const GoToButton = styled(OrangeRoundButton)`
   padding: 0.7em 2em;
   border-radius: 4em;
   font-weight: 600;
-  border-bottom: solid 0.2em ${zeeguuDarkOrange};
+  box-shadow: 0px 0.2em ${zeeguuDarkOrange};
+  transition: all ease-in 0.08s;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 0.2em;
+
+  &:active {
+    box-shadow: none;
+    transform: translateY(0.2em);
+    transition: all ease-in 0.08s;
+  }
 `;
 
 export { GoToButton };
