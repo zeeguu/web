@@ -60,7 +60,7 @@ export default function Classrooms({ api }) {
       (status) => {
         if (status == "OK") {
           updateValues();
-          setShowJoinCohortError(false); //clear error message after successful exit from classroom
+          setShowJoinCohortError(false); //clear error message after successfully leaving the classroom
         } else {
           setShowJoinCohortError(true);
         }
