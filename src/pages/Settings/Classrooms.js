@@ -18,7 +18,7 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 import ClassroomItem from "./settings_pages_shared/ClassroomItem";
 import MyClassroomsModal from "./MyClassroomsModal";
 
-export default function CurrentClass({ api }) {
+export default function Classrooms({ api }) {
   const history = useHistory();
 
   const user = useContext(UserContext);

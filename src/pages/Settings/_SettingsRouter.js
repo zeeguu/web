@@ -6,7 +6,7 @@ import ProfileDetails from "./ProfileDetails";
 import Languages from "./Languages";
 import Interests from "./Interests";
 import AudioExercises from "./AudioExercises";
-import CurrentClass from "./CurrentClass";
+import Classrooms from "./Classrooms";
 import DeleteAccount from "./DeleteAccount";
 
 export default function SettingsRouter({ api, setUser }) {
@@ -42,7 +42,7 @@ export default function SettingsRouter({ api, setUser }) {
       <PrivateRoute
         path="/account_settings/current_class"
         api={api}
-        component={CurrentClass}
+        component={Classrooms}
       />
 
       <PrivateRoute
