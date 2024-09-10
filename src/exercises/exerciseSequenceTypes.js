@@ -13,7 +13,9 @@ import ClickWordInContext from "./exerciseTypes/wordInContextExercises/ClickWord
 import MultipleChoiceContext from "./exerciseTypes/multipleChoiceContext/MultipleChoiceContext";
 import { MEMORY_TASK } from "./ExerciseTypeConstants";
 
-const NUMBER_OF_BOOKMARKS_TO_PRACTICE = 12;
+const DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE = 12;
+const MAX_NUMBER_OF_BOOKMARKS_EX_SESSION = 20;
+
 const EX_Match = {
   type: Match,
   requiredBookmarks: 3,
@@ -150,7 +152,8 @@ export {
   EXERCISE_TYPES_TIAGO,
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
-  NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+  DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
+  MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 };
 
 // Function to validate that every combination of learningCycle and memoryTask has at least one exercise with requiredBookmarks = 1

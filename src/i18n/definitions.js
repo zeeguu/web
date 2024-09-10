@@ -492,13 +492,17 @@ let strings = new LocalizedStrings(
 
       //ExerciseNavigation
       backToReading: "Back to Reading",
+      goToReading: "Go To Reading",
       backToWords: "Back to Words",
       keepExercising: "Keep Exercising",
+      startLearningNewWords: "Start Learning New Words",
 
       //CongratulationsPage
       goodJob: "Good Job, ",
       correct: "You got the following words correct:",
       payMoreAttentionTo: "Pay more attention to these words:",
+      wordsIncorrect: "Words you got incorrect: ",
+      wordsCorrect: "Words you got correct:",
 
       //Settings
       //Settings categories
