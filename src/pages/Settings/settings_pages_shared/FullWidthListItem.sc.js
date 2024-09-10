@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { veryDarkGrey } from "../../../components/colors";
 
-const ClassroomItem = styled.li`
+const FullWidthListItem = styled.li`
   width: 100%;
   box-sizing: border-box;
   display: flex;
@@ -28,7 +28,7 @@ const ClassroomItem = styled.li`
   }
 `;
 
-const ClassName = styled.div`
+const TextContent = styled.div`
   display: flex;
   flex-direction: row;
   flex: 1;
@@ -40,7 +40,7 @@ const ClassName = styled.div`
   }
 `;
 
-const ClassroomButton = styled.button`
+const ListButton = styled.button`
   display: flex;
   border: inherit;
   margin: 0;
@@ -54,4 +54,4 @@ const ClassroomButton = styled.button`
   }
 `;
 
-export { ClassroomItem, ClassroomButton, ClassName };
+export { FullWidthListItem, ListButton, TextContent };

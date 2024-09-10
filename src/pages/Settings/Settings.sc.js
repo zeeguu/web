@@ -7,13 +7,4 @@ const StyledWrapper = styled.div`
   gap: 1rem;
 `;
 
-const ClassContainer = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-`;
-
-export { StyledWrapper, ClassContainer };
+export { StyledWrapper };

@@ -9,12 +9,12 @@ import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
-import { ClassContainer } from "./Settings.sc";
+import { FullWidthListContainer } from "./settings_pages_shared/FullWidthListContainer.sc";
 import FullWidthErrorMsg from "../_pages_shared/FullWidthErrorMsg";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
-import ClassroomItem from "./settings_pages_shared/ClassroomItem";
+import FullWidthListItem from "./settings_pages_shared/FullWidthListItem";
 import LeaveClassroomModal from "./LeaveClassroomModal";
 
 export default function Classrooms({ api }) {
@@ -99,15 +99,15 @@ export default function Classrooms({ api }) {
         <Heading>{strings.myClassrooms}</Heading>
       </Header>
       <Main>
-        <ClassContainer>
+        <FullWidthListContainer>
           {studentIsInCohort ? (
             studentCohorts.map((classroom, idx) => (
               <>
-                <ClassroomItem
+                <FullWidthListItem
                   hasButton={true}
                   key={classroom.id}
-                  onIconClick={handleOpenLeaveClassroomModal}
-                >{`${idx + 1}. ${classroom.name}`}</ClassroomItem>
+                  onButtonClick={handleOpenLeaveClassroomModal}
+                >{`${idx + 1}. ${classroom.name}`}</FullWidthListItem>
                 <LeaveClassroomModal
                   leaveClass={leaveClass}
                   classroom={classroom}
@@ -119,11 +119,11 @@ export default function Classrooms({ api }) {
               </>
             ))
           ) : (
-            <ClassroomItem>
+            <FullWidthListItem>
               {"Currently, you are not enrolled in any class"}
-            </ClassroomItem>
+            </FullWidthListItem>
           )}
-        </ClassContainer>
+        </FullWidthListContainer>
         <Form>
           <FormSection>
             <InputField
