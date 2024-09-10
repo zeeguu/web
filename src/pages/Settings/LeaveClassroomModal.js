@@ -6,14 +6,16 @@ import Footer from "../../components/modal_shared/Footer";
 import ButtonContainer from "../../components/modal_shared/ButtonContainer";
 import GoToButton from "../../components/modal_shared/GoToButton";
 
+import * as s from "./LeaveClassroomModal.sc";
+
 export default function LeaveClassroomModal({
   isLeaveClassroomModalOpen,
   handleCloseLeaveClassroomModal,
-  classroom,
-  leaveClass,
+  currentClassroom,
+  leaveClassroom,
 }) {
   function handleLeaveClassroom(e) {
-    leaveClass(e, classroom);
+    leaveClassroom(e, currentClassroom);
     handleCloseLeaveClassroomModal();
   }
   return (
@@ -23,7 +25,8 @@ export default function LeaveClassroomModal({
     >
       <Header>
         <Heading>
-          You are about to leave the following classroom: {classroom.name}
+          You are about to leave the following classroom:{" "}
+          <s.ColorAccent>{currentClassroom.name}</s.ColorAccent>
         </Heading>
       </Header>
       <Footer>

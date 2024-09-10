@@ -27,6 +27,7 @@ export default function Classrooms({ api }) {
   const [studentCohorts, setStudentCohorts] = useState();
   const [isLeaveClassroomModalOpen, setIsLeaveClassroomModalOpen] =
     useState(false);
+  const [currentClassroom, setCurrentClassroom] = useState("");
 
   function updateValues() {
     setIsLoading(true);
@@ -39,7 +40,8 @@ export default function Classrooms({ api }) {
     updateValues();
   }, [user.session, api]);
 
-  function handleOpenLeaveClassroomModal() {
+  function handleOpenLeaveClassroomModal(classroom) {
+    setCurrentClassroom(classroom);
     setIsLeaveClassroomModalOpen(true);
   }
 
@@ -51,7 +53,7 @@ export default function Classrooms({ api }) {
     setInviteCode(event.target.value);
   }
 
-  function leaveClass(e, cohort) {
+  function leaveClassroom(e, cohort) {
     e.preventDefault();
     api.leaveCohort(
       cohort.id,
@@ -71,7 +73,7 @@ export default function Classrooms({ api }) {
     );
   }
 
-  function saveStudentToClass(e) {
+  function saveStudentToClassroom(e) {
     e.preventDefault(e);
     api.joinCohort(
       inviteCode.trim(),
@@ -103,25 +105,24 @@ export default function Classrooms({ api }) {
         <FullWidthListContainer>
           {studentIsInCohort ? (
             studentCohorts.map((classroom, idx) => (
-              <React.Fragment key={classroom.id}>
-                <FullWidthListItem
-                  hasButton={true}
-                  onButtonClick={handleOpenLeaveClassroomModal}
-                >{`${idx + 1}. ${classroom.name}`}</FullWidthListItem>
-                <LeaveClassroomModal
-                  leaveClass={leaveClass}
-                  classroom={classroom}
-                  isLeaveClassroomModalOpen={isLeaveClassroomModalOpen}
-                  handleCloseLeaveClassroomModal={
-                    handleCloseLeaveClassroomModal
-                  }
-                />
-              </React.Fragment>
+              <FullWidthListItem
+                key={classroom.id}
+                hasButton={true}
+                onButtonClick={() => handleOpenLeaveClassroomModal(classroom)}
+              >{`${idx + 1}. ${classroom.name}`}</FullWidthListItem>
             ))
           ) : (
             <FullWidthListItem>
               {"Currently, you are not enrolled in any class"}
             </FullWidthListItem>
+          )}
+          {isLeaveClassroomModalOpen && (
+            <LeaveClassroomModal
+              leaveClass={leaveClassroom}
+              currentClassroom={currentClassroom}
+              isLeaveClassroomModalOpen={isLeaveClassroomModalOpen}
+              handleCloseLeaveClassroomModal={handleCloseLeaveClassroomModal}
+            />
           )}
         </FullWidthListContainer>
         <Form>
@@ -146,7 +147,7 @@ export default function Classrooms({ api }) {
             )}
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
-            <Button type="submit" onClick={(e) => saveStudentToClass(e)}>
+            <Button type="submit" onClick={(e) => saveStudentToClassroom(e)}>
               {studentIsInCohort ? strings.addClass : strings.joinClass}
             </Button>
           </ButtonContainer>
