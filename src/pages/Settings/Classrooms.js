@@ -118,7 +118,7 @@ export default function Classrooms({ api }) {
           )}
           {isLeaveClassroomModalOpen && (
             <LeaveClassroomModal
-              leaveClass={leaveClassroom}
+              leaveClassroom={leaveClassroom}
               currentClassroom={currentClassroom}
               isLeaveClassroomModalOpen={isLeaveClassroomModalOpen}
               handleCloseLeaveClassroomModal={handleCloseLeaveClassroomModal}
@@ -142,7 +142,7 @@ export default function Classrooms({ api }) {
 
             {showJoinCohortError && (
               <FullWidthErrorMsg>
-                <p>{strings.checkIfInviteCodeIsValid}</p>
+                {strings.checkIfInviteCodeIsValid}
               </FullWidthErrorMsg>
             )}
           </FormSection>
