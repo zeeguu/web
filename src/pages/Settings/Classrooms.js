@@ -54,8 +54,13 @@ export default function Classrooms({ api }) {
     e.preventDefault();
     api.leaveCohort(
       cohort.id,
-      (response) => {
-        updateValues();
+      (status) => {
+        if (status == "OK") {
+          updateValues();
+          setShowJoinCohortError(false); //clear error message after successful exit from classroom
+        } else {
+          setShowJoinCohortError(true);
+        }
       },
       (error) => {
         setShowJoinCohortError(true);
