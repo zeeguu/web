@@ -5,12 +5,6 @@ function saveUserInfoIntoCookies(userInfo, sessionID = null) {
   Cookies.set("nativeLanguage", userInfo.native_language, {
     expires: FAR_INTO_THE_FUTURE,
   });
-  Cookies.set("pronounceWords", true, {
-    expires: FAR_INTO_THE_FUTURE,
-  });
-  Cookies.set("translateWords", true, {
-    expires: FAR_INTO_THE_FUTURE,
-  });
   Cookies.set("name", userInfo.name, { expires: FAR_INTO_THE_FUTURE });
   if (sessionID) {
     console.log("saving also session ID");
