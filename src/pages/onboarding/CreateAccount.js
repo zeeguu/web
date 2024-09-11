@@ -105,11 +105,6 @@ export default function CreateAccount({
       native_language: native_language_on_register,
     };
 
-    const handleError = (error) => {
-      setErrorMessage(error); // Set the error message
-      scrollToTop(); // Scroll to the top whenever there's an error
-    };
-
     api.addUser(
       inviteCode,
       password,
@@ -124,7 +119,7 @@ export default function CreateAccount({
         });
       },
       (error) => {
-        handleError(error);
+        setErrorMessage(error);
       },
     );
   }
