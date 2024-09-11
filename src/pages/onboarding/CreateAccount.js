@@ -1,6 +1,7 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import redirect from "../../utils/routing/routing";
+import { scrollToTop } from "../../utils/misc/scrollToTop";
 import * as sC from "../../components/modal_shared/Checkbox.sc";
 import useFormField from "../../hooks/useFormField";
 
@@ -75,6 +76,12 @@ export default function CreateAccount({
     });
   }, []);
 
+  useEffect(() => {
+    if (errorMessage) {
+      scrollToTop();
+    }
+  }, [errorMessage]);
+
   //Clear temp local storage entries needed only for account creation
   function clearOnRegisterLanguageEntries() {
     LocalStorage.removeLearnedLanguage_OnRegister();
@@ -98,6 +105,11 @@ export default function CreateAccount({
       native_language: native_language_on_register,
     };
 
+    const handleError = (error) => {
+      setErrorMessage(error); // Set the error message
+      scrollToTop(); // Scroll to the top whenever there's an error
+    };
+
     api.addUser(
       inviteCode,
       password,
@@ -112,7 +124,7 @@ export default function CreateAccount({
         });
       },
       (error) => {
-        setErrorMessage(error);
+        handleError(error);
       },
     );
   }
@@ -140,6 +152,9 @@ export default function CreateAccount({
       </Header>
       <Main>
         <Form action={""} method={"POST"}>
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
           <FormSection>
             <InputField
               type={"text"}
@@ -208,9 +223,6 @@ export default function CreateAccount({
               </a>
             </label>
           </sC.CheckboxWrapper>
-          {errorMessage && (
-            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
-          )}
           <ButtonContainer className={"padding-medium"}>
             <Button
               type={"submit"}

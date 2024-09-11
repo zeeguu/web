@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import LocalStorage from "../../assorted/LocalStorage";
 
+import { scrollToTop } from "../../utils/misc/scrollToTop";
+
 import redirect from "../../utils/routing/routing";
 import useFormField from "../../hooks/useFormField";
 
@@ -32,6 +34,12 @@ export default function LanguagePreferences({ api }) {
     useFormField("");
   const [systemLanguages, setSystemLanguages] = useState();
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (errorMessage) {
+      scrollToTop();
+    }
+  }, [errorMessage]);
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
