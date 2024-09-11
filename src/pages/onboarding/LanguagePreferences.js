@@ -137,7 +137,11 @@ export default function LanguagePreferences({ api }) {
           </FormSection>
           <p>{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
-            <Button className={"full-width-btn"} onClick={validateAndRedirect}>
+            <Button
+              type={"submit"}
+              className={"full-width-btn"}
+              onClick={validateAndRedirect}
+            >
               {strings.next} <ArrowForwardRoundedIcon />
             </Button>
           </ButtonContainer>

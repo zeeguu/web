@@ -102,7 +102,11 @@ export default function ResetPasswordStep2({ api, email }) {
       </FormSection>
 
       <ButtonContainer className={"padding-medium"}>
-        <Button className={"full-width-btn"} onClick={handleResetPassword}>
+        <Button
+          type={"submit"}
+          className={"full-width-btn"}
+          onClick={handleResetPassword}
+        >
           {strings.setNewPassword}
         </Button>
       </ButtonContainer>

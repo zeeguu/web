@@ -99,7 +99,9 @@ export default function AudioExercises({ api }) {
             </FormSection>
           )}
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
-            <Button onClick={handleSave}>{strings.save}</Button>
+            <Button type={"submit"} onClick={handleSave}>
+              {strings.save}
+            </Button>
           </ButtonContainer>
         </Form>
       </Main>
