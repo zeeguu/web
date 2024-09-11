@@ -16,7 +16,6 @@ export default function ClassroomArticles({ api }) {
 
   useEffect(() => {
     api.getStudent((student) => {
-      console.log(student);
       setStudentJoinedCohort(student.cohorts.length > 0);
     }); // eslint-disable-next-line
   }, []);
