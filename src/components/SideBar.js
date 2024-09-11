@@ -95,7 +95,7 @@ export default function SideBar(props) {
       <div className="SettingsLogoutContainer">
         <div className="SettingsLogoutHolder">
           <Tooltip title="Settings">
-            <a href="/account_settings">
+            <a href="/account_settings/options">
               <SettingsIcon
                 fontSize="large"
                 className="navigationIcon"

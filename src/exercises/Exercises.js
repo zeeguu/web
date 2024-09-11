@@ -13,6 +13,7 @@ import Feature from "../features/Feature";
 import {
   MAX_EXERCISE_IN_LEARNING_BOOKMARKS,
   MAX_EXERCISE_TO_DO_NOTIFICATION,
+  MAX_COOLDOWN_INTERVAL,
 } from "./ExerciseConstants";
 
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
@@ -24,14 +25,14 @@ import {
   DEFAULT_SEQUENCE_NO_AUDIO,
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
-  NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+  DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
+  MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
 import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
-import LocalStorage from "../assorted/LocalStorage";
-import { PRONOUNCIATION_SETTING } from "./ExerciseTypeConstants";
+import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -68,6 +69,8 @@ export default function Exercises({
     useActivityTimer();
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
+  const [isAbleToAddBookmarksToPipe, setIsAbleToAddBookmarksToPipe] =
+    useState();
 
   useEffect(() => {
     api.getUserPreferences((preferences) => {
@@ -152,8 +155,14 @@ export default function Exercises({
     setActivityOver(false);
   }
 
+  function updateIsAbleToAddNewBookmarksToStudy() {
+    api.getNewBookmarksToStudy(1, (new_bookmarks) => {
+      setIsAbleToAddBookmarksToPipe(new_bookmarks.length > 0);
+    });
+  }
   function startExercising(is_new_scheduled_words) {
     resetExerciseState();
+    updateIsAbleToAddNewBookmarksToStudy();
     if (is_new_scheduled_words) {
       exercise_new_bookmarks();
     } else {
@@ -172,7 +181,7 @@ export default function Exercises({
 
   function exercise_new_bookmarks() {
     api.getNewBookmarksToStudy(
-      NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+      DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
       (new_bookmarks) => {
         initializeExercises(new_bookmarks, strings.exercises);
       },
@@ -184,7 +193,7 @@ export default function Exercises({
       setTotalBookmarksInPipeline(totalInLearning);
       if (totalInLearning < MAX_EXERCISE_IN_LEARNING_BOOKMARKS) {
         api.getNewBookmarksToStudy(
-          NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+          DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
           (new_bookmarks) => {
             initializeExercises(new_bookmarks, strings.exercises);
           },
@@ -210,29 +219,47 @@ export default function Exercises({
     // and if we have more than 99 + session we would not correctly
     // display the number to the user.
     api.getUserBookmarksToStudy(
-      MAX_EXERCISE_TO_DO_NOTIFICATION + NUMBER_OF_BOOKMARKS_TO_PRACTICE,
+      MAX_EXERCISE_TO_DO_NOTIFICATION + DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
       (bookmarks) => {
         exerciseNotification.setExerciseCounter(bookmarks.length);
+        let exerciseSession =
+          bookmarks.lengh <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
         initializeExercises(
-          bookmarks.slice(0, NUMBER_OF_BOOKMARKS_TO_PRACTICE + 1),
+          bookmarks.slice(0, exerciseSession + 1),
           strings.exercises,
         );
       },
     );
   }
-
+  if (!totalBookmarksInPipeline) {
+    api.getTotalBookmarksInPipeline((totalBookmarks) => {
+      setTotalBookmarksInPipeline(totalBookmarks);
+    });
+  }
   // Standard flow when user completes exercise session
   if (finished) {
+    updateIsAbleToAddNewBookmarksToStudy();
     return (
       <>
         <Congratulations
           articleID={articleID}
+          isAbleToAddBookmarksToPipe={isAbleToAddBookmarksToPipe}
+          hasExceededTotalBookmarks={
+            totalBookmarksInPipeline >= MAX_EXERCISE_IN_LEARNING_BOOKMARKS
+          }
+          totalBookmarksInPipeline={totalBookmarksInPipeline}
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
           api={api}
           backButtonAction={backButtonAction}
           keepExercisingAction={() => {
             startExercising(BOOKMARKS_DUE_REVIEW);
+            setHasKeptExercising(true);
+          }}
+          startExercisingNewWords={() => {
+            startExercising(NEW_BOOKMARKS_TO_STUDY);
             setHasKeptExercising(true);
           }}
           source={source}
@@ -245,16 +272,12 @@ export default function Exercises({
   }
 
   if (showOutOfWordsMessage) {
-    if (!totalBookmarksInPipeline) {
-      api.getTotalBookmarksInPipeline((totalBookmarks) => {
-        setTotalBookmarksInPipeline(totalBookmarks);
-      });
-    }
     return (
       <OutOfWordsMessage
         api={api}
         totalInLearning={totalBookmarksInPipeline}
         goBackAction={backButtonAction}
+        isAbleToAddBookmarksToPipe={isAbleToAddBookmarksToPipe}
         keepExercisingAction={() => {
           startExercising(NEW_BOOKMARKS_TO_STUDY);
           setHasKeptExercising(true);
@@ -290,9 +313,13 @@ export default function Exercises({
   function correctAnswerNotification(currentBookmark) {
     if (!incorrectBookmarks.includes(currentBookmark)) {
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
+      let didItProgressToProductive =
+        currentBookmark["cooling_interval"] === MAX_COOLDOWN_INTERVAL &&
+        currentBookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"];
       if (
         currentBookmark["cooling_interval"] !== null &&
-        !correctBookmarksIds.includes(currentBookmark.id)
+        !correctBookmarksIds.includes(currentBookmark.id) &&
+        !didItProgressToProductive
       ) {
         // Only decrement if it's already part of the schedule
         exerciseNotification.decrementExerciseCounter();
@@ -347,7 +374,6 @@ export default function Exercises({
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
-
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
     <>

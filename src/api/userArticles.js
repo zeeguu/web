@@ -33,11 +33,11 @@ Zeeguu_API.prototype.getMoreUserArticles = function (count, page, callback) {
   );
 };
 
-Zeeguu_API.prototype.getRecommendedArticles = function (callback){
+Zeeguu_API.prototype.getRecommendedArticles = function (callback) {
   this._getJSON("user_articles/foryou", (articles) => {
-  const ids = articles.map((o) => o.id);
+    const ids = articles.map((o) => o.id);
     const deduplicated = articles.filter(
-        ({ id }, index) => !ids.includes(id, index + 1)
+      ({ id }, index) => !ids.includes(id, index + 1),
     );
     callback(deduplicated);
   });
@@ -145,4 +145,8 @@ Zeeguu_API.prototype.submitArticleDifficultyFeedback = function (
   callback,
 ) {
   this._post(`/article_difficulty_feedback`, qs.stringify(feedback), callback);
+};
+
+Zeeguu_API.prototype.getUnfinishedUserReadingSessions = function (callback) {
+  this._getJSON(`/get_unfinished_user_reading_sessions`, callback);
 };
