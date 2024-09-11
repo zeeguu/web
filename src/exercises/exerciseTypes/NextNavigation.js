@@ -17,6 +17,7 @@ import Feature from "../../features/Feature";
 import { ExerciseValidation } from "../ExerciseValidation.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
+import Pluralize from "../../utils/text/pluralize.js";
 
 export default function NextNavigation({
   message,
@@ -149,10 +150,10 @@ export default function NextNavigation({
 
   function celebrationMessageMatch() {
     if (LocalStorage.getProductiveExercisesEnabled()) {
-      let verb = matchWordsProgressCount > 1 ? "have" : "has";
+      let verb = Pluralize.has(matchWordsProgressCount);
       return `${verb} now moved to your productive knowledge.`;
     } else {
-      let verb = matchWordsProgressCount > 1 ? "are" : "is";
+      let verb = Pluralize.is(matchWordsProgressCount);
       return `${verb} now learned!`;
     }
   }

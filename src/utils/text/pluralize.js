@@ -2,6 +2,9 @@ class Pluralize {
   static _pickRightForm(count, singular, plural) {
     return count === 1 ? singular : plural;
   }
+  static has(count) {
+    return this._pickRightForm(count, "has", "have");
+  }
   static word(count) {
     return this._pickRightForm(count, "word", "words");
   }
