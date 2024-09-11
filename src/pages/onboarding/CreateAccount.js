@@ -140,9 +140,6 @@ export default function CreateAccount({
       </Header>
       <Main>
         <Form action={""} method={"POST"}>
-          {errorMessage && (
-            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
-          )}
           <FormSection>
             <InputField
               type={"text"}
@@ -191,36 +188,41 @@ export default function CreateAccount({
               helperText={strings.passwordHelperText}
             />
           </FormSection>
-          <FormSection>
-            <sC.CheckboxWrapper>
-              <input
-                onChange={handleCheckPrivacyNote}
-                checked={checkPrivacyNote}
-                id="checkbox"
-                name=""
-                value=""
-                type="checkbox"
-              ></input>
-              <label>
-                By checking this box you agree to our &nbsp;
-                <a
-                  onClick={() => {
-                    setShowPrivacyNotice(true);
-                  }}
-                >
-                  {strings.privacyNotice}
-                </a>
-              </label>
-            </sC.CheckboxWrapper>
-          </FormSection>
+          <sC.CheckboxWrapper>
+            <input
+              onChange={handleCheckPrivacyNote}
+              checked={checkPrivacyNote}
+              id="checkbox"
+              name=""
+              value=""
+              type="checkbox"
+            ></input>
+            <label>
+              By checking this box you agree to our &nbsp;
+              <a
+                onClick={() => {
+                  setShowPrivacyNotice(true);
+                }}
+              >
+                {strings.privacyNotice}
+              </a>
+            </label>
+          </sC.CheckboxWrapper>
+          {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
+          <ButtonContainer className={"padding-medium"}>
+            <Button
+              type={"submit"}
+              className={"full-width-btn"}
+              onClick={handleCreate}
+            >
+              {strings.createAccount}
+            </Button>
+          </ButtonContainer>
         </Form>
       </Main>
       <Footer>
-        <ButtonContainer className={"padding-medium"}>
-          <Button className={"full-width-btn"} onClick={handleCreate}>
-            {strings.createAccount}
-          </Button>
-        </ButtonContainer>
         <p>
           {strings.alreadyHaveAccount + " "}
           <a className="bold underlined-link" href="/login">
