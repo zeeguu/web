@@ -24,7 +24,7 @@ export default function Classrooms({ api }) {
   const [isLoading, setIsLoading] = useState(true);
   const [inviteCode, setInviteCode] = useState("");
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
-  const [studentCohorts, setStudentCohorts] = useState();
+  const [studentCohorts, setStudentCohorts] = useState([]);
   const [isLeaveClassroomModalOpen, setIsLeaveClassroomModalOpen] =
     useState(false);
   const [currentClassroom, setCurrentClassroom] = useState("");
@@ -59,7 +59,7 @@ export default function Classrooms({ api }) {
     api.leaveCohort(
       cohort.id,
       (status) => {
-        if (status == "OK") {
+        if (status === "OK") {
           updateValues();
           setShowJoinCohortError(false); //clear error message after successfully leaving the classroom
         } else {
@@ -79,7 +79,7 @@ export default function Classrooms({ api }) {
     api.joinCohort(
       inviteCode.trim(),
       (status) => {
-        if (status == "OK") {
+        if (status === "OK") {
           updateValues();
           setInviteCode("");
           setShowJoinCohortError(false); //clear error message after successful next attempt
@@ -96,7 +96,9 @@ export default function Classrooms({ api }) {
   }
 
   if (isLoading) return <LoadingAnimation></LoadingAnimation>;
+
   const studentIsInCohort = studentCohorts && studentCohorts.length > 0;
+
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
