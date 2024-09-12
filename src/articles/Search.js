@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as s from "./Search.sc";
 import useQuery from "../hooks/useQuery";
 import SubscribeSearchButton from "./SubscribeSearchButton";
