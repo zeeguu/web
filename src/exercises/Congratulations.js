@@ -16,6 +16,7 @@ export default function Congratulations({
   articleID,
   isAbleToAddBookmarksToPipe,
   hasExceededTotalBookmarks,
+  totalPracticedBookmarksInSession,
   totalBookmarksInPipeline,
   articleTitle,
   articleURL,
@@ -26,8 +27,9 @@ export default function Congratulations({
   keepExercisingAction,
   startExercisingNewWords,
   source,
-  totalTime,
+  exerciseSessionTimer,
 }) {
+  const [checkpointTime] = useState(exerciseSessionTimer);
   const exerciseNotification = useContext(ExerciseCountContext);
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks),
@@ -137,17 +139,22 @@ export default function Congratulations({
         </CenteredColumn>
         <div style={{ marginLeft: "0.5em" }}>
           <p>
-            You have just reviewed <b>{totalBookmarksReviewed}</b>{" "}
-            {Pluralize.word(totalBookmarksReviewed)}.
+            You have reviewed <b>{totalPracticedBookmarksInSession}</b>{" "}
+            {Pluralize.word(totalBookmarksReviewed)} in{" "}
+            {timeToHumanReadable(checkpointTime)}.
+          </p>
+          <p>
             {hasScheduledExercises && (
               <b>
                 {" "}
-                You still have {exerciseNotification.exerciseCounter}{" "}
+                There {Pluralize.is(exerciseNotification.exerciseCounter)}{" "}
+                {exerciseNotification.exerciseCounter}{" "}
                 {Pluralize.word(exerciseNotification.exerciseCounter)} left to
-                revise today.
+                exercise today.
               </b>
             )}
           </p>
+
           {isOverTotalBookmarkLimit && (
             <p>
               You have already <b>{totalBookmarksInPipeline} words</b> you are
@@ -172,9 +179,6 @@ export default function Congratulations({
         <CenteredColumn className="CenteredColumn" style={{ marginTop: "2em" }}>
           {progressionButtonRender()}
         </CenteredColumn>
-        <div style={{ marginTop: "1em", fontSize: "small" }}>
-          You have been exercising for {timeToHumanReadable(totalTime)}
-        </div>
         {articleID && (
           <p>
             You practiced words from: <a href={articleURL}>{articleTitle}</a>
