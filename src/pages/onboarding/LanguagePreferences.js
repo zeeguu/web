@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import LocalStorage from "../../assorted/LocalStorage";
 
+import { scrollToTop } from "../../utils/misc/scrollToTop";
+
 import redirect from "../../utils/routing/routing";
 import useFormField from "../../hooks/useFormField";
 
@@ -32,6 +34,12 @@ export default function LanguagePreferences({ api }) {
     useFormField("");
   const [systemLanguages, setSystemLanguages] = useState();
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (errorMessage) {
+      scrollToTop();
+    }
+  }, [errorMessage]);
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
@@ -137,7 +145,11 @@ export default function LanguagePreferences({ api }) {
           </FormSection>
           <p>{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
-            <Button className={"full-width-btn"} onClick={validateAndRedirect}>
+            <Button
+              type={"submit"}
+              className={"full-width-btn"}
+              onClick={validateAndRedirect}
+            >
               {strings.next} <ArrowForwardRoundedIcon />
             </Button>
           </ButtonContainer>

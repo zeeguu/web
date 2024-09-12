@@ -67,13 +67,17 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
               helperText={<a href="/reset_pass">{strings.forgotPassword}</a>}
             />
           </FormSection>
+          <ButtonContainer className={"padding-medium"}>
+            <Button
+              type={"submit"}
+              className={"full-width-btn"}
+              onClick={handleSignIn}
+            >
+              {strings.login}
+            </Button>
+          </ButtonContainer>
         </Form>
       </Main>
-      <ButtonContainer className={"padding-medium"}>
-        <Button className={"full-width-btn"} onClick={handleSignIn}>
-          {strings.login}
-        </Button>
-      </ButtonContainer>
       <Footer>
         <p>
           {strings.dontHaveAnAccount + " "}

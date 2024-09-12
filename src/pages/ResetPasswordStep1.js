@@ -60,7 +60,11 @@ export default function ResetPasswordStep1({
         />
       </FormSection>
       <ButtonContainer className={"padding-medium"}>
-        <Button className={"full-width-btn"} onClick={handleResetPassword}>
+        <Button
+          type={"submit"}
+          className={"full-width-btn"}
+          onClick={handleResetPassword}
+        >
           {strings.resetPassword}
         </Button>
       </ButtonContainer>
