@@ -70,7 +70,7 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
           {unwantedKeywords.map((keyword) => (
             <div key={keyword.id} id={keyword.id}>
               <Tag
-                className={"outlined-blue"}
+                className={"outlined-blue small"}
                 onClick={() => removeUnwantedKeyword(keyword)}
               >
                 {keyword.search}

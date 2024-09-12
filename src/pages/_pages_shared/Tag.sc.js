@@ -29,15 +29,18 @@ const Tag = styled.button`
     border: 1.5px solid ${zeeguuOrange};
   }
 
+  &.small {
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
   &.outlined-blue {
     align-items: center;
     border: 1.5px solid ${blue500};
     background-color: ${blue200};
     color: ${blue800};
-    padding: 0.5rem 1rem;
-    margin: 0.25rem;
-    font-weight: 500;
-    font-size: 0.9rem;
   }
 
   &.selected {

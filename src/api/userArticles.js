@@ -56,8 +56,37 @@ Zeeguu_API.prototype.getSavedUserArticles = function (callback) {
   });
 };
 
-Zeeguu_API.prototype.search = function (term, callback) {
-  return this._getJSON(`search/${term}`, (articles) => {
+Zeeguu_API.prototype.search = function (
+  term,
+  searchPublishPriority,
+  searchDifficultyPriority,
+  callback,
+  onError,
+) {
+  let preferences = {
+    use_publish_priority: searchPublishPriority,
+    use_readability_priority: searchDifficultyPriority,
+  };
+  return this._post(
+    `search/${term}`,
+    qs.stringify(preferences),
+    (response) => {
+      let articles = JSON.parse(response);
+      // sometimes we get duplicates from the server
+      // deduplicate them here
+      // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
+      const ids = articles.map((o) => o.id);
+      const deduplicated = articles.filter(
+        ({ id }, index) => !ids.includes(id, index + 1),
+      );
+      callback(deduplicated);
+    },
+    onError,
+  );
+};
+
+Zeeguu_API.prototype.latestSearch = function (term, callback) {
+  return this._getJSON(`latest_search/${term}`, (articles) => {
     // sometimes we get duplicates from the server
     // deduplicate them here
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
@@ -69,17 +98,34 @@ Zeeguu_API.prototype.search = function (term, callback) {
   });
 };
 
-Zeeguu_API.prototype.searchMore = function (term, page, callback) {
-  return this._getJSON(`search/${term}/${page}`, (articles) => {
-    // sometimes we get duplicates from the server
-    // deduplicate them here
-    // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
-    const ids = articles.map((o) => o.id);
-    const deduplicated = articles.filter(
-      ({ id }, index) => !ids.includes(id, index + 1),
-    );
-    callback(deduplicated);
-  });
+Zeeguu_API.prototype.searchMore = function (
+  term,
+  page,
+  searchPublishPriority,
+  searchDifficultyPriority,
+  callback,
+  onError,
+) {
+  let preferences = {
+    use_publish_priority: searchPublishPriority,
+    use_readability_priority: searchDifficultyPriority,
+  };
+  return this._post(
+    `search/${term}/${page}`,
+    qs.stringify(preferences),
+    (response) => {
+      let articles = JSON.parse(response);
+      // sometimes we get duplicates from the server
+      // deduplicate them here
+      // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
+      const ids = articles.map((o) => o.id);
+      const deduplicated = articles.filter(
+        ({ id }, index) => !ids.includes(id, index + 1),
+      );
+      callback(deduplicated);
+    },
+    onError,
+  );
 };
 
 Zeeguu_API.prototype.getBookmarkedArticles = function (callback) {

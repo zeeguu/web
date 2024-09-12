@@ -13,13 +13,15 @@ import LocalStorage from "../assorted/LocalStorage";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
-import {
-  getPixelsFromScrollBarToEnd,
-  isScrollable,
-} from "../utils/misc/getScrollLocation";
+import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 import UnfinishedArticlesList from "./UnfinishedArticleList";
 
-export default function FindArticles({ content, searchQuery }) {
+export default function FindArticles({
+  content,
+  searchQuery,
+  searchPublishPriority,
+  searchDifficultyPriority,
+}) {
   let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
@@ -41,13 +43,13 @@ export default function FindArticles({ content, searchQuery }) {
   ] = useState(doNotShowRedirectionModal_LocalStorage);
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-
+  const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
   const [noMoreArticlesToShow, setNoMoreArticlesToShow] = useState(false);
   const articleListRef = useShadowRef(articleList);
   const currentPageRef = useShadowRef(currentPage);
   const noMoreArticlesToShowRef = useShadowRef(noMoreArticlesToShow);
   const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
-  console.log(articleList);
+
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index)
@@ -79,13 +81,22 @@ export default function FindArticles({ content, searchQuery }) {
       let newArticles = [...articleListRef.current];
 
       if (searchQuery) {
-        api.searchMore(searchQuery, newCurrentPage, (articles) => {
-          insertNewArticlesIntoArticleList(
-            articles,
-            newCurrentPage,
-            newArticles,
-          );
-        });
+        api.searchMore(
+          searchQuery,
+          newCurrentPage,
+          searchPublishPriority,
+          searchDifficultyPriority,
+          (articles) => {
+            insertNewArticlesIntoArticleList(
+              articles,
+              newCurrentPage,
+              newArticles,
+            );
+          },
+          (error) => {
+            console.log("Failed to get searches!");
+          },
+        );
       } else {
         api.getMoreUserArticles(20, newCurrentPage, (articles) => {
           insertNewArticlesIntoArticleList(
@@ -126,19 +137,27 @@ export default function FindArticles({ content, searchQuery }) {
       "Localstorage displayed extension: " +
         LocalStorage.displayedExtensionPopup(),
     );
-
     // load articles)
     if (searchQuery) {
-      api.search(searchQuery, (articles) => {
-        setArticleList(articles);
-        setOriginalList([...articles]);
-        if (articles.length < 20) setNoMoreArticlesToShow(true);
-      });
+      setReloadingSearchArticles(true);
+      api.search(
+        searchQuery,
+        searchPublishPriority,
+        searchDifficultyPriority,
+        (articles) => {
+          setArticleList(articles);
+          setOriginalList([...articles]);
+          setReloadingSearchArticles(false);
+        },
+        (error) => {
+          console.log(error);
+          console.log("Failed to get searches!");
+        },
+      );
     } else {
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
-        if (articles.length < 20) setNoMoreArticlesToShow(true);
       });
     }
     window.addEventListener("scroll", handleScroll, true);
@@ -146,7 +165,7 @@ export default function FindArticles({ content, searchQuery }) {
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
     };
-  }, []);
+  }, [searchPublishPriority, searchDifficultyPriority]);
 
   useEffect(() => {
     if (!isExtensionAvailable) {
@@ -178,41 +197,44 @@ export default function FindArticles({ content, searchQuery }) {
       ></ExtensionMessage>
 
       {!searchQuery && (
-        <Interests
-          api={api}
-          articlesListShouldChange={articlesListShouldChange}
-        />
+        <>
+          <Interests
+            api={api}
+            articlesListShouldChange={articlesListShouldChange}
+          />
+          <s.SearchHolder>
+            <SearchField api={api} query={searchQuery} />
+          </s.SearchHolder>
+          {!searchQuery && <UnfinishedArticlesList />}
+          <s.SortHolder>
+            <SortingButtons
+              articleList={articleList}
+              originalList={originalList}
+              setArticleList={setArticleList}
+            />
+          </s.SortHolder>
+        </>
       )}
-      <s.SearchHolder>
-        <SearchField api={api} query={searchQuery} />
-      </s.SearchHolder>
-      {!searchQuery && <UnfinishedArticlesList />}
-      <s.SortHolder>
-        <SortingButtons
-          articleList={articleList}
-          originalList={originalList}
-          setArticleList={setArticleList}
-        />
-      </s.SortHolder>
 
       {/* This is where the content of the Search component will be rendered */}
       {content}
-
-      {articleList.map((each, index) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          api={api}
-          hasExtension={isExtensionAvailable}
-          doNotShowRedirectionModal_UserPreference={
-            doNotShowRedirectionModal_UserPreference
-          }
-          setDoNotShowRedirectionModal_UserPreference={
-            setDoNotShowRedirectionModal_UserPreference
-          }
-          onArticleClick={() => handleArticleClick(each.id, index)}
-        />
-      ))}
+      {reloadingSearchArticles && <LoadingAnimation></LoadingAnimation>}
+      {!reloadingSearchArticles &&
+        articleList.map((each, index) => (
+          <ArticlePreview
+            key={each.id}
+            article={each}
+            api={api}
+            hasExtension={isExtensionAvailable}
+            doNotShowRedirectionModal_UserPreference={
+              doNotShowRedirectionModal_UserPreference
+            }
+            setDoNotShowRedirectionModal_UserPreference={
+              setDoNotShowRedirectionModal_UserPreference
+            }
+            onArticleClick={() => handleArticleClick(each.id, index)}
+          />
+        ))}
 
       {!searchQuery && (
         <>

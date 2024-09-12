@@ -44,10 +44,6 @@ export function onBlur(api, articleID, source) {
   api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
 }
 
-export function toggle(state, togglerFunction) {
-  togglerFunction(!state);
-}
-
 export default function ArticleReader({ api, teacherArticleID }) {
   let articleID = "";
   let query = useQuery();
