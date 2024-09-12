@@ -63,14 +63,16 @@ export default function MySearches({ api }) {
         <div key={searchTerm}>
           <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>
           <SubscribeSearchButton api={api} query={searchTerm} />
-
+          {articles.length === 0 && (
+            <p>No recent articles were found for this keyword.</p>
+          )}
           {articles.map((each) => (
             <ArticlePreview key={each.id} api={api} article={each} />
           ))}
           <d.buttonMoreArticles
             onClick={(e) => redirect(`/search?search=${searchTerm}`)}
           >
-            See more articles
+            {articles.length === 0 ? "Search for Keyword" : "See more articles"}
           </d.buttonMoreArticles>
         </div>
       ))}
