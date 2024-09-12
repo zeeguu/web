@@ -17,6 +17,7 @@ import Feature from "../../features/Feature";
 import { ExerciseValidation } from "../ExerciseValidation.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
+import Pluralize from "../../utils/text/pluralize.js";
 
 export default function NextNavigation({
   message,
@@ -146,6 +147,17 @@ export default function NextNavigation({
   const showCoffetti =
     isCorrect &&
     (isMatchBookmarkProgression || bookmarkProgression || bookmarkLearned);
+
+  function celebrationMessageMatch() {
+    if (LocalStorage.getProductiveExercisesEnabled()) {
+      let verb = Pluralize.has(matchWordsProgressCount);
+      return `${verb} now moved to your productive knowledge.`;
+    } else {
+      let verb = Pluralize.is(matchWordsProgressCount);
+      return `${verb} now learned!`;
+    }
+  }
+
   return (
     <>
       {learningCycleFeature && (
@@ -177,8 +189,7 @@ export default function NextNavigation({
             <p>
               <b>
                 {`${matchExerciseProgressionMessage}`}{" "}
-                {matchWordsProgressCount > 1 ? "have" : "has"} now moved to your
-                productive knowledge.
+                {celebrationMessageMatch()}
               </b>
             </p>
           </div>
