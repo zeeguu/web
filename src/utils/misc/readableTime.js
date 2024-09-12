@@ -20,7 +20,7 @@ function timeToHumanReadable(timeInSeconds, precision = "seconds") {
     let minutes = secondsToMinutes(timeInSeconds);
     let string = minutes + " " + Pluralize.minute(minutes);
     if (seconds > 0 && precision === "seconds")
-      string += " " + seconds + Pluralize.second(seconds);
+      string += " " + seconds + " " + Pluralize.second(seconds);
     return string;
   }
 }

@@ -59,6 +59,10 @@ export default function Exercises({
   const [articleTitle, setArticleTitle] = useState();
   const [articleURL, setArticleURL] = useState();
   const [showOutOfWordsMessage, setShowOutOfWordsMessage] = useState();
+  const [
+    totalPracticedBookmarksInSession,
+    setTotalPracticedBookmarksInSession,
+  ] = useState(0);
 
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
@@ -240,7 +244,6 @@ export default function Exercises({
   }
   // Standard flow when user completes exercise session
   if (finished) {
-    updateIsAbleToAddNewBookmarksToStudy();
     return (
       <>
         <Congratulations
@@ -249,6 +252,7 @@ export default function Exercises({
           hasExceededTotalBookmarks={
             totalBookmarksInPipeline >= MAX_EXERCISE_IN_LEARNING_BOOKMARKS
           }
+          totalPracticedBookmarksInSession={totalPracticedBookmarksInSession}
           totalBookmarksInPipeline={totalBookmarksInPipeline}
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
@@ -263,7 +267,7 @@ export default function Exercises({
             setHasKeptExercising(true);
           }}
           source={source}
-          totalTime={activeSessionDuration}
+          exerciseSessionTimer={activeSessionDuration}
           articleURL={articleURL}
           articleTitle={articleTitle}
         />
@@ -312,6 +316,7 @@ export default function Exercises({
 
   function correctAnswerNotification(currentBookmark) {
     if (!incorrectBookmarks.includes(currentBookmark)) {
+      setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
       let didItProgressToProductive =
         currentBookmark["cooling_interval"] === MAX_COOLDOWN_INTERVAL &&
@@ -335,6 +340,7 @@ export default function Exercises({
   function incorrectAnswerNotification(currentBookmark) {
     let incorrectBookmarksIds = incorrectBookmarksCopy.map((b) => b.id);
     if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
+      setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       if (currentBookmark["cooling_interval"] > 1) {
         // 8->4, 4->2, 2->1
         // We decrease because you dont have to do it
