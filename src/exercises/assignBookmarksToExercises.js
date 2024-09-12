@@ -15,23 +15,26 @@ import {
  * currentBookmarksToStudy to begin the exercise session.
  */
 const EX_TYPE_SEQUENCE = [
-  [LEARNING_CYCLE.RECEPTIVE],
-  [LEARNING_CYCLE.PRODUCTIVE],
+  [LEARNING_CYCLE.RECEPTIVE, MEMORY_TASK.RECOGNITION],
+  [LEARNING_CYCLE.PRODUCTIVE, MEMORY_TASK.RECOGNITION],
+  [LEARNING_CYCLE.RECEPTIVE, MEMORY_TASK.RECALL],
+  [LEARNING_CYCLE.PRODUCTIVE, MEMORY_TASK.RECALL],
 ];
 
 function getMemoryTask(bookmark) {
   let memoryTask =
-    bookmark.consecutive_correct_answers >= 2 && bookmark.cooling_interval >= 2
+    bookmark.cooling_interval > 2
       ? MEMORY_TASK.RECALL
       : MEMORY_TASK.RECOGNITION;
   return memoryTask;
 }
 function getBookmarkCycleTaskKey(b) {
-  return [b.learning_cycle];
+  return [b.learning_cycle, getMemoryTask(b)];
 }
 
 function getExerciseCycleTaskKey(e) {
-  return e.learningCycle === "receptive" ? 1 : 2;
+  let learningCycleKey = e.learningCycle === "receptive" ? 1 : 2;
+  return [learningCycleKey, e.memoryTask];
 }
 
 function getElementsByCycleTask(elementList, keyFunc) {
