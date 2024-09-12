@@ -1,17 +1,17 @@
 import * as s from "./Checkbox.sc";
 
-export default function Checkbox({ label, checked, onChange }) {
+export default function Checkbox({ label, checked, onChange, id }) {
   return (
     <s.CheckboxWrapper>
       <input
         onChange={onChange}
         checked={checked}
-        id="checkbox"
+        id={id}
         name=""
         value=""
         type="checkbox"
       ></input>
-      <label htmlFor="checkbox">{label}</label>
+      <label htmlFor={id}>{label}</label>
     </s.CheckboxWrapper>
   );
 }

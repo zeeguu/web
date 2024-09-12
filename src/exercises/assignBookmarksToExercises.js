@@ -78,8 +78,6 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
     bookmarks,
     getBookmarkCycleTaskKey,
   );
-  console.log(exerciseTypesList);
-  console.log(bookmarksByCycleTask);
 
   for (let i = 0; i < EX_TYPE_SEQUENCE.length; i++) {
     let currentCycleTask = EX_TYPE_SEQUENCE[i];
@@ -168,9 +166,6 @@ function assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList) {
 }
 
 function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
-  console.log("about to test:");
-  console.log(bookmarks);
-
   const learningCycleSequence =
     exerciseTypesList === LEARNING_CYCLE_SEQUENCE ||
     exerciseTypesList === LEARNING_CYCLE_SEQUENCE_NO_AUDIO;

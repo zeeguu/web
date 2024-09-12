@@ -65,6 +65,30 @@ let RightHandSide = styled.div`
   float: right;
 `;
 
+let TopReaderButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+let AuthorLinksContainer = styled.div`
+  margin-top: 1em;
+  margin-bottom: 2em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+let ArticleImgContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+let ArticleImg = styled.img`
+  width: 100%;
+  border-radius: 1em;
+  margin-bottom: 1em;
+`;
+
 let Toolbar = styled.div`
   padding-top: 0.5rem;
   height: 8em;
@@ -176,6 +200,9 @@ let _BottomButton = styled(BigSquareButton)`
   width: 8em;
   height: auto;
   display: inline-block;
+  &.slightlyLarger {
+    width: 10em;
+  }
 `;
 
 let WhiteButton = styled(_BottomButton)`
@@ -366,6 +393,10 @@ let CombinedBox = styled.div`
 
 export {
   ArticleReader,
+  ArticleImg,
+  ArticleImgContainer,
+  AuthorLinksContainer,
+  TopReaderButtonsContainer,
   Toolbar,
   Title,
   BookmarkButton,

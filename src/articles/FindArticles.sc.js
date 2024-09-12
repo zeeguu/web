@@ -13,6 +13,7 @@ const SortHolder = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  margin-bottom: -3em;
 `;
 
 const SearchHolder = styled.div`

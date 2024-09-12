@@ -17,6 +17,7 @@ import {
   getPixelsFromScrollBarToEnd,
   isScrollable,
 } from "../utils/misc/getScrollLocation";
+import UnfinishedArticlesList from "./UnfinishedArticleList";
 
 export default function FindArticles({ content, searchQuery }) {
   let api = useContext(APIContext);
@@ -185,7 +186,7 @@ export default function FindArticles({ content, searchQuery }) {
       <s.SearchHolder>
         <SearchField api={api} query={searchQuery} />
       </s.SearchHolder>
-
+      {!searchQuery && <UnfinishedArticlesList />}
       <s.SortHolder>
         <SortingButtons
           articleList={articleList}
@@ -214,9 +215,11 @@ export default function FindArticles({ content, searchQuery }) {
       ))}
 
       {!searchQuery && (
-        <ShowLinkRecommendationsIfNoArticles
-          articleList={articleList}
-        ></ShowLinkRecommendationsIfNoArticles>
+        <>
+          <ShowLinkRecommendationsIfNoArticles
+            articleList={articleList}
+          ></ShowLinkRecommendationsIfNoArticles>
+        </>
       )}
       {isWaitingForNewArticles && (
         <LoadingAnimation delay={0}></LoadingAnimation>
