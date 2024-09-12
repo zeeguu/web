@@ -35,7 +35,7 @@ export default function Settings() {
 
         {!user.is_teacher && (
           <SettingsItem path={"/account_settings/current_class"}>
-            {strings.myCurrentClass}
+            {strings.myClassrooms}
           </SettingsItem>
         )}
         <SettingsItem path={"/account_settings/interests"}>

@@ -45,7 +45,7 @@ let strings = new LocalizedStrings(
       addTexts: "Add Texts",
       delete: "Delete",
       cancel: "Cancel",
-      joinClass: "Join Class",
+      joinClass: "Join Classroom",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
       tooEasy: "too easy",
@@ -506,14 +506,14 @@ let strings = new LocalizedStrings(
 
       //Settings
       //Settings categories
-      myAccount: "My account",
+      myAccount: "My Account",
       exercises: "Exercises",
       accountManagement: "Account Management",
 
       //Settings main page nav options
       profileDetails: "Profile Details",
       languageSettings: "Language Settings",
-      myCurrentClass: "My Current Class",
+      myClassrooms: "My Classrooms",
       exerciseTypePreferences: "Exercise Type Preferences",
       interests: "Interests",
       deleteAccount: "Delete Account",
@@ -521,6 +521,7 @@ let strings = new LocalizedStrings(
       nativeLanguage: "Native Language",
       yourCurrentClassIs: "Your current class is: ",
       changeClass: "Change Class",
+      addClass: "Add Class",
       insertNewInviteCode: "Insert new invite code",
       insertInviteCode: "Insert invite code",
       checkIfInviteCodeIsValid:
@@ -621,7 +622,7 @@ let strings = new LocalizedStrings(
       addColleague: "Add Colleague",
 
       //CohortList
-      addClass: "Add Class",
+      addClass: "Add Classroom",
 
       //DeleteCohortWarning
       dangerzone: "Danger Zone!",

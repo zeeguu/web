@@ -12,7 +12,7 @@ import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
 import Form from "../_pages_shared/Form";
-import FullWidthErrorMsg from "../_pages_shared/FullWidthErrorMsg";
+import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import FormSection from "../_pages_shared/FormSection";
 import InputField from "../../components/InputField";
 import Footer from "../_pages_shared/Footer";

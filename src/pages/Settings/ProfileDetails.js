@@ -14,7 +14,7 @@ import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
 import BackArrow from "./settings_pages_shared/BackArrow";
-import FullWidthErrorMsg from "../_pages_shared/FullWidthErrorMsg";
+import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 
 import LoadingAnimation from "../../components/LoadingAnimation";
 
