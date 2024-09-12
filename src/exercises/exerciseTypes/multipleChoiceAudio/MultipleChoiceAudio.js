@@ -48,6 +48,7 @@ export default function MultipleChoiceAudio({
   );
   const bookmarkToStudy = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -66,7 +67,7 @@ export default function MultipleChoiceAudio({
 
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, []);
+  }, [isBookmarkChanged]);
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
@@ -259,6 +260,7 @@ export default function MultipleChoiceAudio({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
         <DisableAudioSession

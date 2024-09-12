@@ -42,6 +42,7 @@ export default function MultipleChoiceContext({
   const [wordInContextHeadline, setWordInContextHeadline] = useState(
     removePunctuation(bookmarksToStudy[0].from),
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -65,6 +66,21 @@ export default function MultipleChoiceContext({
       );
     });
   }, []);
+
+  useEffect(() => {
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
+  }, [isBookmarkChanged]);
 
   function handleShowSolution() {
     let message = messageToAPI + "S";
@@ -174,6 +190,7 @@ export default function MultipleChoiceContext({
         handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

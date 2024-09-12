@@ -43,6 +43,7 @@ export default function SpellWhatYouHear({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   async function handleSpeak() {
     await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
@@ -63,7 +64,7 @@ export default function SpellWhatYouHear({
       );
     });
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, []);
+  }, [isBookmarkChanged]);
 
   useEffect(() => {
     // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
@@ -187,6 +188,7 @@ export default function SpellWhatYouHear({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
         <DisableAudioSession
