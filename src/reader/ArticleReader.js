@@ -27,6 +27,7 @@ import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
 import useUserPreferences from "../hooks/useUserPreferences";
+import toggle from "../utils/misc/toggle";
 
 export const UMR_SOURCE = "UMR";
 
@@ -42,10 +43,6 @@ export function onFocus(api, articleID, source) {
 
 export function onBlur(api, articleID, source) {
   api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
-}
-
-export function toggle(state, togglerFunction) {
-  togglerFunction(!state);
 }
 
 export default function ArticleReader({ api, teacherArticleID }) {

@@ -28,7 +28,7 @@ export default function MySearches({ api }) {
 
   async function topArticlesForSearchTerm(searchTerm) {
     return new Promise((resolve) => {
-      api.search(searchTerm, (articles) => {
+      api.latestSearch(searchTerm, (articles) => {
         const firstTwoArticles = articles.slice(0, 2);
         resolve({ searchTerm, articles: firstTwoArticles });
       });
