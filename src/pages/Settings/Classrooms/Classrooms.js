@@ -36,6 +36,7 @@ export default function Classrooms({ api }) {
       setIsLoading(false);
     });
   }
+
   useEffect(() => {
     updateValues();
   }, [user.session, api]);
@@ -93,6 +94,7 @@ export default function Classrooms({ api }) {
       },
     );
   }
+
   if (isLoading) return <LoadingAnimation></LoadingAnimation>;
   const studentIsInCohort = studentCohorts && studentCohorts.length > 0;
   return (
@@ -107,7 +109,7 @@ export default function Classrooms({ api }) {
             studentCohorts.map((classroom, idx) => (
               <FullWidthListItem
                 key={classroom.id}
-                hasButton={true}
+                hasDeleteButton={true}
                 onButtonClick={() => handleOpenLeaveClassroomModal(classroom)}
               >{`${idx + 1}. ${classroom.name}`}</FullWidthListItem>
             ))

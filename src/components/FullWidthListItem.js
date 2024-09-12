@@ -3,13 +3,13 @@ import * as s from "./FullWidthListItem.sc";
 
 export default function FullWidthListItem({
   children,
-  hasButton,
+  hasDeleteButton,
   onButtonClick,
 }) {
   return (
     <s.FullWidthListItem>
       <s.TextContent>{children}</s.TextContent>
-      {hasButton && (
+      {hasDeleteButton && (
         <s.ListButton type="button" onClick={onButtonClick}>
           <CloseRoundedIcon fontSize="small" sx={{ color: "#808080" }} />
         </s.ListButton>
