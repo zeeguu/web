@@ -16,7 +16,7 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import Checkbox from "../../components/modal_shared/Checkbox";
 import strings from "../../i18n/definitions";
 
-export default function AudioExercises({ api }) {
+export default function ExerciseTypePreferences({ api }) {
   const user = useContext(UserContext);
   const history = useHistory();
 

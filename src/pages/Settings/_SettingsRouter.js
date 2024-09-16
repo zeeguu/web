@@ -5,7 +5,7 @@ import Settings from "./Settings";
 import ProfileDetails from "./ProfileDetails";
 import Languages from "./Languages";
 import Interests from "./Interests";
-import AudioExercises from "./AudioExercises";
+import ExerciseTypePreferences from "./ExerciseTypePreferences";
 import Classrooms from "./Classrooms/Classrooms";
 import DeleteAccount from "./DeleteAccount";
 
@@ -36,7 +36,7 @@ export default function SettingsRouter({ api, setUser }) {
       <PrivateRoute
         path="/account_settings/exercise_type_preferences"
         api={api}
-        component={AudioExercises}
+        component={ExerciseTypePreferences}
       />
 
       <PrivateRoute
