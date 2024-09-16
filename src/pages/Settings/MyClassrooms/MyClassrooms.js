@@ -18,7 +18,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import FullWidthListItem from "../../../components/FullWidthListItem";
 import LeaveClassroomModal from "./LeaveClassroomModal";
 
-export default function Classrooms({ api }) {
+export default function MyClassrooms({ api }) {
   const user = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(true);
