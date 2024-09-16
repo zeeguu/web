@@ -27,20 +27,20 @@ export default function SettingsRouter({ api, setUser }) {
       />
 
       <PrivateRoute
-        path="/account_settings/languages"
+        path="/account_settings/language_settings"
         api={api}
         setUser={setUser}
         component={Languages}
       />
 
       <PrivateRoute
-        path="/account_settings/audio_exercises"
+        path="/account_settings/exercise_type_preferences"
         api={api}
         component={AudioExercises}
       />
 
       <PrivateRoute
-        path="/account_settings/current_class"
+        path="/account_settings/my_classrooms"
         api={api}
         component={Classrooms}
       />
