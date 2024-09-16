@@ -3,7 +3,7 @@ import { Switch } from "react-router-dom";
 
 import Settings from "./Settings";
 import ProfileDetails from "./ProfileDetails";
-import Languages from "./Languages";
+import LanguageSettings from "./LanguageSettings";
 import Interests from "./Interests";
 import ExerciseTypePreferences from "./ExerciseTypePreferences";
 import Classrooms from "./Classrooms/Classrooms";
@@ -30,7 +30,7 @@ export default function SettingsRouter({ api, setUser }) {
         path="/account_settings/language_settings"
         api={api}
         setUser={setUser}
-        component={Languages}
+        component={LanguageSettings}
       />
 
       <PrivateRoute
