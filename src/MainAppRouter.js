@@ -31,7 +31,7 @@ export default function MainAppRouter({
   return (
     <Switch>
       <Route
-        path="/login"
+        path="/log_in"
         render={() => (
           <LogIn api={api} handleSuccessfulLogIn={handleSuccessfulLogIn} />
         )}

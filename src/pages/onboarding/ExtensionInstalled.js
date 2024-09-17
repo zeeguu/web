@@ -47,7 +47,7 @@ export default function ExtensionInstalled({ api }) {
               </Button>
               <Button
                 className={"full-width-btn"}
-                onClick={() => redirect("/login")}
+                onClick={() => redirect("/log_in")}
               >
                 {strings.login}
               </Button>
