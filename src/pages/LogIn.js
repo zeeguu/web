@@ -22,10 +22,9 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
 
   const [email, handleEmailChange] = useFormField("");
   const [password, handlePasswordChange] = useFormField("");
-
   const [errorMessage, setErrorMessage] = useState("");
 
-  function handleSignIn(e) {
+  function handleLogIn(e) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
@@ -70,7 +69,7 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
             <Button
               type={"submit"}
               className={"full-width-btn"}
-              onClick={handleSignIn}
+              onClick={handleLogIn}
             >
               {strings.login}
             </Button>
