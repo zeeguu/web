@@ -26,7 +26,7 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
 
   function handleLogIn(e) {
     e.preventDefault();
-    api.signIn(email, password, setErrorMessage, (sessionId) => {
+    api.logIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
         handleSuccessfulLogIn(userInfo, sessionId);
       });
