@@ -158,7 +158,7 @@ function App() {
                   api={api}
                   setUser={setUserData}
                   hasExtension={isExtensionAvailable}
-                  handleSuccessfulSignIn={handleSuccessfulSignIn}
+                  handleSuccessfulLogIn={handleSuccessfulSignIn}
                 />
 
                 <ToastContainer

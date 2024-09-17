@@ -26,14 +26,14 @@ export default function MainAppRouter({
   api,
   setUser,
   hasExtension,
-  handleSuccessfulSignIn,
+  handleSuccessfulLogIn,
 }) {
   return (
     <Switch>
       <Route
         path="/login"
         render={() => (
-          <LogIn api={api} handleSuccessfulLogIn={handleSuccessfulSignIn} />
+          <LogIn api={api} handleSuccessfulLogIn={handleSuccessfulLogIn} />
         )}
       />
 
@@ -42,7 +42,7 @@ export default function MainAppRouter({
         render={() => (
           <CreateAccount
             api={api}
-            handleSuccessfulLogIn={handleSuccessfulSignIn}
+            handleSuccessfulLogIn={handleSuccessfulLogIn}
             setUser={setUser}
           />
         )}
