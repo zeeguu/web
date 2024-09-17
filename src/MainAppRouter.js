@@ -7,7 +7,7 @@ import ExcludeWordsStep1 from "./pages/onboarding/ExcludeWordsStep1";
 import ExcludeWordsStep2 from "./pages/onboarding/ExcludeWordsStep2";
 import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
-import SignIn from "./pages/SignIn";
+import LogIn from "./pages/LogIn";
 import CreateAccount from "./pages/onboarding/CreateAccount";
 import LanguagePreferences from "./pages/onboarding/LanguagePreferences";
 import ArticlesRouter from "./articles/_ArticlesRouter";
@@ -33,7 +33,7 @@ export default function MainAppRouter({
       <Route
         path="/login"
         render={() => (
-          <SignIn api={api} handleSuccessfulSignIn={handleSuccessfulSignIn} />
+          <LogIn api={api} handleSuccessfulSignIn={handleSuccessfulSignIn} />
         )}
       />
 
