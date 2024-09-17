@@ -42,7 +42,7 @@ export default function MainAppRouter({
         render={() => (
           <CreateAccount
             api={api}
-            handleSuccessfulSignIn={handleSuccessfulSignIn}
+            handleSuccessfulLogIn={handleSuccessfulSignIn}
             setUser={setUser}
           />
         )}

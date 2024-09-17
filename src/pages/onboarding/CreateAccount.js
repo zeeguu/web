@@ -26,11 +26,7 @@ import strings from "../../i18n/definitions";
 import * as EmailValidator from "email-validator";
 import LocalStorage from "../../assorted/LocalStorage";
 
-export default function CreateAccount({
-  api,
-  handleSuccessfulSignIn,
-  setUser,
-}) {
+export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
   const user = useContext(UserContext);
 
   const learnedLanguage_OnRegister =
@@ -111,7 +107,7 @@ export default function CreateAccount({
       userInfo,
       (session) => {
         api.getUserDetails((user) => {
-          handleSuccessfulSignIn(user, session);
+          handleSuccessfulLogIn(user, session);
           setUser(userInfo);
           saveUserInfoIntoCookies(userInfo);
           clearOnRegisterLanguageEntries();
