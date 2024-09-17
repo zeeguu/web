@@ -28,7 +28,7 @@ export default function LandingPage() {
             Zeeguu
           </s.LogoWithText>
           <s.NavbarButtonContainer>
-            <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/login")}>
+            <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/log_in")}>
               {strings.login}
             </s.WhiteOutlinedNavbarBtn>
             <s.WhiteFilledNavbarBtn

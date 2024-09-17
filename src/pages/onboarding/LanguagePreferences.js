@@ -155,7 +155,7 @@ export default function LanguagePreferences({ api }) {
           </ButtonContainer>
           <p>
             {strings.alreadyHaveAccount + " "}
-            <a className="bold underlined-link" href="/login">
+            <a className="bold underlined-link" href="/log_in">
               {strings.login}
             </a>
           </p>

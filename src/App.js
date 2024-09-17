@@ -103,7 +103,7 @@ function App() {
     removeUserInfoFromCookies();
   }
 
-  function handleSuccessfulSignIn(userInfo, sessionId) {
+  function handleSuccessfulLogIn(userInfo, sessionId) {
     console.log("HANDLE SUCCESSFUL SIGN IN");
     api.session = sessionId;
     console.log("Session: " + api.session);
@@ -158,7 +158,7 @@ function App() {
                   api={api}
                   setUser={setUserData}
                   hasExtension={isExtensionAvailable}
-                  handleSuccessfulSignIn={handleSuccessfulSignIn}
+                  handleSuccessfulLogIn={handleSuccessfulLogIn}
                 />
 
                 <ToastContainer

@@ -17,20 +17,18 @@ import Button from "./_pages_shared/Button";
 import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
 
-export default function SignIn({ api, handleSuccessfulSignIn }) {
-  // TODO: Fix this bug in a different way. Requires understanding why strings._language changes to "da" without it being asked to, whenever this component renders. Perhaps it imports an un-updated version of strings?
+export default function LogIn({ api, handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
   const [email, handleEmailChange] = useFormField("");
   const [password, handlePasswordChange] = useFormField("");
-
   const [errorMessage, setErrorMessage] = useState("");
 
-  function handleSignIn(e) {
+  function handleLogIn(e) {
     e.preventDefault();
-    api.signIn(email, password, setErrorMessage, (sessionId) => {
+    api.logIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
-        handleSuccessfulSignIn(userInfo, sessionId);
+        handleSuccessfulLogIn(userInfo, sessionId);
       });
     });
   }
@@ -71,7 +69,7 @@ export default function SignIn({ api, handleSuccessfulSignIn }) {
             <Button
               type={"submit"}
               className={"full-width-btn"}
-              onClick={handleSignIn}
+              onClick={handleLogIn}
             >
               {strings.login}
             </Button>

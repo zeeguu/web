@@ -29,12 +29,12 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/profile_details"}>
           {strings.profileDetails}
         </SettingsItem>
-        <SettingsItem path={"/account_settings/languages"}>
+        <SettingsItem path={"/account_settings/language_settings"}>
           {strings.languageSettings}
         </SettingsItem>
 
         {!user.is_teacher && (
-          <SettingsItem path={"/account_settings/current_class"}>
+          <SettingsItem path={"/account_settings/my_classrooms"}>
             {strings.myClassrooms}
           </SettingsItem>
         )}
@@ -44,7 +44,7 @@ export default function Settings() {
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={strings.exercises}>
-        <SettingsItem path={"/account_settings/audio_exercises"}>
+        <SettingsItem path={"/account_settings/exercise_type_preferences"}>
           {strings.exerciseTypePreferences}
         </SettingsItem>
       </ListOfSettingsItems>

@@ -3,10 +3,10 @@ import { Switch } from "react-router-dom";
 
 import Settings from "./Settings";
 import ProfileDetails from "./ProfileDetails";
-import Languages from "./Languages";
+import LanguageSettings from "./LanguageSettings";
 import Interests from "./Interests";
-import AudioExercises from "./AudioExercises";
-import Classrooms from "./Classrooms/Classrooms";
+import ExerciseTypePreferences from "./ExerciseTypePreferences";
+import MyClassrooms from "./MyClassrooms/MyClassrooms";
 import DeleteAccount from "./DeleteAccount";
 
 export default function SettingsRouter({ api, setUser }) {
@@ -27,22 +27,22 @@ export default function SettingsRouter({ api, setUser }) {
       />
 
       <PrivateRoute
-        path="/account_settings/languages"
+        path="/account_settings/language_settings"
         api={api}
         setUser={setUser}
-        component={Languages}
+        component={LanguageSettings}
       />
 
       <PrivateRoute
-        path="/account_settings/audio_exercises"
+        path="/account_settings/exercise_type_preferences"
         api={api}
-        component={AudioExercises}
+        component={ExerciseTypePreferences}
       />
 
       <PrivateRoute
-        path="/account_settings/current_class"
+        path="/account_settings/my_classrooms"
         api={api}
-        component={Classrooms}
+        component={MyClassrooms}
       />
 
       <PrivateRoute

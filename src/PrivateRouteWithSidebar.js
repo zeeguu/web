@@ -16,7 +16,7 @@ export const PrivateRouteWithSidebar = ({ component: Component, ...rest }) => {
     return (
       <Redirect
         to={{
-          pathname: "/login",
+          pathname: "/log_in",
           search: "?redirectLink=" + window.location.href,
         }}
       />

@@ -19,7 +19,7 @@ import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import Selector from "../../components/Selector";
 
-export default function Languages({ api, setUser }) {
+export default function LanguageSettings({ api, setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [userDetails, setUserDetails] = useState(null);
   const [languages, setLanguages] = useState();
