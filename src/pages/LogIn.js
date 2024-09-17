@@ -17,7 +17,7 @@ import Button from "./_pages_shared/Button";
 import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
 
-export default function LogIn({ api, handleSuccessfulSignIn }) {
+export default function LogIn({ api, handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
   const [email, handleEmailChange] = useFormField("");
@@ -29,7 +29,7 @@ export default function LogIn({ api, handleSuccessfulSignIn }) {
     e.preventDefault();
     api.signIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
-        handleSuccessfulSignIn(userInfo, sessionId);
+        handleSuccessfulLogIn(userInfo, sessionId);
       });
     });
   }

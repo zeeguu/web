@@ -33,7 +33,7 @@ export default function MainAppRouter({
       <Route
         path="/login"
         render={() => (
-          <LogIn api={api} handleSuccessfulSignIn={handleSuccessfulSignIn} />
+          <LogIn api={api} handleSuccessfulLogIn={handleSuccessfulSignIn} />
         )}
       />
 
