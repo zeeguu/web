@@ -56,7 +56,7 @@ const MainContentToggled = styled.div`
 const sidebarCommon = css`
   position: fixed;
   top: 0;
-  height: 100vh;
+  height: 100%;
   background-color: ${(props) => props.light};
 `;
 
@@ -136,9 +136,6 @@ const navigationVisibleCommon = css`
     position: absolute;
     bottom: 1em;
     width: 100%;
-    @media (max-width: 768px) {
-      bottom: 5em;
-    }
   }
 
   .SettingsLogoutHolder {
