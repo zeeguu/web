@@ -166,7 +166,6 @@ export default function Exercises({
   }
   function startExercising(is_new_scheduled_words) {
     resetExerciseState();
-    updateIsAbleToAddNewBookmarksToStudy();
     if (is_new_scheduled_words) {
       exercise_new_bookmarks();
     } else {
@@ -305,6 +304,7 @@ export default function Exercises({
     exerciseNotification.updateReactState();
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
+      updateIsAbleToAddNewBookmarksToStudy();
       return;
     }
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
