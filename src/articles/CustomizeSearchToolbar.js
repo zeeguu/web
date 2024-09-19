@@ -18,20 +18,26 @@ export default function CustomizeSearchToolbar({
           <FormHelperText>{<small>{"Adjust search:"}</small>}</FormHelperText>
           <FormControlLabel
             checked={searchPublishPriority}
-            control={<Android12Switch />}
-            className={searchPublishPriority ? "selected" : ""}
-            onClick={(e) =>
-              toggle(searchPublishPriority, setSearchPublishPriority)
+            control={
+              <Android12Switch
+                onClick={(e) =>
+                  toggle(searchPublishPriority, setSearchPublishPriority)
+                }
+              />
             }
+            className={searchPublishPriority ? "selected" : ""}
             label={<small>{"Prioritize recent articles"}</small>}
           />
           <FormControlLabel
             checked={searchDifficultyPriority}
-            control={<Android12Switch />}
-            className={searchDifficultyPriority ? "selected" : ""}
-            onClick={(e) =>
-              toggle(searchDifficultyPriority, setSearchDifficultyPriority)
+            control={
+              <Android12Switch
+                onClick={(e) =>
+                  toggle(searchDifficultyPriority, setSearchDifficultyPriority)
+                }
+              />
             }
+            className={searchDifficultyPriority ? "selected" : ""}
             label={<small>{"Prioritize articles in my level"}</small>}
           />
         </FormGroup>
