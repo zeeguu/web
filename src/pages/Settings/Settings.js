@@ -8,6 +8,7 @@ import SettingsItem from "./settings_pages_shared/SettingsItem";
 import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
 
 import * as s from "./Settings.sc";
+import LogOutButton from "./LogOutButton";
 
 export default function Settings() {
   const user = useContext(UserContext);
@@ -41,8 +42,8 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/interests"}>
           {strings.interests}
         </SettingsItem>
+        <LogOutButton />
       </ListOfSettingsItems>
-
       <ListOfSettingsItems header={strings.exercises}>
         <SettingsItem path={"/account_settings/exercise_type_preferences"}>
           {strings.exerciseTypePreferences}

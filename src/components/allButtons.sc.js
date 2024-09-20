@@ -13,10 +13,17 @@ const RoundButton = styled.div`
   color: white !important;
   font-weight: 500;
   text-align: center;
+  vertical
 
   cursor: pointer;
   margin-top: 3px;
   box-sizing: border-box;
+`;
+
+const WhiteRoundButton = styled(RoundButton)`
+  background-color: white;
+  color: ${zeeguuOrange} !important;
+  border: 2px solid ${zeeguuOrange};
 `;
 
 const OrangeRoundButton = styled(RoundButton)`
@@ -37,7 +44,8 @@ const ClearSearchButton = styled.div`
   border-style: solid;
   border-color: white;
   border-radius: 100%;
-  background: -webkit-linear-gradient(
+  background:
+    -webkit-linear-gradient(
       -45deg,
       transparent 0%,
       transparent 46%,
@@ -65,26 +73,26 @@ const BigSquareButton = styled(RoundButton)`
 `;
 
 const StyledButton = styled.button`
-color: black;
-height: auto;
-display: flex;
-padding: 1em;
-margin: 1em;
-border-style: none;
-border-width: 2px;
-border-radius: 10px;
-font-size: 1em;
-font-weight: bold;
-cursor: pointer;
-align-items: center;
-justify-content: center;
+  color: black;
+  height: auto;
+  display: flex;
+  padding: 1em;
+  margin: 1em;
+  border-style: none;
+  border-width: 2px;
+  border-radius: 10px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
 
-// Primary
+  // Primary
   ${(props) =>
     props.primary &&
     css`
       background-color: ${zeeguuOrange};
-      :hover{
+      :hover {
         background-color: ${lightOrange};
       }
     `}
@@ -94,7 +102,7 @@ justify-content: center;
     props.secondary &&
     css`
       background-color: white;
-      :hover{
+      :hover {
         text-decoration: underline;
       }
     `}
@@ -108,5 +116,11 @@ justify-content: center;
     `}
 `;
 
-
-export { RoundButton, OrangeRoundButton, BigSquareButton, ClearSearchButton, StyledButton};
+export {
+  RoundButton,
+  OrangeRoundButton,
+  WhiteRoundButton,
+  BigSquareButton,
+  ClearSearchButton,
+  StyledButton,
+};
