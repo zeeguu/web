@@ -78,48 +78,6 @@ export default function Congratulations({
           {strings.keepExercising}
         </s.OrangeButton>
       );
-    else if (canStartLearningNewWords && isOverTotalBookmarkLimit)
-      return (
-        <>
-          <s.OrangeButton className="orangeButton" onClick={backButtonAction}>
-            {strings.goToReading}
-          </s.OrangeButton>
-          <s.WhiteButton
-            className="whiteButton slightlyLarger"
-            onClick={startExercisingNewWords}
-          >
-            {strings.startLearningNewWords}
-          </s.WhiteButton>
-        </>
-      );
-    else if (canStartLearningNewWords && !isOverTotalBookmarkLimit)
-      return (
-        <>
-          <s.OrangeButton
-            className="orangeButton slightlyLarger"
-            onClick={startExercisingNewWords}
-          >
-            {strings.startLearningNewWords}
-          </s.OrangeButton>
-          <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
-            {strings.goToReading}
-          </s.WhiteButton>
-        </>
-      );
-    else if (canStartLearningNewWords && isOverTotalBookmarkLimit)
-      return (
-        <>
-          <s.OrangeButton className="whiteButton" onClick={backButtonAction}>
-            {strings.goToReading}
-          </s.OrangeButton>
-          <s.WhiteButton
-            className="whiteButton slightlyLarger"
-            onClick={startExercisingNewWords}
-          >
-            {strings.startLearningNewWords}
-          </s.WhiteButton>
-        </>
-      );
     else
       return (
         <s.OrangeButton className="orangeButton" onClick={backButtonAction}>
@@ -154,25 +112,12 @@ export default function Congratulations({
               </b>
             )}
           </p>
-
-          {isOverTotalBookmarkLimit && (
-            <p>
-              You have already <b>{totalBookmarksInPipeline} words</b> you are
-              learning at the moment. We recommend that you at{" "}
-              <b>most learn {MAX_EXERCISE_IN_LEARNING_BOOKMARKS} words</b> at
-              any given point.
-            </p>
-          )}
-          {canStartLearningNewWords && !isOverTotalBookmarkLimit && (
-            <p>
-              You can start <b>studying new words</b>, do you want to continue
-              exercising?
-            </p>
-          )}
           {!isThereMoreExercises && (
             <p>
               There are no more words for you to practice. You can read more
-              articles and find new words to learn!
+              articles and find new words to learn! We will let you know when
+              it's time to review your words according to our spaced-repetition
+              schedule.
             </p>
           )}
         </div>

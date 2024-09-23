@@ -98,6 +98,19 @@ export default function ExerciseTypePreferences({ api }) {
               />
             </FormSection>
           )}
+          <FormSection>
+            <Checkbox
+              id="exercise-scheduling-checkbox"
+              label={
+                <>
+                  Only do exercises when scheduled{" "}
+                  {SessionStorage.isAudioExercisesEnabled()}
+                </>
+              }
+              checked={audioExercises}
+              onChange={handleAudioExercisesChange}
+            />
+          </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button type={"submit"} onClick={handleSave}>
               {strings.save}

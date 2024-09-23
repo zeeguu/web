@@ -2,7 +2,7 @@ import { Zeeguu_API } from "./classDef";
 import qs from "qs";
 
 Zeeguu_API.prototype.getUserBookmarksToStudy = function (count, callback) {
-  this._getJSON(`bookmarks_to_study/${count}`, callback);
+  this._getJSON(`scheduled_bookmarks_to_study/${count}`, callback);
 };
 
 Zeeguu_API.prototype.getUserBookmarksInPipeline = function (callback) {
@@ -13,8 +13,24 @@ Zeeguu_API.prototype.getNewBookmarksToStudy = function (count, callback) {
   this._getJSON(`new_bookmarks_to_study/${count}`, callback);
 };
 
+Zeeguu_API.prototype.getTopBookmarksToStudy = function (callback) {
+  this._getJSON(`top_bookmarks_to_study`, callback);
+};
+
+Zeeguu_API.prototype.bookmarksNotLearned = function (callback) {
+  this._getJSON(`bookmarks_not_learned`, callback);
+};
+
+Zeeguu_API.prototype.hasBookmarksLeftBasedOnExercises = function (callback) {
+  this._getJSON(`has_bookmarks_left_based_on_exercises`, callback);
+};
+
 Zeeguu_API.prototype.getTotalBookmarksInPipeline = function (callback) {
   this._getJSON(`get_total_bookmarks_in_pipeline`, callback);
+};
+
+Zeeguu_API.prototype.hasBookmarksToReview = function (callback) {
+  this._getJSON(`has_bookmarks_to_review`, callback);
 };
 
 Zeeguu_API.prototype.hasBookmarksInPipelineToReview = function (callback) {

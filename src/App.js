@@ -69,7 +69,7 @@ function App() {
               };
               console.log("Session: " + api.session);
 
-              api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+              api.hasBookmarksToReview((hasBookmarks) => {
                 exerciseNotification.setHasExercises(hasBookmarks);
                 exerciseNotification.updateReactState();
               });
