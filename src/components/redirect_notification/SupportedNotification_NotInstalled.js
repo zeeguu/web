@@ -1,4 +1,5 @@
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
+import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";
@@ -38,7 +39,7 @@ export default function SupportedNotification_NotInstalled({
       <Footer>
         <ButtonContainer buttonCountNum={1}>
           <GoToButton target={"_self"} href={getExtensionInstallationLinks()}>
-            Install from Chrome Web Store
+            {getExtensionInstallationButtonContent()}
             <ArrowForwardRoundedIcon fontSize="small" />
           </GoToButton>
         </ButtonContainer>

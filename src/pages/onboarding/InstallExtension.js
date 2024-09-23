@@ -7,6 +7,7 @@ import Footer from "../_pages_shared/Footer";
 import Button from "../_pages_shared/Button";
 import FullWidthImage from "../../components/FullWidthImage";
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
+import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
 
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
@@ -31,7 +32,7 @@ export default function InstallExtension() {
             className={"full-width-btn"}
             onClick={() => redirect(getExtensionInstallationLinks())}
           >
-            Install from Chrome Web Store
+            {getExtensionInstallationButtonContent()}
             <ArrowForwardRoundedIcon fontSize="medium" />
           </Button>
           <a className="link" href="/articles">
