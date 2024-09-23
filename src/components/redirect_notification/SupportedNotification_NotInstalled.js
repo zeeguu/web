@@ -28,12 +28,12 @@ export default function SupportedNotification_NotInstalled({
       </Header>
       <Main>
         <FullWidthImage
-          src={"use-extension.png"}
+          src={"find-extension.png"}
           alt={"Zeeguu browser extension"}
         />
-        <p>
-          To read this article with the help of Zeeguu without the extension,
-          simply click "Add to Saves" above the article's title.
+        <p className="small">
+          <sup>*</sup> To read this article without the extension, simply click
+          "Add&nbsp;to&nbsp;Saves" above the article's title.
         </p>
       </Main>
       <Footer>
