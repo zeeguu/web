@@ -8,7 +8,7 @@ import Button from "../_pages_shared/Button";
 import FullWidthImage from "../../components/FullWidthImage";
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
 
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
@@ -17,23 +17,22 @@ export default function InstallExtension() {
   return (
     <PreferencesPage>
       <Header>
-        <Heading>You're almost there</Heading>
+        <Heading>
+          Read and translate any foreign article
+          with&nbsp;The&nbsp;Zeeguu&nbsp;Reader browser&nbsp;extension
+        </Heading>
       </Header>
       <Main>
-        <p>
-          Time to install The Zeeguu Reader browser extension, which enables you
-          to&nbsp;read and translate articles and solve&nbsp;exercises
-        </p>
         <FullWidthImage src={"find-extension.png"} />
       </Main>
       <Footer>
-        <ButtonContainer className={"padding-large"}>
+        <ButtonContainer className={"padding-medium"}>
           <Button
             className={"full-width-btn"}
             onClick={() => redirect(getExtensionInstallationLinks())}
           >
-            <FileDownloadOutlinedIcon fontSize="small" />
-            {strings.installTheExtension}
+            Install from Chrome Web Store
+            <ArrowForwardRoundedIcon fontSize="medium" />
           </Button>
           <a className="link" href="/articles">
             {strings.iWillInstallLater}

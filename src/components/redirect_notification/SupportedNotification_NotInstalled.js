@@ -1,6 +1,5 @@
-import * as s from "../modal_shared/Modal.sc";
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";
 import Heading from "../modal_shared/Heading";
@@ -8,7 +7,7 @@ import Main from "../modal_shared/Main";
 import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import GoToButton from "../modal_shared/GoToButton";
-import Icon from "../modal_shared/Icon";
+import FullWidthImage from "../FullWidthImage";
 
 export default function SupportedNotification_NotInstalled({
   handleCloseRedirectionModal,
@@ -22,15 +21,15 @@ export default function SupportedNotification_NotInstalled({
     <Modal open={open} onClose={handleCancel}>
       <Header>
         <Heading>
-          <Icon src={"../static/images/zeeguuLogo.svg"} />
-          The Zeeguu Reader<br></br>browser extension is not installed
+          Enable reading <br></br> and translating articles by installing
+          The&nbsp;Zeeguu Reader browser extension
         </Heading>
       </Header>
       <Main>
-        <p>
-          For the best user experience we recommend you to read articles with{" "}
-          <s.Strong>The Zeeguu Reader</s.Strong> browser extension.
-        </p>
+        <FullWidthImage
+          src={"use-extension.png"}
+          alt={"Zeeguu browser extension"}
+        />
         <p>
           To read this article with the help of Zeeguu without the extension,
           simply click "Add to Saves" above the article's title.
@@ -39,8 +38,8 @@ export default function SupportedNotification_NotInstalled({
       <Footer>
         <ButtonContainer buttonCountNum={1}>
           <GoToButton target={"_self"} href={getExtensionInstallationLinks()}>
-            <DownloadRoundedIcon fontSize="small" />
-            Install the Extension
+            Install from Chrome Web Store
+            <ArrowForwardRoundedIcon fontSize="small" />
           </GoToButton>
         </ButtonContainer>
       </Footer>
