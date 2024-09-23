@@ -8,6 +8,7 @@ import Button from "../_pages_shared/Button";
 import FullWidthImage from "../../components/FullWidthImage";
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
 import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
+import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
 
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
@@ -25,6 +26,13 @@ export default function InstallExtension() {
       </Header>
       <Main>
         <FullWidthImage src={"find-extension.png"} />
+        {runningInChromeDesktop() && (
+          <p>
+            * Also compatible with <b>Edge</b>, <b>Opera</b>, <b>Vivaldi</b>,
+            and <b>Brave</b>. <br></br> Not seeing your browser? The extension
+            may still work - try installing it!
+          </p>
+        )}
       </Main>
       <Footer>
         <ButtonContainer className={"padding-medium"}>

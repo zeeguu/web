@@ -1,5 +1,6 @@
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
 import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
+import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";
@@ -22,8 +23,8 @@ export default function SupportedNotification_NotInstalled({
     <Modal open={open} onClose={handleCancel}>
       <Header>
         <Heading>
-          Enable reading <br></br> and translating articles by installing
-          The&nbsp;Zeeguu Reader browser extension
+          Enable reading <br></br>and translating articles by&nbsp;installing
+          The&nbsp;Zeeguu&nbsp;Reader&nbsp;browser extension
         </Heading>
       </Header>
       <Main>
@@ -31,9 +32,16 @@ export default function SupportedNotification_NotInstalled({
           src={"find-extension.png"}
           alt={"Zeeguu browser extension"}
         />
-        <p className="small">
-          <sup>*</sup> To read this article without the extension, click
-          "Add&nbsp;to&nbsp;Saves" above the article's title.
+        {runningInChromeDesktop() && (
+          <p className="small">
+            * Also compatible with <b>Edge</b>, <b>Opera</b>, <b>Vivaldi</b>,
+            and <b>Brave</b>. <br></br> Not seeing your browser? The extension
+            may still work - try installing it!
+          </p>
+        )}
+        <p className="extra-small">
+          To read articles without the extension, click "Add&nbsp;to&nbsp;Saves"
+          above their&nbsp;titles.
         </p>
       </Main>
       <Footer>
