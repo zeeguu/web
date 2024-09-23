@@ -32,7 +32,7 @@ export default function SupportedNotification_NotInstalled({
           alt={"Zeeguu browser extension"}
         />
         <p className="small">
-          <sup>*</sup> To read this article without the extension, simply click
+          <sup>*</sup> To read this article without the extension, click
           "Add&nbsp;to&nbsp;Saves" above the article's title.
         </p>
       </Main>
