@@ -126,6 +126,7 @@ export default function Exercises({
       // that we tried to schedule new bookmarks but none
       // were found.
       setShowOutOfWordsMessage(true);
+      updateIsAbleToAddNewBookmarksToStudy();
       return;
     }
     setCountBookmarksToPractice(bookmarks.length);
