@@ -9,6 +9,7 @@ import WordsForArticle from "./WordsForArticle";
 import Receptive from "./Receptive";
 import Productive from "./Productive";
 import Feature from "../features/Feature";
+import ToLearn from "./ToLearn";
 
 export default function WordsRouter({ api }) {
   let tabsAndLinks = {
@@ -18,6 +19,7 @@ export default function WordsRouter({ api }) {
 
   if (Feature.merle_exercises) {
     tabsAndLinks = {
+      [strings.titleToLearnWords]: "/words/toLearn",
       [strings.titleReceptiveWords]: "/words",
       [strings.titleProductiveWords]: "/words/productive",
       [strings.learned]: "/words/learned",
@@ -66,6 +68,12 @@ export default function WordsRouter({ api }) {
         />
         <PrivateRoute
           exact
+          path="/render/words/toLearn"
+          api={api}
+          component={ToLearn}
+        />
+        <PrivateRoute
+          exact
           path="/render/words/receptive"
           api={api}
           component={Receptive}
@@ -82,6 +90,12 @@ export default function WordsRouter({ api }) {
           path="/render/words/productive"
           api={api}
           component={Productive}
+        />
+        <PrivateRoute
+          exact
+          path="/words/toLearn"
+          api={api}
+          component={ToLearn}
         />
       </s.NarrowColumn>
     </Switch>
