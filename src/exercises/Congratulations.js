@@ -9,15 +9,12 @@ import LocalStorage from "../assorted/LocalStorage";
 import { timeToHumanReadable } from "../utils/misc/readableTime";
 import { ExerciseCountContext } from "./ExerciseCountContext";
 import CollapsablePanel from "../components/CollapsablePanel";
-import { MAX_EXERCISE_IN_LEARNING_BOOKMARKS } from "./ExerciseConstants";
 import Pluralize from "../utils/text/pluralize";
 
 export default function Congratulations({
   articleID,
   isAbleToAddBookmarksToPipe,
-  hasExceededTotalBookmarks,
   totalPracticedBookmarksInSession,
-  totalBookmarksInPipeline,
   articleTitle,
   articleURL,
   correctBookmarks,
@@ -25,7 +22,6 @@ export default function Congratulations({
   api,
   backButtonAction,
   keepExercisingAction,
-  startExercisingNewWords,
   source,
   exerciseSessionTimer,
 }) {
@@ -64,12 +60,6 @@ export default function Congratulations({
   const hasScheduledExercises = exerciseNotification.exerciseCounter > 0;
   const isThereMoreExercises =
     hasScheduledExercises || isAbleToAddBookmarksToPipe;
-  const canStartLearningNewWords =
-    isAbleToAddBookmarksToPipe &&
-    !articleID &&
-    exerciseNotification.exerciseCounter <= 0;
-  const isOverTotalBookmarkLimit =
-    hasExceededTotalBookmarks && !hasScheduledExercises;
 
   function progressionButtonRender() {
     if (hasScheduledExercises)

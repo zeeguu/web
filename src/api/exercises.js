@@ -17,14 +17,6 @@ Zeeguu_API.prototype.getTopBookmarksToStudy = function (callback) {
   this._getJSON(`top_bookmarks_to_study`, callback);
 };
 
-Zeeguu_API.prototype.bookmarksNotLearned = function (callback) {
-  this._getJSON(`bookmarks_not_learned`, callback);
-};
-
-Zeeguu_API.prototype.hasBookmarksLeftBasedOnExercises = function (callback) {
-  this._getJSON(`has_bookmarks_left_based_on_exercises`, callback);
-};
-
 Zeeguu_API.prototype.getTotalBookmarksInPipeline = function (callback) {
   this._getJSON(`get_total_bookmarks_in_pipeline`, callback);
 };

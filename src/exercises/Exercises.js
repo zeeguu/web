@@ -128,8 +128,8 @@ export default function Exercises({
       // If a user gets here with no bookmarks, means
       // that we tried to schedule new bookmarks but none
       // were found.
-      updateIsAbleToAddNewBookmarksToStudy();
       setShowOutOfWordsMessage(true);
+      updateIsAbleToAddNewBookmarksToStudy();
       return;
     }
     setCountBookmarksToPractice(bookmarks.length);
@@ -206,21 +206,13 @@ export default function Exercises({
         <Congratulations
           articleID={articleID}
           isAbleToAddBookmarksToPipe={isAbleToAddBookmarksToPipe}
-          hasExceededTotalBookmarks={
-            totalBookmarksInPipeline >= MAX_EXERCISE_IN_LEARNING_BOOKMARKS
-          }
           totalPracticedBookmarksInSession={totalPracticedBookmarksInSession}
-          totalBookmarksInPipeline={totalBookmarksInPipeline}
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
           api={api}
           backButtonAction={backButtonAction}
           keepExercisingAction={() => {
             startExercising(BOOKMARKS_DUE_REVIEW);
-            setHasKeptExercising(true);
-          }}
-          startExercisingNewWords={() => {
-            startExercising(NEW_BOOKMARKS_TO_STUDY);
             setHasKeptExercising(true);
           }}
           source={source}
