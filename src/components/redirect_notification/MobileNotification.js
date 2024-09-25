@@ -10,6 +10,7 @@ import Checkbox from "../modal_shared/Checkbox";
 import GoToButton from "../modal_shared/GoToButton";
 import AddToSavesButton from "../modal_shared/AddToSavesButton";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import redirect from "../../utils/routing/routing";
 
 export default function MobileNotification({
   article,
@@ -46,6 +47,11 @@ export default function MobileNotification({
     handleCloseRedirectionModal();
   }
 
+  function handleOpenArticle(article) {
+    handleSaveVisibilityPreferences(); //if user checked "Don't show this message again" or not
+    redirect(article.url);
+  }
+
   // function below saves article, visibility preferences of the modal and closes it
   function handleSaveArticleFromTheModal() {
     saveArticle();
@@ -76,11 +82,7 @@ export default function MobileNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={2}>
-          <GoToButton
-            href={article.url}
-            target={"_self"}
-            onClick={handleSaveVisibilityPreferences}
-          >
+          <GoToButton onClick={() => handleOpenArticle(article)}>
             Enter the article's website
           </GoToButton>
           <AddToSavesButton onClick={handleSaveArticleFromTheModal}>

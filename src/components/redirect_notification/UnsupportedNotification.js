@@ -11,6 +11,7 @@ import GoToButton from "../modal_shared/GoToButton";
 import AddToSavesButton from "../modal_shared/AddToSavesButton";
 import Icon from "../modal_shared/Icon";
 import Checkbox from "../modal_shared/Checkbox";
+import redirect from "../../utils/routing/routing";
 
 export default function UnsupportedNotification({
   article,
@@ -45,6 +46,11 @@ export default function UnsupportedNotification({
   function handleSaveVisibilityPreferences() {
     handleModalVisibilityPreferences();
     handleCloseRedirectionModal();
+  }
+
+  function handleOpenArticle(article) {
+    handleSaveVisibilityPreferences(); //if user checked "Don't show this message again" or not
+    redirect(article.url, true);
   }
 
   // function below saves article, visibility preferences of the modal and closes it
@@ -118,11 +124,7 @@ export default function UnsupportedNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={2}>
-          <GoToButton
-            target={"_blank"}
-            href={article.url}
-            onClick={handleSaveVisibilityPreferences}
-          >
+          <GoToButton onClick={() => handleOpenArticle(article)}>
             Enter the article's website
           </GoToButton>
           <AddToSavesButton onClick={handleSaveArticleFromTheModal}>

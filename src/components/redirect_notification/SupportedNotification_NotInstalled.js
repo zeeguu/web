@@ -10,6 +10,7 @@ import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import GoToButton from "../modal_shared/GoToButton";
 import FullWidthImage from "../FullWidthImage";
+import redirect from "../../utils/routing/routing";
 
 export default function SupportedNotification_NotInstalled({
   handleCloseRedirectionModal,
@@ -46,7 +47,11 @@ export default function SupportedNotification_NotInstalled({
       </Main>
       <Footer>
         <ButtonContainer buttonCountNum={1}>
-          <GoToButton target={"_self"} href={getExtensionInstallationLinks()}>
+          <GoToButton
+            onClick={() => {
+              redirect(getExtensionInstallationLinks());
+            }}
+          >
             {getExtensionInstallationButtonContent()}
             <ArrowForwardRoundedIcon fontSize="small" />
           </GoToButton>

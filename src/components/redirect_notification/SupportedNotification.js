@@ -9,6 +9,7 @@ import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import Checkbox from "../modal_shared/Checkbox";
 import GoToButton from "../modal_shared/GoToButton";
+import redirect from "../../utils/routing/routing";
 
 export default function SupportedNotification({
   article,
@@ -29,10 +30,10 @@ export default function SupportedNotification({
       : setDoNotShowRedirectionModal_UserPreference(false);
   }
 
-  //runs when user enters article
-  function handleSaveVisibilityPreferences() {
-    handleModalVisibilityPreferences();
+  function handleOpenArticle(article) {
+    handleModalVisibilityPreferences(); //if user checked "Don't show this message again" or not
     handleCloseRedirectionModal();
+    redirect(article.url, true);
   }
 
   function handleCancel() {
@@ -65,11 +66,7 @@ export default function SupportedNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={1}>
-          <GoToButton
-            target={"_blank"}
-            href={article.url}
-            onClick={handleSaveVisibilityPreferences}
-          >
+          <GoToButton onClick={() => handleOpenArticle(article)}>
             Enter the article's website
           </GoToButton>
         </ButtonContainer>

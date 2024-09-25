@@ -13,6 +13,7 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
+import redirect from "../utils/routing/routing";
 
 export default function ExtensionMessage({
   open,
@@ -60,7 +61,11 @@ export default function ExtensionMessage({
         </Main>
         <Footer>
           <ButtonContainer buttonCountNum={1}>
-            <GoToButton target={"_self"} href={getExtensionInstallationLinks()}>
+            <GoToButton
+              onClick={() => {
+                redirect(getExtensionInstallationLinks());
+              }}
+            >
               <FileDownloadOutlinedIcon fontSize="small" />
               Install the Extension
             </GoToButton>
