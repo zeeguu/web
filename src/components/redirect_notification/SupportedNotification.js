@@ -6,7 +6,7 @@ import { Heading } from "../modal_shared/Heading.sc";
 import { Main } from "../modal_shared/Main.sc";
 import FullWidthImage from "../FullWidthImage";
 import { Footer } from "../modal_shared/Footer.sc";
-import ButtonContainer from "../modal_shared/ButtonContainer";
+import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import Checkbox from "../modal_shared/Checkbox";
 import { GoToButton } from "../modal_shared/GoToButton.sc";
 import redirect from "../../utils/routing/routing";

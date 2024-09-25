@@ -7,7 +7,7 @@ import { Main } from "../components/modal_shared/Main.sc";
 import { Footer } from "../components/modal_shared/Footer.sc";
 import strings from "../i18n/definitions";
 import { GoToButton } from "../components/modal_shared/GoToButton.sc";
-import ButtonContainer from "../components/modal_shared/ButtonContainer";
+import { ButtonContainer } from "../components/modal_shared/ButtonContainer.sc";
 
 export default function CelebrationModal({ open, onClose }) {
   const [showConfetti, setShowConfetti] = useState(false);

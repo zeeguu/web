@@ -3,7 +3,7 @@ import Modal from "../../../components/modal_shared/Modal";
 import { Header } from "../../../components/modal_shared/Header.sc";
 import { Heading } from "../../../components/modal_shared/Heading.sc";
 import { Footer } from "../../../components/modal_shared/Footer.sc";
-import ButtonContainer from "../../../components/modal_shared/ButtonContainer";
+import { ButtonContainer } from "../../../components/modal_shared/ButtonContainer.sc";
 import { GoToButton } from "../../../components/modal_shared/GoToButton.sc";
 
 import * as s from "./LeaveClassroomModal.sc";
