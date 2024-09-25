@@ -8,7 +8,7 @@ import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import Checkbox from "../modal_shared/Checkbox";
 import { GoToButton } from "../modal_shared/GoToButton.sc";
-import AddToSavesButton from "../modal_shared/AddToSavesButton";
+import { AddToSavesButton } from "../modal_shared/AddToSavesButton.sc";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import redirect from "../../utils/routing/routing";
 
