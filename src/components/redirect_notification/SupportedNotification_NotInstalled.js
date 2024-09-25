@@ -3,7 +3,7 @@ import { getExtensionInstallationButtonContent } from "../../utils/extension/ext
 import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Modal from "../modal_shared/Modal";
-import Header from "../modal_shared/Header";
+import { Header } from "../modal_shared/Header.sc";
 import Heading from "../modal_shared/Heading";
 import { Main } from "../modal_shared/Main.sc";
 import { Footer } from "../modal_shared/Footer.sc";
