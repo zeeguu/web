@@ -5,7 +5,7 @@ import { Main } from "../components/modal_shared/Main.sc";
 import FullWidthImage from "../components/FullWidthImage";
 import { Footer } from "../components/modal_shared/Footer.sc";
 import { ButtonContainer } from "../components/modal_shared/ButtonContainer.sc";
-import { GoToButton } from "../components/modal_shared/GoToButton.sc";
+import { Button } from "../components/modal_shared/Button.sc";
 import { getExtensionInstallationLinks } from "../utils/extension/extensionInstallationLinks";
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
 import { isMobile } from "../utils/misc/browserDetection";
@@ -61,14 +61,14 @@ export default function ExtensionMessage({
         </Main>
         <Footer>
           <ButtonContainer buttonCountNum={1}>
-            <GoToButton
+            <Button
               onClick={() => {
                 redirect(getExtensionInstallationLinks());
               }}
             >
               <FileDownloadOutlinedIcon fontSize="small" />
               Install the Extension
-            </GoToButton>
+            </Button>
           </ButtonContainer>
         </Footer>
       </Modal>

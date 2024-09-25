@@ -6,7 +6,7 @@ import { Heading } from "../components/modal_shared/Heading.sc";
 import { Main } from "../components/modal_shared/Main.sc";
 import { Footer } from "../components/modal_shared/Footer.sc";
 import strings from "../i18n/definitions";
-import { GoToButton } from "../components/modal_shared/GoToButton.sc";
+import { Button } from "../components/modal_shared/Button.sc";
 import { ButtonContainer } from "../components/modal_shared/ButtonContainer.sc";
 
 export default function CelebrationModal({ open, onClose }) {
@@ -41,9 +41,7 @@ export default function CelebrationModal({ open, onClose }) {
         </Main>
         <Footer>
           <ButtonContainer>
-            <GoToButton onClick={onClose}>
-              Continue with the exercises
-            </GoToButton>
+            <Button onClick={onClose}>Continue with the exercises</Button>
           </ButtonContainer>
         </Footer>
       </Modal>

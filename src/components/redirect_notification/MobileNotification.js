@@ -7,7 +7,7 @@ import { Main } from "../modal_shared/Main.sc";
 import { Footer } from "../modal_shared/Footer.sc";
 import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import Checkbox from "../modal_shared/Checkbox";
-import { GoToButton } from "../modal_shared/GoToButton.sc";
+import { Button } from "../modal_shared/Button.sc";
 import { AddToSavesButton } from "../modal_shared/AddToSavesButton.sc";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import redirect from "../../utils/routing/routing";
@@ -82,9 +82,9 @@ export default function MobileNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={2}>
-          <GoToButton onClick={() => handleOpenArticle(article)}>
+          <Button onClick={() => handleOpenArticle(article)}>
             Enter the article's website
-          </GoToButton>
+          </Button>
           <AddToSavesButton onClick={handleSaveArticleFromTheModal}>
             <BookmarkBorderIcon fontSize="small" />
             Add to Saves

@@ -3,7 +3,7 @@ import { OrangeRoundButton } from "../allButtons.sc";
 import styled from "styled-components";
 
 // TODO: Merge with Save button from Preferences
-const GoToButton = styled(OrangeRoundButton)`
+const Button = styled(OrangeRoundButton)`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -30,4 +30,4 @@ const GoToButton = styled(OrangeRoundButton)`
   }
 `;
 
-export { GoToButton };
+export { Button };
