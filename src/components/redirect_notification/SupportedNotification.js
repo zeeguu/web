@@ -8,7 +8,7 @@ import FullWidthImage from "../FullWidthImage";
 import { Footer } from "../modal_shared/Footer.sc";
 import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import Checkbox from "../modal_shared/Checkbox";
-import Button from "../../pages/_pages_shared/Button";
+import { Button } from "../../pages/_pages_shared/Button.sc";
 import redirect from "../../utils/routing/routing";
 
 export default function SupportedNotification({

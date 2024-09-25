@@ -7,7 +7,7 @@ import strings from "../../i18n/definitions";
 import LocalStorage from "../../assorted/LocalStorage";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import LanguageSelector from "../../components/LanguageSelector";
-import Button from "../_pages_shared/Button";
+import { Button } from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import Form from "../_pages_shared/Form";
 import FormSection from "../_pages_shared/FormSection";

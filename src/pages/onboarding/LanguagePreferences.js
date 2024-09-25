@@ -16,7 +16,7 @@ import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import FormSection from "../_pages_shared/FormSection";
 import Selector from "../../components/Selector";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
-import Button from "../_pages_shared/Button";
+import { Button } from "../_pages_shared/Button.sc";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import validator from "../../assorted/validator";

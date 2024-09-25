@@ -4,7 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 import SessionStorage from "../../assorted/SessionStorage";
 import LocalStorage from "../../assorted/LocalStorage";
 import Feature from "../../features/Feature";
-import Button from "../_pages_shared/Button";
+import { Button } from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import Form from "../_pages_shared/Form";
 import FormSection from "../_pages_shared/FormSection";

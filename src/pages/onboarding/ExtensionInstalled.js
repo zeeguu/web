@@ -7,7 +7,7 @@ import Main from "../_pages_shared/Main";
 import FullWidthImage from "../../components/FullWidthImage";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import Footer from "../_pages_shared/Footer";
-import Button from "../_pages_shared/Button";
+import { Button } from "../_pages_shared/Button.sc";
 
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";

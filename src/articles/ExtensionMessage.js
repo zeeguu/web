@@ -5,7 +5,7 @@ import { Main } from "../components/modal_shared/Main.sc";
 import FullWidthImage from "../components/FullWidthImage";
 import { Footer } from "../components/modal_shared/Footer.sc";
 import { ButtonContainer } from "../components/modal_shared/ButtonContainer.sc";
-import Button from "../pages/_pages_shared/Button";
+import { Button } from "../pages/_pages_shared/Button.sc";
 import { getExtensionInstallationLinks } from "../utils/extension/extensionInstallationLinks";
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
 import { isMobile } from "../utils/misc/browserDetection";
