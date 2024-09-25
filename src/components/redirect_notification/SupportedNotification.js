@@ -8,7 +8,7 @@ import FullWidthImage from "../FullWidthImage";
 import { Footer } from "../modal_shared/Footer.sc";
 import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import Checkbox from "../modal_shared/Checkbox";
-import { Button } from "../modal_shared/Button.sc";
+import Button from "../../pages/_pages_shared/Button";
 import redirect from "../../utils/routing/routing";
 
 export default function SupportedNotification({
@@ -66,7 +66,7 @@ export default function SupportedNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={1}>
-          <Button onClick={() => handleOpenArticle(article)}>
+          <Button className="small" onClick={() => handleOpenArticle(article)}>
             Enter the article's website
           </Button>
         </ButtonContainer>

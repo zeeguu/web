@@ -8,7 +8,7 @@ import { Heading } from "../modal_shared/Heading.sc";
 import { Main } from "../modal_shared/Main.sc";
 import { Footer } from "../modal_shared/Footer.sc";
 import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
-import { Button } from "../modal_shared/Button.sc";
+import Button from "../../pages/_pages_shared/Button";
 import { Icon } from "../modal_shared/Icon.sc";
 import FullWidthImage from "../FullWidthImage";
 import redirect from "../../utils/routing/routing";
@@ -50,6 +50,7 @@ export default function SupportedNotification_NotInstalled({
       <Footer>
         <ButtonContainer buttonCountNum={1}>
           <Button
+            className={"small"}
             onClick={() => {
               redirect(getExtensionInstallationLinks());
             }}

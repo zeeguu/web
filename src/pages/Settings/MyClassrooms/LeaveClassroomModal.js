@@ -4,7 +4,7 @@ import { Header } from "../../../components/modal_shared/Header.sc";
 import { Heading } from "../../../components/modal_shared/Heading.sc";
 import { Footer } from "../../../components/modal_shared/Footer.sc";
 import { ButtonContainer } from "../../../components/modal_shared/ButtonContainer.sc";
-import { Button } from "../../../components/modal_shared/Button.sc";
+import Button from "../../_pages_shared/Button";
 
 import * as s from "./LeaveClassroomModal.sc";
 
@@ -31,7 +31,9 @@ export default function LeaveClassroomModal({
       </Header>
       <Footer>
         <ButtonContainer buttonCountNum={1}>
-          <Button onClick={handleLeaveClassroom}>Leave the classroom</Button>
+          <Button className="small" onClick={handleLeaveClassroom}>
+            Leave the classroom
+          </Button>
         </ButtonContainer>
       </Footer>
     </Modal>

@@ -8,7 +8,7 @@ import { ButtonContainer } from "../../components/modal_shared/ButtonContainer.s
 import * as s from "../../components/FormPage.sc";
 import redirect from "../../utils/routing/routing";
 import SessionStorage from "../../assorted/SessionStorage.js";
-import { Button } from "../../components/modal_shared/Button.sc.js";
+import Button from "../_pages_shared/Button.js";
 
 export default function DeleteAccountButton() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -54,7 +54,7 @@ export default function DeleteAccountButton() {
         </Main>
         <Footer>
           <ButtonContainer buttonCountNum={1}>
-            <Button className="warning" onClick={handleUserConfirmation}>
+            <Button className="warning small" onClick={handleUserConfirmation}>
               Delete my account
             </Button>
           </ButtonContainer>

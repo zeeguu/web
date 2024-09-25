@@ -7,7 +7,7 @@ import { Main } from "../modal_shared/Main.sc";
 import { Footer } from "../modal_shared/Footer.sc";
 import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { Button } from "../modal_shared/Button.sc";
+import Button from "../../pages/_pages_shared/Button";
 import { AddToSavesButton } from "../modal_shared/AddToSavesButton.sc";
 import { Icon } from "../modal_shared/Icon.sc";
 import Checkbox from "../modal_shared/Checkbox";
@@ -124,7 +124,7 @@ export default function UnsupportedNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={2}>
-          <Button onClick={() => handleOpenArticle(article)}>
+          <Button className="small" onClick={() => handleOpenArticle(article)}>
             Enter the article's website
           </Button>
           <AddToSavesButton onClick={handleSaveArticleFromTheModal}>

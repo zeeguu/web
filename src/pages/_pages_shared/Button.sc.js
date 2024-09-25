@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { zeeguuDarkOrange, zeeguuOrange } from "../../components/colors";
+import {
+  zeeguuDarkOrange,
+  zeeguuOrange,
+  zeeguuRed,
+} from "../../components/colors";
 
 const Button = styled.button`
   cursor: pointer;
@@ -16,11 +20,21 @@ const Button = styled.button`
   border-radius: 4em;
   background-color: ${zeeguuOrange};
   font-weight: 600;
-  box-shadow: 0px 0.2em ${zeeguuDarkOrange};
+  box-shadow: 0px 0.2rem ${zeeguuDarkOrange};
   transition: all ease-in 0.08s;
   overflow: hidden;
   white-space: nowrap;
   margin-bottom: 0.2em;
+
+  &.small {
+    padding: 0.7em 2em;
+    font-size: 1rem;
+  }
+
+  &.warning {
+    background-color: red;
+    box-shadow: 0 0.2em ${zeeguuRed};
+  }
 
   &:active {
     box-shadow: none;
