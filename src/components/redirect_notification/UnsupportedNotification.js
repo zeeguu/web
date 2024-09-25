@@ -4,7 +4,7 @@ import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";
 import Heading from "../modal_shared/Heading";
 import Main from "../modal_shared/Main";
-import Footer from "../modal_shared/Footer";
+import { Footer } from "../modal_shared/Footer.sc";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { GoToButton } from "../modal_shared/GoToButton.sc";

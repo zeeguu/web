@@ -5,7 +5,7 @@ import Header from "../modal_shared/Header";
 import Heading from "../modal_shared/Heading";
 import Main from "../modal_shared/Main";
 import FullWidthImage from "../FullWidthImage";
-import Footer from "../modal_shared/Footer";
+import { Footer } from "../modal_shared/Footer.sc";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import Checkbox from "../modal_shared/Checkbox";
 import { GoToButton } from "../modal_shared/GoToButton.sc";
