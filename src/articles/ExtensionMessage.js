@@ -8,12 +8,16 @@ import { ButtonContainer } from "../components/modal_shared/ButtonContainer.sc";
 import { Button } from "../pages/_pages_shared/Button.sc";
 import { getExtensionInstallationLinks } from "../utils/extension/extensionInstallationLinks";
 import { isSupportedBrowser } from "../utils/misc/browserDetection";
-import { isMobile } from "../utils/misc/browserDetection";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import {
+  isMobile,
+  runningInChromeDesktop,
+} from "../utils/misc/browserDetection";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import strings from "../i18n/definitions";
 import redirect from "../utils/routing/routing";
+import { getExtensionInstallationButtonContent } from "../utils/extension/extensionInstallationButtonContent";
 
 export default function ExtensionMessage({
   open,
@@ -50,14 +54,21 @@ export default function ExtensionMessage({
         </Header>
         <Main>
           <p>
-            To read articles recommended by Zeeguu that are not saved or to read
-            external articles, you need to install The Zeeguu Reader browser
-            extension.
+            To start reading and translating articles recommended by&nbsp;Zeeguu
+            or&nbsp;other sources, simply install The Zeeguu Reader
+            browser&nbsp;extension!
           </p>
           <FullWidthImage
             src={"find-extension.png"}
             alt={"Zeeguu browser extension"}
           />
+          {runningInChromeDesktop() && (
+            <p className="small">
+              * Also compatible with <b>Edge</b>, <b>Opera</b>, <b>Vivaldi</b>,
+              and <b>Brave</b>. <br></br> Not seeing your browser? The extension
+              may still work - try installing it!
+            </p>
+          )}
         </Main>
         <Footer>
           <ButtonContainer buttonCountNum={1}>
@@ -67,8 +78,8 @@ export default function ExtensionMessage({
                 redirect(getExtensionInstallationLinks());
               }}
             >
-              <FileDownloadOutlinedIcon fontSize="small" />
-              Install the Extension
+              {getExtensionInstallationButtonContent()}
+              <ArrowForwardRoundedIcon fontSize="small" />
             </Button>
           </ButtonContainer>
         </Footer>
