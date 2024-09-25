@@ -3,7 +3,7 @@ import Confetti from "react-confetti";
 import Modal from "../components/modal_shared/Modal";
 import Header from "../components/modal_shared/Header";
 import Heading from "../components/modal_shared/Heading";
-import Main from "../components/modal_shared/Main";
+import { Main } from "../components/modal_shared/Main.sc";
 import { Footer } from "../components/modal_shared/Footer.sc";
 import strings from "../i18n/definitions";
 import { GoToButton } from "../components/modal_shared/GoToButton.sc";

@@ -5,7 +5,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header";
 import Heading from "../modal_shared/Heading";
-import Main from "../modal_shared/Main";
+import { Main } from "../modal_shared/Main.sc";
 import { Footer } from "../modal_shared/Footer.sc";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import { GoToButton } from "../modal_shared/GoToButton.sc";
