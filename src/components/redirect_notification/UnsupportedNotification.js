@@ -7,7 +7,7 @@ import Main from "../modal_shared/Main";
 import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import GoToButton from "../modal_shared/GoToButton";
+import { GoToButton } from "../modal_shared/GoToButton.sc";
 import AddToSavesButton from "../modal_shared/AddToSavesButton";
 import Icon from "../modal_shared/Icon";
 import Checkbox from "../modal_shared/Checkbox";

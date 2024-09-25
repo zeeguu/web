@@ -6,7 +6,7 @@ import Heading from "../components/modal_shared/Heading";
 import Main from "../components/modal_shared/Main";
 import Footer from "../components/modal_shared/Footer";
 import strings from "../i18n/definitions";
-import GoToButton from "../components/modal_shared/GoToButton";
+import { GoToButton } from "../components/modal_shared/GoToButton.sc";
 import ButtonContainer from "../components/modal_shared/ButtonContainer";
 
 export default function CelebrationModal({ open, onClose }) {

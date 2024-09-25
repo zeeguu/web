@@ -8,7 +8,7 @@ import Heading from "../modal_shared/Heading";
 import Main from "../modal_shared/Main";
 import Footer from "../modal_shared/Footer";
 import ButtonContainer from "../modal_shared/ButtonContainer";
-import GoToButton from "../modal_shared/GoToButton";
+import { GoToButton } from "../modal_shared/GoToButton.sc";
 import FullWidthImage from "../FullWidthImage";
 import redirect from "../../utils/routing/routing";
 

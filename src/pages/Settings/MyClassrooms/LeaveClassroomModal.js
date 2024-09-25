@@ -4,7 +4,7 @@ import Header from "../../../components/modal_shared/Header";
 import Heading from "../../../components/modal_shared/Heading";
 import Footer from "../../../components/modal_shared/Footer";
 import ButtonContainer from "../../../components/modal_shared/ButtonContainer";
-import GoToButton from "../../../components/modal_shared/GoToButton";
+import { GoToButton } from "../../../components/modal_shared/GoToButton.sc";
 
 import * as s from "./LeaveClassroomModal.sc";
 
