@@ -1,4 +1,4 @@
-import { zeeguuDarkOrange } from "../colors";
+import { zeeguuDarkOrange, zeeguuRed } from "../colors";
 import { OrangeRoundButton } from "../allButtons.sc";
 import styled from "styled-components";
 
@@ -17,6 +17,11 @@ const GoToButton = styled(OrangeRoundButton)`
   overflow: hidden;
   white-space: nowrap;
   margin-bottom: 0.2em;
+
+  &.warning {
+    background-color: red;
+    box-shadow: 0 0.2em ${zeeguuRed};
+  }
 
   &:active {
     box-shadow: none;
