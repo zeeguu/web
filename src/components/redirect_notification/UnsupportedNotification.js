@@ -9,7 +9,7 @@ import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { Button } from "../modal_shared/Button.sc";
 import { AddToSavesButton } from "../modal_shared/AddToSavesButton.sc";
-import Icon from "../modal_shared/Icon";
+import { Icon } from "../modal_shared/Icon.sc";
 import Checkbox from "../modal_shared/Checkbox";
 import redirect from "../../utils/routing/routing";
 
