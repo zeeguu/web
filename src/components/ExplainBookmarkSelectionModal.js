@@ -1,6 +1,6 @@
 import Modal from "../components/modal_shared/Modal";
 import { Header } from "../components/modal_shared/Header.sc";
-import Heading from "../components/modal_shared/Heading";
+import { Heading } from "../components/modal_shared/Heading.sc";
 import { Main } from "../components/modal_shared/Main.sc";
 import { APP_DOMAIN } from "../appConstants";
 import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";

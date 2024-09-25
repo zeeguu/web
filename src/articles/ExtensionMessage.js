@@ -1,6 +1,6 @@
 import Modal from "../components/modal_shared/Modal";
 import { Header } from "../components/modal_shared/Header.sc";
-import Heading from "../components/modal_shared/Heading";
+import { Heading } from "../components/modal_shared/Heading.sc";
 import { Main } from "../components/modal_shared/Main.sc";
 import FullWidthImage from "../components/FullWidthImage";
 import Footer from "../pages/_pages_shared/Footer";

@@ -2,7 +2,7 @@ import * as s from "../modal_shared/Modal.sc";
 import { useState } from "react";
 import Modal from "../modal_shared/Modal";
 import { Header } from "../modal_shared/Header.sc";
-import Heading from "../modal_shared/Heading";
+import { Heading } from "../modal_shared/Heading.sc";
 import { Main } from "../modal_shared/Main.sc";
 import FullWidthImage from "../FullWidthImage";
 import { Footer } from "../modal_shared/Footer.sc";

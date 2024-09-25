@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Confetti from "react-confetti";
 import Modal from "../components/modal_shared/Modal";
 import { Header } from "../components/modal_shared/Header.sc";
-import Heading from "../components/modal_shared/Heading";
+import { Heading } from "../components/modal_shared/Heading.sc";
 import { Main } from "../components/modal_shared/Main.sc";
 import { Footer } from "../components/modal_shared/Footer.sc";
 import strings from "../i18n/definitions";

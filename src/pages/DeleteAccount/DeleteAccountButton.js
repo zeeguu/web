@@ -2,7 +2,7 @@ import { useState } from "react";
 import WarningButton from "../../components/modal_shared/WarningButton";
 import Modal from "../../components/modal_shared/Modal";
 import { Header } from "../../components/modal_shared/Header.sc";
-import Heading from "../../components/modal_shared/Heading";
+import { Heading } from "../../components/modal_shared/Heading.sc";
 import { Main } from "../../components/modal_shared/Main.sc";
 import Footer from "../_pages_shared/Footer";
 import ButtonContainer from "../../components/modal_shared/ButtonContainer";
