@@ -9,6 +9,7 @@ import { Main } from "../modal_shared/Main.sc";
 import { Footer } from "../modal_shared/Footer.sc";
 import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import { Button } from "../modal_shared/Button.sc";
+import { Icon } from "../modal_shared/Icon.sc";
 import FullWidthImage from "../FullWidthImage";
 import redirect from "../../utils/routing/routing";
 
@@ -23,9 +24,10 @@ export default function SupportedNotification_NotInstalled({
   return (
     <Modal open={open} onClose={handleCancel}>
       <Header>
-        <Heading>
-          Enable reading <br></br>and translating articles by&nbsp;installing
-          The&nbsp;Zeeguu&nbsp;Reader&nbsp;browser extension
+        <Heading className="small">
+          Enable reading and translating articles by&nbsp;installing<br></br>
+          <Icon type="small" src={"../static/images/zeeguuLogo.svg"} />
+          The&nbsp;Zeeguu&nbsp;Reader browser&nbsp;extension
         </Heading>
       </Header>
       <Main>
