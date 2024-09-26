@@ -1,0 +1,85 @@
+import { toast } from "react-toastify";
+import { useEffect, useState, useContext } from "react";
+import useFormField from "../hooks/useFormField.js";
+import { APIContext } from "../contexts/APIContext";
+import Modal from "./modal_shared/Modal.js";
+import Form from "../pages/_pages_shared/Form.js";
+import ButtonContainer from "./modal_shared/ButtonContainer.js";
+import Button from "../pages/_pages_shared/Button.js";
+import Selector from "./Selector.js";
+import FormSection from "../pages/_pages_shared/FormSection.js";
+import TextField from "./TextField.js";
+import Main from "./modal_shared/Main.js";
+import Header from "./modal_shared/Header.js";
+import Heading from "./modal_shared/Heading.js";
+import { FEEDBACK_CODES, FEEDBACK_CODES_NAME } from "./FeedbackConstants.js";
+
+export default function FeedbackModal({ open, setOpen, feedbackOptions }) {
+  let api = useContext(APIContext);
+  const [feedbackComponentSelected, setFeedbackComponentSelected] =
+    useFormField(FEEDBACK_CODES_NAME.OTHER);
+  const [feedbackMessage, feedbackMessageChange] = useFormField("");
+
+  useEffect(() => {}, []);
+
+  function onSubmit(e) {
+    e.preventDefault();
+    let payload = {
+      message: feedbackMessage,
+      feedbackComponentId: feedbackComponentSelected,
+      currentUrl: window.location.href,
+    };
+    api.sendFeedback(payload);
+    setOpen(false);
+  }
+
+  return (
+    <Modal
+      open={open}
+      onClose={() => {
+        setOpen(false);
+      }}
+    >
+      <Main>
+        <Header withoutLogo>
+          <Heading>Provide Feedback</Heading>
+        </Header>
+        <Form action={onSubmit}>
+          <FormSection>
+            <Selector
+              options={feedbackOptions}
+              optionLabel={(v) => {
+                return FEEDBACK_CODES[v];
+              }}
+              optionValue={(v) => {
+                return v;
+              }}
+              selectedValue={feedbackComponentSelected}
+              onChange={(e) => setFeedbackComponentSelected(e)}
+              label={"Which component do you want to give feedback on?"}
+              placeholder={"Select Component to give Feedback on"}
+              id={"feedback-option"}
+            />
+          </FormSection>
+          <FormSection>
+            <TextField
+              label={"Let us know what happened"}
+              onChange={feedbackMessageChange}
+            />
+          </FormSection>
+
+          <ButtonContainer className={"adaptive-alignment-horizontal"}>
+            <Button
+              type={"submit"}
+              onClick={(e) => {
+                onSubmit(e);
+              }}
+            >
+              Submit
+            </Button>
+          </ButtonContainer>
+        </Form>
+      </Main>
+    </Modal>
+  );
+}

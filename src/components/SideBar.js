@@ -9,8 +9,8 @@ import { APIContext } from "../contexts/APIContext";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import NotificationIcon from "./NotificationIcon";
 import SettingsIcon from "@mui/icons-material/Settings";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { Tooltip } from "@mui/material";
+import FeedbackButton from "./FeedbackButton";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -103,20 +103,7 @@ export default function SideBar(props) {
               />
             </a>
           </Tooltip>
-          <Tooltip title="Logout">
-            <Link
-              to="/"
-              onClick={() => {
-                user.logoutMethod();
-              }}
-            >
-              <LogoutIcon
-                fontSize="large"
-                className="navigationIcon"
-                sx={{ color: "white" }}
-              />
-            </Link>
-          </Tooltip>
+          <FeedbackButton />
         </div>
       </div>
     </>

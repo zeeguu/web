@@ -1,7 +1,8 @@
 import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { useState } from "react";
-import GiveFeedbackModal from "../GiveFeedbackModal";
+import FeedbackModal from "../../components/FeedbackModal";
+import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants";
 
 export default function SolutionFeedbackLinks({
   api,
@@ -13,10 +14,11 @@ export default function SolutionFeedbackLinks({
 
   return (
     <s.CenteredRow>
-      <GiveFeedbackModal
+      <FeedbackModal
         open={openFeedback}
         setOpen={setOpenFeedback}
-      ></GiveFeedbackModal>
+        feedbackOptions={FEEDBACK_OPTIONS.EXERCISE}
+      ></FeedbackModal>
       {!isCorrect && (
         <>
           <s.StyledGreyButton
