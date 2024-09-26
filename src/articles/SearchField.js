@@ -1,10 +1,7 @@
 import { useRef, useState } from "react";
 import strings from "../i18n/definitions";
 import * as s from "./SearchField.sc";
-import {
-  ClearSearchButton,
-  ZeeguuSearchIcon,
-} from "../components/allButtons.sc";
+import { ClearSearchButton, SearchIcon } from "../components/allButtons.sc";
 import redirect from "../utils/routing/routing";
 
 export default function SearchField({ api, query }) {
@@ -59,7 +56,7 @@ export default function SearchField({ api, query }) {
       )}
 
       <a style={{ cursor: "pointer" }} onClick={(e) => handleSearch()}>
-        <ZeeguuSearchIcon />
+        <SearchIcon />
       </a>
     </s.SearchField>
   );

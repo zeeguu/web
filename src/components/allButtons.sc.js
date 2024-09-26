@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { zeeguuOrange, lightOrange, lightGrey } from "./colors";
-import SearchIcon from "@mui/icons-material/Search";
+import MUISearchIcon from "@mui/icons-material/Search";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -24,7 +24,7 @@ const OrangeRoundButton = styled(RoundButton)`
   background-color: ${zeeguuOrange};
 `;
 
-const ZeeguuSearchIcon = styled(SearchIcon)`
+const SearchIcon = styled(MUISearchIcon)`
   color: ${zeeguuOrange};
   &:hover {
     filter: brightness(120%);
@@ -126,5 +126,5 @@ export {
   BigSquareButton,
   ClearSearchButton,
   StyledButton,
-  ZeeguuSearchIcon,
+  SearchIcon,
 };
