@@ -77,7 +77,7 @@ export default function WordEditForm({
       ) : (
         <s.Headline>{strings.editWord}</s.Headline>
       )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoFocus={true}>
         {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
         {isBookmarkExpression(bookmark) ? (
           <s.CustomTextField
@@ -86,7 +86,6 @@ export default function WordEditForm({
             variant="outlined"
             fullWidth
             value={expression}
-            autoFocus={true}
             onChange={typingExpression}
           />
         ) : (
@@ -96,7 +95,6 @@ export default function WordEditForm({
             variant="outlined"
             fullWidth
             value={expression}
-            autoFocus={true}
             onChange={typingExpression}
           />
         )}

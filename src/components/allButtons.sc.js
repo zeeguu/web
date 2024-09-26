@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import { zeeguuOrange, lightOrange, lightGrey } from "./colors";
+import MUISearchIcon from "@mui/icons-material/Search";
 
 const RoundButton = styled.div`
   user-select: none;
@@ -30,20 +31,30 @@ const OrangeRoundButton = styled(RoundButton)`
   background-color: ${zeeguuOrange};
 `;
 
+const SearchIcon = styled(MUISearchIcon)`
+  color: ${zeeguuOrange};
+  &:hover {
+    filter: brightness(120%);
+  }
+`;
+
 // from: https://stackoverflow.com/questions/10019797/pure-css-close-button
 const ClearSearchButton = styled.div`
   display: block;
   float: left;
-  margin-top: 3px;
+  margin-top: 2px;
   margin-left: -1.6em;
   box-sizing: border-box;
   width: 1.4em;
   height: 1.4em;
-
+  cursor: pointer;
   border-width: 3px;
   border-style: solid;
   border-color: white;
   border-radius: 100%;
+  &:hover {
+    filter: brightness(120%);
+  }
   background:
     -webkit-linear-gradient(
       -45deg,
@@ -123,4 +134,5 @@ export {
   BigSquareButton,
   ClearSearchButton,
   StyledButton,
+  SearchIcon,
 };

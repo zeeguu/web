@@ -216,6 +216,12 @@ export default function FindArticles({
         </>
       )}
 
+      {searchQuery && (
+        <s.SearchHolder>
+          <SearchField api={api} query={searchQuery} />
+        </s.SearchHolder>
+      )}
+
       {/* This is where the content of the Search component will be rendered */}
       {content}
       {reloadingSearchArticles && <LoadingAnimation></LoadingAnimation>}
@@ -235,6 +241,9 @@ export default function FindArticles({
             onArticleClick={() => handleArticleClick(each.id, index)}
           />
         ))}
+      {!reloadingSearchArticles && articleList.length === 0 && (
+        <p>No searches were found for this query.</p>
+      )}
 
       {!searchQuery && (
         <>
