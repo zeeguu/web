@@ -20,8 +20,9 @@ export default function InstallExtension() {
     <PreferencesPage>
       <Header>
         <Heading>
-          Read and translate any foreign article
-          with&nbsp;The&nbsp;Zeeguu&nbsp;Reader browser&nbsp;extension
+          Read and translate foreign&nbsp;articles<br></br>
+          with&nbsp;the&nbsp;Zeeguu browser&nbsp;
+          {runningInChromeDesktop() ? "extension" : "add-on"}
         </Heading>
       </Header>
       <Main>
