@@ -9,7 +9,6 @@ import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { Button } from "../../pages/_pages_shared/Button.sc";
 import { AddToSavesButton } from "../modal_shared/AddToSavesButton.sc";
-import { Icon } from "../modal_shared/Icon.sc";
 import Checkbox from "../modal_shared/Checkbox";
 import redirect from "../../utils/routing/routing";
 
@@ -92,13 +91,13 @@ export default function UnsupportedNotification({
       <Header>
         <Heading>
           Your browser doesn't support <br></br>
-          <Icon src={"../static/images/zeeguuLogo.svg"} />
-          The Zeeguu Reader extension
+          the Zeeguu browser extension
         </Heading>
       </Header>
       <Main>
         <p>
-          To read articles with our extension, we recommend installing{" "}
+          To read and translate articles with our extension, we recommend
+          installing{" "}
           {renderExternalLink(
             BrowserLinks.Chrome.link,
             BrowserLinks.Chrome.name,
@@ -108,7 +107,7 @@ export default function UnsupportedNotification({
             BrowserLinks.Firefox.link,
             BrowserLinks.Firefox.name,
           )}
-          , or{" "}
+          , or&nbsp;
           {renderExternalLink(BrowserLinks.Edge.link, BrowserLinks.Edge.name)}.
         </p>
         <p>
