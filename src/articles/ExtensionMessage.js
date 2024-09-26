@@ -15,7 +15,6 @@ import {
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
-import strings from "../i18n/definitions";
 import redirect from "../utils/routing/routing";
 import { getExtensionInstallationButtonContent } from "../utils/extension/extensionInstallationButtonContent";
 
@@ -48,15 +47,16 @@ export default function ExtensionMessage({
       >
         <Header>
           <Heading>
-            <span className="annotation">New!</span>&nbsp;
-            {strings.extensionHeadline}
+            <span className="annotation">New!</span>&nbsp;Read and translate
+            foreign&nbsp;articles with&nbsp;the&nbsp;Zeeguu browser&nbsp;
+            {runningInChromeDesktop() ? "extension" : "add-on"}
           </Heading>
         </Header>
         <Main>
           <p>
-            To start reading and translating articles recommended by&nbsp;Zeeguu
-            or&nbsp;other sources, simply install The Zeeguu Reader
-            browser&nbsp;extension!
+            Enable reading and translating any foreign articles recommended
+            by&nbsp;Zeeguu or&nbsp;from other sources, with the&nbsp;Zeeguu
+            browser&nbsp;{runningInChromeDesktop() ? "extension!" : "add-on!"}
           </p>
           <FullWidthImage
             src={"find-extension.png"}
