@@ -42,7 +42,6 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/interests"}>
           {strings.interests}
         </SettingsItem>
-        <LogOutButton />
       </ListOfSettingsItems>
       <ListOfSettingsItems header={strings.exercises}>
         <SettingsItem path={"/account_settings/exercise_type_preferences"}>

@@ -17,6 +17,7 @@ const LogOutButtonStyle = styled(WhiteRoundButton)`
   white-space: nowrap;
   margin-bottom: 1rem;
   margin-top: 2rem;
+  cursor: pointer;
 
   &:active {
     box-shadow: none;
