@@ -42,7 +42,6 @@ export default function Settings() {
           {strings.interests}
         </SettingsItem>
       </ListOfSettingsItems>
-
       <ListOfSettingsItems header={strings.exercises}>
         <SettingsItem path={"/account_settings/exercise_type_preferences"}>
           {strings.exerciseTypePreferences}
