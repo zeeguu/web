@@ -8,7 +8,6 @@ import SettingsItem from "./settings_pages_shared/SettingsItem";
 import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
 
 import * as s from "./Settings.sc";
-import LogOutButton from "./LogOutButton";
 
 export default function Settings() {
   const user = useContext(UserContext);
