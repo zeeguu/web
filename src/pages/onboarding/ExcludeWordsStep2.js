@@ -11,7 +11,7 @@ import Form from "../_pages_shared/Form";
 import { Button } from "../_pages_shared/Button.sc";
 import Footer from "../_pages_shared/Footer";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
@@ -87,7 +87,7 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
             className={"full-width-btn"}
             onClick={() => redirect(getLinkToNextPage())}
           >
-            {strings.next} <ArrowForwardRoundedIcon />
+            {strings.next} <RoundedForwardArrow />
           </Button>
         </ButtonContainer>
       </Footer>

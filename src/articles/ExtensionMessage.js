@@ -12,7 +12,7 @@ import {
   isMobile,
   runningInChromeDesktop,
 } from "../utils/misc/browserDetection";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
 import redirect from "../utils/routing/routing";
@@ -79,7 +79,7 @@ export default function ExtensionMessage({
               }}
             >
               {getExtensionInstallationButtonContent()}
-              <ArrowForwardRoundedIcon fontSize="small" />
+              <RoundedForwardArrow fontSize="small" />
             </Button>
           </ButtonContainer>
         </Footer>

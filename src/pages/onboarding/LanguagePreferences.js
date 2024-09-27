@@ -17,7 +17,7 @@ import FormSection from "../_pages_shared/FormSection";
 import Selector from "../../components/Selector";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import { Button } from "../_pages_shared/Button.sc";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import validator from "../../assorted/validator";
 import strings from "../../i18n/definitions";
@@ -150,7 +150,7 @@ export default function LanguagePreferences({ api }) {
               className={"full-width-btn"}
               onClick={validateAndRedirect}
             >
-              {strings.next} <ArrowForwardRoundedIcon />
+              {strings.next} <RoundedForwardArrow />
             </Button>
           </ButtonContainer>
           <p>

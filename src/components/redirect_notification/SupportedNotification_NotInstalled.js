@@ -1,7 +1,7 @@
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
 import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
 import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import Modal from "../modal_shared/Modal";
 import { Header } from "../modal_shared/Header.sc";
 import { Heading } from "../modal_shared/Heading.sc";
@@ -44,7 +44,7 @@ export default function SupportedNotification_NotInstalled({
             }}
           >
             {getExtensionInstallationButtonContent()}
-            <ArrowForwardRoundedIcon fontSize="small" />
+            <RoundedForwardArrow fontSize="small" />
           </Button>
         </ButtonContainer>
         {runningInChromeDesktop() && (

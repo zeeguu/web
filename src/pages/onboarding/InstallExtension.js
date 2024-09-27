@@ -10,7 +10,7 @@ import { getExtensionInstallationLinks } from "../../utils/extension/extensionIn
 import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
 import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
 
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
@@ -42,7 +42,7 @@ export default function InstallExtension() {
             onClick={() => redirect(getExtensionInstallationLinks())}
           >
             {getExtensionInstallationButtonContent()}
-            <ArrowForwardRoundedIcon fontSize="medium" />
+            <RoundedForwardArrow fontSize="medium" />
           </Button>
           <a className="link" href="/articles">
             {strings.iWillInstallLater}

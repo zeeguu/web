@@ -6,7 +6,7 @@ import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import { Button } from "../pages/_pages_shared/Button.sc";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import redirect from "../utils/routing/routing.js";
 
@@ -54,7 +54,7 @@ export default function LandingPage() {
           </p>
           <Button onClick={() => redirect("/language_preferences")}>
             {strings.getStarted}
-            <ArrowForwardRoundedIcon />
+            <RoundedForwardArrow />
           </Button>
         </s.HeroColumn>
 

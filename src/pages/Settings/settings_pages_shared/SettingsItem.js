@@ -1,5 +1,5 @@
 import * as s from "./SettingsItem.sc";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import { NavLink } from "react-router-dom";
 
 export default function SettingsItem({ children, path }) {
@@ -7,7 +7,7 @@ export default function SettingsItem({ children, path }) {
     <s.SettingsItem>
       <NavLink className={"settings-link"} to={path ? path : "/"}>
         {children}{" "}
-        <ArrowForwardRoundedIcon fontSize="small" sx={{ color: "#808080" }} />
+        <RoundedForwardArrow fontSize="small" sx={{ color: "#808080" }} />
       </NavLink>
     </s.SettingsItem>
   );
