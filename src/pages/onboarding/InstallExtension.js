@@ -29,9 +29,9 @@ export default function InstallExtension() {
         <FullWidthImage src={"find-extension.png"} />
         {runningInChromeDesktop() && (
           <p>
-            * Also compatible with <b>Edge</b>, <b>Opera</b>, <b>Vivaldi</b>,
-            and <b>Brave</b>. <br></br> Not seeing your browser? The extension
-            may still work - try installing it!
+            The Chrone Web Store extension also works in <b>Edge</b>,{" "}
+            <b>Opera</b>, <b>Arc</b>, <b>Vivaldi</b>, and <b>Brave</b> and other
+            Chromium based browsers.
           </p>
         )}
       </Main>

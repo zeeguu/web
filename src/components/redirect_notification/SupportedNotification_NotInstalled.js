@@ -34,13 +34,6 @@ export default function SupportedNotification_NotInstalled({
           src={"find-extension.png"}
           alt={"Zeeguu browser extension"}
         />
-        {runningInChromeDesktop() && (
-          <p className="small">
-            * Also compatible with <b>Edge</b>, <b>Opera</b>, <b>Vivaldi</b>,
-            and <b>Brave</b>. <br></br> Not seeing your browser? The extension
-            may still work - try installing it!
-          </p>
-        )}
       </Main>
       <Footer>
         <ButtonContainer buttonCountNum={1}>
@@ -54,6 +47,13 @@ export default function SupportedNotification_NotInstalled({
             <ArrowForwardRoundedIcon fontSize="small" />
           </Button>
         </ButtonContainer>
+        {runningInChromeDesktop() && (
+          <p className="small">
+            The Chrone Web Store extension also works in <b>Edge</b>,{" "}
+            <b>Opera</b>, <b>Arc</b>, <b>Vivaldi</b>, and <b>Brave</b> and other
+            Chromium based browsers.
+          </p>
+        )}
       </Footer>
     </Modal>
   );
