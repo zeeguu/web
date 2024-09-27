@@ -134,13 +134,19 @@ const navigationVisibleCommon = css`
 
   .SettingsLogoutContainer {
     position: absolute;
-    bottom: 1em;
+    bottom: 2rem;
     width: 100%;
   }
 
   .SettingsLogoutHolder {
     display: flex;
     justify-content: space-around;
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 2rem;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   .navigationIcon {
