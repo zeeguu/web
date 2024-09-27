@@ -41,10 +41,6 @@ export default function SupportedNotification_NotInstalled({
             may still work - try installing it!
           </p>
         )}
-        <p className="extra-small">
-          To read articles without the extension, click "Add&nbsp;to&nbsp;Saves"
-          above their&nbsp;titles.
-        </p>
       </Main>
       <Footer>
         <ButtonContainer buttonCountNum={1}>
