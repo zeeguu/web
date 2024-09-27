@@ -47,8 +47,8 @@ export default function ExtensionMessage({
       >
         <Header>
           <Heading>
-            <span className="annotation">New!</span>&nbsp;Read and translate
-            foreign&nbsp;articles with&nbsp;the&nbsp;Zeeguu browser&nbsp;
+            Read and translate foreign&nbsp;articles with&nbsp;the&nbsp;Zeeguu
+            browser&nbsp;
             {runningInChromeDesktop() ? "extension" : "add-on"}
           </Heading>
         </Header>
