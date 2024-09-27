@@ -9,7 +9,7 @@ import FormSection from "./_pages_shared/FormSection";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg";
 import InputField from "../components/InputField";
 import ButtonContainer from "./_pages_shared/ButtonContainer";
-import Button from "./_pages_shared/Button";
+import { Button } from "./_pages_shared/Button.sc";
 
 export default function ResetPasswordStep2({ api, email }) {
   const [errorMessage, setErrorMessage] = useState("");

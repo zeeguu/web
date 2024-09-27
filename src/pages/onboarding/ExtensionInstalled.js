@@ -7,10 +7,11 @@ import Main from "../_pages_shared/Main";
 import FullWidthImage from "../../components/FullWidthImage";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import Footer from "../_pages_shared/Footer";
-import Button from "../_pages_shared/Button";
+import { Button } from "../_pages_shared/Button.sc";
 
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
+import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
 
 export default function ExtensionInstalled({ api }) {
   useEffect(() => {
@@ -21,8 +22,9 @@ export default function ExtensionInstalled({ api }) {
     <PreferencesPage>
       <Header>
         <Heading>
-          Right-click anywhere on any article’s page to&nbsp;access The Zeeguu
-          Reader&nbsp;extension
+          Right-click anywhere on any article’s page to&nbsp;access
+          the&nbsp;Zeeguu&nbsp;
+          {runningInChromeDesktop() ? "extension" : "add-on"}
         </Heading>
       </Header>
       <Main>

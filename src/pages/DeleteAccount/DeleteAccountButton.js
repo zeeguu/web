@@ -1,14 +1,14 @@
 import { useState } from "react";
-import WarningButton from "../../components/modal_shared/WarningButton";
 import Modal from "../../components/modal_shared/Modal";
-import Header from "../../components/modal_shared/Header";
-import Heading from "../../components/modal_shared/Heading";
-import Main from "../../components/modal_shared/Main";
+import { Header } from "../../components/modal_shared/Header.sc";
+import { Heading } from "../../components/modal_shared/Heading.sc";
+import { Main } from "../../components/modal_shared/Main.sc";
 import Footer from "../_pages_shared/Footer";
-import ButtonContainer from "../../components/modal_shared/ButtonContainer";
+import { ButtonContainer } from "../../components/modal_shared/ButtonContainer.sc";
 import * as s from "../../components/FormPage.sc";
 import redirect from "../../utils/routing/routing";
 import SessionStorage from "../../assorted/SessionStorage.js";
+import { Button } from "../_pages_shared/Button.sc";
 
 export default function DeleteAccountButton() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -54,9 +54,9 @@ export default function DeleteAccountButton() {
         </Main>
         <Footer>
           <ButtonContainer buttonCountNum={1}>
-            <WarningButton onClick={handleUserConfirmation}>
+            <Button className="warning small" onClick={handleUserConfirmation}>
               Delete my account
-            </WarningButton>
+            </Button>
           </ButtonContainer>
         </Footer>
       </Modal>

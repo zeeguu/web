@@ -25,7 +25,6 @@ const LocalStorage = {
     SelectedTimePeriod: "selected_time_period",
     Features: "features",
     IsStudent: "is_student",
-    DisplayedExtensionPopup: "displayed_extension_popup",
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
@@ -120,10 +119,6 @@ const LocalStorage = {
     return localStorage[this.Keys.SelectedTimePeriod]
       ? localStorage[this.Keys.SelectedTimePeriod]
       : 30;
-  },
-
-  displayedExtensionPopup: function () {
-    return localStorage[this.Keys.DisplayedExtensionPopup];
   },
 
   getDoNotShowRedirectionModal: function () {
@@ -233,10 +228,6 @@ const LocalStorage = {
 
   setSelectedTimePeriod: function (time) {
     localStorage[this.Keys.SelectedTimePeriod] = time;
-  },
-
-  setDisplayedExtensionPopup: function (displayedExtensionPopup) {
-    localStorage[this.Keys.DisplayedExtensionPopup] = displayedExtensionPopup;
   },
 
   displayedAudioExperimentPopup: function () {
