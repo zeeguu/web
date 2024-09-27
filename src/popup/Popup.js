@@ -52,7 +52,7 @@ export default function Popup({ loggedIn }) {
       const isProbablyReadable = isProbablyReaderable(
         documentFromTab,
         minLength,
-        minScore
+        minScore,
       );
       const ownIsProbablyReadable = checkReadability(tab.url);
       if (!isProbablyReadable || !ownIsProbablyReadable) {
@@ -69,7 +69,7 @@ export default function Popup({ loggedIn }) {
   }, [tab, user]);
 
   const openLogin = () => {
-    window.open(WEB_URL + "/login", "_blank");
+    window.open(WEB_URL + "/log_in", "_blank");
   };
 
   if (loggedIn === false) {
