@@ -14,10 +14,17 @@ const RoundButton = styled.div`
   color: white !important;
   font-weight: 500;
   text-align: center;
+  vertical
 
   cursor: pointer;
   margin-top: 3px;
   box-sizing: border-box;
+`;
+
+const WhiteRoundButton = styled(RoundButton)`
+  background-color: white;
+  color: ${zeeguuOrange} !important;
+  border: 2px solid ${zeeguuOrange};
 `;
 
 const OrangeRoundButton = styled(RoundButton)`
@@ -123,6 +130,7 @@ const StyledButton = styled.button`
 export {
   RoundButton,
   OrangeRoundButton,
+  WhiteRoundButton,
   BigSquareButton,
   ClearSearchButton,
   StyledButton,
