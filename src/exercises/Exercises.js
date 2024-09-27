@@ -202,7 +202,10 @@ export default function Exercises({
             initializeExercises(new_bookmarks, strings.exercises);
           },
         );
-      } else setShowOutOfWordsMessage(true);
+      } else {
+        setShowOutOfWordsMessage(true);
+        updateIsAbleToAddNewBookmarksToStudy();
+      }
     });
   }
 
