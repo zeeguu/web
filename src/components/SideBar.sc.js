@@ -134,7 +134,7 @@ const navigationVisibleCommon = css`
 
   .SettingsLogoutContainer {
     position: absolute;
-    bottom: 2rem;
+    bottom: 2.5rem;
     width: 100%;
   }
 
