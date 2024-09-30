@@ -15,7 +15,7 @@ export default function LandingPage() {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
 
-  setTitle("All You Can Read");
+  setTitle("Learn foreign languages while reading what you like");
   return (
     <s.PageWrapper>
       <s.NavbarBg>
