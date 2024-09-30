@@ -136,6 +136,7 @@ export default function FindArticles({
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
+    setNoMoreArticlesToShow(false);
     if (searchQuery) {
       setReloadingSearchArticles(true);
       api.search(
