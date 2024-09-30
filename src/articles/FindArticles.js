@@ -123,6 +123,13 @@ export default function FindArticles({
   }
 
   useEffect(() => {
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, []);
+
+  useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
       doNotShowRedirectionModal_UserPreference,
     );
@@ -151,11 +158,8 @@ export default function FindArticles({
         setOriginalList([...articles]);
       });
     }
-    window.addEventListener("scroll", handleScroll, true);
+
     document.title = "Recommend Articles: Zeeguu";
-    return () => {
-      window.removeEventListener("scroll", handleScroll, true);
-    };
   }, [searchPublishPriority, searchDifficultyPriority]);
 
   if (articleList == null) {
