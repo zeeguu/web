@@ -66,6 +66,9 @@ let strings = new LocalizedStrings(
       logout: "Logout",
       userDashboard: "Statistics",
 
+      // User Dashboard:
+      titleUserDashboard: "User Statistics",
+
       //CreateAccount
       nameIsRequired: "Name is required.",
       passwordMustBeMsg: "Password should be at least 4 characters long.",
@@ -244,6 +247,12 @@ let strings = new LocalizedStrings(
       starAWordMsg:
         "Star a word to ensure it appears in exercises. Delete to avoid it. Gray words don't appear unless starred.",
 
+      // Home (Find Articles)
+      titleHome: "Home",
+
+      // Search Query (Find Articles)
+      titleSearch: "Search",
+
       //FindArticles
       findArticles: "Find Articles",
 
@@ -403,6 +412,7 @@ let strings = new LocalizedStrings(
       orderWordsOnlyTwoMessagesShown: "Only the first 2 clues are shown",
 
       //Exercises
+      titleExercises: "Exercises",
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
       goBackArticlePrefix: "Go back to reading: ",
