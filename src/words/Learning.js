@@ -36,7 +36,7 @@ export default function Learning({ api }) {
     api.getBookmarksToLearn((bookmarks) => {
       setToLearnWords(bookmarks);
     });
-    setTitle(strings.titleReceptiveWords);
+    setTitle(strings.titleToLearnWords);
   }, [api]);
 
   function onNotifyDelete(bookmark) {

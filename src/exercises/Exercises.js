@@ -92,7 +92,7 @@ export default function Exercises({
       let id = JSON.parse(newlyCreatedDBSessionID).id;
       setDbExerciseSessionId(id);
     });
-
+    setTitle("Exercises");
     startExercising();
     return () => {
       if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
@@ -128,7 +128,6 @@ export default function Exercises({
       // If a user gets here with no bookmarks, means
       // that we tried to schedule new bookmarks but none
       // were found.
-
       updateIsAbleToAddNewBookmarksToStudy();
       return;
     }
