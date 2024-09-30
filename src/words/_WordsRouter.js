@@ -6,10 +6,8 @@ import TopTabs from "../components/TopTabs";
 import strings from "../i18n/definitions";
 import { Switch } from "react-router-dom";
 import WordsForArticle from "./WordsForArticle";
-import Receptive from "./Receptive";
-import Productive from "./Productive";
 import Feature from "../features/Feature";
-import ToLearn from "./ToLearn";
+import Learning from "./Learning";
 
 export default function WordsRouter({ api }) {
   let tabsAndLinks = {
@@ -19,9 +17,7 @@ export default function WordsRouter({ api }) {
 
   if (Feature.merle_exercises) {
     tabsAndLinks = {
-      [strings.titleToLearnWords]: "/words/toLearn",
-      [strings.titleReceptiveWords]: "/words",
-      [strings.titleProductiveWords]: "/words/productive",
+      [strings.learning]: "/words",
       [strings.learned]: "/words/learned",
     };
   }
@@ -54,7 +50,7 @@ export default function WordsRouter({ api }) {
         />
 
         {Feature.merle_exercises ? (
-          <PrivateRoute exact path="/words" api={api} component={Receptive} />
+          <PrivateRoute exact path="/words" api={api} component={Learning} />
         ) : (
           <PrivateRoute exact path="/words" api={api} component={Top} />
         )}
@@ -62,41 +58,17 @@ export default function WordsRouter({ api }) {
         <PrivateRoute exact path="/render/words" api={api} component={Top} />
         <PrivateRoute
           exact
-          path="/words/receptive"
+          path="/words/learning"
           api={api}
-          component={Receptive}
+          component={Learning}
         />
         <PrivateRoute
           exact
-          path="/render/words/toLearn"
+          path="/render/words/learning"
           api={api}
-          component={ToLearn}
-        />
-        <PrivateRoute
-          exact
-          path="/render/words/receptive"
-          api={api}
-          component={Receptive}
-        />
-        <PrivateRoute
-          exact
-          path="/words/productive"
-          api={api}
-          component={Productive}
+          component={Learning}
         />
         <PrivateRoute exact path="/words/top" api={api} component={Top} />
-        <PrivateRoute
-          exact
-          path="/render/words/productive"
-          api={api}
-          component={Productive}
-        />
-        <PrivateRoute
-          exact
-          path="/words/toLearn"
-          api={api}
-          component={ToLearn}
-        />
       </s.NarrowColumn>
     </Switch>
   );

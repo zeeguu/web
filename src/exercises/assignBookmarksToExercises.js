@@ -3,7 +3,11 @@ import {
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
 } from "./exerciseSequenceTypes";
-import { LEARNING_CYCLE_NAME, MEMORY_TASK } from "./ExerciseTypeConstants";
+import {
+  LEARNING_CYCLE_NAME,
+  MEMORY_TASK,
+  LEARNING_CYCLE,
+} from "./ExerciseTypeConstants";
 
 /**
  * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
