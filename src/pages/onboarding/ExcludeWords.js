@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
@@ -21,6 +22,7 @@ import TagContainer from "../_pages_shared/TagContainer";
 
 import redirect from "../../utils/routing/routing";
 import strings from "../../i18n/definitions";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function ExcludeWords({ api, hasExtension }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
@@ -42,6 +44,10 @@ export default function ExcludeWords({ api, hasExtension }) {
       resetExcludedWords();
     }
   }
+
+  useEffect(() => {
+    setTitle("Exclude Words");
+  }, []);
 
   return (
     <PreferencesPage>

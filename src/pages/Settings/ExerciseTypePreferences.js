@@ -15,6 +15,7 @@ import Heading from "../_pages_shared/Heading";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import Checkbox from "../../components/modal_shared/Checkbox";
 import strings from "../../i18n/definitions";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function ExerciseTypePreferences({ api }) {
   const user = useContext(UserContext);
@@ -27,6 +28,10 @@ export default function ExerciseTypePreferences({ api }) {
   const [productiveExercises, setProductiveExercises] = useState(
     preferenceNotSet || LocalStorage.getProductiveExercisesEnabled(),
   );
+
+  useEffect(() => {
+    setTitle("Exercise Type Preferences");
+  }, []);
 
   useEffect(() => {
     api.getUserPreferences((preferences) => {

@@ -18,6 +18,7 @@ import Main from "../_pages_shared/Main";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import Selector from "../../components/Selector";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function LanguageSettings({ api, setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,6 +39,10 @@ export default function LanguageSettings({ api, setUser }) {
       cefr_level: levelNumber,
     });
   }
+
+  useEffect(() => {
+    setTitle("Language Settings");
+  }, []);
 
   useEffect(() => {
     api.getUserDetails((data) => {

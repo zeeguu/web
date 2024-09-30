@@ -17,6 +17,7 @@ import strings from "../../../i18n/definitions";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import FullWidthListItem from "../../../components/FullWidthListItem";
 import LeaveClassroomModal from "./LeaveClassroomModal";
+import { setTitle } from "../../../assorted/setTitle";
 
 export default function MyClassrooms({ api }) {
   const user = useContext(UserContext);
@@ -36,6 +37,10 @@ export default function MyClassrooms({ api }) {
       setIsLoading(false);
     });
   }
+
+  useEffect(() => {
+    setTitle("My Classrooms");
+  }, []);
 
   useEffect(() => {
     updateValues();

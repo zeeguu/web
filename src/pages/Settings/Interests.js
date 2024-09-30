@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Tag from "../_pages_shared/Tag";
 import TagContainer from "../_pages_shared/TagContainer";
 import useSelectInterest from "../../hooks/useSelectInterest";
@@ -7,10 +8,15 @@ import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function Interests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
+
+  useEffect(() => {
+    setTitle("Interests");
+  }, []);
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />

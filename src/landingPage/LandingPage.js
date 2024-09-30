@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import strings from "../i18n/definitions";
 import News from "./News";
 import * as s from "./LandingPage.sc.js";
@@ -11,11 +12,14 @@ import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import redirect from "../utils/routing/routing.js";
 
 export default function LandingPage() {
+  useEffect(() => {
+    setTitle("Learn foreign languages while reading what you like");
+  }, []);
+
   if (getSessionFromCookies()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
 
-  setTitle("Learn foreign languages while reading what you like");
   return (
     <s.PageWrapper>
       <s.NavbarBg>
