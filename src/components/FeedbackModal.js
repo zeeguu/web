@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import useFormField from "../hooks/useFormField.js";
 import { APIContext } from "../contexts/APIContext";
 import Modal from "./modal_shared/Modal.js";
@@ -20,8 +20,6 @@ export default function FeedbackModal({ open, setOpen, feedbackOptions }) {
     useFormField(FEEDBACK_CODES_NAME.OTHER);
   const [feedbackMessage, feedbackMessageChange] = useFormField("");
 
-  useEffect(() => {}, []);
-
   function onSubmit(e) {
     e.preventDefault();
     let payload = {
@@ -29,7 +27,15 @@ export default function FeedbackModal({ open, setOpen, feedbackOptions }) {
       feedbackComponentId: feedbackComponentSelected,
       currentUrl: window.location.href,
     };
-    api.sendFeedback(payload);
+    api.sendFeedback(
+      payload,
+      () => {
+        toast.success("Feedback sent!");
+      },
+      () => {
+        toast.error("There was an error sending your message.");
+      },
+    );
     setOpen(false);
   }
 

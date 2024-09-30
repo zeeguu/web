@@ -182,8 +182,8 @@ Zeeguu_API.prototype.isArticleLanguageSupported = function (
   this._post(`/is_article_language_supported`, qs.stringify(article), callback);
 };
 
-Zeeguu_API.prototype.sendFeedback = function (feedback, callback) {
-  this._post(`/send_feedback`, qs.stringify(feedback), callback);
+Zeeguu_API.prototype.sendFeedback = function (feedback, callback, onError) {
+  this._post(`/send_feedback`, qs.stringify(feedback), callback, onError);
 };
 
 Zeeguu_API.prototype.submitArticleDifficultyFeedback = function (
