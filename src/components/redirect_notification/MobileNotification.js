@@ -1,15 +1,16 @@
 import * as s from "../modal_shared/Modal.sc";
 import { useState } from "react";
 import Modal from "../modal_shared/Modal";
-import Header from "../modal_shared/Header";
-import Heading from "../modal_shared/Heading";
-import Main from "../modal_shared/Main";
-import Footer from "../modal_shared/Footer";
-import ButtonContainer from "../modal_shared/ButtonContainer";
+import { Header } from "../modal_shared/Header.sc";
+import { Heading } from "../modal_shared/Heading.sc";
+import { Main } from "../modal_shared/Main.sc";
+import { Footer } from "../modal_shared/Footer.sc";
+import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import Checkbox from "../modal_shared/Checkbox";
-import GoToButton from "../modal_shared/GoToButton";
-import AddToSavesButton from "../modal_shared/AddToSavesButton";
+import { Button } from "../../pages/_pages_shared/Button.sc";
+import { AddToSavesButton } from "../modal_shared/AddToSavesButton.sc";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import redirect from "../../utils/routing/routing";
 
 export default function MobileNotification({
   article,
@@ -46,6 +47,11 @@ export default function MobileNotification({
     handleCloseRedirectionModal();
   }
 
+  function handleOpenArticle(article) {
+    handleSaveVisibilityPreferences(); //if user checked "Don't show this message again" or not
+    redirect(article.url);
+  }
+
   // function below saves article, visibility preferences of the modal and closes it
   function handleSaveArticleFromTheModal() {
     saveArticle();
@@ -76,13 +82,9 @@ export default function MobileNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={2}>
-          <GoToButton
-            href={article.url}
-            target={"_self"}
-            onClick={handleSaveVisibilityPreferences}
-          >
+          <Button className="small" onClick={() => handleOpenArticle(article)}>
             Enter the article's website
-          </GoToButton>
+          </Button>
           <AddToSavesButton onClick={handleSaveArticleFromTheModal}>
             <BookmarkBorderIcon fontSize="small" />
             Add to Saves

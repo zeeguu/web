@@ -128,7 +128,7 @@ export default function Exercises({
       // If a user gets here with no bookmarks, means
       // that we tried to schedule new bookmarks but none
       // were found.
-      setShowOutOfWordsMessage(true);
+
       updateIsAbleToAddNewBookmarksToStudy();
       return;
     }
@@ -166,6 +166,7 @@ export default function Exercises({
   function updateIsAbleToAddNewBookmarksToStudy() {
     api.getNewBookmarksToStudy(1, (new_bookmarks) => {
       setIsAbleToAddBookmarksToPipe(new_bookmarks.length > 0);
+      setShowOutOfWordsMessage(new_bookmarks.length == 0);
     });
   }
   function startExercising() {

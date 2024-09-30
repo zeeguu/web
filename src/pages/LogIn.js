@@ -12,7 +12,7 @@ import FullWidthErrorMsg from "../components/FullWidthErrorMsg";
 import InputField from "../components/InputField";
 import Footer from "./_pages_shared/Footer";
 import ButtonContainer from "./_pages_shared/ButtonContainer";
-import Button from "./_pages_shared/Button";
+import { Button } from "./_pages_shared/Button.sc";
 
 import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";

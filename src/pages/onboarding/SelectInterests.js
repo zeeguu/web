@@ -5,10 +5,10 @@ import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import Footer from "../_pages_shared/Footer";
-import Button from "../_pages_shared/Button";
+import { Button } from "../_pages_shared/Button.sc";
 import Tag from "../_pages_shared/Tag";
 import TagContainer from "../_pages_shared/TagContainer";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import strings from "../../i18n/definitions";
 
 import redirect from "../../utils/routing/routing";
@@ -43,7 +43,7 @@ export default function SelectInterests({ api }) {
             onClick={() => redirect("/exclude_words_step1")}
           >
             {strings.next}
-            <ArrowForwardRoundedIcon />
+            <RoundedForwardArrow />
           </Button>
         </ButtonContainer>
       </Footer>

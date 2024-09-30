@@ -685,17 +685,6 @@ let strings = new LocalizedStrings(
       pinExtension: "Pin it to the toolbar to make it easy to access",
       congratulations: "Extension is installed!",
 
-      //ExtensionMessage
-      extensionHeadline: "Browser Extension For Reading Articles",
-      extensionAllow:
-        "Starting with the summer of 2022 you need to install the browser extension to read the articles recommended by Zeeguu.",
-      extensionToRead:
-        "From the Recommendations page on Zeeguu you will be redirected to the original article where you can activate the extension. The extension removes all excess clutter (e.g. adverts) and formats the article for reading. It also enables you to read any other article you find online.",
-      extensionReadability:
-        'When reading an article with the extension, you can click the "Save article to Zeeguu" button. The article is saved here in the "My Texts" page from where it will also be readable on phone or tablet.',
-      extensionChromeInstall: "Install for Chrome or Edge",
-      extensionFirefoxInstall: "Install for Firefox",
-
       //TooltipedButtons
       viewAsStudent: "View as Student",
       addToClass: "Share/unshare with class",

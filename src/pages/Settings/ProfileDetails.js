@@ -6,7 +6,7 @@ import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
 import Form from "../_pages_shared/Form";
 import FormSection from "../_pages_shared/FormSection";
-import Button from "../_pages_shared/Button";
+import { Button } from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import InputField from "../../components/InputField";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
@@ -17,6 +17,7 @@ import BackArrow from "./settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 
 import LoadingAnimation from "../../components/LoadingAnimation";
+import LogOutButton from "./LogOutButton";
 
 export default function ProfileDetails({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -106,6 +107,9 @@ export default function ProfileDetails({ api, setUser }) {
             </Button>
           </ButtonContainer>
         </Form>
+        <ButtonContainer className={"adaptive-alignment-horizontal"}>
+          <LogOutButton />
+        </ButtonContainer>
       </Main>
     </PreferencesPage>
   );

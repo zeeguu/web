@@ -1,14 +1,16 @@
-import * as s from "../modal_shared/Modal.sc";
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
+import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import Modal from "../modal_shared/Modal";
-import Header from "../modal_shared/Header";
-import Heading from "../modal_shared/Heading";
-import Main from "../modal_shared/Main";
-import Footer from "../modal_shared/Footer";
-import ButtonContainer from "../modal_shared/ButtonContainer";
-import GoToButton from "../modal_shared/GoToButton";
-import Icon from "../modal_shared/Icon";
+import { Header } from "../modal_shared/Header.sc";
+import { Heading } from "../modal_shared/Heading.sc";
+import { Main } from "../modal_shared/Main.sc";
+import { Footer } from "../modal_shared/Footer.sc";
+import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
+import { Button } from "../../pages/_pages_shared/Button.sc";
+import FullWidthImage from "../FullWidthImage";
+import redirect from "../../utils/routing/routing";
 
 export default function SupportedNotification_NotInstalled({
   handleCloseRedirectionModal,
@@ -22,27 +24,36 @@ export default function SupportedNotification_NotInstalled({
     <Modal open={open} onClose={handleCancel}>
       <Header>
         <Heading>
-          <Icon src={"../static/images/zeeguuLogo.svg"} />
-          The Zeeguu Reader<br></br>browser extension is not installed
+          Enable translating foreign articles with&nbsp;the&nbsp;Zeeguu
+          browser&nbsp;
+          {runningInChromeDesktop() ? "extension" : "add-on"}
         </Heading>
       </Header>
       <Main>
-        <p>
-          For the best user experience we recommend you to read articles with{" "}
-          <s.Strong>The Zeeguu Reader</s.Strong> browser extension.
-        </p>
-        <p>
-          To read this article with the help of Zeeguu without the extension,
-          simply click "Add to Saves" above the article's title.
-        </p>
+        <FullWidthImage
+          src={"find-extension.png"}
+          alt={"Zeeguu browser extension"}
+        />
       </Main>
       <Footer>
         <ButtonContainer buttonCountNum={1}>
-          <GoToButton target={"_self"} href={getExtensionInstallationLinks()}>
-            <DownloadRoundedIcon fontSize="small" />
-            Install the Extension
-          </GoToButton>
+          <Button
+            className={"small"}
+            onClick={() => {
+              redirect(getExtensionInstallationLinks());
+            }}
+          >
+            {getExtensionInstallationButtonContent()}
+            <RoundedForwardArrow fontSize="small" />
+          </Button>
         </ButtonContainer>
+        {runningInChromeDesktop() && (
+          <p className="small">
+            The Chrone Web Store extension also works in <b>Edge</b>,{" "}
+            <b>Opera</b>, <b>Arc</b>, <b>Vivaldi</b>, and <b>Brave</b> and other
+            Chromium based browsers.
+          </p>
+        )}
       </Footer>
     </Modal>
   );

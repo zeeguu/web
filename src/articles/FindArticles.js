@@ -7,7 +7,6 @@ import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 
-import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
 
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
@@ -35,8 +34,6 @@ export default function FindArticles({
   const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [isExtensionAvailable] = useExtensionCommunication();
-  const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
-  const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   const [
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
@@ -132,12 +129,6 @@ export default function FindArticles({
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
-    setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
-    console.log(
-      "Localstorage displayed extension: " +
-        LocalStorage.displayedExtensionPopup(),
-    );
-    // load articles)
     if (searchQuery) {
       setReloadingSearchArticles(true);
       api.search(
@@ -167,12 +158,6 @@ export default function FindArticles({
     };
   }, [searchPublishPriority, searchDifficultyPriority]);
 
-  useEffect(() => {
-    if (!isExtensionAvailable) {
-      setExtensionMessageOpen(true);
-    }
-  }, [isExtensionAvailable]);
-
   if (articleList == null) {
     return <LoadingAnimation />;
   }
@@ -188,14 +173,6 @@ export default function FindArticles({
 
   return (
     <>
-      <ExtensionMessage
-        open={extensionMessageOpen}
-        hasExtension={isExtensionAvailable}
-        displayedExtensionPopup={displayedExtensionPopup}
-        setExtensionMessageOpen={setExtensionMessageOpen}
-        setDisplayedExtensionPopup={setDisplayedExtensionPopup}
-      ></ExtensionMessage>
-
       {!searchQuery && (
         <>
           <Interests
@@ -214,6 +191,12 @@ export default function FindArticles({
             />
           </s.SortHolder>
         </>
+      )}
+
+      {searchQuery && (
+        <s.SearchHolder>
+          <SearchField api={api} query={searchQuery} />
+        </s.SearchHolder>
       )}
 
       {/* This is where the content of the Search component will be rendered */}
@@ -235,6 +218,9 @@ export default function FindArticles({
             onArticleClick={() => handleArticleClick(each.id, index)}
           />
         ))}
+      {!reloadingSearchArticles && articleList.length === 0 && (
+        <p>No searches were found for this query.</p>
+      )}
 
       {!searchQuery && (
         <>

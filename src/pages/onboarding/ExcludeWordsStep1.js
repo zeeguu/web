@@ -4,7 +4,7 @@ import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
-import Button from "../_pages_shared/Button";
+import { Button } from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 
 import redirect from "../../utils/routing/routing";

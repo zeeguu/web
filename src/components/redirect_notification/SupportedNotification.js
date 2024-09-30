@@ -1,14 +1,15 @@
 import * as s from "../modal_shared/Modal.sc";
 import { useState } from "react";
 import Modal from "../modal_shared/Modal";
-import Header from "../modal_shared/Header";
-import Heading from "../modal_shared/Heading";
-import Main from "../modal_shared/Main";
+import { Header } from "../modal_shared/Header.sc";
+import { Heading } from "../modal_shared/Heading.sc";
+import { Main } from "../modal_shared/Main.sc";
 import FullWidthImage from "../FullWidthImage";
-import Footer from "../modal_shared/Footer";
-import ButtonContainer from "../modal_shared/ButtonContainer";
+import { Footer } from "../modal_shared/Footer.sc";
+import { ButtonContainer } from "../modal_shared/ButtonContainer.sc";
 import Checkbox from "../modal_shared/Checkbox";
-import GoToButton from "../modal_shared/GoToButton";
+import { Button } from "../../pages/_pages_shared/Button.sc";
+import redirect from "../../utils/routing/routing";
 
 export default function SupportedNotification({
   article,
@@ -29,10 +30,10 @@ export default function SupportedNotification({
       : setDoNotShowRedirectionModal_UserPreference(false);
   }
 
-  //runs when user enters article
-  function handleSaveVisibilityPreferences() {
-    handleModalVisibilityPreferences();
+  function handleOpenArticle(article) {
+    handleModalVisibilityPreferences(); //if user checked "Don't show this message again" or not
     handleCloseRedirectionModal();
+    redirect(article.url, true);
   }
 
   function handleCancel() {
@@ -65,13 +66,9 @@ export default function SupportedNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={1}>
-          <GoToButton
-            target={"_blank"}
-            href={article.url}
-            onClick={handleSaveVisibilityPreferences}
-          >
+          <Button className="small" onClick={() => handleOpenArticle(article)}>
             Enter the article's website
-          </GoToButton>
+          </Button>
         </ButtonContainer>
       </Footer>
     </Modal>

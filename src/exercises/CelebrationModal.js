@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import Confetti from "react-confetti";
 import Modal from "../components/modal_shared/Modal";
-import Header from "../components/modal_shared/Header";
-import Heading from "../components/modal_shared/Heading";
-import Main from "../components/modal_shared/Main";
-import Footer from "../components/modal_shared/Footer";
+import { Header } from "../components/modal_shared/Header.sc";
+import { Heading } from "../components/modal_shared/Heading.sc";
+import { Main } from "../components/modal_shared/Main.sc";
+import { Footer } from "../components/modal_shared/Footer.sc";
 import strings from "../i18n/definitions";
-import GoToButton from "../components/modal_shared/GoToButton";
-import ButtonContainer from "../components/modal_shared/ButtonContainer";
+import { Button } from "../pages/_pages_shared/Button.sc";
+import { ButtonContainer } from "../components/modal_shared/ButtonContainer.sc";
 
 export default function CelebrationModal({ open, onClose }) {
   const [showConfetti, setShowConfetti] = useState(false);
@@ -41,9 +41,9 @@ export default function CelebrationModal({ open, onClose }) {
         </Main>
         <Footer>
           <ButtonContainer>
-            <GoToButton onClick={onClose}>
+            <Button className="small" onClick={onClose}>
               Continue with the exercises
-            </GoToButton>
+            </Button>
           </ButtonContainer>
         </Footer>
       </Modal>

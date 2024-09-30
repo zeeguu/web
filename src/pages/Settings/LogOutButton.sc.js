@@ -1,12 +1,11 @@
-import { zeeguuDarkOrange } from "../colors";
-import { OrangeRoundButton } from "../allButtons.sc";
+import { zeeguuDarkOrange } from "../../components/colors";
+import { WhiteRoundButton } from "../../components/allButtons.sc";
 import styled from "styled-components";
 
-// TODO: Merge with Save button from Preferences
-const GoToButton = styled(OrangeRoundButton)`
+const LogOutButtonStyle = styled(WhiteRoundButton)`
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 0.25rem;
   padding: 0.7em 2em;
@@ -16,7 +15,9 @@ const GoToButton = styled(OrangeRoundButton)`
   transition: all ease-in 0.08s;
   overflow: hidden;
   white-space: nowrap;
-  margin-bottom: 0.2em;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+  cursor: pointer;
 
   &:active {
     box-shadow: none;
@@ -25,4 +26,4 @@ const GoToButton = styled(OrangeRoundButton)`
   }
 `;
 
-export { GoToButton };
+export { LogOutButtonStyle };

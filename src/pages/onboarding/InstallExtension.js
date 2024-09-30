@@ -4,11 +4,13 @@ import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import Footer from "../_pages_shared/Footer";
-import Button from "../_pages_shared/Button";
+import { Button } from "../_pages_shared/Button.sc";
 import FullWidthImage from "../../components/FullWidthImage";
 import { getExtensionInstallationLinks } from "../../utils/extension/extensionInstallationLinks";
+import { getExtensionInstallationButtonContent } from "../../utils/extension/extensionInstallationButtonContent";
+import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
 
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
@@ -17,23 +19,30 @@ export default function InstallExtension() {
   return (
     <PreferencesPage>
       <Header>
-        <Heading>You're almost there</Heading>
+        <Heading>
+          Read and translate foreign&nbsp;articles<br></br>
+          with&nbsp;the&nbsp;Zeeguu browser&nbsp;
+          {runningInChromeDesktop() ? "extension" : "add-on"}
+        </Heading>
       </Header>
       <Main>
-        <p>
-          Time to install The Zeeguu Reader browser extension, which enables you
-          to&nbsp;read and translate articles and solve&nbsp;exercises
-        </p>
         <FullWidthImage src={"find-extension.png"} />
+        {runningInChromeDesktop() && (
+          <p>
+            The Chrone Web Store extension also works in <b>Edge</b>,{" "}
+            <b>Opera</b>, <b>Arc</b>, <b>Vivaldi</b>, and <b>Brave</b> and other
+            Chromium based browsers.
+          </p>
+        )}
       </Main>
       <Footer>
-        <ButtonContainer className={"padding-large"}>
+        <ButtonContainer className={"padding-medium"}>
           <Button
             className={"full-width-btn"}
             onClick={() => redirect(getExtensionInstallationLinks())}
           >
-            <FileDownloadOutlinedIcon fontSize="small" />
-            {strings.installTheExtension}
+            {getExtensionInstallationButtonContent()}
+            <RoundedForwardArrow fontSize="medium" />
           </Button>
           <a className="link" href="/articles">
             {strings.iWillInstallLater}
