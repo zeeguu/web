@@ -15,7 +15,7 @@ export default function Interests({ api }) {
     useSelectInterest(api);
 
   useEffect(() => {
-    setTitle("Interests");
+    setTitle(strings.interests);
   }, []);
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>

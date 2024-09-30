@@ -19,7 +19,7 @@ import { setTitle } from "../../assorted/setTitle";
 
 export default function InstallExtension() {
   useEffect(() => {
-    setTitle("Install Extension");
+    setTitle(strings.installExtension);
   }, []);
 
   return (

@@ -43,7 +43,7 @@ export default function LanguagePreferences({ api }) {
   }, [errorMessage]);
 
   useEffect(() => {
-    setTitle("Language Preferences");
+    setTitle(strings.languagePreferences);
 
     api.getSystemLanguages((languages) => {
       languages.learnable_languages.sort((a, b) => (a.name > b.name ? 1 : -1));

@@ -22,7 +22,7 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
   useEffect(() => {
-    setTitle("Log in");
+    setTitle(strings.login);
   }, []);
 
   const [email, handleEmailChange] = useFormField("");

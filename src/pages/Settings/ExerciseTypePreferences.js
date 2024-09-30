@@ -30,7 +30,7 @@ export default function ExerciseTypePreferences({ api }) {
   );
 
   useEffect(() => {
-    setTitle("Exercise Type Preferences");
+    setTitle(strings.exerciseTypePreferences);
   }, []);
 
   useEffect(() => {

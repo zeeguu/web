@@ -13,7 +13,7 @@ import redirect from "../utils/routing/routing.js";
 
 export default function LandingPage() {
   useEffect(() => {
-    setTitle("Learn foreign languages while reading what you like");
+    setTitle(strings.landingPageTitle);
   }, []);
 
   if (getSessionFromCookies()) {

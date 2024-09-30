@@ -16,7 +16,7 @@ import { setTitle } from "../../assorted/setTitle";
 
 export default function ExtensionInstalled({ api }) {
   useEffect(() => {
-    setTitle("Extension Installed");
+    setTitle(strings.extensionInstalled);
     api.logUserActivity(api.OPEN_EXTENSION_INSTALLED);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -10,7 +10,7 @@ import { setTitle } from "../../assorted/setTitle";
 
 export default function DeleteAccount() {
   useEffect(() => {
-    setTitle("Delete Account");
+    setTitle(strings.deleteAccount);
   }, []);
 
   return (

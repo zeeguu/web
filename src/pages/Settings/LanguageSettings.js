@@ -41,7 +41,7 @@ export default function LanguageSettings({ api, setUser }) {
   }
 
   useEffect(() => {
-    setTitle("Language Settings");
+    setTitle(strings.languageSettings);
   }, []);
 
   useEffect(() => {

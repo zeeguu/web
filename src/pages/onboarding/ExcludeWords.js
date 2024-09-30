@@ -46,7 +46,7 @@ export default function ExcludeWords({ api, hasExtension }) {
   }
 
   useEffect(() => {
-    setTitle("Exclude Words");
+    setTitle(strings.excludeWords);
   }, []);
 
   return (

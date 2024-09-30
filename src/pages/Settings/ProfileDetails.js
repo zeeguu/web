@@ -29,7 +29,7 @@ export default function ProfileDetails({ api, setUser }) {
   const history = useHistory();
 
   useEffect(() => {
-    setTitle("Profile Details");
+    setTitle(strings.profileDetails);
   }, []);
 
   useEffect(() => {

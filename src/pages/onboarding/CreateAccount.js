@@ -74,7 +74,7 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
   }, []);
 
   useEffect(() => {
-    setTitle("Create Account");
+    setTitle(strings.createAccount);
   }, []);
 
   useEffect(() => {

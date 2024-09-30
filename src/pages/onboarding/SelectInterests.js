@@ -20,7 +20,7 @@ export default function SelectInterests({ api }) {
     useSelectInterest(api);
 
   useEffect(() => {
-    setTitle("Select Interests");
+    setTitle(strings.selectInterests);
   }, []);
 
   return (

@@ -23,7 +23,7 @@ export default function ResetPassword({ api }) {
   }
 
   useEffect(() => {
-    setTitle("Reset Password");
+    setTitle(strings.resetPassword);
   }, []);
 
   return (
@@ -46,7 +46,7 @@ export default function ResetPassword({ api }) {
       <Footer>
         <p className="centered">
           {strings.rememberPassword + " "}
-          <a className="bold underlined-link" href="login">
+          <a className="bold underlined-link" href="log_in">
             {strings.login}
           </a>
         </p>

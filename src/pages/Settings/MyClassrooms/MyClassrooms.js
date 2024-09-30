@@ -39,7 +39,7 @@ export default function MyClassrooms({ api }) {
   }
 
   useEffect(() => {
-    setTitle("My Classrooms");
+    setTitle(strings.myClassrooms);
   }, []);
 
   useEffect(() => {
