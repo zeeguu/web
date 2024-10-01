@@ -8,7 +8,7 @@ import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
 import { Footer } from "../_pages_shared/Footer.sc";
 import { Button } from "../_pages_shared/Button.sc";
 import Tag from "../_pages_shared/Tag";
-import TagContainer from "../_pages_shared/TagContainer";
+import { TagContainer } from "../_pages_shared/TagContainer.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import strings from "../../i18n/definitions";
 

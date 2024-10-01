@@ -12,7 +12,7 @@ import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
 import InputField from "../../components/InputField";
 import Tag from "../_pages_shared/Tag";
-import TagContainer from "../_pages_shared/TagContainer";
+import { TagContainer } from "../_pages_shared/TagContainer.sc";
 
 import strings from "../../i18n/definitions";
 import BackArrow from "./settings_pages_shared/BackArrow";

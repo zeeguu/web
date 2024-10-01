@@ -18,7 +18,7 @@ import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
 import InputField from "../../components/InputField";
 import Tag from "../_pages_shared/Tag";
-import TagContainer from "../_pages_shared/TagContainer";
+import { TagContainer } from "../_pages_shared/TagContainer.sc";
 
 import redirect from "../../utils/routing/routing";
 import strings from "../../i18n/definitions";
