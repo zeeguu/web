@@ -11,7 +11,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
 import InputField from "../../components/InputField";
-import Tag from "../_pages_shared/Tag";
+import { Tag } from "../_pages_shared/Tag.sc";
 import { TagContainer } from "../_pages_shared/TagContainer.sc";
 
 import strings from "../../i18n/definitions";

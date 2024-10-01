@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Tag from "../_pages_shared/Tag";
+import { Tag } from "../_pages_shared/Tag.sc";
 import { TagContainer } from "../_pages_shared/TagContainer.sc";
 import useSelectInterest from "../../hooks/useSelectInterest";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
