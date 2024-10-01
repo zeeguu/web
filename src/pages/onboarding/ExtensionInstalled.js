@@ -6,7 +6,7 @@ import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
 import FullWidthImage from "../../components/FullWidthImage";
 import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
-import Footer from "../_pages_shared/Footer";
+import { Footer } from "../_pages_shared/Footer.sc";
 import { Button } from "../_pages_shared/Button.sc";
 
 import strings from "../../i18n/definitions";

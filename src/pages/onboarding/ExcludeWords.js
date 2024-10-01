@@ -10,7 +10,7 @@ import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
 import Form from "../_pages_shared/Form";
 import { Button } from "../_pages_shared/Button.sc";
-import Footer from "../_pages_shared/Footer";
+import { Footer } from "../_pages_shared/Footer.sc";
 import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";

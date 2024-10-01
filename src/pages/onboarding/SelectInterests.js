@@ -5,7 +5,7 @@ import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
 import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
-import Footer from "../_pages_shared/Footer";
+import { Footer } from "../_pages_shared/Footer.sc";
 import { Button } from "../_pages_shared/Button.sc";
 import Tag from "../_pages_shared/Tag";
 import TagContainer from "../_pages_shared/TagContainer";

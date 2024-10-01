@@ -10,7 +10,7 @@ import Form from "./_pages_shared/Form";
 import FormSection from "./_pages_shared/FormSection";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg";
 import InputField from "../components/InputField";
-import Footer from "./_pages_shared/Footer";
+import { Footer } from "./_pages_shared/Footer.sc";
 import { ButtonContainer } from "./_pages_shared/ButtonContainer.sc";
 import { Button } from "./_pages_shared/Button.sc";
 
