@@ -38,10 +38,17 @@ export default function Settings() {
             {strings.myClassrooms}
           </SettingsItem>
         )}
+      </ListOfSettingsItems>
+
+      <ListOfSettingsItems header={"Reading Preferences"}>
         <SettingsItem path={"/account_settings/interests"}>
           {strings.interests}
         </SettingsItem>
+        <SettingsItem path={"/account_settings/keyword_exclusions"}>
+          {"Keyword Exclusions"}
+        </SettingsItem>
       </ListOfSettingsItems>
+
       <ListOfSettingsItems header={strings.exercises}>
         <SettingsItem path={"/account_settings/exercise_type_preferences"}>
           {strings.exerciseTypePreferences}
