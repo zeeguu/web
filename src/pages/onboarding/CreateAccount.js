@@ -11,7 +11,7 @@ import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
-import Main from "../_pages_shared/Main";
+import { Main } from "../_pages_shared/Main.sc";
 import Form from "../_pages_shared/Form";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import FormSection from "../_pages_shared/FormSection";

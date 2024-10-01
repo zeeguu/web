@@ -9,7 +9,7 @@ import FormSection from "../../_pages_shared/FormSection";
 import PreferencesPage from "../../_pages_shared/PreferencesPage";
 import Header from "../../_pages_shared/Header";
 import Heading from "../../_pages_shared/Heading";
-import Main from "../../_pages_shared/Main";
+import { Main } from "../../_pages_shared/Main.sc";
 import { FullWidthListContainer } from "../../../components/FullWidthListContainer.sc";
 import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg";
 import BackArrow from "../settings_pages_shared/BackArrow";

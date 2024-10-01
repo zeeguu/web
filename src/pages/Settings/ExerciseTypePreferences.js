@@ -9,7 +9,7 @@ import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
 import Form from "../_pages_shared/Form";
 import FormSection from "../_pages_shared/FormSection";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
-import Main from "../_pages_shared/Main";
+import { Main } from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import BackArrow from "./settings_pages_shared/BackArrow";

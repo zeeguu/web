@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import DeleteAccountButton from "../DeleteAccount/DeleteAccountButton";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
-import Main from "../_pages_shared/Main";
+import { Main } from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import BackArrow from "./settings_pages_shared/BackArrow";
