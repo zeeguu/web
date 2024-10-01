@@ -11,7 +11,7 @@ import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
 import InputField from "../../components/InputField";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading";
+import { Heading } from "../_pages_shared/Heading.sc";
 import { Main } from "../_pages_shared/Main.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";

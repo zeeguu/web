@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading";
+import { Heading } from "../_pages_shared/Heading.sc";
 import { Main } from "../_pages_shared/Main.sc";
 import { Footer } from "../_pages_shared/Footer.sc";
 import LoadingAnimation from "../../components/LoadingAnimation";

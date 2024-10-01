@@ -11,7 +11,7 @@ import FormSection from "../_pages_shared/FormSection";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import { Main } from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading";
+import { Heading } from "../_pages_shared/Heading.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import Checkbox from "../../components/modal_shared/Checkbox";
 import strings from "../../i18n/definitions";

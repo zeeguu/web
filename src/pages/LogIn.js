@@ -4,7 +4,7 @@ import useFormField from "../hooks/useFormField";
 
 import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
-import Heading from "./_pages_shared/Heading";
+import { Heading } from "./_pages_shared/Heading.sc";
 import { Main } from "./_pages_shared/Main.sc";
 import Form from "./_pages_shared/Form";
 import FormSection from "./_pages_shared/FormSection";
