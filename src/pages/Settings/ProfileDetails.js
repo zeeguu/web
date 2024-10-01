@@ -7,7 +7,7 @@ import strings from "../../i18n/definitions";
 import Form from "../_pages_shared/Form";
 import FormSection from "../_pages_shared/FormSection";
 import { Button } from "../_pages_shared/Button.sc";
-import ButtonContainer from "../_pages_shared/ButtonContainer";
+import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
 import InputField from "../../components/InputField";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";

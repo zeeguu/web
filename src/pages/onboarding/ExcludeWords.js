@@ -11,7 +11,7 @@ import Main from "../_pages_shared/Main";
 import Form from "../_pages_shared/Form";
 import { Button } from "../_pages_shared/Button.sc";
 import Footer from "../_pages_shared/Footer";
-import ButtonContainer from "../_pages_shared/ButtonContainer";
+import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";

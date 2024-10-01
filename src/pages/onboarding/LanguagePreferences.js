@@ -15,7 +15,7 @@ import Form from "../_pages_shared/Form";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import FormSection from "../_pages_shared/FormSection";
 import Selector from "../../components/Selector";
-import ButtonContainer from "../_pages_shared/ButtonContainer";
+import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
 import { Button } from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 

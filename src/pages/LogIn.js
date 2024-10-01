@@ -11,7 +11,7 @@ import FormSection from "./_pages_shared/FormSection";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg";
 import InputField from "../components/InputField";
 import Footer from "./_pages_shared/Footer";
-import ButtonContainer from "./_pages_shared/ButtonContainer";
+import { ButtonContainer } from "./_pages_shared/ButtonContainer.sc";
 import { Button } from "./_pages_shared/Button.sc";
 
 import strings from "../i18n/definitions";

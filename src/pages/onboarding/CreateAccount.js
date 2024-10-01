@@ -17,7 +17,7 @@ import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import FormSection from "../_pages_shared/FormSection";
 import InputField from "../../components/InputField";
 import Footer from "../_pages_shared/Footer";
-import ButtonContainer from "../_pages_shared/ButtonContainer";
+import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
 import { Button } from "../_pages_shared/Button.sc";
 import Modal from "../../components/modal_shared/Modal";
 import validator from "../../assorted/validator";

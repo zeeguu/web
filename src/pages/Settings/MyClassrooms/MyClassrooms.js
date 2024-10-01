@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { Button } from "../../_pages_shared/Button.sc";
-import ButtonContainer from "../../_pages_shared/ButtonContainer";
+import { ButtonContainer } from "../../_pages_shared/ButtonContainer.sc";
 import InputField from "../../../components/InputField";
 import Form from "../../_pages_shared/Form";
 import FormSection from "../../_pages_shared/FormSection";

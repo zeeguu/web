@@ -4,7 +4,7 @@ import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
-import ButtonContainer from "../_pages_shared/ButtonContainer";
+import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
 import Footer from "../_pages_shared/Footer";
 import { Button } from "../_pages_shared/Button.sc";
 import Tag from "../_pages_shared/Tag";
