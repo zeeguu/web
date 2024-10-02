@@ -82,7 +82,7 @@ export default function ExcludeWords({ api, hasExtension }) {
         </TagContainer>
       </Main>
       <Footer>
-        <p>{strings.youCanChangeLater}</p>
+        <p className="centered">{strings.youCanChangeLater}</p>
         <ButtonContainer className={"padding-large"}>
           <Button
             className={"full-width-btn"}

@@ -143,7 +143,7 @@ export default function LanguagePreferences({ api }) {
               onChange={handleNative_language_on_register}
             />
           </FormSection>
-          <p>{strings.youCanChangeLater}</p>
+          <p className="centered">{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
             <Button
               type={"submit"}
@@ -153,7 +153,7 @@ export default function LanguagePreferences({ api }) {
               {strings.next} <RoundedForwardArrow />
             </Button>
           </ButtonContainer>
-          <p>
+          <p className="centered">
             {strings.alreadyHaveAccount + " "}
             <a className="bold underlined-link" href="/log_in">
               {strings.login}

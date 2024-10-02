@@ -87,6 +87,10 @@ const ContentWrapper = styled.div`
     font-size: 0.9em;
     margin: 0;
   }
+
+  p.centered {
+    text-align: center;
+  }
 `;
 
 export { ContentWrapper, PageContainer, PageBackground };
