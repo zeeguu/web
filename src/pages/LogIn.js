@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import useFormField from "../hooks/useFormField";
 
@@ -16,9 +16,14 @@ import { Button } from "./_pages_shared/Button.sc";
 
 import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
+import { setTitle } from "../assorted/setTitle";
 
 export default function LogIn({ api, handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
+
+  useEffect(() => {
+    setTitle(strings.login);
+  }, []);
 
   const [email, handleEmailChange] = useFormField("");
   const [password, handlePasswordChange] = useFormField("");

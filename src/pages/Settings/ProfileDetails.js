@@ -18,6 +18,7 @@ import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 
 import LoadingAnimation from "../../components/LoadingAnimation";
 import LogOutButton from "./LogOutButton";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function ProfileDetails({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
@@ -26,6 +27,10 @@ export default function ProfileDetails({ api, setUser }) {
 
   const user = useContext(UserContext);
   const history = useHistory();
+
+  useEffect(() => {
+    setTitle(strings.profileDetails);
+  }, []);
 
   useEffect(() => {
     api.getUserDetails((data) => {

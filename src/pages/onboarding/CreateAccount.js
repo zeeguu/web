@@ -25,6 +25,7 @@ import strings from "../../i18n/definitions";
 
 import * as EmailValidator from "email-validator";
 import LocalStorage from "../../assorted/LocalStorage";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
   const user = useContext(UserContext);
@@ -70,6 +71,10 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
         setPrivacyNoticeText(text);
       });
     });
+  }, []);
+
+  useEffect(() => {
+    setTitle(strings.createAccount);
   }, []);
 
   useEffect(() => {

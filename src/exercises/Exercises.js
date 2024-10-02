@@ -77,6 +77,7 @@ export default function Exercises({
     useState();
 
   useEffect(() => {
+    setTitle(strings.titleExercises);
     api.getUserPreferences((preferences) => {
       if (SessionStorage.getAudioExercisesEnabled() === undefined)
         // If the user doesn't go through the login (or has it cached, we need to set it at the start of the exercises.)

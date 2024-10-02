@@ -12,9 +12,11 @@ import { Button } from "../_pages_shared/Button.sc";
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
 import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function ExtensionInstalled({ api }) {
   useEffect(() => {
+    setTitle(strings.extensionInstalled);
     api.logUserActivity(api.OPEN_EXTENSION_INSTALLED);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
