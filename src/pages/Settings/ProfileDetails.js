@@ -4,7 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
-import Form from "../_pages_shared/Form";
+import { Form } from "../_pages_shared/Form.sc";
 import FormSection from "../_pages_shared/FormSection";
 import { Button } from "../_pages_shared/Button.sc";
 import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";

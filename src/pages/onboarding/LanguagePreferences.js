@@ -11,7 +11,7 @@ import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import { Heading } from "../_pages_shared/Heading.sc";
 import { Main } from "../_pages_shared/Main.sc";
-import Form from "../_pages_shared/Form";
+import { Form } from "../_pages_shared/Form.sc";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import FormSection from "../_pages_shared/FormSection";
 import Selector from "../../components/Selector";

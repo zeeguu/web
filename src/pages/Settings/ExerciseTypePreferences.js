@@ -6,7 +6,7 @@ import LocalStorage from "../../assorted/LocalStorage";
 import Feature from "../../features/Feature";
 import { Button } from "../_pages_shared/Button.sc";
 import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
-import Form from "../_pages_shared/Form";
+import { Form } from "../_pages_shared/Form.sc";
 import FormSection from "../_pages_shared/FormSection";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import { Main } from "../_pages_shared/Main.sc";

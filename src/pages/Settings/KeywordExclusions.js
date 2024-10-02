@@ -5,7 +5,7 @@ import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import { Heading } from "../_pages_shared/Heading.sc";
 import { Main } from "../_pages_shared/Main.sc";
-import Form from "../_pages_shared/Form";
+import { Form } from "../_pages_shared/Form.sc";
 import { Button } from "../_pages_shared/Button.sc";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";

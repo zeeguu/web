@@ -8,7 +8,7 @@ import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import { Heading } from "../_pages_shared/Heading.sc";
 import { Main } from "../_pages_shared/Main.sc";
-import Form from "../_pages_shared/Form";
+import { Form } from "../_pages_shared/Form.sc";
 import { Button } from "../_pages_shared/Button.sc";
 import { Footer } from "../_pages_shared/Footer.sc";
 import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";
