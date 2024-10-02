@@ -110,7 +110,7 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
         </Form>
       </Main>
       <Footer>
-        <p>
+        <p className="centered">
           {strings.dontHaveAnAccount + " "}
           <a className="bold underlined-link" href="/language_preferences">
             {strings.getStarted}

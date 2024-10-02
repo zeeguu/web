@@ -50,7 +50,7 @@ export default function ResetPassword({ api }) {
         {codeSent && <ResetPasswordStep2 api={api} email={email} />}
       </Main>
       <Footer>
-        <p>
+        <p className="centered">
           {strings.rememberPassword + " "}
           <a className="bold underlined-link" href="login">
             {strings.login}
