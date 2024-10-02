@@ -40,7 +40,7 @@ export default function SelectInterests({ api }) {
         <ButtonContainer className={"padding-large"}>
           <Button
             className={"full-width-btn"}
-            onClick={() => redirect("/exclude_words_step2")}
+            onClick={() => redirect("/exclude_words")}
           >
             {strings.next}
             <RoundedForwardArrow />

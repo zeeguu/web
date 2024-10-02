@@ -75,7 +75,7 @@ export default function MainAppRouter({
       />
 
       <PrivateRoute
-        path="/exclude_words_step2"
+        path="/exclude_words"
         api={api}
         hasExtension={hasExtension}
         component={ExcludeWords}
