@@ -21,7 +21,7 @@ const ExerciseNotifications = class {
     this.exerciseCounter = exerciseCount;
   }
 
-  unsetExerciseCounter(exerciseCount) {
+  unsetExerciseCounter() {
     this.exerciseCounter = null;
   }
 

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import useSelectInterest from "../../hooks/useSelectInterest";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -12,10 +13,15 @@ import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import strings from "../../i18n/definitions";
 
 import redirect from "../../utils/routing/routing";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function SelectInterests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
+
+  useEffect(() => {
+    setTitle(strings.selectInterests);
+  }, []);
 
   return (
     <PreferencesPage>
@@ -36,11 +42,11 @@ export default function SelectInterests({ api }) {
         </TagContainer>
       </Main>
       <Footer>
-        <p>{strings.youCanChangeLater}</p>
+        <p className="centered">{strings.youCanChangeLater}</p>
         <ButtonContainer className={"padding-large"}>
           <Button
             className={"full-width-btn"}
-            onClick={() => redirect("/exclude_words_step1")}
+            onClick={() => redirect("/exclude_words")}
           >
             {strings.next}
             <RoundedForwardArrow />

@@ -9,15 +9,12 @@ import LocalStorage from "../assorted/LocalStorage";
 import { timeToHumanReadable } from "../utils/misc/readableTime";
 import { ExerciseCountContext } from "./ExerciseCountContext";
 import CollapsablePanel from "../components/CollapsablePanel";
-import { MAX_EXERCISE_IN_LEARNING_BOOKMARKS } from "./ExerciseConstants";
 import Pluralize from "../utils/text/pluralize";
 
 export default function Congratulations({
   articleID,
   isAbleToAddBookmarksToPipe,
-  hasExceededTotalBookmarks,
   totalPracticedBookmarksInSession,
-  totalBookmarksInPipeline,
   articleTitle,
   articleURL,
   correctBookmarks,
@@ -25,7 +22,6 @@ export default function Congratulations({
   api,
   backButtonAction,
   keepExercisingAction,
-  startExercisingNewWords,
   source,
   exerciseSessionTimer,
 }) {
@@ -64,12 +60,6 @@ export default function Congratulations({
   const hasScheduledExercises = exerciseNotification.exerciseCounter > 0;
   const isThereMoreExercises =
     hasScheduledExercises || isAbleToAddBookmarksToPipe;
-  const canStartLearningNewWords =
-    isAbleToAddBookmarksToPipe &&
-    !articleID &&
-    exerciseNotification.exerciseCounter <= 0;
-  const isOverTotalBookmarkLimit =
-    hasExceededTotalBookmarks && !hasScheduledExercises;
 
   function progressionButtonRender() {
     if (hasScheduledExercises)
@@ -77,48 +67,6 @@ export default function Congratulations({
         <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
           {strings.keepExercising}
         </s.OrangeButton>
-      );
-    else if (canStartLearningNewWords && isOverTotalBookmarkLimit)
-      return (
-        <>
-          <s.OrangeButton className="orangeButton" onClick={backButtonAction}>
-            {strings.goToReading}
-          </s.OrangeButton>
-          <s.WhiteButton
-            className="whiteButton slightlyLarger"
-            onClick={startExercisingNewWords}
-          >
-            {strings.startLearningNewWords}
-          </s.WhiteButton>
-        </>
-      );
-    else if (canStartLearningNewWords && !isOverTotalBookmarkLimit)
-      return (
-        <>
-          <s.OrangeButton
-            className="orangeButton slightlyLarger"
-            onClick={startExercisingNewWords}
-          >
-            {strings.startLearningNewWords}
-          </s.OrangeButton>
-          <s.WhiteButton className="whiteButton" onClick={backButtonAction}>
-            {strings.goToReading}
-          </s.WhiteButton>
-        </>
-      );
-    else if (canStartLearningNewWords && isOverTotalBookmarkLimit)
-      return (
-        <>
-          <s.OrangeButton className="whiteButton" onClick={backButtonAction}>
-            {strings.goToReading}
-          </s.OrangeButton>
-          <s.WhiteButton
-            className="whiteButton slightlyLarger"
-            onClick={startExercisingNewWords}
-          >
-            {strings.startLearningNewWords}
-          </s.WhiteButton>
-        </>
       );
     else
       return (
@@ -154,25 +102,12 @@ export default function Congratulations({
               </b>
             )}
           </p>
-
-          {isOverTotalBookmarkLimit && (
-            <p>
-              You have already <b>{totalBookmarksInPipeline} words</b> you are
-              learning at the moment. We recommend that you at{" "}
-              <b>most learn {MAX_EXERCISE_IN_LEARNING_BOOKMARKS} words</b> at
-              any given point.
-            </p>
-          )}
-          {canStartLearningNewWords && !isOverTotalBookmarkLimit && (
-            <p>
-              You can start <b>studying new words</b>, do you want to continue
-              exercising?
-            </p>
-          )}
           {!isThereMoreExercises && (
             <p>
               There are no more words for you to practice. You can read more
-              articles and find new words to learn!
+              articles and find new words to learn! We will let you know when
+              it's time to review your words according to our spaced-repetition
+              schedule.
             </p>
           )}
         </div>

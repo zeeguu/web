@@ -3,8 +3,7 @@ import LandingPage from "./landingPage/LandingPage";
 import ExtensionInstalled from "./pages/onboarding/ExtensionInstalled";
 import InstallExtension from "./pages/onboarding/InstallExtension";
 import SelectInterests from "./pages/onboarding/SelectInterests";
-import ExcludeWordsStep1 from "./pages/onboarding/ExcludeWordsStep1";
-import ExcludeWordsStep2 from "./pages/onboarding/ExcludeWordsStep2";
+import ExcludeWords from "./pages/onboarding/ExcludeWords";
 import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
 import LogIn from "./pages/LogIn";
@@ -76,17 +75,10 @@ export default function MainAppRouter({
       />
 
       <PrivateRoute
-        path="/exclude_words_step1"
+        path="/exclude_words"
         api={api}
         hasExtension={hasExtension}
-        component={ExcludeWordsStep1}
-      />
-
-      <PrivateRoute
-        path="/exclude_words_step2"
-        api={api}
-        hasExtension={hasExtension}
-        component={ExcludeWordsStep2}
+        component={ExcludeWords}
       />
 
       <PrivateRouteWithSidebar

@@ -66,6 +66,9 @@ let strings = new LocalizedStrings(
       logout: "Logout",
       userDashboard: "Statistics",
 
+      // User Dashboard:
+      titleUserDashboard: "User Statistics",
+
       //CreateAccount
       nameIsRequired: "Name is required.",
       passwordMustBeMsg: "Password should be at least 4 characters long.",
@@ -81,11 +84,16 @@ let strings = new LocalizedStrings(
       baseLanguagePlaceholder: "Select Language",
 
       //LanguagePreferences
+      languagePreferences: "Language Preferences",
       learnedLanguageIsRequired: "Learned language is required.",
       languangeLevelIsRequired: "Language level is required.",
       plsSelectBaseLanguage: "Please select a base language.",
 
+      //SelectInterests
+      selectInterests: "Select Interests",
+
       //ExcludeWords
+      excludeWords: "Exclude Words",
       addUnwantedWordHelperText: "Add one unwanted word / phrase at a time",
       unwantedWordPlaceholder: "e.g. robbery",
 
@@ -140,11 +148,16 @@ let strings = new LocalizedStrings(
       rememberPassword: "Remember Password?",
 
       //InstallExtension
+      installExtension: "Install Extension",
       iWillInstallLater: "I will install it later",
       installTheExtension: "Install the Extension",
 
+      //ExtensionInstalled
+      extensionInstalled: "Extension Installed",
+
       //LandingPage
       landingPage: "Landing Page",
+      landingPageTitle: "Learn foreign languages while reading what you like",
       projectDescription_UltraShort: `Zeeguu is a research project that personalizes the way you learn foreign languages. It lets you read texts based on your interests, translate unfamiliar words, and practice vocabulary. On any device.`,
       betaTester: "Become a Betatester!",
       howDoesItWork: "How Does It Work?",
@@ -225,7 +238,7 @@ let strings = new LocalizedStrings(
       yourWordsHeadline: "Your Words",
       history: "History",
       starred: "Starred",
-
+      learning: "Learning",
       learned: "Learned",
       topWords: "Top Words",
 
@@ -233,6 +246,12 @@ let strings = new LocalizedStrings(
       titleTranslationHistory: "Translation History",
       starAWordMsg:
         "Star a word to ensure it appears in exercises. Delete to avoid it. Gray words don't appear unless starred.",
+
+      // Home (Find Articles)
+      titleHome: "Home",
+
+      // Search Query (Find Articles)
+      titleSearch: "Search",
 
       //FindArticles
       findArticles: "Find Articles",
@@ -307,6 +326,12 @@ let strings = new LocalizedStrings(
       titleRankedWords: "Most Important Words",
       rankedMsg:
         "The most important words that you translated. Ordered by frequency of occurrence in your learned language. To see all your past translations, go to History.",
+      //To Learn
+      titleToLearnWords: "Words to Learn",
+      toLearnMsg:
+        "These words have not yet been practiced in Exercises. Once you exercise them for the first time they will move into the Receptive status.",
+      noToLearnWords:
+        "You have no words you haven't practiced. Keep reading and translating to add some.",
 
       //Receptive
       titleReceptiveWords: "Receptive",
@@ -393,6 +418,7 @@ let strings = new LocalizedStrings(
       orderWordsOnlyTwoMessagesShown: "Only the first 2 clues are shown",
 
       //Exercises
+      titleExercises: "Exercises",
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
       goBackArticlePrefix: "Go back to reading: ",
@@ -663,7 +689,6 @@ let strings = new LocalizedStrings(
 
       // New user created
       userCreated: "Welcome to Zeeguu",
-      installExtension: " Time to install the Zeeguu Reader browser extension",
       extensionDescription:
         "Here on zeeguu.org you can see your words, find article recommendation links, do exercises, see statistics, etc. You can also read, but only articles that were shared with you by your teacher, or articles that you have saved from the extension.",
       extensionFunctionality:

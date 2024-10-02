@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
@@ -21,8 +22,9 @@ import TagContainer from "../_pages_shared/TagContainer";
 
 import redirect from "../../utils/routing/routing";
 import strings from "../../i18n/definitions";
+import { setTitle } from "../../assorted/setTitle";
 
-export default function ExcludeWordsStep2({ api, hasExtension }) {
+export default function ExcludeWords({ api, hasExtension }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 
@@ -43,11 +45,16 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
     }
   }
 
+  useEffect(() => {
+    setTitle(strings.excludeWords);
+  }, []);
+
   return (
     <PreferencesPage>
       <Header>
         <Heading>
-          Here you can add<br></br> unwanted words or&nbsp;phrases
+          Would you like to exclude articles and exercises containing particular
+          words or&nbsp;phrases?
         </Heading>
       </Header>
       <Main>
@@ -81,7 +88,7 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
         </TagContainer>
       </Main>
       <Footer>
-        <p>{strings.youCanChangeLater}</p>
+        <p className="centered">{strings.youCanChangeLater}</p>
         <ButtonContainer className={"padding-large"}>
           <Button
             className={"full-width-btn"}
