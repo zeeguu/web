@@ -47,7 +47,8 @@ export default function ExcludeWordsStep2({ api, hasExtension }) {
     <PreferencesPage>
       <Header>
         <Heading>
-          Here you can add<br></br> unwanted words or&nbsp;phrases
+          Would you like to exclude articles and exercises containing particular
+          words or&nbsp;phrases?
         </Heading>
       </Header>
       <Main>
