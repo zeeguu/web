@@ -87,6 +87,7 @@ export default function MyClassrooms({ api }) {
 
   function saveStudentToClassroom(e) {
     e.preventDefault(e);
+    setShowJoinCohortError(false);
     if (!validateInviteCode()) return;
     api.joinCohort(
       inviteCode.trim(),
@@ -94,7 +95,6 @@ export default function MyClassrooms({ api }) {
         if (status === "OK") {
           updateValues();
           setInviteCode("");
-          setShowJoinCohortError(false); //clear error message after successful next attempt
         } else {
           setShowJoinCohortError(true);
         }
