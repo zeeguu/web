@@ -123,6 +123,7 @@ export default function ResetPasswordStep2({ api, email }) {
           id={"new-password"}
           label={strings.newPassword}
           name={"new-password"}
+          type="password"
           placeholder={strings.newPasswordPlaceholder}
           value={newPass}
           isError={!isNewPassValid}
