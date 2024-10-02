@@ -22,7 +22,7 @@ import TagContainer from "../_pages_shared/TagContainer";
 import redirect from "../../utils/routing/routing";
 import strings from "../../i18n/definitions";
 
-export default function ExcludeWordsStep2({ api, hasExtension }) {
+export default function ExcludeWords({ api, hasExtension }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 
