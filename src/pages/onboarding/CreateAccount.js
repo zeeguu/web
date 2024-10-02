@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import redirect from "../../utils/routing/routing";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import * as sC from "../../components/modal_shared/Checkbox.sc";
+import * as sI from "../../components/InputField.sc";
 import useFormField from "../../hooks/useFormField";
 
 import { UserContext } from "../../contexts/UserContext";
@@ -23,8 +24,13 @@ import Modal from "../../components/modal_shared/Modal";
 import validator from "../../assorted/validator";
 import strings from "../../i18n/definitions";
 
-import * as EmailValidator from "email-validator";
 import LocalStorage from "../../assorted/LocalStorage";
+import {
+  EmailValidation,
+  LongerThanNValidation,
+  NotEmptyValidation,
+  ValidateRule,
+} from "../../utils/ValidateRule/ValidateRule";
 
 export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
   const user = useContext(UserContext);
@@ -41,22 +47,47 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     learnedCefrLevel_OnRegister,
   );
 
-  const [inviteCode, handleInviteCodeChange] = useFormField("");
-  const [name, handleNameChange] = useFormField("");
-  const [email, handleEmailChange] = useFormField("");
-  const [password, handlePasswordChange] = useFormField("");
-  const [checkPrivacyNote, handleCheckPrivacyNote] = useFormField(false);
+  const [
+    inviteCode,
+    setInviteCode,
+    validateInviteCode,
+    isInviteCodeValid,
+    inviteCodeMsg,
+  ] = useFormField("", [NotEmptyValidation]);
+
+  const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
+    NotEmptyValidation,
+  ]);
+  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField(
+    "",
+    [NotEmptyValidation, EmailValidation],
+  );
+  const [
+    password,
+    setPassword,
+    validatePassword,
+    isPasswordValid,
+    passwordMsg,
+  ] = useFormField("", [
+    NotEmptyValidation,
+    LongerThanNValidation(3, strings.passwordMustBeMsg),
+  ]);
+  const [
+    checkPrivacyNote,
+    setCheckPrivacyNote,
+    validateCheckPrivacyNote,
+    isCheckPrivacyNoteValid,
+    checkPrivacyNoteMsg,
+  ] = useFormField(
+    false,
+    new ValidateRule((v) => {
+      return v === true;
+    }, strings.plsAcceptPrivacyPolicy),
+  );
 
   const [errorMessage, setErrorMessage] = useState("");
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(false);
   const [privacyNoticeText, setPrivacyNoticeText] = useState([]);
-
-  let validatorRules = [
-    [name === "", strings.nameIsRequired],
-    [!EmailValidator.validate(email), strings.plsProvideValidEmail],
-    [password.length < 4, strings.passwordMustBeMsg],
-    [!checkPrivacyNote, strings.plsAcceptPrivacyPolicy],
-  ];
 
   useState(() => {
     fetch(
@@ -87,8 +118,17 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
 
   function handleCreate(e) {
     e.preventDefault();
-
-    if (!validator(validatorRules, setErrorMessage)) {
+    // If users have the same error, there wouldn't be a scroll.
+    setErrorMessage("");
+    if (
+      !validator([
+        validateName,
+        validatePassword,
+        validateEmail,
+        validateInviteCode,
+        validateCheckPrivacyNote,
+      ])
+    ) {
       return;
     }
 
@@ -154,7 +194,11 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               name={"invite-code"}
               placeholder={strings.inviteCodePlaceholder}
               value={inviteCode}
-              onChange={handleInviteCodeChange}
+              onChange={(e) => {
+                setInviteCode(e.target.value);
+              }}
+              isError={!isInviteCodeValid}
+              errorMessage={inviteCodeMsg}
               helperText={
                 <div>
                   No invite code? Request it at:{" "}
@@ -170,7 +214,11 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               name={"name"}
               placeholder={strings.fullNamePlaceholder}
               value={name}
-              onChange={handleNameChange}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              isError={!isNameValid}
+              errorMessage={nameMsg}
             />
 
             <InputField
@@ -180,7 +228,11 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               name={"email"}
               placeholder={strings.emailPlaceholder}
               value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              isError={!isEmailValid}
+              errorMessage={emailMsg}
             />
 
             <InputField
@@ -190,13 +242,19 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               name={"password"}
               placeholder={strings.passwordPlaceholder}
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
               helperText={strings.passwordHelperText}
+              isError={!isPasswordValid}
+              errorMessage={passwordMsg}
             />
           </FormSection>
           <sC.CheckboxWrapper>
             <input
-              onChange={handleCheckPrivacyNote}
+              onChange={(e) => {
+                setCheckPrivacyNote(e.target.checked);
+              }}
               checked={checkPrivacyNote}
               id="checkbox"
               name=""
@@ -212,6 +270,9 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               >
                 {strings.privacyNotice}
               </a>
+              {!isCheckPrivacyNoteValid && (
+                <sI.ErrorMessage>{checkPrivacyNoteMsg}</sI.ErrorMessage>
+              )}
             </label>
           </sC.CheckboxWrapper>
           <ButtonContainer className={"padding-medium"}>

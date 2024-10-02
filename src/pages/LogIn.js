@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import useFormField from "../hooks/useFormField";
 
@@ -16,16 +16,41 @@ import { Button } from "./_pages_shared/Button.sc";
 
 import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
+import {
+  NotEmptyValidationWithMsg,
+  EmailValidation,
+} from "../utils/ValidateRule/ValidateRule";
+import validator from "../assorted/validator";
+import { scrollToTop } from "../utils/misc/scrollToTop";
 
 export default function LogIn({ api, handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
 
-  const [email, handleEmailChange] = useFormField("");
-  const [password, handlePasswordChange] = useFormField("");
+  const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
+    useFormField("", [
+      NotEmptyValidationWithMsg("Please provide an email."),
+      EmailValidation,
+    ]);
+  const [
+    password,
+    setPassword,
+    validatePassword,
+    isPasswordValid,
+    passwordErrorMsg,
+  ] = useFormField(
+    "",
+    NotEmptyValidationWithMsg("Please enter your password."),
+  );
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    scrollToTop();
+  }, [errorMessage]);
 
   function handleLogIn(e) {
     e.preventDefault();
+    setErrorMessage("");
+    if (!validator([validateEmail, validatePassword])) return;
     api.logIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
         handleSuccessfulLogIn(userInfo, sessionId);
@@ -51,7 +76,11 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
               name={"email"}
               placeholder={strings.emailPlaceholder}
               value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              isError={!isEmailValid}
+              errorMessage={emailErrorMsg}
             />
 
             <InputField
@@ -61,7 +90,11 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
               name={"password"}
               placeholder={strings.passwordPlaceholder}
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              isError={!isPasswordValid}
+              errorMessage={passwordErrorMsg}
               helperText={<a href="/reset_pass">{strings.forgotPassword}</a>}
             />
           </FormSection>

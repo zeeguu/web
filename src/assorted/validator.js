@@ -1,12 +1,19 @@
-export default function validator(validatorRules, errorFunction) {
+/**
+ * Tests a sequence of validation rules, by calling each rule
+ * returning true, if all validations pass.
+ *
+ * @param {Array[function]} validatorRules - List with functions that return a boolean.
+ *                                           They could be for example a ValidateRule.validateFuntion
+ *
+ * @returns {boolean}
+ *
+ */
+
+export default function validator(validatorRules) {
+  let result = true;
   for (let i = 0; i < validatorRules.length; i++) {
-    let rule = validatorRules[i];
-
-    if (rule[0]) {
-      errorFunction(rule[1]);
-      return false;
-    }
+    let test = validatorRules[i]();
+    result = result && test;
   }
-
-  return true;
+  return result;
 }

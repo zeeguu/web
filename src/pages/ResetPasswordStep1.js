@@ -1,5 +1,4 @@
-import { useState } from "react";
-import * as EmailValidator from "email-validator";
+import { useState, useEffect } from "react";
 import validator from "../assorted/validator";
 import strings from "../i18n/definitions";
 
@@ -9,30 +8,36 @@ import FullWidthErrorMsg from "../components/FullWidthErrorMsg";
 import InputField from "../components/InputField";
 import ButtonContainer from "./_pages_shared/ButtonContainer";
 import { Button } from "./_pages_shared/Button.sc";
+import { scrollToTop } from "../utils/misc/scrollToTop";
 
 export default function ResetPasswordStep1({
   api,
   email,
-  handleEmailChange,
-  notifyOfValidEmail,
+  setEmail,
+  validateEmail,
+  isEmailValid,
+  emailErrorMsg,
+  notifyEmailSent,
 }) {
   const [errorMessage, setErrorMessage] = useState("");
 
-  let validatorRules = [
-    [!EmailValidator.validate(email), strings.plsProvideValidEmail],
-  ];
+  useEffect(() => {
+    if (errorMessage) {
+      scrollToTop();
+    }
+  }, [errorMessage]);
 
   function handleResetPassword(e) {
     e.preventDefault();
 
-    if (!validator(validatorRules, setErrorMessage)) {
+    if (!validator([validateEmail])) {
       return;
     }
 
     api.sendCode(
       email,
       () => {
-        notifyOfValidEmail();
+        notifyEmailSent();
       },
       () => {
         setErrorMessage("inexistent email");
@@ -56,7 +61,11 @@ export default function ResetPasswordStep1({
           name={"email"}
           placeholder={strings.emailPlaceholder}
           value={email}
-          onChange={handleEmailChange}
+          isError={!isEmailValid}
+          errorMessage={emailErrorMsg}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
         />
       </FormSection>
       <ButtonContainer className={"padding-medium"}>

@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 
 import LocalStorage from "../../assorted/LocalStorage";
 
-import { scrollToTop } from "../../utils/misc/scrollToTop";
-
 import redirect from "../../utils/routing/routing";
 import useFormField from "../../hooks/useFormField";
 
@@ -12,7 +10,6 @@ import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
 import Main from "../_pages_shared/Main";
 import Form from "../_pages_shared/Form";
-import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
 import FormSection from "../_pages_shared/FormSection";
 import Selector from "../../components/Selector";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
@@ -20,26 +17,43 @@ import { Button } from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import validator from "../../assorted/validator";
+import { NotEmptyValidationWithMsg } from "../../utils/ValidateRule/ValidateRule";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
 
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 
 export default function LanguagePreferences({ api }) {
-  const [learned_language_on_register, handleLearned_language_on_register] =
-    useFormField("");
-  const [native_language_on_register, handleNative_language_on_register] =
-    useFormField("en");
-  const [learned_cefr_level_on_register, handleLearned_cefr_level_on_register] =
-    useFormField("");
+  const [
+    learnedLanguage,
+    setLearnedLanguage,
+    validateLearnedLanguage,
+    isLearnedLanguageValid,
+    learnedLanguageMsg,
+  ] = useFormField("", NotEmptyValidationWithMsg("Please select a language."));
+  const [
+    nativeLanguage,
+    setNativeLanguage,
+    validateNativeLanguage,
+    isNativeLanguageValid,
+    nativeLanguageMsg,
+  ] = useFormField(
+    "en",
+    NotEmptyValidationWithMsg("Please select a language."),
+  );
+  const [
+    learnedCEFRLevel,
+    setLearnedCEFRLevel,
+    validateLearnedCEFRLevel,
+    isLearnedCEFRLevelValid,
+    learnedCEFRLevelMsg,
+  ] = useFormField(
+    "",
+    NotEmptyValidationWithMsg(
+      "Please select a level for your learned language.",
+    ),
+  );
   const [systemLanguages, setSystemLanguages] = useState();
-  const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    if (errorMessage) {
-      scrollToTop();
-    }
-  }, [errorMessage]);
 
   useEffect(() => {
     api.getSystemLanguages((languages) => {
@@ -53,42 +67,31 @@ export default function LanguagePreferences({ api }) {
   //The useEffect hooks below take care of updating initial language preferences
   //in real time
   useEffect(() => {
-    LocalStorage.setLearnedLanguage_OnRegister(learned_language_on_register);
-  }, [learned_language_on_register]);
+    LocalStorage.setLearnedLanguage_OnRegister(learnedLanguage);
+  }, [learnedLanguage]);
 
   useEffect(() => {
-    LocalStorage.setLearnedCefrLevel_OnRegister(learned_cefr_level_on_register);
-  }, [learned_cefr_level_on_register]);
+    LocalStorage.setLearnedCefrLevel_OnRegister(learnedCEFRLevel);
+  }, [learnedCEFRLevel]);
 
   useEffect(() => {
-    LocalStorage.setNativeLanguage_OnRegister(native_language_on_register);
-  }, [native_language_on_register]);
+    LocalStorage.setNativeLanguage_OnRegister(nativeLanguage);
+  }, [nativeLanguage]);
 
   if (!systemLanguages) {
     return <LoadingAnimation />;
   }
 
-  let validatorRules = [
-    [
-      learned_language_on_register === "",
-      "Please select language you want to practice",
-    ],
-    [
-      learned_cefr_level_on_register === "",
-      "Please select your current level in language you want to practice",
-    ],
-    [
-      native_language_on_register === "",
-      "Please select language you want to translations in",
-    ],
-  ];
-
   function validateAndRedirect(e) {
     e.preventDefault();
-    if (!validator(validatorRules, setErrorMessage)) {
-      return;
-    }
-    redirect("/create_account");
+    if (
+      validator([
+        validateLearnedLanguage,
+        validateLearnedCEFRLevel,
+        validateNativeLanguage,
+      ])
+    )
+      redirect("/create_account");
   }
 
   return (
@@ -106,41 +109,50 @@ export default function LanguagePreferences({ api }) {
           <span className="bold">{strings.zeeguuTeamEmail}</span>.
         </p>
         <Form action={""}>
-          {errorMessage && (
-            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
-          )}
           <FormSection>
             <Selector
-              selectedValue={learned_language_on_register}
+              selectedValue={learnedLanguage}
               label={strings.learnedLanguage}
               placeholder={strings.learnedLanguagePlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"practiced-languages"}
               options={systemLanguages.learnable_languages}
-              onChange={handleLearned_language_on_register}
+              isError={!isLearnedLanguageValid}
+              errorMessage={learnedLanguageMsg}
+              onChange={(e) => {
+                setLearnedLanguage(e.target.value);
+              }}
             />
 
             <Selector
-              selectedValue={learned_cefr_level_on_register}
+              selectedValue={learnedCEFRLevel}
               label={strings.levelOfLearnedLanguage}
               placeholder={strings.levelOfLearnedLanguagePlaceholder}
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               id={"level-of-practiced-languages"}
               options={CEFR_LEVELS}
-              onChange={handleLearned_cefr_level_on_register}
+              isError={!isLearnedCEFRLevelValid}
+              errorMessage={learnedCEFRLevelMsg}
+              onChange={(e) => {
+                setLearnedCEFRLevel(e.target.value);
+              }}
             />
 
             <Selector
-              selectedValue={native_language_on_register}
+              selectedValue={nativeLanguage}
               label={strings.baseLanguage}
               placeholder={strings.baseLanguagePlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"translation-languages"}
+              isError={!isNativeLanguageValid}
+              errorMessage={nativeLanguageMsg}
               options={systemLanguages.native_languages}
-              onChange={handleNative_language_on_register}
+              onChange={(e) => {
+                setNativeLanguage(e.target.value);
+              }}
             />
           </FormSection>
           <p>{strings.youCanChangeLater}</p>

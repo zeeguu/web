@@ -1,27 +1,52 @@
 import { useState } from "react";
-/*
-A custom hook controlling form field logic.
-It could be extended with:
-    - validation support (a function with validation rules could be passed as an argument)
-    - error message states 
-*/
+import { validateMultipleRules } from "../utils/ValidateRule/ValidateRule";
 
-export default function useFormField(initialState) {
+/**
+ * Hook to handle fields and validate them.
+ *
+ * @param {string} initialState - The intial value for the input field.
+ * @param {InputValidator} InputValidator - ValidatorRule that is used to validate the field.
+ *
+ */
+
+export default function useFormField(initialState, InputValidator) {
+  const NO_INPUT_VALIDATION = "Input validation is undefinied.";
+
   const [currentState, setState] = useState(initialState);
-
-  function handleInputChange(e) {
-    switch (e.target.type) {
-      case "checkbox":
-        setState(e.target.checked);
-        break;
-      default:
-        setState(e.target.value);
-    }
-  }
+  const [inputValidation, setInputValidation] = useState(InputValidator);
+  const [isInputValid, setIsInputValid] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(NO_INPUT_VALIDATION);
 
   function resetInputState() {
     setState("");
   }
 
-  return [currentState, handleInputChange, resetInputState];
+  function validateInput() {
+    if (inputValidation === undefined) {
+      setIsInputValid(false);
+      return false;
+    }
+    let _inputValidationArray = inputValidation;
+    if (!Array.isArray(_inputValidationArray)) {
+      _inputValidationArray = [inputValidation];
+    }
+    let _validationResult = validateMultipleRules(
+      currentState,
+      _inputValidationArray,
+      setErrorMessage,
+    );
+    setIsInputValid(_validationResult);
+    if (_validationResult) setErrorMessage("");
+    return _validationResult;
+  }
+
+  return [
+    currentState,
+    setState,
+    validateInput,
+    isInputValid,
+    errorMessage,
+    resetInputState,
+    setInputValidation,
+  ];
 }
