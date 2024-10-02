@@ -4,7 +4,7 @@ import strings from "../i18n/definitions";
 import { useState } from "react";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import isBookmarkExpression from "../utils/misc/isBookmarkExpression";
-import FullWidthErrorMsg from "../components/FullWidthErrorMsg";
+import { FullWidthErrorMsg } from "../components/FullWidthErrorMsg.sc";
 
 export default function WordEditForm({
   bookmark,

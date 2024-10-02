@@ -8,7 +8,7 @@ import { Heading } from "./_pages_shared/Heading.sc";
 import { Main } from "./_pages_shared/Main.sc";
 import { Form } from "./_pages_shared/Form.sc";
 import { FormSection } from "./_pages_shared/FormSection.sc";
-import FullWidthErrorMsg from "../components/FullWidthErrorMsg";
+import { FullWidthErrorMsg } from "../components/FullWidthErrorMsg.sc";
 import InputField from "../components/InputField";
 import { Footer } from "./_pages_shared/Footer.sc";
 import { ButtonContainer } from "./_pages_shared/ButtonContainer.sc";

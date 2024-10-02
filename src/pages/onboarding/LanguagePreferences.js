@@ -12,7 +12,7 @@ import Header from "../_pages_shared/Header";
 import { Heading } from "../_pages_shared/Heading.sc";
 import { Main } from "../_pages_shared/Main.sc";
 import { Form } from "../_pages_shared/Form.sc";
-import FullWidthErrorMsg from "../../components/FullWidthErrorMsg";
+import { FullWidthErrorMsg } from "../../components/FullWidthErrorMsg.sc";
 import { FormSection } from "../_pages_shared/FormSection.sc";
 import Selector from "../../components/Selector";
 import { ButtonContainer } from "../_pages_shared/ButtonContainer.sc";

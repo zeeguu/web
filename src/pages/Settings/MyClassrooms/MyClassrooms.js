@@ -11,7 +11,7 @@ import Header from "../../_pages_shared/Header";
 import { Heading } from "../../_pages_shared/Heading.sc";
 import { Main } from "../../_pages_shared/Main.sc";
 import { FullWidthListContainer } from "../../../components/FullWidthListContainer.sc";
-import FullWidthErrorMsg from "../../../components/FullWidthErrorMsg";
+import { FullWidthErrorMsg } from "../../../components/FullWidthErrorMsg.sc";
 import BackArrow from "../settings_pages_shared/BackArrow";
 import strings from "../../../i18n/definitions";
 import LoadingAnimation from "../../../components/LoadingAnimation";
