@@ -263,13 +263,14 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
             ></input>
             <label>
               By checking this box you agree to our &nbsp;
-              <a
+              <span
+                className="link-style"
                 onClick={() => {
                   setShowPrivacyNotice(true);
                 }}
               >
                 {strings.privacyNotice}
-              </a>
+              </span>
               {!isCheckPrivacyNoteValid && (
                 <sI.ErrorMessage>{checkPrivacyNoteMsg}</sI.ErrorMessage>
               )}
