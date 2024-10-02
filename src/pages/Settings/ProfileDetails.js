@@ -64,19 +64,17 @@ export default function ProfileDetails({ api, setUser }) {
       ...user,
       name: info.name,
     });
-
     saveUserInfoIntoCookies(info);
   }
 
   function handleSave(e) {
     e.preventDefault();
     setErrorMessage("");
-    let isFormValid = validator([validateUserName, validateEmail]);
-    if (isFormValid)
-      api.saveUserDetails(userDetails, setErrorMessage, () => {
-        updateUserInfo(userDetails);
-        history.goBack();
-      });
+    if (!validator([validateUserName, validateEmail])) return;
+    api.saveUserDetails(userDetails, setErrorMessage, () => {
+      updateUserInfo(userDetails);
+      history.goBack();
+    });
   }
 
   if (!userDetails) {
