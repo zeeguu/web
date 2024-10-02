@@ -22,7 +22,7 @@ export default function SideBar(props) {
   const path = useLocation().pathname;
   useEffect(() => {
     setIsOnStudentSide(!path.includes("teacher"));
-    api.hasBookmarksInPipelineToReview((hasBookmarks) => {
+    api.hasBookmarksToReview((hasBookmarks) => {
       exerciseNotification.setHasExercises(hasBookmarks);
       exerciseNotification.updateReactState();
     });

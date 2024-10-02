@@ -7,17 +7,14 @@ import Word from "./Word";
 import * as s from "../components/TopMessage.sc";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 
-export default function Receptive({ api }) {
+export default function ToLearn({ api }) {
   const [words, setWords] = useState(null);
 
   useEffect(() => {
-    api.getUserBookmarksInPipeline((bookmarks) => {
-      const receptiveWords = bookmarks.filter(
-        (word) => word.learning_cycle === 1,
-      );
-      setWords(receptiveWords);
+    api.getBookmarksToLearn((bookmarks) => {
+      setWords(bookmarks);
     });
-    setTitle(strings.titleReceptiveWords);
+    setTitle(strings.titleToLearnWords);
   }, [api]);
 
   function onNotifyDelete(bookmark) {
@@ -32,21 +29,10 @@ export default function Receptive({ api }) {
   return (
     <>
       <s.TopMessage>
-        <div className="top-message-icon">
-          <img
-            src="/static/icons/receptive-icon.png"
-            alt="Receptive Icon"
-            style={{
-              height: "2.5em",
-              width: "2.5em",
-              margin: "0.5em",
-            }}
-          />
-          {strings.receptiveMsg}
-        </div>
+        <div className="top-message-icon">{strings.toLearnMsg}</div>
       </s.TopMessage>
       {words.length === 0 ? (
-        <s.TopMessage>{strings.noReceptiveWords}</s.TopMessage>
+        <s.TopMessage>{strings.noToLearnWords}</s.TopMessage>
       ) : (
         words.map((each) => (
           <Word

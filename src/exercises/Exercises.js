@@ -85,11 +85,14 @@ export default function Exercises({
             preferences["audio_exercises"] === "true",
         );
     });
+    api.getTotalBookmarksInPipeline((totalInLearning) => {
+      setTotalBookmarksInPipeline(totalInLearning);
+    });
     api.startLoggingExerciseSessionToDB((newlyCreatedDBSessionID) => {
       let id = JSON.parse(newlyCreatedDBSessionID).id;
       setDbExerciseSessionId(id);
     });
-
+    setTitle("Exercises");
     startExercising();
     return () => {
       if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
@@ -125,7 +128,6 @@ export default function Exercises({
       // If a user gets here with no bookmarks, means
       // that we tried to schedule new bookmarks but none
       // were found.
-      setShowOutOfWordsMessage(true);
       updateIsAbleToAddNewBookmarksToStudy();
       return;
     }
@@ -163,50 +165,27 @@ export default function Exercises({
   function updateIsAbleToAddNewBookmarksToStudy() {
     api.getNewBookmarksToStudy(1, (new_bookmarks) => {
       setIsAbleToAddBookmarksToPipe(new_bookmarks.length > 0);
+      setShowOutOfWordsMessage(new_bookmarks.length == 0);
     });
   }
-  function startExercising(is_new_scheduled_words) {
+  function startExercising() {
     resetExerciseState();
-    if (is_new_scheduled_words) {
-      exercise_new_bookmarks();
+    if (articleID) {
+      exercise_article_bookmarks();
     } else {
-      if (articleID) {
-        exercise_article_bookmarks();
-      } else {
-        api.hasBookmarksInPipelineToReview((hasBookmarksToPractice) => {
-          if (hasBookmarksToPractice) exercise_in_progress_bookmarks();
-          else {
-            add_new_bookmarks_or_show_out_of_words();
-          }
-        });
-      }
-    }
-  }
-
-  function exercise_new_bookmarks() {
-    api.getNewBookmarksToStudy(
-      DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
-      (new_bookmarks) => {
-        initializeExercises(new_bookmarks, strings.exercises);
-      },
-    );
-  }
-
-  function add_new_bookmarks_or_show_out_of_words() {
-    api.getTotalBookmarksInPipeline((totalInLearning) => {
-      setTotalBookmarksInPipeline(totalInLearning);
-      if (totalInLearning < MAX_EXERCISE_IN_LEARNING_BOOKMARKS) {
-        api.getNewBookmarksToStudy(
-          DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
-          (new_bookmarks) => {
-            initializeExercises(new_bookmarks, strings.exercises);
-          },
+      api.getTopBookmarksToStudy((bookmarks) => {
+        exerciseNotification.setExerciseCounter(bookmarks.length);
+        exerciseNotification.updateReactState();
+        let exerciseSession =
+          bookmarks.lengh <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+            : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
+        initializeExercises(
+          bookmarks.slice(0, exerciseSession + 1),
+          strings.exercises,
         );
-      } else {
-        setShowOutOfWordsMessage(true);
-        updateIsAbleToAddNewBookmarksToStudy();
-      }
-    });
+      });
+    }
   }
 
   function exercise_article_bookmarks() {
@@ -220,31 +199,6 @@ export default function Exercises({
     });
   }
 
-  function exercise_in_progress_bookmarks() {
-    // We retrieve the maximum (99) + the ones for the session
-    // This is because we update the count in memory
-    // and if we have more than 99 + session we would not correctly
-    // display the number to the user.
-    api.getUserBookmarksToStudy(
-      MAX_EXERCISE_TO_DO_NOTIFICATION + DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
-      (bookmarks) => {
-        exerciseNotification.setExerciseCounter(bookmarks.length);
-        let exerciseSession =
-          bookmarks.lengh <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-            ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-            : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
-        initializeExercises(
-          bookmarks.slice(0, exerciseSession + 1),
-          strings.exercises,
-        );
-      },
-    );
-  }
-  if (!totalBookmarksInPipeline) {
-    api.getTotalBookmarksInPipeline((totalBookmarks) => {
-      setTotalBookmarksInPipeline(totalBookmarks);
-    });
-  }
   // Standard flow when user completes exercise session
   if (finished) {
     return (
@@ -252,21 +206,13 @@ export default function Exercises({
         <Congratulations
           articleID={articleID}
           isAbleToAddBookmarksToPipe={isAbleToAddBookmarksToPipe}
-          hasExceededTotalBookmarks={
-            totalBookmarksInPipeline >= MAX_EXERCISE_IN_LEARNING_BOOKMARKS
-          }
           totalPracticedBookmarksInSession={totalPracticedBookmarksInSession}
-          totalBookmarksInPipeline={totalBookmarksInPipeline}
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
           api={api}
           backButtonAction={backButtonAction}
           keepExercisingAction={() => {
             startExercising(BOOKMARKS_DUE_REVIEW);
-            setHasKeptExercising(true);
-          }}
-          startExercisingNewWords={() => {
-            startExercising(NEW_BOOKMARKS_TO_STUDY);
             setHasKeptExercising(true);
           }}
           source={source}
@@ -326,11 +272,9 @@ export default function Exercises({
         currentBookmark["cooling_interval"] === MAX_COOLDOWN_INTERVAL &&
         currentBookmark.learning_cycle === LEARNING_CYCLE["RECEPTIVE"];
       if (
-        currentBookmark["cooling_interval"] !== null &&
         !correctBookmarksIds.includes(currentBookmark.id) &&
         !didItProgressToProductive
       ) {
-        // Only decrement if it's already part of the schedule
         exerciseNotification.decrementExerciseCounter();
       }
       correctBookmarksCopy.push(currentBookmark);
@@ -350,10 +294,6 @@ export default function Exercises({
         // We decrease because you dont have to do it
         // today.
         exerciseNotification.decrementExerciseCounter();
-      }
-      if (currentBookmark["cooling_interval"] === null) {
-        // Bookmark is new, if the user got it wrong it is now scheduled.
-        exerciseNotification.incrementExerciseCounter();
       }
     }
     incorrectBookmarksCopy.push(currentBookmark);

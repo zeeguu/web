@@ -225,7 +225,7 @@ let strings = new LocalizedStrings(
       yourWordsHeadline: "Your Words",
       history: "History",
       starred: "Starred",
-
+      learning: "Learning",
       learned: "Learned",
       topWords: "Top Words",
 
@@ -307,6 +307,12 @@ let strings = new LocalizedStrings(
       titleRankedWords: "Most Important Words",
       rankedMsg:
         "The most important words that you translated. Ordered by frequency of occurrence in your learned language. To see all your past translations, go to History.",
+      //To Learn
+      titleToLearnWords: "Words to Learn",
+      toLearnMsg:
+        "These words have not yet been practiced in Exercises. Once you exercise them for the first time they will move into the Receptive status.",
+      noToLearnWords:
+        "You have no words you haven't practiced. Keep reading and translating to add some.",
 
       //Receptive
       titleReceptiveWords: "Receptive",
