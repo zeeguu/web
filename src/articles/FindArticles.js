@@ -126,12 +126,20 @@ export default function FindArticles({
   }
 
   useEffect(() => {
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, []);
+
+  useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
       doNotShowRedirectionModal_UserPreference,
     );
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
+    setNoMoreArticlesToShow(false);
     if (searchQuery) {
       setTitle(strings.titleSearch + ` '${searchQuery}'`);
       setReloadingSearchArticles(true);
@@ -160,6 +168,7 @@ export default function FindArticles({
         window.removeEventListener("scroll", handleScroll, true);
       };
     }
+
   }, [searchPublishPriority, searchDifficultyPriority]);
 
   if (articleList == null) {
