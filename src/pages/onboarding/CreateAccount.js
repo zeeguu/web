@@ -226,7 +226,7 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
         </Form>
       </Main>
       <Footer>
-        <p>
+        <p className="centered">
           {strings.alreadyHaveAccount + " "}
           <a className="bold underlined-link" href="/log_in">
             {strings.login}
