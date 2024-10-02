@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
 
@@ -16,6 +17,7 @@ import { TagContainer } from "../_pages_shared/TagContainer.sc";
 
 import strings from "../../i18n/definitions";
 import BackArrow from "./settings_pages_shared/BackArrow";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function KeywordExclusions({ api }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
@@ -23,6 +25,10 @@ export default function KeywordExclusions({ api }) {
 
   const [excludedWord, handleExcludedWordsChange, resetExcludedWords] =
     useFormField("");
+
+  useEffect(() => {
+    setTitle(strings.excludeWords);
+  }, []);
 
   function handleAddNewSearchFilter(e) {
     e.preventDefault();
