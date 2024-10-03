@@ -29,7 +29,9 @@ function getMemoryTask(bookmark) {
   return memoryTask;
 }
 function getBookmarkCycleTaskKey(b) {
-  return [b.learning_cycle, getMemoryTask(b)];
+  // If there is no learning cycle (it is a new word) treat as
+  // receptive.
+  return [b.learning_cycle === 0 ? 1 : b.learning_cycle, getMemoryTask(b)];
 }
 
 function getExerciseCycleTaskKey(e) {
