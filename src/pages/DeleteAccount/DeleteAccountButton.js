@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Modal from "../../components/modal_shared/Modal";
-import { Header } from "../../components/modal_shared/Header.sc";
-import { Heading } from "../../components/modal_shared/Heading.sc";
-import { Main } from "../../components/modal_shared/Main.sc";
+import Header from "../../components/modal_shared/Header.sc";
+import Heading from "../../components/modal_shared/Heading.sc";
+import Main from "../../components/modal_shared/Main.sc";
 import { Footer } from "../_pages_shared/Footer.sc";
-import { ButtonContainer } from "../../components/modal_shared/ButtonContainer.sc";
+import ButtonContainer from "../../components/modal_shared/ButtonContainer.sc";
 import * as s from "../../components/FormPage.sc";
 import redirect from "../../utils/routing/routing";
 import SessionStorage from "../../assorted/SessionStorage.js";

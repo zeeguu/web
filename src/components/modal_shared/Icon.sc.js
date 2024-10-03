@@ -14,4 +14,4 @@ const Icon = styled.img`
     `}
 `;
 
-export { Icon };
+export default Icon;
