@@ -94,6 +94,7 @@ let strings = new LocalizedStrings(
 
       //ExcludeWords
       excludeWords: "Exclude Words",
+      excludedKeywords: "Excluded Keywords",
       addUnwantedWordHelperText: "Add one unwanted word / phrase at a time",
       unwantedWordPlaceholder: "e.g. robbery",
 

@@ -44,8 +44,8 @@ export default function Settings() {
         <SettingsItem path={"/account_settings/interests"}>
           {strings.interests}
         </SettingsItem>
-        <SettingsItem path={"/account_settings/keyword_exclusions"}>
-          {"Keyword Exclusions"}
+        <SettingsItem path={"/account_settings/excluded_keywords"}>
+          {strings.excludedKeywords}
         </SettingsItem>
       </ListOfSettingsItems>
 

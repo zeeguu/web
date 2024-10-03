@@ -19,7 +19,7 @@ import strings from "../../i18n/definitions";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import { setTitle } from "../../assorted/setTitle";
 
-export default function KeywordExclusions({ api }) {
+export default function ExcludedKeywords({ api }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 
@@ -27,7 +27,7 @@ export default function KeywordExclusions({ api }) {
     useFormField("");
 
   useEffect(() => {
-    setTitle(strings.excludeWords);
+    setTitle(strings.excludedKeywords);
   }, []);
 
   function handleAddNewSearchFilter(e) {
@@ -41,7 +41,7 @@ export default function KeywordExclusions({ api }) {
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
       <Header withoutLogo>
-        <Heading>Keyword Exclusions</Heading>
+        <Heading>{strings.excludedKeywords}</Heading>
       </Header>
       <Main>
         <Form>
