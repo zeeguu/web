@@ -30,6 +30,9 @@ export default function LearningCycleIndicator({
       return "/static/icons/active-icon-lightGrey.png";
     }
     switch (LEARNING_CYCLE_NAME[learningCycle]) {
+      // If there is no learning cycle (it is a new word) treat as
+      // receptive.
+      case "not set":
       case "receptive":
         return "/static/icons/receptive-icon.png";
       case "productive":
@@ -41,6 +44,9 @@ export default function LearningCycleIndicator({
 
   const getTooltipContent = () => {
     switch (LEARNING_CYCLE_NAME[learningCycle]) {
+      // If there is no learning cycle (it is a new word) treat as
+      // receptive.
+      case "not set":
       case "receptive":
         return strings.receptiveTooltip;
       case "productive":
