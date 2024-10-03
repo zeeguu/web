@@ -12,4 +12,4 @@ const TagContainer = styled.div`
   }
 `;
 
-export { TagContainer };
+export default TagContainer;

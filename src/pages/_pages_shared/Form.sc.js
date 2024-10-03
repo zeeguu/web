@@ -9,4 +9,4 @@ const Form = styled.form`
   max-width: 38rem;
 `;
 
-export { Form };
+export default Form;

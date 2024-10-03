@@ -12,4 +12,4 @@ const Footer = styled.footer`
   ${BaseSectionStyle}
 `;
 
-export { Footer };
+export default Footer;

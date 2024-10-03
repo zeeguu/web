@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { Tag } from "../_pages_shared/Tag.sc";
-import { TagContainer } from "../_pages_shared/TagContainer.sc";
+import Tag from "../_pages_shared/Tag.sc";
+import TagContainer from "../_pages_shared/TagContainer.sc";
 import useSelectInterest from "../../hooks/useSelectInterest";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
-import { Main } from "../_pages_shared/Main.sc";
+import Main from "../_pages_shared/Main.sc";
 import Header from "../_pages_shared/Header";
-import { Heading } from "../_pages_shared/Heading.sc";
+import Heading from "../_pages_shared/Heading.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";

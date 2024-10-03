@@ -10,4 +10,4 @@ const FullWidthListContainer = styled.ul`
   margin: 0;
 `;
 
-export { FullWidthListContainer };
+export default FullWidthListContainer;
