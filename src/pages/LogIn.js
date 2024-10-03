@@ -22,6 +22,7 @@ import {
 } from "../utils/ValidateRule/ValidateRule";
 import validator from "../assorted/validator";
 import { scrollToTop } from "../utils/misc/scrollToTop";
+import { setTitle } from "../assorted/setTitle";
 
 export default function LogIn({ api, handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
@@ -46,6 +47,10 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
   useEffect(() => {
     scrollToTop();
   }, [errorMessage]);
+
+  useEffect(() => {
+    setTitle(strings.login);
+  }, []);
 
   function handleLogIn(e) {
     e.preventDefault();
