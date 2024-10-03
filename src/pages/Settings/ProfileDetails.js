@@ -24,6 +24,7 @@ import {
   NotEmptyValidationWithMsg,
 } from "../../utils/ValidateRule/ValidateRule";
 import validator from "../../assorted/validator";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function ProfileDetails({ api, setUser }) {
   const [userDetails, setUserDetails] = useState("");
@@ -49,6 +50,10 @@ export default function ProfileDetails({ api, setUser }) {
 
   const user = useContext(UserContext);
   const history = useHistory();
+
+  useEffect(() => {
+    setTitle(strings.profileDetails);
+  }, []);
 
   useEffect(() => {
     api.getUserDetails((data) => {

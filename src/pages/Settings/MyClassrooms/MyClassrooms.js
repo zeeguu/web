@@ -19,6 +19,7 @@ import FullWidthListItem from "../../../components/FullWidthListItem";
 import LeaveClassroomModal from "./LeaveClassroomModal";
 import useFormField from "../../../hooks/useFormField";
 import { NotEmptyValidationWithMsg } from "../../../utils/ValidateRule/ValidateRule";
+import { setTitle } from "../../../assorted/setTitle";
 
 export default function MyClassrooms({ api }) {
   const user = useContext(UserContext);
@@ -47,6 +48,10 @@ export default function MyClassrooms({ api }) {
       setIsLoading(false);
     });
   }
+
+  useEffect(() => {
+    setTitle(strings.myClassrooms);
+  }, []);
 
   useEffect(() => {
     updateValues();

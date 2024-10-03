@@ -22,6 +22,7 @@ import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
 
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function LanguagePreferences({ api }) {
   const [
@@ -56,6 +57,8 @@ export default function LanguagePreferences({ api }) {
   const [systemLanguages, setSystemLanguages] = useState();
 
   useEffect(() => {
+    setTitle(strings.languagePreferences);
+
     api.getSystemLanguages((languages) => {
       languages.learnable_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
       languages.native_languages.sort((a, b) => (a.name > b.name ? 1 : -1));

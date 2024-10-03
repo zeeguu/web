@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading";
@@ -14,8 +15,13 @@ import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function InstallExtension() {
+  useEffect(() => {
+    setTitle(strings.installExtension);
+  }, []);
+
   return (
     <PreferencesPage>
       <Header>

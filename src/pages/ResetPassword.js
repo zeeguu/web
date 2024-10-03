@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import PreferencesPage from "./_pages_shared/PreferencesPage";
 import Header from "./_pages_shared/Header";
@@ -16,6 +16,7 @@ import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
 
 import strings from "../i18n/definitions";
+import { setTitle } from "../assorted/setTitle";
 
 export default function ResetPassword({ api }) {
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
@@ -28,6 +29,10 @@ export default function ResetPassword({ api }) {
   function emailSent() {
     setCodeSent(true);
   }
+
+  useEffect(() => {
+    setTitle(strings.resetPassword);
+  }, []);
 
   return (
     <PreferencesPage pageWidth={"narrow"}>
@@ -52,7 +57,7 @@ export default function ResetPassword({ api }) {
       <Footer>
         <p className="centered">
           {strings.rememberPassword + " "}
-          <a className="bold underlined-link" href="login">
+          <a className="bold underlined-link" href="log_in">
             {strings.login}
           </a>
         </p>

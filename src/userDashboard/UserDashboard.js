@@ -19,15 +19,17 @@ import {
 } from "./userdashboard_Graphs/dataFormat/ReadingAndExercisesTimeDataFormat";
 import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
+import { setTitle } from "../assorted/setTitle";
+import strings from "../i18n/definitions";
 
 export default function UserDashboard({ api }) {
   const [activeTab, setActiveTab] = useState(TABS_IDS.BAR_GRAPH);
   const [activeTimeInterval, setActiveTimeInterval] = useState(OPTIONS.WEEK);
   const [activeCustomTimeInterval, setActiveCustomTimeInterval] = useState(
-    PERIOD_OPTIONS.WEEK
+    PERIOD_OPTIONS.WEEK,
   );
   const [activeTimeFormatOption, setActiveTimeFormatOption] = useState(
-    ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES
+    ACTIVITY_TIME_FORMAT_OPTIONS.MINUTES,
   );
   const [allWordsData, setAllWordsData] = useState(null);
   const [allWordsDataPerMonths, setAllWordsDataPerMonths] = useState({});
@@ -55,12 +57,12 @@ export default function UserDashboard({ api }) {
       selected === OPTIONS.WEEK || selected === OPTIONS.CUSTOM_WEEK
         ? PERIOD_OPTIONS.WEEK
         : selected === OPTIONS.MONTH || selected === OPTIONS.CUSTOM_MONTH
-        ? PERIOD_OPTIONS.MONTH
-        : selected === OPTIONS.YEAR || selected === OPTIONS.CUSTOM_YEAR
-        ? PERIOD_OPTIONS.YEAR
-        : selected === OPTIONS.YEARS
-        ? PERIOD_OPTIONS.YEARS
-        : PERIOD_OPTIONS.WEEK;
+          ? PERIOD_OPTIONS.MONTH
+          : selected === OPTIONS.YEAR || selected === OPTIONS.CUSTOM_YEAR
+            ? PERIOD_OPTIONS.YEAR
+            : selected === OPTIONS.YEARS
+              ? PERIOD_OPTIONS.YEARS
+              : PERIOD_OPTIONS.WEEK;
 
     // if it's last week/month/year/years,
     //set the date to today's date and show time in minutes
@@ -88,6 +90,7 @@ export default function UserDashboard({ api }) {
   }
 
   useEffect(() => {
+    setTitle(strings.titleUserDashboard);
     api.logUserActivity(api.USER_DASHBOARD_OPEN);
     // eslint-disable-next-line
   }, []);
@@ -105,7 +108,7 @@ export default function UserDashboard({ api }) {
       setDailyExerciseAndReadingTimes(activity);
 
       setMonthlyExerciseAndReadingTimes(
-        calculateCountPerMonth_Activity(activity)
+        calculateCountPerMonth_Activity(activity),
       );
     });
     // eslint-disable-next-line
@@ -136,7 +139,7 @@ export default function UserDashboard({ api }) {
               monthlyExerciseAndReadingTimes,
               activeCustomTimeInterval,
               referenceDate,
-              activeTimeFormatOption
+              activeTimeFormatOption,
             )}
             activeCustomTimeInterval={activeCustomTimeInterval}
             activeTimeFormatOption={activeTimeFormatOption}
@@ -147,7 +150,7 @@ export default function UserDashboard({ api }) {
               allWordsData,
               allWordsDataPerMonths,
               activeCustomTimeInterval,
-              referenceDate
+              referenceDate,
             )}
           />
         ) : (

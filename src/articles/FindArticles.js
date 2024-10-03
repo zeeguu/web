@@ -14,6 +14,8 @@ import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
 import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 import UnfinishedArticlesList from "./UnfinishedArticleList";
+import { setTitle } from "../assorted/setTitle";
+import strings from "../i18n/definitions";
 
 export default function FindArticles({
   content,
@@ -72,7 +74,7 @@ export default function FindArticles({
       articlesHaveBeenFetched
     ) {
       setIsWaitingForNewArticles(true);
-      document.title = "Getting more articles...";
+      setTitle("Getting more articles...");
 
       let newCurrentPage = currentPageRef.current + 1;
       let newArticles = [...articleListRef.current];
@@ -89,6 +91,7 @@ export default function FindArticles({
               newCurrentPage,
               newArticles,
             );
+            setTitle(strings.titleSearch + ` '${searchQuery}'`);
           },
           (error) => {
             console.log("Failed to get searches!");
@@ -101,6 +104,7 @@ export default function FindArticles({
             newCurrentPage,
             newArticles,
           );
+          setTitle(strings.titleHome);
         });
       }
     }
@@ -119,8 +123,14 @@ export default function FindArticles({
     setOriginalList([...newArticles]);
     setCurrentPage(newCurrentPage);
     setIsWaitingForNewArticles(false);
-    document.title = "Recommend Articles: Zeeguu";
   }
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, []);
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
@@ -129,7 +139,9 @@ export default function FindArticles({
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
+    setNoMoreArticlesToShow(false);
     if (searchQuery) {
+      setTitle(strings.titleSearch + ` '${searchQuery}'`);
       setReloadingSearchArticles(true);
       api.search(
         searchQuery,
@@ -146,16 +158,17 @@ export default function FindArticles({
         },
       );
     } else {
+      setTitle(strings.titleHome);
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
       });
+      window.addEventListener("scroll", handleScroll, true);
+      return () => {
+        window.removeEventListener("scroll", handleScroll, true);
+      };
     }
-    window.addEventListener("scroll", handleScroll, true);
-    document.title = "Recommend Articles: Zeeguu";
-    return () => {
-      window.removeEventListener("scroll", handleScroll, true);
-    };
+
   }, [searchPublishPriority, searchDifficultyPriority]);
 
   if (articleList == null) {

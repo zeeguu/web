@@ -31,6 +31,7 @@ import {
   NotEmptyValidation,
   ValidateRule,
 } from "../../utils/ValidateRule/ValidateRule";
+import { setTitle } from "../../assorted/setTitle";
 
 export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
   const user = useContext(UserContext);
@@ -101,6 +102,10 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
         setPrivacyNoticeText(text);
       });
     });
+  }, []);
+
+  useEffect(() => {
+    setTitle(strings.createAccount);
   }, []);
 
   useEffect(() => {
