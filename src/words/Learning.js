@@ -122,7 +122,7 @@ export default function Learning({ api }) {
           <div className="top-message-icon">{strings.toLearnMsg}</div>
         </s.TopMessage>
         {toLearnWords.length === 0 ? (
-          <s.TopMessage>{strings.noProductiveWords}</s.TopMessage>
+          <s.TopMessage>{strings.noToLearnWords}</s.TopMessage>
         ) : (
           toLearnWords.map((each) => (
             <Word
