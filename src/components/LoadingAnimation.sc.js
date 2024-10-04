@@ -1,21 +1,25 @@
 import styled from "styled-components";
 import { zeeguuOrange } from "./colors";
 // Source: https://loading.io/css/
-const LoadingAnimation = styled.div`
+
+const LoadingContainer = styled.div`
   margin: 5em;
   text-align: center;
   display: flex;
+  -webkit-box-align: center;
   align-items: center;
+  -webkit-box-pack: center;
   justify-content: center;
   height: 80%;
+  flex-direction: column;
+`;
 
+const LoadingAnimation = styled.div`
   .lds-ellipsis {
     display: inline-block;
     position: relative;
     width: 80px;
     height: 80px;
-    
-    
   }
   .lds-ellipsis div {
     position: absolute;
@@ -66,8 +70,6 @@ const LoadingAnimation = styled.div`
       transform: translate(24px, 0);
     }
   }
-
-
 `;
 
-export { LoadingAnimation };
+export { LoadingAnimation, LoadingContainer };

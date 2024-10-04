@@ -285,6 +285,7 @@ export default function NextNavigation({
         </s.StyledGreyButton>
       )}
       <SolutionFeedbackLinks
+        api={api}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}

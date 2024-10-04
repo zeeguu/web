@@ -11,6 +11,7 @@ import NotificationIcon from "./NotificationIcon";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { userHasNotExercisedToday } from "../exercises/utils/daysSinceLastExercise";
 import { Tooltip } from "@mui/material";
+import FeedbackButton from "./FeedbackButton";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -109,6 +110,7 @@ export default function SideBar(props) {
               />
             </a>
           </Tooltip>
+          <FeedbackButton />
         </div>
       </div>
     </>
