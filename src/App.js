@@ -28,7 +28,7 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
-import daysSinceLastExercise from "./exercises/utils/daysSinceLastExercise";
+import { userHasNotExercisedToday } from "./exercises/utils/daysSinceLastExercise";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -69,8 +69,8 @@ function App() {
                 ...LocalStorage.userInfo(),
               };
               console.log("Session: " + api.session);
-              let daysSinceExercise = daysSinceLastExercise();
-              if (daysSinceExercise === null || daysSinceExercise >= 1)
+
+              if (userHasNotExercisedToday())
                 api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
                   exerciseNotification.setHasExercises(
                     scheduledBookmaks.length > 0,

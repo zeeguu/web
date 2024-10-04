@@ -9,7 +9,7 @@ import { APIContext } from "../contexts/APIContext";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import NotificationIcon from "./NotificationIcon";
 import SettingsIcon from "@mui/icons-material/Settings";
-import daysSinceLastExercise from "../exercises/utils/daysSinceLastExercise";
+import { userHasNotExercisedToday } from "../exercises/utils/daysSinceLastExercise";
 import { Tooltip } from "@mui/material";
 
 export default function SideBar(props) {
@@ -23,13 +23,8 @@ export default function SideBar(props) {
   const path = useLocation().pathname;
   useEffect(() => {
     setIsOnStudentSide(!path.includes("teacher"));
-    // If the user hasn't been to exercises or it's a day since they have been
-    // to exercises, then show the notification.
-    let daysSinceExercise = daysSinceLastExercise();
-    if (
-      (daysSinceExercise === null || daysSinceExercise >= 1) &&
-      path !== "/exercises"
-    )
+
+    if (userHasNotExercisedToday() && path !== "/exercises")
       api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
         exerciseNotification.setHasExercises(scheduledBookmaks.length > 0);
         exerciseNotification.updateReactState();
