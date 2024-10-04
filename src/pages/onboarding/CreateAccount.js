@@ -20,6 +20,7 @@ import InputField from "../../components/InputField";
 import Footer from "../_pages_shared/Footer";
 import ButtonContainer from "../_pages_shared/ButtonContainer";
 import { Button } from "../_pages_shared/Button.sc";
+import useShadowRef from "../../hooks/useShadowRef";
 import Modal from "../../components/modal_shared/Modal";
 import validator from "../../assorted/validator";
 import strings from "../../i18n/definitions";
@@ -28,7 +29,7 @@ import LocalStorage from "../../assorted/LocalStorage";
 import {
   EmailValidation,
   LongerThanNValidation,
-  NotEmptyValidation,
+  NotEmptyValidationWithMsg,
   ValidateRule,
 } from "../../utils/ValidateRule/ValidateRule";
 import { setTitle } from "../../assorted/setTitle";
@@ -36,17 +37,9 @@ import { setTitle } from "../../assorted/setTitle";
 export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
   const user = useContext(UserContext);
 
-  const learnedLanguage_OnRegister =
-    LocalStorage.getLearnedLanguage_OnRegister();
-  const nativeLanguage_OnRegister = LocalStorage.getNativeLanguage_OnRegister();
-  const learnedCefrLevel_OnRegister =
-    LocalStorage.getLearnedCefrLevel_OnRegister();
-
-  const [learned_language_on_register] = useState(learnedLanguage_OnRegister);
-  const [native_language_on_register] = useState(nativeLanguage_OnRegister);
-  const [learned_cefr_level_on_register] = useState(
-    learnedCefrLevel_OnRegister,
-  );
+  const learnedLanguage = LocalStorage.getLearnedLanguage();
+  const nativeLanguage = LocalStorage.getNativeLanguage();
+  const learnedCefrLevel = LocalStorage.getLearnedCefrLevel();
 
   const [
     inviteCode,
@@ -54,14 +47,16 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     validateInviteCode,
     isInviteCodeValid,
     inviteCodeMsg,
-  ] = useFormField("", [NotEmptyValidation]);
+  ] = useFormField("", [
+    NotEmptyValidationWithMsg("Please enter an invite code."),
+  ]);
 
   const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
-    NotEmptyValidation,
+    NotEmptyValidationWithMsg("Please enter a name."),
   ]);
   const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField(
     "",
-    [NotEmptyValidation, EmailValidation],
+    [NotEmptyValidationWithMsg("Please enter an e-mail."), EmailValidation],
   );
   const [
     password,
@@ -70,9 +65,25 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     isPasswordValid,
     passwordMsg,
   ] = useFormField("", [
-    NotEmptyValidation,
+    NotEmptyValidationWithMsg("Please enter a password."),
     LongerThanNValidation(3, strings.passwordMustBeMsg),
   ]);
+
+  const passwordRef = useShadowRef(password);
+
+  const [
+    confirmPass,
+    setConfirmPass,
+    validateConfirmPass,
+    isConfirmPassValid,
+    confirmPassMsg,
+  ] = useFormField("", [
+    NotEmptyValidationWithMsg("Please re-enter your password."),
+    new ValidateRule((v) => {
+      return v === passwordRef.current;
+    }, "Passwords must match."),
+  ]);
+
   const [
     checkPrivacyNote,
     setCheckPrivacyNote,
@@ -114,13 +125,6 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     }
   }, [errorMessage]);
 
-  //Clear temp local storage entries needed only for account creation
-  function clearOnRegisterLanguageEntries() {
-    LocalStorage.removeLearnedLanguage_OnRegister();
-    LocalStorage.removeCefrLevel_OnRegister();
-    LocalStorage.removeNativeLanguage_OnRegister();
-  }
-
   function handleCreate(e) {
     e.preventDefault();
     // If users have the same error, there wouldn't be a scroll.
@@ -132,6 +136,7 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
         validateEmail,
         validateInviteCode,
         validateCheckPrivacyNote,
+        validateConfirmPass,
       ])
     ) {
       return;
@@ -141,9 +146,9 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
       ...user,
       name: name,
       email: email,
-      learned_language: learned_language_on_register,
-      learned_cefr_level: learned_cefr_level_on_register,
-      native_language: native_language_on_register,
+      learned_language: learnedLanguage,
+      learned_cefr_level: learnedCefrLevel,
+      native_language: nativeLanguage,
     };
 
     api.addUser(
@@ -155,7 +160,6 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
           handleSuccessfulLogIn(user, session);
           setUser(userInfo);
           saveUserInfoIntoCookies(userInfo);
-          clearOnRegisterLanguageEntries();
           redirect("/select_interests");
         });
       },
@@ -253,6 +257,20 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               helperText={strings.passwordHelperText}
               isError={!isPasswordValid}
               errorMessage={passwordMsg}
+            />
+
+            <InputField
+              type={"password"}
+              label={strings.passwordConfirm}
+              id={"passwordConfirm"}
+              name={"passwordConfirm"}
+              placeholder={strings.passwordConfirmPlaceholder}
+              value={confirmPass}
+              onChange={(e) => {
+                setConfirmPass(e.target.value);
+              }}
+              isError={!isConfirmPassValid}
+              errorMessage={confirmPassMsg}
             />
           </FormSection>
           <sC.CheckboxWrapper>
