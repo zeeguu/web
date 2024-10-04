@@ -5,13 +5,10 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import Pluralize from "../utils/text/pluralize";
 
 export default function OutOfWordsMessage({
-  isAbleToAddBookmarksToPipe,
   totalInLearning,
   goBackAction,
   keepExercisingAction,
 }) {
-  if (isAbleToAddBookmarksToPipe === undefined)
-    return <LoadingAnimation></LoadingAnimation>;
   return (
     <s.Exercise>
       <div className="contextExample">
@@ -32,7 +29,7 @@ export default function OutOfWordsMessage({
         <sc.OrangeButton onClick={goBackAction}>
           {"Go to reading"}
         </sc.OrangeButton>
-        {isAbleToAddBookmarksToPipe && (
+        {/* (
           <sc.OrangeButton
             style={{ minWidth: "10em" }}
             onClick={() => {
@@ -41,7 +38,7 @@ export default function OutOfWordsMessage({
           >
             {"Start learning new words"}
           </sc.OrangeButton>
-        )}
+        )*/}
       </s.BottomRow>
     </s.Exercise>
   );

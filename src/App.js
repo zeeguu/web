@@ -28,6 +28,7 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
+import daysSinceLastExercise from "./utils/daysSinceLastExercise/daysSinceLastExercise";
 
 function App() {
   const [api, setApi] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -68,11 +69,18 @@ function App() {
                 ...LocalStorage.userInfo(),
               };
               console.log("Session: " + api.session);
-
-              api.hasBookmarksToReview((hasBookmarks) => {
-                exerciseNotification.setHasExercises(hasBookmarks);
+              let daysSinceExercise = daysSinceLastExercise();
+              if (daysSinceExercise === null || daysSinceExercise >= 1)
+                api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
+                  exerciseNotification.setHasExercises(
+                    scheduledBookmaks.length > 0,
+                  );
+                  exerciseNotification.updateReactState();
+                });
+              else {
+                exerciseNotification.setHasExercises(false);
                 exerciseNotification.updateReactState();
-              });
+              }
               setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
               setUserData(userDict);
             });
