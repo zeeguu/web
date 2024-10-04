@@ -1,7 +1,6 @@
 import * as s from "./exerciseTypes/Exercise.sc";
 import * as sc from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
-import LoadingAnimation from "../components/LoadingAnimation";
 import Pluralize from "../utils/text/pluralize";
 
 export default function OutOfWordsMessage({
@@ -29,16 +28,6 @@ export default function OutOfWordsMessage({
         <sc.OrangeButton onClick={goBackAction}>
           {"Go to reading"}
         </sc.OrangeButton>
-        {/* (
-          <sc.OrangeButton
-            style={{ minWidth: "10em" }}
-            onClick={() => {
-              keepExercisingAction();
-            }}
-          >
-            {"Start learning new words"}
-          </sc.OrangeButton>
-        )*/}
       </s.BottomRow>
     </s.Exercise>
   );
