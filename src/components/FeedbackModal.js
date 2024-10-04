@@ -3,15 +3,15 @@ import { useContext } from "react";
 import useFormField from "../hooks/useFormField.js";
 import { APIContext } from "../contexts/APIContext";
 import Modal from "./modal_shared/Modal.js";
-import Form from "../pages/_pages_shared/Form.js";
-import ButtonContainer from "./modal_shared/ButtonContainer.js";
-import Button from "../pages/_pages_shared/Button.js";
+import Form from "../pages/_pages_shared/Form.sc.js";
+import ButtonContainer from "./modal_shared/ButtonContainer.sc.js";
+import Button from "../pages/_pages_shared/Button.sc.js";
 import Selector from "./Selector.js";
-import FormSection from "../pages/_pages_shared/FormSection.js";
+import FormSection from "../pages/_pages_shared/FormSection.sc.js";
 import TextField from "./TextField.js";
-import Main from "./modal_shared/Main.js";
-import Header from "./modal_shared/Header.js";
-import Heading from "./modal_shared/Heading.js";
+import Main from "./modal_shared/Main.sc.js";
+import Header from "./modal_shared/Header.sc.js";
+import Heading from "./modal_shared/Heading.sc.js";
 import { FEEDBACK_CODES, FEEDBACK_CODES_NAME } from "./FeedbackConstants.js";
 
 export default function FeedbackModal({ open, setOpen, feedbackOptions }) {
