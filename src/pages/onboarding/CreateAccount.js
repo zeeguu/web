@@ -255,7 +255,7 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
                 setPassword(e.target.value);
               }}
               helperText={strings.passwordHelperText}
-              isError={!isPasswordValid}
+              isError={!isPasswordValid || !isConfirmPassValid}
               errorMessage={passwordMsg}
             />
 
