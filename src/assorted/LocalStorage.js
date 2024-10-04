@@ -15,11 +15,6 @@ const LocalStorage = {
     NativeLanguage: "native_language",
     LearnedCefrLevel: "learned_cefr_level",
 
-    // language related keys used for initial language set-up during account creation
-    LearnedLanguage_OnRegister: "learned_language_on_register",
-    NativeLanguage_OnRegister: "native_language_on_register",
-    LearnedCefrLevel_OnRegister: "learned_cefr_on_register",
-
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
