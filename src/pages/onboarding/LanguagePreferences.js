@@ -70,15 +70,15 @@ export default function LanguagePreferences({ api }) {
   //The useEffect hooks below take care of updating initial language preferences
   //in real time
   useEffect(() => {
-    LocalStorage.setLearnedLanguage_OnRegister(learnedLanguage);
+    LocalStorage.setLearnedLanguage(learnedLanguage);
   }, [learnedLanguage]);
 
   useEffect(() => {
-    LocalStorage.setLearnedCefrLevel_OnRegister(learnedCEFRLevel);
+    LocalStorage.setLearnedCefrLevel(learnedCEFRLevel);
   }, [learnedCEFRLevel]);
 
   useEffect(() => {
-    LocalStorage.setNativeLanguage_OnRegister(nativeLanguage);
+    LocalStorage.setNativeLanguage(nativeLanguage);
   }, [nativeLanguage]);
 
   if (!systemLanguages) {

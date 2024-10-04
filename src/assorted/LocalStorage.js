@@ -76,45 +76,6 @@ const LocalStorage = {
     localStorage[this.Keys.NativeLanguage] = nativeLanguage;
   },
 
-  getLearnedLanguage_OnRegister: function () {
-    return localStorage[this.Keys.LearnedLanguage_OnRegister];
-  },
-
-  setLearnedLanguage_OnRegister: function (learnedLanguage_OnRegister) {
-    localStorage[this.Keys.LearnedLanguage_OnRegister] =
-      learnedLanguage_OnRegister;
-  },
-
-  removeLearnedLanguage_OnRegister: function () {
-    localStorage.removeItem(this.Keys.LearnedLanguage_OnRegister);
-  },
-
-  getLearnedCefrLevel_OnRegister: function () {
-    return localStorage[this.Keys.LearnedCefrLevel_OnRegister];
-  },
-
-  setLearnedCefrLevel_OnRegister: function (learnedCefrLevel_OnRegister) {
-    localStorage[this.Keys.LearnedCefrLevel_OnRegister] =
-      learnedCefrLevel_OnRegister;
-  },
-
-  removeCefrLevel_OnRegister: function () {
-    localStorage.removeItem(this.Keys.LearnedCefrLevel_OnRegister);
-  },
-
-  getNativeLanguage_OnRegister: function () {
-    return localStorage[this.Keys.NativeLanguage_OnRegister];
-  },
-
-  setNativeLanguage_OnRegister: function (nativeLanguage_OnRegister) {
-    localStorage[this.Keys.NativeLanguage_OnRegister] =
-      nativeLanguage_OnRegister;
-  },
-
-  removeNativeLanguage_OnRegister: function () {
-    localStorage.removeItem(this.Keys.NativeLanguage_OnRegister);
-  },
-
   selectedTimePeriod: function () {
     return localStorage[this.Keys.SelectedTimePeriod]
       ? localStorage[this.Keys.SelectedTimePeriod]
