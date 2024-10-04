@@ -42,6 +42,12 @@ function App() {
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   useEffect(() => {
+    if (userData && userData.learned_language) {
+      setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
+    }
+  }, [userData]);
+
+  useEffect(() => {
     console.log("Got the API URL:" + API_ENDPOINT);
     console.log("Got the Domain URL:" + APP_DOMAIN);
     console.log("Extension ID: " + process.env.REACT_APP_EXTENSION_ID);
