@@ -35,7 +35,7 @@ const LocalStorage = {
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
     ProductiveExercisesEnabled: "productiveExercisesEnabled",
     AutoPronounceInExercises: "auto_pronounce_bookmark_exercise",
-    lastExerciseCompleteDate: "last_exercise_visit_date",
+    lastExerciseCompleteDate: "last_exercise_complete_date",
   },
 
   userInfo: function () {
