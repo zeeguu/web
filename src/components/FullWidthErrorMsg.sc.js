@@ -14,4 +14,4 @@ const FullWidthErrorMsg = styled.div`
   font-weight: 500;
 `;
 
-export { FullWidthErrorMsg };
+export default FullWidthErrorMsg;

@@ -1,6 +1,4 @@
 import { useEffect } from "react";
-import { isSupportedBrowser } from "../../utils/misc/browserDetection";
-
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
 
@@ -10,9 +8,6 @@ import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
 import Form from "../_pages_shared/Form.sc";
 import Button from "../_pages_shared/Button.sc";
-import Footer from "../_pages_shared/Footer.sc";
-import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
-import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
@@ -20,22 +15,20 @@ import InputField from "../../components/InputField";
 import Tag from "../_pages_shared/Tag.sc";
 import TagContainer from "../_pages_shared/TagContainer.sc";
 
-import redirect from "../../utils/routing/routing";
 import strings from "../../i18n/definitions";
+import BackArrow from "./settings_pages_shared/BackArrow";
 import { setTitle } from "../../assorted/setTitle";
 
-export default function ExcludeWords({ api, hasExtension }) {
+export default function ExcludedKeywords({ api }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 
   const [excludedWord, handleExcludedWordsChange, resetExcludedWords] =
     useFormField("");
 
-  function getLinkToNextPage() {
-    if (isSupportedBrowser() && hasExtension === false) {
-      return "/install_extension";
-    } else return "/articles";
-  }
+  useEffect(() => {
+    setTitle(strings.excludedKeywords);
+  }, []);
 
   function handleAddNewSearchFilter(e) {
     e.preventDefault();
@@ -44,18 +37,11 @@ export default function ExcludeWords({ api, hasExtension }) {
       resetExcludedWords();
     }
   }
-
-  useEffect(() => {
-    setTitle(strings.excludeWords);
-  }, []);
-
   return (
-    <PreferencesPage>
-      <Header>
-        <Heading>
-          Would you like to exclude articles and exercises containing particular
-          words or&nbsp;phrases?
-        </Heading>
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+      <BackArrow />
+      <Header withoutLogo>
+        <Heading>{strings.excludedKeywords}</Heading>
       </Header>
       <Main>
         <Form>
@@ -87,17 +73,6 @@ export default function ExcludeWords({ api, hasExtension }) {
           ))}
         </TagContainer>
       </Main>
-      <Footer>
-        <p className="centered">{strings.youCanChangeLater}</p>
-        <ButtonContainer className={"padding-large"}>
-          <Button
-            className={"full-width-btn"}
-            onClick={() => redirect(getLinkToNextPage())}
-          >
-            {strings.next} <RoundedForwardArrow />
-          </Button>
-        </ButtonContainer>
-      </Footer>
     </PreferencesPage>
   );
 }
