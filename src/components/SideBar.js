@@ -3,13 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
-import { setColors } from "../components/colors";
+import { setColors } from "./colors";
 import * as s from "./SideBar.sc";
 import { APIContext } from "../contexts/APIContext";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import NotificationIcon from "./NotificationIcon";
 import SettingsIcon from "@mui/icons-material/Settings";
-import daysSinceLastExercise from "../utils/daysSinceLastExercise/daysSinceLastExercise";
+import daysSinceLastExercise from "../exercises/utils/daysSinceLastExercise";
 import { Tooltip } from "@mui/material";
 
 export default function SideBar(props) {
@@ -72,7 +72,7 @@ export default function SideBar(props) {
     setInitialSidebarState(!initialSidebarState);
   }
 
-  function resetSidebarToDefault(e) {
+  function resetSidebarToDefault() {
     setInitialSidebarState(true);
   }
 

@@ -28,10 +28,10 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
-import daysSinceLastExercise from "./utils/daysSinceLastExercise/daysSinceLastExercise";
+import daysSinceLastExercise from "./exercises/utils/daysSinceLastExercise";
 
 function App() {
-  const [api, setApi] = useState(new Zeeguu_API(API_ENDPOINT));
+  const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
   const [exerciseNotification] = useState(new ExerciseNotifications());
 
