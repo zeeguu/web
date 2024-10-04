@@ -238,8 +238,9 @@ export default function Exercises({
   }
 
   function moveToNextExercise() {
-    //ML: TODO? Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
+
+    //ML: To think about: Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
     setIsCorrect(false);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
