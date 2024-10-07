@@ -7,10 +7,10 @@ import useFormField from "../../hooks/useFormField";
 
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
-import Heading from "../_pages_shared/Heading";
-import Main from "../_pages_shared/Main";
-import Form from "../_pages_shared/Form";
-import FormSection from "../_pages_shared/FormSection";
+import Heading from "../../components/modal_shared/Heading.sc";
+import Main from "../_pages_shared/Main.sc";
+import Form from "../_pages_shared/Form.sc";
+import FormSection from "../_pages_shared/FormSection.sc";
 import Selector from "../../components/Selector";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
