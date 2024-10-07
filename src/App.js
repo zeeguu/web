@@ -28,9 +28,10 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
+import { userHasNotExercisedToday } from "./exercises/utils/daysSinceLastExercise";
 
 function App() {
-  const [api, setApi] = useState(new Zeeguu_API(API_ENDPOINT));
+  const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
   const [exerciseNotification] = useState(new ExerciseNotifications());
 
@@ -40,6 +41,12 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
+
+  useEffect(() => {
+    if (userData && userData.learned_language) {
+      setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
+    }
+  }, [userData]);
 
   useEffect(() => {
     console.log("Got the API URL:" + API_ENDPOINT);
@@ -69,10 +76,17 @@ function App() {
               };
               console.log("Session: " + api.session);
 
-              api.hasBookmarksToReview((hasBookmarks) => {
-                exerciseNotification.setHasExercises(hasBookmarks);
+              if (userHasNotExercisedToday())
+                api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
+                  exerciseNotification.setHasExercises(
+                    scheduledBookmaks.length > 0,
+                  );
+                  exerciseNotification.updateReactState();
+                });
+              else {
+                exerciseNotification.setHasExercises(false);
                 exerciseNotification.updateReactState();
-              });
+              }
               setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
               setUserData(userDict);
             });

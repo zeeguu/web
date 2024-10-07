@@ -24,4 +24,4 @@ const AddToSavesButton = styled.button`
   }
 `;
 
-export { AddToSavesButton };
+export default AddToSavesButton;

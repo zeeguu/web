@@ -13,4 +13,4 @@ const Main = styled.main`
   line-height: 150%;
 `;
 
-export { Main };
+export default Main;

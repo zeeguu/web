@@ -30,6 +30,7 @@ const LocalStorage = {
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
     ProductiveExercisesEnabled: "productiveExercisesEnabled",
     AutoPronounceInExercises: "auto_pronounce_bookmark_exercise",
+    lastExerciseCompleteDate: "last_exercise_complete_date",
   },
 
   userInfo: function () {
@@ -276,6 +277,14 @@ const LocalStorage = {
 
   getClickedVideo: function () {
     return localStorage[this.Keys.clickedVideoLink];
+  },
+
+  getLastExerciseCompleteDate: function () {
+    return localStorage[this.Keys.lastExerciseCompleteDate];
+  },
+
+  setLastExerciseCompleteDate: function (date) {
+    localStorage[this.Keys.lastExerciseCompleteDate] = date;
   },
 };
 

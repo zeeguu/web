@@ -56,4 +56,4 @@ const Tag = styled.button`
   }
 `;
 
-export { Tag };
+export default Tag;

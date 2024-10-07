@@ -3,13 +3,15 @@ import { Link, useLocation } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import StudentSpecificSidebarOptions from "./StudentSpecificSidebarOptions";
 import TeacherSpecificSidebarOptions from "./TeacherSpecificSidebarOptions";
-import { setColors } from "../components/colors";
+import { setColors } from "./colors";
 import * as s from "./SideBar.sc";
 import { APIContext } from "../contexts/APIContext";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import NotificationIcon from "./NotificationIcon";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { userHasNotExercisedToday } from "../exercises/utils/daysSinceLastExercise";
 import { Tooltip } from "@mui/material";
+import FeedbackButton from "./FeedbackButton";
 
 export default function SideBar(props) {
   const user = useContext(UserContext);
@@ -22,10 +24,16 @@ export default function SideBar(props) {
   const path = useLocation().pathname;
   useEffect(() => {
     setIsOnStudentSide(!path.includes("teacher"));
-    api.hasBookmarksToReview((hasBookmarks) => {
-      exerciseNotification.setHasExercises(hasBookmarks);
+
+    if (userHasNotExercisedToday() && path !== "/exercises")
+      api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
+        exerciseNotification.setHasExercises(scheduledBookmaks.length > 0);
+        exerciseNotification.updateReactState();
+      });
+    else {
+      exerciseNotification.setHasExercises(false);
       exerciseNotification.updateReactState();
-    });
+    }
   }, [path]);
 
   const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
@@ -60,7 +68,7 @@ export default function SideBar(props) {
     setInitialSidebarState(!initialSidebarState);
   }
 
-  function resetSidebarToDefault(e) {
+  function resetSidebarToDefault() {
     setInitialSidebarState(true);
   }
 
@@ -102,6 +110,7 @@ export default function SideBar(props) {
               />
             </a>
           </Tooltip>
+          <FeedbackButton />
         </div>
       </div>
     </>

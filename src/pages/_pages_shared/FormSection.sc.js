@@ -8,4 +8,4 @@ const FormSection = styled.section`
   margin: 0 0 1rem 0;
 `;
 
-export { FormSection };
+export default FormSection;

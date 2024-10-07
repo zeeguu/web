@@ -12,8 +12,8 @@ import Main from "../_pages_shared/Main";
 import Form from "../_pages_shared/Form";
 import FormSection from "../_pages_shared/FormSection";
 import Selector from "../../components/Selector";
-import ButtonContainer from "../_pages_shared/ButtonContainer";
-import { Button } from "../_pages_shared/Button.sc";
+import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
+import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import validator from "../../assorted/validator";

@@ -13,7 +13,7 @@ import Pluralize from "../utils/text/pluralize";
 
 export default function Congratulations({
   articleID,
-  isAbleToAddBookmarksToPipe,
+  isOutOfWordsToday,
   totalPracticedBookmarksInSession,
   articleTitle,
   articleURL,
@@ -57,12 +57,9 @@ export default function Congratulations({
   if (username === undefined) {
     return <LoadingAnimation />;
   }
-  const hasScheduledExercises = exerciseNotification.exerciseCounter > 0;
-  const isThereMoreExercises =
-    hasScheduledExercises || isAbleToAddBookmarksToPipe;
 
   function progressionButtonRender() {
-    if (hasScheduledExercises)
+    if (!isOutOfWordsToday)
       return (
         <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
           {strings.keepExercising}
@@ -91,6 +88,7 @@ export default function Congratulations({
             {Pluralize.word(totalBookmarksReviewed)} in{" "}
             {timeToHumanReadable(checkpointTime)}.
           </p>
+          {/*
           <p>
             {hasScheduledExercises && (
               <b>
@@ -102,7 +100,8 @@ export default function Congratulations({
               </b>
             )}
           </p>
-          {!isThereMoreExercises && (
+          */}
+          {isOutOfWordsToday && (
             <p>
               There are no more words for you to practice. You can read more
               articles and find new words to learn! We will let you know when

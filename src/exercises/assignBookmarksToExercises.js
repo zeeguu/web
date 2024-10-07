@@ -31,11 +31,19 @@ function getMemoryTask(bookmark) {
 function getBookmarkCycleTaskKey(b) {
   // If there is no learning cycle (it is a new word) treat as
   // receptive.
-  return [b.learning_cycle === 0 ? 1 : b.learning_cycle, getMemoryTask(b)];
+  return [
+    b.learning_cycle === LEARNING_CYCLE.NOT_SET
+      ? LEARNING_CYCLE.RECEPTIVE
+      : b.learning_cycle,
+    getMemoryTask(b),
+  ];
 }
 
 function getExerciseCycleTaskKey(e) {
-  let learningCycleKey = e.learningCycle === "receptive" ? 1 : 2;
+  let learningCycleKey =
+    e.learningCycle === "receptive"
+      ? LEARNING_CYCLE.RECEPTIVE
+      : LEARNING_CYCLE.PRODUCTIVE;
   return [learningCycleKey, e.memoryTask];
 }
 

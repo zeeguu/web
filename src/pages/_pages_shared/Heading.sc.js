@@ -16,4 +16,4 @@ const Heading = styled.h1`
   }
 `;
 
-export { Heading };
+export default Heading;

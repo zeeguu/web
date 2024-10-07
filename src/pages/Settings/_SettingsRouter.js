@@ -8,6 +8,7 @@ import Interests from "./Interests";
 import ExerciseTypePreferences from "./ExerciseTypePreferences";
 import MyClassrooms from "./MyClassrooms/MyClassrooms";
 import DeleteAccount from "./DeleteAccount";
+import ExcludedKeywords from "./ExcludedKeywords";
 
 export default function SettingsRouter({ api, setUser }) {
   return (
@@ -49,6 +50,12 @@ export default function SettingsRouter({ api, setUser }) {
         path="/account_settings/interests"
         api={api}
         component={Interests}
+      />
+
+      <PrivateRoute
+        path="/account_settings/excluded_keywords"
+        api={api}
+        component={ExcludedKeywords}
       />
 
       <PrivateRoute

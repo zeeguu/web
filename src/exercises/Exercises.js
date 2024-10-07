@@ -10,12 +10,8 @@ import FeedbackDisplay from "./bottomActions/FeedbackDisplay";
 import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
 import Feature from "../features/Feature";
-import {
-  MAX_EXERCISE_IN_LEARNING_BOOKMARKS,
-  MAX_EXERCISE_TO_DO_NOTIFICATION,
-  MAX_COOLDOWN_INTERVAL,
-} from "./ExerciseConstants";
-
+import { MAX_COOLDOWN_INTERVAL } from "./ExerciseConstants";
+import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
 import { isMobile } from "../utils/misc/browserDetection";
@@ -58,7 +54,7 @@ export default function Exercises({
   const [reload, setReload] = useState(false);
   const [articleTitle, setArticleTitle] = useState();
   const [articleURL, setArticleURL] = useState();
-  const [showOutOfWordsMessage, setShowOutOfWordsMessage] = useState();
+  const [isOutOfWordsToday, setIsOutOfWordsToday] = useState();
   const [
     totalPracticedBookmarksInSession,
     setTotalPracticedBookmarksInSession,
@@ -73,8 +69,6 @@ export default function Exercises({
     useActivityTimer();
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
-  const [isAbleToAddBookmarksToPipe, setIsAbleToAddBookmarksToPipe] =
-    useState();
 
   useEffect(() => {
     setTitle(strings.titleExercises);
@@ -129,7 +123,7 @@ export default function Exercises({
       // If a user gets here with no bookmarks, means
       // that we tried to schedule new bookmarks but none
       // were found.
-      updateIsAbleToAddNewBookmarksToStudy();
+      updateIsOutOfWordsToday();
       return;
     }
     setCountBookmarksToPractice(bookmarks.length);
@@ -152,7 +146,7 @@ export default function Exercises({
   }
 
   function resetExerciseState() {
-    setShowOutOfWordsMessage(false);
+    setIsOutOfWordsToday(false);
     setCountBookmarksToPractice();
     setFullExerciseProgression();
     setCurrentBookmarksToStudy();
@@ -163,10 +157,9 @@ export default function Exercises({
     setActivityOver(false);
   }
 
-  function updateIsAbleToAddNewBookmarksToStudy() {
-    api.getNewBookmarksToStudy(1, (new_bookmarks) => {
-      setIsAbleToAddBookmarksToPipe(new_bookmarks.length > 0);
-      setShowOutOfWordsMessage(new_bookmarks.length == 0);
+  function updateIsOutOfWordsToday() {
+    api.getTopBookmarksToStudy((topBookmarks) => {
+      setIsOutOfWordsToday(topBookmarks.length == 0);
     });
   }
   function startExercising() {
@@ -175,8 +168,6 @@ export default function Exercises({
       exercise_article_bookmarks();
     } else {
       api.getTopBookmarksToStudy((bookmarks) => {
-        exerciseNotification.setExerciseCounter(bookmarks.length);
-        exerciseNotification.updateReactState();
         let exerciseSession =
           bookmarks.lengh <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
@@ -206,7 +197,7 @@ export default function Exercises({
       <>
         <Congratulations
           articleID={articleID}
-          isAbleToAddBookmarksToPipe={isAbleToAddBookmarksToPipe}
+          isOutOfWordsToday={isOutOfWordsToday}
           totalPracticedBookmarksInSession={totalPracticedBookmarksInSession}
           correctBookmarks={correctBookmarks}
           incorrectBookmarks={incorrectBookmarks}
@@ -225,13 +216,12 @@ export default function Exercises({
     );
   }
 
-  if (showOutOfWordsMessage) {
+  if (isOutOfWordsToday) {
     return (
       <OutOfWordsMessage
         api={api}
         totalInLearning={totalBookmarksInPipeline}
         goBackAction={backButtonAction}
-        isAbleToAddBookmarksToPipe={isAbleToAddBookmarksToPipe}
         keepExercisingAction={() => {
           startExercising(NEW_BOOKMARKS_TO_STUDY);
           setHasKeptExercising(true);
@@ -248,14 +238,16 @@ export default function Exercises({
   }
 
   function moveToNextExercise() {
-    //ML: TODO? Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
+    LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
+
+    //ML: To think about: Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
     setIsCorrect(false);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
     exerciseNotification.updateReactState();
     if (newIndex === fullExerciseProgression.length) {
       setFinished(true);
-      updateIsAbleToAddNewBookmarksToStudy();
+      updateIsOutOfWordsToday();
       return;
     }
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
