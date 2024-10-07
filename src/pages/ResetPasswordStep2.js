@@ -8,7 +8,7 @@ import Form from "./_pages_shared/Form.sc";
 import FormSection from "./_pages_shared/FormSection.sc";
 import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 import InputField from "../components/InputField";
-import ButtonContainer from "../components/modal_shared/ButtonContainer.sc";
+import ButtonContainer from "../pages/_pages_shared/ButtonContainer.sc";
 import Button from "../pages/_pages_shared/Button.sc";
 import {
   LongerThanNValidation,
