@@ -52,8 +52,9 @@ export default function ArticlePreview({
   }
 
   function titleLink(article) {
+    let linkToRedirect = `/read/article?id=${article.id}`;
     let open_in_zeeguu = (
-      <Link to={`/read/article?id=${article.id}`} onClick={handleArticleClick}>
+      <Link to={linkToRedirect} onClick={handleArticleClick}>
         {article.title}
       </Link>
     );
@@ -162,7 +163,7 @@ export default function ArticlePreview({
                   }
                 >
                   {tuple[0]}
-                  {tuple[1] === 3 && (
+                  {tuple[1] === TopicOriginType.INFERRED && (
                     <HighlightOffRoundedIcon
                       className="cancelButton"
                       sx={{ color: darkBlue }}
@@ -188,7 +189,13 @@ export default function ArticlePreview({
         <ArticleStatInfo
           cefr_level={cefr_level}
           articleInfo={article}
-        ></ArticleStatInfo>
+          dontShowPublishingTime={dontShowPublishingTime}
+          dontShowSourceIcon={dontShowSourceIcon}
+        />
+        <s.ArticleContent>
+          {article.img_url && <img alt="" src={article.img_url} />}
+          <s.Summary>{article.summary}...</s.Summary>
+        </s.ArticleContent>
       </s.BottomContainer>
       {article.video ? (
         <img

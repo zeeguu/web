@@ -1,5 +1,5 @@
 import * as s from "./ArticleReader.sc";
-import { toggle } from "./ArticleReader";
+import toggle from "../utils/misc/toggle";
 import * as React from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -22,16 +22,22 @@ export default function ToolbarButtons({
           </FormHelperText>
           <FormControlLabel
             checked={translating}
-            control={<Android12Switch />}
+            control={
+              <Android12Switch
+                onClick={(e) => toggle(translating, setTranslating)}
+              />
+            }
             className={translating ? "selected" : ""}
-            onClick={(e) => toggle(translating, setTranslating)}
             label={<small>{"See translation"}</small>}
           />
           <FormControlLabel
             checked={pronouncing}
-            control={<Android12Switch />}
+            control={
+              <Android12Switch
+                onClick={(e) => toggle(pronouncing, setPronouncing)}
+              />
+            }
             className={pronouncing ? "selected" : ""}
-            onClick={(e) => toggle(pronouncing, setPronouncing)}
             label={<small>{"Hear pronunciation"}</small>}
           />
         </FormGroup>

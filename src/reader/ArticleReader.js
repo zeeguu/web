@@ -28,9 +28,6 @@ import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
 import useUserPreferences from "../hooks/useUserPreferences";
 
-let FREQUENCY_KEEPALIVE = 30 * 1000; // 30 seconds
-let previous_time = 0; // since sent a scroll update
-
 export const UMR_SOURCE = "UMR";
 
 // A custom hook that builds on useLocation to parse
@@ -47,16 +44,17 @@ export function onBlur(api, articleID, source) {
   api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
 }
 
-export function toggle(state, togglerFunction) {
-  togglerFunction(!state);
-}
-
 export default function ArticleReader({ api, teacherArticleID }) {
   let articleID = "";
   let query = useQuery();
   teacherArticleID
     ? (articleID = teacherArticleID)
     : (articleID = query.get("id"));
+  let last_reading_percentage = query.get("percentage");
+  last_reading_percentage =
+    last_reading_percentage === "undefined"
+      ? null
+      : Number(last_reading_percentage);
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
@@ -72,6 +70,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const [readerReady, setReaderReady] = useState();
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
+  const [viewPortSettings, setViewPortSettings] = useState("");
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -84,6 +83,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const activityTimerRef = useShadowRef(activityTimer);
   const readingSessionIdRef = useShadowRef(readingSessionId);
   const clickedOnReviewVocabRef = useShadowRef(clickedOnReviewVocab);
+  const viewPortSettingsRef = useShadowRef(viewPortSettings);
 
   const lastSampleTimer = useRef();
   const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
@@ -114,9 +114,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     onBlur(api, articleID, UMR_SOURCE);
   };
 
-  const handleScroll = () => {
-    let bottomRowElement = document.getElementById("bottomRow");
-
+  function addPositionToScrollEventTracker(bottomRowElement) {
     // We use this to avoid counting the feedback elements
     // as part of the article length when updating the
     // scroll bar.
@@ -125,7 +123,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     if (bottomRowElement) {
       bottomRowHeight = bottomRowElement.offsetHeight;
     }
-
     let ratio = getScrollRatio(bottomRowHeight);
     setScrollPosition(ratio);
     let percentage = Math.floor(ratio * 100);
@@ -137,7 +134,46 @@ export default function ArticleReader({ api, teacherArticleID }) {
       scrollEvents.current.push([currentReadingTimer, percentage]);
       lastSampleTimer.current = currentReadingTimer;
     }
+  }
+
+  const handleScroll = () => {
+    let bottomRowElement = document.getElementById("bottomRow");
+    addPositionToScrollEventTracker(bottomRowElement);
   };
+
+  useEffect(() => {
+    if (interactiveText !== undefined) {
+      setTimeout(() => {
+        try {
+          let scrollElement = document.getElementById("scrollHolder");
+          let textElement = document.getElementById("text");
+          let bottomRow = document.getElementById("bottomRow");
+          if (last_reading_percentage) {
+            let currentScrollHeight =
+              scrollElement.scrollHeight -
+              scrollElement.clientHeight -
+              bottomRow.clientHeight;
+            let destinationPixel =
+              last_reading_percentage * currentScrollHeight;
+            scrollElement.scrollTo({
+              top: (0, destinationPixel),
+              behavior: "smooth",
+            });
+          }
+          setViewPortSettings(
+            JSON.stringify({
+              scrollHeight: scrollElement.scrollHeight,
+              clientHeight: scrollElement.clientHeight,
+              textHeight: textElement.clientHeight,
+              bottomRowHeight: bottomRow.clientHeight,
+            }),
+          );
+        } catch {
+          console.log("Failed to get elements to scroll.");
+        }
+      }, 250);
+    }
+  }, [interactiveText]);
 
   function onCreate() {
     scrollEvents.current = [];
@@ -192,7 +228,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.logReaderActivity(
       api.SCROLL,
       articleID,
-      scrollEvents.current.length,
+      viewPortSettingsRef.current,
       JSON.stringify(scrollEvents.current).slice(0, 4096),
     );
     api.logReaderActivity("ARTICLE CLOSED", articleID, "", UMR_SOURCE);
@@ -285,69 +321,56 @@ export default function ArticleReader({ api, teacherArticleID }) {
         UMR_SOURCE={UMR_SOURCE}
         articleProgress={scrollPosition}
       />
-      <h1>
-        <TranslatableText
-          interactiveText={interactiveTitle}
-          translating={translateInReader}
-          pronouncing={pronounceInReader}
-          setIsRendered={setReaderReady}
-        />
-      </h1>
-      <div
-        style={{
-          marginTop: "1em",
-          marginBottom: "2em",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <ArticleAuthors articleInfo={articleInfo} />
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <ArticleSource url={articleInfo.url} />
-          <ReportBroken
-            api={api}
-            UMR_SOURCE={UMR_SOURCE}
-            history={history}
-            articleID={articleID}
+      <div id="text">
+        <h1>
+          <TranslatableText
+            interactiveText={interactiveTitle}
+            translating={translateInReader}
+            pronouncing={pronounceInReader}
+            setIsRendered={setReaderReady}
           />
-        </div>
+        </h1>
+        <s.AuthorLinksContainer>
+          <ArticleAuthors articleInfo={articleInfo} />
+          <s.TopReaderButtonsContainer>
+            <ArticleSource url={articleInfo.url} />
+            <ReportBroken
+              api={api}
+              UMR_SOURCE={UMR_SOURCE}
+              history={history}
+              articleID={articleID}
+            />
+          </s.TopReaderButtonsContainer>
+        </s.AuthorLinksContainer>
+        <hr></hr>
+        {articleInfo.img_url && (
+          <s.ArticleImgContainer>
+            <s.ArticleImg alt="article image" src={articleInfo.img_url} />
+          </s.ArticleImgContainer>
+        )}
+
+        {articleInfo.video ? (
+          <iframe
+            title="video-frame"
+            width="620"
+            height="415"
+            src={
+              "https://www.youtube.com/embed/" +
+              extractVideoIDFromURL(articleInfo.url)
+            }
+          ></iframe>
+        ) : (
+          ""
+        )}
+
+        <s.MainText>
+          <TranslatableText
+            interactiveText={interactiveText}
+            translating={translateInReader}
+            pronouncing={pronounceInReader}
+          />
+        </s.MainText>
       </div>
-      <hr></hr>
-      {articleInfo.img_url && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <img
-            alt=""
-            src={articleInfo.img_url}
-            style={{
-              width: "100%",
-              borderRadius: "1em",
-              marginBottom: "1em",
-            }}
-          />
-        </div>
-      )}
-
-      {articleInfo.video ? (
-        <iframe
-          width="620"
-          height="415"
-          src={
-            "https://www.youtube.com/embed/" +
-            extractVideoIDFromURL(articleInfo.url)
-          }
-        ></iframe>
-      ) : (
-        ""
-      )}
-
-      <s.MainText>
-        <TranslatableText
-          interactiveText={interactiveText}
-          translating={translateInReader}
-          pronouncing={pronounceInReader}
-        />
-      </s.MainText>
 
       {readerReady && (
         <div id={"bottomRow"}>

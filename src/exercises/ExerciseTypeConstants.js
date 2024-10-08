@@ -39,6 +39,11 @@ export const LEARNING_CYCLE = Object.freeze({
   ["PRODUCTIVE"]: 2,
 });
 
+export const MEMORY_TASK = Object.freeze({
+  RECALL: "recall",
+  RECOGNITION: "recognition",
+});
+
 export const PRONOUNCIATION_SETTING = Object.freeze({
   off: 0,
   on: 1,

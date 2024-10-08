@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SpeakButton from "../SpeakButton";
 import * as s from "../Exercise.sc";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../../../utils/text/preprocessing";
 import EditBookmarkButton from "../../../words/EditBookmarkButton.js";
 import {
   zeeguuOrange,

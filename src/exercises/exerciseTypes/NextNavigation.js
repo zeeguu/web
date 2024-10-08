@@ -8,11 +8,7 @@ import { useEffect, useState, useContext } from "react";
 import Confetti from "react-confetti";
 import SessionStorage from "../../assorted/SessionStorage.js";
 import { SpeechContext } from "../../contexts/SpeechContext.js";
-import {
-  EXERCISE_TYPES,
-  LEARNING_CYCLE,
-  PRONOUNCIATION_SETTING,
-} from "../ExerciseTypeConstants";
+import { EXERCISE_TYPES, LEARNING_CYCLE } from "../ExerciseTypeConstants";
 
 import CelebrationModal from "../CelebrationModal";
 import { getStaticPath } from "../../utils/misc/staticPath.js";
@@ -21,6 +17,7 @@ import Feature from "../../features/Feature";
 import { ExerciseValidation } from "../ExerciseValidation.js";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import useBookmarkAutoPronounce from "../../hooks/useBookmarkAutoPronounce.js";
+import Pluralize from "../../utils/text/pluralize.js";
 
 export default function NextNavigation({
   message,
@@ -35,6 +32,7 @@ export default function NextNavigation({
   isCorrect,
   handleShowSolution,
   exerciseType,
+  isBookmarkChanged,
 }) {
   const correctStrings = [
     strings.correctExercise1,
@@ -48,7 +46,7 @@ export default function NextNavigation({
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
-  const [autoPronounceState, autoPronounceString, toggleAutoPronounceValue] =
+  const [autoPronounceBookmark, autoPronounceString, toggleAutoPronounceState] =
     useBookmarkAutoPronounce();
   const speech = useContext(SpeechContext);
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
@@ -85,14 +83,9 @@ export default function NextNavigation({
   async function handleSpeak() {
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
   }
+
   useEffect(() => {
-    if (
-      isCorrect &&
-      autoPronounceState &&
-      autoPronounceState !== PRONOUNCIATION_SETTING.off &&
-      !isMatchExercise
-    )
-      handleSpeak();
+    if (isCorrect && autoPronounceBookmark && !isMatchExercise) handleSpeak();
     if (exerciseAttemptsLog) {
       let wordsProgressed = [];
       for (let i = 0; i < exerciseAttemptsLog.length; i++) {
@@ -151,6 +144,21 @@ export default function NextNavigation({
   }, [bookmarkLearned]);
   const isExerciseCorrect =
     (isRightAnswer && !isMatchExercise) || isCorrectMatch;
+
+  const showCoffetti =
+    isCorrect &&
+    (isMatchBookmarkProgression || bookmarkProgression || bookmarkLearned);
+
+  function celebrationMessageMatch() {
+    if (LocalStorage.getProductiveExercisesEnabled()) {
+      let verb = Pluralize.has(matchWordsProgressCount);
+      return `${verb} now moved to your productive knowledge.`;
+    } else {
+      let verb = Pluralize.is(matchWordsProgressCount);
+      return `${verb} now learned!`;
+    }
+  }
+
   return (
     <>
       {learningCycleFeature && (
@@ -161,13 +169,16 @@ export default function NextNavigation({
           />
         </>
       )}
+      {showCoffetti && (
+        <Confetti
+          width={window.innerWidth}
+          height={window.innerHeight}
+          recycle={false}
+          style={{ position: "fixed" }}
+        />
+      )}
       {isCorrect && isMatchExercise && isMatchBookmarkProgression && (
         <>
-          <Confetti
-            width={window.innerWidth}
-            height={window.innerHeight}
-            recycle={false}
-          />
           <div
             className="next-nav-learning-cycle"
             style={{ textAlign: "left" }}
@@ -179,8 +190,7 @@ export default function NextNavigation({
             <p>
               <b>
                 {`${matchExerciseProgressionMessage}`}{" "}
-                {matchWordsProgressCount > 1 ? "have" : "has"} now moved to your
-                productive knowledge.
+                {celebrationMessageMatch()}
               </b>
             </p>
           </div>
@@ -190,11 +200,6 @@ export default function NextNavigation({
         <>
           {isRightAnswer && bookmarkProgression && (
             <>
-              <Confetti
-                width={window.innerWidth}
-                height={window.innerHeight}
-                recycle={false}
-              />
               <div className="next-nav-learning-cycle">
                 <img
                   src={getStaticPath("icons", "zeeguu-icon-correct.png")}
@@ -208,11 +213,6 @@ export default function NextNavigation({
           )}
           {isRightAnswer && bookmarkLearned && (
             <>
-              <Confetti
-                width={window.innerWidth}
-                height={window.innerHeight}
-                recycle={false}
-              />
               <div className="next-nav-learning-cycle">
                 <img
                   src={getStaticPath("icons", "zeeguu-icon-correct.png")}
@@ -255,6 +255,7 @@ export default function NextNavigation({
                 reload={reload}
                 setReload={setReload}
                 notifyDelete={() => setIsDeleted(true)}
+                notifyWordChange={() => isBookmarkChanged()}
               />
             </s.EditSpeakButtonHolder>
             <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
@@ -272,7 +273,7 @@ export default function NextNavigation({
       )}
       {isCorrect && (
         <s.StyledGreyButton
-          onClick={toggleAutoPronounceValue}
+          onClick={toggleAutoPronounceState}
           style={{
             position: "relative",
             bottom: "3em",
@@ -284,6 +285,7 @@ export default function NextNavigation({
         </s.StyledGreyButton>
       )}
       <SolutionFeedbackLinks
+        api={api}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}

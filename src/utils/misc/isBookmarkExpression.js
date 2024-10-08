@@ -1,3 +1,5 @@
+import { isExpression } from "../text/expressions";
+
 export default function isBookmarkExpression(bookmark) {
-  return bookmark.from.includes(" ");
+  return isExpression(bookmark.from);
 }

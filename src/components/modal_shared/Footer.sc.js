@@ -17,4 +17,4 @@ const Footer = styled.footer`
   }
 `;
 
-export { Footer };
+export default Footer;

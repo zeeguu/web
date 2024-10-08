@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import InfoPage from "./info_page_shared/InfoPage";
-import Header from "./info_page_shared/Header";
-import Heading from "./info_page_shared/Heading";
-import Main from "./info_page_shared/Main";
-import Footer from "./info_page_shared/Footer";
+import PreferencesPage from "./_pages_shared/PreferencesPage";
+import Header from "./_pages_shared/Header";
+import Heading from "./_pages_shared/Heading.sc";
+import Main from "./_pages_shared/Main.sc";
+import Footer from "./_pages_shared/Footer.sc";
 
 import useFormField from "../hooks/useFormField";
 
@@ -12,6 +12,7 @@ import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
 
 import strings from "../i18n/definitions";
+import { setTitle } from "../assorted/setTitle";
 
 export default function ResetPassword({ api }) {
   const [email, handleEmailChange] = useFormField("");
@@ -21,8 +22,12 @@ export default function ResetPassword({ api }) {
     setCodeSent(true);
   }
 
+  useEffect(() => {
+    setTitle(strings.resetPassword);
+  }, []);
+
   return (
-    <InfoPage type={"narrow"}>
+    <PreferencesPage pageWidth={"narrow"}>
       <Header>
         <Heading>Reset Password</Heading>
       </Header>
@@ -39,13 +44,13 @@ export default function ResetPassword({ api }) {
         {codeSent && <ResetPasswordStep2 api={api} email={email} />}
       </Main>
       <Footer>
-        <p>
+        <p className="centered">
           {strings.rememberPassword + " "}
-          <a className="bold underlined-link" href="login">
+          <a className="bold underlined-link" href="log_in">
             {strings.login}
           </a>
         </p>
       </Footer>
-    </InfoPage>
+    </PreferencesPage>
   );
 }

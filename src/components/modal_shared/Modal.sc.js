@@ -24,10 +24,20 @@ const ModalWrapper = styled(Box)`
   overflow: auto;
 
   p {
+    width: 100%;
     line-height: 150%;
     text-align: left;
-    font-size: 1em;
+    font-size: 1rem;
     margin: 0;
+  }
+
+  p.small {
+    font-size: 0.875rem;
+  }
+
+  p.extra-small {
+    font-size: 0.8rem;
+    color: gray;
   }
 
   a {

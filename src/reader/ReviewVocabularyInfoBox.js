@@ -4,18 +4,22 @@ import { StyledButton } from "../components/allButtons.sc.js";
 import { useHistory } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useEffect } from "react";
+import { getStaticPath } from "../utils/misc/staticPath.js";
 
 export default function ReviewVocabularyInfoBox({
   articleID,
   clickedOnReviewVocab,
   setClickedOnReviewVocab,
+  // openReview is required in the extension
+  openReview,
 }) {
   useUILanguage();
 
   const history = useHistory();
 
   const handleButtonClick = () => {
-    setClickedOnReviewVocab(true);
+    if (setClickedOnReviewVocab) setClickedOnReviewVocab(true);
+    if (openReview) openReview();
   };
 
   useEffect(() => {
@@ -30,7 +34,7 @@ export default function ReviewVocabularyInfoBox({
             <h2>Exercises</h2>
             <div>
               <img
-                src="/static/images/zeeguuWhiteLogo.svg"
+                src={getStaticPath("images", "zeeguuWhiteLogo.svg")}
                 alt="Zeeguu Logo - The Elephant"
               />
             </div>

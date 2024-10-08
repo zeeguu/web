@@ -10,7 +10,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../../../utils/text/preprocessing";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -39,6 +39,7 @@ export default function TranslateL2toL1({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -54,7 +55,7 @@ export default function TranslateL2toL1({
         ),
       );
     });
-  }, []);
+  }, [isBookmarkChanged]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -151,6 +152,7 @@ export default function TranslateL2toL1({
         handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

@@ -8,7 +8,7 @@ import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
@@ -41,6 +41,7 @@ export default function MultipleChoiceL2toL1({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -56,7 +57,7 @@ export default function MultipleChoiceL2toL1({
         ),
       );
     });
-  }, []);
+  }, [isBookmarkChanged]);
 
   useEffect(() => {
     if (interactiveText) {
@@ -150,6 +151,7 @@ export default function MultipleChoiceL2toL1({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

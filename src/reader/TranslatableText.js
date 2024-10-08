@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
-import { removePunctuation } from "../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../utils/text/preprocessing";
 import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 
 export function TranslatableText({
@@ -29,7 +29,7 @@ export function TranslatableText({
     }
     setParagraphs(interactiveText.getParagraphs());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [interactiveText]);
 
   useEffect(() => {
     setRenderedText(
@@ -39,7 +39,14 @@ export function TranslatableText({
         </div>
       )),
     );
-  }, [paragraphs, translationCount, translating, pronouncing, isCorrect]);
+  }, [
+    paragraphs,
+    translationCount,
+    translating,
+    pronouncing,
+    isCorrect,
+    bookmarkToStudy,
+  ]);
 
   useEffect(() => {
     if (setIsRendered) setIsRendered(true);

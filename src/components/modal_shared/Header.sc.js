@@ -7,4 +7,4 @@ const Header = styled.header`
   }
 `;
 
-export { Header };
+export default Header;

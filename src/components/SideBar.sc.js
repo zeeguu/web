@@ -56,7 +56,7 @@ const MainContentToggled = styled.div`
 const sidebarCommon = css`
   position: fixed;
   top: 0;
-  height: 100vh;
+  height: 100%;
   background-color: ${(props) => props.light};
 `;
 
@@ -115,6 +115,10 @@ const sidebarMinimizedCommon = css`
   .navigationLink {
     display: none;
   }
+
+  .SettingsLogoutContainer {
+    display: none;
+  }
 `;
 
 const navigationVisibleCommon = css`
@@ -133,24 +137,26 @@ const navigationVisibleCommon = css`
   }
 
   .SettingsLogoutContainer {
+    display: block;
     position: absolute;
-    bottom: 1em;
+    bottom: 2.5rem;
     width: 100%;
   }
 
   .SettingsLogoutHolder {
     display: flex;
     justify-content: space-around;
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 2rem;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   .navigationIcon {
-    height: 32px;
-
     :hover {
       filter: brightness(0.95);
-    }
-    @media (max-width: 768px) {
-      height: 22px;
     }
   }
 `;

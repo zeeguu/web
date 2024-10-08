@@ -4,7 +4,7 @@ import strings from "../i18n/definitions";
 import { useState } from "react";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import isBookmarkExpression from "../utils/misc/isBookmarkExpression";
-import FullWidthErrorMsg from "../pages/info_page_shared/FullWidthErrorMsg";
+import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 
 export default function WordEditForm({
   bookmark,
@@ -30,9 +30,11 @@ export default function WordEditForm({
     setContext(bookmark.context);
     setFitForStudy(bookmark.fit_for_study);
   }
+
   function handleFitForStudyCheck() {
     setFitForStudy((state) => !state);
   }
+
   function typingTranslation(event) {
     setTranslation(event.target.value);
   }
@@ -67,6 +69,7 @@ export default function WordEditForm({
       updateBookmark(bookmark, expression, translation, context, fitForStudy);
     }
   }
+
   return (
     <>
       {isBookmarkExpression(bookmark) ? (
@@ -74,7 +77,7 @@ export default function WordEditForm({
       ) : (
         <s.Headline>{strings.editWord}</s.Headline>
       )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoFocus={true}>
         {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
         {isBookmarkExpression(bookmark) ? (
           <s.CustomTextField
@@ -83,7 +86,6 @@ export default function WordEditForm({
             variant="outlined"
             fullWidth
             value={expression}
-            autoFocus={true}
             onChange={typingExpression}
           />
         ) : (
@@ -93,7 +95,6 @@ export default function WordEditForm({
             variant="outlined"
             fullWidth
             value={expression}
-            autoFocus={true}
             onChange={typingExpression}
           />
         )}

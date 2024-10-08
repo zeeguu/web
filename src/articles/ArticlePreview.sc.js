@@ -62,7 +62,7 @@ const InvisibleTitleButton = styled.button`
 `;
 //previously the color was defined as black and font-weight was 400 but dark orange was
 //displayed and font-weight 500 because the article's title inside the titleLink(article) function
-//was wrapped in a link tag and inherited its color and font weight settings.
+//was wrapped in a link tag and inherited its color and font weight ettings.
 //Currently the article's title is no longer wrapped in a link, this is why styling update
 const Title = styled.div`
   font-size: 1.4em;
@@ -71,6 +71,33 @@ const Title = styled.div`
   font-weight: 500;
   display: block;
   width: 100%;
+`;
+
+const UnfinishedArticleContainer = styled.div`
+  margin-top: 0.5em;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  gap: 0.5em;
+
+  img {
+    margin: 0.5em;
+    margin-left: 0;
+    max-width: 8em;
+    max-height: 8em;
+    border-radius: 1em;
+    align-self: center;
+    object-fit: cover;
+    @media (max-width: 990px) {
+      display: none;
+    }
+  }
+`;
+
+const UnfinishedArticleStats = styled.span`
+  font-weight: 550;
 `;
 
 let Summary = styled.div`
@@ -149,6 +176,8 @@ let KeywordTopics = styled.div`
 export {
   Title,
   ArticlePreview,
+  UnfinishedArticleContainer,
+  UnfinishedArticleStats,
   InvisibleTitleButton,
   ArticleContent,
   BottomContainer,

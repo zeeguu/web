@@ -45,7 +45,7 @@ let strings = new LocalizedStrings(
       addTexts: "Add Texts",
       delete: "Delete",
       cancel: "Cancel",
-      joinClass: "Join Class",
+      joinClass: "Join Classroom",
       youHaveNotJoinedAClass: "You haven't joined a class yet.",
       titleLearnedWords: "Learned Words",
       tooEasy: "too easy",
@@ -66,6 +66,9 @@ let strings = new LocalizedStrings(
       logout: "Logout",
       userDashboard: "Statistics",
 
+      // User Dashboard:
+      titleUserDashboard: "User Statistics",
+
       //CreateAccount
       nameIsRequired: "Name is required.",
       passwordMustBeMsg: "Password should be at least 4 characters long.",
@@ -81,11 +84,17 @@ let strings = new LocalizedStrings(
       baseLanguagePlaceholder: "Select Language",
 
       //LanguagePreferences
+      languagePreferences: "Language Preferences",
       learnedLanguageIsRequired: "Learned language is required.",
       languangeLevelIsRequired: "Language level is required.",
       plsSelectBaseLanguage: "Please select a base language.",
 
+      //SelectInterests
+      selectInterests: "Select Interests",
+
       //ExcludeWords
+      excludeWords: "Exclude Words",
+      excludedKeywords: "Excluded Keywords",
       addUnwantedWordHelperText: "Add one unwanted word / phrase at a time",
       unwantedWordPlaceholder: "e.g. robbery",
 
@@ -140,11 +149,16 @@ let strings = new LocalizedStrings(
       rememberPassword: "Remember Password?",
 
       //InstallExtension
+      installExtension: "Install Extension",
       iWillInstallLater: "I will install it later",
       installTheExtension: "Install the Extension",
 
+      //ExtensionInstalled
+      extensionInstalled: "Extension Installed",
+
       //LandingPage
       landingPage: "Landing Page",
+      landingPageTitle: "Learn foreign languages while reading what you like",
       projectDescription_UltraShort: `Zeeguu is a research project that personalizes the way you learn foreign languages. It lets you read texts based on your interests, translate unfamiliar words, and practice vocabulary. On any device.`,
       betaTester: "Become a Betatester!",
       howDoesItWork: "How Does It Work?",
@@ -225,7 +239,7 @@ let strings = new LocalizedStrings(
       yourWordsHeadline: "Your Words",
       history: "History",
       starred: "Starred",
-
+      learning: "Learning",
       learned: "Learned",
       topWords: "Top Words",
 
@@ -233,6 +247,12 @@ let strings = new LocalizedStrings(
       titleTranslationHistory: "Translation History",
       starAWordMsg:
         "Star a word to ensure it appears in exercises. Delete to avoid it. Gray words don't appear unless starred.",
+
+      // Home (Find Articles)
+      titleHome: "Home",
+
+      // Search Query (Find Articles)
+      titleSearch: "Search",
 
       //FindArticles
       findArticles: "Find Articles",
@@ -307,15 +327,21 @@ let strings = new LocalizedStrings(
       titleRankedWords: "Most Important Words",
       rankedMsg:
         "The most important words that you translated. Ordered by frequency of occurrence in your learned language. To see all your past translations, go to History.",
+      //To Learn
+      titleToLearnWords: "Words to Learn",
+      toLearnMsg:
+        "These words have not yet been practiced in Exercises. Once you exercise them for the first time they will move into the Receptive status.",
+      noToLearnWords:
+        "You have no words you haven't practiced. Keep reading and translating to add some.",
 
       //Receptive
-      titleReceptiveWords: "Receptive Words",
+      titleReceptiveWords: "Receptive",
       receptiveMsg:
         "These words will appear in exercises testing your receptive knowledge. Receptive means you understand the word when you see or hear it, but can't necessarily use it yet.",
       noReceptiveWords:
         "You have no receptive words at the moment. Keep reading and translating to add some.",
       //Productive
-      titleProductiveWords: "Productive Words",
+      titleProductiveWords: "Productive",
 
       productiveMsg:
         "You already know these words receptively, so they will only appear in exercises testing your productive knowledge. Productive means you can use a word in writing or speech.",
@@ -328,7 +354,7 @@ let strings = new LocalizedStrings(
 
       //LearningCycle
       nextLearningCycle:
-        "This word has now moved to your productive knowledge.",
+        "This word has now moved to your productive exercises.",
       wordLearned: "You've learned a new word!",
       receptiveTooltip:
         "This word is part of your receptive vocabulary knowledge. Receptive means the capability to comprehend a word when you hear or see it.",
@@ -338,7 +364,7 @@ let strings = new LocalizedStrings(
       //CelebrationModal
       celebrationTitle: "Congratulations, you've learned a new word!",
       celebrationMsg:
-        "You've successfully completed all stages for this word, so it won't be tested in the exercises anymore. Keep up the good work!",
+        "You now know this word both receptively and productively, so it won't be tested in the exercises anymore. Keep up the good work!",
 
       //WordEditAccordion
       deleteWord: "Delete Word",
@@ -393,6 +419,7 @@ let strings = new LocalizedStrings(
       orderWordsOnlyTwoMessagesShown: "Only the first 2 clues are shown",
 
       //Exercises
+      titleExercises: "Exercises",
       wordSourceDefaultText: "your past readings",
       wordSourcePrefix: "Words in",
       goBackArticlePrefix: "Go back to reading: ",
@@ -441,7 +468,10 @@ let strings = new LocalizedStrings(
       multipleChoiceContextHeadline: "Choose the context that fits the word",
 
       //FeedbackButtons
-      giveFeedback: "Don't show this word again",
+      dontShowThisWordAgain: "Don't show this word again",
+      dontShowThisWordAgainAlert:
+        "Please type your feedback before submitting.",
+      giveFeedback: "Give Feedback",
       giveFeedbackAlert: "Please type your feedback before submitting.",
       selectWords: "Select the word(s):",
       selectWordsAlert:
@@ -492,18 +522,36 @@ let strings = new LocalizedStrings(
 
       //ExerciseNavigation
       backToReading: "Back to Reading",
+      goToReading: "Go To Reading",
       backToWords: "Back to Words",
       keepExercising: "Keep Exercising",
+      startLearningNewWords: "Start Learning New Words",
 
       //CongratulationsPage
       goodJob: "Good Job, ",
       correct: "You got the following words correct:",
       payMoreAttentionTo: "Pay more attention to these words:",
+      wordsIncorrect: "Words you got incorrect: ",
+      wordsCorrect: "Words you got correct:",
 
       //Settings
+      //Settings categories
+      myAccount: "My Account",
+      exercises: "Exercises",
+      accountManagement: "Account Management",
+
+      //Settings main page nav options
+      profileDetails: "Profile Details",
+      languageSettings: "Language Settings",
+      myClassrooms: "My Classrooms",
+      exerciseTypePreferences: "Exercise Type Preferences",
+      interests: "Interests",
+      deleteAccount: "Delete Account",
+
       nativeLanguage: "Native Language",
       yourCurrentClassIs: "Your current class is: ",
       changeClass: "Change Class",
+      addClass: "Add Class",
       insertNewInviteCode: "Insert new invite code",
       insertInviteCode: "Insert invite code",
       checkIfInviteCodeIsValid:
@@ -604,7 +652,7 @@ let strings = new LocalizedStrings(
       addColleague: "Add Colleague",
 
       //CohortList
-      addClass: "Add Class",
+      addClass: "Add Classroom",
 
       //DeleteCohortWarning
       dangerzone: "Danger Zone!",
@@ -645,7 +693,6 @@ let strings = new LocalizedStrings(
 
       // New user created
       userCreated: "Welcome to Zeeguu",
-      installExtension: " Time to install the Zeeguu Reader browser extension",
       extensionDescription:
         "Here on zeeguu.org you can see your words, find article recommendation links, do exercises, see statistics, etc. You can also read, but only articles that were shared with you by your teacher, or articles that you have saved from the extension.",
       extensionFunctionality:
@@ -660,17 +707,6 @@ let strings = new LocalizedStrings(
       goToZeeguuApp: "Go to Zeeguu",
       pinExtension: "Pin it to the toolbar to make it easy to access",
       congratulations: "Extension is installed!",
-
-      //ExtensionMessage
-      extensionHeadline: "Browser Extension For Reading Articles",
-      extensionAllow:
-        "Starting with the summer of 2022 you need to install the browser extension to read the articles recommended by Zeeguu.",
-      extensionToRead:
-        "From the Recommendations page on Zeeguu you will be redirected to the original article where you can activate the extension. The extension removes all excess clutter (e.g. adverts) and formats the article for reading. It also enables you to read any other article you find online.",
-      extensionReadability:
-        'When reading an article with the extension, you can click the "Save article to Zeeguu" button. The article is saved here in the "My Texts" page from where it will also be readable on phone or tablet.',
-      extensionChromeInstall: "Install for Chrome or Edge",
-      extensionFirefoxInstall: "Install for Firefox",
 
       //TooltipedButtons
       viewAsStudent: "View as Student",
