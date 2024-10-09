@@ -115,6 +115,10 @@ const sidebarMinimizedCommon = css`
   .navigationLink {
     display: none;
   }
+
+  .SettingsLogoutContainer {
+    display: none;
+  }
 `;
 
 const navigationVisibleCommon = css`
@@ -133,6 +137,7 @@ const navigationVisibleCommon = css`
   }
 
   .SettingsLogoutContainer {
+    display: block;
     position: absolute;
     bottom: 2.5rem;
     width: 100%;
