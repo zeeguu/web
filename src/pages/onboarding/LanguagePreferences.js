@@ -24,6 +24,8 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 import { setTitle } from "../../assorted/setTitle";
 
+import { scrollToTop } from "../../utils/misc/scrollToTop";
+
 export default function LanguagePreferences({ api }) {
   const [
     learnedLanguage,
@@ -88,13 +90,14 @@ export default function LanguagePreferences({ api }) {
   function validateAndRedirect(e) {
     e.preventDefault();
     if (
-      validator([
+      !validator([
         validateLearnedLanguage,
         validateLearnedCEFRLevel,
         validateNativeLanguage,
       ])
     )
-      redirect("/create_account");
+      scrollToTop();
+    else redirect("/create_account");
   }
 
   return (

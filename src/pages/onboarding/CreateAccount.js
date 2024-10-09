@@ -139,6 +139,7 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
         validateConfirmPass,
       ])
     ) {
+      scrollToTop();
       return;
     }
 
