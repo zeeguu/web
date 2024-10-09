@@ -65,6 +65,7 @@ export default function ClassroomArticles({ api }) {
       />
       {articleList.map((each) => (
         <ArticlePreview
+          api={api}
           key={each.id}
           article={each}
           dontShowSourceIcon={true}
