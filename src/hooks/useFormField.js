@@ -10,12 +10,10 @@ import { validateMultipleRules } from "../utils/ValidatorRule/ValidatorRule";
  */
 
 export default function useFormField(initialState, validator) {
-  const NO_INPUT_VALIDATION = "Input validation is undefinied.";
-
   const [currentState, setState] = useState(initialState);
   const [inputValidator, setInputValidator] = useState(validator);
   const [isInputValid, setIsInputValid] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(NO_INPUT_VALIDATION);
+  const [errorMessage, setErrorMessage] = useState("");
 
   function resetInputState() {
     setState("");
