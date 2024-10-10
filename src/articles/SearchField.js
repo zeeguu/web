@@ -36,7 +36,6 @@ export default function SearchField({ api, query }) {
     <s.SearchField>
       <s.SearchInput
         style={{ float: "left", fontWeight: query ? "bold" : "normal" }}
-        className="searchTextfieldInput"
         type="text"
         placeholder={strings.searchAllArticles}
         value={searchTerm == null ? "" : searchTerm}
@@ -48,16 +47,13 @@ export default function SearchField({ api, query }) {
         onBlur={handleBlur}
         hasValue={!!searchTerm}
       />
-
-      {query && (
-        <a onClick={(e) => redirect("/articles")}>
-          <ClearSearchButton />
-        </a>
-      )}
-
-      <a style={{ cursor: "pointer" }} onClick={(e) => handleSearch()}>
-        <SearchIcon />
-      </a>
+      {query && <ClearSearchButton onClick={(e) => redirect("/articles")} />}
+      <SearchIcon
+        className="searchIcon"
+        style={{ cursor: "pointer" }}
+        sx={{ fontSize: "2rem" }}
+        onClick={(e) => handleSearch()}
+      />
     </s.SearchField>
   );
 }

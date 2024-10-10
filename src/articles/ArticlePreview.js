@@ -185,17 +185,10 @@ export default function ArticlePreview({
             ))}
           </s.Topics>
         </div>
-
         <ArticleStatInfo
           cefr_level={cefr_level}
           articleInfo={article}
-          dontShowPublishingTime={dontShowPublishingTime}
-          dontShowSourceIcon={dontShowSourceIcon}
-        />
-        <s.ArticleContent>
-          {article.img_url && <img alt="" src={article.img_url} />}
-          <s.Summary>{article.summary}...</s.Summary>
-        </s.ArticleContent>
+        ></ArticleStatInfo>
       </s.BottomContainer>
       {article.video ? (
         <img

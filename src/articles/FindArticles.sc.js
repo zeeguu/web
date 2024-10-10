@@ -17,9 +17,7 @@ const SortHolder = styled.div`
 `;
 
 const SearchHolder = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+  display: block;
 `;
 
 export { MaterialSelection, SortHolder, SearchHolder };

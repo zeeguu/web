@@ -31,19 +31,25 @@ export default function InterestsAndSearch({ api, articlesListShouldChange }) {
 
   return (
     <s.Interests>
-      <b.OrangeRoundButton
-        onClick={(e) => toggleInterests()}
-        style={{ filter: showingInterests ? "brightness(110%)" : "" }}
-      >
-        {strings.interests}
-      </b.OrangeRoundButton>
+      {showingInterests ? (
+        <b.OrangeRoundButton onClick={(e) => toggleInterests()}>
+          {strings.interests}
+        </b.OrangeRoundButton>
+      ) : (
+        <b.WhiteRoundButton onClick={(e) => toggleInterests()}>
+          {strings.interests}
+        </b.WhiteRoundButton>
+      )}
 
-      <b.OrangeRoundButton
-        onClick={(e) => toggleFilters()}
-        style={{ filter: showingFilters ? "brightness(110%)" : "" }}
-      >
-        {strings.nonInterests}
-      </b.OrangeRoundButton>
+      {showingFilters ? (
+        <b.OrangeRoundButton onClick={(e) => toggleFilters()}>
+          {strings.nonInterests}
+        </b.OrangeRoundButton>
+      ) : (
+        <b.WhiteRoundButton onClick={(e) => toggleFilters()}>
+          {strings.nonInterests}
+        </b.WhiteRoundButton>
+      )}
 
       <TagsOfInterests
         visible={showingInterests}
