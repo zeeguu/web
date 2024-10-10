@@ -9,8 +9,8 @@ import Footer from "./_pages_shared/Footer.sc";
 import useFormField from "../hooks/useFormField";
 import {
   EmailValidator,
-  NonEmptyValidation,
-} from "../utils/ValidatorRule/ValidatorRule";
+  NonEmptyValidator,
+} from "../utils/ValidatorRule/Validator";
 
 import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
@@ -21,7 +21,7 @@ import { setTitle } from "../assorted/setTitle";
 export default function ResetPassword({ api }) {
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
     useFormField("", [
-      NonEmptyValidation("Please provide an email."),
+      NonEmptyValidator("Please provide an email."),
       EmailValidator,
     ]);
   const [codeSent, setCodeSent] = useState(false);

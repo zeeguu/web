@@ -12,8 +12,8 @@ import ButtonContainer from "../pages/_pages_shared/ButtonContainer.sc";
 import Button from "../pages/_pages_shared/Button.sc";
 import {
   MinimumLengthValidator,
-  NonEmptyValidation,
-} from "../utils/ValidatorRule/ValidatorRule";
+  NonEmptyValidator,
+} from "../utils/ValidatorRule/Validator";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 
 export default function ResetPasswordStep2({ api, email }) {
@@ -28,14 +28,14 @@ export default function ResetPasswordStep2({ api, email }) {
     issentCodeValid,
     sentCodeMsg,
   ] = useFormField("", [
-    NonEmptyValidation("Please insert the code sent to your email."),
+    NonEmptyValidator("Please insert the code sent to your email."),
   ]);
 
   // strings.plsProvideCode
 
   const [newPass, setNewPass, validateNewPass, isNewPassValid, newPassMsg] =
     useFormField("", [
-      NonEmptyValidation("You must provide a new password."),
+      NonEmptyValidator("You must provide a new password."),
       MinimumLengthValidator(3, strings.passwordMustBeMsg),
     ]);
 

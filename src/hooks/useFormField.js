@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { validateMultipleRules } from "../utils/ValidatorRule/ValidatorRule";
+import { validateMultipleRules } from "../utils/ValidatorRule/Validator";
 
 /**
  * Hook to handle fields and validate them.

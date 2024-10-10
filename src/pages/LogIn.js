@@ -17,9 +17,9 @@ import Button from "./_pages_shared/Button.sc";
 import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
 import {
-  NonEmptyValidation,
+  NonEmptyValidator,
   EmailValidator,
-} from "../utils/ValidatorRule/ValidatorRule";
+} from "../utils/ValidatorRule/Validator";
 import validateRules from "../assorted/validateRules";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { setTitle } from "../assorted/setTitle";
@@ -29,7 +29,7 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
 
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
     useFormField("", [
-      NonEmptyValidation("Please provide an email."),
+      NonEmptyValidator("Please provide an email."),
       EmailValidator,
     ]);
   const [
@@ -38,7 +38,7 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
     validatePassword,
     isPasswordValid,
     passwordErrorMsg,
-  ] = useFormField("", NonEmptyValidation("Please enter your password."));
+  ] = useFormField("", NonEmptyValidator("Please enter your password."));
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {

@@ -21,8 +21,8 @@ import LogOutButton from "./LogOutButton";
 import useFormField from "../../hooks/useFormField";
 import {
   EmailValidator,
-  NonEmptyValidation,
-} from "../../utils/ValidatorRule/ValidatorRule";
+  NonEmptyValidator,
+} from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
 import { setTitle } from "../../assorted/setTitle";
 
@@ -34,7 +34,7 @@ export default function ProfileDetails({ api, setUser }) {
     validateUserName,
     isUserNameValid,
     userErrorMessage,
-  ] = useFormField("", NonEmptyValidation("Please provide a name."));
+  ] = useFormField("", NonEmptyValidator("Please provide a name."));
   const [
     userEmail,
     setUserEmail,
@@ -42,7 +42,7 @@ export default function ProfileDetails({ api, setUser }) {
     isEmailValid,
     emailErrorMessage,
   ] = useFormField("", [
-    NonEmptyValidation("Please provide an email."),
+    NonEmptyValidator("Please provide an email."),
     EmailValidator,
   ]);
 

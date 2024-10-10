@@ -17,7 +17,7 @@ import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import validateRules from "../../assorted/validateRules";
-import { NonEmptyValidation } from "../../utils/ValidatorRule/ValidatorRule";
+import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
 
@@ -33,14 +33,14 @@ export default function LanguagePreferences({ api }) {
     validateLearnedLanguage,
     isLearnedLanguageValid,
     learnedLanguageMsg,
-  ] = useFormField("", NonEmptyValidation("Please select a language."));
+  ] = useFormField("", NonEmptyValidator("Please select a language."));
   const [
     nativeLanguage,
     setNativeLanguage,
     validateNativeLanguage,
     isNativeLanguageValid,
     nativeLanguageMsg,
-  ] = useFormField("en", NonEmptyValidation("Please select a language."));
+  ] = useFormField("en", NonEmptyValidator("Please select a language."));
   const [
     learnedCEFRLevel,
     setLearnedCEFRLevel,
@@ -49,7 +49,7 @@ export default function LanguagePreferences({ api }) {
     learnedCEFRLevelMsg,
   ] = useFormField(
     "",
-    NonEmptyValidation("Please select a level for your learned language."),
+    NonEmptyValidator("Please select a level for your learned language."),
   );
   const [systemLanguages, setSystemLanguages] = useState();
 

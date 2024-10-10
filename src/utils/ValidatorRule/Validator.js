@@ -5,29 +5,29 @@ import strings from "../../i18n/definitions";
   This class is used in combination to the useFormField hook.
 
   It allows to define a rule and the message that should be given based 
-  on the rule.There is some examples provided in this file, e.g. EmailValidator,
+  on the rule. There is some examples provided in this file, e.g. EmailValidator,
   MinimumLengthValidator.
 */
 
-const ValidatorRule = class {
+const Validator = class {
   constructor(validationFunction, validationErrorMessage) {
     this.validationFunction = validationFunction;
     this.validationErrorMessage = validationErrorMessage;
   }
 };
 
-const EmailValidator = new ValidatorRule((email) => {
+const EmailValidator = new Validator((email) => {
   return EmailValidatorFn.validate(email);
 }, strings.plsProvideValidEmail);
 
-function NonEmptyValidation(msg = "Field cannot be empty.") {
-  return new ValidatorRule((value) => {
+function NonEmptyValidator(msg = "Field cannot be empty.") {
+  return new Validator((value) => {
     return value !== "" && value !== null && value !== undefined;
   }, msg);
 }
 
 function MinimumLengthValidator(n_chars, msg) {
-  return new ValidatorRule((value) => {
+  return new Validator((value) => {
     return value.length > n_chars;
   }, msg);
 }
@@ -45,10 +45,11 @@ function validateMultipleRules(value, ValidatorRuleList, setErrorMsg) {
   }
   return isValid;
 }
+
 export {
-  ValidatorRule,
+  Validator,
   EmailValidator,
-  NonEmptyValidation,
-  validateMultipleRules,
+  NonEmptyValidator,
   MinimumLengthValidator,
+  validateMultipleRules,
 };

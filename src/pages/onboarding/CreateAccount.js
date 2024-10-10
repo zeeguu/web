@@ -29,9 +29,9 @@ import LocalStorage from "../../assorted/LocalStorage";
 import {
   EmailValidator,
   MinimumLengthValidator,
-  NonEmptyValidation,
-  ValidatorRule,
-} from "../../utils/ValidatorRule/ValidatorRule";
+  NonEmptyValidator,
+  Validator,
+} from "../../utils/ValidatorRule/Validator";
 import { setTitle } from "../../assorted/setTitle";
 
 export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
@@ -47,14 +47,14 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     validateInviteCode,
     isInviteCodeValid,
     inviteCodeMsg,
-  ] = useFormField("", [NonEmptyValidation("Please enter an invite code.")]);
+  ] = useFormField("", [NonEmptyValidator("Please enter an invite code.")]);
 
   const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
-    NonEmptyValidation("Please enter a name."),
+    NonEmptyValidator("Please enter a name."),
   ]);
   const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField(
     "",
-    [NonEmptyValidation("Please enter an e-mail."), EmailValidator],
+    [NonEmptyValidator("Please enter an e-mail."), EmailValidator],
   );
   const [
     password,
@@ -63,7 +63,7 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     isPasswordValid,
     passwordMsg,
   ] = useFormField("", [
-    NonEmptyValidation("Please enter a password."),
+    NonEmptyValidator("Please enter a password."),
     MinimumLengthValidator(3, strings.passwordMustBeMsg),
   ]);
 
@@ -76,8 +76,8 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     isConfirmPassValid,
     confirmPassMsg,
   ] = useFormField("", [
-    NonEmptyValidation("Please re-enter your password."),
-    new ValidatorRule((v) => {
+    NonEmptyValidator("Please re-enter your password."),
+    new Validator((v) => {
       return v === passwordRef.current;
     }, "Passwords must match."),
   ]);
@@ -90,7 +90,7 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     checkPrivacyNoteMsg,
   ] = useFormField(
     false,
-    new ValidatorRule((v) => {
+    new Validator((v) => {
       return v === true;
     }, strings.plsAcceptPrivacyPolicy),
   );
