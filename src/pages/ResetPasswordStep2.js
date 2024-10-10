@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import validator from "../assorted/validator";
+import validateRules from "../assorted/validateRules";
 import strings from "../i18n/definitions";
 
 import useFormField from "../hooks/useFormField";
@@ -11,9 +11,9 @@ import InputField from "../components/InputField";
 import ButtonContainer from "../pages/_pages_shared/ButtonContainer.sc";
 import Button from "../pages/_pages_shared/Button.sc";
 import {
-  LongerThanNValidation,
-  NotEmptyValidationWithMsg,
-} from "../utils/ValidateRule/ValidateRule";
+  MinimumLengthValidator,
+  NonEmptyValidation,
+} from "../utils/ValidatorRule/ValidatorRule";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 
 export default function ResetPasswordStep2({ api, email }) {
@@ -28,15 +28,15 @@ export default function ResetPasswordStep2({ api, email }) {
     issentCodeValid,
     sentCodeMsg,
   ] = useFormField("", [
-    NotEmptyValidationWithMsg("Please insert the code sent to your email."),
+    NonEmptyValidation("Please insert the code sent to your email."),
   ]);
 
   // strings.plsProvideCode
 
   const [newPass, setNewPass, validateNewPass, isNewPassValid, newPassMsg] =
     useFormField("", [
-      NotEmptyValidationWithMsg("You must provide a new password."),
-      LongerThanNValidation(3, strings.passwordMustBeMsg),
+      NonEmptyValidation("You must provide a new password."),
+      MinimumLengthValidator(3, strings.passwordMustBeMsg),
     ]);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function ResetPasswordStep2({ api, email }) {
     // If users have the same error, there wouldn't be a scroll.
     setErrorMessage("");
 
-    if (!validator([validatesentCode, validateNewPass])) {
+    if (!validateRules([validatesentCode, validateNewPass])) {
       return;
     }
 

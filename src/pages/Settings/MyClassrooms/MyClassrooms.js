@@ -18,7 +18,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import FullWidthListItem from "../../../components/FullWidthListItem";
 import LeaveClassroomModal from "./LeaveClassroomModal";
 import useFormField from "../../../hooks/useFormField";
-import { NotEmptyValidationWithMsg } from "../../../utils/ValidateRule/ValidateRule";
+import { NonEmptyValidation } from "../../../utils/ValidatorRule/ValidatorRule";
 import { setTitle } from "../../../assorted/setTitle";
 
 export default function MyClassrooms({ api }) {
@@ -31,10 +31,7 @@ export default function MyClassrooms({ api }) {
     validateInviteCode,
     isInviteCodeValid,
     inviteCodeErrorMsg,
-  ] = useFormField(
-    "",
-    NotEmptyValidationWithMsg("Please provide an invite code."),
-  );
+  ] = useFormField("", NonEmptyValidation("Please provide an invite code."));
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [studentCohorts, setStudentCohorts] = useState([]);
   const [isLeaveClassroomModalOpen, setIsLeaveClassroomModalOpen] =

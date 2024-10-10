@@ -16,8 +16,8 @@ import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
-import validator from "../../assorted/validator";
-import { NotEmptyValidationWithMsg } from "../../utils/ValidateRule/ValidateRule";
+import validateRules from "../../assorted/validateRules";
+import { NonEmptyValidation } from "../../utils/ValidatorRule/ValidatorRule";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
 
@@ -33,17 +33,14 @@ export default function LanguagePreferences({ api }) {
     validateLearnedLanguage,
     isLearnedLanguageValid,
     learnedLanguageMsg,
-  ] = useFormField("", NotEmptyValidationWithMsg("Please select a language."));
+  ] = useFormField("", NonEmptyValidation("Please select a language."));
   const [
     nativeLanguage,
     setNativeLanguage,
     validateNativeLanguage,
     isNativeLanguageValid,
     nativeLanguageMsg,
-  ] = useFormField(
-    "en",
-    NotEmptyValidationWithMsg("Please select a language."),
-  );
+  ] = useFormField("en", NonEmptyValidation("Please select a language."));
   const [
     learnedCEFRLevel,
     setLearnedCEFRLevel,
@@ -52,9 +49,7 @@ export default function LanguagePreferences({ api }) {
     learnedCEFRLevelMsg,
   ] = useFormField(
     "",
-    NotEmptyValidationWithMsg(
-      "Please select a level for your learned language.",
-    ),
+    NonEmptyValidation("Please select a level for your learned language."),
   );
   const [systemLanguages, setSystemLanguages] = useState();
 
@@ -90,7 +85,7 @@ export default function LanguagePreferences({ api }) {
   function validateAndRedirect(e) {
     e.preventDefault();
     if (
-      !validator([
+      !validateRules([
         validateLearnedLanguage,
         validateLearnedCEFRLevel,
         validateNativeLanguage,

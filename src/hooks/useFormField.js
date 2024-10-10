@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { validateMultipleRules } from "../utils/ValidateRule/ValidateRule";
+import { validateMultipleRules } from "../utils/ValidatorRule/ValidatorRule";
 
 /**
  * Hook to handle fields and validate them.
  *
  * @param {string} initialState - The intial value for the input field.
- * @param {InputValidator} InputValidator - ValidatorRule that is used to validate the field.
+ * @param {InputValidator} validator - ValidatorRule that is used to validate the field.
  *
  */
 
-export default function useFormField(initialState, InputValidator) {
+export default function useFormField(initialState, validator) {
   const NO_INPUT_VALIDATION = "Input validation is undefinied.";
 
   const [currentState, setState] = useState(initialState);
-  const [inputValidation, setInputValidation] = useState(InputValidator);
+  const [inputValidator, setInputValidator] = useState(validator);
   const [isInputValid, setIsInputValid] = useState(true);
   const [errorMessage, setErrorMessage] = useState(NO_INPUT_VALIDATION);
 
@@ -22,13 +22,13 @@ export default function useFormField(initialState, InputValidator) {
   }
 
   function validateInput() {
-    if (inputValidation === undefined) {
+    if (inputValidator === undefined) {
       setIsInputValid(false);
       return false;
     }
-    let _inputValidationArray = inputValidation;
+    let _inputValidationArray = inputValidator;
     if (!Array.isArray(_inputValidationArray)) {
-      _inputValidationArray = [inputValidation];
+      _inputValidationArray = [inputValidator];
     }
     let _validationResult = validateMultipleRules(
       currentState,
@@ -47,6 +47,6 @@ export default function useFormField(initialState, InputValidator) {
     isInputValid,
     errorMessage,
     resetInputState,
-    setInputValidation,
+    setInputValidator,
   ];
 }

@@ -23,7 +23,7 @@ import TagContainer from "../_pages_shared/TagContainer.sc";
 import redirect from "../../utils/routing/routing";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
-import { NotEmptyValidationWithMsg } from "../../utils/ValidateRule/ValidateRule";
+import { NonEmptyValidation } from "../../utils/ValidatorRule/ValidatorRule";
 
 export default function ExcludeWords({ api, hasExtension }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
@@ -36,7 +36,7 @@ export default function ExcludeWords({ api, hasExtension }) {
     isExcludedWordValid,
     excludedWordErrorMsg,
     resetExcludedWords,
-  ] = useFormField("", [NotEmptyValidationWithMsg("Please write a keyword.")]);
+  ] = useFormField("", [NonEmptyValidation("Please write a keyword.")]);
 
   function getLinkToNextPage() {
     if (isSupportedBrowser() && hasExtension === false) {

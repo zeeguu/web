@@ -17,10 +17,10 @@ import Button from "./_pages_shared/Button.sc";
 import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
 import {
-  NotEmptyValidationWithMsg,
-  EmailValidation,
-} from "../utils/ValidateRule/ValidateRule";
-import validator from "../assorted/validator";
+  NonEmptyValidation,
+  EmailValidator,
+} from "../utils/ValidatorRule/ValidatorRule";
+import validateRules from "../assorted/validateRules";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { setTitle } from "../assorted/setTitle";
 
@@ -29,8 +29,8 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
 
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
     useFormField("", [
-      NotEmptyValidationWithMsg("Please provide an email."),
-      EmailValidation,
+      NonEmptyValidation("Please provide an email."),
+      EmailValidator,
     ]);
   const [
     password,
@@ -38,10 +38,7 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
     validatePassword,
     isPasswordValid,
     passwordErrorMsg,
-  ] = useFormField(
-    "",
-    NotEmptyValidationWithMsg("Please enter your password."),
-  );
+  ] = useFormField("", NonEmptyValidation("Please enter your password."));
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -55,7 +52,7 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
   function handleLogIn(e) {
     e.preventDefault();
     setErrorMessage("");
-    if (!validator([validateEmail, validatePassword])) return;
+    if (!validateRules([validateEmail, validatePassword])) return;
     api.logIn(email, password, setErrorMessage, (sessionId) => {
       api.getUserDetails((userInfo) => {
         handleSuccessfulLogIn(userInfo, sessionId);

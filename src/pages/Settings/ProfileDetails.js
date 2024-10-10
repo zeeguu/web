@@ -20,10 +20,10 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 import LogOutButton from "./LogOutButton";
 import useFormField from "../../hooks/useFormField";
 import {
-  EmailValidation,
-  NotEmptyValidationWithMsg,
-} from "../../utils/ValidateRule/ValidateRule";
-import validator from "../../assorted/validator";
+  EmailValidator,
+  NonEmptyValidation,
+} from "../../utils/ValidatorRule/ValidatorRule";
+import validateRules from "../../assorted/validateRules";
 import { setTitle } from "../../assorted/setTitle";
 
 export default function ProfileDetails({ api, setUser }) {
@@ -34,7 +34,7 @@ export default function ProfileDetails({ api, setUser }) {
     validateUserName,
     isUserNameValid,
     userErrorMessage,
-  ] = useFormField("", NotEmptyValidationWithMsg("Please provide a name."));
+  ] = useFormField("", NonEmptyValidation("Please provide a name."));
   const [
     userEmail,
     setUserEmail,
@@ -42,8 +42,8 @@ export default function ProfileDetails({ api, setUser }) {
     isEmailValid,
     emailErrorMessage,
   ] = useFormField("", [
-    NotEmptyValidationWithMsg("Please provide an email."),
-    EmailValidation,
+    NonEmptyValidation("Please provide an email."),
+    EmailValidator,
   ]);
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -75,7 +75,7 @@ export default function ProfileDetails({ api, setUser }) {
   function handleSave(e) {
     e.preventDefault();
     setErrorMessage("");
-    if (!validator([validateUserName, validateEmail])) return;
+    if (!validateRules([validateUserName, validateEmail])) return;
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
       history.goBack();

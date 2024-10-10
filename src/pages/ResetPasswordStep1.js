@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import validator from "../assorted/validator";
+import validateRules from "../assorted/validateRules";
 import strings from "../i18n/definitions";
 
 import Form from "./_pages_shared/Form.sc";
@@ -30,7 +30,7 @@ export default function ResetPasswordStep1({
   function handleResetPassword(e) {
     e.preventDefault();
 
-    if (!validator([validateEmail])) {
+    if (!validateRules([validateEmail])) {
       return;
     }
 

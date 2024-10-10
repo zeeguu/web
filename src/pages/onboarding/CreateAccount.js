@@ -22,16 +22,16 @@ import Footer from "../_pages_shared/Footer.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import Modal from "../../components/modal_shared/Modal";
-import validator from "../../assorted/validator";
+import validateRules from "../../assorted/validateRules";
 import strings from "../../i18n/definitions";
 
 import LocalStorage from "../../assorted/LocalStorage";
 import {
-  EmailValidation,
-  LongerThanNValidation,
-  NotEmptyValidationWithMsg,
-  ValidateRule,
-} from "../../utils/ValidateRule/ValidateRule";
+  EmailValidator,
+  MinimumLengthValidator,
+  NonEmptyValidation,
+  ValidatorRule,
+} from "../../utils/ValidatorRule/ValidatorRule";
 import { setTitle } from "../../assorted/setTitle";
 
 export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
@@ -47,16 +47,14 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     validateInviteCode,
     isInviteCodeValid,
     inviteCodeMsg,
-  ] = useFormField("", [
-    NotEmptyValidationWithMsg("Please enter an invite code."),
-  ]);
+  ] = useFormField("", [NonEmptyValidation("Please enter an invite code.")]);
 
   const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
-    NotEmptyValidationWithMsg("Please enter a name."),
+    NonEmptyValidation("Please enter a name."),
   ]);
   const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField(
     "",
-    [NotEmptyValidationWithMsg("Please enter an e-mail."), EmailValidation],
+    [NonEmptyValidation("Please enter an e-mail."), EmailValidator],
   );
   const [
     password,
@@ -65,8 +63,8 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     isPasswordValid,
     passwordMsg,
   ] = useFormField("", [
-    NotEmptyValidationWithMsg("Please enter a password."),
-    LongerThanNValidation(3, strings.passwordMustBeMsg),
+    NonEmptyValidation("Please enter a password."),
+    MinimumLengthValidator(3, strings.passwordMustBeMsg),
   ]);
 
   const passwordRef = useShadowRef(password);
@@ -78,8 +76,8 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     isConfirmPassValid,
     confirmPassMsg,
   ] = useFormField("", [
-    NotEmptyValidationWithMsg("Please re-enter your password."),
-    new ValidateRule((v) => {
+    NonEmptyValidation("Please re-enter your password."),
+    new ValidatorRule((v) => {
       return v === passwordRef.current;
     }, "Passwords must match."),
   ]);
@@ -92,7 +90,7 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     checkPrivacyNoteMsg,
   ] = useFormField(
     false,
-    new ValidateRule((v) => {
+    new ValidatorRule((v) => {
       return v === true;
     }, strings.plsAcceptPrivacyPolicy),
   );
@@ -130,7 +128,7 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     // If users have the same error, there wouldn't be a scroll.
     setErrorMessage("");
     if (
-      !validator([
+      !validateRules([
         validateName,
         validatePassword,
         validateEmail,
