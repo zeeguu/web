@@ -23,8 +23,8 @@ export default function useFormField(initialState, validator) {
 
   function validateInput() {
     if (inputValidator === undefined) {
-      setIsInputValid(false);
-      return false;
+      setIsInputValid(true);
+      return true;
     }
     let _inputValidationArray = inputValidator;
     if (!Array.isArray(_inputValidationArray)) {
