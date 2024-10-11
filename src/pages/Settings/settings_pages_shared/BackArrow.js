@@ -1,19 +1,14 @@
 import { useHistory } from "react-router-dom";
-import useQuery from "../../../hooks/useQuery";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import * as s from "./BackArrow.sc";
 import redirect from "../../../utils/routing/routing";
 
-export default function BackArrow() {
+export default function BackArrow({ redirectLink }) {
   const history = useHistory();
-  const searchQuery = useQuery().get("fromArticles");
-  const IsRedirectToArticles = searchQuery ? searchQuery === "1" : false;
 
   return (
     <s.BackArrow
-      onClick={() =>
-        IsRedirectToArticles ? redirect("/articles") : history.goBack()
-      }
+      onClick={() => (redirectLink ? redirect(redirectLink) : history.goBack())}
     >
       <ArrowBackRoundedIcon /> Back
     </s.BackArrow>
