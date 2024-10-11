@@ -199,11 +199,11 @@ export default function FindArticles({
           <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
             <span>
               You can customize your Home by{" "}
-              <a href="/account_settings/interests">
+              <a href="/account_settings/interests?fromArticles=1">
                 subscribing&nbsp;to&nbsp;topics
               </a>
               ,{" "}
-              <a href="/account_settings/excluded_keywords">
+              <a href="/account_settings/excluded_keywords?fromArticles=1">
                 filtering&nbsp;keywords
               </a>{" "}
               or <a href="articles/mySearches">adding&nbsp;searches</a>.
