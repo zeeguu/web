@@ -2,6 +2,7 @@ import {
   OPTIONS,
   TABS_IDS,
   USER_DASHBOARD_TITLES,
+  STREAK_MESSAGE,
 } from "../ConstantsUserDashboard";
 import * as s from "../userDashboard_Styled/UserDashboard.sc";
 import IntervalDropdownList from "./IntervalDropdownList";
@@ -18,6 +19,7 @@ export default function UserDashboardTop({
   activeTimeFormatOption,
   referenceDate,
   handleChangeReferenceDate,
+  currentStreak,
 }) {
   return (
     <s.UserDashboardTopContainer>
@@ -59,6 +61,19 @@ export default function UserDashboardTop({
           )}
         </>
       </s.UserDashboardHelperText>
+
+      {activeTab === TABS_IDS.BAR_GRAPH ?
+      <s.StreakDisplay>
+      <>
+          {activeTab === TABS_IDS.BAR_GRAPH
+            ? STREAK_MESSAGE.YOUR_STREAK
+            : null}
+        <s.Streak>  
+          {currentStreak} days 
+        </s.Streak>
+        </>
+      </s.StreakDisplay>
+        : null}
     </s.UserDashboardTopContainer>
   );
 }

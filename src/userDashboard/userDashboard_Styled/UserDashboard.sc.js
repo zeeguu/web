@@ -17,6 +17,25 @@ const UserDashboardHelperText = styled(s.TopMessage)`
   }
 `;
 
+const StreakDisplay =styled(s.TopMessage)`
+@media screen and (max-width: 768px) {
+  font-size: 0.8em;
+  line-height: 4ex;
+  text-align: left;
+}
+`;
+
+const Streak = styled.div`
+  line-height: 0.8em;
+  font-size: 1em;
+  width: 100%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
+`;
+
+
 const UserDatePicker = styled.div`
   ${datePickerCSS}
   padding: 0.2em;
@@ -129,4 +148,6 @@ export {
   NivoGraphContainer,
   UserDatePicker,
   UserDashboardFeedbackButton,
+  StreakDisplay,
+  Streak,
 };

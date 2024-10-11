@@ -38,6 +38,7 @@ export default function UserDashboard({ api }) {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
+  const [currentStreak, setCurrentStreak] = useState(0);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -88,6 +89,7 @@ export default function UserDashboard({ api }) {
     setActiveTimeFormatOption(selected);
     api.logUserActivity(api.USER_DASHBOARD_TIME_COUNT_CHANGE, "", selected);
   }
+  
 
   useEffect(() => {
     setTitle(strings.titleUserDashboard);
@@ -106,13 +108,39 @@ export default function UserDashboard({ api }) {
 
     api.getUserActivityByDay((activity) => {
       setDailyExerciseAndReadingTimes(activity);
+      
+      const exercises = activity.exercises;
+      const reading = activity.reading;
+      const activitiesArray = exercises.concat(reading);
+      console.log(activitiesArray);
 
-      setMonthlyExerciseAndReadingTimes(
-        calculateCountPerMonth_Activity(activity),
-      );
-    });
-    // eslint-disable-next-line
-  }, [activeTab]);
+      const allActivities = [...activitiesArray].sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateB.getTime() - dateA.getTime();
+      });
+            console.log(allActivities);
+    
+            let currentStreak = 0;
+          
+            allActivities.forEach(({ date }) => {
+              const hasActivity = allActivities.some(item => item.date === date && item.seconds > 0);
+              if (hasActivity) {
+                currentStreak++;
+              } else {
+                currentStreak = 0;
+              }
+            });
+            setCurrentStreak(currentStreak);
+
+            setMonthlyExerciseAndReadingTimes(
+              calculateCountPerMonth_Activity(activity),
+            );
+          });
+            // eslint-disable-next-line
+        }, [activeTab]);
+  
+
 
   if (!allWordsData || !dailyExerciseAndReadingTimes) {
     return <LoadingAnimation />;
@@ -128,6 +156,7 @@ export default function UserDashboard({ api }) {
         handleActiveTimeFormatChange={handleActiveTimeFormatChange}
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
+        currentStreak={currentStreak}
         handleChangeReferenceDate={handleChangeReferenceDate}
       />
 
