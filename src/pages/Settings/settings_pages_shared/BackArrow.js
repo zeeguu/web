@@ -5,7 +5,7 @@ import * as s from "./BackArrow.sc";
 export default function BackArrow() {
   const history = useHistory();
   return (
-    <s.BackArrow onClick={() => history.goBack()}>
+    <s.BackArrow onClick={() => history.goBack(0)}>
       <ArrowBackRoundedIcon /> Back
     </s.BackArrow>
   );
