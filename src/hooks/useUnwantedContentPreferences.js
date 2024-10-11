@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import Feature from "../features/Feature";
 
 export default function useUnwantedContentPreferences(api) {
+  const useNewTopics = Feature.new_topics();
   const [topicsAvailableForExclusion, setTopicsAvailableForExclusion] =
     useState([]);
   const [excludedTopics, setExcludedTopics] = useState([]);
@@ -8,13 +10,23 @@ export default function useUnwantedContentPreferences(api) {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    api.topicsAvailableForExclusion((topics) => {
-      setTopicsAvailableForExclusion(topics);
-    });
+    if (useNewTopics) {
+      api.newTopicsAvailableForExclusion((topics) => {
+        setTopicsAvailableForExclusion(topics);
+      });
 
-    api.getExcludedTopics((filters) => {
-      setExcludedTopics(filters);
-    });
+      api.getExcludedNewTopics((filters) => {
+        setExcludedTopics(filters);
+      });
+    } else {
+      api.topicsAvailableForExclusion((topics) => {
+        setTopicsAvailableForExclusion(topics);
+      });
+
+      api.getExcludedTopics((filters) => {
+        setExcludedTopics(filters);
+      });
+    }
 
     api.getUnwantedKeywords((keywords) => {
       setUnwantedKeywords(keywords);
@@ -23,12 +35,20 @@ export default function useUnwantedContentPreferences(api) {
 
   function excludeTopic(topic) {
     setExcludedTopics([...excludedTopics, topic]);
-    api.excludeTopic(topic);
+    if (useNewTopics) {
+      api.excludeNewTopic(topic);
+    } else {
+      api.excludeTopic(topic);
+    }
   }
 
   function unexcludeTopic(topic) {
     setExcludedTopics(excludedTopics.filter((each) => each.id !== topic.id));
-    api.unexcludeTopic(topic);
+    if (useNewTopics) {
+      api.unexcludeNewTopic(topic);
+    } else {
+      api.unexcludeTopic(topic);
+    }
   }
 
   function toggleTopicExclusion(topic) {

@@ -9,6 +9,7 @@ import { setTitle } from "../assorted/setTitle";
 import useSelectInterest from "../hooks/useSelectInterest";
 import redirect from "../utils/routing/routing.js";
 import SubscribeSearchButton from "./SubscribeSearchButton.js";
+import SearchField from "./SearchField.js";
 
 export default function MySearches({ api }) {
   const { subscribedSearches } = useSelectInterest(api);
@@ -54,11 +55,19 @@ export default function MySearches({ api }) {
   }
 
   if (subscribedSearches && subscribedSearches.length === 0) {
-    return <s.TopMessage>{strings.NoSavedSearches}</s.TopMessage>;
+    return (
+      <>
+        <div>
+          <SearchField api={api} />
+        </div>
+        <s.TopMessage>{strings.NoSavedSearches}</s.TopMessage>
+      </>
+    );
   }
 
   return (
     <>
+      <SearchField api={api} />
       {articlesBySearchTerm.map(({ searchTerm, articles }) => (
         <div key={searchTerm}>
           <d.HeadlineSavedSearches>{searchTerm}</d.HeadlineSavedSearches>

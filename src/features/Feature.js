@@ -9,6 +9,10 @@ const Feature = {
     return this.is_enabled("tiago_exercises");
   },
 
+  new_topics: function () {
+    return this.is_enabled("new_topics");
+  },
+
   merle_exercises: function () {
     return this.is_enabled("merle_exercises");
   },
