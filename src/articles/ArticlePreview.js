@@ -25,6 +25,7 @@ export default function ArticlePreview({
   setDoNotShowRedirectionModal_UserPreference,
   onArticleClick,
 }) {
+  // Store which topic was clicked to show in the Modal
   const [infoTopicClick, setInfoTopicClick] = useState("");
   const [showInfoTopics, setShowInfoTopics] = useState(false);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
@@ -149,7 +150,7 @@ export default function ArticlePreview({
       <s.BottomContainer>
         <div>
           {Feature.new_topics() && showInferredTopic && (
-            <s.KeywordTopics>
+            <s.UrlTopics>
               {new_topics.map((tuple) => (
                 // Tuple (Topic Title, TopicOriginType)
                 <span
@@ -170,14 +171,14 @@ export default function ArticlePreview({
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowInferredTopic(false);
-                        toast("Thank you for letting us know!");
+                        toast("Your preference was saved.");
                         api.removeMLSuggestion(article.id, tuple[0]);
                       }}
                     />
                   )}
                 </span>
               ))}
-            </s.KeywordTopics>
+            </s.UrlTopics>
           )}
           <s.Topics>
             {topics.map((topic) => (

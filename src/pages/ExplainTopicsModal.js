@@ -14,7 +14,7 @@ export default function ExplainTopicsModal({
         <>
           <h1>Article topics are shown differently!</h1>
           <div style={{ textAlign: "left", lineHeight: "2em" }}>
-            <s.KeywordTopics style={{ cursor: "default" }}>
+            <s.UrlTopics style={{ cursor: "default" }}>
               <span
                 className="inferred"
                 style={{ marginRight: "0.5em", cursor: "default" }}
@@ -29,8 +29,8 @@ export default function ExplainTopicsModal({
               A dashed-line means that similar articles have been labeled with '
               {infoTopicClick}'. You can choose to remove them by clicking the
               cross.
-            </s.KeywordTopics>
-            <s.KeywordTopics style={{ cursor: "default" }}>
+            </s.UrlTopics>
+            <s.UrlTopics style={{ cursor: "default" }}>
               <span
                 className="gold"
                 style={{ marginRight: "0.5em", cursor: "default" }}
@@ -39,7 +39,7 @@ export default function ExplainTopicsModal({
               </span>{" "}
               The source associated with the article usually publishes '
               {infoTopicClick}'.
-            </s.KeywordTopics>
+            </s.UrlTopics>
           </div>
         </>
       }

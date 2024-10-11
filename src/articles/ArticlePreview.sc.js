@@ -139,7 +139,7 @@ let Topics = styled.span`
     vertical-align: middle;
   }
 `;
-let KeywordTopics = styled.div`
+let UrlTopics = styled.div`
   display: inline-block;
   cursor: help;
 
@@ -183,5 +183,5 @@ export {
   BottomContainer,
   Summary,
   Topics,
-  KeywordTopics,
+  UrlTopics,
 };
