@@ -16,6 +16,9 @@ const isExpectedDomain = /netlify.app|zeeguu.org|localhost/g;
 
 if (!isExpectedDomain.test(APP_DOMAIN)) APP_DOMAIN = "https://www.zeeguu.org";
 
+/*
+ * This is mirrored from the API -> zeeguu\core\model\new_article_topic_map.py
+ */
 const TopicOriginType = Object.freeze({
   URL_PARSED: 1,
   HARDSET: 2,
