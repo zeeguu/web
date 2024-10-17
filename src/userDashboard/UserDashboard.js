@@ -38,7 +38,7 @@ export default function UserDashboard({ api }) {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  const [currentStreak, setCurrentStreak] = useState(0);
+  const [setCurrentStreak] = useState(0);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -89,7 +89,12 @@ export default function UserDashboard({ api }) {
     setActiveTimeFormatOption(selected);
     api.logUserActivity(api.USER_DASHBOARD_TIME_COUNT_CHANGE, "", selected);
   }
-  
+
+  function getPreviousDate(dateString) {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() - 1);
+    return date.toISOString().slice(0, 10);
+  }
 
   useEffect(() => {
     setTitle(strings.titleUserDashboard);
@@ -106,40 +111,30 @@ export default function UserDashboard({ api }) {
       setAllWordsDataPerMonths(calculateCountPerMonth_Words(formatted));
     });
 
-    api.getUserActivityByDay((activity) => {
-      setDailyExerciseAndReadingTimes(activity);
-      
-      const exercises = activity.exercises;
-      const reading = activity.reading;
-      const activitiesArray = exercises.concat(reading);
-      console.log(activitiesArray);
+    api.getUserActivityByDay((activitiesArray) => {
+      setDailyExerciseAndReadingTimes(activitiesArray);
+      setMonthlyExerciseAndReadingTimes(calculateCountPerMonth_Activity(activitiesArray));
 
-      const allActivities = [...activitiesArray].sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return dateB.getTime() - dateA.getTime();
-      });
-            console.log(allActivities);
-    
-            let currentStreak = 0;
-          
-            allActivities.forEach(({ date }) => {
-              const hasActivity = allActivities.some(item => item.date === date && item.seconds > 0);
-              if (hasActivity) {
-                currentStreak++;
-              } else {
-                currentStreak = 0;
-              }
-            });
-            setCurrentStreak(currentStreak);
+      const currentDate = new Date();
+      const currentDateString = currentDate.toISOString().slice(0, 10);
 
-            setMonthlyExerciseAndReadingTimes(
-              calculateCountPerMonth_Activity(activity),
-            );
-          });
-            // eslint-disable-next-line
-        }, [activeTab]);
-  
+      const activitiesSorted = activitiesArray.sort((a, b) => b.date.localeCompare(a.date));
+
+      let streak = 0;
+      let previousDate = currentDateString;
+
+      for (const activity of activitiesSorted) {
+        if (activity.date === previousDate) {
+          streak++;
+          previousDate = getPreviousDate(activity.date);
+        } else {
+          break;
+        }
+      }
+
+      setCurrentStreak(streak);
+    });
+  }, [api, setCurrentStreak]);
 
 
   if (!allWordsData || !dailyExerciseAndReadingTimes) {
@@ -156,7 +151,7 @@ export default function UserDashboard({ api }) {
         handleActiveTimeFormatChange={handleActiveTimeFormatChange}
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
-        currentStreak={currentStreak}
+        setCurrentStreak={setCurrentStreak}
         handleChangeReferenceDate={handleChangeReferenceDate}
       />
 

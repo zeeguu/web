@@ -19,7 +19,7 @@ export default function UserDashboardTop({
   activeTimeFormatOption,
   referenceDate,
   handleChangeReferenceDate,
-  currentStreak,
+  setCurrentStreak,
 }) {
   return (
     <s.UserDashboardTopContainer>
@@ -69,7 +69,7 @@ export default function UserDashboardTop({
             ? STREAK_MESSAGE.YOUR_STREAK
             : null}
         <s.Streak>  
-          {currentStreak} days 
+          {setCurrentStreak}
         </s.Streak>
         </>
       </s.StreakDisplay>
