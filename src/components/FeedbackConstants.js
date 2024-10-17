@@ -1,3 +1,8 @@
+/**
+ * These values need to be aligned with the API values in the Database
+ * (FeedbackComponent)
+ *
+ */
 export const FEEDBACK_CODES = Object.freeze({
   1: "Article Reader",
   2: "Article Recommendations",

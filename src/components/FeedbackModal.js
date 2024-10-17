@@ -54,14 +54,10 @@ export default function FeedbackModal({ open, setOpen, feedbackOptions }) {
           <FormSection>
             <Selector
               options={feedbackOptions}
-              optionLabel={(v) => {
-                return FEEDBACK_CODES[v];
-              }}
-              optionValue={(v) => {
-                return v;
-              }}
+              optionLabel={(v) => FEEDBACK_CODES[v]}
+              optionValue={(v) => v}
               selectedValue={feedbackComponentSelected}
-              onChange={(e) => setFeedbackComponentSelected(e)}
+              onChange={(e) => setFeedbackComponentSelected(e.target.value)}
               label={"Which component do you want to give feedback on?"}
               placeholder={"Select Component to give Feedback on"}
               id={"feedback-option"}
@@ -70,7 +66,7 @@ export default function FeedbackModal({ open, setOpen, feedbackOptions }) {
           <FormSection>
             <TextField
               label={"Let us know what happened"}
-              onChange={feedbackMessageChange}
+              onChange={(e) => feedbackMessageChange(e.target.value)}
             />
           </FormSection>
 

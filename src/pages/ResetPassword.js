@@ -7,6 +7,10 @@ import Main from "./_pages_shared/Main.sc";
 import Footer from "./_pages_shared/Footer.sc";
 
 import useFormField from "../hooks/useFormField";
+import {
+  EmailValidator,
+  NonEmptyValidator,
+} from "../utils/ValidatorRule/Validator";
 
 import ResetPasswordStep1 from "./ResetPasswordStep1";
 import ResetPasswordStep2 from "./ResetPasswordStep2";
@@ -15,10 +19,14 @@ import strings from "../i18n/definitions";
 import { setTitle } from "../assorted/setTitle";
 
 export default function ResetPassword({ api }) {
-  const [email, handleEmailChange] = useFormField("");
+  const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
+    useFormField("", [
+      NonEmptyValidator("Please provide an email."),
+      EmailValidator,
+    ]);
   const [codeSent, setCodeSent] = useState(false);
 
-  function validEmail() {
+  function emailSent() {
     setCodeSent(true);
   }
 
@@ -36,8 +44,11 @@ export default function ResetPassword({ api }) {
           <ResetPasswordStep1
             api={api}
             email={email}
-            handleEmailChange={handleEmailChange}
-            notifyOfValidEmail={validEmail}
+            setEmail={setEmail}
+            validateEmail={validateEmail}
+            isEmailValid={isEmailValid}
+            emailErrorMsg={emailErrorMsg}
+            notifyEmailSent={emailSent}
           />
         )}
 
