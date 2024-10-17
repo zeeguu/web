@@ -38,7 +38,7 @@ export default function UserDashboard({ api }) {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  const [setCurrentStreak] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -118,7 +118,9 @@ export default function UserDashboard({ api }) {
       const currentDate = new Date();
       const currentDateString = currentDate.toISOString().slice(0, 10);
 
-      const activitiesSorted = activitiesArray.sort((a, b) => b.date.localeCompare(a.date));
+      const combinedArray = activitiesArray.exercises.concat(activitiesArray.reading);
+      const activitiesSorted = combinedArray.sort((a, b) => b.date.localeCompare(a.date));
+      console.log(activitiesSorted);
 
       let streak = 0;
       let previousDate = currentDateString;
@@ -151,7 +153,7 @@ export default function UserDashboard({ api }) {
         handleActiveTimeFormatChange={handleActiveTimeFormatChange}
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
-        setCurrentStreak={setCurrentStreak}
+        currentStreak={currentStreak}
         handleChangeReferenceDate={handleChangeReferenceDate}
       />
 
