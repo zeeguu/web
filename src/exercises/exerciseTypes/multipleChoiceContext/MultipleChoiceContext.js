@@ -88,6 +88,7 @@ export default function MultipleChoiceContext({
     setIsCorrect(true);
     handleAnswer(message);
     setShowSolution(true);
+    setWordInContextHeadline(removePunctuation(bookmarksToStudy[0].to));
   }
 
   function notifyChoiceSelection(
