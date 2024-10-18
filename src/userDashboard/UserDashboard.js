@@ -115,9 +115,6 @@ export default function UserDashboard({ api }) {
       setDailyExerciseAndReadingTimes(activitiesArray);
       setMonthlyExerciseAndReadingTimes(calculateCountPerMonth_Activity(activitiesArray));
 
-      const currentDate = new Date();
-      const currentDateString = currentDate.toISOString().slice(0, 10);
-
       //Adds the activity arrays together that we get from getUserActivityByDay
       const bothActivitiesArray = activitiesArray.exercises.concat(activitiesArray.reading);
 
@@ -143,6 +140,8 @@ export default function UserDashboard({ api }) {
       const activitiesSorted =combinedArray.filter((activity) => activity.seconds > 0).sort((a, b) => b.date.localeCompare(a.date));
       console.log(activitiesSorted);
 
+      const currentDate = new Date();
+      const currentDateString = currentDate.toISOString().slice(0, 10);
       
       let streak = 0;
       let previousDate = currentDateString;
