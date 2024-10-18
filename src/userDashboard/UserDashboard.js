@@ -118,10 +118,32 @@ export default function UserDashboard({ api }) {
       const currentDate = new Date();
       const currentDateString = currentDate.toISOString().slice(0, 10);
 
-      const combinedArray = activitiesArray.exercises.concat(activitiesArray.reading);
-      const activitiesSorted = combinedArray.sort((a, b) => b.date.localeCompare(a.date));
+      //Adds the activity arrays together that we get from getUserActivityByDay
+      const bothActivitiesArray = activitiesArray.exercises.concat(activitiesArray.reading);
+
+      //adds together the seconds for each day. this is an object 
+      const combinedObject= bothActivitiesArray.reduce((acc,curr)=> {
+        if (acc[curr.date]){
+          acc[curr.date] += curr.seconds;
+        }
+        else
+        {
+          acc[curr.date] = curr.seconds;
+      }
+      return acc;
+    }, {});
+   
+    //converts back into array 
+    const combinedArray = Object.keys(combinedObject).map((date) => ({
+      date: date,
+      seconds: combinedObject[date],
+    }));
+    
+      // filters out the instances where seconds is 0 and orders by date
+      const activitiesSorted =combinedArray.filter((activity) => activity.seconds > 0).sort((a, b) => b.date.localeCompare(a.date));
       console.log(activitiesSorted);
 
+      
       let streak = 0;
       let previousDate = currentDateString;
 
