@@ -20,7 +20,7 @@ export default function UnfinishedArticlePreview({ article, onArticleClick }) {
   }
 
   return (
-    <s.ArticlePreview>
+    <s.ArticlePreview style={{ border: "none" }}>
       <s.UnfinishedArticleContainer>
         <s.Title>{titleLink(article)}</s.Title>
         {article.img_url && <img alt="" src={article.img_url} />}

@@ -25,10 +25,18 @@ const WhiteRoundButton = styled(RoundButton)`
   background-color: white;
   color: ${zeeguuOrange} !important;
   border: 2px solid ${zeeguuOrange};
+  &:hover {
+    filter: brightness(95%);
+  }
 `;
 
 const OrangeRoundButton = styled(RoundButton)`
   background-color: ${zeeguuOrange};
+  border: 2px solid ${zeeguuOrange};
+  &:hover {
+    filter: brightness(105%);
+  }
+  .
 `;
 
 const SearchIcon = styled(MUISearchIcon)`
@@ -40,10 +48,10 @@ const SearchIcon = styled(MUISearchIcon)`
 
 // from: https://stackoverflow.com/questions/10019797/pure-css-close-button
 const ClearSearchButton = styled.div`
-  display: block;
   float: left;
   margin-top: 2px;
-  margin-left: -1.6em;
+  margin-left: -3rem;
+  margin-right: 1rem;
   box-sizing: border-box;
   width: 1.4em;
   height: 1.4em;
@@ -68,8 +76,6 @@ const ClearSearchButton = styled.div`
     -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, gray 46%, gray
           56%, transparent 56%, transparent 100%);
   background-color: white;
-
-  transition: all 0.3s ease;
 `;
 
 const BigSquareButton = styled(RoundButton)`
