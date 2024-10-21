@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <meta name="description" content="Web site created using create-react-app"/>
+
+    <base href="/"/>
+    
+    <link rel="apple-touch-icon" href="/logo192.png"/>
+    <link rel="manifest" href="/manifest.json"/>
+    <link href="/static/fonts/montserrat.css" type="text/css" rel="stylesheet" />
+
+    <title>Zeeguu</title>
+
+  <style>
+    .contentDiv {
+      display: flex; 
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Monsterrat', sans-serif;
+    }
+
+    .capitalizeBold {
+      text-transform: capitalize;
+      font-weight: bold;
+    }
+  </style>
+
+<body>
+  <div id="offlineRoot" class="contentDiv">
+    <img src="/logo192.png"> 
+    <h1>You seem to be offline</h1>
+    <h2>Please return to Zeeguu when you are back online!</h2>
+    <div id="wordsList">Loading cached words...</div>
+  </div>
+  <script>
+    async function displayCachedWords() {
+      try {
+        const sessionId = document.cookie.split(";")[0].split("=")[1]
+        if (!sessionId) {
+          console.error("No session ID found")
+          return;
+        }
+        
+        const cache = await caches.open("data-cache-v1");
+        const request = new Request(`https://api.zeeguu.org/bookmarks_in_pipeline?session=${sessionId}`);
+    
+        const cachedRequests = await cache.keys();
+        let cachedResponse = null;
+
+        for (const cachedRequest of cachedRequests) {
+          if (new URL(cachedRequest.url).pathname === new URL(request.url).pathname) {
+            cachedResponse = await cache.match(cachedRequest);
+            break;
+          }
+        }
+        
+        if (cachedResponse) {
+          const contentType = cachedResponse.headers.get("Content-Type");
+
+          if (contentType && contentType.includes("application/json")) {
+          const words = await cachedResponse.json();
+          const wordsList = document.getElementById("wordsList");
+          wordsList.innerHTML = words.map(word => `<p class="capitalizeBold">${word.from}</p><p>${word.to}</p></br>`).join("");
+        
+          } else {
+            console.error("Cached response is not JSON. Received content type:", contentType);
+            document.getElementById("wordsList").innerText = "No cached words found.";
+          }
+        } else {
+          document.getElementById("wordsList").innerText = "No cached words found.";
+        }
+      } catch (error) {
+          console.error("Error fetching cached words:", error);
+        }
+    } displayCachedWords();
+      
+    window.addEventListener("online", () => {
+      console.log("Network is back online. Reloading the page once.");
+      window.location.reload();
+    });
+  
+    async function checkNetworkAndReload() {
+      try {
+        const response = await fetch(".");
+        if (response.status >= 200 && response.status < 500) {
+          console.log("Server is responsive. Reloading the page.");
+          window.location.reload();
+        }
+      } catch (error) {
+        console.log("Server not responsive, staying on offline page.");
+      }
+    }
+  
+    if (navigator.onLine) {
+      checkNetworkAndReload();
+    }
+
+    </script>
+  </body>
+</html>
