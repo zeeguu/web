@@ -14,7 +14,12 @@ import Header from "./modal_shared/Header.sc.js";
 import Heading from "./modal_shared/Heading.sc.js";
 import { FEEDBACK_CODES, FEEDBACK_CODES_NAME } from "./FeedbackConstants.js";
 
-export default function FeedbackModal({ open, setOpen, feedbackOptions }) {
+export default function FeedbackModal({
+  open,
+  setOpen,
+  feedbackOptions,
+  prefixMsg,
+}) {
   let api = useContext(APIContext);
   const [feedbackComponentSelected, setFeedbackComponentSelected] =
     useFormField(FEEDBACK_CODES_NAME.OTHER);
@@ -23,7 +28,9 @@ export default function FeedbackModal({ open, setOpen, feedbackOptions }) {
   function onSubmit(e) {
     e.preventDefault();
     let payload = {
-      message: feedbackMessage,
+      message: prefixMsg
+        ? prefixMsg + " - " + feedbackMessage
+        : feedbackMessage,
       feedbackComponentId: feedbackComponentSelected,
       currentUrl: window.location.href,
     };

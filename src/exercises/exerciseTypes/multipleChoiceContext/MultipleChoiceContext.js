@@ -182,6 +182,7 @@ export default function MultipleChoiceContext({
       ))}
 
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
