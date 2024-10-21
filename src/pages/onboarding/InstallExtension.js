@@ -32,7 +32,7 @@ export default function InstallExtension() {
         </Heading>
       </Header>
       <Main>
-        <FullWidthImage src={"find-extension.png"} />
+        <FullWidthImage src={"translations.png"} />
         {runningInChromeDesktop() && (
           <p>
             The Chrone Web Store extension also works in <b>Edge</b>,{" "}
