@@ -143,6 +143,7 @@ export default function TranslateL2toL1({
       )}
 
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}

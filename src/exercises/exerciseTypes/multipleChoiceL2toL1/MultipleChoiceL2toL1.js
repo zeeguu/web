@@ -142,6 +142,7 @@ export default function MultipleChoiceL2toL1({
         />
       )}
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}

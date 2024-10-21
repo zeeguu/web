@@ -5,7 +5,7 @@ import FeedbackModal from "../../components/FeedbackModal";
 import { FEEDBACK_OPTIONS } from "../../components/FeedbackConstants";
 
 export default function SolutionFeedbackLinks({
-  api,
+  prefixMsg,
   handleShowSolution,
   toggleShow,
   isCorrect,
@@ -15,6 +15,7 @@ export default function SolutionFeedbackLinks({
   return (
     <s.CenteredRow>
       <FeedbackModal
+        prefixMsg={prefixMsg}
         open={openFeedback}
         setOpen={setOpenFeedback}
         feedbackOptions={FEEDBACK_OPTIONS.EXERCISE}

@@ -251,6 +251,7 @@ export default function MultipleChoiceAudio({
         </>
       )}
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}

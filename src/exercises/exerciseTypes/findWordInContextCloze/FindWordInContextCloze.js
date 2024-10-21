@@ -138,6 +138,7 @@ export default function FindWordInContextCloze({
 
       <NextNavigation
         message={messageToAPI}
+        exerciseType={EXERCISE_TYPE}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
