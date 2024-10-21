@@ -31,7 +31,7 @@ export default function SupportedNotification_NotInstalled({
       </Header>
       <Main>
         <FullWidthImage
-          src={"find-extension.png"}
+          src={"translations.png"}
           alt={"Zeeguu browser extension"}
         />
       </Main>
