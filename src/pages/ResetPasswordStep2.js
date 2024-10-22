@@ -92,7 +92,7 @@ export default function ResetPasswordStep2({ api, email }) {
         <br />
         <p>
           {strings.youCanGoTo}
-          <a href="signin">{strings.login}</a> {strings.now}
+          <a href="log_in">{strings.login}</a> {strings.now}
         </p>
       </>
     );
