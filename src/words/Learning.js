@@ -8,6 +8,7 @@ import * as s from "../components/TopMessage.sc";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 import { LEARNING_CYCLE } from "../exercises/ExerciseTypeConstants";
 import CollapsablePanel from "../components/CollapsablePanel";
+import LocalStorage from "../assorted/LocalStorage";
 
 export default function Learning({ api }) {
   const [receptiveWords, setReceptiveWords] = useState(null);
@@ -58,21 +59,28 @@ export default function Learning({ api }) {
 
   return (
     <>
-      <CollapsablePanel topMessage="Receptive">
-        <s.TopMessage>
-          <div className="top-message-icon">
-            <img
-              src="/static/icons/receptive-icon.png"
-              alt="Receptive Icon"
-              style={{
-                height: "2.5em",
-                width: "2.5em",
-                margin: "0.5em",
-              }}
-            />
-            {strings.receptiveMsg}
-          </div>
-        </s.TopMessage>
+      <CollapsablePanel
+        topMessage={
+          LocalStorage.productiveExercisesEnabled ? "Receptive" : "In Learning"
+        }
+      >
+        {LocalStorage.productiveExercisesEnabled && (
+          <s.TopMessage>
+            <div className="top-message-icon">
+              <img
+                src="/static/icons/receptive-icon.png"
+                alt="Receptive Icon"
+                style={{
+                  height: "2.5em",
+                  width: "2.5em",
+                  margin: "0.5em",
+                }}
+              />
+              {strings.receptiveMsg}
+            </div>
+          </s.TopMessage>
+        )}
+
         {receptiveWords.length === 0 ? (
           <s.TopMessage>{strings.noReceptiveWords}</s.TopMessage>
         ) : (
@@ -88,35 +96,42 @@ export default function Learning({ api }) {
         )}
       </CollapsablePanel>
       <br />
-      <CollapsablePanel topMessage="Productive">
-        <s.TopMessage>
-          <div className="top-message-icon">
-            <img
-              src="/static/icons/productive-icon.png"
-              alt="Productive Icon"
-              style={{ height: "2.5em", width: "2.5em", margin: "0.5em" }}
-            />
-            {strings.productiveMsg}
-          </div>
-        </s.TopMessage>
-        {productiveExercisesEnabled === false && (
-          <s.TopMessage>{strings.productiveDisableMsg}</s.TopMessage>
-        )}
-        {productiveWords.length === 0 && productiveExercisesEnabled === true ? (
-          <s.TopMessage>{strings.noProductiveWords}</s.TopMessage>
-        ) : (
-          productiveWords.map((each) => (
-            <Word
-              key={each.id}
-              bookmark={each}
-              api={api}
-              source={UMR_SOURCE}
-              notifyDelete={onNotifyDelete}
-            />
-          ))
-        )}
-      </CollapsablePanel>
-      <br />
+      {LocalStorage.productiveExercisesEnabled && (
+        <>
+          <CollapsablePanel topMessage="Productive">
+            <s.TopMessage>
+              <div className="top-message-icon">
+                <img
+                  src="/static/icons/productive-icon.png"
+                  alt="Productive Icon"
+                  style={{ height: "2.5em", width: "2.5em", margin: "0.5em" }}
+                />
+                {strings.productiveMsg}
+              </div>
+            </s.TopMessage>
+
+            {productiveExercisesEnabled === false && (
+              <s.TopMessage>{strings.productiveDisableMsg}</s.TopMessage>
+            )}
+            {productiveWords.length === 0 &&
+            productiveExercisesEnabled === true ? (
+              <s.TopMessage>{strings.noProductiveWords}</s.TopMessage>
+            ) : (
+              productiveWords.map((each) => (
+                <Word
+                  key={each.id}
+                  bookmark={each}
+                  api={api}
+                  source={UMR_SOURCE}
+                  notifyDelete={onNotifyDelete}
+                />
+              ))
+            )}
+          </CollapsablePanel>
+          <br />
+        </>
+      )}
+
       <CollapsablePanel topMessage="Not Yet In Study">
         <s.TopMessage>
           <div className="top-message-icon">{strings.toLearnMsg}</div>
