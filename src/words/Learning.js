@@ -9,6 +9,7 @@ import { UMR_SOURCE } from "../reader/ArticleReader";
 import { LEARNING_CYCLE } from "../exercises/ExerciseTypeConstants";
 import CollapsablePanel from "../components/CollapsablePanel";
 import LocalStorage from "../assorted/LocalStorage";
+import Feature from "../features/Feature";
 
 export default function Learning({ api }) {
   const [receptiveWords, setReceptiveWords] = useState(null);
@@ -18,12 +19,6 @@ export default function Learning({ api }) {
     useState();
 
   useEffect(() => {
-    const productiveExercisesEnabled = localStorage.getItem(
-      "productiveExercisesEnabled",
-    );
-    if (productiveExercisesEnabled) {
-      setProductiveExercisesEnabled(JSON.parse(productiveExercisesEnabled));
-    }
     api.getUserBookmarksInPipeline((bookmarks) => {
       const _receptiveWords = bookmarks.filter(
         (word) => word.learning_cycle === LEARNING_CYCLE.RECEPTIVE,
@@ -60,11 +55,9 @@ export default function Learning({ api }) {
   return (
     <>
       <CollapsablePanel
-        topMessage={
-          LocalStorage.productiveExercisesEnabled ? "Receptive" : "In Learning"
-        }
+        topMessage={Feature.merle_exercises() ? "Receptive" : "In Learning"}
       >
-        {LocalStorage.productiveExercisesEnabled && (
+        {Feature.merle_exercises() && (
           <s.TopMessage>
             <div className="top-message-icon">
               <img
@@ -96,7 +89,7 @@ export default function Learning({ api }) {
         )}
       </CollapsablePanel>
       <br />
-      {LocalStorage.productiveExercisesEnabled && (
+      {Feature.merle_exercises() && (
         <>
           <CollapsablePanel topMessage="Productive">
             <s.TopMessage>
