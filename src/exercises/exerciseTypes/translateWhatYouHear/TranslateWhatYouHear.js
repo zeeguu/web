@@ -41,7 +41,6 @@ export default function TranslateWhatYouHear({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const [showHintText, setShowHintText] = useState(false);
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   async function handleSpeak() {
@@ -156,7 +155,6 @@ export default function TranslateWhatYouHear({
             setMessageToAPI={setMessageToAPI}
             isL1Answer={true}
             exerciseType={EXERCISE_TYPE}
-            onHintUsed={() => setShowHintText(true)}
           />
         </>
       )}

@@ -17,7 +17,6 @@ export default function BottomInput({
   messageToAPI,
   setMessageToAPI,
   isL1Answer,
-  onHintUsed,
   exerciseType,
 }) {
   const [currentInput, setCurrentInput] = useState("");
@@ -44,7 +43,12 @@ export default function BottomInput({
   function handleHint() {
     setUsedHint(true);
     let hint;
-    if (currentInput === targetWord.substring(0, currentInput.length)) {
+    const lowerCurrentInput = currentInput.toLowerCase();
+    const lowerTargetWord = targetWord.toLowerCase();
+    if (
+      lowerCurrentInput ===
+      lowerTargetWord.substring(0, lowerCurrentInput.length)
+    ) {
       hint = targetWord.substring(0, currentInput.length + 1);
     } else {
       hint = targetWord.substring(0, 1);
