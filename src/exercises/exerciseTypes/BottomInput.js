@@ -17,7 +17,6 @@ export default function BottomInput({
   messageToAPI,
   setMessageToAPI,
   isL1Answer,
-  onHintUsed,
   exerciseType,
 }) {
   const [currentInput, setCurrentInput] = useState("");
@@ -29,7 +28,6 @@ export default function BottomInput({
   const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
   const [isOneWordCorrect, setIsOneWordCorrect] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
-  const [firstHint, setFirstHint] = useState(true);
   const levenshtein = require("fast-levenshtein");
 
   const normalizedLearningWord = normalizeAnswer(bookmarksToStudy[0].from);
@@ -43,20 +41,20 @@ export default function BottomInput({
     : bookmarksToStudy[0].from_lang;
 
   function handleHint() {
-    if (exerciseType === EXERCISE_TYPES.translateWhatYouHear && firstHint) {
-      setFirstHint(false);
-      onHintUsed();
+    setUsedHint(true);
+    let hint;
+    const lowerCurrentInput = currentInput.toLowerCase();
+    const lowerTargetWord = targetWord.toLowerCase();
+    if (
+      lowerCurrentInput ===
+      lowerTargetWord.substring(0, lowerCurrentInput.length)
+    ) {
+      hint = targetWord.substring(0, currentInput.length + 1);
     } else {
-      setUsedHint(true);
-      let hint;
-      if (currentInput === targetWord.substring(0, currentInput.length)) {
-        hint = targetWord.substring(0, currentInput.length + 1);
-      } else {
-        hint = targetWord.substring(0, 1);
-      }
-      setCurrentInput(hint);
-      setMessageToAPI(messageToAPI + "H");
+      hint = targetWord.substring(0, 1);
     }
+    setCurrentInput(hint);
+    setMessageToAPI(messageToAPI + "H");
   }
 
   // Update the feedback message
