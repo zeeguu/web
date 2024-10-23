@@ -14,7 +14,7 @@ import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
 
-// The user has to translate the word they hear into their L1. A L2 context with the word is shown when clicking the Hint button.
+// The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
 
 const EXERCISE_TYPE = EXERCISE_TYPES.translateWhatYouHear;
@@ -138,18 +138,16 @@ export default function TranslateWhatYouHear({
               parentIsSpeakingControl={isButtonSpeaking}
             />
           </s.CenteredRowTall>
-          {showHintText && (
-            <div className="contextExample">
-              <TranslatableText
-                isCorrect={isCorrect}
-                interactiveText={interactiveText}
-                translating={true}
-                pronouncing={false}
-                bookmarkToStudy={bookmarksToStudy[0].from}
-                exerciseType={EXERCISE_TYPE}
-              />
-            </div>
-          )}
+          <div className="contextExample">
+            <TranslatableText
+              isCorrect={isCorrect}
+              interactiveText={interactiveText}
+              translating={true}
+              pronouncing={false}
+              bookmarkToStudy={bookmarksToStudy[0].from}
+              exerciseType={EXERCISE_TYPE}
+            />
+          </div>
           <BottomInput
             handleCorrectAnswer={handleCorrectAnswer}
             handleIncorrectAnswer={handleIncorrectAnswer}

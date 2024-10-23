@@ -12,10 +12,7 @@ export const EXERCISE_TYPES = {
   findWordInContext: "Recognize_L1W_in_L2T",
 
   isTranslationExercise: function (exerciseType) {
-    return (
-      exerciseType === this.translateWhatYouHear ||
-      exerciseType === this.multipleChoice
-    );
+    return exerciseType === this.multipleChoice;
   },
 
   isMultiBookmarkExercise: function (exerciseType) {
