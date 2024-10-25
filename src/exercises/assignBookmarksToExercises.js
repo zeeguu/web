@@ -81,6 +81,14 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
     return distinctContextsCount === potentialBookmarkContexts.length;
   }
 
+  function _distinctTranslations(potentialBookmarks) {
+    let potentialBookmarkContexts = potentialBookmarks.map(
+      (bookmark) => bookmark.to,
+    );
+    let distinctContextsCount = new Set(potentialBookmarkContexts).size;
+    return distinctContextsCount === potentialBookmarkContexts.length;
+  }
+
   let exerciseSequence = [];
 
   let exercisesByCycleTask = getElementsByCycleTask(
@@ -109,7 +117,12 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
           let availableBookmarks = currentBookmarkList.length;
           if (
             requiredBookmarks <= availableBookmarks &&
-            _distinctContexts(currentBookmarkList.slice(0, requiredBookmarks))
+            _distinctContexts(
+              currentBookmarkList.slice(0, requiredBookmarks),
+            ) &&
+            _distinctTranslations(
+              currentBookmarkList.slice(0, requiredBookmarks),
+            )
           ) {
             let testedBookmarks = popNElementsFromList(
               currentBookmarkList,
