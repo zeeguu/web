@@ -1182,6 +1182,7 @@ export default function OrderWords({
           </div>
         )}
         <NextNavigation
+          exerciseType={EXERCISE_TYPE}
           message={messageToAPI}
           api={api}
           // Added an empty bookmark to avoid showing the

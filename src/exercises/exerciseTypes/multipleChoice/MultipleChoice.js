@@ -153,6 +153,7 @@ export default function MultipleChoice({
         />
       )}
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}

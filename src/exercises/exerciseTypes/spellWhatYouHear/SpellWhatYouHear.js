@@ -179,6 +179,7 @@ export default function SpellWhatYouHear({
         </>
       )}
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         api={api}
         message={messageToAPI}
         exerciseBookmark={bookmarksToStudy[0]}

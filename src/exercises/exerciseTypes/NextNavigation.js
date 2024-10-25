@@ -285,7 +285,7 @@ export default function NextNavigation({
         </s.StyledGreyButton>
       )}
       <SolutionFeedbackLinks
-        api={api}
+        prefixMsg={`${exerciseType}-(${exerciseBookmark.id})`}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
