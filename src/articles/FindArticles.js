@@ -168,7 +168,6 @@ export default function FindArticles({
         window.removeEventListener("scroll", handleScroll, true);
       };
     }
-
   }, [searchPublishPriority, searchDifficultyPriority]);
 
   if (articleList == null) {
@@ -188,13 +187,29 @@ export default function FindArticles({
     <>
       {!searchQuery && (
         <>
+          <s.SearchHolder>
+            <SearchField api={api} query={searchQuery} />
+          </s.SearchHolder>
+          {/*          
           <Interests
             api={api}
             articlesListShouldChange={articlesListShouldChange}
           />
-          <s.SearchHolder>
-            <SearchField api={api} query={searchQuery} />
-          </s.SearchHolder>
+          */}
+          <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
+            <span>
+              You can customize your Home by{" "}
+              <a href="/account_settings/interests?fromArticles">
+                subscribing&nbsp;to&nbsp;topics
+              </a>
+              ,{" "}
+              <a href="/account_settings/excluded_keywords?fromArticles">
+                filtering&nbsp;keywords
+              </a>{" "}
+              or <a href="articles/mySearches">adding&nbsp;searches</a>.
+            </span>
+          </div>
+
           {!searchQuery && <UnfinishedArticlesList />}
           <s.SortHolder>
             <SortingButtons

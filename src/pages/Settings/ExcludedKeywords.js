@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
+import useQuery from "../../hooks/useQuery";
 
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -26,6 +27,7 @@ export default function ExcludedKeywords({ api }) {
   const [excludedWord, handleExcludedWordsChange, resetExcludedWords] =
     useFormField("");
 
+  const isFromArticles = useQuery().get("fromArticles");
   useEffect(() => {
     setTitle(strings.excludedKeywords);
   }, []);
@@ -39,7 +41,7 @@ export default function ExcludedKeywords({ api }) {
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
+      <BackArrow redirectLink={isFromArticles && "/articles"} />
       <Header withoutLogo>
         <Heading>{strings.excludedKeywords}</Heading>
       </Header>

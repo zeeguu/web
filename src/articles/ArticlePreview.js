@@ -6,8 +6,14 @@ import RedirectionNotificationModal from "../components/redirect_notification/Re
 import Feature from "../features/Feature";
 import { extractVideoIDFromURL } from "../utils/misc/youtube";
 import SmallSaveArticleButton from "./SmallSaveArticleButton";
+import * as sweetM from "./TagsOfInterests.sc";
 import ArticleSourceInfo from "../components/ArticleSourceInfo";
 import ArticleStatInfo from "../components/ArticleStatInfo";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import { toast } from "react-toastify";
+import { darkBlue } from "../components/colors";
+import ExplainTopicsModal from "../pages/ExplainTopicsModal";
+import { TopicOriginType } from "../appConstants";
 
 export default function ArticlePreview({
   article,
@@ -19,10 +25,14 @@ export default function ArticlePreview({
   setDoNotShowRedirectionModal_UserPreference,
   onArticleClick,
 }) {
+  // Store which topic was clicked to show in the Modal
+  const [infoTopicClick, setInfoTopicClick] = useState("");
+  const [showInfoTopics, setShowInfoTopics] = useState(false);
   const [isRedirectionModalOpen, setIsRedirectionModaOpen] = useState(false);
   const [isArticleSaved, setIsArticleSaved] = useState(
     article.has_personal_copy,
   );
+  const [showInferredTopic, setShowInferredTopic] = useState(true);
 
   const handleArticleClick = () => {
     if (onArticleClick) {
@@ -31,6 +41,7 @@ export default function ArticlePreview({
   };
 
   let topics = article.topics.split(" ").filter((each) => each !== "");
+  let new_topics = article.new_topics_list;
   let cefr_level = article.metrics.cefr_level;
 
   function handleCloseRedirectionModal() {
@@ -108,6 +119,16 @@ export default function ArticlePreview({
 
   return (
     <s.ArticlePreview>
+      {showInfoTopics && Feature.new_topics() && (
+        <sweetM.TagsOfInterests>
+          <ExplainTopicsModal
+            infoTopicClick={infoTopicClick}
+            showInfoTopics={showInfoTopics}
+            setShowInfoTopics={setShowInfoTopics}
+          />
+        </sweetM.TagsOfInterests>
+      )}
+
       <SmallSaveArticleButton
         api={api}
         article={article}
@@ -115,42 +136,76 @@ export default function ArticlePreview({
         setIsArticleSaved={setIsArticleSaved}
       />
 
-      <>
-        <s.Title>{titleLink(article)}</s.Title>
-        <ArticleSourceInfo
+      <s.Title>{titleLink(article)}</s.Title>
+      <ArticleSourceInfo
+        articleInfo={article}
+        dontShowPublishingTime={dontShowPublishingTime}
+        dontShowSourceIcon={dontShowSourceIcon}
+      ></ArticleSourceInfo>
+      <s.ArticleContent>
+        {article.img_url && <img alt="" src={article.img_url} />}
+        <s.Summary>{article.summary}...</s.Summary>
+      </s.ArticleContent>
+
+      <s.BottomContainer>
+        <div>
+          {Feature.new_topics() && showInferredTopic && (
+            <s.UrlTopics>
+              {new_topics.map((tuple) => (
+                // Tuple (Topic Title, TopicOriginType)
+                <span
+                  onClick={() => {
+                    setShowInfoTopics(!showInfoTopics);
+                    setInfoTopicClick(tuple[0]);
+                  }}
+                  key={tuple[0]}
+                  className={
+                    tuple[1] === TopicOriginType.INFERRED ? "inferred" : "gold"
+                  }
+                >
+                  {tuple[0]}
+                  {tuple[1] === TopicOriginType.INFERRED && (
+                    <HighlightOffRoundedIcon
+                      className="cancelButton"
+                      sx={{ color: darkBlue }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowInferredTopic(false);
+                        toast("Your preference was saved.");
+                        api.removeMLSuggestion(article.id, tuple[0]);
+                      }}
+                    />
+                  )}
+                </span>
+              ))}
+            </s.UrlTopics>
+          )}
+          {!Feature.new_topics() && (
+            <s.Topics>
+              {topics.map((topic) => (
+                <span key={topic}>{topic}</span>
+              ))}
+            </s.Topics>
+          )}
+        </div>
+        <ArticleStatInfo
+          cefr_level={cefr_level}
           articleInfo={article}
-          dontShowPublishingTime={dontShowPublishingTime}
-          dontShowSourceIcon={dontShowSourceIcon}
-        ></ArticleSourceInfo>
-        <s.ArticleContent>
-          {article.img_url && <img alt="" src={article.img_url} />}
-          <s.Summary>{article.summary}...</s.Summary>
-        </s.ArticleContent>
-        <s.BottomContainer>
-          <s.Topics>
-            {topics.map((topic) => (
-              <span key={topic}>{topic}</span>
-            ))}
-          </s.Topics>
-          <ArticleStatInfo
-            cefr_level={cefr_level}
-            articleInfo={article}
-          ></ArticleStatInfo>
-        </s.BottomContainer>
-        {article.video ? (
-          <img
-            alt=""
-            style={{ float: "left", marginRight: "1em" }}
-            src={
-              "https://img.youtube.com/vi/" +
-              extractVideoIDFromURL(article.url) +
-              "/default.jpg"
-            }
-          />
-        ) : (
-          ""
-        )}
-      </>
+        ></ArticleStatInfo>
+      </s.BottomContainer>
+      {article.video ? (
+        <img
+          alt=""
+          style={{ float: "left", marginRight: "1em" }}
+          src={
+            "https://img.youtube.com/vi/" +
+            extractVideoIDFromURL(article.url) +
+            "/default.jpg"
+          }
+        />
+      ) : (
+        ""
+      )}
     </s.ArticlePreview>
   );
 }
