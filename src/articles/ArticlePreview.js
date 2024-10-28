@@ -180,11 +180,13 @@ export default function ArticlePreview({
               ))}
             </s.UrlTopics>
           )}
-          <s.Topics>
-            {topics.map((topic) => (
-              <span key={topic}>{topic}</span>
-            ))}
-          </s.Topics>
+          {!Feature.new_topics() && (
+            <s.Topics>
+              {topics.map((topic) => (
+                <span key={topic}>{topic}</span>
+              ))}
+            </s.Topics>
+          )}
         </div>
         <ArticleStatInfo
           cefr_level={cefr_level}
