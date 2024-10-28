@@ -24,7 +24,7 @@ export default function ExcludedKeywords({ api }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 
-  const [excludedWord, handleExcludedWordsChange, resetExcludedWords] =
+  const [excludedWord, setExcludedWord, , , , resetExcludedWord] =
     useFormField("");
 
   const isFromArticles = useQuery().get("fromArticles");
@@ -36,7 +36,7 @@ export default function ExcludedKeywords({ api }) {
     e.preventDefault();
     if (excludedWord) {
       addUnwantedKeyword(excludedWord);
-      resetExcludedWords();
+      resetExcludedWord();
     }
   }
   return (
@@ -49,7 +49,9 @@ export default function ExcludedKeywords({ api }) {
         <Form>
           <InputField
             value={excludedWord}
-            onChange={handleExcludedWordsChange}
+            onChange={(e) => {
+              setExcludedWord(e.target.value);
+            }}
             helperText={strings.addUnwantedWordHelperText}
             placeholder={strings.unwantedWordPlaceholder}
           >
