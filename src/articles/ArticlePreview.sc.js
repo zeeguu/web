@@ -3,7 +3,10 @@ import {
   almostBlack,
   zeeguuOrange,
   zeeguuDarkOrange,
-  darkBlue,
+  blue600,
+  blue400,
+  blue100,
+  blue200,
 } from "../components/colors";
 
 const ArticlePreview = styled.div`
@@ -142,13 +145,12 @@ let Topics = styled.span`
 let UrlTopics = styled.div`
   display: inline-block;
   cursor: help;
-
   margin-top: 1em;
   .inferred {
-    border: dashed ${darkBlue};
+    border: dashed 1px ${blue400};
   }
   .gold {
-    border: solid ${darkBlue};
+    border: solid 1px ${blue600};
   }
 
   span {
@@ -161,6 +163,7 @@ let UrlTopics = styled.div`
     font-weight: 500;
     text-align: center;
     vertical-align: middle;
+    background-color: ${blue100};
   }
   .cancelButton {
     cursor: pointer;

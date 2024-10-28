@@ -8,7 +8,9 @@ export default function BackArrow({ redirectLink }) {
 
   return (
     <s.BackArrow
-      onClick={() => (redirectLink ? redirect(redirectLink) : history.goBack())}
+      onClick={() =>
+        redirectLink ? window.location.replace(redirectLink) : history.goBack()
+      }
     >
       <ArrowBackRoundedIcon /> Back
     </s.BackArrow>
