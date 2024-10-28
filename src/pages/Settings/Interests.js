@@ -14,8 +14,7 @@ import { setTitle } from "../../assorted/setTitle";
 export default function Interests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
-  const isFromArticles = useQuery().get("fromArticles");
-
+  const isFromArticles = useQuery().get("fromArticles") === "1";
   useEffect(() => {
     setTitle(strings.interests);
   }, []);

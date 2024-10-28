@@ -27,7 +27,7 @@ export default function ExcludedKeywords({ api }) {
   const [excludedWord, setExcludedWord, , , , resetExcludedWord] =
     useFormField("");
 
-  const isFromArticles = useQuery().get("fromArticles");
+  const isFromArticles = useQuery().get("fromArticles") === "1";
   useEffect(() => {
     setTitle(strings.excludedKeywords);
   }, []);
