@@ -18,12 +18,35 @@ import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 
 import LoadingAnimation from "../../components/LoadingAnimation";
 import LogOutButton from "./LogOutButton";
+import useFormField from "../../hooks/useFormField";
+import {
+  EmailValidator,
+  NonEmptyValidator,
+} from "../../utils/ValidatorRule/Validator";
+import validateRules from "../../assorted/validateRules";
 import { setTitle } from "../../assorted/setTitle";
 
 export default function ProfileDetails({ api, setUser }) {
-  const [userDetails, setUserDetails] = useState(null);
+  const [userDetails, setUserDetails] = useState("");
+  const [
+    userName,
+    setUserName,
+    validateUserName,
+    isUserNameValid,
+    userErrorMessage,
+  ] = useFormField("", NonEmptyValidator("Please provide a name."));
+  const [
+    userEmail,
+    setUserEmail,
+    validateEmail,
+    isEmailValid,
+    emailErrorMessage,
+  ] = useFormField("", [
+    NonEmptyValidator("Please provide an email."),
+    EmailValidator,
+  ]);
+
   const [errorMessage, setErrorMessage] = useState("");
-  const [cefr, setCEFR] = useState("");
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -35,19 +58,10 @@ export default function ProfileDetails({ api, setUser }) {
   useEffect(() => {
     api.getUserDetails((data) => {
       setUserDetails(data);
-      setCEFRlevel(data);
+      setUserEmail(data.email);
+      setUserName(data.name);
     });
   }, [user.session, api]);
-
-  function setCEFRlevel(data) {
-    const levelKey = data.learned_language + "_cefr_level";
-    const levelNumber = data[levelKey];
-    setCEFR("" + levelNumber);
-    setUserDetails({
-      ...data,
-      cefr_level: levelNumber,
-    });
-  }
 
   function updateUserInfo(info) {
     LocalStorage.setUserInfo(info);
@@ -55,12 +69,13 @@ export default function ProfileDetails({ api, setUser }) {
       ...user,
       name: info.name,
     });
-
     saveUserInfoIntoCookies(info);
   }
 
   function handleSave(e) {
     e.preventDefault();
+    setErrorMessage("");
+    if (!validateRules([validateUserName, validateEmail])) return;
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
       history.goBack();
@@ -89,10 +104,13 @@ export default function ProfileDetails({ api, setUser }) {
               id={"name"}
               name={"name"}
               placeholder={strings.name}
-              value={userDetails.name}
-              onChange={(e) =>
-                setUserDetails({ ...userDetails, name: e.target.value })
-              }
+              value={userName}
+              isError={!isUserNameValid}
+              errorMessage={userErrorMessage}
+              onChange={(e) => {
+                setUserDetails({ ...userDetails, name: e.target.value });
+                setUserName(e.target.value);
+              }}
             />
             <InputField
               type={"email"}
@@ -100,10 +118,13 @@ export default function ProfileDetails({ api, setUser }) {
               id={"email"}
               name={"email"}
               placeholder={strings.email}
-              value={userDetails.email}
-              onChange={(e) =>
-                setUserDetails({ ...userDetails, email: e.target.value })
-              }
+              value={userEmail}
+              isError={!isEmailValid}
+              errorMessage={emailErrorMessage}
+              onChange={(e) => {
+                setUserDetails({ ...userDetails, email: e.target.value });
+                setUserEmail(e.target.value);
+              }}
             />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>

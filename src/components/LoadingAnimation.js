@@ -32,6 +32,7 @@ export default function LoadingAnimation({
   return (
     <>
       <FeedbackModal
+        prefixMsg={"Loading"}
         open={showFeedbackModal}
         setOpen={() => {
           setShowFeedbackModal(!showFeedbackModal);

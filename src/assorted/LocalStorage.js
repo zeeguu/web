@@ -15,11 +15,6 @@ const LocalStorage = {
     NativeLanguage: "native_language",
     LearnedCefrLevel: "learned_cefr_level",
 
-    // language related keys used for initial language set-up during account creation
-    LearnedLanguage_OnRegister: "learned_language_on_register",
-    NativeLanguage_OnRegister: "native_language_on_register",
-    LearnedCefrLevel_OnRegister: "learned_cefr_on_register",
-
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
@@ -75,45 +70,6 @@ const LocalStorage = {
 
   setNativeLanguage: function (nativeLanguage) {
     localStorage[this.Keys.NativeLanguage] = nativeLanguage;
-  },
-
-  getLearnedLanguage_OnRegister: function () {
-    return localStorage[this.Keys.LearnedLanguage_OnRegister];
-  },
-
-  setLearnedLanguage_OnRegister: function (learnedLanguage_OnRegister) {
-    localStorage[this.Keys.LearnedLanguage_OnRegister] =
-      learnedLanguage_OnRegister;
-  },
-
-  removeLearnedLanguage_OnRegister: function () {
-    localStorage.removeItem(this.Keys.LearnedLanguage_OnRegister);
-  },
-
-  getLearnedCefrLevel_OnRegister: function () {
-    return localStorage[this.Keys.LearnedCefrLevel_OnRegister];
-  },
-
-  setLearnedCefrLevel_OnRegister: function (learnedCefrLevel_OnRegister) {
-    localStorage[this.Keys.LearnedCefrLevel_OnRegister] =
-      learnedCefrLevel_OnRegister;
-  },
-
-  removeCefrLevel_OnRegister: function () {
-    localStorage.removeItem(this.Keys.LearnedCefrLevel_OnRegister);
-  },
-
-  getNativeLanguage_OnRegister: function () {
-    return localStorage[this.Keys.NativeLanguage_OnRegister];
-  },
-
-  setNativeLanguage_OnRegister: function (nativeLanguage_OnRegister) {
-    localStorage[this.Keys.NativeLanguage_OnRegister] =
-      nativeLanguage_OnRegister;
-  },
-
-  removeNativeLanguage_OnRegister: function () {
-    localStorage.removeItem(this.Keys.NativeLanguage_OnRegister);
   },
 
   selectedTimePeriod: function () {
