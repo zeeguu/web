@@ -47,8 +47,12 @@ Zeeguu_API.prototype.starBookmark = function (bookmark_id) {
   this._post(`star_bookmark/${bookmark_id}`);
 };
 
-Zeeguu_API.prototype.deleteBookmark = function (bookmark_id, callback) {
-  this._post(`delete_bookmark/${bookmark_id}`, "", callback);
+Zeeguu_API.prototype.deleteBookmark = function (
+  bookmark_id,
+  callback,
+  onError,
+) {
+  this._post(`delete_bookmark/${bookmark_id}`, "", callback, onError);
 };
 
 Zeeguu_API.prototype.setIsFitForStudy = function (bookmark_id) {

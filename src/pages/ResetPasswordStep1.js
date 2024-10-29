@@ -1,44 +1,50 @@
-import { useState } from "react";
-import * as EmailValidator from "email-validator";
-import validator from "../assorted/validator";
+import { useState, useEffect } from "react";
+import validateRules from "../assorted/validateRules";
 import strings from "../i18n/definitions";
 
-import Form from "./info_page_shared/Form";
-import FormSection from "./info_page_shared/FormSection";
-import FullWidthErrorMsg from "./info_page_shared/FullWidthErrorMsg";
-import InputField from "./info_page_shared/InputField";
-import ButtonContainer from "./info_page_shared/ButtonContainer";
-import Button from "./info_page_shared/Button";
+import Form from "./_pages_shared/Form.sc";
+import FormSection from "./_pages_shared/FormSection.sc";
+import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
+import InputField from "../components/InputField";
+import ButtonContainer from "./_pages_shared/ButtonContainer.sc";
+import Button from "./_pages_shared/Button.sc";
+import { scrollToTop } from "../utils/misc/scrollToTop";
 
 export default function ResetPasswordStep1({
   api,
   email,
-  handleEmailChange,
-  notifyOfValidEmail,
+  setEmail,
+  validateEmail,
+  isEmailValid,
+  emailErrorMsg,
+  notifyEmailSent,
 }) {
   const [errorMessage, setErrorMessage] = useState("");
 
-  let validatorRules = [
-    [!EmailValidator.validate(email), strings.plsProvideValidEmail],
-  ];
+  useEffect(() => {
+    if (errorMessage) {
+      scrollToTop();
+    }
+  }, [errorMessage]);
 
   function handleResetPassword(e) {
     e.preventDefault();
 
-    if (!validator(validatorRules, setErrorMessage)) {
+    if (!validateRules([validateEmail])) {
       return;
     }
 
     api.sendCode(
       email,
       () => {
-        notifyOfValidEmail();
+        notifyEmailSent();
       },
       () => {
         setErrorMessage("inexistent email");
       },
     );
   }
+
   return (
     <Form action={""} method={"post"}>
       <FormSection>
@@ -55,11 +61,19 @@ export default function ResetPasswordStep1({
           name={"email"}
           placeholder={strings.emailPlaceholder}
           value={email}
-          onChange={handleEmailChange}
+          isError={!isEmailValid}
+          errorMessage={emailErrorMsg}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
         />
       </FormSection>
       <ButtonContainer className={"padding-medium"}>
-        <Button className={"full-width-btn"} onClick={handleResetPassword}>
+        <Button
+          type={"submit"}
+          className={"full-width-btn"}
+          onClick={handleResetPassword}
+        >
           {strings.resetPassword}
         </Button>
       </ButtonContainer>

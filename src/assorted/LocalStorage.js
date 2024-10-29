@@ -15,17 +15,11 @@ const LocalStorage = {
     NativeLanguage: "native_language",
     LearnedCefrLevel: "learned_cefr_level",
 
-    // language related keys used for initial language set-up during account creation
-    LearnedLanguage_OnRegister: "learned_language_on_register",
-    NativeLanguage_OnRegister: "native_language_on_register",
-    LearnedCefrLevel_OnRegister: "learned_cefr_on_register",
-
     UiLanguage: "ui_language",
     IsTeacher: "is_teacher",
     SelectedTimePeriod: "selected_time_period",
     Features: "features",
     IsStudent: "is_student",
-    DisplayedExtensionPopup: "displayed_extension_popup",
     AudioExperimentNoOfSessions: "audio_experiment_no_of_sessions",
     DisplayedAudioExperimentPopup: "audio_experiment_displayed_popup",
     AudioExperimentCompleted: "audio_experiment_completed",
@@ -35,6 +29,8 @@ const LocalStorage = {
     clickedVideoLink: "clicked_video_link",
     DoNotShowRedirectionModal: "do_not_show_redirection_modal",
     ProductiveExercisesEnabled: "productiveExercisesEnabled",
+    AutoPronounceInExercises: "auto_pronounce_bookmark_exercise",
+    lastExerciseCompleteDate: "last_exercise_complete_date",
   },
 
   userInfo: function () {
@@ -76,53 +72,10 @@ const LocalStorage = {
     localStorage[this.Keys.NativeLanguage] = nativeLanguage;
   },
 
-  getLearnedLanguage_OnRegister: function () {
-    return localStorage[this.Keys.LearnedLanguage_OnRegister];
-  },
-
-  setLearnedLanguage_OnRegister: function (learnedLanguage_OnRegister) {
-    localStorage[this.Keys.LearnedLanguage_OnRegister] =
-      learnedLanguage_OnRegister;
-  },
-
-  removeLearnedLanguage_OnRegister: function () {
-    localStorage.removeItem(this.Keys.LearnedLanguage_OnRegister);
-  },
-
-  getLearnedCefrLevel_OnRegister: function () {
-    return localStorage[this.Keys.LearnedCefrLevel_OnRegister];
-  },
-
-  setLearnedCefrLevel_OnRegister: function (learnedCefrLevel_OnRegister) {
-    localStorage[this.Keys.LearnedCefrLevel_OnRegister] =
-      learnedCefrLevel_OnRegister;
-  },
-
-  removeCefrLevel_OnRegister: function () {
-    localStorage.removeItem(this.Keys.LearnedCefrLevel_OnRegister);
-  },
-
-  getNativeLanguage_OnRegister: function () {
-    return localStorage[this.Keys.NativeLanguage_OnRegister];
-  },
-
-  setNativeLanguage_OnRegister: function (nativeLanguage_OnRegister) {
-    localStorage[this.Keys.NativeLanguage_OnRegister] =
-      nativeLanguage_OnRegister;
-  },
-
-  removeNativeLanguage_OnRegister: function () {
-    localStorage.removeItem(this.Keys.NativeLanguage_OnRegister);
-  },
-
   selectedTimePeriod: function () {
     return localStorage[this.Keys.SelectedTimePeriod]
       ? localStorage[this.Keys.SelectedTimePeriod]
       : 30;
-  },
-
-  displayedExtensionPopup: function () {
-    return localStorage[this.Keys.DisplayedExtensionPopup];
   },
 
   getDoNotShowRedirectionModal: function () {
@@ -170,6 +123,16 @@ const LocalStorage = {
     } else {
       const uiLang = uiLanguages.find((item) => item.code === uiLangCode);
       return uiLang;
+    }
+  },
+
+  getAutoPronounceInExercises: function () {
+    const autoPronounceInExercises =
+      localStorage[this.Keys.AutoPronounceInExercises];
+    if (autoPronounceInExercises === undefined) {
+      return undefined;
+    } else {
+      return Number(autoPronounceInExercises);
     }
   },
 
@@ -224,10 +187,6 @@ const LocalStorage = {
     localStorage[this.Keys.SelectedTimePeriod] = time;
   },
 
-  setDisplayedExtensionPopup: function (displayedExtensionPopup) {
-    localStorage[this.Keys.DisplayedExtensionPopup] = displayedExtensionPopup;
-  },
-
   displayedAudioExperimentPopup: function () {
     return localStorage[this.Keys.DisplayedAudioExperimentPopup];
   },
@@ -273,6 +232,10 @@ const LocalStorage = {
       displayedAudioExperimentQuestionnaire;
   },
 
+  setAutoPronounceInExercises: function (val) {
+    localStorage[this.Keys.AutoPronounceInExercises] = val;
+  },
+
   getTargetNoOfAudioSessions: function () {
     try {
       let noofsessions = Number(
@@ -314,6 +277,14 @@ const LocalStorage = {
 
   getClickedVideo: function () {
     return localStorage[this.Keys.clickedVideoLink];
+  },
+
+  getLastExerciseCompleteDate: function () {
+    return localStorage[this.Keys.lastExerciseCompleteDate];
+  },
+
+  setLastExerciseCompleteDate: function (date) {
+    localStorage[this.Keys.lastExerciseCompleteDate] = date;
   },
 };
 

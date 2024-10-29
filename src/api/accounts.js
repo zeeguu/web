@@ -83,7 +83,7 @@ Zeeguu_API.prototype.addBasicUser = function (
     });
 };
 
-Zeeguu_API.prototype.signIn = function (email, password, onError, onSuccess) {
+Zeeguu_API.prototype.logIn = function (email, password, onError, onSuccess) {
   let url = this.baseAPIurl + `/session/${email}`;
   this.apiLog(`/session/${email}`);
 

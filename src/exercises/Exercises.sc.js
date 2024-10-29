@@ -11,6 +11,7 @@ const ExercisesColumn = styled.div`
 `;
 
 const ExForm = styled.div`
+  position: relative;
   margin: auto;
   background-color: rgba(241, 240, 240, 0.274);
 

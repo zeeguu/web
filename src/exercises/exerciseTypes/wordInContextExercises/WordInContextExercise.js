@@ -5,11 +5,11 @@ import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
-import { tokenize } from "../../../utils/preprocessing/preprocessing.js";
+import { tokenize } from "../../../utils/text/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
+import { removePunctuation } from "../../../utils/text/preprocessing.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
 //The difference between the two is that in FindWordInContext the user can choose to either click on the word or type the word.
@@ -44,6 +44,7 @@ export default function WordInContextExercise({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(exerciseType);
@@ -62,7 +63,7 @@ export default function WordInContextExercise({
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isBookmarkChanged]);
 
   useEffect(() => {
     checkTranslations(translatedWords);
@@ -194,6 +195,7 @@ export default function WordInContextExercise({
         />
       )}
       <NextNavigation
+        exerciseType={exerciseType}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
@@ -203,6 +205,7 @@ export default function WordInContextExercise({
         handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

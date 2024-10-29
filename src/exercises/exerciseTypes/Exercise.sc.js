@@ -134,12 +134,35 @@ const Exercise = styled.div`
     background-color: green;
   }
 
-  .cooling-bar.yellow {
-    background-color: #ffd047;
+  .cooling-bar.greenCorrect {
+    background-color: green;
+    animation: glowGreen 1s ease-in-out 1;
+  }
+
+  @keyframes glowGreen {
+    0% {
+      box-shadow: 0 0 3px 0 rgba(0, 255, 0, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 10px 5px rgba(0, 255, 0, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 3px 0 rgba(0, 255, 0, 0.5);
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 
   .cooling-bar.grey {
-    background-color: grey;
+    background-color: lightGrey;
   }
 
   /* Mobile version */
@@ -202,8 +225,8 @@ let MatchSpeakButtonHolder = styled.div`
 
 let MatchButton = styled(StyledButton)`
   width: fit-content;
-  margin-top: 2em;
-  margin-bottom: 2em;
+  margin-top: 1.5em;
+  margin-bottom: 1em;
   background: #ffd04799;
   color: black;
   border: 0.125em solid ${zeeguuTransparentLightOrange};
@@ -218,8 +241,8 @@ let MatchButton = styled(StyledButton)`
 `;
 
 let MatchingWords = styled.p`
-  margin-top: 2.125em;
-  margin-bottom: 2.125em;
+  margin-top: 1.6em;
+  margin-bottom: 1.1em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   padding-left: 0.5em;

@@ -28,6 +28,7 @@ const AlterMenuSC = styled.div`
     color: ${almostBlack};
     line-height: 1em;
     cursor: pointer;
+    margin-top: 0.2em;
   }
 
   .ownTranslationInput {
@@ -41,7 +42,7 @@ const AlterMenuSC = styled.div`
     box-sizing: border-box;
     background: white;
     color: ${almostBlack};
-    border-radius: 1em;
+    border-radius: 0.4em;
     font-weight: 400;
     font-size: small;
 

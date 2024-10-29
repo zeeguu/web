@@ -1,21 +1,33 @@
 import { useEffect, useState } from "react";
+import Feature from "../features/Feature";
 
 export default function useSelectInterest(api) {
+  const useNewTopics = Feature.new_topics();
   const [availableTopics, setAvailableTopics] = useState([]);
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
-  const [subscribedSearches, setSubscribedSearches] = useState([]);
+  const [subscribedSearches, setSubscribedSearches] = useState();
   const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
     useState(false);
 
   useEffect(() => {
-    api.getAvailableTopics((data) => {
-      setAvailableTopics(data);
-    });
+    if (useNewTopics) {
+      api.getAvailableNewTopics((data) => {
+        setAvailableTopics(data);
+      });
 
-    api.getSubscribedTopics((data) => {
-      setSubscribedTopics(data);
-    });
+      api.getSubscribedNewTopics((data) => {
+        setSubscribedTopics(data);
+      });
+    } else {
+      api.getAvailableTopics((data) => {
+        setAvailableTopics(data);
+      });
+
+      api.getSubscribedTopics((data) => {
+        setSubscribedTopics(data);
+      });
+    }
 
     //custom interest filters
     api.getSubscribedSearchers((data) => {
@@ -32,7 +44,8 @@ export default function useSelectInterest(api) {
   function subscribeToTopic(topic) {
     setSubscribedTopics([...subscribedTopics, topic]);
     setAvailableTopics(availableTopics.filter((each) => each.id !== topic.id));
-    api.subscribeToTopic(topic);
+    if (useNewTopics) api.subscribeToNewTopic(topic);
+    else api.subscribeToTopic(topic);
   }
 
   function unsubscribeFromTopic(topic) {
@@ -40,7 +53,8 @@ export default function useSelectInterest(api) {
       subscribedTopics.filter((each) => each.id !== topic.id),
     );
     setAvailableTopics([...availableTopics, topic]);
-    api.unsubscribeFromTopic(topic);
+    if (useNewTopics) api.unsubscribeFromNewTopic(topic);
+    else api.unsubscribeFromTopic(topic);
   }
 
   function toggleTopicSubscription(topic) {
@@ -75,6 +89,26 @@ export default function useSelectInterest(api) {
       : false;
   }
 
+  function subscribeToEmail(search) {
+    api.subscribeToEmailSearch(search, (data) => {
+      setSubscribedSearches((prevSearches) =>
+        prevSearches.map((entry) =>
+          entry.search === search ? { ...entry, receive_email: true } : entry,
+        ),
+      );
+    });
+  }
+
+  function unsubscribeFromEmail(search) {
+    api.unsubscribeFromEmailSearch(search, (data) => {
+      setSubscribedSearches((prevSearches) =>
+        prevSearches.map((entry) =>
+          entry.search === search ? { ...entry, receive_email: false } : entry,
+        ),
+      );
+    });
+  }
+
   return {
     allTopics,
 
@@ -87,6 +121,8 @@ export default function useSelectInterest(api) {
     setSubscribedSearches,
     subscribeToSearch,
     removeSearch,
+    subscribeToEmail,
+    unsubscribeFromEmail,
 
     showingSpecialInterestModal,
     setshowingSpecialInterestModal,

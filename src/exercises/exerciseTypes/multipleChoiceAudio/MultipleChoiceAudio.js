@@ -6,7 +6,7 @@ import NextNavigation from "../NextNavigation.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import shuffle from "../../../assorted/fisherYatesShuffle.js";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing.js";
+import { removePunctuation } from "../../../utils/text/preprocessing.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import AudioTwoBotInput from "./MultipleChoiceAudioBottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
@@ -48,6 +48,7 @@ export default function MultipleChoiceAudio({
   );
   const bookmarkToStudy = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -66,7 +67,7 @@ export default function MultipleChoiceAudio({
 
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, []);
+  }, [isBookmarkChanged]);
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
@@ -251,6 +252,7 @@ export default function MultipleChoiceAudio({
       )}
 
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
@@ -260,6 +262,7 @@ export default function MultipleChoiceAudio({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
         <DisableAudioSession

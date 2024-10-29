@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import strings from "../i18n/definitions";
 import { useContext, useEffect, useState } from "react";
 import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../exercises/ExerciseConstants";
@@ -46,18 +45,6 @@ export default function StudentSpecificSidebarOptions({ SidebarLink, user }) {
       {is_teacher && (
         <SidebarLink text={strings.teacherSite} to="/teacher/classes" />
       )}
-
-      <SidebarLink text={strings.settings} to="/account_settings" />
-
-      <Link
-        className="navigationLink"
-        to="/"
-        onClick={() => {
-          user.logoutMethod();
-        }}
-      >
-        <small>{strings.logout}</small>
-      </Link>
     </>
   );
 }

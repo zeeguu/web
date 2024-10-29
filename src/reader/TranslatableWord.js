@@ -14,6 +14,7 @@ export default function TranslatableWord({
 }) {
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
   const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
+  const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
 
   function clickOnWord(e, word) {
     if (word.translation) {
@@ -32,7 +33,8 @@ export default function TranslatableWord({
         setTranslatedWords(copyOfWords);
       }
     }
-    if (pronouncing) {
+    if (pronouncing || isClickedToPronounce) {
+      setIsClickedToPronounce(true);
       interactiveText.pronounce(word);
     }
   }
@@ -42,9 +44,9 @@ export default function TranslatableWord({
       setShowingAlterMenu(false);
       return;
     }
+    setShowingAlterMenu(true);
     interactiveText.alternativeTranslations(word, () => {
       wordUpdated(word);
-      setShowingAlterMenu(!showingAlterMenu);
     });
   }
 
@@ -65,14 +67,13 @@ export default function TranslatableWord({
   }
 
   function hideTranslation(e, word) {
-    console.log(word);
     word.translation = undefined;
     word.splitIntoComponents();
     wordUpdated();
   }
 
   //disableTranslation so user cannot translate words that are being tested
-  if (!word.translation || disableTranslation) {
+  if ((!word.translation && !isClickedToPronounce) || disableTranslation) {
     return (
       <>
         <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
@@ -82,15 +83,16 @@ export default function TranslatableWord({
   return (
     <>
       <z-tag>
-        <z-tran
-          chosen={word.translation}
-          translation0={word.translation}
-          ref={refToTranslation}
-          onClick={(e) => toggleAlterMenu(e, word)}
-        >
-          <span className="arrow">▼</span>
-        </z-tran>
-
+        {word.translation && (
+          <z-tran
+            chosen={word.translation}
+            translation0={word.translation}
+            ref={refToTranslation}
+            onClick={(e) => toggleAlterMenu(e, word)}
+          >
+            <span className="arrow">▼</span>
+          </z-tran>
+        )}
         <z-orig>
           <span onClick={(e) => clickOnWord(e, word)}>{word.word} </span>
           {showingAlterMenu && (

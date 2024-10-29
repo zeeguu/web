@@ -1,14 +1,14 @@
 import Cookies from "js-cookie";
 
+const FAR_INTO_THE_FUTURE = 365 * 5;
 function saveUserInfoIntoCookies(userInfo, sessionID = null) {
-  let far_into_the_future = 365 * 5;
   Cookies.set("nativeLanguage", userInfo.native_language, {
-    expires: far_into_the_future,
+    expires: FAR_INTO_THE_FUTURE,
   });
-  Cookies.set("name", userInfo.name, { expires: far_into_the_future });
+  Cookies.set("name", userInfo.name, { expires: FAR_INTO_THE_FUTURE });
   if (sessionID) {
     console.log("saving also session ID");
-    Cookies.set("sessionID", sessionID, { expires: far_into_the_future });
+    Cookies.set("sessionID", sessionID, { expires: FAR_INTO_THE_FUTURE });
   }
 }
 

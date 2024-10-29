@@ -8,10 +8,10 @@ const Icon = styled.img`
   ${(props) =>
     props.type === "small" &&
     css`
-      margin: 0 0.4rem;
+      margin: 0.1rem 0.4rem -0.1rem 0;
       height: 1rem;
       width: 1rem;
     `}
 `;
 
-export { Icon };
+export default Icon;

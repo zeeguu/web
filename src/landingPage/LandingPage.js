@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import strings from "../i18n/definitions";
 import News from "./News";
 import * as s from "./LandingPage.sc.js";
@@ -5,17 +6,20 @@ import Contributors from "./Contributors";
 import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
-import Button from "../pages/info_page_shared/Button.js";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import Button from "../pages/_pages_shared/Button.sc";
+import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 
 import redirect from "../utils/routing/routing.js";
 
 export default function LandingPage() {
+  useEffect(() => {
+    setTitle(strings.landingPageTitle);
+  }, []);
+
   if (getSessionFromCookies()) {
     return <Redirect to={{ pathname: "/articles" }} />;
   }
 
-  setTitle("All You Can Read");
   return (
     <s.PageWrapper>
       <s.NavbarBg>
@@ -28,7 +32,7 @@ export default function LandingPage() {
             Zeeguu
           </s.LogoWithText>
           <s.NavbarButtonContainer>
-            <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/login")}>
+            <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/log_in")}>
               {strings.login}
             </s.WhiteOutlinedNavbarBtn>
             <s.WhiteFilledNavbarBtn
@@ -54,7 +58,7 @@ export default function LandingPage() {
           </p>
           <Button onClick={() => redirect("/language_preferences")}>
             {strings.getStarted}
-            <ArrowForwardRoundedIcon />
+            <RoundedForwardArrow />
           </Button>
         </s.HeroColumn>
 

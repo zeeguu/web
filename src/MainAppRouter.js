@@ -1,39 +1,38 @@
 import { Route, Switch } from "react-router-dom";
 import LandingPage from "./landingPage/LandingPage";
-import ExtensionInstalled from "./pages/ExtensionInstalled";
-import InstallExtension from "./pages/InstallExtension";
-import SelectInterests from "./pages/SelectInterests";
-import ExcludeWordsStep1 from "./pages/ExcludeWordsStep1";
-import ExcludeWordsStep2 from "./pages/ExcludeWordsStep2";
+import ExtensionInstalled from "./pages/onboarding/ExtensionInstalled";
+import InstallExtension from "./pages/onboarding/InstallExtension";
+import SelectInterests from "./pages/onboarding/SelectInterests";
+import ExcludeWords from "./pages/onboarding/ExcludeWords";
 import ResetPassword from "./pages/ResetPassword";
 import NoSidebarRouter from "./NoSidebarRouter";
-import SignIn from "./pages/SignIn";
-import CreateAccount from "./pages/CreateAccount";
-import LanguagePreferences from "./pages/LanguagePreferences";
+import LogIn from "./pages/LogIn";
+import CreateAccount from "./pages/onboarding/CreateAccount";
+import LanguagePreferences from "./pages/onboarding/LanguagePreferences";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
 import ReadingHistory from "./words/WordHistory";
 import TeacherRouter from "./teacher/_routing/_TeacherRouter";
-import Settings from "./pages/Settings";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
 import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
 import { PrivateRoute } from "./PrivateRoute";
-import AccountDeletion from "./pages/AccountDeletion";
+import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
+import SettingsRouter from "./pages/Settings/_SettingsRouter";
 
 export default function MainAppRouter({
   api,
   setUser,
   hasExtension,
-  handleSuccessfulSignIn,
+  handleSuccessfulLogIn,
 }) {
   return (
     <Switch>
       <Route
-        path="/login"
+        path="/log_in"
         render={() => (
-          <SignIn api={api} handleSuccessfulSignIn={handleSuccessfulSignIn} />
+          <LogIn api={api} handleSuccessfulLogIn={handleSuccessfulLogIn} />
         )}
       />
 
@@ -42,7 +41,7 @@ export default function MainAppRouter({
         render={() => (
           <CreateAccount
             api={api}
-            handleSuccessfulSignIn={handleSuccessfulSignIn}
+            handleSuccessfulLogIn={handleSuccessfulLogIn}
             setUser={setUser}
           />
         )}
@@ -65,7 +64,7 @@ export default function MainAppRouter({
       <PrivateRoute
         path="/account_deletion"
         api={api}
-        component={AccountDeletion}
+        component={DeleteAccount}
       />
 
       <PrivateRoute
@@ -76,17 +75,10 @@ export default function MainAppRouter({
       />
 
       <PrivateRoute
-        path="/exclude_words_step1"
+        path="/exclude_words"
         api={api}
         hasExtension={hasExtension}
-        component={ExcludeWordsStep1}
-      />
-
-      <PrivateRoute
-        path="/exclude_words_step2"
-        api={api}
-        hasExtension={hasExtension}
-        component={ExcludeWordsStep2}
+        component={ExcludeWords}
       />
 
       <PrivateRouteWithSidebar
@@ -113,7 +105,7 @@ export default function MainAppRouter({
         path="/account_settings"
         api={api}
         setUser={setUser}
-        component={Settings}
+        component={SettingsRouter}
       />
       <PrivateRouteWithSidebar
         path="/teacher"
@@ -129,6 +121,11 @@ export default function MainAppRouter({
         path="/user_dashboard"
         api={api}
         component={UserDashboard}
+      />
+      <PrivateRouteWithSidebar
+        path="/search"
+        api={api}
+        component={ArticlesRouter}
       />
     </Switch>
   );

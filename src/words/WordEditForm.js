@@ -3,9 +3,12 @@ import * as st from "../exercises/bottomActions/FeedbackButtons.sc";
 import strings from "../i18n/definitions";
 import { useState } from "react";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
+import isBookmarkExpression from "../utils/misc/isBookmarkExpression";
+import FullWidthErrorMsg from "../components/FullWidthErrorMsg.sc";
 
 export default function WordEditForm({
   bookmark,
+  errorMessage,
   handleClose,
   updateBookmark,
   deleteAction,
@@ -15,16 +18,23 @@ export default function WordEditForm({
   const [context, setContext] = useState(bookmark.context);
   const [fitForStudy, setFitForStudy] = useState(bookmark.fit_for_study);
 
+  const isNotEdited =
+    bookmark.to === translation &&
+    bookmark.from === expression &&
+    bookmark.context === context &&
+    bookmark.fit_for_study === fitForStudy;
+
   function prepClose() {
     setTranslation(bookmark.to);
     setExpression(bookmark.from);
     setContext(bookmark.context);
     setFitForStudy(bookmark.fit_for_study);
-    handleClose();
   }
+
   function handleFitForStudyCheck() {
     setFitForStudy((state) => !state);
   }
+
   function typingTranslation(event) {
     setTranslation(event.target.value);
   }
@@ -38,6 +48,7 @@ export default function WordEditForm({
   }
 
   function handleSubmit(event) {
+    event.preventDefault();
     if (translation === "" || expression === "" || context === "") {
       if (translation === "") {
         setTranslation(bookmark.to);
@@ -51,36 +62,24 @@ export default function WordEditForm({
         setContext(bookmark.context);
         event.preventDefault();
       }
-    } else if (
-      bookmark.to === translation &&
-      bookmark.from === expression &&
-      bookmark.context === context &&
-      bookmark.fitForStudy === fitForStudy
-    ) {
+    } else if (isNotEdited) {
       prepClose();
+      handleClose();
     } else {
       updateBookmark(bookmark, expression, translation, context, fitForStudy);
-      prepClose();
     }
   }
+
   return (
     <>
-      {bookmark.from.includes(" ") ? (
+      {isBookmarkExpression(bookmark) ? (
         <s.Headline>{strings.editExpression}</s.Headline>
       ) : (
         <s.Headline>{strings.editWord}</s.Headline>
       )}
-      <form onSubmit={handleSubmit}>
-        <s.CustomTextField
-          id="outlined-basic"
-          label={strings.translation}
-          variant="outlined"
-          fullWidth
-          autoFocus={true}
-          value={translation}
-          onChange={typingTranslation}
-        />
-        {bookmark.from.includes(" ") ? (
+      <form onSubmit={handleSubmit} autoFocus={true}>
+        {errorMessage && <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>}
+        {isBookmarkExpression(bookmark) ? (
           <s.CustomTextField
             id="outlined-basic"
             label={strings.expression}
@@ -99,6 +98,14 @@ export default function WordEditForm({
             onChange={typingExpression}
           />
         )}
+        <s.CustomTextField
+          id="outlined-basic"
+          label={strings.translation}
+          variant="outlined"
+          fullWidth
+          value={translation}
+          onChange={typingTranslation}
+        />
         <s.CustomTextField
           id="outlined-basic"
           label={strings.context}
@@ -121,13 +128,11 @@ export default function WordEditForm({
           </s.CustomCheckBoxDiv>
         )}
 
-        {bookmark.to === translation &&
-        bookmark.from === expression &&
-        bookmark.context === context &&
-        bookmark.fit_for_study === fitForStudy ? (
+        {isNotEdited ? (
           <s.DoneButtonHolder>
             <st.FeedbackDelete
-              onClick={(e) => deleteAction(bookmark)}
+              type="button"
+              onClick={() => deleteAction(bookmark)}
               value={strings.deleteWord}
             />
             <st.FeedbackSubmit

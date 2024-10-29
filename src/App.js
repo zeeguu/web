@@ -28,9 +28,10 @@ import { setUser } from "@sentry/react";
 import SessionStorage from "./assorted/SessionStorage";
 import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
+import { userHasNotExercisedToday } from "./exercises/utils/daysSinceLastExercise";
 
 function App() {
-  const [api, setApi] = useState(new Zeeguu_API(API_ENDPOINT));
+  const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
   const [exerciseNotification] = useState(new ExerciseNotifications());
 
@@ -40,6 +41,12 @@ function App() {
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
+
+  useEffect(() => {
+    if (userData && userData.learned_language) {
+      setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
+    }
+  }, [userData]);
 
   useEffect(() => {
     console.log("Got the API URL:" + API_ENDPOINT);
@@ -53,37 +60,45 @@ function App() {
     api.session = getSessionFromCookies();
     console.log("Session: " + api.session);
 
-    api.isValidSession(
-      () => {
-        console.log("valid sesison... getting user details...");
-        api.getUserDetails((data) => {
-          LocalStorage.setUserInfo(data);
-          api.getUserPreferences((preferences) => {
-            LocalStorage.setUserPreferences(preferences);
+    // Only validate if there is a session in cookies.
+    if (api.session !== undefined)
+      api.isValidSession(
+        () => {
+          console.log("valid sesison... getting user details...");
+          api.getUserDetails((data) => {
+            LocalStorage.setUserInfo(data);
+            api.getUserPreferences((preferences) => {
+              LocalStorage.setUserPreferences(preferences);
 
-            let userDict = {
-              session: getSessionFromCookies(),
-              ...LocalStorage.userInfo(),
-            };
-            console.log("Session: " + api.session);
+              let userDict = {
+                session: getSessionFromCookies(),
+                ...LocalStorage.userInfo(),
+              };
+              console.log("Session: " + api.session);
 
-            api.hasBookmarksInPipelineToReview((hasBookmarks) => {
-              exerciseNotification.setHasExercises(hasBookmarks);
-              exerciseNotification.updateReactState();
+              if (userHasNotExercisedToday())
+                api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
+                  exerciseNotification.setHasExercises(
+                    scheduledBookmaks.length > 0,
+                  );
+                  exerciseNotification.updateReactState();
+                });
+              else {
+                exerciseNotification.setHasExercises(false);
+                exerciseNotification.updateReactState();
+              }
+              setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
+              setUserData(userDict);
             });
-            setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
-            setUserData(userDict);
           });
-        });
-      },
-      () => {
-        console.log("no valid session");
-        logout();
-      },
-    );
+        },
+        () => {
+          console.log("no valid session");
+          logout();
+        },
+      );
 
     //logs out user on zeeguu.org if they log out of the extension
-
     const interval = setInterval(() => {
       if (!getSessionFromCookies()) {
         setUserData({});
@@ -102,7 +117,7 @@ function App() {
     removeUserInfoFromCookies();
   }
 
-  function handleSuccessfulSignIn(userInfo, sessionId) {
+  function handleSuccessfulLogIn(userInfo, sessionId) {
     console.log("HANDLE SUCCESSFUL SIGN IN");
     api.session = sessionId;
     console.log("Session: " + api.session);
@@ -157,7 +172,7 @@ function App() {
                   api={api}
                   setUser={setUserData}
                   hasExtension={isExtensionAvailable}
-                  handleSuccessfulSignIn={handleSuccessfulSignIn}
+                  handleSuccessfulLogIn={handleSuccessfulLogIn}
                 />
 
                 <ToastContainer

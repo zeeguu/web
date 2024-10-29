@@ -9,7 +9,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../../../utils/text/preprocessing";
 
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 
@@ -39,6 +39,10 @@ export default function MultipleChoiceContext({
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
   const [showSolution, setShowSolution] = useState(false);
+  const [wordInContextHeadline, setWordInContextHeadline] = useState(
+    removePunctuation(bookmarksToStudy[0].from),
+  );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -63,12 +67,28 @@ export default function MultipleChoiceContext({
     });
   }, []);
 
+  useEffect(() => {
+    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(
+          bookmarksToStudy[0].context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
+  }, [isBookmarkChanged]);
+
   function handleShowSolution() {
     let message = messageToAPI + "S";
     notifyIncorrectAnswer(bookmarksToStudy[0]);
     setIsCorrect(true);
     handleAnswer(message);
     setShowSolution(true);
+    setWordInContextHeadline(removePunctuation(bookmarksToStudy[0].to));
   }
 
   function notifyChoiceSelection(
@@ -84,6 +104,7 @@ export default function MultipleChoiceContext({
       setClickedIndex(index);
       notifyCorrectAnswer(bookmarksToStudy[0]);
       setIsCorrect(true);
+      setWordInContextHeadline(removePunctuation(bookmarksToStudy[0].to));
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
     } else {
@@ -126,9 +147,7 @@ export default function MultipleChoiceContext({
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />
-      <h1 className="wordInContextHeadline">
-        {removePunctuation(bookmarksToStudy[0].from)}
-      </h1>
+      <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
       {exerciseBookmarks.map((option, index) => (
         <s.MultipleChoiceContext
           key={index}
@@ -163,6 +182,7 @@ export default function MultipleChoiceContext({
       ))}
 
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
@@ -172,6 +192,7 @@ export default function MultipleChoiceContext({
         handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

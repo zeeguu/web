@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import Confetti from "react-confetti";
 import Modal from "../components/modal_shared/Modal";
-import Header from "../components/modal_shared/Header";
-import Heading from "../components/modal_shared/Heading";
-import Main from "../components/modal_shared/Main";
-import Footer from "../components/modal_shared/Footer";
+import Header from "../components/modal_shared/Header.sc";
+import Heading from "../components/modal_shared/Heading.sc";
+import Main from "../components/modal_shared/Main.sc";
+import Footer from "../components/modal_shared/Footer.sc";
 import strings from "../i18n/definitions";
-import GoToButton from "../components/modal_shared/GoToButton";
-import ButtonContainer from "../components/modal_shared/ButtonContainer";
+import Button from "../pages/_pages_shared/Button.sc";
+import ButtonContainer from "../components/modal_shared/ButtonContainer.sc";
 
-export default function CelebrationModal({open, onClose}) {
+export default function CelebrationModal({ open, onClose }) {
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
@@ -22,33 +22,31 @@ export default function CelebrationModal({open, onClose}) {
 
   return (
     <>
-    {showConfetti && (
-      <div>
-        <Confetti 
-          width={window.innerWidth}
-          height={window.innerHeight}
-          recycle={true}/>
-      </div>
-    )}
-    <Modal open={open} onClose={onClose}>
-      <Header>
-        <Heading>
-          {strings.celebrationTitle}
-        </Heading>
-      </Header>
-      <Main>
-        <p>{strings.celebrationMsg}</p>
-      </Main>
+      {showConfetti && (
+        <div>
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={true}
+            style={{ position: "fixed" }}
+          />
+        </div>
+      )}
+      <Modal open={open} onClose={onClose}>
+        <Header>
+          <Heading>{strings.celebrationTitle}</Heading>
+        </Header>
+        <Main>
+          <p>{strings.celebrationMsg}</p>
+        </Main>
         <Footer>
-        <ButtonContainer>
-            <GoToButton
-                onClick={onClose}
-            >
-                Continue with the exercises
-            </GoToButton>
-        </ButtonContainer>
-      </Footer>
-    </Modal>
+          <ButtonContainer>
+            <Button className="small" onClick={onClose}>
+              Continue with the exercises
+            </Button>
+          </ButtonContainer>
+        </Footer>
+      </Modal>
     </>
   );
 }

@@ -8,67 +8,74 @@ import {
   zeeguuSalmonOrange,
   veryLightGrey,
   alertGreen,
+  blue200,
+  blue500,
+  blue800,
 } from "../components/colors";
 
 const TagsOfInterests = styled.div`
+  .clickable {
+    cursor: pointer;
+  }
   .tagsOfInterests,
   .tagsWithFilters {
-    cursor: pointer;
-    background: ${zeeguuTransparentLightOrange};
+    position: absolute; 
+    background: white;
+    border: 0.25rem solid ${zeeguuSalmonOrange};
+    box-shadow: 3px 3px 1px rgb(68 68 68 / 25%);
     margin-top: 10px;
-    border-radius: 0.5em;
-    display: none;
-    width: 100%;
-    padding: 5px;
+    border-radius: 1em;
+    display: flex;
+    width: 40%;
+    padding: 1.5rem 1rem;
     text-align: center;
     overflow: auto;
     animation: fadeIn ease 0.5s;
+    @media (max-width: 768px) {
+      width: 80%;
+    }
   }
 
   .interestsSettings {
+    margin-top: 3rem;
     display: flex;
-    width: 6.5em;
-    float: right;
-    justify-content: space-around;
-    margin-top: 0.2em;
-    margin-bottom: 0.2em;
-    margin-left: 3em;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: -1rem;
+
   }
 
   .addInterestButton,
   .addNonInterestButton {
     box-shadow: none;
     all: unset;
-    border: 0.0625em solid ${zeeguuOrange};
     border-radius: 100%;
-    background-color: white;
-    -webkit-text-fill-color: ${zeeguuOrange};
-    color: ${zeeguuOrange};
-    font-size: 1em;
+    font-size: 1em
     width: 1.5em;
     height: 1.5em;
     margin-top: 0.1em;
+    -webkit-text-fill-color: ${zeeguuOrange};
+    color: ${zeeguuOrange};
+    background-color: white;
   }
 
   .addInterestButton:hover,
   .addNonInterestButton:hover {
-    background-color: ${zeeguuOrange};
     -webkit-text-fill-color: white;
     color: white;
-  }
-
-  .addInterestButton:active,
-  .addNonInterestButton:active {
-    border: 0.06em solid ${zeeguuOrange};
+    background-color: ${zeeguuOrange};
   }
 
   .closeTagsOfInterests,
   .closeTagsOfNonInterests {
     box-shadow: none;
     all: unset;
+    cursor: pointer;
     border: 0.07em solid ${zeeguuOrange};
     border-radius: 1em;
     padding: 0.2em 1em;
+    margin-left: 0.2rem;
     background-color: ${zeeguuOrange};
     -webkit-text-fill-color: white;
     color: white;
@@ -87,12 +94,6 @@ const TagsOfInterests = styled.div`
     border: 0.07em solid ${zeeguuOrange} !important;
   }
 
-  .addInterestButton:hover,
-  .addNonInterestButton:hover {
-    background-color: ${zeeguuOrange};
-    color: white;
-  }
-
   .interests,
   .noninterest {
     box-shadow: none;
@@ -109,6 +110,27 @@ const TagsOfInterests = styled.div`
     margin-left: 0.2em;
     margin-right: 0.2em;
     float: left;
+  }
+
+  .searches {
+    box-shadow: none;
+    all: unset;
+    cursor: pointer;
+    border-radius: 1em;
+    padding: 0.5em 0.5em;
+    font-size: 0.85em;
+    font-family: Montserrat;
+    font-weight: 400;
+    text-align: center;
+    min-width: 4em;
+    margin-bottom: 0.2em;
+    margin-top: 0.2em;
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+    float: left;
+    border: 1.5px solid ${blue500};
+    background-color: ${blue200};
+    color: ${blue800};
   }
 
   .interests {
@@ -213,12 +235,16 @@ const TagsOfInterests = styled.div`
     overflow: hidden;
     padding: 0 10px;
     max-height: 0;
-    transition: padding 0.15s, max-height 0.15s;
+    transition:
+      padding 0.15s,
+      max-height 0.15s;
   }
   .sweet-alert .sa-error-container.show {
     padding: 10px 0;
     max-height: 100px;
-    transition: padding 0.25s, max-height 0.25s;
+    transition:
+      padding 0.25s,
+      max-height 0.25s;
   }
   .sweet-alert .sa-error-container .icon {
     display: inline-block;
@@ -366,7 +392,9 @@ const TagsOfInterests = styled.div`
     background-color: ${lightGrey};
   }
   .sweet-alert button.cancel:focus {
-    box-shadow: ${lightGrey} 0px 0px 2px, white 0px 0px 0px 1px inset !important;
+    box-shadow:
+      ${lightGrey} 0px 0px 2px,
+      white 0px 0px 0px 1px inset !important;
   }
   .sweet-alert button[disabled] {
     opacity: 0.6;

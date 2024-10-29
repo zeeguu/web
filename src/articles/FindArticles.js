@@ -7,25 +7,22 @@ import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 
-import ExtensionMessage from "./ExtensionMessage";
 import LocalStorage from "../assorted/LocalStorage";
 
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
-import { useLocation } from "react-router-dom";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
-import {
-  getPixelsFromScrollBarToEnd,
-  isScrollable,
-} from "../utils/misc/getScrollLocation";
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
+import UnfinishedArticlesList from "./UnfinishedArticleList";
+import { setTitle } from "../assorted/setTitle";
+import strings from "../i18n/definitions";
 
-export default function NewArticles() {
-  const searchQuery = useQuery().get("search");
+export default function FindArticles({
+  content,
+  searchQuery,
+  searchPublishPriority,
+  searchDifficultyPriority,
+}) {
   let api = useContext(APIContext);
 
   //The ternary operator below fix the problem with the getOpenArticleExternallyWithoutModal()
@@ -39,21 +36,19 @@ export default function NewArticles() {
   const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [isExtensionAvailable] = useExtensionCommunication();
-  const [extensionMessageOpen, setExtensionMessageOpen] = useState(false);
-  const [displayedExtensionPopup, setDisplayedExtensionPopup] = useState(false);
   const [
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-
+  const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
   const [noMoreArticlesToShow, setNoMoreArticlesToShow] = useState(false);
   const articleListRef = useShadowRef(articleList);
   const currentPageRef = useShadowRef(currentPage);
   const noMoreArticlesToShowRef = useShadowRef(noMoreArticlesToShow);
   const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
-  console.log(articleList);
+
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index)
@@ -68,26 +63,40 @@ export default function NewArticles() {
   };
   function handleScroll() {
     let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
+    let articlesHaveBeenFetched =
+      currentPageRef.current !== undefined &&
+      articleListRef.current !== undefined;
 
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
       !isWaitingForNewArticlesRef.current &&
-      !noMoreArticlesToShowRef.current
+      !noMoreArticlesToShowRef.current &&
+      articlesHaveBeenFetched
     ) {
       setIsWaitingForNewArticles(true);
-      document.title = "Getting more articles...";
+      setTitle("Getting more articles...");
 
       let newCurrentPage = currentPageRef.current + 1;
       let newArticles = [...articleListRef.current];
 
       if (searchQuery) {
-        api.searchMore(searchQuery, newCurrentPage, (articles) => {
-          insertNewArticlesIntoArticleList(
-            articles,
-            newCurrentPage,
-            newArticles,
-          );
-        });
+        api.searchMore(
+          searchQuery,
+          newCurrentPage,
+          searchPublishPriority,
+          searchDifficultyPriority,
+          (articles) => {
+            insertNewArticlesIntoArticleList(
+              articles,
+              newCurrentPage,
+              newArticles,
+            );
+            setTitle(strings.titleSearch + ` '${searchQuery}'`);
+          },
+          (error) => {
+            console.log("Failed to get searches!");
+          },
+        );
       } else {
         api.getMoreUserArticles(20, newCurrentPage, (articles) => {
           insertNewArticlesIntoArticleList(
@@ -95,6 +104,7 @@ export default function NewArticles() {
             newCurrentPage,
             newArticles,
           );
+          setTitle(strings.titleHome);
         });
       }
     }
@@ -113,8 +123,14 @@ export default function NewArticles() {
     setOriginalList([...newArticles]);
     setCurrentPage(newCurrentPage);
     setIsWaitingForNewArticles(false);
-    document.title = "Recommend Articles: Zeeguu";
   }
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, []);
 
   useEffect(() => {
     LocalStorage.setDoNotShowRedirectionModal(
@@ -123,38 +139,36 @@ export default function NewArticles() {
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
-    setDisplayedExtensionPopup(LocalStorage.displayedExtensionPopup());
-    console.log(
-      "Localstorage displayed extension: " +
-        LocalStorage.displayedExtensionPopup(),
-    );
-
-    // load articles)
+    setNoMoreArticlesToShow(false);
     if (searchQuery) {
-      api.search(searchQuery, (articles) => {
-        setArticleList(articles);
-        setOriginalList([...articles]);
-        if (articles.length < 20) setNoMoreArticlesToShow(true);
-      });
+      setTitle(strings.titleSearch + ` '${searchQuery}'`);
+      setReloadingSearchArticles(true);
+      api.search(
+        searchQuery,
+        searchPublishPriority,
+        searchDifficultyPriority,
+        (articles) => {
+          setArticleList(articles);
+          setOriginalList([...articles]);
+          setReloadingSearchArticles(false);
+        },
+        (error) => {
+          console.log(error);
+          console.log("Failed to get searches!");
+        },
+      );
     } else {
+      setTitle(strings.titleHome);
       api.getUserArticles((articles) => {
         setArticleList(articles);
         setOriginalList([...articles]);
-        if (articles.length < 20) setNoMoreArticlesToShow(true);
       });
+      window.addEventListener("scroll", handleScroll, true);
+      return () => {
+        window.removeEventListener("scroll", handleScroll, true);
+      };
     }
-    window.addEventListener("scroll", handleScroll, true);
-    document.title = "Recommend Articles: Zeeguu";
-    return () => {
-      window.removeEventListener("scroll", handleScroll, true);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isExtensionAvailable) {
-      setExtensionMessageOpen(true);
-    }
-  }, [isExtensionAvailable]);
+  }, [searchPublishPriority, searchDifficultyPriority]);
 
   if (articleList == null) {
     return <LoadingAnimation />;
@@ -171,52 +185,77 @@ export default function NewArticles() {
 
   return (
     <>
-      <ExtensionMessage
-        open={extensionMessageOpen}
-        hasExtension={isExtensionAvailable}
-        displayedExtensionPopup={displayedExtensionPopup}
-        setExtensionMessageOpen={setExtensionMessageOpen}
-        setDisplayedExtensionPopup={setDisplayedExtensionPopup}
-      ></ExtensionMessage>
+      {!searchQuery && (
+        <>
+          <s.SearchHolder>
+            <SearchField api={api} query={searchQuery} />
+          </s.SearchHolder>
+          {/*          
+          <Interests
+            api={api}
+            articlesListShouldChange={articlesListShouldChange}
+          />
+          */}
+          <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
+            <span>
+              You can customize your Home by{" "}
+              <a href="/account_settings/interests?fromArticles=1">
+                subscribing&nbsp;to&nbsp;topics
+              </a>
+              ,{" "}
+              <a href="/account_settings/excluded_keywords?fromArticles=1">
+                filtering&nbsp;keywords
+              </a>{" "}
+              or <a href="articles/mySearches">adding&nbsp;searches</a>.
+            </span>
+          </div>
 
-      <s.MaterialSelection>
-        <Interests
-          api={api}
-          articlesListShouldChange={articlesListShouldChange}
-        />
+          {!searchQuery && <UnfinishedArticlesList />}
+          <s.SortHolder>
+            <SortingButtons
+              articleList={articleList}
+              originalList={originalList}
+              setArticleList={setArticleList}
+            />
+          </s.SortHolder>
+        </>
+      )}
 
-        <SearchField api={api} query={searchQuery} />
-      </s.MaterialSelection>
+      {searchQuery && (
+        <s.SearchHolder>
+          <SearchField api={api} query={searchQuery} />
+        </s.SearchHolder>
+      )}
 
-      <SortingButtons
-        articleList={articleList}
-        originalList={originalList}
-        setArticleList={setArticleList}
-      />
-      {articleList.map((each, index) => (
-        <ArticlePreview
-          key={each.id}
-          article={each}
-          api={api}
-          hasExtension={isExtensionAvailable}
-          doNotShowRedirectionModal_UserPreference={
-            doNotShowRedirectionModal_UserPreference
-          }
-          setDoNotShowRedirectionModal_UserPreference={
-            setDoNotShowRedirectionModal_UserPreference
-          }
-          onArticleClick={() => handleArticleClick(each.id, index)}
-        />
-      ))}
-
-      {searchQuery && articleList.length === 0 && (
-        <>No articles found that match your search</>
+      {/* This is where the content of the Search component will be rendered */}
+      {content}
+      {reloadingSearchArticles && <LoadingAnimation></LoadingAnimation>}
+      {!reloadingSearchArticles &&
+        articleList.map((each, index) => (
+          <ArticlePreview
+            key={each.id}
+            article={each}
+            api={api}
+            hasExtension={isExtensionAvailable}
+            doNotShowRedirectionModal_UserPreference={
+              doNotShowRedirectionModal_UserPreference
+            }
+            setDoNotShowRedirectionModal_UserPreference={
+              setDoNotShowRedirectionModal_UserPreference
+            }
+            onArticleClick={() => handleArticleClick(each.id, index)}
+          />
+        ))}
+      {!reloadingSearchArticles && articleList.length === 0 && (
+        <p>No searches were found for this query.</p>
       )}
 
       {!searchQuery && (
-        <ShowLinkRecommendationsIfNoArticles
-          articleList={articleList}
-        ></ShowLinkRecommendationsIfNoArticles>
+        <>
+          <ShowLinkRecommendationsIfNoArticles
+            articleList={articleList}
+          ></ShowLinkRecommendationsIfNoArticles>
+        </>
       )}
       {isWaitingForNewArticles && (
         <LoadingAnimation delay={0}></LoadingAnimation>

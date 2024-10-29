@@ -41,7 +41,8 @@ export default function TranslateWhatYouHear({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const [usedHint, setUsedHint] = useState(false);
+  const [showHintText, setShowHintText] = useState(false);
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   async function handleSpeak() {
     await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
@@ -62,7 +63,7 @@ export default function TranslateWhatYouHear({
       );
     });
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, []);
+  }, [isBookmarkChanged]);
 
   useEffect(() => {
     if (SessionStorage.isAudioExercisesEnabled()) {
@@ -127,7 +128,7 @@ export default function TranslateWhatYouHear({
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />
-      {!isCorrect && !usedHint && (
+      {!isCorrect && (
         <>
           <s.CenteredRowTall>
             <SpeakButton
@@ -137,7 +138,18 @@ export default function TranslateWhatYouHear({
               parentIsSpeakingControl={isButtonSpeaking}
             />
           </s.CenteredRowTall>
-
+          {showHintText && (
+            <div className="contextExample">
+              <TranslatableText
+                isCorrect={isCorrect}
+                interactiveText={interactiveText}
+                translating={true}
+                pronouncing={false}
+                bookmarkToStudy={bookmarksToStudy[0].from}
+                exerciseType={EXERCISE_TYPE}
+              />
+            </div>
+          )}
           <BottomInput
             handleCorrectAnswer={handleCorrectAnswer}
             handleIncorrectAnswer={handleIncorrectAnswer}
@@ -146,44 +158,11 @@ export default function TranslateWhatYouHear({
             setMessageToAPI={setMessageToAPI}
             isL1Answer={true}
             exerciseType={EXERCISE_TYPE}
-            onHintUsed={() => setUsedHint(true)}
+            onHintUsed={() => setShowHintText(true)}
           />
         </>
       )}
-      {!isCorrect && usedHint && (
-        <>
-          <s.CenteredRowTall>
-            <SpeakButton
-              bookmarkToStudy={bookmarkToStudy}
-              api={api}
-              styling="large"
-              parentIsSpeakingControl={isButtonSpeaking}
-            />
-          </s.CenteredRowTall>
 
-          <div className="contextExample">
-            <TranslatableText
-              isCorrect={isCorrect}
-              interactiveText={interactiveText}
-              translating={true}
-              pronouncing={false}
-              bookmarkToStudy={bookmarksToStudy[0].from}
-              exerciseType={EXERCISE_TYPE}
-            />
-          </div>
-
-          <BottomInput
-            handleCorrectAnswer={handleCorrectAnswer}
-            handleIncorrectAnswer={handleIncorrectAnswer}
-            bookmarksToStudy={bookmarksToStudy}
-            messageToAPI={messageToAPI}
-            setMessageToAPI={setMessageToAPI}
-            isL1Answer={true}
-            exerciseType={EXERCISE_TYPE}
-            onHintUsed={() => setUsedHint(true)}
-          />
-        </>
-      )}
       {isCorrect && (
         <>
           <br></br>
@@ -200,6 +179,7 @@ export default function TranslateWhatYouHear({
         </>
       )}
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         api={api}
         message={messageToAPI}
         exerciseBookmark={bookmarksToStudy[0]}
@@ -209,6 +189,7 @@ export default function TranslateWhatYouHear({
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
       {SessionStorage.isAudioExercisesEnabled() && (
         <DisableAudioSession

@@ -1,16 +1,16 @@
 import * as s from "../modal_shared/Modal.sc";
 import { useState } from "react";
 import Modal from "../modal_shared/Modal";
-import Header from "../modal_shared/Header";
-import Heading from "../modal_shared/Heading";
-import Main from "../modal_shared/Main";
-import Footer from "../modal_shared/Footer";
-import ButtonContainer from "../modal_shared/ButtonContainer";
+import Header from "../modal_shared/Header.sc";
+import Heading from "../modal_shared/Heading.sc";
+import Main from "../modal_shared/Main.sc";
+import Footer from "../modal_shared/Footer.sc";
+import ButtonContainer from "../modal_shared/ButtonContainer.sc";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import GoToButton from "../modal_shared/GoToButton";
-import AddToSavesButton from "../modal_shared/AddToSavesButton";
-import Icon from "../modal_shared/Icon";
+import Button from "../../pages/_pages_shared/Button.sc";
+import AddToSavesButton from "../modal_shared/AddToSavesButton.sc";
 import Checkbox from "../modal_shared/Checkbox";
+import redirect from "../../utils/routing/routing";
 
 export default function UnsupportedNotification({
   article,
@@ -45,6 +45,11 @@ export default function UnsupportedNotification({
   function handleSaveVisibilityPreferences() {
     handleModalVisibilityPreferences();
     handleCloseRedirectionModal();
+  }
+
+  function handleOpenArticle(article) {
+    handleSaveVisibilityPreferences(); //if user checked "Don't show this message again" or not
+    redirect(article.url, true);
   }
 
   // function below saves article, visibility preferences of the modal and closes it
@@ -86,13 +91,13 @@ export default function UnsupportedNotification({
       <Header>
         <Heading>
           Your browser doesn't support <br></br>
-          <Icon src={"../static/images/zeeguuLogo.svg"} />
-          The Zeeguu Reader extension
+          the Zeeguu browser extension
         </Heading>
       </Header>
       <Main>
         <p>
-          To read articles with our extension, we recommend installing{" "}
+          To read and translate articles with our extension, we recommend
+          installing{" "}
           {renderExternalLink(
             BrowserLinks.Chrome.link,
             BrowserLinks.Chrome.name,
@@ -102,7 +107,7 @@ export default function UnsupportedNotification({
             BrowserLinks.Firefox.link,
             BrowserLinks.Firefox.name,
           )}
-          , or{" "}
+          , or&nbsp;
           {renderExternalLink(BrowserLinks.Edge.link, BrowserLinks.Edge.name)}.
         </p>
         <p>
@@ -118,13 +123,9 @@ export default function UnsupportedNotification({
           onChange={toggleRedirectCheckbox}
         />
         <ButtonContainer buttonCountNum={2}>
-          <GoToButton
-            target={"_blank"}
-            href={article.url}
-            onClick={handleSaveVisibilityPreferences}
-          >
+          <Button className="small" onClick={() => handleOpenArticle(article)}>
             Enter the article's website
-          </GoToButton>
+          </Button>
           <AddToSavesButton onClick={handleSaveArticleFromTheModal}>
             <BookmarkBorderIcon fontSize="small" />
             Add to Saves

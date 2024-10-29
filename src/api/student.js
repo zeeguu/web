@@ -18,6 +18,10 @@ Zeeguu_API.prototype.joinCohort = function (inv_code, onSuccess, onError) {
   this._post("join_cohort", qs.stringify(payload), onSuccess, onError);
 };
 
+Zeeguu_API.prototype.leaveCohort = function (cohortID, callback) {
+  this._getPlainText(`leave_cohort/${cohortID}`, callback);
+};
+
 /*
   Gets info about this student, including the cohort he is in.
   Endpoint implementation:  https://github.com/zeeguu/api/blob/master/zeeguu/api/api/student.py

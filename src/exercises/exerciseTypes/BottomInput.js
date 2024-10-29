@@ -4,6 +4,8 @@ import * as s from "./Exercise.sc";
 import { EXERCISE_TYPES } from "../ExerciseTypeConstants";
 import { normalizeAnswer } from "../inputNormalization";
 
+import { isWordIncluded } from "../../utils/text/expressions";
+
 function getFlagImageUrl(languageCode) {
   return `/static/flags/${languageCode}.png`;
 }
@@ -25,7 +27,9 @@ export default function BottomInput({
   const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
   const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
   const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
+  const [isOneWordCorrect, setIsOneWordCorrect] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [firstHint, setFirstHint] = useState(true);
   const levenshtein = require("fast-levenshtein");
 
   const normalizedLearningWord = normalizeAnswer(bookmarksToStudy[0].from);
@@ -39,12 +43,11 @@ export default function BottomInput({
     : bookmarksToStudy[0].from_lang;
 
   function handleHint() {
-    setUsedHint(true);
-
-    if (exerciseType === EXERCISE_TYPES.translateWhatYouHear) {
+    if (exerciseType === EXERCISE_TYPES.translateWhatYouHear && firstHint) {
+      setFirstHint(false);
       onHintUsed();
-      setMessageToAPI(messageToAPI + "H");
     } else {
+      setUsedHint(true);
       let hint;
       if (currentInput === targetWord.substring(0, currentInput.length)) {
         hint = targetWord.substring(0, currentInput.length + 1);
@@ -60,6 +63,10 @@ export default function BottomInput({
   useEffect(() => {
     if (isInputWrongLanguage) {
       setFeedbackMessage("Correct, but wrong language! 😉");
+      return;
+    }
+    if (isOneWordCorrect) {
+      setFeedbackMessage("⭐ You are still missing a word!");
       return;
     }
     if (distanceToCorrect < 5 && distanceToCorrect > 2) {
@@ -108,8 +115,9 @@ export default function BottomInput({
       return;
     }
 
+    let oneWordCorrect = isWordIncluded(normalizedInput, normalizedAnswer);
+    setIsOneWordCorrect(oneWordCorrect);
     setDistanceToCorrect(levDistance);
-
     setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
     setIsSameLengthAsSolution(
       normalizedInput.length === normalizedAnswer.length,
@@ -125,6 +133,8 @@ export default function BottomInput({
       // we give them a Hint, mainly for audio exercises.
       updatedMessageToAPI = messageToAPI + "H";
       setDistanceToCorrect();
+    } else if (oneWordCorrect) {
+      updatedMessageToAPI = messageToAPI + "H";
     } else if (levDistance === 1) {
       // The user almost got it correct
       // we associate it with a H
@@ -151,7 +161,9 @@ export default function BottomInput({
           <InputField
             type="text"
             className={
-              distanceToCorrect >= 5 ? "wrong-border" : "almost-border"
+              distanceToCorrect >= 5 && !isOneWordCorrect
+                ? "wrong-border"
+                : "almost-border"
             }
             value={currentInput}
             onChange={(e) => setCurrentInput(e.target.value)}

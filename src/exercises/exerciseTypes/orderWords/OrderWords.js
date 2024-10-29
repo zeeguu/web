@@ -5,10 +5,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
-import {
-  removePunctuation,
-  tokenize,
-} from "../../../utils/preprocessing/preprocessing";
+import { removePunctuation, tokenize } from "../../../utils/text/preprocessing";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
@@ -1185,6 +1182,7 @@ export default function OrderWords({
           </div>
         )}
         <NextNavigation
+          exerciseType={EXERCISE_TYPE}
           message={messageToAPI}
           api={api}
           // Added an empty bookmark to avoid showing the

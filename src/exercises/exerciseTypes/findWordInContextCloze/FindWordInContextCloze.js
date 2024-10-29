@@ -11,7 +11,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import LearningCycleIndicator from "../../LearningCycleIndicator.js";
-import { removePunctuation } from "../../../utils/preprocessing/preprocessing";
+import { removePunctuation } from "../../../utils/text/preprocessing";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.
@@ -40,6 +40,7 @@ export default function FindWordInContextCloze({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
+  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -56,7 +57,7 @@ export default function FindWordInContextCloze({
       );
       setArticleInfo(articleInfo);
     });
-  }, []);
+  }, [isBookmarkChanged]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -137,6 +138,7 @@ export default function FindWordInContextCloze({
 
       <NextNavigation
         message={messageToAPI}
+        exerciseType={EXERCISE_TYPE}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
         moveToNextExercise={moveToNextExercise}
@@ -145,6 +147,7 @@ export default function FindWordInContextCloze({
         handleShowSolution={(e) => handleShowSolution(e, undefined)}
         toggleShow={toggleShow}
         isCorrect={isCorrect}
+        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
       />
     </s.Exercise>
   );

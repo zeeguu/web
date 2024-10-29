@@ -12,6 +12,9 @@ let TopMessage = styled.div`
   margin: 2em;
   padding: 0.5em 0.5em;
   font-size: large;
+  @media (max-width: 720px) {
+    font-size: small;
+  }
 
   @media (min-width: 768px) {
     width: 36em;
@@ -21,6 +24,9 @@ let TopMessage = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    @media (max-width: 720px) {
+      flex-direction: column;
+    }
   }
 `;
 
