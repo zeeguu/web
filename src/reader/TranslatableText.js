@@ -156,16 +156,13 @@ export function TranslatableText({
         );
       }
 
-      const translationExercise =
-        EXERCISE_TYPES.isTranslationExercise(exerciseType);
-
-      if (foundInstances[0] === word.id && !translationExercise) {
+      if (foundInstances[0] === word.id) {
         // If we want, we can render it according to words size.
         // "_".repeat(word.word.length) + " ";
         return "_______ ";
       }
 
-      if (disableTranslation && !translationExercise) {
+      if (disableTranslation) {
         return "";
       }
 

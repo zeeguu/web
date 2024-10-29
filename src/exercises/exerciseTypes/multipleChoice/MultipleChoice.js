@@ -136,6 +136,7 @@ export default function MultipleChoice({
           translating={true}
           pronouncing={false}
           bookmarkToStudy={bookmarksToStudy[0].from}
+          exerciseType={EXERCISE_TYPE}
         />
       </div>
 
