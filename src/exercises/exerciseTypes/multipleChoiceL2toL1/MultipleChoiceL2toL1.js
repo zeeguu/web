@@ -116,6 +116,9 @@ export default function MultipleChoiceL2toL1({
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />
+
+      {isCorrect && <h1>{removePunctuation(bookmarksToStudy[0].to)}</h1>}
+
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
@@ -127,8 +130,6 @@ export default function MultipleChoiceL2toL1({
           boldExpression={bookmarksToStudy[0].from}
         />
       </div>
-
-      {isCorrect && <h1>{removePunctuation(bookmarksToStudy[0].to)}</h1>}
 
       {!buttonOptions && <LoadingAnimation />}
       {!isCorrect && (

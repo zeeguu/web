@@ -109,6 +109,13 @@ export default function TranslateL2toL1({
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />
+      {isCorrect && (
+        <>
+          <h1 className="wordInContextHeadline">
+            {removePunctuation(bookmarksToStudy[0].to)}
+          </h1>
+        </>
+      )}
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
@@ -132,13 +139,6 @@ export default function TranslateL2toL1({
             setMessageToAPI={setMessageToAPI}
             isL1Answer={true}
           />
-        </>
-      )}
-      {isCorrect && (
-        <>
-          <h1 className="wordInContextHeadline">
-            {removePunctuation(bookmarksToStudy[0].to)}
-          </h1>
         </>
       )}
 
