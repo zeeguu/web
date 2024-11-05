@@ -107,10 +107,11 @@ export default function Exercises({
 
   function getExerciseSequenceType() {
     let exerciseTypesList;
-    if (Feature.merle_exercises()) exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
+    if (Feature.merle_exercises() || Feature.exercise_levels())
+      exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
-      if (Feature.merle_exercises())
+      if (Feature.merle_exercises() || Feature.exercise_levels())
         exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
       else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
     }

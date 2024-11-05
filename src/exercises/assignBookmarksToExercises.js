@@ -8,6 +8,7 @@ import {
   MEMORY_TASK,
   LEARNING_CYCLE,
 } from "./ExerciseTypeConstants";
+import Feature from "../features/Feature";
 
 /**
  * The bookmarks fetched by the API are assigned to the various exercises in the defined exercise session --
@@ -68,27 +69,38 @@ function popNElementsFromList(l, n) {
   return a;
 }
 
+function removeExerciseFromList(exercise, list) {
+  return list.filter((ex) => ex !== exercise);
+}
+
+function distinctContexts(potentialBookmarks) {
+  let potentialBookmarkContexts = potentialBookmarks.map(
+    (bookmark) => bookmark.context,
+  );
+  let distinctContextsCount = new Set(potentialBookmarkContexts).size;
+  return distinctContextsCount === potentialBookmarkContexts.length;
+}
+
+function distinctTranslations(potentialBookmarks) {
+  let potentialBookmarkContexts = potentialBookmarks.map(
+    (bookmark) => bookmark.to,
+  );
+  let distinctContextsCount = new Set(potentialBookmarkContexts).size;
+  return distinctContextsCount === potentialBookmarkContexts.length;
+}
+
+function groupByLevel(items) {
+  return items.reduce((acc, item) => {
+    const level = item.level || 1;
+    if (!acc[level]) {
+      acc[level] = [];
+    }
+    acc[level].push(item);
+    return acc;
+  }, {});
+}
+
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
-  function _removeExerciseFromList(exercise, list) {
-    return list.filter((ex) => ex !== exercise);
-  }
-
-  function _distinctContexts(potentialBookmarks) {
-    let potentialBookmarkContexts = potentialBookmarks.map(
-      (bookmark) => bookmark.context,
-    );
-    let distinctContextsCount = new Set(potentialBookmarkContexts).size;
-    return distinctContextsCount === potentialBookmarkContexts.length;
-  }
-
-  function _distinctTranslations(potentialBookmarks) {
-    let potentialBookmarkContexts = potentialBookmarks.map(
-      (bookmark) => bookmark.to,
-    );
-    let distinctContextsCount = new Set(potentialBookmarkContexts).size;
-    return distinctContextsCount === potentialBookmarkContexts.length;
-  }
-
   let exerciseSequence = [];
 
   let exercisesByCycleTask = getElementsByCycleTask(
@@ -117,10 +129,8 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
           let availableBookmarks = currentBookmarkList.length;
           if (
             requiredBookmarks <= availableBookmarks &&
-            _distinctContexts(
-              currentBookmarkList.slice(0, requiredBookmarks),
-            ) &&
-            _distinctTranslations(
+            distinctContexts(currentBookmarkList.slice(0, requiredBookmarks)) &&
+            distinctTranslations(
               currentBookmarkList.slice(0, requiredBookmarks),
             )
           ) {
@@ -145,7 +155,7 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
             suitableExerciseFound = true;
           }
           if (!suitableExerciseFound) {
-            possibleExercises = _removeExerciseFromList(
+            possibleExercises = removeExerciseFromList(
               selectedExerciseType,
               possibleExercises,
             );
@@ -162,6 +172,64 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
       }
     }
   }
+  return exerciseSequence;
+}
+
+function assignBookmarksToLevels(bookmarks, exerciseTypesList) {
+  console.log("bookmarks", bookmarks);
+
+  let exerciseSequence = [];
+
+  const bookmarksByLevel = groupByLevel(bookmarks);
+  const exercisesByLevel = groupByLevel(exerciseTypesList);
+
+  for (let level = 1; level <= 4; level++) {
+    const currentBookmarks = bookmarksByLevel[level] || [];
+    const currentExercises = exercisesByLevel[level] || [];
+
+    let exerciseIndex = 0;
+
+    while (currentBookmarks.length > 0 && currentExercises.length > 0) {
+      const exercise = currentExercises[exerciseIndex];
+      const requiredBookmarks = exercise.requiredBookmarks;
+
+      if (currentBookmarks.length >= requiredBookmarks) {
+        const potentialBookmarks = currentBookmarks.slice(0, requiredBookmarks);
+        if (
+          distinctContexts(potentialBookmarks) &&
+          distinctTranslations(potentialBookmarks)
+        ) {
+          const testedBookmarks = currentBookmarks.splice(
+            0,
+            exercise.testedBookmarks,
+          );
+          const bookmarksForExercise = testedBookmarks.concat(
+            currentBookmarks.slice(
+              0,
+              requiredBookmarks - testedBookmarks.length,
+            ),
+          );
+          exerciseSequence.push({
+            type: exercise.type,
+            bookmarks: bookmarksForExercise,
+          });
+        } else {
+          currentExercises.splice(exerciseIndex, 1);
+          if (currentExercises.length === 0) {
+            return assignBookmarksToDefaultSequence(
+              bookmarks,
+              exerciseTypesList,
+            );
+          }
+          continue;
+        }
+      }
+
+      // Move to the next exercise, and wrap around if necessary
+      exerciseIndex = (exerciseIndex + 1) % currentExercises.length;
+    }
+  }
+
   return exerciseSequence;
 }
 
@@ -196,8 +264,10 @@ function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
     exerciseTypesList === LEARNING_CYCLE_SEQUENCE ||
     exerciseTypesList === LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
 
-  if (learningCycleSequence) {
+  if (Feature.merle_exercises()) {
     return assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList);
+  } else if (Feature.exercise_levels()) {
+    return assignBookmarksToLevels(bookmarks, exerciseTypesList);
   } else {
     return assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList);
   }
