@@ -1,5 +1,5 @@
 import * as s from "../modal_shared/Modal.sc";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header.sc";
 import Heading from "../modal_shared/Heading.sc";
@@ -18,6 +18,16 @@ export default function SupportedNotification({
   open,
 }) {
   const [redirectCheckbox, setRedirectCheckbox] = useState(false);
+  const [gifSrc, setGifSrc] = useState("enable-zeeguu.gif");
+
+  useEffect(() => {
+    // When 'open' is true, sets the GIF source to a unique URL with a timestamp query parameter.
+    // This forces the browser to reload the GIF each time the modal is displayed,
+    // preventing it from using a cached version and ensuring the GIF plays from the start.
+    if (open) {
+      setGifSrc(`enable-zeeguu.gif?timestamp=${new Date().getTime()}`);
+    }
+  }, [open]);
 
   function toggleRedirectCheckbox() {
     setRedirectCheckbox(!redirectCheckbox);
@@ -54,10 +64,7 @@ export default function SupportedNotification({
           Once there, <s.Strong>right-click</s.Strong> anywhere on the page and
           select the "Read with Zeeguu" option.
         </p>
-        <FullWidthImage
-          src={"use-extension.png"}
-          alt={"Zeeguu browser extension"}
-        />
+        <FullWidthImage src={gifSrc} alt={"Zeeguu browser extension"} />
       </Main>
       <Footer>
         <Checkbox
