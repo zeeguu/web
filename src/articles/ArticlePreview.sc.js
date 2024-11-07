@@ -176,7 +176,7 @@ let UrlTopics = styled.div`
     margin-bottom: -0.3em;
     margin-right: -0.3em;
   }
-  @media (max-width: 900px) {
+  @media (max-width: 990px) {
     margin-bottom: 1.2em;
   }
 `;
