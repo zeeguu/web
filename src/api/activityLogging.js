@@ -111,3 +111,7 @@ Zeeguu_API.prototype.logReaderActivity = function (
 ) {
   return this.logUserActivity(event, article_id, value, extra_data);
 };
+
+Zeeguu_API.prototype.daysSinceLastUse = function (callback) {
+  this._getPlainText("/days_since_last_use", callback);
+};
