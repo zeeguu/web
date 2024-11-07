@@ -50,6 +50,8 @@ export default function UserDashboard({ api }) {
     api.logUserActivity(api.USER_DASHBOARD_TAB_CHANGE, "", tabId);
   }
 
+  //This is a test to see 
+
   function handleActiveTimeIntervalChange(selected) {
     setActiveTimeInterval(selected);
     api.logUserActivity(api.USER_DASHBOARD_PERIOD_CHANGE, "", selected);
