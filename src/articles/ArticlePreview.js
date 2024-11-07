@@ -148,8 +148,8 @@ export default function ArticlePreview({
       </s.ArticleContent>
 
       <s.BottomContainer>
-        <div>
-          {Feature.new_topics() && showInferredTopic && (
+        {Feature.new_topics() && showInferredTopic && new_topics.length > 0 && (
+          <div>
             <s.UrlTopics>
               {new_topics.map((tuple) => (
                 // Tuple (Topic Title, TopicOriginType)
@@ -179,15 +179,17 @@ export default function ArticlePreview({
                 </span>
               ))}
             </s.UrlTopics>
-          )}
-          {!Feature.new_topics() && (
+          </div>
+        )}
+        {!Feature.new_topics() && topics.length > 0 && (
+          <div>
             <s.Topics>
               {topics.map((topic) => (
                 <span key={topic}>{topic}</span>
               ))}
             </s.Topics>
-          )}
-        </div>
+          </div>
+        )}
         <ArticleStatInfo
           cefr_level={cefr_level}
           articleInfo={article}
