@@ -12,3 +12,4 @@ export const SESSISON_FEEDBACK =
   "Something went wrong with your login, please try to relog into Zeeguu.";
 export const OTHER_FEEDBACK = "Something went wrong, please report it to us.";
 export const LANGUAGE_UNDEFINED = "Language support information is unavailable";
+export const TIMEOUT_FEEDBACK = "The operation timed out";

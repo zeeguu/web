@@ -10,6 +10,7 @@ import {
   READABILITY_FEEDBACK,
   API_DOWN_FEEDBACK,
   OTHER_FEEDBACK,
+  TIMEOUT_FEEDBACK,
 } from "./constants";
 
 export default function ZeeguuError({
@@ -18,6 +19,7 @@ export default function ZeeguuError({
   isMissingSession,
   isZeeguuAPIDown,
   isInternetDown,
+  isTimeout,
   api,
 }) {
   const [timeout, setTimeout] = useState(7);
@@ -34,6 +36,7 @@ export default function ZeeguuError({
     else if (isZeeguuAPIDown) setReason(API_DOWN_FEEDBACK);
     else if (isNotLanguageSupported) setReason(LANGUAGE_FEEDBACK);
     else if (isNotReadable) setReason(READABILITY_FEEDBACK);
+    else if (isTimeout) setReason(TIMEOUT_FEEDBACK);
     else setReason(OTHER_FEEDBACK);
     return () => clearInterval(interval);
   });

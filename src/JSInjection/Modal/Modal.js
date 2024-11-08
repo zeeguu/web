@@ -356,7 +356,7 @@ export function Modal({
     return <ZeeguuLoader />;
   }
   if (isTimedOut) {
-    return <ZeeguuError />;
+    return <ZeeguuError api={api} isTimeout={isTimedOut} />;
   }
   return (
     <>

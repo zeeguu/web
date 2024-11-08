@@ -22,9 +22,10 @@ export default function ReportError({
     if (feedback === LANGUAGE_FEEDBACK || feedback === LANGUAGE_UNDEFINED)
       feedbackType = "LANGUAGE_";
     else if (feedback === READABILITY_FEEDBACK) feedbackType = "READABLE_";
-    sendFeedbackEmail(api, feedback, url, undefined, feedbackType);
-    setFeedbackSent(true);
-    setFeedbackSuccess(true);
+    sendFeedbackEmail(api, feedback, url, undefined, feedbackType, (result) => {
+      setFeedbackSuccess(result);
+      setFeedbackSent(true);
+    });
   };
   return (
     <>
@@ -40,6 +41,9 @@ export default function ReportError({
       )}
       {feedbackSent && feedbackSuccess && (
         <Alert severity="success">Thanks for the feedback</Alert>
+      )}
+      {feedbackSent && !feedbackSuccess && (
+        <Alert severity="error">An error ocurred.</Alert>
       )}
     </>
   );
