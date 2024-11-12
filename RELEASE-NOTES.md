@@ -1,6 +1,9 @@
 # v2.4.5
 - bug fix: alternative translation menu is not sized correctly
 
+# v2.4.4
+- better error reporting when an article can't be extracted
+
 # v2.4.3
 - bug fix; login path is updated in the web app
 
