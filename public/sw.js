@@ -34,8 +34,7 @@ function startPollingNotifications() {
 }
 
 async function pollNotifications() {
-  if (!sessionId) {
-    console.warn("No session ID available for polling notifications.");
+  if (!sessionId || Notification.permission !== "granted") {
     return;
   }
 
