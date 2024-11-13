@@ -1,0 +1,22 @@
+[
+  {
+    "message": "Mock data notification: Remember to complete your daily exercises!",
+    "notificationId": "123",
+    "url": "/exercises"
+  },
+  {
+    "message": "Mock data notification: Find today's interesting article!",
+    "notificationId": "123",
+    "url": "/articles"
+  },
+  {
+    "message": "Mock data notification: Remember to practice your recently learned words!",
+    "notificationId": "123",
+    "url": "/words"
+  },
+  {
+    "message": "Mock data notification: Take a look at your history with Zeeguu!",
+    "notificationId": "123",
+    "url": "/history"
+  }
+]

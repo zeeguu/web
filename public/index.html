@@ -50,16 +50,24 @@
   To create a production bundle, use `npm run build` or `yarn build`.
 -->
 <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker
-            .register('/sw.js', {scope: '/'})
-            .then(function (registration) {
-                console.log('Service Worker Regsitered');
-            });
-        navigator.serviceWorker.ready.then(function (registration) {
-            console.log('Service Worker Ready')
-        });
-    }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+    .register('/sw.js')
+    .then((registration) => {
+      try {    
+      const sessionId = document.cookie.split(";")[0].split("=")[1]
+          if (sessionId) {
+            registration.active.postMessage({ sessionId: sessionId, timestamp: Date.now() });
+            Notification.requestPermission();
+          } else {
+            console.error("No session ID found")
+            return;
+          }
+        } catch {
+          console.error("Error sending mesages to the service worker")
+        }
+    });
+  }
 </script>
 </body>
 </html>
