@@ -24,15 +24,25 @@ let darkBlue = "#2f77ad";
 
   All other colors in the application will be revised using the same pattern on an ongoing basis.
 */
-let blue100 = "hsl(216, 100%, 97%)";
-let blue200 = "hsl(216, 100%, 89%)";
-let blue300 = "hsl(216, 100%, 81%)";
-let blue400 = "hsl(216, 100%, 74%)";
-let blue500 = "hsl(216, 100%, 66%)";
-let blue600 = "hsl(216, 100%, 57%)";
-let blue700 = "hsl(216, 100%, 48%)";
-let blue800 = "hsl(216, 100%, 40%)";
-let blue900 = "hsl(216, 100%, 31%)";
+const blue100 = "hsl(216, 100%, 97%)";
+const blue200 = "hsl(216, 100%, 89%)";
+const blue300 = "hsl(216, 100%, 81%)";
+const blue400 = "hsl(216, 100%, 74%)";
+const blue500 = "hsl(216, 100%, 66%)";
+const blue600 = "hsl(216, 100%, 57%)";
+const blue700 = "hsl(216, 100%, 48%)";
+const blue800 = "hsl(216, 100%, 40%)";
+const blue900 = "hsl(216, 100%, 31%)";
+
+const orange100 = "";
+const orange200 = "";
+const orange300 = "";
+const orange400 = "";
+const orange500 = "";
+const orange600 = "";
+const orange700 = "";
+const orange800 = "";
+const orange900 = "";
 
 let veryLightGrey = "#efefef";
 let lightGrey = "#c1c1c1";

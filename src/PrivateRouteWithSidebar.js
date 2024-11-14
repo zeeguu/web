@@ -2,6 +2,9 @@ import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
 import SideBar from "./components/SideBar";
+import NewSidebar from "./components/sidebar/NewSidebar";
+import { isMobile } from "./utils/misc/browserDetection";
+import BottomNav from "./components/sidebar/BottomNav";
 
 // inspired from:
 // https://dev.to/mychal/protected-routes-with-react-function-components-dh
@@ -26,9 +29,15 @@ export const PrivateRouteWithSidebar = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) => (
-        <SideBar>
-          <Component {...rest} {...props} />
-        </SideBar>
+        <>
+          {" "}
+          {isMobile() ? (
+            <BottomNav />
+          ) : (
+            <NewSidebar />
+            // <SideBar>{<Component {...rest} {...props} />}</SideBar>
+          )}
+        </>
       )}
     />
   );
