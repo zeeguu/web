@@ -35,7 +35,7 @@ export const PrivateRouteWithSidebar = ({ component: Component, ...rest }) => {
             <BottomNav />
           ) : (
             <>
-              <NewSidebar />
+              <NewSidebar>{<Component {...rest} {...props} />}</NewSidebar>
               {/* <SideBar>{<Component {...rest} {...props} />}</SideBar> */}
             </>
           )}

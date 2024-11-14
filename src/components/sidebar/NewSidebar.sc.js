@@ -1,5 +1,13 @@
 import styled from "styled-components";
 
+const Content = styled.div`
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow-y: scroll;
+`;
+
 const SideBar = styled.nav`
   box-sizing: border-box;
   height: 100%;
@@ -8,6 +16,8 @@ const SideBar = styled.nav`
   width: 14rem;
   overflow-y: scroll;
   display: block;
+  position: fixed;
+  top: 0;
 `;
 
 const NavOption = styled.li`
@@ -20,9 +30,11 @@ const NavOption = styled.li`
   border-radius: 0.25rem;
   border: solid 0.1rem transparent;
   transition: 0.3s ease-in-out;
+  cursor: pointer;
 
   :hover {
-    border: solid 0.1rem white;
+    border: solid 0.1rem rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.05);
   }
 
   :active {
@@ -48,4 +60,4 @@ const Logotype = styled.span`
   font-weight: 500;
 `;
 
-export { SideBar, NavOption, Logotype };
+export { SideBar, NavOption, Logotype, Content };
