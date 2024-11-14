@@ -18,10 +18,17 @@ const NavOption = styled.li`
   color: white;
   font-weight: 600;
   border-radius: 0.25rem;
+  border: solid 0.1rem transparent;
+  transition: 0.3s ease-in-out;
 
   :hover {
+    border: solid 0.1rem white;
+  }
+
+  :active {
     background-color: white;
     color: #ffa41a;
+    opacity: 100%;
   }
 
   a {
