@@ -50,7 +50,7 @@ export default function UserDashboard({ api }) {
     api.logUserActivity(api.USER_DASHBOARD_TAB_CHANGE, "", tabId);
   }
 
-  //This is a test to see 
+  //This is a test to see
 
   function handleActiveTimeIntervalChange(selected) {
     setActiveTimeInterval(selected);
@@ -113,38 +113,44 @@ export default function UserDashboard({ api }) {
       setAllWordsDataPerMonths(calculateCountPerMonth_Words(formatted));
     });
 
+    //the activitiesArray argument in the anonymous function (which is also an argument)
+    //is what is passed as the argument to the function in userStats.js
     api.getUserActivityByDay((activitiesArray) => {
       setDailyExerciseAndReadingTimes(activitiesArray);
-      setMonthlyExerciseAndReadingTimes(calculateCountPerMonth_Activity(activitiesArray));
+      setMonthlyExerciseAndReadingTimes(
+        calculateCountPerMonth_Activity(activitiesArray),
+      );
 
       //Adds the activity arrays together that we get from getUserActivityByDay
-      const bothActivitiesArray = activitiesArray.exercises.concat(activitiesArray.reading);
+      const bothActivitiesArray = activitiesArray.exercises.concat(
+        activitiesArray.reading,
+      );
 
-      //adds together the seconds for each day. this is an object 
-      const combinedObject= bothActivitiesArray.reduce((acc,curr)=> {
-        if (acc[curr.date]){
+      //adds together the seconds for each day. this is an object
+      const combinedObject = bothActivitiesArray.reduce((acc, curr) => {
+        if (acc[curr.date]) {
           acc[curr.date] += curr.seconds;
-        }
-        else
-        {
+        } else {
           acc[curr.date] = curr.seconds;
-      }
-      return acc;
-    }, {});
-   
-    //converts back into array 
-    const combinedArray = Object.keys(combinedObject).map((date) => ({
-      date: date,
-      seconds: combinedObject[date],
-    }));
-    
+        }
+        return acc;
+      }, {});
+
+      //converts back into array
+      const combinedArray = Object.keys(combinedObject).map((date) => ({
+        date: date,
+        seconds: combinedObject[date],
+      }));
+
       // filters out the instances where seconds is 0 and orders by date
-      const activitiesSorted =combinedArray.filter((activity) => activity.seconds > 0).sort((a, b) => b.date.localeCompare(a.date));
+      const activitiesSorted = combinedArray
+        .filter((activity) => activity.seconds > 0)
+        .sort((a, b) => b.date.localeCompare(a.date));
       console.log(activitiesSorted);
 
       const currentDate = new Date();
       const currentDateString = currentDate.toISOString().slice(0, 10);
-      
+
       let streak = 0;
       let previousDate = currentDateString;
 
@@ -160,7 +166,6 @@ export default function UserDashboard({ api }) {
       setCurrentStreak(streak);
     });
   }, [api, setCurrentStreak]);
-
 
   if (!allWordsData || !dailyExerciseAndReadingTimes) {
     return <LoadingAnimation />;
