@@ -126,21 +126,23 @@ export default function Learning({ api }) {
       )}
 
       <CollapsablePanel topMessage="Not Yet In Study">
-        <s.TopMessage>
-          <div className="top-message-icon">{strings.toLearnMsg}</div>
-        </s.TopMessage>
         {toLearnWords.length === 0 ? (
           <s.TopMessage>{strings.noToLearnWords}</s.TopMessage>
         ) : (
-          toLearnWords.map((each) => (
-            <Word
-              key={each.id}
-              bookmark={each}
-              api={api}
-              source={UMR_SOURCE}
-              notifyDelete={onNotifyDelete}
-            />
-          ))
+          <>
+            <s.TopMessage>
+              <div className="top-message-icon">{strings.toLearnMsg}</div>
+            </s.TopMessage>
+            {toLearnWords.map((each) => (
+              <Word
+                key={each.id}
+                bookmark={each}
+                api={api}
+                source={UMR_SOURCE}
+                notifyDelete={onNotifyDelete}
+              />
+            ))}
+          </>
         )}
       </CollapsablePanel>
     </>
