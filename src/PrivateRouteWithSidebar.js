@@ -34,8 +34,10 @@ export const PrivateRouteWithSidebar = ({ component: Component, ...rest }) => {
           {isMobile() ? (
             <BottomNav />
           ) : (
-            <NewSidebar />
-            // <SideBar>{<Component {...rest} {...props} />}</SideBar>
+            <>
+              <NewSidebar />
+              {/* <SideBar>{<Component {...rest} {...props} />}</SideBar> */}
+            </>
           )}
         </>
       )}
