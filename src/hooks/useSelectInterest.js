@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import Feature from "../features/Feature";
 
 export default function useSelectInterest(api) {
-  const useNewTopics = Feature.new_topics();
   const [availableTopics, setAvailableTopics] = useState([]);
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
@@ -11,23 +9,13 @@ export default function useSelectInterest(api) {
     useState(false);
 
   useEffect(() => {
-    if (useNewTopics) {
-      api.getAvailableNewTopics((data) => {
-        setAvailableTopics(data);
-      });
+    api.getAvailableTopics((data) => {
+      setAvailableTopics(data);
+    });
 
-      api.getSubscribedNewTopics((data) => {
-        setSubscribedTopics(data);
-      });
-    } else {
-      api.getAvailableTopics((data) => {
-        setAvailableTopics(data);
-      });
-
-      api.getSubscribedTopics((data) => {
-        setSubscribedTopics(data);
-      });
-    }
+    api.getSubscribedTopics((data) => {
+      setSubscribedTopics(data);
+    });
 
     //custom interest filters
     api.getSubscribedSearchers((data) => {
@@ -44,8 +32,7 @@ export default function useSelectInterest(api) {
   function subscribeToTopic(topic) {
     setSubscribedTopics([...subscribedTopics, topic]);
     setAvailableTopics(availableTopics.filter((each) => each.id !== topic.id));
-    if (useNewTopics) api.subscribeToNewTopic(topic);
-    else api.subscribeToTopic(topic);
+    api.subscribeToTopic(topic);
   }
 
   function unsubscribeFromTopic(topic) {
@@ -53,8 +40,7 @@ export default function useSelectInterest(api) {
       subscribedTopics.filter((each) => each.id !== topic.id),
     );
     setAvailableTopics([...availableTopics, topic]);
-    if (useNewTopics) api.unsubscribeFromNewTopic(topic);
-    else api.unsubscribeFromTopic(topic);
+    api.unsubscribeFromTopic(topic);
   }
 
   function toggleTopicSubscription(topic) {
