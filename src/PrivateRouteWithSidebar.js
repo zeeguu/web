@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
 import SideBar from "./components/SideBar";
-import NewSidebar from "./components/sidebar/NewSidebar";
+import ContentWithSidebar from "./components/sidebar/ContentWithSidebar";
 import { isMobile } from "./utils/misc/browserDetection";
 import BottomNav from "./components/sidebar/BottomNav";
 
@@ -30,15 +30,10 @@ export const PrivateRouteWithSidebar = ({ component: Component, ...rest }) => {
       {...rest}
       render={(props) => (
         <>
-          {" "}
-          {isMobile() ? (
-            <BottomNav />
-          ) : (
-            <>
-              <NewSidebar>{<Component {...rest} {...props} />}</NewSidebar>
-              {/* <SideBar>{<Component {...rest} {...props} />}</SideBar> */}
-            </>
-          )}
+          <ContentWithSidebar>
+            {<Component {...rest} {...props} />}
+          </ContentWithSidebar>
+          {/* <SideBar>{<Component {...rest} {...props} />}</SideBar> */}
         </>
       )}
     />

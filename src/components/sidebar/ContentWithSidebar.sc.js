@@ -1,5 +1,13 @@
 import styled from "styled-components";
 
+const Content = styled.div`
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow-y: scroll;
+`;
+
 const SideBar = styled.nav`
   box-sizing: border-box;
   height: 100%;
@@ -52,4 +60,4 @@ const Logotype = styled.span`
   font-weight: 500;
 `;
 
-export { SideBar, NavOption, Logotype };
+export { SideBar, NavOption, Logotype, Content };
