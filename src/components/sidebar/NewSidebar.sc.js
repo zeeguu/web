@@ -10,9 +10,10 @@ const SideBar = styled.nav`
   display: block;
   position: fixed;
   top: 0;
+  transition: 0.3s ease-in-out;
 `;
 
-const NavOption = styled.li`
+const LogoLink = styled.li`
   box-sizing: border-box;
   width: 100%;
   list-style-type: none;
@@ -24,17 +25,6 @@ const NavOption = styled.li`
   transition: 0.3s ease-in-out;
   cursor: pointer;
 
-  :hover {
-    border: solid 0.1rem rgba(255, 255, 255, 0.9);
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-
-  :active {
-    background-color: white;
-    color: #ffa41a;
-    opacity: 100%;
-  }
-
   a {
     font: inherit;
     color: inherit;
@@ -42,14 +32,14 @@ const NavOption = styled.li`
     flex-direction: row;
     align-items: center;
     gap: 1rem;
-    padding: 0.75rem;
+    padding: 0.75rem 0.75rem 1.5rem 0.75rem;
   }
 `;
 
 const Logotype = styled.span`
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: white;
   font-weight: 500;
 `;
 
-export { SideBar, NavOption, Logotype };
+export { SideBar, LogoLink, Logotype };
