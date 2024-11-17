@@ -1,11 +1,20 @@
 import React from "react";
-import { Link } from "react-router-dom/cjs/react-router-dom";
 import * as s from "./NavLink.sc";
 
-export default function NavLink({ children, linkTo, isOnStudentSide = true }) {
+export default function NavLink({
+  linkTo,
+  icon,
+  isOnStudentSide = true,
+  isCollapsed = false,
+  title,
+  text,
+}) {
   return (
     <s.NavOption isOnStudentSide={isOnStudentSide}>
-      <Link to={linkTo}>{children}</Link>
+      <s.RouterLink to={linkTo}>
+        <s.IconContainer title={title}>{icon}</s.IconContainer>
+        <s.Span visibility={isCollapsed}>{text}</s.Span>
+      </s.RouterLink>
     </s.NavOption>
   );
 }

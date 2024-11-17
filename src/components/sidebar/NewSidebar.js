@@ -24,6 +24,7 @@ export default function NewSidebar() {
   const [state, setState] = useState(false);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
   const [isTeacher] = useState(user.is_teacher);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const path = useLocation().pathname;
   useEffect(() => {
@@ -34,52 +35,74 @@ export default function NewSidebar() {
   console.log(state);
   return (
     <s.SideBar
+      isCollapsed={isCollapsed}
       isOnStudentSide={isOnStudentSide}
       role="navigation"
       aria-label="Sidebar Navigation"
     >
-      <s.LogoLink onClick={() => setState(!state)}>
-        <Link to="/">
-          <s.Logotype>Zeeguu </s.Logotype>
-        </Link>
+      <s.LogoLink onClick={() => setIsCollapsed(!isCollapsed)}>
+        {/* <Link to=""> */}
+        <s.Logotype>Zeeguu </s.Logotype>
+        {/* </Link> */}
       </s.LogoLink>
       {isOnStudentSide && (
         <>
-          <NavLink linkTo={"/"}>
-            <HomeRoundedIcon />
-            Home
-          </NavLink>
+          <NavLink
+            linkTo={"/articles"}
+            icon={<HomeRoundedIcon />}
+            isCollapsed={isCollapsed}
+            title={"Home"}
+            text={"Home"}
+          />
 
-          <NavLink linkTo={"/exercises"}>
-            <CategoryRoundedIcon />
-            Exercises
-          </NavLink>
+          <NavLink
+            linkTo={"/exercises"}
+            icon={<CategoryRoundedIcon />}
+            isCollapsed={isCollapsed}
+            title={"Exercises"}
+            text={"Exercises"}
+          />
 
-          <NavLink linkTo={"/words"}>
-            <AssignmentRoundedIcon />
-            Words
-          </NavLink>
+          <NavLink
+            linkTo={"/words"}
+            icon={<AssignmentRoundedIcon />}
+            isCollapsed={isCollapsed}
+            title={"Words"}
+            text={"Words"}
+          />
 
-          <NavLink linkTo={"/account_settings/language_settings"}>
-            <TranslateRoundedIcon />
-            Language
-          </NavLink>
+          <NavLink
+            linkTo={"/account_settings/language_settings"}
+            icon={<TranslateRoundedIcon />}
+            isCollapsed={isCollapsed}
+            title={"Language"}
+            text={"Language"}
+          />
 
-          <NavLink linkTo={"/history"}>
-            <HistoryRoundedIcon />
-            History
-          </NavLink>
+          <NavLink
+            linkTo={"/history"}
+            icon={<HistoryRoundedIcon />}
+            isCollapsed={isCollapsed}
+            title={"History"}
+            text={"History"}
+          />
 
-          <NavLink linkTo={"/user_dashboard"}>
-            <DonutSmallRoundedIcon />
-            Statistics
-          </NavLink>
+          <NavLink
+            linkTo={"/user_dashboard"}
+            icon={<DonutSmallRoundedIcon />}
+            isCollapsed={isCollapsed}
+            title={"Statistics"}
+            text={"Statistics"}
+          />
 
           {isTeacher && (
-            <NavLink linkTo={"/teacher/classes"}>
-              <BusinessCenterRoundedIcon />
-              Teacher Site
-            </NavLink>
+            <NavLink
+              linkTo={"/teacher/classes"}
+              icon={<BusinessCenterRoundedIcon />}
+              isCollapsed={isCollapsed}
+              title={"Teacher Site"}
+              text={"Teacher Site"}
+            />
           )}
         </>
       )}
@@ -89,34 +112,48 @@ export default function NewSidebar() {
           <NavLink
             isOnStudentSide={isOnStudentSide}
             linkTo={"/teacher/classes"}
-          >
-            <GroupsRoundedIcon />
-            My Classrooms
-          </NavLink>
+            icon={<GroupsRoundedIcon />}
+            isCollapsed={isCollapsed}
+            title={"My Classrooms"}
+            text={"My Classrooms"}
+          />
 
-          <NavLink isOnStudentSide={isOnStudentSide} linkTo={"/teacher/texts"}>
-            <ChromeReaderModeRoundedIcon />
-            My Texts
-          </NavLink>
+          <NavLink
+            isOnStudentSide={isOnStudentSide}
+            linkTo={"/teacher/texts"}
+            icon={<ChromeReaderModeRoundedIcon />}
+            isCollapsed={isCollapsed}
+            title={"My Texts"}
+            text={"My Texts"}
+          />
 
-          <NavLink isOnStudentSide={isOnStudentSide} linkTo={"/articles"}>
-            <SchoolRoundedIcon />
-            Student Site
-          </NavLink>
+          <NavLink
+            isOnStudentSide={isOnStudentSide}
+            linkTo={"/articles"}
+            icon={<SchoolRoundedIcon />}
+            isCollapsed={isCollapsed}
+            title={"Student Site"}
+            text={"Student Site"}
+          />
         </>
       )}
+
       <NavLink
         isOnStudentSide={isOnStudentSide}
         linkTo={"/account_settings/options"}
-      >
-        <SettingsRoundedIcon />
-        Settings
-      </NavLink>
+        icon={<SettingsRoundedIcon />}
+        isCollapsed={isCollapsed}
+        title={"Settings"}
+        text={"Settings"}
+      />
 
-      <NavLink linkTo={"/"}>
-        <FeedbackRoundedIcon />
-        Give Feedback
-      </NavLink>
+      <NavLink
+        linkTo={"/articles"}
+        icon={<FeedbackRoundedIcon />}
+        isCollapsed={isCollapsed}
+        title={"Give Feedback"}
+        text={"Give Feedback"}
+      />
     </s.SideBar>
   );
 }

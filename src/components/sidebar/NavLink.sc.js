@@ -1,9 +1,11 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 import { blue700 } from "../colors";
 
 const NavOption = styled.li`
   box-sizing: border-box;
   width: 100%;
+  height: 3rem;
   list-style-type: none;
   font-size: 1rem;
   color: white;
@@ -12,6 +14,7 @@ const NavOption = styled.li`
   border: solid 0.1rem transparent;
   transition: 0.3s ease-in-out;
   cursor: pointer;
+  white-space: nowrap;
 
   :hover {
     border: solid 0.1rem rgba(255, 255, 255, 0.9);
@@ -24,16 +27,39 @@ const NavOption = styled.li`
       props.isOnStudentSide === true ? "#ffa41a" : `${blue700}`};
     opacity: 100%;
   }
+`;
 
-  a {
-    font: inherit;
-    color: inherit;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.75rem;
+const RouterLink = styled(Link)`
+  font: inherit;
+  color: inherit;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  /* padding: 0.75rem; */
+`;
+
+const Span = styled.span`
+  white-space: nowrap;
+  opacity: ${(props) => (props.visibility ? "0" : "1")};
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
+  white-space: nowrap;
+  @media (max-width: 768px) {
+    opacity: 0;
   }
 `;
 
-export { NavOption };
+const IconContainer = styled.span`
+  width: 3rem;
+  min-width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+`;
+
+export { NavOption, RouterLink, Span, IconContainer };

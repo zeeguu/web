@@ -8,12 +8,16 @@ const SideBar = styled.nav`
   background-color: ${(props) =>
     props.isOnStudentSide === true ? "#ffa41a" : `${blue700}`};
   padding: 0.5rem;
-  width: 14rem;
+  width: ${(props) => (props.isCollapsed ? "4.5rem" : "14rem")};
   overflow-y: scroll;
   display: block;
   position: fixed;
   top: 0;
   transition: 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    width: 4.5rem;
+  }
 `;
 
 const LogoLink = styled.li`
@@ -43,6 +47,12 @@ const Logotype = styled.span`
   font-size: 1.5rem;
   color: white;
   font-weight: 500;
+  color: inherit;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0.75rem 1.5rem 0.75rem;
 `;
 
 export { SideBar, LogoLink, Logotype };
