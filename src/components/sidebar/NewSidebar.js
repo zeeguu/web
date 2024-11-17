@@ -33,7 +33,11 @@ export default function NewSidebar() {
   console.log(`State:`);
   console.log(state);
   return (
-    <s.SideBar role="navigation" aria-label="Sidebar Navigation">
+    <s.SideBar
+      isOnStudentSide={isOnStudentSide}
+      role="navigation"
+      aria-label="Sidebar Navigation"
+    >
       <s.LogoLink onClick={() => setState(!state)}>
         <Link to="/">
           <s.Logotype>Zeeguu </s.Logotype>
@@ -82,23 +86,29 @@ export default function NewSidebar() {
 
       {!isOnStudentSide && (
         <>
-          <NavLink linkTo={"/teacher/classes"}>
+          <NavLink
+            isOnStudentSide={isOnStudentSide}
+            linkTo={"/teacher/classes"}
+          >
             <GroupsRoundedIcon />
             My Classrooms
           </NavLink>
 
-          <NavLink linkTo={"/teacher/texts"}>
+          <NavLink isOnStudentSide={isOnStudentSide} linkTo={"/teacher/texts"}>
             <ChromeReaderModeRoundedIcon />
             My Texts
           </NavLink>
 
-          <NavLink linkTo={"/articles"}>
+          <NavLink isOnStudentSide={isOnStudentSide} linkTo={"/articles"}>
             <SchoolRoundedIcon />
             Student Site
           </NavLink>
         </>
       )}
-      <NavLink linkTo={"/account_settings/options"}>
+      <NavLink
+        isOnStudentSide={isOnStudentSide}
+        linkTo={"/account_settings/options"}
+      >
         <SettingsRoundedIcon />
         Settings
       </NavLink>

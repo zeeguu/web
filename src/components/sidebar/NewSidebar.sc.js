@@ -1,9 +1,12 @@
 import styled from "styled-components";
+import { blue700 } from "../colors";
 
 const SideBar = styled.nav`
   box-sizing: border-box;
   height: 100%;
   background-color: #ffa41a;
+  background-color: ${(props) =>
+    props.isOnStudentSide === true ? "#ffa41a" : `${blue700}`};
   padding: 0.5rem;
   width: 14rem;
   overflow-y: scroll;

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { blue700 } from "../colors";
 
 const NavOption = styled.li`
   box-sizing: border-box;
@@ -19,7 +20,8 @@ const NavOption = styled.li`
 
   :active {
     background-color: white;
-    color: #ffa41a;
+    color: ${(props) =>
+      props.isOnStudentSide === true ? "#ffa41a" : `${blue700}`};
     opacity: 100%;
   }
 
