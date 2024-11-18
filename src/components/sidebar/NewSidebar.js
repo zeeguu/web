@@ -27,6 +27,8 @@ export default function NewSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const path = useLocation().pathname;
+  const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
+
   useEffect(() => {
     setIsOnStudentSide(!path.includes("teacher"));
   }, [path]);
@@ -39,10 +41,11 @@ export default function NewSidebar() {
       aria-label="Sidebar Navigation"
     >
       <s.LogoLink>
-        {/* <Link to=""> */}
+        {/* <Link to={defaultPage}> */}
         <s.Logotype>Zeeguu </s.Logotype>
         {/* </Link> */}
       </s.LogoLink>
+
       {isOnStudentSide && (
         <>
           <NavLink
@@ -50,6 +53,7 @@ export default function NewSidebar() {
             icon={<HomeRoundedIcon />}
             isCollapsed={isCollapsed}
             text={"Home"}
+            currentPath={path}
           />
 
           <NavLink
@@ -57,6 +61,7 @@ export default function NewSidebar() {
             icon={<CategoryRoundedIcon />}
             isCollapsed={isCollapsed}
             text={"Exercises"}
+            currentPath={path}
           />
 
           <NavLink
@@ -64,6 +69,7 @@ export default function NewSidebar() {
             icon={<AssignmentRoundedIcon />}
             isCollapsed={isCollapsed}
             text={"Words"}
+            currentPath={path}
           />
 
           <NavLink
@@ -71,6 +77,7 @@ export default function NewSidebar() {
             icon={<TranslateRoundedIcon />}
             isCollapsed={isCollapsed}
             text={"Language"}
+            currentPath={path}
           />
 
           <NavLink
@@ -78,6 +85,7 @@ export default function NewSidebar() {
             icon={<HistoryRoundedIcon />}
             isCollapsed={isCollapsed}
             text={"History"}
+            currentPath={path}
           />
 
           <NavLink
@@ -85,6 +93,7 @@ export default function NewSidebar() {
             icon={<DonutSmallRoundedIcon />}
             isCollapsed={isCollapsed}
             text={"Statistics"}
+            currentPath={path}
           />
 
           {isTeacher && (
@@ -93,6 +102,7 @@ export default function NewSidebar() {
               icon={<BusinessCenterRoundedIcon />}
               isCollapsed={isCollapsed}
               text={"Teacher Site"}
+              currentPath={path}
             />
           )}
         </>
@@ -106,6 +116,7 @@ export default function NewSidebar() {
             icon={<GroupsRoundedIcon />}
             isCollapsed={isCollapsed}
             text={"My Classrooms"}
+            currentPath={path}
           />
 
           <NavLink
@@ -114,6 +125,7 @@ export default function NewSidebar() {
             icon={<ChromeReaderModeRoundedIcon />}
             isCollapsed={isCollapsed}
             text={"My Texts"}
+            currentPath={path}
           />
 
           <NavLink
@@ -122,6 +134,7 @@ export default function NewSidebar() {
             icon={<SchoolRoundedIcon />}
             isCollapsed={isCollapsed}
             text={"Student Site"}
+            currentPath={path}
           />
         </>
       )}
@@ -132,6 +145,7 @@ export default function NewSidebar() {
         icon={<SettingsRoundedIcon />}
         isCollapsed={isCollapsed}
         text={"Settings"}
+        currentPath={path}
       />
       <FeedbackButton isCollapsed={isCollapsed} />
 

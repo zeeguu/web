@@ -10,6 +10,7 @@ export default function NavLink({
   title,
   isButton = false,
   onClick,
+  currentPath,
 }) {
   const content = (
     <>
@@ -19,7 +20,10 @@ export default function NavLink({
   );
 
   return (
-    <s.NavOption isOnStudentSide={isOnStudentSide}>
+    <s.NavOption
+      isActive={currentPath && currentPath === linkTo}
+      isOnStudentSide={isOnStudentSide}
+    >
       {!isButton ? (
         <s.RouterLink to={linkTo}>{content}</s.RouterLink>
       ) : (

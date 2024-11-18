@@ -4,6 +4,7 @@ import { blue700 } from "../colors";
 
 const NavOption = styled.li`
   box-sizing: border-box;
+  margin: 0.125rem 0 0.125rem;
   width: 100%;
   height: 3rem;
   list-style-type: none;
@@ -15,16 +16,22 @@ const NavOption = styled.li`
   transition: 0.3s ease-in-out;
   cursor: pointer;
   white-space: nowrap;
+  ${({ isActive, isOnStudentSide }) =>
+    isActive &&
+    `
+    background-color: white;
+    color: ${isOnStudentSide ? "#ffa41a" : `${blue700}`};
+    opacity: 100%;
+  `}
 
   :hover {
     border: solid 0.1rem rgba(255, 255, 255, 0.9);
-    background-color: rgba(255, 255, 255, 0.05);
   }
 
   :active {
     background-color: white;
-    color: ${(props) =>
-      props.isOnStudentSide === true ? "#ffa41a" : `${blue700}`};
+    color: ${({ isOnStudentSide }) =>
+      isOnStudentSide ? `#ffa41a` : `${blue700}`};
     opacity: 100%;
   }
 `;
