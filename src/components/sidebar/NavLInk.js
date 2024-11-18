@@ -7,12 +7,13 @@ export default function NavLink({
   isOnStudentSide = true,
   isCollapsed = false,
   text,
+  title,
   isButton = false,
   onClick,
 }) {
   const content = (
     <>
-      <s.IconContainer title={text}>{icon}</s.IconContainer>
+      <s.IconContainer title={title ? title : text}>{icon}</s.IconContainer>
       <s.Span visibility={isCollapsed}>{text}</s.Span>
     </>
   );

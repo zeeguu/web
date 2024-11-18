@@ -17,6 +17,8 @@ import ChromeReaderModeRoundedIcon from "@mui/icons-material/ChromeReaderModeRou
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import BusinessCenterRoundedIcon from "@mui/icons-material/BusinessCenterRounded";
 import FeedbackButton from "../FeedbackButton";
+import KeyboardDoubleArrowRightOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
+import KeyboardDoubleArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 
 export default function NewSidebar() {
   const user = useContext(UserContext);
@@ -36,7 +38,7 @@ export default function NewSidebar() {
       role="navigation"
       aria-label="Sidebar Navigation"
     >
-      <s.LogoLink onClick={() => setIsCollapsed(!isCollapsed)}>
+      <s.LogoLink>
         {/* <Link to=""> */}
         <s.Logotype>Zeeguu </s.Logotype>
         {/* </Link> */}
@@ -132,6 +134,20 @@ export default function NewSidebar() {
         text={"Settings"}
       />
       <FeedbackButton isCollapsed={isCollapsed} />
+
+      <NavLink
+        icon={
+          isCollapsed ? (
+            <KeyboardDoubleArrowRightOutlinedIcon />
+          ) : (
+            <KeyboardDoubleArrowLeftOutlinedIcon />
+          )
+        }
+        isCollapsed={isCollapsed}
+        text={isCollapsed ? "Expand" : "Collapse"}
+        isButton={true}
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      />
     </s.SideBar>
   );
 }
