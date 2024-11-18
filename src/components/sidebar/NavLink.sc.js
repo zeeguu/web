@@ -84,6 +84,7 @@ const OptionButton = styled.button`
   color: inherit;
   padding: 0;
   cursor: pointer;
+  width: 100%;
 `;
 
 export { NavOption, RouterLink, Span, IconContainer, OptionButton };
