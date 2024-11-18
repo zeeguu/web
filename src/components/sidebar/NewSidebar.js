@@ -12,16 +12,14 @@ import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded";
 import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
 import ChromeReaderModeRoundedIcon from "@mui/icons-material/ChromeReaderModeRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import BusinessCenterRoundedIcon from "@mui/icons-material/BusinessCenterRounded";
+import FeedbackButton from "../FeedbackButton";
 
 export default function NewSidebar() {
   const user = useContext(UserContext);
-
-  const [state, setState] = useState(false);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
   const [isTeacher] = useState(user.is_teacher);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -31,8 +29,6 @@ export default function NewSidebar() {
     setIsOnStudentSide(!path.includes("teacher"));
   }, [path]);
 
-  console.log(`State:`);
-  console.log(state);
   return (
     <s.SideBar
       isCollapsed={isCollapsed}
@@ -51,7 +47,6 @@ export default function NewSidebar() {
             linkTo={"/articles"}
             icon={<HomeRoundedIcon />}
             isCollapsed={isCollapsed}
-            title={"Home"}
             text={"Home"}
           />
 
@@ -59,7 +54,6 @@ export default function NewSidebar() {
             linkTo={"/exercises"}
             icon={<CategoryRoundedIcon />}
             isCollapsed={isCollapsed}
-            title={"Exercises"}
             text={"Exercises"}
           />
 
@@ -67,7 +61,6 @@ export default function NewSidebar() {
             linkTo={"/words"}
             icon={<AssignmentRoundedIcon />}
             isCollapsed={isCollapsed}
-            title={"Words"}
             text={"Words"}
           />
 
@@ -75,7 +68,6 @@ export default function NewSidebar() {
             linkTo={"/account_settings/language_settings"}
             icon={<TranslateRoundedIcon />}
             isCollapsed={isCollapsed}
-            title={"Language"}
             text={"Language"}
           />
 
@@ -83,7 +75,6 @@ export default function NewSidebar() {
             linkTo={"/history"}
             icon={<HistoryRoundedIcon />}
             isCollapsed={isCollapsed}
-            title={"History"}
             text={"History"}
           />
 
@@ -91,7 +82,6 @@ export default function NewSidebar() {
             linkTo={"/user_dashboard"}
             icon={<DonutSmallRoundedIcon />}
             isCollapsed={isCollapsed}
-            title={"Statistics"}
             text={"Statistics"}
           />
 
@@ -100,7 +90,6 @@ export default function NewSidebar() {
               linkTo={"/teacher/classes"}
               icon={<BusinessCenterRoundedIcon />}
               isCollapsed={isCollapsed}
-              title={"Teacher Site"}
               text={"Teacher Site"}
             />
           )}
@@ -114,7 +103,6 @@ export default function NewSidebar() {
             linkTo={"/teacher/classes"}
             icon={<GroupsRoundedIcon />}
             isCollapsed={isCollapsed}
-            title={"My Classrooms"}
             text={"My Classrooms"}
           />
 
@@ -123,7 +111,6 @@ export default function NewSidebar() {
             linkTo={"/teacher/texts"}
             icon={<ChromeReaderModeRoundedIcon />}
             isCollapsed={isCollapsed}
-            title={"My Texts"}
             text={"My Texts"}
           />
 
@@ -132,7 +119,6 @@ export default function NewSidebar() {
             linkTo={"/articles"}
             icon={<SchoolRoundedIcon />}
             isCollapsed={isCollapsed}
-            title={"Student Site"}
             text={"Student Site"}
           />
         </>
@@ -143,17 +129,9 @@ export default function NewSidebar() {
         linkTo={"/account_settings/options"}
         icon={<SettingsRoundedIcon />}
         isCollapsed={isCollapsed}
-        title={"Settings"}
         text={"Settings"}
       />
-
-      <NavLink
-        linkTo={"/articles"}
-        icon={<FeedbackRoundedIcon />}
-        isCollapsed={isCollapsed}
-        title={"Give Feedback"}
-        text={"Give Feedback"}
-      />
+      <FeedbackButton isCollapsed={isCollapsed} />
     </s.SideBar>
   );
 }

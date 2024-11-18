@@ -6,15 +6,24 @@ export default function NavLink({
   icon,
   isOnStudentSide = true,
   isCollapsed = false,
-  title,
   text,
+  isButton = false,
+  onClick,
 }) {
+  const content = (
+    <>
+      <s.IconContainer title={text}>{icon}</s.IconContainer>
+      <s.Span visibility={isCollapsed}>{text}</s.Span>
+    </>
+  );
+
   return (
     <s.NavOption isOnStudentSide={isOnStudentSide}>
-      <s.RouterLink to={linkTo}>
-        <s.IconContainer title={title}>{icon}</s.IconContainer>
-        <s.Span visibility={isCollapsed}>{text}</s.Span>
-      </s.RouterLink>
+      {!isButton ? (
+        <s.RouterLink to={linkTo}>{content}</s.RouterLink>
+      ) : (
+        <s.OptionButton onClick={onClick}>{content}</s.OptionButton>
+      )}
     </s.NavOption>
   );
 }

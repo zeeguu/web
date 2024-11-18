@@ -31,6 +31,7 @@ const NavOption = styled.li`
 
 const RouterLink = styled(Link)`
   font: inherit;
+  height: 2.813rem;
   color: inherit;
   display: flex;
   flex-direction: row;
@@ -54,12 +55,28 @@ const Span = styled.span`
 const IconContainer = styled.span`
   width: 3rem;
   min-width: 3rem;
-  height: 3rem;
-  min-height: 3rem;
+  height: 2.813rem;
+  min-height: 2.813rem;
   display: flex;
   align-items: center;
   justify-content: center;
   color: inherit;
 `;
 
-export { NavOption, RouterLink, Span, IconContainer };
+const OptionButton = styled.button`
+  font: inherit;
+  color: inherit;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  margin: inherit;
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+`;
+
+export { NavOption, RouterLink, Span, IconContainer, OptionButton };
