@@ -14,14 +14,16 @@ export default function NavLink({
 }) {
   const content = (
     <>
-      <s.IconContainer title={title ? title : text}>{icon}</s.IconContainer>
+      <s.IconContainer isCollapsed={isCollapsed} title={title ? title : text}>
+        {icon}
+      </s.IconContainer>
       <s.Span visibility={isCollapsed}>{text}</s.Span>
     </>
   );
 
   return (
     <s.NavOption
-      isActive={currentPath && linkTo === currentPath}
+      isActive={currentPath && currentPath.includes(linkTo)}
       isOnStudentSide={isOnStudentSide}
     >
       {!isButton ? (
