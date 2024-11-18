@@ -21,9 +21,10 @@ const PageBackground = styled.div`
   ${(props) =>
     props.layoutVariant === "minimalistic-top-aligned" &&
     css`
-      width: auto;
+      width: 100%;
       min-height: auto;
       background: none;
+      justify-content: flex-start;
     `}
 `;
 

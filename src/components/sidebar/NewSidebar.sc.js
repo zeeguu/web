@@ -10,7 +10,6 @@ const SideBar = styled.nav`
   padding: 0.5rem;
   width: ${(props) => (props.isCollapsed ? "4.5rem" : "14rem")};
   overflow-y: scroll;
-  display: block;
   position: fixed;
   top: 0;
   transition: 0.3s ease-in-out;

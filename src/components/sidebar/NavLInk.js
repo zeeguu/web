@@ -21,7 +21,7 @@ export default function NavLink({
 
   return (
     <s.NavOption
-      isActive={currentPath && currentPath === linkTo}
+      isActive={currentPath && linkTo === currentPath}
       isOnStudentSide={isOnStudentSide}
     >
       {!isButton ? (

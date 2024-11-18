@@ -20,11 +20,11 @@ import FeedbackButton from "../FeedbackButton";
 import KeyboardDoubleArrowRightOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
 import KeyboardDoubleArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 
-export default function NewSidebar() {
+export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
   const user = useContext(UserContext);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
   const [isTeacher] = useState(user.is_teacher);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  // const [isCollapsed, setIsCollapsed] = useState(false);
 
   const path = useLocation().pathname;
   const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
