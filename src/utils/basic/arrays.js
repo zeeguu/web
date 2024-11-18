@@ -4,8 +4,15 @@ function removeArrayDuplicates(array) {
   return newArray;
 }
 
+function removeByValue(array, val) {
+  // from https://stackoverflow.com/questions/3954438/how-to-remove-item-from-array-by-value
+  let index = array.indexOf(val);
+  if (index !== -1) array.splice(index, 1);
+  return array;
+}
+
 function random(x) {
   return x[Math.floor(Math.random() * x.length)];
 }
 
-export { removeArrayDuplicates, random };
+export { removeArrayDuplicates, removeByValue, random };

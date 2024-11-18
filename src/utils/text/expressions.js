@@ -1,4 +1,5 @@
 import { removePunctuation, tokenize } from "./preprocessing";
+import { removeByValue } from "../basic/arrays";
 
 function isExpression(text) {
   return text.includes(" ");
@@ -23,4 +24,17 @@ function isWordIncluded(word, expression) {
   return isWordIncluded;
 }
 
-export { isWordIncluded, isTextInSentence, isExpression };
+function countWordsIncluded(expression1, expression2) {
+  let wordsIncluded = 0;
+  let wordsInExp1 = expression1.split(" ");
+  let wordsInExp2 = expression2.split(" ");
+  wordsInExp1.forEach((each) => {
+    if (wordsInExp2.includes(each)) {
+      wordsIncluded += 1;
+      removeByValue(wordsInExp2, each);
+    }
+  });
+  return wordsIncluded;
+}
+
+export { isWordIncluded, isTextInSentence, isExpression, countWordsIncluded };
