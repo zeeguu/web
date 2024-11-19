@@ -170,7 +170,7 @@ Zeeguu_API.prototype.removeMLSuggestion = function (
   topic,
   callback,
 ) {
-  let param = qs.stringify({ article_id: articleId, new_topic: topic });
+  let param = qs.stringify({ article_id: articleId, topic: topic });
   this._post(`/remove_ml_suggestion`, param, callback);
 };
 

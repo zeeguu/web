@@ -40,8 +40,7 @@ export default function ArticlePreview({
     }
   };
 
-  let topics = article.topics.split(" ").filter((each) => each !== "");
-  let new_topics = article.new_topics_list;
+  let topics = article.topics_list;
   let cefr_level = article.metrics.cefr_level;
 
   function handleCloseRedirectionModal() {
@@ -119,7 +118,7 @@ export default function ArticlePreview({
 
   return (
     <s.ArticlePreview>
-      {showInfoTopics && Feature.new_topics() && (
+      {showInfoTopics && (
         <sweetM.TagsOfInterests>
           <ExplainTopicsModal
             infoTopicClick={infoTopicClick}
@@ -148,10 +147,10 @@ export default function ArticlePreview({
       </s.ArticleContent>
 
       <s.BottomContainer>
-        {Feature.new_topics() && showInferredTopic && new_topics.length > 0 && (
+        {showInferredTopic && topics.length > 0 && (
           <div>
             <s.UrlTopics>
-              {new_topics.map((tuple) => (
+              {topics.map((tuple) => (
                 // Tuple (Topic Title, TopicOriginType)
                 <span
                   onClick={() => {
@@ -179,15 +178,6 @@ export default function ArticlePreview({
                 </span>
               ))}
             </s.UrlTopics>
-          </div>
-        )}
-        {!Feature.new_topics() && topics.length > 0 && (
-          <div>
-            <s.Topics>
-              {topics.map((topic) => (
-                <span key={topic}>{topic}</span>
-              ))}
-            </s.Topics>
           </div>
         )}
         <ArticleStatInfo
