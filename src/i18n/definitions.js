@@ -335,14 +335,13 @@ let strings = new LocalizedStrings(
       titleToLearnWords: "Words to Learn",
       toLearnMsg: "These words have not yet been practiced in Exercises.",
       noToLearnWords:
-        "You have no words you haven't practiced. Keep reading and translating to add some.",
+        "You haven't practiced any words. Keep reading and translating to add words.",
 
       //Receptive
       titleReceptiveWords: "Receptive",
       receptiveMsg:
         "These words will appear in exercises testing your receptive knowledge. Receptive means you understand the word when you see or hear it, but can't necessarily use it yet.",
-      noReceptiveWords:
-        "You have no receptive words at the moment. Keep reading and translating to add some.",
+      noReceptiveWords: "You haven't practiced any words yet.",
       //Productive
       titleProductiveWords: "Productive",
 
