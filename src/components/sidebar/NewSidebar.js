@@ -4,8 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 import SidebarOptions_Student from "./SidebarOptions_Student";
 import SidebarOptions_Teacher from "./SidebarOptions_Teacher";
 import * as s from "./NewSidebar.sc";
-import { Link } from "react-router-dom/cjs/react-router-dom";
-import NavLink from "./NavOption";
+import NavOption from "./NavOption";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import FeedbackButton from "../FeedbackButton";
 import DoubleArrowRight from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
@@ -30,11 +29,14 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
       role="navigation"
       aria-label="Sidebar Navigation"
     >
-      <s.LogoLink>
-        {/* <Link to={defaultPage}> */}
-        <s.Logotype>Zeeguu </s.Logotype>
-        {/* </Link> */}
-      </s.LogoLink>
+      <NavOption
+        className={"logo"}
+        isOnStudentSide={isOnStudentSide}
+        linkTo={defaultPage}
+        icon={<img src="../static/images/zeeguuWhiteLogo.svg"></img>}
+        isCollapsed={isCollapsed}
+        text={"Zeeguu"}
+      />
 
       {isOnStudentSide && (
         <SidebarOptions_Student
@@ -53,7 +55,7 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
         />
       )}
 
-      <NavLink
+      <NavOption
         isOnStudentSide={isOnStudentSide}
         linkTo={"/account_settings/options"}
         icon={<SettingsRoundedIcon />}
@@ -61,9 +63,10 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
         text={"Settings"}
         currentPath={path}
       />
+
       <FeedbackButton isCollapsed={isCollapsed} />
 
-      <NavLink
+      <NavOption
         icon={isCollapsed ? <DoubleArrowRight /> : <DoubleArrowLeft />}
         isCollapsed={isCollapsed}
         text={isCollapsed ? "Expand" : "Collapse"}

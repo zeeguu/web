@@ -10,6 +10,7 @@ export default function NavOption({
   isButton = false,
   onClick,
   currentPath,
+  className,
 }) {
   const content = (
     <>
@@ -24,6 +25,7 @@ export default function NavOption({
     <s.NavOption
       isActive={currentPath && currentPath.includes(linkTo)}
       isOnStudentSide={isOnStudentSide}
+      className={className}
     >
       {!isButton ? (
         <s.RouterLink to={linkTo}>{content}</s.RouterLink>

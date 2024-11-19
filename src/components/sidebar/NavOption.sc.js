@@ -4,6 +4,9 @@ import { blue700 } from "../colors";
 
 const NavOption = styled.li`
   box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   margin: 0.125rem 0 0.125rem;
   width: 100%;
   height: 3rem;
@@ -23,6 +26,13 @@ const NavOption = styled.li`
     color: ${isOnStudentSide ? "#ffa41a" : `${blue700}`};
     opacity: 100%;
   `}
+
+  &.logo {
+    font-size: 1.5rem;
+    pointer-events: none;
+    height: 3.5rem;
+    margin: 0 0 1rem 0;
+  }
 
   :hover {
     border: solid 0.1rem rgba(255, 255, 255, 0.9);
@@ -45,13 +55,11 @@ const RouterLink = styled(Link)`
   align-items: center;
   flex-wrap: nowrap;
   gap: 0.5rem;
-  /* padding: 0.75rem; */
 `;
 
 const Span = styled.span`
   white-space: nowrap;
   opacity: ${(props) => (props.visibility ? "0" : "1")};
-  pointer-events: none;
   transition: opacity 0.3s ease-in-out;
   white-space: nowrap;
   @media (max-width: 768px) {
