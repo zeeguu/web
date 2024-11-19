@@ -1,4 +1,3 @@
-import React from "react";
 import * as s from "./NavLink.sc";
 
 export default function NavLink({

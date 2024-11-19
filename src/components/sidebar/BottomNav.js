@@ -1,4 +1,3 @@
-import React from "react";
 import { BottomNavigation } from "@mui/material";
 import { BottomNavigationAction } from "@mui/material";
 import InsertEmoticonRoundedIcon from "@mui/icons-material/InsertEmoticonRounded";

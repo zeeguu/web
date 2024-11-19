@@ -1,4 +1,3 @@
-import React from "react";
 import * as s from "./ContentWithSidebar.sc";
 import NewSidebar from "./NewSidebar";
 import { useState } from "react";

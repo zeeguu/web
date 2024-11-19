@@ -10,7 +10,7 @@ const Content = styled.div`
 
 const ContentContainer = styled.body`
   width: 100%;
-  margin-left: ${({ isCollapsed }) => (isCollapsed ? "4rem" : "12rem")};
+  margin-left: ${({ isCollapsed }) => (isCollapsed ? "4.5rem" : "14rem")};
   transition: 0.3s ease-in-out;
   padding: 0 1rem 0 1rem;
 
