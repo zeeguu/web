@@ -12,10 +12,11 @@ import LocalStorage from "../assorted/LocalStorage";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
-import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
+import useEndlessScrolling from "../hooks/useEndlessScrolling";
 import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import { ADD_ACTIONS } from "../utils/endlessScrolling/add_actions";
 
 export default function FindArticles({
   content,
@@ -40,15 +41,16 @@ export default function FindArticles({
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
-  const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
-  const [noMoreArticlesToShow, setNoMoreArticlesToShow] = useState(false);
-  const articleListRef = useShadowRef(articleList);
-  const currentPageRef = useShadowRef(currentPage);
-  const noMoreArticlesToShowRef = useShadowRef(noMoreArticlesToShow);
-  const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
-
+  const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow] =
+    useEndlessScrolling(
+      api,
+      articleList,
+      setArticleList,
+      searchQuery ? "Article Search" : strings.titleHome,
+      searchPublishPriority,
+      searchDifficultyPriority,
+    );
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index)
@@ -61,74 +63,14 @@ export default function FindArticles({
       articleSeenListString,
     );
   };
-  function handleScroll() {
-    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
-    let articlesHaveBeenFetched =
-      currentPageRef.current !== undefined &&
-      articleListRef.current !== undefined;
-
-    if (
-      scrollBarPixelDistToPageEnd <= 50 &&
-      !isWaitingForNewArticlesRef.current &&
-      !noMoreArticlesToShowRef.current &&
-      articlesHaveBeenFetched
-    ) {
-      setIsWaitingForNewArticles(true);
-      setTitle("Getting more articles...");
-
-      let newCurrentPage = currentPageRef.current + 1;
-      let newArticles = [...articleListRef.current];
-
-      if (searchQuery) {
-        api.searchMore(
-          searchQuery,
-          newCurrentPage,
-          searchPublishPriority,
-          searchDifficultyPriority,
-          (articles) => {
-            insertNewArticlesIntoArticleList(
-              articles,
-              newCurrentPage,
-              newArticles,
-            );
-            setTitle(strings.titleSearch + ` '${searchQuery}'`);
-          },
-          (error) => {
-            console.log("Failed to get searches!");
-          },
-        );
-      } else {
-        api.getMoreUserArticles(20, newCurrentPage, (articles) => {
-          insertNewArticlesIntoArticleList(
-            articles,
-            newCurrentPage,
-            newArticles,
-          );
-          setTitle(strings.titleHome);
-        });
-      }
-    }
-  }
-
-  function insertNewArticlesIntoArticleList(
-    fetchedArticles,
-    newCurrentPage,
-    newArticles,
-  ) {
-    if (fetchedArticles.length === 0) {
-      setNoMoreArticlesToShow(true);
-    }
-    newArticles = newArticles.concat(fetchedArticles);
-    setArticleList(newArticles);
-    setOriginalList([...newArticles]);
-    setCurrentPage(newCurrentPage);
-    setIsWaitingForNewArticles(false);
-  }
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, true);
+    let scrollFunc;
+    if (searchQuery) scrollFunc = handleScroll(ADD_ACTIONS.ADD_SEARCH_ARTICLES);
+    else scrollFunc = handleScroll(ADD_ACTIONS.ADD_RECOMMENDED_ARTICLES);
+    window.addEventListener("scroll", scrollFunc, true);
     return () => {
-      window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("scroll", scrollFunc, true);
     };
   }, []);
 
@@ -139,7 +81,6 @@ export default function FindArticles({
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
-    setNoMoreArticlesToShow(false);
     if (searchQuery) {
       setTitle(strings.titleSearch + ` '${searchQuery}'`);
       setReloadingSearchArticles(true);
@@ -163,9 +104,13 @@ export default function FindArticles({
         setArticleList(articles);
         setOriginalList([...articles]);
       });
-      window.addEventListener("scroll", handleScroll, true);
+      let scrollFunc;
+      if (searchQuery)
+        scrollFunc = handleScroll(ADD_ACTIONS.ADD_SEARCH_ARTICLES);
+      else scrollFunc = handleScroll(ADD_ACTIONS.ADD_RECOMMENDED_ARTICLES);
+      window.addEventListener("scroll", scrollFunc, true);
       return () => {
-        window.removeEventListener("scroll", handleScroll, true);
+        window.removeEventListener("scroll", scrollFunc, true);
       };
     }
   }, [searchPublishPriority, searchDifficultyPriority]);
