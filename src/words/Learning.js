@@ -39,7 +39,7 @@ export default function Learning({ api }) {
       setToLearnWords(newWords);
     } else {
       let newWords = [...inLearningWords].filter((b) => b.id !== bookmark.id);
-      setToLearnWords(newWords);
+      setInLearningWords(newWords);
     }
   }
 
