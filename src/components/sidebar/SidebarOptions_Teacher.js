@@ -1,4 +1,4 @@
-import NavLink from "./NavLInk";
+import NavOption from "./NavOption";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import ChromeReaderModeRoundedIcon from "@mui/icons-material/ChromeReaderModeRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
@@ -10,7 +10,7 @@ export default function SidebarOptions_Teacher({
 }) {
   return (
     <>
-      <NavLink
+      <NavOption
         isOnStudentSide={isOnStudentSide}
         linkTo={"/teacher/classes"}
         icon={<GroupsRoundedIcon />}
@@ -18,7 +18,7 @@ export default function SidebarOptions_Teacher({
         text={"My Classrooms"}
         currentPath={currentPath}
       />
-      <NavLink
+      <NavOption
         isOnStudentSide={isOnStudentSide}
         linkTo={"/teacher/texts"}
         icon={<ChromeReaderModeRoundedIcon />}
@@ -26,7 +26,7 @@ export default function SidebarOptions_Teacher({
         text={"My Texts"}
         currentPath={currentPath}
       />
-      <NavLink
+      <NavOption
         isOnStudentSide={isOnStudentSide}
         linkTo={"/articles"}
         icon={<SchoolRoundedIcon />}

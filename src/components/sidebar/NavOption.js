@@ -1,6 +1,6 @@
-import * as s from "./NavLink.sc";
+import * as s from "./NavOption.sc";
 
-export default function NavLink({
+export default function NavOption({
   linkTo,
   icon,
   isOnStudentSide = true,

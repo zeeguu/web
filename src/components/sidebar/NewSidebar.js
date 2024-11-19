@@ -5,11 +5,11 @@ import SidebarOptions_Student from "./SidebarOptions_Student";
 import SidebarOptions_Teacher from "./SidebarOptions_Teacher";
 import * as s from "./NewSidebar.sc";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import NavLink from "./NavLInk";
+import NavLink from "./NavOption";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import FeedbackButton from "../FeedbackButton";
-import KeyboardDoubleArrowRightOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
-import KeyboardDoubleArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
+import DoubleArrowRight from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
+import DoubleArrowLeft from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 
 export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
   const user = useContext(UserContext);
@@ -64,13 +64,7 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
       <FeedbackButton isCollapsed={isCollapsed} />
 
       <NavLink
-        icon={
-          isCollapsed ? (
-            <KeyboardDoubleArrowRightOutlinedIcon />
-          ) : (
-            <KeyboardDoubleArrowLeftOutlinedIcon />
-          )
-        }
+        icon={isCollapsed ? <DoubleArrowRight /> : <DoubleArrowLeft />}
         isCollapsed={isCollapsed}
         text={isCollapsed ? "Expand" : "Collapse"}
         isButton={true}

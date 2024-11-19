@@ -1,4 +1,4 @@
-import NavLink from "./NavLInk";
+import NavOption from "./NavOption";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
@@ -10,47 +10,46 @@ import BusinessCenterRoundedIcon from "@mui/icons-material/BusinessCenterRounded
 export default function SidebarOptions_Student({
   isCollapsed,
   currentPath,
-  isOnStudentSide,
   isTeacher,
 }) {
   return (
     <>
-      <NavLink
+      <NavOption
         linkTo={"/articles"}
         icon={<HomeRoundedIcon />}
         isCollapsed={isCollapsed}
         text={"Home"}
         currentPath={currentPath}
       />
-      <NavLink
+      <NavOption
         linkTo={"/exercises"}
         icon={<CategoryRoundedIcon />}
         isCollapsed={isCollapsed}
         text={"Exercises"}
         currentPath={currentPath}
       />
-      <NavLink
+      <NavOption
         linkTo={"/words"}
         icon={<AssignmentRoundedIcon />}
         isCollapsed={isCollapsed}
         text={"Words"}
         currentPath={currentPath}
       />
-      <NavLink
+      <NavOption
         linkTo={"/account_settings/language_settings"}
         icon={<TranslateRoundedIcon />}
         isCollapsed={isCollapsed}
         text={"Language"}
         currentPath={currentPath}
       />
-      <NavLink
+      <NavOption
         linkTo={"/history"}
         icon={<HistoryRoundedIcon />}
         isCollapsed={isCollapsed}
         text={"History"}
         currentPath={currentPath}
       />
-      <NavLink
+      <NavOption
         linkTo={"/user_dashboard"}
         icon={<DonutSmallRoundedIcon />}
         isCollapsed={isCollapsed}
@@ -58,7 +57,7 @@ export default function SidebarOptions_Student({
         currentPath={currentPath}
       />
       {isTeacher && (
-        <NavLink
+        <NavOption
           linkTo={"/teacher/classes"}
           icon={<BusinessCenterRoundedIcon />}
           isCollapsed={isCollapsed}

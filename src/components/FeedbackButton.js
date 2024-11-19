@@ -1,9 +1,7 @@
 import { useState } from "react";
-import FeedbackIcon from "@mui/icons-material/Feedback";
 import FeedbackModal from "./FeedbackModal";
-import { Tooltip } from "@mui/material";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
-import NavLink from "./sidebar/NavLInk";
+import NavLink from "./sidebar/NavOption";
 import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded";
 
 export default function FeedbackButton({ isCollapsed }) {
