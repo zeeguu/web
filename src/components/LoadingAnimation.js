@@ -10,6 +10,7 @@ export default function LoadingAnimation({
   text,
   specificStyle,
   delay = 1000,
+  children,
 }) {
   let _text = text ? text : strings.loadingMsg;
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
@@ -40,8 +41,8 @@ export default function LoadingAnimation({
         feedbackOptions={FEEDBACK_OPTIONS.ALL}
       />
       {showLoadingScreen && (
-        <s.LoadingContainer>
-          <s.LoadingAnimation style={specificStyle}>
+        <s.LoadingContainer style={specificStyle}>
+          <s.LoadingAnimation>
             <div className="lds-ellipsis">
               <div></div>
               <div></div>
@@ -58,6 +59,7 @@ export default function LoadingAnimation({
               Report Issue
             </StyledGreyButton>
           )}
+          {children}
         </s.LoadingContainer>
       )}
     </>

@@ -44,11 +44,14 @@ export default function AlterMenu({
     return word.source;
   }
   return (
-    <AlterMenuSC ref={refToAlterMenu}>
+    <AlterMenuSC
+      ref={refToAlterMenu}
+      className={word.alternatives === undefined ? "loading" : ""}
+    >
       {word.alternatives === undefined ? (
         <LoadingAnimation
-          specificStyle={{ height: "1em", margin: "1em 3em" }}
-          delay={100}
+          specificStyle={{ height: "1rem", margin: "2rem 4rem" }}
+          delay={0}
         ></LoadingAnimation>
       ) : (
         word.alternatives.map((each) => (
@@ -74,17 +77,18 @@ export default function AlterMenu({
         ))
       )}
       {word.alternatives !== undefined && (
-        <input
-          className="ownTranslationInput matchWidth"
-          type="text"
-          id="#userAlternative"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e)}
-          placeholder="add own translation..."
-        />
+        <>
+          <input
+            className="ownTranslationInput matchWidth"
+            type="text"
+            id="#userAlternative"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e)}
+            placeholder="add own translation..."
+          />
+        </>
       )}
-
       <div className="alterMenuLink" onClick={(e) => hideTranslation(e, word)}>
         Hide Translation
       </div>
