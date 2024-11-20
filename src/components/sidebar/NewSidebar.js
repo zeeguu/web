@@ -31,7 +31,6 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
     >
       <NavOption
         className={"logo"}
-        isOnStudentSide={isOnStudentSide}
         linkTo={defaultPage}
         icon={<img src="../static/images/zeeguuWhiteLogo.svg"></img>}
         isCollapsed={isCollapsed}
@@ -55,24 +54,29 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
         />
       )}
 
-      <NavOption
+      <s.BottomSection
+        isCollapsed={isCollapsed}
         isOnStudentSide={isOnStudentSide}
-        linkTo={"/account_settings"}
-        icon={<SettingsRoundedIcon />}
-        isCollapsed={isCollapsed}
-        text={"Settings"}
-        currentPath={path}
-      />
+      >
+        <NavOption
+          isOnStudentSide={isOnStudentSide}
+          linkTo={"/account_settings"}
+          icon={<SettingsRoundedIcon />}
+          isCollapsed={isCollapsed}
+          text={"Settings"}
+          currentPath={path}
+        />
 
-      <FeedbackButton isCollapsed={isCollapsed} />
+        <FeedbackButton isCollapsed={isCollapsed} />
 
-      <NavOption
-        icon={isCollapsed ? <DoubleArrowRight /> : <DoubleArrowLeft />}
-        isCollapsed={isCollapsed}
-        text={isCollapsed ? "Expand" : "Collapse"}
-        isButton={true}
-        onClick={() => setIsCollapsed(!isCollapsed)}
-      />
+        <NavOption
+          icon={isCollapsed ? <DoubleArrowRight /> : <DoubleArrowLeft />}
+          isCollapsed={isCollapsed}
+          text={isCollapsed ? "Expand" : "Collapse"}
+          isButton={true}
+          onClick={() => setIsCollapsed(!isCollapsed)}
+        />
+      </s.BottomSection>
     </s.SideBar>
   );
 }

@@ -7,7 +7,7 @@ const NavOption = styled.li`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 0.125rem 0 0.125rem;
+  margin: 0.25rem 0 0.25rem;
   width: 100%;
   height: 3rem;
   list-style-type: none;
@@ -40,7 +40,7 @@ const NavOption = styled.li`
   &.logo {
     font-size: 1.5rem;
     height: 3.5rem;
-    margin: 0 0 1.5rem 0;
+    margin: 0 0 2rem 0;
   }
 
   &.logo:hover {
