@@ -111,7 +111,7 @@ export default function useArticlePagination(
     }
   }
 
-  function resetScrolling() {
+  function resetPagination() {
     setNoMoreArticlesToShow(false);
     setCurrentPage(0);
     setIsWaitingForNewArticles(false);
@@ -121,6 +121,6 @@ export default function useArticlePagination(
     handleScroll,
     isWaitingForNewArticles,
     noMoreArticlesToShow,
-    resetScrolling,
+    resetPagination,
   ];
 }

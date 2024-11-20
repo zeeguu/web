@@ -44,7 +44,7 @@ export default function FindArticles({
     handleScroll,
     isWaitingForNewArticles,
     noMoreArticlesToShow,
-    resetScrolling,
+    resetPagination,
   ] = useArticlePagination(
     api,
     articleList,
@@ -84,7 +84,7 @@ export default function FindArticles({
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
-    resetScrolling();
+    resetPagination();
     if (searchQuery) {
       setTitle(strings.titleSearch + ` '${searchQuery}'`);
       setReloadingSearchArticles(true);
