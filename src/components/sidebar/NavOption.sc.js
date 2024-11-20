@@ -27,13 +27,6 @@ const NavOption = styled.li`
     opacity: 100%;
   `}
 
-  &.logo {
-    font-size: 1.5rem;
-    pointer-events: none;
-    height: 3.5rem;
-    margin: 0 0 1rem 0;
-  }
-
   :hover {
     border: solid 0.1rem rgba(255, 255, 255, 0.9);
   }
@@ -42,7 +35,21 @@ const NavOption = styled.li`
     background-color: white;
     color: ${({ isOnStudentSide }) =>
       isOnStudentSide ? `#F09000` : `${blue700}`};
-    opacity: 100%;
+  }
+
+  &.logo {
+    font-size: 1.5rem;
+    height: 3.5rem;
+    margin: 0 0 1.5rem 0;
+  }
+
+  &.logo:hover {
+    border: solid 0.1rem transparent;
+  }
+
+  &.logo:active {
+    background-color: transparent;
+    color: white;
   }
 `;
 
