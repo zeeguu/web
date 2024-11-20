@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
 
@@ -15,17 +15,22 @@ export default function TranslatableWord({
   const [showingAlterMenu, setShowingAlterMenu] = useState(false);
   const [refToTranslation, clickedOutsideTranslation] = useClickOutside();
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
+  const [isWordTranslating, setIsWordTranslating] = useState(false);
+  const [prevWord, setPreviousWord] = useState("");
 
   function clickOnWord(e, word) {
+    e.target.classList.add("loading");
+    setPreviousWord(word.word);
     if (word.translation) {
       interactiveText.pronounce(word);
       return;
     }
     if (translating) {
-      e.target.className = "loading";
+      setIsWordTranslating(true);
       interactiveText.translate(word, () => {
         wordUpdated();
-        e.target.className = null;
+        e.target.classList.remove("loading");
+        setIsWordTranslating(false);
       });
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
@@ -94,7 +99,11 @@ export default function TranslatableWord({
           </z-tran>
         )}
         <z-orig>
-          <span onClick={(e) => clickOnWord(e, word)}>{word.word} </span>
+          {isWordTranslating ? (
+            <span> {prevWord} </span>
+          ) : (
+            <span onClick={(e) => clickOnWord(e, word)}>{word.word} </span>
+          )}
           {showingAlterMenu && (
             <AlterMenu
               word={word}
