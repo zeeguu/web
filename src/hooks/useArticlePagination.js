@@ -79,7 +79,7 @@ export default function useArticlePagination(
               newCurrentPage,
               newArticles,
             );
-            setTitle(strings.titleHome);
+            setTitle(pageTitle);
           });
           break;
         case ADD_ARTICLE_ACTION.SEARCH_ARTICLES:
@@ -94,7 +94,7 @@ export default function useArticlePagination(
                 newCurrentPage,
                 newArticles,
               );
-              setTitle(strings.titleSearch + ` '${searchQuery}'`);
+              setTitle(`${pageTitle} '${searchQuery}'`);
             },
             (error) => {
               console.log("Failed to get searches!");
