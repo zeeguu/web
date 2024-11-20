@@ -23,7 +23,7 @@ const NavOption = styled.li`
     isActive &&
     `
     background-color: white;
-    color: ${isOnStudentSide ? "#ffa41a" : `${blue700}`};
+    color: ${isOnStudentSide ? "#F09000" : `${blue700}`};
     opacity: 100%;
   `}
 
@@ -41,13 +41,14 @@ const NavOption = styled.li`
   :active {
     background-color: white;
     color: ${({ isOnStudentSide }) =>
-      isOnStudentSide ? `#ffa41a` : `${blue700}`};
+      isOnStudentSide ? `#F09000` : `${blue700}`};
     opacity: 100%;
   }
 `;
 
 const RouterLink = styled(Link)`
   font: inherit;
+  width: 100%;
   height: 2.813rem;
   color: inherit;
   display: flex;

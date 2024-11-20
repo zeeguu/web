@@ -6,7 +6,7 @@ const SideBar = styled.nav`
   height: 100%;
   background-color: #ffa41a;
   background-color: ${(props) =>
-    props.isOnStudentSide === true ? "#ffa41a" : `${blue700}`};
+    props.isOnStudentSide === true ? "#F09000" : `${blue700}`};
   padding: 0.5rem;
   width: ${(props) => (props.isCollapsed ? "4.5rem" : "14rem")};
   overflow-y: scroll;
