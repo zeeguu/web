@@ -1,7 +1,7 @@
 import NavOption from "./NavOption";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
-import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
+import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
+import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
 import BusinessCenterRoundedIcon from "@mui/icons-material/BusinessCenterRounded";
@@ -23,7 +23,7 @@ export default function SidebarOptions_Student({
 
       <NavOption
         linkTo={"/exercises"}
-        icon={<CategoryRoundedIcon />}
+        icon={<FitnessCenterRoundedIcon />}
         isCollapsed={isCollapsed}
         text={"Exercises"}
         currentPath={currentPath}
@@ -31,7 +31,7 @@ export default function SidebarOptions_Student({
 
       <NavOption
         linkTo={"/words"}
-        icon={<AssignmentRoundedIcon />}
+        icon={<TranslateRoundedIcon />}
         isCollapsed={isCollapsed}
         text={"Words"}
         currentPath={currentPath}
