@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import useShadowRef from "../hooks/useShadowRef";
 import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
-import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -12,11 +10,11 @@ import LocalStorage from "../assorted/LocalStorage";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
-import useEndlessScrolling from "../hooks/useEndlessScrolling";
+import useArticlePagination from "../hooks/useArticlePagination";
 import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import { ADD_ACTIONS } from "../utils/endlessScrolling/add_actions";
+import { ADD_ARTICLE_ACTION } from "../utils/articlePagination/add_actions";
 
 export default function FindArticles({
   content,
@@ -42,15 +40,23 @@ export default function FindArticles({
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
-  const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow] =
-    useEndlessScrolling(
-      api,
-      articleList,
-      setArticleList,
-      searchQuery ? "Article Search" : strings.titleHome,
-      searchPublishPriority,
-      searchDifficultyPriority,
-    );
+  const [
+    handleScroll,
+    isWaitingForNewArticles,
+    noMoreArticlesToShow,
+    resetScrolling,
+  ] = useArticlePagination(
+    api,
+    articleList,
+    setArticleList,
+    searchQuery ? "Article Search" : strings.titleHome,
+    searchQuery
+      ? ADD_ARTICLE_ACTION.SEARCH_ARTICLES
+      : ADD_ARTICLE_ACTION.RECOMMENDED_ARTICLES,
+    searchQuery,
+    searchPublishPriority,
+    searchDifficultyPriority,
+  );
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index)
@@ -65,12 +71,9 @@ export default function FindArticles({
   };
 
   useEffect(() => {
-    let scrollFunc;
-    if (searchQuery) scrollFunc = handleScroll(ADD_ACTIONS.ADD_SEARCH_ARTICLES);
-    else scrollFunc = handleScroll(ADD_ACTIONS.ADD_RECOMMENDED_ARTICLES);
-    window.addEventListener("scroll", scrollFunc, true);
+    window.addEventListener("scroll", handleScroll, true);
     return () => {
-      window.removeEventListener("scroll", scrollFunc, true);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, []);
 
@@ -81,6 +84,7 @@ export default function FindArticles({
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
+    resetScrolling();
     if (searchQuery) {
       setTitle(strings.titleSearch + ` '${searchQuery}'`);
       setReloadingSearchArticles(true);
@@ -104,13 +108,9 @@ export default function FindArticles({
         setArticleList(articles);
         setOriginalList([...articles]);
       });
-      let scrollFunc;
-      if (searchQuery)
-        scrollFunc = handleScroll(ADD_ACTIONS.ADD_SEARCH_ARTICLES);
-      else scrollFunc = handleScroll(ADD_ACTIONS.ADD_RECOMMENDED_ARTICLES);
-      window.addEventListener("scroll", scrollFunc, true);
+      window.addEventListener("scroll", handleScroll, true);
       return () => {
-        window.removeEventListener("scroll", scrollFunc, true);
+        window.removeEventListener("scroll", handleScroll, true);
       };
     }
   }, [searchPublishPriority, searchDifficultyPriority]);

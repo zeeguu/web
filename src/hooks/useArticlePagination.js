@@ -3,20 +3,18 @@ import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "./useShadowRef";
-import { ADD_ACTIONS } from "../utils/endlessScrolling/add_actions";
+import { ADD_ARTICLE_ACTION } from "../utils/articlePagination/add_actions";
 
-export default function useEndlessScrolling(
+export default function useArticlePagination(
   api,
   articleList,
   setArticleList,
   pageTitle,
+  action,
   searchQuery,
   searchPublishPriority,
   searchDifficultyPriority,
 ) {
-  // active session duration is measured in seconds
-  // The DB stored the exercise time in ms we need to convert it
-  // to MS.
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [noMoreArticlesToShow, setNoMoreArticlesToShow] = useState(false);
@@ -25,6 +23,8 @@ export default function useEndlessScrolling(
   const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
   const currentPageRef = useShadowRef(currentPage);
   const articleListRef = useShadowRef(articleList);
+  const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
+  const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
 
   function insertNewArticlesIntoArticleList(
     fetchedArticles,
@@ -34,13 +34,17 @@ export default function useEndlessScrolling(
     if (fetchedArticles.length === 0) {
       setNoMoreArticlesToShow(true);
     }
-    newArticles = newArticles.concat(fetchedArticles);
+    let existingArticlesId = newArticles.map((each) => each.id);
+    newArticles = newArticles.concat(
+      fetchedArticles.filter((each) => !existingArticlesId.includes(each.id)),
+    );
     setArticleList(newArticles);
     setCurrentPage(newCurrentPage);
     setIsWaitingForNewArticles(false);
   }
 
-  function handleScroll(action) {
+  function handleScroll() {
+    if (!articleListRef.current) return;
     let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
     let articlesHaveBeenFetched =
       currentPageRef.current !== undefined &&
@@ -58,7 +62,7 @@ export default function useEndlessScrolling(
       let newCurrentPage = currentPageRef.current + 1;
       let newArticles = [...articleListRef.current];
       switch (action) {
-        case action === ADD_ACTIONS.ADD_SAVED_ARTICLES:
+        case ADD_ARTICLE_ACTION.SAVED_ARTICLES:
           api.getSavedUserArticles(newCurrentPage, (articles) => {
             insertNewArticlesIntoArticleList(
               articles,
@@ -68,7 +72,7 @@ export default function useEndlessScrolling(
             setTitle(pageTitle);
           });
           break;
-        case action === ADD_ACTIONS.ADD_RECOMMENDED_ARTICLES:
+        case ADD_ARTICLE_ACTION.RECOMMENDED_ARTICLES:
           api.getMoreUserArticles(20, newCurrentPage, (articles) => {
             insertNewArticlesIntoArticleList(
               articles,
@@ -78,12 +82,12 @@ export default function useEndlessScrolling(
             setTitle(strings.titleHome);
           });
           break;
-        case action === ADD_ACTIONS.ADD_SEARCH_ARTICLES:
+        case ADD_ARTICLE_ACTION.SEARCH_ARTICLES:
           api.searchMore(
             searchQuery,
             newCurrentPage,
-            searchPublishPriority,
-            searchDifficultyPriority,
+            searchPublishPriorityRef.current,
+            searchDifficultyPriorityRef.current,
             (articles) => {
               insertNewArticlesIntoArticleList(
                 articles,
@@ -94,11 +98,12 @@ export default function useEndlessScrolling(
             },
             (error) => {
               console.log("Failed to get searches!");
+              console.error(error);
             },
           );
           break;
         default:
-          console.warn(
+          console.error(
             `Action used '${action}' is not defined, check function call.`,
           );
           break;
@@ -106,5 +111,16 @@ export default function useEndlessScrolling(
     }
   }
 
-  return [handleScroll, isWaitingForNewArticles, noMoreArticlesToShowRef];
+  function resetScrolling() {
+    setNoMoreArticlesToShow(false);
+    setCurrentPage(0);
+    setIsWaitingForNewArticles(false);
+  }
+
+  return [
+    handleScroll,
+    isWaitingForNewArticles,
+    noMoreArticlesToShow,
+    resetScrolling,
+  ];
 }

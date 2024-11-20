@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
-import useShadowRef from "../hooks/useShadowRef";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 
 import ArticlePreview from "./ArticlePreview";
-
 import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
-import useEndlessScrolling from "../hooks/useEndlessScrolling";
-import { ADD_ACTIONS } from "../utils/endlessScrolling/add_actions";
+import useArticlePagination from "../hooks/useArticlePagination";
+import { ADD_ARTICLE_ACTION } from "../utils/articlePagination/add_actions";
 
 export default function OwnArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
 
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow] =
-    useEndlessScrolling(api, articleList, setArticleList, "Saved Articles");
+    useArticlePagination(
+      api,
+      articleList,
+      setArticleList,
+      "Saved Articles",
+      ADD_ARTICLE_ACTION.SAVED_ARTICLES,
+    );
 
   useEffect(() => {
     setTitle("Saved Articles");
@@ -25,17 +29,9 @@ export default function OwnArticles({ api }) {
       setArticleList(articles);
       setOriginalList(articles);
     });
-    window.addEventListener(
-      "scroll",
-      handleScroll(ADD_ACTIONS.ADD_SAVED_ARTICLES),
-      true,
-    );
+    window.addEventListener("scroll", handleScroll, true);
     return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll(ADD_ACTIONS.ADD_SAVED_ARTICLES),
-        true,
-      );
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, []);
 

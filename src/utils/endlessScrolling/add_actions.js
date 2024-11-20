@@ -1,7 +1,0 @@
-const ADD_ACTIONS = Object.freeze({
-  ADD_SAVED_ARTICLES: 1,
-  ADD_RECOMMENDED_ARTICLES: 2,
-  ADD_SEARCH_ARTICLES: 3,
-});
-
-export { ADD_ACTIONS };
