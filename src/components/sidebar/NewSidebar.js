@@ -57,7 +57,7 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
 
       <NavOption
         isOnStudentSide={isOnStudentSide}
-        linkTo={"/account_settings/options"}
+        linkTo={"/account_settings"}
         icon={<SettingsRoundedIcon />}
         isCollapsed={isCollapsed}
         text={"Settings"}
