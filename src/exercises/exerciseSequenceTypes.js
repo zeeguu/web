@@ -147,10 +147,10 @@ let LEARNING_CYCLE_SEQUENCE = [
 
 let LEARNING_CYCLE_SEQUENCE_NO_AUDIO = [
   EX_Match,
-  EX_Match,
   EX_MultipleChoiceL2toL1,
   EX_TranslateL2toL1,
   EX_ClickWordInContext,
+  EX_Match,
   EX_MultipleChoiceContext,
   EX_FindWordInContextCloze,
   EX_MultipleChoice,

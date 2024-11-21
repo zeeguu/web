@@ -1,4 +1,4 @@
-import { random } from "../utils/basic/arrays";
+import { random, removeItemFromList } from "../utils/basic/arrays";
 import {
   LEARNING_CYCLE_SEQUENCE,
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
@@ -69,10 +69,6 @@ function popNElementsFromList(l, n) {
   return a;
 }
 
-function removeExerciseFromList(exercise, list) {
-  return list.filter((ex) => ex !== exercise);
-}
-
 function distinctContexts(potentialBookmarks) {
   let potentialBookmarkContexts = potentialBookmarks.map(
     (bookmark) => bookmark.context,
@@ -100,9 +96,56 @@ function groupByLevel(items) {
   }, {});
 }
 
-function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
-  let exerciseSequence = [];
+function assignBookmarks(currentBookmarks, currentExercises) {
+  let suitableExerciseFound = false;
+  let possibleExercises = [...currentExercises];
+  let exerciseList = [];
+  while (!suitableExerciseFound) {
+    for (let i = 0; i < possibleExercises.length; i++) {
+      let selectedExerciseType = possibleExercises[i];
+      let requiredBookmarks = selectedExerciseType.requiredBookmarks;
+      let availableBookmarks = currentBookmarks.length;
+      if (
+        requiredBookmarks <= availableBookmarks &&
+        distinctContexts(currentBookmarks.slice(0, requiredBookmarks)) &&
+        distinctTranslations(currentBookmarks.slice(0, requiredBookmarks))
+      ) {
+        let testedBookmarks = popNElementsFromList(
+          currentBookmarks,
+          selectedExerciseType.testedBookmarks,
+        );
+        // This is done to avoid sequences that are too small
+        // We only remove the bookmarks we are testing, and then
+        // we take the others as extra
+        let bookmarksForExercise = testedBookmarks.concat(
+          currentBookmarks.slice(0, requiredBookmarks - testedBookmarks.length),
+        );
+        let exercise = {
+          type: selectedExerciseType.type,
+          bookmarks: bookmarksForExercise,
+        };
+        exerciseList.push(exercise);
+        suitableExerciseFound = true;
+      }
 
+      if (!suitableExerciseFound) {
+        possibleExercises = removeItemFromList(
+          selectedExerciseType,
+          possibleExercises,
+        );
+        // Fallback to default sequence if no suitable exercises are found
+        if (possibleExercises.length === 0) {
+          console.log("FALLING BACK!");
+          return [];
+        }
+      }
+    }
+  }
+  return exerciseList;
+}
+
+function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
+  console.log("bookmarks", bookmarks);
   let exercisesByCycleTask = getElementsByCycleTask(
     exerciseTypesList,
     getExerciseCycleTaskKey,
@@ -111,6 +154,8 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
     bookmarks,
     getBookmarkCycleTaskKey,
   );
+
+  let exerciseSequence = [];
 
   for (let i = 0; i < EX_TYPE_SEQUENCE.length; i++) {
     let currentCycleTask = EX_TYPE_SEQUENCE[i];
@@ -122,53 +167,11 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
         // We have to unpack, because we alter the list if the exercise
         // can't be done with the number of bookmarks we have.
         let possibleExercises = [...exercisesByCycleTask[currentCycleTask]];
-        let suitableExerciseFound = false;
-        while (!suitableExerciseFound) {
-          let selectedExerciseType = random(possibleExercises);
-          let requiredBookmarks = selectedExerciseType.requiredBookmarks;
-          let availableBookmarks = currentBookmarkList.length;
-          if (
-            requiredBookmarks <= availableBookmarks &&
-            distinctContexts(currentBookmarkList.slice(0, requiredBookmarks)) &&
-            distinctTranslations(
-              currentBookmarkList.slice(0, requiredBookmarks),
-            )
-          ) {
-            let testedBookmarks = popNElementsFromList(
-              currentBookmarkList,
-              selectedExerciseType.testedBookmarks,
-            );
-            // This is done to avoid sequences that are too small
-            // We only remove the bookmarks we are testing, and then
-            // we take the others as extra
-            let bookmarksForExercise = testedBookmarks.concat(
-              currentBookmarkList.slice(
-                0,
-                requiredBookmarks - testedBookmarks.length,
-              ),
-            );
-            let exercise = {
-              type: selectedExerciseType.type,
-              bookmarks: bookmarksForExercise,
-            };
-            exerciseSequence.push(exercise);
-            suitableExerciseFound = true;
-          }
-          if (!suitableExerciseFound) {
-            possibleExercises = removeExerciseFromList(
-              selectedExerciseType,
-              possibleExercises,
-            );
-            // Fallback to default sequence if no suitable exercises are found
-            if (possibleExercises.length === 0) {
-              console.log("FALLING BACK!");
-              return assignBookmarksToDefaultSequence(
-                bookmarks,
-                exerciseTypesList,
-              );
-            }
-          }
-        }
+        let assignedExercises = assignBookmarks(
+          currentBookmarkList,
+          possibleExercises,
+        );
+        exerciseSequence = exerciseSequence.concat(assignedExercises);
       }
     }
   }
@@ -180,53 +183,19 @@ function assignBookmarksToLevels(bookmarks, exerciseTypesList) {
 
   let exerciseSequence = [];
 
-  const bookmarksByLevel = groupByLevel(bookmarks);
-  const exercisesByLevel = groupByLevel(exerciseTypesList);
+  let bookmarksByLevel = groupByLevel(bookmarks);
+  let exercisesByLevel = groupByLevel(exerciseTypesList);
 
   for (let level = 1; level <= 4; level++) {
-    const currentBookmarks = bookmarksByLevel[level] || [];
-    const currentExercises = exercisesByLevel[level] || [];
-
-    let exerciseIndex = 0;
+    let currentBookmarks = bookmarksByLevel[level] || [];
+    let currentExercises = exercisesByLevel[level] || [];
 
     while (currentBookmarks.length > 0 && currentExercises.length > 0) {
-      const exercise = currentExercises[exerciseIndex];
-      const requiredBookmarks = exercise.requiredBookmarks;
-
-      if (currentBookmarks.length >= requiredBookmarks) {
-        const potentialBookmarks = currentBookmarks.slice(0, requiredBookmarks);
-        if (
-          distinctContexts(potentialBookmarks) &&
-          distinctTranslations(potentialBookmarks)
-        ) {
-          const testedBookmarks = currentBookmarks.splice(
-            0,
-            exercise.testedBookmarks,
-          );
-          const bookmarksForExercise = testedBookmarks.concat(
-            currentBookmarks.slice(
-              0,
-              requiredBookmarks - testedBookmarks.length,
-            ),
-          );
-          exerciseSequence.push({
-            type: exercise.type,
-            bookmarks: bookmarksForExercise,
-          });
-        } else {
-          currentExercises.splice(exerciseIndex, 1);
-          if (currentExercises.length === 0) {
-            return assignBookmarksToDefaultSequence(
-              bookmarks,
-              exerciseTypesList,
-            );
-          }
-          continue;
-        }
-      }
-
-      // Move to the next exercise, and wrap around if necessary
-      exerciseIndex = (exerciseIndex + 1) % currentExercises.length;
+      let assignedExercises = assignBookmarks(
+        currentBookmarks,
+        currentExercises,
+      );
+      exerciseSequence = exerciseSequence.concat(assignedExercises);
     }
   }
 
@@ -260,10 +229,6 @@ function assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList) {
 }
 
 function assignBookmarksToExercises(bookmarks, exerciseTypesList) {
-  const learningCycleSequence =
-    exerciseTypesList === LEARNING_CYCLE_SEQUENCE ||
-    exerciseTypesList === LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
-
   if (Feature.merle_exercises()) {
     return assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList);
   } else if (Feature.exercise_levels()) {
