@@ -8,7 +8,7 @@ const Content = styled.div`
   overflow-y: scroll;
 `;
 
-const ContentContainer = styled.body`
+const ContentContainer = styled.section`
   width: 100%;
   margin-left: ${({ isCollapsed }) => (isCollapsed ? "4.5rem" : "14rem")};
   transition: 0.3s ease-in-out;
