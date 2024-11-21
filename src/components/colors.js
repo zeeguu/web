@@ -34,15 +34,19 @@ const blue700 = "hsl(216, 100%, 48%)";
 const blue800 = "hsl(216, 100%, 40%)";
 const blue900 = "hsl(216, 100%, 31%)";
 
-const orange100 = "";
-const orange200 = "";
-const orange300 = "";
-const orange400 = "";
-const orange500 = "";
-const orange600 = "";
-const orange700 = "";
-const orange800 = "";
-const orange900 = "";
+const blue700_transparent = "hsl(216, 100%, 48%, 60%)";
+
+const orange100 = "hsl(36, 100%, 96%)";
+const orange200 = "hsl(36, 100%, 85%)";
+const orange300 = "hsl(36, 100%, 75%)";
+const orange400 = "hsl(36, 100%, 65%)";
+const orange500 = "hsl(36, 100%, 55%)";
+const orange600 = "hsl(36, 100%, 47%)";
+const orange700 = "hsl(36, 100%, 40%)";
+const orange800 = "hsl(36, 100%, 32%)";
+const orange900 = "hsl(36, 100%, 24%)";
+
+const orange600_transparent = "hsl(36, 100%, 47%, 60%)";
 
 let veryLightGrey = "#efefef";
 let lightGrey = "#c1c1c1";
@@ -99,6 +103,17 @@ export {
   blue700,
   blue800,
   blue900,
+  blue700_transparent,
+  orange100,
+  orange200,
+  orange300,
+  orange400,
+  orange500,
+  orange600,
+  orange700,
+  orange800,
+  orange900,
+  orange600_transparent,
   veryLightGrey,
   lightGrey,
   darkGrey,

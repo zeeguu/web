@@ -1,41 +1,42 @@
-import styled from "styled-components";
-import { blue700 } from "../colors";
+import styled, { css } from "styled-components";
+import {
+  blue700,
+  blue700_transparent,
+  orange600,
+  orange600_transparent,
+} from "../colors";
 
-const SideBar = styled.nav`
+const sharedSidebarStyling = css`
   box-sizing: border-box;
-  height: 100%;
-  background-color: #ffa41a;
-  background-color: ${(props) =>
-    props.isOnStudentSide === true ? "#F09000" : `${blue700}`};
-  padding: 0.5rem 0.5rem 11rem 0.5rem;
-  width: ${(props) => (props.isCollapsed ? "4.5rem" : "14rem")};
-  overflow-y: scroll;
   position: fixed;
-  top: 0;
   transition: 0.3s ease-in-out;
-
-  img {
-    width: 2rem;
-    height: 2rem;
-  }
+  width: ${({ isCollapsed }) => (isCollapsed ? "4.5rem" : "14rem")};
 
   @media (max-width: 768px) {
     width: 4.5rem;
   }
 `;
 
-const BottomSection = styled.div`
-  bottom: 0;
-  padding: 1rem 0 1rem 0;
-  position: fixed;
-  width: ${(props) => (props.isCollapsed ? "3.5rem" : "13rem")};
-  background-color: ${(props) =>
-    props.isOnStudentSide === true ? "#F09000" : `${blue700}`};
-  transition: 0.3s ease-in-out;
+const SideBar = styled.nav`
+  ${sharedSidebarStyling}
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 0.5rem 0.5rem 11rem 0.5rem;
+  background-color: ${({ isOnStudentSide }) =>
+    isOnStudentSide === true ? `${orange600}` : `${blue700}`};
+  overflow-y: scroll;
+`;
 
-  @media (max-width: 768px) {
-    width: 3.5rem;
-  }
+const BottomSection = styled.div`
+  ${sharedSidebarStyling}
+  bottom: 0;
+  left: 0;
+  padding: 1rem 0.5rem 1rem 0.5rem;
+  background-color: ${({ isOnStudentSide }) =>
+    isOnStudentSide === true
+      ? `${orange600_transparent}`
+      : `${blue700_transparent}`};
 `;
 
 export { SideBar, BottomSection };

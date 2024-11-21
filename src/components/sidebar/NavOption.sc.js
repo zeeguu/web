@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { blue700 } from "../colors";
+import { blue700, orange600 } from "../colors";
 
 const NavOption = styled.li`
   box-sizing: border-box;
@@ -23,7 +23,7 @@ const NavOption = styled.li`
     isActive &&
     `
     background-color: white;
-    color: ${isOnStudentSide ? "#F09000" : `${blue700}`};
+    color: ${isOnStudentSide ? `${orange600}` : `${blue700}`};
     opacity: 100%;
   `}
 
@@ -34,13 +34,18 @@ const NavOption = styled.li`
   :active {
     background-color: white;
     color: ${({ isOnStudentSide }) =>
-      isOnStudentSide ? `#F09000` : `${blue700}`};
+      isOnStudentSide ? `${orange600}` : `${blue700}`};
   }
 
   &.logo {
     font-size: 1.5rem;
     height: 3.5rem;
     margin: 0 0 2rem 0;
+  }
+
+  &.logo img {
+    width: 2rem;
+    height: 2rem;
   }
 
   &.logo:hover {
