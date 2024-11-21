@@ -9,8 +9,8 @@ like api.getUserActivityByDay, where the callback function is activitiesArray.Wh
 is finished with fetching the data, it will execute this callback with the data it retreived.
 
 */
-Zeeguu_API.prototype.getUserCommitment = function (callback) {
-  this._getJSON("data_user_commitment", callback);
+Zeeguu_API.protoype.getUserActivityAndCommitment = function (callback) {
+  this._getJSON("user_activity_and_commitment", callback);
 };
 
 /*
