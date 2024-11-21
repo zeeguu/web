@@ -41,6 +41,7 @@ export default function UserDashboard({ api }) {
     useState({});
   const [currentStreak, setCurrentStreak] = useState(0);
   const [commitmentAndActivityData, setCommitmentAndActivityData] = useState(0); //added useState for the streak
+  const [lastStreakUpdate, setLastStreakUpate] = useState(0);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -162,20 +163,43 @@ export default function UserDashboard({ api }) {
         (activity) => activity.seconds >= userMinutes,
       );
 
-      const weeklyActivitiesAccount = filteredActivities.length; //amount of activities that fulfills the minimum amount of minutes per session.
+      const weeklyActivitiesCount = filteredActivities.length; //amount of activities that fulfills the minimum amount of minutes per session.
 
       const userDaysPerWeek = activitiesAndCommitmentArray.user_days;
 
-      //Checks if the user have
-      if (weeklyActivitiesAccount >= userDaysPerWeek) {
-        setCommitmentAndActivityData(commitmentAndActivityData++);
+      //get the specific dates for current week
+      const startOfWeek = new Date(currentDate);
+      startOfWeek.setDate(currentDate.getDate() - daysAwayFromMonday); //getDate returns the a number (the day of the month eg 21.)
+      startOfWeek.setHours(0, 0, 0); //makes sure it is monday 00:00
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59);
+
+      //now we check if current date is within the specicif dates
+      const inCurrentWeek =
+        currentDate >= startOfWeek && currentDate <= endOfWeek;
+
+      const goalMetThisWeek =
+        weeklyActivitiesCount >= userDaysPerWeek && inCurrentWeek;
+
+      if (goalMetThisWeek) {
+        //Have we already updated the streak this week?
+        const lastStreakUpdate =
+          activitiesAndCommitmentArray.last_weekly_commitment_update;
+        const currentWeek = startOfWeek.getWeek();
+
+        //If the last streak update was this week, to not increment
+        if (lastStreakUpdate && lastStreakUpdate.getWeek() === currentWeek) {
+          setCommitmentAndActivityData(commitmentAndActivityData);
+        } else {
+          //
+          setCommitmentAndActivityData(commitmentAndActivityData + 1);
+          setLastStreakUpate(currentDate);
+        }
       }
-
-      const daysToSunday = (7 - dayOfWeek) % 7; //days left until sunday
-
-      setCommitmentAndActivityData(activitiesAndCommitmentArray);
     });
-  });
+  }, []);
 
   useEffect(() => {
     api.getBookmarksCountsByDate((counts) => {
