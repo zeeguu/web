@@ -22,6 +22,7 @@ const NotificationIcon = styled.div`
       rgba(42, 8, 12, 0.5) 100%
     );
     border-radius: 1000px;
+    border: 0.12rem solid white;
     z-index: 99;
     padding: 0.1em 0.5em;
     min-width: 0.1em;

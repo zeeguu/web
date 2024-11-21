@@ -5,9 +5,10 @@ export default function NavOption({
   icon,
   isOnStudentSide = true,
   isCollapsed = false,
+  isButton = false,
+  notification = null,
   text,
   title,
-  isButton = false,
   onClick,
   currentPath,
   className,
@@ -16,6 +17,7 @@ export default function NavOption({
     <>
       <s.IconContainer isCollapsed={isCollapsed} title={title ? title : text}>
         {icon}
+        {notification}
       </s.IconContainer>
       <s.Span visibility={isCollapsed}>{text}</s.Span>
     </>

@@ -50,12 +50,6 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
     exerciseNotification.updateReactState();
   }, []);
 
-  console.log("Print Notification:");
-  console.log(exerciseNotification);
-
-  console.log("Print Exercise Pipeline:");
-  console.log(totalExercisesInPipeline);
-
   return (
     <s.SideBar
       isCollapsed={isCollapsed}
@@ -63,25 +57,13 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
       role="navigation"
       aria-label="Sidebar Navigation"
     >
-      {hasExerciseNotification && (
-        <NotificationIcon
-          text={
-            totalExercisesInPipeline
-              ? totalExercisesInPipeline > MAX_EXERCISE_TO_DO_NOTIFICATION
-                ? MAX_EXERCISE_TO_DO_NOTIFICATION + "+"
-                : totalExercisesInPipeline
-              : ""
-          }
-        />
-      )}
-
       <NavOption
         className={"logo"}
         linkTo={defaultPage}
         icon={<img src="../static/images/zeeguuWhiteLogo.svg"></img>}
         isCollapsed={isCollapsed}
         text={"Zeeguu"}
-      />
+      ></NavOption>
 
       {isOnStudentSide && (
         <SidebarOptions_Student
@@ -111,6 +93,19 @@ export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
           isCollapsed={isCollapsed}
           text={"Settings"}
           currentPath={path}
+          notification={
+            !hasExerciseNotification && (
+              <NotificationIcon
+                text={
+                  totalExercisesInPipeline
+                    ? totalExercisesInPipeline > MAX_EXERCISE_TO_DO_NOTIFICATION
+                      ? MAX_EXERCISE_TO_DO_NOTIFICATION + "+"
+                      : totalExercisesInPipeline
+                    : ""
+                }
+              />
+            )
+          }
         />
 
         <FeedbackButton isCollapsed={isCollapsed} />
