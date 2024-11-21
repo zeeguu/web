@@ -1,13 +1,7 @@
-import { random, removeItemFromList } from "../utils/basic/arrays";
-import {
-  LEARNING_CYCLE_SEQUENCE,
-  LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
-} from "./exerciseSequenceTypes";
-import {
-  LEARNING_CYCLE_NAME,
-  MEMORY_TASK,
-  LEARNING_CYCLE,
-} from "./ExerciseTypeConstants";
+import { removeItemFromList } from "../utils/basic/arrays";
+import shuffle from "../assorted/fisherYatesShuffle";
+
+import { MEMORY_TASK, LEARNING_CYCLE } from "./ExerciseTypeConstants";
 import Feature from "../features/Feature";
 
 /**
@@ -97,10 +91,16 @@ function groupByLevel(items) {
 }
 
 function assignBookmarks(currentBookmarks, currentExercises) {
+  /* 
+    Attempts to assign all currentExercises given the currentBookmarks.
+    
+    We shuffle the list every loop to ensure variation of the sequence of exercises.
+  */
   let suitableExerciseFound = false;
   let possibleExercises = [...currentExercises];
   let exerciseList = [];
   while (!suitableExerciseFound) {
+    possibleExercises = shuffle(possibleExercises);
     for (let i = 0; i < possibleExercises.length; i++) {
       let selectedExerciseType = possibleExercises[i];
       let requiredBookmarks = selectedExerciseType.requiredBookmarks;
@@ -135,8 +135,13 @@ function assignBookmarks(currentBookmarks, currentExercises) {
         );
         // Fallback to default sequence if no suitable exercises are found
         if (possibleExercises.length === 0) {
-          console.log("FALLING BACK!");
-          return [];
+          console.error(
+            "Couldn't find a sequence, resorting to default sequence.",
+          );
+          return assignBookmarksToDefaultSequence(
+            currentBookmarks,
+            currentExercises,
+          );
         }
       }
     }
