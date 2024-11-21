@@ -21,6 +21,7 @@ import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import getUserActivityAndCommitment from "../api/userActivityAndCommitment/"; //importing function for user activity and commitment
 
 export default function UserDashboard({ api }) {
   const [activeTab, setActiveTab] = useState(TABS_IDS.BAR_GRAPH);
@@ -39,6 +40,7 @@ export default function UserDashboard({ api }) {
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
   const [currentStreak, setCurrentStreak] = useState(0);
+  const [commitmentAndActivityData, setCommitmentAndActivityData] = useState(0); //added useState for the streak
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -103,6 +105,11 @@ export default function UserDashboard({ api }) {
     api.logUserActivity(api.USER_DASHBOARD_OPEN);
     // eslint-disable-next-line
   }, []);
+
+  //useEffect and function for the user defined commitment
+  useEffect(() => {
+    api.getUserActivityAndCommitment((activitiesAndCommitmentArray) => {});
+  });
 
   useEffect(() => {
     api.getBookmarksCountsByDate((counts) => {
