@@ -108,7 +108,73 @@ export default function UserDashboard({ api }) {
 
   //useEffect and function for the user defined commitment
   useEffect(() => {
-    api.getUserActivityAndCommitment((activitiesAndCommitmentArray) => {});
+    api.getUserActivityAndCommitment((activitiesAndCommitmentArray) => {
+      //Week logic
+      const currentDate = new Date(); //current date and time
+      const dayOfWeek = currentDate.getDay(); //day of the week (sunday = 0, monday = 1 etc.)
+      let daysAwayFromMonday; //the x amount of days starting from monday to the current date that we want to include in our calculation.
+
+      //set the days away from monday. We need an if statement because sunday is 0.
+      if (dayOfWeek === 0) {
+        daysAwayFromMonday = 6;
+      } else {
+        daysAwayFromMonday = dayOfWeek - 1;
+      }
+
+      //Only extract activity_time_by_day data
+      const activityTimeByDay =
+        activitiesAndCommitmentArray.activity_time_by_day;
+      //Adds the activity arrays together that we get from getUserActivityByDay
+      const bothActivitiesArray = activityTimeByDay.exercises.concat(
+        activityTimeByDay.reading,
+      );
+
+      //adds together the seconds for each day. this is an object
+      const combinedObject = bothActivitiesArray.reduce((acc, curr) => {
+        if (acc[curr.date]) {
+          acc[curr.date] += curr.seconds;
+        } else {
+          acc[curr.date] = curr.seconds;
+        }
+        return acc;
+      }, {});
+
+      //converts back into array
+      const combinedArray = Object.keys(combinedObject).map((date) => ({
+        date: date,
+        seconds: combinedObject[date],
+      }));
+
+      // orders the instances by date
+      const activitiesSorted = combinedArray.sort((a, b) =>
+        b.date.localeCompare(a.date),
+      );
+
+      //the array only containing the weekly dates.
+      const filterActivitiesSorted = activitiesSorted.slice(
+        0,
+        daysAwayFromMonday + 1,
+      );
+
+      const userMinutes = activitiesAndCommitmentArray.user_minutes; //gets the users commitment of minutes converted to seconds
+
+      const filteredActivities = filterActivitiesSorted.filter(
+        (activity) => activity.seconds >= userMinutes,
+      );
+
+      const weeklyActivitiesAccount = filteredActivities.length; //amount of activities that fulfills the minimum amount of minutes per session.
+
+      const userDaysPerWeek = activitiesAndCommitmentArray.user_days;
+
+      //Checks if the user have
+      if (weeklyActivitiesAccount >= userDaysPerWeek) {
+        setCommitmentAndActivityData(commitmentAndActivityData++);
+      }
+
+      const daysToSunday = (7 - dayOfWeek) % 7; //days left until sunday
+
+      setCommitmentAndActivityData(activitiesAndCommitmentArray);
+    });
   });
 
   useEffect(() => {
