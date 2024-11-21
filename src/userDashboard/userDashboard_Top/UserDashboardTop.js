@@ -19,7 +19,8 @@ export default function UserDashboardTop({
   activeTimeFormatOption,
   referenceDate,
   handleChangeReferenceDate,
-  currentStreak,
+  commitmentAndActivityData,
+  //currentStreak,
 }) {
   return (
     <s.UserDashboardTopContainer>
@@ -62,18 +63,16 @@ export default function UserDashboardTop({
         </>
       </s.UserDashboardHelperText>
 
-      {activeTab === TABS_IDS.BAR_GRAPH ?
-      <s.StreakDisplay>
-      <>
-          {activeTab === TABS_IDS.BAR_GRAPH
-            ? STREAK_MESSAGE.YOUR_STREAK
-            : null}
-        <s.Streak>  
-          {currentStreak}
-        </s.Streak>
-        </>
-      </s.StreakDisplay>
-        : null}
+      {activeTab === TABS_IDS.BAR_GRAPH ? (
+        <s.StreakDisplay>
+          <>
+            {activeTab === TABS_IDS.BAR_GRAPH
+              ? STREAK_MESSAGE.YOUR_STREAK
+              : null}
+            <s.Streak>{commitmentAndActivityData}</s.Streak>
+          </>
+        </s.StreakDisplay>
+      ) : null}
     </s.UserDashboardTopContainer>
   );
 }
