@@ -136,11 +136,16 @@ export default function ArticlePreview({
       />
 
       <s.Title>{titleLink(article)}</s.Title>
-      <ArticleSourceInfo
-        articleInfo={article}
-        dontShowPublishingTime={dontShowPublishingTime}
-        dontShowSourceIcon={dontShowSourceIcon}
-      ></ArticleSourceInfo>
+      {article.feed_id ? (
+        <ArticleSourceInfo
+          articleInfo={article}
+          dontShowPublishingTime={dontShowPublishingTime}
+          dontShowSourceIcon={dontShowSourceIcon}
+        ></ArticleSourceInfo>
+      ) : (
+        <span>{article.url}</span>
+      )}
+
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
         <s.Summary>{article.summary}...</s.Summary>
