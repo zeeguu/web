@@ -1,6 +1,6 @@
 {
   "name": "extension",
-  "version": "0.1.0",
+  "version": "2.4.5",
   "private": true,
   "dependencies": {
     "ref_name": "file:src/zeeguu-react/"
@@ -50,6 +50,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-syntax-dynamic-import": "^7.8.3"
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "npm-run-all": "^4.1.5"
   }
 }
