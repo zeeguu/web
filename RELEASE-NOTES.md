@@ -1,3 +1,5 @@
+# v2.4.3
+- bug fix: alternative translation menu is not sized correctly
 
 # v2.4.2
 - bug fix: The extension is now showing the elephant logo and the Review Words button is working now

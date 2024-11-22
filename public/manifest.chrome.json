@@ -1,7 +1,7 @@
 {
   "name": "The Zeeguu Reader",
   "description": "The extension helps you read articles in the language that you want to practice and offers one-click translation and pronunciation.",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "manifest_version": 3,
   "host_permissions": ["https://www.zeeguu.org/", "https://api.zeeguu.org/"],
   "permissions": [
