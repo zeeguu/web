@@ -9,6 +9,7 @@ export default function FeedbackButton() {
   return (
     <>
       <FeedbackModal
+        prefixMsg={"Sidebar"}
         open={showFeedbackModal}
         setOpen={() => {
           setShowFeedbackModal(!showFeedbackModal);

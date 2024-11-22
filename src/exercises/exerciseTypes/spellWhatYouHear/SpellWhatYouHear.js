@@ -134,6 +134,14 @@ export default function SpellWhatYouHear({
 
       {!isCorrect && (
         <>
+          <s.CenteredRowTall>
+            <SpeakButton
+              bookmarkToStudy={bookmarkToStudy}
+              api={api}
+              styling="large"
+              parentIsSpeakingControl={isButtonSpeaking}
+            />
+          </s.CenteredRowTall>
           <div className="contextExample">
             <TranslatableText
               isCorrect={isCorrect}
@@ -143,14 +151,6 @@ export default function SpellWhatYouHear({
               bookmarkToStudy={bookmarksToStudy[0].from}
             />
           </div>
-          <s.CenteredRowTall>
-            <SpeakButton
-              bookmarkToStudy={bookmarkToStudy}
-              api={api}
-              styling="large"
-              parentIsSpeakingControl={isButtonSpeaking}
-            />
-          </s.CenteredRowTall>
 
           <BottomInput
             handleCorrectAnswer={handleCorrectAnswer}
@@ -179,6 +179,7 @@ export default function SpellWhatYouHear({
         </>
       )}
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         api={api}
         message={messageToAPI}
         exerciseBookmark={bookmarksToStudy[0]}

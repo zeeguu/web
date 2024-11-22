@@ -3,6 +3,10 @@ import {
   almostBlack,
   zeeguuOrange,
   zeeguuDarkOrange,
+  blue600,
+  blue400,
+  blue100,
+  blue200,
 } from "../components/colors";
 
 const ArticlePreview = styled.div`
@@ -26,13 +30,11 @@ const ArticleContent = styled.div`
   font-weight: inherit;
   flex-direction: row;
   flex-wrap: wrap;
-  align-content: center;
-  justify-content: space-around;
-  align-items: center;
+
+  gap: 0.5em;
 
   img {
-    margin: 0.5em;
-    margin-left: 0;
+    margin: 0 0.5em;
     max-width: 10em;
     max-height: 10em;
     border-radius: 1em;
@@ -40,9 +42,18 @@ const ArticleContent = styled.div`
     object-fit: cover;
 
     @media (max-width: 990px) {
+      align-content: center;
+      justify-content: space-around;
+      align-items: center;
       max-width: 14em;
       max-height: 10em;
+      margin: 0.5rem;
     }
+  }
+  @media (max-width: 990px) {
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;
   }
 `;
 
@@ -105,8 +116,6 @@ let Summary = styled.div`
   line-height: 1.5em;
   margin-top: 0.36em;
   width: 40em;
-  margin: auto;
-  margin-left: 1em;
   @media (max-width: 990px) {
     width: 100%;
   }
@@ -114,13 +123,13 @@ let Summary = styled.div`
 
 let BottomContainer = styled.div`
   display: flex;
+  flex-direction: row;
   margin-top: 0.5em;
-  align-items: center;
   justify-content: space-between;
-  @media (max-width: 900px) {
-    align-items: flex-start;
+  @media (max-width: 990px) {
     flex-direction: column;
-    gap: 1em;
+    align-items: flex-start;
+    gap: 0.5 rem;
   }
 `;
 
@@ -129,9 +138,46 @@ let Topics = styled.span`
     height: 1.2em;
     margin-left: 0.2em;
     border: solid ${zeeguuOrange};
-    border-radius: 1.0416666666666667em;
-    padding: 0.20833333333333334em 1.3541666666666667em;
-    font-size: 0.8333333333333334em;
+    border-radius: 2em;
+    font-size: 0.85em;
+    font-weight: 500;
+    padding: 0.5em 1.35em;
+    margin-bottom: 0.5em;
+    text-align: center;
+    vertical-align: middle;
+  }
+`;
+let UrlTopics = styled.div`
+  display: inline-block;
+  cursor: help;
+  margin-top: 1em;
+  .inferred {
+    border: dashed 1px ${blue400};
+  }
+  .gold {
+    border: solid 1px ${blue600};
+  }
+
+  span {
+    height: 1.2em;
+    margin-left: 0.2em;
+    margin-bottom: 0.5em;
+    border-radius: 2em;
+    padding: 0.4em 1.35em;
+    font-size: 0.85em;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+    background-color: ${blue100};
+  }
+  .cancelButton {
+    cursor: pointer;
+    padding-left: 0.3em;
+    margin-bottom: -0.3em;
+    margin-right: -0.3em;
+  }
+  @media (max-width: 990px) {
+    margin-bottom: 1.2em;
   }
 `;
 
@@ -145,4 +191,5 @@ export {
   BottomContainer,
   Summary,
   Topics,
+  UrlTopics,
 };

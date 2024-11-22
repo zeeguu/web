@@ -11,13 +11,6 @@ export const EXERCISE_TYPES = {
   clickWordInContext: "Click_L1W_in_L2T",
   findWordInContext: "Recognize_L1W_in_L2T",
 
-  isTranslationExercise: function (exerciseType) {
-    return (
-      exerciseType === this.translateWhatYouHear ||
-      exerciseType === this.multipleChoice
-    );
-  },
-
   isMultiBookmarkExercise: function (exerciseType) {
     return [
       this.multipleChoice,

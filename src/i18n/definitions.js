@@ -12,6 +12,7 @@ let strings = new LocalizedStrings(
       articles: "Home",
       text: "Text",
       save: "Save",
+      apply: "Apply",
       settings: "Settings",
       wordHistoryTitle: "Word Translation History",
       exercises: "Exercises",
@@ -311,9 +312,10 @@ let strings = new LocalizedStrings(
 
       //TagOfFilters
       addPersonalFilter: "Add a personal filter",
+      addExcludedKeyword: "Add an excluded keyword",
 
       //TagsOfInterests
-      addPersonalInterest: "Add a personal interest",
+      addPersonalInterest: "Add an interest keyword",
 
       //Learned
       learnedWordsAreMsg:

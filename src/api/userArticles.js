@@ -3,6 +3,7 @@ import qs from "qs";
 
 // articles
 // articles
+
 Zeeguu_API.prototype.getUserArticles = function (callback) {
   this._getJSON("user_articles/recommended", (articles) => {
     // sometimes we get duplicates from the server
@@ -162,6 +163,15 @@ Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback) {
     authors: articleInfo.authors,
   };
   this._post(`/find_or_create_article`, qs.stringify(article), callback);
+};
+
+Zeeguu_API.prototype.removeMLSuggestion = function (
+  articleId,
+  topic,
+  callback,
+) {
+  let param = qs.stringify({ article_id: articleId, topic: topic });
+  this._post(`/remove_ml_suggestion`, param, callback);
 };
 
 Zeeguu_API.prototype.makePersonalCopy = function (articleId, callback) {

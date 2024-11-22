@@ -129,6 +129,9 @@ export default function MultipleChoice({
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />
+
+      {isCorrect && <h1>{removePunctuation(bookmarksToStudy[0].to)}</h1>}
+
       <div className="contextExample">
         <TranslatableText
           isCorrect={isCorrect}
@@ -136,10 +139,9 @@ export default function MultipleChoice({
           translating={true}
           pronouncing={false}
           bookmarkToStudy={bookmarksToStudy[0].from}
+          exerciseType={EXERCISE_TYPE}
         />
       </div>
-
-      {isCorrect && <h1>{removePunctuation(bookmarksToStudy[0].to)}</h1>}
 
       {!buttonOptions && <LoadingAnimation />}
       {!isCorrect && (
@@ -153,6 +155,7 @@ export default function MultipleChoice({
         />
       )}
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
