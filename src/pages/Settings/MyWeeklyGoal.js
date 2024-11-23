@@ -12,50 +12,44 @@ import Selector from "../../components/Selector";
 import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 
+export default function MyWeeklyGoal({ api }) {
+  const [userDetails, setUserDetails] = useState(null);
 
-export default function MyWeeklyGoal({api}){
-    const [userDetails, setUserDetails] = useState(null);
+  useEffect(() => {
+    setTitle(strings.MyWeeklyGoal);
+  }, []);
 
-    useEffect(() => {
-        setTitle(strings.MyWeeklyGoal);
-      }, []);
+  useEffect(() => {
+    api.getUserCommitment((commitmentData) => {
+      setUserDetails(commitmentData);
+    });
+  }, []);
 
-    useEffect(() => { 
-        api.getUserCommitment((commitmentData) => { 
-            setUserDetails(commitmentData);
-        })
-    }
-    )
-
-    return (
-        <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-        <BackArrow />   
-        <Header withoutLogo>
-            <Heading>{strings.myWeeklyGoal}</Heading>
-        </Header>
-        <Main>
-            <Form>
-                <FormSection>
-                <Selector
-                label={strings.myPracticeGoal}
-                selected = {userDetails.user_days}
-                />
-                </FormSection>
-                <FormSection>
-                <Selector
-                label={strings.myDurationGoal}
-                />
-                </FormSection>
-                <ButtonContainer className={"adaptive-alignment-horizontal"}>
-                        <Button type={"submit"}>
-                         {strings.save}
-                        </Button>
-                </ButtonContainer>
-            </Form>
-        </Main>
-        </PreferencesPage>
-    )
-
-    
-
+  return (
+    <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
+      <BackArrow />
+      <Header withoutLogo>
+        <Heading>{strings.myWeeklyGoal}</Heading>
+      </Header>
+      <Main>
+        <Form>
+          <FormSection>
+            <Selector
+              label={strings.myPracticeGoal}
+              selected={userDetails.user_days}
+            />
+          </FormSection>
+          <FormSection>
+            <Selector
+              label={strings.myDurationGoal}
+              selected={userDetails ? userDetails.user_minutes : 0}
+            />
+          </FormSection>
+          <ButtonContainer className={"adaptive-alignment-horizontal"}>
+            <Button type={"submit"}>{strings.save}</Button>
+          </ButtonContainer>
+        </Form>
+      </Main>
+    </PreferencesPage>
+  );
 }
