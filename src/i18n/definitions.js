@@ -548,7 +548,8 @@ let strings = new LocalizedStrings(
       interests: "Interests",
       deleteAccount: "Delete Account",
       myWeeklyGoal: "My Weekly Goal",
-      myGoalSetting: "I want to practice",
+      myPracticeGoal: "I want to practice",
+      myDurationGoal: "For a duration of",
 
       nativeLanguage: "Native Language",
       yourCurrentClassIs: "Your current class is: ",

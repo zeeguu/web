@@ -9,14 +9,8 @@ import Main from "../_pages_shared/Main.sc";
 import Form from "../_pages_shared/Form.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
 import Selector from "../../components/Selector";
-
-
-
-
-
-
-
-
+import Button from "../_pages_shared/Button.sc";
+import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 
 export default function MyWeeklyGoal({}){
 
@@ -34,9 +28,19 @@ export default function MyWeeklyGoal({}){
             <Form>
                 <FormSection>
                 <Selector
-                label={strings.myGoalSetting}
+                label={strings.myPracticeGoal}
                 />
                 </FormSection>
+                <FormSection>
+                <Selector
+                label={strings.myDurationGoal}
+                />
+                </FormSection>
+                <ButtonContainer className={"adaptive-alignment-horizontal"}>
+                        <Button type={"submit"}>
+                     {strings.save}
+                        </Button>
+                </ButtonContainer>
             </Form>
         </Main>
         </PreferencesPage>
