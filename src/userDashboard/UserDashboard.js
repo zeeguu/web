@@ -242,6 +242,9 @@ export default function UserDashboard({ api }) {
       const goalMetThisWeek =
         weeklyActivitiesCount >= userDaysPerWeek && inCurrentWeek;
 
+      const currentCommitmentAndActivityData =
+        activitiesAndCommitmentArray.consecutive_weeks;
+
       //we have reached our weekly commitment within the current week
       if (goalMetThisWeek) {
         //Now we want to check if we have already updated the streak this week
@@ -255,10 +258,10 @@ export default function UserDashboard({ api }) {
           lastWeeklyCommitmentUpdate >= startOfWeek &&
           lastWeeklyCommitmentUpdate <= endOfWeek
         ) {
-          setCommitmentAndActivityData(commitmentAndActivityData);
+          setCommitmentAndActivityData(currentCommitmentAndActivityData);
         } else {
           //update the CommitmentAndActivityData variable by one and update when the Streak was updated
-          setCommitmentAndActivityData(commitmentAndActivityData + 1);
+          setCommitmentAndActivityData(currentCommitmentAndActivityData + 1);
           setLastCommitmentUpate(currentDate);
         }
       }
