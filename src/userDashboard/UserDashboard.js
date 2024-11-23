@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import TranslatedWordsGraph from "./userdashboard_Graphs/TranslatedWordsGraph";
+
 import ReadingAndExercisesTimeGraph from "./userdashboard_Graphs/ReadingAndExercisesTimeGraph";
 import {
   PERIOD_OPTIONS,
@@ -38,9 +39,8 @@ export default function UserDashboard({ api }) {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  // [currentStreak, setCurrentStreak] = useState(0);
   const [commitmentAndActivityData, setCommitmentAndActivityData] = useState(0); //added useState for the streak
-  const [lastCommitmentUpdate, setLastCommitmentUpate] = useState(0);
+  const [lastCommitmentUpdate, setLastCommitmentUpate] = useState(null);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -51,8 +51,6 @@ export default function UserDashboard({ api }) {
     setActiveTab(tabId);
     api.logUserActivity(api.USER_DASHBOARD_TAB_CHANGE, "", tabId);
   }
-
-  //This is a test to see
 
   function handleActiveTimeIntervalChange(selected) {
     setActiveTimeInterval(selected);
@@ -94,12 +92,6 @@ export default function UserDashboard({ api }) {
     api.logUserActivity(api.USER_DASHBOARD_TIME_COUNT_CHANGE, "", selected);
   }
 
-  function getPreviousDate(dateString) {
-    const date = new Date(dateString);
-    date.setDate(date.getDate() - 1);
-    return date.toISOString().slice(0, 10);
-  }
-
   useEffect(() => {
     setTitle(strings.titleUserDashboard);
     api.logUserActivity(api.USER_DASHBOARD_OPEN);
@@ -125,6 +117,9 @@ export default function UserDashboard({ api }) {
     }
    */
   //useEffect and function for the user defined commitment
+  console.log(api);
+  console.log(api.getUserActivityAndCommitment);
+
   useEffect(() => {
     api.getUserActivityAndCommitment((activitiesAndCommitmentArray) => {
       //date with format eg. "Thu Nov 21 2024 15:32:26 GMT+0100"
@@ -268,7 +263,7 @@ export default function UserDashboard({ api }) {
         }
       }
     });
-  }, [api, setCommitmentAndActivityData]);
+  }, [api, setCommitmentAndActivityData, commitmentAndActivityData]);
 
   useEffect(() => {
     api.getBookmarksCountsByDate((counts) => {
@@ -286,51 +281,8 @@ export default function UserDashboard({ api }) {
       setMonthlyExerciseAndReadingTimes(
         calculateCountPerMonth_Activity(activitiesArray),
       );
-
-      //Adds the activity arrays together that we get from getUserActivityByDay
-      const bothActivitiesArray = activitiesArray.exercises.concat(
-        activitiesArray.reading,
-      );
-
-      //adds together the seconds for each day. this is an object
-      const combinedObject = bothActivitiesArray.reduce((acc, curr) => {
-        if (acc[curr.date]) {
-          acc[curr.date] += curr.seconds;
-        } else {
-          acc[curr.date] = curr.seconds;
-        }
-        return acc;
-      }, {});
-
-      //converts back into array
-      const combinedArray = Object.keys(combinedObject).map((date) => ({
-        date: date,
-        seconds: combinedObject[date],
-      }));
-
-      // filters out the instances where seconds is 0 and orders by date
-      const activitiesSorted = combinedArray
-        .filter((activity) => activity.seconds > 0)
-        .sort((a, b) => b.date.localeCompare(a.date));
-      console.log(activitiesSorted);
-
-      const currentDate = new Date();
-      const currentDateString = currentDate.toISOString().slice(0, 10);
-
-      let streak = 0;
-      let previousDate = currentDateString;
-
-      for (const activity of activitiesSorted) {
-        if (activity.date === previousDate) {
-          streak++;
-          previousDate = getPreviousDate(activity.date);
-        } else {
-          break;
-        }
-      }
-      setCurrentStreak(streak);
     });
-  }, [api, setCurrentStreak]);
+  }, [activeTab]);
 
   if (!allWordsData || !dailyExerciseAndReadingTimes) {
     return <LoadingAnimation />;

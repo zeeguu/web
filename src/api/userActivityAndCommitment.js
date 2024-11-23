@@ -1,6 +1,6 @@
 import { Zeeguu_API } from "./classDef";
 
-Zeeguu_API.protoype.getUserActivityAndCommitment = function (callback) {
+Zeeguu_API.prototype.getUserActivityAndCommitment = function (callback) {
   this._getJSON("user_activity_and_commitment", callback);
 };
 
@@ -17,7 +17,7 @@ Zeeguu_API.prototype.createUserCommitment = function (
   this._postJSON("user_commitment_create", payload, callback);
 };
 
-Zeeguu_API.prototype.updateUserCommitment= function (
+Zeeguu_API.prototype.updateUserCommitment = function (
   consecutiveWeeks,
   commitmentLastUpdated,
   callback,
