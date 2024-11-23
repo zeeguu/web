@@ -21,7 +21,6 @@ import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import getUserActivityAndCommitment from "../api/userActivityAndCommitment/"; //importing function for user activity and commitment
 
 export default function UserDashboard({ api }) {
   const [activeTab, setActiveTab] = useState(TABS_IDS.BAR_GRAPH);
@@ -39,9 +38,9 @@ export default function UserDashboard({ api }) {
     useState(null);
   const [monthlyExerciseAndReadingTimes, setMonthlyExerciseAndReadingTimes] =
     useState({});
-  const [currentStreak, setCurrentStreak] = useState(0);
+  // [currentStreak, setCurrentStreak] = useState(0);
   const [commitmentAndActivityData, setCommitmentAndActivityData] = useState(0); //added useState for the streak
-  const [lastStreakUpdate, setLastStreakUpate] = useState(0);
+  const [lastCommitmentUpdate, setLastCommitmentUpate] = useState(0);
 
   function handleChangeReferenceDate(newDate) {
     setReferenceDate(newDate);
@@ -265,7 +264,7 @@ export default function UserDashboard({ api }) {
         } else {
           //update the CommitmentAndActivityData variable by one and update when the Streak was updated
           setCommitmentAndActivityData(commitmentAndActivityData + 1);
-          setLastStreakUpate(currentDate);
+          setLastCommitmentUpate(currentDate);
         }
       }
     });
