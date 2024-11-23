@@ -252,7 +252,7 @@ export default function UserDashboard({ api }) {
       if (goalMetThisWeek) {
         //Now we want to check if we have already updated the streak this week
         const lastWeeklyCommitmentUpdate = new Date(
-          activitiesAndCommitmentArray.last_weekly_commitment_update,
+          activitiesAndCommitmentArray.last_commitment_update,
         );
 
         //If the last streak update was this week, do not increment and not null
@@ -348,7 +348,7 @@ export default function UserDashboard({ api }) {
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
         //currentStreak={currentStreak}
-        weeklyCommitment={commitmentAndActivityData}
+        commitmentAndActivityData={commitmentAndActivityData}
         handleChangeReferenceDate={handleChangeReferenceDate}
       />
 
