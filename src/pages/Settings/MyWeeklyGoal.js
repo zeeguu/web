@@ -1,6 +1,6 @@
 import BackArrow from "./settings_pages_shared/BackArrow";
 import { setTitle } from "../../assorted/setTitle";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import strings from "../../i18n/definitions";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -12,11 +12,20 @@ import Selector from "../../components/Selector";
 import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 
-export default function MyWeeklyGoal({}){
+
+export default function MyWeeklyGoal({api}){
+    const [userDetails, setUserDetails] = useState(null);
 
     useEffect(() => {
         setTitle(strings.MyWeeklyGoal);
       }, []);
+
+    useEffect(() => { 
+        api.getUserCommitment((commitmentData) => { 
+            setUserDetails(commitmentData);
+        })
+    }
+    )
 
     return (
         <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
@@ -29,6 +38,7 @@ export default function MyWeeklyGoal({}){
                 <FormSection>
                 <Selector
                 label={strings.myPracticeGoal}
+                selected = {userDetails.user_days}
                 />
                 </FormSection>
                 <FormSection>
@@ -38,7 +48,7 @@ export default function MyWeeklyGoal({}){
                 </FormSection>
                 <ButtonContainer className={"adaptive-alignment-horizontal"}>
                         <Button type={"submit"}>
-                     {strings.save}
+                         {strings.save}
                         </Button>
                 </ButtonContainer>
             </Form>

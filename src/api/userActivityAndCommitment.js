@@ -4,6 +4,10 @@ Zeeguu_API.prototype.getUserActivityAndCommitment = function (callback) {
   this._getJSON("user_activity_and_commitment", callback);
 };
 
+Zeeguu_API.prototype.getUserCommitment = function (callback) {
+  this._getJSON("user_commitment", callback);
+};
+
 Zeeguu_API.prototype.createUserCommitment = function (
   userMinutes,
   userDays,
