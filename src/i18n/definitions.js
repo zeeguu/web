@@ -560,6 +560,22 @@ let strings = new LocalizedStrings(
       checkIfInviteCodeIsValid:
         "Something went wrong. Please check that the invite code is valid and try again.",
 
+      //PRACTICE_DAYS
+      oneDay: "1 day per week",
+      twoDays: "2 days per week",
+      threeDays: "3 days per week",
+      fourDays: "4 days per week",
+      fiveDays: "5 days per week",
+      sixDays: "6 days per week",
+      sevenDays: "Every day per week",
+
+      //MINUTES_GOALS
+      fiveMinutes: "5 minutes",
+      tenMinutes: "10 minutes",
+      fifteenMinutes: "15 minutes",
+      thirtyMinutes: "30 minutes",
+      sixtyMinutes: "1 hour",
+
       //CEFR_LEVELS
       beginner: "Beginner",
       elementary: "Elementary",

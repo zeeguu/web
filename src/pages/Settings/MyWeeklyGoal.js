@@ -11,12 +11,14 @@ import FormSection from "../_pages_shared/FormSection.sc";
 import Selector from "../../components/Selector";
 import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
+import { PRACTICE_DAYS } from "../../assorted/practiceDays";
+import { MINUTES_GOAL } from "../../assorted/minutesGoal";
 
 export default function MyWeeklyGoal({ api }) {
   const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
-    setTitle(strings.MyWeeklyGoal);
+    setTitle(strings.myWeeklyGoal);
   }, []);
 
   useEffect(() => {
@@ -35,12 +37,20 @@ export default function MyWeeklyGoal({ api }) {
         <Form>
           <FormSection>
             <Selector
+              id={"practice-goal-selector"}
+              options={PRACTICE_DAYS}
+              optionLabel={(e) => e.label}
+              optionValue={(e) => e.value}
               label={strings.myPracticeGoal}
-              selected={userDetails.user_days}
+              selected={userDetails ? userDetails.user_days : 0}
             />
           </FormSection>
           <FormSection>
             <Selector
+              id={"minutes-goal-selector"}
+              options={MINUTES_GOAL}
+              optionLabel={(e) => e.label}
+              optionValue={(e) => e.value}
               label={strings.myDurationGoal}
               selected={userDetails ? userDetails.user_minutes : 0}
             />
