@@ -1,6 +1,6 @@
 import BackArrow from "./settings_pages_shared/BackArrow";
 import { setTitle } from "../../assorted/setTitle";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import strings from "../../i18n/definitions";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -13,9 +13,18 @@ import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import { PRACTICE_DAYS } from "../../assorted/practiceDays";
 import { MINUTES_GOAL } from "../../assorted/minutesGoal";
+import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
+import { useHistory } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
+import LocalStorage from "../../assorted/LocalStorage";
+import LoadingAnimation from "../../components/LoadingAnimation";
+import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 
 export default function MyWeeklyGoal({ api }) {
   const [userDetails, setUserDetails] = useState(null);
+
+  const user = useContext(UserContext);
+  const history = useHistory();
 
   useEffect(() => {
     setTitle(strings.myWeeklyGoal);
@@ -26,6 +35,20 @@ export default function MyWeeklyGoal({ api }) {
       setUserDetails(commitmentData);
     });
   }, []);
+
+  function updateCommitmentInto() {
+    saveUserInfoIntoCookies();
+  }
+
+  function updatePracticeDays() {}
+
+  function updateMinutes() {}
+
+  function handleSave() {}
+
+  if (!userDetails) {
+    return <LoadingAnimation />;
+  }
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
