@@ -56,6 +56,10 @@ const NavOption = styled.li`
     background-color: transparent;
     color: white;
   }
+
+  @media (max-width: 768px) {
+    width: 2rem;
+  }
 `;
 
 const RouterLink = styled(Link)`
@@ -71,12 +75,17 @@ const RouterLink = styled(Link)`
 `;
 
 const Span = styled.span`
+  box-sizing: border-box;
   white-space: nowrap;
   opacity: ${(props) => (props.visibility ? "0" : "1")};
-  transition: opacity 0.3s ease-in-out;
-  white-space: nowrap;
+  /* width: ${(props) => (props.visibility ? "0%" : "fit-content")}; */
+  transition: 0.3s ease-in-out;
+  width: fit-content;
+  text-align: left;
+  display: inline-block;
   @media (max-width: 768px) {
     opacity: 0;
+    display: none;
   }
 `;
 
