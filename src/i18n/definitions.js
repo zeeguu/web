@@ -573,7 +573,7 @@ let strings = new LocalizedStrings(
       fourDays: "4 days per week",
       fiveDays: "5 days per week",
       sixDays: "6 days per week",
-      sevenDays: "Every day per week",
+      sevenDays: "7 days per week",
 
       //MINUTES_GOALS
       fiveMinutes: "5 minutes",

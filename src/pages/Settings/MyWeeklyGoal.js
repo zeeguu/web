@@ -52,7 +52,7 @@ export default function MyWeeklyGoal({ api }) {
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               label={strings.myDurationGoal}
-              selected={userDetails ? userDetails.minutes : 0}
+              selected={userDetails ? userDetails.user_minutes : 0}
             />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>

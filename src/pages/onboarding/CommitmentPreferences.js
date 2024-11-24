@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import LocalStorage from "../../assorted/LocalStorage";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import redirect from "../../utils/routing/routing";
 import useFormField from "../../hooks/useFormField";
@@ -19,19 +18,15 @@ import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import validator from "../../assorted/validator";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
-
-import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 import { PRACTICE_DAYS } from "../../assorted/practiceDays";
 import { MINUTES_GOAL } from "../../assorted/minutesGoal";
 
-export default function CommitmentPreferences({ api}) {
-  const [days_per_week_on_register, handleDays_per_week_on_register] =
-    useFormField(""); //change this to send the things to the 
-  const [mins_per_session_on_register, handleMins_per_session_on_register] =
-    useFormField("");
-    const [systemLanguages]= useState(" ");
+export default function CommitmentPreferences({ api }) {
+  const [practice_days_on_register, handlePractice_days_on_register] =
+    useFormField(""); 
+  const [mins_goal_on_register, handleMins_goal_on_register] = useFormField("");
+  const [systemLanguages] = useState(" ");
   const [errorMessage, setErrorMessage] = useState("");
-  const [userCommitment, setUserCommitment] = useState(null);
 
   useEffect(() => {
     if (errorMessage) {
@@ -39,22 +34,19 @@ export default function CommitmentPreferences({ api}) {
     }
   }, [errorMessage]);
 
-  
-
   if (!systemLanguages) {
     return <LoadingAnimation />;
   }
 
   let validatorRules = [
     [
-      days_per_week_on_register === "",
+      practice_days_on_register === "",
       "Please select how many days per week you want to practice",
     ],
     [
-      mins_per_session_on_register === "",
+      mins_goal_on_register === "",
       "Please select how many minutes per session you want to practice",
     ],
-   
   ];
 
   function validateAndRedirect(e) {
@@ -68,9 +60,7 @@ export default function CommitmentPreferences({ api}) {
   return (
     <PreferencesPage pageWidth={"narrow"}>
       <Header>
-        <Heading>
-          How much time would you like to commit to per week?
-        </Heading>
+        <Heading>How much time would you like to commit to per week?</Heading>
       </Header>
       <Main>
         <Form action={""}>
@@ -79,25 +69,24 @@ export default function CommitmentPreferences({ api}) {
           )}
           <FormSection>
             <Selector
-               id={"practice-goal-selector"}
-               options={PRACTICE_DAYS}
-               optionLabel={(e) => e.label}
-               optionValue={(e) => e.value}
-               label={strings.myPracticeGoal}
-               selected={userCommitment ? userCommitment.user_days : 0}
+              id={"practice-goal-initialiser"}
+              options={PRACTICE_DAYS}
+              optionLabel={(e) => e.label}
+              optionValue={(e) => e.value}
+              label={strings.myPracticeGoal}
+              selectedValue={practice_days_on_register}
+              onChange={handlePractice_days_on_register}
             />
 
             <Selector
-              selectedValue={mins_per_session_on_register}
-              label={strings.myDurationGoal}
-              placeholder={strings.durationPlaceholder}
+              id={"minutes-goal-initialiser"}
+              options={MINUTES_GOAL}
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
-              id={"level-of-practiced-languages"}
-              options={CEFR_LEVELS}
-              onChange={handleMins_per_session_on_register}
+              label={strings.myDurationGoal}
+              selectedValue={mins_goal_on_register}
+              onChange={handleMins_goal_on_register}
             />
-           
           </FormSection>
           <p className="centered">{strings.youCanChangeLater}</p>
           <ButtonContainer className={"padding-medium"}>
