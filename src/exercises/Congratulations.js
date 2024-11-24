@@ -2,7 +2,7 @@ import Word from "../words/Word";
 import * as s from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import { useState, useEffect, useContext } from "react";
-import { CenteredColumn } from "./Congratulations.sc";
+import { CenteredColumn, StreakCircle, StreakCircleDisplay, ConclusionBox, StreakText, ExerciseBox, WeekText } from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import LocalStorage from "../assorted/LocalStorage";
@@ -24,6 +24,7 @@ export default function Congratulations({
   keepExercisingAction,
   source,
   exerciseSessionTimer,
+  commitmentAndActivityData
 }) {
   const [checkpointTime] = useState(exerciseSessionTimer);
   const exerciseNotification = useContext(ExerciseCountContext);
@@ -82,6 +83,8 @@ export default function Congratulations({
             {strings.goodJob} {username}!
           </h1>
         </CenteredColumn>
+        <ConclusionBox>
+          <ExerciseBox>
         <div style={{ marginLeft: "0.5em" }}>
           <p>
             You have reviewed <b>{totalPracticedBookmarksInSession}</b>{" "}
@@ -110,9 +113,15 @@ export default function Congratulations({
             </p>
           )}
         </div>
-        <CenteredColumn className="CenteredColumn" style={{ marginTop: "2em" }}>
+      
+        <CenteredColumn className="CenteredColumn">
           {progressionButtonRender()}
         </CenteredColumn>
+        </ExerciseBox>
+        <StreakCircleDisplay className="streakCircleDisplay">
+        <StreakCircle><StreakText>Well done! You have been practicing for </StreakText><WeekText>20 weeks</WeekText> <img src='/static/images/lightning.svg' alt="lightning"/> </StreakCircle>
+        </StreakCircleDisplay>
+        </ConclusionBox>
         {articleID && (
           <p>
             You practiced words from: <a href={articleURL}>{articleTitle}</a>
