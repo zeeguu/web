@@ -34,7 +34,7 @@ export default function MyWeeklyGoal({ api }) {
     api.getUserCommitment((commitmentData) => {
       setUserDetails(commitmentData);
     });
-  }, []);
+  }, [user.session, api]);
 
   function updateCommitmentInto() {
     saveUserInfoIntoCookies();
