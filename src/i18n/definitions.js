@@ -8,7 +8,6 @@ let strings = new LocalizedStrings(
       title: "Title",
       words: "Words",
       lengthWithCapital: "Length",
-      levelWithCapital: "Level",
       articles: "Home",
       text: "Text",
       save: "Save",
@@ -88,6 +87,11 @@ let strings = new LocalizedStrings(
       learnedLanguageIsRequired: "Learned language is required.",
       languangeLevelIsRequired: "Language level is required.",
       plsSelectBaseLanguage: "Please select a base language.",
+
+      //CommitmentPreferences
+      commitmentPreferences: "Commitment Preferences",
+      weeklyMinutesAreRequired: "Weekly minutes commitment is required.",
+      weeklyHoursAreRequired: "Weekly hours commitment is required.",
 
       //SelectInterests
       selectInterests: "Select Interests",
@@ -549,7 +553,9 @@ let strings = new LocalizedStrings(
       deleteAccount: "Delete Account",
       myWeeklyGoal: "My Weekly Goal",
       myPracticeGoal: "I want to practice",
+      praticePlaceholder: "4 days per week",
       myDurationGoal: "For a duration of",
+      durationPlaceholder: "10 mins per session",
 
       nativeLanguage: "Native Language",
       yourCurrentClassIs: "Your current class is: ",
