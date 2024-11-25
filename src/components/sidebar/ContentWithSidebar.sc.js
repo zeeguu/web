@@ -10,12 +10,13 @@ const Content = styled.div`
 
 const ContentContainer = styled.section`
   width: 100%;
-  margin-left: ${({ isCollapsed }) => (isCollapsed ? "4.5rem" : "14rem")};
+  margin-left: ${({ isCollapsed, isMobile }) =>
+    isMobile ? "0" : isCollapsed ? "4.5rem" : "14rem"};
   transition: 0.3s ease-in-out;
-  padding: 0 1rem 0 1rem;
+  padding: 0 1rem 80px 1rem;
 
   @media (max-width: 768px) {
-    margin-left: 4.5rem;
+    margin-left: ${({ isMobile }) => (isMobile ? "0" : "4.5rem")};
   }
 `;
 
