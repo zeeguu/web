@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { darkBlue } from "../components/colors";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
 import { TopicOriginType } from "../appConstants";
+import extractDomain from "../utils/web/extractDomain";
 
 export default function ArticlePreview({
   article,
@@ -143,7 +144,8 @@ export default function ArticlePreview({
           dontShowSourceIcon={dontShowSourceIcon}
         ></ArticleSourceInfo>
       ) : (
-        <span>{article.url}</span>
+        !dontShowSourceIcon &&
+        article.url && <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
       )}
 
       <s.ArticleContent>
