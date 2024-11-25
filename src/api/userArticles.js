@@ -44,8 +44,8 @@ Zeeguu_API.prototype.getRecommendedArticles = function (callback) {
   });
 };
 
-Zeeguu_API.prototype.getSavedUserArticles = function (callback) {
-  this._getJSON("user_articles/saved", (articles) => {
+Zeeguu_API.prototype.getSavedUserArticles = function (page, callback) {
+  this._getJSON(`user_articles/saved/${page}`, (articles) => {
     // sometimes we get duplicates from the server
     // deduplicate them here
     // fast deduplication cf. https://stackoverflow.com/a/64791605/1200070
