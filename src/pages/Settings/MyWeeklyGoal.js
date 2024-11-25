@@ -20,7 +20,7 @@ import LocalStorage from "../../assorted/LocalStorage";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 
-export default function MyWeeklyGoal({ api }) {
+export default function MyWeeklyGoal({ api, setUser }) {
   const [userDetails, setUserDetails] = useState(null);
   const user = useContext(UserContext);
   const history = useHistory();
@@ -36,15 +36,29 @@ export default function MyWeeklyGoal({ api }) {
     });
   }, []);
 
-  function updateCommitmentInto() {
-    saveUserInfoIntoCookies();
+  function updateCommitmentInfo(info) {
+    setUserDetails({
+      ...user,
+      user_minutes: info.user_minutes,
+      user_days: info.user_days,
+    });
   }
 
-  function updatePracticeDays() {}
+  function updatePracticeDays(practiceDays) {
+    setUserDetails({ ...userDetails, user_days: practiceDays });
+  }
 
-  function updateMinutes() {}
+  function updateMinutes(minutes) {
+    setUserDetails({ ...userDetails, user_minutes: minutes });
+  }
 
-  function handleSave() {}
+  function handleSave(e) {
+    e.preventDefault();
+    api.saveUserCommitmentInfo(userDetails, () => {
+      updateCommitmentInfo(userDetails);
+      history.goBack();
+    });
+  }
 
   if (!userDetails) {
     return <LoadingAnimation />;
@@ -66,6 +80,9 @@ export default function MyWeeklyGoal({ api }) {
               optionValue={(e) => e.value}
               label={strings.myPracticeGoal}
               selectedValue={userDetails.user_days}
+              onChange={(e) => {
+                updatePracticeDays(e.target.value);
+              }}
             />
           </FormSection>
           <FormSection>
@@ -76,10 +93,15 @@ export default function MyWeeklyGoal({ api }) {
               optionValue={(e) => e.value}
               label={strings.myDurationGoal}
               selectedValue={userDetails.user_minutes}
+              onChange={(e) => {
+                updateMinutes(e.target.value);
+              }}
             />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
-            <Button type={"submit"}>{strings.save}</Button>
+            <Button type={"submit"} onClick={handleSave}>
+              {strings.save}
+            </Button>
           </ButtonContainer>
         </Form>
       </Main>

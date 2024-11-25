@@ -2,7 +2,15 @@ import Word from "../words/Word";
 import * as s from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import { useState, useEffect, useContext } from "react";
-import { CenteredColumn, StreakCircle, StreakCircleDisplay, ConclusionBox, StreakText, ExerciseBox, WeekText } from "./Congratulations.sc";
+import {
+  CenteredColumn,
+  StreakCircle,
+  StreakCircleDisplay,
+  ConclusionBox,
+  StreakText,
+  ExerciseBox,
+  WeekText,
+} from "./Congratulations.sc";
 import { removeArrayDuplicates } from "../utils/basic/arrays";
 import { LoadingAnimation } from "../components/LoadingAnimation.sc";
 import LocalStorage from "../assorted/LocalStorage";
@@ -24,7 +32,7 @@ export default function Congratulations({
   keepExercisingAction,
   source,
   exerciseSessionTimer,
-  commitmentAndActivityData
+  commitmentAndActivityData,
 }) {
   const [checkpointTime] = useState(exerciseSessionTimer);
   const exerciseNotification = useContext(ExerciseCountContext);
@@ -85,13 +93,13 @@ export default function Congratulations({
         </CenteredColumn>
         <ConclusionBox>
           <ExerciseBox>
-        <div style={{ marginLeft: "0.5em" }}>
-          <p>
-            You have reviewed <b>{totalPracticedBookmarksInSession}</b>{" "}
-            {Pluralize.word(totalBookmarksReviewed)} in{" "}
-            {timeToHumanReadable(checkpointTime)}.
-          </p>
-          {/*
+            <div style={{ marginLeft: "0.5em" }}>
+              <p>
+                You have reviewed <b>{totalPracticedBookmarksInSession}</b>{" "}
+                {Pluralize.word(totalBookmarksReviewed)} in{" "}
+                {timeToHumanReadable(checkpointTime)}.
+              </p>
+              {/*
           <p>
             {hasScheduledExercises && (
               <b>
@@ -104,23 +112,27 @@ export default function Congratulations({
             )}
           </p>
           */}
-          {isOutOfWordsToday && (
-            <p>
-              There are no more words for you to practice. You can read more
-              articles and find new words to learn! We will let you know when
-              it's time to review your words according to our spaced-repetition
-              schedule.
-            </p>
-          )}
-        </div>
-      
-        <CenteredColumn className="CenteredColumn">
-          {progressionButtonRender()}
-        </CenteredColumn>
-        </ExerciseBox>
-        <StreakCircleDisplay className="streakCircleDisplay">
-        <StreakCircle><StreakText>Well done! You have been practicing for </StreakText><WeekText>20 weeks</WeekText> <img src='/static/images/lightning.svg' alt="lightning"/> </StreakCircle>
-        </StreakCircleDisplay>
+              {isOutOfWordsToday && (
+                <p>
+                  There are no more words for you to practice. You can read more
+                  articles and find new words to learn! We will let you know
+                  when it's time to review your words according to our
+                  spaced-repetition schedule.
+                </p>
+              )}
+            </div>
+
+            <CenteredColumn className="CenteredColumn">
+              {progressionButtonRender()}
+            </CenteredColumn>
+          </ExerciseBox>
+          <StreakCircleDisplay className="streakCircleDisplay">
+            <StreakCircle>
+              <StreakText>Well done! You have been practicing for </StreakText>
+              <WeekText>{commitmentAndActivityData}</WeekText> weeks{" "}
+              <img src="/static/images/lightning.svg" alt="lightning" />{" "}
+            </StreakCircle>
+          </StreakCircleDisplay>
         </ConclusionBox>
         {articleID && (
           <p>
