@@ -116,12 +116,10 @@ export default function UserDashboard({ api }) {
       }
     }
    */
-  //useEffect and function for the user defined commitment
-  console.log(api);
-  console.log(api.getUserActivityAndCommitment);
-
   useEffect(() => {
     api.getUserActivityAndCommitment((activitiesAndCommitmentArray) => {
+      console.log(activitiesAndCommitmentArray);
+
       //date with format eg. "Thu Nov 21 2024 15:32:26 GMT+0100"
       const currentDate = new Date();
       //day of the week (sunday = 0, monday = 1 etc.). If it is thursday -> dayOfWeek = 4
@@ -137,8 +135,9 @@ export default function UserDashboard({ api }) {
       }
 
       //Stores only the activity by day data
-      const activityTimeByDay =
-        activitiesAndCommitmentArray.activity_time_by_day;
+      const activityTimeByDay = activitiesAndCommitmentArray.user_activities;
+      console.log(activityTimeByDay);
+
       /*
         activityTimeByDay would probably look something like
         {
@@ -206,7 +205,6 @@ export default function UserDashboard({ api }) {
         0,
         daysAwayFromMonday + 1,
       );
-
       //gets the users commitment of minutes converted to seconds
       const userMinutes = activitiesAndCommitmentArray.user_minutes;
 
@@ -264,6 +262,8 @@ export default function UserDashboard({ api }) {
           setCommitmentAndActivityData(currentCommitmentAndActivityData + 1);
           setLastCommitmentUpate(currentDate);
         }
+      } else {
+        setCommitmentAndActivityData(currentCommitmentAndActivityData);
       }
     });
   }, [api, setCommitmentAndActivityData, commitmentAndActivityData]);
@@ -301,7 +301,6 @@ export default function UserDashboard({ api }) {
         handleActiveTimeFormatChange={handleActiveTimeFormatChange}
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
-        //currentStreak={currentStreak}
         commitmentAndActivityData={commitmentAndActivityData}
         handleChangeReferenceDate={handleChangeReferenceDate}
       />

@@ -20,7 +20,6 @@ export default function UserDashboardTop({
   referenceDate,
   handleChangeReferenceDate,
   commitmentAndActivityData,
-  //currentStreak,
 }) {
   return (
     <s.UserDashboardTopContainer>
