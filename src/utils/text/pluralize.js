@@ -17,6 +17,9 @@ class Pluralize {
   static is(count) {
     return this._pickRightForm(count, "is", "are");
   }
+  static wordExpression(count) {
+    return this._pickRightForm(count, "word", "expression");
+  }
 }
 
 export default Pluralize;
