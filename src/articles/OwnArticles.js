@@ -58,7 +58,7 @@ export default function OwnArticles({ api }) {
           api={api}
           key={each.id}
           article={each}
-          dontShowSourceIcon={true}
+          dontShowSourceIcon={false}
         />
       ))}
       {isWaitingForNewArticles && (
