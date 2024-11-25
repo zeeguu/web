@@ -17,9 +17,9 @@ export default function NavOption({
     <>
       <s.IconContainer isCollapsed={isCollapsed} title={title ? title : text}>
         {icon}
+        {notification}
       </s.IconContainer>
       <s.Span visibility={isCollapsed}>{text}</s.Span>
-      {notification}
     </>
   );
 
