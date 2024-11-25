@@ -14,7 +14,7 @@ import useArticlePagination from "../hooks/useArticlePagination";
 import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
-import { ADD_ARTICLE_ACTION } from "../utils/articlePagination/add_actions";
+import useShadowRef from "../hooks/useShadowRef";
 
 export default function FindArticles({
   content,
@@ -31,7 +31,7 @@ export default function FindArticles({
   //in bool values changing on its own on refresh without any other external trigger or preferences change.
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage =
-    LocalStorage.getDoNotShowRedirectionModal() === "true" ? true : false;
+    LocalStorage.getDoNotShowRedirectionModal() === "true";
   const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [isExtensionAvailable] = useExtensionCommunication();
@@ -40,6 +40,28 @@ export default function FindArticles({
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
+
+  const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
+  const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
+
+  function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
+    if (searchQuery) {
+      api.searchMore(
+        searchQuery,
+        pageNumber,
+        searchPublishPriorityRef.current,
+        searchDifficultyPriorityRef.current,
+        handleArticleInsertion,
+        (error) => {
+          console.log("Failed to get searches!");
+          console.error(error);
+        },
+      );
+    } else {
+      api.getMoreUserArticles(20, pageNumber, handleArticleInsertion);
+    }
+  }
+
   const [
     handleScroll,
     isWaitingForNewArticles,
@@ -50,12 +72,7 @@ export default function FindArticles({
     articleList,
     setArticleList,
     searchQuery ? "Article Search" : strings.titleHome,
-    searchQuery
-      ? ADD_ARTICLE_ACTION.SEARCH_ARTICLES
-      : ADD_ARTICLE_ACTION.RECOMMENDED_ARTICLES,
-    searchQuery,
-    searchPublishPriority,
-    searchDifficultyPriority,
+    getNewArticlesForPage,
   );
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
@@ -119,15 +136,6 @@ export default function FindArticles({
     return <LoadingAnimation />;
   }
 
-  //when the user changes interests...
-  function articlesListShouldChange() {
-    setArticleList(null);
-    api.getUserArticles((articles) => {
-      setArticleList(articles);
-      setOriginalList([...articles]);
-    });
-  }
-
   return (
     <>
       {!searchQuery && (
@@ -135,12 +143,6 @@ export default function FindArticles({
           <s.SearchHolder>
             <SearchField api={api} query={searchQuery} />
           </s.SearchHolder>
-          {/*          
-          <Interests
-            api={api}
-            articlesListShouldChange={articlesListShouldChange}
-          />
-          */}
           <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
             <span>
               You can customize your Home by{" "}

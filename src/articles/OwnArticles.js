@@ -8,7 +8,6 @@ import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
 import useArticlePagination from "../hooks/useArticlePagination";
-import { ADD_ARTICLE_ACTION } from "../utils/articlePagination/add_actions";
 
 export default function OwnArticles({ api }) {
   const [articleList, setArticleList] = useState(null);
@@ -20,7 +19,9 @@ export default function OwnArticles({ api }) {
       articleList,
       setArticleList,
       "Saved Articles",
-      ADD_ARTICLE_ACTION.SAVED_ARTICLES,
+      (pageNumber, handleArticleInsertion) => {
+        api.getSavedUserArticles(pageNumber, handleArticleInsertion);
+      },
     );
 
   useEffect(() => {

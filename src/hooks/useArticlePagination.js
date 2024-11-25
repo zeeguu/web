@@ -1,19 +1,14 @@
 import { useState } from "react";
 import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
 import { setTitle } from "../assorted/setTitle";
-import strings from "../i18n/definitions";
 import useShadowRef from "./useShadowRef";
-import { ADD_ARTICLE_ACTION } from "../utils/articlePagination/add_actions";
 
 export default function useArticlePagination(
   api,
   articleList,
   setArticleList,
   pageTitle,
-  action,
-  searchQuery,
-  searchPublishPriority,
-  searchDifficultyPriority,
+  getNewArticlesForPage,
 ) {
   const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -23,91 +18,54 @@ export default function useArticlePagination(
   const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
   const currentPageRef = useShadowRef(currentPage);
   const articleListRef = useShadowRef(articleList);
-  const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
-  const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
 
   function insertNewArticlesIntoArticleList(
     fetchedArticles,
     newCurrentPage,
-    newArticles,
+    currentArticleList,
   ) {
     if (fetchedArticles.length === 0) {
       setNoMoreArticlesToShow(true);
     }
-    let existingArticlesId = newArticles.map((each) => each.id);
-    newArticles = newArticles.concat(
+    let existingArticlesId = currentArticleList.map((each) => each.id);
+    currentArticleList = currentArticleList.concat(
       fetchedArticles.filter((each) => !existingArticlesId.includes(each.id)),
     );
-    setArticleList(newArticles);
+    setArticleList(currentArticleList);
     setCurrentPage(newCurrentPage);
     setIsWaitingForNewArticles(false);
   }
 
   function handleScroll() {
     if (!articleListRef.current) return;
+
     let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
-    let articlesHaveBeenFetched =
-      currentPageRef.current !== undefined &&
-      articleListRef.current !== undefined;
+
+    let weHaveHadAtLeastOneRenderingOfArticles =
+      currentPageRef.current !== undefined;
 
     if (
       scrollBarPixelDistToPageEnd <= 50 &&
       !isWaitingForNewArticlesRef.current &&
       !noMoreArticlesToShowRef.current &&
-      articlesHaveBeenFetched
+      weHaveHadAtLeastOneRenderingOfArticles
     ) {
       setIsWaitingForNewArticles(true);
       setTitle("Getting more articles...");
 
       let newCurrentPage = currentPageRef.current + 1;
-      let newArticles = [...articleListRef.current];
-      switch (action) {
-        case ADD_ARTICLE_ACTION.SAVED_ARTICLES:
-          api.getSavedUserArticles(newCurrentPage, (articles) => {
-            insertNewArticlesIntoArticleList(
-              articles,
-              newCurrentPage,
-              newArticles,
-            );
-            setTitle(pageTitle);
-          });
-          break;
-        case ADD_ARTICLE_ACTION.RECOMMENDED_ARTICLES:
-          api.getMoreUserArticles(20, newCurrentPage, (articles) => {
-            insertNewArticlesIntoArticleList(
-              articles,
-              newCurrentPage,
-              newArticles,
-            );
-            setTitle(pageTitle);
-          });
-          break;
-        case ADD_ARTICLE_ACTION.SEARCH_ARTICLES:
-          api.searchMore(
-            searchQuery,
-            newCurrentPage,
-            searchPublishPriorityRef.current,
-            searchDifficultyPriorityRef.current,
-            (articles) => {
-              insertNewArticlesIntoArticleList(
-                articles,
-                newCurrentPage,
-                newArticles,
-              );
-              setTitle(`${pageTitle} '${searchQuery}'`);
-            },
-            (error) => {
-              console.log("Failed to get searches!");
-              console.error(error);
-            },
-          );
-          break;
-        default:
-          console.error(
-            `Action used '${action}' is not defined, check function call.`,
-          );
-          break;
-      }
+      let articleListCopy = [...articleListRef.current];
+
+      getNewArticlesForPage(newCurrentPage, (articles) => {
+        insertNewArticlesIntoArticleList(
+          articles,
+          newCurrentPage,
+          articleListCopy,
+        );
+        setTitle(pageTitle);
+      });
+
+      return true;
     }
   }
 
