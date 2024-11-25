@@ -5,6 +5,10 @@ function isExpression(text) {
   return text.includes(" ");
 }
 
+function getExpressionlength(text) {
+  return text.split(" ").length;
+}
+
 function isTextInSentence(text, sentence) {
   if (isExpression(text)) {
     return sentence.includes(text);
@@ -37,4 +41,10 @@ function countWordsIncluded(expression1, expression2) {
   return wordsIncluded;
 }
 
-export { isWordIncluded, isTextInSentence, isExpression, countWordsIncluded };
+export {
+  isWordIncluded,
+  isTextInSentence,
+  isExpression,
+  countWordsIncluded,
+  getExpressionlength,
+};
