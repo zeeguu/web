@@ -10,17 +10,16 @@ import FeedbackButton from "../FeedbackButton";
 import DoubleArrowRight from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
 import DoubleArrowLeft from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 
-export default function NewSidebar({ isCollapsed, setIsCollapsed }) {
+export default function NewSidebar({
+  isCollapsed,
+  setIsCollapsed,
+  isOnStudentSide,
+  isTeacher,
+}) {
   const user = useContext(UserContext);
-  const [isOnStudentSide, setIsOnStudentSide] = useState(true);
-  const [isTeacher] = useState(user.is_teacher);
 
   const path = useLocation().pathname;
   const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
-
-  useEffect(() => {
-    setIsOnStudentSide(!path.includes("teacher"));
-  }, [path]);
 
   return (
     <s.SideBar
