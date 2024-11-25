@@ -22,7 +22,6 @@ import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 
 export default function MyWeeklyGoal({ api }) {
   const [userDetails, setUserDetails] = useState(null);
-
   const user = useContext(UserContext);
   const history = useHistory();
 
@@ -33,8 +32,9 @@ export default function MyWeeklyGoal({ api }) {
   useEffect(() => {
     api.getUserCommitment((commitmentData) => {
       setUserDetails(commitmentData);
+      console.log(commitmentData);
     });
-  }, [user.session, api]);
+  }, []);
 
   function updateCommitmentInto() {
     saveUserInfoIntoCookies();
@@ -49,7 +49,7 @@ export default function MyWeeklyGoal({ api }) {
   if (!userDetails) {
     return <LoadingAnimation />;
   }
-
+  console.log(userDetails.user_days);
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
@@ -65,7 +65,7 @@ export default function MyWeeklyGoal({ api }) {
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               label={strings.myPracticeGoal}
-              selected={userDetails ? userDetails.user_days : 0}
+              selectedValue={userDetails.user_days}
             />
           </FormSection>
           <FormSection>
@@ -75,7 +75,7 @@ export default function MyWeeklyGoal({ api }) {
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               label={strings.myDurationGoal}
-              selected={userDetails ? userDetails.user_minutes : 0}
+              selectedValue={userDetails.user_minutes}
             />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
