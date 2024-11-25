@@ -1,4 +1,5 @@
 import * as s from "./BottomNav.sc";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
@@ -10,29 +11,57 @@ import ChromeReaderModeRoundedIcon from "@mui/icons-material/ChromeReaderModeRou
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
+  const path = useLocation().pathname;
   return (
     <s.BottomNav isOnStudentSide={isOnStudentSide}>
       {isOnStudentSide && (
         <>
           <s.BottomNavOption>
             <s.StyledLink to="/articles">
-              <HomeRoundedIcon /> Home
+              <s.IconSpan
+                isOnStudentSide={isOnStudentSide}
+                isActive={path && path.includes("/articles")}
+              >
+                <HomeRoundedIcon />
+              </s.IconSpan>
+              Home
             </s.StyledLink>
           </s.BottomNavOption>
+
           <s.BottomNavOption>
             <s.StyledLink to="/exercises">
-              <FitnessCenterRoundedIcon /> Exercises
+              <s.IconSpan
+                isOnStudentSide={isOnStudentSide}
+                isActive={path && path.includes("/exercises")}
+              >
+                <FitnessCenterRoundedIcon />
+              </s.IconSpan>
+              Exercises
             </s.StyledLink>
           </s.BottomNavOption>
+
           <s.BottomNavOption>
             <s.StyledLink to="/words">
-              <TranslateRoundedIcon /> Words
+              <s.IconSpan
+                isOnStudentSide={isOnStudentSide}
+                isActive={path && path.includes("/words")}
+              >
+                <TranslateRoundedIcon />
+              </s.IconSpan>
+              Words
             </s.StyledLink>
           </s.BottomNavOption>
+
           {isTeacher && (
             <s.BottomNavOption>
               <s.StyledLink to="/teacher/classes">
-                <BusinessCenterRoundedIcon /> Teacher Site
+                <s.IconSpan
+                  isOnStudentSide={isOnStudentSide}
+                  isActive={path && path.includes("/teacher/classes")}
+                >
+                  <BusinessCenterRoundedIcon />
+                </s.IconSpan>
+                Teacher Site
               </s.StyledLink>
             </s.BottomNavOption>
           )}
@@ -43,24 +72,47 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
         <>
           <s.BottomNavOption>
             <s.StyledLink to="/teacher/classes">
-              <GroupsRoundedIcon /> My Classroom
+              <s.IconSpan
+                isOnStudentSide={isOnStudentSide}
+                isActive={path && path.includes("/teacher/classes")}
+              >
+                <GroupsRoundedIcon />
+              </s.IconSpan>
+              My Classroom
             </s.StyledLink>
           </s.BottomNavOption>
+
           <s.BottomNavOption>
             <s.StyledLink to="/teacher/texts">
-              <ChromeReaderModeRoundedIcon /> My Texts
+              <s.IconSpan
+                isOnStudentSide={isOnStudentSide}
+                isActive={path && path.includes("/teacher/texts")}
+              >
+                <ChromeReaderModeRoundedIcon />
+              </s.IconSpan>
+              My Texts
             </s.StyledLink>
           </s.BottomNavOption>
+
           <s.BottomNavOption>
             <s.StyledLink to="/articles">
-              <SchoolRoundedIcon /> Student Site
+              <s.IconSpan
+                isOnStudentSide={isOnStudentSide}
+                isActive={path && path.includes("/articles")}
+              >
+                <SchoolRoundedIcon />
+              </s.IconSpan>
+              Student Site
             </s.StyledLink>
           </s.BottomNavOption>
         </>
       )}
       <s.BottomNavOption>
         <s.StyledLink to="/articles">
-          <MoreHorizRoundedIcon /> More
+          <s.IconSpan>
+            <MoreHorizRoundedIcon />
+          </s.IconSpan>
+          More
         </s.StyledLink>
       </s.BottomNavOption>
     </s.BottomNav>
