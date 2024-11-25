@@ -83,6 +83,12 @@ const Title = styled.div`
   width: 100%;
 `;
 
+const UrlSource = styled.span`
+  font-size: 0.8em;
+  font-style: italic;
+  font-weight: 500;
+`;
+
 const UnfinishedArticleContainer = styled.div`
   margin-top: 0.5em;
   display: flex;
@@ -183,6 +189,7 @@ let UrlTopics = styled.div`
 
 export {
   Title,
+  UrlSource,
   ArticlePreview,
   UnfinishedArticleContainer,
   UnfinishedArticleStats,
