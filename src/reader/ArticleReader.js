@@ -28,6 +28,7 @@ import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
 import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
+import DigitalTimer from "../components/DigitalTimer";
 
 export const UMR_SOURCE = "UMR";
 
@@ -59,6 +60,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
+  console.log(articleInfo);
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const {
@@ -302,12 +304,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   return (
     <s.ArticleReader>
-      <ActivityTimer
-        message="Total time in this reading session"
-        activeSessionDuration={activityTimer}
-        clockActive={isTimerActive}
-      />
-
       <TopToolbar
         user={user}
         teacherArticleID={teacherArticleID}
@@ -321,6 +317,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
         url={articleInfo.url}
         UMR_SOURCE={UMR_SOURCE}
         articleProgress={scrollPosition}
+        timer={
+          <DigitalTimer
+            activeSessionDuration={activityTimer}
+            clockActive={isTimerActive}
+          ></DigitalTimer>
+        }
       />
       <div id="text">
         <h1>

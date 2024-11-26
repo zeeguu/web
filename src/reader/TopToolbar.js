@@ -41,6 +41,7 @@ export default function TopToolbar({
   setTranslating,
   setPronouncing,
   articleProgress,
+  timer,
 }) {
   const history = useHistory();
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
@@ -65,42 +66,51 @@ export default function TopToolbar({
   return (
     <PopupButtonWrapper>
       <s.Toolbar>
-        {user.is_teacher && (
-          <>
-            {teacherArticleID && (
-              <Link to={`/teacher/texts/editText/${articleID}`}>
-                <StyledButton secondary studentView>
-                  {strings.backToEditing}
-                </StyledButton>
-              </Link>
-            )}
+        <s.TopbarButtonsContainer>
+          <div>
+            {user.is_teacher && (
+              <>
+                {teacherArticleID && (
+                  <Link to={`/teacher/texts/editText/${articleID}`}>
+                    <StyledButton secondary studentView>
+                      {strings.backToEditing}
+                    </StyledButton>
+                  </Link>
+                )}
 
-            {!teacherArticleID && (
-              <StyledButton primary studentView onClick={handleSaveCopyToShare}>
-                <img
-                  width="40px"
-                  src="/static/images/share-button.svg"
-                  alt="share"
-                />
-              </StyledButton>
+                {!teacherArticleID && (
+                  <StyledButton
+                    primary
+                    studentView
+                    onClick={handleSaveCopyToShare}
+                  >
+                    <img
+                      width="40px"
+                      src="/static/images/share-button.svg"
+                      alt="share"
+                    />
+                  </StyledButton>
+                )}
+              </>
             )}
-          </>
-        )}
-
-        {userIsTesterForAudio(user) && (
-          <s.PlayerControl>
-            <SoundPlayer api={api} interactiveText={interactiveText} />
-          </s.PlayerControl>
-        )}
-        <s.RightHandSide>
+            {userIsTesterForAudio(user) && (
+              <s.PlayerControl>
+                <SoundPlayer api={api} interactiveText={interactiveText} />
+              </s.PlayerControl>
+            )}
+          </div>
           <ToolbarButtons
             translating={translating}
             pronouncing={pronouncing}
             setTranslating={setTranslating}
             setPronouncing={setPronouncing}
           />
-        </s.RightHandSide>
-        <progress value={articleProgress} />
+        </s.TopbarButtonsContainer>
+
+        <div>
+          {timer}
+          <progress style={{ margin: "0px" }} value={articleProgress} />
+        </div>
       </s.Toolbar>
     </PopupButtonWrapper>
   );

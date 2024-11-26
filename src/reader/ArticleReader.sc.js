@@ -61,8 +61,12 @@ let PlayerControl = styled.div`
   }
 `;
 
-let RightHandSide = styled.div`
-  float: right;
+let TopbarButtonsContainer = styled.div`
+  display: flex;
+  align-items: flex-end;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
 `;
 
 let TopReaderButtonsContainer = styled.div`
@@ -85,8 +89,8 @@ let ArticleInfoContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   @media (max-width: 990px) {
-    flex-direction: column-reverse;
-    align-items: center;
+    flex-direction: column;
+    align-items: left;
     gap: 1.2rem;
   }
 `;
@@ -104,7 +108,6 @@ let ArticleImg = styled.img`
 
 let Toolbar = styled.div`
   padding-top: 0.5rem;
-  height: 8em;
   width: 100%;
   // background-color: ${veryLightGrey};
 
@@ -135,7 +138,6 @@ let Toolbar = styled.div`
     border: none;
     width: 100%;
     height: 0.5em;
-    margin: 10px 0px 1px 0px;
     border-radius: 10em;
     background: var(--background);
     transition: all 0.1s linear 0s;
@@ -423,7 +425,7 @@ export {
   NarrowColumn,
   ContentOnRow,
   NavigationLink,
-  RightHandSide,
+  TopbarButtonsContainer,
   PlayerControl,
   InvisibleBox,
   CombinedBox,
