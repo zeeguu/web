@@ -35,6 +35,23 @@ const StyledLink = styled(Link)`
   white-space: nowrap;
   gap: 0.2rem;
   font-weight: inherit;
+  user-select: none;
+`;
+
+const StyledButton = styled.button`
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: inherit;
+  font: inherit;
+  border: inherit;
+  padding: inherit;
+  margin: inherit;
+  width: 4rem;
+  height: 3rem;
+  gap: 0.2rem;
+  user-select: none;
 `;
 
 const IconSpan = styled.span`
@@ -57,4 +74,25 @@ const IconSpan = styled.span`
   }
 `;
 
-export { BottomNav, BottomNavOption, StyledLink, IconSpan };
+const MoreOptionsPanel = styled.nav`
+  box-sizing: border-box;
+  width: 100%;
+  background-color: ${({ isOnStudentSide }) =>
+    isOnStudentSide ? `${orange600}` : `${blue700}`};
+  position: fixed;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem 1rem 0 0;
+  padding: 1rem;
+`;
+
+export {
+  BottomNav,
+  BottomNavOption,
+  StyledLink,
+  IconSpan,
+  MoreOptionsPanel,
+  StyledButton,
+};

@@ -30,7 +30,9 @@ export default function NavOption({
       className={className}
     >
       {!isButton ? (
-        <s.RouterLink to={linkTo}>{content}</s.RouterLink>
+        <s.RouterLink onClick={onClick} to={linkTo}>
+          {content}
+        </s.RouterLink>
       ) : (
         <s.OptionButton onClick={onClick}>{content}</s.OptionButton>
       )}

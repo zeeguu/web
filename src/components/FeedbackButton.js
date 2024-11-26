@@ -4,7 +4,7 @@ import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import NavLink from "./sidebar/NavOption";
 import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded";
 
-export default function FeedbackButton({ isCollapsed }) {
+export default function FeedbackButton({ isCollapsed, isOnStudentSide }) {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   return (
     <>
@@ -19,6 +19,7 @@ export default function FeedbackButton({ isCollapsed }) {
       <NavLink
         icon={<FeedbackRoundedIcon />}
         isCollapsed={isCollapsed}
+        isOnStudentSide={isOnStudentSide}
         text={"Give Feedback"}
         isButton={true}
         onClick={() => {

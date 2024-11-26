@@ -9,125 +9,178 @@ import BusinessCenterRoundedIcon from "@mui/icons-material/BusinessCenterRounded
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import ChromeReaderModeRoundedIcon from "@mui/icons-material/ChromeReaderModeRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
+import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
+import FeedbackButton from "../FeedbackButton";
+import NavOption from "./NavOption";
+import { useState } from "react";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;
+  const [isMoreOptionsVisible, setIsMoreOptionsVisible] = useState(false);
   return (
-    <s.BottomNav isOnStudentSide={isOnStudentSide}>
-      {isOnStudentSide && (
-        <>
-          <s.BottomNavOption>
-            <s.StyledLink to="/articles">
-              <s.IconSpan
-                isOnStudentSide={isOnStudentSide}
-                isActive={path && path.includes("/articles")}
-              >
-                <HomeRoundedIcon />
-              </s.IconSpan>
-              Home
-            </s.StyledLink>
-          </s.BottomNavOption>
+    <>
+      {isMoreOptionsVisible && (
+        <s.MoreOptionsPanel isOnStudentSide={isOnStudentSide}>
+          <button
+            onClick={() => {
+              setIsMoreOptionsVisible(false);
+            }}
+          >
+            Close
+          </button>
 
-          <s.BottomNavOption>
-            <s.StyledLink to="/exercises">
-              <s.IconSpan
+          {isOnStudentSide && (
+            <>
+              <NavOption
                 isOnStudentSide={isOnStudentSide}
-                isActive={path && path.includes("/exercises")}
-              >
-                <FitnessCenterRoundedIcon />
-              </s.IconSpan>
-              Exercises
-            </s.StyledLink>
-          </s.BottomNavOption>
+                linkTo={"/user_dashboard"}
+                icon={<DonutSmallRoundedIcon />}
+                text={"Statistics"}
+                currentPath={path}
+                onClick={() => {
+                  setIsMoreOptionsVisible(false);
+                }}
+              />
 
-          <s.BottomNavOption>
-            <s.StyledLink to="/words">
-              <s.IconSpan
+              <NavOption
                 isOnStudentSide={isOnStudentSide}
-                isActive={path && path.includes("/words")}
-              >
-                <TranslateRoundedIcon />
-              </s.IconSpan>
-              Words
-            </s.StyledLink>
-          </s.BottomNavOption>
+                linkTo={"/history"}
+                icon={<HistoryRoundedIcon />}
+                text={"History"}
+                currentPath={path}
+                onClick={() => {
+                  setIsMoreOptionsVisible(false);
+                }}
+              />
 
-          {/* {isTeacher && (
+              {isTeacher && (
+                <NavOption
+                  linkTo={"/teacher/classes"}
+                  icon={<BusinessCenterRoundedIcon />}
+                  text={"Teacher Site"}
+                  currentPath={path}
+                  onClick={() => {
+                    setIsMoreOptionsVisible(false);
+                  }}
+                />
+              )}
+            </>
+          )}
+
+          {!isOnStudentSide && (
+            <>
+              <NavOption
+                isOnStudentSide={isOnStudentSide}
+                linkTo={"/articles"}
+                icon={<SchoolRoundedIcon />}
+                text={"Student Site"}
+                currentPath={path}
+                onClick={() => {
+                  setIsMoreOptionsVisible(false);
+                }}
+              />
+            </>
+          )}
+
+          <FeedbackButton isOnStudentSide={isOnStudentSide} />
+        </s.MoreOptionsPanel>
+      )}
+      <s.BottomNav isOnStudentSide={isOnStudentSide}>
+        {isOnStudentSide && (
+          <>
+            <s.BottomNavOption>
+              <s.StyledLink to="/articles">
+                <s.IconSpan
+                  isOnStudentSide={isOnStudentSide}
+                  isActive={path && path.includes("/articles")}
+                >
+                  <HomeRoundedIcon />
+                </s.IconSpan>
+                Home
+              </s.StyledLink>
+            </s.BottomNavOption>
+
+            <s.BottomNavOption>
+              <s.StyledLink to="/exercises">
+                <s.IconSpan
+                  isOnStudentSide={isOnStudentSide}
+                  isActive={path && path.includes("/exercises")}
+                >
+                  <FitnessCenterRoundedIcon />
+                </s.IconSpan>
+                Exercises
+              </s.StyledLink>
+            </s.BottomNavOption>
+
+            <s.BottomNavOption>
+              <s.StyledLink to="/words">
+                <s.IconSpan
+                  isOnStudentSide={isOnStudentSide}
+                  isActive={path && path.includes("/words")}
+                >
+                  <TranslateRoundedIcon />
+                </s.IconSpan>
+                Words
+              </s.StyledLink>
+            </s.BottomNavOption>
+          </>
+        )}
+
+        {!isOnStudentSide && (
+          <>
             <s.BottomNavOption>
               <s.StyledLink to="/teacher/classes">
                 <s.IconSpan
                   isOnStudentSide={isOnStudentSide}
                   isActive={path && path.includes("/teacher/classes")}
                 >
-                  <BusinessCenterRoundedIcon />
+                  <GroupsRoundedIcon />
                 </s.IconSpan>
-                Teacher Site
+                My Classroom
               </s.StyledLink>
             </s.BottomNavOption>
-          )} */}
-        </>
-      )}
 
-      <s.BottomNavOption>
-        <s.StyledLink to="/account_settings">
-          <s.IconSpan
-            isOnStudentSide={isOnStudentSide}
-            isActive={path && path.includes("/account_settings")}
+            <s.BottomNavOption>
+              <s.StyledLink to="/teacher/texts">
+                <s.IconSpan
+                  isOnStudentSide={isOnStudentSide}
+                  isActive={path && path.includes("/teacher/texts")}
+                >
+                  <ChromeReaderModeRoundedIcon />
+                </s.IconSpan>
+                My Texts
+              </s.StyledLink>
+            </s.BottomNavOption>
+          </>
+        )}
+
+        <s.BottomNavOption>
+          <s.StyledLink to="/account_settings">
+            <s.IconSpan
+              isOnStudentSide={isOnStudentSide}
+              isActive={path && path.includes("/account_settings")}
+            >
+              <SettingsRoundedIcon />
+            </s.IconSpan>
+            Settings
+          </s.StyledLink>
+        </s.BottomNavOption>
+
+        <s.BottomNavOption>
+          <s.StyledButton
+            onClick={() => {
+              setIsMoreOptionsVisible(true);
+            }}
           >
-            <SettingsRoundedIcon />
-          </s.IconSpan>
-          Settings
-        </s.StyledLink>
-      </s.BottomNavOption>
-
-      {!isOnStudentSide && (
-        <>
-          <s.BottomNavOption>
-            <s.StyledLink to="/teacher/classes">
-              <s.IconSpan
-                isOnStudentSide={isOnStudentSide}
-                isActive={path && path.includes("/teacher/classes")}
-              >
-                <GroupsRoundedIcon />
-              </s.IconSpan>
-              My Classroom
-            </s.StyledLink>
-          </s.BottomNavOption>
-
-          <s.BottomNavOption>
-            <s.StyledLink to="/teacher/texts">
-              <s.IconSpan
-                isOnStudentSide={isOnStudentSide}
-                isActive={path && path.includes("/teacher/texts")}
-              >
-                <ChromeReaderModeRoundedIcon />
-              </s.IconSpan>
-              My Texts
-            </s.StyledLink>
-          </s.BottomNavOption>
-
-          <s.BottomNavOption>
-            <s.StyledLink to="/articles">
-              <s.IconSpan
-                isOnStudentSide={isOnStudentSide}
-                isActive={path && path.includes("/articles")}
-              >
-                <SchoolRoundedIcon />
-              </s.IconSpan>
-              Student Site
-            </s.StyledLink>
-          </s.BottomNavOption>
-        </>
-      )}
-      <s.BottomNavOption>
-        <s.StyledLink to="/articles">
-          <s.IconSpan>
-            <MoreHorizRoundedIcon />
-          </s.IconSpan>
-          More
-        </s.StyledLink>
-      </s.BottomNavOption>
-    </s.BottomNav>
+            <s.IconSpan isOnStudentSide={isOnStudentSide}>
+              <MoreHorizRoundedIcon />
+            </s.IconSpan>
+            More
+          </s.StyledButton>
+        </s.BottomNavOption>
+      </s.BottomNav>
+    </>
   );
 }
 
@@ -140,3 +193,10 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
 // add additional options in the expandible bar)
 //
 // - turn the notification icon into a reusable hook useNotification
+//
+// - The app automatically zooms in when user enters input, this makes the navbar invisible.
+// Do something about it
+//
+// - Make a theme
+//
+// - Prevent bg from scrolling when "more" is open
