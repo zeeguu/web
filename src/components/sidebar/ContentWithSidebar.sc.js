@@ -9,6 +9,7 @@ const Content = styled.div`
 `;
 
 const ContentContainer = styled.section`
+  height: 100%;
   width: 100%;
   margin-left: ${({ isCollapsed, isMobile }) =>
     isMobile ? "0" : isCollapsed ? "4.5rem" : "14rem"};

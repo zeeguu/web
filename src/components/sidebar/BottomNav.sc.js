@@ -10,7 +10,7 @@ const BottomNav = styled.nav`
   justify-content: space-between;
   position: fixed;
   bottom: 0;
-  padding: 0.5rem 1.25rem 1rem 1.25rem;
+  padding: 0.5rem 1rem 1rem 1rem;
   background-color: ${({ isOnStudentSide }) =>
     isOnStudentSide ? `${orange600}` : `${blue700}`};
   color: white;

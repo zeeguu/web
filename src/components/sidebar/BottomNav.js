@@ -52,7 +52,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
             </s.StyledLink>
           </s.BottomNavOption>
 
-          {isTeacher && (
+          {/* {isTeacher && (
             <s.BottomNavOption>
               <s.StyledLink to="/teacher/classes">
                 <s.IconSpan
@@ -64,9 +64,21 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                 Teacher Site
               </s.StyledLink>
             </s.BottomNavOption>
-          )}
+          )} */}
         </>
       )}
+
+      <s.BottomNavOption>
+        <s.StyledLink to="/account_settings">
+          <s.IconSpan
+            isOnStudentSide={isOnStudentSide}
+            isActive={path && path.includes("/account_settings")}
+          >
+            <SettingsRoundedIcon />
+          </s.IconSpan>
+          Settings
+        </s.StyledLink>
+      </s.BottomNavOption>
 
       {!isOnStudentSide && (
         <>
@@ -118,3 +130,13 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
     </s.BottomNav>
   );
 }
+
+// Todo:
+// - make the bottom bar not visible on the article’s page and the exercise page
+//
+// - make the top bar with a back button on mobile (for some pages such as articles)
+//
+// - adapt options in the bottom bar (remove the teacher’s view, replace with settings,
+// add additional options in the expandible bar)
+//
+// - turn the notification icon into a reusable hook useNotification
