@@ -42,7 +42,6 @@ export default function ArticlePreview({
   };
 
   let topics = article.topics_list;
-  let cefr_level = article.metrics.cefr_level;
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -187,10 +186,7 @@ export default function ArticlePreview({
             </s.UrlTopics>
           </div>
         )}
-        <ArticleStatInfo
-          cefr_level={cefr_level}
-          articleInfo={article}
-        ></ArticleStatInfo>
+        <ArticleStatInfo articleInfo={article}></ArticleStatInfo>
       </s.BottomContainer>
       {article.video ? (
         <img

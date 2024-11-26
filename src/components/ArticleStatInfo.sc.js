@@ -3,7 +3,6 @@ import styled from "styled-components";
 let StatContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: auto;
   @media (max-width: 990px) {
     margin-left: 0;
   }

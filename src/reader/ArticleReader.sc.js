@@ -71,11 +71,24 @@ let TopReaderButtonsContainer = styled.div`
 `;
 
 let AuthorLinksContainer = styled.div`
-  margin-top: 1em;
+  margin-top: 0.5em;
   margin-bottom: 2em;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+`;
+
+let ArticleInfoContainer = styled.div`
+  margin-top: 1em;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  @media (max-width: 990px) {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 1.2rem;
+  }
 `;
 
 let ArticleImgContainer = styled.div`
@@ -396,6 +409,7 @@ export {
   ArticleImg,
   ArticleImgContainer,
   AuthorLinksContainer,
+  ArticleInfoContainer,
   TopReaderButtonsContainer,
   Toolbar,
   Title,

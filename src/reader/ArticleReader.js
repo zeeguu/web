@@ -27,6 +27,7 @@ import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
 import useUserPreferences from "../hooks/useUserPreferences";
+import ArticleStatInfo from "../components/ArticleStatInfo";
 
 export const UMR_SOURCE = "UMR";
 
@@ -330,8 +331,12 @@ export default function ArticleReader({ api, teacherArticleID }) {
             setIsRendered={setReaderReady}
           />
         </h1>
+
         <s.AuthorLinksContainer>
           <ArticleAuthors articleInfo={articleInfo} />
+        </s.AuthorLinksContainer>
+        <s.ArticleInfoContainer>
+          <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
           <s.TopReaderButtonsContainer>
             <ArticleSource url={articleInfo.url} />
             <ReportBroken
@@ -341,7 +346,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
               articleID={articleID}
             />
           </s.TopReaderButtonsContainer>
-        </s.AuthorLinksContainer>
+        </s.ArticleInfoContainer>
         <hr></hr>
         {articleInfo.img_url && (
           <s.ArticleImgContainer>
