@@ -321,6 +321,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
           <DigitalTimer
             activeSessionDuration={activityTimer}
             clockActive={isTimerActive}
+            showClock={true}
           ></DigitalTimer>
         }
       />
