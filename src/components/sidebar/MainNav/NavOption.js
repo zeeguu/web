@@ -5,23 +5,14 @@ export default function NavOption({
   icon,
   isOnStudentSide = true,
   isCollapsed = false,
-  isButton = false,
   notification = null,
   text,
   title,
-  onClick,
+  onClick = () => {},
   currentPath,
   className,
 }) {
-  const content = (
-    <>
-      <s.IconContainer isCollapsed={isCollapsed} title={title ? title : text}>
-        {icon}
-        {notification}
-      </s.IconContainer>
-      <s.Span visibility={isCollapsed}>{text}</s.Span>
-    </>
-  );
+  const Component = linkTo ? s.RouterLink : s.OptionButton;
 
   return (
     <s.NavOption
@@ -29,13 +20,13 @@ export default function NavOption({
       isOnStudentSide={isOnStudentSide}
       className={className}
     >
-      {!isButton ? (
-        <s.RouterLink onClick={onClick} to={linkTo}>
-          {content}
-        </s.RouterLink>
-      ) : (
-        <s.OptionButton onClick={onClick}>{content}</s.OptionButton>
-      )}
+      <Component onClick={onClick} to={linkTo && linkTo}>
+        <s.IconContainer isCollapsed={isCollapsed} title={title ? title : text}>
+          {icon}
+          {notification}
+        </s.IconContainer>
+        <s.Span visibility={isCollapsed}>{text}</s.Span>
+      </Component>
     </s.NavOption>
   );
 }
