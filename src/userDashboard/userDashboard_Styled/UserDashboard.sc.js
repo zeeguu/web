@@ -17,12 +17,19 @@ const UserDashboardHelperText = styled(s.TopMessage)`
   }
 `;
 
-const StreakDisplay =styled(s.TopMessage)`
-@media screen and (max-width: 768px) {
-  font-size: 0.8em;
-  line-height: 4ex;
-  text-align: left;
-}
+const StreakDisplay = styled(s.TopMessage)`
+  @media screen and (max-width: 768px) {
+    font-size: 0.8em;
+    line-height: 4ex;
+    text-align: left;
+    width: 400px;
+    padding:10px 0 ;
+  }
+`;
+
+const StreakText = styled.text`
+  font-weight: bold;
+  margin-right: 5px;
 `;
 
 const Streak = styled.div`
@@ -34,7 +41,6 @@ const Streak = styled.div`
   justify-content: center;
   margin-bottom: 1em;
 `;
-
 
 const UserDatePicker = styled.div`
   ${datePickerCSS}
@@ -150,4 +156,5 @@ export {
   UserDashboardFeedbackButton,
   StreakDisplay,
   Streak,
+  StreakText,
 };
