@@ -29,6 +29,7 @@ import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
 import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
+import DigitalTimer from "../components/DigitalTimer";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -324,6 +325,19 @@ export default function Exercises({
         <ProgressBar
           index={currentIndex}
           total={fullExerciseProgression.length}
+          clock={
+            <DigitalTimer
+              activeSessionDuration={activeSessionDuration}
+              clockActive={clockActive}
+              showClock={false}
+              style={{
+                width: "3em",
+                float: "right",
+                margin: "0.25rem 0.15rem",
+                color: "grey",
+              }}
+            ></DigitalTimer>
+          }
         />
         <s.ExForm>
           <CurrentExercise
@@ -357,13 +371,6 @@ export default function Exercises({
           </p>
         )}
       </s.ExercisesColumn>
-      {!isMobile() && (
-        <ActivityTimer
-          message="Total time in this exercise session"
-          activeSessionDuration={activeSessionDuration}
-          clockActive={clockActive}
-        />
-      )}
     </>
   );
 }

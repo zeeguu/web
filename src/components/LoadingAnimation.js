@@ -27,6 +27,7 @@ export default function LoadingAnimation({
     ); // Wait 4 seconds to show the link to the FeedbackScreen.
     return () => {
       clearTimeout(loadingTimer);
+      clearTimeout(showReportButtonTimer);
     };
   }, []);
 

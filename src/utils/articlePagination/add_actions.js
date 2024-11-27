@@ -1,0 +1,7 @@
+const ADD_ARTICLE_ACTION = Object.freeze({
+  SAVED_ARTICLES: 1,
+  RECOMMENDED_ARTICLES: 2,
+  SEARCH_ARTICLES: 3,
+});
+
+export { ADD_ARTICLE_ACTION };

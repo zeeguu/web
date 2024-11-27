@@ -9,6 +9,29 @@ function secondsToDays(timeInSeconds) {
   return Math.floor(secondsToHours(timeInSeconds) / 24);
 }
 
+function twoDigitNumber(number) {
+  return number > 9 ? number + "" : "0" + number;
+}
+
+function timeToDigitalClock(timeInSeconds, precision = "minutes") {
+  // Currently supports two precision:
+  // "minutes" : 01:23
+  // "hours" : 04:23:54
+  if (timeInSeconds < 60) {
+    if (precision === "minutes") return "00:" + twoDigitNumber(timeInSeconds);
+    else if (precision === "hours")
+      return "00:00:" + twoDigitNumber(timeInSeconds);
+  } else {
+    let seconds = timeInSeconds % 60;
+    let minutes = secondsToMinutes(timeInSeconds);
+    let hours = secondsToHours(timeInSeconds);
+    if (precision === "minutes")
+      return `${twoDigitNumber(minutes)}:${twoDigitNumber(seconds)}`;
+    else if (precision === "hours")
+      return `${twoDigitNumber(hours)}:${twoDigitNumber(minutes)}:${twoDigitNumber(seconds)}`;
+  }
+}
+
 function timeToHumanReadable(timeInSeconds, precision = "seconds") {
   // Currently supports two precision: "seconds" and "minutes"
   if (timeInSeconds < 60) {
@@ -35,5 +58,6 @@ export {
   secondsToHours,
   secondsToDays,
   timeToHumanReadable,
+  timeToDigitalClock,
   estimateReadingTime,
 };

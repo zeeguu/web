@@ -4,7 +4,7 @@ import getDomainName from "../utils/misc/getDomainName";
 
 export default function ArticleSource({ url }) {
   return (
-    <div style={{ marginLeft: "5px", marginRight: "5px" }}>
+    <div>
       {url && (
         <Chip
           label={getDomainName(url)}

@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { darkBlue } from "../components/colors";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
 import { TopicOriginType } from "../appConstants";
+import extractDomain from "../utils/web/extractDomain";
 
 export default function ArticlePreview({
   article,
@@ -41,7 +42,6 @@ export default function ArticlePreview({
   };
 
   let topics = article.topics_list;
-  let cefr_level = article.metrics.cefr_level;
 
   function handleCloseRedirectionModal() {
     setIsRedirectionModaOpen(false);
@@ -136,11 +136,17 @@ export default function ArticlePreview({
       />
 
       <s.Title>{titleLink(article)}</s.Title>
-      <ArticleSourceInfo
-        articleInfo={article}
-        dontShowPublishingTime={dontShowPublishingTime}
-        dontShowSourceIcon={dontShowSourceIcon}
-      ></ArticleSourceInfo>
+      {article.feed_id ? (
+        <ArticleSourceInfo
+          articleInfo={article}
+          dontShowPublishingTime={dontShowPublishingTime}
+          dontShowSourceIcon={dontShowSourceIcon}
+        ></ArticleSourceInfo>
+      ) : (
+        !dontShowSourceIcon &&
+        article.url && <s.UrlSource>{extractDomain(article.url)}</s.UrlSource>
+      )}
+
       <s.ArticleContent>
         {article.img_url && <img alt="" src={article.img_url} />}
         <s.Summary>{article.summary}...</s.Summary>
@@ -180,10 +186,7 @@ export default function ArticlePreview({
             </s.UrlTopics>
           </div>
         )}
-        <ArticleStatInfo
-          cefr_level={cefr_level}
-          articleInfo={article}
-        ></ArticleStatInfo>
+        <ArticleStatInfo articleInfo={article}></ArticleStatInfo>
       </s.BottomContainer>
       {article.video ? (
         <img
