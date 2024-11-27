@@ -8,4 +8,8 @@ function random(x) {
   return x[Math.floor(Math.random() * x.length)];
 }
 
-export { removeArrayDuplicates, random };
+function removeItemFromList(item, list) {
+  return list.filter((i) => i !== item);
+}
+
+export { removeArrayDuplicates, random, removeItemFromList };

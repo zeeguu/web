@@ -67,11 +67,16 @@ export default function NextNavigation({
   const isCorrectMatch = ["CCC"].includes(message);
   const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
   const isRightAnswer = message.includes("C"); // User has gotten to the right answer, but not api correct
+  const levelsFeature = Feature.exercise_levels();
+  const isLastLevel = exerciseBookmark.level === 4;
 
   const bookmarkLearned =
     isUserAndAnswerCorrect &&
     isLastInCycle &&
-    (isLearningCycleTwo || (isLearningCycleOne && productiveExercisesDisabled));
+    ((levelsFeature && isLastLevel) ||
+      (learningCycleFeature &&
+        (isLearningCycleTwo ||
+          (isLearningCycleOne && productiveExercisesDisabled))));
 
   const bookmarkProgression =
     userIsCorrect &&
@@ -96,7 +101,8 @@ export default function NextNavigation({
           b.is_last_in_cycle &&
           apiMessage === "C" &&
           !isLastBookmark &&
-          b.learning_cycle == LEARNING_CYCLE["RECEPTIVE"]
+          b.learning_cycle == LEARNING_CYCLE["RECEPTIVE"] &&
+          learningCycleFeature
         ) {
           wordsProgressed.push(b.from);
           setIsMatchBookmarkProgression(true);
@@ -146,7 +152,7 @@ export default function NextNavigation({
     (isRightAnswer && !isMatchExercise) || isCorrectMatch;
 
   const showCoffetti =
-    isCorrect &&
+    isUserAndAnswerCorrect &&
     (isMatchBookmarkProgression || bookmarkProgression || bookmarkLearned);
 
   function celebrationMessageMatch() {
@@ -161,14 +167,12 @@ export default function NextNavigation({
 
   return (
     <>
-      {learningCycleFeature && (
-        <>
-          <CelebrationModal
-            open={showCelebrationModal}
-            onClose={() => setShowCelebrationModal(false)}
-          />
-        </>
-      )}
+      <>
+        <CelebrationModal
+          open={showCelebrationModal}
+          onClose={() => setShowCelebrationModal(false)}
+        />
+      </>
       {showCoffetti && (
         <Confetti
           width={window.innerWidth}
