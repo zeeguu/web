@@ -19,6 +19,7 @@ import {
 import { Link } from "react-router-dom";
 
 let ArticleReader = styled.div`
+  padding: 0px 0.5rem;
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;

@@ -334,9 +334,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
           />
         </h1>
 
-        <s.AuthorLinksContainer>
-          <ArticleAuthors articleInfo={articleInfo} />
-        </s.AuthorLinksContainer>
+        <ArticleAuthors articleInfo={articleInfo} />
         <s.ArticleInfoContainer>
           <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
           <s.TopReaderButtonsContainer>
