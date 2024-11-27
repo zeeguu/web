@@ -22,11 +22,12 @@ import TopToolbar from "./TopToolbar";
 import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
-import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
 import useUserPreferences from "../hooks/useUserPreferences";
+import ArticleStatInfo from "../components/ArticleStatInfo";
+import DigitalTimer from "../components/DigitalTimer";
 
 export const UMR_SOURCE = "UMR";
 
@@ -58,6 +59,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
+
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const {
@@ -301,12 +303,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   return (
     <s.ArticleReader>
-      <ActivityTimer
-        message="Total time in this reading session"
-        activeSessionDuration={activityTimer}
-        clockActive={isTimerActive}
-      />
-
       <TopToolbar
         user={user}
         teacherArticleID={teacherArticleID}
@@ -320,6 +316,13 @@ export default function ArticleReader({ api, teacherArticleID }) {
         url={articleInfo.url}
         UMR_SOURCE={UMR_SOURCE}
         articleProgress={scrollPosition}
+        timer={
+          <DigitalTimer
+            activeSessionDuration={activityTimer}
+            clockActive={isTimerActive}
+            showClock={true}
+          ></DigitalTimer>
+        }
       />
       <div id="text">
         <h1>
@@ -330,8 +333,10 @@ export default function ArticleReader({ api, teacherArticleID }) {
             setIsRendered={setReaderReady}
           />
         </h1>
-        <s.AuthorLinksContainer>
-          <ArticleAuthors articleInfo={articleInfo} />
+
+        <ArticleAuthors articleInfo={articleInfo} />
+        <s.ArticleInfoContainer>
+          <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
           <s.TopReaderButtonsContainer>
             <ArticleSource url={articleInfo.url} />
             <ReportBroken
@@ -341,7 +346,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
               articleID={articleID}
             />
           </s.TopReaderButtonsContainer>
-        </s.AuthorLinksContainer>
+        </s.ArticleInfoContainer>
         <hr></hr>
         {articleInfo.img_url && (
           <s.ArticleImgContainer>
