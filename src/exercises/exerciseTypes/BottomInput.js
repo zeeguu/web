@@ -40,6 +40,8 @@ export default function BottomInput({
     : bookmarksToStudy[0].from;
 
   const answerExpressionLength = getExpressionlength(targetWord);
+  const isWrongOrder =
+    isIncorrect && totalWordsCorrect === answerExpressionLength;
 
   const isPartOfExpressionCorrect =
     totalWordsCorrect >= 1 && answerExpressionLength > 1 && isIncorrect;
@@ -72,7 +74,7 @@ export default function BottomInput({
       return;
     }
 
-    if (distanceToCorrect < 5 && distanceToCorrect > 2) {
+    if (distanceToCorrect < 5 && distanceToCorrect > 2 && !isWrongOrder) {
       setFeedbackMessage(
         `❌ Not quite the ${Pluralize.wordExpression(answerExpressionLength)}`,
       );
@@ -97,8 +99,7 @@ export default function BottomInput({
       }
     }
     if (isPartOfExpressionCorrect) {
-      if (isIncorrect && totalWordsCorrect === answerExpressionLength)
-        setFeedbackMessage(`⭐ Check the word order`);
+      if (isWrongOrder) setFeedbackMessage(`⭐ Check the word order`);
       else
         setFeedbackMessage(
           `⭐ You got ${totalWordsCorrect}/${answerExpressionLength} words correct`,
