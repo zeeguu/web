@@ -29,16 +29,9 @@ function isWordIncluded(word, expression) {
 }
 
 function countWordsIncluded(expression1, expression2) {
-  let wordsIncluded = 0;
-  let wordsInExp1 = expression1.split(" ");
-  let wordsInExp2 = expression2.split(" ");
-  wordsInExp1.forEach((each) => {
-    if (wordsInExp2.includes(each)) {
-      wordsIncluded += 1;
-      removeByValue(wordsInExp2, each);
-    }
-  });
-  return wordsIncluded;
+  let wordsInExp1 = new Set(expression1.split(" "));
+  let wordsInExp2 = new Set(expression2.split(" "));
+  return wordsInExp1.intersection(wordsInExp2).size;
 }
 
 export {
