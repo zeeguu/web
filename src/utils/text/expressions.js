@@ -1,5 +1,4 @@
 import { removePunctuation, tokenize } from "./preprocessing";
-import { removeByValue } from "../basic/arrays";
 
 function isExpression(text) {
   return text.includes(" ");
@@ -28,7 +27,7 @@ function isWordIncluded(word, expression) {
   return isWordIncluded;
 }
 
-function countWordsIncluded(expression1, expression2) {
+function countCommonWords(expression1, expression2) {
   let wordsInExp1 = new Set(expression1.split(" "));
   let wordsInExp2 = new Set(expression2.split(" "));
   return wordsInExp1.intersection(wordsInExp2).size;
@@ -38,6 +37,6 @@ export {
   isWordIncluded,
   isTextInSentence,
   isExpression,
-  countWordsIncluded,
+  countCommonWords,
   getExpressionlength,
 };

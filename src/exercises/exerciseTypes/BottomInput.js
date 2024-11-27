@@ -6,7 +6,7 @@ import Pluralize from "../../utils/text/pluralize";
 
 import {
   getExpressionlength,
-  countWordsIncluded,
+  countCommonWords,
 } from "../../utils/text/expressions";
 
 function getFlagImageUrl(languageCode) {
@@ -29,22 +29,22 @@ export default function BottomInput({
   const [isSameLengthAsSolution, setIsSameLengthAsSolution] = useState(false);
   const [isLongerThanSolution, setIsLongerThanSolution] = useState(false);
   const [isInputWrongLanguage, setIsInputWrongLanguage] = useState(false);
-  const [totalWordsCorrect, setTotalWordsCorrect] = useState(0);
+  const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
 
   const normalizedLearningWord = normalizeAnswer(bookmarksToStudy[0].from);
 
-  const targetWord = isL1Answer
+  const solutionText = isL1Answer
     ? bookmarksToStudy[0].to
     : bookmarksToStudy[0].from;
 
-  const answerExpressionLength = getExpressionlength(targetWord);
+  const solutionWordCount = getExpressionlength(solutionText);
   const isWrongOrder =
-    isIncorrect && totalWordsCorrect === answerExpressionLength;
+    isIncorrect && correctWordCountInInput === solutionWordCount;
 
   const isPartOfExpressionCorrect =
-    totalWordsCorrect >= 1 && answerExpressionLength > 1 && isIncorrect;
+    correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
 
   const answerLanguageCode = isL1Answer
     ? bookmarksToStudy[0].to_lang
@@ -54,14 +54,14 @@ export default function BottomInput({
     setUsedHint(true);
     let hint;
     const lowerCurrentInput = currentInput.toLowerCase();
-    const lowerTargetWord = targetWord.toLowerCase();
+    const lowerTargetWord = solutionText.toLowerCase();
     if (
       lowerCurrentInput ===
       lowerTargetWord.substring(0, lowerCurrentInput.length)
     ) {
-      hint = targetWord.substring(0, currentInput.length + 1);
+      hint = solutionText.substring(0, currentInput.length + 1);
     } else {
-      hint = targetWord.substring(0, 1);
+      hint = solutionText.substring(0, 1);
     }
     setCurrentInput(hint);
     setMessageToAPI(messageToAPI + "H");
@@ -76,7 +76,7 @@ export default function BottomInput({
 
     if (distanceToCorrect < 5 && distanceToCorrect > 2 && !isWrongOrder) {
       setFeedbackMessage(
-        `❌ Not quite the ${Pluralize.wordExpression(answerExpressionLength)}`,
+        `❌ Not quite the ${Pluralize.wordExpression(solutionWordCount)}`,
       );
       return;
     }
@@ -102,7 +102,7 @@ export default function BottomInput({
       if (isWrongOrder) setFeedbackMessage(`⭐ Check the word order`);
       else
         setFeedbackMessage(
-          `⭐ You got ${totalWordsCorrect}/${answerExpressionLength} words correct`,
+          `⭐ You got ${correctWordCountInInput}/${solutionWordCount} words correct`,
         );
       return;
     }
@@ -121,7 +121,7 @@ export default function BottomInput({
     }
 
     let normalizedInput = normalizeAnswer(currentInput);
-    let normalizedAnswer = normalizeAnswer(targetWord);
+    let normalizedAnswer = normalizeAnswer(solutionText);
     let levDistance = levenshtein.get(normalizedInput, normalizedAnswer);
 
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
@@ -131,12 +131,9 @@ export default function BottomInput({
       setIsIncorrect(false);
       return;
     }
-    let totalWordsCorrect = countWordsIncluded(
-      normalizedInput,
-      normalizedAnswer,
-    );
+    let totalWordsCorrect = countCommonWords(normalizedInput, normalizedAnswer);
 
-    setTotalWordsCorrect(totalWordsCorrect);
+    setCorrectWordCountInInput(totalWordsCorrect);
     setDistanceToCorrect(levDistance);
     setIsLongerThanSolution(normalizedInput.length > normalizedAnswer.length);
     setIsSameLengthAsSolution(
@@ -153,7 +150,7 @@ export default function BottomInput({
       // we give them a Hint, mainly for audio exercises.
       updatedMessageToAPI = messageToAPI + "H";
       setDistanceToCorrect();
-    } else if (totalWordsCorrect >= 1 && answerExpressionLength > 1) {
+    } else if (totalWordsCorrect >= 1 && solutionWordCount > 1) {
       updatedMessageToAPI = messageToAPI + "H";
     } else if (levDistance === 1) {
       // The user almost got it correct
@@ -181,7 +178,7 @@ export default function BottomInput({
           <InputField
             type="text"
             className={
-              distanceToCorrect >= 5 && totalWordsCorrect === 0
+              distanceToCorrect >= 5 && correctWordCountInInput === 0
                 ? "wrong-border"
                 : "almost-border"
             }
