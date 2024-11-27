@@ -22,7 +22,6 @@ import TopToolbar from "./TopToolbar";
 import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
-import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
@@ -60,7 +59,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
-  console.log(articleInfo);
+
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const {
