@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { blue700, orange600 } from "../colors";
+import { blue700, orange600 } from "../../../colors";
 
 const sharedSidebarStyling = css`
   box-sizing: border-box;

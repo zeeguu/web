@@ -12,13 +12,13 @@ import ChromeReaderModeRoundedIcon from "@mui/icons-material/ChromeReaderModeRou
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
-import FeedbackButton from "../FeedbackButton";
-import NavOption from "./NavOption";
-import NotificationIcon from "../NotificationIcon";
-import { APIContext } from "../../contexts/APIContext";
-import { ExerciseCountContext } from "../../exercises/ExerciseCountContext";
-import { userHasNotExercisedToday } from "../../exercises/utils/daysSinceLastExercise";
-import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../../exercises/ExerciseConstants";
+import FeedbackButton from "../../../FeedbackButton";
+import NavOption from "../NavOption";
+import NotificationIcon from "../../../NotificationIcon";
+import { APIContext } from "../../../../contexts/APIContext";
+import { ExerciseCountContext } from "../../../../exercises/ExerciseCountContext";
+import { userHasNotExercisedToday } from "../../../../exercises/utils/daysSinceLastExercise";
+import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../../../../exercises/ExerciseConstants";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;

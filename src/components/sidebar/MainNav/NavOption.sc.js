@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { blue700, orange600 } from "../colors";
-import { isMobile } from "../../utils/misc/browserDetection";
+import { blue700, orange600 } from "../../colors";
+import { isMobile } from "../../../utils/misc/browserDetection";
 
 const NavOption = styled.li`
   box-sizing: border-box;

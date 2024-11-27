@@ -1,25 +1,25 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../../../../contexts/UserContext";
 import SidebarOptions_Student from "./SidebarOptions_Student";
 import SidebarOptions_Teacher from "./SidebarOptions_Teacher";
-import * as s from "./NewSidebar.sc";
-import NavOption from "./NavOption";
+import * as s from "./Sidebar.sc";
+import NavOption from "../NavOption";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import FeedbackButton from "../FeedbackButton";
+import FeedbackButton from "../../../FeedbackButton";
 import DoubleArrowRight from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
 import DoubleArrowLeft from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 
-export default function NewSidebar({
+export default function Sidebar({
   isCollapsed,
   setIsCollapsed,
   isOnStudentSide,
   isTeacher,
 }) {
-  const user = useContext(UserContext);
+  const { is_teacher } = useContext(UserContext);
 
   const path = useLocation().pathname;
-  const defaultPage = user.is_teacher ? "/teacher/classes" : "articles";
+  const defaultPage = is_teacher ? "/teacher/classes" : "articles";
 
   return (
     <s.SideBar

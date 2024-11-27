@@ -1,4 +1,4 @@
-import NavOption from "./NavOption";
+import NavOption from "../NavOption";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import ChromeReaderModeRoundedIcon from "@mui/icons-material/ChromeReaderModeRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";

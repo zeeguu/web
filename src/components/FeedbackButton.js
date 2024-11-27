@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FeedbackModal from "./FeedbackModal";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
-import NavLink from "./sidebar/NavOption";
+import NavOption from "./sidebar/MainNav/NavOption";
 import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded";
 
 export default function FeedbackButton({ isCollapsed, isOnStudentSide }) {
@@ -16,7 +16,7 @@ export default function FeedbackButton({ isCollapsed, isOnStudentSide }) {
         }}
         feedbackOptions={FEEDBACK_OPTIONS.ALL}
       ></FeedbackModal>
-      <NavLink
+      <NavOption
         icon={<FeedbackRoundedIcon />}
         isCollapsed={isCollapsed}
         isOnStudentSide={isOnStudentSide}

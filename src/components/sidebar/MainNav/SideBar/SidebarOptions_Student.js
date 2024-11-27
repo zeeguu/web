@@ -1,11 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import { APIContext } from "../../contexts/APIContext";
-import { ExerciseCountContext } from "../../exercises/ExerciseCountContext";
-import { userHasNotExercisedToday } from "../../exercises/utils/daysSinceLastExercise";
-import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../../exercises/ExerciseConstants";
-import NotificationIcon from "../NotificationIcon";
-import NavOption from "./NavOption";
+import { APIContext } from "../../../../contexts/APIContext";
+import { ExerciseCountContext } from "../../../../exercises/ExerciseCountContext";
+import { userHasNotExercisedToday } from "../../../../exercises/utils/daysSinceLastExercise";
+import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../../../../exercises/ExerciseConstants";
+import NotificationIcon from "../../../NotificationIcon";
+import NavOption from "../NavOption";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
 import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";

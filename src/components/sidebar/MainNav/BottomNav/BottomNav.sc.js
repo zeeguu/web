@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { blue700, orange600 } from "../colors";
+import { blue700, orange600 } from "../../../colors";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 
 const BottomNav = styled.nav`
