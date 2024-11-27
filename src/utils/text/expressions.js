@@ -4,6 +4,10 @@ function isExpression(text) {
   return text.includes(" ");
 }
 
+function getExpressionlength(text) {
+  return text.split(" ").length;
+}
+
 function isTextInSentence(text, sentence) {
   if (isExpression(text)) {
     return sentence.includes(text);
@@ -23,4 +27,16 @@ function isWordIncluded(word, expression) {
   return isWordIncluded;
 }
 
-export { isWordIncluded, isTextInSentence, isExpression };
+function countCommonWords(expression1, expression2) {
+  let wordsInExp1 = new Set(expression1.split(" "));
+  let wordsInExp2 = new Set(expression2.split(" "));
+  return wordsInExp1.intersection(wordsInExp2).size;
+}
+
+export {
+  isWordIncluded,
+  isTextInSentence,
+  isExpression,
+  countCommonWords,
+  getExpressionlength,
+};
