@@ -1,6 +1,6 @@
 import * as s from "./BottomNav.sc";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
@@ -15,36 +15,13 @@ import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
 import FeedbackButton from "../../../FeedbackButton";
 import NavOption from "../NavOption";
 import NotificationIcon from "../../../NotificationIcon";
-import { APIContext } from "../../../../contexts/APIContext";
-import { ExerciseCountContext } from "../../../../exercises/ExerciseCountContext";
-import { userHasNotExercisedToday } from "../../../../exercises/utils/daysSinceLastExercise";
-import { MAX_EXERCISE_TO_DO_NOTIFICATION } from "../../../../exercises/ExerciseConstants";
+import useExerciseNotification from "../../../../hooks/useExerciseNotification";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] = useState(false);
-  const api = useContext(APIContext);
-  const exerciseNotification = useContext(ExerciseCountContext);
-  const [hasExerciseNotification, setHasExerciseNotification] = useState(false);
-  const [totalExercisesInPipeline, setTotalExercisesInPipeline] = useState();
-
-  useEffect(() => {
-    if (userHasNotExercisedToday() && path !== "/exercises")
-      api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
-        exerciseNotification.setHasExercises(scheduledBookmaks.length > 0);
-        exerciseNotification.updateReactState();
-      });
-    else {
-      exerciseNotification.setHasExercises(false);
-      exerciseNotification.updateReactState();
-    }
-  }, [path]);
-
-  useEffect(() => {
-    exerciseNotification.setHasExercisesHook = setHasExerciseNotification;
-    exerciseNotification.setExerciseCounterHook = setTotalExercisesInPipeline;
-    exerciseNotification.updateReactState();
-  }, []);
+  const { hasExerciseNotification, notificationMsg } =
+    useExerciseNotification();
 
   return (
     <>
@@ -132,16 +109,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
             <s.BottomNavOption>
               <s.StyledLink to="/exercises">
                 {hasExerciseNotification && (
-                  <NotificationIcon
-                    text={
-                      totalExercisesInPipeline
-                        ? totalExercisesInPipeline >
-                          MAX_EXERCISE_TO_DO_NOTIFICATION
-                          ? MAX_EXERCISE_TO_DO_NOTIFICATION + "+"
-                          : totalExercisesInPipeline
-                        : ""
-                    }
-                  />
+                  <NotificationIcon text={notificationMsg} />
                 )}
                 <s.IconSpan
                   isOnStudentSide={isOnStudentSide}
@@ -231,8 +199,6 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
 //
 // - adapt options in the bottom bar (remove the teacher’s view, replace with settings,
 // add additional options in the expandible bar)
-//
-// - turn the notification icon into a reusable hook useNotification
 //
 // - The app automatically zooms in when user enters input, this makes the navbar invisible.
 // Do something about it
