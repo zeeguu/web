@@ -1,3 +1,6 @@
+# v2.4.6
+- adding article difficulty info; nicer timer
+
 # v2.4.5
 - bug fix: alternative translation menu is not sized correctly
 
