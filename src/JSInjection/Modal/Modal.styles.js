@@ -150,6 +150,7 @@ export const StyledModal = styled(ReactModal)`
   }
 
   .author {
+    max-width: 20em;
     margin-block-start: 0em;
     margin-block-end: 0em;
     line-height: 20px !important;
@@ -419,7 +420,10 @@ export const StyledBox = styled.div`
   margin-left: auto;
   margin-right: auto;
 
-  h2, h3, h5,  p {
+  h2,
+  h3,
+  h5,
+  p {
     text-align: center;
   }
   .selected {
@@ -469,4 +473,3 @@ export const CenteredContent = styled.div`
     align-items: center;
   }
 `;
-

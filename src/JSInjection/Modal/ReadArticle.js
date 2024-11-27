@@ -6,6 +6,8 @@ import ReviewVocabularyInfoBox from "../../zeeguu-react/src/reader/ReviewVocabul
 import LikeFeedbackBox from "../../zeeguu-react/src/reader/LikeFeedbackBox";
 import DifficultyFeedbackBox from "../../zeeguu-react/src/reader/DifficultyFeedbackBox";
 import { random } from "../../zeeguu-react/src/utils/basic/arrays";
+import ArticleStatInfo from "../../zeeguu-react/src/components/ArticleStatInfo";
+import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
 
 export function ReadArticle({
   articleId,
@@ -41,7 +43,11 @@ export function ReadArticle({
             pronouncing={pronouncing}
           />
         </h1>
-        <p className="author">{author}</p>
+        <s.ArticleInfoContainer>
+          <span className="author">{author}</span>
+          <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
+        </s.ArticleInfoContainer>
+
         <hr />
         {articleImage && (
           <div style={{ display: "flex", justifyContent: "center" }}>

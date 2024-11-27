@@ -8,6 +8,8 @@ import {
   OverwriteZeeguu,
 } from "./Modal.styles";
 
+import * as s from "./Modal.sc";
+
 import { StyledCloseButton, StyledSmallButton } from "./Buttons.styles";
 import FloatingMenu from "./FloatingMenu";
 import ZeeguuLoader from "../ZeeguuLoader";
@@ -38,7 +40,7 @@ import useActivityTimer from "../../zeeguu-react/src/hooks/useActivityTimer";
 import useShadowRef from "../../zeeguu-react/src/hooks/useShadowRef";
 import ratio from "../../zeeguu-react/src/utils/basic/ratio";
 
-import ActivityTimer from "../../zeeguu-react/src/components/ActivityTimer";
+import DigitalTimer from "../../zeeguu-react/src/components/DigitalTimer";
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ZeeguuError from "../ZeeguuError";
@@ -104,7 +106,7 @@ export function Modal({
   const SCROLL_SAMPLE_FREQUENCY = 1; // Sample Every second
 
   const openSettings = () => {
-    window.open("https://www.zeeguu.org/account_settings", "_blank");
+    window.open("https://www.zeeguu.org/account_settings/options", "_blank");
   };
 
   const buttons = [
@@ -370,78 +372,73 @@ export function Modal({
             id="scrollHolder"
             overlayClassName={"reader-overlay"}
           >
-            {readArticleOpen && (
-              <ActivityTimer
-                message="Seconds in this reading session"
-                activeSessionDuration={activeSessionDuration}
-                clockActive={clockActive}
-              />
-            )}
             <OverwriteZeeguu>
               <StyledHeading>
-                <div
-                  style={{
-                    float: "left",
-                    "max-width": "50%",
-                    display: "inline-flex",
-                    padding: "1.5em",
-                  }}
-                >
-                  <StyledSmallButton>
-                    <a href="https://www.zeeguu.org">
-                      <img
-                        src={BROWSER_API.runtime.getURL(
-                          "images/zeeguuLogo.svg"
-                        )}
-                        alt={"Zeeguu logo"}
-                        className="logoModal"
-                      />
-                    </a>{" "}
-                    <br />
-                    <span>Home</span>
-                  </StyledSmallButton>
-                  <SaveToZeeguu
-                    api={api}
-                    articleId={articleId()}
-                    setPersonalCopySaved={setPersonalCopySaved}
-                    personalCopySaved={personalCopySaved}
-                  />
-                  <div>
-                    <StyledSmallButton
-                      onMouseEnter={() => setIsHovered(true)}
-                      onMouseLeave={() => setIsHovered(false)}
-                      onClick={openReview}
-                    >
-                      {isHovered ? (
-                        <FactCheckIcon fontSize="large" />
-                      ) : (
-                        <FactCheckOutlinedIcon fontSize="large" />
-                      )}{" "}
+                <s.TopElementsContainer>
+                  <s.ZeeguuRowFlexStart>
+                    <StyledSmallButton>
+                      <a href="https://www.zeeguu.org">
+                        <img
+                          src={BROWSER_API.runtime.getURL(
+                            "images/zeeguuLogo.svg"
+                          )}
+                          alt={"Zeeguu logo"}
+                          className="logoModal"
+                        />
+                      </a>{" "}
                       <br />
-                      <span>Words</span>
+                      <span>Home</span>
                     </StyledSmallButton>
-                  </div>
-                </div>
-                <div
-                  style={{ float: "right", width: "50%", display: "inline" }}
-                >
-                  <StyledCloseButton
-                    role="button"
-                    onClick={handleClose}
-                    id="qtClose"
-                  >
-                    <CloseSharpIcon sx={{ color: colors.gray }} />
-                  </StyledCloseButton>
-                  {readArticleOpen ? (
-                    <ToolbarButtons
-                      translating={translateInReader}
-                      pronouncing={pronounceInReader}
-                      setTranslating={updateTranslateInReader}
-                      setPronouncing={updatePronounceInReader}
+                    <SaveToZeeguu
+                      api={api}
+                      articleId={articleId()}
+                      setPersonalCopySaved={setPersonalCopySaved}
+                      personalCopySaved={personalCopySaved}
                     />
-                  ) : null}
-                </div>
-                {readArticleOpen && <progress value={scrollPosition} />}
+                    <div>
+                      <StyledSmallButton
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                        onClick={openReview}
+                      >
+                        {isHovered ? (
+                          <FactCheckIcon fontSize="large" />
+                        ) : (
+                          <FactCheckOutlinedIcon fontSize="large" />
+                        )}{" "}
+                        <br />
+                        <span>Words</span>
+                      </StyledSmallButton>
+                    </div>
+                  </s.ZeeguuRowFlexStart>
+                  <s.ZeeguuRowFlexStart>
+                    {readArticleOpen ? (
+                      <ToolbarButtons
+                        translating={translateInReader}
+                        pronouncing={pronounceInReader}
+                        setTranslating={updateTranslateInReader}
+                        setPronouncing={updatePronounceInReader}
+                      />
+                    ) : null}
+                    <StyledCloseButton
+                      role="button"
+                      onClick={handleClose}
+                      id="qtClose"
+                    >
+                      <CloseSharpIcon sx={{ color: colors.gray }} />
+                    </StyledCloseButton>
+                  </s.ZeeguuRowFlexStart>
+                </s.TopElementsContainer>
+                {readArticleOpen && (
+                  <div>
+                    <DigitalTimer
+                      activeSessionDuration={activeSessionDuration}
+                      clockActive={clockActive}
+                      showClock={true}
+                    ></DigitalTimer>
+                    <progress value={scrollPosition} />
+                  </div>
+                )}
               </StyledHeading>
               {readArticleOpen === true && (
                 <ReadArticle
@@ -476,15 +473,14 @@ export function Modal({
                 />
               )}
             </OverwriteZeeguu>
+            <FloatingMenu
+              buttons={buttons}
+              buttonGroupVisible={buttonGroupVisible}
+              toggleButtonGroup={toggleButtonGroup}
+            />
           </StyledModal>
         </div>
       </SpeechContext.Provider>
-
-      <FloatingMenu
-        buttons={buttons}
-        buttonGroupVisible={buttonGroupVisible}
-        toggleButtonGroup={toggleButtonGroup}
-      />
     </>
   );
 }
