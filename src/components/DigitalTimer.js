@@ -7,13 +7,14 @@ export default function DigitalTimer({
   clockActive,
   style,
   precision,
+  showClock,
 }) {
   return (
     <s.DigitalClock
       className={clockActive ? "" : "disabled"}
       style={{ ...style }}
     >
-      <AccessTimeIcon fontSize="small" />
+      {showClock && <AccessTimeIcon fontSize="small" />}
       {timeToDigitalClock(
         activeSessionDuration,
         precision ? "minutes" : precision,
