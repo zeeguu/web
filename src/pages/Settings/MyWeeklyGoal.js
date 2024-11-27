@@ -9,6 +9,7 @@ import Main from "../_pages_shared/Main.sc";
 import Form from "../_pages_shared/Form.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
 import Selector from "../../components/Selector";
+import InputField from "../../components/InputField";
 import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import { PRACTICE_DAYS } from "../../assorted/practiceDays";
@@ -21,6 +22,15 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 
 export default function MyWeeklyGoal({ api, setUser }) {
+  const [value, setValue] = useState("");
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    if (newValue <= 720) {
+      setValue(newValue); 
+      updateMinutes(newValue); 
+    }
+  };
+
   const [userDetails, setUserDetails] = useState(null);
   const user = useContext(UserContext);
   const history = useHistory();
@@ -96,6 +106,15 @@ export default function MyWeeklyGoal({ api, setUser }) {
               onChange={(e) => {
                 updateMinutes(e.target.value);
               }}
+            />
+            <InputField
+              type="number"
+              label="Enter minutes"
+              name="minutes"
+              id="minutes"
+              value={value}
+              onChange={handleChange}
+              placeholder="Enter up to 720 minutes"
             />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
