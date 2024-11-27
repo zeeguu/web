@@ -2,12 +2,7 @@ import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import useExerciseNotification from "../../../../hooks/useExerciseNotification";
 import NotificationIcon from "../../../NotificationIcon";
 import NavOption from "../NavOption";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
-import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
-import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
-import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
-import BusinessCenterRoundedIcon from "@mui/icons-material/BusinessCenterRounded";
+import NavIcon from "../NavIcon";
 
 export default function SidebarOptions_Student({
   isCollapsed,
@@ -23,7 +18,7 @@ export default function SidebarOptions_Student({
     <>
       <NavOption
         linkTo={"/articles"}
-        icon={<HomeRoundedIcon />}
+        icon={<NavIcon name="home" />}
         isCollapsed={isCollapsed}
         text={"Home"}
         currentPath={currentPath}
@@ -31,7 +26,7 @@ export default function SidebarOptions_Student({
 
       <NavOption
         linkTo={"/exercises"}
-        icon={<FitnessCenterRoundedIcon />}
+        icon={<NavIcon name="exercises" />}
         isCollapsed={isCollapsed}
         text={"Exercises"}
         currentPath={currentPath}
@@ -42,7 +37,7 @@ export default function SidebarOptions_Student({
 
       <NavOption
         linkTo={"/words"}
-        icon={<TranslateRoundedIcon />}
+        icon={<NavIcon name="words" />}
         isCollapsed={isCollapsed}
         text={"Words"}
         currentPath={currentPath}
@@ -50,7 +45,7 @@ export default function SidebarOptions_Student({
 
       <NavOption
         linkTo={"/history"}
-        icon={<HistoryRoundedIcon />}
+        icon={<NavIcon name="history" />}
         isCollapsed={isCollapsed}
         text={"History"}
         currentPath={currentPath}
@@ -58,7 +53,7 @@ export default function SidebarOptions_Student({
 
       <NavOption
         linkTo={"/user_dashboard"}
-        icon={<DonutSmallRoundedIcon />}
+        icon={<NavIcon name="statistics" />}
         isCollapsed={isCollapsed}
         text={"Statistics"}
         currentPath={currentPath}
@@ -67,7 +62,7 @@ export default function SidebarOptions_Student({
       {isTeacher && (
         <NavOption
           linkTo={"/teacher/classes"}
-          icon={<BusinessCenterRoundedIcon />}
+          icon={<NavIcon name="teacherSite" />}
           isCollapsed={isCollapsed}
           text={"Teacher Site"}
           currentPath={currentPath}

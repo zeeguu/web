@@ -1,17 +1,7 @@
 import * as s from "./BottomNav.sc";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { useState } from "react";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
-import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-import BusinessCenterRoundedIcon from "@mui/icons-material/BusinessCenterRounded";
-import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
-import ChromeReaderModeRoundedIcon from "@mui/icons-material/ChromeReaderModeRounded";
-import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
-import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
-import DonutSmallRoundedIcon from "@mui/icons-material/DonutSmallRounded";
+import NavIcon from "../NavIcon";
 import FeedbackButton from "../../../FeedbackButton";
 import NavOption from "../NavOption";
 import NotificationIcon from "../../../NotificationIcon";
@@ -40,7 +30,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
               <NavOption
                 isOnStudentSide={isOnStudentSide}
                 linkTo={"/user_dashboard"}
-                icon={<DonutSmallRoundedIcon />}
+                icon={<NavIcon name="statistics" />}
                 text={"Statistics"}
                 currentPath={path}
                 onClick={() => {
@@ -51,7 +41,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
               <NavOption
                 isOnStudentSide={isOnStudentSide}
                 linkTo={"/history"}
-                icon={<HistoryRoundedIcon />}
+                icon={<NavIcon name="history" />}
                 text={"History"}
                 currentPath={path}
                 onClick={() => {
@@ -62,7 +52,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
               {isTeacher && (
                 <NavOption
                   linkTo={"/teacher/classes"}
-                  icon={<BusinessCenterRoundedIcon />}
+                  icon={<NavIcon name="teacherSite" />}
                   text={"Teacher Site"}
                   currentPath={path}
                   onClick={() => {
@@ -78,7 +68,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
               <NavOption
                 isOnStudentSide={isOnStudentSide}
                 linkTo={"/articles"}
-                icon={<SchoolRoundedIcon />}
+                icon={<NavIcon name="studentSite" />}
                 text={"Student Site"}
                 currentPath={path}
                 onClick={() => {
@@ -100,7 +90,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                   isOnStudentSide={isOnStudentSide}
                   isActive={path && path.includes("/articles")}
                 >
-                  <HomeRoundedIcon />
+                  <NavIcon name="home" />
                 </s.IconSpan>
                 Home
               </s.StyledLink>
@@ -115,7 +105,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                   isOnStudentSide={isOnStudentSide}
                   isActive={path && path.includes("/exercises")}
                 >
-                  <FitnessCenterRoundedIcon />
+                  <NavIcon name="exercises" />
                 </s.IconSpan>
                 Exercises
               </s.StyledLink>
@@ -127,7 +117,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                   isOnStudentSide={isOnStudentSide}
                   isActive={path && path.includes("/words")}
                 >
-                  <TranslateRoundedIcon />
+                  <NavIcon name="words" />
                 </s.IconSpan>
                 Words
               </s.StyledLink>
@@ -143,9 +133,9 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                   isOnStudentSide={isOnStudentSide}
                   isActive={path && path.includes("/teacher/classes")}
                 >
-                  <GroupsRoundedIcon />
+                  <NavIcon name="myClassrooms" />
                 </s.IconSpan>
-                My Classroom
+                My Classrooms
               </s.StyledLink>
             </s.BottomNavOption>
 
@@ -155,7 +145,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                   isOnStudentSide={isOnStudentSide}
                   isActive={path && path.includes("/teacher/texts")}
                 >
-                  <ChromeReaderModeRoundedIcon />
+                  <NavIcon name="myTexts" />
                 </s.IconSpan>
                 My Texts
               </s.StyledLink>
@@ -169,7 +159,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
               isOnStudentSide={isOnStudentSide}
               isActive={path && path.includes("/account_settings")}
             >
-              <SettingsRoundedIcon />
+              <NavIcon name="settings" />
             </s.IconSpan>
             Settings
           </s.StyledLink>
@@ -182,7 +172,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
             }}
           >
             <s.IconSpan isOnStudentSide={isOnStudentSide}>
-              <MoreHorizRoundedIcon />
+              <NavIcon name="more" />
             </s.IconSpan>
             More
           </s.StyledButton>

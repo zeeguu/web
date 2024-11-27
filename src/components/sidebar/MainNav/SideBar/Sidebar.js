@@ -5,10 +5,8 @@ import SidebarOptions_Student from "./SidebarOptions_Student";
 import SidebarOptions_Teacher from "./SidebarOptions_Teacher";
 import * as s from "./Sidebar.sc";
 import NavOption from "../NavOption";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import NavIcon from "../NavIcon";
 import FeedbackButton from "../../../FeedbackButton";
-import DoubleArrowRight from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
-import DoubleArrowLeft from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 
 export default function Sidebar({
   isCollapsed,
@@ -60,7 +58,7 @@ export default function Sidebar({
         <NavOption
           isOnStudentSide={isOnStudentSide}
           linkTo={"/account_settings"}
-          icon={<SettingsRoundedIcon />}
+          icon={<NavIcon name="settings" />}
           isCollapsed={isCollapsed}
           text={"Settings"}
           currentPath={path}
@@ -69,7 +67,7 @@ export default function Sidebar({
         <FeedbackButton isCollapsed={isCollapsed} />
 
         <NavOption
-          icon={isCollapsed ? <DoubleArrowRight /> : <DoubleArrowLeft />}
+          icon={<NavIcon name={isCollapsed ? "expand" : "collapse"} />}
           isCollapsed={isCollapsed}
           text={isCollapsed ? "Expand" : "Collapse"}
           isButton={true}
