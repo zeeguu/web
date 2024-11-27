@@ -107,10 +107,14 @@ export default function BottomInput({
     }
     setFeedbackMessage("");
   }, [
+    isPartOfExpressionCorrect,
+    isIncorrect,
     distanceToCorrect,
+    answerExpressionLength,
     isSameLengthAsSolution,
     isLongerThanSolution,
     isInputWrongLanguage,
+    totalWordsCorrect,
   ]);
 
   function checkResult() {
