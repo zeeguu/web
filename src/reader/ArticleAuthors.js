@@ -7,9 +7,10 @@ function multipleAuthors(authors_str) {
 export default function ArticleAuthors({ articleInfo }) {
   const firstAuthor = articleInfo.authors.split(",")[0].trim();
 
-  if (!firstAuthor || firstAuthor == "") return <></>;
-  return;
-  <s.AuthorLinksContainer>
-    <div>{firstAuthor}</div>
-  </s.AuthorLinksContainer>;
+  if (!firstAuthor || firstAuthor === "") return <></>;
+  return (
+    <s.AuthorLinksContainer>
+      <div>{firstAuthor}</div>
+    </s.AuthorLinksContainer>
+  );
 }
