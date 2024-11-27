@@ -130,7 +130,6 @@ export default function BottomInput({
       setIsIncorrect(false);
       return;
     }
-    console.log(normalizedInput, normalizedAnswer);
     let totalWordsCorrect = countWordsIncluded(
       normalizedInput,
       normalizedAnswer,
@@ -181,7 +180,7 @@ export default function BottomInput({
           <InputField
             type="text"
             className={
-              distanceToCorrect >= 5 && totalWordsCorrect == 0
+              distanceToCorrect >= 5 && totalWordsCorrect === 0
                 ? "wrong-border"
                 : "almost-border"
             }
