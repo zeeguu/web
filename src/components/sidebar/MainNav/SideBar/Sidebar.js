@@ -64,15 +64,18 @@ export default function Sidebar({
           currentPath={path}
         />
 
-        <FeedbackButton isCollapsed={isCollapsed} />
+        <FeedbackButton
+          isOnStudentSide={isOnStudentSide}
+          isCollapsed={isCollapsed}
+        />
 
-        <NavOption
+        {/* <NavOption
           icon={<NavIcon name={isCollapsed ? "expand" : "collapse"} />}
           isCollapsed={isCollapsed}
           text={isCollapsed ? "Expand" : "Collapse"}
           isButton={true}
           onClick={() => setIsCollapsed(!isCollapsed)}
-        />
+        /> */}
       </s.BottomSection>
     </s.SideBar>
   );

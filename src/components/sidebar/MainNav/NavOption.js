@@ -3,7 +3,7 @@ import * as s from "./NavOption.sc";
 export default function NavOption({
   linkTo,
   icon,
-  isOnStudentSide = true,
+  isOnStudentSide,
   isCollapsed = false,
   notification = null,
   text,
@@ -13,14 +13,17 @@ export default function NavOption({
   className,
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
+  const isActive = currentPath?.includes(linkTo);
 
   return (
-    <s.NavOption
-      isActive={currentPath && currentPath.includes(linkTo)}
-      isOnStudentSide={isOnStudentSide}
-      className={className}
-    >
-      <Component onClick={onClick} to={linkTo && linkTo}>
+    <s.NavOption>
+      <Component
+        className={className}
+        isActive={isActive}
+        isOnStudentSide={isOnStudentSide}
+        onClick={onClick}
+        to={linkTo && linkTo}
+      >
         <s.IconContainer isCollapsed={isCollapsed} title={title ? title : text}>
           {icon}
           {notification}

@@ -8,6 +8,7 @@ export default function SidebarOptions_Student({
   isCollapsed,
   currentPath,
   isTeacher,
+  isOnStudentSide,
 }) {
   const path = useLocation().pathname;
 
@@ -22,6 +23,7 @@ export default function SidebarOptions_Student({
         isCollapsed={isCollapsed}
         text={"Home"}
         currentPath={currentPath}
+        isOnStudentSide={isOnStudentSide}
       />
 
       <NavOption
@@ -30,6 +32,7 @@ export default function SidebarOptions_Student({
         isCollapsed={isCollapsed}
         text={"Exercises"}
         currentPath={currentPath}
+        isOnStudentSide={isOnStudentSide}
         notification={
           hasExerciseNotification && <NotificationIcon text={notificationMsg} />
         }
@@ -41,6 +44,7 @@ export default function SidebarOptions_Student({
         isCollapsed={isCollapsed}
         text={"Words"}
         currentPath={currentPath}
+        isOnStudentSide={isOnStudentSide}
       />
 
       <NavOption
@@ -49,6 +53,7 @@ export default function SidebarOptions_Student({
         isCollapsed={isCollapsed}
         text={"History"}
         currentPath={currentPath}
+        isOnStudentSide={isOnStudentSide}
       />
 
       <NavOption
@@ -57,6 +62,7 @@ export default function SidebarOptions_Student({
         isCollapsed={isCollapsed}
         text={"Statistics"}
         currentPath={currentPath}
+        isOnStudentSide={isOnStudentSide}
       />
 
       {isTeacher && (
@@ -66,6 +72,7 @@ export default function SidebarOptions_Student({
           isCollapsed={isCollapsed}
           text={"Teacher Site"}
           currentPath={currentPath}
+          isOnStudentSide={isOnStudentSide}
         />
       )}
     </>
