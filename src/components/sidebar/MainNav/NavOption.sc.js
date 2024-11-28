@@ -92,7 +92,7 @@ const OptionButton = styled.button`
 
 const Span = styled.span`
   white-space: nowrap;
-  opacity: ${({ visibility }) => (visibility ? (visibility ? "0" : "1") : "1")};
+  opacity: 1;
   transition: opacity 0.3s ease-in-out;
   @media (max-width: 992px) {
     opacity: ${!isMobile() && 0};

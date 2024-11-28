@@ -8,12 +8,7 @@ import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import FeedbackButton from "../../../FeedbackButton";
 
-export default function Sidebar({
-  isCollapsed,
-  setIsCollapsed,
-  isOnStudentSide,
-  isTeacher,
-}) {
+export default function Sidebar({ isOnStudentSide, isTeacher }) {
   const { is_teacher } = useContext(UserContext);
 
   const path = useLocation().pathname;
@@ -21,7 +16,6 @@ export default function Sidebar({
 
   return (
     <s.SideBar
-      isCollapsed={isCollapsed}
       isOnStudentSide={isOnStudentSide}
       role="navigation"
       aria-label="Sidebar Navigation"
@@ -30,13 +24,11 @@ export default function Sidebar({
         className={"logo"}
         linkTo={defaultPage}
         icon={<img src="../static/images/zeeguuWhiteLogo.svg"></img>}
-        isCollapsed={isCollapsed}
         text={"Zeeguu"}
       ></NavOption>
 
       {isOnStudentSide && (
         <SidebarOptions_Student
-          isCollapsed={isCollapsed}
           currentPath={path}
           isOnStudentSide={isOnStudentSide}
           isTeacher={isTeacher}
@@ -45,37 +37,21 @@ export default function Sidebar({
 
       {!isOnStudentSide && (
         <SidebarOptions_Teacher
-          isCollapsed={isCollapsed}
           currentPath={path}
           isOnStudentSide={isOnStudentSide}
         />
       )}
 
-      <s.BottomSection
-        isCollapsed={isCollapsed}
-        isOnStudentSide={isOnStudentSide}
-      >
+      <s.BottomSection isOnStudentSide={isOnStudentSide}>
         <NavOption
           isOnStudentSide={isOnStudentSide}
           linkTo={"/account_settings"}
           icon={<NavIcon name="settings" />}
-          isCollapsed={isCollapsed}
           text={"Settings"}
           currentPath={path}
         />
 
-        <FeedbackButton
-          isOnStudentSide={isOnStudentSide}
-          isCollapsed={isCollapsed}
-        />
-
-        {/* <NavOption
-          icon={<NavIcon name={isCollapsed ? "expand" : "collapse"} />}
-          isCollapsed={isCollapsed}
-          text={isCollapsed ? "Expand" : "Collapse"}
-          isButton={true}
-          onClick={() => setIsCollapsed(!isCollapsed)}
-        /> */}
+        <FeedbackButton isOnStudentSide={isOnStudentSide} />
       </s.BottomSection>
     </s.SideBar>
   );

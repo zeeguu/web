@@ -4,7 +4,6 @@ export default function NavOption({
   linkTo,
   icon,
   isOnStudentSide,
-  isCollapsed = false,
   notification = null,
   text,
   title,
@@ -24,11 +23,11 @@ export default function NavOption({
         onClick={onClick}
         to={linkTo && linkTo}
       >
-        <s.IconContainer isCollapsed={isCollapsed} title={title ? title : text}>
+        <s.IconContainer title={title ? title : text}>
           {icon}
           {notification}
         </s.IconContainer>
-        <s.Span visibility={isCollapsed}>{text}</s.Span>
+        <s.Span>{text}</s.Span>
       </Component>
     </s.NavOption>
   );

@@ -5,7 +5,6 @@ import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 
 export default function SidebarOptions_Student({
-  isCollapsed,
   currentPath,
   isTeacher,
   isOnStudentSide,
@@ -20,7 +19,6 @@ export default function SidebarOptions_Student({
       <NavOption
         linkTo={"/articles"}
         icon={<NavIcon name="home" />}
-        isCollapsed={isCollapsed}
         text={"Home"}
         currentPath={currentPath}
         isOnStudentSide={isOnStudentSide}
@@ -29,7 +27,6 @@ export default function SidebarOptions_Student({
       <NavOption
         linkTo={"/exercises"}
         icon={<NavIcon name="exercises" />}
-        isCollapsed={isCollapsed}
         text={"Exercises"}
         currentPath={currentPath}
         isOnStudentSide={isOnStudentSide}
@@ -41,7 +38,6 @@ export default function SidebarOptions_Student({
       <NavOption
         linkTo={"/words"}
         icon={<NavIcon name="words" />}
-        isCollapsed={isCollapsed}
         text={"Words"}
         currentPath={currentPath}
         isOnStudentSide={isOnStudentSide}
@@ -50,7 +46,6 @@ export default function SidebarOptions_Student({
       <NavOption
         linkTo={"/history"}
         icon={<NavIcon name="history" />}
-        isCollapsed={isCollapsed}
         text={"History"}
         currentPath={currentPath}
         isOnStudentSide={isOnStudentSide}
@@ -59,7 +54,6 @@ export default function SidebarOptions_Student({
       <NavOption
         linkTo={"/user_dashboard"}
         icon={<NavIcon name="statistics" />}
-        isCollapsed={isCollapsed}
         text={"Statistics"}
         currentPath={currentPath}
         isOnStudentSide={isOnStudentSide}
@@ -69,7 +63,6 @@ export default function SidebarOptions_Student({
         <NavOption
           linkTo={"/teacher/classes"}
           icon={<NavIcon name="teacherSite" />}
-          isCollapsed={isCollapsed}
           text={"Teacher Site"}
           currentPath={currentPath}
           isOnStudentSide={isOnStudentSide}
