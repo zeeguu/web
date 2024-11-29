@@ -8,6 +8,35 @@ export default function useActivityTimer(activityUploaderFunction) {
 
   const [isActivityOver, setIsActivityOver] = useState(false);
 
+  useIdleTimer({
+    onIdle,
+    onActive,
+    timeout: 30_000,
+    eventsThrottle: 500,
+    events: [
+      "keydown",
+      "wheel",
+      "DOMMouseScroll",
+      "mousewheel",
+      "mousedown",
+      "touchstart",
+      "touchmove",
+      "MSPointerDown",
+      "MSPointerMove",
+      "focus",
+    ],
+  });
+  function onIdle() {
+    if (isTimerActive && activityUploaderFunction) {
+      activityUploaderFunction();
+    }
+    setIsTimerActive(false);
+  }
+
+  function onActive() {
+    setIsTimerActive(true);
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
       let newValue =
@@ -24,13 +53,6 @@ export default function useActivityTimer(activityUploaderFunction) {
       clearInterval(interval);
     };
   }, [activityTimer, isTimerActive]);
-
-  useIdleTimer({
-    onIdle,
-    onActive,
-    timeout: 30_000,
-    throttle: 500,
-  });
 
   useEffect(() => {
     const handleFocus = () => {
