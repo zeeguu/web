@@ -22,7 +22,7 @@ export default function TranslatableWord({
     e.target.classList.add("loading");
     setPreviousWord(word.word);
     if (word.translation) {
-      interactiveText.pronounce(word);
+      if (pronouncing) interactiveText.pronounce(word);
       return;
     }
     if (translating) {
