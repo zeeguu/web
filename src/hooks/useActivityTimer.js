@@ -5,12 +5,13 @@ export default function useActivityTimer(activityUploaderFunction) {
   const [activityTimer, setActivityTimer] = useState(0);
 
   const [isTimerActive, setIsTimerActive] = useState(true);
+  const [isFocused, setIsFocused] = useState(true);
 
   const [isActivityOver, setIsActivityOver] = useState(false);
 
   useIdleTimer({
-    onIdle,
     onActive,
+    onIdle,
     timeout: 30_000,
     eventsThrottle: 500,
     events: [
@@ -23,7 +24,6 @@ export default function useActivityTimer(activityUploaderFunction) {
       "touchmove",
       "MSPointerDown",
       "MSPointerMove",
-      "focus",
     ],
   });
   function onIdle() {
@@ -34,7 +34,7 @@ export default function useActivityTimer(activityUploaderFunction) {
   }
 
   function onActive() {
-    setIsTimerActive(true);
+    if (isFocused) setIsTimerActive(true);
   }
 
   useEffect(() => {
@@ -59,6 +59,7 @@ export default function useActivityTimer(activityUploaderFunction) {
       if (!isActivityOver) {
         setIsTimerActive(true);
       }
+      setIsFocused(true);
     };
 
     const handleBlur = () => {
@@ -66,6 +67,7 @@ export default function useActivityTimer(activityUploaderFunction) {
         activityUploaderFunction();
       }
       setIsTimerActive(false);
+      setIsFocused(false);
     };
 
     window.addEventListener("focus", handleFocus);
@@ -76,17 +78,6 @@ export default function useActivityTimer(activityUploaderFunction) {
       window.removeEventListener("blur", handleBlur);
     };
   }, []);
-
-  function onIdle() {
-    if (isTimerActive && activityUploaderFunction) {
-      activityUploaderFunction();
-    }
-    setIsTimerActive(false);
-  }
-
-  function onActive() {
-    setIsTimerActive(true);
-  }
 
   // active session duration is measured in seconds
   return [activityTimer, isTimerActive, setIsActivityOver];
