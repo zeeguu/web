@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if [[ $# -eq 0 ]] ; then
-    echo 'usage: ./download <URL> [image file-name]'
+    echo 'usage: ./download <domain-name> [image file-name]'
+    echo '  e.g. ./download https://giallozafferanno.it giallozafferanno.png'
     exit 0
 fi
 
