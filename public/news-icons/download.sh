@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $# -eq 0 ]] ; then
-    echo 'Provide the domain you want to get the favicon image from'
+    echo 'usage: ./download <URL> [image file-name]'
     exit 0
 fi
 
