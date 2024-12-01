@@ -91,7 +91,7 @@ export default function LanguagePreferences({ api }) {
     if (!validator(validatorRules, setErrorMessage)) {
       return;
     }
-    redirect("/commitment_preferences");
+    redirect("/create_account");
   }
 
   return (
