@@ -22,7 +22,8 @@ export default function FeedbackButton({ isCollapsed, isOnStudentSide }) {
         isOnStudentSide={isOnStudentSide}
         text={"Give Feedback"}
         isButton={true}
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           setShowFeedbackModal(!showFeedbackModal);
         }}
       />

@@ -1,6 +1,24 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { blue700, orange600 } from "../../../colors";
 import { Link } from "react-router-dom/cjs/react-router-dom";
+
+const slideIn = keyframes`
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+`;
 
 const BottomNav = styled.nav`
   box-sizing: border-box;
@@ -16,6 +34,9 @@ const BottomNav = styled.nav`
   color: white;
   z-index: 1;
   transition: 0.3s ease-in-out;
+  animation: ${({ isBottonNavVisible }) =>
+      isBottonNavVisible ? slideIn : slideOut}
+    0.3s ease-in-out forwards;
 `;
 
 const BottomNavOption = styled.li`
@@ -74,22 +95,32 @@ const IconSpan = styled.span`
   }
 `;
 
-const MoreOptionsWrapper = styled.div`
-  background-color: rgba(0, 0, 0, 0.6);
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  position: absolute;
-  animation: fadeIn 0.3s ease-in-out forwards;
-
-  @keyframes fadeIn {
+const fadeIn = keyframes`
     from {
       opacity: 0;
     }
     to {
       opacity: 1;
     }
-  }
+`;
+
+const fadeOut = keyframes`
+from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+`;
+
+const MoreOptionsWrapper = styled.div`
+  background-color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  position: absolute;
+  animation: ${({ isOverlayVisible }) => (isOverlayVisible ? fadeIn : fadeOut)}
+    0.3s ease-in-out forwards;
 `;
 
 const MoreOptionsPanel = styled.nav`
@@ -100,22 +131,28 @@ const MoreOptionsPanel = styled.nav`
     isOnStudentSide ? `${orange600}` : `${blue700}`};
   position: fixed;
   bottom: 0;
-  z-index: 3;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   border-radius: 1rem 1rem 0 0;
-  padding: 1rem;
+  padding: 1rem 1rem 2rem 1rem;
   box-shadow: 0 -0.25rem 1.25rem rgba(0, 0, 0, 0.1);
-  animation: slideIn 0.3s ease-in-out forwards;
+  animation: ${({ isMoreOptionsVisible }) =>
+      isMoreOptionsVisible ? slideIn : slideOut}
+    0.3s ease-in-out forwards;
+`;
 
-  @keyframes slideIn {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
+const CloseSection = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+const CloseButton = styled.button`
+  background-color: inherit;
+  border: none;
+  padding: 0;
+  margin: 0 0 0 auto;
+  color: white;
 `;
 
 export {
@@ -126,4 +163,6 @@ export {
   MoreOptionsWrapper,
   MoreOptionsPanel,
   StyledButton,
+  CloseSection,
+  CloseButton,
 };

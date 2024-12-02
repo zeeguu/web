@@ -6,40 +6,59 @@ import FeedbackButton from "../../../FeedbackButton";
 import NavOption from "../NavOption";
 import NotificationIcon from "../../../NotificationIcon";
 import useExerciseNotification from "../../../../hooks/useExerciseNotification";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] = useState(false);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [shouldMOreOptionsRender, setShouldMOreOptionsRender] = useState(false);
   const { hasExerciseNotification, notificationMsg } =
     useExerciseNotification();
-  const [isVisible, setIsVisible] = useState(true);
+  const [isBottonNavVisible, setIsBottomNavVisible] = useState(true);
+  const [shouldBottomNavRender, setShouldBottomNavRender] = useState(false);
 
   useEffect(() => {
     if (path.includes("/exercises") || path.includes("/read")) {
-      setIsVisible(false);
+      setIsBottomNavVisible(false);
+      setTimeout(() => setShouldBottomNavRender(false), 500);
     } else {
-      setIsVisible(true);
+      setIsBottomNavVisible(true);
+      setShouldBottomNavRender(true);
     }
   }, [path]);
 
   return (
     <>
-      {isVisible && (
+      {shouldBottomNavRender && (
         <>
-          {isMoreOptionsVisible && (
+          {shouldMOreOptionsRender && (
             <s.MoreOptionsWrapper
-              onClick={() => {
+              isOverlayVisible={isOverlayVisible}
+              onClick={(e) => {
                 setIsMoreOptionsVisible(false);
+                setIsOverlayVisible(false);
+                setTimeout(() => setShouldMOreOptionsRender(false), 500);
               }}
             >
-              <s.MoreOptionsPanel isOnStudentSide={isOnStudentSide}>
-                <button
-                  onClick={() => {
-                    setIsMoreOptionsVisible(false);
-                  }}
-                >
-                  Close
-                </button>
+              <s.MoreOptionsPanel
+                isMoreOptionsVisible={isMoreOptionsVisible}
+                isOnStudentSide={isOnStudentSide}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <s.CloseSection>
+                  <s.CloseButton
+                    onClick={() => {
+                      setIsMoreOptionsVisible(false);
+                      setIsOverlayVisible(false);
+                      setTimeout(() => setShouldMOreOptionsRender(false), 500);
+                    }}
+                  >
+                    <CloseRoundedIcon fontSize="small" />
+                  </s.CloseButton>
+                </s.CloseSection>
 
                 {isOnStudentSide && (
                   <>
@@ -51,6 +70,11 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                       currentPath={path}
                       onClick={() => {
                         setIsMoreOptionsVisible(false);
+                        setIsOverlayVisible(false);
+                        setTimeout(
+                          () => setShouldMOreOptionsRender(false),
+                          500,
+                        );
                       }}
                     />
 
@@ -62,6 +86,11 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                       currentPath={path}
                       onClick={() => {
                         setIsMoreOptionsVisible(false);
+                        setIsOverlayVisible(false);
+                        setTimeout(
+                          () => setShouldMOreOptionsRender(false),
+                          500,
+                        );
                       }}
                     />
 
@@ -73,6 +102,11 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                         currentPath={path}
                         onClick={() => {
                           setIsMoreOptionsVisible(false);
+                          setIsOverlayVisible(false);
+                          setTimeout(
+                            () => setShouldMOreOptionsRender(false),
+                            500,
+                          );
                         }}
                       />
                     )}
@@ -89,6 +123,11 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
                       currentPath={path}
                       onClick={() => {
                         setIsMoreOptionsVisible(false);
+                        setIsOverlayVisible(false);
+                        setTimeout(
+                          () => setShouldMOreOptionsRender(false),
+                          500,
+                        );
                       }}
                     />
                   </>
@@ -98,7 +137,10 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
               </s.MoreOptionsPanel>
             </s.MoreOptionsWrapper>
           )}
-          <s.BottomNav isOnStudentSide={isOnStudentSide}>
+          <s.BottomNav
+            isBottonNavVisible={isBottonNavVisible}
+            isOnStudentSide={isOnStudentSide}
+          >
             {isOnStudentSide && (
               <>
                 <s.BottomNavOption>
@@ -186,6 +228,8 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
               <s.StyledButton
                 onClick={() => {
                   setIsMoreOptionsVisible(true);
+                  setIsOverlayVisible(true);
+                  setShouldMOreOptionsRender(true);
                 }}
               >
                 <s.IconSpan isOnStudentSide={isOnStudentSide}>
