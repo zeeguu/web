@@ -157,7 +157,12 @@ export default function FindArticles({
             </span>
           </div>
 
-          {!searchQuery && <UnfinishedArticlesList />}
+          {!searchQuery && (
+            <UnfinishedArticlesList
+              articleList={articleList}
+              setArticleList={setArticleList}
+            />
+          )}
           <s.SortHolder>
             <SortingButtons
               articleList={articleList}
