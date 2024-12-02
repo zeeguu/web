@@ -74,18 +74,48 @@ const IconSpan = styled.span`
   }
 `;
 
+const MoreOptionsWrapper = styled.div`
+  background-color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  position: absolute;
+  animation: fadeIn 0.3s ease-in-out forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
 const MoreOptionsPanel = styled.nav`
+  opacity: 1;
   box-sizing: border-box;
   width: 100%;
   background-color: ${({ isOnStudentSide }) =>
     isOnStudentSide ? `${orange600}` : `${blue700}`};
   position: fixed;
   bottom: 0;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   border-radius: 1rem 1rem 0 0;
   padding: 1rem;
+  box-shadow: 0 -0.25rem 1.25rem rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-in-out forwards;
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
 `;
 
 export {
@@ -93,6 +123,7 @@ export {
   BottomNavOption,
   StyledLink,
   IconSpan,
+  MoreOptionsWrapper,
   MoreOptionsPanel,
   StyledButton,
 };

@@ -27,70 +27,76 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
       {isVisible && (
         <>
           {isMoreOptionsVisible && (
-            <s.MoreOptionsPanel isOnStudentSide={isOnStudentSide}>
-              <button
-                onClick={() => {
-                  setIsMoreOptionsVisible(false);
-                }}
-              >
-                Close
-              </button>
+            <s.MoreOptionsWrapper
+              onClick={() => {
+                setIsMoreOptionsVisible(false);
+              }}
+            >
+              <s.MoreOptionsPanel isOnStudentSide={isOnStudentSide}>
+                <button
+                  onClick={() => {
+                    setIsMoreOptionsVisible(false);
+                  }}
+                >
+                  Close
+                </button>
 
-              {isOnStudentSide && (
-                <>
-                  <NavOption
-                    isOnStudentSide={isOnStudentSide}
-                    linkTo={"/user_dashboard"}
-                    icon={<NavIcon name="statistics" />}
-                    text={"Statistics"}
-                    currentPath={path}
-                    onClick={() => {
-                      setIsMoreOptionsVisible(false);
-                    }}
-                  />
-
-                  <NavOption
-                    isOnStudentSide={isOnStudentSide}
-                    linkTo={"/history"}
-                    icon={<NavIcon name="history" />}
-                    text={"History"}
-                    currentPath={path}
-                    onClick={() => {
-                      setIsMoreOptionsVisible(false);
-                    }}
-                  />
-
-                  {isTeacher && (
+                {isOnStudentSide && (
+                  <>
                     <NavOption
-                      linkTo={"/teacher/classes"}
-                      icon={<NavIcon name="teacherSite" />}
-                      text={"Teacher Site"}
+                      isOnStudentSide={isOnStudentSide}
+                      linkTo={"/user_dashboard"}
+                      icon={<NavIcon name="statistics" />}
+                      text={"Statistics"}
                       currentPath={path}
                       onClick={() => {
                         setIsMoreOptionsVisible(false);
                       }}
                     />
-                  )}
-                </>
-              )}
 
-              {!isOnStudentSide && (
-                <>
-                  <NavOption
-                    isOnStudentSide={isOnStudentSide}
-                    linkTo={"/articles"}
-                    icon={<NavIcon name="studentSite" />}
-                    text={"Student Site"}
-                    currentPath={path}
-                    onClick={() => {
-                      setIsMoreOptionsVisible(false);
-                    }}
-                  />
-                </>
-              )}
+                    <NavOption
+                      isOnStudentSide={isOnStudentSide}
+                      linkTo={"/history"}
+                      icon={<NavIcon name="history" />}
+                      text={"History"}
+                      currentPath={path}
+                      onClick={() => {
+                        setIsMoreOptionsVisible(false);
+                      }}
+                    />
 
-              <FeedbackButton isOnStudentSide={isOnStudentSide} />
-            </s.MoreOptionsPanel>
+                    {isTeacher && (
+                      <NavOption
+                        linkTo={"/teacher/classes"}
+                        icon={<NavIcon name="teacherSite" />}
+                        text={"Teacher Site"}
+                        currentPath={path}
+                        onClick={() => {
+                          setIsMoreOptionsVisible(false);
+                        }}
+                      />
+                    )}
+                  </>
+                )}
+
+                {!isOnStudentSide && (
+                  <>
+                    <NavOption
+                      isOnStudentSide={isOnStudentSide}
+                      linkTo={"/articles"}
+                      icon={<NavIcon name="studentSite" />}
+                      text={"Student Site"}
+                      currentPath={path}
+                      onClick={() => {
+                        setIsMoreOptionsVisible(false);
+                      }}
+                    />
+                  </>
+                )}
+
+                <FeedbackButton isOnStudentSide={isOnStudentSide} />
+              </s.MoreOptionsPanel>
+            </s.MoreOptionsWrapper>
           )}
           <s.BottomNav isOnStudentSide={isOnStudentSide}>
             {isOnStudentSide && (
