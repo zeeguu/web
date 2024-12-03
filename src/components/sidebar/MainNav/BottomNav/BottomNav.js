@@ -131,13 +131,16 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
 
                 <s.BottomNavOption>
                   <s.StyledLink to="/exercises">
-                    {hasExerciseNotification && (
-                      <NotificationIcon text={notificationMsg} />
-                    )}
                     <s.IconSpan
                       isOnStudentSide={isOnStudentSide}
                       isActive={path && path.includes("/exercises")}
                     >
+                      {hasExerciseNotification && (
+                        <NotificationIcon
+                          position={"top-absolute"}
+                          text={notificationMsg}
+                        />
+                      )}
                       <NavIcon name="exercises" />
                     </s.IconSpan>
                     Exercises

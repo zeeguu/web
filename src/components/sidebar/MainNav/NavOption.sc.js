@@ -17,6 +17,7 @@ const FontColors = css`
 
 const Shared = css`
   box-sizing: border-box;
+  /* padding: 0 0 0 0.75rem; */
   display: flex;
   width: 100%;
   min-width: 3rem;
@@ -90,12 +91,14 @@ const OptionButton = styled.button`
   ${Shared}
 `;
 
-const Span = styled.span`
+const TextWrapper = styled.span`
   white-space: nowrap;
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
+  width: fit-content;
   @media (max-width: 992px) {
     opacity: ${!isMobile() && 0};
+    width: 0;
   }
 `;
 
@@ -109,4 +112,23 @@ const IconContainer = styled.span`
   justify-content: center;
 `;
 
-export { NavOption, RouterLink, Span, IconContainer, OptionButton };
+const OptionContentWrapper = styled.span`
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: fit-content;
+  padding: 0 1rem 0 0;
+`;
+
+export {
+  NavOption,
+  RouterLink,
+  TextWrapper,
+  IconContainer,
+  OptionButton,
+  OptionContentWrapper,
+};

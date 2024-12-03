@@ -6,6 +6,13 @@ const NotificationIcon = styled.div`
     left: 0.05em;
     margin-right: -0.6em;
   }
+
+  &.top-absolute {
+    top: 0;
+    right: 0;
+    position: absolute;
+  }
+
   &.bottom {
     top: 0.15em;
     left: 0.05em;
@@ -13,6 +20,7 @@ const NotificationIcon = styled.div`
   }
   display: inline-block;
   position: relative;
+
   cursor: default;
   div {
     display: flex;

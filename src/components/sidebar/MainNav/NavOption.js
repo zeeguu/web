@@ -23,11 +23,11 @@ export default function NavOption({
         onClick={onClick}
         to={linkTo && linkTo}
       >
-        <s.IconContainer title={title ? title : text}>
-          {icon}
+        <s.OptionContentWrapper>
+          <s.IconContainer title={title ? title : text}>{icon}</s.IconContainer>
+          <s.TextWrapper>{text}</s.TextWrapper>
           {notification}
-        </s.IconContainer>
-        <s.Span>{text}</s.Span>
+        </s.OptionContentWrapper>
       </Component>
     </s.NavOption>
   );

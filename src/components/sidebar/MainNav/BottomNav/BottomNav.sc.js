@@ -44,6 +44,7 @@ const BottomNavOption = styled.li`
   list-style: none;
   font-weight: 700;
   font-size: 0.7rem;
+  position: relative;
 `;
 
 const StyledLink = styled(Link)`
@@ -76,6 +77,7 @@ const StyledButton = styled.button`
 `;
 
 const IconSpan = styled.span`
+  position: relative;
   border-radius: 0.25rem;
   padding: 0.2rem 0.5rem;
   color: inherit;

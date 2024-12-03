@@ -31,7 +31,12 @@ export default function SidebarOptions_Student({
         currentPath={currentPath}
         isOnStudentSide={isOnStudentSide}
         notification={
-          hasExerciseNotification && <NotificationIcon text={notificationMsg} />
+          hasExerciseNotification && (
+            <NotificationIcon
+              position={"top-absolute"}
+              text={notificationMsg}
+            />
+          )
         }
       />
 
