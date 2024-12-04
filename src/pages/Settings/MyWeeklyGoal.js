@@ -20,8 +20,8 @@ import { useHistory } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import LoadingAnimation from "../../components/LoadingAnimation";
 
-export default function MyWeeklyGoal({ api, setUser }) {
-  const [value, setValue] = useState("");
+export default function MyWeeklyGoal({ api}) {
+  const [setValue] = useState("");
   const handleChange = (e) => {
     const newValue = e.target.value;
     if (newValue <= 720) {
@@ -43,7 +43,7 @@ export default function MyWeeklyGoal({ api, setUser }) {
       setUserDetails(commitmentData);
       console.log(commitmentData);
     });
-  }, []);
+  }, [api]);
 
   function updateCommitmentInfo(info) {
     setUserDetails({
@@ -73,7 +73,7 @@ export default function MyWeeklyGoal({ api, setUser }) {
   if (!userDetails) {
     return <LoadingAnimation />;
   }
-  console.log(userDetails.user_days);
+ 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow />
