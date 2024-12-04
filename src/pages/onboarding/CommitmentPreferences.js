@@ -19,7 +19,7 @@ import validator from "../../assorted/validator";
 import strings from "../../i18n/definitions";
 import LoadingAnimation from "../../components/LoadingAnimation";
 import { PRACTICE_DAYS } from "../../assorted/practiceDays";
-import { MINUTES_GOAL } from "../../assorted/minutesGoal";
+import { MINUTES_GOAL_INTRO } from "../../assorted/minutesGoal";
 
 export default function CommitmentPreferences({ api }) {
   const [practice_days_on_register, handlePractice_days_on_register] =
@@ -76,16 +76,18 @@ export default function CommitmentPreferences({ api }) {
               label={strings.myPracticeGoal}
               selectedValue={practice_days_on_register}
               onChange={handlePractice_days_on_register}
+              placeholder = {"5 days is recommended."}
             />
 
             <Selector
               id={"minutes-goal-initialiser"}
-              options={MINUTES_GOAL}
+              options={MINUTES_GOAL_INTRO}
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               label={strings.myDurationGoal}
               selectedValue={mins_goal_on_register}
               onChange={handleMins_goal_on_register}
+              placeholder= {"5 minutes is recommended."}
             />
           </FormSection>
           <p className="centered">{strings.youCanChangeLater}</p>
