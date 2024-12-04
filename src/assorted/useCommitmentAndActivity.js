@@ -89,7 +89,7 @@ const useCommitmentAndActivity = (api) => {
             setLastCommitmentUpdate(currentDate);
           }
         } else {
-          setCommitmentAndActivityData(currentCommitmentAndActivityData);
+          setCommitmentAndActivityData(0);
         }
       });
     };
