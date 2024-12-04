@@ -150,7 +150,6 @@ function assignBookmarks(currentBookmarks, currentExercises) {
 }
 
 function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
-  console.log("bookmarks", bookmarks);
   let exercisesByCycleTask = getElementsByCycleTask(
     exerciseTypesList,
     getExerciseCycleTaskKey,
@@ -184,8 +183,6 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
 }
 
 function assignBookmarksToLevels(bookmarks, exerciseTypesList) {
-  console.log("bookmarks", bookmarks);
-
   let exerciseSequence = [];
 
   let bookmarksByLevel = groupByLevel(bookmarks);
@@ -211,12 +208,16 @@ function assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList) {
   let exerciseSequence = [];
   let exerciseType_i = 0;
   let bookmark_i = 0;
-
   while (bookmark_i < bookmarks.length) {
     let currExRequiredBookmarks =
       exerciseTypesList[exerciseType_i].requiredBookmarks;
 
-    if (bookmark_i + currExRequiredBookmarks <= bookmarks.length) {
+    if (
+      bookmark_i + currExRequiredBookmarks <= bookmarks.length &&
+      distinctTranslations(
+        bookmarks.slice(bookmark_i, bookmark_i + currExRequiredBookmarks),
+      )
+    ) {
       let exercise = {
         type: exerciseTypesList[exerciseType_i].type,
         bookmarks: bookmarks.slice(
