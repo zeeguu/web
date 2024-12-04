@@ -35,7 +35,7 @@ self.addEventListener("message", async (event) => {
 function scheduleDailyNotification() {
   const now = new Date();
   const nextNotificationTime = new Date();
-  nextNotificationTime.setHours(dailyNotificationTime, 90, 0, 0);
+  nextNotificationTime.setHours(dailyNotificationTime, 0, 0, 0);
 
   if (now.getTime() > nextNotificationTime.getTime()) {
     nextNotificationTime.setDate(now.getDate() + 1);
