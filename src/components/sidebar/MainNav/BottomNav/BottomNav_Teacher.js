@@ -1,34 +1,26 @@
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import * as s from "./BottomNav.sc";
 import NavIcon from "../NavIcon";
+import BottomNavOption from "./BottomNavOption";
 
 export default function BottomNav_Teacher({ isOnStudentSide }) {
   const path = useLocation().pathname;
   return (
     <>
-      <s.BottomNavOption>
-        <s.StyledLink to="/teacher/classes">
-          <s.IconSpan
-            isOnStudentSide={isOnStudentSide}
-            isActive={path && path.includes("/teacher/classes")}
-          >
-            <NavIcon name="myClassrooms" />
-          </s.IconSpan>
-          My Classrooms
-        </s.StyledLink>
-      </s.BottomNavOption>
+      <BottomNavOption
+        linkTo={"/teacher/classes"}
+        currentPath={path}
+        icon={<NavIcon name="myClassrooms" />}
+        text={"My Classrooms"}
+        isOnStudentSide={isOnStudentSide}
+      />
 
-      <s.BottomNavOption>
-        <s.StyledLink to="/teacher/texts">
-          <s.IconSpan
-            isOnStudentSide={isOnStudentSide}
-            isActive={path && path.includes("/teacher/texts")}
-          >
-            <NavIcon name="myTexts" />
-          </s.IconSpan>
-          My Texts
-        </s.StyledLink>
-      </s.BottomNavOption>
+      <BottomNavOption
+        linkTo={"/teacher/texts"}
+        currentPath={path}
+        icon={<NavIcon name="myTexts" />}
+        text={"My Texts"}
+        isOnStudentSide={isOnStudentSide}
+      />
     </>
   );
 }

@@ -5,6 +5,7 @@ import NavIcon from "../NavIcon";
 import MoreOptions from "./MoreOptions";
 import BottomNav_Student from "./BottomNav_Student";
 import BottomNav_Teacher from "./BottomNav_Teacher";
+import BottomNavOption from "./BottomNavOption";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;
@@ -51,27 +52,20 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
             {!isOnStudentSide && (
               <BottomNav_Teacher isOnStudentSide={isOnStudentSide} />
             )}
+            <BottomNavOption
+              linkTo={"/account_settings"}
+              currentPath={path}
+              icon={<NavIcon name="settings" />}
+              text={"Settings"}
+              isOnStudentSide={isOnStudentSide}
+            />
 
-            <s.BottomNavOption>
-              <s.StyledLink to="/account_settings">
-                <s.IconSpan
-                  isOnStudentSide={isOnStudentSide}
-                  isActive={path && path.includes("/account_settings")}
-                >
-                  <NavIcon name="settings" />
-                </s.IconSpan>
-                Settings
-              </s.StyledLink>
-            </s.BottomNavOption>
-
-            <s.BottomNavOption>
-              <s.StyledButton onClick={handleShowMoreOptions}>
-                <s.IconSpan isOnStudentSide={isOnStudentSide}>
-                  <NavIcon name="more" />
-                </s.IconSpan>
-                More
-              </s.StyledButton>
-            </s.BottomNavOption>
+            <BottomNavOption
+              onClick={handleShowMoreOptions}
+              icon={<NavIcon name="more" />}
+              text={"More"}
+              isOnStudentSide={isOnStudentSide}
+            />
           </s.BottomNav>
         </>
       )}
