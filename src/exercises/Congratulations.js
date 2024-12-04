@@ -129,8 +129,8 @@ export default function Congratulations({
           <StreakCircleDisplay className="streakCircleDisplay">
             <StreakCircle>
               <StreakText>Well done! You have been practicing for </StreakText>
-              <WeekText>{commitmentAndActivityData}</WeekText> weeks{" "}
-              <img src="/static/images/lightning.svg" alt="lightning" />{" "}
+              <WeekText>  {commitmentAndActivityData}  weeks</WeekText>
+              <img src="/static/images/lightning.svg" alt="lightning" />
             </StreakCircle>
           </StreakCircleDisplay>
         </ConclusionBox>
