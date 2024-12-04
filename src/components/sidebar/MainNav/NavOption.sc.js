@@ -21,7 +21,6 @@ const Shared = css`
   width: 100%;
   min-width: 3rem;
   height: 3rem;
-  flex: 1;
   flex-direction: row;
   align-items: center;
   flex-wrap: nowrap;

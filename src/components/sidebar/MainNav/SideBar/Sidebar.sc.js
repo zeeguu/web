@@ -11,6 +11,7 @@ const sharedSidebarStyling = css`
   position: fixed;
   left: 0;
   transition: 0.3s ease-in-out;
+  overflow-x: hidden;
   width: ${({ isCollapsed }) => (isCollapsed ? "4.2rem" : "14rem")};
   ${BgColors}
 
@@ -20,17 +21,18 @@ const sharedSidebarStyling = css`
 `;
 
 const SideBar = styled.nav`
-  ${sharedSidebarStyling}
   height: 100%;
   top: 0;
   padding: 0.5rem 0.5rem 11rem 0.5rem;
   overflow-y: scroll;
+  ${sharedSidebarStyling}
 `;
 
 const BottomSection = styled.div`
-  ${sharedSidebarStyling}
   bottom: 0;
   padding: 1rem 0.5rem 1rem 0.5rem;
+  position: fixed;
+  ${sharedSidebarStyling}
 `;
 
 export { SideBar, BottomSection };
