@@ -1,60 +1,56 @@
-import { useState, useEffect } from "react";
-import { scrollToTop } from "../../utils/misc/scrollToTop";
-import redirect from "../../utils/routing/routing";
-import useFormField from "../../hooks/useFormField";
-
+import { useState} from "react";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
 import Form from "../_pages_shared/Form.sc";
-import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
 import Selector from "../../components/Selector";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
+import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 
-import validator from "../../assorted/validator";
 import strings from "../../i18n/definitions";
-import LoadingAnimation from "../../components/LoadingAnimation";
 import { PRACTICE_DAYS } from "../../assorted/practiceDays";
 import { MINUTES_GOAL_INTRO } from "../../assorted/minutesGoal";
+import { useHistory } from "react-router-dom";
 
-export default function CommitmentPreferences({ api }) {
-  const [practice_days_on_register, handlePractice_days_on_register] =
-    useFormField(""); 
-  const [mins_goal_on_register, handleMins_goal_on_register] = useFormField("");
-  const [systemLanguages] = useState(" ");
-  const [errorMessage, setErrorMessage] = useState("");
+export default function CommitmentPreferences({ api, hasExtension }) {
+  const [userDetails, setUserDetails] = useState({
+    user_minutes: "",
+    user_days: "",
+  });
+  const history = useHistory();
 
-  useEffect(() => {
-    if (errorMessage) {
-      scrollToTop();
-    }
-  }, [errorMessage]);
-
-  if (!systemLanguages) {
-    return <LoadingAnimation />;
+  function saveCommitmentInfo(info) {
+    setUserDetails({
+      user_minutes: info.user_minutes,
+      user_days: info.user_days,
+    });
   }
 
-  let validatorRules = [
-    [
-      practice_days_on_register === "",
-      "Please select how many days per week you want to practice",
-    ],
-    [
-      mins_goal_on_register === "",
-      "Please select how many minutes per session you want to practice",
-    ],
-  ];
+  function savePracticeDays(practiceDays) {
+    setUserDetails({ ...userDetails, user_days: practiceDays });
+  }
 
-  function validateAndRedirect(e) {
+  function saveMinutes(minutes) {
+    setUserDetails({ ...userDetails, user_minutes: minutes });
+  }
+
+  function handleCommitmentPreferences(e) {
     e.preventDefault();
-    if (!validator(validatorRules, setErrorMessage)) {
-      return;
-    }
-    redirect("/create_account");
+    api.createUserCommitment(userDetails, () => {
+      saveCommitmentInfo(userDetails);
+      const nextPage = getLinkToNextPage();
+      history.push(nextPage);
+    });
+  }
+
+  function getLinkToNextPage() {
+    if (isSupportedBrowser() && hasExtension === false) {
+      return "/install_extension";
+    } else return "/articles";
   }
 
   return (
@@ -63,10 +59,7 @@ export default function CommitmentPreferences({ api }) {
         <Heading>How much time would you like to commit to per week?</Heading>
       </Header>
       <Main>
-        <Form action={""}>
-          {errorMessage && (
-            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
-          )}
+        <Form>
           <FormSection>
             <Selector
               id={"practice-goal-initialiser"}
@@ -74,8 +67,10 @@ export default function CommitmentPreferences({ api }) {
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               label={strings.myPracticeGoal}
-              selectedValue={practice_days_on_register}
-              onChange={handlePractice_days_on_register}
+              selectedValue={userDetails.user_days}
+              onChange={(e) => {
+                savePracticeDays(e.target.value);
+              }}
               placeholder = {"5 days is recommended."}
             />
 
@@ -85,8 +80,10 @@ export default function CommitmentPreferences({ api }) {
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               label={strings.myDurationGoal}
-              selectedValue={mins_goal_on_register}
-              onChange={handleMins_goal_on_register}
+              selectedValue={userDetails.user_minutes}
+              onChange={(e) => {
+                saveMinutes(e.target.value);
+              }}
               placeholder= {"5 minutes is recommended."}
             />
           </FormSection>
@@ -95,7 +92,7 @@ export default function CommitmentPreferences({ api }) {
             <Button
               type={"submit"}
               className={"full-width-btn"}
-              onClick={validateAndRedirect}
+              onClick={handleCommitmentPreferences}
             >
               {strings.next} <RoundedForwardArrow />
             </Button>

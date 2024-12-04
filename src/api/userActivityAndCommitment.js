@@ -10,16 +10,15 @@ Zeeguu_API.prototype.getUserCommitment = function (callback) {
 };
 
 Zeeguu_API.prototype.createUserCommitment = function (
-  userMinutes,
-  userDays,
-  callback,
+  user_commitment,
+  onSuccess,
 ) {
-  let payload = {
-    user_minutes: userMinutes,
-    user_days: userDays,
-  };
-
-  this._postJSON("user_commitment_create", payload, callback);
+  this.apiLog(this._appendSessionToUrl("user_commitment_create"));
+  this._post(
+    `user_commitment_create`,
+    qs.stringify(user_commitment),
+    onSuccess,
+  );
 };
 
 Zeeguu_API.prototype.updateUserCommitment = function (
