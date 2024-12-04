@@ -2,17 +2,15 @@ import * as s from "./BottomNav.sc";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { useEffect, useState } from "react";
 import NavIcon from "../NavIcon";
-import FeedbackButton from "../../../FeedbackButton";
-import NavOption from "../NavOption";
 import NotificationIcon from "../../../NotificationIcon";
 import useExerciseNotification from "../../../../hooks/useExerciseNotification";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import MoreOptions from "./MoreOptions";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] = useState(false);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
-  const [shouldMOreOptionsRender, setShouldMOreOptionsRender] = useState(false);
+  const [shouldMoreOptionsRender, setShouldMoreOptionsRender] = useState(false);
   const { hasExerciseNotification, notificationMsg } =
     useExerciseNotification();
   const [isBottonNavVisible, setIsBottomNavVisible] = useState(true);
@@ -31,85 +29,28 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   function handleShowMoreOptions() {
     setIsMoreOptionsVisible(true);
     setIsOverlayVisible(true);
-    setShouldMOreOptionsRender(true);
+    setShouldMoreOptionsRender(true);
   }
 
   function handleHideMoreOptions() {
     setIsMoreOptionsVisible(false);
     setIsOverlayVisible(false);
-    setTimeout(() => setShouldMOreOptionsRender(false), 500);
+    setTimeout(() => setShouldMoreOptionsRender(false), 500);
   }
 
   return (
     <>
       {shouldBottomNavRender && (
         <>
-          {shouldMOreOptionsRender && (
-            <s.MoreOptionsWrapper
+          {shouldMoreOptionsRender && (
+            <MoreOptions
+              currentPath={path}
+              isOnStudentSide={isOnStudentSide}
+              isTeacher={isTeacher}
               isOverlayVisible={isOverlayVisible}
-              onClick={handleHideMoreOptions}
-            >
-              <s.MoreOptionsPanel
-                isMoreOptionsVisible={isMoreOptionsVisible}
-                isOnStudentSide={isOnStudentSide}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <s.CloseSection>
-                  <s.CloseButton onClick={handleHideMoreOptions}>
-                    <CloseRoundedIcon fontSize="small" />
-                  </s.CloseButton>
-                </s.CloseSection>
-
-                {isOnStudentSide && (
-                  <>
-                    <NavOption
-                      isOnStudentSide={isOnStudentSide}
-                      linkTo={"/user_dashboard"}
-                      icon={<NavIcon name="statistics" />}
-                      text={"Statistics"}
-                      currentPath={path}
-                      onClick={handleHideMoreOptions}
-                    />
-
-                    <NavOption
-                      isOnStudentSide={isOnStudentSide}
-                      linkTo={"/history"}
-                      icon={<NavIcon name="history" />}
-                      text={"History"}
-                      currentPath={path}
-                      onClick={handleHideMoreOptions}
-                    />
-
-                    {isTeacher && (
-                      <NavOption
-                        linkTo={"/teacher/classes"}
-                        icon={<NavIcon name="teacherSite" />}
-                        text={"Teacher Site"}
-                        currentPath={path}
-                        onClick={handleHideMoreOptions}
-                      />
-                    )}
-                  </>
-                )}
-
-                {!isOnStudentSide && (
-                  <>
-                    <NavOption
-                      isOnStudentSide={isOnStudentSide}
-                      linkTo={"/articles"}
-                      icon={<NavIcon name="studentSite" />}
-                      text={"Student Site"}
-                      currentPath={path}
-                      onClick={handleHideMoreOptions}
-                    />
-                  </>
-                )}
-
-                <FeedbackButton isOnStudentSide={isOnStudentSide} />
-              </s.MoreOptionsPanel>
-            </s.MoreOptionsWrapper>
+              isMoreOptionsVisible={isMoreOptionsVisible}
+              handleHideMoreOptions={handleHideMoreOptions}
+            />
           )}
           <s.BottomNav
             isBottonNavVisible={isBottonNavVisible}
