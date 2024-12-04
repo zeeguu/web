@@ -1,6 +1,8 @@
 import BackArrow from "./settings_pages_shared/BackArrow";
 import { setTitle } from "../../assorted/setTitle";
 import { useEffect, useState, useContext } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import strings from "../../i18n/definitions";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -14,20 +16,17 @@ import Button from "../_pages_shared/Button.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import { PRACTICE_DAYS } from "../../assorted/practiceDays";
 import { MINUTES_GOAL } from "../../assorted/minutesGoal";
-import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
-import LocalStorage from "../../assorted/LocalStorage";
 import LoadingAnimation from "../../components/LoadingAnimation";
-import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 
 export default function MyWeeklyGoal({ api, setUser }) {
   const [value, setValue] = useState("");
   const handleChange = (e) => {
     const newValue = e.target.value;
     if (newValue <= 720) {
-      setValue(newValue); 
-      updateMinutes(newValue); 
+      setValue(newValue);
+      updateMinutes(newValue);
     }
   };
 
@@ -67,6 +66,7 @@ export default function MyWeeklyGoal({ api, setUser }) {
     api.saveUserCommitmentInfo(userDetails, () => {
       updateCommitmentInfo(userDetails);
       history.goBack();
+      toast("Commitment saved!", { position: "top-right" });
     });
   }
 
@@ -109,10 +109,10 @@ export default function MyWeeklyGoal({ api, setUser }) {
             />
             <InputField
               type="number"
-              label="Enter minutes"
+              label="Custom minutes"
               name="minutes"
               id="minutes"
-              value={value}
+              value={userDetails.user_minutes}
               onChange={handleChange}
               placeholder="Enter up to 720 minutes"
             />

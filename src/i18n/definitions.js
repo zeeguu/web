@@ -576,12 +576,14 @@ let strings = new LocalizedStrings(
       sevenDays: "7 days per week",
 
       //MINUTES_GOALS
+      twoMinutes: "2 minutes",
       fiveMinutes: "5 minutes",
       tenMinutes: "10 minutes",
       fifteenMinutes: "15 minutes",
+      twentyMinutes: "20 minutes",
       thirtyMinutes: "30 minutes",
-      sixtyMinutes: "1 hour",
-
+      custom: "Enter a custom amount",
+    
       //CEFR_LEVELS
       beginner: "Beginner",
       elementary: "Elementary",
