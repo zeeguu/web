@@ -42,7 +42,10 @@ const Shared = css`
     `}
 
   &:hover {
-    border: solid 0.1rem rgba(255, 255, 255, 0.9);
+    ${!isMobile() &&
+    css`
+      border: solid 0.1rem rgba(255, 255, 255, 0.9);
+    `}
   }
 
   &:active {
@@ -94,6 +97,7 @@ const TextWrapper = styled.span`
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
   width: fit-content;
+  user-select: none;
   @media (max-width: 992px) {
     opacity: ${!isMobile() && 0};
     width: 0;
