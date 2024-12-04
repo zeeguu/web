@@ -17,7 +17,6 @@ const FontColors = css`
 
 const Shared = css`
   box-sizing: border-box;
-  /* padding: 0 0 0 0.75rem; */
   display: flex;
   width: 100%;
   min-width: 3rem;
@@ -119,9 +118,13 @@ const OptionContentWrapper = styled.span`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.76rem;
   width: fit-content;
-  padding: 0 1rem 0 0;
+  padding: 0 1.8rem 0 0;
+  height: 2rem;
+  @media (max-width: 992px) {
+    padding: 0;
+  }
 `;
 
 export {

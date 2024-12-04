@@ -9,7 +9,7 @@ const NotificationIcon = styled.div`
 
   &.top-absolute {
     top: 0;
-    right: 0;
+    right: 0.7rem;
     position: absolute;
   }
 

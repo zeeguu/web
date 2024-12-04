@@ -131,16 +131,16 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
 
                 <s.BottomNavOption>
                   <s.StyledLink to="/exercises">
+                    {hasExerciseNotification && (
+                      <NotificationIcon
+                        position={"top-absolute"}
+                        text={notificationMsg}
+                      />
+                    )}
                     <s.IconSpan
                       isOnStudentSide={isOnStudentSide}
                       isActive={path && path.includes("/exercises")}
                     >
-                      {hasExerciseNotification && (
-                        <NotificationIcon
-                          position={"top-absolute"}
-                          text={notificationMsg}
-                        />
-                      )}
                       <NavIcon name="exercises" />
                     </s.IconSpan>
                     Exercises
@@ -215,18 +215,3 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
     </>
   );
 }
-
-// Todo:
-// - make the bottom bar not visible on the article’s page and the exercise page
-//
-// - make the top bar with a back button on mobile (for some pages such as articles)
-//
-// - adapt options in the bottom bar (remove the teacher’s view, replace with settings,
-// add additional options in the expandible bar)
-//
-// - The app automatically zooms in when user enters input, this makes the navbar invisible.
-// Do something about it
-//
-// - Make a theme
-//
-// - Prevent bg from scrolling when "more" is open

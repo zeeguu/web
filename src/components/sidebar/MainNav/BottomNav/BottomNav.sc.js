@@ -58,6 +58,7 @@ const StyledLink = styled(Link)`
   gap: 0.2rem;
   font-weight: inherit;
   user-select: none;
+  position: relative;
 `;
 
 const StyledButton = styled.button`
@@ -74,6 +75,7 @@ const StyledButton = styled.button`
   height: 3rem;
   gap: 0.2rem;
   user-select: none;
+  position: relative;
 `;
 
 const IconSpan = styled.span`
