@@ -37,7 +37,7 @@ export default function MainAppRouter({
       />
 
       <Route
-        path="/create_account"
+        path="/account_details"
         render={() => (
           <CreateAccount
             api={api}
@@ -45,6 +45,11 @@ export default function MainAppRouter({
             setUser={setUser}
           />
         )}
+      />
+
+      <Route
+        path="/create_account"
+        render={() => <LanguagePreferences api={api} />}
       />
 
       <Route
