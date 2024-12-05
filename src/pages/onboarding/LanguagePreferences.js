@@ -25,6 +25,8 @@ import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 import { setTitle } from "../../assorted/setTitle";
 
 import { scrollToTop } from "../../utils/misc/scrollToTop";
+import { Validator } from "../../utils/ValidatorRule/Validator";
+import useShadowRef from "../../hooks/useShadowRef";
 
 export default function LanguagePreferences({ api }) {
   const [
@@ -34,13 +36,20 @@ export default function LanguagePreferences({ api }) {
     isLearnedLanguageValid,
     learnedLanguageMsg,
   ] = useFormField("", NonEmptyValidator("Please select a language."));
+
+  const learnedLanguageRef = useShadowRef(learnedLanguage);
   const [
     nativeLanguage,
     setNativeLanguage,
     validateNativeLanguage,
     isNativeLanguageValid,
     nativeLanguageMsg,
-  ] = useFormField("en", NonEmptyValidator("Please select a language."));
+  ] = useFormField("en", [
+    NonEmptyValidator("Please select a language."),
+    new Validator((v) => {
+      return v !== learnedLanguageRef.current;
+    }, "Your Translation language needs to be different than your learned language."),
+  ]);
   const [
     learnedCEFRLevel,
     setLearnedCEFRLevel,
