@@ -1,6 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState, useContext } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
+import { APIContext } from "../contexts/APIContext";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+
+import { zeeguuDarkRed } from "../components/colors";
 
 export default function TranslatableWord({
   interactiveText,
@@ -17,20 +23,27 @@ export default function TranslatableWord({
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
   const [isWordTranslating, setIsWordTranslating] = useState(false);
   const [prevWord, setPreviousWord] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+
+  const api = useContext(APIContext);
 
   function clickOnWord(e, word) {
-    e.target.classList.add("loading");
-    setPreviousWord(word.word);
+    console.log(translating);
+    console.log(pronouncing);
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
+      if (translating) setIsVisible(!isVisible);
       return;
     }
     if (translating) {
+      e.target.classList.add("loading");
+      setPreviousWord(word.word);
       setIsWordTranslating(true);
       interactiveText.translate(word, () => {
         wordUpdated();
         e.target.classList.remove("loading");
         setIsWordTranslating(false);
+        setIsVisible(true);
       });
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
@@ -53,6 +66,28 @@ export default function TranslatableWord({
     interactiveText.alternativeTranslations(word, () => {
       wordUpdated(word);
     });
+  }
+
+  function deleteTranslation(e, word) {
+    console.log(word);
+    api.deleteBookmark(
+      word.bookmark_id,
+      (response) => {
+        if (response === "OK") {
+          // delete was successful; log and close
+          word.translation = undefined;
+          word.splitIntoComponents();
+          wordUpdated();
+        }
+      },
+      (error) => {
+        // onError
+        console.log(error);
+        alert(
+          "something went wrong and we could not delete the bookmark; try again later.",
+        );
+      },
+    );
   }
 
   function selectAlternative(alternative, preferredSource) {
@@ -88,14 +123,41 @@ export default function TranslatableWord({
   return (
     <>
       <z-tag>
-        {word.translation && (
+        {word.translation && isVisible && (
           <z-tran
             chosen={word.translation}
             translation0={word.translation}
             ref={refToTranslation}
-            onClick={(e) => toggleAlterMenu(e, word)}
           >
-            <span className="arrow">▼</span>
+            <div className="translationContainer">
+              <span className="delete">
+                <VisibilityOffIcon
+                  fontSize="small"
+                  onClrick={(e) => {
+                    setIsVisible(!isVisible);
+                    setShowingAlterMenu(false);
+                  }}
+                />
+              </span>
+              <span onClick={(e) => toggleAlterMenu(e, word)}>
+                {word.translation}
+              </span>
+              {showingAlterMenu ? (
+                <span
+                  className="arrow"
+                  onClick={(e) => toggleAlterMenu(e, word)}
+                >
+                  ▲
+                </span>
+              ) : (
+                <span
+                  className="arrow"
+                  onClick={(e) => toggleAlterMenu(e, word)}
+                >
+                  ▼
+                </span>
+              )}
+            </div>
           </z-tran>
         )}
         <z-orig>
@@ -112,6 +174,7 @@ export default function TranslatableWord({
               hideAlterMenu={hideAlterMenu}
               clickedOutsideTranslation={clickedOutsideTranslation}
               hideTranslation={hideTranslation}
+              deleteTranslation={deleteTranslation}
             />
           )}
         </z-orig>

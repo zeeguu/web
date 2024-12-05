@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {
   almostBlack,
+  zeeguuDarkRed,
   zeeguuLightYellow,
   zeeguuOrange,
   zeeguuTransparentLightOrange,
@@ -65,10 +66,6 @@ const TranslatableText = styled.div`
     display: flex;
   }
 
-  z-tag z-tran:hover {
-    color: black;
-  }
-
   z-tag z-orig {
     border-bottom: 1px dashed ${zeeguuOrange};
     width: 100%;
@@ -76,18 +73,22 @@ const TranslatableText = styled.div`
     font-weight: 600;
   }
 
-  z-tran > .arrow {
-    padding: 0;
-    margin-left: auto;
-    color: rgba(0, 0, 0, 0.2);
-  }
+  .translationContainer {
+    display: flex;
+    align-items: center;
+    .arrow {
+      margin-left: 0.3rem;
+    }
 
-  z-tran:hover > .arrow {
-    visibility: visible;
-  }
-
-  z-tag z-tran[chosen]:before {
-    content: attr(chosen);
+    .delete {
+      margin-right: 0.3rem;
+      :hover {
+        filter: brightness(1.5);
+      }
+    }
+    :hover {
+      filter: brightness(1.25);
+    }
   }
 
   .handSelected,

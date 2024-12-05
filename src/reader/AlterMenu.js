@@ -9,6 +9,7 @@ export default function AlterMenu({
   hideAlterMenu,
   selectAlternative,
   hideTranslation,
+  deleteTranslation,
   clickedOutsideTranslation,
 }) {
   const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
@@ -89,9 +90,11 @@ export default function AlterMenu({
           />
         </>
       )}
-      <div className="alterMenuLink" onClick={(e) => hideTranslation(e, word)}>
-        Hide Translation
-      </div>
+      {word.alternatives !== undefined && (
+        <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
+          Delete Translation
+        </div>
+      )}
     </AlterMenuSC>
   );
 }
