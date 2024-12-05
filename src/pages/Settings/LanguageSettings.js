@@ -19,6 +19,14 @@ import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import Selector from "../../components/Selector";
 import { setTitle } from "../../assorted/setTitle";
+import useFormField from "../../hooks/useFormField";
+import {
+  NonEmptyValidator,
+  Validator,
+} from "../../utils/ValidatorRule/Validator";
+import useShadowRef from "../../hooks/useShadowRef";
+import { scrollToTop } from "../../utils/misc/scrollToTop";
+import validateRules from "../../assorted/validateRules";
 
 export default function LanguageSettings({ api, setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -26,6 +34,27 @@ export default function LanguageSettings({ api, setUser }) {
   const [languages, setLanguages] = useState();
   // TODO: not used; see if you can remove
   const [cefr, setCEFR] = useState("");
+  const [
+    learnedLanguage,
+    setLearnedLanguage,
+    validateLearnedLanguage,
+    isLearnedLanguageValid,
+    learnedLanguageErrorMsg,
+  ] = useFormField("", NonEmptyValidator("Please select a language."));
+
+  const learnedLanguageRef = useShadowRef(learnedLanguage);
+  const [
+    nativeLanguage,
+    setNativeLanguage,
+    validateNativeLanguage,
+    isNativeLanguageValid,
+    nativeLanguageMsg,
+  ] = useFormField("en", [
+    NonEmptyValidator("Please select a language."),
+    new Validator((v) => {
+      return v !== learnedLanguageRef.current;
+    }, "Your Translation language needs to be different than your learned language."),
+  ]);
 
   const user = useContext(UserContext);
   const history = useHistory();
@@ -48,6 +77,8 @@ export default function LanguageSettings({ api, setUser }) {
     api.getUserDetails((data) => {
       setUserDetails(data);
       setCEFRlevel(data);
+      setLearnedLanguage(data.learned_language);
+      setNativeLanguage(data.native_language);
     });
 
     api.getSystemLanguages((systemLanguages) => {
@@ -67,6 +98,7 @@ export default function LanguageSettings({ api, setUser }) {
   }
 
   function updateNativeLanguage(lang_code) {
+    setNativeLanguage(lang_code);
     setUserDetails({
       ...userDetails,
       native_language: lang_code,
@@ -82,6 +114,7 @@ export default function LanguageSettings({ api, setUser }) {
 
   function updateLearnedLanguage(lang_code) {
     console.log("language code in updateLearnedLanguage");
+    setLearnedLanguage(lang_code);
     console.log(lang_code);
     setUserDetails({
       ...userDetails,
@@ -91,10 +124,13 @@ export default function LanguageSettings({ api, setUser }) {
 
   function handleSave(e) {
     e.preventDefault();
-    api.saveUserDetails(userDetails, setErrorMessage, () => {
-      updateUserInfo(userDetails);
-      history.goBack();
-    });
+    if (!validateRules([validateLearnedLanguage, validateNativeLanguage]))
+      scrollToTop();
+    else
+      api.saveUserDetails(userDetails, setErrorMessage, () => {
+        updateUserInfo(userDetails);
+        history.goBack();
+      });
   }
 
   if (!userDetails || !languages) {
@@ -119,10 +155,12 @@ export default function LanguageSettings({ api, setUser }) {
               id={"practiced-language-selector"}
               label={strings.learnedLanguage}
               languages={languages.learnable_languages}
-              selected={userDetails.learned_language}
-              onChange={(languageCode) => {
-                updateLearnedLanguage(languageCode);
+              selected={learnedLanguage}
+              onChange={(e) => {
+                updateLearnedLanguage(e.target.value);
               }}
+              isError={!isLearnedLanguageValid}
+              errorMessage={learnedLanguageErrorMsg}
             />
 
             <Selector
@@ -142,9 +180,11 @@ export default function LanguageSettings({ api, setUser }) {
               id={"translation-language-selector"}
               label={strings.baseLanguage}
               languages={languages.native_languages}
-              selected={userDetails.native_language}
-              onChange={(languageCode) => {
-                updateNativeLanguage(languageCode);
+              selected={nativeLanguage}
+              isError={!isNativeLanguageValid}
+              errorMessage={nativeLanguageMsg}
+              onChange={(e) => {
+                updateNativeLanguage(e.target.value);
               }}
             />
           </FormSection>

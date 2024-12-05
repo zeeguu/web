@@ -25,6 +25,8 @@ import { CEFR_LEVELS } from "../../assorted/cefrLevels";
 import { setTitle } from "../../assorted/setTitle";
 
 import { scrollToTop } from "../../utils/misc/scrollToTop";
+import { Validator } from "../../utils/ValidatorRule/Validator";
+import useShadowRef from "../../hooks/useShadowRef";
 
 export default function LanguagePreferences({ api }) {
   const [
@@ -34,13 +36,20 @@ export default function LanguagePreferences({ api }) {
     isLearnedLanguageValid,
     learnedLanguageMsg,
   ] = useFormField("", NonEmptyValidator("Please select a language."));
+
+  const learnedLanguageRef = useShadowRef(learnedLanguage);
   const [
-    nativeLanguage,
-    setNativeLanguage,
-    validateNativeLanguage,
-    isNativeLanguageValid,
-    nativeLanguageMsg,
-  ] = useFormField("en", NonEmptyValidator("Please select a language."));
+    translationLanguage,
+    setTranslationLanguage,
+    validateTranslationLanguage,
+    isTranslationLanguageValid,
+    translationLanguageErrorMsg,
+  ] = useFormField("en", [
+    NonEmptyValidator("Please select a language."),
+    new Validator((translationLanguage) => {
+      return translationLanguage !== learnedLanguageRef.current;
+    }, "Your Translation language needs to be different than your learned language."),
+  ]);
   const [
     learnedCEFRLevel,
     setLearnedCEFRLevel,
@@ -75,8 +84,8 @@ export default function LanguagePreferences({ api }) {
   }, [learnedCEFRLevel]);
 
   useEffect(() => {
-    LocalStorage.setNativeLanguage(nativeLanguage);
-  }, [nativeLanguage]);
+    LocalStorage.setNativeLanguage(translationLanguage);
+  }, [translationLanguage]);
 
   if (!systemLanguages) {
     return <LoadingAnimation />;
@@ -88,7 +97,7 @@ export default function LanguagePreferences({ api }) {
       !validateRules([
         validateLearnedLanguage,
         validateLearnedCEFRLevel,
-        validateNativeLanguage,
+        validateTranslationLanguage,
       ])
     )
       scrollToTop();
@@ -142,17 +151,17 @@ export default function LanguagePreferences({ api }) {
             />
 
             <Selector
-              selectedValue={nativeLanguage}
+              selectedValue={translationLanguage}
               label={strings.baseLanguage}
               placeholder={strings.baseLanguagePlaceholder}
               optionLabel={(e) => e.name}
               optionValue={(e) => e.code}
               id={"translation-languages"}
-              isError={!isNativeLanguageValid}
-              errorMessage={nativeLanguageMsg}
+              isError={!isTranslationLanguageValid}
+              errorMessage={translationLanguageErrorMsg}
               options={systemLanguages.native_languages}
               onChange={(e) => {
-                setNativeLanguage(e.target.value);
+                setTranslationLanguage(e.target.value);
               }}
             />
           </FormSection>
