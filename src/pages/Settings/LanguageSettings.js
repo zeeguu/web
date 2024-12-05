@@ -39,7 +39,7 @@ export default function LanguageSettings({ api, setUser }) {
     setLearnedLanguage,
     validateLearnedLanguage,
     isLearnedLanguageValid,
-    learnedLanguageMsg,
+    learnedLanguageErrorMsg,
   ] = useFormField("", NonEmptyValidator("Please select a language."));
 
   const learnedLanguageRef = useShadowRef(learnedLanguage);
@@ -160,7 +160,7 @@ export default function LanguageSettings({ api, setUser }) {
                 updateLearnedLanguage(e.target.value);
               }}
               isError={!isLearnedLanguageValid}
-              errorMessage={learnedLanguageMsg}
+              errorMessage={learnedLanguageErrorMsg}
             />
 
             <Selector
