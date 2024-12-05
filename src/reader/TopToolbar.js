@@ -13,6 +13,9 @@ import * as s from "./ArticleReader.sc";
 import SoundPlayer from "./SoundPlayer";
 import ToolbarButtons from "./ToolbarButtons";
 
+import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import { isMobile } from "../utils/misc/browserDetection";
+
 function userIsTesterForAudio(user) {
   let testers = [
     "Michalis",
@@ -66,20 +69,22 @@ export default function TopToolbar({
   return (
     <PopupButtonWrapper>
       <s.Toolbar>
-        <s.TopbarButtonsContainer>
+        <s.TopbarButtonsContainer isMobile={isMobile()}>
+          {isMobile() && <BackArrow noMargin={false} />}
           <div>
             {user.is_teacher && (
               <>
-                {teacherArticleID && (
+                {teacherArticleID && !isMobile() && (
                   <Link to={`/teacher/texts/editText/${articleID}`}>
-                    <StyledButton secondary studentView>
+                    <StyledButton className="toolbar-btn" secondary studentView>
                       {strings.backToEditing}
                     </StyledButton>
                   </Link>
                 )}
 
-                {!teacherArticleID && (
+                {!teacherArticleID && !isMobile() && (
                   <StyledButton
+                    className="toolbar-btn"
                     primary
                     studentView
                     onClick={handleSaveCopyToShare}

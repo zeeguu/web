@@ -64,7 +64,7 @@ let PlayerControl = styled.div`
 
 let TopbarButtonsContainer = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: ${({ isMobile }) => (isMobile ? "flex-start" : "flex-end")};
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 0.6rem;
@@ -112,7 +112,7 @@ let Toolbar = styled.div`
   width: 100%;
   // background-color: ${veryLightGrey};
 
-  button {
+  button.toolbar-btn {
     width: 55px;
     height: 55px;
 

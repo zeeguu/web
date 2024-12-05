@@ -31,6 +31,8 @@ import useShadowRef from "../hooks/useShadowRef";
 import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
 import DigitalTimer from "../components/DigitalTimer";
 
+import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
 
@@ -321,6 +323,7 @@ export default function Exercises({
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
     <>
+      {isMobile() && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
         <ProgressBar
           index={currentIndex}
