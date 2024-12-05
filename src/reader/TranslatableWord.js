@@ -28,8 +28,6 @@ export default function TranslatableWord({
   const api = useContext(APIContext);
 
   function clickOnWord(e, word) {
-    console.log(translating);
-    console.log(pronouncing);
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
       if (translating) setIsVisible(!isVisible);
@@ -133,7 +131,7 @@ export default function TranslatableWord({
               <span className="delete">
                 <VisibilityOffIcon
                   fontSize="small"
-                  onClrick={(e) => {
+                  onClick={(e) => {
                     setIsVisible(!isVisible);
                     setShowingAlterMenu(false);
                   }}
