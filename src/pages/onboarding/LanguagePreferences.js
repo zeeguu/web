@@ -92,7 +92,7 @@ export default function LanguagePreferences({ api }) {
       ])
     )
       scrollToTop();
-    else redirect("/create_account");
+    else redirect("/account_details");
   }
 
   return (
