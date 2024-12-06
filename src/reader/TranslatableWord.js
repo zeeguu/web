@@ -128,15 +128,6 @@ export default function TranslatableWord({
             ref={refToTranslation}
           >
             <div className="translationContainer">
-              <span className="delete">
-                <VisibilityOffIcon
-                  fontSize="small"
-                  onClick={(e) => {
-                    setIsVisible(!isVisible);
-                    setShowingAlterMenu(false);
-                  }}
-                />
-              </span>
               <span onClick={(e) => toggleAlterMenu(e, word)}>
                 {word.translation}
               </span>
@@ -155,6 +146,15 @@ export default function TranslatableWord({
                   ▼
                 </span>
               )}
+              <span className="hide">
+                <VisibilityOffIcon
+                  fontSize="8px"
+                  onClick={(e) => {
+                    setIsVisible(!isVisible);
+                    setShowingAlterMenu(false);
+                  }}
+                />
+              </span>
             </div>
           </z-tran>
         )}
