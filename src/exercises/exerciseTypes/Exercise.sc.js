@@ -13,7 +13,7 @@ const Exercise = styled.div`
   flex-direction: column;
   text-align: center;
   transition: all 0.5s;
-  padding-bottom: 1em;
+  padding-bottom: 6.5rem;
 
   .next-nav-feedback {
     display: flex;
