@@ -21,14 +21,7 @@ import { UserContext } from "../../contexts/UserContext";
 import LoadingAnimation from "../../components/LoadingAnimation";
 
 export default function MyWeeklyGoal({ api}) {
-  const [setValue] = useState("");
-  const handleChange = (e) => {
-    const newValue = e.target.value;
-    if (newValue <= 720) {
-      setValue(newValue);
-      updateMinutes(newValue);
-    }
-  };
+
 
   const [userDetails, setUserDetails] = useState(null);
   const user = useContext(UserContext);
@@ -113,7 +106,9 @@ export default function MyWeeklyGoal({ api}) {
               name="minutes"
               id="minutes"
               value={userDetails.user_minutes}
-              onChange={handleChange}
+              onChange={(e) => {
+                updateMinutes(e.target.value);
+              }}
               placeholder="Enter up to 720 minutes"
             />
           </FormSection>
