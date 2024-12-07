@@ -117,7 +117,7 @@ function App() {
     removeUserInfoFromCookies();
   }
 
-  async function handleSuccessfulLogIn(userInfo, sessionId) {
+  function handleSuccessfulLogIn(userInfo, sessionId) {
     console.log("HANDLE SUCCESSFUL SIGN IN");
     api.session = sessionId;
     console.log("Session: " + api.session);

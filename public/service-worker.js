@@ -269,7 +269,7 @@ self.addEventListener("fetch", (event) => {
     );
 
     // Tries to serve the requested data from the DATA_CACHE
-    // If unable to, then it makes a network fetch and stores the fetchec data in the cache
+    // If unable to, then it makes a network fetch and stores the fetched data in the cache
   } else if (requestUrl.pathname.startsWith("/bookmarks_in_pipeline")) {
     event.respondWith(
       caches.open(DATA_CACHE).then((cache) =>
