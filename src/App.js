@@ -45,7 +45,6 @@ function App() {
   useEffect(() => {
     if (userData && userData.learned_language) {
       setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
-      Notification.requestPermission();
     }
   }, [userData]);
 
