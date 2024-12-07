@@ -45,6 +45,7 @@ function App() {
   useEffect(() => {
     if (userData && userData.learned_language) {
       setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
+      Notification.requestPermission();
     }
   }, [userData]);
 
@@ -117,7 +118,7 @@ function App() {
     removeUserInfoFromCookies();
   }
 
-  function handleSuccessfulLogIn(userInfo, sessionId) {
+  async function handleSuccessfulLogIn(userInfo, sessionId) {
     console.log("HANDLE SUCCESSFUL SIGN IN");
     api.session = sessionId;
     console.log("Session: " + api.session);
