@@ -107,7 +107,7 @@
       async function checkNetworkAndReload() {
         try {
           const response = await fetch(".");
-          if (response.status >= 2000 && response.status < 5000) {
+          if (response.status >= 200 && response.status < 500) {
             console.log("Server is responsive. Reloading the page.");
             window.location.reload();
           }

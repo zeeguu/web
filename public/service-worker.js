@@ -33,16 +33,16 @@ self.addEventListener("message", async (event) => {
 
 //Schedule a notification to be polled every day at 20 (8 PM)
 function scheduleDailyNotification() {
-  const now = new Date();
+  const currentTime = new Date();
   const nextNotificationTime = new Date();
   nextNotificationTime.setHours(dailyNotificationTime, 0, 0, 0);
 
-  if (now.getTime() > nextNotificationTime.getTime()) {
-    nextNotificationTime.setDate(now.getDate() + 1);
+  if (currentTime.getTime() > nextNotificationTime.getTime()) {
+    nextNotificationTime.setDate(currentTime.getDate() + 1);
   }
 
   const timeUntilNextNotification =
-    nextNotificationTime.getTime() - now.getTime();
+    nextNotificationTime.getTime() - currentTime.getTime();
 
   scheduleNextPoll(timeUntilNextNotification, true);
 }
@@ -92,7 +92,7 @@ async function pollNotifications(isScheduled = false) {
 async function fetchNotificationData() {
   try {
     const response = await fetch(
-      `https://api.zeeguu.org/get_notification_for_user`,
+      `https://api.zeeguu.org/get_notification_for_user?session=${sessionId}`,
     );
     if (response.ok) {
       return await response.json();
@@ -119,7 +119,7 @@ async function canSendNotification() {
 
     const shouldNotify =
       !lastNotificationTime ||
-      Date.now() - lastNotificationTime >= notificationThreshold;
+      Date.currentTime() - lastNotificationTime >= notificationThreshold;
 
     return shouldNotify;
   } catch (error) {
@@ -134,7 +134,7 @@ async function canSendNotification() {
 async function updateLastNotificationTime() {
   try {
     const cache = await caches.open(NOTIFICATION_CACHE);
-    const response = new Response(JSON.stringify(Date.now()));
+    const response = new Response(JSON.stringify(Date.currentTime()));
     await cache.put("lastNotificationTime", response);
   } catch (error) {
     console.error("Failed to update notification timestamp in cache:", error);
@@ -145,6 +145,7 @@ async function updateLastNotificationTime() {
 // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/notificationclick_event
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
+
   // Use event.waitUntil to ensure that all client handling is completed before terminating the service worker
   // https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/waitUntil
   event.waitUntil(
@@ -160,10 +161,9 @@ self.addEventListener("notificationclick", (event) => {
           includeUncontrolled: true,
         });
 
-        //Checks to see if the user has installed the PWA and prioritizes that window, otherwise it will open the notification in the browser
+        // Proritizes opening the notifcation in the PWA if installed, otherwise it will open it in the browser
         let matchingClient = null;
         for (const client of allClients) {
-          //Should be "zeeguu" in production, but this works for dev
           if (client.url.includes("zeeguu")) {
             matchingClient = client;
             break;
@@ -183,6 +183,7 @@ self.addEventListener("notificationclick", (event) => {
   );
 });
 
+// Sends data to an endpoint if notfication was clicked
 async function notificationWasClicked(notificaitonId) {
   try {
     const response = await fetch(
@@ -213,6 +214,7 @@ self.addEventListener("install", (event) => {
     (async () => {
       const cache = await caches.open(OFFLINE_CACHE);
       await cache.addAll(CACHE_STATIC_FILES);
+
       // Force the newest service worker to take over
       // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/skipWaiting
       self.skipWaiting();
@@ -265,8 +267,9 @@ self.addEventListener("fetch", (event) => {
         );
       }),
     );
+
     // Tries to serve the requested data from the DATA_CACHE
-    // If unable to, then it makes a network fetch and stores the data in the cache
+    // If unable to, then it makes a network fetch and stores the fetchec data in the cache
   } else if (requestUrl.pathname.startsWith("/bookmarks_in_pipeline")) {
     event.respondWith(
       caches.open(DATA_CACHE).then((cache) =>
