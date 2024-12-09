@@ -27,7 +27,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-family: "Monsterrat", sans-serif;
+      font-family: "Montserrat", sans-serif;
     }
 
     .capitalizeBold {
@@ -45,26 +45,34 @@
     </div>
 
     <script>
+      function getSessionID() {
+        const cookies = document.cookie
+          .split(";")
+          .map((cookie) => cookie.trim());
+        for (const cookie of cookies) {
+          if (cookie.startsWith("sessionID")) {
+            return cookie.split("=")[1];
+          }
+        }
+
+        return null;
+      }
+
       async function displayCachedWords() {
         try {
-          const sessionId = document.cookie.split(";")[0].split("=")[1];
+          const sessionId = getSessionID();
           if (!sessionId) {
             console.error("No session ID found");
             return;
           }
 
           const cache = await caches.open("data-cache-v1");
-          const request = new Request(
-            `https://api.zeeguu.org/bookmarks_in_pipeline?session=${sessionId}`,
-          );
+          const pathname = "/bookmarks_in_pipeline";
           const cachedRequests = await cache.keys();
           let cachedResponse = null;
 
           for (const cachedRequest of cachedRequests) {
-            if (
-              new URL(cachedRequest.url).pathname ===
-              new URL(request.url).pathname
-            ) {
+            if (new URL(cachedRequest.url).pathname === pathname) {
               cachedResponse = await cache.match(cachedRequest);
               break;
             }
