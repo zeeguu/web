@@ -227,9 +227,16 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
+      // Optimizes startup time for the SW with preloading responses
+      // https://web.dev/blog/navigation-preload
+      // see also the implementeation of handleNavigationRequest
       if ("navigationPreload" in self.registration) {
         await self.registration.navigationPreload.enable();
       }
+
+      // iterate over all the cache keys and delete everything but
+      // the keys that we use
+      // ... why do we need to do this? what other caches are there?
       const cacheKeys = await caches.keys();
       await Promise.all(
         cacheKeys.map((key) => {
