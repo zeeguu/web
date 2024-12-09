@@ -30,7 +30,8 @@ export default function TranslatableWord({
   function clickOnWord(e, word) {
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
-      if (translating) setIsVisible(!isVisible);
+      if ((translating && !isVisible) || (!translating && isVisible))
+        setIsVisible(!isVisible);
       return;
     }
     if (translating) {
