@@ -15,7 +15,7 @@ const FontColors = css`
     isOnStudentSide ? `${orange600}` : `${blue700}`};
 `;
 
-const Shared = css`
+const SharedStyle = css`
   box-sizing: border-box;
   display: flex;
   width: 100%;
@@ -32,6 +32,7 @@ const Shared = css`
   border-radius: 0.25rem;
   border: solid 0.1rem transparent;
   transition: 0.3s ease-in-out;
+  -webkit-tap-highlight-color: transparent;
 
   ${({ isActive }) =>
     isActive &&
@@ -75,7 +76,7 @@ const Shared = css`
 `;
 
 const RouterLink = styled(Link)`
-  ${Shared}
+  ${SharedStyle}
 `;
 
 const OptionButton = styled.button`
@@ -89,7 +90,7 @@ const OptionButton = styled.button`
     box-shadow: none;
     color: white;
   }
-  ${Shared}
+  ${SharedStyle}
 `;
 
 const TextWrapper = styled.span`

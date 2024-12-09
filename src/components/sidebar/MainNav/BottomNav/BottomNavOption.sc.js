@@ -1,6 +1,20 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 import { orange600, blue700 } from "../../../colors";
+
+const OptionShared = css`
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 4rem;
+  height: 3rem;
+  gap: 0.2rem;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+`;
 
 const BottomNavOption = styled.li`
   box-sizing: border-box;
@@ -11,34 +25,16 @@ const BottomNavOption = styled.li`
 `;
 
 const StyledLink = styled(Link)`
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 4rem;
-  height: 3rem;
-  white-space: nowrap;
-  gap: 0.2rem;
-  font-weight: inherit;
-  user-select: none;
-  position: relative;
+  ${OptionShared}
 `;
 
 const StyledButton = styled.button`
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   background-color: inherit;
   font: inherit;
   border: inherit;
   padding: inherit;
   margin: inherit;
-  width: 4rem;
-  height: 3rem;
-  gap: 0.2rem;
-  user-select: none;
-  position: relative;
+  ${OptionShared}
 `;
 
 const IconSpan = styled.span`
@@ -54,7 +50,6 @@ const IconSpan = styled.span`
     background-color: white;
     color: ${isOnStudentSide ? `${orange600}` : `${blue700}`};
   `}
-
   :active {
     background-color: white;
     color: ${({ isOnStudentSide }) =>
