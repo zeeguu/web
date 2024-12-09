@@ -1,6 +1,9 @@
 import styled, { css } from "styled-components";
 import { blue700, orange600 } from "../../../colors";
 
+const sidebarExpandedWidth = "14rem";
+const sidebarCollapsedWidth = "4.2rem";
+
 const BgColors = css`
   background-color: ${({ isOnStudentSide }) =>
     isOnStudentSide === true ? `${orange600}` : `${blue700}`};
@@ -12,7 +15,8 @@ const sharedSidebarStyling = css`
   left: 0;
   transition: 0.3s ease-in-out;
   overflow-x: hidden;
-  width: ${({ isCollapsed }) => (isCollapsed ? "4.2rem" : "14rem")};
+  width: ${({ isCollapsed }) =>
+    isCollapsed ? sidebarCollapsedWidth : sidebarExpandedWidth};
   ${BgColors}
 
   @media (max-width: 992px) {
@@ -35,4 +39,4 @@ const BottomSection = styled.div`
   ${sharedSidebarStyling}
 `;
 
-export { SideBar, BottomSection };
+export { SideBar, BottomSection, sidebarExpandedWidth, sidebarCollapsedWidth };

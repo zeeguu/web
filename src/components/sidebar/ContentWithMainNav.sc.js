@@ -1,4 +1,8 @@
 import styled from "styled-components";
+import {
+  sidebarCollapsedWidth,
+  sidebarExpandedWidth,
+} from "./MainNav/SideBar/Sidebar.sc";
 
 const Content = styled.div`
   box-sizing: border-box;
@@ -14,12 +18,12 @@ const ContentContainer = styled.section`
   width: 100%;
   transition: 0.3s ease-in-out;
   padding: 0 1rem 0 1rem;
-  margin-left: 14rem;
+  margin-left: ${sidebarExpandedWidth};
   overflow-x: hidden;
   top: 0;
 
   @media (max-width: 992px) {
-    margin-left: ${({ isMobile }) => (isMobile ? "0" : "4.2rem")};
+    margin-left: ${({ isMobile }) => (isMobile ? "0" : sidebarCollapsedWidth)};
     padding-bottom: 5rem;
   }
 `;
