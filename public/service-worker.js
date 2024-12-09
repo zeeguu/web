@@ -227,9 +227,16 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
+      // Optimizes startup time for the SW with preloading responses
+      // https://web.dev/blog/navigation-preload
+      // see also the implementeation of handleNavigationRequest
       if ("navigationPreload" in self.registration) {
         await self.registration.navigationPreload.enable();
       }
+
+      // iterate over all the cache keys and delete everything but
+      // the keys that we use
+      // ... why do we need to do this? what other caches are there?
       const cacheKeys = await caches.keys();
       await Promise.all(
         cacheKeys.map((key) => {
@@ -251,6 +258,7 @@ self.addEventListener("activate", (event) => {
 // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/fetch_event
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
+
   if (event.request.mode === "navigate") {
     handleNavigationRequest(event);
   } else if (CACHE_STATIC_FILES.includes(requestUrl.pathname)) {
@@ -270,10 +278,15 @@ self.addEventListener("fetch", (event) => {
 
     // Tries to serve the requested data from the DATA_CACHE
     // If unable to, then it makes a network fetch and stores the fetched data in the cache
+
+    // ML: Why would this third branch ever be taken? why would going to /bookmarks_in_pipeline not be in "navigate mode"
   } else if (requestUrl.pathname.startsWith("/bookmarks_in_pipeline")) {
     event.respondWith(
       caches.open(DATA_CACHE).then((cache) =>
         cache.match(event.request, { ignoreSearch: true }).then((response) => {
+          // ML: as far as we can tell, once the words have been cached, they will never be refreshed
+          // because this match will succeed, and then this first if will be true, and then we will always
+          // return the same words
           if (response) {
             return response;
           } else {

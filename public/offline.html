@@ -67,6 +67,8 @@
           }
 
           const cache = await caches.open("data-cache-v1");
+          // why create a request, when below you take out the URL form the
+          // request again, to create a URL when all you need is a pathname?
           const pathname = "/bookmarks_in_pipeline";
           const cachedRequests = await cache.keys();
           let cachedResponse = null;
@@ -105,6 +107,7 @@
           console.error("Error fetching cached words:", error);
         }
       }
+
       displayCachedWords();
 
       window.addEventListener("online", () => {
