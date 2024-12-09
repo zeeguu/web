@@ -75,6 +75,7 @@ const TranslatableText = styled.div`
 
   .translationContainer {
     display: flex;
+    width: 100%;
     align-items: center;
     .arrow {
       margin-left: 0.1rem;
@@ -88,8 +89,9 @@ const TranslatableText = styled.div`
 
     .hide {
       margin: 0px 0.1rem;
+      margin-left: auto;
       padding: 0.1rem 0.3rem;
-      filter: opacity(25%);
+      filter: opacity(15%);
       padding-top: 0.3rem;
       :hover {
         filter: brightness(1.5);
