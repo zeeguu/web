@@ -1,13 +1,13 @@
 import { useState, useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { UserContext } from "../../../contexts/UserContext";
-import { isMobile } from "../../../utils/misc/browserDetection";
 import Sidebar from "./SideBar/Sidebar";
 import BottomNav from "./BottomNav/BottomNav";
 
-export default function MainNav() {
+export default function MainNav({ screenWidth }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
+  console.log(screenWidth);
 
   const path = useLocation().pathname;
 
@@ -17,10 +17,18 @@ export default function MainNav() {
 
   return (
     <>
-      {isMobile() ? (
-        <BottomNav isOnStudentSide={isOnStudentSide} isTeacher={isTeacher} />
+      {screenWidth <= "700" ? (
+        <BottomNav
+          screenWidth={screenWidth}
+          isOnStudentSide={isOnStudentSide}
+          isTeacher={isTeacher}
+        />
       ) : (
-        <Sidebar isOnStudentSide={isOnStudentSide} isTeacher={isTeacher} />
+        <Sidebar
+          screenWidth={screenWidth}
+          isOnStudentSide={isOnStudentSide}
+          isTeacher={isTeacher}
+        />
       )}
     </>
   );

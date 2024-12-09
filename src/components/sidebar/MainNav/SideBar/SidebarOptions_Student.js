@@ -5,9 +5,9 @@ import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 
 export default function SidebarOptions_Student({
-  currentPath,
   isTeacher,
   isOnStudentSide,
+  screenWidth,
 }) {
   const path = useLocation().pathname;
 
@@ -20,16 +20,18 @@ export default function SidebarOptions_Student({
         linkTo={"/articles"}
         icon={<NavIcon name="home" />}
         text={"Home"}
-        currentPath={currentPath}
+        currentPath={path}
         isOnStudentSide={isOnStudentSide}
+        screenWidth={screenWidth}
       />
 
       <NavOption
         linkTo={"/exercises"}
         icon={<NavIcon name="exercises" />}
         text={"Exercises"}
-        currentPath={currentPath}
+        currentPath={path}
         isOnStudentSide={isOnStudentSide}
+        screenWidth={screenWidth}
         notification={
           hasExerciseNotification && (
             <NotificationIcon
@@ -44,24 +46,27 @@ export default function SidebarOptions_Student({
         linkTo={"/words"}
         icon={<NavIcon name="words" />}
         text={"Words"}
-        currentPath={currentPath}
+        currentPath={path}
         isOnStudentSide={isOnStudentSide}
+        screenWidth={screenWidth}
       />
 
       <NavOption
         linkTo={"/history"}
         icon={<NavIcon name="history" />}
         text={"History"}
-        currentPath={currentPath}
+        currentPath={path}
         isOnStudentSide={isOnStudentSide}
+        screenWidth={screenWidth}
       />
 
       <NavOption
         linkTo={"/user_dashboard"}
         icon={<NavIcon name="statistics" />}
         text={"Statistics"}
-        currentPath={currentPath}
+        currentPath={path}
         isOnStudentSide={isOnStudentSide}
+        screenWidth={screenWidth}
       />
 
       {isTeacher && (
@@ -69,8 +74,9 @@ export default function SidebarOptions_Student({
           linkTo={"/teacher/classes"}
           icon={<NavIcon name="teacherSite" />}
           text={"Teacher Site"}
-          currentPath={currentPath}
+          currentPath={path}
           isOnStudentSide={isOnStudentSide}
+          screenWidth={screenWidth}
         />
       )}
     </>

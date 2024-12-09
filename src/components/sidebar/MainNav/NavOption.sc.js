@@ -1,7 +1,6 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 import { blue700, orange600 } from "../../colors";
-import { isMobile } from "../../../utils/misc/browserDetection";
 
 const NavOption = styled.li`
   box-sizing: border-box;
@@ -43,10 +42,11 @@ const SharedStyle = css`
     `}
 
   &:hover {
-    ${!isMobile() &&
-    css`
-      border: solid 0.1rem rgba(255, 255, 255, 0.9);
-    `}
+    ${({ screenWidth }) =>
+      screenWidth > 700 &&
+      css`
+        border: solid 0.1rem rgba(255, 255, 255, 0.9);
+      `}
   }
 
   &:active {
@@ -99,10 +99,13 @@ const TextWrapper = styled.span`
   transition: opacity 0.3s ease-in-out;
   width: fit-content;
   user-select: none;
-  @media (max-width: 992px) {
-    opacity: ${!isMobile() && 0};
-    width: 0;
-  }
+
+  ${({ screenWidth }) =>
+    screenWidth <= 992 &&
+    css`
+      opacity: 0;
+      width: 0;
+    `}
 `;
 
 const IconContainer = styled.span`
@@ -126,9 +129,12 @@ const OptionContentWrapper = styled.span`
   width: fit-content;
   padding: 0 1.8rem 0 0;
   height: 2rem;
-  @media (max-width: 992px) {
-    padding: 0;
-  }
+
+  ${({ screenWidth }) =>
+    screenWidth <= 992 &&
+    css`
+      padding: 0;
+    `}
 `;
 
 export {

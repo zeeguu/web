@@ -64,7 +64,8 @@ let PlayerControl = styled.div`
 
 let TopbarButtonsContainer = styled.div`
   display: flex;
-  align-items: ${({ isMobile }) => (isMobile ? "flex-start" : "flex-end")};
+  align-items: ${({ screenWidth }) =>
+    screenWidth < 700 ? "flex-start" : "flex-end"};
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 0.6rem;

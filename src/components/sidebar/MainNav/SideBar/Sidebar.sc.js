@@ -13,15 +13,16 @@ const sharedSidebarStyling = css`
   box-sizing: border-box;
   position: fixed;
   left: 0;
-  transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out width;
   overflow-x: hidden;
-  width: ${({ isCollapsed }) =>
-    isCollapsed ? sidebarCollapsedWidth : sidebarExpandedWidth};
+  width: ${({ screenWidth }) => {
+    if (screenWidth > 992) {
+      return sidebarExpandedWidth;
+    } else if (screenWidth <= 992 && screenWidth > 700) {
+      return sidebarCollapsedWidth;
+    }
+  }};
   ${BgColors}
-
-  @media (max-width: 992px) {
-    width: 4.2rem;
-  }
 `;
 
 const SideBar = styled.nav`
@@ -35,7 +36,6 @@ const SideBar = styled.nav`
 const BottomSection = styled.div`
   bottom: 0;
   padding: 1rem 0.5rem 1rem 0.5rem;
-  position: fixed;
   ${sharedSidebarStyling}
 `;
 

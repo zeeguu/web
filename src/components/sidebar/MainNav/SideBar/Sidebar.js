@@ -8,7 +8,7 @@ import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import FeedbackButton from "../../../FeedbackButton";
 
-export default function Sidebar({ isOnStudentSide, isTeacher }) {
+export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
   const { is_teacher } = useContext(UserContext);
 
   const path = useLocation().pathname;
@@ -19,6 +19,7 @@ export default function Sidebar({ isOnStudentSide, isTeacher }) {
       isOnStudentSide={isOnStudentSide}
       role="navigation"
       aria-label="Sidebar Navigation"
+      screenWidth={screenWidth}
     >
       <NavOption
         className={"logo"}
@@ -29,29 +30,35 @@ export default function Sidebar({ isOnStudentSide, isTeacher }) {
 
       {isOnStudentSide && (
         <SidebarOptions_Student
-          currentPath={path}
           isOnStudentSide={isOnStudentSide}
           isTeacher={isTeacher}
+          screenWidth={screenWidth}
         />
       )}
 
       {!isOnStudentSide && (
         <SidebarOptions_Teacher
-          currentPath={path}
           isOnStudentSide={isOnStudentSide}
+          screenWidth={screenWidth}
         />
       )}
 
-      <s.BottomSection isOnStudentSide={isOnStudentSide}>
+      <s.BottomSection
+        screenWidth={screenWidth}
+        isOnStudentSide={isOnStudentSide}
+      >
         <NavOption
           isOnStudentSide={isOnStudentSide}
           linkTo={"/account_settings"}
           icon={<NavIcon name="settings" />}
           text={"Settings"}
           currentPath={path}
+          screenWidth={screenWidth}
         />
-
-        <FeedbackButton isOnStudentSide={isOnStudentSide} />
+        <FeedbackButton
+          screenWidth={screenWidth}
+          isOnStudentSide={isOnStudentSide}
+        />
       </s.BottomSection>
     </s.SideBar>
   );

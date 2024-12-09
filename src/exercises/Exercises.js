@@ -32,6 +32,7 @@ import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
 import DigitalTimer from "../components/DigitalTimer";
 
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import useScreenWidth from "../hooks/useScreenWidth";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -72,6 +73,8 @@ export default function Exercises({
     useActivityTimer();
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
+
+  const { screenWidth } = useScreenWidth();
 
   useEffect(() => {
     setTitle(strings.titleExercises);
@@ -323,7 +326,7 @@ export default function Exercises({
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
     <>
-      {isMobile() && <BackArrow />}
+      {screenWidth < 700 && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
         <ProgressBar
           index={currentIndex}

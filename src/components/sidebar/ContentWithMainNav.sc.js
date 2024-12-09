@@ -22,10 +22,17 @@ const ContentContainer = styled.section`
   overflow-x: hidden;
   top: 0;
 
-  @media (max-width: 992px) {
-    margin-left: ${({ isMobile }) => (isMobile ? "0" : sidebarCollapsedWidth)};
-    padding-bottom: 5rem;
-  }
+  margin-left: ${({ screenWidth }) => {
+    if (screenWidth > 992) {
+      return sidebarExpandedWidth;
+    } else if (screenWidth <= 992 && screenWidth > 700) {
+      return sidebarCollapsedWidth;
+    } else {
+      return "0px";
+    }
+  }};
+
+  padding-bottom: ${({ screenWidth }) => (screenWidth <= 700 ? "4rem" : "0")};
 `;
 
 export { Content, ContentContainer };
