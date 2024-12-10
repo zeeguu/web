@@ -1,5 +1,4 @@
-import styled, { css } from "styled-components";
-import { blue700, orange600 } from "../../../colors";
+import styled from "styled-components";
 import { fadeIn, fadeOut, slideIn, slideOut } from "../../../transitions";
 import { BgColorsTheme } from "../SideBar/Sidebar.sc";
 

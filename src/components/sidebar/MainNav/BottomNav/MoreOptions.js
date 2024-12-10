@@ -1,4 +1,3 @@
-import React from "react";
 import * as s from "./MoreOptions.sc";
 import FeedbackButton from "../../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";

@@ -1,4 +1,3 @@
-import React from "react";
 import * as s from "./BottomNavOption.sc";
 
 export default function BottomNavOption({
@@ -11,14 +10,13 @@ export default function BottomNavOption({
   notification,
 }) {
   const Component = linkTo ? s.StyledLink : s.StyledButton;
+  const isActive = currentPath?.includes(linkTo);
+
   return (
     <s.BottomNavOption>
       <Component to={linkTo && linkTo} onClick={onClick}>
         {notification}
-        <s.IconSpan
-          isOnStudentSide={isOnStudentSide}
-          isActive={currentPath && currentPath.includes(linkTo)}
-        >
+        <s.IconSpan isOnStudentSide={isOnStudentSide} isActive={isActive}>
           {icon}
         </s.IconSpan>
         {text}

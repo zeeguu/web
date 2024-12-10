@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
-import ContentWithMainNav from "./components/sidebar/ContentWithMainNav";
+import AppWithMainNav from "./components/sidebar/AppWithMainNav";
 
 // inspired from:
 // https://dev.to/mychal/protected-routes-with-react-function-components-dh
@@ -27,9 +27,7 @@ export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
       {...rest}
       render={(props) => (
         <>
-          <ContentWithMainNav>
-            {<Component {...rest} {...props} />}
-          </ContentWithMainNav>
+          <AppWithMainNav>{<Component {...rest} {...props} />}</AppWithMainNav>
         </>
       )}
     />

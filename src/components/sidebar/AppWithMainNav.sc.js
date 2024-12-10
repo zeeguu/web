@@ -4,7 +4,7 @@ import {
   sidebarExpandedWidth,
 } from "./MainNav/SideBar/Sidebar.sc";
 
-const Content = styled.div`
+const AppWithMainNav = styled.div`
   box-sizing: border-box;
   top: 0;
   height: 100%;
@@ -12,7 +12,7 @@ const Content = styled.div`
   flex-direction: row;
 `;
 
-const ContentContainer = styled.section`
+const AppContent = styled.section`
   box-sizing: border-box;
   height: 100%;
   width: 100%;
@@ -35,4 +35,4 @@ const ContentContainer = styled.section`
   padding-bottom: ${({ screenWidth }) => (screenWidth <= 700 ? "4rem" : "0")};
 `;
 
-export { Content, ContentContainer };
+export { AppWithMainNav, AppContent };
