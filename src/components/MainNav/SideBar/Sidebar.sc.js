@@ -31,6 +31,10 @@ const SideBar = styled.nav`
   padding: 0.5rem 0.5rem 11rem 0.5rem;
   overflow-y: scroll;
   ${sharedSidebarStyling}
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const BottomSection = styled.div`
