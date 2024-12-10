@@ -37,6 +37,12 @@ const StyledButton = styled.button`
   ${OptionShared}
 `;
 
+const activeIconShared = css`
+  background-color: white;
+  color: ${({ isOnStudentSide }) =>
+    isOnStudentSide ? `${orange600}` : `${blue700}`};
+`;
+
 const IconSpan = styled.span`
   position: relative;
   border-radius: 0.25rem;
@@ -44,16 +50,13 @@ const IconSpan = styled.span`
   color: inherit;
   transition: 0.3s ease-in-out;
 
-  ${({ isActive, isOnStudentSide }) =>
+  ${({ isActive }) =>
     isActive &&
     css`
-      background-color: white;
-      color: ${isOnStudentSide ? `${orange600}` : `${blue700}`};
+      ${activeIconShared}
     `}
   :active {
-    background-color: white;
-    color: ${({ isOnStudentSide }) =>
-      isOnStudentSide ? `${orange600}` : `${blue700}`};
+    ${activeIconShared}
   }
 `;
 

@@ -4,9 +4,9 @@ import { blue700, orange600 } from "../../../colors";
 const sidebarExpandedWidth = "14rem";
 const sidebarCollapsedWidth = "4.2rem";
 
-const BgColors = css`
+const BgColorsTheme = css`
   background-color: ${({ isOnStudentSide }) =>
-    isOnStudentSide === true ? `${orange600}` : `${blue700}`};
+    isOnStudentSide ? `${orange600}` : `${blue700}`};
 `;
 
 const sharedSidebarStyling = css`
@@ -22,7 +22,7 @@ const sharedSidebarStyling = css`
       return sidebarCollapsedWidth;
     }
   }};
-  ${BgColors}
+  ${BgColorsTheme}
 `;
 
 const SideBar = styled.nav`
@@ -39,4 +39,10 @@ const BottomSection = styled.div`
   ${sharedSidebarStyling}
 `;
 
-export { SideBar, BottomSection, sidebarExpandedWidth, sidebarCollapsedWidth };
+export {
+  SideBar,
+  BottomSection,
+  sidebarExpandedWidth,
+  sidebarCollapsedWidth,
+  BgColorsTheme,
+};

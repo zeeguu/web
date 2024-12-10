@@ -1,6 +1,7 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { blue700, orange600 } from "../../../colors";
 import { fadeIn, fadeOut, slideIn, slideOut } from "../../../transitions";
+import { BgColorsTheme } from "../SideBar/Sidebar.sc";
 
 const MoreOptionsWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.6);
@@ -16,8 +17,7 @@ const MoreOptionsPanel = styled.nav`
   opacity: 1;
   box-sizing: border-box;
   width: 100%;
-  background-color: ${({ isOnStudentSide }) =>
-    isOnStudentSide ? `${orange600}` : `${blue700}`};
+  ${BgColorsTheme}
   position: fixed;
   bottom: 0;
   z-index: 2;
