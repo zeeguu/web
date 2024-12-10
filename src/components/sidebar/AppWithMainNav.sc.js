@@ -22,17 +22,17 @@ const AppContent = styled.section`
   overflow-x: hidden;
   top: 0;
 
-  margin-left: ${({ screenWidth }) => {
-    if (screenWidth > 992) {
+  margin-left: ${({ $screenWidth }) => {
+    if ($screenWidth > 992) {
       return sidebarExpandedWidth;
-    } else if (screenWidth <= 992 && screenWidth > 700) {
+    } else if ($screenWidth <= 992 && $screenWidth > 700) {
       return sidebarCollapsedWidth;
     } else {
       return "0px";
     }
   }};
 
-  padding-bottom: ${({ screenWidth }) => (screenWidth <= 700 ? "4rem" : "0")};
+  padding-bottom: ${({ $screenWidth }) => ($screenWidth <= 700 ? "4rem" : "0")};
 `;
 
 export { AppWithMainNav, AppContent };

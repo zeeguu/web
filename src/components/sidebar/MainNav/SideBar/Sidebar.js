@@ -17,9 +17,9 @@ export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
 
   return (
     <s.SideBar
-      isOnStudentSide={isOnStudentSide}
+      $isOnStudentSide={isOnStudentSide}
+      $screenWidth={screenWidth}
       role="navigation"
-      screenWidth={screenWidth}
     >
       <NavOption
         className={"logo"}
@@ -44,8 +44,8 @@ export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
       )}
 
       <s.BottomSection
-        screenWidth={screenWidth}
-        isOnStudentSide={isOnStudentSide}
+        $screenWidth={screenWidth}
+        $isOnStudentSide={isOnStudentSide}
       >
         <NavOption
           isOnStudentSide={isOnStudentSide}

@@ -10,8 +10,8 @@ const NavOption = styled.li`
 `;
 
 const FontColors = css`
-  color: ${({ isOnStudentSide }) =>
-    isOnStudentSide ? `${orange600}` : `${blue700}`};
+  color: ${({ $isOnStudentSide }) =>
+    $isOnStudentSide ? `${orange600}` : `${blue700}`};
 `;
 
 const SharedStyle = css`
@@ -33,8 +33,8 @@ const SharedStyle = css`
   transition: 0.3s ease-in-out;
   -webkit-tap-highlight-color: transparent;
 
-  ${({ isActive }) =>
-    isActive &&
+  ${({ $isActive }) =>
+    $isActive &&
     css`
       ${FontColors}
       background-color: white;
@@ -42,8 +42,8 @@ const SharedStyle = css`
     `}
 
   &:hover {
-    ${({ screenWidth }) =>
-      screenWidth > 700 &&
+    ${({ $screenWidth }) =>
+      $screenWidth > 700 &&
       css`
         border: solid 0.1rem rgba(255, 255, 255, 0.9);
       `}
@@ -100,8 +100,8 @@ const TextWrapper = styled.span`
   width: fit-content;
   user-select: none;
 
-  ${({ screenWidth }) =>
-    screenWidth <= 992 &&
+  ${({ $screenWidth }) =>
+    $screenWidth <= 992 &&
     css`
       opacity: 0;
       width: 0;
@@ -130,8 +130,8 @@ const OptionContentWrapper = styled.span`
   padding: 0 1.8rem 0 0;
   height: 2rem;
 
-  ${({ screenWidth }) =>
-    screenWidth <= 992 &&
+  ${({ $screenWidth }) =>
+    $screenWidth <= 992 &&
     css`
       padding: 0;
     `}

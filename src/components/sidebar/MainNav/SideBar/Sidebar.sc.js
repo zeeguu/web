@@ -5,8 +5,8 @@ const sidebarExpandedWidth = "14rem";
 const sidebarCollapsedWidth = "4.2rem";
 
 const BgColorsTheme = css`
-  background-color: ${({ isOnStudentSide }) =>
-    isOnStudentSide ? `${orange600}` : `${blue700}`};
+  background-color: ${({ $isOnStudentSide }) =>
+    $isOnStudentSide ? `${orange600}` : `${blue700}`};
 `;
 
 const sharedSidebarStyling = css`
@@ -15,10 +15,10 @@ const sharedSidebarStyling = css`
   left: 0;
   transition: 0.3s ease-in-out;
   overflow-x: hidden;
-  width: ${({ screenWidth }) => {
-    if (screenWidth > 992) {
+  width: ${({ $screenWidth }) => {
+    if ($screenWidth > 992) {
       return sidebarExpandedWidth;
-    } else if (screenWidth <= 992 && screenWidth > 700) {
+    } else if ($screenWidth <= 992 && $screenWidth > 700) {
       return sidebarCollapsedWidth;
     }
   }};

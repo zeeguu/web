@@ -43,8 +43,8 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
       {shouldBottomNavRender && (
         <>
           <s.BottomNav
-            isBottonNavVisible={isBottonNavVisible}
-            isOnStudentSide={isOnStudentSide}
+            $isBottonNavVisible={isBottonNavVisible}
+            $isOnStudentSide={isOnStudentSide}
           >
             {isOnStudentSide && (
               <BottomNav_Student isOnStudentSide={isOnStudentSide} />

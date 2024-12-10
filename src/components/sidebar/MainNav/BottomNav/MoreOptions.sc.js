@@ -8,7 +8,8 @@ const MoreOptionsWrapper = styled.div`
   height: 100%;
   z-index: 2;
   position: absolute;
-  animation: ${({ isOverlayVisible }) => (isOverlayVisible ? fadeIn : fadeOut)}
+  animation: ${({ $isOverlayVisible }) =>
+      $isOverlayVisible ? fadeIn : fadeOut}
     0.3s ease-in-out forwards;
 `;
 
@@ -25,8 +26,8 @@ const MoreOptionsPanel = styled.nav`
   border-radius: 1rem 1rem 0 0;
   padding: 1rem 1rem 2rem 1rem;
   box-shadow: 0 -0.25rem 1.25rem rgba(0, 0, 0, 0.1);
-  animation: ${({ isMoreOptionsVisible }) =>
-      isMoreOptionsVisible ? slideIn : slideOut}
+  animation: ${({ $isMoreOptionsVisible }) =>
+      $isMoreOptionsVisible ? slideIn : slideOut}
     0.3s ease-in-out forwards;
 `;
 

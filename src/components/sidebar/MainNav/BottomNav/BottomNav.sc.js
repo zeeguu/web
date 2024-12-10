@@ -15,8 +15,8 @@ const BottomNav = styled.nav`
   color: white;
   z-index: 1;
   transition: 0.3s ease-in-out;
-  animation: ${({ isBottonNavVisible }) =>
-      isBottonNavVisible ? slideIn : slideOut}
+  animation: ${({ $isBottonNavVisible }) =>
+      $isBottonNavVisible ? slideIn : slideOut}
     0.3s ease-in-out forwards;
 `;
 

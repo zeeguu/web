@@ -9,7 +9,7 @@ export default function AppWithMainNav(props) {
   return (
     <s.AppWithMainNav>
       <MainNav screenWidth={screenWidth} />
-      <s.AppContent screenWidth={screenWidth} id="scrollHolder">
+      <s.AppContent $screenWidth={screenWidth} id="scrollHolder">
         {appContent}
       </s.AppContent>
     </s.AppWithMainNav>

@@ -20,17 +20,17 @@ export default function NavOption({
   return (
     <s.NavOption>
       <Component
-        screenWidth={screenWidth}
+        $screenWidth={screenWidth}
+        $isActive={isActive}
+        $isOnStudentSide={isOnStudentSide}
         className={className}
-        isActive={isActive}
-        isOnStudentSide={isOnStudentSide}
         onClick={onClick}
         to={linkTo && linkTo}
         title={elementTitle}
       >
-        <s.OptionContentWrapper screenWidth={screenWidth}>
+        <s.OptionContentWrapper $screenWidth={screenWidth}>
           <s.IconContainer>{icon}</s.IconContainer>
-          <s.TextWrapper screenWidth={screenWidth}>{text}</s.TextWrapper>
+          <s.TextWrapper $screenWidth={screenWidth}>{text}</s.TextWrapper>
           {notification}
         </s.OptionContentWrapper>
       </Component>

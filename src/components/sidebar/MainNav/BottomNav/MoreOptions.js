@@ -15,12 +15,12 @@ export default function MoreOptions({
 }) {
   return (
     <s.MoreOptionsWrapper
-      isOverlayVisible={isOverlayVisible}
+      $isOverlayVisible={isOverlayVisible}
       onClick={handleHideMoreOptions}
     >
       <s.MoreOptionsPanel
-        isMoreOptionsVisible={isMoreOptionsVisible}
-        isOnStudentSide={isOnStudentSide}
+        $isMoreOptionsVisible={isMoreOptionsVisible}
+        $isOnStudentSide={isOnStudentSide}
         onClick={(e) => {
           e.stopPropagation();
         }}
