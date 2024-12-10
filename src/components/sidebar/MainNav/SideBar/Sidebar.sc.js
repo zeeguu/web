@@ -13,7 +13,7 @@ const sharedSidebarStyling = css`
   box-sizing: border-box;
   position: fixed;
   left: 0;
-  transition: 0.3s ease-in-out width;
+  transition: 0.3s ease-in-out;
   overflow-x: hidden;
   width: ${({ screenWidth }) => {
     if (screenWidth > 992) {

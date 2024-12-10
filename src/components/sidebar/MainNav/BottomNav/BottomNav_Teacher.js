@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import NavIcon from "../NavIcon";
 import BottomNavOption from "./BottomNavOption";
+import strings from "../../../../i18n/definitions";
 
 export default function BottomNav_Teacher({ isOnStudentSide }) {
   const path = useLocation().pathname;
@@ -10,7 +11,7 @@ export default function BottomNav_Teacher({ isOnStudentSide }) {
         linkTo={"/teacher/classes"}
         currentPath={path}
         icon={<NavIcon name="myClassrooms" />}
-        text={"My Classrooms"}
+        text={strings.myClasses}
         isOnStudentSide={isOnStudentSide}
       />
 
@@ -18,7 +19,7 @@ export default function BottomNav_Teacher({ isOnStudentSide }) {
         linkTo={"/teacher/texts"}
         currentPath={path}
         icon={<NavIcon name="myTexts" />}
-        text={"My Texts"}
+        text={strings.myTexts}
         isOnStudentSide={isOnStudentSide}
       />
     </>

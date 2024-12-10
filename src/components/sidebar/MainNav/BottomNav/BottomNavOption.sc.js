@@ -46,10 +46,10 @@ const IconSpan = styled.span`
 
   ${({ isActive, isOnStudentSide }) =>
     isActive &&
-    `
-    background-color: white;
-    color: ${isOnStudentSide ? `${orange600}` : `${blue700}`};
-  `}
+    css`
+      background-color: white;
+      color: ${isOnStudentSide ? `${orange600}` : `${blue700}`};
+    `}
   :active {
     background-color: white;
     color: ${({ isOnStudentSide }) =>

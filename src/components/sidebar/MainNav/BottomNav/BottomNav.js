@@ -6,6 +6,7 @@ import MoreOptions from "./MoreOptions";
 import BottomNav_Student from "./BottomNav_Student";
 import BottomNav_Teacher from "./BottomNav_Teacher";
 import BottomNavOption from "./BottomNavOption";
+import strings from "../../../../i18n/definitions";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;
@@ -56,14 +57,14 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
               linkTo={"/account_settings"}
               currentPath={path}
               icon={<NavIcon name="settings" />}
-              text={"Settings"}
+              text={strings.settings}
               isOnStudentSide={isOnStudentSide}
             />
 
             <BottomNavOption
               onClick={handleShowMoreOptions}
               icon={<NavIcon name="more" />}
-              text={"More"}
+              text={strings.more}
               isOnStudentSide={isOnStudentSide}
             />
           </s.BottomNav>

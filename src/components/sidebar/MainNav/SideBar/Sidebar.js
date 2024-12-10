@@ -7,6 +7,7 @@ import * as s from "./Sidebar.sc";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import FeedbackButton from "../../../FeedbackButton";
+import strings from "../../../../i18n/definitions";
 
 export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
   const { is_teacher } = useContext(UserContext);
@@ -18,7 +19,6 @@ export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
     <s.SideBar
       isOnStudentSide={isOnStudentSide}
       role="navigation"
-      aria-label="Sidebar Navigation"
       screenWidth={screenWidth}
     >
       <NavOption
@@ -51,7 +51,7 @@ export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
           isOnStudentSide={isOnStudentSide}
           linkTo={"/account_settings"}
           icon={<NavIcon name="settings" />}
-          text={"Settings"}
+          text={strings.settings}
           currentPath={path}
           screenWidth={screenWidth}
         />

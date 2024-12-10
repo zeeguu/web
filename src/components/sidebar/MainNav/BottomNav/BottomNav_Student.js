@@ -3,6 +3,7 @@ import NotificationIcon from "../../../NotificationIcon";
 import useExerciseNotification from "../../../../hooks/useExerciseNotification";
 import NavIcon from "../NavIcon";
 import BottomNavOption from "./BottomNavOption";
+import strings from "../../../../i18n/definitions";
 
 export default function BottomNav_Student({ isOnStudentSide }) {
   const path = useLocation().pathname;
@@ -15,7 +16,7 @@ export default function BottomNav_Student({ isOnStudentSide }) {
         linkTo={"/articles"}
         currentPath={path}
         icon={<NavIcon name="home" />}
-        text={"Home"}
+        text={strings.articles}
         isOnStudentSide={isOnStudentSide}
       />
 
@@ -23,7 +24,7 @@ export default function BottomNav_Student({ isOnStudentSide }) {
         linkTo={"/exercises"}
         currentPath={path}
         icon={<NavIcon name="exercises" />}
-        text={"Exercises"}
+        text={strings.exercises}
         isOnStudentSide={isOnStudentSide}
         notification={
           hasExerciseNotification && (
@@ -39,7 +40,7 @@ export default function BottomNav_Student({ isOnStudentSide }) {
         linkTo={"/words"}
         currentPath={path}
         icon={<NavIcon name="words" />}
-        text={"Words"}
+        text={strings.words}
         isOnStudentSide={isOnStudentSide}
       />
     </>

@@ -4,6 +4,7 @@ import FeedbackButton from "../../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
+import strings from "../../../../i18n/definitions";
 
 export default function MoreOptions({
   isOnStudentSide,
@@ -37,7 +38,7 @@ export default function MoreOptions({
               isOnStudentSide={isOnStudentSide}
               linkTo={"/user_dashboard"}
               icon={<NavIcon name="statistics" />}
-              text={"Statistics"}
+              text={strings.userDashboard}
               currentPath={currentPath}
               onClick={handleHideMoreOptions}
             />
@@ -46,7 +47,7 @@ export default function MoreOptions({
               isOnStudentSide={isOnStudentSide}
               linkTo={"/history"}
               icon={<NavIcon name="history" />}
-              text={"History"}
+              text={strings.history}
               currentPath={currentPath}
               onClick={handleHideMoreOptions}
             />
@@ -55,7 +56,7 @@ export default function MoreOptions({
               <NavOption
                 linkTo={"/teacher/classes"}
                 icon={<NavIcon name="teacherSite" />}
-                text={"Teacher Site"}
+                text={strings.teacherSite}
                 currentPath={currentPath}
                 onClick={handleHideMoreOptions}
               />
@@ -68,7 +69,7 @@ export default function MoreOptions({
             isOnStudentSide={isOnStudentSide}
             linkTo={"/articles"}
             icon={<NavIcon name="studentSite" />}
-            text={"Student Site"}
+            text={strings.studentSite}
             currentPath={currentPath}
             onClick={handleHideMoreOptions}
           />
