@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
-import AppWithMainNav from "./components/sidebar/AppWithMainNav";
+import AppWithMainNav from "./AppWithMainNav";
 
 // inspired from:
 // https://dev.to/mychal/protected-routes-with-react-function-components-dh

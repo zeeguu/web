@@ -1,6 +1,6 @@
 import * as s from "./AppWithMainNav.sc";
-import MainNav from "./MainNav/MainNav";
-import useScreenWidth from "../../hooks/useScreenWidth";
+import MainNav from "./components/sidebar/MainNav/MainNav";
+import useScreenWidth from "./hooks/useScreenWidth";
 
 export default function AppWithMainNav(props) {
   const { children: appContent } = props;
