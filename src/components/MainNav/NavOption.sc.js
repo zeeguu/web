@@ -86,9 +86,10 @@ const OptionButton = styled.button`
   padding: 0;
 
   &:hover {
-    border: none;
     box-shadow: none;
     color: white;
+    margin: none;
+    padding: none;
   }
   ${SharedStyle}
 `;

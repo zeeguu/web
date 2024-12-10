@@ -53,6 +53,7 @@ export default function MoreOptions({
 
             {isTeacher && (
               <NavOption
+                isOnStudentSide={isOnStudentSide}
                 linkTo={"/teacher/classes"}
                 icon={<NavIcon name="teacherSite" />}
                 text={strings.teacherSite}
