@@ -1,7 +1,7 @@
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import strings from "../../../../i18n/definitions";
+import strings from "../../../i18n/definitions";
 
 export default function SidebarOptions_Teacher({
   isOnStudentSide,

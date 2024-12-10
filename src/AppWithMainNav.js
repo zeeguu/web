@@ -1,5 +1,5 @@
 import * as s from "./AppWithMainNav.sc";
-import MainNav from "./components/sidebar/MainNav/MainNav";
+import MainNav from "./components/MainNav/MainNav";
 import useScreenWidth from "./hooks/useScreenWidth";
 
 export default function AppWithMainNav(props) {

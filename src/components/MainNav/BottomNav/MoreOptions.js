@@ -1,9 +1,9 @@
 import * as s from "./MoreOptions.sc";
-import FeedbackButton from "../../../FeedbackButton";
+import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
-import strings from "../../../../i18n/definitions";
+import strings from "../../../i18n/definitions";
 
 export default function MoreOptions({
   isOnStudentSide,

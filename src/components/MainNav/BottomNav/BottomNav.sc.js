@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { slideIn, slideOut } from "../../../transitions";
+import { slideIn, slideOut } from "../../transitions";
 import { BgColorsTheme } from "../SideBar/Sidebar.sc";
 
 const BottomNav = styled.nav`

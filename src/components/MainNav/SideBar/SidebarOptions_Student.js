@@ -1,9 +1,9 @@
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import useExerciseNotification from "../../../../hooks/useExerciseNotification";
-import NotificationIcon from "../../../NotificationIcon";
+import useExerciseNotification from "../../../hooks/useExerciseNotification";
+import NotificationIcon from "../../NotificationIcon";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
-import strings from "../../../../i18n/definitions";
+import strings from "../../../i18n/definitions";
 
 export default function SidebarOptions_Student({
   isTeacher,

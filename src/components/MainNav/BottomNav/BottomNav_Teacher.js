@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import NavIcon from "../NavIcon";
 import BottomNavOption from "./BottomNavOption";
-import strings from "../../../../i18n/definitions";
+import strings from "../../../i18n/definitions";
 
 export default function BottomNav_Teacher({ isOnStudentSide }) {
   const path = useLocation().pathname;

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { fadeIn, fadeOut, slideIn, slideOut } from "../../../transitions";
+import { fadeIn, fadeOut, slideIn, slideOut } from "../../transitions";
 import { BgColorsTheme } from "../SideBar/Sidebar.sc";
 
 const MoreOptionsWrapper = styled.div`

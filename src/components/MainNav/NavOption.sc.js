@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { blue700, orange600 } from "../../colors";
+import { blue700, orange600 } from "../colors";
 
 const NavOption = styled.li`
   box-sizing: border-box;

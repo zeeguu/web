@@ -1,9 +1,9 @@
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import NotificationIcon from "../../../NotificationIcon";
-import useExerciseNotification from "../../../../hooks/useExerciseNotification";
+import NotificationIcon from "../../NotificationIcon";
+import useExerciseNotification from "../../../hooks/useExerciseNotification";
 import NavIcon from "../NavIcon";
 import BottomNavOption from "./BottomNavOption";
-import strings from "../../../../i18n/definitions";
+import strings from "../../../i18n/definitions";
 
 export default function BottomNav_Student({ isOnStudentSide }) {
   const path = useLocation().pathname;

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {
   sidebarCollapsedWidth,
   sidebarExpandedWidth,
-} from "./components/sidebar/MainNav/SideBar/Sidebar.sc";
+} from "./components/MainNav/SideBar/Sidebar.sc";
 
 const AppWithMainNav = styled.div`
   box-sizing: border-box;

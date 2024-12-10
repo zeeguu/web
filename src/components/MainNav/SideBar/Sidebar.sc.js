@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { blue700, orange600 } from "../../../colors";
+import { blue700, orange600 } from "../../colors";
 
 const sidebarExpandedWidth = "14rem";
 const sidebarCollapsedWidth = "4.2rem";

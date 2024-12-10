@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import { UserContext } from "../../../contexts/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 import Sidebar from "./SideBar/Sidebar";
 import BottomNav from "./BottomNav/BottomNav";
 

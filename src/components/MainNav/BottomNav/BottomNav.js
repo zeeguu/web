@@ -6,7 +6,7 @@ import MoreOptions from "./MoreOptions";
 import BottomNav_Student from "./BottomNav_Student";
 import BottomNav_Teacher from "./BottomNav_Teacher";
 import BottomNavOption from "./BottomNavOption";
-import strings from "../../../../i18n/definitions";
+import strings from "../../../i18n/definitions";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;

@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import { UserContext } from "../../../../contexts/UserContext";
+import { UserContext } from "../../../contexts/UserContext";
 import SidebarOptions_Student from "./SidebarOptions_Student";
 import SidebarOptions_Teacher from "./SidebarOptions_Teacher";
 import * as s from "./Sidebar.sc";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
-import FeedbackButton from "../../../FeedbackButton";
-import strings from "../../../../i18n/definitions";
+import FeedbackButton from "../../FeedbackButton";
+import strings from "../../../i18n/definitions";
 
 export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
   const { is_teacher } = useContext(UserContext);

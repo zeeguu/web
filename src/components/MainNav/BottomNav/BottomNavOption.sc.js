@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { orange600, blue700 } from "../../../colors";
+import { orange600, blue700 } from "../../colors";
 
 const OptionShared = css`
   color: white;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FeedbackModal from "./FeedbackModal";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
-import NavOption from "./sidebar/MainNav/NavOption";
+import NavOption from "./MainNav/NavOption";
 import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded";
 
 export default function FeedbackButton({ isOnStudentSide, screenWidth }) {
