@@ -86,7 +86,9 @@ export default function Congratulations({
           <p>
             You have reviewed <b>{totalPracticedBookmarksInSession}</b>{" "}
             {Pluralize.word(totalBookmarksReviewed)} in{" "}
-            {timeToHumanReadable(checkpointTime)}.
+            <b>{timeToHumanReadable(checkpointTime)}</b>. These words are now
+            part of your vocabulary exercises, using spaced repetition and smart
+            learning techniques to help you remember them better.
           </p>
           {/*
           <p>

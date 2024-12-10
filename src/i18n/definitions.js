@@ -393,7 +393,7 @@ let strings = new LocalizedStrings(
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
-      toExercises: "To Exercises",
+      toExercises: "Practice Words",
 
       //EmptyArticles
       noArticles:
@@ -526,9 +526,9 @@ let strings = new LocalizedStrings(
 
       //ExerciseNavigation
       backToReading: "Back to Reading",
-      goToReading: "Go To Reading",
+      goToReading: "Go to Reading",
       backToWords: "Back to Words",
-      keepExercising: "Keep Exercising",
+      keepExercising: "Go to Exercises",
       startLearningNewWords: "Start Learning New Words",
 
       //CongratulationsPage

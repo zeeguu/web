@@ -28,23 +28,16 @@ export default function ReviewVocabularyInfoBox({
 
   return (
     <>
-      <s.InteractiveBox className="review-words">
-        <s.CenteredContent>
-          <div className="imgContainer">
-            <h2>Exercises</h2>
-            <div>
-              <img
-                src={getStaticPath("images", "zeeguuWhiteLogo.svg")}
-                alt="Zeeguu Logo - The Elephant"
-              />
-            </div>
-          </div>
-          <StyledButton primary onClick={handleButtonClick}>
-            <span>Review words</span>
-            {<NavigateNextIcon />}
-          </StyledButton>
-        </s.CenteredContent>
-      </s.InteractiveBox>
+      <s.CenteredContent>
+        <StyledButton
+          primary
+          onClick={handleButtonClick}
+          style={{ marginLeft: "auto", marginBottom: "5em" }}
+        >
+          <span>Review words</span>
+          {<NavigateNextIcon />}
+        </StyledButton>
+      </s.CenteredContent>
     </>
   );
 }
