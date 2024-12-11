@@ -31,3 +31,15 @@ Zeeguu_API.prototype.saveUserCommitmentInfo = function (
 
   this._post(`user_commitment_info`, qs.stringify(user_commitment), onSuccess);
 };
+
+Zeeguu_API.prototype.updateUserCommitment = function (
+  consecutiveWeeks,
+  commitmentLastUpdated,
+  callback,
+) {
+  let payload = {
+    consecutive_weeks: consecutiveWeeks,
+    commitment_last_updated: commitmentLastUpdated,
+  };
+  this._putJSON("user_commitment_update", payload, callback);
+};
