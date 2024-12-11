@@ -23,7 +23,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const delay = useRef(0); // initialize with an int that will represent the timeout id
 
   useEffect(() => {
-    if (PAGES_WITHOUT_BOTTOM_NAV.includes(path)) {
+    if (PAGES_WITHOUT_BOTTOM_NAV.some((page) => path.startsWith(page))) {
       setBottomNavTransition(slideOut);
       delay.current = setTimeout(() => setRenderBottomNav(false), 500);
     } else {
