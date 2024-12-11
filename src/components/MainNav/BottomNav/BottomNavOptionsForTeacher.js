@@ -3,7 +3,7 @@ import NavIcon from "../NavIcon";
 import BottomNavOption from "./BottomNavOption";
 import strings from "../../../i18n/definitions";
 
-export default function BottomNav_Teacher({ isOnStudentSide }) {
+export default function BottomNavOptionsForTeacher({ isOnStudentSide }) {
   const path = useLocation().pathname;
   return (
     <>

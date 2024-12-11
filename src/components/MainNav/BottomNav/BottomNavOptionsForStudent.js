@@ -5,7 +5,7 @@ import NavIcon from "../NavIcon";
 import BottomNavOption from "./BottomNavOption";
 import strings from "../../../i18n/definitions";
 
-export default function BottomNav_Student({ isOnStudentSide }) {
+export default function BottomNavOptionsForStudent({ isOnStudentSide }) {
   const path = useLocation().pathname;
   const { hasExerciseNotification, notificationMsg } =
     useExerciseNotification();

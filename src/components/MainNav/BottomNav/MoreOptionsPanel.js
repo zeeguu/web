@@ -1,11 +1,11 @@
-import * as s from "./MoreOptions.sc";
+import * as s from "./MoreOptionsPanel.sc";
 import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import strings from "../../../i18n/definitions";
 
-export default function MoreOptions({
+export default function MoreOptionsPanel({
   isOnStudentSide,
   isTeacher,
   overlayTransition,
