@@ -129,7 +129,7 @@ export default function Congratulations({
           <StreakCircleDisplay className="streakCircleDisplay">
             <StreakCircle>
               <StreakText>Well done! You have been practicing for </StreakText>
-              <WeekText>  {commitmentAndActivityData}  weeks</WeekText>
+              <WeekText> {commitmentAndActivityData} weeks straight!</WeekText>
               <img src="/static/images/lightning.svg" alt="lightning" />
             </StreakCircle>
           </StreakCircleDisplay>
