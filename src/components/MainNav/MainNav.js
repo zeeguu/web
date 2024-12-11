@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import Sidebar from "./SideBar/Sidebar";
 import BottomNav from "./BottomNav/BottomNav";
+import { MOBILE_WIDTH } from "./screenSize";
 
 export default function MainNav({ screenWidth }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
@@ -17,7 +18,7 @@ export default function MainNav({ screenWidth }) {
 
   return (
     <>
-      {screenWidth <= "700" ? (
+      {screenWidth <= MOBILE_WIDTH ? (
         <BottomNav
           screenWidth={screenWidth}
           isOnStudentSide={isOnStudentSide}

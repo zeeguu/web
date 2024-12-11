@@ -17,6 +17,7 @@ import {
 } from "../components/ColumnWidth.sc";
 
 import { Link } from "react-router-dom";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 let ArticleReader = styled.div`
   padding: 0px 0.5rem;
@@ -64,8 +65,8 @@ let PlayerControl = styled.div`
 
 let TopbarButtonsContainer = styled.div`
   display: flex;
-  align-items: ${({ screenWidth }) =>
-    screenWidth < 700 ? "flex-start" : "flex-end"};
+  align-items: ${({ $screenWidth }) =>
+    $screenWidth < MOBILE_WIDTH ? "flex-start" : "flex-end"};
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 0.6rem;

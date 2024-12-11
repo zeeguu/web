@@ -1,4 +1,5 @@
 import * as s from "./NavOption.sc";
+import { MEDIUM_WIDTH } from "./screenSize";
 
 export default function NavOption({
   linkTo,
@@ -15,7 +16,11 @@ export default function NavOption({
   const Component = linkTo ? s.RouterLink : s.OptionButton;
   const isActive = currentPath?.includes(linkTo);
   const elementTitle =
-    screenWidth <= 992 && screenWidth > 700 ? (title ? title : text) : "";
+    screenWidth <= MEDIUM_WIDTH && screenWidth > MEDIUM_WIDTH
+      ? title
+        ? title
+        : text
+      : "";
 
   return (
     <s.NavOption>

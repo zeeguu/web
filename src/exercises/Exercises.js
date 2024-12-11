@@ -30,6 +30,7 @@ import DigitalTimer from "../components/DigitalTimer";
 
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -325,7 +326,7 @@ export default function Exercises({
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
     <>
-      {screenWidth < 700 && <BackArrow />}
+      {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
         <ProgressBar
           index={currentIndex}

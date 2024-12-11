@@ -15,6 +15,7 @@ import ToolbarButtons from "./ToolbarButtons";
 
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 function userIsTesterForAudio(user) {
   let testers = [
@@ -70,12 +71,12 @@ export default function TopToolbar({
   return (
     <PopupButtonWrapper>
       <s.Toolbar>
-        <s.TopbarButtonsContainer screenWidth={screenWidth}>
-          {screenWidth < 700 && <BackArrow noMargin={false} />}
+        <s.TopbarButtonsContainer $screenWidth={screenWidth}>
+          {screenWidth < MOBILE_WIDTH && <BackArrow noMargin={false} />}
           <div>
             {user.is_teacher && (
               <>
-                {teacherArticleID && screenWidth >= 700 && (
+                {teacherArticleID && screenWidth >= MOBILE_WIDTH && (
                   <Link to={`/teacher/texts/editText/${articleID}`}>
                     <StyledButton className="toolbar-btn" secondary studentView>
                       {strings.backToEditing}
@@ -83,7 +84,7 @@ export default function TopToolbar({
                   </Link>
                 )}
 
-                {!teacherArticleID && screenWidth >= 700 && (
+                {!teacherArticleID && screenWidth >= MOBILE_WIDTH && (
                   <StyledButton
                     className="toolbar-btn"
                     primary

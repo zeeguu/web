@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 import { blue700, orange600 } from "../colors";
+import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./screenSize";
 
 const NavOption = styled.li`
   box-sizing: border-box;
@@ -43,7 +44,7 @@ const SharedStyle = css`
 
   &:hover {
     ${({ $screenWidth }) =>
-      $screenWidth > 700 &&
+      $screenWidth > MOBILE_WIDTH &&
       css`
         border: solid 0.1rem rgba(255, 255, 255, 0.9);
       `}
@@ -102,7 +103,7 @@ const TextWrapper = styled.span`
   user-select: none;
 
   ${({ $screenWidth }) =>
-    $screenWidth <= 992 &&
+    $screenWidth <= MEDIUM_WIDTH &&
     css`
       opacity: 0;
       width: 0;
@@ -132,7 +133,7 @@ const OptionContentWrapper = styled.span`
   height: 2rem;
 
   ${({ $screenWidth }) =>
-    $screenWidth <= 992 &&
+    $screenWidth <= MEDIUM_WIDTH &&
     css`
       padding: 0;
     `}
