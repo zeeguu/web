@@ -63,14 +63,14 @@ export default function UserDashboardTop({
       </s.UserDashboardHelperText>
 
       {activeTab === TABS_IDS.BAR_GRAPH ? (
-        <s.StreakDisplay>
+        <s.CommitmentDisplay>
           <>
             {COMMITMENT_MESSAGE.YOUR_COMMITMENT1}
-           <s.Streak><s.StreakText>{commitmentAndActivityData} </s.StreakText>  {COMMITMENT_MESSAGE.YOUR_COMMITMENT2}</s.Streak>
+           <s.Commitment><s.CommitmentText>{commitmentAndActivityData} </s.CommitmentText>  {COMMITMENT_MESSAGE.YOUR_COMMITMENT2}</s.Commitment>
             <img src="/static/images/lightning-orange.svg" alt="lightning" height = "30px" />
      
           </>
-        </s.StreakDisplay>
+        </s.CommitmentDisplay>
       ) : null}
       </s.UserDashboardContainer>
     </s.UserDashboardTopContainer>

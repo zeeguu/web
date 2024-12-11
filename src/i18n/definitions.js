@@ -585,7 +585,11 @@ let strings = new LocalizedStrings(
       twentyMinutes: "20 minutes",
       thirtyMinutes: "30 minutes",
       custom: "Enter a custom amount",
-    
+
+      //SELECT MINS OR DAYS 
+      selectMinutes: "Select minutes",
+      selectDays: "Select days",
+
       //CEFR_LEVELS
       beginner: "Beginner",
       elementary: "Elementary",
