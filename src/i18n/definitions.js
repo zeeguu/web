@@ -52,6 +52,7 @@ let strings = new LocalizedStrings(
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
       next: "Next",
       youCanChangeLater: "You can always change it later",
+      youCanChangeInSettings: "You can add a custom minute amount or edit your choices in Settings.",
       yesPlease: "Yes, please",
       noThankYou: "No, thank you",
       getStarted: "Get Started",
@@ -92,6 +93,7 @@ let strings = new LocalizedStrings(
       commitmentPreferences: "Commitment Preferences",
       weeklyMinutesAreRequired: "Weekly minutes commitment is required.",
       weeklyHoursAreRequired: "Weekly hours commitment is required.",
+      timeCommitment: "How much time would you like to commit to per week?",
 
       //SelectInterests
       selectInterests: "Select Interests",

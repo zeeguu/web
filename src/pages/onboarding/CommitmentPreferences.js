@@ -10,7 +10,6 @@ import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import { isSupportedBrowser } from "../../utils/misc/browserDetection";
-
 import strings from "../../i18n/definitions";
 import { PRACTICE_DAYS } from "../../assorted/practiceDays";
 import { MINUTES_GOAL_INTRO } from "../../assorted/minutesGoal";
@@ -56,7 +55,7 @@ export default function CommitmentPreferences({ api, hasExtension }) {
   return (
     <PreferencesPage pageWidth={"narrow"}>
       <Header>
-        <Heading>How much time would you like to commit to per week?</Heading>
+        <Heading>{strings.timeCommitment}</Heading>
       </Header>
       <Main>
         <Form>
@@ -73,7 +72,6 @@ export default function CommitmentPreferences({ api, hasExtension }) {
               }}
               placeholder = {"5 days is recommended."}
             />
-
             <Selector
               id={"minutes-goal-initialiser"}
               options={MINUTES_GOAL_INTRO}
@@ -87,7 +85,7 @@ export default function CommitmentPreferences({ api, hasExtension }) {
               placeholder= {"5 minutes is recommended."}
             />
           </FormSection>
-          <p className="centered">{strings.youCanChangeLater}</p>
+          <p className="centered">{strings.youCanChangeInSettings}</p>
           <ButtonContainer className={"padding-medium"}>
             <Button
               type={"submit"}
