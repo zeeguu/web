@@ -22,7 +22,7 @@ const UserDashboardHelperText = styled(s.TopMessage)`
   }
 `;
 
-const StreakDisplay = styled(s.TopMessage)`
+const CommitmentDisplay = styled(s.TopMessage)`
   @media screen and (max-width: 768px) {
     font-size: 0.8em;
     line-height: 4ex;
@@ -32,12 +32,12 @@ const StreakDisplay = styled(s.TopMessage)`
   }
 `;
 
-const StreakText = styled.text`
+const CommitmentText = styled.text`
   font-weight: bold;
   margin-right: 5px;
 `;
 
-const Streak = styled.div`
+const Commitment = styled.div`
   line-height: 0.8em;
   font-size: 1em;
   width: 100%;
@@ -159,8 +159,8 @@ export {
   NivoGraphContainer,
   UserDatePicker,
   UserDashboardFeedbackButton,
-  StreakDisplay,
-  Streak,
-  StreakText,
+  CommitmentDisplay,
+  Commitment,
+  CommitmentText,
   UserDashboardContainer,
 };

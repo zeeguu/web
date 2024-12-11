@@ -4,10 +4,10 @@ import strings from "../i18n/definitions";
 import { useState, useEffect, useContext } from "react";
 import {
   CenteredColumn,
-  StreakCircle,
-  StreakCircleDisplay,
+  CommitmentCircle,
+  CommitmentCircleDisplay,
   ConclusionBox,
-  StreakText,
+  CommitmentText,
   ExerciseBox,
   WeekText,
 } from "./Congratulations.sc";
@@ -126,13 +126,13 @@ export default function Congratulations({
               {progressionButtonRender()}
             </CenteredColumn>
           </ExerciseBox>
-          <StreakCircleDisplay className="streakCircleDisplay">
-            <StreakCircle>
-              <StreakText>Well done! You have been practicing for </StreakText>
+          <CommitmentCircleDisplay>
+            <CommitmentCircle>
+              <CommitmentText>Well done! You have been practicing for </CommitmentText>
               <WeekText>  {commitmentAndActivityData}  weeks</WeekText>
               <img src="/static/images/lightning.svg" alt="lightning" />
-            </StreakCircle>
-          </StreakCircleDisplay>
+            </CommitmentCircle>
+          </CommitmentCircleDisplay>
         </ConclusionBox>
         {articleID && (
           <p>

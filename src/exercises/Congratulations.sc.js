@@ -6,7 +6,7 @@ const CenteredColumn = styled.div`
   display: flex;
 `;
 
-const StreakCircleDisplay = styled.div`
+const CommitmentCircleDisplay = styled.div`
   @media screen and (max-width: 768) {
     font-size: 0.8 em;
     line-height: 4ex;
@@ -15,12 +15,12 @@ const StreakCircleDisplay = styled.div`
   }
 `;
 
-const StreakText = styled.text`
+const CommitmentText = styled.text`
   line-height: 1.5em;
   color: white;
 `;
 
-const StreakCircle = styled.div`
+const CommitmentCircle = styled.div`
   margin-top:0.3em;
   display: flex;
   flex-direction: column;
@@ -64,7 +64,7 @@ export {
   ConclusionBox,
   ExerciseBox,
   CenteredColumn,
-  StreakCircleDisplay,
-  StreakCircle,
-  StreakText,
+  CommitmentCircleDisplay,
+  CommitmentCircle,
+  CommitmentText,
 };
