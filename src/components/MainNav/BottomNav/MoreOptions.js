@@ -9,7 +9,7 @@ export default function MoreOptions({
   isOnStudentSide,
   isTeacher,
   overlayTransition,
-  moreOptionsAnimation,
+  moreOptionsTransition,
   handleHideMoreOptions,
   currentPath,
 }) {
@@ -19,7 +19,7 @@ export default function MoreOptions({
       onClick={handleHideMoreOptions}
     >
       <s.MoreOptionsPanel
-        $moreOptionsAnimation={moreOptionsAnimation}
+        $moreOptionsTransition={moreOptionsTransition}
         $isOnStudentSide={isOnStudentSide}
         onClick={(e) => {
           e.stopPropagation();

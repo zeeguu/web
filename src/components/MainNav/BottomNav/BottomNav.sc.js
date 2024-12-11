@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { slideIn, slideOut } from "../../transitions";
 import { BgColorsTheme } from "../SideBar/Sidebar.sc";
 
 const BottomNav = styled.nav`
@@ -15,9 +14,8 @@ const BottomNav = styled.nav`
   color: white;
   z-index: 1;
   transition: 0.3s ease-in-out;
-  animation: ${({ $bottomNavTransition }) =>
-      $bottomNavTransition === "slideIn" ? slideIn : slideOut}
-    0.3s ease-in-out forwards;
+  animation: ${({ $bottomNavTransition }) => $bottomNavTransition} 0.3s
+    ease-in-out forwards;
 `;
 
 export { BottomNav };

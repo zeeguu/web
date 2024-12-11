@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { fadeIn, fadeOut, slideIn, slideOut } from "../../transitions";
 import { BgColorsTheme } from "../SideBar/Sidebar.sc";
 
 const MoreOptionsWrapper = styled.div`
@@ -25,9 +24,8 @@ const MoreOptionsPanel = styled.nav`
   border-radius: 1rem 1rem 0 0;
   padding: 1rem 1rem 2rem 1rem;
   box-shadow: 0 -0.25rem 1.25rem rgba(0, 0, 0, 0.1);
-  animation: ${({ $moreOptionsAnimation }) =>
-      $moreOptionsAnimation === "slideIn" ? slideIn : slideOut}
-    0.3s ease-in-out forwards;
+  animation: ${({ $moreOptionsTransition }) => $moreOptionsTransition} 0.3s
+    ease-in-out forwards;
 `;
 
 const CloseSection = styled.div`

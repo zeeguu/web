@@ -8,6 +8,7 @@ import BottomNav_Teacher from "./BottomNav_Teacher";
 import BottomNavOption from "./BottomNavOption";
 import strings from "../../../i18n/definitions";
 import { fadeIn, fadeOut } from "../../transitions";
+import { slideIn, slideOut } from "../../transitions";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;
@@ -20,10 +21,10 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
 
   useEffect(() => {
     if (path.includes("/exercises") || path.includes("/read")) {
-      setBottomNavTransition("slideOut");
+      setBottomNavTransition(slideOut);
       setTimeout(() => setRenderBottomNav(false), 500);
     } else {
-      setBottomNavTransition("slideIn");
+      setBottomNavTransition(slideIn);
       setRenderBottomNav(true);
     }
   }, [path]);
@@ -31,12 +32,12 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   function handleShowMoreOptions() {
     setOverlayTransition(fadeIn);
     setRenderMoreOptions(true);
-    setMoreOptionsTransition("slideIn");
+    setMoreOptionsTransition(slideIn);
   }
 
   function handleHideMoreOptions() {
     setOverlayTransition(fadeOut);
-    setMoreOptionsTransition("slideOut");
+    setMoreOptionsTransition(slideOut);
     setTimeout(() => setRenderMoreOptions(false), 500);
   }
 
@@ -79,7 +80,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
           isOnStudentSide={isOnStudentSide}
           isTeacher={isTeacher}
           overlayTransition={overlayTransition}
-          moreOptionsAnimation={moreOptionsTransition}
+          moreOptionsTransition={moreOptionsTransition}
           handleHideMoreOptions={handleHideMoreOptions}
         />
       )}
