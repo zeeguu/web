@@ -1,36 +1,23 @@
 import NavOption from "../NavOption";
-import NavIcon from "../NavIcon";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import strings from "../../../i18n/definitions";
+import NavigationOptions from "../navigationOptions";
 
-export default function SidebarOptions_Teacher({
-  isOnStudentSide,
-  screenWidth,
-}) {
+export default function SidebarOptions_Teacher({ screenWidth }) {
   const path = useLocation().pathname;
   return (
     <>
       <NavOption
-        isOnStudentSide={isOnStudentSide}
-        linkTo={"/teacher/classes"}
-        icon={<NavIcon name="myClassrooms" />}
-        text={strings.myClasses}
+        {...NavigationOptions.myClasses}
         currentPath={path}
         screenWidth={screenWidth}
       />
       <NavOption
-        isOnStudentSide={isOnStudentSide}
-        linkTo={"/teacher/texts"}
-        icon={<NavIcon name="myTexts" />}
-        text={strings.myTexts}
+        {...NavigationOptions.myTexts}
         currentPath={path}
         screenWidth={screenWidth}
       />
       <NavOption
-        isOnStudentSide={isOnStudentSide}
-        linkTo={"/articles"}
-        icon={<NavIcon name="studentSite" />}
-        text={strings.studentSite}
+        {...NavigationOptions.studentSite}
         currentPath={path}
         screenWidth={screenWidth}
       />

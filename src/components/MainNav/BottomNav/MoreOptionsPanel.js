@@ -2,8 +2,7 @@ import * as s from "./MoreOptionsPanel.sc";
 import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
-import NavIcon from "../NavIcon";
-import strings from "../../../i18n/definitions";
+import NavigationOptions from "../navigationOptions";
 
 export default function MoreOptionsPanel({
   isOnStudentSide,
@@ -34,29 +33,20 @@ export default function MoreOptionsPanel({
         {isOnStudentSide && (
           <>
             <NavOption
-              isOnStudentSide={isOnStudentSide}
-              linkTo={"/user_dashboard"}
-              icon={<NavIcon name="statistics" />}
-              text={strings.userDashboard}
+              {...NavigationOptions.statistics}
               currentPath={currentPath}
               onClick={handleHideMoreOptions}
             />
 
             <NavOption
-              isOnStudentSide={isOnStudentSide}
-              linkTo={"/history"}
-              icon={<NavIcon name="history" />}
-              text={strings.history}
+              {...NavigationOptions.history}
               currentPath={currentPath}
               onClick={handleHideMoreOptions}
             />
 
             {isTeacher && (
               <NavOption
-                isOnStudentSide={isOnStudentSide}
-                linkTo={"/teacher/classes"}
-                icon={<NavIcon name="teacherSite" />}
-                text={strings.teacherSite}
+                {...NavigationOptions.teacherSite}
                 currentPath={currentPath}
                 onClick={handleHideMoreOptions}
               />
@@ -66,10 +56,7 @@ export default function MoreOptionsPanel({
 
         {!isOnStudentSide && (
           <NavOption
-            isOnStudentSide={isOnStudentSide}
-            linkTo={"/articles"}
-            icon={<NavIcon name="studentSite" />}
-            text={strings.studentSite}
+            {...NavigationOptions.studentSite}
             currentPath={currentPath}
             onClick={handleHideMoreOptions}
           />

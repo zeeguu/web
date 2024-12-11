@@ -5,9 +5,8 @@ import SidebarOptions_Student from "./SidebarOptions_Student";
 import SidebarOptions_Teacher from "./SidebarOptions_Teacher";
 import * as s from "./Sidebar.sc";
 import NavOption from "../NavOption";
-import NavIcon from "../NavIcon";
 import FeedbackButton from "../../FeedbackButton";
-import strings from "../../../i18n/definitions";
+import NavigationOptions from "../navigationOptions";
 
 export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
   const { is_teacher } = useContext(UserContext);
@@ -30,28 +29,19 @@ export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
 
       {isOnStudentSide && (
         <SidebarOptions_Student
-          isOnStudentSide={isOnStudentSide}
           isTeacher={isTeacher}
           screenWidth={screenWidth}
         />
       )}
 
-      {!isOnStudentSide && (
-        <SidebarOptions_Teacher
-          isOnStudentSide={isOnStudentSide}
-          screenWidth={screenWidth}
-        />
-      )}
+      {!isOnStudentSide && <SidebarOptions_Teacher screenWidth={screenWidth} />}
 
       <s.BottomSection
         $screenWidth={screenWidth}
         $isOnStudentSide={isOnStudentSide}
       >
         <NavOption
-          isOnStudentSide={isOnStudentSide}
-          linkTo={"/account_settings"}
-          icon={<NavIcon name="settings" />}
-          text={strings.settings}
+          {...NavigationOptions.settings}
           currentPath={path}
           screenWidth={screenWidth}
         />

@@ -56,13 +56,9 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
             $bottomNavTransition={bottomNavTransition}
             $isOnStudentSide={isOnStudentSide}
           >
-            {isOnStudentSide && (
-              <BottomNavOptionsForStudent isOnStudentSide={isOnStudentSide} />
-            )}
+            {isOnStudentSide && <BottomNavOptionsForStudent />}
 
-            {!isOnStudentSide && (
-              <BottomNavOptionsForTeacher isOnStudentSide={isOnStudentSide} />
-            )}
+            {!isOnStudentSide && <BottomNavOptionsForTeacher />}
 
             <BottomNavOption
               linkTo={"/account_settings"}
