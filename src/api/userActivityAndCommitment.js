@@ -9,6 +9,7 @@ Zeeguu_API.prototype.getUserCommitment = function (callback) {
   this._getJSON("user_commitment", callback);
 };
 
+//creates the user commitment upon registration
 Zeeguu_API.prototype.createUserCommitment = function (
   user_commitment,
   onSuccess,
@@ -21,20 +22,7 @@ Zeeguu_API.prototype.createUserCommitment = function (
   );
 };
 
-Zeeguu_API.prototype.updateUserCommitment = function (
-  consecutiveWeeks,
-  commitmentLastUpdated,
-  callback,
-) {
-  let payload = {
-    consecutive_weeks: consecutiveWeeks,
-    commitment_last_updated: commitmentLastUpdated,
-  };
-
-  this._putJSON("user_commitment_update", payload, callback);
-};
-
-//saves new commitment from user when user changes it under settings
+//updates commitment values when user changes it under settings
 Zeeguu_API.prototype.saveUserCommitmentInfo = function (
   user_commitment,
   onSuccess,
