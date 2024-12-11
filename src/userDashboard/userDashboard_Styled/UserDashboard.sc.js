@@ -9,6 +9,11 @@ const UserDashboardTopContainer = styled.div`
   text-align: center;
 `;
 
+const UserDashboardContainer= styled.div`
+  display: flex;
+  flex-direction: row;
+  `;
+
 const UserDashboardHelperText = styled(s.TopMessage)`
   @media screen and (max-width: 768px) {
     font-size: 0.8em;
@@ -157,4 +162,5 @@ export {
   StreakDisplay,
   Streak,
   StreakText,
+  UserDashboardContainer,
 };

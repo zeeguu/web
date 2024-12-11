@@ -30,7 +30,7 @@ export default function UserDashboardTop({
         activeTab={activeTab}
         handleActiveTabChange={handleActiveTabChange}
       />
-
+<s.UserDashboardContainer>
       <s.UserDashboardHelperText>
         <>
           {activeTab === TABS_IDS.BAR_GRAPH
@@ -72,6 +72,7 @@ export default function UserDashboardTop({
           </>
         </s.StreakDisplay>
       ) : null}
+      </s.UserDashboardContainer>
     </s.UserDashboardTopContainer>
   );
 }
