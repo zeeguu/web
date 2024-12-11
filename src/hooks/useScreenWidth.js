@@ -1,24 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function useScreenWidth() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const debounceTimeout = useRef();
+
+  const handleResize = () => {
+    clearTimeout(debounceTimeout.current);
+    debounceTimeout.current = setTimeout(() => {
+      setScreenWidth(window.innerWidth);
+    }, 200);
+  };
 
   useEffect(() => {
-    let debounceTimeout;
-
-    const handleResize = () => {
-      clearTimeout(debounceTimeout);
-
-      debounceTimeout = setTimeout(() => {
-        setScreenWidth(window.innerWidth);
-      }, 200);
-    };
-
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      clearTimeout(debounceTimeout);
+      clearTimeout(debounceTimeout.current);
     };
   }, []);
 

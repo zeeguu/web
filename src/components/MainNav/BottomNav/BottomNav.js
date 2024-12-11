@@ -1,6 +1,6 @@
 import * as s from "./BottomNav.sc";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import NavIcon from "../NavIcon";
 import MoreOptions from "./MoreOptions";
 import BottomNav_Student from "./BottomNav_Student";
@@ -19,14 +19,20 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const [bottomNavTransition, setBottomNavTransition] = useState();
   const [renderBottomNav, setRenderBottomNav] = useState(false);
 
+  const delay = useRef();
+
   useEffect(() => {
     if (path.includes("/exercises") || path.includes("/read")) {
+      clearTimeout(delay.current);
       setBottomNavTransition(slideOut);
-      setTimeout(() => setRenderBottomNav(false), 500);
+      delay.current = setTimeout(() => setRenderBottomNav(false), 500);
     } else {
       setBottomNavTransition(slideIn);
       setRenderBottomNav(true);
     }
+    return () => {
+      clearTimeout(delay.current);
+    };
   }, [path]);
 
   function handleShowMoreOptions() {
@@ -36,9 +42,10 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   }
 
   function handleHideMoreOptions() {
+    clearTimeout(delay.current);
     setOverlayTransition(fadeOut);
     setMoreOptionsTransition(slideOut);
-    setTimeout(() => setRenderMoreOptions(false), 500);
+    delay.current = setTimeout(() => setRenderMoreOptions(false), 500);
   }
 
   return (
