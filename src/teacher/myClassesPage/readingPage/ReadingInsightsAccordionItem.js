@@ -22,9 +22,6 @@ const ReadingInsightAccordionItem = ({
     }
   };
 
-  console.log("inside ReadingInsightAccordionItem");
-  console.log(readingSession);
-
   return (
     <s.ReadingInsightAccordion isFirst={isFirst}>
       <AccordionItem className="accordion-wrapper">
