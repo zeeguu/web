@@ -1,0 +1,4 @@
+const MEDIUM_WIDTH = 992;
+const MOBILE_WIDTH = 700;
+
+export { MOBILE_WIDTH, MEDIUM_WIDTH };

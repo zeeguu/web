@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import { blue700, orange600 } from "../../colors";
+import { MEDIUM_WIDTH, MOBILE_WIDTH } from "../screenSize";
 
 const sidebarExpandedWidth = "14rem";
 const sidebarCollapsedWidth = "4.2rem";
@@ -16,9 +17,9 @@ const sharedSidebarStyling = css`
   transition: 0.3s ease-in-out;
   overflow-x: hidden;
   width: ${({ $screenWidth }) => {
-    if ($screenWidth > 992) {
+    if ($screenWidth > MEDIUM_WIDTH) {
       return sidebarExpandedWidth;
-    } else if ($screenWidth <= 992 && $screenWidth > 700) {
+    } else if ($screenWidth <= MEDIUM_WIDTH && $screenWidth > MOBILE_WIDTH) {
       return sidebarCollapsedWidth;
     }
   }};
@@ -30,8 +31,8 @@ const SideBar = styled.nav`
   top: 0;
   padding: 0.5rem 0.5rem 11rem 0.5rem;
   overflow-y: scroll;
-  ${sharedSidebarStyling}
 
+  ${sharedSidebarStyling}
   &::-webkit-scrollbar {
     display: none;
   }

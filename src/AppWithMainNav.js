@@ -7,7 +7,7 @@ export default function AppWithMainNav(props) {
   const { screenWidth } = useScreenWidth();
 
   return (
-    <s.AppWithMainNav>
+    <s.AppWithMainNav $screenWidth={screenWidth}>
       <MainNav screenWidth={screenWidth} />
       <s.AppContent $screenWidth={screenWidth} id="scrollHolder">
         {appContent}
