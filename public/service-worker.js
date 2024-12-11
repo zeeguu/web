@@ -27,37 +27,80 @@ self.addEventListener("message", async (event) => {
   if (event.data.sessionId) {
     sessionId = event.data.sessionId;
     console.log("Session ID updated in service worker:", sessionId);
+    const nextNotificationTime = await getCachedNotificationTime();
+
+    // Schedules notification at first time use or if it's past 8 PM
+    // Schedules notification for the next time it'll be 8 PM on the current or next day
+    if (!nextNotificationTime || new Date().getTime() > nextNotificationTime) {
+      scheduleNotification(true);
+    } else {
+      // Schedules a notification for 8 PM or 10 minutes later if a notification wasn't received on today
+      scheduleNotification(false, nextNotificationTime - new Date().getTime());
+    }
   }
-  scheduleDailyNotification();
 });
 
-//Schedule a notification to be polled every day at 20 (8 PM)
-function scheduleDailyNotification() {
+//Schedule a notification to be polled every day at 8 PM
+async function scheduleNotification(
+  isNotificationSent = false,
+  timeDelay = null,
+) {
   const currentTime = new Date();
-  const nextNotificationTime = new Date();
-  nextNotificationTime.setHours(dailyNotificationTime, 0, 0, 0);
+  if (isNotificationSent) {
+    // Logic for scheduling a notification for the next day
+    const nextNotificationTime = new Date();
+    nextNotificationTime.setHours(dailyNotificationTime, 0, 0, 0);
 
-  if (currentTime.getTime() > nextNotificationTime.getTime()) {
-    nextNotificationTime.setDate(currentTime.getDate() + 1);
+    if (currentTime.getTime() > nextNotificationTime.getTime()) {
+      nextNotificationTime.setDate(currentTime.getDate() + 1);
+    }
+
+    const nextNotificationTimestamp = nextNotificationTime.getTime();
+    await cachedNotificationTime(nextNotificationTimestamp);
+    scheduleNextPoll(nextNotificationTimestamp - currentTime.getTime());
+  } else if (timeDelay !== null) {
+    // Logic for for retrying to send a notification after 10 minutes
+    const notificationRetryTimestamp = currentTime.getTime() + timeDelay;
+    await cachedNotificationTime(notificationRetryTimestamp);
+    scheduleNextPoll(timeDelay);
+  } else {
+    console.error("Invalid scheduling parameters");
   }
-
-  const timeUntilNextNotification =
-    nextNotificationTime.getTime() - currentTime.getTime();
-
-  scheduleNextPoll(timeUntilNextNotification, true);
 }
 
-// Receive notification everyday at 8 PM. If no notifications are available check again every 10 minutes (600000 as setTimeout uses milliseconds)
-function scheduleNextPoll(timeDelay = tenMinutes, isScheduled = false) {
+// Caches the timestamp for when the next notification should be sent
+async function cachedNotificationTime(time) {
+  const cache = await caches.open(NOTIFICATION_CACHE);
+  const response = new Response(JSON.stringify({ nextNotificationTime: time }));
+  await cache.put("nextNotificationTime", response);
+}
+
+async function getCachedNotificationTime() {
+  const cache = await caches.open(NOTIFICATION_CACHE);
+  const response = await cache.match("nextNotificationTime");
+  if (response) {
+    const data = await response.json();
+    return data.nextNotificationTime;
+  }
+  return null;
+}
+
+// Receive notification everyday at 8 PM.
+// If no notifications are available check again every 10 minutes (600000 as setTimeout uses milliseconds)
+function scheduleNextPoll(timeDelay) {
   if (notificationTimer !== null) {
     clearTimeout(notificationTimer);
   }
-  notificationTimer = setTimeout(() => {
-    pollNotifications(isScheduled);
-  }, timeDelay);
+  if (timeDelay > 0) {
+    notificationTimer = setTimeout(() => {
+      pollNotifications();
+    }, timeDelay);
+  } else {
+    console.error("Invalid time delay parameter:", timeDelay);
+  }
 }
 
-async function pollNotifications(isScheduled = false) {
+async function pollNotifications() {
   // Will not start polling without a session id and enabled notification permissions
   if (!sessionId || Notification.permission !== "granted") {
     return;
@@ -76,16 +119,14 @@ async function pollNotifications(isScheduled = false) {
         },
       });
 
-      if (isScheduled) {
-        scheduleDailyNotification();
-      }
+      scheduleNotification(true);
     } else {
       console.log("No notifications are currently available");
-      scheduleNextPoll(tenMinutes);
+      scheduleNotification(false, tenMinutes);
     }
   } catch (error) {
     console.error("Failed to poll notifications:", error);
-    scheduleNextPoll(tenMinutes);
+    scheduleNotification(false, tenMinutes);
   }
 }
 
@@ -99,6 +140,7 @@ async function fetchNotificationData() {
     }
   } catch (error) {
     console.error("Failed to fetch notificaiton data:", error);
+    return null;
   }
 }
 
@@ -276,27 +318,23 @@ self.addEventListener("fetch", (event) => {
       }),
     );
 
-    // Tries to serve the requested data from the DATA_CACHE
-    // If unable to, then it makes a network fetch and stores the fetched data in the cache
-
-    // ML: Why would this third branch ever be taken? why would going to /bookmarks_in_pipeline not be in "navigate mode"
+    // Fetches data from the network and updates the cache with the new data
+    // If unable to, then it fetches from the cache instead, which can be used offline
   } else if (requestUrl.pathname.startsWith("/bookmarks_in_pipeline")) {
     event.respondWith(
-      caches.open(DATA_CACHE).then((cache) =>
-        cache.match(event.request, { ignoreSearch: true }).then((response) => {
-          // ML: as far as we can tell, once the words have been cached, they will never be refreshed
-          // because this match will succeed, and then this first if will be true, and then we will always
-          // return the same words
-          if (response) {
-            return response;
-          } else {
-            return fetch(event.request).then((networkResponse) => {
-              cache.put(event.request, networkResponse.clone());
-              return networkResponse;
-            });
-          }
-        }),
-      ),
+      // ML: as far as we can tell, once the words have been cached, they will never be refreshed
+      // because this match will succeed, and then this first if will be true, and then we will always
+      // return the same words
+      caches.open(DATA_CACHE).then((cache) => {
+        return fetch(event.request)
+          .then((networkResponse) => {
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          })
+          .catch(() => {
+            return cache.match(event.request);
+          });
+      }),
     );
   }
 });
