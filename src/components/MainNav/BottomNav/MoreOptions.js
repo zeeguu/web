@@ -8,18 +8,18 @@ import strings from "../../../i18n/definitions";
 export default function MoreOptions({
   isOnStudentSide,
   isTeacher,
-  isOverlayVisible,
-  isMoreOptionsVisible,
+  overlayTransition,
+  moreOptionsAnimation,
   handleHideMoreOptions,
   currentPath,
 }) {
   return (
     <s.MoreOptionsWrapper
-      $isOverlayVisible={isOverlayVisible}
+      $overlayTransition={overlayTransition}
       onClick={handleHideMoreOptions}
     >
       <s.MoreOptionsPanel
-        $isMoreOptionsVisible={isMoreOptionsVisible}
+        $moreOptionsAnimation={moreOptionsAnimation}
         $isOnStudentSide={isOnStudentSide}
         onClick={(e) => {
           e.stopPropagation();

@@ -7,43 +7,45 @@ import BottomNav_Student from "./BottomNav_Student";
 import BottomNav_Teacher from "./BottomNav_Teacher";
 import BottomNavOption from "./BottomNavOption";
 import strings from "../../../i18n/definitions";
+import { fadeIn, fadeOut } from "../../transitions";
 
 export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const path = useLocation().pathname;
-  const [isMoreOptionsVisible, setIsMoreOptionsVisible] = useState(false);
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
-  const [shouldMoreOptionsRender, setShouldMoreOptionsRender] = useState(false);
-  const [isBottonNavVisible, setIsBottomNavVisible] = useState(true);
-  const [shouldBottomNavRender, setShouldBottomNavRender] = useState(false);
+
+  const [overlayTransition, setOverlayTransition] = useState();
+  const [renderMoreOptions, setRenderMoreOptions] = useState(false);
+  const [moreOptionsTransition, setMoreOptionsTransition] = useState();
+  const [bottomNavTransition, setBottomNavTransition] = useState();
+  const [renderBottomNav, setRenderBottomNav] = useState(false);
 
   useEffect(() => {
     if (path.includes("/exercises") || path.includes("/read")) {
-      setIsBottomNavVisible(false);
-      setTimeout(() => setShouldBottomNavRender(false), 500);
+      setBottomNavTransition("slideOut");
+      setTimeout(() => setRenderBottomNav(false), 500);
     } else {
-      setIsBottomNavVisible(true);
-      setShouldBottomNavRender(true);
+      setBottomNavTransition("slideIn");
+      setRenderBottomNav(true);
     }
   }, [path]);
 
   function handleShowMoreOptions() {
-    setIsMoreOptionsVisible(true);
-    setIsOverlayVisible(true);
-    setShouldMoreOptionsRender(true);
+    setOverlayTransition(fadeIn);
+    setRenderMoreOptions(true);
+    setMoreOptionsTransition("slideIn");
   }
 
   function handleHideMoreOptions() {
-    setIsMoreOptionsVisible(false);
-    setIsOverlayVisible(false);
-    setTimeout(() => setShouldMoreOptionsRender(false), 500);
+    setOverlayTransition(fadeOut);
+    setMoreOptionsTransition("slideOut");
+    setTimeout(() => setRenderMoreOptions(false), 500);
   }
 
   return (
     <>
-      {shouldBottomNavRender && (
+      {renderBottomNav && (
         <>
           <s.BottomNav
-            $isBottonNavVisible={isBottonNavVisible}
+            $bottomNavTransition={bottomNavTransition}
             $isOnStudentSide={isOnStudentSide}
           >
             {isOnStudentSide && (
@@ -71,13 +73,13 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
         </>
       )}
 
-      {shouldMoreOptionsRender && (
+      {renderMoreOptions && (
         <MoreOptions
           currentPath={path}
           isOnStudentSide={isOnStudentSide}
           isTeacher={isTeacher}
-          isOverlayVisible={isOverlayVisible}
-          isMoreOptionsVisible={isMoreOptionsVisible}
+          overlayTransition={overlayTransition}
+          moreOptionsAnimation={moreOptionsTransition}
           handleHideMoreOptions={handleHideMoreOptions}
         />
       )}

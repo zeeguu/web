@@ -8,16 +8,15 @@ const MoreOptionsWrapper = styled.div`
   height: 100%;
   z-index: 2;
   position: absolute;
-  animation: ${({ $isOverlayVisible }) =>
-      $isOverlayVisible ? fadeIn : fadeOut}
-    0.3s ease-in-out forwards;
+  animation: ${({ $overlayTransition }) => $overlayTransition} 0.3s ease-in-out
+    forwards;
 `;
 
 const MoreOptionsPanel = styled.nav`
   opacity: 1;
   box-sizing: border-box;
   width: 100%;
-  ${BgColorsTheme}
+  ${BgColorsTheme};
   position: fixed;
   bottom: 0;
   z-index: 2;
@@ -26,8 +25,8 @@ const MoreOptionsPanel = styled.nav`
   border-radius: 1rem 1rem 0 0;
   padding: 1rem 1rem 2rem 1rem;
   box-shadow: 0 -0.25rem 1.25rem rgba(0, 0, 0, 0.1);
-  animation: ${({ $isMoreOptionsVisible }) =>
-      $isMoreOptionsVisible ? slideIn : slideOut}
+  animation: ${({ $moreOptionsAnimation }) =>
+      $moreOptionsAnimation === "slideIn" ? slideIn : slideOut}
     0.3s ease-in-out forwards;
 `;
 

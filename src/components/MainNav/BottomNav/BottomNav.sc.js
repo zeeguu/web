@@ -11,12 +11,12 @@ const BottomNav = styled.nav`
   position: fixed;
   bottom: 0;
   padding: 0.5rem 1rem 1rem 1rem;
-  ${BgColorsTheme}
+  ${BgColorsTheme};
   color: white;
   z-index: 1;
   transition: 0.3s ease-in-out;
-  animation: ${({ $isBottonNavVisible }) =>
-      $isBottonNavVisible ? slideIn : slideOut}
+  animation: ${({ $bottomNavTransition }) =>
+      $bottomNavTransition === "slideIn" ? slideIn : slideOut}
     0.3s ease-in-out forwards;
 `;
 
