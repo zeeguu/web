@@ -11,7 +11,6 @@ export default function useScreenWidth() {
 
       debounceTimeout = setTimeout(() => {
         setScreenWidth(window.innerWidth);
-        console.log("Screen width rerenders");
       }, 200);
     };
 
