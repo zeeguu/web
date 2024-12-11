@@ -33,7 +33,8 @@ const AppContent = styled.section`
     }
   }};
 
-  margin-bottom: ${({ $screenWidth }) => ($screenWidth <= 700 ? "4rem" : "0")};
+  margin-bottom: ${({ $screenWidth }) =>
+    $screenWidth <= MOBILE_WIDTH ? "4rem" : "0"};
 `;
 
 export { AppWithMainNav, AppContent };
