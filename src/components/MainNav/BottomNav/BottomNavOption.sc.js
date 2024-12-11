@@ -13,6 +13,7 @@ const OptionShared = css`
   white-space: nowrap;
   user-select: none;
   position: relative;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 `;
 

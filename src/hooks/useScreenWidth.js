@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 export default function useScreenWidth() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const debounceTimeout = useRef();
+  const debounceTimeout = useRef(0); // initialize with an int that will represent the timeout id
 
   const handleResize = () => {
     clearTimeout(debounceTimeout.current);
