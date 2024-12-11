@@ -22,8 +22,8 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   const delay = useRef();
 
   useEffect(() => {
+    clearTimeout(delay.current);
     if (path.includes("/exercises") || path.includes("/read")) {
-      clearTimeout(delay.current);
       setBottomNavTransition(slideOut);
       delay.current = setTimeout(() => setRenderBottomNav(false), 500);
     } else {
