@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { UserContext } from "../../../contexts/UserContext";
-import SidebarOptions_Student from "./SidebarOptions_Student";
-import SidebarOptions_Teacher from "./SidebarOptions_Teacher";
+import SidebarOptionsForStudent from "./SidebarOptionsForStudent";
+import SidebarOptionsForTeacher from "./SidebarOptionsForTeacher";
 import * as s from "./Sidebar.sc";
 import NavOption from "../NavOption";
 import FeedbackButton from "../../FeedbackButton";
@@ -28,13 +28,15 @@ export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
       ></NavOption>
 
       {isOnStudentSide && (
-        <SidebarOptions_Student
+        <SidebarOptionsForStudent
           isTeacher={isTeacher}
           screenWidth={screenWidth}
         />
       )}
 
-      {!isOnStudentSide && <SidebarOptions_Teacher screenWidth={screenWidth} />}
+      {!isOnStudentSide && (
+        <SidebarOptionsForTeacher screenWidth={screenWidth} />
+      )}
 
       <s.BottomSection
         $screenWidth={screenWidth}

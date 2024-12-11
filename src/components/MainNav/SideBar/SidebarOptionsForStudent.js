@@ -4,7 +4,7 @@ import NotificationIcon from "../../NotificationIcon";
 import NavOption from "../NavOption";
 import NavigationOptions from "../navigationOptions";
 
-export default function SidebarOptions_Student({ isTeacher, screenWidth }) {
+export default function SidebarOptionsForStudent({ isTeacher, screenWidth }) {
   const path = useLocation().pathname;
 
   const { hasExerciseNotification, notificationMsg } =
