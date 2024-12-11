@@ -5,6 +5,8 @@ import {
 } from "./components/MainNav/SideBar/Sidebar.sc";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./components/MainNav/screenSize";
 
+const PAGES_WITHOUT_BOTTOM_NAV = ["/exercises", "/read"];
+
 const AppWithMainNav = styled.div`
   box-sizing: border-box;
   top: 0;
@@ -33,8 +35,20 @@ const AppContent = styled.section`
     }
   }};
 
-  margin-bottom: ${({ $screenWidth }) =>
-    $screenWidth <= MOBILE_WIDTH ? "4rem" : "0"};
+  // Updated margin-bottom because we don't want margin-bottom on pages that don't have the bottom bar
+  // To be refactored so that this logic is not repeated and info is retrieved from the navbar's context
+  margin-bottom: ${({ $screenWidth, $currentPath }) => {
+    if (
+      $screenWidth <= MOBILE_WIDTH &&
+      PAGES_WITHOUT_BOTTOM_NAV.some((page) => $currentPath.startsWith(page))
+    ) {
+      return "0";
+    } else if ($screenWidth <= MOBILE_WIDTH) {
+      return "4 rem";
+    } else {
+      return "0";
+    }
+  }};
 `;
 
 export { AppWithMainNav, AppContent };
