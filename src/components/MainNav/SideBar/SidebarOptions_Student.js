@@ -4,6 +4,7 @@ import NotificationIcon from "../../NotificationIcon";
 import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import strings from "../../../i18n/definitions";
+import StudentOptions from "../navigationOptions";
 
 export default function SidebarOptions_Student({
   isTeacher,
@@ -18,20 +19,14 @@ export default function SidebarOptions_Student({
   return (
     <>
       <NavOption
-        linkTo={"/articles"}
-        icon={<NavIcon name="home" />}
-        text={strings.articles}
+        {...StudentOptions.articles}
         currentPath={path}
-        isOnStudentSide={isOnStudentSide}
         screenWidth={screenWidth}
       />
 
       <NavOption
-        linkTo={"/exercises"}
-        icon={<NavIcon name="exercises" />}
-        text={strings.exercises}
+        {...StudentOptions.exercises}
         currentPath={path}
-        isOnStudentSide={isOnStudentSide}
         screenWidth={screenWidth}
         notification={
           hasExerciseNotification && (
@@ -44,11 +39,8 @@ export default function SidebarOptions_Student({
       />
 
       <NavOption
-        linkTo={"/words"}
-        icon={<NavIcon name="words" />}
-        text={strings.words}
+        {...StudentOptions.words}
         currentPath={path}
-        isOnStudentSide={isOnStudentSide}
         screenWidth={screenWidth}
       />
 

@@ -8,7 +8,6 @@ import { MOBILE_WIDTH } from "./screenSize";
 export default function MainNav({ screenWidth }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
   const [isOnStudentSide, setIsOnStudentSide] = useState(true);
-  console.log(screenWidth);
 
   const path = useLocation().pathname;
 
