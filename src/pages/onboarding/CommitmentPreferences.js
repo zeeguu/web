@@ -1,9 +1,11 @@
-import { useState} from "react";
+import { useState, useEffect} from "react";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
+import { scrollToTop } from "../../utils/misc/scrollToTop";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
 import Form from "../_pages_shared/Form.sc";
+import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
 import Selector from "../../components/Selector";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
@@ -14,6 +16,7 @@ import strings from "../../i18n/definitions";
 import { PRACTICE_DAYS } from "../../assorted/practiceDays";
 import { MINUTES_GOAL_INTRO } from "../../assorted/minutesGoal";
 import { useHistory } from "react-router-dom";
+import validator from "../../assorted/validator";
 
 export default function CommitmentPreferences({ api, hasExtension }) {
   const [userDetails, setUserDetails] = useState({
@@ -21,6 +24,13 @@ export default function CommitmentPreferences({ api, hasExtension }) {
     user_days: "",
   });
   const history = useHistory();
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (errorMessage) {
+      scrollToTop();
+    }
+  }, [errorMessage]);
 
   function saveCommitmentInfo(info) {
     setUserDetails({
@@ -37,8 +47,22 @@ export default function CommitmentPreferences({ api, hasExtension }) {
     setUserDetails({ ...userDetails, user_minutes: minutes });
   }
 
+  let validatorRules = [
+    [
+      userDetails.user_days === "",
+      "Please select how many days you want to practice",
+    ],
+    [
+      userDetails.user_minutes === "",
+     "Please select how many days you want to practice",
+    ],
+  ];
+
   function handleCommitmentPreferences(e) {
     e.preventDefault();
+    if (!validator(validatorRules, setErrorMessage)) {
+      return;
+    }
     api.createUserCommitment(userDetails, () => {
       saveCommitmentInfo(userDetails);
       const nextPage = getLinkToNextPage();
@@ -59,6 +83,9 @@ export default function CommitmentPreferences({ api, hasExtension }) {
       </Header>
       <Main>
         <Form>
+        {errorMessage && (
+            <FullWidthErrorMsg>{errorMessage}</FullWidthErrorMsg>
+          )}
           <FormSection>
             <Selector
               id={"practice-goal-initialiser"}
@@ -70,7 +97,7 @@ export default function CommitmentPreferences({ api, hasExtension }) {
               onChange={(e) => {
                 savePracticeDays(e.target.value);
               }}
-              placeholder = {"5 days is recommended."}
+              placeholder={strings.selectDays}
             />
             <Selector
               id={"minutes-goal-initialiser"}
@@ -82,7 +109,7 @@ export default function CommitmentPreferences({ api, hasExtension }) {
               onChange={(e) => {
                 saveMinutes(e.target.value);
               }}
-              placeholder= {"5 minutes is recommended."}
+              placeholder={strings.selectMinutes}
             />
           </FormSection>
           <p className="centered">{strings.youCanChangeInSettings}</p>
