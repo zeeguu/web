@@ -19,8 +19,8 @@ import { isMobile } from "../utils/misc/browserDetection";
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
-  LEARNING_CYCLE_SEQUENCE,
-  LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
+  EXTENDED_SEQUENCE,
+  EXTENDED_SEQUENCE_NO_AUDIO,
   DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
@@ -108,11 +108,11 @@ export default function Exercises({
   function getExerciseSequenceType() {
     let exerciseTypesList;
     if (Feature.merle_exercises() || Feature.exercise_levels())
-      exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
+      exerciseTypesList = EXTENDED_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
       if (Feature.merle_exercises() || Feature.exercise_levels())
-        exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
+        exerciseTypesList = EXTENDED_SEQUENCE_NO_AUDIO;
       else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
     }
     return exerciseTypesList;
@@ -163,6 +163,7 @@ export default function Exercises({
       setIsOutOfWordsToday(topBookmarks.length == 0);
     });
   }
+
   function startExercising() {
     resetExerciseState();
     if (articleID) {
@@ -318,6 +319,7 @@ export default function Exercises({
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
+
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
     <>

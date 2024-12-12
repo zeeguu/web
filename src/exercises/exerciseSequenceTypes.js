@@ -32,6 +32,9 @@ const EX_MultipleChoice = {
   testedBookmarks: 1,
   level: 2,
 };
+
+// this is not used because it is before Merle time!
+// it allows either click or type and now these are two separate exercises
 const EX_FindWordInContext = {
   type: FindWordInContext,
   requiredBookmarks: 1,
@@ -132,7 +135,7 @@ let DEFAULT_SEQUENCE_NO_AUDIO = [
   EX_FindWordInContext,
 ];
 
-let LEARNING_CYCLE_SEQUENCE = [
+let EXTENDED_SEQUENCE = [
   EX_Match,
   EX_MultipleChoiceL2toL1,
   EX_TranslateL2toL1,
@@ -145,7 +148,7 @@ let LEARNING_CYCLE_SEQUENCE = [
   EX_MultipleChoiceAudio,
 ];
 
-let LEARNING_CYCLE_SEQUENCE_NO_AUDIO = [
+let EXTENDED_SEQUENCE_NO_AUDIO = [
   EX_Match,
   EX_MultipleChoiceL2toL1,
   EX_TranslateL2toL1,
@@ -160,8 +163,8 @@ export {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
   EXERCISE_TYPES_TIAGO,
-  LEARNING_CYCLE_SEQUENCE,
-  LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
+  EXTENDED_SEQUENCE,
+  EXTENDED_SEQUENCE_NO_AUDIO,
   DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 };
@@ -202,6 +205,6 @@ function validateExerciseSequence(exerciseList) {
   });
 }
 
-validateExerciseSequence(LEARNING_CYCLE_SEQUENCE);
+validateExerciseSequence(EXTENDED_SEQUENCE);
 
-validateExerciseSequence(LEARNING_CYCLE_SEQUENCE_NO_AUDIO);
+validateExerciseSequence(EXTENDED_SEQUENCE_NO_AUDIO);
