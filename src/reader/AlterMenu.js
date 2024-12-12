@@ -9,6 +9,7 @@ export default function AlterMenu({
   hideAlterMenu,
   selectAlternative,
   hideTranslation,
+  deleteTranslation,
   clickedOutsideTranslation,
 }) {
   const [refToAlterMenu, clickedOutsideAlterMenu] = useClickOutside();
@@ -50,7 +51,7 @@ export default function AlterMenu({
     >
       {word.alternatives === undefined ? (
         <LoadingAnimation
-          specificStyle={{ height: "1rem", margin: "2rem 4rem" }}
+          specificStyle={{ height: "1rem", margin: "1rem 3.1rem" }}
           delay={0}
         ></LoadingAnimation>
       ) : (
@@ -79,6 +80,7 @@ export default function AlterMenu({
       {word.alternatives !== undefined && (
         <>
           <input
+            autocomplete="off"
             className="ownTranslationInput matchWidth"
             type="text"
             id="#userAlternative"
@@ -89,9 +91,11 @@ export default function AlterMenu({
           />
         </>
       )}
-      <div className="alterMenuLink" onClick={(e) => hideTranslation(e, word)}>
-        Hide Translation
-      </div>
+      {word.alternatives !== undefined && (
+        <div className="removeLink" onClick={(e) => deleteTranslation(e, word)}>
+          Delete Translation
+        </div>
+      )}
     </AlterMenuSC>
   );
 }
