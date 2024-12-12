@@ -21,8 +21,7 @@ const SettingsItem = styled.li`
   height: 56px;
   width: 100%;
   cursor: pointer;
-  /* margin-left: auto;
-      margin-right: auto; */
+  transition: 0.3s ease-in-out;
 
   &:hover {
     background-color: #f6f6f6;

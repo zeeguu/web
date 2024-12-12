@@ -13,6 +13,10 @@ import * as s from "./ArticleReader.sc";
 import SoundPlayer from "./SoundPlayer";
 import ToolbarButtons from "./ToolbarButtons";
 
+import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import useScreenWidth from "../hooks/useScreenWidth";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+
 function userIsTesterForAudio(user) {
   let testers = [
     "Michalis",
@@ -43,6 +47,7 @@ export default function TopToolbar({
   articleProgress,
   timer,
 }) {
+  const { screenWidth } = useScreenWidth();
   const history = useHistory();
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
   const saveArticleToOwnTexts = () => {
@@ -66,20 +71,22 @@ export default function TopToolbar({
   return (
     <PopupButtonWrapper>
       <s.Toolbar>
-        <s.TopbarButtonsContainer>
+        <s.TopbarButtonsContainer $screenWidth={screenWidth}>
+          {screenWidth < MOBILE_WIDTH && <BackArrow noMargin={false} />}
           <div>
             {user.is_teacher && (
               <>
-                {teacherArticleID && (
+                {teacherArticleID && screenWidth >= MOBILE_WIDTH && (
                   <Link to={`/teacher/texts/editText/${articleID}`}>
-                    <StyledButton secondary studentView>
+                    <StyledButton className="toolbar-btn" secondary studentView>
                       {strings.backToEditing}
                     </StyledButton>
                   </Link>
                 )}
 
-                {!teacherArticleID && (
+                {!teacherArticleID && screenWidth >= MOBILE_WIDTH && (
                   <StyledButton
+                    className="toolbar-btn"
                     primary
                     studentView
                     onClick={handleSaveCopyToShare}
