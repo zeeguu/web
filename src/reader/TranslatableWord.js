@@ -132,21 +132,9 @@ export default function TranslatableWord({
               <span onClick={(e) => toggleAlterMenu(e, word)}>
                 {word.translation}
               </span>
-              {showingAlterMenu ? (
-                <span
-                  className="arrow"
-                  onClick={(e) => toggleAlterMenu(e, word)}
-                >
-                  ▲
-                </span>
-              ) : (
-                <span
-                  className="arrow"
-                  onClick={(e) => toggleAlterMenu(e, word)}
-                >
-                  ▼
-                </span>
-              )}
+              <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
+                {showingAlterMenu ? "▲" : "▼"}
+              </span>
               <span className="hide">
                 <VisibilityOffIcon
                   fontSize="8px"
