@@ -22,17 +22,15 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
 
   const delay = useRef(0); // initialize with an int that will represent the timeout id
 
+  // No need to clear timeout in this use case
   useEffect(() => {
     if (PAGES_WITHOUT_BOTTOM_NAV.some((page) => path.startsWith(page))) {
       setBottomNavTransition(slideOut);
-      delay.current = setTimeout(() => setRenderBottomNav(false), 200);
+      delay.current = setTimeout(() => setRenderBottomNav(false), 300);
     } else {
       setBottomNavTransition(slideIn);
       setRenderBottomNav(true);
     }
-    return () => {
-      clearTimeout(delay.current);
-    };
   }, [path]);
 
   function handleShowMoreOptions() {
@@ -42,10 +40,9 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   }
 
   function handleHideMoreOptions() {
-    clearTimeout(delay.current);
     setOverlayTransition(fadeOut);
     setMoreOptionsTransition(slideOut);
-    delay.current = setTimeout(() => setRenderMoreOptions(false), 200);
+    delay.current = setTimeout(() => setRenderMoreOptions(false), 300);
   }
 
   return (

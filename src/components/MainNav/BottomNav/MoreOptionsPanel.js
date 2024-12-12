@@ -11,13 +11,16 @@ export default function MoreOptionsPanel({
   moreOptionsTransition,
   handleHideMoreOptions,
   currentPath,
+  renderMoreOptions,
 }) {
   return (
     <s.MoreOptionsWrapper
+      $renderMoreOptions={renderMoreOptions}
       $overlayTransition={overlayTransition}
       onClick={handleHideMoreOptions}
     >
       <s.MoreOptionsPanel
+        $renderMoreOptions={renderMoreOptions}
         $moreOptionsTransition={moreOptionsTransition}
         $isOnStudentSide={isOnStudentSide}
         onClick={(e) => {
