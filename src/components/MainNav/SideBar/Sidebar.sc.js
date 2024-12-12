@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { blue700, orange600 } from "../../colors";
+import { darkBlue, orange600 } from "../../colors";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "../screenSize";
 
 const sidebarExpandedWidth = "14rem";
@@ -7,7 +7,7 @@ const sidebarCollapsedWidth = "4.2rem";
 
 const BgColorsTheme = css`
   background-color: ${({ $isOnStudentSide }) =>
-    $isOnStudentSide ? `${orange600}` : `${blue700}`};
+    $isOnStudentSide ? `${orange600}` : `${darkBlue}`};
 `;
 
 const sharedSidebarStyling = css`

@@ -25,7 +25,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   useEffect(() => {
     if (PAGES_WITHOUT_BOTTOM_NAV.some((page) => path.startsWith(page))) {
       setBottomNavTransition(slideOut);
-      delay.current = setTimeout(() => setRenderBottomNav(false), 500);
+      delay.current = setTimeout(() => setRenderBottomNav(false), 200);
     } else {
       setBottomNavTransition(slideIn);
       setRenderBottomNav(true);
@@ -45,7 +45,7 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
     clearTimeout(delay.current);
     setOverlayTransition(fadeOut);
     setMoreOptionsTransition(slideOut);
-    delay.current = setTimeout(() => setRenderMoreOptions(false), 500);
+    delay.current = setTimeout(() => setRenderMoreOptions(false), 200);
   }
 
   return (

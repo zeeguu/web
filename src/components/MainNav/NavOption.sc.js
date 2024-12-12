@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { blue700, orange600 } from "../colors";
+import { darkBlue, orange600 } from "../colors";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./screenSize";
 
 const NavOption = styled.li`
@@ -12,7 +12,7 @@ const NavOption = styled.li`
 
 const FontColors = css`
   color: ${({ $isOnStudentSide }) =>
-    $isOnStudentSide ? `${orange600}` : `${blue700}`};
+    $isOnStudentSide ? `${orange600}` : `${darkBlue}`};
 `;
 
 const SharedStyle = css`
