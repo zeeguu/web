@@ -100,6 +100,15 @@ export default function UserDashboard({ api }) {
   }, []);
 
   useEffect(() => {
+    if (lastCommitmentUpdate && commitmentAndActivityData !== null) {
+      api.updateUserCommitment(
+        lastCommitmentUpdate,
+        commitmentAndActivityData,
+      );
+    }
+  }, [lastCommitmentUpdate, commitmentAndActivityData, api]);
+
+  useEffect(() => {
     api.getBookmarksCountsByDate((counts) => {
       var formatted = getMapData(counts);
 

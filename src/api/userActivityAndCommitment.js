@@ -28,18 +28,18 @@ Zeeguu_API.prototype.saveUserCommitmentInfo = function (
   onSuccess,
 ) {
   this.apiLog(this._appendSessionToUrl("user_commitment_info"));
-
   this._post(`user_commitment_info`, qs.stringify(user_commitment), onSuccess);
 };
 
 Zeeguu_API.prototype.updateUserCommitment = function (
-  consecutiveWeeks,
-  commitmentLastUpdated,
-  callback,
+  last_commitment_update,
+  commitment_and_activity_data,
+  onSuccess,
 ) {
-  let payload = {
-    consecutive_weeks: consecutiveWeeks,
-    commitment_last_updated: commitmentLastUpdated,
+  const dataToSend = {
+    last_commitment_update: last_commitment_update,
+    commitment_and_activity_data: commitment_and_activity_data,
   };
-  this._putJSON("user_commitment_update", payload, callback);
+  this.apiLog(this._appendSessionToUrl("user_commitment_update"));
+  this._post(`user_commitment_update`, qs.stringify(dataToSend), onSuccess);
 };
