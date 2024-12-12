@@ -10,6 +10,7 @@ import { timeToHumanReadable } from "../utils/misc/readableTime";
 import { ExerciseCountContext } from "./ExerciseCountContext";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Pluralize from "../utils/text/pluralize";
+import { StyledButton } from "../components/allButtons.sc.js";
 
 export default function Congratulations({
   articleID,
@@ -22,6 +23,7 @@ export default function Congratulations({
   api,
   backButtonAction,
   keepExercisingAction,
+  toScheduledExercises,
   source,
   exerciseSessionTimer,
 }) {
@@ -61,15 +63,15 @@ export default function Congratulations({
   function progressionButtonRender() {
     if (!isOutOfWordsToday)
       return (
-        <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
+        <StyledButton secondary onClick={keepExercisingAction}>
           {strings.keepExercising}
-        </s.OrangeButton>
+        </StyledButton>
       );
     else
       return (
-        <s.OrangeButton className="orangeButton" onClick={backButtonAction}>
+        <StyledButton secondary onClick={backButtonAction}>
           {strings.goToReading}
-        </s.OrangeButton>
+        </StyledButton>
       );
   }
 
@@ -112,8 +114,14 @@ export default function Congratulations({
             </p>
           )}
         </div>
-        <CenteredColumn className="CenteredColumn" style={{ marginTop: "2em" }}>
+        <CenteredColumn
+          className="contentOnRow"
+          style={{ marginTop: "2em", justifyContent: "space-around" }}
+        >
           {progressionButtonRender()}
+          <StyledButton primary onClick={toScheduledExercises}>
+            {strings.goToExercises}
+          </StyledButton>
         </CenteredColumn>
         {articleID && (
           <p>

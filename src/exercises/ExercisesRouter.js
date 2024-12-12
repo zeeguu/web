@@ -18,6 +18,11 @@ export default function ExercisesRouter({ api }) {
     api.logReaderActivity(api.KEEP_EXERCISING, "", "", UMR_SOURCE);
   };
 
+  const toScheduledExercises = () => {
+    history.push("/exercises");
+    api.logReaderActivity(api.TO_SCHEDULED_EXERCISES, "", "", UMR_SOURCE);
+  };
+
   return (
     <s.NarrowColumn>
       <Switch>
@@ -41,6 +46,7 @@ export default function ExercisesRouter({ api }) {
           component={Exercises}
           backButtonAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
+          toScheduledExercises={toScheduledExercises}
           source={UMR_SOURCE}
         />
       </Switch>

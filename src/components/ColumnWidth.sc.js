@@ -10,7 +10,6 @@ const CenteredContent = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  max-width: 90%;
   align-items: center;
 
   .imgContainer {

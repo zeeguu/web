@@ -122,6 +122,17 @@ const StyledButton = styled.button`
       :hover {
         text-decoration: underline;
       }
+      border: 2px solid ${zeeguuOrange};
+    `}
+  
+  // Navigation used together with <NavigateNextIcon /> or <NavigateBeforeIcon />
+  ${(props) =>
+    props.navigation &&
+    css`
+      background-color: white;
+      :hover {
+        text-decoration: underline;
+      }
     `}
 
     // Disabled

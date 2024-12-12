@@ -75,6 +75,10 @@ export default function WordsForArticle({ api }) {
     }
   };
 
+  const toScheduledExercises = async (e) => {
+    history.push(`/exercises/}`);
+  };
+
   function logGoingToExercisesAfterReview(e) {
     console.log("logGoingToExercisesAfterReview called");
     return api.logReaderActivity(
@@ -96,26 +100,23 @@ export default function WordsForArticle({ api }) {
         source={UMR_SOURCE}
       />
       <CenteredContent>
-        <StyledButton secondary onClick={backToArticle}>
-          {<NavigateBeforeIcon />}
-          {strings.backToArticle}
-        </StyledButton>
         {!exercisesEnabled ? (
           <Tooltip
-            title="Translate or star words in the article before accessing exercises."
+            title="You need to translate words in the article first."
             arrow
           >
             <span>
-              <StyledButton disabled>
-                {strings.toExercises} {<NavigateNextIcon />}
-              </StyledButton>
+              <StyledButton disabled>{strings.toExercises}</StyledButton>
             </span>
           </Tooltip>
         ) : (
-          <StyledButton primary onClick={toExercises}>
-            {strings.toExercises} <NavigateNextIcon />
+          <StyledButton navigation onClick={toExercises}>
+            {strings.toExercises}
           </StyledButton>
         )}
+        <StyledButton primary onClick={toScheduledExercises}>
+          Scheduled Exercises
+        </StyledButton>
       </CenteredContent>
     </NarrowColumn>
   );

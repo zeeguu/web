@@ -4,7 +4,6 @@ import { StyledButton } from "../components/allButtons.sc.js";
 import { useHistory } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useEffect } from "react";
-import { getStaticPath } from "../utils/misc/staticPath.js";
 
 export default function ReviewVocabularyInfoBox({
   articleID,
@@ -12,6 +11,8 @@ export default function ReviewVocabularyInfoBox({
   setClickedOnReviewVocab,
   // openReview is required in the extension
   openReview,
+  translationCount,
+  bookmarks,
 }) {
   useUILanguage();
 
@@ -29,14 +30,16 @@ export default function ReviewVocabularyInfoBox({
   return (
     <>
       <s.CenteredContent>
-        <StyledButton
-          primary
-          onClick={handleButtonClick}
-          style={{ marginLeft: "auto", marginBottom: "5em" }}
-        >
-          <span>Review words</span>
-          {<NavigateNextIcon />}
-        </StyledButton>
+        {bookmarks.length > 0 && (
+          <StyledButton
+            primary
+            onClick={handleButtonClick}
+            style={{ marginLeft: "auto", marginBottom: "5em" }}
+          >
+            <span>Review Words</span>
+            {<NavigateNextIcon />}
+          </StyledButton>
+        )}
       </s.CenteredContent>
     </>
   );

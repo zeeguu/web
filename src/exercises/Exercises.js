@@ -38,6 +38,7 @@ export default function Exercises({
   api,
   articleID,
   backButtonAction,
+  toScheduledExercises,
   source,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
@@ -208,6 +209,7 @@ export default function Exercises({
             startExercising(BOOKMARKS_DUE_REVIEW);
             setHasKeptExercising(true);
           }}
+          toScheduledExercises={toScheduledExercises}
           source={source}
           exerciseSessionTimer={activeSessionDuration}
           articleURL={articleURL}

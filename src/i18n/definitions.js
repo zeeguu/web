@@ -528,8 +528,9 @@ let strings = new LocalizedStrings(
       backToReading: "Back to Reading",
       goToReading: "Go to Reading",
       backToWords: "Back to Words",
-      keepExercising: "Go to Exercises",
+      keepExercising: "Keep Practicing",
       startLearningNewWords: "Start Learning New Words",
+      goToExercises: "Go to Exercises",
 
       //CongratulationsPage
       goodJob: "Good Job, ",
