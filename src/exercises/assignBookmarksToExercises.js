@@ -23,6 +23,7 @@ function getMemoryTask(bookmark) {
       : MEMORY_TASK.RECOGNITION;
   return memoryTask;
 }
+
 function getBookmarkCycleTaskKey(b) {
   // If there is no learning cycle (it is a new word) treat as
   // receptive.
@@ -92,10 +93,14 @@ function groupByLevel(items) {
 
 function assignBookmarks(currentBookmarks, currentExercises) {
   /* 
-    Attempts to assign all currentExercises given the currentBookmarks.
-    
-    We shuffle the list every loop to ensure variation of the sequence of exercises.
-  */
+                          Attempts to assign all currentExercises given the currentBookmarks.
+                          if there is no exercise for these bookmarks, assign a default one.
+                
+                          Does all the checks that are required to ensure quality exercises
+                          are generated for the Extended Sequence
+                          
+                          We shuffle the list every loop to ensure variation of the sequence of exercises.
+                        */
   let suitableExerciseFound = false;
   let possibleExercises = [...currentExercises];
   let exerciseList = [];
@@ -105,6 +110,7 @@ function assignBookmarks(currentBookmarks, currentExercises) {
       let selectedExerciseType = possibleExercises[i];
       let requiredBookmarks = selectedExerciseType.requiredBookmarks;
       let availableBookmarks = currentBookmarks.length;
+
       if (
         requiredBookmarks <= availableBookmarks &&
         distinctContexts(currentBookmarks.slice(0, requiredBookmarks)) &&
@@ -163,7 +169,7 @@ function assignBookmarksWithLearningCycle(bookmarks, exerciseTypesList) {
 
   for (let i = 0; i < EX_TYPE_SEQUENCE.length; i++) {
     let currentCycleTask = EX_TYPE_SEQUENCE[i];
-    // Check if we have exercises for the the sequence type
+    // Check if we have exercises for the sequence type
     if (bookmarksByCycleTask[currentCycleTask]) {
       // Assign the bookmarks to a random exercise if possible
       let currentBookmarkList = bookmarksByCycleTask[currentCycleTask];
@@ -204,10 +210,16 @@ function assignBookmarksToLevels(bookmarks, exerciseTypesList) {
   return exerciseSequence;
 }
 
+// NOTE: This has "default sequence" in the name because it is really supposed to be only used for the default sequence; it would really
+// not do a good job at assigning bookmarks to the Extended sequence, e.g. ,
+// because it does not have specific checks (e.g. different contexts)
+// TODO: Investigate whether this can be implemented by generalizing the assignBookmarks
+// and just taking another function that is testing whether a set of bookmarks match an exercise
 function assignBookmarksToDefaultSequence(bookmarks, exerciseTypesList) {
   let exerciseSequence = [];
   let exerciseType_i = 0;
   let bookmark_i = 0;
+
   while (bookmark_i < bookmarks.length) {
     let currExRequiredBookmarks =
       exerciseTypesList[exerciseType_i].requiredBookmarks;

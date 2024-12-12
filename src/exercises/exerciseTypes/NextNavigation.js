@@ -65,6 +65,8 @@ export default function NextNavigation({
   const isMultiExerciseType =
     EXERCISE_TYPES.isMultiBookmarkExercise(exerciseType);
   const isCorrectMatch = ["CCC"].includes(message);
+  // TODO: Let's make sure that these two are named as clearly as possible;
+  // if one is about actual answer correctness and the other is about correct answer being on screen, this should be clearer
   const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
   const isRightAnswer = message.includes("C"); // User has gotten to the right answer, but not api correct
   const levelsFeature = Feature.exercise_levels();
@@ -77,8 +79,10 @@ export default function NextNavigation({
       (learningCycleFeature &&
         (isLearningCycleTwo ||
           (isLearningCycleOne && productiveExercisesDisabled))));
+  // amazing!
 
-  const bookmarkProgression =
+  // this next one is only for the Merle exercises with two learning cycles
+  const bookmarkIsProgressingToNextLearningCycle =
     userIsCorrect &&
     isLearningCycleOne &&
     isLastInCycle &&
@@ -101,7 +105,7 @@ export default function NextNavigation({
           b.is_last_in_cycle &&
           apiMessage === "C" &&
           !isLastBookmark &&
-          b.learning_cycle == LEARNING_CYCLE["RECEPTIVE"] &&
+          b.learning_cycle === LEARNING_CYCLE["RECEPTIVE"] &&
           learningCycleFeature
         ) {
           wordsProgressed.push(b.from);
@@ -153,7 +157,9 @@ export default function NextNavigation({
 
   const showCoffetti =
     isUserAndAnswerCorrect &&
-    (isMatchBookmarkProgression || bookmarkProgression || bookmarkLearned);
+    (isMatchBookmarkProgression ||
+      bookmarkIsProgressingToNextLearningCycle ||
+      bookmarkLearned);
 
   function celebrationMessageMatch() {
     if (LocalStorage.getProductiveExercisesEnabled()) {
@@ -202,7 +208,7 @@ export default function NextNavigation({
       )}
       {!isMatchExercise && (
         <>
-          {isRightAnswer && bookmarkProgression && (
+          {isRightAnswer && bookmarkIsProgressingToNextLearningCycle && (
             <>
               <div className="next-nav-learning-cycle">
                 <img
@@ -230,17 +236,18 @@ export default function NextNavigation({
           )}
         </>
       )}
-      {isExerciseCorrect && !(bookmarkLearned || bookmarkProgression) && (
-        <div className="next-nav-feedback">
-          <img
-            src={getStaticPath("icons", "zeeguu-icon-correct.png")}
-            alt="Correct Icon"
-          />
-          <p>
-            <b>{correctMessage}</b>
-          </p>
-        </div>
-      )}
+      {isExerciseCorrect &&
+        !(bookmarkLearned || bookmarkIsProgressingToNextLearningCycle) && (
+          <div className="next-nav-feedback">
+            <img
+              src={getStaticPath("icons", "zeeguu-icon-correct.png")}
+              alt="Correct Icon"
+            />
+            <p>
+              <b>{correctMessage}</b>
+            </p>
+          </div>
+        )}
       {isCorrect && !isMultiExerciseType && (
         <>
           <s.BottomRowSmallTopMargin className="bottomRow">
