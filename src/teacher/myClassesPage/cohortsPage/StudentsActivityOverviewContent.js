@@ -3,13 +3,14 @@ import StudentInfoLine from "./StudentInfoLine";
 import TimeSelector from "../../sharedComponents/TimeSelector";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import strings from "../../../i18n/definitions";
+import { CenteredContentContainer } from "../../../components/ColumnWidth.sc";
 
 const StudentsActivityOverviewContent = ({
   api,
   cohortID,
   students,
   setForceUpdate,
-  removeStudentFromCohort
+  removeStudentFromCohort,
 }) => {
   const [firstStudent, setFirstStudent] = useState(null);
   const [restOfStudents, setRestOfStudents] = useState(null);
@@ -27,7 +28,7 @@ const StudentsActivityOverviewContent = ({
   const customText = [strings.customTextInTimeSelector];
 
   return (
-    <Fragment>
+    <CenteredContentContainer>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
       {firstStudent !== null && (
         <StudentInfoLine
@@ -50,7 +51,7 @@ const StudentsActivityOverviewContent = ({
             isFirst={false}
           />
         ))}
-    </Fragment>
+    </CenteredContentContainer>
   );
 };
 export default StudentsActivityOverviewContent;

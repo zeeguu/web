@@ -60,7 +60,7 @@ export default function StudentsActivityOverview({ api }) {
   }
 
   return (
-    <Fragment>
+    <>
       <PageTitle>Class: {cohort.name}</PageTitle>
       <s.WidestColumn>
         <div>
@@ -96,6 +96,6 @@ export default function StudentsActivityOverview({ api }) {
           inviteCode={cohort.inv_code}
         />
       )}
-    </Fragment>
+    </>
   );
 }

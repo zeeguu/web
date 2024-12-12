@@ -5,6 +5,7 @@ import { StyledGreyButton } from "../exercises/exerciseTypes/Exercise.sc";
 import { useState, useEffect } from "react";
 import FeedbackModal from "./FeedbackModal";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
+import isInTeacherWebsite from "../utils/misc/isTeacherWebsite";
 
 export default function LoadingAnimation({
   text,
@@ -16,6 +17,7 @@ export default function LoadingAnimation({
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
   const [showReportButton, setShowReportButton] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [isTeacherWebsite] = useState(isInTeacherWebsite());
 
   useEffect(() => {
     // Code from: https://stackoverflow.com/questions/53090432/react-hooks-right-way-to-clear-timeouts-and-intervals
@@ -44,7 +46,11 @@ export default function LoadingAnimation({
       {showLoadingScreen && (
         <s.LoadingContainer style={specificStyle}>
           <s.LoadingAnimation>
-            <div className="lds-ellipsis">
+            <div
+              className={
+                "lds-ellipsis " + (isTeacherWebsite ? "teacher" : "student")
+              }
+            >
               <div></div>
               <div></div>
               <div></div>

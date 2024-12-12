@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { zeeguuOrange } from "./colors";
+import { darkBlue, zeeguuOrange } from "./colors";
+
 // Source: https://loading.io/css/
 
 const LoadingContainer = styled.div`
@@ -21,13 +22,21 @@ const LoadingAnimation = styled.div`
     width: 80px;
     height: 80px;
   }
+  .student div {
+    background: ${zeeguuOrange};
+  }
+
+  .teacher div {
+    background: ${darkBlue};
+  }
+
   .lds-ellipsis div {
     position: absolute;
     top: 33px;
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    background: ${zeeguuOrange};
+
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
   }
   .lds-ellipsis div:nth-child(1) {

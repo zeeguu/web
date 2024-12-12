@@ -8,9 +8,6 @@ const ReadingInsightAccordion = ({ readingSessions }) => {
   // const [restOfReadingSessions, setRestOfReadingSessions] = useState(null);
   const [openedArticle, setOpenedArticle] = useState(null);
 
-  console.log("inside ReadingInsightAccordion");
-  console.log(readingSessions);
-
   return (
     <Accordion collapsible>
       {readingSessions !== null &&
