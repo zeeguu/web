@@ -20,6 +20,7 @@ const AppContent = styled.section`
   box-sizing: border-box;
   height: 100%;
   width: 100%;
+  position: relative;
   transition: 0.3s ease-in-out;
   padding: 0 1rem 0 1rem;
   overflow-x: hidden;
