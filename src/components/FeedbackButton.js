@@ -1,10 +1,10 @@
 import { useState } from "react";
-import FeedbackIcon from "@mui/icons-material/Feedback";
 import FeedbackModal from "./FeedbackModal";
-import { Tooltip } from "@mui/material";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
+import NavOption from "./MainNav/NavOption";
+import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded";
 
-export default function FeedbackButton() {
+export default function FeedbackButton({ isOnStudentSide, screenWidth }) {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   return (
     <>
@@ -16,16 +16,17 @@ export default function FeedbackButton() {
         }}
         feedbackOptions={FEEDBACK_OPTIONS.ALL}
       ></FeedbackModal>
-      <Tooltip title="Give Feedback">
-        <FeedbackIcon
-          fontSize="large"
-          className="navigationIcon"
-          sx={{ color: "white" }}
-          onClick={() => {
-            setShowFeedbackModal(!showFeedbackModal);
-          }}
-        />
-      </Tooltip>
+      <NavOption
+        icon={<FeedbackRoundedIcon />}
+        screenWidth={screenWidth}
+        isOnStudentSide={isOnStudentSide}
+        text={"Give Feedback"}
+        isButton={true}
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowFeedbackModal(!showFeedbackModal);
+        }}
+      />
     </>
   );
 }

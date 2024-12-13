@@ -22,6 +22,7 @@ let SourceImage = styled.span`
     background-color: ${zeeguuVarmYellow};
     height: 1.5em;
     width: 1.5em;
+    border-radius: 0.25em;
   }
   margin-right: 0.2em;
 `;
