@@ -68,7 +68,7 @@ export default function Learning({ api }) {
                 {strings.receptiveMsg}
               </div>
             </s.TopMessage>
-            {receptiveWords.length > 0 ? (
+            {receptiveWords && receptiveWords.length > 0 ? (
               receptiveWords.map((each) => (
                 <Word
                   key={each.id}
@@ -86,7 +86,7 @@ export default function Learning({ api }) {
 
         {!Feature.merle_exercises() && (
           <>
-            {inLearningWords.length > 0 ? (
+            {inLearningWords && inLearningWords.length > 0 ? (
               inLearningWords.map((each) => (
                 <Word
                   key={each.id}

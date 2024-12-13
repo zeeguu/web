@@ -24,6 +24,9 @@ export default function Learned({ api }) {
         curDate = curWord.learned_datetime;
       }
     }
+    // Push the last date
+    groupListByDate.push(currentGroup);
+
     return groupListByDate;
   }
 
