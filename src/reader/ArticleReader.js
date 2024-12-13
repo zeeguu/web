@@ -302,7 +302,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   return (
-    <s.ArticleReader>
+    <>
       <TopToolbar
         user={user}
         teacherArticleID={teacherArticleID}
@@ -324,90 +324,95 @@ export default function ArticleReader({ api, teacherArticleID }) {
           ></DigitalTimer>
         }
       />
-      <div id="text">
-        <h1>
-          <TranslatableText
-            interactiveText={interactiveTitle}
-            translating={translateInReader}
-            pronouncing={pronounceInReader}
-            setIsRendered={setReaderReady}
-          />
-        </h1>
 
-        <ArticleAuthors articleInfo={articleInfo} />
-        <s.ArticleInfoContainer>
-          <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
-          <s.TopReaderButtonsContainer>
-            <ArticleSource url={articleInfo.url} />
-            <ReportBroken
-              api={api}
-              UMR_SOURCE={UMR_SOURCE}
-              history={history}
-              articleID={articleID}
+      <s.ArticleReader>
+        <div id="text">
+          <h1>
+            <TranslatableText
+              interactiveText={interactiveTitle}
+              translating={translateInReader}
+              pronouncing={pronounceInReader}
+              setIsRendered={setReaderReady}
             />
-          </s.TopReaderButtonsContainer>
-        </s.ArticleInfoContainer>
-        <hr></hr>
-        {articleInfo.img_url && (
-          <s.ArticleImgContainer>
-            <s.ArticleImg alt="article image" src={articleInfo.img_url} />
-          </s.ArticleImgContainer>
-        )}
+          </h1>
 
-        {articleInfo.video ? (
-          <iframe
-            title="video-frame"
-            width="620"
-            height="415"
-            src={
-              "https://www.youtube.com/embed/" +
-              extractVideoIDFromURL(articleInfo.url)
-            }
-          ></iframe>
-        ) : (
-          ""
-        )}
+          <ArticleAuthors articleInfo={articleInfo} />
+          <s.ArticleInfoContainer>
+            <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
+            <s.TopReaderButtonsContainer>
+              <ArticleSource url={articleInfo.url} />
+              <ReportBroken
+                api={api}
+                UMR_SOURCE={UMR_SOURCE}
+                history={history}
+                articleID={articleID}
+              />
+            </s.TopReaderButtonsContainer>
+          </s.ArticleInfoContainer>
+          <hr></hr>
+          {articleInfo.img_url && (
+            <s.ArticleImgContainer>
+              <s.ArticleImg alt="article image" src={articleInfo.img_url} />
+            </s.ArticleImgContainer>
+          )}
 
-        <s.MainText>
-          <TranslatableText
-            interactiveText={interactiveText}
-            translating={translateInReader}
-            pronouncing={pronounceInReader}
-          />
-        </s.MainText>
-      </div>
+          {articleInfo.video ? (
+            <iframe
+              title="video-frame"
+              width="620"
+              height="415"
+              src={
+                "https://www.youtube.com/embed/" +
+                extractVideoIDFromURL(articleInfo.url)
+              }
+            ></iframe>
+          ) : (
+            ""
+          )}
 
-      {readerReady && (
-        <div id={"bottomRow"}>
-          <ReviewVocabularyInfoBox
-            articleID={articleID}
-            clickedOnReviewVocab={clickedOnReviewVocab}
-            setClickedOnReviewVocab={setClickedOnReviewVocab}
-          />
-          <s.CombinedBox>
-            <p style={{ padding: "0em 2em 0em 2em" }}>
-              {" "}
-              {strings.answeringMsg}{" "}
-            </p>
-            <LikeFeedBackBox
-              articleInfo={articleInfo}
-              setLikedState={setLikedState}
+          <s.MainText>
+            <TranslatableText
+              interactiveText={interactiveText}
+              translating={translateInReader}
+              pronouncing={pronounceInReader}
             />
-            <DifficultyFeedbackBox
-              articleInfo={articleInfo}
-              updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
-            />
-            {answerSubmitted && (
-              <s.InvisibleBox>
-                <h3 align="center">
-                  Thank You {random(["🤗", "🙏", "😊", "🎉"])}
-                </h3>
-              </s.InvisibleBox>
-            )}
-          </s.CombinedBox>
+          </s.MainText>
         </div>
-      )}
-      <s.ExtraSpaceAtTheBottom />
-    </s.ArticleReader>
+
+        {readerReady && (
+          <div id={"bottomRow"}>
+            <ReviewVocabularyInfoBox
+              articleID={articleID}
+              clickedOnReviewVocab={clickedOnReviewVocab}
+              setClickedOnReviewVocab={setClickedOnReviewVocab}
+            />
+            <s.CombinedBox>
+              <p style={{ padding: "0em 2em 0em 2em" }}>
+                {" "}
+                {strings.answeringMsg}{" "}
+              </p>
+              <LikeFeedBackBox
+                articleInfo={articleInfo}
+                setLikedState={setLikedState}
+              />
+              <DifficultyFeedbackBox
+                articleInfo={articleInfo}
+                updateArticleDifficultyFeedback={
+                  updateArticleDifficultyFeedback
+                }
+              />
+              {answerSubmitted && (
+                <s.InvisibleBox>
+                  <h3 align="center">
+                    Thank You {random(["🤗", "🙏", "😊", "🎉"])}
+                  </h3>
+                </s.InvisibleBox>
+              )}
+            </s.CombinedBox>
+          </div>
+        )}
+        <s.ExtraSpaceAtTheBottom />
+      </s.ArticleReader>
+    </>
   );
 }

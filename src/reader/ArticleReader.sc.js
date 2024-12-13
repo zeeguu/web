@@ -109,11 +109,24 @@ let ArticleImg = styled.img`
   margin-bottom: 1em;
 `;
 
-let Toolbar = styled.div`
-  padding-top: 0.5rem;
+const ToolbarWrapper = styled.div`
   width: 100%;
-  // background-color: ${veryLightGrey};
+  justify-content: flex-end;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 2000;
+  background-color: white;
+  padding-top: 0.5rem;
+`;
 
+let Toolbar = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 768px;
+  margin-left: auto;
+  margin-right: auto;
+  border-bottom: 1px solid ${veryLightGrey};
   button.toolbar-btn {
     width: 55px;
     height: 55px;
@@ -432,4 +445,5 @@ export {
   PlayerControl,
   InvisibleBox,
   CombinedBox,
+  ToolbarWrapper,
 };
