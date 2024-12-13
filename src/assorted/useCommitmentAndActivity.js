@@ -21,6 +21,9 @@ const useCommitmentAndActivity = (api) => {
           daysAwayFromMonday = dayOfWeek - 1;
         }
 
+       let daysLeftInWeek= 7 - dayOfWeek;
+       console.log("daysLeftInWeek", daysLeftInWeek);
+
         const activityTimeByDay = activitiesAndCommitmentArray.user_activities;
         const bothActivitiesArray = activityTimeByDay.exercises.concat(
           activityTimeByDay.reading,
@@ -69,18 +72,22 @@ const useCommitmentAndActivity = (api) => {
 
         //stores the minutes goal the user picked
         const userMinutes = activitiesAndCommitmentArray.user_minutes;
+        //seconds version to be able to filter 
+        const userSeconds = userMinutes * 60;
+        console.log("userMinutes", userMinutes )
+        console.log("userSeconds", userSeconds);
 
-        //CHLOE! BUG: Does not filter out sessions that is less than the minutes the user picked even if it should
+
+        //filters out sessions that is less than the seconds the user 
         const filteredActivities = filteredActivitiesSorted.filter(
-          (activity) => activity.seconds >= userMinutes,
+          (activity) => activity.seconds >= userSeconds,
         );
 
         console.log(
           "This is the filteredActivitesSorted when we have filtered out the one with too few time",
-        );
         filteredActivities.forEach((item) => {
           console.log(item);
-        });
+        }));
 
         //How many times the user have practiced this week
         const weeklyActivitiesCount = filteredActivities.length;
@@ -93,39 +100,52 @@ const useCommitmentAndActivity = (api) => {
 
         const goalMetThisWeek =
           weeklyActivitiesCount >= userDaysPerWeek && inCurrentWeek;
+        console.log("is goal met? ", goalMetThisWeek)
 
-        const currentCommitmentAndActivityData =
+
+        const currentConsecutiveWeeks =
           activitiesAndCommitmentArray.consecutive_weeks;
+          console.log("current number of weeks", currentConsecutiveWeeks);
 
         if (goalMetThisWeek) {
-          const lastWeeklyCommitmentUpdate = new Date(
+          const lastCommitmentUpdate = new Date(
             activitiesAndCommitmentArray.commitment_last_updated,
           );
 
-          console.log("lastWeeklyCommitmentUpdate", lastWeeklyCommitmentUpdate);
+          console.log("lastWeeklyCommitmentUpdate", lastCommitmentUpdate);
           console.log("startofWeek", startOfWeek);
           console.log("endOfWeek", endOfWeek);
 
           if (
-            lastWeeklyCommitmentUpdate != null &&
-            lastWeeklyCommitmentUpdate.getTime() >= startOfWeek.getTime() &&
-            lastWeeklyCommitmentUpdate.getTime() <= endOfWeek.getTime()
+            lastCommitmentUpdate != null &&
+            lastCommitmentUpdate.getTime() >= startOfWeek.getTime() &&
+            lastCommitmentUpdate.getTime() <= endOfWeek.getTime()
           ) {
-            setCommitmentAndActivityData(currentCommitmentAndActivityData);
+            setCommitmentAndActivityData(currentConsecutiveWeeks);
             console.log("It is in the week!");
             console.log(
               "currentCommitmentAndActivityData",
-              currentCommitmentAndActivityData,
+              currentConsecutiveWeeks,
             );
           } else {
             console.log("It is NOT in the week!");
-            setCommitmentAndActivityData(currentCommitmentAndActivityData + 1);
+            setCommitmentAndActivityData(currentConsecutiveWeeks + 1);
             setLastCommitmentUpdate(currentDate);
           }
         } else {
+          // checks if there are enough days left in the week for the user to potentially meet their goal
+          if((userDaysPerWeek-weeklyActivitiesCount)> daysLeftInWeek){
+          console.log("Now the week number is reset")
+          console.log("Result of userDaysPerWeek-weeklyActivitiesCount",userDaysPerWeek-weeklyActivitiesCount)
           console.log("is this what is happening?");
-          setCommitmentAndActivityData(0);
+          // if not the consecutive weeks is reset 
+          setCommitmentAndActivityData(0)}
+          // if it is it's set to the current amount 
+          else{
+            setCommitmentAndActivityData(currentConsecutiveWeeks)
+          }
         }
+        console.log("commitmentAndActivityData", commitmentAndActivityData)
       });
     };
 
