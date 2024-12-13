@@ -69,7 +69,7 @@ export default function TopToolbar({
   };
 
   return (
-    <PopupButtonWrapper>
+    <s.ToolbarWrapper>
       <s.Toolbar>
         <s.TopbarButtonsContainer $screenWidth={screenWidth}>
           {screenWidth < MOBILE_WIDTH && <BackArrow noMargin={false} />}
@@ -119,6 +119,6 @@ export default function TopToolbar({
           <progress style={{ margin: "0px" }} value={articleProgress} />
         </div>
       </s.Toolbar>
-    </PopupButtonWrapper>
+    </s.ToolbarWrapper>
   );
 }
