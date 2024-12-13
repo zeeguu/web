@@ -12,6 +12,7 @@ const AppWithMainNav = styled.div`
   top: 0;
   height: 100%;
   display: flex;
+  justify-content: space-around;
   flex-direction: ${({ $screenWidth }) =>
     $screenWidth <= MOBILE_WIDTH ? "column" : "row"};
 `;
@@ -45,7 +46,7 @@ const AppContent = styled.section`
     ) {
       return "0";
     } else if ($screenWidth <= MOBILE_WIDTH) {
-      return "4 rem";
+      return "4rem";
     } else {
       return "0";
     }

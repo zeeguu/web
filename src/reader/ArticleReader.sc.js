@@ -110,6 +110,19 @@ let ArticleImg = styled.img`
 `;
 
 const ToolbarWrapper = styled.div`
+  margin-top: 25px;
+  display: flex;
+  justify-content: flex-end;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background: white;
+  z-index: 2000;
+  border-bottom: 1px solid ${veryLightGrey};
+`;
+
+let Toolbar = styled.div`
+  padding-top: 0.5rem;
   width: 100%;
   justify-content: flex-end;
   position: sticky;
