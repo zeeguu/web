@@ -68,7 +68,6 @@ export default function TranslatableWord({
   }
 
   function deleteTranslation(e, word) {
-    console.log(word);
     api.deleteBookmark(
       word.bookmark_id,
       (response) => {
