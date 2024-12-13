@@ -75,20 +75,30 @@ const useCommitmentAndActivity = (api) => {
 
         if (goalMetThisWeek) {
           const lastWeeklyCommitmentUpdate = new Date(
-            activitiesAndCommitmentArray.last_commitment_update,
+            activitiesAndCommitmentArray.commitment_last_updated,
           );
-
+      
+          console.log("lastWeeklyCommitmentUpdate",lastWeeklyCommitmentUpdate);
+          console.log("startofWeek", startOfWeek);
+          console.log("endOfWeek", endOfWeek);
+     
           if (
             lastWeeklyCommitmentUpdate != null &&
-            lastWeeklyCommitmentUpdate >= startOfWeek &&
-            lastWeeklyCommitmentUpdate <= endOfWeek
+            lastWeeklyCommitmentUpdate.getTime() >= startOfWeek.getTime() &&
+            lastWeeklyCommitmentUpdate.getTime() <= endOfWeek.getTime()
           ) {
             setCommitmentAndActivityData(currentCommitmentAndActivityData);
-          } else {
+            console.log("It is in the week!");
+            console.log("currentCommitmentAndActivityData",currentCommitmentAndActivityData);
+            
+          } else{
+            console.log("It is NOT in the week!");
             setCommitmentAndActivityData(currentCommitmentAndActivityData + 1);
             setLastCommitmentUpdate(currentDate);
           }
+      
         } else {
+          console.log("is this what is happening?")
           setCommitmentAndActivityData(0);
         }
       });
@@ -97,6 +107,7 @@ const useCommitmentAndActivity = (api) => {
     fetchData();
   }, [api]);
 
+  console.log( "This is the commitmentAndActivityData, lastCommitmentUpdate", commitmentAndActivityData, lastCommitmentUpdate);
   return { commitmentAndActivityData, lastCommitmentUpdate };
 };
 
