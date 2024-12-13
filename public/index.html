@@ -67,22 +67,51 @@
         navigator.serviceWorker
           .register("/service-worker.js")
           .then((registration) => {
-            try {
-              const sessionId = getSessionID();
-              if (sessionId) {
+            const sessionId = getSessionID();
+            if (sessionId) {
+              navigator.serviceWorker.ready.then((registration) => {
                 registration.active.postMessage({
                   sessionId: sessionId,
-                  timestamp: Date.now(),
                 });
-                Notification.requestPermission();
-              } else {
-                console.error("No session ID found");
-                return;
-              }
-            } catch {
-              console.error("Error sending mesages to the service worker");
+                console.log("Service worker registered successfully");
+              });
+              Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                  console.log("Notification permission granted");
+                  registerPeriodicSync();
+                } else {
+                  console.warn("Notification permission denied");
+                }
+              });
+            } else {
+              console.error("No session ID found");
             }
+          })
+          .catch((error) => {
+            console.error("Failed to register service worker:", error);
           });
+      }
+
+      async function registerPeriodicSync() {
+        if ("PeriodicSyncManager" in window) {
+          try {
+            const registration = await navigator.serviceWorker.ready;
+            const tags = await registration.periodicSync.getTags();
+            if (!tags.includes("zeeguu-notifications")) {
+              await registration.periodicSync.register("zeeguu-notifications", {
+                // Checks once per day
+                minInterval: 24 * 60 * 60 * 1000,
+              });
+              console.log("Periodic sync registered successfully!");
+            } else {
+              console.log("Periodic sync already registered.");
+            }
+          } catch (err) {
+            console.error("Periodic Sync could not be registered!", err);
+          }
+        } else {
+          console.warn("PeriodicSyncManager is not supported on this device.");
+        }
       }
     </script>
   </body>
