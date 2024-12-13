@@ -110,22 +110,23 @@ let ArticleImg = styled.img`
 `;
 
 const ToolbarWrapper = styled.div`
-  margin-top: 25px;
-  display: flex;
+  width: 100%;
   justify-content: flex-end;
   position: sticky;
   position: -webkit-sticky;
   top: 0;
-  background: white;
   z-index: 2000;
-  border-bottom: 1px solid ${veryLightGrey};
+  background-color: white;
+  padding-top: 0.5rem;
 `;
 
 let Toolbar = styled.div`
-  padding-top: 0.5rem;
-  width: 100%;
-  // background-color: ${veryLightGrey};
-
+  display: flex;
+  flex-direction: column;
+  max-width: 768px;
+  margin-left: auto;
+  margin-right: auto;
+  border-bottom: 1px solid ${veryLightGrey};
   button.toolbar-btn {
     width: 55px;
     height: 55px;

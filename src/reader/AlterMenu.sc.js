@@ -12,6 +12,7 @@ import {
 const AlterMenuSC = styled.div`
   font-size: medium;
   z-index: 1000;
+  text-align: left;
 
   position: absolute;
   max-width: 30em;
