@@ -9,12 +9,42 @@ const UserDashboardTopContainer = styled.div`
   text-align: center;
 `;
 
+const UserDashboardContainer= styled.div`
+  display: flex;
+  flex-direction: row;
+  `;
+
 const UserDashboardHelperText = styled(s.TopMessage)`
   @media screen and (max-width: 768px) {
     font-size: 0.8em;
     line-height: 4ex;
     text-align: left;
   }
+`;
+
+const CommitmentDisplay = styled(s.TopMessage)`
+  @media screen and (max-width: 768px) {
+    font-size: 0.8em;
+    line-height: 4ex;
+    text-align: left;
+    width: 400px;
+    padding:10px 0 ;
+  }
+`;
+
+const CommitmentText = styled.text`
+  font-weight: bold;
+  margin-right: 5px;
+`;
+
+const Commitment = styled.div`
+  line-height: 0.8em;
+  font-size: 1em;
+  width: 100%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
 `;
 
 const UserDatePicker = styled.div`
@@ -129,4 +159,8 @@ export {
   NivoGraphContainer,
   UserDatePicker,
   UserDashboardFeedbackButton,
+  CommitmentDisplay,
+  Commitment,
+  CommitmentText,
+  UserDashboardContainer,
 };

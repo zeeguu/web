@@ -45,6 +45,18 @@ let compactFormat = {
     en: "12 months until",
     da: "12 måneder indtil d.",
   },
+  streakText:{
+    en:"You have a streak of",
+    da: "Du har en streak af",
+  },
+  commitmentText1:{
+    en:"You have met your goal for",
+    da: "Du har nået dit mål i",
+  },
+  commitmentText2:{
+    en:" weeks straight!",
+    da: " uger i træk",
+  },
   helperTextActivity: {
     en: "Your activity data for ",
     da: "Dit aktivitet data for ",
