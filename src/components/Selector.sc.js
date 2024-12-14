@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { lightGrey, zeeguuOrange, darkGrey } from "./colors";
+import { lightGrey, zeeguuOrange, darkGrey, zeeguuRed } from "./colors";
 
 const SelectWrapper = styled.div`
   box-sizing: border-box;
@@ -47,6 +47,10 @@ const Select = styled.select`
   cursor: inherit;
   line-height: inherit;
   grid-area: select;
+
+  &.error {
+    border: 1.5px solid ${zeeguuRed};
+  }
 
   &:focus {
     outline: transparent;

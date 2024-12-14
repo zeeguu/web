@@ -3,6 +3,7 @@ import styled from "styled-components";
 import {
   almostBlack,
   zeeguuDarkOrange,
+  zeeguuDarkRed,
   zeeguuLightYellow,
   zeeguuOrange,
   zeeguuVeryLightYellow,
@@ -11,6 +12,7 @@ import {
 const AlterMenuSC = styled.div`
   font-size: medium;
   z-index: 1000;
+  text-align: left;
 
   position: absolute;
   max-width: 30em;
@@ -57,6 +59,20 @@ const AlterMenuSC = styled.div`
     margin-top: 0.2em;
     border-top: 1px solid ${zeeguuLightYellow} !important;
     color: orange;
+    &:hover {
+      filter: brightness(110%);
+    }
+  }
+
+  .removeLink {
+    //text-decoration: underline;
+    margin-top: 0.2em;
+    border-top: 1px solid ${zeeguuDarkRed} !important;
+    color: ${zeeguuDarkRed};
+
+    &:hover {
+      filter: brightness(110%);
+    }
   }
 `;
 

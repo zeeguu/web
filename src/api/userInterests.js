@@ -61,6 +61,7 @@ Zeeguu_API.prototype.unsubscribeFromEmailSearch = function (
 
 // NON-INTERESTS
 // These are topics and searches that the user has explicitly filtered out because they don't want to see them
+
 Zeeguu_API.prototype.getExcludedTopics = function (callback) {
   this._getJSON("filtered_topics", callback);
 };

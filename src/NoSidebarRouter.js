@@ -1,4 +1,3 @@
-import SideBar from "./components/SideBar";
 import { PrivateRoute } from "./PrivateRoute";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import WordsRouter from "./words/_WordsRouter";

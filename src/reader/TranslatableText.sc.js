@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {
   almostBlack,
+  zeeguuDarkRed,
   zeeguuLightYellow,
   zeeguuOrange,
   zeeguuTransparentLightOrange,
@@ -47,10 +48,10 @@ const TranslatableText = styled.div`
    */
 
   z-tag z-tran {
-    margin-top: 0.2em;
+    margin-right: -0.1rem;
+    margin-left: -0.2rem;
     margin-bottom: -0.1em;
-    margin-left: -0.3em;
-    padding: 2px;
+    margin-top: 0.1em;
     padding-left: 0.3em;
     border-radius: 0.3em 0.3em 0.3em 0.3em;
     background-clip: padding-box;
@@ -65,10 +66,6 @@ const TranslatableText = styled.div`
     display: flex;
   }
 
-  z-tag z-tran:hover {
-    color: black;
-  }
-
   z-tag z-orig {
     border-bottom: 1px dashed ${zeeguuOrange};
     width: 100%;
@@ -76,18 +73,34 @@ const TranslatableText = styled.div`
     font-weight: 600;
   }
 
-  z-tran > .arrow {
-    padding: 0;
-    margin-left: auto;
-    color: rgba(0, 0, 0, 0.2);
-  }
+  .translationContainer {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    .arrow {
+      margin-left: 0.1rem;
+      padding-top: 0.1rem;
+      filter: opacity(50%);
+      :hover {
+        filter: brightness(1.5);
+        filter: opacity(100%);
+      }
+    }
 
-  z-tran:hover > .arrow {
-    visibility: visible;
-  }
-
-  z-tag z-tran[chosen]:before {
-    content: attr(chosen);
+    .hide {
+      margin: 0px 0.1rem;
+      margin-left: auto;
+      padding: 0.1rem 0.3rem;
+      filter: opacity(15%);
+      padding-top: 0.3rem;
+      :hover {
+        filter: brightness(1.5);
+        filter: opacity(100%);
+      }
+    }
+    :hover {
+      filter: brightness(1.25);
+    }
   }
 
   .handSelected,

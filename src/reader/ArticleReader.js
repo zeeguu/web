@@ -22,11 +22,12 @@ import TopToolbar from "./TopToolbar";
 import ReviewVocabularyInfoBox from "./ReviewVocabularyInfoBox";
 import ArticleAuthors from "./ArticleAuthors";
 import useActivityTimer from "../hooks/useActivityTimer";
-import ActivityTimer from "../components/ActivityTimer";
 import useShadowRef from "../hooks/useShadowRef";
 import strings from "../i18n/definitions";
 import { getScrollRatio } from "../utils/misc/getScrollLocation";
 import useUserPreferences from "../hooks/useUserPreferences";
+import ArticleStatInfo from "../components/ArticleStatInfo";
+import DigitalTimer from "../components/DigitalTimer";
 
 export const UMR_SOURCE = "UMR";
 
@@ -58,6 +59,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
+
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const {
@@ -300,13 +302,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   };
 
   return (
-    <s.ArticleReader>
-      <ActivityTimer
-        message="Total time in this reading session"
-        activeSessionDuration={activityTimer}
-        clockActive={isTimerActive}
-      />
-
+    <>
       <TopToolbar
         user={user}
         teacherArticleID={teacherArticleID}
@@ -320,89 +316,103 @@ export default function ArticleReader({ api, teacherArticleID }) {
         url={articleInfo.url}
         UMR_SOURCE={UMR_SOURCE}
         articleProgress={scrollPosition}
+        timer={
+          <DigitalTimer
+            activeSessionDuration={activityTimer}
+            clockActive={isTimerActive}
+            showClock={true}
+          ></DigitalTimer>
+        }
       />
-      <div id="text">
-        <h1>
-          <TranslatableText
-            interactiveText={interactiveTitle}
-            translating={translateInReader}
-            pronouncing={pronounceInReader}
-            setIsRendered={setReaderReady}
-          />
-        </h1>
-        <s.AuthorLinksContainer>
+
+      <s.ArticleReader>
+        <div id="text">
+          <h1>
+            <TranslatableText
+              interactiveText={interactiveTitle}
+              translating={translateInReader}
+              pronouncing={pronounceInReader}
+              setIsRendered={setReaderReady}
+            />
+          </h1>
+
           <ArticleAuthors articleInfo={articleInfo} />
-          <s.TopReaderButtonsContainer>
-            <ArticleSource url={articleInfo.url} />
-            <ReportBroken
-              api={api}
-              UMR_SOURCE={UMR_SOURCE}
-              history={history}
-              articleID={articleID}
-            />
-          </s.TopReaderButtonsContainer>
-        </s.AuthorLinksContainer>
-        <hr></hr>
-        {articleInfo.img_url && (
-          <s.ArticleImgContainer>
-            <s.ArticleImg alt="article image" src={articleInfo.img_url} />
-          </s.ArticleImgContainer>
-        )}
+          <s.ArticleInfoContainer>
+            <ArticleStatInfo articleInfo={articleInfo}></ArticleStatInfo>
+            <s.TopReaderButtonsContainer>
+              <ArticleSource url={articleInfo.url} />
+              <ReportBroken
+                api={api}
+                UMR_SOURCE={UMR_SOURCE}
+                history={history}
+                articleID={articleID}
+              />
+            </s.TopReaderButtonsContainer>
+          </s.ArticleInfoContainer>
+          <hr></hr>
+          {articleInfo.img_url && (
+            <s.ArticleImgContainer>
+              <s.ArticleImg alt="article image" src={articleInfo.img_url} />
+            </s.ArticleImgContainer>
+          )}
 
-        {articleInfo.video ? (
-          <iframe
-            title="video-frame"
-            width="620"
-            height="415"
-            src={
-              "https://www.youtube.com/embed/" +
-              extractVideoIDFromURL(articleInfo.url)
-            }
-          ></iframe>
-        ) : (
-          ""
-        )}
+          {articleInfo.video ? (
+            <iframe
+              title="video-frame"
+              width="620"
+              height="415"
+              src={
+                "https://www.youtube.com/embed/" +
+                extractVideoIDFromURL(articleInfo.url)
+              }
+            ></iframe>
+          ) : (
+            ""
+          )}
 
-        <s.MainText>
-          <TranslatableText
-            interactiveText={interactiveText}
-            translating={translateInReader}
-            pronouncing={pronounceInReader}
-          />
-        </s.MainText>
-      </div>
-
-      {readerReady && (
-        <div id={"bottomRow"}>
-          <ReviewVocabularyInfoBox
-            articleID={articleID}
-            clickedOnReviewVocab={clickedOnReviewVocab}
-            setClickedOnReviewVocab={setClickedOnReviewVocab}
-          />
-          <s.CombinedBox>
-            <p style={{ padding: "0em 2em 0em 2em" }}>
-              {" "}
-              {strings.answeringMsg}{" "}
-            </p>
-            <LikeFeedBackBox
-              articleInfo={articleInfo}
-              setLikedState={setLikedState}
+          <s.MainText>
+            <TranslatableText
+              interactiveText={interactiveText}
+              translating={translateInReader}
+              pronouncing={pronounceInReader}
             />
-            <DifficultyFeedbackBox
-              articleInfo={articleInfo}
-              updateArticleDifficultyFeedback={updateArticleDifficultyFeedback}
-            />
-            {answerSubmitted && (
-              <s.InvisibleBox>
-                <h3 align="center">
-                  Thank You {random(["🤗", "🙏", "😊", "🎉"])}
-                </h3>
-              </s.InvisibleBox>
-            )}
-          </s.CombinedBox>
+          </s.MainText>
         </div>
-      )}
-      <s.ExtraSpaceAtTheBottom />
-    </s.ArticleReader>
+
+        {readerReady && (
+          <div id={"bottomRow"}>
+            <ReviewVocabularyInfoBox
+              articleID={articleID}
+              clickedOnReviewVocab={clickedOnReviewVocab}
+              setClickedOnReviewVocab={setClickedOnReviewVocab}
+            />
+            <s.CombinedBox>
+              <p style={{ padding: "0em 2em 0em 2em" }}>
+                {" "}
+                {strings.answeringMsg}{" "}
+              </p>
+              <LikeFeedBackBox
+                articleInfo={articleInfo}
+                setLikedState={setLikedState}
+              />
+              <DifficultyFeedbackBox
+                articleInfo={articleInfo}
+                updateArticleDifficultyFeedback={
+                  updateArticleDifficultyFeedback
+                }
+              />
+              {answerSubmitted && (
+                <s.InvisibleBox>
+                  <h3 align="center">
+                    Thank You {random(["🤗", "🙏", "😊", "🎉"])}
+                  </h3>
+                </s.InvisibleBox>
+              )}
+            </s.CombinedBox>
+          </div>
+        )}
+        <s.ExtraSpaceAtTheBottom />
+      </s.ArticleReader>
+    </>
   );
 }

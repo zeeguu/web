@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import useShadowRef from "../hooks/useShadowRef";
 import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
-import Interests from "./Interests";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -12,10 +10,11 @@ import LocalStorage from "../assorted/LocalStorage";
 import ShowLinkRecommendationsIfNoArticles from "./ShowLinkRecommendationsIfNoArticles";
 import { APIContext } from "../contexts/APIContext";
 import useExtensionCommunication from "../hooks/useExtensionCommunication";
-import { getPixelsFromScrollBarToEnd } from "../utils/misc/getScrollLocation";
+import useArticlePagination from "../hooks/useArticlePagination";
 import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import useShadowRef from "../hooks/useShadowRef";
 
 export default function FindArticles({
   content,
@@ -32,7 +31,7 @@ export default function FindArticles({
   //in bool values changing on its own on refresh without any other external trigger or preferences change.
   // A '=== "true"' clause has been added to the getters to achieve predictable and desired bool values.
   const doNotShowRedirectionModal_LocalStorage =
-    LocalStorage.getDoNotShowRedirectionModal() === "true" ? true : false;
+    LocalStorage.getDoNotShowRedirectionModal() === "true";
   const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [isExtensionAvailable] = useExtensionCommunication();
@@ -40,15 +39,41 @@ export default function FindArticles({
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
   ] = useState(doNotShowRedirectionModal_LocalStorage);
-  const [isWaitingForNewArticles, setIsWaitingForNewArticles] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
   const [reloadingSearchArticles, setReloadingSearchArticles] = useState(false);
-  const [noMoreArticlesToShow, setNoMoreArticlesToShow] = useState(false);
-  const articleListRef = useShadowRef(articleList);
-  const currentPageRef = useShadowRef(currentPage);
-  const noMoreArticlesToShowRef = useShadowRef(noMoreArticlesToShow);
-  const isWaitingForNewArticlesRef = useShadowRef(isWaitingForNewArticles);
 
+  const searchPublishPriorityRef = useShadowRef(searchPublishPriority);
+  const searchDifficultyPriorityRef = useShadowRef(searchDifficultyPriority);
+
+  function getNewArticlesForPage(pageNumber, handleArticleInsertion) {
+    if (searchQuery) {
+      api.searchMore(
+        searchQuery,
+        pageNumber,
+        searchPublishPriorityRef.current,
+        searchDifficultyPriorityRef.current,
+        handleArticleInsertion,
+        (error) => {
+          console.log("Failed to get searches!");
+          console.error(error);
+        },
+      );
+    } else {
+      api.getMoreUserArticles(20, pageNumber, handleArticleInsertion);
+    }
+  }
+
+  const [
+    handleScroll,
+    isWaitingForNewArticles,
+    noMoreArticlesToShow,
+    resetPagination,
+  ] = useArticlePagination(
+    api,
+    articleList,
+    setArticleList,
+    searchQuery ? "Article Search" : strings.titleHome,
+    getNewArticlesForPage,
+  );
   const handleArticleClick = (articleId, index) => {
     const articleSeenList = articleList
       .slice(0, index)
@@ -61,69 +86,6 @@ export default function FindArticles({
       articleSeenListString,
     );
   };
-  function handleScroll() {
-    let scrollBarPixelDistToPageEnd = getPixelsFromScrollBarToEnd();
-    let articlesHaveBeenFetched =
-      currentPageRef.current !== undefined &&
-      articleListRef.current !== undefined;
-
-    if (
-      scrollBarPixelDistToPageEnd <= 50 &&
-      !isWaitingForNewArticlesRef.current &&
-      !noMoreArticlesToShowRef.current &&
-      articlesHaveBeenFetched
-    ) {
-      setIsWaitingForNewArticles(true);
-      setTitle("Getting more articles...");
-
-      let newCurrentPage = currentPageRef.current + 1;
-      let newArticles = [...articleListRef.current];
-
-      if (searchQuery) {
-        api.searchMore(
-          searchQuery,
-          newCurrentPage,
-          searchPublishPriority,
-          searchDifficultyPriority,
-          (articles) => {
-            insertNewArticlesIntoArticleList(
-              articles,
-              newCurrentPage,
-              newArticles,
-            );
-            setTitle(strings.titleSearch + ` '${searchQuery}'`);
-          },
-          (error) => {
-            console.log("Failed to get searches!");
-          },
-        );
-      } else {
-        api.getMoreUserArticles(20, newCurrentPage, (articles) => {
-          insertNewArticlesIntoArticleList(
-            articles,
-            newCurrentPage,
-            newArticles,
-          );
-          setTitle(strings.titleHome);
-        });
-      }
-    }
-  }
-
-  function insertNewArticlesIntoArticleList(
-    fetchedArticles,
-    newCurrentPage,
-    newArticles,
-  ) {
-    if (fetchedArticles.length === 0) {
-      setNoMoreArticlesToShow(true);
-    }
-    newArticles = newArticles.concat(fetchedArticles);
-    setArticleList(newArticles);
-    setOriginalList([...newArticles]);
-    setCurrentPage(newCurrentPage);
-    setIsWaitingForNewArticles(false);
-  }
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, true);
@@ -139,7 +101,7 @@ export default function FindArticles({
   }, [doNotShowRedirectionModal_UserPreference]);
 
   useEffect(() => {
-    setNoMoreArticlesToShow(false);
+    resetPagination();
     if (searchQuery) {
       setTitle(strings.titleSearch + ` '${searchQuery}'`);
       setReloadingSearchArticles(true);
@@ -168,34 +130,39 @@ export default function FindArticles({
         window.removeEventListener("scroll", handleScroll, true);
       };
     }
-
   }, [searchPublishPriority, searchDifficultyPriority]);
 
   if (articleList == null) {
     return <LoadingAnimation />;
   }
 
-  //when the user changes interests...
-  function articlesListShouldChange() {
-    setArticleList(null);
-    api.getUserArticles((articles) => {
-      setArticleList(articles);
-      setOriginalList([...articles]);
-    });
-  }
-
   return (
     <>
       {!searchQuery && (
         <>
-          <Interests
-            api={api}
-            articlesListShouldChange={articlesListShouldChange}
-          />
           <s.SearchHolder>
             <SearchField api={api} query={searchQuery} />
           </s.SearchHolder>
-          {!searchQuery && <UnfinishedArticlesList />}
+          <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
+            <span>
+              You can customize your Home by{" "}
+              <a href="/account_settings/interests?fromArticles=1">
+                subscribing&nbsp;to&nbsp;topics
+              </a>
+              ,{" "}
+              <a href="/account_settings/excluded_keywords?fromArticles=1">
+                filtering&nbsp;keywords
+              </a>{" "}
+              or <a href="articles/mySearches">adding&nbsp;searches</a>.
+            </span>
+          </div>
+
+          {!searchQuery && (
+            <UnfinishedArticlesList
+              articleList={articleList}
+              setArticleList={setArticleList}
+            />
+          )}
           <s.SortHolder>
             <SortingButtons
               articleList={articleList}

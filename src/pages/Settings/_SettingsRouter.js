@@ -1,6 +1,5 @@
 import { PrivateRoute } from "../../PrivateRoute";
 import { Switch } from "react-router-dom";
-
 import Settings from "./Settings";
 import ProfileDetails from "./ProfileDetails";
 import LanguageSettings from "./LanguageSettings";
@@ -15,7 +14,8 @@ export default function SettingsRouter({ api, setUser }) {
   return (
     <Switch>
       <PrivateRoute
-        path="/account_settings/options"
+        exact
+        path="/account_settings"
         api={api}
         setUser={setUser}
         component={Settings}

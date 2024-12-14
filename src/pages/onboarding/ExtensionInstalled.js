@@ -30,7 +30,7 @@ export default function ExtensionInstalled({ api }) {
         </Heading>
       </Header>
       <Main>
-        <FullWidthImage src={"use-extension.png"} />
+        <FullWidthImage src={"read-any-article.gif"} />
       </Main>
       <Footer>
         <ButtonContainer className={"padding-large"}>

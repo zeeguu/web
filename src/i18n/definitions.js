@@ -11,10 +11,12 @@ let strings = new LocalizedStrings(
       articles: "Home",
       text: "Text",
       save: "Save",
+      apply: "Apply",
       settings: "Settings",
+      more: "More",
       wordHistoryTitle: "Word Translation History",
       exercises: "Exercises",
-      myClasses: "My Classes",
+      myClasses: "My Classrooms",
       myTexts: "My Texts",
       tutorials: "Help",
       login: "Log in",
@@ -33,7 +35,9 @@ let strings = new LocalizedStrings(
       plsProvideValidEmail: "Please provide a valid email.",
       plsAcceptPrivacyNotice: "Please accept Privacy Notice",
       password: "Password",
+      passwordConfirm: "Confirm Password",
       passwordPlaceholder: "Enter Password",
+      passwordConfirmPlaceholder: "Re-enter Password",
       passwordHelperText: "Must contain at least 4 characters",
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
@@ -316,9 +320,10 @@ let strings = new LocalizedStrings(
 
       //TagOfFilters
       addPersonalFilter: "Add a personal filter",
+      addExcludedKeyword: "Add an excluded keyword",
 
       //TagsOfInterests
-      addPersonalInterest: "Add a personal interest",
+      addPersonalInterest: "Add an interest keyword",
 
       //Learned
       learnedWordsAreMsg:

@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import redirect from "../../utils/routing/routing";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import * as sC from "../../components/modal_shared/Checkbox.sc";
+import * as sI from "../../components/InputField.sc";
 import useFormField from "../../hooks/useFormField";
 
 import { UserContext } from "../../contexts/UserContext";
@@ -16,48 +17,87 @@ import Form from "../_pages_shared/Form.sc";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
 import FormSection from "../_pages_shared/FormSection.sc";
 import InputField from "../../components/InputField";
+import useShadowRef from "../../hooks/useShadowRef";
 import Footer from "../_pages_shared/Footer.sc";
 import ButtonContainer from "../_pages_shared/ButtonContainer.sc";
 import Button from "../_pages_shared/Button.sc";
 import Modal from "../../components/modal_shared/Modal";
-import validator from "../../assorted/validator";
+import validateRules from "../../assorted/validateRules";
 import strings from "../../i18n/definitions";
 
-import * as EmailValidator from "email-validator";
 import LocalStorage from "../../assorted/LocalStorage";
+import {
+  EmailValidator,
+  MinimumLengthValidator,
+  NonEmptyValidator,
+  Validator,
+} from "../../utils/ValidatorRule/Validator";
 import { setTitle } from "../../assorted/setTitle";
 
 export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
   const user = useContext(UserContext);
 
-  const learnedLanguage_OnRegister =
-    LocalStorage.getLearnedLanguage_OnRegister();
-  const nativeLanguage_OnRegister = LocalStorage.getNativeLanguage_OnRegister();
-  const learnedCefrLevel_OnRegister =
-    LocalStorage.getLearnedCefrLevel_OnRegister();
+  const learnedLanguage = LocalStorage.getLearnedLanguage();
+  const nativeLanguage = LocalStorage.getNativeLanguage();
+  const learnedCefrLevel = LocalStorage.getLearnedCefrLevel();
 
-  const [learned_language_on_register] = useState(learnedLanguage_OnRegister);
-  const [native_language_on_register] = useState(nativeLanguage_OnRegister);
-  const [learned_cefr_level_on_register] = useState(
-    learnedCefrLevel_OnRegister,
+  const [
+    inviteCode,
+    setInviteCode,
+    validateInviteCode,
+    isInviteCodeValid,
+    inviteCodeMsg,
+  ] = useFormField("", [NonEmptyValidator("Please enter an invite code.")]);
+
+  const [name, setName, validateName, isNameValid, nameMsg] = useFormField("", [
+    NonEmptyValidator("Please enter a name."),
+  ]);
+  const [email, setEmail, validateEmail, isEmailValid, emailMsg] = useFormField(
+    "",
+    [NonEmptyValidator("Please enter an e-mail."), EmailValidator],
   );
+  const [
+    password,
+    setPassword,
+    validatePassword,
+    isPasswordValid,
+    passwordMsg,
+  ] = useFormField("", [
+    NonEmptyValidator("Please enter a password."),
+    MinimumLengthValidator(3, strings.passwordMustBeMsg),
+  ]);
 
-  const [inviteCode, handleInviteCodeChange] = useFormField("");
-  const [name, handleNameChange] = useFormField("");
-  const [email, handleEmailChange] = useFormField("");
-  const [password, handlePasswordChange] = useFormField("");
-  const [checkPrivacyNote, handleCheckPrivacyNote] = useFormField(false);
+  const passwordRef = useShadowRef(password);
+
+  const [
+    confirmPass,
+    setConfirmPass,
+    validateConfirmPass,
+    isConfirmPassValid,
+    confirmPassMsg,
+  ] = useFormField("", [
+    NonEmptyValidator("Please re-enter your password."),
+    new Validator((v) => {
+      return v === passwordRef.current;
+    }, "Passwords must match."),
+  ]);
+
+  const [
+    checkPrivacyNote,
+    setCheckPrivacyNote,
+    validateCheckPrivacyNote,
+    isCheckPrivacyNoteValid,
+    checkPrivacyNoteMsg,
+  ] = useFormField(
+    false,
+    new Validator((v) => {
+      return v === true;
+    }, strings.plsAcceptPrivacyPolicy),
+  );
 
   const [errorMessage, setErrorMessage] = useState("");
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(false);
   const [privacyNoticeText, setPrivacyNoticeText] = useState([]);
-
-  let validatorRules = [
-    [name === "", strings.nameIsRequired],
-    [!EmailValidator.validate(email), strings.plsProvideValidEmail],
-    [password.length < 4, strings.passwordMustBeMsg],
-    [!checkPrivacyNote, strings.plsAcceptPrivacyPolicy],
-  ];
 
   useState(() => {
     fetch(
@@ -83,17 +123,21 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
     }
   }, [errorMessage]);
 
-  //Clear temp local storage entries needed only for account creation
-  function clearOnRegisterLanguageEntries() {
-    LocalStorage.removeLearnedLanguage_OnRegister();
-    LocalStorage.removeCefrLevel_OnRegister();
-    LocalStorage.removeNativeLanguage_OnRegister();
-  }
-
   function handleCreate(e) {
     e.preventDefault();
-
-    if (!validator(validatorRules, setErrorMessage)) {
+    // If users have the same error, there wouldn't be a scroll.
+    setErrorMessage("");
+    if (
+      !validateRules([
+        validateName,
+        validatePassword,
+        validateEmail,
+        validateInviteCode,
+        validateCheckPrivacyNote,
+        validateConfirmPass,
+      ])
+    ) {
+      scrollToTop();
       return;
     }
 
@@ -101,9 +145,9 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
       ...user,
       name: name,
       email: email,
-      learned_language: learned_language_on_register,
-      learned_cefr_level: learned_cefr_level_on_register,
-      native_language: native_language_on_register,
+      learned_language: learnedLanguage,
+      learned_cefr_level: learnedCefrLevel,
+      native_language: nativeLanguage,
     };
 
     api.addUser(
@@ -115,7 +159,6 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
           handleSuccessfulLogIn(user, session);
           setUser(userInfo);
           saveUserInfoIntoCookies(userInfo);
-          clearOnRegisterLanguageEntries();
           redirect("/select_interests");
         });
       },
@@ -159,7 +202,11 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               name={"invite-code"}
               placeholder={strings.inviteCodePlaceholder}
               value={inviteCode}
-              onChange={handleInviteCodeChange}
+              onChange={(e) => {
+                setInviteCode(e.target.value);
+              }}
+              isError={!isInviteCodeValid}
+              errorMessage={inviteCodeMsg}
               helperText={
                 <div>
                   No invite code? Request it at:{" "}
@@ -175,7 +222,11 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               name={"name"}
               placeholder={strings.fullNamePlaceholder}
               value={name}
-              onChange={handleNameChange}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              isError={!isNameValid}
+              errorMessage={nameMsg}
             />
 
             <InputField
@@ -185,7 +236,11 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               name={"email"}
               placeholder={strings.emailPlaceholder}
               value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              isError={!isEmailValid}
+              errorMessage={emailMsg}
             />
 
             <InputField
@@ -195,13 +250,33 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
               name={"password"}
               placeholder={strings.passwordPlaceholder}
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
               helperText={strings.passwordHelperText}
+              isError={!isPasswordValid || !isConfirmPassValid}
+              errorMessage={passwordMsg}
+            />
+
+            <InputField
+              type={"password"}
+              label={strings.passwordConfirm}
+              id={"passwordConfirm"}
+              name={"passwordConfirm"}
+              placeholder={strings.passwordConfirmPlaceholder}
+              value={confirmPass}
+              onChange={(e) => {
+                setConfirmPass(e.target.value);
+              }}
+              isError={!isConfirmPassValid}
+              errorMessage={confirmPassMsg}
             />
           </FormSection>
           <sC.CheckboxWrapper>
             <input
-              onChange={handleCheckPrivacyNote}
+              onChange={(e) => {
+                setCheckPrivacyNote(e.target.checked);
+              }}
               checked={checkPrivacyNote}
               id="checkbox"
               name=""
@@ -210,13 +285,17 @@ export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
             ></input>
             <label>
               By checking this box you agree to our &nbsp;
-              <a
+              <span
+                className="link-style"
                 onClick={() => {
                   setShowPrivacyNotice(true);
                 }}
               >
                 {strings.privacyNotice}
-              </a>
+              </span>
+              {!isCheckPrivacyNoteValid && (
+                <sI.ErrorMessage>{checkPrivacyNoteMsg}</sI.ErrorMessage>
+              )}
             </label>
           </sC.CheckboxWrapper>
           <ButtonContainer className={"padding-medium"}>

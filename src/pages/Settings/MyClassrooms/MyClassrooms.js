@@ -17,13 +17,21 @@ import strings from "../../../i18n/definitions";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import FullWidthListItem from "../../../components/FullWidthListItem";
 import LeaveClassroomModal from "./LeaveClassroomModal";
+import useFormField from "../../../hooks/useFormField";
+import { NonEmptyValidator } from "../../../utils/ValidatorRule/Validator";
 import { setTitle } from "../../../assorted/setTitle";
 
 export default function MyClassrooms({ api }) {
   const user = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [inviteCode, setInviteCode] = useState("");
+  const [
+    inviteCode,
+    setInviteCode,
+    validateInviteCode,
+    isInviteCodeValid,
+    inviteCodeErrorMsg,
+  ] = useFormField("", NonEmptyValidator("Please provide an invite code."));
   const [showJoinCohortError, setShowJoinCohortError] = useState(false);
   const [studentCohorts, setStudentCohorts] = useState([]);
   const [isLeaveClassroomModalOpen, setIsLeaveClassroomModalOpen] =
@@ -81,13 +89,14 @@ export default function MyClassrooms({ api }) {
 
   function saveStudentToClassroom(e) {
     e.preventDefault(e);
+    setShowJoinCohortError(false);
+    if (!validateInviteCode()) return;
     api.joinCohort(
       inviteCode.trim(),
       (status) => {
         if (status === "OK") {
           updateValues();
           setInviteCode("");
-          setShowJoinCohortError(false); //clear error message after successful next attempt
         } else {
           setShowJoinCohortError(true);
         }
@@ -147,6 +156,8 @@ export default function MyClassrooms({ api }) {
               name={"cohort"}
               value={inviteCode}
               onChange={(event) => handleInviteCodeChange(event)}
+              isError={!isInviteCodeValid || showJoinCohortError}
+              errorMessage={inviteCodeErrorMsg}
             />
 
             {showJoinCohortError && (

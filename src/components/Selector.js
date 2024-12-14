@@ -8,6 +8,7 @@
 //onChange in Selector takes and evokes standard react event handler
 
 import * as s from "./Selector.sc";
+import { ErrorMessage } from "./InputField.sc";
 
 export default function Selector({
   options, // objects that should include the value and the label
@@ -17,6 +18,8 @@ export default function Selector({
   onChange,
   label, // label above the field
   placeholder,
+  isError,
+  errorMessage,
   id,
 }) {
   return (
@@ -25,7 +28,12 @@ export default function Selector({
         {label}
       </s.Label>
       <s.SelectStyledContainer>
-        <s.Select id={id} value={selectedValue} onChange={onChange}>
+        <s.Select
+          id={id}
+          value={selectedValue}
+          onChange={onChange}
+          className={`${isError && "error"}`}
+        >
           <option value={""} disabled>
             {placeholder}
           </option>
@@ -36,6 +44,7 @@ export default function Selector({
             </option>
           ))}
         </s.Select>
+        {isError && errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       </s.SelectStyledContainer>
     </s.SelectWrapper>
   );

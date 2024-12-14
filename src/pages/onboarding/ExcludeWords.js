@@ -23,17 +23,24 @@ import TagContainer from "../_pages_shared/TagContainer.sc";
 import redirect from "../../utils/routing/routing";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
+import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
 
 export default function ExcludeWords({ api, hasExtension }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 
-  const [excludedWord, handleExcludedWordsChange, resetExcludedWords] =
-    useFormField("");
+  const [
+    excludedWord,
+    setExcludedWord,
+    validateExcludedWord,
+    isExcludedWordValid,
+    excludedWordErrorMsg,
+    resetExcludedWords,
+  ] = useFormField("", [NonEmptyValidator("Please write a keyword.")]);
 
   function handleAddNewSearchFilter(e) {
     e.preventDefault();
-    if (excludedWord) {
+    if (validateExcludedWord()) {
       addUnwantedKeyword(excludedWord);
       resetExcludedWords();
     }
@@ -55,9 +62,13 @@ export default function ExcludeWords({ api, hasExtension }) {
         <Form>
           <InputField
             value={excludedWord}
-            onChange={handleExcludedWordsChange}
+            onChange={(e) => {
+              setExcludedWord(e.target.value);
+            }}
             helperText={strings.addUnwantedWordHelperText}
             placeholder={strings.unwantedWordPlaceholder}
+            isError={!isExcludedWordValid}
+            errorMessage={excludedWordErrorMsg}
           >
             <Button
               className="small-square-btn"

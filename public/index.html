@@ -1,23 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="theme-color" content="#000000"/>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
     <meta
-            name="description"
-            content="Web site created using create-react-app"
+      name="description"
+      content="Web site created using create-react-app"
     />
 
-    <base href="/"/>
+    <base href="/" />
 
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png"/>
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -28,18 +28,18 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <link
-            href="/static/fonts/montserrat.css"
-            type="text/css"
-            rel="stylesheet"
+      href="/static/fonts/montserrat.css"
+      type="text/css"
+      rel="stylesheet"
     />
 
     <title>Zeeguu</title>
+  </head>
 
-
-<body>
-<noscript>You need to enable JavaScript to run this app.</noscript>
-<div id="root"></div>
-<!--
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
   This HTML file is a template.
   If you open it directly in the browser, you will see an empty page.
 
@@ -49,5 +49,70 @@
   To begin the development, run `npm start` or `yarn start`.
   To create a production bundle, use `npm run build` or `yarn build`.
 -->
-</body>
+    <script>
+      function getSessionID() {
+        const cookies = document.cookie
+          .split(";")
+          .map((cookie) => cookie.trim());
+        for (const cookie of cookies) {
+          if (cookie.startsWith("sessionID")) {
+            return cookie.split("=")[1];
+          }
+        }
+
+        return null;
+      }
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then((registration) => {
+            const sessionId = getSessionID();
+            if (sessionId) {
+              navigator.serviceWorker.ready.then((registration) => {
+                registration.active.postMessage({
+                  sessionId: sessionId,
+                });
+                console.log("Service worker registered successfully");
+              });
+              Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                  console.log("Notification permission granted");
+                  registerPeriodicSync();
+                } else {
+                  console.warn("Notification permission denied");
+                }
+              });
+            } else {
+              console.error("No session ID found");
+            }
+          })
+          .catch((error) => {
+            console.error("Failed to register service worker:", error);
+          });
+      }
+
+      async function registerPeriodicSync() {
+        if ("PeriodicSyncManager" in window) {
+          try {
+            const registration = await navigator.serviceWorker.ready;
+            const tags = await registration.periodicSync.getTags();
+            if (!tags.includes("zeeguu-notifications")) {
+              await registration.periodicSync.register("zeeguu-notifications", {
+                // Checks once per day
+                minInterval: 24 * 60 * 60 * 1000,
+              });
+              console.log("Periodic sync registered successfully!");
+            } else {
+              console.log("Periodic sync already registered.");
+            }
+          } catch (err) {
+            console.error("Periodic Sync could not be registered!", err);
+          }
+        } else {
+          console.warn("PeriodicSyncManager is not supported on this device.");
+        }
+      }
+    </script>
+  </body>
 </html>

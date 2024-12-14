@@ -195,6 +195,7 @@ export default function WordInContextExercise({
         />
       )}
       <NextNavigation
+        exerciseType={exerciseType}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}

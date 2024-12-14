@@ -171,11 +171,7 @@ export default class InteractiveText {
     }
 
     let context =
-      getLeftContext(word.prev, 32) +
-      " " +
-      word.word +
-      " " +
-      getRightContext(word.next, 32);
+      getLeftContext(word.prev, 32) + " " + getRightContext(word, 32);
 
     // console.log("context is: " + context);
     return context;

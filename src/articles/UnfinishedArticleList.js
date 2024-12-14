@@ -4,18 +4,31 @@ import { APIContext } from "../contexts/APIContext";
 import * as s from "./UnfinishedArticleList.sc";
 import UnfinishedArticlePreview from "./UnfinishedArticlePreview";
 
-export default function UnfinishedArticlesList({}) {
+export default function UnfinishedArticlesList({
+  articleList,
+  setArticleList,
+}) {
   let api = useContext(APIContext);
 
-  const [unreadArticleList, setUnreadArticleList] = useState();
+  const [unfineshedArticleList, setUnfineshedArticleList] = useState();
 
   useEffect(() => {
     api.getUnfinishedUserReadingSessions((articles) => {
-      setUnreadArticleList(articles);
+      setUnfineshedArticleList(articles);
+      let filterUnfinishedArticles = [...articleList];
+      for (let i = 0; i < articles.length; i++) {
+        filterUnfinishedArticles = filterUnfinishedArticles.filter(
+          (article) => article.id !== articles[i].id,
+        );
+      }
+      setArticleList(filterUnfinishedArticles);
     });
   }, []);
 
-  if (unreadArticleList === undefined || unreadArticleList.length == 0) {
+  if (
+    unfineshedArticleList === undefined ||
+    unfineshedArticleList.length === 0
+  ) {
     return <></>;
   }
 
@@ -25,7 +38,7 @@ export default function UnfinishedArticlesList({}) {
         <s.UnfishedArticleBoxTitle>
           Continue where you left off
         </s.UnfishedArticleBoxTitle>
-        {unreadArticleList.map((each, index) => (
+        {unfineshedArticleList.map((each, index) => (
           <UnfinishedArticlePreview
             key={each.id}
             article={each}

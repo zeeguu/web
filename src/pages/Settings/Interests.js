@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import useQuery from "../../hooks/useQuery";
 import Tag from "../_pages_shared/Tag.sc";
 import TagContainer from "../_pages_shared/TagContainer.sc";
 import useSelectInterest from "../../hooks/useSelectInterest";
@@ -13,13 +14,13 @@ import { setTitle } from "../../assorted/setTitle";
 export default function Interests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
-
+  const isFromArticles = useQuery().get("fromArticles") === "1";
   useEffect(() => {
     setTitle(strings.interests);
   }, []);
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
+      <BackArrow redirectLink={isFromArticles && "/articles"} />
       <Header withoutLogo>
         <Heading>{strings.interests}</Heading>
       </Header>

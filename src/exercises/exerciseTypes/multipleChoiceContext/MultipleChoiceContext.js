@@ -88,6 +88,7 @@ export default function MultipleChoiceContext({
     setIsCorrect(true);
     handleAnswer(message);
     setShowSolution(true);
+    setWordInContextHeadline(removePunctuation(bookmarksToStudy[0].to));
   }
 
   function notifyChoiceSelection(
@@ -181,6 +182,7 @@ export default function MultipleChoiceContext({
       ))}
 
       <NextNavigation
+        exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}

@@ -6,6 +6,12 @@ const NarrowColumn = styled.div`
   margin-right: auto;
 `;
 
+const CenteredContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const CenteredContent = styled.div`
   display: flex;
   flex-direction: row;
@@ -62,6 +68,7 @@ const WidestColumn = styled.div`
 `;
 export {
   NarrowColumn,
+  CenteredContentContainer,
   CenteredContent,
   ContentOnRow,
   WideColumn,

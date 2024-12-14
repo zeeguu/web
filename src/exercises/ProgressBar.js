@@ -4,7 +4,7 @@ function percentageDone(index, total) {
   return p;
 }
 
-export default function ProgressBar({ index, total }) {
+export default function ProgressBar({ index, total, clock }) {
   return (
     <s.ProgressBar>
       <div className="progressModule">
@@ -13,6 +13,7 @@ export default function ProgressBar({ index, total }) {
             id="ex-bar"
             style={{ width: percentageDone(index, total) + "%" }}
           ></div>
+          {clock}
         </div>
       </div>
     </s.ProgressBar>

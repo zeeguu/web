@@ -14,8 +14,6 @@ import { MAX_COOLDOWN_INTERVAL } from "./ExerciseConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
-import { isMobile } from "../utils/misc/browserDetection";
-
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
@@ -25,10 +23,14 @@ import {
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
-import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
 import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
+import DigitalTimer from "../components/DigitalTimer";
+
+import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import useScreenWidth from "../hooks/useScreenWidth";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -68,6 +70,8 @@ export default function Exercises({
     useActivityTimer();
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
+
+  const { screenWidth } = useScreenWidth();
 
   useEffect(() => {
     setTitle(strings.titleExercises);
@@ -161,6 +165,7 @@ export default function Exercises({
       setIsOutOfWordsToday(topBookmarks.length == 0);
     });
   }
+
   function startExercising() {
     resetExerciseState();
     if (articleID) {
@@ -316,13 +321,28 @@ export default function Exercises({
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
+
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
     <>
+      {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
         <ProgressBar
           index={currentIndex}
           total={fullExerciseProgression.length}
+          clock={
+            <DigitalTimer
+              activeSessionDuration={activeSessionDuration}
+              clockActive={clockActive}
+              showClock={false}
+              style={{
+                width: "3em",
+                float: "right",
+                margin: "0.25rem 0.15rem",
+                color: "grey",
+              }}
+            ></DigitalTimer>
+          }
         />
         <s.ExForm>
           <CurrentExercise
@@ -356,13 +376,6 @@ export default function Exercises({
           </p>
         )}
       </s.ExercisesColumn>
-      {!isMobile() && (
-        <ActivityTimer
-          message="Total time in this exercise session"
-          activeSessionDuration={activeSessionDuration}
-          clockActive={clockActive}
-        />
-      )}
     </>
   );
 }

@@ -17,8 +17,10 @@ import {
 } from "../components/ColumnWidth.sc";
 
 import { Link } from "react-router-dom";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 let ArticleReader = styled.div`
+  padding: 0px 0.5rem;
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
@@ -61,8 +63,13 @@ let PlayerControl = styled.div`
   }
 `;
 
-let RightHandSide = styled.div`
-  float: right;
+let TopbarButtonsContainer = styled.div`
+  display: flex;
+  align-items: ${({ $screenWidth }) =>
+    $screenWidth < MOBILE_WIDTH ? "flex-start" : "flex-end"};
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
 `;
 
 let TopReaderButtonsContainer = styled.div`
@@ -71,11 +78,24 @@ let TopReaderButtonsContainer = styled.div`
 `;
 
 let AuthorLinksContainer = styled.div`
-  margin-top: 1em;
+  margin-top: 0.5em;
   margin-bottom: 2em;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+`;
+
+let ArticleInfoContainer = styled.div`
+  margin-top: 1em;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  @media (max-width: 990px) {
+    flex-direction: column;
+    align-items: left;
+    gap: 1.2rem;
+  }
 `;
 
 let ArticleImgContainer = styled.div`
@@ -89,13 +109,25 @@ let ArticleImg = styled.img`
   margin-bottom: 1em;
 `;
 
-let Toolbar = styled.div`
-  padding-top: 0.5rem;
-  height: 8em;
+const ToolbarWrapper = styled.div`
   width: 100%;
-  // background-color: ${veryLightGrey};
+  justify-content: flex-end;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 2000;
+  background-color: white;
+  padding-top: 0.5rem;
+`;
 
-  button {
+let Toolbar = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 768px;
+  margin-left: auto;
+  margin-right: auto;
+  border-bottom: 1px solid ${veryLightGrey};
+  button.toolbar-btn {
     width: 55px;
     height: 55px;
 
@@ -122,7 +154,6 @@ let Toolbar = styled.div`
     border: none;
     width: 100%;
     height: 0.5em;
-    margin: 10px 0px 1px 0px;
     border-radius: 10em;
     background: var(--background);
     transition: all 0.1s linear 0s;
@@ -397,6 +428,7 @@ export {
   ArticleImg,
   ArticleImgContainer,
   AuthorLinksContainer,
+  ArticleInfoContainer,
   TopReaderButtonsContainer,
   Toolbar,
   Title,
@@ -410,8 +442,9 @@ export {
   NarrowColumn,
   ContentOnRow,
   NavigationLink,
-  RightHandSide,
+  TopbarButtonsContainer,
   PlayerControl,
   InvisibleBox,
   CombinedBox,
+  ToolbarWrapper,
 };

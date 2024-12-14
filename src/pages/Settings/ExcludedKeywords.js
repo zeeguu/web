@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
+import useQuery from "../../hooks/useQuery";
 
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
@@ -23,9 +24,10 @@ export default function ExcludedKeywords({ api }) {
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 
-  const [excludedWord, handleExcludedWordsChange, resetExcludedWords] =
+  const [excludedWord, setExcludedWord, , , , resetExcludedWord] =
     useFormField("");
 
+  const isFromArticles = useQuery().get("fromArticles") === "1";
   useEffect(() => {
     setTitle(strings.excludedKeywords);
   }, []);
@@ -34,12 +36,12 @@ export default function ExcludedKeywords({ api }) {
     e.preventDefault();
     if (excludedWord) {
       addUnwantedKeyword(excludedWord);
-      resetExcludedWords();
+      resetExcludedWord();
     }
   }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
-      <BackArrow />
+      <BackArrow redirectLink={isFromArticles && "/articles"} />
       <Header withoutLogo>
         <Heading>{strings.excludedKeywords}</Heading>
       </Header>
@@ -47,7 +49,9 @@ export default function ExcludedKeywords({ api }) {
         <Form>
           <InputField
             value={excludedWord}
-            onChange={handleExcludedWordsChange}
+            onChange={(e) => {
+              setExcludedWord(e.target.value);
+            }}
             helperText={strings.addUnwantedWordHelperText}
             placeholder={strings.unwantedWordPlaceholder}
           >
