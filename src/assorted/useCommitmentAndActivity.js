@@ -85,11 +85,11 @@ const useCommitmentAndActivity = (api) => {
         const currentConsecutiveWeeks =
           activitiesAndCommitmentArray.consecutive_weeks;
 
-        if (goalMetThisWeek) {
-          const lastCommitmentUpdate = new Date(
+        const lastCommitmentUpdate = new Date(
             activitiesAndCommitmentArray.commitment_last_updated,
           );
-
+          
+        if (goalMetThisWeek) {
           if (
             lastCommitmentUpdate != null &&
             lastCommitmentUpdate.getTime() >= startOfWeek.getTime() &&
@@ -105,6 +105,7 @@ const useCommitmentAndActivity = (api) => {
           if (userDaysPerWeek - weeklyActivitiesCount > daysLeftInWeek) {
             // if not the consecutive weeks is reset
             setCommitmentAndActivityData(0);
+            setLastCommitmentUpdate(currentDate);
           }
           // if it is it's set to the current amount
           else {
@@ -116,7 +117,7 @@ const useCommitmentAndActivity = (api) => {
 
     fetchData();
   }, [api]);
-
+  
   return { commitmentAndActivityData, lastCommitmentUpdate };
 };
 
