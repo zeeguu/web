@@ -21,7 +21,7 @@ const CommitmentText = styled.text`
 `;
 
 const CommitmentCircle = styled.div`
-  margin-top:0.3em;
+  margin-top: 0.3em;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -53,11 +53,9 @@ const ExerciseBox = styled.div`
 
 const WeekText = styled.text`
   font-weight: bold;
-  color:white;
+  color: white;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
-
-
 `;
 export {
   WeekText,
