@@ -1,10 +1,12 @@
 import { Zeeguu_API } from "./classDef";
 import qs from "qs";
 
+//gets user commitment data and activites combined
 Zeeguu_API.prototype.getUserActivityAndCommitment = function (callback) {
   this._getJSON("user_activity_and_commitment", callback);
 };
 
+//gets user commitment daa
 Zeeguu_API.prototype.getUserCommitment = function (callback) {
   this._getJSON("user_commitment", callback);
 };
@@ -31,6 +33,7 @@ Zeeguu_API.prototype.saveUserCommitmentInfo = function (
   this._post(`user_commitment_info`, qs.stringify(user_commitment), onSuccess);
 };
 
+//updates the user commitment when user reaches goal
 Zeeguu_API.prototype.updateUserCommitment = function (
   last_commitment_update,
   commitment_and_activity_data,

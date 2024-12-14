@@ -29,7 +29,6 @@ import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
 import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
-import useCommitmentAndActivity from '../assorted/useCommitmentAndActivity';
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -61,7 +60,6 @@ export default function Exercises({
     setTotalPracticedBookmarksInSession,
   ] = useState(0);
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
-  const {commitmentAndActivityData, lastCommitmentUpdate}= useCommitmentAndActivity(api);
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const currentIndexRef = useShadowRef(currentIndex);
   const hasKeptExercisingRef = useShadowRef(hasKeptExercising);
@@ -212,7 +210,6 @@ export default function Exercises({
           exerciseSessionTimer={activeSessionDuration}
           articleURL={articleURL}
           articleTitle={articleTitle}
-          commitmentAndActivityData={commitmentAndActivityData}
         />
       </>
     );

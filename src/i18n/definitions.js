@@ -52,7 +52,8 @@ let strings = new LocalizedStrings(
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
       next: "Next",
       youCanChangeLater: "You can always change it later",
-      youCanChangeInSettings: "You can add a custom minute amount or edit your choices in Settings.",
+      youCanChangeInSettings:
+        "You can add a custom minute amount or edit your choices in Settings.",
       yesPlease: "Yes, please",
       noThankYou: "No, thank you",
       getStarted: "Get Started",
@@ -586,7 +587,7 @@ let strings = new LocalizedStrings(
       thirtyMinutes: "30 minutes",
       custom: "Enter a custom amount",
 
-      //SELECT MINS OR DAYS 
+      //SELECT MINS OR DAYS
       selectMinutes: "Select minutes",
       selectDays: "Select days",
 
