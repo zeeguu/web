@@ -21,7 +21,7 @@ const useCommitmentAndActivity = (api) => {
           daysAwayFromMonday = dayOfWeek - 1;
         }
 
-       let daysLeftInWeek= 7 - dayOfWeek;
+       let daysLeftInWeek = 8 - dayOfWeek;
        console.log("daysLeftInWeek", daysLeftInWeek);
 
         const activityTimeByDay = activitiesAndCommitmentArray.user_activities;
