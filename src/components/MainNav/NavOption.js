@@ -35,7 +35,7 @@ export default function NavOption({
         <s.OptionContentWrapper $screenWidth={screenWidth}>
           <s.IconContainer>{icon}</s.IconContainer>
           <s.TextWrapper $screenWidth={screenWidth}>{text}</s.TextWrapper>
-          {notification}
+          {!isActive && notification}
         </s.OptionContentWrapper>
       </Component>
     </s.NavOption>
