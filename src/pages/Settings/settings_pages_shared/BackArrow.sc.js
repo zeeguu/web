@@ -10,7 +10,7 @@ const BackArrow = styled.button`
   gap: 0.25rem;
   color: ${darkGrey};
   background: inherit;
-  border: inherit;
+  border: none;
   font-family: inherit;
   font-size: inherit;
   font-weight: 600;

@@ -2,14 +2,19 @@ import * as s from "./exerciseTypes/Exercise.sc";
 import * as sc from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import Pluralize from "../utils/text/pluralize";
+import useScreenWidth from "../hooks/useScreenWidth";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 
 export default function OutOfWordsMessage({
   totalInLearning,
   goBackAction,
   keepExercisingAction,
 }) {
+  const { screenWidth } = useScreenWidth();
   return (
     <s.Exercise>
+      {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <div className="contextExample">
         <h2>{strings.noTranslatedWords}</h2>
         <p>

@@ -16,7 +16,7 @@ import ReadingHistory from "./words/WordHistory";
 import TeacherRouter from "./teacher/_routing/_TeacherRouter";
 import ArticleReader from "./reader/ArticleReader";
 import UserDashboard from "./userDashboard/UserDashboard";
-import { PrivateRouteWithSidebar } from "./PrivateRouteWithSidebar";
+import { PrivateRouteWithMainNav } from "./PrivateRouteWithMainNav";
 import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
@@ -37,7 +37,7 @@ export default function MainAppRouter({
       />
 
       <Route
-        path="/create_account"
+        path="/account_details"
         render={() => (
           <CreateAccount
             api={api}
@@ -45,6 +45,11 @@ export default function MainAppRouter({
             setUser={setUser}
           />
         )}
+      />
+
+      <Route
+        path="/create_account"
+        render={() => <LanguagePreferences api={api} />}
       />
 
       <Route
@@ -81,48 +86,48 @@ export default function MainAppRouter({
         component={ExcludeWords}
       />
 
-      <PrivateRouteWithSidebar
+      <PrivateRouteWithMainNav
         path="/articles"
         api={api}
         component={ArticlesRouter}
       />
-      <PrivateRouteWithSidebar
+      <PrivateRouteWithMainNav
         path="/exercises"
         api={api}
         component={ExercisesRouter}
       />
-      <PrivateRouteWithSidebar
+      <PrivateRouteWithMainNav
         path="/words"
         api={api}
         component={WordsRouter}
       />
-      <PrivateRouteWithSidebar
+      <PrivateRouteWithMainNav
         path="/history"
         api={api}
         component={ReadingHistory}
       />
-      <PrivateRouteWithSidebar
+      <PrivateRouteWithMainNav
         path="/account_settings"
         api={api}
         setUser={setUser}
         component={SettingsRouter}
       />
-      <PrivateRouteWithSidebar
+      <PrivateRouteWithMainNav
         path="/teacher"
         api={api}
         component={TeacherRouter}
       />
-      <PrivateRouteWithSidebar
+      <PrivateRouteWithMainNav
         path="/read/article"
         api={api}
         component={ArticleReader}
       />
-      <PrivateRouteWithSidebar
+      <PrivateRouteWithMainNav
         path="/user_dashboard"
         api={api}
         component={UserDashboard}
       />
-      <PrivateRouteWithSidebar
+      <PrivateRouteWithMainNav
         path="/search"
         api={api}
         component={ArticlesRouter}

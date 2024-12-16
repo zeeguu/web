@@ -2,7 +2,8 @@ import * as s from "./ArticleStatInfo.sc";
 import { getStaticPath } from "../utils/misc/staticPath";
 import { estimateReadingTime } from "../utils/misc/readableTime";
 
-export default function ArticleStatInfo({ cefr_level, articleInfo }) {
+export default function ArticleStatInfo({ articleInfo }) {
+  let cefr_level = articleInfo.metrics.cefr_level;
   return (
     <s.StatContainer>
       <s.Difficulty>

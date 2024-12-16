@@ -7,8 +7,6 @@ import { longFormattedDate } from "../../sharedComponents/FormattedDate";
 
 const ReadingSessionCard = ({ readingSession, isFirst, openedArticle }) => {
   const [translationCount, setTranslationCount] = useState(0);
-  console.log("READING SESSION CARD HAS THE FOLLOWING READING SESSION: ");
-  console.dir(readingSession);
 
   useEffect(() => {
     setTranslationCount(0);

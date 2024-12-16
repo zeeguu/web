@@ -5,16 +5,19 @@ import { StyledGreyButton } from "../exercises/exerciseTypes/Exercise.sc";
 import { useState, useEffect } from "react";
 import FeedbackModal from "./FeedbackModal";
 import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
+import isInTeacherWebsite from "../utils/misc/isTeacherWebsite";
 
 export default function LoadingAnimation({
   text,
   specificStyle,
   delay = 1000,
+  children,
 }) {
   let _text = text ? text : strings.loadingMsg;
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
   const [showReportButton, setShowReportButton] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [isTeacherWebsite] = useState(isInTeacherWebsite());
 
   useEffect(() => {
     // Code from: https://stackoverflow.com/questions/53090432/react-hooks-right-way-to-clear-timeouts-and-intervals
@@ -26,6 +29,7 @@ export default function LoadingAnimation({
     ); // Wait 4 seconds to show the link to the FeedbackScreen.
     return () => {
       clearTimeout(loadingTimer);
+      clearTimeout(showReportButtonTimer);
     };
   }, []);
 
@@ -40,9 +44,13 @@ export default function LoadingAnimation({
         feedbackOptions={FEEDBACK_OPTIONS.ALL}
       />
       {showLoadingScreen && (
-        <s.LoadingContainer>
-          <s.LoadingAnimation style={specificStyle}>
-            <div className="lds-ellipsis">
+        <s.LoadingContainer style={specificStyle}>
+          <s.LoadingAnimation>
+            <div
+              className={
+                "lds-ellipsis " + (isTeacherWebsite ? "teacher" : "student")
+              }
+            >
               <div></div>
               <div></div>
               <div></div>
@@ -58,6 +66,7 @@ export default function LoadingAnimation({
               Report Issue
             </StyledGreyButton>
           )}
+          {children}
         </s.LoadingContainer>
       )}
     </>

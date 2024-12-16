@@ -111,6 +111,7 @@ let DEFAULT_SEQUENCE = [
   EX_Match,
   EX_MultipleChoice,
   EX_FindWordInContext,
+  EX_MultipleChoiceAudio,
   EX_SpellWhatYouHear,
   EX_FindWordInContext,
 ];

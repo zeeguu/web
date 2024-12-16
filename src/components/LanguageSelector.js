@@ -5,6 +5,8 @@ export default function LanguageSelector({
   languages,
   selected,
   onChange,
+  errorMessage,
+  isError,
   label,
   id,
 }) {
@@ -19,19 +21,17 @@ export default function LanguageSelector({
     return language.code;
   }
 
-  function getLanguageCodeFromDOMEvent(e) {
-    return e.target.value;
-  }
-
   return (
     <Selector
       options={languages}
       optionLabel={languageLabel}
       optionValue={languageCode}
       selectedValue={selected}
-      onChange={(e) => onChange(getLanguageCodeFromDOMEvent(e))}
+      onChange={onChange}
       label={label}
       placeholder={"Select language"}
+      errorMessage={errorMessage}
+      isError={isError}
       id={id}
     />
   );

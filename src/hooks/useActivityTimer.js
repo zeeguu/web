@@ -5,8 +5,37 @@ export default function useActivityTimer(activityUploaderFunction) {
   const [activityTimer, setActivityTimer] = useState(0);
 
   const [isTimerActive, setIsTimerActive] = useState(true);
+  const [isFocused, setIsFocused] = useState(true);
 
   const [isActivityOver, setIsActivityOver] = useState(false);
+
+  useIdleTimer({
+    onActive,
+    onIdle,
+    timeout: 30_000,
+    eventsThrottle: 500,
+    events: [
+      "keydown",
+      "wheel",
+      "DOMMouseScroll",
+      "mousewheel",
+      "mousedown",
+      "touchstart",
+      "touchmove",
+      "MSPointerDown",
+      "MSPointerMove",
+    ],
+  });
+  function onIdle() {
+    if (isTimerActive && activityUploaderFunction) {
+      activityUploaderFunction();
+    }
+    setIsTimerActive(false);
+  }
+
+  function onActive() {
+    if (isFocused) setIsTimerActive(true);
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,18 +54,12 @@ export default function useActivityTimer(activityUploaderFunction) {
     };
   }, [activityTimer, isTimerActive]);
 
-  useIdleTimer({
-    onIdle,
-    onActive,
-    timeout: 30_000,
-    throttle: 500,
-  });
-
   useEffect(() => {
     const handleFocus = () => {
       if (!isActivityOver) {
         setIsTimerActive(true);
       }
+      setIsFocused(true);
     };
 
     const handleBlur = () => {
@@ -44,6 +67,7 @@ export default function useActivityTimer(activityUploaderFunction) {
         activityUploaderFunction();
       }
       setIsTimerActive(false);
+      setIsFocused(false);
     };
 
     window.addEventListener("focus", handleFocus);
@@ -54,17 +78,6 @@ export default function useActivityTimer(activityUploaderFunction) {
       window.removeEventListener("blur", handleBlur);
     };
   }, []);
-
-  function onIdle() {
-    if (isTimerActive && activityUploaderFunction) {
-      activityUploaderFunction();
-    }
-    setIsTimerActive(false);
-  }
-
-  function onActive() {
-    setIsTimerActive(true);
-  }
 
   // active session duration is measured in seconds
   return [activityTimer, isTimerActive, setIsActivityOver];

@@ -14,34 +14,30 @@ export default function ToolbarButtons({
   setPronouncing,
 }) {
   return (
-    <s.Toolbar style={{ float: "right", width: "auto", height: "auto" }}>
-      <ThemeProvider theme={t}>
-        <FormGroup>
-          <FormHelperText>
-            {<small>{"Click word(s) to:"}</small>}
-          </FormHelperText>
-          <FormControlLabel
-            checked={translating}
-            control={
-              <Android12Switch
-                onClick={(e) => toggle(translating, setTranslating)}
-              />
-            }
-            className={translating ? "selected" : ""}
-            label={<small>{"See translation"}</small>}
-          />
-          <FormControlLabel
-            checked={pronouncing}
-            control={
-              <Android12Switch
-                onClick={(e) => toggle(pronouncing, setPronouncing)}
-              />
-            }
-            className={pronouncing ? "selected" : ""}
-            label={<small>{"Hear pronunciation"}</small>}
-          />
-        </FormGroup>
-      </ThemeProvider>
-    </s.Toolbar>
+    <ThemeProvider theme={t}>
+      <FormGroup>
+        <FormHelperText>{<small>{"Click word(s) to:"}</small>}</FormHelperText>
+        <FormControlLabel
+          checked={translating}
+          control={
+            <Android12Switch
+              onClick={(e) => toggle(translating, setTranslating)}
+            />
+          }
+          className={translating ? "selected" : ""}
+          label={<small>{"See translation"}</small>}
+        />
+        <FormControlLabel
+          checked={pronouncing}
+          control={
+            <Android12Switch
+              onClick={(e) => toggle(pronouncing, setPronouncing)}
+            />
+          }
+          className={pronouncing ? "selected" : ""}
+          label={<small>{"Hear pronunciation"}</small>}
+        />
+      </FormGroup>
+    </ThemeProvider>
   );
 }
