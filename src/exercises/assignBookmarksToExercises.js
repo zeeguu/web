@@ -1,4 +1,4 @@
-import { removeItemFromList } from "../utils/basic/arrays";
+import { removeAllMatchingItemFromList } from "../utils/basic/arrays";
 import shuffle from "../assorted/fisherYatesShuffle";
 
 import { MEMORY_TASK, LEARNING_CYCLE } from "./ExerciseTypeConstants";
@@ -135,7 +135,7 @@ function assignBookmarks(currentBookmarks, currentExercises) {
       }
 
       if (!suitableExerciseFound) {
-        possibleExercises = removeItemFromList(
+        possibleExercises = removeAllMatchingItemFromList(
           selectedExerciseType,
           possibleExercises,
         );

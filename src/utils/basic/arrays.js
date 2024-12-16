@@ -19,11 +19,16 @@ function random(x) {
   return x[Math.floor(Math.random() * x.length)];
 }
 
-function removeAllItemFromList(item, list) {
+function removeAllMatchingItemFromList(item, list) {
   /*
     Removes all items that match the item in the list.
   */
   return list.filter((i) => i !== item);
 }
 
-export { removeArrayDuplicates, removeByValue, random, removeAllItemFromList };
+export {
+  removeArrayDuplicates,
+  removeByValue,
+  random,
+  removeAllMatchingItemFromList,
+};
