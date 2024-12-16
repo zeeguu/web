@@ -4,7 +4,7 @@ function removeArrayDuplicates(array) {
   return newArray;
 }
 
-function removeByValue(list, item) {
+function removeFirstItemByValue(item, list) {
   /*
     Removes the first occurence of item in list.
 
@@ -28,7 +28,7 @@ function removeAllMatchingItemFromList(item, list) {
 
 export {
   removeArrayDuplicates,
-  removeByValue,
+  removeFirstItemByValue as removeByValue,
   random,
   removeAllMatchingItemFromList,
 };
