@@ -29,17 +29,17 @@ export default function AlterMenu({
 
   function shortenSource(word) {
     if (word.source === "Microsoft - without context") {
-      return "Microsoft translate";
+      return "Azure translate";
     }
     if (word.source === "Microsoft - with context") {
-      return "contextual Microsoft translate";
+      return "Contextual Azure translate";
     }
 
     if (word.source === "Google - without context") {
-      return "Goog";
+      return "Google translate";
     }
     if (word.source === "Google - with context") {
-      return "Goog + ctx";
+      return "Contextual Google translate";
     }
 
     return word.source;
