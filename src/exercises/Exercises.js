@@ -93,7 +93,8 @@ export default function Exercises({
     });
 
     if (!articleID)
-      // Only report if it's the tab
+      // Only report if it's the scheduled exercises that are opened
+      // and not the article exercises
       api.logReaderActivity(
         api.SCHEDULED_EXERCISES_OPEN,
         null,
@@ -105,7 +106,7 @@ export default function Exercises({
     startExercising();
     return () => {
       if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
-        // Do not report if there was no exercises
+        // Do not report if there were no exercises
         // performed
         api.reportExerciseSessionEnd(
           dbExerciseSessionIdRef.current,
