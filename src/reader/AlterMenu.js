@@ -32,14 +32,14 @@ export default function AlterMenu({
       return "Azure";
     }
     if (word.source === "Microsoft - with context") {
-      return "Context-aware Azure";
+      return "Azure (in context)";
     }
 
     if (word.source === "Google - without context") {
       return "Google";
     }
     if (word.source === "Google - with context") {
-      return "Context-aware Google";
+      return "Google (in context)";
     }
 
     return word.source;
