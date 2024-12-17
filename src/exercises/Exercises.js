@@ -91,17 +91,22 @@ export default function Exercises({
       let id = JSON.parse(newlyCreatedDBSessionID).id;
       setDbExerciseSessionId(id);
     });
-    api.logReaderActivity(
-      api.SCHEDULED_EXERCISES_OPEN,
-      null,
-      JSON.stringify({ had_notification: exerciseNotification.hasExercises }),
-      "",
-    );
+
+    if (!articleID)
+      // Only report if it's the scheduled exercises that are opened
+      // and not the article exercises
+      api.logReaderActivity(
+        api.SCHEDULED_EXERCISES_OPEN,
+        null,
+        JSON.stringify({ had_notification: exerciseNotification.hasExercises }),
+        "",
+      );
+
     setTitle("Exercises");
     startExercising();
     return () => {
       if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
-        // Do not report if there was no exercises
+        // Do not report if there were no exercises
         // performed
         api.reportExerciseSessionEnd(
           dbExerciseSessionIdRef.current,
