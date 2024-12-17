@@ -91,12 +91,16 @@ export default function Exercises({
       let id = JSON.parse(newlyCreatedDBSessionID).id;
       setDbExerciseSessionId(id);
     });
-    api.logReaderActivity(
-      api.SCHEDULED_EXERCISES_OPEN,
-      null,
-      JSON.stringify({ had_notification: exerciseNotification.hasExercises }),
-      "",
-    );
+
+    if (!articleID)
+      // Only report if it's the tab
+      api.logReaderActivity(
+        api.SCHEDULED_EXERCISES_OPEN,
+        null,
+        JSON.stringify({ had_notification: exerciseNotification.hasExercises }),
+        "",
+      );
+
     setTitle("Exercises");
     startExercising();
     return () => {
