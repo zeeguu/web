@@ -8,6 +8,7 @@ import ExerciseTypePreferences from "./ExerciseTypePreferences";
 import MyClassrooms from "./MyClassrooms/MyClassrooms";
 import DeleteAccount from "./DeleteAccount";
 import ExcludedKeywords from "./ExcludedKeywords";
+import MyWeeklyGoal from "./MyWeeklyGoal";
 
 export default function SettingsRouter({ api, setUser }) {
   return (
@@ -44,6 +45,12 @@ export default function SettingsRouter({ api, setUser }) {
         path="/account_settings/my_classrooms"
         api={api}
         component={MyClassrooms}
+      />
+
+      <PrivateRoute
+        path="/account_settings/my_weekly_goal"
+        api={api}
+        component={MyWeeklyGoal}
       />
 
       <PrivateRoute

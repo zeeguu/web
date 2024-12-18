@@ -38,12 +38,6 @@ export default function ExcludeWords({ api, hasExtension }) {
     resetExcludedWords,
   ] = useFormField("", [NonEmptyValidator("Please write a keyword.")]);
 
-  function getLinkToNextPage() {
-    if (isSupportedBrowser() && hasExtension === false) {
-      return "/install_extension";
-    } else return "/articles";
-  }
-
   function handleAddNewSearchFilter(e) {
     e.preventDefault();
     if (validateExcludedWord()) {
@@ -103,7 +97,7 @@ export default function ExcludeWords({ api, hasExtension }) {
         <ButtonContainer className={"padding-large"}>
           <Button
             className={"full-width-btn"}
-            onClick={() => redirect(getLinkToNextPage())}
+            onClick={() => redirect("/commitment_preferences")}
           >
             {strings.next} <RoundedForwardArrow />
           </Button>

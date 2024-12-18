@@ -8,7 +8,6 @@ let strings = new LocalizedStrings(
       title: "Title",
       words: "Words",
       lengthWithCapital: "Length",
-      levelWithCapital: "Level",
       articles: "Home",
       text: "Text",
       save: "Save",
@@ -57,6 +56,8 @@ let strings = new LocalizedStrings(
       colleagueEmailExample: "eg. 'colleague@work.mail.com'",
       next: "Next",
       youCanChangeLater: "You can always change it later",
+      youCanChangeInSettings:
+        "You can add a custom minute amount or edit your choices in Settings.",
       yesPlease: "Yes, please",
       noThankYou: "No, thank you",
       getStarted: "Get Started",
@@ -92,6 +93,12 @@ let strings = new LocalizedStrings(
       learnedLanguageIsRequired: "Learned language is required.",
       languangeLevelIsRequired: "Language level is required.",
       plsSelectBaseLanguage: "Please select a base language.",
+
+      //CommitmentPreferences
+      commitmentPreferences: "Commitment Preferences",
+      weeklyMinutesAreRequired: "Weekly minutes commitment is required.",
+      weeklyHoursAreRequired: "Weekly hours commitment is required.",
+      timeCommitment: "How much time would you like to commit to per week?",
 
       //SelectInterests
       selectInterests: "Select Interests",
@@ -552,6 +559,11 @@ let strings = new LocalizedStrings(
       exerciseTypePreferences: "Exercise Type Preferences",
       interests: "Interests",
       deleteAccount: "Delete Account",
+      myWeeklyGoal: "My Weekly Goal",
+      myPracticeGoal: "I want to practice",
+      praticePlaceholder: "4 days per week",
+      myDurationGoal: "For a duration of",
+      durationPlaceholder: "10 mins per session",
 
       nativeLanguage: "Native Language",
       yourCurrentClassIs: "Your current class is: ",
@@ -561,6 +573,28 @@ let strings = new LocalizedStrings(
       insertInviteCode: "Insert invite code",
       checkIfInviteCodeIsValid:
         "Something went wrong. Please check that the invite code is valid and try again.",
+
+      //PRACTICE_DAYS
+      oneDay: "1 day per week",
+      twoDays: "2 days per week",
+      threeDays: "3 days per week",
+      fourDays: "4 days per week",
+      fiveDays: "5 days per week",
+      sixDays: "6 days per week",
+      sevenDays: "7 days per week",
+
+      //MINUTES_GOALS
+      twoMinutes: "2 minutes",
+      fiveMinutes: "5 minutes",
+      tenMinutes: "10 minutes",
+      fifteenMinutes: "15 minutes",
+      twentyMinutes: "20 minutes",
+      thirtyMinutes: "30 minutes",
+      custom: "Enter a custom amount",
+
+      //SELECT MINS OR DAYS
+      selectMinutes: "Select minutes",
+      selectDays: "Select days",
 
       //CEFR_LEVELS
       beginner: "Beginner",

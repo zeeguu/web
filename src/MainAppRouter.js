@@ -9,6 +9,7 @@ import NoSidebarRouter from "./NoSidebarRouter";
 import LogIn from "./pages/LogIn";
 import CreateAccount from "./pages/onboarding/CreateAccount";
 import LanguagePreferences from "./pages/onboarding/LanguagePreferences";
+import CommitmentPreferences from "./pages/onboarding/CommitmentPreferences";
 import ArticlesRouter from "./articles/_ArticlesRouter";
 import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
@@ -55,6 +56,11 @@ export default function MainAppRouter({
       <Route
         path="/language_preferences"
         render={() => <LanguagePreferences api={api} />}
+      />
+
+      <Route
+        path="/commitment_preferences"
+        render={() => <CommitmentPreferences api={api} />}
       />
 
       <Route path="/" exact render={() => <LandingPage />} />

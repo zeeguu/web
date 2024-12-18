@@ -61,7 +61,6 @@ export default function Exercises({
     totalPracticedBookmarksInSession,
     setTotalPracticedBookmarksInSession,
   ] = useState(0);
-
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const currentIndexRef = useShadowRef(currentIndex);

@@ -24,6 +24,15 @@ const TOP_TABS = {
   LINE_GRAPH: udstrings.tabWords,
 };
 
+const STREAK_MESSAGE ={
+  YOUR_STREAK: udstrings.streakText,
+};
+
+const COMMITMENT_MESSAGE ={
+  YOUR_COMMITMENT1: udstrings.commitmentText1,
+  YOUR_COMMITMENT2: udstrings.commitmentText2,
+};
+
 const USER_DASHBOARD_TITLES = {
   MAIN_TITLE: udstrings.activity,
   BAR_GRAPH_TEXT: udstrings.helperTextActivity,
@@ -107,4 +116,6 @@ export {
   DATE_FORMAT_FOR_DATEPICKER,
   TABS_IDS,
   DEFAULT_MAX_VALUE_BAR_GRAPH,
+  STREAK_MESSAGE,
+  COMMITMENT_MESSAGE,
 };
