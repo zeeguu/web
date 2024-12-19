@@ -340,7 +340,7 @@ export default function Exercises({
       {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
         <ProgressBar
-          index={currentIndex}
+          index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
           clock={
             <DigitalTimer
