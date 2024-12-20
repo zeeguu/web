@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Tooltip from "@material-ui/core/Tooltip";
 import strings from "../i18n/definitions";
 import Feature from "../features/Feature";
-import { ExerciseValidation } from "./ExerciseValidation";
+import { correctnessBasedOnTries } from "./CorrectnessBasedOnTries";
 import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
 import { APP_DOMAIN } from "../appConstants.js";
 import NotificationIcon from "../components/NotificationIcon";
@@ -19,8 +19,9 @@ export default function LearningCycleIndicator({
 
   let learningCycle = bookmark.learning_cycle;
   let coolingInterval = bookmark.cooling_interval;
+
   useEffect(() => {
-    const { userIsCorrect, userIsWrong } = ExerciseValidation(message);
+    const { userIsCorrect, userIsWrong } = correctnessBasedOnTries(message);
     setUserIsCorrect(userIsCorrect);
     setUserIsWrong(userIsWrong);
   }, [message]);
