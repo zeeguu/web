@@ -14,6 +14,11 @@ export default function LearningCycleIndicator({
   message,
   isHidden,
 }) {
+  // Note that the userIsCorrect and userIsWrong states are needed both
+  // for the logic of this component to work.
+  // When message changes, the correctness changes but the two can still be
+  // both false if the user is still in the process.
+  // Probably would be nice to refactor but till then, beware.
   const [userIsCorrect, setUserIsCorrect] = useState(false);
   const [userIsWrong, setUserIsWrong] = useState(false);
 
