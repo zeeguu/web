@@ -1,5 +1,4 @@
-// mimics correctness from api
-export function ExerciseValidation(message) {
+export function correctnessBasedOnTries(message) {
   const userIsCorrect = ["C", "TC", "TTC", "TTTC", "HC", "CC", "CCC"].includes(
     message,
   );

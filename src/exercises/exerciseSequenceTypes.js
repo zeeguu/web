@@ -22,6 +22,7 @@ const EX_Match = {
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECOGNITION,
   testedBookmarks: 2,
+  level: 1,
 };
 const EX_MultipleChoice = {
   type: MultipleChoice,
@@ -29,7 +30,11 @@ const EX_MultipleChoice = {
   learningCycle: "productive",
   memoryTask: MEMORY_TASK.RECOGNITION,
   testedBookmarks: 1,
+  level: 2,
 };
+
+// this is not used because it is before Merle time!
+// it allows either click or type and now these are two separate exercises
 const EX_FindWordInContext = {
   type: FindWordInContext,
   requiredBookmarks: 1,
@@ -41,6 +46,7 @@ const EX_SpellWhatYouHear = {
   learningCycle: "productive",
   memoryTask: MEMORY_TASK.RECALL,
   testedBookmarks: 1,
+  level: 4,
 };
 const EX_MultipleChoiceL2toL1 = {
   type: MultipleChoiceL2toL1,
@@ -48,6 +54,7 @@ const EX_MultipleChoiceL2toL1 = {
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECOGNITION,
   testedBookmarks: 1,
+  level: 1,
 };
 const EX_TranslateL2toL1 = {
   type: TranslateL2toL1,
@@ -55,6 +62,7 @@ const EX_TranslateL2toL1 = {
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECALL,
   testedBookmarks: 1,
+  level: 3,
 };
 const EX_TranslateWhatYouHear = {
   type: TranslateWhatYouHear,
@@ -62,6 +70,7 @@ const EX_TranslateWhatYouHear = {
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECALL,
   testedBookmarks: 1,
+  level: 3,
 };
 const EX_MultipleChoiceContext = {
   type: MultipleChoiceContext,
@@ -69,6 +78,7 @@ const EX_MultipleChoiceContext = {
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECOGNITION,
   testedBookmarks: 1,
+  level: 2,
 };
 const EX_ClickWordInContext = {
   type: ClickWordInContext,
@@ -76,6 +86,7 @@ const EX_ClickWordInContext = {
   learningCycle: "receptive",
   memoryTask: MEMORY_TASK.RECOGNITION,
   testedBookmarks: 1,
+  level: 1,
 };
 const EX_FindWordInContextCloze = {
   type: FindWordInContextCloze,
@@ -83,6 +94,7 @@ const EX_FindWordInContextCloze = {
   learningCycle: "productive",
   memoryTask: MEMORY_TASK.RECALL,
   testedBookmarks: 1,
+  level: 4,
 };
 const EX_MultipleChoiceAudio = {
   type: MultipleChoiceAudio,
@@ -90,6 +102,7 @@ const EX_MultipleChoiceAudio = {
   learningCycle: "productive",
   memoryTask: MEMORY_TASK.RECOGNITION,
   testedBookmarks: 1,
+  level: 2,
 };
 const EX_OrderWordsL2 = { type: OrderWordsL2, requiredBookmarks: 1 };
 const EX_OrderWordsL1 = { type: OrderWordsL1, requiredBookmarks: 1 };
@@ -123,7 +136,7 @@ let DEFAULT_SEQUENCE_NO_AUDIO = [
   EX_FindWordInContext,
 ];
 
-let LEARNING_CYCLE_SEQUENCE = [
+let EXTENDED_SEQUENCE = [
   EX_Match,
   EX_MultipleChoiceL2toL1,
   EX_TranslateL2toL1,
@@ -136,12 +149,12 @@ let LEARNING_CYCLE_SEQUENCE = [
   EX_MultipleChoiceAudio,
 ];
 
-let LEARNING_CYCLE_SEQUENCE_NO_AUDIO = [
-  EX_Match,
+let EXTENDED_SEQUENCE_NO_AUDIO = [
   EX_Match,
   EX_MultipleChoiceL2toL1,
   EX_TranslateL2toL1,
   EX_ClickWordInContext,
+  EX_Match,
   EX_MultipleChoiceContext,
   EX_FindWordInContextCloze,
   EX_MultipleChoice,
@@ -151,8 +164,8 @@ export {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
   EXERCISE_TYPES_TIAGO,
-  LEARNING_CYCLE_SEQUENCE,
-  LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
+  EXTENDED_SEQUENCE,
+  EXTENDED_SEQUENCE_NO_AUDIO,
   DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 };
@@ -193,6 +206,6 @@ function validateExerciseSequence(exerciseList) {
   });
 }
 
-validateExerciseSequence(LEARNING_CYCLE_SEQUENCE);
+validateExerciseSequence(EXTENDED_SEQUENCE);
 
-validateExerciseSequence(LEARNING_CYCLE_SEQUENCE_NO_AUDIO);
+validateExerciseSequence(EXTENDED_SEQUENCE_NO_AUDIO);

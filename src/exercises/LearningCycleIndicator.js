@@ -3,24 +3,31 @@ import { useState, useEffect } from "react";
 import Tooltip from "@material-ui/core/Tooltip";
 import strings from "../i18n/definitions";
 import Feature from "../features/Feature";
-import { ExerciseValidation } from "./ExerciseValidation";
+import { correctnessBasedOnTries } from "./CorrectnessBasedOnTries";
 import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
 import { APP_DOMAIN } from "../appConstants.js";
 import NotificationIcon from "../components/NotificationIcon";
 import isBookmarkExpression from "../utils/misc/isBookmarkExpression.js";
+import LevelIndicator from "./utils/LevelIndicator";
 
 export default function LearningCycleIndicator({
   bookmark,
   message,
   isHidden,
 }) {
+  // Note that the userIsCorrect and userIsWrong states are needed both
+  // for the logic of this component to work.
+  // When message changes, the correctness changes but the two can still be
+  // both false if the user is still in the process.
+  // Probably would be nice to refactor but till then, beware.
   const [userIsCorrect, setUserIsCorrect] = useState(false);
   const [userIsWrong, setUserIsWrong] = useState(false);
 
   let learningCycle = bookmark.learning_cycle;
   let coolingInterval = bookmark.cooling_interval;
+
   useEffect(() => {
-    const { userIsCorrect, userIsWrong } = ExerciseValidation(message);
+    const { userIsCorrect, userIsWrong } = correctnessBasedOnTries(message);
     setUserIsCorrect(userIsCorrect);
     setUserIsWrong(userIsWrong);
   }, [message]);
@@ -135,6 +142,8 @@ export default function LearningCycleIndicator({
           </div>
         </div>
       )}
+
+      {Feature.exercise_levels() && <LevelIndicator level={bookmark.level} />}
     </>
   );
 }
