@@ -8,6 +8,7 @@ import { LEARNING_CYCLE_NAME } from "./ExerciseTypeConstants";
 import { APP_DOMAIN } from "../appConstants.js";
 import NotificationIcon from "../components/NotificationIcon";
 import isBookmarkExpression from "../utils/misc/isBookmarkExpression.js";
+import LevelIndicator from "./utils/LevelIndicator";
 
 export default function LearningCycleIndicator({
   bookmark,
@@ -141,6 +142,8 @@ export default function LearningCycleIndicator({
           </div>
         </div>
       )}
+
+      {Feature.exercise_levels() && <LevelIndicator level={bookmark.level} />}
     </>
   );
 }
