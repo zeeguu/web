@@ -153,8 +153,8 @@ export default function ArticlePreview({
       </s.ArticleContent>
 
       <s.BottomContainer>
-        {showInferredTopic && topics.length > 0 && (
-          <div>
+        <div>
+          {showInferredTopic && topics.length > 0 && (
             <s.UrlTopics>
               {topics.map((tuple) => (
                 // Tuple (Topic Title, TopicOriginType)
@@ -184,8 +184,8 @@ export default function ArticlePreview({
                 </span>
               ))}
             </s.UrlTopics>
-          </div>
-        )}
+          )}
+        </div>
         <ArticleStatInfo articleInfo={article}></ArticleStatInfo>
       </s.BottomContainer>
       {article.video ? (
