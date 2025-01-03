@@ -267,6 +267,7 @@ let OrangeButton = styled(_BottomButton)`
   align-items: center;
   justify-content: center;
   color: white;
+  height: fit-content;
 
   h1 {
     color: white;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import TranslatedWordsGraph from "./userdashboard_Graphs/TranslatedWordsGraph";
+
 import ReadingAndExercisesTimeGraph from "./userdashboard_Graphs/ReadingAndExercisesTimeGraph";
 import {
   PERIOD_OPTIONS,
@@ -21,8 +22,11 @@ import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import useCommitmentAndActivity from "../assorted/useCommitmentAndActivity";
 
 export default function UserDashboard({ api }) {
+  const { commitmentAndActivityData, lastCommitmentUpdate } =
+    useCommitmentAndActivity(api);
   const [activeTab, setActiveTab] = useState(TABS_IDS.BAR_GRAPH);
   const [activeTimeInterval, setActiveTimeInterval] = useState(OPTIONS.WEEK);
   const [activeCustomTimeInterval, setActiveCustomTimeInterval] = useState(
@@ -96,6 +100,15 @@ export default function UserDashboard({ api }) {
   }, []);
 
   useEffect(() => {
+    if (lastCommitmentUpdate!== null) {
+      api.updateUserCommitment(
+        lastCommitmentUpdate,
+        commitmentAndActivityData,
+      );
+    }
+  }, [lastCommitmentUpdate, api]);
+
+  useEffect(() => {
     api.getBookmarksCountsByDate((counts) => {
       var formatted = getMapData(counts);
 
@@ -104,14 +117,12 @@ export default function UserDashboard({ api }) {
       setAllWordsDataPerMonths(calculateCountPerMonth_Words(formatted));
     });
 
-    api.getUserActivityByDay((activity) => {
-      setDailyExerciseAndReadingTimes(activity);
-
+    api.getUserActivityByDay((activitiesArray) => {
+      setDailyExerciseAndReadingTimes(activitiesArray);
       setMonthlyExerciseAndReadingTimes(
-        calculateCountPerMonth_Activity(activity),
+        calculateCountPerMonth_Activity(activitiesArray),
       );
     });
-    // eslint-disable-next-line
   }, [activeTab]);
 
   if (!allWordsData || !dailyExerciseAndReadingTimes) {
@@ -128,6 +139,7 @@ export default function UserDashboard({ api }) {
         handleActiveTimeFormatChange={handleActiveTimeFormatChange}
         activeTimeFormatOption={activeTimeFormatOption}
         referenceDate={referenceDate}
+        commitmentAndActivityData={commitmentAndActivityData}
         handleChangeReferenceDate={handleChangeReferenceDate}
       />
 

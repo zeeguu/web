@@ -38,6 +38,9 @@ export default function Settings() {
             {strings.myClassrooms}
           </SettingsItem>
         )}
+        <SettingsItem path={"/account_settings/my_weekly_goal"}>
+          {strings.myWeeklyGoal}
+        </SettingsItem>
       </ListOfSettingsItems>
 
       <ListOfSettingsItems header={"Reading Preferences"}>
