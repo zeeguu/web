@@ -33,6 +33,7 @@ const SharedStyle = css`
   border: solid 0.1rem transparent;
   transition: 0.3s ease-in-out;
   -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 
   ${({ $isActive }) =>
     $isActive &&
