@@ -196,7 +196,10 @@ export default function ArticleReader({ api, teacherArticleID }) {
       setInteractiveTitle(
         new InteractiveText(
           articleInfo.title,
-          articleInfo,
+          // Override the paragraphs as that is not content.
+          // Consider what to do here, right now the article context is 0
+          // but this is from the title (which is not in the context.)
+          { ...articleInfo, paragraphs: undefined },
           api,
           api.TRANSLATE_TEXT,
           UMR_SOURCE,

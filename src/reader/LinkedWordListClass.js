@@ -2,15 +2,19 @@ import { v4 as uuid } from "uuid";
 import { List, Item } from "linked-list";
 
 export class Word extends Item {
-  constructor(word) {
+  constructor(word, word_i) {
     super();
     this.id = uuid();
     this.word = word;
     this.translation = null;
+    // Stores the i'th position that the word starts in the content.
+    // Note this is in the article's content, which is needed to calculate
+    // the start of the context's start at the article as a whole.
+    this.wordIndexInContent = word_i;
   }
 
   splitIntoComponents() {
-    let words = this.word.split(" ").map((e) => new Word(e));
+    let words = splitTextIntoWords(this.word + " ", this.wordIndexInContent);
 
     this.append(words[0]);
 
@@ -34,8 +38,9 @@ export class Word extends Item {
       // To think more about
       api.deleteBookmark(this.prev.bookmark_id);
     }
-    this.prev.detach();
 
+    this.wordIndexInText = this.prev.wordIndexInText;
+    this.prev.detach();
     return this;
   }
 
@@ -46,7 +51,6 @@ export class Word extends Item {
       api.deleteBookmark(this.next.bookmark_id);
     }
     this.next.detach();
-
     return this;
   }
 
@@ -73,8 +77,10 @@ export class Word extends Item {
 }
 
 export default class LinkedWordList {
-  constructor(text) {
-    this.linkedWords = List.from(splitTextIntoWords(text));
+  constructor(text, start_char_i) {
+    let result = splitTextIntoWords(text, start_char_i);
+    this.linkedWords = List.from(result);
+    this.start_char_i = start_char_i;
   }
 
   getWords() {
@@ -83,10 +89,29 @@ export default class LinkedWordList {
 }
 
 // Private functions
-function splitTextIntoWords(text) {
-  let splitWords = text
-    .trim()
-    .split(/[\s]+/)
-    .map((word) => new Word(word));
+function splitTextIntoWords(text, start_char_i) {
+  function sliceAndTrim(text, start, end) {
+    return text.slice(start, end).trim();
+  }
+  const wordDivider = /[\s]+/g;
+  const allMatches = [...text.matchAll(wordDivider)];
+  let splitWords = [];
+  let currentStart = 0;
+  for (let i = 0; i < allMatches.length - 1; i++) {
+    let match = allMatches[i];
+    splitWords.push(
+      new Word(
+        sliceAndTrim(text, currentStart, match["index"]),
+        currentStart + start_char_i,
+      ),
+    );
+    currentStart = match["index"] + match[0].length;
+  }
+  splitWords.push(
+    new Word(
+      sliceAndTrim(text, currentStart, text.length),
+      currentStart + start_char_i,
+    ),
+  );
   return splitWords;
 }
