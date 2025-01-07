@@ -1,17 +1,12 @@
 import styled, { css } from "styled-components";
-import { darkBlue, orange600 } from "../../colors";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "../screenSize";
 
 const sidebarExpandedWidth = "14rem";
 const sidebarCollapsedWidth = "4.2rem";
 
-const BgColorsTheme = css`
-  background-color: ${({ $isOnStudentSide }) =>
-    $isOnStudentSide ? `${orange600}` : `${darkBlue}`};
-`;
-
 const sharedSidebarStyling = css`
   box-sizing: border-box;
+  background-color: ${({ theme }) => theme.primary};
   position: fixed;
   left: 0;
   transition: 0.3s ease-in-out;
@@ -23,7 +18,6 @@ const sharedSidebarStyling = css`
       return sidebarCollapsedWidth;
     }
   }};
-  ${BgColorsTheme}
 `;
 
 const SideBar = styled.nav`
@@ -44,10 +38,4 @@ const BottomSection = styled.div`
   ${sharedSidebarStyling}
 `;
 
-export {
-  SideBar,
-  BottomSection,
-  sidebarExpandedWidth,
-  sidebarCollapsedWidth,
-  BgColorsTheme,
-};
+export { SideBar, BottomSection, sidebarExpandedWidth, sidebarCollapsedWidth };

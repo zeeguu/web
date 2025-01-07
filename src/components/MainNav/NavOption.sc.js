@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { darkBlue, orange600 } from "../colors";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./screenSize";
 
 const NavOption = styled.li`
@@ -8,11 +7,6 @@ const NavOption = styled.li`
   margin: 0.25rem 0 0.25rem;
   width: 100%;
   list-style-type: none;
-`;
-
-const FontColors = css`
-  color: ${({ $isOnStudentSide }) =>
-    $isOnStudentSide ? `${orange600}` : `${darkBlue}`};
 `;
 
 const SharedStyle = css`
@@ -38,7 +32,7 @@ const SharedStyle = css`
   ${({ $isActive }) =>
     $isActive &&
     css`
-      ${FontColors}
+      color: ${({ theme }) => theme.primary};
       background-color: white;
       opacity: 100%;
     `}
@@ -53,7 +47,7 @@ const SharedStyle = css`
 
   &:active {
     background-color: white;
-    ${FontColors};
+    color: ${({ theme }) => theme.primary};
   }
 
   &.logo {

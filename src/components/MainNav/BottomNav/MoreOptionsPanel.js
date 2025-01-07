@@ -22,7 +22,6 @@ export default function MoreOptionsPanel({
       <s.MoreOptionsPanel
         $renderMoreOptions={renderMoreOptions}
         $moreOptionsTransition={moreOptionsTransition}
-        $isOnStudentSide={isOnStudentSide}
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -65,7 +64,7 @@ export default function MoreOptionsPanel({
           />
         )}
 
-        <FeedbackButton isOnStudentSide={isOnStudentSide} />
+        <FeedbackButton />
       </s.MoreOptionsPanel>
     </s.MoreOptionsWrapper>
   );

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { BgColorsTheme } from "../SideBar/Sidebar.sc";
 
 const MoreOptionsWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.6);
@@ -13,9 +12,9 @@ const MoreOptionsWrapper = styled.div`
 
 const MoreOptionsPanel = styled.nav`
   opacity: 1;
+  background-color: ${({ theme }) => theme.primary};
   box-sizing: border-box;
   width: 100%;
-  ${BgColorsTheme};
   position: fixed;
   bottom: 0;
   z-index: 2;

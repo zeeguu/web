@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { orange600, darkBlue } from "../../colors";
 
 const OptionShared = css`
   color: white;
@@ -40,8 +39,7 @@ const StyledButton = styled.button`
 
 const activeIconShared = css`
   background-color: white;
-  color: ${({ isOnStudentSide }) =>
-    isOnStudentSide ? `${orange600}` : `${darkBlue}`};
+  color: ${({ theme }) => theme.primary};
 `;
 
 const IconSpan = styled.span`

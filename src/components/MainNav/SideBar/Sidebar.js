@@ -15,11 +15,7 @@ export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
   const defaultPage = is_teacher ? "/teacher/classes" : "articles";
 
   return (
-    <s.SideBar
-      $isOnStudentSide={isOnStudentSide}
-      $screenWidth={screenWidth}
-      role="navigation"
-    >
+    <s.SideBar $screenWidth={screenWidth} role="navigation">
       <NavOption
         className={"logo"}
         linkTo={defaultPage}
@@ -38,19 +34,13 @@ export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
         <SidebarOptionsForTeacher screenWidth={screenWidth} />
       )}
 
-      <s.BottomSection
-        $screenWidth={screenWidth}
-        $isOnStudentSide={isOnStudentSide}
-      >
+      <s.BottomSection $screenWidth={screenWidth}>
         <NavOption
           {...NavigationOptions.settings}
           currentPath={path}
           screenWidth={screenWidth}
         />
-        <FeedbackButton
-          screenWidth={screenWidth}
-          isOnStudentSide={isOnStudentSide}
-        />
+        <FeedbackButton screenWidth={screenWidth} />
       </s.BottomSection>
     </s.SideBar>
   );

@@ -56,31 +56,24 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   return (
     <>
       {renderBottomNav && (
-        <>
-          <s.BottomNav
-            $bottomNavTransition={bottomNavTransition}
-            $isOnStudentSide={isOnStudentSide}
-          >
-            {isOnStudentSide && <BottomNavOptionsForStudent />}
+        <s.BottomNav $bottomNavTransition={bottomNavTransition}>
+          {isOnStudentSide && <BottomNavOptionsForStudent />}
 
-            {!isOnStudentSide && <BottomNavOptionsForTeacher />}
+          {!isOnStudentSide && <BottomNavOptionsForTeacher />}
 
-            <BottomNavOption
-              linkTo={"/account_settings"}
-              currentPath={path}
-              icon={<NavIcon name="settings" />}
-              text={strings.settings}
-              isOnStudentSide={isOnStudentSide}
-            />
+          <BottomNavOption
+            linkTo={"/account_settings"}
+            currentPath={path}
+            icon={<NavIcon name="settings" />}
+            text={strings.settings}
+          />
 
-            <BottomNavOption
-              onClick={handleShowMoreOptions}
-              icon={<NavIcon name="more" />}
-              text={strings.more}
-              isOnStudentSide={isOnStudentSide}
-            />
-          </s.BottomNav>
-        </>
+          <BottomNavOption
+            onClick={handleShowMoreOptions}
+            icon={<NavIcon name="more" />}
+            text={strings.more}
+          />
+        </s.BottomNav>
       )}
 
       {renderMoreOptions && (

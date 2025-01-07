@@ -4,6 +4,8 @@ import { UserContext } from "../../contexts/UserContext";
 import Sidebar from "./SideBar/Sidebar";
 import BottomNav from "./BottomNav/BottomNav";
 import { MOBILE_WIDTH } from "./screenSize";
+import { ThemeProvider as MainNavThemeProvider } from "styled-components";
+import { theme } from "./mainNavTheme";
 
 export default function MainNav({ screenWidth }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
@@ -16,13 +18,11 @@ export default function MainNav({ screenWidth }) {
   }, [path]);
 
   return (
-    <>
+    <MainNavThemeProvider
+      theme={isOnStudentSide ? theme.student : theme.teacher}
+    >
       {screenWidth <= MOBILE_WIDTH ? (
-        <BottomNav
-          screenWidth={screenWidth}
-          isOnStudentSide={isOnStudentSide}
-          isTeacher={isTeacher}
-        />
+        <BottomNav isOnStudentSide={isOnStudentSide} isTeacher={isTeacher} />
       ) : (
         <Sidebar
           screenWidth={screenWidth}
@@ -30,6 +30,6 @@ export default function MainNav({ screenWidth }) {
           isTeacher={isTeacher}
         />
       )}
-    </>
+    </MainNavThemeProvider>
   );
 }

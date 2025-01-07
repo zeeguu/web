@@ -1,7 +1,6 @@
 import * as s from "./BottomNavOption.sc";
 
 export default function BottomNavOption({
-  isOnStudentSide,
   currentPath,
   linkTo,
   onClick = () => {},
@@ -16,9 +15,7 @@ export default function BottomNavOption({
     <s.BottomNavOption>
       <Component to={linkTo && linkTo} onClick={onClick}>
         {notification}
-        <s.IconSpan isOnStudentSide={isOnStudentSide} isActive={isActive}>
-          {icon}
-        </s.IconSpan>
+        <s.IconSpan isActive={isActive}>{icon}</s.IconSpan>
         {text}
       </Component>
     </s.BottomNavOption>
