@@ -36,7 +36,7 @@ export default function NextNavigation({
   isBookmarkChanged,
 }) {
   const exercise = "exercise";
-  const [userIsCorrect] = useState(correctnessBasedOnTries(messageForAPI));
+  const [userIsCorrect] = correctnessBasedOnTries(messageForAPI);
 
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
