@@ -6,7 +6,7 @@ const sidebarCollapsedWidth = "4.2rem";
 
 const sharedSidebarStyling = css`
   box-sizing: border-box;
-  background-color: ${({ theme }) => theme.primary};
+  background-color: ${({ theme }) => theme.navBg};
   position: fixed;
   left: 0;
   transition: 0.3s ease-in-out;

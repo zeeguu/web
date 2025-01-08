@@ -1,14 +1,26 @@
-import { darkBlue, orange600 } from "../colors";
+import { darkBlue, orange600, white } from "../colors";
 
-const studentTheme = {
-  primary: `${orange600}`,
+const sharedNavColors = {
+  btnContentDefault: `${white}`,
+  btnBorderDefault: "transparent",
+  btnBorderHover: `${white}`,
+  btnBgActive: `${white}`,
+  btnBgDefault: "transparent",
 };
 
-const TeacherTheme = {
-  primary: `${darkBlue}`,
+const studentNavTheme = {
+  ...sharedNavColors,
+  navBg: `${orange600}`,
+  btnContentActive: `${orange600}`,
 };
 
-export const theme = {
-  student: studentTheme,
-  teacher: TeacherTheme,
+const TeacherNavTheme = {
+  ...sharedNavColors,
+  navBg: `${darkBlue}`,
+  btnContentActive: `${darkBlue}`,
+};
+
+export const mainNavTheme = {
+  student: studentNavTheme,
+  teacher: TeacherNavTheme,
 };

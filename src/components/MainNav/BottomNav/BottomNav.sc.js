@@ -9,8 +9,7 @@ const BottomNav = styled.nav`
   position: fixed;
   bottom: 0;
   padding: 0.5rem 1rem 1rem 1rem;
-  background-color: ${({ theme }) => theme.primary};
-  color: white;
+  background-color: ${({ theme }) => theme.navBg};
   z-index: 1;
   transition: 0.3s ease-in-out;
   animation: ${({ $bottomNavTransition }) => $bottomNavTransition} 0.3s

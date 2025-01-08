@@ -12,7 +12,7 @@ const MoreOptionsWrapper = styled.div`
 
 const MoreOptionsPanel = styled.nav`
   opacity: 1;
-  background-color: ${({ theme }) => theme.primary};
+  background-color: ${({ theme }) => theme.navBg};
   box-sizing: border-box;
   width: 100%;
   position: fixed;
@@ -33,11 +33,12 @@ const CloseSection = styled.div`
 `;
 
 const CloseButton = styled.button`
-  background-color: inherit;
+  color: ${({ theme }) => theme.btnContentDefault};
+  background-color: ${({ theme }) => theme.btnBgDefault};
   border: none;
   padding: 0;
   margin: 0 0 0 auto;
-  color: white;
+  cursor: pointer;
 `;
 
 export { MoreOptionsWrapper, MoreOptionsPanel, CloseSection, CloseButton };

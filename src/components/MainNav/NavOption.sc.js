@@ -21,10 +21,11 @@ const SharedStyle = css`
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: white;
+  color: ${({ theme }) => theme.btnContentDefault};
+  background-color: ${({ theme }) => theme.btnBgDefault};
   white-space: nowrap;
   border-radius: 0.25rem;
-  border: solid 0.1rem transparent;
+  border: solid 0.1rem ${({ theme }) => theme.btnBorderDefault};
   transition: 0.3s ease-in-out;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
@@ -32,8 +33,8 @@ const SharedStyle = css`
   ${({ $isActive }) =>
     $isActive &&
     css`
-      color: ${({ theme }) => theme.primary};
-      background-color: white;
+      color: ${({ theme }) => theme.btnContentActive};
+      background-color: ${({ theme }) => theme.btnBgActive};
       opacity: 100%;
     `}
 
@@ -41,13 +42,13 @@ const SharedStyle = css`
     ${({ $screenWidth }) =>
       $screenWidth > MOBILE_WIDTH &&
       css`
-        border: solid 0.1rem rgba(255, 255, 255, 0.9);
+        border: solid 0.1rem ${({ theme }) => theme.btnBorderHover};);
       `}
   }
 
   &:active {
-    background-color: white;
-    color: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.btnContentActive};
+    background-color: ${({ theme }) => theme.btnBgActive};
   }
 
   &.logo {
@@ -60,8 +61,7 @@ const SharedStyle = css`
     }
 
     &:active {
-      background-color: transparent;
-      color: white;
+      color: ${({ theme }) => theme.btnContentActive};
     }
 
     img {
@@ -77,13 +77,11 @@ const RouterLink = styled(Link)`
 
 const OptionButton = styled.button`
   border: none;
-  background-color: transparent;
   margin: 0;
   padding: 0;
 
   &:hover {
     box-shadow: none;
-    color: white;
     margin: none;
     padding: none;
   }
