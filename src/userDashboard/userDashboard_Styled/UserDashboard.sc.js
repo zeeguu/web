@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import * as s from "../../components/TopMessage.sc";
-import { zeeguuVarmYellow, zeeguuDarkOrange } from "../../components/colors";
+import {
+  zeeguuWarmYellow as zeeguuWarmYellow,
+  zeeguuDarkOrange,
+} from "../../components/colors";
 import { device } from "./Devices";
 import * as datePickerCSS from "react-datepicker/dist/react-datepicker.css";
 import { OrangeButton } from "../../reader/ArticleReader.sc";
@@ -50,7 +53,7 @@ const UserDashBoardTab = styled.a`
   padding: 1em;
 
   :hover {
-    color: ${zeeguuVarmYellow};
+    color: ${zeeguuWarmYellow};
     cursor: pointer;
   }
 

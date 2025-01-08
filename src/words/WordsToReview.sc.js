@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange, zeeguuVarmYellow } from "../components/colors";
+import { zeeguuOrange, zeeguuWarmYellow } from "../components/colors";
 
 let EditWordsToExerciseButton = styled.button`
   color: black;

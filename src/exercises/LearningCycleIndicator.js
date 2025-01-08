@@ -143,7 +143,13 @@ export default function LearningCycleIndicator({
         </div>
       )}
 
-      {Feature.exercise_levels() && <LevelIndicator level={bookmark.level} />}
+      {Feature.exercise_levels() && (
+        <LevelIndicator
+          bookmark={bookmark}
+          userIsCorrect={userIsCorrect}
+          userIsWrong={userIsWrong}
+        />
+      )}
     </>
   );
 }
