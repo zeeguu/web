@@ -14,7 +14,7 @@ const studentNavTheme = {
   btnContentActive: `${orange600}`,
 };
 
-const TeacherNavTheme = {
+const teacherNavTheme = {
   ...sharedNavColors,
   navBg: `${darkBlue}`,
   btnContentActive: `${darkBlue}`,
@@ -22,5 +22,5 @@ const TeacherNavTheme = {
 
 export const mainNavTheme = {
   student: studentNavTheme,
-  teacher: TeacherNavTheme,
+  teacher: teacherNavTheme,
 };
