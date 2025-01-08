@@ -8,11 +8,11 @@ import NavOption from "../NavOption";
 import FeedbackButton from "../../FeedbackButton";
 import NavigationOptions from "../navigationOptions";
 
-export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
-  const { is_teacher } = useContext(UserContext);
+export default function Sidebar({ isOnStudentSide, screenWidth }) {
+  const { is_teacher: isTeacher } = useContext(UserContext);
 
   const path = useLocation().pathname;
-  const defaultPage = is_teacher ? "/teacher/classes" : "articles";
+  const defaultPage = isTeacher ? "/teacher/classes" : "articles";
 
   return (
     <s.SideBar $screenWidth={screenWidth} role="navigation">
@@ -24,10 +24,7 @@ export default function Sidebar({ isOnStudentSide, isTeacher, screenWidth }) {
       ></NavOption>
 
       {isOnStudentSide && (
-        <SidebarOptionsForStudent
-          isTeacher={isTeacher}
-          screenWidth={screenWidth}
-        />
+        <SidebarOptionsForStudent screenWidth={screenWidth} />
       )}
 
       {!isOnStudentSide && (

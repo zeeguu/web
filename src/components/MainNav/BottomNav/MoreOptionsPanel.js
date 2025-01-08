@@ -1,4 +1,6 @@
 import * as s from "./MoreOptionsPanel.sc";
+import { useContext } from "react";
+import { UserContext } from "../../../contexts/UserContext";
 import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
@@ -6,13 +8,13 @@ import NavigationOptions from "../navigationOptions";
 
 export default function MoreOptionsPanel({
   isOnStudentSide,
-  isTeacher,
   overlayTransition,
   moreOptionsTransition,
   handleHideMoreOptions,
   currentPath,
   renderMoreOptions,
 }) {
+  const { is_teacher: isTeacher } = useContext(UserContext);
   return (
     <s.MoreOptionsWrapper
       $renderMoreOptions={renderMoreOptions}

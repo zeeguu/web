@@ -1,10 +1,13 @@
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../../contexts/UserContext";
 import useExerciseNotification from "../../../hooks/useExerciseNotification";
 import NotificationIcon from "../../NotificationIcon";
 import NavOption from "../NavOption";
 import NavigationOptions from "../navigationOptions";
 
-export default function SidebarOptionsForStudent({ isTeacher, screenWidth }) {
+export default function SidebarOptionsForStudent({ screenWidth }) {
+  const { is_teacher: isTeacher } = useContext(UserContext);
   const path = useLocation().pathname;
 
   const { hasExerciseNotification, notificationMsg } =

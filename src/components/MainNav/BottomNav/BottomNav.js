@@ -11,7 +11,7 @@ import { fadeIn, fadeOut } from "../../transitions";
 import { slideIn, slideOut } from "../../transitions";
 
 const PAGES_WITHOUT_BOTTOM_NAV = ["/exercises", "/read"];
-export default function BottomNav({ isOnStudentSide, isTeacher }) {
+export default function BottomNav({ isOnStudentSide }) {
   const path = useLocation().pathname;
 
   const [overlayTransition, setOverlayTransition] = useState({});
@@ -80,7 +80,6 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
         <MoreOptionsPanel
           currentPath={path}
           isOnStudentSide={isOnStudentSide}
-          isTeacher={isTeacher}
           overlayTransition={overlayTransition}
           moreOptionsTransition={moreOptionsTransition}
           handleHideMoreOptions={handleHideMoreOptions}
