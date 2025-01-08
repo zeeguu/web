@@ -12,7 +12,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
-import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 
 // The user has to translate the word they hear into their L1.
 // This tests the user's passive knowledge.
@@ -123,7 +123,7 @@ export default function TranslateWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.translateWhatYouHearHeadline}
       </div>
-      <LearningCycleIndicator
+      <BookmarkProgressBar
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />

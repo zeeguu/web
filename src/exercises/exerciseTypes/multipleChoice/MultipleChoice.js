@@ -5,7 +5,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 
 import NextNavigation from "../NextNavigation";
 import strings from "../../../i18n/definitions.js";
@@ -125,7 +125,7 @@ export default function MultipleChoice({
       <div className="headlineWithMoreSpace">
         {strings.chooseTheWordFittingContextHeadline}
       </div>
-      <LearningCycleIndicator
+      <BookmarkProgressBar
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />

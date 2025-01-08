@@ -6,6 +6,7 @@ export default function LevelIndicator({
   bookmark,
   userIsCorrect,
   userIsWrong,
+  isHidden,
 }) {
   const totalLevels = 5;
   const stagesPerLevel = 3;
@@ -14,7 +15,9 @@ export default function LevelIndicator({
 
   const initialProgressWithinLevel = cooling_interval / stagesPerLevel;
 
-  const initialProgressBarWidth = `${((level - 1) / (totalLevels - 1)) * 100 + initialProgressWithinLevel * 25}%`;
+  const initialProgressBarWidth = isHidden
+    ? `0%`
+    : `${((level - 1) / (totalLevels - 1)) * 100 + initialProgressWithinLevel * 25}%`;
 
   const [progressBarWidth, setProgressBarWidth] = useState(
     initialProgressBarWidth,
@@ -35,7 +38,7 @@ export default function LevelIndicator({
     setProgressBarWidth(updatedProgressBarWidth);
   }, [userIsCorrect, userIsWrong, cooling_interval, is_last_in_cycle, level]);
   return (
-    <s.LevelIndicator>
+    <s.LevelIndicator isHidden={isHidden}>
       <div className="level-indicator">
         <div className="progress-bar">
           <div

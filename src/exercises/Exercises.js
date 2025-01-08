@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 
 import Congratulations from "./Congratulations";
-import ProgressBar from "./ProgressBar";
+import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
 import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -329,7 +329,7 @@ export default function Exercises({
     <>
       {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
-        <ProgressBar
+        <ExerciseSessionProgressBar
           index={currentIndex}
           total={fullExerciseProgression.length}
           clock={

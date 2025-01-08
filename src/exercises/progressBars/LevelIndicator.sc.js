@@ -25,7 +25,7 @@ const LevelIndicator = styled.div`
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #74a664, #8bc34a);
+    background: ${({ isHidden }) => (isHidden ? "transparent" : "linear-gradient(90deg, #74a664, #8bc34a)")};
     transition: width 0.5s ease-in-out;
     border-radius: 10px;
   }
