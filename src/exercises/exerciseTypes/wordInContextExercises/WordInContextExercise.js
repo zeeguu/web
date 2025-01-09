@@ -37,7 +37,6 @@ export default function WordInContextExercise({
   activeSessionDuration,
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
@@ -45,22 +44,23 @@ export default function WordInContextExercise({
     activeSessionDuration,
   );
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+  const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
     setExerciseType(exerciseType);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          exerciseType,
-          speech,
-        ),
-      );
-      setArticleInfo(articleInfo);
-    });
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        false,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        exerciseType,
+        speech,
+      ),
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBookmarkChanged]);
@@ -84,7 +84,7 @@ export default function WordInContextExercise({
 
     let solutionDiscovered = false;
 
-    let solutionSplitIntoWords = tokenize(bookmarksToStudy[0].from);
+    let solutionSplitIntoWords = tokenize(exerciseBookmark.from);
 
     solutionSplitIntoWords.forEach((wordInSolution) => {
       userTranslatedSequences.forEach((userTranslatedSequence) => {
@@ -129,27 +129,27 @@ export default function WordInContextExercise({
       concatMessage = message;
     }
     setMessageToAPI(concatMessage);
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     console.log(activeSessionDuration);
     api.uploadExerciseFinalizedData(
       concatMessage,
       exerciseType,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    notifyCorrectAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       exerciseType,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
@@ -157,10 +157,10 @@ export default function WordInContextExercise({
   function handleIncorrectAnswer() {
     //alert("incorrect answer")
     setMessageToAPI(messageToAPI + "W");
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 
@@ -168,11 +168,11 @@ export default function WordInContextExercise({
     <s.Exercise className={exerciseType}>
       <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
       <LearningCycleIndicator
-        bookmark={bookmarksToStudy[0]}
+        bookmark={exerciseBookmark}
         message={messageToAPI}
       />
       <h1 className="wordInContextHeadline">
-        {removePunctuation(bookmarksToStudy[0].to)}
+        {removePunctuation(exerciseBookmark.to)}
       </h1>
       <div className="contextExample">
         <TranslatableText
@@ -182,7 +182,7 @@ export default function WordInContextExercise({
           pronouncing={false}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
-          bookmarkToStudy={bookmarksToStudy[0].from}
+          bookmarkToStudy={exerciseBookmark.from}
         />
       </div>
       {showBottomInput && !isCorrect && (
@@ -198,7 +198,7 @@ export default function WordInContextExercise({
         exerciseType={exerciseType}
         message={messageToAPI}
         api={api}
-        exerciseBookmark={bookmarksToStudy[0]}
+        exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

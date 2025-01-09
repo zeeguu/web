@@ -1,12 +1,8 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
 import { APIContext } from "../contexts/APIContext";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-
-import { zeeguuDarkRed } from "../components/colors";
 
 export default function TranslatableWord({
   interactiveText,
@@ -26,6 +22,10 @@ export default function TranslatableWord({
   const [isVisible, setIsVisible] = useState(false);
 
   const api = useContext(APIContext);
+
+  useEffect(() => {
+    if (word.translation) setIsVisible(false);
+  }, []);
 
   function clickOnWord(e, word) {
     if (word.translation) {

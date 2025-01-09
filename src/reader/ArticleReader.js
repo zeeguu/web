@@ -183,25 +183,30 @@ export default function ArticleReader({ api, teacherArticleID }) {
     setScrollPosition(0);
 
     api.getArticleInfo(articleID, (articleInfo) => {
+      console.log("Got article!");
+      console.dir(articleInfo);
       setInteractiveText(
         new InteractiveText(
-          articleInfo.content,
-          articleInfo,
+          articleInfo.tokenized_paragraphs,
+          articleInfo.id,
+          true,
           api,
+          articleInfo.translations,
           api.TRANSLATE_TEXT,
+          articleInfo.language,
           UMR_SOURCE,
           speech,
         ),
       );
       setInteractiveTitle(
         new InteractiveText(
-          articleInfo.title,
-          // Override the paragraphs as that is not content.
-          // Consider what to do here, right now the article context is 0
-          // but this is from the title (which is not in the context.)
-          { ...articleInfo, paragraphs: undefined },
+          articleInfo.tokenized_title,
+          articleInfo.id,
+          false,
           api,
+          articleInfo.translations,
           api.TRANSLATE_TEXT,
+          articleInfo.language,
           UMR_SOURCE,
           speech,
         ),

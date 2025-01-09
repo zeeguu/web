@@ -1,42 +1,31 @@
 import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
 
-function getParagraphsWithIndexStart(content) {
-  const paragraphDivider = /\n\n/g;
-  const allMatches = [...content.matchAll(paragraphDivider)];
-  let resultList = [];
-  let currentStart = 0;
-  for (let i = 0; i < allMatches.length - 1; i++) {
-    let match = allMatches[i];
-    resultList.push([
-      content.slice(currentStart, match["index"]),
-      currentStart,
-    ]);
-    currentStart = match["index"] + match[0].length;
-  }
-  resultList.push([content.slice(currentStart, content.length), currentStart]);
-  return resultList;
-}
 export default class InteractiveText {
   constructor(
-    content,
-    articleInfo,
+    tokenized_paragraphs,
+    article_id,
+    is_article_content,
     api,
+    previousTranslations,
     translationEvent = api.TRANSLATE_TEXT,
+    language,
     source = "",
     zeeguuSpeech,
   ) {
-    this.articleInfo = articleInfo;
     this.api = api;
+    this.article_id = article_id;
+    this.is_article_content = article_id && is_article_content;
     this.translationEvent = translationEvent;
     this.source = source;
-    this.paragraphs =
-      articleInfo.paragraphs || getParagraphsWithIndexStart(content);
+    this.previousTranslatons = [];
+    this.paragraphs = tokenized_paragraphs;
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
-      (each) => new LinkedWordList(each[0], each[1]),
+      (token_l) => new LinkedWordList(token_l, previousTranslations),
     );
-    if (this.articleInfo.language !== zeeguuSpeech.language) {
-      this.zeeguuSpeech = new ZeeguuSpeech(api, this.articleInfo.language);
+
+    if (language !== zeeguuSpeech.language) {
+      this.zeeguuSpeech = new ZeeguuSpeech(api, language);
     } else {
       this.zeeguuSpeech = zeeguuSpeech;
     }
@@ -52,17 +41,16 @@ export default class InteractiveText {
     [context, contextIndexStart] = this.getContextAndStartingIndex(word);
     let isItTitle = this.articleInfo.title.trim() === context.trim();
     word = word.fuseWithNeighborsIfNeeded(this.api);
+
     this.api
       .getOneTranslation(
-        this.articleInfo.language,
+        this.language,
         localStorage.native_language,
         word.word,
         word.wordIndexInContent - contextIndexStart,
         context,
         isItTitle ? undefined : contextIndexStart,
-        window.location,
-        this.articleInfo.title,
-        this.articleInfo.id,
+        this.article_id,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -96,7 +84,7 @@ export default class InteractiveText {
     let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`;
     this.api.logReaderActivity(
       this.api.SEND_SUGGESTION,
-      this.articleInfo.id,
+      this.article_id,
       alternative_info,
       this.source,
     );
@@ -108,15 +96,14 @@ export default class InteractiveText {
     let context = this.getContextAndStartingIndex(word);
     this.api
       .getMultipleTranslations(
-        this.articleInfo.language,
+        this.language,
         localStorage.native_language,
         word.word,
         context,
-        this.articleInfo.url,
         -1,
         word.service_name,
         word.translation,
-        this.articleInfo.id,
+        this.article_id,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -127,7 +114,7 @@ export default class InteractiveText {
 
   playAll() {
     console.log("playing all");
-    this.zeeguuSpeech.playAll(this.articleInfo);
+    this.zeeguuSpeech.playAll(this.article_id);
   }
 
   pause() {
@@ -198,7 +185,7 @@ export default class InteractiveText {
       [leftContext, indexAtStart] = getLeftContextAndStartIndex(
         word.prev,
         32,
-        word.wordIndexInContent,
+        word.prev.wordIndexInContent,
       );
     let context = leftContext + " " + getRightContext(word, 32);
     return [context, indexAtStart];

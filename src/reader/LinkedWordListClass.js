@@ -2,15 +2,21 @@ import { v4 as uuid } from "uuid";
 import { List, Item } from "linked-list";
 
 export class Word extends Item {
-  constructor(word, word_i) {
+  constructor(token, prevTranslation = null) {
     super();
     this.id = uuid();
-    this.word = word;
-    this.translation = null;
-    // Stores the i'th position that the word starts in the content.
-    // Note this is in the article's content, which is needed to calculate
-    // the start of the context's start at the article as a whole.
-    this.wordIndexInContent = word_i;
+    this.word = token.text;
+    this.translation = prevTranslation;
+    this.paragraph_i = token.par_i;
+    // Store only token? Or unpack the properties?
+    this.token = token;
+    this.sent_i = token.sent_i;
+    this.token_i = token.token_i;
+    this.is_sent_start = token.is_sent_start;
+    this.is_punct = token.is_punct;
+    this.is_left_punct = token.is_left_punct;
+    this.is_right_punct = token.is_right_punct;
+    this.is_like_num = token.is_like_num;
   }
 
   splitIntoComponents() {
@@ -27,7 +33,6 @@ export class Word extends Item {
 
   fuseWithPrevious(api) {
     this.word = this.prev.word + " " + this.word;
-
     if (this.prev && this.prev.bookmark_id) {
       // consider hide bookmark; here
       // this would allow caching of partial translations
@@ -38,15 +43,14 @@ export class Word extends Item {
       // To think more about
       api.deleteBookmark(this.prev.bookmark_id);
     }
-
-    this.wordIndexInText = this.prev.wordIndexInText;
+    this.wordIndexInContent = this.prev.wordIndexInContent;
     this.prev.detach();
     return this;
   }
 
   fuseWithNext(api) {
     this.word = this.word + " " + this.next.word;
-
+    console.log("FUSED WITH NEXT");
     if (this.next && this.next.bookmark_id) {
       api.deleteBookmark(this.next.bookmark_id);
     }
@@ -77,8 +81,8 @@ export class Word extends Item {
 }
 
 export default class LinkedWordList {
-  constructor(text, start_char_i) {
-    let result = splitTextIntoWords(text, start_char_i);
+  constructor(text, start_char_i, previousTranslations) {
+    let result = splitTextIntoWords(text, start_char_i, previousTranslations);
     this.linkedWords = List.from(result);
     this.start_char_i = start_char_i;
   }
@@ -89,29 +93,11 @@ export default class LinkedWordList {
 }
 
 // Private functions
-function splitTextIntoWords(text, start_char_i) {
-  function sliceAndTrim(text, start, end) {
-    return text.slice(start, end).trim();
+function splitTextIntoWords(tokenList, previousTranslations) {
+  let wordList = [];
+  for (let i = 0; i < tokenList.length; i++) {
+    let token = tokenList[i];
+    wordList.push(new Word(token, token["translation"]));
   }
-  const wordDivider = /[\s]+/g;
-  const allMatches = [...text.matchAll(wordDivider)];
-  let splitWords = [];
-  let currentStart = 0;
-  for (let i = 0; i < allMatches.length - 1; i++) {
-    let match = allMatches[i];
-    splitWords.push(
-      new Word(
-        sliceAndTrim(text, currentStart, match["index"]),
-        currentStart + start_char_i,
-      ),
-    );
-    currentStart = match["index"] + match[0].length;
-  }
-  splitWords.push(
-    new Word(
-      sliceAndTrim(text, currentStart, text.length),
-      currentStart + start_char_i,
-    ),
-  );
-  return splitWords;
+  return wordList;
 }

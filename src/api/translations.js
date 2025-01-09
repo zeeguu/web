@@ -8,16 +8,12 @@ Zeeguu_API.prototype.getOneTranslation = function (
   word_text_index_start,
   context,
   content_origin_index,
-  articleUrl,
-  articleTitle,
   articleID,
 ) {
   let payload = {
     word: word,
     context: context,
     word_text_index_start: word_text_index_start,
-    url: articleUrl,
-    title: articleTitle,
     articleID: articleID,
   };
   if (content_origin_index !== undefined)

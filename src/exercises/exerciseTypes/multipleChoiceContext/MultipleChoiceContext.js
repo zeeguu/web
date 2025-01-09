@@ -43,6 +43,7 @@ export default function MultipleChoiceContext({
     removePunctuation(bookmarksToStudy[0].from),
   );
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+  const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -52,34 +53,22 @@ export default function MultipleChoiceContext({
       else initExerciseBookmarks[i].isExercise = false;
     }
     setExerciseBookmarks(shuffle(initExerciseBookmarks));
-
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
   }, []);
 
   useEffect(() => {
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        false,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
   }, [isBookmarkChanged]);
 
   function handleShowSolution() {

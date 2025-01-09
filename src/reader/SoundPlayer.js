@@ -50,14 +50,13 @@ export default function SoundPlayer({ api, interactiveText }) {
     let player = playSilentAudio();
 
     api.getLinkToFullArticleReadout(
-      interactiveText.articleInfo,
-      interactiveText.articleInfo.id,
+      interactiveText.articleInfo_id,
       (linkToMp3) => {
         player.src = linkToMp3;
         setMp3Player(player);
 
         setState("playing");
-      }
+      },
     );
   }
 
@@ -75,7 +74,11 @@ export default function SoundPlayer({ api, interactiveText }) {
     return (
       <div>
         <button onClick={startPlaying}>
-          <img width="35px" src="/static/images/play-button.svg" alt="start playing"/>
+          <img
+            width="35px"
+            src="/static/images/play-button.svg"
+            alt="start playing"
+          />
         </button>
         <div className="buttonText">Read aloud</div>
       </div>
@@ -84,7 +87,11 @@ export default function SoundPlayer({ api, interactiveText }) {
     return (
       <div>
         <button onClick={pausePlay}>
-          <img width="35px" src="/static/images/pause-button.svg" alt="pause play"/>
+          <img
+            width="35px"
+            src="/static/images/pause-button.svg"
+            alt="pause play"
+          />
         </button>
         <div className="buttonText">{currentTime}</div>
       </div>
@@ -93,7 +100,11 @@ export default function SoundPlayer({ api, interactiveText }) {
     return (
       <div>
         <button onClick={resumePlay}>
-          <img width="35px" src="/static/images/play-button.svg" alt="resume play"/>
+          <img
+            width="35px"
+            src="/static/images/play-button.svg"
+            alt="resume play"
+          />
         </button>
         <div className="buttonText">{currentTime}</div>
       </div>
