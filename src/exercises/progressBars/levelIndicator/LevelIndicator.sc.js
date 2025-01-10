@@ -1,10 +1,15 @@
 import styled from "styled-components";
-import { zeeguuWarmYellow } from "../../components/colors";
+import { zeeguuWarmYellow } from "../../../components/colors";
 
 const LevelIndicator = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
   .level-indicator {
+    width: 70%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     margin: 1em 0;
     position: relative;
@@ -12,7 +17,7 @@ const LevelIndicator = styled.div`
 
   .progress-bar {
     position: relative;
-    width: 70%;
+    width: 100%;
     height: 10px;
     background-color: #e0e0e0;
     border-radius: 10px;
@@ -35,8 +40,8 @@ const LevelIndicator = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    top: -12px;
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: 24px;
     height: 24px;
     font-size: 14px;
@@ -104,7 +109,6 @@ const LevelIndicator = styled.div`
       margin-bottom: 2em;
     }
     .progress-bar {
-      width: 80%;
       height: 8px;
     }
 

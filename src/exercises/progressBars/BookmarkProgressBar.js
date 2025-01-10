@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Feature from "../../features/Feature.js";
 import { correctnessBasedOnTries } from "../CorrectnessBasedOnTries.js";
-import LevelIndicator from "./LevelIndicator.js";
+import LevelIndicator from "./levelIndicator/LevelIndicator.js";
 import LearningCycleIndicator from "./LearningCycleIndicator.js";
 
 export default function BookmarkProgressBar({ bookmark, message, isHidden }) {
