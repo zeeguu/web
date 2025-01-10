@@ -21,7 +21,7 @@ export default class InteractiveText {
     this.previousTranslatons = [];
     this.paragraphs = tokenized_paragraphs;
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
-      (token_l) => new LinkedWordList(token_l, previousTranslations),
+      (sent) => new LinkedWordList(sent, previousTranslations),
     );
 
     if (language !== zeeguuSpeech.language) {

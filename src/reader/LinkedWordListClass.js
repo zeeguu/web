@@ -81,10 +81,9 @@ export class Word extends Item {
 }
 
 export default class LinkedWordList {
-  constructor(text, start_char_i, previousTranslations) {
-    let result = splitTextIntoWords(text, start_char_i, previousTranslations);
+  constructor(sentList, previousTranslations) {
+    let result = splitTextIntoWords(sentList, previousTranslations);
     this.linkedWords = List.from(result);
-    this.start_char_i = start_char_i;
   }
 
   getWords() {
@@ -93,11 +92,15 @@ export default class LinkedWordList {
 }
 
 // Private functions
-function splitTextIntoWords(tokenList, previousTranslations) {
+function splitTextIntoWords(sentList, previousTranslations) {
   let wordList = [];
-  for (let i = 0; i < tokenList.length; i++) {
-    let token = tokenList[i];
-    wordList.push(new Word(token, token["translation"]));
+  for (let sent_i = 0; sent_i < sentList.length; sent_i++) {
+    let sent = sentList[sent_i];
+    for (let token_i = 0; token_i < sent.length; token_i++) {
+      let token = sent[token_i];
+      wordList.push(new Word(token, token["translation"]));
+    }
   }
+
   return wordList;
 }
