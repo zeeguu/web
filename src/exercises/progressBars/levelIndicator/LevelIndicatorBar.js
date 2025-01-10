@@ -1,44 +1,55 @@
 import { useEffect, useState } from "react";
 
 export default function LevelIndicatorBar({
-  cooling_interval,
   isHidden,
   newBookmark,
   userIsCorrect,
   userIsWrong,
-  is_last_in_cycle,
-  level,
   levelsInPercent,
   coolingIntervalsPerLevel,
   totalLearningStages,
+  bookmark,
 }) {
+  const { cooling_interval, level, is_last_in_cycle } = bookmark;
+  // Normalize level and cooling_interval to handle null values the first time a bookmark is practiced
+  const normalizedLevel = (level ?? 1) === 0 ? 1 : level;
+  const normalizedCoolingInterval = cooling_interval ?? 0;
+
   const initialProgressWithinLevel =
-    cooling_interval / coolingIntervalsPerLevel;
+    normalizedCoolingInterval / coolingIntervalsPerLevel;
 
   const initialProgressBarWidth =
     isHidden || newBookmark
       ? `0%`
-      : `${((level - 1) / (totalLearningStages - 1)) * 100 + initialProgressWithinLevel * levelsInPercent}%`;
+      : `${((normalizedLevel - 1) / (totalLearningStages - 1)) * 100 + initialProgressWithinLevel * levelsInPercent}%`;
 
   const [progressBarWidth, setProgressBarWidth] = useState(
     initialProgressBarWidth,
   );
 
   useEffect(() => {
-    const updatedProgressWithinLevel = userIsCorrect
-      ? (cooling_interval + 1) / coolingIntervalsPerLevel
-      : userIsWrong && cooling_interval === 0
-        ? cooling_interval / coolingIntervalsPerLevel
+    const calculateProgressWithinLevel = userIsCorrect
+      ? (normalizedCoolingInterval + 1) / coolingIntervalsPerLevel
+      : userIsWrong && normalizedCoolingInterval === 0
+        ? normalizedCoolingInterval / coolingIntervalsPerLevel
         : userIsWrong
-          ? (cooling_interval - 1) / coolingIntervalsPerLevel
-          : cooling_interval / coolingIntervalsPerLevel;
+          ? (normalizedCoolingInterval - 1) / coolingIntervalsPerLevel
+          : normalizedCoolingInterval / coolingIntervalsPerLevel;
 
-    const updatedProgressBarWidth =
+    const calculateProgressBarWidth =
       is_last_in_cycle && userIsCorrect
-        ? `${(level / (totalLearningStages - 1)) * 100}%`
-        : `${((level - 1) / (totalLearningStages - 1)) * 100 + updatedProgressWithinLevel * levelsInPercent}%`;
-    setProgressBarWidth(updatedProgressBarWidth);
-  }, [userIsCorrect, userIsWrong, cooling_interval, is_last_in_cycle, level]);
+        ? `${(normalizedLevel / (totalLearningStages - 1)) * 100}%`
+        : `${((normalizedLevel - 1) / (totalLearningStages - 1)) * 100 + calculateProgressWithinLevel * levelsInPercent}%`;
+    setProgressBarWidth(calculateProgressBarWidth);
+  }, [
+    userIsCorrect,
+    userIsWrong,
+    normalizedCoolingInterval,
+    is_last_in_cycle,
+    normalizedLevel,
+    newBookmark,
+    isHidden,
+  ]);
 
   return (
     <div className="progress-bar">

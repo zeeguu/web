@@ -12,20 +12,17 @@ export default function LevelIndicator({
   const coolingIntervalsPerLevel = 3; // cooling intervals 0, 1, and 2
   const levelsInPercent = 25; //100% bar width divided by 4 levels
 
-  const { cooling_interval, is_last_in_cycle, level } = bookmark;
+  const { cooling_interval, level } = bookmark;
 
   const newBookmark = level === 0 && cooling_interval === null && !isHidden;
-  const bookmarkMovesToNextLevel = is_last_in_cycle && userIsCorrect;
 
   return (
     <s.LevelIndicator isHidden={isHidden}>
       <div className="level-indicator">
         <LevelIndicatorBar
           totalLearningStages={totalLearningStages}
-          level={level}
-          cooling_interval={cooling_interval}
+          bookmark={bookmark}
           userIsWrong={userIsWrong}
-          bookmarkMovesToNextLevel={bookmarkMovesToNextLevel}
           newBookmark={newBookmark}
           isHidden={isHidden}
           userIsCorrect={userIsCorrect}
@@ -35,9 +32,9 @@ export default function LevelIndicator({
         <LevelIndicatorCircle
           totalLearningStages={totalLearningStages}
           userIsWrong={userIsWrong}
-          bookmarkMovesToNextLevel={bookmarkMovesToNextLevel}
           newBookmark={newBookmark}
           bookmark={bookmark}
+          userIsCorrect={userIsCorrect}
         />
       </div>
     </s.LevelIndicator>

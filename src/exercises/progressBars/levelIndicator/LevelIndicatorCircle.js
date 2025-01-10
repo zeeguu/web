@@ -6,24 +6,43 @@ import strings from "../../../i18n/definitions.js";
 export default function LevelIndicatorCircle({
   totalLearningStages,
   userIsWrong,
-  bookmarkMovesToNextLevel,
   newBookmark,
   bookmark,
+  userIsCorrect,
 }) {
-  const { cooling_interval, level } = bookmark;
+  const { cooling_interval, level, is_last_in_cycle } = bookmark;
+  const bookmarkMovesToNextLevel = is_last_in_cycle && userIsCorrect;
+  const bookmarkStaysAtCurrentLevel = cooling_interval === 0 && userIsWrong;
+
+  function getCircleClass(
+    index,
+    level,
+    bookmarkStaysAtCurrentLevel,
+    bookmarkMovesToNextLevel,
+  ) {
+    if (index === 0) {
+      return "level-circle filled";
+    } else if (index === level - 1 && bookmarkStaysAtCurrentLevel) {
+      return "level-circle passed blink";
+    } else if (
+      index <= level - 1 ||
+      (index === level && bookmarkMovesToNextLevel)
+    ) {
+      return "level-circle passed";
+    } else {
+      return "level-circle upcoming";
+    }
+  }
 
   return (
     <>
       {Array.from({ length: totalLearningStages }).map((_, index) => {
-        const circleClass =
-          index === 0
-            ? "level-circle filled"
-            : index === level - 1 && cooling_interval === 0 && userIsWrong
-              ? "level-circle passed blink"
-              : index <= level - 1 ||
-                  (index === level && bookmarkMovesToNextLevel)
-                ? "level-circle passed "
-                : "level-circle upcoming";
+        const circleClass = getCircleClass(
+          index,
+          level,
+          bookmarkStaysAtCurrentLevel,
+          bookmarkMovesToNextLevel,
+        );
 
         return (
           <div
