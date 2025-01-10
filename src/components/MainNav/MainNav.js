@@ -8,10 +8,15 @@ import { mainNavTheme } from "./mainNavTheme";
 import { MainNavContext } from "../../contexts/MainNavContext";
 
 export default function MainNav({ screenWidth }) {
-  const { isOnStudentSide, setIsOnStudentSide } = useContext(MainNavContext);
+  const { mainNav, setMainNav } = useContext(MainNavContext);
+  const { isOnStudentSide } = mainNav;
+
   const path = useLocation().pathname;
   useEffect(() => {
-    setIsOnStudentSide(!path.includes("teacher"));
+    setMainNav({
+      ...mainNav,
+      isOnStudentSide: !path.includes("teacher"),
+    });
   }, [path]);
 
   return (

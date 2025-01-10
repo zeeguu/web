@@ -15,7 +15,9 @@ export default function MoreOptionsPanel({
   renderMoreOptions,
 }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
-  const { isOnStudentSide } = useContext(MainNavContext);
+  const { mainNav } = useContext(MainNavContext);
+  const { isOnStudentSide } = mainNav;
+
   return (
     <s.MoreOptionsWrapper
       $renderMoreOptions={renderMoreOptions}

@@ -13,7 +13,8 @@ import { MainNavContext } from "../../../contexts/MainNavContext";
 
 const PAGES_WITHOUT_BOTTOM_NAV = ["/exercises", "/read"];
 export default function BottomNav() {
-  const { isOnStudentSide } = useContext(MainNavContext);
+  const { mainNav } = useContext(MainNavContext);
+  const { isOnStudentSide } = mainNav;
 
   const path = useLocation().pathname;
 

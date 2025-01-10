@@ -158,8 +158,8 @@ function App() {
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
 
-  //Setting up the main nav context to be able to switch between student and teacher side
-  const [isOnStudentSide, setIsOnStudentSide] = useState(true);
+  //Setting up the main nav context
+  const [mainNav, setMainNav] = useState({ isOnStudentSide: true });
 
   if (userData === undefined) {
     return <LoadingAnimation />;
@@ -172,9 +172,7 @@ function App() {
           <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
             <ExerciseCountContext.Provider value={exerciseNotification}>
               <APIContext.Provider value={api}>
-                <MainNavContext.Provider
-                  value={{ isOnStudentSide, setIsOnStudentSide }}
-                >
+                <MainNavContext.Provider value={{ mainNav, setMainNav }}>
                   {/* Routing*/}
                   <MainAppRouter
                     api={api}

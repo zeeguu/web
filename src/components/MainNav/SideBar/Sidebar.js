@@ -11,7 +11,8 @@ import { MainNavContext } from "../../../contexts/MainNavContext";
 
 export default function Sidebar({ screenWidth }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
-  const { isOnStudentSide } = useContext(MainNavContext);
+  const { mainNav } = useContext(MainNavContext);
+  const { isOnStudentSide } = mainNav;
 
   const path = useLocation().pathname;
   const defaultPage = isTeacher ? "/teacher/classes" : "articles";
