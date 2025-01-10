@@ -31,7 +31,6 @@ import LoadingAnimation from "./components/LoadingAnimation";
 import { userHasNotExercisedToday } from "./exercises/utils/daysSinceLastExercise";
 
 import { MainNavContext } from "./contexts/MainNavContext";
-import { is } from "date-fns/locale";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
