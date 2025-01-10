@@ -4,8 +4,7 @@ import {
   sidebarExpandedWidth,
 } from "./components/MainNav/SideBar/Sidebar.sc";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./components/MainNav/screenSize";
-
-const PAGES_WITHOUT_BOTTOM_NAV = ["/exercises", "/read"];
+import { PAGES_WITHOUT_BOTTOM_NAV } from "./components/MainNav/BottomNav/pagesWithoutBottomNav";
 
 const AppWithMainNav = styled.div`
   box-sizing: border-box;

@@ -31,6 +31,7 @@ import LoadingAnimation from "./components/LoadingAnimation";
 import { userHasNotExercisedToday } from "./exercises/utils/daysSinceLastExercise";
 
 import { MainNavContext } from "./contexts/MainNavContext";
+import { is } from "date-fns/locale";
 
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
@@ -159,7 +160,9 @@ function App() {
   const [returnPath, setReturnPath] = useState("");
 
   //Setting up the main nav context
-  const [mainNav, setMainNav] = useState({ isOnStudentSide: true });
+  const [mainNav, setMainNav] = useState({
+    isOnStudentSide: true,
+  });
 
   if (userData === undefined) {
     return <LoadingAnimation />;

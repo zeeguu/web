@@ -10,8 +10,8 @@ import strings from "../../../i18n/definitions";
 import { fadeIn, fadeOut } from "../../transitions";
 import { slideIn, slideOut } from "../../transitions";
 import { MainNavContext } from "../../../contexts/MainNavContext";
+import { PAGES_WITHOUT_BOTTOM_NAV } from "./pagesWithoutBottomNav";
 
-const PAGES_WITHOUT_BOTTOM_NAV = ["/exercises", "/read"];
 export default function BottomNav() {
   const { mainNav } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNav;
