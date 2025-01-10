@@ -1,6 +1,6 @@
 import * as s from "./BottomNav.sc";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import NavIcon from "../NavIcon";
 import MoreOptionsPanel from "./MoreOptionsPanel";
 import BottomNavOptionsForStudent from "./BottomNavOptionsForStudent";
@@ -9,9 +9,12 @@ import BottomNavOption from "./BottomNavOption";
 import strings from "../../../i18n/definitions";
 import { fadeIn, fadeOut } from "../../transitions";
 import { slideIn, slideOut } from "../../transitions";
+import { MainNavContext } from "../../../contexts/MainNavContext";
 
 const PAGES_WITHOUT_BOTTOM_NAV = ["/exercises", "/read"];
-export default function BottomNav({ isOnStudentSide }) {
+export default function BottomNav() {
+  const { isOnStudentSide } = useContext(MainNavContext);
+
   const path = useLocation().pathname;
 
   const [overlayTransition, setOverlayTransition] = useState({});
@@ -79,7 +82,6 @@ export default function BottomNav({ isOnStudentSide }) {
       {renderMoreOptions && (
         <MoreOptionsPanel
           currentPath={path}
-          isOnStudentSide={isOnStudentSide}
           overlayTransition={overlayTransition}
           moreOptionsTransition={moreOptionsTransition}
           handleHideMoreOptions={handleHideMoreOptions}

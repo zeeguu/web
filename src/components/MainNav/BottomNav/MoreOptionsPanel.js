@@ -5,9 +5,9 @@ import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
 import NavigationOptions from "../navigationOptions";
+import { MainNavContext } from "../../../contexts/MainNavContext";
 
 export default function MoreOptionsPanel({
-  isOnStudentSide,
   overlayTransition,
   moreOptionsTransition,
   handleHideMoreOptions,
@@ -15,6 +15,7 @@ export default function MoreOptionsPanel({
   renderMoreOptions,
 }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
+  const { isOnStudentSide } = useContext(MainNavContext);
   return (
     <s.MoreOptionsWrapper
       $renderMoreOptions={renderMoreOptions}

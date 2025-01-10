@@ -7,9 +7,11 @@ import * as s from "./Sidebar.sc";
 import NavOption from "../NavOption";
 import FeedbackButton from "../../FeedbackButton";
 import NavigationOptions from "../navigationOptions";
+import { MainNavContext } from "../../../contexts/MainNavContext";
 
-export default function Sidebar({ isOnStudentSide, screenWidth }) {
+export default function Sidebar({ screenWidth }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
+  const { isOnStudentSide } = useContext(MainNavContext);
 
   const path = useLocation().pathname;
   const defaultPage = isTeacher ? "/teacher/classes" : "articles";

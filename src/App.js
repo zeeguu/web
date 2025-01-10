@@ -30,6 +30,8 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import { userHasNotExercisedToday } from "./exercises/utils/daysSinceLastExercise";
 
+import { MainNavContext } from "./contexts/MainNavContext";
+
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
@@ -156,6 +158,9 @@ function App() {
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
 
+  //Setting up the main nav context to be able to switch between student and teacher side
+  const [isOnStudentSide, setIsOnStudentSide] = useState(true);
+
   if (userData === undefined) {
     return <LoadingAnimation />;
   }
@@ -167,26 +172,30 @@ function App() {
           <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
             <ExerciseCountContext.Provider value={exerciseNotification}>
               <APIContext.Provider value={api}>
-                {/* Routing*/}
-                <MainAppRouter
-                  api={api}
-                  setUser={setUserData}
-                  hasExtension={isExtensionAvailable}
-                  handleSuccessfulLogIn={handleSuccessfulLogIn}
-                />
+                <MainNavContext.Provider
+                  value={{ isOnStudentSide, setIsOnStudentSide }}
+                >
+                  {/* Routing*/}
+                  <MainAppRouter
+                    api={api}
+                    setUser={setUserData}
+                    hasExtension={isExtensionAvailable}
+                    handleSuccessfulLogIn={handleSuccessfulLogIn}
+                  />
 
-                <ToastContainer
-                  position="bottom-right"
-                  autoClose={2000}
-                  hideProgressBar={true}
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  theme="light"
-                />
+                  <ToastContainer
+                    position="bottom-right"
+                    autoClose={2000}
+                    hideProgressBar={true}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                  />
+                </MainNavContext.Provider>
               </APIContext.Provider>
             </ExerciseCountContext.Provider>
           </UserContext.Provider>
