@@ -13,17 +13,52 @@ export default class InteractiveText {
     source = "",
     zeeguuSpeech,
   ) {
+    function _updateTranslations(previousTranslations, paragraphs) {
+      for (let i = 0; i < previousTranslations.length; i++) {
+        let translation = previousTranslations[i];
+        let target_p_i, target_s_i, target_t_i;
+
+        let target_token, target_sent;
+        if (is_article_content) {
+          target_p_i = translation["context_paragraph"];
+          target_s_i =
+            translation["context_sent"] + translation["t_sentence_i"];
+          target_t_i = translation["context_token"] + translation["t_token_i"];
+          target_sent = paragraphs[target_p_i][target_s_i];
+          target_token = paragraphs[target_p_i][target_s_i][target_t_i];
+        } else {
+          target_s_i = translation["t_sentence_i"];
+          target_t_i = translation["t_token_i"];
+          target_sent = paragraphs[0][target_s_i];
+          target_token = paragraphs[0][target_s_i][target_t_i];
+        }
+
+        target_token.translation = translation;
+        // Now we update the sentence to reflect the new token.
+        let beforeToken = target_sent.slice(0, target_t_i);
+        let afterToken = target_sent.slice(
+          target_t_i + translation["t_total_token"],
+        );
+        target_sent = beforeToken.concat([target_token]).concat(afterToken);
+      }
+    }
     this.api = api;
     this.article_id = article_id;
+    this.language = language;
     this.is_article_content = article_id && is_article_content;
     this.translationEvent = translationEvent;
     this.source = source;
-    this.previousTranslatons = [];
-    this.paragraphs = tokenized_paragraphs;
-    this.paragraphsAsLinkedWordLists = this.paragraphs.map(
-      (sent) => new LinkedWordList(sent, previousTranslations),
+    this.previousTranslatons = previousTranslations.filter(
+      (each) =>
+        (is_article_content && each.context_paragraph !== null) ||
+        (!is_article_content && each.context_paragraph === null),
     );
-
+    console.log(this.previousTranslatons);
+    this.paragraphs = tokenized_paragraphs;
+    _updateTranslations(this.previousTranslatons, this.paragraphs);
+    this.paragraphsAsLinkedWordLists = this.paragraphs.map(
+      (sent) => new LinkedWordList(sent),
+    );
     if (language !== zeeguuSpeech.language) {
       this.zeeguuSpeech = new ZeeguuSpeech(api, language);
     } else {
@@ -36,20 +71,23 @@ export default class InteractiveText {
   }
 
   translate(word, onSuccess) {
-    let context, contextIndexStart;
+    let context, cParagraph_i, cSent_i, cToken_i;
 
-    [context, contextIndexStart] = this.getContextAndStartingIndex(word);
-    let isItTitle = this.articleInfo.title.trim() === context.trim();
+    [context, cParagraph_i, cSent_i, cToken_i] =
+      this.getContextAndStartingIndex(word);
+    let isItTitle = !this.is_article_content;
     word = word.fuseWithNeighborsIfNeeded(this.api);
+    let wordSent_i = word.sent_i - cSent_i;
+    let wordToken_i = word.token_i - cToken_i;
 
     this.api
       .getOneTranslation(
         this.language,
         localStorage.native_language,
         word.word,
-        word.wordIndexInContent - contextIndexStart,
+        [wordSent_i, wordToken_i, word.total_tokens],
         context,
-        isItTitle ? undefined : contextIndexStart,
+        isItTitle ? undefined : [cParagraph_i, cSent_i, cToken_i],
         this.article_id,
       )
       .then((response) => response.json())
@@ -65,7 +103,7 @@ export default class InteractiveText {
 
     this.api.logReaderActivity(
       this.translationEvent,
-      this.articleInfo.id,
+      this.article_id,
       word.word,
       this.source,
     );
@@ -145,49 +183,68 @@ export default class InteractiveText {
    */
   getContextAndStartingIndex(word) {
     function endOfSentenceIn(word) {
-      const endOfSentenceSigns = [".", "?", "!"];
-      let text = word.word;
-
-      let lastLetter = text[text.length - 1];
-
-      if (word.next) {
-        let startOfNextWord = word.next.word[0];
-        let nextWordIsUppercase =
-          startOfNextWord === startOfNextWord.toUpperCase();
-
-        return (
-          nextWordIsUppercase && endOfSentenceSigns.indexOf(lastLetter) > -1
-        );
-      } else {
-        return endOfSentenceSigns.indexOf(lastLetter) > -1;
-      }
+      return word.is_sent_start;
     }
 
-    function getLeftContextAndStartIndex(word, count, startingIndex) {
-      if (count === 0 || !word || endOfSentenceIn(word))
-        return ["", startingIndex];
-      let result = getLeftContextAndStartIndex(
-        word.prev,
-        count - 1,
-        word.prev ? word.prev.wordIndexInContent : startingIndex,
-      );
-      return [result[0] + " " + word.word, result[1]];
+    function getLeftContextAndStartIndex(word, count) {
+      let currentWord = word;
+      let contextBuilder = "";
+      while (count > 0 && currentWord) {
+        contextBuilder = currentWord.word + " " + contextBuilder;
+        if (currentWord.is_sent_start || currentWord.token_i === 0) {
+          break;
+        }
+        count--;
+        currentWord = currentWord.prev;
+      }
+      return [
+        contextBuilder,
+        currentWord.paragraph_i,
+        currentWord.sent_i,
+        currentWord.token_i,
+      ];
     }
 
     function getRightContext(word, count) {
-      if (count === 0 || !word) return "";
-      if (endOfSentenceIn(word)) return word.word;
-      return word.word + " " + getRightContext(word.next, count - 1);
+      let currentWord = word;
+      let contextBuilder = "";
+      while (count > 0 && currentWord) {
+        contextBuilder = contextBuilder + " " + currentWord.word;
+        if (
+          currentWord.is_sent_start &&
+          currentWord.sent_i > currentWord.prev.sent_i
+        ) {
+          break;
+        }
+        count++;
+        currentWord = currentWord.next;
+      }
+      return contextBuilder;
     }
 
-    let [leftContext, indexAtStart] = ["", word.wordIndexInContent];
+    let [leftContext, paragraph_i, sent_i, token_i] = [
+      "",
+      word.paragraph_i,
+      word.sent_i,
+      word.token_i,
+    ];
     if (word.prev)
-      [leftContext, indexAtStart] = getLeftContextAndStartIndex(
+      [leftContext, paragraph_i, sent_i, token_i] = getLeftContextAndStartIndex(
         word.prev,
         32,
         word.prev.wordIndexInContent,
       );
-    let context = leftContext + " " + getRightContext(word, 32);
-    return [context, indexAtStart];
+    let rightContext = getRightContext(word.next, 32);
+    let context = leftContext + word.word + rightContext;
+    console.log("DEBUGGING CONTEXT");
+    console.log(leftContext);
+    console.log(rightContext);
+    console.log(context);
+    return [
+      context,
+      this.is_article_content ? paragraph_i : null,
+      sent_i,
+      token_i,
+    ];
   }
 }

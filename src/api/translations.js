@@ -5,19 +5,27 @@ Zeeguu_API.prototype.getOneTranslation = function (
   from_lang,
   to_lang,
   word,
-  word_text_index_start,
+  bookmark_token_i,
   context,
-  content_origin_index,
+  context_token_i,
   articleID,
 ) {
+  let w_sent_i, w_token_i, w_total_tokens;
+  let c_paragraph_i, c_sent_i, c_token_i;
+  [w_sent_i, w_token_i, w_total_tokens] = bookmark_token_i;
+  if (context_token_i) [c_paragraph_i, c_sent_i, c_token_i] = context_token_i;
+
   let payload = {
     word: word,
     context: context,
-    word_text_index_start: word_text_index_start,
+    w_sent_i: w_sent_i,
+    w_token_i: w_token_i,
+    w_total_tokens: w_total_tokens,
+    c_paragraph_i: c_paragraph_i,
+    c_sent_i: c_sent_i,
+    c_token_i: c_token_i,
     articleID: articleID,
   };
-  if (content_origin_index !== undefined)
-    payload["content_origin_index"] = content_origin_index;
 
   return this._post(
     `get_one_translation/${from_lang}/${to_lang}`,

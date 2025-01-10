@@ -185,6 +185,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.getArticleInfo(articleID, (articleInfo) => {
       console.log("Got article!");
       console.dir(articleInfo);
+      console.log("Sending Content");
       setInteractiveText(
         new InteractiveText(
           articleInfo.tokenized_paragraphs,
@@ -198,6 +199,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
           speech,
         ),
       );
+      console.log("Sending Title");
       setInteractiveTitle(
         new InteractiveText(
           articleInfo.tokenized_title,
