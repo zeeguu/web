@@ -57,7 +57,7 @@ const LevelIndicator = styled.div`
   }
 
   .level-circle.filled {
-    background-color: #74a664;
+    background-color: ${({ isHidden }) => (isHidden ? "#e0e0e0" : "#74a664")};
   }
 
   .level-circle.blink {
