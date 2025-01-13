@@ -28,7 +28,7 @@ function removeAllMatchingItemFromList(item, list) {
 
 export {
   removeArrayDuplicates,
-  removeFirstItemByValue as removeByValue,
+  removeFirstItemByValue,
   random,
   removeAllMatchingItemFromList,
 };
