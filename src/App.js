@@ -159,9 +159,7 @@ function App() {
   const [returnPath, setReturnPath] = useState("");
 
   //Setting up the main nav context
-  const [mainNav, setMainNav] = useState({
-    isOnStudentSide: true,
-  });
+  const [mainNav, setMainNav] = useState({});
 
   if (userData === undefined) {
     return <LoadingAnimation />;
