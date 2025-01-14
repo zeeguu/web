@@ -1,8 +1,5 @@
 import styled, { css } from "styled-components";
-import {
-  darkBlue,
-  zeeguuWarmYellow as zeeguuWarmYellow,
-} from "../../components/colors";
+import { darkBlue, zeeguuWarmYellow } from "../../components/colors";
 
 export const StudentActivityBar = styled.div`
   .activity-bar {

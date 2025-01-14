@@ -1,9 +1,6 @@
 import styled from "styled-components";
 import * as s from "../../components/TopMessage.sc";
-import {
-  zeeguuWarmYellow as zeeguuWarmYellow,
-  zeeguuDarkOrange,
-} from "../../components/colors";
+import { zeeguuWarmYellow, zeeguuDarkOrange } from "../../components/colors";
 import { device } from "./Devices";
 import * as datePickerCSS from "react-datepicker/dist/react-datepicker.css";
 import { OrangeButton } from "../../reader/ArticleReader.sc";

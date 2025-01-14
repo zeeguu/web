@@ -5,7 +5,7 @@ import {
   veryLightGrey,
   zeeguuLightYellow,
   zeeguuOrange,
-  zeeguuWarmYellow as zeeguuWarmYellow,
+  zeeguuWarmYellow,
   lighterBlue,
   lightGrey,
 } from "../components/colors";

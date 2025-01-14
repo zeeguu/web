@@ -4,7 +4,7 @@ import {
   zeeguuDarkRed,
   zeeguuOrange,
   zeeguuTransparentLightOrange,
-  zeeguuWarmYellow as zeeguuWarmYellow,
+  zeeguuWarmYellow,
 } from "../../components/colors";
 import StyledButton from "../exerciseTypes/Exercise.sc";
 

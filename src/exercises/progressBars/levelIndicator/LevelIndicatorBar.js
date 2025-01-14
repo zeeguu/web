@@ -12,7 +12,7 @@ export default function LevelIndicatorBar({
 }) {
   const { cooling_interval, level, is_last_in_cycle } = bookmark;
   // Normalize level and cooling_interval to handle null values the first time a bookmark is practiced
-  const normalizedLevel = (level ?? 1) === 0 ? 1 : level;
+  const normalizedLevel = level ? level : 1;
   const normalizedCoolingInterval = cooling_interval ?? 0;
 
   const initialProgressWithinLevel =
@@ -31,10 +31,10 @@ export default function LevelIndicatorBar({
     const calculateProgressWithinLevel = userIsCorrect
       ? (normalizedCoolingInterval + 1) / coolingIntervalsPerLevel
       : userIsWrong && normalizedCoolingInterval === 0
-        ? normalizedCoolingInterval / coolingIntervalsPerLevel
+        ? initialProgressBarWidth
         : userIsWrong
           ? (normalizedCoolingInterval - 1) / coolingIntervalsPerLevel
-          : normalizedCoolingInterval / coolingIntervalsPerLevel;
+          : initialProgressBarWidth;
 
     const calculateProgressBarWidth =
       is_last_in_cycle && userIsCorrect

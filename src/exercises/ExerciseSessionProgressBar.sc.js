@@ -35,4 +35,4 @@ const ExerciseSessionProgressBar = styled.div`
   }
 `;
 
-export { ExerciseSessionProgressBar as ExerciseSessionProgressBar };
+export { ExerciseSessionProgressBar };

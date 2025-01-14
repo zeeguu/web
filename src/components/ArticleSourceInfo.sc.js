@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuWarmYellow as zeeguuWarmYellow } from "../components/colors";
+import { zeeguuWarmYellow } from "../components/colors";
 
 const SourceContainer = styled.div`
   display: flex;
