@@ -60,8 +60,10 @@ const SharedStyle = css`
       border: solid 0.1rem transparent;
     }
 
+    //logo color is always white
     &:active {
-      color: ${({ theme }) => theme.btnContentActive};
+      color: ${({ theme }) => theme.btnContentDefault};
+      background-color: transparent;
     }
 
     img {
