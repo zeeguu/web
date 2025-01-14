@@ -45,8 +45,8 @@ const LevelIndicator = styled.div`
     justify-content: center;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     font-size: 14px;
     color: white;
     background-color: #e0e0e0;
@@ -90,8 +90,8 @@ const LevelIndicator = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     background-color: #ffffff; /* Inner circle color */
     border-radius: 50%;
   }
@@ -101,6 +101,15 @@ const LevelIndicator = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+
+  .level-circle.final {
+    width: 28px;
+    height: 28px;
+  }
+
+  .level-circle.learned {
+    background-color: #74a664;
   }
 
   .level-circle.upcoming {
@@ -116,14 +125,22 @@ const LevelIndicator = styled.div`
     }
 
     .level-circle {
-      width: 20px;
-      height: 20px;
-      font-size: 12px;
+      width: 16px;
+      height: 16px;
     }
 
     .level-circle.filled::before {
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
+    }
+
+    .level-circle.final {
+      width: 22px;
+      height: 22px;
+    }
+
+    .school-icon {
+      font-size: 18px;
     }
   }
 `;
