@@ -38,31 +38,29 @@ Zeeguu_API.prototype.getMultipleTranslations = function (
   to_lang,
   word,
   context,
-  pageUrl,
   numberOfResults,
   serviceToExclude,
   translationToExclude,
   articleID,
 ) {
-  let url = this._appendSessionToUrl(
-    `get_multiple_translations/${from_lang}/${to_lang}`,
-  );
-
-  let body = `word=${word}&context=${context}&url=${pageUrl}&numberOfResults=${numberOfResults}&articleID=${articleID}`;
-
+  let payload = {
+    word: word,
+    context: context,
+    numberOfResults: numberOfResults,
+    articleID: articleID,
+  };
   if (serviceToExclude) {
-    body += `&service=${serviceToExclude}`;
+    payload["service"] = serviceToExclude;
   }
 
   if (translationToExclude) {
-    body += `&currentTranslation=${translationToExclude}`;
+    payload["currentTranslation"] = translationToExclude;
   }
 
-  return fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: body,
-  });
+  return this._post(
+    `get_multiple_translations/${from_lang}/${to_lang}`,
+    qs.stringify(payload),
+  );
 };
 
 Zeeguu_API.prototype.contributeTranslation = function (
@@ -74,17 +72,18 @@ Zeeguu_API.prototype.contributeTranslation = function (
   pageUrl,
   pageTitle,
 ) {
-  let url = this._appendSessionToUrl(
+  /* Currently (13-01-2025), unused in the frontend */
+  let payload = {
+    word: word,
+    translation: translation,
+    context: context,
+    url: pageUrl,
+    pageTitle: pageTitle,
+  };
+  return this._post(
     `contribute_translation/${from_lang}/${to_lang}`,
+    qs.stringify(payload),
   );
-
-  let body = `word=${word}&translation=${translation}&context=${context}&url=${pageUrl}&pageTitle=${pageTitle}`;
-
-  return fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: body,
-  });
 };
 
 Zeeguu_API.prototype.updateBookmark = function (
@@ -93,15 +92,13 @@ Zeeguu_API.prototype.updateBookmark = function (
   translation,
   context,
 ) {
-  let url = this._appendSessionToUrl(`update_bookmark/${bookmark_id}`);
+  let payload = {
+    word: word,
+    translation: translation,
+    context: context,
+  };
 
-  let body = `word=${word}&translation=${translation}&context=${context}`;
-
-  return fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: body,
-  });
+  return this._post(`update_bookmark/${bookmark_id}`, qs.stringify(payload));
 };
 
 Zeeguu_API.prototype.basicTranlsate = function (from_lang, to_lang, phrase) {
