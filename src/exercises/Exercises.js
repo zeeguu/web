@@ -14,8 +14,6 @@ import { MAX_COOLDOWN_INTERVAL } from "./ExerciseConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 
-import { isMobile } from "../utils/misc/browserDetection";
-
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
@@ -25,11 +23,14 @@ import {
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
-import ActivityTimer from "../components/ActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
 import useShadowRef from "../hooks/useShadowRef";
 import { LEARNING_CYCLE } from "./ExerciseTypeConstants";
 import DigitalTimer from "../components/DigitalTimer";
+
+import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import useScreenWidth from "../hooks/useScreenWidth";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -72,6 +73,8 @@ export default function Exercises({
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
 
+  const { screenWidth } = useScreenWidth();
+
   useEffect(() => {
     setTitle(strings.titleExercises);
     api.getUserPreferences((preferences) => {
@@ -89,11 +92,22 @@ export default function Exercises({
       let id = JSON.parse(newlyCreatedDBSessionID).id;
       setDbExerciseSessionId(id);
     });
+
+    if (!articleID)
+      // Only report if it's the scheduled exercises that are opened
+      // and not the article exercises
+      api.logReaderActivity(
+        api.SCHEDULED_EXERCISES_OPEN,
+        null,
+        JSON.stringify({ had_notification: exerciseNotification.hasExercises }),
+        "",
+      );
+
     setTitle("Exercises");
     startExercising();
     return () => {
       if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
-        // Do not report if there was no exercises
+        // Do not report if there were no exercises
         // performed
         api.reportExerciseSessionEnd(
           dbExerciseSessionIdRef.current,
@@ -164,6 +178,7 @@ export default function Exercises({
       setIsOutOfWordsToday(topBookmarks.length == 0);
     });
   }
+
   function startExercising() {
     resetExerciseState();
     if (articleID) {
@@ -320,12 +335,14 @@ export default function Exercises({
   function toggleShow() {
     setShowFeedbackButtons(!showFeedbackButtons);
   }
+
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
     <>
+      {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
         <ProgressBar
-          index={currentIndex}
+          index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
           clock={
             <DigitalTimer

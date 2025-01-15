@@ -96,7 +96,7 @@ export default function SpellWhatYouHear({
   }
 
   function handleDisabledAudio() {
-    api.logUserActivity("AUDIO_DISABLE", "", bookmarksToStudy[0].id, "");
+    api.logUserActivity(api.AUDIO_DISABLE, "", bookmarksToStudy[0].id, "");
     moveToNextExercise();
   }
 

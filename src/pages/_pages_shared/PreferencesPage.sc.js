@@ -2,13 +2,16 @@ import styled, { css } from "styled-components";
 import { zeeguuOrange } from "../../components/colors";
 
 const PageBackground = styled.div`
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100vw;
   min-height: 100dvh;
+  height: 100%;
   background: ${zeeguuOrange};
+  overflow-y: scroll;
 
   .bold {
     font-weight: 600;
@@ -21,9 +24,11 @@ const PageBackground = styled.div`
   ${(props) =>
     props.layoutVariant === "minimalistic-top-aligned" &&
     css`
-      width: auto;
+      width: 100%;
       min-height: auto;
       background: none;
+      justify-content: flex-start;
+      overflow-x: hidden;
     `}
 `;
 
@@ -74,6 +79,8 @@ const PageContainer = styled.div`
       }
       @media (max-width: 576px) {
         width: 100%;
+        padding: 0;
+        margin: 1rem 0 0 0;
       }
     `}
 `;

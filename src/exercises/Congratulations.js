@@ -10,7 +10,9 @@ import { timeToHumanReadable } from "../utils/misc/readableTime";
 import { ExerciseCountContext } from "./ExerciseCountContext";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Pluralize from "../utils/text/pluralize";
-import { StyledButton } from "../components/allButtons.sc.js";
+import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import useScreenWidth from "../hooks/useScreenWidth";
+import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 
 export default function Congratulations({
   articleID,
@@ -36,6 +38,8 @@ export default function Congratulations({
     useState(removeArrayDuplicates(incorrectBookmarks));
   const [totalBookmarksReviewed, setTotalBookmarksReviewed] = useState();
   const [username, setUsername] = useState();
+
+  const { screenWidth } = useScreenWidth();
 
   function deleteBookmark(bookmark) {
     setCorrectBookmarksToDisplay(
@@ -78,7 +82,7 @@ export default function Congratulations({
   return (
     <>
       <s.NarrowColumn className="narrowColumn">
-        <br />
+        {screenWidth < MOBILE_WIDTH && <BackArrow />}
         <CenteredColumn className="centeredColumn">
           <h1>
             {strings.goodJob} {username}!
