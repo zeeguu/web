@@ -5,10 +5,12 @@ export class Word extends Item {
   constructor(token) {
     super();
     this.id = uuid();
-    if (token.translation) {
-      this.word = token.translation.origin;
-      this.translation = token.translation.translation;
-      this.total_tokens = token.translation.t_total_token;
+    let bookmark = token.bookmark;
+    if (bookmark) {
+      this.word = bookmark.origin;
+      this.translation = bookmark.translation;
+      this.total_tokens = bookmark.t_total_token;
+      this.bookmark_id = bookmark.bookmark_id;
     } else {
       this.word = token.text;
       this.translation = null;
@@ -25,15 +27,24 @@ export class Word extends Item {
     this.is_left_punct = token.is_left_punct;
     this.is_right_punct = token.is_right_punct;
     this.is_like_num = token.is_like_num;
+    this.is_like_email = token.is_like_email;
+    this.is_like_url = token.is_like_url;
+    if (token.mergedTokens) this.mergedTokens = [...token.mergedTokens];
+    else this.mergedTokens = [{ ...token }];
   }
 
   splitIntoComponents() {
-    let words = splitTextIntoWords(this.word + " ", this.wordIndexInContent);
+    // mergedTokens contains all the tokens in order that were merged
+    // in the current word.
+    // Used when deleting translations
+    let wordList = this.mergedTokens.map((each) => new Word(each));
+    wordList[0].translation = null;
+    this.append(wordList[0]);
 
-    this.append(words[0]);
-
-    for (let i = 0; i < words.length - 1; i++) {
-      words[i].append(words[i + 1]);
+    for (let i = 0; i < wordList.length - 1; i++) {
+      // set translation of word to null
+      wordList[i].translation = null;
+      wordList[i].append(wordList[i + 1]);
     }
 
     this.detach();
@@ -51,6 +62,10 @@ export class Word extends Item {
       // To think more about
       api.deleteBookmark(this.prev.bookmark_id);
     }
+    // We keep track of merged tokens in case the user wants to delete the bookmark
+    this.prev.mergedTokens.push({ ...this.token });
+    this.mergedTokens = [...this.prev.mergedTokens];
+
     this.token = this.prev.token;
     this.paragraph_i = this.prev.paragraph_i;
     this.sent_i = this.prev.sent_i;
@@ -60,17 +75,22 @@ export class Word extends Item {
     this.is_left_punct = this.prev.is_left_punct;
     this.is_right_punct = this.prev.is_right_punct;
     this.is_like_num = this.prev.is_like_num;
+    this.is_like_email = this.prev.token.is_like_email;
+    this.is_like_url = this.prev.token.is_like_url;
     this.total_tokens += this.prev.total_tokens;
+
     this.prev.detach();
     return this;
   }
 
   fuseWithNext(api) {
+    console.log("Fuse with next!");
     this.word = this.word + " " + this.next.word;
     if (this.next && this.next.bookmark_id) {
       api.deleteBookmark(this.next.bookmark_id);
     }
     this.total_tokens += this.next.total_tokens;
+    this.mergedTokens.push({ ...this.next.token });
     this.next.detach();
     return this;
   }
@@ -93,8 +113,8 @@ export class Word extends Item {
 }
 
 export default class LinkedWordList {
-  constructor(sentList, previousTranslations) {
-    let result = splitTextIntoWords(sentList, previousTranslations);
+  constructor(sentList) {
+    let result = splitTextIntoWords(sentList);
     this.linkedWords = List.from(result);
   }
 
@@ -110,9 +130,9 @@ function splitTextIntoWords(sentList) {
     let sent = sentList[sent_i];
     for (let token_i = 0; token_i < sent.length; token_i++) {
       let token = sent[token_i];
+      if (token.skipRender) continue;
       wordList.push(new Word(token));
     }
   }
-
   return wordList;
 }

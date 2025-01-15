@@ -7,39 +7,51 @@ export default class InteractiveText {
     article_id,
     is_article_content,
     api,
-    previousTranslations,
+    previousBookmarks,
     translationEvent = api.TRANSLATE_TEXT,
     language,
     source = "",
     zeeguuSpeech,
   ) {
-    function _updateTranslations(previousTranslations, paragraphs) {
-      for (let i = 0; i < previousTranslations.length; i++) {
-        let translation = previousTranslations[i];
+    function _updateBookmarks(previousBookmarks, paragraphs) {
+      console.log(previousBookmarks);
+      for (let i = 0; i < previousBookmarks.length; i++) {
+        let bookmark = previousBookmarks[i];
         let target_p_i, target_s_i, target_t_i;
+        let target_token;
 
-        let target_token, target_sent;
         if (is_article_content) {
-          target_p_i = translation["context_paragraph"];
-          target_s_i =
-            translation["context_sent"] + translation["t_sentence_i"];
-          target_t_i = translation["context_token"] + translation["t_token_i"];
-          target_sent = paragraphs[target_p_i][target_s_i];
+          target_p_i = bookmark["context_paragraph"];
+          target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
+          target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
+          if (target_t_i == null) return;
           target_token = paragraphs[target_p_i][target_s_i][target_t_i];
         } else {
-          target_s_i = translation["t_sentence_i"];
-          target_t_i = translation["t_token_i"];
-          target_sent = paragraphs[0][target_s_i];
-          target_token = paragraphs[0][target_s_i][target_t_i];
+          // Discuss with Mircea
+          target_p_i = 0;
+          target_s_i = bookmark["t_sentence_i"];
+          target_t_i = bookmark["t_token_i"];
+          if (target_t_i == null) return;
+          target_token = paragraphs[target_p_i][target_s_i][target_t_i];
         }
+        if (target_token == null) return;
+        target_token.bookmark = bookmark;
 
-        target_token.translation = translation;
-        // Now we update the sentence to reflect the new token.
-        let beforeToken = target_sent.slice(0, target_t_i);
-        let afterToken = target_sent.slice(
-          target_t_i + translation["t_total_token"],
-        );
-        target_sent = beforeToken.concat([target_token]).concat(afterToken);
+        /*
+          When rendering the words in the frontend, we alter the word object to be composed
+          of multiple tokens.
+          In case of deleting a bookmark, we need to make sure that all the tokens are 
+          available to re-render the original text. 
+          To do this, we need to ensure that the stored token is stored without a bookmark,
+          so when those are retrieved the token is seen as a token rather than a bookmark. 
+         */
+        target_token.mergedTokens = [{ ...target_token, bookmark: null }];
+        for (let i = 1; i < bookmark["t_total_token"]; i++) {
+          target_token.mergedTokens.push({
+            ...paragraphs[target_p_i][target_s_i][target_t_i + i],
+          });
+          paragraphs[target_p_i][target_s_i][target_t_i + i].skipRender = true;
+        }
       }
     }
     this.api = api;
@@ -48,14 +60,16 @@ export default class InteractiveText {
     this.is_article_content = article_id && is_article_content;
     this.translationEvent = translationEvent;
     this.source = source;
-    this.previousTranslatons = previousTranslations.filter(
+
+    // Might be worth to store a flag to keep track of wether or not the
+    // bookmark / text are part of the content or stand by themselves.
+    this.previousBookmarks = previousBookmarks.filter(
       (each) =>
         (is_article_content && each.context_paragraph !== null) ||
         (!is_article_content && each.context_paragraph === null),
     );
-    console.log(this.previousTranslatons);
     this.paragraphs = tokenized_paragraphs;
-    _updateTranslations(this.previousTranslatons, this.paragraphs);
+    _updateBookmarks(this.previousBookmarks, this.paragraphs);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (sent) => new LinkedWordList(sent),
     );
@@ -110,12 +124,10 @@ export default class InteractiveText {
   }
 
   selectAlternative(word, alternative, preferredSource, onSuccess) {
-    this.api.updateBookmark(
-      word.bookmark_id,
-      word.word,
-      alternative,
-      this.getContextAndStartingIndex(word),
-    );
+    let context, pargraph_i, sentence_i, token_i;
+    [context, pargraph_i, sentence_i, token_i] =
+      this.getContextAndStartingIndex(word);
+    this.api.updateBookmark(word.bookmark_id, word.word, alternative, context);
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
@@ -182,10 +194,6 @@ export default class InteractiveText {
    * might be tricked by I'm going to N.Y. to see my friend.
    */
   getContextAndStartingIndex(word) {
-    function endOfSentenceIn(word) {
-      return word.is_sent_start;
-    }
-
     function getLeftContextAndStartIndex(word, count) {
       let currentWord = word;
       let contextBuilder = "";
@@ -209,13 +217,13 @@ export default class InteractiveText {
       let currentWord = word;
       let contextBuilder = "";
       while (count > 0 && currentWord) {
-        contextBuilder = contextBuilder + " " + currentWord.word;
         if (
           currentWord.is_sent_start &&
           currentWord.sent_i > currentWord.prev.sent_i
         ) {
           break;
         }
+        contextBuilder = contextBuilder + " " + currentWord.word;
         count++;
         currentWord = currentWord.next;
       }
@@ -232,7 +240,6 @@ export default class InteractiveText {
       [leftContext, paragraph_i, sent_i, token_i] = getLeftContextAndStartIndex(
         word.prev,
         32,
-        word.prev.wordIndexInContent,
       );
     let rightContext = getRightContext(word.next, 32);
     let context = leftContext + word.word + rightContext;
