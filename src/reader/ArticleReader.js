@@ -114,6 +114,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const fetchBookmarks = () => {
     api.bookmarksForArticle(articleID, (bookmarks) => {
       setBookmarks(bookmarks);
+      setTranslationCount(bookmarks.length);
     });
   };
 
@@ -275,10 +276,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     setTranslationCount(count);
   };
 
-  const updateBookmarks = () => {
-    fetchBookmarks();
-  };
-
   if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
   }
@@ -396,6 +393,8 @@ export default function ArticleReader({ api, teacherArticleID }) {
               interactiveText={interactiveText}
               translating={translateInReader}
               pronouncing={pronounceInReader}
+              onTranslationCountChange={handleTranslationCountChange}
+              updateBookmarks={fetchBookmarks}
             />
           </s.MainText>
         </div>
@@ -406,6 +405,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
               articleID={articleID}
               clickedOnReviewVocab={clickedOnReviewVocab}
               setClickedOnReviewVocab={setClickedOnReviewVocab}
+              bookmarks={bookmarks}
             />
             <s.CombinedBox>
               <p style={{ padding: "0em 2em 0em 2em" }}>

@@ -20,6 +20,8 @@ import { PrivateRouteWithMainNav } from "./PrivateRouteWithMainNav";
 import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
+import ExercisesForArticle from "./exercises/ExercisesForArticle";
+import { UMR_SOURCE } from "./reader/ArticleReader";
 
 export default function MainAppRouter({
   api,
@@ -131,6 +133,12 @@ export default function MainAppRouter({
         path="/search"
         api={api}
         component={ArticlesRouter}
+      />
+      <PrivateRouteWithMainNav
+        path="/articleWordReview/:articleID"
+        api={api}
+        component={ExercisesForArticle}
+        source={UMR_SOURCE}
       />
     </Switch>
   );

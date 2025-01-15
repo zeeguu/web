@@ -13,6 +13,7 @@ import Pluralize from "../utils/text/pluralize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+import { StyledButton } from "../components/allButtons.sc";
 
 export default function Congratulations({
   articleID,
@@ -65,15 +66,26 @@ export default function Congratulations({
   }
 
   function progressionButtonRender() {
-    if (!isOutOfWordsToday)
+    if (articleID)
       return (
-        <StyledButton secondary onClick={keepExercisingAction}>
+        <>
+          <StyledButton secondary onClick={keepExercisingAction}>
+            {strings.keepExercising}
+          </StyledButton>
+          <StyledButton primary onClick={toScheduledExercises}>
+            {strings.goToExercises}
+          </StyledButton>
+        </>
+      );
+    else if (!isOutOfWordsToday)
+      return (
+        <StyledButton primary onClick={keepExercisingAction}>
           {strings.keepExercising}
         </StyledButton>
       );
     else
       return (
-        <StyledButton secondary onClick={backButtonAction}>
+        <StyledButton primary onClick={backButtonAction}>
           {strings.goToReading}
         </StyledButton>
       );
@@ -92,9 +104,14 @@ export default function Congratulations({
           <p>
             You have reviewed <b>{totalPracticedBookmarksInSession}</b>{" "}
             {Pluralize.word(totalBookmarksReviewed)} in{" "}
-            <b>{timeToHumanReadable(checkpointTime)}</b>. These words are now
-            part of your vocabulary exercises, using spaced repetition and smart
-            learning techniques to help you remember them better.
+            <b>{timeToHumanReadable(checkpointTime)}</b>.
+            {articleID && (
+              <p>
+                These words are now part of your vocabulary exercises, using
+                spaced repetition and smart learning techniques to help you
+                remember them better.
+              </p>
+            )}
           </p>
           {/*
           <p>
@@ -123,9 +140,6 @@ export default function Congratulations({
           style={{ marginTop: "2em", justifyContent: "space-around" }}
         >
           {progressionButtonRender()}
-          <StyledButton primary onClick={toScheduledExercises}>
-            {strings.goToExercises}
-          </StyledButton>
         </CenteredColumn>
         {articleID && (
           <p>

@@ -11,7 +11,6 @@ export default function ReviewVocabularyInfoBox({
   setClickedOnReviewVocab,
   // openReview is required in the extension
   openReview,
-  translationCount,
   bookmarks,
 }) {
   useUILanguage();

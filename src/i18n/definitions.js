@@ -394,7 +394,7 @@ let strings = new LocalizedStrings(
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
-      toExercises: "Practice Words",
+      toPracticeWords: "Practice Words",
 
       //EmptyArticles
       noArticles:

@@ -7,8 +7,6 @@ import { NarrowColumn, CenteredContent } from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { StyledButton } from "../components/allButtons.sc.js";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import Tooltip from "@mui/material/Tooltip";
 
 function fit_for_study(words) {
@@ -55,21 +53,14 @@ export default function WordsForArticle({ api }) {
     setExercisesEnabled(fit_for_study(newWords));
   }
 
-  const backToArticle = () => {
-    history.push(`../../read/article?id=${articleID}`);
-  };
-
   const toExercises = async (e) => {
     e.preventDefault();
     console.log("toExercises called");
     try {
       console.log("Logging activity...");
       await logGoingToExercisesAfterReview(e);
-      console.log(
-        "Activity logged, navigating to:",
-        `../words/forArticle/${articleID}`,
-      );
-      history.push(`../../exercises/forArticle/${articleID}`);
+      console.log("Activity logged, navigating to:", `articleWordReview`);
+      history.push(`/articleWordReview/${articleID}`);
     } catch (error) {
       console.error("Error during logging and navigation:", error);
     }
@@ -99,19 +90,19 @@ export default function WordsForArticle({ api }) {
         notifyWordChanged={notifyWordChanged}
         source={UMR_SOURCE}
       />
-      <CenteredContent>
+      <CenteredContent style={{ marginBottom: "2em" }}>
         {!exercisesEnabled ? (
           <Tooltip
             title="You need to translate words in the article first."
             arrow
           >
             <span>
-              <StyledButton disabled>{strings.toExercises}</StyledButton>
+              <StyledButton disabled>{strings.toPracticeWords}</StyledButton>
             </span>
           </Tooltip>
         ) : (
           <StyledButton navigation onClick={toExercises}>
-            {strings.toExercises}
+            {strings.toPracticeWords}
           </StyledButton>
         )}
         <StyledButton primary onClick={toScheduledExercises}>
