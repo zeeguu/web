@@ -161,7 +161,7 @@ export default function Exercises({
   }
 
   function resetExerciseState() {
-    setIsOutOfWordsToday(false);
+    setIsOutOfWordsToday();
     setCountBookmarksToPractice();
     setFullExerciseProgression();
     setCurrentBookmarksToStudy();
@@ -174,7 +174,7 @@ export default function Exercises({
 
   function updateIsOutOfWordsToday() {
     api.getTopBookmarksToStudy((topBookmarks) => {
-      setIsOutOfWordsToday(topBookmarks.length == 0);
+      setIsOutOfWordsToday(topBookmarks.length === 0);
     });
   }
 
@@ -256,8 +256,7 @@ export default function Exercises({
   function moveToNextExercise() {
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
 
-    //ML: To think about: Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
-    setIsCorrect(false);
+    setIsCorrect(null);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
     exerciseNotification.updateReactState();

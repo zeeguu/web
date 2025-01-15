@@ -29,7 +29,6 @@ export default function Congratulations({
   exerciseSessionTimer,
 }) {
   const [checkpointTime] = useState(exerciseSessionTimer);
-  const exerciseNotification = useContext(ExerciseCountContext);
   const [correctBookmarksToDisplay, setCorrectBookmarksToDisplay] = useState(
     removeArrayDuplicates(correctBookmarks),
   );
@@ -59,7 +58,7 @@ export default function Congratulations({
     api.logUserActivity(api.COMPLETED_EXERCISES, articleID, "", source);
   }, []);
 
-  if (username === undefined) {
+  if (username === undefined || isOutOfWordsToday === undefined) {
     return <LoadingAnimation />;
   }
 
