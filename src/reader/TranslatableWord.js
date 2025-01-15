@@ -3,6 +3,8 @@ import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
 import { APIContext } from "../contexts/APIContext";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import extractDomain from "../utils/web/extractDomain";
+import redirect from "../utils/routing/routing";
 
 export default function TranslatableWord({
   interactiveText,
@@ -35,15 +37,18 @@ export default function TranslatableWord({
       return;
     }
     if (translating) {
-      e.target.classList.add("loading");
-      setPreviousWord(word.word);
-      setIsWordTranslating(true);
-      interactiveText.translate(word, () => {
-        wordUpdated();
-        e.target.classList.remove("loading");
-        setIsWordTranslating(false);
-        setIsVisible(true);
-      });
+      if (!disableTranslation && !word.is_punct) {
+        e.target.classList.add("loading");
+        setPreviousWord(word.word);
+        setIsWordTranslating(true);
+        interactiveText.translate(word, () => {
+          wordUpdated();
+          e.target.classList.remove("loading");
+          setIsWordTranslating(false);
+          setIsVisible(true);
+        });
+      }
+
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
         copyOfWords.push(word.word);
@@ -73,7 +78,6 @@ export default function TranslatableWord({
       (response) => {
         if (response === "OK") {
           // delete was successful; log and close
-          word.translation = undefined;
           word.splitIntoComponents();
           wordUpdated();
         }
@@ -105,22 +109,55 @@ export default function TranslatableWord({
   }
 
   function hideTranslation(e, word) {
-    word.translation = undefined;
     word.splitIntoComponents();
     wordUpdated();
   }
 
-  //disableTranslation so user cannot translate words that are being tested
-  if ((!word.translation && !isClickedToPronounce) || disableTranslation) {
+  function getWordClass(word) {
+    const noMarginPunctuation = ["–", "—", "“", "‘"];
+    let allClasses = [];
+    if (word.is_punct) allClasses.push("punct");
+    if (word.is_left_punct) allClasses.push("left-punct");
+    if (noMarginPunctuation.includes(word.word.trim()))
+      allClasses.push("no-margin");
+    return allClasses.join(" ");
+  }
+
+  const wordClass = getWordClass(word);
+
+  if (word.is_like_email)
     return (
       <>
-        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
+        <z-tag>
+          <a href={"mailto:" + word.word}>{extractDomain(word.word) + " "}</a>
+        </z-tag>
+      </>
+    );
+  if (word.is_like_url)
+    return (
+      <>
+        <z-tag onClick={() => redirect(word.word, true)}>
+          <span className="link-style">{extractDomain(word.word) + " "}</span>
+        </z-tag>
+      </>
+    );
+  //disableTranslation so user cannot translate words that are being tested
+  if (
+    (!isWordTranslating && !word.translation && !isClickedToPronounce) ||
+    disableTranslation
+  ) {
+    return (
+      <>
+        <z-tag class={wordClass} onClick={(e) => clickOnWord(e, word)}>
+          {word.word + " "}
+        </z-tag>
       </>
     );
   }
+
   return (
     <>
-      <z-tag>
+      <z-tag class={wordClass}>
         {word.translation && isVisible && (
           <z-tran
             chosen={word.translation}

@@ -19,6 +19,23 @@ const TranslatableText = styled.div`
     /* background-color: greenyellow; */
   }
 
+  z-tag.punct {
+    margin-left: -5px;
+    cursor: default;
+    &:hover {
+      background-color: rgb(255, 255, 255) !important;
+    }
+  }
+
+  z-tag.left-punct {
+    margin-left: 0px;
+    margin-right: -5px;
+  }
+
+  z-tag.no-margin {
+    margin: 0px !important;
+  }
+
   z-tag.loading {
     animation: blink 1.5s linear infinite;
     color: ${zeeguuOrange};
