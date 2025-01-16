@@ -8,6 +8,9 @@ import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import { StyledButton } from "../components/allButtons.sc.js";
 import Tooltip from "@mui/material/Tooltip";
+import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import useScreenWidth from "../hooks/useScreenWidth";
+import { isDesktopScreenWidth } from "../components/MainNav/screenSize";
 
 function fit_for_study(words) {
   return words.filter((b) => b.fit_for_study || b.starred).length > 0;
@@ -19,6 +22,10 @@ export default function WordsForArticle({ api }) {
   const [words, setWords] = useState(null);
   const [articleInfo, setArticleInfo] = useState(null);
   const [exercisesEnabled, setExercisesEnabled] = useState(false);
+  const { screenWidth } = useScreenWidth();
+  const desktopTopMargin = isDesktopScreenWidth(screenWidth)
+    ? { marginTop: "2em" }
+    : {};
 
   useEffect(() => {
     api.prioritizeBookmarksToStudy(articleID, setWords);
@@ -81,7 +88,8 @@ export default function WordsForArticle({ api }) {
   }
 
   return (
-    <NarrowColumn>
+    <NarrowColumn style={desktopTopMargin}>
+      <BackArrow />
       <WordsToReview
         words={words}
         deleteBookmark={deleteBookmark}
