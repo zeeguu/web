@@ -251,7 +251,9 @@ let strings = new LocalizedStrings(
       titleTranslationHistory: "Translation History",
       starAWordMsg:
         "Star a word to ensure it appears in exercises. Delete to avoid it. Gray words don't appear unless starred.",
-
+      noWordsInHistory:
+        "You haven't translated any words yet. Find an article that interests you, start reading, and click on words you'd like to translate.",
+      happyLearning: "Happy Learning!",
       // Home (Find Articles)
       titleHome: "Home",
 

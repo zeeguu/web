@@ -6,6 +6,9 @@ import strings from "../i18n/definitions";
 import * as sc from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
 import { PageTitle } from "../components/PageTitle";
+import * as s from "../components/TopMessage.sc";
+import { StyledButton } from "../components/allButtons.sc";
+import { useHistory } from "react-router-dom";
 
 export default function ReadingHistory({ api }) {
   const [wordsByDay, setWordsByDay] = useState(null);
@@ -34,6 +37,14 @@ export default function ReadingHistory({ api }) {
       <br />
       <br />
       <PageTitle>{strings.wordHistoryTitle}</PageTitle>
+      {wordsByDay.length === 0 && (
+        <>
+          <s.TopMessage>
+            <p>{strings.noWordsInHistory}</p>
+            <p>{strings.happyLearning}</p>
+          </s.TopMessage>
+        </>
+      )}
       {wordsByDay.map((day) => (
         <WordsOnDate
           key={day.date}
