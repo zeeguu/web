@@ -58,6 +58,7 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
           hasExtension={hasExtension}
           isChrome={isChrome}
         />
+
         <PrivateRoute
           path="/articles/bookmarked"
           api={api}

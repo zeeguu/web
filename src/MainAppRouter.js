@@ -20,6 +20,7 @@ import { PrivateRouteWithMainNav } from "./PrivateRouteWithMainNav";
 import { PrivateRoute } from "./PrivateRoute";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import SettingsRouter from "./pages/Settings/_SettingsRouter";
+import ArticleSwiper from "./articles/ArticleSwiper";
 
 export default function MainAppRouter({
   api,
@@ -91,6 +92,13 @@ export default function MainAppRouter({
         api={api}
         component={ArticlesRouter}
       />
+
+      <PrivateRouteWithMainNav
+        path="/swiper"
+        api={api}
+        component={ArticleSwiper}
+      />
+
       <PrivateRouteWithMainNav
         path="/exercises"
         api={api}

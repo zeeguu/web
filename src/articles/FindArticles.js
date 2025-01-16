@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 import SearchField from "./SearchField";
 import * as s from "./FindArticles.sc";
@@ -15,6 +14,7 @@ import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
+import ArticleList from "./ArticleList";
 
 export default function FindArticles({
   content,
@@ -182,22 +182,20 @@ export default function FindArticles({
       {/* This is where the content of the Search component will be rendered */}
       {content}
       {reloadingSearchArticles && <LoadingAnimation></LoadingAnimation>}
-      {!reloadingSearchArticles &&
-        articleList.map((each, index) => (
-          <ArticlePreview
-            key={each.id}
-            article={each}
-            api={api}
-            hasExtension={isExtensionAvailable}
-            doNotShowRedirectionModal_UserPreference={
-              doNotShowRedirectionModal_UserPreference
-            }
-            setDoNotShowRedirectionModal_UserPreference={
-              setDoNotShowRedirectionModal_UserPreference
-            }
-            onArticleClick={() => handleArticleClick(each.id, index)}
-          />
-        ))}
+      {!reloadingSearchArticles && (
+        <ArticleList
+          articleList={articleList}
+          api={api}
+          isExtensionAvailable={isExtensionAvailable}
+          doNotShowRedirectionModal_UserPreference={
+            doNotShowRedirectionModal_UserPreference
+          }
+          setDoNotShowRedirectionModal_UserPreference={
+            setDoNotShowRedirectionModal_UserPreference
+          }
+          handleArticleClick={handleArticleClick}
+        />
+      )}
       {!reloadingSearchArticles && articleList.length === 0 && (
         <p>No searches were found for this query.</p>
       )}

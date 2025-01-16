@@ -15,7 +15,6 @@ export function TranslatableText({
   overrideBookmarkHighlightText,
   setIsRendered,
   boldExpression,
-  exerciseType,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
