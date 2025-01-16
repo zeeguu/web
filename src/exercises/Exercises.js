@@ -240,10 +240,6 @@ export default function Exercises({
         api={api}
         totalInLearning={totalBookmarksInPipeline}
         goBackAction={backButtonAction}
-        keepExercisingAction={() => {
-          startExercising(NEW_BOOKMARKS_TO_STUDY);
-          setHasKeptExercising(true);
-        }}
       />
     );
   }

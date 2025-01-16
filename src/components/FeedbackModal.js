@@ -66,7 +66,7 @@ export default function FeedbackModal({
               selectedValue={feedbackComponentSelected}
               onChange={(e) => setFeedbackComponentSelected(e.target.value)}
               label={"Which component do you want to give feedback on?"}
-              placeholder={"Select Component to give Feedback on"}
+              placeholder={"Select component to give feedback on"}
               id={"feedback-option"}
             />
           </FormSection>
