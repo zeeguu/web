@@ -3,9 +3,9 @@ import ZeeguuSpeech from "../speech/APIBasedSpeech";
 
 export default class InteractiveText {
   constructor(
-    tokenized_paragraphs,
-    article_id,
-    is_article_content,
+    tokenizedParagraphs,
+    articleID,
+    isArticleContent,
     api,
     previousBookmarks,
     translationEvent = api.TRANSLATE_TEXT,
@@ -20,7 +20,7 @@ export default class InteractiveText {
         let target_p_i, target_s_i, target_t_i;
         let target_token;
 
-        if (is_article_content) {
+        if (isArticleContent) {
           target_p_i = bookmark["context_paragraph"];
           target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
           target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
@@ -34,7 +34,7 @@ export default class InteractiveText {
           if (target_t_i == null) return;
           target_token = paragraphs[target_p_i][target_s_i][target_t_i];
         }
-        if (target_token == null) return;
+        if (target_token === undefined) return;
         target_token.bookmark = bookmark;
 
         /*
@@ -55,9 +55,9 @@ export default class InteractiveText {
       }
     }
     this.api = api;
-    this.article_id = article_id;
+    this.article_id = articleID;
     this.language = language;
-    this.is_article_content = article_id && is_article_content;
+    this.isArticleContent = articleID && isArticleContent;
     this.translationEvent = translationEvent;
     this.source = source;
 
@@ -65,10 +65,10 @@ export default class InteractiveText {
     // bookmark / text are part of the content or stand by themselves.
     this.previousBookmarks = previousBookmarks.filter(
       (each) =>
-        (is_article_content && each.context_paragraph !== null) ||
-        (!is_article_content && each.context_paragraph === null),
+        (isArticleContent && each.in_content) ||
+        (!isArticleContent && !each.in_content),
     );
-    this.paragraphs = tokenized_paragraphs;
+    this.paragraphs = tokenizedParagraphs;
     _updateBookmarks(this.previousBookmarks, this.paragraphs);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (sent) => new LinkedWordList(sent),
@@ -89,7 +89,6 @@ export default class InteractiveText {
 
     [context, cParagraph_i, cSent_i, cToken_i] =
       this.getContextAndStartingIndex(word);
-    let isItTitle = !this.is_article_content;
     word = word.fuseWithNeighborsIfNeeded(this.api);
     let wordSent_i = word.sent_i - cSent_i;
     let wordToken_i = word.token_i - cToken_i;
@@ -101,8 +100,9 @@ export default class InteractiveText {
         word.word,
         [wordSent_i, wordToken_i, word.total_tokens],
         context,
-        isItTitle ? undefined : [cParagraph_i, cSent_i, cToken_i],
+        [cParagraph_i, cSent_i, cToken_i],
         this.article_id,
+        this.isArticleContent,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -127,7 +127,13 @@ export default class InteractiveText {
     let context, pargraph_i, sentence_i, token_i;
     [context, pargraph_i, sentence_i, token_i] =
       this.getContextAndStartingIndex(word);
-    this.api.updateBookmark(word.bookmark_id, word.word, alternative, context);
+    this.api.updateBookmark(
+      word.bookmark_id,
+      word.word,
+      alternative,
+      context,
+      this.isArticleContent,
+    );
     word.translation = alternative;
     word.service_name = "Own alternative selection";
 
@@ -247,11 +253,6 @@ export default class InteractiveText {
     console.log(leftContext);
     console.log(rightContext);
     console.log(context);
-    return [
-      context,
-      this.is_article_content ? paragraph_i : null,
-      sent_i,
-      token_i,
-    ];
+    return [context, paragraph_i, sent_i, token_i];
   }
 }
