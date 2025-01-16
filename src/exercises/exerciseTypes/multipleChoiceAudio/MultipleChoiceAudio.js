@@ -160,7 +160,7 @@ export default function MultipleChoiceAudio({
     );
   }
 
-  if (!interactiveText) {
+  if (!interactiveText || !choiceOptions) {
     return <LoadingAnimation />;
   }
 

@@ -34,7 +34,7 @@ export default function TranslateWhatYouHear({
   activeSessionDuration,
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
-  const bookmarkToStudy = bookmarksToStudy[0];
+  const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
@@ -44,9 +44,8 @@ export default function TranslateWhatYouHear({
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   async function handleSpeak() {
-    await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
+    await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
   }
-  const exerciseBookmark = bookmarkToStudy[0];
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -133,7 +132,7 @@ export default function TranslateWhatYouHear({
         <>
           <s.CenteredRowTall>
             <SpeakButton
-              bookmarkToStudy={bookmarkToStudy}
+              exerciseBookmark={exerciseBookmark}
               api={api}
               styling="large"
               parentIsSpeakingControl={isButtonSpeaking}
@@ -145,7 +144,7 @@ export default function TranslateWhatYouHear({
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              bookmarkToStudy={exerciseBookmark.from}
+              exerciseBookmark={exerciseBookmark.from}
               exerciseType={EXERCISE_TYPE}
             />
           </div>
@@ -171,7 +170,7 @@ export default function TranslateWhatYouHear({
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              bookmarkToStudy={exerciseBookmark.from}
+              exerciseBookmark={exerciseBookmark.from}
             />
           </div>
         </>

@@ -147,6 +147,20 @@ let LEARNING_CYCLE_SEQUENCE_NO_AUDIO = [
   EX_MultipleChoice,
 ];
 
+let ALL_EXERCISES = [
+  EX_Match,
+  EX_MultipleChoice,
+  EX_FindWordInContext,
+  EX_SpellWhatYouHear,
+  EX_MultipleChoiceL2toL1,
+  EX_TranslateL2toL1,
+  EX_TranslateWhatYouHear,
+  EX_MultipleChoiceContext,
+  EX_ClickWordInContext,
+  EX_FindWordInContextCloze,
+  EX_MultipleChoiceAudio,
+];
+
 export {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
@@ -155,9 +169,11 @@ export {
   LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
   DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
+  ALL_EXERCISES,
 };
 
-// Function to validate that every combination of learningCycle and memoryTask has at least one exercise with requiredBookmarks = 1
+// Function to validate that every combination of learningCycle and memoryTask has at
+// least one exercise with requiredBookmarks = 1
 function validateExerciseSequence(exerciseList) {
   const requiredTestedBookmarks = 1;
 

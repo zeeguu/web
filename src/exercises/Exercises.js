@@ -174,7 +174,7 @@ export default function Exercises({
 
   function updateIsOutOfWordsToday() {
     api.getTopBookmarksToStudy((topBookmarks) => {
-      setIsOutOfWordsToday(topBookmarks.length == 0);
+      setIsOutOfWordsToday(topBookmarks.length === 0);
     });
   }
 

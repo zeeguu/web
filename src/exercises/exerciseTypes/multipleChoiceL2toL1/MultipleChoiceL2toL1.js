@@ -105,7 +105,7 @@ export default function MultipleChoiceL2toL1({
     );
   }
 
-  if (!interactiveText) {
+  if (!interactiveText || !buttonOptions) {
     return <LoadingAnimation />;
   }
 

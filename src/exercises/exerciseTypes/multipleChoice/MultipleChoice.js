@@ -117,7 +117,7 @@ export default function MultipleChoice({
     setButtonOptions(shuffledListOfOptions);
   }
 
-  if (!interactiveText) {
+  if (!interactiveText || !buttonOptions) {
     return <LoadingAnimation />;
   }
 
