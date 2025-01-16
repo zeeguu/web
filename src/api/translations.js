@@ -9,6 +9,7 @@ Zeeguu_API.prototype.getOneTranslation = function (
   context,
   context_token_i,
   articleID,
+  isArticleContent,
 ) {
   let w_sent_i, w_token_i, w_total_tokens;
   let c_paragraph_i, c_sent_i, c_token_i;
@@ -24,6 +25,7 @@ Zeeguu_API.prototype.getOneTranslation = function (
     c_paragraph_i: c_paragraph_i,
     c_sent_i: c_sent_i,
     c_token_i: c_token_i,
+    in_content: isArticleContent,
     articleID: articleID,
   };
 
