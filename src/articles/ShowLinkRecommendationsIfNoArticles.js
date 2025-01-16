@@ -1,22 +1,43 @@
 import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
 import React, { useState, useEffect } from "react";
+import ExtensionInstallationMessage from "./ExtensionInstallationMessage";
 
-export default function ShowLinkRecommendationsIfNoArticles({ articleList }) {
-  const [learnedLanguage, setLearnedLanguage] = useState(null);
+export default function ShowLinkRecommendationsIfNoArticles({
+  articleList,
+  isExtensionAvailable,
+}) {
+  const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
+  const [learnedLanguageName, setLearnedLanguageName] = useState(null);
 
   useEffect(() => {
     let userInfo = LocalStorage.userInfo();
-    setLearnedLanguage(userInfo.learned_language);
-  }, []);
+    setLearnedLanguageCode(userInfo.learned_language);
+  }, [learnedLanguageCode]);
 
-  if (articleList.length === 0 && learnedLanguage) {
+  useEffect(() => {
+    if (learnedLanguageCode === "pt" || learnedLanguageCode === "pt-br")
+      setLearnedLanguageName("Portuguese");
+    else if (learnedLanguageCode === "hu") setLearnedLanguageName("Hungarian");
+    else if (learnedLanguageCode === "no") setLearnedLanguageName("Norwegian");
+  }, [learnedLanguageCode]);
+
+  if (articleList.length === 0 && learnedLanguageCode) {
     return (
       <>
-        <p> {strings.noArticles}</p>
-        {(learnedLanguage === "pt" || learnedLanguage === "pt-br") && (
+        <p>
+          You can still use our <b>Extension</b> to read articles on any
+          website.
+        </p>
+        <ExtensionInstallationMessage
+          hasExtension={isExtensionAvailable}
+        ></ExtensionInstallationMessage>
+        <p>
+          Examples of some of the most popular news sites for{" "}
+          <b>{learnedLanguageName}</b> are:
+        </p>
+        {(learnedLanguageCode === "pt" || learnedLanguageCode === "pt-br") && (
           <>
-            <p> {strings.newssites}</p>
             <ul>
               <li>
                 <a href="https://www.sapo.pt/" rel="noopener">
@@ -51,9 +72,8 @@ export default function ShowLinkRecommendationsIfNoArticles({ articleList }) {
             </ul>
           </>
         )}
-        {learnedLanguage === "hu" && (
+        {learnedLanguageCode === "hu" && (
           <>
-            <p> {strings.newssites}</p>
             <ul>
               <li>
                 <a href="https://index.hu/" rel="noopener">
@@ -78,9 +98,8 @@ export default function ShowLinkRecommendationsIfNoArticles({ articleList }) {
             </ul>
           </>
         )}
-        {learnedLanguage === "no" && (
+        {learnedLanguageCode === "no" && (
           <>
-            <p> {strings.newssites}</p>
             <ul>
               <li>
                 <a href="https://www.vg.no/" rel="noopener">

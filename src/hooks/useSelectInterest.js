@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 export default function useSelectInterest(api) {
-  const [availableTopics, setAvailableTopics] = useState([]);
-  const [subscribedTopics, setSubscribedTopics] = useState([]);
-  const [allTopics, setAllTopics] = useState([]);
+  const [availableTopics, setAvailableTopics] = useState();
+  const [subscribedTopics, setSubscribedTopics] = useState();
+  const [allTopics, setAllTopics] = useState();
   const [subscribedSearches, setSubscribedSearches] = useState();
   const [showingSpecialInterestModal, setshowingSpecialInterestModal] =
     useState(false);
@@ -24,6 +24,9 @@ export default function useSelectInterest(api) {
   }, [api]);
 
   useEffect(() => {
+    if (availableTopics === undefined || subscribedTopics === undefined) {
+      return;
+    }
     let newAllTopics = [...availableTopics, ...subscribedTopics];
     newAllTopics.sort((a, b) => a.title.localeCompare(b.title));
     setAllTopics(newAllTopics);

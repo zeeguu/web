@@ -5,6 +5,7 @@ import {
   runningInFirefoxDesktop,
 } from "../utils/misc/browserDetection";
 import LocalStorage from "../assorted/LocalStorage";
+import ExtensionInstallationMessage from "./ExtensionInstallationMessage";
 
 export default function Reminder({ hasExtension }) {
   console.log("Running in Chrome Desktop: " + runningInChromeDesktop());
@@ -29,13 +30,7 @@ export default function Reminder({ hasExtension }) {
         To read articles with the help of Zeeguu you need to read them from the
         browser extension or by adding the texts to "My Texts" through the "Save
         article to Zeeguu.org" button from within the extension.
-        <a
-          href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
-          rel="noopener noreferrer"
-        >
-          {" "}
-          Install the extension in the Chrome Web Store.
-        </a>
+        <ExtensionInstallationMessage hasExtension={hasExtension} />
       </ExtensionReminder>
     );
   }
@@ -49,13 +44,7 @@ export default function Reminder({ hasExtension }) {
         To read articles with the help of Zeeguu you need to read them from the
         browser extension or by adding the texts to "My Texts" through the "Save
         article to Zeeguu.org" button from within the extension.
-        <a
-          href="https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/"
-          rel="noopener noreferrer"
-        >
-          {" "}
-          Install the extension from the Firefox Add-ons library.
-        </a>
+        <ExtensionInstallationMessage hasExtension={hasExtension} />
       </ExtensionReminder>
     );
   }
@@ -94,22 +83,8 @@ export default function Reminder({ hasExtension }) {
           <br />
           <br />
           From within the extension you can then add texts to "My Texts" through
-          the "Save article to Zeeguu.org" button. Install the extension in the
-          <a
-            href="https://chrome.google.com/webstore/detail/zeeguu/ckncjmaednfephhbpeookmknhmjjodcd"
-            rel="noopener noreferrer"
-          >
-            {" "}
-            Chrome Web Store (also for an Edge browser)
-          </a>{" "}
-          or install it in the
-          <a
-            href="https://addons.mozilla.org/en-US/firefox/addon/the-zeeguu-reader/"
-            rel="noopener noreferrer"
-          >
-            {" "}
-            Firefox Browser Add-ons library.
-          </a>
+          the "Save article to Zeeguu.org" button.
+          <ExtensionInstallationMessage hasExtension={hasExtension} />
         </ExtensionReminder>
       );
     }

@@ -10,6 +10,7 @@ import Heading from "../_pages_shared/Heading.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
+import LoadingAnimation from "../../components/LoadingAnimation";
 
 export default function Interests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
@@ -18,6 +19,9 @@ export default function Interests({ api }) {
   useEffect(() => {
     setTitle(strings.interests);
   }, []);
+  if (allTopics === undefined) {
+    return <LoadingAnimation></LoadingAnimation>;
+  }
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
       <BackArrow redirectLink={isFromArticles && "/articles"} />

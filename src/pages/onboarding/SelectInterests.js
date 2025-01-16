@@ -14,6 +14,7 @@ import strings from "../../i18n/definitions";
 
 import redirect from "../../utils/routing/routing";
 import { setTitle } from "../../assorted/setTitle";
+import LoadingAnimation from "../../components/LoadingAnimation";
 
 export default function SelectInterests({ api }) {
   const { allTopics, toggleTopicSubscription, isSubscribed } =
@@ -22,6 +23,15 @@ export default function SelectInterests({ api }) {
   useEffect(() => {
     setTitle(strings.selectInterests);
   }, []);
+
+  useEffect(() => {
+    if (allTopics === undefined) return;
+    // If there are no topics to filter just send users to exclude words.
+    if (allTopics.length === 0) redirect("/exclude_words");
+  }, [allTopics]);
+
+  if (allTopics === undefined || allTopics.length === 0)
+    return <LoadingAnimation></LoadingAnimation>;
 
   return (
     <PreferencesPage>

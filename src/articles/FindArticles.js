@@ -15,6 +15,7 @@ import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
+import useSelectInterest from "../hooks/useSelectInterest";
 
 export default function FindArticles({
   content,
@@ -35,6 +36,7 @@ export default function FindArticles({
   const [articleList, setArticleList] = useState();
   const [originalList, setOriginalList] = useState(null);
   const [isExtensionAvailable] = useExtensionCommunication();
+  const { allTopics } = useSelectInterest(api);
   const [
     doNotShowRedirectionModal_UserPreference,
     setDoNotShowRedirectionModal_UserPreference,
@@ -132,7 +134,7 @@ export default function FindArticles({
     }
   }, [searchPublishPriority, searchDifficultyPriority]);
 
-  if (articleList == null) {
+  if (articleList == null || allTopics == null) {
     return <LoadingAnimation />;
   }
 
@@ -146,10 +148,14 @@ export default function FindArticles({
           <div style={{ marginBottom: "1.5rem", padding: "0.5rem" }}>
             <span>
               You can customize your Home by{" "}
-              <a href="/account_settings/interests?fromArticles=1">
-                subscribing&nbsp;to&nbsp;topics
-              </a>
-              ,{" "}
+              {allTopics.length > 0 && (
+                <>
+                  <a href="/account_settings/interests?fromArticles=1">
+                    subscribing&nbsp;to&nbsp;topics
+                  </a>
+                  ,{" "}
+                </>
+              )}
               <a href="/account_settings/excluded_keywords?fromArticles=1">
                 filtering&nbsp;keywords
               </a>{" "}
@@ -199,13 +205,14 @@ export default function FindArticles({
           />
         ))}
       {!reloadingSearchArticles && articleList.length === 0 && (
-        <p>No searches were found for this query.</p>
+        <p>Sorry, we couldn't find any articles for you.</p>
       )}
 
       {!searchQuery && (
         <>
           <ShowLinkRecommendationsIfNoArticles
             articleList={articleList}
+            isExtensionAvailable={isExtensionAvailable}
           ></ShowLinkRecommendationsIfNoArticles>
         </>
       )}
