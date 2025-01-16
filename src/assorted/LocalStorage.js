@@ -31,6 +31,7 @@ const LocalStorage = {
     ProductiveExercisesEnabled: "productiveExercisesEnabled",
     AutoPronounceInExercises: "auto_pronounce_bookmark_exercise",
     lastExerciseCompleteDate: "last_exercise_complete_date",
+    ArticlesNotFoundFeedbackSent: "articles_not_found_feedback_sent",
   },
 
   userInfo: function () {
@@ -62,6 +63,14 @@ const LocalStorage = {
 
   setLearnedCefrLevel: function (learnedCefrLevel) {
     localStorage[this.Keys.LearnedCefrLevel] = learnedCefrLevel;
+  },
+
+  setArticleNotFoundFeedbackSent: function (value) {
+    localStorage[this.Keys.ArticlesNotFoundFeedbackSent] = value;
+  },
+
+  getArticleNotFoundFeedbackSent: function () {
+    return localStorage[this.Keys.ArticlesNotFoundFeedbackSent];
   },
 
   getNativeLanguage: function () {

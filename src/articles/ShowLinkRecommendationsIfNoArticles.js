@@ -1,19 +1,35 @@
-import strings from "../i18n/definitions";
 import LocalStorage from "../assorted/LocalStorage";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ExtensionInstallationMessage from "./ExtensionInstallationMessage";
+import { FEEDBACK_CODES_NAME } from "../components/FeedbackConstants";
+import { APIContext } from "../contexts/APIContext";
 
 export default function ShowLinkRecommendationsIfNoArticles({
   articleList,
   isExtensionAvailable,
 }) {
+  const api = useContext(APIContext);
   const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
   const [learnedLanguageName, setLearnedLanguageName] = useState(null);
+
+  function sendFeedbackOnArticleNotFound(userInfo) {
+    let payload = {
+      message: `User did not find any articles to read for language '${userInfo.learned_language}'.`,
+      feedbackComponentId: FEEDBACK_CODES_NAME.ARTICLE_READER,
+      currentUrl: window.location.href,
+    };
+    api.sendFeedback(payload, () => {
+      LocalStorage.setArticleNotFoundFeedbackSent(true);
+    });
+  }
 
   useEffect(() => {
     let userInfo = LocalStorage.userInfo();
     setLearnedLanguageCode(userInfo.learned_language);
-  }, [learnedLanguageCode]);
+    if (!LocalStorage.getArticleNotFoundFeedbackSent()) {
+      sendFeedbackOnArticleNotFound(userInfo);
+    }
+  }, [api]);
 
   useEffect(() => {
     if (learnedLanguageCode === "pt" || learnedLanguageCode === "pt-br")
