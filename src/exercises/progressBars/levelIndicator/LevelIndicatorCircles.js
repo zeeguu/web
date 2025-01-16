@@ -4,7 +4,7 @@ import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
 import strings from "../../../i18n/definitions.js";
 import SchoolIcon from "@mui/icons-material/School";
 
-export default function LevelIndicatorCircle({
+export default function LevelIndicatorCircles({
   totalLearningStages,
   userIsWrong,
   newBookmark,

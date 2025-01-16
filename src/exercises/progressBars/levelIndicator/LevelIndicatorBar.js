@@ -6,7 +6,7 @@ export default function LevelIndicatorBar({
   userIsCorrect,
   userIsWrong,
   levelsInPercent,
-  coolingIntervalsPerLevel,
+  numberOfCoolingIntervalsPerLevel,
   totalLearningStages,
   bookmark,
 }) {
@@ -16,7 +16,7 @@ export default function LevelIndicatorBar({
   const normalizedCoolingInterval = cooling_interval ?? 0;
 
   const initialProgressWithinLevel =
-    normalizedCoolingInterval / coolingIntervalsPerLevel;
+    normalizedCoolingInterval / numberOfCoolingIntervalsPerLevel;
 
   const initialProgressBarWidth =
     isHidden || newBookmark
@@ -29,11 +29,11 @@ export default function LevelIndicatorBar({
 
   useEffect(() => {
     const calculateProgressWithinLevel = userIsCorrect
-      ? (normalizedCoolingInterval + 1) / coolingIntervalsPerLevel
+      ? (normalizedCoolingInterval + 1) / numberOfCoolingIntervalsPerLevel
       : userIsWrong && normalizedCoolingInterval === 0
         ? initialProgressBarWidth
         : userIsWrong
-          ? (normalizedCoolingInterval - 1) / coolingIntervalsPerLevel
+          ? (normalizedCoolingInterval - 1) / numberOfCoolingIntervalsPerLevel
           : initialProgressBarWidth;
 
     const calculateProgressBarWidth =

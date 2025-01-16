@@ -1,6 +1,6 @@
 import * as s from "./LevelIndicator.sc.js";
 import LevelIndicatorBar from "./LevelIndicatorBar.js";
-import LevelIndicatorCircle from "./LevelIndicatorCircle.js";
+import LevelIndicatorCircles from "./LevelIndicatorCircles.js";
 
 export default function LevelIndicator({
   bookmark,
@@ -9,7 +9,7 @@ export default function LevelIndicator({
   isHidden,
 }) {
   const totalLearningStages = 5; // 4 levels + 1 for learned stage
-  const coolingIntervalsPerLevel = 3; // cooling intervals 0, 1, and 2
+  const numberOfCoolingIntervalsPerLevel = 3; // cooling intervals 0, 1, and 2
   const levelsInPercent = 25; //100% bar width divided by 4 levels
 
   const { cooling_interval, level } = bookmark;
@@ -27,9 +27,9 @@ export default function LevelIndicator({
           isHidden={isHidden}
           userIsCorrect={userIsCorrect}
           levelsInPercent={levelsInPercent}
-          coolingIntervalsPerLevel={coolingIntervalsPerLevel}
+          numberOfCoolingIntervalsPerLevel={numberOfCoolingIntervalsPerLevel}
         />
-        <LevelIndicatorCircle
+        <LevelIndicatorCircles
           totalLearningStages={totalLearningStages}
           userIsWrong={userIsWrong}
           newBookmark={newBookmark}
