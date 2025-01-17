@@ -114,10 +114,24 @@ export default function TranslatableWord({
   }
 
   function getWordClass(word) {
+    /*
+    Function determines which class to be assigned to the word object.
+    Mainly, to render the punctuation cases that need to be handled differently.
+    By default, all punctuation words are assigned the class "punct", which means they
+    are moved slightly to the left, to be close to the previous tokens.
+    - left_punct means that the punctuation is moved a bit to the right, for example ( 
+    */
     const noMarginPunctuation = ["–", "—", "“", "‘", '"'];
     let allClasses = [];
     if (word.is_punct) allClasses.push("punct");
-    if (word.is_left_punct) allClasses.push("left-punct");
+    if (
+      word.is_left_punct ||
+      (word.is_punct &&
+        word.prev &&
+        [":", ".", ","].includes(word.prev.word.trim()))
+    )
+      allClasses.push("left-punct");
+    if (word.is_like_num) allClasses.push("number");
     if (noMarginPunctuation.includes(word.word.trim()))
       allClasses.push("no-margin");
     return allClasses.join(" ");

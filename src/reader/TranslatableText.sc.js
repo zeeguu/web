@@ -19,8 +19,15 @@ const TranslatableText = styled.div`
     /* background-color: greenyellow; */
   }
 
+  z-tag.number {
+    cursor: default;
+    &:hover {
+      background-color: rgb(255 255 255 / 0%) !important;
+    }
+  }
+
   z-tag.punct {
-    margin-left: -5px;
+    margin-left: -5.2px;
     cursor: default;
     &:hover {
       background-color: rgb(255 255 255 / 0%) !important;
