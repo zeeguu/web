@@ -52,7 +52,7 @@ export default function AlterMenu({
     >
       {word.alternatives === undefined ? (
         <LoadingAnimation
-          specificStyle={{ height: "1rem", margin: "1rem 3.1rem" }}
+          specificStyle={{ height: "3.5rem", margin: "1rem 3.1rem" }}
           delay={0}
         ></LoadingAnimation>
       ) : (
