@@ -23,7 +23,7 @@ const TranslatableText = styled.div`
     margin-left: -5px;
     cursor: default;
     &:hover {
-      background-color: rgb(255, 255, 255) !important;
+      background-color: rgb(255 255 255 / 0%) !important;
     }
   }
 

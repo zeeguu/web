@@ -114,7 +114,7 @@ export default function TranslatableWord({
   }
 
   function getWordClass(word) {
-    const noMarginPunctuation = ["–", "—", "“", "‘"];
+    const noMarginPunctuation = ["–", "—", "“", "‘", '"'];
     let allClasses = [];
     if (word.is_punct) allClasses.push("punct");
     if (word.is_left_punct) allClasses.push("left-punct");
