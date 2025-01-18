@@ -767,7 +767,7 @@ let strings = new LocalizedStrings(
       ukrainian: "Ukrainian",
       vietnamese: "Vietnamese",
       norwegian: "Norwegian",
-      portughese: "Portuguese",
+      portuguese: "Portuguese",
       albanian: "Albanian",
       japanese: "Japanese",
       serbian: "Serbian",
