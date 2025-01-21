@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import {
-  sidebarCollapsedWidth,
-  sidebarExpandedWidth,
-} from "./components/MainNav/SideBar/Sidebar.sc";
+  sideNavCollapsedWidth,
+  sideNavExpandedWidth,
+} from "./components/MainNav/SideNav/SideNav.sc";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import { PAGES_WITHOUT_BOTTOM_NAV } from "./components/MainNav/BottomNav/pagesWithoutBottomNav";
 
@@ -28,9 +28,9 @@ const AppContent = styled.section`
 
   margin-left: ${({ $screenWidth }) => {
     if ($screenWidth > MEDIUM_WIDTH) {
-      return sidebarExpandedWidth;
+      return sideNavExpandedWidth;
     } else if ($screenWidth <= MEDIUM_WIDTH && $screenWidth > MOBILE_WIDTH) {
-      return sidebarCollapsedWidth;
+      return sideNavCollapsedWidth;
     } else {
       return "0px";
     }

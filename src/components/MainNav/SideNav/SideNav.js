@@ -1,15 +1,15 @@
 import { useContext } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { UserContext } from "../../../contexts/UserContext";
-import SidebarOptionsForStudent from "./SidebarOptionsForStudent";
-import SidebarOptionsForTeacher from "./SidebarOptionsForTeacher";
-import * as s from "./Sidebar.sc";
+import SideNavOptionsForStudent from "./SideNavOptionsForStudent";
+import SideNavOptionsForTeacher from "./SideNavOptionsForTeacher";
+import * as s from "./SideNav.sc";
 import NavOption from "../NavOption";
 import FeedbackButton from "../../FeedbackButton";
 import NavigationOptions from "../navigationOptions";
 import { MainNavContext } from "../../../contexts/MainNavContext";
 
-export default function Sidebar({ screenWidth }) {
+export default function SideNav({ screenWidth }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
   const { mainNav } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNav;
@@ -18,20 +18,25 @@ export default function Sidebar({ screenWidth }) {
   const defaultPage = isTeacher ? "/teacher/classes" : "articles";
 
   return (
-    <s.SideBar $screenWidth={screenWidth} role="navigation">
+    <s.SideNav $screenWidth={screenWidth} role="navigation">
       <NavOption
         className={"logo"}
         linkTo={defaultPage}
-        icon={<img src="../static/images/zeeguuWhiteLogo.svg"></img>}
+        icon={
+          <img
+            alt="Zeeguu logo - the elephant"
+            src="../static/images/zeeguuWhiteLogo.svg"
+          ></img>
+        }
         text={"Zeeguu"}
       ></NavOption>
 
       {isOnStudentSide && (
-        <SidebarOptionsForStudent screenWidth={screenWidth} />
+        <SideNavOptionsForStudent screenWidth={screenWidth} />
       )}
 
       {!isOnStudentSide && (
-        <SidebarOptionsForTeacher screenWidth={screenWidth} />
+        <SideNavOptionsForTeacher screenWidth={screenWidth} />
       )}
 
       <s.BottomSection $screenWidth={screenWidth}>
@@ -42,6 +47,6 @@ export default function Sidebar({ screenWidth }) {
         />
         <FeedbackButton screenWidth={screenWidth} />
       </s.BottomSection>
-    </s.SideBar>
+    </s.SideNav>
   );
 }

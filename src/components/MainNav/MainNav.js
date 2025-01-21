@@ -1,6 +1,6 @@
 import { useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import Sidebar from "./SideBar/Sidebar";
+import SideNav from "./SideNav/SideNav";
 import BottomNav from "./BottomNav/BottomNav";
 import { MOBILE_WIDTH } from "./screenSize";
 import { ThemeProvider } from "styled-components";
@@ -26,7 +26,7 @@ export default function MainNav({ screenWidth }) {
       {screenWidth <= MOBILE_WIDTH ? (
         <BottomNav />
       ) : (
-        <Sidebar screenWidth={screenWidth} />
+        <SideNav screenWidth={screenWidth} />
       )}
     </ThemeProvider>
   );

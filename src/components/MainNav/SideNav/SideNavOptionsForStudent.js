@@ -6,7 +6,7 @@ import NotificationIcon from "../../NotificationIcon";
 import NavOption from "../NavOption";
 import NavigationOptions from "../navigationOptions";
 
-export default function SidebarOptionsForStudent({ screenWidth }) {
+export default function SideNavOptionsForStudent({ screenWidth }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
   const path = useLocation().pathname;
 
