@@ -158,7 +158,7 @@ function App() {
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
 
-  //Setting up the main nav context
+  //Initial state and setter passed to the value prop of the MainNavContext.Provider
   const [mainNav, setMainNav] = useState({ isOnStudentSide: true });
 
   if (userData === undefined) {
