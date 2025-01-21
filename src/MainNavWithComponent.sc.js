@@ -6,7 +6,7 @@ import {
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./components/MainNav/screenSize";
 import { PAGES_WITHOUT_BOTTOM_NAV } from "./components/MainNav/BottomNav/pagesWithoutBottomNav";
 
-const AppWithMainNav = styled.div`
+const MainNavWithComponent = styled.div`
   box-sizing: border-box;
   top: 0;
   height: 100%;
@@ -52,4 +52,4 @@ const AppContent = styled.section`
   }};
 `;
 
-export { AppWithMainNav, AppContent };
+export { MainNavWithComponent, AppContent };
