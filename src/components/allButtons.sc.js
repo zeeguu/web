@@ -123,6 +123,12 @@ const StyledButton = styled.button`
         text-decoration: underline;
       }
       border: 2px solid ${zeeguuOrange};
+
+      ${(props) =>
+        props.disabled &&
+        css`
+          border: none;
+        `}
     `}
   
   // Navigation used together with <NavigateNextIcon /> or <NavigateBeforeIcon />

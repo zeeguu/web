@@ -66,10 +66,18 @@ export default function Congratulations({
   }
 
   function progressionButtonRender() {
+    const isKeepExercisingDisabled =
+      incorrectBookmarksToDisplay.length === 0 &&
+      correctBookmarksToDisplay.length === 0;
+
     if (articleID)
       return (
         <>
-          <StyledButton secondary onClick={keepExercisingAction}>
+          <StyledButton
+            secondary
+            onClick={keepExercisingAction}
+            disabled={isKeepExercisingDisabled}
+          >
             {strings.keepExercising}
           </StyledButton>
           <StyledButton primary onClick={toScheduledExercises}>
@@ -79,7 +87,11 @@ export default function Congratulations({
       );
     else if (!isOutOfWordsToday)
       return (
-        <StyledButton primary onClick={keepExercisingAction}>
+        <StyledButton
+          primary
+          onClick={keepExercisingAction}
+          disabled={isKeepExercisingDisabled}
+        >
           {strings.keepExercising}
         </StyledButton>
       );
@@ -95,6 +107,7 @@ export default function Congratulations({
     <>
       <s.NarrowColumn className="narrowColumn">
         {screenWidth < MOBILE_WIDTH && <BackArrow />}
+
         <CenteredColumn className="centeredColumn">
           <h1>
             {strings.goodJob} {username}!

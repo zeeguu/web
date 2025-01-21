@@ -16,7 +16,6 @@ export function TranslatableText({
   setIsRendered,
   boldExpression,
   exerciseType,
-  onTranslationCountChange,
   updateBookmarks,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
@@ -53,12 +52,6 @@ export function TranslatableText({
   useEffect(() => {
     if (setIsRendered) setIsRendered(true);
   }, [renderedText]);
-
-  useEffect(() => {
-    if (onTranslationCountChange) {
-      onTranslationCountChange(translationCount);
-    }
-  }, [translationCount, onTranslationCountChange]);
 
   function wordUpdated() {
     setTranslationCount(translationCount + 1);

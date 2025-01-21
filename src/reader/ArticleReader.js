@@ -79,8 +79,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const speech = useContext(SpeechContext);
   const [activityTimer, isTimerActive] = useActivityTimer(uploadActivity);
   const [readingSessionId, setReadingSessionId] = useState();
-
-  const [translationCount, setTranslationCount] = useState(0);
   const [bookmarks, setBookmarks] = useState([]);
 
   const scrollEvents = useRef();
@@ -114,7 +112,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const fetchBookmarks = () => {
     api.bookmarksForArticle(articleID, (bookmarks) => {
       setBookmarks(bookmarks);
-      setTranslationCount(bookmarks.length);
     });
   };
 
@@ -272,10 +269,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     );
   }
 
-  const handleTranslationCountChange = (count) => {
-    setTranslationCount(count);
-  };
-
   if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
   }
@@ -393,7 +386,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
               interactiveText={interactiveText}
               translating={translateInReader}
               pronouncing={pronounceInReader}
-              onTranslationCountChange={handleTranslationCountChange}
               updateBookmarks={fetchBookmarks}
             />
           </s.MainText>
