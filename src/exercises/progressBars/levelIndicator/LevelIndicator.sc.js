@@ -32,8 +32,10 @@ const LevelIndicator = styled.div`
 
   .progress-fill {
     height: 100%;
-    background: ${({ isHidden }) =>
-      isHidden ? "transparent" : "linear-gradient(90deg, #74a664, #8bc34a)"};
+    background: ${({ isGreyedOutBar }) =>
+      isGreyedOutBar
+        ? "transparent"
+        : "linear-gradient(90deg, #74a664, #8bc34a)"};
     transition: width 0.5s ease-in-out;
     border-radius: 10px;
   }
@@ -60,7 +62,8 @@ const LevelIndicator = styled.div`
   }
 
   .level-circle.filled {
-    background-color: ${({ isHidden }) => (isHidden ? "#e0e0e0" : "#74a664")};
+    background-color: ${({ isGreyedOutBar }) =>
+      isGreyedOutBar ? "#e0e0e0" : "#74a664"};
   }
 
   .level-circle.blink {

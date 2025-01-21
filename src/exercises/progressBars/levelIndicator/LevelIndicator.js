@@ -6,7 +6,7 @@ export default function LevelIndicator({
   bookmark,
   userIsCorrect,
   userIsWrong,
-  isHidden,
+  isGreyedOutBar,
 }) {
   const totalLearningStages = 5; // 4 levels + 1 for learned stage
   const numberOfCoolingIntervalsPerLevel = 3; // cooling intervals 0, 1, and 2
@@ -14,17 +14,18 @@ export default function LevelIndicator({
 
   const { cooling_interval, level } = bookmark;
 
-  const newBookmark = level === 0 && cooling_interval === null && !isHidden;
+  const newBookmark =
+    level === 0 && cooling_interval === null && !isGreyedOutBar;
 
   return (
-    <s.LevelIndicator isHidden={isHidden}>
+    <s.LevelIndicator isGreyedOutBar={isGreyedOutBar}>
       <div className="level-indicator">
         <LevelIndicatorBar
           totalLearningStages={totalLearningStages}
           bookmark={bookmark}
           userIsWrong={userIsWrong}
           newBookmark={newBookmark}
-          isHidden={isHidden}
+          isGreyedOutBar={isGreyedOutBar}
           userIsCorrect={userIsCorrect}
           levelsInPercent={levelsInPercent}
           numberOfCoolingIntervalsPerLevel={numberOfCoolingIntervalsPerLevel}

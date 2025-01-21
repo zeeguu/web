@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function LevelIndicatorBar({
-  isHidden,
+  isGreyedOutBar,
   newBookmark,
   userIsCorrect,
   userIsWrong,
@@ -19,7 +19,7 @@ export default function LevelIndicatorBar({
     normalizedCoolingInterval / numberOfCoolingIntervalsPerLevel;
 
   const initialProgressBarWidth =
-    isHidden || newBookmark
+    isGreyedOutBar || newBookmark
       ? `0%`
       : `${((normalizedLevel - 1) / (totalLearningStages - 1)) * 100 + initialProgressWithinLevel * levelsInPercent}%`;
 
@@ -48,7 +48,7 @@ export default function LevelIndicatorBar({
     is_last_in_cycle,
     normalizedLevel,
     newBookmark,
-    isHidden,
+    isGreyedOutBar,
   ]);
 
   return (
