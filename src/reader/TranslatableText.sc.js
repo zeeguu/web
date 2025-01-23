@@ -28,6 +28,9 @@ const TranslatableText = styled.div`
 
   z-tag.punct {
     margin-left: -5.2px;
+  }
+
+  z-tag.no-hover {
     cursor: default;
     &:hover {
       background-color: rgb(255 255 255 / 0%) !important;
@@ -36,6 +39,10 @@ const TranslatableText = styled.div`
 
   z-tag.left-punct {
     margin-left: 0px;
+    margin-right: -5px;
+  }
+
+  z-tag.no-space {
     margin-right: -5px;
   }
 

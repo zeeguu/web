@@ -30,6 +30,7 @@ export default function TranslatableWord({
   }, []);
 
   function clickOnWord(e, word) {
+    if (word.is_like_num) return;
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
       if ((translating && !isVisible) || (!translating && isVisible))
@@ -123,17 +124,25 @@ export default function TranslatableWord({
     */
     const noMarginPunctuation = ["–", "—", "“", "‘", '"'];
     let allClasses = [];
-    if (word.is_punct) allClasses.push("punct");
-    if (
-      word.is_left_punct ||
-      (word.is_punct &&
-        word.prev &&
-        [":", ".", ","].includes(word.prev.word.trim()))
-    )
-      allClasses.push("left-punct");
+    if (word.has_space !== undefined) {
+      // From Stanza
+      if (word.is_punct) allClasses.push("no-hover");
+    } else {
+      if (word.is_punct) {
+        allClasses.push("punct");
+        allClasses.push("no-hover");
+      }
+      if (
+        word.is_left_punct ||
+        (word.is_punct &&
+          word.prev &&
+          [":", ".", ","].includes(word.prev.word.trim()))
+      )
+        allClasses.push("left-punct");
+      if (noMarginPunctuation.includes(word.word.trim()))
+        allClasses.push("no-margin");
+    }
     if (word.is_like_num) allClasses.push("number");
-    if (noMarginPunctuation.includes(word.word.trim()))
-      allClasses.push("no-margin");
     return allClasses.join(" ");
   }
 
@@ -155,6 +164,7 @@ export default function TranslatableWord({
         </z-tag>
       </>
     );
+
   //disableTranslation so user cannot translate words that are being tested
   if (
     (!isWordTranslating && !word.translation && !isClickedToPronounce) ||
@@ -163,7 +173,7 @@ export default function TranslatableWord({
     return (
       <>
         <z-tag class={wordClass} onClick={(e) => clickOnWord(e, word)}>
-          {word.word + " "}
+          {word.word + (word.has_space === true ? " " : "")}
         </z-tag>
       </>
     );

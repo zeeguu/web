@@ -29,6 +29,8 @@ export class Word extends Item {
     this.is_like_num = token.is_like_num;
     this.is_like_email = token.is_like_email;
     this.is_like_url = token.is_like_url;
+    this.pos = token.pos;
+    this.has_space = token.has_space;
     if (token.mergedTokens) this.mergedTokens = [...token.mergedTokens];
     else this.mergedTokens = [{ ...token }];
   }
