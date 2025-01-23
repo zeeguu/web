@@ -151,7 +151,7 @@ function App() {
     setUser(newUserValue);
 
     /* If a redirect link exists, uses it to redirect the user,
-        otherwise, uses the location from the function argument. */
+                otherwise, uses the location from the function argument. */
     handleRedirectLinkOrGoTo("/articles");
   }
 
@@ -159,7 +159,9 @@ function App() {
   const [returnPath, setReturnPath] = useState("");
 
   //Initial state and setter passed to the value prop of the MainNavContext.Provider
-  const [mainNav, setMainNav] = useState({ isOnStudentSide: true });
+  const [mainNavProperties, setMainNavProperties] = useState({
+    isOnStudentSide: true,
+  });
 
   if (userData === undefined) {
     return <LoadingAnimation />;
@@ -172,7 +174,12 @@ function App() {
           <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
             <ExerciseCountContext.Provider value={exerciseNotification}>
               <APIContext.Provider value={api}>
-                <MainNavContext.Provider value={{ mainNav, setMainNav }}>
+                <MainNavContext.Provider
+                  value={{
+                    mainNavProperties: mainNavProperties,
+                    setMainNavProperties: setMainNavProperties,
+                  }}
+                >
                   {/* Routing*/}
                   <MainAppRouter
                     api={api}
