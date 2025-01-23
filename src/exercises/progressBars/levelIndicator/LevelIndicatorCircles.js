@@ -14,7 +14,7 @@ export default function LevelIndicatorCircles({
 
   function getCircleClass(index, level, levelIsBlinking, levelCompleted) {
     if (index === 0) {
-      return "level-circle filled";
+      return "level-circle filled" + (levelIsBlinking ? " blink" : "");
     } else if (index === level - 1 && levelIsBlinking) {
       return "level-circle passed blink";
     } else if (index === maxLevel) {

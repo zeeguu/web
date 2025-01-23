@@ -17,11 +17,9 @@ export default function LevelIndicator({
   const totalCircles = LEVELS + 1;
 
   let { cooling_interval, level, is_last_in_cycle } = bookmark;
-  console.log(bookmark);
 
-  // const isNewBookmark = level === 0 && cooling_interval === null && !isHidden;
   // when we create a new bookmark, the level is automatically set to zero
-  // for backwards compatibility we also set all the levels to zero
+  // (for backwards compatibility we also set all the levels to zero)
   const isNewBookmark = level === 0 && cooling_interval === null;
 
   // if the backend sent us a bookmark with level 0 that actually means
@@ -31,9 +29,21 @@ export default function LevelIndicator({
   // the semantics is that it's actually 0
   level = level ? level : 1;
   cooling_interval = cooling_interval ?? 0;
+  cooling_interval =
+    cooling_interval >= COOLING_INTERVALS_PER_LEVEL ? 0 : cooling_interval;
 
-  const bookmarkMovesToNextLevel = is_last_in_cycle && userIsCorrect;
-  const bookmarkStaysAtCurrentLevel = cooling_interval === 0 && userIsWrong;
+  // update the level and cooling interval based on the user correctness
+  // these variables are defined only after the user has attempted a solution
+  if (userIsCorrect) {
+    cooling_interval = cooling_interval + 1;
+    if (cooling_interval === COOLING_INTERVALS_PER_LEVEL) {
+      level += 1;
+      cooling_interval = 0;
+    }
+  }
+  if (userIsWrong && cooling_interval > 0) {
+    cooling_interval = cooling_interval - 1;
+  }
 
   return (
     <s.LevelIndicator isHidden={isHidden}>
@@ -45,8 +55,8 @@ export default function LevelIndicator({
         />
         <LevelIndicatorCircles
           totalLearningStages={totalCircles}
-          levelCompleted={bookmarkMovesToNextLevel}
-          levelIsBlinking={bookmarkStaysAtCurrentLevel}
+          levelCompleted={is_last_in_cycle && userIsCorrect}
+          levelIsBlinking={cooling_interval === 0 && userIsWrong}
           showNewNotification={isNewBookmark}
           levelInProgress={level}
           tooltipText={
