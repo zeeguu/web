@@ -1,18 +1,23 @@
 import * as s from "./MoreOptionsPanel.sc";
+import { useContext } from "react";
+import { UserContext } from "../../../contexts/UserContext";
 import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
 import NavigationOptions from "../navigationOptions";
+import { MainNavContext } from "../../../contexts/MainNavContext";
 
 export default function MoreOptionsPanel({
-  isOnStudentSide,
-  isTeacher,
   overlayTransition,
   moreOptionsTransition,
   handleHideMoreOptions,
   currentPath,
   renderMoreOptions,
 }) {
+  const { is_teacher: isTeacher } = useContext(UserContext);
+  const { mainNavProperties } = useContext(MainNavContext);
+  const { isOnStudentSide } = mainNavProperties;
+
   return (
     <s.MoreOptionsWrapper
       $renderMoreOptions={renderMoreOptions}
@@ -22,7 +27,6 @@ export default function MoreOptionsPanel({
       <s.MoreOptionsPanel
         $renderMoreOptions={renderMoreOptions}
         $moreOptionsTransition={moreOptionsTransition}
-        $isOnStudentSide={isOnStudentSide}
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -65,7 +69,7 @@ export default function MoreOptionsPanel({
           />
         )}
 
-        <FeedbackButton isOnStudentSide={isOnStudentSide} />
+        <FeedbackButton />
       </s.MoreOptionsPanel>
     </s.MoreOptionsWrapper>
   );

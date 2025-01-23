@@ -1,35 +1,35 @@
-import { useState, useContext, useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import { UserContext } from "../../contexts/UserContext";
-import Sidebar from "./SideBar/Sidebar";
+import SideNav from "./SideNav/SideNav";
 import BottomNav from "./BottomNav/BottomNav";
 import { MOBILE_WIDTH } from "./screenSize";
+import { ThemeProvider } from "styled-components";
+import { mainNavTheme } from "./mainNavTheme";
+import { MainNavContext } from "../../contexts/MainNavContext";
 
 export default function MainNav({ screenWidth }) {
-  const { is_teacher: isTeacher } = useContext(UserContext);
-  const [isOnStudentSide, setIsOnStudentSide] = useState(true);
+  const { mainNavProperties, setMainNavProperties } =
+    useContext(MainNavContext);
+  const { isOnStudentSide } = mainNavProperties;
 
   const path = useLocation().pathname;
-
   useEffect(() => {
-    setIsOnStudentSide(!path.includes("teacher"));
+    setMainNavProperties({
+      ...mainNavProperties,
+      isOnStudentSide: !path.includes("teacher"),
+    });
   }, [path]);
 
   return (
-    <>
+    // More about ThemeProviders (https://styled-components.com/docs/advanced)
+    <ThemeProvider
+      theme={isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}
+    >
       {screenWidth <= MOBILE_WIDTH ? (
-        <BottomNav
-          screenWidth={screenWidth}
-          isOnStudentSide={isOnStudentSide}
-          isTeacher={isTeacher}
-        />
+        <BottomNav />
       ) : (
-        <Sidebar
-          screenWidth={screenWidth}
-          isOnStudentSide={isOnStudentSide}
-          isTeacher={isTeacher}
-        />
+        <SideNav screenWidth={screenWidth} />
       )}
-    </>
+    </ThemeProvider>
   );
 }

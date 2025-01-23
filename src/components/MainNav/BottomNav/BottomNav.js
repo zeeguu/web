@@ -1,6 +1,6 @@
 import * as s from "./BottomNav.sc";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import NavIcon from "../NavIcon";
 import MoreOptionsPanel from "./MoreOptionsPanel";
 import BottomNavOptionsForStudent from "./BottomNavOptionsForStudent";
@@ -9,9 +9,13 @@ import BottomNavOption from "./BottomNavOption";
 import strings from "../../../i18n/definitions";
 import { fadeIn, fadeOut } from "../../transitions";
 import { slideIn, slideOut } from "../../transitions";
+import { MainNavContext } from "../../../contexts/MainNavContext";
+import { PAGES_WITHOUT_BOTTOM_NAV } from "./pagesWithoutBottomNav";
 
-const PAGES_WITHOUT_BOTTOM_NAV = ["/exercises", "/read"];
-export default function BottomNav({ isOnStudentSide, isTeacher }) {
+export default function BottomNav() {
+  const { mainNavProperties } = useContext(MainNavContext);
+  const { isOnStudentSide } = mainNavProperties;
+
   const path = useLocation().pathname;
 
   const [overlayTransition, setOverlayTransition] = useState({});
@@ -56,38 +60,29 @@ export default function BottomNav({ isOnStudentSide, isTeacher }) {
   return (
     <>
       {renderBottomNav && (
-        <>
-          <s.BottomNav
-            $bottomNavTransition={bottomNavTransition}
-            $isOnStudentSide={isOnStudentSide}
-          >
-            {isOnStudentSide && <BottomNavOptionsForStudent />}
+        <s.BottomNav $bottomNavTransition={bottomNavTransition}>
+          {isOnStudentSide && <BottomNavOptionsForStudent />}
 
-            {!isOnStudentSide && <BottomNavOptionsForTeacher />}
+          {!isOnStudentSide && <BottomNavOptionsForTeacher />}
 
-            <BottomNavOption
-              linkTo={"/account_settings"}
-              currentPath={path}
-              icon={<NavIcon name="settings" />}
-              text={strings.settings}
-              isOnStudentSide={isOnStudentSide}
-            />
+          <BottomNavOption
+            linkTo={"/account_settings"}
+            currentPath={path}
+            icon={<NavIcon name="settings" />}
+            text={strings.settings}
+          />
 
-            <BottomNavOption
-              onClick={handleShowMoreOptions}
-              icon={<NavIcon name="more" />}
-              text={strings.more}
-              isOnStudentSide={isOnStudentSide}
-            />
-          </s.BottomNav>
-        </>
+          <BottomNavOption
+            onClick={handleShowMoreOptions}
+            icon={<NavIcon name="more" />}
+            text={strings.more}
+          />
+        </s.BottomNav>
       )}
 
       {renderMoreOptions && (
         <MoreOptionsPanel
           currentPath={path}
-          isOnStudentSide={isOnStudentSide}
-          isTeacher={isTeacher}
           overlayTransition={overlayTransition}
           moreOptionsTransition={moreOptionsTransition}
           handleHideMoreOptions={handleHideMoreOptions}

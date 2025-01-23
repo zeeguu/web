@@ -1,16 +1,16 @@
-import * as s from "./AppWithMainNav.sc";
+import * as s from "./MainNavWithComponent.sc";
 import MainNav from "./components/MainNav/MainNav";
 import useScreenWidth from "./hooks/useScreenWidth";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 
-export default function AppWithMainNav(props) {
+export default function MainNavWithComponent(props) {
   const { children: appContent } = props;
   const { screenWidth } = useScreenWidth();
 
   const path = useLocation().pathname;
 
   return (
-    <s.AppWithMainNav $screenWidth={screenWidth}>
+    <s.MainNavWithComponent $screenWidth={screenWidth}>
       <MainNav screenWidth={screenWidth} />
       <s.AppContent
         $currentPath={path}
@@ -19,6 +19,6 @@ export default function AppWithMainNav(props) {
       >
         {appContent}
       </s.AppContent>
-    </s.AppWithMainNav>
+    </s.MainNavWithComponent>
   );
 }
