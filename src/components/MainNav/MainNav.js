@@ -8,17 +8,8 @@ import { mainNavTheme } from "./mainNavTheme";
 import { MainNavContext } from "../../contexts/MainNavContext";
 
 export default function MainNav({ screenWidth }) {
-  const { mainNavProperties, setMainNavProperties } =
-    useContext(MainNavContext);
+  const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
-
-  const path = useLocation().pathname;
-  useEffect(() => {
-    setMainNavProperties({
-      ...mainNavProperties,
-      isOnStudentSide: !path.includes("teacher"),
-    });
-  }, [path]);
 
   return (
     // More about ThemeProviders (https://styled-components.com/docs/advanced)

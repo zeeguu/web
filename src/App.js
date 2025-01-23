@@ -30,8 +30,6 @@ import useRedirectLink from "./hooks/useRedirectLink";
 import LoadingAnimation from "./components/LoadingAnimation";
 import { userHasNotExercisedToday } from "./exercises/utils/daysSinceLastExercise";
 
-import { MainNavContext } from "./contexts/MainNavContext";
-
 function App() {
   const [api] = useState(new Zeeguu_API(API_ENDPOINT));
 
@@ -151,17 +149,12 @@ function App() {
     setUser(newUserValue);
 
     /* If a redirect link exists, uses it to redirect the user,
-                otherwise, uses the location from the function argument. */
+                            otherwise, uses the location from the function argument. */
     handleRedirectLinkOrGoTo("/articles");
   }
 
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
-
-  //Initial state and setter passed to the value prop of the MainNavContext.Provider
-  const [mainNavProperties, setMainNavProperties] = useState({
-    isOnStudentSide: true,
-  });
 
   if (userData === undefined) {
     return <LoadingAnimation />;
@@ -174,33 +167,26 @@ function App() {
           <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
             <ExerciseCountContext.Provider value={exerciseNotification}>
               <APIContext.Provider value={api}>
-                <MainNavContext.Provider
-                  value={{
-                    mainNavProperties: mainNavProperties,
-                    setMainNavProperties: setMainNavProperties,
-                  }}
-                >
-                  {/* Routing*/}
-                  <MainAppRouter
-                    api={api}
-                    setUser={setUserData}
-                    hasExtension={isExtensionAvailable}
-                    handleSuccessfulLogIn={handleSuccessfulLogIn}
-                  />
+                {/* Routing*/}
+                <MainAppRouter
+                  api={api}
+                  setUser={setUserData}
+                  hasExtension={isExtensionAvailable}
+                  handleSuccessfulLogIn={handleSuccessfulLogIn}
+                />
 
-                  <ToastContainer
-                    position="bottom-right"
-                    autoClose={2000}
-                    hideProgressBar={true}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                  />
-                </MainNavContext.Provider>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
               </APIContext.Provider>
             </ExerciseCountContext.Provider>
           </UserContext.Provider>
