@@ -173,8 +173,8 @@ export default function Exercises({
   }
 
   function updateIsOutOfWordsToday() {
-    api.getTopBookmarksToStudy((topBookmarks) => {
-      setIsOutOfWordsToday(topBookmarks.length === 0);
+    api.getTopBookmarksCount((bookmarkCount) => {
+      setIsOutOfWordsToday(bookmarkCount === 0);
     });
   }
 
@@ -183,21 +183,24 @@ export default function Exercises({
     if (articleID) {
       exercise_article_bookmarks();
     } else {
-      api.getTopBookmarksToStudy((bookmarks) => {
+      api.getTopBookmarksCount((bookmarkCount) => {
         let exerciseSession =
-          bookmarks.lengh <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+          bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
-        initializeExercises(
-          bookmarks.slice(0, exerciseSession + 1),
-          strings.exercises,
+        api.getTopBookmarksToStudy(exerciseSession, (bookmarks) =>
+          initializeExercises(
+            bookmarks.slice(0, exerciseSession + 1),
+            strings.exercises,
+          ),
         );
       });
     }
   }
 
   function exercise_article_bookmarks() {
-    api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
+    api.bookmarksToStudyForArticle(articleID, true, (bookmarks) => {
+      console.log(bookmarks);
       api.getArticleInfo(articleID, (data) => {
         exerciseNotification.unsetExerciseCounter();
         initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');

@@ -19,7 +19,7 @@ export default function Learning({ api }) {
     useState();
 
   useEffect(() => {
-    api.getUserBookmarksInPipeline((bookmarks) => {
+    api.getUserBookmarksInPipeline(false, (bookmarks) => {
       const _receptiveWords = bookmarks.filter(
         (word) => word.learning_cycle === LEARNING_CYCLE.RECEPTIVE,
       );
@@ -29,7 +29,7 @@ export default function Learning({ api }) {
       setReceptiveWords(_receptiveWords);
       setProductiveWords(_productiveWords);
     });
-    api.getBookmarksToLearn((bookmarks) => {
+    api.getBookmarksToLearn(false, (bookmarks) => {
       setToLearnWords(bookmarks);
     });
     setTitle(strings.titleToLearnWords);

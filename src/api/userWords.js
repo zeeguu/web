@@ -30,11 +30,18 @@ Zeeguu_API.prototype.bookmarksForArticle = function (articleId, callback) {
 
 Zeeguu_API.prototype.bookmarksToStudyForArticle = function (
   articleId,
+  withTokens,
   callback,
 ) {
-  this._getJSON(`bookmarks_to_study_for_article/${articleId}`, (result) =>
-    callback(result.bookmarks),
-  );
+  if (withTokens)
+    this._getJSON(
+      `bookmarks_to_study_for_article/${articleId}/with_tokens`,
+      (result) => callback(result),
+    );
+  else
+    this._getJSON(`bookmarks_to_study_for_article/${articleId}`, (result) =>
+      callback(result),
+    );
 };
 
 // individual bookmark handling
