@@ -9,6 +9,7 @@ import { UMR_SOURCE } from "../reader/ArticleReader";
 import { LEARNING_CYCLE } from "../exercises/ExerciseTypeConstants";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Feature from "../features/Feature";
+import LocalStorage from "../assorted/LocalStorage";
 
 export default function Learning({ api }) {
   const [inLearningWords, setInLearningWords] = useState(null);
@@ -139,7 +140,6 @@ export default function Learning({ api }) {
       )}
 
       <CollapsablePanel topMessage="Not Yet In Study">
-
         {toLearnWords.length > 0 && (
           <s.TopMessage>
             <div className="top-message-icon">
