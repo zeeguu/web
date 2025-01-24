@@ -20,7 +20,7 @@ let strings = new LocalizedStrings(
       myClasses: "My Classrooms",
       myTexts: "My Texts",
       tutorials: "Help",
-      login: "Log in",
+      login: "Log In",
       register: "Register",
       getStarted: "Get Started",
       createAccount: "Create Account",
@@ -30,15 +30,15 @@ let strings = new LocalizedStrings(
       zeeguuTeamEmail: "zeeguu.team@gmail.com",
       name: "Name",
       fullName: "Full Name",
-      fullNamePlaceholder: "First And Last Name",
+      fullNamePlaceholder: "First and last name",
       learnedLanguage: "I want to learn",
       learnedLanguagePlaceholder: "Select language",
       plsProvideValidEmail: "Please provide a valid email.",
       plsAcceptPrivacyNotice: "Please accept Privacy Notice",
       password: "Password",
       passwordConfirm: "Confirm Password",
-      passwordPlaceholder: "Enter Password",
-      passwordConfirmPlaceholder: "Re-enter Password",
+      passwordPlaceholder: "Enter password",
+      passwordConfirmPlaceholder: "Re-enter password",
       passwordHelperText: "Must contain at least 4 characters",
       resetYourPassword: "reset your password",
       resetPassword: "Reset Password",
@@ -81,7 +81,7 @@ let strings = new LocalizedStrings(
         "Thanks for being a beta-tester. We really want to hear from you at",
       thankYouMsgSuffix: ". Contact us also if you don't have an invite code.",
       inviteCode: "Invite Code",
-      inviteCodePlaceholder: "Enter Your Invite Code",
+      inviteCodePlaceholder: "Enter your invite code",
       levelOfLearnedLanguage: "My current level",
       levelOfLearnedLanguagePlaceholder: "Select level",
       baseLanguage: "I want translations in",
@@ -99,8 +99,8 @@ let strings = new LocalizedStrings(
       //ExcludeWords
       excludeWords: "Exclude Words",
       excludedKeywords: "Excluded Keywords",
-      addUnwantedWordHelperText: "Add one unwanted word / phrase at a time",
-      unwantedWordPlaceholder: "e.g. robbery",
+      addUnwantedWordHelperText: "Add one unwanted word or phrase at a time",
+      unwantedWordPlaceholder: "E.g. robbery",
 
       //PrivacyNotice
       privacyNotice: "Privacy Notice",
@@ -334,8 +334,10 @@ let strings = new LocalizedStrings(
         "The most important words that you translated. Ordered by frequency of occurrence in your learned language. To see all your past translations, go to History.",
       //To Learn
       titleToLearnWords: "Words to Learn",
+      toLearnMsgLearningCycles:
+        "These words have not yet been practiced in the exercises. Once you practice them for the first time they will be shown under Receptive.",
       toLearnMsg:
-        "These words have not yet been practiced in Exercises. Once you exercise them for the first time they will move into the Receptive status.",
+        "These words have not yet been practiced in the exercises. Once you practice them for the first time they will be shown under In Learning.",
       noToLearnWords:
         "You have no words you haven't practiced. Keep reading and translating to add some.",
 
@@ -394,11 +396,11 @@ let strings = new LocalizedStrings(
       theWordsYouTranslate:
         "The words you translate in the article will appear here for review",
       backToArticle: "Back to Article",
-      toExercises: "To Exercises",
+      toPracticeWords: "Practice Words",
 
       //EmptyArticles
       noArticles:
-        'We can not find articles in the language you want to study and for your current interests. Consider changing your interests. Alternatively read articles with the help of the Zeeguu browser extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
+        'We cannot find articles in the language you want to study and for your current interests. Consider changing your interests. Alternatively read articles with the help of the Zeeguu browser extension. You can also add articles to "My Texts" through the "Save article to Zeeguu.org" button from within the extension.',
       newssites: "Examples of some of the most popular news sites are:",
 
       //ExerciseType
@@ -527,10 +529,11 @@ let strings = new LocalizedStrings(
 
       //ExerciseNavigation
       backToReading: "Back to Reading",
-      goToReading: "Go To Reading",
+      goToReading: "Go to Reading",
       backToWords: "Back to Words",
-      keepExercising: "Keep Exercising",
+      keepExercising: "Keep Practicing",
       startLearningNewWords: "Start Learning New Words",
+      goToExercises: "Go to Exercises",
 
       //CongratulationsPage
       goodJob: "Good Job, ",
@@ -784,13 +787,13 @@ let strings = new LocalizedStrings(
       soTheStudentCanJoinClass: "so they can sign up and join the classroom.",
 
       //PractisedWordsCard
-      practisedWords: "Practised Words",
+      practisedWords: "Practiced Words",
       timeSpendOnExercises: "Time spent on exercises",
       numberOfWords: "Number of words",
       solvedOnFirstAttempt: "Solved on 1st attempt",
 
       //PractisedWordsList
-      noPractisedWordsYet: "The student has not practised any words yet.",
+      noPractisedWordsYet: "The student has not practiced any words yet.",
 
       //StudentActivityDataCircleWrapper
       level: "level",
@@ -879,9 +882,9 @@ let strings = new LocalizedStrings(
       wordsTranslatedButNotInZeeguu:
         "Words/sentences translated by the student but not studied in Zeeguu",
       wordsTranslatedAndLearned:
-        "Words/sentences practised correctly on four different days or tagged 'Too easy'",
+        "Words/sentences practiced correctly on four different days or tagged 'Too easy'",
       wordsTranslatedAndExercised:
-        "Practised words/sentences - translated and exercised by the student",
+        "Practiced words/sentences - translated and exercised by the student",
 
       //StudentExercisesInsights
       hasCompleted: " has completed ",

@@ -73,6 +73,22 @@ export default function Parent({}) {
 }
 ```
 
+## Style Guidelines for the UI
+
+#### General Rules
+
+- Buttons: Use Title Case for all button labels. (Example: "Save Changes", "Log In")
+- UI Text Elements (e.g. forms, descriptions): Use Sentence case. (Example: "Enter your email address.")
+
+#### Specific Terminology
+
+- Use the noun "Login" when referring to credentials or in titles. (Example: "Login details", "Secure Login")
+- Use the verb "Log In" for the action. (Example: "Log In" button, "Log in to your account")
+
+#### Language Preference
+
+- We use US English for spelling and terminology. (Example: "color" instead of "colour", "practice" instead of "practise")
+
 ## Notes
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

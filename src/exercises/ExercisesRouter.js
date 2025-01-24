@@ -1,7 +1,6 @@
 import { Switch, useHistory } from "react-router-dom";
 import { PrivateRoute } from "../PrivateRoute";
 import Exercises from "./Exercises";
-import ExercisesForArticle from "./ExercisesForArticle";
 import * as s from "../components/ColumnWidth.sc";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 
@@ -18,29 +17,21 @@ export default function ExercisesRouter({ api }) {
     api.logReaderActivity(api.KEEP_EXERCISING, "", "", UMR_SOURCE);
   };
 
+  const toScheduledExercises = () => {
+    history.push("/exercises");
+    api.logReaderActivity(api.TO_SCHEDULED_EXERCISES, "", "", UMR_SOURCE);
+  };
+
   return (
     <s.NarrowColumn>
       <Switch>
-        <PrivateRoute
-          path="/exercises/forArticle/:articleID"
-          api={api}
-          component={ExercisesForArticle}
-          source={UMR_SOURCE}
-        />
-
-        <PrivateRoute
-          path="/render/exercises/forArticle/:articleID"
-          api={api}
-          component={ExercisesForArticle}
-          source={UMR_SOURCE}
-        />
-
         <PrivateRoute
           path="/exercises"
           api={api}
           component={Exercises}
           backButtonAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}
+          toScheduledExercises={toScheduledExercises}
           source={UMR_SOURCE}
         />
       </Switch>

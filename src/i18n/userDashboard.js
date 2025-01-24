@@ -3,19 +3,19 @@ import LocalizedStrings from "localized-strings";
 let compactFormat = {
   tabActivity: {
     en: "Time",
-    da: "Time",
+    da: "Tid",
   },
   tabWords: {
     en: "Translations",
     da: "Ord",
   },
   minutes: {
-    en: "minutes",
-    da: "minutter",
+    en: "Minutes",
+    da: "Minutter",
   },
   hours: {
-    en: "hours",
-    da: "timer",
+    en: "Hours",
+    da: "Timer",
   },
   last7days: {
     en: "Last 7 days",

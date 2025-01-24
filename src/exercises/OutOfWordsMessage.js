@@ -1,16 +1,12 @@
 import * as s from "./exerciseTypes/Exercise.sc";
-import * as sc from "../reader/ArticleReader.sc";
 import strings from "../i18n/definitions";
 import Pluralize from "../utils/text/pluralize";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
+import { StyledButton } from "../components/allButtons.sc";
 
-export default function OutOfWordsMessage({
-  totalInLearning,
-  goBackAction,
-  keepExercisingAction,
-}) {
+export default function OutOfWordsMessage({ totalInLearning, goBackAction }) {
   const { screenWidth } = useScreenWidth();
   return (
     <s.Exercise>
@@ -30,9 +26,9 @@ export default function OutOfWordsMessage({
         </p>
       </div>
       <s.BottomRow>
-        <sc.OrangeButton onClick={goBackAction}>
-          {"Go to reading"}
-        </sc.OrangeButton>
+        <StyledButton primary onClick={goBackAction}>
+          {"Go to Reading"}
+        </StyledButton>
       </s.BottomRow>
     </s.Exercise>
   );

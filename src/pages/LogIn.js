@@ -63,7 +63,7 @@ export default function LogIn({ api, handleSuccessfulLogIn }) {
   return (
     <PreferencesPage pageWidth={"narrow"}>
       <Header>
-        <Heading>Log in</Heading>
+        <Heading>Login</Heading>
       </Header>
       <Main>
         <Form action={""} method={"post"}>

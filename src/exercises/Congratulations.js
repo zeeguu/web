@@ -13,6 +13,7 @@ import Pluralize from "../utils/text/pluralize";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+import { StyledButton } from "../components/allButtons.sc";
 
 export default function Congratulations({
   articleID,
@@ -25,6 +26,7 @@ export default function Congratulations({
   api,
   backButtonAction,
   keepExercisingAction,
+  toScheduledExercises,
   source,
   exerciseSessionTimer,
 }) {
@@ -63,17 +65,40 @@ export default function Congratulations({
   }
 
   function progressionButtonRender() {
-    if (!isOutOfWordsToday)
+    const isKeepExercisingDisabled =
+      incorrectBookmarksToDisplay.length === 0 &&
+      correctBookmarksToDisplay.length === 0;
+
+    if (articleID)
       return (
-        <s.OrangeButton className="orangeButton" onClick={keepExercisingAction}>
+        <>
+          <StyledButton
+            secondary
+            onClick={keepExercisingAction}
+            disabled={isKeepExercisingDisabled}
+          >
+            {strings.keepExercising}
+          </StyledButton>
+          <StyledButton primary onClick={toScheduledExercises}>
+            {strings.goToExercises}
+          </StyledButton>
+        </>
+      );
+    else if (!isOutOfWordsToday)
+      return (
+        <StyledButton
+          primary
+          onClick={keepExercisingAction}
+          disabled={isKeepExercisingDisabled}
+        >
           {strings.keepExercising}
-        </s.OrangeButton>
+        </StyledButton>
       );
     else
       return (
-        <s.OrangeButton className="orangeButton" onClick={backButtonAction}>
+        <StyledButton primary onClick={backButtonAction}>
           {strings.goToReading}
-        </s.OrangeButton>
+        </StyledButton>
       );
   }
 
@@ -81,6 +106,7 @@ export default function Congratulations({
     <>
       <s.NarrowColumn className="narrowColumn">
         {screenWidth < MOBILE_WIDTH && <BackArrow />}
+
         <CenteredColumn className="centeredColumn">
           <h1>
             {strings.goodJob} {username}!
@@ -90,7 +116,14 @@ export default function Congratulations({
           <p>
             You have reviewed <b>{totalPracticedBookmarksInSession}</b>{" "}
             {Pluralize.word(totalBookmarksReviewed)} in{" "}
-            {timeToHumanReadable(checkpointTime)}.
+            <b>{timeToHumanReadable(checkpointTime)}</b>.
+            {articleID && (
+              <p>
+                These words are now part of your vocabulary exercises, using
+                spaced repetition and smart learning techniques to help you
+                remember them better.
+              </p>
+            )}
           </p>
           {/*
           <p>
@@ -114,7 +147,10 @@ export default function Congratulations({
             </p>
           )}
         </div>
-        <CenteredColumn className="CenteredColumn" style={{ marginTop: "2em" }}>
+        <CenteredColumn
+          className="contentOnRow"
+          style={{ marginTop: "2em", justifyContent: "space-around" }}
+        >
           {progressionButtonRender()}
         </CenteredColumn>
         {articleID && (
