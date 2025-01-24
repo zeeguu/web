@@ -14,14 +14,16 @@ export default function LevelIndicatorCircles({
 
   function getCircleClass(index, level, levelIsBlinking, levelCompleted) {
     if (index === 0) {
-      return "level-circle filled" + (levelIsBlinking ? " blink" : "");
+      return (
+        "level-circle filled" + (level === 1 && levelIsBlinking ? " blink" : "")
+      );
     } else if (index === level - 1 && levelIsBlinking) {
       return "level-circle passed blink";
     } else if (index === maxLevel) {
       return "level-circle final";
     } else if (index === maxLevel && levelCompleted) {
       return "level-circle final learned";
-    } else if (index <= level - 1 || (index === level && levelCompleted)) {
+    } else if (index <= level - 1) {
       return "level-circle passed";
     } else {
       return "level-circle upcoming";

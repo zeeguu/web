@@ -31,6 +31,7 @@ export default function LevelIndicator({
   cooling_interval = cooling_interval ?? 0;
   cooling_interval =
     cooling_interval >= COOLING_INTERVALS_PER_LEVEL ? 0 : cooling_interval;
+  const shouldBlink = cooling_interval === 0 && userIsWrong;
 
   // update the level and cooling interval based on the user correctness
   // these variables are defined only after the user has attempted a solution
@@ -56,7 +57,7 @@ export default function LevelIndicator({
         <LevelIndicatorCircles
           totalLearningStages={totalCircles}
           levelCompleted={is_last_in_cycle && userIsCorrect}
-          levelIsBlinking={cooling_interval === 0 && userIsWrong}
+          levelIsBlinking={shouldBlink}
           showNewNotification={isNewBookmark}
           levelInProgress={level}
           tooltipText={

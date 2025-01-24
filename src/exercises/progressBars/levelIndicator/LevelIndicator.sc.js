@@ -64,23 +64,15 @@ const LevelIndicator = styled.div`
   }
 
   .level-circle.blink {
-    animation: blink-animation 1.5s 1;
-  }
-  @keyframes blink-animation {
-    0% {
-      background-color: #74a664;
-    }
-    25% {
-      background-color: ${zeeguuWarmYellow};
-    }
-    50% {
-      background-color: #e0e0e0;
-    }
-    75% {
-      background-color: ${zeeguuWarmYellow};
-    }
-    100% {
-      background-color: #74a664;
+    animation: blink-animation 0.75s 2 alternate;
+
+    @keyframes blink-animation {
+      0% {
+        background-color: #74a664;
+      }
+      100% {
+        background-color: ${zeeguuWarmYellow};
+      }
     }
   }
 
