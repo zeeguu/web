@@ -5,7 +5,7 @@ import {
   veryLightGrey,
   zeeguuLightYellow,
   zeeguuOrange,
-  zeeguuVarmYellow,
+  zeeguuWarmYellow,
   lighterBlue,
   lightGrey,
 } from "../components/colors";
@@ -356,7 +356,7 @@ let InteractiveBox = styled.div`
     text-align: center;
   }
   .selected {
-    background-color: ${zeeguuVarmYellow} !important;
+    background-color: ${zeeguuWarmYellow} !important;
     color: white !important;
   }
 `;
@@ -382,7 +382,7 @@ let InvisibleBox = styled.div`
     text-align: center;
   }
   .selected {
-    background-color: ${zeeguuVarmYellow} !important;
+    background-color: ${zeeguuWarmYellow} !important;
     color: white !important;
   }
   .hovered {
@@ -418,7 +418,7 @@ let CombinedBox = styled.div`
     text-align: center;
   }
   .selected {
-    background-color: ${zeeguuVarmYellow} !important;
+    background-color: ${zeeguuWarmYellow} !important;
     color: white !important;
   }
 `;

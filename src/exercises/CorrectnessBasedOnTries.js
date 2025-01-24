@@ -4,5 +4,5 @@ export function correctnessBasedOnTries(message) {
   );
   const userIsWrong = message.includes("W") || message.includes("S");
 
-  return { userIsCorrect, userIsWrong };
+  return [userIsCorrect, userIsWrong];
 }

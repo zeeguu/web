@@ -14,7 +14,7 @@ import DisableAudioSession from "../DisableAudioSession.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 
 // The user has to select the correct spoken L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
@@ -181,7 +181,7 @@ export default function MultipleChoiceAudio({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceAudioHeadline}
       </div>
-      <LearningCycleIndicator
+      <BookmarkProgressBar
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />

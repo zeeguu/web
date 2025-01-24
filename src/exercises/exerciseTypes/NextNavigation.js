@@ -36,7 +36,7 @@ export default function NextNavigation({
   isBookmarkChanged,
 }) {
   const exercise = "exercise";
-  const [userIsCorrect] = useState(correctnessBasedOnTries(messageForAPI));
+  const [userIsCorrect] = correctnessBasedOnTries(messageForAPI);
 
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
@@ -65,17 +65,9 @@ export default function NextNavigation({
   // if one is about actual answer correctness and the other is about correct answer being on screen, this should be clearer
   const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
   const isRightAnswer = messageForAPI.includes("C"); // User has gotten to the right answer, but not necessarily api correct
-  const levelsFeature = Feature.exercise_levels();
-  const isLastLevel = bookmarkBeingTested.level === 4;
 
   const bookmarkLearned =
-    isUserAndAnswerCorrect &&
-    isLastInCycle &&
-    ((levelsFeature && isLastLevel) ||
-      (learningCycleFeature &&
-        (isLearningCycleTwo ||
-          (isLearningCycleOne && productiveExercisesDisabled))));
-  // amazing!
+    isUserAndAnswerCorrect && bookmarkBeingTested.is_about_to_be_learned;
 
   // this next one is only for the Merle exercises with two learning cycles
   const bookmarkIsProgressingToNextLearningCycle =

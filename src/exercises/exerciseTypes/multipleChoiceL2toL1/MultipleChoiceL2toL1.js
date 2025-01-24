@@ -11,7 +11,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
-import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
@@ -112,7 +112,7 @@ export default function MultipleChoiceL2toL1({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceL2toL1Headline}
       </div>
-      <LearningCycleIndicator
+      <BookmarkProgressBar
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />

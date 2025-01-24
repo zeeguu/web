@@ -1,12 +1,12 @@
-import * as s from "./ProgressBar.sc";
+import * as s from "./ExerciseSessionProgressBar.sc";
 function percentageDone(index, total) {
   var p = Math.floor((index / total) * 100);
   return p;
 }
 
-export default function ProgressBar({ index, total, clock }) {
+export default function ExerciseSessionProgressBar({ index, total, clock }) {
   return (
-    <s.ProgressBar>
+    <s.ExerciseSessionProgressBar>
       <div className="progressModule">
         <div className="ex-progress">
           <div
@@ -16,6 +16,6 @@ export default function ProgressBar({ index, total, clock }) {
           {clock}
         </div>
       </div>
-    </s.ProgressBar>
+    </s.ExerciseSessionProgressBar>
   );
 }

@@ -4,7 +4,7 @@ import {
   zeeguuDarkRed,
   zeeguuOrange,
   zeeguuTransparentLightOrange,
-  zeeguuVarmYellow,
+  zeeguuWarmYellow,
 } from "../../components/colors";
 import StyledButton from "../exerciseTypes/Exercise.sc";
 
@@ -121,7 +121,7 @@ const UndoButton = styled.button`
   margin-left: 1em;
   background-color: ${alertGreen};
   border: none;
-  color: ${zeeguuVarmYellow}; //red will not work for color blind people on green background
+  color: ${zeeguuWarmYellow}; //red will not work for color blind people on green background
   font-weight: bold;
   cursor: pointer;
 `;
