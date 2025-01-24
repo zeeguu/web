@@ -5,13 +5,13 @@ import {
 } from "./LevelIndicator";
 
 export default function LevelIndicatorBar({
-  isHidden,
+  isGreyedOutBar,
   cooling_interval,
   level,
 }) {
   const progressWithinLevel = cooling_interval / COOLING_INTERVALS_PER_LEVEL;
 
-  const progressBarWidth = isHidden
+  const progressBarWidth = isGreyedOutBar
     ? 0
     : ((level - 1) / LEVELS) * 100 + progressWithinLevel * LEVELS_IN_PERCENT;
 

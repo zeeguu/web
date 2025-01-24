@@ -55,9 +55,9 @@ function handleBookmarkThatNeedsToBeMigrated(bookmark) {
 }
 
 const GrayedOutIndicator = (
-  <s.LevelIndicator isHidden={true}>
+  <s.LevelIndicator isGreyedOutBar={true}>
     <div className="level-indicator">
-      <LevelIndicatorBar isHidden={true} />
+      <LevelIndicatorBar isGreyedOutBar={true} />
       <LevelIndicatorCircles
         totalLearningStages={TOTAL_CIRCLES}
         levelInProgress={0}
@@ -103,7 +103,7 @@ export default function LevelIndicator({
     <s.LevelIndicator isGreyedOutBar={isGreyedOutBar}>
       <div className="level-indicator">
         <LevelIndicatorBar
-          isHidden={isHidden}
+          isGreyedOutBar={isGreyedOutBar}
           cooling_interval={cooling_interval}
           level={level}
         />
