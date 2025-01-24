@@ -10,7 +10,6 @@ export const LEVELS_IN_PERCENT = 100 / LEVELS;
 const TOTAL_CIRCLES = LEVELS + 1;
 
 function handleBookmarkThatNeedsToBeMigrated(bookmark) {
-
   const COOLING_INTERVAL_TO_LEVEL_MAPPING = {
     0: 1,
     1: 1,
@@ -41,7 +40,7 @@ function handleBookmarkThatNeedsToBeMigrated(bookmark) {
 
   // extra bonus for receptive and cooling cycle 8
   if (learning_cycle === 1) {
-    if (cooling_interval === ONE_DAY * 8) {
+    if (cooling_interval === 8) {
       new_level += 1;
     }
   }
