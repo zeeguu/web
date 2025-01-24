@@ -208,7 +208,7 @@ export default function Match({
       <BookmarkProgressBar
         bookmark={selectedBookmark}
         message={selectedBookmarkMessage}
-        isHidden={selectedBookmark === undefined}
+        isGreyedOutBar={selectedBookmark === undefined}
       />
 
       <MatchInput

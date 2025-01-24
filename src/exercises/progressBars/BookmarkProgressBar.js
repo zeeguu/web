@@ -4,7 +4,11 @@ import { correctnessBasedOnTries } from "../CorrectnessBasedOnTries.js";
 import LevelIndicator from "./levelIndicator/LevelIndicator.js";
 import LearningCycleIndicator from "./LearningCycleIndicator.js";
 
-export default function BookmarkProgressBar({ bookmark, message, isHidden }) {
+export default function BookmarkProgressBar({
+  bookmark,
+  message,
+  isGreyedOutBar,
+}) {
   // Note that the userIsCorrect and userIsWrong states are needed both
   // for the logic of this component to work.
   // When message changes, the correctness changes but the two can still be
@@ -26,7 +30,7 @@ export default function BookmarkProgressBar({ bookmark, message, isHidden }) {
           bookmark={bookmark}
           userIsCorrect={userIsCorrect}
           userIsWrong={userIsWrong}
-          isHidden={isHidden}
+          isGreyedOutBar={isGreyedOutBar}
         />
       )}
       {Feature.merle_exercises() && (
@@ -34,7 +38,7 @@ export default function BookmarkProgressBar({ bookmark, message, isHidden }) {
           bookmark={bookmark}
           userIsCorrect={userIsCorrect}
           userIsWrong={userIsWrong}
-          isHidden={isHidden}
+          isGreyedOutBar={isGreyedOutBar}
         />
       )}
     </>

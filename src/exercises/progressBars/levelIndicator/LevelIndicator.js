@@ -10,7 +10,6 @@ export const LEVELS_IN_PERCENT = 100 / LEVELS;
 const TOTAL_CIRCLES = LEVELS + 1;
 
 function handleBookmarkThatNeedsToBeMigrated(bookmark) {
-  const ONE_DAY = 60 * 24;
 
   const COOLING_INTERVAL_TO_LEVEL_MAPPING = {
     0: 1,
@@ -72,13 +71,11 @@ export default function LevelIndicator({
   bookmark,
   userIsCorrect,
   userIsWrong,
-  isHidden,
+  isGreyedOutBar,
 }) {
   if (bookmark === undefined) {
     return GrayedOutIndicator;
   }
-
-  console.log(bookmark);
 
   // when we create a new bookmark, the level is automatically set to zero
   // (for backwards compatibility we also set all the levels to zero)
@@ -87,9 +84,6 @@ export default function LevelIndicator({
 
   let { cooling_interval, level, is_last_in_cycle } =
     handleBookmarkThatNeedsToBeMigrated(bookmark);
-
-  console.log("after conversion: ");
-  console.log(cooling_interval, level, is_last_in_cycle);
 
   const shouldBlink = cooling_interval === 0 && userIsWrong;
 
@@ -107,7 +101,7 @@ export default function LevelIndicator({
   }
 
   return (
-    <s.LevelIndicator isHidden={isHidden}>
+    <s.LevelIndicator isGreyedOutBar={isGreyedOutBar}>
       <div className="level-indicator">
         <LevelIndicatorBar
           isHidden={isHidden}

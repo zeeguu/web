@@ -10,13 +10,13 @@ export default function LearningCycleIndicator({
   bookmark,
   userIsCorrect,
   userIsWrong,
-  isHidden,
+  isGreyedOutBar,
 }) {
   let learningCycle = bookmark.learning_cycle;
   let coolingInterval = bookmark.cooling_interval;
 
   const getLearningCycleIcon = () => {
-    if (isHidden) {
+    if (isGreyedOutBar) {
       return "/static/icons/active-icon-lightGrey.png";
     }
     switch (LEARNING_CYCLE_NAME[learningCycle]) {
@@ -50,7 +50,7 @@ export default function LearningCycleIndicator({
     let color = "grey";
     let widthMultiplier = Math.pow(1.8, index);
 
-    if (isHidden) {
+    if (isGreyedOutBar) {
       return { color, widthMultiplier };
     }
 
@@ -93,7 +93,7 @@ export default function LearningCycleIndicator({
               style={{ height: "2.5em", width: "2.5em" }}
             />
           </Tooltip>
-          {coolingInterval === null && !isHidden && (
+          {coolingInterval === null && !isGreyedOutBar && (
             <NotificationIcon
               style={{
                 marginRight: "-2.2em",
