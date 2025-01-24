@@ -12,7 +12,7 @@ import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
-import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 
 // The user has to write the word they hear. A context with the word omitted is shown.
@@ -127,7 +127,7 @@ export default function SpellWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.audioExerciseHeadline}
       </div>
-      <LearningCycleIndicator
+      <BookmarkProgressBar
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />

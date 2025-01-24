@@ -8,7 +8,7 @@ import { TranslatableText } from "../../../reader/TranslatableText.js";
 import { tokenize } from "../../../utils/text/preprocessing.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
-import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
 
 //shared code for ClickWordInContext and FindWordInContext exercises
@@ -167,7 +167,7 @@ export default function WordInContextExercise({
   return (
     <s.Exercise className={exerciseType}>
       <div className="headlineWithMoreSpace">{exerciseHeadline}</div>
-      <LearningCycleIndicator
+      <BookmarkProgressBar
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />

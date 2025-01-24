@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 
 import Congratulations from "./Congratulations";
-import ProgressBar from "./ProgressBar";
+import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
 import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -17,8 +17,8 @@ import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
-  LEARNING_CYCLE_SEQUENCE,
-  LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
+  EXTENDED_SEQUENCE,
+  EXTENDED_SEQUENCE_NO_AUDIO,
   DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
@@ -123,11 +123,12 @@ export default function Exercises({
 
   function getExerciseSequenceType() {
     let exerciseTypesList;
-    if (Feature.merle_exercises()) exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
+    if (Feature.merle_exercises() || Feature.exercise_levels())
+      exerciseTypesList = EXTENDED_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
-      if (Feature.merle_exercises())
-        exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
+      if (Feature.merle_exercises() || Feature.exercise_levels())
+        exerciseTypesList = EXTENDED_SEQUENCE_NO_AUDIO;
       else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
     }
     return exerciseTypesList;
@@ -336,7 +337,8 @@ export default function Exercises({
     <>
       {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
-        <ProgressBar
+
+        <ExerciseSessionProgressBar
           index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
           clock={
