@@ -4,7 +4,6 @@ import { StyledButton } from "../components/allButtons.sc.js";
 import { useHistory } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useEffect } from "react";
-import { getStaticPath } from "../utils/misc/staticPath.js";
 
 export default function ReviewVocabularyInfoBox({
   articleID,
@@ -12,6 +11,7 @@ export default function ReviewVocabularyInfoBox({
   setClickedOnReviewVocab,
   // openReview is required in the extension
   openReview,
+  bookmarks,
 }) {
   useUILanguage();
 
@@ -28,23 +28,18 @@ export default function ReviewVocabularyInfoBox({
 
   return (
     <>
-      <s.InteractiveBox className="review-words">
-        <s.CenteredContent>
-          <div className="imgContainer">
-            <h2>Exercises</h2>
-            <div>
-              <img
-                src={getStaticPath("images", "zeeguuWhiteLogo.svg")}
-                alt="Zeeguu Logo - The Elephant"
-              />
-            </div>
-          </div>
-          <StyledButton primary onClick={handleButtonClick}>
-            <span>Review words</span>
+      <s.CenteredContent>
+        {bookmarks.length > 0 && (
+          <StyledButton
+            primary
+            onClick={handleButtonClick}
+            style={{ marginLeft: "auto", marginBottom: "5em" }}
+          >
+            <span>Review Words</span>
             {<NavigateNextIcon />}
           </StyledButton>
-        </s.CenteredContent>
-      </s.InteractiveBox>
+        )}
+      </s.CenteredContent>
     </>
   );
 }

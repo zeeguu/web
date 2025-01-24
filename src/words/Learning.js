@@ -8,7 +8,6 @@ import * as s from "../components/TopMessage.sc";
 import { UMR_SOURCE } from "../reader/ArticleReader";
 import { LEARNING_CYCLE } from "../exercises/ExerciseTypeConstants";
 import CollapsablePanel from "../components/CollapsablePanel";
-import LocalStorage from "../assorted/LocalStorage";
 import Feature from "../features/Feature";
 
 export default function Learning({ api }) {
@@ -140,6 +139,17 @@ export default function Learning({ api }) {
       )}
 
       <CollapsablePanel topMessage="Not Yet In Study">
+
+        {toLearnWords.length > 0 && (
+          <s.TopMessage>
+            <div className="top-message-icon">
+              {Feature.merle_exercises()
+                ? strings.toLearnMsgLearningCycles
+                : strings.toLearnMsg}
+            </div>
+          </s.TopMessage>
+        )}
+
         {toLearnWords.length === 0 ? (
           <s.TopMessage>{strings.noToLearnWords}</s.TopMessage>
         ) : (

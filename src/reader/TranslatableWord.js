@@ -35,15 +35,23 @@ export default function TranslatableWord({
       return;
     }
     if (translating) {
-      e.target.classList.add("loading");
-      setPreviousWord(word.word);
-      setIsWordTranslating(true);
-      interactiveText.translate(word, () => {
-        wordUpdated();
-        e.target.classList.remove("loading");
-        setIsWordTranslating(false);
-        setIsVisible(true);
-      });
+      if (!disableTranslation) {
+        /* disableTranslation means that this word
+       is being tested in the exercises.
+       In this case, we don't want to re-translate it.
+       */
+        e.target.classList.add("loading");
+        setPreviousWord(word.word);
+        setIsWordTranslating(true);
+        interactiveText.translate(word, () => {
+          wordUpdated();
+          e.target.classList.remove("loading");
+          setIsWordTranslating(false);
+          setIsVisible(true);
+        });
+      }
+      /* We want to run this still as the check on exercises
+      looks for the bookmark word in the translated words */
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
         copyOfWords.push(word.word);

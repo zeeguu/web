@@ -39,6 +39,7 @@ export default function Exercises({
   api,
   articleID,
   backButtonAction,
+  toScheduledExercises,
   source,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
@@ -91,11 +92,22 @@ export default function Exercises({
       let id = JSON.parse(newlyCreatedDBSessionID).id;
       setDbExerciseSessionId(id);
     });
+
+    if (!articleID)
+      // Only report if it's the scheduled exercises that are opened
+      // and not the article exercises
+      api.logReaderActivity(
+        api.SCHEDULED_EXERCISES_OPEN,
+        null,
+        JSON.stringify({ had_notification: exerciseNotification.hasExercises }),
+        "",
+      );
+
     setTitle("Exercises");
     startExercising();
     return () => {
       if (currentIndexRef.current > 0 || hasKeptExercisingRef.current) {
-        // Do not report if there was no exercises
+        // Do not report if there were no exercises
         // performed
         api.reportExerciseSessionEnd(
           dbExerciseSessionIdRef.current,
@@ -151,7 +163,7 @@ export default function Exercises({
   }
 
   function resetExerciseState() {
-    setIsOutOfWordsToday(false);
+    setIsOutOfWordsToday();
     setCountBookmarksToPractice();
     setFullExerciseProgression();
     setCurrentBookmarksToStudy();
@@ -164,7 +176,7 @@ export default function Exercises({
 
   function updateIsOutOfWordsToday() {
     api.getTopBookmarksToStudy((topBookmarks) => {
-      setIsOutOfWordsToday(topBookmarks.length == 0);
+      setIsOutOfWordsToday(topBookmarks.length === 0);
     });
   }
 
@@ -213,6 +225,7 @@ export default function Exercises({
             startExercising(BOOKMARKS_DUE_REVIEW);
             setHasKeptExercising(true);
           }}
+          toScheduledExercises={toScheduledExercises}
           source={source}
           exerciseSessionTimer={activeSessionDuration}
           articleURL={articleURL}
@@ -228,10 +241,6 @@ export default function Exercises({
         api={api}
         totalInLearning={totalBookmarksInPipeline}
         goBackAction={backButtonAction}
-        keepExercisingAction={() => {
-          startExercising(NEW_BOOKMARKS_TO_STUDY);
-          setHasKeptExercising(true);
-        }}
       />
     );
   }
@@ -246,8 +255,7 @@ export default function Exercises({
   function moveToNextExercise() {
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
 
-    //ML: To think about: Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
-    setIsCorrect(false);
+    setIsCorrect(null);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
     exerciseNotification.updateReactState();
@@ -329,8 +337,9 @@ export default function Exercises({
     <>
       {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
+
         <ExerciseSessionProgressBar
-          index={currentIndex}
+          index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
           clock={
             <DigitalTimer

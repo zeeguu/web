@@ -29,21 +29,22 @@ export default function AlterMenu({
 
   function shortenSource(word) {
     if (word.source === "Microsoft - without context") {
-      return "Microsoft translate";
+      return "Azure";
     }
     if (word.source === "Microsoft - with context") {
-      return "contextual Microsoft translate";
+      return "Azure (in context)";
     }
 
     if (word.source === "Google - without context") {
-      return "Goog";
+      return "Google";
     }
     if (word.source === "Google - with context") {
-      return "Goog + ctx";
+      return "Google (in context)";
     }
 
     return word.source;
   }
+
   return (
     <AlterMenuSC
       ref={refToAlterMenu}

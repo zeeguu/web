@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { darkBlue, orange600 } from "../colors";
 import { MEDIUM_WIDTH, MOBILE_WIDTH } from "./screenSize";
 
 const NavOption = styled.li`
@@ -8,11 +7,6 @@ const NavOption = styled.li`
   margin: 0.25rem 0 0.25rem;
   width: 100%;
   list-style-type: none;
-`;
-
-const FontColors = css`
-  color: ${({ $isOnStudentSide }) =>
-    $isOnStudentSide ? `${orange600}` : `${darkBlue}`};
 `;
 
 const SharedStyle = css`
@@ -27,18 +21,20 @@ const SharedStyle = css`
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: white;
+  color: ${({ theme }) => theme.btnContentDefault};
+  background-color: ${({ theme }) => theme.btnBgDefault};
   white-space: nowrap;
   border-radius: 0.25rem;
-  border: solid 0.1rem transparent;
+  border: solid 0.1rem ${({ theme }) => theme.btnBorderDefault};
   transition: 0.3s ease-in-out;
   -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 
   ${({ $isActive }) =>
     $isActive &&
     css`
-      ${FontColors}
-      background-color: white;
+      color: ${({ theme }) => theme.btnContentActive};
+      background-color: ${({ theme }) => theme.btnBgActive};
       opacity: 100%;
     `}
 
@@ -46,13 +42,13 @@ const SharedStyle = css`
     ${({ $screenWidth }) =>
       $screenWidth > MOBILE_WIDTH &&
       css`
-        border: solid 0.1rem rgba(255, 255, 255, 0.9);
+        border: solid 0.1rem ${({ theme }) => theme.btnBorderHover};);
       `}
   }
 
   &:active {
-    background-color: white;
-    ${FontColors};
+    color: ${({ theme }) => theme.btnContentActive};
+    background-color: ${({ theme }) => theme.btnBgActive};
   }
 
   &.logo {
@@ -64,9 +60,10 @@ const SharedStyle = css`
       border: solid 0.1rem transparent;
     }
 
+    //logo color is always white
     &:active {
+      color: ${({ theme }) => theme.btnContentDefault};
       background-color: transparent;
-      color: white;
     }
 
     img {
@@ -82,13 +79,11 @@ const RouterLink = styled(Link)`
 
 const OptionButton = styled.button`
   border: none;
-  background-color: transparent;
   margin: 0;
   padding: 0;
 
   &:hover {
     box-shadow: none;
-    color: white;
     margin: none;
     padding: none;
   }

@@ -4,7 +4,7 @@ import { FEEDBACK_OPTIONS } from "./FeedbackConstants";
 import NavOption from "./MainNav/NavOption";
 import FeedbackRoundedIcon from "@mui/icons-material/FeedbackRounded";
 
-export default function FeedbackButton({ isOnStudentSide, screenWidth }) {
+export default function FeedbackButton({ screenWidth }) {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   return (
     <>
@@ -19,7 +19,6 @@ export default function FeedbackButton({ isOnStudentSide, screenWidth }) {
       <NavOption
         icon={<FeedbackRoundedIcon />}
         screenWidth={screenWidth}
-        isOnStudentSide={isOnStudentSide}
         text={"Give Feedback"}
         isButton={true}
         onClick={(e) => {

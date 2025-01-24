@@ -4,7 +4,6 @@ import { isMediumScreenWidth } from "./screenSize";
 export default function NavOption({
   linkTo,
   icon,
-  isOnStudentSide,
   notification = null,
   text,
   title,
@@ -26,7 +25,6 @@ export default function NavOption({
       <Component
         $screenWidth={screenWidth}
         $isActive={isActive}
-        $isOnStudentSide={isOnStudentSide}
         className={className}
         onClick={onClick}
         to={linkTo && linkTo}
@@ -35,7 +33,7 @@ export default function NavOption({
         <s.OptionContentWrapper $screenWidth={screenWidth}>
           <s.IconContainer>{icon}</s.IconContainer>
           <s.TextWrapper $screenWidth={screenWidth}>{text}</s.TextWrapper>
-          {notification}
+          {!isActive && notification}
         </s.OptionContentWrapper>
       </Component>
     </s.NavOption>

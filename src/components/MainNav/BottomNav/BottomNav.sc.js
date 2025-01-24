@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { BgColorsTheme } from "../SideBar/Sidebar.sc";
 
 const BottomNav = styled.nav`
   box-sizing: border-box;
@@ -10,8 +9,7 @@ const BottomNav = styled.nav`
   position: fixed;
   bottom: 0;
   padding: 0.5rem 1rem 1rem 1rem;
-  ${BgColorsTheme};
-  color: white;
+  background-color: ${({ theme }) => theme.navBg};
   z-index: 1;
   transition: 0.3s ease-in-out;
   animation: ${({ $bottomNavTransition }) => $bottomNavTransition} 0.3s
