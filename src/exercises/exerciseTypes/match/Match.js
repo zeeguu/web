@@ -157,6 +157,7 @@ export default function Match({
   }
 
   function handleShowSolution() {
+    setSelectedBookmark();
     let finalMessage = "";
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       if (!exerciseAttemptsLog[i].messageToAPI.includes("C")) {
@@ -205,7 +206,7 @@ export default function Match({
       </div>
 
       <BookmarkProgressBar
-        bookmark={selectedBookmark ? selectedBookmark : bookmarksToStudy[0]}
+        bookmark={selectedBookmark}
         message={selectedBookmarkMessage}
         isGreyedOutBar={selectedBookmark === undefined}
       />

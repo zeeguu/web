@@ -1,39 +1,29 @@
 import CheckIcon from "@mui/icons-material/Check";
 import NotificationIcon from "../../../components/NotificationIcon.js";
-import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
-import strings from "../../../i18n/definitions.js";
 import SchoolIcon from "@mui/icons-material/School";
 
 export default function LevelIndicatorCircles({
   totalLearningStages,
-  userIsWrong,
-  newBookmark,
-  bookmark,
-  userIsCorrect,
+  showNewNotification,
+  levelInProgress,
+  levelCompleted,
+  levelIsBlinking,
+  tooltipText,
 }) {
-  const { cooling_interval, level, is_last_in_cycle } = bookmark;
-  const bookmarkMovesToNextLevel = is_last_in_cycle && userIsCorrect;
-  const bookmarkStaysAtCurrentLevel = cooling_interval === 0 && userIsWrong;
   const maxLevel = 4;
 
-  function getCircleClass(
-    index,
-    level,
-    bookmarkStaysAtCurrentLevel,
-    bookmarkMovesToNextLevel,
-  ) {
+  function getCircleClass(index, level, levelIsBlinking, levelCompleted) {
     if (index === 0) {
-      return "level-circle filled";
-    } else if (index === level - 1 && bookmarkStaysAtCurrentLevel) {
+      return (
+        "level-circle filled" + (level === 1 && levelIsBlinking ? " blink" : "")
+      );
+    } else if (index === level - 1 && levelIsBlinking) {
       return "level-circle passed blink";
     } else if (index === maxLevel) {
       return "level-circle final";
-    } else if (index === maxLevel && bookmarkMovesToNextLevel) {
+    } else if (index === maxLevel && levelCompleted) {
       return "level-circle final learned";
-    } else if (
-      index <= level - 1 ||
-      (index === level && bookmarkMovesToNextLevel)
-    ) {
+    } else if (index <= level - 1) {
       return "level-circle passed";
     } else {
       return "level-circle upcoming";
@@ -55,9 +45,9 @@ export default function LevelIndicatorCircles({
       {Array.from({ length: totalLearningStages }).map((_, index) => {
         const circleClass = getCircleClass(
           index,
-          level,
-          bookmarkStaysAtCurrentLevel,
-          bookmarkMovesToNextLevel,
+          levelInProgress,
+          levelIsBlinking,
+          levelCompleted,
         );
 
         return (
@@ -69,7 +59,7 @@ export default function LevelIndicatorCircles({
             }}
           >
             {getCircleIcon(index)}
-            {newBookmark && circleClass === "level-circle filled" && (
+            {showNewNotification && circleClass === "level-circle filled" && (
               <NotificationIcon
                 style={{
                   marginRight: "-2.2em",
@@ -77,11 +67,7 @@ export default function LevelIndicatorCircles({
                   left: "0.2em",
                 }}
                 text={"New!"}
-                tooltipText={
-                  isBookmarkExpression(bookmark)
-                    ? strings.newExpressionExercisesTooltip
-                    : strings.newWordExercisesTooltip
-                }
+                tooltipText={tooltipText}
               />
             )}
           </div>
