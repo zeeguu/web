@@ -206,7 +206,7 @@ export default function Match({
       </div>
 
       <BookmarkProgressBar
-        bookmark={selectedBookmark ? selectedBookmark : bookmarksToStudy[0]}
+        bookmark={selectedBookmark}
         message={selectedBookmarkMessage}
         isHidden={selectedBookmark === undefined}
       />
