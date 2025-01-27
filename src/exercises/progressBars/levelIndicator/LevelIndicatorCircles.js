@@ -19,10 +19,12 @@ export default function LevelIndicatorCircles({
       );
     } else if (index === level - 1 && levelIsBlinking) {
       return "level-circle passed blink";
+    } else if (index === maxLevel && level === maxLevel + 1 && levelCompleted) {
+      // We update the level when the bookmark is correct, so if the level is
+      // equal to maxLevel + 1, then we are at the end of the learning cycle.
+      return "level-circle final learned";
     } else if (index === maxLevel) {
       return "level-circle final";
-    } else if (index === maxLevel && levelCompleted) {
-      return "level-circle final learned";
     } else if (index <= level - 1) {
       return "level-circle passed";
     } else {
