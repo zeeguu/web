@@ -59,7 +59,6 @@ let strings = new LocalizedStrings(
       youCanChangeLater: "You can always change it later",
       yesPlease: "Yes, please",
       noThankYou: "No, thank you",
-      getStarted: "Get Started",
 
       //LoadingAnimation
       loadingMsg: "Loading...",
@@ -544,7 +543,7 @@ let strings = new LocalizedStrings(
       //Settings
       //Settings categories
       myAccount: "My Account",
-      exercises: "Exercises",
+
       accountManagement: "Account Management",
 
       //Settings main page nav options
@@ -552,7 +551,7 @@ let strings = new LocalizedStrings(
       languageSettings: "Language Settings",
       myClassrooms: "My Classrooms",
       exerciseTypePreferences: "Exercise Type Preferences",
-      interests: "Interests",
+
       deleteAccount: "Delete Account",
 
       nativeLanguage: "Native Language",
@@ -659,7 +658,6 @@ let strings = new LocalizedStrings(
       addColleague: "Add Colleague",
 
       //CohortList
-      addClass: "Add Classroom",
 
       //DeleteCohortWarning
       dangerzone: "Danger Zone!",
