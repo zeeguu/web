@@ -115,7 +115,7 @@ const ToolbarWrapper = styled.div`
   position: sticky;
   position: -webkit-sticky;
   top: 0;
-  z-index: 2000;
+  z-index: 1000;
   background-color: white;
   padding-top: 0.5rem;
 `;
