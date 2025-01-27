@@ -84,12 +84,12 @@ export default class InteractiveText {
     return this.paragraphsAsLinkedWordLists;
   }
 
-  translate(word, onSuccess) {
+  translate(word, fuseWithNeighbours, onSuccess) {
     let context, cParagraph_i, cSent_i, cToken_i;
 
     [context, cParagraph_i, cSent_i, cToken_i] =
       this.getContextAndStartingIndex(word);
-    word = word.fuseWithNeighborsIfNeeded(this.api);
+    if (fuseWithNeighbours) word = word.fuseWithNeighborsIfNeeded(this.api);
     let wordSent_i = word.sent_i - cSent_i;
     let wordToken_i = word.token_i - cToken_i;
 
@@ -106,12 +106,14 @@ export default class InteractiveText {
       )
       .then((response) => response.json())
       .then((data) => {
-        word.translation = data.translation;
-        word.service_name = data.service_name;
-        word.bookmark_id = data.bookmark_id;
+        word.updateTranslation(
+          data.translation,
+          data.service_name,
+          data.bookmark_id,
+        );
         onSuccess();
       })
-      .catch(() => {
+      .catch((e) => {
         console.log("could not retreive translation");
       });
 
@@ -249,10 +251,6 @@ export default class InteractiveText {
       );
     let rightContext = getRightContext(word.next, 32);
     let context = leftContext + word.word + rightContext;
-    console.log("DEBUGGING CONTEXT");
-    console.log(leftContext);
-    console.log(rightContext);
-    console.log(context);
     return [context, paragraph_i, sent_i, token_i];
   }
 }
