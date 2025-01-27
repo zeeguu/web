@@ -1,9 +1,9 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom/cjs/react-router-dom";
-import { orange600, darkBlue } from "../../colors";
 
 const OptionShared = css`
-  color: white;
+  color: ${({ theme }) => theme.btnContentDefault};
+  background-color: ${({ theme }) => theme.btnBgDefault};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,7 +30,6 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledButton = styled.button`
-  background-color: inherit;
   font: inherit;
   border: inherit;
   padding: inherit;
@@ -39,16 +38,15 @@ const StyledButton = styled.button`
 `;
 
 const activeIconShared = css`
-  background-color: white;
-  color: ${({ isOnStudentSide }) =>
-    isOnStudentSide ? `${orange600}` : `${darkBlue}`};
+  color: ${({ theme }) => theme.btnContentActive};
+  background-color: ${({ theme }) => theme.btnBgActive};
 `;
 
 const IconSpan = styled.span`
   position: relative;
   border-radius: 0.25rem;
   padding: 0.2rem 0.5rem;
-  color: inherit;
+  color: ${({ theme }) => theme.btnContentDefault};
   transition: 0.3s ease-in-out;
 
   ${({ isActive }) =>

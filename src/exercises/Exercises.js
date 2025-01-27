@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 
 import Congratulations from "./Congratulations";
-import ProgressBar from "./ProgressBar";
+import ExerciseSessionProgressBar from "./ExerciseSessionProgressBar";
 import * as s from "./Exercises.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -17,8 +17,8 @@ import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
-  LEARNING_CYCLE_SEQUENCE,
-  LEARNING_CYCLE_SEQUENCE_NO_AUDIO,
+  EXTENDED_SEQUENCE,
+  EXTENDED_SEQUENCE_NO_AUDIO,
   DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
@@ -39,6 +39,7 @@ export default function Exercises({
   api,
   articleID,
   backButtonAction,
+  toScheduledExercises,
   source,
 }) {
   const [countBookmarksToPractice, setCountBookmarksToPractice] = useState();
@@ -122,11 +123,12 @@ export default function Exercises({
 
   function getExerciseSequenceType() {
     let exerciseTypesList;
-    if (Feature.merle_exercises()) exerciseTypesList = LEARNING_CYCLE_SEQUENCE;
+    if (Feature.merle_exercises() || Feature.exercise_levels())
+      exerciseTypesList = EXTENDED_SEQUENCE;
     else exerciseTypesList = DEFAULT_SEQUENCE;
     if (!SessionStorage.isAudioExercisesEnabled()) {
-      if (Feature.merle_exercises())
-        exerciseTypesList = LEARNING_CYCLE_SEQUENCE_NO_AUDIO;
+      if (Feature.merle_exercises() || Feature.exercise_levels())
+        exerciseTypesList = EXTENDED_SEQUENCE_NO_AUDIO;
       else exerciseTypesList = DEFAULT_SEQUENCE_NO_AUDIO;
     }
     return exerciseTypesList;
@@ -161,7 +163,7 @@ export default function Exercises({
   }
 
   function resetExerciseState() {
-    setIsOutOfWordsToday(false);
+    setIsOutOfWordsToday();
     setCountBookmarksToPractice();
     setFullExerciseProgression();
     setCurrentBookmarksToStudy();
@@ -226,6 +228,7 @@ export default function Exercises({
             startExercising(BOOKMARKS_DUE_REVIEW);
             setHasKeptExercising(true);
           }}
+          toScheduledExercises={toScheduledExercises}
           source={source}
           exerciseSessionTimer={activeSessionDuration}
           articleURL={articleURL}
@@ -241,10 +244,6 @@ export default function Exercises({
         api={api}
         totalInLearning={totalBookmarksInPipeline}
         goBackAction={backButtonAction}
-        keepExercisingAction={() => {
-          startExercising(NEW_BOOKMARKS_TO_STUDY);
-          setHasKeptExercising(true);
-        }}
       />
     );
   }
@@ -259,8 +258,7 @@ export default function Exercises({
   function moveToNextExercise() {
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
 
-    //ML: To think about: Semantically this is strange; Why don't we set it to null? We don't know if it's correct or not
-    setIsCorrect(false);
+    setIsCorrect(null);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
     exerciseNotification.updateReactState();
@@ -342,7 +340,7 @@ export default function Exercises({
     <>
       {screenWidth < MOBILE_WIDTH && <BackArrow />}
       <s.ExercisesColumn className="exercisesColumn">
-        <ProgressBar
+        <ExerciseSessionProgressBar
           index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
           clock={

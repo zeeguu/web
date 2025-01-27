@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuOrange, zeeguuVarmYellow } from "../components/colors";
+import { zeeguuWarmYellow } from "../components/colors";
 
 let Word = styled.div`
   display: flex;
@@ -14,7 +14,7 @@ let Word = styled.div`
 
 let StarIcon = styled.div`
   cursor: pointer;
-  color: ${zeeguuVarmYellow};
+  color: ${zeeguuWarmYellow};
 
   display: flex;
   flex-direction: column;

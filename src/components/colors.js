@@ -2,7 +2,7 @@ let zeeguuVeryLightYellow = "#fafad2";
 let zeeguuVeryLightOrange = "hsl(46, 90%, 90%)";
 let zeeguuTransparentLightYellow = "#ffe59e10";
 let zeeguuLightYellow = "#ffe59e";
-let zeeguuVarmYellow = "#ffd047";
+let zeeguuWarmYellow = "#ffd047";
 let zeeguuSalmonOrange = "#f8bb86";
 let zeeguuTransparentLightOrange = "hsl(54,100%,95%)";
 let zeeguuTransparentMediumOrange = "#ffbe007a";
@@ -71,7 +71,7 @@ let gray = "999999";
 //white - the css standard color is used throughout the repo.
 
 const setColors = (isOnStudentSide) => {
-  let light_color = zeeguuVarmYellow;
+  let light_color = zeeguuWarmYellow;
   let dark_color = zeeguuOrange;
   if (!isOnStudentSide) {
     light_color = lightBlue;
@@ -85,7 +85,7 @@ export {
   zeeguuVeryLightOrange,
   zeeguuTransparentLightYellow,
   zeeguuLightYellow,
-  zeeguuVarmYellow,
+  zeeguuWarmYellow as zeeguuWarmYellow,
   zeeguuSalmonOrange,
   zeeguuTransparentLightOrange,
   zeeguuTransparentMediumOrange,

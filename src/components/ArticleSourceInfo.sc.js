@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { zeeguuVarmYellow } from "../components/colors";
+import { zeeguuWarmYellow } from "../components/colors";
 
 const SourceContainer = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ let FeedName = styled.span`
 
 let SourceImage = styled.span`
   img {
-    background-color: ${zeeguuVarmYellow};
+    background-color: ${zeeguuWarmYellow};
     height: 1.5em;
     width: 1.5em;
     border-radius: 0.25em;

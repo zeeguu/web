@@ -5,7 +5,7 @@ import {
   zeeguuOrange,
 } from "../components/colors";
 
-const ProgressBar = styled.div`
+const ExerciseSessionProgressBar = styled.div`
   .progress-module {
     margin: 20px auto 40px;
     max-width: 800px;
@@ -35,4 +35,4 @@ const ProgressBar = styled.div`
   }
 `;
 
-export { ProgressBar };
+export { ExerciseSessionProgressBar };

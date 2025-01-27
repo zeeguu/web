@@ -5,7 +5,7 @@ import {
   veryLightGrey,
   zeeguuLightYellow,
   zeeguuOrange,
-  zeeguuVarmYellow,
+  zeeguuWarmYellow,
   lighterBlue,
   lightGrey,
 } from "../components/colors";
@@ -115,7 +115,7 @@ const ToolbarWrapper = styled.div`
   position: sticky;
   position: -webkit-sticky;
   top: 0;
-  z-index: 2000;
+  z-index: 1000;
   background-color: white;
   padding-top: 0.5rem;
 `;
@@ -267,6 +267,7 @@ let OrangeButton = styled(_BottomButton)`
   align-items: center;
   justify-content: center;
   color: white;
+  cursor: pointer;
 
   h1 {
     color: white;
@@ -355,7 +356,7 @@ let InteractiveBox = styled.div`
     text-align: center;
   }
   .selected {
-    background-color: ${zeeguuVarmYellow} !important;
+    background-color: ${zeeguuWarmYellow} !important;
     color: white !important;
   }
 `;
@@ -381,7 +382,7 @@ let InvisibleBox = styled.div`
     text-align: center;
   }
   .selected {
-    background-color: ${zeeguuVarmYellow} !important;
+    background-color: ${zeeguuWarmYellow} !important;
     color: white !important;
   }
   .hovered {
@@ -417,7 +418,7 @@ let CombinedBox = styled.div`
     text-align: center;
   }
   .selected {
-    background-color: ${zeeguuVarmYellow} !important;
+    background-color: ${zeeguuWarmYellow} !important;
     color: white !important;
   }
 `;

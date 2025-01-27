@@ -3,7 +3,7 @@ import * as s from "../Exercise.sc.js";
 import strings from "../../../i18n/definitions";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import NextNavigation from "../NextNavigation";
 import MatchInput from "./MatchInput.js";
@@ -157,6 +157,7 @@ export default function Match({
   }
 
   function handleShowSolution() {
+    setSelectedBookmark();
     let finalMessage = "";
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       if (!exerciseAttemptsLog[i].messageToAPI.includes("C")) {
@@ -204,10 +205,10 @@ export default function Match({
         {strings.matchWordWithTranslation}{" "}
       </div>
 
-      <LearningCycleIndicator
-        bookmark={selectedBookmark ? selectedBookmark : bookmarksToStudy[0]}
+      <BookmarkProgressBar
+        bookmark={selectedBookmark}
         message={selectedBookmarkMessage}
-        isHidden={selectedBookmark === undefined}
+        isGreyedOutBar={selectedBookmark === undefined}
       />
 
       <MatchInput

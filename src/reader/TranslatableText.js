@@ -16,6 +16,7 @@ export function TranslatableText({
   setIsRendered,
   boldExpression,
   exerciseType,
+  updateBookmarks,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -54,6 +55,7 @@ export function TranslatableText({
 
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
+    if (updateBookmarks) updateBookmarks();
   }
 
   function findBookmarkInInteractiveText() {

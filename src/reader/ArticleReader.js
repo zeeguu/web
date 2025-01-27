@@ -79,6 +79,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
   const speech = useContext(SpeechContext);
   const [activityTimer, isTimerActive] = useActivityTimer(uploadActivity);
   const [readingSessionId, setReadingSessionId] = useState();
+  const [bookmarks, setBookmarks] = useState([]);
 
   const scrollEvents = useRef();
 
@@ -107,6 +108,16 @@ export default function ArticleReader({ api, teacherArticleID }) {
     };
     // eslint-disable-next-line
   }, []);
+
+  const fetchBookmarks = () => {
+    api.bookmarksForArticle(articleID, (bookmarks) => {
+      setBookmarks(bookmarks);
+    });
+  };
+
+  useEffect(() => {
+    fetchBookmarks();
+  }, [articleID]);
 
   const handleFocus = () => {
     onFocus(api, articleID, UMR_SOURCE);
@@ -381,6 +392,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
               interactiveText={interactiveText}
               translating={translateInReader}
               pronouncing={pronounceInReader}
+              updateBookmarks={fetchBookmarks}
             />
           </s.MainText>
         </div>
@@ -391,6 +403,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
               articleID={articleID}
               clickedOnReviewVocab={clickedOnReviewVocab}
               setClickedOnReviewVocab={setClickedOnReviewVocab}
+              bookmarks={bookmarks}
             />
             <s.CombinedBox>
               <p style={{ padding: "0em 2em 0em 2em" }}>

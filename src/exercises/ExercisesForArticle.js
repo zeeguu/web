@@ -20,12 +20,18 @@ export default function ExercisesForArticle({ api }) {
     api.logReaderActivity(api.KEEP_EXERCISING, articleID, "", UMR_SOURCE);
   };
 
+  const toScheduledExercises = () => {
+    history.push("/exercises");
+    api.logReaderActivity(api.TO_SCHEDULED_EXERCISES, "", "", UMR_SOURCE);
+  };
+
   return (
     <Exercises
       api={api}
       articleID={articleID}
       backButtonAction={backToArticleAction}
       keepExercisingAction={keepExercisingAction}
+      toScheduledExercises={toScheduledExercises}
       source={UMR_SOURCE}
     />
   );

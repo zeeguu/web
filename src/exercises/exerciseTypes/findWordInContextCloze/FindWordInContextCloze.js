@@ -10,7 +10,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
@@ -107,7 +107,7 @@ export default function FindWordInContextCloze({
       <div className="headlineWithMoreSpace">
         {strings.findWordInContextClozeHeadline}
       </div>
-      <LearningCycleIndicator
+      <BookmarkProgressBar
         bookmark={bookmarksToStudy[0]}
         message={messageToAPI}
       />

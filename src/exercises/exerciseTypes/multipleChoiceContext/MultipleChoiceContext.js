@@ -8,7 +8,7 @@ import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
-import LearningCycleIndicator from "../../LearningCycleIndicator.js";
+import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
 import useShadowRef from "../../../hooks/useShadowRef";
 
@@ -134,10 +134,7 @@ export default function MultipleChoiceContext({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceContextHeadline}
       </div>
-      <LearningCycleIndicator
-        bookmark={exerciseBookmark}
-        message={messageToAPI}
-      />
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
       <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
       {exerciseBookmarks.map((option, index) => (
         <s.MultipleChoiceContext

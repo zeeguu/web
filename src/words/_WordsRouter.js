@@ -68,6 +68,7 @@ export default function WordsRouter({ api }) {
           api={api}
           component={Learning}
         />
+
         <PrivateRoute exact path="/words/top" api={api} component={Top} />
       </s.NarrowColumn>
     </Switch>

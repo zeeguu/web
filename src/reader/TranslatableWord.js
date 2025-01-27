@@ -55,7 +55,6 @@ export default function TranslatableWord({
           setIsVisible(true);
         });
       }
-
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
         copyOfWords.push(word.word);
