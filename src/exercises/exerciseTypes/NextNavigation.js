@@ -204,7 +204,7 @@ export default function NextNavigation({
         !(bookmarkLearned || bookmarkIsProgressingToNextLearningCycle) && (
           <CorrectMessage className={"next-nav-feedback"} info={""} />
         )}
-      {isCorrect && !isMultiExerciseType && (
+      {isCorrect && !isMatchExercise && (
         <>
           <s.BottomRowSmallTopMargin className="bottomRow">
             <s.EditSpeakButtonHolder>
@@ -231,7 +231,7 @@ export default function NextNavigation({
           </s.BottomRowSmallTopMargin>
         </>
       )}
-      {isCorrect && isMultiExerciseType && (
+      {isCorrect && isMatchExercise && (
         <s.BottomRowSmallTopMargin className="bottomRow">
           <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
             {strings.next}
