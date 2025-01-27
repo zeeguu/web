@@ -2,9 +2,10 @@ import { useState, useContext, useEffect } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
 import { APIContext } from "../contexts/APIContext";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import extractDomain from "../utils/web/extractDomain";
 import redirect from "../utils/routing/routing";
+import LinkOffIcon from "@mui/icons-material/LinkOff";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 export default function TranslatableWord({
   interactiveText,
@@ -22,10 +23,15 @@ export default function TranslatableWord({
   const [isWordTranslating, setIsWordTranslating] = useState(false);
   const [prevWord, setPreviousWord] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const api = useContext(APIContext);
 
   useEffect(() => {
+    if (word.isVisible) {
+      setIsVisible(true);
+      return;
+    }
     if (word.translation) setIsVisible(false);
   }, []);
 
@@ -39,12 +45,12 @@ export default function TranslatableWord({
     }
     if (translating) {
       if (!disableTranslation && !word.is_punct) {
-        e.target.classList.add("loading");
+        setIsLoading(true);
         setPreviousWord(word.word);
         setIsWordTranslating(true);
-        interactiveText.translate(word, () => {
+        interactiveText.translate(word, true, () => {
           wordUpdated();
-          e.target.classList.remove("loading");
+          setIsLoading(false);
           setIsWordTranslating(false);
           setIsVisible(true);
         });
@@ -71,6 +77,35 @@ export default function TranslatableWord({
     interactiveText.alternativeTranslations(word, () => {
       wordUpdated(word);
     });
+  }
+
+  function unlinkLastWord(e, word) {
+    setIsLoading(true);
+    api.deleteBookmark(
+      word.bookmark_id,
+      (response) => {
+        if (response === "OK") {
+          // delete was successful; log and close
+          let new_word = word.unlinkLastWord();
+          interactiveText.translate(new_word, true, () => {
+            new_word.isVisible = true;
+            let nextWord = new_word.next;
+            interactiveText.translate(nextWord, false, () => {
+              nextWord.isVisible = true;
+              wordUpdated();
+              setIsLoading(false);
+            });
+          });
+        }
+      },
+      (error) => {
+        // onError
+        console.log(error);
+        alert(
+          "something went wrong and we could not delete the bookmark; try again later.",
+        );
+      },
+    );
   }
 
   function deleteTranslation(e, word) {
@@ -126,7 +161,7 @@ export default function TranslatableWord({
     let allClasses = [];
     if (word.has_space !== undefined) {
       // From Stanza
-      if (word.is_punct) allClasses.push("no-hover");
+      if (word.is_punct || word.is_like_symbol) allClasses.push("no-hover");
     } else {
       if (word.is_punct) {
         allClasses.push("punct");
@@ -189,13 +224,7 @@ export default function TranslatableWord({
             ref={refToTranslation}
           >
             <div className="translationContainer">
-              <span onClick={(e) => toggleAlterMenu(e, word)}>
-                {word.translation}
-              </span>
-              <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
-                {showingAlterMenu ? "▲" : "▼"}
-              </span>
-              <span className="hide">
+              <span className="hide low-oppacity translation-icon">
                 <VisibilityOffIcon
                   fontSize="8px"
                   onClick={(e) => {
@@ -204,14 +233,38 @@ export default function TranslatableWord({
                   }}
                 />
               </span>
+              <span
+                className="translation"
+                onClick={(e) => toggleAlterMenu(e, word)}
+              >
+                {word.translation}
+              </span>
+              <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
+                {showingAlterMenu ? "▲" : "▼"}
+              </span>
+              {word.mergedTokens.length > 1 && (
+                <span className="unlink low-oppacity translation-icon">
+                  <LinkOffIcon
+                    fontSize="8px"
+                    onClick={(e) => {
+                      unlinkLastWord(e, word);
+                    }}
+                  />
+                </span>
+              )}
             </div>
           </z-tran>
         )}
         <z-orig>
           {isWordTranslating ? (
-            <span> {prevWord} </span>
+            <span class={isLoading ? " loading" : ""}> {prevWord} </span>
           ) : (
-            <span onClick={(e) => clickOnWord(e, word)}>{word.word} </span>
+            <span
+              class={isLoading ? " loading" : ""}
+              onClick={(e) => clickOnWord(e, word)}
+            >
+              {word.word}{" "}
+            </span>
           )}
           {showingAlterMenu && (
             <AlterMenu

@@ -24,6 +24,7 @@ export class Word extends Item {
     this.token_i = token.token_i;
     this.is_sent_start = token.is_sent_start;
     this.is_punct = token.is_punct;
+    this.is_symbol = token.is_symbol;
     this.is_left_punct = token.is_left_punct;
     this.is_right_punct = token.is_right_punct;
     this.is_like_num = token.is_like_num;
@@ -33,6 +34,18 @@ export class Word extends Item {
     this.has_space = token.has_space;
     if (token.mergedTokens) this.mergedTokens = [...token.mergedTokens];
     else this.mergedTokens = [{ ...token }];
+  }
+
+  updateTranslation(translation, service_name, bookmark_id) {
+    // When updating translation we need to also update the
+    // translation in the merged tokens.
+    this.translation = translation;
+    this.bookmark_id = bookmark_id;
+    this.service_name = service_name;
+    this.mergedTokens = [...this.mergedTokens];
+    let lastIndex = this.mergedTokens.length - 1;
+    let lastElement = this.mergedTokens[lastIndex];
+    lastElement["translation"] = translation;
   }
 
   splitIntoComponents() {
@@ -50,6 +63,24 @@ export class Word extends Item {
     }
 
     this.detach();
+  }
+
+  unlinkLastWord() {
+    let wordList = this.mergedTokens.map((each) => new Word(each));
+    wordList[0].translation = null;
+    this.append(wordList[0]);
+
+    for (let i = 0; i < wordList.length - 1; i++) {
+      // set translation of word to null
+      wordList[i].translation = null;
+      wordList[i].append(wordList[i + 1]);
+    }
+    for (let i = 0; i < wordList.length - 2; i++) {
+      this.next.fuseWithNext();
+    }
+    let new_word = this.next;
+    this.detach();
+    return new_word;
   }
 
   fuseWithPrevious(api) {
@@ -92,7 +123,7 @@ export class Word extends Item {
       api.deleteBookmark(this.next.bookmark_id);
     }
     this.total_tokens += this.next.total_tokens;
-    this.mergedTokens.push({ ...this.next.token });
+    this.mergedTokens = this.mergedTokens.concat(...this.next.mergedTokens);
     this.next.detach();
     return this;
   }
