@@ -59,6 +59,7 @@ export default function LoadingAnimation({
           </s.LoadingAnimation>
           {showReportButton && (
             <StyledGreyButton
+              style={{ marginTop: "-1.5rem", zIndex: 1000 }}
               onClick={() => {
                 setShowFeedbackModal(!showFeedbackModal);
               }}

@@ -34,29 +34,29 @@ export default function FindWordInContextCloze({
   activeSessionDuration,
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
-  const [articleInfo, setArticleInfo] = useState();
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+  const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-      setArticleInfo(articleInfo);
-    });
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        false,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
   }, [isBookmarkChanged]);
 
   function handleShowSolution(e, message) {
@@ -98,7 +98,7 @@ export default function FindWordInContextCloze({
     notifyIncorrectAnswer(bookmarksToStudy[0]);
   }
 
-  if (!articleInfo) {
+  if (!interactiveText) {
     return <LoadingAnimation />;
   }
 

@@ -13,13 +13,12 @@ Zeeguu_API.prototype.fetchLinkToSpeechMp3 = async function (
 };
 
 Zeeguu_API.prototype.getLinkToFullArticleReadout = function (
-  articleInfo,
   article_id,
   callback,
 ) {
   this._post(
     `mp3_of_full_article`,
-    `language_id=${articleInfo.language}&article_id=${article_id}&text=${articleInfo.content}`,
+    `article_id=${article_id}`,
     (linkToMp3) => {
       let final_link = this.baseAPIurl + linkToMp3;
       console.log("got link to full article readout: " + final_link);

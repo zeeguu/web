@@ -36,7 +36,6 @@ export default function SpellWhatYouHear({
   activeSessionDuration,
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
-  const bookmarkToStudy = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
@@ -44,25 +43,27 @@ export default function SpellWhatYouHear({
     activeSessionDuration,
   );
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+  const exerciseBookmark = bookmarksToStudy[0];
 
   async function handleSpeak() {
-    await speech.speakOut(bookmarkToStudy.from, setIsButtonSpeaking);
+    await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
   }
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        false,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, [isBookmarkChanged]);
 
@@ -83,37 +84,37 @@ export default function SpellWhatYouHear({
       concatMessage = message;
     }
 
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     setMessageToAPI(concatMessage);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
 
   function handleDisabledAudio() {
-    api.logUserActivity(api.AUDIO_DISABLE, "", bookmarksToStudy[0].id, "");
+    api.logUserActivity(api.AUDIO_DISABLE, "", exerciseBookmark.id, "");
     moveToNextExercise();
   }
 
   function handleIncorrectAnswer() {
     setMessageToAPI(messageToAPI + "W");
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
   }
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    notifyCorrectAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
@@ -136,7 +137,7 @@ export default function SpellWhatYouHear({
         <>
           <s.CenteredRowTall>
             <SpeakButton
-              bookmarkToStudy={bookmarkToStudy}
+              bookmarkToStudy={exerciseBookmark}
               api={api}
               styling="large"
               parentIsSpeakingControl={isButtonSpeaking}
@@ -148,7 +149,7 @@ export default function SpellWhatYouHear({
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              bookmarkToStudy={bookmarksToStudy[0].from}
+              bookmarkToStudy={exerciseBookmark.from}
             />
           </div>
 
@@ -165,7 +166,7 @@ export default function SpellWhatYouHear({
         <>
           <br></br>
           <h1 className="wordInContextHeadline">
-            {removePunctuation(bookmarksToStudy[0].to)}
+            {removePunctuation(exerciseBookmark.to)}
           </h1>
           <div className="contextExample">
             <TranslatableText
@@ -173,7 +174,7 @@ export default function SpellWhatYouHear({
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              bookmarkToStudy={bookmarksToStudy[0].from}
+              bookmarkToStudy={exerciseBookmark.from}
             />
           </div>
         </>
@@ -182,7 +183,7 @@ export default function SpellWhatYouHear({
         exerciseType={EXERCISE_TYPE}
         api={api}
         message={messageToAPI}
-        exerciseBookmark={bookmarksToStudy[0]}
+        exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

@@ -11,16 +11,45 @@ const TranslatableText = styled.div`
   z-tag {
     white-space: break-spaces;
     cursor: pointer;
-    /* margin-right: 1em; 
-    padding-right: 0.3em;*/
     display: inline-block;
     margin: 0;
     line-height: 29px;
     /* background-color: greenyellow; */
   }
 
-  z-tag.loading {
-    animation: blink 1.5s linear infinite;
+  z-tag.number {
+    cursor: default;
+    &:hover {
+      background-color: rgb(255 255 255 / 0%) !important;
+    }
+  }
+
+  z-tag.punct {
+    margin-left: -5.2px;
+  }
+
+  z-tag.no-hover {
+    cursor: default;
+    &:hover {
+      background-color: rgb(255 255 255 / 0%) !important;
+    }
+  }
+
+  z-tag.left-punct {
+    margin-left: 0px;
+    margin-right: -5px;
+  }
+
+  z-tag.no-space {
+    margin-right: -5px;
+  }
+
+  z-tag.no-margin {
+    margin: 0px !important;
+  }
+
+  .loading {
+    animation: blink 0.75s linear infinite alternate;
     color: ${zeeguuOrange};
   }
 
@@ -47,17 +76,22 @@ const TranslatableText = styled.div`
    highlights the fact that we are not sure of the translation ...
    */
 
+  z-tran {
+    margin-right: 0px !important;
+    margin-left: 2px !important;
+  }
+
   z-tag z-tran {
-    margin-right: -0.1rem;
+    margin-right: -0.2rem;
     margin-left: -0.2rem;
-    margin-bottom: -0.1em;
-    margin-top: 0.1em;
-    padding-left: 0.3em;
+    margin-bottom: -0.3rem;
+    margin-top: 0.1rem;
+    padding-left: 0.3rem;
     border-radius: 0.3em 0.3em 0.3em 0.3em;
     background-clip: padding-box;
-    background-color: ${zeeguuLightYellow};
-    font-size: medium;
-    line-height: 1em;
+    background-color: rgb(255 229 158 / 100%);
+    font-size: 14px;
+    line-height: 1.1rem;
     max-width: 100%;
     font-weight: 600;
     color: ${almostBlack};
@@ -66,8 +100,14 @@ const TranslatableText = styled.div`
     display: flex;
   }
 
-  z-tag z-orig {
+  z-orig span {
     border-bottom: 1px dashed ${zeeguuOrange};
+    border-radius: 0.35rem;
+    padding-left: 0.3rem;
+    margin-left: 0.3rem;
+  }
+
+  z-tag z-orig {
     width: 100%;
     color: ${zeeguuOrange};
     font-weight: 600;
@@ -77,10 +117,32 @@ const TranslatableText = styled.div`
     display: flex;
     width: 100%;
     align-items: center;
+    margin-right: 2px;
+
     .arrow {
       margin-left: 0.1rem;
       padding-top: 0.1rem;
+      padding-right: 0.2rem;
       filter: opacity(50%);
+      :hover {
+        filter: brightness(1.5);
+        filter: opacity(100%);
+      }
+    }
+
+    .translation-icon {
+      font-size: 17px;
+    }
+
+    .unlink {
+      margin: 0px 0.1rem;
+      margin-left: auto;
+      padding: 0.2rem 0.3rem;
+      padding-left: -0.3rem;
+    }
+
+    .low-oppacity {
+      filter: opacity(20%);
       :hover {
         filter: brightness(1.5);
         filter: opacity(100%);
@@ -89,14 +151,8 @@ const TranslatableText = styled.div`
 
     .hide {
       margin: 0px 0.1rem;
-      margin-left: auto;
-      padding: 0.1rem 0.3rem;
-      filter: opacity(15%);
-      padding-top: 0.3rem;
-      :hover {
-        filter: brightness(1.5);
-        filter: opacity(100%);
-      }
+      margin-left: -4px;
+      padding: 0.2rem 0.3rem;
     }
     :hover {
       filter: brightness(1.25);

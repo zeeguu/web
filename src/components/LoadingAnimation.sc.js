@@ -4,7 +4,7 @@ import { darkBlue, zeeguuOrange } from "./colors";
 // Source: https://loading.io/css/
 
 const LoadingContainer = styled.div`
-  margin: 5em;
+  margin: 2.5em;
   text-align: center;
   display: flex;
   -webkit-box-align: center;

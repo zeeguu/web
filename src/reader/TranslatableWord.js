@@ -1,12 +1,11 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
 import { APIContext } from "../contexts/APIContext";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import extractDomain from "../utils/web/extractDomain";
+import redirect from "../utils/routing/routing";
+import LinkOffIcon from "@mui/icons-material/LinkOff";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-
-import { zeeguuDarkRed } from "../components/colors";
 
 export default function TranslatableWord({
   interactiveText,
@@ -24,10 +23,20 @@ export default function TranslatableWord({
   const [isWordTranslating, setIsWordTranslating] = useState(false);
   const [prevWord, setPreviousWord] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const api = useContext(APIContext);
 
+  useEffect(() => {
+    if (word.isVisible) {
+      setIsVisible(true);
+      return;
+    }
+    if (word.translation) setIsVisible(false);
+  }, []);
+
   function clickOnWord(e, word) {
+    if (word.is_like_num) return;
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
       if ((translating && !isVisible) || (!translating && isVisible))
@@ -35,23 +44,17 @@ export default function TranslatableWord({
       return;
     }
     if (translating) {
-      if (!disableTranslation) {
-        /* disableTranslation means that this word
-       is being tested in the exercises.
-       In this case, we don't want to re-translate it.
-       */
-        e.target.classList.add("loading");
+      if (!disableTranslation && !word.is_punct) {
+        setIsLoading(true);
         setPreviousWord(word.word);
         setIsWordTranslating(true);
-        interactiveText.translate(word, () => {
+        interactiveText.translate(word, true, () => {
           wordUpdated();
-          e.target.classList.remove("loading");
+          setIsLoading(false);
           setIsWordTranslating(false);
           setIsVisible(true);
         });
       }
-      /* We want to run this still as the check on exercises
-      looks for the bookmark word in the translated words */
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
         copyOfWords.push(word.word);
@@ -75,13 +78,41 @@ export default function TranslatableWord({
     });
   }
 
+  function unlinkLastWord(e, word) {
+    setIsLoading(true);
+    api.deleteBookmark(
+      word.bookmark_id,
+      (response) => {
+        if (response === "OK") {
+          // delete was successful; log and close
+          let new_word = word.unlinkLastWord();
+          interactiveText.translate(new_word, true, () => {
+            new_word.isVisible = true;
+            let nextWord = new_word.next;
+            interactiveText.translate(nextWord, false, () => {
+              nextWord.isVisible = true;
+              wordUpdated();
+              setIsLoading(false);
+            });
+          });
+        }
+      },
+      (error) => {
+        // onError
+        console.log(error);
+        alert(
+          "something went wrong and we could not delete the bookmark; try again later.",
+        );
+      },
+    );
+  }
+
   function deleteTranslation(e, word) {
     api.deleteBookmark(
       word.bookmark_id,
       (response) => {
         if (response === "OK") {
           // delete was successful; log and close
-          word.translation = undefined;
           word.splitIntoComponents();
           wordUpdated();
         }
@@ -113,22 +144,78 @@ export default function TranslatableWord({
   }
 
   function hideTranslation(e, word) {
-    word.translation = undefined;
     word.splitIntoComponents();
     wordUpdated();
   }
 
-  //disableTranslation so user cannot translate words that are being tested
-  if ((!word.translation && !isClickedToPronounce) || disableTranslation) {
+  function getWordClass(word) {
+    /*
+    Function determines which class to be assigned to the word object.
+    Mainly, to render the punctuation cases that need to be handled differently.
+    By default, all punctuation words are assigned the class "punct", which means they
+    are moved slightly to the left, to be close to the previous tokens.
+    - left_punct means that the punctuation is moved a bit to the right, for example ( 
+    */
+    const noMarginPunctuation = ["–", "—", "“", "‘", '"'];
+    let allClasses = [];
+    if (word.has_space !== undefined) {
+      // From Stanza
+      if (word.is_punct || word.is_like_symbol) allClasses.push("no-hover");
+    } else {
+      if (word.is_punct) {
+        allClasses.push("punct");
+        allClasses.push("no-hover");
+      }
+      if (
+        word.is_left_punct ||
+        (word.is_punct &&
+          word.prev &&
+          [":", ".", ","].includes(word.prev.word.trim()))
+      )
+        allClasses.push("left-punct");
+      if (noMarginPunctuation.includes(word.word.trim()))
+        allClasses.push("no-margin");
+    }
+    if (word.is_like_num) allClasses.push("number");
+    return allClasses.join(" ");
+  }
+
+  const wordClass = getWordClass(word);
+
+  if (word.is_like_email)
     return (
       <>
-        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
+        <z-tag>
+          <a href={"mailto:" + word.word}>{extractDomain(word.word) + " "}</a>
+        </z-tag>
+      </>
+    );
+  if (word.is_like_url)
+    return (
+      <>
+        <z-tag onClick={() => redirect(word.word, true)}>
+          <span className="link-style">{extractDomain(word.word) + " "}</span>
+        </z-tag>
+      </>
+    );
+
+  //disableTranslation so user cannot translate words that are being tested
+  if (
+    (!isWordTranslating && !word.translation && !isClickedToPronounce) ||
+    disableTranslation
+  ) {
+    return (
+      <>
+        <z-tag class={wordClass} onClick={(e) => clickOnWord(e, word)}>
+          {word.word + (word.has_space === true ? " " : "")}
+        </z-tag>
       </>
     );
   }
+
   return (
     <>
-      <z-tag>
+      <z-tag class={wordClass}>
         {word.translation && isVisible && (
           <z-tran
             chosen={word.translation}
@@ -136,13 +223,7 @@ export default function TranslatableWord({
             ref={refToTranslation}
           >
             <div className="translationContainer">
-              <span onClick={(e) => toggleAlterMenu(e, word)}>
-                {word.translation}
-              </span>
-              <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
-                {showingAlterMenu ? "▲" : "▼"}
-              </span>
-              <span className="hide">
+              <span className="hide low-oppacity translation-icon">
                 <VisibilityOffIcon
                   fontSize="8px"
                   onClick={(e) => {
@@ -151,14 +232,38 @@ export default function TranslatableWord({
                   }}
                 />
               </span>
+              <span
+                className="translation"
+                onClick={(e) => toggleAlterMenu(e, word)}
+              >
+                {word.translation}
+              </span>
+              <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
+                {showingAlterMenu ? "▲" : "▼"}
+              </span>
+              {word.mergedTokens.length > 1 && (
+                <span className="unlink low-oppacity translation-icon">
+                  <LinkOffIcon
+                    fontSize="8px"
+                    onClick={(e) => {
+                      unlinkLastWord(e, word);
+                    }}
+                  />
+                </span>
+              )}
             </div>
           </z-tran>
         )}
         <z-orig>
           {isWordTranslating ? (
-            <span> {prevWord} </span>
+            <span class={isLoading ? " loading" : ""}> {prevWord} </span>
           ) : (
-            <span onClick={(e) => clickOnWord(e, word)}>{word.word} </span>
+            <span
+              class={isLoading ? " loading" : ""}
+              onClick={(e) => clickOnWord(e, word)}
+            >
+              {word.word}{" "}
+            </span>
           )}
           {showingAlterMenu && (
             <AlterMenu

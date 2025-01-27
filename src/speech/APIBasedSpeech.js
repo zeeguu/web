@@ -46,18 +46,14 @@ const ZeeguuSpeech = class {
       });
   }
 
-  playFullArticle(articleInfo, api, player) {
+  playFullArticle(article_id, api, player) {
     return new Promise(function (resolve, reject) {
-      api.getLinkToFullArticleReadout(
-        articleInfo,
-        articleInfo.id,
-        (linkToMp3) => {
-          player.src = linkToMp3;
-          player.autoplay = true;
-          player.onerror = reject;
-          player.onended = resolve;
-        },
-      );
+      api.getLinkToFullArticleReadout(article_id, (linkToMp3) => {
+        player.src = linkToMp3;
+        player.autoplay = true;
+        player.onerror = reject;
+        player.onended = resolve;
+      });
     });
   }
 };

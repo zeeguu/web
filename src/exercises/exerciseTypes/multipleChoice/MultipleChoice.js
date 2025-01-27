@@ -43,24 +43,25 @@ export default function MultipleChoice({
     activeSessionDuration,
   );
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
-
+  const exerciseBookmark = bookmarksToStudy[0];
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
+    api.wordsSimilarTo(exerciseBookmark.id, (words) => {
       consolidateChoiceOptions(words);
     });
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        false,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBookmarkChanged]);
@@ -116,7 +117,7 @@ export default function MultipleChoice({
     setButtonOptions(shuffledListOfOptions);
   }
 
-  if (!interactiveText) {
+  if (!interactiveText || !buttonOptions) {
     return <LoadingAnimation />;
   }
 

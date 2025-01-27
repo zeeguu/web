@@ -11,7 +11,7 @@ export default function ToLearn({ api }) {
   const [words, setWords] = useState(null);
 
   useEffect(() => {
-    api.getBookmarksToLearn((bookmarks) => {
+    api.getBookmarksToLearn(false, (bookmarks) => {
       setWords(bookmarks);
     });
     setTitle(strings.titleToLearnWords);
