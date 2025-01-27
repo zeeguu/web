@@ -154,9 +154,6 @@ export default function Learning({ api }) {
           <s.TopMessage>{strings.noToLearnWords}</s.TopMessage>
         ) : (
           <>
-            <s.TopMessage>
-              <div className="top-message-icon">{strings.toLearnMsg}</div>
-            </s.TopMessage>
             {toLearnWords.map((each) => (
               <Word
                 key={each.id}
