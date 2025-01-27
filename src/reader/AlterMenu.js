@@ -46,10 +46,7 @@ export default function AlterMenu({
   }
 
   return (
-    <AlterMenuSC
-      ref={refToAlterMenu}
-      className={word.alternatives === undefined ? "loading" : ""}
-    >
+    <AlterMenuSC ref={refToAlterMenu}>
       {word.alternatives === undefined ? (
         <LoadingAnimation
           specificStyle={{ height: "3.5rem", margin: "1rem 3.1rem" }}
@@ -88,7 +85,7 @@ export default function AlterMenu({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => handleKeyDown(e)}
-            placeholder="add own translation..."
+            placeholder="Add own translation..."
           />
         </>
       )}
