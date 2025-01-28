@@ -1,7 +1,6 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
-import { APIContext } from "../contexts/APIContext";
 import extractDomain from "../utils/web/extractDomain";
 import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
@@ -24,8 +23,6 @@ export default function TranslatableWord({
   const [prevWord, setPreviousWord] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const api = useContext(APIContext);
 
   useEffect(() => {
     if (word.isVisible) {
@@ -80,7 +77,7 @@ export default function TranslatableWord({
 
   function unlinkLastWord(e, word) {
     setIsLoading(true);
-    api.deleteBookmark(
+    interactiveText.api.deleteBookmark(
       word.bookmark_id,
       (response) => {
         if (response === "OK") {
@@ -108,7 +105,7 @@ export default function TranslatableWord({
   }
 
   function deleteTranslation(e, word) {
-    api.deleteBookmark(
+    interactiveText.api.deleteBookmark(
       word.bookmark_id,
       (response) => {
         if (response === "OK") {
