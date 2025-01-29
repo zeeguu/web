@@ -3,6 +3,7 @@ import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
 import { APIContext } from "../contexts/APIContext";
 import extractDomain from "../utils/web/extractDomain";
+import addProtocolToLink from "../utils/web/addProtocolToLink";
 import redirect from "../utils/routing/routing";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -193,7 +194,7 @@ export default function TranslatableWord({
   if (word.is_like_url)
     return (
       <>
-        <z-tag onClick={() => redirect(word.word, true)}>
+        <z-tag onClick={() => redirect(addProtocolToLink(word.word), true)}>
           <span className="link-style">{extractDomain(word.word) + " "}</span>
         </z-tag>
       </>
