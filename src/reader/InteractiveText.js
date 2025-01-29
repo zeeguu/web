@@ -244,7 +244,9 @@ export default class InteractiveText {
       word.sent_i,
       word.token_i,
     ];
-    if (word.prev)
+    // Do not get left context, if we are starting a sentence
+    // at the token.
+    if (word.prev && !word.is_sent_start)
       [leftContext, paragraph_i, sent_i, token_i] = getLeftContextAndStartIndex(
         word.prev,
         32,
