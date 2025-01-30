@@ -9,7 +9,7 @@ export default function BackArrow({ redirectLink, func }) {
     <s.BackArrow
       onClick={() =>
         func
-          ? func
+          ? func()
           : redirectLink
             ? history.push(redirectLink)
             : history.goBack()
