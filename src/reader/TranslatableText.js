@@ -27,7 +27,7 @@ export function TranslatableText({
     if (bookmarkToStudy) {
       findBookmarkInInteractiveText();
     }
-    setParagraphs(interactiveText.getParagraphs());
+    if (interactiveText) setParagraphs(interactiveText.getParagraphs());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
 
