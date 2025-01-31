@@ -185,7 +185,7 @@ export default class InteractiveText {
     this.zeeguuSpeech.resume();
   }
 
-  pronounce(word) {
+  pronounce(word, callback) {
     this.zeeguuSpeech.speakOut(word.word);
 
     this.api.logReaderActivity(
@@ -202,16 +202,17 @@ export default class InteractiveText {
    * might be tricked by I'm going to N.Y. to see my friend.
    */
   getContextAndStartingIndex(word) {
-    function getLeftContextAndStartIndex(word, count) {
+    function getLeftContextAndStartIndex(word, maxLeftContextLength) {
       let currentWord = word;
       let contextBuilder = "";
-      while (count > 0 && currentWord) {
+      let count = 0;
+      while (count < maxLeftContextLength && currentWord) {
+        currentWord = currentWord.prev;
         contextBuilder = currentWord.word + " " + contextBuilder;
         if (currentWord.is_sent_start || currentWord.token_i === 0) {
           break;
         }
-        count--;
-        currentWord = currentWord.prev;
+        count++;
       }
       return [
         contextBuilder,
@@ -221,10 +222,10 @@ export default class InteractiveText {
       ];
     }
 
-    function getRightContext(word, count) {
+    function getRightContext(word, maxRightContextLength) {
       let currentWord = word;
       let contextBuilder = "";
-      while (count > 0 && currentWord) {
+      while (maxRightContextLength > 0 && currentWord) {
         if (
           currentWord.is_sent_start &&
           currentWord.sent_i > currentWord.prev.sent_i
@@ -232,7 +233,7 @@ export default class InteractiveText {
           break;
         }
         contextBuilder = contextBuilder + " " + currentWord.word;
-        count++;
+        maxRightContextLength++;
         currentWord = currentWord.next;
       }
       return contextBuilder;
@@ -248,7 +249,7 @@ export default class InteractiveText {
     // at the token.
     if (word.prev && !word.is_sent_start)
       [leftContext, paragraph_i, sent_i, token_i] = getLeftContextAndStartIndex(
-        word.prev,
+        word,
         32,
       );
     let rightContext = getRightContext(word.next, 32);
