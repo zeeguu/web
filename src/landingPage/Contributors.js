@@ -23,9 +23,11 @@ export default function Contributors() {
 
       {member("Tiago Ribeiro", "Development and ML Research")}
 
-      {member("Darinka Maldonado", "Browser Extension Usability Improvements")}
-
       {member("Iga Anna Waclawska", "Onboarding Experience Improvement")}
+
+      {member("Merle Schön", "Exercises and Learning Algorithms")}
+
+      {member("Darinka Maldonado", "Browser Extension Usability Improvements")}
 
       {member("Beatrice Verzier", "Exercise Improvements")}
 
