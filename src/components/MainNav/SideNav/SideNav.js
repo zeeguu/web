@@ -15,7 +15,7 @@ export default function SideNav({ screenWidth }) {
   const { isOnStudentSide } = mainNavProperties;
 
   const path = useLocation().pathname;
-  const defaultPage = isTeacher ? "/teacher/classes" : "articles";
+  const defaultPage = isTeacher ? "/teacher/classes" : "/articles";
 
   return (
     <s.SideNav $screenWidth={screenWidth} role="navigation">
