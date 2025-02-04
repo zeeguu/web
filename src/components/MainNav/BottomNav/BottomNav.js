@@ -1,16 +1,16 @@
-import * as s from "./BottomNav.sc";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { useEffect, useState, useRef, useContext } from "react";
+import { MainNavContext } from "../../../contexts/MainNavContext";
+import { PAGES_WITHOUT_BOTTOM_NAV } from "./pagesWithoutBottomNav";
+import strings from "../../../i18n/definitions";
 import NavIcon from "../NavIcon";
 import MoreOptionsPanel from "./MoreOptionsPanel";
 import BottomNavOptionsForStudent from "./BottomNavOptionsForStudent";
 import BottomNavOptionsForTeacher from "./BottomNavOptionsForTeacher";
 import BottomNavOption from "./BottomNavOption";
-import strings from "../../../i18n/definitions";
 import { fadeIn, fadeOut } from "../../transitions";
 import { slideIn, slideOut } from "../../transitions";
-import { MainNavContext } from "../../../contexts/MainNavContext";
-import { PAGES_WITHOUT_BOTTOM_NAV } from "./pagesWithoutBottomNav";
+import * as s from "./BottomNav.sc";
 
 export default function BottomNav() {
   const { mainNavProperties } = useContext(MainNavContext);
@@ -64,13 +64,6 @@ export default function BottomNav() {
           {isOnStudentSide && <BottomNavOptionsForStudent />}
 
           {!isOnStudentSide && <BottomNavOptionsForTeacher />}
-
-          <BottomNavOption
-            linkTo={"/account_settings"}
-            currentPath={path}
-            icon={<NavIcon name="settings" />}
-            text={strings.settings}
-          />
 
           <BottomNavOption
             onClick={handleShowMoreOptions}

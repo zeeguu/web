@@ -10,7 +10,7 @@ export default function SideNavLanguageOption() {
     <>
       <NavOption
         icon={<NavIcon name={"language"} />}
-        text={"Current Language"}
+        text={"Language"}
         onClick={(e) => {
           e.stopPropagation();
           setShowLanguageModal(!showLanguageModal);
@@ -18,9 +18,9 @@ export default function SideNavLanguageOption() {
       />
       <LanguageModal
         prefixMsg={"Sidebar"}
-        open={showFeedbackModal}
+        open={showLanguageModal}
         setOpen={() => {
-          setShowLanguageModal(!showFeedbackModal);
+          setShowLanguageModal(!showLanguageModal);
         }}
         feedbackOptions={FEEDBACK_OPTIONS.ALL}
       ></LanguageModal>

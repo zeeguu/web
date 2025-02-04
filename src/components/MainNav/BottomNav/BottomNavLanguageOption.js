@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FEEDBACK_OPTIONS } from "../../FeedbackConstants";
 import LanguageModal from "../LanguageModal";
-import BottomNavOption from "../BottomNavOption";
+import BottomNavOption from "./BottomNavOption";
 import NavIcon from "../NavIcon";
 
 export default function BottomNavLanguageOption() {
@@ -10,7 +10,7 @@ export default function BottomNavLanguageOption() {
     <>
       <BottomNavOption
         icon={<NavIcon name="language" />}
-        text={strings.more}
+        text={"Language"}
         onClick={(e) => {
           e.stopPropagation();
           setShowLanguageModal(!showLanguageModal);

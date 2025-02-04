@@ -1,11 +1,12 @@
-import * as s from "./MoreOptionsPanel.sc";
 import { useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
+import { MainNavContext } from "../../../contexts/MainNavContext";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import NavigationOptions from "../navigationOptions";
 import FeedbackButton from "../../FeedbackButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import NavOption from "../NavOption";
-import NavigationOptions from "../navigationOptions";
-import { MainNavContext } from "../../../contexts/MainNavContext";
+import * as s from "./MoreOptionsPanel.sc";
 
 export default function MoreOptionsPanel({
   overlayTransition,
@@ -17,6 +18,7 @@ export default function MoreOptionsPanel({
   const { is_teacher: isTeacher } = useContext(UserContext);
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
+  const path = useLocation().pathname;
 
   return (
     <s.MoreOptionsWrapper
@@ -68,6 +70,12 @@ export default function MoreOptionsPanel({
             onClick={handleHideMoreOptions}
           />
         )}
+
+        <NavOption
+          {...NavigationOptions.settings}
+          currentPath={path}
+          onClick={handleHideMoreOptions}
+        />
 
         <FeedbackButton />
       </s.MoreOptionsPanel>
