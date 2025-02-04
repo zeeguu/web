@@ -1,6 +1,13 @@
 import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
 
+// We try to capture about a full sentence around a word.
+const MAX_WORD_EXPANSION_COUNT = 14;
+function wordShouldSkipCount(word) {
+  //   When building context, we do not count for the context limit punctuation,
+  // symbols, and numbers.
+  return word.is_punct || word.is_symbol || word.is_like_num;
+}
 export default class InteractiveText {
   constructor(
     tokenizedParagraphs,
@@ -212,7 +219,7 @@ export default class InteractiveText {
         if (currentWord.is_sent_start || currentWord.token_i === 0) {
           break;
         }
-        count++;
+        if (!wordShouldSkipCount(currentWord)) count++;
       }
       return [
         contextBuilder,
@@ -233,7 +240,9 @@ export default class InteractiveText {
           break;
         }
         contextBuilder = contextBuilder + " " + currentWord.word;
-        maxRightContextLength++;
+        if (!wordShouldSkipCount(currentWord))
+          // If it's not a punctuation or symbol we count it.
+          maxRightContextLength++;
         currentWord = currentWord.next;
       }
       return contextBuilder;
@@ -250,10 +259,11 @@ export default class InteractiveText {
     if (word.prev && !word.is_sent_start)
       [leftContext, paragraph_i, sent_i, token_i] = getLeftContextAndStartIndex(
         word,
-        32,
+        MAX_WORD_EXPANSION_COUNT,
       );
-    let rightContext = getRightContext(word.next, 32);
+    let rightContext = getRightContext(word.next, MAX_WORD_EXPANSION_COUNT);
     let context = leftContext + word.word + rightContext;
+    console.log("Final context: ", context);
     return [context, paragraph_i, sent_i, token_i];
   }
 }
