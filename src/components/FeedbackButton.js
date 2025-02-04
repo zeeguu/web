@@ -20,7 +20,6 @@ export default function FeedbackButton({ screenWidth }) {
         icon={<FeedbackRoundedIcon />}
         screenWidth={screenWidth}
         text={"Give Feedback"}
-        isButton={true}
         onClick={(e) => {
           e.stopPropagation();
           setShowFeedbackModal(!showFeedbackModal);
