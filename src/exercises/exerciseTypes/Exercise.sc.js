@@ -3,9 +3,6 @@ import styled, { css, keyframes } from "styled-components";
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
-  lightBlue,
-  gray,
-  buttonBorder,
 } from "../../components/colors";
 
 const Exercise = styled.div`
@@ -13,7 +10,11 @@ const Exercise = styled.div`
   flex-direction: column;
   text-align: center;
   transition: all 0.5s;
-  padding-bottom: 6.5rem;
+  padding-bottom: 2rem;
+
+  @media (max-width: 700px) {
+    min-height: 90%;
+  }
 
   .next-nav-feedback {
     display: flex;
@@ -430,6 +431,9 @@ let StyledGreyButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   font-family: "Montserrat";
+  :hover {
+    filter: brightness(110%);
+  }
 `;
 
 let StyledDiv = styled.div`
@@ -449,6 +453,10 @@ let CenteredRow = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
+  &.topAuto {
+    margin-top: auto;
+  }
 `;
 
 let CenteredRowTall = styled.div`

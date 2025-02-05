@@ -31,6 +31,7 @@ import DigitalTimer from "../components/DigitalTimer";
 import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
+import { NarrowColumn } from "../components/ColumnWidth.sc";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -334,10 +335,9 @@ export default function Exercises({
 
   const CurrentExercise = fullExerciseProgression[currentIndex].type;
   return (
-    <>
-      {screenWidth < MOBILE_WIDTH && <BackArrow />}
-      <s.ExercisesColumn className="exercisesColumn">
-
+    <NarrowColumn>
+      <s.ExercisesColumn>
+        {screenWidth < MOBILE_WIDTH && <BackArrow />}
         <ExerciseSessionProgressBar
           index={isCorrect ? currentIndex + 1 : currentIndex}
           total={fullExerciseProgression.length}
@@ -372,14 +372,15 @@ export default function Exercises({
             exerciseSessionId={dbExerciseSessionId}
             activeSessionDuration={activeSessionDuration}
           />
+          <FeedbackDisplay
+            showFeedbackButtons={showFeedbackButtons}
+            setShowFeedbackButtons={setShowFeedbackButtons}
+            currentExerciseType={currentExerciseType}
+            currentBookmarksToStudy={currentBookmarksToStudy}
+            feedbackFunction={uploadUserFeedback}
+          />
         </s.ExForm>
-        <FeedbackDisplay
-          showFeedbackButtons={showFeedbackButtons}
-          setShowFeedbackButtons={setShowFeedbackButtons}
-          currentExerciseType={currentExerciseType}
-          currentBookmarksToStudy={currentBookmarksToStudy}
-          feedbackFunction={uploadUserFeedback}
-        />
+
         {articleID && (
           <p>
             You are practicing words from:{" "}
@@ -387,7 +388,7 @@ export default function Exercises({
           </p>
         )}
       </s.ExercisesColumn>
-    </>
+    </NarrowColumn>
   );
 }
 

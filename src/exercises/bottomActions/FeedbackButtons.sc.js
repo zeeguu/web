@@ -10,10 +10,6 @@ import StyledButton from "../exerciseTypes/Exercise.sc";
 
 const FeedbackHolder = styled.div`
   display: flex;
-  background-color: rgba(211, 211, 211, 0.139);
-  border: 0px;
-  border-radius: 0.5em;
-
   width: 100%;
   flex-direction: column;
   justify-content: center;
@@ -22,10 +18,11 @@ const FeedbackHolder = styled.div`
 
 const FeedbackButtonsHolder = styled.div`
   display: flex;
-
   width: 100%;
+  margin-top: 1rem;
   flex-direction: row;
   justify-content: center;
+
   flex-wrap: wrap;
 `;
 
@@ -36,7 +33,7 @@ const FeedbackButton = styled(StyledButton)`
   align-items: center;
   color: black;
   margin: 0.3em;
-  font-size: 0.875em;
+  font-size: 0.875em !important;
   background-color: ${zeeguuTransparentLightOrange};
   outline: none;
 
@@ -89,7 +86,7 @@ const FeedbackSubmit = styled.input`
   align-items: center;
   color: black;
   margin: 0.3em;
-  font-size: 0.875em;
+  font-size: 0.875em !important;
   background-color: ${zeeguuOrange};
   border: 0.2em solid ${zeeguuOrange};
   font-weight: 550;
