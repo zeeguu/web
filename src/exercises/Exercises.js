@@ -175,7 +175,7 @@ export default function Exercises({
   }
 
   function updateIsOutOfWordsToday() {
-    api.getTopBookmarksCount((bookmarkCount) => {
+    api.getTopBookmarksToStudyCount((bookmarkCount) => {
       setIsOutOfWordsToday(bookmarkCount === 0);
     });
   }
@@ -185,7 +185,7 @@ export default function Exercises({
     if (articleID) {
       exercise_article_bookmarks();
     } else {
-      api.getTopBookmarksCount((bookmarkCount) => {
+      api.getTopBookmarksToStudyCount((bookmarkCount) => {
         let exerciseSession =
           bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
@@ -202,7 +202,6 @@ export default function Exercises({
 
   function exercise_article_bookmarks() {
     api.bookmarksToStudyForArticle(articleID, true, (bookmarks) => {
-      console.log(bookmarks);
       api.getArticleInfo(articleID, (data) => {
         exerciseNotification.unsetExerciseCounter();
         initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');

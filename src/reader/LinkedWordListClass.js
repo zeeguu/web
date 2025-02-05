@@ -10,7 +10,7 @@ export class Word extends Item {
       this.word = bookmark.origin;
       this.translation = bookmark.translation;
       this.total_tokens = bookmark.t_total_token;
-      this.bookmark_id = bookmark.bookmark_id;
+      this.bookmark_id = bookmark.id;
     } else {
       this.word = token.text;
       this.translation = null;
@@ -46,6 +46,7 @@ export class Word extends Item {
     let lastIndex = this.mergedTokens.length - 1;
     let lastElement = this.mergedTokens[lastIndex];
     lastElement["translation"] = translation;
+    console.log(this);
   }
 
   splitIntoComponents() {

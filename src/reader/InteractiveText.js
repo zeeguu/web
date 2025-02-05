@@ -137,7 +137,7 @@ export default class InteractiveText {
     [context, pargraph_i, sentence_i, token_i] =
       this.getContextAndStartingIndex(word);
     this.api.updateBookmark(
-      word.bookmark_id,
+      word.id,
       word.word,
       alternative,
       context,

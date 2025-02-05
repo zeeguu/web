@@ -9,33 +9,29 @@ Zeeguu_API.prototype.getUserBookmarksInPipeline = function (
   isWithTokens,
   callback,
 ) {
+  let endpoint = `bookmarks_in_pipeline`;
   let payload = {
     with_tokens: isWithTokens,
   };
-  if (isWithTokens)
-    this._post(`bookmarks_in_pipeline`, qs.stringify(payload), callback);
-  else this._getJSON(`bookmarks_in_pipeline`, callback);
+  if (isWithTokens) this._post(endpoint, qs.stringify(payload), callback);
+  else this._getJSON(endpoint, callback);
 };
 
 Zeeguu_API.prototype.getBookmarksToLearn = function (isWithTokens, callback) {
   let payload = {
     with_tokens: isWithTokens,
   };
-  if (isWithTokens)
-    this._post(
-      `bookmarks_to_learn_not_scheduled`,
-      qs.stringify(payload),
-      callback,
-    );
-  else this._getJSON(`bookmarks_to_learn_not_scheduled`, callback);
+  let endpoint = `bookmarks_to_learn_not_scheduled`;
+  if (isWithTokens) this._post(endpoint, qs.stringify(payload), callback);
+  else this._getJSON(endpoint, callback);
 };
 
 Zeeguu_API.prototype.getNewBookmarksToStudy = function (count, callback) {
   this._getJSON(`new_bookmarks_to_study/${count}`, callback);
 };
 
-Zeeguu_API.prototype.getTopBookmarksCount = function (callback) {
-  this._getJSON(`top_bookmarks_count`, callback);
+Zeeguu_API.prototype.getTopBookmarksToStudyCount = function (callback) {
+  this._getJSON(`top_bookmarks_to_study_count`, callback);
 };
 
 Zeeguu_API.prototype.getTopBookmarksToStudy = function (count, callback) {
