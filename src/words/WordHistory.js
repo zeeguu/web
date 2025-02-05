@@ -20,19 +20,19 @@ export default function ReadingHistory({ api }) {
     setWordsByDay(newBookmarksByDay);
   }
 
-  if (!wordsByDay) {
+  useState(() => {
     api.getBookmarksByDay((bookmarks_by_day) => {
       setWordsByDay(bookmarks_by_day);
     });
-
     setTitle(strings.titleTranslationHistory);
+  }, []);
+
+  if (!wordsByDay) {
     return <LoadingAnimation />;
   }
 
   return (
     <sc.NarrowColumn>
-      <br />
-      <br />
       <PageTitle>{strings.wordHistoryTitle}</PageTitle>
       {wordsByDay.map((day) => (
         <WordsOnDate

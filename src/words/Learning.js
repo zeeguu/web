@@ -43,7 +43,12 @@ export default function Learning({ api }) {
     }
   }
 
-  if (!receptiveWords || !productiveWords || !toLearnWords) {
+  if (
+    !receptiveWords ||
+    !productiveWords ||
+    !toLearnWords ||
+    !inLearningWords
+  ) {
     return <LoadingAnimation />;
   }
 
