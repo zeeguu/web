@@ -37,7 +37,6 @@ export default function MultipleChoiceContext({
     activeSessionDuration,
   );
   const exerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
-  const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
   const [showSolution, setShowSolution] = useState(false);
@@ -100,11 +99,13 @@ export default function MultipleChoiceContext({
       handleAnswer(concatMessage);
     } else {
       setClickedIndex(null);
-      setIncorrectAnswer(selectedChoiceId);
       notifyIncorrectAnswer(exerciseBookmark);
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
       setTimeout(() => {
+        // This line is here to avoid the reseting the styling on the
+        // correct box if the user clicks on it shortly after getting the
+        // context wrong.
         if (!showSolutionRef.current) setClickedOption(null);
       }, 500);
     }
