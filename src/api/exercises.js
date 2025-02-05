@@ -9,14 +9,24 @@ Zeeguu_API.prototype.getUserBookmarksInPipeline = function (
   isWithTokens,
   callback,
 ) {
+  let payload = {
+    with_tokens: isWithTokens,
+  };
   if (isWithTokens)
-    this._getJSON(`bookmarks_in_pipeline/with_tokens`, callback);
+    this._post(`bookmarks_in_pipeline`, qs.stringify(payload), callback);
   else this._getJSON(`bookmarks_in_pipeline`, callback);
 };
 
 Zeeguu_API.prototype.getBookmarksToLearn = function (isWithTokens, callback) {
+  let payload = {
+    with_tokens: isWithTokens,
+  };
   if (isWithTokens)
-    this._getJSON(`bookmarks_to_learn_not_scheduled/with_tokens`, callback);
+    this._post(
+      `bookmarks_to_learn_not_scheduled`,
+      qs.stringify(payload),
+      callback,
+    );
   else this._getJSON(`bookmarks_to_learn_not_scheduled`, callback);
 };
 
