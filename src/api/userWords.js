@@ -4,7 +4,16 @@ import { USER_WORD_PREFERENCE } from "../words/userBookmarkPreferences.js";
 import qs from "qs";
 
 Zeeguu_API.prototype.getBookmarksByDay = function (callback) {
-  this._getJSON("bookmarks_by_day/with_context", callback);
+  let payload = {
+    with_context: true,
+  };
+  this._post(
+    "bookmarks_by_day",
+    qs.stringify(payload),
+    callback,
+    () => {},
+    true,
+  );
 };
 
 Zeeguu_API.prototype.getBookmarksCountsByDate = function (callback) {
