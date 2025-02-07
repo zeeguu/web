@@ -4,7 +4,7 @@ const StyledFieldset = styled.fieldset`
   all: unset;
   box-sizing: border-box;
   overflow-y: scroll;
-  max-height: 300px;
+  max-height: 500px;
 `;
 
 const StyledLegend = styled.legend`
