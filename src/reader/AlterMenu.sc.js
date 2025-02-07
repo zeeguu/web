@@ -17,10 +17,10 @@ const AlterMenuSC = styled.div`
   position: absolute;
   max-width: 30em;
   background-color: ${zeeguuVeryLightYellow};
-  border: 0.15em solid ${zeeguuDarkOrange};
   border-radius: 0.5em;
   margin-top: 0.5em;
   padding: 0.3em;
+  filter: drop-shadow(0 0 0.2rem rgb(0 0 0 / 50%));
 
   .additionalTrans {
     height: 100%;
@@ -84,6 +84,7 @@ const AlterMenuSC = styled.div`
     margin-bottom: -0.2rem;
     border-top: 1px solid ${zeeguuDarkRed} !important;
     color: ${zeeguuDarkRed};
+    font-size: small;
 
     &:hover {
       filter: brightness(110%);

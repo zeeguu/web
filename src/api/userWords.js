@@ -1,6 +1,7 @@
 import { Zeeguu_API } from "./classDef";
 import { MAX_BOOKMARKS_TO_STUDY_PER_ARTICLE } from "../exercises/ExerciseConstants";
 import { USER_WORD_PREFERENCE } from "../words/userBookmarkPreferences.js";
+import qs from "qs";
 
 Zeeguu_API.prototype.getBookmarksByDay = function (callback) {
   this._getJSON("bookmarks_by_day/with_context", callback);
@@ -18,6 +19,10 @@ Zeeguu_API.prototype.learnedBookmarks = function (count, callback) {
   this._getJSON(`learned_bookmarks/${count}`, callback);
 };
 
+Zeeguu_API.prototype.totalLearnedBookmarks = function (callback) {
+  this._getJSON(`total_learned_bookmarks`, callback);
+};
+
 Zeeguu_API.prototype.topBookmarks = function (count, callback) {
   this._getJSON(`top_bookmarks/${count}`, callback);
 };
@@ -30,11 +35,15 @@ Zeeguu_API.prototype.bookmarksForArticle = function (articleId, callback) {
 
 Zeeguu_API.prototype.bookmarksToStudyForArticle = function (
   articleId,
+  isWithTokens,
   callback,
 ) {
-  this._getJSON(`bookmarks_to_study_for_article/${articleId}`, (result) =>
-    callback(result.bookmarks),
-  );
+  let payload = {
+    with_tokens: isWithTokens,
+  };
+  let endpoint = `bookmarks_to_study_for_article/${articleId}`;
+  if (isWithTokens) this._post(endpoint, qs.stringify(payload), callback);
+  else this._getJSON(endpoint, (result) => callback(result));
 };
 
 // individual bookmark handling

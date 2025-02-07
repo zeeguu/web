@@ -29,11 +29,9 @@ function handleBookmarkThatNeedsToBeMigrated(bookmark) {
 
   // the actual conversion
   let new_level = COOLING_INTERVAL_TO_LEVEL_MAPPING[cooling_interval] ?? 1;
-  console.log(new_level);
 
   if (learning_cycle === 2) {
     new_level += 2;
-    console.log(new_level);
   }
 
   let new_cooling_interval = 0;
@@ -44,8 +42,6 @@ function handleBookmarkThatNeedsToBeMigrated(bookmark) {
       new_level += 1;
     }
   }
-
-  console.log(new_level);
 
   return {
     cooling_interval: new_cooling_interval,

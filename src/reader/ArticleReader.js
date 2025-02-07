@@ -196,20 +196,26 @@ export default function ArticleReader({ api, teacherArticleID }) {
     api.getArticleInfo(articleID, (articleInfo) => {
       setInteractiveText(
         new InteractiveText(
-          articleInfo.content,
-          articleInfo,
+          articleInfo.tokenized_paragraphs,
+          articleInfo.id,
+          true,
           api,
+          articleInfo.translations,
           api.TRANSLATE_TEXT,
+          articleInfo.language,
           UMR_SOURCE,
           speech,
         ),
       );
       setInteractiveTitle(
         new InteractiveText(
-          articleInfo.title,
-          articleInfo,
+          articleInfo.tokenized_title,
+          articleInfo.id,
+          false,
           api,
+          articleInfo.translations,
           api.TRANSLATE_TEXT,
+          articleInfo.language,
           UMR_SOURCE,
           speech,
         ),

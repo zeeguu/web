@@ -40,21 +40,22 @@ export default function TranslateL2toL1({
     activeSessionDuration,
   );
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
-
+  const exerciseBookmark = bookmarksToStudy[0];
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        exerciseBookmark.context_in_content,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
   }, [isBookmarkChanged]);
 
   function handleShowSolution(e, message) {
@@ -66,34 +67,34 @@ export default function TranslateL2toL1({
       concatMessage = message;
     }
 
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     setMessageToAPI(concatMessage);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    notifyCorrectAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
 
   function handleIncorrectAnswer() {
     setMessageToAPI(messageToAPI + "W");
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
   }
 
   if (!interactiveText) {
@@ -105,14 +106,11 @@ export default function TranslateL2toL1({
       <div className="headlineWithMoreSpace">
         {strings.translateL2toL1Headline}
       </div>
-      <BookmarkProgressBar
-        bookmark={bookmarksToStudy[0]}
-        message={messageToAPI}
-      />
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
       {isCorrect && (
         <>
           <h1 className="wordInContextHeadline">
-            {removePunctuation(bookmarksToStudy[0].to)}
+            {removePunctuation(exerciseBookmark.to)}
           </h1>
         </>
       )}
@@ -124,8 +122,10 @@ export default function TranslateL2toL1({
           pronouncing={false}
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
-          bookmarkToStudy={bookmarksToStudy[0].from}
-          boldExpression={bookmarksToStudy[0].from}
+          bookmarkToStudy={exerciseBookmark.from}
+          boldExpression={exerciseBookmark.from}
+          leftEllipsis={exerciseBookmark.left_ellipsis}
+          rightEllipsis={exerciseBookmark.right_ellipsis}
         />
       </div>
 
@@ -146,7 +146,7 @@ export default function TranslateL2toL1({
         exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
-        exerciseBookmark={bookmarksToStudy[0]}
+        exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

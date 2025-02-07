@@ -10,6 +10,7 @@ import shuffle from "../../../assorted/fisherYatesShuffle";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
+import useShadowRef from "../../../hooks/useShadowRef";
 
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceContext;
 
@@ -35,14 +36,15 @@ export default function MultipleChoiceContext({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const [incorrectAnswer, setIncorrectAnswer] = useState("");
+  const exerciseBookmark = { ...bookmarksToStudy[0], isExercise: true };
   const [clickedIndex, setClickedIndex] = useState(null);
   const [clickedOption, setClickedOption] = useState(null);
   const [showSolution, setShowSolution] = useState(false);
   const [wordInContextHeadline, setWordInContextHeadline] = useState(
-    removePunctuation(bookmarksToStudy[0].from),
+    removePunctuation(exerciseBookmark.from),
   );
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+  const showSolutionRef = useShadowRef(showSolution);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
@@ -52,43 +54,31 @@ export default function MultipleChoiceContext({
       else initExerciseBookmarks[i].isExercise = false;
     }
     setExerciseBookmarks(shuffle(initExerciseBookmarks));
-
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
   }, []);
 
   useEffect(() => {
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        exerciseBookmark.context_in_content,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
   }, [isBookmarkChanged]);
 
   function handleShowSolution() {
     let message = messageToAPI + "S";
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     handleAnswer(message);
     setShowSolution(true);
-    setWordInContextHeadline(removePunctuation(bookmarksToStudy[0].to));
+    setWordInContextHeadline(removePunctuation(exerciseBookmark.to));
   }
 
   function notifyChoiceSelection(
@@ -99,22 +89,24 @@ export default function MultipleChoiceContext({
   ) {
     if (isCorrect) return;
     setClickedOption(index);
-    if (selectedChoiceId === bookmarksToStudy[0].id) {
+    if (selectedChoiceId === exerciseBookmark.id) {
       setShowSolution(true);
       setClickedIndex(index);
-      notifyCorrectAnswer(bookmarksToStudy[0]);
+      notifyCorrectAnswer(exerciseBookmark);
       setIsCorrect(true);
-      setWordInContextHeadline(removePunctuation(bookmarksToStudy[0].to));
+      setWordInContextHeadline(removePunctuation(exerciseBookmark.to));
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
     } else {
       setClickedIndex(null);
-      setIncorrectAnswer(selectedChoiceId);
-      notifyIncorrectAnswer(bookmarksToStudy[0]);
+      notifyIncorrectAnswer(exerciseBookmark);
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
       setTimeout(() => {
-        setClickedOption(null);
+        // This line is here to avoid the reseting the styling on the
+        // correct box if the user clicks on it shortly after getting the
+        // context wrong.
+        if (!showSolutionRef.current) setClickedOption(null);
       }, 500);
     }
   }
@@ -125,7 +117,7 @@ export default function MultipleChoiceContext({
       message,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
@@ -134,7 +126,7 @@ export default function MultipleChoiceContext({
     return `<span class="highlightedWord">${word}</span>`;
   }
 
-  if (!interactiveText) {
+  if (!interactiveText || !exerciseBookmarks) {
     return <LoadingAnimation />;
   }
 
@@ -143,10 +135,7 @@ export default function MultipleChoiceContext({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceContextHeadline}
       </div>
-      <BookmarkProgressBar
-        bookmark={bookmarksToStudy[0]}
-        message={messageToAPI}
-      />
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
       <h1 className="wordInContextHeadline">{wordInContextHeadline}</h1>
       {exerciseBookmarks.map((option, index) => (
         <s.MultipleChoiceContext

@@ -1,12 +1,11 @@
-import { useState, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useClickOutside } from "react-click-outside-hook";
 import AlterMenu from "./AlterMenu";
-import { APIContext } from "../contexts/APIContext";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import extractDomain from "../utils/web/extractDomain";
+import addProtocolToLink from "../utils/web/addProtocolToLink";
+import redirect from "../utils/routing/routing";
+import LinkOffIcon from "@mui/icons-material/LinkOff";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-
-import { zeeguuDarkRed } from "../components/colors";
 
 export default function TranslatableWord({
   interactiveText,
@@ -23,36 +22,41 @@ export default function TranslatableWord({
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
   const [isWordTranslating, setIsWordTranslating] = useState(false);
   const [prevWord, setPreviousWord] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
+  const [isTranslationVisible, setIsTranslationVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasFetchedAlternatives, setHasFetchedAlternatives] = useState(false);
 
-  const api = useContext(APIContext);
+  useEffect(() => {
+    if (word.isTranslationVisible) {
+      setIsTranslationVisible(true);
+      return;
+    }
+    if (word.translation) setIsTranslationVisible(false);
+  }, []);
 
   function clickOnWord(e, word) {
+    if (word.is_like_num || word.is_punct) return;
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
-      if ((translating && !isVisible) || (!translating && isVisible))
-        setIsVisible(!isVisible);
+      if (
+        (translating && !isTranslationVisible) ||
+        (!translating && isTranslationVisible)
+      )
+        setIsTranslationVisible(!isTranslationVisible);
       return;
     }
     if (translating) {
       if (!disableTranslation) {
-        /* disableTranslation means that this word
-       is being tested in the exercises.
-       In this case, we don't want to re-translate it.
-       */
-        e.target.classList.add("loading");
+        setIsLoading(true);
         setPreviousWord(word.word);
         setIsWordTranslating(true);
-        interactiveText.translate(word, () => {
+        interactiveText.translate(word, true, () => {
           wordUpdated();
-          e.target.classList.remove("loading");
+          setIsLoading(false);
           setIsWordTranslating(false);
-          setIsVisible(true);
+          setIsTranslationVisible(true);
         });
       }
-      /* We want to run this still as the check on exercises
-      looks for the bookmark word in the translated words */
       if (translatedWords) {
         let copyOfWords = [...translatedWords];
         copyOfWords.push(word.word);
@@ -78,13 +82,38 @@ export default function TranslatableWord({
       });
   }
 
-  function deleteTranslation(e, word) {
-    api.deleteBookmark(
+  function unlinkLastWord(e, word) {
+    setIsLoading(true);
+    interactiveText.api.deleteBookmark(
       word.bookmark_id,
       (response) => {
         if (response === "OK") {
           // delete was successful; log and close
-          word.translation = undefined;
+          let withoutLastWord = word.unlinkLastWord();
+          interactiveText.translate(withoutLastWord, true, () => {
+            withoutLastWord.isTranslationVisible = true;
+            let unlinkedWord = withoutLastWord.next;
+            interactiveText.translate(unlinkedWord, false, () => {
+              unlinkedWord.isTranslationVisible = true;
+              wordUpdated();
+              setIsLoading(false);
+            });
+          });
+        }
+      },
+      (error) => {
+        // onError
+        console.error(error);
+      },
+    );
+  }
+
+  function deleteTranslation(e, word) {
+    interactiveText.api.deleteBookmark(
+      word.bookmark_id,
+      (response) => {
+        if (response === "OK") {
+          // delete was successful; log and close
           word.splitIntoComponents();
           wordUpdated();
         }
@@ -115,53 +144,124 @@ export default function TranslatableWord({
     setShowingAlterMenu(false);
   }
 
-  function hideTranslation(e, word) {
-    word.translation = undefined;
-    word.splitIntoComponents();
-    wordUpdated();
+  function getWordClass(word) {
+    /*
+    Function determines which class to be assigned to the word object.
+    Mainly, to render the punctuation cases that need to be handled differently.
+    By default, all punctuation words are assigned the class "punct", which means they
+    are moved slightly to the left, to be close to the previous tokens.
+    - left_punct means that the punctuation is moved a bit to the right, for example ( 
+    */
+    const noMarginPunctuation = ["–", "—", "“", "‘", '"'];
+    let allClasses = [];
+    if (word.token.has_space !== undefined) {
+      // from stanza, has_space property
+      if (word.token.is_punct || word.token.is_like_symbol)
+        allClasses.push("no-hover");
+    } else {
+      // we are in NLTK
+      if (word.token.is_punct) {
+        allClasses.push("punct");
+        allClasses.push("no-hover");
+      }
+      if (
+        word.token.is_left_punct ||
+        (word.token.is_punct &&
+          word.prev &&
+          [":", ".", ","].includes(word.prev.word.trim()))
+      )
+        allClasses.push("left-punct");
+      if (noMarginPunctuation.includes(word.word.trim()))
+        allClasses.push("no-margin");
+    }
+    if (word.token.is_like_num) allClasses.push("number");
+    return allClasses.join(" ");
   }
 
-  //disableTranslation so user cannot translate words that are being tested
-  if ((!word.translation && !isClickedToPronounce) || disableTranslation) {
+  const wordClass = getWordClass(word);
+
+  if (word.is_like_email)
     return (
       <>
-        <z-tag onClick={(e) => clickOnWord(e, word)}>{word.word + " "}</z-tag>
+        <z-tag>
+          <a href={"mailto:" + word.word}>{extractDomain(word.word) + " "}</a>
+        </z-tag>
+      </>
+    );
+  if (word.is_like_url)
+    return (
+      <>
+        <z-tag onClick={() => redirect(addProtocolToLink(word.word), true)}>
+          <span className="link-style">{extractDomain(word.word) + " "}</span>
+        </z-tag>
+      </>
+    );
+
+  //disableTranslation so user cannot translate words that are being tested
+  if (
+    (!isWordTranslating && !word.translation && !isClickedToPronounce) ||
+    disableTranslation
+  ) {
+    return (
+      <>
+        <z-tag class={wordClass} onClick={(e) => clickOnWord(e, word)}>
+          {word.word + (word.token.has_space === true ? " " : "")}
+        </z-tag>
       </>
     );
   }
+
   return (
     <>
-      <z-tag>
-        {word.translation && isVisible && (
+      <z-tag className={wordClass}>
+        {word.translation && isTranslationVisible && (
           <z-tran
             chosen={word.translation}
             translation0={word.translation}
             ref={refToTranslation}
           >
             <div className="translationContainer">
-              <span onClick={(e) => toggleAlterMenu(e, word)}>
+              <span className="hide low-oppacity translation-icon">
+                <VisibilityOffIcon
+                  fontSize="8px"
+                  onClick={(e) => {
+                    setIsTranslationVisible(!isTranslationVisible);
+                    setShowingAlterMenu(false);
+                  }}
+                />
+              </span>
+              <span
+                className="translation"
+                onClick={(e) => toggleAlterMenu(e, word)}
+              >
                 {word.translation}
               </span>
               <span className="arrow" onClick={(e) => toggleAlterMenu(e, word)}>
                 {showingAlterMenu ? "▲" : "▼"}
               </span>
-              <span className="hide">
-                <VisibilityOffIcon
-                  fontSize="8px"
-                  onClick={(e) => {
-                    setIsVisible(!isVisible);
-                    setShowingAlterMenu(false);
-                  }}
-                />
-              </span>
+              {word.mergedTokens.length > 1 && (
+                <span className="unlink low-oppacity translation-icon">
+                  <LinkOffIcon
+                    fontSize="8px"
+                    onClick={(e) => {
+                      unlinkLastWord(e, word);
+                    }}
+                  />
+                </span>
+              )}
             </div>
           </z-tran>
         )}
         <z-orig>
           {isWordTranslating ? (
-            <span> {prevWord} </span>
+            <span className={isLoading ? " loading" : ""}> {prevWord} </span>
           ) : (
-            <span onClick={(e) => clickOnWord(e, word)}>{word.word} </span>
+            <span
+              className={isLoading ? " loading" : ""}
+              onClick={(e) => clickOnWord(e, word)}
+            >
+              {word.word}{" "}
+            </span>
           )}
           {showingAlterMenu && (
             <AlterMenu
@@ -170,7 +270,6 @@ export default function TranslatableWord({
               selectAlternative={selectAlternative}
               hideAlterMenu={hideAlterMenu}
               clickedOutsideTranslation={clickedOutsideTranslation}
-              hideTranslation={hideTranslation}
               deleteTranslation={deleteTranslation}
             />
           )}

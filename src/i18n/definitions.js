@@ -483,7 +483,7 @@ let strings = new LocalizedStrings(
         "Please select the word(s) for which you are providing feedback.",
       clickWords:
         "Click on the word(s) for which you are improving the translation:",
-      otherFeedback: "Other reasons:",
+      otherFeedback: "Other reason:",
       sentFeedback1: "Feedback",
       sentFeedback2: "sent!",
 

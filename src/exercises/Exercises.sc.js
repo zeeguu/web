@@ -11,15 +11,14 @@ const ExercisesColumn = styled.div`
 `;
 
 const ExForm = styled.div`
-  position: relative;
-  margin: auto;
   background-color: rgba(241, 240, 240, 0.274);
-  min-height: 500px;
+  min-height: 300px;
 
   border-radius: 10px;
   overflow: hidden;
   transition: all 0.5s;
   width: 100%;
+  padding-bottom: 2rem;
 
   box-sizing: border-box; // to ensure that padding does not expand width!
   justify-content: center;

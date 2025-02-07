@@ -93,14 +93,14 @@ function groupByLevel(items) {
 
 function assignBookmarks(currentBookmarks, currentExercises) {
   /* 
-                          Attempts to assign all currentExercises given the currentBookmarks.
-                          if there is no exercise for these bookmarks, assign a default one.
-                
-                          Does all the checks that are required to ensure quality exercises
-                          are generated for the Extended Sequence
-                          
-                          We shuffle the list every loop to ensure variation of the sequence of exercises.
-                        */
+    Attempts to assign all currentExercises given the currentBookmarks.
+    if there is no exercise for these bookmarks, assign a default one.
+  
+    Does all the checks that are required to ensure quality exercises
+    are generated for the Extended Sequence
+    
+    We shuffle the list every loop to ensure variation of the sequence of exercises.
+  */
   let suitableExerciseFound = false;
   let possibleExercises = [...currentExercises];
   let exerciseList = [];
