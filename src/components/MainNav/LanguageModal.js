@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { APIContext } from "../../contexts/APIContext.js";
 import Modal from "../modal_shared/Modal.js";
 import Form from "../../pages/_pages_shared/Form.sc.js";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc.js";
@@ -17,8 +18,25 @@ const options = [
 ];
 
 export default function FeedbackModal({ open, setOpen }) {
-  const [selectedLanguage, setSelectedLanguage] = useState("german");
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeLanguages, setActiveLanguages] = useState(undefined);
+  const [selectedLanguage, setSelectedLanguage] = useState();
   const [reorderedOptions, setReorderedOptions] = useState(options);
+  const api = useContext(APIContext);
+  // const { getUserLanguages } = api;
+
+  // console.log("Api:", getUserLanguages);
+
+  useEffect(() => {
+    if (open) {
+      setIsLoading(true);
+      api.getUserLanguages((data) => {
+        console.log("Languages:", data);
+        setActiveLanguages(data);
+        setIsLoading(false);
+      });
+    }
+  }, [open, api]);
 
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
@@ -44,15 +62,17 @@ export default function FeedbackModal({ open, setOpen }) {
         <Header withoutLogo>
           <Heading>Your Active Languages:</Heading>
         </Header>
-        <Form action={onSubmit}>
+        <Form onSubmit={onSubmit}>
           <FormSection>
-            <RadioGroup
-              legend="Select your active languages:"
-              name="active-language"
-              options={reorderedOptions}
-              selectedValue={selectedLanguage}
-              onChange={handleLanguageChange}
-            />
+            {!isLoading && (
+              <RadioGroup
+                legend="Select your active languages:"
+                name="active-language"
+                options={activeLanguages}
+                selectedValue={selectedLanguage}
+                onChange={handleLanguageChange}
+              />
+            )}
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button
