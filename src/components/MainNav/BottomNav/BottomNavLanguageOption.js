@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { FEEDBACK_OPTIONS } from "../../FeedbackConstants";
 import LanguageModal from "../LanguageModal";
 import BottomNavOption from "./BottomNavOption";
 import NavIcon from "../NavIcon";
@@ -9,6 +8,7 @@ export default function BottomNavLanguageOption() {
   return (
     <>
       <BottomNavOption
+        ariaHasPopup={"dialog"}
         icon={<NavIcon name="language" />}
         text={"Language"}
         onClick={(e) => {
@@ -22,7 +22,6 @@ export default function BottomNavLanguageOption() {
         setOpen={() => {
           setShowLanguageModal(!showLanguageModal);
         }}
-        feedbackOptions={FEEDBACK_OPTIONS.ALL}
       ></LanguageModal>
     </>
   );
