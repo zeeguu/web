@@ -6,22 +6,25 @@ export default function RadioGroup({
   options,
   selectedValue,
   onChange,
+  optionLabel,
+  optionValue,
+  optionId,
 }) {
   return (
     <s.StyledFieldset>
       <s.StyledLegend id={`${name}-label`}>{legend}</s.StyledLegend>
       {options?.map((option) => (
-        <s.StyledDiv key={option.id}>
+        <s.StyledDiv key={optionId(option)}>
           <s.StyledInput
             type="radio"
-            id={option.id}
+            id={optionId(option)}
             name={name}
-            value={option.language}
-            checked={selectedValue === option.language}
+            value={optionValue(option)}
+            checked={selectedValue === optionValue(option)}
             onChange={onChange}
           />
-          <s.StyledLabel htmlFor={option.language}>
-            {option.language}
+          <s.StyledLabel htmlFor={optionValue(option)}>
+            {optionLabel(option)}
           </s.StyledLabel>
         </s.StyledDiv>
       ))}

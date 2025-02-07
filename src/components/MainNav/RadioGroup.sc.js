@@ -4,7 +4,21 @@ const StyledFieldset = styled.fieldset`
   all: unset;
   box-sizing: border-box;
   overflow-y: scroll;
-  max-height: 500px;
+  height: 24rem;
+
+  ::-webkit-scrollbar {
+    width: 0.25rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: darkgray;
+    border-radius: 1rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: lightgray;
+    border-radius: 1rem;
+  }
 `;
 
 const StyledLegend = styled.legend`

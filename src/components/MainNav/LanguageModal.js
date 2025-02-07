@@ -10,31 +10,30 @@ import Header from "../modal_shared/Header.sc.js";
 import Heading from "../modal_shared/Heading.sc.js";
 import RadioGroup from "./RadioGroup.js";
 
-//to be replaced with actual languages
-const options = [
-  { value: "german", label: "German" },
-  { value: "danish", label: "Danish" },
-  { value: "french", label: "French" },
-];
-
 export default function FeedbackModal({ open, setOpen }) {
   const [isLoading, setIsLoading] = useState(false);
   const [activeLanguages, setActiveLanguages] = useState(undefined);
-  const [selectedLanguage, setSelectedLanguage] = useState();
-  const [reorderedOptions, setReorderedOptions] = useState(options);
+  const [selectedLanguage, setSelectedLanguage] = useState("de");
   const api = useContext(APIContext);
-  // const { getUserLanguages } = api;
-
-  // console.log("Api:", getUserLanguages);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (open) {
       setIsLoading(true);
       api.getUserLanguages((data) => {
-        console.log("Languages:", data);
-        setActiveLanguages(data);
-        setIsLoading(false);
+        if (isMounted) {
+          console.log("Languages:", data);
+          setActiveLanguages(data);
+          setIsLoading(false);
+        }
       });
+
+      return () => {
+        isMounted = false;
+        setActiveLanguages(undefined);
+        setIsLoading(false);
+      };
     }
   }, [open, api]);
 
@@ -44,10 +43,7 @@ export default function FeedbackModal({ open, setOpen }) {
 
   function onSubmit(e) {
     e.preventDefault();
-    setReorderedOptions([
-      ...options.filter((option) => option.value === selectedLanguage),
-      ...options.filter((option) => option.value !== selectedLanguage),
-    ]);
+    console.log("Selected a new language");
     setOpen(false);
   }
 
@@ -64,15 +60,16 @@ export default function FeedbackModal({ open, setOpen }) {
         </Header>
         <Form onSubmit={onSubmit}>
           <FormSection>
-            {!isLoading && (
-              <RadioGroup
-                legend="Select your active languages:"
-                name="active-language"
-                options={activeLanguages}
-                selectedValue={selectedLanguage}
-                onChange={handleLanguageChange}
-              />
-            )}
+            <RadioGroup
+              legend="Select your active language:"
+              name="active-language"
+              options={activeLanguages}
+              selectedValue={selectedLanguage}
+              onChange={handleLanguageChange}
+              optionLabel={(e) => e.language}
+              optionValue={(e) => e.code}
+              optionId={(e) => e.id}
+            />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
             <Button
