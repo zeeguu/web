@@ -5,6 +5,10 @@ Zeeguu_API.prototype.getUserDetails = function (callback) {
   this._getJSON("get_user_details", callback);
 };
 
+Zeeguu_API.prototype.getUserLanguages = function (callback) {
+  this._getJSON("user_languages", callback);
+};
+
 Zeeguu_API.prototype.saveUserDetails = function (
   user_details,
   setErrorMessage,

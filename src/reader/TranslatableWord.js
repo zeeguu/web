@@ -24,6 +24,7 @@ export default function TranslatableWord({
   const [prevWord, setPreviousWord] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasFetchedAlternatives, setHasFetchedAlternatives] = useState(false);
 
   useEffect(() => {
     if (word.isVisible) {
@@ -71,9 +72,11 @@ export default function TranslatableWord({
       return;
     }
     setShowingAlterMenu(true);
-    interactiveText.alternativeTranslations(word, () => {
-      wordUpdated(word);
-    });
+    if (!hasFetchedAlternatives)
+      interactiveText.alternativeTranslations(word, () => {
+        wordUpdated(word);
+        setHasFetchedAlternatives(true);
+      });
   }
 
   function unlinkLastWord(e, word) {
