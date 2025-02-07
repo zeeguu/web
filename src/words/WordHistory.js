@@ -6,9 +6,10 @@ import strings from "../i18n/definitions";
 import * as sc from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
 import { PageTitle } from "../components/PageTitle";
+import Infobox from "../components/Infobox";
 
 export default function ReadingHistory({ api }) {
-  const [wordsByDay, setWordsByDay] = useState(null);
+  const [wordsByDay, setWordsByDay] = useState();
 
   function onNotifyDelete(bookmark) {
     let newBookmarksByDay = [...wordsByDay];
@@ -27,13 +28,16 @@ export default function ReadingHistory({ api }) {
     setTitle(strings.titleTranslationHistory);
   }, []);
 
-  if (!wordsByDay) {
+  if (wordsByDay === undefined) {
     return <LoadingAnimation />;
   }
-
+  console.dir(wordsByDay);
   return (
     <sc.NarrowColumn>
       <PageTitle>{strings.wordHistoryTitle}</PageTitle>
+      {wordsByDay.length === 0 && (
+        <Infobox>You don't have any translations yet.</Infobox>
+      )}
       {wordsByDay.map((day) => (
         <WordsOnDate
           key={day.date}
