@@ -54,7 +54,7 @@ export default function WordsForArticle({ api }) {
 
   function notifyWordChanged(bookmark) {
     let newWords = words.map((word) =>
-      word.id === bookmark.id ? bookmark : word,
+      word.bookmark_id === bookmark.id ? bookmark : word,
     );
     setWords(newWords);
     setExercisesEnabled(fit_for_study(newWords));

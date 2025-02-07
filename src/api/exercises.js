@@ -65,7 +65,6 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
     other_feedback: user_feedback,
     session_id: exerciseSessionId,
   };
-  console.log(payload);
   this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 
@@ -85,7 +84,6 @@ Zeeguu_API.prototype.uploadExerciseFinalizedData = function (
     other_feedback: other_feedback,
     session_id: exerciseSessionId,
   };
-  console.log(payload);
   this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 

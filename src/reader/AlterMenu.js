@@ -8,7 +8,6 @@ export default function AlterMenu({
   word,
   hideAlterMenu,
   selectAlternative,
-  hideTranslation,
   deleteTranslation,
   clickedOutsideTranslation,
 }) {
@@ -59,7 +58,11 @@ export default function AlterMenu({
             onClick={(e) =>
               selectAlternative(each.translation, shortenSource(each))
             }
-            className="additionalTrans"
+            className={
+              each.translation === word.translation
+                ? "additionalTrans selected"
+                : "additionalTrans"
+            }
           >
             {each.translation}
             <div

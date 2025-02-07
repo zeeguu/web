@@ -6,7 +6,7 @@ const MAX_WORD_EXPANSION_COUNT = 14;
 function wordShouldSkipCount(word) {
   //   When building context, we do not count for the context limit punctuation,
   // symbols, and numbers.
-  return word.is_punct || word.is_symbol || word.is_like_num;
+  return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
 }
 export default class InteractiveText {
   constructor(
@@ -20,30 +20,18 @@ export default class InteractiveText {
     source = "",
     zeeguuSpeech,
   ) {
-    function _updateBookmarks(previousBookmarks, paragraphs) {
-      console.log(previousBookmarks);
-      for (let i = 0; i < previousBookmarks.length; i++) {
-        let bookmark = previousBookmarks[i];
+    function _updateTokensWithBookmarks(bookmarks, paragraphs) {
+      for (let i = 0; i < bookmarks.length; i++) {
+        let bookmark = bookmarks[i];
         let target_p_i, target_s_i, target_t_i;
         let target_token;
+        target_p_i = bookmark["context_paragraph"];
+        target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
+        target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
 
-        if (isArticleContent) {
-          target_p_i = bookmark["context_paragraph"];
-          target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
-          target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
-          if (target_t_i == null) return;
-          target_token = paragraphs[target_p_i][target_s_i][target_t_i];
-        } else {
-          // Discuss with Mircea
-          target_p_i = 0;
-          target_s_i = bookmark["t_sentence_i"];
-          target_t_i = bookmark["t_token_i"];
-          if (target_t_i == null) return;
-          target_token = paragraphs[target_p_i][target_s_i][target_t_i];
-        }
+        target_token = paragraphs[target_p_i][target_s_i][target_t_i];
         if (target_token === undefined) return;
         target_token.bookmark = bookmark;
-
         /*
           When rendering the words in the frontend, we alter the word object to be composed
           of multiple tokens.
@@ -76,7 +64,7 @@ export default class InteractiveText {
         (!isArticleContent && !each.in_content),
     );
     this.paragraphs = tokenizedParagraphs;
-    _updateBookmarks(this.previousBookmarks, this.paragraphs);
+    _updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
       (sent) => new LinkedWordList(sent),
     );
@@ -92,14 +80,14 @@ export default class InteractiveText {
   }
 
   translate(word, fuseWithNeighbours, onSuccess) {
-    let context, cParagraph_i, cSent_i, cToken_i;
+    let context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis;
 
-    [context, cParagraph_i, cSent_i, cToken_i] =
-      this.getContextAndStartingIndex(word);
+    [context, cParagraph_i, cSent_i, cToken_i, leftEllipsis, rightEllipsis] =
+      this.getContextAndCoordinates(word);
     if (fuseWithNeighbours) word = word.fuseWithNeighborsIfNeeded(this.api);
-    let wordSent_i = word.sent_i - cSent_i;
-    let wordToken_i = word.token_i - cToken_i;
-
+    let wordSent_i = word.token.sent_i - cSent_i;
+    let wordToken_i = word.token.token_i - cToken_i;
+    console.log(word);
     this.api
       .getOneTranslation(
         this.language,
@@ -110,6 +98,8 @@ export default class InteractiveText {
         [cParagraph_i, cSent_i, cToken_i],
         this.article_id,
         this.isArticleContent,
+        leftEllipsis,
+        rightEllipsis,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -133,11 +123,10 @@ export default class InteractiveText {
   }
 
   selectAlternative(word, alternative, preferredSource, onSuccess) {
-    let context, pargraph_i, sentence_i, token_i;
-    [context, pargraph_i, sentence_i, token_i] =
-      this.getContextAndStartingIndex(word);
+    let context;
+    [context] = this.getContextAndCoordinates(word);
     this.api.updateBookmark(
-      word.id,
+      word.bookmark_id,
       word.word,
       alternative,
       context,
@@ -158,7 +147,8 @@ export default class InteractiveText {
   }
 
   alternativeTranslations(word, onSuccess) {
-    let context = this.getContextAndStartingIndex(word);
+    let context;
+    [context] = this.getContextAndCoordinates(word);
     this.api
       .getMultipleTranslations(
         this.language,
@@ -203,12 +193,7 @@ export default class InteractiveText {
     );
   }
 
-  /**
-   * Homemade... might not work that well for all languages...
-   * - won't catch a sentence that ends with ...
-   * might be tricked by I'm going to N.Y. to see my friend.
-   */
-  getContextAndStartingIndex(word) {
+  getContextAndCoordinates(word) {
     function getLeftContextAndStartIndex(word, maxLeftContextLength) {
       let currentWord = word;
       let contextBuilder = "";
@@ -216,54 +201,67 @@ export default class InteractiveText {
       while (count < maxLeftContextLength && currentWord) {
         currentWord = currentWord.prev;
         contextBuilder = currentWord.word + " " + contextBuilder;
-        if (currentWord.is_sent_start || currentWord.token_i === 0) {
+        if (
+          currentWord.token.is_sent_start ||
+          currentWord.token.token_i === 0
+        ) {
           break;
         }
         if (!wordShouldSkipCount(currentWord)) count++;
       }
       return [
         contextBuilder,
-        currentWord.paragraph_i,
-        currentWord.sent_i,
-        currentWord.token_i,
+        currentWord.token.paragraph_i,
+        currentWord.token.sent_i,
+        currentWord.token.token_i,
       ];
     }
 
     function getRightContext(word, maxRightContextLength) {
       let currentWord = word;
       let contextBuilder = "";
-      while (maxRightContextLength > 0 && currentWord) {
+      let hasRightEllipsis = true;
+      let count = 0;
+      while (count < maxRightContextLength && currentWord) {
         if (
-          currentWord.is_sent_start &&
-          currentWord.sent_i > currentWord.prev.sent_i
+          currentWord.token.is_sent_start &&
+          currentWord.token.sent_i !== currentWord.prev.token.sent_i
         ) {
           break;
         }
         contextBuilder = contextBuilder + " " + currentWord.word;
         if (!wordShouldSkipCount(currentWord))
           // If it's not a punctuation or symbol we count it.
-          maxRightContextLength++;
+          count++;
         currentWord = currentWord.next;
       }
-      return contextBuilder;
+      // We broke early, or we didn't have more tokens in the link early.
+      // We are at the end of paragraph (currentWord undefined),
+      // or we broke early (found end of sent.)
+      if (count < maxRightContextLength) hasRightEllipsis = false;
+      return [contextBuilder, hasRightEllipsis];
     }
 
     let [leftContext, paragraph_i, sent_i, token_i] = [
       "",
-      word.paragraph_i,
-      word.sent_i,
-      word.token_i,
+      word.token.paragraph_i,
+      word.token.sent_i,
+      word.token.token_i,
     ];
     // Do not get left context, if we are starting a sentence
     // at the token.
-    if (word.prev && !word.is_sent_start)
+    if (word.prev && !word.token.is_sent_start)
       [leftContext, paragraph_i, sent_i, token_i] = getLeftContextAndStartIndex(
         word,
         MAX_WORD_EXPANSION_COUNT,
       );
-    let rightContext = getRightContext(word.next, MAX_WORD_EXPANSION_COUNT);
+    let leftEllipsis = token_i !== 0;
+    let [rightContext, rightEllipsis] = getRightContext(
+      word.next,
+      MAX_WORD_EXPANSION_COUNT,
+    );
     let context = leftContext + word.word + rightContext;
     console.log("Final context: ", context);
-    return [context, paragraph_i, sent_i, token_i];
+    return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
   }
 }

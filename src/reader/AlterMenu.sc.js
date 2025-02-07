@@ -31,6 +31,15 @@ const AlterMenuSC = styled.div`
     line-height: 1em;
     cursor: pointer;
     margin-top: 0.2em;
+    font-weight: 500;
+
+    &:hover {
+      filter: brightness(90%);
+    }
+  }
+
+  .selected {
+    font-weight: 600;
   }
 
   .ownTranslationInput {
@@ -47,6 +56,10 @@ const AlterMenuSC = styled.div`
     border-radius: 0.4em;
     font-weight: 400;
     font-size: small;
+
+    &:hover {
+      filter: brightness(98%);
+    }
 
     &:focus {
       border: 0.17em solid ${almostBlack};
@@ -67,10 +80,11 @@ const AlterMenuSC = styled.div`
   .removeLink {
     //text-decoration: underline;
     margin-top: 0.2rem;
+    padding-top: 0.2rem;
     margin-bottom: -0.2rem;
     border-top: 1px solid ${zeeguuDarkRed} !important;
     color: ${zeeguuDarkRed};
-    font-size: 13px;
+    font-size: small;
 
     &:hover {
       filter: brightness(110%);

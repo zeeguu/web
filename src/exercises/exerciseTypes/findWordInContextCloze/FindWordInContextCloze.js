@@ -48,7 +48,7 @@ export default function FindWordInContextCloze({
       new InteractiveText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.article_id,
-        false,
+        exerciseBookmark.context_in_content,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",
@@ -68,34 +68,34 @@ export default function FindWordInContextCloze({
       concatMessage = message;
     }
 
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     setMessageToAPI(concatMessage);
     api.uploadExerciseFinalizedData(
       concatMessage,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    notifyCorrectAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
 
   function handleIncorrectAnswer() {
     setMessageToAPI(messageToAPI + "W");
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
   }
 
   if (!interactiveText) {
@@ -107,12 +107,9 @@ export default function FindWordInContextCloze({
       <div className="headlineWithMoreSpace">
         {strings.findWordInContextClozeHeadline}
       </div>
-      <BookmarkProgressBar
-        bookmark={bookmarksToStudy[0]}
-        message={messageToAPI}
-      />
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
       <h1 className="wordInContextHeadline">
-        {removePunctuation(bookmarksToStudy[0].to)}
+        {removePunctuation(exerciseBookmark.to)}
       </h1>
       <div className="contextExample">
         <TranslatableText
@@ -120,7 +117,9 @@ export default function FindWordInContextCloze({
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
-          bookmarkToStudy={bookmarksToStudy[0].from}
+          bookmarkToStudy={exerciseBookmark.from}
+          leftEllipsis={exerciseBookmark.left_ellipsis}
+          rightEllipsis={exerciseBookmark.right_ellipsis}
         />
       </div>
 
@@ -140,7 +139,7 @@ export default function FindWordInContextCloze({
         message={messageToAPI}
         exerciseType={EXERCISE_TYPE}
         api={api}
-        exerciseBookmark={bookmarksToStudy[0]}
+        exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

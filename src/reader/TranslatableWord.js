@@ -22,27 +22,31 @@ export default function TranslatableWord({
   const [isClickedToPronounce, setIsClickedToPronounce] = useState(false);
   const [isWordTranslating, setIsWordTranslating] = useState(false);
   const [prevWord, setPreviousWord] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
+  const [isTranslationVisible, setIsTranslationVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasFetchedAlternatives, setHasFetchedAlternatives] = useState(false);
 
   useEffect(() => {
-    if (word.isVisible) {
-      setIsVisible(true);
+    if (word.isTranslationVisible) {
+      setIsTranslationVisible(true);
       return;
     }
-    if (word.translation) setIsVisible(false);
+    if (word.translation) setIsTranslationVisible(false);
   }, []);
 
   function clickOnWord(e, word) {
-    if (word.is_like_num) return;
+    if (word.is_like_num || word.is_punct) return;
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
-      if ((translating && !isVisible) || (!translating && isVisible))
-        setIsVisible(!isVisible);
+      if (
+        (translating && !isTranslationVisible) ||
+        (!translating && isTranslationVisible)
+      )
+        setIsTranslationVisible(!isTranslationVisible);
       return;
     }
     if (translating) {
-      if (!disableTranslation && !word.is_punct) {
+      if (!disableTranslation) {
         setIsLoading(true);
         setPreviousWord(word.word);
         setIsWordTranslating(true);
@@ -50,7 +54,7 @@ export default function TranslatableWord({
           wordUpdated();
           setIsLoading(false);
           setIsWordTranslating(false);
-          setIsVisible(true);
+          setIsTranslationVisible(true);
         });
       }
       if (translatedWords) {
@@ -71,9 +75,11 @@ export default function TranslatableWord({
       return;
     }
     setShowingAlterMenu(true);
-    interactiveText.alternativeTranslations(word, () => {
-      wordUpdated(word);
-    });
+    if (!hasFetchedAlternatives)
+      interactiveText.alternativeTranslations(word, () => {
+        wordUpdated(word);
+        setHasFetchedAlternatives(true);
+      });
   }
 
   function unlinkLastWord(e, word) {
@@ -83,12 +89,12 @@ export default function TranslatableWord({
       (response) => {
         if (response === "OK") {
           // delete was successful; log and close
-          let new_word = word.unlinkLastWord();
-          interactiveText.translate(new_word, true, () => {
-            new_word.isVisible = true;
-            let nextWord = new_word.next;
-            interactiveText.translate(nextWord, false, () => {
-              nextWord.isVisible = true;
+          let withoutLastWord = word.unlinkLastWord();
+          interactiveText.translate(withoutLastWord, true, () => {
+            withoutLastWord.isTranslationVisible = true;
+            let unlinkedWord = withoutLastWord.next;
+            interactiveText.translate(unlinkedWord, false, () => {
+              unlinkedWord.isTranslationVisible = true;
               wordUpdated();
               setIsLoading(false);
             });
@@ -97,10 +103,7 @@ export default function TranslatableWord({
       },
       (error) => {
         // onError
-        console.log(error);
-        alert(
-          "something went wrong and we could not delete the bookmark; try again later.",
-        );
+        console.error(error);
       },
     );
   }
@@ -141,11 +144,6 @@ export default function TranslatableWord({
     setShowingAlterMenu(false);
   }
 
-  function hideTranslation(e, word) {
-    word.splitIntoComponents();
-    wordUpdated();
-  }
-
   function getWordClass(word) {
     /*
     Function determines which class to be assigned to the word object.
@@ -156,17 +154,19 @@ export default function TranslatableWord({
     */
     const noMarginPunctuation = ["–", "—", "“", "‘", '"'];
     let allClasses = [];
-    if (word.has_space !== undefined) {
-      // From Stanza
-      if (word.is_punct || word.is_like_symbol) allClasses.push("no-hover");
+    if (word.token.has_space !== undefined) {
+      // from stanza, has_space property
+      if (word.token.is_punct || word.token.is_like_symbol)
+        allClasses.push("no-hover");
     } else {
-      if (word.is_punct) {
+      // we are in NLTK
+      if (word.token.is_punct) {
         allClasses.push("punct");
         allClasses.push("no-hover");
       }
       if (
-        word.is_left_punct ||
-        (word.is_punct &&
+        word.token.is_left_punct ||
+        (word.token.is_punct &&
           word.prev &&
           [":", ".", ","].includes(word.prev.word.trim()))
       )
@@ -174,7 +174,7 @@ export default function TranslatableWord({
       if (noMarginPunctuation.includes(word.word.trim()))
         allClasses.push("no-margin");
     }
-    if (word.is_like_num) allClasses.push("number");
+    if (word.token.is_like_num) allClasses.push("number");
     return allClasses.join(" ");
   }
 
@@ -205,7 +205,7 @@ export default function TranslatableWord({
     return (
       <>
         <z-tag class={wordClass} onClick={(e) => clickOnWord(e, word)}>
-          {word.word + (word.has_space === true ? " " : "")}
+          {word.word + (word.token.has_space === true ? " " : "")}
         </z-tag>
       </>
     );
@@ -213,8 +213,8 @@ export default function TranslatableWord({
 
   return (
     <>
-      <z-tag class={wordClass}>
-        {word.translation && isVisible && (
+      <z-tag className={wordClass}>
+        {word.translation && isTranslationVisible && (
           <z-tran
             chosen={word.translation}
             translation0={word.translation}
@@ -225,7 +225,7 @@ export default function TranslatableWord({
                 <VisibilityOffIcon
                   fontSize="8px"
                   onClick={(e) => {
-                    setIsVisible(!isVisible);
+                    setIsTranslationVisible(!isTranslationVisible);
                     setShowingAlterMenu(false);
                   }}
                 />
@@ -254,10 +254,10 @@ export default function TranslatableWord({
         )}
         <z-orig>
           {isWordTranslating ? (
-            <span class={isLoading ? " loading" : ""}> {prevWord} </span>
+            <span className={isLoading ? " loading" : ""}> {prevWord} </span>
           ) : (
             <span
-              class={isLoading ? " loading" : ""}
+              className={isLoading ? " loading" : ""}
               onClick={(e) => clickOnWord(e, word)}
             >
               {word.word}{" "}
@@ -270,7 +270,6 @@ export default function TranslatableWord({
               selectAlternative={selectAlternative}
               hideAlterMenu={hideAlterMenu}
               clickedOutsideTranslation={clickedOutsideTranslation}
-              hideTranslation={hideTranslation}
               deleteTranslation={deleteTranslation}
             />
           )}

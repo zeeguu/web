@@ -50,7 +50,7 @@ export default function MultipleChoiceL2toL1({
       new InteractiveText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.article_id,
-        false,
+        exerciseBookmark.context_in_content,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",
@@ -127,6 +127,8 @@ export default function MultipleChoiceL2toL1({
           bookmarkToStudy={exerciseBookmark.from}
           exerciseType={EXERCISE_TYPE}
           boldExpression={exerciseBookmark.from}
+          leftEllipsis={exerciseBookmark.left_ellipsis}
+          rightEllipsis={exerciseBookmark.right_ellipsis}
         />
       </div>
 

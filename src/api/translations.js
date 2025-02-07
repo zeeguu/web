@@ -10,6 +10,8 @@ Zeeguu_API.prototype.getOneTranslation = function (
   context_token_i,
   articleID,
   isArticleContent,
+  leftEllipsis,
+  rightEllipsis,
 ) {
   let w_sent_i, w_token_i, w_total_tokens;
   let c_paragraph_i, c_sent_i, c_token_i;
@@ -27,8 +29,9 @@ Zeeguu_API.prototype.getOneTranslation = function (
     c_token_i: c_token_i,
     in_content: isArticleContent,
     articleID: articleID,
+    left_ellipsis: leftEllipsis,
+    right_ellipsis: rightEllipsis,
   };
-
   return this._post(
     `get_one_translation/${from_lang}/${to_lang}`,
     qs.stringify(payload),

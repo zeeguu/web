@@ -52,7 +52,7 @@ export default function WordInContextExercise({
       new InteractiveText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.article_id,
-        false,
+        exerciseBookmark.context_in_content,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",
@@ -180,6 +180,8 @@ export default function WordInContextExercise({
           translatedWords={translatedWords}
           setTranslatedWords={setTranslatedWords}
           bookmarkToStudy={exerciseBookmark.from}
+          leftEllipsis={exerciseBookmark.left_ellipsis}
+          rightEllipsis={exerciseBookmark.right_ellipsis}
         />
       </div>
       {showBottomInput && !isCorrect && (
