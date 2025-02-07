@@ -84,7 +84,7 @@ const AlterMenuSC = styled.div`
     margin-bottom: -0.2rem;
     border-top: 1px solid ${zeeguuDarkRed} !important;
     color: ${zeeguuDarkRed};
-    font-size: 13px;
+    font-size: small;
 
     &:hover {
       filter: brightness(110%);

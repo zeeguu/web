@@ -16,6 +16,8 @@ export function TranslatableText({
   boldExpression,
   exerciseType,
   updateBookmarks,
+  leftEllipsis,
+  rightEllipsis,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -35,7 +37,9 @@ export function TranslatableText({
     setRenderedText(
       paragraphs.map((par, index) => (
         <div key={index} className="textParagraph">
+          {index === 0 && leftEllipsis && <>...</>}
           {par.getWords().map((word) => renderWordJSX(word))}
+          {index === 0 && rightEllipsis && <>...</>}
         </div>
       )),
     );

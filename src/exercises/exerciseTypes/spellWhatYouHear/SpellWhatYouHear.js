@@ -55,7 +55,7 @@ export default function SpellWhatYouHear({
       new InteractiveText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.article_id,
-        false,
+        exerciseBookmark.context_in_content,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",
@@ -128,10 +128,7 @@ export default function SpellWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.audioExerciseHeadline}
       </div>
-      <BookmarkProgressBar
-        bookmark={bookmarksToStudy[0]}
-        message={messageToAPI}
-      />
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
 
       {!isCorrect && (
         <>
@@ -150,6 +147,8 @@ export default function SpellWhatYouHear({
               translating={true}
               pronouncing={false}
               bookmarkToStudy={exerciseBookmark.from}
+              leftEllipsis={exerciseBookmark.left_ellipsis}
+              rightEllipsis={exerciseBookmark.right_ellipsis}
             />
           </div>
 
@@ -175,6 +174,8 @@ export default function SpellWhatYouHear({
               translating={true}
               pronouncing={false}
               bookmarkToStudy={exerciseBookmark.from}
+              leftEllipsis={exerciseBookmark.left_ellipsis}
+              rightEllipsis={exerciseBookmark.right_ellipsis}
             />
           </div>
         </>

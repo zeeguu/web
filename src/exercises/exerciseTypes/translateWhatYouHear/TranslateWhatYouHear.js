@@ -53,7 +53,7 @@ export default function TranslateWhatYouHear({
       new InteractiveText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.article_id,
-        false,
+        exerciseBookmark.context_in_content,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",
@@ -143,6 +143,8 @@ export default function TranslateWhatYouHear({
               pronouncing={false}
               exerciseBookmark={exerciseBookmark.from}
               exerciseType={EXERCISE_TYPE}
+              leftEllipsis={exerciseBookmark.left_ellipsis}
+              rightEllipsis={exerciseBookmark.right_ellipsis}
             />
           </div>
           <BottomInput
@@ -168,6 +170,8 @@ export default function TranslateWhatYouHear({
               translating={true}
               pronouncing={false}
               exerciseBookmark={exerciseBookmark.from}
+              leftEllipsis={exerciseBookmark.left_ellipsis}
+              rightEllipsis={exerciseBookmark.right_ellipsis}
             />
           </div>
         </>

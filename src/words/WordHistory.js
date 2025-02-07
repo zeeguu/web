@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { WordsOnDate } from "./WordsOnDate";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -20,7 +20,7 @@ export default function ReadingHistory({ api }) {
     setWordsByDay(newBookmarksByDay);
   }
 
-  useState(() => {
+  useEffect(() => {
     api.getBookmarksByDay((bookmarks_by_day) => {
       setWordsByDay(bookmarks_by_day);
     });

@@ -8,7 +8,6 @@ export default function AlterMenu({
   word,
   hideAlterMenu,
   selectAlternative,
-  hideTranslation,
   deleteTranslation,
   clickedOutsideTranslation,
 }) {
