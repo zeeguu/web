@@ -54,10 +54,10 @@ export default function FeedbackModal({ open, setOpen }) {
         setOpen(false);
       }}
     >
+      <Header withoutLogo>
+        <Heading>Your Active Languages:</Heading>
+      </Header>
       <Main>
-        <Header withoutLogo>
-          <Heading>Your Active Languages:</Heading>
-        </Header>
         <Form onSubmit={onSubmit}>
           <FormSection>
             <RadioGroup
