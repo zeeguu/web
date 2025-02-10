@@ -27,6 +27,7 @@ export default function MoreOptionsPanel({
       onClick={handleHideMoreOptions}
     >
       <s.MoreOptionsPanel
+        aria-label="More Options Menu panel"
         $renderMoreOptions={renderMoreOptions}
         $moreOptionsTransition={moreOptionsTransition}
         onClick={(e) => {
@@ -34,50 +35,55 @@ export default function MoreOptionsPanel({
         }}
       >
         <s.CloseSection>
-          <s.CloseButton onClick={handleHideMoreOptions}>
+          <s.CloseButton
+            aria-label="Close More Options panel"
+            onClick={handleHideMoreOptions}
+          >
             <CloseRoundedIcon fontSize="small" />
           </s.CloseButton>
         </s.CloseSection>
 
-        {isOnStudentSide && (
-          <>
-            <NavOption
-              {...NavigationOptions.statistics}
-              currentPath={currentPath}
-              onClick={handleHideMoreOptions}
-            />
-
-            <NavOption
-              {...NavigationOptions.history}
-              currentPath={currentPath}
-              onClick={handleHideMoreOptions}
-            />
-
-            {isTeacher && (
+        <s.MoreOptionsList>
+          {isOnStudentSide && (
+            <>
               <NavOption
-                {...NavigationOptions.teacherSite}
+                {...NavigationOptions.statistics}
                 currentPath={currentPath}
                 onClick={handleHideMoreOptions}
               />
-            )}
-          </>
-        )}
 
-        {!isOnStudentSide && (
+              <NavOption
+                {...NavigationOptions.history}
+                currentPath={currentPath}
+                onClick={handleHideMoreOptions}
+              />
+
+              {isTeacher && (
+                <NavOption
+                  {...NavigationOptions.teacherSite}
+                  currentPath={currentPath}
+                  onClick={handleHideMoreOptions}
+                />
+              )}
+            </>
+          )}
+
+          {!isOnStudentSide && (
+            <NavOption
+              {...NavigationOptions.studentSite}
+              currentPath={currentPath}
+              onClick={handleHideMoreOptions}
+            />
+          )}
+
           <NavOption
-            {...NavigationOptions.studentSite}
-            currentPath={currentPath}
+            {...NavigationOptions.settings}
+            currentPath={path}
             onClick={handleHideMoreOptions}
           />
-        )}
 
-        <NavOption
-          {...NavigationOptions.settings}
-          currentPath={path}
-          onClick={handleHideMoreOptions}
-        />
-
-        <FeedbackButton />
+          <FeedbackButton />
+        </s.MoreOptionsList>
       </s.MoreOptionsPanel>
     </s.MoreOptionsWrapper>
   );

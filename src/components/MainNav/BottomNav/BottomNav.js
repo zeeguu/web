@@ -60,16 +60,22 @@ export default function BottomNav() {
   return (
     <>
       {renderBottomNav && (
-        <s.BottomNav $bottomNavTransition={bottomNavTransition}>
-          {isOnStudentSide && <BottomNavOptionsForStudent />}
+        <s.BottomNav
+          aria-label="Bottom Navigation"
+          $bottomNavTransition={bottomNavTransition}
+        >
+          <s.NavList>
+            {isOnStudentSide && <BottomNavOptionsForStudent />}
 
-          {!isOnStudentSide && <BottomNavOptionsForTeacher />}
+            {!isOnStudentSide && <BottomNavOptionsForTeacher />}
 
-          <BottomNavOption
-            onClick={handleShowMoreOptions}
-            icon={<NavIcon name="more" />}
-            text={strings.more}
-          />
+            <BottomNavOption
+              onClick={handleShowMoreOptions}
+              icon={<NavIcon name="more" />}
+              text={strings.more}
+              ariaHasPopup={"true"}
+            />
+          </s.NavList>
         </s.BottomNav>
       )}
 
