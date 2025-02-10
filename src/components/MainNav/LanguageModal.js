@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { APIContext } from "../../contexts/APIContext.js";
+import { UserContext } from "../../contexts/UserContext.js";
 import Modal from "../modal_shared/Modal.js";
 import Form from "../../pages/_pages_shared/Form.sc.js";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc.js";
@@ -11,10 +12,12 @@ import Heading from "../modal_shared/Heading.sc.js";
 import RadioGroup from "./RadioGroup.js";
 
 export default function FeedbackModal({ open, setOpen }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeLanguages, setActiveLanguages] = useState(undefined);
-  const [selectedLanguage, setSelectedLanguage] = useState("de");
   const api = useContext(APIContext);
+  const user = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentLearnedLanguage, setCurrentLearnedLanguage] =
+    useState(undefined);
+  const [activeLanguages, setActiveLanguages] = useState(undefined);
 
   useEffect(() => {
     let isMounted = true;
@@ -35,15 +38,18 @@ export default function FeedbackModal({ open, setOpen }) {
         setIsLoading(false);
       };
     }
-  }, [open, api]);
+  }, [open, api, user.session]);
+
+  useEffect(() => {
+    setCurrentLearnedLanguage(user.learned_language);
+  }, [user.learned_language]);
 
   const handleLanguageChange = (event) => {
-    setSelectedLanguage(event.target.value);
+    setCurrentLearnedLanguage(event.target.value);
   };
 
   function onSubmit(e) {
     e.preventDefault();
-    console.log("Selected a new language");
     setOpen(false);
   }
 
@@ -64,7 +70,7 @@ export default function FeedbackModal({ open, setOpen }) {
               legend="Select your active language:"
               name="active-language"
               options={activeLanguages}
-              selectedValue={selectedLanguage}
+              selectedValue={currentLearnedLanguage}
               onChange={handleLanguageChange}
               optionLabel={(e) => e.language}
               optionValue={(e) => e.code}
@@ -78,7 +84,7 @@ export default function FeedbackModal({ open, setOpen }) {
                 onSubmit(e);
               }}
             >
-              Submit
+              Save
             </Button>
           </ButtonContainer>
         </Form>
