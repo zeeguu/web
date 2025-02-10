@@ -19,33 +19,33 @@ export default function SideNav({ screenWidth }) {
 
   return (
     <s.SideNav $screenWidth={screenWidth} role="navigation">
-      <NavOption
-        className={"logo"}
-        linkTo={defaultPage}
-        icon={
-          <img
-            alt="Zeeguu logo - the elephant"
-            src="../static/images/zeeguuWhiteLogo.svg"
-          ></img>
-        }
-        text={"Zeeguu"}
-      ></NavOption>
+      <s.NavList>
+        <NavOption
+          className={"logo"}
+          linkTo={defaultPage}
+          icon={<img alt="" src="../static/images/zeeguuWhiteLogo.svg"></img>}
+          text={"Zeeguu"}
+          ariaLabel={"Go to Zeeguu homepage"}
+        ></NavOption>
 
-      {isOnStudentSide && (
-        <SideNavOptionsForStudent screenWidth={screenWidth} />
-      )}
+        {isOnStudentSide && (
+          <SideNavOptionsForStudent screenWidth={screenWidth} />
+        )}
 
-      {!isOnStudentSide && (
-        <SideNavOptionsForTeacher screenWidth={screenWidth} />
-      )}
+        {!isOnStudentSide && (
+          <SideNavOptionsForTeacher screenWidth={screenWidth} />
+        )}
+      </s.NavList>
 
       <s.BottomSection $screenWidth={screenWidth}>
-        <NavOption
-          {...NavigationOptions.settings}
-          currentPath={path}
-          screenWidth={screenWidth}
-        />
-        <FeedbackButton screenWidth={screenWidth} />
+        <s.NavList>
+          <NavOption
+            {...NavigationOptions.settings}
+            currentPath={path}
+            screenWidth={screenWidth}
+          />
+          <FeedbackButton screenWidth={screenWidth} />
+        </s.NavList>
       </s.BottomSection>
     </s.SideNav>
   );
