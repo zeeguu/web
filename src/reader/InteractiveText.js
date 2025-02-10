@@ -198,7 +198,7 @@ export default class InteractiveText {
       let currentWord = word;
       let contextBuilder = "";
       let count = 0;
-      while (count < maxLeftContextLength && currentWord) {
+      while (count < maxLeftContextLength && currentWord.prev) {
         currentWord = currentWord.prev;
         contextBuilder = currentWord.word + " " + contextBuilder;
         if (
