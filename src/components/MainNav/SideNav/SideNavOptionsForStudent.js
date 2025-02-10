@@ -54,7 +54,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
         screenWidth={screenWidth}
       />
 
-      <SideNavLanguageOption />
+      <SideNavLanguageOption screenWidth={screenWidth} />
 
       {isTeacher && (
         <NavOption

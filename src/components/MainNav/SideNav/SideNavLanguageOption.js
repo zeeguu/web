@@ -5,7 +5,7 @@ import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import navLanguages from "../navLanguages";
 
-export default function SideNavLanguageOption() {
+export default function SideNavLanguageOption({ screenWidth }) {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const user = useContext(UserContext);
 
@@ -23,6 +23,8 @@ export default function SideNavLanguageOption() {
         ariaLabel={`Change language (currently: ${languageDisplayed})`}
         icon={<NavIcon name={"language"} />}
         text={languageDisplayed}
+        title={languageDisplayed}
+        screenWidth={screenWidth}
         onClick={(e) => {
           e.stopPropagation();
           setShowLanguageModal(!showLanguageModal);
