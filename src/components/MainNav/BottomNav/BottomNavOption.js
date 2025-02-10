@@ -8,13 +8,19 @@ export default function BottomNavOption({
   text,
   notification,
   ariaHasPopup,
+  ariaLabel,
 }) {
   const Component = linkTo ? s.StyledLink : s.StyledButton;
   const isActive = currentPath?.includes(linkTo);
 
   return (
     <s.BottomNavOption>
-      <Component to={linkTo} onClick={onClick} aria-haspopup={ariaHasPopup}>
+      <Component
+        to={linkTo}
+        onClick={onClick}
+        aria-haspopup={ariaHasPopup}
+        aria-label={ariaLabel}
+      >
         {notification}
         <s.IconSpan isActive={isActive}>{icon}</s.IconSpan>
         {text}

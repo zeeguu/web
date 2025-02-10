@@ -42,7 +42,7 @@ export default function FeedbackModal({ open, setOpen }) {
 
   useEffect(() => {
     setCurrentLearnedLanguage(user.learned_language);
-  }, [user.learned_language]);
+  }, [user.learned_language, open]);
 
   const handleLanguageChange = (event) => {
     setCurrentLearnedLanguage(event.target.value);
