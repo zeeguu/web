@@ -141,7 +141,7 @@ export default function TranslateWhatYouHear({
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              exerciseBookmark={exerciseBookmark.from}
+              bookmarkToStudy={exerciseBookmark.from}
               exerciseType={EXERCISE_TYPE}
               leftEllipsis={exerciseBookmark.left_ellipsis}
               rightEllipsis={exerciseBookmark.right_ellipsis}
