@@ -187,7 +187,7 @@ export default class InteractiveText {
 
     this.api.logReaderActivity(
       this.api.SPEAK_TEXT,
-      this.articleInfo.id,
+      this.article_id,
       word.word,
       this.source,
     );
