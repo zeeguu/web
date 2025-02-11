@@ -29,8 +29,8 @@ export default class InteractiveText {
         target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
         target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
 
+        if (target_p_i === undefined || target_p_i === null) return;
         target_token = paragraphs[target_p_i][target_s_i][target_t_i];
-        if (target_token === undefined) return;
         target_token.bookmark = bookmark;
         /*
           When rendering the words in the frontend, we alter the word object to be composed
