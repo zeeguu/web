@@ -1,32 +1,21 @@
 import styled from "styled-components";
+import { blue100, blue700, blue900, lightGrey, veryLightGrey } from "../colors";
 
 const StyledFieldset = styled.fieldset`
   all: unset;
   box-sizing: border-box;
   overflow-y: scroll;
-  height: 24rem;
-
-  ::-webkit-scrollbar {
-    width: 0.25rem;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: darkgray;
-    border-radius: 1rem;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: lightgray;
-    border-radius: 1rem;
-  }
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 0.5rem;
+  padding: 1rem 0 0 0;
+  max-height: 24rem;
 `;
 
 const StyledLegend = styled.legend`
   margin: 0 0 0.5rem 0;
-`;
-
-const StyledDiv = styled.div`
-  margin: 0.5rem 0;
 `;
 
 const StyledInput = styled.input`
@@ -36,25 +25,45 @@ const StyledInput = styled.input`
 `;
 
 const StyledLabel = styled.label`
-  box-sizing: border-box;
   cursor: pointer;
-  padding: 0.5rem;
-  border: 2px solid transparent;
-  display: inline-block;
-  width: 100%;
+  color: black;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 2rem;
+  border: solid 0.1rem ${lightGrey};
+  box-shadow: 0px 0.1rem ${lightGrey};
+  white-space: nowrap;
   transition: all 300ms ease-in-out;
-  user-select: none;
-  font-weight: bold;
-  border-radius: 0.3rem;
-  border: solid 0.1rem transparent;
+  margin-bottom: 0.2rem;
 
   &:hover {
-    border-color: #007bff;
+    background-color: ${veryLightGrey};
+  }
+
+  ${StyledInput}:checked + &:hover {
+    background-color: ${blue100};
   }
 
   ${StyledInput}:checked + & {
-    border-color: #007bff;
+    background-color: ${blue100};
+    border-color: ${blue700};
+    box-shadow: 0px 0.1rem ${blue700};
+    color: ${blue900};
+  }
+
+  //more about :is() https://developer.mozilla.org/en-US/docs/Web/CSS/:is
+  &:is(:active, ${StyledInput}:checked + &:active) {
+    box-shadow: none;
+    transform: translateY(0.1em);
+    transition: all ease-in 0.08s;
   }
 `;
 
-export { StyledFieldset, StyledLegend, StyledDiv, StyledInput, StyledLabel };
+export { StyledFieldset, StyledLegend, StyledInput, StyledLabel };

@@ -14,8 +14,9 @@ export default function RadioGroup({
     <s.StyledFieldset>
       <s.StyledLegend id={`${name}-label`}>{legend}</s.StyledLegend>
       {options?.map((option) => (
-        <s.StyledDiv key={optionId(option)}>
+        <>
           <s.StyledInput
+            key={optionId(option)}
             type="radio"
             id={optionId(option)}
             name={name}
@@ -26,7 +27,7 @@ export default function RadioGroup({
           <s.StyledLabel htmlFor={optionId(option)}>
             {optionLabel(option)}
           </s.StyledLabel>
-        </s.StyledDiv>
+        </>
       ))}
     </s.StyledFieldset>
   );
