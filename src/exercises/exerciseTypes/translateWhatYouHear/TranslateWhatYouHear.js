@@ -129,7 +129,7 @@ export default function TranslateWhatYouHear({
         <>
           <s.CenteredRowTall>
             <SpeakButton
-              exerciseBookmark={exerciseBookmark}
+              bookmarkToStudy={exerciseBookmark}
               api={api}
               styling="large"
               parentIsSpeakingControl={isButtonSpeaking}
@@ -169,7 +169,7 @@ export default function TranslateWhatYouHear({
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
-              exerciseBookmark={exerciseBookmark.from}
+              bookmarkToStudy={exerciseBookmark.from}
               leftEllipsis={exerciseBookmark.left_ellipsis}
               rightEllipsis={exerciseBookmark.right_ellipsis}
             />
