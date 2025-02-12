@@ -200,7 +200,10 @@ export default class InteractiveText {
       let count = 0;
       while (count < maxLeftContextLength && currentWord.prev) {
         currentWord = currentWord.prev;
-        contextBuilder = currentWord.word + " " + contextBuilder;
+        contextBuilder =
+          currentWord.word +
+          (currentWord.token.has_space ? " " : "") +
+          contextBuilder;
         if (
           currentWord.token.is_sent_start ||
           currentWord.token.token_i === 0
@@ -229,7 +232,11 @@ export default class InteractiveText {
         ) {
           break;
         }
-        contextBuilder = contextBuilder + " " + currentWord.word;
+
+        contextBuilder =
+          contextBuilder +
+          (currentWord.prev.token.has_space ? " " : "") +
+          currentWord.word;
         if (!wordShouldSkipCount(currentWord))
           // If it's not a punctuation or symbol we count it.
           count++;
