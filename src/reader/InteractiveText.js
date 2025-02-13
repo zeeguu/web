@@ -1,5 +1,8 @@
 import LinkedWordList from "./LinkedWordListClass";
 import ZeeguuSpeech from "../speech/APIBasedSpeech";
+import { tokenize } from "../utils/text/preprocessing";
+import { removePunctuation } from "../utils/text/preprocessing";
+import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 14;
@@ -29,8 +32,49 @@ export default class InteractiveText {
         target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
         target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
 
-        if (target_p_i === undefined || target_p_i === null) return;
+        // If any the coordinates are null / undefined, we skip.
+        if (
+          isNullOrUndefinied(target_p_i) ||
+          isNullOrUndefinied(target_s_i) ||
+          isNullOrUndefinied(target_t_i)
+        )
+          continue;
         target_token = paragraphs[target_p_i][target_s_i][target_t_i];
+        /*
+        Before we update the target token we want to check two cases:
+         1. The bookmark isn't defined. 
+         If the bookmark is defined it means a bookmark is trying to override another
+         previous bookmark.
+         2. The bookmark text, doesn't match the token.
+         In this case, we might have an error in the coordinates, and for that reason
+         we don't update the original text.
+         */
+        if (target_token.bookmark) {
+          continue;
+        }
+        let bookmarkTokensSimplified = tokenize(bookmark["origin"]);
+        // Text and Bookmark will have different tokenization.
+        let bookmark_i = 0;
+        let text_i = 0;
+        let shouldSkipBookmarkUpdate = false;
+        while (bookmark_i < bookmarkTokensSimplified.length) {
+          let bookmark_word = removePunctuation(bookmarkTokensSimplified[0]);
+          let text_word = removePunctuation(
+            paragraphs[target_p_i][target_s_i][target_t_i + text_i].text,
+          );
+          while (text_word.length === 0 && text_word) {
+            text_word = removePunctuation(
+              paragraphs[target_p_i][target_s_i][target_t_i + text_i].text,
+            );
+            text_i++;
+          }
+          if (bookmark_word !== text_word) {
+            shouldSkipBookmarkUpdate = true;
+            break;
+          }
+          bookmark_i++;
+        }
+        if (shouldSkipBookmarkUpdate) continue;
         target_token.bookmark = bookmark;
         /*
           When rendering the words in the frontend, we alter the word object to be composed
