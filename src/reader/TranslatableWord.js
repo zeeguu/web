@@ -35,7 +35,7 @@ export default function TranslatableWord({
   }, []);
 
   function clickOnWord(e, word) {
-    if (word.is_like_num || word.is_punct) return;
+    if (word.token.is_like_num || word.token.is_punct) return;
     if (word.translation) {
       if (pronouncing) interactiveText.pronounce(word);
       if (
