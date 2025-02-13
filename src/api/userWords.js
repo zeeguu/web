@@ -51,7 +51,16 @@ Zeeguu_API.prototype.bookmarksToStudyForArticle = function (
     with_tokens: isWithTokens,
   };
   let endpoint = `bookmarks_to_study_for_article/${articleId}`;
-  if (isWithTokens) this._post(endpoint, qs.stringify(payload), callback);
+  if (isWithTokens)
+        this._post(
+          endpoint,
+          qs.stringify(payload),
+          callback,
+          (error) => {
+            console.error(error);
+          },
+          true,
+        );
   else this._getJSON(endpoint, (result) => callback(result));
 };
 
@@ -64,7 +73,6 @@ Zeeguu_API.prototype.unstarBookmark = function (bookmark_id) {
 Zeeguu_API.prototype.starBookmark = function (bookmark_id) {
   this._post(`star_bookmark/${bookmark_id}`);
 };
-
 Zeeguu_API.prototype.deleteBookmark = function (
   bookmark_id,
   callback,
