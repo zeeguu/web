@@ -8,22 +8,37 @@ const ZeeguuSpeech = class {
     this.pronunciationPlayer = new Audio();
     this.pronunciationPlayer.autoplay = true;
     this.isCurrentlySpeaking = false;
+    this.lastSetter = null;
+  }
+
+  resetClip() {
+    this.pronunciationPlayer.currentTime = 0;
+  }
+
+  animateSpeechButton(setIsSpeaking, isPlayingSound) {
+    if (typeof setIsSpeaking !== "undefined") setIsSpeaking(isPlayingSound);
+  }
+
+  stopAudio() {
+    this.animateSpeechButton(this.lastSetter, false);
+    this.pronunciationPlayer.pause();
+    this.isCurrentlySpeaking = false;
   }
 
   async speakOut(word, setIsSpeaking) {
-    if (this.isCurrentlySpeaking) return;
-    function animateSpeechButton(setIsSpeaking, isPlayingSound) {
-      if (typeof setIsSpeaking !== "undefined") setIsSpeaking(isPlayingSound);
+    if (this.isCurrentlySpeaking) {
+      this.stopAudio();
     }
     this.isCurrentlySpeaking = true;
-    animateSpeechButton(setIsSpeaking, true);
+    this.animateSpeechButton(setIsSpeaking, true);
+    this.lastSetter = setIsSpeaking;
     await this.api
       .fetchLinkToSpeechMp3(word, this.language)
       .then((linkToMp3) => {
         this.pronunciationPlayer.src = linkToMp3;
         this.pronunciationPlayer.addEventListener("ended", (e) => {
           // Only terminate the animation after playing the sound.
-          animateSpeechButton(setIsSpeaking, false);
+          this.animateSpeechButton(setIsSpeaking, false);
           this.isCurrentlySpeaking = false;
         });
 
@@ -34,14 +49,14 @@ const ZeeguuSpeech = class {
               // Autoplay started!
             })
             .catch((error) => {
-              animateSpeechButton(setIsSpeaking, false);
+              this.animateSpeechButton(setIsSpeaking, false);
               this.isCurrentlySpeaking = false;
             });
         }
       })
       .catch(() => {
         // in case anything goes wrong here... we should still deactivate the animation
-        animateSpeechButton(setIsSpeaking, false);
+        this.animateSpeechButton(setIsSpeaking, false);
         this.isCurrentlySpeaking = false;
       });
   }
