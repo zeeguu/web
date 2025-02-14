@@ -24,6 +24,21 @@ export default class InteractiveText {
     zeeguuSpeech,
   ) {
     function _updateTokensWithBookmarks(bookmarks, paragraphs) {
+      function areCoordinatesInParagraphMatrix(
+        target_p_i,
+        target_s_i,
+        target_t_i,
+        paragraphs,
+      ) {
+        // This can happen when we update the tokenizer, but do not update the bookmarks.
+        // They might become misaligned and point to a non existing token.
+        return (
+          target_p_i < paragraphs.length &&
+          target_s_i < paragraphs[target_p_i].length &&
+          target_t_i < paragraphs[target_p_i][target_s_i].length
+        );
+      }
+
       for (let i = 0; i < bookmarks.length; i++) {
         let bookmark = bookmarks[i];
         let target_p_i, target_s_i, target_t_i;
@@ -36,7 +51,13 @@ export default class InteractiveText {
         if (
           isNullOrUndefinied(target_p_i) ||
           isNullOrUndefinied(target_s_i) ||
-          isNullOrUndefinied(target_t_i)
+          isNullOrUndefinied(target_t_i) ||
+          !areCoordinatesInParagraphMatrix(
+            target_p_i,
+            target_s_i,
+            target_t_i,
+            paragraphs,
+          )
         )
           continue;
         target_token = paragraphs[target_p_i][target_s_i][target_t_i];
@@ -58,23 +79,44 @@ export default class InteractiveText {
         let text_i = 0;
         let shouldSkipBookmarkUpdate = false;
         while (bookmark_i < bookmarkTokensSimplified.length) {
-          let bookmark_word = removePunctuation(bookmarkTokensSimplified[0]);
-          let text_word = removePunctuation(
-            paragraphs[target_p_i][target_s_i][target_t_i + text_i].text,
+          let bookmark_word = removePunctuation(
+            bookmarkTokensSimplified[bookmark_i],
           );
-          while (text_word.length === 0 && text_word) {
-            text_word = removePunctuation(
-              paragraphs[target_p_i][target_s_i][target_t_i + text_i].text,
-            );
-            text_i++;
+          // If token is empty, due to removing punctuation, skip.
+          if (bookmark_word.length === 0) {
+            bookmark_i++;
+            continue;
           }
+          let text_word = removePunctuation(
+            paragraphs[target_p_i][target_s_i][target_t_i + text_i + bookmark_i]
+              .text,
+          );
+          // If text is empty and there is more text in the sentence, we update the
+          // text pointer.
+          if (
+            text_word.length === 0 &&
+            target_t_i + text_i + bookmark_i + 1 <
+              paragraphs[target_p_i][target_s_i].length
+          ) {
+            text_i++;
+            continue;
+          }
+          // If the tokens don't match, we break and skip this bookmark.
           if (bookmark_word !== text_word) {
             shouldSkipBookmarkUpdate = true;
             break;
           }
           bookmark_i++;
         }
-        if (shouldSkipBookmarkUpdate) continue;
+        if (shouldSkipBookmarkUpdate) {
+          console.log(bookmark);
+          console.log("Skipped bookmark!");
+          continue;
+        }
+        // Because we are trying to find the tokens, we might skip some tokens that
+        // weren't included in the original bookmark. E.g. This, is a -> 4 tokens not 3.
+        if (bookmark.t_total_token < text_i + bookmark_i)
+          bookmark.total_tokens = text_i + bookmark_i;
         target_token.bookmark = bookmark;
         /*
           When rendering the words in the frontend, we alter the word object to be composed
