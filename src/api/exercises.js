@@ -13,7 +13,16 @@ Zeeguu_API.prototype.getUserBookmarksInPipeline = function (
   let payload = {
     with_tokens: isWithTokens,
   };
-  if (isWithTokens) this._post(endpoint, qs.stringify(payload), callback);
+  if (isWithTokens)
+    this._post(
+      endpoint,
+      qs.stringify(payload),
+      callback,
+      (error) => {
+        console.error(error);
+      },
+      true,
+    );
   else this._getJSON(endpoint, callback);
 };
 
@@ -22,7 +31,16 @@ Zeeguu_API.prototype.getBookmarksToLearn = function (isWithTokens, callback) {
     with_tokens: isWithTokens,
   };
   let endpoint = `bookmarks_to_learn_not_scheduled`;
-  if (isWithTokens) this._post(endpoint, qs.stringify(payload), callback);
+  if (isWithTokens)
+    this._post(
+      endpoint,
+      qs.stringify(payload),
+      callback,
+      (error) => {
+        console.error(error);
+      },
+      true,
+    );
   else this._getJSON(endpoint, callback);
 };
 
