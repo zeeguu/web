@@ -5,6 +5,7 @@ const StyledFieldset = styled.fieldset`
   all: unset;
   box-sizing: border-box;
   overflow-y: scroll;
+  overflow-x: hidden;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

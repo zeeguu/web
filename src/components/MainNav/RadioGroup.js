@@ -21,8 +21,8 @@ export default function RadioGroup({
             id={optionId(option)}
             name={name}
             value={optionValue(option)}
-            checked={selectedValue === optionValue(option)}
             onChange={onChange}
+            checked={selectedValue === optionValue(option)}
           />
           <s.StyledLabel htmlFor={optionId(option)}>
             {optionLabel(option)}

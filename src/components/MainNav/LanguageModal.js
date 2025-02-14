@@ -14,7 +14,6 @@ import RadioGroup from "./RadioGroup.js";
 export default function FeedbackModal({ open, setOpen }) {
   const api = useContext(APIContext);
   const user = useContext(UserContext);
-  const [isLoading, setIsLoading] = useState(false);
   const [currentLearnedLanguage, setCurrentLearnedLanguage] =
     useState(undefined);
   const [activeLanguages, setActiveLanguages] = useState(undefined);
@@ -23,19 +22,16 @@ export default function FeedbackModal({ open, setOpen }) {
     let isMounted = true;
 
     if (open) {
-      setIsLoading(true);
       api.getUserLanguages((data) => {
         if (isMounted) {
           console.log("Languages:", data);
           setActiveLanguages(data);
-          setIsLoading(false);
         }
       });
 
       return () => {
         isMounted = false;
         setActiveLanguages(undefined);
-        setIsLoading(false);
       };
     }
   }, [open, api, user.session]);
