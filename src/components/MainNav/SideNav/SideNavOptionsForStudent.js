@@ -2,10 +2,9 @@ import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import useExerciseNotification from "../../../hooks/useExerciseNotification";
-import NotificationIcon from "../../NotificationIcon";
 import NavOption from "../NavOption";
 import NavigationOptions from "../navigationOptions";
-import SideNavLanguageOption from "./SideNavLanguageOption";
+import NotificationIcon from "../../NotificationIcon";
 
 export default function SideNavOptionsForStudent({ screenWidth }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
@@ -53,8 +52,6 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
         currentPath={path}
         screenWidth={screenWidth}
       />
-
-      <SideNavLanguageOption screenWidth={screenWidth} />
 
       {isTeacher && (
         <NavOption
