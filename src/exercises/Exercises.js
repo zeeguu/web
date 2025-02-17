@@ -13,6 +13,7 @@ import Feature from "../features/Feature";
 import { MAX_COOLDOWN_INTERVAL } from "./ExerciseConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
+import { SpeechContext } from "../contexts/SpeechContext";
 
 import {
   DEFAULT_SEQUENCE,
@@ -72,6 +73,7 @@ export default function Exercises({
     useActivityTimer();
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
+  const speech = useContext(SpeechContext);
 
   const { screenWidth } = useScreenWidth();
 
@@ -255,6 +257,7 @@ export default function Exercises({
   }
 
   function moveToNextExercise() {
+    speech.stopAudio();
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
 
     setIsCorrect(null);
