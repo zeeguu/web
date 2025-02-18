@@ -5,15 +5,11 @@ import strings from "../../i18n/definitions";
 import { StyledButton } from "../styledComponents/TeacherButtons.sc";
 import * as st from "../styledComponents/TeacherTextPreview.sc";
 import * as s from "../../articles/ArticlePreview.sc";
-import * as sS from "../../components/ArticleSourceInfo.sc";
-import * as sStat from "../../components/ArticleStatInfo.sc";
 import ArticleStatInfo from "../../components/ArticleStatInfo";
 
 export default function TeacherTextPreview({ article }) {
   //Setting up the routing context to be able to route correctly on Cancel
   const { setReturnPath } = useContext(RoutingContext);
-
-  const difficulty = Math.round(article.metrics.difficulty * 100) / 10;
 
   const shortenedTitle = article.title.substring(0, 128);
   let cefr_level = article.metrics.cefr_level;

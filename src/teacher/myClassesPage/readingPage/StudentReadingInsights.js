@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import strings from "../../../i18n/definitions";
 import TimeSelector from "../../sharedComponents/TimeSelector";
 import LocalStorage from "../../../assorted/LocalStorage";
@@ -9,8 +9,10 @@ import {
   CenteredContentContainer,
 } from "../../../components/ColumnWidth.sc";
 import LoadingAnimation from "../../../components/LoadingAnimation";
+import { APIContext } from "../../../contexts/APIContext";
 
-export default function StudentReadingInsights({ api }) {
+export default function StudentReadingInsights() {
+  const api = useContext(APIContext);
   const [forceUpdate, setForceUpdate] = useState(0);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
@@ -18,7 +20,7 @@ export default function StudentReadingInsights({ api }) {
 
   const [studentName, setStudentName] = useState(null);
   const [cohortLang, setCohortLang] = useState("");
-  const [readingSessions, setReadingSessions] = useState([]);
+  const [readingSessions, setReadingSessions] = useState();
   const [articleCount, setArticleCount] = useState(null);
 
   useEffect(() => {
@@ -62,14 +64,18 @@ export default function StudentReadingInsights({ api }) {
       articleCount +
       strings.textsInTheLastPeriod;
 
-  if (studentName === null || articleCount === null) {
+  if (
+    studentName === null ||
+    articleCount === null ||
+    readingSessions === undefined
+  ) {
     return <LoadingAnimation />;
   }
 
   return (
     <CenteredContentContainer>
       <TimeSelector setForceUpdate={setForceUpdate} customText={customText} />
-      {readingSessions.length === 0 ? (
+      {readingSessions && readingSessions.length === 0 ? (
         <CenteredContent>
           <h3>
             {strings.studentHasNotReadAnyArticles} {cohortLang}

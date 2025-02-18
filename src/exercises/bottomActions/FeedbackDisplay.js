@@ -18,12 +18,11 @@ export default function FeedbackDisplay({
     } else {
       setSelectedId(null);
     }
-    console.log(selectedId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => {
       toast.dismiss();
     };
-  }, [currentExerciseType]);
+  }, [currentBookmarksToStudy, currentExerciseType]);
 
   function callFeedbackFunctionAndNotify(feedbackMessage, apiFeedbackMessage) {
     toast.success(feedbackMessage, {

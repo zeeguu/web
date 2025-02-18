@@ -31,9 +31,9 @@ const WordsDropDown = ({ api, card }) => {
           )}
         </div>
         <div className="exercise-drop-down-container">
-          {card === "practised" && <PractisedWordsList api={api} />}
-          {card === "learned" && <LearnedWordsList api={api} />}
-          {card === "non-studied" && <NonStudiedWordsList api={api} />}
+          {card === "practised" && <PractisedWordsList />}
+          {card === "learned" && <LearnedWordsList />}
+          {card === "non-studied" && <NonStudiedWordsList />}
         </div>
       </div>
     </s.StyledWordsDropDown>

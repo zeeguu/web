@@ -63,7 +63,6 @@ const styles = {
 
 export default function SpeakButton({
   bookmarkToStudy,
-  api,
   styling,
   handleClick,
   isReadContext,

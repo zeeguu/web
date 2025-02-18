@@ -7,7 +7,6 @@ import {
 } from "../sharedComponents/LabeledInputFields";
 
 export default function EditTextInputFields({
-  api,
   language_code,
   article_title,
   article_content,
@@ -32,11 +31,7 @@ export default function EditTextInputFields({
       >
         {strings.clickToChangeBody}
       </LabeledMultiLineTextField>
-      <LanguageSelector
-        api={api}
-        value={language_code}
-        onChange={handleLanguageChange}
-      >
+      <LanguageSelector value={language_code} onChange={handleLanguageChange}>
         {strings.defineLanguage}
       </LanguageSelector>
     </Fragment>

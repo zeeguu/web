@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { AttemptIcons } from "./AttemptIcons";
 import { v4 as uuid } from "uuid";
 import { shortFormattedDate } from "../../sharedComponents/FormattedDate";
@@ -7,8 +7,10 @@ import { useParams } from "react-router";
 import LocalStorage from "../../../assorted/LocalStorage";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/PractisedWordsList.sc";
+import { APIContext } from "../../../contexts/APIContext";
 
-const PractisedWordsList = ({ api }) => {
+const PractisedWordsList = () => {
+  const api = useContext(APIContext);
   const [practisedWords, setPractisedWords] = useState([]);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
@@ -24,7 +26,7 @@ const PractisedWordsList = ({ api }) => {
       },
       (error) => {
         console.log(error);
-      }
+      },
     );
     //eslint-disable-next-line
   }, []);

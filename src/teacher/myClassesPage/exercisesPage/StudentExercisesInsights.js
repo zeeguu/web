@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import TimeSelector from "../../sharedComponents/TimeSelector";
 import LocalStorage from "../../../assorted/LocalStorage";
 import { useParams } from "react-router-dom";
@@ -9,8 +9,10 @@ import WordsDropDown from "./WordsDropDown";
 import { convertTime } from "../../sharedComponents/FormattedTime";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/StudentExercisesInsights.sc";
+import { APIContext } from "../../../contexts/APIContext";
 
-export default function StudentExercisesInsights({ api }) {
+export default function StudentExercisesInsights() {
+  const api = useContext(APIContext);
   const [forceUpdate, setForceUpdate] = useState(0);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
@@ -28,7 +30,7 @@ export default function StudentExercisesInsights({ api }) {
       cohortID,
       selectedTimePeriod,
       (studentInfo) => setStudentName(studentInfo.name),
-      (error) => console.log(error)
+      (error) => console.log(error),
     );
 
     api.getStudentActivityOverview(
@@ -41,7 +43,7 @@ export default function StudentExercisesInsights({ api }) {
         setPractisedWordsCount(activity.practiced_words_count);
         setCompletedExercisesCount(activity.number_of_exercises);
       },
-      (error) => console.log(error)
+      (error) => console.log(error),
     );
     // eslint-disable-next-line
   }, [forceUpdate]);
@@ -94,7 +96,7 @@ export default function StudentExercisesInsights({ api }) {
             />
           </StyledButton>
         </div>
-        {isOpen !== "" && <WordsDropDown api={api} card={isOpen} />}
+        {isOpen !== "" && <WordsDropDown card={isOpen} />}
       </Fragment>
     </s.StyledStudentExercisesInsights>
   );

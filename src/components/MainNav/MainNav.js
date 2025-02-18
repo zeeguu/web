@@ -1,5 +1,4 @@
-import { useEffect, useContext } from "react";
-import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import { useContext } from "react";
 import SideNav from "./SideNav/SideNav";
 import BottomNav from "./BottomNav/BottomNav";
 import { MOBILE_WIDTH } from "./screenSize";

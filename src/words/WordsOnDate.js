@@ -3,7 +3,7 @@ import strings from "../i18n/definitions";
 import Word from "./Word";
 import * as s from "./WordsOnDate.sc";
 
-export function WordsOnDate({ day, api, notifyDelete }) {
+export function WordsOnDate({ day, notifyDelete }) {
   function groupBy(list, keyGetter) {
     const map = new Map();
     list.forEach((item) => {
@@ -37,7 +37,6 @@ export function WordsOnDate({ day, api, notifyDelete }) {
               <Word
                 key={bookmark.id}
                 bookmark={bookmark}
-                api={api}
                 notifyDelete={notifyDelete}
               />
             </s.ContentOnRow>

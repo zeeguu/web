@@ -15,6 +15,7 @@ import SessionStorage from "../../../assorted/SessionStorage.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to select the correct spoken L2 translation of a given L1 word out of three.
 // This tests the user's active knowledge.
@@ -22,7 +23,6 @@ import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceAudio;
 
 export default function MultipleChoiceAudio({
-  api,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -36,6 +36,7 @@ export default function MultipleChoiceAudio({
   exerciseSessionId,
   activeSessionDuration,
 }) {
+  const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
@@ -67,10 +68,11 @@ export default function MultipleChoiceAudio({
     );
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, [isBookmarkChanged]);
+
+    // eslint-disable-next-line
+  }, [exerciseBookmark, isBookmarkChanged]);
 
   function notifyChoiceSelection(selectedChoice) {
-    console.log("checking result...");
     if (
       selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())
     ) {
@@ -98,7 +100,6 @@ export default function MultipleChoiceAudio({
       setCurrentChoice(true);
       setSelectedButtonId(id);
     }
-    console.log(id + " true");
   }
 
   // Setting current choice and id if the incorrect index is chosen
@@ -107,7 +108,6 @@ export default function MultipleChoiceAudio({
       setCurrentChoice(false);
       setSelectedButtonId(id);
     }
-    console.log(id + " false");
   }
 
   function handleDisabledAudio() {
@@ -172,7 +172,6 @@ export default function MultipleChoiceAudio({
 
   function handleClick(id) {
     setSelectedButtonId(id);
-    console.log(id + " selected");
   }
 
   return (
@@ -212,7 +211,6 @@ export default function MultipleChoiceAudio({
                   handleClick={() => buttonSelectFalse(option)}
                   onClick={(e) => handleClick(option)}
                   bookmarkToStudy={bookmarksToStudy[option]}
-                  api={api}
                   id={option.id}
                   styling={selectedButtonStyle(option)}
                 />
@@ -221,7 +219,6 @@ export default function MultipleChoiceAudio({
                   handleClick={() => buttonSelectTrue(option)}
                   onClick={(e) => handleClick(option)}
                   bookmarkToStudy={bookmarksToStudy[option]}
-                  api={api}
                   id={option.id}
                   styling={selectedButtonStyle(option)}
                 />
@@ -252,7 +249,6 @@ export default function MultipleChoiceAudio({
       <NextNavigation
         exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
-        api={api}
         exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useSelectInterest from "../hooks/useSelectInterest";
 import React from "react";
 import SweetAlert from "react18-bootstrap-sweetalert";
@@ -7,12 +7,10 @@ import * as s from "./TagsOfInterests.sc";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { zeeguuOrange } from "../components/colors";
+import { APIContext } from "../contexts/APIContext";
 
-export default function TagsOfInterests({
-  visible,
-  api,
-  articlesListShouldChange,
-}) {
+export default function TagsOfInterests({ visible, articlesListShouldChange }) {
+  const api = useContext(APIContext);
   // Update NEW TOPICS
   const {
     allTopics,

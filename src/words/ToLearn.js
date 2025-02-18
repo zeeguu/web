@@ -38,7 +38,6 @@ export default function ToLearn({ api }) {
           <Word
             key={each.id}
             bookmark={each}
-            api={api}
             source={UMR_SOURCE}
             notifyDelete={onNotifyDelete}
           />

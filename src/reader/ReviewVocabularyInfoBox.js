@@ -24,7 +24,7 @@ export default function ReviewVocabularyInfoBox({
 
   useEffect(() => {
     if (clickedOnReviewVocab) history.push(`../words/forArticle/${articleID}`);
-  }, [clickedOnReviewVocab]);
+  }, [clickedOnReviewVocab, articleID, history]);
 
   return (
     <>

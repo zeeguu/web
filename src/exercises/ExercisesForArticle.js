@@ -1,8 +1,11 @@
 import { useParams, useHistory } from "react-router-dom";
 import Exercises from "./Exercises";
 import { UMR_SOURCE } from "../reader/ArticleReader";
+import { useContext } from "react";
+import { APIContext } from "../contexts/APIContext";
 
-export default function ExercisesForArticle({ api }) {
+export default function ExercisesForArticle() {
+  const api = useContext(APIContext);
   const history = useHistory();
   let { articleID } = useParams();
 
@@ -27,7 +30,6 @@ export default function ExercisesForArticle({ api }) {
 
   return (
     <Exercises
-      api={api}
       articleID={articleID}
       backButtonAction={backToArticleAction}
       keepExercisingAction={keepExercisingAction}

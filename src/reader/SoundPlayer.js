@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
+import { APIContext } from "../contexts/APIContext";
 
 // (This is a tiny MP3 file that is silent and extremely short - retrieved from https://bigsoundbank.com and then modified)
 const EMPTY_SOUND_DATA =
@@ -6,12 +7,13 @@ const EMPTY_SOUND_DATA =
 
 const UNKNOWN = "-:--";
 
-export default function SoundPlayer({ api, interactiveText }) {
+export default function SoundPlayer({ interactiveText }) {
+  const api = useContext(APIContext);
   const [state, setState] = useState("initial");
   const [mp3Player, setMp3Player] = useState();
   const intervalRef = useRef();
   const [totalTime, setTotalTime] = useState(UNKNOWN);
-  const [currentTime, setCurrentTime] = useState("0:00" + "/" + totalTime);
+  const [currentTime, setCurrentTime] = useState("0:00/" + totalTime);
   const [counter, setCounter] = useState(0);
 
   function onDestroy() {
@@ -29,13 +31,14 @@ export default function SoundPlayer({ api, interactiveText }) {
         return;
       }
 
-      if (totalTime == UNKNOWN) {
+      if (totalTime === UNKNOWN) {
         setTotalTime(formatMMSS(mp3Player.duration));
       }
 
       setCurrentTime(formatMMSS(mp3Player.currentTime) + " / " + totalTime);
     }, 1000);
     return () => clearInterval(intervalRef.current);
+    // eslint-disable-next-line
   }, [currentTime, counter]);
 
   useEffect(() => {
@@ -43,6 +46,7 @@ export default function SoundPlayer({ api, interactiveText }) {
     return () => {
       onDestroy();
     };
+    // eslint-disable-next-line
   }, [mp3Player]);
 
   function startPlaying() {

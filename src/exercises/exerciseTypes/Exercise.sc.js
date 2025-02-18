@@ -1,11 +1,8 @@
-import styled, { css, keyframes } from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 import {
   zeeguuTransparentLightOrange,
   zeeguuOrange,
-  lightBlue,
-  gray,
-  buttonBorder,
   lightGrey,
 } from "../../components/colors";
 

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { lightGrey, zeeguuOrange, darkGrey } from "./colors";
+import { lightGrey } from "./colors";
 import TextField from "@material-ui/core/TextField";
 
 const TextFieldWrapper = styled.div`

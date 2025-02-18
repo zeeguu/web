@@ -1,6 +1,6 @@
 import * as s from "./WordEdit.sc";
 import * as sc from "./Word.sc";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
@@ -8,16 +8,17 @@ import { getStaticPath } from "../utils/misc/staticPath.js";
 import { toast } from "react-toastify";
 
 import { isTextInSentence } from "../utils/text/expressions";
+import { APIContext } from "../contexts/APIContext.js";
 
 export default function EditBookmarkButton({
   bookmark,
-  api,
   styling,
   reload,
   setReload,
   notifyWordChange,
   notifyDelete,
 }) {
+  const api = useContext(APIContext);
   const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
   const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";

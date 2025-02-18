@@ -19,13 +19,14 @@ export default function InfoBoxWordsToReview({
           {wordsSelectedByZeeguu_Counter} out of {totalWordsTranslated}{" "}
           translated words for you to practice.{" "}
         </b>
-        <a
+        <span
+          className="link-style"
           onClick={() => {
             setShowExplainWordSelectionModal(!showExplainWordSelectionModal);
           }}
         >
           Tell me why these words are selected
-        </a>
+        </span>
         .
       </p>
       <p>

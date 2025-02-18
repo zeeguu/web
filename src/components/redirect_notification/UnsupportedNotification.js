@@ -1,5 +1,5 @@
 import * as s from "../modal_shared/Modal.sc";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Modal from "../modal_shared/Modal";
 import Header from "../modal_shared/Header.sc";
 import Heading from "../modal_shared/Heading.sc";
@@ -11,15 +11,16 @@ import Button from "../../pages/_pages_shared/Button.sc";
 import AddToSavesButton from "../modal_shared/AddToSavesButton.sc";
 import Checkbox from "../modal_shared/Checkbox";
 import redirect from "../../utils/routing/routing";
+import { APIContext } from "../../contexts/APIContext";
 
 export default function UnsupportedNotification({
   article,
-  api,
   setIsArticleSaved,
   handleCloseRedirectionModal,
   setDoNotShowRedirectionModal_UserPreference,
   open,
 }) {
+  const api = useContext(APIContext);
   const [redirectCheckbox, setRedirectCheckbox] = useState(false);
 
   function toggleRedirectCheckbox() {

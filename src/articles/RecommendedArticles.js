@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
@@ -8,11 +8,12 @@ import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 
 import * as s from "../components/TopMessage.sc";
+import { APIContext } from "../contexts/APIContext";
 
-export default function RecommendedArticles({ api }) {
+export default function RecommendedArticles() {
+  const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
-
 
   useEffect(() => {
     setTitle("Recommended Articles");
@@ -21,6 +22,7 @@ export default function RecommendedArticles({ api }) {
       setArticleList(articles);
       setOriginalList(articles);
     });
+    // eslint-disable-next-line
   }, []);
 
   if (articleList == null) {
@@ -42,7 +44,6 @@ export default function RecommendedArticles({ api }) {
       />
       {articleList.map((each) => (
         <ArticlePreview
-          api={api}
           key={each.id}
           article={each}
           dontShowSourceIcon={true}

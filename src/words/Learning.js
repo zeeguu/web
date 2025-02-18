@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -10,8 +10,10 @@ import { LEARNING_CYCLE } from "../exercises/ExerciseTypeConstants";
 import CollapsablePanel from "../components/CollapsablePanel";
 import Feature from "../features/Feature";
 import LocalStorage from "../assorted/LocalStorage";
+import { APIContext } from "../contexts/APIContext";
 
-export default function Learning({ api }) {
+export default function Learning() {
+  const api = useContext(APIContext);
   const [inLearningWords, setInLearningWords] = useState(null);
   const [toLearnWords, setToLearnWords] = useState(null);
 
@@ -78,7 +80,6 @@ export default function Learning({ api }) {
                 <Word
                   key={each.id}
                   bookmark={each}
-                  api={api}
                   source={UMR_SOURCE}
                   notifyDelete={onNotifyDelete}
                 />
@@ -96,7 +97,6 @@ export default function Learning({ api }) {
                 <Word
                   key={each.id}
                   bookmark={each}
-                  api={api}
                   source={UMR_SOURCE}
                   notifyDelete={onNotifyDelete}
                 />
@@ -133,7 +133,6 @@ export default function Learning({ api }) {
                 <Word
                   key={each.id}
                   bookmark={each}
-                  api={api}
                   source={UMR_SOURCE}
                   notifyDelete={onNotifyDelete}
                 />
@@ -163,7 +162,6 @@ export default function Learning({ api }) {
               <Word
                 key={each.id}
                 bookmark={each}
-                api={api}
                 source={UMR_SOURCE}
                 notifyDelete={onNotifyDelete}
               />

@@ -6,7 +6,6 @@ import {
   blue600,
   blue400,
   blue100,
-  blue200,
 } from "../components/colors";
 
 const ArticlePreview = styled.div`

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -7,8 +7,10 @@ import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
 import { OrangeRoundButton } from "../components/allButtons.sc";
 import * as s from "../components/TopMessage.sc";
+import { APIContext } from "../contexts/APIContext";
 
-export default function ClassroomArticles({ api }) {
+export default function ClassroomArticles() {
+  const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
   const [studentJoinedCohort, setStudentJoinedCohort] = useState(null);
 
@@ -65,7 +67,6 @@ export default function ClassroomArticles({ api }) {
       />
       {articleList.map((each) => (
         <ArticlePreview
-          api={api}
           key={each.id}
           article={each}
           dontShowSourceIcon={true}

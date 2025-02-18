@@ -27,9 +27,9 @@ export const LEARNING_CYCLE_NAME = Object.freeze({
 });
 
 export const LEARNING_CYCLE = Object.freeze({
-  ["NOT_SET"]: 0,
-  ["RECEPTIVE"]: 1,
-  ["PRODUCTIVE"]: 2,
+  NOT_SET: 0,
+  RECEPTIVE: 1,
+  PRODUCTIVE: 2,
 });
 
 export const MEMORY_TASK = Object.freeze({

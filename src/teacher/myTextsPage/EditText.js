@@ -18,15 +18,16 @@ import {
 } from "./TooltippedButtons";
 import { Error } from "../sharedComponents/Error";
 import ShareWithCollegueDialog from "./ShareWithColleagueDialog";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function EditText({ api }) {
+export default function EditText() {
+  const api = useContext(APIContext);
   const [articleState, setArticleState] = useState({
     article_title: "",
     article_content: "",
     language_code: "default",
   });
-  const [showAddToCohortDialog, setShowAddToCohortDialog] =
-    useState(false);
+  const [showAddToCohortDialog, setShowAddToCohortDialog] = useState(false);
   const [showDeleteTextWarning, setShowDeleteTextWarning] = useState(false);
   const [showShareWithColleagueDialog, setShowShareWithColleagueDialog] =
     useState(false);
@@ -89,7 +90,7 @@ export default function EditText({ api }) {
         console.log(`article created with id: ${newID}`);
         setStateChanged(false);
         history.push("/teacher/texts");
-      }
+      },
     );
   };
 
@@ -106,7 +107,7 @@ export default function EditText({ api }) {
         } else {
           console.log(result);
         }
-      }
+      },
     );
   };
 
@@ -150,7 +151,6 @@ export default function EditText({ api }) {
           </StyledButton>
         </TopButtonWrapper>
         <EditTextInputFields
-          api={api}
           language_code={articleState.language_code}
           article_title={articleState.article_title}
           article_content={articleState.article_content}
@@ -187,7 +187,7 @@ export default function EditText({ api }) {
         </PopupButtonWrapper>
       </s.NarrowColumn>
       {showAddToCohortDialog && (
-        <AddToCohortDialog api={api} setIsOpen={setShowAddToCohortDialog} />
+        <AddToCohortDialog setIsOpen={setShowAddToCohortDialog} />
       )}
       {showDeleteTextWarning && (
         <DeleteTextWarning
@@ -198,7 +198,6 @@ export default function EditText({ api }) {
       )}
       {showShareWithColleagueDialog && (
         <ShareWithCollegueDialog
-          api={api}
           articleID={articleID}
           setShowDialog={setShowShareWithColleagueDialog}
         />

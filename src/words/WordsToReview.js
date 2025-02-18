@@ -14,7 +14,6 @@ export default function WordsToReview({
   words,
   articleInfo,
   deleteBookmark,
-  api,
   notifyWordChanged,
   source,
 }) {
@@ -133,7 +132,6 @@ export default function WordsToReview({
                 key={each.id}
                 bookmark={each}
                 notifyDelete={deleteBookmark}
-                api={api}
                 hideStar={true}
                 notifyWordChange={notifyWordChanged}
                 source={source}
@@ -156,7 +154,6 @@ export default function WordsToReview({
                 key={each.id}
                 bookmark={each}
                 notifyDelete={deleteBookmark}
-                api={api}
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}
@@ -186,7 +183,6 @@ export default function WordsToReview({
                 key={each.id}
                 bookmark={each}
                 notifyDelete={deleteBookmark}
-                api={api}
                 notifyWordChange={notifyWordChanged}
                 source={source}
                 isReview={inEditMode}

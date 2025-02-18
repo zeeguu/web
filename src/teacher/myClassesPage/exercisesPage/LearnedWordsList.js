@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router";
 import { v4 as uuid } from "uuid";
 import LocalStorage from "../../../assorted/LocalStorage";
 import ExerciseType from "./ExerciseType";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/LearnedWordsList.sc";
+import { APIContext } from "../../../contexts/APIContext";
 
-const LearnedWordsList = ({ api }) => {
+const LearnedWordsList = () => {
+  const api = useContext(APIContext);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
   const cohortID = useParams().cohortID;
@@ -22,7 +24,7 @@ const LearnedWordsList = ({ api }) => {
       },
       (error) => {
         console.log(error);
-      }
+      },
     );
     //eslint-disable-next-line
   }, [selectedTimePeriod]);
