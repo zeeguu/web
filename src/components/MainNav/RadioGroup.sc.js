@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { blue100, blue700, blue900, lightGrey, veryLightGrey } from "../colors";
 
-const StyledFieldset = styled.fieldset`
+const StyledRadioGroup = styled.div`
   all: unset;
   box-sizing: border-box;
   overflow-y: scroll;
@@ -11,12 +11,14 @@ const StyledFieldset = styled.fieldset`
   flex-wrap: wrap;
   align-content: flex-start;
   gap: 0.5rem;
-  padding: 1rem 0 0 0;
+  padding: 0;
   max-height: 24rem;
 `;
 
-const StyledLegend = styled.legend`
-  margin: 0 0 0.5rem 0;
+const RadioGroupLabel = styled.div`
+  margin: 0 0 1rem 0;
+  display: block;
+  width: 100%;
 `;
 
 const StyledInput = styled.input`
@@ -25,7 +27,7 @@ const StyledInput = styled.input`
   opacity: 0;
 `;
 
-const StyledLabel = styled.label`
+const OptionLabel = styled.label`
   cursor: pointer;
   color: black;
   margin: 0;
@@ -67,4 +69,4 @@ const StyledLabel = styled.label`
   }
 `;
 
-export { StyledFieldset, StyledLegend, StyledInput, StyledLabel };
+export { StyledRadioGroup, RadioGroupLabel, StyledInput, OptionLabel };

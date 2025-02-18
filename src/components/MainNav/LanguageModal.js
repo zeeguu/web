@@ -63,7 +63,7 @@ export default function FeedbackModal({ open, setOpen }) {
         <Form onSubmit={onSubmit}>
           <FormSection>
             <RadioGroup
-              legend="Select your active language:"
+              radioGroupLabel="Choose your current language:"
               name="active-language"
               options={activeLanguages}
               selectedValue={currentLearnedLanguage}

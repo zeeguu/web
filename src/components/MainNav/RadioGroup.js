@@ -1,7 +1,7 @@
 import * as s from "./RadioGroup.sc";
 
 export default function RadioGroup({
-  legend,
+  radioGroupLabel,
   name,
   options,
   selectedValue,
@@ -11,24 +11,28 @@ export default function RadioGroup({
   optionId,
 }) {
   return (
-    <s.StyledFieldset>
-      <s.StyledLegend id={`${name}-label`}>{legend}</s.StyledLegend>
-      {options?.map((option) => (
-        <>
-          <s.StyledInput
-            key={optionId(option)}
-            type="radio"
-            id={optionId(option)}
-            name={name}
-            value={optionValue(option)}
-            onChange={onChange}
-            checked={selectedValue === optionValue(option)}
-          />
-          <s.StyledLabel htmlFor={optionId(option)}>
-            {optionLabel(option)}
-          </s.StyledLabel>
-        </>
-      ))}
-    </s.StyledFieldset>
+    <>
+      <s.StyledRadioGroup role="radiogroup" aria-labelledby={`${name}-label`}>
+        <s.RadioGroupLabel id={`${name}-label`}>
+          {radioGroupLabel}
+        </s.RadioGroupLabel>
+        {options?.map((option) => (
+          <>
+            <s.StyledInput
+              key={optionId(option)}
+              type="radio"
+              id={optionId(option)}
+              name={name}
+              value={optionValue(option)}
+              onChange={onChange}
+              checked={selectedValue === optionValue(option)}
+            />
+            <s.OptionLabel htmlFor={optionId(option)}>
+              {optionLabel(option)}
+            </s.OptionLabel>
+          </>
+        ))}
+      </s.StyledRadioGroup>
+    </>
   );
 }
