@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { APIContext } from "../../contexts/APIContext.js";
 import { UserContext } from "../../contexts/UserContext.js";
+import LocalStorage from "../../assorted/LocalStorage.js";
+import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo.js";
 import Modal from "../modal_shared/Modal.js";
 import Form from "../../pages/_pages_shared/Form.sc.js";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc.js";
@@ -11,42 +13,56 @@ import Header from "../modal_shared/Header.sc.js";
 import Heading from "../modal_shared/Heading.sc.js";
 import RadioGroup from "./RadioGroup.js";
 
-export default function FeedbackModal({ open, setOpen }) {
+export default function LanguageModal({ open, setOpen, setUser }) {
   const api = useContext(APIContext);
   const user = useContext(UserContext);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [userDetails, setUserDetails] = useState(undefined);
   const [currentLearnedLanguage, setCurrentLearnedLanguage] =
     useState(undefined);
   const [activeLanguages, setActiveLanguages] = useState(undefined);
 
   useEffect(() => {
-    let isMounted = true;
-
     if (open) {
       api.getUserLanguages((data) => {
-        if (isMounted) {
-          console.log("Languages:", data);
-          setActiveLanguages(data);
-        }
+        setActiveLanguages(data);
       });
 
-      return () => {
-        isMounted = false;
-        setActiveLanguages(undefined);
-      };
+      api.getUserDetails((data) => {
+        console.log("User details from api:", data);
+        setUserDetails(data);
+        setCurrentLearnedLanguage(data.learned_language);
+      });
     }
-  }, [open, api, user.session]);
+  }, [open, api, user.session, user.learned_language]);
 
-  useEffect(() => {
-    setCurrentLearnedLanguage(user.learned_language);
-  }, [user.learned_language, open]);
+  console.log("User details underneath useeffect:", userDetails);
+  console.log("user context underneath useeffect:", user);
 
-  const handleLanguageChange = (event) => {
-    setCurrentLearnedLanguage(event.target.value);
-  };
+  //Note to myself: This one is working
+  function updateLearnedLanguage(lang_code) {
+    console.log("language code in updateLearnedLanguage");
+    console.log(lang_code);
+    setCurrentLearnedLanguage(lang_code);
+    const newUserDetails = { ...userDetails, learned_language: lang_code };
+    setUserDetails(newUserDetails);
 
-  function onSubmit(e) {
+    console.log("User details from the live update:", newUserDetails);
+  }
+
+  function handleSave(e) {
     e.preventDefault();
-    setOpen(false);
+    api.saveUserDetails(userDetails, setErrorMessage, () => {
+      console.log("User Details from onSubmit:", userDetails);
+      LocalStorage.setUserInfo(userDetails);
+      setUser({
+        ...user,
+        learned_language: userDetails.learned_language,
+      });
+
+      saveUserInfoIntoCookies(userDetails);
+      setOpen(false);
+    });
   }
 
   return (
@@ -60,26 +76,23 @@ export default function FeedbackModal({ open, setOpen }) {
         <Heading>Your Active Languages:</Heading>
       </Header>
       <Main>
-        <Form onSubmit={onSubmit}>
+        <Form>
           <FormSection>
             <RadioGroup
               radioGroupLabel="Choose your current language:"
               name="active-language"
               options={activeLanguages}
               selectedValue={currentLearnedLanguage}
-              onChange={handleLanguageChange}
+              onChange={(e) => {
+                updateLearnedLanguage(e.target.value);
+              }}
               optionLabel={(e) => e.language}
               optionValue={(e) => e.code}
               optionId={(e) => e.id}
             />
           </FormSection>
           <ButtonContainer className={"adaptive-alignment-horizontal"}>
-            <Button
-              type={"submit"}
-              onClick={(e) => {
-                onSubmit(e);
-              }}
-            >
+            <Button onClick={handleSave} type={"submit"}>
               Save
             </Button>
           </ButtonContainer>

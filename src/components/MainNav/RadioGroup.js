@@ -17,9 +17,8 @@ export default function RadioGroup({
           {radioGroupLabel}
         </s.RadioGroupLabel>
         {options?.map((option) => (
-          <>
+          <div key={optionId(option)}>
             <s.StyledInput
-              key={optionId(option)}
               type="radio"
               id={optionId(option)}
               name={name}
@@ -30,7 +29,7 @@ export default function RadioGroup({
             <s.OptionLabel htmlFor={optionId(option)}>
               {optionLabel(option)}
             </s.OptionLabel>
-          </>
+          </div>
         ))}
       </s.StyledRadioGroup>
     </>

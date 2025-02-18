@@ -5,7 +5,7 @@ import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import navLanguages from "../navLanguages";
 
-export default function SideNavLanguageOption({ screenWidth }) {
+export default function SideNavLanguageOption({ screenWidth, setUser }) {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const user = useContext(UserContext);
 
@@ -31,6 +31,7 @@ export default function SideNavLanguageOption({ screenWidth }) {
         }}
       />
       <LanguageModal
+        setUser={setUser}
         prefixMsg={"Sidebar"}
         open={showLanguageModal}
         setOpen={() => {

@@ -6,8 +6,10 @@ import { MainNavContext } from "./contexts/MainNavContext";
 import { useEffect, useState } from "react";
 
 export default function MainNavWithComponent(props) {
-  const { children: appContent } = props;
+  const { children: appContent, setUser } = props;
   const { screenWidth } = useScreenWidth();
+
+  console.log("MainNavWithComponent", { setUser });
 
   const path = useLocation().pathname;
 
@@ -32,7 +34,7 @@ export default function MainNavWithComponent(props) {
       }}
     >
       <s.MainNavWithComponent $screenWidth={screenWidth}>
-        <MainNav screenWidth={screenWidth} />
+        <MainNav setUser={setUser} screenWidth={screenWidth} />
         <s.AppContent
           $currentPath={path}
           $screenWidth={screenWidth}

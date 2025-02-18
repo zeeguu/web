@@ -10,7 +10,7 @@ import NavigationOptions from "../navigationOptions";
 import SideNavLanguageOption from "./SideNavLanguageOption";
 import * as s from "./SideNav.sc";
 
-export default function SideNav({ screenWidth }) {
+export default function SideNav({ screenWidth, setUser }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
@@ -41,7 +41,10 @@ export default function SideNav({ screenWidth }) {
       <s.BottomSection $screenWidth={screenWidth}>
         <s.NavList>
           {isOnStudentSide && (
-            <SideNavLanguageOption screenWidth={screenWidth} />
+            <SideNavLanguageOption
+              setUser={setUser}
+              screenWidth={screenWidth}
+            />
           )}
           <NavOption
             {...NavigationOptions.settings}
