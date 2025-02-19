@@ -100,6 +100,8 @@ export default function Match({
     }
   }, [selectedBookmark]);
 
+  useEffect(() => {});
+
   function notifyBookmarkDeletion(bookmark) {
     let word_expression = "";
     if (isBookmarkExpression(bookmark)) word_expression = "expression";
@@ -232,6 +234,7 @@ export default function Match({
         message={messageToNextNav}
         api={api}
         exerciseBookmark={bookmarksToStudy[0]}
+        matchBookmarks={bookmarksToStudy}
         exerciseAttemptsLog={exerciseAttemptsLog}
         moveToNextExercise={moveToNextExercise}
         reload={reload}

@@ -22,15 +22,16 @@ import CorrectMessage from "./CorrectMessage";
 export default function NextNavigation({
   message: messageForAPI,
   exerciseBookmark: bookmarkBeingTested,
-
   exerciseAttemptsLog, // Used for exercises like Match which test multiple bookmarks
   moveToNextExercise,
+  matchBookmarks,
   api,
   reload,
   setReload,
   isReadContext,
   toggleShow,
   isCorrect,
+  isExerciseOver,
   handleShowSolution,
   exerciseType,
   isBookmarkChanged,
@@ -165,7 +166,7 @@ export default function NextNavigation({
           style={{ position: "fixed" }}
         />
       )}
-      {isCorrect && isMatchExercise && isMatchBookmarkProgression && (
+      {isExerciseOver && isMatchExercise && isMatchBookmarkProgression && (
         <>
           <div
             className="next-nav-learning-cycle"
@@ -204,14 +205,14 @@ export default function NextNavigation({
         !(bookmarkLearned || bookmarkIsProgressingToNextLearningCycle) && (
           <CorrectMessage className={"next-nav-feedback"} info={""} />
         )}
-      {isCorrect && !isMatchExercise && (
+      {isExerciseOver && !isMatchExercise && (
         <>
           <s.BottomRowSmallTopMargin className="bottomRow">
             <s.EditSpeakButtonHolder>
               <SpeakButton
                 bookmarkToStudy={bookmarkBeingTested}
                 api={api}
-                style="next"
+                style={"next"}
                 isReadContext={isReadContext}
                 parentIsSpeakingControl={isButtonSpeaking}
               />
@@ -222,7 +223,6 @@ export default function NextNavigation({
                 reload={reload}
                 setReload={setReload}
                 notifyDelete={() => setIsDeleted(true)}
-                notifyWordChange={() => isBookmarkChanged()}
               />
             </s.EditSpeakButtonHolder>
             <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
@@ -231,14 +231,14 @@ export default function NextNavigation({
           </s.BottomRowSmallTopMargin>
         </>
       )}
-      {isCorrect && isMatchExercise && (
+      {isExerciseOver && isMatchExercise && (
         <s.BottomRowSmallTopMargin className="bottomRow">
           <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
             {strings.next}
           </s.FeedbackButton>
         </s.BottomRowSmallTopMargin>
       )}
-      {isCorrect && (
+      {isExerciseOver && (
         <s.StyledGreyButton
           onClick={toggleAutoPronounceState}
           style={{
@@ -252,10 +252,12 @@ export default function NextNavigation({
         </s.StyledGreyButton>
       )}
       <SolutionFeedbackLinks
+        isMatchExercise={isMatchExercise}
+        matchBookmarks={matchBookmarks}
         prefixMsg={`${exerciseType}-(${bookmarkBeingTested.id})`}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
-        isCorrect={isCorrect}
+        isCorrect={isExerciseOver}
       />
     </>
   );

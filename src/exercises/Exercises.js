@@ -11,6 +11,7 @@ import OutOfWordsMessage from "./OutOfWordsMessage";
 import SessionStorage from "../assorted/SessionStorage";
 import Feature from "../features/Feature";
 import { MAX_COOLDOWN_INTERVAL } from "./ExerciseConstants";
+import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import { SpeechContext } from "../contexts/SpeechContext";
@@ -20,8 +21,6 @@ import {
   DEFAULT_SEQUENCE_NO_AUDIO,
   EXTENDED_SEQUENCE,
   EXTENDED_SEQUENCE_NO_AUDIO,
-  DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
-  MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
 } from "./exerciseSequenceTypes";
 import useActivityTimer from "../hooks/useActivityTimer";
 import { ExerciseCountContext } from "../exercises/ExerciseCountContext";
@@ -33,6 +32,7 @@ import BackArrow from "../pages/Settings/settings_pages_shared/BackArrow";
 import useScreenWidth from "../hooks/useScreenWidth";
 import { MOBILE_WIDTH } from "../components/MainNav/screenSize";
 import { NarrowColumn } from "../components/ColumnWidth.sc";
+import useSubSessionTimer from "../hooks/useSubSessionTimer";
 
 const BOOKMARKS_DUE_REVIEW = false;
 const NEW_BOOKMARKS_TO_STUDY = true;
@@ -54,7 +54,19 @@ export default function Exercises({
   const [fullExerciseProgression, setFullExerciseProgression] = useState();
   const [totalBookmarksInPipeline, setTotalBookmarksInPipeline] = useState();
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
-  const [isCorrect, setIsCorrect] = useState(false);
+
+  /*
+  We can use this too states to track if the user is correct.
+  isExerciseOver & !isShownSolution & isCorrect = User Correct
+  isExerciseOver & isShownSolution & isCorrect === null = User Show Solution
+  isExerciseOver & isShownSolution === null & !isCorrect = User Wrong
+   */
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [isExerciseOver, setIsExerciseOver] = useState(false);
+  const [isShowSolution, setIsShowSolution] = useState(null);
+  const [selectedExerciseBookmark, setSelectedExerciseBookmark] =
+    useState(null);
+
   const [showFeedbackButtons, setShowFeedbackButtons] = useState(false);
   const [reload, setReload] = useState(false);
   const [articleTitle, setArticleTitle] = useState();
@@ -64,7 +76,7 @@ export default function Exercises({
     totalPracticedBookmarksInSession,
     setTotalPracticedBookmarksInSession,
   ] = useState(0);
-
+  const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState("");
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const currentIndexRef = useShadowRef(currentIndex);
@@ -72,7 +84,10 @@ export default function Exercises({
 
   const [activeSessionDuration, clockActive, setActivityOver] =
     useActivityTimer();
+
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
+  const [getCurrentSubSessionDuration, resetSubSessionTimer] =
+    useSubSessionTimer(activeSessionDurationRef.current);
   const exerciseNotification = useContext(ExerciseCountContext);
   const speech = useContext(SpeechContext);
 
@@ -260,7 +275,11 @@ export default function Exercises({
   function moveToNextExercise() {
     speech.stopAudio();
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
-
+    setSelectedExerciseBookmark(null);
+    setIsExerciseOver(false);
+    setIsShowSolution(null);
+    setSelectedExerciseBookmark(null);
+    setExerciseMessageToAPI("");
     setIsCorrect(null);
     setShowFeedbackButtons(false);
     const newIndex = currentIndex + 1;
@@ -271,6 +290,7 @@ export default function Exercises({
       return;
     }
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
+    setSelectedExerciseBookmark(fullExerciseProgression[newIndex].bookmarks[0]);
     setCurrentIndex(newIndex);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
@@ -314,6 +334,29 @@ export default function Exercises({
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
+  function showSolutionNotification(message) {
+    setIsShowSolution(true);
+    incorrectAnswerNotification(selectedExerciseBookmark);
+    setExerciseMessageToAPI(message);
+    exerciseCompletedNotification(message);
+  }
+
+  function exerciseCompletedNotification(message) {
+    setIsExerciseOver(true);
+    api.uploadExerciseFinalizedData(
+      message,
+      currentExerciseType,
+      getCurrentSubSessionDuration(),
+      selectedExerciseBookmark.id,
+      dbExerciseSessionIdRef.current,
+    );
+  }
+
+  function disableAudio() {
+    api.logUserActivity(api.AUDIO_DISABLE, "", selectedExerciseBookmark.id, "");
+    moveToNextExercise();
+  }
+
   function uploadUserFeedback(userWrittenFeedback, word_id) {
     console.log(
       "Sending to the API. Feedback: ",
@@ -338,7 +381,7 @@ export default function Exercises({
     setShowFeedbackButtons(!showFeedbackButtons);
   }
 
-  const CurrentExercise = fullExerciseProgression[currentIndex].type;
+  const CurrentExerciseComponent = fullExerciseProgression[currentIndex].type;
   return (
     <NarrowColumn>
       <s.ExercisesColumn>
@@ -361,14 +404,20 @@ export default function Exercises({
           }
         />
         <s.ExForm>
-          <CurrentExercise
+          <CurrentExerciseComponent
             key={currentIndex}
             bookmarksToStudy={currentBookmarksToStudy}
+            selectedExerciseBookmark={selectedExerciseBookmark}
+            setSelectedExerciseBookmark={setSelectedExerciseBookmark}
             notifyCorrectAnswer={correctAnswerNotification}
             notifyIncorrectAnswer={incorrectAnswerNotification}
+            notifyExerciseCompleted={exerciseCompletedNotification}
+            notifyShowSolution={showSolutionNotification}
             api={api}
             setExerciseType={setCurrentExerciseType}
             isCorrect={isCorrect}
+            isExerciseOver={isExerciseOver}
+            isShowSolution={isShowSolution}
             setIsCorrect={setIsCorrect}
             moveToNextExercise={moveToNextExercise}
             toggleShow={toggleShow}
@@ -376,16 +425,41 @@ export default function Exercises({
             setReload={setReload}
             exerciseSessionId={dbExerciseSessionId}
             activeSessionDuration={activeSessionDuration}
+            resetSubSessionTimer={resetSubSessionTimer}
           />
-          <FeedbackDisplay
-            showFeedbackButtons={showFeedbackButtons}
-            setShowFeedbackButtons={setShowFeedbackButtons}
-            currentExerciseType={currentExerciseType}
-            currentBookmarksToStudy={currentBookmarksToStudy}
-            feedbackFunction={uploadUserFeedback}
+          <NextNavigation
+            exerciseType={currentExerciseType}
+            message={"TEST"}
+            api={api}
+            exerciseBookmark={currentBookmarksToStudy[0]}
+            moveToNextExercise={moveToNextExercise}
+            reload={reload}
+            setReload={setReload}
+            handleShowSolution={() => {
+              setIsShowSolution(true);
+              showSolutionNotification("Testing Message");
+            }}
+            toggleShow={toggleShow}
+            isCorrect={isCorrect}
+            isExerciseOver={isExerciseOver}
           />
+          {EXERCISE_TYPES.isAudioExercise(currentExerciseType) &&
+            SessionStorage.isAudioExercisesEnabled() && (
+              <DisableAudioSession
+                handleDisabledAudio={disableAudio}
+                setIsCorrect={setIsExerciseOver}
+              />
+            )}
+          {showFeedbackButtons && (
+            <FeedbackDisplay
+              showFeedbackButtons={showFeedbackButtons}
+              setShowFeedbackButtons={setShowFeedbackButtons}
+              currentExerciseType={currentExerciseType}
+              currentBookmarksToStudy={currentBookmarksToStudy}
+              feedbackFunction={uploadUserFeedback}
+            />
+          )}
         </s.ExForm>
-
         {articleID && (
           <p>
             You are practicing words from:{" "}

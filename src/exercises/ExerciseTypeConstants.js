@@ -18,6 +18,11 @@ export const EXERCISE_TYPES = {
       this.match,
     ].includes(exerciseType);
   },
+  isAudioExercise: function (exerciseType) {
+    return [this.multipleChoiceAudio, this.spellWhatYouHear].includes(
+      exerciseType,
+    );
+  },
 };
 
 export const LEARNING_CYCLE_NAME = Object.freeze({

@@ -15,15 +15,15 @@ const ExercisesColumn = styled.div`
 `;
 
 const ExForm = styled.div`
-  background-color: rgba(241, 240, 240, 0.274);
-  min-height: 250px;
+  display: flex;
+  flex-direction: column;
   border-radius: 10px;
   transition: all 0.5s;
   width: 100%;
   margin: 1rem auto;
-  @media (max-width: 700px) {
-    height: 90%;
-  }
+  margin-top: 0px;
+  background-color: rgba(241, 240, 240, 0.274);
+  min-height: 400px;
 
   box-sizing: border-box; // to ensure that padding does not expand width!
   justify-content: center;

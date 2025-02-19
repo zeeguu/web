@@ -23,8 +23,10 @@ const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
 export default function SpellWhatYouHear({
   api,
   bookmarksToStudy,
+  selectedExerciseBookmark,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
+  handleDisabledAudio,
   setExerciseType,
   isCorrect,
   setIsCorrect,
@@ -65,7 +67,7 @@ export default function SpellWhatYouHear({
       ),
     );
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, [isBookmarkChanged]);
+  }, [exerciseBookmark]);
 
   useEffect(() => {
     // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
@@ -94,11 +96,6 @@ export default function SpellWhatYouHear({
       exerciseBookmark.id,
       exerciseSessionId,
     );
-  }
-
-  function handleDisabledAudio() {
-    api.logUserActivity(api.AUDIO_DISABLE, "", exerciseBookmark.id, "");
-    moveToNextExercise();
   }
 
   function handleIncorrectAnswer() {
@@ -179,25 +176,6 @@ export default function SpellWhatYouHear({
             />
           </div>
         </>
-      )}
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        api={api}
-        message={messageToAPI}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={handleShowSolution}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
-      {SessionStorage.isAudioExercisesEnabled() && (
-        <DisableAudioSession
-          handleDisabledAudio={handleDisabledAudio}
-          setIsCorrect={setIsCorrect}
-        />
       )}
     </s.Exercise>
   );

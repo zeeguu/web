@@ -10,11 +10,7 @@ const Exercise = styled.div`
   flex-direction: column;
   text-align: center;
   transition: all 0.5s;
-  padding-bottom: 2rem;
-
-  @media (max-width: 700px) {
-    min-height: 90%;
-  }
+  padding-bottom: 1rem;
 
   .next-nav-feedback {
     display: flex;
@@ -408,6 +404,7 @@ let BottomRowCompact = styled.div`
   align-items: center;
   justify-content: space-around;
   margin-bottom: 3em;
+  margin-top: auto;
 
   @media (max-width: 430px) {
     flex-flow: row wrap;
@@ -460,7 +457,7 @@ let CenteredRow = styled.div`
   align-items: center;
   justify-content: center;
 
-  &.topAuto {
+  &.margin-top-auto {
     margin-top: auto;
   }
 `;

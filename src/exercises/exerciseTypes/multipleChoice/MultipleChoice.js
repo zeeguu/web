@@ -23,30 +23,34 @@ export default function MultipleChoice({
   api,
   bookmarksToStudy,
   notifyCorrectAnswer,
+  notifyExerciseCompleted,
   notifyIncorrectAnswer,
+  notifyShowSolution,
+  isShowSolution,
+  exerciseCompletedNotification,
+  setSelectedExerciseBookmark,
   setExerciseType,
   isCorrect,
-  setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  isExerciseOver,
+  setIsCorrect,
+  resetSubSessionTimer,
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
   const exerciseBookmark = bookmarksToStudy[0];
+
+  useEffect(() => {
+    resetSubSessionTimer();
+  }, []);
+
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.wordsSimilarTo(exerciseBookmark.id, (words) => {
+    setSelectedExerciseBookmark(bookmarksToStudy[0]);
+    api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
       consolidateChoiceOptions(words);
     });
     setInteractiveText(
@@ -64,41 +68,23 @@ export default function MultipleChoice({
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isBookmarkChanged]);
+  }, [reload]);
 
   function notifyChoiceSelection(selectedChoice) {
-    console.log("checking result...");
     if (
       selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())
     ) {
       notifyCorrectAnswer(exerciseBookmark);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
-      handleAnswer(concatMessage);
+      notifyExerciseCompleted(concatMessage);
     } else {
       setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer(exerciseBookmark);
       let concatMessage = messageToAPI + "W";
+      setIsCorrect(false);
       setMessageToAPI(concatMessage);
     }
-  }
-
-  function handleShowSolution() {
-    let message = messageToAPI + "S";
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    handleAnswer(message);
-  }
-
-  function handleAnswer(message) {
-    setMessageToAPI(message);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
   }
 
   function consolidateChoiceOptions(similarWords) {
@@ -127,11 +113,11 @@ export default function MultipleChoice({
       </div>
       <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
 
-      {isCorrect && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
+      {isExerciseOver && <h1>{removePunctuation(bookmarksToStudy[0].to)}</h1>}
 
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isCorrect}
+          isCorrect={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -143,29 +129,14 @@ export default function MultipleChoice({
       </div>
 
       {!buttonOptions && <LoadingAnimation />}
-      {!isCorrect && (
+      {!isExerciseOver && (
         <MultipleChoicesInput
           buttonOptions={buttonOptions}
           notifyChoiceSelection={notifyChoiceSelection}
           incorrectAnswer={incorrectAnswer}
           setIncorrectAnswer={setIncorrectAnswer}
-          handleShowSolution={handleShowSolution}
-          toggleShow={toggleShow}
         />
       )}
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        message={messageToAPI}
-        api={api}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={handleShowSolution}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
     </s.Exercise>
   );
 }

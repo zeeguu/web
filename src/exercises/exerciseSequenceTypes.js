@@ -116,6 +116,15 @@ let DEFAULT_SEQUENCE = [
   EX_FindWordInContext,
 ];
 
+let DEFAULT_SEQUENCE_NO_AUDIO = [
+  EX_MultipleChoice,
+  EX_Match,
+  EX_MultipleChoice,
+  EX_FindWordInContext,
+  EX_Match,
+  EX_FindWordInContext,
+];
+
 let EXERCISE_TYPES_TIAGO = [
   EX_MultipleChoice,
   EX_FindWordInContext,
@@ -127,14 +136,7 @@ let EXERCISE_TYPES_TIAGO = [
   EX_OrderWordsL1,
 ];
 
-let DEFAULT_SEQUENCE_NO_AUDIO = [
-  EX_MultipleChoice,
-  EX_Match,
-  EX_MultipleChoice,
-  EX_FindWordInContext,
-  EX_Match,
-  EX_FindWordInContext,
-];
+let AUDIO_EXERCISES = [EX_MultipleChoiceAudio, EX_SpellWhatYouHear];
 
 let EXTENDED_SEQUENCE = [
   EX_Match,
@@ -161,17 +163,17 @@ let EXTENDED_SEQUENCE_NO_AUDIO = [
 ];
 
 let ALL_EXERCISES = [
-  EX_Match,
   EX_MultipleChoice,
   EX_FindWordInContext,
   EX_SpellWhatYouHear,
   EX_MultipleChoiceL2toL1,
   EX_TranslateL2toL1,
   EX_TranslateWhatYouHear,
-  EX_MultipleChoiceContext,
   EX_ClickWordInContext,
   EX_FindWordInContextCloze,
   EX_MultipleChoiceAudio,
+  EX_Match,
+  EX_MultipleChoiceContext,
 ];
 
 export {
@@ -182,6 +184,7 @@ export {
   EXTENDED_SEQUENCE_NO_AUDIO,
   DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE,
   MAX_NUMBER_OF_BOOKMARKS_EX_SESSION,
+  AUDIO_EXERCISES,
   ALL_EXERCISES,
 };
 
