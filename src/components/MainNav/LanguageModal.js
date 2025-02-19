@@ -39,28 +39,28 @@ export default function LanguageModal({ open, setOpen, setUser }) {
       setUserDetails(undefined);
       setCurrentLearnedLanguage(undefined);
     };
-  }, [open, api, user.session, user.learned_language]);
+  }, [open, api, user.session]);
 
-  console.log("User details underneath useeffect:", userDetails);
-  console.log("user context underneath useeffect:", user);
-
-  //Note to myself: This one is working
   function updateLearnedLanguage(lang_code) {
     setCurrentLearnedLanguage(lang_code);
     const newUserDetails = { ...userDetails, learned_language: lang_code };
     setUserDetails(newUserDetails);
   }
 
+  function updateUserInfo(info) {
+    LocalStorage.setUserInfo(info);
+    setUser({
+      ...user,
+      learned_language: info.learned_language,
+    });
+
+    saveUserInfoIntoCookies(info);
+  }
+
   function handleSave(e) {
     e.preventDefault();
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      LocalStorage.setUserInfo(userDetails);
-      setUser({
-        ...user,
-        learned_language: userDetails.learned_language,
-      });
-
-      saveUserInfoIntoCookies(userDetails);
+      updateUserInfo(userDetails);
       setOpen(false);
     });
   }
