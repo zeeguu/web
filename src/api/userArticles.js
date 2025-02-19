@@ -159,8 +159,6 @@ Zeeguu_API.prototype.findOrCreateArticle = function (articleInfo, callback) {
   let article = {
     url: articleInfo.url,
     htmlContent: articleInfo.htmlContent,
-    title: articleInfo.title,
-    authors: articleInfo.authors,
   };
   this._post(`/find_or_create_article`, qs.stringify(article), callback);
 };

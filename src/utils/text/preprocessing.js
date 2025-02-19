@@ -3,7 +3,7 @@ function removePunctuation(string) {
   let removeLeadingPunctuation =
     /(\s|^)[¡!"”“„#$%&'(–)*+,…./—:;«<=>»¿?@[\]^_`{|}~]+/g;
   let removeTrailingPunctuation =
-    /[¡!"”“„#$%&'(–)*+,…./—:;«<=>»¿?@[\]^_`{|}~]+(\s|$)/g;
+    /[¡!"”“„#$%&'(–)*+,…./—:;«<=>»¿?@[\]^_`{|}~]+(\s|$)$/g;
   return string
     .replace(removeLeadingPunctuation, "")
     .replace(removeTrailingPunctuation, "");

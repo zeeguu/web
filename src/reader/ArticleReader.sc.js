@@ -85,6 +85,13 @@ let AuthorLinksContainer = styled.div`
   justify-content: space-between;
 `;
 
+let ArticleTopics = styled.div`
+  margin-top: 10px;
+  margin-bottom: -20px;
+  font-style: italic;
+  font-size: small;
+`;
+
 let ArticleInfoContainer = styled.div`
   margin-top: 1em;
   margin-bottom: 1rem;
@@ -425,6 +432,7 @@ let CombinedBox = styled.div`
 
 export {
   ArticleReader,
+  ArticleTopics,
   ArticleImg,
   ArticleImgContainer,
   AuthorLinksContainer,

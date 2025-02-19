@@ -5,20 +5,55 @@ Zeeguu_API.prototype.getUserBookmarksToStudy = function (count, callback) {
   this._getJSON(`scheduled_bookmarks_to_study/${count}`, callback);
 };
 
-Zeeguu_API.prototype.getUserBookmarksInPipeline = function (callback) {
-  this._getJSON(`bookmarks_in_pipeline`, callback);
+Zeeguu_API.prototype.getUserBookmarksInPipeline = function (
+  isWithTokens,
+  callback,
+) {
+  let endpoint = `bookmarks_in_pipeline`;
+  let payload = {
+    with_tokens: isWithTokens,
+  };
+  if (isWithTokens)
+    this._post(
+      endpoint,
+      qs.stringify(payload),
+      callback,
+      (error) => {
+        console.error(error);
+      },
+      true,
+    );
+  else this._getJSON(endpoint, callback);
 };
 
-Zeeguu_API.prototype.getBookmarksToLearn = function (callback) {
-  this._getJSON(`bookmarks_to_learn_not_scheduled`, callback);
+Zeeguu_API.prototype.getBookmarksToLearn = function (isWithTokens, callback) {
+  let payload = {
+    with_tokens: isWithTokens,
+  };
+  let endpoint = `bookmarks_to_learn_not_scheduled`;
+  if (isWithTokens)
+    this._post(
+      endpoint,
+      qs.stringify(payload),
+      callback,
+      (error) => {
+        console.error(error);
+      },
+      true,
+    );
+  else this._getJSON(endpoint, callback);
 };
 
 Zeeguu_API.prototype.getNewBookmarksToStudy = function (count, callback) {
   this._getJSON(`new_bookmarks_to_study/${count}`, callback);
 };
 
-Zeeguu_API.prototype.getTopBookmarksToStudy = function (callback) {
-  this._getJSON(`top_bookmarks_to_study`, callback);
+Zeeguu_API.prototype.getTopBookmarksToStudyCount = function (callback) {
+  this._getJSON(`top_bookmarks_to_study_count`, callback);
+};
+
+Zeeguu_API.prototype.getTopBookmarksToStudy = function (count, callback) {
+  this._getJSON(`top_bookmarks_to_study/${count}`, callback);
 };
 
 Zeeguu_API.prototype.getTotalBookmarksInPipeline = function (callback) {
@@ -48,7 +83,6 @@ Zeeguu_API.prototype.uploadExerciseFeedback = function (
     other_feedback: user_feedback,
     session_id: exerciseSessionId,
   };
-  console.log(payload);
   this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 
@@ -68,7 +102,6 @@ Zeeguu_API.prototype.uploadExerciseFinalizedData = function (
     other_feedback: other_feedback,
     session_id: exerciseSessionId,
   };
-  console.log(payload);
   this._post(`report_exercise_outcome`, qs.stringify(payload));
 };
 

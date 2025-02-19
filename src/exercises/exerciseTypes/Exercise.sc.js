@@ -360,6 +360,12 @@ let Input = styled.input`
     width: 80%;
   }
 
+  &::placeholder {
+    font-size: medium;
+    font-weight: 500;
+    color: ${lightGrey};
+  }
+
   @media (max-width: 430px) {
     order: 3;
   }

@@ -3,6 +3,7 @@ import strings from "../../i18n/definitions";
 import * as s from "./Exercise.sc";
 import { normalizeAnswer } from "../inputNormalization";
 import Pluralize from "../../utils/text/pluralize";
+import { LANGUAGE_CODE_TO_NAME } from "../../utils/misc/languageCodeToName";
 
 import {
   getExpressionlength,
@@ -49,6 +50,8 @@ export default function BottomInput({
   const answerLanguageCode = isL1Answer
     ? bookmarksToStudy[0].to_lang
     : bookmarksToStudy[0].from_lang;
+
+  const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
 
   function handleHint() {
     setUsedHint(true);
@@ -177,6 +180,7 @@ export default function BottomInput({
           </div>
           <InputField
             type="text"
+            placeholder={"Type in " + inputLanguageName}
             className={
               distanceToCorrect >= 5 && correctWordCountInInput === 0
                 ? "wrong-border"

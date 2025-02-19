@@ -10,6 +10,7 @@ import LogIn from "./pages/LogIn";
 import CreateAccount from "./pages/onboarding/CreateAccount";
 import LanguagePreferences from "./pages/onboarding/LanguagePreferences";
 import ArticlesRouter from "./articles/_ArticlesRouter";
+import NotFound from "./pages/NotFound";
 import ExercisesRouter from "./exercises/ExercisesRouter";
 import WordsRouter from "./words/_WordsRouter";
 import ReadingHistory from "./words/WordHistory";
@@ -140,6 +141,7 @@ export default function MainAppRouter({
         component={ExercisesForArticle}
         source={UMR_SOURCE}
       />
+      <Route path="*" component={NotFound} />
     </Switch>
   );
 }

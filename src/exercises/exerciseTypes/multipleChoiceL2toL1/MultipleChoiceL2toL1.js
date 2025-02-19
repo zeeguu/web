@@ -42,21 +42,23 @@ export default function MultipleChoiceL2toL1({
     activeSessionDuration,
   );
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+  const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        exerciseBookmark.context_in_content,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
   }, [isBookmarkChanged]);
 
   useEffect(() => {
@@ -72,14 +74,14 @@ export default function MultipleChoiceL2toL1({
   }, [interactiveText]);
 
   function notifyChoiceSelection(selectedChoice) {
-    if (selectedChoice === removePunctuation(bookmarksToStudy[0].to)) {
-      notifyCorrectAnswer(bookmarksToStudy[0]);
+    if (selectedChoice === removePunctuation(exerciseBookmark.to)) {
+      notifyCorrectAnswer(exerciseBookmark);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
     } else {
       setIncorrectAnswer(selectedChoice);
-      notifyIncorrectAnswer(bookmarksToStudy[0]);
+      notifyIncorrectAnswer(exerciseBookmark);
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
     }
@@ -87,7 +89,7 @@ export default function MultipleChoiceL2toL1({
 
   function handleShowSolution() {
     let message = messageToAPI + "S";
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     handleAnswer(message);
   }
@@ -98,12 +100,12 @@ export default function MultipleChoiceL2toL1({
       message,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
 
-  if (!interactiveText) {
+  if (!interactiveText || !buttonOptions) {
     return <LoadingAnimation />;
   }
 
@@ -112,12 +114,9 @@ export default function MultipleChoiceL2toL1({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceL2toL1Headline}
       </div>
-      <BookmarkProgressBar
-        bookmark={bookmarksToStudy[0]}
-        message={messageToAPI}
-      />
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
 
-      {isCorrect && <h1>{removePunctuation(bookmarksToStudy[0].to)}</h1>}
+      {isCorrect && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
 
       <div className="contextExample">
         <TranslatableText
@@ -125,9 +124,11 @@ export default function MultipleChoiceL2toL1({
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
-          bookmarkToStudy={bookmarksToStudy[0].from}
+          bookmarkToStudy={exerciseBookmark.from}
           exerciseType={EXERCISE_TYPE}
-          boldExpression={bookmarksToStudy[0].from}
+          boldExpression={exerciseBookmark.from}
+          leftEllipsis={exerciseBookmark.left_ellipsis}
+          rightEllipsis={exerciseBookmark.right_ellipsis}
         />
       </div>
 
@@ -146,7 +147,7 @@ export default function MultipleChoiceL2toL1({
         exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
-        exerciseBookmark={bookmarksToStudy[0]}
+        exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

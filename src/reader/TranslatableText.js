@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import TranslatableWord from "./TranslatableWord";
 import * as s from "./TranslatableText.sc";
 import { removePunctuation } from "../utils/text/preprocessing";
-import { EXERCISE_TYPES } from "../exercises/ExerciseTypeConstants";
 
 export function TranslatableText({
   isCorrect,
@@ -17,6 +16,8 @@ export function TranslatableText({
   boldExpression,
   exerciseType,
   updateBookmarks,
+  leftEllipsis,
+  rightEllipsis,
 }) {
   const [translationCount, setTranslationCount] = useState(0);
   const [foundInstances, setFoundInstances] = useState([]);
@@ -28,7 +29,7 @@ export function TranslatableText({
     if (bookmarkToStudy) {
       findBookmarkInInteractiveText();
     }
-    setParagraphs(interactiveText.getParagraphs());
+    if (interactiveText) setParagraphs(interactiveText.getParagraphs());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactiveText]);
 
@@ -36,7 +37,9 @@ export function TranslatableText({
     setRenderedText(
       paragraphs.map((par, index) => (
         <div key={index} className="textParagraph">
+          {index === 0 && leftEllipsis && <>...</>}
           {par.getWords().map((word) => renderWordJSX(word))}
+          {index === 0 && rightEllipsis && <>...</>}
         </div>
       )),
     );

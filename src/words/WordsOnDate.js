@@ -18,8 +18,8 @@ export function WordsOnDate({ day, api, notifyDelete }) {
     return map;
   }
 
-  let bookmarks_by_article = groupBy(day.bookmarks, (x) => x.article_id);
-  let articleIDs = Array.from(bookmarks_by_article.keys());
+  const bookmarks_by_article = groupBy(day.bookmarks, (x) => x.article_id);
+  const articleIDs = Array.from(bookmarks_by_article.keys());
 
   return (
     <div key={day.date}>
@@ -28,7 +28,7 @@ export function WordsOnDate({ day, api, notifyDelete }) {
       {articleIDs.map((article_id) => (
         <s.Article key={article_id}>
           <s.ArticleTitle>
-            {bookmarks_by_article.get(article_id)[0].article_title}
+            {bookmarks_by_article.get(article_id)[0].title}
             <Link to={"/read/article?id=" + article_id}>{strings.open}</Link>
           </s.ArticleTitle>
 

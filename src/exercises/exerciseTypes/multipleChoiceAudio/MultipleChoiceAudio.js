@@ -46,25 +46,25 @@ export default function MultipleChoiceAudio({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const bookmarkToStudy = bookmarksToStudy[0];
+  const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
   const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(bookmarksToStudy[0].article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
-
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        exerciseBookmark.context_in_content,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
   }, [isBookmarkChanged]);
@@ -72,16 +72,15 @@ export default function MultipleChoiceAudio({
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
     if (
-      selectedChoice ===
-      removePunctuation(bookmarksToStudy[0].from.toLowerCase())
+      selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())
     ) {
-      notifyCorrectAnswer(bookmarksToStudy[0]);
+      notifyCorrectAnswer(exerciseBookmark);
       setIsCorrect(true);
       let concatMessage = messageToAPI + "C";
       handleAnswer(concatMessage);
     } else {
       setIncorrectAnswer(selectedChoice);
-      notifyIncorrectAnswer(bookmarksToStudy[0]);
+      notifyIncorrectAnswer(exerciseBookmark);
       let concatMessage = messageToAPI + "W";
       setMessageToAPI(concatMessage);
     }
@@ -112,20 +111,20 @@ export default function MultipleChoiceAudio({
   }
 
   function handleDisabledAudio() {
-    api.logUserActivity(api.AUDIO_DISABLE, "", bookmarksToStudy[0].id, "");
+    api.logUserActivity(api.AUDIO_DISABLE, "", exerciseBookmark.id, "");
     moveToNextExercise();
   }
 
   function handleShowSolution() {
     let message = messageToAPI + "S";
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     handleAnswer(message);
   }
 
   function handleIncorrectAnswer() {
     setMessageToAPI(messageToAPI + "W");
-    notifyIncorrectAnswer(bookmarksToStudy[0]);
+    notifyIncorrectAnswer(exerciseBookmark);
     setFirstTypeTime(new Date());
   }
 
@@ -135,7 +134,7 @@ export default function MultipleChoiceAudio({
       message,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
@@ -149,18 +148,18 @@ export default function MultipleChoiceAudio({
 
   function handleCorrectAnswer(message) {
     setMessageToAPI(message);
-    notifyCorrectAnswer(bookmarksToStudy[0]);
+    notifyCorrectAnswer(exerciseBookmark);
     setIsCorrect(true);
     api.uploadExerciseFinalizedData(
       message,
       EXERCISE_TYPE,
       getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      bookmarksToStudy[0].id,
+      exerciseBookmark.id,
       exerciseSessionId,
     );
   }
 
-  if (!interactiveText) {
+  if (!interactiveText || !choiceOptions) {
     return <LoadingAnimation />;
   }
 
@@ -181,15 +180,12 @@ export default function MultipleChoiceAudio({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceAudioHeadline}
       </div>
-      <BookmarkProgressBar
-        bookmark={bookmarksToStudy[0]}
-        message={messageToAPI}
-      />
+      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
       {isCorrect && (
         <>
           <br></br>
           <h1 className="wordInContextHeadline">
-            {removePunctuation(bookmarksToStudy[0].to)}
+            {removePunctuation(exerciseBookmark.to)}
           </h1>
         </>
       )}
@@ -200,7 +196,9 @@ export default function MultipleChoiceAudio({
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
-          bookmarkToStudy={bookmarksToStudy[0].from}
+          bookmarkToStudy={exerciseBookmark.from}
+          leftEllipsis={exerciseBookmark.left_ellipsis}
+          rightEllipsis={exerciseBookmark.right_ellipsis}
         />
       </div>
 
@@ -255,7 +253,7 @@ export default function MultipleChoiceAudio({
         exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
         api={api}
-        exerciseBookmark={bookmarksToStudy[0]}
+        exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}
         setReload={setReload}

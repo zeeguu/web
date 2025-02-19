@@ -13,6 +13,7 @@ import Feature from "../features/Feature";
 import { MAX_COOLDOWN_INTERVAL } from "./ExerciseConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
+import { SpeechContext } from "../contexts/SpeechContext";
 
 import {
   DEFAULT_SEQUENCE,
@@ -73,6 +74,7 @@ export default function Exercises({
     useActivityTimer();
   const activeSessionDurationRef = useShadowRef(activeSessionDuration);
   const exerciseNotification = useContext(ExerciseCountContext);
+  const speech = useContext(SpeechContext);
 
   const { screenWidth } = useScreenWidth();
 
@@ -176,8 +178,8 @@ export default function Exercises({
   }
 
   function updateIsOutOfWordsToday() {
-    api.getTopBookmarksToStudy((topBookmarks) => {
-      setIsOutOfWordsToday(topBookmarks.length === 0);
+    api.getTopBookmarksToStudyCount((bookmarkCount) => {
+      setIsOutOfWordsToday(bookmarkCount === 0);
     });
   }
 
@@ -186,21 +188,23 @@ export default function Exercises({
     if (articleID) {
       exercise_article_bookmarks();
     } else {
-      api.getTopBookmarksToStudy((bookmarks) => {
+      api.getTopBookmarksToStudyCount((bookmarkCount) => {
         let exerciseSession =
-          bookmarks.lengh <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+          bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
             : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
-        initializeExercises(
-          bookmarks.slice(0, exerciseSession + 1),
-          strings.exercises,
+        api.getTopBookmarksToStudy(exerciseSession, (bookmarks) =>
+          initializeExercises(
+            bookmarks.slice(0, exerciseSession + 1),
+            strings.exercises,
+          ),
         );
       });
     }
   }
 
   function exercise_article_bookmarks() {
-    api.bookmarksToStudyForArticle(articleID, (bookmarks) => {
+    api.bookmarksToStudyForArticle(articleID, true, (bookmarks) => {
       api.getArticleInfo(articleID, (data) => {
         exerciseNotification.unsetExerciseCounter();
         initializeExercises(bookmarks, 'Exercises for "' + data.title + '"');
@@ -254,6 +258,7 @@ export default function Exercises({
   }
 
   function moveToNextExercise() {
+    speech.stopAudio();
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
 
     setIsCorrect(null);

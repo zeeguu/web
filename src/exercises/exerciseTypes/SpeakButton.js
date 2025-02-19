@@ -78,8 +78,6 @@ export default function SpeakButton({
   }, [parentIsSpeakingControl]);
 
   async function handleSpeak() {
-    // If audio is playing don't let other buttons be clicked.
-    if (speech.isCurrentlySpeaking) return;
     try {
       if (isReadContext) {
         await speech.speakOut(bookmarkToStudy.context, setIsSpeaking);

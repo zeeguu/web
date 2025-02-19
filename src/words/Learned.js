@@ -31,9 +31,11 @@ export default function Learned({ api }) {
   }
 
   useEffect(() => {
+    api.totalLearnedBookmarks((totalLearnedCount) => {
+      setTotalWordsLearned(totalLearnedCount);
+    });
     api.learnedBookmarks(300, (learnedWords) => {
       setWords(groupByDate(learnedWords));
-      setTotalWordsLearned(learnedWords.length);
     });
     setTitle(strings.titleLearnedWords);
   }, [api]);

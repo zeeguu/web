@@ -24,10 +24,10 @@ export default function Learning({ api }) {
   const productiveWords = get_bookmark_in_cycle(LEARNING_CYCLE.PRODUCTIVE);
 
   useEffect(() => {
-    api.getUserBookmarksInPipeline((bookmarks) => {
+    api.getUserBookmarksInPipeline(false, (bookmarks) => {
       setInLearningWords(bookmarks);
     });
-    api.getBookmarksToLearn((bookmarks) => {
+    api.getBookmarksToLearn(false, (bookmarks) => {
       setToLearnWords(bookmarks);
     });
     setTitle(strings.titleToLearnWords);
@@ -43,7 +43,12 @@ export default function Learning({ api }) {
     }
   }
 
-  if (!receptiveWords || !productiveWords || !toLearnWords) {
+  if (
+    !receptiveWords ||
+    !productiveWords ||
+    !toLearnWords ||
+    !inLearningWords
+  ) {
     return <LoadingAnimation />;
   }
 
