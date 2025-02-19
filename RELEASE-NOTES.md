@@ -1,3 +1,6 @@
+# v2.4.7
+- remembering translations in the text
+
 # v2.4.6
 - adding article difficulty info; nicer timer
 
