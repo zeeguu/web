@@ -5,7 +5,7 @@ import BottomNavOption from "./BottomNavOption";
 import NavIcon from "../NavIcon";
 import navLanguages from "../navLanguages";
 
-export default function BottomNavLanguageOption() {
+export default function BottomNavLanguageOption({ setUser }) {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const user = useContext(UserContext);
 
@@ -29,6 +29,7 @@ export default function BottomNavLanguageOption() {
         }}
       />
       <LanguageModal
+        setUser={setUser}
         prefixMsg={"Sidebar"}
         open={showLanguageModal}
         setOpen={() => {
