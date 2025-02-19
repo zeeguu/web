@@ -3,6 +3,7 @@ import ZeeguuSpeech from "../speech/APIBasedSpeech";
 import { tokenize } from "../utils/text/preprocessing";
 import { removePunctuation } from "../utils/text/preprocessing";
 import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
+import * as Sentry from "@sentry/browser";
 
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 14;
@@ -109,8 +110,13 @@ export default class InteractiveText {
           bookmark_i++;
         }
         if (shouldSkipBookmarkUpdate) {
-          console.log(bookmark);
-          console.log("Skipped bookmark!");
+          Sentry.captureMessage(
+            `Bookmark '${bookmark.id}' failed to render in text '${articleID}'.`,
+            "warning",
+          );
+          console.error(
+            `Bookmark '${bookmark.id}' failed to render in text '${articleID}'.`,
+          );
           continue;
         }
         // Because we are trying to find the tokens, we might skip some tokens that
