@@ -359,7 +359,7 @@ let Input = styled.input`
   &::placeholder {
     font-size: medium;
     font-weight: 500;
-    color: ${lightGrey};
+    color: lightgrey;
   }
 
   @media (max-width: 430px) {

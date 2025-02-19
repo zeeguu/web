@@ -16,6 +16,8 @@ import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import { SpeechContext } from "../contexts/SpeechContext";
 
+import NextNavigation from "./exerciseTypes/NextNavigation";
+import DisableAudioSession from "./exerciseTypes/DisableAudioSession";
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
@@ -203,16 +205,21 @@ export default function Exercises({
     if (articleID) {
       exercise_article_bookmarks();
     } else {
-      api.getTopBookmarksToStudyCount((bookmarkCount) => {
-        let exerciseSession =
-          bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-            ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
-            : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
-        api.getTopBookmarksToStudy(exerciseSession, (bookmarks) =>
-          initializeExercises(
-            bookmarks.slice(0, exerciseSession + 1),
-            strings.exercises,
-          ),
+      // api.getTopBookmarksToStudyCount((bookmarkCount) => {
+      //   let exerciseSession =
+      //     bookmarkCount <= MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+      //       ? MAX_NUMBER_OF_BOOKMARKS_EX_SESSION
+      //       : DEFAULT_NUMBER_BOOKMARKS_TO_PRACTICE;
+      //   api.getTopBookmarksToStudy(exerciseSession, (bookmarks) =>
+      //     initializeExercises(
+      //       bookmarks.slice(0, exerciseSession + 1),
+      //       strings.exercises,
+      //     ),
+      api.getTopBookmarksToStudy((bookmarks) => {
+        let exerciseSession = 20;
+        initializeExercises(
+          bookmarks.slice(0, exerciseSession + 1),
+          strings.exercises,
         );
       });
     }
@@ -469,10 +476,4 @@ export default function Exercises({
       </s.ExercisesColumn>
     </NarrowColumn>
   );
-}
-
-function truncate(str, n) {
-  // ML: TODO: substr seems to be deprecated; also, this should be moved to some string-utils function?
-  // or a new package should be imported?!
-  return str.length > n ? str.substr(0, n - 1) + "..." : str;
 }
