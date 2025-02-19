@@ -14,8 +14,6 @@ import { MAX_COOLDOWN_INTERVAL } from "./ExerciseConstants";
 import { EXERCISE_TYPES } from "./ExerciseTypeConstants";
 import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
-import { SpeechContext } from "../contexts/SpeechContext";
-
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import DisableAudioSession from "./exerciseTypes/DisableAudioSession";
 import {

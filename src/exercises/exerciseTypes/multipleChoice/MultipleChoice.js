@@ -41,7 +41,6 @@ export default function MultipleChoice({
   const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
-  const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
     resetSubSessionTimer();

@@ -44,7 +44,6 @@ export default function SpellWhatYouHear({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const exerciseBookmark = bookmarksToStudy[0];
 
   async function handleSpeak() {
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
@@ -52,21 +51,20 @@ export default function SpellWhatYouHear({
 
   useEffect(() => {
     setExerciseType(EXERCISE_TYPE);
-    setInteractiveText(
-      new InteractiveText(
-        exerciseBookmark.context_tokenized,
-        exerciseBookmark.article_id,
-        exerciseBookmark.context_in_content,
-        api,
-        [],
-        "TRANSLATE WORDS IN EXERCISE",
-        exerciseBookmark.from_lang,
-        EXERCISE_TYPE,
-        speech,
-      ),
-    );
+    api.getArticleInfo(selectedExerciseBookmark.article_id, (articleInfo) => {
+      setInteractiveText(
+        new InteractiveText(
+          selectedExerciseBookmark.context,
+          articleInfo,
+          api,
+          "TRANSLATE WORDS IN EXERCISE",
+          EXERCISE_TYPE,
+          speech,
+        ),
+      );
+    });
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, [exerciseBookmark]);
+  }, [bookmarksToStudy]);
 
   useEffect(() => {
     // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
