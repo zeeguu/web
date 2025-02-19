@@ -16,7 +16,8 @@ const ZeeguuSpeech = class {
   }
 
   animateSpeechButton(setIsSpeaking, isPlayingSound) {
-    if (typeof setIsSpeaking !== "undefined") setIsSpeaking(isPlayingSound);
+    if (typeof setIsSpeaking !== "undefined" && setIsSpeaking)
+      setIsSpeaking(isPlayingSound);
   }
 
   stopAudio() {
