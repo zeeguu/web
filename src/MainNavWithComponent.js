@@ -9,8 +9,6 @@ export default function MainNavWithComponent(props) {
   const { children: appContent, setUser } = props;
   const { screenWidth } = useScreenWidth();
 
-  console.log("MainNavWithComponent", { setUser });
-
   const path = useLocation().pathname;
 
   //Initial state and setter passed to the value prop of the MainNavContext.Provider

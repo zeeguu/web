@@ -1,12 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { APIContext } from "../../contexts/APIContext.js";
 import { UserContext } from "../../contexts/UserContext.js";
-import LocalStorage from "../../assorted/LocalStorage.js";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo.js";
+import LocalStorage from "../../assorted/LocalStorage.js";
 import Modal from "../modal_shared/Modal.js";
 import Form from "../../pages/_pages_shared/Form.sc.js";
 import ButtonContainer from "../modal_shared/ButtonContainer.sc.js";
 import Button from "../../pages/_pages_shared/Button.sc.js";
+import { Link } from "react-router-dom";
 import FormSection from "../../pages/_pages_shared/FormSection.sc.js";
 import Main from "../modal_shared/Main.sc.js";
 import Header from "../modal_shared/Header.sc.js";
@@ -29,11 +30,15 @@ export default function LanguageModal({ open, setOpen, setUser }) {
       });
 
       api.getUserDetails((data) => {
-        console.log("User details from api:", data);
         setUserDetails(data);
         setCurrentLearnedLanguage(data.learned_language);
       });
     }
+    return () => {
+      setActiveLanguages(undefined);
+      setUserDetails(undefined);
+      setCurrentLearnedLanguage(undefined);
+    };
   }, [open, api, user.session, user.learned_language]);
 
   console.log("User details underneath useeffect:", userDetails);
@@ -41,19 +46,14 @@ export default function LanguageModal({ open, setOpen, setUser }) {
 
   //Note to myself: This one is working
   function updateLearnedLanguage(lang_code) {
-    console.log("language code in updateLearnedLanguage");
-    console.log(lang_code);
     setCurrentLearnedLanguage(lang_code);
     const newUserDetails = { ...userDetails, learned_language: lang_code };
     setUserDetails(newUserDetails);
-
-    console.log("User details from the live update:", newUserDetails);
   }
 
   function handleSave(e) {
     e.preventDefault();
     api.saveUserDetails(userDetails, setErrorMessage, () => {
-      console.log("User Details from onSubmit:", userDetails);
       LocalStorage.setUserInfo(userDetails);
       setUser({
         ...user,
@@ -95,6 +95,12 @@ export default function LanguageModal({ open, setOpen, setUser }) {
             <Button onClick={handleSave} type={"submit"}>
               Save
             </Button>
+            <Link
+              onClick={() => setOpen(false)}
+              to="/account_settings/language_settings"
+            >
+              Add a new language
+            </Link>
           </ButtonContainer>
         </Form>
       </Main>
