@@ -66,9 +66,10 @@ export default function TranslateWhatYouHear({
   }, [isBookmarkChanged]);
 
   useEffect(() => {
-    if (SessionStorage.isAudioExercisesEnabled()) {
-      handleSpeak();
-    }
+    if (interactiveText && !isButtonSpeaking)
+      setTimeout(() => {
+        handleSpeak();
+      }, 200);
   }, [interactiveText]);
 
   function handleShowSolution(e, message) {
