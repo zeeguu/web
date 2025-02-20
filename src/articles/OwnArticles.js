@@ -46,8 +46,6 @@ export default function OwnArticles({ api }) {
 
   return (
     <>
-      <br />
-      <br />
       <SortingButtons
         articleList={articleList}
         originalList={originalList}

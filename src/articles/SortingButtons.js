@@ -10,10 +10,18 @@ export default function SortingButtons({
 }) {
   const [difficultySortState, setCurrentSort] = useState("");
   const [wordCountSortState, setwordCountSortState] = useState("");
+  const [progressSortState, setProgressSortState] = useState("");
   const isOnTeacherSite = useLocation().pathname.includes("teacher");
+  const isOnSavedArticles = useLocation().pathname.includes("ownTexts");
 
+  function zeroIfNull(val) {
+    return val ? val : 0;
+  }
   function sortArticleList(sorting) {
     setArticleList([...articleList].sort(sorting));
+    for (let i; i < articleList.length; i++) {
+      console.log(articleList[i]);
+    }
   }
 
   function changeDifficultySorting(
@@ -70,6 +78,25 @@ export default function SortingButtons({
       >
         {strings.lengthWithCapital}
       </s.SortButton>
+      {isOnSavedArticles && (
+        <s.SortButton
+          isOnTeacherSite={isOnTeacherSite}
+          className={progressSortState}
+          onClick={(e) =>
+            changeDifficultySorting(
+              e,
+              progressSortState,
+              setProgressSortState,
+              setCurrentSort,
+              (a, b) =>
+                zeroIfNull(b.reading_completion) -
+                zeroIfNull(a.reading_completion),
+            )
+          }
+        >
+          {strings.readingCompletion}
+        </s.SortButton>
+      )}
     </s.SortingButtons>
   );
 }

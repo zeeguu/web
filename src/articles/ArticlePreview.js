@@ -15,11 +15,13 @@ import { darkBlue } from "../components/colors";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
 import { TopicOriginType } from "../appConstants";
 import extractDomain from "../utils/web/extractDomain";
+import ReadingCompletionProgress from "./ReadingCompletionProgress";
 
 export default function ArticlePreview({
   article,
   dontShowPublishingTime,
   dontShowSourceIcon,
+  showArticleCompletion,
   hasExtension,
   api,
   doNotShowRedirectionModal_UserPreference,
@@ -34,6 +36,7 @@ export default function ArticlePreview({
     article.has_personal_copy,
   );
   const [showInferredTopic, setShowInferredTopic] = useState(true);
+  const readingCompletion = Math.round(article.reading_completion * 100);
 
   const handleArticleClick = () => {
     if (onArticleClick) {
@@ -127,15 +130,24 @@ export default function ArticlePreview({
           />
         </sweetM.TagsOfInterests>
       )}
-
       <SmallSaveArticleButton
         api={api}
         article={article}
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
+      <s.TitleContainer>
+        <s.Title className={article.opened ? "opened" : ""}>
+          {titleLink(article)}{" "}
+        </s.Title>
+        <ReadingCompletionProgress
+          value={readingCompletion}
+          style={
+            readingCompletion < 100 ? { color: "grey" } : { color: "green" }
+          }
+        ></ReadingCompletionProgress>
+      </s.TitleContainer>
 
-      <s.Title>{titleLink(article)}</s.Title>
       {article.feed_id ? (
         <ArticleSourceInfo
           articleInfo={article}
@@ -188,6 +200,7 @@ export default function ArticlePreview({
         </div>
         <ArticleStatInfo articleInfo={article}></ArticleStatInfo>
       </s.BottomContainer>
+
       {article.video ? (
         <img
           alt=""
