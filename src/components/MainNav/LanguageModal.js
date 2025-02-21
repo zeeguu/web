@@ -104,7 +104,7 @@ export default function LanguageModal({ open, setOpen, setUser }) {
         <Form>
           <FormSection>
             <RadioGroup
-              radioGroupLabel="Choose your current language:"
+              radioGroupLabel="Select the language you want to practice:"
               name="active-language"
               options={reorderedLanguages}
               selectedValue={currentLearnedLanguage}
