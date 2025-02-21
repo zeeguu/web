@@ -85,7 +85,6 @@ export default function LanguageModal({ open, setOpen, setUser }) {
     e.preventDefault();
     api.saveUserDetails(userDetails, setErrorMessage, () => {
       updateUserInfo(userDetails);
-      window.location.reload();
       setOpen(false);
     });
   }
