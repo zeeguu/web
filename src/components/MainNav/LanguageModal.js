@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import { APIContext } from "../../contexts/APIContext.js";
 import { UserContext } from "../../contexts/UserContext.js";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo.js";
@@ -19,10 +19,9 @@ export default function LanguageModal({ open, setOpen, setUser }) {
   const api = useContext(APIContext);
   const user = useContext(UserContext);
   const [, setErrorMessage] = useState("");
-  const [userDetails, setUserDetails] = useState(undefined);
-  const [currentLearnedLanguage, setCurrentLearnedLanguage] =
-    useState(undefined);
-  const [activeLanguages, setActiveLanguages] = useState(undefined);
+  const [userDetails, setUserDetails] = useState(null);
+  const [learnedLanguage, setLearnedLanguage] = useState(null);
+  const [activeLanguages, setActiveLanguages] = useState(null);
   const [CEFR, setCEFR] = useState("");
 
   function setCEFRlevel(data) {
@@ -40,7 +39,7 @@ export default function LanguageModal({ open, setOpen, setUser }) {
       api.getUserDetails((data) => {
         setUserDetails(data);
         setCEFRlevel(data); //the api won't update without CEFR (bug to fix)
-        setCurrentLearnedLanguage(data.learned_language);
+        setLearnedLanguage(data.learned_language);
       });
 
       api.getUserLanguages((data) => {
@@ -50,18 +49,29 @@ export default function LanguageModal({ open, setOpen, setUser }) {
     return () => {
       setActiveLanguages(undefined);
       setUserDetails(undefined);
-      setCurrentLearnedLanguage(undefined);
+      setLearnedLanguage(undefined);
     };
   }, [open, api, user.session]);
 
-  const reorderedLanguages = activeLanguages?.sort((a, b) => {
-    if (a.code === user.learned_language) return -1;
-    if (b.code === user.learned_language) return 1;
-    return 0;
-  });
+  console.log(user);
+
+  const reorderedLanguages = useMemo(() => {
+    if (!activeLanguages) return [];
+
+    // Filter out the user's translation language
+    const filteredLanguages = activeLanguages.filter(
+      (lang) => lang.code !== user.native_language,
+    );
+
+    return filteredLanguages.sort((a, b) => {
+      if (a.code === user.learned_language) return -1;
+      if (b.code === user.learned_language) return 1;
+      return 0;
+    });
+  }, [activeLanguages, user.native_language, user.learned_language]);
 
   function updateLearnedLanguage(lang_code) {
-    setCurrentLearnedLanguage(lang_code);
+    setLearnedLanguage(lang_code);
     const newUserDetails = {
       ...userDetails,
       learned_language: lang_code,
@@ -106,7 +116,7 @@ export default function LanguageModal({ open, setOpen, setUser }) {
               radioGroupLabel="Select the language you want to practice:"
               name="active-language"
               options={reorderedLanguages}
-              selectedValue={currentLearnedLanguage}
+              selectedValue={learnedLanguage}
               onChange={(e) => {
                 updateLearnedLanguage(e.target.value);
               }}
