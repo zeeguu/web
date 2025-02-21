@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from "react";
 import { APIContext } from "../../contexts/APIContext.js";
 import { UserContext } from "../../contexts/UserContext.js";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo.js";
-import { Link } from "react-router-dom";
 import LocalStorage from "../../assorted/LocalStorage.js";
 import Modal from "../modal_shared/Modal.js";
 import Form from "../../pages/_pages_shared/Form.sc.js";
@@ -13,11 +12,13 @@ import Main from "../modal_shared/Main.sc.js";
 import Header from "../modal_shared/Header.sc.js";
 import Heading from "../modal_shared/Heading.sc.js";
 import RadioGroup from "./RadioGroup.js";
+import ReactLink from "../ReactLink.sc.js";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 export default function LanguageModal({ open, setOpen, setUser }) {
   const api = useContext(APIContext);
   const user = useContext(UserContext);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [, setErrorMessage] = useState("");
   const [userDetails, setUserDetails] = useState(undefined);
   const [currentLearnedLanguage, setCurrentLearnedLanguage] =
     useState(undefined);
@@ -36,14 +37,14 @@ export default function LanguageModal({ open, setOpen, setUser }) {
 
   useEffect(() => {
     if (open) {
-      api.getUserLanguages((data) => {
-        setActiveLanguages(data);
-      });
-
       api.getUserDetails((data) => {
         setUserDetails(data);
         setCEFRlevel(data); //the api won't update without it (bug to fix)
         setCurrentLearnedLanguage(data.learned_language);
+      });
+
+      api.getUserLanguages((data) => {
+        setActiveLanguages(data);
       });
     }
     return () => {
@@ -113,12 +114,13 @@ export default function LanguageModal({ open, setOpen, setUser }) {
             <Button onClick={handleSave} type={"submit"}>
               Save
             </Button>
-            <Link
+            <ReactLink
+              className="small"
               onClick={() => setOpen(false)}
               to="/account_settings/language_settings"
             >
-              Add a new language
-            </Link>
+              <AddRoundedIcon /> Add a new language
+            </ReactLink>
           </ButtonContainer>
         </Form>
       </Main>

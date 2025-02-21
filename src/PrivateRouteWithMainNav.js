@@ -12,8 +12,6 @@ import MainNavWithComponent from "./MainNavWithComponent";
 export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
   const user = useContext(UserContext);
 
-  console.log("Rest", { rest });
-
   if (!user.session) {
     return (
       <Redirect
