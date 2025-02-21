@@ -40,7 +40,7 @@ export default function SideNav({ screenWidth, setUser }) {
 
       <s.BottomSection $screenWidth={screenWidth}>
         <s.NavList>
-          {isOnStudentSide && (
+          {isOnStudentSide && !path?.includes("/read") && (
             <SideNavLanguageOption
               setUser={setUser}
               screenWidth={screenWidth}
