@@ -39,7 +39,7 @@ export default function LanguageModal({ open, setOpen, setUser }) {
     if (open) {
       api.getUserDetails((data) => {
         setUserDetails(data);
-        setCEFRlevel(data); //the api won't update without it (bug to fix)
+        setCEFRlevel(data); //the api won't update without CEFR (bug to fix)
         setCurrentLearnedLanguage(data.learned_language);
       });
 
@@ -53,6 +53,12 @@ export default function LanguageModal({ open, setOpen, setUser }) {
       setCurrentLearnedLanguage(undefined);
     };
   }, [open, api, user.session]);
+
+  const reorderedLanguages = activeLanguages?.sort((a, b) => {
+    if (a.code === user.learned_language) return -1;
+    if (b.code === user.learned_language) return 1;
+    return 0;
+  });
 
   function updateLearnedLanguage(lang_code) {
     setCurrentLearnedLanguage(lang_code);
@@ -100,7 +106,7 @@ export default function LanguageModal({ open, setOpen, setUser }) {
             <RadioGroup
               radioGroupLabel="Choose your current language:"
               name="active-language"
-              options={activeLanguages}
+              options={reorderedLanguages}
               selectedValue={currentLearnedLanguage}
               onChange={(e) => {
                 updateLearnedLanguage(e.target.value);
