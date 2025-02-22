@@ -76,7 +76,8 @@ export default function SpellWhatYouHear({
       setTimeout(() => {
         handleSpeak();
       }, 200);
-  }, [interactiveText]);
+    // eslint-disable-next-line
+  }, [interactiveText, isButtonSpeaking]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();

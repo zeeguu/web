@@ -72,7 +72,8 @@ export default function TranslateWhatYouHear({
       setTimeout(() => {
         handleSpeak();
       }, 200);
-  }, [interactiveText]);
+    // eslint-disable-next-line
+  }, [interactiveText, isButtonSpeaking]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
