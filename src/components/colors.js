@@ -85,7 +85,7 @@ export {
   zeeguuVeryLightOrange,
   zeeguuTransparentLightYellow,
   zeeguuLightYellow,
-  zeeguuWarmYellow as zeeguuWarmYellow,
+  zeeguuWarmYellow,
   zeeguuSalmonOrange,
   zeeguuTransparentLightOrange,
   zeeguuTransparentMediumOrange,

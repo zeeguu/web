@@ -1,10 +1,12 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import strings from "../i18n/definitions";
 import * as s from "./SearchField.sc";
 import { ClearSearchButton, SearchIcon } from "../components/allButtons.sc";
 import redirect from "../utils/routing/routing";
+import { APIContext } from "../contexts/APIContext";
 
-export default function SearchField({ api, query }) {
+export default function SearchField({ query }) {
+  const api = useContext(APIContext);
   const [searchTerm, setSearchTerm] = useState(query);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef();

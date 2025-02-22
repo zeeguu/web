@@ -28,7 +28,7 @@ function checkExtensionInstalled(setHasExtension) {
 
   window.addEventListener("message", function (event) {
     if (
-      event.source == window &&
+      event.source === window &&
       event.data.message === "EXTENSION_CONFIRMATION_RESPONSE" &&
       event.data.source === "EXTENSION_INJECTED_CODE"
     ) {

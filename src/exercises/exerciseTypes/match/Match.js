@@ -11,6 +11,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import { toast } from "react-toastify";
 import isBookmarkExpression from "../../../utils/misc/isBookmarkExpression.js";
 import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to match three L1 words to their correct L2 translations.
 // This tests the user's passive knowledge.
@@ -18,7 +19,6 @@ import useBookmarkAutoPronounce from "../../../hooks/useBookmarkAutoPronounce.js
 const EXERCISE_TYPE = EXERCISE_TYPES.match;
 
 export default function Match({
-  api,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -32,6 +32,7 @@ export default function Match({
   exerciseSessionId,
   activeSessionDuration,
 }) {
+  const api = useContext(APIContext);
   // ML: TODO: this duplicates a bit the information in bookmarksToStudy
   // It should be possible to implement with a simple array of messageToAPI that will
   // always be in sync with bookmarksToStudy, i.e. messageToAPI[0] refers to the state of bookmarksToStudy[0], etc.
@@ -95,9 +96,11 @@ export default function Match({
   useEffect(() => {
     for (let i = 0; i < bookmarksToStudy.length; i++) {
       let currentBookmarkLog = exerciseAttemptsLog[i];
-      if (selectedBookmark == currentBookmarkLog.bookmark)
+      if (selectedBookmark === currentBookmarkLog.bookmark)
         setSelectedBookmarkMessage(currentBookmarkLog.messageToAPI);
     }
+
+    // eslint-disable-next-line
   }, [selectedBookmark]);
 
   function notifyBookmarkDeletion(bookmark) {
@@ -108,7 +111,6 @@ export default function Match({
   }
 
   function notifyChoiceSelection(firstChoice, secondChoice) {
-    console.log("checking result...");
     let exerciseAttemptsLogCopy = [...exerciseAttemptsLog];
     let fullMessage = messageToNextNav;
     for (let i = 0; i < bookmarksToStudy.length; i++) {
@@ -150,7 +152,7 @@ export default function Match({
           setexerciseAttemptsLog(exerciseAttemptsLogCopy);
         }
       }
-      if (selectedBookmark == currentBookmarkLog.bookmark)
+      if (selectedBookmark === currentBookmarkLog.bookmark)
         setSelectedBookmarkMessage(concatMessage);
     }
     setMessageToNextNav(fullMessage);
@@ -196,7 +198,6 @@ export default function Match({
     ];
     let shuffledOptions = shuffle(optionsToShuffle);
     setToButtonOptions(shuffledOptions);
-    console.log(shuffledOptions);
   }
 
   return (
@@ -218,7 +219,6 @@ export default function Match({
         inputFirstClick={inputFirstClick}
         buttonsToDisable={buttonsToDisable}
         isCorrect={isCorrect}
-        api={api}
         incorrectAnswer={incorrectAnswer}
         setIncorrectAnswer={setIncorrectAnswer}
         reload={reload}
@@ -230,7 +230,6 @@ export default function Match({
       />
       <NextNavigation
         message={messageToNextNav}
-        api={api}
         exerciseBookmark={bookmarksToStudy[0]}
         exerciseAttemptsLog={exerciseAttemptsLog}
         moveToNextExercise={moveToNextExercise}

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import { APIContext } from "../contexts/APIContext";
 
 import ArticlePreview from "./ArticlePreview";
 import SortingButtons from "./SortingButtons";
@@ -9,13 +10,13 @@ import SortingButtons from "./SortingButtons";
 import * as s from "../components/TopMessage.sc";
 import useArticlePagination from "../hooks/useArticlePagination";
 
-export default function OwnArticles({ api }) {
+export default function OwnArticles() {
+  const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
 
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow] =
     useArticlePagination(
-      api,
       articleList,
       setArticleList,
       "Saved Articles",
@@ -34,6 +35,7 @@ export default function OwnArticles({ api }) {
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
     };
+    // eslint-disable-next-line
   }, []);
 
   if (articleList == null) {
@@ -55,7 +57,6 @@ export default function OwnArticles({ api }) {
       />
       {articleList.map((each) => (
         <ArticlePreview
-          api={api}
           key={each.id}
           article={each}
           dontShowSourceIcon={false}

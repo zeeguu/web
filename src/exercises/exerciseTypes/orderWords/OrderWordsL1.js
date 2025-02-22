@@ -3,7 +3,6 @@ import OrderWords from "./OrderWords.js";
 const EXERCISE_TYPE = "OrderWords_L1";
 
 export default function OrderWordsL1({
-  api,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -23,7 +22,6 @@ export default function OrderWordsL1({
         bookmarksToStudy={bookmarksToStudy}
         notifyCorrectAnswer={notifyCorrectAnswer}
         notifyIncorrectAnswer={notifyIncorrectAnswer}
-        api={api}
         setExerciseType={setExerciseType}
         isCorrect={isCorrect}
         setIsCorrect={setIsCorrect}

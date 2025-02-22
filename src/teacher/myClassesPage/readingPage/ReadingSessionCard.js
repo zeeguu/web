@@ -1,38 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/ReadingInsightAccordion.sc";
 import ViewMoreLessButton from "./ViewMoreLessButton";
 import StudentActivityDataCircleWrapper from "../cohortsPage/StudentActivityDataCircleWrapper";
 import { longFormattedDate } from "../../sharedComponents/FormattedDate";
 
-const ReadingSessionCard = ({ readingSession, isFirst, openedArticle }) => {
-  const [translationCount, setTranslationCount] = useState(0);
-
-  useEffect(() => {
-    setTranslationCount(0);
-    let previousTranslation = {};
-    readingSession.translations.forEach((translation) => {
-      if (
-        previousTranslation === {} ||
-        (previousTranslation !== {} &&
-          translation.id !== previousTranslation.id)
-      ) {
-        setTranslationCount((prev) => prev + 1);
-        previousTranslation = translation;
-      }
-    });
-    //eslint-disable-next-line
-  }, []);
+const ReadingSessionCard = ({ readingSession, isFirst, isOpen }) => {
+  const [translationCount] = useState(readingSession.translations.length);
+  const maxTitleCharSize = 100;
 
   return (
     <s.ReadingInsightAccordion isFirst={isFirst}>
       <div className="content-wrapper">
         <div className="date-title-wrapper">
-          {isFirst && <p className="head-title">{strings.title}</p>}
           <div className="left-line">
             <h2 className="article-title">
-              {readingSession.title.substring(0, 100)}
-              {readingSession.title.length > 100 ? "..." : ""}
+              {readingSession.title.substring(0, maxTitleCharSize)}
+              {readingSession.title.length > maxTitleCharSize && "..."}
             </h2>
             <p className="date">
               {strings.readingDate}{" "}
@@ -52,7 +36,7 @@ const ReadingSessionCard = ({ readingSession, isFirst, openedArticle }) => {
           <ViewMoreLessButton
             isFirst={isFirst}
             sessionID={readingSession.session_id}
-            openedArticle={openedArticle}
+            isOpen={isOpen}
           />
         </div>
       </div>

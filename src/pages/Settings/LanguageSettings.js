@@ -27,13 +27,13 @@ import {
 import useShadowRef from "../../hooks/useShadowRef";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import validateRules from "../../assorted/validateRules";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function LanguageSettings({ api, setUser }) {
+export default function LanguageSettings({ setUser }) {
+  const api = useContext(APIContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [userDetails, setUserDetails] = useState(null);
   const [languages, setLanguages] = useState();
-  // TODO: not used; see if you can remove
-  const [cefr, setCEFR] = useState("");
   const [
     learnedLanguage,
     setLearnedLanguage,
@@ -62,7 +62,6 @@ export default function LanguageSettings({ api, setUser }) {
   function setCEFRlevel(data) {
     const levelKey = data.learned_language + "_cefr_level";
     const levelNumber = data[levelKey];
-    setCEFR("" + levelNumber);
     setUserDetails({
       ...data,
       cefr_level: levelNumber,
@@ -84,6 +83,7 @@ export default function LanguageSettings({ api, setUser }) {
     api.getSystemLanguages((systemLanguages) => {
       setLanguages(systemLanguages);
     });
+    // eslint-disable-next-line
   }, [user.session, api]);
 
   function updateUserInfo(info) {

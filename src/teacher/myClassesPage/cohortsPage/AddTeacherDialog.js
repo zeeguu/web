@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import strings from "../../../i18n/definitions";
 import { LabeledTextField } from "../../sharedComponents/LabeledInputFields";
 import * as s from "../../styledComponents/AddURLDialog.sc";
@@ -8,13 +8,14 @@ import {
 } from "../../styledComponents/TeacherButtons.sc";
 import { Error } from "../../sharedComponents/Error";
 import { StyledDialog } from "../../styledComponents/StyledDialog.sc";
+import { APIContext } from "../../../contexts/APIContext";
 
 export default function AddTeacherDialog({
-  api,
   cohort,
   setIsOpen,
   setForceUpdate,
 }) {
+  const api = useContext(APIContext);
   const [showGuidance, setShowGuidance] = useState(false);
   const [showError, setShowError] = useState(false);
   const [colleagueEmail, setColleagueEmail] = useState("");
@@ -50,7 +51,7 @@ export default function AddTeacherDialog({
         (error) => {
           console.log(error);
           setShowError(true);
-        }
+        },
       );
     }
   };

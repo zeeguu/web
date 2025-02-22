@@ -3,15 +3,20 @@ import { Switch, useParams } from "react-router";
 import { Link, useLocation } from "react-router-dom";
 import { PrivateRoute } from "../../PrivateRoute";
 import LocalStorage from "../../assorted/LocalStorage";
-import { StyledButton, TopButtonWrapper } from "../styledComponents/TeacherButtons.sc";
+import {
+  StyledButton,
+  TopButtonWrapper,
+} from "../styledComponents/TeacherButtons.sc";
 import * as s from "../../components/ColumnWidth.sc";
 import * as sc from "../../components/TopTabs.sc";
 import StudentReadingInsights from "../myClassesPage/readingPage/StudentReadingInsights";
 import StudentExercisesInsights from "../myClassesPage/exercisesPage/StudentExercisesInsights";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../../components/LoadingAnimation";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function ActivityInsightsRouter({ api }) {
+export default function ActivityInsightsRouter() {
+  const api = useContext(APIContext);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod(); //this is only needed for the api call
   const cohortID = useParams().cohortID;
   const studentID = useParams().studentID;
@@ -34,7 +39,7 @@ export default function ActivityInsightsRouter({ api }) {
       cohortID,
       selectedTimePeriod,
       (studentInfo) => setStudentName(trimName(studentInfo.name)),
-      (error) => console.log(error)
+      (error) => console.log(error),
     );
     //eslint-disable-next-line
   }, []);
@@ -76,13 +81,11 @@ export default function ActivityInsightsRouter({ api }) {
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID"
           exact
-          api={api}
           component={StudentReadingInsights}
         />
 
         <PrivateRoute
           path="/teacher/classes/viewStudent/:studentID/class/:cohortID/exercises"
-          api={api}
           component={StudentExercisesInsights}
         />
       </s.WidestColumn>

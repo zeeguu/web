@@ -12,6 +12,7 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to select the correct L1 translation out of three. The L2 word is marked in bold in the context.
 // This tests the user's passive knowledge.
@@ -19,7 +20,6 @@ import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceL2toL1;
 
 export default function MultipleChoiceL2toL1({
-  api,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -33,6 +33,7 @@ export default function MultipleChoiceL2toL1({
   exerciseSessionId,
   activeSessionDuration,
 }) {
+  const api = useContext(APIContext);
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
   const [messageToAPI, setMessageToAPI] = useState("");
@@ -59,7 +60,8 @@ export default function MultipleChoiceL2toL1({
         speech,
       ),
     );
-  }, [isBookmarkChanged]);
+    // eslint-disable-next-line
+  }, [isBookmarkChanged, exerciseBookmark]);
 
   useEffect(() => {
     if (interactiveText) {
@@ -71,6 +73,7 @@ export default function MultipleChoiceL2toL1({
         ]),
       );
     }
+    // eslint-disable-next-line
   }, [interactiveText]);
 
   function notifyChoiceSelection(selectedChoice) {
@@ -146,7 +149,6 @@ export default function MultipleChoiceL2toL1({
       <NextNavigation
         exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
-        api={api}
         exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}

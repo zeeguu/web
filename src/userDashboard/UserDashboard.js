@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LoadingAnimation from "../components/LoadingAnimation";
 import TranslatedWordsGraph from "./userdashboard_Graphs/TranslatedWordsGraph";
 import ReadingAndExercisesTimeGraph from "./userdashboard_Graphs/ReadingAndExercisesTimeGraph";
@@ -21,8 +21,10 @@ import UserDashboardTop from "./userDashboard_Top/UserDashboardTop";
 import * as s from "./userDashboard_Styled/UserDashboard.sc";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
+import { APIContext } from "../contexts/APIContext";
 
-export default function UserDashboard({ api }) {
+export default function UserDashboard() {
+  const api = useContext(APIContext);
   const [activeTab, setActiveTab] = useState(TABS_IDS.BAR_GRAPH);
   const [activeTimeInterval, setActiveTimeInterval] = useState(OPTIONS.WEEK);
   const [activeCustomTimeInterval, setActiveCustomTimeInterval] = useState(

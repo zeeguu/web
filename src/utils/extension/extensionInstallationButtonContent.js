@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 /*global chrome*/
 // (this will let our linter know we are accessing Chrome browser methods)
 import {

@@ -25,12 +25,14 @@ export default function useExerciseNotification() {
       exerciseNotification.setHasExercises(false);
       exerciseNotification.updateReactState();
     }
+    // eslint-disable-next-line
   }, [path]);
 
   useEffect(() => {
     exerciseNotification.setHasExercisesHook = setHasExerciseNotification;
     exerciseNotification.setExerciseCounterHook = setTotalExercisesInPipeline;
     exerciseNotification.updateReactState();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import validateRules from "../assorted/validateRules";
 import strings from "../i18n/definitions";
 
@@ -15,8 +15,10 @@ import {
   NonEmptyValidator,
 } from "../utils/ValidatorRule/Validator";
 import { scrollToTop } from "../utils/misc/scrollToTop";
+import { APIContext } from "../contexts/APIContext";
 
-export default function ResetPasswordStep2({ api, email }) {
+export default function ResetPasswordStep2({ email }) {
+  const api = useContext(APIContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [failure, setFailure] = useState(false);

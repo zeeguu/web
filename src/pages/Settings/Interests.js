@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import useQuery from "../../hooks/useQuery";
 import Tag from "../_pages_shared/Tag.sc";
 import TagContainer from "../_pages_shared/TagContainer.sc";
@@ -10,8 +10,10 @@ import Heading from "../_pages_shared/Heading.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function Interests({ api }) {
+export default function Interests() {
+  const api = useContext(APIContext);
   const { allTopics, toggleTopicSubscription, isSubscribed } =
     useSelectInterest(api);
   const isFromArticles = useQuery().get("fromArticles") === "1";

@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import {
   almostBlack,
-  zeeguuDarkRed,
-  zeeguuLightYellow,
   zeeguuOrange,
   zeeguuTransparentLightOrange,
 } from "../components/colors";

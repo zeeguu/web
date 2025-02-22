@@ -1,10 +1,9 @@
-import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Chip from "@mui/material/Chip";
 import ReportProblemRoundedIcon from "@mui/icons-material/ReportProblemRounded";
 import IconButton from "@mui/material/IconButton";
@@ -12,9 +11,11 @@ import SendIcon from "@mui/icons-material/Send";
 import Alert from "@mui/material/Alert";
 import { gray, darkBlue } from "../components/colors";
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
+import { APIContext } from "../contexts/APIContext";
 
-export default function ReportBroken({ api, articleID, UMR_SOURCE, history }) {
-  const [open, setOpen] = React.useState(false);
+export default function ReportBroken({ articleID, UMR_SOURCE }) {
+  const api = useContext(APIContext);
+  const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [isFeedbackSent, setIsFeedbackSent] = useState(false);
 
@@ -40,7 +41,7 @@ export default function ReportBroken({ api, articleID, UMR_SOURCE, history }) {
   };
 
   return (
-    <React.Fragment>
+    <>
       <div style={{ marginLeft: "5px" }}>
         <Chip
           label="Report broken article"
@@ -112,6 +113,6 @@ export default function ReportBroken({ api, articleID, UMR_SOURCE, history }) {
           )}
         </DialogContent>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 }

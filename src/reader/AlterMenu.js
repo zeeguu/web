@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useClickOutside } from "react-click-outside-hook";
-import { zeeguuDarkOrange } from "../components/colors";
 import { AlterMenuSC } from "./AlterMenu.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 
@@ -18,7 +17,7 @@ export default function AlterMenu({
     if (clickedOutsideAlterMenu && clickedOutsideTranslation) {
       hideAlterMenu();
     }
-  }, [clickedOutsideAlterMenu]);
+  }, [clickedOutsideAlterMenu, clickedOutsideTranslation, hideAlterMenu]);
 
   function handleKeyDown(e) {
     if (e.code === "Enter") {

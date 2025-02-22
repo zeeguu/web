@@ -21,6 +21,7 @@ export default function MainNavWithComponent(props) {
       ...mainNavProperties,
       isOnStudentSide: !path.includes("teacher"),
     });
+    // eslint-disable-next-line
   }, [path]);
 
   return (

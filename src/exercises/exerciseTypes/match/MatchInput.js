@@ -17,7 +17,6 @@ function MatchInput({
   inputFirstClick,
   buttonsToDisable,
   isCorrect,
-  api,
   incorrectAnswer,
   setIncorrectAnswer,
   reload,
@@ -119,7 +118,6 @@ function MatchInput({
                 <s.ButtonRow key={"L2_Row_" + option.id}>
                   <EditBookmarkButton
                     bookmark={option}
-                    api={api}
                     styling={match}
                     reload={reload}
                     setReload={setReload}
@@ -135,7 +133,6 @@ function MatchInput({
                   <s.MatchSpeakButtonHolder>
                     <SpeakButton
                       bookmarkToStudy={option}
-                      api={api}
                       styling={small}
                       key={"L2_Speak_" + option.id}
                       parentIsSpeakingControl={

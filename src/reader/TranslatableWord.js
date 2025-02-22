@@ -32,7 +32,7 @@ export default function TranslatableWord({
       return;
     }
     if (word.translation) setIsTranslationVisible(false);
-  }, []);
+  }, [word]);
 
   function clickOnWord(e, word) {
     if (word.token.is_like_num || word.token.is_punct) return;

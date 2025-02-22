@@ -12,6 +12,7 @@ import BottomInput from "../BottomInput.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to type the correct translation of a given L1 word in a L2 context. The L2 word is omitted in the context, so the user has to fill in the blank.
 // This tests the user's active knowledge.
@@ -19,7 +20,6 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 const EXERCISE_TYPE = EXERCISE_TYPES.findWordInContextCloze;
 
 export default function FindWordInContextCloze({
-  api,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -33,6 +33,7 @@ export default function FindWordInContextCloze({
   exerciseSessionId,
   activeSessionDuration,
 }) {
+  const api = useContext(APIContext);
   const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
@@ -57,7 +58,8 @@ export default function FindWordInContextCloze({
         speech,
       ),
     );
-  }, [isBookmarkChanged]);
+    // eslint-disable-next-line
+  }, [isBookmarkChanged, exerciseBookmark]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -138,7 +140,6 @@ export default function FindWordInContextCloze({
       <NextNavigation
         message={messageToAPI}
         exerciseType={EXERCISE_TYPE}
-        api={api}
         exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}

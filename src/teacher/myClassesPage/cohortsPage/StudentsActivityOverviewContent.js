@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import StudentInfoLine from "./StudentInfoLine";
 import TimeSelector from "../../sharedComponents/TimeSelector";
 import LoadingAnimation from "../../../components/LoadingAnimation";
@@ -6,7 +6,6 @@ import strings from "../../../i18n/definitions";
 import { CenteredContentContainer } from "../../../components/ColumnWidth.sc";
 
 const StudentsActivityOverviewContent = ({
-  api,
   cohortID,
   students,
   setForceUpdate,
@@ -33,7 +32,6 @@ const StudentsActivityOverviewContent = ({
       {firstStudent !== null && (
         <StudentInfoLine
           key={firstStudent.id}
-          api={api}
           cohortID={cohortID}
           student={firstStudent}
           removeStudentFromCohort={removeStudentFromCohort}
@@ -44,7 +42,6 @@ const StudentsActivityOverviewContent = ({
         restOfStudents.map((student) => (
           <StudentInfoLine
             key={student.id}
-            api={api}
             cohortID={cohortID}
             student={student}
             removeStudentFromCohort={removeStudentFromCohort}

@@ -1,5 +1,5 @@
 import { getSessionFromCookies } from "../../utils/cookies/userInfo";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import PreferencesPage from "../_pages_shared/PreferencesPage";
 import Header from "../_pages_shared/Header";
 import Heading from "../_pages_shared/Heading.sc";
@@ -13,8 +13,10 @@ import strings from "../../i18n/definitions";
 import redirect from "../../utils/routing/routing";
 import { runningInChromeDesktop } from "../../utils/misc/browserDetection";
 import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function ExtensionInstalled({ api }) {
+export default function ExtensionInstalled() {
+  const api = useContext(APIContext);
   useEffect(() => {
     setTitle(strings.extensionInstalled);
     api.logUserActivity(api.OPEN_EXTENSION_INSTALLED);

@@ -109,6 +109,7 @@ a {
   text-decoration: none;
   font-weight: 500;
   color: rgb(164, 106, 0);
+  cursor: pointer;
 }
 
 code {

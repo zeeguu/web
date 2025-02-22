@@ -1,6 +1,6 @@
 import FindArticles from "./FindArticles";
 import BookmarkedArticles from "./BookmarkedArticles";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { PrivateRoute } from "../PrivateRoute";
 import ClassroomArticles from "./ClassroomArticles";
@@ -15,8 +15,10 @@ import Search from "./Search";
 
 import * as s from "../components/ColumnWidth.sc";
 import LocalStorage from "../assorted/LocalStorage";
+import { APIContext } from "../contexts/APIContext";
 
-export default function ArticlesRouter({ api, hasExtension, isChrome }) {
+export default function ArticlesRouter({ hasExtension, isChrome }) {
+  const api = useContext(APIContext);
   const [tabsAndLinks, setTabsAndLinks] = useState({
     [strings.homeTab]: "/articles",
     [strings.saved]: "/articles/ownTexts",
@@ -42,7 +44,7 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
         }));
       }
     });
-  }, []);
+  }, [api]);
 
   return (
     <>
@@ -53,47 +55,28 @@ export default function ArticlesRouter({ api, hasExtension, isChrome }) {
         <PrivateRoute
           path="/articles"
           exact
-          api={api}
           component={FindArticles}
           hasExtension={hasExtension}
           isChrome={isChrome}
         />
         <PrivateRoute
           path="/articles/bookmarked"
-          api={api}
           component={BookmarkedArticles}
         />
         <PrivateRoute
           path="/articles/classroom"
-          api={api}
           component={ClassroomArticles}
         />
 
-        <PrivateRoute
-          path="/articles/ownTexts"
-          api={api}
-          component={OwnArticles}
-        />
+        <PrivateRoute path="/articles/ownTexts" component={OwnArticles} />
 
-        <PrivateRoute
-          path="/articles/forYou"
-          api={api}
-          component={RecommendedArticles}
-        />
+        <PrivateRoute path="/articles/forYou" component={RecommendedArticles} />
 
-        <PrivateRoute
-          path="/articles/history"
-          api={api}
-          component={ReadingHistory}
-        />
+        <PrivateRoute path="/articles/history" component={ReadingHistory} />
 
-        <PrivateRoute
-          path="/articles/mySearches"
-          api={api}
-          component={MySearches}
-        />
+        <PrivateRoute path="/articles/mySearches" component={MySearches} />
 
-        <PrivateRoute path="/search" api={api} component={Search} />
+        <PrivateRoute path="/search" component={Search} />
       </s.NarrowColumn>
     </>
   );

@@ -56,7 +56,8 @@ export default function TranslateL2toL1({
         speech,
       ),
     );
-  }, [isBookmarkChanged]);
+    // eslint-disable-next-line
+  }, [isBookmarkChanged, exerciseBookmark]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -145,7 +146,6 @@ export default function TranslateL2toL1({
       <NextNavigation
         exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
-        api={api}
         exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}

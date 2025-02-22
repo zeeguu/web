@@ -43,6 +43,7 @@ export function TranslatableText({
         </div>
       )),
     );
+    //eslint-disable-next-line
   }, [
     paragraphs,
     translationCount,
@@ -50,11 +51,13 @@ export function TranslatableText({
     pronouncing,
     isCorrect,
     bookmarkToStudy,
+    rightEllipsis,
+    leftEllipsis,
   ]);
 
   useEffect(() => {
     if (setIsRendered) setIsRendered(true);
-  }, [renderedText]);
+  }, [setIsRendered]);
 
   function wordUpdated() {
     setTranslationCount(translationCount + 1);
