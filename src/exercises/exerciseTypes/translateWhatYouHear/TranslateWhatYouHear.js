@@ -68,10 +68,10 @@ export default function TranslateWhatYouHear({
   }, [isBookmarkChanged, exerciseBookmark]);
 
   useEffect(() => {
-    if (SessionStorage.isAudioExercisesEnabled()) {
-      handleSpeak();
-    }
-    // eslint-disable-next-line
+    if (interactiveText && !isButtonSpeaking)
+      setTimeout(() => {
+        handleSpeak();
+      }, 200);
   }, [interactiveText]);
 
   function handleShowSolution(e, message) {

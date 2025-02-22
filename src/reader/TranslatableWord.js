@@ -180,7 +180,7 @@ export default function TranslatableWord({
 
   const wordClass = getWordClass(word);
 
-  if (word.is_like_email)
+  if (word.token.is_like_email)
     return (
       <>
         <z-tag>
@@ -188,7 +188,7 @@ export default function TranslatableWord({
         </z-tag>
       </>
     );
-  if (word.is_like_url)
+  if (word.token.is_like_url)
     return (
       <>
         <z-tag onClick={() => redirect(addProtocolToLink(word.word), true)}>
