@@ -11,7 +11,7 @@
     "installDeps": "(cd src/zeeguu-react/ && npm install) && ln -s src/zeeguu-react/node_modules .",
     "start": "react-scripts start",
     "prebuild": "rm -rf build",
-    "build": "npm-run-all buildUnix:* && npm-run-all build:* && rm ./build/manifest.* && cp ./public/manifest.chrome.json ./build/manifest.json",
+    "build": "npx -y browserslist@latest --update-db && npm-run-all buildUnix:* && npm-run-all build:* && rm ./build/manifest.* && cp ./public/manifest.chrome.json ./build/manifest.json",
     "buildDev": "npm-run-all buildUnix:* && npm-run-all build:* && rm ./build/manifest.* && cp ./public/manifest.chrome.dev.json ./build/manifest.json",
     "buildWindows": "npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.chrome.json .\\build\\manifest.json /Y",
     "buildWindowsDev": "npm-run-all buildWindows:* && npm-run-all build:* && copy .\\public\\manifest.chrome.dev.json .\\build\\manifest.json /Y",
