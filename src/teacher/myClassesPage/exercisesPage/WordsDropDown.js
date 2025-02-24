@@ -7,7 +7,7 @@ import * as s from "../../styledComponents/WordsDropDown.sc";
 import { StyledTooltip } from "../../styledComponents/StyledTooltip.sc";
 import { IconExplanation } from "./AttemptIcons";
 
-const WordsDropDown = ({ api, card }) => {
+const WordsDropDown = ({ card }) => {
   const setHeadline = () => {
     switch (card) {
       case "non-studied":
