@@ -68,7 +68,6 @@ export default function FindArticles({
     noMoreArticlesToShow,
     resetPagination,
   ] = useArticlePagination(
-    api,
     articleList,
     setArticleList,
     searchQuery ? "Article Search" : strings.titleHome,
