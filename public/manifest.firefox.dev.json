@@ -18,7 +18,8 @@
     "scripting",
     "https://www.zeeguu.org/",
     "https://api.zeeguu.org/",
-
+    "http://localhost:8080/",
+    "http://localhost:3000/",
     "<all_urls>",
     "contextMenus"
   ],

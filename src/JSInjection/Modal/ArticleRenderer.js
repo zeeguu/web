@@ -1,6 +1,5 @@
-/*global chrome*/
+import { useState } from "react";
 import { TranslatableText } from "../../zeeguu-react/src/reader/TranslatableText";
-import { LIST_CONTENT, PARAGRAPH_CONTENT, HEADER_CONTENT } from "../constants";
 import { InvisibleBox, StyledBox } from "./Modal.styles";
 import ReviewVocabularyInfoBox from "../../zeeguu-react/src/reader/ReviewVocabularyInfoBox";
 import LikeFeedbackBox from "../../zeeguu-react/src/reader/LikeFeedbackBox";
@@ -9,38 +8,42 @@ import { random } from "../../zeeguu-react/src/utils/basic/arrays";
 import ArticleStatInfo from "../../zeeguu-react/src/components/ArticleStatInfo";
 import * as s from "../../zeeguu-react/src/reader/ArticleReader.sc";
 
-export function ReadArticle({
+export function ArticleRenderer({
   articleId,
-  api,
+  articleTopics,
+
   author,
-  interactiveTextArray,
+  interactiveText,
   interactiveTitle,
   articleImage,
   openReview,
   translating,
   pronouncing,
-  url,
-  setPersonalCopySaved,
-  personalCopySaved,
   articleInfo,
   setLikedState,
   updateArticleDifficultyFeedback,
   answerSubmitted,
+  bookmarks,
+  fetchBookmarks,
 }) {
   if (articleImage) {
     if (articleImage.src === null) {
       articleImage = undefined;
     }
   }
-
+  const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
   return (
     <>
       <div className="article-container">
+        {articleTopics && (
+          <s.ArticleTopics>{articleTopics.join(",")}</s.ArticleTopics>
+        )}
         <h1>
           <TranslatableText
             interactiveText={interactiveTitle}
             translating={translating}
             pronouncing={pronouncing}
+            updateBookmarks={fetchBookmarks}
           />
         </h1>
         <s.ArticleInfoContainer>
@@ -62,45 +65,20 @@ export function ReadArticle({
             />
           </div>
         )}
-        {interactiveTextArray.map((paragraph) => {
-          const CustomTag = `${paragraph.tag}`;
-          if (
-            HEADER_CONTENT.includes(paragraph.tag) ||
-            PARAGRAPH_CONTENT.includes(paragraph.tag)
-          ) {
-            return (
-              <CustomTag>
-                <TranslatableText
-                  interactiveText={paragraph.text}
-                  translating={translating}
-                  pronouncing={pronouncing}
-                />
-              </CustomTag>
-            );
-          }
-          if (LIST_CONTENT.includes(paragraph.tag)) {
-            let list = Array.from(paragraph.list);
-            return (
-              <CustomTag>
-                {list.map((paragraph, i) => {
-                  return (
-                    <li key={i}>
-                      <TranslatableText
-                        interactiveText={paragraph.text}
-                        translating={translating}
-                        pronouncing={pronouncing}
-                      />
-                    </li>
-                  );
-                })}
-              </CustomTag>
-            );
-          }
-        })}
+        <s.MainText>
+          <TranslatableText
+            interactiveText={interactiveText}
+            translating={translating}
+            pronouncing={pronouncing}
+            updateBookmarks={fetchBookmarks}
+          />
+        </s.MainText>
         <div id={"bottomRow"}>
           <ReviewVocabularyInfoBox
-            articleId={articleId}
-            api={api}
+            articleID={articleId}
+            clickedOnReviewVocab={clickedOnReviewVocab}
+            setClickedOnReviewVocab={setClickedOnReviewVocab}
+            bookmarks={bookmarks}
             openReview={openReview}
           />
           <StyledBox>

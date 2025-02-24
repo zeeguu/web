@@ -10,19 +10,14 @@ import {
   deleteTimeouts,
 } from "../popup/functions";
 import { Article } from "./Modal/Article";
-import { generalClean } from "./Cleaning/generelClean";
-import {
-  cleanAfterArray,
-  cleanDOMAfter,
-  individualClean,
-} from "./Cleaning/pageSpecificClean";
+import { cleanDOMAfter } from "./Cleaning/pageSpecificClean";
 import Zeeguu_API from "../zeeguu-react/src/api/Zeeguu_API";
-import DOMPurify from "dompurify";
 import ZeeguuLoader from "./ZeeguuLoader";
 import { API_URL } from "../config";
 import ZeeguuError from "./ZeeguuError";
 import { isProbablyReaderable } from "@mozilla/readability";
 import { checkReadability } from "../popup/checkReadability";
+import { APIContext } from "../zeeguu-react/src/contexts/APIContext";
 
 export function Main({ documentFromTab, url }) {
   const [article, setArticle] = useState();
@@ -54,7 +49,7 @@ export function Main({ documentFromTab, url }) {
               isProbablyReadable = isProbablyReaderable(
                 documentFromTab,
                 minLength,
-                minScore,
+                minScore
               );
               ownIsProbablyReadable = checkReadability(url);
               if (!isProbablyReadable || !ownIsProbablyReadable) {
@@ -72,7 +67,7 @@ export function Main({ documentFromTab, url }) {
                     if (result_dict === "YES") {
                       setLanguageSupported(true);
                     }
-                  },
+                  }
                 );
               }
             } catch {
@@ -82,20 +77,20 @@ export function Main({ documentFromTab, url }) {
           () => {
             setFoundError(true);
             setIsAPIDown(true);
-          },
+          }
         );
       },
       () => {
         setFoundError(true);
         setIsAPIDown(true);
-      },
+      }
     );
   }, [url]);
 
   useEffect(() => {
     if (languageSupported !== undefined && isReadable !== undefined)
       setFoundError(
-        sessionId === undefined || !languageSupported || !isReadable,
+        sessionId === undefined || !languageSupported || !isReadable
       );
   }, [languageSupported, isReadable]);
 
@@ -130,20 +125,15 @@ export function Main({ documentFromTab, url }) {
       />
     );
   }
-
-  let cleanedContent = individualClean(article.content, url, cleanAfterArray);
-  cleanedContent = generalClean(cleanedContent);
-  cleanedContent = DOMPurify.sanitize(cleanedContent);
   return (
-    <Modal
-      modalIsOpen={modalIsOpen}
-      setModalIsOpen={setModalIsOpen}
-      title={article.title}
-      author={article.byline}
-      content={cleanedContent}
-      api={api}
-      url={url}
-    />
+    <APIContext.Provider value={api}>
+      <Modal
+        modalIsOpen={modalIsOpen}
+        setModalIsOpen={setModalIsOpen}
+        api={api}
+        url={url}
+      />
+    </APIContext.Provider>
   );
 }
 

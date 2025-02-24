@@ -3,7 +3,12 @@
   "description": "The extension helps you read articles in the language that you want to practice and offers one-click translation and pronunciation.",
   "version": "2.2.6",
   "manifest_version": 3,
-  "host_permissions": ["https://www.zeeguu.org/", "https://api.zeeguu.org/"],
+  "host_permissions": [
+    "https://www.zeeguu.org/",
+    "https://api.zeeguu.org/",
+    "http://localhost:8080/",
+    "http://localhost:3000/"
+  ],
   "permissions": [
     "storage",
     "activeTab",
@@ -33,7 +38,7 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.zeeguu.org/*"],
+      "matches": ["*://*.zeeguu.org/*", "*://localhost/*"],
       "js": ["injectOnZeeguuOrg.js"]
     }
   ],

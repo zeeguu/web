@@ -208,46 +208,6 @@ export const StyledModal = styled(ReactModal)`
 `;
 
 export const OverwriteZeeguu = styled.div`
-  /** Zeeguu Reader **/
-  z-tag:hover {
-    color: ${colors.translationHover} !important;
-    background-color: ${colors.lightOrange};
-  }
-  .article-container z-tag {
-    font-size: 1.2em !important;
-  }
-  z-tag z-tran {
-    margin-bottom: -5px !important;
-    color: ${colors.black} !important;
-    font-weight: 400 !important;
-  }
-  h1 z-tag z-tran {
-    margin-bottom: 2px !important;
-  }
-  h2 z-tag z-tran {
-    margin-bottom: -1px !important;
-  }
-  h3 z-tag z-tran {
-    margin-bottom: -1px !important;
-  }
-
-  z-tag.loading {
-    color: ${colors.translationHover} !important;
-  }
-
-  z-orig {
-    color: ${colors.black} !important;
-    border-bottom: 2px dashed ${colors.translationHover} !important;
-  }
-
-  .topMessage {
-    background-color: ${zeeguuTransparentMediumOrange};
-  }
-
-  .centeredColumn {
-    margin-top: 0px !important;
-  }
-
   /** Exercises **/
 
   .wordSourceText {
