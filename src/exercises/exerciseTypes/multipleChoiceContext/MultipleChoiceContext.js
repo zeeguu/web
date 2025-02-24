@@ -59,6 +59,7 @@ export default function MultipleChoiceContext({
   }, []);
 
   useEffect(() => {
+    console.log(bookmarksToStudy);
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
@@ -73,7 +74,7 @@ export default function MultipleChoiceContext({
       ),
     );
     // eslint-disable-next-line
-  }, [isBookmarkChanged, exerciseBookmark]);
+  }, [isBookmarkChanged, bookmarksToStudy]);
 
   function handleShowSolution() {
     let message = messageToAPI + "S";
@@ -158,7 +159,8 @@ export default function MultipleChoiceContext({
             notifyChoiceSelection(option.id, option.context, index, e)
           }
         >
-          <div
+          {option.left_ellipsis && <>...</>}
+          <span
             dangerouslySetInnerHTML={{
               __html: showSolution
                 ? option.isExercise
@@ -170,6 +172,7 @@ export default function MultipleChoiceContext({
                 : option.context.replace(option.from, "_____"),
             }}
           />
+          {option.right_ellipsis && <>...</>}
         </s.MultipleChoiceContext>
       ))}
 
