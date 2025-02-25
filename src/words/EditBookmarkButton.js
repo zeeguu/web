@@ -103,9 +103,10 @@ export default function EditBookmarkButton({
         bookmark.context_in_content = newBookmark.context_in_content;
         bookmark.left_ellipsis = newBookmark.left_ellipsis;
         bookmark.right_ellipsis = newBookmark.right_ellipsis;
+        bookmark.id = newBookmark.id;
 
         if (newFitForStudy) {
-          api.userSetForExercises(newBookmark.id);
+          api.userSetForExercises(bookmark.id);
           api.logReaderActivity(
             api.USER_SET_WORD_PREFERRED,
             newBookmark.article_id,
@@ -113,7 +114,7 @@ export default function EditBookmarkButton({
             SOURCE_FOR_API_USER_PREFERENCE,
           );
         } else {
-          api.userSetNotForExercises(newBookmark.id);
+          api.userSetNotForExercises(bookmark.id);
           api.logReaderActivity(
             api.USER_SET_NOT_WORD_PREFERED,
             newBookmark.article_id,
