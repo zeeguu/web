@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import strings from "../../../i18n/definitions";
-import { FormControl } from "@material-ui/core";
+import { FormControl } from "@mui/material";
 import LoadingAnimation from "../../../components/LoadingAnimation";
 import { Error } from "../../sharedComponents/Error";
 import {

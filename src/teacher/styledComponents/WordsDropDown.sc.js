@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { darkBlue } from "../../components/colors";
 
 export const StyledWordsDropDown = styled.div`
-
   .exercise-categories-drop-down {
     padding: 20px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 4px 8px 0 rgba(0, 0, 0, 0.12),
+      0 2px 4px 0 rgba(0, 0, 0, 0.08);
     border-radius: 15px;
     width: 90%;
     margin: auto;

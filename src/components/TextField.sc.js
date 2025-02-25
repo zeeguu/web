@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { lightGrey } from "./colors";
-import TextField from "@material-ui/core/TextField";
+import { TextField } from "@mui/material";
 
 const TextFieldWrapper = styled.div`
   box-sizing: border-box;
