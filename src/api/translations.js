@@ -96,6 +96,7 @@ Zeeguu_API.prototype.updateBookmark = function (
   word,
   translation,
   context,
+  callback,
 ) {
   let payload = {
     word: word,
@@ -103,7 +104,15 @@ Zeeguu_API.prototype.updateBookmark = function (
     context: context,
   };
 
-  return this._post(`update_bookmark/${bookmark_id}`, qs.stringify(payload));
+  return this._post(
+    `update_bookmark/${bookmark_id}`,
+    qs.stringify(payload),
+    callback,
+    (error) => {
+      console.error(error);
+    },
+    true,
+  );
 };
 
 Zeeguu_API.prototype.basicTranlsate = function (from_lang, to_lang, phrase) {
