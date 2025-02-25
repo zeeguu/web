@@ -11,6 +11,7 @@ import MainNavWithComponent from "./MainNavWithComponent";
 
 export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
   const user = useContext(UserContext);
+  //TODO: modify the UserContext so that the setUser function could be accessed here, instead of being drilled
 
   if (!user.session) {
     return (

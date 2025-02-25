@@ -79,44 +79,30 @@ export default function MainAppRouter({
       <PrivateRouteWithMainNav
         setUser={setUser}
         path="/articles"
-        api={api}
         component={ArticlesRouter}
       />
       <PrivateRouteWithMainNav
         setUser={setUser}
         path="/exercises"
-        api={api}
         component={ExercisesRouter}
       />
       <PrivateRouteWithMainNav
         setUser={setUser}
         path="/words"
-        api={api}
         component={WordsRouter}
       />
       <PrivateRouteWithMainNav
         setUser={setUser}
         path="/history"
-        api={api}
         component={ReadingHistory}
       />
       <PrivateRouteWithMainNav
-        path="/account_settings"
         setUser={setUser}
+        path="/account_settings"
         component={SettingsRouter}
       />
-      <PrivateRouteWithMainNav
-        setUser={setUser}
-        path="/teacher"
-        api={api}
-        component={TeacherRouter}
-      />
-      <PrivateRouteWithMainNav
-        setUser={setUser}
-        path="/read/article"
-        api={api}
-        component={ArticleReader}
-      />
+      <PrivateRouteWithMainNav path="/teacher" component={TeacherRouter} />
+      <PrivateRouteWithMainNav path="/read/article" component={ArticleReader} />
       <PrivateRouteWithMainNav
         setUser={setUser}
         path="/user_dashboard"
@@ -125,7 +111,6 @@ export default function MainAppRouter({
       <PrivateRouteWithMainNav
         setUser={setUser}
         path="/search"
-        api={api}
         component={ArticlesRouter}
       />
       <PrivateRouteWithMainNav
