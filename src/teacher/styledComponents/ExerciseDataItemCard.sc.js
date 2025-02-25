@@ -6,6 +6,7 @@ export const StyledExerciseDataItemCard = styled.div`
     //text-align: center;
     height: 280;
     width: 290;
+
     margin-bottom: 2em;
     padding-top: 0.5em;
     text-align: center;
@@ -41,7 +42,6 @@ export const StyledExerciseDataItemCard = styled.div`
     margin-top: -0.5em;
     font-size: 45px;
     color: ${darkBlue};
-    
   }
 
   .view-less-box {

@@ -1,7 +1,7 @@
 import PractisedWordsList from "./PractisedWordsList";
 import LearnedWordsList from "./LearnedWordsList";
 import NonStudiedWordsList from "./NonStudiedWordsList";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import { InfoOutlined } from "@mui/icons-material";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/WordsDropDown.sc";
 import { StyledTooltip } from "../../styledComponents/StyledTooltip.sc";
@@ -26,7 +26,7 @@ const WordsDropDown = ({ card }) => {
           <h3 className="exercise-drop-down-headlines">{setHeadline()}</h3>
           {card === "practised" && (
             <StyledTooltip label={IconExplanation()}>
-              <InfoOutlinedIcon className="information-icon" />
+              <InfoOutlined className="information-icon" />
             </StyledTooltip>
           )}
         </div>

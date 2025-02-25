@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { StyledTooltip } from "../../styledComponents/StyledTooltip.sc";
 import { StarExplanation } from "../exercisesPage/AttemptIcons";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import { InfoOutlined } from "@mui/icons-material";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/StudentTranslations.sc";
 
@@ -56,7 +56,7 @@ const StudentTranslations = ({ article }) => {
             {strings.translatedWordsInSentence}
           </h4>
           <StyledTooltip label={StarExplanation()}>
-            <InfoOutlinedIcon className="information-icon" />
+            <InfoOutlined className="information-icon" />
           </StyledTooltip>
         </div>
         {translations &&

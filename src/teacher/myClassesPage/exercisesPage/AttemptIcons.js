@@ -1,6 +1,7 @@
-import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
-import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
-import PriorityHighRoundedIcon from "@material-ui/icons/PriorityHighRounded";
+import { CheckCircleRounded } from "@mui/icons-material";
+import CancelIcon from "@mui/icons-material/Cancel";
+import InfoIcon from "@mui/icons-material/Info";
+import HelpIcon from "@mui/icons-material/Help";
 import { v4 as uuid } from "uuid";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/AttemptIcons.sc";
@@ -8,7 +9,7 @@ import * as s from "../../styledComponents/AttemptIcons.sc";
 const CorrectAttempt = () => {
   return (
     <s.StyledAttemptIcons>
-      <CheckRoundedIcon className="correct-attempt-icon" />
+      <CheckCircleRounded className="correct-attempt-icon" />
     </s.StyledAttemptIcons>
   );
 };
@@ -16,7 +17,7 @@ const CorrectAttempt = () => {
 const WrongAttempt = () => {
   return (
     <s.StyledAttemptIcons>
-      <ClearRoundedIcon className="wrong-attempt-icon" />
+      <CancelIcon className="wrong-attempt-icon" />
     </s.StyledAttemptIcons>
   );
 };
@@ -24,7 +25,7 @@ const WrongAttempt = () => {
 const SolutionShown = () => {
   return (
     <s.StyledAttemptIcons>
-      <PriorityHighRoundedIcon className="solution-shown-icon" />
+      <InfoIcon className="solution-shown-icon" />
     </s.StyledAttemptIcons>
   );
 };
@@ -32,7 +33,7 @@ const SolutionShown = () => {
 const HintUsed = () => {
   return (
     <s.StyledAttemptIcons>
-      <p className="hint-used-icon">?</p>
+      <HelpIcon className="hint-used-icon" />
     </s.StyledAttemptIcons>
   );
 };
@@ -97,25 +98,25 @@ export const IconExplanation = () => {
       <div>
         <div className="icon-explained-row">
           <WrongAttempt />
-          <p className="wrong-attempt-string">
+          <p className="info-attempt-string">
             {strings.incorrectAttemptIconExplanation}
           </p>
         </div>
         <div className="icon-explained-row">
           <CorrectAttempt />
-          <p className="correct-attempt-string">
+          <p className="info-attempt-string">
             {strings.correctExerciseIconExplanation}
           </p>
         </div>
         <div className="icon-explained-row">
           <HintUsed />
-          <p className="hint-used-string">
+          <p className="info-attempt-string">
             {strings.hintInExerciseIconExplanation}
           </p>
         </div>
         <div className="icon-explained-row">
           <SolutionShown />
-          <p className="solution-shown-string">
+          <p className="info-attempt-string">
             {strings.askedForSolutionInExercise}
           </p>
         </div>
