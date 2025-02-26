@@ -12,7 +12,7 @@ import { fadeIn, fadeOut } from "../../transitions";
 import { slideIn, slideOut } from "../../transitions";
 import * as s from "./BottomNav.sc";
 
-export default function BottomNav({ setUser }) {
+export default function BottomNav() {
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
 
@@ -65,9 +65,7 @@ export default function BottomNav({ setUser }) {
           $bottomNavTransition={bottomNavTransition}
         >
           <s.NavList>
-            {isOnStudentSide && (
-              <BottomNavOptionsForStudent setUser={setUser} />
-            )}
+            {isOnStudentSide && <BottomNavOptionsForStudent />}
 
             {!isOnStudentSide && <BottomNavOptionsForTeacher />}
 

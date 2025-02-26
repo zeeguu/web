@@ -5,7 +5,7 @@ import BottomNavOption from "./BottomNavOption";
 import NavigationOptions from "../navigationOptions";
 import BottomNavLanguageOption from "./BottomNavLanguageOption";
 
-export default function BottomNavOptionsForStudent({ setUser }) {
+export default function BottomNavOptionsForStudent() {
   const path = useLocation().pathname;
   const { hasExerciseNotification, notificationMsg } =
     useExerciseNotification();
@@ -26,7 +26,7 @@ export default function BottomNavOptionsForStudent({ setUser }) {
         }
       />
       <BottomNavOption {...NavigationOptions.words} currentPath={path} />
-      <BottomNavLanguageOption setUser={setUser} />
+      <BottomNavLanguageOption />
     </>
   );
 }

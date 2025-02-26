@@ -15,32 +15,17 @@ import RadioGroup from "./RadioGroup.js";
 import ReactLink from "../ReactLink.sc.js";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
-export default function LanguageModal({ open, setOpen, setUser }) {
+export default function LanguageModal({ open, setOpen }) {
   const api = useContext(APIContext);
-  const user = useContext(UserContext);
+  const { userData, setUserData, session } = useContext(UserContext);
   const [, setErrorMessage] = useState("");
-  const [userDetails, setUserDetails] = useState(null);
-  const [learnedLanguage, setLearnedLanguage] = useState(null);
-  const [activeLanguages, setActiveLanguages] = useState(null);
-  const [CEFR, setCEFR] = useState("");
 
-  function setCEFRlevel(data) {
-    const levelKey = data.learned_language + "_cefr_level";
-    const levelNumber = data[levelKey];
-    setCEFR("" + levelNumber);
-    setUserDetails({
-      ...data,
-      cefr_level: levelNumber,
-    });
-  }
+  const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
+  const [activeLanguages, setActiveLanguages] = useState(null);
 
   useEffect(() => {
     if (open) {
-      api.getUserDetails((data) => {
-        setUserDetails(data);
-        setCEFRlevel(data); //the api won't update without CEFR (bug to fix)
-        setLearnedLanguage(data.learned_language);
-      });
+      setLearnedLanguageCode(userData.userDetails.learned_language);
 
       api.getUserLanguages((data) => {
         setActiveLanguages(data);
@@ -48,54 +33,53 @@ export default function LanguageModal({ open, setOpen, setUser }) {
     }
     return () => {
       setActiveLanguages(undefined);
-      setUserDetails(undefined);
-      setLearnedLanguage(undefined);
-    };
-  }, [open, api, user.session]);
 
-  console.log(user);
+      setLearnedLanguageCode(undefined);
+    };
+  }, [open, api, session]);
 
   const reorderedLanguages = useMemo(() => {
     if (!activeLanguages) return [];
 
     // Filter out the user's translation language
     const filteredLanguages = activeLanguages.filter(
-      (lang) => lang.code !== user.native_language,
+      (lang) => lang.code !== userData.native_language,
     );
 
     return filteredLanguages.sort((a, b) => {
-      if (a.code === user.learned_language) return -1;
-      if (b.code === user.learned_language) return 1;
+      if (a.code === userData.userDetails.learned_language) return -1;
+      if (b.code === userData.userDetails.learned_language) return 1;
       return 0;
     });
-  }, [activeLanguages, user.native_language, user.learned_language]);
+  }, [
+    activeLanguages,
+    userData.userDetails.native_language,
+    userData.userDetails.learned_language,
+  ]);
 
   function updateLearnedLanguage(lang_code) {
-    setLearnedLanguage(lang_code);
-    const newUserDetails = {
-      ...userDetails,
-      learned_language: lang_code,
-      cefr_level: CEFR,
-    };
-    setUserDetails(newUserDetails);
-  }
-
-  function updateUserInfo(info) {
-    LocalStorage.setUserInfo(info);
-    setUser({
-      ...user,
-      learned_language: info.learned_language,
-      cefr_level: CEFR,
-    });
-
-    saveUserInfoIntoCookies(info);
+    setLearnedLanguageCode(lang_code);
   }
 
   function handleSave(e) {
     e.preventDefault();
-    api.saveUserDetails(userDetails, setErrorMessage, () => {
-      updateUserInfo(userDetails);
+
+    const newUserDetails = {
+      ...userData.userDetails,
+      learned_language: learnedLanguageCode,
+    };
+
+    api.saveUserDetails(newUserDetails, setErrorMessage, () => {
+      setUserData({
+        ...userData,
+        userDetails: newUserDetails,
+      });
+
+      LocalStorage.setUserInfo(newUserDetails);
+      saveUserInfoIntoCookies(newUserDetails);
+
       setOpen(false);
+      console.log("success in updating userDetails");
     });
   }
 
@@ -116,7 +100,7 @@ export default function LanguageModal({ open, setOpen, setUser }) {
               radioGroupLabel="Select the language you want to practice:"
               name="active-language"
               options={reorderedLanguages}
-              selectedValue={learnedLanguage}
+              selectedValue={learnedLanguageCode}
               onChange={(e) => {
                 updateLearnedLanguage(e.target.value);
               }}

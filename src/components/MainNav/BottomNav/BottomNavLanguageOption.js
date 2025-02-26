@@ -5,15 +5,19 @@ import BottomNavOption from "./BottomNavOption";
 import NavIcon from "../NavIcon";
 import navLanguages from "../navLanguages";
 
-export default function BottomNavLanguageOption({ setUser }) {
+export default function BottomNavLanguageOption() {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const user = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   const currentLearnedLanguage = useMemo(() => {
-    const languageCode = user.learned_language;
+    const languageCode = userContext.userData.userDetails.learned_language;
+    console.log(
+      "Language Code: Inside bottom nav language option: ",
+      languageCode,
+    );
     const languageName = navLanguages[languageCode];
     return languageName || "Language";
-  }, [user.learned_language]);
+  }, [userContext]);
 
   const languageDisplayed = currentLearnedLanguage || "Language";
   return (
@@ -29,7 +33,6 @@ export default function BottomNavLanguageOption({ setUser }) {
         }}
       />
       <LanguageModal
-        setUser={setUser}
         prefixMsg={"Sidebar"}
         open={showLanguageModal}
         setOpen={() => {

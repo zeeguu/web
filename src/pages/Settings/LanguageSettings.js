@@ -29,7 +29,7 @@ import { scrollToTop } from "../../utils/misc/scrollToTop";
 import validateRules from "../../assorted/validateRules";
 import { APIContext } from "../../contexts/APIContext";
 
-export default function LanguageSettings({ setUser }) {
+export default function LanguageSettings() {
   const api = useContext(APIContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [userDetails, setUserDetails] = useState(null);
@@ -56,7 +56,7 @@ export default function LanguageSettings({ setUser }) {
     }, "Your Translation language needs to be different than your learned language."),
   ]);
 
-  const user = useContext(UserContext);
+  const userContext = useContext(UserContext);
   const history = useHistory();
 
   function setCEFRlevel(data) {
@@ -84,14 +84,18 @@ export default function LanguageSettings({ setUser }) {
       setLanguages(systemLanguages);
     });
     // eslint-disable-next-line
-  }, [user.session, api]);
+  }, [userContext.session, api]);
 
   function updateUserInfo(info) {
     LocalStorage.setUserInfo(info);
-    setUser({
-      ...user,
-      learned_language: info.learned_language,
-      native_language: info.native_language,
+
+    userContext.setUserData({
+      ...userContext.userData,
+      userDetails: {
+        ...userContext.userData.userDetails,
+        learned_language: info.learned_language,
+        native_language: info.native_language,
+      },
     });
 
     saveUserInfoIntoCookies(info);

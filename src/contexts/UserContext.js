@@ -1,6 +1,20 @@
 import React from "react";
-const UserContext = React.createContext({}); // Create a context object
 
+const UserContext = React.createContext({
+  // What we have in a user context:
+  // - userData {userDetails: {}, userPreferences: {}}
+  // - setUserData:
+  // - session
+  // - logoutMethod
+});
+
+// who uses what from userContext
+// - learned_language: SideNavLanguageOption: learned_language
+// - session
+// - is_teacher: SideNav.js
+// - native_language
+
+// In LanguageModal we call setUser ...
 export {
   UserContext, // Export it so it can be used by other Components
 };

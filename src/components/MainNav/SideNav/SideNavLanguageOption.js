@@ -7,13 +7,13 @@ import navLanguages from "../navLanguages";
 
 export default function SideNavLanguageOption({ screenWidth, setUser }) {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const user = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   const currentLearnedLanguage = useMemo(() => {
-    const languageCode = user.learned_language;
+    const languageCode = userContext.userData.userDetails.learned_language;
     const languageName = navLanguages[languageCode];
     return languageName || "Language";
-  }, [user.learned_language]);
+  }, [userContext.userData.userDetails.learned_language]);
 
   const languageDisplayed = currentLearnedLanguage || "Language not set";
   return (
