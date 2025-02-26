@@ -61,8 +61,8 @@ const OptionLabel = styled.label`
     color: ${blue900};
   }
 
-  //more about :is() https://developer.mozilla.org/en-US/docs/Web/CSS/:is
-  &:is(:active, ${StyledInput}:checked + &:active) {
+  &:active,
+  ${StyledInput}:checked + &:active {
     box-shadow: none;
     transform: translateY(0.1em);
     transition: all ease-in 0.08s;
