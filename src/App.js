@@ -66,16 +66,14 @@ function App() {
       api.isValidSession(
         () => {
           console.log("valid sesison... getting user details...");
-          api.getUserDetails((data) => {
-            LocalStorage.setUserInfo(data);
-            api.getUserPreferences((preferences) => {
-              LocalStorage.setUserPreferences(preferences);
-
-              let userDict = {
-                session: getSessionFromCookies(),
-                ...LocalStorage.userInfo(),
-              };
-              console.log("Session: " + api.session);
+          api.getUserDetails((userDetails) => {
+            LocalStorage.setUserInfo(userDetails);
+            console.log("User Details: ");
+            console.log(userDetails);
+            api.getUserPreferences((userPreferences) => {
+              LocalStorage.setUserPreferences(userPreferences);
+              console.log("User Preferences: ");
+              console.log(userPreferences);
 
               if (userHasNotExercisedToday())
                 api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
@@ -88,8 +86,13 @@ function App() {
                 exerciseNotification.setHasExercises(false);
                 exerciseNotification.updateReactState();
               }
-              setZeeguuSpeech(new ZeeguuSpeech(api, userDict.learned_language));
-              setUserData(userDict);
+              setZeeguuSpeech(
+                new ZeeguuSpeech(api, userDetails.learned_language),
+              );
+              setUserData({
+                userDetails: userDetails,
+                userPreferences: userPreferences,
+              });
             });
           });
         },
@@ -150,7 +153,7 @@ function App() {
     setUser(newUserValue);
 
     /* If a redirect link exists, uses it to redirect the user,
-                            otherwise, uses the location from the function argument. */
+                                                                            otherwise, uses the location from the function argument. */
     handleRedirectLinkOrGoTo("/articles");
   }
 
@@ -165,12 +168,18 @@ function App() {
     <SpeechContext.Provider value={zeeguuSpeech}>
       <BrowserRouter>
         <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
-          <UserContext.Provider value={{ ...userData, logoutMethod: logout }}>
+          <UserContext.Provider
+            value={{
+              userData,
+              setUserData: setUserData,
+              session: getSessionFromCookies(),
+              logoutMethod: logout,
+            }}
+          >
             <ExerciseCountContext.Provider value={exerciseNotification}>
               <APIContext.Provider value={api}>
                 {/* Routing*/}
                 <MainAppRouter
-                  setUser={setUserData}
                   hasExtension={isExtensionAvailable}
                   handleSuccessfulLogIn={handleSuccessfulLogIn}
                 />

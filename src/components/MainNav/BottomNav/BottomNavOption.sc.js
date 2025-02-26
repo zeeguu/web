@@ -10,6 +10,8 @@ const OptionShared = css`
   width: 4rem;
   height: 3rem;
   gap: 0.2rem;
+  font-weight: 700;
+  font-size: 0.7rem;
   white-space: nowrap;
   user-select: none;
   position: relative;
@@ -20,8 +22,6 @@ const OptionShared = css`
 const BottomNavOption = styled.li`
   box-sizing: border-box;
   list-style: none;
-  font-weight: 700;
-  font-size: 0.7rem;
   position: relative;
 `;
 
@@ -30,7 +30,6 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledButton = styled.button`
-  font: inherit;
   border: inherit;
   padding: inherit;
   margin: inherit;

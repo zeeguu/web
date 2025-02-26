@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Heading = styled.h1`
+const Heading = styled.h2`
   font-size: 1.3rem;
   line-height: 150%;
   text-align: center;

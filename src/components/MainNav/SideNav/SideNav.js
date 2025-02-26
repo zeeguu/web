@@ -1,15 +1,16 @@
 import { useContext } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import { UserContext } from "../../../contexts/UserContext";
+import { MainNavContext } from "../../../contexts/MainNavContext";
 import SideNavOptionsForStudent from "./SideNavOptionsForStudent";
 import SideNavOptionsForTeacher from "./SideNavOptionsForTeacher";
-import * as s from "./SideNav.sc";
 import NavOption from "../NavOption";
 import FeedbackButton from "../../FeedbackButton";
 import NavigationOptions from "../navigationOptions";
-import { MainNavContext } from "../../../contexts/MainNavContext";
+import SideNavLanguageOption from "./SideNavLanguageOption";
+import * as s from "./SideNav.sc";
 
-export default function SideNav({ screenWidth }) {
+export default function SideNav({ screenWidth, setUser }) {
   const { is_teacher: isTeacher } = useContext(UserContext);
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
@@ -19,33 +20,39 @@ export default function SideNav({ screenWidth }) {
 
   return (
     <s.SideNav $screenWidth={screenWidth} role="navigation">
-      <NavOption
-        className={"logo"}
-        linkTo={defaultPage}
-        icon={
-          <img
-            alt="Zeeguu logo - the elephant"
-            src="../static/images/zeeguuWhiteLogo.svg"
-          ></img>
-        }
-        text={"Zeeguu"}
-      ></NavOption>
+      <s.NavList>
+        <NavOption
+          className={"logo"}
+          linkTo={defaultPage}
+          icon={<img alt="" src="../static/images/zeeguuWhiteLogo.svg"></img>}
+          text={"Zeeguu"}
+          ariaLabel={"Go to Zeeguu homepage"}
+        ></NavOption>
 
-      {isOnStudentSide && (
-        <SideNavOptionsForStudent screenWidth={screenWidth} />
-      )}
+        {isOnStudentSide && (
+          <SideNavOptionsForStudent screenWidth={screenWidth} />
+        )}
 
-      {!isOnStudentSide && (
-        <SideNavOptionsForTeacher screenWidth={screenWidth} />
-      )}
+        {!isOnStudentSide && (
+          <SideNavOptionsForTeacher screenWidth={screenWidth} />
+        )}
+      </s.NavList>
 
       <s.BottomSection $screenWidth={screenWidth}>
-        <NavOption
-          {...NavigationOptions.settings}
-          currentPath={path}
-          screenWidth={screenWidth}
-        />
-        <FeedbackButton screenWidth={screenWidth} />
+        <s.NavList>
+          {isOnStudentSide && !path?.includes("/read") && (
+            <SideNavLanguageOption
+              setUser={setUser}
+              screenWidth={screenWidth}
+            />
+          )}
+          <NavOption
+            {...NavigationOptions.settings}
+            currentPath={path}
+            screenWidth={screenWidth}
+          />
+          <FeedbackButton screenWidth={screenWidth} />
+        </s.NavList>
       </s.BottomSection>
     </s.SideNav>
   );

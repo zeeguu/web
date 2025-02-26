@@ -7,7 +7,7 @@ export default function Modal({ children, open, onClose }) {
     <ModalMui open={open} onClose={onClose}>
       <s.ModalWrapper>
         {children}
-        <s.CloseButton role="button" onClick={onClose}>
+        <s.CloseButton aria-label="Close Modal" onClick={onClose}>
           <CloseRoundedIcon fontSize="medium" />
         </s.CloseButton>
       </s.ModalWrapper>

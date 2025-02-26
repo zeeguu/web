@@ -3,9 +3,6 @@ import styled from "styled-components";
 const BottomNav = styled.nav`
   box-sizing: border-box;
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   position: fixed;
   bottom: 0;
   padding: 0.5rem 1rem 1rem 1rem;
@@ -16,4 +13,12 @@ const BottomNav = styled.nav`
     ease-in-out forwards;
 `;
 
-export { BottomNav };
+const NavList = styled.ul`
+  all: unset;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export { BottomNav, NavList };
