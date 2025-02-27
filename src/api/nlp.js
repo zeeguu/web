@@ -10,7 +10,13 @@ Zeeguu_API.prototype.tokenizeText = function (text, language, callback) {
     text: text,
     language: language,
   };
-  return this._post(`/tokenize_text`, qs.stringify(payload), callback);
+  return this._post(
+    `/tokenize_text`,
+    qs.stringify(payload),
+    callback,
+    (error) => console.log(error),
+    true,
+  );
 };
 
 Zeeguu_API.prototype.getSents = function (text, language, callback) {
@@ -21,7 +27,13 @@ Zeeguu_API.prototype.getSents = function (text, language, callback) {
     text: text,
     language: language,
   };
-  return this._post(`/tokenize_sents`, qs.stringify(payload), callback);
+  return this._post(
+    `/tokenize_sents`,
+    qs.stringify(payload),
+    callback,
+    (error) => console.log(error),
+    true,
+  );
 };
 
 Zeeguu_API.prototype.getParagraphs = function (text, language, callback) {
@@ -31,5 +43,11 @@ Zeeguu_API.prototype.getParagraphs = function (text, language, callback) {
   let payload = {
     text: text,
   };
-  return this._post(`/get_paragraphs`, qs.stringify(payload), callback);
+  return this._post(
+    `/get_paragraphs`,
+    qs.stringify(payload),
+    callback,
+    (error) => console.log(error),
+    true,
+  );
 };
