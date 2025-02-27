@@ -3,14 +3,12 @@ import * as s from "../Exercise.sc.js";
 import BottomInput from "../BottomInput.js";
 import SpeakButton from "../SpeakButton.js";
 import strings from "../../../i18n/definitions.js";
-import NextNavigation from "../NextNavigation.js";
 import { EXERCISE_TYPES } from "../../ExerciseTypeConstants.js";
 import SessionStorage from "../../../assorted/SessionStorage.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import LoadingAnimation from "../../../components/LoadingAnimation.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
-import DisableAudioSession from "../DisableAudioSession.js";
 import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing.js";
@@ -23,94 +21,58 @@ const EXERCISE_TYPE = EXERCISE_TYPES.spellWhatYouHear;
 export default function SpellWhatYouHear({
   api,
   bookmarksToStudy,
-  selectedExerciseBookmark,
+  setSelectedExerciseBookmark,
+  exerciseMessageToAPI,
+  setExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
-  handleDisabledAudio,
   setExerciseType,
-  isCorrect,
-  setIsCorrect,
   moveToNextExercise,
-  toggleShow,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  isExerciseOver,
+  resetSubSessionTimer,
 }) {
-  const [messageToAPI, setMessageToAPI] = useState("");
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
+  const exerciseBookmark = bookmarksToStudy[0];
 
   async function handleSpeak() {
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
   }
 
   useEffect(() => {
+    if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
+    resetSubSessionTimer();
+    setSelectedExerciseBookmark(exerciseBookmark);
     setExerciseType(EXERCISE_TYPE);
-    api.getArticleInfo(selectedExerciseBookmark.article_id, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          selectedExerciseBookmark.context,
-          articleInfo,
-          api,
-          "TRANSLATE WORDS IN EXERCISE",
-          EXERCISE_TYPE,
-          speech,
-        ),
-      );
-    });
-    if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, [bookmarksToStudy]);
+    setInteractiveText(
+      new InteractiveText(
+        exerciseBookmark.context_tokenized,
+        exerciseBookmark.article_id,
+        exerciseBookmark.context_in_content,
+        api,
+        [],
+        "TRANSLATE WORDS IN EXERCISE",
+        exerciseBookmark.from_lang,
+        EXERCISE_TYPE,
+        speech,
+      ),
+    );
+  }, [exerciseBookmark, reload]);
 
   useEffect(() => {
     // Timeout is set so that the page renders before the word is spoken, allowing for the user to gain focus on the page
     // Changed timeout to be slightly shorter.
-    setTimeout(() => {
-      handleSpeak();
-    }, 300);
+    if (interactiveText && !isButtonSpeaking)
+      setTimeout(() => {
+        handleSpeak();
+      }, 200);
   }, [interactiveText]);
 
-  function handleShowSolution(e, message) {
-    e.preventDefault();
-    let concatMessage;
-    if (!message) {
-      concatMessage = messageToAPI + "S";
-    } else {
-      concatMessage = message;
-    }
-
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    setMessageToAPI(concatMessage);
-    api.uploadExerciseFinalizedData(
-      concatMessage,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
   function handleIncorrectAnswer() {
-    setMessageToAPI(messageToAPI + "W");
+    setExerciseMessageToAPI(exerciseMessageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
-  }
-
-  function handleCorrectAnswer(message) {
-    setMessageToAPI(message);
-    notifyCorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
   }
 
   if (!interactiveText) {
@@ -122,9 +84,12 @@ export default function SpellWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.audioExerciseHeadline}
       </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <BookmarkProgressBar
+        bookmark={exerciseBookmark}
+        message={exerciseMessageToAPI}
+      />
 
-      {!isCorrect && (
+      {!isExerciseOver && (
         <>
           <s.CenteredRowTall>
             <SpeakButton
@@ -136,7 +101,7 @@ export default function SpellWhatYouHear({
           </s.CenteredRowTall>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isCorrect}
+              isCorrect={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
@@ -147,15 +112,15 @@ export default function SpellWhatYouHear({
           </div>
 
           <BottomInput
-            handleCorrectAnswer={handleCorrectAnswer}
+            handleCorrectAnswer={notifyCorrectAnswer}
             handleIncorrectAnswer={handleIncorrectAnswer}
-            bookmarksToStudy={bookmarksToStudy}
-            messageToAPI={messageToAPI}
-            setMessageToAPI={setMessageToAPI}
+            exerciseBookmark={exerciseBookmark}
+            messageToAPI={exerciseMessageToAPI}
+            setMessageToAPI={setExerciseMessageToAPI}
           />
         </>
       )}
-      {isCorrect && (
+      {isExerciseOver && (
         <>
           <br></br>
           <h1 className="wordInContextHeadline">
@@ -163,7 +128,7 @@ export default function SpellWhatYouHear({
           </h1>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isCorrect}
+              isCorrect={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}

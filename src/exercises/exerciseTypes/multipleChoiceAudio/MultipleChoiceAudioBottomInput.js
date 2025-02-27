@@ -3,25 +3,20 @@ import strings from "../../../i18n/definitions";
 import { useState } from "react";
 
 export default function MultipleChoiceAudioBottomInput({
-  handleCorrectAnswer,
-  handleIncorrectAnswer,
-  messageToAPI,
-  setMessageToAPI,
+  notifyCorrectAnswer,
+  notifyIncorrectAnswer,
   currentChoice,
+  bookmarksToStudy,
 }) {
   const [isIncorrect, setIsIncorrect] = useState(false);
 
   function checkResult() {
     console.log(currentChoice);
-    console.log("checking result...");
+    let bookmarkSelected = bookmarksToStudy[currentChoice];
     if (currentChoice === true) {
-      let concatMessage = messageToAPI + "C";
-      handleCorrectAnswer(concatMessage);
+      notifyCorrectAnswer(bookmarkSelected);
     } else {
-      let concatMessage = messageToAPI + "W";
-      setMessageToAPI(concatMessage);
-      setIsIncorrect(true);
-      handleIncorrectAnswer();
+      notifyIncorrectAnswer(bookmarkSelected);
     }
   }
 

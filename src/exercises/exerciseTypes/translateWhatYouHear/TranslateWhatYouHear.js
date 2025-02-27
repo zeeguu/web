@@ -21,33 +21,28 @@ const EXERCISE_TYPE = EXERCISE_TYPES.translateWhatYouHear;
 export default function TranslateWhatYouHear({
   api,
   bookmarksToStudy,
+  exerciseMessageToAPI,
+  setExerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
-  setExerciseType,
-  isCorrect,
-  setIsCorrect,
   moveToNextExercise,
-  toggleShow,
+  setExerciseType,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  isExerciseOver,
+  resetSubSessionTimer,
 }) {
-  const [messageToAPI, setMessageToAPI] = useState("");
   const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
   const [interactiveText, setInteractiveText] = useState();
   const [isButtonSpeaking, setIsButtonSpeaking] = useState(false);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   async function handleSpeak() {
     await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
   }
 
   useEffect(() => {
+    if (!SessionStorage.isAudioExercisesEnabled()) moveToNextExercise();
+    resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
     setInteractiveText(
       new InteractiveText(
@@ -62,60 +57,17 @@ export default function TranslateWhatYouHear({
         speech,
       ),
     );
-    if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, [isBookmarkChanged]);
+  }, [exerciseBookmark, reload]);
 
   useEffect(() => {
     if (SessionStorage.isAudioExercisesEnabled()) {
-      handleSpeak();
+      setTimeout(() => {
+        handleSpeak();
+      }, 300);
     }
   }, [interactiveText]);
 
-  function handleShowSolution(e, message) {
-    e.preventDefault();
-    let concatMessage;
-    if (!message) {
-      concatMessage = messageToAPI + "S";
-    } else {
-      concatMessage = message;
-    }
-
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    setMessageToAPI(concatMessage);
-    api.uploadExerciseFinalizedData(
-      concatMessage,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
-  function handleDisabledAudio() {
-    api.logUserActivity(api.AUDIO_DISABLE, "", exerciseBookmark.id, "");
-    moveToNextExercise();
-  }
-
-  function handleIncorrectAnswer() {
-    setMessageToAPI(messageToAPI + "W");
-    notifyIncorrectAnswer(exerciseBookmark);
-  }
-
-  function handleCorrectAnswer(message) {
-    setMessageToAPI(message);
-    notifyCorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
-  if (!interactiveText) {
+  if (!interactiveText || !exerciseBookmark) {
     return <LoadingAnimation />;
   }
 
@@ -124,8 +76,11 @@ export default function TranslateWhatYouHear({
       <div className="headlineWithMoreSpace">
         {strings.translateWhatYouHearHeadline}
       </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
-      {!isCorrect && (
+      <BookmarkProgressBar
+        bookmark={exerciseBookmark}
+        message={exerciseMessageToAPI}
+      />
+      {!isExerciseOver && (
         <>
           <s.CenteredRowTall>
             <SpeakButton
@@ -137,7 +92,7 @@ export default function TranslateWhatYouHear({
           </s.CenteredRowTall>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isCorrect}
+              isCorrect={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
@@ -148,24 +103,23 @@ export default function TranslateWhatYouHear({
             />
           </div>
           <BottomInput
-            handleCorrectAnswer={handleCorrectAnswer}
-            handleIncorrectAnswer={handleIncorrectAnswer}
-            bookmarksToStudy={bookmarksToStudy}
-            messageToAPI={messageToAPI}
-            setMessageToAPI={setMessageToAPI}
+            handleCorrectAnswer={notifyCorrectAnswer}
+            handleIncorrectAnswer={notifyIncorrectAnswer}
+            exerciseBookmark={exerciseBookmark}
+            messageToAPI={exerciseMessageToAPI}
+            setMessageToAPI={setExerciseMessageToAPI}
             isL1Answer={true}
             exerciseType={EXERCISE_TYPE}
           />
         </>
       )}
 
-      {isCorrect && (
+      {isExerciseOver && (
         <>
-          <br></br>
           <h1 className="wordInContextHeadline">{exerciseBookmark.to}</h1>
           <div className="contextExample">
             <TranslatableText
-              isCorrect={isCorrect}
+              isCorrect={isExerciseOver}
               interactiveText={interactiveText}
               translating={true}
               pronouncing={false}
@@ -175,25 +129,6 @@ export default function TranslateWhatYouHear({
             />
           </div>
         </>
-      )}
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        api={api}
-        message={messageToAPI}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={handleShowSolution}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
-      {SessionStorage.isAudioExercisesEnabled() && (
-        <DisableAudioSession
-          handleDisabledAudio={handleDisabledAudio}
-          setIsCorrect={setIsCorrect}
-        />
       )}
     </s.Exercise>
   );

@@ -26,10 +26,8 @@ export default function FindWordInContextCloze({
   setExerciseType,
   isCorrect,
   setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
+  isExerciseOver,
   reload,
-  setReload,
   exerciseSessionId,
   activeSessionDuration,
 }) {
@@ -39,7 +37,6 @@ export default function FindWordInContextCloze({
   const [getCurrentSubSessionDuration] = useSubSessionTimer(
     activeSessionDuration,
   );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
   const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
@@ -57,7 +54,7 @@ export default function FindWordInContextCloze({
         speech,
       ),
     );
-  }, [isBookmarkChanged]);
+  }, [exerciseBookmark, reload]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -113,7 +110,7 @@ export default function FindWordInContextCloze({
       </h1>
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isCorrect}
+          isCorrect={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -123,31 +120,17 @@ export default function FindWordInContextCloze({
         />
       </div>
 
-      {!isCorrect && (
+      {!isExerciseOver && (
         <>
           <BottomInput
             handleCorrectAnswer={handleCorrectAnswer}
             handleIncorrectAnswer={handleIncorrectAnswer}
-            bookmarksToStudy={bookmarksToStudy}
+            exerciseBookmark={exerciseBookmark}
             messageToAPI={messageToAPI}
             setMessageToAPI={setMessageToAPI}
           />
         </>
       )}
-
-      <NextNavigation
-        message={messageToAPI}
-        exerciseType={EXERCISE_TYPE}
-        api={api}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={(e) => handleShowSolution(e, undefined)}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
     </s.Exercise>
   );
 }

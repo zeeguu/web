@@ -20,28 +20,27 @@ const EXERCISE_TYPE = EXERCISE_TYPES.translateL2toL1;
 export default function TranslateL2toL1({
   api,
   bookmarksToStudy,
+  setSelectedExerciseBookmark,
   notifyCorrectAnswer,
+  notifyExerciseCompleted,
   notifyIncorrectAnswer,
+  exerciseMessageToAPI,
+  setExerciseMessageToAPI,
   setExerciseType,
-  isCorrect,
-  setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  setIsCorrect,
+  isExerciseOver,
+  resetSubSessionTimer,
 }) {
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+
   const exerciseBookmark = bookmarksToStudy[0];
+
   useEffect(() => {
+    setSelectedExerciseBookmark(exerciseBookmark);
+    resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
     setInteractiveText(
       new InteractiveText(
@@ -56,44 +55,10 @@ export default function TranslateL2toL1({
         speech,
       ),
     );
-  }, [isBookmarkChanged]);
-
-  function handleShowSolution(e, message) {
-    e.preventDefault();
-    let concatMessage;
-    if (!message) {
-      concatMessage = messageToAPI + "S";
-    } else {
-      concatMessage = message;
-    }
-
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    setMessageToAPI(concatMessage);
-    api.uploadExerciseFinalizedData(
-      concatMessage,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
-  function handleCorrectAnswer(message) {
-    setMessageToAPI(message);
-    notifyCorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
+  }, [exerciseBookmark, reload]);
 
   function handleIncorrectAnswer() {
-    setMessageToAPI(messageToAPI + "W");
+    setExerciseMessageToAPI(exerciseMessageToAPI + "W");
     notifyIncorrectAnswer(exerciseBookmark);
   }
 
@@ -106,8 +71,11 @@ export default function TranslateL2toL1({
       <div className="headlineWithMoreSpace">
         {strings.translateL2toL1Headline}
       </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
-      {isCorrect && (
+      <BookmarkProgressBar
+        bookmark={exerciseBookmark}
+        message={exerciseMessageToAPI}
+      />
+      {isExerciseOver && (
         <>
           <h1 className="wordInContextHeadline">
             {removePunctuation(exerciseBookmark.to)}
@@ -116,7 +84,7 @@ export default function TranslateL2toL1({
       )}
       <div className="contextExample">
         <TranslatableText
-          isCorrect={isCorrect}
+          isCorrect={isExerciseOver}
           interactiveText={interactiveText}
           translating={true}
           pronouncing={false}
@@ -129,32 +97,17 @@ export default function TranslateL2toL1({
         />
       </div>
 
-      {!isCorrect && (
-        <>
-          <BottomInput
-            handleCorrectAnswer={handleCorrectAnswer}
-            handleIncorrectAnswer={handleIncorrectAnswer}
-            bookmarksToStudy={bookmarksToStudy}
-            messageToAPI={messageToAPI}
-            setMessageToAPI={setMessageToAPI}
-            isL1Answer={true}
-          />
-        </>
+      {!isExerciseOver && (
+        <BottomInput
+          handleCorrectAnswer={notifyCorrectAnswer}
+          handleIncorrectAnswer={handleIncorrectAnswer}
+          handleExerciseCompleted={notifyExerciseCompleted}
+          setIsCorrect={setIsCorrect}
+          exerciseBookmark={exerciseBookmark}
+          messageToAPI={exerciseMessageToAPI}
+          setMessageToAPI={setExerciseMessageToAPI}
+        />
       )}
-
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        message={messageToAPI}
-        api={api}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={(e) => handleShowSolution(e, undefined)}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
     </s.Exercise>
   );
 }

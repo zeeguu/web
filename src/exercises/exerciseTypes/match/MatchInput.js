@@ -16,7 +16,7 @@ function MatchInput({
   notifyChoiceSelection,
   inputFirstClick,
   buttonsToDisable,
-  isCorrect,
+  isExerciseOver,
   api,
   incorrectAnswer,
   setIncorrectAnswer,
@@ -115,7 +115,7 @@ function MatchInput({
                 >
                   {removePunctuation(option.from.toLowerCase())}
                 </s.AnimatedMatchButton>
-              ) : buttonsToDisable.includes(option.id) || isCorrect ? (
+              ) : buttonsToDisable.includes(option.id) || isExerciseOver ? (
                 <s.ButtonRow key={"L2_Row_" + option.id}>
                   <EditBookmarkButton
                     bookmark={option}
@@ -172,7 +172,7 @@ function MatchInput({
                 >
                   {removePunctuation(option.to.toLowerCase())}
                 </s.AnimatedMatchButton>
-              ) : buttonsToDisable.includes(option.id) || isCorrect ? (
+              ) : buttonsToDisable.includes(option.id) || isExerciseOver ? (
                 <s.MatchingWords
                   className="matchingWords"
                   style={answerPairStyle(option.id)}

@@ -19,39 +19,29 @@ export default function WordInContextExercise({
   exerciseHeadline,
   setSelectedExerciseBookmark,
   showBottomInput,
-  checkTranslations,
-  handleShowSolution,
-  handleCorrectAnswer,
   notifyExerciseCompleted,
   notifyShowSolution,
   api,
+  reload,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
-  isShowSolution,
   isExerciseOver,
   setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
-  reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
+  resetSubSessionTimer,
 }) {
   const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
   const speech = useContext(SpeechContext);
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
+
   const exerciseBookmark = bookmarksToStudy[0];
 
   useEffect(() => {
-    setSelectedExerciseBookmark(bookmarksToStudy[0]);
+    resetSubSessionTimer();
+    setSelectedExerciseBookmark(exerciseBookmark);
     setExerciseType(exerciseType);
     setInteractiveText(
       new InteractiveText(
@@ -68,16 +58,7 @@ export default function WordInContextExercise({
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isBookmarkChanged]);
-
-  useEffect(() => {
-    if (isShowSolution)
-      notifyShowSolution(
-        bookmarksToStudy[0],
-        messageToAPI + "S",
-        getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      );
-  }, [isShowSolution]);
+  }, [exerciseBookmark, reload]);
 
   useEffect(() => {
     checkTranslations(translatedWords);
@@ -121,17 +102,11 @@ export default function WordInContextExercise({
       if (translationCount < 2) {
         let concatMessage = messageToAPI + "C";
         setIsCorrect(true);
-        notifyExerciseCompleted(
-          concatMessage,
-          getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-        );
-        handleCorrectAnswer(concatMessage);
+        notifyCorrectAnswer(exerciseBookmark);
+        notifyExerciseCompleted(concatMessage, exerciseBookmark);
       } else {
         let concatMessage = messageToAPI + "S";
-        notifyShowSolution(
-          concatMessage,
-          getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-        );
+        notifyShowSolution(concatMessage);
       }
     } else {
       setMessageToAPI(messageToAPI + "T");
@@ -170,9 +145,11 @@ export default function WordInContextExercise({
       </div>
       {showBottomInput && !isExerciseOver && (
         <BottomInput
-          handleCorrectAnswer={handleCorrectAnswer}
+          handleCorrectAnswer={notifyCorrectAnswer}
           handleIncorrectAnswer={handleIncorrectAnswer}
-          bookmarksToStudy={bookmarksToStudy}
+          handleExerciseCompleted={notifyExerciseCompleted}
+          setIsCorrect={setIsCorrect}
+          exerciseBookmark={exerciseBookmark}
           messageToAPI={messageToAPI}
           setMessageToAPI={setMessageToAPI}
         />

@@ -22,15 +22,12 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoice;
 export default function MultipleChoice({
   api,
   bookmarksToStudy,
-  notifyCorrectAnswer,
-  notifyExerciseCompleted,
-  notifyIncorrectAnswer,
-  notifyShowSolution,
-  isShowSolution,
-  exerciseCompletedNotification,
   setSelectedExerciseBookmark,
+  exerciseMessageToAPI,
+  setExerciseMessageToAPI,
+  notifyCorrectAnswer,
+  notifyIncorrectAnswer,
   setExerciseType,
-  isCorrect,
   reload,
   isExerciseOver,
   setIsCorrect,
@@ -38,18 +35,17 @@ export default function MultipleChoice({
 }) {
   const [incorrectAnswer, setIncorrectAnswer] = useState("");
   const [buttonOptions, setButtonOptions] = useState(null);
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const speech = useContext(SpeechContext);
-
+  const exerciseBookmark = bookmarksToStudy[0];
   useEffect(() => {
     resetSubSessionTimer();
+    setExerciseType(EXERCISE_TYPE);
   }, []);
 
   useEffect(() => {
-    setExerciseType(EXERCISE_TYPE);
-    setSelectedExerciseBookmark(bookmarksToStudy[0]);
-    api.wordsSimilarTo(bookmarksToStudy[0].id, (words) => {
+    setSelectedExerciseBookmark(exerciseBookmark);
+    api.wordsSimilarTo(exerciseBookmark.id, (words) => {
       consolidateChoiceOptions(words);
     });
     setInteractiveText(
@@ -67,22 +63,19 @@ export default function MultipleChoice({
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reload]);
+  }, [exerciseBookmark, reload]);
 
   function notifyChoiceSelection(selectedChoice) {
     if (
       selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())
     ) {
-      notifyCorrectAnswer(exerciseBookmark);
       setIsCorrect(true);
-      let concatMessage = messageToAPI + "C";
-      notifyExerciseCompleted(concatMessage);
+      notifyCorrectAnswer(exerciseBookmark);
     } else {
       setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer(exerciseBookmark);
-      let concatMessage = messageToAPI + "W";
+      setExerciseMessageToAPI(exerciseMessageToAPI + "W");
       setIsCorrect(false);
-      setMessageToAPI(concatMessage);
     }
   }
 
@@ -110,9 +103,12 @@ export default function MultipleChoice({
       <div className="headlineWithMoreSpace">
         {strings.chooseTheWordFittingContextHeadline}
       </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <BookmarkProgressBar
+        bookmark={exerciseBookmark}
+        message={exerciseMessageToAPI}
+      />
 
-      {isExerciseOver && <h1>{removePunctuation(bookmarksToStudy[0].to)}</h1>}
+      {isExerciseOver && <h1>{removePunctuation(exerciseBookmark.to)}</h1>}
 
       <div className="contextExample">
         <TranslatableText

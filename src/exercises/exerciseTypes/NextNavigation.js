@@ -21,24 +21,23 @@ import CorrectMessage from "./CorrectMessage";
 
 export default function NextNavigation({
   message: messageForAPI,
-  exerciseBookmark: bookmarkBeingTested,
+  exerciseBookmarks,
+  exerciseBookmark,
   exerciseAttemptsLog, // Used for exercises like Match which test multiple bookmarks
   moveToNextExercise,
-  matchBookmarks,
   api,
   reload,
   setReload,
   isReadContext,
   toggleShow,
   isCorrect,
+  uploadUserFeedback,
   isExerciseOver,
   handleShowSolution,
   exerciseType,
-  isBookmarkChanged,
 }) {
   const exercise = "exercise";
   const [userIsCorrect] = correctnessBasedOnTries(messageForAPI);
-
   const [learningCycle, setLearningCycle] = useState(null);
   const [showCelebrationModal, setShowCelebrationModal] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
@@ -53,7 +52,8 @@ export default function NextNavigation({
     useState(false);
   const productiveExercisesDisabled =
     LocalStorage.getProductiveExercisesEnabled() === "false";
-  const isLastInCycle = bookmarkBeingTested.is_last_in_cycle;
+
+  const isLastInCycle = exerciseBookmark.is_last_in_cycle;
   const isLearningCycleOne = learningCycle === 1;
   const isLearningCycleTwo = learningCycle === 2;
   const learningCycleFeature = Feature.merle_exercises();
@@ -65,10 +65,8 @@ export default function NextNavigation({
   // TODO: Let's make sure that these two are named as clearly as possible;
   // if one is about actual answer correctness and the other is about correct answer being on screen, this should be clearer
   const isUserAndAnswerCorrect = userIsCorrect && isCorrect;
-  const isRightAnswer = messageForAPI.includes("C"); // User has gotten to the right answer, but not necessarily api correct
-
   const bookmarkLearned =
-    isUserAndAnswerCorrect && bookmarkBeingTested.is_about_to_be_learned;
+    isUserAndAnswerCorrect && exerciseBookmark.is_about_to_be_learned;
 
   // this next one is only for the Merle exercises with two learning cycles
   const bookmarkIsProgressingToNextLearningCycle =
@@ -79,11 +77,12 @@ export default function NextNavigation({
     learningCycleFeature;
 
   async function handleSpeak() {
-    await speech.speakOut(bookmarkBeingTested.from, setIsButtonSpeaking);
+    await speech.speakOut(exerciseBookmark.from, setIsButtonSpeaking);
   }
 
   useEffect(() => {
-    if (isCorrect && autoPronounceBookmark && !isMatchExercise) handleSpeak();
+    if (isExerciseOver && autoPronounceBookmark && !isMatchExercise)
+      handleSpeak();
 
     if (exerciseAttemptsLog) {
       let wordsProgressed = [];
@@ -107,17 +106,17 @@ export default function NextNavigation({
       );
       setMatchWordsProgressCount(wordsProgressed.length);
     }
-  }, [isCorrect, exerciseAttemptsLog]);
+  }, [isExerciseOver, exerciseAttemptsLog]);
 
   useEffect(() => {
-    if (bookmarkBeingTested && "learning_cycle" in bookmarkBeingTested) {
-      setLearningCycle(bookmarkBeingTested.learning_cycle);
+    if (exerciseBookmark && "learning_cycle" in exerciseBookmark) {
+      setLearningCycle(exerciseBookmark.learning_cycle);
     }
-  }, [bookmarkBeingTested]);
+  }, [exerciseBookmark]);
 
   useEffect(() => {
-    setLearningCycle(bookmarkBeingTested.learning_cycle);
-  }, [bookmarkBeingTested.learning_cycle]);
+    setLearningCycle(exerciseBookmark.learning_cycle);
+  }, [exerciseBookmark.learning_cycle]);
 
   useEffect(() => {
     if (isDeleted) {
@@ -131,8 +130,7 @@ export default function NextNavigation({
       SessionStorage.setCelebrationModalShown(true);
     }
   }, [bookmarkLearned]);
-  const isExerciseCorrect =
-    (isRightAnswer && !isMatchExercise) || isCorrectMatch;
+  const isExerciseCorrect = (isCorrect && !isMatchExercise) || isCorrectMatch;
 
   const showConffetti =
     isUserAndAnswerCorrect &&
@@ -187,13 +185,13 @@ export default function NextNavigation({
       )}
       {!isMatchExercise && (
         <>
-          {isRightAnswer && bookmarkIsProgressingToNextLearningCycle && (
+          {isCorrect && bookmarkIsProgressingToNextLearningCycle && (
             <CorrectMessage
               className={"next-nav-learning-cycle"}
               info={strings.nextLearningCycle}
             />
           )}
-          {isRightAnswer && bookmarkLearned && (
+          {isCorrect && bookmarkLearned && (
             <CorrectMessage
               className={"next-nav-learning-cycle"}
               info={strings.wordLearned}
@@ -205,59 +203,53 @@ export default function NextNavigation({
         !(bookmarkLearned || bookmarkIsProgressingToNextLearningCycle) && (
           <CorrectMessage className={"next-nav-feedback"} info={""} />
         )}
-      {isExerciseOver && !isMatchExercise && (
+      {isExerciseOver && (
         <>
           <s.BottomRowSmallTopMargin className="bottomRow">
-            <s.EditSpeakButtonHolder>
-              <SpeakButton
-                bookmarkToStudy={bookmarkBeingTested}
-                api={api}
-                style={"next"}
-                isReadContext={isReadContext}
-                parentIsSpeakingControl={isButtonSpeaking}
-              />
-              <EditBookmarkButton
-                bookmark={bookmarkBeingTested}
-                api={api}
-                styling={exercise}
-                reload={reload}
-                setReload={setReload}
-                notifyDelete={() => setIsDeleted(true)}
-              />
-            </s.EditSpeakButtonHolder>
+            {!isMatchExercise && (
+              <s.EditSpeakButtonHolder>
+                <SpeakButton
+                  bookmarkToStudy={exerciseBookmark}
+                  api={api}
+                  styling={"next"}
+                  isReadContext={isReadContext}
+                  parentIsSpeakingControl={isButtonSpeaking}
+                />
+                <EditBookmarkButton
+                  bookmark={exerciseBookmark}
+                  api={api}
+                  styling={exercise}
+                  reload={reload}
+                  setReload={setReload}
+                  notifyDelete={() => setIsDeleted(true)}
+                />
+              </s.EditSpeakButtonHolder>
+            )}
             <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
               {strings.next}
             </s.FeedbackButton>
           </s.BottomRowSmallTopMargin>
+          <s.StyledGreyButton
+            onClick={toggleAutoPronounceState}
+            style={{
+              position: "relative",
+              bottom: "3em",
+              left: "2em",
+              textAlign: "start",
+            }}
+          >
+            {"Auto-Pronounce: " + autoPronounceString}
+          </s.StyledGreyButton>
         </>
       )}
-      {isExerciseOver && isMatchExercise && (
-        <s.BottomRowSmallTopMargin className="bottomRow">
-          <s.FeedbackButton onClick={(e) => moveToNextExercise()} autoFocus>
-            {strings.next}
-          </s.FeedbackButton>
-        </s.BottomRowSmallTopMargin>
-      )}
-      {isExerciseOver && (
-        <s.StyledGreyButton
-          onClick={toggleAutoPronounceState}
-          style={{
-            position: "relative",
-            bottom: "3em",
-            left: "2em",
-            textAlign: "start",
-          }}
-        >
-          {"Auto-Pronounce: " + autoPronounceString}
-        </s.StyledGreyButton>
-      )}
       <SolutionFeedbackLinks
-        isMatchExercise={isMatchExercise}
-        matchBookmarks={matchBookmarks}
-        prefixMsg={`${exerciseType}-(${bookmarkBeingTested.id})`}
+        isTestingMultipleBookmarks={isMatchExercise}
+        exerciseBookmarks={exerciseBookmarks}
+        prefixMsg={`${exerciseType}-(${exerciseBookmark.id})`}
         handleShowSolution={handleShowSolution}
         toggleShow={toggleShow}
-        isCorrect={isExerciseOver}
+        isExerciseOver={isExerciseOver}
+        uploadUserFeedback={uploadUserFeedback}
       />
     </>
   );

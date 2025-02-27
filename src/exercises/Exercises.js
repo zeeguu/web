@@ -16,6 +16,7 @@ import LocalStorage from "../assorted/LocalStorage";
 import { assignBookmarksToExercises } from "./assignBookmarksToExercises";
 import NextNavigation from "./exerciseTypes/NextNavigation";
 import DisableAudioSession from "./exerciseTypes/DisableAudioSession";
+import { SpeechContext } from "../contexts/SpeechContext";
 import {
   DEFAULT_SEQUENCE,
   DEFAULT_SEQUENCE_NO_AUDIO,
@@ -76,7 +77,7 @@ export default function Exercises({
     totalPracticedBookmarksInSession,
     setTotalPracticedBookmarksInSession,
   ] = useState(0);
-  const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState("");
+  const [exerciseMessageToAPI, setExerciseMessageToAPI] = useState({});
   const [dbExerciseSessionId, setDbExerciseSessionId] = useState();
   const dbExerciseSessionIdRef = useShadowRef(dbExerciseSessionId);
   const currentIndexRef = useShadowRef(currentIndex);
@@ -139,6 +140,14 @@ export default function Exercises({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (selectedExerciseBookmark) {
+      let _newExerciseMessageToAPI = { ...exerciseMessageToAPI };
+      if ((!selectedExerciseBookmark.id) in _newExerciseMessageToAPI)
+        _newExerciseMessageToAPI[selectedExerciseBookmark.id] = "";
+    }
+  }, [selectedExerciseBookmark]);
+
   function getExerciseSequenceType() {
     let exerciseTypesList;
     if (Feature.merle_exercises() || Feature.exercise_levels())
@@ -175,6 +184,7 @@ export default function Exercises({
       setFullExerciseProgression(exerciseSession);
 
       setCurrentBookmarksToStudy(exerciseSession[0].bookmarks);
+      setSelectedExerciseBookmark(exerciseSession[0].bookmarks[0]);
 
       setTitle(title);
     }
@@ -213,8 +223,9 @@ export default function Exercises({
       //       bookmarks.slice(0, exerciseSession + 1),
       //       strings.exercises,
       //     ),
-      api.getTopBookmarksToStudy((bookmarks) => {
-        let exerciseSession = 20;
+      let exerciseSession = 20;
+      api.getTopBookmarksToStudy(exerciseSession, (bookmarks) => {
+        console.log(bookmarks);
         initializeExercises(
           bookmarks.slice(0, exerciseSession + 1),
           strings.exercises,
@@ -280,10 +291,8 @@ export default function Exercises({
   function moveToNextExercise() {
     speech.stopAudio();
     LocalStorage.setLastExerciseCompleteDate(new Date().toDateString());
-    setSelectedExerciseBookmark(null);
     setIsExerciseOver(false);
     setIsShowSolution(null);
-    setSelectedExerciseBookmark(null);
     setExerciseMessageToAPI("");
     setIsCorrect(null);
     setShowFeedbackButtons(false);
@@ -296,13 +305,14 @@ export default function Exercises({
     }
     setCurrentBookmarksToStudy(fullExerciseProgression[newIndex].bookmarks);
     setSelectedExerciseBookmark(fullExerciseProgression[newIndex].bookmarks[0]);
+
     setCurrentIndex(newIndex);
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
   let correctBookmarksCopy = [...correctBookmarks];
 
-  function correctAnswerNotification(currentBookmark) {
+  function correctAnswerNotification(currentBookmark, endExercise = true) {
     if (!incorrectBookmarks.includes(currentBookmark)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       let correctBookmarksIds = correctBookmarksCopy.map((b) => b.id);
@@ -319,6 +329,14 @@ export default function Exercises({
       setCorrectBookmarks(correctBookmarksCopy);
     }
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
+    if (endExercise) {
+      setIsCorrect(true);
+      exerciseCompletedNotification(
+        exerciseMessageToAPI + "C",
+        selectedExerciseBookmark,
+        endExercise,
+      );
+    }
   }
 
   let incorrectBookmarksCopy = [...incorrectBookmarks];
@@ -328,9 +346,6 @@ export default function Exercises({
     if (!incorrectBookmarksIds.includes(currentBookmark.id)) {
       setTotalPracticedBookmarksInSession(totalPracticedBookmarksInSession + 1);
       if (currentBookmark["cooling_interval"] > 1) {
-        // 8->4, 4->2, 2->1
-        // We decrease because you dont have to do it
-        // today.
         exerciseNotification.decrementExerciseCounter();
       }
     }
@@ -339,20 +354,37 @@ export default function Exercises({
     api.updateExerciseSession(dbExerciseSessionId, activeSessionDuration);
   }
 
-  function showSolutionNotification(message) {
+  function showSolutionNotification() {
+    for (let i = 0; i < currentBookmarksToStudy.length; i++) {
+      let currentBookmark = currentBookmarksToStudy[i];
+      incorrectAnswerNotification(currentBookmark);
+      exerciseCompletedNotification(
+        exerciseMessageToAPI + "S",
+        currentBookmark,
+      );
+    }
     setIsShowSolution(true);
-    incorrectAnswerNotification(selectedExerciseBookmark);
-    setExerciseMessageToAPI(message);
-    exerciseCompletedNotification(message);
   }
 
-  function exerciseCompletedNotification(message) {
-    setIsExerciseOver(true);
+  function exerciseCompletedNotification(
+    message,
+    bookmark,
+    endExercise = true,
+  ) {
+    setExerciseMessageToAPI(message);
+    if (endExercise) setIsExerciseOver(true);
+    console.log(
+      message,
+      currentExerciseType,
+      getCurrentSubSessionDuration(),
+      bookmark.id,
+      dbExerciseSessionIdRef.current,
+    );
     api.uploadExerciseFinalizedData(
       message,
       currentExerciseType,
       getCurrentSubSessionDuration(),
-      selectedExerciseBookmark.id,
+      bookmark.id,
       dbExerciseSessionIdRef.current,
     );
   }
@@ -371,7 +403,7 @@ export default function Exercises({
       " and word: ",
       word_id,
     );
-    setIsCorrect(true);
+    setIsExerciseOver(true);
     exerciseNotification.decrementExerciseCounter();
     api.uploadExerciseFeedback(
       userWrittenFeedback,
@@ -414,6 +446,8 @@ export default function Exercises({
             bookmarksToStudy={currentBookmarksToStudy}
             selectedExerciseBookmark={selectedExerciseBookmark}
             setSelectedExerciseBookmark={setSelectedExerciseBookmark}
+            exerciseMessageToAPI={exerciseMessageToAPI}
+            setExerciseMessageToAPI={setExerciseMessageToAPI}
             notifyCorrectAnswer={correctAnswerNotification}
             notifyIncorrectAnswer={incorrectAnswerNotification}
             notifyExerciseCompleted={exerciseCompletedNotification}
@@ -424,6 +458,7 @@ export default function Exercises({
             isExerciseOver={isExerciseOver}
             isShowSolution={isShowSolution}
             setIsCorrect={setIsCorrect}
+            setIsExerciseOver={setIsExerciseOver}
             moveToNextExercise={moveToNextExercise}
             toggleShow={toggleShow}
             reload={reload}
@@ -434,15 +469,21 @@ export default function Exercises({
           />
           <NextNavigation
             exerciseType={currentExerciseType}
-            message={"TEST"}
+            message={
+              Object.keys(exerciseMessageToAPI).length === 0
+                ? ""
+                : exerciseMessageToAPI[selectedExerciseBookmark.id]
+            }
             api={api}
+            exerciseBookmarks={currentBookmarksToStudy}
             exerciseBookmark={currentBookmarksToStudy[0]}
             moveToNextExercise={moveToNextExercise}
+            uploadUserFeedback={uploadUserFeedback}
             reload={reload}
             setReload={setReload}
             handleShowSolution={() => {
               setIsShowSolution(true);
-              showSolutionNotification("Testing Message");
+              showSolutionNotification();
             }}
             toggleShow={toggleShow}
             isCorrect={isCorrect}

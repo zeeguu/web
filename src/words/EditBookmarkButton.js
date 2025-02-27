@@ -93,6 +93,8 @@ export default function EditBookmarkButton({
     bookmark.fit_for_study = newFitForStudy;
 
     api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
+    // If we want the context to update we need to have the update bookmark send the
+    // context back tokenized, or have the frontend ask for a tokenized version.
     if (newFitForStudy) {
       api.userSetForExercises(bookmark.id);
       api.logReaderActivity(

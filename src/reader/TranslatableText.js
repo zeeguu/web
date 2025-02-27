@@ -14,7 +14,6 @@ export function TranslatableText({
   overrideBookmarkHighlightText,
   setIsRendered,
   boldExpression,
-  exerciseType,
   updateBookmarks,
   leftEllipsis,
   rightEllipsis,
@@ -43,14 +42,7 @@ export function TranslatableText({
         </div>
       )),
     );
-  }, [
-    paragraphs,
-    translationCount,
-    translating,
-    pronouncing,
-    isCorrect,
-    bookmarkToStudy,
-  ]);
+  }, [paragraphs, translationCount, translating, pronouncing, isCorrect]);
 
   useEffect(() => {
     if (setIsRendered) setIsRendered(true);

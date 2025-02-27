@@ -7,12 +7,38 @@ import Button from "../../pages/_pages_shared/Button.sc";
 import TextField from "../../components/TextField";
 import FormSection from "../../pages/_pages_shared/FormSection.sc";
 import Form from "../../pages/_pages_shared/Form.sc";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import MatchBookmarkSelection from "./MatchBookmarkSelection";
+import { isExpression } from "../../utils/text/expressions";
+import LoadingAnimation from "../../components/LoadingAnimation";
 
-export default function RemoveBookmarkModal({ matchBookmarks, open, setOpen }) {
+export default function RemoveBookmarkModal({
+  isTestingMultipleBookmarks,
+  exerciseBookmarks,
+  open,
+  setOpen,
+  uploadUserFeedback,
+  setHasProvidedQuickFeedback,
+}) {
   const [showOtherForm, setShowOtherForm] = useState(false);
-  const [matchSelectedBookmark, setMatchSelectedBookmark] = useState(null);
+  const [otherFeedback, setOtherFeedback] = useState("");
+  const [hasMultipleBookmarks, setHasMultipleBookmarks] = useState(false);
+  const [exerciseBookmarkForFeedback, setExerciseBookmarkForFeedback] =
+    useState(null);
+
+  useEffect(() => {
+    if (exerciseBookmarks) {
+      if (exerciseBookmarks.length > 1 && isTestingMultipleBookmarks) {
+        setHasMultipleBookmarks(true);
+        setExerciseBookmarkForFeedback(null);
+      } else {
+        setHasMultipleBookmarks(false);
+        setExerciseBookmarkForFeedback(exerciseBookmarks[0]);
+      }
+    }
+  }, [exerciseBookmarks, isTestingMultipleBookmarks]);
+
   const possibleReasons = [
     ["too_easy", "Too Easy"],
     ["too_hard", "Too Hard"],
@@ -20,6 +46,16 @@ export default function RemoveBookmarkModal({ matchBookmarks, open, setOpen }) {
     ["dont_want_to_see_this_word", "Don't want to see this word"],
     ["other", "Other"],
   ];
+
+  function handleSubmit(e, reason) {
+    e.preventDefault();
+    toast.success(
+      `Bookmark ${exerciseBookmarkForFeedback.from} removed successfully ${reason}`,
+    );
+    uploadUserFeedback(reason, exerciseBookmarkForFeedback.id);
+    setOpen(!open);
+    setHasProvidedQuickFeedback(true);
+  }
   return (
     <Modal
       open={open}
@@ -29,20 +65,26 @@ export default function RemoveBookmarkModal({ matchBookmarks, open, setOpen }) {
       }}
     >
       <Header>
-        <Heading>Removing bookmark from exercises</Heading>
+        <Heading>Removing a word/expression from exercises</Heading>
       </Header>
       <Main>
-        {matchBookmarks && (
+        {hasMultipleBookmarks && (
           <MatchBookmarkSelection
-            bookmarkSelected={matchSelectedBookmark}
-            matchBookmarks={matchBookmarks}
-            setMatchBookmarkForFeedback={setMatchSelectedBookmark}
+            bookmarkSelected={exerciseBookmarkForFeedback}
+            exerciseBookmarks={exerciseBookmarks}
+            setExerciseBookmarkForFeedback={setExerciseBookmarkForFeedback}
           ></MatchBookmarkSelection>
         )}
-        {((!matchBookmarks && matchSelectedBookmark === null) ||
-          (matchBookmarks && matchSelectedBookmark !== null)) && (
+        {(!hasMultipleBookmarks ||
+          (hasMultipleBookmarks && exerciseBookmarkForFeedback !== null)) && (
           <>
-            <p>Why don't you want to see this bookmark?</p>
+            {exerciseBookmarkForFeedback && (
+              <p>
+                Why don't you want to see '
+                <b>{exerciseBookmarkForFeedback.from}</b>'?
+              </p>
+            )}
+
             {!showOtherForm && (
               <ButtonContainer
                 style={{
@@ -56,6 +98,7 @@ export default function RemoveBookmarkModal({ matchBookmarks, open, setOpen }) {
                     className="small-border-btn white-btn"
                     onClick={(e) => {
                       if (each[0] === "other") setShowOtherForm(true);
+                      else handleSubmit(e, each[0]);
                     }}
                   >
                     {each[1]}
@@ -67,12 +110,17 @@ export default function RemoveBookmarkModal({ matchBookmarks, open, setOpen }) {
               <Form>
                 {" "}
                 <FormSection>
-                  <TextField label={"Other"} />
+                  <TextField
+                    onChange={(e) => setOtherFeedback(e.target.value)}
+                    label={"Other"}
+                  />
                   <ButtonContainer className={"adaptive-alignment-horizontal"}>
                     <Button
                       type={"submit"}
                       className="small-border-btn"
-                      onClick={(e) => {}}
+                      onClick={(e) => {
+                        handleSubmit(e, otherFeedback);
+                      }}
                     >
                       Submit
                     </Button>

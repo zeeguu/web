@@ -39,6 +39,47 @@ const ExForm = styled.div`
   input {
     font-size: large;
   }
+  .next-nav-feedback {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5em;
+
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+    }
+    p {
+      margin-left: 1em;
+    }
+  }
+
+  .next-nav-learning-cycle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border: 0.125em solid #99e47f;
+    border-radius: 0.5em;
+    background-color: #f1f7f2;
+    width: 70%;
+
+    img {
+      width: 60px;
+      mix-blend-mode: multiply;
+      height: auto;
+      margin: 0.5em;
+    }
+    p {
+      margin-left: 1em;
+      margin-right: 1em;
+    }
+  }
 `;
 
 const LittleMessageAbove = styled.div`

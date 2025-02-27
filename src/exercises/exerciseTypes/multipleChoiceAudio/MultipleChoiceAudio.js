@@ -24,33 +24,25 @@ const EXERCISE_TYPE = EXERCISE_TYPES.multipleChoiceAudio;
 export default function MultipleChoiceAudio({
   api,
   bookmarksToStudy,
+  exerciseMessageToAPI,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
   setExerciseType,
   isCorrect,
-  setIsCorrect,
-  moveToNextExercise,
-  toggleShow,
+  resetSubSessionTimer,
+  handleDisabledAudio,
   reload,
-  setReload,
-  exerciseSessionId,
-  activeSessionDuration,
 }) {
-  const [incorrectAnswer, setIncorrectAnswer] = useState("");
-  const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [currentChoice, setCurrentChoice] = useState("");
   const [firstTypeTime, setFirstTypeTime] = useState();
   const [selectedButtonId, setSelectedButtonId] = useState("");
-  const [getCurrentSubSessionDuration] = useSubSessionTimer(
-    activeSessionDuration,
-  );
   const exerciseBookmark = bookmarksToStudy[0];
   const speech = useContext(SpeechContext);
-  const [isBookmarkChanged, setIsBookmarkChanged] = useState(false);
 
   useEffect(() => {
+    resetSubSessionTimer();
     setExerciseType(EXERCISE_TYPE);
     setInteractiveText(
       new InteractiveText(
@@ -67,7 +59,7 @@ export default function MultipleChoiceAudio({
     );
     consolidateChoice();
     if (!SessionStorage.isAudioExercisesEnabled()) handleDisabledAudio();
-  }, [isBookmarkChanged]);
+  }, [reload, exerciseBookmark]);
 
   function notifyChoiceSelection(selectedChoice) {
     console.log("checking result...");
@@ -75,14 +67,8 @@ export default function MultipleChoiceAudio({
       selectedChoice === removePunctuation(exerciseBookmark.from.toLowerCase())
     ) {
       notifyCorrectAnswer(exerciseBookmark);
-      setIsCorrect(true);
-      let concatMessage = messageToAPI + "C";
-      handleAnswer(concatMessage);
     } else {
-      setIncorrectAnswer(selectedChoice);
       notifyIncorrectAnswer(exerciseBookmark);
-      let concatMessage = messageToAPI + "W";
-      setMessageToAPI(concatMessage);
     }
   }
 
@@ -92,71 +78,11 @@ export default function MultipleChoiceAudio({
     }
   }
 
-  // Setting current choice and id if the correct index is chosen
-  function buttonSelectTrue(id) {
-    if (currentChoice !== 0) {
-      setCurrentChoice(true);
-      setSelectedButtonId(id);
-    }
-    console.log(id + " true");
-  }
-
-  // Setting current choice and id if the incorrect index is chosen
-  function buttonSelectFalse(id) {
-    if (currentChoice !== 1 || currentChoice !== 2) {
-      setCurrentChoice(false);
-      setSelectedButtonId(id);
-    }
-    console.log(id + " false");
-  }
-
-  function handleDisabledAudio() {
-    api.logUserActivity(api.AUDIO_DISABLE, "", exerciseBookmark.id, "");
-    moveToNextExercise();
-  }
-
-  function handleShowSolution() {
-    let message = messageToAPI + "S";
-    notifyIncorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    handleAnswer(message);
-  }
-
-  function handleIncorrectAnswer() {
-    setMessageToAPI(messageToAPI + "W");
-    notifyIncorrectAnswer(exerciseBookmark);
-    setFirstTypeTime(new Date());
-  }
-
-  function handleAnswer(message) {
-    setMessageToAPI(message);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
-  }
-
   function consolidateChoice() {
     // Index 0 is the correct bookmark and index 1 and 2 are incorrect
     let listOfchoices = [0, 1, 2];
     let shuffledListOfChoices = shuffle(listOfchoices);
     setChoiceOptions(shuffledListOfChoices);
-  }
-
-  function handleCorrectAnswer(message) {
-    setMessageToAPI(message);
-    notifyCorrectAnswer(exerciseBookmark);
-    setIsCorrect(true);
-    api.uploadExerciseFinalizedData(
-      message,
-      EXERCISE_TYPE,
-      getCurrentSubSessionDuration(activeSessionDuration, "ms"),
-      exerciseBookmark.id,
-      exerciseSessionId,
-    );
   }
 
   if (!interactiveText || !choiceOptions) {
@@ -180,7 +106,10 @@ export default function MultipleChoiceAudio({
       <div className="headlineWithMoreSpace">
         {strings.multipleChoiceAudioHeadline}
       </div>
-      <BookmarkProgressBar bookmark={exerciseBookmark} message={messageToAPI} />
+      <BookmarkProgressBar
+        bookmark={exerciseBookmark}
+        message={exerciseMessageToAPI}
+      />
       {isCorrect && (
         <>
           <br></br>
@@ -205,67 +134,29 @@ export default function MultipleChoiceAudio({
       {!isCorrect && (
         <s.CenteredRow>
           {/* Mapping bookmarks to the buttons in random order, setting button properties based on bookmark index */}
-          {choiceOptions ? (
-            choiceOptions.map((option) =>
-              0 !== option ? (
-                <SpeakButton
-                  handleClick={() => buttonSelectFalse(option)}
-                  onClick={(e) => handleClick(option)}
-                  bookmarkToStudy={bookmarksToStudy[option]}
-                  api={api}
-                  id={option.id}
-                  styling={selectedButtonStyle(option)}
-                />
-              ) : (
-                <SpeakButton
-                  handleClick={() => buttonSelectTrue(option)}
-                  onClick={(e) => handleClick(option)}
-                  bookmarkToStudy={bookmarksToStudy[option]}
-                  api={api}
-                  id={option.id}
-                  styling={selectedButtonStyle(option)}
-                />
-              ),
-            )
-          ) : (
-            <></>
-          )}
+          {choiceOptions &&
+            choiceOptions.map((option) => (
+              <SpeakButton
+                onClick={(e) => {
+                  setCurrentChoice(option);
+                  handleClick(option);
+                }}
+                isSelected={option === currentChoice}
+                bookmarkToStudy={bookmarksToStudy[option]}
+                api={api}
+                id={option.id}
+                styling={selectedButtonStyle(option)}
+              />
+            ))}
         </s.CenteredRow>
       )}
 
       {!isCorrect && (
         <AudioTwoBotInput
+          bookmarksToStudy={bookmarksToStudy}
           currentChoice={currentChoice}
-          notifyChoiceSelection={notifyChoiceSelection}
-          incorrectAnswer={incorrectAnswer}
-          setIncorrectAnswer={setIncorrectAnswer}
-          handleShowSolution={handleShowSolution}
-          toggleShow={toggleShow}
-          handleCorrectAnswer={handleCorrectAnswer}
-          handleIncorrectAnswer={handleIncorrectAnswer}
-          messageToAPI={messageToAPI}
-          setMessageToAPI={setMessageToAPI}
-          notifyKeyPress={inputKeyPress}
-        />
-      )}
-
-      <NextNavigation
-        exerciseType={EXERCISE_TYPE}
-        message={messageToAPI}
-        api={api}
-        exerciseBookmark={exerciseBookmark}
-        moveToNextExercise={moveToNextExercise}
-        reload={reload}
-        setReload={setReload}
-        handleShowSolution={handleShowSolution}
-        toggleShow={toggleShow}
-        isCorrect={isCorrect}
-        isBookmarkChanged={() => setIsBookmarkChanged(!isBookmarkChanged)}
-      />
-      {SessionStorage.isAudioExercisesEnabled() && (
-        <DisableAudioSession
-          handleDisabledAudio={handleDisabledAudio}
-          setIsCorrect={setIsCorrect}
+          notifyCorrectAnswer={notifyCorrectAnswer}
+          notifyIncorrectAnswer={notifyIncorrectAnswer}
         />
       )}
     </s.Exercise>

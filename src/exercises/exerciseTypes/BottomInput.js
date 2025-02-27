@@ -17,11 +17,12 @@ function getFlagImageUrl(languageCode) {
 export default function BottomInput({
   handleCorrectAnswer,
   handleIncorrectAnswer,
-  bookmarksToStudy,
+  handleExerciseCompleted,
+  setIsCorrect,
+  exerciseBookmark,
   messageToAPI,
   setMessageToAPI,
   isL1Answer,
-  exerciseType,
 }) {
   const [currentInput, setCurrentInput] = useState("");
   const [isIncorrect, setIsIncorrect] = useState(false);
@@ -33,12 +34,9 @@ export default function BottomInput({
   const [correctWordCountInInput, setCorrectWordCountInInput] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const levenshtein = require("fast-levenshtein");
+  const normalizedLearningWord = normalizeAnswer(exerciseBookmark.from);
 
-  const normalizedLearningWord = normalizeAnswer(bookmarksToStudy[0].from);
-
-  const solutionText = isL1Answer
-    ? bookmarksToStudy[0].to
-    : bookmarksToStudy[0].from;
+  const solutionText = isL1Answer ? exerciseBookmark.to : exerciseBookmark.from;
 
   const solutionWordCount = getExpressionlength(solutionText);
   const isWrongOrder =
@@ -48,8 +46,8 @@ export default function BottomInput({
     correctWordCountInInput >= 1 && solutionWordCount > 1 && isIncorrect;
 
   const answerLanguageCode = isL1Answer
-    ? bookmarksToStudy[0].to_lang
-    : bookmarksToStudy[0].from_lang;
+    ? exerciseBookmark.to_lang
+    : exerciseBookmark.from_lang;
 
   const inputLanguageName = LANGUAGE_CODE_TO_NAME[answerLanguageCode];
 
@@ -130,7 +128,9 @@ export default function BottomInput({
     let userHasTypoInNativeLanguage = isL1Answer && levDistance === 1;
     if (normalizedInput === normalizedAnswer || userHasTypoInNativeLanguage) {
       //this allows for a typo in the native language
-      handleCorrectAnswer(messageToAPI + "C");
+      handleCorrectAnswer(exerciseBookmark);
+      handleExerciseCompleted(messageToAPI + "C", exerciseBookmark);
+      setIsCorrect(true);
       setIsIncorrect(false);
       return;
     }

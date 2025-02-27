@@ -163,6 +163,7 @@ let EXTENDED_SEQUENCE_NO_AUDIO = [
 ];
 
 let ALL_EXERCISES = [
+  EX_Match,
   EX_MultipleChoice,
   EX_FindWordInContext,
   EX_SpellWhatYouHear,
@@ -172,7 +173,7 @@ let ALL_EXERCISES = [
   EX_ClickWordInContext,
   EX_FindWordInContextCloze,
   EX_MultipleChoiceAudio,
-  EX_Match,
+
   EX_MultipleChoiceContext,
 ];
 
