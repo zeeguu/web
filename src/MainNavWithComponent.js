@@ -9,7 +9,8 @@ import * as s from "./MainNavWithComponent.sc";
 export default function MainNavWithComponent(props) {
   const { children: appContent, setUser } = props;
   const { screenWidth } = useScreenWidth();
-  const userContext = useContext(UserContext);
+  const { userData } = useContext(UserContext);
+  const { userDetails } = userData;
 
   const path = useLocation().pathname;
 
@@ -39,7 +40,7 @@ export default function MainNavWithComponent(props) {
           // Update the key when the learned_language changes to trigger a re-render
           // of the app content that needs real-time updates. This is a smoother
           // alternative to window.location.reload() when switching the practiced language in navigation.
-          key={userContext.userData.userDetails.learned_language}
+          key={userDetails.learned_language}
           $currentPath={path}
           $screenWidth={screenWidth}
           id="scrollHolder"

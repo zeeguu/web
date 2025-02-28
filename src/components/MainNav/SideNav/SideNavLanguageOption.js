@@ -5,15 +5,16 @@ import NavOption from "../NavOption";
 import NavIcon from "../NavIcon";
 import navLanguages from "../navLanguages";
 
-export default function SideNavLanguageOption({ screenWidth, setUser }) {
+export default function SideNavLanguageOption({ screenWidth }) {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const userContext = useContext(UserContext);
+  const { userData } = useContext(UserContext);
+  const { userDetails } = userData;
 
   const currentLearnedLanguage = useMemo(() => {
-    const languageCode = userContext.userData.userDetails.learned_language;
+    const languageCode = userDetails.learned_language;
     const languageName = navLanguages[languageCode];
     return languageName || "Language";
-  }, [userContext.userData.userDetails.learned_language]);
+  }, [userDetails.learned_language]);
 
   const languageDisplayed = currentLearnedLanguage || "Language not set";
   return (
@@ -31,7 +32,6 @@ export default function SideNavLanguageOption({ screenWidth, setUser }) {
         }}
       />
       <LanguageModal
-        setUser={setUser}
         prefixMsg={"Sidebar"}
         open={showLanguageModal}
         setOpen={() => {

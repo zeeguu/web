@@ -18,6 +18,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 export default function LanguageModal({ open, setOpen }) {
   const api = useContext(APIContext);
   const { userData, setUserData, session } = useContext(UserContext);
+  const { userDetails } = userData;
   const [, setErrorMessage] = useState("");
 
   const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
@@ -25,7 +26,7 @@ export default function LanguageModal({ open, setOpen }) {
 
   useEffect(() => {
     if (open) {
-      setLearnedLanguageCode(userData.userDetails.learned_language);
+      setLearnedLanguageCode(userDetails.learned_language);
 
       api.getUserLanguages((data) => {
         setActiveLanguages(data);
@@ -33,7 +34,6 @@ export default function LanguageModal({ open, setOpen }) {
     }
     return () => {
       setActiveLanguages(undefined);
-
       setLearnedLanguageCode(undefined);
     };
   }, [open, api, session]);
@@ -41,20 +41,19 @@ export default function LanguageModal({ open, setOpen }) {
   const reorderedLanguages = useMemo(() => {
     if (!activeLanguages) return [];
 
-    // Filter out the user's translation language
     const filteredLanguages = activeLanguages.filter(
-      (lang) => lang.code !== userData.native_language,
+      (lang) => lang.code !== userDetails.native_language,
     );
 
     return filteredLanguages.sort((a, b) => {
-      if (a.code === userData.userDetails.learned_language) return -1;
-      if (b.code === userData.userDetails.learned_language) return 1;
+      if (a.code === userDetails.learned_language) return -1;
+      if (b.code === userDetails.learned_language) return 1;
       return 0;
     });
   }, [
     activeLanguages,
-    userData.userDetails.native_language,
-    userData.userDetails.learned_language,
+    userDetails.native_language,
+    userDetails.learned_language,
   ]);
 
   function updateLearnedLanguage(lang_code) {
@@ -65,7 +64,7 @@ export default function LanguageModal({ open, setOpen }) {
     e.preventDefault();
 
     const newUserDetails = {
-      ...userData.userDetails,
+      ...userDetails,
       learned_language: learnedLanguageCode,
     };
 

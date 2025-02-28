@@ -20,7 +20,7 @@ import { APIContext } from "../../contexts/APIContext";
 
 export default function ExerciseTypePreferences() {
   const api = useContext(APIContext);
-  const user = useContext(UserContext);
+  const { session } = useContext(UserContext);
   const history = useHistory();
 
   const [audioExercises, setAudioExercises] = useState(true);
@@ -43,7 +43,7 @@ export default function ExerciseTypePreferences() {
           SessionStorage.isAudioExercisesEnabled(),
       );
     });
-  }, [user.session, api]);
+  }, [session, api]);
 
   function handleAudioExercisesChange(e) {
     setAudioExercises((state) => !state);

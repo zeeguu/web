@@ -10,10 +10,9 @@ import MainNavWithComponent from "./MainNavWithComponent";
 //- they cannot access the content of Zeeguu and will be redirected to the login-page
 
 export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
-  const user = useContext(UserContext);
-  //TODO: modify the UserContext so that the setUser function could be accessed here, instead of being drilled
+  const { session } = useContext(UserContext);
 
-  if (!user.session) {
+  if (!session) {
     return (
       <Redirect
         to={{
@@ -27,9 +26,7 @@ export const PrivateRouteWithMainNav = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={() => (
-        <MainNavWithComponent {...rest}>
-          {<Component {...rest} />}
-        </MainNavWithComponent>
+        <MainNavWithComponent>{<Component {...rest} />}</MainNavWithComponent>
       )}
     />
   );

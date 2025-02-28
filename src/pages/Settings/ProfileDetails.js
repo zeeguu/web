@@ -2,6 +2,8 @@ import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
+import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../contexts/APIContext";
 import LocalStorage from "../../assorted/LocalStorage";
 import strings from "../../i18n/definitions";
 import Form from "../_pages_shared/Form.sc";
@@ -15,7 +17,6 @@ import Heading from "../_pages_shared/Heading.sc";
 import Main from "../_pages_shared/Main.sc";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import FullWidthErrorMsg from "../../components/FullWidthErrorMsg.sc";
-
 import LoadingAnimation from "../../components/LoadingAnimation";
 import LogOutButton from "./LogOutButton";
 import useFormField from "../../hooks/useFormField";
@@ -24,12 +25,15 @@ import {
   NonEmptyValidator,
 } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
-import { setTitle } from "../../assorted/setTitle";
-import { APIContext } from "../../contexts/APIContext";
 
-export default function ProfileDetails({ setUser }) {
+export default function ProfileDetails() {
   const api = useContext(APIContext);
-  const [userDetails, setUserDetails] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const { userData, setUserData } = useContext(UserContext);
+  const { userDetails } = userData;
+  const history = useHistory();
+
+  const [tempUserDetails, setTempUserDetails] = useState("");
   const [
     userName,
     setUserName,
@@ -48,29 +52,29 @@ export default function ProfileDetails({ setUser }) {
     EmailValidator,
   ]);
 
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const user = useContext(UserContext);
-  const history = useHistory();
-
   useEffect(() => {
     setTitle(strings.profileDetails);
   }, []);
 
   useEffect(() => {
     api.getUserDetails((data) => {
-      setUserDetails(data);
+      setTempUserDetails(data);
       setUserEmail(data.email);
       setUserName(data.name);
     });
     // eslint-disable-next-line
-  }, [user, api]);
+  }, [userData, api]);
 
   function updateUserInfo(info) {
-    LocalStorage.setUserInfo(info);
-    setUser({
-      ...user,
+    const newUserDetails = {
+      ...userDetails,
       name: info.name,
+    };
+
+    LocalStorage.setUserInfo(info);
+    setUserData({
+      ...userData,
+      userDetails: newUserDetails,
     });
     saveUserInfoIntoCookies(info);
   }
@@ -79,13 +83,17 @@ export default function ProfileDetails({ setUser }) {
     e.preventDefault();
     setErrorMessage("");
     if (!validateRules([validateUserName, validateEmail])) return;
-    api.saveUserDetails(userDetails, setErrorMessage, () => {
-      updateUserInfo(userDetails);
-      history.goBack();
+    api.saveUserDetails(tempUserDetails, setErrorMessage, () => {
+      updateUserInfo(tempUserDetails);
+      console.log("User details saved", userDetails);
+      setTimeout(() => {
+        //timeout to prevent unmounting to early
+        history.goBack();
+      }, 400);
     });
   }
 
-  if (!userDetails) {
+  if (!tempUserDetails) {
     return <LoadingAnimation />;
   }
 
@@ -111,7 +119,10 @@ export default function ProfileDetails({ setUser }) {
               isError={!isUserNameValid}
               errorMessage={userErrorMessage}
               onChange={(e) => {
-                setUserDetails({ ...userDetails, name: e.target.value });
+                setTempUserDetails({
+                  ...tempUserDetails,
+                  name: e.target.value,
+                });
                 setUserName(e.target.value);
               }}
             />
@@ -125,7 +136,10 @@ export default function ProfileDetails({ setUser }) {
               isError={!isEmailValid}
               errorMessage={emailErrorMessage}
               onChange={(e) => {
-                setUserDetails({ ...userDetails, email: e.target.value });
+                setTempUserDetails({
+                  ...tempUserDetails,
+                  email: e.target.value,
+                });
                 setUserEmail(e.target.value);
               }}
             />

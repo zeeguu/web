@@ -10,13 +10,14 @@ import NavigationOptions from "../navigationOptions";
 import SideNavLanguageOption from "./SideNavLanguageOption";
 import * as s from "./SideNav.sc";
 
-export default function SideNav({ screenWidth, setUser }) {
-  const { is_teacher: isTeacher } = useContext(UserContext);
+export default function SideNav({ screenWidth }) {
+  const { userData } = useContext(UserContext);
+  const { userDetails } = userData;
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
 
   const path = useLocation().pathname;
-  const defaultPage = isTeacher ? "/teacher/classes" : "/articles";
+  const defaultPage = userDetails.is_teacher ? "/teacher/classes" : "/articles";
 
   return (
     <s.SideNav $screenWidth={screenWidth} role="navigation">
@@ -41,10 +42,7 @@ export default function SideNav({ screenWidth, setUser }) {
       <s.BottomSection $screenWidth={screenWidth}>
         <s.NavList>
           {isOnStudentSide && !path?.includes("/read") && (
-            <SideNavLanguageOption
-              setUser={setUser}
-              screenWidth={screenWidth}
-            />
+            <SideNavLanguageOption screenWidth={screenWidth} />
           )}
           <NavOption
             {...NavigationOptions.settings}

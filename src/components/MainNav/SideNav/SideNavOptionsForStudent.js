@@ -7,9 +7,10 @@ import NavigationOptions from "../navigationOptions";
 import NotificationIcon from "../../NotificationIcon";
 
 export default function SideNavOptionsForStudent({ screenWidth }) {
-  const { is_teacher: isTeacher } = useContext(UserContext);
-  const path = useLocation().pathname;
+  const { userData } = useContext(UserContext);
+  const { userDetails } = userData;
 
+  const path = useLocation().pathname;
   const { hasExerciseNotification, notificationMsg } =
     useExerciseNotification();
 
@@ -53,7 +54,7 @@ export default function SideNavOptionsForStudent({ screenWidth }) {
         screenWidth={screenWidth}
       />
 
-      {isTeacher && (
+      {userDetails.is_teacher && (
         <NavOption
           {...NavigationOptions.teacherSite}
           currentPath={path}

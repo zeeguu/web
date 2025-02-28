@@ -31,8 +31,10 @@ import { APIContext } from "../../contexts/APIContext";
 
 export default function LanguageSettings() {
   const api = useContext(APIContext);
+  const { userData, setUserData, session } = useContext(UserContext);
+  const { userDetails } = userData;
   const [errorMessage, setErrorMessage] = useState("");
-  const [userDetails, setUserDetails] = useState(null);
+  const [tempUserDetails, setTempUserDetails] = useState(null);
   const [languages, setLanguages] = useState();
   const [
     learnedLanguage,
@@ -55,14 +57,12 @@ export default function LanguageSettings() {
       return v !== learnedLanguageRef.current;
     }, "Your Translation language needs to be different than your learned language."),
   ]);
-
-  const userContext = useContext(UserContext);
   const history = useHistory();
 
   function setCEFRlevel(data) {
     const levelKey = data.learned_language + "_cefr_level";
     const levelNumber = data[levelKey];
-    setUserDetails({
+    setTempUserDetails({
       ...data,
       cefr_level: levelNumber,
     });
@@ -74,7 +74,7 @@ export default function LanguageSettings() {
 
   useEffect(() => {
     api.getUserDetails((data) => {
-      setUserDetails(data);
+      setTempUserDetails(data);
       setCEFRlevel(data);
       setLearnedLanguage(data.learned_language);
       setNativeLanguage(data.native_language);
@@ -84,18 +84,20 @@ export default function LanguageSettings() {
       setLanguages(systemLanguages);
     });
     // eslint-disable-next-line
-  }, [userContext.session, api]);
+  }, [session, api]);
 
   function updateUserInfo(info) {
     LocalStorage.setUserInfo(info);
 
-    userContext.setUserData({
-      ...userContext.userData,
-      userDetails: {
-        ...userContext.userData.userDetails,
-        learned_language: info.learned_language,
-        native_language: info.native_language,
-      },
+    const newUserDetails = {
+      ...userDetails,
+      learned_language: info.learned_language,
+      native_language: info.native_language,
+    };
+
+    setUserData({
+      ...userData,
+      userDetails: newUserDetails,
     });
 
     saveUserInfoIntoCookies(info);
@@ -103,15 +105,15 @@ export default function LanguageSettings() {
 
   function updateNativeLanguage(lang_code) {
     setNativeLanguage(lang_code);
-    setUserDetails({
-      ...userDetails,
+    setTempUserDetails({
+      ...tempUserDetails,
       native_language: lang_code,
     });
   }
 
   function updateCEFRLevel(level) {
-    setUserDetails({
-      ...userDetails,
+    setTempUserDetails({
+      ...tempUserDetails,
       cefr_level: level,
     });
   }
@@ -120,8 +122,8 @@ export default function LanguageSettings() {
     console.log("language code in updateLearnedLanguage");
     setLearnedLanguage(lang_code);
     console.log(lang_code);
-    setUserDetails({
-      ...userDetails,
+    setTempUserDetails({
+      ...tempUserDetails,
       learned_language: lang_code,
     });
   }
@@ -131,17 +133,15 @@ export default function LanguageSettings() {
     if (!validateRules([validateLearnedLanguage, validateNativeLanguage]))
       scrollToTop();
     else
-      api.saveUserDetails(userDetails, setErrorMessage, () => {
-        updateUserInfo(userDetails);
+      api.saveUserDetails(tempUserDetails, setErrorMessage, () => {
+        updateUserInfo(tempUserDetails);
         history.goBack();
       });
   }
 
-  if (!userDetails || !languages) {
+  if (!tempUserDetails || !languages) {
     return <LoadingAnimation />;
   }
-
-  console.log(userDetails);
 
   return (
     <PreferencesPage layoutVariant={"minimalistic-top-aligned"}>
@@ -175,7 +175,7 @@ export default function LanguageSettings() {
               onChange={(e) => {
                 updateCEFRLevel(e.target.value);
               }}
-              selectedValue={userDetails.cefr_level}
+              selectedValue={tempUserDetails.cefr_level}
             />
           </FormSection>
 

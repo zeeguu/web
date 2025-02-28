@@ -15,7 +15,9 @@ export default function MoreOptionsPanel({
   currentPath,
   renderMoreOptions,
 }) {
-  const { is_teacher: isTeacher } = useContext(UserContext);
+  const { userData } = useContext(UserContext);
+  const { userDetails } = userData;
+
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
   const path = useLocation().pathname;
@@ -58,7 +60,7 @@ export default function MoreOptionsPanel({
                 onClick={handleHideMoreOptions}
               />
 
-              {isTeacher && (
+              {userDetails.is_teacher && (
                 <NavOption
                   {...NavigationOptions.teacherSite}
                   currentPath={currentPath}
