@@ -10,11 +10,12 @@ import { UserContext } from "./contexts/UserContext";
 //- they cannot access the content of Zeeguu and will be redirected to the login-page
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const user = useContext(UserContext);
+  const { session } = useContext(UserContext);
+
   const isAccountDelition = window.location.href.includes(
     APP_DOMAIN + "account_deletion",
   );
-  if (!user.session) {
+  if (!session) {
     if (isAccountDelition) {
       return (
         <Redirect

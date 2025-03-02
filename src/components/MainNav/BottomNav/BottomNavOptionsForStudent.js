@@ -3,6 +3,7 @@ import NotificationIcon from "../../NotificationIcon";
 import useExerciseNotification from "../../../hooks/useExerciseNotification";
 import BottomNavOption from "./BottomNavOption";
 import NavigationOptions from "../navigationOptions";
+import BottomNavLanguageOption from "./BottomNavLanguageOption";
 
 export default function BottomNavOptionsForStudent() {
   const path = useLocation().pathname;
@@ -12,7 +13,6 @@ export default function BottomNavOptionsForStudent() {
   return (
     <>
       <BottomNavOption {...NavigationOptions.articles} currentPath={path} />
-
       <BottomNavOption
         {...NavigationOptions.exercises}
         currentPath={path}
@@ -25,8 +25,8 @@ export default function BottomNavOptionsForStudent() {
           )
         }
       />
-
       <BottomNavOption {...NavigationOptions.words} currentPath={path} />
+      <BottomNavLanguageOption />
     </>
   );
 }

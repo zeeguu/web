@@ -25,11 +25,16 @@ const SideNav = styled.nav`
   top: 0;
   padding: 0.5rem 0.5rem 11rem 0.5rem;
   overflow-y: scroll;
+  z-index: 2;
 
   ${sharedSideNavStyling}
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const NavList = styled.ul`
+  all: unset;
 `;
 
 const BottomSection = styled.div`
@@ -38,4 +43,10 @@ const BottomSection = styled.div`
   ${sharedSideNavStyling}
 `;
 
-export { SideNav, BottomSection, sideNavExpandedWidth, sideNavCollapsedWidth };
+export {
+  SideNav,
+  NavList,
+  BottomSection,
+  sideNavExpandedWidth,
+  sideNavCollapsedWidth,
+};

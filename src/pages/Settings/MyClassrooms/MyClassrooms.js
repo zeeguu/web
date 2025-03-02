@@ -24,7 +24,7 @@ import { APIContext } from "../../../contexts/APIContext";
 
 export default function MyClassrooms() {
   const api = useContext(APIContext);
-  const user = useContext(UserContext);
+  const { session } = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(true);
   const [
@@ -55,7 +55,7 @@ export default function MyClassrooms() {
   useEffect(() => {
     updateValues();
     // eslint-disable-next-line
-  }, [user.session, api]);
+  }, [session, api]);
 
   function handleOpenLeaveClassroomModal(classroom) {
     setCurrentClassroom(classroom);

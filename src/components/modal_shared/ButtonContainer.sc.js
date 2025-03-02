@@ -7,6 +7,7 @@ const ButtonContainer = styled.div`
   gap: 1.5rem;
   flex-direction: row-reverse;
   justify-content: space-between;
+  align-items: center;
 
   ${(props) =>
     props.buttonCountNum === 1 &&
