@@ -38,13 +38,16 @@ function App() {
   useUILanguage();
 
   const [userData, setUserData] = useState();
+
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   useEffect(() => {
-    if (userData && userData.learned_language) {
-      setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
+    if (userData && userData.userDetails.learned_language) {
+      setZeeguuSpeech(
+        new ZeeguuSpeech(api, userData.userDetails.learned_language),
+      );
     }
     // eslint-disable-next-line
   }, [userData]);
@@ -68,8 +71,6 @@ function App() {
           console.log("valid sesison... getting user details...");
           api.getUserDetails((userDetails) => {
             LocalStorage.setUserInfo(userDetails);
-            console.log("User Details: ");
-            console.log(userDetails);
             api.getUserPreferences((userPreferences) => {
               LocalStorage.setUserPreferences(userPreferences);
 
