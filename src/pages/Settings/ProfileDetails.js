@@ -85,7 +85,6 @@ export default function ProfileDetails() {
     if (!validateRules([validateUserName, validateEmail])) return;
     api.saveUserDetails(tempUserDetails, setErrorMessage, () => {
       updateUserInfo(tempUserDetails);
-      console.log("User details saved", userDetails);
       setTimeout(() => {
         //timeout to prevent unmounting to early
         history.goBack();

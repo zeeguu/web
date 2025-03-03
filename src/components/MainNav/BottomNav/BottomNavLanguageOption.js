@@ -10,14 +10,8 @@ export default function BottomNavLanguageOption() {
   const { userData } = useContext(UserContext);
   const { userDetails } = userData;
 
-  console.log("User data", userData);
-
   const currentLearnedLanguage = useMemo(() => {
     const languageCode = userDetails.learned_language;
-    console.log(
-      "Language Code: Inside bottom nav language option: ",
-      languageCode,
-    );
     const languageName = navLanguages[languageCode];
     return languageName || "Language";
   }, [userDetails.learned_language]);

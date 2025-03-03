@@ -78,7 +78,6 @@ export default function LanguageModal({ open, setOpen }) {
       saveUserInfoIntoCookies(newUserDetails);
 
       setOpen(false);
-      console.log("success in updating userDetails");
     });
   }
 

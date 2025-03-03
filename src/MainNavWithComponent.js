@@ -7,7 +7,7 @@ import MainNav from "./components/MainNav/MainNav";
 import * as s from "./MainNavWithComponent.sc";
 
 export default function MainNavWithComponent(props) {
-  const { children: appContent, setUser } = props;
+  const { children: appContent } = props;
   const { screenWidth } = useScreenWidth();
   const { userData } = useContext(UserContext);
   const { userDetails } = userData;
@@ -35,7 +35,7 @@ export default function MainNavWithComponent(props) {
       }}
     >
       <s.MainNavWithComponent $screenWidth={screenWidth}>
-        <MainNav setUser={setUser} screenWidth={screenWidth} />
+        <MainNav screenWidth={screenWidth} />
         <s.AppContent
           // Update the key when the learned_language changes to trigger a re-render
           // of the app content that needs real-time updates. This is a smoother

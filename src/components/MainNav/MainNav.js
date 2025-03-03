@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import { mainNavTheme } from "./mainNavTheme";
 import { MainNavContext } from "../../contexts/MainNavContext";
 
-export default function MainNav({ screenWidth, setUser }) {
+export default function MainNav({ screenWidth }) {
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
 
@@ -16,9 +16,9 @@ export default function MainNav({ screenWidth, setUser }) {
       theme={isOnStudentSide ? mainNavTheme.student : mainNavTheme.teacher}
     >
       {screenWidth <= MOBILE_WIDTH ? (
-        <BottomNav setUser={setUser} />
+        <BottomNav />
       ) : (
-        <SideNav setUser={setUser} screenWidth={screenWidth} />
+        <SideNav screenWidth={screenWidth} />
       )}
     </ThemeProvider>
   );

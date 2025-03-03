@@ -72,8 +72,6 @@ function App() {
             console.log(userDetails);
             api.getUserPreferences((userPreferences) => {
               LocalStorage.setUserPreferences(userPreferences);
-              console.log("User Preferences: ");
-              console.log(userPreferences);
 
               if (userHasNotExercisedToday())
                 api.getUserBookmarksToStudy(1, (scheduledBookmaks) => {
