@@ -62,7 +62,7 @@ export default function ProfileDetails() {
       setUserName(data.name);
     });
     // eslint-disable-next-line
-  }, [userData, api]);
+  }, [userDetails, api]);
 
   function updateUserInfo(info) {
     const newUserDetails = {

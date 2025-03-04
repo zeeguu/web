@@ -129,7 +129,10 @@ export default function LanguageSettings() {
     else
       api.saveUserDetails(tempUserDetails, setErrorMessage, () => {
         updateUserInfo(tempUserDetails);
-        history.goBack();
+        setTimeout(() => {
+          //timeout to prevent unmounting to early
+          history.goBack();
+        }, 400);
       });
   }
 
