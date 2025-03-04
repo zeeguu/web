@@ -9,8 +9,7 @@ import * as s from "./MainNavWithComponent.sc";
 export default function MainNavWithComponent(props) {
   const { children: appContent } = props;
   const { screenWidth } = useScreenWidth();
-  const { userData } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails } = useContext(UserContext);
 
   const path = useLocation().pathname;
 

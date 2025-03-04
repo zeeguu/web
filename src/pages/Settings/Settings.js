@@ -9,8 +9,7 @@ import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
 import * as s from "./Settings.sc";
 
 export default function Settings() {
-  const { userData } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails } = useContext(UserContext);
 
   useEffect(() => {
     setTitle(strings.settings);

@@ -2,8 +2,10 @@ import React from "react";
 
 const UserContext = React.createContext({
   // What we have in a user context:
-  // - userData {userDetails: {}, userPreferences: {}}
-  // - setUserData:
+  // - userDetails: {}
+  // - setUserDetails
+  // - userPreferences: {}
+  // - setUserPreferences
   // - session
   // - logoutMethod
 });

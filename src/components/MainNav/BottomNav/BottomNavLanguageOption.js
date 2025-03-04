@@ -7,8 +7,7 @@ import navLanguages from "../navLanguages";
 
 export default function BottomNavLanguageOption() {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const { userData } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails } = useContext(UserContext);
 
   const currentLearnedLanguage = useMemo(() => {
     const languageCode = userDetails.learned_language;

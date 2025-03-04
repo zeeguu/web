@@ -74,8 +74,7 @@ export default function ArticleReader({ teacherArticleID }) {
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
   const [viewPortSettings, setViewPortSettings] = useState("");
 
-  const { userData } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails } = useContext(UserContext);
   const history = useHistory();
   const speech = useContext(SpeechContext);
   const [activityTimer, isTimerActive] = useActivityTimer(uploadActivity);

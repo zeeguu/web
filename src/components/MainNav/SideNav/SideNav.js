@@ -11,8 +11,7 @@ import SideNavLanguageOption from "./SideNavLanguageOption";
 import * as s from "./SideNav.sc";
 
 export default function SideNav({ screenWidth }) {
-  const { userData } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails } = useContext(UserContext);
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;
 

@@ -17,8 +17,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 export default function LanguageModal({ open, setOpen }) {
   const api = useContext(APIContext);
-  const { userData, setUserData, session } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails, setUserDetails, session } = useContext(UserContext);
   const [, setErrorMessage] = useState("");
 
   const [learnedLanguageCode, setLearnedLanguageCode] = useState(null);
@@ -69,10 +68,7 @@ export default function LanguageModal({ open, setOpen }) {
     };
 
     api.saveUserDetails(newUserDetails, setErrorMessage, () => {
-      setUserData({
-        ...userData,
-        userDetails: newUserDetails,
-      });
+      setUserDetails(newUserDetails);
 
       LocalStorage.setUserInfo(newUserDetails);
       saveUserInfoIntoCookies(newUserDetails);

@@ -15,8 +15,7 @@ export default function MoreOptionsPanel({
   currentPath,
   renderMoreOptions,
 }) {
-  const { userData } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails } = useContext(UserContext);
 
   const { mainNavProperties } = useContext(MainNavContext);
   const { isOnStudentSide } = mainNavProperties;

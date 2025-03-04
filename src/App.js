@@ -37,20 +37,19 @@ function App() {
 
   useUILanguage();
 
-  const [userData, setUserData] = useState();
+  const [userDetails, setUserDetails] = useState();
+  const [userPreferences, setUserPreferences] = useState();
 
   const [isExtensionAvailable] = useExtensionCommunication();
   const [zeeguuSpeech, setZeeguuSpeech] = useState(false);
   let { handleRedirectLinkOrGoTo } = useRedirectLink();
 
   useEffect(() => {
-    if (userData && userData.userDetails.learned_language) {
-      setZeeguuSpeech(
-        new ZeeguuSpeech(api, userData.userDetails.learned_language),
-      );
+    if (userDetails && userDetails.learned_language) {
+      setZeeguuSpeech(new ZeeguuSpeech(api, userDetails.learned_language));
     }
     // eslint-disable-next-line
-  }, [userData]);
+  }, [userDetails]);
 
   useEffect(() => {
     console.log("Got the API URL:" + API_ENDPOINT);
@@ -88,10 +87,8 @@ function App() {
               setZeeguuSpeech(
                 new ZeeguuSpeech(api, userDetails.learned_language),
               );
-              setUserData({
-                userDetails: userDetails,
-                userPreferences: userPreferences,
-              });
+              setUserDetails(userDetails);
+              setUserPreferences(userPreferences);
             });
           });
         },
@@ -104,7 +101,8 @@ function App() {
     //logs out user on zeeguu.org if they log out of the extension
     const interval = setInterval(() => {
       if (!getSessionFromCookies()) {
-        setUserData({});
+        setUserDetails({});
+        setUserPreferences({});
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -115,7 +113,8 @@ function App() {
   function logout() {
     LocalStorage.deleteUserInfo();
     LocalStorage.deleteUserPreferences();
-    setUserData({});
+    setUserDetails({});
+    setUserPreferences({});
 
     removeUserInfoFromCookies();
   }
@@ -159,7 +158,7 @@ function App() {
   //Setting up the routing context to be able to use the cancel-button in EditText correctly
   const [returnPath, setReturnPath] = useState("");
 
-  if (userData === undefined) {
+  if (userDetails === undefined) {
     return <LoadingAnimation />;
   }
 
@@ -169,8 +168,10 @@ function App() {
         <RoutingContext.Provider value={{ returnPath, setReturnPath }}>
           <UserContext.Provider
             value={{
-              userData,
-              setUserData: setUserData,
+              userDetails,
+              setUserDetails,
+              userPreferences,
+              setUserPreferences,
               session: getSessionFromCookies(),
               logoutMethod: logout,
             }}

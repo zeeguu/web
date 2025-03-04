@@ -29,8 +29,7 @@ import validateRules from "../../assorted/validateRules";
 export default function ProfileDetails() {
   const api = useContext(APIContext);
   const [errorMessage, setErrorMessage] = useState("");
-  const { userData, setUserData } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails, setUserDetails } = useContext(UserContext);
   const history = useHistory();
 
   const [tempUserDetails, setTempUserDetails] = useState("");
@@ -70,12 +69,8 @@ export default function ProfileDetails() {
       ...userDetails,
       name: info.name,
     };
-
+    setUserDetails(newUserDetails);
     LocalStorage.setUserInfo(info);
-    setUserData({
-      ...userData,
-      userDetails: newUserDetails,
-    });
     saveUserInfoIntoCookies(info);
   }
 

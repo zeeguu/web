@@ -37,8 +37,7 @@ import { APIContext } from "../../contexts/APIContext";
 
 export default function CreateAccount({ handleSuccessfulLogIn }) {
   const api = useContext(APIContext);
-  const { userData, setUserData } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails, setUserDetails } = useContext(UserContext);
 
   const learnedLanguage = LocalStorage.getLearnedLanguage();
   const nativeLanguage = LocalStorage.getNativeLanguage();
@@ -160,7 +159,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
       (session) => {
         api.getUserDetails((user) => {
           handleSuccessfulLogIn(user, session);
-          setUserData({ ...userData, userDetails: userInfo });
+          setUserDetails(userInfo);
           saveUserInfoIntoCookies(userInfo);
           redirect("/select_interests");
         });

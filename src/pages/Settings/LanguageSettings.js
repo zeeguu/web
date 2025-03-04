@@ -31,8 +31,7 @@ import { APIContext } from "../../contexts/APIContext";
 
 export default function LanguageSettings() {
   const api = useContext(APIContext);
-  const { userData, setUserData, session } = useContext(UserContext);
-  const { userDetails } = userData;
+  const { userDetails, setUserDetails, session } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [tempUserDetails, setTempUserDetails] = useState(null);
   const [languages, setLanguages] = useState();
@@ -94,12 +93,7 @@ export default function LanguageSettings() {
       learned_language: info.learned_language,
       native_language: info.native_language,
     };
-
-    setUserData({
-      ...userData,
-      userDetails: newUserDetails,
-    });
-
+    setUserDetails(newUserDetails);
     saveUserInfoIntoCookies(info);
   }
 
