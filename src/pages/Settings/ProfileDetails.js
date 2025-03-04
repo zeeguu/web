@@ -89,10 +89,7 @@ export default function ProfileDetails() {
     if (!validateRules([validateUserName, validateEmail])) return;
     api.saveUserDetails(tempUserDetails, setErrorMessage, () => {
       updateUserInfo(tempUserDetails);
-      // setTimeout(() => {
-      //timeout to prevent unmounting to early
       history.goBack();
-      // }, 400);
     });
   }
 
