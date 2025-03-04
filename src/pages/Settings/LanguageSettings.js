@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
@@ -57,6 +57,7 @@ export default function LanguageSettings() {
     }, "Your Translation language needs to be different than your learned language."),
   ]);
   const history = useHistory();
+  const isPageMounted = useRef(true);
 
   function setCEFRlevel(data) {
     const levelKey = data.learned_language + "_cefr_level";
@@ -72,16 +73,25 @@ export default function LanguageSettings() {
   }, []);
 
   useEffect(() => {
+    isPageMounted.current = true;
     api.getUserDetails((data) => {
-      setTempUserDetails(data);
-      setCEFRlevel(data);
-      setLearnedLanguage(data.learned_language);
-      setNativeLanguage(data.native_language);
+      if (isPageMounted.current) {
+        setTempUserDetails(data);
+        setCEFRlevel(data);
+        setLearnedLanguage(data.learned_language);
+        setNativeLanguage(data.native_language);
+      }
     });
 
     api.getSystemLanguages((systemLanguages) => {
-      setLanguages(systemLanguages);
+      if (isPageMounted.current) {
+        setLanguages(systemLanguages);
+      }
     });
+
+    return () => {
+      isPageMounted.current = false;
+    };
     // eslint-disable-next-line
   }, [session, api]);
 
@@ -129,10 +139,7 @@ export default function LanguageSettings() {
     else
       api.saveUserDetails(tempUserDetails, setErrorMessage, () => {
         updateUserInfo(tempUserDetails);
-        setTimeout(() => {
-          //timeout to prevent unmounting to early
-          history.goBack();
-        }, 400);
+        history.goBack();
       });
   }
 

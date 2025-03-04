@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import { setTitle } from "../../assorted/setTitle";
@@ -25,12 +25,14 @@ import {
   NonEmptyValidator,
 } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
+import { is } from "date-fns/locale";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
   const [errorMessage, setErrorMessage] = useState("");
   const { userDetails, setUserDetails } = useContext(UserContext);
   const history = useHistory();
+  const isPageMounted = useRef(true);
 
   const [tempUserDetails, setTempUserDetails] = useState("");
   const [
@@ -56,11 +58,18 @@ export default function ProfileDetails() {
   }, []);
 
   useEffect(() => {
+    isPageMounted.current = true;
     api.getUserDetails((data) => {
-      setTempUserDetails(data);
-      setUserEmail(data.email);
-      setUserName(data.name);
+      if (isPageMounted.current) {
+        setTempUserDetails(data);
+        setUserEmail(data.email);
+        setUserName(data.name);
+      }
     });
+
+    return () => {
+      isPageMounted.current = false;
+    };
     // eslint-disable-next-line
   }, [userDetails, api]);
 
@@ -80,10 +89,10 @@ export default function ProfileDetails() {
     if (!validateRules([validateUserName, validateEmail])) return;
     api.saveUserDetails(tempUserDetails, setErrorMessage, () => {
       updateUserInfo(tempUserDetails);
-      setTimeout(() => {
-        //timeout to prevent unmounting to early
-        history.goBack();
-      }, 400);
+      // setTimeout(() => {
+      //timeout to prevent unmounting to early
+      history.goBack();
+      // }, 400);
     });
   }
 
