@@ -24,11 +24,7 @@ import SettingsRouter from "./pages/Settings/_SettingsRouter";
 import ExercisesForArticle from "./exercises/ExercisesForArticle";
 import { UMR_SOURCE } from "./reader/ArticleReader";
 
-export default function MainAppRouter({
-  setUser,
-  hasExtension,
-  handleSuccessfulLogIn,
-}) {
+export default function MainAppRouter({ hasExtension, handleSuccessfulLogIn }) {
   return (
     <Switch>
       <Route
@@ -39,10 +35,7 @@ export default function MainAppRouter({
       <Route
         path="/account_details"
         render={() => (
-          <CreateAccount
-            handleSuccessfulLogIn={handleSuccessfulLogIn}
-            setUser={setUser}
-          />
+          <CreateAccount handleSuccessfulLogIn={handleSuccessfulLogIn} />
         )}
       />
 
@@ -77,28 +70,20 @@ export default function MainAppRouter({
       />
 
       <PrivateRouteWithMainNav path="/articles" component={ArticlesRouter} />
-
       <PrivateRouteWithMainNav path="/exercises" component={ExercisesRouter} />
-
       <PrivateRouteWithMainNav path="/words" component={WordsRouter} />
-
       <PrivateRouteWithMainNav path="/history" component={ReadingHistory} />
-
       <PrivateRouteWithMainNav
         path="/account_settings"
-        setUser={setUser}
         component={SettingsRouter}
       />
       <PrivateRouteWithMainNav path="/teacher" component={TeacherRouter} />
-
       <PrivateRouteWithMainNav path="/read/article" component={ArticleReader} />
-
       <PrivateRouteWithMainNav
         path="/user_dashboard"
         component={UserDashboard}
       />
       <PrivateRouteWithMainNav path="/search" component={ArticlesRouter} />
-
       <PrivateRouteWithMainNav
         path="/articleWordReview/:articleID"
         component={ExercisesForArticle}

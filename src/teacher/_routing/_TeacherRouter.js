@@ -3,7 +3,7 @@ import CohortsRouter from "./_CohortsRouter";
 import Tutorials from "../helpPage/Tutorials";
 import TeacherTextsRouter from "./_TeacherTextsRouter";
 
-export default function TeacherRouter({ api }) {
+export default function TeacherRouter() {
   return (
     <>
       <PrivateRoute path="/teacher/classes" component={CohortsRouter} />
