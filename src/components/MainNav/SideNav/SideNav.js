@@ -24,9 +24,11 @@ export default function SideNav({ screenWidth }) {
         <NavOption
           className={"logo"}
           linkTo={defaultPage}
-          icon={<img alt="" src="../static/images/zeeguuWhiteLogo.svg"></img>}
+          icon={
+            <img alt="Zeeguu" src="../static/images/zeeguuWhiteLogo.svg"></img>
+          }
           text={"Zeeguu"}
-          ariaLabel={"Go to Zeeguu homepage"}
+          ariaLabel="Zeeguu homepage"
         ></NavOption>
 
         {isOnStudentSide && (
