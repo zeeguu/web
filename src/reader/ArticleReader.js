@@ -62,6 +62,7 @@ export default function ArticleReader({ teacherArticleID }) {
 
   const [interactiveText, setInteractiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
+  const [interactiveFragments, setInteractiveFragments] = useState();
   const {
     translateInReader,
     pronounceInReader,
@@ -195,30 +196,40 @@ export default function ArticleReader({ teacherArticleID }) {
     setScrollPosition(0);
 
     api.getArticleInfo(articleID, (articleInfo) => {
-      setInteractiveText(
-        new InteractiveText(
-          articleInfo.tokenized_paragraphs,
-          articleInfo.id,
-          true,
-          api,
-          articleInfo.translations,
-          api.TRANSLATE_TEXT,
-          articleInfo.language,
-          UMR_SOURCE,
-          speech,
+      console.log("Here is the article info!");
+      console.dir(articleInfo);
+      setInteractiveFragments(
+        articleInfo.tokenized_fragments.map(
+          (each) =>
+            new InteractiveText(
+              each.tokens,
+              articleInfo.id,
+              false,
+              api,
+              each.past_bookmarks,
+              api.TRANSLATE_TEXT,
+              articleInfo.language,
+              UMR_SOURCE,
+              speech,
+              each.context_type,
+              each.formatting,
+              each.fragment_id,
+            ),
         ),
       );
+      const articleTitleData = articleInfo.tokenized_title_new;
       setInteractiveTitle(
         new InteractiveText(
-          articleInfo.tokenized_title,
+          articleTitleData.tokens,
           articleInfo.id,
           false,
           api,
-          articleInfo.translations,
+          articleTitleData.past_bookmarks,
           api.TRANSLATE_TEXT,
           articleInfo.language,
           UMR_SOURCE,
           speech,
+          articleTitleData.context_type,
         ),
       );
       setArticleInfo(articleInfo);
@@ -263,7 +274,7 @@ export default function ArticleReader({ teacherArticleID }) {
     }
   }
 
-  if (!articleInfo || !interactiveText) {
+  if (!articleInfo || !interactiveFragments) {
     return <LoadingAnimation />;
   }
 
@@ -292,7 +303,6 @@ export default function ArticleReader({ teacherArticleID }) {
       UMR_SOURCE,
     );
   };
-
   return (
     <>
       <TopToolbar
@@ -361,12 +371,16 @@ export default function ArticleReader({ teacherArticleID }) {
           )}
 
           <s.MainText>
-            <TranslatableText
-              interactiveText={interactiveText}
-              translating={translateInReader}
-              pronouncing={pronounceInReader}
-              updateBookmarks={fetchBookmarks}
-            />
+            {interactiveFragments &&
+              interactiveFragments.map((interactiveText) => (
+                <TranslatableText
+                  interactiveText={interactiveText}
+                  translating={translateInReader}
+                  pronouncing={pronounceInReader}
+                  setIsRendered={setReaderReady}
+                  updateBookmarks={fetchBookmarks}
+                />
+              ))}
           </s.MainText>
         </div>
 

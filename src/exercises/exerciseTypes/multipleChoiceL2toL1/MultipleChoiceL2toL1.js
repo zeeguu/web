@@ -58,6 +58,9 @@ export default function MultipleChoiceL2toL1({
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
         speech,
+        exerciseBookmark.context_type,
+        null,
+        exerciseBookmark.fragment_id,
       ),
     );
     // eslint-disable-next-line

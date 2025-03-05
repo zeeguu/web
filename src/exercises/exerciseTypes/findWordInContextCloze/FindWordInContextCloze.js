@@ -56,6 +56,9 @@ export default function FindWordInContextCloze({
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
         speech,
+        exerciseBookmark.context_type,
+        null,
+        exerciseBookmark.fragment_id,
       ),
     );
     // eslint-disable-next-line

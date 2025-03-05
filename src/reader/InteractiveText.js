@@ -22,10 +22,12 @@ export default class InteractiveText {
     language,
     source = "",
     zeeguuSpeech,
+    contextType,
+    formatting,
+    fragmentId,
   ) {
     function _updateTokensWithBookmarks(bookmarks, paragraphs) {
       function areCoordinatesInParagraphMatrix(
-        target_p_i,
         target_s_i,
         target_t_i,
         paragraphs,
@@ -33,9 +35,8 @@ export default class InteractiveText {
         // This can happen when we update the tokenizer, but do not update the bookmarks.
         // They might become misaligned and point to a non existing token.
         return (
-          target_p_i < paragraphs.length &&
-          target_s_i < paragraphs[target_p_i].length &&
-          target_t_i < paragraphs[target_p_i][target_s_i].length
+          target_s_i < paragraphs[0].length &&
+          target_t_i < paragraphs[0][target_s_i].length
         );
       }
 
@@ -43,23 +44,21 @@ export default class InteractiveText {
         let bookmark = bookmarks[i];
         let target_p_i, target_s_i, target_t_i;
         let target_token;
-        target_p_i = bookmark["context_paragraph"];
+        target_p_i = 0;
         target_s_i = bookmark["context_sent"] + bookmark["t_sentence_i"];
         target_t_i = bookmark["context_token"] + bookmark["t_token_i"];
 
         // If any the coordinates are null / undefined, we skip.
+        console.log(bookmark);
         if (
-          isNullOrUndefinied(target_p_i) ||
           isNullOrUndefinied(target_s_i) ||
           isNullOrUndefinied(target_t_i) ||
-          !areCoordinatesInParagraphMatrix(
-            target_p_i,
-            target_s_i,
-            target_t_i,
-            paragraphs,
-          )
-        )
+          !areCoordinatesInParagraphMatrix(target_s_i, target_t_i, paragraphs)
+        ) {
+          console.log("Skupped!");
           continue;
+        }
+
         target_token = paragraphs[target_p_i][target_s_i][target_t_i];
         /*
         Before we update the target token we want to check two cases:
@@ -83,6 +82,12 @@ export default class InteractiveText {
             bookmarkTokensSimplified[bookmark_i],
           );
           // If token is empty, due to removing punctuation, skip.
+          console.log(
+            bookmark_word,
+            paragraphs[target_p_i][target_s_i][
+              target_t_i + text_i + bookmark_i
+            ],
+          );
           if (bookmark_word.length === 0) {
             bookmark_i++;
             continue;
@@ -102,6 +107,7 @@ export default class InteractiveText {
             continue;
           }
           // If the tokens don't match, we break and skip this bookmark.
+          console.log(bookmark_word, text_word);
           if (bookmark_word !== text_word) {
             shouldSkipBookmarkUpdate = true;
             break;
@@ -141,14 +147,13 @@ export default class InteractiveText {
     this.isArticleContent = articleID && isArticleContent;
     this.translationEvent = translationEvent;
     this.source = source;
+    this.contextType = contextType;
+    this.formatting = formatting;
+    this.fragmentId = fragmentId;
 
     // Might be worth to store a flag to keep track of wether or not the
     // bookmark / text are part of the content or stand by themselves.
-    this.previousBookmarks = previousBookmarks.filter(
-      (each) =>
-        (isArticleContent && each.in_content) ||
-        (!isArticleContent && !each.in_content),
-    );
+    this.previousBookmarks = previousBookmarks;
     this.paragraphs = tokenizedParagraphs;
     _updateTokensWithBookmarks(this.previousBookmarks, this.paragraphs);
     this.paragraphsAsLinkedWordLists = this.paragraphs.map(
@@ -186,6 +191,9 @@ export default class InteractiveText {
         this.isArticleContent,
         leftEllipsis,
         rightEllipsis,
+        this.contextType,
+        this.formatting,
+        this.fragmentId,
       )
       .then((response) => response.json())
       .then((data) => {

@@ -123,7 +123,7 @@ export default function EditBookmarkButton({
           );
         }
         if (setReload) setReload(!reload);
-        if (notifyWordChange) notifyWordChange(bookmark.id);
+        if (notifyWordChange) notifyWordChange(bookmark);
         toast.success("Thank you for the contribution!");
         handleClose();
       },
