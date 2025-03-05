@@ -25,7 +25,6 @@ import {
   NonEmptyValidator,
 } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
-import { is } from "date-fns/locale";
 
 export default function ProfileDetails() {
   const api = useContext(APIContext);
