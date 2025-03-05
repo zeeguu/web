@@ -28,7 +28,7 @@ export default function SideNav({ screenWidth }) {
             <img alt="Zeeguu" src="../static/images/zeeguuWhiteLogo.svg"></img>
           }
           text={"Zeeguu"}
-          ariaLabel="Zeeguu homepage"
+          ariaLabel="Zeeguu"
         ></NavOption>
 
         {isOnStudentSide && (
