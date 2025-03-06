@@ -14,8 +14,12 @@ export default function SortingButtons({
   const isOnTeacherSite = useLocation().pathname.includes("teacher");
   const isOnSavedArticles = useLocation().pathname.includes("ownTexts");
 
-  function zeroIfNull(val) {
-    return val ? val : 0;
+  function getReadingCompletion(article) {
+    // If the article wasn't open give a negative value so they are first in the list.
+    let openAdjustment = article.opened ? 0 : 0.1;
+    return article.reading_completion
+      ? article.reading_completion
+      : 0 - openAdjustment;
   }
   function sortArticleList(sorting) {
     setArticleList([...articleList].sort(sorting));
@@ -88,9 +92,7 @@ export default function SortingButtons({
               progressSortState,
               setProgressSortState,
               setCurrentSort,
-              (a, b) =>
-                zeroIfNull(b.reading_completion) -
-                zeroIfNull(a.reading_completion),
+              (a, b) => getReadingCompletion(b) - getReadingCompletion(a),
             )
           }
         >

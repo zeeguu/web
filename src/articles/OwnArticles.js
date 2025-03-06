@@ -15,10 +15,15 @@ export default function OwnArticles() {
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
 
+  function updateOnPagination(newUpdatedList) {
+    setArticleList(newUpdatedList);
+    setOriginalList(newUpdatedList);
+  }
+
   const [handleScroll, isWaitingForNewArticles, noMoreArticlesToShow] =
     useArticlePagination(
       articleList,
-      setArticleList,
+      updateOnPagination,
       "Saved Articles",
       (pageNumber, handleArticleInsertion) => {
         api.getSavedUserArticles(pageNumber, handleArticleInsertion);
