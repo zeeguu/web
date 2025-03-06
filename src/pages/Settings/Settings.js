@@ -9,7 +9,7 @@ import ListOfSettingsItems from "./settings_pages_shared/ListOfSettingsItems";
 import * as s from "./Settings.sc";
 
 export default function Settings() {
-  const user = useContext(UserContext);
+  const { userDetails } = useContext(UserContext);
 
   useEffect(() => {
     setTitle(strings.settings);
@@ -27,7 +27,7 @@ export default function Settings() {
           {strings.languageSettings}
         </SettingsItem>
 
-        {!user.is_teacher && (
+        {!userDetails.is_teacher && (
           <SettingsItem path={"/account_settings/my_classrooms"}>
             {strings.myClassrooms}
           </SettingsItem>
