@@ -204,7 +204,6 @@ export default function ArticleReader({ teacherArticleID }) {
             new InteractiveText(
               each.tokens,
               articleInfo.id,
-              false,
               api,
               each.past_bookmarks,
               api.TRANSLATE_TEXT,
@@ -222,7 +221,6 @@ export default function ArticleReader({ teacherArticleID }) {
         new InteractiveText(
           articleTitleData.tokens,
           articleInfo.id,
-          false,
           api,
           articleTitleData.past_bookmarks,
           api.TRANSLATE_TEXT,

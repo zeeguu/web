@@ -83,6 +83,7 @@ export default function OrderWords({
   const moveElementInitialPosition = useRef();
   const scrollY = useRef();
   const speech = useContext(SpeechContext);
+  const exerciseBookmark = bookmarksToStudy[0];
 
   // Exercise Functions / Setup / Handle Interactions
 
@@ -93,12 +94,17 @@ export default function OrderWords({
       if (IS_DEBUG) console.log("Setting article info.");
       setInteractiveText(
         new InteractiveText(
-          bookmarksToStudy[0].context,
-          articleInfo,
+          exerciseBookmark.context_tokenized,
+          exerciseBookmark.article_id,
           api,
+          [],
           "TRANSLATE WORDS IN EXERCISE",
+          exerciseBookmark.from_lang,
           EXERCISE_TYPE,
           speech,
+          exerciseBookmark.context_type,
+          null,
+          exerciseBookmark.fragment_id,
         ),
       );
     });

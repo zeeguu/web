@@ -64,7 +64,6 @@ export default function MultipleChoiceContext({
       new InteractiveText(
         exerciseBookmark.context_tokenized,
         exerciseBookmark.article_id,
-        exerciseBookmark.context_in_content,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",

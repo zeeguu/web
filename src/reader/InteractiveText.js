@@ -14,8 +14,7 @@ function wordShouldSkipCount(word) {
 export default class InteractiveText {
   constructor(
     tokenizedParagraphs,
-    articleID,
-    isArticleContent,
+    sourceId,
     api,
     previousBookmarks,
     translationEvent = api.TRANSLATE_TEXT,
@@ -25,6 +24,7 @@ export default class InteractiveText {
     contextType,
     formatting,
     fragmentId,
+    subtitleId,
   ) {
     function _updateTokensWithBookmarks(bookmarks, paragraphs) {
       function areCoordinatesInParagraphMatrix(
@@ -142,14 +142,14 @@ export default class InteractiveText {
       }
     }
     this.api = api;
-    this.article_id = articleID;
+    this.sourceId = sourceId;
     this.language = language;
-    this.isArticleContent = articleID && isArticleContent;
     this.translationEvent = translationEvent;
     this.source = source;
     this.contextType = contextType;
     this.formatting = formatting;
     this.fragmentId = fragmentId;
+    this.subtitleId = subtitleId;
 
     // Might be worth to store a flag to keep track of wether or not the
     // bookmark / text are part of the content or stand by themselves.
@@ -187,7 +187,7 @@ export default class InteractiveText {
         [wordSent_i, wordToken_i, word.total_tokens],
         context,
         [cParagraph_i, cSent_i, cToken_i],
-        this.article_id,
+        this.sourceId,
         this.isArticleContent,
         leftEllipsis,
         rightEllipsis,
@@ -210,7 +210,7 @@ export default class InteractiveText {
 
     this.api.logReaderActivity(
       this.translationEvent,
-      this.article_id,
+      this.sourceId,
       word.word,
       this.source,
     );
@@ -232,7 +232,7 @@ export default class InteractiveText {
     let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`;
     this.api.logReaderActivity(
       this.api.SEND_SUGGESTION,
-      this.article_id,
+      this.sourceId,
       alternative_info,
       this.source,
     );
@@ -252,7 +252,7 @@ export default class InteractiveText {
         -1,
         word.service_name,
         word.translation,
-        this.article_id,
+        this.sourceId,
       )
       .then((response) => response.json())
       .then((data) => {
@@ -263,7 +263,7 @@ export default class InteractiveText {
 
   playAll() {
     console.log("playing all");
-    this.zeeguuSpeech.playAll(this.article_id);
+    this.zeeguuSpeech.playAll(this.sourceId);
   }
 
   pause() {
@@ -281,7 +281,7 @@ export default class InteractiveText {
 
     this.api.logReaderActivity(
       this.api.SPEAK_TEXT,
-      this.article_id,
+      this.sourceId,
       word.word,
       this.source,
     );
