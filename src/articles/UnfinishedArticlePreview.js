@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import * as s from "./ArticlePreview.sc";
 import moment from "moment";
+import ReadingCompletionProgress from "./ReadingCompletionProgress";
 export default function UnfinishedArticlePreview({ article, onArticleClick }) {
   const handleArticleClick = () => {
     if (onArticleClick) {
       onArticleClick(article.id);
     }
   };
+  const readingCompletion = article.last_reading_percentage * 100;
 
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
@@ -22,15 +24,17 @@ export default function UnfinishedArticlePreview({ article, onArticleClick }) {
   return (
     <s.ArticlePreview style={{ border: "none" }}>
       <s.UnfinishedArticleContainer>
-        <s.Title>{titleLink(article)}</s.Title>
         {article.img_url && <img alt="" src={article.img_url} />}
+        <s.Title className={article.opened ? "opened" : ""}>
+          {titleLink(article)}
+        </s.Title>
+        <ReadingCompletionProgress
+          value={readingCompletion}
+        ></ReadingCompletionProgress>
       </s.UnfinishedArticleContainer>
-      <div>
-        <s.UnfinishedArticleStats>
-          ({moment.utc(article.time_last_read).fromNow()},{" "}
-          {Math.round(article.last_reading_percentage * 100)}% read)
-        </s.UnfinishedArticleStats>
-      </div>
+      <s.UnfinishedArticleStats>
+        ({moment.utc(article.time_last_read).fromNow()})
+      </s.UnfinishedArticleStats>
     </s.ArticlePreview>
   );
 }

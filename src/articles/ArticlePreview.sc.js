@@ -116,7 +116,8 @@ const UrlSource = styled.span`
 const UnfinishedArticleContainer = styled.div`
   margin-top: 0.5em;
   display: flex;
-  flex-direction: row-reverse;
+  position: relative;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   align-content: center;
@@ -136,8 +137,10 @@ const UnfinishedArticleContainer = styled.div`
   }
 `;
 
-const UnfinishedArticleStats = styled.span`
+const UnfinishedArticleStats = styled.div`
   font-weight: 550;
+  margin-top: 0.5rem;
+  margin-bottom: -0.75rem;
 `;
 
 let Summary = styled.div`
