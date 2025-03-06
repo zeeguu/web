@@ -23,6 +23,7 @@ export default function UnfinishedArticlesList({
       }
       setArticleList(filterUnfinishedArticles);
     });
+    // eslint-disable-next-line
   }, []);
 
   if (
@@ -42,7 +43,6 @@ export default function UnfinishedArticlesList({
           <UnfinishedArticlePreview
             key={each.id}
             article={each}
-            api={api}
             onArticleClick={() => {
               api.logUserActivity(api.CLICKED_RESUME_ARTICLE, each.id, "", "");
             }}

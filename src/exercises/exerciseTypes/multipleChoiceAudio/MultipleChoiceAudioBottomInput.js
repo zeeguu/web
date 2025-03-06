@@ -12,8 +12,6 @@ export default function MultipleChoiceAudioBottomInput({
   const [isIncorrect, setIsIncorrect] = useState(false);
 
   function checkResult() {
-    console.log(currentChoice);
-    console.log("checking result...");
     if (currentChoice === true) {
       let concatMessage = messageToAPI + "C";
       handleCorrectAnswer(concatMessage);

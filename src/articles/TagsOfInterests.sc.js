@@ -2,7 +2,6 @@ import styled from "styled-components";
 import {
   zeeguuOrange,
   lightGrey,
-  zeeguuTransparentLightOrange,
   darkGrey,
   veryDarkGrey,
   zeeguuSalmonOrange,

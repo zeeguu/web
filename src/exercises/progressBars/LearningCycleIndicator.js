@@ -1,5 +1,5 @@
 import React from "react";
-import Tooltip from "@material-ui/core/Tooltip";
+import { Tooltip } from "@mui/material";
 import strings from "../../i18n/definitions.js";
 import { LEARNING_CYCLE_NAME } from "../ExerciseTypeConstants.js";
 import { APP_DOMAIN } from "../../appConstants.js";

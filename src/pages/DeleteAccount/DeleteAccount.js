@@ -9,6 +9,7 @@ import LoadingAnimation from "../../components/LoadingAnimation";
 import redirect from "../../utils/routing/routing";
 import SessionStorage from "../../assorted/SessionStorage";
 import { APP_DOMAIN } from "../../appConstants";
+import { APIContext } from "../../contexts/APIContext";
 
 const TIME_BEFORE_REDIRECT = 5000;
 
@@ -19,7 +20,8 @@ const DeletionStatus = Object.freeze({
   OK: 3,
 });
 
-export default function DeleteAccount({ api }) {
+export default function DeleteAccount() {
+  const api = useContext(APIContext);
   const user = useContext(UserContext);
   const [headingMsg, setHeadingMsg] = useState("We are deleting your account");
   const [currentStatus, setCurrentStatus] = useState(DeletionStatus.UNDEFINED);

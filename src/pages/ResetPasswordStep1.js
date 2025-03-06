@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import validateRules from "../assorted/validateRules";
 import strings from "../i18n/definitions";
 
@@ -9,9 +9,9 @@ import InputField from "../components/InputField";
 import ButtonContainer from "./_pages_shared/ButtonContainer.sc";
 import Button from "./_pages_shared/Button.sc";
 import { scrollToTop } from "../utils/misc/scrollToTop";
+import { APIContext } from "../contexts/APIContext";
 
 export default function ResetPasswordStep1({
-  api,
   email,
   setEmail,
   validateEmail,
@@ -19,6 +19,7 @@ export default function ResetPasswordStep1({
   emailErrorMsg,
   notifyEmailSent,
 }) {
+  const api = useContext(APIContext);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {

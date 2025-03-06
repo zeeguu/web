@@ -33,8 +33,10 @@ import {
   Validator,
 } from "../../utils/ValidatorRule/Validator";
 import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function CreateAccount({ api, handleSuccessfulLogIn, setUser }) {
+export default function CreateAccount({ handleSuccessfulLogIn, setUser }) {
+  const api = useContext(APIContext);
   const user = useContext(UserContext);
 
   const learnedLanguage = LocalStorage.getLearnedLanguage();

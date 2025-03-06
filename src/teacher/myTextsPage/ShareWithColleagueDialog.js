@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import strings from "../../i18n/definitions";
 import { Error } from "../sharedComponents/Error";
 import { LabeledTextField } from "../sharedComponents/LabeledInputFields";
@@ -7,8 +7,10 @@ import {
   PopupButtonWrapper,
   StyledButton,
 } from "../styledComponents/TeacherButtons.sc";
+import { APIContext } from "../../contexts/APIContext";
 
-const ShareWithCollegueDialog = ({ api, articleID, setShowDialog }) => {
+const ShareWithCollegueDialog = ({ articleID, setShowDialog }) => {
+  const api = useContext(APIContext);
   const [receivingColleague, setReceivingColleague] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [articleSent, setArticleSent] = useState(false);
@@ -35,7 +37,7 @@ const ShareWithCollegueDialog = ({ api, articleID, setShowDialog }) => {
       (error) => {
         setErrorMsg(strings.theConnectionFailed);
         console.log(error);
-      }
+      },
     );
   }
 

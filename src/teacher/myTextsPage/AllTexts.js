@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import TeacherTextPreview from "./TeacherTextPreview";
 import LoadingAnimation from "../../components/LoadingAnimation";
@@ -9,12 +9,13 @@ import {
   TopButtonWrapper,
 } from "../styledComponents/TeacherButtons.sc";
 import * as s from "../../components/ColumnWidth.sc";
-import * as sc from "../../components/TopTabs.sc";
 import * as m from "../styledComponents/AllTexts.sc";
 import SortingButtons from "../../articles/SortingButtons";
 import { PageTitle } from "../../components/PageTitle";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function AllTexts({ api }) {
+export default function AllTexts() {
+  const api = useContext(APIContext);
   const [articleList, setArticleList] = useState(null);
   const [originalList, setOriginalList] = useState(null);
   setTitle(strings.myTexts);

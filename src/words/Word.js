@@ -1,6 +1,6 @@
 import * as s from "./Word.sc";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import SpeakButton from "../exercises/exerciseTypes/SpeakButton";
 import EditBookmarkButton from "./EditBookmarkButton";
 import { darkGrey } from "../components/colors";
@@ -8,17 +8,17 @@ import { CenteredRow } from "../exercises/exerciseTypes/Exercise.sc";
 import { USER_WORD_PREFERENCE } from "./userBookmarkPreferences";
 import { MAX_WORDS_IN_BOOKMARK_FOR_EXERCISES } from "../exercises/ExerciseConstants";
 import { getStaticPath } from "../utils/misc/staticPath";
+import { APIContext } from "../contexts/APIContext";
 
 export default function Word({
   bookmark,
   notifyDelete,
   notifyWordChange,
   children,
-  api,
-  hideStar = true,
   source,
   isReview,
 }) {
+  const api = useContext(APIContext);
   const [deleted, setDeleted] = useState(false);
   const [reload, setReload] = useState(false);
 
@@ -95,7 +95,6 @@ export default function Word({
           {!isReview && (
             <EditBookmarkButton
               bookmark={bookmark}
-              api={api}
               reload={reload}
               setReload={setReload}
               notifyWordChange={notifyWordChange}
@@ -107,11 +106,7 @@ export default function Word({
           )}
 
           {!isReview && (
-            <SpeakButton
-              bookmarkToStudy={bookmark}
-              api={api}
-              styling={square}
-            />
+            <SpeakButton bookmarkToStudy={bookmark} styling={square} />
           )}
           <s.WordPair>
             <div className="from" style={style_grayed_out}>

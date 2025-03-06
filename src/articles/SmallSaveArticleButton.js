@@ -3,14 +3,15 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { APIContext } from "../contexts/APIContext.js";
 
 export default function SmallSaveArticleButton({
   article,
-  api,
   isArticleSaved,
   setIsArticleSaved,
 }) {
+  const api = useContext(APIContext);
   const [isHoveringSave, setIsHoveringSave] = useState(false);
 
   function saveArticle() {

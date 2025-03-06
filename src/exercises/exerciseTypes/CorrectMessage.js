@@ -10,9 +10,7 @@ const ENCOURAGEMENT = [
 ];
 
 export default function CorrectMessage({ className, info }) {
-  const [encouragementMessage, setEncouragementMessage] = useState(
-    random(ENCOURAGEMENT),
-  );
+  const [encouragementMessage] = useState(random(ENCOURAGEMENT));
   return (
     <div className={className}>
       <img

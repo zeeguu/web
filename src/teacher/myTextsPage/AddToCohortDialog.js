@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import strings from "../../i18n/definitions";
 import { useParams } from "react-router";
 import SelectButton from "../sharedComponents/SelectButton";
 import { StyledDialog } from "../styledComponents/StyledDialog.sc";
-import { PopupButtonWrapper, StyledButton } from "../styledComponents/TeacherButtons.sc";
+import {
+  PopupButtonWrapper,
+  StyledButton,
+} from "../styledComponents/TeacherButtons.sc";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function AddToCohortDialog({ api, setIsOpen }) {
+export default function AddToCohortDialog({ setIsOpen }) {
+  const api = useContext(APIContext);
   const [cohortsToChoose, setCohortsToChoose] = useState([]);
   const [initiallyChosen, setInitiallyChosen] = useState([]);
   const [chosenCohorts, setChosenCohorts] = useState([]);
@@ -42,7 +47,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
     //taking a cohort off the list
     if (chosenCohorts.includes(cohort_name)) {
       const temp = chosenCohorts.filter(
-        (chosenCohort) => chosenCohort !== cohort_name
+        (chosenCohort) => chosenCohort !== cohort_name,
       );
       setChosenCohorts(temp);
     }
@@ -57,7 +62,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       },
       () => {
         console.log("Connection to server failed...");
-      }
+      },
     );
   };
 
@@ -70,7 +75,7 @@ export default function AddToCohortDialog({ api, setIsOpen }) {
       },
       () => {
         console.log("Connection to server failed...");
-      }
+      },
     );
   };
 

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { isSupportedBrowser } from "../../utils/misc/browserDetection";
 
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
@@ -24,8 +24,10 @@ import redirect from "../../utils/routing/routing";
 import strings from "../../i18n/definitions";
 import { setTitle } from "../../assorted/setTitle";
 import { NonEmptyValidator } from "../../utils/ValidatorRule/Validator";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function ExcludeWords({ api, hasExtension }) {
+export default function ExcludeWords({ hasExtension }) {
+  const api = useContext(APIContext);
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 

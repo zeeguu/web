@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import { setTitle } from "../assorted/setTitle";
@@ -6,8 +6,10 @@ import strings from "../i18n/definitions";
 import Word from "./Word";
 import * as s from "../components/TopMessage.sc";
 import { UMR_SOURCE } from "../reader/ArticleReader";
+import { APIContext } from "../contexts/APIContext";
 
-export default function Top({ api }) {
+export default function Top() {
+  const api = useContext(APIContext);
   const [words, setWords] = useState();
 
   useEffect(() => {
@@ -33,7 +35,6 @@ export default function Top({ api }) {
         <Word
           key={each.id}
           bookmark={each}
-          api={api}
           source={UMR_SOURCE}
           notifyDelete={onNotifyDelete}
         />

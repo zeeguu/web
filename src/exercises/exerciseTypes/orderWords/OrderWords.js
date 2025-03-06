@@ -11,9 +11,9 @@ import { removeArrayDuplicates } from "../../../utils/basic/arrays.js";
 import { TranslatableText } from "../../../reader/TranslatableText.js";
 import InteractiveText from "../../../reader/InteractiveText.js";
 import { SpeechContext } from "../../../contexts/SpeechContext.js";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 export default function OrderWords({
-  api,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -28,6 +28,7 @@ export default function OrderWords({
   exerciseType,
   activeSessionDuration,
 }) {
+  const api = useContext(APIContext);
   // Constants for Exercise
   const L1_LANG = bookmarksToStudy[0].to_lang;
   const L2_LANG = bookmarksToStudy[0].from_lang;
@@ -115,6 +116,7 @@ export default function OrderWords({
     // to prepare the exercise, as well as the sentenceTooLong.
     setInitialTime(exerciseIntializeVariables["exerciseStartTime"]);
     setIsSentenceTooLong(exerciseIntializeVariables["isLongSentence"]);
+    // eslint-disable-next-line
   }, []);
 
   function prepareContext(
@@ -238,7 +240,7 @@ export default function OrderWords({
     let currentElement = prevElement;
     while (currentElement != null) {
       prevElement = currentElement;
-      if (prevElement.scrollTop != 0) {
+      if (prevElement.scrollTop !== 0) {
         break;
       }
       currentElement = currentElement.parentNode;
@@ -296,7 +298,7 @@ export default function OrderWords({
     if (moveOverElement.current == null) {
       // We are hovering a new object
       moveOverElement.current = element;
-    } else if (moveOverElement.current != element) {
+    } else if (moveOverElement.current !== element) {
       // We are over a new element.
       _clearMoveOverObject();
     } else {
@@ -1184,7 +1186,6 @@ export default function OrderWords({
         <NextNavigation
           exerciseType={EXERCISE_TYPE}
           message={messageToAPI}
-          api={api}
           // Added an empty bookmark to avoid showing the
           // Listen Button.
           exerciseBookmark={bookmarksToStudy[0]}
@@ -1226,15 +1227,6 @@ export default function OrderWords({
       </sOW.ExerciseOW>
     </>
   );
-
-  function _getCurrentDuration() {
-    let currTime = new Date();
-    if (IS_DEBUG) {
-      console.log(currTime - initialTime);
-      console.log("^^^^ time elapsed");
-    }
-    return currTime - initialTime;
-  }
 
   // Touch / Mouse Drag n' Drop
   // Helper Functions

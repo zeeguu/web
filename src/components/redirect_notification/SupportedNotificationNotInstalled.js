@@ -12,7 +12,7 @@ import Button from "../../pages/_pages_shared/Button.sc";
 import FullWidthImage from "../FullWidthImage";
 import redirect from "../../utils/routing/routing";
 
-export default function SupportedNotification_NotInstalled({
+export default function SupportedNotificationNotInstalled({
   handleCloseRedirectionModal,
   open,
 }) {

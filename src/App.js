@@ -46,6 +46,7 @@ function App() {
     if (userData && userData.learned_language) {
       setZeeguuSpeech(new ZeeguuSpeech(api, userData.learned_language));
     }
+    // eslint-disable-next-line
   }, [userData]);
 
   useEffect(() => {
@@ -169,7 +170,6 @@ function App() {
               <APIContext.Provider value={api}>
                 {/* Routing*/}
                 <MainAppRouter
-                  api={api}
                   setUser={setUserData}
                   hasExtension={isExtensionAvailable}
                   handleSuccessfulLogIn={handleSuccessfulLogIn}

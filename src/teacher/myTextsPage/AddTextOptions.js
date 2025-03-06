@@ -10,7 +10,7 @@ import {
 } from "./AddTextOptionTypes";
 import AddURLDialog from "./AddURLDialog";
 
-export default function AddTextOptions({ api }) {
+export default function AddTextOptions() {
   const [showAddURLDialog, setShowAddURLDialog] = useState(false);
   setTitle(strings.addTexts);
   return (
@@ -26,7 +26,7 @@ export default function AddTextOptions({ api }) {
         <AddURLOption onClick={() => setShowAddURLDialog(true)} />
       </s.NarrowColumn>
       {showAddURLDialog && (
-        <AddURLDialog api={api} setShowAddURLDialog={setShowAddURLDialog} />
+        <AddURLDialog setShowAddURLDialog={setShowAddURLDialog} />
       )}
     </Fragment>
   );

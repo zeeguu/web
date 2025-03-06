@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AttemptIcons } from "./AttemptIcons";
 import { v4 as uuid } from "uuid";
 import { shortFormattedDate } from "../../sharedComponents/FormattedDate";
@@ -7,8 +7,10 @@ import { useParams } from "react-router";
 import LocalStorage from "../../../assorted/LocalStorage";
 import strings from "../../../i18n/definitions";
 import * as s from "../../styledComponents/PractisedWordsList.sc";
+import { APIContext } from "../../../contexts/APIContext";
 
-const PractisedWordsList = ({ api }) => {
+const PractisedWordsList = () => {
+  const api = useContext(APIContext);
   const [practisedWords, setPractisedWords] = useState([]);
   const selectedTimePeriod = LocalStorage.selectedTimePeriod();
   const studentID = useParams().studentID;
@@ -24,41 +26,51 @@ const PractisedWordsList = ({ api }) => {
       },
       (error) => {
         console.log(error);
-      }
+      },
     );
     //eslint-disable-next-line
   }, []);
 
   return (
-    <Fragment>
+    <>
       {practisedWords.length === 0 && (
         <p style={{ fontSize: "medium" }}>{strings.noPractisedWordsYet}</p>
       )}
       {practisedWords &&
         practisedWords.map((word) => (
-          <div key={word + uuid()}>
-            <s.StyledPractisedWordsList>
-              <div key={uuid()} className="practised-words-container">
-                <p className="word-practised">
-                  <b>{word.word}</b>
-                </p>
-                <p className="translation-of-practised-word">
-                  {word.translation.toLowerCase()}
-                </p>
+          <s.StyledPractisedWordsList key={word + uuid()}>
+            <div key={uuid()} className="practised-words-container">
+              <p className="word-practised">
+                <b>{word.word}</b>
+              </p>
+              <p className="translation-of-practised-word">
+                {word.translation.toLowerCase()}
+              </p>
+              <div key={uuid()} className="table">
                 {word.exerciseAttempts.map((exercise) => (
-                  <div key={uuid()} className="practised-word-date-and-icons">
-                    <p className="word-practised-date">
-                      {shortFormattedDate(exercise.time)}
-                    </p>
-                    <ExerciseType source={exercise.source} />
-                    <AttemptIcons attemptString={exercise.outcome} />
-                  </div>
+                  <tr>
+                    <td className="col">
+                      <span className="word-practised-date">
+                        {shortFormattedDate(exercise.time)}
+                      </span>
+                    </td>
+                    <td>
+                      <ExerciseType className="col" source={exercise.source} />
+                    </td>
+                    <td>
+                      {" "}
+                      <AttemptIcons
+                        className="col"
+                        attemptString={exercise.outcome}
+                      />
+                    </td>
+                  </tr>
                 ))}
               </div>
-            </s.StyledPractisedWordsList>
-          </div>
+            </div>
+          </s.StyledPractisedWordsList>
         ))}
-    </Fragment>
+    </>
   );
 };
 export default PractisedWordsList;

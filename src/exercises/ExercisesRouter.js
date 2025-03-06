@@ -3,8 +3,11 @@ import { PrivateRoute } from "../PrivateRoute";
 import Exercises from "./Exercises";
 import * as s from "../components/ColumnWidth.sc";
 import { UMR_SOURCE } from "../reader/ArticleReader";
+import { useContext } from "react";
+import { APIContext } from "../contexts/APIContext";
 
-export default function ExercisesRouter({ api }) {
+export default function ExercisesRouter() {
+  const api = useContext(APIContext);
   const history = useHistory();
 
   const backToReadingAction = () => {
@@ -27,7 +30,6 @@ export default function ExercisesRouter({ api }) {
       <Switch>
         <PrivateRoute
           path="/exercises"
-          api={api}
           component={Exercises}
           backButtonAction={backToReadingAction}
           keepExercisingAction={keepExercisingAction}

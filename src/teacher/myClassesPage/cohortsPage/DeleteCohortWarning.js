@@ -9,7 +9,6 @@ import CohortItemCard from "./CohortItemCard";
 import { Error } from "../../sharedComponents/Error";
 
 const DeleteCohortWarning = ({
-  api,
   cohort,
   setShowWarning,
   deleteCohort,
@@ -30,7 +29,7 @@ const DeleteCohortWarning = ({
       <div className="centered">
         <h1>{strings.dangerzone}</h1>
       </div>
-      <CohortItemCard api={api} cohort={cohort} isWarning={true} />
+      <CohortItemCard cohort={cohort} isWarning={true} />
       <p>{strings.deleteCohortEnsurance}</p>
       {isDeleteError && <Error message={strings.cannotDeleteClassWithText} />}
       {cohort.teachers_for_cohort.length > 1 && (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import LocalStorage from "../../assorted/LocalStorage";
 
@@ -27,8 +27,10 @@ import { setTitle } from "../../assorted/setTitle";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import { Validator } from "../../utils/ValidatorRule/Validator";
 import useShadowRef from "../../hooks/useShadowRef";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function LanguagePreferences({ api }) {
+export default function LanguagePreferences() {
+  const api = useContext(APIContext);
   const [
     learnedLanguage,
     setLearnedLanguage,

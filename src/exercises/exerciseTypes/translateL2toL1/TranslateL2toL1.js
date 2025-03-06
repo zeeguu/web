@@ -11,6 +11,7 @@ import useSubSessionTimer from "../../../hooks/useSubSessionTimer.js";
 import BottomInput from "../BottomInput.js";
 import BookmarkProgressBar from "../../progressBars/BookmarkProgressBar.js";
 import { removePunctuation } from "../../../utils/text/preprocessing";
+import { APIContext } from "../../../contexts/APIContext.js";
 
 // The user has to translate the L2 word in bold to their L1.
 // This tests the user's active knowledge.
@@ -18,7 +19,6 @@ import { removePunctuation } from "../../../utils/text/preprocessing";
 const EXERCISE_TYPE = EXERCISE_TYPES.translateL2toL1;
 
 export default function TranslateL2toL1({
-  api,
   bookmarksToStudy,
   notifyCorrectAnswer,
   notifyIncorrectAnswer,
@@ -32,6 +32,7 @@ export default function TranslateL2toL1({
   exerciseSessionId,
   activeSessionDuration,
 }) {
+  const api = useContext(APIContext);
   const [messageToAPI, setMessageToAPI] = useState("");
   const [interactiveText, setInteractiveText] = useState();
   const [translatedWords, setTranslatedWords] = useState([]);
@@ -56,7 +57,8 @@ export default function TranslateL2toL1({
         speech,
       ),
     );
-  }, [isBookmarkChanged]);
+    // eslint-disable-next-line
+  }, [isBookmarkChanged, exerciseBookmark]);
 
   function handleShowSolution(e, message) {
     e.preventDefault();
@@ -145,7 +147,6 @@ export default function TranslateL2toL1({
       <NextNavigation
         exerciseType={EXERCISE_TYPE}
         message={messageToAPI}
-        api={api}
         exerciseBookmark={exerciseBookmark}
         moveToNextExercise={moveToNextExercise}
         reload={reload}

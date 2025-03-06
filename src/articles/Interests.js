@@ -6,7 +6,7 @@ import * as s from "./Interests.sc";
 import * as b from "../components/allButtons.sc";
 import strings from "../i18n/definitions";
 
-export default function InterestsAndSearch({ api, articlesListShouldChange }) {
+export default function InterestsAndSearch({ articlesListShouldChange }) {
   const [showingInterests, setShowingInterests] = useState(false);
   const [showingFilters, setShowingFilters] = useState(false);
 
@@ -53,14 +53,12 @@ export default function InterestsAndSearch({ api, articlesListShouldChange }) {
 
       <TagsOfInterests
         visible={showingInterests}
-        api={api}
         articlesListShouldChange={
           closeTagsOfInterestAndNotifyArticleListOfChange
         }
       />
       <TagsOfFilters
         visible={showingFilters}
-        api={api}
         articlesListShouldChange={
           closeTagsOfInterestAndNotifyArticleListOfChange
         }

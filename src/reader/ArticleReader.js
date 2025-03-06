@@ -2,7 +2,6 @@ import { useEffect, useState, useContext, useRef } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 
 import { UserContext } from "../contexts/UserContext";
-import { RoutingContext } from "../contexts/RoutingContext";
 import { SpeechContext } from "../contexts/SpeechContext";
 import { TranslatableText } from "./TranslatableText";
 import InteractiveText from "./InteractiveText";
@@ -28,6 +27,7 @@ import { getScrollRatio } from "../utils/misc/getScrollLocation";
 import useUserPreferences from "../hooks/useUserPreferences";
 import ArticleStatInfo from "../components/ArticleStatInfo";
 import DigitalTimer from "../components/DigitalTimer";
+import { APIContext } from "../contexts/APIContext";
 
 export const UMR_SOURCE = "UMR";
 
@@ -45,7 +45,8 @@ export function onBlur(api, articleID, source) {
   api.logReaderActivity(api.ARTICLE_UNFOCUSED, articleID, "", source);
 }
 
-export default function ArticleReader({ api, teacherArticleID }) {
+export default function ArticleReader({ teacherArticleID }) {
+  const api = useContext(APIContext);
   let articleID = "";
   let query = useQuery();
   teacherArticleID
@@ -56,7 +57,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
     last_reading_percentage === "undefined"
       ? null
       : Number(last_reading_percentage);
-  const { setReturnPath } = useContext(RoutingContext); //This to be able to use Cancel correctly in EditText.
 
   const [articleInfo, setArticleInfo] = useState();
 
@@ -117,6 +117,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
 
   useEffect(() => {
     fetchBookmarks();
+    // eslint-disable-next-line
   }, [articleID]);
 
   const handleFocus = () => {
@@ -186,7 +187,7 @@ export default function ArticleReader({ api, teacherArticleID }) {
         }
       }, 250);
     }
-  }, [interactiveText]);
+  }, [interactiveText, last_reading_percentage]);
 
   function onCreate() {
     scrollEvents.current = [];
@@ -262,35 +263,9 @@ export default function ArticleReader({ api, teacherArticleID }) {
     }
   }
 
-  function toggleBookmarkedState() {
-    let newArticleInfo = { ...articleInfo, starred: !articleInfo.starred };
-    api.setArticleInfo(newArticleInfo, () => {
-      setArticleInfo(newArticleInfo);
-    });
-    api.logReaderActivity(
-      api.STAR_ARTICLE,
-      articleID,
-      readingSessionId,
-      UMR_SOURCE,
-    );
-  }
-
   if (!articleInfo || !interactiveText) {
     return <LoadingAnimation />;
   }
-
-  const saveArticleToOwnTexts = () => {
-    api.getArticleInfo(articleID, (article) => {
-      api.uploadOwnText(
-        article.title,
-        article.content,
-        article.language,
-        (newID) => {
-          history.push(`/teacher/texts/editText/${newID}`);
-        },
-      );
-    });
-  };
 
   const setLikedState = (state) => {
     let newArticleInfo = { ...articleInfo, liked: state };
@@ -324,7 +299,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
         user={user}
         teacherArticleID={teacherArticleID}
         articleID={articleID}
-        api={api}
         interactiveText={interactiveText}
         translating={translateInReader}
         pronouncing={pronounceInReader}
@@ -359,7 +333,6 @@ export default function ArticleReader({ api, teacherArticleID }) {
             <s.TopReaderButtonsContainer>
               <ArticleSource url={articleInfo.url} />
               <ReportBroken
-                api={api}
                 UMR_SOURCE={UMR_SOURCE}
                 history={history}
                 articleID={articleID}

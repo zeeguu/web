@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import strings from "../../../i18n/definitions";
 import CohortForm from "./CohortForm";
 import { CohortItemCard } from "./CohortItemCard";
@@ -9,7 +9,7 @@ import {
 } from "../../styledComponents/TeacherButtons.sc";
 import AddTeacherDialog from "./AddTeacherDialog";
 
-export default function CohortList({ api, cohorts, setForceUpdate }) {
+export default function CohortList({ cohorts, setForceUpdate }) {
   const [showCohortForm, setShowCohortForm] = useState(false);
   const [showAddTeacherDialog, setShowAddTeacherDialog] = useState(false);
   const [reversedList, setReversedList] = useState(null);
@@ -33,7 +33,7 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
   }
 
   return (
-    <Fragment>
+    <>
       <TopButtonWrapper>
         <StyledButton primary onClick={handleAddNewCohort}>
           {strings.addClass}
@@ -50,7 +50,6 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
       ))}
       {showCohortForm && (
         <CohortForm
-          api={api}
           setShowCohortForm={setShowCohortForm}
           setForceUpdate={setForceUpdate}
           cohort={cohortToEdit}
@@ -59,12 +58,11 @@ export default function CohortList({ api, cohorts, setForceUpdate }) {
       )}
       {showAddTeacherDialog && (
         <AddTeacherDialog
-          api={api}
           cohort={cohortToEdit}
           setIsOpen={setShowAddTeacherDialog}
           setForceUpdate={setForceUpdate}
         />
       )}
-    </Fragment>
+    </>
   );
 }

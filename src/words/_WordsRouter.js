@@ -9,7 +9,7 @@ import WordsForArticle from "./WordsForArticle";
 import Feature from "../features/Feature";
 import Learning from "./Learning";
 
-export default function WordsRouter({ api }) {
+export default function WordsRouter() {
   let tabsAndLinks = {
     [strings.learned]: "/words/learned",
     [strings.topWords]: "/words",
@@ -26,12 +26,10 @@ export default function WordsRouter({ api }) {
     <Switch>
       <PrivateRoute
         path="/words/forArticle/:articleID"
-        api={api}
         component={WordsForArticle}
       />
       <PrivateRoute
         path="/render/words/forArticle/:articleID"
-        api={api}
         component={WordsForArticle}
       />
 
@@ -41,35 +39,27 @@ export default function WordsRouter({ api }) {
           tabsAndLinks={tabsAndLinks}
         />
 
-        <PrivateRoute path="/words/learned" api={api} component={Learned} />
+        <PrivateRoute path="/words/learned" component={Learned} />
 
-        <PrivateRoute
-          path="/render/words/learned"
-          api={api}
-          component={Learned}
-        />
+        <PrivateRoute path="/render/words/learned" component={Learned} />
 
         {Feature.merle_exercises ? (
-          <PrivateRoute exact path="/words" api={api} component={Learning} />
+          <PrivateRoute exact path="/words" component={Learning} />
         ) : (
-          <PrivateRoute exact path="/words" api={api} component={Top} />
+          <PrivateRoute exact path="/words" component={Top} />
         )}
 
-        <PrivateRoute exact path="/render/words" api={api} component={Top} />
-        <PrivateRoute
-          exact
-          path="/words/learning"
-          api={api}
-          component={Learning}
-        />
+        <PrivateRoute exact path="/render/words" component={Top} />
+
+        <PrivateRoute exact path="/words/learning" component={Learning} />
+
         <PrivateRoute
           exact
           path="/render/words/learning"
-          api={api}
           component={Learning}
         />
 
-        <PrivateRoute exact path="/words/top" api={api} component={Top} />
+        <PrivateRoute exact path="/words/top" component={Top} />
       </s.NarrowColumn>
     </Switch>
   );

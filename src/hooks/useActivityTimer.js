@@ -52,6 +52,7 @@ export default function useActivityTimer(activityUploaderFunction) {
     return () => {
       clearInterval(interval);
     };
+    // eslint-disable-next-line
   }, [activityTimer, isTimerActive]);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ export default function useActivityTimer(activityUploaderFunction) {
       window.removeEventListener("focus", handleFocus);
       window.removeEventListener("blur", handleBlur);
     };
+    // eslint-disable-next-line
   }, []);
 
   // active session duration is measured in seconds

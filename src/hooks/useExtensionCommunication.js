@@ -17,7 +17,7 @@ export default function useExtensionCommunication() {
     } else {
       checkExtensionInstalled(setIsExtensionAvailable);
     }
-  });
+  }, []);
 
   return [isExtensionAvailable];
 }

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import useUnwantedContentPreferences from "../../hooks/useUnwantedContentPreferences";
 import useFormField from "../../hooks/useFormField";
 import useQuery from "../../hooks/useQuery";
@@ -19,8 +19,10 @@ import TagContainer from "../_pages_shared/TagContainer.sc";
 import strings from "../../i18n/definitions";
 import BackArrow from "./settings_pages_shared/BackArrow";
 import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function ExcludedKeywords({ api }) {
+export default function ExcludedKeywords() {
+  const api = useContext(APIContext);
   const { unwantedKeywords, addUnwantedKeyword, removeUnwantedKeyword } =
     useUnwantedContentPreferences(api);
 

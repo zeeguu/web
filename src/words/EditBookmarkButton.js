@@ -1,6 +1,6 @@
 import * as s from "./WordEdit.sc";
 import * as sc from "./Word.sc";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import WordEditForm from "./WordEditForm";
@@ -8,16 +8,17 @@ import { getStaticPath } from "../utils/misc/staticPath.js";
 import { toast } from "react-toastify";
 
 import { isTextInSentence } from "../utils/text/expressions";
+import { APIContext } from "../contexts/APIContext.js";
 
 export default function EditBookmarkButton({
   bookmark,
-  api,
   styling,
   reload,
   setReload,
   notifyWordChange,
   notifyDelete,
 }) {
+  const api = useContext(APIContext);
   const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
   const SOURCE_FOR_API_USER_PREFERENCE = "WORD_EDIT_FORM_CHECKBOX";
@@ -92,28 +93,41 @@ export default function EditBookmarkButton({
     bookmark.context = newContext;
     bookmark.fit_for_study = newFitForStudy;
 
-    api.updateBookmark(bookmark.id, newWord, newTranslation, newContext);
-    if (newFitForStudy) {
-      api.userSetForExercises(bookmark.id);
-      api.logReaderActivity(
-        api.USER_SET_WORD_PREFERRED,
-        bookmark.article_id,
-        bookmark.from,
-        SOURCE_FOR_API_USER_PREFERENCE,
-      );
-    } else {
-      api.userSetNotForExercises(bookmark.id);
-      api.logReaderActivity(
-        api.USER_SET_NOT_WORD_PREFERED,
-        bookmark.article_id,
-        bookmark.from,
-        SOURCE_FOR_API_USER_PREFERENCE,
-      );
-    }
-    if (setReload) setReload(!reload);
-    if (notifyWordChange) notifyWordChange(bookmark.id);
-    toast.success("Thank you for the contribution!");
-    handleClose();
+    api.updateBookmark(
+      bookmark.id,
+      newWord,
+      newTranslation,
+      newContext,
+      (newBookmark) => {
+        bookmark.context_tokenized = newBookmark.context_tokenized;
+        bookmark.context_in_content = newBookmark.context_in_content;
+        bookmark.left_ellipsis = newBookmark.left_ellipsis;
+        bookmark.right_ellipsis = newBookmark.right_ellipsis;
+        bookmark.id = newBookmark.id;
+
+        if (newFitForStudy) {
+          api.userSetForExercises(bookmark.id);
+          api.logReaderActivity(
+            api.USER_SET_WORD_PREFERRED,
+            newBookmark.article_id,
+            newBookmark.from,
+            SOURCE_FOR_API_USER_PREFERENCE,
+          );
+        } else {
+          api.userSetNotForExercises(bookmark.id);
+          api.logReaderActivity(
+            api.USER_SET_NOT_WORD_PREFERED,
+            newBookmark.article_id,
+            newBookmark.from,
+            SOURCE_FOR_API_USER_PREFERENCE,
+          );
+        }
+        if (setReload) setReload(!reload);
+        if (notifyWordChange) notifyWordChange(bookmark.id);
+        toast.success("Thank you for the contribution!");
+        handleClose();
+      },
+    );
   }
   const isPhoneScreen = window.innerWidth < 800;
   return (

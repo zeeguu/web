@@ -25,8 +25,10 @@ import {
 } from "../../utils/ValidatorRule/Validator";
 import validateRules from "../../assorted/validateRules";
 import { setTitle } from "../../assorted/setTitle";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function ProfileDetails({ api, setUser }) {
+export default function ProfileDetails({ setUser }) {
+  const api = useContext(APIContext);
   const [userDetails, setUserDetails] = useState("");
   const [
     userName,
@@ -61,7 +63,8 @@ export default function ProfileDetails({ api, setUser }) {
       setUserEmail(data.email);
       setUserName(data.name);
     });
-  }, [user.session, api]);
+    // eslint-disable-next-line
+  }, [user, api]);
 
   function updateUserInfo(info) {
     LocalStorage.setUserInfo(info);

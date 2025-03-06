@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useClickOutside } from "react-click-outside-hook";
-import { zeeguuDarkOrange } from "../components/colors";
 import { AlterMenuSC } from "./AlterMenu.sc";
 import LoadingAnimation from "../components/LoadingAnimation";
 
@@ -18,7 +17,7 @@ export default function AlterMenu({
     if (clickedOutsideAlterMenu && clickedOutsideTranslation) {
       hideAlterMenu();
     }
-  }, [clickedOutsideAlterMenu]);
+  }, [clickedOutsideAlterMenu, clickedOutsideTranslation, hideAlterMenu]);
 
   function handleKeyDown(e) {
     if (e.code === "Enter") {
@@ -31,14 +30,14 @@ export default function AlterMenu({
       return "Azure";
     }
     if (word.source === "Microsoft - with context") {
-      return "Azure (in context)";
+      return "Azure (contextual)";
     }
 
     if (word.source === "Google - without context") {
       return "Google";
     }
     if (word.source === "Google - with context") {
-      return "Google (in context)";
+      return "Google (contextual)";
     }
 
     return word.source;

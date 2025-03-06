@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import strings from "../../i18n/definitions";
 import { useHistory } from "react-router";
 import { LabeledTextField } from "../sharedComponents/LabeledInputFields";
@@ -9,8 +9,10 @@ import {
   StyledButton,
 } from "../styledComponents/TeacherButtons.sc";
 import { Error } from "../sharedComponents/Error";
+import { APIContext } from "../../contexts/APIContext";
 
-export default function AddURLDialog({ api, setShowAddURLDialog }) {
+export default function AddURLDialog({ setShowAddURLDialog }) {
+  const api = useContext(APIContext);
   const history = useHistory();
   const [showGuidance, setShowGuidance] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -44,10 +46,10 @@ export default function AddURLDialog({ api, setShowAddURLDialog }) {
         (err) => {
           setShowError(true);
           console.log(
-            "An error occurred. It might be caused by an invalid URL: "
+            "An error occurred. It might be caused by an invalid URL: ",
           );
           console.log(err);
-        }
+        },
       );
     }
   };

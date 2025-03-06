@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import useFormField from "../hooks/useFormField";
 
@@ -23,10 +23,11 @@ import {
 import validateRules from "../assorted/validateRules";
 import { scrollToTop } from "../utils/misc/scrollToTop";
 import { setTitle } from "../assorted/setTitle";
+import { APIContext } from "../contexts/APIContext";
 
-export default function LogIn({ api, handleSuccessfulLogIn }) {
+export default function LogIn({ handleSuccessfulLogIn }) {
   strings.setLanguage(LocalStorage.getUiLanguage().code);
-
+  const api = useContext(APIContext);
   const [email, setEmail, validateEmail, isEmailValid, emailErrorMsg] =
     useFormField("", [
       NonEmptyValidator("Please provide an email."),

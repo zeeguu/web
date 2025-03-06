@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { WordsOnDate } from "./WordsOnDate";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -7,8 +7,10 @@ import * as sc from "../components/ColumnWidth.sc";
 import { setTitle } from "../assorted/setTitle";
 import { PageTitle } from "../components/PageTitle";
 import Infobox from "../components/Infobox";
+import { APIContext } from "../contexts/APIContext";
 
-export default function ReadingHistory({ api }) {
+export default function ReadingHistory() {
+  const api = useContext(APIContext);
   const [wordsByDay, setWordsByDay] = useState();
 
   function onNotifyDelete(bookmark) {
@@ -26,7 +28,7 @@ export default function ReadingHistory({ api }) {
       setWordsByDay(bookmarks_by_day);
     });
     setTitle(strings.titleTranslationHistory);
-  }, []);
+  }, [api]);
 
   if (wordsByDay === undefined) {
     return <LoadingAnimation />;
@@ -39,12 +41,7 @@ export default function ReadingHistory({ api }) {
         <Infobox>You don't have any translations yet.</Infobox>
       )}
       {wordsByDay.map((day) => (
-        <WordsOnDate
-          key={day.date}
-          day={day}
-          api={api}
-          notifyDelete={onNotifyDelete}
-        />
+        <WordsOnDate key={day.date} day={day} notifyDelete={onNotifyDelete} />
       ))}
     </sc.NarrowColumn>
   );
