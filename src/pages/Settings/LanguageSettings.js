@@ -59,7 +59,7 @@ export default function LanguageSettings() {
   const history = useHistory();
   const isPageMounted = useRef(true);
 
-  function handleSetCEFRlevelFromUserData(data) {
+  function setCEFRlevelFromUserContext(data) {
     const levelKey = data.learned_language + "_cefr_level";
     const levelNumber = data[levelKey];
     setCEFR(levelNumber);
@@ -73,7 +73,7 @@ export default function LanguageSettings() {
     isPageMounted.current = true;
 
     if (isPageMounted.current) {
-      handleSetCEFRlevelFromUserData(userDetails);
+      setCEFRlevelFromUserContext(userDetails);
       setLearnedLanguage(userDetails.learned_language);
       setNativeLanguage(userDetails.native_language);
     }
@@ -87,8 +87,7 @@ export default function LanguageSettings() {
     return () => {
       isPageMounted.current = false;
     };
-    // eslint-disable-next
-    // -line
+    // eslint-disable-next-line
   }, [session, api]);
 
   function handleSave(e) {

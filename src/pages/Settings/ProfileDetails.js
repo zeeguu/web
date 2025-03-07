@@ -33,11 +33,6 @@ export default function ProfileDetails() {
   const history = useHistory();
   const isPageMounted = useRef(true);
 
-  console.log(
-    "userDetails from the context on the ProfileDetails page:",
-    userDetails,
-  );
-
   const [
     userName,
     setUserName,
