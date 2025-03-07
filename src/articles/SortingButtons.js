@@ -8,8 +8,8 @@ export default function SortingButtons({
   setArticleList,
   originalList,
 }) {
-  const [difficultySortState, setCurrentSort] = useState("");
-  const [wordCountSortState, setwordCountSortState] = useState("");
+  const [difficultySortState, setDifficultySortState] = useState("");
+  const [wordCountSortState, setWordCountSortState] = useState("");
   const [progressSortState, setProgressSortState] = useState("");
   const isOnTeacherSite = useLocation().pathname.includes("teacher");
   const isOnSavedArticles = useLocation().pathname.includes("ownTexts");
@@ -32,21 +32,20 @@ export default function SortingButtons({
     e,
     currentSort,
     setCurrentSort,
-    setOtherSort,
+    otherSetters,
     sortingFunction,
   ) {
     if (currentSort === "ascending") {
       sortArticleList(sortingFunction);
       setCurrentSort("descending");
-      setOtherSort("");
     } else if (currentSort === "descending") {
       setArticleList(originalList);
       setCurrentSort("");
     } else {
       sortArticleList((a, b) => 0 - sortingFunction(a, b));
       setCurrentSort("ascending");
-      setOtherSort("");
     }
+    otherSetters.forEach((setter) => setter(""));
   }
 
   return (
@@ -59,8 +58,8 @@ export default function SortingButtons({
           changeDifficultySorting(
             e,
             difficultySortState,
-            setCurrentSort,
-            setwordCountSortState,
+            setDifficultySortState,
+            [setWordCountSortState, setProgressSortState],
             (a, b) => b.metrics.difficulty - a.metrics.difficulty,
           )
         }
@@ -74,8 +73,8 @@ export default function SortingButtons({
           changeDifficultySorting(
             e,
             wordCountSortState,
-            setwordCountSortState,
-            setCurrentSort,
+            setWordCountSortState,
+            [setDifficultySortState, setProgressSortState],
             (a, b) => b.metrics.word_count - a.metrics.word_count,
           )
         }
@@ -91,7 +90,7 @@ export default function SortingButtons({
               e,
               progressSortState,
               setProgressSortState,
-              setCurrentSort,
+              [setDifficultySortState, setWordCountSortState],
               (a, b) => getReadingCompletion(b) - getReadingCompletion(a),
             )
           }
