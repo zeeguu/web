@@ -8,7 +8,6 @@ export default function UnfinishedArticlePreview({ article, onArticleClick }) {
       onArticleClick(article.id);
     }
   };
-  const readingCompletion = article.last_reading_percentage * 100;
 
   function titleLink(article) {
     let linkToRedirect = `/read/article?id=${article.id}`;
@@ -29,7 +28,7 @@ export default function UnfinishedArticlePreview({ article, onArticleClick }) {
           {titleLink(article)}
         </s.Title>
         <ReadingCompletionProgress
-          value={readingCompletion}
+          last_reading_percentage={article.last_reading_percentage}
         ></ReadingCompletionProgress>
       </s.UnfinishedArticleContainer>
       <s.UnfinishedArticleStats>

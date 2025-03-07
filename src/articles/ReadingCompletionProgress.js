@@ -4,9 +4,10 @@ import Box from "@mui/material/Box";
 import DoneIcon from "@mui/icons-material/Done";
 import { veryLightGrey, transparentDarkGreen } from "../components/colors";
 
-export default function ReadingCompletionProgress({ value }) {
-  const colorValue = value < 100 ? "grey" : transparentDarkGreen;
-  if (isNaN(value) || value === 0) return <></>;
+export default function ReadingCompletionProgress({ last_reading_percentage }) {
+  const readingCompletion = last_reading_percentage * 100;
+  const colorValue = readingCompletion < 100 ? "grey" : transparentDarkGreen;
+  if (isNaN(readingCompletion) || readingCompletion === 0) return <></>;
   return (
     <>
       <CircularProgress
@@ -22,7 +23,7 @@ export default function ReadingCompletionProgress({ value }) {
       <Box sx={{ position: "relative", display: "inline-flex" }}>
         <CircularProgress
           variant="determinate"
-          value={value}
+          value={readingCompletion}
           style={{ color: colorValue }}
           size={50}
         />
@@ -38,7 +39,7 @@ export default function ReadingCompletionProgress({ value }) {
             justifyContent: "center",
           }}
         >
-          {value < 100 ? (
+          {readingCompletion < 100 ? (
             <>
               <span
                 style={{
@@ -46,7 +47,7 @@ export default function ReadingCompletionProgress({ value }) {
                   fontWeight: "500",
                   fontSize: "14px",
                 }}
-              >{`${Math.round(value)}%`}</span>
+              >{`${Math.round(readingCompletion)}%`}</span>
             </>
           ) : (
             <DoneIcon style={{ color: "green", fontSize: "28px" }}></DoneIcon>

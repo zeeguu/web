@@ -37,7 +37,6 @@ export default function ArticlePreview({
     article.has_personal_copy,
   );
   const [showInferredTopic, setShowInferredTopic] = useState(true);
-  const readingCompletion = Math.round(article.reading_completion * 100);
 
   const handleArticleClick = () => {
     if (onArticleClick) {
@@ -140,10 +139,7 @@ export default function ArticlePreview({
           {titleLink(article)}{" "}
         </s.Title>
         <ReadingCompletionProgress
-          value={readingCompletion}
-          style={
-            readingCompletion < 100 ? { color: "grey" } : { color: "green" }
-          }
+          last_reading_percentage={article.reading_completion}
         ></ReadingCompletionProgress>
       </s.TitleContainer>
 
