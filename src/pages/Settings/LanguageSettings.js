@@ -70,7 +70,6 @@ export default function LanguageSettings() {
   }, []);
 
   useEffect(() => {
-    const startTime = performance.now();
     isPageMounted.current = true;
 
     if (isPageMounted.current) {
@@ -82,10 +81,6 @@ export default function LanguageSettings() {
     api.getSystemLanguages((systemLanguages) => {
       if (isPageMounted.current) {
         setLanguages(systemLanguages);
-        const endTime = performance.now();
-        console.log(
-          `LanguageSettings component loaded in ${endTime - startTime} milliseconds.`,
-        );
       }
     });
 
