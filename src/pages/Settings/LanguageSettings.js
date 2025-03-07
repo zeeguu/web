@@ -87,20 +87,9 @@ export default function LanguageSettings() {
     return () => {
       isPageMounted.current = false;
     };
-    // eslint-disable-next-line
+    // eslint-disable-next
+    // -line
   }, [session, api]);
-
-  function updateNativeLanguage(lang_code) {
-    setNativeLanguage(lang_code);
-  }
-
-  function updateCEFRLevel(level) {
-    setCEFR(parseInt(level));
-  }
-
-  function updateLearnedLanguage(lang_code) {
-    setLearnedLanguage(lang_code);
-  }
 
   function handleSave(e) {
     e.preventDefault();
@@ -150,7 +139,7 @@ export default function LanguageSettings() {
               languages={languages.learnable_languages}
               selected={learnedLanguage}
               onChange={(e) => {
-                updateLearnedLanguage(e.target.value);
+                setLearnedLanguage(e.target.value);
               }}
               isError={!isLearnedLanguageValid}
               errorMessage={learnedLanguageErrorMsg}
@@ -162,7 +151,7 @@ export default function LanguageSettings() {
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               onChange={(e) => {
-                updateCEFRLevel(e.target.value);
+                setCEFR(parseInt(e.target.value));
               }}
               selectedValue={CEFR}
             />
@@ -177,7 +166,7 @@ export default function LanguageSettings() {
               isError={!isNativeLanguageValid}
               errorMessage={nativeLanguageMsg}
               onChange={(e) => {
-                updateNativeLanguage(e.target.value);
+                setNativeLanguage(e.target.value);
               }}
             />
           </FormSection>
