@@ -15,12 +15,14 @@ import { darkBlue } from "../components/colors";
 import ExplainTopicsModal from "../pages/ExplainTopicsModal";
 import { TopicOriginType } from "../appConstants";
 import extractDomain from "../utils/web/extractDomain";
+import ReadingCompletionProgress from "./ReadingCompletionProgress";
 import { APIContext } from "../contexts/APIContext";
 
 export default function ArticlePreview({
   article,
   dontShowPublishingTime,
   dontShowSourceIcon,
+  showArticleCompletion,
   hasExtension,
   doNotShowRedirectionModal_UserPreference,
   setDoNotShowRedirectionModal_UserPreference,
@@ -127,14 +129,20 @@ export default function ArticlePreview({
           />
         </sweetM.TagsOfInterests>
       )}
-
       <SmallSaveArticleButton
         article={article}
         isArticleSaved={isArticleSaved}
         setIsArticleSaved={setIsArticleSaved}
       />
+      <s.TitleContainer>
+        <s.Title className={article.opened ? "opened" : ""}>
+          {titleLink(article)}{" "}
+        </s.Title>
+        <ReadingCompletionProgress
+          last_reading_percentage={article.reading_completion}
+        ></ReadingCompletionProgress>
+      </s.TitleContainer>
 
-      <s.Title>{titleLink(article)}</s.Title>
       {article.feed_id ? (
         <ArticleSourceInfo
           articleInfo={article}
@@ -187,6 +195,7 @@ export default function ArticlePreview({
         </div>
         <ArticleStatInfo articleInfo={article}></ArticleStatInfo>
       </s.BottomContainer>
+
       {article.video ? (
         <img
           alt=""

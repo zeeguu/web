@@ -62,6 +62,11 @@ export default function FindArticles({
     }
   }
 
+  function updateOnPagination(newUpdatedList) {
+    setArticleList(newUpdatedList);
+    setOriginalList(newUpdatedList);
+  }
+
   const [
     handleScroll,
     isWaitingForNewArticles,
@@ -69,7 +74,7 @@ export default function FindArticles({
     resetPagination,
   ] = useArticlePagination(
     articleList,
-    setArticleList,
+    updateOnPagination,
     searchQuery ? "Article Search" : strings.titleHome,
     getNewArticlesForPage,
   );

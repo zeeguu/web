@@ -10,7 +10,6 @@ import {
 
 const ArticlePreview = styled.div`
   margin-bottom: 1em;
-  border-left: solid ${zeeguuOrange};
   margin-top: 2em;
   padding-left: 0.8em;
   padding-bottom: 1em;
@@ -73,6 +72,23 @@ const InvisibleTitleButton = styled.button`
 //displayed and font-weight 500 because the article's title inside the titleLink(article) function
 //was wrapped in a link tag and inherited its color and font weight ettings.
 //Currently the article's title is no longer wrapped in a link, this is why styling update
+const ReadProgress = styled.span`
+  font-size: medium;
+  font-weight: 500;
+  color: grey;
+
+  &.complete {
+    color: green;
+  }
+`;
+const TitleContainer = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+`;
+
 const Title = styled.div`
   font-size: 1.4em;
   color: ${zeeguuDarkOrange};
@@ -80,6 +96,15 @@ const Title = styled.div`
   font-weight: 500;
   display: block;
   width: 100%;
+  &.opened a {
+    color: grey !important;
+    &.completed {
+    }
+  }
+
+  &.opened {
+    color: grey !important;
+  }
 `;
 
 const UrlSource = styled.span`
@@ -91,7 +116,8 @@ const UrlSource = styled.span`
 const UnfinishedArticleContainer = styled.div`
   margin-top: 0.5em;
   display: flex;
-  flex-direction: row-reverse;
+  position: relative;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   align-content: center;
@@ -111,8 +137,10 @@ const UnfinishedArticleContainer = styled.div`
   }
 `;
 
-const UnfinishedArticleStats = styled.span`
+const UnfinishedArticleStats = styled.div`
   font-weight: 550;
+  margin-top: 0.5rem;
+  margin-bottom: -0.75rem;
 `;
 
 let Summary = styled.div`
@@ -188,6 +216,7 @@ let UrlTopics = styled.div`
 
 export {
   Title,
+  TitleContainer,
   UrlSource,
   ArticlePreview,
   UnfinishedArticleContainer,
@@ -198,4 +227,5 @@ export {
   Summary,
   Topics,
   UrlTopics,
+  ReadProgress,
 };
