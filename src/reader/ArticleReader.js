@@ -75,7 +75,7 @@ export default function ArticleReader({ teacherArticleID }) {
   const [clickedOnReviewVocab, setClickedOnReviewVocab] = useState(false);
   const [viewPortSettings, setViewPortSettings] = useState("");
 
-  const user = useContext(UserContext);
+  const { userDetails } = useContext(UserContext);
   const history = useHistory();
   const speech = useContext(SpeechContext);
   const [activityTimer, isTimerActive] = useActivityTimer(uploadActivity);
@@ -304,7 +304,7 @@ export default function ArticleReader({ teacherArticleID }) {
   return (
     <>
       <TopToolbar
-        user={user}
+        user={userDetails}
         teacherArticleID={teacherArticleID}
         articleID={articleID}
         interactiveText={interactiveText}

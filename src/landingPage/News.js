@@ -18,6 +18,30 @@ export default function News() {
   return (
     <>
       <h1>{strings.news}</h1>
+
+      <h3>2025</h3>
+      {item(
+        strings.jan,
+        "Iga adds a fast language switcher: Zeeguu is ready for polyglots",
+      )}
+
+      {item(
+        strings.jan,
+        "Merle adds new vocabulary exercises and introduces four distinct levels of difficulty together with a cool progress bar. ",
+      )}
+
+      <h3>2024</h3>
+
+      {item(
+        strings.oct,
+        "Tiago implements an automatic multilingual classifier that works with seven top-level topics.",
+      )}
+
+      {item(
+        strings.jul,
+        "Similar articles are recommended based on past likes",
+      )}
+
       <h3>2023</h3>
 
       {item(

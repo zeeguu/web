@@ -70,12 +70,14 @@ const Strong = styled.span`
   font-weight: 700;
 `;
 
-const CloseButton = styled.div`
+const CloseButton = styled.button`
   cursor: pointer;
   padding: 1px;
   text-align: right;
   position: absolute;
   float: right;
+  border: none;
+  background-color: inherit;
   right: 16px;
   margin-top: -16px;
   @media (max-width: 576px) {

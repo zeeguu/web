@@ -11,6 +11,8 @@ export default function NavOption({
   currentPath,
   className,
   screenWidth,
+  ariaHasPopup,
+  ariaLabel,
 }) {
   const Component = linkTo ? s.RouterLink : s.OptionButton;
   const isActive = currentPath?.includes(linkTo);
@@ -27,8 +29,10 @@ export default function NavOption({
         $isActive={isActive}
         className={className}
         onClick={onClick}
-        to={linkTo && linkTo}
+        to={linkTo}
         title={elementTitle}
+        aria-haspopup={ariaHasPopup}
+        aria-label={ariaLabel}
       >
         <s.OptionContentWrapper $screenWidth={screenWidth}>
           <s.IconContainer>{icon}</s.IconContainer>

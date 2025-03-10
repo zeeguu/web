@@ -7,6 +7,7 @@ let strings = new LocalizedStrings(
       //Shared
       title: "Title",
       words: "Words",
+      readingCompletion: "Completion",
       lengthWithCapital: "Length",
       levelWithCapital: "Level",
       articles: "Home",

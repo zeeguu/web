@@ -18,13 +18,18 @@ const MoreOptionsPanel = styled.nav`
   position: fixed;
   bottom: 0;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
   border-radius: 1rem 1rem 0 0;
   padding: 1rem 1rem 2rem 1rem;
   box-shadow: 0 -0.25rem 1.25rem rgba(0, 0, 0, 0.1);
   animation: ${({ $moreOptionsTransition }) => $moreOptionsTransition} 0.3s
     ease-in-out forwards;
+`;
+
+const MoreOptionsList = styled.ul`
+  all: unset;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const CloseSection = styled.div`
@@ -41,4 +46,10 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-export { MoreOptionsWrapper, MoreOptionsPanel, CloseSection, CloseButton };
+export {
+  MoreOptionsWrapper,
+  MoreOptionsPanel,
+  MoreOptionsList,
+  CloseSection,
+  CloseButton,
+};

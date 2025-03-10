@@ -35,9 +35,9 @@ import {
 import { setTitle } from "../../assorted/setTitle";
 import { APIContext } from "../../contexts/APIContext";
 
-export default function CreateAccount({ handleSuccessfulLogIn, setUser }) {
+export default function CreateAccount({ handleSuccessfulLogIn }) {
   const api = useContext(APIContext);
-  const user = useContext(UserContext);
+  const { userDetails, setUserDetails } = useContext(UserContext);
 
   const learnedLanguage = LocalStorage.getLearnedLanguage();
   const nativeLanguage = LocalStorage.getNativeLanguage();
@@ -144,7 +144,7 @@ export default function CreateAccount({ handleSuccessfulLogIn, setUser }) {
     }
 
     let userInfo = {
-      ...user,
+      ...userDetails,
       name: name,
       email: email,
       learned_language: learnedLanguage,
@@ -159,7 +159,7 @@ export default function CreateAccount({ handleSuccessfulLogIn, setUser }) {
       (session) => {
         api.getUserDetails((user) => {
           handleSuccessfulLogIn(user, session);
-          setUser(userInfo);
+          setUserDetails(userInfo);
           saveUserInfoIntoCookies(userInfo);
           redirect("/select_interests");
         });

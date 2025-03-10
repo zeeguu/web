@@ -22,7 +22,7 @@ const DeletionStatus = Object.freeze({
 
 export default function DeleteAccount() {
   const api = useContext(APIContext);
-  const user = useContext(UserContext);
+  const { logoutMethod } = useContext(UserContext);
   const [headingMsg, setHeadingMsg] = useState("We are deleting your account");
   const [currentStatus, setCurrentStatus] = useState(DeletionStatus.UNDEFINED);
 
@@ -35,7 +35,7 @@ export default function DeleteAccount() {
           setHeadingMsg("✅ Your account has been successfully deleted!");
           setCurrentStatus(DeletionStatus.OK);
           setTimeout(() => {
-            user.logoutMethod();
+            logoutMethod();
           }, TIME_BEFORE_REDIRECT);
         },
         () => {
