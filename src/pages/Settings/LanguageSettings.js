@@ -59,7 +59,7 @@ export default function LanguageSettings() {
   const history = useHistory();
   const isPageMounted = useRef(true);
 
-  function setCEFRlevelFromUserContext(data) {
+  function setCEFRLevelFromUserContext(data) {
     const levelKey = data.learned_language + "_cefr_level";
     const levelNumber = data[levelKey];
     setCEFR(levelNumber);
@@ -73,7 +73,7 @@ export default function LanguageSettings() {
     isPageMounted.current = true;
 
     if (isPageMounted.current) {
-      setCEFRlevelFromUserContext(userDetails);
+      setCEFRLevelFromUserContext(userDetails);
       setLearnedLanguage(userDetails.learned_language);
       setNativeLanguage(userDetails.native_language);
     }
