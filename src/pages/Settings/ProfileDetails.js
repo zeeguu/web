@@ -33,7 +33,6 @@ export default function ProfileDetails() {
   const history = useHistory();
   const isPageMounted = useRef(true);
 
-  const [tempUserDetails, setTempUserDetails] = useState("");
   const [
     userName,
     setUserName,
@@ -58,13 +57,10 @@ export default function ProfileDetails() {
 
   useEffect(() => {
     isPageMounted.current = true;
-    api.getUserDetails((data) => {
-      if (isPageMounted.current) {
-        setTempUserDetails(data);
-        setUserEmail(data.email);
-        setUserName(data.name);
-      }
-    });
+    if (isPageMounted.current) {
+      setUserEmail(userDetails.email);
+      setUserName(userDetails.name);
+    }
 
     return () => {
       isPageMounted.current = false;
@@ -72,27 +68,25 @@ export default function ProfileDetails() {
     // eslint-disable-next-line
   }, [userDetails, api]);
 
-  function updateUserInfo(info) {
-    const newUserDetails = {
-      ...userDetails,
-      name: info.name,
-    };
-    setUserDetails(newUserDetails);
-    LocalStorage.setUserInfo(info);
-    saveUserInfoIntoCookies(info);
-  }
-
   function handleSave(e) {
     e.preventDefault();
     setErrorMessage("");
     if (!validateRules([validateUserName, validateEmail])) return;
-    api.saveUserDetails(tempUserDetails, setErrorMessage, () => {
-      updateUserInfo(tempUserDetails);
+
+    const newUserDetails = {
+      ...userDetails,
+      name: userName,
+      email: userEmail,
+    };
+    api.saveUserDetails(newUserDetails, setErrorMessage, () => {
+      setUserDetails(newUserDetails);
+      LocalStorage.setUserInfo(newUserDetails);
+      saveUserInfoIntoCookies(newUserDetails);
       history.goBack();
     });
   }
 
-  if (!tempUserDetails) {
+  if (!userDetails) {
     return <LoadingAnimation />;
   }
 
@@ -118,10 +112,6 @@ export default function ProfileDetails() {
               isError={!isUserNameValid}
               errorMessage={userErrorMessage}
               onChange={(e) => {
-                setTempUserDetails({
-                  ...tempUserDetails,
-                  name: e.target.value,
-                });
                 setUserName(e.target.value);
               }}
             />
@@ -135,10 +125,6 @@ export default function ProfileDetails() {
               isError={!isEmailValid}
               errorMessage={emailErrorMessage}
               onChange={(e) => {
-                setTempUserDetails({
-                  ...tempUserDetails,
-                  email: e.target.value,
-                });
                 setUserEmail(e.target.value);
               }}
             />

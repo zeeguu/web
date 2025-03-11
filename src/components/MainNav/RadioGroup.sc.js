@@ -13,6 +13,9 @@ const StyledRadioGroup = styled.div`
   gap: 0.5rem;
   padding: 0;
   max-height: 24rem;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const RadioGroupLabel = styled.div`
