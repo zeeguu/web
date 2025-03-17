@@ -5,7 +5,7 @@ import { removePunctuation } from "../utils/text/preprocessing";
 import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 
 // We try to capture about a full sentence around a word.
-const MAX_WORD_EXPANSION_COUNT = 14;
+const MAX_WORD_EXPANSION_COUNT = 28;
 function wordShouldSkipCount(word) {
   //   When building context, we do not count for the context limit punctuation,
   // symbols, and numbers.
@@ -296,13 +296,14 @@ export default class InteractiveText {
         ) {
           break;
         }
-        if (!wordShouldSkipCount(currentWord)) count++;
+        count++;
       }
       return [
         contextBuilder,
         currentWord.token.paragraph_i,
         currentWord.token.sent_i,
         currentWord.token.token_i,
+        count > 0,
       ];
     }
 
@@ -323,16 +324,15 @@ export default class InteractiveText {
           contextBuilder +
           (currentWord.prev.token.has_space ? " " : "") +
           currentWord.word;
-        if (!wordShouldSkipCount(currentWord))
-          // If it's not a punctuation or symbol we count it.
-          count++;
+
+        count++;
         currentWord = currentWord.next;
       }
       // We broke early, or we didn't have more tokens in the link early.
       // We are at the end of paragraph (currentWord undefined),
       // or we broke early (found end of sent.)
       if (count < maxRightContextLength) hasRightEllipsis = false;
-      return [contextBuilder, hasRightEllipsis];
+      return [contextBuilder, hasRightEllipsis, count > 0];
     }
 
     let [leftContext, paragraph_i, sent_i, token_i] = [
@@ -341,20 +341,41 @@ export default class InteractiveText {
       word.token.sent_i,
       word.token.token_i,
     ];
-    // Do not get left context, if we are starting a sentence
-    // at the token.
-    if (word.prev && !word.token.is_sent_start)
-      [leftContext, paragraph_i, sent_i, token_i] = getLeftContextAndStartIndex(
-        word,
-        MAX_WORD_EXPANSION_COUNT,
-      );
-    let leftEllipsis = token_i !== 0;
-    let [rightContext, rightEllipsis] = getRightContext(
-      word.next,
-      MAX_WORD_EXPANSION_COUNT,
-    );
-    let context = leftContext + word.word + rightContext;
+
+    let budget = MAX_WORD_EXPANSION_COUNT;
+    let leftEllipsis;
+    let rightContext, rightEllipsis;
+
+    let leftWord = word;
+    let rightWord = word.next;
+    let context = word.word;
+    while (budget > 0) {
+      console.log("Current budget: ", budget);
+      let rightUpdated = false;
+      let leftUpdated = false;
+      if (leftWord.prev && !leftWord.token.is_sent_start) {
+        [leftContext, paragraph_i, sent_i, token_i, leftUpdated] =
+          getLeftContextAndStartIndex(leftWord, 1);
+        if (!wordShouldSkipCount(leftWord)) budget -= 1;
+        leftWord = leftWord.prev;
+        context = leftContext + context;
+      }
+
+      if (budget > 0 && rightWord) {
+        [rightContext, rightEllipsis, rightUpdated] = getRightContext(
+          rightWord,
+          1,
+        );
+        if (!wordShouldSkipCount(rightWord)) budget -= 1;
+        rightWord = rightWord.next;
+        context += rightContext;
+      }
+      if (!rightUpdated & !leftUpdated) break;
+      // We have captured the sentence in its entirety.
+    }
+    leftEllipsis = token_i !== 0;
     console.log("Final context: ", context);
+    console.log(paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis);
     return [context, paragraph_i, sent_i, token_i, leftEllipsis, rightEllipsis];
   }
 }
