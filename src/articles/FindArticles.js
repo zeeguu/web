@@ -15,6 +15,7 @@ import UnfinishedArticlesList from "./UnfinishedArticleList";
 import { setTitle } from "../assorted/setTitle";
 import strings from "../i18n/definitions";
 import useShadowRef from "../hooks/useShadowRef";
+import isStringUrl from "../utils/misc/isStringUrl";
 
 export default function FindArticles({
   content,
@@ -110,8 +111,13 @@ export default function FindArticles({
     if (searchQuery) {
       setTitle(strings.titleSearch + ` '${searchQuery}'`);
       setReloadingSearchArticles(true);
+
+      let parsedQuery = isStringUrl(searchQuery)
+        ? encodeURIComponent(searchQuery.replaceAll("/", " "))
+        : searchQuery;
+
       api.search(
-        searchQuery,
+        parsedQuery,
         searchPublishPriority,
         searchDifficultyPriority,
         (articles) => {
