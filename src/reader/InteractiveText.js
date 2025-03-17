@@ -21,10 +21,7 @@ export default class InteractiveText {
     language,
     source = "",
     zeeguuSpeech,
-    contextType,
-    formatting,
-    fragmentId,
-    subtitleId,
+    contextIdentifier,
   ) {
     function _updateTokensWithBookmarks(bookmarks, paragraphs) {
       function areCoordinatesInParagraphMatrix(
@@ -146,10 +143,8 @@ export default class InteractiveText {
     this.language = language;
     this.translationEvent = translationEvent;
     this.source = source;
-    this.contextType = contextType;
     this.formatting = formatting;
-    this.fragmentId = fragmentId;
-    this.subtitleId = subtitleId;
+    this.contextIdentifier = contextIdentifier;
 
     // Might be worth to store a flag to keep track of wether or not the
     // bookmark / text are part of the content or stand by themselves.
@@ -191,9 +186,7 @@ export default class InteractiveText {
         this.isArticleContent,
         leftEllipsis,
         rightEllipsis,
-        this.contextType,
-        this.formatting,
-        this.fragmentId,
+        this.contextIdentifier,
       )
       .then((response) => response.json())
       .then((data) => {
