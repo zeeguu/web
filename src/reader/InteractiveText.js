@@ -22,6 +22,7 @@ export default class InteractiveText {
     source = "",
     zeeguuSpeech,
     contextIdentifier,
+    formatting,
   ) {
     function _updateTokensWithBookmarks(bookmarks, paragraphs) {
       function areCoordinatesInParagraphMatrix(
@@ -36,6 +37,7 @@ export default class InteractiveText {
           target_t_i < paragraphs[0][target_s_i].length
         );
       }
+      if (!bookmarks) return;
 
       for (let i = 0; i < bookmarks.length; i++) {
         let bookmark = bookmarks[i];
@@ -183,7 +185,6 @@ export default class InteractiveText {
         context,
         [cParagraph_i, cSent_i, cToken_i],
         this.sourceId,
-        this.isArticleContent,
         leftEllipsis,
         rightEllipsis,
         this.contextIdentifier,
@@ -203,9 +204,10 @@ export default class InteractiveText {
 
     this.api.logReaderActivity(
       this.translationEvent,
-      this.sourceId,
+      null,
       word.word,
       this.source,
+      this.sourceId,
     );
   }
 
@@ -217,7 +219,7 @@ export default class InteractiveText {
       word.word,
       alternative,
       context,
-      this.isArticleContent,
+      this.contextIdentifier["context_type"],
     );
     word.translation = alternative;
     word.service_name = "Own alternative selection";
@@ -225,9 +227,10 @@ export default class InteractiveText {
     let alternative_info = `${word.translation} => ${alternative} (${preferredSource})`;
     this.api.logReaderActivity(
       this.api.SEND_SUGGESTION,
-      this.sourceId,
+      null,
       alternative_info,
       this.source,
+      this.sourceId,
     );
 
     onSuccess();
@@ -274,9 +277,10 @@ export default class InteractiveText {
 
     this.api.logReaderActivity(
       this.api.SPEAK_TEXT,
-      this.sourceId,
+      null,
       word.word,
       this.source,
+      this.sourceId,
     );
   }
 

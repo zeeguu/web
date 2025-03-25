@@ -8,8 +8,7 @@ Zeeguu_API.prototype.getOneTranslation = function (
   bookmark_token_i,
   context,
   context_token_i,
-  articleID,
-  isArticleContent,
+  sourceID,
   leftEllipsis,
   rightEllipsis,
   contextIdentifier,
@@ -22,19 +21,22 @@ Zeeguu_API.prototype.getOneTranslation = function (
   let payload = {
     word: word,
     context: context,
+    source_id: sourceID,
     w_sent_i: w_sent_i,
     w_token_i: w_token_i,
     w_total_tokens: w_total_tokens,
     c_paragraph_i: c_paragraph_i,
     c_sent_i: c_sent_i,
     c_token_i: c_token_i,
-    in_content: isArticleContent,
-    articleID: articleID,
     left_ellipsis: leftEllipsis,
     right_ellipsis: rightEllipsis,
     context_identifier: contextIdentifier,
   };
+
+  /*   
+  console.log("Sending bookmark!");
   console.dir(payload);
+  */
   return this._post(
     `get_one_translation/${from_lang}/${to_lang}`,
     qs.stringify(payload),
@@ -99,12 +101,14 @@ Zeeguu_API.prototype.updateBookmark = function (
   word,
   translation,
   context,
+  context_type,
   callback,
 ) {
   let payload = {
     word: word,
     translation: translation,
     context: context,
+    context_type: context_type,
   };
 
   return this._post(

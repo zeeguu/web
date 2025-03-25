@@ -13,7 +13,7 @@ import { gray, darkBlue } from "../components/colors";
 import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 import { APIContext } from "../contexts/APIContext";
 
-export default function ReportBroken({ articleID, UMR_SOURCE }) {
+export default function ReportBroken({ sourceID, UMR_SOURCE }) {
   const api = useContext(APIContext);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState("");
@@ -30,7 +30,7 @@ export default function ReportBroken({ articleID, UMR_SOURCE }) {
   };
 
   function reportBroken() {
-    api.logReaderActivity(api.USER_FEEDBACK, articleID, feedback, UMR_SOURCE);
+    api.logReaderActivity(api.USER_FEEDBACK, sourceID, feedback, UMR_SOURCE);
     setIsFeedbackSent(true);
     setTimeout(() => handleClose(), 1000);
   }

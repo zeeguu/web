@@ -56,7 +56,7 @@ export default function MultipleChoiceAudio({
     setInteractiveText(
       new InteractiveText(
         exerciseBookmark.context_tokenized,
-        exerciseBookmark.article_id,
+        exerciseBookmark.source_id,
         api,
         [],
         "TRANSLATE WORDS IN EXERCISE",

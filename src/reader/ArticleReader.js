@@ -60,7 +60,7 @@ export default function ArticleReader({ teacherArticleID }) {
 
   const [articleInfo, setArticleInfo] = useState();
 
-  const [interactiveText, setInteractiveText] = useState();
+  const [interactiveText] = useState();
   const [interactiveTitle, setInteractiveTitle] = useState();
   const [interactiveFragments, setInteractiveFragments] = useState();
   const {
@@ -157,7 +157,7 @@ export default function ArticleReader({ teacherArticleID }) {
   };
 
   useEffect(() => {
-    if (interactiveText !== undefined) {
+    if (interactiveFragments !== undefined) {
       setTimeout(() => {
         try {
           let scrollElement = document.getElementById("scrollHolder");
@@ -188,7 +188,7 @@ export default function ArticleReader({ teacherArticleID }) {
         }
       }, 250);
     }
-  }, [interactiveText, last_reading_percentage]);
+  }, [interactiveFragments, last_reading_percentage]);
 
   function onCreate() {
     scrollEvents.current = [];
@@ -203,16 +203,15 @@ export default function ArticleReader({ teacherArticleID }) {
           (each) =>
             new InteractiveText(
               each.tokens,
-              articleInfo.id,
+              articleInfo.source_id,
               api,
               each.past_bookmarks,
               api.TRANSLATE_TEXT,
               articleInfo.language,
               UMR_SOURCE,
               speech,
-              each.context_type,
+              each.context_identifier,
               each.formatting,
-              each.fragment_id,
             ),
         ),
       );
@@ -227,7 +226,7 @@ export default function ArticleReader({ teacherArticleID }) {
           articleInfo.language,
           UMR_SOURCE,
           speech,
-          articleTitleData.context_type,
+          articleTitleData.context_identifier,
         ),
       );
       setArticleInfo(articleInfo);
@@ -282,7 +281,7 @@ export default function ArticleReader({ teacherArticleID }) {
       setAnswerSubmitted(true);
       setArticleInfo(newArticleInfo);
     });
-    api.logReaderActivity(api.LIKE_ARTICLE, articleInfo.id, state, UMR_SOURCE);
+    api.logReaderActivity(api.LIKE_ARTICLE, articleID, state, UMR_SOURCE);
   };
 
   const updateArticleDifficultyFeedback = (answer) => {
@@ -296,7 +295,7 @@ export default function ArticleReader({ teacherArticleID }) {
     );
     api.logReaderActivity(
       api.DIFFICULTY_FEEDBACK,
-      articleInfo.id,
+      articleID,
       answer,
       UMR_SOURCE,
     );
