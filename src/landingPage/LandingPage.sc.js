@@ -1,8 +1,9 @@
-import styled, { keyframes, css } from "styled-components";
+import styled, { css } from "styled-components";
 import {
   zeeguuOrange,
   zeeguuTransparentLightYellow,
   veryDarkGrey,
+  orange600,
 } from "../components/colors";
 
 const PageWrapper = styled.div`
@@ -21,7 +22,7 @@ const _navbarShared = css`
 const NavbarBg = styled.div`
   ${_navbarShared};
   justify-content: center;
-  background: ${zeeguuOrange};
+  background: white;
 `;
 
 const Navbar = styled.nav`
@@ -34,6 +35,7 @@ const Navbar = styled.nav`
 `;
 
 const LogoWithText = styled.div`
+  color: ${orange600};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -50,28 +52,9 @@ const LogoWithText = styled.div`
   }
 `;
 
-const swing = keyframes`
-  20% {
-  transform: rotate(15deg);
-}
-40% {
-  transform: rotate(-10deg);
-}
-60% {
-  transform: rotate(5deg);
-}
-80% {
-  transform: rotate(-5deg);
-}
-100% {
-  transform: rotate(0deg);
-}
-`;
-
 const ZeeguuLogo = styled.img`
   text-align: center;
   width: 1.9rem;
-  animation: ${swing} 2s ease 3;
 
   @media (max-width: 576px) {
     width: 1.5rem;
@@ -167,9 +150,9 @@ const PaleAdaptableColumn = styled(AdaptableColumn)`
   padding-top: 0.1em;
 `;
 
-const WhiteFilledNavbarBtn = styled.button`
+const NavbarButtonSharedStyles = css`
+  all: unset;
   cursor: pointer;
-  border: solid 2px white;
   margin: 0;
   display: flex;
   flex-direction: row;
@@ -178,13 +161,18 @@ const WhiteFilledNavbarBtn = styled.button`
   white-space: nowrap;
   gap: 0.25rem;
   padding: 0.75rem 1.5rem;
-  border-radius: 4em;
   font-size: 0.9rem;
   font-weight: 700;
   overflow-y: hidden;
   background-color: white;
-  color: ${zeeguuOrange};
-  box-shadow: 0px 0.1em white;
+`;
+
+const WhiteFilledNavbarBtn = styled.button`
+  ${NavbarButtonSharedStyles}
+  border: solid 2px ${orange600};
+  border-radius: 4em;
+  color: ${orange600};
+  box-shadow: 0px 0.1em ${orange600};
   transition: all ease-in 0.08s;
 
   &:active {
@@ -194,9 +182,10 @@ const WhiteFilledNavbarBtn = styled.button`
   }
 `;
 
-const WhiteOutlinedNavbarBtn = styled(WhiteFilledNavbarBtn)`
+const WhiteOutlinedNavbarBtn = styled.button`
+  ${NavbarButtonSharedStyles}
   background: none;
-  color: white;
+  color: ${orange600};
 `;
 
 const DescriptionText = styled.div`
