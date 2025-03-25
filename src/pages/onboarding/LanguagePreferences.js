@@ -30,6 +30,10 @@ import useShadowRef from "../../hooks/useShadowRef";
 import { APIContext } from "../../contexts/APIContext";
 
 export default function LanguagePreferences() {
+  function getInitialLearnedLanguage() {
+    const storedLearnedLanguage = LocalStorage.getLearnedLanguage();
+    return storedLearnedLanguage || "";
+  }
   const api = useContext(APIContext);
   const [
     learnedLanguage,
@@ -37,7 +41,10 @@ export default function LanguagePreferences() {
     validateLearnedLanguage,
     isLearnedLanguageValid,
     learnedLanguageMsg,
-  ] = useFormField("", NonEmptyValidator("Please select a language."));
+  ] = useFormField(
+    getInitialLearnedLanguage(),
+    NonEmptyValidator("Please select a language."),
+  );
 
   const learnedLanguageRef = useShadowRef(learnedLanguage);
   const [

@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState, useContext } from "react";
+import { APIContext } from "../contexts/APIContext.js";
 import strings from "../i18n/definitions";
 import News from "./News";
 import * as s from "./LandingPage.sc.js";
@@ -8,16 +9,36 @@ import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import Button from "../pages/_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
+import LocalStorage from "../assorted/LocalStorage.js";
 
 import redirect from "../utils/routing/routing.js";
 
 export default function LandingPage() {
+  const api = useContext(APIContext);
+  const [systemLanguages, setSystemLanguages] = useState();
+
   useEffect(() => {
     setTitle(strings.landingPageTitle);
-  }, []);
+
+    api.getSystemLanguages((languages) => {
+      languages.learnable_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
+      languages.native_languages.sort((a, b) => (a.name > b.name ? 1 : -1));
+      setSystemLanguages(languages);
+    });
+  }, [api]);
 
   if (getSessionFromCookies()) {
     return <Redirect to={{ pathname: "/articles" }} />;
+  }
+
+  function handleLanguageSelect(language) {
+    LocalStorage.setLearnedLanguage(language);
+    redirect("/language_preferences");
+  }
+
+  function handleRegisterClick() {
+    LocalStorage.setLearnedLanguage("");
+    redirect("/language_preferences");
   }
 
   return (
@@ -35,31 +56,37 @@ export default function LandingPage() {
             <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/log_in")}>
               {strings.login}
             </s.WhiteOutlinedNavbarBtn>
-            <s.WhiteFilledNavbarBtn
-              onClick={() => redirect("/language_preferences")}
-            >
+            <s.WhiteFilledNavbarBtn onClick={() => handleRegisterClick()}>
               {strings.register}
             </s.WhiteFilledNavbarBtn>
           </s.NavbarButtonContainer>
-
-          {/* temporarily disable UI language settings */}
-          {/* <UiLanguageSettings
-          uiLanguage={uiLanguage}
-          setUiLanguage={setUiLanguage}
-        /> */}
         </s.Navbar>
       </s.NavbarBg>
 
       <s.PageContent>
         <s.HeroColumn>
-          <h1>Learn foreign languages while reading what you&nbsp;like</h1>
+          <h1>
+            Read what you love in your target language and improve your
+            vocabulary
+          </h1>
           <p className="hero-paragraph">
-            {strings.projectDescription_UltraShort}
+            {/* {strings.projectDescription_UltraShort} */}
+            Find interesting articles, translate words as you read, and use
+            spaced repetition to remember them
           </p>
-          <Button onClick={() => redirect("/language_preferences")}>
+          <Button onClick={() => handleRegisterClick()}>
             {strings.getStarted}
             <RoundedForwardArrow />
           </Button>
+          {systemLanguages &&
+            systemLanguages.learnable_languages.map((language) => (
+              <Button
+                key={language.code}
+                onClick={() => handleLanguageSelect(language.code)}
+              >
+                {language.name}
+              </Button>
+            ))}
         </s.HeroColumn>
 
         <s.PaleAdaptableColumn>
