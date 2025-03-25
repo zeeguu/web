@@ -1,6 +1,6 @@
 import { orange500 } from "../../components/colors";
 
-export default function Logo({ color, size }) {
+export default function Logo({ color = orange500, size = "2.25rem" }) {
   return (
     <svg
       width={size ? size : "2.25rem"}
