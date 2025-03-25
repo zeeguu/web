@@ -67,28 +67,32 @@ export default function LandingPage() {
 
       <s.PageContent>
         <s.HeroColumn>
-          <h1>
-            Read what you love in your target language and improve your
-            vocabulary
-          </h1>
-          <p className="hero-paragraph">
-            {/* {strings.projectDescription_UltraShort} */}
-            Find interesting articles, translate words as you read, and use
-            spaced repetition to remember them
-          </p>
-          <Button onClick={() => handleRegisterClick()}>
-            {strings.getStarted}
-            <RoundedForwardArrow />
-          </Button>
-          {systemLanguages &&
-            systemLanguages.learnable_languages.map((language) => (
-              <Button
-                key={language.code}
-                onClick={() => handleLanguageSelect(language.code)}
-              >
-                {language.name}
-              </Button>
-            ))}
+          <s.HeroLeftColumn>
+            <h1>
+              Read what you love in your target language and improve your
+              vocabulary
+            </h1>
+            <p className="hero-paragraph">
+              {/* {strings.projectDescription_UltraShort} */}
+              Find interesting articles, translate words as you read, and use
+              spaced repetition to remember them
+            </p>
+            <Button onClick={() => handleRegisterClick()}>
+              {strings.getStarted}
+              <RoundedForwardArrow />
+            </Button>
+          </s.HeroLeftColumn>
+          <s.HeroRightColumn>
+            {systemLanguages &&
+              systemLanguages.learnable_languages.map((language) => (
+                <Button
+                  key={language.code}
+                  onClick={() => handleLanguageSelect(language.code)}
+                >
+                  {language.name}
+                </Button>
+              ))}
+          </s.HeroRightColumn>
         </s.HeroColumn>
 
         <s.PaleAdaptableColumn>

@@ -27,11 +27,11 @@ const NavbarBg = styled.div`
 
 const Navbar = styled.nav`
   ${_navbarShared};
-  max-width: 90rem;
   justify-content: space-between;
   color: white;
   font-size: 18px;
-  padding: 0 1rem;
+  max-width: 76.25rem;
+  margin: 0 1rem;
 `;
 
 const LogoWithText = styled.div`
@@ -92,8 +92,9 @@ const HeroColumn = styled.div`
   margin-right: auto;
   text-align: center;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-start;
+  max-width: 76.25rem;
   gap: 1.5rem;
 
   @media (max-width: 576px) {
@@ -103,7 +104,7 @@ const HeroColumn = styled.div`
   h1 {
     ${_mainHeader}
     color: ${veryDarkGrey};
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     margin: 0;
 
     @media (max-width: 768px) {
@@ -117,6 +118,24 @@ const HeroColumn = styled.div`
     line-height: 150%;
     color: ${veryDarkGrey};
   }
+`;
+
+const HeroLeftColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 1.5rem;
+  flex: 1;
+`;
+
+const HeroRightColumn = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex: 1;
 `;
 
 const AdaptableColumn = styled.div`
@@ -211,6 +230,8 @@ export {
   LogoWithText,
   PageContent,
   HeroColumn,
+  HeroLeftColumn,
+  HeroRightColumn,
   ZeeguuLogo,
   AdaptableColumn,
   PaleAdaptableColumn,
