@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { APIContext } from "../contexts/APIContext.js";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min.js";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import strings from "../i18n/definitions";
 import News from "./News";
 import * as s from "./LandingPage.sc.js";

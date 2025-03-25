@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
-import redirect from "../../utils/routing/routing";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import * as sC from "../../components/modal_shared/Checkbox.sc";
 import * as sI from "../../components/InputField.sc";
@@ -37,6 +37,7 @@ import { APIContext } from "../../contexts/APIContext";
 
 export default function CreateAccount({ handleSuccessfulLogIn }) {
   const api = useContext(APIContext);
+  const history = useHistory();
   const { userDetails, setUserDetails } = useContext(UserContext);
 
   const learnedLanguage = LocalStorage.getLearnedLanguage();
@@ -161,7 +162,7 @@ export default function CreateAccount({ handleSuccessfulLogIn }) {
           handleSuccessfulLogIn(user, session);
           setUserDetails(userInfo);
           saveUserInfoIntoCookies(userInfo);
-          redirect("/select_interests");
+          history.push("/select_interests");
         });
       },
       (error) => {

@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 import LocalStorage from "../../assorted/LocalStorage";
 
-import redirect from "../../utils/routing/routing";
 import useFormField from "../../hooks/useFormField";
 
 import PreferencesPage from "../_pages_shared/PreferencesPage";
@@ -30,6 +30,7 @@ import useShadowRef from "../../hooks/useShadowRef";
 import { APIContext } from "../../contexts/APIContext";
 
 export default function LanguagePreferences() {
+  const history = useHistory();
   function getInitialLearnedLanguage() {
     const storedLearnedLanguage = LocalStorage.getLearnedLanguage();
     return storedLearnedLanguage || "";
@@ -110,7 +111,7 @@ export default function LanguagePreferences() {
       ])
     )
       scrollToTop();
-    else redirect("/account_details");
+    else history.push("/account_details");
   }
 
   return (
