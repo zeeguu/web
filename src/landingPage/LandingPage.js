@@ -11,6 +11,7 @@ import { getSessionFromCookies } from "../utils/cookies/userInfo";
 import Button from "../pages/_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import LocalStorage from "../assorted/LocalStorage.js";
+import Logo from "../pages/_pages_shared/Logo.js";
 
 export default function LandingPage() {
   const api = useContext(APIContext);
@@ -50,10 +51,7 @@ export default function LandingPage() {
       <s.NavbarBg>
         <s.Navbar>
           <s.LogoWithText>
-            <s.ZeeguuLogo
-              src="/static/images/zeeguuWhiteLogo.svg"
-              alt="elephant logo"
-            />
+            <Logo size={"1.9rem"} />
             Zeeguu
           </s.LogoWithText>
           <s.NavbarButtonContainer>
