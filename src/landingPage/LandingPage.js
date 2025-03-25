@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { APIContext } from "../contexts/APIContext.js";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min.js";
 import strings from "../i18n/definitions";
 import News from "./News";
 import * as s from "./LandingPage.sc.js";
@@ -11,10 +12,9 @@ import Button from "../pages/_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import LocalStorage from "../assorted/LocalStorage.js";
 
-import redirect from "../utils/routing/routing.js";
-
 export default function LandingPage() {
   const api = useContext(APIContext);
+  const history = useHistory();
   const [systemLanguages, setSystemLanguages] = useState();
 
   useEffect(() => {
@@ -33,12 +33,16 @@ export default function LandingPage() {
 
   function handleLanguageSelect(language) {
     LocalStorage.setLearnedLanguage(language);
-    redirect("/language_preferences");
+    history.push("/language_preferences");
   }
 
   function handleRegisterClick() {
     LocalStorage.setLearnedLanguage("");
-    redirect("/language_preferences");
+    history.push("/language_preferences");
+  }
+
+  function handleLogInClick() {
+    history.push("/log_in");
   }
 
   return (
@@ -53,7 +57,7 @@ export default function LandingPage() {
             Zeeguu
           </s.LogoWithText>
           <s.NavbarButtonContainer>
-            <s.WhiteOutlinedNavbarBtn onClick={() => redirect("/log_in")}>
+            <s.WhiteOutlinedNavbarBtn onClick={() => handleLogInClick()}>
               {strings.login}
             </s.WhiteOutlinedNavbarBtn>
             <s.WhiteFilledNavbarBtn onClick={() => handleRegisterClick()}>
