@@ -68,7 +68,7 @@ export default function LandingPage() {
             {systemLanguages &&
               systemLanguages.learnable_languages.map((language) => (
                 <Button
-                  className="small"
+                  className="small grey"
                   key={language.code}
                   onClick={() => handleLanguageSelect(language.code)}
                 >
