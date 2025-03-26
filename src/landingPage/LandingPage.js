@@ -1,17 +1,17 @@
 import { useEffect, useState, useContext } from "react";
 import { APIContext } from "../contexts/APIContext.js";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import strings from "../i18n/definitions";
-import News from "./News";
-import * as s from "./LandingPage.sc.js";
-import Contributors from "./Contributors";
 import { Redirect } from "react-router-dom";
 import { setTitle } from "../assorted/setTitle";
 import { getSessionFromCookies } from "../utils/cookies/userInfo";
+import strings from "../i18n/definitions";
+import News from "./News";
+import Contributors from "./Contributors";
 import Button from "../pages/_pages_shared/Button.sc";
 import RoundedForwardArrow from "@mui/icons-material/ArrowForwardRounded";
 import LocalStorage from "../assorted/LocalStorage.js";
-import Logo from "../pages/_pages_shared/Logo.js";
+import LandingPageTopNav from "./LandingPageTopNav.js";
+import * as s from "./LandingPage.sc.js";
 
 export default function LandingPage() {
   const api = useContext(APIContext);
@@ -42,31 +42,13 @@ export default function LandingPage() {
     history.push("/language_preferences");
   }
 
-  function handleLogInClick() {
-    history.push("/log_in");
-  }
-
   return (
     <s.PageWrapper>
-      <s.NavbarBg>
-        <s.Navbar>
-          <s.LogoWithText>
-            <Logo size={"1.9rem"} />
-            Zeeguu
-          </s.LogoWithText>
-          <s.NavbarButtonContainer>
-            <s.WhiteOutlinedNavbarBtn onClick={() => handleLogInClick()}>
-              {strings.login}
-            </s.WhiteOutlinedNavbarBtn>
-            <s.WhiteFilledNavbarBtn onClick={() => handleRegisterClick()}>
-              {strings.register}
-            </s.WhiteFilledNavbarBtn>
-          </s.NavbarButtonContainer>
-        </s.Navbar>
-      </s.NavbarBg>
-
-      <s.PageContent>
-        <s.HeroColumn>
+      <s.Header>
+        <LandingPageTopNav />
+      </s.Header>
+      <s.Main>
+        <s.HeroSection>
           <s.HeroLeftColumn>
             <h1>
               Read what you love in your target language and improve your
@@ -86,6 +68,7 @@ export default function LandingPage() {
             {systemLanguages &&
               systemLanguages.learnable_languages.map((language) => (
                 <Button
+                  className="small"
                   key={language.code}
                   onClick={() => handleLanguageSelect(language.code)}
                 >
@@ -93,10 +76,14 @@ export default function LandingPage() {
                 </Button>
               ))}
           </s.HeroRightColumn>
-        </s.HeroColumn>
+        </s.HeroSection>
 
         <s.PaleAdaptableColumn>
           <h1>{strings.howDoesItWork}</h1>
+          <p>
+            Zeeguu is a research project that personalizes the way you
+            <br /> learn foreign languages
+          </p>
           <h2>{strings.personalizedReading}</h2>
           <s.DescriptionText>
             <p>{strings.personalizedRecommandationsEllaboration1}</p>
@@ -130,7 +117,7 @@ export default function LandingPage() {
         <s.PaleAdaptableColumn>
           <Contributors />
         </s.PaleAdaptableColumn>
-      </s.PageContent>
+      </s.Main>
     </s.PageWrapper>
   );
 }

@@ -2,72 +2,16 @@ import styled, { css } from "styled-components";
 import {
   zeeguuOrange,
   zeeguuTransparentLightYellow,
-  veryDarkGrey,
-  orange600,
+  almostBlack,
 } from "../components/colors";
 
 const PageWrapper = styled.div`
   width: 100%;
 `;
 
-const _navbarShared = css`
-  box-sizing: border-box;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  margin: 0;
-  height: 4em;
-`;
+const Header = styled.header``;
 
-const NavbarBg = styled.div`
-  ${_navbarShared};
-  justify-content: center;
-  background: white;
-`;
-
-const Navbar = styled.nav`
-  ${_navbarShared};
-  justify-content: space-between;
-  color: white;
-  font-size: 18px;
-  max-width: 76.25rem;
-  margin: 0 1rem;
-`;
-
-const LogoWithText = styled.div`
-  color: ${orange600};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 1.25em;
-  font-weight: 600;
-  margin: 0;
-  padding: 0;
-
-  @media (max-width: 576px) {
-    gap: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-  }
-`;
-
-const ZeeguuLogo = styled.img`
-  text-align: center;
-  width: 1.9rem;
-
-  @media (max-width: 576px) {
-    width: 1.5rem;
-  }
-`;
-
-const NavbarButtonContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-`;
-
-const PageContent = styled.div`
+const Main = styled.main`
   position: absolute;
   width: 100%;
   left: 0;
@@ -84,7 +28,7 @@ const _mainHeader = css`
   color: ${zeeguuOrange};
 `;
 
-const HeroColumn = styled.div`
+const HeroSection = styled.section`
   height: auto;
   max-width: 52rem;
   padding: 6rem 1rem;
@@ -103,7 +47,7 @@ const HeroColumn = styled.div`
 
   h1 {
     ${_mainHeader}
-    color: ${veryDarkGrey};
+    color: ${almostBlack};
     font-size: 2.5rem;
     margin: 0;
 
@@ -116,11 +60,11 @@ const HeroColumn = styled.div`
     font-size: 1.1rem;
     font-weight: 500;
     line-height: 150%;
-    color: ${veryDarkGrey};
+    color: ${almostBlack};
   }
 `;
 
-const HeroLeftColumn = styled.div`
+const HeroLeftColumn = styled.section`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -132,10 +76,12 @@ const HeroLeftColumn = styled.div`
 const HeroRightColumn = styled.div`
   display: flex;
   flex-direction: row;
-  justify-items: center;
+  align-content: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.75rem;
   flex: 1;
+  height: 100%;
+  padding: 3rem;
 `;
 
 const AdaptableColumn = styled.div`
@@ -169,44 +115,6 @@ const PaleAdaptableColumn = styled(AdaptableColumn)`
   padding-top: 0.1em;
 `;
 
-const NavbarButtonSharedStyles = css`
-  all: unset;
-  cursor: pointer;
-  margin: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  white-space: nowrap;
-  gap: 0.25rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 700;
-  overflow-y: hidden;
-  background-color: white;
-`;
-
-const WhiteFilledNavbarBtn = styled.button`
-  ${NavbarButtonSharedStyles}
-  border: solid 2px ${orange600};
-  border-radius: 4em;
-  color: ${orange600};
-  box-shadow: 0px 0.1em ${orange600};
-  transition: all ease-in 0.08s;
-
-  &:active {
-    box-shadow: none;
-    transform: translateY(0.2em);
-    transition: all ease-in 0.08s;
-  }
-`;
-
-const WhiteOutlinedNavbarBtn = styled.button`
-  ${NavbarButtonSharedStyles}
-  background: none;
-  color: ${orange600};
-`;
-
 const DescriptionText = styled.div`
   text-align: center;
   padding: 1em;
@@ -222,17 +130,11 @@ const CenterText = styled.div`
 
 export {
   PageWrapper,
-  NavbarBg,
-  Navbar,
-  WhiteFilledNavbarBtn,
-  WhiteOutlinedNavbarBtn,
-  NavbarButtonContainer,
-  LogoWithText,
-  PageContent,
-  HeroColumn,
+  Header,
+  Main,
+  HeroSection,
   HeroLeftColumn,
   HeroRightColumn,
-  ZeeguuLogo,
   AdaptableColumn,
   PaleAdaptableColumn,
   DescriptionText,
