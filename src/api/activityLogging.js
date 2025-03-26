@@ -114,6 +114,15 @@ Zeeguu_API.prototype.logReaderActivity = function (
   extra_data = "",
   source_id = "",
 ) {
+  /**
+   * Logs an activity that occurred in the text reader.
+   *
+   * @param {string} event - The type of event that occurred.
+   * @param {string} [article_id=""] - The ID of the article associated with the event.
+   * @param {string} [value=""] - Additional information about the event.
+   * @param {string} [extra_data=""] - Extra data related to the event.
+   * @param {string} [source_id=""] - The ID of source associated with the event.
+   */
   return this.logUserActivity(event, article_id, value, extra_data, source_id);
 };
 

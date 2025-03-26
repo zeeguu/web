@@ -30,7 +30,13 @@ export default function ReportBroken({ sourceID, UMR_SOURCE }) {
   };
 
   function reportBroken() {
-    api.logReaderActivity(api.USER_FEEDBACK, sourceID, feedback, UMR_SOURCE);
+    api.logReaderActivity(
+      api.USER_FEEDBACK,
+      "",
+      feedback,
+      UMR_SOURCE,
+      sourceID,
+    );
     setIsFeedbackSent(true);
     setTimeout(() => handleClose(), 1000);
   }
