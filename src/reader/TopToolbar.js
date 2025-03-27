@@ -25,7 +25,8 @@ function userIsTesterForAudio(user) {
     "Geertje",
     "Pieter",
   ];
-  return testers.some((tester) => user.name.startsWith(tester));
+  // return testers.some((tester) => user.name.startsWith(tester));
+  return false;
 }
 
 export function toggle(state, togglerFunction) {

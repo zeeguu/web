@@ -1,5 +1,6 @@
 import { useHistory } from "react-router-dom";
 import { useState, useEffect, useContext, useRef } from "react";
+import { APIContext } from "../../contexts/APIContext";
 import { UserContext } from "../../contexts/UserContext";
 import { saveUserInfoIntoCookies } from "../../utils/cookies/userInfo";
 import { CEFR_LEVELS } from "../../assorted/cefrLevels";
@@ -27,13 +28,12 @@ import {
 import useShadowRef from "../../hooks/useShadowRef";
 import { scrollToTop } from "../../utils/misc/scrollToTop";
 import validateRules from "../../assorted/validateRules";
-import { APIContext } from "../../contexts/APIContext";
 
 export default function LanguageSettings() {
   const api = useContext(APIContext);
   const { userDetails, setUserDetails, session } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState("");
-  const [tempUserDetails, setTempUserDetails] = useState(null);
+  const [CEFR, setCEFR] = useState(null);
   const [languages, setLanguages] = useState();
   const [
     learnedLanguage,
@@ -59,13 +59,10 @@ export default function LanguageSettings() {
   const history = useHistory();
   const isPageMounted = useRef(true);
 
-  function setCEFRlevel(data) {
+  function setCEFRLevelFromUserContext(data) {
     const levelKey = data.learned_language + "_cefr_level";
     const levelNumber = data[levelKey];
-    setTempUserDetails({
-      ...data,
-      cefr_level: levelNumber,
-    });
+    setCEFR(levelNumber);
   }
 
   useEffect(() => {
@@ -74,14 +71,12 @@ export default function LanguageSettings() {
 
   useEffect(() => {
     isPageMounted.current = true;
-    api.getUserDetails((data) => {
-      if (isPageMounted.current) {
-        setTempUserDetails(data);
-        setCEFRlevel(data);
-        setLearnedLanguage(data.learned_language);
-        setNativeLanguage(data.native_language);
-      }
-    });
+
+    if (isPageMounted.current) {
+      setCEFRLevelFromUserContext(userDetails);
+      setLearnedLanguage(userDetails.learned_language);
+      setNativeLanguage(userDetails.native_language);
+    }
 
     api.getSystemLanguages((systemLanguages) => {
       if (isPageMounted.current) {
@@ -95,55 +90,33 @@ export default function LanguageSettings() {
     // eslint-disable-next-line
   }, [session, api]);
 
-  function updateUserInfo(info) {
-    LocalStorage.setUserInfo(info);
-
-    const newUserDetails = {
-      ...userDetails,
-      learned_language: info.learned_language,
-      native_language: info.native_language,
-    };
-    setUserDetails(newUserDetails);
-    saveUserInfoIntoCookies(info);
-  }
-
-  function updateNativeLanguage(lang_code) {
-    setNativeLanguage(lang_code);
-    setTempUserDetails({
-      ...tempUserDetails,
-      native_language: lang_code,
-    });
-  }
-
-  function updateCEFRLevel(level) {
-    setTempUserDetails({
-      ...tempUserDetails,
-      cefr_level: level,
-    });
-  }
-
-  function updateLearnedLanguage(lang_code) {
-    console.log("language code in updateLearnedLanguage");
-    setLearnedLanguage(lang_code);
-    console.log(lang_code);
-    setTempUserDetails({
-      ...tempUserDetails,
-      learned_language: lang_code,
-    });
-  }
-
   function handleSave(e) {
     e.preventDefault();
     if (!validateRules([validateLearnedLanguage, validateNativeLanguage]))
       scrollToTop();
-    else
-      api.saveUserDetails(tempUserDetails, setErrorMessage, () => {
-        updateUserInfo(tempUserDetails);
+    else {
+      const newUserDetails = {
+        ...userDetails,
+        learned_language: learnedLanguage,
+        native_language: nativeLanguage,
+        [learnedLanguage + "_cefr_level"]: CEFR,
+      };
+
+      const newUserDetailsForAPI = {
+        ...newUserDetails,
+        cefr_level: CEFR,
+      };
+
+      api.saveUserDetails(newUserDetailsForAPI, setErrorMessage, () => {
+        setUserDetails(newUserDetails);
+        LocalStorage.setUserInfo(newUserDetails);
+        saveUserInfoIntoCookies(newUserDetails);
         history.goBack();
       });
+    }
   }
 
-  if (!tempUserDetails || !languages) {
+  if (!userDetails || !languages) {
     return <LoadingAnimation />;
   }
 
@@ -165,7 +138,7 @@ export default function LanguageSettings() {
               languages={languages.learnable_languages}
               selected={learnedLanguage}
               onChange={(e) => {
-                updateLearnedLanguage(e.target.value);
+                setLearnedLanguage(e.target.value);
               }}
               isError={!isLearnedLanguageValid}
               errorMessage={learnedLanguageErrorMsg}
@@ -177,9 +150,9 @@ export default function LanguageSettings() {
               optionLabel={(e) => e.label}
               optionValue={(e) => e.value}
               onChange={(e) => {
-                updateCEFRLevel(e.target.value);
+                setCEFR(parseInt(e.target.value));
               }}
-              selectedValue={tempUserDetails.cefr_level}
+              selectedValue={CEFR}
             />
           </FormSection>
 
@@ -192,7 +165,7 @@ export default function LanguageSettings() {
               isError={!isNativeLanguageValid}
               errorMessage={nativeLanguageMsg}
               onChange={(e) => {
-                updateNativeLanguage(e.target.value);
+                setNativeLanguage(e.target.value);
               }}
             />
           </FormSection>
