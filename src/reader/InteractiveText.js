@@ -193,7 +193,7 @@ export default class InteractiveText {
         rightEllipsis,
         this.contextIdentifier,
       )
-      .then((response) => response.json())
+      .then((response) => response.data)
       .then((data) => {
         word.updateTranslation(
           data.translation,
