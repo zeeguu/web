@@ -70,9 +70,7 @@ export default function MultipleChoiceContext({
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
         speech,
-        exerciseBookmark.context_type,
-        null,
-        exerciseBookmark.fragment_id,
+        exerciseBookmark.context_identifier,
       ),
     );
     // eslint-disable-next-line

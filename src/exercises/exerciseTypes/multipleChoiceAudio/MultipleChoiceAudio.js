@@ -63,9 +63,7 @@ export default function MultipleChoiceAudio({
         exerciseBookmark.from_lang,
         EXERCISE_TYPE,
         speech,
-        exerciseBookmark.context_type,
-        null,
-        exerciseBookmark.fragment_id,
+        exerciseBookmark.context_identifier,
       ),
     );
     consolidateChoice();
