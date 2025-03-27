@@ -6,11 +6,13 @@ import isNullOrUndefinied from "../utils/misc/isNullOrUndefinied";
 
 // We try to capture about a full sentence around a word.
 const MAX_WORD_EXPANSION_COUNT = 14;
+
 function wordShouldSkipCount(word) {
   //   When building context, we do not count for the context limit punctuation,
   // symbols, and numbers.
   return word.token.is_punct || word.token.is_symbol || word.token.is_like_num;
 }
+
 export default class InteractiveText {
   constructor(
     tokenizedParagraphs,
@@ -37,6 +39,7 @@ export default class InteractiveText {
           target_t_i < paragraphs[0][target_s_i].length
         );
       }
+
       if (!bookmarks) return;
 
       for (let i = 0; i < bookmarks.length; i++) {
@@ -60,14 +63,14 @@ export default class InteractiveText {
 
         target_token = paragraphs[target_p_i][target_s_i][target_t_i];
         /*
-        Before we update the target token we want to check two cases:
-         1. The bookmark isn't defined. 
-         If the bookmark is defined it means a bookmark is trying to override another
-         previous bookmark.
-         2. The bookmark text, doesn't match the token.
-         In this case, we might have an error in the coordinates, and for that reason
-         we don't update the original text.
-         */
+                Before we update the target token we want to check two cases:
+                 1. The bookmark isn't defined. 
+                 If the bookmark is defined it means a bookmark is trying to override another
+                 previous bookmark.
+                 2. The bookmark text, doesn't match the token.
+                 In this case, we might have an error in the coordinates, and for that reason
+                 we don't update the original text.
+                 */
         if (target_token.bookmark) {
           continue;
         }
@@ -124,13 +127,13 @@ export default class InteractiveText {
           bookmark.total_tokens = text_i + bookmark_i;
         target_token.bookmark = bookmark;
         /*
-          When rendering the words in the frontend, we alter the word object to be composed
-          of multiple tokens.
-          In case of deleting a bookmark, we need to make sure that all the tokens are 
-          available to re-render the original text. 
-          To do this, we need to ensure that the stored token is stored without a bookmark,
-          so when those are retrieved the token is seen as a token rather than a bookmark. 
-         */
+                  When rendering the words in the frontend, we alter the word object to be composed
+                  of multiple tokens.
+                  In case of deleting a bookmark, we need to make sure that all the tokens are 
+                  available to re-render the original text. 
+                  To do this, we need to ensure that the stored token is stored without a bookmark,
+                  so when those are retrieved the token is seen as a token rather than a bookmark. 
+                 */
         target_token.mergedTokens = [{ ...target_token, bookmark: null }];
         for (let i = 1; i < bookmark["t_total_token"]; i++) {
           target_token.mergedTokens.push({
@@ -140,6 +143,7 @@ export default class InteractiveText {
         }
       }
     }
+
     this.api = api;
     this.sourceId = sourceId;
     this.language = language;
@@ -199,6 +203,7 @@ export default class InteractiveText {
         onSuccess();
       })
       .catch((e) => {
+        console.error(e);
         console.log("could not retreive translation");
       });
 

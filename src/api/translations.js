@@ -33,14 +33,7 @@ Zeeguu_API.prototype.getOneTranslation = function (
     context_identifier: contextIdentifier,
   };
 
-  /*   
-  console.log("Sending bookmark!");
-  console.dir(payload);
-  */
-  return this._post(
-    `get_one_translation/${from_lang}/${to_lang}`,
-    qs.stringify(payload),
-  );
+  return this.apiPost(`/get_one_translation/${from_lang}/${to_lang}`, payload);
 };
 
 Zeeguu_API.prototype.getMultipleTranslations = function (
